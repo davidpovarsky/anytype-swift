@@ -1,0 +1,39 @@
+name: Pinkha Tests
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - 'pinkha/*'
+    paths:
+      - 'Modules/PinkhaKit/**'
+      - 'Anytype/Sources/Pinkha/**'
+      - '.github/workflows/pinkha-tests.yaml'
+  pull_request:
+    paths:
+      - 'Modules/PinkhaKit/**'
+      - 'Anytype/Sources/Pinkha/**'
+      - '.github/workflows/pinkha-tests.yaml'
+  workflow_dispatch:
+
+jobs:
+  pinkha-tests:
+    name: PinkhaKit Tests
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1.6.0
+        with:
+          xcode-version: '26.1'
+
+      - name: Run PinkhaKit Unit Tests
+        run: swift test --package-path Modules/PinkhaKit

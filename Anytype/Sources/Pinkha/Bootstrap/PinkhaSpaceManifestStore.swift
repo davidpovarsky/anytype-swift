@@ -2,6 +2,7 @@ import Foundation
 import PinkhaKit
 import Services
 import AnytypeCore
+import Logger
 import Factory
 import SwiftProtobuf
 import ProtobufMessages
@@ -10,6 +11,8 @@ import ProtobufMessages
 /// Stores the PinkhaSpaceManifest as an internal hidden object within the Anytype Space.
 /// Synchronizes across devices using Anytype's native CRDT sync engine without secondary local databases.
 public final class PinkhaSpaceManifestStore: PinkhaSpaceManifestStoreProtocol, Sendable {
+
+    private static let log = EventLogger(category: "Pinkha")
 
     @Injected(\.searchMiddleService)
     private var searchMiddleService: any SearchMiddleServiceProtocol
@@ -67,7 +70,11 @@ public final class PinkhaSpaceManifestStore: PinkhaSpaceManifestStoreProtocol, S
         let secondaryIds = results.map(\.id).filter { $0 != bestId }
         if !secondaryIds.isEmpty {
             Task {
-                try? await objectActionsService.delete(objectIds: secondaryIds)
+                do {
+                    try await objectActionsService.delete(objectIds: secondaryIds)
+                } catch {
+                    Self.log.log(level: .warning, message: "Failed to clean up secondary manifest objects \(secondaryIds): \(error.localizedDescription)")
+                }
             }
         }
 

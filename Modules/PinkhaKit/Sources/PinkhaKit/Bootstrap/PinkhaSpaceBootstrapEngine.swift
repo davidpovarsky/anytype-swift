@@ -60,17 +60,24 @@ public final class PinkhaSpaceBootstrapEngine: PinkhaSpaceBootstrapEngineProtoco
             throw PinkhaBootstrapError.disabled
         }
 
-        // 1. Fast path: check in-memory cache
-        if let cached = cache.get(spaceId), cached.isFullyProvisioned {
-            return cached
-        }
-
-        // 2. Load synced manifest from store
+        // 1. Load synced canonical manifest from store (authoritative source of truth)
         var loadedManifest: PinkhaSpaceManifest?
         do {
             loadedManifest = try await store.loadManifest(spaceId: spaceId)
         } catch {
             throw PinkhaBootstrapError.manifestStoreError("Failed to load manifest: \(error.localizedDescription)")
+        }
+
+        // 2. Authoritative sync check: compare in-memory cache with canonical store manifest
+        if let existing = loadedManifest, existing.isFullyProvisioned {
+            if let cached = cache.get(spaceId),
+               cached.isFullyProvisioned,
+               cached.manifestObjectId == existing.manifestObjectId,
+               cached.schemaVersion == existing.schemaVersion,
+               cached.updatedAt == existing.updatedAt {
+                // Cached decoded state matches canonical store exactly; reuse it safely
+                return cached
+            }
         }
 
         // 3. Migrate if present

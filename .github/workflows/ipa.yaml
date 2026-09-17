@@ -1,5 +1,9 @@
 name: Build IPA
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   workflow_dispatch:
     inputs:
@@ -23,15 +27,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1.6.0
         with:
           xcode-version: '26.1'
 
-      - name: Install iOS Platform
-        run: xcodebuild -downloadPlatform iOS
+      - name: Run PinkhaKit Unit Tests
+        run: swift test --package-path Modules/PinkhaKit
+
+      - name: Cache Middleware
+        uses: actions/cache@v4
+        with:
+          path: .libcache
+          key: middleware-libcache-${{ hashFiles('Libraryfile') }}
 
       - name: Download Middleware
         run: make setup-middle-ci
@@ -39,12 +49,17 @@ jobs:
           CI: 'true'
           MIDDLEWARE_TOKEN: ${{ secrets.MIDDLEWARE_TOKEN }}
 
-      - name: Run PinkhaKit Unit Tests
-        run: swift test --package-path Modules/PinkhaKit
+      - name: Cache Swift Package Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ./build/DerivedData/SourcePackages
+          key: xcode-spm-packages-${{ hashFiles('Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          restore-keys: |
+            xcode-spm-packages-
 
       - name: Build Anytype for iOS Device (Unsigned)
         run: |
-          xcodebuild clean build \
+          xcodebuild build \
             -project Anytype.xcodeproj \
             -scheme Anytype \
             -configuration Release-Anytype \
@@ -79,6 +94,7 @@ jobs:
           name: Anytype-Hebrew-Unsigned-Device-IPA
           path: ./build/ipa/Anytype-Hebrew-Unsigned.ipa
           if-no-files-found: error
+          retention-days: 7
 
       - name: Upload Build Logs on Failure
         if: failure()

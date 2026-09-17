@@ -521,9 +521,9 @@ struct PinkhaSpaceBootstrapEngineTests {
         #expect(storedAfter?.schemaVersion == 99)
     }
 
-    // 13. True concurrent bootstraps against race-capable store converge
-    @Test("Concurrent bootstraps with race-capable store converge on canonical manifest")
-    func testConcurrentBootstrapsWithRaceCapableStoreConverge() async throws {
+    // 13. Concurrent bootstraps select a canonical manifest in store
+    @Test("Concurrent bootstraps select a canonical manifest in store")
+    func testConcurrentBootstrapsSelectCanonicalManifest() async throws {
         let store = RaceCapableMockManifestStore()
         let propService = MockPropertyService()
         let typeService = MockTypeService()
@@ -767,5 +767,71 @@ struct PinkhaSpaceBootstrapEngineTests {
         #expect(newPropCount == initialPropCount)
         #expect(newTypeCount == initialTypeCount)
         #expect(newTmplCount == initialTmplCount + 1)
+    }
+
+    // 20. Decisive convergence: cached loser engine re-bootstrap converges on canonical manifest
+    @Test("Decisive convergence: cached-loser engines re-bootstrap to same canonical manifest without new schema")
+    func testCachedLoserEngineConvergesOnCanonicalManifest() async throws {
+        let store = RaceCapableMockManifestStore()
+        let propService = MockPropertyService()
+        let typeService = MockTypeService()
+        let templateService = MockTemplateService()
+        let spaceId = "space_decisive_convergence_020"
+
+        let clientA = PinkhaSpaceBootstrapEngine(
+            store: store,
+            propertyService: propService,
+            typeService: typeService,
+            templateService: templateService
+        )
+        let clientB = PinkhaSpaceBootstrapEngine(
+            store: store,
+            propertyService: propService,
+            typeService: typeService,
+            templateService: templateService
+        )
+
+        // 1. Initial concurrent bootstrap: both engines bootstrap against empty store
+        async let runA = clientA.bootstrapSpace(spaceId: spaceId)
+        async let runB = clientB.bootstrapSpace(spaceId: spaceId)
+        let (initialA, initialB) = try await (runA, runB)
+
+        #expect(initialA.isFullyProvisioned)
+        #expect(initialB.isFullyProvisioned)
+
+        // Store selected one canonical winner
+        let canonicalWinner = try await store.loadManifest(spaceId: spaceId)
+        #expect(canonicalWinner != nil)
+
+        let propCountAfterInitial = await propService.getCreateCount()
+        let typeCountAfterInitial = await typeService.getCreateCount()
+        let tmplCountAfterInitial = await templateService.getCreateCount()
+
+        // 2. WITHOUT recreating either engine instance, call bootstrapSpace again on BOTH
+        let convergedA = try await clientA.bootstrapSpace(spaceId: spaceId)
+        let convergedB = try await clientB.bootstrapSpace(spaceId: spaceId)
+
+        // 3. Both must now return the EXACT SAME canonical manifest
+        #expect(convergedA == convergedB)
+        #expect(convergedA == canonicalWinner)
+        #expect(convergedB == canonicalWinner)
+
+        #expect(convergedA.manifestObjectId == canonicalWinner?.manifestObjectId)
+        #expect(convergedA.parentPropertyId == canonicalWinner?.parentPropertyId)
+        #expect(convergedA.orderPropertyId == canonicalWinner?.orderPropertyId)
+        #expect(convergedA.documentAssociationsPropertyId == canonicalWinner?.documentAssociationsPropertyId)
+        #expect(convergedA.folderTypeId == canonicalWinner?.folderTypeId)
+        #expect(convergedA.bookFolderTypeId == canonicalWinner?.bookFolderTypeId)
+        #expect(convergedA.registeredDocumentTypes == canonicalWinner?.registeredDocumentTypes)
+        #expect(convergedA.defaultTemplateIds == canonicalWinner?.defaultTemplateIds)
+
+        // 4. Verify no new schema objects were created during this convergence pass
+        let propCountAfterConvergence = await propService.getCreateCount()
+        let typeCountAfterConvergence = await typeService.getCreateCount()
+        let tmplCountAfterConvergence = await templateService.getCreateCount()
+
+        #expect(propCountAfterConvergence == propCountAfterInitial)
+        #expect(typeCountAfterConvergence == typeCountAfterInitial)
+        #expect(tmplCountAfterConvergence == tmplCountAfterInitial)
     }
 }
