@@ -17,11 +17,7 @@ RESET='\033[0m'
 source Libraryfile
 
 if [ "$CI" = true ] ; then
-    if [[  -z "$MIDDLEWARE_TOKEN" ]]; then
-        printf "MIDDLEWARE_TOKEN is not set\n"
-        exit 1
-    fi
-    token=${MIDDLEWARE_TOKEN}
+    token=${MIDDLEWARE_TOKEN:-}
 else
     has_token=$(has-keychain-environment-variable MIDDLEWARE_TOKEN)
     if [ ${has_token} == 0 ] ; then
@@ -36,11 +32,26 @@ LIB_PATH=${CACHE_DIR}/lib-${MIDDLE_VERSION}.gz
 
 if [[ ! -f "$LIB_PATH" ]]; then
     LIB_PATH_TMP=${CACHE_DIR}/lib-tmp.gz
+    downloaded=0
 
-    if ! curl https://maven.pkg.github.com/anyproto/anytype-heart/io.anyproto/anytype-heart-ios/${MIDDLE_VERSION}/anytype-heart-ios-${MIDDLE_VERSION}.gz -f --header "Authorization: token ${token}" -L --output ${LIB_PATH_TMP}; then
+    if [[ -n "$token" ]]; then
+        echo "Attempting to download middleware from GitHub Packages with provided token..."
+        if curl https://maven.pkg.github.com/anyproto/anytype-heart/io.anyproto/anytype-heart-ios/${MIDDLE_VERSION}/anytype-heart-ios-${MIDDLE_VERSION}.gz -f --header "Authorization: token ${token}" -L --output ${LIB_PATH_TMP}; then
+            downloaded=1
+        fi
+    fi
 
-        printf "${RED}Error downloading middleware, check out token provided${RESET}"
-        printf "use \"make change-github-token\" command to update token"
+    if [[ ${downloaded} -eq 0 ]]; then
+        echo "Downloading middleware from public anytype-heart release (${MIDDLE_VERSION})..."
+        PUBLIC_RELEASE_URL="https://github.com/anyproto/anytype-heart/releases/download/${MIDDLE_VERSION}/ios_framework_${MIDDLE_VERSION}.tar.gz"
+        if curl -f -L "${PUBLIC_RELEASE_URL}" --output ${LIB_PATH_TMP}; then
+            downloaded=1
+        fi
+    fi
+
+    if [[ ${downloaded} -eq 0 ]]; then
+        printf "${RED}Error downloading middleware, check out token provided or network connectivity${RESET}\n"
+        printf "use \"make change-github-token\" command to update token\n"
         exit 1
     fi
 
