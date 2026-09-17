@@ -84,17 +84,29 @@ public final class PinkhaSpaceBootstrapEngine: PinkhaSpaceBootstrapEngineProtoco
             }
         }
 
-        // 4. If fully provisioned and all IDs valid, cache and return
-        if let existing = loadedManifest, existing.isFullyProvisioned {
-            let valid = try await validateReferencedIds(existing, spaceId: spaceId)
-            if valid {
-                cache.set(spaceId, manifest: existing)
-                return existing
+        // 4. If existing manifest is present: validate all referenced IDs.
+        // If any referenced component is missing:
+        // - clear/repair that mapping in the manifest,
+        // - transition manifest back to .inProgress,
+        // - immediately persist that repair to the store.
+        // If all referenced IDs are valid and it is fully provisioned, cache and return.
+        var manifest: PinkhaSpaceManifest
+        if let existing = loadedManifest {
+            let (repaired, hasRepairs) = try await repairInvalidReferences(in: existing, spaceId: spaceId)
+            if hasRepairs {
+                var inProgressRepaired = repaired
+                inProgressRepaired.provisioningState = .inProgress
+                inProgressRepaired.updatedAt = Date()
+                manifest = try await store.saveManifest(inProgressRepaired)
+            } else if repaired.isFullyProvisioned {
+                cache.set(spaceId, manifest: repaired)
+                return repaired
+            } else {
+                manifest = repaired
             }
+        } else {
+            manifest = PinkhaSpaceManifest.initial(spaceId: spaceId)
         }
-
-        // 5. Initialize or resume manifest
-        var manifest = loadedManifest ?? PinkhaSpaceManifest.initial(spaceId: spaceId)
 
         // If manifest has no objectId yet, save initial in-progress state to obtain object ID
         if manifest.manifestObjectId == nil {
@@ -219,39 +231,92 @@ public final class PinkhaSpaceBootstrapEngine: PinkhaSpaceBootstrapEngineProtoco
             }
         }
 
-        // 9. Mark Complete and Persist
-        manifest.provisioningState = .complete
-        manifest.updatedAt = Date()
-        manifest = try await store.saveManifest(manifest)
+        // 9. Re-validate all referenced components before declaring complete
+        let (finalRepaired, finalHasRepairs) = try await repairInvalidReferences(in: manifest, spaceId: spaceId)
+        guard !finalHasRepairs &&
+              finalRepaired.allRequiredPropertiesPresent &&
+              finalRepaired.allRequiredTypesPresent &&
+              finalRepaired.allRequiredTemplatesPresent else {
+            throw PinkhaBootstrapError.invalidManifest("Provisioning finished but some required references remain invalid or missing")
+        }
 
-        cache.set(spaceId, manifest: manifest)
-        return manifest
+        // 10. Mark Complete and Persist
+        var completedManifest = finalRepaired
+        completedManifest.provisioningState = .complete
+        completedManifest.updatedAt = Date()
+        completedManifest = try await store.saveManifest(completedManifest)
+
+        cache.set(spaceId, manifest: completedManifest)
+        return completedManifest
     }
 
-    private func validateReferencedIds(_ manifest: PinkhaSpaceManifest, spaceId: String) async throws -> Bool {
-        guard try await propertyService.validatePropertyExists(propertyId: manifest.parentPropertyId, spaceId: spaceId),
-              try await propertyService.validatePropertyExists(propertyId: manifest.orderPropertyId, spaceId: spaceId),
-              try await propertyService.validatePropertyExists(propertyId: manifest.documentAssociationsPropertyId, spaceId: spaceId) else {
-            return false
-        }
+    private func repairInvalidReferences(
+        in manifest: PinkhaSpaceManifest,
+        spaceId: String
+    ) async throws -> (repairedManifest: PinkhaSpaceManifest, hasRepairs: Bool) {
+        var repaired = manifest
+        var hasRepairs = false
 
-        guard try await typeService.validateTypeExists(typeId: manifest.folderTypeId, spaceId: spaceId),
-              try await typeService.validateTypeExists(typeId: manifest.bookFolderTypeId, spaceId: spaceId) else {
-            return false
-        }
-
-        for (_, typeId) in manifest.registeredDocumentTypes {
-            guard try await typeService.validateTypeExists(typeId: typeId, spaceId: spaceId) else {
-                return false
+        if !repaired.parentPropertyId.isEmpty {
+            let exists = try await propertyService.validatePropertyExists(propertyId: repaired.parentPropertyId, spaceId: spaceId)
+            if !exists {
+                repaired.parentPropertyId = ""
+                repaired.parentPropertyKey = ""
+                hasRepairs = true
             }
         }
 
-        for (_, templateId) in manifest.defaultTemplateIds {
-            guard try await templateService.validateTemplateExists(templateId: templateId, spaceId: spaceId) else {
-                return false
+        if !repaired.orderPropertyId.isEmpty {
+            let exists = try await propertyService.validatePropertyExists(propertyId: repaired.orderPropertyId, spaceId: spaceId)
+            if !exists {
+                repaired.orderPropertyId = ""
+                repaired.orderPropertyKey = ""
+                hasRepairs = true
             }
         }
 
-        return true
+        if !repaired.documentAssociationsPropertyId.isEmpty {
+            let exists = try await propertyService.validatePropertyExists(propertyId: repaired.documentAssociationsPropertyId, spaceId: spaceId)
+            if !exists {
+                repaired.documentAssociationsPropertyId = ""
+                repaired.documentAssociationsPropertyKey = ""
+                hasRepairs = true
+            }
+        }
+
+        if !repaired.folderTypeId.isEmpty {
+            let exists = try await typeService.validateTypeExists(typeId: repaired.folderTypeId, spaceId: spaceId)
+            if !exists {
+                repaired.folderTypeId = ""
+                hasRepairs = true
+            }
+        }
+
+        if !repaired.bookFolderTypeId.isEmpty {
+            let exists = try await typeService.validateTypeExists(typeId: repaired.bookFolderTypeId, spaceId: spaceId)
+            if !exists {
+                repaired.bookFolderTypeId = ""
+                hasRepairs = true
+            }
+        }
+
+        for (role, typeId) in repaired.registeredDocumentTypes {
+            let exists = try await typeService.validateTypeExists(typeId: typeId, spaceId: spaceId)
+            if !exists {
+                repaired.registeredDocumentTypes.removeValue(forKey: role)
+                repaired.defaultTemplateIds.removeValue(forKey: role)
+                hasRepairs = true
+            }
+        }
+
+        for (role, templateId) in repaired.defaultTemplateIds {
+            let exists = try await templateService.validateTemplateExists(templateId: templateId, spaceId: spaceId)
+            if !exists {
+                repaired.defaultTemplateIds.removeValue(forKey: role)
+                hasRepairs = true
+            }
+        }
+
+        return (repaired, hasRepairs)
     }
 }

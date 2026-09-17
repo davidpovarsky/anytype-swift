@@ -14,6 +14,9 @@ public final class PinkhaSpaceManifestStore: PinkhaSpaceManifestStoreProtocol, S
     @Injected(\.searchMiddleService)
     private var searchMiddleService: any SearchMiddleServiceProtocol
 
+    @Injected(\.objectActionsService)
+    private var objectActionsService: any ObjectActionsServiceProtocol
+
     public init() {}
 
     public func discoverManifestObjectId(spaceId: String) async throws -> String? {
@@ -57,6 +60,14 @@ public final class PinkhaSpaceManifestStore: PinkhaSpaceManifestStoreProtocol, S
                     bestManifest = manifest
                     bestId = result.id
                 }
+            }
+        }
+
+        // Clean up secondary (losing) duplicate manifest objects safely
+        let secondaryIds = results.map(\.id).filter { $0 != bestId }
+        if !secondaryIds.isEmpty {
+            Task {
+                try? await objectActionsService.delete(objectIds: secondaryIds)
             }
         }
 

@@ -58,6 +58,10 @@ actor MockPropertyService: PinkhaPropertyServiceProtocol {
         createdProperties.append(prop)
     }
 
+    func removeProperty(id: String) {
+        createdProperties.removeAll(where: { $0.id == id })
+    }
+
     func getCreateCount() -> Int {
         createCallCount
     }
@@ -88,6 +92,10 @@ actor MockTypeService: PinkhaTypeServiceProtocol {
         createdTypes.append(type)
     }
 
+    func removeType(id: String) {
+        createdTypes.removeAll(where: { $0.id == id })
+    }
+
     func getCreateCount() -> Int {
         createCallCount
     }
@@ -111,7 +119,7 @@ actor MockTemplateService: PinkhaTemplateServiceProtocol {
             throw PinkhaBootstrapError.templateCreationFailed("Mock template creation failure")
         }
         createCallCount += 1
-        let templateId = "tmpl_\(typeId)"
+        let templateId = "tmpl_\(typeId)_\(createCallCount)"
         createdTemplates[typeId] = templateId
         return templateId
     }
@@ -120,8 +128,54 @@ actor MockTemplateService: PinkhaTemplateServiceProtocol {
         createdTemplates.values.contains(templateId)
     }
 
+    func removeTemplate(id: String) {
+        createdTemplates = createdTemplates.filter { $0.value != id }
+    }
+
     func getCreateCount() -> Int {
         createCallCount
+    }
+}
+
+actor RaceCapableMockManifestStore: PinkhaSpaceManifestStoreProtocol {
+    private var persistedManifests: [PinkhaSpaceManifest] = []
+    private var loadCount = 0
+
+    func loadManifest(spaceId: String) async throws -> PinkhaSpaceManifest? {
+        loadCount += 1
+        // Simulate race window: first 2 loads from concurrent clients both observe nil
+        if loadCount <= 2 && persistedManifests.isEmpty {
+            return nil
+        }
+        return getCanonicalManifest(spaceId: spaceId)
+    }
+
+    func saveManifest(_ manifest: PinkhaSpaceManifest) async throws -> PinkhaSpaceManifest {
+        var toSave = manifest
+        if toSave.manifestObjectId == nil {
+            toSave.manifestObjectId = "obj_manifest_\(manifest.spaceId)_\(persistedManifests.count + 1)"
+        }
+        persistedManifests.append(toSave)
+        return toSave
+    }
+
+    func discoverManifestObjectId(spaceId: String) async throws -> String? {
+        getCanonicalManifest(spaceId: spaceId)?.manifestObjectId
+    }
+
+    func getCanonicalManifest(spaceId: String) -> PinkhaSpaceManifest? {
+        let matching = persistedManifests.filter { $0.spaceId == spaceId }
+        guard !matching.isEmpty else { return nil }
+        return matching.sorted { m1, m2 in
+            if m1.isComplete != m2.isComplete { return m1.isComplete }
+            if m1.schemaVersion != m2.schemaVersion { return m1.schemaVersion > m2.schemaVersion }
+            if m1.updatedAt != m2.updatedAt { return m1.updatedAt > m2.updatedAt }
+            return (m1.manifestObjectId ?? "") < (m2.manifestObjectId ?? "")
+        }.first
+    }
+
+    func allPersistedManifests() -> [PinkhaSpaceManifest] {
+        persistedManifests
     }
 }
 
@@ -297,9 +351,9 @@ struct PinkhaSpaceBootstrapEngineTests {
         #expect(m1.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey] == m2.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey])
     }
 
-    // 5. Two service instances sharing persisted state converge on the same manifest
-    @Test("Two service instances converge on same manifest")
-    func testTwoInstancesConverge() async throws {
+    // 5. Sequential two instances sharing persisted state reuse existing manifest
+    @Test("Sequential two instances reuse existing manifest")
+    func testSequentialTwoInstancesReuseExistingManifest() async throws {
         let store = MockManifestStore()
         let propService = MockPropertyService()
         let typeService = MockTypeService()
@@ -465,5 +519,253 @@ struct PinkhaSpaceBootstrapEngineTests {
         // Verify the store was NOT overwritten
         let storedAfter = await store.getManifest(spaceId: spaceId)
         #expect(storedAfter?.schemaVersion == 99)
+    }
+
+    // 13. True concurrent bootstraps against race-capable store converge
+    @Test("Concurrent bootstraps with race-capable store converge on canonical manifest")
+    func testConcurrentBootstrapsWithRaceCapableStoreConverge() async throws {
+        let store = RaceCapableMockManifestStore()
+        let propService = MockPropertyService()
+        let typeService = MockTypeService()
+        let templateService = MockTemplateService()
+        let spaceId = "space_concurrent_013"
+
+        let clientA = PinkhaSpaceBootstrapEngine(
+            store: store,
+            propertyService: propService,
+            typeService: typeService,
+            templateService: templateService
+        )
+        let clientB = PinkhaSpaceBootstrapEngine(
+            store: store,
+            propertyService: propService,
+            typeService: typeService,
+            templateService: templateService
+        )
+
+        // Run both clients concurrently, modeling true simultaneous bootstrap
+        async let runA = clientA.bootstrapSpace(spaceId: spaceId)
+        async let runB = clientB.bootstrapSpace(spaceId: spaceId)
+
+        let (manifestA, manifestB) = try await (runA, runB)
+
+        #expect(manifestA.isFullyProvisioned)
+        #expect(manifestB.isFullyProvisioned)
+
+        // When queried from store afterwards, reconciliation returns a single canonical manifest
+        let canonical = try await store.loadManifest(spaceId: spaceId)
+        #expect(canonical != nil)
+        #expect(canonical?.isFullyProvisioned == true)
+
+        let allManifests = await store.allPersistedManifests()
+        #expect(allManifests.count >= 2)
+    }
+
+    // 14. Invalid reference repair: missing parent property recreated only
+    @Test("Repair missing parent property recreates only parent property")
+    func testRepairMissingParentPropertyRecreatesOnlyParentProperty() async throws {
+        let (engine, store, propService, typeService, templateService) = makeEngine()
+        let spaceId = "space_repair_parent_014"
+
+        let initial = try await engine.bootstrapSpace(spaceId: spaceId)
+        #expect(initial.isFullyProvisioned)
+        let initialPropCount = await propService.getCreateCount()
+        let initialTypeCount = await typeService.getCreateCount()
+        let initialTmplCount = await templateService.getCreateCount()
+
+        // Delete parent property from space
+        await propService.removeProperty(id: initial.parentPropertyId)
+
+        // New engine instance without in-memory cache
+        let engine2 = PinkhaSpaceBootstrapEngine(
+            store: store,
+            propertyService: propService,
+            typeService: typeService,
+            templateService: templateService
+        )
+
+        let repaired = try await engine2.bootstrapSpace(spaceId: spaceId)
+        #expect(repaired.isFullyProvisioned)
+        #expect(repaired.parentPropertyId != initial.parentPropertyId)
+        #expect(repaired.orderPropertyId == initial.orderPropertyId)
+        #expect(repaired.documentAssociationsPropertyId == initial.documentAssociationsPropertyId)
+        #expect(repaired.folderTypeId == initial.folderTypeId)
+
+        let newPropCount = await propService.getCreateCount()
+        let newTypeCount = await typeService.getCreateCount()
+        let newTmplCount = await templateService.getCreateCount()
+
+        // Exactly 1 new property created, 0 new types, 0 new templates
+        #expect(newPropCount == initialPropCount + 1)
+        #expect(newTypeCount == initialTypeCount)
+        #expect(newTmplCount == initialTmplCount)
+    }
+
+    // 15. Invalid reference repair: missing order property recreated only
+    @Test("Repair missing order property recreates only order property")
+    func testRepairMissingOrderPropertyRecreatesOnlyOrderProperty() async throws {
+        let (engine, store, propService, typeService, templateService) = makeEngine()
+        let spaceId = "space_repair_order_015"
+
+        let initial = try await engine.bootstrapSpace(spaceId: spaceId)
+        #expect(initial.isFullyProvisioned)
+        let initialPropCount = await propService.getCreateCount()
+
+        // Delete order property
+        await propService.removeProperty(id: initial.orderPropertyId)
+
+        let engine2 = PinkhaSpaceBootstrapEngine(
+            store: store,
+            propertyService: propService,
+            typeService: typeService,
+            templateService: templateService
+        )
+
+        let repaired = try await engine2.bootstrapSpace(spaceId: spaceId)
+        #expect(repaired.isFullyProvisioned)
+        #expect(repaired.orderPropertyId != initial.orderPropertyId)
+        #expect(repaired.parentPropertyId == initial.parentPropertyId)
+        #expect(repaired.documentAssociationsPropertyId == initial.documentAssociationsPropertyId)
+
+        let newPropCount = await propService.getCreateCount()
+        #expect(newPropCount == initialPropCount + 1)
+    }
+
+    // 16. Invalid reference repair: missing Torah associations property recreated only
+    @Test("Repair missing Torah associations property recreates only Torah property")
+    func testRepairMissingTorahPropertyRecreatesOnlyTorahProperty() async throws {
+        let (engine, store, propService, typeService, templateService) = makeEngine()
+        let spaceId = "space_repair_torah_016"
+
+        let initial = try await engine.bootstrapSpace(spaceId: spaceId)
+        #expect(initial.isFullyProvisioned)
+        let initialPropCount = await propService.getCreateCount()
+
+        // Delete associations property
+        await propService.removeProperty(id: initial.documentAssociationsPropertyId)
+
+        let engine2 = PinkhaSpaceBootstrapEngine(
+            store: store,
+            propertyService: propService,
+            typeService: typeService,
+            templateService: templateService
+        )
+
+        let repaired = try await engine2.bootstrapSpace(spaceId: spaceId)
+        #expect(repaired.isFullyProvisioned)
+        #expect(repaired.documentAssociationsPropertyId != initial.documentAssociationsPropertyId)
+        #expect(repaired.parentPropertyId == initial.parentPropertyId)
+        #expect(repaired.orderPropertyId == initial.orderPropertyId)
+
+        let newPropCount = await propService.getCreateCount()
+        #expect(newPropCount == initialPropCount + 1)
+    }
+
+    // 17. Invalid reference repair: missing folder type recreated only
+    @Test("Repair missing folder type recreates only folder type")
+    func testRepairMissingFolderTypeRecreatesOnlyFolderType() async throws {
+        let (engine, store, propService, typeService, templateService) = makeEngine()
+        let spaceId = "space_repair_folder_017"
+
+        let initial = try await engine.bootstrapSpace(spaceId: spaceId)
+        #expect(initial.isFullyProvisioned)
+        let initialPropCount = await propService.getCreateCount()
+        let initialTypeCount = await typeService.getCreateCount()
+
+        // Delete folder type
+        await typeService.removeType(id: initial.folderTypeId)
+
+        let engine2 = PinkhaSpaceBootstrapEngine(
+            store: store,
+            propertyService: propService,
+            typeService: typeService,
+            templateService: templateService
+        )
+
+        let repaired = try await engine2.bootstrapSpace(spaceId: spaceId)
+        #expect(repaired.isFullyProvisioned)
+        #expect(repaired.folderTypeId != initial.folderTypeId)
+        #expect(repaired.bookFolderTypeId == initial.bookFolderTypeId)
+
+        let newPropCount = await propService.getCreateCount()
+        let newTypeCount = await typeService.getCreateCount()
+        #expect(newPropCount == initialPropCount)
+        #expect(newTypeCount == initialTypeCount + 1)
+    }
+
+    // 18. Invalid reference repair: missing writing type recreates type and template only
+    @Test("Repair missing writing type recreates writing type and template")
+    func testRepairMissingWritingTypeRecreatesTypeAndTemplate() async throws {
+        let (engine, store, propService, typeService, templateService) = makeEngine()
+        let spaceId = "space_repair_writing_018"
+
+        let initial = try await engine.bootstrapSpace(spaceId: spaceId)
+        #expect(initial.isFullyProvisioned)
+        let chiddushId = initial.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey]!
+        let initialPropCount = await propService.getCreateCount()
+        let initialTypeCount = await typeService.getCreateCount()
+        let initialTmplCount = await templateService.getCreateCount()
+
+        // Delete chiddush type
+        await typeService.removeType(id: chiddushId)
+
+        let engine2 = PinkhaSpaceBootstrapEngine(
+            store: store,
+            propertyService: propService,
+            typeService: typeService,
+            templateService: templateService
+        )
+
+        let repaired = try await engine2.bootstrapSpace(spaceId: spaceId)
+        #expect(repaired.isFullyProvisioned)
+        #expect(repaired.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey] != chiddushId)
+        #expect(repaired.registeredDocumentTypes[PinkhaSchemaRoles.articleKey] == initial.registeredDocumentTypes[PinkhaSchemaRoles.articleKey])
+
+        let newPropCount = await propService.getCreateCount()
+        let newTypeCount = await typeService.getCreateCount()
+        let newTmplCount = await templateService.getCreateCount()
+
+        // 0 new properties, exactly 1 new type (chiddush), 1 new template (for chiddush)
+        #expect(newPropCount == initialPropCount)
+        #expect(newTypeCount == initialTypeCount + 1)
+        #expect(newTmplCount == initialTmplCount + 1)
+    }
+
+    // 19. Invalid reference repair: missing default template recreates template only
+    @Test("Repair missing default template recreates only template")
+    func testRepairMissingTemplateRecreatesOnlyTemplate() async throws {
+        let (engine, store, propService, typeService, templateService) = makeEngine()
+        let spaceId = "space_repair_template_019"
+
+        let initial = try await engine.bootstrapSpace(spaceId: spaceId)
+        #expect(initial.isFullyProvisioned)
+        let articleTmplId = initial.defaultTemplateIds[PinkhaSchemaRoles.articleKey]!
+        let initialPropCount = await propService.getCreateCount()
+        let initialTypeCount = await typeService.getCreateCount()
+        let initialTmplCount = await templateService.getCreateCount()
+
+        // Delete article template
+        await templateService.removeTemplate(id: articleTmplId)
+
+        let engine2 = PinkhaSpaceBootstrapEngine(
+            store: store,
+            propertyService: propService,
+            typeService: typeService,
+            templateService: templateService
+        )
+
+        let repaired = try await engine2.bootstrapSpace(spaceId: spaceId)
+        #expect(repaired.isFullyProvisioned)
+        #expect(repaired.defaultTemplateIds[PinkhaSchemaRoles.articleKey] != articleTmplId)
+        #expect(repaired.defaultTemplateIds[PinkhaSchemaRoles.chiddushKey] == initial.defaultTemplateIds[PinkhaSchemaRoles.chiddushKey])
+
+        let newPropCount = await propService.getCreateCount()
+        let newTypeCount = await typeService.getCreateCount()
+        let newTmplCount = await templateService.getCreateCount()
+
+        // 0 new properties, 0 new types, exactly 1 new template
+        #expect(newPropCount == initialPropCount)
+        #expect(newTypeCount == initialTypeCount)
+        #expect(newTmplCount == initialTmplCount + 1)
     }
 }

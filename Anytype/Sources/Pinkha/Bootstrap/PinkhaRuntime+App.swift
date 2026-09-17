@@ -26,4 +26,8 @@ extension Container {
     public var pinkhaTemplateServiceAdapter: Factory<any PinkhaTemplateServiceProtocol> {
         self { AnytypeTemplateServiceAdapter() }.singleton
     }
+
+    public var pinkhaBootstrapStateManager: Factory<PinkhaBootstrapStateManager> {
+        self { PinkhaBootstrapStateManager() }.singleton
+    }
 }

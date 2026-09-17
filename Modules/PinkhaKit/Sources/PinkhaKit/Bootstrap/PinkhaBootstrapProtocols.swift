@@ -10,6 +10,13 @@ public enum PinkhaBootstrapError: Error, Equatable, Sendable {
     case invalidManifest(String)
 }
 
+public enum PinkhaSpaceBootstrapState: Equatable, Sendable {
+    case uninitialized
+    case provisioning
+    case ready(PinkhaSpaceManifest)
+    case failed(String)
+}
+
 public enum PinkhaSchemaMigrationError: Error, Equatable, Sendable {
     case unsupportedVersion(Int)
     case migrationFailed(String)

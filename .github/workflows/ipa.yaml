@@ -39,6 +39,9 @@ jobs:
           CI: 'true'
           MIDDLEWARE_TOKEN: ${{ secrets.MIDDLEWARE_TOKEN }}
 
+      - name: Run PinkhaKit Unit Tests
+        run: swift test --package-path Modules/PinkhaKit
+
       - name: Build Anytype for iOS Device (Unsigned)
         run: |
           xcodebuild clean build \
