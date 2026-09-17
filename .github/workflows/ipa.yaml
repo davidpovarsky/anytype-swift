@@ -5,11 +5,12 @@ on:
     inputs:
       build_type:
         description: "App build type"
-        required: true
+        required: false
+        default: release
         type: choice
         options:
-          - dev
           - release
+          - dev
   repository_dispatch:
     types:
       - trigger-build
@@ -20,13 +21,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-           fetch-depth: 0
+          fetch-depth: 0
 
-      - name: Prepare deps
-        uses: ./.github/actions/prepare-deps
-        
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1.6.0
         with:
@@ -38,38 +36,51 @@ jobs:
       - name: Download Middleware
         run: make setup-middle-ci
         env:
+          CI: 'true'
           MIDDLEWARE_TOKEN: ${{ secrets.MIDDLEWARE_TOKEN }}
 
-      - name: Build IPA
-        run:  |
-          if [[ "$BUILD_TYPE" == "release" ]]; then
-            bundle exec fastlane build_ipa_release
-          else
-            bundle exec fastlane build_ipa_dev
-          fi
-        continue-on-error: true
-        env:
-          BUILD_TYPE: ${{ github.event.inputs.build_type }}
+      - name: Build Anytype for iOS Device (Unsigned)
+        run: |
+          xcodebuild clean build \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -configuration Release-Anytype \
+            -destination 'generic/platform=iOS' \
+            -sdk iphoneos \
+            -derivedDataPath ./build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY='' \
+            PROVISIONING_PROFILE_SPECIFIER='' \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES
 
-      - name: Upload Build Artifact
+      - name: Package Unsigned Device IPA
+        run: |
+          APP_PATH="./build/DerivedData/Build/Products/Release-Anytype-iphoneos/Anytype.app"
+          if [[ ! -d "$APP_PATH" ]]; then
+            echo "Error: $APP_PATH not found! Checking available products:"
+            find ./build/DerivedData/Build/Products -maxdepth 2
+            exit 1
+          fi
+
+          mkdir -p ./build/ipa/Payload
+          cp -R "$APP_PATH" ./build/ipa/Payload/
+          cd ./build/ipa
+          zip -r -y Anytype-Hebrew-Unsigned.ipa Payload
+          cd ../..
+          ls -lh ./build/ipa/Anytype-Hebrew-Unsigned.ipa
+
+      - name: Upload Unsigned IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: AnytypeIOS
-          path: ./build/result
-          
-      - name: Trigger Test Repo Workflow
-        if: success()  # Only trigger if build succeeded
-        run: |
-          RUN_ID=${{ github.run_id }}
-          echo "Triggering anytype-test with run_id=$RUN_ID"
+          name: Anytype-Hebrew-Unsigned-Device-IPA
+          path: ./build/ipa/Anytype-Hebrew-Unsigned.ipa
+          if-no-files-found: error
 
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.WORKFLOW_TRIGGER_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/anyproto/anytype-test/dispatches \
-            -d '{
-              "event_type": "trigger-ios-tests",
-              "client_payload": {
-                "run_id": "'$RUN_ID'"
-              }
-            }'
+      - name: Upload Build Logs on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: ./build/DerivedData/Logs/
+          if-no-files-found: ignore
