@@ -37,6 +37,9 @@ jobs:
       - name: Run PinkhaKit Unit Tests
         run: swift test --package-path Modules/PinkhaKit
 
+      - name: Install iOS Platform
+        run: xcodebuild -downloadPlatform iOS
+
       - name: Cache Middleware
         uses: actions/cache@v4
         with:
