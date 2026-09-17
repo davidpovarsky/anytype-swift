@@ -3,6 +3,8 @@ import PinkhaKit
 import Services
 import AnytypeCore
 import Factory
+import SwiftProtobuf
+import ProtobufMessages
 
 public final class AnytypePropertyServiceAdapter: PinkhaPropertyServiceProtocol, Sendable {
     @Injected(\.propertiesService)
@@ -16,7 +18,7 @@ public final class AnytypePropertyServiceAdapter: PinkhaPropertyServiceProtocol,
         case "object": propFormat = .object
         case "number": propFormat = .number
         case "longText": propFormat = .longText
-        default: propFormat = .text
+        default: propFormat = .shortText
         }
 
         let details = PropertyDetails(
