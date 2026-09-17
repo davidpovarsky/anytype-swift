@@ -10,4 +10,20 @@ extension Container {
     public var pinkhaSchemaMigrator: Factory<PinkhaSchemaMigrator> {
         self { PinkhaSchemaMigrator() }.singleton
     }
+
+    public var pinkhaSpaceManifestStore: Factory<any PinkhaSpaceManifestStoreProtocol> {
+        self { PinkhaSpaceManifestStore() }.singleton
+    }
+
+    public var pinkhaPropertyServiceAdapter: Factory<any PinkhaPropertyServiceProtocol> {
+        self { AnytypePropertyServiceAdapter() }.singleton
+    }
+
+    public var pinkhaTypeServiceAdapter: Factory<any PinkhaTypeServiceProtocol> {
+        self { AnytypeTypeServiceAdapter() }.singleton
+    }
+
+    public var pinkhaTemplateServiceAdapter: Factory<any PinkhaTemplateServiceProtocol> {
+        self { AnytypeTemplateServiceAdapter() }.singleton
+    }
 }

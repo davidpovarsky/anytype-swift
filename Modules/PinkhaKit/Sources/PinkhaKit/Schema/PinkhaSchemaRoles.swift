@@ -3,6 +3,10 @@ import Foundation
 /// Logical roles and identifiers for Pinkha schema components.
 /// Concrete Anytype Property and Type IDs are mapped to these roles in `PinkhaSpaceManifest`.
 public enum PinkhaSchemaRoles {
+    // MARK: - Manifest Identity
+    public static let manifestUniqueKey = "pinkha.space.manifest"
+    public static let manifestName = "pinkha.space.manifest"
+
     // MARK: - Logical Property Roles
     public static let parentProperty = "pinkha.parent"
     public static let orderProperty = "pinkha.order"

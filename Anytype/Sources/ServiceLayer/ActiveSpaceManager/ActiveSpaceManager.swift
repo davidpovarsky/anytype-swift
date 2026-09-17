@@ -73,6 +73,8 @@ actor ActiveSpaceManager: ActiveSpaceManagerProtocol, Sendable {
                     await objectTypeProvider.startSubscription(spaceId: spaceId)
                     await propertyDetailsStorage.startSubscription(spaceId: spaceId)
                     
+                    PinkhaBootstrapHook.handleSpaceActivated(spaceId: spaceId)
+                    
                     logSwitchSpace(spaceId: spaceId)
                     
                     workspaceInfoStreamInternal.send(info)
