@@ -107,6 +107,7 @@ actor MockTypeService: PinkhaTypeServiceProtocol {
 
 actor MockTemplateService: PinkhaTemplateServiceProtocol {
     var createdTemplates: [String: String] = [:] // typeId -> templateId
+    var allCreatedTemplateIds: Set<String> = []
     var shouldFail = false
     var createCallCount = 0
 
@@ -118,17 +119,22 @@ actor MockTemplateService: PinkhaTemplateServiceProtocol {
         if shouldFail {
             throw PinkhaBootstrapError.templateCreationFailed("Mock template creation failure")
         }
+        if let existing = createdTemplates[typeId] {
+            return existing
+        }
         createCallCount += 1
         let templateId = "tmpl_\(typeId)_\(createCallCount)"
         createdTemplates[typeId] = templateId
+        allCreatedTemplateIds.insert(templateId)
         return templateId
     }
 
     func validateTemplateExists(templateId: String, spaceId: String) async throws -> Bool {
-        createdTemplates.values.contains(templateId)
+        allCreatedTemplateIds.contains(templateId)
     }
 
     func removeTemplate(id: String) {
+        allCreatedTemplateIds.remove(id)
         createdTemplates = createdTemplates.filter { $0.value != id }
     }
 
@@ -144,7 +150,7 @@ actor RaceCapableMockManifestStore: PinkhaSpaceManifestStoreProtocol {
     func loadManifest(spaceId: String) async throws -> PinkhaSpaceManifest? {
         loadCount += 1
         // Simulate race window: first 2 loads from concurrent clients both observe nil
-        if loadCount <= 2 && persistedManifests.isEmpty {
+        if loadCount <= 2 {
             return nil
         }
         return getCanonicalManifest(spaceId: spaceId)
@@ -154,8 +160,14 @@ actor RaceCapableMockManifestStore: PinkhaSpaceManifestStoreProtocol {
         var toSave = manifest
         if toSave.manifestObjectId == nil {
             toSave.manifestObjectId = "obj_manifest_\(manifest.spaceId)_\(persistedManifests.count + 1)"
+            persistedManifests.append(toSave)
+        } else {
+            if let idx = persistedManifests.firstIndex(where: { $0.manifestObjectId == toSave.manifestObjectId }) {
+                persistedManifests[idx] = toSave
+            } else {
+                persistedManifests.append(toSave)
+            }
         }
-        persistedManifests.append(toSave)
         return toSave
     }
 
