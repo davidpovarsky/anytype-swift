@@ -10,7 +10,7 @@ import ProtobufMessages
 /// Canonical synced Anytype-backed manifest store.
 /// Stores the PinkhaSpaceManifest as an internal hidden object within the Anytype Space.
 /// Synchronizes across devices using Anytype's native CRDT sync engine without secondary local databases.
-public final class PinkhaSpaceManifestStore: PinkhaSpaceManifestStoreProtocol, Sendable {
+public final class PinkhaSpaceManifestStore: PinkhaSpaceManifestStoreProtocol, @unchecked Sendable {
 
     private static let log = EventLogger(category: "Pinkha")
 

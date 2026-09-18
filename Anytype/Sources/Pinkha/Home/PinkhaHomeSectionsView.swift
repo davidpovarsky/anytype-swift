@@ -7,18 +7,18 @@ import Factory
 
 /// Main downstream home sections container for Pinkha spaces.
 /// Replaces the generic upstream Home sections when `PinkhaRuntime.enabled` is true.
-public struct PinkhaHomeSectionsView: View {
+struct PinkhaHomeSectionsView: View {
     let spaceId: String
     weak var output: (any CommonWidgetModuleOutput)?
 
     @State private var bootstrapState: PinkhaSpaceBootstrapState = .uninitialized
 
-    public init(spaceId: String, output: (any CommonWidgetModuleOutput)?) {
+    init(spaceId: String, output: (any CommonWidgetModuleOutput)?) {
         self.spaceId = spaceId
         self.output = output
     }
 
-    public var body: some View {
+    var body: some View {
         VStack(spacing: 0) {
             switch bootstrapState {
             case .ready(let manifest):

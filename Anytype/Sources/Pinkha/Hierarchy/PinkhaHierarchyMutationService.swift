@@ -8,7 +8,7 @@ import Factory
 
 /// Service that executes hierarchy mutations (create folder, rename, move, reorder, safe delete)
 /// against Anytype's object and property APIs.
-public final class PinkhaHierarchyMutationService: Sendable {
+final class PinkhaHierarchyMutationService: @unchecked Sendable {
 
     @Injected(\.objectActionsService)
     private var objectActionsService: any ObjectActionsServiceProtocol
@@ -19,12 +19,12 @@ public final class PinkhaHierarchyMutationService: Sendable {
     @Injected(\.objectTypeProvider)
     private var objectTypeProvider: any ObjectTypeProviderProtocol
 
-    public init() {}
+    init() {}
 
     // MARK: - Folder Creation
 
     /// Creates a real Anytype Object using `manifest.folderTypeId`, assigning initial parent and order rank.
-    public func createFolder(
+    func createFolder(
         name: String,
         parentId: String?,
         spaceId: String,
@@ -58,7 +58,7 @@ public final class PinkhaHierarchyMutationService: Sendable {
     // MARK: - Folder Rename
 
     /// Renames a folder by updating its name property.
-    public func renameFolder(objectId: String, newName: String) async throws {
+    func renameFolder(objectId: String, newName: String) async throws {
         try await propertiesService.updateProperty(
             objectId: objectId,
             propertyKey: BundledPropertyKey.name.rawValue,
@@ -70,7 +70,7 @@ public final class PinkhaHierarchyMutationService: Sendable {
 
     /// Moves an object (folder or document) to a new parent or to root.
     /// Validates cycles before writing, computes new sparse rank, and does not rewrite createdInContext.
-    public func move(
+    func move(
         objectId: String,
         newParentId: String?,
         spaceId: String,
@@ -113,7 +113,7 @@ public final class PinkhaHierarchyMutationService: Sendable {
     // MARK: - Reorder Siblings
 
     /// Updates the order rank of an object.
-    public func updateOrder(objectId: String, newRank: Double, manifest: PinkhaSpaceManifest) async throws {
+    func updateOrder(objectId: String, newRank: Double, manifest: PinkhaSpaceManifest) async throws {
         try await propertiesService.updateProperty(
             objectId: objectId,
             propertyKey: manifest.orderPropertyKey,
@@ -122,7 +122,7 @@ public final class PinkhaHierarchyMutationService: Sendable {
     }
 
     /// Rebalances only the specified sibling group when ranks become dense.
-    public func rebalanceSiblings(siblings: [PinkhaHierarchyNode], manifest: PinkhaSpaceManifest) async throws {
+    func rebalanceSiblings(siblings: [PinkhaHierarchyNode], manifest: PinkhaSpaceManifest) async throws {
         let rebalanced = PinkhaHierarchyOrdering.rebalanceRanks(siblings: siblings)
         for item in rebalanced {
             try await updateOrder(objectId: item.objectId, newRank: item.newRank, manifest: manifest)
@@ -133,7 +133,7 @@ public final class PinkhaHierarchyMutationService: Sendable {
 
     /// Safely deletes a folder by reparenting all its direct children to the deleted folder's parent
     /// before deleting the folder object itself. Never silently orphans user documents.
-    public func deleteFolderSafely(
+    func deleteFolderSafely(
         objectId: String,
         spaceId: String,
         manifest: PinkhaSpaceManifest,

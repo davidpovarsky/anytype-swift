@@ -10,9 +10,9 @@ import Factory
 /// Repository that manages loading and live synchronization of the Pinkha navigation hierarchy
 /// backed by native Anytype Search and Subscription infrastructure.
 @MainActor
-public final class PinkhaHierarchyRepository: ObservableObject {
+final class PinkhaHierarchyRepository: ObservableObject {
 
-    public let spaceId: String
+    let spaceId: String
     private let manifest: PinkhaSpaceManifest
 
     @Injected(\.searchMiddleService)
@@ -25,11 +25,11 @@ public final class PinkhaHierarchyRepository: ObservableObject {
     private var subscriptionCancellable: AnyCancellable?
     private let subscriptionId: String
 
-    @Published public private(set) var snapshot: PinkhaHierarchySnapshot = .empty
-    @Published public private(set) var isLoading: Bool = false
-    @Published public private(set) var detailsMap: [String: ObjectDetails] = [:]
+    @Published private(set) var snapshot: PinkhaHierarchySnapshot = .empty
+    @Published private(set) var isLoading: Bool = false
+    @Published private(set) var detailsMap: [String: ObjectDetails] = [:]
 
-    public init(spaceId: String, manifest: PinkhaSpaceManifest) {
+    init(spaceId: String, manifest: PinkhaSpaceManifest) {
         self.spaceId = spaceId
         self.manifest = manifest
         self.subscriptionId = "PinkhaHierarchy-\(spaceId)"
@@ -37,7 +37,7 @@ public final class PinkhaHierarchyRepository: ObservableObject {
 
     // MARK: - Subscriptions & Data Loading
 
-    public func start() async {
+    func start() async {
         guard subscriptionStorage == nil else { return }
         isLoading = true
 
@@ -75,14 +75,14 @@ public final class PinkhaHierarchyRepository: ObservableObject {
         try? await storage.startOrUpdateSubscription(data: .search(searchData))
     }
 
-    public func stop() async {
+    func stop() async {
         subscriptionCancellable?.cancel()
         subscriptionCancellable = nil
         try? await subscriptionStorage?.stopSubscription()
         subscriptionStorage = nil
     }
 
-    public func reload() async {
+    func reload() async {
         let typesToInclude: [String] = [manifest.folderTypeId] + Array(manifest.registeredDocumentTypes.values)
         let filters: [DataviewFilter] = .builder {
             SearchHelper.spaceIdFilter(spaceId)
@@ -165,8 +165,8 @@ public final class PinkhaHierarchyRepository: ObservableObject {
 
     private func extractOrder(from details: ObjectDetails, key: String) -> Double? {
         guard !key.isEmpty, let value = details.values[key] else { return nil }
-        if value.hasNumberValue {
-            return value.numberValue
+        if case let .numberValue(num) = value.kind {
+            return num
         }
         return details.doubleValue(for: key)
     }
