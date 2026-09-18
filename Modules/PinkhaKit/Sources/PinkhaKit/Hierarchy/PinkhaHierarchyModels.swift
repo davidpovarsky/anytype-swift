@@ -101,6 +101,30 @@ public struct PinkhaHierarchySnapshot: Sendable, Equatable {
         return result
     }
 
+    /// Returns the full path of ancestor nodes starting from root down to the direct parent.
+    public func ancestorPath(for objectId: String) -> [PinkhaHierarchyNode] {
+        ancestors(of: objectId).reversed()
+    }
+
+    /// Returns the full path of the node itself (including root ancestors down to the node).
+    public func fullNodePath(for objectId: String) -> [PinkhaHierarchyNode] {
+        guard let node = allNodes[objectId] else { return [] }
+        return ancestorPath(for: objectId) + [node]
+    }
+
+    /// Returns the full path string of the node (e.g. "הלכה / יום הכיפורים").
+    public func pathString(for objectId: String, separator: String = " / ") -> String {
+        let path = fullNodePath(for: objectId)
+        return path.map(\.title).joined(separator: separator)
+    }
+
+    /// Returns the breadcrumb context string of the node's parent path (e.g. "הלכה").
+    public func parentPathString(for objectId: String, separator: String = " / ") -> String? {
+        let path = ancestorPath(for: objectId)
+        guard !path.isEmpty else { return nil }
+        return path.map(\.title).joined(separator: separator)
+    }
+
     /// Returns all descendant object IDs for the given node recursively.
     public func descendantIds(of objectId: String) -> Set<String> {
         guard let node = allNodes[objectId] else { return [] }

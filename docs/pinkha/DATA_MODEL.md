@@ -27,6 +27,13 @@ Logical roles are mapped to concrete Anytype Property IDs in `PinkhaSpaceManifes
 - **`PinkhaHierarchyNode`**: Domain node with `objectId`, `typeId`, `title`, `parentId?`, `order?`, `kind: .folder | .writingDocument`, and `children: [PinkhaHierarchyNode]`.
 - **Root Semantics**: An object with no parent relation (`parentId == nil`) is a root node.
 - **Order Semantics**: Dense threshold `< 0.001`; default step `1000.0`; unranked items deterministically placed after ranked items, ordered by title, then objectId.
+- **`PinkhaReparentPlan`**: Result of `PinkhaHierarchyOrdering.planSafeFolderDeletion(targetFolderId:in:)`, specifying target folder deletion, target parent ID, and child updates with new parent ID and non-colliding order ranks.
+- **`PinkhaHierarchySnapshot` Path Helpers**:
+  - `ancestorPath(for objectId: String) -> [PinkhaHierarchyNode]`
+  - `fullNodePath(for objectId: String) -> [PinkhaHierarchyNode]`
+  - `pathString(for objectId: String, separator: String) -> String`
+  - `parentPathString(for objectId: String, separator: String) -> String`
+- **Query Scale**: Native unbounded query limit (`limit: 0`) used across search and subscription builders.
 
 
 ## 3. Block Fields

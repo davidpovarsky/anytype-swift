@@ -6,11 +6,14 @@ import AnytypeCore
 import SwiftProtobuf
 import ProtobufMessages
 import Factory
+import Logger
 
 /// Repository that manages loading and live synchronization of the Pinkha navigation hierarchy
 /// backed by native Anytype Search and Subscription infrastructure.
 @MainActor
 final class PinkhaHierarchyRepository: ObservableObject {
+
+    private static let log = EventLogger(category: "Pinkha")
 
     let spaceId: String
     private let manifest: PinkhaSpaceManifest
@@ -61,7 +64,7 @@ final class PinkhaHierarchyRepository: ObservableObject {
             spaceId: spaceId,
             sorts: [],
             filters: filters,
-            limit: 1000,
+            limit: 0,
             keys: []
         )
 
@@ -72,13 +75,22 @@ final class PinkhaHierarchyRepository: ObservableObject {
                 self.processDetails(state.items)
             }
 
-        try? await storage.startOrUpdateSubscription(data: .search(searchData))
+        do {
+            try await storage.startOrUpdateSubscription(data: .search(searchData))
+        } catch {
+            Self.log.error("Failed to start hierarchy subscription for space \(spaceId): \(error)")
+            isLoading = false
+        }
     }
 
     func stop() async {
         subscriptionCancellable?.cancel()
         subscriptionCancellable = nil
-        try? await subscriptionStorage?.stopSubscription()
+        do {
+            try await subscriptionStorage?.stopSubscription()
+        } catch {
+            Self.log.error("Failed to stop hierarchy subscription for space \(spaceId): \(error)")
+        }
         subscriptionStorage = nil
     }
 
@@ -98,11 +110,12 @@ final class PinkhaHierarchyRepository: ObservableObject {
                 sorts: [],
                 fullText: "",
                 keys: [],
-                limit: 1000
+                limit: 0
             )
             processDetails(details)
             isLoading = false
         } catch {
+            Self.log.error("Failed to reload hierarchy for space \(spaceId): \(error)")
             isLoading = false
         }
     }

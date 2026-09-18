@@ -12,6 +12,7 @@ struct PinkhaHomeSectionsView: View {
     weak var output: (any CommonWidgetModuleOutput)?
 
     @State private var bootstrapState: PinkhaSpaceBootstrapState = .uninitialized
+    @State private var repository: PinkhaHierarchyRepository? = nil
 
     init(spaceId: String, output: (any CommonWidgetModuleOutput)?) {
         self.spaceId = spaceId
@@ -40,27 +41,27 @@ struct PinkhaHomeSectionsView: View {
 
     @ViewBuilder
     private func readySections(manifest: PinkhaSpaceManifest) -> some View {
+        let repo = repository ?? PinkhaHierarchyRepository(spaceId: spaceId, manifest: manifest)
+
         // 1. Existing Recently Edited section
         RecentlyEditedSectionView(
             spaceId: spaceId,
             output: output
         )
 
-        // 2. Pinkha Folder / Hierarchy section
+        // 2. Pinkha Hierarchical Navigation Tree (folders & documents)
         PinkhaHierarchySectionView(
             spaceId: spaceId,
             manifest: manifest,
+            repository: repo,
             output: output
         )
 
-        // [Extension Point: Torah Sources section will be inserted here in a future phase]
-
-        // [Extension Point: Books section will be inserted here in a future phase]
-
-        // 3. Pinkha Writing Types section (חידוש, מאמר, מחקר)
+        // 3. Primary Writing Types (חידוש, מאמר, מחקר)
         PinkhaWritingTypesSectionView(
             spaceId: spaceId,
             manifest: manifest,
+            repository: repo,
             output: output
         )
 
@@ -87,8 +88,10 @@ struct PinkhaHomeSectionsView: View {
 
     private func failedView(message: String) -> some View {
         VStack(spacing: 12) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 28))
+            Image(asset: .X18.redAttention)
+                .renderingMode(.template)
+                .resizable()
+                .frame(width: 28, height: 28)
                 .foregroundStyle(Color.Text.primary)
 
             AnytypeText(Loc.Pinkha.Home.failed, style: .bodySemibold)
@@ -119,7 +122,8 @@ struct PinkhaHomeSectionsView: View {
         let current = stateManager.state(for: spaceId)
 
         switch current {
-        case .ready:
+        case .ready(let manifest):
+            self.repository = PinkhaHierarchyRepository(spaceId: spaceId, manifest: manifest)
             self.bootstrapState = current
             return
         case .failed:
@@ -134,6 +138,7 @@ struct PinkhaHomeSectionsView: View {
         self.bootstrapState = .provisioning
         do {
             let manifest = try await stateManager.awaitReadiness(spaceId: spaceId, timeoutSeconds: 15.0)
+            self.repository = PinkhaHierarchyRepository(spaceId: spaceId, manifest: manifest)
             self.bootstrapState = .ready(manifest)
         } catch {
             self.bootstrapState = .failed(error.localizedDescription)

@@ -247,4 +247,179 @@ struct PinkhaHierarchyTests {
         let snapshot = PinkhaHierarchyBuilder.build(items: items)
         #expect(snapshot.rootNodes.count > 0)
     }
+
+    @Test("Root writing document sparse rank assignment (A -> 1000, B -> 2000, C -> 3000)")
+    func rootWritingDocumentAppendOrdering() {
+        var existingRootNodes: [PinkhaHierarchyNode] = []
+
+        // Document A created in empty root
+        let rankA = PinkhaHierarchyOrdering.nextAppendRank(existingSiblings: existingRootNodes)
+        #expect(rankA == 1000.0)
+        let nodeA = PinkhaHierarchyNode(
+            objectId: "docA", typeId: "chiddush", title: "Chiddush 1",
+            parentId: nil, order: rankA, kind: .writingDocument
+        )
+        existingRootNodes.append(nodeA)
+
+        // Document B created with existing [A]
+        let rankB = PinkhaHierarchyOrdering.nextAppendRank(existingSiblings: existingRootNodes)
+        #expect(rankB == 2000.0)
+        let nodeB = PinkhaHierarchyNode(
+            objectId: "docB", typeId: "article", title: "Article 1",
+            parentId: nil, order: rankB, kind: .writingDocument
+        )
+        existingRootNodes.append(nodeB)
+
+        // Document C created with existing [A, B]
+        let rankC = PinkhaHierarchyOrdering.nextAppendRank(existingSiblings: existingRootNodes)
+        #expect(rankC == 3000.0)
+        let nodeC = PinkhaHierarchyNode(
+            objectId: "docC", typeId: "research", title: "Research 1",
+            parentId: nil, order: rankC, kind: .writingDocument
+        )
+        existingRootNodes.append(nodeC)
+
+        let sorted = PinkhaHierarchyOrdering.sort(nodes: existingRootNodes)
+        #expect(sorted.map(\.objectId) == ["docA", "docB", "docC"])
+        #expect(sorted.map(\.order) == [1000.0, 2000.0, 3000.0])
+    }
+
+    @Test("Mixed siblings reordering (Folder A, Document B, Folder C, Document D)")
+    func mixedSiblingsReordering() {
+        let nodeA = PinkhaHierarchyNode(objectId: "fA", typeId: "folder", title: "Folder A", parentId: nil, order: 1000, kind: .folder)
+        let nodeB = PinkhaHierarchyNode(objectId: "dB", typeId: "chiddush", title: "Doc B", parentId: nil, order: 2000, kind: .writingDocument)
+        let nodeC = PinkhaHierarchyNode(objectId: "fC", typeId: "folder", title: "Folder C", parentId: nil, order: 3000, kind: .folder)
+        let nodeD = PinkhaHierarchyNode(objectId: "dD", typeId: "article", title: "Doc D", parentId: nil, order: 4000, kind: .writingDocument)
+
+        var siblings = [nodeA, nodeB, nodeC, nodeD]
+
+        // Move Folder C up: goes between A (1000) and B (2000)
+        let newRankC = PinkhaHierarchyOrdering.rankBetween(before: siblings[0].order, after: siblings[1].order)
+        #expect(newRankC == 1500.0)
+        let updatedC = PinkhaHierarchyNode(objectId: "fC", typeId: "folder", title: "Folder C", parentId: nil, order: newRankC, kind: .folder)
+        siblings[2] = updatedC
+
+        var sorted = PinkhaHierarchyOrdering.sort(nodes: siblings)
+        #expect(sorted.map(\.objectId) == ["fA", "fC", "dB", "dD"])
+
+        // Move Doc B down: goes after D (4000)
+        let newRankB = PinkhaHierarchyOrdering.rankBetween(before: sorted.last?.order, after: nil)
+        #expect(newRankB == 5000.0)
+        let updatedB = PinkhaHierarchyNode(objectId: "dB", typeId: "chiddush", title: "Doc B", parentId: nil, order: newRankB, kind: .writingDocument)
+        sorted[2] = updatedB
+
+        let finalSorted = PinkhaHierarchyOrdering.sort(nodes: sorted)
+        #expect(finalSorted.map(\.objectId) == ["fA", "fC", "dD", "dB"])
+    }
+
+    @Test("Safe folder deletion reparent plan when destination is empty")
+    func safeDeletionPlanDestinationEmpty() {
+        let items = [
+            PinkhaHierarchyRawItem(objectId: "target", typeId: "folder", title: "Target", parentId: nil, order: 1000, kind: .folder),
+            PinkhaHierarchyRawItem(objectId: "c1", typeId: "writing", title: "Child 1", parentId: "target", order: 500, kind: .writingDocument),
+            PinkhaHierarchyRawItem(objectId: "c2", typeId: "folder", title: "Child 2", parentId: "target", order: 800, kind: .folder)
+        ]
+        let snapshot = PinkhaHierarchyBuilder.build(items: items)
+        let plans = PinkhaHierarchyOrdering.planSafeFolderDeletion(targetFolderId: "target", in: snapshot)
+
+        #expect(plans.count == 2)
+        #expect(plans[0] == PinkhaReparentPlan(objectId: "c1", newParentId: nil, newOrder: 1000.0))
+        #expect(plans[1] == PinkhaReparentPlan(objectId: "c2", newParentId: nil, newOrder: 2000.0))
+    }
+
+    @Test("Safe folder deletion reparent plan when destination already has siblings (no rank collisions)")
+    func safeDeletionPlanDestinationHasSiblings() {
+        let items = [
+            PinkhaHierarchyRawItem(objectId: "r1", typeId: "folder", title: "Root 1", parentId: nil, order: 1000, kind: .folder),
+            PinkhaHierarchyRawItem(objectId: "target", typeId: "folder", title: "Target", parentId: nil, order: 2000, kind: .folder),
+            PinkhaHierarchyRawItem(objectId: "r2", typeId: "folder", title: "Root 2", parentId: nil, order: 3000, kind: .folder),
+            PinkhaHierarchyRawItem(objectId: "c1", typeId: "writing", title: "Child 1", parentId: "target", order: 100, kind: .writingDocument),
+            PinkhaHierarchyRawItem(objectId: "c2", typeId: "writing", title: "Child 2", parentId: "target", order: 200, kind: .writingDocument)
+        ]
+        let snapshot = PinkhaHierarchyBuilder.build(items: items)
+        let plans = PinkhaHierarchyOrdering.planSafeFolderDeletion(targetFolderId: "target", in: snapshot)
+
+        #expect(plans.count == 2)
+        // Destination siblings excluding target are r1 (1000) and r2 (3000). Max is 3000.
+        // Base rank should be 3000 + 1000 = 4000
+        #expect(plans[0] == PinkhaReparentPlan(objectId: "c1", newParentId: nil, newOrder: 4000.0))
+        #expect(plans[1] == PinkhaReparentPlan(objectId: "c2", newParentId: nil, newOrder: 5000.0))
+    }
+
+    @Test("Safe folder deletion preserves relative order of multiple moved children")
+    func safeDeletionPreservesChildOrder() {
+        let items = [
+            PinkhaHierarchyRawItem(objectId: "parent", typeId: "folder", title: "Parent", parentId: nil, order: 1000, kind: .folder),
+            PinkhaHierarchyRawItem(objectId: "c1", typeId: "writing", title: "A", parentId: "parent", order: 100, kind: .writingDocument),
+            PinkhaHierarchyRawItem(objectId: "c2", typeId: "folder", title: "B", parentId: "parent", order: 200, kind: .folder),
+            PinkhaHierarchyRawItem(objectId: "c3", typeId: "writing", title: "C", parentId: "parent", order: 300, kind: .writingDocument)
+        ]
+        let snapshot = PinkhaHierarchyBuilder.build(items: items)
+        let plans = PinkhaHierarchyOrdering.planSafeFolderDeletion(targetFolderId: "parent", in: snapshot)
+
+        #expect(plans.map(\.objectId) == ["c1", "c2", "c3"])
+        #expect(plans[0].newOrder < plans[1].newOrder)
+        #expect(plans[1].newOrder < plans[2].newOrder)
+    }
+
+    @Test("Safe folder deletion moving nested folder children to grandparent")
+    func safeDeletionNestedReparentToGrandparent() {
+        let items = [
+            PinkhaHierarchyRawItem(objectId: "gp", typeId: "folder", title: "Grandparent", parentId: nil, order: 1000, kind: .folder),
+            PinkhaHierarchyRawItem(objectId: "p", typeId: "folder", title: "Parent", parentId: "gp", order: 1000, kind: .folder),
+            PinkhaHierarchyRawItem(objectId: "sibling", typeId: "writing", title: "Direct Child of GP", parentId: "gp", order: 2000, kind: .writingDocument),
+            PinkhaHierarchyRawItem(objectId: "c1", typeId: "writing", title: "Child", parentId: "p", order: 100, kind: .writingDocument)
+        ]
+        let snapshot = PinkhaHierarchyBuilder.build(items: items)
+        let plans = PinkhaHierarchyOrdering.planSafeFolderDeletion(targetFolderId: "p", in: snapshot)
+
+        #expect(plans.count == 1)
+        #expect(plans[0] == PinkhaReparentPlan(objectId: "c1", newParentId: "gp", newOrder: 3000.0))
+    }
+
+    @Test("Hierarchy snapshot pathString disambiguation for folders with duplicate names")
+    func pathStringDisambiguation() {
+        let items = [
+            PinkhaHierarchyRawItem(objectId: "halacha", typeId: "folder", title: "הלכה", parentId: nil, order: 1000, kind: .folder),
+            PinkhaHierarchyRawItem(objectId: "machshava", typeId: "folder", title: "מחשבה", parentId: nil, order: 2000, kind: .folder),
+            PinkhaHierarchyRawItem(objectId: "yk_h", typeId: "folder", title: "יום הכיפורים", parentId: "halacha", order: 1000, kind: .folder),
+            PinkhaHierarchyRawItem(objectId: "yk_m", typeId: "folder", title: "יום הכיפורים", parentId: "machshava", order: 1000, kind: .folder)
+        ]
+        let snapshot = PinkhaHierarchyBuilder.build(items: items)
+
+        #expect(snapshot.pathString(for: "yk_h") == "הלכה / יום הכיפורים")
+        #expect(snapshot.pathString(for: "yk_m") == "מחשבה / יום הכיפורים")
+        #expect(snapshot.parentPathString(for: "yk_h") == "הלכה")
+        #expect(snapshot.parentPathString(for: "yk_m") == "מחשבה")
+        #expect(snapshot.parentPathString(for: "halacha") == nil)
+    }
+
+    @Test("Large hierarchy scalability (>1000 items, 2,550 objects)")
+    func largeHierarchyScalability() {
+        var items: [PinkhaHierarchyRawItem] = []
+        for f in 1...50 {
+            let folderId = "folder_\(f)"
+            items.append(PinkhaHierarchyRawItem(
+                objectId: folderId, typeId: "folder", title: "Folder \(f)",
+                parentId: nil, order: Double(f) * 1000.0, kind: .folder
+            ))
+            for d in 1...50 {
+                let docId = "doc_\(f)_\(d)"
+                items.append(PinkhaHierarchyRawItem(
+                    objectId: docId, typeId: "chiddush", title: "Doc \(f)-\(d)",
+                    parentId: folderId, order: Double(d) * 1000.0, kind: .writingDocument
+                ))
+            }
+        }
+        #expect(items.count == 2550)
+
+        let snapshot = PinkhaHierarchyBuilder.build(items: items)
+        #expect(snapshot.allNodes.count == 2550)
+        #expect(snapshot.rootNodes.count == 50)
+
+        let firstFolder = snapshot.node(for: "folder_1")
+        #expect(firstFolder != nil)
+        #expect(firstFolder?.children.count == 50)
+        #expect(snapshot.descendantIds(of: "folder_1").count == 50)
+    }
 }

@@ -6,10 +6,12 @@
 |------|------------|--------|---------------|
 | Space Manifest | `PinkhaSpaceManifestTests` | `PinkhaKitTests` | Serialization, forward-compatibility, default role resolution |
 | Schema Migration | `PinkhaSchemaMigratorTests` | `PinkhaKitTests` | Version upgrades, missing fields fallback |
-| Hierarchy Engine | `PinkhaHierarchyTests` | `PinkhaKitTests` | Empty hierarchy, root nodes, nested tree, depth > 3, deterministic order, missing order fallback, append rank, midpoint insertion, dense rank rebalancing, valid reparent, move to root, self-parent rejection, direct cycle rejection, deep cycle rejection, subtree independence, safe folder deletion, corrupt cycle recovery |
+| Hierarchy Engine | `PinkhaHierarchyTests` | `PinkhaKitTests` | Empty hierarchy, root nodes, nested tree, depth > 3, deterministic order, missing order fallback, append rank, midpoint insertion, dense rank rebalancing, valid reparent, move to root, self-parent rejection, direct cycle rejection, deep cycle rejection, subtree independence, safe folder deletion (empty destination, existing siblings, order preservation, nested grandparent), pathString disambiguation, large hierarchy scalability (>1000 items, 2550 objects), root writing document append ordering, mixed sibling reordering |
 | Torah Association Codecs | `TorahAssociationCodecTests` | `PinkhaKitTests` | Document & block association JSON round-trip |
 | Text Direction Resolver | `PinkhaTextDirectionTests` | `PinkhaKitTests` | Pure Hebrew, pure English, mixed sentences, fallback |
 | Localization Suite | `LocTests` | `LocTests` | Localized string catalog resolution and accessor correctness |
+
+> **Current Test Count**: 49 unit tests across 3 suites in `PinkhaKitTests` + 1 test in `LocTests`, all passing.
 
 ## 2. Integration Tests
 

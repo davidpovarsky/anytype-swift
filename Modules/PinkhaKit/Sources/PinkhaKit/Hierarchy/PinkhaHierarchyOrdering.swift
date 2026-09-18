@@ -110,4 +110,51 @@ public enum PinkhaHierarchyOrdering {
             (objectId: node.objectId, newRank: Double(index + 1) * defaultStep)
         }
     }
+
+    /// Plans safe folder deletion by re-ranking all direct children after any destination siblings.
+    /// Preserves the direct children's relative order, avoids rank collisions, and never alters descendants.
+    public static func planSafeFolderDeletion(
+        targetFolderId: String,
+        in snapshot: PinkhaHierarchySnapshot
+    ) -> [PinkhaReparentPlan] {
+        guard let targetNode = snapshot.node(for: targetFolderId) else {
+            return []
+        }
+
+        let directChildren = targetNode.children // already canonically sorted in snapshot
+        guard !directChildren.isEmpty else {
+            return []
+        }
+
+        let destinationParentId = targetNode.parentId // nil if target was at root
+        let destinationSiblings = snapshot.children(of: destinationParentId).filter { $0.objectId != targetFolderId }
+
+        let baseRank: Double
+        if let maxRank = destinationSiblings.compactMap(\.order).max() {
+            baseRank = maxRank + defaultStep
+        } else {
+            baseRank = initialRank
+        }
+
+        return directChildren.enumerated().map { index, child in
+            PinkhaReparentPlan(
+                objectId: child.objectId,
+                newParentId: destinationParentId,
+                newOrder: baseRank + Double(index) * defaultStep
+            )
+        }
+    }
+}
+
+/// Plan instruction for safely reparenting a node during folder deletion.
+public struct PinkhaReparentPlan: Equatable, Sendable {
+    public let objectId: String
+    public let newParentId: String?
+    public let newOrder: Double
+
+    public init(objectId: String, newParentId: String?, newOrder: Double) {
+        self.objectId = objectId
+        self.newParentId = newParentId
+        self.newOrder = newOrder
+    }
 }

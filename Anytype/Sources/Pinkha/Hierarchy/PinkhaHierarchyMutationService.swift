@@ -55,6 +55,55 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
         return createdDetails.id
     }
 
+    // MARK: - Writing Document Creation
+
+    /// Creates a writing document (חידוש, מאמר, מחקר) assigning canonical nextAppendRank from existing siblings.
+    func createWritingDocument(
+        typeId: String,
+        parentId: String?,
+        spaceId: String,
+        manifest: PinkhaSpaceManifest,
+        existingSiblings: [PinkhaHierarchyNode]
+    ) async throws -> ObjectDetails {
+        let type = try objectTypeProvider.objectType(id: typeId)
+        let role = manifest.role(forTypeId: typeId) ?? ""
+        let templateId = manifest.defaultTemplateIds[role] ?? type.defaultTemplateId
+
+        let details = try await objectActionsService.createObject(
+            name: "",
+            typeUniqueKey: type.uniqueKey,
+            shouldDeleteEmptyObject: true,
+            shouldSelectType: false,
+            shouldSelectTemplate: false,
+            spaceId: spaceId,
+            origin: .none,
+            templateId: templateId
+        )
+
+        // Assign canonical append rank
+        if !manifest.orderPropertyKey.isEmpty {
+            let order = PinkhaHierarchyOrdering.nextAppendRank(existingSiblings: existingSiblings)
+            var updateDetails: [Anytype_Model_Detail] = [
+                Anytype_Model_Detail.with {
+                    $0.key = manifest.orderPropertyKey
+                    $0.value = order.protobufValue
+                }
+            ]
+            if let parentId, !parentId.isEmpty {
+                updateDetails.append(Anytype_Model_Detail.with {
+                    $0.key = manifest.parentPropertyKey
+                    $0.value = parentId.protobufValue
+                })
+            }
+            _ = try await ClientCommands.objectSetDetails(.with {
+                $0.contextID = details.id
+                $0.details = updateDetails
+            }).invoke(qos: .userInitiated)
+        }
+
+        return details
+    }
+
     // MARK: - Folder Rename
 
     /// Renames a folder by updating its name property.
@@ -132,24 +181,30 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
     // MARK: - Safe Folder Deletion
 
     /// Safely deletes a folder by reparenting all its direct children to the deleted folder's parent
-    /// before deleting the folder object itself. Never silently orphans user documents.
+    /// before deleting the folder object itself. Re-ranks all moved children after destination siblings.
+    /// Never silently orphans user documents or collides ranks.
     func deleteFolderSafely(
         objectId: String,
         spaceId: String,
         manifest: PinkhaSpaceManifest,
         snapshot: PinkhaHierarchySnapshot
     ) async throws {
-        guard let targetNode = snapshot.node(for: objectId) else {
+        guard snapshot.node(for: objectId) != nil else {
             return
         }
 
-        let directChildren = targetNode.children
-        let destinationParentId = targetNode.parentId // nil if target was at root
+        let plans = PinkhaHierarchyOrdering.planSafeFolderDeletion(targetFolderId: objectId, in: snapshot)
 
-        // Reparent all direct children to targetNode's parent
-        for child in directChildren {
-            var details: [Anytype_Model_Detail] = []
-            if let dest = destinationParentId, !dest.isEmpty {
+        // Execute all reparent and re-rank plans first
+        for plan in plans {
+            var details: [Anytype_Model_Detail] = [
+                Anytype_Model_Detail.with {
+                    $0.key = manifest.orderPropertyKey
+                    $0.value = plan.newOrder.protobufValue
+                }
+            ]
+
+            if let dest = plan.newParentId, !dest.isEmpty {
                 details.append(Anytype_Model_Detail.with {
                     $0.key = manifest.parentPropertyKey
                     $0.value = dest.protobufValue
@@ -162,12 +217,12 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
             }
 
             _ = try await ClientCommands.objectSetDetails(.with {
-                $0.contextID = child.objectId
+                $0.contextID = plan.objectId
                 $0.details = details
             }).invoke(qos: .userInitiated)
         }
 
-        // Delete the folder object itself
+        // Only delete the folder object itself once all children have been safely reparented & re-ranked
         try await objectActionsService.delete(objectIds: [objectId])
     }
 }

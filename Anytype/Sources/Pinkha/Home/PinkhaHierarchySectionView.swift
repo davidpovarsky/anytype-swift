@@ -3,13 +3,16 @@ import SwiftUI
 import PinkhaKit
 import Services
 import AnytypeCore
+import Logger
 
 struct PinkhaHierarchySectionView: View {
+    private static let log = EventLogger(category: "Pinkha")
+
     let spaceId: String
     let manifest: PinkhaSpaceManifest
     weak var output: (any CommonWidgetModuleOutput)?
 
-    @StateObject private var repository: PinkhaHierarchyRepository
+    @ObservedObject var repository: PinkhaHierarchyRepository
     private let mutationService = PinkhaHierarchyMutationService()
 
     @State private var isSectionExpanded: Bool = true
@@ -29,12 +32,13 @@ struct PinkhaHierarchySectionView: View {
     @State private var showingDeleteConfirmation: Bool = false
 
     @State private var moveTargetNode: PinkhaHierarchyNode? = nil
+    @State private var errorMessage: String? = nil
 
-    init(spaceId: String, manifest: PinkhaSpaceManifest, output: (any CommonWidgetModuleOutput)?) {
+    init(spaceId: String, manifest: PinkhaSpaceManifest, repository: PinkhaHierarchyRepository, output: (any CommonWidgetModuleOutput)?) {
         self.spaceId = spaceId
         self.manifest = manifest
+        self.repository = repository
         self.output = output
-        self._repository = StateObject(wrappedValue: PinkhaHierarchyRepository(spaceId: spaceId, manifest: manifest))
     }
 
     var body: some View {
@@ -68,14 +72,19 @@ struct PinkhaHierarchySectionView: View {
                 let name = newRootFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
                 guard !name.isEmpty else { return }
                 Task {
-                    _ = try? await mutationService.createFolder(
-                        name: name,
-                        parentId: nil,
-                        spaceId: spaceId,
-                        manifest: manifest,
-                        existingSiblings: repository.snapshot.rootNodes
-                    )
-                    await repository.reload()
+                    do {
+                        _ = try await mutationService.createFolder(
+                            name: name,
+                            parentId: nil,
+                            spaceId: spaceId,
+                            manifest: manifest,
+                            existingSiblings: repository.snapshot.rootNodes
+                        )
+                        await repository.reload()
+                    } catch {
+                        Self.log.error("Failed to create root folder: \(error)")
+                        errorMessage = error.localizedDescription
+                    }
                 }
             }
         }
@@ -93,15 +102,20 @@ struct PinkhaHierarchySectionView: View {
                 guard !name.isEmpty else { return }
                 let siblings = repository.snapshot.children(of: parentId)
                 Task {
-                    _ = try? await mutationService.createFolder(
-                        name: name,
-                        parentId: parentId,
-                        spaceId: spaceId,
-                        manifest: manifest,
-                        existingSiblings: siblings
-                    )
-                    expandedFolderIds.insert(parentId)
-                    await repository.reload()
+                    do {
+                        _ = try await mutationService.createFolder(
+                            name: name,
+                            parentId: parentId,
+                            spaceId: spaceId,
+                            manifest: manifest,
+                            existingSiblings: siblings
+                        )
+                        expandedFolderIds.insert(parentId)
+                        await repository.reload()
+                    } catch {
+                        Self.log.error("Failed to create subfolder: \(error)")
+                        errorMessage = error.localizedDescription
+                    }
                 }
                 subfolderTargetParentId = nil
             }
@@ -119,8 +133,13 @@ struct PinkhaHierarchySectionView: View {
                 let name = renameNodeName.trimmingCharacters(in: .whitespacesAndNewlines)
                 guard !name.isEmpty else { return }
                 Task {
-                    try? await mutationService.renameFolder(objectId: target.objectId, newName: name)
-                    await repository.reload()
+                    do {
+                        try await mutationService.renameFolder(objectId: target.objectId, newName: name)
+                        await repository.reload()
+                    } catch {
+                        Self.log.error("Failed to rename folder: \(error)")
+                        errorMessage = error.localizedDescription
+                    }
                 }
                 renameTargetNode = nil
             }
@@ -135,13 +154,18 @@ struct PinkhaHierarchySectionView: View {
             }
             Button(Loc.Pinkha.Folder.deleteConfirmationAction, role: .destructive) {
                 Task {
-                    try? await mutationService.deleteFolderSafely(
-                        objectId: target.objectId,
-                        spaceId: spaceId,
-                        manifest: manifest,
-                        snapshot: repository.snapshot
-                    )
-                    await repository.reload()
+                    do {
+                        try await mutationService.deleteFolderSafely(
+                            objectId: target.objectId,
+                            spaceId: spaceId,
+                            manifest: manifest,
+                            snapshot: repository.snapshot
+                        )
+                        await repository.reload()
+                    } catch {
+                        Self.log.error("Failed to delete folder safely: \(error)")
+                        errorMessage = error.localizedDescription
+                    }
                 }
                 deleteTargetNode = nil
             }
@@ -157,17 +181,22 @@ struct PinkhaHierarchySectionView: View {
                 snapshot: repository.snapshot,
                 onSelectDestination: { destinationId in
                     Task {
-                        try? await mutationService.move(
-                            objectId: targetNode.objectId,
-                            newParentId: destinationId,
-                            spaceId: spaceId,
-                            manifest: manifest,
-                            snapshot: repository.snapshot
-                        )
-                        if let destinationId {
-                            expandedFolderIds.insert(destinationId)
+                        do {
+                            try await mutationService.move(
+                                objectId: targetNode.objectId,
+                                newParentId: destinationId,
+                                spaceId: spaceId,
+                                manifest: manifest,
+                                snapshot: repository.snapshot
+                            )
+                            if let destinationId {
+                                expandedFolderIds.insert(destinationId)
+                            }
+                            await repository.reload()
+                        } catch {
+                            Self.log.error("Failed to move node: \(error)")
+                            errorMessage = error.localizedDescription
                         }
-                        await repository.reload()
                     }
                     moveTargetNode = nil
                 },
@@ -175,6 +204,21 @@ struct PinkhaHierarchySectionView: View {
                     moveTargetNode = nil
                 }
             )
+        }
+        .alert(
+            Loc.Pinkha.Home.failed,
+            isPresented: Binding(
+                get: { errorMessage != nil },
+                set: { if !$0 { errorMessage = nil } }
+            )
+        ) {
+            Button(Loc.Pinkha.Folder.cancel, role: .cancel) {
+                errorMessage = nil
+            }
+        } message: {
+            if let errorMessage {
+                Text(errorMessage)
+            }
         }
     }
 
@@ -302,48 +346,55 @@ struct PinkhaHierarchySectionView: View {
                 renameTargetNode = node
             } label: {
                 Text(Loc.Pinkha.Folder.rename)
-                Image(systemName: "pencil")
+                Image(asset: .CustomIcons.pencil)
             }
 
             Button {
                 moveTargetNode = node
             } label: {
                 Text(Loc.Pinkha.Hierarchy.move)
-                Image(systemName: "folder")
+                Image(asset: .CustomIcons.folder)
             }
+
+            reorderButtons(for: node)
 
             Button(role: .destructive) {
                 deleteTargetNode = node
                 showingDeleteConfirmation = true
             } label: {
                 Text(Loc.Pinkha.Folder.deleteFolder)
-                Image(systemName: "trash")
+                Image(asset: .CustomIcons.trash)
             }
         } else {
             Button {
                 moveTargetNode = node
             } label: {
                 Text(Loc.Pinkha.Hierarchy.move)
-                Image(systemName: "folder")
+                Image(asset: .CustomIcons.folder)
             }
 
-            let siblings = repository.snapshot.children(of: node.parentId)
-            if let index = siblings.firstIndex(where: { $0.objectId == node.objectId }) {
-                if index > 0 {
-                    Button {
-                        moveSibling(node: node, direction: .up, siblings: siblings, index: index)
-                    } label: {
-                        Text(Loc.Pinkha.Hierarchy.moveUp)
-                        Image(systemName: "arrow.up")
-                    }
+            reorderButtons(for: node)
+        }
+    }
+
+    @ViewBuilder
+    private func reorderButtons(for node: PinkhaHierarchyNode) -> some View {
+        let siblings = repository.snapshot.children(of: node.parentId)
+        if let index = siblings.firstIndex(where: { $0.objectId == node.objectId }) {
+            if index > 0 {
+                Button {
+                    moveSibling(node: node, direction: .up, siblings: siblings, index: index)
+                } label: {
+                    Text(Loc.Pinkha.Hierarchy.moveUp)
+                    Image(asset: .X24.Arrow.up)
                 }
-                if index < siblings.count - 1 {
-                    Button {
-                        moveSibling(node: node, direction: .down, siblings: siblings, index: index)
-                    } label: {
-                        Text(Loc.Pinkha.Hierarchy.moveDown)
-                        Image(systemName: "arrow.down")
-                    }
+            }
+            if index < siblings.count - 1 {
+                Button {
+                    moveSibling(node: node, direction: .down, siblings: siblings, index: index)
+                } label: {
+                    Text(Loc.Pinkha.Hierarchy.moveDown)
+                    Image(asset: .X24.Arrow.down)
                 }
             }
         }
@@ -374,11 +425,16 @@ struct PinkhaHierarchySectionView: View {
         }
 
         Task {
-            try? await mutationService.updateOrder(objectId: node.objectId, newRank: newRank, manifest: manifest)
-            if PinkhaHierarchyOrdering.shouldRebalance(siblings: siblings) {
-                try? await mutationService.rebalanceSiblings(siblings: siblings, manifest: manifest)
+            do {
+                try await mutationService.updateOrder(objectId: node.objectId, newRank: newRank, manifest: manifest)
+                if PinkhaHierarchyOrdering.shouldRebalance(siblings: siblings) {
+                    try await mutationService.rebalanceSiblings(siblings: siblings, manifest: manifest)
+                }
+                await repository.reload()
+            } catch {
+                Self.log.error("Failed to move sibling: \(error)")
+                errorMessage = error.localizedDescription
             }
-            await repository.reload()
         }
     }
 

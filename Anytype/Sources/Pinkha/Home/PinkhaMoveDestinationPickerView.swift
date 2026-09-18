@@ -21,7 +21,9 @@ struct PinkhaMoveDestinationPickerView: View {
                 !descendantIds.contains(node.objectId) &&
                 node.objectId != movingNode.parentId
             }
-            .sorted { $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending }
+            .sorted {
+                snapshot.pathString(for: $0.objectId).localizedCaseInsensitiveCompare(snapshot.pathString(for: $1.objectId)) == .orderedAscending
+            }
     }
 
     var body: some View {
@@ -53,8 +55,15 @@ struct PinkhaMoveDestinationPickerView: View {
                                     Image(asset: .CustomIcons.folder)
                                         .frame(width: 20, height: 20)
                                         .foregroundStyle(Color.Text.primary)
-                                    AnytypeText(folder.title, style: .bodySemibold)
-                                        .foregroundStyle(Color.Text.primary)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        AnytypeText(folder.title, style: .bodySemibold)
+                                            .foregroundStyle(Color.Text.primary)
+                                        let parentPath = snapshot.parentPathString(for: folder.objectId)
+                                        if !parentPath.isEmpty {
+                                            AnytypeText(parentPath, style: .caption1Regular)
+                                                .foregroundStyle(Color.Text.secondary)
+                                        }
+                                    }
                                     Spacer()
                                 }
                             }

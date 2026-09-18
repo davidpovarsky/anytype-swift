@@ -4,23 +4,24 @@ import PinkhaKit
 import Services
 import AnytypeCore
 import Factory
+import Logger
 
 struct PinkhaWritingTypesSectionView: View {
+    private static let log = EventLogger(category: "Pinkha")
+
     let spaceId: String
     let manifest: PinkhaSpaceManifest
+    @ObservedObject var repository: PinkhaHierarchyRepository
     weak var output: (any CommonWidgetModuleOutput)?
 
     @State private var isSectionExpanded: Bool = true
     @State private var typeInfos: [ObjectTypeWidgetInfo] = []
+    @State private var errorMessage: String? = nil
+
+    private let mutationService = PinkhaHierarchyMutationService()
 
     @Injected(\.objectTypeProvider)
     private var objectTypeProvider: any ObjectTypeProviderProtocol
-
-    @Injected(\.objectActionsService)
-    private var objectActionsService: any ObjectActionsServiceProtocol
-
-    @Injected(\.propertiesService)
-    private var propertiesService: any PropertiesServiceProtocol
 
     var body: some View {
         VStack(spacing: 0) {
@@ -53,6 +54,21 @@ struct PinkhaWritingTypesSectionView: View {
         .task {
             loadWritingTypes()
         }
+        .alert(
+            Loc.Pinkha.Home.failed,
+            isPresented: Binding(
+                get: { errorMessage != nil },
+                set: { if !$0 { errorMessage = nil } }
+            )
+        ) {
+            Button(Loc.Pinkha.Folder.cancel, role: .cancel) {
+                errorMessage = nil
+            }
+        } message: {
+            if let errorMessage {
+                Text(errorMessage)
+            }
+        }
     }
 
     private func loadWritingTypes() {
@@ -83,31 +99,20 @@ struct PinkhaWritingTypesSectionView: View {
     }
 
     private func createWritingDocument(for info: ObjectTypeWidgetInfo) async throws {
-        let type = try objectTypeProvider.objectType(id: info.objectTypeId)
-        let role = manifest.role(forTypeId: info.objectTypeId) ?? ""
-        let templateId = manifest.defaultTemplateIds[role] ?? type.defaultTemplateId
-
-        let details = try await objectActionsService.createObject(
-            name: "",
-            typeUniqueKey: type.uniqueKey,
-            shouldDeleteEmptyObject: true,
-            shouldSelectType: false,
-            shouldSelectTemplate: false,
-            spaceId: spaceId,
-            origin: .none,
-            templateId: templateId
-        )
-
-        // Assign initial order rank if order property exists
-        if !manifest.orderPropertyKey.isEmpty {
-            let initialRank = PinkhaHierarchyOrdering.initialRank
-            try? await propertiesService.updateProperty(
-                objectId: details.id,
-                propertyKey: manifest.orderPropertyKey,
-                value: initialRank.protobufValue
+        do {
+            let details = try await mutationService.createWritingDocument(
+                typeId: info.objectTypeId,
+                parentId: nil,
+                spaceId: spaceId,
+                manifest: manifest,
+                existingSiblings: repository.snapshot.rootNodes
             )
+            await repository.reload()
+            output?.onObjectSelected(screenData: details.screenData())
+        } catch {
+            Self.log.error("Failed to create writing document: \(error)")
+            errorMessage = error.localizedDescription
+            throw error
         }
-
-        output?.onObjectSelected(screenData: details.screenData())
     }
 }
