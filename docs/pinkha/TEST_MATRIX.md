@@ -6,10 +6,10 @@
 |------|------------|--------|---------------|
 | Space Manifest | `PinkhaSpaceManifestTests` | `PinkhaKitTests` | Serialization, forward-compatibility, default role resolution |
 | Schema Migration | `PinkhaSchemaMigratorTests` | `PinkhaKitTests` | Version upgrades, missing fields fallback |
-| Hierarchy Sibling Order | `PinkhaOrderRankTests` | `PinkhaKitTests` | Sparse rank generation, rebalance thresholds |
-| Hierarchy Move & Cycle | `PinkhaCycleDetectionTests` | `PinkhaKitTests` | Self-parenting, direct cycle, deep cycle prevention |
+| Hierarchy Engine | `PinkhaHierarchyTests` | `PinkhaKitTests` | Empty hierarchy, root nodes, nested tree, depth > 3, deterministic order, missing order fallback, append rank, midpoint insertion, dense rank rebalancing, valid reparent, move to root, self-parent rejection, direct cycle rejection, deep cycle rejection, subtree independence, safe folder deletion, corrupt cycle recovery |
 | Torah Association Codecs | `TorahAssociationCodecTests` | `PinkhaKitTests` | Document & block association JSON round-trip |
 | Text Direction Resolver | `PinkhaTextDirectionTests` | `PinkhaKitTests` | Pure Hebrew, pure English, mixed sentences, fallback |
+| Localization Suite | `LocTests` | `LocTests` | Localized string catalog resolution and accessor correctness |
 
 ## 2. Integration Tests
 

@@ -22,6 +22,13 @@ Logical roles are mapped to concrete Anytype Property IDs in `PinkhaSpaceManifes
 | `pinkha.order` | `.number` | Sparse numeric rank for deterministic sibling ordering |
 | `pinkha.torahAssociations` | `.text` (JSON payload) | Document-level Torah context associations |
 
+### Hierarchy Domain Representation (`Modules/PinkhaKit`)
+
+- **`PinkhaHierarchyNode`**: Domain node with `objectId`, `typeId`, `title`, `parentId?`, `order?`, `kind: .folder | .writingDocument`, and `children: [PinkhaHierarchyNode]`.
+- **Root Semantics**: An object with no parent relation (`parentId == nil`) is a root node.
+- **Order Semantics**: Dense threshold `< 0.001`; default step `1000.0`; unranked items deterministically placed after ranked items, ordered by title, then objectId.
+
+
 ## 3. Block Fields
 
 Custom block-level Pinkha data is stored in `BlockInformation.fields`:
