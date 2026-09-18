@@ -52,12 +52,97 @@ public final class PinkhaHierarchyReconciler: @unchecked Sendable {
     public func receiveSubscription(items: [PinkhaHierarchyRawItem]) -> PinkhaHierarchySnapshot {
         lastSubscriptionItems = items
 
-        // For any item observed in the authoritative subscription:
-        // Clear it from pendingCreatedItems and remove matching optimistic mutations
+        var incomingMap: [String: PinkhaHierarchyRawItem] = [:]
         for item in items {
-            pendingCreatedItems.removeValue(forKey: item.objectId)
+            incomingMap[item.objectId] = item
             confirmedSubscriptionIds.insert(item.objectId)
-            optimisticMutations.removeValue(forKey: item.objectId)
+        }
+
+        // 1. Semantic confirmation of optimistic mutations by value
+        for (id, mutation) in optimisticMutations {
+            guard let subItem = incomingMap[id] else {
+                // Item is ABSENT from the authoritative subscription:
+                // If the mutation was delete, deletion is confirmed!
+                if case .delete = mutation {
+                    optimisticMutations.removeValue(forKey: id)
+                }
+                // For rename, order, move: item not present in subscription yet, keep mutation pending
+                continue
+            }
+
+            // Item IS present in the incoming subscription:
+            switch mutation {
+            case .rename(let expectedTitle):
+                let subTitle = subItem.title.trimmingCharacters(in: .whitespacesAndNewlines)
+                let expTitle = expectedTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+                if subTitle == expTitle {
+                    optimisticMutations.removeValue(forKey: id)
+                }
+                // Else stale subscription frame still has old title -> keep mutation pending
+
+            case .order(let expectedRank):
+                if let subOrder = subItem.order, abs(subOrder - expectedRank) < 0.0001 {
+                    optimisticMutations.removeValue(forKey: id)
+                }
+                // Else stale subscription frame still has old order -> keep mutation pending
+
+            case .move(let expectedParentId, let expectedRank):
+                let subParent = (subItem.parentId?.isEmpty == false) ? subItem.parentId : nil
+                let expParent = (expectedParentId?.isEmpty == false) ? expectedParentId : nil
+                let parentMatches = (subParent == expParent)
+
+                let rankMatches: Bool
+                if let expectedRank {
+                    rankMatches = (subItem.order != nil && abs(subItem.order! - expectedRank) < 0.0001)
+                } else {
+                    rankMatches = true
+                }
+
+                if parentMatches && rankMatches {
+                    optimisticMutations.removeValue(forKey: id)
+                }
+                // Else stale subscription frame still has old parent/order -> keep mutation pending
+
+            case .delete:
+                // Item IS STILL present in the incoming subscription!
+                // Do NOT clear; keep mutation pending so the item remains hidden until genuinely absent
+                break
+            }
+        }
+
+        // 2. Semantic confirmation of pending created items by value
+        for (id, pending) in pendingCreatedItems {
+            guard let subItem = incomingMap[id] else {
+                // Item not in subscription at all -> keep pending
+                continue
+            }
+
+            let typeMatches = (subItem.typeId == pending.typeId)
+
+            let subParent = (subItem.parentId?.isEmpty == false) ? subItem.parentId : nil
+            let pendingParent = (pending.parentId?.isEmpty == false) ? pending.parentId : nil
+            let parentMatches = (subParent == pendingParent)
+
+            let orderMatches: Bool
+            if let pendingOrder = pending.order {
+                orderMatches = (subItem.order != nil && abs(subItem.order! - pendingOrder) < 0.0001)
+            } else {
+                orderMatches = (subItem.order == nil)
+            }
+
+            let titleMatches: Bool
+            if !pending.title.isEmpty {
+                titleMatches = (subItem.title.trimmingCharacters(in: .whitespacesAndNewlines) == pending.title.trimmingCharacters(in: .whitespacesAndNewlines))
+            } else {
+                titleMatches = true
+            }
+
+            if typeMatches && parentMatches && orderMatches && titleMatches {
+                // Subscription has fully confirmed the created object and all its properties!
+                pendingCreatedItems.removeValue(forKey: id)
+            }
+            // Else intermediate/stale frame (e.g. object exists before order/parent properties written)
+            // -> keep pending item authoritative
         }
 
         return rebuildSnapshot()
@@ -138,49 +223,50 @@ public final class PinkhaHierarchyReconciler: @unchecked Sendable {
             mergedItems[item.objectId] = item
         }
 
-        // 2. Overlay pending created items that are not yet present in the subscription
+        // 2. Overlay pending created items that are still pending.
+        // Pending created items take precedence over intermediate/incomplete subscription frames!
         for (id, pendingItem) in pendingCreatedItems {
-            if mergedItems[id] == nil {
-                mergedItems[id] = pendingItem
-            }
+            mergedItems[id] = pendingItem
         }
 
         // 3. Overlay optimistic mutations
         for (id, mutation) in optimisticMutations {
-            guard var item = mergedItems[id] else { continue }
             switch mutation {
-            case .rename(let newTitle):
-                item = PinkhaHierarchyRawItem(
-                    objectId: item.objectId,
-                    typeId: item.typeId,
-                    title: newTitle,
-                    parentId: item.parentId,
-                    order: item.order,
-                    kind: item.kind
-                )
-                mergedItems[id] = item
-            case .order(let newRank):
-                item = PinkhaHierarchyRawItem(
-                    objectId: item.objectId,
-                    typeId: item.typeId,
-                    title: item.title,
-                    parentId: item.parentId,
-                    order: newRank,
-                    kind: item.kind
-                )
-                mergedItems[id] = item
-            case .move(let newParentId, let newRank):
-                item = PinkhaHierarchyRawItem(
-                    objectId: item.objectId,
-                    typeId: item.typeId,
-                    title: item.title,
-                    parentId: newParentId,
-                    order: newRank ?? item.order,
-                    kind: item.kind
-                )
-                mergedItems[id] = item
             case .delete:
                 mergedItems.removeValue(forKey: id)
+            case .rename(let newTitle):
+                if let item = mergedItems[id] {
+                    mergedItems[id] = PinkhaHierarchyRawItem(
+                        objectId: item.objectId,
+                        typeId: item.typeId,
+                        title: newTitle,
+                        parentId: item.parentId,
+                        order: item.order,
+                        kind: item.kind
+                    )
+                }
+            case .order(let newRank):
+                if let item = mergedItems[id] {
+                    mergedItems[id] = PinkhaHierarchyRawItem(
+                        objectId: item.objectId,
+                        typeId: item.typeId,
+                        title: item.title,
+                        parentId: item.parentId,
+                        order: newRank,
+                        kind: item.kind
+                    )
+                }
+            case .move(let newParentId, let newRank):
+                if let item = mergedItems[id] {
+                    mergedItems[id] = PinkhaHierarchyRawItem(
+                        objectId: item.objectId,
+                        typeId: item.typeId,
+                        title: item.title,
+                        parentId: newParentId,
+                        order: newRank ?? item.order,
+                        kind: item.kind
+                    )
+                }
             }
         }
 

@@ -222,9 +222,9 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
         spaceId: String,
         manifest: PinkhaSpaceManifest,
         snapshot: PinkhaHierarchySnapshot
-    ) async throws {
+    ) async throws -> [PinkhaReparentPlan] {
         guard snapshot.node(for: objectId) != nil else {
-            return
+            return []
         }
 
         let plans = PinkhaHierarchyOrdering.planSafeFolderDeletion(targetFolderId: objectId, in: snapshot)
@@ -258,5 +258,6 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
 
         // Only delete the folder object itself once all children have been safely reparented & re-ranked
         try await objectActionsService.delete(objectIds: [objectId])
+        return plans
     }
 }

@@ -196,34 +196,41 @@ struct PinkhaHierarchySectionView: View {
         guard let target = renameTargetNode else { return }
         let name = renameNodeName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty else { return }
+        renameTargetNode = nil
         Task {
             do {
-                repository.applyOptimisticRename(objectId: target.objectId, newName: name)
                 try await mutationService.renameFolder(objectId: target.objectId, newName: name)
+                repository.applyOptimisticRename(objectId: target.objectId, newName: name)
             } catch {
                 Self.log.error("Failed to rename folder: \(error)")
                 errorMessage = error.localizedDescription
             }
         }
-        renameTargetNode = nil
     }
 
     private func handleDeleteFolder(target: PinkhaHierarchyNode) {
+        deleteTargetNode = nil
         Task {
             do {
-                repository.applyOptimisticDelete(objectId: target.objectId)
-                try await mutationService.deleteFolderSafely(
+                let plans = try await mutationService.deleteFolderSafely(
                     objectId: target.objectId,
                     spaceId: spaceId,
                     manifest: manifest,
                     snapshot: repository.snapshot
                 )
+                for plan in plans {
+                    repository.applyOptimisticMove(
+                        objectId: plan.objectId,
+                        newParentId: plan.newParentId,
+                        newRank: plan.newOrder
+                    )
+                }
+                repository.applyOptimisticDelete(objectId: target.objectId)
             } catch {
                 Self.log.error("Failed to delete folder safely: \(error)")
                 errorMessage = error.localizedDescription
             }
         }
-        deleteTargetNode = nil
     }
 
     private func handleMoveDestinationSelected(targetNode: PinkhaHierarchyNode, destinationId: String?) {
@@ -462,8 +469,8 @@ struct PinkhaHierarchySectionView: View {
 
         Task {
             do {
-                repository.applyOptimisticOrder(objectId: node.objectId, newRank: newRank)
                 try await mutationService.updateOrder(objectId: node.objectId, newRank: newRank, manifest: manifest)
+                repository.applyOptimisticOrder(objectId: node.objectId, newRank: newRank)
                 if PinkhaHierarchyOrdering.shouldRebalance(siblings: siblings) {
                     try await mutationService.rebalanceSiblings(siblings: siblings, manifest: manifest)
                 }
