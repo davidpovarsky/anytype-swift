@@ -348,7 +348,7 @@ struct PinkhaHierarchySectionView: View {
                 subfolderTargetParentId = node.objectId
             } label: {
                 Text(Loc.Pinkha.Folder.newSubfolder)
-                PinkhaSizedAssetIcon(asset: .X18.plus, size: 18)
+                Image(asset: .X18.plus)
             }
 
             Button {
@@ -356,14 +356,14 @@ struct PinkhaHierarchySectionView: View {
                 renameTargetNode = node
             } label: {
                 Text(Loc.Pinkha.Folder.rename)
-                PinkhaSizedAssetIcon(asset: .CustomIcons.pencil, size: 18)
+                Image(asset: .CustomIcons.pencil)
             }
 
             Button {
                 moveTargetNode = node
             } label: {
                 Text(Loc.Pinkha.Hierarchy.move)
-                PinkhaSizedAssetIcon(asset: .CustomIcons.folder, size: 18)
+                Image(asset: .CustomIcons.folder)
             }
 
             reorderButtons(for: node)
@@ -373,14 +373,14 @@ struct PinkhaHierarchySectionView: View {
                 showingDeleteConfirmation = true
             } label: {
                 Text(Loc.Pinkha.Folder.deleteFolder)
-                PinkhaSizedAssetIcon(asset: .CustomIcons.trash, size: 18)
+                Image(asset: .CustomIcons.trash)
             }
         } else {
             Button {
                 moveTargetNode = node
             } label: {
                 Text(Loc.Pinkha.Hierarchy.move)
-                PinkhaSizedAssetIcon(asset: .CustomIcons.folder, size: 18)
+                Image(asset: .CustomIcons.folder)
             }
 
             reorderButtons(for: node)
