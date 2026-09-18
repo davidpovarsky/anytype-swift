@@ -42,6 +42,89 @@ struct PinkhaHierarchySectionView: View {
     }
 
     var body: some View {
+        mainSectionContent
+            .task {
+                await repository.start()
+            }
+            // Native Alerts & Sheets
+            .alert(Loc.Pinkha.Folder.newFolder, isPresented: $showingCreateRootFolderAlert) {
+                TextField(Loc.Pinkha.Folder.folderName, text: $newRootFolderName)
+                Button(Loc.Pinkha.Folder.cancel, role: .cancel) {}
+                Button(Loc.Pinkha.Folder.save) {
+                    handleCreateRootFolder()
+                }
+            }
+            .alert(Loc.Pinkha.Folder.newSubfolder, isPresented: Binding(
+                get: { subfolderTargetParentId != nil },
+                set: { if !$0 { subfolderTargetParentId = nil } }
+            )) {
+                TextField(Loc.Pinkha.Folder.folderName, text: $newSubfolderName)
+                Button(Loc.Pinkha.Folder.cancel, role: .cancel) {
+                    subfolderTargetParentId = nil
+                }
+                Button(Loc.Pinkha.Folder.save) {
+                    handleCreateSubfolder()
+                }
+            }
+            .alert(Loc.Pinkha.Folder.rename, isPresented: Binding(
+                get: { renameTargetNode != nil },
+                set: { if !$0 { renameTargetNode = nil } }
+            )) {
+                TextField(Loc.Pinkha.Folder.folderName, text: $renameNodeName)
+                Button(Loc.Pinkha.Folder.cancel, role: .cancel) {
+                    renameTargetNode = nil
+                }
+                Button(Loc.Pinkha.Folder.save) {
+                    handleRenameFolder()
+                }
+            }
+            .alert(
+                Loc.Pinkha.Folder.deleteFolder,
+                isPresented: $showingDeleteConfirmation,
+                presenting: deleteTargetNode
+            ) { target in
+                Button(Loc.Pinkha.Folder.cancel, role: .cancel) {
+                    deleteTargetNode = nil
+                }
+                Button(Loc.Pinkha.Folder.deleteConfirmationAction, role: .destructive) {
+                    handleDeleteFolder(target: target)
+                }
+            } message: { _ in
+                Text(Loc.Pinkha.Folder.deleteConfirmationMessage)
+            }
+            .sheet(item: Binding<PinkhaHierarchyNode?>(
+                get: { moveTargetNode },
+                set: { moveTargetNode = $0 }
+            )) { targetNode in
+                PinkhaMoveDestinationPickerView(
+                    movingNode: targetNode,
+                    snapshot: repository.snapshot,
+                    onSelectDestination: { destinationId in
+                        handleMoveDestinationSelected(targetNode: targetNode, destinationId: destinationId)
+                    },
+                    onDismiss: {
+                        moveTargetNode = nil
+                    }
+                )
+            }
+            .alert(
+                Loc.Pinkha.Home.failed,
+                isPresented: Binding(
+                    get: { errorMessage != nil },
+                    set: { if !$0 { errorMessage = nil } }
+                )
+            ) {
+                Button(Loc.Pinkha.Folder.cancel, role: .cancel) {
+                    errorMessage = nil
+                }
+            } message: {
+                if let errorMessage {
+                    Text(errorMessage)
+                }
+            }
+    }
+
+    private var mainSectionContent: some View {
         VStack(spacing: 0) {
             HomeWidgetsGroupView(
                 title: Loc.Pinkha.Home.folders,
@@ -61,169 +144,112 @@ struct PinkhaHierarchySectionView: View {
                     .transition(.sectionBody)
             }
         }
-        .task {
-            await repository.start()
+    }
+
+    // MARK: - Action Handlers
+
+    private func handleCreateRootFolder() {
+        let name = newRootFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { return }
+        Task {
+            do {
+                let createdDetails = try await mutationService.createFolder(
+                    name: name,
+                    parentId: nil,
+                    spaceId: spaceId,
+                    manifest: manifest,
+                    existingSiblings: repository.snapshot.rootNodes
+                )
+                repository.registerPendingCreated(details: createdDetails)
+            } catch {
+                Self.log.error("Failed to create root folder: \(error)")
+                errorMessage = error.localizedDescription
+            }
         }
-        // Native Alerts & Sheets
-        .alert(Loc.Pinkha.Folder.newFolder, isPresented: $showingCreateRootFolderAlert) {
-            TextField(Loc.Pinkha.Folder.folderName, text: $newRootFolderName)
-            Button(Loc.Pinkha.Folder.cancel, role: .cancel) {}
-            Button(Loc.Pinkha.Folder.save) {
-                let name = newRootFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !name.isEmpty else { return }
-                Task {
-                    do {
-                        let createdDetails = try await mutationService.createFolder(
-                            name: name,
-                            parentId: nil,
-                            spaceId: spaceId,
-                            manifest: manifest,
-                            existingSiblings: repository.snapshot.rootNodes
-                        )
-                        repository.registerPendingCreated(details: createdDetails)
-                    } catch {
-                        Self.log.error("Failed to create root folder: \(error)")
-                        errorMessage = error.localizedDescription
-                    }
+    }
+
+    private func handleCreateSubfolder() {
+        guard let parentId = subfolderTargetParentId else { return }
+        let name = newSubfolderName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { return }
+        let siblings = repository.snapshot.children(of: parentId)
+        Task {
+            do {
+                let createdDetails = try await mutationService.createFolder(
+                    name: name,
+                    parentId: parentId,
+                    spaceId: spaceId,
+                    manifest: manifest,
+                    existingSiblings: siblings
+                )
+                expandedFolderIds.insert(parentId)
+                repository.registerPendingCreated(details: createdDetails)
+            } catch {
+                Self.log.error("Failed to create subfolder: \(error)")
+                errorMessage = error.localizedDescription
+            }
+        }
+        subfolderTargetParentId = nil
+    }
+
+    private func handleRenameFolder() {
+        guard let target = renameTargetNode else { return }
+        let name = renameNodeName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { return }
+        Task {
+            do {
+                repository.applyOptimisticRename(objectId: target.objectId, newName: name)
+                try await mutationService.renameFolder(objectId: target.objectId, newName: name)
+            } catch {
+                Self.log.error("Failed to rename folder: \(error)")
+                errorMessage = error.localizedDescription
+            }
+        }
+        renameTargetNode = nil
+    }
+
+    private func handleDeleteFolder(target: PinkhaHierarchyNode) {
+        Task {
+            do {
+                repository.applyOptimisticDelete(objectId: target.objectId)
+                try await mutationService.deleteFolderSafely(
+                    objectId: target.objectId,
+                    spaceId: spaceId,
+                    manifest: manifest,
+                    snapshot: repository.snapshot
+                )
+            } catch {
+                Self.log.error("Failed to delete folder safely: \(error)")
+                errorMessage = error.localizedDescription
+            }
+        }
+        deleteTargetNode = nil
+    }
+
+    private func handleMoveDestinationSelected(targetNode: PinkhaHierarchyNode, destinationId: String?) {
+        Task {
+            do {
+                let newRank = try await mutationService.move(
+                    objectId: targetNode.objectId,
+                    newParentId: destinationId,
+                    spaceId: spaceId,
+                    manifest: manifest,
+                    snapshot: repository.snapshot
+                )
+                if let destinationId {
+                    expandedFolderIds.insert(destinationId)
                 }
+                repository.applyOptimisticMove(
+                    objectId: targetNode.objectId,
+                    newParentId: destinationId,
+                    newRank: newRank
+                )
+            } catch {
+                Self.log.error("Failed to move node: \(error)")
+                errorMessage = error.localizedDescription
             }
         }
-        .alert(Loc.Pinkha.Folder.newSubfolder, isPresented: Binding(
-            get: { subfolderTargetParentId != nil },
-            set: { if !$0 { subfolderTargetParentId = nil } }
-        )) {
-            TextField(Loc.Pinkha.Folder.folderName, text: $newSubfolderName)
-            Button(Loc.Pinkha.Folder.cancel, role: .cancel) {
-                subfolderTargetParentId = nil
-            }
-            Button(Loc.Pinkha.Folder.save) {
-                guard let parentId = subfolderTargetParentId else { return }
-                let name = newSubfolderName.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !name.isEmpty else { return }
-                let siblings = repository.snapshot.children(of: parentId)
-                Task {
-                    do {
-                        let createdDetails = try await mutationService.createFolder(
-                            name: name,
-                            parentId: parentId,
-                            spaceId: spaceId,
-                            manifest: manifest,
-                            existingSiblings: siblings
-                        )
-                        expandedFolderIds.insert(parentId)
-                        repository.registerPendingCreated(details: createdDetails)
-                    } catch {
-                        Self.log.error("Failed to create subfolder: \(error)")
-                        errorMessage = error.localizedDescription
-                    }
-                }
-                subfolderTargetParentId = nil
-            }
-        }
-        .alert(Loc.Pinkha.Folder.rename, isPresented: Binding(
-            get: { renameTargetNode != nil },
-            set: { if !$0 { renameTargetNode = nil } }
-        )) {
-            TextField(Loc.Pinkha.Folder.folderName, text: $renameNodeName)
-            Button(Loc.Pinkha.Folder.cancel, role: .cancel) {
-                renameTargetNode = nil
-            }
-            Button(Loc.Pinkha.Folder.save) {
-                guard let target = renameTargetNode else { return }
-                let name = renameNodeName.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !name.isEmpty else { return }
-                Task {
-                    do {
-                        repository.applyOptimisticRename(objectId: target.objectId, newName: name)
-                        try await mutationService.renameFolder(objectId: target.objectId, newName: name)
-                    } catch {
-                        Self.log.error("Failed to rename folder: \(error)")
-                        errorMessage = error.localizedDescription
-                    }
-                }
-                renameTargetNode = nil
-            }
-        }
-        .alert(
-            Loc.Pinkha.Folder.deleteFolder,
-            isPresented: $showingDeleteConfirmation,
-            presenting: deleteTargetNode
-        ) { target in
-            Button(Loc.Pinkha.Folder.cancel, role: .cancel) {
-                deleteTargetNode = nil
-            }
-            Button(Loc.Pinkha.Folder.deleteConfirmationAction, role: .destructive) {
-                Task {
-                    do {
-                        repository.applyOptimisticDelete(objectId: target.objectId)
-                        try await mutationService.deleteFolderSafely(
-                            objectId: target.objectId,
-                            spaceId: spaceId,
-                            manifest: manifest,
-                            snapshot: repository.snapshot
-                        )
-                    } catch {
-                        Self.log.error("Failed to delete folder safely: \(error)")
-                        errorMessage = error.localizedDescription
-                    }
-                }
-                deleteTargetNode = nil
-            }
-        } message: { _ in
-            Text(Loc.Pinkha.Folder.deleteConfirmationMessage)
-        }
-        .sheet(item: Binding<PinkhaHierarchyNode?>(
-            get: { moveTargetNode },
-            set: { moveTargetNode = $0 }
-        )) { targetNode in
-            PinkhaMoveDestinationPickerView(
-                movingNode: targetNode,
-                snapshot: repository.snapshot,
-                onSelectDestination: { destinationId in
-                    Task {
-                        do {
-                            let newRank = try await mutationService.move(
-                                objectId: targetNode.objectId,
-                                newParentId: destinationId,
-                                spaceId: spaceId,
-                                manifest: manifest,
-                                snapshot: repository.snapshot
-                            )
-                            if let destinationId {
-                                expandedFolderIds.insert(destinationId)
-                            }
-                            repository.applyOptimisticMove(
-                                objectId: targetNode.objectId,
-                                newParentId: destinationId,
-                                newRank: newRank
-                            )
-                        } catch {
-                            Self.log.error("Failed to move node: \(error)")
-                            errorMessage = error.localizedDescription
-                        }
-                    }
-                    moveTargetNode = nil
-                },
-                onDismiss: {
-                    moveTargetNode = nil
-                }
-            )
-        }
-        .alert(
-            Loc.Pinkha.Home.failed,
-            isPresented: Binding(
-                get: { errorMessage != nil },
-                set: { if !$0 { errorMessage = nil } }
-            )
-        ) {
-            Button(Loc.Pinkha.Folder.cancel, role: .cancel) {
-                errorMessage = nil
-            }
-        } message: {
-            if let errorMessage {
-                Text(errorMessage)
-            }
-        }
+        moveTargetNode = nil
     }
 
     // MARK: - Tree View

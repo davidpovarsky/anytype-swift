@@ -69,18 +69,11 @@ jobs:
             -destination 'generic/platform=iOS' \
             -sdk iphoneos \
             -derivedDataPath ./build/DerivedData \
-            COMPILER_INDEX_STORE_ENABLE=NO \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY='' \
             PROVISIONING_PROFILE_SPECIFIER='' \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES &
-          XCODE_PID=$!
-          while kill -0 $XCODE_PID 2>/dev/null; do
-            sleep 30
-            echo "[$(date -u +%T)] Building Anytype..."
-          done
-          wait $XCODE_PID
+            AD_HOC_CODE_SIGNING_ALLOWED=YES
 
       - name: Package Unsigned Device IPA
         run: |

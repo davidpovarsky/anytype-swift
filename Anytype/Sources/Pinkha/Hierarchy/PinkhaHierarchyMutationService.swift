@@ -70,7 +70,7 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
         }
         createdDetails = createdDetails.updated(by: localUpdates)
 
-        Self.log.info("Created folder: objectId=\(createdDetails.id), typeId=\(createdDetails.type), expectedFolderTypeId=\(manifest.folderTypeId)")
+        Self.log.debug("Created folder: objectId=\(createdDetails.id), typeId=\(createdDetails.type), expectedFolderTypeId=\(manifest.folderTypeId)")
         return createdDetails
     }
 
@@ -127,11 +127,11 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
             }).invoke(qos: .userInitiated)
 
             let updatedDetails = details.updated(by: localUpdates)
-            Self.log.info("Created writing document: objectId=\(updatedDetails.id), typeId=\(updatedDetails.type)")
+            Self.log.debug("Created writing document: objectId=\(updatedDetails.id), typeId=\(updatedDetails.type)")
             return updatedDetails
         }
 
-        Self.log.info("Created writing document: objectId=\(details.id), typeId=\(details.type)")
+        Self.log.debug("Created writing document: objectId=\(details.id), typeId=\(details.type)")
         return details
     }
 
@@ -189,7 +189,7 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
             $0.details = details
         }).invoke(qos: .userInitiated)
 
-        Self.log.info("Moved node: objectId=\(objectId), newParentId=\(newParentId ?? "root"), newOrder=\(newOrder)")
+        Self.log.debug("Moved node: objectId=\(objectId), newParentId=\(newParentId ?? "root"), newOrder=\(newOrder)")
         return newOrder
     }
 

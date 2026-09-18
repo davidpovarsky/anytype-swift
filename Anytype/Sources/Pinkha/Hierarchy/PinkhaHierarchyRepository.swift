@@ -136,7 +136,7 @@ final class PinkhaHierarchyRepository: ObservableObject {
             return
         }
 
-        Self.log.info("Registering pending created object: id=\(rawItem.objectId), kind=\(rawItem.kind), title=\(rawItem.title)")
+        Self.log.debug("Registering pending created object: id=\(rawItem.objectId), kind=\(rawItem.kind), title=\(rawItem.title)")
         self.snapshot = reconciler.registerPending(item: rawItem)
     }
 
@@ -149,15 +149,19 @@ final class PinkhaHierarchyRepository: ObservableObject {
     }
 
     /// Applies an optimistic order change to local presentation state.
-    func applyOptimisticOrder(objectId: String, newOrder: Double) {
+    func applyOptimisticOrder(objectId: String, newRank: Double) {
         if let existing = detailsMap[objectId] {
-            detailsMap[objectId] = existing.updated(by: [manifest.orderPropertyKey: newOrder.protobufValue])
+            detailsMap[objectId] = existing.updated(by: [manifest.orderPropertyKey: newRank.protobufValue])
         }
-        self.snapshot = reconciler.applyOptimisticOrder(objectId: objectId, newRank: newOrder)
+        self.snapshot = reconciler.applyOptimisticOrder(objectId: objectId, newRank: newRank)
+    }
+
+    func applyOptimisticOrder(objectId: String, newOrder: Double) {
+        applyOptimisticOrder(objectId: objectId, newRank: newOrder)
     }
 
     /// Applies an optimistic move (reparent + optional rank) to local presentation state.
-    func applyOptimisticMove(objectId: String, newParentId: String?, newOrder: Double? = nil) {
+    func applyOptimisticMove(objectId: String, newParentId: String?, newRank: Double? = nil) {
         if let existing = detailsMap[objectId] {
             var updates: [String: Google_Protobuf_Value] = [:]
             if let newParentId, !newParentId.isEmpty {
@@ -165,12 +169,16 @@ final class PinkhaHierarchyRepository: ObservableObject {
             } else {
                 updates[manifest.parentPropertyKey] = "".protobufValue
             }
-            if let newOrder {
-                updates[manifest.orderPropertyKey] = newOrder.protobufValue
+            if let newRank {
+                updates[manifest.orderPropertyKey] = newRank.protobufValue
             }
             detailsMap[objectId] = existing.updated(by: updates)
         }
-        self.snapshot = reconciler.applyOptimisticMove(objectId: objectId, newParentId: newParentId, newRank: newOrder)
+        self.snapshot = reconciler.applyOptimisticMove(objectId: objectId, newParentId: newParentId, newRank: newRank)
+    }
+
+    func applyOptimisticMove(objectId: String, newParentId: String?, newOrder: Double?) {
+        applyOptimisticMove(objectId: objectId, newParentId: newParentId, newRank: newOrder)
     }
 
     /// Applies an optimistic deletion to local presentation state.
@@ -182,7 +190,7 @@ final class PinkhaHierarchyRepository: ObservableObject {
     // MARK: - Data Transformation & Subscription Processing
 
     private func processSubscriptionDetails(_ detailsList: [ObjectDetails]) {
-        Self.log.info("Subscription update: received \(detailsList.count) items for space \(spaceId)")
+        Self.log.debug("Subscription update: received \(detailsList.count) items for space \(spaceId)")
 
         var rawItems: [PinkhaHierarchyRawItem] = []
         var newDetailsMap: [String: ObjectDetails] = [:]
@@ -190,7 +198,7 @@ final class PinkhaHierarchyRepository: ObservableObject {
         // Check and log presence of currently pending items
         let pendingIds = Set(reconciler.pendingCreatedItems.keys)
         if !pendingIds.isEmpty {
-            Self.log.info("Active pending objects before reconciliation: \(pendingIds)")
+            Self.log.debug("Active pending objects before reconciliation: \(pendingIds)")
         }
 
         for details in detailsList {
@@ -211,7 +219,7 @@ final class PinkhaHierarchyRepository: ObservableObject {
             }
 
             if pendingIds.contains(details.id) {
-                Self.log.info("Pending object confirmed in subscription: id=\(details.id), type=\(details.type), kind=\(raw.kind)")
+                Self.log.debug("Pending object confirmed in subscription: id=\(details.id), type=\(details.type), kind=\(raw.kind)")
             }
 
             rawItems.append(raw)
@@ -222,7 +230,7 @@ final class PinkhaHierarchyRepository: ObservableObject {
         for (pendingId, pendingItem) in reconciler.pendingCreatedItems {
             if newDetailsMap[pendingId] == nil, let cached = detailsMap[pendingId] {
                 newDetailsMap[pendingId] = cached
-                Self.log.info("Retaining pending object not yet in subscription: id=\(pendingId), kind=\(pendingItem.kind)")
+                Self.log.debug("Retaining pending object not yet in subscription: id=\(pendingId), kind=\(pendingItem.kind)")
             }
         }
 
