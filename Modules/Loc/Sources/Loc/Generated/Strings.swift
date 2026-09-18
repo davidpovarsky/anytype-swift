@@ -2009,6 +2009,33 @@ public enum Loc {
       return Loc.tr("Workspace", "PermissionChangeNotification.Text", String(describing: p1), String(describing: p2), fallback: "Your access rights were changed to **%@** in the **%@** space.")
     }
   }
+  public enum Pinkha {
+    public enum Folder {
+      public static let cancel = Loc.tr("Workspace", "Pinkha.Folder.cancel", fallback: "Cancel")
+      public static let deleteConfirmationAction = Loc.tr("Workspace", "Pinkha.Folder.deleteConfirmationAction", fallback: "Delete")
+      public static let deleteConfirmationMessage = Loc.tr("Workspace", "Pinkha.Folder.deleteConfirmationMessage", fallback: "Are you sure you want to delete this folder? Sub-items will be moved to the parent folder.")
+      public static let deleteFolder = Loc.tr("Workspace", "Pinkha.Folder.deleteFolder", fallback: "Delete Folder")
+      public static let folderName = Loc.tr("Workspace", "Pinkha.Folder.folderName", fallback: "Folder Name")
+      public static let newFolder = Loc.tr("Workspace", "Pinkha.Folder.newFolder", fallback: "New Folder")
+      public static let newSubfolder = Loc.tr("Workspace", "Pinkha.Folder.newSubfolder", fallback: "New Subfolder")
+      public static let rename = Loc.tr("Workspace", "Pinkha.Folder.rename", fallback: "Rename")
+      public static let save = Loc.tr("Workspace", "Pinkha.Folder.save", fallback: "Save")
+    }
+    public enum Hierarchy {
+      public static let move = Loc.tr("Workspace", "Pinkha.Hierarchy.move", fallback: "Move")
+      public static let moveDestination = Loc.tr("Workspace", "Pinkha.Hierarchy.moveDestination", fallback: "Choose Destination Folder")
+      public static let moveDown = Loc.tr("Workspace", "Pinkha.Hierarchy.moveDown", fallback: "Move Down")
+      public static let moveToRoot = Loc.tr("Workspace", "Pinkha.Hierarchy.moveToRoot", fallback: "Move to Root")
+      public static let moveUp = Loc.tr("Workspace", "Pinkha.Hierarchy.moveUp", fallback: "Move Up")
+    }
+    public enum Home {
+      public static let failed = Loc.tr("Workspace", "Pinkha.Home.failed", fallback: "Pinkha initialization failed")
+      public static let folders = Loc.tr("Workspace", "Pinkha.Home.folders", fallback: "Folders")
+      public static let loading = Loc.tr("Workspace", "Pinkha.Home.loading", fallback: "Loading Pinkha...")
+      public static let retry = Loc.tr("Workspace", "Pinkha.Home.retry", fallback: "Retry")
+      public static let writing = Loc.tr("Workspace", "Pinkha.Home.writing", fallback: "Writing")
+    }
+  }
   public enum Publishing {
     public enum Error {
       public static let noDomain = Loc.tr("Workspace", "Publishing.Error.NoDomain", fallback: "Failed to load your domain. Please try again.")
