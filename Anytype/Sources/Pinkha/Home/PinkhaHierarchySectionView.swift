@@ -73,14 +73,14 @@ struct PinkhaHierarchySectionView: View {
                 guard !name.isEmpty else { return }
                 Task {
                     do {
-                        _ = try await mutationService.createFolder(
+                        let createdDetails = try await mutationService.createFolder(
                             name: name,
                             parentId: nil,
                             spaceId: spaceId,
                             manifest: manifest,
                             existingSiblings: repository.snapshot.rootNodes
                         )
-                        await repository.reload()
+                        repository.registerPendingCreated(details: createdDetails)
                     } catch {
                         Self.log.error("Failed to create root folder: \(error)")
                         errorMessage = error.localizedDescription
@@ -103,7 +103,7 @@ struct PinkhaHierarchySectionView: View {
                 let siblings = repository.snapshot.children(of: parentId)
                 Task {
                     do {
-                        _ = try await mutationService.createFolder(
+                        let createdDetails = try await mutationService.createFolder(
                             name: name,
                             parentId: parentId,
                             spaceId: spaceId,
@@ -111,7 +111,7 @@ struct PinkhaHierarchySectionView: View {
                             existingSiblings: siblings
                         )
                         expandedFolderIds.insert(parentId)
-                        await repository.reload()
+                        repository.registerPendingCreated(details: createdDetails)
                     } catch {
                         Self.log.error("Failed to create subfolder: \(error)")
                         errorMessage = error.localizedDescription
@@ -134,8 +134,8 @@ struct PinkhaHierarchySectionView: View {
                 guard !name.isEmpty else { return }
                 Task {
                     do {
+                        repository.applyOptimisticRename(objectId: target.objectId, newName: name)
                         try await mutationService.renameFolder(objectId: target.objectId, newName: name)
-                        await repository.reload()
                     } catch {
                         Self.log.error("Failed to rename folder: \(error)")
                         errorMessage = error.localizedDescription
@@ -155,13 +155,13 @@ struct PinkhaHierarchySectionView: View {
             Button(Loc.Pinkha.Folder.deleteConfirmationAction, role: .destructive) {
                 Task {
                     do {
+                        repository.applyOptimisticDelete(objectId: target.objectId)
                         try await mutationService.deleteFolderSafely(
                             objectId: target.objectId,
                             spaceId: spaceId,
                             manifest: manifest,
                             snapshot: repository.snapshot
                         )
-                        await repository.reload()
                     } catch {
                         Self.log.error("Failed to delete folder safely: \(error)")
                         errorMessage = error.localizedDescription
@@ -182,7 +182,7 @@ struct PinkhaHierarchySectionView: View {
                 onSelectDestination: { destinationId in
                     Task {
                         do {
-                            try await mutationService.move(
+                            let newRank = try await mutationService.move(
                                 objectId: targetNode.objectId,
                                 newParentId: destinationId,
                                 spaceId: spaceId,
@@ -192,7 +192,11 @@ struct PinkhaHierarchySectionView: View {
                             if let destinationId {
                                 expandedFolderIds.insert(destinationId)
                             }
-                            await repository.reload()
+                            repository.applyOptimisticMove(
+                                objectId: targetNode.objectId,
+                                newParentId: destinationId,
+                                newRank: newRank
+                            )
                         } catch {
                             Self.log.error("Failed to move node: \(error)")
                             errorMessage = error.localizedDescription
@@ -232,11 +236,17 @@ struct PinkhaHierarchySectionView: View {
         )
 
         return VStack(spacing: 0) {
-            ForEach(Array(flattened.enumerated()), id: \.element.node.id) { index, item in
-                treeRow(
-                    item: item,
-                    showDivider: index < flattened.count - 1
-                )
+            if flattened.isEmpty {
+                WidgetEmptyView()
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 72)
+            } else {
+                ForEach(Array(flattened.enumerated()), id: \.element.node.id) { index, item in
+                    treeRow(
+                        item: item,
+                        showDivider: index < flattened.count - 1
+                    )
+                }
             }
         }
         .background(Color.Background.widget)
@@ -321,7 +331,7 @@ struct PinkhaHierarchySectionView: View {
     @ViewBuilder
     private func rowIcon(node: PinkhaHierarchyNode, details: ObjectDetails?, isExpanded: Bool) -> some View {
         if node.kind == .folder {
-            Image(asset: isExpanded ? .CustomIcons.folderOpen : .CustomIcons.folder)
+            PinkhaSizedAssetIcon(asset: isExpanded ? .CustomIcons.folderOpen : .CustomIcons.folder, size: 18)
                 .foregroundStyle(Color.Text.primary)
         } else if let details {
             IconView(icon: details.objectIconImage)
@@ -338,7 +348,7 @@ struct PinkhaHierarchySectionView: View {
                 subfolderTargetParentId = node.objectId
             } label: {
                 Text(Loc.Pinkha.Folder.newSubfolder)
-                Image(asset: .X18.plus)
+                PinkhaSizedAssetIcon(asset: .X18.plus, size: 18)
             }
 
             Button {
@@ -346,14 +356,14 @@ struct PinkhaHierarchySectionView: View {
                 renameTargetNode = node
             } label: {
                 Text(Loc.Pinkha.Folder.rename)
-                Image(asset: .CustomIcons.pencil)
+                PinkhaSizedAssetIcon(asset: .CustomIcons.pencil, size: 18)
             }
 
             Button {
                 moveTargetNode = node
             } label: {
                 Text(Loc.Pinkha.Hierarchy.move)
-                Image(asset: .CustomIcons.folder)
+                PinkhaSizedAssetIcon(asset: .CustomIcons.folder, size: 18)
             }
 
             reorderButtons(for: node)
@@ -363,14 +373,14 @@ struct PinkhaHierarchySectionView: View {
                 showingDeleteConfirmation = true
             } label: {
                 Text(Loc.Pinkha.Folder.deleteFolder)
-                Image(asset: .CustomIcons.trash)
+                PinkhaSizedAssetIcon(asset: .CustomIcons.trash, size: 18)
             }
         } else {
             Button {
                 moveTargetNode = node
             } label: {
                 Text(Loc.Pinkha.Hierarchy.move)
-                Image(asset: .CustomIcons.folder)
+                PinkhaSizedAssetIcon(asset: .CustomIcons.folder, size: 18)
             }
 
             reorderButtons(for: node)
@@ -426,11 +436,11 @@ struct PinkhaHierarchySectionView: View {
 
         Task {
             do {
+                repository.applyOptimisticOrder(objectId: node.objectId, newRank: newRank)
                 try await mutationService.updateOrder(objectId: node.objectId, newRank: newRank, manifest: manifest)
                 if PinkhaHierarchyOrdering.shouldRebalance(siblings: siblings) {
                     try await mutationService.rebalanceSiblings(siblings: siblings, manifest: manifest)
                 }
-                await repository.reload()
             } catch {
                 Self.log.error("Failed to move sibling: \(error)")
                 errorMessage = error.localizedDescription

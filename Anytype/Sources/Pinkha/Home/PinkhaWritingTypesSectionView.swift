@@ -107,7 +107,7 @@ struct PinkhaWritingTypesSectionView: View {
                 manifest: manifest,
                 existingSiblings: repository.snapshot.rootNodes
             )
-            await repository.reload()
+            repository.registerPendingCreated(details: details)
             output?.onObjectSelected(screenData: details.screenData())
         } catch {
             Self.log.error("Failed to create writing document: \(error)")

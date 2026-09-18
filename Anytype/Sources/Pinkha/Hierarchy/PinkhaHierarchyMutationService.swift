@@ -5,10 +5,13 @@ import AnytypeCore
 import SwiftProtobuf
 import ProtobufMessages
 import Factory
+import Logger
 
 /// Service that executes hierarchy mutations (create folder, rename, move, reorder, safe delete)
 /// against Anytype's object and property APIs.
 final class PinkhaHierarchyMutationService: @unchecked Sendable {
+
+    private static let log = EventLogger(category: "Pinkha")
 
     @Injected(\.objectActionsService)
     private var objectActionsService: any ObjectActionsServiceProtocol
@@ -24,13 +27,14 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
     // MARK: - Folder Creation
 
     /// Creates a real Anytype Object using `manifest.folderTypeId`, assigning initial parent and order rank.
+    /// Returns the fully-populated ObjectDetails so the UI can register it immediately.
     func createFolder(
         name: String,
         parentId: String?,
         spaceId: String,
         manifest: PinkhaSpaceManifest,
         existingSiblings: [PinkhaHierarchyNode]
-    ) async throws -> String {
+    ) async throws -> ObjectDetails {
         let order = PinkhaHierarchyOrdering.nextAppendRank(existingSiblings: existingSiblings)
         let type = try objectTypeProvider.objectType(id: manifest.folderTypeId)
 
@@ -51,8 +55,23 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
             $0.objectTypeUniqueKey = type.uniqueKey.value
         }).invoke(qos: .userInitiated)
 
-        let createdDetails = try response.details.toDetails()
-        return createdDetails.id
+        var createdDetails = try response.details.toDetails()
+
+        // Ensure returned ObjectDetails reflects type, name, order, and parent
+        var localUpdates: [String: Google_Protobuf_Value] = [
+            BundledPropertyKey.name.rawValue: name.protobufValue,
+            manifest.orderPropertyKey: order.protobufValue
+        ]
+        if createdDetails.type.isEmpty {
+            localUpdates[BundledPropertyKey.type.rawValue] = manifest.folderTypeId.protobufValue
+        }
+        if let parentId, !parentId.isEmpty {
+            localUpdates[manifest.parentPropertyKey] = parentId.protobufValue
+        }
+        createdDetails = createdDetails.updated(by: localUpdates)
+
+        Self.log.info("Created folder: objectId=\(createdDetails.id), typeId=\(createdDetails.type), expectedFolderTypeId=\(manifest.folderTypeId)")
+        return createdDetails
     }
 
     // MARK: - Writing Document Creation
@@ -89,18 +108,30 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
                     $0.value = order.protobufValue
                 }
             ]
+            var localUpdates: [String: Google_Protobuf_Value] = [
+                manifest.orderPropertyKey: order.protobufValue
+            ]
+            if details.type.isEmpty {
+                localUpdates[BundledPropertyKey.type.rawValue] = typeId.protobufValue
+            }
             if let parentId, !parentId.isEmpty {
                 updateDetails.append(Anytype_Model_Detail.with {
                     $0.key = manifest.parentPropertyKey
                     $0.value = parentId.protobufValue
                 })
+                localUpdates[manifest.parentPropertyKey] = parentId.protobufValue
             }
             _ = try await ClientCommands.objectSetDetails(.with {
                 $0.contextID = details.id
                 $0.details = updateDetails
             }).invoke(qos: .userInitiated)
+
+            let updatedDetails = details.updated(by: localUpdates)
+            Self.log.info("Created writing document: objectId=\(updatedDetails.id), typeId=\(updatedDetails.type)")
+            return updatedDetails
         }
 
+        Self.log.info("Created writing document: objectId=\(details.id), typeId=\(details.type)")
         return details
     }
 
@@ -125,7 +156,7 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
         spaceId: String,
         manifest: PinkhaSpaceManifest,
         snapshot: PinkhaHierarchySnapshot
-    ) async throws {
+    ) async throws -> Double {
         // Validate cycle prevention
         try PinkhaHierarchyMutationValidator.validateMove(objectId: objectId, newParentId: newParentId, in: snapshot)
 
@@ -157,6 +188,9 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
             $0.contextID = objectId
             $0.details = details
         }).invoke(qos: .userInitiated)
+
+        Self.log.info("Moved node: objectId=\(objectId), newParentId=\(newParentId ?? "root"), newOrder=\(newOrder)")
+        return newOrder
     }
 
     // MARK: - Reorder Siblings

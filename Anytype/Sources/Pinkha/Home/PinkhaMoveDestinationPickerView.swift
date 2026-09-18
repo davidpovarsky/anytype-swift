@@ -34,8 +34,7 @@ struct PinkhaMoveDestinationPickerView: View {
                         onSelectDestination(nil)
                     } label: {
                         HStack(spacing: 12) {
-                            Image(asset: .CustomIcons.home)
-                                .frame(width: 20, height: 20)
+                            PinkhaSizedAssetIcon(asset: .CustomIcons.home, size: 20)
                                 .foregroundStyle(Color.Text.primary)
                             AnytypeText(Loc.Pinkha.Hierarchy.moveToRoot, style: .bodySemibold)
                                 .foregroundStyle(Color.Text.primary)
@@ -52,8 +51,7 @@ struct PinkhaMoveDestinationPickerView: View {
                                 onSelectDestination(folder.objectId)
                             } label: {
                                 HStack(spacing: 12) {
-                                    Image(asset: .CustomIcons.folder)
-                                        .frame(width: 20, height: 20)
+                                    PinkhaSizedAssetIcon(asset: .CustomIcons.folder, size: 20)
                                         .foregroundStyle(Color.Text.primary)
                                     VStack(alignment: .leading, spacing: 2) {
                                         AnytypeText(folder.title, style: .bodySemibold)

@@ -28,6 +28,13 @@ Logical roles are mapped to concrete Anytype Property IDs in `PinkhaSpaceManifes
 - **Root Semantics**: An object with no parent relation (`parentId == nil`) is a root node.
 - **Order Semantics**: Dense threshold `< 0.001`; default step `1000.0`; unranked items deterministically placed after ranked items, ordered by title, then objectId.
 - **`PinkhaReparentPlan`**: Result of `PinkhaHierarchyOrdering.planSafeFolderDeletion(targetFolderId:in:)`, specifying target folder deletion, target parent ID, and child updates with new parent ID and non-colliding order ranks.
+- **`PinkhaHierarchyReconciler`**: Pure domain state reconciler in `Modules/PinkhaKit` managing optimistic state:
+  - `registerPending(item:)`: Optimistically inserts a pending item and rebuilds snapshot.
+  - `receiveSubscription(items:)`: Merges pending unconfirmed items with incoming subscription items, clears confirmed items, deduplicates IDs strictly, and rebuilds snapshot.
+  - `rename(objectId:newName:)`: Optimistic title update.
+  - `updateOrder(objectId:newRank:)`: Optimistic sparse rank update.
+  - `move(objectId:newParentId:newRank:)`: Optimistic reparenting and rank update.
+  - `delete(objectId:)`: Optimistic deletion of node and unregisters any pending creations.
 - **`PinkhaHierarchySnapshot` Path Helpers**:
   - `ancestorPath(for objectId: String) -> [PinkhaHierarchyNode]`
   - `fullNodePath(for objectId: String) -> [PinkhaHierarchyNode]`
