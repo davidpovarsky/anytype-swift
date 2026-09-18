@@ -58,8 +58,7 @@ struct PinkhaMoveDestinationPickerView: View {
                                     VStack(alignment: .leading, spacing: 2) {
                                         AnytypeText(folder.title, style: .bodySemibold)
                                             .foregroundStyle(Color.Text.primary)
-                                        let parentPath = snapshot.parentPathString(for: folder.objectId)
-                                        if !parentPath.isEmpty {
+                                        if let parentPath = snapshot.parentPathString(for: folder.objectId) {
                                             AnytypeText(parentPath, style: .caption1Regular)
                                                 .foregroundStyle(Color.Text.secondary)
                                         }

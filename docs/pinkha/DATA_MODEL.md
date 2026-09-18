@@ -32,7 +32,7 @@ Logical roles are mapped to concrete Anytype Property IDs in `PinkhaSpaceManifes
   - `ancestorPath(for objectId: String) -> [PinkhaHierarchyNode]`
   - `fullNodePath(for objectId: String) -> [PinkhaHierarchyNode]`
   - `pathString(for objectId: String, separator: String) -> String`
-  - `parentPathString(for objectId: String, separator: String) -> String`
+  - `parentPathString(for objectId: String, separator: String) -> String?`
 - **Query Scale**: Native unbounded query limit (`limit: 0`) used across search and subscription builders.
 
 
