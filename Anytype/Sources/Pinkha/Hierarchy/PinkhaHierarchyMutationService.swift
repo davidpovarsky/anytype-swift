@@ -45,7 +45,7 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
         ]
 
         if let parentId, !parentId.isEmpty {
-            fields[manifest.parentPropertyKey] = parentId.protobufValue
+            fields[manifest.parentPropertyKey] = [parentId].protobufValue
         }
 
         let details = Google_Protobuf_Struct(fields: fields)
@@ -66,9 +66,35 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
             localUpdates[BundledPropertyKey.type.rawValue] = manifest.folderTypeId.protobufValue
         }
         if let parentId, !parentId.isEmpty {
-            localUpdates[manifest.parentPropertyKey] = parentId.protobufValue
+            localUpdates[manifest.parentPropertyKey] = [parentId].protobufValue
         }
         createdDetails = createdDetails.updated(by: localUpdates)
+
+        // Focused verification for Phase 2: verify canonical stored object in Anytype
+        do {
+            let showResponse = try await ClientCommands.objectShow(.with {
+                $0.contextID = createdDetails.id
+                $0.objectID = createdDetails.id
+                $0.spaceID = spaceId
+            }).invoke(qos: .userInitiated, ignoreLogErrors: .objectDeleted)
+            if let showDetailsStruct = showResponse.objectView.details.first(where: { $0.id == createdDetails.id })?.details,
+               let storedDetails = try? ObjectDetails(protobufStruct: showDetailsStruct) {
+                let storedType = storedDetails.type
+                let storedName = storedDetails.objectName.isEmpty ? storedDetails.name : storedDetails.objectName
+                let storedOrder = storedDetails.doubleValue(for: manifest.orderPropertyKey) ?? storedDetails.values[manifest.orderPropertyKey]?.numberValue
+                var storedParentId: String?
+                if let parentVal = storedDetails.values[manifest.parentPropertyKey] {
+                    if case let .listValue(list) = parentVal.kind, let first = list.values.first?.stringValue, !first.isEmpty {
+                        storedParentId = first
+                    } else if !parentVal.stringValue.isEmpty {
+                        storedParentId = parentVal.stringValue
+                    }
+                }
+                Self.log.debug("Canonical read-back check for created folder: id=\(createdDetails.id), storedType=\(storedType) (matches=\(storedType == manifest.folderTypeId)), storedName=\(storedName) (matches=\(storedName == name)), storedOrder=\(String(describing: storedOrder)) (matches=\(storedOrder == order)), storedParent=\(String(describing: storedParentId)) (matches=\(storedParentId == parentId))")
+            }
+        } catch {
+            Self.log.debug("Canonical read-back check failed: \(error)")
+        }
 
         Self.log.debug("Created folder: objectId=\(createdDetails.id), typeId=\(createdDetails.type), expectedFolderTypeId=\(manifest.folderTypeId)")
         return createdDetails
@@ -117,9 +143,9 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
             if let parentId, !parentId.isEmpty {
                 updateDetails.append(Anytype_Model_Detail.with {
                     $0.key = manifest.parentPropertyKey
-                    $0.value = parentId.protobufValue
+                    $0.value = [parentId].protobufValue
                 })
-                localUpdates[manifest.parentPropertyKey] = parentId.protobufValue
+                localUpdates[manifest.parentPropertyKey] = [parentId].protobufValue
             }
             _ = try await ClientCommands.objectSetDetails(.with {
                 $0.contextID = details.id
@@ -174,13 +200,13 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
         if let newParentId, !newParentId.isEmpty {
             details.append(Anytype_Model_Detail.with {
                 $0.key = manifest.parentPropertyKey
-                $0.value = newParentId.protobufValue
+                $0.value = [newParentId].protobufValue
             })
         } else {
             // Move to root: clear parent property
             details.append(Anytype_Model_Detail.with {
                 $0.key = manifest.parentPropertyKey
-                $0.value = Google_Protobuf_Value()
+                $0.value = [String]().protobufValue
             })
         }
 
@@ -241,12 +267,12 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
             if let dest = plan.newParentId, !dest.isEmpty {
                 details.append(Anytype_Model_Detail.with {
                     $0.key = manifest.parentPropertyKey
-                    $0.value = dest.protobufValue
+                    $0.value = [dest].protobufValue
                 })
             } else {
                 details.append(Anytype_Model_Detail.with {
                     $0.key = manifest.parentPropertyKey
-                    $0.value = Google_Protobuf_Value()
+                    $0.value = [String]().protobufValue
                 })
             }
 

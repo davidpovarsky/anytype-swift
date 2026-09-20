@@ -313,4 +313,130 @@ struct PinkhaHierarchyReconciliationTests {
         #expect(completeSnap.node(for: "fB")?.children.first?.objectId == "doc1")
         #expect(completeSnap.node(for: "fB")?.children.first?.order == 3000.0)
     }
+
+    // MARK: - Fresh Reconstruction & Persistence Tests (Requirement 6 & 11)
+
+    @Test("Fresh reconstruction from canonical subscription only (Folder A -> Folder B -> Folder C) with zero pending state")
+    func testFreshReconstructionFromCanonicalSubscriptionWithoutPendingState() {
+        // 1. Define canonical raw items equivalent to what Anytype subscription returns after reload
+        let folderA = makeFolder(id: "folder_a", title: "Folder A", parentId: nil, order: 1000.0)
+        let folderB = makeFolder(id: "folder_b", title: "Folder B", parentId: "folder_a", order: 1000.0)
+        let folderC = makeFolder(id: "folder_c", title: "Folder C", parentId: "folder_b", order: 1000.0)
+        let canonicalItems = [folderA, folderB, folderC]
+
+        // 2. Discard/destroy any previous reconciler and pending state.
+        // Construct a brand new PinkhaHierarchyReconciler (representing a freshly created repository).
+        let freshReconciler = PinkhaHierarchyReconciler()
+        #expect(freshReconciler.pendingCreatedItems.isEmpty)
+        #expect(freshReconciler.optimisticMutations.isEmpty)
+        #expect(freshReconciler.currentSnapshot.rootNodes.isEmpty)
+
+        // 3. Receive ONLY authoritative subscription items (no pending registration)
+        let snapshot = freshReconciler.receiveSubscription(items: canonicalItems)
+
+        // 4. Verify reconstruction:
+        // Root has Folder A
+        #expect(snapshot.rootNodes.count == 1)
+        let rootNode = snapshot.rootNodes[0]
+        #expect(rootNode.objectId == "folder_a")
+        #expect(rootNode.title == "Folder A")
+        #expect(rootNode.parentId == nil)
+        #expect(rootNode.order == 1000.0)
+        #expect(rootNode.kind == .folder)
+
+        // Folder A has child Folder B
+        #expect(rootNode.children.count == 1)
+        let nodeB = rootNode.children[0]
+        #expect(nodeB.objectId == "folder_b")
+        #expect(nodeB.title == "Folder B")
+        #expect(nodeB.parentId == "folder_a")
+        #expect(nodeB.order == 1000.0)
+        #expect(nodeB.kind == .folder)
+
+        // Folder B has child Folder C
+        #expect(nodeB.children.count == 1)
+        let nodeC = nodeB.children[0]
+        #expect(nodeC.objectId == "folder_c")
+        #expect(nodeC.title == "Folder C")
+        #expect(nodeC.parentId == "folder_b")
+        #expect(nodeC.order == 1000.0)
+        #expect(nodeC.kind == .folder)
+
+        // Path verification
+        #expect(snapshot.pathString(for: "folder_c") == "Folder A / Folder B / Folder C")
+        #expect(snapshot.parentPathString(for: "folder_c") == "Folder A / Folder B")
+
+        // Zero pending items
+        #expect(freshReconciler.pendingCreatedItems.isEmpty)
+    }
+
+    @Test("Nested hierarchy with mixed folders and writing documents reconstructed from fresh canonical details only")
+    func testFreshReconstructionNestedWithWritingDocumentsWithoutPendingState() {
+        let halacha = makeFolder(id: "f_halacha", title: "הלכה", parentId: nil, order: 1000.0)
+        let moadim = makeFolder(id: "f_moadim", title: "מועדים", parentId: "f_halacha", order: 1000.0)
+        let shofarDoc = makeDoc(id: "d_shofar", title: "שופר", parentId: "f_moadim", order: 1000.0)
+        let yomKippur = makeFolder(id: "f_yk", title: "יום הכיפורים", parentId: "f_moadim", order: 2000.0)
+        let dinimDoc = makeDoc(id: "d_dinim", title: "פרטי הדינים", parentId: "f_yk", order: 1000.0)
+
+        // Fresh reconciler simulating app reload / screen return
+        let freshReconciler = PinkhaHierarchyReconciler()
+        let snapshot = freshReconciler.receiveSubscription(items: [
+            halacha, moadim, shofarDoc, yomKippur, dinimDoc
+        ])
+
+        #expect(snapshot.rootNodes.count == 1)
+        #expect(snapshot.rootNodes[0].title == "הלכה")
+
+        let moadimNode = snapshot.node(for: "f_moadim")
+        #expect(moadimNode != nil)
+        #expect(moadimNode?.children.count == 2)
+        #expect(moadimNode?.children[0].objectId == "d_shofar")
+        #expect(moadimNode?.children[0].kind == .writingDocument)
+        #expect(moadimNode?.children[1].objectId == "f_yk")
+        #expect(moadimNode?.children[1].kind == .folder)
+
+        let ykNode = snapshot.node(for: "f_yk")
+        #expect(ykNode?.children.count == 1)
+        #expect(ykNode?.children[0].objectId == "d_dinim")
+        #expect(ykNode?.children[0].kind == .writingDocument)
+
+        #expect(snapshot.pathString(for: "d_dinim") == "הלכה / מועדים / יום הכיפורים / פרטי הדינים")
+        #expect(freshReconciler.pendingCreatedItems.isEmpty)
+    }
+
+    @Test("Simulated screen navigation away and back: tree reconstructs completely when repository state is destroyed")
+    func testSimulatedScreenNavigationAwayAndBack() {
+        // Screen 1: Original repository session
+        var oldReconciler: PinkhaHierarchyReconciler? = PinkhaHierarchyReconciler()
+        let folder1 = makeFolder(id: "f1", title: "Root Folder", parentId: nil, order: 1000.0)
+        let folder2 = makeFolder(id: "f2", title: "Child Folder", parentId: "f1", order: 1000.0)
+
+        // Optimistic registration during creation
+        oldReconciler?.registerPending(item: folder1)
+        oldReconciler?.registerPending(item: folder2)
+
+        // Anytype backend subscription confirms items
+        _ = oldReconciler?.receiveSubscription(items: [folder1, folder2])
+        #expect(oldReconciler?.currentSnapshot.rootNodes.count == 1)
+
+        // Navigation AWAY: Old repository/reconciler is completely deallocated!
+        oldReconciler = nil
+        #expect(oldReconciler == nil)
+
+        // Navigation BACK: Brand new repository creates a brand new reconciler with zero prior state
+        let newReconciler = PinkhaHierarchyReconciler()
+        #expect(newReconciler.pendingCreatedItems.isEmpty)
+        #expect(newReconciler.currentSnapshot.rootNodes.isEmpty)
+
+        // Anytype subscription starts and emits persisted canonical data
+        let reloadedSnapshot = newReconciler.receiveSubscription(items: [folder1, folder2])
+
+        // ENTIRE TREE MUST STILL BE THERE!
+        #expect(reloadedSnapshot.rootNodes.count == 1)
+        #expect(reloadedSnapshot.rootNodes[0].objectId == "f1")
+        #expect(reloadedSnapshot.rootNodes[0].children.count == 1)
+        #expect(reloadedSnapshot.rootNodes[0].children[0].objectId == "f2")
+        #expect(newReconciler.pendingCreatedItems.isEmpty)
+    }
 }
+

@@ -60,13 +60,15 @@ final class PinkhaHierarchyRepository: ObservableObject {
             SearchHelper.typeFilter(typesToInclude)
         }
 
+        let hierarchyKeys = PinkhaHierarchySubscriptionConfiguration.hierarchyKeys(manifest: manifest)
+
         let searchData = SubscriptionData.Search(
             identifier: subscriptionId,
             spaceId: spaceId,
             sorts: [],
             filters: filters,
             limit: 0,
-            keys: []
+            keys: hierarchyKeys
         )
 
         // Attach live subscription listener BEFORE starting subscription
@@ -107,13 +109,15 @@ final class PinkhaHierarchyRepository: ObservableObject {
             SearchHelper.typeFilter(typesToInclude)
         }
 
+        let hierarchyKeys = PinkhaHierarchySubscriptionConfiguration.hierarchyKeys(manifest: manifest)
+
         do {
             let details = try await searchMiddleService.search(
                 spaceId: spaceId,
                 filters: filters,
                 sorts: [],
                 fullText: "",
-                keys: [],
+                keys: hierarchyKeys,
                 limit: 0
             )
             processSubscriptionDetails(details)
@@ -165,9 +169,9 @@ final class PinkhaHierarchyRepository: ObservableObject {
         if let existing = detailsMap[objectId] {
             var updates: [String: Google_Protobuf_Value] = [:]
             if let newParentId, !newParentId.isEmpty {
-                updates[manifest.parentPropertyKey] = newParentId.protobufValue
+                updates[manifest.parentPropertyKey] = [newParentId].protobufValue
             } else {
-                updates[manifest.parentPropertyKey] = "".protobufValue
+                updates[manifest.parentPropertyKey] = [String]().protobufValue
             }
             if let newRank {
                 updates[manifest.orderPropertyKey] = newRank.protobufValue
@@ -212,6 +216,13 @@ final class PinkhaHierarchyRepository: ObservableObject {
                 Self.log.debug("Excluded book folder object: \(details.id)")
                 continue
             }
+
+            let isWritingType = manifest.isRegisteredDocumentType(typeId: details.type)
+            let candidateTitle = details.objectName.isEmpty ? details.name : details.objectName
+            let hasParentValue = details.values[manifest.parentPropertyKey] != nil
+            let hasOrderValue = details.values[manifest.orderPropertyKey] != nil
+
+            Self.log.debug("Hierarchy candidate metadata: objectId=\(details.id), type=\(details.type), expectedFolderTypeId=\(manifest.folderTypeId), isRegisteredWritingType=\(isWritingType), title=\(candidateTitle), hasParentValue=\(hasParentValue), hasOrderValue=\(hasOrderValue)")
 
             guard let raw = makeRawItem(from: details) else {
                 Self.log.debug("Excluded item id=\(details.id), type=\(details.type): unrecognized type (expected folder=\(manifest.folderTypeId))")
@@ -262,15 +273,18 @@ final class PinkhaHierarchyRepository: ObservableObject {
         )
     }
 
+    // TODO: [Migration] Scalar string parentId support is kept temporarily for backward compatibility
+    // with objects created on physical devices before the listValue fix. Remove once legacy data is migrated.
     private func extractParentId(from details: ObjectDetails, key: String) -> String? {
         guard !key.isEmpty, let value = details.values[key] else { return nil }
-        if !value.stringValue.isEmpty {
-            return value.stringValue
+        var listStrings: [String]?
+        if case let .listValue(list) = value.kind {
+            listStrings = list.values.compactMap { val in
+                val.stringValue.isEmpty ? nil : val.stringValue
+            }
         }
-        if case let .listValue(list) = value.kind, let first = list.values.first?.stringValue, !first.isEmpty {
-            return first
-        }
-        return nil
+        let scalarString = !value.stringValue.isEmpty ? value.stringValue : nil
+        return PinkhaHierarchyCodec.decodeParentId(listValues: listStrings, scalarValue: scalarString)
     }
 
     private func extractOrder(from details: ObjectDetails, key: String) -> Double? {
