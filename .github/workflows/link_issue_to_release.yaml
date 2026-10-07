@@ -32,6 +32,14 @@ jobs:
     env:
       PIPELINE_NAME: Anytype iOS
     steps:
+      - name: Live Activity · refresh
+        uses: davidpovarsky/github-automation/live-refresh@main
+        continue-on-error: true
+        with:
+          event: refresh
+          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+          github_token: ${{ github.token }}
       - name: Extract Linear issue identifier from branch
         id: extract
         shell: bash
@@ -48,6 +56,15 @@ jobs:
             echo "identifier=" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Live Activity · refresh
+        if: steps.extract.outputs.identifier != ''
+        uses: davidpovarsky/github-automation/live-refresh@main
+        continue-on-error: true
+        with:
+          event: refresh
+          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+          github_token: ${{ github.token }}
       - name: Determine target stage preference
         id: stages
         if: steps.extract.outputs.identifier != ''
@@ -64,6 +81,15 @@ jobs:
           echo "Base branch '$BASE_REF' → stage preference: $PREF"
           echo "preference=$PREF" >> "$GITHUB_OUTPUT"
 
+      - name: Live Activity · refresh
+        if: steps.extract.outputs.identifier != ''
+        uses: davidpovarsky/github-automation/live-refresh@main
+        continue-on-error: true
+        with:
+          event: refresh
+          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+          github_token: ${{ github.token }}
       - name: Fetch issue and candidate releases
         id: fetch
         if: steps.extract.outputs.identifier != ''
@@ -112,6 +138,15 @@ jobs:
           echo "releases=$RELEASES" >> "$GITHUB_OUTPUT"
           echo "skip=false" >> "$GITHUB_OUTPUT"
 
+      - name: Live Activity · refresh
+        if: steps.fetch.outputs.skip == 'false'
+        uses: davidpovarsky/github-automation/live-refresh@main
+        continue-on-error: true
+        with:
+          event: refresh
+          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+          github_token: ${{ github.token }}
       - name: Pick target release
         id: pick
         if: steps.fetch.outputs.skip == 'false'
@@ -144,6 +179,15 @@ jobs:
           echo "releaseId=$RELEASE_ID" >> "$GITHUB_OUTPUT"
           echo "releaseName=$RELEASE_NAME" >> "$GITHUB_OUTPUT"
 
+      - name: Live Activity · refresh
+        if: steps.pick.outputs.found == 'true'
+        uses: davidpovarsky/github-automation/live-refresh@main
+        continue-on-error: true
+        with:
+          event: refresh
+          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+          github_token: ${{ github.token }}
       - name: Assign issue to release
         if: steps.pick.outputs.found == 'true'
         shell: bash
@@ -173,6 +217,15 @@ jobs:
 
           echo "::notice::Assigned $IDENTIFIER to release $RELEASE_NAME"
 
+      - name: Live Activity · refresh
+        if: steps.pick.outputs.found == 'false'
+        uses: davidpovarsky/github-automation/live-refresh@main
+        continue-on-error: true
+        with:
+          event: refresh
+          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}
+          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
+          github_token: ${{ github.token }}
       - name: Comment on issue when no release matched
         if: steps.pick.outputs.found == 'false'
         shell: bash
