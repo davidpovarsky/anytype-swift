@@ -29,7 +29,9 @@ public struct SefariaRelationshipProvider: RelationshipProvider {
             }
             let collective = SefariaJSON.localizedTitle(row["collectiveTitle"])
             let anchors: [String]
-            if let array = row["anchorRefs"] as? [String] {
+            if let array = row["anchorRefExpanded"] as? [String] {
+                anchors = array.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+            } else if let array = row["anchorRefs"] as? [String] {
                 anchors = array.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
             } else if let single = SefariaJSON.string(row, keys: ["anchorRef"]) {
                 anchors = [single]
@@ -44,8 +46,8 @@ public struct SefariaRelationshipProvider: RelationshipProvider {
                 type: SefariaJSON.string(row, keys: ["type"]) ?? "link",
                 collectiveTitle: collective.en,
                 hebrewCollectiveTitle: collective.he,
-                hebrewText: SefariaJSON.string(row, keys: ["he"]),
-                englishText: SefariaJSON.string(row, keys: ["text"]),
+                hebrewText: SefariaJSONText.preview(from: row["he"]),
+                englishText: SefariaJSONText.preview(from: row["text"]),
                 versionTitle: SefariaJSON.string(row, keys: ["versionTitle"]),
                 hebrewVersionTitle: SefariaJSON.string(row, keys: ["heVersionTitle"]),
                 license: SefariaJSON.string(row, keys: ["heLicense", "license"]),

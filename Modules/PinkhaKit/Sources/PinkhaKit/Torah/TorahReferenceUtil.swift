@@ -8,11 +8,17 @@ public enum TorahReferenceUtil {
 
         var bookParts: [Substring] = []
         for (index, part) in parts.enumerated() {
-            let isRomanPrefix = index == 0 && ["I", "II", "III", "IV"].contains(part)
-            if !isRomanPrefix, part.first?.isNumber == true { break }
+            let isTitlePrefix = index == 0 && Self.isOrdinalTitlePrefix(part)
+            if !isTitlePrefix, part.first?.isNumber == true { break }
             bookParts.append(part)
         }
         return bookParts.isEmpty ? trimmed : bookParts.joined(separator: " ")
+    }
+
+    private static func isOrdinalTitlePrefix(_ value: Substring) -> Bool {
+        if ["I", "II", "III", "IV"].contains(value.uppercased()) { return true }
+        guard let number = Int(value) else { return false }
+        return (1...4).contains(number)
     }
 
     /// A conservative syntactic fallback. Production section loading prefers

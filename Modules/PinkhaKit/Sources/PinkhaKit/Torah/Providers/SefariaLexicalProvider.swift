@@ -74,7 +74,7 @@ public struct SefariaLexicalProvider: LexicalProvider {
                 surface: trimmedSurface,
                 headword: headword,
                 lexicon: lexicon,
-                description: SefariaJSON.string(row, keys: ["definition", "content", "description"]),
+                description: SefariaJSONText.lexicalDefinition(from: row),
                 payload: SefariaJSON.payload(row)
             )))
         }

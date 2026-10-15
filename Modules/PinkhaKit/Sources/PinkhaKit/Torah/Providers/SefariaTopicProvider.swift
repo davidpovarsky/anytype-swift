@@ -29,7 +29,8 @@ public struct SefariaTopicProvider: TopicProvider {
             let normalizedQuery = Self.normalized(trimmedQuery)
             let matches = cached.filter { topic in
                 Self.normalized(topic.id).contains(normalizedQuery)
-                    || Self.normalized(topic.labelHe).contains(normalizedQuery)
+                    || Self.normalized(topic.displayTitle).contains(normalizedQuery)
+                    || topic.labelHe.map { Self.normalized($0).contains(normalizedQuery) } == true
                     || topic.labelEn.map { Self.normalized($0).contains(normalizedQuery) } == true
             }
             if !matches.isEmpty {
@@ -48,7 +49,10 @@ public struct SefariaTopicProvider: TopicProvider {
         guard let root = try SefariaJSON.object(from: data) as? [String: Any],
               let rows = root["completion_objects"] as? [[String: Any]]
         else { throw TorahError.malformedResponse }
-        let decoded = Self.deduplicate(rows.compactMap(Self.decodeTopic))
+        let responseLanguage = SefariaJSON.string(root, keys: ["lang", "language"])
+        let decoded = Self.deduplicate(rows.compactMap {
+            Self.decodeTopic($0, responseLanguage: responseLanguage)
+        })
         if !rows.isEmpty, decoded.isEmpty { throw TorahError.malformedResponse }
         return limit > 0 ? Array(decoded.prefix(limit)) : decoded
     }
@@ -64,10 +68,14 @@ public struct SefariaTopicProvider: TopicProvider {
               let slug = SefariaJSON.string(root, keys: ["slug"])
         else { throw TorahError.malformedResponse }
 
-        let title = SefariaJSON.localizedTitle(root["primaryTitle"] ?? root["titles"])
+        let title = Self.localizedTitles(
+            primaryTitle: root["primaryTitle"],
+            titles: root["titles"]
+        )
         return ResolvedTopic(
             slug: slug,
-            labelHe: title.he ?? SefariaJSON.string(root, keys: ["he", "slug"]) ?? slug,
+            displayTitle: title.en ?? title.he ?? slug,
+            labelHe: title.he ?? SefariaJSON.string(root, keys: ["he"]),
             labelEn: title.en ?? SefariaJSON.string(root, keys: ["en"]),
             payload: SefariaJSON.payload(root)
         )
@@ -96,7 +104,9 @@ public struct SefariaTopicProvider: TopicProvider {
             throw TorahError.malformedResponse
         }
 
-        let decoded = Self.deduplicate(rows.compactMap(Self.decodeTopic))
+        let decoded = Self.deduplicate(rows.compactMap {
+            Self.decodeTopic($0, responseLanguage: nil)
+        })
         guard !decoded.isEmpty else { throw TorahError.malformedResponse }
         try Task.checkCancellation()
         await cache.replace(
@@ -105,14 +115,60 @@ public struct SefariaTopicProvider: TopicProvider {
         )
     }
 
-    private static func decodeTopic(_ value: [String: Any]) -> TopicCandidate? {
+    private static func decodeTopic(
+        _ value: [String: Any],
+        responseLanguage: String?
+    ) -> TopicCandidate? {
         guard let slug = SefariaJSON.string(value, keys: ["slug", "key", "id"]) else { return nil }
-        let title = SefariaJSON.localizedTitle(value["primaryTitle"] ?? value["title"])
+        let localized = localizedTitles(
+            primaryTitle: value["primaryTitle"] ?? (value["title"] as? [String: Any]),
+            titles: value["titles"]
+        )
+        let displayTitle = SefariaJSON.string(value, keys: ["title", "label"])
+            ?? localized.en
+            ?? localized.he
+            ?? slug
+        let language = SefariaJSON.string(value, keys: ["lang", "language"])
+            ?? responseLanguage
+        var labelHe = localized.he ?? SefariaJSON.string(value, keys: ["he"])
+        var labelEn = localized.en ?? SefariaJSON.string(value, keys: ["en"])
+        if labelHe == nil, labelEn == nil {
+            if language?.lowercased() == "he" || containsHebrew(displayTitle) {
+                labelHe = displayTitle
+            } else if language?.lowercased() == "en" || !displayTitle.isEmpty {
+                labelEn = displayTitle
+            }
+        }
         return TopicCandidate(
             id: slug,
-            labelHe: title.he ?? SefariaJSON.string(value, keys: ["he", "title", "label"]) ?? slug,
-            labelEn: title.en ?? SefariaJSON.string(value, keys: ["en"])
+            displayTitle: displayTitle,
+            labelHe: labelHe,
+            labelEn: labelEn
         )
+    }
+
+    private static func localizedTitles(
+        primaryTitle: Any?,
+        titles: Any?
+    ) -> (he: String?, en: String?) {
+        let primary = SefariaJSON.localizedTitle(primaryTitle)
+        guard let rows = titles as? [[String: Any]] else { return primary }
+
+        func title(language: String) -> String? {
+            let matching = rows.filter {
+                SefariaJSON.string($0, keys: ["lang", "language"])?.lowercased() == language
+            }
+            let preferred = matching.first { $0["primary"] as? Bool == true }
+                ?? matching.first { $0["is_primary"] as? Bool == true }
+                ?? matching.first
+            return preferred.flatMap { SefariaJSON.string($0, keys: ["text", "title"]) }
+        }
+
+        return (primary.he ?? title(language: "he"), primary.en ?? title(language: "en"))
+    }
+
+    private static func containsHebrew(_ value: String) -> Bool {
+        value.unicodeScalars.contains { (0x0590...0x05FF).contains($0.value) }
     }
 
     private static func deduplicate(_ topics: [TopicCandidate]) -> [TopicCandidate] {

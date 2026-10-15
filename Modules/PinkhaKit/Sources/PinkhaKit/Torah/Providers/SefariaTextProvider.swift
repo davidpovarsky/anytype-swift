@@ -103,17 +103,31 @@ public struct SefariaTextProvider: TextProvider {
         guard !texts.isEmpty else { throw TorahError.noText }
 
         let startIndexes = metadata["start_indexes"] as? [Int] ?? []
+        let endIndexes = metadata["end_indexes"] as? [Int] ?? []
         let depth = metadata["depth"] as? Int
-        let isExactSegment = texts.count == 1 && depth != nil && startIndexes.count == depth
-        let startOrdinal: Int
-        if let depth, startIndexes.count >= depth {
-            startOrdinal = (startIndexes.last ?? 0) + 1
-        } else {
-            startOrdinal = 1
+        let hasSegmentIndex = depth.map { startIndexes.count >= $0 } == true
+        let isExactSegment = texts.count == 1
+            && hasSegmentIndex
+            && (endIndexes.isEmpty || startIndexes == endIndexes)
+        let startOrdinal = hasSegmentIndex ? (startIndexes.last ?? 0) : 1
+        guard startOrdinal > 0 else { throw TorahError.malformedResponse }
+
+        if let depth,
+           startIndexes.count >= depth,
+           endIndexes.count >= depth,
+           startIndexes.dropLast() != endIndexes.dropLast() {
+            // Texts V3 does not provide an exact ref for each flattened item in
+            // a cross-section range. Refuse to invent identities across a
+            // boundary; callers can request each returned section explicitly.
+            throw TorahError.malformedResponse
         }
 
         let segments = texts.map { entry -> TorahTextSegment in
             let ordinal = startOrdinal + entry.offset
+            // `start_indexes` is documented as already 1-based. Exact segment
+            // requests retain the provider's canonical ref verbatim. For a
+            // section or same-section range, the provider-returned section ref
+            // plus the documented numeric ordinal is the conservative identity.
             let segmentRef = isExactSegment ? canonical : "\(sectionRef):\(ordinal)"
             return TorahTextSegment(
                 canonicalRef: segmentRef,

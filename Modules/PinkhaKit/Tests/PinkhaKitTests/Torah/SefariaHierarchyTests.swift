@@ -85,6 +85,42 @@ struct SefariaHierarchyTests {
         #expect(keys.contains("Rosh Hashanah 16b"))
     }
 
+    @Test("Book fallback recognizes numeric and Roman title prefixes")
+    func numberedBookTitles() {
+        #expect(TorahReferenceUtil.bookTitle(from: "1 Samuel 3:4") == "1 Samuel")
+        #expect(TorahReferenceUtil.bookTitle(from: "2 Kings 4:1") == "2 Kings")
+        #expect(TorahReferenceUtil.bookTitle(from: "4 Maccabees 2:3") == "4 Maccabees")
+        #expect(TorahReferenceUtil.bookTitle(from: "II Kings 3:4") == "II Kings")
+        #expect(TorahReferenceUtil.bookTitle(from: "Genesis 1:1") == "Genesis")
+        #expect(TorahReferenceUtil.bookTitle(from: "Rosh Hashanah 16b") == "Rosh Hashanah")
+    }
+
+    @Test("Hierarchy filtering keeps numbered books exact without cross-matching")
+    func numberedBookFiltering() throws {
+        let roots = try SefariaHierarchyProvider.decodeTOC(TorahFixture.data("toc"))
+        let hierarchy = TorahSourceHierarchy(roots: roots, providerID: "sefaria")
+        let groups = [
+            (canonicalKey: "1 Samuel 3:4", labelHe: "שמואל א׳ ג׳:ד׳", leafCount: 1),
+            (canonicalKey: "2 Kings 4:1", labelHe: "מלכים ב׳ ד׳:א׳", leafCount: 2),
+            (canonicalKey: "4 Maccabees 2:3", labelHe: "מקבים ד׳ ב׳:ג׳", leafCount: 1)
+        ]
+        let filtered = hierarchy.filtered(
+            byAssociatedKeys: Set(groups.map(\.canonicalKey)),
+            associationGroups: groups
+        )
+        let keys = flattenedCanonicalKeys(filtered.roots)
+
+        #expect(keys.contains("1 Samuel"))
+        #expect(keys.contains("1 Samuel 3:4"))
+        #expect(keys.contains("2 Kings"))
+        #expect(keys.contains("2 Kings 4:1"))
+        #expect(keys.contains("4 Maccabees"))
+        #expect(keys.contains("4 Maccabees 2:3"))
+        #expect(!keys.contains("II Kings"))
+        #expect(!keys.contains("Genesis"))
+        #expect(!keys.contains("Genesis Rabbah"))
+    }
+
     @Test("Malformed TOC is reported")
     func malformedTOC() {
         #expect(throws: TorahError.malformedResponse) {

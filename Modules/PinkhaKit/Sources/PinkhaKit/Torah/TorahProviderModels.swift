@@ -61,11 +61,20 @@ public struct ResolvedReference: Hashable, Sendable {
 
 public struct TopicCandidate: Identifiable, Hashable, Sendable {
     public let id: String
-    public let labelHe: String
+    /// The title returned for this autocomplete result in the response
+    /// language. It is not duplicated into an unverified locale.
+    public let displayTitle: String
+    public let labelHe: String?
     public let labelEn: String?
 
-    public init(id: String, labelHe: String, labelEn: String? = nil) {
+    public init(
+        id: String,
+        displayTitle: String? = nil,
+        labelHe: String? = nil,
+        labelEn: String? = nil
+    ) {
         self.id = id
+        self.displayTitle = displayTitle ?? labelHe ?? labelEn ?? id
         self.labelHe = labelHe
         self.labelEn = labelEn
     }
@@ -73,12 +82,20 @@ public struct TopicCandidate: Identifiable, Hashable, Sendable {
 
 public struct ResolvedTopic: Hashable, Sendable {
     public let slug: String
-    public let labelHe: String
+    public let displayTitle: String
+    public let labelHe: String?
     public let labelEn: String?
     public let payload: String
 
-    public init(slug: String, labelHe: String, labelEn: String? = nil, payload: String = "{}") {
+    public init(
+        slug: String,
+        displayTitle: String? = nil,
+        labelHe: String? = nil,
+        labelEn: String? = nil,
+        payload: String = "{}"
+    ) {
         self.slug = slug
+        self.displayTitle = displayTitle ?? labelHe ?? labelEn ?? slug
         self.labelHe = labelHe
         self.labelEn = labelEn
         self.payload = payload

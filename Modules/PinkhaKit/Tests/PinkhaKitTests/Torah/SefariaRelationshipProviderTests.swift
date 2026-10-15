@@ -18,12 +18,14 @@ struct SefariaRelationshipProviderTests {
         let commentary = try #require(sources.first)
         #expect(commentary.sourceRef == "Rashi on Genesis 1:1:1")
         #expect(commentary.canonicalBookID == "Rashi on Genesis")
-        #expect(commentary.anchorRefs == ["Genesis 1:1"])
+        #expect(commentary.anchorRefs == ["Genesis 1:1", "Genesis 1:2"])
         #expect(commentary.relationshipKind == .commentary)
         #expect(commentary.semanticCategory == .commentary)
         #expect(commentary.hebrewCollectiveTitle == "רש״י")
-        #expect(commentary.hebrewText == "אָמַר רַבִּי יִצְחָק")
-        #expect(commentary.englishText == "Rabbi Isaac said")
+        #expect(commentary.hebrewText == "אָמַר רַבִּי יִצְחָק בְּרֵאשִׁית")
+        #expect(commentary.englishText == "Rabbi Isaac said In the beginning")
+        #expect(!commentary.englishText!.contains("<b>"))
+        #expect(commentary.rawProviderPayload.contains("<b>Rabbi Isaac</b>"))
         #expect(commentary.versionTitle == "Sefaria Community Translation")
         #expect(commentary.license == "CC-BY-SA")
 
@@ -31,6 +33,10 @@ struct SefariaRelationshipProviderTests {
         #expect(midrash.relationshipKind == .link)
         #expect(midrash.semanticCategory == .midrash)
         #expect(midrash.anchorRefs == ["Genesis 1:1"])
+        #expect(midrash.canonicalBookID == "Genesis Rabbah")
+        #expect(midrash.hebrewText == "רבי הושעיה רבה פתח")
+        #expect(midrash.englishText == nil)
+        #expect(midrash.rawProviderPayload.contains(#""text":[]"#))
         #expect(midrash.rawProviderPayload.contains("Genesis Rabbah"))
     }
 
@@ -49,6 +55,7 @@ struct SefariaRelationshipProviderTests {
         #expect(groups.commentaryGroups.map(\.id) == ["Rashi on Genesis"])
         #expect(groups.linkedSourceGroups.count == 1)
         #expect(groups.commentaryGroups[0].entries.count == 1)
+        #expect(groups.commentaryGroups[0].entries[0].anchorRefs == ["Genesis 1:1", "Genesis 1:2"])
     }
 
     @Test("Reference topics retain localized titles and deduplicate slugs")

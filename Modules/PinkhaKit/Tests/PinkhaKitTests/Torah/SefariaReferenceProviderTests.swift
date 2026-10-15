@@ -43,7 +43,7 @@ struct SefariaReferenceProviderTests {
         #expect(resolved.labelHe == "בראשית א׳:א׳")
         #expect(resolved.labelEn == "Genesis 1:1")
         #expect(resolved.urlRef == "Genesis.1.1")
-        #expect(resolved.startIndexes == [0, 0])
+        #expect(resolved.startIndexes == [1, 1])
         #expect(resolved.firstAvailableSectionRef == "Genesis 1")
         #expect(resolved.payload.contains(#""node_type":"JaggedArrayNode""#))
         #expect(resolved.isEmbeddableSource)
