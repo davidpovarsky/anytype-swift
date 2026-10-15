@@ -16,6 +16,8 @@ T2 working branch: `pinkha/torah-integration-t2`
 
 CI-validated implementation HEAD: `b1ed4b561f78d2883ae2f7f0d8383cde41b0c821`
 
+T2 CI-validated implementation HEAD: `0486bb72337a8c95b863ad8c8d9c5a7f11f51669`
+
 Local toolchain: Swift 6.3.3 on Windows; Apple SDK unavailable locally.
 
 | Stage | Status | Working branch | Evidence | Outstanding |
@@ -83,8 +85,8 @@ reported as real middleware or two-client sync evidence.
 | T2-22 | BLOCKED | Proposed immutable operation retry/recovery semantics require client-supplied idempotent identity not exposed by current ordinary object creation. |
 | T2-23 | BLOCKED | Codec corrupt/future data returns explicit errors rather than empty lists; backend failure and unknown-provider behavior need the blocked adapter. |
 | T2-24 | PASS | Repository/identity interface and ADR specify indexed Space/target/source lookup plus reverse-query support without library-wide scans; T5 index/UI is not implemented. |
-| T2-25 | PENDING | Local parse/typecheck passed; authoritative macOS package regression workflow will be recorded after the implementation push. |
-| T2-26 | PENDING | One deliberate registered IPA workflow will be recorded after source/test audit. No host adapter files exist because T2-A blocked them. |
+| T2-25 | PASS | macOS/Xcode run `38805873149` passed 125/125 tests in 15 suites (114 existing plus 11 T2), 0 failures, at `0486bb72337a8c95b863ad8c8d9c5a7f11f51669`. |
+| T2-26 | PASS | Registered IPA run `38805908691` repeated 125/125 tests, installed middleware, built the unsigned iOS device app, packaged and uploaded the IPA at the same implementation HEAD. No host adapter files exist because T2-A correctly blocked them. |
 | T2-27 | BLOCKED | No authorized disposable real middleware object/Space fixture is available, and no unsafe personal-Space test was attempted. |
 | T2-28 | PASS | ADR and this matrix explicitly distinguish formal in-process/model evidence, real middleware persistence, and real two-client/device sync; the latter two are reported BLOCKED, not inferred. |
 
@@ -112,6 +114,36 @@ reported as real middleware or two-client sync evidence.
 - `.github/workflows/ipa.yaml`, run `38791605742` — PASS at the same SHA; tests, middleware setup, unsigned device build, IPA packaging and artifact upload all passed: <https://github.com/davidpovarsky/anytype-swift/actions/runs/38791605742>.
 - IPA artifact ID `12001423107`, `Anytype-Hebrew-Unsigned-Device-IPA`, 151,105,287 bytes, unexpired at verification time, retention through 2026-10-22.
 - Detailed response-contract and fixture provenance: `T1_REVIEW_FINDINGS.md`.
+
+### T2 portable domain and concurrency gate, 2026-10-16
+
+- Exact local/origin hardening baseline `40f94396d8ebaff84a3b0d04afe50a81c2e67241`
+  and isolated `pinkha/torah-integration-t2` branch — PASS.
+- `apple-doctor --json` — Windows Swift 6.3.3 available; Apple SDK unavailable.
+- `swiftc -frontend -parse` over all T2 production/tests, isolated Swift 6
+  typecheck against the exact pinned `TorahInspectorCore` models, deterministic
+  runtime smoke (decode/encode/reopen/unknown fields/identity), portable
+  dependency scan and `git diff --check` excluding the byte-exact supplied
+  assignment's intentional Markdown hard-break spaces — PASS.
+- `swift test --package-path Modules/PinkhaKit` locally — BLOCKED at the unchanged
+  pinned dependency because Windows has no `CoreTransferable`; macOS CI is the
+  authoritative package run.
+- `.github/workflows/pinkha-tests.yaml`, run `38805873149` — PASS at
+  `0486bb72337a8c95b863ad8c8d9c5a7f11f51669`; 125 tests in 15 suites passed,
+  0 failed: <https://github.com/davidpovarsky/anytype-swift/actions/runs/38805873149>.
+- `.github/workflows/ipa.yaml`, run `38805908691` — PASS at the same SHA; 125
+  tests, middleware download/setup, unsigned iOS device build, IPA packaging and
+  artifact upload all passed:
+  <https://github.com/davidpovarsky/anytype-swift/actions/runs/38805908691>.
+- IPA artifact ID `12007806245`, `Anytype-Hebrew-Unsigned-Device-IPA`,
+  151,160,830 bytes, SHA-256 digest
+  `361591a3ca95ee20adbf987dea2ab41763256ce318a4d7ff8ccb5fb14ca25fa4`,
+  retention through 2026-10-22.
+- Supplied Stage 2 assignment and repository copy both hash to
+  `C541491FBC4A3813A253DEE1A6DD95F92817C84B811E55C468C22C80D1C482EE`.
+- Real middleware CRUD/reopen and real two-client/offline convergence — BLOCKED;
+  no disposable authorized environment or qualifying atomic/idempotent primitive
+  exists. These are not represented by the passing unit/build workflows.
 
 ## Decisions / ADRs
 
