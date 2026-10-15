@@ -25,7 +25,8 @@ struct SefariaRelationshipProviderTests {
         #expect(commentary.hebrewText == "אָמַר רַבִּי יִצְחָק בְּרֵאשִׁית")
         #expect(commentary.englishText == "Rabbi Isaac said In the beginning")
         #expect(!commentary.englishText!.contains("<b>"))
-        #expect(commentary.rawProviderPayload.contains("<b>Rabbi Isaac</b>"))
+        #expect(commentary.rawProviderPayload.contains("<b>Rabbi Isaac"))
+        #expect(commentary.rawProviderPayload.contains("anchorRefExpanded"))
         #expect(commentary.versionTitle == "Sefaria Community Translation")
         #expect(commentary.license == "CC-BY-SA")
 
