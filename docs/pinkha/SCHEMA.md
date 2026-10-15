@@ -22,9 +22,9 @@ Stored as an internal Anytype Object:
 }
 ```
 
-## 2. Document Torah Associations (`version: 1`)
+## 2. Document Torah Associations (`version: 1`, compatibility codec)
 
-Stored in `pinkha.torahAssociations` property:
+The existing wire shape remains decodable and deterministically encodable:
 
 ```json
 {
@@ -44,9 +44,14 @@ Stored in `pinkha.torahAssociations` property:
 }
 ```
 
-## 3. Torah Source Quote Block (`version: 1`)
+This scalar JSON shape is **not** selected as T2's canonical persistence backend.
+Heart replaces the scalar value, so two stale read/modify/write clients can lose
+one another's additions. Unknown future versions fail before a write; unknown V1
+fields and item IDs survive a decode/re-encode cycle.
 
-Stored in `pinkha.torah.sourceQuote.v1` block field:
+## 3. Torah Source Quote (`version: 1`, compatibility codec)
+
+The legacy wire shape remains readable:
 
 ```json
 {
@@ -59,3 +64,27 @@ Stored in `pinkha.torah.sourceQuote.v1` block field:
   "readOnly": true
 }
 ```
+
+It is not written to a block by T2. Whole `BlockSetFields` replacement can also
+erase unrelated concurrently updated fields, and actual quote block creation is
+owned by T4.
+
+## 4. Rich Source Quote Provenance (`version: 2`, portable codec)
+
+V2 adds an optional `provenance` object with an explicit UTC capture timestamp,
+provider/canonical reference, raw reference-provider response, the complete
+`TorahTextDocument` (including original raw provider JSON and version/license),
+and UTF-16 excerpt offset/length. The codec sorts keys and uses RFC 3339 UTC
+timestamps with fractional seconds. V1 remains unchanged and no missing field is
+invented during migration.
+
+## 5. T2 persistence status
+
+No manifest version or native storage schema is installed in T2. The audited
+client API exposes neither compare-and-swap for scalar details/fields nor a
+client-supplied idempotent identity for ordinary created objects. The proposed
+future schema is immutable native association-operation records with stable
+client operation IDs and an indexed Space/target lookup, but it remains blocked
+until Heart exposes the missing primitive and it passes disposable real
+middleware plus two-client/offline convergence tests. See
+`torah-integration/ADR-T2-STORAGE-CONCURRENCY.md`.

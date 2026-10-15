@@ -10,6 +10,10 @@ TorahInspectorKit pinned SHA: `e8aefc626350c8ee0df9daf8d7de7e1dcd0ea418`
 
 Working branch: `pinkha/torah-integration-t1-hardening`
 
+T2 pinned baseline: `40f94396d8ebaff84a3b0d04afe50a81c2e67241`
+
+T2 working branch: `pinkha/torah-integration-t2`
+
 CI-validated implementation HEAD: `b1ed4b561f78d2883ae2f7f0d8383cde41b0c821`
 
 Local toolchain: Swift 6.3.3 on Windows; Apple SDK unavailable locally.
@@ -18,7 +22,7 @@ Local toolchain: Swift 6.3.3 on Windows; Apple SDK unavailable locally.
 |---|---|---|---|---|
 | T0 | PASS | `pinkha/torah-integration-t1` | Origin branch and all three pinned SHAs verified; clean isolated branch created from the pinned Anytype commit; supplied documents copied byte-for-byte. | None. |
 | T1 | PASS | `pinkha/torah-integration-t1-hardening` | Initial T1 evidence remains valid. R1-R5 hardening added official-shaped response fixtures, 114/114 macOS package tests, a live bounded canary, and a full unsigned iOS app/IPA build at `b1ed4b561f78d2883ae2f7f0d8383cde41b0c821`. | None; await review. |
-| T2 | NOT STARTED | | | Storage and conflict-policy ADR remain separately authorized work. |
+| T2 | PARTIAL / BLOCKED | `pinkha/torah-integration-t2` | Exact baseline/branch verified; storage/concurrency ADR and Heart source audit complete; stale-scalar loss reproduced; portable identity, V1/V2 codecs, provenance and safe per-item repository contract implemented. | Native adapter, real middleware persistence and two-client/offline proof are blocked by the missing atomic/idempotent native primitive and absence of an authorized disposable two-client environment. No unsafe adapter was installed. |
 | T3 | NOT STARTED | | | Inspector UI and document session are deferred. |
 | T4 | NOT STARTED | | | Quote/editor integration is deferred. |
 | T5 | NOT STARTED | | | Native Notes and reverse index are deferred. |
@@ -47,6 +51,42 @@ Local toolchain: Swift 6.3.3 on Windows; Apple SDK unavailable locally.
 | T1-16 | PASS | Both hardening macOS workflows passed all 114 tests in 12 suites (72 pre-existing, 37 original T1 and 5 R1-R5 hardening tests), with 0 failures. |
 | T1-17 | PASS | Static scan of new production files found no SQLite, Leaf, Heart, protobuf, Services, UIKit or SwiftUI coupling. |
 | T1-18 | PASS | Existing registered `.github/workflows/ipa.yaml` built the unsigned Anytype device app at the hardening SHA, packaged the IPA and uploaded `Anytype-Hebrew-Unsigned-Device-IPA` successfully. |
+
+## T2 acceptance evidence
+
+Unit-test names below identify portable/model evidence only. They are never
+reported as real middleware or two-client sync evidence.
+
+| ID | Status | Evidence |
+|---|---|---|
+| T2-01 | PASS | T2 began from clean exact hardening head `40f94396d8ebaff84a3b0d04afe50a81c2e67241`; origin matched; isolated branch `pinkha/torah-integration-t2` created before edits. |
+| T2-02 | BLOCKED | `ADR-T2-STORAGE-CONCURRENCY.md` audits exact Swift/Heart calls and `staleScalarReplacementLosesConcurrentAdd` formally reproduces JSON loss. No candidate meets both native atomic convergence and retry idempotency, so no backend is selected. |
+| T2-03 | PASS | Portable files import only Foundation and pinned `TorahInspectorCore`; static scan finds no Services, Heart, protobuf, SQLite, UIKit or SwiftUI dependency. |
+| T2-04 | PASS | `roleCompatibility` decodes `source_quote` and `sourceQuote` and asserts canonical `sourceQuote` encoding. |
+| T2-05 | PASS | `documentRoundTripIsLossless` retains the stable ID, every supplied field, absent optional label, and unknown item/envelope JSON across reopen. |
+| T2-06 | PASS | `legacySourceQuote` covers unchanged V1; `richProvenanceRoundTrip` covers raw provider/reference payloads, original source text, version/license, UTC timestamp and UTF-16 excerpt coordinates. |
+| T2-07 | PASS | `safeFailures` rejects future/corrupt data before producing a value; V1 canonical decode/encode/reopen is byte-idempotent and never invents missing provenance. |
+| T2-08 | BLOCKED | No approved Anytype-native persistence backend; document reopen behavior cannot be claimed. |
+| T2-09 | BLOCKED | No approved Anytype-native persistence backend; block reopen behavior cannot be claimed. |
+| T2-10 | BLOCKED | `targetIsolation` proves the portable key separates documents, but independent native persistence/reopen is unproved. |
+| T2-11 | BLOCKED | `targetIsolation` proves block IDs are part of the portable key, but independent native persistence/reopen is unproved. |
+| T2-12 | PASS | `contextDeduplication` and `quoteInstances` prove stable retry identity, deterministic context dedup and retention of distinct quote excerpts. |
+| T2-13 | BLOCKED | Exact scalar add/add loss is proven; no real two-client safe backend exists to retain A+B. |
+| T2-14 | BLOCKED | ADR defines proposed observed-remove/add-wins operation semantics, but no native tombstone/operation representation is available for proof. |
+| T2-15 | PASS | Deprecated snapshot APIs are non-requirement throwing extensions; `staleSnapshotAPIsThrow` asserts both document and block replacements fail visibly. |
+| T2-16 | BLOCKED | Offline native replay requires an authorized disposable two-client environment after the missing primitive is implemented. |
+| T2-17 | BLOCKED | Portable identity includes Space and `targetIsolation` proves key separation; actual native Space membership/permission checks require the blocked adapter. |
+| T2-18 | BLOCKED | Orphan/target validation policy is documented, but native object/block existence and move races require the blocked adapter. |
+| T2-19 | BLOCKED | Permission failure/unchanged canonical data requires a real native backend fixture. |
+| T2-20 | BLOCKED | Heart `BlockSetFields` whole-field replacement risk is documented; no safe block-field write was shipped. |
+| T2-21 | BLOCKED | No production mutation occurs, but non-interference of a future native association backend remains unproved. |
+| T2-22 | BLOCKED | Proposed immutable operation retry/recovery semantics require client-supplied idempotent identity not exposed by current ordinary object creation. |
+| T2-23 | BLOCKED | Codec corrupt/future data returns explicit errors rather than empty lists; backend failure and unknown-provider behavior need the blocked adapter. |
+| T2-24 | PASS | Repository/identity interface and ADR specify indexed Space/target/source lookup plus reverse-query support without library-wide scans; T5 index/UI is not implemented. |
+| T2-25 | PENDING | Local parse/typecheck passed; authoritative macOS package regression workflow will be recorded after the implementation push. |
+| T2-26 | PENDING | One deliberate registered IPA workflow will be recorded after source/test audit. No host adapter files exist because T2-A blocked them. |
+| T2-27 | BLOCKED | No authorized disposable real middleware object/Space fixture is available, and no unsafe personal-Space test was attempted. |
+| T2-28 | PASS | ADR and this matrix explicitly distinguish formal in-process/model evidence, real middleware persistence, and real two-client/device sync; the latter two are reported BLOCKED, not inferred. |
 
 ## Verification log
 
@@ -80,17 +120,36 @@ Local toolchain: Swift 6.3.3 on Windows; Apple SDK unavailable locally.
 - Explicit provider IDs are strict routing keys; an unknown explicit ID throws `TorahError.missingProvider`.
 - The Inspector factory wires `notesFetcher` to an explicit empty result until T5.
 - No new upstream hooks in T1.
+- T2 rejects a single JSON detail/block field as canonical association truth:
+  both client paths replace a scalar/whole fields value and lose a concurrent
+  stale read/modify/write addition.
+- Ordinary native object creation exposes no client-supplied stable identity;
+  retry after a lost response can create duplicate hidden records. Search is
+  eventual and cannot repair physical idempotency.
+- The future proof target is immutable association-operation records with stable
+  client operation IDs, observed-remove/add-wins semantics and indexed
+  Space/target/source queries. It is a proposal, not an installed schema.
+- Until that primitive and disposable two-client proof exist, T2 deliberately
+  ships no `AnytypeTorahAssociationRepository` adapter.
 
 ## Known risks and blockers
 
 - The existing `BlockInformationConverter` fields behavior remains an open T4 risk and was not changed.
 - Sefaria is a live external API and can evolve. T1 decoding is intentionally bounded (8 levels, 512 visited nodes and 4,096 output characters) and retains raw provider JSON for diagnostics.
-- T2 storage/conflict policy, T3 Inspector UI/session work, T4 quote/editor integration, T5 Notes/reverse index, T6 device/RTL/accessibility/release validation and T7 extensions remain deferred and untested by T1.
+- T2 native persistence remains blocked by the missing atomic/idempotent primitive
+  and real two-client test environment. Portable codecs/policy are complete.
+- T3 Inspector UI/session work, T4 quote/editor integration, T5 Notes/reverse
+  index, T6 device/RTL/accessibility/release validation and T7 extensions remain
+  deferred.
 
 ## Changes from approved scope
 
-Production changes remain inside `Modules/PinkhaKit`; documentation changes remain under `docs/pinkha`. The requested `.github/workflows/pinkha-validation.yml` could not be dispatched because GitHub returned HTTP 404 and the workflow is not registered on the default branch. No workflow was created or edited; the one deliberate full-build slot used the already registered `.github/workflows/ipa.yaml`, which performs the required PinkhaKit tests, middleware setup, unsigned device build, IPA packaging and artifact upload.
+Production changes remain inside `Modules/PinkhaKit`; documentation changes remain under `docs/pinkha`. T2 adds no host adapter or schema mutation because its mandatory concurrency gate did not pass. No workflow was created or edited; validation uses the registered `.github/workflows/pinkha-tests.yaml` and one deliberate `.github/workflows/ipa.yaml` run.
 
-## Next authorized action
+## Next action required to unblock T2
 
-Await review and a separate T2 implementation order. Do not start T2.
+Expose or verify a Heart-native mutation primitive with a caller-supplied stable
+operation identity and convergent per-association add/remove semantics. Then run
+the ADR's proof plan against two independent clients and a disposable Space,
+including lost-response retry, reopen, offline replay, permissions and target
+deletion. Only a passing result authorizes the Anytype host adapter.

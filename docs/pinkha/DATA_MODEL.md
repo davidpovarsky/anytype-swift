@@ -20,7 +20,7 @@ Logical roles are mapped to concrete Anytype Property IDs in `PinkhaSpaceManifes
 |--------------|-----------------------|-------------|
 | `pinkha.parent` | `.object` | Points to navigation parent (Folder or Document) |
 | `pinkha.order` | `.number` | Sparse numeric rank for deterministic sibling ordering |
-| `pinkha.torahAssociations` | `.text` (JSON payload) | Document-level Torah context associations |
+| `pinkha.torahAssociations` | `.text` (legacy JSON payload) | T2 read/codec compatibility only; not an approved canonical concurrent store |
 
 ### Hierarchy Domain Representation (`Modules/PinkhaKit`)
 
@@ -43,12 +43,32 @@ Logical roles are mapped to concrete Anytype Property IDs in `PinkhaSpaceManifes
 - **Query Scale**: Native unbounded query limit (`limit: 0`) used across search and subscription builders.
 
 
-## 3. Block Fields
+## 3. Torah Association Domain (T2)
+
+- Every logical location contains an exact `spaceId` plus either an object ID or
+  an object/block ID pair. IDs that merely look the same in another Space are a
+  different location.
+- Context-association identity is the target, kind, role, provider, and canonical
+  source identity. A retry preserves the existing stable association ID.
+- Source quotes additionally include the stable association ID, so retrying the
+  same capture is idempotent while two genuinely different excerpts are retained.
+- Payload decoding preserves stable IDs, raw input/provider payload, available
+  labels, optional timestamps, custom metadata, and unknown legacy JSON fields.
+  It never fabricates absent provenance.
+- V1 document/source-quote JSON remains readable. Rich source-quote provenance is
+  a V2 codec value containing capture time, the lossless `TorahTextDocument`, raw
+  reference response, original source text/version/license, and UTF-16 excerpt
+  coordinates.
+- These types and merge rules are portable policy, not a persistence guarantee.
+  `ADR-T2-STORAGE-CONCURRENCY.md` blocks a production adapter until a native,
+  individually atomic and idempotent representation passes real two-client tests.
+
+## 4. Block Fields
 
 Custom block-level Pinkha data is stored in `BlockInformation.fields`:
 
 | Field Key | Payload | Description |
 |-----------|---------|-------------|
-| `pinkha.torah.associations.v1` | JSON (`items[]`) | Block-level Torah references, topics, and words |
-| `pinkha.torah.sourceQuote.v1` | JSON (`providerID`, `reference`, `labelHe`, `readOnly`) | Metadata converting a Quote block into a Torah Source |
+| `pinkha.torah.associations.v1` | JSON (`items[]`) | Legacy compatibility only; unsafe as a concurrent canonical store |
+| `pinkha.torah.sourceQuote.v1` | JSON (`providerID`, `reference`, `labelHe`, `readOnly`) | Legacy compatibility only; quote-block creation remains T4 |
 | `pinkha.textDirection.v1` | String (`"auto"`, `"rtl"`, `"ltr"`) | Explicit or auto-detected text direction |

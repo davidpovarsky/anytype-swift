@@ -1,19 +1,68 @@
 import Foundation
 
-/// Repository protocol abstracting Anytype-backed storage for user-created Torah associations.
-public protocol TorahAssociationRepository: Sendable {
-    /// Lists all Torah associations attached to the specified document (whole-object scope).
-    func listDocumentAssociations(objectId: String, spaceId: String) async throws -> [TorahAssociationItem]
+public enum TorahAssociationRepositoryError: Error, Sendable, Equatable {
+    case unsafeSnapshotReplacement
+    case associationNotFound(String)
+    case targetNotFound
+    case targetOutsideSpace
+    case permissionDenied
+    case malformedCanonicalData
+    case unsupportedPayloadVersion(Int)
+    case backendFailure(String)
+}
 
-    /// Lists all Torah associations attached to a specific block within a document.
+/// Space-scoped association storage. Every mutating requirement changes one logical item only.
+public protocol TorahAssociationRepository: Sendable {
+    func listDocumentAssociations(objectId: String, spaceId: String) async throws -> [TorahAssociationItem]
     func listBlockAssociations(objectId: String, blockId: String, spaceId: String) async throws -> [TorahAssociationItem]
 
-    /// Adds or replaces document-level associations.
-    func setDocumentAssociations(objectId: String, items: [TorahAssociationItem], spaceId: String) async throws
+    @discardableResult
+    func addAssociation(
+        _ item: TorahAssociationItem,
+        target: TorahAssociationTarget,
+        spaceId: String
+    ) async throws -> TorahAssociationItem
 
-    /// Adds or replaces block-level associations.
-    func setBlockAssociations(objectId: String, blockId: String, items: [TorahAssociationItem], spaceId: String) async throws
+    @discardableResult
+    func upsertAssociation(
+        _ item: TorahAssociationItem,
+        target: TorahAssociationTarget,
+        spaceId: String
+    ) async throws -> TorahAssociationItem
 
-    /// Removes a specific association from a document or block.
-    func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String) async throws
+    @discardableResult
+    func updateAssociation(
+        _ item: TorahAssociationItem,
+        target: TorahAssociationTarget,
+        spaceId: String
+    ) async throws -> TorahAssociationItem
+
+    func removeAssociation(
+        associationId: String,
+        target: TorahAssociationTarget,
+        spaceId: String
+    ) async throws
+}
+
+public extension TorahAssociationRepository {
+    /// Retained for source compatibility. A stale full snapshot is never accepted implicitly.
+    @available(*, deprecated, message: "Use addAssociation/upsertAssociation/updateAssociation per item")
+    func setDocumentAssociations(
+        objectId: String,
+        items: [TorahAssociationItem],
+        spaceId: String
+    ) async throws {
+        throw TorahAssociationRepositoryError.unsafeSnapshotReplacement
+    }
+
+    /// Retained for source compatibility. A stale full snapshot is never accepted implicitly.
+    @available(*, deprecated, message: "Use addAssociation/upsertAssociation/updateAssociation per item")
+    func setBlockAssociations(
+        objectId: String,
+        blockId: String,
+        items: [TorahAssociationItem],
+        spaceId: String
+    ) async throws {
+        throw TorahAssociationRepositoryError.unsafeSnapshotReplacement
+    }
 }

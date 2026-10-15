@@ -48,3 +48,18 @@ CI-validated hardening implementation: `b1ed4b561f78d2883ae2f7f0d8383cde41b0c821
 | R5 — Numbered titles | `TorahReferenceUtil.swift` | Recognizes numeric `1`-`4` and Roman `I`-`IV` first-token book prefixes without weakening exact hierarchy matching. | Extended `toc.json`; direct parsing and exact filtering for `1 Samuel`, `2 Kings`, `II Kings` and `4 Maccabees`. |
 
 Fixtures are minimal, sanitized, official-shaped contract cases maintained in the test bundle. They are not production snapshots and contain no user data. Their field shapes were cross-checked on 2026-10-15 against Sefaria's official Ref, Texts v3, Links, Lexicon, Name and Topic v2 documentation and a bounded read-only live canary. Full provenance and endpoint outcomes are recorded in `T1_REVIEW_FINDINGS.md`.
+
+## T2 association/provenance adaptation ledger
+
+T2 starts at the exact T1 hardening head
+`40f94396d8ebaff84a3b0d04afe50a81c2e67241` and refers to Pinkha source
+`24e074d5557dba632d36dbb71fda8cf9acb8d3ac` for behavior only.
+
+| Pinned Pinkha source | T2 target | Adaptation | Status / evidence |
+|---|---|---|---|
+| `PinkhaTorahCore/Models.swift` — `TorahAssociation` | `TorahAssociationModels.swift`, `TorahAssociationIdentity.swift` | Retains stable IDs, kind/role/provider/source keys, available labels, raw input/provider payload, optional timestamps and unknown legacy metadata. Accepts legacy `source_quote` but emits canonical `sourceQuote`. Identity is explicitly Space- and object/block-scoped; context semantic duplicates preserve the old ID, while distinct quote IDs remain distinct. | Portable typecheck and deterministic unit tests. |
+| `PinkhaTorahCore/Models.swift` — `TorahSourceQuoteExcerpt` / `TorahSourceQuoteProvenance` | `TorahAssociationModels.swift`, `TorahAssociationPayloadCodec.swift` | Adapts capture time, canonical/provider identity, raw reference response, full pinned-Core `TorahTextDocument`, original provider JSON/text/version/license, and UTF-16 excerpt coordinates. No display normalization replaces captured text. | V1 compatibility and V2 lossless round-trip tests. |
+| `PinkhaTorahCore/TorahStore.swift` association uniqueness and CRUD behavior | `TorahAssociationRepository.swift`, `TorahAssociationIdentity.swift` | Translates behavior into per-association add/upsert/update/remove contracts and deterministic pure collection policy. Stale full-snapshot setters are source-compatible throwing extensions. | Unit policy and adversarial stale-scalar probe only; not a native persistence claim. |
+| `PinkhaTorahCore/TorahStore.swift` reverse association queries | `ADR-T2-STORAGE-CONCURRENCY.md` | Captures the required indexed Space/target/source query shape for T5 without shipping a scan or speculative index. | Design evidence only; adapter blocked. |
+| `PinkhaTorahCore/TorahStore.swift`, `CSQLite`, migrations/tables | **Not ported** | SQLite is neither canonical storage nor a shadow source of truth. No local actor/cache/database stores user associations. | Required exclusion. |
+| Anytype native details/block fields/create APIs and Heart `v0.50.21-nightly.20260824.1` | `ADR-T2-STORAGE-CONCURRENCY.md`, `TorahAssociationConcurrencyProbeTests` | Audits exact replacement/create semantics, reproduces stale JSON add/add loss, and records the missing atomic/idempotent primitive plus disposable two-client proof plan. | Gate result: `BLOCKED`; no unsafe host adapter created. |
