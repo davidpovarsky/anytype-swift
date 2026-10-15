@@ -13,11 +13,18 @@ let package = Package(
             targets: ["PinkhaKit"]
         ),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(
+            url: "https://github.com/davidpovarsky/TorahInspectorKit.git",
+            revision: "e8aefc626350c8ee0df9daf8d7de7e1dcd0ea418"
+        )
+    ],
     targets: [
         .target(
             name: "PinkhaKit",
-            dependencies: [],
+            dependencies: [
+                .product(name: "TorahInspectorCore", package: "TorahInspectorKit")
+            ],
             path: "Sources/PinkhaKit",
             swiftSettings: [
                 .swiftLanguageMode(.v6)
@@ -25,8 +32,14 @@ let package = Package(
         ),
         .testTarget(
             name: "PinkhaKitTests",
-            dependencies: ["PinkhaKit"],
+            dependencies: [
+                "PinkhaKit",
+                .product(name: "TorahInspectorCore", package: "TorahInspectorKit")
+            ],
             path: "Tests/PinkhaKitTests",
+            resources: [
+                .process("Torah/Fixtures")
+            ],
             swiftSettings: [
                 .swiftLanguageMode(.v6)
             ]

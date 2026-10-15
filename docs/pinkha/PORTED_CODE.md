@@ -2,23 +2,30 @@
 
 This document records code ported or adapted from `davidpovarsky/pinkha` and `TorahInspectorKit`.
 
-## 1. TorahInspectorKit
+## 1. TorahInspectorKit (implemented in T1)
 - **Source**: `https://github.com/davidpovarsky/TorahInspectorKit.git`
+- **Revision**: `e8aefc626350c8ee0df9daf8d7de7e1dcd0ea418`
 - **Component**: `TorahInspectorCore`
 - **Target**: Dependency of `Modules/PinkhaKit`
-- **Role**: Reference parsing, book catalog, inspector data protocols.
+- **Role**: Inspector text/relationship models, provider protocols and repository.
+- **Scope**: Core only. `TorahInspectorUI` is deferred to T3.
 
-## 2. PinkhaTorahCore (Selected Logic)
+## 2. PinkhaTorahCore (implemented/adapted in T1)
 - **Source Repository**: `davidpovarsky/pinkha`
 - **Source Branch**: `torah-ux-knowledge-tab`
-- **Source Commit**: `05d7c931974108e4655a6d0581096c0775f388de`
+- **Source Commit**: `24e074d5557dba632d36dbb71fda8cf9acb8d3ac`
 - **Selected Components**:
-  - `ProviderProtocols.swift` -> `PinkhaKit/Torah/ProviderProtocols.swift`
-  - `SefariaClient.swift` -> `PinkhaKit/Torah/SefariaClient.swift`
-  - `SefariaProviders.swift` -> `PinkhaKit/Torah/SefariaProviders.swift`
-  - `TorahReferenceUtil.swift` -> `PinkhaKit/Torah/TorahReferenceUtil.swift`
-  - `Hierarchy/TorahSourceHierarchy.swift` -> `PinkhaKit/Hierarchy/TorahSourceHierarchy.swift`
+  - Provider models/protocols/registry -> `Modules/PinkhaKit/Sources/PinkhaKit/Torah/`
+  - Sefaria transport/providers -> `Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/`
+  - Source hierarchy -> `Modules/PinkhaKit/Sources/PinkhaKit/Torah/Hierarchy/`
+  - Workspace and Inspector repository factory -> `Modules/PinkhaKit/Sources/PinkhaKit/Torah/`
 - **Adaptations**:
-  - Replaced Leaf / LeafID with Anytype ObjectID.
-  - Replaced custom SQLite association table with `TorahAssociationRepository` (Anytype Object property & block fields).
-  - Preserved reference normalization, Sefaria API interaction, and hierarchy navigation.
+  - Removed Leaf and SQLite dependencies from the provider/core layer.
+  - Replaced provider metadata caches with discardable actor-backed in-memory caches.
+  - Reused current Kit text/relationship types instead of copying legacy models.
+  - Preserved canonical provider identities, raw payloads and rich source metadata.
+
+The paths listed in the previous legacy specification did not exist on the
+pinned target and should be read as planned legacy paths, not evidence of a
+completed port. The authoritative per-file mapping is
+`docs/pinkha/torah-integration/SOURCE_PORT_LEDGER.md`.
