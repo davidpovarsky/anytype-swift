@@ -33,3 +33,18 @@ Stage T1 was adapted from `davidpovarsky/pinkha` at
 - `TorahInspectorUI`, host actions, editor hooks, quote insertion and Notes writes.
 - Anytype Services, protobuf, Heart, object or block mutations.
 - Otzaria, automatic reference detection and reverse-index persistence.
+
+## T1 review remediation ledger (R1-R5)
+
+Review baseline: `c8d326f637d63318b42d8ab17b7fbd3672142d1b`.
+CI-validated hardening implementation: `b1ed4b561f78d2883ae2f7f0d8383cde41b0c821`.
+
+| Review item | Target | Contract-preserving adaptation | Deterministic evidence |
+|---|---|---|---|
+| R1 — Ref ordinals/ranges | `SefariaTextProvider.swift` | Treats Ref API `start_indexes`/`end_indexes` as 1-based, preserves an exact segment ref, maps same-section ranges from the documented start ordinal and rejects cross-section ranges whose flattened items cannot be assigned honest refs. | `reference-resolved.json`; first-segment, exact-segment, gapped same-section range and cross-section refusal tests. |
+| R2 — Links | `SefariaRelationshipProvider.swift`, `SefariaJSONText.swift` | Prefers `anchorRefExpanded`; accepts string or nested-array `he`/`text`; produces bounded plain-text previews while retaining raw JSON, version and license fields. | `links.json`; expanded anchors, nested text order, HTML removal, empty array, raw HTML preservation and grouping/dedup tests. |
+| R3 — Lexicon | `SefariaLexicalProvider.swift`, `SefariaJSONText.swift` | Recursively walks `content.senses` with strict depth/node/length limits, strips markup/decodes entities and keeps flat legacy `definition`/`description` compatibility. | `lexicon.json`; nested/deeper senses, entity, flat legacy entry, stable IDs and raw `alt_headwords` tests. |
+| R4 — Topics | `SefariaTopicProvider.swift`, `TorahProviderModels.swift` | Uses Name API `key` as identity and `title` as the response-language display value without inventing the other locale; Topic v2 combines `primaryTitle` with primary entries in `titles`. | `topic-name-en.json`, `topic-name-he.json`, `topic-resolved.json`; English/Hebrew locale separation and bilingual resolve tests. |
+| R5 — Numbered titles | `TorahReferenceUtil.swift` | Recognizes numeric `1`-`4` and Roman `I`-`IV` first-token book prefixes without weakening exact hierarchy matching. | Extended `toc.json`; direct parsing and exact filtering for `1 Samuel`, `2 Kings`, `II Kings` and `4 Maccabees`. |
+
+Fixtures are minimal, sanitized, official-shaped contract cases maintained in the test bundle. They are not production snapshots and contain no user data. Their field shapes were cross-checked on 2026-10-15 against Sefaria's official Ref, Texts v3, Links, Lexicon, Name and Topic v2 documentation and a bounded read-only live canary. Full provenance and endpoint outcomes are recorded in `T1_REVIEW_FINDINGS.md`.
