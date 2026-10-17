@@ -14,6 +14,8 @@ T2 pinned baseline: `40f94396d8ebaff84a3b0d04afe50a81c2e67241`
 
 T2 working branch: `pinkha/torah-integration-t2`
 
+T2-Unblock working branch: `pinkha/torah-integration-t2-unblock`
+
 CI-validated implementation HEAD: `b1ed4b561f78d2883ae2f7f0d8383cde41b0c821`
 
 T2 CI-validated implementation HEAD: `0486bb72337a8c95b863ad8c8d9c5a7f11f51669`
@@ -24,7 +26,7 @@ Local toolchain: Swift 6.3.3 on Windows; Apple SDK unavailable locally.
 |---|---|---|---|---|
 | T0 | PASS | `pinkha/torah-integration-t1` | Origin branch and all three pinned SHAs verified; clean isolated branch created from the pinned Anytype commit; supplied documents copied byte-for-byte. | None. |
 | T1 | PASS | `pinkha/torah-integration-t1-hardening` | Initial T1 evidence remains valid. R1-R5 hardening added official-shaped response fixtures, 114/114 macOS package tests, a live bounded canary, and a full unsigned iOS app/IPA build at `b1ed4b561f78d2883ae2f7f0d8383cde41b0c821`. | None; await review. |
-| T2 | PARTIAL / BLOCKED | `pinkha/torah-integration-t2` | Exact baseline/branch verified; storage/concurrency ADR and Heart source audit complete; stale-scalar loss reproduced; portable identity, V1/V2 codecs, provenance and safe per-item repository contract implemented. | Native adapter, real middleware persistence and two-client/offline proof are blocked by the missing atomic/idempotent native primitive and absence of an authorized disposable two-client environment. No unsafe adapter was installed. |
+| T2 | PARTIAL / BLOCKED | `pinkha/torah-integration-t2-unblock` | Original portable work remains valid. The exact-tag native BlockCreate follow-up proved caller IDs and atomic initial payloads at state level, but also proved silent differing-payload replacement, removed-anchor loss, search/undo exposure, and unsafe manifest-host cleanup. Candidate status: `REJECTED / STILL BLOCKED`. | A different sanctioned stable/invisible native primitive plus real disposable middleware and two-client/offline proof is required. No unsafe adapter was installed. |
 | T3 | NOT STARTED | | | Inspector UI and document session are deferred. |
 | T4 | NOT STARTED | | | Quote/editor integration is deferred. |
 | T5 | NOT STARTED | | | Native Notes and reverse index are deferred. |
@@ -90,6 +92,27 @@ reported as real middleware or two-client sync evidence.
 | T2-27 | BLOCKED | No authorized disposable real middleware object/Space fixture is available, and no unsafe personal-Space test was attempted. |
 | T2-28 | PASS | ADR and this matrix explicitly distinguish formal in-process/model evidence, real middleware persistence, and real two-client/device sync; the latter two are reported BLOCKED, not inferred. |
 
+### T2-Unblock native block-journal audit
+
+The follow-up B01–B16 matrix is recorded in
+`T2_UNBLOCK_NATIVE_BLOCK_JOURNAL_AUDIT.md`. Its final status is
+`REJECTED / STILL BLOCKED`:
+
+- exact Heart source and Tier B state/snapshot evidence pass caller-supplied ID
+  retention and complete initial payload carriage;
+- same-ID/different-payload replay silently replaces the earlier model and is
+  order-dependent (B04 FAIL);
+- a create whose target anchor was removed can be ignored and left unreachable
+  during production-style replay (B06 FAIL);
+- text payloads enter native search text and normal block creation enters undo
+  history; no alternative block kind is proven invisible (B12 FAIL);
+- duplicate manifest canonicalization can delete a losing journal host (B13
+  FAIL);
+- native base/text validation does not validate the Pinkha payload/version
+  (B16 FAIL);
+- middleware persistence, real two-client sync, permissions, crash/retry, and
+  load/index proof remain BLOCKED or NOT RUN and are not inferred from Tier B.
+
 ## Verification log
 
 - `swift package --package-path Modules/PinkhaKit resolve --verbose` — PASS; exact Kit revision reported by resolver.
@@ -145,6 +168,39 @@ reported as real middleware or two-client sync evidence.
   no disposable authorized environment or qualifying atomic/idempotent primitive
   exists. These are not represented by the passing unit/build workflows.
 
+### T2-Unblock native BlockCreate audit, 2026-10-18
+
+- Parent/origin `pinkha/torah-integration-t2` both resolved exactly to
+  `813f6b6c8824125f5244ff1d4b7db4a3c81b39cd`; clean isolated branch
+  `pinkha/torah-integration-t2-unblock` created — PASS.
+- `Libraryfile` and Go module resolution both pinned Heart tag
+  `v0.50.21-nightly.20260824.1` to
+  `7e8f5535add386ff5f7573cde47e095c867ab724` — PASS.
+- `apple-doctor --json` — Windows with portable Swift 6.3.3; no Apple SDK.
+  This follow-up changes no Swift production code, so no unsupported local iOS
+  result is claimed.
+- Exact-tag source audit covered middleware error mapping, local create,
+  ID generation/validation, state add/set, change replay, positional insertion,
+  smart-block apply/history/rebuild, object-tree reconstruction, native search,
+  Swift conversion, manifest discovery, and duplicate cleanup — PASS.
+- Isolated Go probe command: `go test -mod=readonly -v -count=1 ./...` from
+  `docs/pinkha/torah-integration/t2-block-journal-probe`, executed with the
+  exact tag's Go 1.26.5 toolchain in `-mod=readonly` mode — PASS. All five
+  top-level tests passed (including both duplicate replay orders) in 22.280s:
+  initial ID/content/fields survived replay and snapshot; identical duplicates
+  collapsed to one reachable ID; differing payloads silently selected the last
+  replay; distinct IDs both survived with replay-dependent sibling order; and
+  a create against a removed anchor remained unreachable. Unrelated existing
+  block fields also remained byte-equivalent. The final command used 92.9s wall
+  time; the first host build took 358.8s.
+- `Dependencies/Middleware` is absent. Repository secrets visible through
+  `gh secret list` are only `NOTIFY_DEVICE_ID` and `NOTIFY_DEVICE_TOKEN`; no
+  disposable middleware account/Space or independent two-client fixture is
+  configured. Tier C and Tier D — BLOCKED.
+- No CI workflow was spent: the safety invariant failed at pinned source/state
+  replay, and the registered workflows contain no authorized real two-client
+  fixture. The prior T2 macOS/IPA results remain valid for unchanged Swift.
+
 ## Decisions / ADRs
 
 - T1 caches only discardable provider metadata in actor-backed memory. No user data or association truth is stored there.
@@ -163,25 +219,39 @@ reported as real middleware or two-client sync evidence.
   Space/target/source queries. It is a proposal, not an installed schema.
 - Until that primitive and disposable two-client proof exist, T2 deliberately
   ships no `AnytypeTorahAssociationRepository` adapter.
+- The follow-up deterministic-ID block journal is rejected: replay uses
+  unlink-and-`Set` without payload comparison, so differing content under one
+  ID is silent last-replay-wins; invalid anchors can drop reachability.
+- The manifest is not a journal host. Its duplicate canonicalization deletes
+  secondary manifest objects, which would also delete their attached blocks.
 
 ## Known risks and blockers
 
 - The existing `BlockInformationConverter` fields behavior remains an open T4 risk and was not changed.
 - Sefaria is a live external API and can evolve. T1 decoding is intentionally bounded (8 levels, 512 visited nodes and 4,096 output characters) and retains raw provider JSON for diagnostics.
-- T2 native persistence remains blocked by the missing atomic/idempotent primitive
-  and real two-client test environment. Portable codecs/policy are complete.
+- T2 native persistence remains blocked. Caller-supplied block IDs exist, but
+  their replay collision semantics, anchor behavior, visibility/history, host
+  lifecycle, and validation fail the journal gate; a real two-client test
+  environment is also absent. Portable codecs/policy remain complete.
 - T3 Inspector UI/session work, T4 quote/editor integration, T5 Notes/reverse
   index, T6 device/RTL/accessibility/release validation and T7 extensions remain
   deferred.
 
 ## Changes from approved scope
 
-Production changes remain inside `Modules/PinkhaKit`; documentation changes remain under `docs/pinkha`. T2 adds no host adapter or schema mutation because its mandatory concurrency gate did not pass. No workflow was created or edited; validation uses the registered `.github/workflows/pinkha-tests.yaml` and one deliberate `.github/workflows/ipa.yaml` run.
+Production changes remain inside `Modules/PinkhaKit`; T2-Unblock changes are
+limited to documentation and an isolated exact-tag Go probe under
+`docs/pinkha/torah-integration`. T2 adds no host adapter or schema mutation
+because its mandatory concurrency gate did not pass. No workflow was created
+or edited; the follow-up did not spend CI after native correctness failed.
 
 ## Next action required to unblock T2
 
-Expose or verify a Heart-native mutation primitive with a caller-supplied stable
-operation identity and convergent per-association add/remove semantics. Then run
-the ADR's proof plan against two independent clients and a disposable Space,
-including lost-response retry, reopen, offline replay, permissions and target
-deletion. Only a passing result authorizes the Anytype host adapter.
+Do not implement the rejected block journal and do not start T3. Expose or
+verify a different sanctioned Heart-native primitive with a stable invisible
+Space-scoped host, caller-supplied operation identity, explicit payload
+collision detection, non-dropping insertion, validation, and bounded indexed
+queries. Then run B01–B16 against real middleware and two independent clients
+in an authorized disposable Space, including response loss, reopen, offline
+replay, permissions, visibility/export/undo, target deletion, and 1k/10k load.
+Only a complete passing result authorizes the Anytype host adapter.

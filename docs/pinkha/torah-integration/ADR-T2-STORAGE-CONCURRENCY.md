@@ -296,3 +296,58 @@ the host adapter.
   and adversarial tests can be completed independently.
 - T2 overall status remains `PARTIAL/BLOCKED` until real native persistence and
   concurrency evidence exists.
+
+## Supplement — native BlockCreate journal audit (2026-10-18)
+
+The follow-up audit began from exact T2 head
+`813f6b6c8824125f5244ff1d4b7db4a3c81b39cd` on the isolated branch
+`pinkha/torah-integration-t2-unblock` and re-audited Heart tag
+`v0.50.21-nightly.20260824.1`, commit
+`7e8f5535add386ff5f7573cde47e095c867ab724`.
+
+### Candidate C — deterministic-ID immutable operation blocks
+
+The candidate is partly real:
+
+- `RpcBlockCreateRequest` carries a complete block model.
+- `simple.New` retains any nonempty caller-supplied block ID.
+- local `basic.CreateBlock` rejects an ID already in the current state.
+- a complete initial block model can carry content and fields in its
+  `ChangeBlockCreate`, avoiding a later whole-fields replacement.
+
+Those facts do not provide cross-device collision safety. Tree reconstruction
+calls `ApplyChangeIgnoreErr`; `changeBlockCreate` unlinks an existing ID and
+uses `State.Set` without comparing payloads. An exact-tag Tier B probe generated
+independent branch creates from the same snapshot and rebuilt snapshots after
+both replay orders. Identical duplicate payloads collapsed to one reachable
+ID, but differing payloads were silently last-replay-wins: A→B retained B and
+B→A retained A. No error or conflict was produced. A create targeting an
+anchor already removed was likewise made unreachable while the create error
+was ignored.
+
+The ordinary RPC path also has no intrinsic invisibility contract. Text block
+payloads feed `State.SearchText`, and normal `BlockCreate` reaches
+`smartBlock.Apply` with undo history enabled. A fields-carried payload avoids
+that one text-index path but is discarded by the existing Swift
+`BlockInformationConverter` and remains unproved for editor, preview, export,
+backlink, and undo isolation.
+
+### Host decision
+
+No journal host is accepted. The existing Pinkha manifest is an ordinary
+hidden page with a server-returned random ID. When discovery sees duplicate
+manifests, it chooses one and asynchronously deletes the others. A journal
+attached to a losing manifest can therefore be destroyed. A new random-ID
+hidden page would retain the ambiguous-create/duplicate-root problem, while
+reusing a user document would mutate its tree, index, history, and exportable
+content. No sanctioned deterministic internal journal root was found in the
+exposed path.
+
+### Decision
+
+Candidate C is **REJECTED / STILL BLOCKED** on the pinned implementation.
+Failures B04, B06, B12, B13, and B16 are safety failures; Tier C persistence
+and Tier D two-client sync are additionally unavailable. No production adapter
+or migration is authorized. The detailed code evidence, B01–B16 matrix, and
+probe are in `T2_UNBLOCK_NATIVE_BLOCK_JOURNAL_AUDIT.md` and
+`t2-block-journal-probe/`.
