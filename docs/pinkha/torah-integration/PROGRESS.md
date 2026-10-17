@@ -16,6 +16,10 @@ T2 working branch: `pinkha/torah-integration-t2`
 
 T2-Unblock working branch: `pinkha/torah-integration-t2-unblock`
 
+Upstream-sync candidate branch: `pinkha/upstream-sync-2026-10-18`
+
+Upstream-sync merge commit: `acbd2b242f07a271f983f59c9eba44e4e9d717ea`
+
 CI-validated implementation HEAD: `b1ed4b561f78d2883ae2f7f0d8383cde41b0c821`
 
 T2 CI-validated implementation HEAD: `0486bb72337a8c95b863ad8c8d9c5a7f11f51669`
@@ -167,6 +171,31 @@ The follow-up B01–B16 matrix is recorded in
 - Real middleware CRUD/reopen and real two-client/offline convergence — BLOCKED;
   no disposable authorized environment or qualifying atomic/idempotent primitive
   exists. These are not represented by the passing unit/build workflows.
+
+### Upstream synchronization and T2 native-storage research, 2026-10-18
+
+- The isolated candidate merges official Swift `d5650321577a209505a3277c8437b7608cff1cb9`
+  into source `13d7577bca9c2ed9848a6a46eac49461a9e1c0d7` with traceable merge commit
+  `acbd2b242f07a271f983f59c9eba44e4e9d717ea`. Neither source branch nor fork
+  `develop` was moved.
+- The only merge conflict was `Workspace.xcstrings`. Structured reconciliation
+  retains all 19 Pinkha keys with Hebrew/English localizations and all 18 new
+  upstream Chat Activity keys. The integrated catalog has the exact 580-key
+  union and generated Swift accessors for both namespaces.
+- Protected Pinkha production trees, Xcode package linkage, two installed
+  native hooks, workflows and the exact TorahInspectorKit pin are retained.
+  The candidate takes the complete official Heart/protobuf/Services family at
+  `v0.51.7-nightly.20261014.1` / `d98420b1113536afd08cde6de9a5816f6d27ffff`.
+- Exact-tag Heart source audit found no released primitive that satisfies T2.
+  StoreState accepts explicit record IDs but maps existing-document creation to
+  ignore without same-payload/different-payload detection; its modify ordering
+  also does not provide the required canonical update rule. ImportV2 supplies
+  recovery precedents but no public deterministic user-record API.
+- A minimal dedicated immutable Torah-operation host/API is specified in
+  `T2_NATIVE_STORAGE_UPSTREAM_RESEARCH_2026-10-18.md`. It is an RFC proposal,
+  not an implementation. Real middleware reopen (Tier C) and two independent
+  clients (Tier D) remain BLOCKED; T2 stays `PARTIAL / BLOCKED`, B04/B06 stay
+  failed, no adapter is connected, and T3 remains NOT STARTED.
 
 ### T2-Unblock native BlockCreate audit, 2026-10-18
 
