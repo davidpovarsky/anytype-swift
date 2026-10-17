@@ -42,6 +42,10 @@ extension Anytype_Rpc.Object {
         /// keys to return in records; empty = all
         public var keys: [String] = []
 
+        /// Optional allowlist applied before querying stores. Empty
+        /// means all user spaces; callers with no access must not query.
+        public var spaceIds: [String] = []
+
         public var unknownFields = SwiftProtobuf.UnknownStorage()
 
         public init() {}
@@ -157,7 +161,7 @@ extension Anytype_Rpc.Object.CrossSpaceSearch: SwiftProtobuf.Message, SwiftProto
 
 extension Anytype_Rpc.Object.CrossSpaceSearch.Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   public static let protoMessageName: String = Anytype_Rpc.Object.CrossSpaceSearch.protoMessageName + ".Request"
-  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}filters\0\u{1}sorts\0\u{1}fullText\0\u{1}offset\0\u{1}limit\0\u{1}keys\0")
+  public static let _protobuf_nameMap = SwiftProtobuf._NameMap(bytecode: "\0\u{1}filters\0\u{1}sorts\0\u{1}fullText\0\u{1}offset\0\u{1}limit\0\u{1}keys\0\u{1}spaceIds\0")
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
@@ -171,6 +175,7 @@ extension Anytype_Rpc.Object.CrossSpaceSearch.Request: SwiftProtobuf.Message, Sw
       case 4: try { try decoder.decodeSingularInt32Field(value: &self.offset) }()
       case 5: try { try decoder.decodeSingularInt32Field(value: &self.limit) }()
       case 6: try { try decoder.decodeRepeatedStringField(value: &self.keys) }()
+      case 7: try { try decoder.decodeRepeatedStringField(value: &self.spaceIds) }()
       default: break
       }
     }
@@ -195,6 +200,9 @@ extension Anytype_Rpc.Object.CrossSpaceSearch.Request: SwiftProtobuf.Message, Sw
     if !self.keys.isEmpty {
       try visitor.visitRepeatedStringField(value: self.keys, fieldNumber: 6)
     }
+    if !self.spaceIds.isEmpty {
+      try visitor.visitRepeatedStringField(value: self.spaceIds, fieldNumber: 7)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -205,6 +213,7 @@ extension Anytype_Rpc.Object.CrossSpaceSearch.Request: SwiftProtobuf.Message, Sw
     if lhs.offset != rhs.offset {return false}
     if lhs.limit != rhs.limit {return false}
     if lhs.keys != rhs.keys {return false}
+    if lhs.spaceIds != rhs.spaceIds {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

@@ -67,16 +67,27 @@ public extension FeatureDescription {
 
     static let quickCapture = FeatureDescription(
         title: "Quick Capture from Space Hub - IOS-6617",
+        category: .productFeature(author: "requilence@gmail.com", targetRelease: "0.49.0"),
+        defaultValue: true
+    )
+
+    static let quickCaptureTypeSuggestions = FeatureDescription(
+        title: "Quick Capture - on-device AI type suggestions - IOS-6617",
+        category: .productFeature(author: "requilence@gmail.com", targetRelease: "0.49.1"),
+        defaultValue: true
+    )
+
+    static let nativeLocalDiscovery = FeatureDescription(
+        title: "LAN discovery through system Bonjour (DNS-SD), applied on relaunch - GO-7576",
         category: .productFeature(author: "requilence@gmail.com", targetRelease: "?"),
         defaultValue: false,
         debugValue: true
     )
 
-    static let quickCaptureTypeSuggestions = FeatureDescription(
-        title: "Quick Capture - on-device AI type suggestions - IOS-6617",
+    static let chatActivity = FeatureDescription(
+        title: "Live typing and agent tool-call activity in chats and discussions - IOS-6626",
         category: .productFeature(author: "requilence@gmail.com", targetRelease: "?"),
-        defaultValue: false,
-        debugValue: true
+        defaultValue: true
     )
 
     // MARK: - Experemental

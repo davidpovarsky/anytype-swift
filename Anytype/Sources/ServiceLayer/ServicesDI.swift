@@ -187,6 +187,14 @@ extension Container {
     var deviceSceneStateListener: Factory<any DeviceSceneStateListenerProtocol> {
         self { DeviceSceneStateListener() }.singleton
     }
+
+    var chatActivityStore: Factory<any ChatActivityStoreProtocol> {
+        self { ChatActivityStore() }.singleton
+    }
+
+    var bonjourDiscoveryService: Factory<any BonjourDiscoveryServiceProtocol> {
+        self { BonjourDiscoveryService() }.singleton
+    }
     
     var textServiceHandler: Factory<any TextServiceProtocol> {
         self { TextServiceHandler() }.shared
