@@ -4,6 +4,15 @@ This is the read-only inventory captured before merging the official Anytype
 Swift upstream into the Pinkha T2-Unblock line. It records the immutable inputs
 used by the isolated candidate; it is not a promotion decision.
 
+## Master-plan source of truth
+
+The user-supplied `Anytype_Torah_Integration_MASTER_PLAN_v1.md` is already
+stored at `docs/pinkha/torah-integration/MASTER_PLAN.md`. The supplied and
+repository files are byte-identical: SHA-256
+`486B5E7148CF5AB3CDD39626D470C337FDB55B2AE8C4F8599D68EC945A919AE1`.
+Future stage work must read that repository copy together with `PROGRESS.md`
+and the current stage order; no duplicate master-plan copy is needed.
+
 ## Exact refs and ancestry
 
 | Ref | Exact commit |

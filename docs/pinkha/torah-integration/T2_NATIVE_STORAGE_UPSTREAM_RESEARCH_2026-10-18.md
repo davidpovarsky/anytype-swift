@@ -121,7 +121,13 @@ inferred from an internal type name.
 | [Heart #3322](https://github.com/anyproto/anytype-heart/pull/3322) | OPEN; updated 2026-10-11 | Adjacent upstream follow-up; not part of the exact release tag. |
 | [Heart #3324](https://github.com/anyproto/anytype-heart/pull/3324) | MERGED 2026-10-12 | Reviewed adjacent release work; no qualifying generic primitive. |
 | [Heart #3327](https://github.com/anyproto/anytype-heart/pull/3327) | MERGED at `d98420b…` | Dependency bumps (`any-sync` 0.13.8, `any-store` 1.0.3); no T2 semantic fix. |
-| Issues [#3321](https://github.com/anyproto/anytype-heart/issues/3321), [#3253](https://github.com/anyproto/anytype-heart/issues/3253), [#3212](https://github.com/anyproto/anytype-heart/issues/3212), [#3084](https://github.com/anyproto/anytype-heart/issues/3084), [#3254](https://github.com/anyproto/anytype-heart/issues/3254), [#3169](https://github.com/anyproto/anytype-heart/issues/3169), [#3137](https://github.com/anyproto/anytype-heart/issues/3137) | OPEN | Relevant storage/replay/import/index/lifecycle follow-ups; none supplies a released supported contract. |
+| [Issue #3321](https://github.com/anyproto/anytype-heart/issues/3321) | OPEN; updated 2026-10-11 | Ordinary cached creation roots do not request advertised peer content. |
+| [Issue #3253](https://github.com/anyproto/anytype-heart/issues/3253) | OPEN; updated 2026-08-28 | History-cleanup risk is relevant to retention and migration. |
+| [Issue #3212](https://github.com/anyproto/anytype-heart/issues/3212) | OPEN; updated 2026-07-17 | Collection subscription observer can loop; reinforces bounded subscription requirements. |
+| [Issue #3084](https://github.com/anyproto/anytype-heart/issues/3084) | OPEN; updated 2026-04-14 | Local-only sync can leave titles absent until object open/reload. |
+| [Issue #3254](https://github.com/anyproto/anytype-heart/issues/3254) | OPEN; updated 2026-09-03 | Local-only paired device can connect without syncing content. |
+| [Issue #3169](https://github.com/anyproto/anytype-heart/issues/3169) | OPEN; updated 2026-06-10 | Object read response omission is relevant to authoritative read-back. |
+| [Issue #3137](https://github.com/anyproto/anytype-heart/issues/3137) | OPEN; updated 2026-05-29 | Export/import can lose version history/authors; relevant to backup and migration. |
 
 The exact tag source, rather than issue intent, controls this decision.
 
@@ -141,7 +147,9 @@ The exact tag source, rather than issue intent, controls this decision.
 ### Data model
 
 Create a dedicated, versioned, internal Space-scoped record type,
-`TorahOperationRecord`. Records are immutable after creation.
+`TorahOperationRecord`. Records are immutable after creation. Heart owns one
+hidden internal collection/host per Space (not an account-personal object and
+not a user page), with a dedicated handler and explicit lifecycle contract.
 
 Required fields:
 
@@ -259,6 +267,9 @@ operation collection by incidental ownership.
 - Backup/account export must either include a versioned encrypted logical
   stream or explicitly report unsupported data; it must not silently omit user
   associations.
+- Account switching must close subscriptions, clear decrypted caches, and
+  reauthorize/reopen only the newly active account's Space hosts; no host ID,
+  cursor or payload may cross account boundaries.
 - No chat, discussion, favorites or arbitrary page type is repurposed.
 - Subscriptions are Space/target scoped, paged and bounded.
 
@@ -308,7 +319,9 @@ on-disk readback and the test tier.
     bounds.
 14. No appearance in normal search, backlinks, editor, undo or ordinary export;
     backup behavior explicitly verified.
-15. Mixed old/new Heart and downgrade using disposable backup/restore fixtures.
+15. Backup/export/import and account-switch isolation, including stale cursor
+    and decrypted-cache rejection.
+16. Mixed old/new Heart and downgrade using disposable backup/restore fixtures.
 
 Tier A is source inference; Tier B is Go state/change testing; Tier C is real
 middleware persist/close/reopen in an authorized disposable Space; Tier D is

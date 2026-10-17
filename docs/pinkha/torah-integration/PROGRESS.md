@@ -196,6 +196,18 @@ The follow-up B01–B16 matrix is recorded in
   not an implementation. Real middleware reopen (Tier C) and two independent
   clients (Tier D) remain BLOCKED; T2 stays `PARTIAL / BLOCKED`, B04/B06 stay
   failed, no adapter is connected, and T3 remains NOT STARTED.
+- Candidate CI at `ac7abb29e94f332e3d4ea3c080ddb3fef5eb4e94` passed
+  `pinkha-tests.yaml` run `39076635946` with 125/125 tests in 15 suites and
+  `ipa.yaml` run `39076638187` with the same 125/125 tests, official
+  `v0.51.7-nightly.20261014.1` middleware, full unsigned iOS device build and
+  artifact `12118300198` (155,114,954 bytes; SHA-256
+  `a7223b409a65a323f26cb01696a87cb6a1f3b909e82ddf0c755a9c606c964bdf`).
+- Upstream integration remains `PARTIAL / BLOCKED`, not PASS: the registered
+  `pr_tests.yml` explicitly disables `Run unit tests`, and the mandated Pinkha
+  and IPA workflows do not execute the new Chat Activity/DNS-SD or existing
+  Quick Capture `AnyTypeTests`. Their sources parse and the app compiles, but
+  that is not test execution. Real-device, migration and downgrade proof also
+  remains unavailable.
 
 ### T2-Unblock native BlockCreate audit, 2026-10-18
 
