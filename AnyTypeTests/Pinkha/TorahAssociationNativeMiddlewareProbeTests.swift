@@ -9,10 +9,7 @@ import Testing
 
 @Suite("T2-L real Anytype middleware persistence probe", .serialized)
 struct TorahAssociationNativeMiddlewareProbeTests {
-    @Test(
-        "Phase 1 writes document and block associations through the native property",
-        .enabled(if: ProcessInfo.processInfo.environment["PINKHA_T2L_NATIVE_PROBE_PHASE"] == "prepare")
-    )
+    @Test("Phase 1 writes document and block associations through the native property")
     func prepareNativeState() async throws {
         let paths = try ProbePaths.make()
         try? FileManager.default.removeItem(at: paths.root)
@@ -310,10 +307,7 @@ struct TorahAssociationNativeMiddlewareProbeTests {
         #expect(FileManager.default.fileExists(atPath: paths.state.path))
     }
 
-    @Test(
-        "Phase 2 reopens after host termination and reads the exact native state",
-        .enabled(if: ProcessInfo.processInfo.environment["PINKHA_T2L_NATIVE_PROBE_PHASE"] == "relaunch")
-    )
+    @Test("Phase 2 reopens after host termination and reads the exact native state")
     func reopenNativeStateAfterHostTermination() async throws {
         let paths = try ProbePaths.make()
         let state = try JSONDecoder().decode(ProbeState.self, from: Data(contentsOf: paths.state))

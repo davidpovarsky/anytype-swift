@@ -144,7 +144,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          env PINKHA_T2L_NATIVE_PROBE_PHASE=prepare NSUnbufferedIO=YES xcodebuild \
+          env NSUnbufferedIO=YES xcodebuild \
             -project Anytype.xcodeproj \
             -scheme Anytype \
             -testPlan AnytypeTests \
@@ -173,7 +173,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          env PINKHA_T2L_NATIVE_PROBE_PHASE=relaunch NSUnbufferedIO=YES xcodebuild \
+          env NSUnbufferedIO=YES xcodebuild \
             -project Anytype.xcodeproj \
             -scheme Anytype \
             -testPlan AnytypeTests \
