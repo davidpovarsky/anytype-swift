@@ -8,6 +8,8 @@ public enum TorahAssociationRepositoryError: Error, Sendable, Equatable {
     case permissionDenied
     case malformedCanonicalData
     case unsupportedPayloadVersion(Int)
+    case writeConflict(String)
+    case writeUncertain(String)
     case backendFailure(String)
 }
 

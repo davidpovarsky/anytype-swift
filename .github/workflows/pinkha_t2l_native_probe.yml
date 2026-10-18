@@ -1,0 +1,244 @@
+name: Pinkha T2-L Native Middleware Gate
+
+on:
+  push:
+    branches:
+      - pinkha/torah-functional-ui-single-device-2026-10-18
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pinkha-t2l-native-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  native-single-writer-gate:
+    runs-on: macos-26
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout exact pushed SHA
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Establish bounded evidence paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "DERIVED_DATA=$RUNNER_TEMP/t2l-derived-data" >> "$GITHUB_ENV"
+          echo "RESULTS_DIR=$RUNNER_TEMP/t2l-results" >> "$GITHUB_ENV"
+          echo "LOGS_DIR=$RUNNER_TEMP/t2l-logs" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/t2l-results" "$RUNNER_TEMP/t2l-logs"
+          git rev-parse HEAD | tee "$RUNNER_TEMP/t2l-logs/sha.txt"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+
+      - name: Prepare dependencies
+        uses: ./.github/actions/prepare-deps
+
+      - name: Select Xcode 26.1
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.1'
+
+      - name: Install matching iOS Simulator platform
+        uses: ./.github/actions/install-ios-platform
+
+      - name: Download exact middleware
+        timeout-minutes: 10
+        env:
+          MIDDLEWARE_TOKEN: ${{ secrets.MIDDLEWARE_TOKEN }}
+        run: make setup-middle-ci
+
+      - name: Resolve pinned packages
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          set -euo pipefail
+          env NSUnbufferedIO=YES xcodebuild \
+            -resolvePackageDependencies \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -skipPackagePluginValidation \
+            2>&1 | tee "$LOGS_DIR/package-resolution.log"
+
+      - name: Boot newest installed iPhone Simulator
+        timeout-minutes: 5
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcrun simctl list devices available -j > "$LOGS_DIR/devices.json"
+          python3 - <<'PY' > "$LOGS_DIR/selected-device.txt"
+          import json, os, re
+          from pathlib import Path
+
+          data = json.loads(Path(os.environ["LOGS_DIR"], "devices.json").read_text())
+          candidates = []
+          for runtime, devices in data.get("devices", {}).items():
+              if ".iOS-" not in runtime:
+                  continue
+              version = tuple(int(part) for part in re.findall(r"\d+", runtime))
+              for device in devices:
+                  if device.get("isAvailable") and device.get("name", "").startswith("iPhone"):
+                      candidates.append((version, device["name"], device["udid"], runtime))
+          if not candidates:
+              raise SystemExit("No available iPhone Simulator")
+          version, name, udid, runtime = sorted(candidates, reverse=True)[0]
+          print(f"{udid}\t{name}\t{runtime}")
+          PY
+          IFS=$'\t' read -r SIMULATOR_UDID SIMULATOR_NAME SIMULATOR_RUNTIME < "$LOGS_DIR/selected-device.txt"
+          echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
+          printf '%s (%s) %s\n' "$SIMULATOR_NAME" "$SIMULATOR_UDID" "$SIMULATOR_RUNTIME" | tee "$LOGS_DIR/simulator.txt"
+          xcrun simctl boot "$SIMULATOR_UDID" || true
+          xcrun simctl bootstatus "$SIMULATOR_UDID" -b
+
+      - name: Build focused test host
+        timeout-minutes: 40
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$DERIVED_DATA"
+          env NSUnbufferedIO=YES xcodebuild \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -testPlan AnytypeTests \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
+            -destination-timeout 120 \
+            -derivedDataPath "$DERIVED_DATA" \
+            -skipPackagePluginValidation \
+            -disableAutomaticPackageResolution \
+            -parallel-testing-enabled NO \
+            -maximum-parallel-testing-workers 1 \
+            -only-testing:AnytypeTests/TorahAssociationNativeRepositoryTests \
+            -only-testing:AnytypeTests/TorahAssociationNativeMiddlewareProbeTests \
+            build-for-testing \
+            2>&1 | tee "$LOGS_DIR/build.log"
+
+      - name: Run isolated single-process repository tests
+        timeout-minutes: 12
+        shell: bash
+        run: |
+          set -euo pipefail
+          env NSUnbufferedIO=YES xcodebuild \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -testPlan AnytypeTests \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
+            -derivedDataPath "$DERIVED_DATA" \
+            -skipPackagePluginValidation \
+            -disableAutomaticPackageResolution \
+            -parallel-testing-enabled NO \
+            -maximum-parallel-testing-workers 1 \
+            -resultBundlePath "$RESULTS_DIR/repository.xcresult" \
+            -only-testing:AnytypeTests/TorahAssociationNativeRepositoryTests \
+            test-without-building \
+            2>&1 | tee "$LOGS_DIR/repository.log"
+
+      - name: Native phase 1 — write and read back
+        timeout-minutes: 20
+        shell: bash
+        run: |
+          set -euo pipefail
+          env PINKHA_T2L_NATIVE_PROBE_PHASE=prepare NSUnbufferedIO=YES xcodebuild \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -testPlan AnytypeTests \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
+            -derivedDataPath "$DERIVED_DATA" \
+            -skipPackagePluginValidation \
+            -disableAutomaticPackageResolution \
+            -parallel-testing-enabled NO \
+            -maximum-parallel-testing-workers 1 \
+            -resultBundlePath "$RESULTS_DIR/prepare.xcresult" \
+            -only-testing:AnytypeTests/TorahAssociationNativeMiddlewareProbeTests/prepareNativeState \
+            test-without-building \
+            2>&1 | tee "$LOGS_DIR/prepare.log"
+
+      - name: Force-terminate the Anytype test host
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcrun simctl terminate "$SIMULATOR_UDID" io.anytype.app.dev || true
+          xcrun simctl terminate "$SIMULATOR_UDID" com.AnytypeTests || true
+          printf 'terminated test host before relaunch phase\n' | tee "$LOGS_DIR/termination.txt"
+
+      - name: Native phase 2 — relaunch and verify persistence
+        timeout-minutes: 20
+        shell: bash
+        run: |
+          set -euo pipefail
+          env PINKHA_T2L_NATIVE_PROBE_PHASE=relaunch NSUnbufferedIO=YES xcodebuild \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -testPlan AnytypeTests \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
+            -derivedDataPath "$DERIVED_DATA" \
+            -skipPackagePluginValidation \
+            -disableAutomaticPackageResolution \
+            -parallel-testing-enabled NO \
+            -maximum-parallel-testing-workers 1 \
+            -resultBundlePath "$RESULTS_DIR/relaunch.xcresult" \
+            -only-testing:AnytypeTests/TorahAssociationNativeMiddlewareProbeTests/reopenNativeStateAfterHostTermination \
+            test-without-building \
+            2>&1 | tee "$LOGS_DIR/relaunch.log"
+
+      - name: Validate exact executed counts
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          validate() {
+            local bundle="$1"
+            local minimum="$2"
+            local output="$3"
+            xcrun xcresulttool get test-results summary --path "$bundle" --format json > "$output"
+            python3 - "$output" "$minimum" <<'PY'
+          import json, sys
+          data = json.load(open(sys.argv[1]))
+          minimum = int(sys.argv[2])
+          def find(key, value):
+              if isinstance(value, dict):
+                  if isinstance(value.get(key), int): return value[key]
+                  for child in value.values():
+                      result = find(key, child)
+                      if result is not None: return result
+              if isinstance(value, list):
+                  for child in value:
+                      result = find(key, child)
+                      if result is not None: return result
+              return None
+          total = find("totalTestCount", data)
+          passed = find("passedTests", data)
+          failed = find("failedTests", data)
+          skipped = find("skippedTests", data)
+          print({"total": total, "passed": passed, "failed": failed, "skipped": skipped})
+          if total is None or total < minimum or passed != total or failed != 0 or skipped != 0:
+              raise SystemExit("native gate result counts are not fully passing")
+          PY
+          }
+          validate "$RESULTS_DIR/repository.xcresult" 5 "$LOGS_DIR/repository-summary.json"
+          validate "$RESULTS_DIR/prepare.xcresult" 1 "$LOGS_DIR/prepare-summary.json"
+          validate "$RESULTS_DIR/relaunch.xcresult" 1 "$LOGS_DIR/relaunch-summary.json"
+
+      - name: Shut down Simulator
+        if: always()
+        run: xcrun simctl shutdown "$SIMULATOR_UDID" || true
+
+      - name: Upload native gate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pinkha-t2l-native-evidence-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/t2l-logs
+            ${{ runner.temp }}/t2l-results
+          if-no-files-found: warn
+          retention-days: 14
+          compression-level: 6

@@ -32,6 +32,49 @@ public struct TorahAssociationPayloadCodec: Sendable {
         return try decodeDocument(data)
     }
 
+    /// Encodes the canonical v2 document-and-block payload used only by the
+    /// explicitly limited single-active-writer track.
+    public func encodeCanonicalDocument(_ payload: TorahCanonicalAssociationsPayload) throws -> Data {
+        guard payload.version == TorahCanonicalAssociationsPayload.currentVersion else {
+            throw TorahAssociationPayloadCodecError.unsupportedVersion(payload.version)
+        }
+        return try encode(payload)
+    }
+
+    /// Decodes v2 canonical data or losslessly lifts legacy v1 document items
+    /// into the supplied exact document location. Future versions fail before
+    /// yielding writable data.
+    public func decodeCanonicalDocument(
+        _ data: Data,
+        legacyLocation: TorahAssociationLocation
+    ) throws -> TorahCanonicalAssociationsPayload {
+        let version = try inspectVersion(data)
+        switch version {
+        case TorahDocumentAssociationsPayload.currentVersion:
+            let legacy = try decodeDocument(data)
+            return TorahCanonicalAssociationsPayload(
+                records: legacy.items.map {
+                    TorahStoredAssociationRecord(location: legacyLocation, item: $0)
+                },
+                unknownFields: legacy.unknownFields
+            )
+        case TorahCanonicalAssociationsPayload.currentVersion:
+            return try decode(TorahCanonicalAssociationsPayload.self, from: data)
+        default:
+            throw TorahAssociationPayloadCodecError.unsupportedVersion(version)
+        }
+    }
+
+    public func decodeCanonicalDocument(
+        _ string: String,
+        legacyLocation: TorahAssociationLocation
+    ) throws -> TorahCanonicalAssociationsPayload {
+        guard let data = string.data(using: .utf8) else {
+            throw TorahAssociationPayloadCodecError.invalidUTF8
+        }
+        return try decodeCanonicalDocument(data, legacyLocation: legacyLocation)
+    }
+
     public func encodeSourceQuote(_ payload: TorahSourceQuotePayload) throws -> Data {
         guard (1...TorahSourceQuotePayload.currentVersion).contains(payload.version) else {
             throw TorahAssociationPayloadCodecError.unsupportedVersion(payload.version)

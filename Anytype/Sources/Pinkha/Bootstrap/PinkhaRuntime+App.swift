@@ -30,4 +30,12 @@ extension Container {
     public var pinkhaBootstrapStateManager: Factory<PinkhaBootstrapStateManager> {
         self { PinkhaBootstrapStateManager() }.singleton
     }
+
+    public var pinkhaTorahAssociationRepository: Factory<any TorahAssociationRepository> {
+        self { AnytypeTorahAssociationRepository() }.singleton
+    }
+
+    var pinkhaTorahAssociationStatusCenter: Factory<TorahAssociationPersistenceStatusCenter> {
+        self { TorahAssociationPersistenceStatusCenter.shared }.singleton
+    }
 }

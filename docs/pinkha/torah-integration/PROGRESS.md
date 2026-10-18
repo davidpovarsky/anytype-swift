@@ -16,6 +16,8 @@ T2 working branch: `pinkha/torah-integration-t2`
 
 T2-Unblock working branch: `pinkha/torah-integration-t2-unblock`
 
+T2-L/T5-L limited-mode working branch: `pinkha/torah-functional-ui-single-device-2026-10-18`
+
 Upstream-sync candidate branch: `pinkha/upstream-sync-2026-10-18`
 
 Upstream-sync merge commit: `acbd2b242f07a271f983f59c9eba44e4e9d717ea`
@@ -31,6 +33,11 @@ Local toolchain: Swift 6.3.3 on Windows; Apple SDK unavailable locally.
 | T0 | PASS | `pinkha/torah-integration-t1` | Origin branch and all three pinned SHAs verified; clean isolated branch created from the pinned Anytype commit; supplied documents copied byte-for-byte. | None. |
 | T1 | PASS | `pinkha/torah-integration-t1-hardening` | Initial T1 evidence remains valid. R1-R5 hardening added official-shaped response fixtures, 114/114 macOS package tests, a live bounded canary, and a full unsigned iOS app/IPA build at `b1ed4b561f78d2883ae2f7f0d8383cde41b0c821`. | None; await review. |
 | T2 | PARTIAL / BLOCKED | `pinkha/torah-integration-t2-unblock` | Original portable work remains valid. The exact-tag native BlockCreate follow-up proved caller IDs and atomic initial payloads at state level, but also proved silent differing-payload replacement, removed-anchor loss, search/undo exposure, and unsafe manifest-host cleanup. Candidate status: `REJECTED / STILL BLOCKED`. | A different sanctioned stable/invisible native primitive plus real disposable middleware and two-client/offline proof is required. No unsafe adapter was installed. |
+| T2-L | IN PROGRESS | `pinkha/torah-functional-ui-single-device-2026-10-18` | Scope amendment recorded in `ADR-T2L-UI-FIRST-SINGLE-WRITER-2026-10-18.md`; exact parent `825437fb0f145ebe0430f27c3f099d0621246484` and remote refs verified. | Implement native single-writer adapter and pass the disposable real-middleware SD01-SD05 gate before enabling dependent UI. |
+| Kit side sheet | NOT STARTED | `feature/native-ios27-torah-side-sheet` | Candidate Kit baseline `0d4c3407182e18ca62c3280b3a04a2b905a51c93` and demo `55a5035aa50d6b76d7bb29bacc2b76f30d917236` verified. | T2-L gate first; then exact iPadOS 27 presenter, tests, screenshots, fallback and pin. |
+| T3-L | NOT STARTED | | | Blocked on T2-L real middleware gate. |
+| T4-L | NOT STARTED | | | Blocked on T2-L and T3-L gates. |
+| T5-L | NOT STARTED | | | Blocked on T2-L through T4-L gates. |
 | T3 | NOT STARTED | | | Inspector UI and document session are deferred. |
 | T4 | NOT STARTED | | | Quote/editor integration is deferred. |
 | T5 | NOT STARTED | | | Native Notes and reverse index are deferred. |
