@@ -53,14 +53,24 @@ struct TorahAssociationNativeMiddlewareProbeTests {
             shouldSelectTemplate: false,
             spaceId: spaceId,
             origin: .none,
+            templateId: nil,
             additionalDetails: [.description("non-Torah detail must survive")]
         )
-        let blockId = try await Container.shared.blockService().addFirstBlock(
+        let blockIdA = try await Container.shared.blockService().addFirstBlock(
             contextId: document.id,
             info: .empty(
                 id: "",
                 content: .text(.plain("Non-Torah block content", contentType: .text))
             )
+        )
+        let blockIdB = try await Container.shared.blockService().add(
+            contextId: document.id,
+            targetId: blockIdA,
+            info: .empty(
+                id: "",
+                content: .text(.plain("Second non-Torah block", contentType: .text))
+            ),
+            position: .bottom
         )
 
         let before = try await documentSnapshot(
@@ -68,55 +78,206 @@ struct TorahAssociationNativeMiddlewareProbeTests {
             objectId: document.id,
             associationKey: manifest.documentAssociationsPropertyKey
         )
-        #expect(before.blockIds.contains(blockId))
+        #expect(before.blockIds.contains(blockIdA))
+        #expect(before.blockIds.contains(blockIdB))
         #expect(before.name == "T2-L canonical document")
         #expect(before.description == "non-Torah detail must survive")
         #expect(before.associationValue == nil || before.associationValue == "")
 
-        let repository = AnytypeTorahAssociationRepository()
-        var documentItem = association(id: "document-final", reference: "Genesis 1:1")
-        _ = try await repository.addAssociation(
-            documentItem,
-            target: .object(objectId: document.id),
+        // Two repository instances model independent scenes/windows in one app
+        // process. Both must use the same process-wide document mutation queue.
+        let repositoryA = AnytypeTorahAssociationRepository()
+        let repositoryB = AnytypeTorahAssociationRepository()
+        var sourceA = association(id: "a-source", kind: .ref, reference: "Genesis 1:1")
+        let wordB = association(id: "b-word", kind: .word, reference: "בראשית")
+        let topicC = association(id: "c-topic", kind: .topic, reference: "creation")
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            for (repository, item) in [(repositoryA, sourceA), (repositoryB, wordB), (repositoryA, topicC)] {
+                group.addTask {
+                    _ = try await repository.addAssociation(
+                        item,
+                        target: .object(objectId: document.id),
+                        spaceId: spaceId
+                    )
+                }
+            }
+            try await group.waitForAll()
+        }
+
+        let sourceD = association(id: "d-source", kind: .ref, reference: "Genesis 1:4")
+        sourceA.labelEn = "Genesis 1:1 (edited)"
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            group.addTask {
+                try await repositoryA.removeAssociation(
+                    associationId: wordB.id,
+                    target: .object(objectId: document.id),
+                    spaceId: spaceId
+                )
+            }
+            group.addTask {
+                _ = try await repositoryB.addAssociation(
+                    sourceD,
+                    target: .object(objectId: document.id),
+                    spaceId: spaceId
+                )
+            }
+            group.addTask {
+                _ = try await repositoryA.updateAssociation(
+                    sourceA,
+                    target: .object(objectId: document.id),
+                    spaceId: spaceId
+                )
+            }
+            try await group.waitForAll()
+        }
+
+        let blockSourceA = association(id: "block-a-source", kind: .ref, reference: "Exodus 3:2")
+        let blockSourceB = association(id: "block-b-source", kind: .ref, reference: "Exodus 3:2")
+        _ = try await repositoryA.addAssociation(
+            blockSourceA,
+            target: .block(objectId: document.id, blockId: blockIdA),
             spaceId: spaceId
         )
-        documentItem.labelEn = "Genesis 1:1 (edited)"
-        _ = try await repository.updateAssociation(
-            documentItem,
+        _ = try await repositoryB.addAssociation(
+            blockSourceB,
+            target: .block(objectId: document.id, blockId: blockIdB),
+            spaceId: spaceId
+        )
+        let deduplicatedRetry = try await repositoryA.addAssociation(
+            association(id: "block-a-retry", kind: .ref, reference: "Exodus 3:2"),
+            target: .block(objectId: document.id, blockId: blockIdA),
+            spaceId: spaceId
+        )
+        #expect(deduplicatedRetry.id == blockSourceA.id)
+
+        let quoteA = association(
+            id: "quote-a",
+            kind: .ref,
+            role: .sourceQuote,
+            reference: "Exodus 3:2",
+            providerPayload: #"{"version":2,"excerpt":"first"}"#
+        )
+        let quoteB = association(
+            id: "quote-b",
+            kind: .ref,
+            role: .sourceQuote,
+            reference: "Exodus 3:2",
+            providerPayload: #"{"version":2,"excerpt":"second"}"#
+        )
+        _ = try await repositoryA.addAssociation(
+            quoteA,
+            target: .block(objectId: document.id, blockId: blockIdA),
+            spaceId: spaceId
+        )
+        _ = try await repositoryA.addAssociation(
+            quoteB,
+            target: .block(objectId: document.id, blockId: blockIdA),
+            spaceId: spaceId
+        )
+
+        // The real middleware persists the write; this wrapper deliberately
+        // drops only its acknowledgement. Repository reconciliation must reopen
+        // the native property and return success without a duplicate retry.
+        let lostAcknowledgement = association(
+            id: "e-lost-ack",
+            kind: .topic,
+            reference: "revelation"
+        )
+        let reconciliationRepository = AnytypeTorahAssociationRepository(
+            nativeStore: LostAcknowledgementNativeStore()
+        )
+        _ = try await reconciliationRepository.addAssociation(
+            lostAcknowledgement,
             target: .object(objectId: document.id),
             spaceId: spaceId
         )
 
-        let removed = association(id: "document-removed", reference: "Genesis 1:2")
-        _ = try await repository.addAssociation(
-            removed,
-            target: .object(objectId: document.id),
-            spaceId: spaceId
-        )
-        try await repository.removeAssociation(
-            associationId: removed.id,
-            target: .object(objectId: document.id),
-            spaceId: spaceId
-        )
-
-        let blockItem = association(id: "block-final", reference: "Exodus 3:2")
-        _ = try await repository.addAssociation(
-            blockItem,
-            target: .block(objectId: document.id, blockId: blockId),
-            spaceId: spaceId
-        )
-
-        let documentItems = try await repository.listDocumentAssociations(
+        let expectedDocument = [sourceA, topicC, sourceD, lostAcknowledgement].sorted { $0.id < $1.id }
+        let expectedBlockA = [blockSourceA, quoteA, quoteB].sorted { $0.id < $1.id }
+        let expectedBlockB = [blockSourceB]
+        let documentItems = try await repositoryA.listDocumentAssociations(
             objectId: document.id,
             spaceId: spaceId
         )
-        let blockItems = try await repository.listBlockAssociations(
+        let blockItemsA = try await repositoryA.listBlockAssociations(
             objectId: document.id,
-            blockId: blockId,
+            blockId: blockIdA,
             spaceId: spaceId
         )
-        #expect(documentItems == [documentItem])
-        #expect(blockItems == [blockItem])
+        let blockItemsB = try await repositoryB.listBlockAssociations(
+            objectId: document.id,
+            blockId: blockIdB,
+            spaceId: spaceId
+        )
+        #expect(documentItems == expectedDocument)
+        #expect(blockItemsA == expectedBlockA)
+        #expect(blockItemsB == expectedBlockB)
+
+        // Exercise exact native close/reopen, lifecycle transition and Space
+        // switch before the separate process-relaunch phase.
+        try await ClientCommands.objectClose(.with {
+            $0.contextID = document.id
+            $0.objectID = document.id
+            $0.spaceID = spaceId
+        }).invoke()
+        try await ClientCommands.appSetDeviceState(.with { $0.deviceState = .background }).invoke()
+        try await ClientCommands.appSetDeviceState(.with { $0.deviceState = .foreground }).invoke()
+        let away = try await Container.shared.workspaceService().createSpace(
+            name: "T2-L Away Space",
+            iconOption: 2,
+            accessType: .private,
+            useCase: .none,
+            withChat: false,
+            spaceType: .regular
+        )
+        _ = try await Container.shared.workspaceService().workspaceOpen(spaceId: away.spaceID, withChat: false)
+        _ = try await Container.shared.workspaceService().workspaceOpen(spaceId: spaceId, withChat: false)
+        #expect(
+            try await repositoryA.listDocumentAssociations(objectId: document.id, spaceId: spaceId)
+                == expectedDocument
+        )
+
+        // Unsupported native values are fail-closed and byte-for-byte retained.
+        let futureDocument = try await Container.shared.objectActionsService().createObject(
+            name: "T2-L future payload guard",
+            typeUniqueKey: .page,
+            shouldDeleteEmptyObject: false,
+            shouldSelectType: false,
+            shouldSelectTemplate: false,
+            spaceId: spaceId,
+            origin: .none,
+            templateId: nil
+        )
+        let futurePayload = #"{"records":[],"version":99}"#
+        try await Container.shared.propertiesService().updateProperty(
+            objectId: futureDocument.id,
+            propertyKey: manifest.documentAssociationsPropertyKey,
+            value: futurePayload.protobufValue
+        )
+        do {
+            _ = try await repositoryA.addAssociation(
+                association(id: "must-not-write", kind: .ref, reference: "Genesis 9:9"),
+                target: .object(objectId: futureDocument.id),
+                spaceId: spaceId
+            )
+            Issue.record("Future native payload was overwritten")
+        } catch let error as TorahAssociationRepositoryError {
+            #expect(error == .unsupportedPayloadVersion(99))
+        }
+        let guarded = try await documentSnapshot(
+            spaceId: spaceId,
+            objectId: futureDocument.id,
+            associationKey: manifest.documentAssociationsPropertyKey
+        )
+        #expect(guarded.associationValue == futurePayload)
+
+        await expectFailure(.targetNotFound) {
+            _ = try await repositoryA.addAssociation(
+                self.association(id: "stale-block", kind: .ref, reference: "Genesis 2:1"),
+                target: .block(objectId: document.id, blockId: "deleted-or-stale-block"),
+                spaceId: spaceId
+            )
+        }
 
         let after = try await documentSnapshot(
             spaceId: spaceId,
@@ -133,10 +294,12 @@ struct TorahAssociationNativeMiddlewareProbeTests {
             accountId: account.id,
             spaceId: spaceId,
             objectId: document.id,
-            blockId: blockId,
+            blockIdA: blockIdA,
+            blockIdB: blockIdB,
             associationKey: manifest.documentAssociationsPropertyKey,
-            expectedDocument: documentItem,
-            expectedBlock: blockItem,
+            expectedDocument: expectedDocument,
+            expectedBlockA: expectedBlockA,
+            expectedBlockB: expectedBlockB,
             blockBytes: before.blockBytes,
             name: before.name,
             description: before.description
@@ -172,11 +335,17 @@ struct TorahAssociationNativeMiddlewareProbeTests {
         )
         let blockItems = try await repository.listBlockAssociations(
             objectId: state.objectId,
-            blockId: state.blockId,
+            blockId: state.blockIdA,
             spaceId: state.spaceId
         )
-        #expect(documentItems == [state.expectedDocument])
-        #expect(blockItems == [state.expectedBlock])
+        let blockItemsB = try await repository.listBlockAssociations(
+            objectId: state.objectId,
+            blockId: state.blockIdB,
+            spaceId: state.spaceId
+        )
+        #expect(documentItems == state.expectedDocument)
+        #expect(blockItems == state.expectedBlockA)
+        #expect(blockItemsB == state.expectedBlockB)
 
         let reopened = try await documentSnapshot(
             spaceId: state.spaceId,
@@ -217,17 +386,40 @@ struct TorahAssociationNativeMiddlewareProbeTests {
         )
     }
 
-    private func association(id: String, reference: String) -> TorahAssociationItem {
+    private func association(
+        id: String,
+        kind: TorahAssociationKind,
+        role: TorahAssociationRole = .context,
+        reference: String,
+        providerPayload: String? = nil
+    ) -> TorahAssociationItem {
         TorahAssociationItem(
             id: id,
-            kind: .ref,
-            role: .context,
+            kind: kind,
+            role: role,
             providerID: "sefaria",
             externalID: reference.replacingOccurrences(of: " ", with: "."),
             canonicalKey: reference,
             labelHe: "מקור בדיקה",
-            labelEn: reference
+            labelEn: reference,
+            rawInput: reference,
+            providerPayload: providerPayload ?? #"{"provider":"sefaria","retained":true}"#,
+            customMetadata: ["probe": "native"]
         )
+    }
+
+    private func expectFailure(
+        _ expected: TorahAssociationRepositoryError,
+        operation: () async throws -> Void
+    ) async {
+        do {
+            try await operation()
+            Issue.record("Guarded native operation unexpectedly succeeded")
+        } catch let error as TorahAssociationRepositoryError {
+            #expect(error == expected)
+        } catch {
+            Issue.record("Unexpected native error: \(error)")
+        }
     }
 }
 
@@ -244,13 +436,36 @@ private struct ProbeState: Codable, Sendable {
     let accountId: String
     let spaceId: String
     let objectId: String
-    let blockId: String
+    let blockIdA: String
+    let blockIdB: String
     let associationKey: String
-    let expectedDocument: TorahAssociationItem
-    let expectedBlock: TorahAssociationItem
+    let expectedDocument: [TorahAssociationItem]
+    let expectedBlockA: [TorahAssociationItem]
+    let expectedBlockB: [TorahAssociationItem]
     let blockBytes: [String]
     let name: String
     let description: String
+}
+
+private struct LostAcknowledgementNativeStore: TorahAssociationNativeStore {
+    private let base = MiddlewareTorahAssociationNativeStore()
+
+    func readDocument(
+        spaceId: String,
+        objectId: String,
+        propertyKey: String
+    ) async throws -> TorahAssociationNativeDocumentSnapshot {
+        try await base.readDocument(spaceId: spaceId, objectId: objectId, propertyKey: propertyKey)
+    }
+
+    func writeDocumentProperty(objectId: String, propertyKey: String, value: String) async throws {
+        try await base.writeDocumentProperty(objectId: objectId, propertyKey: propertyKey, value: value)
+        throw LostAcknowledgementError.simulatedAfterNativeCommit
+    }
+}
+
+private enum LostAcknowledgementError: Error {
+    case simulatedAfterNativeCommit
 }
 
 private struct ProbePaths {
