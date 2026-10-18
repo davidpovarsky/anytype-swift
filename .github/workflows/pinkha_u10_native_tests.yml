@@ -1,0 +1,489 @@
+name: Pinkha U10 Native Tests
+
+on:
+  push:
+    branches:
+      - pinkha/upstream-u10-validation-2026-10-18
+    paths-ignore:
+      - docs/pinkha/torah-integration/UPSTREAM_U10_VALIDATION_2026-10-18.md
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pinkha-u10-native-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  focused-native-tests:
+    name: Focused AnytypeTests
+    if: github.ref == 'refs/heads/pinkha/upstream-u10-validation-2026-10-18'
+    runs-on: macos-26
+    timeout-minutes: 75
+    env:
+      DERIVED_DATA: ${{ runner.temp }}/u10-derived-data
+      LOGS_DIR: ${{ runner.temp }}/u10-logs
+      RESULTS_DIR: ${{ runner.temp }}/u10-results
+
+    steps:
+      - name: Checkout exact pushed SHA
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+
+      - name: Audit branch, Git trees, and checkout case behavior
+        id: checkout_audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$LOGS_DIR"
+
+          actual_sha="$(git rev-parse HEAD)"
+          test "$actual_sha" = "$GITHUB_SHA"
+          test "$GITHUB_REF_NAME" = "pinkha/upstream-u10-validation-2026-10-18"
+          printf 'sha=%s\nref=%s\n' "$actual_sha" "$GITHUB_REF" | tee "$LOGS_DIR/checkout.txt"
+
+          git ls-tree -d HEAD -- AnyTypeTests AnytypeTests | tee -a "$LOGS_DIR/checkout.txt"
+          git ls-tree -r --name-only HEAD -- AnyTypeTests | tee "$LOGS_DIR/git-upper-tree.txt"
+          git ls-tree -r --name-only HEAD -- AnytypeTests | tee "$LOGS_DIR/git-lower-tree.txt"
+
+          python3 - <<'PY' | tee -a "$LOGS_DIR/checkout.txt"
+          import subprocess
+
+          def relative_tree(root: str) -> set[str]:
+              output = subprocess.check_output(
+                  ["git", "ls-tree", "-r", "--name-only", "HEAD", "--", root],
+                  text=True,
+              )
+              prefix = root + "/"
+              return {line.removeprefix(prefix) for line in output.splitlines() if line}
+
+          upper = relative_tree("AnyTypeTests")
+          lower = relative_tree("AnytypeTests")
+          overlap = sorted(upper & lower)
+          print(f"AnyTypeTests entries: {len(upper)}")
+          print(f"AnytypeTests entries: {len(lower)}")
+          print(f"relative-path collisions: {len(overlap)}")
+          if overlap:
+              raise SystemExit("Mixed-case trees have colliding relative paths: " + ", ".join(overlap))
+          PY
+
+          probe="$RUNNER_TEMP/u10-case-probe"
+          mkdir -p "$probe"
+          touch "$probe/CaseProbe"
+          if [[ -e "$probe/caseprobe" ]]; then
+            case_behavior="case-insensitive"
+          else
+            case_behavior="case-sensitive"
+          fi
+          echo "filesystem_case_behavior=$case_behavior" | tee -a "$LOGS_DIR/checkout.txt"
+          diskutil info / | grep -E 'File System Personality|Type \(Bundle\)' | tee -a "$LOGS_DIR/checkout.txt" || true
+          find . -maxdepth 1 -type d -iname 'anytypetests' -print | sort | tee -a "$LOGS_DIR/checkout.txt"
+          printf 'case_behavior=%s\n' "$case_behavior" >> "$GITHUB_OUTPUT"
+
+          required_paths=(
+            AnytypeTests/AnytypeTests.xctestplan
+            AnytypeTests/ChatActivity/ActivityJSONTests.swift
+            AnytypeTests/ChatActivity/ChatActivityJournalTests.swift
+            AnytypeTests/ChatActivity/ChatActivityTextTests.swift
+            AnytypeTests/ChatActivity/TypingTests.swift
+            AnytypeTests/ServiceLayer/LocalDiscovery/BonjourDiscoveryEngineTests.swift
+            AnytypeTests/Services/QuickCaptureDraftTests.swift
+            AnytypeTests/Services/QuickCaptureInputObserverTests.swift
+            AnytypeTests/Services/QuickCaptureLifecycleTests.swift
+            AnytypeTests/Services/QuickCaptureServiceTests.swift
+            AnytypeTests/Info.plist
+          )
+          for path in "${required_paths[@]}"; do
+            if [[ ! -f "$path" ]]; then
+              echo "Required path is not visible through the Xcode synchronized-root spelling: $path" >&2
+              echo "The clean checkout does not safely merge the two mixed-case Git trees." >&2
+              exit 1
+            fi
+            printf 'visible: %s\n' "$path" | tee -a "$LOGS_DIR/checkout.txt"
+          done
+
+      - name: Clear stale module cache
+        shell: bash
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
+
+      - name: Prepare dependencies
+        uses: ./.github/actions/prepare-deps
+
+      - name: Select Xcode 26.1
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.1'
+
+      - name: Install matching iOS Simulator platform
+        uses: ./.github/actions/install-ios-platform
+
+      - name: Download exact middleware
+        timeout-minutes: 10
+        shell: bash
+        env:
+          MIDDLEWARE_TOKEN: ${{ secrets.MIDDLEWARE_TOKEN }}
+        run: make setup-middle-ci
+
+      - name: Audit Xcode project, scheme, plan, and destinations
+        timeout-minutes: 10
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild -version | tee "$LOGS_DIR/xcode-version.txt"
+          xcodebuild -showsdks | tee "$LOGS_DIR/xcode-sdks.txt"
+          xcodebuild -project Anytype.xcodeproj -list -json | tee "$LOGS_DIR/xcodebuild-list.json"
+          xcodebuild \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -showdestinations | tee "$LOGS_DIR/xcodebuild-destinations.txt"
+
+          python3 - <<'PY' | tee "$LOGS_DIR/test-plan-audit.txt"
+          import json
+          from pathlib import Path
+
+          plan_path = Path("AnytypeTests/AnytypeTests.xctestplan")
+          plan = json.loads(plan_path.read_text())
+          targets = [entry["target"]["name"] for entry in plan["testTargets"]]
+          print(f"test plan: {plan_path}")
+          print("targets: " + ", ".join(targets))
+          if "AnytypeTests" not in targets:
+              raise SystemExit("AnytypeTests is absent from the test plan")
+
+          scheme = Path("Anytype.xcodeproj/xcshareddata/xcschemes/Anytype.xcscheme").read_text()
+          expected_reference = "container:AnytypeTests/AnytypeTests.xctestplan"
+          print(f"scheme reference present: {expected_reference in scheme}")
+          if expected_reference not in scheme:
+              raise SystemExit("The Anytype scheme does not reference the expected test plan")
+          PY
+
+      - name: Resolve pinned Swift packages
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          set -euo pipefail
+          env NSUnbufferedIO=YES xcodebuild \
+            -resolvePackageDependencies \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -skipPackagePluginValidation \
+            2>&1 | tee "$LOGS_DIR/package-resolution.log"
+
+      - name: Select and boot an installed iPhone Simulator
+        id: simulator
+        timeout-minutes: 5
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcrun simctl list runtimes available -j > "$LOGS_DIR/simulator-runtimes.json"
+          xcrun simctl list devices available -j > "$LOGS_DIR/simulator-devices.json"
+
+          python3 - <<'PY' > "$LOGS_DIR/simulator-selection.txt"
+          import json
+          import re
+          from pathlib import Path
+
+          runtimes_data = json.loads(Path(__import__('os').environ['LOGS_DIR'], 'simulator-runtimes.json').read_text())
+          devices_data = json.loads(Path(__import__('os').environ['LOGS_DIR'], 'simulator-devices.json').read_text())
+
+          versions = {}
+          for runtime in runtimes_data.get('runtimes', []):
+              if runtime.get('isAvailable') and runtime.get('identifier', '').startswith('com.apple.CoreSimulator.SimRuntime.iOS-'):
+                  numbers = tuple(int(value) for value in re.findall(r'\d+', runtime.get('version', '0')))
+                  versions[runtime['identifier']] = numbers
+
+          candidates = []
+          for runtime_id, devices in devices_data.get('devices', {}).items():
+              if runtime_id not in versions:
+                  continue
+              for device in devices:
+                  if device.get('isAvailable') and device.get('name', '').startswith('iPhone'):
+                      candidates.append((versions[runtime_id], device['name'], device['udid'], runtime_id))
+
+          if not candidates:
+              raise SystemExit('No available iPhone Simulator is installed')
+
+          version, name, udid, runtime_id = sorted(candidates, reverse=True)[0]
+          print(f"{udid}\t{name}\t{runtime_id}")
+          PY
+
+          IFS=$'\t' read -r udid device_name runtime_id < "$LOGS_DIR/simulator-selection.txt"
+          test -n "$udid"
+          printf 'Selected %s (%s) on %s\n' "$device_name" "$udid" "$runtime_id" | tee "$LOGS_DIR/selected-simulator.txt"
+          echo "udid=$udid" >> "$GITHUB_OUTPUT"
+          echo "device_name=$device_name" >> "$GITHUB_OUTPUT"
+          echo "runtime_id=$runtime_id" >> "$GITHUB_OUTPUT"
+          echo "SIMULATOR_UDID=$udid" >> "$GITHUB_ENV"
+
+          if ! xcrun simctl boot "$udid"; then
+            state="$(xcrun simctl list devices -j | python3 -c 'import json,sys; data=json.load(sys.stdin); target=sys.argv[1]; print(next(device["state"] for devices in data["devices"].values() for device in devices if device["udid"] == target))' "$udid")"
+            test "$state" = "Booted"
+          fi
+          xcrun simctl bootstatus "$udid" -b
+
+      - name: Build AnytypeTests once
+        id: build
+        continue-on-error: true
+        timeout-minutes: 35
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "$DERIVED_DATA" "$RESULTS_DIR"
+          mkdir -p "$DERIVED_DATA" "$RESULTS_DIR"
+
+          env NSUnbufferedIO=YES xcodebuild \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -testPlan AnytypeTests \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
+            -destination-timeout 120 \
+            -derivedDataPath "$DERIVED_DATA" \
+            -skipPackagePluginValidation \
+            -disableAutomaticPackageResolution \
+            -only-testing:AnytypeTests \
+            -parallel-testing-enabled NO \
+            -maximum-parallel-testing-workers 1 \
+            build-for-testing \
+            2>&1 | tee "$LOGS_DIR/build-for-testing.log"
+
+      - name: Run Chat Activity native tests
+        id: chat_tests
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          set -euo pipefail
+          env NSUnbufferedIO=YES xcodebuild \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -testPlan AnytypeTests \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
+            -destination-timeout 120 \
+            -derivedDataPath "$DERIVED_DATA" \
+            -skipPackagePluginValidation \
+            -disableAutomaticPackageResolution \
+            -parallel-testing-enabled NO \
+            -maximum-parallel-testing-workers 1 \
+            -resultBundlePath "$RESULTS_DIR/chat-activity.xcresult" \
+            -only-testing:AnytypeTests/ActivityJSONTests \
+            -only-testing:AnytypeTests/ChatActivityPayloadsTests \
+            -only-testing:AnytypeTests/ChatActivityJournalTests \
+            -only-testing:AnytypeTests/DiscussionActivityJournalTests \
+            -only-testing:AnytypeTests/DiscussionActivityPlacementTests \
+            -only-testing:AnytypeTests/ChatActivityTimelineRunsTests \
+            -only-testing:AnytypeTests/ChatActivityTextTests \
+            -only-testing:AnytypeTests/TypingPublishPolicyTests \
+            -only-testing:AnytypeTests/TypingRosterTests \
+            -only-testing:AnytypeTests/ChatTypingPublisherTests \
+            test-without-building \
+            2>&1 | tee "$LOGS_DIR/chat-activity.log"
+
+      - name: Run DNS-SD native tests
+        id: dns_tests
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 12
+        shell: bash
+        run: |
+          set -euo pipefail
+          env NSUnbufferedIO=YES xcodebuild \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -testPlan AnytypeTests \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
+            -destination-timeout 120 \
+            -derivedDataPath "$DERIVED_DATA" \
+            -skipPackagePluginValidation \
+            -disableAutomaticPackageResolution \
+            -parallel-testing-enabled NO \
+            -maximum-parallel-testing-workers 1 \
+            -resultBundlePath "$RESULTS_DIR/dns-sd.xcresult" \
+            -only-testing:AnytypeTests/BonjourDiscoveryEngineTests \
+            test-without-building \
+            2>&1 | tee "$LOGS_DIR/dns-sd.log"
+
+      - name: Run Quick Capture native tests
+        id: quick_capture_tests
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
+        timeout-minutes: 12
+        shell: bash
+        run: |
+          set -euo pipefail
+          env NSUnbufferedIO=YES xcodebuild \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -testPlan AnytypeTests \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=$SIMULATOR_UDID" \
+            -destination-timeout 120 \
+            -derivedDataPath "$DERIVED_DATA" \
+            -skipPackagePluginValidation \
+            -disableAutomaticPackageResolution \
+            -parallel-testing-enabled NO \
+            -maximum-parallel-testing-workers 1 \
+            -resultBundlePath "$RESULTS_DIR/quick-capture.xcresult" \
+            -only-testing:AnytypeTests/QuickCaptureDraftTests \
+            -only-testing:AnytypeTests/QuickCaptureInputObserverTests \
+            -only-testing:AnytypeTests/QuickCaptureLifecycleTests \
+            -only-testing:AnytypeTests/QuickCaptureServiceTests \
+            test-without-building \
+            2>&1 | tee "$LOGS_DIR/quick-capture.log"
+
+      - name: Validate executed suites and counts
+        id: validate
+        if: always()
+        timeout-minutes: 5
+        shell: bash
+        env:
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          CHAT_OUTCOME: ${{ steps.chat_tests.outcome }}
+          DNS_OUTCOME: ${{ steps.dns_tests.outcome }}
+          QUICK_CAPTURE_OUTCOME: ${{ steps.quick_capture_tests.outcome }}
+        run: |
+          set -uo pipefail
+          status=0
+
+          printf '## U10 focused native-test evidence\n\n' >> "$GITHUB_STEP_SUMMARY"
+          printf -- '- SHA: `%s`\n' "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          printf -- '- Simulator: `%s` (`%s`)\n' '${{ steps.simulator.outputs.device_name }}' '${{ steps.simulator.outputs.runtime_id }}' >> "$GITHUB_STEP_SUMMARY"
+          printf -- '- Checkout filesystem: `%s`\n\n' '${{ steps.checkout_audit.outputs.case_behavior }}' >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ "$BUILD_OUTCOME" != "success" ]]; then
+            echo "build-for-testing outcome: $BUILD_OUTCOME" >&2
+            status=1
+          fi
+
+          validate_group() {
+            local group="$1"
+            local minimum="$2"
+            local suites="$3"
+            local bundle="$RESULTS_DIR/$group.xcresult"
+            local summary="$LOGS_DIR/$group-summary.json"
+            local tests="$LOGS_DIR/$group-tests.json"
+            local log="$LOGS_DIR/$group.log"
+
+            if [[ ! -d "$bundle" ]]; then
+              echo "Missing result bundle: $bundle" >&2
+              status=1
+              return
+            fi
+            if ! xcrun xcresulttool get test-results summary --path "$bundle" --format json > "$summary"; then
+              echo "Could not read test summary for $group" >&2
+              status=1
+              return
+            fi
+            if ! xcrun xcresulttool get test-results tests --path "$bundle" --format json > "$tests"; then
+              echo "Could not read executed test identities for $group" >&2
+              status=1
+              return
+            fi
+
+            GROUP="$group" MINIMUM="$minimum" EXPECTED_SUITES="$suites" \
+              SUMMARY_PATH="$summary" TESTS_PATH="$tests" LOG_PATH="$log" \
+              python3 - <<'PY' || status=1
+          import json
+          import os
+          from pathlib import Path
+
+          group = os.environ["GROUP"]
+          minimum = int(os.environ["MINIMUM"])
+          expected = os.environ["EXPECTED_SUITES"].split()
+          summary = json.loads(Path(os.environ["SUMMARY_PATH"]).read_text())
+          identities = Path(os.environ["TESTS_PATH"]).read_text()
+          log = Path(os.environ["LOG_PATH"]).read_text(errors="replace") if Path(os.environ["LOG_PATH"]).exists() else ""
+
+          def integer_value(key: str):
+              if isinstance(summary.get(key), int):
+                  return summary[key]
+              stack = [summary]
+              while stack:
+                  value = stack.pop()
+                  if isinstance(value, dict):
+                      candidate = value.get(key)
+                      if isinstance(candidate, int):
+                          return candidate
+                      stack.extend(value.values())
+                  elif isinstance(value, list):
+                      stack.extend(value)
+              return None
+
+          total = integer_value("totalTestCount")
+          passed = integer_value("passedTests")
+          failed = integer_value("failedTests")
+          skipped = integer_value("skippedTests")
+          values = {"total": total, "passed": passed, "failed": failed, "skipped": skipped}
+          print(f"{group}: {values}")
+
+          problems = []
+          if total is None or total < minimum:
+              problems.append(f"executed {total!r}; expected at least {minimum}")
+          if failed != 0:
+              problems.append(f"failedTests={failed!r}")
+          if skipped != 0:
+              problems.append(f"skippedTests={skipped!r}")
+          if total is not None and passed != total:
+              problems.append(f"passedTests={passed!r} does not equal totalTestCount={total}")
+
+          evidence = identities + "\n" + log
+          missing = [suite for suite in expected if suite not in evidence]
+          if missing:
+              problems.append("missing suite identities: " + ", ".join(missing))
+
+          with Path(os.environ["GITHUB_STEP_SUMMARY"]).open("a") as output:
+              output.write(f"- `{group}`: total={total}, passed={passed}, failed={failed}, skipped={skipped}\n")
+
+          if problems:
+              raise SystemExit(group + ": " + "; ".join(problems))
+          PY
+          }
+
+          validate_group \
+            chat-activity \
+            106 \
+            'ActivityJSONTests ChatActivityPayloadsTests ChatActivityJournalTests DiscussionActivityJournalTests DiscussionActivityPlacementTests ChatActivityTimelineRunsTests ChatActivityTextTests TypingPublishPolicyTests TypingRosterTests ChatTypingPublisherTests'
+          validate_group \
+            dns-sd \
+            51 \
+            'BonjourDiscoveryEngineTests'
+          validate_group \
+            quick-capture \
+            49 \
+            'QuickCaptureDraftTests QuickCaptureInputObserverTests QuickCaptureLifecycleTests QuickCaptureServiceTests'
+
+          for outcome in \
+            "chat-activity:$CHAT_OUTCOME" \
+            "dns-sd:$DNS_OUTCOME" \
+            "quick-capture:$QUICK_CAPTURE_OUTCOME"; do
+            group="${outcome%%:*}"
+            result="${outcome#*:}"
+            if [[ "$result" != "success" ]]; then
+              echo "$group xcodebuild outcome: $result" >&2
+              status=1
+            fi
+          done
+
+          exit "$status"
+
+      - name: Shut down selected Simulator
+        if: ${{ always() && steps.simulator.outputs.udid != '' }}
+        shell: bash
+        run: xcrun simctl shutdown '${{ steps.simulator.outputs.udid }}' || true
+
+      - name: Upload bounded native-test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pinkha-u10-native-evidence-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/u10-logs
+            ${{ runner.temp }}/u10-results
+          if-no-files-found: warn
+          retention-days: 14
+          compression-level: 6
