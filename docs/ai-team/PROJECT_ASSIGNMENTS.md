@@ -28,8 +28,8 @@
 
 ---
 
-## 3. Mandatory Subagent Delegation & Approval Gates
-- **חובת האצלה:** הסוכן הראשי פועל כמתאם בלבד ומחויב להפעיל סוכני משנה (`invoke_subagent`). כל קוד מועבר לרוני לאימות.
+## 3. Two-Tier Execution Policy & Approval Gates
+- **מדיניות ביצוע (NORMAL מול TEAM):** ברירת המחדל היא ביצוע ישיר בסשן הראשי (`[MAIN_SESSION]`) תוך טעינת הוראות התפקיד מ-`.agents/roles/<role>.md` ו-`PROJECT_ASSIGNMENTS.md`. הפעלת סוכני משנה (`invoke_subagent` / `[SUBAGENT]`) מתבצעת אך ורק לפי בקשה מפורשת של המשתמש ("עבוד במצב צוות" / "הפעל סוכני משנה").
 - **Heart / Protobuf Integrity:** No modifications to Heart, protobuf schemas, or CRDT engine without explicit owner approval.
 - **Personal Space Mutation:** Testing must use disposable isolated Spaces only. Never mutate personal Spaces.
 - **Release & Merges:** PR merges to `develop` or production releases require owner approval.
