@@ -21,10 +21,6 @@ jobs:
     if: github.ref == 'refs/heads/pinkha/upstream-u10-validation-2026-10-18'
     runs-on: macos-26
     timeout-minutes: 75
-    env:
-      DERIVED_DATA: ${{ runner.temp }}/u10-derived-data
-      LOGS_DIR: ${{ runner.temp }}/u10-logs
-      RESULTS_DIR: ${{ runner.temp }}/u10-results
 
     steps:
       - name: Checkout exact pushed SHA
@@ -32,6 +28,15 @@ jobs:
         with:
           ref: ${{ github.sha }}
           fetch-depth: 1
+
+      - name: Initialize isolated evidence paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "DERIVED_DATA=$RUNNER_TEMP/u10-derived-data" >> "$GITHUB_ENV"
+          echo "LOGS_DIR=$RUNNER_TEMP/u10-logs" >> "$GITHUB_ENV"
+          echo "RESULTS_DIR=$RUNNER_TEMP/u10-results" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/u10-logs" "$RUNNER_TEMP/u10-results"
 
       - name: Audit branch, Git trees, and checkout case behavior
         id: checkout_audit
