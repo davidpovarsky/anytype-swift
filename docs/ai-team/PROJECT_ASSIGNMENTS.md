@@ -28,7 +28,8 @@
 
 ---
 
-## 3. Approval Gates
+## 3. Mandatory Subagent Delegation & Approval Gates
+- **חובת האצלה:** הסוכן הראשי פועל כמתאם בלבד ומחויב להפעיל סוכני משנה (`invoke_subagent`). כל קוד מועבר לרוני לאימות.
 - **Heart / Protobuf Integrity:** No modifications to Heart, protobuf schemas, or CRDT engine without explicit owner approval.
 - **Personal Space Mutation:** Testing must use disposable isolated Spaces only. Never mutate personal Spaces.
 - **Release & Merges:** PR merges to `develop` or production releases require owner approval.
