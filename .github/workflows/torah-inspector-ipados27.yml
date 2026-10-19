@@ -23,12 +23,13 @@ jobs:
         run: |
           mkdir -p build/evidence
           xcodebuild -version | tee build/evidence/xcode-version.txt
+          xcodebuild -showsdks | tee build/evidence/xcode-sdks.txt
           swift --version | tee build/evidence/swift-version.txt
 
       - name: Verify immutable TorahInspectorKit pins
         run: |
-          test "$(grep -c 'b0a3edcb9607105ef321a37c13de1eee9f198870' Modules/PinkhaKit/Package.swift)" -eq 1
-          test "$(grep -c 'b0a3edcb9607105ef321a37c13de1eee9f198870' Anytype.xcodeproj/project.pbxproj)" -eq 1
+          test "$(grep -c 'f78897cfd418844235f0cd358289daa064225db6' Modules/PinkhaKit/Package.swift)" -eq 1
+          test "$(grep -c 'f78897cfd418844235f0cd358289daa064225db6' Anytype.xcodeproj/project.pbxproj)" -eq 1
           grep -q 'productName = TorahInspectorUI' Anytype.xcodeproj/project.pbxproj
 
       - name: Run PinkhaKit tests
@@ -105,7 +106,7 @@ jobs:
           shasum -a 256 build/ipa/Anytype-TorahInspector-iPadOS27-Unsigned.ipa | tee build/evidence/ipa-sha256.txt
           printf 'Anytype commit: %s\nTorahInspectorKit commit: %s\nBundle ID: %s\n' \
             "$GITHUB_SHA" \
-            'b0a3edcb9607105ef321a37c13de1eee9f198870' \
+            'f78897cfd418844235f0cd358289daa064225db6' \
             'com.gloiiire.anytype.torahtrial' \
             > build/evidence/manifest.txt
 
@@ -124,6 +125,24 @@ jobs:
           name: TorahInspector-iPadOS27-Test-Results
           path: build/results
           if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload acceptance matrix
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TorahInspector-iPadOS27-Acceptance-Matrix
+          path: docs/pinkha/torah-integration/ACCEPTANCE_MATRIX_2026-10-20.md
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload screenshot status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TorahInspector-iPadOS27-Screenshot-Status
+          path: docs/pinkha/torah-integration/SCREENSHOT_STATUS_2026-10-20.md
+          if-no-files-found: error
           retention-days: 14
 
       - name: Upload logs and manifest

@@ -53,7 +53,7 @@ struct SefariaRelationshipProviderTests {
 
         #expect(groups.commentary.count == 1)
         #expect(groups.linkedSources.count == 1)
-        #expect(groups.commentaryGroups.map(\.id) == ["Rashi on Genesis"])
+        #expect(groups.commentaryGroups.map(\.id) == ["author:rashi"])
         #expect(groups.linkedSourceGroups.count == 1)
         #expect(groups.commentaryGroups[0].entries.count == 1)
         #expect(groups.commentaryGroups[0].entries[0].anchorRefs == ["Genesis 1:1", "Genesis 1:2"])

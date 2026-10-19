@@ -29,3 +29,22 @@ focused PinkhaKit canonical-model additions, focused tests, the dedicated CI
 workflow and evidence documentation. The planned Phase 3-7 hooks above were
 not activated by this blocked assignment.
 
+## iPad trial branch hooks — 2026-10-20
+
+These hooks exist only on
+`pinkha/torah-inspector-full-ipad-trial-2026-10-20`; they do not change the
+prior blocked-branch accounting above.
+
+| Upstream file | Trial hook | Why unavoidable | Merge risk | Safety boundary |
+|---|---|---|---|---|
+| `Anytype.xcodeproj/project.pbxproj` | Exact remote `TorahInspectorUI` product at the same immutable SHA used by PinkhaKit Core | The app target must import real Kit UI directly | Medium | Feature branch only; no stable branch merge |
+| `EditorPageCoordinatorView(.Model).swift` | Own document-scoped Torah session, entry/presenter modifier and note navigation | Binds Space/object identity to actual editor lifecycle | Medium | Session is recreated per document/window; writes default OFF |
+| `EditorPageView.swift`, `EditorPageModuleAssembly.swift`, `EditorPageViewModel(.Protocol).swift` | Pass the bounded session and install the shared native insertion handler | Host callbacks require the active editor's native block services | Medium | Quote insertion uses `setFocus: false`; generic insert defaults unchanged |
+| `EditorPageController+DragNDrop.swift` | Separate `UTType.torahSource` external route | UIKit collection drop is the real editor insertion boundary | High | External `.copy`; existing `BlockDragConfiguration` remains `.move`; opt-in required |
+| `BlocksOptionItem.swift`, `EditorPageBlocksStateManager.swift` | Single-block `קשר תורני` context action | Required block-scoped add/list/unlink entry | Medium | Hidden when no Torah session; exactly one selected block |
+| `.github/workflows/torah-inspector-ipados27.yml` | Xcode 27 verification and unsigned separate-sandbox IPA | Stable Xcode 26.1 workflow must remain unchanged | Low | No signing keys or profile mutation; artifact requires user signing |
+
+Pinkha-owned additions live under `Anytype/Sources/Pinkha/Torah/UI` and keep
+provider composition, mutation gating, association preview, Notes bridging and
+presentation state outside upstream editor files.
+
