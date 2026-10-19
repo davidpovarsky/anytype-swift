@@ -2,7 +2,7 @@
 
 Date: 2026-10-18
 
-Status: **PROPOSED / IMPLEMENTATION IN PROGRESS — native middleware gate not yet passed**
+Status: **BLOCKED — native middleware cold-relaunch gate failed; dependent UI stopped**
 
 Decision scope: the owner-approved limited acceptance track `T2-L → T5-L` on
 one actively writing device. This ADR does not replace or relax the original
@@ -76,6 +76,56 @@ If the native probe cannot establish these guarantees without Heart/protobuf
 changes or unsafe user-data behavior, dependent UI implementation stops. The
 repository retains useful codecs/tests/documentation, reports T2-L blocked,
 and requests an owner decision rather than installing an unsafe fallback.
+
+## Native gate result — 2026-10-19
+
+The bounded implementation and its pre-relaunch native proof completed useful
+work, but the mandatory cold-relaunch acceptance did not pass:
+
+- `AnytypeTorahAssociationRepository`, the canonical v2 codec, the process-wide
+  document mutation queue, fail-closed decoding, stable-ID reconciliation and
+  disposable native probe remain on the feature branch as proof-ready work.
+- Each final run passed the five focused repository tests and the one native
+  Phase 1 test. Phase 1 exercised document and block targets, all three kinds,
+  overlapping add/remove/update work, same-source target isolation, quote
+  identity, lost acknowledgement, document close/reopen, background/foreground,
+  Space switching, future-version refusal, stale-block refusal and byte-for-byte
+  preservation of unrelated blocks.
+- Run `39246935214` first proved that a fresh process must recover the wallet;
+  its Phase 2 failed immediately with `wallet not initialized`.
+- Runs `39286528380`, `39295768767` and `39306273085` recovered the wallet, but
+  Phase 2 then timed out inside native `AccountSelect`. The final run also
+  completed `AccountPreloadRemainingSpaces` before a real forced host
+  termination. Its stage markers reached `state-loaded` and
+  `wallet-recovered`, but never `account-selected`.
+- The middleware log repeatedly reported `space storage missing` for internal
+  Space IDs and left `client.space` in `components start in progress` until the
+  bounded 20-minute timeout. The exact validator therefore failed, as designed.
+
+Final evidence is run
+[`39306273085`](https://github.com/davidpovarsky/anytype-swift/actions/runs/39306273085),
+tested SHA `1a1bb3606721edb1586f77074950d1305d434b40`, artifact
+`pinkha-t2l-native-evidence-39306273085` (`12218585026`). Earlier diagnostic
+artifacts are `12185619069`, `12206249637` and `12213956450`.
+
+The application DI registration for the unaccepted repository was removed.
+No editor, Kit, quote, Notes or knowledge UI was started. This is an intentional
+gate stop, not a claim that the portable/native work is production-ready.
+
+### Owner decision alternatives
+
+1. **Preferred:** fix or upgrade the pinned middleware so a disposable
+   local-only account can complete `walletRecovery → AccountSelect` after a
+   forced process restart, then rerun the unchanged `5/5 + 1/1 + 1/1` gate.
+2. Approve a narrowly scoped middleware/Heart API change that makes all native
+   Space stores durably recoverable before reopening the canonical property;
+   this requires a separate RFC and is outside this branch's authority.
+3. Explicitly weaken the product requirement to graceful account shutdown.
+   That would be a new acceptance decision and still must not be reported as
+   the force-terminate/relaunch PASS required by this ADR.
+
+Standalone SQLite, `UserDefaults`, a hidden-page journal, optimistic cache-only
+state, or silently skipping relaunch are not acceptable alternatives.
 
 ## Explicit exclusions
 

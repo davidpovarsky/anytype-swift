@@ -15,3 +15,17 @@ Every modification to an upstream-owned file must be cataloged here:
 | `EditorPageView.swift` (Phase 4) | `.pinkhaEditorSession(...)` modifier | Document-scoped session lifecycle | ~3 lines | Low | Yes |
 | `BlockViewModelBuilder.swift` (Phase 6/7) | Editor items decoration & quote model override | Top-of-document associations & source quote | ~10 lines | High | Yes |
 
+## T2-L blocked-branch accounting — 2026-10-19
+
+The mandatory native persistence gate failed before Kit/editor integration.
+Consequently this branch makes **no final diff** to an upstream-owned editor,
+navigation, Xcode project, localization or application bootstrap file. A
+temporary `Container` registration in `PinkhaRuntime+App.swift` was removed
+after the gate failed; the final file matches parent
+`825437fb0f145ebe0430f27c3f099d0621246484`.
+
+All retained T2-L changes are isolated to new Pinkha Torah storage/probe files,
+focused PinkhaKit canonical-model additions, focused tests, the dedicated CI
+workflow and evidence documentation. The planned Phase 3-7 hooks above were
+not activated by this blocked assignment.
+

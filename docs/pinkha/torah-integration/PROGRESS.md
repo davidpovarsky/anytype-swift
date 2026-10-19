@@ -33,16 +33,47 @@ Local toolchain: Swift 6.3.3 on Windows; Apple SDK unavailable locally.
 | T0 | PASS | `pinkha/torah-integration-t1` | Origin branch and all three pinned SHAs verified; clean isolated branch created from the pinned Anytype commit; supplied documents copied byte-for-byte. | None. |
 | T1 | PASS | `pinkha/torah-integration-t1-hardening` | Initial T1 evidence remains valid. R1-R5 hardening added official-shaped response fixtures, 114/114 macOS package tests, a live bounded canary, and a full unsigned iOS app/IPA build at `b1ed4b561f78d2883ae2f7f0d8383cde41b0c821`. | None; await review. |
 | T2 | PARTIAL / BLOCKED | `pinkha/torah-integration-t2-unblock` | Original portable work remains valid. The exact-tag native BlockCreate follow-up proved caller IDs and atomic initial payloads at state level, but also proved silent differing-payload replacement, removed-anchor loss, search/undo exposure, and unsafe manifest-host cleanup. Candidate status: `REJECTED / STILL BLOCKED`. | A different sanctioned stable/invisible native primitive plus real disposable middleware and two-client/offline proof is required. No unsafe adapter was installed. |
-| T2-L | IN PROGRESS | `pinkha/torah-functional-ui-single-device-2026-10-18` | Scope amendment recorded in `ADR-T2L-UI-FIRST-SINGLE-WRITER-2026-10-18.md`; exact parent `825437fb0f145ebe0430f27c3f099d0621246484` and remote refs verified. | Implement native single-writer adapter and pass the disposable real-middleware SD01-SD05 gate before enabling dependent UI. |
-| Kit side sheet | NOT STARTED | `feature/native-ios27-torah-side-sheet` | Candidate Kit baseline `0d4c3407182e18ca62c3280b3a04a2b905a51c93` and demo `55a5035aa50d6b76d7bb29bacc2b76f30d917236` verified. | T2-L gate first; then exact iPadOS 27 presenter, tests, screenshots, fallback and pin. |
-| T3-L | NOT STARTED | | | Blocked on T2-L real middleware gate. |
-| T4-L | NOT STARTED | | | Blocked on T2-L and T3-L gates. |
-| T5-L | NOT STARTED | | | Blocked on T2-L through T4-L gates. |
+| T2-L | BLOCKED / FAIL | `pinkha/torah-functional-ui-single-device-2026-10-18` | Focused repository `5/5` and native Phase 1 `1/1` pass, but Phase 2 cold relaunch times out inside native `AccountSelect` after wallet recovery. Final run `39306273085`, SHA `1a1bb3606721edb1586f77074950d1305d434b40`, artifact `12218585026`. | Owner decision: middleware recovery fix/upgrade or separately approved native API/RFC. The failed repository is not registered in application DI. |
+| Kit side sheet | BLOCKED / NOT RUN | `feature/native-ios27-torah-side-sheet` | Candidate Kit baseline `0d4c3407182e18ca62c3280b3a04a2b905a51c93` and demo `55a5035aa50d6b76d7bb29bacc2b76f30d917236` were audited read-only. | Mandatory T2-L gate failed; presenter implementation was not started. |
+| T3-L | BLOCKED / NOT RUN | | Mandatory STOP after T2-L failure. | Requires a passing real-middleware T2-L gate. |
+| T4-L | BLOCKED / NOT RUN | | Mandatory STOP after T2-L failure. | Requires passing T2-L and T3-L gates. |
+| T5-L | BLOCKED / NOT RUN | | Mandatory STOP after T2-L failure. | Requires passing T2-L through T4-L gates. |
 | T3 | NOT STARTED | | | Inspector UI and document session are deferred. |
 | T4 | NOT STARTED | | | Quote/editor integration is deferred. |
 | T5 | NOT STARTED | | | Native Notes and reverse index are deferred. |
 | T6 | NOT STARTED | | | Device, RTL, accessibility and release validation are deferred. |
 | T7 | DEFERRED | | | Otzaria and other extensions are outside the approved core path. |
+
+## T2-L native gate evidence — 2026-10-19
+
+| Run | Tested SHA | Repository | Native Phase 1 | Forced relaunch Phase 2 | Evidence |
+|---|---|---:|---:|---:|---|
+| `39246935214` | `d688070ef31b414c85fb38c2aabc2915ae58bf38` | 5/5 PASS | 1/1 PASS | FAIL: `wallet not initialized` | Artifact `12185619069` |
+| `39286528380` | `0942e075b58361fec564aaaf66b5034b27a13c42` | 5/5 PASS | 1/1 PASS | FAIL: `AccountSelect` timeout after wallet recovery | Artifact `12206249637` |
+| `39295768767` | `b446a4c6c15c8098062d2df2279dc2892bec4d5e` | 5/5 PASS | 1/1 PASS | FAIL: same timeout with ordinary empty `preferredSpaceId` | Artifact `12213956450` |
+| `39306273085` | `1a1bb3606721edb1586f77074950d1305d434b40` | 5/5 PASS | 1/1 PASS | FAIL: same timeout after all-Space preload and real force termination | Artifact `12218585026` |
+
+Final log boundary: `state-loaded` and `wallet-recovered` are present;
+`account-selected` is absent. Native logs report `space storage missing` and
+`client.space` remains in `components start in progress` until the 20-minute
+timeout. The exact-count validator fails and dependent implementation stops.
+
+| Acceptance | Status | Evidence |
+|---|---|---|
+| SD01 | PASS | Real middleware Phase 1 stores and reads canonical document/block records for source, word and topic. |
+| SD02 | PASS | Focused repository stress plus native overlapping mutations preserve all expected stable IDs. |
+| SD03 | FAIL | Close/reopen and Space switch pass before restart; forced process relaunch cannot complete native `AccountSelect`. |
+| SD04 | BLOCKED | Future/corrupt/stale-target policy is covered, but the full native restart/permission acceptance cannot complete. |
+| SD05 | PASS | Phase 1 compares unrelated serialized block bytes before/after mutation. |
+| SD06 | PASS | ADR and negative stale-client test retain the explicit single-writer limit; full T2 remains blocked. |
+| KIT01-KIT05 | BLOCKED / NOT RUN | Stopped before Kit mutation because T2-L is a mandatory prerequisite. |
+| UX01-UX06 | BLOCKED / NOT RUN | No editor or Inspector host hooks were added. |
+| Q01-Q05 | BLOCKED / NOT RUN | No quote UI/editor integration was added. |
+| K01-K03 | BLOCKED / NOT RUN | Notes and reverse-index work was not started. |
+| REG01 | BLOCKED | Added focused tests ran, but the complete delivery regression matrix was not reached. |
+| REG02 | NOT RUN | The previously verified U10 baseline was not rerun on this blocked branch. |
+| REG03 | BLOCKED / NOT RUN | Real editor/device regressions require dependent UI implementation and hardware. |
+| REG04 | BLOCKED | U12/U13 real-device, migration and downgrade gaps remain unchanged. |
 
 ## T1 acceptance evidence
 
