@@ -286,6 +286,12 @@ struct TorahAssociationNativeMiddlewarePrepareTests {
         #expect(after.description == before.description)
         #expect(after.associationValue?.contains(#""version":2"#) == true)
 
+        // AccountSelect must be able to reopen every native Space known to the
+        // disposable account. Materialize the remaining stores before the
+        // host is force-terminated so relaunch never depends on a peer.
+        try await auth.preloadRemainingSpaces()
+        print("T2L_PREPARE_STAGE remaining-spaces-preloaded")
+
         let state = ProbeState(
             rootPath: paths.root.path,
             mnemonic: mnemonic,
@@ -304,8 +310,8 @@ struct TorahAssociationNativeMiddlewarePrepareTests {
         )
         try JSONEncoder().encode(state).write(to: paths.state, options: .atomic)
 
-        try await Container.shared.authMiddleService().logout(removeData: false)
         #expect(FileManager.default.fileExists(atPath: paths.state.path))
+        print("T2L_PREPARE_STAGE state-persisted-awaiting-force-termination")
     }
 
     private func documentSnapshot(
