@@ -16,7 +16,7 @@ struct TorahAssociationNativeMiddlewarePrepareTests {
         try? FileManager.default.removeItem(at: paths.state)
 
         let auth = Container.shared.authMiddleService()
-        _ = try await auth.createWallet(rootPath: paths.root.path)
+        let mnemonic = try await auth.createWallet(rootPath: paths.root.path)
         let account = try await auth.createAccount(
             name: "Pinkha T2-L Probe",
             imagePath: "",
@@ -288,6 +288,7 @@ struct TorahAssociationNativeMiddlewarePrepareTests {
 
         let state = ProbeState(
             rootPath: paths.root.path,
+            mnemonic: mnemonic,
             accountId: account.id,
             spaceId: spaceId,
             objectId: document.id,
@@ -376,7 +377,9 @@ struct TorahAssociationNativeMiddlewareRelaunchTests {
         let paths = try ProbePaths.make()
         let state = try JSONDecoder().decode(ProbeState.self, from: Data(contentsOf: paths.state))
 
-        _ = try await Container.shared.authMiddleService().selectAccount(
+        let auth = Container.shared.authMiddleService()
+        try await auth.walletRecovery(rootPath: state.rootPath, mnemonic: state.mnemonic)
+        _ = try await auth.selectAccount(
             id: state.accountId,
             rootPath: state.rootPath,
             networkMode: .localOnly,
@@ -415,7 +418,7 @@ struct TorahAssociationNativeMiddlewareRelaunchTests {
         #expect(reopened.description == state.description)
         #expect(reopened.associationValue?.contains(#""version":2"#) == true)
 
-        try await Container.shared.authMiddleService().logout(removeData: true)
+        try await auth.logout(removeData: true)
         try? FileManager.default.removeItem(at: paths.state)
     }
 
@@ -455,6 +458,7 @@ private struct DocumentProbeSnapshot: Sendable {
 
 private struct ProbeState: Codable, Sendable {
     let rootPath: String
+    let mnemonic: String
     let accountId: String
     let spaceId: String
     let objectId: String
