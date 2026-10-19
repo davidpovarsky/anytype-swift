@@ -376,18 +376,24 @@ struct TorahAssociationNativeMiddlewareRelaunchTests {
     func reopenNativeStateAfterHostTermination() async throws {
         let paths = try ProbePaths.make()
         let state = try JSONDecoder().decode(ProbeState.self, from: Data(contentsOf: paths.state))
+        print("T2L_RELAUNCH_STAGE state-loaded")
 
         let auth = Container.shared.authMiddleService()
         try await auth.walletRecovery(rootPath: state.rootPath, mnemonic: state.mnemonic)
+        print("T2L_RELAUNCH_STAGE wallet-recovered")
         _ = try await auth.selectAccount(
             id: state.accountId,
             rootPath: state.rootPath,
             networkMode: .localOnly,
             joinStreamUrl: "",
             configPath: nil,
-            preferredSpaceId: state.spaceId
+            // Match the app's ordinary cold-start path. A Space is opened only
+            // after account startup has completed unless a deep link is pending.
+            preferredSpaceId: ""
         )
+        print("T2L_RELAUNCH_STAGE account-selected")
         _ = try await Container.shared.workspaceService().workspaceOpen(spaceId: state.spaceId, withChat: false)
+        print("T2L_RELAUNCH_STAGE workspace-opened")
 
         let repository = AnytypeTorahAssociationRepository()
         let documentItems = try await repository.listDocumentAssociations(
@@ -407,6 +413,7 @@ struct TorahAssociationNativeMiddlewareRelaunchTests {
         #expect(documentItems == state.expectedDocument)
         #expect(blockItems == state.expectedBlockA)
         #expect(blockItemsB == state.expectedBlockB)
+        print("T2L_RELAUNCH_STAGE associations-read")
 
         let reopened = try await documentSnapshot(
             spaceId: state.spaceId,
@@ -417,6 +424,7 @@ struct TorahAssociationNativeMiddlewareRelaunchTests {
         #expect(reopened.name == state.name)
         #expect(reopened.description == state.description)
         #expect(reopened.associationValue?.contains(#""version":2"#) == true)
+        print("T2L_RELAUNCH_STAGE native-document-verified")
 
         try await auth.logout(removeData: true)
         try? FileManager.default.removeItem(at: paths.state)
