@@ -7,8 +7,8 @@ import SwiftProtobuf
 import Testing
 @testable import Anytype
 
-@Suite("T2-L real Anytype middleware persistence probe", .serialized)
-struct TorahAssociationNativeMiddlewareProbeTests {
+@Suite("T2-L real Anytype middleware prepare probe", .serialized)
+struct TorahAssociationNativeMiddlewarePrepareTests {
     @Test("Phase 1 writes document and block associations through the native property")
     func prepareNativeState() async throws {
         let paths = try ProbePaths.make()
@@ -307,6 +307,70 @@ struct TorahAssociationNativeMiddlewareProbeTests {
         #expect(FileManager.default.fileExists(atPath: paths.state.path))
     }
 
+    private func documentSnapshot(
+        spaceId: String,
+        objectId: String,
+        associationKey: String
+    ) async throws -> DocumentProbeSnapshot {
+        let response = try await ClientCommands.objectShow(.with {
+            $0.contextID = objectId
+            $0.objectID = objectId
+            $0.spaceID = spaceId
+        }).invoke(qos: .userInitiated)
+        let detailsStruct = try #require(
+            response.objectView.details.first(where: { $0.id == objectId })?.details
+        )
+        let details = try ObjectDetails(protobufStruct: detailsStruct)
+        return DocumentProbeSnapshot(
+            blockIds: Set(response.objectView.blocks.map(\.id)),
+            blockBytes: try response.objectView.blocks.map {
+                try $0.serializedData().base64EncodedString()
+            },
+            name: details.values[BundledPropertyKey.name.rawValue]?.stringValue ?? "",
+            description: details.values[BundledPropertyKey.description.rawValue]?.stringValue ?? "",
+            associationValue: details.values[associationKey]?.stringValue
+        )
+    }
+
+    private func association(
+        id: String,
+        kind: TorahAssociationKind,
+        role: TorahAssociationRole = .context,
+        reference: String,
+        providerPayload: String? = nil
+    ) -> TorahAssociationItem {
+        TorahAssociationItem(
+            id: id,
+            kind: kind,
+            role: role,
+            providerID: "sefaria",
+            externalID: reference.replacingOccurrences(of: " ", with: "."),
+            canonicalKey: reference,
+            labelHe: "מקור בדיקה",
+            labelEn: reference,
+            rawInput: reference,
+            providerPayload: providerPayload ?? #"{"provider":"sefaria","retained":true}"#,
+            customMetadata: ["probe": "native"]
+        )
+    }
+
+    private func expectFailure(
+        _ expected: TorahAssociationRepositoryError,
+        operation: () async throws -> Void
+    ) async {
+        do {
+            try await operation()
+            Issue.record("Guarded native operation unexpectedly succeeded")
+        } catch let error as TorahAssociationRepositoryError {
+            #expect(error == expected)
+        } catch {
+            Issue.record("Unexpected native error: \(error)")
+        }
+    }
+}
+
+@Suite("T2-L real Anytype middleware relaunch probe", .serialized)
+struct TorahAssociationNativeMiddlewareRelaunchTests {
     @Test("Phase 2 reopens after host termination and reads the exact native state")
     func reopenNativeStateAfterHostTermination() async throws {
         let paths = try ProbePaths.make()
@@ -378,42 +442,6 @@ struct TorahAssociationNativeMiddlewareProbeTests {
             description: details.values[BundledPropertyKey.description.rawValue]?.stringValue ?? "",
             associationValue: details.values[associationKey]?.stringValue
         )
-    }
-
-    private func association(
-        id: String,
-        kind: TorahAssociationKind,
-        role: TorahAssociationRole = .context,
-        reference: String,
-        providerPayload: String? = nil
-    ) -> TorahAssociationItem {
-        TorahAssociationItem(
-            id: id,
-            kind: kind,
-            role: role,
-            providerID: "sefaria",
-            externalID: reference.replacingOccurrences(of: " ", with: "."),
-            canonicalKey: reference,
-            labelHe: "מקור בדיקה",
-            labelEn: reference,
-            rawInput: reference,
-            providerPayload: providerPayload ?? #"{"provider":"sefaria","retained":true}"#,
-            customMetadata: ["probe": "native"]
-        )
-    }
-
-    private func expectFailure(
-        _ expected: TorahAssociationRepositoryError,
-        operation: () async throws -> Void
-    ) async {
-        do {
-            try await operation()
-            Issue.record("Guarded native operation unexpectedly succeeded")
-        } catch let error as TorahAssociationRepositoryError {
-            #expect(error == expected)
-        } catch {
-            Issue.record("Unexpected native error: \(error)")
-        }
     }
 }
 

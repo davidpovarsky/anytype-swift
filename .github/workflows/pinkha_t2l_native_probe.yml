@@ -114,7 +114,8 @@ jobs:
             -parallel-testing-enabled NO \
             -maximum-parallel-testing-workers 1 \
             -only-testing:AnytypeTests/TorahAssociationNativeRepositoryTests \
-            -only-testing:AnytypeTests/TorahAssociationNativeMiddlewareProbeTests \
+            -only-testing:AnytypeTests/TorahAssociationNativeMiddlewarePrepareTests \
+            -only-testing:AnytypeTests/TorahAssociationNativeMiddlewareRelaunchTests \
             build-for-testing \
             2>&1 | tee "$LOGS_DIR/build.log"
 
@@ -156,7 +157,7 @@ jobs:
             -parallel-testing-enabled NO \
             -maximum-parallel-testing-workers 1 \
             -resultBundlePath "$RESULTS_DIR/prepare.xcresult" \
-            -only-testing:AnytypeTests/TorahAssociationNativeMiddlewareProbeTests/prepareNativeState \
+            -only-testing:AnytypeTests/TorahAssociationNativeMiddlewarePrepareTests \
             test-without-building \
             2>&1 | tee "$LOGS_DIR/prepare.log"
 
@@ -185,7 +186,7 @@ jobs:
             -parallel-testing-enabled NO \
             -maximum-parallel-testing-workers 1 \
             -resultBundlePath "$RESULTS_DIR/relaunch.xcresult" \
-            -only-testing:AnytypeTests/TorahAssociationNativeMiddlewareProbeTests/reopenNativeStateAfterHostTermination \
+            -only-testing:AnytypeTests/TorahAssociationNativeMiddlewareRelaunchTests \
             test-without-building \
             2>&1 | tee "$LOGS_DIR/relaunch.log"
 
