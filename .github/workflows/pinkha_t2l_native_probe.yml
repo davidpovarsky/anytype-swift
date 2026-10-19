@@ -4,6 +4,14 @@ on:
   push:
     branches:
       - pinkha/torah-functional-ui-single-device-2026-10-18
+    paths:
+      - Anytype/Sources/Pinkha/Torah/Storage/**
+      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift
+      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift
+      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahCanonicalAssociations.swift
+      - Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/**
+      - AnyTypeTests/Pinkha/TorahAssociationNativeMiddlewareProbeTests.swift
+      - AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift
   workflow_dispatch:
 
 permissions:
