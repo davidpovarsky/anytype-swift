@@ -28,11 +28,13 @@ jobs:
 
       - name: Verify immutable TorahInspectorKit pins
         run: |
-          test "$(grep -c 'f78897cfd418844235f0cd358289daa064225db6' Modules/PinkhaKit/Package.swift)" -eq 1
-          test "$(grep -c 'f78897cfd418844235f0cd358289daa064225db6' Anytype.xcodeproj/project.pbxproj)" -eq 1
+          test "$(grep -c 'f67582097f9f083f9b4ea55c7ac2828853093f87' Modules/PinkhaKit/Package.swift)" -eq 1
+          test "$(grep -c 'f67582097f9f083f9b4ea55c7ac2828853093f87' Anytype.xcodeproj/project.pbxproj)" -eq 1
           grep -q 'productName = TorahInspectorUI' Anytype.xcodeproj/project.pbxproj
 
       - name: Run PinkhaKit tests
+        id: pinkhakit_tests
+        continue-on-error: true
         run: swift test --package-path Modules/PinkhaKit 2>&1 | tee build/evidence/pinkhakit-tests.log
 
       - name: Download middleware
@@ -60,6 +62,8 @@ jobs:
           PY
 
       - name: Run focused native association tests
+        id: native_tests
+        continue-on-error: true
         run: |
           set -o pipefail
           xcodebuild test \
@@ -69,12 +73,14 @@ jobs:
             -destination "platform=iOS Simulator,id=$IPAD_UDID" \
             -derivedDataPath build/DerivedData-Tests \
             -resultBundlePath build/results/TorahAssociationTests.xcresult \
+            -collect-test-diagnostics never \
             -only-testing:AnytypeTests/TorahAssociationNativeRepositoryTests \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             2>&1 | tee build/evidence/native-association-tests.log
 
       - name: Build unsigned iPad device app
+        id: device_build
         run: |
           set -o pipefail
           xcodebuild build \
@@ -92,6 +98,8 @@ jobs:
             2>&1 | tee build/evidence/device-build.log
 
       - name: Package separate-sandbox unsigned IPA
+        id: package_ipa
+        if: steps.device_build.outcome == 'success'
         run: |
           APP_PATH='build/DerivedData-Device/Build/Products/Release-Anytype-iphoneos/Anytype.app'
           test -d "$APP_PATH"
@@ -106,11 +114,12 @@ jobs:
           shasum -a 256 build/ipa/Anytype-TorahInspector-iPadOS27-Unsigned.ipa | tee build/evidence/ipa-sha256.txt
           printf 'Anytype commit: %s\nTorahInspectorKit commit: %s\nBundle ID: %s\n' \
             "$GITHUB_SHA" \
-            'f78897cfd418844235f0cd358289daa064225db6' \
+            'f67582097f9f083f9b4ea55c7ac2828853093f87' \
             'com.gloiiire.anytype.torahtrial' \
             > build/evidence/manifest.txt
 
       - name: Upload unsigned IPA
+        if: steps.package_ipa.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: Anytype-TorahInspector-iPadOS27-Unsigned-IPA
@@ -127,12 +136,28 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
+      - name: Prepare runtime evidence documents
+        if: always()
+        run: |
+          cp docs/pinkha/torah-integration/ACCEPTANCE_MATRIX_2026-10-20.md build/evidence/acceptance-matrix.md
+          cp docs/pinkha/torah-integration/SCREENSHOT_STATUS_2026-10-20.md build/evidence/screenshot-status.md
+          printf '\n## CI identity\n\n- Run: %s\n- Anytype commit: `%s`\n- TorahInspectorKit commit: `%s`\n' \
+            "$GITHUB_RUN_ID" \
+            "$GITHUB_SHA" \
+            'f67582097f9f083f9b4ea55c7ac2828853093f87' \
+            >> build/evidence/acceptance-matrix.md
+          printf '\n## CI identity\n\n- Run: %s\n- Anytype commit: `%s`\n- TorahInspectorKit commit: `%s`\n' \
+            "$GITHUB_RUN_ID" \
+            "$GITHUB_SHA" \
+            'f67582097f9f083f9b4ea55c7ac2828853093f87' \
+            >> build/evidence/screenshot-status.md
+
       - name: Upload acceptance matrix
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: TorahInspector-iPadOS27-Acceptance-Matrix
-          path: docs/pinkha/torah-integration/ACCEPTANCE_MATRIX_2026-10-20.md
+          path: build/evidence/acceptance-matrix.md
           if-no-files-found: error
           retention-days: 14
 
@@ -141,7 +166,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TorahInspector-iPadOS27-Screenshot-Status
-          path: docs/pinkha/torah-integration/SCREENSHOT_STATUS_2026-10-20.md
+          path: build/evidence/screenshot-status.md
           if-no-files-found: error
           retention-days: 14
 
@@ -153,3 +178,9 @@ jobs:
           path: build/evidence
           if-no-files-found: error
           retention-days: 14
+
+      - name: Enforce test outcomes after publishing evidence
+        if: always() && (steps.pinkhakit_tests.outcome != 'success' || steps.native_tests.outcome != 'success')
+        run: |
+          echo "At least one test stage failed; artifacts above remain available for diagnosis."
+          exit 1

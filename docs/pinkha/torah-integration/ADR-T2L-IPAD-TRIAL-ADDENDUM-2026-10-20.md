@@ -115,7 +115,7 @@ Anytype branch:
 ## Evidence boundary
 
 - Old simulator recovery: run `39306273085` — **FAIL**, unchanged.
-- Kit Xcode 27 lane: current run `39337576270` — pending at authoring time;
+- Kit Xcode 27 lane: current run `39338038543` — pending at authoring time;
   prior run `39333954262` failed only its UI identifier observation after
   package compilation/tests passed.
 - Anytype Xcode 27/IPA lane: run `39335838450` — pending at authoring time.

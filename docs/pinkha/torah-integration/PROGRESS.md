@@ -34,12 +34,12 @@ The 2026-10-20 owner directive authorizes a new isolated iPad trial without
 reclassifying the failed T2-L simulator recovery gate. Work starts from exact
 Anytype baseline `0c14bcf4ac06466b88ba9c823cac8e0002109898` on
 `pinkha/torah-inspector-full-ipad-trial-2026-10-20` and pins both Kit Core and
-UI to `f78897cfd418844235f0cd358289daa064225db6`. The existing
+UI to `f67582097f9f083f9b4ea55c7ac2828853093f87`. The existing
 `39306273085` AccountSelect result remains **FAIL**.
 
 | Trial area | Current status | Evidence / boundary |
 |---|---|---|
-| Native Kit presenter | IMPLEMENTED / CI PENDING | Actual `.sheet`, iPadOS 27 `.presentationPlacement`, physical-right RTL resolver, 155/medium/large detents and iOS 17-26 fallback on Kit branch `feature/native-ios27-torah-side-sheet-2026-10-20`; current Kit run `39337576270` (prior run `39333954262` failed UI identifier observation after package tests passed). |
+| Native Kit presenter | IMPLEMENTED / CI PENDING | Actual `.sheet`, iPadOS 27 `.presentationPlacement`, physical-right RTL resolver, 155/medium/large detents and iOS 17-26 fallback on Kit branch `feature/native-ios27-torah-side-sheet-2026-10-20`; current Kit run `39338038543` (prior run `39333954262` failed UI identifier observation after package tests passed). |
 | Anytype reader/search host | IMPLEMENTED / CI PENDING | Discoverable `תורה / מקורות`, provider-backed ref/topic/word search, document-scoped session and real `TorahInspectorUI`; Anytype run `39335838450`. |
 | Experimental T2-L writer | IMPLEMENTED / UNPROVEN ON DEVICE | Default OFF; requires disposable-Space, fresh-document and `DISPOSABLE` confirmations. Uses the existing serialized native read/apply/write/readback repository. It is not full T2 and is not enabled on old documents. |
 | Quote insertion / drag | IMPLEMENTED / USER TEST PENDING | Explicit Insert and external `TorahSourceTransfer` drop share one native quote-block pipeline with `setFocus: false`; external is `.copy`, internal block reorder stays `.move`. Sheet-to-editor drag requires physical iPad validation. |

@@ -279,18 +279,40 @@ final class TorahEditorSession {
         guard result.scope == .references else { return }
         do {
             let resolved = try await workspace.resolveReference(result.providerValue)
-            let canonical = resolved.isEmbeddableSource
-                ? resolved.canonical
-                : resolved.firstAvailableSectionRef
-            guard let canonical, !canonical.isEmpty else {
-                throw TorahError.referenceTooBroad
-            }
-            selection = TorahInspectorSelection(providerID: "sefaria", canonicalRef: canonical)
+            selection = try Self.inspectorSelection(for: resolved)
             selectedDetent = .medium
             isSearchPresented = false
         } catch {
             message = error.localizedDescription
         }
+    }
+
+    static func inspectorSelection(for resolved: ResolvedReference) throws -> TorahInspectorSelection {
+        guard resolved.isEmbeddableSource else {
+            guard let sectionRef = resolved.firstAvailableSectionRef, !sectionRef.isEmpty else {
+                throw TorahError.referenceTooBroad
+            }
+            return TorahInspectorSelection(
+                providerID: "sefaria",
+                canonicalRef: sectionRef,
+                scope: .section
+            )
+        }
+
+        if TorahReferenceUtil.isSegmentRef(resolved.canonical) {
+            return TorahInspectorSelection(
+                providerID: "sefaria",
+                canonicalRef: TorahReferenceUtil.sectionRef(from: resolved.canonical),
+                preferredSegmentRef: resolved.canonical,
+                scope: .segment
+            )
+        }
+
+        return TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: resolved.canonical,
+            scope: .section
+        )
     }
 
     func link(_ result: SearchResult) async {
@@ -355,7 +377,8 @@ final class TorahEditorSession {
                     "snapshotText": transfer.text,
                     "sectionRef": transfer.sectionRef ?? "",
                     "versionTitle": transfer.versionTitle ?? "",
-                    "license": transfer.license ?? ""
+                    "license": transfer.license ?? "",
+                    "direction": transfer.direction ?? ""
                 ]
             )
             do {

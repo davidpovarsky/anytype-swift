@@ -2,6 +2,7 @@ import Foundation
 import PinkhaKit
 import SwiftProtobuf
 import Testing
+import TorahInspectorCore
 @testable import Anytype
 
 @Suite("T2-L native single-writer repository")
@@ -169,6 +170,24 @@ struct TorahAssociationNativeRepositoryTests {
             mutationIsAuthorized: false,
             canPlace: true
         ) == .forbidden)
+    }
+
+    @Test("Resolved verses preserve section and exact-segment identity")
+    func resolvedVerseSelection() throws {
+        let resolved = ResolvedReference(
+            canonical: "Genesis 1:1",
+            labelHe: "בראשית א׳:א׳",
+            nodeType: "JaggedArrayNode",
+            depth: 2,
+            startIndexes: [1, 1],
+            firstAvailableSectionRef: "Genesis 1"
+        )
+
+        let selection = try TorahEditorSession.inspectorSelection(for: resolved)
+
+        #expect(selection.canonicalRef == "Genesis 1")
+        #expect(selection.preferredSegmentRef == "Genesis 1:1")
+        #expect(selection.scope == .segment)
     }
 
     @Test("Space, block, deletion, archive, and detail permissions are enforced")
