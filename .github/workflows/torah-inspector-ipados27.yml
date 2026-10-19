@@ -28,8 +28,8 @@ jobs:
 
       - name: Verify immutable TorahInspectorKit pins
         run: |
-          test "$(grep -c 'f67582097f9f083f9b4ea55c7ac2828853093f87' Modules/PinkhaKit/Package.swift)" -eq 1
-          test "$(grep -c 'f67582097f9f083f9b4ea55c7ac2828853093f87' Anytype.xcodeproj/project.pbxproj)" -eq 1
+          test "$(grep -c '5ab2f49b4320759e03f40ffa2a2e472835ba9348' Modules/PinkhaKit/Package.swift)" -eq 1
+          test "$(grep -c '5ab2f49b4320759e03f40ffa2a2e472835ba9348' Anytype.xcodeproj/project.pbxproj)" -eq 1
           grep -q 'productName = TorahInspectorUI' Anytype.xcodeproj/project.pbxproj
 
       - name: Run PinkhaKit tests
@@ -146,7 +146,7 @@ jobs:
           shasum -a 256 build/ipa/Anytype-TorahInspector-iPadOS27-Unsigned.ipa | tee build/evidence/ipa-sha256.txt
           printf 'Anytype commit: %s\nTorahInspectorKit commit: %s\nBundle ID: %s\n' \
             "$GITHUB_SHA" \
-            'f67582097f9f083f9b4ea55c7ac2828853093f87' \
+            '5ab2f49b4320759e03f40ffa2a2e472835ba9348' \
             'com.gloiiire.anytype.torahtrial' \
             > build/evidence/manifest.txt
 
@@ -176,12 +176,12 @@ jobs:
           printf '\n## CI identity\n\n- Run: %s\n- Anytype commit: `%s`\n- TorahInspectorKit commit: `%s`\n' \
             "$GITHUB_RUN_ID" \
             "$GITHUB_SHA" \
-            'f67582097f9f083f9b4ea55c7ac2828853093f87' \
+            '5ab2f49b4320759e03f40ffa2a2e472835ba9348' \
             >> build/evidence/acceptance-matrix.md
           printf '\n## CI identity\n\n- Run: %s\n- Anytype commit: `%s`\n- TorahInspectorKit commit: `%s`\n' \
             "$GITHUB_RUN_ID" \
             "$GITHUB_SHA" \
-            'f67582097f9f083f9b4ea55c7ac2828853093f87' \
+            '5ab2f49b4320759e03f40ffa2a2e472835ba9348' \
             >> build/evidence/screenshot-status.md
 
       - name: Upload acceptance matrix

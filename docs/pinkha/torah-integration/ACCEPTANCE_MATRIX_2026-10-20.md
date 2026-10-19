@@ -7,8 +7,8 @@ source path exists; it is not a device PASS.
 
 | ID | Status | Evidence / exact boundary |
 |---|---|---|
-| KIT-1 | IMPLEMENTED / CI PENDING | App target links `TorahInspectorUI` directly and PinkhaKit links Core only, both at `f67582097f9f083f9b4ea55c7ac2828853093f87`; Kit retains its own NavigationStack. |
-| KIT-2 | IMPLEMENTED / SCREENSHOT PENDING | Actual `.sheet` and iOS 27 `.presentationPlacement`; RTL physical-edge unit test. Current Kit run `39338038543`; prior UI identifier-observation failure `39333954262` is retained. |
+| KIT-1 | IMPLEMENTED / CI PENDING | App target links `TorahInspectorUI` directly and PinkhaKit links Core only, both at `5ab2f49b4320759e03f40ffa2a2e472835ba9348`; Kit retains its own NavigationStack. |
+| KIT-2 | IMPLEMENTED / SCREENSHOT PENDING | Actual `.sheet` and iOS 27 `.presentationPlacement`; empirically corrected RTL physical-edge unit test. Current Kit run `39341354225`; green run `39339610430` is rejected because visual review found physical-left placement. |
 | KIT-3 | IMPLEMENTED / SCREENSHOT PENDING | 155/medium/large detents and Kit UI test. |
 | KIT-4 | IMPLEMENTED / CI PENDING | Production `AnytypeTorahWorkspace` fetchers feed actual Kit reader/commentaries/links; no fixture provider in Anytype UI. |
 | KIT-5 | IMPLEMENTED / USER TEST PENDING | Native Note create/open/unlink callbacks and cache invalidation. |
