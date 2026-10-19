@@ -1,4 +1,6 @@
 import UIKit
+import TorahInspectorCore
+import UniformTypeIdentifiers
 
 extension EditorPageController: UICollectionViewDropDelegate {
     func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: any UICollectionViewDropCoordinator) {
@@ -7,6 +9,15 @@ extension EditorPageController: UICollectionViewDropDelegate {
         collectionView.performUsingPresentationValues {
             let location = coordinator.session.location(in: collectionView)
             destinationIndexPath = collectionView.indexPathForItem(at: location)
+        }
+
+        if coordinator.session.hasItemsConforming(toTypeIdentifiers: [UTType.torahSource.identifier]) {
+            insertTorahSource(
+                coordinator: coordinator,
+                targetBlockId: viewModel.torahDropTargetBlockId(at: destinationIndexPath)
+            )
+            dividerCursorController.movingMode = .none
+            return
         }
 
         reorderItems(
@@ -29,8 +40,30 @@ extension EditorPageController: UICollectionViewDropDelegate {
     ) -> UICollectionViewDropProposal {
         dividerCursorController.movingMode = .dragNdrop
         let indexPath = desiredIndexPath(using: destinationIndexPath)
+        let containsTorahSource = session.hasItemsConforming(
+            toTypeIdentifiers: [UTType.torahSource.identifier]
+        )
+        let operation = TorahEditorSafetyPolicy.dropOperation(
+            containsTorahSource: containsTorahSource,
+            mutationIsAuthorized: viewModel.torahSession?.mutationOptIn == true,
+            canPlace: viewModel.blocksStateManager.canPlaceDividerAtIndexPath(indexPath)
+        )
 
-        guard viewModel.blocksStateManager.canPlaceDividerAtIndexPath(indexPath) else {
+        if containsTorahSource {
+            guard operation == .copy else {
+                dividerCursorController.moveCursorView.isHidden = true
+                return UICollectionViewDropProposal(operation: .forbidden)
+            }
+            collectionView.performUsingPresentationValues {
+                dividerCursorController.adjustDivider(at: session.location(in: collectionView))
+            }
+            return UICollectionViewDropProposal(
+                operation: .copy,
+                intent: .insertAtDestinationIndexPath
+            )
+        }
+
+        guard operation == .move else {
             dividerCursorController.moveCursorView.isHidden = true
 
             return UICollectionViewDropProposal(operation: .forbidden)
@@ -45,6 +78,22 @@ extension EditorPageController: UICollectionViewDropDelegate {
             operation: .move,
             intent: .insertIntoDestinationIndexPath
         )
+    }
+
+    private func insertTorahSource(
+        coordinator: any UICollectionViewDropCoordinator,
+        targetBlockId: String?
+    ) {
+        dividerCursorController.moveCursorView.isHidden = true
+        let providers = coordinator.items.map(\.dragItem.itemProvider)
+        TorahSourceTransfer.decode(providers) { [weak self] transfer in
+            Task { @MainActor in
+                await self?.viewModel.insertExternalTorahSource(
+                    transfer,
+                    targetBlockId: targetBlockId
+                )
+            }
+        }
     }
 
     private func desiredIndexPath(using destinationIndexPath: IndexPath?) -> IndexPath {

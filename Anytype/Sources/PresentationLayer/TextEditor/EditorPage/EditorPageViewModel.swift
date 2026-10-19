@@ -4,6 +4,7 @@ import SwiftUI
 import os
 import Services
 import AnytypeCore
+import TorahInspectorCore
 
 @MainActor
 final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNavigationManagerOutput, ObservableObject {
@@ -15,6 +16,8 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
     let modelsHolder: EditorMainItemModelsHolder
     let router: any EditorRouterProtocol
     let actionHandler: any BlockActionHandlerProtocol
+    let blockActionService: any BlockActionServiceProtocol
+    weak var torahSession: TorahEditorSession?
     
     @Injected(\.objectActionsService)
     var objectActionsService: any ObjectActionsServiceProtocol
@@ -34,6 +37,8 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
     private var publishedUrlBuilder: any PublishedUrlBuilderProtocol
     @Injected(\.keyboardInsertedBlocksStorage)
     private var keyboardInsertedBlocksStorage: any KeyboardInsertedBlocksStorageProtocol
+    @Injected(\.blockService)
+    private var blockService: any BlockServiceProtocol
 
 
     private let cursorManager: EditorCursorManager
@@ -71,6 +76,8 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
         cursorManager: EditorCursorManager,
         editorPageTemplatesHandler: some EditorPageTemplatesHandlerProtocol,
         configuration: EditorPageViewModelConfiguration,
+        blockActionService: some BlockActionServiceProtocol,
+        torahSession: TorahEditorSession?,
         output: (any EditorPageModuleOutput)?
     ) {
         self.viewInput = viewInput
@@ -84,10 +91,66 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
         self.cursorManager = cursorManager
         self.editorPageTemplatesHandler = editorPageTemplatesHandler
         self.configuration = configuration
+        self.blockActionService = blockActionService
+        self.torahSession = torahSession
         self.output = output
         self.actionHandler = actionHandler
+
+        torahSession?.installInsertionHandler { [weak self] transfer, targetBlockId in
+            guard let self else { throw CancellationError() }
+            return try await self.insertTorahSource(transfer, targetBlockId: targetBlockId)
+        }
         
         setupLoadingState()
+    }
+
+    func torahDropTargetBlockId(at indexPath: IndexPath?) -> String? {
+        guard let row = indexPath?.row else { return nil }
+        if let blockId = modelsHolder.blockViewModel(at: row)?.blockId {
+            return blockId
+        }
+        guard row > 0 else { return nil }
+        return stride(from: row - 1, through: 0, by: -1)
+            .compactMap { modelsHolder.blockViewModel(at: $0)?.blockId }
+            .first
+    }
+
+    func insertExternalTorahSource(_ transfer: TorahSourceTransfer, targetBlockId: String?) async {
+        await torahSession?.insertExternalDrop(transfer, targetBlockId: targetBlockId)
+    }
+
+    private func insertTorahSource(
+        _ transfer: TorahSourceTransfer,
+        targetBlockId: String?
+    ) async throws -> String {
+        let displayReference = transfer.hebrewRef ?? transfer.canonicalRef
+        let text = "\(transfer.text)\n— \(displayReference)"
+        let info = BlockInformation.empty(
+            content: .text(.plain(text, contentType: .quote))
+        )
+
+        if let targetBlockId {
+            return try await blockActionService.add(
+                info: info,
+                targetBlockId: targetBlockId,
+                position: .top,
+                setFocus: false
+            )
+        }
+
+        if let lastBlockId = modelsHolder.items.reversed().compactMap({ item -> String? in
+            guard case .block(let block) = item else { return nil }
+            return block.blockId
+        }).first {
+            return try await blockActionService.add(
+                info: info,
+                targetBlockId: lastBlockId,
+                position: .bottom,
+                setFocus: false
+            )
+        }
+
+        return try await blockService.addFirstBlock(contextId: document.objectId, info: info)
     }
     
     func setupSubscriptions() {

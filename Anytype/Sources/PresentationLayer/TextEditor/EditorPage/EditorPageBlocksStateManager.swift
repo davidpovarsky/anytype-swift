@@ -86,6 +86,7 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
     private let actionHandler: any BlockActionHandlerProtocol
     private let router: any EditorRouterProtocol
     private let bottomNavigationManager: any EditorBottomNavigationManagerProtocol
+    private weak var torahSession: TorahEditorSession?
     
     weak var blocksOptionViewModel: SelectionOptionsViewModel?
     weak var blocksSelectionOverlayViewModel: BlocksSelectionOverlayViewModel?
@@ -101,7 +102,8 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
         router: some EditorRouterProtocol,
         initialEditingState: EditorEditingState,
         viewInput: some EditorPageViewInput,
-        bottomNavigationManager: some EditorBottomNavigationManagerProtocol
+        bottomNavigationManager: some EditorBottomNavigationManagerProtocol,
+        torahSession: TorahEditorSession?
     ) {
         self.document = document
         self.modelsHolder = modelsHolder
@@ -111,6 +113,7 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
         self.editingState = initialEditingState
         self.viewInput = viewInput
         self.bottomNavigationManager = bottomNavigationManager
+        self.torahSession = torahSession
         
         setupEditingHandlers()
     }
@@ -263,7 +266,11 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
     }
 
     private func updateSelectionBarActions(selectedBlocks: [BlockInformation]) {
-        let availableItems = selectedBlocks.blocksOptionItems(document: document)
+        let availableItems = selectedBlocks
+            .blocksOptionItems(document: document)
+            .filter { item in
+                item != .torahLink || (torahSession != nil && selectedBlocks.count == 1)
+            }
         let horizontalItems = availableItems.map { item in
             SelectionOptionsItemViewModel(
                 id: "\(item.hashValue)",
@@ -555,6 +562,9 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
                     self?.actionHandler.setAppearance(blockId: blockId, appearance: appearance)
                 }
             }
+        case .torahLink:
+            guard let blockId = elements.first?.blockId else { return }
+            torahSession?.presentSearch(targetBlockId: blockId)
         }
 
         editingState = .editing

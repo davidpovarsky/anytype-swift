@@ -1,5 +1,6 @@
 import Foundation
 import PinkhaKit
+import SwiftProtobuf
 import Testing
 @testable import Anytype
 
@@ -111,6 +112,63 @@ struct TorahAssociationNativeRepositoryTests {
             }
             #expect(await store.writeCount() == 0)
         }
+    }
+
+    @Test("A present non-string native property fails closed")
+    func wrongTypedNativePropertyFailsClosed() {
+        let value = Google_Protobuf_Value.with { $0.numberValue = 42 }
+
+        do {
+            _ = try TorahAssociationNativePropertyValue.decode(value)
+            Issue.record("A wrong-typed native value was treated as an absent property")
+        } catch let error as TorahAssociationRepositoryError {
+            #expect(error == .malformedCanonicalData)
+        } catch {
+            Issue.record("Unexpected error: \(error)")
+        }
+    }
+
+    @Test("Trial mutations require every disposable-document confirmation")
+    func mutationOptInFailsClosed() {
+        #expect(!TorahEditorSafetyPolicy.mutationIsAuthorized(
+            disposableSpaceConfirmed: false,
+            freshDocumentConfirmed: true,
+            confirmation: "DISPOSABLE"
+        ))
+        #expect(!TorahEditorSafetyPolicy.mutationIsAuthorized(
+            disposableSpaceConfirmed: true,
+            freshDocumentConfirmed: false,
+            confirmation: "DISPOSABLE"
+        ))
+        #expect(!TorahEditorSafetyPolicy.mutationIsAuthorized(
+            disposableSpaceConfirmed: true,
+            freshDocumentConfirmed: true,
+            confirmation: "production"
+        ))
+        #expect(TorahEditorSafetyPolicy.mutationIsAuthorized(
+            disposableSpaceConfirmed: true,
+            freshDocumentConfirmed: true,
+            confirmation: " disposable "
+        ))
+    }
+
+    @Test("External Torah drops copy while internal editor drags remain moves")
+    func dragOperationsStaySeparated() {
+        #expect(TorahEditorSafetyPolicy.dropOperation(
+            containsTorahSource: true,
+            mutationIsAuthorized: true,
+            canPlace: true
+        ) == .copy)
+        #expect(TorahEditorSafetyPolicy.dropOperation(
+            containsTorahSource: false,
+            mutationIsAuthorized: true,
+            canPlace: true
+        ) == .move)
+        #expect(TorahEditorSafetyPolicy.dropOperation(
+            containsTorahSource: true,
+            mutationIsAuthorized: false,
+            canPlace: true
+        ) == .forbidden)
     }
 
     @Test("Space, block, deletion, archive, and detail permissions are enforced")

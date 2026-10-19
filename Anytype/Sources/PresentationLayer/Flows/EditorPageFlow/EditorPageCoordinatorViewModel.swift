@@ -9,6 +9,7 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
 
     let data: EditorPageObject
     let showHeader: Bool
+    let torahSession: TorahEditorSession?
     @ObservationIgnored
     @Injected(\.propertyValueProcessingService)
     private var propertyValueProcessingService: any PropertyValueProcessingServiceProtocol
@@ -35,6 +36,13 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
     ) {
         self.data = data
         self.showHeader = showHeader
+        self.torahSession = try? TorahEditorSession(spaceId: data.spaceId, objectId: data.objectId)
+        self.torahSession?.installOpenObjectHandler { [weak self] objectId in
+            guard let self else { return }
+            pageNavigation?.open(
+                .editor(.page(EditorPageObject(objectId: objectId, spaceId: data.spaceId)))
+            )
+        }
     }
     
     // MARK: - EditorPageModuleOutput

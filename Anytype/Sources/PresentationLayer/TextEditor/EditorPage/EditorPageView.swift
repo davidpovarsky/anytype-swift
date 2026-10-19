@@ -8,9 +8,19 @@ struct EditorPageView: View {
     
     private var model: EditorPageViewModel { stateModel.model }
     
-    init(data: EditorPageObject, output: (any EditorPageModuleOutput)?, showHeader: Bool) {
+    init(
+        data: EditorPageObject,
+        output: (any EditorPageModuleOutput)?,
+        showHeader: Bool,
+        torahSession: TorahEditorSession? = nil
+    ) {
         self._stateModel = StateObject(
-            wrappedValue: Container.shared.legacyEditorPageModuleAssembly().buildStateModel(data: data, output: output, showHeader: showHeader)
+            wrappedValue: Container.shared.legacyEditorPageModuleAssembly().buildStateModel(
+                data: data,
+                output: output,
+                showHeader: showHeader,
+                torahSession: torahSession
+            )
         )
     }
     

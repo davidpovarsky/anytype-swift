@@ -4,7 +4,12 @@ import Services
 
 @MainActor
 protocol EditorPageModuleAssemblyProtocol: AnyObject {
-    func buildStateModel(data: EditorPageObject, output: (any EditorPageModuleOutput)?, showHeader: Bool) -> EditorPageViewState
+    func buildStateModel(
+        data: EditorPageObject,
+        output: (any EditorPageModuleOutput)?,
+        showHeader: Bool,
+        torahSession: TorahEditorSession?
+    ) -> EditorPageViewState
 }
 
 @MainActor
@@ -15,7 +20,12 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
     
     nonisolated init() {}
     
-    func buildStateModel(data: EditorPageObject, output: (any EditorPageModuleOutput)?, showHeader: Bool) -> EditorPageViewState {
+    func buildStateModel(
+        data: EditorPageObject,
+        output: (any EditorPageModuleOutput)?,
+        showHeader: Bool,
+        torahSession: TorahEditorSession?
+    ) -> EditorPageViewState {
         let simpleTableMenuViewModel = SimpleTableMenuViewModel()
         let blocksOptionViewModel = SelectionOptionsViewModel(itemProvider: nil)
         
@@ -58,6 +68,7 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
                 quickCapture: data.quickCapture,
                 headerHint: data.headerHint
             ),
+            torahSession: torahSession,
             output: output
         )
 
@@ -78,6 +89,7 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
         blocksSelectionOverlayViewModel: BlocksSelectionOverlayViewModel,
         bottomNavigationManager: some EditorBottomNavigationManagerProtocol,
         configuration: EditorPageViewModelConfiguration,
+        torahSession: TorahEditorSession?,
         output: (any EditorPageModuleOutput)?
     ) -> EditorPageViewModel {
         let modelsHolder = EditorMainItemModelsHolder()
@@ -127,7 +139,8 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             router: router,
             initialEditingState: document.mode.isHandling ? .editing : .readonly,
             viewInput: viewInput,
-            bottomNavigationManager: bottomNavigationManager
+            bottomNavigationManager: bottomNavigationManager,
+            torahSession: torahSession
         )
  
         let accessoryState = AccessoryViewBuilder.accessoryState(
@@ -219,6 +232,8 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             cursorManager: cursorManager,
             editorPageTemplatesHandler: editorPageTemplatesHandler,
             configuration: configuration,
+            blockActionService: blockActionService,
+            torahSession: torahSession,
             output: output
         )
 

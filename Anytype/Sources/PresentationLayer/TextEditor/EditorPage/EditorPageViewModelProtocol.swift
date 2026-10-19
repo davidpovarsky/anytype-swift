@@ -1,6 +1,7 @@
 import Foundation
 import Services
 import Combine
+import TorahInspectorCore
 
 @MainActor
 protocol EditorPageViewModelProtocol: AnyObject {
@@ -12,6 +13,7 @@ protocol EditorPageViewModelProtocol: AnyObject {
     var actionHandler: any BlockActionHandlerProtocol { get }
     
     var router: any EditorRouterProtocol { get }
+    var torahSession: TorahEditorSession? { get }
     
     func viewDidLoad()
     func viewWillAppear()
@@ -37,4 +39,7 @@ protocol EditorPageViewModelProtocol: AnyObject {
     func showWidgets()
 
     func onPublishingBannerTap()
+
+    func torahDropTargetBlockId(at indexPath: IndexPath?) -> String?
+    func insertExternalTorahSource(_ transfer: TorahSourceTransfer, targetBlockId: String?) async
 }

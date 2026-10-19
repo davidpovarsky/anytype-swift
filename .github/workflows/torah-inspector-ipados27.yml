@@ -1,0 +1,136 @@
+name: Torah Inspector iPadOS 27 Trial
+
+on:
+  push:
+    branches:
+      - pinkha/torah-inspector-full-ipad-trial-2026-10-20
+  workflow_dispatch:
+
+concurrency:
+  group: torah-inspector-ipados27-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-and-package:
+    runs-on: xcode-27
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record toolchain
+        run: |
+          mkdir -p build/evidence
+          xcodebuild -version | tee build/evidence/xcode-version.txt
+          swift --version | tee build/evidence/swift-version.txt
+
+      - name: Verify immutable TorahInspectorKit pins
+        run: |
+          test "$(grep -c 'b0a3edcb9607105ef321a37c13de1eee9f198870' Modules/PinkhaKit/Package.swift)" -eq 1
+          test "$(grep -c 'b0a3edcb9607105ef321a37c13de1eee9f198870' Anytype.xcodeproj/project.pbxproj)" -eq 1
+          grep -q 'productName = TorahInspectorUI' Anytype.xcodeproj/project.pbxproj
+
+      - name: Run PinkhaKit tests
+        run: swift test --package-path Modules/PinkhaKit 2>&1 | tee build/evidence/pinkhakit-tests.log
+
+      - name: Download middleware
+        run: make setup-middle-ci
+        env:
+          CI: 'true'
+          MIDDLEWARE_TOKEN: ${{ secrets.MIDDLEWARE_TOKEN }}
+
+      - name: Select iPadOS 27 simulator
+        run: |
+          xcrun simctl list devices available --json > build/evidence/simulators.json
+          python3 - <<'PY'
+          import json, os
+          data = json.load(open('build/evidence/simulators.json'))
+          candidates = []
+          for runtime, devices in data['devices'].items():
+              if 'iOS-27' not in runtime:
+                  continue
+              candidates.extend(d for d in devices if d.get('isAvailable') and 'iPad' in d['name'])
+          if not candidates:
+              raise SystemExit('No available iPadOS 27 simulator')
+          with open(os.environ['GITHUB_ENV'], 'a') as env:
+              env.write(f"IPAD_UDID={candidates[0]['udid']}\n")
+              env.write(f"IPAD_NAME={candidates[0]['name']}\n")
+          PY
+
+      - name: Run focused native association tests
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -configuration Debug-Anytype \
+            -destination "platform=iOS Simulator,id=$IPAD_UDID" \
+            -derivedDataPath build/DerivedData-Tests \
+            -resultBundlePath build/results/TorahAssociationTests.xcresult \
+            -only-testing:AnytypeTests/TorahAssociationNativeRepositoryTests \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            2>&1 | tee build/evidence/native-association-tests.log
+
+      - name: Build unsigned iPad device app
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -configuration Release-Anytype \
+            -destination 'generic/platform=iOS' \
+            -sdk iphoneos \
+            -derivedDataPath build/DerivedData-Device \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY='' \
+            PROVISIONING_PROFILE_SPECIFIER='' \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            2>&1 | tee build/evidence/device-build.log
+
+      - name: Package separate-sandbox unsigned IPA
+        run: |
+          APP_PATH='build/DerivedData-Device/Build/Products/Release-Anytype-iphoneos/Anytype.app'
+          test -d "$APP_PATH"
+          /usr/libexec/PlistBuddy -c 'Set :CFBundleIdentifier com.gloiiire.anytype.torahtrial' "$APP_PATH/Info.plist"
+          /usr/libexec/PlistBuddy -c 'Set :CFBundleDisplayName Anytype Torah Trial' "$APP_PATH/Info.plist"
+          if [[ -d "$APP_PATH/PlugIns" ]]; then
+            rm -rf "$APP_PATH/PlugIns"
+          fi
+          mkdir -p build/ipa/Payload
+          cp -R "$APP_PATH" build/ipa/Payload/AnytypeTorahTrial.app
+          ditto -c -k --sequesterRsrc --keepParent build/ipa/Payload build/ipa/Anytype-TorahInspector-iPadOS27-Unsigned.ipa
+          shasum -a 256 build/ipa/Anytype-TorahInspector-iPadOS27-Unsigned.ipa | tee build/evidence/ipa-sha256.txt
+          printf 'Anytype commit: %s\nTorahInspectorKit commit: %s\nBundle ID: %s\n' \
+            "$GITHUB_SHA" \
+            'b0a3edcb9607105ef321a37c13de1eee9f198870' \
+            'com.gloiiire.anytype.torahtrial' \
+            > build/evidence/manifest.txt
+
+      - name: Upload unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Anytype-TorahInspector-iPadOS27-Unsigned-IPA
+          path: build/ipa/Anytype-TorahInspector-iPadOS27-Unsigned.ipa
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TorahInspector-iPadOS27-Test-Results
+          path: build/results
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload logs and manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TorahInspector-iPadOS27-Logs
+          path: build/evidence
+          if-no-files-found: error
+          retention-days: 14

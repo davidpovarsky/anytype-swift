@@ -13,8 +13,14 @@ struct EditorPageCoordinatorView: View {
     }
     
     var body: some View {
-        EditorPageView(data: model.data, output: model, showHeader: model.showHeader)
+        EditorPageView(
+            data: model.data,
+            output: model,
+            showHeader: model.showHeader,
+            torahSession: model.torahSession
+        )
             .ignoresSafeArea()
+            .torahEditorHost(session: model.torahSession)
             .onAppear {
                 model.pageNavigation = pageNavigation
             }

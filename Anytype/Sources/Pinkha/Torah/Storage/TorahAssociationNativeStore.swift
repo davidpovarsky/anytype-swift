@@ -76,12 +76,7 @@ final class MiddlewareTorahAssociationNativeStore: TorahAssociationNativeStore, 
             .convertObjectRestrictions(middlewareRestrictions: response.objectView.restrictions)
             .objectRestriction
         let canWriteDetails = !details.isReadonly && !restrictions.contains(.details)
-        let rawValue = details.values[propertyKey]
-        let propertyValue: String? = if let rawValue, case .stringValue(let value) = rawValue.kind {
-            value
-        } else {
-            nil
-        }
+        let propertyValue = try TorahAssociationNativePropertyValue.decode(details.values[propertyKey])
 
         return TorahAssociationNativeDocumentSnapshot(
             spaceId: details.spaceId,
@@ -108,6 +103,16 @@ final class MiddlewareTorahAssociationNativeStore: TorahAssociationNativeStore, 
         } catch {
             throw TorahAssociationRepositoryError.backendFailure(error.localizedDescription)
         }
+    }
+}
+
+enum TorahAssociationNativePropertyValue {
+    static func decode(_ value: Google_Protobuf_Value?) throws -> String? {
+        guard let value else { return nil }
+        guard case .stringValue(let string) = value.kind else {
+            throw TorahAssociationRepositoryError.malformedCanonicalData
+        }
+        return string
     }
 }
 

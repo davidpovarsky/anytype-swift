@@ -69,6 +69,7 @@
 		74B35D262D5B39C500AC9879 /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 74B35D252D5B39C500AC9879 /* AsyncAlgorithms */; };
 		74D79ED52D784FBF00658D0A /* AsyncTools in Frameworks */ = {isa = PBXBuildFile; productRef = 74D79ED42D784FBF00658D0A /* AsyncTools */; };
 		FA0000022E797AAD006805CC /* PinkhaKit in Frameworks */ = {isa = PBXBuildFile; productRef = FA0000012E797AAD006805CC /* PinkhaKit */; };
+		FA1000022F000001006805CC /* TorahInspectorUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA1000012F000001006805CC /* TorahInspectorUI */; };
 		74D9D0F42E5F31F500CA09E7 /* AssetConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74D9D0F32E5F31ED00CA09E7 /* AssetConstants.swift */; };
 		74EB806C2D79D3EA003F8D84 /* Assets in Frameworks */ = {isa = PBXBuildFile; productRef = 74EB806B2D79D3EA003F8D84 /* Assets */; };
 		74FC7F722D9EE65100FDD16F /* Loc in Frameworks */ = {isa = PBXBuildFile; productRef = 74FC7F712D9EE65100FDD16F /* Loc */; };
@@ -287,6 +288,7 @@
 				2A41A6782B84E57B00EAE6E6 /* DeepLinks in Frameworks */,
 				74D79ED52D784FBF00658D0A /* AsyncTools in Frameworks */,
 				FA0000022E797AAD006805CC /* PinkhaKit in Frameworks */,
+				FA1000022F000001006805CC /* TorahInspectorUI in Frameworks */,
 				5333421C262E249100238121 /* FloatingPanel in Frameworks */,
 				2A6ED16C285B44DB00AAA21C /* ProtobufMessages in Frameworks */,
 				2E63D9B72D56520C008A733A /* FirebaseMessaging in Frameworks */,
@@ -507,6 +509,7 @@
 				74B35D252D5B39C500AC9879 /* AsyncAlgorithms */,
 				74D79ED42D784FBF00658D0A /* AsyncTools */,
 				FA0000012E797AAD006805CC /* PinkhaKit */,
+				FA1000012F000001006805CC /* TorahInspectorUI */,
 				74EB806B2D79D3EA003F8D84 /* Assets */,
 				7411879A2D9ADD200006EA41 /* Loc */,
 				746F06002DB8E712005795F7 /* DesignKit */,
@@ -686,6 +689,7 @@
 				2E63D9B52D56520C008A733A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				74B35D242D5B39C500AC9879 /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 				74819CB22E169F5D0042D5EC /* XCRemoteSwiftPackageReference "Amplitude-Swift" */,
+				FA1000002F000001006805CC /* XCRemoteSwiftPackageReference "TorahInspectorKit" */,
 			);
 			preferredProjectObjectVersion = 52;
 			productRefGroup = 0303ECFC22D8EDAA005C552B /* Products */;
@@ -2182,6 +2186,14 @@
 				version = 2.2.0;
 			};
 		};
+		FA1000002F000001006805CC /* XCRemoteSwiftPackageReference "TorahInspectorKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/davidpovarsky/TorahInspectorKit.git";
+			requirement = {
+				kind = revision;
+				revision = b0a3edcb9607105ef321a37c13de1eee9f198870;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2392,6 +2404,11 @@
 		FA0000012E797AAD006805CC /* PinkhaKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PinkhaKit;
+		};
+		FA1000012F000001006805CC /* TorahInspectorUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA1000002F000001006805CC /* XCRemoteSwiftPackageReference "TorahInspectorKit" */;
+			productName = TorahInspectorUI;
 		};
 		74EB806B2D79D3EA003F8D84 /* Assets */ = {
 			isa = XCSwiftPackageProductDependency;
