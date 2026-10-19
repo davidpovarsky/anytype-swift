@@ -26,4 +26,4 @@ source path exists; it is not a device PASS.
 | DATA-3 | USER TEST PENDING | Physical iPad force-close/relaunch and offline persistence not observed. |
 | REG-1 | CI PENDING | Anytype run `39335838450`; no regression PASS claimed before completion. |
 | PLATFORM-1 | PARTIAL / USER TEST PENDING | Kit fallback source path and RTL resolver exist. Orientation/window/iPhone screenshots are unobserved. |
-| BUILD-1 | CI PENDING | Xcode 27 device lane `39335838450`; no IPA claim until artifact exists. |
+| BUILD-1 | CI PENDING | Xcode 27 device lane verifies separate bundle ID, iPad family, MinimumOS, stripped extensions, empty build entitlements and unsigned package; no IPA claim until artifact exists. |

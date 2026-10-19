@@ -87,6 +87,17 @@ sandbox; the user must follow normal login in the trial app. No signing assets
 are created. The unsigned IPA still requires an external signing/sideloading
 workflow compatible with that identifier.
 
+The normal Release target declares push/associated-domain/multicast
+entitlements and the production app group `group.io.anytype.app`. The trial
+device build explicitly overrides `CODE_SIGN_ENTITLEMENTS` to empty and strips
+the share/notification extensions before packaging. A signer must use the
+trial bundle identifier and must **not** add the production app group; granting
+that group would defeat the isolation boundary. Push, associated links,
+multicast discovery, notification communication and extension features are not
+claimed for this unsigned trial. The workflow records the packaged Info.plist,
+minimum OS, iPad device family, original-but-not-applied entitlement file and
+the expected absence of a code signature as evidence.
+
 ## Modified-file inventory
 
 Kit branch:

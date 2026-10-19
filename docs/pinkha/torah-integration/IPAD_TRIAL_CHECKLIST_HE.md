@@ -9,6 +9,7 @@
 - [ ] חתום והתקן את ה‑IPA הניסיוני בעזרת תהליך sideload מתאים. ה‑IPA שמופק ב‑CI אינו חתום ואינו מותקן ישירות.
 - [ ] ודא שהאפליקציה נקראת `Anytype Torah Trial` ושמזהה החבילה הוא `com.gloiiire.anytype.torahtrial` — אין להחליף את אפליקציית Anytype הרגילה.
 - [ ] בצע כניסה רגילה בתוך אפליקציית הניסוי. ה‑sandbox הנפרד אינו משתף אוטומטית session או נתונים עם האפליקציה הרגילה.
+- [ ] בעת חתימה/סידלואד השתמש ב‑Bundle ID `com.gloiiire.anytype.torahtrial` ואל תעניק את קבוצת האפליקציה הרגילה `group.io.anytype.app`; ה‑IPA נבנה ללא entitlements וללא extensions.
 
 ## קריאה ו‑Side Sheet — ללא כתיבה
 
