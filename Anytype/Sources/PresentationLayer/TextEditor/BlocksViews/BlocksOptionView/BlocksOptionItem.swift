@@ -8,6 +8,7 @@ enum BlocksOptionItem: CaseIterable, Comparable {
     case preview
     case openObject
     case openSource
+    case torahOpen
     case torahLink
     // -- Unique options. End
     case paste
@@ -49,7 +50,7 @@ extension BlocksOptionItem {
             return .X32.copy
         case .preview:
             return .X32.View.view
-        case .torahLink:
+        case .torahOpen, .torahLink:
             return .X32.linkTo
         }
     }
@@ -82,8 +83,10 @@ extension BlocksOptionItem {
             return Loc.copy
         case .preview:
             return Loc.view
+        case .torahOpen:
+            return Loc.Pinkha.Torah.openSource
         case .torahLink:
-            return "קשר תורני"
+            return Loc.Pinkha.Torah.addLink
         }
     }
 
@@ -115,6 +118,8 @@ extension BlocksOptionItem {
             return "Copy"
         case .preview:
             return "Preview"
+        case .torahOpen:
+            return "TorahOpen"
         case .torahLink:
             return "TorahLink"
         }

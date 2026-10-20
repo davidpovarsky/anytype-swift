@@ -4,7 +4,11 @@ import PinkhaKit
 /// Native Anytype association repository for the deliberately bounded
 /// single-active-writer track. Canonical data remains one native document
 /// property; full multi-client T2 remains independently blocked.
-final class AnytypeTorahAssociationRepository: TorahAssociationRepository, @unchecked Sendable {
+protocol AnytypeTorahAssociationSnapshotRepository: TorahAssociationRepository {
+    func listAssociationRecords(objectId: String, spaceId: String) async throws -> [TorahStoredAssociationRecord]
+}
+
+final class AnytypeTorahAssociationRepository: AnytypeTorahAssociationSnapshotRepository, @unchecked Sendable {
     private struct LoadedDocument: Sendable {
         let manifest: PinkhaSpaceManifest
         let snapshot: TorahAssociationNativeDocumentSnapshot
@@ -62,6 +66,17 @@ final class AnytypeTorahAssociationRepository: TorahAssociationRepository, @unch
                 target: .block(objectId: objectId, blockId: blockId)
             )
         )
+    }
+
+    func listAssociationRecords(objectId: String, spaceId: String) async throws -> [TorahStoredAssociationRecord] {
+        let location = TorahAssociationLocation(
+            spaceId: spaceId,
+            target: .object(objectId: objectId)
+        )
+        let key = documentKey(for: location)
+        return try await coordinator.enqueue(key: key) { [self] in
+            try await load(location: location, requiresWrite: false).payload.records
+        }
     }
 
     func addAssociation(

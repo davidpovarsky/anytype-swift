@@ -14,7 +14,7 @@ final class AnytypeTorahNotesService {
 
     let spaceId: String
     let objectId: String
-    private let associations: AnytypeTorahAssociationRepository
+    private let associations: any TorahAssociationRepository
 
     @Injected(\.objectActionsService)
     private var objectActionsService: any ObjectActionsServiceProtocol
@@ -24,7 +24,7 @@ final class AnytypeTorahNotesService {
     init(
         spaceId: String,
         objectId: String,
-        associations: AnytypeTorahAssociationRepository
+        associations: any TorahAssociationRepository
     ) {
         self.spaceId = spaceId
         self.objectId = objectId

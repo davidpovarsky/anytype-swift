@@ -1,27 +1,23 @@
 import SwiftUI
+import PinkhaKit
 
 struct TorahSourcesSearchView: View {
     @Bindable var session: TorahEditorSession
-
-    @State private var disposableSpaceConfirmed = false
-    @State private var freshDocumentConfirmed = false
-    @State private var confirmation = ""
+    @Environment(\.locale) private var locale
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 12) {
-                mutationGate
-
                 associationPreview
 
-                Picker("סוג חיפוש", selection: $session.searchScope) {
+                Picker(Loc.Pinkha.Torah.searchType, selection: $session.searchScope) {
                     ForEach(TorahEditorSession.SearchScope.allCases) { scope in
                         Text(scope.title).tag(scope)
                     }
                 }
                 .pickerStyle(.segmented)
 
-                TextField("חיפוש בספריא", text: $session.searchQuery)
+                TextField(Loc.Pinkha.Torah.searchPlaceholder, text: $session.searchQuery)
                     .textFieldStyle(.roundedBorder)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
@@ -30,11 +26,11 @@ struct TorahSourcesSearchView: View {
                 results
             }
             .padding(16)
-            .navigationTitle("תורה / מקורות")
+            .navigationTitle(contextTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("סגור") { session.isSearchPresented = false }
+                    Button(Loc.close) { session.isSearchPresented = false }
                 }
             }
         }
@@ -46,15 +42,15 @@ struct TorahSourcesSearchView: View {
             } catch {
             }
         }
-        .task { await session.refreshAssociations() }
+        .task(id: session.associationContext.id) { await session.refreshAssociations() }
     }
 
     private var associationPreview: some View {
         GroupBox {
             if session.currentAssociations.isEmpty {
                 Text(session.associationTargetBlockId == nil
-                     ? "אין עדיין קשרים תורניים במסמך"
-                     : "אין עדיין קשרים תורניים בבלוק")
+                     ? Loc.Pinkha.Torah.noDocumentLinks
+                     : Loc.Pinkha.Torah.noBlockLinks)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -63,20 +59,28 @@ struct TorahSourcesSearchView: View {
                     HStack {
                         ForEach(session.currentAssociations) { item in
                             HStack(spacing: 6) {
-                                Button(item.labelHe) {
+                                Image(systemName: kindSymbol(item.kind))
+                                    .foregroundStyle(.secondary)
+                                    .accessibilityHidden(true)
+                                Button(displayLabel(item)) {
                                     session.openAssociation(item)
                                 }
                                 .buttonStyle(.plain)
                                 .lineLimit(1)
                                 .disabled(!session.canOpenAssociation(item))
+                                .environment(
+                                    \.layoutDirection,
+                                    TorahAssociationDisplayFormatter.containsHebrew(displayLabel(item))
+                                        ? .rightToLeft
+                                        : .leftToRight
+                                )
                                 Button {
                                     Task { await session.unlinkAssociation(item) }
                                 } label: {
                                     Image(systemName: "xmark.circle.fill")
                                 }
                                 .buttonStyle(.plain)
-                                .disabled(!session.mutationOptIn)
-                                .accessibilityLabel("בטל קשר")
+                                .accessibilityLabel(Loc.Pinkha.Torah.removeLink)
                             }
                             .font(.caption)
                             .padding(.horizontal, 10)
@@ -95,7 +99,7 @@ struct TorahSourcesSearchView: View {
             }
         } label: {
             Label(
-                session.associationTargetBlockId == nil ? "קשר תורני במסמך" : "קשר תורני בבלוק",
+                contextTitle,
                 systemImage: "link"
             )
         }
@@ -103,70 +107,32 @@ struct TorahSourcesSearchView: View {
 
     private func persistenceLabel(_ state: TorahAssociationPersistenceState) -> String {
         switch state {
-        case .waiting: "ממתין לשמירה"
-        case .saving: "שומר…"
-        case .saved: "נשמר ואומת בקריאה חוזרת"
-        case .conflict: "התנגשות כתיבה"
-        case .uncertain: "מצב השמירה אינו ודאי"
-        case .error: "שגיאת שמירה"
-        }
-    }
-
-    private var mutationGate: some View {
-        GroupBox {
-            if session.mutationOptIn {
-                HStack {
-                    Label("כתיבה ניסיונית פעילה למסמך זה בלבד", systemImage: "exclamationmark.shield.fill")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(.orange)
-                    Spacer()
-                    Button("כבה") { session.disableMutations() }
-                }
-            } else {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("ברירת המחדל היא קריאה בלבד. הפעל כתיבה רק ב‑Space חד־פעמי ובמסמך חדש וריק ללא מידע בעל ערך.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                    Toggle("זהו Space חד־פעמי חדש", isOn: $disposableSpaceConfirmed)
-                    Toggle("זהו מסמך חדש וריק", isOn: $freshDocumentConfirmed)
-                    TextField("הקלד DISPOSABLE", text: $confirmation)
-                        .textFieldStyle(.roundedBorder)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
-                    Button("הפעל כתיבה ניסיונית") {
-                        session.enableMutations(
-                            disposableSpaceConfirmed: disposableSpaceConfirmed,
-                            freshDocumentConfirmed: freshDocumentConfirmed,
-                            confirmation: confirmation
-                        )
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(!disposableSpaceConfirmed || !freshDocumentConfirmed)
-                    .accessibilityIdentifier("torah-mutation-opt-in")
-                }
-            }
-        } label: {
-            Label("מגבלת בטיחות T2‑L", systemImage: "lock.shield")
+        case .waiting: Loc.Pinkha.Torah.Persistence.waiting
+        case .saving: Loc.Pinkha.Torah.Persistence.saving
+        case .saved: Loc.Pinkha.Torah.Persistence.saved
+        case .conflict: Loc.Pinkha.Torah.Persistence.conflict
+        case .uncertain: Loc.Pinkha.Torah.Persistence.uncertain
+        case .error: Loc.Pinkha.Torah.Persistence.error
         }
     }
 
     @ViewBuilder
     private var results: some View {
         if session.isSearching {
-            ProgressView("מחפש…")
+            ProgressView(Loc.Pinkha.Torah.searching)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else if session.searchResults.isEmpty {
             ContentUnavailableView(
-                "חפש מקור, נושא או מילה",
+                Loc.Pinkha.Torah.searchPrompt,
                 systemImage: "text.book.closed",
-                description: Text("התוצאות מגיעות מספק המקורות המוגדר, ללא נתוני דמה.")
+                description: Text(Loc.Pinkha.Torah.searchDescription)
             )
         } else {
             List(session.searchResults) { result in
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(result.title)
+                    Text(result.title(locale: locale))
                         .font(.body.weight(.medium))
-                    if let subtitle = result.subtitle, !subtitle.isEmpty {
+                    if let subtitle = result.subtitle(locale: locale), !subtitle.isEmpty {
                         Text(subtitle)
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -174,22 +140,41 @@ struct TorahSourcesSearchView: View {
                     }
                     HStack {
                         if result.scope == .references {
-                            Button("פתח במפקח") {
+                            Button(Loc.Pinkha.Torah.openInspector) {
                                 Task { await session.openReference(result) }
                             }
                             .buttonStyle(.borderedProminent)
                         }
-                        Button("קשר למסמך") {
+                        Button(session.associationTargetBlockId == nil
+                               ? Loc.Pinkha.Torah.linkToDocument
+                               : Loc.Pinkha.Torah.linkToBlock) {
                             Task { await session.link(result) }
                         }
                         .buttonStyle(.bordered)
-                        .disabled(!session.mutationOptIn)
                     }
                     .controlSize(.small)
                 }
                 .padding(.vertical, 4)
             }
             .listStyle(.plain)
+        }
+    }
+
+    private var contextTitle: String {
+        session.associationTargetBlockId == nil
+            ? Loc.Pinkha.Torah.documentLinks
+            : Loc.Pinkha.Torah.blockLinks
+    }
+
+    private func displayLabel(_ item: TorahAssociationItem) -> String {
+        TorahAssociationDisplayFormatter.label(for: item, locale: locale)
+    }
+
+    private func kindSymbol(_ kind: TorahAssociationKind) -> String {
+        switch kind {
+        case .ref: "book.pages"
+        case .topic: "tag"
+        case .word: "textformat"
         }
     }
 }

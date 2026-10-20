@@ -3,6 +3,7 @@ import TorahInspectorUI
 
 struct TorahEditorHostModifier: ViewModifier {
     let session: TorahEditorSession?
+    @Environment(\.locale) private var locale
 
     @ViewBuilder
     func body(content: Content) -> some View {
@@ -12,9 +13,18 @@ struct TorahEditorHostModifier: ViewModifier {
             content
                 .overlay(alignment: .topTrailing) {
                     Button {
-                        session.presentSearch(targetBlockId: nil)
+                        session.presentSearch(scope: .document)
                     } label: {
-                        Label("תורה / מקורות", systemImage: "text.book.closed")
+                        HStack(spacing: 6) {
+                            Label(Loc.Pinkha.Torah.title, systemImage: "text.book.closed")
+                            if !session.visibleDocumentAssociations.isEmpty {
+                                Text(session.visibleDocumentAssociations.count, format: .number)
+                                    .font(.caption2.weight(.bold))
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(.secondary.opacity(0.14), in: Capsule())
+                            }
+                        }
                             .font(.subheadline.weight(.semibold))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
@@ -24,6 +34,7 @@ struct TorahEditorHostModifier: ViewModifier {
                     .padding(.top, 54)
                     .padding(.trailing, 16)
                     .accessibilityIdentifier("torah-sources-entry")
+                    .accessibilityValue(String(session.visibleDocumentAssociations.count))
                 }
                 .popover(isPresented: $session.isSearchPresented, attachmentAnchor: .rect(.bounds)) {
                     TorahSourcesSearchView(session: session)
@@ -32,20 +43,32 @@ struct TorahEditorHostModifier: ViewModifier {
                 .torahInspectorSheet(
                     selection: $session.selection,
                     repository: session.repository,
+                    entryMode: session.inspectorEntryMode,
                     selectedTool: $session.selectedTool,
                     selectedDetent: $session.selectedDetent,
                     actions: session.hostActions
                 )
                 .alert(
-                    "Torah Inspector",
+                    Loc.Pinkha.Torah.title,
                     isPresented: Binding(
                         get: { session.message != nil },
                         set: { if !$0 { session.message = nil } }
                     )
                 ) {
-                    Button("אישור") { session.message = nil }
+                    Button(Loc.ok) { session.message = nil }
                 } message: {
                     Text(session.message ?? "")
+                }
+                .task(id: session.objectId) {
+                    session.updateEffectiveLocale(locale)
+                    await session.refreshAssociationSnapshot()
+                }
+                .onChange(of: locale.identifier) {
+                    session.updateEffectiveLocale(locale)
+                }
+                .onChange(of: session.selection?.id) { _, selectionID in
+                    guard selectionID == nil else { return }
+                    Task { await session.refreshAssociationSnapshot() }
                 }
         } else {
             content

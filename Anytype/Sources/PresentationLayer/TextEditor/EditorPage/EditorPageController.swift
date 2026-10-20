@@ -758,11 +758,54 @@ private extension EditorPageController {
     func setupCell(cell: UICollectionViewListCell, indexPath: IndexPath, item: some BlockViewModelProtocol) {
         cell.contentConfiguration = item.makeContentConfiguration(maxWidth: cell.bounds.width)
         cell.contentView.isUserInteractionEnabled = true
+        configureTorahAccessory(cell: cell, blockId: item.blockId)
         
         cell.backgroundConfiguration = UIBackgroundConfiguration.clear()
         if FeatureFlags.rainbowViews {
             cell.fillSubviewsWithRandomColors(recursively: false)
         }
+    }
+
+    func configureTorahAccessory(cell: UICollectionViewListCell, blockId: String) {
+        guard let session = viewModel.torahSession else {
+            cell.accessories = []
+            return
+        }
+        let count = session.linkedAssociationCount(blockId: blockId)
+        guard count > 0 else {
+            cell.accessories = []
+            return
+        }
+
+        var buttonConfiguration = UIButton.Configuration.tinted()
+        buttonConfiguration.image = UIImage(systemName: "book.pages")
+        buttonConfiguration.title = count > 1 ? String(count) : nil
+        buttonConfiguration.imagePadding = 4
+        buttonConfiguration.cornerStyle = .capsule
+        buttonConfiguration.contentInsets = NSDirectionalEdgeInsets(
+            top: 5,
+            leading: 7,
+            bottom: 5,
+            trailing: 7
+        )
+        let button = UIButton(
+            configuration: buttonConfiguration,
+            primaryAction: UIAction { [weak session] _ in
+                session?.openLinkedAssociations(blockId: blockId)
+            }
+        )
+        let sourceLabel = session.linkedAssociationLabel(blockId: blockId)
+        button.accessibilityLabel = [Loc.Pinkha.Torah.openSource, sourceLabel]
+            .compactMap { $0 }
+            .joined(separator: ", ")
+        button.accessibilityValue = String(count)
+        button.accessibilityIdentifier = "torah-linked-source-\(blockId)"
+
+        let configuration = UICellAccessory.CustomViewConfiguration(
+            customView: button,
+            placement: .trailing()
+        )
+        cell.accessories = [.customView(configuration: configuration)]
     }
     
 }

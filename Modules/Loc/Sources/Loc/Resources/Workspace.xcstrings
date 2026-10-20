@@ -89126,6 +89126,258 @@
           }
         }
       }
+    },
+    "Pinkha.Torah.addLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Add Torah link" } },
+        "he": { "stringUnit": { "state": "translated", "value": "הוסף קשר תורני" } }
+      }
+    },
+    "Pinkha.Torah.blockLinks": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Block links" } },
+        "he": { "stringUnit": { "state": "translated", "value": "קישורים בבלוק" } }
+      }
+    },
+    "Pinkha.Torah.documentLinks": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Document links" } },
+        "he": { "stringUnit": { "state": "translated", "value": "קישורים במסמך" } }
+      }
+    },
+    "Pinkha.Torah.Error.backendFailure": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "The source link could not be saved." } },
+        "he": { "stringUnit": { "state": "translated", "value": "לא ניתן לשמור את שיוך המקור." } }
+      }
+    },
+    "Pinkha.Torah.Error.conflictingWrite": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "The source links changed elsewhere. Nothing was overwritten." } },
+        "he": { "stringUnit": { "state": "translated", "value": "שיוכי המקור השתנו במקום אחר. דבר לא נדרס." } }
+      }
+    },
+    "Pinkha.Torah.Error.insertionUnavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "The editor is not ready to insert a source yet." } },
+        "he": { "stringUnit": { "state": "translated", "value": "העורך אינו מוכן עדיין להכנסת מקור." } }
+      }
+    },
+    "Pinkha.Torah.Error.noResolvedWord": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No matching lexical entry was found." } },
+        "he": { "stringUnit": { "state": "translated", "value": "לא נמצא ערך מילוני מתאים." } }
+      }
+    },
+    "Pinkha.Torah.Error.invalidStoredData": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "The saved source-link data is invalid and was left unchanged." } },
+        "he": { "stringUnit": { "state": "translated", "value": "נתוני שיוכי המקור השמורים אינם תקינים ונשארו ללא שינוי." } }
+      }
+    },
+    "Pinkha.Torah.Error.partialInsertion": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "The quote was added, but its source link was not saved. Do not retry blindly." } },
+        "he": { "stringUnit": { "state": "translated", "value": "הציטוט נוסף, אך שיוך המקור לא נשמר. אין לבצע ניסיון עיוור נוסף." } }
+      }
+    },
+    "Pinkha.Torah.Error.permissionDenied": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "You do not have permission to change source links in this document." } },
+        "he": { "stringUnit": { "state": "translated", "value": "אין לך הרשאה לשנות שיוכי מקור במסמך זה." } }
+      }
+    },
+    "Pinkha.Torah.Error.staleDocument": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "The document target changed. The operation was cancelled without writing." } },
+        "he": { "stringUnit": { "state": "translated", "value": "יעד המסמך השתנה. הפעולה בוטלה ללא כתיבה." } }
+      }
+    },
+    "Pinkha.Torah.Error.targetUnavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "The document or block is no longer available. Nothing was written." } },
+        "he": { "stringUnit": { "state": "translated", "value": "המסמך או הבלוק אינם זמינים עוד. דבר לא נכתב." } }
+      }
+    },
+    "Pinkha.Torah.Error.uncertainWrite": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "The save result is uncertain. Check the links before trying again." } },
+        "he": { "stringUnit": { "state": "translated", "value": "תוצאת השמירה אינה ודאית. יש לבדוק את השיוכים לפני ניסיון נוסף." } }
+      }
+    },
+    "Pinkha.Torah.Error.unsupportedStoredData": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "These source links were created by a newer app version and were left unchanged." } },
+        "he": { "stringUnit": { "state": "translated", "value": "שיוכי המקור נוצרו בגרסת אפליקציה חדשה יותר ונשארו ללא שינוי." } }
+      }
+    },
+    "Pinkha.Torah.linkToBlock": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Link to block" } },
+        "he": { "stringUnit": { "state": "translated", "value": "קשר לבלוק" } }
+      }
+    },
+    "Pinkha.Torah.linkToDocument": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Link to document" } },
+        "he": { "stringUnit": { "state": "translated", "value": "קשר למסמך" } }
+      }
+    },
+    "Pinkha.Torah.noBlockLinks": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No Torah links in this block yet" } },
+        "he": { "stringUnit": { "state": "translated", "value": "אין עדיין קשרים תורניים בבלוק" } }
+      }
+    },
+    "Pinkha.Torah.noDocumentLinks": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "No Torah links in this document yet" } },
+        "he": { "stringUnit": { "state": "translated", "value": "אין עדיין קשרים תורניים במסמך" } }
+      }
+    },
+    "Pinkha.Torah.openInspector": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Open in Inspector" } },
+        "he": { "stringUnit": { "state": "translated", "value": "פתח במפקח" } }
+      }
+    },
+    "Pinkha.Torah.openSource": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Open Torah source" } },
+        "he": { "stringUnit": { "state": "translated", "value": "פתח מקור תורני" } }
+      }
+    },
+    "Pinkha.Torah.removeLink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Remove link" } },
+        "he": { "stringUnit": { "state": "translated", "value": "בטל קשר" } }
+      }
+    },
+    "Pinkha.Torah.Persistence.conflict": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Write conflict" } },
+        "he": { "stringUnit": { "state": "translated", "value": "התנגשות כתיבה" } }
+      }
+    },
+    "Pinkha.Torah.Persistence.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Save error" } },
+        "he": { "stringUnit": { "state": "translated", "value": "שגיאת שמירה" } }
+      }
+    },
+    "Pinkha.Torah.Persistence.saved": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Saved and verified by readback" } },
+        "he": { "stringUnit": { "state": "translated", "value": "נשמר ואומת בקריאה חוזרת" } }
+      }
+    },
+    "Pinkha.Torah.Persistence.saving": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Saving…" } },
+        "he": { "stringUnit": { "state": "translated", "value": "שומר…" } }
+      }
+    },
+    "Pinkha.Torah.Persistence.uncertain": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Save status is uncertain" } },
+        "he": { "stringUnit": { "state": "translated", "value": "מצב השמירה אינו ודאי" } }
+      }
+    },
+    "Pinkha.Torah.Persistence.waiting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Waiting to save" } },
+        "he": { "stringUnit": { "state": "translated", "value": "ממתין לשמירה" } }
+      }
+    },
+    "Pinkha.Torah.searchDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Results come from the configured Torah provider." } },
+        "he": { "stringUnit": { "state": "translated", "value": "התוצאות מגיעות מספק המקורות המוגדר." } }
+      }
+    },
+    "Pinkha.Torah.searching": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Searching…" } },
+        "he": { "stringUnit": { "state": "translated", "value": "מחפש…" } }
+      }
+    },
+    "Pinkha.Torah.searchPlaceholder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Search Sefaria" } },
+        "he": { "stringUnit": { "state": "translated", "value": "חיפוש בספריא" } }
+      }
+    },
+    "Pinkha.Torah.searchType": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Search type" } },
+        "he": { "stringUnit": { "state": "translated", "value": "סוג חיפוש" } }
+      }
+    },
+    "Pinkha.Torah.searchPrompt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Search for a source, topic, or word" } },
+        "he": { "stringUnit": { "state": "translated", "value": "חפש מקור, נושא או מילה" } }
+      }
+    },
+    "Pinkha.Torah.sources": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Sources" } },
+        "he": { "stringUnit": { "state": "translated", "value": "מקורות" } }
+      }
+    },
+    "Pinkha.Torah.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Torah / Sources" } },
+        "he": { "stringUnit": { "state": "translated", "value": "תורה / מקורות" } }
+      }
+    },
+    "Pinkha.Torah.topics": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Topics" } },
+        "he": { "stringUnit": { "state": "translated", "value": "נושאים" } }
+      }
+    },
+    "Pinkha.Torah.words": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": { "stringUnit": { "state": "translated", "value": "Words" } },
+        "he": { "stringUnit": { "state": "translated", "value": "מילים" } }
+      }
     }
   },
   "version": "1.0"

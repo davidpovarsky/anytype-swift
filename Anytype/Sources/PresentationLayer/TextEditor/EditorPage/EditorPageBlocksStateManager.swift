@@ -269,7 +269,13 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
         let availableItems = selectedBlocks
             .blocksOptionItems(document: document)
             .filter { item in
-                item != .torahLink || (torahSession != nil && selectedBlocks.count == 1)
+                guard torahSession != nil, selectedBlocks.count == 1 else {
+                    return item != .torahLink && item != .torahOpen
+                }
+                if item == .torahOpen, let blockId = selectedBlocks.first?.id {
+                    return (torahSession?.linkedAssociationCount(blockId: blockId) ?? 0) > 0
+                }
+                return true
             }
         let horizontalItems = availableItems.map { item in
             SelectionOptionsItemViewModel(
@@ -562,9 +568,12 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
                     self?.actionHandler.setAppearance(blockId: blockId, appearance: appearance)
                 }
             }
+        case .torahOpen:
+            guard let blockId = elements.first?.blockId else { return }
+            torahSession?.openLinkedAssociations(blockId: blockId)
         case .torahLink:
             guard let blockId = elements.first?.blockId else { return }
-            torahSession?.presentSearch(targetBlockId: blockId)
+            torahSession?.presentSearch(scope: .block(blockId))
         }
 
         editingState = .editing

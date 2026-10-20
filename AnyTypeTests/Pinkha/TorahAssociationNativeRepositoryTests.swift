@@ -129,47 +129,257 @@ struct TorahAssociationNativeRepositoryTests {
         }
     }
 
-    @Test("Trial mutations require every disposable-document confirmation")
-    func mutationOptInFailsClosed() {
-        #expect(!TorahEditorSafetyPolicy.mutationIsAuthorized(
-            disposableSpaceConfirmed: false,
-            freshDocumentConfirmed: true,
-            confirmation: "DISPOSABLE"
-        ))
-        #expect(!TorahEditorSafetyPolicy.mutationIsAuthorized(
-            disposableSpaceConfirmed: true,
-            freshDocumentConfirmed: false,
-            confirmation: "DISPOSABLE"
-        ))
-        #expect(!TorahEditorSafetyPolicy.mutationIsAuthorized(
-            disposableSpaceConfirmed: true,
-            freshDocumentConfirmed: true,
-            confirmation: "production"
-        ))
-        #expect(TorahEditorSafetyPolicy.mutationIsAuthorized(
-            disposableSpaceConfirmed: true,
-            freshDocumentConfirmed: true,
-            confirmation: " disposable "
-        ))
-    }
-
     @Test("External Torah drops copy while internal editor drags remain moves")
     func dragOperationsStaySeparated() {
         #expect(TorahEditorSafetyPolicy.dropOperation(
             containsTorahSource: true,
-            mutationIsAuthorized: true,
+            canMutate: true,
             canPlace: true
         ) == .copy)
         #expect(TorahEditorSafetyPolicy.dropOperation(
             containsTorahSource: false,
-            mutationIsAuthorized: true,
+            canMutate: true,
             canPlace: true
         ) == .move)
         #expect(TorahEditorSafetyPolicy.dropOperation(
             containsTorahSource: true,
-            mutationIsAuthorized: false,
+            canMutate: false,
             canPlace: true
         ) == .forbidden)
+        #expect(TorahEditorSafetyPolicy.dropOperation(
+            containsTorahSource: false,
+            canMutate: false,
+            canPlace: true
+        ) == .forbidden)
+    }
+
+    @Test("Document REF, TOPIC and WORD records survive a fresh repository instance")
+    func documentKindsSurviveFreshRepository() async throws {
+        let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: ["block"])
+        let first = makeRepository(store: store)
+        for item in [
+            association(10, kind: .ref),
+            association(11, kind: .topic),
+            association(12, kind: .word)
+        ] {
+            _ = try await first.addAssociation(
+                item,
+                target: .object(objectId: objectId),
+                spaceId: spaceId
+            )
+        }
+
+        let reopened = makeRepository(store: store)
+        let items = try await reopened.listDocumentAssociations(objectId: objectId, spaceId: spaceId)
+        #expect(Set(items.map(\.kind)) == Set([.ref, .topic, .word]))
+        let records = try await reopened.listAssociationRecords(objectId: objectId, spaceId: spaceId)
+        #expect(records.count == 3)
+        #expect(records.allSatisfy { $0.blockId == nil })
+    }
+
+    @Test("Document and block targets retain identical canonical sources independently")
+    func identicalSourceAcrossScopesRemainsDistinct() async throws {
+        let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: ["a", "b"])
+        let repository = makeRepository(store: store)
+        let source = association(20)
+        _ = try await repository.addAssociation(source, target: .object(objectId: objectId), spaceId: spaceId)
+        _ = try await repository.addAssociation(source, target: .block(objectId: objectId, blockId: "a"), spaceId: spaceId)
+        _ = try await repository.addAssociation(source, target: .block(objectId: objectId, blockId: "b"), spaceId: spaceId)
+
+        let records = try await repository.listAssociationRecords(objectId: objectId, spaceId: spaceId)
+        #expect(records.count == 3)
+        #expect(Set(records.map(\.blockId)) == Set<String?>([nil, "a", "b"]))
+    }
+
+    @Test("Removing one scope leaves every other scope unchanged")
+    func scopedRemovalDoesNotTouchOtherTargets() async throws {
+        let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: ["a", "b"])
+        let repository = makeRepository(store: store)
+        for (index, target) in [
+            (30, TorahAssociationTarget.object(objectId: objectId)),
+            (31, TorahAssociationTarget.block(objectId: objectId, blockId: "a")),
+            (32, TorahAssociationTarget.block(objectId: objectId, blockId: "b"))
+        ] {
+            _ = try await repository.addAssociation(association(index), target: target, spaceId: spaceId)
+        }
+
+        try await repository.removeAssociation(
+            associationId: "association-30",
+            target: .object(objectId: objectId),
+            spaceId: spaceId
+        )
+
+        #expect(try await repository.listDocumentAssociations(objectId: objectId, spaceId: spaceId).isEmpty)
+        #expect(try await repository.listBlockAssociations(objectId: objectId, blockId: "a", spaceId: spaceId).map(\.id) == ["association-31"])
+        #expect(try await repository.listBlockAssociations(objectId: objectId, blockId: "b", spaceId: spaceId).map(\.id) == ["association-32"])
+    }
+
+    @Test("Document updates and removal preserve two independently linked blocks")
+    func documentMutationPreservesTwoBlockRecords() async throws {
+        let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: ["a", "b"])
+        let repository = makeRepository(store: store)
+        let documentItem = association(33)
+        let blockA = association(34)
+        let blockB = association(35)
+        _ = try await repository.addAssociation(documentItem, target: .object(objectId: objectId), spaceId: spaceId)
+        _ = try await repository.addAssociation(blockA, target: .block(objectId: objectId, blockId: "a"), spaceId: spaceId)
+        _ = try await repository.addAssociation(blockB, target: .block(objectId: objectId, blockId: "b"), spaceId: spaceId)
+
+        var updatedDocumentItem = documentItem
+        updatedDocumentItem.labelHe = "בראשית מעודכן"
+        _ = try await repository.updateAssociation(
+            updatedDocumentItem,
+            target: .object(objectId: objectId),
+            spaceId: spaceId
+        )
+        try await repository.removeAssociation(
+            associationId: documentItem.id,
+            target: .object(objectId: objectId),
+            spaceId: spaceId
+        )
+
+        #expect(try await repository.listDocumentAssociations(objectId: objectId, spaceId: spaceId).isEmpty)
+        #expect(try await repository.listBlockAssociations(objectId: objectId, blockId: "a", spaceId: spaceId) == [blockA])
+        #expect(try await repository.listBlockAssociations(objectId: objectId, blockId: "b", spaceId: spaceId) == [blockB])
+    }
+
+    @MainActor
+    @Test("A stale block refresh cannot overwrite a newer document context")
+    func staleRefreshCannotReplaceDocumentAssociations() async throws {
+        let documentItem = association(40)
+        let blockItem = association(41)
+        let probe = DelayedSessionAssociationProbe(
+            responses: [
+                .init(
+                    delay: .milliseconds(120),
+                    records: [TorahStoredAssociationRecord(
+                        location: .init(spaceId: spaceId, target: .block(objectId: objectId, blockId: "block")),
+                        item: blockItem
+                    )]
+                ),
+                .init(
+                    delay: .milliseconds(5),
+                    records: [TorahStoredAssociationRecord(
+                        location: .init(spaceId: spaceId, target: .object(objectId: objectId)),
+                        item: documentItem
+                    )]
+                )
+            ]
+        )
+        let session = TorahEditorSession(
+            spaceId: spaceId,
+            objectId: objectId,
+            workspace: try AnytypeTorahWorkspace.sefaria(),
+            associations: probe
+        )
+
+        session.presentSearch(scope: .block("block"))
+        try await Task.sleep(for: .milliseconds(15))
+        session.presentSearch(scope: .document)
+        try await Task.sleep(for: .milliseconds(160))
+
+        #expect(session.associationContext.scope == .document)
+        #expect(session.currentAssociations.map(\.id) == [documentItem.id])
+    }
+
+    @Test("Locale changes display only and new quote bodies do not freeze a citation")
+    func localeAndQuoteContentAreNonDestructive() {
+        let item = TorahAssociationItem(
+            id: "stable",
+            kind: .ref,
+            role: .sourceQuote,
+            providerID: "sefaria",
+            externalID: "Genesis.1.1",
+            canonicalKey: "Genesis 1:1",
+            labelHe: "בראשית א׳:א׳",
+            labelEn: "Genesis 1:1"
+        )
+        #expect(TorahAssociationDisplayFormatter.label(for: item, locale: Locale(identifier: "he")) == "בראשית א׳:א׳")
+        #expect(TorahAssociationDisplayFormatter.label(for: item, locale: Locale(identifier: "en")) == "Genesis 1:1")
+        #expect(item.id == "stable")
+        #expect(item.canonicalKey == "Genesis 1:1")
+
+        let transfer = TorahSourceTransfer(
+            providerID: "sefaria",
+            canonicalRef: "Genesis 1:1",
+            hebrewRef: "בראשית א׳:א׳",
+            sectionRef: "Genesis 1",
+            text: "בראשית ברא"
+        )
+        #expect(TorahQuoteContentPolicy.editableBody(for: transfer) == "בראשית ברא")
+        #expect(!TorahQuoteContentPolicy.editableBody(for: transfer).contains("Genesis 1:1"))
+    }
+
+    @MainActor
+    @Test("A single linked verse opens exact relationships; multiple or typed links open a chooser")
+    func linkedBlockOpeningRoutesByAssociationShape() async throws {
+        let verse = TorahAssociationItem(
+            id: "verse",
+            kind: .ref,
+            role: .sourceQuote,
+            providerID: "sefaria",
+            externalID: "Genesis.1.1",
+            canonicalKey: "Genesis 1:1",
+            labelHe: "בראשית א׳:א׳",
+            labelEn: "Genesis 1:1",
+            customMetadata: ["sectionRef": "Genesis 1"]
+        )
+        let topic = TorahAssociationItem(
+            id: "topic",
+            kind: .topic,
+            role: .context,
+            providerID: "sefaria",
+            externalID: "creation",
+            canonicalKey: "creation",
+            labelHe: "בריאה",
+            labelEn: "Creation"
+        )
+        let probe = DelayedSessionAssociationProbe(responses: [
+            .init(delay: .zero, records: [
+                TorahStoredAssociationRecord(
+                    location: .init(spaceId: spaceId, target: .block(objectId: objectId, blockId: "single")),
+                    item: verse
+                ),
+                TorahStoredAssociationRecord(
+                    location: .init(spaceId: spaceId, target: .block(objectId: objectId, blockId: "multiple")),
+                    item: verse
+                ),
+                TorahStoredAssociationRecord(
+                    location: .init(spaceId: spaceId, target: .block(objectId: objectId, blockId: "multiple")),
+                    item: topic
+                ),
+                TorahStoredAssociationRecord(
+                    location: .init(spaceId: spaceId, target: .block(objectId: objectId, blockId: "typed")),
+                    item: topic
+                )
+            ])
+        ])
+        let session = TorahEditorSession(
+            spaceId: spaceId,
+            objectId: objectId,
+            workspace: try AnytypeTorahWorkspace.sefaria(),
+            associations: probe
+        )
+        await session.refreshAssociationSnapshot()
+
+        session.openLinkedAssociations(blockId: "single")
+        #expect(session.selection == TorahInspectorSelection(
+            providerID: "sefaria",
+            canonicalRef: "Genesis 1",
+            preferredSegmentRef: "Genesis 1:1",
+            scope: .segment
+        ))
+        #expect(session.inspectorEntryMode == .relationships)
+        #expect(!session.isSearchPresented)
+
+        session.openLinkedAssociations(blockId: "multiple")
+        #expect(session.isSearchPresented)
+        #expect(session.associationTargetBlockId == "multiple")
+
+        session.isSearchPresented = false
+        session.openLinkedAssociations(blockId: "typed")
+        #expect(session.isSearchPresented)
+        #expect(session.associationTargetBlockId == "typed")
     }
 
     @MainActor
@@ -224,10 +434,13 @@ struct TorahAssociationNativeRepositoryTests {
         )
     }
 
-    private func association(_ index: Int) -> TorahAssociationItem {
+    private func association(
+        _ index: Int,
+        kind: TorahAssociationKind = .ref
+    ) -> TorahAssociationItem {
         TorahAssociationItem(
             id: "association-\(index)",
-            kind: .ref,
+            kind: kind,
             role: .context,
             providerID: "sefaria",
             externalID: "Genesis.1.\(index + 1)",
@@ -235,6 +448,80 @@ struct TorahAssociationNativeRepositoryTests {
             labelHe: "בראשית א",
             labelEn: "Genesis 1:\(index + 1)"
         )
+    }
+}
+
+private actor DelayedSessionAssociationProbe: AnytypeTorahAssociationSnapshotRepository {
+    struct Response: Sendable {
+        let delay: Duration
+        let records: [TorahStoredAssociationRecord]
+    }
+
+    private var responses: [Response]
+
+    init(responses: [Response]) {
+        self.responses = responses
+    }
+
+    func listAssociationRecords(
+        objectId: String,
+        spaceId: String
+    ) async throws -> [TorahStoredAssociationRecord] {
+        guard !responses.isEmpty else { return [] }
+        let response = responses.removeFirst()
+        try await Task.sleep(for: response.delay)
+        return response.records
+    }
+
+    func listDocumentAssociations(
+        objectId: String,
+        spaceId: String
+    ) async throws -> [TorahAssociationItem] {
+        try await listAssociationRecords(objectId: objectId, spaceId: spaceId)
+            .filter { $0.blockId == nil }
+            .map(\.item)
+    }
+
+    func listBlockAssociations(
+        objectId: String,
+        blockId: String,
+        spaceId: String
+    ) async throws -> [TorahAssociationItem] {
+        try await listAssociationRecords(objectId: objectId, spaceId: spaceId)
+            .filter { $0.blockId == blockId }
+            .map(\.item)
+    }
+
+    func addAssociation(
+        _ item: TorahAssociationItem,
+        target: TorahAssociationTarget,
+        spaceId: String
+    ) async throws -> TorahAssociationItem {
+        throw TorahAssociationRepositoryError.backendFailure("Unexpected mutation")
+    }
+
+    func upsertAssociation(
+        _ item: TorahAssociationItem,
+        target: TorahAssociationTarget,
+        spaceId: String
+    ) async throws -> TorahAssociationItem {
+        throw TorahAssociationRepositoryError.backendFailure("Unexpected mutation")
+    }
+
+    func updateAssociation(
+        _ item: TorahAssociationItem,
+        target: TorahAssociationTarget,
+        spaceId: String
+    ) async throws -> TorahAssociationItem {
+        throw TorahAssociationRepositoryError.backendFailure("Unexpected mutation")
+    }
+
+    func removeAssociation(
+        associationId: String,
+        target: TorahAssociationTarget,
+        spaceId: String
+    ) async throws {
+        throw TorahAssociationRepositoryError.backendFailure("Unexpected mutation")
     }
 }
 

@@ -6,7 +6,7 @@ Base Anytype SHA: `e9ae976ca7882ac0b1fa8efb2f75e20618c82718`
 
 Source Pinkha SHA: `24e074d5557dba632d36dbb71fda8cf9acb8d3ac`
 
-TorahInspectorKit pinned SHA: `e8aefc626350c8ee0df9daf8d7de7e1dcd0ea418`
+TorahInspectorKit pinned SHA: `1ebbbd2d43e1ba078e50408ce518d739fe6ca94f`
 
 Working branch: `pinkha/torah-integration-t1-hardening`
 
@@ -28,7 +28,46 @@ T2 CI-validated implementation HEAD: `0486bb72337a8c95b863ad8c8d9c5a7f11f51669`
 
 Local toolchain: Swift 6.3.3 on Windows; Apple SDK unavailable locally.
 
-## Owner-directed iPad trial — 2026-10-20
+## Production association UX correction — 2026-10-20
+
+Working branch: `pinkha/torah-associations-native-ux-persistence-localization-2026-10-20`
+
+Shared Kit branch: `feature/torah-inspector-locale-linked-opening-2026-10-20`
+at immutable revision `1ebbbd2d43e1ba078e50408ce518d739fe6ca94f`.
+
+The physical-iPad report was traced to host presentation state, not to a second
+or missing persistence store. `TorahEditorSession` previously kept a mutable
+optional block target while independent asynchronous refreshes updated one
+`currentAssociations` array. A late block response could therefore replace a
+newer document view after the toolbar switched scope. The canonical v2 native
+property already retained both `blockId == nil` document records and block
+records. The host now uses an explicit Space/object/scope context, reads one
+canonical record snapshot, indexes it by block ID, and rejects stale refreshes
+by request identity and exact context.
+
+The owner-directed correction also:
+
+- removes the entire `DISPOSABLE`/experimental mutation gate while retaining
+  native permissions, stale-target checks, serialized mutations, readback and
+  conflict/uncertain-write reporting;
+- adds a UIKit cell accessory and context action for block-linked sources;
+  one reference opens the real Kit system Sheet directly, while multiple or
+  typed associations open the scoped chooser;
+- renders association/source labels from the effective SwiftUI locale without
+  changing canonical identity, and fixes provider-derived Hebrew segment labels
+  for trustworthy simple numeric sections;
+- keeps existing quote bodies untouched and stores no locale-dependent suffix
+  in newly inserted editable quote text;
+- preserves bundle ID `com.gloiiire.anytype.torahtrial` for an in-place sideload
+  update. The display name changes to `Anytype Torah` only.
+
+Local portable evidence: `swift test --package-path Modules/PinkhaKit` passed
+131 tests in 16 suites. Native SwiftUI/UIKit/Xcode verification and the unsigned
+device IPA are CI pending. Physical app relaunch, authenticated account data,
+editing gestures, orientation and two-window behavior remain **DEVICE PENDING**.
+Full T2 multi-device convergence remains unproven and is not reclassified.
+
+## Historical owner-directed iPad trial — 2026-10-20 (superseded UX)
 
 The 2026-10-20 owner directive authorizes a new isolated iPad trial without
 reclassifying the failed T2-L simulator recovery gate. Work starts from exact

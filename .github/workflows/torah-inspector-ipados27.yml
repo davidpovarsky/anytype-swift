@@ -1,9 +1,9 @@
-name: Torah Inspector iPadOS 27 Trial
+name: Torah Associations iPadOS 27 Update
 
 on:
   push:
     branches:
-      - pinkha/torah-inspector-full-ipad-trial-2026-10-20
+      - pinkha/torah-associations-native-ux-persistence-localization-2026-10-20
   workflow_dispatch:
 
 concurrency:
@@ -28,9 +28,33 @@ jobs:
 
       - name: Verify immutable TorahInspectorKit pins
         run: |
-          test "$(grep -c '5ab2f49b4320759e03f40ffa2a2e472835ba9348' Modules/PinkhaKit/Package.swift)" -eq 1
-          test "$(grep -c '5ab2f49b4320759e03f40ffa2a2e472835ba9348' Anytype.xcodeproj/project.pbxproj)" -eq 1
+          test "$(grep -c '1ebbbd2d43e1ba078e50408ce518d739fe6ca94f' Modules/PinkhaKit/Package.swift)" -eq 1
+          test "$(grep -c '1ebbbd2d43e1ba078e50408ce518d739fe6ca94f' Anytype.xcodeproj/project.pbxproj)" -eq 1
           grep -q 'productName = TorahInspectorUI' Anytype.xcodeproj/project.pbxproj
+
+      - name: Verify production Torah feature has no trial mutation gate
+        run: |
+          if grep -R -n -E 'mutationOptIn|mutationGate|DISPOSABLE|disposableSpaceConfirmed|freshDocumentConfirmed|mutationIsAuthorized|Activate experimental writing|T2-L safety' \
+            Anytype/Sources/Pinkha/Torah \
+            Anytype/Sources/PresentationLayer/TextEditor/EditorPage \
+            AnyTypeTests/Pinkha; then
+            echo 'Obsolete trial mutation gate remains in compiled feature code.' >&2
+            exit 1
+          fi
+
+      - name: Verify localization catalog and generated accessors
+        run: |
+          python3 -m json.tool Modules/Loc/Sources/Loc/Resources/Workspace.xcstrings > /dev/null
+          grep -q 'public enum Torah' Modules/Loc/Sources/Loc/Generated/Strings.swift
+          grep -q 'Pinkha.Torah.searchType' Modules/Loc/Sources/Loc/Generated/Strings.swift
+
+      - name: Run TorahInspectorKit tests
+        id: torahinspectorkit_tests
+        continue-on-error: true
+        run: |
+          git clone --quiet https://github.com/davidpovarsky/TorahInspectorKit.git build/TorahInspectorKit
+          git -C build/TorahInspectorKit checkout --quiet 1ebbbd2d43e1ba078e50408ce518d739fe6ca94f
+          swift test --package-path build/TorahInspectorKit 2>&1 | tee build/evidence/torahinspectorkit-tests.log
 
       - name: Run PinkhaKit tests
         id: pinkhakit_tests
@@ -98,7 +122,7 @@ jobs:
             AD_HOC_CODE_SIGNING_ALLOWED=YES \
             2>&1 | tee build/evidence/device-build.log
 
-      - name: Package separate-sandbox unsigned IPA
+      - name: Package same-sandbox unsigned IPA update
         id: package_ipa
         if: steps.device_build.outcome == 'success'
         run: |
@@ -112,7 +136,7 @@ jobs:
           with plist.open('rb') as stream:
               info = plistlib.load(stream)
           info['CFBundleIdentifier'] = 'com.gloiiire.anytype.torahtrial'
-          info['CFBundleDisplayName'] = 'Anytype Torah Trial'
+          info['CFBundleDisplayName'] = 'Anytype Torah'
           with plist.open('wb') as stream:
               plistlib.dump(info, stream, fmt=plistlib.FMT_BINARY)
           PY
@@ -129,10 +153,11 @@ jobs:
           with (app / 'Info.plist').open('rb') as stream:
               info = plistlib.load(stream)
           assert info['CFBundleIdentifier'] == 'com.gloiiire.anytype.torahtrial'
-          assert info['CFBundleDisplayName'] == 'Anytype Torah Trial'
+          assert info['CFBundleDisplayName'] == 'Anytype Torah'
           assert 2 in info['UIDeviceFamily'], info['UIDeviceFamily']
           assert info.get('MinimumOSVersion'), 'MinimumOSVersion is missing'
           assert not (app / 'PlugIns').exists(), 'Embedded extensions were not removed'
+          assert not (app / '_CodeSignature').exists(), 'Code signature directory is present'
           Path('build/evidence/package-audit.txt').write_text(
               'Bundle ID: ' + info['CFBundleIdentifier'] + '\n'
               'Display name: ' + info['CFBundleDisplayName'] + '\n'
@@ -144,19 +169,19 @@ jobs:
           )
           PY
           if codesign -d --entitlements :- "$APP_PATH" > build/evidence/codesign-audit.txt 2>&1; then
-            echo 'Unexpected code signature on unsigned experimental app' >&2
+            echo 'Unexpected code signature on unsigned app update' >&2
             exit 1
           else
             printf '\nExpected result: app is unsigned and has no embedded signing entitlements.\n' \
               >> build/evidence/codesign-audit.txt
           fi
           mkdir -p build/ipa/Payload
-          cp -R "$APP_PATH" build/ipa/Payload/AnytypeTorahTrial.app
-          ditto -c -k --sequesterRsrc --keepParent build/ipa/Payload build/ipa/Anytype-TorahInspector-iPadOS27-Unsigned.ipa
-          shasum -a 256 build/ipa/Anytype-TorahInspector-iPadOS27-Unsigned.ipa | tee build/evidence/ipa-sha256.txt
+          cp -R "$APP_PATH" build/ipa/Payload/AnytypeTorah.app
+          ditto -c -k --sequesterRsrc --keepParent build/ipa/Payload build/ipa/Anytype-Torah-iPadOS27-Unsigned.ipa
+          shasum -a 256 build/ipa/Anytype-Torah-iPadOS27-Unsigned.ipa | tee build/evidence/ipa-sha256.txt
           printf 'Anytype commit: %s\nTorahInspectorKit commit: %s\nBundle ID: %s\n' \
             "$GITHUB_SHA" \
-            '5ab2f49b4320759e03f40ffa2a2e472835ba9348' \
+            '1ebbbd2d43e1ba078e50408ce518d739fe6ca94f' \
             'com.gloiiire.anytype.torahtrial' \
             > build/evidence/manifest.txt
 
@@ -164,8 +189,8 @@ jobs:
         if: steps.package_ipa.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
-          name: Anytype-TorahInspector-iPadOS27-Unsigned-IPA
-          path: build/ipa/Anytype-TorahInspector-iPadOS27-Unsigned.ipa
+          name: Anytype-Torah-iPadOS27-Unsigned-IPA
+          path: build/ipa/Anytype-Torah-iPadOS27-Unsigned.ipa
           if-no-files-found: error
           retention-days: 14
 
@@ -186,12 +211,12 @@ jobs:
           printf '\n## CI identity\n\n- Run: %s\n- Anytype commit: `%s`\n- TorahInspectorKit commit: `%s`\n' \
             "$GITHUB_RUN_ID" \
             "$GITHUB_SHA" \
-            '5ab2f49b4320759e03f40ffa2a2e472835ba9348' \
+            '1ebbbd2d43e1ba078e50408ce518d739fe6ca94f' \
             >> build/evidence/acceptance-matrix.md
           printf '\n## CI identity\n\n- Run: %s\n- Anytype commit: `%s`\n- TorahInspectorKit commit: `%s`\n' \
             "$GITHUB_RUN_ID" \
             "$GITHUB_SHA" \
-            '5ab2f49b4320759e03f40ffa2a2e472835ba9348' \
+            '1ebbbd2d43e1ba078e50408ce518d739fe6ca94f' \
             >> build/evidence/screenshot-status.md
 
       - name: Upload acceptance matrix
@@ -222,7 +247,7 @@ jobs:
           retention-days: 14
 
       - name: Enforce test outcomes after publishing evidence
-        if: always() && (steps.pinkhakit_tests.outcome != 'success' || steps.native_tests.outcome != 'success')
+        if: always() && (steps.torahinspectorkit_tests.outcome != 'success' || steps.pinkhakit_tests.outcome != 'success' || steps.native_tests.outcome != 'success')
         run: |
           echo "At least one test stage failed; artifacts above remain available for diagnosis."
           exit 1

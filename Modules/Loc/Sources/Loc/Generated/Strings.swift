@@ -2081,6 +2081,48 @@ public enum Loc {
       public static let retry = Loc.tr("Workspace", "Pinkha.Home.retry", fallback: "Retry")
       public static let writing = Loc.tr("Workspace", "Pinkha.Home.writing", fallback: "Writing")
     }
+    public enum Torah {
+      public static let addLink = Loc.tr("Workspace", "Pinkha.Torah.addLink", fallback: "Add Torah link")
+      public static let blockLinks = Loc.tr("Workspace", "Pinkha.Torah.blockLinks", fallback: "Block links")
+      public static let documentLinks = Loc.tr("Workspace", "Pinkha.Torah.documentLinks", fallback: "Document links")
+      public static let linkToBlock = Loc.tr("Workspace", "Pinkha.Torah.linkToBlock", fallback: "Link to block")
+      public static let linkToDocument = Loc.tr("Workspace", "Pinkha.Torah.linkToDocument", fallback: "Link to document")
+      public static let noBlockLinks = Loc.tr("Workspace", "Pinkha.Torah.noBlockLinks", fallback: "No Torah links in this block yet")
+      public static let noDocumentLinks = Loc.tr("Workspace", "Pinkha.Torah.noDocumentLinks", fallback: "No Torah links in this document yet")
+      public static let openInspector = Loc.tr("Workspace", "Pinkha.Torah.openInspector", fallback: "Open in Inspector")
+      public static let openSource = Loc.tr("Workspace", "Pinkha.Torah.openSource", fallback: "Open Torah source")
+      public static let removeLink = Loc.tr("Workspace", "Pinkha.Torah.removeLink", fallback: "Remove link")
+      public static let searchDescription = Loc.tr("Workspace", "Pinkha.Torah.searchDescription", fallback: "Results come from the configured Torah provider.")
+      public static let searching = Loc.tr("Workspace", "Pinkha.Torah.searching", fallback: "Searching…")
+      public static let searchPlaceholder = Loc.tr("Workspace", "Pinkha.Torah.searchPlaceholder", fallback: "Search Sefaria")
+      public static let searchPrompt = Loc.tr("Workspace", "Pinkha.Torah.searchPrompt", fallback: "Search for a source, topic, or word")
+      public static let searchType = Loc.tr("Workspace", "Pinkha.Torah.searchType", fallback: "Search type")
+      public static let sources = Loc.tr("Workspace", "Pinkha.Torah.sources", fallback: "Sources")
+      public static let title = Loc.tr("Workspace", "Pinkha.Torah.title", fallback: "Torah / Sources")
+      public static let topics = Loc.tr("Workspace", "Pinkha.Torah.topics", fallback: "Topics")
+      public static let words = Loc.tr("Workspace", "Pinkha.Torah.words", fallback: "Words")
+      public enum Error {
+        public static let backendFailure = Loc.tr("Workspace", "Pinkha.Torah.Error.backendFailure", fallback: "The source link could not be saved.")
+        public static let conflictingWrite = Loc.tr("Workspace", "Pinkha.Torah.Error.conflictingWrite", fallback: "The source links changed elsewhere. Nothing was overwritten.")
+        public static let insertionUnavailable = Loc.tr("Workspace", "Pinkha.Torah.Error.insertionUnavailable", fallback: "The editor is not ready to insert a source yet.")
+        public static let invalidStoredData = Loc.tr("Workspace", "Pinkha.Torah.Error.invalidStoredData", fallback: "The saved source-link data is invalid and was left unchanged.")
+        public static let noResolvedWord = Loc.tr("Workspace", "Pinkha.Torah.Error.noResolvedWord", fallback: "No matching lexical entry was found.")
+        public static let partialInsertion = Loc.tr("Workspace", "Pinkha.Torah.Error.partialInsertion", fallback: "The quote was added, but its source link was not saved. Do not retry blindly.")
+        public static let permissionDenied = Loc.tr("Workspace", "Pinkha.Torah.Error.permissionDenied", fallback: "You do not have permission to change source links in this document.")
+        public static let staleDocument = Loc.tr("Workspace", "Pinkha.Torah.Error.staleDocument", fallback: "The document target changed. The operation was cancelled without writing.")
+        public static let targetUnavailable = Loc.tr("Workspace", "Pinkha.Torah.Error.targetUnavailable", fallback: "The document or block is no longer available. Nothing was written.")
+        public static let uncertainWrite = Loc.tr("Workspace", "Pinkha.Torah.Error.uncertainWrite", fallback: "The save result is uncertain. Check the links before trying again.")
+        public static let unsupportedStoredData = Loc.tr("Workspace", "Pinkha.Torah.Error.unsupportedStoredData", fallback: "These source links were created by a newer app version and were left unchanged.")
+      }
+      public enum Persistence {
+        public static let conflict = Loc.tr("Workspace", "Pinkha.Torah.Persistence.conflict", fallback: "Write conflict")
+        public static let error = Loc.tr("Workspace", "Pinkha.Torah.Persistence.error", fallback: "Save error")
+        public static let saved = Loc.tr("Workspace", "Pinkha.Torah.Persistence.saved", fallback: "Saved and verified by readback")
+        public static let saving = Loc.tr("Workspace", "Pinkha.Torah.Persistence.saving", fallback: "Saving…")
+        public static let uncertain = Loc.tr("Workspace", "Pinkha.Torah.Persistence.uncertain", fallback: "Save status is uncertain")
+        public static let waiting = Loc.tr("Workspace", "Pinkha.Torah.Persistence.waiting", fallback: "Waiting to save")
+      }
+    }
   }
   public enum Publishing {
     public enum Error {

@@ -21,12 +21,57 @@ struct SefariaTextProviderTests {
         #expect(document.canonicalRef == "Genesis 1")
         #expect(document.sectionRef == "Genesis 1")
         #expect(document.segments.map(\.canonicalRef) == ["Genesis 1:1", "Genesis 1:3"])
+        #expect(document.segments.map(\.hebrewRef) == ["בראשית א׳:א׳", "בראשית א׳:ג׳"])
         #expect(document.segments.map(\.ordinal) == [1, 3])
         #expect(document.previousSectionRef == "Genesis 0")
         #expect(document.nextSectionRef == "Genesis 2")
         #expect(document.version.versionTitle == "Fixture Hebrew")
         #expect(document.version.license == "CC-BY")
         #expect(document.version.direction == "rtl")
+    }
+
+    @Test("Section-derived Hebrew segment labels use correct 15 and 16 numerals")
+    func sectionDerivedHebrewFifteenAndSixteen() throws {
+        let root: [String: Any] = [
+            "ref": "Genesis 1:15-16",
+            "heRef": "בראשית א׳:ט״ו-ט״ז",
+            "sectionRef": "Genesis 1",
+            "heSectionRef": "בראשית א׳",
+            "versions": [[
+                "language": "he",
+                "versionTitle": "Fixture",
+                "text": ["חמשה עשר", "ששה עשר"]
+            ]]
+        ]
+        let metadata: [String: Any] = [
+            "depth": 2,
+            "start_indexes": [1, 15],
+            "end_indexes": [1, 16]
+        ]
+
+        let document = try SefariaTextProvider.decode(
+            requestedReference: "Genesis 1:15-16",
+            root: root,
+            metadata: metadata
+        )
+
+        #expect(document.segments.map(\.hebrewRef) == ["בראשית א׳:ט״ו", "בראשית א׳:ט״ז"])
+    }
+
+    @Test("Complex daf sections never fabricate Hebrew segment labels")
+    func complexDafDoesNotFabricateHebrewRef() throws {
+        #expect(SefariaTextProvider.localizedSegmentReference(
+            sectionRef: "Berakhot 2a",
+            hebrewSectionRef: "ברכות ב׳ א",
+            ordinal: 1,
+            depth: 2
+        ) == nil)
+        #expect(SefariaTextProvider.localizedSegmentReference(
+            sectionRef: "Genesis 1-2",
+            hebrewSectionRef: "בראשית א׳-ב׳",
+            ordinal: 1,
+            depth: 2
+        ) == nil)
     }
 
     @Test("Documented one-based Genesis 1:1 indexes remain ordinal one")

@@ -1,5 +1,18 @@
 # Screenshot status — 2026-10-20
 
+## Production UX correction
+
+- The locale-aware Kit change is pinned at
+  `1ebbbd2d43e1ba078e50408ce518d739fe6ca94f`; updated Kit test/screenshot
+  evidence is CI pending.
+- The Anytype block badge is a real UIKit cell accessory feeding the existing
+  Kit system Sheet. No authenticated screenshot is claimed before the owner
+  installs and opens the update on the existing iPad account.
+- Document/block persistence visibility, editable-text gestures, Stage Manager,
+  orientation and locale switching remain **DEVICE PENDING**.
+
+## Historical trial evidence
+
 - Kit demo Hebrew RTL Peek/Medium/Large screenshots: expected from Kit run
   `39333954262`; status pending until artifacts are uploaded.
 - Actual authenticated Anytype app screenshots: **NOT VERIFIED**. CI starts in a
@@ -9,5 +22,5 @@
   **USER TEST PENDING**.
 
 The lack of an authenticated app screenshot does not become a PASS. Use
-`IPAD_TRIAL_CHECKLIST_HE.md` after signing/installing the separate experimental
-IPA and attach real captures to the acceptance record.
+`IPAD_TRIAL_CHECKLIST_HE.md` for the safe in-place update procedure and attach
+real captures to the acceptance record.

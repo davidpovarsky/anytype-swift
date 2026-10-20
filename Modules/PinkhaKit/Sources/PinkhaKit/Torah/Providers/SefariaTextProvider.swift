@@ -111,6 +111,7 @@ public struct SefariaTextProvider: TextProvider {
             && (endIndexes.isEmpty || startIndexes == endIndexes)
         let startOrdinal = hasSegmentIndex ? (startIndexes.last ?? 0) : 1
         guard startOrdinal > 0 else { throw TorahError.malformedResponse }
+        let hebrewSectionRef = SefariaJSON.string(root, keys: ["heSectionRef"])
 
         if let depth,
            startIndexes.count >= depth,
@@ -131,7 +132,14 @@ public struct SefariaTextProvider: TextProvider {
             let segmentRef = isExactSegment ? canonical : "\(sectionRef):\(ordinal)"
             return TorahTextSegment(
                 canonicalRef: segmentRef,
-                hebrewRef: isExactSegment ? SefariaJSON.string(root, keys: ["heRef"]) : nil,
+                hebrewRef: isExactSegment
+                    ? SefariaJSON.string(root, keys: ["heRef"])
+                    : localizedSegmentReference(
+                        sectionRef: sectionRef,
+                        hebrewSectionRef: hebrewSectionRef,
+                        ordinal: ordinal,
+                        depth: depth
+                    ),
                 text: entry.text,
                 ordinal: ordinal
             )
@@ -144,7 +152,7 @@ public struct SefariaTextProvider: TextProvider {
             canonicalRef: canonical,
             hebrewRef: SefariaJSON.string(root, keys: ["heRef"]),
             sectionRef: sectionRef,
-            hebrewSectionRef: SefariaJSON.string(root, keys: ["heSectionRef"]),
+            hebrewSectionRef: hebrewSectionRef,
             segments: segments,
             previousSectionRef: SefariaJSON.string(navigation, keys: ["prev_section_ref"]),
             nextSectionRef: SefariaJSON.string(navigation, keys: ["next_section_ref"]),
@@ -176,5 +184,59 @@ public struct SefariaTextProvider: TextProvider {
             }
         }
         return flattened
+    }
+
+    /// Constructs a provider-backed Hebrew segment label only for a simple
+    /// two-level numeric section. Daf notation, ranges and deeper schemas are
+    /// deliberately left unresolved instead of fabricating a Hebrew identity.
+    static func localizedSegmentReference(
+        sectionRef: String,
+        hebrewSectionRef: String?,
+        ordinal: Int,
+        depth: Int?
+    ) -> String? {
+        guard depth == 2,
+              let hebrewSectionRef,
+              !hebrewSectionRef.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !sectionRef.contains(":"),
+              !sectionRef.contains("-"),
+              let lastToken = sectionRef.split(separator: " ").last,
+              Int(lastToken) != nil,
+              let numeral = hebrewNumeral(ordinal) else { return nil }
+        return "\(hebrewSectionRef):\(numeral)"
+    }
+
+    static func hebrewNumeral(_ value: Int) -> String? {
+        guard (1...999).contains(value) else { return nil }
+        var remainder = value
+        var letters = ""
+        for (amount, letter) in [
+            (400, "ת"), (300, "ש"), (200, "ר"), (100, "ק"),
+            (90, "צ"), (80, "פ"), (70, "ע"), (60, "ס"),
+            (50, "נ"), (40, "מ"), (30, "ל"), (20, "כ")
+        ] {
+            while remainder >= amount {
+                letters += letter
+                remainder -= amount
+            }
+        }
+        if remainder == 15 {
+            letters += "טו"
+            remainder = 0
+        } else if remainder == 16 {
+            letters += "טז"
+            remainder = 0
+        }
+        for (amount, letter) in [
+            (10, "י"), (9, "ט"), (8, "ח"), (7, "ז"), (6, "ו"),
+            (5, "ה"), (4, "ד"), (3, "ג"), (2, "ב"), (1, "א")
+        ] where remainder >= amount {
+            letters += letter
+            remainder -= amount
+        }
+
+        guard letters.count > 1 else { return letters + "׳" }
+        let finalIndex = letters.index(before: letters.endIndex)
+        return String(letters[..<finalIndex]) + "״" + String(letters[finalIndex...])
     }
 }

@@ -4,6 +4,76 @@ import PinkhaKit
 import TorahInspectorCore
 import TorahInspectorUI
 
+struct TorahAssociationContext: Hashable, Sendable, Identifiable {
+    enum Scope: Hashable, Sendable {
+        case document
+        case block(String)
+    }
+
+    let spaceId: String
+    let objectId: String
+    let scope: Scope
+
+    var id: String {
+        switch scope {
+        case .document: "\(spaceId):\(objectId):document"
+        case .block(let blockId): "\(spaceId):\(objectId):block:\(blockId)"
+        }
+    }
+
+    var blockId: String? {
+        guard case .block(let blockId) = scope else { return nil }
+        return blockId
+    }
+
+    var target: TorahAssociationTarget {
+        switch scope {
+        case .document: .object(objectId: objectId)
+        case .block(let blockId): .block(objectId: objectId, blockId: blockId)
+        }
+    }
+}
+
+enum TorahAssociationDisplayFormatter {
+    static func prefersHebrew(_ locale: Locale) -> Bool {
+        let language = locale.identifier
+            .split(whereSeparator: { $0 == "_" || $0 == "-" })
+            .first?
+            .lowercased()
+        return language == "he" || language == "iw"
+    }
+
+    static func label(for item: TorahAssociationItem, locale: Locale) -> String {
+        localized(
+            hebrew: item.labelHe,
+            english: item.labelEn,
+            fallback: item.canonicalKey.isEmpty ? item.externalID : item.canonicalKey,
+            locale: locale
+        )
+    }
+
+    static func localized(
+        hebrew: String?,
+        english: String?,
+        fallback: String,
+        locale: Locale
+    ) -> String {
+        let preferred = prefersHebrew(locale) ? hebrew : english
+        let secondary = prefersHebrew(locale) ? english : hebrew
+        return nonempty(preferred) ?? nonempty(secondary) ?? fallback
+    }
+
+    static func containsHebrew(_ value: String) -> Bool {
+        value.unicodeScalars.contains { (0x0590...0x05FF).contains(Int($0.value)) }
+    }
+
+    private static func nonempty(_ value: String?) -> String? {
+        guard let trimmed = value?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !trimmed.isEmpty else { return nil }
+        return trimmed
+    }
+}
+
 @MainActor
 @Observable
 final class TorahEditorSession {
@@ -16,9 +86,9 @@ final class TorahEditorSession {
 
         var title: String {
             switch self {
-            case .references: "מקורות"
-            case .topics: "נושאים"
-            case .words: "מילים"
+            case .references: Loc.Pinkha.Torah.sources
+            case .topics: Loc.Pinkha.Torah.topics
+            case .words: Loc.Pinkha.Torah.words
             }
         }
     }
@@ -27,12 +97,31 @@ final class TorahEditorSession {
         let id: String
         let scope: SearchScope
         let providerValue: String
-        let title: String
-        let subtitle: String?
+        let labelHe: String?
+        let labelEn: String?
+        let fallbackTitle: String
+        let fallbackSubtitle: String?
+
+        func title(locale: Locale) -> String {
+            TorahAssociationDisplayFormatter.localized(
+                hebrew: labelHe,
+                english: labelEn,
+                fallback: fallbackTitle,
+                locale: locale
+            )
+        }
+
+        func subtitle(locale: Locale) -> String? {
+            let title = title(locale: locale)
+            let alternate = TorahAssociationDisplayFormatter.prefersHebrew(locale) ? labelEn : labelHe
+            guard let alternate,
+                  !alternate.isEmpty,
+                  alternate != title else { return fallbackSubtitle }
+            return alternate
+        }
     }
 
     enum SessionError: LocalizedError {
-        case mutationLocked
         case insertionUnavailable
         case staleDocument
         case noResolvedWord
@@ -40,16 +129,14 @@ final class TorahEditorSession {
 
         var errorDescription: String? {
             switch self {
-            case .mutationLocked:
-                "כתיבה חסומה. יש להפעיל מצב ניסוי למסמך חד־פעמי חדש."
             case .insertionUnavailable:
-                "העורך אינו מוכן עדיין להכנסת מקור."
+                Loc.Pinkha.Torah.Error.insertionUnavailable
             case .staleDocument:
-                "יעד המסמך השתנה. הפעולה בוטלה ללא כתיבה."
+                Loc.Pinkha.Torah.Error.staleDocument
             case .noResolvedWord:
-                "לא נמצא ערך מילוני מתאים."
+                Loc.Pinkha.Torah.Error.noResolvedWord
             case .partialInsertion:
-                "הציטוט נוסף, אך שיוך המקור לא נשמר. אין לבצע ניסיון עיוור נוסף."
+                Loc.Pinkha.Torah.Error.partialInsertion
             }
         }
     }
@@ -67,21 +154,55 @@ final class TorahEditorSession {
     var searchQuery = ""
     var searchResults: [SearchResult] = []
     var isSearching = false
-    var mutationOptIn = false
     var message: String?
-    var associationTargetBlockId: String?
+    private(set) var associationContext: TorahAssociationContext
     var currentAssociations: [TorahAssociationItem] = []
+    private(set) var documentAssociations: [TorahAssociationItem] = []
+    private(set) var associationsByBlockId: [String: [TorahAssociationItem]] = [:]
     var persistenceState: TorahAssociationPersistenceState?
+    var inspectorEntryMode: TorahInspectorEntryMode = .sourceReader
 
-    private let associations: AnytypeTorahAssociationRepository
+    private let associations: any AnytypeTorahAssociationSnapshotRepository
     private let notesService: AnytypeTorahNotesService
     private var insertionHandler: ((TorahSourceTransfer, String?) async throws -> String)?
     private var claimedDropIDs = Set<String>()
     private var openObjectHandler: ((String) -> Void)?
+    private var associationSnapshotHandler: ((Set<String>) -> Void)?
+    private var refreshRequestID: UUID?
+    private var effectiveLocale = Locale.autoupdatingCurrent
 
     init(spaceId: String, objectId: String) throws {
         let workspace = try AnytypeTorahWorkspace.sefaria()
         let associations = AnytypeTorahAssociationRepository()
+        let notesService = AnytypeTorahNotesService(
+            spaceId: spaceId,
+            objectId: objectId,
+            associations: associations
+        )
+        self.spaceId = spaceId
+        self.objectId = objectId
+        self.workspace = workspace
+        self.associations = associations
+        self.associationContext = TorahAssociationContext(
+            spaceId: spaceId,
+            objectId: objectId,
+            scope: .document
+        )
+        self.notesService = notesService
+        self.repository = TorahInspectorRepositoryFactory.make(
+            workspace: workspace,
+            notesFetcher: { [notesService] selection in
+                try await notesService.notes(for: selection)
+            }
+        )
+    }
+
+    init(
+        spaceId: String,
+        objectId: String,
+        workspace: AnytypeTorahWorkspace,
+        associations: any AnytypeTorahAssociationSnapshotRepository
+    ) {
         let notesService = AnytypeTorahNotesService(
             spaceId: spaceId,
             objectId: objectId,
@@ -93,6 +214,11 @@ final class TorahEditorSession {
         self.workspace = workspace
         self.associations = associations
         self.notesService = notesService
+        self.associationContext = TorahAssociationContext(
+            spaceId: spaceId,
+            objectId: objectId,
+            scope: .document
+        )
         self.repository = TorahInspectorRepositoryFactory.make(
             workspace: workspace,
             notesFetcher: { [notesService] selection in
@@ -100,6 +226,14 @@ final class TorahEditorSession {
             }
         )
     }
+
+    var associationTargetBlockId: String? { associationContext.blockId }
+
+    var visibleDocumentAssociations: [TorahAssociationItem] {
+        documentAssociations.filter { !Self.isNoteAssociation($0) }
+    }
+
+    var linkedBlockIDs: Set<String> { Set(associationsByBlockId.keys) }
 
     var hostActions: TorahInspectorHostActions {
         TorahInspectorHostActions(
@@ -139,71 +273,72 @@ final class TorahEditorSession {
         openObjectHandler = handler
     }
 
-    func enableMutations(
-        disposableSpaceConfirmed: Bool,
-        freshDocumentConfirmed: Bool,
-        confirmation: String
-    ) {
-        mutationOptIn = TorahEditorSafetyPolicy.mutationIsAuthorized(
-            disposableSpaceConfirmed: disposableSpaceConfirmed,
-            freshDocumentConfirmed: freshDocumentConfirmed,
-            confirmation: confirmation
-        )
-        if !mutationOptIn {
-            message = SessionError.mutationLocked.localizedDescription
-        }
+    func installAssociationSnapshotHandler(_ handler: @escaping (Set<String>) -> Void) {
+        associationSnapshotHandler = handler
     }
 
-    func disableMutations() {
-        mutationOptIn = false
+    func updateEffectiveLocale(_ locale: Locale) {
+        guard effectiveLocale.identifier != locale.identifier else { return }
+        effectiveLocale = locale
+        associationSnapshotHandler?(linkedBlockIDs)
     }
 
-    func presentSearch(targetBlockId: String?) {
-        associationTargetBlockId = targetBlockId
+    func presentSearch(scope: TorahAssociationContext.Scope) {
+        let context = TorahAssociationContext(spaceId: spaceId, objectId: objectId, scope: scope)
+        associationContext = context
+        currentAssociations = visibleAssociations(for: context)
         isSearchPresented = true
-        Task { await refreshAssociations() }
+        Task { await refreshAssociations(for: context) }
     }
 
     func refreshAssociations() async {
+        await refreshAssociations(for: associationContext)
+    }
+
+    func refreshAssociationSnapshot() async {
+        await refreshAssociations(for: associationContext)
+    }
+
+    private func refreshAssociations(for context: TorahAssociationContext) async {
+        let requestID = UUID()
+        refreshRequestID = requestID
         do {
-            if let associationTargetBlockId {
-                currentAssociations = try await associations.listBlockAssociations(
-                    objectId: objectId,
-                    blockId: associationTargetBlockId,
-                    spaceId: spaceId
-                )
-            } else {
-                currentAssociations = try await associations.listDocumentAssociations(
-                    objectId: objectId,
-                    spaceId: spaceId
-                )
-            }
+            let records = try await associations.listAssociationRecords(
+                objectId: context.objectId,
+                spaceId: context.spaceId
+            )
+            try Task.checkCancellation()
+            guard refreshRequestID == requestID,
+                  associationContext == context,
+                  context.objectId == objectId,
+                  context.spaceId == spaceId else { return }
+            apply(records: records)
+            currentAssociations = visibleAssociations(for: context)
+        } catch is CancellationError {
+        } catch let error as TorahAssociationRepositoryError {
+            guard refreshRequestID == requestID, associationContext == context else { return }
+            message = localizedMessage(for: error)
         } catch {
-            currentAssociations = []
+            guard refreshRequestID == requestID, associationContext == context else { return }
             message = error.localizedDescription
         }
     }
 
     func unlinkAssociation(_ item: TorahAssociationItem) async {
-        guard mutationOptIn else {
-            message = SessionError.mutationLocked.localizedDescription
-            return
-        }
+        let context = associationContext
         persistenceState = .waiting
         do {
             persistenceState = .saving
             try await associations.removeAssociation(
                 associationId: item.id,
-                target: associationTargetBlockId.map {
-                    .block(objectId: objectId, blockId: $0)
-                } ?? .object(objectId: objectId),
-                spaceId: spaceId
+                target: context.target,
+                spaceId: context.spaceId
             )
             persistenceState = .saved
-            await refreshAssociations()
+            await refreshAssociationSnapshot()
         } catch let error as TorahAssociationRepositoryError {
             persistenceState = persistenceState(for: error)
-            message = error.localizedDescription
+            message = localizedMessage(for: error)
         } catch {
             persistenceState = .error(error.localizedDescription)
             message = error.localizedDescription
@@ -212,12 +347,39 @@ final class TorahEditorSession {
 
     func openAssociation(_ item: TorahAssociationItem) {
         guard canOpenAssociation(item) else { return }
-        selection = TorahInspectorSelection(
-            providerID: item.providerID,
-            canonicalRef: item.canonicalKey
-        )
+        selection = Self.inspectorSelection(for: item)
+        inspectorEntryMode = .relationships
         selectedDetent = .medium
         isSearchPresented = false
+    }
+
+    func openLinkedAssociations(blockId: String) {
+        let context = TorahAssociationContext(
+            spaceId: spaceId,
+            objectId: objectId,
+            scope: .block(blockId)
+        )
+        let items = visibleAssociations(for: context)
+        let references = items.filter { canOpenAssociation($0) }
+        if items.count == 1, let reference = references.first {
+            associationContext = context
+            currentAssociations = items
+            openAssociation(reference)
+        } else {
+            presentSearch(scope: .block(blockId))
+        }
+    }
+
+    func linkedAssociationCount(blockId: String) -> Int {
+        visibleAssociations(
+            for: TorahAssociationContext(spaceId: spaceId, objectId: objectId, scope: .block(blockId))
+        ).count
+    }
+
+    func linkedAssociationLabel(blockId: String) -> String? {
+        let context = TorahAssociationContext(spaceId: spaceId, objectId: objectId, scope: .block(blockId))
+        guard let item = visibleAssociations(for: context).first else { return nil }
+        return TorahAssociationDisplayFormatter.label(for: item, locale: effectiveLocale)
     }
 
     func canOpenAssociation(_ item: TorahAssociationItem) -> Bool {
@@ -225,8 +387,33 @@ final class TorahEditorSession {
         return !item.canonicalKey.hasPrefix("anytype-note:") && !item.canonicalKey.isEmpty
     }
 
+    static func inspectorSelection(for item: TorahAssociationItem) -> TorahInspectorSelection {
+        let canonical = item.canonicalKey
+        let explicitSection = item.customMetadata?["sectionRef"]?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if TorahReferenceUtil.isSegmentRef(canonical) {
+            let section = if let explicitSection, !explicitSection.isEmpty {
+                explicitSection
+            } else {
+                TorahReferenceUtil.sectionRef(from: canonical)
+            }
+            return TorahInspectorSelection(
+                providerID: item.providerID,
+                canonicalRef: section,
+                preferredSegmentRef: canonical,
+                scope: .segment
+            )
+        }
+        return TorahInspectorSelection(
+            providerID: item.providerID,
+            canonicalRef: canonical,
+            scope: .section
+        )
+    }
+
     func performSearch() async {
         let query = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
+        let scope = searchScope
         guard query.count >= 2 else {
             searchResults = []
             return
@@ -236,40 +423,54 @@ final class TorahEditorSession {
         defer { isSearching = false }
 
         do {
-            switch searchScope {
+            let results: [SearchResult]
+            switch scope {
             case .references:
-                searchResults = try await workspace.suggestReferences(query).map {
-                    SearchResult(
+                results = try await workspace.suggestReferences(query).map {
+                    let isHebrew = TorahAssociationDisplayFormatter.containsHebrew($0.label)
+                    return SearchResult(
                         id: "reference:\($0.id)",
                         scope: .references,
                         providerValue: $0.id,
-                        title: $0.label,
-                        subtitle: nil
+                        labelHe: isHebrew ? $0.label : nil,
+                        labelEn: isHebrew ? $0.id : $0.label,
+                        fallbackTitle: $0.label,
+                        fallbackSubtitle: nil
                     )
                 }
             case .topics:
-                searchResults = try await workspace.suggestTopics(query).map {
+                results = try await workspace.suggestTopics(query).map {
                     SearchResult(
                         id: "topic:\($0.id)",
                         scope: .topics,
                         providerValue: $0.id,
-                        title: $0.displayTitle,
-                        subtitle: $0.labelEn
+                        labelHe: $0.labelHe,
+                        labelEn: $0.labelEn,
+                        fallbackTitle: $0.displayTitle,
+                        fallbackSubtitle: nil
                     )
                 }
             case .words:
-                searchResults = try await workspace.suggestWords(query).map {
-                    SearchResult(
+                results = try await workspace.suggestWords(query).map {
+                    let isHebrew = TorahAssociationDisplayFormatter.containsHebrew($0.headword)
+                    return SearchResult(
                         id: "word:\($0.id)",
                         scope: .words,
                         providerValue: $0.surface,
-                        title: $0.headword,
-                        subtitle: $0.description ?? $0.lexicon
+                        labelHe: isHebrew ? $0.headword : nil,
+                        labelEn: isHebrew ? $0.description : $0.headword,
+                        fallbackTitle: $0.headword,
+                        fallbackSubtitle: $0.lexicon
                     )
                 }
             }
+            guard searchQuery.trimmingCharacters(in: .whitespacesAndNewlines) == query,
+                  searchScope == scope else { return }
+            searchResults = results
         } catch is CancellationError {
         } catch {
+            guard searchQuery.trimmingCharacters(in: .whitespacesAndNewlines) == query,
+                  searchScope == scope else { return }
             searchResults = []
             message = error.localizedDescription
         }
@@ -280,6 +481,7 @@ final class TorahEditorSession {
         do {
             let resolved = try await workspace.resolveReference(result.providerValue)
             selection = try Self.inspectorSelection(for: resolved)
+            inspectorEntryMode = .sourceReader
             selectedDetent = .medium
             isSearchPresented = false
         } catch {
@@ -300,9 +502,10 @@ final class TorahEditorSession {
         }
 
         if TorahReferenceUtil.isSegmentRef(resolved.canonical) {
+            let sectionRef = TorahReferenceUtil.sectionRef(from: resolved.canonical)
             return TorahInspectorSelection(
                 providerID: "sefaria",
-                canonicalRef: TorahReferenceUtil.sectionRef(from: resolved.canonical),
+                canonicalRef: sectionRef,
                 preferredSegmentRef: resolved.canonical,
                 scope: .segment
             )
@@ -316,28 +519,21 @@ final class TorahEditorSession {
     }
 
     func link(_ result: SearchResult) async {
-        guard mutationOptIn else {
-            message = SessionError.mutationLocked.localizedDescription
-            return
-        }
-
+        let context = associationContext
         do {
             let item = try await associationItem(for: result)
             persistenceState = .waiting
             persistenceState = .saving
             _ = try await associations.addAssociation(
                 item,
-                target: associationTargetBlockId.map {
-                    .block(objectId: objectId, blockId: $0)
-                } ?? .object(objectId: objectId),
-                spaceId: spaceId
+                target: context.target,
+                spaceId: context.spaceId
             )
             persistenceState = .saved
-            await refreshAssociations()
-            message = "השיוך נשמר במסמך הניסוי."
+            await refreshAssociationSnapshot()
         } catch let error as TorahAssociationRepositoryError {
             persistenceState = persistenceState(for: error)
-            message = error.localizedDescription
+            message = localizedMessage(for: error)
         } catch {
             persistenceState = .error(error.localizedDescription)
             message = error.localizedDescription
@@ -351,10 +547,6 @@ final class TorahEditorSession {
     }
 
     private func insert(_ transfer: TorahSourceTransfer, targetBlockId: String?) async {
-        guard mutationOptIn else {
-            message = SessionError.mutationLocked.localizedDescription
-            return
-        }
         guard let insertionHandler else {
             message = SessionError.insertionUnavailable.localizedDescription
             return
@@ -369,7 +561,7 @@ final class TorahEditorSession {
                 providerID: transfer.providerID,
                 externalID: transfer.canonicalRef,
                 canonicalKey: transfer.canonicalRef,
-                labelHe: transfer.hebrewRef ?? transfer.canonicalRef,
+                labelHe: transfer.hebrewRef ?? "",
                 labelEn: transfer.canonicalRef,
                 providerPayload: transfer.rawProviderPayload,
                 createdAt: transfer.retrievedAt,
@@ -389,7 +581,7 @@ final class TorahEditorSession {
                     spaceId: spaceId
                 )
                 persistenceState = .saved
-                message = "הציטוט והמקור נוספו למסמך."
+                await refreshAssociationSnapshot()
             } catch {
                 persistenceState = .uncertain(SessionError.partialInsertion.localizedDescription)
                 message = SessionError.partialInsertion.localizedDescription
@@ -414,7 +606,10 @@ final class TorahEditorSession {
                 labelEn: resolved.labelEn,
                 rawInput: searchQuery,
                 providerPayload: resolved.payload,
-                createdAt: Date()
+                createdAt: Date(),
+                customMetadata: TorahReferenceUtil.isSegmentRef(resolved.canonical)
+                    ? ["sectionRef": TorahReferenceUtil.sectionRef(from: resolved.canonical)]
+                    : nil
             )
         case .topics:
             let resolved = try await workspace.resolveTopic(result.providerValue)
@@ -424,8 +619,12 @@ final class TorahEditorSession {
                 providerID: "sefaria",
                 externalID: resolved.slug,
                 canonicalKey: resolved.slug,
-                labelHe: resolved.labelHe ?? resolved.displayTitle,
-                labelEn: resolved.labelEn,
+                labelHe: resolved.labelHe ?? "",
+                labelEn: resolved.labelEn ?? (
+                    TorahAssociationDisplayFormatter.containsHebrew(resolved.displayTitle)
+                        ? nil
+                        : resolved.displayTitle
+                ),
                 rawInput: searchQuery,
                 providerPayload: resolved.payload,
                 createdAt: Date()
@@ -440,8 +639,12 @@ final class TorahEditorSession {
                 providerID: "sefaria",
                 externalID: resolved.candidate.id,
                 canonicalKey: resolved.candidate.headword,
-                labelHe: resolved.candidate.headword,
-                labelEn: resolved.candidate.description,
+                labelHe: TorahAssociationDisplayFormatter.containsHebrew(resolved.candidate.headword)
+                    ? resolved.candidate.headword
+                    : "",
+                labelEn: TorahAssociationDisplayFormatter.containsHebrew(resolved.candidate.headword)
+                    ? resolved.candidate.description
+                    : resolved.candidate.headword,
                 rawInput: searchQuery,
                 providerPayload: resolved.candidate.payload,
                 createdAt: Date(),
@@ -454,12 +657,9 @@ final class TorahEditorSession {
         for selection: TorahInspectorSelection,
         didChange: @escaping TorahInspectorHostActions.NotesDidChange
     ) async {
-        guard mutationOptIn else {
-            message = SessionError.mutationLocked.localizedDescription
-            return
-        }
         do {
             _ = try await notesService.createNote(for: selection)
+            await refreshAssociationSnapshot()
             repository.invalidateNotes(for: selection)
             didChange()
         } catch {
@@ -483,12 +683,9 @@ final class TorahEditorSession {
         for selection: TorahInspectorSelection,
         didChange: @escaping TorahInspectorHostActions.NotesDidChange
     ) async {
-        guard mutationOptIn else {
-            message = SessionError.mutationLocked.localizedDescription
-            return
-        }
         do {
             try await notesService.unlink(noteId: note.id, for: selection)
+            await refreshAssociationSnapshot()
             repository.invalidateNotes(for: selection)
             didChange()
         } catch {
@@ -496,13 +693,66 @@ final class TorahEditorSession {
         }
     }
 
+    private func apply(records: [TorahStoredAssociationRecord]) {
+        let previousBlockIDs = linkedBlockIDs
+        let relevant = records.filter { $0.spaceId == spaceId && $0.objectId == objectId }
+        documentAssociations = relevant
+            .filter { $0.blockId == nil }
+            .map(\.item)
+
+        associationsByBlockId = Dictionary(
+            grouping: relevant.compactMap { record -> (String, TorahAssociationItem)? in
+                guard let blockId = record.blockId else { return nil }
+                return (blockId, record.item)
+            },
+            by: { $0.0 }
+        ).mapValues { values in
+            values.map(\.1)
+        }
+        associationSnapshotHandler?(previousBlockIDs.union(linkedBlockIDs))
+    }
+
+    private func visibleAssociations(for context: TorahAssociationContext) -> [TorahAssociationItem] {
+        let items: [TorahAssociationItem]
+        switch context.scope {
+        case .document:
+            items = documentAssociations
+        case .block(let blockId):
+            items = associationsByBlockId[blockId] ?? []
+        }
+        return items.filter { !Self.isNoteAssociation($0) }
+    }
+
+    private static func isNoteAssociation(_ item: TorahAssociationItem) -> Bool {
+        item.canonicalKey.hasPrefix("anytype-note:")
+    }
+
     private func persistenceState(
         for error: TorahAssociationRepositoryError
     ) -> TorahAssociationPersistenceState {
         switch error {
-        case .writeConflict(let message): .conflict(message)
-        case .writeUncertain(let message): .uncertain(message)
-        default: .error(error.localizedDescription)
+        case .writeConflict: .conflict(localizedMessage(for: error))
+        case .writeUncertain: .uncertain(localizedMessage(for: error))
+        default: .error(localizedMessage(for: error))
+        }
+    }
+
+    private func localizedMessage(for error: TorahAssociationRepositoryError) -> String {
+        switch error {
+        case .permissionDenied:
+            Loc.Pinkha.Torah.Error.permissionDenied
+        case .targetNotFound, .targetOutsideSpace, .associationNotFound:
+            Loc.Pinkha.Torah.Error.targetUnavailable
+        case .malformedCanonicalData:
+            Loc.Pinkha.Torah.Error.invalidStoredData
+        case .unsupportedPayloadVersion:
+            Loc.Pinkha.Torah.Error.unsupportedStoredData
+        case .writeConflict:
+            Loc.Pinkha.Torah.Error.conflictingWrite
+        case .writeUncertain:
+            Loc.Pinkha.Torah.Error.uncertainWrite
+        case .backendFailure, .unsafeSnapshotReplacement:
+            Loc.Pinkha.Torah.Error.backendFailure
         }
     }
 }

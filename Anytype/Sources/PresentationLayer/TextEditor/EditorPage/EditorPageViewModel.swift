@@ -6,6 +6,14 @@ import Services
 import AnytypeCore
 import TorahInspectorCore
 
+enum TorahQuoteContentPolicy {
+    /// Locale-dependent citations are rendered by the association accessory.
+    /// Existing quote text is never rewritten; new quote bodies contain only provider text.
+    static func editableBody(for transfer: TorahSourceTransfer) -> String {
+        transfer.text
+    }
+}
+
 @MainActor
 final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNavigationManagerOutput, ObservableObject {
     weak private(set) var viewInput: (any EditorPageViewInput)?
@@ -100,6 +108,13 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
             guard let self else { throw CancellationError() }
             return try await self.insertTorahSource(transfer, targetBlockId: targetBlockId)
         }
+        torahSession?.installAssociationSnapshotHandler { [weak self] blockIDs in
+            guard let self else { return }
+            let items = blockIDs.compactMap { blockId in
+                self.modelsHolder.blocksMapping[blockId].map { EditorItem.block($0) }
+            }
+            self.viewInput?.reconfigure(items: items)
+        }
         
         setupLoadingState()
     }
@@ -123,8 +138,7 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
         _ transfer: TorahSourceTransfer,
         targetBlockId: String?
     ) async throws -> String {
-        let displayReference = transfer.hebrewRef ?? transfer.canonicalRef
-        let text = "\(transfer.text)\n— \(displayReference)"
+        let text = TorahQuoteContentPolicy.editableBody(for: transfer)
         let info = BlockInformation.empty(
             content: .text(.plain(text, contentType: .quote))
         )

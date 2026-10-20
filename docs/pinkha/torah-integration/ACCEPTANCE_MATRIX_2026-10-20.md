@@ -1,29 +1,39 @@
-# Torah Inspector iPad trial acceptance matrix
+# Torah associations production UX acceptance matrix
 
 Date: 2026-10-20
 
-Any unobserved iPad behavior is `USER TEST PENDING`. `IMPLEMENTED` means the
-source path exists; it is not a device PASS.
+`IMPLEMENTED` is code evidence, not physical-device proof. Any behavior that
+requires the owner's authenticated iPad is explicitly `DEVICE PENDING`.
 
 | ID | Status | Evidence / exact boundary |
 |---|---|---|
-| KIT-1 | IMPLEMENTED / CI PENDING | App target links `TorahInspectorUI` directly and PinkhaKit links Core only, both at `5ab2f49b4320759e03f40ffa2a2e472835ba9348`; Kit retains its own NavigationStack. |
-| KIT-2 | IMPLEMENTED / SCREENSHOT PENDING | Actual `.sheet` and iOS 27 `.presentationPlacement`; empirically corrected RTL physical-edge unit test. Current Kit run `39341354225`; green run `39339610430` is rejected because visual review found physical-left placement. |
-| KIT-3 | IMPLEMENTED / SCREENSHOT PENDING | 155/medium/large detents and Kit UI test. |
-| KIT-4 | IMPLEMENTED / CI PENDING | Production `AnytypeTorahWorkspace` fetchers feed actual Kit reader/commentaries/links; no fixture provider in Anytype UI. |
-| KIT-5 | IMPLEMENTED / USER TEST PENDING | Native Note create/open/unlink callbacks and cache invalidation. |
-| UX-1 | IMPLEMENTED / APP SCREENSHOT NOT VERIFIED | `תורה / מקורות` editor entry has accessibility ID `torah-sources-entry`. An authenticated app screenshot cannot be captured without a fresh normal login. |
-| UX-2 | IMPLEMENTED / CI PENDING | Provider suggestion/resolve calls for refs/topics/words with 300 ms cancellation task. |
-| UX-3 | IMPLEMENTED / USER TEST PENDING | Document and single-block add/list/unlink; exact session Space/object/block and disposable gate. |
-| UX-4 | IMPLEMENTED / CI PENDING | Resolved refs alone create Kit selections; word/topic do not masquerade as verses. In-Kit routes remain active; unsupported new-tab callback is hidden. |
-| UX-5 | UNSUPPORTED, DISCLOSED | No verified edit-stable native character anchor; no UTF-16-only durable control exposed. |
-| QUOTE-1 | IMPLEMENTED / USER TEST PENDING | Native quote block, shared handler, `setFocus: false`; ordinary overload remains default-focus. |
-| QUOTE-2 | PARTIAL / USER TEST PENDING | Block association stores canonical/provider/snapshot/version/license metadata and duplicate drop claim. Strict read-only, Undo/Redo and two-window checks are pending. |
-| DRAG-1 | IMPLEMENTED / REGRESSION CI PENDING | Internal `BlockDragConfiguration` path remains `.move`; focused policy test added. |
-| DRAG-2 | IMPLEMENTED / USER TEST PENDING | External UTType path returns `.copy` and revalidates session opt-in; physical system-sheet drag unobserved. Explicit Insert is independent. |
-| DATA-1 | IMPLEMENTED / FOCUSED TEST PENDING | Present non-string property now fails closed; future/corrupt/target tests retained. |
-| DATA-2 | FAIL (UNCHANGED) | T2-L run `39306273085` remains failed at cold AccountSelect. |
-| DATA-3 | USER TEST PENDING | Physical iPad force-close/relaunch and offline persistence not observed. |
-| REG-1 | CI PENDING | Anytype run `39335838450`; no regression PASS claimed before completion. |
-| PLATFORM-1 | PARTIAL / USER TEST PENDING | Kit fallback source path and RTL resolver exist. Orientation/window/iPhone screenshots are unobserved. |
-| BUILD-1 | CI PENDING | Xcode 27 device lane verifies separate bundle ID, iPad family, MinimumOS, stripped extensions, empty build entitlements and unsigned package; no IPA claim until artifact exists. |
+| DOC-01 | IMPLEMENTED / CI PENDING | Fresh repository test stores and reloads document REF/TOPIC/WORD with `blockId == nil`. |
+| DOC-02 | IMPLEMENTED / CI PENDING | Document update/removal test retains two unrelated block records. |
+| DOC-03 | IMPLEMENTED / CI PENDING | Same source remains three target records at document, block A and block B. |
+| DOC-04 | IMPLEMENTED / CI PENDING | Exact-target removal tests preserve other scopes. |
+| DOC-05 | IMPLEMENTED / CI PENDING | Typed context plus request UUID prevents stale block refresh from replacing document scope; reverse selection is synchronous and exact. |
+| DOC-06 | PARTIAL / DEVICE PENDING | Space/object are immutable per session and records are filtered exactly; authenticated navigation A→B→A and multiple windows require owner hardware. |
+| DOC-07 | IMPLEMENTED / CI PENDING | Existing v2/v1, unknown-field and future/corrupt fail-closed coverage retained; no migration or read-time rewrite added. |
+| DOC-08 | DEVICE PENDING | Force-close/reopen checklist below; not inferred from same-process tests. |
+| GATE-01 | IMPLEMENTED / CI PENDING | Gate state, UI, errors and authorization policy removed; workflow source scan fails if forbidden symbols return. |
+| GATE-02 | IMPLEMENTED / CI PENDING | Normal link/unlink/quote/Notes paths have no opt-in; native repository permission/stale/Space tests remain. |
+| GATE-03 | IMPLEMENTED / CI PENDING | External Torah drop is copy only for writable valid placement; internal drag is move; readonly is forbidden. |
+| OPEN-01 | IMPLEMENTED / CI PENDING | `UICellAccessory.CustomViewConfiguration` badge invokes session source opening and the existing `.torahInspectorSheet`. |
+| OPEN-02 | IMPLEMENTED / CI PENDING | Stored section provenance creates exact segment selection and `.relationships` entry. |
+| OPEN-03 | IMPLEMENTED / CI PENDING | One REF opens directly; multiple REF or WORD/TOPIC opens localized scoped chooser; document chips open REF sources. |
+| OPEN-04 | IMPLEMENTED / DEVICE PENDING | Accessory is outside editable content; no collection/text-view double-tap recognizer was added. Caret/selection/VoiceOver require iPad verification. |
+| LOC-01 | IMPLEMENTED / CI PENDING | Central formatter selects stable `labelHe`/`labelEn` by effective locale without changing IDs or canonical refs. |
+| LOC-02 | PASS (portable) | PinkhaKit test suite verifies section-derived א׳/ט״ו/ט״ז and refuses fabricated daf/range labels. |
+| LOC-03 | IMPLEMENTED / CI PENDING | Anytype and Kit pass environment locale through chips, work titles, controls, Notes and errors; Kit UI tests run on macOS CI. |
+| LOC-04 | IMPLEMENTED / CI PENDING | Existing bodies are never migrated; new quote body is provider text only and localized source remains association-backed accessory metadata. |
+| DATA-01 | IMPLEMENTED / CI PENDING | Single process queue/readback tests retain records and unrelated document/block data. |
+| DATA-02 | IMPLEMENTED / CI PENDING | Wrong type, corrupt/future payload, wrong Space, stale block and readonly cases fail without write. |
+| REG-01 | PARTIAL | Local `PinkhaKit`: 131 tests / 16 suites passed. Kit UI and Anytype native tests await Xcode CI. |
+| REG-02 | IMPLEMENTED / CI PENDING | Quote insertion retains `setFocus: false`; generic block creation overload is unchanged. |
+| REG-03 | DEVICE PENDING | Real iPadOS 27 physical-right system Sheet/detents retain prior Kit evidence; updated authenticated host needs owner verification. |
+| REG-04 | CI PENDING | Workflow keeps bundle ID, strips extensions/signature, applies no production entitlements and packages unsigned device IPA. |
+| LIMIT-T2 | UNPROVEN / UNCHANGED | Independent multi-device scalar merge is still not claimed. Serialized single-active-writer/readback safeguards remain. |
+| LIMIT-LOGIN | FAIL / UNCHANGED | Historical simulator AccountSelect run `39306273085` remains separate and does not represent the owner's physical iPad session. |
+
+Authenticated Anytype screenshots are not manufactured in CI. Kit demo
+screenshots, if produced, must remain labeled as Kit evidence only.
