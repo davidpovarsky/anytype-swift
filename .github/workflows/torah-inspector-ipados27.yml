@@ -104,8 +104,18 @@ jobs:
         run: |
           APP_PATH='build/DerivedData-Device/Build/Products/Release-Anytype-iphoneos/Anytype.app'
           test -d "$APP_PATH"
-          /usr/libexec/PlistBuddy -c 'Set :CFBundleIdentifier com.gloiiire.anytype.torahtrial' "$APP_PATH/Info.plist"
-          /usr/libexec/PlistBuddy -c 'Set :CFBundleDisplayName Anytype Torah Trial' "$APP_PATH/Info.plist"
+          python3 - <<'PY'
+          import plistlib
+          from pathlib import Path
+
+          plist = Path('build/DerivedData-Device/Build/Products/Release-Anytype-iphoneos/Anytype.app/Info.plist')
+          with plist.open('rb') as stream:
+              info = plistlib.load(stream)
+          info['CFBundleIdentifier'] = 'com.gloiiire.anytype.torahtrial'
+          info['CFBundleDisplayName'] = 'Anytype Torah Trial'
+          with plist.open('wb') as stream:
+              plistlib.dump(info, stream, fmt=plistlib.FMT_BINARY)
+          PY
           if [[ -d "$APP_PATH/PlugIns" ]]; then
             rm -rf "$APP_PATH/PlugIns"
           fi

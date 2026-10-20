@@ -172,6 +172,7 @@ struct TorahAssociationNativeRepositoryTests {
         ) == .forbidden)
     }
 
+    @MainActor
     @Test("Resolved verses preserve section and exact-segment identity")
     func resolvedVerseSelection() throws {
         let resolved = ResolvedReference(
