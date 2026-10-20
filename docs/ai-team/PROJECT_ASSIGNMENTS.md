@@ -11,6 +11,7 @@
 - **T2-L SINGLE DEVICE SCOPE:** Active implementation is strictly limited to the T2-L single active writer architecture on `pinkha/torah-functional-ui-single-device-2026-10-18`.
 - **ORIGINAL T2 CROSS-DEVICE SYNC REMAINS BLOCKED:** Multi-device sync is blocked pending separate Heart/protobuf minimal RFC approval. Do not silently edit production Heart/protobuf or claim sync safety.
 - Native iPadOS 27 trailing side sheet, semantic word selection anchors, Quote blocks, and Notes integration.
+- **ORIGINAL ANYTYPE DESIGN LANGUAGE REFERENCE:** All native UI design, screen specifications, and visual reviews led by Maya must follow the Original Anytype Visual Consistency Contract in `.agents/roles/maya.md` and use the canonical design reference at `docs/ai-team/references/Anytype_Original_Design_Language_Audit_2026-10-20.md`.
 
 ---
 
