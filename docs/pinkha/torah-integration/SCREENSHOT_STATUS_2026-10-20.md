@@ -3,8 +3,9 @@
 ## Production UX correction
 
 - The locale-aware Kit change is pinned at
-  `1ebbbd2d43e1ba078e50408ce518d739fe6ca94f`; updated Kit test/screenshot
-  evidence is CI pending.
+  `1ebbbd2d43e1ba078e50408ce518d739fe6ca94f`; its 25 package tests passed in
+  Anytype CI run `39469048720`. This run did not manufacture a new authenticated
+  app screenshot.
 - The Anytype block badge is a real UIKit cell accessory feeding the existing
   Kit system Sheet. No authenticated screenshot is claimed before the owner
   installs and opens the update on the existing iPad account.
@@ -13,8 +14,9 @@
 
 ## Historical trial evidence
 
-- Kit demo Hebrew RTL Peek/Medium/Large screenshots: expected from Kit run
-  `39333954262`; status pending until artifacts are uploaded.
+- Kit demo Hebrew RTL Peek/Medium/Large screenshots remain historical Kit-only
+  evidence from run `39350598474`, artifact `12233133803`; they are not evidence
+  from the owner's authenticated Anytype sandbox.
 - Actual authenticated Anytype app screenshots: **NOT VERIFIED**. CI starts in a
   separate empty sandbox and this implementation does not inject, clone or copy
   a production account/session merely to manufacture screenshots.

@@ -62,10 +62,22 @@ The owner-directed correction also:
   update. The display name changes to `Anytype Torah` only.
 
 Local portable evidence: `swift test --package-path Modules/PinkhaKit` passed
-131 tests in 16 suites. Native SwiftUI/UIKit/Xcode verification and the unsigned
-device IPA are CI pending. Physical app relaunch, authenticated account data,
-editing gestures, orientation and two-window behavior remain **DEVICE PENDING**.
-Full T2 multi-device convergence remains unproven and is not reclassified.
+131 tests in 16 suites. GitHub Actions run `39469048720` then passed at exact
+implementation commit `e58516b113f00d067472772493dee033bb2f97bf` using Xcode
+27.0 (`27A266a`) and Apple Swift 6.4. It passed 25 TorahInspectorKit tests, 131
+PinkhaKit tests in 16 suites, 15 focused native association tests, the unsigned
+generic-device build and the package audit.
+
+Artifact `Anytype-Torah-iPadOS27-Unsigned-IPA` (ID `12290847132`) contains a
+149,688,876-byte IPA with SHA-256
+`0fb5c898f5e17fa46639868043508ca910d2e55c7ce2b300d262202ebf803762`.
+The package retains bundle ID `com.gloiiire.anytype.torahtrial`, has display name
+`Anytype Torah`, minimum iOS 17.0 and iPad device-family support. Direct archive
+inspection confirms that it is unsigned and contains no PlugIns, appex,
+provisioning profile or `_CodeSignature` directory. Physical app relaunch,
+authenticated account data, editing gestures, orientation and two-window
+behavior remain **DEVICE PENDING**. Full T2 multi-device convergence remains
+unproven and is not reclassified.
 
 ## Historical owner-directed iPad trial — 2026-10-20 (superseded UX)
 
