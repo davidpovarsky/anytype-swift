@@ -121,6 +121,19 @@ final class TorahEditorSession {
         }
     }
 
+    enum SearchState: Equatable {
+        case idle
+        case loading
+        case results([SearchResult])
+        case empty
+        case error(String)
+
+        var results: [SearchResult] {
+            guard case .results(let values) = self else { return [] }
+            return values
+        }
+    }
+
     enum SessionError: LocalizedError {
         case insertionUnavailable
         case staleDocument
@@ -147,13 +160,12 @@ final class TorahEditorSession {
     let repository: TorahInspectorRepository
 
     var selection: TorahInspectorSelection?
-    var selectedTool: TorahStudyTool = .commentaries
+    var selectedTool: TorahStudyToolID = .commentaries
     var selectedDetent: TorahInspectorSheetDetent = .medium
     var isSearchPresented = false
     var searchScope: SearchScope = .references
     var searchQuery = ""
-    var searchResults: [SearchResult] = []
-    var isSearching = false
+    private(set) var searchState: SearchState = .idle
     var message: String?
     private(set) var associationContext: TorahAssociationContext
     var currentAssociations: [TorahAssociationItem] = []
@@ -169,6 +181,7 @@ final class TorahEditorSession {
     private var openObjectHandler: ((String) -> Void)?
     private var associationSnapshotHandler: ((Set<String>) -> Void)?
     private var refreshRequestID: UUID?
+    private var searchRequestEpoch: UInt = 0
     private var effectiveLocale = Locale.autoupdatingCurrent
 
     init(spaceId: String, objectId: String) throws {
@@ -193,6 +206,9 @@ final class TorahEditorSession {
             workspace: workspace,
             notesFetcher: { [notesService] selection in
                 try await notesService.notes(for: selection)
+            },
+            relatedDocumentsFetcher: { [notesService] selection in
+                try await notesService.relatedDocuments(for: selection)
             }
         )
     }
@@ -223,6 +239,9 @@ final class TorahEditorSession {
             workspace: workspace,
             notesFetcher: { [notesService] selection in
                 try await notesService.notes(for: selection)
+            },
+            relatedDocumentsFetcher: { [notesService] selection in
+                try await notesService.relatedDocuments(for: selection)
             }
         )
     }
@@ -257,6 +276,14 @@ final class TorahEditorSession {
             onDeleteNote: { [weak self] note, selection, didChange in
                 Task { @MainActor in
                     await self?.unlink(note: note, for: selection, didChange: didChange)
+                }
+            },
+            onOpenRelatedDocument: { [weak self] document in
+                self?.openObjectHandler?(document.objectID)
+            },
+            onUnlinkRelatedDocument: { [weak self] document, selection, didChange in
+                Task { @MainActor in
+                    await self?.unlink(document: document, for: selection, didChange: didChange)
                 }
             },
             showsCloseButton: true
@@ -411,18 +438,23 @@ final class TorahEditorSession {
         )
     }
 
-    func performSearch() async {
+    func performSearch(debounce: Duration = .zero) async {
+        searchRequestEpoch &+= 1
+        let requestEpoch = searchRequestEpoch
         let query = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
         let scope = searchScope
         guard query.count >= 2 else {
-            searchResults = []
+            searchState = .idle
             return
         }
 
-        isSearching = true
-        defer { isSearching = false }
+        searchState = .loading
 
         do {
+            if debounce > .zero {
+                try await Task.sleep(for: debounce)
+            }
+            try Task.checkCancellation()
             let results: [SearchResult]
             switch scope {
             case .references:
@@ -464,16 +496,34 @@ final class TorahEditorSession {
                     )
                 }
             }
-            guard searchQuery.trimmingCharacters(in: .whitespacesAndNewlines) == query,
-                  searchScope == scope else { return }
-            searchResults = results
+            try Task.checkCancellation()
+            guard isCurrentSearch(requestEpoch, query: query, scope: scope) else { return }
+            searchState = results.isEmpty ? .empty : .results(results)
         } catch is CancellationError {
+            guard isCurrentSearch(requestEpoch, query: query, scope: scope) else { return }
+            searchState = .idle
+        } catch TorahError.noResults {
+            guard isCurrentSearch(requestEpoch, query: query, scope: scope) else { return }
+            searchState = .empty
         } catch {
-            guard searchQuery.trimmingCharacters(in: .whitespacesAndNewlines) == query,
-                  searchScope == scope else { return }
-            searchResults = []
-            message = error.localizedDescription
+            guard isCurrentSearch(requestEpoch, query: query, scope: scope) else { return }
+            let localized = if let torahError = error as? TorahError {
+                TorahStrings.message(for: torahError, locale: effectiveLocale)
+            } else {
+                Loc.Pinkha.Torah.Error.backendFailure
+            }
+            searchState = .error(localized)
         }
+    }
+
+    private func isCurrentSearch(
+        _ requestEpoch: UInt,
+        query: String,
+        scope: SearchScope
+    ) -> Bool {
+        searchRequestEpoch == requestEpoch
+            && searchQuery.trimmingCharacters(in: .whitespacesAndNewlines) == query
+            && searchScope == scope
     }
 
     func openReference(_ result: SearchResult) async {
@@ -687,6 +737,22 @@ final class TorahEditorSession {
             try await notesService.unlink(noteId: note.id, for: selection)
             await refreshAssociationSnapshot()
             repository.invalidateNotes(for: selection)
+            didChange()
+        } catch {
+            message = error.localizedDescription
+        }
+    }
+
+    private func unlink(
+        document: TorahRelatedDocument,
+        for selection: TorahInspectorSelection,
+        didChange: @escaping TorahInspectorHostActions.NotesDidChange
+    ) async {
+        do {
+            try await notesService.unlink(document: document, for: selection)
+            await refreshAssociationSnapshot()
+            repository.invalidateNotes(for: selection)
+            repository.invalidateRelatedDocuments(for: selection)
             didChange()
         } catch {
             message = error.localizedDescription

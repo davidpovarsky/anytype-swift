@@ -197,6 +197,9 @@ struct TorahInspectorRepositoryBridgeTests {
             scope: .section
         )
         #expect(try await repository.notes(for: selection).isEmpty)
+        let related = try await repository.relatedDocuments(for: selection)
+        #expect(related.documents.isEmpty)
+        #expect(related.coverage == .currentDocumentOnly)
         await #expect(throws: TorahError.missingProvider) {
             _ = try await repository.document(for: "Genesis 1", providerID: "wrong-provider")
         }

@@ -15,7 +15,13 @@ public struct SefariaLexicalProvider: LexicalProvider {
     ) async throws -> [WordCandidate] {
         let trimmed = prefix.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return [] }
-        return try await resolveWord(surface: trimmed, context: context).map(\.candidate)
+        do {
+            return try await resolveWord(surface: trimmed, context: context).map(\.candidate)
+        } catch TorahError.noResults {
+            // Suggestions model absence as an empty collection. The explicit
+            // resolve API retains its historical throwing contract below.
+            return []
+        }
     }
 
     public func resolveWord(

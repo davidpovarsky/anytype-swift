@@ -282,6 +282,72 @@ struct TorahAssociationNativeRepositoryTests {
         #expect(session.currentAssociations.map(\.id) == [documentItem.id])
     }
 
+    @MainActor
+    @Test("Search state rejects stale query and scope responses and clears cancellation")
+    func searchStateRejectsStaleResponses() async throws {
+        let provider = SessionSearchProvider()
+        let registry = try TorahProviderRegistry(
+            referenceProviders: [provider],
+            topicProviders: [provider],
+            lexicalProviders: [provider],
+            defaultProviderID: provider.providerID
+        )
+        let session = TorahEditorSession(
+            spaceId: spaceId,
+            objectId: objectId,
+            workspace: AnytypeTorahWorkspace(registry: registry),
+            associations: DelayedSessionAssociationProbe(responses: [])
+        )
+
+        session.searchScope = .words
+        session.searchQuery = "old"
+        let staleQuery = Task { await session.performSearch() }
+        try await Task.sleep(for: .milliseconds(10))
+        session.searchQuery = "new"
+        await session.performSearch()
+        await staleQuery.value
+        #expect(session.searchState.results.map(\.providerValue) == ["new"])
+
+        session.searchQuery = "old"
+        let staleScope = Task { await session.performSearch() }
+        try await Task.sleep(for: .milliseconds(10))
+        session.searchScope = .topics
+        session.searchQuery = "topic"
+        await session.performSearch()
+        await staleScope.value
+        #expect(session.searchState.results.map(\.scope) == [.topics])
+
+        session.searchScope = .words
+        session.searchQuery = "none"
+        await session.performSearch()
+        #expect(session.searchState == .empty)
+        #expect(session.message == nil)
+
+        session.searchQuery = "failure"
+        await session.performSearch()
+        guard case .error(let message) = session.searchState else {
+            Issue.record("A genuine provider failure must remain an inline error")
+            return
+        }
+        #expect(!message.isEmpty)
+        #expect(session.message == nil)
+
+        session.searchQuery = "old"
+        let canceled = Task { await session.performSearch() }
+        try await Task.sleep(for: .milliseconds(10))
+        canceled.cancel()
+        await canceled.value
+        #expect(session.searchState == .idle)
+
+        session.searchQuery = "old"
+        let staleAfterClear = Task { await session.performSearch() }
+        try await Task.sleep(for: .milliseconds(10))
+        session.searchQuery = ""
+        await session.performSearch()
+        await staleAfterClear.value
+        #expect(session.searchState == .idle)
+    }
+
     @Test("Locale changes display only and new quote bodies do not freeze a citation")
     func localeAndQuoteContentAreNonDestructive() {
         let item = TorahAssociationItem(
@@ -635,4 +701,43 @@ private actor NativeStoreProbe: TorahAssociationNativeStore {
 
 private enum ProbeError: Error {
     case lostAcknowledgement
+}
+
+private enum SessionSearchProbeError: Error {
+    case backendFailure
+}
+
+private struct SessionSearchProvider: ReferenceProvider, TopicProvider, LexicalProvider {
+    let providerID = "session-search-probe"
+
+    func suggestReferences(query: String, limit: Int) async throws -> [ReferenceCandidate] {
+        [ReferenceCandidate(id: query, label: query)]
+    }
+
+    func resolveReference(_ input: String) async throws -> ResolvedReference {
+        ResolvedReference(canonical: input, labelHe: input)
+    }
+
+    func suggestTopics(query: String, limit: Int) async throws -> [TopicCandidate] {
+        [TopicCandidate(id: query, displayTitle: query)]
+    }
+
+    func resolveTopic(id: String) async throws -> ResolvedTopic {
+        ResolvedTopic(slug: id, displayTitle: id)
+    }
+
+    func refreshTopicIndexIfNeeded() async throws {}
+
+    func suggestWords(prefix: String, context: TorahLexicalContext?) async throws -> [WordCandidate] {
+        if prefix == "old" {
+            try await Task.sleep(for: .milliseconds(80))
+        }
+        if prefix == "none" { throw TorahError.noResults }
+        if prefix == "failure" { throw SessionSearchProbeError.backendFailure }
+        return [WordCandidate(id: prefix, surface: prefix, headword: prefix, lexicon: "fixture")]
+    }
+
+    func resolveWord(surface: String, context: TorahLexicalContext?) async throws -> [ResolvedWord] {
+        try await suggestWords(prefix: surface, context: context).map { ResolvedWord(candidate: $0) }
+    }
 }

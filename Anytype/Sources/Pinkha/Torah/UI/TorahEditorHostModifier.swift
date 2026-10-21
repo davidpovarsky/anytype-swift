@@ -46,6 +46,11 @@ struct TorahEditorHostModifier: ViewModifier {
                     entryMode: session.inspectorEntryMode,
                     selectedTool: $session.selectedTool,
                     selectedDetent: $session.selectedDetent,
+                    configuration: TorahInspectorConfiguration(
+                        availableTools: [.commentaries, .links, .relatedDocuments],
+                        allowsInlineFullSourceNavigation: true,
+                        theme: .anytype
+                    ),
                     actions: session.hostActions
                 )
                 .alert(

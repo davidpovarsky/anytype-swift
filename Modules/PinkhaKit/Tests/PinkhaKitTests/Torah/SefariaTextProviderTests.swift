@@ -216,4 +216,52 @@ struct SefariaTextProviderTests {
             #expect(message.contains("503"))
         }
     }
+
+    @Test("Full segment display normalization is faithful, unbounded and keeps raw payload")
+    func fullSegmentDisplayNormalization() throws {
+        let longTail = String(repeating: "אבגדה ", count: 900)
+        let root: [String: Any] = [
+            "ref": "Genesis 1",
+            "heRef": "בראשית א׳",
+            "sectionRef": "Genesis 1",
+            "heSectionRef": "בראשית א׳",
+            "versions": [[
+                "language": "he",
+                "versionTitle": "Fixture",
+                "direction": "rtl",
+                "text": [
+                    "בְּרֵאשִׁית&nbsp;<b>בָּרָא</b> &amp; &#1492;&#x5D0;",
+                    "&lt;מילולי&gt; <span>מילה</span><span>נוספת</span> <b>מודגש</b><b>צמוד</b><br>שורה<p>פסקה</p>",
+                    "סימן & לא־ישות &unknown; &amp;lt;שמור&amp;gt; " + longTail
+                ]
+            ]]
+        ]
+        let metadata: [String: Any] = [
+            "depth": 2,
+            "start_indexes": [1],
+            "navigation_refs": [:]
+        ]
+
+        let document = try SefariaTextProvider.decode(
+            requestedReference: "Genesis 1",
+            root: root,
+            metadata: metadata
+        )
+
+        #expect(document.segments.count == 3)
+        #expect(document.segments[0].text == "בְּרֵאשִׁית\u{00A0}בָּרָא & הא")
+        #expect(document.segments[1].text == "<מילולי> מילה נוספת מודגש צמוד\nשורה\nפסקה")
+        #expect(document.segments[2].text.contains("סימן & לא־ישות &unknown; <שמור>"))
+        #expect(document.segments[2].text.count > 4_096)
+        #expect(document.segments.map(\.ordinal) == [1, 2, 3])
+        #expect(document.segments.map(\.canonicalRef) == ["Genesis 1:1", "Genesis 1:2", "Genesis 1:3"])
+        #expect(document.rawProviderPayload == SefariaJSON.payload(root))
+    }
+
+    @Test("Already-clean text and invalid entities are left intact")
+    func cleanTextIsStable() {
+        let clean = "וְהָאָרֶץ הָיְתָה < בין & ובין"
+        #expect(SefariaDisplayText.fullSegment(clean) == clean)
+        #expect(SefariaDisplayText.fullSegment("&#xD800; &#1114112;") == "&#xD800; &#1114112;")
+    }
 }

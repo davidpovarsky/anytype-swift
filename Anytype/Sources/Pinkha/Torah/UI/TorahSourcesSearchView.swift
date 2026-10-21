@@ -17,15 +17,18 @@ struct TorahSourcesSearchView: View {
                 }
                 .pickerStyle(.segmented)
 
-                TextField(Loc.Pinkha.Torah.searchPlaceholder, text: $session.searchQuery)
-                    .textFieldStyle(.roundedBorder)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
+                SearchBar(
+                    text: $session.searchQuery,
+                    focused: true,
+                    placeholder: Loc.Pinkha.Torah.searchPlaceholder,
+                    shouldShowDivider: false
+                )
                     .accessibilityIdentifier("torah-sources-search-field")
 
                 results
             }
             .padding(16)
+            .background(Color.Background.primary)
             .navigationTitle(contextTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -36,11 +39,7 @@ struct TorahSourcesSearchView: View {
         }
         .frame(idealWidth: 460, idealHeight: 640)
         .task(id: SearchTaskID(scope: session.searchScope, query: session.searchQuery)) {
-            do {
-                try await Task.sleep(for: .milliseconds(300))
-                await session.performSearch()
-            } catch {
-            }
+            await session.performSearch(debounce: .milliseconds(300))
         }
         .task(id: session.associationContext.id) { await session.refreshAssociations() }
     }
@@ -48,11 +47,10 @@ struct TorahSourcesSearchView: View {
     private var associationPreview: some View {
         GroupBox {
             if session.currentAssociations.isEmpty {
-                Text(session.associationTargetBlockId == nil
+                AnytypeText(session.associationTargetBlockId == nil
                      ? Loc.Pinkha.Torah.noDocumentLinks
-                     : Loc.Pinkha.Torah.noBlockLinks)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                     : Loc.Pinkha.Torah.noBlockLinks, style: .caption1Regular)
+                    .foregroundStyle(Color.Text.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
                 ScrollView(.horizontal) {
@@ -92,9 +90,8 @@ struct TorahSourcesSearchView: View {
             }
 
             if let persistenceState = session.persistenceState {
-                Text(persistenceLabel(persistenceState))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                AnytypeText(persistenceLabel(persistenceState), style: .caption1Regular)
+                    .foregroundStyle(Color.Text.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
         } label: {
@@ -118,24 +115,42 @@ struct TorahSourcesSearchView: View {
 
     @ViewBuilder
     private var results: some View {
-        if session.isSearching {
-            ProgressView(Loc.Pinkha.Torah.searching)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else if session.searchResults.isEmpty {
+        switch session.searchState {
+        case .idle:
             ContentUnavailableView(
                 Loc.Pinkha.Torah.searchPrompt,
                 systemImage: "text.book.closed",
                 description: Text(Loc.Pinkha.Torah.searchDescription)
             )
-        } else {
-            List(session.searchResults) { result in
+        case .loading:
+            ProgressView(Loc.Pinkha.Torah.searching)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        case .empty:
+            ContentUnavailableView(
+                session.searchScope == .words
+                    ? Loc.Pinkha.Torah.Error.noResolvedWord
+                    : Loc.Pinkha.Torah.searchDescription,
+                systemImage: "magnifyingglass"
+            )
+            .accessibilityIdentifier("torah-search-empty")
+        case .error(let message):
+            ContentUnavailableView {
+                Label(Loc.Pinkha.Torah.title, systemImage: "exclamationmark.triangle")
+            } description: {
+                Text(message)
+            } actions: {
+                Button(Loc.retry) {
+                    Task { await session.performSearch() }
+                }
+            }
+            .accessibilityIdentifier("torah-search-error")
+        case .results(let values):
+            List(values) { result in
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(result.title(locale: locale))
-                        .font(.body.weight(.medium))
+                    AnytypeText(result.title(locale: locale), style: .bodySemibold)
                     if let subtitle = result.subtitle(locale: locale), !subtitle.isEmpty {
-                        Text(subtitle)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        AnytypeText(subtitle, style: .caption1Regular)
+                            .foregroundStyle(Color.Text.secondary)
                             .lineLimit(2)
                     }
                     HStack {

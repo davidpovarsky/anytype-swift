@@ -170,13 +170,15 @@ public struct SefariaTextProvider: TextProvider {
     }
 
     private static func segmentTexts(_ value: Any?) -> [(offset: Int, text: String)] {
-        if let text = value as? String { return [(0, text)] }
+        if let text = value as? String {
+            return [(0, SefariaDisplayText.fullSegment(text))]
+        }
         guard let values = value as? [Any] else { return [] }
 
         var flattened: [(offset: Int, text: String)] = []
         for value in values {
             if let text = value as? String {
-                flattened.append((flattened.count, text))
+                flattened.append((flattened.count, SefariaDisplayText.fullSegment(text)))
             } else {
                 for nested in segmentTexts(value) {
                     flattened.append((flattened.count, nested.text))

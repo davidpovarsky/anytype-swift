@@ -148,7 +148,7 @@ struct SefariaTopicLexicalProviderTests {
         #expect(expectedURL.contains("lookup_ref="))
     }
 
-    @Test("Lexical lookup without context omits lookup_ref and empty results are noResults")
+    @Test("Lexical resolve keeps noResults while suggestions map valid emptiness to zero matches")
     func lexicalNoContextAndNoResults() async throws {
         let url = try SefariaClient().makeURL(pathSegments: ["api", "words", "שלום"]).absoluteString
         let transport = MockTorahHTTPTransport(responses: [
@@ -158,6 +158,30 @@ struct SefariaTopicLexicalProviderTests {
         await #expect(throws: TorahError.noResults) {
             _ = try await provider.resolveWord(surface: "שלום", context: nil)
         }
+        #expect(try await provider.suggestWords(prefix: "שלום", context: nil).isEmpty)
         #expect(!url.contains("lookup_ref"))
+    }
+
+    @Test("Lexical suggestion maps HTTP 404 to empty but preserves server and schema errors")
+    func lexicalSuggestionErrorBoundaries() async throws {
+        let missingURL = try SefariaClient().makeURL(pathSegments: ["api", "words", "לטו"]).absoluteString
+        let missing = SefariaLexicalProvider(client: SefariaClient(transport: MockTorahHTTPTransport(responses: [
+            missingURL: MockHTTPResponse(statusCode: 404, json: #"{"detail":"not found"}"#)
+        ])))
+        #expect(try await missing.suggestWords(prefix: "לטו", context: nil).isEmpty)
+
+        let unavailable = SefariaLexicalProvider(client: SefariaClient(transport: MockTorahHTTPTransport(responses: [
+            missingURL: MockHTTPResponse(statusCode: 503, json: #"{"error":"unavailable"}"#)
+        ])))
+        await #expect(throws: TorahError.self) {
+            _ = try await unavailable.suggestWords(prefix: "לטו", context: nil)
+        }
+
+        let malformed = SefariaLexicalProvider(client: SefariaClient(transport: MockTorahHTTPTransport(responses: [
+            missingURL: MockHTTPResponse(json: #"{"unexpected":true}"#)
+        ])))
+        await #expect(throws: TorahError.malformedResponse) {
+            _ = try await malformed.suggestWords(prefix: "לטו", context: nil)
+        }
     }
 }

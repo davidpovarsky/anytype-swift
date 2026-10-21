@@ -42,6 +42,31 @@ final class AnytypeTorahNotesService {
         }
     }
 
+    func relatedDocuments(
+        for selection: TorahInspectorSelection
+    ) async throws -> TorahRelatedDocumentsSnapshot {
+        let documents = try await noteItems(for: selection).compactMap { item -> TorahRelatedDocument? in
+            guard let noteObjectId = item.customMetadata?[MetadataKey.noteObjectId],
+                  !noteObjectId.isEmpty else { return nil }
+            return TorahRelatedDocument(
+                id: item.id,
+                spaceID: spaceId,
+                objectID: noteObjectId,
+                title: item.labelHe,
+                snippet: selection.relationshipRef,
+                sourceReference: selection.relationshipRef,
+                kind: .note
+            )
+        }
+        // The host currently has no global reverse-index API. Returning the
+        // real current-document objects with explicit coverage prevents an
+        // empty collection from being presented as a space-wide zero.
+        return TorahRelatedDocumentsSnapshot(
+            documents: documents,
+            coverage: .currentDocumentOnly
+        )
+    }
+
     func createNote(for selection: TorahInspectorSelection) async throws -> TorahInspectorNote {
         let title = "הערה על \(selection.relationshipRef)"
         let details = try await objectActionsService.createObject(
@@ -112,6 +137,10 @@ final class AnytypeTorahNotesService {
             target: .object(objectId: objectId),
             spaceId: spaceId
         )
+    }
+
+    func unlink(document: TorahRelatedDocument, for selection: TorahInspectorSelection) async throws {
+        try await unlink(noteId: document.id, for: selection)
     }
 
     private func noteItems(for selection: TorahInspectorSelection) async throws -> [TorahAssociationItem] {

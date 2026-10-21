@@ -6,7 +6,8 @@ public enum TorahInspectorRepositoryFactory {
         workspace: AnytypeTorahWorkspace,
         documentCapacity: Int = 30,
         relationshipCapacity: Int = 50,
-        notesFetcher: @escaping TorahInspectorRepository.NotesFetcher = { _ in [] }
+        notesFetcher: @escaping TorahInspectorRepository.NotesFetcher = { _ in [] },
+        relatedDocumentsFetcher: @escaping TorahInspectorRepository.RelatedDocumentsFetcher = { _ in .unavailable }
     ) -> TorahInspectorRepository {
         TorahInspectorRepository(
             documentCapacity: documentCapacity,
@@ -23,7 +24,8 @@ public enum TorahInspectorRepositoryFactory {
             topicsFetcher: { reference, providerID in
                 try await workspace.topics(for: reference, providerID: providerID)
             },
-            notesFetcher: notesFetcher
+            notesFetcher: notesFetcher,
+            relatedDocumentsFetcher: relatedDocumentsFetcher
         )
     }
 }
