@@ -5,6 +5,18 @@ import Testing
 import TorahInspectorCore
 @testable import Anytype
 
+@Suite("Torah block accessory presentation")
+struct TorahBlockAccessoryPresentationTests {
+    @Test("Counts remain truthful for one, two and double digits")
+    func countText() {
+        #expect(TorahBlockAccessoryPresentation.countText(0) == nil)
+        #expect(TorahBlockAccessoryPresentation.countText(1) == "1")
+        #expect(TorahBlockAccessoryPresentation.countText(2) == "2")
+        #expect(TorahBlockAccessoryPresentation.countText(10) == "10")
+        #expect(TorahBlockAccessoryPresentation.countText(37) == "37")
+    }
+}
+
 @Suite("T2-L native single-writer repository")
 struct TorahAssociationNativeRepositoryTests {
     private let spaceId = "space"
@@ -437,8 +449,13 @@ struct TorahAssociationNativeRepositoryTests {
         ))
         #expect(session.inspectorEntryMode == .relationships)
         #expect(!session.isSearchPresented)
+        #expect(session.selection?.displayMetadata?.hebrew == "בראשית א׳:א׳")
+        #expect(session.selection?.displayMetadata?.english == "Genesis 1:1")
 
         session.openLinkedAssociations(blockId: "multiple")
+        #expect(session.selection == nil)
+        #expect(!session.isSearchPresented)
+        session.hostActions.onClose?()
         #expect(session.isSearchPresented)
         #expect(session.associationTargetBlockId == "multiple")
 
@@ -446,6 +463,12 @@ struct TorahAssociationNativeRepositoryTests {
         session.openLinkedAssociations(blockId: "typed")
         #expect(session.isSearchPresented)
         #expect(session.associationTargetBlockId == "typed")
+
+        session.openAssociation(verse)
+        #expect(!session.isSearchPresented)
+        #expect(session.selection == nil)
+        session.searchDidDismiss()
+        #expect(session.selection?.relationshipRef == "Genesis 1:1")
     }
 
     @MainActor
@@ -465,6 +488,7 @@ struct TorahAssociationNativeRepositoryTests {
         #expect(selection.canonicalRef == "Genesis 1")
         #expect(selection.preferredSegmentRef == "Genesis 1:1")
         #expect(selection.scope == .segment)
+        #expect(selection.displayMetadata?.hebrew == "בראשית א׳:א׳")
     }
 
     @Test("Space, block, deletion, archive, and detail permissions are enforced")

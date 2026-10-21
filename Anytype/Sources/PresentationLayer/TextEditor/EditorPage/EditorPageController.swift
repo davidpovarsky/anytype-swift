@@ -755,7 +755,7 @@ private extension EditorPageController {
         }
     }
     
-    func setupCell(cell: UICollectionViewListCell, indexPath: IndexPath, item: some BlockViewModelProtocol) {
+    func setupCell(cell: EditorViewListCell, indexPath: IndexPath, item: some BlockViewModelProtocol) {
         cell.contentConfiguration = item.makeContentConfiguration(maxWidth: cell.bounds.width)
         cell.contentView.isUserInteractionEnabled = true
         configureTorahAccessory(cell: cell, blockId: item.blockId)
@@ -766,28 +766,35 @@ private extension EditorPageController {
         }
     }
 
-    func configureTorahAccessory(cell: UICollectionViewListCell, blockId: String) {
+    func configureTorahAccessory(cell: EditorViewListCell, blockId: String) {
         guard let session = viewModel.torahSession else {
-            cell.accessories = []
+            cell.setTorahAccessory(nil)
             return
         }
         let count = session.linkedAssociationCount(blockId: blockId)
         guard count > 0 else {
-            cell.accessories = []
+            cell.setTorahAccessory(nil)
             return
         }
 
-        var buttonConfiguration = UIButton.Configuration.tinted()
-        buttonConfiguration.image = UIImage(systemName: "book.pages")
-        buttonConfiguration.title = count > 1 ? String(count) : nil
-        buttonConfiguration.imagePadding = 4
-        buttonConfiguration.cornerStyle = .capsule
+        var buttonConfiguration = UIButton.Configuration.plain()
+        buttonConfiguration.image = UIImage(asset: .CustomIcons.book)?.withRenderingMode(.alwaysTemplate)
+        buttonConfiguration.title = TorahBlockAccessoryPresentation.countText(count)
+        buttonConfiguration.imagePadding = 5
+        buttonConfiguration.baseForegroundColor = UIColor.Control.secondary
+        buttonConfiguration.background.backgroundColor = UIColor.Shape.transparentSecondary
+        buttonConfiguration.background.cornerRadius = 10
         buttonConfiguration.contentInsets = NSDirectionalEdgeInsets(
-            top: 5,
-            leading: 7,
-            bottom: 5,
-            trailing: 7
+            top: 11,
+            leading: 9,
+            bottom: 11,
+            trailing: 9
         )
+        buttonConfiguration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+            var attributes = attributes
+            attributes.font = .caption1Semibold
+            return attributes
+        }
         let button = UIButton(
             configuration: buttonConfiguration,
             primaryAction: UIAction { [weak session] _ in
@@ -805,9 +812,17 @@ private extension EditorPageController {
             customView: button,
             placement: .trailing()
         )
-        cell.accessories = [.customView(configuration: configuration)]
+        cell.setTorahAccessory(
+            .customView(configuration: configuration)
+        )
     }
     
+}
+
+enum TorahBlockAccessoryPresentation {
+    static func countText(_ count: Int) -> String? {
+        count > 0 ? String(count) : nil
+    }
 }
 
 // MARK: - Initial Update data

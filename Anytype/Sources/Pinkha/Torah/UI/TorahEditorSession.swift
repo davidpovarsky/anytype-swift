@@ -77,6 +77,11 @@ enum TorahAssociationDisplayFormatter {
 @MainActor
 @Observable
 final class TorahEditorSession {
+    private struct PendingInspectorPresentation {
+        let selection: TorahInspectorSelection
+        let entryMode: TorahInspectorEntryMode
+    }
+
     enum SearchScope: String, CaseIterable, Identifiable, Hashable {
         case references
         case topics
@@ -183,6 +188,8 @@ final class TorahEditorSession {
     private var refreshRequestID: UUID?
     private var searchRequestEpoch: UInt = 0
     private var effectiveLocale = Locale.autoupdatingCurrent
+    private var pendingInspectorPresentation: PendingInspectorPresentation?
+    private var pendingSearchContext: TorahAssociationContext?
 
     init(spaceId: String, objectId: String) throws {
         let workspace = try AnytypeTorahWorkspace.sefaria()
@@ -256,7 +263,7 @@ final class TorahEditorSession {
 
     var hostActions: TorahInspectorHostActions {
         TorahInspectorHostActions(
-            onClose: { [weak self] in self?.selection = nil },
+            onClose: { [weak self] in self?.inspectorDidDismiss() },
             onInsertSegment: { [weak self] transfer in
                 Task { @MainActor in
                     await self?.insert(transfer, targetBlockId: nil)
@@ -312,10 +319,53 @@ final class TorahEditorSession {
 
     func presentSearch(scope: TorahAssociationContext.Scope) {
         let context = TorahAssociationContext(spaceId: spaceId, objectId: objectId, scope: scope)
+        pendingInspectorPresentation = nil
+        if selection != nil {
+            pendingSearchContext = context
+            selection = nil
+            return
+        }
+        beginSearchPresentation(context: context)
+    }
+
+    private func beginSearchPresentation(context: TorahAssociationContext) {
         associationContext = context
         currentAssociations = visibleAssociations(for: context)
         isSearchPresented = true
         Task { await refreshAssociations(for: context) }
+    }
+
+    func searchDidDismiss() {
+        guard let pending = pendingInspectorPresentation else { return }
+        pendingInspectorPresentation = nil
+        inspectorEntryMode = pending.entryMode
+        selectedDetent = .medium
+        selection = pending.selection
+    }
+
+    private func inspectorDidDismiss() {
+        selection = nil
+        guard let context = pendingSearchContext else { return }
+        pendingSearchContext = nil
+        beginSearchPresentation(context: context)
+    }
+
+    private func presentInspector(
+        selection nextSelection: TorahInspectorSelection,
+        entryMode: TorahInspectorEntryMode
+    ) {
+        pendingSearchContext = nil
+        if isSearchPresented {
+            pendingInspectorPresentation = PendingInspectorPresentation(
+                selection: nextSelection,
+                entryMode: entryMode
+            )
+            isSearchPresented = false
+            return
+        }
+        inspectorEntryMode = entryMode
+        selectedDetent = .medium
+        selection = nextSelection
     }
 
     func refreshAssociations() async {
@@ -374,10 +424,10 @@ final class TorahEditorSession {
 
     func openAssociation(_ item: TorahAssociationItem) {
         guard canOpenAssociation(item) else { return }
-        selection = Self.inspectorSelection(for: item)
-        inspectorEntryMode = .relationships
-        selectedDetent = .medium
-        isSearchPresented = false
+        presentInspector(
+            selection: Self.inspectorSelection(for: item),
+            entryMode: .relationships
+        )
     }
 
     func openLinkedAssociations(blockId: String) {
@@ -416,6 +466,10 @@ final class TorahEditorSession {
 
     static func inspectorSelection(for item: TorahAssociationItem) -> TorahInspectorSelection {
         let canonical = item.canonicalKey
+        let displayMetadata = TorahReferenceDisplayMetadata(
+            english: item.labelEn,
+            hebrew: item.labelHe
+        )
         let explicitSection = item.customMetadata?["sectionRef"]?
             .trimmingCharacters(in: .whitespacesAndNewlines)
         if TorahReferenceUtil.isSegmentRef(canonical) {
@@ -428,13 +482,15 @@ final class TorahEditorSession {
                 providerID: item.providerID,
                 canonicalRef: section,
                 preferredSegmentRef: canonical,
-                scope: .segment
+                scope: .segment,
+                displayMetadata: displayMetadata
             )
         }
         return TorahInspectorSelection(
             providerID: item.providerID,
             canonicalRef: canonical,
-            scope: .section
+            scope: .section,
+            displayMetadata: displayMetadata
         )
     }
 
@@ -530,16 +586,18 @@ final class TorahEditorSession {
         guard result.scope == .references else { return }
         do {
             let resolved = try await workspace.resolveReference(result.providerValue)
-            selection = try Self.inspectorSelection(for: resolved)
-            inspectorEntryMode = .sourceReader
-            selectedDetent = .medium
-            isSearchPresented = false
+            let nextSelection = try Self.inspectorSelection(for: resolved)
+            presentInspector(selection: nextSelection, entryMode: .sourceReader)
         } catch {
             message = error.localizedDescription
         }
     }
 
     static func inspectorSelection(for resolved: ResolvedReference) throws -> TorahInspectorSelection {
+        let displayMetadata = TorahReferenceDisplayMetadata(
+            english: resolved.labelEn,
+            hebrew: resolved.labelHe
+        )
         guard resolved.isEmbeddableSource else {
             guard let sectionRef = resolved.firstAvailableSectionRef, !sectionRef.isEmpty else {
                 throw TorahError.referenceTooBroad
@@ -547,7 +605,8 @@ final class TorahEditorSession {
             return TorahInspectorSelection(
                 providerID: "sefaria",
                 canonicalRef: sectionRef,
-                scope: .section
+                scope: .section,
+                displayMetadata: displayMetadata
             )
         }
 
@@ -557,14 +616,16 @@ final class TorahEditorSession {
                 providerID: "sefaria",
                 canonicalRef: sectionRef,
                 preferredSegmentRef: resolved.canonical,
-                scope: .segment
+                scope: .segment,
+                displayMetadata: displayMetadata
             )
         }
 
         return TorahInspectorSelection(
             providerID: "sefaria",
             canonicalRef: resolved.canonical,
-            scope: .section
+            scope: .section,
+            displayMetadata: displayMetadata
         )
     }
 

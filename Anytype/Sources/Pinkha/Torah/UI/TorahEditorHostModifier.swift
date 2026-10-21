@@ -36,9 +36,13 @@ struct TorahEditorHostModifier: ViewModifier {
                     .accessibilityIdentifier("torah-sources-entry")
                     .accessibilityValue(String(session.visibleDocumentAssociations.count))
                 }
-                .popover(isPresented: $session.isSearchPresented, attachmentAnchor: .rect(.bounds)) {
+                .sheet(
+                    isPresented: $session.isSearchPresented,
+                    onDismiss: session.searchDidDismiss
+                ) {
                     TorahSourcesSearchView(session: session)
-                        .presentationCompactAdaptation(.sheet)
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.hidden)
                 }
                 .torahInspectorSheet(
                     selection: $session.selection,

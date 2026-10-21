@@ -230,7 +230,7 @@ struct SefariaTextProviderTests {
                 "versionTitle": "Fixture",
                 "direction": "rtl",
                 "text": [
-                    "בְּרֵאשִׁית&nbsp;<b>בָּרָא</b> &amp; &#1492;&#x5D0;",
+                    "בְּרֵאשִׁית&nbsp;<b>בָּרָא</b> &amp; &#1492;&#X5D0;",
                     "&lt;מילולי&gt; <span>מילה</span><span>נוספת</span> <b>מודגש</b><b>צמוד</b><br>שורה<p>פסקה</p>",
                     "סימן & לא־ישות &unknown; &amp;lt;שמור&amp;gt; " + longTail
                 ]
@@ -263,5 +263,24 @@ struct SefariaTextProviderTests {
         let clean = "וְהָאָרֶץ הָיְתָה < בין & ובין"
         #expect(SefariaDisplayText.fullSegment(clean) == clean)
         #expect(SefariaDisplayText.fullSegment("&#xD800; &#1114112;") == "&#xD800; &#1114112;")
+        #expect(SefariaDisplayText.fullSegment("&#x202E;") == "&#x202E;")
+    }
+
+    @Test("Genesis 1:5 spacing and standard typography entities decode at the provider boundary")
+    func genesisOneFiveEntityFixture() {
+        let providerText = "וַיִּקְרָא אֱלֹהִים לָאוֹר יוֹם&thinsp;&thinsp;&nbsp;וְלַחֹשֶׁךְ קָרָא לָיְלָה&hellip; &ldquo;יוֹם&rdquo; &ndash; &amp;"
+        let displayed = SefariaDisplayText.fullSegment(providerText)
+
+        #expect(displayed == "וַיִּקְרָא אֱלֹהִים לָאוֹר יוֹם\u{2009}\u{2009}\u{00A0}וְלַחֹשֶׁךְ קָרָא לָיְלָה… “יוֹם” – &")
+        #expect(!displayed.contains("&thinsp;"))
+        #expect(!displayed.contains("&nbsp;"))
+    }
+
+    @Test("Entity decoding is bounded, case tolerant and preserves unknown names")
+    func entityCoverageAndBounds() {
+        let encoded = "א&ensp;&emsp;ב&shy;&lrm;&rlm;&mdash;&Prime;&#65;&#x42;&#X43; &unknown; &amp;amp;"
+        let decoded = SefariaDisplayText.fullSegment(encoded)
+
+        #expect(decoded == "א\u{2002}\u{2003}ב\u{00AD}\u{200E}\u{200F}—″ABC &unknown; &")
     }
 }

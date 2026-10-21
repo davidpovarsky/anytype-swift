@@ -13,24 +13,31 @@ enum TestTransportError: Error, Equatable {
 struct MockHTTPResponse: Sendable {
     let statusCode: Int
     let data: Data
+    let headers: [String: String]
 
-    init(statusCode: Int = 200, json: String) {
+    init(statusCode: Int = 200, json: String, headers: [String: String] = [:]) {
         self.statusCode = statusCode
         self.data = Data(json.utf8)
+        self.headers = headers
     }
 
-    init(statusCode: Int = 200, data: Data) {
+    init(statusCode: Int = 200, data: Data, headers: [String: String] = [:]) {
         self.statusCode = statusCode
         self.data = data
+        self.headers = headers
     }
 }
 
 actor MockTorahHTTPTransport: TorahHTTPTransport {
-    private let responses: [String: MockHTTPResponse]
+    private var responses: [String: [MockHTTPResponse]]
     private(set) var requestedURLs: [String] = []
 
     init(responses: [String: MockHTTPResponse]) {
-        self.responses = responses
+        self.responses = responses.mapValues { [$0] }
+    }
+
+    init(responseSequences: [String: [MockHTTPResponse]]) {
+        self.responses = responseSequences
     }
 
     func data(for request: URLRequest) async throws -> (Data, HTTPURLResponse) {
@@ -38,14 +45,20 @@ actor MockTorahHTTPTransport: TorahHTTPTransport {
         guard let url = request.url else { throw TorahError.malformedResponse }
         let absoluteURL = url.absoluteString
         requestedURLs.append(absoluteURL)
-        guard let response = responses[absoluteURL] else {
+        guard var queued = responses[absoluteURL], let response = queued.first else {
             throw TestTransportError.unexpectedURL(absoluteURL)
         }
+        if queued.count > 1 {
+            queued.removeFirst()
+            responses[absoluteURL] = queued
+        }
+        var headers = response.headers
+        headers["Content-Type"] = headers["Content-Type"] ?? "application/json"
         guard let http = HTTPURLResponse(
             url: url,
             statusCode: response.statusCode,
             httpVersion: "HTTP/1.1",
-            headerFields: ["Content-Type": "application/json"]
+            headerFields: headers
         ) else { throw TorahError.malformedResponse }
         return (response.data, http)
     }
@@ -63,6 +76,30 @@ actor ThrowingTorahHTTPTransport: TorahHTTPTransport {
     func data(for request: URLRequest) async throws -> (Data, HTTPURLResponse) {
         throw error
     }
+}
+
+actor TimeoutThenSuccessTorahHTTPTransport: TorahHTTPTransport {
+    private var requestCount = 0
+
+    func data(for request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        try Task.checkCancellation()
+        requestCount += 1
+        if requestCount == 1 {
+            throw URLError(.timedOut)
+        }
+        guard let url = request.url,
+              let response = HTTPURLResponse(
+                url: url,
+                statusCode: 200,
+                httpVersion: "HTTP/1.1",
+                headerFields: ["Content-Type": "application/json"]
+              ) else {
+            throw TorahError.malformedResponse
+        }
+        return (Data(#"{"is_ref":true}"#.utf8), response)
+    }
+
+    func count() -> Int { requestCount }
 }
 
 actor SuspendedTorahHTTPTransport: TorahHTTPTransport {

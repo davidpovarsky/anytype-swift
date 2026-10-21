@@ -28,8 +28,8 @@ jobs:
 
       - name: Verify immutable TorahInspectorKit pins
         run: |
-          test "$(grep -c '5ae6666e6de3004294e270a3cc5d20b8cc5d52ee' Modules/PinkhaKit/Package.swift)" -eq 1
-          test "$(grep -c '5ae6666e6de3004294e270a3cc5d20b8cc5d52ee' Anytype.xcodeproj/project.pbxproj)" -eq 1
+          test "$(grep -c '59b6f4629da6a7edd625de0ae004d04dbbc037de' Modules/PinkhaKit/Package.swift)" -eq 1
+          test "$(grep -c '59b6f4629da6a7edd625de0ae004d04dbbc037de' Anytype.xcodeproj/project.pbxproj)" -eq 1
           grep -q 'productName = TorahInspectorUI' Anytype.xcodeproj/project.pbxproj
 
       - name: Verify production Torah feature has no trial mutation gate
@@ -53,7 +53,7 @@ jobs:
         continue-on-error: true
         run: |
           git clone --quiet https://github.com/davidpovarsky/TorahInspectorKit.git build/TorahInspectorKit
-          git -C build/TorahInspectorKit checkout --quiet 5ae6666e6de3004294e270a3cc5d20b8cc5d52ee
+          git -C build/TorahInspectorKit checkout --quiet 59b6f4629da6a7edd625de0ae004d04dbbc037de
           swift test --package-path build/TorahInspectorKit 2>&1 | tee build/evidence/torahinspectorkit-tests.log
 
       - name: Run PinkhaKit tests
@@ -181,7 +181,7 @@ jobs:
           shasum -a 256 build/ipa/Anytype-Torah-iPadOS27-Unsigned.ipa | tee build/evidence/ipa-sha256.txt
           printf 'Anytype commit: %s\nTorahInspectorKit commit: %s\nBundle ID: %s\n' \
             "$GITHUB_SHA" \
-            '5ae6666e6de3004294e270a3cc5d20b8cc5d52ee' \
+            '59b6f4629da6a7edd625de0ae004d04dbbc037de' \
             'com.gloiiire.anytype.torahtrial' \
             > build/evidence/manifest.txt
 
@@ -206,17 +206,17 @@ jobs:
       - name: Prepare runtime evidence documents
         if: always()
         run: |
-          cp docs/pinkha/torah-integration/EIGHT_FIXES_ACCEPTANCE_MATRIX_2026-10-21.md build/evidence/acceptance-matrix.md
-          cp docs/pinkha/torah-integration/EIGHT_FIXES_SCREENSHOT_STATUS_2026-10-21.md build/evidence/screenshot-status.md
+          cp docs/pinkha/torah-integration/SEVEN_FIXES_ACCEPTANCE_MATRIX_2026-10-21.md build/evidence/acceptance-matrix.md
+          cp docs/pinkha/torah-integration/SEVEN_FIXES_SCREENSHOT_STATUS_2026-10-21.md build/evidence/screenshot-status.md
           printf '\n## CI identity\n\n- Run: %s\n- Anytype commit: `%s`\n- TorahInspectorKit commit: `%s`\n' \
             "$GITHUB_RUN_ID" \
             "$GITHUB_SHA" \
-            '5ae6666e6de3004294e270a3cc5d20b8cc5d52ee' \
+            '59b6f4629da6a7edd625de0ae004d04dbbc037de' \
             >> build/evidence/acceptance-matrix.md
           printf '\n## CI identity\n\n- Run: %s\n- Anytype commit: `%s`\n- TorahInspectorKit commit: `%s`\n' \
             "$GITHUB_RUN_ID" \
             "$GITHUB_SHA" \
-            '5ae6666e6de3004294e270a3cc5d20b8cc5d52ee' \
+            '59b6f4629da6a7edd625de0ae004d04dbbc037de' \
             >> build/evidence/screenshot-status.md
 
       - name: Upload acceptance matrix

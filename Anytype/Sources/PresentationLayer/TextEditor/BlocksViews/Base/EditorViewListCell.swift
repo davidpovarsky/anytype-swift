@@ -1,6 +1,25 @@
 import UIKit
 
 final class EditorViewListCell: UICollectionViewListCell, CustomTypesAccessable {
+    private var torahAccessory: UICellAccessory?
+
+    func setTorahAccessory(_ accessory: UICellAccessory?) {
+        var updatedAccessories = accessories
+        if let torahAccessory {
+            updatedAccessories.removeAll { $0 == torahAccessory }
+        }
+        if let accessory {
+            updatedAccessories.append(accessory)
+        }
+        torahAccessory = accessory
+        accessories = updatedAccessories
+    }
+
+    override func prepareForReuse() {
+        setTorahAccessory(nil)
+        super.prepareForReuse()
+    }
+
     override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
         let superSize = super.systemLayoutSizeFitting(
             targetSize,
