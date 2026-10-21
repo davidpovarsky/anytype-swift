@@ -139,7 +139,7 @@ struct TorahSourcesSearchView: View {
             } description: {
                 Text(message)
             } actions: {
-                Button(Loc.retry) {
+                Button(Loc.Pinkha.Home.retry) {
                     Task { await session.performSearch() }
                 }
             }
