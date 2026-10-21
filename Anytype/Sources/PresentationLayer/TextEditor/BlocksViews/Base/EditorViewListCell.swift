@@ -1,17 +1,19 @@
 import UIKit
 
 final class EditorViewListCell: UICollectionViewListCell, CustomTypesAccessable {
-    private var torahAccessory: UICellAccessory?
+    private var torahAccessoryIndex: Int?
 
     func setTorahAccessory(_ accessory: UICellAccessory?) {
         var updatedAccessories = accessories
-        if let torahAccessory {
-            updatedAccessories.removeAll { $0 == torahAccessory }
+        if let torahAccessoryIndex,
+           updatedAccessories.indices.contains(torahAccessoryIndex) {
+            updatedAccessories.remove(at: torahAccessoryIndex)
         }
+        torahAccessoryIndex = nil
         if let accessory {
+            torahAccessoryIndex = updatedAccessories.endIndex
             updatedAccessories.append(accessory)
         }
-        torahAccessory = accessory
         accessories = updatedAccessories
     }
 
