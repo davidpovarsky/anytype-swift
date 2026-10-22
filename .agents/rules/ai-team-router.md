@@ -22,3 +22,7 @@ Before acting on a task, load and review:
 - `docs/ai-team/ASANA_POLICY.md`
 
 Select the matching agent from `.agents/agents/` or role from `.agents/roles/`. Preserve existing repo instructions, approval gates, and frozen components.
+
+## Mandatory clean-upstream and owner approval gate (2026-10-22)
+
+Read `docs/architecture/UPSTREAM_INTEGRITY_POLICY.md` before implementation, integration or QA. Original Anytype upstream/develop, Heart, protobuf and generated code are read-only for Pinkha custom work unless the owner explicitly approves a specific file/hunk; legacy modifications are not authorization. Prefer isolated Pinkha adapters, wrappers, protocols and packages. Do not claim successful compilation proves functional parity. Asana is read-only unless the user explicitly asks to update/sync. Preserve all stricter original Anytype rules, including CLAUDE.md: no staging/committing without explicit user request.
