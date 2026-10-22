@@ -1,27 +1,6 @@
 import UIKit
 
 final class EditorViewListCell: UICollectionViewListCell, CustomTypesAccessable {
-    private var torahAccessoryIndex: Int?
-
-    func setTorahAccessory(_ accessory: UICellAccessory?) {
-        var updatedAccessories = accessories
-        if let torahAccessoryIndex,
-           updatedAccessories.indices.contains(torahAccessoryIndex) {
-            updatedAccessories.remove(at: torahAccessoryIndex)
-        }
-        torahAccessoryIndex = nil
-        if let accessory {
-            torahAccessoryIndex = updatedAccessories.endIndex
-            updatedAccessories.append(accessory)
-        }
-        accessories = updatedAccessories
-    }
-
-    override func prepareForReuse() {
-        setTorahAccessory(nil)
-        super.prepareForReuse()
-    }
-
     override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
         let superSize = super.systemLayoutSizeFitting(
             targetSize,

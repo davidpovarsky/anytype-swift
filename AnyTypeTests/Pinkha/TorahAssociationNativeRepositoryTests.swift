@@ -5,18 +5,6 @@ import Testing
 import TorahInspectorCore
 @testable import Anytype
 
-@Suite("Torah block accessory presentation")
-struct TorahBlockAccessoryPresentationTests {
-    @Test("Counts remain truthful for one, two and double digits")
-    func countText() {
-        #expect(TorahBlockAccessoryPresentation.countText(0) == nil)
-        #expect(TorahBlockAccessoryPresentation.countText(1) == "1")
-        #expect(TorahBlockAccessoryPresentation.countText(2) == "2")
-        #expect(TorahBlockAccessoryPresentation.countText(10) == "10")
-        #expect(TorahBlockAccessoryPresentation.countText(37) == "37")
-    }
-}
-
 @Suite("T2-L native single-writer repository")
 struct TorahAssociationNativeRepositoryTests {
     private let spaceId = "space"

@@ -6,9 +6,16 @@ final class UIEditorBarButtonItem: UIView, CustomizableHitTestAreaView {
 
     private let button = UIButton(type: .custom)
 
-    init(imageAsset: ImageAsset, action: @escaping () -> Void) {
+    init(
+        imageAsset: ImageAsset,
+        accessibilityLabel: String? = nil,
+        accessibilityIdentifier: String? = nil,
+        action: @escaping () -> Void
+    ) {
         super.init(frame: .zero)
         setup(imageAsset: imageAsset, action: action)
+        button.accessibilityLabel = accessibilityLabel
+        button.accessibilityIdentifier = accessibilityIdentifier
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {

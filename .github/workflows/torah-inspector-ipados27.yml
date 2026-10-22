@@ -48,6 +48,15 @@ jobs:
           grep -q 'public enum Torah' Modules/Loc/Sources/Loc/Generated/Strings.swift
           grep -q 'Pinkha.Torah.searchType' Modules/Loc/Sources/Loc/Generated/Strings.swift
 
+      - name: Verify native UI parity source contracts
+        run: |
+          grep -q 'SearchViewShell' Anytype/Sources/PresentationLayer/Common/SwiftUI/Search/Common/SearchView/SearchView.swift
+          grep -q 'SearchViewShell' Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift
+          ! grep -q 'presentationDetents' Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift
+          ! grep -q 'overlay(alignment: .topTrailing)' Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift
+          ! grep -q 'UICellAccessory' Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift
+          grep -q 'additionalMenuItems' Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/EditorNavigationBarHelper/EditorNavigationBarHelper.swift
+
       - name: Run TorahInspectorKit tests
         id: torahinspectorkit_tests
         continue-on-error: true
@@ -99,6 +108,7 @@ jobs:
             -resultBundlePath build/results/TorahAssociationTests.xcresult \
             -collect-test-diagnostics never \
             -only-testing:AnytypeTests/TorahAssociationNativeRepositoryTests \
+            -only-testing:AnytypeTests/TorahNativeUIParityTests \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             2>&1 | tee build/evidence/native-association-tests.log

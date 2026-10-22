@@ -6,40 +6,23 @@ struct TorahSourcesSearchView: View {
     @Environment(\.locale) private var locale
 
     var body: some View {
-        VStack(spacing: 0) {
-            DragIndicator()
-            TitleView(title: contextTitle) {
-                closeButton
-            }
-            associationPreview
+        SearchViewShell(
+            title: contextTitle,
+            placeholder: Loc.Pinkha.Torah.searchPlaceholder,
+            searchText: $session.searchQuery,
+            searchFieldAccessibilityIdentifier: "torah-sources-search-field"
+        ) {
             scopePicker
-            SearchBar(
-                text: $session.searchQuery,
-                focused: true,
-                placeholder: Loc.Pinkha.Torah.searchPlaceholder,
-                shouldShowDivider: false
-            )
-            .accessibilityIdentifier("torah-sources-search-field")
+            if !session.currentAssociations.isEmpty || session.persistenceState != nil {
+                associationPreview
+            }
             results
         }
-        .background(Color.Background.secondary)
+        .accessibilityIdentifier("torah-sources-search-sheet")
         .task(id: SearchTaskID(scope: session.searchScope, query: session.searchQuery)) {
             await session.performSearch(debounce: .milliseconds(300))
         }
         .task(id: session.associationContext.id) { await session.refreshAssociations() }
-    }
-
-    private var closeButton: some View {
-        Button {
-            session.isSearchPresented = false
-        } label: {
-            Image(asset: .X24.close)
-                .foregroundStyle(Color.Control.secondary)
-                .frame(width: 44, height: 44)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Loc.close)
     }
 
     private var scopePicker: some View {
@@ -50,7 +33,8 @@ struct TorahSourcesSearchView: View {
         }
         .pickerStyle(.segmented)
         .padding(.horizontal, 16)
-        .padding(.top, 8)
+        .padding(.vertical, 10)
+        .divider()
     }
 
     private var associationPreview: some View {
@@ -61,22 +45,10 @@ struct TorahSourcesSearchView: View {
                 bottomPadding: 4
             )
 
-            if session.currentAssociations.isEmpty {
-                AnytypeText(
-                    session.associationTargetBlockId == nil
-                        ? Loc.Pinkha.Torah.noDocumentLinks
-                        : Loc.Pinkha.Torah.noBlockLinks,
-                    style: .caption1Regular
-                )
-                .foregroundStyle(Color.Text.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 6)
-            } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    LazyHStack(spacing: 8) {
-                        ForEach(session.currentAssociations) { item in
-                            associationCard(item)
-                        }
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(spacing: 8) {
+                    ForEach(session.currentAssociations) { item in
+                        associationCard(item)
                     }
                 }
             }
@@ -88,7 +60,8 @@ struct TorahSourcesSearchView: View {
             }
         }
         .padding(.horizontal, 16)
-        .padding(.bottom, 4)
+        .padding(.bottom, 8)
+        .divider()
     }
 
     private func associationCard(_ item: TorahAssociationItem) -> some View {
@@ -191,56 +164,29 @@ struct TorahSourcesSearchView: View {
     }
 
     private func resultRow(_ result: TorahEditorSession.SearchResult) -> some View {
-        HStack(spacing: 8) {
-            Group {
-                if result.scope == .references {
-                    Button {
-                        Task { await session.openReference(result) }
-                    } label: {
-                        resultLabel(result)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(result.title(locale: locale))
-                    .accessibilityHint(Loc.Pinkha.Torah.openInspector)
-                } else {
-                    resultLabel(result)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
+        SearchCell(
+            data: TorahSearchCellData(result: result, locale: locale),
+            onSelect: result.scope == .references ? {
+                Task { await session.openReference(result) }
+            } : nil,
+            primaryAccessibilityLabel: result.title(locale: locale),
+            primaryAccessibilityHint: result.scope == .references
+                ? Loc.Pinkha.Torah.openInspector
+                : nil
+        ) {
             Button {
                 Task { await session.link(result) }
             } label: {
-                HStack(spacing: 5) {
-                    Image(asset: .X24.linkToExistingObject)
-                        .renderingMode(.template)
-                        .frame(width: 20, height: 20)
-                    AnytypeText(linkTitle, style: .caption1Medium)
-                }
+                Image(asset: .X24.linkToExistingObject)
+                    .renderingMode(.template)
+                    .frame(width: 20, height: 20)
                 .foregroundStyle(Color.Control.secondary)
-                .frame(minHeight: 44)
+                .frame(width: 44, height: 44)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(linkTitle)
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 8)
-        .frame(minHeight: 64)
-        .divider(spacing: 0)
-    }
-
-    private func resultLabel(_ result: TorahEditorSession.SearchResult) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
-            AnytypeText(result.title(locale: locale), style: .bodySemibold)
-                .foregroundStyle(Color.Text.primary)
-            if let subtitle = result.subtitle(locale: locale), !subtitle.isEmpty {
-                AnytypeText(subtitle, style: .caption1Regular)
-                    .foregroundStyle(Color.Text.secondary)
-                    .lineLimit(2)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .contentShape(Rectangle())
     }
 
     private var linkTitle: String {
@@ -264,6 +210,37 @@ struct TorahSourcesSearchView: View {
         case .ref: .CustomIcons.book
         case .topic: .CustomIcons.pricetag
         case .word: .CustomIcons.text
+        }
+    }
+}
+
+private struct TorahSearchCellData: SearchDataProtocol {
+    let id: String
+    let iconImage: Icon?
+    let title: String
+    let mode: SerchDataPresentationMode
+
+    init(result: TorahEditorSession.SearchResult, locale: Locale) {
+        self.id = result.id
+        self.iconImage = .asset(Self.asset(for: result.scope))
+        self.title = result.title(locale: locale)
+        self.mode = .full(
+            descriptionInfo: result.subtitle(locale: locale).map {
+                SearchDataDescriptionInfo(
+                    description: $0,
+                    descriptionTextColor: Color.Text.secondary,
+                    descriptionFont: .relation2Regular
+                )
+            },
+            callout: nil
+        )
+    }
+
+    private static func asset(for scope: TorahEditorSession.SearchScope) -> ImageAsset {
+        switch scope {
+        case .references: .CustomIcons.book
+        case .topics: .CustomIcons.pricetag
+        case .words: .CustomIcons.text
         }
     }
 }

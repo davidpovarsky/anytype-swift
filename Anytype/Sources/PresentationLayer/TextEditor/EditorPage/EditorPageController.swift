@@ -88,7 +88,12 @@ final class EditorPageController: UIViewController {
         onSyncStatusTap: { [weak viewModel] in
             UISelectionFeedbackGenerator().selectionChanged()
             viewModel?.showSyncStatusInfo()
-        }, onWebBannerTap: { [weak viewModel] in
+        },
+        torahSourcesAvailable: viewModel.torahSession != nil,
+        onTorahSourcesTap: { [weak self] in
+            self?.viewModel.torahSession?.presentSearch(scope: .document)
+        },
+        onWebBannerTap: { [weak viewModel] in
             UISelectionFeedbackGenerator().selectionChanged()
             viewModel?.onPublishingBannerTap()
         }
@@ -103,6 +108,9 @@ final class EditorPageController: UIViewController {
             // Layout metadata must subscribe before model snapshot updates to avoid first-frame indentation fallback.
             layout.blockLayoutDetailsPublisher = viewModel.document.blockLayoutDetailsPublisher.receiveOnMain().eraseToAnyPublisher()
             viewModel.setupSubscriptions()
+            if isViewLoaded {
+                navigationBarHelper.updateTorahSourcesAvailability(viewModel.torahSession != nil)
+            }
         }
     }
     
@@ -758,7 +766,7 @@ private extension EditorPageController {
     func setupCell(cell: EditorViewListCell, indexPath: IndexPath, item: some BlockViewModelProtocol) {
         cell.contentConfiguration = item.makeContentConfiguration(maxWidth: cell.bounds.width)
         cell.contentView.isUserInteractionEnabled = true
-        configureTorahAccessory(cell: cell, blockId: item.blockId)
+        configureTorahAccessory(in: cell, blockId: item.blockId)
         
         cell.backgroundConfiguration = UIBackgroundConfiguration.clear()
         if FeatureFlags.rainbowViews {
@@ -766,63 +774,34 @@ private extension EditorPageController {
         }
     }
 
-    func configureTorahAccessory(cell: EditorViewListCell, blockId: String) {
+    func configureTorahAccessory(in cell: EditorViewListCell, blockId: String) {
+        guard let contentView = firstTextBlockContentView(in: cell) else { return }
         guard let session = viewModel.torahSession else {
-            cell.setTorahAccessory(nil)
+            contentView.updateTorahAccessory(nil)
             return
         }
         let count = session.linkedAssociationCount(blockId: blockId)
         guard count > 0 else {
-            cell.setTorahAccessory(nil)
+            contentView.updateTorahAccessory(nil)
             return
         }
 
-        var buttonConfiguration = UIButton.Configuration.plain()
-        buttonConfiguration.image = UIImage(asset: .CustomIcons.book)?.withRenderingMode(.alwaysTemplate)
-        buttonConfiguration.title = TorahBlockAccessoryPresentation.countText(count)
-        buttonConfiguration.imagePadding = 5
-        buttonConfiguration.baseForegroundColor = UIColor.Control.secondary
-        buttonConfiguration.background.backgroundColor = UIColor.Shape.transparentSecondary
-        buttonConfiguration.background.cornerRadius = 10
-        buttonConfiguration.contentInsets = NSDirectionalEdgeInsets(
-            top: 11,
-            leading: 9,
-            bottom: 11,
-            trailing: 9
-        )
-        buttonConfiguration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
-            var attributes = attributes
-            attributes.font = .caption1Semibold
-            return attributes
-        }
-        let button = UIButton(
-            configuration: buttonConfiguration,
-            primaryAction: UIAction { [weak session] _ in
-                session?.openLinkedAssociations(blockId: blockId)
-            }
-        )
         let sourceLabel = session.linkedAssociationLabel(blockId: blockId)
-        button.accessibilityLabel = [Loc.Pinkha.Torah.openSource, sourceLabel]
+        let accessibilityLabel = [Loc.Pinkha.Torah.openSource, sourceLabel]
             .compactMap { $0 }
             .joined(separator: ", ")
-        button.accessibilityValue = String(count)
-        button.accessibilityIdentifier = "torah-linked-source-\(blockId)"
-
-        let configuration = UICellAccessory.CustomViewConfiguration(
-            customView: button,
-            placement: .trailing()
-        )
-        cell.setTorahAccessory(
-            .customView(configuration: configuration)
+        contentView.updateTorahAccessory(
+            TorahBlockAccessoryConfiguration(
+                accessibilityLabel: accessibilityLabel,
+                accessibilityValue: String(count),
+                accessibilityIdentifier: "torah-linked-source-\(blockId)",
+                action: { [weak session] in
+                    session?.openLinkedAssociations(blockId: blockId)
+                }
+            )
         )
     }
     
-}
-
-enum TorahBlockAccessoryPresentation {
-    static func countText(_ count: Int) -> String? {
-        count > 0 ? String(count) : nil
-    }
 }
 
 // MARK: - Initial Update data

@@ -36,3 +36,31 @@ oversized duplicate inspector header.
 
 Record light/dark mode, full-screen and narrow Stage Manager where practical.
 Until those exact host captures pass, status is `DEVICE_PENDING`.
+
+## Native parity follow-up capture status — 2026-10-22
+
+The three named physical-iPad follow-up references (`IMG_0184.jpeg`,
+`IMG_0185.jpeg`, `IMG_0168.jpeg`) were not available on this workstation.
+Their descriptions were used only to identify the native source comparators;
+no image inspection or pixel measurement is claimed.
+
+The consolidated workflow compiles the integrated host, runs the focused UIKit
+layout/routing tests, and exports an unsigned IPA. It does not have an
+authenticated fixture Space and therefore cannot honestly generate the required
+integrated before/after scenes. The following remain `DEVICE_PENDING`:
+
+1. Original “קישור אל” and Torah opening sheets in the same Hebrew RTL window,
+   followed by both populated result lists with the same keyboard state.
+2. Original Callout/lightbulb, linked short `שלום` block at 1 and 2 links, and
+   long linked Quote at 10+ links beside an unlinked comparison.
+3. Normal-width top bar showing physical ellipsis → BOOK → green sync dot on
+   one 44pt baseline, with the same title before/after and no floating pill.
+4. Narrow Stage Manager and compact iPhone showing no BOOK in the bar and
+   exactly one localized Torah/Sources item inside the original ellipsis menu.
+5. Search opened from BOOK/overflow, link completed, editor restored, Inspector
+   opened, and link removed without a second modal or keyboard/caret regression.
+6. Light/dark, landscape, RTL/LTR, Dynamic Type and VoiceOver reading order.
+
+All captures must come from the integrated Anytype host at the workflow's exact
+commit, device scale, locale, orientation and window size. Standalone Kit images
+remain explicitly insufficient for this acceptance gate.

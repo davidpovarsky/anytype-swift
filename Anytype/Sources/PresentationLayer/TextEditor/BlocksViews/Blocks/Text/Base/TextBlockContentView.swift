@@ -18,14 +18,23 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         self?.actions?.createEmptyBlock()
     }
     private lazy var textBlockLeadingView = TextBlockLeadingView()
+    private(set) lazy var torahAccessoryButton: TorahBlockAccessoryButton = {
+        let button = TorahBlockAccessoryButton()
+        button.addTarget(self, action: #selector(openTorahAccessory), for: .touchUpInside)
+        return button
+    }()
     
     private let mainStackView: UIStackView = makeMainStackView()
     
     private var topContentConstraint: NSLayoutConstraint?
     private var bottomContentnConstraint: NSLayoutConstraint?
     private var contentSpacingConstraint: NSLayoutConstraint?
+    private var textTrailingConstraint: NSLayoutConstraint?
+    private var textTrailingToTorahAccessoryConstraint: NSLayoutConstraint?
+    private var torahAccessoryBottomConstraint: NSLayoutConstraint?
     private var focusSubscription: AnyCancellable?
     private var resetSubscription: AnyCancellable?
+    private var torahAccessoryAction: (() -> Void)?
     
     private(set) var actions: TextBlockContentConfiguration.Actions?
     
@@ -53,6 +62,25 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         textBlockLeadingView.calloutIconView?.isUserInteractionEnabled = !state.isLocked
         textView.textView.isUserInteractionEnabled = state.isEditing
     }
+
+    func updateTorahAccessory(_ configuration: TorahBlockAccessoryConfiguration?) {
+        torahAccessoryAction = configuration?.action
+        torahAccessoryButton.isHidden = configuration == nil
+        torahAccessoryButton.accessibilityLabel = configuration?.accessibilityLabel
+        torahAccessoryButton.accessibilityValue = configuration?.accessibilityValue
+        torahAccessoryButton.accessibilityIdentifier = configuration?.accessibilityIdentifier
+
+        if configuration == nil {
+            textTrailingToTorahAccessoryConstraint?.isActive = false
+            torahAccessoryBottomConstraint?.isActive = false
+            textTrailingConstraint?.isActive = true
+        } else {
+            textTrailingConstraint?.isActive = false
+            textTrailingToTorahAccessoryConstraint?.isActive = true
+            torahAccessoryBottomConstraint?.isActive = true
+        }
+        setNeedsLayout()
+    }
     
     // MARK: - Setup views
     
@@ -61,12 +89,28 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
             $0.pinToSuperview(excluding: [.right])
         }
         textContainerView.addSubview(textView) {
-            $0.pinToSuperview(excluding: [.left])
+            $0.pinToSuperview(excluding: [.left, .right])
             // For textBlockLeadingView is visible
             contentSpacingConstraint = $0.leading.equal(to: textBlockLeadingView.trailingAnchor, priority: .required)
             // For textBlockLeadingView is hidden
             $0.leading.equal(to: textContainerView.leadingAnchor, priority: .defaultHigh)
         }
+
+        textTrailingConstraint = textView.trailingAnchor.constraint(equalTo: textContainerView.trailingAnchor)
+        textTrailingConstraint?.isActive = true
+
+        textContainerView.addSubview(torahAccessoryButton) {
+            $0.top.equal(to: textContainerView.topAnchor)
+            $0.trailing.equal(to: textContainerView.trailingAnchor)
+            $0.size(TorahBlockAccessoryButton.hitTargetSize)
+        }
+        textTrailingToTorahAccessoryConstraint = textView.trailingAnchor.constraint(
+            equalTo: torahAccessoryButton.leadingAnchor
+        )
+        torahAccessoryBottomConstraint = torahAccessoryButton.bottomAnchor.constraint(
+            lessThanOrEqualTo: textContainerView.bottomAnchor
+        )
+        torahAccessoryButton.isHidden = true
             
         contentView.addSubview(textContainerView) {
             topContentConstraint = $0.top.equal(to: contentView.topAnchor)
@@ -205,6 +249,56 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
             contentSpacingConstraint?.constant = 8
         } else {
             contentSpacingConstraint?.constant = 4
+        }
+    }
+
+    @objc private func openTorahAccessory() {
+        torahAccessoryAction?()
+    }
+}
+
+struct TorahBlockAccessoryConfiguration {
+    let accessibilityLabel: String
+    let accessibilityValue: String
+    let accessibilityIdentifier: String
+    let action: () -> Void
+}
+
+/// A block-local source ornament. Its visible glyph follows the native inline-icon scale while
+/// the transparent control keeps the 44pt accessibility target. Unlike `UICellAccessory`, its
+/// reserved width is deterministic and belongs to the text block's own layout.
+final class TorahBlockAccessoryButton: UIButton {
+    static let hitTargetSize = CGSize(width: 44, height: 44)
+    static let visibleIconSize = CGSize(width: 20, height: 20)
+    private(set) lazy var iconView = UIImageView(
+        image: UIImage(asset: .CustomIcons.book)?.withRenderingMode(.alwaysTemplate)
+    )
+
+    init() {
+        super.init(frame: .zero)
+
+        tintColor = .Control.secondary
+        backgroundColor = .clear
+        iconView.tintColor = .Control.secondary
+        iconView.contentMode = .scaleAspectFit
+        iconView.isUserInteractionEnabled = false
+        addSubview(iconView) {
+            $0.size(Self.visibleIconSize)
+            $0.center(in: self)
+        }
+        accessibilityTraits = .button
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override var intrinsicContentSize: CGSize { Self.hitTargetSize }
+
+    override var isHighlighted: Bool {
+        didSet {
+            iconView.alpha = isHighlighted ? 0.5 : 1
         }
     }
 }

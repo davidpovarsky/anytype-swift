@@ -22,6 +22,14 @@ final class EditorNavigationBarTitleView: UIView {
 
     private var mode: Mode?
     private var stackViewLeadingConstraint: NSLayoutConstraint?
+
+    var minimumWidthWithoutTruncation: CGFloat {
+        layoutIfNeeded()
+        let contentWidth = stackView.systemLayoutSizeFitting(
+            UIView.layoutFittingCompressedSize
+        ).width
+        return ceil(contentWidth + (stackViewLeadingConstraint?.constant ?? 0) + 6)
+    }
     
     init() {
         super.init(frame: .zero)

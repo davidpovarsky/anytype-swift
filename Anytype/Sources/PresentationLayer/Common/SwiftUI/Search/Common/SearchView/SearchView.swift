@@ -41,13 +41,13 @@ struct SearchView<SearchData: SearchDataProtocol>: View {
     var onCreateNew: ((_ name: String) -> Void)?
     
     var body: some View {
-        VStack(spacing: 0) {
-            DragIndicator()
-            TitleView(title: title)
-            SearchBar(text: $searchText, focused: true, placeholder: placeholder)
+        SearchViewShell(
+            title: title,
+            placeholder: placeholder,
+            searchText: $searchText
+        ) {
             content
         }
-        .background(Color.Background.secondary)
         .task(id: searchText) {
             // Debounce real typing: a new keystroke changes the id, cancelling this task so
             // the sleep throws and `search` is never called for intermediate terms. Skip the
@@ -121,6 +121,51 @@ struct SearchView<SearchData: SearchDataProtocol>: View {
                 subtitle: Loc.createANewOneOrSearchForSomethingElse,
                 style: .plain
             )
+        }
+    }
+}
+
+/// The native search-sheet chrome shared by Link To and feature-specific searches.
+/// Keeping the drag indicator, title, focused search field and background here prevents
+/// feature sheets from drifting away from the host presentation recipe.
+struct SearchViewShell<Content: View>: View {
+    let title: String?
+    let placeholder: String
+    @Binding var searchText: String
+    private let searchFieldAccessibilityIdentifier: String?
+    private let content: Content
+
+    init(
+        title: String?,
+        placeholder: String,
+        searchText: Binding<String>,
+        searchFieldAccessibilityIdentifier: String? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.title = title
+        self.placeholder = placeholder
+        self._searchText = searchText
+        self.searchFieldAccessibilityIdentifier = searchFieldAccessibilityIdentifier
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            DragIndicator()
+            TitleView(title: title)
+            searchBar
+            content
+        }
+        .background(Color.Background.secondary)
+    }
+
+    @ViewBuilder
+    private var searchBar: some View {
+        if let searchFieldAccessibilityIdentifier {
+            SearchBar(text: $searchText, focused: true, placeholder: placeholder)
+                .accessibilityIdentifier(searchFieldAccessibilityIdentifier)
+        } else {
+            SearchBar(text: $searchText, focused: true, placeholder: placeholder)
         }
     }
 }

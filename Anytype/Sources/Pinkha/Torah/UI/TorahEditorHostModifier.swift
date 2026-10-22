@@ -11,38 +11,11 @@ struct TorahEditorHostModifier: ViewModifier {
             @Bindable var session = session
 
             content
-                .overlay(alignment: .topTrailing) {
-                    Button {
-                        session.presentSearch(scope: .document)
-                    } label: {
-                        HStack(spacing: 6) {
-                            Label(Loc.Pinkha.Torah.title, systemImage: "text.book.closed")
-                            if !session.visibleDocumentAssociations.isEmpty {
-                                Text(session.visibleDocumentAssociations.count, format: .number)
-                                    .font(.caption2.weight(.bold))
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(.secondary.opacity(0.14), in: Capsule())
-                            }
-                        }
-                            .font(.subheadline.weight(.semibold))
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background(.regularMaterial, in: Capsule())
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.top, 54)
-                    .padding(.trailing, 16)
-                    .accessibilityIdentifier("torah-sources-entry")
-                    .accessibilityValue(String(session.visibleDocumentAssociations.count))
-                }
                 .sheet(
                     isPresented: $session.isSearchPresented,
                     onDismiss: session.searchDidDismiss
                 ) {
                     TorahSourcesSearchView(session: session)
-                        .presentationDetents([.medium, .large])
-                        .presentationDragIndicator(.hidden)
                 }
                 .torahInspectorSheet(
                     selection: $session.selection,

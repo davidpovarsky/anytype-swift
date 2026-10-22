@@ -9,6 +9,9 @@ final class EditorNavigationBarView: UIView {
     private let titleContainer = UIView()
     private let contentView = UIView()
     private let bannerContainer = UIView()
+    private var lastReportedContentWidth: CGFloat = -1
+
+    var onContentWidthChange: (() -> Void)?
     
     var leftButton: UIView? {
         didSet {
@@ -90,5 +93,56 @@ final class EditorNavigationBarView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        let contentWidth = contentView.bounds.width
+        guard contentWidth != lastReportedContentWidth else { return }
+        lastReportedContentWidth = contentWidth
+        onContentWidthChange?()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        guard previousTraitCollection?.preferredContentSizeCategory
+            != traitCollection.preferredContentSizeCategory else { return }
+        onContentWidthChange?()
+    }
+
+    func canFitUntruncatedTitle(
+        width titleWidth: CGFloat,
+        candidateRightButtonWidth: CGFloat
+    ) -> Bool {
+        layoutIfNeeded()
+        let leftWidth = leftButtonContainer.systemLayoutSizeFitting(
+            UIView.layoutFittingCompressedSize
+        ).width
+        return EditorNavigationBarFit.canFit(
+            contentWidth: contentView.bounds.width,
+            leftButtonWidth: leftWidth,
+            titleWidth: titleWidth,
+            rightButtonWidth: candidateRightButtonWidth,
+            titleSpacing: 8
+        )
+    }
+}
+
+enum EditorNavigationBarFit {
+    static func canFit(
+        contentWidth: CGFloat,
+        leftButtonWidth: CGFloat,
+        titleWidth: CGFloat,
+        rightButtonWidth: CGFloat,
+        titleSpacing: CGFloat
+    ) -> Bool {
+        let requiredWidth = leftButtonWidth
+            + titleSpacing
+            + titleWidth
+            + titleSpacing
+            + rightButtonWidth
+        return contentWidth >= requiredWidth
     }
 }
