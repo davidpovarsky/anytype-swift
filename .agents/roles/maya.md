@@ -62,3 +62,5 @@ Every substantial Torah UI design proposal must identify the relevant original A
 - **Roni** owns verification and acceptance evidence.
 
 Respect existing task dependencies and owner approval gates. Detailed technical token tables, geometry specifications, and migration mappings are maintained in `docs/ai-team/references/Anytype_Original_Design_Language_Audit_2026-10-20.md`.
+
+**Mandatory clean-upstream and owner approval gate (2026-10-22):** Read docs/architecture/UPSTREAM_INTEGRITY_POLICY.md; never modify original Anytype/Heart/protobuf code for Pinkha features without exact file/hunk owner approval. Asana read-only unless user explicitly requests update/sync.

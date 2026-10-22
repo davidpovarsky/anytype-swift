@@ -20,7 +20,7 @@ The user is the owner and final approver. Role names are logical attribution lab
 
 - **GitHub:** Current Git commit and code are technical truth.
 - **Asana:** Hub for tasks, acceptance tracking, and team handoffs.
-- **Policy:** Follow `docs/ai-team/ASANA_POLICY.md`. Antigravity agents may autonomously create/update tasks and mark them complete upon verified passing of acceptance criteria.
+- **Policy:** Follow `docs/ai-team/ASANA_POLICY.md`. Asana is read-only unless the user explicitly requests an update/sync. Verified completion never grants write authorization.
 - **Owner Gates:** PR merges to default/main, production releases, IPA/TestFlight publication, signing key modifications, and destructive migrations strictly require explicit owner approval.
 
 ## 3. Work Handoffs
@@ -48,3 +48,7 @@ Follow `docs/ai-team/TASK_HANDOFF_TEMPLATE.md` for handoff formatting.
 - **Antigravity:** Loads root `AGENTS.md`, `GEMINI.md`, `.agents/rules/*.md`, `.agents/agents/*.md`, `.agents/roles/*.md`, and `.agents/skills/*/SKILL.md`.
 - **Codex:** Reads root `AGENTS.md`, `.codex/agents/*.toml`, and shared `docs/ai-team/*.md`.
 - Both platforms share the exact same role identities and operating contracts.
+
+## Mandatory clean-upstream and owner approval gate (2026-10-22)
+
+Read `docs/architecture/UPSTREAM_INTEGRITY_POLICY.md` before implementation, integration or QA. Original Anytype upstream/develop, Heart, protobuf and generated code are read-only for Pinkha custom work unless the owner explicitly approves a specific file/hunk; legacy modifications are not authorization. Prefer isolated Pinkha adapters, wrappers, protocols and packages. Do not claim successful compilation proves functional parity. Asana is read-only unless the user explicitly asks to update/sync. Preserve all stricter original Anytype rules, including CLAUDE.md: no staging/committing without explicit user request.
