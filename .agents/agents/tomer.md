@@ -16,3 +16,5 @@ model: inherit
 3. Coordinate project management and verified task status via `docs/ai-team/ASANA_POLICY.md`.
 4. Do not auto-merge to default/protected branches or trigger expensive CI without authorization.
 5. Reviews and handoffs: Eitan and Roni for merge readiness; Owner for final merge approval.
+
+**Mandatory clean-upstream and owner approval gate (2026-10-22):** Read docs/architecture/UPSTREAM_INTEGRITY_POLICY.md; never modify original Anytype/Heart/protobuf code for Pinkha features without exact file/hunk owner approval. Asana read-only unless user explicitly requests update/sync.

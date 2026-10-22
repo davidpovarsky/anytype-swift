@@ -11,15 +11,11 @@
 
 ---
 
-## 1. Core Operating Principle: Autonomous Verified Writes
+## 1. Core Operating Principle: READ-ONLY unless explicitly authorized
 
-When carrying out owner-assigned development, research, QA, review, or integration work, Antigravity agents may autonomously create and update relevant Asana tasks and subtasks, label the logical owner and reviewer, add meaningful coordination comments, update progress and blockers, adjust dependencies, and set `completed=true` when — and **ONLY** when — that exact task's defined acceptance conditions have verifiably passed.
+Asana may be read proactively to understand project status. **No Asana mutation without an explicit user request to update/sync Asana.** No task creation, editing, comments, labels, assignments, dependencies, status or completion writes. Earlier autonomous-write permissions are superseded. A code implementation request alone does not authorize an Asana write.
 
-Per-task owner confirmation is not required for these routine project-management actions. Record exact evidence (repository, branch, commit SHA, named tests/run IDs, real-device proof when required, and remaining scope).
-
-If requirements are not met, leave the task open with `IN_PROGRESS`, `READY_FOR_QA`, or `BLOCKED`, including the next action. **No false completion is permitted.**
-
-Existing explicit owner gates for PR merges, releases, external publication, signing credentials, destructive migrations, and sensitive production operations still strictly require explicit owner approval.
+When the user explicitly requests an Asana update/sync, first verify actual repository and task state; avoid duplicates, preserve existing descriptions, and only mark complete on demonstrated acceptance evidence. Keep unverified work OPEN/BLOCKED. Owner release/merge/signing gates remain.
 
 ---
 
@@ -78,7 +74,7 @@ Next Action: <what next reviewer should verify>
 
 ## 6. Operational Guardrails
 
-- **No Continuous Polling**: Never run a background polling loop or webhook daemon. Read and update Asana on demand at task start, significant phase handoff, and completion only.
+- **No Continuous Polling**: Never run a background polling loop or webhook daemon. Read Asana on demand; write only on the user's explicit update/sync request.
 - **Rate Limit Handling**: Respect HTTP 429 with bounded exponential backoff.
 - **Idempotency & Secret Protection**: Perform targeted field updates. Never overwrite entire task descriptions unnecessarily. Never log tokens, commit PATs, or store credentials in repository files.
 - **Scope Discipline**: Do not invent new unrelated feature tasks or broaden project scope without explicit user authorization.

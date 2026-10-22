@@ -20,3 +20,7 @@ Before starting work, load and follow:
 - `.agents/roles/<role>.md` — Role-specific scope and handoff rules
 
 Preserve all existing repository policies, frozen components, and explicit owner release gates.
+
+## Mandatory clean-upstream and owner approval gate (2026-10-22)
+
+Read `docs/architecture/UPSTREAM_INTEGRITY_POLICY.md` before implementation, integration or QA. Original Anytype upstream/develop, Heart, protobuf and generated code are read-only for Pinkha custom work unless the owner explicitly approves a specific file/hunk; legacy modifications are not authorization. Prefer isolated Pinkha adapters, wrappers, protocols and packages. Do not claim successful compilation proves functional parity. Asana is read-only unless the user explicitly asks to update/sync. Preserve all stricter original Anytype rules, including CLAUDE.md: no staging/committing without explicit user request.

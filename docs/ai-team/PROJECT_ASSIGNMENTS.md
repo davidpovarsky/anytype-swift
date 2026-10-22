@@ -1,7 +1,7 @@
 # Pinkha / Anytype — Team Assignments & Work Routing
 
 **Asana Project:** [Pinkha (1219604672449660)](https://app.asana.com/0/1219604672449660/list)  
-**Base Branch:** `pinkha/torah-functional-ui-single-device-2026-10-18`  
+**Historical T2-L Base Branch:** `pinkha/torah-functional-ui-single-device-2026-10-18` (not necessarily the current active branch; inspect actual HEAD).  
 **Setup PR:** https://github.com/davidpovarsky/anytype-swift/pull/1  
 **Setup Task:** `1219611621133496`
 
@@ -33,4 +33,8 @@
 - **Personal Space Mutation:** Testing must use disposable isolated Spaces only. Never mutate personal Spaces.
 - **Release & Merges:** PR merges to `develop` or production releases require owner approval.
 - **Physical Device:** Narrow iPad window and RTL tests require physical hardware verification.
-- **Asana Policy:** Autonomous updates and verified completion are authorized per `docs/ai-team/ASANA_POLICY.md`.
+- **Asana Policy:** Read-only Asana by default; writes require explicit user request per `docs/ai-team/ASANA_POLICY.md`.
+
+## Mandatory clean-upstream and owner approval gate (2026-10-22)
+
+Read `docs/architecture/UPSTREAM_INTEGRITY_POLICY.md` before implementation, integration or QA. Original Anytype upstream/develop, Heart, protobuf and generated code are read-only for Pinkha custom work unless the owner explicitly approves a specific file/hunk; legacy modifications are not authorization. Prefer isolated Pinkha adapters, wrappers, protocols and packages. Do not claim successful compilation proves functional parity. Asana is read-only unless the user explicitly asks to update/sync. Preserve all stricter original Anytype rules, including CLAUDE.md: no staging/committing without explicit user request.

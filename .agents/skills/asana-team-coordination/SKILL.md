@@ -8,6 +8,8 @@ description: "Task coordination, evidence-based status updates, and verified com
 ## Purpose
 Enables persistent named roles (Eitan, Noam, Maya, Roni, Tomer, Yael, Dana) to coordinate project management actions directly and truthfully in Asana, following `docs/ai-team/ASANA_POLICY.md`.
 
+**Authorization:** Read Asana when useful; NEVER write or mark tasks complete unless the user explicitly requests an Asana update/sync. Verified acceptance is not permission.
+
 ## Lifecycle & Procedures
 1. **Task Start / Claim**:
    - Read the existing task, notes, comments, and linked PR.
@@ -29,6 +31,6 @@ Enables persistent named roles (Eitan, Noam, Maya, Roni, Tomer, Yael, Dana) to c
    - **Owner Gates**: Releases, main branch merges, signing keys, and destructive migrations still require explicit owner approval.
 
 5. **Operational Discipline**:
-   - No continuous background polling. Read/write on-demand at task start, handoff, and completion.
+   - No continuous background polling. Read on-demand; write only upon explicit user request.
    - Handle rate limits (HTTP 429) with bounded backoff.
    - Never log secrets or embed credentials in repository files.
