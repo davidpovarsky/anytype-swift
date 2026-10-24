@@ -113,7 +113,7 @@ struct TorahSearchLayoutTests {
         let scrollView = try #require(firstSubview(of: UIScrollView.self, in: host.view))
 
         #expect(scrollView.contentSize.width > scrollView.bounds.width)
-        #expect(scrollView.bounds.height <= TorahAssociationPreviewStrip.height)
+        #expect(host.view.bounds.height == TorahAssociationPreviewStrip.height)
     }
 
     @Test("Saved state never creates a permanent standalone row")
