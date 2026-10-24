@@ -238,9 +238,9 @@ struct TorahAssociationPreviewStrip: View {
             } label: {
                 HStack(spacing: 6) {
                     Image(asset: kindAsset(item.kind))
+                        .renderingMode(.template)
                         .resizable()
                         .scaledToFit()
-                        .renderingMode(.template)
                         .frame(width: 18, height: 18)
                         .foregroundStyle(Color.Control.secondary)
                         .accessibilityHidden(true)
@@ -283,15 +283,15 @@ struct TorahAssociationPreviewStrip: View {
     ) -> String? {
         guard let state else { return nil }
         switch state {
-        case .waiting: Loc.Pinkha.Torah.Persistence.waiting
-        case .saving: Loc.Pinkha.Torah.Persistence.saving
-        case .saved: nil
+        case .waiting: return Loc.Pinkha.Torah.Persistence.waiting
+        case .saving: return Loc.Pinkha.Torah.Persistence.saving
+        case .saved: return nil
         case .conflict(let message):
-            message.isEmpty ? Loc.Pinkha.Torah.Persistence.conflict : message
+            return message.isEmpty ? Loc.Pinkha.Torah.Persistence.conflict : message
         case .uncertain(let message):
-            message.isEmpty ? Loc.Pinkha.Torah.Persistence.uncertain : message
+            return message.isEmpty ? Loc.Pinkha.Torah.Persistence.uncertain : message
         case .error(let message):
-            message.isEmpty ? Loc.Pinkha.Torah.Persistence.error : message
+            return message.isEmpty ? Loc.Pinkha.Torah.Persistence.error : message
         }
     }
 
