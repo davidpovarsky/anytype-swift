@@ -109,6 +109,8 @@ jobs:
             -collect-test-diagnostics never \
             -only-testing:AnytypeTests/TorahAssociationNativeRepositoryTests \
             -only-testing:AnytypeTests/TorahNativeUIParityTests \
+            -only-testing:AnytypeTests/TorahSearchLayoutTests \
+            -only-testing:AnytypeTests/TorahSearchLayoutScreenshotTests \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             2>&1 | tee build/evidence/native-association-tests.log

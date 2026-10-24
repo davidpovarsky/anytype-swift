@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import PinkhaKit
 
 struct TorahSourcesSearchView: View {
@@ -13,12 +14,22 @@ struct TorahSourcesSearchView: View {
             searchFieldAccessibilityIdentifier: "torah-sources-search-field"
         ) {
             scopePicker
-            if !session.currentAssociations.isEmpty || session.persistenceState != nil {
+            if TorahAssociationPreviewStrip.shouldShow(
+                items: session.currentAssociations,
+                persistenceState: session.persistenceState
+            ) {
                 associationPreview
             }
             results
         }
         .accessibilityIdentifier("torah-sources-search-sheet")
+        .onChange(of: session.persistenceState) { _, state in
+            guard state == .saved else { return }
+            UIAccessibility.post(
+                notification: .announcement,
+                argument: Loc.Pinkha.Torah.Persistence.saved
+            )
+        }
         .task(id: SearchTaskID(scope: session.searchScope, query: session.searchQuery)) {
             await session.performSearch(debounce: .milliseconds(300))
         }
@@ -38,86 +49,17 @@ struct TorahSourcesSearchView: View {
     }
 
     private var associationPreview: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ListSectionHeaderView(
-                title: Loc.Pinkha.Torah.sources,
-                increasedTopPadding: false,
-                bottomPadding: 4
-            )
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: 8) {
-                    ForEach(session.currentAssociations) { item in
-                        associationCard(item)
-                    }
-                }
-            }
-
-            if let persistenceState = session.persistenceState {
-                AnytypeText(persistenceLabel(persistenceState), style: .caption1Regular)
-                    .foregroundStyle(Color.Text.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 8)
-        .divider()
-    }
-
-    private func associationCard(_ item: TorahAssociationItem) -> some View {
-        HStack(spacing: 4) {
-            Button {
-                session.openAssociation(item)
-            } label: {
-                HStack(spacing: 6) {
-                    Image(asset: kindAsset(item.kind))
-                        .resizable()
-                        .renderingMode(.template)
-                        .frame(width: 18, height: 18)
-                        .foregroundStyle(Color.Control.secondary)
-                        .accessibilityHidden(true)
-                    AnytypeText(displayLabel(item), style: .caption1Medium)
-                        .foregroundStyle(Color.Text.primary)
-                        .lineLimit(1)
-                }
-                .padding(.leading, 10)
-                .padding(.vertical, 8)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .disabled(!session.canOpenAssociation(item))
-            .environment(
-                \.layoutDirection,
-                TorahAssociationDisplayFormatter.containsHebrew(displayLabel(item))
-                    ? .rightToLeft
-                    : .leftToRight
-            )
-
-            Button {
+        TorahAssociationPreviewStrip(
+            items: session.currentAssociations,
+            persistenceState: session.persistenceState,
+            locale: locale,
+            canOpen: session.canOpenAssociation,
+            onOpen: session.openAssociation,
+            onUnlink: { item in
                 Task { await session.unlinkAssociation(item) }
-            } label: {
-                Image(asset: .multiplyCircleFill)
-                    .renderingMode(.template)
-                    .foregroundStyle(Color.Control.secondary)
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel(Loc.Pinkha.Torah.removeLink)
-        }
-        .background(Color.Shape.transparentSecondary)
-        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-    }
-
-    private func persistenceLabel(_ state: TorahAssociationPersistenceState) -> String {
-        switch state {
-        case .waiting: Loc.Pinkha.Torah.Persistence.waiting
-        case .saving: Loc.Pinkha.Torah.Persistence.saving
-        case .saved: Loc.Pinkha.Torah.Persistence.saved
-        case .conflict: Loc.Pinkha.Torah.Persistence.conflict
-        case .uncertain: Loc.Pinkha.Torah.Persistence.uncertain
-        case .error: Loc.Pinkha.Torah.Persistence.error
-        }
+        )
+        .divider()
     }
 
     @ViewBuilder
@@ -169,6 +111,7 @@ struct TorahSourcesSearchView: View {
             onSelect: result.scope == .references ? {
                 Task { await session.openReference(result) }
             } : nil,
+            assetGlyphSize: SearchCellIconView.standardAssetGlyphSize,
             primaryAccessibilityLabel: result.title(locale: locale),
             primaryAccessibilityHint: result.scope == .references
                 ? Loc.Pinkha.Torah.openInspector
@@ -190,31 +133,16 @@ struct TorahSourcesSearchView: View {
     }
 
     private var linkTitle: String {
-        session.associationTargetBlockId == nil
-            ? Loc.Pinkha.Torah.linkToDocument
-            : Loc.Pinkha.Torah.linkToBlock
+        TorahSourcesSearchCopy.linkTitle(blockId: session.associationTargetBlockId)
     }
 
     private var contextTitle: String {
-        session.associationTargetBlockId == nil
-            ? Loc.Pinkha.Torah.documentLinks
-            : Loc.Pinkha.Torah.blockLinks
+        TorahSourcesSearchCopy.contextTitle(blockId: session.associationTargetBlockId)
     }
 
-    private func displayLabel(_ item: TorahAssociationItem) -> String {
-        TorahAssociationDisplayFormatter.label(for: item, locale: locale)
-    }
-
-    private func kindAsset(_ kind: TorahAssociationKind) -> ImageAsset {
-        switch kind {
-        case .ref: .CustomIcons.book
-        case .topic: .CustomIcons.pricetag
-        case .word: .CustomIcons.text
-        }
-    }
 }
 
-private struct TorahSearchCellData: SearchDataProtocol {
+struct TorahSearchCellData: SearchDataProtocol {
     let id: String
     let iconImage: Icon?
     let title: String
@@ -242,6 +170,151 @@ private struct TorahSearchCellData: SearchDataProtocol {
         case .topics: .CustomIcons.pricetag
         case .words: .CustomIcons.text
         }
+    }
+}
+
+struct TorahAssociationPreviewStrip: View {
+    static let height: CGFloat = 48
+
+    let items: [TorahAssociationItem]
+    let persistenceState: TorahAssociationPersistenceState?
+    let locale: Locale
+    let canOpen: (TorahAssociationItem) -> Bool
+    let onOpen: (TorahAssociationItem) -> Void
+    let onUnlink: (TorahAssociationItem) -> Void
+
+    static func shouldShow(
+        items: [TorahAssociationItem],
+        persistenceState: TorahAssociationPersistenceState?
+    ) -> Bool {
+        items.isNotEmpty || visiblePersistenceLabel(persistenceState) != nil
+    }
+
+    var body: some View {
+        ScrollView(.horizontal) {
+            LazyHStack(spacing: 8) {
+                if items.isNotEmpty {
+                    AnytypeText(Loc.Pinkha.Torah.sources, style: .caption1Regular)
+                        .foregroundStyle(Color.Text.secondary)
+                        .fixedSize(horizontal: true, vertical: false)
+                }
+
+                if let statusLabel = Self.visiblePersistenceLabel(persistenceState) {
+                    persistenceStatus(statusLabel)
+                }
+
+                ForEach(items) { item in
+                    associationCard(item)
+                }
+            }
+            .frame(height: 44)
+            .padding(.horizontal, 16)
+        }
+        .scrollIndicators(.hidden)
+        .frame(height: Self.height)
+        .accessibilityIdentifier("torah-existing-associations-strip")
+    }
+
+    private func persistenceStatus(_ label: String) -> some View {
+        HStack(spacing: 6) {
+            if persistenceState == .waiting || persistenceState == .saving {
+                ProgressView()
+                    .controlSize(.small)
+                    .accessibilityHidden(true)
+            }
+            AnytypeText(label, style: .caption1Regular)
+                .foregroundStyle(Color.Text.secondary)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private func associationCard(_ item: TorahAssociationItem) -> some View {
+        let label = displayLabel(item)
+        return HStack(spacing: 4) {
+            Button {
+                onOpen(item)
+            } label: {
+                HStack(spacing: 6) {
+                    Image(asset: kindAsset(item.kind))
+                        .resizable()
+                        .scaledToFit()
+                        .renderingMode(.template)
+                        .frame(width: 18, height: 18)
+                        .foregroundStyle(Color.Control.secondary)
+                        .accessibilityHidden(true)
+                    AnytypeText(label, style: .caption1Medium)
+                        .foregroundStyle(Color.Text.primary)
+                        .lineLimit(1)
+                }
+                .padding(.leading, 10)
+                .padding(.vertical, 8)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .disabled(!canOpen(item))
+            .environment(
+                \.layoutDirection,
+                TorahAssociationDisplayFormatter.containsHebrew(label)
+                    ? .rightToLeft
+                    : .leftToRight
+            )
+
+            Button {
+                onUnlink(item)
+            } label: {
+                Image(asset: .multiplyCircleFill)
+                    .renderingMode(.template)
+                    .foregroundStyle(Color.Control.secondary)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Loc.Pinkha.Torah.removeLink)
+        }
+        .frame(height: 44)
+        .background(Color.Shape.transparentSecondary)
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
+
+    static func visiblePersistenceLabel(
+        _ state: TorahAssociationPersistenceState?
+    ) -> String? {
+        guard let state else { return nil }
+        switch state {
+        case .waiting: Loc.Pinkha.Torah.Persistence.waiting
+        case .saving: Loc.Pinkha.Torah.Persistence.saving
+        case .saved: nil
+        case .conflict(let message):
+            message.isEmpty ? Loc.Pinkha.Torah.Persistence.conflict : message
+        case .uncertain(let message):
+            message.isEmpty ? Loc.Pinkha.Torah.Persistence.uncertain : message
+        case .error(let message):
+            message.isEmpty ? Loc.Pinkha.Torah.Persistence.error : message
+        }
+    }
+
+    private func displayLabel(_ item: TorahAssociationItem) -> String {
+        TorahAssociationDisplayFormatter.label(for: item, locale: locale)
+    }
+
+    private func kindAsset(_ kind: TorahAssociationKind) -> ImageAsset {
+        switch kind {
+        case .ref: .CustomIcons.book
+        case .topic: .CustomIcons.pricetag
+        case .word: .CustomIcons.text
+        }
+    }
+}
+
+enum TorahSourcesSearchCopy {
+    static func contextTitle(blockId: String?) -> String {
+        blockId == nil ? Loc.Pinkha.Torah.documentLinks : Loc.Pinkha.Torah.blockLinks
+    }
+
+    static func linkTitle(blockId: String?) -> String {
+        blockId == nil ? Loc.Pinkha.Torah.linkToDocument : Loc.Pinkha.Torah.linkToBlock
     }
 }
 

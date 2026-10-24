@@ -8,6 +8,7 @@ struct SearchCell<SearchData: SearchDataProtocol, TrailingContent: View>: View {
     private let onSelect: (() -> Void)?
     private let primaryAccessibilityLabel: String?
     private let primaryAccessibilityHint: String?
+    private let assetGlyphSize: CGFloat?
     private let trailingContent: TrailingContent
 
     init(data: SearchData) where TrailingContent == EmptyView {
@@ -15,12 +16,23 @@ struct SearchCell<SearchData: SearchDataProtocol, TrailingContent: View>: View {
         self.onSelect = nil
         self.primaryAccessibilityLabel = nil
         self.primaryAccessibilityHint = nil
+        self.assetGlyphSize = nil
+        self.trailingContent = EmptyView()
+    }
+
+    init(data: SearchData, assetGlyphSize: CGFloat) where TrailingContent == EmptyView {
+        self.data = data
+        self.onSelect = nil
+        self.primaryAccessibilityLabel = nil
+        self.primaryAccessibilityHint = nil
+        self.assetGlyphSize = assetGlyphSize
         self.trailingContent = EmptyView()
     }
 
     init(
         data: SearchData,
         onSelect: (() -> Void)?,
+        assetGlyphSize: CGFloat? = nil,
         primaryAccessibilityLabel: String? = nil,
         primaryAccessibilityHint: String? = nil,
         @ViewBuilder trailingContent: () -> TrailingContent
@@ -29,6 +41,7 @@ struct SearchCell<SearchData: SearchDataProtocol, TrailingContent: View>: View {
         self.onSelect = onSelect
         self.primaryAccessibilityLabel = primaryAccessibilityLabel
         self.primaryAccessibilityHint = primaryAccessibilityHint
+        self.assetGlyphSize = assetGlyphSize
         self.trailingContent = trailingContent()
     }
 
@@ -70,14 +83,18 @@ struct SearchCell<SearchData: SearchDataProtocol, TrailingContent: View>: View {
     private var icon: some View {
         if let iconImage = data.iconImage {
             if data.isMinimal {
-                IconView(icon: iconImage)
-                    .frame(width: 24, height: 24)
-                    .allowsHitTesting(false)
+                SearchCellIconView(
+                    icon: iconImage,
+                    slotSize: 24,
+                    assetGlyphSize: assetGlyphSize
+                )
                 Spacer.fixedWidth(10)
             } else {
-                IconView(icon: iconImage)
-                    .frame(width: 48, height: 48)
-                    .allowsHitTesting(false)
+                SearchCellIconView(
+                    icon: iconImage,
+                    slotSize: 48,
+                    assetGlyphSize: assetGlyphSize
+                )
                 Spacer.fixedWidth( 12)
             }
         }
@@ -115,4 +132,37 @@ struct SearchCell<SearchData: SearchDataProtocol, TrailingContent: View>: View {
         }
     }
     
+}
+
+/// Opt-in renderer for asset-backed icons whose intrinsic canvas is larger than a search row.
+/// The default remains IconView so existing search rows keep their original icon behavior.
+struct SearchCellIconView: View {
+    static let standardAssetGlyphSize: CGFloat = 24
+
+    let icon: Icon
+    let slotSize: CGFloat
+    let assetGlyphSize: CGFloat?
+
+    var body: some View {
+        Group {
+            switch icon {
+            case .asset(let asset) where assetGlyphSize != nil:
+                Image(asset: asset)
+                    .resizable()
+                    .scaledToFit()
+                    .dynamicForegroundStyle(
+                        color: Color.Control.secondary,
+                        disabledColor: Color.Control.tertiary
+                    )
+                    .frame(
+                        width: min(assetGlyphSize ?? slotSize, slotSize),
+                        height: min(assetGlyphSize ?? slotSize, slotSize)
+                    )
+            default:
+                IconView(icon: icon)
+            }
+        }
+        .frame(width: slotSize, height: slotSize)
+        .allowsHitTesting(false)
+    }
 }
