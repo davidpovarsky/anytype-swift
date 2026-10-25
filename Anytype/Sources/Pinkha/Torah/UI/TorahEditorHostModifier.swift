@@ -28,7 +28,7 @@ struct TorahEditorHostModifier: ViewModifier {
                         allowsInlineFullSourceNavigation: true,
                         theme: .anytype
                     ),
-                    actions: session.hostActions
+                    actions: inspectorActions(for: session)
                 )
                 .alert(
                     Loc.Pinkha.Torah.title,
@@ -42,9 +42,12 @@ struct TorahEditorHostModifier: ViewModifier {
                     Text(session.message ?? "")
                 }
                 .task(id: session.objectId) {
+                    session.activateDocument()
                     session.updateEffectiveLocale(locale)
                     await session.refreshAssociationSnapshot()
                 }
+                .onAppear { session.activateDocument() }
+                .onDisappear { session.deactivateDocument() }
                 .onChange(of: locale.identifier) {
                     session.updateEffectiveLocale(locale)
                 }
@@ -55,6 +58,17 @@ struct TorahEditorHostModifier: ViewModifier {
         } else {
             content
         }
+    }
+
+    private func inspectorActions(for session: TorahEditorSession) -> TorahInspectorHostActions {
+        var actions = session.hostActions
+        actions.search = TorahInspectorSearchCapability { navigation in
+            TorahInspectorEmbeddedSearchView(
+                session: session,
+                navigation: navigation
+            )
+        }
+        return actions
     }
 }
 

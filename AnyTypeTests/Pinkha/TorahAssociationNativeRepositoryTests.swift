@@ -348,6 +348,261 @@ struct TorahAssociationNativeRepositoryTests {
         #expect(session.searchState == .idle)
     }
 
+    @MainActor
+    @Test("Embedded search opens on the current Inspector stack without replacing the sheet root")
+    func embeddedSearchOpenKeepsOuterSelectionAndStandaloneSheetState() async throws {
+        let provider = SessionSearchProvider()
+        let registry = try TorahProviderRegistry(
+            referenceProviders: [provider],
+            topicProviders: [provider],
+            lexicalProviders: [provider],
+            defaultProviderID: provider.providerID
+        )
+        let session = TorahEditorSession(
+            spaceId: spaceId,
+            objectId: objectId,
+            workspace: AnytypeTorahWorkspace(registry: registry),
+            associations: DelayedSessionAssociationProbe(responses: [])
+        )
+        let rootSelection = TorahInspectorSelection(
+            providerID: provider.providerID,
+            canonicalRef: "Genesis 1"
+        )
+        session.selection = rootSelection
+        var navigatedSelection: TorahInspectorSelection?
+        let presenter = TorahSourcesSearchPresenter(
+            session: session,
+            context: session.documentAssociationContext,
+            onOpenSelection: { navigatedSelection = $0 }
+        )
+        presenter.searchQuery = "Exodus 1"
+        await presenter.performSearch()
+        let result = try #require(presenter.searchState.results.first)
+
+        await presenter.openReference(result)
+
+        #expect(navigatedSelection?.canonicalRef == "Exodus 1")
+        #expect(session.selection == rootSelection)
+        #expect(!session.isSearchPresented)
+    }
+
+    @MainActor
+    @Test("Out-of-order and dismissed embedded source resolutions never navigate stale results")
+    func embeddedSearchRejectsStaleSourceResolution() async throws {
+        let provider = DelayedResolutionSearchProvider()
+        let registry = try TorahProviderRegistry(
+            referenceProviders: [provider],
+            topicProviders: [provider],
+            lexicalProviders: [provider],
+            defaultProviderID: provider.providerID
+        )
+        let session = TorahEditorSession(
+            spaceId: spaceId,
+            objectId: objectId,
+            workspace: AnytypeTorahWorkspace(registry: registry),
+            associations: DelayedSessionAssociationProbe(responses: [])
+        )
+        var opened = [String]()
+        let presenter = TorahSourcesSearchPresenter(
+            session: session,
+            context: session.documentAssociationContext,
+            onOpenSelection: { opened.append($0.canonicalRef) }
+        )
+        let old = TorahEditorSession.SearchResult(
+            id: "old",
+            scope: .references,
+            providerValue: "old",
+            labelHe: nil,
+            labelEn: "old",
+            fallbackTitle: "old",
+            fallbackSubtitle: nil
+        )
+        let new = TorahEditorSession.SearchResult(
+            id: "new",
+            scope: .references,
+            providerValue: "new",
+            labelHe: nil,
+            labelEn: "new",
+            fallbackTitle: "new",
+            fallbackSubtitle: nil
+        )
+
+        presenter.searchQuery = "old"
+        let stale = Task { await presenter.openReference(old) }
+        try await Task.sleep(for: .milliseconds(10))
+        presenter.searchQuery = "new"
+        await presenter.openReference(new)
+        await stale.value
+        #expect(opened == ["new"])
+
+        presenter.searchQuery = "old"
+        let dismissed = Task { await presenter.openReference(old) }
+        try await Task.sleep(for: .milliseconds(10))
+        presenter.cancelPendingRequests()
+        await dismissed.value
+        #expect(opened == ["new"])
+
+        session.deactivateDocument()
+        presenter.searchQuery = "new"
+        await presenter.openReference(new)
+        #expect(opened == ["new"])
+        #expect(await provider.resolveCount(for: "new") == 2)
+    }
+
+    @MainActor
+    @Test("Embedded links freeze a document target even after a block-scoped standalone search")
+    func embeddedSearchAlwaysLinksToTheDocumentContext() async throws {
+        let store = NativeStoreProbe(
+            spaceId: spaceId,
+            objectId: objectId,
+            blockIds: ["previous-block"]
+        )
+        let repository = makeRepository(store: store)
+        let provider = SessionSearchProvider()
+        let registry = try TorahProviderRegistry(
+            referenceProviders: [provider],
+            topicProviders: [provider],
+            lexicalProviders: [provider],
+            defaultProviderID: provider.providerID
+        )
+        let workspace = AnytypeTorahWorkspace(registry: registry)
+        let session = TorahEditorSession(
+            spaceId: spaceId,
+            objectId: objectId,
+            workspace: workspace,
+            associations: repository
+        )
+        session.presentSearch(scope: .block("previous-block"))
+        let embedded = TorahSourcesSearchPresenter(
+            session: session,
+            context: session.documentAssociationContext,
+            onOpenSelection: { _ in }
+        )
+        embedded.searchQuery = "Genesis 1:1"
+        await embedded.performSearch()
+        let documentResult = try #require(embedded.searchState.results.first)
+
+        await embedded.link(documentResult)
+
+        #expect(session.associationContext.scope == .block("previous-block"))
+        #expect(try await repository.listDocumentAssociations(
+            objectId: objectId,
+            spaceId: spaceId
+        ).count == 1)
+        #expect(try await repository.listBlockAssociations(
+            objectId: objectId,
+            blockId: "previous-block",
+            spaceId: spaceId
+        ).isEmpty)
+
+        let relaunchedSession = TorahEditorSession(
+            spaceId: spaceId,
+            objectId: objectId,
+            workspace: workspace,
+            associations: repository
+        )
+        let relaunchedEmbedded = TorahSourcesSearchPresenter(
+            session: relaunchedSession,
+            context: relaunchedSession.documentAssociationContext,
+            onOpenSelection: { _ in }
+        )
+        await relaunchedEmbedded.refreshAssociations()
+        #expect(relaunchedEmbedded.associations.count == 1)
+
+        relaunchedSession.presentSearch(scope: .block("previous-block"))
+        let standaloneBlock = TorahSourcesSearchPresenter(
+            session: relaunchedSession,
+            context: relaunchedSession.associationContext,
+            onOpenSelection: { _ in }
+        )
+        standaloneBlock.searchQuery = "Genesis 1:2"
+        await standaloneBlock.performSearch()
+        let blockResult = try #require(standaloneBlock.searchState.results.first)
+        await standaloneBlock.link(blockResult)
+
+        #expect(try await repository.listBlockAssociations(
+            objectId: objectId,
+            blockId: "previous-block",
+            spaceId: spaceId
+        ).count == 1)
+    }
+
+    @MainActor
+    @Test("A document switch invalidates an in-flight embedded link before storage mutation")
+    func inactiveDocumentCannotReceiveEmbeddedLink() async throws {
+        let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: [])
+        let repository = makeRepository(store: store)
+        let provider = SessionSearchProvider()
+        let registry = try TorahProviderRegistry(
+            referenceProviders: [provider],
+            topicProviders: [provider],
+            lexicalProviders: [provider],
+            defaultProviderID: provider.providerID
+        )
+        let session = TorahEditorSession(
+            spaceId: spaceId,
+            objectId: objectId,
+            workspace: AnytypeTorahWorkspace(registry: registry),
+            associations: repository
+        )
+        let presenter = TorahSourcesSearchPresenter(
+            session: session,
+            context: session.documentAssociationContext,
+            onOpenSelection: { _ in }
+        )
+        presenter.searchQuery = "Genesis 1:3"
+        await presenter.performSearch()
+        let result = try #require(presenter.searchState.results.first)
+        session.deactivateDocument()
+
+        await presenter.link(result)
+
+        #expect(await store.writeCount() == 0)
+        guard case .error = presenter.persistenceState else {
+            Issue.record("A stale document target must surface a visible failure")
+            return
+        }
+    }
+
+    @MainActor
+    @Test("Embedded topic and word results remain typed document associations")
+    func embeddedTopicAndWordLinksPreserveKinds() async throws {
+        let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: [])
+        let repository = makeRepository(store: store)
+        let provider = SessionSearchProvider()
+        let registry = try TorahProviderRegistry(
+            referenceProviders: [provider],
+            topicProviders: [provider],
+            lexicalProviders: [provider],
+            defaultProviderID: provider.providerID
+        )
+        let session = TorahEditorSession(
+            spaceId: spaceId,
+            objectId: objectId,
+            workspace: AnytypeTorahWorkspace(registry: registry),
+            associations: repository
+        )
+        let presenter = TorahSourcesSearchPresenter(
+            session: session,
+            context: session.documentAssociationContext,
+            onOpenSelection: { _ in }
+        )
+
+        for scope in [TorahEditorSession.SearchScope.topics, .words] {
+            presenter.searchScope = scope
+            presenter.searchQuery = "typed-\(scope.rawValue)"
+            await presenter.performSearch()
+            let result = try #require(presenter.searchState.results.first)
+            await presenter.link(result)
+        }
+
+        let values = try await repository.listDocumentAssociations(
+            objectId: objectId,
+            spaceId: spaceId
+        )
+        #expect(Set(values.map(\.kind)) == Set([.topic, .word]))
+    }
+
     @Test("Locale changes display only and new quote bodies do not freeze a citation")
     func localeAndQuoteContentAreNonDestructive() {
         let item = TorahAssociationItem(
@@ -752,4 +1007,31 @@ private struct SessionSearchProvider: ReferenceProvider, TopicProvider, LexicalP
     func resolveWord(surface: String, context: TorahLexicalContext?) async throws -> [ResolvedWord] {
         try await suggestWords(prefix: surface, context: context).map { ResolvedWord(candidate: $0) }
     }
+}
+
+private actor DelayedResolutionSearchProvider: ReferenceProvider, TopicProvider, LexicalProvider {
+    nonisolated let providerID = "delayed-resolution-probe"
+    private var resolveCounts = [String: Int]()
+
+    func suggestReferences(query: String, limit: Int) async throws -> [ReferenceCandidate] {
+        [ReferenceCandidate(id: query, label: query)]
+    }
+
+    func resolveReference(_ input: String) async throws -> ResolvedReference {
+        resolveCounts[input, default: 0] += 1
+        if input == "old" {
+            try await Task.sleep(for: .milliseconds(80))
+        }
+        return ResolvedReference(canonical: input, labelEn: input)
+    }
+
+    func resolveCount(for input: String) -> Int { resolveCounts[input, default: 0] }
+
+    func suggestTopics(query: String, limit: Int) async throws -> [TopicCandidate] { [] }
+    func resolveTopic(id: String) async throws -> ResolvedTopic {
+        ResolvedTopic(slug: id, displayTitle: id)
+    }
+    func refreshTopicIndexIfNeeded() async throws {}
+    func suggestWords(prefix: String, context: TorahLexicalContext?) async throws -> [WordCandidate] { [] }
+    func resolveWord(surface: String, context: TorahLexicalContext?) async throws -> [ResolvedWord] { [] }
 }

@@ -185,11 +185,12 @@ final class TorahEditorSession {
     private var claimedDropIDs = Set<String>()
     private var openObjectHandler: ((String) -> Void)?
     private var associationSnapshotHandler: ((Set<String>) -> Void)?
-    private var refreshRequestID: UUID?
+    private var associationSnapshotEpoch: UInt = 0
     private var searchRequestEpoch: UInt = 0
     private var effectiveLocale = Locale.autoupdatingCurrent
     private var pendingInspectorPresentation: PendingInspectorPresentation?
     private var pendingSearchContext: TorahAssociationContext?
+    private var isActiveDocument = true
 
     init(spaceId: String, objectId: String) throws {
         let workspace = try AnytypeTorahWorkspace.sefaria()
@@ -255,6 +256,10 @@ final class TorahEditorSession {
 
     var associationTargetBlockId: String? { associationContext.blockId }
 
+    var documentAssociationContext: TorahAssociationContext {
+        TorahAssociationContext(spaceId: spaceId, objectId: objectId, scope: .document)
+    }
+
     var visibleDocumentAssociations: [TorahAssociationItem] {
         documentAssociations.filter { !Self.isNoteAssociation($0) }
     }
@@ -317,6 +322,16 @@ final class TorahEditorSession {
         associationSnapshotHandler?(linkedBlockIDs)
     }
 
+    func activateDocument() {
+        isActiveDocument = true
+    }
+
+    func deactivateDocument() {
+        isActiveDocument = false
+        searchRequestEpoch &+= 1
+        associationSnapshotEpoch &+= 1
+    }
+
     func presentSearch(scope: TorahAssociationContext.Scope) {
         let context = TorahAssociationContext(spaceId: spaceId, objectId: objectId, scope: scope)
         pendingInspectorPresentation = nil
@@ -377,32 +392,55 @@ final class TorahEditorSession {
     }
 
     private func refreshAssociations(for context: TorahAssociationContext) async {
-        let requestID = UUID()
-        refreshRequestID = requestID
         do {
-            let records = try await associations.listAssociationRecords(
-                objectId: context.objectId,
-                spaceId: context.spaceId
-            )
-            try Task.checkCancellation()
-            guard refreshRequestID == requestID,
-                  associationContext == context,
-                  context.objectId == objectId,
-                  context.spaceId == spaceId else { return }
-            apply(records: records)
-            currentAssociations = visibleAssociations(for: context)
+            let values = try await associationSnapshot(for: context)
+            guard associationContext == context else { return }
+            currentAssociations = values
         } catch is CancellationError {
         } catch let error as TorahAssociationRepositoryError {
-            guard refreshRequestID == requestID, associationContext == context else { return }
+            guard associationContext == context else { return }
             message = localizedMessage(for: error)
         } catch {
-            guard refreshRequestID == requestID, associationContext == context else { return }
+            guard associationContext == context else { return }
             message = error.localizedDescription
         }
     }
 
+    func associationSnapshot(
+        for context: TorahAssociationContext
+    ) async throws -> [TorahAssociationItem] {
+        try validate(context: context)
+        associationSnapshotEpoch &+= 1
+        let requestEpoch = associationSnapshotEpoch
+        let records = try await associations.listAssociationRecords(
+            objectId: context.objectId,
+            spaceId: context.spaceId
+        )
+        try Task.checkCancellation()
+        try validate(context: context)
+        guard associationSnapshotEpoch == requestEpoch else {
+            throw CancellationError()
+        }
+        apply(records: records)
+        let values = visibleAssociations(for: context)
+        if associationContext == context {
+            currentAssociations = values
+        }
+        return values
+    }
+
     func unlinkAssociation(_ item: TorahAssociationItem) async {
         let context = associationContext
+        do {
+            _ = try await unlinkAssociation(item, from: context)
+        } catch {}
+    }
+
+    func unlinkAssociation(
+        _ item: TorahAssociationItem,
+        from context: TorahAssociationContext
+    ) async throws -> [TorahAssociationItem] {
+        try validate(context: context)
         persistenceState = .waiting
         do {
             persistenceState = .saving
@@ -411,14 +449,12 @@ final class TorahEditorSession {
                 target: context.target,
                 spaceId: context.spaceId
             )
+            try validate(context: context)
             persistenceState = .saved
-            await refreshAssociationSnapshot()
-        } catch let error as TorahAssociationRepositoryError {
-            persistenceState = persistenceState(for: error)
-            message = localizedMessage(for: error)
+            return try await associationSnapshot(for: context)
         } catch {
-            persistenceState = .error(error.localizedDescription)
-            message = error.localizedDescription
+            recordAssociationError(error)
+            throw error
         }
     }
 
@@ -511,47 +547,7 @@ final class TorahEditorSession {
                 try await Task.sleep(for: debounce)
             }
             try Task.checkCancellation()
-            let results: [SearchResult]
-            switch scope {
-            case .references:
-                results = try await workspace.suggestReferences(query).map {
-                    let isHebrew = TorahAssociationDisplayFormatter.containsHebrew($0.label)
-                    return SearchResult(
-                        id: "reference:\($0.id)",
-                        scope: .references,
-                        providerValue: $0.id,
-                        labelHe: isHebrew ? $0.label : nil,
-                        labelEn: isHebrew ? $0.id : $0.label,
-                        fallbackTitle: $0.label,
-                        fallbackSubtitle: nil
-                    )
-                }
-            case .topics:
-                results = try await workspace.suggestTopics(query).map {
-                    SearchResult(
-                        id: "topic:\($0.id)",
-                        scope: .topics,
-                        providerValue: $0.id,
-                        labelHe: $0.labelHe,
-                        labelEn: $0.labelEn,
-                        fallbackTitle: $0.displayTitle,
-                        fallbackSubtitle: nil
-                    )
-                }
-            case .words:
-                results = try await workspace.suggestWords(query).map {
-                    let isHebrew = TorahAssociationDisplayFormatter.containsHebrew($0.headword)
-                    return SearchResult(
-                        id: "word:\($0.id)",
-                        scope: .words,
-                        providerValue: $0.surface,
-                        labelHe: isHebrew ? $0.headword : nil,
-                        labelEn: isHebrew ? $0.description : $0.headword,
-                        fallbackTitle: $0.headword,
-                        fallbackSubtitle: $0.lexicon
-                    )
-                }
-            }
+            let results = try await search(query: query, scope: scope)
             try Task.checkCancellation()
             guard isCurrentSearch(requestEpoch, query: query, scope: scope) else { return }
             searchState = results.isEmpty ? .empty : .results(results)
@@ -572,6 +568,49 @@ final class TorahEditorSession {
         }
     }
 
+    func search(query: String, scope: SearchScope) async throws -> [SearchResult] {
+        switch scope {
+        case .references:
+            try await workspace.suggestReferences(query).map {
+                let isHebrew = TorahAssociationDisplayFormatter.containsHebrew($0.label)
+                return SearchResult(
+                    id: "reference:\($0.id)",
+                    scope: .references,
+                    providerValue: $0.id,
+                    labelHe: isHebrew ? $0.label : nil,
+                    labelEn: isHebrew ? $0.id : $0.label,
+                    fallbackTitle: $0.label,
+                    fallbackSubtitle: nil
+                )
+            }
+        case .topics:
+            try await workspace.suggestTopics(query).map {
+                SearchResult(
+                    id: "topic:\($0.id)",
+                    scope: .topics,
+                    providerValue: $0.id,
+                    labelHe: $0.labelHe,
+                    labelEn: $0.labelEn,
+                    fallbackTitle: $0.displayTitle,
+                    fallbackSubtitle: nil
+                )
+            }
+        case .words:
+            try await workspace.suggestWords(query).map {
+                let isHebrew = TorahAssociationDisplayFormatter.containsHebrew($0.headword)
+                return SearchResult(
+                    id: "word:\($0.id)",
+                    scope: .words,
+                    providerValue: $0.surface,
+                    labelHe: isHebrew ? $0.headword : nil,
+                    labelEn: isHebrew ? $0.description : $0.headword,
+                    fallbackTitle: $0.headword,
+                    fallbackSubtitle: $0.lexicon
+                )
+            }
+        }
+    }
+
     private func isCurrentSearch(
         _ requestEpoch: UInt,
         query: String,
@@ -585,12 +624,24 @@ final class TorahEditorSession {
     func openReference(_ result: SearchResult) async {
         guard result.scope == .references else { return }
         do {
-            let resolved = try await workspace.resolveReference(result.providerValue)
-            let nextSelection = try Self.inspectorSelection(for: resolved)
+            let nextSelection = try await resolveReference(result)
             presentInspector(selection: nextSelection, entryMode: .sourceReader)
         } catch {
             message = error.localizedDescription
         }
+    }
+
+    func resolveReference(_ result: SearchResult) async throws -> TorahInspectorSelection {
+        guard result.scope == .references else {
+            throw TorahError.referenceTooBroad
+        }
+        let resolved = try await workspace.resolveReference(result.providerValue)
+        try Task.checkCancellation()
+        return try Self.inspectorSelection(for: resolved)
+    }
+
+    func openResolvedReferenceFromStandaloneSearch(_ selection: TorahInspectorSelection) {
+        presentInspector(selection: selection, entryMode: .sourceReader)
     }
 
     static func inspectorSelection(for resolved: ResolvedReference) throws -> TorahInspectorSelection {
@@ -632,22 +683,39 @@ final class TorahEditorSession {
     func link(_ result: SearchResult) async {
         let context = associationContext
         do {
-            let item = try await associationItem(for: result)
-            persistenceState = .waiting
+            _ = try await link(result, to: context, rawQuery: searchQuery)
+        } catch {}
+    }
+
+    func link(
+        _ result: SearchResult,
+        to context: TorahAssociationContext,
+        rawQuery: String
+    ) async throws -> [TorahAssociationItem] {
+        let frozenContext = context
+        let frozenResult = result
+        let frozenRawQuery = rawQuery
+        try validate(context: frozenContext)
+        persistenceState = .waiting
+        do {
+            let item = try await associationItem(
+                for: frozenResult,
+                rawQuery: frozenRawQuery
+            )
+            try Task.checkCancellation()
+            try validate(context: frozenContext)
             persistenceState = .saving
             _ = try await associations.addAssociation(
                 item,
-                target: context.target,
-                spaceId: context.spaceId
+                target: frozenContext.target,
+                spaceId: frozenContext.spaceId
             )
+            try validate(context: frozenContext)
             persistenceState = .saved
-            await refreshAssociationSnapshot()
-        } catch let error as TorahAssociationRepositoryError {
-            persistenceState = persistenceState(for: error)
-            message = localizedMessage(for: error)
+            return try await associationSnapshot(for: frozenContext)
         } catch {
-            persistenceState = .error(error.localizedDescription)
-            message = error.localizedDescription
+            recordAssociationError(error)
+            throw error
         }
     }
 
@@ -703,7 +771,10 @@ final class TorahEditorSession {
         }
     }
 
-    private func associationItem(for result: SearchResult) async throws -> TorahAssociationItem {
+    private func associationItem(
+        for result: SearchResult,
+        rawQuery: String
+    ) async throws -> TorahAssociationItem {
         switch result.scope {
         case .references:
             let resolved = try await workspace.resolveReference(result.providerValue)
@@ -715,7 +786,7 @@ final class TorahEditorSession {
                 canonicalKey: resolved.canonical,
                 labelHe: resolved.labelHe,
                 labelEn: resolved.labelEn,
-                rawInput: searchQuery,
+                rawInput: rawQuery,
                 providerPayload: resolved.payload,
                 createdAt: Date(),
                 customMetadata: TorahReferenceUtil.isSegmentRef(resolved.canonical)
@@ -736,7 +807,7 @@ final class TorahEditorSession {
                         ? nil
                         : resolved.displayTitle
                 ),
-                rawInput: searchQuery,
+                rawInput: rawQuery,
                 providerPayload: resolved.payload,
                 createdAt: Date()
             )
@@ -756,7 +827,7 @@ final class TorahEditorSession {
                 labelEn: TorahAssociationDisplayFormatter.containsHebrew(resolved.candidate.headword)
                     ? resolved.candidate.description
                     : resolved.candidate.headword,
-                rawInput: searchQuery,
+                rawInput: rawQuery,
                 providerPayload: resolved.candidate.payload,
                 createdAt: Date(),
                 customMetadata: ["lexicon": resolved.candidate.lexicon]
@@ -848,6 +919,50 @@ final class TorahEditorSession {
             items = associationsByBlockId[blockId] ?? []
         }
         return items.filter { !Self.isNoteAssociation($0) }
+    }
+
+    func cachedAssociations(for context: TorahAssociationContext) -> [TorahAssociationItem] {
+        guard context.spaceId == spaceId, context.objectId == objectId else { return [] }
+        return visibleAssociations(for: context)
+    }
+
+    func reportSearchError(_ error: Error) {
+        guard !(error is CancellationError) else { return }
+        if let torahError = error as? TorahError {
+            message = TorahStrings.message(for: torahError, locale: effectiveLocale)
+        } else {
+            message = error.localizedDescription
+        }
+    }
+
+    func searchMessage(for error: Error) -> String {
+        if let torahError = error as? TorahError {
+            return TorahStrings.message(for: torahError, locale: effectiveLocale)
+        }
+        return Loc.Pinkha.Torah.Error.backendFailure
+    }
+
+    func validateSearchContext(_ context: TorahAssociationContext) throws {
+        try validate(context: context)
+    }
+
+    private func validate(context: TorahAssociationContext) throws {
+        guard isActiveDocument,
+              context.spaceId == spaceId,
+              context.objectId == objectId else {
+            throw SessionError.staleDocument
+        }
+    }
+
+    private func recordAssociationError(_ error: Error) {
+        guard !(error is CancellationError) else { return }
+        if let repositoryError = error as? TorahAssociationRepositoryError {
+            persistenceState = persistenceState(for: repositoryError)
+            message = localizedMessage(for: repositoryError)
+        } else {
+            persistenceState = .error(error.localizedDescription)
+            message = error.localizedDescription
+        }
     }
 
     private static func isNoteAssociation(_ item: TorahAssociationItem) -> Bool {

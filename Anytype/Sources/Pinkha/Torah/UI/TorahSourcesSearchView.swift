@@ -1,43 +1,110 @@
 import SwiftUI
 import UIKit
 import PinkhaKit
+import TorahInspectorUI
 
 struct TorahSourcesSearchView: View {
-    @Bindable var session: TorahEditorSession
+    let session: TorahEditorSession
+    @State private var presenter: TorahSourcesSearchPresenter
+
+    init(session: TorahEditorSession) {
+        self.session = session
+        _presenter = State(initialValue: TorahSourcesSearchPresenter(
+            session: session,
+            context: session.associationContext,
+            searchScope: session.searchScope,
+            searchQuery: session.searchQuery,
+            onOpenSelection: session.openResolvedReferenceFromStandaloneSearch
+        ))
+    }
+
+    var body: some View {
+        @Bindable var presenter = presenter
+
+        SearchViewShell(
+            title: TorahSourcesSearchCopy.contextTitle(
+                blockId: presenter.associationTargetBlockID
+            ),
+            placeholder: Loc.Pinkha.Torah.searchPlaceholder,
+            searchText: $presenter.searchQuery,
+            searchFieldAccessibilityIdentifier: "torah-sources-search-field"
+        ) {
+            TorahSourcesSearchContentView(
+                presenter: presenter,
+                showsSearchBar: false,
+                accessibilityIdentifier: "torah-sources-search-standalone"
+            )
+        }
+        .accessibilityIdentifier("torah-sources-search-sheet")
+    }
+}
+
+struct TorahInspectorEmbeddedSearchView: View {
+    @State private var presenter: TorahSourcesSearchPresenter
+
+    init(
+        session: TorahEditorSession,
+        navigation: TorahInspectorSearchNavigation
+    ) {
+        _presenter = State(initialValue: TorahSourcesSearchPresenter(
+            session: session,
+            context: session.documentAssociationContext,
+            onOpenSelection: navigation.navigateToFullSource
+        ))
+    }
+
+    var body: some View {
+        TorahSourcesSearchContentView(
+            presenter: presenter,
+            showsSearchBar: true,
+            accessibilityIdentifier: "torah-sources-search-embedded"
+        )
+    }
+}
+
+struct TorahSourcesSearchContentView: View {
+    @Bindable var presenter: TorahSourcesSearchPresenter
+    let showsSearchBar: Bool
+    let accessibilityIdentifier: String
     @Environment(\.locale) private var locale
 
     var body: some View {
-        SearchViewShell(
-            title: contextTitle,
-            placeholder: Loc.Pinkha.Torah.searchPlaceholder,
-            searchText: $session.searchQuery,
-            searchFieldAccessibilityIdentifier: "torah-sources-search-field"
-        ) {
+        VStack(spacing: 0) {
+            if showsSearchBar {
+                SearchBar(
+                    text: $presenter.searchQuery,
+                    focused: true,
+                    placeholder: Loc.Pinkha.Torah.searchPlaceholder
+                )
+                .accessibilityIdentifier("torah-sources-search-field")
+            }
             scopePicker
             if TorahAssociationPreviewStrip.shouldShow(
-                items: session.currentAssociations,
-                persistenceState: session.persistenceState
+                items: presenter.associations,
+                persistenceState: presenter.persistenceState
             ) {
                 associationPreview
             }
             results
         }
-        .accessibilityIdentifier("torah-sources-search-sheet")
-        .onChange(of: session.persistenceState) { _, state in
+        .background(Color.Background.secondary)
+        .accessibilityIdentifier(accessibilityIdentifier)
+        .onChange(of: presenter.persistenceState) { _, state in
             guard state == .saved else { return }
             UIAccessibility.post(
                 notification: .announcement,
                 argument: Loc.Pinkha.Torah.Persistence.saved
             )
         }
-        .task(id: SearchTaskID(scope: session.searchScope, query: session.searchQuery)) {
-            await session.performSearch(debounce: .milliseconds(300))
+        .task(id: SearchTaskID(scope: presenter.searchScope, query: presenter.searchQuery)) {
+            await presenter.performSearch(debounce: .milliseconds(300))
         }
-        .task(id: session.associationContext.id) { await session.refreshAssociations() }
+        .task(id: presenter.context.id) { await presenter.refreshAssociations() }
+        .onDisappear { presenter.cancelPendingRequests() }
     }
 
     private var scopePicker: some View {
-        Picker(Loc.Pinkha.Torah.searchType, selection: $session.searchScope) {
+        Picker(Loc.Pinkha.Torah.searchType, selection: $presenter.searchScope) {
             ForEach(TorahEditorSession.SearchScope.allCases) { scope in
                 Text(scope.title).tag(scope)
             }
@@ -50,13 +117,13 @@ struct TorahSourcesSearchView: View {
 
     private var associationPreview: some View {
         TorahAssociationPreviewStrip(
-            items: session.currentAssociations,
-            persistenceState: session.persistenceState,
+            items: presenter.associations,
+            persistenceState: presenter.persistenceState,
             locale: locale,
-            canOpen: session.canOpenAssociation,
-            onOpen: session.openAssociation,
+            canOpen: presenter.canOpenAssociation,
+            onOpen: presenter.openAssociation,
             onUnlink: { item in
-                Task { await session.unlinkAssociation(item) }
+                Task { await presenter.unlinkAssociation(item) }
             }
         )
         .divider()
@@ -64,7 +131,7 @@ struct TorahSourcesSearchView: View {
 
     @ViewBuilder
     private var results: some View {
-        switch session.searchState {
+        switch presenter.searchState {
         case .idle:
             EmptyStateView(
                 title: Loc.Pinkha.Torah.searchPrompt,
@@ -77,7 +144,7 @@ struct TorahSourcesSearchView: View {
                 .accessibilityLabel(Loc.Pinkha.Torah.searching)
         case .empty:
             EmptyStateView(
-                title: session.searchScope == .words
+                title: presenter.searchScope == .words
                     ? Loc.Pinkha.Torah.Error.noResolvedWord
                     : Loc.Pinkha.Torah.searchDescription,
                 style: .plain
@@ -90,7 +157,7 @@ struct TorahSourcesSearchView: View {
                 style: .error,
                 buttonData: EmptyStateView.ButtonData(
                     title: Loc.Pinkha.Home.retry,
-                    action: { await session.performSearch() }
+                    action: { await presenter.performSearch() }
                 )
             )
             .accessibilityIdentifier("torah-search-error")
@@ -98,10 +165,12 @@ struct TorahSourcesSearchView: View {
             PlainList {
                 ForEach(values) { result in
                     resultRow(result)
+                        .id(result.id)
                 }
             }
             .scrollIndicators(.never)
-            .id(SearchTaskID(scope: session.searchScope, query: session.searchQuery))
+            .scrollPosition(id: $presenter.resultListScrollAnchor)
+            .id(SearchTaskID(scope: presenter.searchScope, query: presenter.searchQuery))
         }
     }
 
@@ -109,7 +178,7 @@ struct TorahSourcesSearchView: View {
         SearchCell(
             data: TorahSearchCellData(result: result, locale: locale),
             onSelect: result.scope == .references ? {
-                Task { await session.openReference(result) }
+                Task { await presenter.openReference(result) }
             } : nil,
             assetGlyphSize: SearchCellIconView.standardAssetGlyphSize,
             primaryAccessibilityLabel: result.title(locale: locale),
@@ -118,7 +187,7 @@ struct TorahSourcesSearchView: View {
                 : nil
         ) {
             Button {
-                Task { await session.link(result) }
+                Task { await presenter.link(result) }
             } label: {
                 Image(asset: .X24.linkToExistingObject)
                     .renderingMode(.template)
@@ -133,13 +202,8 @@ struct TorahSourcesSearchView: View {
     }
 
     private var linkTitle: String {
-        TorahSourcesSearchCopy.linkTitle(blockId: session.associationTargetBlockId)
+        TorahSourcesSearchCopy.linkTitle(blockId: presenter.associationTargetBlockID)
     }
-
-    private var contextTitle: String {
-        TorahSourcesSearchCopy.contextTitle(blockId: session.associationTargetBlockId)
-    }
-
 }
 
 struct TorahSearchCellData: SearchDataProtocol {
