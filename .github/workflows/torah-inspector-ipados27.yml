@@ -28,8 +28,8 @@ jobs:
 
       - name: Verify immutable TorahInspectorKit pins
         run: |
-          test "$(grep -c '0a026e1c0b7d572c5affea6d31bda7b8ba0d4646' Modules/PinkhaKit/Package.swift)" -eq 1
-          test "$(grep -c '0a026e1c0b7d572c5affea6d31bda7b8ba0d4646' Anytype.xcodeproj/project.pbxproj)" -eq 1
+          test "$(grep -c 'a2fa3a528ac2bccfa00ed206d7954083077fc847' Modules/PinkhaKit/Package.swift)" -eq 1
+          test "$(grep -c 'a2fa3a528ac2bccfa00ed206d7954083077fc847' Anytype.xcodeproj/project.pbxproj)" -eq 1
           grep -q 'productName = TorahInspectorUI' Anytype.xcodeproj/project.pbxproj
 
       - name: Verify production Torah feature has no trial mutation gate
@@ -62,7 +62,7 @@ jobs:
         continue-on-error: true
         run: |
           git clone --quiet https://github.com/davidpovarsky/TorahInspectorKit.git build/TorahInspectorKit
-          git -C build/TorahInspectorKit checkout --quiet 0a026e1c0b7d572c5affea6d31bda7b8ba0d4646
+          git -C build/TorahInspectorKit checkout --quiet a2fa3a528ac2bccfa00ed206d7954083077fc847
           swift test --package-path build/TorahInspectorKit 2>&1 | tee build/evidence/torahinspectorkit-tests.log
 
       - name: Run PinkhaKit tests
@@ -193,7 +193,7 @@ jobs:
           shasum -a 256 build/ipa/Anytype-Torah-iPadOS27-Unsigned.ipa | tee build/evidence/ipa-sha256.txt
           printf 'Anytype commit: %s\nTorahInspectorKit commit: %s\nBundle ID: %s\n' \
             "$GITHUB_SHA" \
-            '0a026e1c0b7d572c5affea6d31bda7b8ba0d4646' \
+            'a2fa3a528ac2bccfa00ed206d7954083077fc847' \
             'com.gloiiire.anytype.torahtrial' \
             > build/evidence/manifest.txt
 
@@ -223,12 +223,12 @@ jobs:
           printf '\n## CI identity\n\n- Run: %s\n- Anytype commit: `%s`\n- TorahInspectorKit commit: `%s`\n' \
             "$GITHUB_RUN_ID" \
             "$GITHUB_SHA" \
-            '0a026e1c0b7d572c5affea6d31bda7b8ba0d4646' \
+            'a2fa3a528ac2bccfa00ed206d7954083077fc847' \
             >> build/evidence/acceptance-matrix.md
           printf '\n## CI identity\n\n- Run: %s\n- Anytype commit: `%s`\n- TorahInspectorKit commit: `%s`\n' \
             "$GITHUB_RUN_ID" \
             "$GITHUB_SHA" \
-            '0a026e1c0b7d572c5affea6d31bda7b8ba0d4646' \
+            'a2fa3a528ac2bccfa00ed206d7954083077fc847' \
             >> build/evidence/screenshot-status.md
 
       - name: Upload acceptance matrix

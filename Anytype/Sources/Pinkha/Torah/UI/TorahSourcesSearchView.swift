@@ -66,6 +66,7 @@ struct TorahSourcesSearchContentView: View {
     @Bindable var presenter: TorahSourcesSearchPresenter
     let showsSearchBar: Bool
     let accessibilityIdentifier: String
+    @State private var searchFieldIsFocused = true
     @Environment(\.locale) private var locale
 
     var body: some View {
@@ -73,7 +74,7 @@ struct TorahSourcesSearchContentView: View {
             if showsSearchBar {
                 SearchBar(
                     text: $presenter.searchQuery,
-                    focused: true,
+                    focused: searchFieldIsFocused,
                     placeholder: Loc.Pinkha.Torah.searchPlaceholder
                 )
                 .accessibilityIdentifier("torah-sources-search-field")
@@ -100,7 +101,13 @@ struct TorahSourcesSearchContentView: View {
             await presenter.performSearch(debounce: .milliseconds(300))
         }
         .task(id: presenter.context.id) { await presenter.refreshAssociations() }
-        .onDisappear { presenter.cancelPendingRequests() }
+        .onAppear {
+            if showsSearchBar { searchFieldIsFocused = true }
+        }
+        .onDisappear {
+            searchFieldIsFocused = false
+            presenter.cancelPendingRequests()
+        }
     }
 
     private var scopePicker: some View {
