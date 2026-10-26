@@ -92,8 +92,9 @@ struct PinkhaTextBlockLeadingMarkerAdapterTests {
 
         let leadingView = try #require(firstDescendant(of: TextBlockLeadingView.self, in: view))
         // The XCTest host does not propagate -testLanguage into UIKit's effective direction.
-        // Force the exact leaf queried by the production adapter, then reapply the reused row.
-        leadingView.semanticContentAttribute = .forceRightToLeft
+        // Force the whole hierarchy to model an app-level language override: the host row's
+        // existing leading/trailing constraints must then place the marker on the physical right.
+        forceSemanticContentAttribute(.forceRightToLeft, in: window)
         view.update(with: configuration)
         view.layoutIfNeeded()
 
@@ -103,8 +104,7 @@ struct PinkhaTextBlockLeadingMarkerAdapterTests {
         #expect(try #require(numberLabel(in: leadingView)).textAlignment == .natural)
 
         // Reuse the same host row while the effective app language changes at runtime.
-        view.semanticContentAttribute = .forceLeftToRight
-        leadingView.semanticContentAttribute = .forceLeftToRight
+        forceSemanticContentAttribute(.forceLeftToRight, in: window)
         view.update(with: configuration)
         view.layoutIfNeeded()
 
@@ -138,5 +138,13 @@ struct PinkhaTextBlockLeadingMarkerAdapterTests {
     private func firstDescendant<T: UIView>(of type: T.Type, in view: UIView) -> T? {
         if let match = view as? T { return match }
         return view.subviews.lazy.compactMap { firstDescendant(of: type, in: $0) }.first
+    }
+
+    private func forceSemanticContentAttribute(
+        _ attribute: UISemanticContentAttribute,
+        in view: UIView
+    ) {
+        view.semanticContentAttribute = attribute
+        view.subviews.forEach { forceSemanticContentAttribute(attribute, in: $0) }
     }
 }
