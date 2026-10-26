@@ -127,6 +127,11 @@ final class TextBlockViewModel: BlockViewModelProtocol {
         let isCheckable = content.contentType == .title ? style == .todo : false
         let anytypeText = content.anytypeText(document: document)
         self.anytypeText = anytypeText
+        let pinkhaWritingContext = PinkhaTextDirectionUIKitAdapter.context(
+            document: document,
+            info: info,
+            text: anytypeText.attrString.string
+        )
         
         let attributes: [NSAttributedString.Key: Any] = [
             .font: anytypeText.anytypeFont.uiKitFont,
@@ -154,6 +159,7 @@ final class TextBlockViewModel: BlockViewModelProtocol {
                 right: 0
             ),
             alignment: blockAlignment(blockText: content, info: info).asNSTextAlignment,
+            pinkhaWritingContext: pinkhaWritingContext,
             isCheckable: isCheckable,
             isToggled: info.isToggled,
             isChecked: content.checked,

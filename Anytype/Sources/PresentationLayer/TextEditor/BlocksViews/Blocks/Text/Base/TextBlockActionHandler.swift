@@ -713,6 +713,12 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
         changeType.map { accessoryViewStateManager.textDidChange(changeType: $0) }
         let text = textView.attributedText.sendable()
         let caret = textView.selectedRange
+        PinkhaTextDirectionPersistence.scheduleAutomaticDirectionIfNeeded(
+            document: document,
+            info: info,
+            attributedText: textView.attributedText,
+            selectedRange: caret
+        )
         if isVirtualUnmaterialized {
             Task { [weak textView] in
                 // Checked after the current call stack unwinds: the toolbar slash/mention

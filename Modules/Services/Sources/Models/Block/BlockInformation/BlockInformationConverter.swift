@@ -29,7 +29,7 @@ public enum BlockInformationConverter: Sendable {
         guard let content = BlocksModelsConverter.convert(block: blockContent) else { return nil }
 
         let id = information.id
-        let fields = Google_Protobuf_Struct()
+        let fields = Google_Protobuf_Struct(fields: information.fields)
         let restrictions = Anytype_Model_Block.Restrictions()
         let childrenIds = information.childrenIds
         let backgroundColor = information.backgroundColor?.rawValue ?? ""

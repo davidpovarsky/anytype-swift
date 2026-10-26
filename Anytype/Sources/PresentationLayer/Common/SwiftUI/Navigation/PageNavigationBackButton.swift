@@ -16,6 +16,7 @@ struct PageNavigationBackButton: View {
             pageNavigation.pop()
         } label: {
             Image(asset: .X24.back)
+                .flipsForRightToLeftLayoutDirection(true)
                 .navPanelDynamicForegroundStyle()
         }
         .simultaneousGesture(
@@ -27,7 +28,7 @@ struct PageNavigationBackButton: View {
         .if(pageNavigationHiddenBackButton) {
             $0.hidden()
         }
-        .accessibilityLabel("NavigationBack")
+        .accessibilityLabel(Loc.back)
     }
 }
 

@@ -44,6 +44,7 @@ struct TextBlockContentConfiguration: BlockConfiguration {
     var shouldDisplayPlaceholder: Bool
     var initialBlockFocusPosition: BlockFocusPosition?
     var alignment: NSTextAlignment
+    var pinkhaWritingContext: PinkhaTextBlockWritingContext?
     @EquatableNoop var textContainerInsets: UIEdgeInsets
     @EquatableNoop var placeholderAttributes: [NSAttributedString.Key: Any]
     @EquatableNoop var typingAttributes: (Int) -> [NSAttributedString.Key: Any]
@@ -59,6 +60,7 @@ struct TextBlockContentConfiguration: BlockConfiguration {
         typingAttributes: @escaping (Int) -> [NSAttributedString.Key: Any],
         textContainerInsets: UIEdgeInsets,
         alignment: NSTextAlignment,
+        pinkhaWritingContext: PinkhaTextBlockWritingContext? = nil,
         isCheckable: Bool,
         isToggled: Bool,
         isChecked: Bool,
@@ -75,6 +77,7 @@ struct TextBlockContentConfiguration: BlockConfiguration {
         self.typingAttributes = typingAttributes
         self.textContainerInsets = textContainerInsets
         self.alignment = alignment
+        self.pinkhaWritingContext = pinkhaWritingContext
         self.isCheckable = isCheckable
         self.isToggled = isToggled
         self.isChecked = isChecked

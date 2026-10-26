@@ -5,6 +5,10 @@ import AnytypeCore
 import Services
 
 final class TextViewWithPlaceholder: UITextView {
+    override var textAlignment: NSTextAlignment {
+        didSet { placeholderLabel.textAlignment = textAlignment }
+    }
+
     private enum InsetEdgeType {
         case top
         case bottom

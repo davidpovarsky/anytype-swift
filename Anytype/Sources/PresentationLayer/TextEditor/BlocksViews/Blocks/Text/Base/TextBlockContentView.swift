@@ -146,9 +146,18 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         applyTextStorage(configuration.attributedString)
 
         textBlockLeadingView.update(blockId: configuration.blockId, style: TextBlockLeadingStyle(with: configuration))
+        PinkhaTextBlockLeadingMarkerAdapter.applyNumberAlignment(
+            context: configuration.pinkhaWritingContext,
+            content: configuration.content,
+            to: textBlockLeadingView
+        )
     
         let restrictions = BlockRestrictionsBuilder.build(textContentType: configuration.content.contentType)
         TextBlockTextViewStyler.applyStyle(textView: textView, configuration: configuration, restrictions: restrictions)
+        PinkhaTextDirectionUIKitAdapter.apply(
+            context: configuration.pinkhaWritingContext,
+            to: textView.textView
+        )
         
         updateAllConstraint(configuration: configuration)
         textView.delegate = self

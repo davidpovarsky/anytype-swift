@@ -123,6 +123,12 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
         AnytypeAnalytics.instance().logSetAlignment(alignment, isBlock: blockIds.isNotEmpty, route: route)
         Task {
             try await blockService.setAlign(objectId: document.objectId, blockIds: blockIds, alignment: alignment)
+            try await PinkhaTextDirectionPersistence.markExplicitAlignmentIfNeeded(
+                document: document,
+                blockIds: blockIds,
+                alignment: alignment,
+                blockService: blockService
+            )
         }
     }
     

@@ -37,7 +37,11 @@ final class FullScreenSwipeNavigationController: UINavigationController, UIGestu
         case .began, .changed:
             let width = view.bounds.width
             guard width > 0 else { return }
-            onInteractivePopProgress?(recognizer.translation(in: view).x / width)
+            onInteractivePopProgress?(PinkhaNavigationGestureBridge.normalizedProgress(
+                controller: self,
+                translationX: recognizer.translation(in: view).x,
+                containerWidth: width
+            ))
         case .ended, .cancelled, .failed:
             // A live transition reports its own outcome through the transition coordinator.
             if transitionCoordinator == nil {
@@ -49,6 +53,9 @@ final class FullScreenSwipeNavigationController: UINavigationController, UIGestu
     }
 
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard !PinkhaNavigationGestureBridge.requiresPublicEdgePop(controller: self) else {
+            return false
+        }
         guard viewControllers.count > 1 else { return false }
 
         guard let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer else { return false }

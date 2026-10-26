@@ -39,6 +39,11 @@ struct AnytypeNavigationViewRepresentable: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ controller: FullScreenSwipeNavigationController, context: Context) {
+        PinkhaNavigationGestureBridge.update(
+            controller: controller,
+            topNavigationItem: path.last,
+            layoutDirection: context.environment.layoutDirection
+        )
         let builder = context.coordinator.builder
         var freeViewControllers = context.coordinator.currentViewControllers
         var viewControllers = [UIHostingController<AnytypeNavigationViewBridge>]()

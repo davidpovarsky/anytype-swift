@@ -21,7 +21,7 @@ struct TorahSourcesSearchView: View {
     var body: some View {
         @Bindable var presenter = presenter
 
-        SearchViewShell(
+        TorahSearchViewShell(
             title: TorahSourcesSearchCopy.contextTitle(
                 blockId: presenter.associationTargetBlockID
             ),
@@ -182,65 +182,25 @@ struct TorahSourcesSearchContentView: View {
     }
 
     private func resultRow(_ result: TorahEditorSession.SearchResult) -> some View {
-        SearchCell(
-            data: TorahSearchCellData(result: result, locale: locale),
+        TorahSourceSearchResultRow(
+            result: result,
+            locale: locale,
             onSelect: result.scope == .references ? {
                 Task { await presenter.openReference(result) }
             } : nil,
-            assetGlyphSize: SearchCellIconView.standardAssetGlyphSize,
             primaryAccessibilityLabel: result.title(locale: locale),
             primaryAccessibilityHint: result.scope == .references
                 ? Loc.Pinkha.Torah.openInspector
-                : nil
-        ) {
-            Button {
+                : nil,
+            onLink: {
                 Task { await presenter.link(result) }
-            } label: {
-                Image(asset: .X24.linkToExistingObject)
-                    .renderingMode(.template)
-                    .frame(width: 20, height: 20)
-                .foregroundStyle(Color.Control.secondary)
-                .frame(width: 44, height: 44)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(linkTitle)
-        }
+            },
+            linkAccessibilityLabel: linkTitle
+        )
     }
 
     private var linkTitle: String {
         TorahSourcesSearchCopy.linkTitle(blockId: presenter.associationTargetBlockID)
-    }
-}
-
-struct TorahSearchCellData: SearchDataProtocol {
-    let id: String
-    let iconImage: Icon?
-    let title: String
-    let mode: SerchDataPresentationMode
-
-    init(result: TorahEditorSession.SearchResult, locale: Locale) {
-        self.id = result.id
-        self.iconImage = .asset(Self.asset(for: result.scope))
-        self.title = result.title(locale: locale)
-        self.mode = .full(
-            descriptionInfo: result.subtitle(locale: locale).map {
-                SearchDataDescriptionInfo(
-                    description: $0,
-                    descriptionTextColor: Color.Text.secondary,
-                    descriptionFont: .relation2Regular
-                )
-            },
-            callout: nil
-        )
-    }
-
-    private static func asset(for scope: TorahEditorSession.SearchScope) -> ImageAsset {
-        switch scope {
-        case .references: .CustomIcons.book
-        case .topics: .CustomIcons.pricetag
-        case .words: .CustomIcons.text
-        }
     }
 }
 
@@ -375,6 +335,139 @@ struct TorahAssociationPreviewStrip: View {
         case .ref: .CustomIcons.book
         case .topic: .CustomIcons.pricetag
         case .word: .CustomIcons.text
+        }
+    }
+}
+
+private struct TorahSearchViewShell<Content: View>: View {
+    let title: String?
+    let placeholder: String
+    @Binding var searchText: String
+    let searchFieldAccessibilityIdentifier: String
+    private let content: Content
+    @State private var searchFieldIsFocused = true
+
+    init(
+        title: String?,
+        placeholder: String,
+        searchText: Binding<String>,
+        searchFieldAccessibilityIdentifier: String,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.title = title
+        self.placeholder = placeholder
+        self._searchText = searchText
+        self.searchFieldAccessibilityIdentifier = searchFieldAccessibilityIdentifier
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            DragIndicator()
+            TitleView(title: title)
+            SearchBar(
+                text: $searchText,
+                focused: searchFieldIsFocused,
+                placeholder: placeholder
+            )
+            .accessibilityIdentifier(searchFieldAccessibilityIdentifier)
+            content
+        }
+        .background(Color.Background.secondary)
+        .onAppear { searchFieldIsFocused = true }
+        .onDisappear { searchFieldIsFocused = false }
+    }
+}
+
+private struct TorahSourceSearchResultRow: View {
+    static let rowHeight: CGFloat = 68
+    static let iconSlotSize: CGFloat = 48
+    static let iconGlyphSize: CGFloat = 24
+
+    let result: TorahEditorSession.SearchResult
+    let locale: Locale
+    let onSelect: (() -> Void)?
+    let primaryAccessibilityLabel: String
+    let primaryAccessibilityHint: String?
+    let onLink: () -> Void
+    let linkAccessibilityLabel: String
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 0) {
+            primaryContent
+            linkButton
+        }
+        .frame(height: Self.rowHeight)
+        .newDivider()
+        .padding(.horizontal, 16)
+    }
+
+    @ViewBuilder
+    private var primaryContent: some View {
+        if let onSelect {
+            Button(action: onSelect) {
+                rowContent
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(primaryAccessibilityLabel)
+            .accessibilityHint(primaryAccessibilityHint ?? "")
+        } else {
+            rowContent
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(primaryAccessibilityLabel)
+        }
+    }
+
+    private var rowContent: some View {
+        HStack(alignment: .center, spacing: 12) {
+            Image(asset: asset)
+                .renderingMode(.template)
+                .resizable()
+                .scaledToFit()
+                .dynamicForegroundStyle(
+                    color: Color.Control.secondary,
+                    disabledColor: Color.Control.tertiary
+                )
+                .frame(width: Self.iconGlyphSize, height: Self.iconGlyphSize)
+                .frame(width: Self.iconSlotSize, height: Self.iconSlotSize)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 1) {
+                AnytypeText(result.title(locale: locale), style: .previewTitle2Medium)
+                    .foregroundStyle(Color.Text.primary)
+                    .lineLimit(1)
+                    .frame(height: 20)
+
+                if let subtitle = result.subtitle(locale: locale) {
+                    AnytypeText(subtitle, style: .relation2Regular)
+                        .foregroundStyle(Color.Text.secondary)
+                        .lineLimit(1)
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+    }
+
+    private var linkButton: some View {
+        Button(action: onLink) {
+            Image(asset: .X24.linkToExistingObject)
+                .renderingMode(.template)
+                .frame(width: 20, height: 20)
+                .foregroundStyle(Color.Control.secondary)
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(linkAccessibilityLabel)
+    }
+
+    private var asset: ImageAsset {
+        switch result.scope {
+        case .references: .CustomIcons.book
+        case .topics: .CustomIcons.pricetag
+        case .words: .CustomIcons.text
         }
     }
 }
