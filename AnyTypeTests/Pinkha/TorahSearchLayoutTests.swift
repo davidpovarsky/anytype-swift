@@ -7,11 +7,11 @@ import XCTest
 @testable import Anytype
 
 @MainActor
-@Suite("Torah search layout")
+@Suite("Torah search layout", .serialized)
 struct TorahSearchLayoutTests {
 
     @Test("Real Torah SVG glyphs stay inside full and minimal SearchCell slots")
-    func torahAssetGlyphsStayInsideSearchCellSlots() throws {
+    func torahAssetGlyphsStayInsideSearchCellSlots() async throws {
         let icons: [Icon] = [
             .asset(.CustomIcons.book),
             .asset(.CustomIcons.pricetag),
@@ -23,7 +23,7 @@ struct TorahSearchLayoutTests {
                 for width in [420.0, 768.0] {
                     for direction in [LayoutDirection.leftToRight, .rightToLeft] {
                         let data = SearchLayoutData(iconImage: icon, mode: mode)
-                        let image = try renderSearchCell(
+                        let image = try await renderSearchCell(
                             data: data,
                             width: width,
                             direction: direction
@@ -46,24 +46,23 @@ struct TorahSearchLayoutTests {
     }
 
     @Test("SearchCell keeps intrinsic asset behavior unless a caller opts into scaling")
-    func unrelatedAssetRowsRemainUnchanged() throws {
+    func unrelatedAssetRowsRemainUnchanged() async throws {
         let icon = Icon.asset(.webPage)
         let data = SearchLayoutData(
             iconImage: icon,
             mode: .full(descriptionInfo: nil, callout: nil)
         )
-        let searchCellImage = try renderSearchCell(
+        let searchCellImage = try await renderSearchCell(
             data: data,
             width: 420,
             direction: .leftToRight,
             assetGlyphSize: nil
         )
-        let directRenderer = ImageRenderer(
-            content: IconView(icon: icon).frame(width: 48, height: 48)
+        let directImage = try await renderHostedCGImage(
+            IconView(icon: icon).frame(width: 48, height: 48),
+            size: CGSize(width: 48, height: 48),
+            direction: .leftToRight
         )
-        directRenderer.scale = 1
-        directRenderer.proposedSize = ProposedViewSize(width: 48, height: 48)
-        let directImage = try #require(directRenderer.cgImage)
         let searchCellBounds = try opaqueContentBounds(searchCellImage)
         let directBounds = try opaqueContentBounds(directImage)
 
@@ -196,7 +195,10 @@ struct TorahSearchLayoutTests {
         width: CGFloat,
         direction: LayoutDirection,
         assetGlyphSize: CGFloat? = SearchCellIconView.standardAssetGlyphSize
-    ) throws -> CGImage {
+    ) async throws -> CGImage {
+        if case .asset(let asset)? = data.iconImage {
+            _ = try #require(UIImage(asset: asset))
+        }
         let height = data.isMinimal ? 52.0 : 68.0
         let content: AnyView
         if let assetGlyphSize {
@@ -207,12 +209,45 @@ struct TorahSearchLayoutTests {
         } else {
             content = AnyView(SearchCell(data: data))
         }
-        let renderer = ImageRenderer(content: content
-            .frame(width: width)
-            .environment(\.layoutDirection, direction))
-        renderer.scale = 1
-        renderer.proposedSize = ProposedViewSize(width: width, height: height)
-        return try #require(renderer.cgImage)
+        return try await renderHostedCGImage(
+            content.frame(width: width, height: height),
+            size: CGSize(width: width, height: height),
+            direction: direction
+        )
+    }
+
+    private func renderHostedCGImage<Content: View>(
+        _ content: Content,
+        size: CGSize,
+        direction: LayoutDirection
+    ) async throws -> CGImage {
+        let controller = UIHostingController(
+            rootView: content.environment(\.layoutDirection, direction)
+        )
+        let window = UIWindow(frame: CGRect(origin: .zero, size: size))
+        window.backgroundColor = .clear
+        window.isOpaque = false
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        controller.view.frame = window.bounds
+        controller.view.backgroundColor = .clear
+        controller.view.isOpaque = false
+        controller.view.setNeedsLayout()
+        controller.view.layoutIfNeeded()
+        await Task.yield()
+        controller.view.setNeedsLayout()
+        controller.view.layoutIfNeeded()
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = false
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
+        let image = renderer.image { context in
+            controller.view.layer.render(in: context.cgContext)
+        }
+        return try #require(image.cgImage)
     }
 
     private func renderAssociationStrip(
