@@ -1022,7 +1022,7 @@ private actor DelayedResolutionSearchProvider: ReferenceProvider, TopicProvider,
         if input == "old" {
             try await Task.sleep(for: .milliseconds(80))
         }
-        return ResolvedReference(canonical: input, labelHe: nil, labelEn: input)
+        return ResolvedReference(canonical: input, labelHe: input, labelEn: input)
     }
 
     func resolveCount(for input: String) -> Int { resolveCounts[input, default: 0] }
