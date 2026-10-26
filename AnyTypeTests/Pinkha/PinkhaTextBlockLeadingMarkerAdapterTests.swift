@@ -4,7 +4,7 @@ import PinkhaKit
 import Services
 @testable import Anytype
 
-@Suite("Pinkha numbered marker adapter")
+@Suite("Pinkha numbered marker adapter", .serialized)
 @MainActor
 struct PinkhaTextBlockLeadingMarkerAdapterTests {
     @Test("Wide Pinkha RTL numbers use semantic alignment", arguments: [20, 99, 100])
@@ -68,9 +68,16 @@ struct PinkhaTextBlockLeadingMarkerAdapterTests {
 
     @Test("The complete text row places the marker on the physical right in RTL and left in LTR")
     func physicalMarkerSide() throws {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        let controller = UIViewController()
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
         let nestedContainer = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 52))
         let view = TextBlockContentView()
         view.frame = CGRect(x: 40, y: 0, width: 240, height: 52)
+        controller.view.addSubview(nestedContainer)
         nestedContainer.addSubview(view)
 
         var configuration = TextBlockContentConfiguration.empty
