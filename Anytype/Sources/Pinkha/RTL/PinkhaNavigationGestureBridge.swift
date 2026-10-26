@@ -40,7 +40,14 @@ enum PinkhaNavigationGestureBridge {
         layoutDirection: LayoutDirection
     ) {
         let key = ObjectIdentifier(controller)
-        let entry = entries[key] ?? Entry(controller: controller)
+        let entry: Entry
+        if let existingEntry = entries[key], existingEntry.controller === controller {
+            entry = existingEntry
+        } else {
+            // ObjectIdentifier values may be reused after a navigation controller is released.
+            // Never bind a newly allocated controller to a stale weak entry from that address.
+            entry = Entry(controller: controller)
+        }
         entry.topObjectId = (topNavigationItem?.base as? EditorScreenData)?.objectId
         let effectiveDirection: PinkhaLayoutDirection = layoutDirection == .rightToLeft
             ? .rightToLeft

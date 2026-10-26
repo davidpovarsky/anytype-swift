@@ -154,6 +154,7 @@ jobs:
             local region="$5"
             local result="build/results/${device_kind}-${direction}.xcresult"
             local log="build/evidence/native-${device_kind}-${direction}.log"
+            set +e
             xcodebuild test-without-building \
               -project Anytype.xcodeproj \
               -scheme Anytype \
@@ -169,7 +170,9 @@ jobs:
               CODE_SIGNING_ALLOWED=NO \
               CODE_SIGNING_REQUIRED=NO \
               2>&1 | tee "$log"
-            if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+            local run_status=${PIPESTATUS[0]}
+            set -e
+            if [[ $run_status -ne 0 ]]; then
               status=1
             fi
           }

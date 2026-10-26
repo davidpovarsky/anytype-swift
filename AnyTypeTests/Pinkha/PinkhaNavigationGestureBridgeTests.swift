@@ -3,7 +3,7 @@ import SwiftUI
 import UIKit
 @testable import Anytype
 
-@Suite("Pinkha navigation gesture bridge")
+@Suite("Pinkha navigation gesture bridge", .serialized)
 @MainActor
 struct PinkhaNavigationGestureBridgeTests {
     @Test("Only an exact Pinkha document with active RTL interface requires edge pop")
@@ -27,6 +27,12 @@ struct PinkhaNavigationGestureBridgeTests {
             id: objectId,
             isPinkhaWritingDocument: true
         )
+        defer {
+            PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
+                id: objectId,
+                isPinkhaWritingDocument: false
+            )
+        }
         #expect(PinkhaNavigationGestureBridge.requiresPublicEdgePop(controller: controller))
         #expect(controller.view.semanticContentAttribute == .forceRightToLeft)
         #expect(systemEdgeRecognizer(in: controller)?.edges == .right)
@@ -39,11 +45,6 @@ struct PinkhaNavigationGestureBridgeTests {
         #expect(!PinkhaNavigationGestureBridge.requiresPublicEdgePop(controller: controller))
         #expect(controller.view.semanticContentAttribute == .unspecified)
         #expect(systemEdgeRecognizer(in: controller)?.edges == .left)
-
-        PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
-            id: objectId,
-            isPinkhaWritingDocument: false
-        )
     }
 
     @Test("Pinkha RTL blocks only the custom recognizer and preserves UIKit's public transition driver")
@@ -58,8 +59,8 @@ struct PinkhaNavigationGestureBridgeTests {
         let fullScreenRecognizer = try #require(controller.view.gestureRecognizers?.first {
             $0 !== systemRecognizer && $0.delegate === controller && $0 is UIPanGestureRecognizer
         } as? UIPanGestureRecognizer)
-        fullScreenRecognizer.setTranslation(CGPoint(x: 40, y: 0), in: controller.view)
-        #expect(controller.gestureRecognizerShouldBegin(fullScreenRecognizer))
+        let positivePan = TranslationPanGestureRecognizer(translation: CGPoint(x: 40, y: 0))
+        #expect(controller.gestureRecognizerShouldBegin(positivePan))
 
         let objectId = "pinkha-public-edge-test"
         let item = editorItem(objectId: objectId)
@@ -67,30 +68,32 @@ struct PinkhaNavigationGestureBridgeTests {
             id: objectId,
             isPinkhaWritingDocument: true
         )
+        defer {
+            PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
+                id: objectId,
+                isPinkhaWritingDocument: false
+            )
+        }
         PinkhaNavigationGestureBridge.update(
             controller: controller,
             topNavigationItem: item,
             layoutDirection: .rightToLeft
         )
 
-        #expect(!controller.gestureRecognizerShouldBegin(fullScreenRecognizer))
+        #expect(!controller.gestureRecognizerShouldBegin(positivePan))
         #expect(systemRecognizer.edges == .right)
         #expect(systemRecognizer.delegate === originalSystemDelegate)
         #expect(systemRecognizer.cancelsTouchesInView == originalCancelsTouches)
         #expect(controller.view.gestureRecognizers?.count == originalGestureCount)
+        #expect(controller.view.gestureRecognizers?.contains { $0 === fullScreenRecognizer } == true)
 
         PinkhaNavigationGestureBridge.update(
             controller: controller,
             topNavigationItem: item,
             layoutDirection: .leftToRight
         )
-        #expect(controller.gestureRecognizerShouldBegin(fullScreenRecognizer))
+        #expect(controller.gestureRecognizerShouldBegin(positivePan))
         #expect(systemRecognizer.edges == .left)
-
-        PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
-            id: objectId,
-            isPinkhaWritingDocument: false
-        )
     }
 
     @Test("Root, ordinary documents, and non-editor inspector destinations preserve host behavior")
@@ -98,8 +101,7 @@ struct PinkhaNavigationGestureBridgeTests {
         let controller = FullScreenSwipeNavigationController()
         controller.loadViewIfNeeded()
         let originalEdges = systemEdgeRecognizer(in: controller)?.edges
-        let pan = UIPanGestureRecognizer()
-        pan.setTranslation(CGPoint(x: 32, y: 0), in: controller.view)
+        let pan = TranslationPanGestureRecognizer(translation: CGPoint(x: 32, y: 0))
 
         controller.setViewControllers([UIViewController()], animated: false)
         #expect(!controller.gestureRecognizerShouldBegin(pan))
@@ -113,8 +115,8 @@ struct PinkhaNavigationGestureBridgeTests {
         #expect(controller.gestureRecognizerShouldBegin(pan))
         #expect(systemEdgeRecognizer(in: controller)?.edges == originalEdges)
 
-        pan.setTranslation(CGPoint(x: -32, y: 0), in: controller.view)
-        #expect(!controller.gestureRecognizerShouldBegin(pan))
+        let reversePan = TranslationPanGestureRecognizer(translation: CGPoint(x: -32, y: 0))
+        #expect(!controller.gestureRecognizerShouldBegin(reversePan))
     }
 
     @Test("RTL Pinkha progress is normalized while ordinary progress is unchanged")
@@ -142,16 +144,17 @@ struct PinkhaNavigationGestureBridgeTests {
             id: objectId,
             isPinkhaWritingDocument: true
         )
+        defer {
+            PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
+                id: objectId,
+                isPinkhaWritingDocument: false
+            )
+        }
         #expect(PinkhaNavigationGestureBridge.normalizedProgress(
             controller: controller,
             translationX: -80,
             containerWidth: 320
         ) == 0.25)
-
-        PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
-            id: objectId,
-            isPinkhaWritingDocument: false
-        )
     }
 
     private func editorItem(objectId: String) -> AnyHashable {
@@ -165,5 +168,23 @@ struct PinkhaNavigationGestureBridgeTests {
         in controller: FullScreenSwipeNavigationController
     ) -> UIScreenEdgePanGestureRecognizer? {
         controller.interactivePopGestureRecognizer as? UIScreenEdgePanGestureRecognizer
+    }
+}
+
+private final class TranslationPanGestureRecognizer: UIPanGestureRecognizer {
+    private let reportedTranslation: CGPoint
+
+    init(translation: CGPoint) {
+        reportedTranslation = translation
+        super.init(target: nil, action: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func translation(in view: UIView?) -> CGPoint {
+        reportedTranslation
     }
 }
