@@ -91,6 +91,12 @@ struct PinkhaTextBlockLeadingMarkerAdapterTests {
         view.layoutIfNeeded()
 
         let leadingView = try #require(firstDescendant(of: TextBlockLeadingView.self, in: view))
+        // The XCTest host does not propagate -testLanguage into UIKit's effective direction.
+        // Force the exact leaf queried by the production adapter, then reapply the reused row.
+        leadingView.semanticContentAttribute = .forceRightToLeft
+        view.update(with: configuration)
+        view.layoutIfNeeded()
+
         var markerFrame = leadingView.convert(leadingView.bounds, to: nestedContainer)
         var textFrame = view.textView.convert(view.textView.bounds, to: nestedContainer)
         #expect(markerFrame.midX > textFrame.midX)
@@ -98,6 +104,7 @@ struct PinkhaTextBlockLeadingMarkerAdapterTests {
 
         // Reuse the same host row while the effective app language changes at runtime.
         view.semanticContentAttribute = .forceLeftToRight
+        leadingView.semanticContentAttribute = .forceLeftToRight
         view.update(with: configuration)
         view.layoutIfNeeded()
 
