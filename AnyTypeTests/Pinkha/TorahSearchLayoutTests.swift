@@ -222,7 +222,9 @@ struct TorahSearchLayoutTests {
         direction: LayoutDirection
     ) async throws -> CGImage {
         let controller = UIHostingController(
-            rootView: content.environment(\.layoutDirection, direction)
+            rootView: content
+                .ignoresSafeArea()
+                .environment(\.layoutDirection, direction)
         )
         let window = UIWindow(frame: CGRect(origin: .zero, size: size))
         window.backgroundColor = .clear
