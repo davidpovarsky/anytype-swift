@@ -1,5 +1,6 @@
 import XCTest
 
+@MainActor
 final class PinkhaStage1AcceptanceUITests: XCTestCase {
     private let app = XCUIApplication()
     private var expectsRTL: Bool {

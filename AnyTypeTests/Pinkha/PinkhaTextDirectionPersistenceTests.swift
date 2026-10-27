@@ -102,9 +102,10 @@ struct PinkhaTextDirectionPersistenceTests {
         Container.shared.pinkhaBootstrapStateManager().setState(.ready(manifest), for: document.spaceId)
         defer { Container.shared.pinkhaBootstrapService.reset() }
 
+        let info = try #require(document.infoContainer.get(id: blockId))
         let context = try #require(PinkhaTextDirectionUIKitAdapter.context(
             document: document,
-            info: try #require(document.infoContainer.get(id: blockId)),
+            info: info,
             text: "שלום"
         ))
 
@@ -128,9 +129,10 @@ struct PinkhaTextDirectionPersistenceTests {
         )
         defer { Container.shared.pinkhaBootstrapService.reset() }
 
+        let info = try #require(document.infoContainer.get(id: blockId))
         let context = try #require(PinkhaTextDirectionUIKitAdapter.context(
             document: document,
-            info: try #require(document.infoContainer.get(id: blockId)),
+            info: info,
             text: ""
         ))
 
