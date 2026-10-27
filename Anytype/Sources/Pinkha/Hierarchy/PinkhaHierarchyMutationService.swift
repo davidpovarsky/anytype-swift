@@ -153,10 +153,24 @@ final class PinkhaHierarchyMutationService: @unchecked Sendable {
             }).invoke(qos: .userInitiated)
 
             let updatedDetails = details.updated(by: localUpdates)
+            let createdObjectId = updatedDetails.id
+            await MainActor.run {
+                PinkhaDocumentIdentityStorage.shared.registerCreated(
+                    objectId: createdObjectId,
+                    spaceId: spaceId
+                )
+            }
             Self.log.debug("Created writing document: objectId=\(updatedDetails.id), typeId=\(updatedDetails.type)")
             return updatedDetails
         }
 
+        let createdObjectId = details.id
+        await MainActor.run {
+            PinkhaDocumentIdentityStorage.shared.registerCreated(
+                objectId: createdObjectId,
+                spaceId: spaceId
+            )
+        }
         Self.log.debug("Created writing document: objectId=\(details.id), typeId=\(details.type)")
         return details
     }

@@ -72,6 +72,10 @@ enum PinkhaTextDirectionPersistence {
         guard sessionExplicitAlignments[info.id] == nil else { return }
         guard initialMarker != nil
                 || SessionCreatedBlockIdsStorage.shared.contains(info.id)
+                || PinkhaDocumentIdentityStorage.shared.wasCreatedThisSession(
+                    objectId: document.objectId,
+                    spaceId: document.spaceId
+                )
                 || PinkhaTextDirectionUIKitAdapter.isLocallyFabricatedUnlinkedBlock(
                     document: document,
                     info: info
@@ -103,7 +107,12 @@ enum PinkhaTextDirectionPersistence {
 
             var currentInfo = document.infoContainer.get(id: info.id) ?? info
             var marker = PinkhaTextDirectionUIKitAdapter.marker(from: currentInfo.fields)
-            if marker == nil, !SessionCreatedBlockIdsStorage.shared.contains(info.id) {
+            if marker == nil,
+               !SessionCreatedBlockIdsStorage.shared.contains(info.id),
+               !PinkhaDocumentIdentityStorage.shared.wasCreatedThisSession(
+                   objectId: document.objectId,
+                   spaceId: document.spaceId
+               ) {
                 // Virtual materialization and empty-block replacement register only after
                 // their create/replace RPC succeeds. Briefly wait for that proof rather than
                 // guessing from an edit; a legacy id never becomes eligible.
@@ -126,6 +135,10 @@ enum PinkhaTextDirectionPersistence {
             guard PinkhaAutomaticDirectionEligibility.shouldPersist(
                 marker: marker,
                 isSessionCreatedBlock: SessionCreatedBlockIdsStorage.shared.contains(info.id)
+                    || PinkhaDocumentIdentityStorage.shared.wasCreatedThisSession(
+                        objectId: document.objectId,
+                        spaceId: document.spaceId
+                    )
             ) else {
                 return
             }

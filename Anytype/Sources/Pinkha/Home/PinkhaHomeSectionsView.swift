@@ -13,6 +13,7 @@ struct PinkhaHomeSectionsView: View {
 
     @State private var bootstrapState: PinkhaSpaceBootstrapState = .uninitialized
     @State private var repository: PinkhaHierarchyRepository? = nil
+    @State private var didOpenAcceptanceDocument = false
 
     init(spaceId: String, output: (any CommonWidgetModuleOutput)?) {
         self.spaceId = spaceId
@@ -125,6 +126,7 @@ struct PinkhaHomeSectionsView: View {
         case .ready(let manifest):
             self.repository = PinkhaHierarchyRepository(spaceId: spaceId, manifest: manifest)
             self.bootstrapState = current
+            openAcceptanceDocumentIfRequested()
             return
         case .failed:
             self.bootstrapState = current
@@ -140,6 +142,7 @@ struct PinkhaHomeSectionsView: View {
             let manifest = try await stateManager.awaitReadiness(spaceId: spaceId, timeoutSeconds: 15.0)
             self.repository = PinkhaHierarchyRepository(spaceId: spaceId, manifest: manifest)
             self.bootstrapState = .ready(manifest)
+            openAcceptanceDocumentIfRequested()
         } catch {
             self.bootstrapState = .failed(error.localizedDescription)
         }
@@ -149,5 +152,25 @@ struct PinkhaHomeSectionsView: View {
         let stateManager = Container.shared.pinkhaBootstrapStateManager()
         stateManager.setState(.uninitialized, for: spaceId)
         await monitorBootstrapReadiness()
+    }
+
+    private func openAcceptanceDocumentIfRequested() {
+        guard PinkhaStage1AcceptanceState.isEnabled,
+              !didOpenAcceptanceDocument,
+              let state = try? PinkhaStage1AcceptanceState.load(),
+              state.spaceId == spaceId else {
+            return
+        }
+        didOpenAcceptanceDocument = true
+        PinkhaDocumentIdentityStorage.shared.registerCreated(
+            objectId: state.objectId,
+            spaceId: state.spaceId
+        )
+        output?.onObjectSelected(
+            screenData: .editor(.page(EditorPageObject(
+                objectId: state.objectId,
+                spaceId: state.spaceId
+            )))
+        )
     }
 }

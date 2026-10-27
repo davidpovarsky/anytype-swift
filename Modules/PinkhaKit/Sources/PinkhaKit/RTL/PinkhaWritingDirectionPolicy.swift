@@ -36,6 +36,7 @@ public struct PinkhaWritingDirectionInput: Sendable, Equatable {
     public let isEmpty: Bool
     public let interfaceDirection: PinkhaLayoutDirection
     public let detectedTextDirection: PinkhaLayoutDirection?
+    public let persistedAutomaticDirection: PinkhaLayoutDirection?
     public let persistedAlignment: PinkhaParagraphAlignment?
     public let alignmentWasExplicit: Bool
 
@@ -45,6 +46,7 @@ public struct PinkhaWritingDirectionInput: Sendable, Equatable {
         isEmpty: Bool,
         interfaceDirection: PinkhaLayoutDirection,
         detectedTextDirection: PinkhaLayoutDirection?,
+        persistedAutomaticDirection: PinkhaLayoutDirection? = nil,
         persistedAlignment: PinkhaParagraphAlignment?,
         alignmentWasExplicit: Bool
     ) {
@@ -53,6 +55,7 @@ public struct PinkhaWritingDirectionInput: Sendable, Equatable {
         self.isEmpty = isEmpty
         self.interfaceDirection = interfaceDirection
         self.detectedTextDirection = detectedTextDirection
+        self.persistedAutomaticDirection = persistedAutomaticDirection
         self.persistedAlignment = persistedAlignment
         self.alignmentWasExplicit = alignmentWasExplicit
     }
@@ -112,10 +115,14 @@ public enum PinkhaWritingDirectionPolicy {
         case .ambiguousLegacyParagraph:
             return PinkhaWritingDirectionDecision(
                 baseWritingDirection: direction,
-                // A missing marker cannot distinguish the old default `.left` from a
-                // deliberate user choice. Keep the stored alignment and limit the fallback
-                // to display-time writing direction; never silently reinterpret user data.
-                alignment: input.persistedAlignment ?? directionalAlignment,
+                // A marker-less host `.left`/`.right` value is indistinguishable from the
+                // historical default. Show Hebrew on its physical reading side but keep this
+                // fallback display-only: no marker or alignment migration is ever written.
+                // Center and justified are non-default choices and remain visually intact.
+                alignment: legacyDisplayAlignment(
+                    stored: input.persistedAlignment,
+                    directional: directionalAlignment
+                ),
                 mutation: .displayOnlyLegacyFallback
             )
         }
@@ -127,6 +134,21 @@ public enum PinkhaWritingDirectionPolicy {
         if !input.isEmpty, let detectedTextDirection = input.detectedTextDirection {
             return detectedTextDirection
         }
+        if let persistedAutomaticDirection = input.persistedAutomaticDirection {
+            return persistedAutomaticDirection
+        }
         return input.interfaceDirection
+    }
+
+    private static func legacyDisplayAlignment(
+        stored: PinkhaParagraphAlignment?,
+        directional: PinkhaParagraphAlignment
+    ) -> PinkhaParagraphAlignment {
+        switch stored {
+        case .center, .justified:
+            return stored ?? directional
+        case .left, .right, .natural, nil:
+            return directional
+        }
     }
 }

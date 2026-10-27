@@ -72,7 +72,7 @@ struct PinkhaWritingDirectionPolicyTests {
         #expect(decision?.mutation == PinkhaWritingMutation.none)
     }
 
-    @Test("Ambiguous legacy alignment preserves stored intent and is never persisted")
+    @Test("Ambiguous markerless Hebrew uses a reversible display-only right alignment")
     func ambiguousLegacyParagraph() {
         let decision = PinkhaWritingDirectionPolicy.resolve(input(
             origin: .ambiguousLegacyParagraph,
@@ -83,8 +83,38 @@ struct PinkhaWritingDirectionPolicyTests {
             alignmentWasExplicit: false
         ))
 
-        #expect(decision?.alignment == .left)
+        #expect(decision?.alignment == .right)
         #expect(decision?.mutation == .displayOnlyLegacyFallback)
+    }
+
+    @Test("A persisted automatic marker restores direction before live detection is available")
+    func persistedAutomaticDirectionRestoresOnReopen() {
+        let decision = PinkhaWritingDirectionPolicy.resolve(input(
+            origin: .existingParagraph,
+            isEmpty: true,
+            interfaceDirection: .leftToRight,
+            persistedAutomaticDirection: .rightToLeft,
+            persistedAlignment: .right
+        ))
+
+        #expect(decision?.baseWritingDirection == .rightToLeft)
+        #expect(decision?.alignment == .right)
+        #expect(decision?.mutation == PinkhaWritingMutation.none)
+    }
+
+    @Test("Legacy center and justified choices stay visually unchanged")
+    func legacyNonDefaultAlignmentIsPreserved() {
+        for alignment in [PinkhaParagraphAlignment.center, .justified] {
+            let decision = PinkhaWritingDirectionPolicy.resolve(input(
+                origin: .ambiguousLegacyParagraph,
+                isEmpty: false,
+                interfaceDirection: .rightToLeft,
+                detectedTextDirection: .rightToLeft,
+                persistedAlignment: alignment
+            ))
+            #expect(decision?.alignment == alignment)
+            #expect(decision?.mutation == .displayOnlyLegacyFallback)
+        }
     }
 
     @Test("Standard Anytype documents are outside Pinkha policy")
@@ -105,6 +135,7 @@ struct PinkhaWritingDirectionPolicyTests {
         isEmpty: Bool,
         interfaceDirection: PinkhaLayoutDirection,
         detectedTextDirection: PinkhaLayoutDirection? = nil,
+        persistedAutomaticDirection: PinkhaLayoutDirection? = nil,
         persistedAlignment: PinkhaParagraphAlignment? = nil,
         alignmentWasExplicit: Bool = false
     ) -> PinkhaWritingDirectionInput {
@@ -114,6 +145,7 @@ struct PinkhaWritingDirectionPolicyTests {
             isEmpty: isEmpty,
             interfaceDirection: interfaceDirection,
             detectedTextDirection: detectedTextDirection,
+            persistedAutomaticDirection: persistedAutomaticDirection,
             persistedAlignment: persistedAlignment,
             alignmentWasExplicit: alignmentWasExplicit
         )

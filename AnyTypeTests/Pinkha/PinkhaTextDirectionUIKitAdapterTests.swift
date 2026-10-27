@@ -124,6 +124,49 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         ))
     }
 
+    @Test("Hebrew detection does not trust a stale LTR UITextInput base direction")
+    func hebrewOverridesStaleTextInputDirection() {
+        let textView = UITextView()
+        textView.semanticContentAttribute = .forceLeftToRight
+        textView.text = "שלום"
+        textView.setBaseWritingDirection(.leftToRight, for: textView.textRange(
+            from: textView.beginningOfDocument,
+            to: textView.endOfDocument
+        )!)
+
+        PinkhaTextDirectionUIKitAdapter.apply(
+            context: PinkhaTextBlockWritingContext(
+                origin: .ambiguousLegacyParagraph,
+                persistedAlignment: .left,
+                alignmentWasExplicit: false
+            ),
+            to: textView
+        )
+
+        #expect(textView.textAlignment == .right)
+        #expect(PinkhaTextDirectionUIKitAdapter.attributedDirection(in: textView.attributedText) == .rightToLeft)
+    }
+
+    @Test("An automatic RTL marker restores an empty caret in an LTR interface")
+    func automaticMarkerRestoresEmptyCaretDirection() {
+        let textView = TextViewWithPlaceholder(frame: .zero, textContainer: nil)
+        textView.semanticContentAttribute = .forceLeftToRight
+
+        PinkhaTextDirectionUIKitAdapter.apply(
+            context: PinkhaTextBlockWritingContext(
+                origin: .existingParagraph,
+                persistedAlignment: .right,
+                alignmentWasExplicit: false,
+                persistedAutomaticDirection: .rightToLeft
+            ),
+            to: textView
+        )
+
+        #expect(textView.textAlignment == .right)
+        let style = textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle
+        #expect(style?.baseWritingDirection == .rightToLeft)
+    }
+
     private var pinkhaContext: PinkhaTextBlockWritingContext {
         PinkhaTextBlockWritingContext(
             origin: .newParagraph,

@@ -90,6 +90,53 @@ struct PinkhaTextDirectionPersistenceTests {
         #expect(context.origin == .existingParagraph)
     }
 
+    @Test("Ready bootstrap state closes the manifest-cache race")
+    func readyStateFallbackClosesGateRace() throws {
+        let blockId = "pinkha-ready-state-race"
+        let document = makeDocument(blockId: blockId)
+        let manifest = PinkhaSpaceManifest(
+            spaceId: document.spaceId,
+            registeredDocumentTypes: ["writing": "pinkha-writing-type"]
+        )
+        Container.shared.pinkhaBootstrapService.register { EmptyBootstrapCacheStub() }
+        Container.shared.pinkhaBootstrapStateManager().setState(.ready(manifest), for: document.spaceId)
+        defer { Container.shared.pinkhaBootstrapService.reset() }
+
+        let context = try #require(PinkhaTextDirectionUIKitAdapter.context(
+            document: document,
+            info: try #require(document.infoContainer.get(id: blockId)),
+            text: "שלום"
+        ))
+
+        #expect(context.origin == .ambiguousLegacyParagraph)
+    }
+
+    @Test("Template blocks in a newly created Pinkha document are proven new")
+    func newDocumentTemplateBlockProvenance() throws {
+        let blockId = "pinkha-template-block"
+        let document = makeDocument(blockId: blockId)
+        let bootstrap = BootstrapStub(
+            manifest: PinkhaSpaceManifest(
+                spaceId: document.spaceId,
+                registeredDocumentTypes: ["writing": "pinkha-writing-type"]
+            )
+        )
+        Container.shared.pinkhaBootstrapService.register { bootstrap }
+        PinkhaDocumentIdentityStorage.shared.registerCreated(
+            objectId: document.objectId,
+            spaceId: document.spaceId
+        )
+        defer { Container.shared.pinkhaBootstrapService.reset() }
+
+        let context = try #require(PinkhaTextDirectionUIKitAdapter.context(
+            document: document,
+            info: try #require(document.infoContainer.get(id: blockId)),
+            text: ""
+        ))
+
+        #expect(context.origin == .newParagraph)
+    }
+
     private func makeDocument(
         blockId: String,
         info: BlockInformation? = nil
@@ -137,6 +184,14 @@ private struct BootstrapStub: PinkhaSpaceBootstrapServiceProtocol {
         spaceId == manifest.spaceId ? manifest : nil
     }
     func isBootstrapped(spaceId: String) -> Bool { spaceId == manifest.spaceId }
+}
+
+private struct EmptyBootstrapCacheStub: PinkhaSpaceBootstrapServiceProtocol {
+    func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
+        throw CancellationError()
+    }
+    func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? { nil }
+    func isBootstrapped(spaceId: String) -> Bool { false }
 }
 
 private actor RecordingBlockService: BlockServiceProtocol {

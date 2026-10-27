@@ -23,19 +23,21 @@ struct PinkhaNavigationGestureBridgeTests {
         )
         #expect(!PinkhaNavigationGestureBridge.requiresPublicEdgePop(controller: controller))
 
-        PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
-            id: objectId,
-            isPinkhaWritingDocument: true
+        PinkhaDocumentIdentityStorage.shared.registerConfirmed(
+            objectId: objectId,
+            spaceId: "space"
         )
-        defer {
-            PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
-                id: objectId,
-                isPinkhaWritingDocument: false
-            )
-        }
+        PinkhaNavigationGestureBridge.update(
+            controller: controller,
+            topNavigationItem: item,
+            layoutDirection: .rightToLeft
+        )
         #expect(PinkhaNavigationGestureBridge.requiresPublicEdgePop(controller: controller))
         #expect(controller.view.semanticContentAttribute == .forceRightToLeft)
-        #expect(systemEdgeRecognizer(in: controller)?.edges == .right)
+        #expect(controller.interactivePopGestureRecognizer?.isEnabled == false)
+        if #available(iOS 26.0, *) {
+            #expect(controller.interactiveContentPopGestureRecognizer?.isEnabled == true)
+        }
 
         PinkhaNavigationGestureBridge.update(
             controller: controller,
@@ -44,7 +46,7 @@ struct PinkhaNavigationGestureBridgeTests {
         )
         #expect(!PinkhaNavigationGestureBridge.requiresPublicEdgePop(controller: controller))
         #expect(controller.view.semanticContentAttribute == .unspecified)
-        #expect(systemEdgeRecognizer(in: controller)?.edges == .left)
+        #expect(controller.interactivePopGestureRecognizer?.isEnabled == true)
     }
 
     @Test("Pinkha RTL blocks only the custom recognizer and preserves UIKit's public transition driver")
@@ -64,16 +66,10 @@ struct PinkhaNavigationGestureBridgeTests {
 
         let objectId = "pinkha-public-edge-test"
         let item = editorItem(objectId: objectId)
-        PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
-            id: objectId,
-            isPinkhaWritingDocument: true
+        PinkhaDocumentIdentityStorage.shared.registerConfirmed(
+            objectId: objectId,
+            spaceId: "space"
         )
-        defer {
-            PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
-                id: objectId,
-                isPinkhaWritingDocument: false
-            )
-        }
         PinkhaNavigationGestureBridge.update(
             controller: controller,
             topNavigationItem: item,
@@ -81,7 +77,7 @@ struct PinkhaNavigationGestureBridgeTests {
         )
 
         #expect(!controller.gestureRecognizerShouldBegin(positivePan))
-        #expect(systemRecognizer.edges == .right)
+        #expect(!systemRecognizer.isEnabled)
         #expect(systemRecognizer.delegate === originalSystemDelegate)
         #expect(systemRecognizer.cancelsTouchesInView == originalCancelsTouches)
         #expect(controller.view.gestureRecognizers?.count == originalGestureCount)
@@ -93,7 +89,7 @@ struct PinkhaNavigationGestureBridgeTests {
             layoutDirection: .leftToRight
         )
         #expect(controller.gestureRecognizerShouldBegin(positivePan))
-        #expect(systemRecognizer.edges == .left)
+        #expect(systemRecognizer.isEnabled)
     }
 
     @Test("Root, ordinary documents, and non-editor inspector destinations preserve host behavior")
@@ -140,16 +136,15 @@ struct PinkhaNavigationGestureBridgeTests {
             containerWidth: 320
         ) == -0.25)
 
-        PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
-            id: objectId,
-            isPinkhaWritingDocument: true
+        PinkhaDocumentIdentityStorage.shared.registerConfirmed(
+            objectId: objectId,
+            spaceId: "space"
         )
-        defer {
-            PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
-                id: objectId,
-                isPinkhaWritingDocument: false
-            )
-        }
+        PinkhaNavigationGestureBridge.update(
+            controller: controller,
+            topNavigationItem: item,
+            layoutDirection: .rightToLeft
+        )
         #expect(PinkhaNavigationGestureBridge.normalizedProgress(
             controller: controller,
             translationX: -80,

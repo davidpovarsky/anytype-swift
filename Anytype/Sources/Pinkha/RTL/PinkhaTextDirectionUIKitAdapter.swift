@@ -8,17 +8,61 @@ struct PinkhaTextBlockWritingContext: Equatable, Hashable {
     let origin: PinkhaParagraphOrigin
     let persistedAlignment: PinkhaParagraphAlignment?
     let alignmentWasExplicit: Bool
+    let persistedAutomaticDirection: PinkhaLayoutDirection?
+    let blockId: String?
+    let isTitle: Bool
+
+    init(
+        origin: PinkhaParagraphOrigin,
+        persistedAlignment: PinkhaParagraphAlignment?,
+        alignmentWasExplicit: Bool,
+        persistedAutomaticDirection: PinkhaLayoutDirection? = nil,
+        blockId: String? = nil,
+        isTitle: Bool = false
+    ) {
+        self.origin = origin
+        self.persistedAlignment = persistedAlignment
+        self.alignmentWasExplicit = alignmentWasExplicit
+        self.persistedAutomaticDirection = persistedAutomaticDirection
+        self.blockId = blockId
+        self.isTitle = isTitle
+    }
 }
 
 @MainActor
 enum PinkhaTextDirectionGate {
     static func isWritingDocument(_ document: some BaseDocumentProtocol) -> Bool {
         guard PinkhaRuntime.enabled,
-              let typeId = document.details?.type,
-              let manifest = Container.shared.pinkhaBootstrapService().manifest(forSpaceId: document.spaceId) else {
+              let typeId = document.details?.type else {
             return false
         }
-        return manifest.isRegisteredDocumentType(typeId: typeId)
+        if PinkhaDocumentIdentityStorage.shared.isConfirmed(
+            objectId: document.objectId,
+            spaceId: document.spaceId
+        ) {
+            return true
+        }
+
+        let manifest: PinkhaSpaceManifest?
+        if let cached = Container.shared.pinkhaBootstrapService().manifest(forSpaceId: document.spaceId) {
+            manifest = cached
+        } else if case let .ready(readyManifest) = Container.shared
+            .pinkhaBootstrapStateManager().state(for: document.spaceId) {
+            // The state manager is the authoritative UI readiness source. Consult it as a
+            // race-safe fallback when the engine cache is not yet visible to this render pass.
+            manifest = readyManifest
+        } else {
+            manifest = nil
+        }
+
+        guard let manifest, manifest.isRegisteredDocumentType(typeId: typeId) else {
+            return false
+        }
+        PinkhaDocumentIdentityStorage.shared.registerConfirmed(
+            objectId: document.objectId,
+            spaceId: document.spaceId
+        )
+        return true
     }
 }
 
@@ -29,12 +73,7 @@ enum PinkhaTextDirectionUIKitAdapter {
         info: BlockInformation,
         text: String
     ) -> PinkhaTextBlockWritingContext? {
-        let isPinkhaWritingDocument = PinkhaTextDirectionGate.isWritingDocument(document)
-        PinkhaNavigationGestureBridge.setPinkhaWritingDocument(
-            id: document.objectId,
-            isPinkhaWritingDocument: isPinkhaWritingDocument
-        )
-        guard isPinkhaWritingDocument else { return nil }
+        guard PinkhaTextDirectionGate.isWritingDocument(document) else { return nil }
 
         let hostAlignment: LayoutAlignment
         if info.textContent?.contentType == .title, let details = document.details {
@@ -49,7 +88,9 @@ enum PinkhaTextDirectionUIKitAdapter {
             return PinkhaTextBlockWritingContext(
                 origin: .existingParagraph,
                 persistedAlignment: sessionAlignment,
-                alignmentWasExplicit: true
+                alignmentWasExplicit: true,
+                blockId: info.id,
+                isTitle: info.textContent?.contentType == .title
             )
         }
 
@@ -59,7 +100,9 @@ enum PinkhaTextDirectionUIKitAdapter {
             return PinkhaTextBlockWritingContext(
                 origin: .existingParagraph,
                 persistedAlignment: alignment,
-                alignmentWasExplicit: true
+                alignmentWasExplicit: true,
+                blockId: info.id,
+                isTitle: info.textContent?.contentType == .title
             )
         case let .automatic(direction):
             if !PinkhaAutomaticDirectionEligibility.markerMatchesStoredAlignment(
@@ -72,18 +115,28 @@ enum PinkhaTextDirectionUIKitAdapter {
                 return PinkhaTextBlockWritingContext(
                     origin: .existingParagraph,
                     persistedAlignment: hostAlignment.pinkhaAlignment,
-                    alignmentWasExplicit: true
+                    alignmentWasExplicit: true,
+                    persistedAutomaticDirection: nil,
+                    blockId: info.id,
+                    isTitle: info.textContent?.contentType == .title
                 )
             }
             return PinkhaTextBlockWritingContext(
                 origin: .existingParagraph,
-                persistedAlignment: nil,
-                alignmentWasExplicit: false
+                persistedAlignment: hostAlignment.pinkhaAlignment,
+                alignmentWasExplicit: false,
+                persistedAutomaticDirection: direction,
+                blockId: info.id,
+                isTitle: info.textContent?.contentType == .title
             )
         case nil:
             // Session registration is the only reliable proof that a marker-less block is
             // new. Text content alone is never used to infer consent to persist metadata.
             let isProvenNew = SessionCreatedBlockIdsStorage.shared.contains(info.id)
+                || PinkhaDocumentIdentityStorage.shared.wasCreatedThisSession(
+                    objectId: document.objectId,
+                    spaceId: document.spaceId
+                )
                 || isLocallyFabricatedUnlinkedBlock(document: document, info: info)
             if isProvenNew, !text.isEmpty {
                 PinkhaTextDirectionPersistence.scheduleInitialDirectionIfNeeded(
@@ -98,7 +151,9 @@ enum PinkhaTextDirectionUIKitAdapter {
             return PinkhaTextBlockWritingContext(
                 origin: origin,
                 persistedAlignment: hostAlignment.pinkhaAlignment,
-                alignmentWasExplicit: false
+                alignmentWasExplicit: false,
+                blockId: info.id,
+                isTitle: info.textContent?.contentType == .title
             )
         }
     }
@@ -116,10 +171,11 @@ enum PinkhaTextDirectionUIKitAdapter {
                 origin: context.origin,
                 isEmpty: textView.text.isEmpty,
                 interfaceDirection: interfaceDirection,
-                detectedTextDirection: resolvedDirection(
-                    in: textView,
+                detectedTextDirection: detectedDirection(
+                    for: textView.text,
                     fallback: interfaceDirection
                 ),
+                persistedAutomaticDirection: context.persistedAutomaticDirection,
                 persistedAlignment: context.persistedAlignment,
                 alignmentWasExplicit: context.alignmentWasExplicit
             )
@@ -151,6 +207,17 @@ enum PinkhaTextDirectionUIKitAdapter {
         typingStyle.alignment = alignment
         typingAttributes[.paragraphStyle] = typingStyle
         textView.typingAttributes = typingAttributes
+
+        if PinkhaStage1AcceptanceState.isEnabled, let blockId = context.blockId {
+            let role = context.isTitle ? "title" : "body"
+            textView.accessibilityIdentifier = "pinkha.stage1.\(role).\(blockId)"
+            textView.accessibilityLabel = [
+                "Pinkha Stage 1",
+                decision.baseWritingDirection == .rightToLeft ? "rtl" : "ltr",
+                "alignment-\(decision.alignment.acceptanceName)",
+                "origin-\(context.origin.acceptanceName)"
+            ].joined(separator: ";")
+        }
     }
 
     static func detectedDirection(
@@ -166,22 +233,6 @@ enum PinkhaTextDirectionUIKitAdapter {
         case .leftToRight: return .leftToRight
         case .natural: return fallback
         @unknown default: return fallback
-        }
-    }
-
-    private static func resolvedDirection(
-        in textView: UITextView,
-        fallback: PinkhaLayoutDirection
-    ) -> PinkhaLayoutDirection? {
-        guard !textView.text.isEmpty else { return nil }
-        switch textView.baseWritingDirection(
-            for: textView.beginningOfDocument,
-            in: .forward
-        ) {
-        case .rightToLeft: return .rightToLeft
-        case .leftToRight: return .leftToRight
-        case .natural: return detectedDirection(for: textView.text, fallback: fallback)
-        @unknown default: return detectedDirection(for: textView.text, fallback: fallback)
         }
     }
 
@@ -291,5 +342,27 @@ private extension PinkhaLayoutDirection {
 private extension UIUserInterfaceLayoutDirection {
     var pinkhaDirection: PinkhaLayoutDirection {
         self == .rightToLeft ? .rightToLeft : .leftToRight
+    }
+}
+
+private extension PinkhaParagraphAlignment {
+    var acceptanceName: String {
+        switch self {
+        case .left: "left"
+        case .center: "center"
+        case .right: "right"
+        case .justified: "justified"
+        case .natural: "natural"
+        }
+    }
+}
+
+private extension PinkhaParagraphOrigin {
+    var acceptanceName: String {
+        switch self {
+        case .newParagraph: "new"
+        case .existingParagraph: "existing"
+        case .ambiguousLegacyParagraph: "legacy-display-only"
+        }
     }
 }

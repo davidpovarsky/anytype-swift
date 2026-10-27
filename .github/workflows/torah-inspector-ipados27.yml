@@ -246,6 +246,170 @@ jobs:
               raise SystemExit('; '.join(problems))
           PY
 
+      - name: Build Release app-hosted preparation and real-app UI acceptance tests
+        id: release_acceptance_build
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          xcodebuild build-for-testing \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -configuration Release-Anytype \
+            -destination "platform=iOS Simulator,id=$IPAD_UDID" \
+            -derivedDataPath build/DerivedData-Release-Acceptance \
+            -collect-test-diagnostics never \
+            -parallel-testing-enabled NO \
+            -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            2>&1 | tee build/evidence/release-acceptance-preparation-build.log
+          xcodebuild build-for-testing \
+            -workspace PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace \
+            -scheme PinkhaStage1Acceptance \
+            -configuration Release-Anytype \
+            -destination "platform=iOS Simulator,id=$IPAD_UDID" \
+            -derivedDataPath build/DerivedData-Release-Acceptance \
+            -collect-test-diagnostics never \
+            -parallel-testing-enabled NO \
+            -only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            2>&1 | tee build/evidence/release-real-app-ui-build.log
+
+      - name: Run Release real-app acceptance on iPhone LTR and iPad RTL
+        id: release_acceptance
+        if: steps.release_acceptance_build.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          status=0
+          run_real_app_acceptance() {
+            local device_kind="$1"
+            local udid="$2"
+            local direction="$3"
+            local language="$4"
+            local region="$5"
+            local prep_result="build/results/release-${device_kind}-${direction}-prepare.xcresult"
+            local ui_result="build/results/release-${device_kind}-${direction}-ui.xcresult"
+
+            set +e
+            xcodebuild test-without-building \
+              -project Anytype.xcodeproj \
+              -scheme Anytype \
+              -configuration Release-Anytype \
+              -destination "platform=iOS Simulator,id=$udid" \
+              -derivedDataPath build/DerivedData-Release-Acceptance \
+              -resultBundlePath "$prep_result" \
+              -collect-test-diagnostics never \
+              -parallel-testing-enabled NO \
+              -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGNING_REQUIRED=NO \
+              2>&1 | tee "build/evidence/release-${device_kind}-${direction}-prepare.log"
+            local prep_status=${PIPESTATUS[0]}
+            set -e
+            if [[ $prep_status -ne 0 ]]; then
+              status=1
+              return
+            fi
+
+            xcrun simctl terminate "$udid" io.anytype.app || true
+            xcrun simctl terminate "$udid" io.anytype.app.dev || true
+
+            set +e
+            PINKHA_ACCEPTANCE_DIRECTION="$direction" xcodebuild test-without-building \
+              -workspace PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace \
+              -scheme PinkhaStage1Acceptance \
+              -configuration Release-Anytype \
+              -destination "platform=iOS Simulator,id=$udid" \
+              -derivedDataPath build/DerivedData-Release-Acceptance \
+              -resultBundlePath "$ui_result" \
+              -collect-test-diagnostics never \
+              -parallel-testing-enabled NO \
+              -testLanguage "$language" \
+              -testRegion "$region" \
+              -only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGNING_REQUIRED=NO \
+              2>&1 | tee "build/evidence/release-${device_kind}-${direction}-ui.log"
+            local ui_status=${PIPESTATUS[0]}
+            set -e
+            if [[ $ui_status -ne 0 ]]; then
+              status=1
+            fi
+          }
+          run_real_app_acceptance iphone "$IPHONE_UDID" ltr en US
+          run_real_app_acceptance ipad "$IPAD_UDID" rtl he IL
+          exit "$status"
+
+      - name: Validate and export real-app acceptance evidence
+        id: release_acceptance_evidence
+        if: always() && steps.release_acceptance_build.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          mkdir -p build/evidence/real-app-screenshots
+          python3 - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          expected = [
+              'release-iphone-ltr-prepare',
+              'release-iphone-ltr-ui',
+              'release-ipad-rtl-prepare',
+              'release-ipad-rtl-ui',
+          ]
+          aggregate = {'total': 0, 'passed': 0, 'failed': 0, 'skipped': 0, 'runs': {}}
+          problems = []
+          for name in expected:
+              bundle = Path('build/results', name + '.xcresult')
+              if not bundle.is_dir():
+                  problems.append(f'missing {bundle}')
+                  continue
+              raw = subprocess.check_output([
+                  'xcrun', 'xcresulttool', 'get', 'test-results', 'summary',
+                  '--path', str(bundle), '--format', 'json'
+              ], text=True)
+              summary = json.loads(raw)
+              def integer_value(key):
+                  stack = [summary]
+                  while stack:
+                      value = stack.pop()
+                      if isinstance(value, dict):
+                          candidate = value.get(key)
+                          if isinstance(candidate, int):
+                              return candidate
+                          stack.extend(value.values())
+                      elif isinstance(value, list):
+                          stack.extend(value)
+                  return 0
+              counts = {
+                  'total': integer_value('totalTestCount'),
+                  'passed': integer_value('passedTests'),
+                  'failed': integer_value('failedTests'),
+                  'skipped': integer_value('skippedTests'),
+              }
+              aggregate['runs'][name] = counts
+              for key in ('total', 'passed', 'failed', 'skipped'):
+                  aggregate[key] += counts[key]
+              if counts['total'] != 1 or counts['passed'] != 1 or counts['failed'] or counts['skipped']:
+                  problems.append(f'{name} is not exactly one passing test: {counts}')
+
+          Path('build/evidence/real-app-test-counts.json').write_text(
+              json.dumps(aggregate, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8'
+          )
+          if problems:
+              raise SystemExit('; '.join(problems))
+          PY
+          for result in build/results/release-*-ui.xcresult; do
+            name="$(basename "$result" .xcresult)"
+            xcrun xcresulttool export attachments \
+              --path "$result" \
+              --output-path "build/evidence/real-app-screenshots/$name"
+          done
+
       - name: Build unsigned iPad device app
         id: device_build
         run: |
@@ -280,6 +444,9 @@ jobs:
               info = plistlib.load(stream)
           info['CFBundleIdentifier'] = 'com.gloiiire.anytype.torahtrial'
           info['CFBundleDisplayName'] = 'Anytype Torah'
+          info['PinkhaBuildCommit'] = '${{ github.sha }}'
+          info['PinkhaBuildConfiguration'] = 'Release-Anytype'
+          info['PinkhaAcceptanceRun'] = '${{ github.run_id }}'
           with plist.open('wb') as stream:
               plistlib.dump(info, stream, fmt=plistlib.FMT_BINARY)
           PY
@@ -297,6 +464,9 @@ jobs:
               info = plistlib.load(stream)
           assert info['CFBundleIdentifier'] == 'com.gloiiire.anytype.torahtrial'
           assert info['CFBundleDisplayName'] == 'Anytype Torah'
+          assert info['PinkhaBuildCommit'] == '${{ github.sha }}'
+          assert info['PinkhaBuildConfiguration'] == 'Release-Anytype'
+          assert info['PinkhaAcceptanceRun'] == '${{ github.run_id }}'
           assert 2 in info['UIDeviceFamily'], info['UIDeviceFamily']
           assert info.get('MinimumOSVersion'), 'MinimumOSVersion is missing'
           assert not (app / 'PlugIns').exists(), 'Embedded extensions were not removed'
@@ -306,6 +476,9 @@ jobs:
               'Display name: ' + info['CFBundleDisplayName'] + '\n'
               'UIDeviceFamily: ' + repr(info['UIDeviceFamily']) + '\n'
               'MinimumOSVersion: ' + info['MinimumOSVersion'] + '\n'
+              'PinkhaBuildCommit: ' + info['PinkhaBuildCommit'] + '\n'
+              'PinkhaBuildConfiguration: ' + info['PinkhaBuildConfiguration'] + '\n'
+              'PinkhaAcceptanceRun: ' + info['PinkhaAcceptanceRun'] + '\n'
               'Embedded PlugIns: absent\n'
               'Build entitlements override: empty\n',
               encoding='utf-8'
@@ -390,7 +563,7 @@ jobs:
           retention-days: 14
 
       - name: Enforce test outcomes after publishing evidence
-        if: always() && (steps.torahinspectorkit_tests.outcome != 'success' || steps.pinkhakit_tests.outcome != 'success' || steps.native_build.outcome != 'success' || steps.native_tests.outcome != 'success' || steps.native_counts.outcome != 'success')
+        if: always() && (steps.torahinspectorkit_tests.outcome != 'success' || steps.pinkhakit_tests.outcome != 'success' || steps.native_build.outcome != 'success' || steps.native_tests.outcome != 'success' || steps.native_counts.outcome != 'success' || steps.release_acceptance_build.outcome != 'success' || steps.release_acceptance.outcome != 'success' || steps.release_acceptance_evidence.outcome != 'success')
         run: |
           echo "At least one test stage failed; artifacts above remain available for diagnosis."
           exit 1

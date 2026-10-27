@@ -329,6 +329,10 @@ struct PinkhaHierarchySectionView: View {
                         }
                     }
                 } else {
+                    PinkhaDocumentIdentityStorage.shared.registerConfirmed(
+                        objectId: node.objectId,
+                        spaceId: spaceId
+                    )
                     if let details {
                         output?.onObjectSelected(screenData: details.screenData())
                     } else {
