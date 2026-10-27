@@ -245,8 +245,29 @@ jobs:
               raise SystemExit('; '.join(problems))
           PY
 
+      - name: Build Release application-hosted acceptance preparation
+        id: release_acceptance_prep_build
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          # Build the preparation test against the same Release application and bundle id
+          # that the UI target launches. ENABLE_TESTABILITY also keeps Swift package test
+          # dependencies compatible with the Release modules selected by the Anytype scheme.
+          xcodebuild build-for-testing \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -configuration Release-Anytype \
+            -destination "platform=iOS Simulator,id=$IPAD_UDID" \
+            -derivedDataPath build/DerivedData-Release-Acceptance \
+            -collect-test-diagnostics never \
+            -parallel-testing-enabled NO \
+            -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
+            ENABLE_TESTABILITY=YES \
+            2>&1 | tee build/evidence/release-acceptance-preparation-build.log
+
       - name: Build Release real-app UI acceptance tests
         id: release_acceptance_build
+        if: steps.release_acceptance_prep_build.outcome == 'success'
         continue-on-error: true
         run: |
           set -o pipefail
@@ -259,11 +280,12 @@ jobs:
             -collect-test-diagnostics never \
             -parallel-testing-enabled NO \
             -only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests \
+            ENABLE_TESTABILITY=YES \
             2>&1 | tee build/evidence/release-real-app-ui-build.log
 
       - name: Run Release real-app acceptance on iPhone LTR and iPad RTL
         id: release_acceptance
-        if: steps.release_acceptance_build.outcome == 'success'
+        if: steps.release_acceptance_prep_build.outcome == 'success' && steps.release_acceptance_build.outcome == 'success'
         continue-on-error: true
         run: |
           set -o pipefail
@@ -281,13 +303,14 @@ jobs:
             xcodebuild test-without-building \
               -project Anytype.xcodeproj \
               -scheme Anytype \
-              -configuration Debug-Anytype \
+              -configuration Release-Anytype \
               -destination "platform=iOS Simulator,id=$udid" \
-              -derivedDataPath build/DerivedData-Tests \
+              -derivedDataPath build/DerivedData-Release-Acceptance \
               -resultBundlePath "$prep_result" \
               -collect-test-diagnostics never \
               -parallel-testing-enabled NO \
               -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
+              ENABLE_TESTABILITY=YES \
               2>&1 | tee "build/evidence/release-${device_kind}-${direction}-prepare.log"
             local prep_status=${PIPESTATUS[0]}
             set -e
@@ -544,7 +567,7 @@ jobs:
           retention-days: 14
 
       - name: Enforce test outcomes after publishing evidence
-        if: always() && (steps.torahinspectorkit_tests.outcome != 'success' || steps.pinkhakit_tests.outcome != 'success' || steps.native_build.outcome != 'success' || steps.native_tests.outcome != 'success' || steps.native_counts.outcome != 'success' || steps.release_acceptance_build.outcome != 'success' || steps.release_acceptance.outcome != 'success' || steps.release_acceptance_evidence.outcome != 'success')
+        if: always() && (steps.torahinspectorkit_tests.outcome != 'success' || steps.pinkhakit_tests.outcome != 'success' || steps.native_build.outcome != 'success' || steps.native_tests.outcome != 'success' || steps.native_counts.outcome != 'success' || steps.release_acceptance_prep_build.outcome != 'success' || steps.release_acceptance_build.outcome != 'success' || steps.release_acceptance.outcome != 'success' || steps.release_acceptance_evidence.outcome != 'success')
         run: |
           echo "At least one test stage failed; artifacts above remain available for diagnosis."
           exit 1
