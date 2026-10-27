@@ -28,7 +28,14 @@ struct TorahSearchLayoutTests {
                             width: width,
                             direction: direction
                         )
-                        let bounds = try opaqueContentBounds(image)
+                        let rowHeight = data.isMinimal ? 52.0 : 68.0
+                        let glyphBand = CGRect(
+                            x: 0,
+                            y: (rowHeight - SearchCellIconView.standardAssetGlyphSize - 4) / 2,
+                            width: width,
+                            height: SearchCellIconView.standardAssetGlyphSize + 4
+                        )
+                        let bounds = try opaqueContentBounds(image, scanning: glyphBand)
                         let slotSize = data.isMinimal ? 24.0 : 48.0
                         let slotMinX = direction == .leftToRight
                             ? 16.0
@@ -539,7 +546,10 @@ private func associationFixtures(count: Int) -> [TorahAssociationItem] {
     }
 }
 
-private func opaqueContentBounds(_ image: CGImage) throws -> CGRect {
+private func opaqueContentBounds(
+    _ image: CGImage,
+    scanning scanRect: CGRect? = nil
+) throws -> CGRect {
     let width = image.width
     let height = image.height
     let bytesPerRow = width * 4
@@ -563,8 +573,15 @@ private func opaqueContentBounds(_ image: CGImage) throws -> CGRect {
     var minY = height
     var maxX = -1
     var maxY = -1
-    for y in 2..<(height - 2) {
-        for x in 0..<width where pixels[(y * bytesPerRow) + (x * 4) + 3] > 8 {
+    let scanRect = (scanRect ?? CGRect(x: 0, y: 2, width: width, height: height - 4))
+        .intersection(CGRect(x: 0, y: 0, width: width, height: height))
+        .integral
+    let minScanX = max(0, Int(scanRect.minX))
+    let maxScanX = min(width, Int(scanRect.maxX))
+    let minScanY = max(0, Int(scanRect.minY))
+    let maxScanY = min(height, Int(scanRect.maxY))
+    for y in minScanY..<maxScanY {
+        for x in minScanX..<maxScanX where pixels[(y * bytesPerRow) + (x * 4) + 3] > 8 {
             minX = min(minX, x)
             minY = min(minY, y)
             maxX = max(maxX, x)
