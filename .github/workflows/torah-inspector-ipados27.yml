@@ -120,6 +120,7 @@ jobs:
             -only-testing:AnytypeTests/PinkhaTextDirectionUIKitAdapterTests \
             -only-testing:AnytypeTests/PinkhaTextBlockLeadingMarkerAdapterTests \
             -only-testing:AnytypeTests/PinkhaNavigationGestureBridgeTests \
+            -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
             -only-testing:AnytypeTests/TorahAssociationNativeRepositoryTests \
             -only-testing:AnytypeTests/TorahNativeUIParityTests \
             -only-testing:AnytypeTests/TorahSearchLayoutTests \
@@ -246,23 +247,11 @@ jobs:
               raise SystemExit('; '.join(problems))
           PY
 
-      - name: Build Release app-hosted preparation and real-app UI acceptance tests
+      - name: Build Release real-app UI acceptance tests
         id: release_acceptance_build
         continue-on-error: true
         run: |
           set -o pipefail
-          xcodebuild build-for-testing \
-            -project Anytype.xcodeproj \
-            -scheme Anytype \
-            -configuration Release-Anytype \
-            -destination "platform=iOS Simulator,id=$IPAD_UDID" \
-            -derivedDataPath build/DerivedData-Release-Acceptance \
-            -collect-test-diagnostics never \
-            -parallel-testing-enabled NO \
-            -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            2>&1 | tee build/evidence/release-acceptance-preparation-build.log
           xcodebuild build-for-testing \
             -workspace PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace \
             -scheme PinkhaStage1Acceptance \
@@ -296,9 +285,9 @@ jobs:
             xcodebuild test-without-building \
               -project Anytype.xcodeproj \
               -scheme Anytype \
-              -configuration Release-Anytype \
+              -configuration Debug-Anytype \
               -destination "platform=iOS Simulator,id=$udid" \
-              -derivedDataPath build/DerivedData-Release-Acceptance \
+              -derivedDataPath build/DerivedData-Tests \
               -resultBundlePath "$prep_result" \
               -collect-test-diagnostics never \
               -parallel-testing-enabled NO \

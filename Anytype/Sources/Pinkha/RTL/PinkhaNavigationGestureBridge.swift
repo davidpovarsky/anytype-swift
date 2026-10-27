@@ -2,6 +2,9 @@ import SwiftUI
 import UIKit
 import PinkhaKit
 import Services
+import AnytypeCore
+import ProtobufMessages
+import SwiftProtobuf
 
 @MainActor
 enum PinkhaNavigationGestureBridge {
@@ -38,6 +41,7 @@ enum PinkhaNavigationGestureBridge {
         }
     }
 
+    @MainActor
     private final class SystemPopObserver: NSObject {
         weak var controller: FullScreenSwipeNavigationController?
 
