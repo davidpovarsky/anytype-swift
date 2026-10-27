@@ -30,10 +30,10 @@ struct PinkhaStage1AcceptancePreparationTests {
         )
         let spaceId = workspace.spaceID
         #expect(!spaceId.isEmpty)
-        _ = try await Container.shared.workspaceService().workspaceOpen(
-            spaceId: spaceId,
-            withChat: false
-        )
+        // Use the same activation path as SpaceLoadingContainer. Besides opening the Space,
+        // this starts the real type/property subscriptions and records it as the active Space
+        // for the subsequent application launch.
+        _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: spaceId)
 
         let manifest = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(
             spaceId: spaceId
@@ -42,6 +42,11 @@ struct PinkhaStage1AcceptancePreparationTests {
         let typeId = try #require(
             manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey]
         )
+        let typeProvider = Container.shared.objectTypeProvider()
+        for _ in 0..<50 where (try? typeProvider.objectType(id: typeId)) == nil {
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        _ = try typeProvider.objectType(id: typeId)
         let document = try await PinkhaHierarchyMutationService().createWritingDocument(
             typeId: typeId,
             parentId: nil,
