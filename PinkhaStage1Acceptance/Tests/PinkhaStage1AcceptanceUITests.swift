@@ -150,13 +150,23 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
         XCTAssertTrue(skip.waitForExistence(timeout: 5), "Use-case Skip button did not appear")
         skip.tap()
 
-        let defaultSpace = staticText(namedAny: ["My First Space", "המרחב הראשון שלי"])
+        let defaultSpace = button(containingAny: ["My First Space", "המרחב הראשון שלי"])
         XCTAssertTrue(defaultSpace.waitForExistence(timeout: 90), "Local-only default Space did not appear")
         defaultSpace.tap()
+        XCTAssertTrue(
+            defaultSpace.waitForNonExistence(timeout: 30),
+            "Tapping the default Space card did not leave Space Hub"
+        )
+        attachScreenshot(named: "real-space-opened-before-document")
     }
 
     private func button(namedAny labels: [String]) -> XCUIElement {
         app.buttons.matching(NSPredicate(format: "label IN %@", labels)).firstMatch
+    }
+
+    private func button(containingAny labels: [String]) -> XCUIElement {
+        let predicates = labels.map { NSPredicate(format: "label CONTAINS %@", $0) }
+        return app.buttons.matching(NSCompoundPredicate(orPredicateWithSubpredicates: predicates)).firstMatch
     }
 
     private func staticText(namedAny labels: [String]) -> XCUIElement {

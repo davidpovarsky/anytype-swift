@@ -314,6 +314,7 @@ jobs:
             # bootstrap and navigation state instead of only XCTest's UI-query timeout.
             xcrun simctl spawn "$udid" log stream \
               --style compact \
+              --level info \
               --predicate 'subsystem == "com.anytype.pinkha"' \
               > "build/evidence/release-${device_kind}-${direction}-pinkha-runtime.log" 2>&1 &
             local pinkha_log_pid=$!
