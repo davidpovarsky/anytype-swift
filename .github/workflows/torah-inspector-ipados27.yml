@@ -155,22 +155,42 @@ jobs:
             local region="$5"
             local result="build/results/${device_kind}-${direction}.xcresult"
             local log="build/evidence/native-${device_kind}-${direction}.log"
-            set +e
-            xcodebuild test-without-building \
-              -project Anytype.xcodeproj \
-              -scheme Anytype \
-              -configuration Debug-Anytype \
-              -destination "platform=iOS Simulator,id=$udid" \
-              -derivedDataPath build/DerivedData-Tests \
-              -resultBundlePath "$result" \
-              -collect-test-diagnostics never \
-              -parallel-testing-enabled NO \
-              -testLanguage "$language" \
-              -testRegion "$region" \
-              "${test_flags[@]}" \
-              2>&1 | tee "$log"
-            local run_status=${PIPESTATUS[0]}
-            set -e
+            local run_status=1
+            for attempt in 1 2; do
+              case "$result" in
+                build/results/*.xcresult) rm -rf -- "$result" ;;
+                *) echo "Refusing to remove unexpected result path: $result"; exit 1 ;;
+              esac
+              local attempt_log="build/evidence/native-${device_kind}-${direction}-attempt-${attempt}.log"
+              set +e
+              xcodebuild test-without-building \
+                -project Anytype.xcodeproj \
+                -scheme Anytype \
+                -configuration Debug-Anytype \
+                -destination "platform=iOS Simulator,id=$udid" \
+                -derivedDataPath build/DerivedData-Tests \
+                -resultBundlePath "$result" \
+                -collect-test-diagnostics never \
+                -parallel-testing-enabled NO \
+                -testLanguage "$language" \
+                -testRegion "$region" \
+                "${test_flags[@]}" \
+                2>&1 | tee "$attempt_log"
+              run_status=${PIPESTATUS[0]}
+              set -e
+              cp "$attempt_log" "$log"
+              if [[ $run_status -eq 0 ]]; then
+                break
+              fi
+              if [[ $attempt -eq 1 ]] && grep -Fq "test runner hung before establishing connection" "$attempt_log"; then
+                echo "Retrying once after simulator test-runner infrastructure failure."
+                xcrun simctl shutdown "$udid" || true
+                xcrun simctl boot "$udid"
+                xcrun simctl bootstatus "$udid" -b
+              else
+                break
+              fi
+            done
             if [[ $run_status -ne 0 ]]; then
               status=1
             fi
@@ -245,32 +265,14 @@ jobs:
               raise SystemExit('; '.join(problems))
           PY
 
-      - name: Build Release application-hosted acceptance preparation
-        id: release_acceptance_prep_build
-        continue-on-error: true
-        run: |
-          set -o pipefail
-          # Build the preparation test against the same Release application and bundle id
-          # that the UI target launches. ENABLE_TESTABILITY also keeps Swift package test
-          # dependencies compatible with the Release modules selected by the Anytype scheme.
-          xcodebuild build-for-testing \
-            -project Anytype.xcodeproj \
-            -scheme Anytype \
-            -configuration Release-Anytype \
-            -destination "platform=iOS Simulator,id=$IPAD_UDID" \
-            -derivedDataPath build/DerivedData-Release-Acceptance \
-            -collect-test-diagnostics never \
-            -parallel-testing-enabled NO \
-            -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
-            ENABLE_TESTABILITY=YES \
-            2>&1 | tee build/evidence/release-acceptance-preparation-build.log
-
-      - name: Build Release real-app UI acceptance tests
+      - name: Build Release real-app acceptance sequence
         id: release_acceptance_build
-        if: steps.release_acceptance_prep_build.outcome == 'success'
         continue-on-error: true
         run: |
           set -o pipefail
+          # Build both test targets into one xctestrun. Running them through this scheme
+          # keeps the Release app installation and container intact between preparation
+          # and the UI assertion instead of reinstalling the app between invocations.
           xcodebuild build-for-testing \
             -workspace PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace \
             -scheme PinkhaStage1Acceptance \
@@ -279,13 +281,14 @@ jobs:
             -derivedDataPath build/DerivedData-Release-Acceptance \
             -collect-test-diagnostics never \
             -parallel-testing-enabled NO \
+            -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
             -only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests \
             ENABLE_TESTABILITY=YES \
-            2>&1 | tee build/evidence/release-real-app-ui-build.log
+            2>&1 | tee build/evidence/release-real-app-sequence-build.log
 
       - name: Run Release real-app acceptance on iPhone LTR and iPad RTL
         id: release_acceptance
-        if: steps.release_acceptance_prep_build.outcome == 'success' && steps.release_acceptance_build.outcome == 'success'
+        if: steps.release_acceptance_build.outcome == 'success'
         continue-on-error: true
         run: |
           set -o pipefail
@@ -296,31 +299,14 @@ jobs:
             local direction="$3"
             local language="$4"
             local region="$5"
-            local prep_result="build/results/release-${device_kind}-${direction}-prepare.xcresult"
-            local ui_result="build/results/release-${device_kind}-${direction}-ui.xcresult"
+            local result="build/results/release-${device_kind}-${direction}.xcresult"
+            local log="build/evidence/release-${device_kind}-${direction}.log"
 
-            set +e
-            xcodebuild test-without-building \
-              -project Anytype.xcodeproj \
-              -scheme Anytype \
-              -configuration Release-Anytype \
-              -destination "platform=iOS Simulator,id=$udid" \
-              -derivedDataPath build/DerivedData-Release-Acceptance \
-              -resultBundlePath "$prep_result" \
-              -collect-test-diagnostics never \
-              -parallel-testing-enabled NO \
-              -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
-              ENABLE_TESTABILITY=YES \
-              2>&1 | tee "build/evidence/release-${device_kind}-${direction}-prepare.log"
-            local prep_status=${PIPESTATUS[0]}
-            set -e
-            if [[ $prep_status -ne 0 ]]; then
-              status=1
-              return
-            fi
-
-            xcrun simctl terminate "$udid" io.anytype.app || true
-            xcrun simctl terminate "$udid" io.anytype.app.dev || true
+            # Native checks installed a Debug build earlier. Start this acceptance run
+            # with a clean, isolated Release container; Xcode then keeps that one install
+            # for the preparation test and the UI test in the same invocation.
+            xcrun simctl uninstall "$udid" io.anytype.app || true
+            xcrun simctl uninstall "$udid" io.anytype.app.dev || true
 
             set +e
             PINKHA_ACCEPTANCE_DIRECTION="$direction" xcodebuild test-without-building \
@@ -329,16 +315,18 @@ jobs:
               -configuration Release-Anytype \
               -destination "platform=iOS Simulator,id=$udid" \
               -derivedDataPath build/DerivedData-Release-Acceptance \
-              -resultBundlePath "$ui_result" \
+              -resultBundlePath "$result" \
               -collect-test-diagnostics never \
               -parallel-testing-enabled NO \
               -testLanguage "$language" \
               -testRegion "$region" \
+              -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
               -only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests \
-              2>&1 | tee "build/evidence/release-${device_kind}-${direction}-ui.log"
-            local ui_status=${PIPESTATUS[0]}
+              ENABLE_TESTABILITY=YES \
+              2>&1 | tee "$log"
+            local run_status=${PIPESTATUS[0]}
             set -e
-            if [[ $ui_status -ne 0 ]]; then
+            if [[ $run_status -ne 0 ]]; then
               status=1
             fi
           }
@@ -359,10 +347,8 @@ jobs:
           from pathlib import Path
 
           expected = [
-              'release-iphone-ltr-prepare',
-              'release-iphone-ltr-ui',
-              'release-ipad-rtl-prepare',
-              'release-ipad-rtl-ui',
+              'release-iphone-ltr',
+              'release-ipad-rtl',
           ]
           aggregate = {'total': 0, 'passed': 0, 'failed': 0, 'skipped': 0, 'runs': {}}
           problems = []
@@ -397,8 +383,8 @@ jobs:
               aggregate['runs'][name] = counts
               for key in ('total', 'passed', 'failed', 'skipped'):
                   aggregate[key] += counts[key]
-              if counts['total'] != 1 or counts['passed'] != 1 or counts['failed'] or counts['skipped']:
-                  problems.append(f'{name} is not exactly one passing test: {counts}')
+              if counts['total'] != 2 or counts['passed'] != 2 or counts['failed'] or counts['skipped']:
+                  problems.append(f'{name} is not exactly two passing tests: {counts}')
 
           Path('build/evidence/real-app-test-counts.json').write_text(
               json.dumps(aggregate, indent=2, sort_keys=True) + '\n',
@@ -407,7 +393,7 @@ jobs:
           if problems:
               raise SystemExit('; '.join(problems))
           PY
-          for result in build/results/release-*-ui.xcresult; do
+          for result in build/results/release-*.xcresult; do
             name="$(basename "$result" .xcresult)"
             xcrun xcresulttool export attachments \
               --path "$result" \
@@ -584,7 +570,7 @@ jobs:
           retention-days: 14
 
       - name: Enforce test outcomes after publishing evidence
-        if: always() && (steps.torahinspectorkit_tests.outcome != 'success' || steps.pinkhakit_tests.outcome != 'success' || steps.native_build.outcome != 'success' || steps.native_tests.outcome != 'success' || steps.native_counts.outcome != 'success' || steps.release_acceptance_prep_build.outcome != 'success' || steps.release_acceptance_build.outcome != 'success' || steps.release_acceptance.outcome != 'success' || steps.release_acceptance_evidence.outcome != 'success')
+        if: always() && (steps.torahinspectorkit_tests.outcome != 'success' || steps.pinkhakit_tests.outcome != 'success' || steps.native_build.outcome != 'success' || steps.native_tests.outcome != 'success' || steps.native_counts.outcome != 'success' || steps.release_acceptance_build.outcome != 'success' || steps.release_acceptance.outcome != 'success' || steps.release_acceptance_evidence.outcome != 'success')
         run: |
           echo "At least one test stage failed; artifacts above remain available for diagnosis."
           exit 1
