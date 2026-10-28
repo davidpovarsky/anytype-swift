@@ -8,6 +8,8 @@ import Factory
 /// Main downstream home sections container for Pinkha spaces.
 /// Replaces the generic upstream Home sections when `PinkhaRuntime.enabled` is true.
 struct PinkhaHomeSectionsView: View {
+    private static let initialBootstrapTimeout: TimeInterval = 300
+
     let spaceId: String
     weak var output: (any CommonWidgetModuleOutput)?
 
@@ -139,7 +141,15 @@ struct PinkhaHomeSectionsView: View {
 
         self.bootstrapState = .provisioning
         do {
-            let manifest = try await stateManager.awaitReadiness(spaceId: spaceId, timeoutSeconds: 15.0)
+            // A first local-only Space provisions the full Pinkha schema through the real
+            // middleware. On slower simulators and devices that sequence can legitimately
+            // exceed the old 15-second UI timeout. Keep observing the single in-flight
+            // bootstrap instead of freezing the home screen in a stale failure state while
+            // the background task continues and eventually becomes ready.
+            let manifest = try await stateManager.awaitReadiness(
+                spaceId: spaceId,
+                timeoutSeconds: Self.initialBootstrapTimeout
+            )
             self.repository = PinkhaHierarchyRepository(spaceId: spaceId, manifest: manifest)
             self.bootstrapState = .ready(manifest)
             await openAcceptanceDocumentIfRequested(manifest: manifest)

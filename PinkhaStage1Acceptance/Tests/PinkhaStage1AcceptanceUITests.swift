@@ -34,7 +34,11 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
         let body = app.textViews.matching(
             NSPredicate(format: "identifier BEGINSWITH %@", "pinkha.stage1.body.")
         ).firstMatch
-        XCTAssertTrue(body.waitForExistence(timeout: 120), "Production editor body UITextView did not appear")
+        guard body.waitForExistence(timeout: 300) else {
+            attachScreenshot(named: "FAIL-production-editor-body-missing")
+            XCTFail("Production editor body UITextView did not appear")
+            return
+        }
         body.tap()
         let enteredText = expectsRTL
             ? "שלום עולם מתוך מסמך אמיתי"
@@ -120,12 +124,11 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
         XCTAssertTrue(acceptLocalOnly.waitForExistence(timeout: 10), "Local-only confirmation did not appear")
         acceptLocalOnly.tap()
 
-        let settingsSheet = app.sheets.firstMatch
-        if settingsSheet.waitForExistence(timeout: 3) {
-            settingsSheet.swipeDown(velocity: .fast)
-        } else {
-            app.swipeDown(velocity: .fast)
-        }
+        // Querying the sheet accessibility node can block for minutes on the iPad simulator
+        // while Anytype is applying the local-only network change. A direct application-level
+        // dismissal exercises the same real UI gesture and worked on both form factors without
+        // depending on a snapshot of the transient sheet hierarchy.
+        app.swipeDown(velocity: .fast)
         XCTAssertTrue(join.waitForExistence(timeout: 15), "Authentication screen did not return")
         join.tap()
 

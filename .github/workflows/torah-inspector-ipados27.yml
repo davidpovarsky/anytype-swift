@@ -310,6 +310,14 @@ jobs:
             xcrun simctl uninstall "$udid" io.anytype.app || true
             xcrun simctl uninstall "$udid" io.anytype.app.dev || true
 
+            # Capture the Pinkha subsystem from the real AUT so acceptance failures expose
+            # bootstrap and navigation state instead of only XCTest's UI-query timeout.
+            xcrun simctl spawn "$udid" log stream \
+              --style compact \
+              --predicate 'subsystem == "com.anytype.pinkha"' \
+              > "build/evidence/release-${device_kind}-${direction}-pinkha-runtime.log" 2>&1 &
+            local pinkha_log_pid=$!
+
             set +e
             PINKHA_ACCEPTANCE_DIRECTION="$direction" xcodebuild test-without-building \
               -workspace PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace \
@@ -327,6 +335,8 @@ jobs:
               2>&1 | tee "$log"
             local run_status=${PIPESTATUS[0]}
             set -e
+            kill "$pinkha_log_pid" || true
+            wait "$pinkha_log_pid" 2>/dev/null || true
             xcrun simctl shutdown "$udid" || true
             if [[ $run_status -ne 0 ]]; then
               status=1
