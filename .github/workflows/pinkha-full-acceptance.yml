@@ -1,7 +1,7 @@
 name: Pinkha Full Acceptance
 
 on:
-  workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: pinkha-full-acceptance-${{ github.ref }}

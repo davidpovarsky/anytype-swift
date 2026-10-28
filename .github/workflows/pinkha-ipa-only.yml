@@ -1,13 +1,12 @@
 name: Pinkha IPA-only
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       require_full_acceptance:
         description: Require Full Acceptance success on the same SHA
         type: boolean
         default: true
-        required: true
 
 concurrency:
   group: pinkha-ipa-${{ github.ref }}
@@ -32,12 +31,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           run_json="$(gh run list \
-            --workflow pinkha-full-acceptance.yml \
+            --workflow torah-inspector-ipados27.yml \
             --commit "$GITHUB_SHA" \
             --event workflow_dispatch \
-            --limit 1 \
-            --json databaseId,conclusion \
-            --jq '.[0] // {}')"
+            --limit 20 \
+            --json databaseId,conclusion,displayTitle \
+            --jq '[.[] | select(.displayTitle | startswith("Pinkha full-acceptance")) | select(.conclusion == "success")][0] // {}')"
           conclusion="$(jq -r '.conclusion // ""' <<< "$run_json")"
           acceptance_run_id="$(jq -r '.databaseId // ""' <<< "$run_json")"
           if [[ "$conclusion" != success || -z "$acceptance_run_id" ]]; then

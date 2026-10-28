@@ -1,0 +1,34 @@
+name: Pinkha Stage 1 Manual Dispatcher
+run-name: Pinkha ${{ inputs.route }} · ${{ github.sha }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      route:
+        description: Stage 1 route to run
+        type: choice
+        required: true
+        options:
+          - full-acceptance
+          - ipa-only
+      require_full_acceptance:
+        description: Require Full Acceptance success before IPA packaging
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  full-acceptance:
+    if: ${{ inputs.route == 'full-acceptance' }}
+    uses: ./.github/workflows/pinkha-full-acceptance.yml
+    secrets: inherit
+
+  ipa-only:
+    if: ${{ inputs.route == 'ipa-only' }}
+    uses: ./.github/workflows/pinkha-ipa-only.yml
+    with:
+      require_full_acceptance: ${{ inputs.require_full_acceptance }}
+    secrets: inherit
