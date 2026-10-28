@@ -418,6 +418,23 @@ jobs:
         id: device_build
         run: |
           set -o pipefail
+          # The simulator matrix and real-app acceptance have already exported their
+          # xcresults and screenshots. Reclaim only their derived products before the
+          # independent iphoneos build so the Xcode 27 runner cannot exhaust its disk.
+          for target in \
+            "$GITHUB_WORKSPACE/build/DerivedData-Tests" \
+            "$GITHUB_WORKSPACE/build/DerivedData-Release-Acceptance" \
+            "$GITHUB_WORKSPACE/build/TorahInspectorKit/.build" \
+            "$GITHUB_WORKSPACE/Modules/PinkhaKit/.build"; do
+            case "$target" in
+              "$GITHUB_WORKSPACE/build/DerivedData-Tests"|\
+              "$GITHUB_WORKSPACE/build/DerivedData-Release-Acceptance"|\
+              "$GITHUB_WORKSPACE/build/TorahInspectorKit/.build"|\
+              "$GITHUB_WORKSPACE/Modules/PinkhaKit/.build") rm -rf -- "$target" ;;
+              *) echo "Refusing to remove unexpected path: $target" >&2; exit 1 ;;
+            esac
+          done
+          df -h "$GITHUB_WORKSPACE"
           xcodebuild build \
             -project Anytype.xcodeproj \
             -scheme Anytype \
