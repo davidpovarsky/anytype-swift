@@ -7,9 +7,9 @@ public enum PinkhaBootstrapHook {
     /// Runs Pinkha bootstrap asynchronously in the background with full state observability.
     public static func handleSpaceActivated(spaceId: String) {
         guard PinkhaRuntime.enabled else { return }
+        let stateManager = Container.shared.pinkhaBootstrapStateManager()
+        guard stateManager.beginProvisioningIfNeeded(spaceId: spaceId) else { return }
         Task {
-            let stateManager = Container.shared.pinkhaBootstrapStateManager()
-            stateManager.setState(.provisioning, for: spaceId)
             do {
                 let manifest = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: spaceId)
                 stateManager.setState(.ready(manifest), for: spaceId)

@@ -142,6 +142,7 @@ jobs:
             -only-testing:AnytypeTests/PinkhaTextDirectionUIKitAdapterTests
             -only-testing:AnytypeTests/PinkhaTextBlockLeadingMarkerAdapterTests
             -only-testing:AnytypeTests/PinkhaNavigationGestureBridgeTests
+            -only-testing:AnytypeTests/PinkhaBootstrapStateManagerTests
             -only-testing:AnytypeTests/TorahAssociationNativeRepositoryTests
             -only-testing:AnytypeTests/TorahNativeUIParityTests
             -only-testing:AnytypeTests/TorahSearchLayoutTests
@@ -303,6 +304,9 @@ jobs:
             # Native checks installed a Debug build earlier. Start this acceptance run
             # with a clean, isolated Release container. The UI test performs onboarding,
             # creates the Pinkha document, edits it, navigates back, and reopens it there.
+            xcrun simctl shutdown "$udid" || true
+            xcrun simctl boot "$udid"
+            xcrun simctl bootstatus "$udid" -b
             xcrun simctl uninstall "$udid" io.anytype.app || true
             xcrun simctl uninstall "$udid" io.anytype.app.dev || true
 
@@ -323,6 +327,7 @@ jobs:
               2>&1 | tee "$log"
             local run_status=${PIPESTATUS[0]}
             set -e
+            xcrun simctl shutdown "$udid" || true
             if [[ $run_status -ne 0 ]]; then
               status=1
             fi

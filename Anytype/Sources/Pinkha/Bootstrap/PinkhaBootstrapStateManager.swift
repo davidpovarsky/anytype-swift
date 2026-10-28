@@ -30,6 +30,23 @@ public final class PinkhaBootstrapStateManager: Sendable {
         }
     }
 
+    /// Atomically claims bootstrap ownership for a Space. Callers that lose the race must
+    /// observe the in-flight state instead of starting a second schema mutation sequence.
+    @discardableResult
+    public func beginProvisioningIfNeeded(spaceId: String) -> Bool {
+        let didBegin = states.withValue { dict in
+            guard case .uninitialized = dict[spaceId] ?? .uninitialized else {
+                return false
+            }
+            dict[spaceId] = .provisioning
+            return true
+        }
+        if didBegin {
+            os_log("[Pinkha] Space %{public}@ bootstrap started (provisioning)", log: pinkhaLog, type: .info, spaceId)
+        }
+        return didBegin
+    }
+
     /// Allows Phase 2 or any caller to asynchronously await readiness without polling blindly.
     public func awaitReadiness(spaceId: String, timeoutSeconds: TimeInterval = 10.0) async throws -> PinkhaSpaceManifest {
         let deadline = Date().addingTimeInterval(timeoutSeconds)
