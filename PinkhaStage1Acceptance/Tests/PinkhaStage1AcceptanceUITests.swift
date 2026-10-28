@@ -29,15 +29,12 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
 
     func testEntryPersistenceAndInteractiveBackInRealDocument() throws {
         app.launch()
-
-        let space = app.staticTexts["Pinkha Stage 1 RTL Acceptance"]
-        XCTAssertTrue(space.waitForExistence(timeout: 45), "Disposable local-only Space did not appear")
-        space.tap()
+        completeFreshLocalOnlyOnboardingIfNeeded()
 
         let body = app.textViews.matching(
             NSPredicate(format: "identifier BEGINSWITH %@", "pinkha.stage1.body.")
         ).firstMatch
-        XCTAssertTrue(body.waitForExistence(timeout: 45), "Production editor body UITextView did not appear")
+        XCTAssertTrue(body.waitForExistence(timeout: 120), "Production editor body UITextView did not appear")
         body.tap()
         let enteredText = expectsRTL
             ? "שלום עולם מתוך מסמך אמיתי"
@@ -102,6 +99,61 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             "Entered text did not survive close and reopen"
         )
         attachScreenshot(named: expectsRTL ? "RTL-03-reopened-persisted" : "RTL-04-ltr-reopened")
+    }
+
+    private func completeFreshLocalOnlyOnboardingIfNeeded() {
+        let join = button(namedAny: ["I am new here", "אני חדש כאן"])
+        guard join.waitForExistence(timeout: 30) else {
+            return
+        }
+
+        let labelledSettings = button(namedAny: ["Space settings", "הגדרות מרחב"])
+        let settings = labelledSettings.exists ? labelledSettings : app.buttons.element(boundBy: 0)
+        XCTAssertTrue(settings.waitForExistence(timeout: 5), "Network settings button did not appear")
+        settings.tap()
+
+        let localOnly = button(namedAny: ["Local-only", "מקומי בלבד"])
+        XCTAssertTrue(localOnly.waitForExistence(timeout: 15), "Local-only network option did not appear")
+        localOnly.tap()
+
+        let acceptLocalOnly = button(namedAny: ["Yes, I accept risks", "הבנתי, המשך"])
+        XCTAssertTrue(acceptLocalOnly.waitForExistence(timeout: 10), "Local-only confirmation did not appear")
+        acceptLocalOnly.tap()
+
+        let settingsSheet = app.sheets.firstMatch
+        if settingsSheet.waitForExistence(timeout: 3) {
+            settingsSheet.swipeDown(velocity: .fast)
+        } else {
+            app.swipeDown(velocity: .fast)
+        }
+        XCTAssertTrue(join.waitForExistence(timeout: 15), "Authentication screen did not return")
+        join.tap()
+
+        let notNow = button(namedAny: ["Not now", "לא עכשיו"])
+        XCTAssertTrue(notNow.waitForExistence(timeout: 120), "Local-only account creation did not finish")
+        notNow.tap()
+
+        let personaTitle = staticText(namedAny: ["Tell Us About Yourself", "ספר לנו על עצמך"])
+        XCTAssertTrue(personaTitle.waitForExistence(timeout: 15), "Persona onboarding step did not appear")
+        let skip = app.buttons["Skip"]
+        XCTAssertTrue(skip.waitForExistence(timeout: 5), "Persona Skip button did not appear")
+        skip.tap()
+
+        let useCaseTitle = staticText(namedAny: [
+            "What do you want to use Anytype for?",
+            "לשם מה תרצה להשתמש ב-Anytype?"
+        ])
+        XCTAssertTrue(useCaseTitle.waitForExistence(timeout: 15), "Use-case onboarding step did not appear")
+        XCTAssertTrue(skip.waitForExistence(timeout: 5), "Use-case Skip button did not appear")
+        skip.tap()
+    }
+
+    private func button(namedAny labels: [String]) -> XCUIElement {
+        app.buttons.matching(NSPredicate(format: "label IN %@", labels)).firstMatch
+    }
+
+    private func staticText(namedAny labels: [String]) -> XCUIElement {
+        app.staticTexts.matching(NSPredicate(format: "label IN %@", labels)).firstMatch
     }
 
     private func attachScreenshot(named name: String) {

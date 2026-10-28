@@ -1,8 +1,8 @@
 import Foundation
 
-/// Test-only rendezvous state shared by the app-hosted middleware preparation test and the
-/// subsequently launched real application. It is inert unless the acceptance environment
-/// variable is present and always points at a disposable local-only account and Space.
+/// Test-only state used after the real application completes its local-only onboarding flow.
+/// It is inert unless the acceptance environment variable is present and always points at a
+/// disposable local-only account and Space created inside the UI-test application container.
 struct PinkhaStage1AcceptanceState: Codable, Equatable, Sendable {
     static let environmentKey = "PINKHA_STAGE1_ACCEPTANCE"
     static let documentTitle = "בדיקת RTL Stage 1"

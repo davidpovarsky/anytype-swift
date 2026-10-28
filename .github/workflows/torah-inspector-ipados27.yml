@@ -265,14 +265,13 @@ jobs:
               raise SystemExit('; '.join(problems))
           PY
 
-      - name: Build Release real-app acceptance sequence
+      - name: Build Release real-app UI acceptance
         id: release_acceptance_build
         continue-on-error: true
         run: |
           set -o pipefail
-          # Build both test targets into one xctestrun. Running them through this scheme
-          # keeps the Release app installation and container intact between preparation
-          # and the UI assertion instead of reinstalling the app between invocations.
+          # The UI test creates its disposable local-only account through the app's actual
+          # onboarding. No state is transferred across Xcode test-target installations.
           xcodebuild build-for-testing \
             -workspace PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace \
             -scheme PinkhaStage1Acceptance \
@@ -281,7 +280,6 @@ jobs:
             -derivedDataPath build/DerivedData-Release-Acceptance \
             -collect-test-diagnostics never \
             -parallel-testing-enabled NO \
-            -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
             -only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests \
             ENABLE_TESTABILITY=YES \
             2>&1 | tee build/evidence/release-real-app-sequence-build.log
@@ -303,8 +301,8 @@ jobs:
             local log="build/evidence/release-${device_kind}-${direction}.log"
 
             # Native checks installed a Debug build earlier. Start this acceptance run
-            # with a clean, isolated Release container; Xcode then keeps that one install
-            # for the preparation test and the UI test in the same invocation.
+            # with a clean, isolated Release container. The UI test performs onboarding,
+            # creates the Pinkha document, edits it, navigates back, and reopens it there.
             xcrun simctl uninstall "$udid" io.anytype.app || true
             xcrun simctl uninstall "$udid" io.anytype.app.dev || true
 
@@ -320,7 +318,6 @@ jobs:
               -parallel-testing-enabled NO \
               -testLanguage "$language" \
               -testRegion "$region" \
-              -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
               -only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests \
               ENABLE_TESTABILITY=YES \
               2>&1 | tee "$log"
@@ -383,8 +380,8 @@ jobs:
               aggregate['runs'][name] = counts
               for key in ('total', 'passed', 'failed', 'skipped'):
                   aggregate[key] += counts[key]
-              if counts['total'] != 2 or counts['passed'] != 2 or counts['failed'] or counts['skipped']:
-                  problems.append(f'{name} is not exactly two passing tests: {counts}')
+              if counts['total'] != 1 or counts['passed'] != 1 or counts['failed'] or counts['skipped']:
+                  problems.append(f'{name} is not exactly one passing test: {counts}')
 
           Path('build/evidence/real-app-test-counts.json').write_text(
               json.dumps(aggregate, indent=2, sort_keys=True) + '\n',

@@ -126,7 +126,7 @@ struct PinkhaHomeSectionsView: View {
         case .ready(let manifest):
             self.repository = PinkhaHierarchyRepository(spaceId: spaceId, manifest: manifest)
             self.bootstrapState = current
-            openAcceptanceDocumentIfRequested()
+            await openAcceptanceDocumentIfRequested(manifest: manifest)
             return
         case .failed:
             self.bootstrapState = current
@@ -142,7 +142,7 @@ struct PinkhaHomeSectionsView: View {
             let manifest = try await stateManager.awaitReadiness(spaceId: spaceId, timeoutSeconds: 15.0)
             self.repository = PinkhaHierarchyRepository(spaceId: spaceId, manifest: manifest)
             self.bootstrapState = .ready(manifest)
-            openAcceptanceDocumentIfRequested()
+            await openAcceptanceDocumentIfRequested(manifest: manifest)
         } catch {
             self.bootstrapState = .failed(error.localizedDescription)
         }
@@ -154,23 +154,60 @@ struct PinkhaHomeSectionsView: View {
         await monitorBootstrapReadiness()
     }
 
-    private func openAcceptanceDocumentIfRequested() {
+    private func openAcceptanceDocumentIfRequested(manifest: PinkhaSpaceManifest) async {
         guard PinkhaStage1AcceptanceState.isEnabled,
-              !didOpenAcceptanceDocument,
-              let state = try? PinkhaStage1AcceptanceState.load(),
-              state.spaceId == spaceId else {
+              !didOpenAcceptanceDocument else {
             return
         }
         didOpenAcceptanceDocument = true
-        PinkhaDocumentIdentityStorage.shared.registerCreated(
-            objectId: state.objectId,
-            spaceId: state.spaceId
-        )
-        output?.onObjectSelected(
-            screenData: .editor(.page(EditorPageObject(
+
+        do {
+            let state: PinkhaStage1AcceptanceState
+            if let storedState = try? PinkhaStage1AcceptanceState.load(),
+               storedState.spaceId == spaceId {
+                state = storedState
+            } else {
+                guard let typeId = manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey] else {
+                    didOpenAcceptanceDocument = false
+                    return
+                }
+
+                let details = try await PinkhaHierarchyMutationService().createWritingDocument(
+                    typeId: typeId,
+                    parentId: nil,
+                    spaceId: spaceId,
+                    manifest: manifest,
+                    existingSiblings: repository?.snapshot.rootNodes ?? []
+                )
+                try await Container.shared.propertiesService().updateProperty(
+                    objectId: details.id,
+                    propertyKey: BundledPropertyKey.name.rawValue,
+                    value: PinkhaStage1AcceptanceState.documentTitle.protobufValue
+                )
+                repository?.registerPendingCreated(details: details.updated(by: [
+                    BundledPropertyKey.name.rawValue: PinkhaStage1AcceptanceState.documentTitle.protobufValue
+                ]))
+
+                state = PinkhaStage1AcceptanceState(
+                    spaceId: spaceId,
+                    objectId: details.id
+                )
+                try state.save()
+            }
+
+            PinkhaDocumentIdentityStorage.shared.registerCreated(
                 objectId: state.objectId,
                 spaceId: state.spaceId
-            )))
-        )
+            )
+            output?.onObjectSelected(
+                screenData: .editor(.page(EditorPageObject(
+                    objectId: state.objectId,
+                    spaceId: state.spaceId
+                )))
+            )
+        } catch {
+            didOpenAcceptanceDocument = false
+            bootstrapState = .failed(error.localizedDescription)
+        }
     }
 }
