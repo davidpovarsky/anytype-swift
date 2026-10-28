@@ -1,0 +1,305 @@
+name: Pinkha Fast CI
+
+on:
+  push:
+    branches:
+      - pinkha/torah-associations-native-ux-persistence-localization-2026-10-20
+
+concurrency:
+  group: pinkha-fast-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  fast-ci:
+    runs-on: xcode-27
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Record toolchain
+        run: |
+          mkdir -p build/evidence
+          xcodebuild -version | tee build/evidence/xcode-version.txt
+          xcodebuild -showsdks | tee build/evidence/xcode-sdks.txt
+          swift --version | tee build/evidence/swift-version.txt
+
+      - name: Verify immutable TorahInspectorKit pins
+        run: |
+          test "$(grep -c 'a2fa3a528ac2bccfa00ed206d7954083077fc847' Modules/PinkhaKit/Package.swift)" -eq 1
+          test "$(grep -c 'a2fa3a528ac2bccfa00ed206d7954083077fc847' Anytype.xcodeproj/project.pbxproj)" -eq 1
+          grep -q 'productName = TorahInspectorUI' Anytype.xcodeproj/project.pbxproj
+
+      - name: Verify production Torah feature has no trial mutation gate
+        run: |
+          if grep -R -n -E 'mutationOptIn|mutationGate|DISPOSABLE|disposableSpaceConfirmed|freshDocumentConfirmed|mutationIsAuthorized|Activate experimental writing|T2-L safety' \
+            Anytype/Sources/Pinkha/Torah \
+            Anytype/Sources/PresentationLayer/TextEditor/EditorPage \
+            AnyTypeTests/Pinkha; then
+            echo 'Obsolete trial mutation gate remains in compiled feature code.' >&2
+            exit 1
+          fi
+
+      - name: Verify localization catalog and generated accessors
+        run: |
+          python3 -m json.tool Modules/Loc/Sources/Loc/Resources/Workspace.xcstrings > /dev/null
+          grep -q 'public enum Torah' Modules/Loc/Sources/Loc/Generated/Strings.swift
+          grep -q 'Pinkha.Torah.searchType' Modules/Loc/Sources/Loc/Generated/Strings.swift
+
+      - name: Verify native UI parity source contracts
+        run: |
+          grep -q 'SearchViewShell' Anytype/Sources/PresentationLayer/Common/SwiftUI/Search/Common/SearchView/SearchView.swift
+          grep -q 'SearchViewShell' Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift
+          ! grep -q 'presentationDetents' Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift
+          ! grep -q 'overlay(alignment: .topTrailing)' Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift
+          ! grep -q 'UICellAccessory' Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift
+          grep -q 'additionalMenuItems' Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/EditorNavigationBarHelper/EditorNavigationBarHelper.swift
+
+      - name: Run TorahInspectorKit tests
+        id: torahinspectorkit_tests
+        run: |
+          set -o pipefail
+          git clone --quiet https://github.com/davidpovarsky/TorahInspectorKit.git build/TorahInspectorKit
+          git -C build/TorahInspectorKit checkout --quiet a2fa3a528ac2bccfa00ed206d7954083077fc847
+          swift test --package-path build/TorahInspectorKit 2>&1 | tee build/evidence/torahinspectorkit-tests.log
+
+      - name: Run PinkhaKit tests
+        id: pinkhakit_tests
+        run: |
+          set -o pipefail
+          swift test --package-path Modules/PinkhaKit 2>&1 | tee build/evidence/pinkhakit-tests.log
+
+      - name: Download middleware
+        run: make setup-middle-ci
+        env:
+          CI: 'true'
+          MIDDLEWARE_TOKEN: ${{ secrets.MIDDLEWARE_TOKEN }}
+
+      - name: Select iPhone and iPad simulators on iOS 27
+        run: |
+          xcrun simctl list devices available --json > build/evidence/simulators.json
+          python3 - <<'PY'
+          import json, os
+          data = json.load(open('build/evidence/simulators.json'))
+          iphones = []
+          ipads = []
+          for runtime, devices in data['devices'].items():
+              if 'iOS-27' not in runtime:
+                  continue
+              iphones.extend(d for d in devices if d.get('isAvailable') and d['name'].startswith('iPhone'))
+              ipads.extend(d for d in devices if d.get('isAvailable') and 'iPad' in d['name'])
+          if not iphones or not ipads:
+              raise SystemExit('Both an iPhone and iPad simulator on iOS 27 are required')
+          with open(os.environ['GITHUB_ENV'], 'a') as env:
+              env.write(f"IPHONE_UDID={iphones[0]['udid']}\n")
+              env.write(f"IPHONE_NAME={iphones[0]['name']}\n")
+              env.write(f"IPAD_UDID={ipads[0]['udid']}\n")
+              env.write(f"IPAD_NAME={ipads[0]['name']}\n")
+          with open('build/evidence/selected-simulators.txt', 'w') as output:
+              output.write(f"iPhone: {iphones[0]['name']} ({iphones[0]['udid']})\n")
+              output.write(f"iPad: {ipads[0]['name']} ({ipads[0]['udid']})\n")
+          PY
+
+      - name: Build focused native tests once
+        id: native_build
+        run: |
+          set -o pipefail
+          mkdir -p build/results
+          # Simulator signing must stay enabled because the real-app preparation exercises
+          # the production Keychain login lifecycle. The device IPA remains unsigned below.
+          xcodebuild build-for-testing \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -configuration Debug-Anytype \
+            -destination "platform=iOS Simulator,id=$IPAD_UDID" \
+            -derivedDataPath build/DerivedData-Tests \
+            -collect-test-diagnostics never \
+            -parallel-testing-enabled NO \
+            -only-testing:AnytypeTests/BlockInformationConverterFieldsTests \
+            -only-testing:AnytypeTests/PinkhaTextDirectionPersistenceTests \
+            -only-testing:AnytypeTests/PinkhaTextDirectionUIKitAdapterTests \
+            -only-testing:AnytypeTests/PinkhaTextBlockLeadingMarkerAdapterTests \
+            -only-testing:AnytypeTests/PinkhaNavigationGestureBridgeTests \
+            -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
+            -only-testing:AnytypeTests/TorahAssociationNativeRepositoryTests \
+            -only-testing:AnytypeTests/TorahNativeUIParityTests \
+            -only-testing:AnytypeTests/TorahSearchLayoutTests \
+            -only-testing:AnytypeTests/TorahSearchLayoutScreenshotTests \
+            2>&1 | tee build/evidence/native-build-for-testing.log
+
+      - name: Run focused native tests on iPhone and iPad in LTR and RTL
+        id: native_tests
+        if: steps.native_build.outcome == 'success'
+        run: |
+          set -o pipefail
+          test_flags=(
+            -only-testing:AnytypeTests/BlockInformationConverterFieldsTests
+            -only-testing:AnytypeTests/PinkhaTextDirectionPersistenceTests
+            -only-testing:AnytypeTests/PinkhaTextDirectionUIKitAdapterTests
+            -only-testing:AnytypeTests/PinkhaTextBlockLeadingMarkerAdapterTests
+            -only-testing:AnytypeTests/PinkhaNavigationGestureBridgeTests
+            -only-testing:AnytypeTests/PinkhaBootstrapStateManagerTests
+            -only-testing:AnytypeTests/TorahAssociationNativeRepositoryTests
+            -only-testing:AnytypeTests/TorahNativeUIParityTests
+            -only-testing:AnytypeTests/TorahSearchLayoutTests
+            -only-testing:AnytypeTests/TorahSearchLayoutScreenshotTests
+          )
+          run_native_tests() {
+            local device_kind="$1"
+            local udid="$2"
+            local direction="$3"
+            local language="$4"
+            local region="$5"
+            local result="build/results/${device_kind}-${direction}.xcresult"
+            local log="build/evidence/native-${device_kind}-${direction}.log"
+            local run_status=1
+            for attempt in 1 2; do
+              case "$result" in
+                build/results/*.xcresult) rm -rf -- "$result" ;;
+                *) echo "Refusing to remove unexpected result path: $result"; exit 1 ;;
+              esac
+              local attempt_log="build/evidence/native-${device_kind}-${direction}-attempt-${attempt}.log"
+              set +e
+              xcodebuild test-without-building \
+                -project Anytype.xcodeproj \
+                -scheme Anytype \
+                -configuration Debug-Anytype \
+                -destination "platform=iOS Simulator,id=$udid" \
+                -derivedDataPath build/DerivedData-Tests \
+                -resultBundlePath "$result" \
+                -collect-test-diagnostics never \
+                -parallel-testing-enabled NO \
+                -testLanguage "$language" \
+                -testRegion "$region" \
+                "${test_flags[@]}" \
+                2>&1 | tee "$attempt_log"
+              run_status=${PIPESTATUS[0]}
+              set -e
+              cp "$attempt_log" "$log"
+              if [[ $run_status -eq 0 ]]; then
+                break
+              fi
+              if [[ $attempt -eq 1 ]] && grep -Fq "test runner hung before establishing connection" "$attempt_log"; then
+                echo "Retrying once after simulator test-runner infrastructure failure."
+                xcrun simctl shutdown "$udid" || true
+                xcrun simctl boot "$udid"
+                xcrun simctl bootstatus "$udid" -b
+              else
+                break
+              fi
+            done
+            return "$run_status"
+          }
+
+          # Run the primary form-factor/direction pair first. Both processes finish so
+          # their xcresults are preserved, then the complementary pair runs only if the
+          # primary gate passed.
+          set +e
+          run_native_tests iphone "$IPHONE_UDID" ltr en US &
+          iphone_ltr_pid=$!
+          run_native_tests ipad "$IPAD_UDID" rtl he IL &
+          ipad_rtl_pid=$!
+          wait "$iphone_ltr_pid"; iphone_ltr_status=$?
+          wait "$ipad_rtl_pid"; ipad_rtl_status=$?
+          set -e
+          if [[ $iphone_ltr_status -ne 0 || $ipad_rtl_status -ne 0 ]]; then
+            exit 1
+          fi
+
+          set +e
+          run_native_tests iphone "$IPHONE_UDID" rtl he IL &
+          iphone_rtl_pid=$!
+          run_native_tests ipad "$IPAD_UDID" ltr en US &
+          ipad_ltr_pid=$!
+          wait "$iphone_rtl_pid"; iphone_rtl_status=$?
+          wait "$ipad_ltr_pid"; ipad_ltr_status=$?
+          set -e
+          if [[ $iphone_rtl_status -ne 0 || $ipad_ltr_status -ne 0 ]]; then
+            exit 1
+          fi
+
+      - name: Validate native result bundles and aggregate counts
+        id: native_counts
+        if: always() && steps.native_build.outcome == 'success'
+        run: |
+          python3 - <<'PY'
+          import json
+          import subprocess
+          from pathlib import Path
+
+          expected = [
+              'iphone-ltr', 'iphone-rtl', 'ipad-ltr', 'ipad-rtl'
+          ]
+          aggregate = {'total': 0, 'passed': 0, 'failed': 0, 'skipped': 0, 'runs': {}}
+          problems = []
+          for name in expected:
+              bundle = Path('build/results', name + '.xcresult')
+              if not bundle.is_dir():
+                  problems.append(f'missing {bundle}')
+                  continue
+              raw = subprocess.check_output([
+                  'xcrun', 'xcresulttool', 'get', 'test-results', 'summary',
+                  '--path', str(bundle), '--format', 'json'
+              ], text=True)
+              summary = json.loads(raw)
+              def integer_value(key):
+                  stack = [summary]
+                  while stack:
+                      value = stack.pop()
+                      if isinstance(value, dict):
+                          candidate = value.get(key)
+                          if isinstance(candidate, int):
+                              return candidate
+                          stack.extend(value.values())
+                      elif isinstance(value, list):
+                          stack.extend(value)
+                  return 0
+              counts = {
+                  'total': integer_value('totalTestCount'),
+                  'passed': integer_value('passedTests'),
+                  'failed': integer_value('failedTests'),
+                  'skipped': integer_value('skippedTests'),
+              }
+              aggregate['runs'][name] = counts
+              for key in ('total', 'passed', 'failed', 'skipped'):
+                  aggregate[key] += counts[key]
+              if counts['total'] < 20:
+                  problems.append(f'{name} executed only {counts["total"]} tests')
+              if counts['failed'] or counts['skipped'] or counts['passed'] != counts['total']:
+                  problems.append(f'{name} counts are not all-pass: {counts}')
+
+          Path('build/evidence/native-test-counts.json').write_text(
+              json.dumps(aggregate, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8'
+          )
+          with Path(__import__('os').environ['GITHUB_STEP_SUMMARY']).open('a') as output:
+              output.write('## Stage 1 native simulator matrix\n\n')
+              for name, counts in aggregate['runs'].items():
+                  output.write(f'- `{name}`: {counts}\n')
+              output.write(f'- aggregate: total={aggregate["total"]}, passed={aggregate["passed"]}, failed={aggregate["failed"]}, skipped={aggregate["skipped"]}\n')
+          if problems:
+              raise SystemExit('; '.join(problems))
+          PY
+
+      - name: Upload Fast CI test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Fast-CI-Test-Results
+          path: build/results
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload Fast CI evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Fast-CI-Evidence
+          path: build/evidence
+          if-no-files-found: warn
+          retention-days: 14
