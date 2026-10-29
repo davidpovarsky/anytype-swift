@@ -18,6 +18,8 @@ struct WidgetSwipeActionView<Content: View>: View {
     private let extraStubMultiple: CGFloat = 0.04
     
     // MARK: - State
+
+    @Environment(\.layoutDirection) private var layoutDirection
     
     @State private var dragOffsetX: CGFloat = 0
     @State private var dragState: DragState = .cancel
@@ -35,6 +37,10 @@ struct WidgetSwipeActionView<Content: View>: View {
         let multiple = isEnable ? extraMultiple : extraStubMultiple
         let extraOffset = max((dragOffsetX - maxCurrentOffset) * multiple, 0)
         return min(dragOffsetX, maxCurrentOffset) + extraOffset
+    }
+
+    private var contentOffsetDirection: CGFloat {
+        layoutDirection == .rightToLeft ? 1 : -1
     }
     
     let isEnable: Bool
@@ -74,13 +80,13 @@ struct WidgetSwipeActionView<Content: View>: View {
                         Rectangle()
                             .overlay {
                                 RoundedRectangle(cornerRadius: 24)
-                                    .offset(x: -contentOffset)
+                                    .offset(x: contentOffsetDirection * contentOffset)
                                     .blendMode(.destinationOut)
                             }
                     }
             
             content
-                .offset(x: -contentOffset)
+                .offset(x: contentOffsetDirection * contentOffset)
         }
         .gesture(
             DragGesture(minimumDistance: 30, coordinateSpace: .local)
@@ -95,9 +101,12 @@ struct WidgetSwipeActionView<Content: View>: View {
                         // This is reproducery very often when widget contains horizontal scroll inside and looks not good.
                         initialStartOffset = value.translation.width
                     }
-                    // Only left
                     withAnimation(.linear(duration: 0.1)) {
-                        dragOffsetX = abs(min(value.translation.width - (initialStartOffset ?? 0), 0))
+                        let translation = value.translation.width - (initialStartOffset ?? 0)
+                        let leadingTranslation = layoutDirection == .rightToLeft
+                            ? translation
+                            : -translation
+                        dragOffsetX = max(leadingTranslation, 0)
                         if isEnable {
                             impact()
                         }

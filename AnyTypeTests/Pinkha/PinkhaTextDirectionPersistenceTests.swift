@@ -1,29 +1,24 @@
-import Testing
 import PinkhaKit
 import ProtobufMessages
 import Services
 import SwiftProtobuf
+import Testing
+import UIKit
 @testable import Anytype
 
-@Suite("Pinkha text-direction persistence", .serialized)
+@Suite("App-wide text-direction persistence", .serialized)
 @MainActor
 struct PinkhaTextDirectionPersistenceTests {
-    @Test("Explicit alignment is committed before metadata and survives metadata failure")
+    @Test("Explicit alignment is committed before metadata in an ordinary Page")
     func explicitAlignmentOrderingAndFailureIsolation() async throws {
-        let blockId = "pinkha-explicit-alignment"
-        let document = makeDocument(blockId: blockId)
+        PinkhaTextDirectionPersistence.resetForTesting()
+        let blockId = "ordinary-explicit-alignment"
+        let document = makeDocument(blockId: blockId, typeId: "ordinary-page-type")
         let service = RecordingBlockService(failFieldWrites: true)
-        let bootstrap = BootstrapStub(
-            manifest: PinkhaSpaceManifest(
-                spaceId: document.spaceId,
-                registeredDocumentTypes: ["writing": "pinkha-writing-type"]
-            )
-        )
-        Container.shared.pinkhaBootstrapService.register { bootstrap }
         Container.shared.blockService.register { service }
         defer {
             Container.shared.blockService.reset()
-            Container.shared.pinkhaBootstrapService.reset()
+            PinkhaTextDirectionPersistence.resetForTesting()
         }
 
         let handler = BlockActionHandler(
@@ -35,50 +30,45 @@ struct PinkhaTextDirectionPersistenceTests {
 
         for _ in 0..<100 {
             if await service.eventCount >= 2 { break }
-            try await Task.sleep(nanoseconds: 10_000_000)
+            try await Task.sleep(for: .milliseconds(10))
         }
 
         let events = await service.events
-        let lastAlignment = await service.lastAlignment
         let lastFields = await service.lastFields
         #expect(events == [.alignment(.right), .fields])
-        #expect(lastAlignment == .right)
         #expect(PinkhaTextDirectionPersistence.sessionExplicitAlignment(blockId: blockId) == .right)
         #expect(lastFields?["existing"]?.stringValue == "preserved")
         let marker = try #require(lastFields?[PinkhaSchemaRoles.blockTextDirectionField])
         #expect(PinkhaTextDirectionMarker(storedValue: marker.stringValue) == .explicit(.right))
     }
 
-    @Test("Persisted explicit metadata restores the choice after a simulated reopen")
+    @Test("Explicit metadata restores the choice in an ordinary Note")
     func explicitAlignmentColdReopen() async throws {
-        let writtenBlockId = "pinkha-persisted-write"
-        let document = makeDocument(blockId: writtenBlockId)
+        PinkhaTextDirectionPersistence.resetForTesting()
+        let blockId = "ordinary-note-write"
+        let document = makeDocument(blockId: blockId, typeId: "ordinary-note-type")
         let service = RecordingBlockService()
-        let bootstrap = BootstrapStub(
-            manifest: PinkhaSpaceManifest(
-                spaceId: document.spaceId,
-                registeredDocumentTypes: ["writing": "pinkha-writing-type"]
-            )
-        )
-        Container.shared.pinkhaBootstrapService.register { bootstrap }
-        defer { Container.shared.pinkhaBootstrapService.reset() }
 
         try await PinkhaTextDirectionPersistence.markExplicitAlignmentIfNeeded(
             document: document,
-            blockIds: [writtenBlockId],
+            blockIds: [blockId],
             alignment: .right,
             blockService: service
         )
 
         let capturedFields = await service.lastFields
         let persistedFields = try #require(capturedFields)
-        let reopenedBlockId = "pinkha-reopened-block"
+        PinkhaTextDirectionPersistence.resetForTesting()
         let reopenedInfo = makeInfo(
-            blockId: reopenedBlockId,
+            blockId: "ordinary-note-reopened",
             alignment: .right,
             fields: persistedFields
         )
-        let reopenedDocument = makeDocument(blockId: reopenedBlockId, info: reopenedInfo)
+        let reopenedDocument = makeDocument(
+            blockId: reopenedInfo.id,
+            typeId: "ordinary-note-type",
+            info: reopenedInfo
+        )
         let context = try #require(PinkhaTextDirectionUIKitAdapter.context(
             document: reopenedDocument,
             info: reopenedInfo,
@@ -90,69 +80,67 @@ struct PinkhaTextDirectionPersistenceTests {
         #expect(context.origin == .existingParagraph)
     }
 
-    @Test("Ready bootstrap state closes the manifest-cache race")
-    func readyStateFallbackClosesGateRace() throws {
-        let blockId = "pinkha-ready-state-race"
-        let document = makeDocument(blockId: blockId)
-        let manifest = PinkhaSpaceManifest(
-            spaceId: document.spaceId,
-            registeredDocumentTypes: ["writing": "pinkha-writing-type"]
+    @Test("Language rendering queues no block service writes")
+    func languageRenderingProducesZeroWrites() async throws {
+        PinkhaTextDirectionPersistence.resetForTesting()
+        let blockId = "ordinary-no-auto-write"
+        let info = makeInfo(blockId: blockId)
+        let document = makeDocument(
+            blockId: blockId,
+            typeId: "ordinary-page-type",
+            info: info
         )
-        Container.shared.pinkhaBootstrapService.register { EmptyBootstrapCacheStub() }
-        Container.shared.pinkhaBootstrapStateManager().setState(.ready(manifest), for: document.spaceId)
-        defer { Container.shared.pinkhaBootstrapService.reset() }
-
-        let info = try #require(document.infoContainer.get(id: blockId))
+        let service = RecordingBlockService()
+        Container.shared.blockService.register { service }
+        defer {
+            Container.shared.blockService.reset()
+            PinkhaTextDirectionPersistence.resetForTesting()
+        }
         let context = try #require(PinkhaTextDirectionUIKitAdapter.context(
             document: document,
             info: info,
             text: "שלום"
         ))
+        let textView = UITextView()
+        textView.semanticContentAttribute = .forceRightToLeft
+        textView.attributedText = NSAttributedString(string: "שלום")
 
-        #expect(context.origin == .ambiguousLegacyParagraph)
+        PinkhaTextDirectionUIKitAdapter.apply(context: context, to: textView)
+        try await Task.sleep(for: .milliseconds(350))
+
+        let events = await service.events
+        #expect(events.isEmpty)
+        #expect(PinkhaTextDirectionPersistence.sessionExplicitAlignment(blockId: blockId) == nil)
     }
 
-    @Test("Template blocks in a newly created Pinkha document are proven new")
-    func newDocumentTemplateBlockProvenance() throws {
-        let blockId = "pinkha-template-block"
-        let document = makeDocument(blockId: blockId)
-        let bootstrap = BootstrapStub(
-            manifest: PinkhaSpaceManifest(
-                spaceId: document.spaceId,
-                registeredDocumentTypes: ["writing": "pinkha-writing-type"]
+    @Test("Document type, manifest and creation provenance are absent from context eligibility")
+    func contextHasNoIdentityGate() throws {
+        for typeId in ["note", "page", "task", "unknown-custom-type"] {
+            let blockId = "block-\(typeId)"
+            let info = makeInfo(blockId: blockId)
+            let document = makeDocument(blockId: blockId, typeId: typeId, info: info)
+            let context = PinkhaTextDirectionUIKitAdapter.context(
+                document: document,
+                info: info,
+                text: "ordinary"
             )
-        )
-        Container.shared.pinkhaBootstrapService.register { bootstrap }
-        PinkhaDocumentIdentityStorage.shared.registerCreated(
-            objectId: document.objectId,
-            spaceId: document.spaceId
-        )
-        defer { Container.shared.pinkhaBootstrapService.reset() }
-
-        let info = try #require(document.infoContainer.get(id: blockId))
-        let context = try #require(PinkhaTextDirectionUIKitAdapter.context(
-            document: document,
-            info: info,
-            text: ""
-        ))
-
-        #expect(context.origin == .newParagraph)
+            #expect(context != nil)
+        }
     }
 
     private func makeDocument(
         blockId: String,
+        typeId: String,
         info: BlockInformation? = nil
     ) -> MockBaseDocument {
         let details = ObjectDetails(
-            id: "pinkha-document",
+            id: "document-\(typeId)",
             values: [
-                BundledPropertyKey.type.rawValue: Google_Protobuf_Value(
-                    stringValue: "pinkha-writing-type"
-                )
+                BundledPropertyKey.type.rawValue: Google_Protobuf_Value(stringValue: typeId)
             ]
         )
         let document = MockBaseDocument(objectId: details.id, details: details)
-        document.mockSpaceId = "pinkha-test-space"
+        document.mockSpaceId = "ordinary-test-space"
         let container = InfoContainerMock()
         container.getReturnInfo[blockId] = info ?? makeInfo(blockId: blockId)
         document.mockInfoContainer = container
@@ -178,24 +166,6 @@ struct PinkhaTextDirectionPersistenceTests {
     }
 }
 
-private struct BootstrapStub: PinkhaSpaceBootstrapServiceProtocol {
-    let manifest: PinkhaSpaceManifest
-
-    func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest { manifest }
-    func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? {
-        spaceId == manifest.spaceId ? manifest : nil
-    }
-    func isBootstrapped(spaceId: String) -> Bool { spaceId == manifest.spaceId }
-}
-
-private struct EmptyBootstrapCacheStub: PinkhaSpaceBootstrapServiceProtocol {
-    func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
-        throw CancellationError()
-    }
-    func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? { nil }
-    func isBootstrapped(spaceId: String) -> Bool { false }
-}
-
 private actor RecordingBlockService: BlockServiceProtocol {
     enum Event: Equatable {
         case alignment(LayoutAlignment)
@@ -209,7 +179,6 @@ private actor RecordingBlockService: BlockServiceProtocol {
 
     private let failFieldWrites: Bool
     private(set) var events = [Event]()
-    private(set) var lastAlignment: LayoutAlignment?
     private(set) var lastFields: BlockFields?
     var eventCount: Int { events.count }
 
@@ -218,7 +187,6 @@ private actor RecordingBlockService: BlockServiceProtocol {
     }
 
     func setAlign(objectId: String, blockIds: [String], alignment: LayoutAlignment) async throws {
-        lastAlignment = alignment
         events.append(.alignment(alignment))
     }
 

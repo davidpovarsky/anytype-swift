@@ -39,11 +39,6 @@ struct AnytypeNavigationViewRepresentable: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ controller: FullScreenSwipeNavigationController, context: Context) {
-        PinkhaNavigationGestureBridge.update(
-            controller: controller,
-            topNavigationItem: path.last,
-            layoutDirection: context.environment.layoutDirection
-        )
         let builder = context.coordinator.builder
         var freeViewControllers = context.coordinator.currentViewControllers
         var viewControllers = [UIHostingController<AnytypeNavigationViewBridge>]()
@@ -61,20 +56,22 @@ struct AnytypeNavigationViewRepresentable: UIViewControllerRepresentable {
                 viewControllers.append(vc)
             }
         }
-        if viewControllers.isEmpty {
-            return
-        }
-        
-        let currentViewControllers = context.coordinator.currentViewControllers
-        if currentViewControllers != viewControllers {
-            context.coordinator.currentViewControllers = viewControllers
-            context.coordinator.numberOfTransactions += 1
-            if currentViewControllers.last == viewControllers.last {
-                controller.setViewControllers(viewControllers, animated: false)
-            } else {
-                controller.setViewControllers(viewControllers, animated: currentViewControllers.isNotEmpty)
+        if !viewControllers.isEmpty {
+            let currentViewControllers = context.coordinator.currentViewControllers
+            if currentViewControllers != viewControllers {
+                context.coordinator.currentViewControllers = viewControllers
+                context.coordinator.numberOfTransactions += 1
+                if currentViewControllers.last == viewControllers.last {
+                    controller.setViewControllers(viewControllers, animated: false)
+                } else {
+                    controller.setViewControllers(viewControllers, animated: currentViewControllers.isNotEmpty)
+                }
             }
         }
+        PinkhaNavigationGestureBridge.update(
+            controller: controller,
+            layoutDirection: context.environment.layoutDirection
+        )
     }
     
     func makeCoordinator() -> AnytypeNavigationCoordinator {

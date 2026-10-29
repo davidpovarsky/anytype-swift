@@ -16,7 +16,6 @@ struct PageNavigationBackButton: View {
             pageNavigation.pop()
         } label: {
             Image(asset: .X24.back)
-                .flipsForRightToLeftLayoutDirection(true)
                 .navPanelDynamicForegroundStyle()
         }
         .simultaneousGesture(

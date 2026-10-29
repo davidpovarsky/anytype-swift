@@ -37,7 +37,7 @@ struct MessageReplyActionView<Content: View>: View {
     
     @available(iOS 18.0, *)
     private var contentWithReply: some View {
-        let progress = (-offsetX / minReplyWidth).clamped(to: 0...1)
+        let progress = (abs(offsetX) / minReplyWidth).clamped(to: 0...1)
         return content
             .overlay(alignment: .topTrailing) {
                 Image(asset: .X32.reply)
@@ -51,19 +51,23 @@ struct MessageReplyActionView<Content: View>: View {
             .offset(x: offsetX)
             .animation(.easeOut(duration: 0.15), value: offsetX)
             .gesture(MessageReplyGestureRecognizer(handleAction: { gesture in
+                guard let view = gesture.view else { return }
                 let translation = gesture.translation(in: gesture.view)
+                let directedDistance = view.effectiveUserInterfaceLayoutDirection == .rightToLeft
+                    ? translation.x
+                    : -translation.x
                 switch gesture.state {
                 case .changed:
-                    guard translation.x < 0 else { return }
+                    guard directedDistance > 0 else { return }
                     
                     offsetX = translation.x
                     
-                    if !hasTriggeredFeedback && -offsetX >= minReplyWidth {
+                    if !hasTriggeredFeedback && directedDistance >= minReplyWidth {
                         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                         hasTriggeredFeedback = true
                     }
                 case .ended:
-                    if abs(translation.x) > minReplyWidth {
+                    if directedDistance > minReplyWidth {
                         action()
                     }
                     withAnimation {

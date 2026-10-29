@@ -279,7 +279,7 @@ struct MessageView: View {
             Button {
                 output?.didSelectReplyTo(message: data)
             } label: {
-                Label(Loc.Message.Action.reply, systemImage: "arrowshape.turn.up.left")
+                Label(Loc.Message.Action.reply, systemImage: "arrowshape.turn.up.backward")
             }
         }
         

@@ -53,14 +53,18 @@ final class FullScreenSwipeNavigationController: UINavigationController, UIGestu
     }
 
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        guard !PinkhaNavigationGestureBridge.requiresPublicEdgePop(controller: self) else {
-            return false
-        }
         guard viewControllers.count > 1 else { return false }
 
         guard let panGestureRecognizer = gestureRecognizer as? UIPanGestureRecognizer else { return false }
 
-        let translation = panGestureRecognizer.translation(in: panGestureRecognizer.view)
-        return translation.x > 0
+        let translationX = panGestureRecognizer.translation(in: panGestureRecognizer.view).x
+        switch view.effectiveUserInterfaceLayoutDirection {
+        case .leftToRight:
+            return translationX > 0
+        case .rightToLeft:
+            return translationX < 0
+        @unknown default:
+            return false
+        }
     }
 }

@@ -1,14 +1,12 @@
-import UIKit
 import NaturalLanguage
-import Factory
 import PinkhaKit
 import Services
+import UIKit
 
 struct PinkhaTextBlockWritingContext: Equatable, Hashable {
     let origin: PinkhaParagraphOrigin
     let persistedAlignment: PinkhaParagraphAlignment?
     let alignmentWasExplicit: Bool
-    let persistedAutomaticDirection: PinkhaLayoutDirection?
     let blockId: String?
     let isTitle: Bool
 
@@ -16,71 +14,35 @@ struct PinkhaTextBlockWritingContext: Equatable, Hashable {
         origin: PinkhaParagraphOrigin,
         persistedAlignment: PinkhaParagraphAlignment?,
         alignmentWasExplicit: Bool,
-        persistedAutomaticDirection: PinkhaLayoutDirection? = nil,
         blockId: String? = nil,
         isTitle: Bool = false
     ) {
         self.origin = origin
         self.persistedAlignment = persistedAlignment
         self.alignmentWasExplicit = alignmentWasExplicit
-        self.persistedAutomaticDirection = persistedAutomaticDirection
         self.blockId = blockId
         self.isTitle = isTitle
     }
 }
 
 @MainActor
-enum PinkhaTextDirectionGate {
-    static func isWritingDocument(_ document: some BaseDocumentProtocol) -> Bool {
-        guard PinkhaRuntime.enabled,
-              let typeId = document.details?.type else {
-            return false
-        }
-        if PinkhaDocumentIdentityStorage.shared.isConfirmed(
-            objectId: document.objectId,
-            spaceId: document.spaceId
-        ) {
-            return true
-        }
-
-        let manifest: PinkhaSpaceManifest?
-        if let cached = Container.shared.pinkhaBootstrapService().manifest(forSpaceId: document.spaceId) {
-            manifest = cached
-        } else if case let .ready(readyManifest) = Container.shared
-            .pinkhaBootstrapStateManager().state(for: document.spaceId) {
-            // The state manager is the authoritative UI readiness source. Consult it as a
-            // race-safe fallback when the engine cache is not yet visible to this render pass.
-            manifest = readyManifest
-        } else {
-            manifest = nil
-        }
-
-        guard let manifest, manifest.isRegisteredDocumentType(typeId: typeId) else {
-            return false
-        }
-        PinkhaDocumentIdentityStorage.shared.registerConfirmed(
-            objectId: document.objectId,
-            spaceId: document.spaceId
-        )
-        return true
-    }
-}
-
-@MainActor
 enum PinkhaTextDirectionUIKitAdapter {
+    private static let layoutDelegates = NSMapTable<UITextView, PinkhaTextLayoutDelegate>.weakToStrongObjects()
+
+    /// Builds presentation context for every Anytype document. Document identity, type,
+    /// provenance, Pinkha registration and session-created status are deliberately absent.
     static func context(
         document: some BaseDocumentProtocol,
         info: BlockInformation,
-        text: String
+        text _: String
     ) -> PinkhaTextBlockWritingContext? {
-        guard PinkhaTextDirectionGate.isWritingDocument(document) else { return nil }
-
         let hostAlignment: LayoutAlignment
         if info.textContent?.contentType == .title, let details = document.details {
             hostAlignment = details.objectAlignValue
         } else {
             hostAlignment = info.horizontalAlignment
         }
+        let isTitle = info.textContent?.contentType == .title
 
         if let sessionAlignment = PinkhaTextDirectionPersistence.sessionExplicitAlignment(
             blockId: info.id
@@ -90,133 +52,83 @@ enum PinkhaTextDirectionUIKitAdapter {
                 persistedAlignment: sessionAlignment,
                 alignmentWasExplicit: true,
                 blockId: info.id,
-                isTitle: info.textContent?.contentType == .title
+                isTitle: isTitle
             )
         }
 
-        let marker = marker(from: info.fields)
-        switch marker {
+        switch marker(from: info.fields) {
         case let .explicit(alignment):
             return PinkhaTextBlockWritingContext(
                 origin: .existingParagraph,
                 persistedAlignment: alignment,
                 alignmentWasExplicit: true,
                 blockId: info.id,
-                isTitle: info.textContent?.contentType == .title
+                isTitle: isTitle
             )
-        case let .automatic(direction):
-            if !PinkhaAutomaticDirectionEligibility.markerMatchesStoredAlignment(
-                marker: .automatic(direction),
-                storedAlignment: hostAlignment.pinkhaAlignment
-            ) {
-                // The host alignment changed but the automatic marker did not. The safest
-                // interpretation is a successful explicit alignment followed by a failed
-                // metadata write; never overwrite that stored choice automatically.
-                return PinkhaTextBlockWritingContext(
-                    origin: .existingParagraph,
-                    persistedAlignment: hostAlignment.pinkhaAlignment,
-                    alignmentWasExplicit: true,
-                    persistedAutomaticDirection: nil,
-                    blockId: info.id,
-                    isTitle: info.textContent?.contentType == .title
-                )
-            }
+        case .automatic:
+            // Old automatic markers are historical defaults. The current application
+            // language now owns the display default, and no migration write is generated.
             return PinkhaTextBlockWritingContext(
                 origin: .existingParagraph,
                 persistedAlignment: hostAlignment.pinkhaAlignment,
                 alignmentWasExplicit: false,
-                persistedAutomaticDirection: direction,
                 blockId: info.id,
-                isTitle: info.textContent?.contentType == .title
+                isTitle: isTitle
             )
         case nil:
-            // Session registration is the only reliable proof that a marker-less block is
-            // new. Text content alone is never used to infer consent to persist metadata.
-            let isProvenNew = SessionCreatedBlockIdsStorage.shared.contains(info.id)
-                || PinkhaDocumentIdentityStorage.shared.wasCreatedThisSession(
-                    objectId: document.objectId,
-                    spaceId: document.spaceId
-                )
-                || isLocallyFabricatedUnlinkedBlock(document: document, info: info)
-            if isProvenNew, !text.isEmpty {
-                PinkhaTextDirectionPersistence.scheduleInitialDirectionIfNeeded(
-                    document: document,
-                    info: info,
-                    text: text
-                )
-            }
-            let origin: PinkhaParagraphOrigin = isProvenNew
-                ? .newParagraph
-                : .ambiguousLegacyParagraph
+            // Marker-less left/right values are unavoidably ambiguous. Treat them as old
+            // defaults for reversible display adaptation; center/justify are preserved by
+            // PinkhaWritingDirectionPolicy as unambiguous formatting choices.
             return PinkhaTextBlockWritingContext(
-                origin: origin,
+                origin: .ambiguousLegacyParagraph,
                 persistedAlignment: hostAlignment.pinkhaAlignment,
                 alignmentWasExplicit: false,
                 blockId: info.id,
-                isTitle: info.textContent?.contentType == .title
+                isTitle: isTitle
             )
         }
     }
 
+    /// Applies display-only defaults. Existing text is aligned by line-fragment geometry, not
+    /// paragraph attributes, so a language/layout refresh cannot enter host text-change
+    /// callbacks or create document mutations. An empty editor receives only a typing default
+    /// (plus its non-document placeholder alignment) so the insertion caret starts on the
+    /// application-language side without rewriting text storage.
     static func apply(
         context: PinkhaTextBlockWritingContext?,
         to textView: UITextView
     ) {
-        guard let context else { return }
+        guard let context, textView.markedTextRange == nil else { return }
 
         let interfaceDirection = textView.effectiveUserInterfaceLayoutDirection.pinkhaDirection
         let decision = PinkhaWritingDirectionPolicy.resolve(
             PinkhaWritingDirectionInput(
-                context: .pinkhaWritingDocument,
-                origin: context.origin,
                 isEmpty: textView.text.isEmpty,
                 interfaceDirection: interfaceDirection,
                 detectedTextDirection: detectedDirection(
                     for: textView.text,
                     fallback: interfaceDirection
                 ),
-                persistedAutomaticDirection: context.persistedAutomaticDirection,
                 persistedAlignment: context.persistedAlignment,
                 alignmentWasExplicit: context.alignmentWasExplicit
             )
         )
-        guard let decision else { return }
 
         let alignment = decision.alignment.nsTextAlignment
-        let writingDirection = decision.baseWritingDirection.nsWritingDirection
-
-        // Never touch paragraph, alignment or typing state while an IME composition is
-        // active. The next model echo/configuration applies the same decision after commit.
-        guard textView.markedTextRange == nil else { return }
-
-        // These properties also drive the empty-state caret and placeholder. The
-        // TextViewWithPlaceholder override keeps its label synchronized on reused rows.
-        textView.textAlignment = alignment
-
-        if textView.textStorage.length > 0 {
-            applyParagraphStyle(
-                to: textView.textStorage,
-                writingDirection: writingDirection,
-                alignment: alignment
-            )
+        if context.alignmentWasExplicit || alignment == .center || alignment == .justified {
+            removeDisplayAlignment(from: textView)
+        } else {
+            applyDisplayAlignment(alignment, to: textView)
         }
-
-        var typingAttributes = textView.typingAttributes
-        let typingStyle = mutableParagraphStyle(from: typingAttributes[.paragraphStyle])
-        typingStyle.baseWritingDirection = writingDirection
-        typingStyle.alignment = alignment
-        typingAttributes[.paragraphStyle] = typingStyle
-        textView.typingAttributes = typingAttributes
 
         if PinkhaStage1AcceptanceState.isEnabled, let blockId = context.blockId {
             let role = context.isTitle ? "title" : "body"
             textView.accessibilityIdentifier = "pinkha.stage1.\(role).\(blockId)"
-            textView.accessibilityLabel = [
-                "Pinkha Stage 1",
-                decision.baseWritingDirection == .rightToLeft ? "rtl" : "ltr",
-                "alignment-\(decision.alignment.acceptanceName)",
-                "origin-\(context.origin.acceptanceName)"
-            ].joined(separator: ";")
+            textView.accessibilityLabel = PinkhaStage1AcceptanceDiagnostics.textViewLabel(
+                decision: decision,
+                origin: context.origin,
+                textView: textView
+            )
         }
     }
 
@@ -244,67 +156,90 @@ enum PinkhaTextDirectionUIKitAdapter {
         return PinkhaTextDirectionMarker(storedValue: storedValue)
     }
 
-    static func isLocallyFabricatedUnlinkedBlock(
-        document: some BaseDocumentProtocol,
-        info: BlockInformation
-    ) -> Bool {
-        // The virtual trailing row is inserted into InfoContainer before it exists in the
-        // middleware, but it is intentionally not attached to its parent's children yet.
-        // This is safe as a display-only new-row signal. Persistence still independently
-        // requires SessionCreatedBlockIdsStorage after successful materialization.
-        guard let parentId = info.configurationData.parentId,
-              let parent = document.infoContainer.get(id: parentId) else {
-            return false
-        }
-        return !parent.childrenIds.contains(info.id)
+    static func visualAlignment(for textView: UITextView) -> NSTextAlignment {
+        layoutDelegates.object(forKey: textView)?.alignment ?? textView.textAlignment
     }
 
-    static func attributedDirection(
-        in attributedText: NSAttributedString
-    ) -> PinkhaLayoutDirection? {
-        guard attributedText.length > 0,
-              let style = attributedText.attribute(
-                .paragraphStyle,
-                at: 0,
-                effectiveRange: nil
-              ) as? NSParagraphStyle else {
-            return nil
-        }
-        switch style.baseWritingDirection {
-        case .rightToLeft: return .rightToLeft
-        case .leftToRight: return .leftToRight
-        case .natural: return nil
-        @unknown default: return nil
-        }
-    }
-
-    private static func applyParagraphStyle(
-        to storage: NSTextStorage,
-        writingDirection: NSWritingDirection,
-        alignment: NSTextAlignment
+    private static func applyDisplayAlignment(
+        _ alignment: NSTextAlignment,
+        to textView: UITextView
     ) {
-        let fullRange = NSRange(location: 0, length: storage.length)
-        var replacements = [(NSRange, NSMutableParagraphStyle)]()
-        storage.enumerateAttribute(.paragraphStyle, in: fullRange) { value, range, _ in
-            let style = mutableParagraphStyle(from: value)
-            style.baseWritingDirection = writingDirection
-            style.alignment = alignment
-            replacements.append((range, style))
+        let layoutManager = textView.layoutManager
+        let layoutDelegate: PinkhaTextLayoutDelegate
+        if let existing = layoutDelegates.object(forKey: textView),
+           layoutManager.delegate === existing {
+            layoutDelegate = existing
+        } else {
+            // The Anytype editor does not install an NSLayoutManager delegate. Do not displace
+            // an unexpected host delegate: that would trade directionality for lost behavior.
+            guard layoutManager.delegate == nil else { return }
+            layoutDelegate = PinkhaTextLayoutDelegate()
+            layoutManager.delegate = layoutDelegate
+            layoutDelegates.setObject(layoutDelegate, forKey: textView)
         }
 
-        storage.beginEditing()
-        for (range, style) in replacements {
-            storage.addAttribute(.paragraphStyle, value: style, range: range)
+        layoutDelegate.alignment = alignment
+
+        if textView.textStorage.length == 0 {
+            var typingAttributes = textView.typingAttributes
+            let paragraphStyle = (
+                typingAttributes[.paragraphStyle] as? NSParagraphStyle
+            )?.mutableCopy() as? NSMutableParagraphStyle ?? NSMutableParagraphStyle()
+            paragraphStyle.alignment = alignment
+            typingAttributes[.paragraphStyle] = paragraphStyle
+            textView.typingAttributes = typingAttributes
+
+            // TextViewWithPlaceholder owns a direct UILabel child. Updating that presentation
+            // object is intentionally separate from the document-backed text storage.
+            textView.subviews.compactMap { $0 as? UILabel }.forEach {
+                $0.textAlignment = alignment
+            }
         }
-        storage.endEditing()
+
+        invalidateDisplayLayout(of: textView)
     }
 
-    private static func mutableParagraphStyle(from value: Any?) -> NSMutableParagraphStyle {
-        if let style = value as? NSParagraphStyle,
-           let copy = style.mutableCopy() as? NSMutableParagraphStyle {
-            return copy
-        }
-        return NSMutableParagraphStyle()
+    private static func removeDisplayAlignment(from textView: UITextView) {
+        guard let layoutDelegate = layoutDelegates.object(forKey: textView),
+              textView.layoutManager.delegate === layoutDelegate else { return }
+        layoutDelegate.alignment = nil
+        invalidateDisplayLayout(of: textView)
+    }
+
+    private static func invalidateDisplayLayout(of textView: UITextView) {
+        let characterRange = NSRange(location: 0, length: textView.textStorage.length)
+        textView.layoutManager.invalidateLayout(
+            forCharacterRange: characterRange,
+            actualCharacterRange: nil
+        )
+        textView.layoutManager.invalidateDisplay(forCharacterRange: characterRange)
+        textView.setNeedsLayout()
+    }
+}
+
+@MainActor
+private final class PinkhaTextLayoutDelegate: NSObject, NSLayoutManagerDelegate {
+    var alignment: NSTextAlignment?
+
+    func layoutManager(
+        _ layoutManager: NSLayoutManager,
+        shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<CGRect>,
+        lineFragmentUsedRect: UnsafeMutablePointer<CGRect>,
+        baselineOffset: UnsafeMutablePointer<CGFloat>,
+        in textContainer: NSTextContainer,
+        forGlyphRange glyphRange: NSRange
+    ) -> Bool {
+        guard let alignment, alignment == .left || alignment == .right else { return false }
+
+        let fragment = lineFragmentRect.pointee
+        var used = lineFragmentUsedRect.pointee
+        guard used.width <= fragment.width else { return false }
+
+        used.origin.x = alignment == .right
+            ? fragment.maxX - used.width
+            : fragment.minX
+        lineFragmentUsedRect.pointee = used
+        return true
     }
 }
 
@@ -330,39 +265,10 @@ private extension PinkhaParagraphAlignment {
         case .natural: .natural
         }
     }
-
-}
-
-private extension PinkhaLayoutDirection {
-    var nsWritingDirection: NSWritingDirection {
-        self == .rightToLeft ? .rightToLeft : .leftToRight
-    }
 }
 
 private extension UIUserInterfaceLayoutDirection {
     var pinkhaDirection: PinkhaLayoutDirection {
         self == .rightToLeft ? .rightToLeft : .leftToRight
-    }
-}
-
-private extension PinkhaParagraphAlignment {
-    var acceptanceName: String {
-        switch self {
-        case .left: "left"
-        case .center: "center"
-        case .right: "right"
-        case .justified: "justified"
-        case .natural: "natural"
-        }
-    }
-}
-
-private extension PinkhaParagraphOrigin {
-    var acceptanceName: String {
-        switch self {
-        case .newParagraph: "new"
-        case .existingParagraph: "existing"
-        case .ambiguousLegacyParagraph: "legacy-display-only"
-        }
     }
 }

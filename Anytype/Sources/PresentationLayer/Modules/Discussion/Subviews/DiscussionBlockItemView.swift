@@ -21,7 +21,7 @@ struct DiscussionBlockItemView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         case .toggle(_, let content):
             HStack(alignment: .top, spacing: 6) {
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .foregroundStyle(Color.Text.secondary)
                     .font(.caption)
                     .frame(width: 20, height: 20)

@@ -14,7 +14,7 @@ permissions:
 jobs:
   full-acceptance:
     runs-on: xcode-27
-    timeout-minutes: 90
+    timeout-minutes: 150
 
     steps:
       - name: Checkout
@@ -90,16 +90,18 @@ jobs:
             ENABLE_TESTABILITY=YES \
             2>&1 | tee build/evidence/release-real-app-sequence-build.log
 
-      - name: Run Release acceptance on iPhone LTR and iPad RTL concurrently
+      - name: Run Release acceptance on iPhone LTR and iPad RTL sequentially
         id: release_acceptance
         run: |
           set -o pipefail
-          run_real_app_acceptance() {
+          run_real_app_acceptance() (
             local device_kind="$1"
             local udid="$2"
             local direction="$3"
-            local language="$4"
-            local region="$5"
+            local device_language="$4"
+            local device_region="$5"
+            local app_language="$6"
+            local app_region="$7"
             local result="build/results/release-${device_kind}-${direction}.xcresult"
             local log="build/evidence/release-${device_kind}-${direction}.log"
 
@@ -108,6 +110,21 @@ jobs:
             xcrun simctl bootstatus "$udid" -b
             xcrun simctl uninstall "$udid" io.anytype.app || true
             xcrun simctl uninstall "$udid" io.anytype.app.dev || true
+            xcrun simctl spawn "$udid" defaults write NSGlobalDomain AppleLanguages -array "$device_language"
+            xcrun simctl spawn "$udid" defaults write NSGlobalDomain AppleLocale "$device_language"_"$device_region"
+            {
+              printf 'device-language-requested=%s\n' "$device_language"
+              printf 'device-region-requested=%s\n' "$device_region"
+              printf 'app-language-requested=%s\n' "$app_language"
+              printf 'app-region-requested=%s\n' "$app_region"
+              xcrun simctl spawn "$udid" defaults read NSGlobalDomain AppleLanguages
+              xcrun simctl spawn "$udid" defaults read NSGlobalDomain AppleLocale
+            } | tee "build/evidence/release-${device_kind}-${direction}-device-language.txt"
+            # Apply the simulator language at the OS boundary before launching the app.
+            # The app itself receives the opposite language through its launch arguments.
+            xcrun simctl shutdown "$udid"
+            xcrun simctl boot "$udid"
+            xcrun simctl bootstatus "$udid" -b
 
             xcrun simctl spawn "$udid" log stream \
               --style compact \
@@ -117,7 +134,9 @@ jobs:
             local pinkha_log_pid=$!
 
             set +e
-            PINKHA_ACCEPTANCE_DIRECTION="$direction" xcodebuild test-without-building \
+            PINKHA_ACCEPTANCE_DIRECTION="$direction" \
+            PINKHA_ACCEPTANCE_DEVICE_LANGUAGE="$device_language" \
+            xcodebuild test-without-building \
               -workspace PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace \
               -scheme PinkhaStage1Acceptance \
               -configuration Release-Anytype \
@@ -126,8 +145,8 @@ jobs:
               -resultBundlePath "$result" \
               -collect-test-diagnostics never \
               -parallel-testing-enabled NO \
-              -testLanguage "$language" \
-              -testRegion "$region" \
+              -testLanguage "$app_language" \
+              -testRegion "$app_region" \
               -only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests \
               ENABLE_TESTABILITY=YES \
               2>&1 | tee "$log"
@@ -138,15 +157,15 @@ jobs:
             wait "$pinkha_log_pid" 2>/dev/null || true
             xcrun simctl shutdown "$udid" || true
             return "$run_status"
-          }
+          )
 
           set +e
-          run_real_app_acceptance iphone "$IPHONE_UDID" ltr en US &
-          iphone_pid=$!
-          run_real_app_acceptance ipad "$IPAD_UDID" rtl he IL &
-          ipad_pid=$!
-          wait "$iphone_pid"; iphone_status=$?
-          wait "$ipad_pid"; ipad_status=$?
+          # The app launch arguments select English while this simulator remains Hebrew.
+          run_real_app_acceptance iphone "$IPHONE_UDID" ltr he IL en US
+          iphone_status=$?
+          # The app launch arguments select Hebrew while this simulator remains English.
+          run_real_app_acceptance ipad "$IPAD_UDID" rtl en US he IL
+          ipad_status=$?
           set -e
 
           printf '%s\n' "$iphone_status" > build/evidence/release-iphone-ltr-status.txt

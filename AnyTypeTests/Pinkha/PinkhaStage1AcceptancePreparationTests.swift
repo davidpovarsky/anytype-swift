@@ -6,7 +6,7 @@ import Testing
 
 @Suite("Pinkha Stage 1 real-app acceptance preparation", .serialized)
 struct PinkhaStage1AcceptancePreparationTests {
-    @Test("Creates a disposable local-only Pinkha document for the launched application")
+    @Test("Creates disposable Pinkha, ordinary Note and ordinary Page documents")
     func prepareRealApplicationState() async throws {
         Container.shared.serverConfigurationStorage().setupCurrentConfiguration(config: .localOnly)
 
@@ -57,15 +57,42 @@ struct PinkhaStage1AcceptancePreparationTests {
         try await Container.shared.propertiesService().updateProperty(
             objectId: document.id,
             propertyKey: BundledPropertyKey.name.rawValue,
-            value: PinkhaStage1AcceptanceState.documentTitle.protobufValue
+            value: PinkhaStage1AcceptanceState.pinkhaDocumentTitle.protobufValue
+        )
+
+        let objectActions = Container.shared.objectActionsService()
+        let note = try await objectActions.createObject(
+            name: PinkhaStage1AcceptanceState.noteDocumentTitle,
+            typeUniqueKey: .note,
+            shouldDeleteEmptyObject: false,
+            shouldSelectType: false,
+            shouldSelectTemplate: false,
+            spaceId: spaceId,
+            origin: .none,
+            templateId: nil
+        )
+        let page = try await objectActions.createObject(
+            name: PinkhaStage1AcceptanceState.pageDocumentTitle,
+            typeUniqueKey: .page,
+            shouldDeleteEmptyObject: false,
+            shouldSelectType: false,
+            shouldSelectTemplate: false,
+            spaceId: spaceId,
+            origin: .none,
+            templateId: nil
         )
 
         try PinkhaStage1AcceptanceState(
             spaceId: spaceId,
-            objectId: document.id
+            pinkhaObjectId: document.id,
+            noteObjectId: note.id,
+            pageObjectId: page.id
         ).save()
         try await Container.shared.authMiddleService().preloadRemainingSpaces()
 
-        print("PINKHA_STAGE1_ACCEPTANCE_READY space=\(spaceId) object=\(document.id)")
+        print(
+            "PINKHA_STAGE1_ACCEPTANCE_READY space=\(spaceId) "
+            + "pinkha=\(document.id) note=\(note.id) page=\(page.id)"
+        )
     }
 }

@@ -8,7 +8,7 @@ enum PinkhaTextBlockLeadingMarkerAdapter {
         content: BlockText,
         to leadingView: TextBlockLeadingView
     ) {
-        let isPinkhaRTL = content.contentType == .numbered
+        let isRTL = content.contentType == .numbered
             && context != nil
             && leadingView.effectiveUserInterfaceLayoutDirection == .rightToLeft
 
@@ -18,7 +18,7 @@ enum PinkhaTextBlockLeadingMarkerAdapter {
             return
         }
         if content.number >= 20 {
-            label.textAlignment = isPinkhaRTL ? .natural : .left
+            label.textAlignment = isRTL ? .natural : .left
         } else {
             label.textAlignment = .center
         }

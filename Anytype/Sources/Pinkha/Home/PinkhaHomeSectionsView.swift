@@ -177,41 +177,20 @@ struct PinkhaHomeSectionsView: View {
                storedState.spaceId == spaceId {
                 state = storedState
             } else {
-                guard let typeId = manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey] else {
-                    didOpenAcceptanceDocument = false
-                    return
-                }
-
-                let details = try await PinkhaHierarchyMutationService().createWritingDocument(
-                    typeId: typeId,
-                    parentId: nil,
-                    spaceId: spaceId,
-                    manifest: manifest,
-                    existingSiblings: repository?.snapshot.rootNodes ?? []
-                )
-                try await Container.shared.propertiesService().updateProperty(
-                    objectId: details.id,
-                    propertyKey: BundledPropertyKey.name.rawValue,
-                    value: PinkhaStage1AcceptanceState.documentTitle.protobufValue
-                )
-                repository?.registerPendingCreated(details: details.updated(by: [
-                    BundledPropertyKey.name.rawValue: PinkhaStage1AcceptanceState.documentTitle.protobufValue
-                ]))
-
-                state = PinkhaStage1AcceptanceState(
-                    spaceId: spaceId,
-                    objectId: details.id
-                )
+                state = try await createAcceptanceState(manifest: manifest)
                 try state.save()
             }
 
             PinkhaDocumentIdentityStorage.shared.registerCreated(
-                objectId: state.objectId,
+                objectId: state.pinkhaObjectId,
                 spaceId: state.spaceId
+            )
+            let selectedObjectId = state.objectId(
+                for: PinkhaStage1AcceptanceState.requestedDocumentKind
             )
             output?.onObjectSelected(
                 screenData: .editor(.page(EditorPageObject(
-                    objectId: state.objectId,
+                    objectId: selectedObjectId,
                     spaceId: state.spaceId
                 )))
             )
@@ -219,5 +198,59 @@ struct PinkhaHomeSectionsView: View {
             didOpenAcceptanceDocument = false
             bootstrapState = .failed(error.localizedDescription)
         }
+    }
+
+    private func createAcceptanceState(
+        manifest: PinkhaSpaceManifest
+    ) async throws -> PinkhaStage1AcceptanceState {
+        guard let typeId = manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey] else {
+            throw PinkhaBootstrapError.manifestStoreError("Missing acceptance writing type")
+        }
+
+        let pinkhaDocument = try await PinkhaHierarchyMutationService().createWritingDocument(
+            typeId: typeId,
+            parentId: nil,
+            spaceId: spaceId,
+            manifest: manifest,
+            existingSiblings: repository?.snapshot.rootNodes ?? []
+        )
+        try await Container.shared.propertiesService().updateProperty(
+            objectId: pinkhaDocument.id,
+            propertyKey: BundledPropertyKey.name.rawValue,
+            value: PinkhaStage1AcceptanceState.pinkhaDocumentTitle.protobufValue
+        )
+        repository?.registerPendingCreated(details: pinkhaDocument.updated(by: [
+            BundledPropertyKey.name.rawValue:
+                PinkhaStage1AcceptanceState.pinkhaDocumentTitle.protobufValue
+        ]))
+
+        let objectActions = Container.shared.objectActionsService()
+        let note = try await objectActions.createObject(
+            name: PinkhaStage1AcceptanceState.noteDocumentTitle,
+            typeUniqueKey: .note,
+            shouldDeleteEmptyObject: false,
+            shouldSelectType: false,
+            shouldSelectTemplate: false,
+            spaceId: spaceId,
+            origin: .none,
+            templateId: nil
+        )
+        let page = try await objectActions.createObject(
+            name: PinkhaStage1AcceptanceState.pageDocumentTitle,
+            typeUniqueKey: .page,
+            shouldDeleteEmptyObject: false,
+            shouldSelectType: false,
+            shouldSelectTemplate: false,
+            spaceId: spaceId,
+            origin: .none,
+            templateId: nil
+        )
+
+        return PinkhaStage1AcceptanceState(
+            spaceId: spaceId,
+            pinkhaObjectId: pinkhaDocument.id,
+            noteObjectId: note.id,
+            pageObjectId: page.id
+        )
     }
 }

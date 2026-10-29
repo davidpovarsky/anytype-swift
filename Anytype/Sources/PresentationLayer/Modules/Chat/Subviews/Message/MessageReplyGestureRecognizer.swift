@@ -32,9 +32,12 @@ struct MessageReplyGestureRecognizer: UIGestureRecognizerRepresentable {
             let velocity = pan.velocity(in: view)
             
             let isHorizontal = abs(velocity.x) > abs(velocity.y)
+            let directionAdjustedVelocityX = view.effectiveUserInterfaceLayoutDirection == .rightToLeft
+                ? -velocity.x
+                : velocity.x
             
             // deviation from the horizontal axis by no more than 25 degrees
-            let angle = atan2(velocity.y, velocity.x) * 180 / .pi
+            let angle = atan2(velocity.y, directionAdjustedVelocityX) * 180 / .pi
             let withinDeviationAngle = (angle > 155 || angle < -155)
             
             return isHorizontal && withinDeviationAngle

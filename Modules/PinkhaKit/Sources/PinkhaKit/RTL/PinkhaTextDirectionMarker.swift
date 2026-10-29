@@ -27,28 +27,3 @@ public enum PinkhaTextDirectionMarker: Sendable, Equatable {
         }
     }
 }
-
-public enum PinkhaAutomaticDirectionEligibility {
-    public static func shouldPersist(
-        marker: PinkhaTextDirectionMarker?,
-        isSessionCreatedBlock: Bool
-    ) -> Bool {
-        switch marker {
-        case .explicit:
-            false
-        case .automatic:
-            true
-        case nil:
-            isSessionCreatedBlock
-        }
-    }
-
-    public static func markerMatchesStoredAlignment(
-        marker: PinkhaTextDirectionMarker?,
-        storedAlignment: PinkhaParagraphAlignment
-    ) -> Bool {
-        guard case let .automatic(direction) = marker else { return true }
-        let expected: PinkhaParagraphAlignment = direction == .rightToLeft ? .right : .left
-        return storedAlignment == expected
-    }
-}
