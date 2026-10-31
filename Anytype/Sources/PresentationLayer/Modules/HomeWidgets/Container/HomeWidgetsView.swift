@@ -2,7 +2,6 @@ import Foundation
 import SwiftUI
 import Services
 import AnytypeCore
-import PinkhaKit
 
 struct HomeWidgetsView: View {
     let info: AccountInfo
@@ -88,12 +87,7 @@ private struct HomeWidgetsInternalView: View {
             VStack(spacing: 0) {
                 SpaceInfoView(spaceId: model.spaceId)
                 InviteMembersStubWidgetView(spaceId: model.spaceId, output: model.output)
-                if PinkhaRuntime.enabled {
-                    PinkhaHomeSectionsView(
-                        spaceId: model.spaceId,
-                        output: model.output
-                    )
-                } else if let channelWidgetsObject = model.channelWidgetsObject,
+                if let channelWidgetsObject = model.channelWidgetsObject,
                    let personalWidgetsObject = model.personalWidgetsObject {
                     homeWidget
                     ForEach(model.visibleSections, id: \.self) { section in
