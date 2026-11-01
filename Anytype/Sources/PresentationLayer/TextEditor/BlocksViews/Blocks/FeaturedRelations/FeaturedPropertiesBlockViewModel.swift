@@ -13,6 +13,7 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
     private var featuredRelations: [Property]
     private let onRelationTap: (Property) -> Void
     private let collectionController: any EditorCollectionReloadable
+    private weak var torahSession: TorahEditorSession?
     
     private var cancellables = [AnyCancellable]()
     
@@ -20,12 +21,14 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
         infoProvider: BlockModelInfomationProvider,
         document: some BaseDocumentProtocol,
         collectionController: some EditorCollectionReloadable,
+        torahSession: TorahEditorSession? = nil,
         onRelationValueTap: @escaping (Property) -> Void
     ) {
         self.infoProvider = infoProvider
         self.document = document
         self.featuredRelations = document.featuredRelationsForEditor
         self.collectionController = collectionController
+        self.torahSession = torahSession
         self.onRelationTap = onRelationValueTap
         
         document.featuredRelationsForEditorPublisher
@@ -48,6 +51,7 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
         return UIHostingConfiguration {
             EditorFeaturedPropertiesView(
                 relations: featuredRelations,
+                torahSession: torahSession,
                 onRelationTap: onRelationTap
             )
         }

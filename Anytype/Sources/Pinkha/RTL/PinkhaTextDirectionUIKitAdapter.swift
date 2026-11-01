@@ -28,6 +28,7 @@ struct PinkhaTextBlockWritingContext: Equatable, Hashable {
 @MainActor
 enum PinkhaTextDirectionUIKitAdapter {
     private static let layoutDelegates = NSMapTable<UITextView, PinkhaTextLayoutDelegate>.weakToStrongObjects()
+    private static let writingContexts = NSMapTable<UITextView, PinkhaWritingContextBox>.weakToStrongObjects()
 
     /// Builds presentation context for every Anytype document. Document identity, type,
     /// provenance, Pinkha registration and session-created status are deliberately absent.
@@ -89,6 +90,30 @@ enum PinkhaTextDirectionUIKitAdapter {
         }
     }
 
+    /// Resolves the effective application-wide layout direction for this text view.
+    /// Prefers container/ancestor attributes, then explicit view-level attributes, then inherited UIKit direction.
+    static func effectiveInterfaceDirection(for textView: UITextView) -> PinkhaLayoutDirection {
+        // The navigation container already receives the effective SwiftUI app layout direction.
+        // The editor row inherits it once attached; never consult a last-used global window.
+        var ancestor = textView.superview
+        while let view = ancestor {
+            switch view.semanticContentAttribute {
+            case .forceRightToLeft: return .rightToLeft
+            case .forceLeftToRight: return .leftToRight
+            default: break
+            }
+            ancestor = view.superview
+        }
+        // Detached text views used by unit tests can retain an intentional explicit setting.
+        switch textView.semanticContentAttribute {
+        case .forceRightToLeft: return .rightToLeft
+        case .forceLeftToRight: return .leftToRight
+        default: break
+        }
+        return textView.effectiveUserInterfaceLayoutDirection == .rightToLeft
+            ? .rightToLeft : .leftToRight
+    }
+
     /// Applies display-only defaults. Existing text is aligned by line-fragment geometry, not
     /// paragraph attributes, so a language/layout refresh cannot enter host text-change
     /// callbacks or create document mutations. An empty editor receives only a typing default
@@ -98,9 +123,22 @@ enum PinkhaTextDirectionUIKitAdapter {
         context: PinkhaTextBlockWritingContext?,
         to textView: UITextView
     ) {
+        if let context {
+            writingContexts.setObject(PinkhaWritingContextBox(context), forKey: textView)
+        } else {
+            writingContexts.removeObject(forKey: textView)
+            removeDisplayAlignment(from: textView)
+        }
         guard let context, textView.markedTextRange == nil else { return }
 
-        let interfaceDirection = textView.effectiveUserInterfaceLayoutDirection.pinkhaDirection
+        let interfaceDirection = effectiveInterfaceDirection(for: textView)
+        let targetSemanticAttribute: UISemanticContentAttribute = interfaceDirection == .rightToLeft
+            ? .forceRightToLeft
+            : .forceLeftToRight
+        if textView.semanticContentAttribute != targetSemanticAttribute {
+            textView.semanticContentAttribute = targetSemanticAttribute
+        }
+
         let decision = PinkhaWritingDirectionPolicy.resolve(
             PinkhaWritingDirectionInput(
                 isEmpty: textView.text.isEmpty,
@@ -118,7 +156,7 @@ enum PinkhaTextDirectionUIKitAdapter {
         if context.alignmentWasExplicit || alignment == .center || alignment == .justified {
             removeDisplayAlignment(from: textView)
         } else {
-            applyDisplayAlignment(alignment, to: textView)
+            applyDisplayAlignment(alignment, decision: decision, to: textView)
         }
 
         if PinkhaStage1AcceptanceState.isEnabled, let blockId = context.blockId {
@@ -148,6 +186,31 @@ enum PinkhaTextDirectionUIKitAdapter {
         }
     }
 
+    static func prepareForEditing(in textView: UITextView) {
+        guard let context = writingContexts.object(forKey: textView)?.context else { return }
+        if textView.textStorage.length == 0 {
+            apply(context: context, to: textView)
+        } else if PinkhaStage1AcceptanceState.isEnabled {
+            let decision = PinkhaWritingDirectionPolicy.resolve(
+                PinkhaWritingDirectionInput(
+                    isEmpty: false,
+                    interfaceDirection: effectiveInterfaceDirection(for: textView),
+                    detectedTextDirection: detectedDirection(
+                        for: textView.text,
+                        fallback: effectiveInterfaceDirection(for: textView)
+                    ),
+                    persistedAlignment: context.persistedAlignment,
+                    alignmentWasExplicit: context.alignmentWasExplicit
+                )
+            )
+            textView.accessibilityLabel = PinkhaStage1AcceptanceDiagnostics.textViewLabel(
+                decision: decision,
+                origin: context.origin,
+                textView: textView
+            )
+        }
+    }
+
     static func marker(from fields: BlockFields) -> PinkhaTextDirectionMarker? {
         guard let value = fields[PinkhaSchemaRoles.blockTextDirectionField],
               case let .stringValue(storedValue) = value.kind else {
@@ -162,6 +225,7 @@ enum PinkhaTextDirectionUIKitAdapter {
 
     private static func applyDisplayAlignment(
         _ alignment: NSTextAlignment,
+        decision: PinkhaWritingDirectionDecision,
         to textView: UITextView
     ) {
         let layoutManager = textView.layoutManager
@@ -181,11 +245,18 @@ enum PinkhaTextDirectionUIKitAdapter {
         layoutDelegate.alignment = alignment
 
         if textView.textStorage.length == 0 {
+            if textView.textAlignment != alignment {
+                textView.textAlignment = alignment
+            }
+
             var typingAttributes = textView.typingAttributes
             let paragraphStyle = (
                 typingAttributes[.paragraphStyle] as? NSParagraphStyle
             )?.mutableCopy() as? NSMutableParagraphStyle ?? NSMutableParagraphStyle()
             paragraphStyle.alignment = alignment
+            paragraphStyle.baseWritingDirection = decision.baseWritingDirection == .rightToLeft
+                ? .rightToLeft
+                : .leftToRight
             typingAttributes[.paragraphStyle] = paragraphStyle
             textView.typingAttributes = typingAttributes
 
@@ -214,6 +285,14 @@ enum PinkhaTextDirectionUIKitAdapter {
         )
         textView.layoutManager.invalidateDisplay(forCharacterRange: characterRange)
         textView.setNeedsLayout()
+    }
+}
+
+private final class PinkhaWritingContextBox {
+    let context: PinkhaTextBlockWritingContext
+
+    init(_ context: PinkhaTextBlockWritingContext) {
+        self.context = context
     }
 }
 

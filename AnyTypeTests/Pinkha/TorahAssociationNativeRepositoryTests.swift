@@ -758,6 +758,71 @@ struct TorahAssociationNativeRepositoryTests {
         }
     }
 
+    @MainActor
+    @Test("Header uses current canonical document links after block search and rejects inactive sessions")
+    func documentHeaderUsesCanonicalSnapshot() async throws {
+        let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: ["previous-block"])
+        let repository = makeRepository(store: store)
+        let provider = SessionSearchProvider()
+        let registry = try TorahProviderRegistry(
+            referenceProviders: [provider],
+            topicProviders: [provider],
+            lexicalProviders: [provider],
+            defaultProviderID: provider.providerID
+        )
+        let session = TorahEditorSession(
+            spaceId: spaceId,
+            objectId: objectId,
+            workspace: AnytypeTorahWorkspace(registry: registry),
+            associations: repository
+        )
+        let item = association(0)
+        _ = try await repository.addAssociation(item, target: .object(objectId: objectId), spaceId: spaceId)
+        _ = try await session.associationSnapshot(for: session.documentAssociationContext)
+        session.presentSearch(scope: .block("previous-block"))
+
+        var staleValue = item
+        staleValue.canonicalKey = "Exodus 1:1"
+        session.openDocumentAssociation(staleValue)
+        session.searchDidDismiss()
+
+        #expect(session.associationContext == session.documentAssociationContext)
+        #expect(session.selection?.canonicalRef == "Genesis 1")
+        #expect(session.selection?.preferredSegmentRef == "Genesis 1:1")
+
+        session.selection = nil
+        session.deactivateDocument()
+        session.openDocumentAssociation(item)
+        #expect(session.selection == nil)
+        #expect(await store.writeCount() == 1)
+    }
+
+    @MainActor
+    @Test("An unlinked header chip cannot open a stale source or change the active block target")
+    func unlinkedDocumentHeaderChipIsRejected() async throws {
+        let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: ["previous-block"])
+        let repository = makeRepository(store: store)
+        let provider = SessionSearchProvider()
+        let registry = try TorahProviderRegistry(
+            referenceProviders: [provider],
+            topicProviders: [provider],
+            lexicalProviders: [provider],
+            defaultProviderID: provider.providerID
+        )
+        let session = TorahEditorSession(
+            spaceId: spaceId,
+            objectId: objectId,
+            workspace: AnytypeTorahWorkspace(registry: registry),
+            associations: repository
+        )
+        session.presentSearch(scope: .block("previous-block"))
+        session.openDocumentAssociation(association(0))
+
+        #expect(session.associationContext.scope == .block("previous-block"))
+        #expect(session.selection == nil)
+        #expect(await store.writeCount() == 0)
+    }
+
     private func makeRepository(store: NativeStoreProbe) -> AnytypeTorahAssociationRepository {
         AnytypeTorahAssociationRepository(
             nativeStore: store,

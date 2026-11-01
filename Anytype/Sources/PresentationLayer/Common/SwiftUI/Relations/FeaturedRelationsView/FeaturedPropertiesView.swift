@@ -6,9 +6,23 @@ enum FeaturedPropertiesConstants {
     static let lineSpacing: CGFloat = 4
 }
 
-struct FeaturedPropertiesView<Content>: View where Content: View {
+struct FeaturedPropertiesView<Content: View, TrailingContent: View>: View {
     let relations: [Property]
     let view: (Property) -> Content
+    let trailingContent: () -> TrailingContent
+    let hasTrailingContent: Bool
+
+    init(
+        relations: [Property],
+        view: @escaping (Property) -> Content,
+        hasTrailingContent: Bool = true,
+        @ViewBuilder trailingContent: @escaping () -> TrailingContent
+    ) {
+        self.relations = relations
+        self.view = view
+        self.hasTrailingContent = hasTrailingContent
+        self.trailingContent = trailingContent
+    }
     
     var body: some View {
         WrappingHStack(
@@ -20,11 +34,12 @@ struct FeaturedPropertiesView<Content>: View where Content: View {
                 HStack(spacing: FeaturedPropertiesConstants.itemSpacing) {
                     view(relation)
                     
-                    if !isLastRelation(relation) {
+                    if !isLastRelation(relation) || hasTrailingContent {
                         divider
                     }
                 }
             }
+            trailingContent()
         }
     }
     
@@ -36,5 +51,16 @@ struct FeaturedPropertiesView<Content>: View where Content: View {
     
     private func isLastRelation(_ relation: Property) -> Bool {
         relations.last?.id == relation.id
+    }
+}
+
+extension FeaturedPropertiesView where TrailingContent == EmptyView {
+    init(relations: [Property], view: @escaping (Property) -> Content) {
+        self.init(
+            relations: relations,
+            view: view,
+            hasTrailingContent: false,
+            trailingContent: { EmptyView() }
+        )
     }
 }

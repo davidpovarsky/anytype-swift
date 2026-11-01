@@ -28,6 +28,8 @@ final class BlockViewModelBuilder {
     private let slashMenuActionHandler: SlashMenuActionHandler
     private let mediaBlockActionsProvider: any MediaBlockActionsProviderProtocol
     private weak var output: (any EditorPageModuleOutput)?
+    private weak var torahSession: TorahEditorSession?
+    private var documentMetadataRow: PinkhaDocumentMetadataRowModel?
     
     @Injected(\.blockTableService)
     private var tableService: any BlockTableServiceProtocol
@@ -61,6 +63,7 @@ final class BlockViewModelBuilder {
         slashMenuActionHandler: SlashMenuActionHandler,
         mediaBlockActionsProvider: some MediaBlockActionsProviderProtocol,
         editorPageBlocksStateManager: EditorPageBlocksStateManager,
+        torahSession: TorahEditorSession? = nil,
         output: (any EditorPageModuleOutput)?
     ) {
         self.document = document
@@ -81,6 +84,7 @@ final class BlockViewModelBuilder {
         self.slashMenuActionHandler = slashMenuActionHandler
         self.mediaBlockActionsProvider = mediaBlockActionsProvider
         self.editorPageBlocksStateManager = editorPageBlocksStateManager
+        self.torahSession = torahSession
         self.output = output
     }
     
@@ -107,6 +111,22 @@ final class BlockViewModelBuilder {
             items.insert(.system(spacer), at: 2)
         }
         
+        if let torahSession, let index = PinkhaDocumentMetadataRowModel.insertionIndex(in: items) {
+            let row: PinkhaDocumentMetadataRowModel
+            if let existing = documentMetadataRow {
+                row = existing
+            } else {
+                row = PinkhaDocumentMetadataRowModel(document: document, session: torahSession) { [weak self] relation in
+                    self?.handleFeaturedRelationTap(relation)
+                }
+                documentMetadataRow = row
+            }
+            items.insert(.system(row), at: index)
+            if !items.contains(where: { $0.blockId == spacer.blockId }) {
+                items.insert(.system(spacer), at: index + 1)
+            }
+        }
+
         return items
     }
     
@@ -381,20 +401,10 @@ final class BlockViewModelBuilder {
             return FeaturedPropertiesBlockViewModel(
                 infoProvider: blockInformationProvider,
                 document: document,
-                collectionController: blockCollectionController
+                collectionController: blockCollectionController,
+                torahSession: torahSession
             ) { [weak self] relation in
-                guard let self = self else { return }
-                
-                if relation.key == BundledPropertyKey.type.rawValue && document.permissions.canChangeType {
-                    self.router.showTypes(
-                        selectedObjectId: self.document.details?.type,
-                        onSelect: { [weak self] type in
-                            self?.typeSelected(type, route: .featuredRelations)
-                        }
-                    )
-                } else {
-                    self.router.showRelationValueEditingView(key: relation.key)
-                }
+                self?.handleFeaturedRelationTap(relation)
             }
         case let .relation(content):
             let relation = document.parsedProperties.all.first {
@@ -469,6 +479,17 @@ final class BlockViewModelBuilder {
         }
     }
     
+    private func handleFeaturedRelationTap(_ relation: Property) {
+        if relation.key == BundledPropertyKey.type.rawValue && document.permissions.canChangeType {
+            router.showTypes(
+                selectedObjectId: document.details?.type,
+                onSelect: { [weak self] type in self?.typeSelected(type, route: .featuredRelations) }
+            )
+        } else {
+            router.showRelationValueEditingView(key: relation.key)
+        }
+    }
+
     private func typeSelected(_ type: ObjectType, route: ChangeObjectTypeRoute? = nil) {
         Task { [weak self] in
             guard let self else { return }

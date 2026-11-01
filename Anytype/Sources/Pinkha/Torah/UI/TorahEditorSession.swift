@@ -333,6 +333,7 @@ final class TorahEditorSession {
     }
 
     func presentSearch(scope: TorahAssociationContext.Scope) {
+        guard isActiveDocument else { return }
         let context = TorahAssociationContext(spaceId: spaceId, objectId: objectId, scope: scope)
         pendingInspectorPresentation = nil
         if selection != nil {
@@ -455,6 +456,24 @@ final class TorahEditorSession {
         } catch {
             recordAssociationError(error)
             throw error
+        }
+    }
+
+    func openDocumentAssociation(_ item: TorahAssociationItem) {
+        guard isActiveDocument else { return }
+        let visible = visibleDocumentAssociations
+        guard let currentItem = visible.first(where: { $0.id == item.id }) else {
+            Task { @MainActor in
+                await refreshAssociationSnapshot()
+            }
+            return
+        }
+        associationContext = documentAssociationContext
+        currentAssociations = visible
+        if canOpenAssociation(currentItem) {
+            openAssociation(currentItem)
+        } else {
+            presentSearch(scope: .document)
         }
     }
 

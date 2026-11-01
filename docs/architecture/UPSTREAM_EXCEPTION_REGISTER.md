@@ -1,5 +1,18 @@
 # Pinkha upstream exception register
 
+## 2026-11-02 — Owner-authorized Stage 1 implementation cycle
+
+- Approval: owner's attached **OWNER AUTHORIZATION — FINISH STAGE 1 IMPLEMENTATION**, received 2026-11-02, grants one scoped cycle including necessary editor hunks, focused tests, selective commit/push, same-SHA Fast CI, Full Acceptance and unsigned QA IPA. It supersedes the earlier proposal-only STOP for these features. No Heart/protobuf/generated/schema changes, personal Spaces, merge, signing or release are authorized.
+- Baseline: feature branch `pinkha/torah-associations-native-ux-persistence-localization-2026-10-20` at `05883c5549261cfed022a63a969751900c96744f`; live upstream/develop `e21834498cd6d8a85e91f69767caec793220a190`, merge base `d5650321577a209505a3277c8437b7608cff1cb9`.
+- Exact cumulative host hunks: [STAGE_1_IMPLEMENTATION_HOST_DIFF_2026-11-02.patch](STAGE_1_IMPLEMENTATION_HOST_DIFF_2026-11-02.patch). This artifact is updated when a measured correction requires another authorized host seam.
+- `FeaturedPropertiesView.swift`: default-empty trailing content inside the original wrapping stack. `EditorFeaturedPropertiesView.swift`: optional session, same original property renderer, show Sources even with no properties. A downstream overlay cannot participate in this private wrapping stack.
+- `FeaturedPropertiesBlockViewModel.swift`, `EditorPageModuleAssembly.swift`: forward the existing session to native metadata configuration; no replacement session/repository.
+- `BlockViewModelBuilder.swift`: session injection plus cached presentation-only system row when there is no native metadata row. The row reuses EditorFeaturedPropertiesView and the original relation action. It has a stable document/Space identity and never creates a BlockInformation, persisted block or Property. The builder alone owns final native item composition, so a downstream component cannot insert this row without this seam.
+- Focused gates: actual UIKit hosted native/missing row at 0/1/2/12/0 sources in LTR/RTL; canonical document scope/stale session; no tree writes; native row suppression/identity; original search/Inspector/layout suites. Native attachment probe separately measures initial empty caret and first accepted insertion using original focus implementation. Full Acceptance covers three document kinds, five Enter transitions and Sources interaction.
+- Verification at initial integration: Windows syntax and diff checks PASS; native Xcode/runtime checks NOT_RUN until CI. Neither historical C1 callback patch is applied. Book remains during initial replacement qualification and will be removed only after native displayed-row evidence.
+- Rollback: reverse only the cumulative host patch plus its downstream Sources presentation files and these cycle's downstream RTL changes/tests. No stored-data migration is involved. Preserve all baseline host divergences and unrelated dirty work.
+- Review date: 2026-11-02. Asana read-only; physical iPad success requires separate hardware evidence.
+
 As of 2026-10-22, no new upstream-file edits have been authorized by this policy update. Existing divergences are LEGACY_UNREVIEWED, not permissions.
 
 Future exception: original upstream SHA, exact path/hunk, approved owner instruction/reference, why a downstream adapter fails, focused regression tests, review date and rollback. No agent self-approval.

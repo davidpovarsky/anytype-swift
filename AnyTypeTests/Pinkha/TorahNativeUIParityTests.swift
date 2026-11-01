@@ -1,3 +1,5 @@
+import PinkhaKit
+import Services
 import Testing
 import UIKit
 @testable import Anytype
@@ -130,10 +132,56 @@ struct TorahNativeUIParityTests {
         #expect(state.showsOverflowAction)
     }
 
+    @Test("Document header bounds chips and keeps every remaining source reachable", arguments: [0, 1, 2, 12])
+    func boundedDocumentSources(count: Int) {
+        let associations = (0..<count).map { index in
+            TorahAssociationItem(
+                id: "source-\(index)",
+                kind: .ref,
+                role: .context,
+                providerID: "sefaria",
+                externalID: "Genesis 1:\(index + 1)",
+                canonicalKey: "Genesis 1:\(index + 1)",
+                labelHe: "בראשית א"
+            )
+        }
+        let presentation = PinkhaDocumentSourcesPresentation(associations: associations)
+
+        #expect(presentation.visibleAssociations.map(\.id) == Array(associations.prefix(2)).map(\.id))
+        #expect(presentation.remainingCount == max(0, count - 2))
+        #expect(presentation.visibleAssociations.count + presentation.remainingCount == count)
+    }
+
     private func fixedControl() -> UIView {
         let view = UIView()
         view.widthAnchor.constraint(equalToConstant: 44).isActive = true
         view.heightAnchor.constraint(equalToConstant: 44).isActive = true
         return view
     }
+
+    @Test("Missing native metadata gets one stable system row; a native row suppresses it")
+    func metadataPresentationPlacement() throws {
+        #expect(PinkhaDocumentMetadataRowModel.insertionIndex(in: []) == 0)
+        let document = MockBaseDocument(objectId: "metadata-document")
+        let nativeInfo = BlockInformation.empty(id: "featuredRelations", content: .featuredRelations)
+        let native = FeaturedPropertiesBlockViewModel(
+            infoProvider: BlockModelInfomationProvider(document: document, info: nativeInfo),
+            document: document,
+            collectionController: MetadataReloadProbe(),
+            onRelationValueTap: { _ in }
+        )
+        #expect(PinkhaDocumentMetadataRowModel.insertionIndex(in: [.block(native)]) == nil)
+    }
+}
+
+@MainActor
+private final class MetadataReloadProbe: EditorCollectionReloadable {
+    func reconfigure(items: [EditorItem]) { }
+    func itemDidChangeFrame(item: EditorItem) { }
+    func scrollToItem(_ item: EditorItem) { }
+    func scrollToTopBlock(blockId: String) { }
+    func scrollToTextViewIfNotVisible(textView: UITextView) { }
+    func textBlockDidBeginEditing(firstResponderView: UIView) { }
+    func textBlockWillBeginEditing() { }
+    func blockDidFinishEditing() { }
 }

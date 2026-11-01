@@ -1,0 +1,277 @@
+diff --git a/Anytype/Sources/PresentationLayer/Common/SwiftUI/Relations/FeaturedRelationsView/EditorFeaturedPropertiesView.swift b/Anytype/Sources/PresentationLayer/Common/SwiftUI/Relations/FeaturedRelationsView/EditorFeaturedPropertiesView.swift
+index e714f1f7d2..1edd6f4a88 100644
+--- a/Anytype/Sources/PresentationLayer/Common/SwiftUI/Relations/FeaturedRelationsView/EditorFeaturedPropertiesView.swift
++++ b/Anytype/Sources/PresentationLayer/Common/SwiftUI/Relations/FeaturedRelationsView/EditorFeaturedPropertiesView.swift
+@@ -2,38 +2,51 @@ import SwiftUI
+ 
+ struct EditorFeaturedPropertiesView: View {
+     let relations: [Property]
++    let torahSession: TorahEditorSession?
+     let onRelationTap: ((Property) -> Void)
+-    
+-    init(relations: [Property], onRelationTap: @escaping (Property) -> Void) {
++
++    init(
++        relations: [Property],
++        torahSession: TorahEditorSession? = nil,
++        onRelationTap: @escaping (Property) -> Void
++    ) {
+         self.relations = relations
++        self.torahSession = torahSession
+         self.onRelationTap = onRelationTap
+     }
+-    
++
+     var body: some View {
+-        if relations.isNotEmpty {
++        if relations.isNotEmpty || torahSession != nil {
+             content
+         }
+     }
+-    
++
++    @ViewBuilder
+     private var content: some View {
+-        FeaturedPropertiesView(
+-            relations: relations,
+-            view: { relation in
+-                PropertyValueView(
+-                    model: PropertyValueViewModel(
+-                        property:  PropertyItemModel(property: relation),
+-                        style: .featuredBlock(
+-                            FeaturedPropertySettings(
+-                                allowMultiLine: false,
+-                                error: PropertyItemModel(property: relation).isErrorState,
+-                                links: relation.links
+-                            )
+-                        ),
+-                        mode: .button(action: { onRelationTap(relation) })
+-                    )
+-                )
++        if let torahSession {
++            FeaturedPropertiesView(relations: relations, view: relationContent) {
++                PinkhaDocumentSourcesFeaturedContent(session: torahSession)
+             }
++            .padding(.top, 8)
++        } else {
++            FeaturedPropertiesView(relations: relations, view: relationContent)
++                .padding(.top, 8)
++        }
++    }
++
++    private func relationContent(for relation: Property) -> some View {
++        PropertyValueView(
++            model: PropertyValueViewModel(
++                property:  PropertyItemModel(property: relation),
++                style: .featuredBlock(
++                    FeaturedPropertySettings(
++                        allowMultiLine: false,
++                        error: PropertyItemModel(property: relation).isErrorState,
++                        links: relation.links
++                    )
++                ),
++                mode: .button(action: { onRelationTap(relation) })
++            )
+         )
+-        .padding(.top, 8)
+     }
+ }
+diff --git a/Anytype/Sources/PresentationLayer/Common/SwiftUI/Relations/FeaturedRelationsView/FeaturedPropertiesView.swift b/Anytype/Sources/PresentationLayer/Common/SwiftUI/Relations/FeaturedRelationsView/FeaturedPropertiesView.swift
+index 4788309693..eb5de68357 100644
+--- a/Anytype/Sources/PresentationLayer/Common/SwiftUI/Relations/FeaturedRelationsView/FeaturedPropertiesView.swift
++++ b/Anytype/Sources/PresentationLayer/Common/SwiftUI/Relations/FeaturedRelationsView/FeaturedPropertiesView.swift
+@@ -6,9 +6,23 @@ enum FeaturedPropertiesConstants {
+     static let lineSpacing: CGFloat = 4
+ }
+ 
+-struct FeaturedPropertiesView<Content>: View where Content: View {
++struct FeaturedPropertiesView<Content: View, TrailingContent: View>: View {
+     let relations: [Property]
+     let view: (Property) -> Content
++    let trailingContent: () -> TrailingContent
++    let hasTrailingContent: Bool
++
++    init(
++        relations: [Property],
++        view: @escaping (Property) -> Content,
++        hasTrailingContent: Bool = true,
++        @ViewBuilder trailingContent: @escaping () -> TrailingContent
++    ) {
++        self.relations = relations
++        self.view = view
++        self.hasTrailingContent = hasTrailingContent
++        self.trailingContent = trailingContent
++    }
+     
+     var body: some View {
+         WrappingHStack(
+@@ -20,11 +34,12 @@ struct FeaturedPropertiesView<Content>: View where Content: View {
+                 HStack(spacing: FeaturedPropertiesConstants.itemSpacing) {
+                     view(relation)
+                     
+-                    if !isLastRelation(relation) {
++                    if !isLastRelation(relation) || hasTrailingContent {
+                         divider
+                     }
+                 }
+             }
++            trailingContent()
+         }
+     }
+     
+@@ -38,3 +53,14 @@ struct FeaturedPropertiesView<Content>: View where Content: View {
+         relations.last?.id == relation.id
+     }
+ }
++
++extension FeaturedPropertiesView where TrailingContent == EmptyView {
++    init(relations: [Property], view: @escaping (Property) -> Content) {
++        self.init(
++            relations: relations,
++            view: view,
++            hasTrailingContent: false,
++            trailingContent: { EmptyView() }
++        )
++    }
++}
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorPageModuleAssembly.swift b/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorPageModuleAssembly.swift
+index 4a2ee344be..5ca6c96dc0 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorPageModuleAssembly.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorPageModuleAssembly.swift
+@@ -211,6 +211,7 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
+             slashMenuActionHandler: slashMenuActionHandler,
+             mediaBlockActionsProvider: mediaBlockActionsProvider,
+             editorPageBlocksStateManager: blocksStateManager,
++            torahSession: torahSession,
+             output: output
+         )
+         
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/FeaturedRelations/FeaturedPropertiesBlockViewModel.swift b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/FeaturedRelations/FeaturedPropertiesBlockViewModel.swift
+index ff36c9520b..eb211be6f5 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/FeaturedRelations/FeaturedPropertiesBlockViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/FeaturedRelations/FeaturedPropertiesBlockViewModel.swift
+@@ -13,6 +13,7 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
+     private var featuredRelations: [Property]
+     private let onRelationTap: (Property) -> Void
+     private let collectionController: any EditorCollectionReloadable
++    private weak var torahSession: TorahEditorSession?
+     
+     private var cancellables = [AnyCancellable]()
+     
+@@ -20,12 +21,14 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
+         infoProvider: BlockModelInfomationProvider,
+         document: some BaseDocumentProtocol,
+         collectionController: some EditorCollectionReloadable,
++        torahSession: TorahEditorSession? = nil,
+         onRelationValueTap: @escaping (Property) -> Void
+     ) {
+         self.infoProvider = infoProvider
+         self.document = document
+         self.featuredRelations = document.featuredRelationsForEditor
+         self.collectionController = collectionController
++        self.torahSession = torahSession
+         self.onRelationTap = onRelationValueTap
+         
+         document.featuredRelationsForEditorPublisher
+@@ -48,6 +51,7 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
+         return UIHostingConfiguration {
+             EditorFeaturedPropertiesView(
+                 relations: featuredRelations,
++                torahSession: torahSession,
+                 onRelationTap: onRelationTap
+             )
+         }
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilder.swift b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilder.swift
+index f6d5d20565..0aa1767f87 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilder.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilder.swift
+@@ -28,6 +28,8 @@ final class BlockViewModelBuilder {
+     private let slashMenuActionHandler: SlashMenuActionHandler
+     private let mediaBlockActionsProvider: any MediaBlockActionsProviderProtocol
+     private weak var output: (any EditorPageModuleOutput)?
++    private weak var torahSession: TorahEditorSession?
++    private var documentMetadataRow: PinkhaDocumentMetadataRowModel?
+     
+     @Injected(\.blockTableService)
+     private var tableService: any BlockTableServiceProtocol
+@@ -61,6 +63,7 @@ final class BlockViewModelBuilder {
+         slashMenuActionHandler: SlashMenuActionHandler,
+         mediaBlockActionsProvider: some MediaBlockActionsProviderProtocol,
+         editorPageBlocksStateManager: EditorPageBlocksStateManager,
++        torahSession: TorahEditorSession? = nil,
+         output: (any EditorPageModuleOutput)?
+     ) {
+         self.document = document
+@@ -81,6 +84,7 @@ final class BlockViewModelBuilder {
+         self.slashMenuActionHandler = slashMenuActionHandler
+         self.mediaBlockActionsProvider = mediaBlockActionsProvider
+         self.editorPageBlocksStateManager = editorPageBlocksStateManager
++        self.torahSession = torahSession
+         self.output = output
+     }
+     
+@@ -107,6 +111,22 @@ final class BlockViewModelBuilder {
+             items.insert(.system(spacer), at: 2)
+         }
+         
++        if let torahSession, let index = PinkhaDocumentMetadataRowModel.insertionIndex(in: items) {
++            let row: PinkhaDocumentMetadataRowModel
++            if let existing = documentMetadataRow {
++                row = existing
++            } else {
++                row = PinkhaDocumentMetadataRowModel(document: document, session: torahSession) { [weak self] relation in
++                    self?.handleFeaturedRelationTap(relation)
++                }
++                documentMetadataRow = row
++            }
++            items.insert(.system(row), at: index)
++            if !items.contains(where: { $0.blockId == spacer.blockId }) {
++                items.insert(.system(spacer), at: index + 1)
++            }
++        }
++
+         return items
+     }
+     
+@@ -381,20 +401,10 @@ final class BlockViewModelBuilder {
+             return FeaturedPropertiesBlockViewModel(
+                 infoProvider: blockInformationProvider,
+                 document: document,
+-                collectionController: blockCollectionController
++                collectionController: blockCollectionController,
++                torahSession: torahSession
+             ) { [weak self] relation in
+-                guard let self = self else { return }
+-                
+-                if relation.key == BundledPropertyKey.type.rawValue && document.permissions.canChangeType {
+-                    self.router.showTypes(
+-                        selectedObjectId: self.document.details?.type,
+-                        onSelect: { [weak self] type in
+-                            self?.typeSelected(type, route: .featuredRelations)
+-                        }
+-                    )
+-                } else {
+-                    self.router.showRelationValueEditingView(key: relation.key)
+-                }
++                self?.handleFeaturedRelationTap(relation)
+             }
+         case let .relation(content):
+             let relation = document.parsedProperties.all.first {
+@@ -469,6 +479,17 @@ final class BlockViewModelBuilder {
+         }
+     }
+     
++    private func handleFeaturedRelationTap(_ relation: Property) {
++        if relation.key == BundledPropertyKey.type.rawValue && document.permissions.canChangeType {
++            router.showTypes(
++                selectedObjectId: document.details?.type,
++                onSelect: { [weak self] type in self?.typeSelected(type, route: .featuredRelations) }
++            )
++        } else {
++            router.showRelationValueEditingView(key: relation.key)
++        }
++    }
++
+     private func typeSelected(_ type: ObjectType, route: ChangeObjectTypeRoute? = nil) {
+         Task { [weak self] in
+             guard let self else { return }

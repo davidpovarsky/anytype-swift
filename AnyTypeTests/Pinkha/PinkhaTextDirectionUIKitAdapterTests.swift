@@ -222,6 +222,253 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         #expect(!context.alignmentWasExplicit)
     }
 
+    @Test("Empty block -> typing -> Return -> next block -> focus -> reuse lifecycle")
+    func emptyToTypingToReturnToNextBlockLifecycle() throws {
+        // 1. Initial empty block configured in Hebrew environment
+        let textView1 = UndoTrackingTextView(frame: CGRect(x: 0, y: 0, width: 320, height: 120))
+        textView1.semanticContentAttribute = .forceRightToLeft
+        let observer1 = TextMutationObserver()
+        textView1.delegate = observer1
+        textView1.textStorage.delegate = observer1
+        observer1.reset()
+
+        let context1 = PinkhaTextBlockWritingContext(
+            origin: .newParagraph,
+            persistedAlignment: nil,
+            alignmentWasExplicit: false,
+            blockId: "block-1"
+        )
+        PinkhaTextDirectionUIKitAdapter.apply(context: context1, to: textView1)
+
+        #expect(textView1.textAlignment == .right)
+        #expect(PinkhaTextDirectionUIKitAdapter.visualAlignment(for: textView1) == .right)
+        let paragraphStyle1 = try #require(
+            textView1.typingAttributes[.paragraphStyle] as? NSParagraphStyle
+        )
+        #expect(paragraphStyle1.alignment == .right)
+        #expect(paragraphStyle1.baseWritingDirection == .rightToLeft)
+        #expect(observer1.textChangeCount == 0)
+        #expect(observer1.storageEditCount == 0)
+
+        // 2. Simulate typing Hebrew text into block 1
+        textView1.textStorage.setAttributedString(NSAttributedString(
+            string: "שלום עולם",
+            attributes: textView1.typingAttributes
+        ))
+        PinkhaTextDirectionUIKitAdapter.apply(context: context1, to: textView1)
+        textView1.layoutManager.ensureLayout(for: textView1.textContainer)
+        let glyphRange1 = textView1.layoutManager.glyphRange(for: textView1.textContainer)
+        let used1 = textView1.layoutManager.lineFragmentUsedRect(forGlyphAt: glyphRange1.location, effectiveRange: nil)
+        let fragment1 = textView1.layoutManager.lineFragmentRect(forGlyphAt: glyphRange1.location, effectiveRange: nil)
+        #expect(abs(used1.maxX - fragment1.maxX) < 0.5)
+
+        // 3. User hits Return -> new empty block 2 created
+        let textView2 = UndoTrackingTextView(frame: CGRect(x: 0, y: 0, width: 320, height: 120))
+        textView2.semanticContentAttribute = .forceRightToLeft
+        let observer2 = TextMutationObserver()
+        textView2.delegate = observer2
+        textView2.textStorage.delegate = observer2
+        observer2.reset()
+
+        let context2 = PinkhaTextBlockWritingContext(
+            origin: .newParagraph,
+            persistedAlignment: nil,
+            alignmentWasExplicit: false,
+            blockId: "block-2"
+        )
+        PinkhaTextDirectionUIKitAdapter.apply(context: context2, to: textView2)
+
+        // The newly created block must be right-aligned and ready for RTL input immediately
+        #expect(textView2.textAlignment == .right)
+        #expect(PinkhaTextDirectionUIKitAdapter.visualAlignment(for: textView2) == .right)
+        let paragraphStyle2 = try #require(
+            textView2.typingAttributes[.paragraphStyle] as? NSParagraphStyle
+        )
+        #expect(paragraphStyle2.alignment == .right)
+        #expect(paragraphStyle2.baseWritingDirection == .rightToLeft)
+        #expect(observer2.textChangeCount == 0)
+        #expect(observer2.storageEditCount == 0)
+
+        // 4. Focus handoff and cell reuse: re-applying configuration does not displace alignment
+        PinkhaTextDirectionUIKitAdapter.apply(context: context2, to: textView2)
+        #expect(textView2.textAlignment == .right)
+        #expect(PinkhaTextDirectionUIKitAdapter.visualAlignment(for: textView2) == .right)
+    }
+
+    @Test("App-level Hebrew direction overrides inherited LTR device direction")
+    func appLevelHebrewDirectionOverridesDeviceLTR() throws {
+        let textView = UITextView(frame: CGRect(x: 0, y: 0, width: 320, height: 120))
+        textView.semanticContentAttribute = .forceRightToLeft
+
+        let context = PinkhaTextBlockWritingContext(
+            origin: .newParagraph,
+            persistedAlignment: nil,
+            alignmentWasExplicit: false,
+            blockId: "block-he"
+        )
+
+        PinkhaTextDirectionUIKitAdapter.apply(context: context, to: textView)
+
+        #expect(textView.textAlignment == .right)
+        #expect(PinkhaTextDirectionUIKitAdapter.visualAlignment(for: textView) == .right)
+        let paragraphStyle = try #require(
+            textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle
+        )
+        #expect(paragraphStyle.alignment == .right)
+        #expect(paragraphStyle.baseWritingDirection == .rightToLeft)
+    }
+
+    @Test("Two simultaneous containers with opposite directions isolate text views without cross-window bleed")
+    func oppositeDirectionContainersIsolateTextViews() throws {
+        let containerRTL = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 480))
+        containerRTL.semanticContentAttribute = .forceRightToLeft
+
+        let containerLTR = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 480))
+        containerLTR.semanticContentAttribute = .forceLeftToRight
+
+        let textViewRTL = UndoTrackingTextView(frame: CGRect(x: 0, y: 0, width: 320, height: 120))
+        let textViewLTR = UndoTrackingTextView(frame: CGRect(x: 0, y: 0, width: 320, height: 120))
+
+        containerRTL.addSubview(textViewRTL)
+        containerLTR.addSubview(textViewLTR)
+
+        let context = PinkhaTextBlockWritingContext(
+            origin: .newParagraph,
+            persistedAlignment: nil,
+            alignmentWasExplicit: false,
+            blockId: "isolated-block"
+        )
+
+        // Alternating updates in the same process
+        PinkhaTextDirectionUIKitAdapter.apply(context: context, to: textViewRTL)
+        PinkhaTextDirectionUIKitAdapter.apply(context: context, to: textViewLTR)
+        PinkhaTextDirectionUIKitAdapter.apply(context: context, to: textViewRTL)
+
+        #expect(PinkhaTextDirectionUIKitAdapter.effectiveInterfaceDirection(for: textViewRTL) == .rightToLeft)
+        #expect(PinkhaTextDirectionUIKitAdapter.effectiveInterfaceDirection(for: textViewLTR) == .leftToRight)
+        #expect(textViewRTL.textAlignment == .right)
+        #expect(textViewLTR.textAlignment == .left)
+        #expect(PinkhaTextDirectionUIKitAdapter.visualAlignment(for: textViewRTL) == .right)
+        #expect(PinkhaTextDirectionUIKitAdapter.visualAlignment(for: textViewLTR) == .left)
+
+        let styleRTL = try #require(textViewRTL.typingAttributes[.paragraphStyle] as? NSParagraphStyle)
+        let styleLTR = try #require(textViewLTR.typingAttributes[.paragraphStyle] as? NSParagraphStyle)
+        #expect(styleRTL.alignment == .right)
+        #expect(styleRTL.baseWritingDirection == .rightToLeft)
+        #expect(styleLTR.alignment == .left)
+        #expect(styleLTR.baseWritingDirection == .leftToRight)
+
+        // Row reuse: moving a text view from LTR container to RTL container
+        textViewLTR.removeFromSuperview()
+        containerRTL.addSubview(textViewLTR)
+        PinkhaTextDirectionUIKitAdapter.apply(context: context, to: textViewLTR)
+        #expect(PinkhaTextDirectionUIKitAdapter.effectiveInterfaceDirection(for: textViewLTR) == .rightToLeft)
+        #expect(textViewLTR.textAlignment == .right)
+    }
+
+    @Test("Editing preparation restores empty-row typing direction after a host style reset")
+    func editingPreparationRestoresTypingDefaults() throws {
+        let textView = UndoTrackingTextView(frame: CGRect(x: 0, y: 0, width: 320, height: 120))
+        textView.semanticContentAttribute = .forceRightToLeft
+        let observer = TextMutationObserver()
+        textView.delegate = observer
+        textView.textStorage.delegate = observer
+        PinkhaTextDirectionUIKitAdapter.apply(context: automaticContext, to: textView)
+        textView.textAlignment = .left
+        textView.typingAttributes = [.font: UIFont.systemFont(ofSize: 17)]
+        observer.reset()
+
+        PinkhaTextDirectionUIKitAdapter.prepareForEditing(in: textView)
+
+        let style = try #require(textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)
+        #expect(style.alignment == .right)
+        #expect(style.baseWritingDirection == .rightToLeft)
+        #expect(textView.selectedRange == NSRange(location: 0, length: 0))
+        #expect(textView.textStorage.length == 0)
+        #expect(observer.storageEditCount == 0)
+        #expect(observer.textChangeCount == 0)
+
+        PinkhaTextDirectionUIKitAdapter.apply(context: nil, to: textView)
+        textView.typingAttributes = [:]
+        PinkhaTextDirectionUIKitAdapter.prepareForEditing(in: textView)
+        #expect(textView.typingAttributes[.paragraphStyle] == nil)
+    }
+
+    @Test("Native row caret and accepted first insertion after attachment", arguments: [false, true])
+    func nativeRowAttachmentProbe(configureAfterAttachment: Bool) async throws {
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        let controller = UIViewController()
+        controller.view.semanticContentAttribute = .forceRightToLeft
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+
+        let row = TextBlockContentView(frame: CGRect(x: 20, y: 80, width: 320, height: 160))
+        let textView = row.textView.textView
+        textView.semanticContentAttribute = .forceLeftToRight
+        var acceptedInsertions = 0
+        var insertionDirection: NSWritingDirection?
+        let defaults = TextBlockContentConfiguration.empty
+        let original = defaults.actions
+        let actions = TextBlockContentConfiguration.Actions(
+            shouldPaste: original.shouldPaste, copy: original.copy, cut: original.cut,
+            createEmptyBlock: original.createEmptyBlock, showObject: original.showObject,
+            openURL: original.openURL, handleKeyboardAction: original.handleKeyboardAction,
+            becomeFirstResponder: original.becomeFirstResponder, resignFirstResponder: original.resignFirstResponder,
+            textBlockSetNeedsLayout: original.textBlockSetNeedsLayout,
+            textViewDidChangeText: original.textViewDidChangeText,
+            textViewWillBeginEditing: original.textViewWillBeginEditing,
+            textViewDidBeginEditing: original.textViewDidBeginEditing,
+            textViewDidEndEditing: original.textViewDidEndEditing,
+            textViewDidChangeCaretPosition: original.textViewDidChangeCaretPosition,
+            textViewShouldReplaceText: { view, replacement, range in
+                if !replacement.isEmpty, view.textStorage.length == 0, range == NSRange(location: 0, length: 0) {
+                    acceptedInsertions += 1
+                    insertionDirection = (view.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection
+                }
+                return true
+            },
+            toggleCheckBox: original.toggleCheckBox, toggleDropDown: original.toggleDropDown,
+            tapOnCalloutIcon: original.tapOnCalloutIcon, escalateToBlockSelection: original.escalateToBlockSelection
+        )
+        let hostStyle = NSMutableParagraphStyle()
+        hostStyle.alignment = .left
+        let configuration = TextBlockContentConfiguration(
+            blockId: "attachment-probe", content: .empty(contentType: .text),
+            attributedString: NSAttributedString(), placeholderAttributes: [:],
+            typingAttributes: { _ in [.paragraphStyle: hostStyle, .font: UIFont.systemFont(ofSize: 17)] },
+            textContainerInsets: .zero, alignment: .left,
+            pinkhaWritingContext: automaticContext,
+            isCheckable: false, isToggled: false, isChecked: false, shouldDisplayPlaceholder: false,
+            initialBlockFocusPosition: nil, focusPublisher: defaults.focusPublisher,
+            resetPublisher: defaults.resetPublisher, actions: actions
+        )
+        if configureAfterAttachment {
+            controller.view.addSubview(row)
+        }
+        row.update(with: configuration)
+        if !configureAfterAttachment { controller.view.addSubview(row) }
+        controller.view.layoutIfNeeded()
+        row.takeFocus(at: .beginning)
+        await Task.yield()
+        controller.view.layoutIfNeeded()
+
+        #expect(textView.isFirstResponder)
+        #expect(textView.markedTextRange == nil)
+        #expect(textView.selectedRange == NSRange(location: 0, length: 0))
+        let selected = try #require(textView.selectedTextRange)
+        let emptyCaret = textView.caretRect(for: selected.start)
+        #expect(emptyCaret.midX > textView.bounds.midX,
+                "Initial empty caret must be physically right before inserting any text")
+
+        textView.insertText("א")
+        #expect(acceptedInsertions == 1,
+                "A missing real delegate callback invalidates the probe; it is not a direction pass")
+        #expect(insertionDirection == .rightToLeft)
+        #expect(textView.text == "א")
+        textView.resignFirstResponder()
+    }
+
     private var automaticContext: PinkhaTextBlockWritingContext {
         PinkhaTextBlockWritingContext(
             origin: .ambiguousLegacyParagraph,

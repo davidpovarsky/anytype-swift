@@ -95,17 +95,35 @@ enum PinkhaStage1AcceptanceDiagnostics {
             PinkhaStage1AcceptanceState.deviceLanguageEnvironmentKey
         ] ?? "unrecorded"
         let documentKind = PinkhaStage1AcceptanceState.requestedDocumentKind.rawValue
+        let typingStyle = textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle
+        let typingDirection: String
+        switch typingStyle?.baseWritingDirection {
+        case .rightToLeft: typingDirection = "rtl"
+        case .leftToRight: typingDirection = "ltr"
+        default: typingDirection = "natural-or-missing"
+        }
+        let caretSide: String
+        if let range = textView.selectedTextRange, range.isEmpty, textView.isFirstResponder {
+            let caret = textView.caretRect(for: range.start)
+            let midpoint = textView.bounds.midX
+            caretSide = caret.midX >= midpoint ? "right" : "left"
+        } else {
+            caretSide = "unavailable"
+        }
         return [
             "Pinkha Stage 1",
             "document-\(documentKind)",
             "app-language-\(appLanguage)",
-            "device-language-\(deviceLanguage)",
+            "device-language-requested-\(deviceLanguage)",
             "swiftui-\(swiftUILayoutDirection.acceptanceName)",
             "navigation-\(navigationLayoutDirection.acceptanceName)",
             "uikit-\(textView.effectiveUserInterfaceLayoutDirection.acceptanceName)",
             decision.baseWritingDirection == .rightToLeft ? "content-rtl" : "content-ltr",
             "alignment-\(decision.alignment.acceptanceName)",
-            "origin-\(origin.acceptanceName)"
+            "origin-\(origin.acceptanceName)",
+            "typing-direction-\(typingDirection)",
+            "caret-side-\(caretSide)",
+            "first-responder-\(textView.isFirstResponder)"
         ].joined(separator: ";")
     }
 }

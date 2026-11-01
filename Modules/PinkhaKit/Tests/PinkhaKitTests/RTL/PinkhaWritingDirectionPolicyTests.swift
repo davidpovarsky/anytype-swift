@@ -86,6 +86,51 @@ struct PinkhaWritingDirectionPolicyTests {
         }
     }
 
+    @Test("Sequential multi-block resolution preserves explicit alignment while adapting automatic")
+    func multiBlockPrecedenceSequence() {
+        // Block 1: automatic Hebrew block in RTL interface -> right
+        let b1 = resolve(
+            isEmpty: false,
+            interfaceDirection: .rightToLeft,
+            detectedTextDirection: .rightToLeft,
+            persistedAlignment: nil,
+            alignmentWasExplicit: false
+        )
+        #expect(b1.alignment == .right)
+        #expect(b1.baseWritingDirection == .rightToLeft)
+
+        // Block 2: user-explicit left alignment in RTL interface -> left
+        let b2 = resolve(
+            isEmpty: false,
+            interfaceDirection: .rightToLeft,
+            detectedTextDirection: .rightToLeft,
+            persistedAlignment: .left,
+            alignmentWasExplicit: true
+        )
+        #expect(b2.alignment == .left)
+
+        // Block 3: newly created empty block after Enter -> right
+        let b3 = resolve(
+            isEmpty: true,
+            interfaceDirection: .rightToLeft,
+            detectedTextDirection: nil,
+            persistedAlignment: nil,
+            alignmentWasExplicit: false
+        )
+        #expect(b3.alignment == .right)
+        #expect(b3.baseWritingDirection == .rightToLeft)
+
+        // Block 4: legacy ambiguous paragraph with stored .left in RTL interface -> right display
+        let b4 = resolve(
+            isEmpty: false,
+            interfaceDirection: .rightToLeft,
+            detectedTextDirection: .rightToLeft,
+            persistedAlignment: .left,
+            alignmentWasExplicit: false
+        )
+        #expect(b4.alignment == .right)
+    }
+
     private func resolve(
         isEmpty: Bool,
         interfaceDirection: PinkhaLayoutDirection,

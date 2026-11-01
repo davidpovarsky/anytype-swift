@@ -223,8 +223,8 @@ jobs:
               aggregate['runs'][name] = counts
               for key in ('total', 'passed', 'failed', 'skipped'):
                   aggregate[key] += counts[key]
-              if counts['total'] != 1 or counts['passed'] != 1 or counts['failed'] or counts['skipped']:
-                  problems.append(f'{name} is not exactly one passing test: {counts}')
+              if counts['total'] != 3 or counts['passed'] != 3 or counts['failed'] or counts['skipped']:
+                  problems.append(f'{name} is not exactly three passing tests: {counts}')
 
           Path('build/evidence/real-app-test-counts.json').write_text(
               json.dumps(aggregate, indent=2, sort_keys=True) + '\n',

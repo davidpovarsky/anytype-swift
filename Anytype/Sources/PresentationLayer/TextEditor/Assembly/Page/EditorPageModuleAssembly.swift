@@ -211,6 +211,7 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             slashMenuActionHandler: slashMenuActionHandler,
             mediaBlockActionsProvider: mediaBlockActionsProvider,
             editorPageBlocksStateManager: blocksStateManager,
+            torahSession: torahSession,
             output: output
         )
         

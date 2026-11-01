@@ -1,5 +1,6 @@
 import CoreGraphics
 import PinkhaKit
+import Services
 import SwiftUI
 import Testing
 import UIKit
@@ -290,6 +291,80 @@ struct TorahSearchLayoutTests {
 
 @MainActor
 final class TorahSearchLayoutScreenshotTests: XCTestCase {
+
+    func testDocumentSourcesNativeAndPresentationRowsRefreshInPlace() async throws {
+        for missingNativeRow in [false, true] {
+            for direction in [LayoutDirection.leftToRight, .rightToLeft] {
+                let context = TorahAssociationContext(spaceId: "header-space", objectId: "header-object", scope: .document)
+                let provider = TorahSearchLayoutProvider()
+                let registry = try TorahProviderRegistry(
+                    referenceProviders: [provider], topicProviders: [provider], lexicalProviders: [provider],
+                    defaultProviderID: provider.providerID
+                )
+                let repository = TorahSearchLayoutRepository(context: context, items: [])
+                let session = TorahEditorSession(
+                    spaceId: context.spaceId, objectId: context.objectId,
+                    workspace: AnytypeTorahWorkspace(registry: registry), associations: repository
+                )
+                let document = MockBaseDocument(objectId: context.objectId)
+                document.mockSpaceId = context.spaceId
+                let row = PinkhaDocumentMetadataRowModel(document: document, session: session, onRelationTap: { _ in })
+                let rowIdentity = row.hashable
+                let configuration: any UIContentConfiguration
+                if missingNativeRow {
+                    configuration = row.makeContentConfiguration(maxWidth: 320)
+                } else {
+                    configuration = UIHostingConfiguration {
+                        EditorFeaturedPropertiesView(relations: [], torahSession: session, onRelationTap: { _ in })
+                    }.margins(.all, 0)
+                }
+                let content = configuration.makeContentView()
+                let controller = UIViewController()
+                controller.view.semanticContentAttribute = direction == .rightToLeft ? .forceRightToLeft : .forceLeftToRight
+                let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 320, height: 280))
+                window.rootViewController = controller
+                window.makeKeyAndVisible()
+                controller.view.addSubview(content)
+                content.translatesAutoresizingMaskIntoConstraints = false
+                NSLayoutConstraint.activate([
+                    content.topAnchor.constraint(equalTo: controller.view.topAnchor),
+                    content.leadingAnchor.constraint(equalTo: controller.view.leadingAnchor),
+                    content.trailingAnchor.constraint(equalTo: controller.view.trailingAnchor)
+                ])
+                var previous = [TorahAssociationItem]()
+                var images = [Int: Data]()
+                for count in [0, 1, 2, 12, 0] {
+                    for item in previous {
+                        try await repository.removeAssociation(associationId: item.id, target: context.target, spaceId: context.spaceId)
+                    }
+                    let items = associationFixtures(count: count)
+                    for item in items { _ = try await repository.addAssociation(item, target: context.target, spaceId: context.spaceId) }
+                    _ = try await session.associationSnapshot(for: context)
+                    try await Task.sleep(for: .milliseconds(80))
+                    controller.view.setNeedsLayout()
+                    controller.view.layoutIfNeeded()
+                    XCTAssertGreaterThanOrEqual(content.bounds.height, 44)
+                    XCTAssertLessThanOrEqual(content.bounds.height, 280)
+                    XCTAssertEqual(session.visibleDocumentAssociations.count, count)
+                    XCTAssertEqual(row.hashable, rowIdentity)
+                    XCTAssertTrue(document.children.isEmpty)
+                    let image = UIGraphicsImageRenderer(bounds: controller.view.bounds).image { canvas in
+                        controller.view.layer.render(in: canvas.cgContext)
+                    }
+                    let data = try XCTUnwrap(image.pngData())
+                    if count > 0, let empty = images[0] { XCTAssertNotEqual(data, empty) }
+                    images[count] = data
+                    addScreenshot(image, name: "sources-\(missingNativeRow ? "presentation" : "native")-\(direction)-\(count)")
+                    previous = items
+                }
+                session.presentSearch(scope: .block("previous-block"))
+                session.presentSearch(scope: .document)
+                XCTAssertEqual(session.associationContext.scope, .document)
+                XCTAssertTrue(session.isSearchPresented)
+                window.isHidden = true
+            }
+        }
+    }
 
     func testDeterministicTorahSearchLayoutEvidence() throws {
         for presentation in TorahSearchLayoutPresentation.allCases {
