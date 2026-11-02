@@ -46,9 +46,7 @@ public struct SefariaClient: Sendable {
         transport: any TorahHTTPTransport = URLSessionTorahTransport(),
         baseURL: URL = URL(string: "https://www.sefaria.org")!,
         retryPolicy: SefariaRetryPolicy = SefariaRetryPolicy(),
-        sleep: @escaping @Sendable (Duration) async throws -> Void = { delay in
-            try await Task.sleep(for: delay)
-        },
+        sleep: @escaping @Sendable (Duration) async throws -> Void = SefariaClient.sleepForRetry,
         metrics: (@Sendable (SefariaRequestMetric) -> Void)? = nil
     ) {
         self.transport = transport
@@ -56,6 +54,14 @@ public struct SefariaClient: Sendable {
         self.retryPolicy = retryPolicy
         self.sleep = sleep
         self.metrics = metrics
+    }
+
+    // Keep the async body in this module rather than emitting a default-argument
+    // closure and Task.sleep specializations into every client (Swift #86204/#92017).
+    @usableFromInline
+    static func sleepForRetry(_ delay: Duration) async throws {
+        let clock = ContinuousClock()
+        try await clock.sleep(until: clock.now.advanced(by: delay))
     }
 
     public func get(

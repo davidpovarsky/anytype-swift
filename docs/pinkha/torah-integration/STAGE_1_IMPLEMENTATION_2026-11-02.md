@@ -35,7 +35,7 @@ Acceptance diagnostics report actual typing paragraph direction, current respond
 | Portable PinkhaKit baseline | PASS (reused) | 153 tests / 19 suites, including 6 direction-policy tests in November 1 evidence; not native proof |
 | Initial native integration/probe | FAIL | [Fast CI 41356934419](https://github.com/davidpovarsky/anytype-swift/actions/runs/41356934419): native app/test build PASS; 66/68 tests per primary device, zero skips; other language pair NOT_RUN |
 | Old package CI toolchain | FAIL | [41356934493](https://github.com/davidpovarsky/anytype-swift/actions/runs/41356934493), signal 6 / task allocator under Xcode 26.1.1 |
-| Updated package toolchain | NOT_RUN | Xcode 26.4.1 / Swift 6.3.1 selected, same complete test command. [Swift release evidence](https://forums.swift.org/t/announcing-swift-6-3-1/86080) documents allocator fixes; this is a toolchain hypothesis until executed |
+| Updated package toolchain alone | FAIL | [41368012507](https://github.com/davidpovarsky/anytype-swift/actions/runs/41368012507), same allocator abort under Xcode 26.4.1. Updating tools alone did not resolve this failure |
 | Native row 0/1/2/12/0 + narrow LTR/RTL snapshots | NOT_RUN | Fast CI includes the actual hosted native and presentation row test |
 | Five successive Enter blocks + relaunch, Page/Note/Pinkha | NOT_RUN | Full Acceptance, separate from isolated UIKit tests |
 | Original search/Inspector/block ornament | NOT_RUN for current implementation | Existing native regression suites retained |
@@ -51,3 +51,11 @@ Both devices measured the same focused empty-caret failure: configuration before
 The baseline programmatic insertText call produced zero native should-change callbacks in both cases; insertionDirection was nil, so that portion of the probe is INVALID, not proof of wrong accepted-input attributes. The unit now names and explicitly exercises the native delegate contract. Full Acceptance separately records the actual host-accepted first empty input before UIKit inserts it, via a diagnostics-only host hook. No behavioral C1 callback is applied.
 
 Sources data counts updated correctly, but baseline standalone-host snapshots stayed at Sources + for every nonzero count. This is a FAIL of displayed refresh qualification. The revised fixture embeds the actual native content configuration in a real EditorViewListCell and diffable collection, keeps the same item and cell, requires no source-driven reconfiguration, and captures the updated visible hierarchy. Pixel differences remain required; this is not yet called a production refresh PASS. Book/overflow remain pending successful displayed and interactive replacement evidence.
+
+## Package CI allocator correction
+
+On Xcode 26.4.1 the four unfinished tests were HTTP status diagnostics, malformed text versus failed HTTP, lexical 404 versus server errors, and topic-cache retry after failure. All four exercise the default SefariaClient backoff after a server error. The same code passed all 153 tests in Xcode 27, while the older compiler aborted before the default delays finished.
+
+This correlates with Swift's documented [cross-module Task.sleep specialization failure](https://github.com/swiftlang/swift/issues/86204) and [default async closure frame mismatch](https://github.com/swiftlang/swift/issues/92017). The downstream correction keeps the default async body in one internal library function and sleeps until a ContinuousClock deadline. The public initializer signature, injected sleepers, retry counts/durations, cancellation and provider errors remain intact. No test is skipped or serialized to conceal the failure.
+
+The complete unchanged 153-test/19-suite package run passed on Windows Swift 6.3.3 after this correction ([local evidence](evidence/2026-11-02/retry-fix-windows.log)). This is not yet a Mac result; native package validation is pending the next push. The correction is kept local while the current native RTL/Sources execution at `f0e6eda5ce4541536b753c8bed10004c9842a455` finishes, avoiding cancellation of its evidence.
