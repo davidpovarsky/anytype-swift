@@ -145,6 +145,7 @@ jobs:
 
       - name: Run focused native tests on iPhone and iPad in LTR and RTL
         id: native_tests
+        timeout-minutes: 35
         if: steps.native_build.outcome == 'success'
         run: |
           set -o pipefail
@@ -185,6 +186,9 @@ jobs:
                 -resultBundlePath "$result" \
                 -collect-test-diagnostics never \
                 -parallel-testing-enabled NO \
+                -test-timeouts-enabled YES \
+                -default-test-execution-time-allowance 120 \
+                -maximum-test-execution-time-allowance 180 \
                 -testLanguage "$language" \
                 -testRegion "$region" \
                 "${test_flags[@]}" \

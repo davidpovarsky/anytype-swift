@@ -80,7 +80,9 @@ struct PinkhaTextDirectionUIKitAdapterTests {
 
     @Test("An active marked-text composition is left byte-for-byte untouched")
     func activeIMECompositionIsUntouched() throws {
-        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        window.frame = CGRect(x: 0, y: 0, width: 390, height: 844)
         let controller = UIViewController()
         let textView = UITextView(frame: controller.view.bounds)
         controller.view.addSubview(textView)
@@ -396,7 +398,9 @@ struct PinkhaTextDirectionUIKitAdapterTests {
 
     @Test("Native row caret and delegate insertion contract after attachment", arguments: [false, true])
     func nativeRowAttachmentProbe(configureAfterAttachment: Bool) async throws {
-        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
+        let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        window.frame = CGRect(x: 0, y: 0, width: 390, height: 844)
         let controller = UIViewController()
         controller.view.semanticContentAttribute = .forceRightToLeft
         window.rootViewController = controller
@@ -461,6 +465,7 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         #expect(textView.selectedRange == NSRange(location: 0, length: 0))
         let selected = try #require(textView.selectedTextRange)
         let emptyCaret = textView.caretRect(for: selected.start)
+        print("PINKHA_NATIVE_CARET attachedBeforeConfiguration=\(configureAfterAttachment) caretX=\(emptyCaret.midX) midpoint=\(textView.bounds.midX) responder=\(textView.isFirstResponder)")
         #expect(emptyCaret.midX > textView.bounds.midX,
                 "Initial empty caret must be physically right before inserting any text")
 
@@ -471,6 +476,7 @@ struct PinkhaTextDirectionUIKitAdapterTests {
             textView, shouldChangeTextIn: NSRange(location: 0, length: 0), replacementText: "א"
         ) ?? false
         try #require(accepted)
+        print("PINKHA_NATIVE_DELEGATE_CONTRACT accepted=\(acceptedInsertions) direction=\(String(describing: insertionDirection))")
         textView.insertText("א")
         #expect(acceptedInsertions == 1,
                 "A missing real delegate callback invalidates the probe; it is not a direction pass")

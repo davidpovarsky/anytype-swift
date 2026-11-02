@@ -204,16 +204,26 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
         let titleField = app.textViews.matching(
             NSPredicate(format: "identifier BEGINSWITH %@", "pinkha.stage1.title.")
         ).firstMatch
+        defer {
+            // Requested environment labels are diagnostics, not proof of document identity.
+            let identity = kind == .note ? editorBody(containing: expectedTitle) : app.textViews.matching(
+                NSPredicate(format: "identifier BEGINSWITH %@ AND value CONTAINS %@", "pinkha.stage1.title.", expectedTitle)
+            ).firstMatch
+            XCTAssertTrue(identity.waitForExistence(timeout: 30), "Expected native \(kind.rawValue) fixture did not open")
+        }
+
+        if kind == .note, editorBody(containing: expectedTitle).exists { return }
 
         if titleField.exists {
             let currentTitle = String(describing: titleField.value)
             if currentTitle.contains(expectedTitle) {
                 return
             }
+        }
+        if titleField.exists || editorBody().exists {
             let back = button(namedAny: ["Back", "חזרה"])
-            if back.exists {
-                back.tap()
-            }
+            XCTAssertTrue(back.waitForExistence(timeout: 5), "Leave the previous native document before selecting another fixture")
+            back.tap()
         }
 
         let docButton = button(containingAny: [expectedTitle])
@@ -278,6 +288,8 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
                 body.tap()
                 body.typeText(expectedTitle + "\n")
             }
+        } else {
+            XCTFail("Native create entry is unavailable; do not silently exercise the previous document")
         }
     }
 
