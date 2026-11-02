@@ -96,6 +96,16 @@ struct PinkhaTextDirectionUIKitAdapterTests {
             .font: UIFont.systemFont(ofSize: 17), .foregroundColor: UIColor.black,
             .paragraphStyle: paragraph
         ])
+        let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        window.frame = CGRect(x: 0, y: 0, width: 390, height: 844)
+        let controller = UIViewController()
+        controller.view.addSubview(wrapper)
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        controller.view.layoutIfNeeded()
+        try #require(textView.becomeFirstResponder())
+        defer { textView.unmarkText(); textView.resignFirstResponder(); window.isHidden = true }
         textView.selectedRange = NSRange(location: 4, length: 3)
         let context = PinkhaTextBlockWritingContext(
             origin: .ambiguousLegacyParagraph,
@@ -103,6 +113,7 @@ struct PinkhaTextDirectionUIKitAdapterTests {
             alignmentWasExplicit: false
         )
         for rtl in [false, true] {
+            controller.view.semanticContentAttribute = rtl ? .forceRightToLeft : .forceLeftToRight
             textView.semanticContentAttribute = rtl ? .forceRightToLeft : .forceLeftToRight
             let attributedBefore = textView.attributedText
             let selectionBefore = textView.selectedRange
@@ -110,6 +121,8 @@ struct PinkhaTextDirectionUIKitAdapterTests {
             PinkhaTextDirectionUIKitAdapter.apply(context: context, to: textView)
             let manager = textView.layoutManager
             manager.ensureLayout(for: textView.textContainer)
+            textView.layoutIfNeeded()
+            try #require(textView.isFirstResponder, "Native caret evidence requires an attached, focused view")
             let range = manager.glyphRange(for: textView.textContainer)
             try #require(range.length > 1)
             let fragment = manager.lineFragmentRect(forGlyphAt: range.location, effectiveRange: nil)
@@ -121,6 +134,7 @@ struct PinkhaTextDirectionUIKitAdapterTests {
             #expect(textView.offset(from: textView.beginningOfDocument, to: nativePosition) == 0)
             let caret = textView.caretRect(for: textView.beginningOfDocument)
             try #require(caret.height > 0, "The native input geometry must be measurable")
+            print("PINKHA_NATIVE_INPUT hostRight=\(hostUsesRight) rtl=\(rtl) caretX=\(caret.midX) firstX=\(fragment.minX + first.x) hit=\(textView.offset(from: textView.beginningOfDocument, to: nativePosition)) responder=\(textView.isFirstResponder)")
             #expect(abs(caret.midX - (fragment.minX + first.x)) < 3,
                     "UITextView's caret must follow the same actual glyph location")
 

@@ -1,0 +1,30 @@
+native-iphone-ltr.log
+✘ Test "Original native layout manager draws and hits the actual glyphs on the default side" recorded an issue with 2 arguments hostUsesRight → false, text → "English text" at PinkhaTextDirectionUIKitAdapterTests.swift:121:13: Expectation failed: textView.offset(from: textView.beginningOfDocument, to: nativePosition) == 0
+↳   textView.offset(from: textView.beginningOfDocument, to: nativePosition) → 12
+✘ Test "Original native layout manager draws and hits the actual glyphs on the default side" recorded an issue with 2 arguments hostUsesRight → false, text → "English text" at PinkhaTextDirectionUIKitAdapterTests.swift:124:13: Expectation failed: abs(caret.midX - (fragment.minX + first.x)) < 3
+↳   abs(caret.midX - (fragment.minX + first.x)) → 231.06982421875
+Hi 👩🏽‍💻" at PinkhaTextDirectionUIKitAdapterTests.swift:124:13: Expectation failed: abs(caret.midX - (fragment.minX + first.x)) < 3
+↳   abs(caret.midX - (fragment.minX + first.x)) → 264.21484375
+✘ Test "Original native layout manager draws and hits the actual glyphs on the default side" recorded an issue with 2 arguments hostUsesRight → true, text → "English text" at PinkhaTextDirectionUIKitAdapterTests.swift:124:13: Expectation failed: abs(caret.midX - (fragment.minX + first.x)) < 3
+↳   abs(caret.midX - (fragment.minX + first.x)) → 232.0
+Hi 👩🏽‍💻" at PinkhaTextDirectionUIKitAdapterTests.swift:124:13: Expectation failed: abs(caret.midX - (fragment.minX + first.x)) < 3
+↳   abs(caret.midX - (fragment.minX + first.x)) → 265.3333333333333
+native-ipad-rtl.log
+✘ Test "Original native layout manager draws and hits the actual glyphs on the default side" recorded an issue with 2 arguments hostUsesRight → false, text → "English text" at PinkhaTextDirectionUIKitAdapterTests.swift:121:13: Expectation failed: textView.offset(from: textView.beginningOfDocument, to: nativePosition) == 0
+↳   textView.offset(from: textView.beginningOfDocument, to: nativePosition) → 12
+✘ Test "Original native layout manager draws and hits the actual glyphs on the default side" recorded an issue with 2 arguments hostUsesRight → false, text → "English text" at PinkhaTextDirectionUIKitAdapterTests.swift:124:13: Expectation failed: abs(caret.midX - (fragment.minX + first.x)) < 3
+↳   abs(caret.midX - (fragment.minX + first.x)) → 231.06982421875
+Hi 👩🏽‍💻" at PinkhaTextDirectionUIKitAdapterTests.swift:124:13: Expectation failed: abs(caret.midX - (fragment.minX + first.x)) < 3
+↳   abs(caret.midX - (fragment.minX + first.x)) → 264.21484375
+✘ Test "Original native layout manager draws and hits the actual glyphs on the default side" recorded an issue with 2 arguments hostUsesRight → true, text → "English text" at PinkhaTextDirectionUIKitAdapterTests.swift:124:13: Expectation failed: abs(caret.midX - (fragment.minX + first.x)) < 3
+↳   abs(caret.midX - (fragment.minX + first.x)) → 232.0
+Hi 👩🏽‍💻" at PinkhaTextDirectionUIKitAdapterTests.swift:124:13: Expectation failed: abs(caret.midX - (fragment.minX + first.x)) < 3
+↳   abs(caret.midX - (fragment.minX + first.x)) → 265.0
+Native preparation:
+PINKHA_ACCEPTANCE_TYPES_READY pinkha=bafyreibpo5em4l3zzhzjcz2bpavam32g3kh4g3x5ftb5rpddubtnr5px4e note=bafyreibmjl674cb2ltstdb36ajqykeinnvf62vfowvowiomsv74zza2q3u builtinNotePresent=false
+HAPE object=bafyreicl5e3vtynjq6pvsaiixvdjm5dc74kd3izah7twzpqptwvbp3dtz4 layout=0 featuredRe2026-11-02 09:30:30.225080+0000 Anytype[54386:162011] [Assert] -[UIApplication statusBarStyle] API has been deprecated and is a no-op on 27.0 and later.
+PINKHA_ACCEPTANCE_NATIVE_SHAPE object=bafyreiccz63qhuzlqua3dxfxuzlm3xm3gmghgibxsndeao7eoy6rresdjm layout=9 featuredRelations=1 title=false
+PINKHA_ACCEPTANCE_NATIVE_SHAPE object=bafyreib4d2tpyksa5nvikf3cvd45mva57p6fn4kbxsyvtopk5li5cyatri layout=0 featuredRelations=1 title=true
+✔ Test "Creates disposable Pinkha, ordinary Note and ordinary Page documents" passed after 4.856 seconds.
+✔ Suite "Pinkha Stage 1 real-app acceptance preparation" passed after 4.858 seconds.
+✔ Test run with 1 test in 1 suite passed after 4.858 seconds.
