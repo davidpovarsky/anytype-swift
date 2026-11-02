@@ -35,18 +35,33 @@ struct PinkhaStage1AcceptancePreparationTests {
         // for the subsequent application launch.
         _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: spaceId)
 
-        let manifest = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(
-            spaceId: spaceId
+        // Join the production bootstrap owner instead of racing its asynchronous activation hook.
+        PinkhaBootstrapHook.handleSpaceActivated(spaceId: spaceId)
+        let manifest = try await Container.shared.pinkhaBootstrapStateManager().awaitReadiness(
+            spaceId: spaceId, timeoutSeconds: 60
         )
-        Container.shared.pinkhaBootstrapStateManager().setState(.ready(manifest), for: spaceId)
         let typeId = try #require(
             manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey]
         )
         let typeProvider = Container.shared.objectTypeProvider()
-        for _ in 0..<50 where (try? typeProvider.objectType(id: typeId)) == nil {
-            try await Task.sleep(for: .milliseconds(100))
-        }
-        _ = try typeProvider.objectType(id: typeId)
+        let indexClock = ContinuousClock()
+        let indexDeadline = indexClock.now.advanced(by: .seconds(30))
+        var typesAreIndexed = false
+        repeat {
+            let types = typeProvider.objectTypes(spaceId: spaceId)
+            if types.contains(where: { $0.id == typeId }),
+               let noteType = types.first(where: { $0.uniqueKey == .note }),
+               let pageType = types.first(where: { $0.uniqueKey == .page }) {
+                let expectedIDs = Set([typeId, noteType.id, pageType.id])
+                let indexed = try await Container.shared.searchService().searchObjects(
+                    spaceId: spaceId, objectIds: Array(expectedIDs)
+                )
+                typesAreIndexed = expectedIDs.isSubset(of: Set(indexed.map(\.id)))
+                if typesAreIndexed { break }
+            }
+            try await Task.sleep(nanoseconds: 100_000_000)
+        } while indexClock.now < indexDeadline
+        try #require(typesAreIndexed, "Native Page/Note/Pinkha creation requires their types in this Space's index")
         let document = try await PinkhaHierarchyMutationService().createWritingDocument(
             typeId: typeId,
             parentId: nil,

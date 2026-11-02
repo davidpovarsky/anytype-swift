@@ -52,6 +52,8 @@ struct PinkhaTextDirectionUIKitAdapterTests {
 
         #expect(PinkhaTextDirectionUIKitAdapter.visualAlignment(for: textView) == .right)
         #expect(abs(used.maxX - fragment.maxX) < 0.5)
+        #expect(fragment.minX + textView.layoutManager.location(forGlyphAt: glyphRange.location).x > textView.bounds.midX,
+                "A reported used rect is insufficient: the rendered glyph origin must move")
         #expect(textView.attributedText == attributedBefore)
         #expect(textView.selectedRange == selectionBefore)
         #expect(NSDictionary(dictionary: textView.typingAttributes).isEqual(
@@ -70,12 +72,138 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         )
         #expect(PinkhaTextDirectionUIKitAdapter.visualAlignment(for: textView) == .left)
         #expect(abs(leftUsed.minX - fragment.minX) < 0.5)
+        #expect(fragment.minX + textView.layoutManager.location(forGlyphAt: glyphRange.location).x < textView.bounds.midX)
         #expect(textView.attributedText == attributedBefore)
         #expect(observer.textChangeCount == 0)
         #expect(observer.storageEditCount == 0)
 
         textView.testUndoManager.undo()
         #expect(undoFlag.reached)
+    }
+
+    @Test("Original native layout manager draws and hits the actual glyphs on the default side",
+          arguments: [false, true], ["English text", "English\nabc אבג\nHi 👩🏽‍💻"])
+    func nativeGlyphRenderingAndHitTesting(hostUsesRight: Bool, text: String) throws {
+        let wrapper = CustomTextView()
+        wrapper.frame = CGRect(x: 0, y: 0, width: 320, height: 80)
+        wrapper.layoutIfNeeded()
+        let textView = wrapper.textView
+        textView.textContainerInset = .zero
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = hostUsesRight ? .right : .left
+        paragraph.baseWritingDirection = .leftToRight
+        textView.attributedText = NSAttributedString(string: text, attributes: [
+            .font: UIFont.systemFont(ofSize: 17), .foregroundColor: UIColor.black,
+            .paragraphStyle: paragraph
+        ])
+        textView.selectedRange = NSRange(location: 4, length: 3)
+        let context = PinkhaTextBlockWritingContext(
+            origin: .ambiguousLegacyParagraph,
+            persistedAlignment: hostUsesRight ? .right : .left,
+            alignmentWasExplicit: false
+        )
+        for rtl in [false, true] {
+            textView.semanticContentAttribute = rtl ? .forceRightToLeft : .forceLeftToRight
+            let attributedBefore = textView.attributedText
+            let selectionBefore = textView.selectedRange
+            let typingBefore = textView.typingAttributes
+            PinkhaTextDirectionUIKitAdapter.apply(context: context, to: textView)
+            let manager = textView.layoutManager
+            manager.ensureLayout(for: textView.textContainer)
+            let range = manager.glyphRange(for: textView.textContainer)
+            try #require(range.length > 1)
+            let fragment = manager.lineFragmentRect(forGlyphAt: range.location, effectiveRange: nil)
+            let first = manager.location(forGlyphAt: range.location)
+            let next = manager.location(forGlyphAt: range.location + 1)
+            let probe = CGPoint(x: fragment.minX + first.x + (next.x - first.x) * 0.25, y: fragment.midY)
+            #expect(manager.glyphIndex(for: probe, in: textView.textContainer) == range.location)
+
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = 1
+            format.opaque = true
+            format.preferredRange = .standard
+            let image = UIGraphicsImageRenderer(size: wrapper.bounds.size, format: format).image { canvas in
+                UIColor.white.setFill()
+                canvas.fill(wrapper.bounds)
+                manager.drawGlyphs(forGlyphRange: range, at: .zero)
+            }
+            let ink = try darkPixelBounds(of: #require(image.cgImage))
+            print("PINKHA_NATIVE_GLYPHS hostRight=\(hostUsesRight) rtl=\(rtl) ink=\(ink) firstX=\(fragment.minX + first.x)")
+            #expect(rtl ? ink.minX > textView.bounds.midX : ink.maxX < textView.bounds.midX)
+            #expect(ink.minX >= 0 && ink.maxX <= textView.bounds.width)
+            manager.ensureLayout(for: textView.textContainer)
+            #expect(manager.location(forGlyphAt: range.location) == first, "A repeated layout query must not accumulate a shift")
+            #expect(textView.attributedText == attributedBefore)
+            #expect(textView.selectedRange == selectionBefore)
+            #expect(NSDictionary(dictionary: textView.typingAttributes).isEqual(NSDictionary(dictionary: typingBefore)))
+        }
+    }
+
+    private func darkPixelBounds(of image: CGImage) throws -> CGRect {
+        let width = image.width
+        let height = image.height
+        var pixels = [UInt8](repeating: 255, count: width * height * 4)
+        return try pixels.withUnsafeMutableBytes { buffer in
+            let context = try #require(CGContext(
+                data: buffer.baseAddress, width: width, height: height,
+                bitsPerComponent: 8, bytesPerRow: width * 4,
+                space: CGColorSpaceCreateDeviceRGB(),
+                bitmapInfo: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.premultipliedLast.rawValue
+            ))
+            context.draw(image, in: CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height)))
+            let bytes = buffer.bindMemory(to: UInt8.self)
+            var minX = width, minY = height, maxX = -1, maxY = -1
+            for y in 0..<height {
+                for x in 0..<width {
+                    let offset = (y * width + x) * 4
+                    if bytes[offset] < 100 && bytes[offset + 1] < 100 && bytes[offset + 2] < 100 {
+                        minX = min(minX, x); minY = min(minY, y)
+                        maxX = max(maxX, x); maxY = max(maxY, y)
+                    }
+                }
+            }
+            try #require(maxX >= minX, "The glyph renderer must draw actual ink, never a blank fixture")
+            return CGRect(x: CGFloat(minX), y: CGFloat(minY), width: CGFloat(maxX - minX + 1), height: CGFloat(maxY - minY + 1))
+        }
+    }
+
+    @Test("An already active display layout preserves marked text during relayout")
+    func activeDisplayLayoutPreservesComposition() throws {
+        let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        let controller = UIViewController()
+        controller.view.semanticContentAttribute = .forceRightToLeft
+        let textView = UITextView(frame: CGRect(x: 0, y: 0, width: 320, height: 120))
+        textView.text = "abc"
+        textView.textAlignment = .left
+        controller.view.addSubview(textView)
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer { textView.resignFirstResponder(); window.isHidden = true }
+        PinkhaTextDirectionUIKitAdapter.apply(context: automaticContext, to: textView)
+        textView.layoutManager.ensureLayout(for: textView.textContainer)
+        try #require(textView.becomeFirstResponder())
+        textView.selectedRange = NSRange(location: 3, length: 0)
+        textView.setMarkedText("אב", selectedRange: NSRange(location: 2, length: 0))
+        let marked = try #require(textView.markedTextRange)
+        let markedStart = textView.offset(from: textView.beginningOfDocument, to: marked.start)
+        let markedEnd = textView.offset(from: textView.beginningOfDocument, to: marked.end)
+        let attributedBefore = textView.attributedText
+        let selectionBefore = textView.selectedRange
+        let typingBefore = textView.typingAttributes
+        let observer = TextMutationObserver()
+        textView.delegate = observer
+        textView.textStorage.delegate = observer
+        textView.layoutManager.invalidateLayout(forCharacterRange: NSRange(location: 0, length: textView.textStorage.length), actualCharacterRange: nil)
+        textView.layoutManager.ensureLayout(for: textView.textContainer)
+        let after = try #require(textView.markedTextRange)
+        #expect(textView.offset(from: textView.beginningOfDocument, to: after.start) == markedStart)
+        #expect(textView.offset(from: textView.beginningOfDocument, to: after.end) == markedEnd)
+        #expect(textView.attributedText == attributedBefore)
+        #expect(textView.selectedRange == selectionBefore)
+        #expect(NSDictionary(dictionary: textView.typingAttributes).isEqual(NSDictionary(dictionary: typingBefore)))
+        #expect(observer.textChangeCount == 0 && observer.storageEditCount == 0)
+        #expect(textView.isFirstResponder)
     }
 
     @Test("An active marked-text composition is left byte-for-byte untouched")

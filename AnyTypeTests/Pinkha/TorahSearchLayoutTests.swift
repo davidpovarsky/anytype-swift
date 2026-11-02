@@ -292,105 +292,125 @@ struct TorahSearchLayoutTests {
 @MainActor
 final class TorahSearchLayoutScreenshotTests: XCTestCase {
 
-    func testDocumentSourcesNativeAndPresentationRowsRefreshInPlace() async throws {
-        for missingNativeRow in [false, true] {
-            for direction in [LayoutDirection.leftToRight, .rightToLeft] {
-                let context = TorahAssociationContext(spaceId: "header-space", objectId: "header-object", scope: .document)
-                let provider = TorahSearchLayoutProvider()
-                let registry = try TorahProviderRegistry(
-                    referenceProviders: [provider], topicProviders: [provider], lexicalProviders: [provider],
-                    defaultProviderID: provider.providerID
-                )
-                let repository = TorahSearchLayoutRepository(context: context, items: [])
-                let session = TorahEditorSession(
-                    spaceId: context.spaceId, objectId: context.objectId,
-                    workspace: AnytypeTorahWorkspace(registry: registry), associations: repository
-                )
-                let document = MockBaseDocument(objectId: context.objectId)
-                document.mockSpaceId = context.spaceId
-                let nativeInfo = BlockInformation.empty(id: "featuredRelations", content: .featuredRelations)
-                document.mockChildren = missingNativeRow ? [] : [nativeInfo]
-                let originalTree = document.children
-                let row = PinkhaDocumentMetadataRowModel(document: document, session: session, onRelationTap: { _ in })
-                let reloadProbe = TorahHeaderReloadProbe()
-                let native = FeaturedPropertiesBlockViewModel(
-                    infoProvider: BlockModelInfomationProvider(
-                        document: document, info: nativeInfo
-                    ),
-                    document: document, collectionController: reloadProbe,
-                    torahSession: session, onRelationValueTap: { _ in }
-                )
-                let item: EditorItem = missingNativeRow ? .system(row) : .block(native)
-                let rowIdentity = item.hashValue
-                let configuration = missingNativeRow
-                    ? row.makeContentConfiguration(maxWidth: 320)
-                    : native.makeContentConfiguration(maxWidth: 320)
-                let controller = UIViewController()
-                controller.view.semanticContentAttribute = direction == .rightToLeft ? .forceRightToLeft : .forceLeftToRight
-                controller.traitOverrides.layoutDirection = direction == .rightToLeft ? .rightToLeft : .leftToRight
-                let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
-                let window = UIWindow(windowScene: scene)
-                window.frame = CGRect(x: 0, y: 0, width: 320, height: 280)
-                window.rootViewController = controller
-                window.makeKeyAndVisible()
-                // UIHostingConfiguration belongs to a real cell, as in the native editor.
-                let layout = EditorCollectionFlowLayout()
-                let collection = EditorCollectionView(frame: window.bounds, collectionViewLayout: layout)
-                collection.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-                controller.view.addSubview(collection)
-                var configurationCount = 0
-                let registration = UICollectionView.CellRegistration<EditorViewListCell, EditorItem> { cell, _, _ in
-                    configurationCount += 1
-                    cell.contentConfiguration = configuration
-                }
-                let dataSource = UICollectionViewDiffableDataSource<EditorSection, EditorItem>(collectionView: collection) { collection, indexPath, item in
-                    collection.dequeueConfiguredReusableCell(using: registration, for: indexPath, item: item)
-                }
-                layout.dataSource = dataSource
-                var snapshot = NSDiffableDataSourceSnapshot<EditorSection, EditorItem>()
-                snapshot.appendSections([.main])
-                snapshot.appendItems([item])
-                await dataSource.apply(snapshot, animatingDifferences: false)
-                print("PINKHA_SOURCES_CELL_READY missingNative=\(missingNativeRow) direction=\(direction)")
-                var previous = [TorahAssociationItem]()
-                var images = [Int: Data]()
-                for count in [0, 1, 2, 12, 0] {
-                    for item in previous {
-                        try await repository.removeAssociation(associationId: item.id, target: context.target, spaceId: context.spaceId)
-                    }
-                    let items = associationFixtures(count: count)
-                    for item in items { _ = try await repository.addAssociation(item, target: context.target, spaceId: context.spaceId) }
-                    _ = try await session.associationSnapshot(for: context)
-                    try await Task.sleep(for: .milliseconds(80))
-                    controller.view.setNeedsLayout()
-                    controller.view.layoutIfNeeded()
-                    collection.layoutIfNeeded()
-                    let content = try XCTUnwrap(collection.cellForItem(at: IndexPath(item: 0, section: 0)))
-                    print("PINKHA_SOURCES_LAYOUT missingNative=\(missingNativeRow) direction=\(direction) count=\(count) height=\(content.bounds.height) configurations=\(configurationCount)")
-                    XCTAssertGreaterThanOrEqual(content.bounds.height, 44)
-                    XCTAssertLessThanOrEqual(content.bounds.height, 280)
-                    XCTAssertEqual(session.visibleDocumentAssociations.count, count)
-                    XCTAssertEqual(item.hashValue, rowIdentity)
-                    XCTAssertEqual(dataSource.snapshot().itemIdentifiers, [item])
-                    XCTAssertEqual(configurationCount, 1)
-                    XCTAssertEqual(reloadProbe.reconfigureCount, 0, "Source snapshots must update the hosted view without editor reconfiguration")
-                    XCTAssertEqual(document.children, originalTree)
-                    let image = UIGraphicsImageRenderer(bounds: controller.view.bounds).image { canvas in
-                        controller.view.layer.render(in: canvas.cgContext)
-                    }
-                    let data = try XCTUnwrap(image.pngData())
-                    if count > 0, let empty = images[0] { XCTAssertNotEqual(data, empty) }
-                    images[count] = data
-                    addScreenshot(image, name: "sources-\(missingNativeRow ? "presentation" : "native")-\(direction)-\(count)")
-                    previous = items
-                }
-                session.presentSearch(scope: .block("previous-block"))
-                session.presentSearch(scope: .document)
-                XCTAssertEqual(session.associationContext.scope, .document)
-                XCTAssertTrue(session.isSearchPresented)
-                window.isHidden = true
-            }
+    func testNativeDocumentSourcesRefreshInLTR() async throws {
+        try await assertDocumentSourcesRefresh(missingNativeRow: false, direction: .leftToRight)
+    }
+
+    func testNativeDocumentSourcesRefreshInRTL() async throws {
+        try await assertDocumentSourcesRefresh(missingNativeRow: false, direction: .rightToLeft)
+    }
+
+    func testPresentationDocumentSourcesRefreshInLTR() async throws {
+        try await assertDocumentSourcesRefresh(missingNativeRow: true, direction: .leftToRight)
+    }
+
+    func testPresentationDocumentSourcesRefreshInRTL() async throws {
+        try await assertDocumentSourcesRefresh(missingNativeRow: true, direction: .rightToLeft)
+    }
+
+    private func assertDocumentSourcesRefresh(missingNativeRow: Bool, direction: LayoutDirection) async throws {
+        let context = TorahAssociationContext(spaceId: "header-space", objectId: "header-object", scope: .document)
+        let provider = TorahSearchLayoutProvider()
+        let registry = try TorahProviderRegistry(
+            referenceProviders: [provider], topicProviders: [provider], lexicalProviders: [provider],
+            defaultProviderID: provider.providerID
+        )
+        let repository = TorahSearchLayoutRepository(context: context, items: [])
+        let session = TorahEditorSession(
+            spaceId: context.spaceId, objectId: context.objectId,
+            workspace: AnytypeTorahWorkspace(registry: registry), associations: repository
+        )
+        let document = MockBaseDocument(objectId: context.objectId)
+        document.mockSpaceId = context.spaceId
+        let nativeInfo = BlockInformation.empty(id: "featuredRelations", content: .featuredRelations)
+        document.mockChildren = missingNativeRow ? [] : [nativeInfo]
+        let originalTree = document.children
+        let row = PinkhaDocumentMetadataRowModel(document: document, session: session, onRelationTap: { _ in })
+        let reloadProbe = TorahHeaderReloadProbe()
+        let native = FeaturedPropertiesBlockViewModel(
+            infoProvider: BlockModelInfomationProvider(
+                document: document, info: nativeInfo
+            ),
+            document: document, collectionController: reloadProbe,
+            torahSession: session, onRelationValueTap: { _ in }
+        )
+        let item: EditorItem = missingNativeRow ? .system(row) : .block(native)
+        let rowIdentity = item.hashValue
+        let configuration = missingNativeRow
+            ? row.makeContentConfiguration(maxWidth: 320)
+            : native.makeContentConfiguration(maxWidth: 320)
+        let controller = UIViewController()
+        controller.view.semanticContentAttribute = direction == .rightToLeft ? .forceRightToLeft : .forceLeftToRight
+        controller.traitOverrides.layoutDirection = direction == .rightToLeft ? .rightToLeft : .leftToRight
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let window = UIWindow(windowScene: scene)
+        window.frame = CGRect(x: 0, y: 0, width: 320, height: 280)
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+        // UIHostingConfiguration belongs to a real cell, as in the native editor.
+        let layout = EditorCollectionFlowLayout()
+        let collection = EditorCollectionView(frame: CGRect(x: 0, y: 0, width: 320, height: 280), collectionViewLayout: layout)
+        controller.view.addSubview(collection)
+        var configurationCount = 0
+        let registration = UICollectionView.CellRegistration<EditorViewListCell, EditorItem> { cell, _, _ in
+            configurationCount += 1
+            cell.contentConfiguration = configuration
         }
+        let dataSource = UICollectionViewDiffableDataSource<EditorSection, EditorItem>(collectionView: collection) { collection, indexPath, item in
+            collection.dequeueConfiguredReusableCell(using: registration, for: indexPath, item: item)
+        }
+        layout.dataSource = dataSource
+        var snapshot = NSDiffableDataSourceSnapshot<EditorSection, EditorItem>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems([item])
+        await dataSource.apply(snapshot, animatingDifferences: false)
+        print("PINKHA_SOURCES_CELL_READY missingNative=\(missingNativeRow) direction=\(direction)")
+        var previous = [TorahAssociationItem]()
+        var images = [Int: Data]()
+        for count in [0, 1, 2, 12, 0] {
+            for item in previous {
+                try await repository.removeAssociation(associationId: item.id, target: context.target, spaceId: context.spaceId)
+            }
+            let items = associationFixtures(count: count)
+            for item in items { _ = try await repository.addAssociation(item, target: context.target, spaceId: context.spaceId) }
+            _ = try await session.associationSnapshot(for: context)
+            try await Task.sleep(for: .milliseconds(80))
+            controller.view.setNeedsLayout()
+            controller.view.layoutIfNeeded()
+            collection.layoutIfNeeded()
+            XCTAssertEqual(collection.bounds.width, 320, "The narrow native editor viewport must stay fixed even if UIWindowScene resizes its window")
+            let content = try XCTUnwrap(collection.cellForItem(at: IndexPath(item: 0, section: 0)))
+            print("PINKHA_SOURCES_LAYOUT missingNative=\(missingNativeRow) direction=\(direction) count=\(count) height=\(content.bounds.height) configurations=\(configurationCount)")
+            XCTAssertGreaterThanOrEqual(content.bounds.height, 44)
+            XCTAssertLessThanOrEqual(content.bounds.height, 280)
+            XCTAssertEqual(session.visibleDocumentAssociations.count, count)
+            XCTAssertEqual(item.hashValue, rowIdentity)
+            XCTAssertEqual(dataSource.snapshot().itemIdentifiers, [item])
+            XCTAssertEqual(configurationCount, 1)
+            XCTAssertEqual(reloadProbe.reconfigureCount, 0, "Source snapshots must update the hosted view without editor reconfiguration")
+            XCTAssertEqual(document.children, originalTree)
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = 1
+            let image = UIGraphicsImageRenderer(bounds: collection.bounds, format: format).image { canvas in
+                collection.layer.render(in: canvas.cgContext)
+            }
+            let data = try XCTUnwrap(image.pngData())
+            if count > 0, let empty = images[0] { XCTAssertNotEqual(data, empty) }
+            if previous.count > 0, let prior = images[previous.count] {
+                XCTAssertNotEqual(data, prior, "Each link/unlink count must change the displayed header")
+            }
+            if count == 0, let originalEmpty = images[0] {
+                XCTAssertEqual(data, originalEmpty, "Unlinking the last sources must restore the original empty header")
+            }
+            images[count] = data
+            addScreenshot(image, name: "sources-\(missingNativeRow ? "presentation" : "native")-\(direction)-\(count)")
+            previous = items
+        }
+        session.presentSearch(scope: .block("previous-block"))
+        session.presentSearch(scope: .document)
+        XCTAssertEqual(session.associationContext.scope, .document)
+        XCTAssertTrue(session.isSearchPresented)
     }
 
     func testDeterministicTorahSearchLayoutEvidence() throws {

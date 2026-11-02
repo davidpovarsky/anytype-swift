@@ -328,7 +328,7 @@ jobs:
 
       - name: Verify disposable native document preparation separately
         if: always() && steps.native_build.outcome == 'success'
-        timeout-minutes: 8
+        timeout-minutes: 12
         run: |
           set -euo pipefail
           xcrun simctl uninstall "$IPAD_UDID" io.anytype.app.dev || true

@@ -344,26 +344,69 @@ private final class PinkhaWritingContextBox {
 @MainActor
 private final class PinkhaTextLayoutDelegate: NSObject, NSLayoutManagerDelegate {
     var alignment: NSTextAlignment?
+    private var isAdjustingLayout = false
 
     func layoutManager(
         _ layoutManager: NSLayoutManager,
-        shouldSetLineFragmentRect lineFragmentRect: UnsafeMutablePointer<CGRect>,
-        lineFragmentUsedRect: UnsafeMutablePointer<CGRect>,
-        baselineOffset: UnsafeMutablePointer<CGFloat>,
-        in textContainer: NSTextContainer,
-        forGlyphRange glyphRange: NSRange
-    ) -> Bool {
-        guard let alignment, alignment == .left || alignment == .right else { return false }
+        didCompleteLayoutFor textContainer: NSTextContainer?,
+        atEnd layoutFinishedFlag: Bool
+    ) {
+        guard let alignment, alignment == .left || alignment == .right,
+              let textContainer, !isAdjustingLayout else { return }
+        isAdjustingLayout = true
+        defer { isAdjustingLayout = false }
 
-        let fragment = lineFragmentRect.pointee
-        var used = lineFragmentUsedRect.pointee
-        guard used.width <= fragment.width else { return false }
+        // Observe only the completed cache; never request more layout from this callback.
+        let cachedRange = layoutManager.glyphRange(
+            forBoundingRectWithoutAdditionalLayout: CGRect(origin: .zero, size: textContainer.size),
+            in: textContainer
+        )
+        guard cachedRange.length > 0 else { return }
+        var lines = [(CGRect, CGRect, NSRange)]()
+        var lineIndex = cachedRange.location
+        while lineIndex < NSMaxRange(cachedRange) {
+            var range = NSRange()
+            let fragment = layoutManager.lineFragmentRect(
+                forGlyphAt: lineIndex, effectiveRange: &range, withoutAdditionalLayout: true
+            )
+            guard range.length > 0, NSMaxRange(range) > lineIndex else { break }
+            let used = layoutManager.lineFragmentUsedRect(
+                forGlyphAt: lineIndex, effectiveRange: nil, withoutAdditionalLayout: true
+            )
+            lines.append((fragment, used, range))
+            lineIndex = NSMaxRange(range)
+        }
+        for (fragment, used, range) in lines {
+            guard used.width > 0, used.width <= fragment.width else { continue }
+            let targetX = alignment == .right ? fragment.maxX - used.width : fragment.minX
+            let delta = targetX - used.minX
+            guard delta.isFinite, abs(delta) > 0.01 else { continue }
 
-        used.origin.x = alignment == .right
-            ? fragment.maxX - used.width
-            : fragment.minX
-        lineFragmentUsedRect.pointee = used
-        return true
+            // Moving only usedRect reports alignment without moving any rendered glyph.
+            // Keep the valid, original line rectangle and translate every nominal glyph
+            // run within it, so drawing, hit testing and caret queries share one cache.
+            var runs = [(NSRange, CGPoint)]()
+            var index = range.location
+            while index < NSMaxRange(range) {
+                let nominal = layoutManager.range(ofNominallySpacedGlyphsContaining: index)
+                // Control glyphs can have no nominal display run, but still carry caret
+                // positions. Include them once without crossing the current line.
+                let end = nominal.location != NSNotFound && nominal.length > 0
+                    ? min(NSMaxRange(nominal), NSMaxRange(range)) : index + 1
+                let run = NSRange(location: index, length: max(1, end - index))
+                let location = layoutManager.location(forGlyphAt: run.location)
+                runs.append((run, CGPoint(x: location.x + delta, y: location.y)))
+                index = NSMaxRange(run)
+            }
+            guard !runs.isEmpty else { continue }
+            layoutManager.setLineFragmentRect(
+                fragment, forGlyphRange: range,
+                usedRect: used.offsetBy(dx: delta, dy: 0)
+            )
+            for (run, location) in runs {
+                layoutManager.setLocation(location, forStartOfGlyphRange: run)
+            }
+        }
     }
 }
 
