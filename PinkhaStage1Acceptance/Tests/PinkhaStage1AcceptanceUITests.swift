@@ -81,7 +81,7 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
         for kind in DocumentKind.allCases {
             if kind != .pinkha { launch(document: kind) }
             openDocumentIfNeeded(kind)
-            XCTAssertTrue(editorBody().waitForExistence(timeout: 60))
+            _ = editableBody()
             let add = app.buttons["torah-document-sources-add"]
             XCTAssertTrue(add.waitForExistence(timeout: 20))
             XCTAssertEqual(app.buttons.matching(identifier: "torah-document-sources-add").count, 1)
@@ -96,13 +96,13 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
 
     private func exerciseMultiBlockEnterLifecycle(_ kind: DocumentKind) throws {
         openDocumentIfNeeded(kind)
-        var target = editorBody()
-        XCTAssertTrue(target.waitForExistence(timeout: 60))
+        var target = editableBody(startNewTrailingBlock: true)
         target.tap()
 
         let token = UUID().uuidString.prefix(8)
         let lines = (1...5).map { index in
-            expectsRTL ? "שורה \(index) בדיקה \(token)" : "Line \(index) test \(token)"
+            let usesHebrew = expectsRTL ? !index.isMultiple(of: 2) : index.isMultiple(of: 2)
+            return usesHebrew ? "שורה \(index) בדיקה \(token)" : "Line \(index) test \(token)"
         }
         var typedBlockIDs = Set<String>()
         for (index, line) in lines.enumerated() {
@@ -128,7 +128,7 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             assertRuntimeDirection(on: target, document: kind)
             let direction = expectsRTL ? "rtl" : "ltr"
             let side = expectsRTL ? "right" : "left"
-            for fragment in ["typing-direction-\(direction)", "caret-side-\(side)"] {
+            for fragment in ["text-empty-true", "typing-direction-\(direction)", "caret-side-\(side)"] {
                 expectation(for: NSPredicate(format: "label CONTAINS %@", fragment), evaluatedWith: target)
             }
             waitForExpectations(timeout: 20)
@@ -159,7 +159,7 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
 
     private func exerciseDocument(_ kind: DocumentKind) throws {
         openDocumentIfNeeded(kind)
-        let body = editorBody()
+        var body = editableBody(startNewTrailingBlock: true)
         guard body.waitForExistence(timeout: 300) else {
             attachScreenshot(named: "FAIL-\(kind.rawValue)-editor-body-missing")
             XCTFail("Production editor body UITextView did not appear for \(kind.rawValue)")
@@ -168,6 +168,8 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
         body.tap()
         let enteredText = text(for: kind)
         body.typeText(enteredText)
+        body = editorBody(containing: enteredText)
+        XCTAssertTrue(body.waitForExistence(timeout: 20))
 
         assertRuntimeDirection(on: body, document: kind)
         attachScreenshot(named: "\(directionName)-\(kind.rawValue)-entry")
@@ -185,7 +187,7 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
 
         launch(document: kind)
         openDocumentIfNeeded(kind)
-        let bodyAfterFullScreenPop = editorBody()
+        let bodyAfterFullScreenPop = editorBody(containing: enteredText)
         XCTAssertTrue(bodyAfterFullScreenPop.waitForExistence(timeout: 60))
         assertRuntimeDirection(on: bodyAfterFullScreenPop, document: kind)
 
@@ -200,7 +202,7 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
 
         launch(document: kind)
         openDocumentIfNeeded(kind)
-        let reopenedBody = editorBody()
+        let reopenedBody = editorBody(containing: enteredText)
         XCTAssertTrue(reopenedBody.waitForExistence(timeout: 60), "\(kind.rawValue) did not reopen")
         assertRuntimeDirection(on: reopenedBody, document: kind)
         XCTAssertTrue(
@@ -242,8 +244,7 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             // Native Note has no title. Wait for the previous Page to leave before seeding
             // the Note's first body through real input, never into the previous document.
             XCTAssertTrue(titleFields.firstMatch.waitForNonExistence(timeout: 60))
-            let body = editorBody()
-            XCTAssertTrue(body.waitForExistence(timeout: 60))
+            let body = editableBody()
             if !identity.exists {
                 body.tap()
                 body.typeText(expectedTitle + "\n")
@@ -327,9 +328,36 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
     }
 
     private func editorBody() -> XCUIElement {
-        app.textViews.matching(
+        let bodies = app.textViews.matching(
             NSPredicate(format: "identifier BEGINSWITH %@", "pinkha.stage1.body.")
-        ).firstMatch
+        )
+        // Keep the Note's stable first-line identity intact while editing later content.
+        return bodies.element(boundBy: max(0, bodies.count - 1))
+    }
+
+    private func editableBody(startNewTrailingBlock: Bool = false) -> XCUIElement {
+        let body = editorBody()
+        if !startNewTrailingBlock, body.waitForExistence(timeout: 3) { return body }
+
+        // A newly opened native document can contain metadata without a body row. The
+        // original editor creates its virtual trailing row only after a tap below content.
+        // Exercise that user path; never create a persisted fixture block or change focus.
+        let editor = app.collectionViews.containing(.button, identifier: "torah-document-sources-add").firstMatch
+        XCTAssertTrue(editor.waitForExistence(timeout: 20))
+        let contentBottom = editor.cells.allElementsBoundByIndex.map { $0.frame.maxY }.max() ?? editor.frame.minY
+        let keyboard = app.keyboards.firstMatch
+        let visibleBottom = keyboard.exists ? min(editor.frame.maxY, keyboard.frame.minY) : editor.frame.maxY
+        XCTAssertGreaterThan(visibleBottom - contentBottom, 24, "A safe native empty area is required before tapping")
+        let y = contentBottom + (visibleBottom - contentBottom) * 0.5
+        editor.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(
+            dx: editor.frame.width * 0.5, dy: y - editor.frame.minY
+        )).tap()
+        let created = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND label CONTAINS %@ AND label CONTAINS %@",
+            "pinkha.stage1.body.", "first-responder-true", "text-empty-true"
+        )).firstMatch
+        XCTAssertTrue(created.waitForExistence(timeout: 20), "Native empty-area tap did not expose a trailing editor row")
+        return created
     }
 
     private func text(for kind: DocumentKind) -> String {

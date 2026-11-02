@@ -143,22 +143,6 @@ jobs:
             -only-testing:AnytypeTests/TorahSearchLayoutScreenshotTests \
             2>&1 | tee build/evidence/native-build-for-testing.log
 
-      - name: Build real-app UI acceptance target against the installed SDK
-        run: |
-          set -o pipefail
-          xcodebuild build-for-testing \
-            -workspace PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace \
-            -scheme PinkhaStage1Acceptance \
-            -configuration Debug-Anytype \
-            -destination "platform=iOS Simulator,id=$IPAD_UDID" \
-            -derivedDataPath build/DerivedData-Tests \
-            -collect-test-diagnostics never \
-            -parallel-testing-enabled NO \
-            -only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests \
-            ENABLE_TESTABILITY=YES \
-            ONLY_ACTIVE_ARCH=YES \
-            2>&1 | tee build/evidence/acceptance-ui-build-for-testing.log
-
       - name: Run focused native tests on iPhone and iPad in LTR and RTL
         id: native_tests
         timeout-minutes: 35
@@ -367,6 +351,22 @@ jobs:
           if actual != (1, 1, 0, 0):
               raise SystemExit(f'Native fixture preparation must pass exactly once, without skips: {actual}')
           PY
+
+      - name: Build real-app UI acceptance target against the installed SDK
+        run: |
+          set -o pipefail
+          xcodebuild build-for-testing \
+            -workspace PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace \
+            -scheme PinkhaStage1Acceptance \
+            -configuration Debug-Anytype \
+            -destination "platform=iOS Simulator,id=$IPAD_UDID" \
+            -derivedDataPath build/DerivedData-Tests \
+            -collect-test-diagnostics never \
+            -parallel-testing-enabled NO \
+            -only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests \
+            ENABLE_TESTABILITY=YES \
+            ONLY_ACTIVE_ARCH=YES \
+            2>&1 | tee build/evidence/acceptance-ui-build-for-testing.log
 
       - name: Save compiled native build intermediates
         if: always() && steps.native_build.outcome == 'success' && steps.native_cache.outputs.cache-hit != 'true'

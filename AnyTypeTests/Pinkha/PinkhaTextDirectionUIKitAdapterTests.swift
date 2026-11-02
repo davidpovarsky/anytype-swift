@@ -31,7 +31,7 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         textView.typingAttributes = [.font: UIFont.systemFont(ofSize: 17)]
         observer.reset()
 
-        let attributedBefore = textView.attributedText
+        let attributedBefore = try #require(textView.attributedText)
         let selectionBefore = textView.selectedRange
         let typingBefore = textView.typingAttributes
         let undoFlag = UndoFlagBox()
@@ -56,7 +56,7 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         #expect(abs(used.maxX - fragment.maxX) < 0.5)
         #expect(fragment.minX + textView.layoutManager.location(forGlyphAt: glyphRange.location).x > textView.bounds.midX,
                 "A reported used rect is insufficient: the rendered glyph origin must move")
-        expectOnlyPresentationAlignmentChanged(before: attributedBefore!, after: textView.attributedText)
+        expectOnlyPresentationAlignmentChanged(before: attributedBefore, after: textView.attributedText)
         #expect(textView.selectedRange == selectionBefore)
         expectTypingFormattingPreserved(before: typingBefore, after: textView.typingAttributes)
         #expect(observer.textChangeCount == 0)
@@ -115,7 +115,7 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         for rtl in [false, true] {
             controller.view.semanticContentAttribute = rtl ? .forceRightToLeft : .forceLeftToRight
             textView.semanticContentAttribute = rtl ? .forceRightToLeft : .forceLeftToRight
-            let attributedBefore = textView.attributedText
+            let attributedBefore = try #require(textView.attributedText)
             let selectionBefore = textView.selectedRange
             let typingBefore = textView.typingAttributes
             PinkhaTextDirectionUIKitAdapter.apply(context: context, to: textView)
@@ -153,7 +153,7 @@ struct PinkhaTextDirectionUIKitAdapterTests {
             #expect(ink.minX >= 0 && ink.maxX <= textView.bounds.width)
             manager.ensureLayout(for: textView.textContainer)
             #expect(manager.location(forGlyphAt: range.location) == first, "A repeated layout query must not accumulate a shift")
-            expectOnlyPresentationAlignmentChanged(before: attributedBefore!, after: textView.attributedText)
+            expectOnlyPresentationAlignmentChanged(before: attributedBefore, after: textView.attributedText)
             #expect(textView.selectedRange == selectionBefore)
             expectTypingFormattingPreserved(before: typingBefore, after: textView.typingAttributes)
         }
@@ -181,6 +181,12 @@ struct PinkhaTextDirectionUIKitAdapterTests {
     }
 
     private func expectTypingFormattingPreserved(before: [NSAttributedString.Key: Any], after: [NSAttributedString.Key: Any]) {
+        if let paragraph = before[.paragraphStyle] as? NSParagraphStyle {
+            let current = (after[.paragraphStyle] as? NSParagraphStyle)?.mutableCopy() as? NSMutableParagraphStyle
+            #expect(current != nil)
+            current?.alignment = paragraph.alignment
+            #expect(current?.isEqual(paragraph) == true)
+        }
         var original = before
         var current = after
         original.removeValue(forKey: .paragraphStyle)

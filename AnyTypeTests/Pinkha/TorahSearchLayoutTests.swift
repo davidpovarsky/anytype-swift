@@ -339,15 +339,22 @@ final class TorahSearchLayoutScreenshotTests: XCTestCase {
         let configuration = missingNativeRow
             ? row.makeContentConfiguration(maxWidth: 320)
             : native.makeContentConfiguration(maxWidth: 320)
-        let controller = UIViewController()
+        let controller = TorahScreenshotContainer()
         controller.view.semanticContentAttribute = direction == .rightToLeft ? .forceRightToLeft : .forceLeftToRight
         controller.traitOverrides.layoutDirection = direction == .rightToLeft ? .rightToLeft : .leftToRight
         let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let previousKeyWindow = scene.windows.first(where: \.isKeyWindow)
         let window = UIWindow(windowScene: scene)
         window.frame = CGRect(x: 0, y: 0, width: 320, height: 280)
         window.rootViewController = controller
         window.makeKeyAndVisible()
-        defer { window.isHidden = true }
+        defer {
+            window.isHidden = true
+            window.rootViewController = nil
+            previousKeyWindow?.makeKey()
+        }
+        let appearance = await XCTWaiter.fulfillment(of: [controller.appeared], timeout: 5)
+        XCTAssertEqual(appearance, .completed, "The native screenshot host must finish appearing before use")
         // UIHostingConfiguration belongs to a real cell, as in the native editor.
         let layout = EditorCollectionFlowLayout()
         let collection = EditorCollectionView(frame: CGRect(x: 0, y: 0, width: 320, height: 280), collectionViewLayout: layout)
@@ -413,10 +420,10 @@ final class TorahSearchLayoutScreenshotTests: XCTestCase {
         XCTAssertTrue(session.isSearchPresented)
     }
 
-    func testDeterministicTorahSearchLayoutEvidence() throws {
+    func testDeterministicTorahSearchLayoutEvidence() async throws {
         for presentation in TorahSearchLayoutPresentation.allCases {
             for scope in TorahEditorSession.SearchScope.allCases {
-                let image = try renderHosted(
+                let image = try await renderHosted(
                     TorahSearchLayoutEvidenceView(
                         presentation: presentation,
                         scope: scope,
@@ -433,7 +440,7 @@ final class TorahSearchLayoutScreenshotTests: XCTestCase {
             }
         }
 
-        let narrowImage = try renderHosted(
+        let narrowImage = try await renderHosted(
             TorahSearchLayoutEvidenceView(
                 presentation: .embedded,
                 scope: .references,
@@ -640,25 +647,53 @@ private func renderHosted<Content: View>(
     _ content: Content,
     size: CGSize,
     direction: LayoutDirection
-) throws -> UIImage {
+) async throws -> UIImage {
     let controller = UIHostingController(
         rootView: content
             .environment(\.layoutDirection, direction)
             .environment(\.locale, Locale(identifier: direction == .rightToLeft ? "he" : "en"))
     )
-    let window = UIWindow(frame: CGRect(origin: .zero, size: size))
-    window.rootViewController = controller
+    let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+    let previousKeyWindow = scene.windows.first(where: \.isKeyWindow)
+    let window = UIWindow(windowScene: scene)
+    let container = TorahScreenshotContainer()
+    container.addChild(controller)
+    container.view.addSubview(controller.view)
+    controller.view.frame = CGRect(origin: .zero, size: size)
+    controller.view.autoresizingMask = []
+    controller.didMove(toParent: container)
+    window.rootViewController = container
     window.makeKeyAndVisible()
-    controller.view.frame = window.bounds
+    defer {
+        controller.willMove(toParent: nil)
+        controller.view.removeFromSuperview()
+        controller.removeFromParent()
+        window.isHidden = true
+        window.rootViewController = nil
+        previousKeyWindow?.makeKey()
+    }
+    let appearance = await XCTWaiter.fulfillment(of: [container.appeared], timeout: 5)
+    XCTAssertEqual(appearance, .completed, "Do not carry unfinished hosting-controller transitions into the next test")
     controller.view.setNeedsLayout()
     controller.view.layoutIfNeeded()
+    XCTAssertTrue(controller.view.window === window)
+    XCTAssertEqual(controller.view.bounds.size, size)
 
     let renderer = UIGraphicsImageRenderer(size: size)
     let image = renderer.image { context in
         controller.view.layer.render(in: context.cgContext)
     }
-    window.isHidden = true
     return image
+}
+
+@MainActor
+private final class TorahScreenshotContainer: UIViewController {
+    let appeared = XCTestExpectation(description: "Native screenshot container appeared")
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        appeared.fulfill()
+    }
 }
 
 private func associationFixtures(count: Int) -> [TorahAssociationItem] {

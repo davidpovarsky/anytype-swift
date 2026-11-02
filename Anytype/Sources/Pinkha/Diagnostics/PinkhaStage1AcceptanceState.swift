@@ -142,6 +142,7 @@ enum PinkhaStage1AcceptanceDiagnostics {
             "origin-\(origin.acceptanceName)",
             "typing-direction-\(typingDirection)",
             "caret-side-\(caretSide)",
+            "text-empty-\(textView.textStorage.length == 0)",
             "first-responder-\(textView.isFirstResponder)",
             "accepted-first-insertion-\(acceptedInsertions.object(forKey: textView).map { $0 as String } ?? "unrecorded")"
         ].joined(separator: ";")
