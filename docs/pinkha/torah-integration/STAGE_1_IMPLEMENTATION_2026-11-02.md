@@ -13,6 +13,8 @@
 
 ## Sources composition
 
+Read-only Asana recheck at 03:01 UTC on November 2 confirmed both tasks remain open with their October 31 revisions: [RTL/Enter](https://app.asana.com/1/1219597879016953/task/1219856114039654) and [Sources placement](https://app.asana.com/1/1219597879016953/task/1219881057229920). This cycle implements the specifically requested Sources placement and RTL stabilization; the separate schema-v2/type migration remains outside scope. The owner's later explicit scoped authorization controls implementation/CI permission, superseding the older proposal-only permission text. No task or comment was changed.
+
 The original native FeaturedProperties wrapping stack still renders every existing Property with its original PropertyValueView, style and action. A default-empty trailing slot renders canonical source chips (at most two), remaining count and permanent Sources +, using the same TorahEditorSession and search/Inspector/repository. Source actions resolve document scope explicitly and reject inactive sessions/stale source IDs.
 
 If the original featuredRelations block exists, including an empty property list, that original row owns Sources. Otherwise the native builder caches one downstream system row with stable `Space + object` identity, reusing EditorFeaturedPropertiesView. It observes native properties and source snapshots without a structural editor reload. It does not create a synthetic persisted block, BlockInformation, Property or another source store. Original type/Tags actions remain shared.
@@ -36,21 +38,23 @@ Acceptance diagnostics report actual typing paragraph direction, current respond
 | Initial native integration/probe | FAIL | [Fast CI 41356934419](https://github.com/davidpovarsky/anytype-swift/actions/runs/41356934419): native app/test build PASS; 66/68 tests per primary device, zero skips; other language pair NOT_RUN |
 | Old package CI toolchain | FAIL | [41356934493](https://github.com/davidpovarsky/anytype-swift/actions/runs/41356934493), signal 6 / task allocator under Xcode 26.1.1 |
 | Updated package toolchain alone | FAIL | [41368012507](https://github.com/davidpovarsky/anytype-swift/actions/runs/41368012507), same allocator abort under Xcode 26.4.1. Updating tools alone did not resolve this failure |
-| Native row 0/1/2/12/0 + narrow LTR/RTL snapshots | NOT_RUN | Fast CI includes the actual hosted native and presentation row test |
-| Five successive Enter blocks + relaunch, Page/Note/Pinkha | NOT_RUN | Full Acceptance, separate from isolated UIKit tests |
-| Original search/Inspector/block ornament | NOT_RUN for current implementation | Existing native regression suites retained |
-| Full Acceptance / unsigned QA IPA | NOT_RUN | Same-SHA Fast CI gate still applies |
+| Corrected default retry, Mac | PASS | [41373600143](https://github.com/davidpovarsky/anytype-swift/actions/runs/41373600143), SHA `c4a3c1f80b112bb3e831ffef38ea9589aea81ccc`: Xcode 26.4.1 (17E202), Swift 6.3.1, 153 tests / 19 suites, 0.880 seconds; no allocator abort |
+| Native row 0/1/2/12/0 + narrow LTR/RTL snapshots | PASS | [41373600187](https://github.com/davidpovarsky/anytype-swift/actions/runs/41373600187), original EditorCollectionView/FlowLayout/ListCell, native and missing metadata shapes, stable item/configuration, no source-driven reconfigure/tree change |
+| Five successive Enter blocks + relaunch, Page/Note/Pinkha | NOT_RUN | c4a3c1f80b Full Acceptance failed before opening the intended fixtures |
+| Original search/Inspector/block ornament | PASS in focused native scope | Existing native regression suites passed within 272/272 matrix; not exhaustive original-app or hardware certification |
+| Full Acceptance | FAIL; Release SDK build PASS | [41376356369](https://github.com/davidpovarsky/anytype-swift/actions/runs/41376356369), c4a3c1f80b; 0/6 UI tests passed, 6 failed, 0 skipped, fixture navigation failed before feature checks |
+| Unsigned QA IPA | NOT_RUN | Same-SHA Full Acceptance gate still applies |
 | Physical iPad, hardware keyboard, real IME/VoiceOver/Stage Manager | NOT_RUN | Simulator/static/Windows results cannot certify these |
 
 This ledger is updated from actual run results. A successful build does not turn any unexecuted interaction or physical-device case into PASS. Full multi-client T2 remains blocked and outside this cycle.
 
 ## First measured failures and correction
 
-Both devices measured the same focused empty-caret failure: configuration before RTL attachment yielded caret x=1 versus view midpoint 160. Configuration after attachment passed this check. The correction is one didMoveToWindow hook applying the cached downstream presentation context at actual attachment. It does not change setFocus or persist alignment. Validation of the correction is pending the next native run.
+Both devices measured the same focused empty-caret failure: configuration before RTL attachment yielded caret x=1 versus view midpoint 160. Configuration after attachment passed this check. The correction is one didMoveToWindow hook applying the cached downstream presentation context at actual attachment. It does not change setFocus or persist alignment. The corrected native four-way matrix now passes both attachment orders; actual keyboard/Enter behavior remains a separate Full Acceptance gate.
 
 The baseline programmatic insertText call produced zero native should-change callbacks in both cases; insertionDirection was nil, so that portion of the probe is INVALID, not proof of wrong accepted-input attributes. The unit now names and explicitly exercises the native delegate contract. Full Acceptance separately records the actual host-accepted first empty input before UIKit inserts it, via a diagnostics-only host hook. No behavioral C1 callback is applied.
 
-Sources data counts updated correctly, but baseline standalone-host snapshots stayed at Sources + for every nonzero count. This is a FAIL of displayed refresh qualification. The revised fixture embeds the actual native content configuration in a real EditorViewListCell and diffable collection, keeps the same item and cell, requires no source-driven reconfiguration, and captures the updated visible hierarchy. Pixel differences remain required; this is not yet called a production refresh PASS. Book/overflow remain pending successful displayed and interactive replacement evidence.
+Sources data counts updated correctly, but baseline standalone-host snapshots stayed at Sources + for every nonzero count. This was a FAIL of displayed refresh qualification. The revised fixture embeds the actual native content configuration in a real EditorViewListCell and diffable collection, keeps the same item and cell, requires no source-driven reconfiguration, and captures the updated visible hierarchy. Required pixel differences and unchanged identities now pass for both native and missing metadata shapes. Book/overflow remain pending successful real-app interactive replacement evidence.
 
 ## Package CI allocator correction
 
@@ -58,7 +62,7 @@ On Xcode 26.4.1 the four unfinished tests were HTTP status diagnostics, malforme
 
 This correlates with Swift's documented [cross-module Task.sleep specialization failure](https://github.com/swiftlang/swift/issues/86204) and [default async closure frame mismatch](https://github.com/swiftlang/swift/issues/92017). The downstream correction keeps the default async body in one internal library function and sleeps until a ContinuousClock deadline. The public initializer signature, injected sleepers, retry counts/durations, cancellation and provider errors remain intact. No test is skipped or serialized to conceal the failure.
 
-The complete unchanged 153-test/19-suite package run passed on Windows Swift 6.3.3 after this correction ([local evidence](evidence/2026-11-02/retry-fix-windows.log)). This is not yet a Mac result; native package validation is pending the next push. The correction is kept local while the current native RTL/Sources execution at `f0e6eda5ce4541536b753c8bed10004c9842a455` finishes, avoiding cancellation of its evidence.
+The complete unchanged 153-test/19-suite package run passed on Windows Swift 6.3.3 after this correction ([local evidence](evidence/2026-11-02/retry-fix-windows.log)), then on Mac Xcode 26.4.1 / Swift 6.3.1 at c4a3c1f80b ([Mac evidence](evidence/2026-11-02/retry-fix-mac.log)). Both runs retain the original assertions and all tests.
 
 ## Second native run: incomplete, not accepted
 
@@ -66,4 +70,22 @@ The complete unchanged 153-test/19-suite package run passed on Windows Swift 6.3
 
 The revised fixture now attaches temporary windows to an actual UIWindowScene, uses EditorCollectionView + EditorCollectionFlowLayout + EditorViewListCell, and captures layers using the repository's existing stable CPU snapshot technique. The disconnected window and screen-update capture are suspected fixture causes, not runtime-proven root causes of the hang. Native scene availability is required rather than assumed. Phase logs identify cell creation, each source layout, caret geometry and the explicit delegate contract. A 120-second per-test allowance (180 maximum) and 35-minute native-step limit fail stalled tests while preserving the job's evidence-upload steps. Pixel/state/identity/no-reconfiguration assertions remain mandatory.
 
-Final UI acceptance also checks fixture identity independently of requested diagnostic labels and handles a Note's absent title when returning from another document. Book/overflow are still present and Full Acceptance has not been dispatched: replacement interaction remains an open gate.
+Real-app UI acceptance also checks fixture identity independently of requested diagnostic labels and handles a Note's absent title when returning from another document. Book/overflow are still present while same-SHA Full Acceptance 41376356369 qualifies replacement interaction.
+
+Current native result: [41373600187](https://github.com/davidpovarsky/anytype-swift/actions/runs/41373600187), SHA `c4a3c1f80b112bb3e831ffef38ea9589aea81ccc`, **272/272 PASS, 0 failures/skips**, 68 per iPhone/iPad × English/Hebrew. Xcode 27.1 (27A9275), iPhone 18 Pro and iPad Pro 13-inch (M5) simulators. [Counts](evidence/2026-11-02/c4a3c1f80b-native-counts.json), [phase/geometry observations](evidence/2026-11-02/c4a3c1f80b-native-observation.log).
+
+The initial empty caret is x=320 with midpoint 160 and first responder true for configuration both before and after attachment. The explicitly invoked native delegate contract accepts one insertion with RTL paragraph attributes. This remains distinct from actual keyboard acceptance, which Full Acceptance measures separately.
+
+The next Full Acceptance revision builds only the selected simulator architecture (same Release configuration and both device tests) and uses a shared shell runner in two sequential device steps. This exposes completed iPhone logs while iPad runs; the public jobs/logs API supplied only prior completed-step logs during the combined step. iPad still runs after an iPhone failure. Three passing UI tests and one passing native preparation test are required per device, without failures/skips; all four result bundles are required. UI tests have 900-second execution bounds and each device step has a 50-minute limit. Local Git Bash/Swift syntax checks pass; SDK and runtime checks remain pending.
+
+Source fixtures retain a single configuration for the same cell/item across 0/1/2/12/0 updates. Both actual native models and presentation-only rows resize from 84 to 132 points for longer content. Visual review confirms two chips, +10 and Sources + in both [native metadata](evidence/2026-11-02/sources-native-rtl-12.png) and [missing-row presentation](evidence/2026-11-02/sources-presentation-rtl-12.png). These layout fixtures use synthetic associations and explicit direction traits; real app-language text and interaction are separately qualified in Full Acceptance. Book removal remains gated on that interaction.
+
+## Full Acceptance fixture failure and targeted correction
+
+At c4a3c1f80b, both simulators completed local-only onboarding. Entering the initial Space opened Anytype's native Welcome document. The old helper returned from that document to Space Hub, then searched for a Create control that is absent there (the actual control is QuickCaptureButton). On iPad it also assumed a Back control was available for every previous-document state. All six UI tests failed during this fixture navigation, before Sources activation or the accepted-first-input/Enter assertions. This is a test-setup FAIL, not evidence of wrong accepted typingAttributes; no behavioral C1 correction follows from it. [Exact counts](evidence/2026-11-02/c4a3c1f80b-full-counts.json), [failures](evidence/2026-11-02/c4a3c1f80b-full-preparation-failures.log).
+
+The real-app [Welcome screenshot](evidence/2026-11-02/c4a3c1f80b-welcome-native-sources.png) confirms original Page and Tag controls plus Sources + in one native metadata row. It does not prove Sources activation, so Book/overflow remain present.
+
+The corrected harness reuses the existing PinkhaStage1AcceptancePreparationTests rather than changing original application navigation/authentication. In a fresh disposable simulator container it uses the original local-only authentication, Space activation, Pinkha bootstrap and native object creation APIs. It opens all three actual documents through BaseDocument, verifies basic/Note layouts, Pinkha type, title presence/absence and exactly one native featuredRelations block, then saves only test fixture IDs. The UI test receives those IDs and opens the original anytype://object route; it separately requires the expected title or Note body identity. It never silently exercises Welcome or substitutes another layout. Note's initial naming text is entered through real keyboard input. Account/Keychain restoration and the real editor remain production behavior.
+
+Fast CI now builds the UI test target against the actual SDK and separately runs the native preparation test on iPad after the unchanged four-way editor matrix. This catches preparation failures before the expensive Release gate. Full Acceptance independently prepares and tests each Release simulator. The previous failed run remains recorded; no feature assertion or zero-skip requirement was removed.

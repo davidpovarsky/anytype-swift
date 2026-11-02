@@ -74,6 +74,22 @@ jobs:
               output.write(f"iPad: {ipads[0]['name']} ({ipads[0]['udid']})\n")
           PY
 
+      - name: Build Release native fixture preparation
+        run: |
+          set -o pipefail
+          xcodebuild build-for-testing \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -configuration Release-Anytype \
+            -destination "platform=iOS Simulator,id=$IPAD_UDID" \
+            -derivedDataPath build/DerivedData-Release-Acceptance \
+            -collect-test-diagnostics never \
+            -parallel-testing-enabled NO \
+            -only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests \
+            ENABLE_TESTABILITY=YES \
+            ONLY_ACTIVE_ARCH=YES \
+            2>&1 | tee build/evidence/release-native-preparation-build.log
+
       - name: Build Release real-app acceptance once
         id: release_acceptance_build
         run: |
@@ -88,91 +104,19 @@ jobs:
             -parallel-testing-enabled NO \
             -only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests \
             ENABLE_TESTABILITY=YES \
+            ONLY_ACTIVE_ARCH=YES \
             2>&1 | tee build/evidence/release-real-app-sequence-build.log
 
-      - name: Run Release acceptance on iPhone LTR and iPad RTL sequentially
-        id: release_acceptance
-        run: |
-          set -o pipefail
-          run_real_app_acceptance() (
-            local device_kind="$1"
-            local udid="$2"
-            local direction="$3"
-            local device_language="$4"
-            local device_region="$5"
-            local app_language="$6"
-            local app_region="$7"
-            local result="build/results/release-${device_kind}-${direction}.xcresult"
-            local log="build/evidence/release-${device_kind}-${direction}.log"
+      - name: Run Release acceptance on iPhone LTR (system Hebrew)
+        id: release_iphone_acceptance
+        timeout-minutes: 50
+        run: bash .github/scripts/run-pinkha-real-app-acceptance.sh iphone "$IPHONE_UDID" ltr he IL en US
 
-            xcrun simctl shutdown "$udid" || true
-            xcrun simctl boot "$udid"
-            xcrun simctl bootstatus "$udid" -b
-            xcrun simctl uninstall "$udid" io.anytype.app || true
-            xcrun simctl uninstall "$udid" io.anytype.app.dev || true
-            xcrun simctl spawn "$udid" defaults write NSGlobalDomain AppleLanguages -array "$device_language"
-            xcrun simctl spawn "$udid" defaults write NSGlobalDomain AppleLocale "$device_language"_"$device_region"
-            {
-              printf 'device-language-requested=%s\n' "$device_language"
-              printf 'device-region-requested=%s\n' "$device_region"
-              printf 'app-language-requested=%s\n' "$app_language"
-              printf 'app-region-requested=%s\n' "$app_region"
-              xcrun simctl spawn "$udid" defaults read NSGlobalDomain AppleLanguages
-              xcrun simctl spawn "$udid" defaults read NSGlobalDomain AppleLocale
-            } | tee "build/evidence/release-${device_kind}-${direction}-device-language.txt"
-            # Apply the simulator language at the OS boundary before launching the app.
-            # The app itself receives the opposite language through its launch arguments.
-            xcrun simctl shutdown "$udid"
-            xcrun simctl boot "$udid"
-            xcrun simctl bootstatus "$udid" -b
-
-            xcrun simctl spawn "$udid" log stream \
-              --style compact \
-              --level info \
-              --predicate 'subsystem == "com.anytype.pinkha"' \
-              > "build/evidence/release-${device_kind}-${direction}-pinkha-runtime.log" 2>&1 &
-            local pinkha_log_pid=$!
-
-            set +e
-            TEST_RUNNER_PINKHA_ACCEPTANCE_DIRECTION="$direction" \
-            TEST_RUNNER_PINKHA_ACCEPTANCE_DEVICE_LANGUAGE="$device_language" \
-            xcodebuild test-without-building \
-              -workspace PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace \
-              -scheme PinkhaStage1Acceptance \
-              -configuration Release-Anytype \
-              -destination "platform=iOS Simulator,id=$udid" \
-              -derivedDataPath build/DerivedData-Release-Acceptance \
-              -resultBundlePath "$result" \
-              -collect-test-diagnostics never \
-              -parallel-testing-enabled NO \
-              -testLanguage "$app_language" \
-              -testRegion "$app_region" \
-              -only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests \
-              ENABLE_TESTABILITY=YES \
-              2>&1 | tee "$log"
-            local run_status=${PIPESTATUS[0]}
-            set -e
-
-            kill "$pinkha_log_pid" || true
-            wait "$pinkha_log_pid" 2>/dev/null || true
-            xcrun simctl shutdown "$udid" || true
-            return "$run_status"
-          )
-
-          set +e
-          # The app launch arguments select English while this simulator remains Hebrew.
-          run_real_app_acceptance iphone "$IPHONE_UDID" ltr he IL en US
-          iphone_status=$?
-          # The app launch arguments select Hebrew while this simulator remains English.
-          run_real_app_acceptance ipad "$IPAD_UDID" rtl en US he IL
-          ipad_status=$?
-          set -e
-
-          printf '%s\n' "$iphone_status" > build/evidence/release-iphone-ltr-status.txt
-          printf '%s\n' "$ipad_status" > build/evidence/release-ipad-rtl-status.txt
-          if [[ $iphone_status -ne 0 || $ipad_status -ne 0 ]]; then
-            exit 1
-          fi
+      - name: Run Release acceptance on iPad RTL (system English)
+        id: release_ipad_acceptance
+        timeout-minutes: 50
+        if: always() && steps.release_acceptance_build.outcome == 'success'
+        run: bash .github/scripts/run-pinkha-real-app-acceptance.sh ipad "$IPAD_UDID" rtl en US he IL
 
       - name: Validate and export real-app acceptance evidence
         id: release_acceptance_evidence
@@ -185,10 +129,15 @@ jobs:
           import subprocess
           from pathlib import Path
 
-          expected = ['release-iphone-ltr', 'release-ipad-rtl']
+          expected = {
+              'release-iphone-ltr': 3,
+              'release-ipad-rtl': 3,
+              'release-iphone-ltr-preparation': 1,
+              'release-ipad-rtl-preparation': 1,
+          }
           aggregate = {'total': 0, 'passed': 0, 'failed': 0, 'skipped': 0, 'runs': {}}
           problems = []
-          for name in expected:
+          for name, expected_count in expected.items():
               bundle = Path('build/results', name + '.xcresult')
               counts = {'total': 0, 'passed': 0, 'failed': 0, 'skipped': 0}
               if not bundle.is_dir():
@@ -223,8 +172,8 @@ jobs:
               aggregate['runs'][name] = counts
               for key in ('total', 'passed', 'failed', 'skipped'):
                   aggregate[key] += counts[key]
-              if counts['total'] != 3 or counts['passed'] != 3 or counts['failed'] or counts['skipped']:
-                  problems.append(f'{name} is not exactly three passing tests: {counts}')
+              if counts['total'] != expected_count or counts['passed'] != expected_count or counts['failed'] or counts['skipped']:
+                  problems.append(f'{name} is not exactly {expected_count} passing tests: {counts}')
 
           Path('build/evidence/real-app-test-counts.json').write_text(
               json.dumps(aggregate, indent=2, sort_keys=True) + '\n',

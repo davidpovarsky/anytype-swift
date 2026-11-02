@@ -2,13 +2,15 @@ import XCTest
 
 @MainActor
 final class PinkhaStage1AcceptanceUITests: XCTestCase {
-    private enum DocumentKind: String, CaseIterable {
+    private enum DocumentKind: String, CaseIterable, Hashable {
         case pinkha
         case note
         case page
     }
 
     private let app = XCUIApplication()
+    private var fixtureSpaceID = ""
+    private var fixtureObjectIDs: [DocumentKind: String] = [:]
     private var expectsRTL: Bool {
         ProcessInfo.processInfo.environment["PINKHA_ACCEPTANCE_DIRECTION"] != "ltr"
     }
@@ -18,8 +20,20 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             ?? (expectsRTL ? "en" : "he")
     }
 
-    override func setUp() {
+    override func setUpWithError() throws {
         continueAfterFailure = false
+        let environment = ProcessInfo.processInfo.environment
+        fixtureSpaceID = try XCTUnwrap(environment["PINKHA_ACCEPTANCE_SPACE_ID"], "Native fixture preparation must supply the disposable Space")
+        let fixtureKeys: [(DocumentKind, String)] = [
+            (.pinkha, "PINKHA_ACCEPTANCE_PINKHA_ID"),
+            (.note, "PINKHA_ACCEPTANCE_NOTE_ID"),
+            (.page, "PINKHA_ACCEPTANCE_PAGE_ID")
+        ]
+        for (kind, key) in fixtureKeys {
+            fixtureObjectIDs[kind] = try XCTUnwrap(environment[key], "Missing prepared native \(kind.rawValue) fixture")
+        }
+        XCTAssertFalse(fixtureSpaceID.isEmpty)
+        XCTAssertEqual(Set(fixtureObjectIDs.values).count, 3)
         app.launchEnvironment["PINKHA_STAGE1_ACCEPTANCE"] = "1"
         app.launchEnvironment["PINKHA_ACCEPTANCE_DEVICE_LANGUAGE"] = deviceLanguage
         app.launchArguments += [
@@ -36,7 +50,6 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
         )
 
         launch(document: .pinkha)
-        completeFreshLocalOnlyOnboardingIfNeeded()
 
         for kind in DocumentKind.allCases {
             if kind != .pinkha {
@@ -54,7 +67,6 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
         )
 
         launch(document: .pinkha)
-        completeFreshLocalOnlyOnboardingIfNeeded()
 
         for kind in DocumentKind.allCases {
             if kind != .pinkha {
@@ -66,7 +78,6 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
 
     func testDocumentSourcesEntryOpensExistingSearch() throws {
         launch(document: .pinkha)
-        completeFreshLocalOnlyOnboardingIfNeeded()
         for kind in DocumentKind.allCases {
             if kind != .pinkha { launch(document: kind) }
             openDocumentIfNeeded(kind)
@@ -201,96 +212,44 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
 
     private func openDocumentIfNeeded(_ kind: DocumentKind) {
         let expectedTitle = documentTitle(for: kind)
-        let titleField = app.textViews.matching(
+        let titleFields = app.textViews.matching(
             NSPredicate(format: "identifier BEGINSWITH %@", "pinkha.stage1.title.")
+        )
+        let identity = kind == .note ? editorBody(containing: expectedTitle) : app.textViews.matching(
+            NSPredicate(format: "identifier BEGINSWITH %@ AND value CONTAINS %@", "pinkha.stage1.title.", expectedTitle)
         ).firstMatch
-        defer {
-            // Requested environment labels are diagnostics, not proof of document identity.
-            let identity = kind == .note ? editorBody(containing: expectedTitle) : app.textViews.matching(
-                NSPredicate(format: "identifier BEGINSWITH %@ AND value CONTAINS %@", "pinkha.stage1.title.", expectedTitle)
-            ).firstMatch
-            XCTAssertTrue(identity.waitForExistence(timeout: 30), "Expected native \(kind.rawValue) fixture did not open")
-        }
+        if identity.exists { return }
 
-        if kind == .note, editorBody(containing: expectedTitle).exists { return }
-
-        if titleField.exists {
-            let currentTitle = String(describing: titleField.value)
-            if currentTitle.contains(expectedTitle) {
-                return
-            }
-        }
-        if titleField.exists || editorBody().exists {
-            let back = button(namedAny: ["Back", "חזרה"])
-            XCTAssertTrue(back.waitForExistence(timeout: 5), "Leave the previous native document before selecting another fixture")
-            back.tap()
-        }
-
-        let docButton = button(containingAny: [expectedTitle])
-        if docButton.waitForExistence(timeout: 8) {
-            docButton.tap()
+        guard let objectID = fixtureObjectIDs[kind] else {
+            XCTFail("Missing prepared native document ID")
             return
         }
-        let docText = staticText(namedAny: [expectedTitle])
-        if docText.waitForExistence(timeout: 5) {
-            docText.tap()
+        var components = URLComponents()
+        components.scheme = "anytype"
+        components.host = "object"
+        components.queryItems = [
+            URLQueryItem(name: "objectId", value: objectID),
+            URLQueryItem(name: "spaceId", value: fixtureSpaceID)
+        ]
+        guard let url = components.url else {
+            XCTFail("Could not form the original native object deeplink")
             return
         }
+        print("PINKHA_ACCEPTANCE_OPEN kind=\(kind.rawValue) space=\(fixtureSpaceID) object=\(objectID)")
+        app.open(url)
 
-        let searchButton = app.buttons.matching(
-            NSPredicate(format: "identifier CONTAINS[c] 'search' OR label CONTAINS[c] 'search'")
-        ).firstMatch
-        if searchButton.waitForExistence(timeout: 4) {
-            searchButton.tap()
-            let searchField = app.textFields.firstMatch
-            if searchField.waitForExistence(timeout: 8) {
-                searchField.typeText(expectedTitle)
-                let result = button(containingAny: [expectedTitle])
-                if result.waitForExistence(timeout: 8) {
-                    result.tap()
-                    return
-                }
-            }
-            let cancel = button(namedAny: ["Cancel", "ביטול"])
-            if cancel.exists { cancel.tap() }
-        }
-
-        let createButton = app.buttons.matching(
-            NSPredicate(format: "identifier CONTAINS[c] 'create' OR label CONTAINS[c] 'create'")
-        ).firstMatch
-        if createButton.waitForExistence(timeout: 8) {
-            createButton.tap()
-            switch kind {
-            case .page:
-                let pageOption = button(containingAny: ["Page", "עמוד"])
-                XCTAssertTrue(pageOption.waitForExistence(timeout: 6), "Native Page type option is required; do not silently test another layout")
-                pageOption.tap()
-            case .note:
-                let noteOption = button(containingAny: ["Note", "פתק"])
-                XCTAssertTrue(noteOption.waitForExistence(timeout: 6), "Native Note type option is required; do not silently test another layout")
-                noteOption.tap()
-            case .pinkha:
-                let moreOption = button(containingAny: ["More", "עוד"])
-                if moreOption.waitForExistence(timeout: 6) {
-                    moreOption.tap()
-                }
-                let chiddushOption = button(containingAny: ["חידוש", "Chiddush"])
-                XCTAssertTrue(chiddushOption.waitForExistence(timeout: 8), "Registered Pinkha type option is required")
-                chiddushOption.tap()
-            }
-            if titleField.waitForExistence(timeout: 10) {
-                titleField.tap()
-                titleField.typeText(expectedTitle + "\n")
-            } else if kind == .note {
-                // Native Note derives its name from its first body block and has no title row.
-                let body = editorBody()
-                XCTAssertTrue(body.waitForExistence(timeout: 20))
+        if kind == .note {
+            // Native Note has no title. Wait for the previous Page to leave before seeding
+            // the Note's first body through real input, never into the previous document.
+            XCTAssertTrue(titleFields.firstMatch.waitForNonExistence(timeout: 60))
+            let body = editorBody()
+            XCTAssertTrue(body.waitForExistence(timeout: 60))
+            if !identity.exists {
                 body.tap()
                 body.typeText(expectedTitle + "\n")
             }
-        } else {
-            XCTFail("Native create entry is unavailable; do not silently exercise the previous document")
         }
+        XCTAssertTrue(identity.waitForExistence(timeout: 60), "Prepared native \(kind.rawValue) fixture did not open")
     }
 
     private func documentTitle(for kind: DocumentKind) -> String {
@@ -381,79 +340,6 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
     }
 
     private var directionName: String { expectsRTL ? "RTL" : "LTR" }
-
-    private func completeFreshLocalOnlyOnboardingIfNeeded() {
-        let join = button(namedAny: ["I am new here", "אני חדש כאן"])
-        guard join.waitForExistence(timeout: 30) else {
-            return
-        }
-
-        let labelledSettings = button(namedAny: ["Space settings", "הגדרות מרחב"])
-        let settings = labelledSettings.exists ? labelledSettings : app.buttons.element(boundBy: 0)
-        XCTAssertTrue(settings.waitForExistence(timeout: 5), "Network settings button did not appear")
-        settings.tap()
-
-        let localOnly = button(namedAny: ["Local-only", "מקומי בלבד"])
-        XCTAssertTrue(localOnly.waitForExistence(timeout: 15), "Local-only network option did not appear")
-        localOnly.tap()
-
-        let acceptLocalOnly = button(namedAny: ["Yes, I accept risks", "הבנתי, המשך"])
-        XCTAssertTrue(acceptLocalOnly.waitForExistence(timeout: 10), "Local-only confirmation did not appear")
-        acceptLocalOnly.tap()
-
-        app.swipeDown(velocity: .fast)
-        XCTAssertTrue(join.waitForExistence(timeout: 15), "Authentication screen did not return")
-        join.tap()
-
-        let notNow = button(namedAny: ["Not now", "לא עכשיו"])
-        XCTAssertTrue(notNow.waitForExistence(timeout: 240), "Local-only account creation did not finish")
-        for _ in 0..<3 where notNow.exists {
-            notNow.tap()
-            if notNow.waitForNonExistence(timeout: 10) {
-                break
-            }
-        }
-        XCTAssertTrue(
-            notNow.waitForNonExistence(timeout: 15),
-            "Dismissing the recovery-key screen did not advance onboarding"
-        )
-
-        let personaTitle = staticText(namedAny: ["Tell Us About Yourself", "ספר לנו על עצמך"])
-        XCTAssertTrue(personaTitle.waitForExistence(timeout: 30), "Persona onboarding step did not appear")
-        let skip = app.buttons["Skip"]
-        XCTAssertTrue(skip.waitForExistence(timeout: 5), "Persona Skip button did not appear")
-        skip.tap()
-
-        let useCaseTitle = staticText(namedAny: [
-            "What do you want to use Anytype for?",
-            "לשם מה תרצה להשתמש ב-Anytype?"
-        ])
-        XCTAssertTrue(useCaseTitle.waitForExistence(timeout: 15), "Use-case onboarding step did not appear")
-        XCTAssertTrue(skip.waitForExistence(timeout: 5), "Use-case Skip button did not appear")
-        skip.tap()
-
-        let defaultSpace = button(containingAny: ["My First Space", "המרחב הראשון שלי"])
-        XCTAssertTrue(defaultSpace.waitForExistence(timeout: 90), "Local-only default Space did not appear")
-        defaultSpace.tap()
-        XCTAssertTrue(
-            defaultSpace.waitForNonExistence(timeout: 30),
-            "Tapping the default Space card did not leave Space Hub"
-        )
-        attachScreenshot(named: "real-space-opened-before-document")
-    }
-
-    private func button(namedAny labels: [String]) -> XCUIElement {
-        app.buttons.matching(NSPredicate(format: "label IN %@", labels)).firstMatch
-    }
-
-    private func button(containingAny labels: [String]) -> XCUIElement {
-        let predicates = labels.map { NSPredicate(format: "label CONTAINS %@", $0) }
-        return app.buttons.matching(NSCompoundPredicate(orPredicateWithSubpredicates: predicates)).firstMatch
-    }
-
-    private func staticText(namedAny labels: [String]) -> XCUIElement {
-        app.staticTexts.matching(NSPredicate(format: "label IN %@", labels)).firstMatch
-    }
 
     private func attachScreenshot(named name: String) {
         let attachment = XCTAttachment(screenshot: app.screenshot())

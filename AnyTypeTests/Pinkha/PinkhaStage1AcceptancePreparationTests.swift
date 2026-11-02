@@ -82,6 +82,30 @@ struct PinkhaStage1AcceptancePreparationTests {
             templateId: nil
         )
 
+        // Verify real native document shapes independently of UI-test diagnostic labels.
+        #expect(Set([document.id, note.id, page.id]).count == 3)
+        let fixtures: [(String, DetailsLayout, Bool)] = [
+            (document.id, .basic, true),
+            (note.id, .note, false),
+            (page.id, .basic, true)
+        ]
+        for (objectID, layout, hasTitle) in fixtures {
+            let nativeDocument = Container.shared.documentsProvider().document(
+                objectId: objectID, spaceId: spaceId, mode: .preview
+            )
+            try await nativeDocument.open()
+            let details = try #require(nativeDocument.details)
+            #expect(details.resolvedLayoutValue == layout)
+            if objectID == document.id { #expect(details.type == typeId) }
+            let tree = nativeDocument.infoContainer.recursiveChildren(of: objectID)
+            let featuredCount = tree.filter { $0.content == .featuredRelations }.count
+            let actualHasTitle = tree.contains { $0.textContent?.contentType == .title }
+            #expect(featuredCount == 1)
+            #expect(actualHasTitle == hasTitle)
+            print("PINKHA_ACCEPTANCE_NATIVE_SHAPE object=\(objectID) layout=\(details.resolvedLayoutValue.rawValue) featuredRelations=\(featuredCount) title=\(actualHasTitle)")
+            try await nativeDocument.close()
+        }
+
         try PinkhaStage1AcceptanceState(
             spaceId: spaceId,
             pinkhaObjectId: document.id,
