@@ -43,48 +43,60 @@ struct PinkhaStage1AcceptancePreparationTests {
         let typeId = try #require(
             manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey]
         )
-        let typeProvider = Container.shared.objectTypeProvider()
-        let indexClock = ContinuousClock()
-        let indexDeadline = indexClock.now.advanced(by: .seconds(30))
-        var typesAreIndexed = false
-        repeat {
-            let types = typeProvider.objectTypes(spaceId: spaceId)
-            if types.contains(where: { $0.id == typeId }),
-               let noteType = types.first(where: { $0.uniqueKey == .note }),
-               let pageType = types.first(where: { $0.uniqueKey == .page }) {
-                let expectedIDs = Set([typeId, noteType.id, pageType.id])
-                let indexed = try await Container.shared.searchService().searchObjects(
-                    spaceId: spaceId, objectIds: Array(expectedIDs)
-                )
-                typesAreIndexed = expectedIDs.isSubset(of: Set(indexed.map(\.id)))
-                if typesAreIndexed { break }
-            }
-            try await Task.sleep(nanoseconds: 100_000_000)
-        } while indexClock.now < indexDeadline
-        try #require(typesAreIndexed, "Native Page/Note/Pinkha creation requires their types in this Space's index")
-        let document = try await PinkhaHierarchyMutationService().createWritingDocument(
-            typeId: typeId,
-            parentId: nil,
-            spaceId: spaceId,
-            manifest: manifest,
-            existingSiblings: []
+        // Note is no longer a bundled system type in current Anytype. Provision the
+        // native Note layout only in this disposable fixture Space, using original APIs.
+        let noteType = try await Container.shared.typesService().createType(
+            name: "Acceptance Native Note", pluralName: "Acceptance Native Notes",
+            icon: nil, color: nil, spaceId: spaceId
         )
         try await Container.shared.propertiesService().updateProperty(
-            objectId: document.id,
-            propertyKey: BundledPropertyKey.name.rawValue,
-            value: PinkhaStage1AcceptanceState.pinkhaDocumentTitle.protobufValue
+            objectId: noteType.id,
+            propertyKey: BundledPropertyKey.recommendedLayout.rawValue,
+            value: DetailsLayout.note.rawValue.protobufValue
+        )
+        let noteTemplateID = try await Container.shared.templatesService().createTemplateFromObjectType(
+            objectTypeId: noteType.id, spaceId: spaceId
+        )
+        try await Container.shared.templatesService().setTemplateAsDefaultForType(
+            objectTypeId: noteType.id, templateId: noteTemplateID
         )
 
+        // Read this Space's real index directly; a UI cache can switch active Spaces.
+        let indexClock = ContinuousClock()
+        let indexDeadline = indexClock.now.advanced(by: .seconds(30))
+        var indexedTypes = [ObjectType]()
+        repeat {
+            indexedTypes = try await Container.shared.searchMiddleService().search(
+                spaceId: spaceId, filters: [SearchHelper.layoutFilter([.objectType])],
+                keys: ObjectType.subscriptionKeys.map(\.rawValue), limit: 0
+            ).map(ObjectType.init(details:))
+            if indexedTypes.contains(where: { $0.id == typeId }),
+               indexedTypes.contains(where: { $0.id == noteType.id }),
+               indexedTypes.contains(where: { $0.uniqueKey == .page }) { break }
+            try await Task.sleep(nanoseconds: 100_000_000)
+        } while indexClock.now < indexDeadline
+        let pinkhaType = try #require(indexedTypes.first { $0.id == typeId })
+        let indexedNoteType = try #require(indexedTypes.first { $0.id == noteType.id })
+        _ = try #require(indexedTypes.first { $0.uniqueKey == .page })
+        #expect(indexedNoteType.recommendedLayout == .note)
+        print("PINKHA_ACCEPTANCE_TYPES_READY pinkha=\(pinkhaType.id) note=\(indexedNoteType.id) builtinNotePresent=\(indexedTypes.contains { $0.uniqueKey == .note })")
+
         let objectActions = Container.shared.objectActionsService()
+        let document = try await objectActions.createObject(
+            name: PinkhaStage1AcceptanceState.pinkhaDocumentTitle,
+            typeUniqueKey: pinkhaType.uniqueKey,
+            shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+            spaceId: spaceId, origin: .none,
+            templateId: manifest.defaultTemplateIds[PinkhaSchemaRoles.chiddushKey]
+        )
+        await MainActor.run {
+            PinkhaDocumentIdentityStorage.shared.registerCreated(objectId: document.id, spaceId: spaceId)
+        }
         let note = try await objectActions.createObject(
             name: PinkhaStage1AcceptanceState.noteDocumentTitle,
-            typeUniqueKey: .note,
-            shouldDeleteEmptyObject: false,
-            shouldSelectType: false,
-            shouldSelectTemplate: false,
-            spaceId: spaceId,
-            origin: .none,
-            templateId: nil
+            typeUniqueKey: indexedNoteType.uniqueKey,
+            shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+            spaceId: spaceId, origin: .none, templateId: noteTemplateID
         )
         let page = try await objectActions.createObject(
             name: PinkhaStage1AcceptanceState.pageDocumentTitle,

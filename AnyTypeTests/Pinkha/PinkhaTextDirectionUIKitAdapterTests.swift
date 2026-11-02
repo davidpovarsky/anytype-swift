@@ -117,6 +117,12 @@ struct PinkhaTextDirectionUIKitAdapterTests {
             let next = manager.location(forGlyphAt: range.location + 1)
             let probe = CGPoint(x: fragment.minX + first.x + (next.x - first.x) * 0.25, y: fragment.midY)
             #expect(manager.glyphIndex(for: probe, in: textView.textContainer) == range.location)
+            let nativePosition = try #require(textView.closestPosition(to: probe))
+            #expect(textView.offset(from: textView.beginningOfDocument, to: nativePosition) == 0)
+            let caret = textView.caretRect(for: textView.beginningOfDocument)
+            try #require(caret.height > 0, "The native input geometry must be measurable")
+            #expect(abs(caret.midX - (fragment.minX + first.x)) < 3,
+                    "UITextView's caret must follow the same actual glyph location")
 
             let format = UIGraphicsImageRendererFormat()
             format.scale = 1
@@ -179,7 +185,7 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         controller.view.addSubview(textView)
         window.rootViewController = controller
         window.makeKeyAndVisible()
-        defer { textView.resignFirstResponder(); window.isHidden = true }
+        defer { textView.unmarkText(); textView.resignFirstResponder(); window.isHidden = true }
         PinkhaTextDirectionUIKitAdapter.apply(context: automaticContext, to: textView)
         textView.layoutManager.ensureLayout(for: textView.textContainer)
         try #require(textView.becomeFirstResponder())
@@ -212,10 +218,11 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         let window = UIWindow(windowScene: scene)
         window.frame = CGRect(x: 0, y: 0, width: 390, height: 844)
         let controller = UIViewController()
-        let textView = UITextView(frame: controller.view.bounds)
+        let textView = UITextView(frame: CGRect(x: 0, y: 0, width: 320, height: 120))
         controller.view.addSubview(textView)
         window.rootViewController = controller
         window.makeKeyAndVisible()
+        defer { textView.unmarkText(); textView.resignFirstResponder(); window.isHidden = true }
         textView.semanticContentAttribute = .forceRightToLeft
         textView.textAlignment = .center
         textView.text = "abc"
@@ -237,9 +244,6 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         #expect(NSDictionary(dictionary: textView.typingAttributes).isEqual(
             NSDictionary(dictionary: typingBefore)
         ))
-        textView.unmarkText()
-        textView.resignFirstResponder()
-        window.isHidden = true
     }
 
     @Test("A reused empty row keeps placeholder and caret alignment synchronized")
