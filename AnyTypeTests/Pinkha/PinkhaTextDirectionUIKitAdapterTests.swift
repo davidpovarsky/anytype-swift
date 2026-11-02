@@ -9,7 +9,7 @@ import UIKit
 @Suite("App-wide UIKit text direction adapter", .serialized)
 @MainActor
 struct PinkhaTextDirectionUIKitAdapterTests {
-    @Test("Language rendering changes alignment without text, attribute, selection or callback writes")
+    @Test("Native presentation alignment preserves serialized text/marks, selection, undo and editing callbacks")
     func languageRenderingIsDisplayOnly() throws {
         let textView = UndoTrackingTextView(frame: CGRect(x: 0, y: 0, width: 320, height: 120))
         let observer = TextMutationObserver()
@@ -18,10 +18,12 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         textView.semanticContentAttribute = .forceRightToLeft
         let hostParagraphStyle = NSMutableParagraphStyle()
         hostParagraphStyle.alignment = .left
+        hostParagraphStyle.lineSpacing = 5
+        hostParagraphStyle.paragraphSpacing = 3
         textView.attributedText = NSAttributedString(
             string: "English text",
             attributes: [
-                .font: UIFont.systemFont(ofSize: 17),
+                .font: UIFont.boldSystemFont(ofSize: 17),
                 .paragraphStyle: hostParagraphStyle
             ]
         )
@@ -54,13 +56,11 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         #expect(abs(used.maxX - fragment.maxX) < 0.5)
         #expect(fragment.minX + textView.layoutManager.location(forGlyphAt: glyphRange.location).x > textView.bounds.midX,
                 "A reported used rect is insufficient: the rendered glyph origin must move")
-        #expect(textView.attributedText == attributedBefore)
+        expectOnlyPresentationAlignmentChanged(before: attributedBefore!, after: textView.attributedText)
         #expect(textView.selectedRange == selectionBefore)
-        #expect(NSDictionary(dictionary: textView.typingAttributes).isEqual(
-            NSDictionary(dictionary: typingBefore)
-        ))
+        expectTypingFormattingPreserved(before: typingBefore, after: textView.typingAttributes)
         #expect(observer.textChangeCount == 0)
-        #expect(observer.storageEditCount == 0)
+        #expect(observer.characterEditCount == 0)
         #expect(textView.testUndoManager.canUndo == couldUndoBefore)
 
         textView.semanticContentAttribute = .forceLeftToRight
@@ -75,7 +75,7 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         #expect(fragment.minX + textView.layoutManager.location(forGlyphAt: glyphRange.location).x < textView.bounds.midX)
         #expect(textView.attributedText == attributedBefore)
         #expect(observer.textChangeCount == 0)
-        #expect(observer.storageEditCount == 0)
+        #expect(observer.characterEditCount == 0)
 
         textView.testUndoManager.undo()
         #expect(undoFlag.reached)
@@ -153,10 +153,39 @@ struct PinkhaTextDirectionUIKitAdapterTests {
             #expect(ink.minX >= 0 && ink.maxX <= textView.bounds.width)
             manager.ensureLayout(for: textView.textContainer)
             #expect(manager.location(forGlyphAt: range.location) == first, "A repeated layout query must not accumulate a shift")
-            #expect(textView.attributedText == attributedBefore)
+            expectOnlyPresentationAlignmentChanged(before: attributedBefore!, after: textView.attributedText)
             #expect(textView.selectedRange == selectionBefore)
-            #expect(NSDictionary(dictionary: textView.typingAttributes).isEqual(NSDictionary(dictionary: typingBefore)))
+            expectTypingFormattingPreserved(before: typingBefore, after: textView.typingAttributes)
         }
+    }
+
+    /// The earlier cache implementation promised immutable UIKit attributes but failed
+    /// actual editable geometry. Native alignment intentionally changes only the display
+    /// paragraph alignment; prove that the real Anytype serialization and all other
+    /// formatting survive, rather than treating an in-memory display style as document data.
+    private func expectOnlyPresentationAlignmentChanged(before: NSAttributedString, after: NSAttributedString) {
+        let savedBefore = AttributedTextConverter.asMiddleware(attributedText: before)
+        let savedAfter = AttributedTextConverter.asMiddleware(attributedText: after)
+        #expect(savedBefore.text == savedAfter.text)
+        #expect(savedBefore.marks == savedAfter.marks)
+        func ignoringAlignment(_ value: NSAttributedString) -> NSAttributedString {
+            let normalized = NSMutableAttributedString(attributedString: value)
+            value.enumerateAttribute(.paragraphStyle, in: NSRange(location: 0, length: value.length)) { style, range, _ in
+                guard let paragraph = (style as? NSParagraphStyle)?.mutableCopy() as? NSMutableParagraphStyle else { return }
+                paragraph.alignment = .natural
+                normalized.addAttribute(.paragraphStyle, value: paragraph, range: range)
+            }
+            return normalized
+        }
+        #expect(ignoringAlignment(before) == ignoringAlignment(after))
+    }
+
+    private func expectTypingFormattingPreserved(before: [NSAttributedString.Key: Any], after: [NSAttributedString.Key: Any]) {
+        var original = before
+        var current = after
+        original.removeValue(forKey: .paragraphStyle)
+        current.removeValue(forKey: .paragraphStyle)
+        #expect(NSDictionary(dictionary: original).isEqual(NSDictionary(dictionary: current)))
     }
 
     private func darkPixelBounds(of image: CGImage) throws -> CGRect {
@@ -685,10 +714,12 @@ private final class UndoTrackingTextView: UITextView {
 private final class TextMutationObserver: NSObject, UITextViewDelegate, NSTextStorageDelegate {
     private(set) var textChangeCount = 0
     private(set) var storageEditCount = 0
+    private(set) var characterEditCount = 0
 
     func reset() {
         textChangeCount = 0
         storageEditCount = 0
+        characterEditCount = 0
     }
 
     func textViewDidChange(_ textView: UITextView) {
@@ -703,6 +734,7 @@ private final class TextMutationObserver: NSObject, UITextViewDelegate, NSTextSt
     ) {
         MainActor.assumeIsolated {
             storageEditCount += 1
+            if editedMask.contains(.editedCharacters) { characterEditCount += 1 }
         }
     }
 }

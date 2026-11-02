@@ -27,7 +27,6 @@ struct PinkhaTextBlockWritingContext: Equatable, Hashable {
 
 @MainActor
 enum PinkhaTextDirectionUIKitAdapter {
-    private static let layoutDelegates = NSMapTable<UITextView, PinkhaTextLayoutDelegate>.weakToStrongObjects()
     private static let writingContexts = NSMapTable<UITextView, PinkhaWritingContextBox>.weakToStrongObjects()
 
     /// Builds presentation context for every Anytype document. Document identity, type,
@@ -114,11 +113,11 @@ enum PinkhaTextDirectionUIKitAdapter {
             ? .rightToLeft : .leftToRight
     }
 
-    /// Applies display-only defaults. Existing text is aligned by line-fragment geometry, not
-    /// paragraph attributes, so a language/layout refresh cannot enter host text-change
-    /// callbacks or create document mutations. An empty editor receives only a typing default
-    /// (plus its non-document placeholder alignment) so the insertion caret starts on the
-    /// application-language side without rewriting text storage.
+    /// Applies native presentation alignment after the host styler, so TextKit computes
+    /// glyphs, selection hit testing and the editable caret together. Paragraph alignment
+    /// is a UIKit rendering attribute: the original AttributedTextConverter serializes
+    /// only text/marks, and this path never calls a document action or editing delegate.
+    /// Active IME composition is left untouched; empty rows receive typing defaults only.
     static func apply(
         context: PinkhaTextBlockWritingContext?,
         to textView: UITextView
@@ -130,7 +129,6 @@ enum PinkhaTextDirectionUIKitAdapter {
             writingContexts.setObject(PinkhaWritingContextBox(context, textView: textView), forKey: textView)
         } else {
             writingContexts.removeObject(forKey: textView)
-            removeDisplayAlignment(from: textView)
         }
         guard let context, textView.markedTextRange == nil else { return }
 
@@ -156,9 +154,7 @@ enum PinkhaTextDirectionUIKitAdapter {
         )
 
         let alignment = decision.alignment.nsTextAlignment
-        if context.alignmentWasExplicit || alignment == .center || alignment == .justified {
-            removeDisplayAlignment(from: textView)
-        } else {
+        if !context.alignmentWasExplicit && alignment != .center && alignment != .justified {
             applyDisplayAlignment(alignment, decision: decision, to: textView)
         }
 
@@ -248,7 +244,7 @@ enum PinkhaTextDirectionUIKitAdapter {
     }
 
     static func visualAlignment(for textView: UITextView) -> NSTextAlignment {
-        layoutDelegates.object(forKey: textView)?.alignment ?? textView.textAlignment
+        textView.textAlignment
     }
 
     private static func applyDisplayAlignment(
@@ -256,27 +252,14 @@ enum PinkhaTextDirectionUIKitAdapter {
         decision: PinkhaWritingDirectionDecision,
         to textView: UITextView
     ) {
-        let layoutManager = textView.layoutManager
-        let layoutDelegate: PinkhaTextLayoutDelegate
-        if let existing = layoutDelegates.object(forKey: textView),
-           layoutManager.delegate === existing {
-            layoutDelegate = existing
-        } else {
-            // The Anytype editor does not install an NSLayoutManager delegate. Do not displace
-            // an unexpected host delegate: that would trade directionality for lost behavior.
-            guard layoutManager.delegate == nil else { return }
-            layoutDelegate = PinkhaTextLayoutDelegate()
-            layoutManager.delegate = layoutDelegate
-            layoutDelegates.setObject(layoutDelegate, forKey: textView)
+        // Use the same native property as TextBlockTextViewStyler. Repositioning only a
+        // layout-manager cache leaves UITextView's actual input geometry on the old side.
+        // This setter changes presentation paragraph attributes, never stored alignment.
+        if textView.textAlignment != alignment {
+            textView.textAlignment = alignment
         }
 
-        layoutDelegate.alignment = alignment
-
         if textView.textStorage.length == 0 {
-            if textView.textAlignment != alignment {
-                textView.textAlignment = alignment
-            }
-
             var typingAttributes = textView.typingAttributes
             let paragraphStyle = (
                 typingAttributes[.paragraphStyle] as? NSParagraphStyle
@@ -287,32 +270,12 @@ enum PinkhaTextDirectionUIKitAdapter {
                 : .leftToRight
             typingAttributes[.paragraphStyle] = paragraphStyle
             textView.typingAttributes = typingAttributes
-
-            // TextViewWithPlaceholder owns a direct UILabel child. Updating that presentation
-            // object is intentionally separate from the document-backed text storage.
-            textView.subviews.compactMap { $0 as? UILabel }.forEach {
-                $0.textAlignment = alignment
-            }
         }
 
-        invalidateDisplayLayout(of: textView)
-    }
-
-    private static func removeDisplayAlignment(from textView: UITextView) {
-        guard let layoutDelegate = layoutDelegates.object(forKey: textView),
-              textView.layoutManager.delegate === layoutDelegate else { return }
-        layoutDelegate.alignment = nil
-        invalidateDisplayLayout(of: textView)
-    }
-
-    private static func invalidateDisplayLayout(of textView: UITextView) {
-        let characterRange = NSRange(location: 0, length: textView.textStorage.length)
-        textView.layoutManager.invalidateLayout(
-            forCharacterRange: characterRange,
-            actualCharacterRange: nil
-        )
-        textView.layoutManager.invalidateDisplay(forCharacterRange: characterRange)
-        textView.setNeedsLayout()
+        // TextViewWithPlaceholder owns a direct UILabel child; it is not document storage.
+        textView.subviews.compactMap { $0 as? UILabel }.forEach {
+            $0.textAlignment = alignment
+        }
     }
 }
 
@@ -338,75 +301,6 @@ private final class PinkhaWritingContextBox {
 
     deinit {
         for observer in diagnosticObservers { NotificationCenter.default.removeObserver(observer) }
-    }
-}
-
-@MainActor
-private final class PinkhaTextLayoutDelegate: NSObject, NSLayoutManagerDelegate {
-    var alignment: NSTextAlignment?
-    private var isAdjustingLayout = false
-
-    func layoutManager(
-        _ layoutManager: NSLayoutManager,
-        didCompleteLayoutFor textContainer: NSTextContainer?,
-        atEnd layoutFinishedFlag: Bool
-    ) {
-        guard let alignment, alignment == .left || alignment == .right,
-              let textContainer, !isAdjustingLayout else { return }
-        isAdjustingLayout = true
-        defer { isAdjustingLayout = false }
-
-        // Observe only the completed cache; never request more layout from this callback.
-        let cachedRange = layoutManager.glyphRange(
-            forBoundingRectWithoutAdditionalLayout: CGRect(origin: .zero, size: textContainer.size),
-            in: textContainer
-        )
-        guard cachedRange.length > 0 else { return }
-        var lines = [(CGRect, CGRect, NSRange)]()
-        var lineIndex = cachedRange.location
-        while lineIndex < NSMaxRange(cachedRange) {
-            var range = NSRange()
-            let fragment = layoutManager.lineFragmentRect(
-                forGlyphAt: lineIndex, effectiveRange: &range, withoutAdditionalLayout: true
-            )
-            guard range.length > 0, NSMaxRange(range) > lineIndex else { break }
-            let used = layoutManager.lineFragmentUsedRect(
-                forGlyphAt: lineIndex, effectiveRange: nil, withoutAdditionalLayout: true
-            )
-            lines.append((fragment, used, range))
-            lineIndex = NSMaxRange(range)
-        }
-        for (fragment, used, range) in lines {
-            guard used.width > 0, used.width <= fragment.width else { continue }
-            let targetX = alignment == .right ? fragment.maxX - used.width : fragment.minX
-            let delta = targetX - used.minX
-            guard delta.isFinite, abs(delta) > 0.01 else { continue }
-
-            // Moving only usedRect reports alignment without moving any rendered glyph.
-            // Keep the valid, original line rectangle and translate every nominal glyph
-            // run within it, so drawing, hit testing and caret queries share one cache.
-            var runs = [(NSRange, CGPoint)]()
-            var index = range.location
-            while index < NSMaxRange(range) {
-                let nominal = layoutManager.range(ofNominallySpacedGlyphsContaining: index)
-                // Control glyphs can have no nominal display run, but still carry caret
-                // positions. Include them once without crossing the current line.
-                let end = nominal.location != NSNotFound && nominal.length > 0
-                    ? min(NSMaxRange(nominal), NSMaxRange(range)) : index + 1
-                let run = NSRange(location: index, length: max(1, end - index))
-                let location = layoutManager.location(forGlyphAt: run.location)
-                runs.append((run, CGPoint(x: location.x + delta, y: location.y)))
-                index = NSMaxRange(run)
-            }
-            guard !runs.isEmpty else { continue }
-            layoutManager.setLineFragmentRect(
-                fragment, forGlyphRange: range,
-                usedRect: used.offsetBy(dx: delta, dy: 0)
-            )
-            for (run, location) in runs {
-                layoutManager.setLocation(location, forStartOfGlyphRange: run)
-            }
-        }
     }
 }
 
