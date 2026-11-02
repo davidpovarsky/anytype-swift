@@ -782,13 +782,12 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
 
     @MainActor
     private func textViewDidChangeCaretPosition(textView: UITextView, range: NSRange) {
-        // A cleared selection (selectedTextRange = nil during the Enter focus handoff) is
-        // not a caret position: recording NSNotFound would leave a poisoned pending focus that
-        // a later reconfigure consumes, stealing first responder back with an invalid caret.
+        // A cleared selection during the Enter handoff is not a restorable caret position.
         guard range.location != NSNotFound else { return }
         accessoryViewStateManager.selectionDidChange(range: range)
-        cursorManager.blockFocus = BlockFocus(id: info.id, position: .at(range))
-//        cursorManager.didChangeCursorPosition(at: data.info.id, position: .at(range)) // DO WE NEED IT? WHY?
+        // Selection is observed state, not a pending focus command. A native echo consumes
+        // blockFocus during reconfiguration and would replay this old offset while typing.
+        cursorManager.didChangeCursorPosition(at: info.id, position: .at(range))
     }
 
     private func toggleCheckBox() {

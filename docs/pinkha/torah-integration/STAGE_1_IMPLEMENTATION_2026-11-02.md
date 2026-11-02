@@ -2,6 +2,26 @@
 
 [נועם | הנדסה] [MAIN_SESSION]. Owner-authorized implementation cycle, 2026-11-02. This report supersedes the proposal-only status of the November 1 artifacts. No Asana changes, merge, release, signing, generated/protobuf/Heart edits or schema migration.
 
+## Owner-directed physical-device QA build
+
+The owner explicitly stopped further simulator work and requested an IPA for manual iPad testing. This delivery therefore uses the existing unsigned IPA-only route with `require_full_acceptance=false` and records `OWNER_OVERRIDE`. The next source commit uses `[skip ci]` to honor the no-simulator instruction; the manually dispatched device SDK build still runs. No test is declared passed because it was skipped.
+
+The candidate includes the narrow native caret-recording correction in TextBlockActionHandler: selection notifications call the existing didChangeCursorPosition API rather than filling blockFocus, which represents a pending focus request consumed by native reconfiguration. The original setFocus implementation, explicit focus publishers, Enter handoff, saved text/alignment and fields remain unchanged. Both C1 styling callback proposals remain unapplied. Device SDK build validation is pending; runtime validation of this correction and the new real-editor input probe is NOT_RUN at the owner's instruction.
+
+Book/overflow are retained pending full replacement qualification. In the previous Full run, Sources visibly opened the real document-scoped search on Pinkha in both languages. Its test queried a child identifier that SwiftUI replaced with the presentation identifier; the test now matches the actual native TextField and document-scope heading. Page/Note interaction remains NOT_RUN. The short-cancel gesture test now includes a stationary release hold; no navigation implementation was changed.
+
+Last automated source: f802e699dc — Fast PASS292/292, zero skips; native preparation1/1; PinkhaKit153/19 PASS, including the successful rerun of standalone41463908009. Full41473921575 FAIL: both native preparation cases PASS, all six UI cases fail. Actual initial accepted RTL attributes are correct, so there is no basis for C1. The real UI shows reordered input / an Enter split at an old caret offset; the native caret-recording change addresses that pending-focus replay path. Its success must still be checked on device; neither static reasoning nor the prior-SHA native matrix is a runtime PASS for this candidate.
+
+## Last automated state — f802e699dc
+
+- Committed source: `f802e699dce0b21870a8f0f37ceb7c8b9f60cbda` on the existing branch.
+- [Fast CI41463907757](https://github.com/davidpovarsky/anytype-swift/actions/runs/41463907757): **PASS292/292**,73 tests in each phone/tablet × LTR/RTL combination, zero failures/skips. Native preparation separately PASS1/1; native and UI-test SDK builds PASS. PinkhaKit153 tests/19 suites PASS within this exact-SHA Fast run.
+- PASS in the focused native scope: actual glyph pixels, UITextView caret/closestPosition, empty caret before/after attachment, serialized text/marks and remaining formatting, selection, Undo and IME; native/missing metadata rows at0/1/2/12/0 with stable cell/item/configuration, no structural reload or tree writes. This does not establish physical iPad behavior or real-keyboard multi-block acceptance.
+- The first iPad native Sources LTR screenshot now completes in1.162 seconds versus the previous130.316-second timeout. The deterministic screenshot case completes in78.362 seconds, retaining its120-second deadline and every image. Other older native fixture window warnings still exist; no claim that all warnings were eliminated.
+- [Full Acceptance41473921575](https://github.com/davidpovarsky/anytype-swift/actions/runs/41473921575): **FAIL (6 UI failures, 2 preparation passes)** at the same SHA after verified Fast success. Real Sources activation and five Enter transitions/relaunch in Page/Note/Pinkha remain unqualified until this run supplies actual evidence. Book/overflow are still present pending interactive Sources qualification; both historical behavioral C1 patches remain unapplied.
+- Separate [Pinkha Tests41463908009](https://github.com/davidpovarsky/anytype-swift/actions/runs/41463908009) initially **NOT_RUN**: no runner or step was acquired, with GitHub annotations explicitly reporting hosted macOS arm64 capacity constraints. One rerun is requested; the153 tests already pass in exact-SHA Fast. This infrastructure cancellation is not reported as a passed package run.
+- Unsigned IPA and physical iPad acceptance: **NOT_RUN**. Original dirty files remain byte-identical to the pre-cycle backup; index was empty after the scoped commit.
+
 ## Identity and preservation
 
 - Existing branch: `pinkha/torah-associations-native-ux-persistence-localization-2026-10-20`.
@@ -29,7 +49,7 @@ The native observation test uses real TextBlockContentView, host styler, origina
 
 Acceptance diagnostics report actual typing paragraph direction, current responder and caret geometry. Read-only diagnostic notifications refresh the measurements after focus restoration; they never apply styles or alter focus/selection. The test-runner language variables use Xcode's required TEST_RUNNER_ forwarding, rather than assuming shell variables reach the UI-test process.
 
-## Verification ledger
+## Historical verification ledger — through c4a3c1f80b
 
 | Gate | State | Evidence / limit |
 |---|---|---|

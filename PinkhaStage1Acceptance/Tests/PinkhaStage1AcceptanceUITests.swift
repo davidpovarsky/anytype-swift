@@ -88,8 +88,14 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             XCTAssertTrue(add.isHittable)
             attachScreenshot(named: "\(directionName)-\(kind.rawValue)-sources-entry")
             add.tap()
-            let field = app.descendants(matching: .any).matching(identifier: "torah-sources-search-field").firstMatch
+            // The native sheet's identifier propagates to its descendants in SwiftUI.
+            // Match the actual editable field within that presentation, not an overridden ID.
+            let field = app.textFields.matching(identifier: "torah-sources-search-sheet").firstMatch
             XCTAssertTrue(field.waitForExistence(timeout: 20), "Sources must open the existing document search presenter")
+            XCTAssertTrue(app.staticTexts.matching(NSPredicate(
+                format: "identifier == %@ AND label == %@", "torah-sources-search-sheet",
+                expectsRTL ? "קישורים במסמך" : "Document links"
+            )).firstMatch.exists, "The opened search must explicitly show document scope")
             attachScreenshot(named: "\(directionName)-\(kind.rawValue)-sources-search")
         }
     }
@@ -311,7 +317,7 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             forDuration: 0.08,
             thenDragTo: cancelledEnd,
             withVelocity: .slow,
-            thenHoldForDuration: 0.05
+            thenHoldForDuration: 0.5
         )
         XCTAssertTrue(body.waitForExistence(timeout: 5), "A short back swipe should cancel and keep the editor")
         attachScreenshot(named: "\(evidencePrefix)-cancelled")

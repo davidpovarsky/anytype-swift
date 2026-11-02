@@ -2,6 +2,7 @@ import AnytypeCore
 import PinkhaKit
 import Services
 import Testing
+import UIKit
 @testable import Anytype
 
 @Suite("Pinkha Stage 1 real-app acceptance preparation", .serialized)
@@ -133,6 +134,13 @@ struct PinkhaStage1AcceptancePreparationTests {
             try await nativeDocument.close()
         }
 
+        let inputProbe = try await objectActions.createObject(
+            name: "Native input lifecycle probe", typeUniqueKey: .page,
+            shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+            spaceId: spaceId, origin: .none, templateId: nil
+        )
+        try await exerciseOriginalEditorInput(objectId: inputProbe.id, spaceId: spaceId)
+
         try PinkhaStage1AcceptanceState(
             spaceId: spaceId,
             pinkhaObjectId: document.id,
@@ -146,4 +154,92 @@ struct PinkhaStage1AcceptancePreparationTests {
             + "pinkha=\(document.id) note=\(note.id) page=\(page.id)"
         )
     }
+
+    /// Runs the original assembly, cursor manager, keyboard handler, virtual row and real
+    /// middleware in the disposable Space. No no-op TextBlock actions stand in for input.
+    @MainActor
+    private func exerciseOriginalEditorInput(objectId: String, spaceId: String) async throws {
+        let state = EditorPageModuleAssembly().buildStateModel(
+            data: EditorPageObject(objectId: objectId, spaceId: spaceId),
+            output: nil, showHeader: true, torahSession: nil
+        )
+        let controller = state.viewController
+        let navigation = UINavigationController(rootViewController: controller)
+        navigation.view.semanticContentAttribute = .forceRightToLeft
+        controller.view.semanticContentAttribute = .forceRightToLeft
+        let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let previousKey = scene.windows.first(where: \.isKeyWindow)
+        let window = UIWindow(windowScene: scene)
+        window.rootViewController = navigation
+        window.makeKeyAndVisible()
+        defer {
+            controller.view.endEditing(true)
+            window.isHidden = true
+            window.rootViewController = nil
+            previousKey?.makeKey()
+        }
+        let document = Container.shared.openedDocumentProvider().document(
+            objectId: objectId, spaceId: spaceId, mode: .handling
+        )
+        for _ in 0..<200 {
+            if document.isOpened, controller.collectionView.numberOfSections > 0,
+               controller.collectionView.numberOfItems(inSection: 0) > 0 { break }
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        try #require(document.isOpened)
+        state.model.tapOnEmptyPlace(isBelowContent: true)
+        var textView = try await focusedEmptyTextView(in: controller.view)
+        let lines = ["שלום בדיקת הקלדה", "English input lifecycle", "שורה שלישית", "Fourth native line", "שלום 👩🏽‍💻 final"]
+        for (index, line) in lines.enumerated() {
+            let emptyCaret = textView.caretRect(for: textView.beginningOfDocument)
+            #expect(emptyCaret.midX > textView.bounds.midX)
+            #expect((textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection == .rightToLeft)
+            for character in line {
+                let replacement = String(character)
+                let accepted = textView.delegate?.textView?(
+                    textView, shouldChangeTextIn: textView.selectedRange, replacementText: replacement
+                ) ?? false
+                try #require(accepted, "Ordinary probe input must follow the actual accepted native delegate path")
+                textView.insertText(replacement)
+                try await Task.sleep(for: .milliseconds(10))
+            }
+            // Wait for the original document event stream, not merely the live view value.
+            for _ in 0..<200 {
+                if document.infoContainer.recursiveChildren(of: objectId).contains(where: { $0.textContent?.text == line }) { break }
+                try await Task.sleep(for: .milliseconds(50))
+            }
+            #expect(textView.text == line, "Native echo must not reorder or discard rapid input")
+            #expect(textView.selectedRange == NSRange(location: line.utf16.count, length: 0), "A caret observation must not replay an old focus offset")
+            #expect(document.infoContainer.recursiveChildren(of: objectId).filter { $0.textContent?.text == line }.count == 1)
+            print("PINKHA_NATIVE_EDITOR_INPUT line=\(index + 1) length=\(textView.text.utf16.count) caret=\(textView.selectedRange.location)")
+            let previous = textView
+            let acceptedReturn = textView.delegate?.textView?(
+                textView, shouldChangeTextIn: textView.selectedRange, replacementText: "\n"
+            ) ?? true
+            #expect(!acceptedReturn, "The original keyboard handler must own Return and create the next block")
+            textView = try await focusedEmptyTextView(in: controller.view, excluding: previous)
+        }
+        for line in lines {
+            #expect(document.infoContainer.recursiveChildren(of: objectId).filter { $0.textContent?.text == line }.count == 1)
+        }
+        controller.view.endEditing(true)
+        try await document.close()
+    }
+
+    @MainActor
+    private func focusedEmptyTextView(in root: UIView, excluding previous: UITextView? = nil) async throws -> UITextView {
+        func descendants(_ view: UIView) -> [UITextView] {
+            (view as? UITextView).map { [$0] } ?? view.subviews.flatMap(descendants)
+        }
+        for _ in 0..<200 {
+            if let view = descendants(root).first(where: { $0 !== previous && $0.isFirstResponder && $0.textStorage.length == 0 }) {
+                return view
+            }
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        Issue.record("The real editor did not focus a distinct empty block")
+        throw NativeInputProbeError.missingFocusedBlock
+    }
 }
+
+private enum NativeInputProbeError: Error { case missingFocusedBlock }

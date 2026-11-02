@@ -1,3 +1,4 @@
+import Combine
 import PinkhaKit
 import ProtobufMessages
 import Services
@@ -9,6 +10,28 @@ import UIKit
 @Suite("App-wide UIKit text direction adapter", .serialized)
 @MainActor
 struct PinkhaTextDirectionUIKitAdapterTests {
+    @Test("Caret observations preserve pending Enter focus and remain restorable")
+    func caretObservationIsNotAFocusRequest() {
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let range = NSRange(location: 12, length: 0)
+        var restored = [NSRange]()
+        var enterReceived = false
+        let oldSubscription = subjects.focusSubject(for: "edited").sink { position in
+            if case let .at(value) = position { restored.append(value) }
+        }
+        let newSubscription = subjects.focusSubject(for: "enter-created").sink { _ in enterReceived = true }
+        cursor.blockFocus = BlockFocus(id: "enter-created", position: .beginning)
+        cursor.didChangeCursorPosition(at: "edited", position: .at(range))
+        #expect(cursor.blockFocus?.id == "enter-created")
+        #expect(restored.isEmpty && !enterReceived)
+        cursor.applyCurrentFocus()
+        #expect(enterReceived && cursor.blockFocus == nil)
+        cursor.restoreLastFocus(at: "edited")
+        #expect(restored == [range])
+        withExtendedLifetime((oldSubscription, newSubscription)) {}
+    }
+
     @Test("Native presentation alignment preserves serialized text/marks, selection, undo and editing callbacks")
     func languageRenderingIsDisplayOnly() throws {
         let textView = UndoTrackingTextView(frame: CGRect(x: 0, y: 0, width: 320, height: 120))
