@@ -123,8 +123,11 @@ enum PinkhaTextDirectionUIKitAdapter {
         context: PinkhaTextBlockWritingContext?,
         to textView: UITextView
     ) {
+        if context == nil || (textView.textStorage.length == 0 && context?.blockId != writingContexts.object(forKey: textView)?.context.blockId) {
+            PinkhaStage1AcceptanceDiagnostics.resetInsertionEvidence(in: textView)
+        }
         if let context {
-            writingContexts.setObject(PinkhaWritingContextBox(context), forKey: textView)
+            writingContexts.setObject(PinkhaWritingContextBox(context, textView: textView), forKey: textView)
         } else {
             writingContexts.removeObject(forKey: textView)
             removeDisplayAlignment(from: textView)
@@ -211,6 +214,31 @@ enum PinkhaTextDirectionUIKitAdapter {
         }
     }
 
+    /// Configuration can occur off-window, before the native row inherits app direction.
+    /// Reapply the cached presentation context at attachment, before original focus runs.
+    static func refreshAfterAttachment(in textView: UITextView) {
+        guard let context = writingContexts.object(forKey: textView)?.context else { return }
+        apply(context: context, to: textView)
+    }
+
+    /// Read-only evidence, deferred until UIKit has finished focus/selection restoration.
+    /// This never applies styles, changes selection or participates in editing delegates.
+    static func recordEditingDiagnostics(in textView: UITextView) {
+        guard PinkhaStage1AcceptanceState.isEnabled,
+              let context = writingContexts.object(forKey: textView)?.context else { return }
+        let direction = effectiveInterfaceDirection(for: textView)
+        let decision = PinkhaWritingDirectionPolicy.resolve(PinkhaWritingDirectionInput(
+            isEmpty: textView.text.isEmpty,
+            interfaceDirection: direction,
+            detectedTextDirection: detectedDirection(for: textView.text, fallback: direction),
+            persistedAlignment: context.persistedAlignment,
+            alignmentWasExplicit: context.alignmentWasExplicit
+        ))
+        textView.accessibilityLabel = PinkhaStage1AcceptanceDiagnostics.textViewLabel(
+            decision: decision, origin: context.origin, textView: textView
+        )
+    }
+
     static func marker(from fields: BlockFields) -> PinkhaTextDirectionMarker? {
         guard let value = fields[PinkhaSchemaRoles.blockTextDirectionField],
               case let .stringValue(storedValue) = value.kind else {
@@ -290,9 +318,26 @@ enum PinkhaTextDirectionUIKitAdapter {
 
 private final class PinkhaWritingContextBox {
     let context: PinkhaTextBlockWritingContext
+    private var diagnosticObservers = [NSObjectProtocol]()
 
-    init(_ context: PinkhaTextBlockWritingContext) {
+    @MainActor
+    init(_ context: PinkhaTextBlockWritingContext, textView: UITextView) {
         self.context = context
+        guard PinkhaStage1AcceptanceState.isEnabled else { return }
+        for name in [UITextView.textDidBeginEditingNotification, UITextView.textDidChangeNotification, UITextView.textDidEndEditingNotification] {
+            diagnosticObservers.append(NotificationCenter.default.addObserver(
+                forName: name, object: textView, queue: .main
+            ) { [weak textView] _ in
+                DispatchQueue.main.async { [weak textView] in
+                    guard let textView else { return }
+                    PinkhaTextDirectionUIKitAdapter.recordEditingDiagnostics(in: textView)
+                }
+            })
+        }
+    }
+
+    deinit {
+        for observer in diagnosticObservers { NotificationCenter.default.removeObserver(observer) }
     }
 }
 

@@ -77,7 +77,7 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             XCTAssertTrue(add.isHittable)
             attachScreenshot(named: "\(directionName)-\(kind.rawValue)-sources-entry")
             add.tap()
-            let field = app.descendants(matching: .any)["torah-sources-search-field"].firstMatch
+            let field = app.descendants(matching: .any).matching(identifier: "torah-sources-search-field").firstMatch
             XCTAssertTrue(field.waitForExistence(timeout: 20), "Sources must open the existing document search presenter")
             attachScreenshot(named: "\(directionName)-\(kind.rawValue)-sources-search")
         }
@@ -94,12 +94,17 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             expectsRTL ? "שורה \(index) בדיקה \(token)" : "Line \(index) test \(token)"
         }
         var typedBlockIDs = Set<String>()
-        for line in lines {
+        for (index, line) in lines.enumerated() {
             target.typeText(line)
             let typedRow = editorBody(containing: line)
             XCTAssertTrue(typedRow.waitForExistence(timeout: 20), "Entered line missing: \(line)")
             XCTAssertTrue(typedBlockIDs.insert(typedRow.identifier).inserted, "Enter reused a previously typed block")
             assertRuntimeDirection(on: typedRow, document: kind)
+            if index > 0 {
+                let direction = expectsRTL ? "rtl" : "ltr"
+                expectation(for: NSPredicate(format: "label CONTAINS %@", "accepted-first-insertion-\(direction)"), evaluatedWith: typedRow)
+                waitForExpectations(timeout: 20)
+            }
 
             typedRow.typeText("\n")
             target = app.textViews.matching(NSPredicate(
@@ -248,27 +253,30 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             switch kind {
             case .page:
                 let pageOption = button(containingAny: ["Page", "עמוד"])
-                if pageOption.waitForExistence(timeout: 6) {
-                    pageOption.tap()
-                }
+                XCTAssertTrue(pageOption.waitForExistence(timeout: 6), "Native Page type option is required; do not silently test another layout")
+                pageOption.tap()
             case .note:
                 let noteOption = button(containingAny: ["Note", "פתק"])
-                if noteOption.waitForExistence(timeout: 6) {
-                    noteOption.tap()
-                }
+                XCTAssertTrue(noteOption.waitForExistence(timeout: 6), "Native Note type option is required; do not silently test another layout")
+                noteOption.tap()
             case .pinkha:
                 let moreOption = button(containingAny: ["More", "עוד"])
                 if moreOption.waitForExistence(timeout: 6) {
                     moreOption.tap()
                 }
                 let chiddushOption = button(containingAny: ["חידוש", "Chiddush"])
-                if chiddushOption.waitForExistence(timeout: 8) {
-                    chiddushOption.tap()
-                }
+                XCTAssertTrue(chiddushOption.waitForExistence(timeout: 8), "Registered Pinkha type option is required")
+                chiddushOption.tap()
             }
             if titleField.waitForExistence(timeout: 10) {
                 titleField.tap()
                 titleField.typeText(expectedTitle + "\n")
+            } else if kind == .note {
+                // Native Note derives its name from its first body block and has no title row.
+                let body = editorBody()
+                XCTAssertTrue(body.waitForExistence(timeout: 20))
+                body.tap()
+                body.typeText(expectedTitle + "\n")
             }
         }
     }

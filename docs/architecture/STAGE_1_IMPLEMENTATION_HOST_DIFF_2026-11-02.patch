@@ -181,6 +181,41 @@ index ff36c9520b..eb211be6f5 100644
                  onRelationTap: onRelationTap
              )
          }
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView+TextViewDelegate.swift b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView+TextViewDelegate.swift
+index 39e86166f2..530f85312c 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView+TextViewDelegate.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView+TextViewDelegate.swift
+@@ -67,6 +67,12 @@ extension TextBlockContentView: CustomTextViewDelegate {
+     }
+     
+     func shouldChangeText(range: NSRange, replacementText: String) -> Bool {
+-        actions?.textViewShouldReplaceText(textView.textView, replacementText, range) ?? false
++        let accepted = actions?.textViewShouldReplaceText(textView.textView, replacementText, range) ?? false
++        if accepted {
++            PinkhaStage1AcceptanceDiagnostics.recordAcceptedInsertion(
++                in: textView.textView, range: range, replacement: replacementText
++            )
++        }
++        return accepted
+     }
+ }
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift
+index b196243f7a..ac3a59b3f4 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift
+@@ -54,6 +54,12 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
+         actions = configuration.actions
+         applyNewConfiguration(configuration: configuration)
+     }
++
++    override func didMoveToWindow() {
++        super.didMoveToWindow()
++        guard window != nil else { return }
++        PinkhaTextDirectionUIKitAdapter.refreshAfterAttachment(in: textView.textView)
++    }
+     
+     func update(with state: UICellConfigurationState) {
+         textView.textView.isLockedForEditing = state.isLocked
 diff --git a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilder.swift b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilder.swift
 index f6d5d20565..0aa1767f87 100644
 --- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilder.swift

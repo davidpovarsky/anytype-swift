@@ -105,6 +105,17 @@ jobs:
               output.write(f"iPad: {ipads[0]['name']} ({ipads[0]['udid']})\n")
           PY
 
+      - name: Restore native build intermediates
+        id: native_cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/DerivedData-Tests
+            !build/DerivedData-Tests/Index.noindex
+          key: pinkha-native-xcode27-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Libraryfile', 'Anytype.xcodeproj/project.pbxproj', '**/Package.resolved') }}-${{ github.sha }}
+          restore-keys: |
+            pinkha-native-xcode27-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Libraryfile', 'Anytype.xcodeproj/project.pbxproj', '**/Package.resolved') }}-
+
       - name: Build focused native tests once
         id: native_build
         run: |
@@ -247,6 +258,15 @@ jobs:
                   '--path', str(bundle), '--format', 'json'
               ], text=True)
               summary = json.loads(raw)
+              output = Path('build/evidence/native-screenshots', name)
+              output.mkdir(parents=True, exist_ok=True)
+              try:
+                  subprocess.run([
+                      'xcrun', 'xcresulttool', 'export', 'attachments',
+                      '--path', str(bundle), '--output-path', str(output)
+                  ], check=True)
+              except subprocess.CalledProcessError as error:
+                  problems.append(f'{name} attachment export failed: {error}')
               def integer_value(key):
                   stack = [summary]
                   while stack:
@@ -285,6 +305,15 @@ jobs:
           if problems:
               raise SystemExit('; '.join(problems))
           PY
+
+      - name: Save compiled native build intermediates
+        if: always() && steps.native_build.outcome == 'success' && steps.native_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            build/DerivedData-Tests
+            !build/DerivedData-Tests/Index.noindex
+          key: ${{ steps.native_cache.outputs.cache-primary-key }}
 
       - name: Upload Fast CI test results
         if: always()

@@ -75,6 +75,25 @@ struct PinkhaStage1AcceptanceState: Codable, Equatable, Sendable {
 enum PinkhaStage1AcceptanceDiagnostics {
     private static var swiftUILayoutDirection: LayoutDirection?
     private static var navigationLayoutDirection: UIUserInterfaceLayoutDirection?
+    private static let acceptedInsertions = NSMapTable<UITextView, NSString>.weakToStrongObjects()
+
+    static func resetInsertionEvidence(in textView: UITextView) {
+        acceptedInsertions.removeObject(forKey: textView)
+    }
+
+    /// Observation only, called after the original host accepts a real empty replacement.
+    static func recordAcceptedInsertion(in textView: UITextView, range: NSRange, replacement: String) {
+        guard PinkhaStage1AcceptanceState.isEnabled, textView.isFirstResponder,
+              textView.textStorage.length == 0, range == NSRange(location: 0, length: 0),
+              !replacement.isEmpty else { return }
+        let name: String
+        switch (textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection {
+        case .rightToLeft: name = "rtl"
+        case .leftToRight: name = "ltr"
+        default: name = "natural-or-missing"
+        }
+        acceptedInsertions.setObject(name as NSString, forKey: textView)
+    }
 
     static func record(
         layoutDirection: LayoutDirection,
@@ -123,7 +142,8 @@ enum PinkhaStage1AcceptanceDiagnostics {
             "origin-\(origin.acceptanceName)",
             "typing-direction-\(typingDirection)",
             "caret-side-\(caretSide)",
-            "first-responder-\(textView.isFirstResponder)"
+            "first-responder-\(textView.isFirstResponder)",
+            "accepted-first-insertion-\(acceptedInsertions.object(forKey: textView).map { $0 as String } ?? "unrecorded")"
         ].joined(separator: ";")
     }
 }

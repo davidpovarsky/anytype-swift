@@ -134,8 +134,8 @@ jobs:
             local pinkha_log_pid=$!
 
             set +e
-            PINKHA_ACCEPTANCE_DIRECTION="$direction" \
-            PINKHA_ACCEPTANCE_DEVICE_LANGUAGE="$device_language" \
+            TEST_RUNNER_PINKHA_ACCEPTANCE_DIRECTION="$direction" \
+            TEST_RUNNER_PINKHA_ACCEPTANCE_DEVICE_LANGUAGE="$device_language" \
             xcodebuild test-without-building \
               -workspace PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace \
               -scheme PinkhaStage1Acceptance \

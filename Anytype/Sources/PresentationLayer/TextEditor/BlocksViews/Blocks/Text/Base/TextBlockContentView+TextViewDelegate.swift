@@ -67,6 +67,12 @@ extension TextBlockContentView: CustomTextViewDelegate {
     }
     
     func shouldChangeText(range: NSRange, replacementText: String) -> Bool {
-        actions?.textViewShouldReplaceText(textView.textView, replacementText, range) ?? false
+        let accepted = actions?.textViewShouldReplaceText(textView.textView, replacementText, range) ?? false
+        if accepted {
+            PinkhaStage1AcceptanceDiagnostics.recordAcceptedInsertion(
+                in: textView.textView, range: range, replacement: replacementText
+            )
+        }
+        return accepted
     }
 }

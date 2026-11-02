@@ -54,6 +54,12 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         actions = configuration.actions
         applyNewConfiguration(configuration: configuration)
     }
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        guard window != nil else { return }
+        PinkhaTextDirectionUIKitAdapter.refreshAfterAttachment(in: textView.textView)
+    }
     
     func update(with state: UICellConfigurationState) {
         textView.textView.isLockedForEditing = state.isLocked

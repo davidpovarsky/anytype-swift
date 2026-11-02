@@ -49,7 +49,9 @@ jobs:
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1.6.0
         with:
-          xcode-version: '26.1'
+          # Swift 6.3.1 fixes async task-stack allocation crashes in older toolchains.
+          # https://forums.swift.org/t/announcing-swift-6-3-1/86080
+          xcode-version: '26.4.1'
 
       - name: Live Activity · refresh
         uses: davidpovarsky/github-automation/live-refresh@main
@@ -60,4 +62,7 @@ jobs:
           token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}
           github_token: ${{ github.token }}
       - name: Run PinkhaKit Unit Tests
-        run: swift test --package-path Modules/PinkhaKit
+        run: |
+          xcodebuild -version
+          swift --version
+          swift test --package-path Modules/PinkhaKit

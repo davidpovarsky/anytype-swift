@@ -394,7 +394,7 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         #expect(textView.typingAttributes[.paragraphStyle] == nil)
     }
 
-    @Test("Native row caret and accepted first insertion after attachment", arguments: [false, true])
+    @Test("Native row caret and delegate insertion contract after attachment", arguments: [false, true])
     func nativeRowAttachmentProbe(configureAfterAttachment: Bool) async throws {
         let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 844))
         let controller = UIViewController()
@@ -448,12 +448,15 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         }
         row.update(with: configuration)
         if !configureAfterAttachment { controller.view.addSubview(row) }
+        await Task.yield()
+        // Other rendering suites can own temporary windows while this task yields.
+        // Keep focus, empty-caret measurement and accepted insertion in one MainActor turn.
+        window.makeKeyAndVisible()
         controller.view.layoutIfNeeded()
         row.takeFocus(at: .beginning)
-        await Task.yield()
         controller.view.layoutIfNeeded()
 
-        #expect(textView.isFirstResponder)
+        try #require(textView.isFirstResponder, "A nonfocused fixture cannot prove native typing/caret behavior")
         #expect(textView.markedTextRange == nil)
         #expect(textView.selectedRange == NSRange(location: 0, length: 0))
         let selected = try #require(textView.selectedTextRange)
@@ -461,6 +464,13 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         #expect(emptyCaret.midX > textView.bounds.midX,
                 "Initial empty caret must be physically right before inserting any text")
 
+        // UIKit's programmatic insertText bypasses should-change on the measured SDK.
+        // Exercise the real native delegate contract explicitly; real keyboard input is
+        // measured separately by Full Acceptance, never inferred from this unit test.
+        let accepted = textView.delegate?.textView?(
+            textView, shouldChangeTextIn: NSRange(location: 0, length: 0), replacementText: "א"
+        ) ?? false
+        try #require(accepted)
         textView.insertText("א")
         #expect(acceptedInsertions == 1,
                 "A missing real delegate callback invalidates the probe; it is not a direction pass")

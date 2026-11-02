@@ -309,28 +309,41 @@ final class TorahSearchLayoutScreenshotTests: XCTestCase {
                 let document = MockBaseDocument(objectId: context.objectId)
                 document.mockSpaceId = context.spaceId
                 let row = PinkhaDocumentMetadataRowModel(document: document, session: session, onRelationTap: { _ in })
-                let rowIdentity = row.hashable
-                let configuration: any UIContentConfiguration
-                if missingNativeRow {
-                    configuration = row.makeContentConfiguration(maxWidth: 320)
-                } else {
-                    configuration = UIHostingConfiguration {
-                        EditorFeaturedPropertiesView(relations: [], torahSession: session, onRelationTap: { _ in })
-                    }.margins(.all, 0)
-                }
-                let content = configuration.makeContentView()
+                let reloadProbe = TorahHeaderReloadProbe()
+                let native = FeaturedPropertiesBlockViewModel(
+                    infoProvider: BlockModelInfomationProvider(
+                        document: document, info: .empty(id: "featuredRelations", content: .featuredRelations)
+                    ),
+                    document: document, collectionController: reloadProbe,
+                    torahSession: session, onRelationValueTap: { _ in }
+                )
+                let item: EditorItem = missingNativeRow ? .system(row) : .block(native)
+                let rowIdentity = item.hashValue
+                let configuration = missingNativeRow
+                    ? row.makeContentConfiguration(maxWidth: 320)
+                    : native.makeContentConfiguration(maxWidth: 320)
                 let controller = UIViewController()
                 controller.view.semanticContentAttribute = direction == .rightToLeft ? .forceRightToLeft : .forceLeftToRight
                 let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 320, height: 280))
                 window.rootViewController = controller
                 window.makeKeyAndVisible()
-                controller.view.addSubview(content)
-                content.translatesAutoresizingMaskIntoConstraints = false
-                NSLayoutConstraint.activate([
-                    content.topAnchor.constraint(equalTo: controller.view.topAnchor),
-                    content.leadingAnchor.constraint(equalTo: controller.view.leadingAnchor),
-                    content.trailingAnchor.constraint(equalTo: controller.view.trailingAnchor)
-                ])
+                // UIHostingConfiguration belongs to a real cell, as in the native editor.
+                let layout = UICollectionViewCompositionalLayout.list(using: .init(appearance: .plain))
+                let collection = UICollectionView(frame: window.bounds, collectionViewLayout: layout)
+                collection.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                controller.view.addSubview(collection)
+                var configurationCount = 0
+                let registration = UICollectionView.CellRegistration<EditorViewListCell, EditorItem> { cell, _, _ in
+                    configurationCount += 1
+                    cell.contentConfiguration = configuration
+                }
+                let dataSource = UICollectionViewDiffableDataSource<Int, EditorItem>(collectionView: collection) { collection, indexPath, item in
+                    collection.dequeueConfiguredReusableCell(using: registration, for: indexPath, item: item)
+                }
+                var snapshot = NSDiffableDataSourceSnapshot<Int, EditorItem>()
+                snapshot.appendSections([0])
+                snapshot.appendItems([item])
+                await dataSource.apply(snapshot, animatingDifferences: false)
                 var previous = [TorahAssociationItem]()
                 var images = [Int: Data]()
                 for count in [0, 1, 2, 12, 0] {
@@ -343,13 +356,18 @@ final class TorahSearchLayoutScreenshotTests: XCTestCase {
                     try await Task.sleep(for: .milliseconds(80))
                     controller.view.setNeedsLayout()
                     controller.view.layoutIfNeeded()
+                    collection.layoutIfNeeded()
+                    let content = try XCTUnwrap(collection.cellForItem(at: IndexPath(item: 0, section: 0)))
                     XCTAssertGreaterThanOrEqual(content.bounds.height, 44)
                     XCTAssertLessThanOrEqual(content.bounds.height, 280)
                     XCTAssertEqual(session.visibleDocumentAssociations.count, count)
-                    XCTAssertEqual(row.hashable, rowIdentity)
+                    XCTAssertEqual(item.hashValue, rowIdentity)
+                    XCTAssertEqual(dataSource.snapshot().itemIdentifiers, [item])
+                    XCTAssertEqual(configurationCount, 1)
+                    XCTAssertEqual(reloadProbe.reconfigureCount, 0, "Source snapshots must update the hosted view without editor reconfiguration")
                     XCTAssertTrue(document.children.isEmpty)
-                    let image = UIGraphicsImageRenderer(bounds: controller.view.bounds).image { canvas in
-                        controller.view.layer.render(in: canvas.cgContext)
+                    let image = UIGraphicsImageRenderer(bounds: controller.view.bounds).image { _ in
+                        XCTAssertTrue(controller.view.drawHierarchy(in: controller.view.bounds, afterScreenUpdates: true))
                     }
                     let data = try XCTUnwrap(image.pngData())
                     if count > 0, let empty = images[0] { XCTAssertNotEqual(data, empty) }
@@ -405,6 +423,19 @@ final class TorahSearchLayoutScreenshotTests: XCTestCase {
         attachment.lifetime = .keepAlways
         add(attachment)
     }
+}
+
+@MainActor
+private final class TorahHeaderReloadProbe: EditorCollectionReloadable {
+    private(set) var reconfigureCount = 0
+    func reconfigure(items: [EditorItem]) { reconfigureCount += 1 }
+    func itemDidChangeFrame(item: EditorItem) { }
+    func scrollToItem(_ item: EditorItem) { }
+    func scrollToTopBlock(blockId: String) { }
+    func scrollToTextViewIfNotVisible(textView: UITextView) { }
+    func textBlockDidBeginEditing(firstResponderView: UIView) { }
+    func textBlockWillBeginEditing() { }
+    func blockDidFinishEditing() { }
 }
 
 private struct SearchLayoutData: SearchDataProtocol {
