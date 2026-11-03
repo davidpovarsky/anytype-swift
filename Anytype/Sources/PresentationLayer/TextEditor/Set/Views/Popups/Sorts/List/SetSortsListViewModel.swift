@@ -43,6 +43,7 @@ extension SetSortsListViewModel {
     func addButtonTapped() {
         let excludeRelations: [PropertyDetails] = setDocument.sorts(for: viewId).map { $0.relationDetails }
         let relationsDetails = setDocument.viewRelations(viewId: viewId, excludeRelations: excludeRelations)
+            .filter { TorahNativePropertyPresentation.supportsOrdering($0.key) }
         output?.onAddButtonTap(relationDetails: relationsDetails, completion: { [weak self] relationDetails in
             self?.addNewSort(with: relationDetails)
         })

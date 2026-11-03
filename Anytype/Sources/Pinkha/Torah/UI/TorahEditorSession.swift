@@ -836,6 +836,15 @@ final class TorahEditorSession {
         }
     }
 
+    /// Resolves a picker selection without reading or mutating associations.
+    /// Used by native Set filters, whose target is a predicate, not a document.
+    func resolveAssociationSelection(
+        _ result: SearchResult,
+        rawQuery: String
+    ) async throws -> TorahAssociationItem {
+        try await associationItem(for: result, rawQuery: rawQuery)
+    }
+
     private func associationItem(
         for result: SearchResult,
         rawQuery: String

@@ -15,6 +15,13 @@ final class PropertyFilterBuilder {
         relationDetails: PropertyDetails,
         filter: DataviewFilter
     ) -> Property? {
+        if TorahNativePropertyPresentation.definition(relationDetails.key) != nil {
+            guard filter.condition.hasValues else { return nil }
+            return TorahNativePropertyPresentation.value(
+                definition: relationDetails,
+                ids: filter.value.listValue.values.map(\.stringValue)
+            )
+        }
         switch relationDetails.format {
         case .object:
             return objectRelation(

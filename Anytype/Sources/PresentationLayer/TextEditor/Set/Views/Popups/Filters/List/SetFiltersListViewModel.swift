@@ -33,6 +33,8 @@ final class SetFiltersListViewModel {
     @ObservationIgnored
     private var deletingFilterIds = Set<String>()
     @ObservationIgnored
+    private var nativeLabelTask: Task<Void, Never>?
+    @ObservationIgnored
     private weak var output: (any SetFiltersListCoordinatorOutput)?
     
     init(
@@ -116,6 +118,34 @@ extension SetFiltersListViewModel {
                     self?.rowTapped(filter.relationDetails.id, index: index)
                 }
             )
+        }
+        loadNativeLabels(for: activeFilters)
+    }
+
+    private func loadNativeLabels(for filters: [SetFilter]) {
+        let spaceId = setDocument.spaceId
+        let pending = filters.filter { filter in
+            TorahNativePropertyPresentation.definition(filter.relationDetails.key) != nil &&
+            filter.filter.value.listValue.values.contains {
+                !TorahNativeLabelCache.shared.contains(id: $0.stringValue, space: spaceId)
+            }
+        }
+        guard !pending.isEmpty else { return }
+        let missingIds = pending.flatMap { $0.filter.value.listValue.values.map(\.stringValue) }
+            .filter { !TorahNativeLabelCache.shared.contains(id: $0, space: spaceId) }
+        nativeLabelTask?.cancel()
+        nativeLabelTask = Task { [weak self] in
+            for filter in pending {
+                await TorahNativePropertyPresentation.loadLabels(
+                    space: spaceId, key: filter.relationDetails.key,
+                    ids: filter.filter.value.listValue.values.map(\.stringValue)
+                )
+            }
+            guard !Task.isCancelled, let self else { return }
+            // Rebuild only when at least one identity was resolved. Offline
+            // misses keep their human fallback and do not schedule retry loops.
+            let loaded = missingIds.contains { TorahNativeLabelCache.shared.contains(id: $0, space: spaceId) }
+            if loaded { self.updateRows(with: self.setDocument.filters(for: self.viewId)) }
         }
     }
     

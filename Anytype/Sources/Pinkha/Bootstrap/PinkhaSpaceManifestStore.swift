@@ -23,76 +23,37 @@ public final class PinkhaSpaceManifestStore: PinkhaSpaceManifestStoreProtocol, @
     public init() {}
 
     public func discoverManifestObjectId(spaceId: String) async throws -> String? {
-        let filters: [DataviewFilter] = .builder {
-            SearchHelper.uniqueKeyFilter(key: PinkhaSchemaRoles.manifestUniqueKey, include: true)
+        // Heart derives uniqueKey from the tree header. Older Pinkha creation
+        // supplied it as a detail, so also discover by the original stable name.
+        // A name alone never establishes identity: validate the actual manifest.
+        var candidates: [String: ObjectDetails] = [:]
+        for key in [BundledPropertyKey.uniqueKey, .name] {
+            let results = try await searchMiddleService.search(
+                spaceId: spaceId,
+                filters: [.with {
+                    $0.relationKey = key.rawValue
+                    $0.condition = .equal
+                    $0.value = PinkhaSchemaRoles.manifestName.protobufValue
+                }],
+                keys: [BundledPropertyKey.id, .spaceId, .description].map(\.rawValue),
+                limit: 0
+            )
+            for result in results { candidates[result.id] = result }
         }
-
-        let results = try await searchMiddleService.search(
-            spaceId: spaceId,
-            filters: filters,
-            sorts: [],
-            fullText: ""
-        )
-
-        guard !results.isEmpty else {
-            return nil
+        let valid = candidates.values.filter { details in
+            guard details.spaceId == spaceId,
+                  let raw = details.values[BundledPropertyKey.description.rawValue]?.stringValue,
+                  let manifest = try? PinkhaSpaceManifest.fromJSONString(raw),
+                  manifest.spaceId == spaceId else { return false }
+            return manifest.manifestObjectId == nil || manifest.manifestObjectId == details.id
         }
-
-        if results.count == 1 {
-            return results[0].id
-        }
-
-        // Multi-client conflict reconciliation:
-        // Decode candidate manifests and pick canonical one:
-        // 1. Complete > InProgress
-        // 2. Higher schemaVersion
-        // 3. Most recently updated
-        // 4. Deterministic ID tie-breaker
-        var bestId = results[0].id
-        var bestManifest: PinkhaSpaceManifest?
-
-        for result in results {
-            if let jsonString = result.values[BundledPropertyKey.description.rawValue]?.stringValue,
-               let manifest = try? PinkhaSpaceManifest.fromJSONString(jsonString) {
-                if let currentBest = bestManifest {
-                    if isManifest(manifest, preferredOver: currentBest) {
-                        bestManifest = manifest
-                        bestId = result.id
-                    }
-                } else {
-                    bestManifest = manifest
-                    bestId = result.id
-                }
-            }
-        }
-
-        // Clean up secondary (losing) duplicate manifest objects safely
-        let secondaryIds = results.map(\.id).filter { $0 != bestId }
-        if !secondaryIds.isEmpty {
-            Task {
-                do {
-                    try await objectActionsService.delete(objectIds: secondaryIds)
-                } catch {
-                    Self.log.log(level: .warning, message: "Failed to clean up secondary manifest objects \(secondaryIds): \(error.localizedDescription)")
-                }
-            }
-        }
-
-        return bestId
+        // Neither discovery nor an engine rebuild may delete synced manifests.
+        // Ambiguity is a recoverable explicit error, not permission to pick one.
+        guard valid.count <= 1 else { throw ManifestDiscoveryError.ambiguous }
+        return valid.first?.id
     }
 
-    private func isManifest(_ candidate: PinkhaSpaceManifest, preferredOver current: PinkhaSpaceManifest) -> Bool {
-        if candidate.isComplete != current.isComplete {
-            return candidate.isComplete
-        }
-        if candidate.schemaVersion != current.schemaVersion {
-            return candidate.schemaVersion > current.schemaVersion
-        }
-        if candidate.updatedAt != current.updatedAt {
-            return candidate.updatedAt > current.updatedAt
-        }
-        return (candidate.manifestObjectId ?? "") < (current.manifestObjectId ?? "")
-    }
+    private enum ManifestDiscoveryError: Error { case ambiguous }
 
     public func loadManifest(spaceId: String) async throws -> PinkhaSpaceManifest? {
         guard let objectId = try await discoverManifestObjectId(spaceId: spaceId) else {

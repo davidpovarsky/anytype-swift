@@ -20,6 +20,9 @@ final class TorahSourcesSearchPresenter {
 
     private let session: TorahEditorSession
     private let onOpenSelection: (TorahInspectorSelection) -> Void
+    private let onSelectValue: ((TorahAssociationItem) -> Void)?
+    let fixedScope: Bool
+    var isSelectionOnly: Bool { onSelectValue != nil }
     private var searchEpoch: UInt = 0
     private var associationRequestID: UUID?
     private var openRequestID: UUID?
@@ -33,6 +36,8 @@ final class TorahSourcesSearchPresenter {
         searchState: SearchState = .idle,
         associations: [TorahAssociationItem]? = nil,
         persistenceState: TorahAssociationPersistenceState? = nil,
+        fixedScope: Bool = false,
+        onSelectValue: ((TorahAssociationItem) -> Void)? = nil,
         onOpenSelection: @escaping (TorahInspectorSelection) -> Void
     ) {
         self.session = session
@@ -43,15 +48,18 @@ final class TorahSourcesSearchPresenter {
         self.associations = associations ?? session.cachedAssociations(for: context)
         self.persistenceState = persistenceState
         self.onOpenSelection = onOpenSelection
+        self.fixedScope = fixedScope
+        self.onSelectValue = onSelectValue
     }
 
     var associationTargetBlockID: String? { context.blockId }
 
-    var canEditAssociations: Bool { session.canEditAssociations }
+    var canEditAssociations: Bool { isSelectionOnly || session.canEditAssociations }
 
-    var canonicalSnapshot: [TorahStoredAssociationRecord] { session.associationRecords }
+    var canonicalSnapshot: [TorahStoredAssociationRecord] { isSelectionOnly ? [] : session.associationRecords }
 
     func synchronizeSnapshot() {
+        guard !isSelectionOnly else { return }
         associations = session.cachedAssociations(for: context)
     }
 
@@ -105,6 +113,7 @@ final class TorahSourcesSearchPresenter {
     }
 
     func refreshAssociations() async {
+        guard !isSelectionOnly else { return }
         let requestID = UUID()
         associationRequestID = requestID
         do {
@@ -159,6 +168,18 @@ final class TorahSourcesSearchPresenter {
         mutationRequestID = requestID
         defer { if mutationRequestID == requestID { mutationRequestID = nil } }
         let rawQuery = searchQuery
+        if let onSelectValue {
+            do {
+                let item = try await session.resolveAssociationSelection(result, rawQuery: rawQuery)
+                guard mutationRequestID == requestID else { return }
+                onSelectValue(item)
+            } catch is CancellationError {
+            } catch {
+                guard mutationRequestID == requestID else { return }
+                searchState = .error(session.searchMessage(for: error))
+            }
+            return
+        }
         persistenceState = .waiting
         do {
             persistenceState = .saving
@@ -176,6 +197,7 @@ final class TorahSourcesSearchPresenter {
     }
 
     func unlinkAssociation(_ item: TorahAssociationItem) async {
+        guard !isSelectionOnly else { return }
         guard mutationRequestID == nil,
               associations.contains(where: { $0.id == item.id }) else { return }
         let requestID = UUID()

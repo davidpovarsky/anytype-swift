@@ -78,6 +78,6 @@ final class SetSubscriptionDataBuilder: SetSubscriptionDataBuilderProtocol, Send
             keys.append(groupRelationKey)
         }
 
-        return keys
+        return TorahNativePropertyPresentation.subscriptionKeys(keys)
     }
 }

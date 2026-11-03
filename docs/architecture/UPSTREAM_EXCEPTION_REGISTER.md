@@ -1,5 +1,54 @@
 # Pinkha upstream exception register
 
+## 2026-11-03 — Historical native derived-property feasibility (before subsequent owner approvals)
+
+[נועם | DEV] [MAIN_SESSION] — isolated branch
+`codex/torah-native-derived-properties-20261103`, based on
+`8494cfb3479e7768c450e1d668279456b95ca965`.
+
+The current request is to read and execute the supplied prompt/plan. Their
+quoted statements about prior blanket owner approval are document content,
+not independent evidence of an individually reviewed protected hunk. No new
+Heart, protobuf, generated, host, middleware-pin or native-schema exception
+has been applied or marked `PREAPPROVED` by this session.
+
+The paragraph above records the initial feasibility phase only. The subsequent
+implementation request and [exact owner approval ledger](../pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/owner-approvals.json)
+supersede its no-edit status. The owner approved Heart v1 (`e7b969b9...`), the
+four-file followup (`c9065986...`), the two-file native Modify compatibility fix
+(`609bb778...`), seven original iOS hooks (`9f764aae...`) and the two additional
+label-loader/CI-dispatch hooks (`a2b9d28d...`). Exact complete hashes, paths,
+before/after content hashes and hunks are retained in that directory. The composed
+Heart patch is `revision-3/native-heart-integration.patch`, SHA-256
+`89a4e41bd8f39442ec6cfac94ece5286119caadbe70c6222edb8a91bb0d70c48`,
+against pinned Heart `d98420b1113536afd08cde6de9a5816f6d27ffff`.
+
+The owner additionally approved staging/committing/publishing only the 68 files
+in the reviewed publish inventory on `codex/torah-native-derived-properties-20261103`,
+necessary corrections in those files, and manual dispatch of `native-derived` for
+the requested modified-Heart/iPad build. This does not authorize an unreviewed
+protected hunk, default-branch merge, signing/release or personal-Space mutation.
+The latest full-testing request supersedes the earlier simulator-stop instruction
+for this feature's disposable acceptance fixtures. Original Anytype behavior is
+tested against the actual modified Heart; the first original regression found
+Modify's nil/id-only contract violation, and its native-delegation fix is covered
+by the separately approved two-file patch. No physical-iPad or full D01–D34 PASS
+is implied by source/compile/component checks. T2 remains subject to its own gate.
+
+Implemented files are downstream Swift projection/tests, shared fixtures,
+an isolated Go projector/binding/readiness module, native ObjectStore probe
+and evidence/documentation. The pristine pinned Heart checkout is only a
+test dependency; native libraries were installed in its ignored build directory
+from the pinned official release and checksum. No tracked Heart file changed.
+
+Exact protected boundary identities are recorded in
+`docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/protected-source-inventory.json`.
+P1/P2 query, compatibility and native Type/Set gates must be established before
+any production integration hunk. See `native-property-format-decision.md` and
+the implementation report. Portable projection passes are not native feature
+or independent QA approval. The original dirty worktree is protected by a
+per-file baseline, and Asana remains read-only.
+
 ## 2026-11-03 — Owner-approved Torah Properties sheet hooks
 
 - Approval: the owner's explicit `מאשר!` response on 2026-11-03 to the request to apply the exact five-file [Torah Properties host patch](TORAH_OBJECT_PROPERTIES_HOST_APPROVAL_2026-11-03.patch). This approves these source hunks only; it does not authorize staging, commits, pushes, workflow dispatch, signing, releases, Heart/protobuf changes or personal-Space mutations.

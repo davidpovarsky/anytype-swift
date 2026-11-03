@@ -1,0 +1,50 @@
+{
+  "app_branch": "codex/torah-native-derived-properties-20261103",
+  "app_base_sha": "8494cfb3479e7768c450e1d668279456b95ca965",
+  "upstream_develop_sha": "e21834498cd6d8a85e91f69767caec793220a190",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "approvals": [
+    {
+      "artifact": "native-heart-integration.patch",
+      "sha256": "e7b969b9d6ebff3765ae1bc95ebc923e6adb1b82d5e029240ecdec46bf8c6107",
+      "owner_reply": "מאשר את הדיפ המדויק",
+      "status": "APPLIED_TO_ISOLATED_WINDOWS_AND_LINUX_HEART"
+    },
+    {
+      "artifact": "native-ios-integration.patch",
+      "sha256": "9f764aae2496769a0aff5e3d5436e75ec438acdf039563e2274af367f8ff0677",
+      "owner_reply": "מאשר את שבעת החיבורים",
+      "status": "APPLIED_TO_ISOLATED_APP_WORKTREE"
+    },
+    {
+      "artifact": "revision-2/native-heart-followup.patch",
+      "sha256": "c9065986b3efb52db3cd9d4352c0cbdc948477d0f48a0d026d35c5024bbac512",
+      "owner_reply": "מאשר את הדיפ המשלים",
+      "status": "APPLIED_TO_ISOLATED_WINDOWS_AND_LINUX_HEART"
+    },
+    {
+      "artifact": "revision-3/native-heart-followup.patch",
+      "sha256": "609bb778963df0b9cfb670a1d48928b65724be9fff345abfc058e6191b14a411",
+      "owner_reply": "מאשר את תיקון הרגרסיה",
+      "status": "APPLIED_TO_ISOLATED_WINDOWS_AND_LINUX_HEART"
+    },
+    {
+      "artifact": "revision-3/native-ios-followup.patch",
+      "sha256": "a2b9d28daea2d03c5d43c29a2fc4afef755982901b0ca5f784f1d29990fa8f73",
+      "owner_reply": "מאשר את שני החיבורים",
+      "status": "APPLIED_TO_ISOLATED_APP_WORKTREE"
+    },
+    {
+      "artifact": "publish/native-source-publish.patch plus the separately approved followup patches",
+      "sha256": "939edef7867978935b8c884ac3f561b670f47f441b725108da579a56e6fdf944",
+      "owner_reply": "מאשר פרסום בענף ובניית CI",
+      "scope": "stage/commit/push only the 68 enumerated feature files, necessary corrections in those files, and dispatch native-derived on this isolated branch",
+      "status": "AUTHORIZED"
+    }
+  ],
+  "not_authorized_by_these_approvals": [
+    "unreviewed protected hunks",
+    "signing or release or default-branch merge",
+    "personal-Space mutations"
+  ]
+}

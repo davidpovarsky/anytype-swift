@@ -1,0 +1,70 @@
+diff --git a/.github/workflows/torah-inspector-ipados27.yml b/.github/workflows/torah-inspector-ipados27.yml
+--- a/.github/workflows/torah-inspector-ipados27.yml
++++ b/.github/workflows/torah-inspector-ipados27.yml
+@@ -11,6 +11,7 @@
+         options:
+           - full-acceptance
+           - ipa-only
++          - native-derived
+       require_full_acceptance:
+         description: Require Full Acceptance success before IPA packaging
+         type: boolean
+@@ -21,6 +22,11 @@
+   actions: read
+ 
+ jobs:
++  native-derived:
++    if: ${{ inputs.route == 'native-derived' }}
++    uses: ./.github/workflows/pinkha-native-derived.yml
++    secrets: inherit
++
+   full-acceptance:
+     if: ${{ inputs.route == 'full-acceptance' }}
+     uses: ./.github/workflows/pinkha-full-acceptance.yml
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Filters/List/SetFiltersListViewModel.swift b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Filters/List/SetFiltersListViewModel.swift
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Filters/List/SetFiltersListViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Filters/List/SetFiltersListViewModel.swift
+@@ -32,6 +32,8 @@
+ 
+     @ObservationIgnored
+     private var deletingFilterIds = Set<String>()
++    @ObservationIgnored
++    private var nativeLabelTask: Task<Void, Never>?
+     @ObservationIgnored
+     private weak var output: (any SetFiltersListCoordinatorOutput)?
+     
+@@ -116,6 +118,34 @@
+                     self?.rowTapped(filter.relationDetails.id, index: index)
+                 }
+             )
++        }
++        loadNativeLabels(for: activeFilters)
++    }
++
++    private func loadNativeLabels(for filters: [SetFilter]) {
++        let spaceId = setDocument.spaceId
++        let pending = filters.filter { filter in
++            TorahNativePropertyPresentation.definition(filter.relationDetails.key) != nil &&
++            filter.filter.value.listValue.values.contains {
++                !TorahNativeLabelCache.shared.contains(id: $0.stringValue, space: spaceId)
++            }
++        }
++        guard !pending.isEmpty else { return }
++        let missingIds = pending.flatMap { $0.filter.value.listValue.values.map(\.stringValue) }
++            .filter { !TorahNativeLabelCache.shared.contains(id: $0, space: spaceId) }
++        nativeLabelTask?.cancel()
++        nativeLabelTask = Task { [weak self] in
++            for filter in pending {
++                await TorahNativePropertyPresentation.loadLabels(
++                    space: spaceId, key: filter.relationDetails.key,
++                    ids: filter.filter.value.listValue.values.map(\.stringValue)
++                )
++            }
++            guard !Task.isCancelled, let self else { return }
++            // Rebuild only when at least one identity was resolved. Offline
++            // misses keep their human fallback and do not schedule retry loops.
++            let loaded = missingIds.contains { TorahNativeLabelCache.shared.contains(id: $0, space: spaceId) }
++            if loaded { self.updateRows(with: self.setDocument.filters(for: self.viewId)) }
+         }
+     }
+     

@@ -17,6 +17,9 @@ final class PinkhaTorahPropertiesModel {
     private let bootstrap: any PinkhaSpaceBootstrapServiceProtocol
 
     var isResolvingManifest: Bool { PinkhaRuntime.enabled && session != nil && manifest == nil }
+    var usesNativeProperties: Bool {
+        document.details?.intValue(for: TorahNativePropertyDefinition.engineVersionKey) == TorahNativePropertyDefinition.engineVersion
+    }
 
     init(
         document: some BaseDocumentProtocol,

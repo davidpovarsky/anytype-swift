@@ -1,0 +1,85 @@
+name: Pinkha native derived custom Heart and iPad
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  native-product:
+    runs-on: xcode-27
+    timeout-minutes: 150
+    steps:
+      - name: Checkout isolated native-derived source
+        uses: actions/checkout@v4
+
+      - name: Install pinned Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache-dependency-path: Modules/PinkhaHeart/go.mod
+
+      - name: Checkout exact Heart source
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Heart-Native-Derived
+
+      - name: Build approved custom Heart and install verified slices
+        run: |
+          python3 Tools/PinkhaNativeDerived/build_custom_heart.py \
+            --heart-source build/Heart-Native-Derived \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-3/native-heart-integration.patch \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-3/native-heart-integration.json \
+            --approved-patch-sha256 89a4e41bd8f39442ec6cfac94ece5286119caadbe70c6222edb8a91bb0d70c48 \
+            --apply-approved-patch --target ios \
+            --install-app "$GITHUB_WORKSPACE" \
+            --evidence build/native-evidence/heart
+
+      - name: Create disposable iPad simulator
+        run: |
+          mkdir -p build/native-evidence
+          python3 - <<'PY'
+          import json, os, subprocess
+          data = json.loads(subprocess.check_output(['xcrun','simctl','list','--json']))
+          runtime = next(r for r in data['runtimes'] if r.get('isAvailable') and 'iOS 27' in r['name'])
+          device = next(d for d in data['devicetypes'] if 'iPad Pro' in d['name'])
+          name = 'Pinkha-Native-Derived-' + os.environ['GITHUB_RUN_ID']
+          udid = subprocess.check_output(['xcrun','simctl','create',name,device['identifier'],runtime['identifier']],text=True).strip()
+          subprocess.run(['xcrun','simctl','boot',udid],check=True)
+          subprocess.run(['xcrun','simctl','bootstatus',udid,'-b'],check=True)
+          with open(os.environ['GITHUB_ENV'],'a') as stream:
+              stream.write('PINKHA_NATIVE_IPAD_UDID='+udid+'\n')
+          with open('build/native-evidence/disposable-simulator.json','w') as stream:
+              json.dump(dict(udid=udid,name=name,device=device,runtime=runtime),stream,indent=2)
+          PY
+
+      - name: Real native product API tests and unsigned iPad IPA
+        run: |
+          python3 Tools/PinkhaNativeDerived/build_native_ipa.py \
+            --app-source "$GITHUB_WORKSPACE" \
+            --simulator-udid "$PINKHA_NATIVE_IPAD_UDID" \
+            --evidence build/native-evidence/app
+
+      - name: Upload actual modified iPad build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Native-Derived-iPad-Unsigned
+          path: build/native-evidence/app/Pinkha-Native-Derived-iPad-Unsigned.ipa
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload native build and test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Native-Derived-Evidence
+          path: |
+            build/native-evidence/**/*.log
+            build/native-evidence/**/*.json
+            build/native-evidence/**/*.xcresult
+          if-no-files-found: warn
+          retention-days: 14

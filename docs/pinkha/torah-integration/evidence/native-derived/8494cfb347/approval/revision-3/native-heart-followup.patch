@@ -1,0 +1,82 @@
+diff --git a/core/pinkha/torahindex/index.go b/core/pinkha/torahindex/index.go
+--- a/core/pinkha/torahindex/index.go
++++ b/core/pinkha/torahindex/index.go
+@@ -151,7 +151,8 @@
+ 	return tx.Commit()
+ }
+ 
+-func (i *Index) Modify(ctx context.Context, id string, proc func(*domain.Details) (*domain.Details, bool, error), upsert bool) error {
++func (i *Index) Modify(ctx context.Context, id string, proc func(*domain.Details) (*domain.Details, bool, error), upsert bool,
++	nativeModify func(context.Context, string, func(*domain.Details) (*domain.Details, bool, error), bool) error) error {
+ 	if proc == nil {
+ 		return nil
+ 	}
+@@ -160,28 +161,37 @@
+ 		return err
+ 	}
+ 	defer tx.Rollback()
+-	d, err := i.read(tx.Context(), id)
++	previous, err := i.read(tx.Context(), id)
+ 	if errors.Is(err, anystore.ErrDocNotFound) {
+ 		if !upsert {
+ 			return nil
+ 		}
+-		d = domain.NewDetails()
+ 	} else if err != nil {
+ 		return err
+ 	}
+-	d, modified, err := proc(d)
+-	if err != nil {
+-		return err
+-	}
+-	if !modified {
+-		return nil
+-	}
+-	if d == nil {
+-		d = domain.NewDetails()
+-	}
+-	d.SetString(bundle.RelationKeyId, id)
+-	if err = i.Update(tx.Context(), id, d); err != nil {
+-		return err
++	// Preserve native Modify's complete contract, including nil/id-only results,
++	// skipped missing rows, modifier failures and native notifications. Both
++	// writes remain invisible until the same root notifying transaction commits.
++	rebind := isManifest(previous) || (source{index: i}).isCanonicalCandidate(tx.Context(), id)
++	if err = nativeModify(tx.Context(), id, proc, upsert); err != nil {
++		return err
++	}
++	d, err := i.read(tx.Context(), id)
++	if errors.Is(err, anystore.ErrDocNotFound) {
++		return tx.Commit()
++	}
++	if err != nil {
++		return err
++	}
++	i.rememberManifest(d)
++	if rebind || isManifest(d) {
++		if err = i.rebuild(tx.Context()); err != nil {
++			return err
++		}
++	} else if d.Len() > 1 {
++		if err = i.Update(tx.Context(), id, d); err != nil {
++			return err
++		}
+ 	}
+ 	return tx.Commit()
+ }
+diff --git a/pkg/lib/localstore/objectstore/spaceindex/update.go b/pkg/lib/localstore/objectstore/spaceindex/update.go
+--- a/pkg/lib/localstore/objectstore/spaceindex/update.go
++++ b/pkg/lib/localstore/objectstore/spaceindex/update.go
+@@ -277,7 +277,11 @@
+ // when the context is non-cancelable, to skip any-store's per-statement
+ // SQLite interrupt handshake.
+ func (s *dsObjectStore) ModifyObjectDetailsCtx(ctx context.Context, id string, proc func(details *domain.Details) (*domain.Details, bool, error), upsert bool) error {
+- if index:=s.nativeTorah();index!=nil{return index.Modify(ctx,id,proc,upsert)}
++ if index:=s.nativeTorah();index!=nil{return index.Modify(ctx,id,proc,upsert,s.modifyObjectDetailsCtx)}
++ return s.modifyObjectDetailsCtx(ctx,id,proc,upsert)
++}
++
++func (s *dsObjectStore) modifyObjectDetailsCtx(ctx context.Context, id string, proc func(details *domain.Details) (*domain.Details, bool, error), upsert bool) error {
+ 	if proc == nil {
+ 		return nil
+ 	}

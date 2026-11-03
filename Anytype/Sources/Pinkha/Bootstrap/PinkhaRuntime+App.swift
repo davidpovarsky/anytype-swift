@@ -4,7 +4,11 @@ import PinkhaKit
 
 extension Container {
     public var pinkhaBootstrapService: Factory<any PinkhaSpaceBootstrapServiceProtocol> {
-        self { PinkhaSpaceBootstrapService() }.singleton
+        self {
+            PinkhaSpaceBootstrapService(nativeProperties: TorahNativeSchemaProvisioner(
+                store: AnytypeTorahNativePropertyProvisioningStore()
+            ))
+        }.singleton
     }
 
     public var pinkhaSchemaMigrator: Factory<PinkhaSchemaMigrator> {

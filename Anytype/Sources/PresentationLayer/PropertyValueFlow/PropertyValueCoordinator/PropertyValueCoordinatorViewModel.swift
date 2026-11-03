@@ -38,6 +38,13 @@ final class PropertyValueCoordinatorViewModel:
     }
     
     func propertyModule() -> AnyView {
+        if TorahNativePropertyPresentation.definition(relation.key) != nil {
+            mediumDetent = false
+            return TorahNativePropertyEditorView(
+                spaceId: objectDetails.spaceId, objectId: objectDetails.id,
+                key: relation.key, canEdit: relation.isEditable
+            ).eraseToAnyView()
+        }
         switch relation {
         case .date(let date):
             return dateModule(date: date)

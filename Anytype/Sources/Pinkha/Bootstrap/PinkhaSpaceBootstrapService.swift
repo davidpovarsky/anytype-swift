@@ -12,13 +12,15 @@ public protocol PinkhaSpaceBootstrapServiceProtocol: Sendable {
 
 public final class PinkhaSpaceBootstrapService: PinkhaSpaceBootstrapServiceProtocol, Sendable {
     private let engine: PinkhaSpaceBootstrapEngine
+    private let nativeProperties: TorahNativeSchemaProvisioner?
 
     public init(
         store: any PinkhaSpaceManifestStoreProtocol = Container.shared.pinkhaSpaceManifestStore(),
         propertyService: any PinkhaPropertyServiceProtocol = Container.shared.pinkhaPropertyServiceAdapter(),
         typeService: any PinkhaTypeServiceProtocol = Container.shared.pinkhaTypeServiceAdapter(),
         templateService: any PinkhaTemplateServiceProtocol = Container.shared.pinkhaTemplateServiceAdapter(),
-        migrator: PinkhaSchemaMigrator = Container.shared.pinkhaSchemaMigrator()
+        migrator: PinkhaSchemaMigrator = Container.shared.pinkhaSchemaMigrator(),
+        nativeProperties: TorahNativeSchemaProvisioner? = nil
     ) {
         self.engine = PinkhaSpaceBootstrapEngine(
             store: store,
@@ -27,6 +29,7 @@ public final class PinkhaSpaceBootstrapService: PinkhaSpaceBootstrapServiceProto
             templateService: templateService,
             migrator: migrator
         )
+        self.nativeProperties = nativeProperties
     }
 
     public func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? {
@@ -38,6 +41,15 @@ public final class PinkhaSpaceBootstrapService: PinkhaSpaceBootstrapServiceProto
     }
 
     public func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
-        try await engine.bootstrapSpace(spaceId: spaceId)
+        let manifest = try await engine.bootstrapSpace(spaceId: spaceId)
+        if let nativeProperties {
+            do {
+                _ = try await nativeProperties.provision(manifest: manifest)
+            } catch TorahNativeSchemaError.unsupportedEngine {
+                // An older middleware retains the existing canonical picker;
+                // never register non-derived fields against an incapable engine.
+            }
+        }
+        return manifest
     }
 }

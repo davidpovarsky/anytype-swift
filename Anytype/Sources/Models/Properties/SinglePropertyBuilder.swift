@@ -24,6 +24,10 @@ final class SinglePropertyBuilder: SinglePropertyBuilderProtocol {
         propertyValuesIsLocked: Bool,
         storage: ObjectDetailsStorage
     ) -> Property? {
+        if let native = TorahNativePropertyPresentation.property(
+            definition: relationDetails, details: details,
+            isFeatured: isFeatured, valuesLocked: propertyValuesIsLocked
+        ) { return native }
         switch relationDetails.format {
         case .longText:
             return textProperty(

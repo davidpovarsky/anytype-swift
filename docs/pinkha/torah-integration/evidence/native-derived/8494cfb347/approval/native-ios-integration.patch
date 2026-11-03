@@ -1,0 +1,98 @@
+diff --git a/Anytype/Sources/Models/Properties/SinglePropertyBuilder.swift b/Anytype/Sources/Models/Properties/SinglePropertyBuilder.swift
+--- a/Anytype/Sources/Models/Properties/SinglePropertyBuilder.swift
++++ b/Anytype/Sources/Models/Properties/SinglePropertyBuilder.swift
+@@ -24,6 +24,10 @@
+         propertyValuesIsLocked: Bool,
+         storage: ObjectDetailsStorage
+     ) -> Property? {
++        if let native = TorahNativePropertyPresentation.property(
++            definition: relationDetails, details: details,
++            isFeatured: isFeatured, valuesLocked: propertyValuesIsLocked
++        ) { return native }
+         switch relationDetails.format {
+         case .longText:
+             return textProperty(
+diff --git a/Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/PropertyValueCoordinatorViewModel.swift b/Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/PropertyValueCoordinatorViewModel.swift
+--- a/Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/PropertyValueCoordinatorViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/PropertyValueCoordinatorViewModel.swift
+@@ -38,6 +38,13 @@
+     }
+     
+     func propertyModule() -> AnyView {
++        if TorahNativePropertyPresentation.definition(relation.key) != nil {
++            mediumDetent = false
++            return TorahNativePropertyEditorView(
++                spaceId: objectDetails.spaceId, objectId: objectDetails.id,
++                key: relation.key, canEdit: relation.isEditable
++            ).eraseToAnyView()
++        }
+         switch relation {
+         case .date(let date):
+             return dateModule(date: date)
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Set/Subscriptions/Set/SetSubscriptionDataBuilder.swift b/Anytype/Sources/PresentationLayer/TextEditor/Set/Subscriptions/Set/SetSubscriptionDataBuilder.swift
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Subscriptions/Set/SetSubscriptionDataBuilder.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Subscriptions/Set/SetSubscriptionDataBuilder.swift
+@@ -78,6 +78,6 @@
+             keys.append(groupRelationKey)
+         }
+ 
+-        return keys
++        return TorahNativePropertyPresentation.subscriptionKeys(keys)
+     }
+ }
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Filters/List/PropertyFilterBuilder.swift b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Filters/List/PropertyFilterBuilder.swift
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Filters/List/PropertyFilterBuilder.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Filters/List/PropertyFilterBuilder.swift
+@@ -15,6 +15,13 @@
+         relationDetails: PropertyDetails,
+         filter: DataviewFilter
+     ) -> Property? {
++        if TorahNativePropertyPresentation.definition(relationDetails.key) != nil {
++            guard filter.condition.hasValues else { return nil }
++            return TorahNativePropertyPresentation.value(
++                definition: relationDetails,
++                ids: filter.value.listValue.values.map(\.stringValue)
++            )
++        }
+         switch relationDetails.format {
+         case .object:
+             return objectRelation(
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Filters/Selection/List/SetFiltersContentViewBuilder.swift b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Filters/Selection/List/SetFiltersContentViewBuilder.swift
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Filters/Selection/List/SetFiltersContentViewBuilder.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Filters/Selection/List/SetFiltersContentViewBuilder.swift
+@@ -32,6 +32,12 @@
+         onApplyCheckbox: @escaping (Bool) -> Void,
+         onApplyDate: @escaping (SetFiltersDate) -> Void
+     ) -> AnyView {
++        if TorahNativePropertyPresentation.definition(filter.relationDetails.key) != nil {
++            return TorahNativeFilterPickerView(
++                spaceId: spaceId, key: filter.relationDetails.key,
++                selected: selectedIds(from: filter.filter.value), onApply: onSelect
++            ).eraseToAnyView()
++        }
+         switch filter.conditionType {
+         case let .selected(format):
+             return buildSearchView(with: format, onSelect: onSelect)
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/GroupBy/SetViewSettingsGroupByViewModel.swift b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/GroupBy/SetViewSettingsGroupByViewModel.swift
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/GroupBy/SetViewSettingsGroupByViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/GroupBy/SetViewSettingsGroupByViewModel.swift
+@@ -23,7 +23,7 @@
+     }
+     
+     func buildPopupItems() -> [CheckPopupItem] {
+-        relations.compactMap { relation in
++        relations.filter { TorahNativePropertyPresentation.supportsOrdering($0.key) }.compactMap { relation in
+             CheckPopupItem(
+                 id: relation.id,
+                 iconAsset: relation.format.iconAsset,
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Sorts/List/SetSortsListViewModel.swift b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Sorts/List/SetSortsListViewModel.swift
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Sorts/List/SetSortsListViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/Sorts/List/SetSortsListViewModel.swift
+@@ -43,6 +43,7 @@
+     func addButtonTapped() {
+         let excludeRelations: [PropertyDetails] = setDocument.sorts(for: viewId).map { $0.relationDetails }
+         let relationsDetails = setDocument.viewRelations(viewId: viewId, excludeRelations: excludeRelations)
++            .filter { TorahNativePropertyPresentation.supportsOrdering($0.key) }
+         output?.onAddButtonTap(relationDetails: relationsDetails, completion: { [weak self] relationDetails in
+             self?.addNewSort(with: relationDetails)
+         })

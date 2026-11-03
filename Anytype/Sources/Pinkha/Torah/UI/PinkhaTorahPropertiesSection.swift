@@ -6,7 +6,7 @@ struct PinkhaTorahPropertiesSection: View {
     let model: PinkhaTorahPropertiesModel
 
     var body: some View {
-        if model.isEligible, let session = model.session {
+        if model.isEligible, !model.usesNativeProperties, let session = model.session {
             ForEach(TorahAssociationKind.allCases, id: \.self) { kind in
                 PinkhaTorahPropertyRow(
                     kind: kind,

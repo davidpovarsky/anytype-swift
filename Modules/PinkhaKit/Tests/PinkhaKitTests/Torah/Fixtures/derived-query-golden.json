@@ -1,0 +1,393 @@
+[
+  {
+    "name": "count-0",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":2,\"records\":[]}",
+    "expected": {
+      "sourceIDs": [],
+      "sources": [],
+      "topicIDs": [],
+      "topics": [],
+      "wordIDs": [],
+      "words": []
+    }
+  },
+  {
+    "name": "count-1",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":2,\"records\":[{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-0\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-0\",\"externalID\":\"ref-0\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-0\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-0\",\"externalID\":\"ref-0\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-0\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-0\",\"externalID\":\"ref-0\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}}]}",
+    "expected": {
+      "sourceIDs": [
+        "ref-0"
+      ],
+      "sources": [
+        "torah1|3:ref|7:sefaria|5:ref-0"
+      ],
+      "topicIDs": [
+        "topic-0"
+      ],
+      "topics": [
+        "torah1|5:topic|7:sefaria|5:ref-0"
+      ],
+      "wordIDs": [
+        "word-0"
+      ],
+      "words": [
+        "torah1|4:word|7:sefaria|5:ref-0"
+      ]
+    }
+  },
+  {
+    "name": "count-2",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":2,\"records\":[{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-0\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-0\",\"externalID\":\"ref-0\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-0\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-0\",\"externalID\":\"ref-0\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-0\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-0\",\"externalID\":\"ref-0\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-1\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-1\",\"externalID\":\"ref-1\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-1\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-1\",\"externalID\":\"ref-1\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-1\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-1\",\"externalID\":\"ref-1\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}}]}",
+    "expected": {
+      "sourceIDs": [
+        "ref-0",
+        "ref-1"
+      ],
+      "sources": [
+        "torah1|3:ref|7:sefaria|5:ref-0",
+        "torah1|3:ref|7:sefaria|5:ref-1"
+      ],
+      "topicIDs": [
+        "topic-0",
+        "topic-1"
+      ],
+      "topics": [
+        "torah1|5:topic|7:sefaria|5:ref-0",
+        "torah1|5:topic|7:sefaria|5:ref-1"
+      ],
+      "wordIDs": [
+        "word-0",
+        "word-1"
+      ],
+      "words": [
+        "torah1|4:word|7:sefaria|5:ref-0",
+        "torah1|4:word|7:sefaria|5:ref-1"
+      ]
+    }
+  },
+  {
+    "name": "count-12",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":2,\"records\":[{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-0\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-0\",\"externalID\":\"ref-0\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-0\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-0\",\"externalID\":\"ref-0\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-0\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-0\",\"externalID\":\"ref-0\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-1\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-1\",\"externalID\":\"ref-1\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-1\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-1\",\"externalID\":\"ref-1\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-1\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-1\",\"externalID\":\"ref-1\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-2\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-2\",\"externalID\":\"ref-2\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-2\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-2\",\"externalID\":\"ref-2\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-2\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-2\",\"externalID\":\"ref-2\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-3\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-3\",\"externalID\":\"ref-3\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-3\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-3\",\"externalID\":\"ref-3\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-3\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-3\",\"externalID\":\"ref-3\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-4\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-4\",\"externalID\":\"ref-4\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-4\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-4\",\"externalID\":\"ref-4\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-4\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-4\",\"externalID\":\"ref-4\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-5\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-5\",\"externalID\":\"ref-5\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-5\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-5\",\"externalID\":\"ref-5\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-5\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-5\",\"externalID\":\"ref-5\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-6\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-6\",\"externalID\":\"ref-6\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-6\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-6\",\"externalID\":\"ref-6\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-6\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-6\",\"externalID\":\"ref-6\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-7\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-7\",\"externalID\":\"ref-7\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-7\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-7\",\"externalID\":\"ref-7\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-7\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-7\",\"externalID\":\"ref-7\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-8\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-8\",\"externalID\":\"ref-8\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-8\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-8\",\"externalID\":\"ref-8\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-8\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-8\",\"externalID\":\"ref-8\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-9\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-9\",\"externalID\":\"ref-9\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-9\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-9\",\"externalID\":\"ref-9\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-9\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-9\",\"externalID\":\"ref-9\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-10\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-10\",\"externalID\":\"ref-10\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-10\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-10\",\"externalID\":\"ref-10\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-10\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-10\",\"externalID\":\"ref-10\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"ref-11\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-11\",\"externalID\":\"ref-11\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic-11\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-11\",\"externalID\":\"ref-11\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word-11\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"ref-11\",\"externalID\":\"ref-11\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}}]}",
+    "expected": {
+      "sourceIDs": [
+        "ref-0",
+        "ref-1",
+        "ref-2",
+        "ref-3",
+        "ref-4",
+        "ref-5",
+        "ref-6",
+        "ref-7",
+        "ref-8",
+        "ref-9",
+        "ref-10",
+        "ref-11"
+      ],
+      "sources": [
+        "torah1|3:ref|7:sefaria|5:ref-0",
+        "torah1|3:ref|7:sefaria|5:ref-1",
+        "torah1|3:ref|7:sefaria|5:ref-2",
+        "torah1|3:ref|7:sefaria|5:ref-3",
+        "torah1|3:ref|7:sefaria|5:ref-4",
+        "torah1|3:ref|7:sefaria|5:ref-5",
+        "torah1|3:ref|7:sefaria|5:ref-6",
+        "torah1|3:ref|7:sefaria|5:ref-7",
+        "torah1|3:ref|7:sefaria|5:ref-8",
+        "torah1|3:ref|7:sefaria|5:ref-9",
+        "torah1|3:ref|7:sefaria|6:ref-10",
+        "torah1|3:ref|7:sefaria|6:ref-11"
+      ],
+      "topicIDs": [
+        "topic-0",
+        "topic-1",
+        "topic-2",
+        "topic-3",
+        "topic-4",
+        "topic-5",
+        "topic-6",
+        "topic-7",
+        "topic-8",
+        "topic-9",
+        "topic-10",
+        "topic-11"
+      ],
+      "topics": [
+        "torah1|5:topic|7:sefaria|5:ref-0",
+        "torah1|5:topic|7:sefaria|5:ref-1",
+        "torah1|5:topic|7:sefaria|5:ref-2",
+        "torah1|5:topic|7:sefaria|5:ref-3",
+        "torah1|5:topic|7:sefaria|5:ref-4",
+        "torah1|5:topic|7:sefaria|5:ref-5",
+        "torah1|5:topic|7:sefaria|5:ref-6",
+        "torah1|5:topic|7:sefaria|5:ref-7",
+        "torah1|5:topic|7:sefaria|5:ref-8",
+        "torah1|5:topic|7:sefaria|5:ref-9",
+        "torah1|5:topic|7:sefaria|6:ref-10",
+        "torah1|5:topic|7:sefaria|6:ref-11"
+      ],
+      "wordIDs": [
+        "word-0",
+        "word-1",
+        "word-2",
+        "word-3",
+        "word-4",
+        "word-5",
+        "word-6",
+        "word-7",
+        "word-8",
+        "word-9",
+        "word-10",
+        "word-11"
+      ],
+      "words": [
+        "torah1|4:word|7:sefaria|5:ref-0",
+        "torah1|4:word|7:sefaria|5:ref-1",
+        "torah1|4:word|7:sefaria|5:ref-2",
+        "torah1|4:word|7:sefaria|5:ref-3",
+        "torah1|4:word|7:sefaria|5:ref-4",
+        "torah1|4:word|7:sefaria|5:ref-5",
+        "torah1|4:word|7:sefaria|5:ref-6",
+        "torah1|4:word|7:sefaria|5:ref-7",
+        "torah1|4:word|7:sefaria|5:ref-8",
+        "torah1|4:word|7:sefaria|5:ref-9",
+        "torah1|4:word|7:sefaria|6:ref-10",
+        "torah1|4:word|7:sefaria|6:ref-11"
+      ]
+    }
+  },
+  {
+    "name": "scope-kind-role-note",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":2,\"records\":[{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"block\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"},\"blockId\":\"block\"},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"first\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"other-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"space\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"other-object\",\"item\":{\"id\":\"object\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"quote\",\"kind\":\"ref\",\"role\":\"source_quote\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"note\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"anytype-note:private\",\"externalID\":\"anytype-note:private\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}}]}",
+    "expected": {
+      "sourceIDs": [
+        "first"
+      ],
+      "sources": [
+        "torah1|3:ref|7:sefaria|12:Berakhot 23b"
+      ],
+      "topicIDs": [],
+      "topics": [],
+      "wordIDs": [],
+      "words": []
+    }
+  },
+  {
+    "name": "kinds-and-providers",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":2,\"records\":[{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"first\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"word\",\"kind\":\"word\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"otzaria\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"otzaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}}]}",
+    "expected": {
+      "sourceIDs": [
+        "first",
+        "otzaria"
+      ],
+      "sources": [
+        "torah1|3:ref|7:otzaria|12:Berakhot 23b",
+        "torah1|3:ref|7:sefaria|12:Berakhot 23b"
+      ],
+      "topicIDs": [
+        "topic"
+      ],
+      "topics": [
+        "torah1|5:topic|7:sefaria|12:Berakhot 23b"
+      ],
+      "wordIDs": [
+        "word"
+      ],
+      "words": [
+        "torah1|4:word|7:sefaria|12:Berakhot 23b"
+      ]
+    }
+  },
+  {
+    "name": "stable-id-and-semantic-retry",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":2,\"records\":[{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"first\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"retry\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"first\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"different\",\"externalID\":\"different\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"topic\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}}]}",
+    "expected": {
+      "sourceIDs": [
+        "first"
+      ],
+      "sources": [
+        "torah1|3:ref|7:sefaria|12:Berakhot 23b"
+      ],
+      "topicIDs": [
+        "topic"
+      ],
+      "topics": [
+        "torah1|5:topic|7:sefaria|12:Berakhot 23b"
+      ],
+      "wordIDs": [],
+      "words": []
+    }
+  },
+  {
+    "name": "external-fallback",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":2,\"records\":[{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"fallback\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"\",\"externalID\":\"fallback-ref\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}}]}",
+    "expected": {
+      "sourceIDs": [
+        "fallback"
+      ],
+      "sources": [
+        "torah1|3:ref|7:sefaria|12:fallback-ref"
+      ],
+      "topicIDs": [],
+      "topics": [],
+      "wordIDs": [],
+      "words": []
+    }
+  },
+  {
+    "name": "unicode-nfc",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":2,\"records\":[{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"composed\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"café\",\"externalID\":\"café\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"decomposed\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"café\",\"externalID\":\"café\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}}]}",
+    "expected": {
+      "sourceIDs": [
+        "composed"
+      ],
+      "sources": [
+        "torah1|3:ref|7:sefaria|5:café"
+      ],
+      "topicIDs": [],
+      "topics": [],
+      "wordIDs": [],
+      "words": []
+    }
+  },
+  {
+    "name": "delimiter-collision",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":2,\"records\":[{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"a\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"x|1:y\",\"canonicalKey\":\"z\",\"externalID\":\"z\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}},{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"b\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"x\",\"canonicalKey\":\"1:y|z\",\"externalID\":\"1:y|z\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}}]}",
+    "expected": {
+      "sourceIDs": [
+        "a",
+        "b"
+      ],
+      "sources": [
+        "torah1|3:ref|1:x|5:1:y|z",
+        "torah1|3:ref|5:x|1:y|1:z"
+      ],
+      "topicIDs": [],
+      "topics": [],
+      "wordIDs": [],
+      "words": []
+    }
+  },
+  {
+    "name": "legacy-v1",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":1,\"items\":[{\"id\":\"first\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"},{\"id\":\"topic\",\"kind\":\"topic\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\"}],\"futureLegacy\":{\"keep\":true}}",
+    "expected": {
+      "sourceIDs": [
+        "first"
+      ],
+      "sources": [
+        "torah1|3:ref|7:sefaria|12:Berakhot 23b"
+      ],
+      "topicIDs": [
+        "topic"
+      ],
+      "topics": [
+        "torah1|5:topic|7:sefaria|12:Berakhot 23b"
+      ],
+      "wordIDs": [],
+      "words": []
+    }
+  },
+  {
+    "name": "unknown-fields-and-raw-whitespace",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": " \n {\"version\":2,\"records\":[{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{\"id\":\"first\",\"kind\":\"ref\",\"role\":\"context\",\"providerID\":\"sefaria\",\"canonicalKey\":\"Berakhot 23b\",\"externalID\":\"Berakhot 23b\",\"labelHe\":\"ברכות כג ב\",\"labelEn\":\"Berakhot 23b\",\"futureItem\":[1,false,{\"k\":\"v\"}]},\"futureRecord\":{\"must\":\"survive\"}}],\"future\":{\"nested\":[null,true,123]}} \n",
+    "expected": {
+      "sourceIDs": [
+        "first"
+      ],
+      "sources": [
+        "torah1|3:ref|7:sefaria|12:Berakhot 23b"
+      ],
+      "topicIDs": [],
+      "topics": [],
+      "wordIDs": [],
+      "words": []
+    }
+  },
+  {
+    "name": "future",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":3,\"records\":[]}",
+    "error": "unsupported"
+  },
+  {
+    "name": "malformed",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{",
+    "error": "malformed"
+  },
+  {
+    "name": "null-records",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":2,\"records\":null}",
+    "error": "malformed"
+  },
+  {
+    "name": "missing-items",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":1}",
+    "error": "malformed"
+  },
+  {
+    "name": "unknown-role",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\": 2, \"records\": [{\"spaceId\": \"test-space\", \"objectId\": \"test-object\", \"item\": {\"id\": \"first\", \"kind\": \"ref\", \"role\": \"future-role\", \"providerID\": \"sefaria\", \"canonicalKey\": \"Berakhot 23b\", \"externalID\": \"Berakhot 23b\", \"labelHe\": \"\\u05d1\\u05e8\\u05db\\u05d5\\u05ea \\u05db\\u05d2 \\u05d1\", \"labelEn\": \"Berakhot 23b\"}}]}",
+    "error": "malformed"
+  },
+  {
+    "name": "missing-required-item",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\":2,\"records\":[{\"spaceId\":\"test-space\",\"objectId\":\"test-object\",\"item\":{}}]}",
+    "error": "malformed"
+  },
+  {
+    "name": "invalid-optional-labelEn",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\": 2, \"records\": [{\"spaceId\": \"test-space\", \"objectId\": \"test-object\", \"item\": {\"id\": \"first\", \"kind\": \"ref\", \"role\": \"context\", \"providerID\": \"sefaria\", \"canonicalKey\": \"Berakhot 23b\", \"externalID\": \"Berakhot 23b\", \"labelHe\": \"\\u05d1\\u05e8\\u05db\\u05d5\\u05ea \\u05db\\u05d2 \\u05d1\", \"labelEn\": 3}}]}",
+    "error": "malformed"
+  },
+  {
+    "name": "invalid-optional-createdAt",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\": 2, \"records\": [{\"spaceId\": \"test-space\", \"objectId\": \"test-object\", \"item\": {\"id\": \"first\", \"kind\": \"ref\", \"role\": \"context\", \"providerID\": \"sefaria\", \"canonicalKey\": \"Berakhot 23b\", \"externalID\": \"Berakhot 23b\", \"labelHe\": \"\\u05d1\\u05e8\\u05db\\u05d5\\u05ea \\u05db\\u05d2 \\u05d1\", \"labelEn\": \"Berakhot 23b\", \"createdAt\": \"not-a-date\"}}]}",
+    "error": "malformed"
+  },
+  {
+    "name": "invalid-optional-customMetadata",
+    "space": "test-space",
+    "object": "test-object",
+    "raw": "{\"version\": 2, \"records\": [{\"spaceId\": \"test-space\", \"objectId\": \"test-object\", \"item\": {\"id\": \"first\", \"kind\": \"ref\", \"role\": \"context\", \"providerID\": \"sefaria\", \"canonicalKey\": \"Berakhot 23b\", \"externalID\": \"Berakhot 23b\", \"labelHe\": \"\\u05d1\\u05e8\\u05db\\u05d5\\u05ea \\u05db\\u05d2 \\u05d1\", \"labelEn\": \"Berakhot 23b\", \"customMetadata\": {\"key\": null}}}]}",
+    "error": "malformed"
+  }
+]

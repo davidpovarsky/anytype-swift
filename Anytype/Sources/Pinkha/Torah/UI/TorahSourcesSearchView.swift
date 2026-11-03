@@ -79,8 +79,8 @@ struct TorahSourcesSearchContentView: View {
                 )
                 .accessibilityIdentifier("torah-sources-search-field")
             }
-            scopePicker
-            if TorahAssociationPreviewStrip.shouldShow(
+            if !presenter.fixedScope { scopePicker }
+            if !presenter.isSelectionOnly && TorahAssociationPreviewStrip.shouldShow(
                 items: presenter.visibleAssociations,
                 persistenceState: presenter.persistenceState
             ) {
@@ -189,7 +189,9 @@ struct TorahSourcesSearchContentView: View {
         TorahSourceSearchResultRow(
             result: result,
             locale: locale,
-            onSelect: result.scope == .references ? {
+            onSelect: presenter.isSelectionOnly ? {
+                Task { await presenter.link(result) }
+            } : result.scope == .references ? {
                 Task { await presenter.openReference(result) }
             } : nil,
             primaryAccessibilityLabel: result.title(locale: locale),
@@ -205,7 +207,7 @@ struct TorahSourcesSearchContentView: View {
     }
 
     private var linkTitle: String {
-        TorahSourcesSearchCopy.linkTitle(blockId: presenter.associationTargetBlockID)
+        presenter.isSelectionOnly ? Loc.apply : TorahSourcesSearchCopy.linkTitle(blockId: presenter.associationTargetBlockID)
     }
 }
 

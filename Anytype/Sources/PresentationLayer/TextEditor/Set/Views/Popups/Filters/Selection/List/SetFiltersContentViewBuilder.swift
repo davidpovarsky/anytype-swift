@@ -32,6 +32,12 @@ final class SetFiltersContentViewBuilder {
         onApplyCheckbox: @escaping (Bool) -> Void,
         onApplyDate: @escaping (SetFiltersDate) -> Void
     ) -> AnyView {
+        if TorahNativePropertyPresentation.definition(filter.relationDetails.key) != nil {
+            return TorahNativeFilterPickerView(
+                spaceId: spaceId, key: filter.relationDetails.key,
+                selected: selectedIds(from: filter.filter.value), onApply: onSelect
+            ).eraseToAnyView()
+        }
         switch filter.conditionType {
         case let .selected(format):
             return buildSearchView(with: format, onSelect: onSelect)

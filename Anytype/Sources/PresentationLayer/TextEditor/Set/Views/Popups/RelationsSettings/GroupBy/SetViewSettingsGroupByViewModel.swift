@@ -23,7 +23,7 @@ final class SetViewSettingsGroupByViewModel: CheckPopupViewViewModelProtocol {
     }
     
     func buildPopupItems() -> [CheckPopupItem] {
-        relations.compactMap { relation in
+        relations.filter { TorahNativePropertyPresentation.supportsOrdering($0.key) }.compactMap { relation in
             CheckPopupItem(
                 id: relation.id,
                 iconAsset: relation.format.iconAsset,
