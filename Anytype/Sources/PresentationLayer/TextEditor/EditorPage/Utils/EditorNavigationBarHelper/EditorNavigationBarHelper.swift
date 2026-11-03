@@ -136,6 +136,7 @@ final class EditorNavigationBarHelper {
         onTitleTap: @escaping () -> Void,
         onSyncStatusTap: @escaping () -> Void,
         torahSourcesAvailable: Bool,
+        torahSession: TorahEditorSession? = nil,
         onTorahSourcesTap: @escaping () -> Void,
         onWebBannerTap: @escaping () -> Void
     ) {
@@ -148,10 +149,12 @@ final class EditorNavigationBarHelper {
         let menuContainer = ObjectSettingsMenuContainer(
             objectId: objectId,
             spaceId: spaceId,
-            output: output
+            output: output,
+            torahSession: torahSession
         ) {
             Image(asset: .X24.more)
                 .foregroundStyle(Color.Text.primary)
+                .accessibilityLabel(Loc.more)
         } additionalMenuItems: {
             EditorTorahSettingsMenuItem(state: torahNavigationStateLocal)
         }

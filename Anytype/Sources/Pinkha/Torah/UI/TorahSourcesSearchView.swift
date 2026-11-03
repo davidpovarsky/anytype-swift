@@ -81,7 +81,7 @@ struct TorahSourcesSearchContentView: View {
             }
             scopePicker
             if TorahAssociationPreviewStrip.shouldShow(
-                items: presenter.associations,
+                items: presenter.visibleAssociations,
                 persistenceState: presenter.persistenceState
             ) {
                 associationPreview
@@ -97,6 +97,8 @@ struct TorahSourcesSearchContentView: View {
                 argument: Loc.Pinkha.Torah.Persistence.saved
             )
         }
+        .onChange(of: presenter.searchScope) { presenter.categoryDidChange() }
+        .onChange(of: presenter.canonicalSnapshot) { presenter.synchronizeSnapshot() }
         .task(id: SearchTaskID(scope: presenter.searchScope, query: presenter.searchQuery)) {
             await presenter.performSearch(debounce: .milliseconds(300))
         }
@@ -124,14 +126,16 @@ struct TorahSourcesSearchContentView: View {
 
     private var associationPreview: some View {
         TorahAssociationPreviewStrip(
-            items: presenter.associations,
+            items: presenter.visibleAssociations,
             persistenceState: presenter.persistenceState,
             locale: locale,
             canOpen: presenter.canOpenAssociation,
             onOpen: presenter.openAssociation,
             onUnlink: { item in
                 Task { await presenter.unlinkAssociation(item) }
-            }
+            },
+            canUnlink: presenter.canEditAssociations,
+            title: presenter.searchScope.title
         )
         .divider()
     }
@@ -195,7 +199,8 @@ struct TorahSourcesSearchContentView: View {
             onLink: {
                 Task { await presenter.link(result) }
             },
-            linkAccessibilityLabel: linkTitle
+            linkAccessibilityLabel: linkTitle,
+            canLink: presenter.canEditAssociations
         )
     }
 
@@ -213,6 +218,8 @@ struct TorahAssociationPreviewStrip: View {
     let canOpen: (TorahAssociationItem) -> Bool
     let onOpen: (TorahAssociationItem) -> Void
     let onUnlink: (TorahAssociationItem) -> Void
+    var canUnlink: Bool = true
+    var title: String = Loc.Pinkha.Torah.sources
 
     static func shouldShow(
         items: [TorahAssociationItem],
@@ -225,7 +232,7 @@ struct TorahAssociationPreviewStrip: View {
         ScrollView(.horizontal) {
             LazyHStack(spacing: 8) {
                 if items.isNotEmpty {
-                    AnytypeText(Loc.Pinkha.Torah.sources, style: .caption1Regular)
+                    AnytypeText(title, style: .caption1Regular)
                         .foregroundStyle(Color.Text.secondary)
                         .fixedSize(horizontal: true, vertical: false)
                 }
@@ -303,6 +310,7 @@ struct TorahAssociationPreviewStrip: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel(Loc.Pinkha.Torah.removeLink)
+            .disabled(!canUnlink)
         }
         .frame(height: 44)
         .background(Color.Shape.transparentSecondary)
@@ -391,6 +399,7 @@ private struct TorahSourceSearchResultRow: View {
     let primaryAccessibilityHint: String?
     let onLink: () -> Void
     let linkAccessibilityLabel: String
+    var canLink: Bool = true
 
     var body: some View {
         HStack(alignment: .center, spacing: 0) {
@@ -461,6 +470,7 @@ private struct TorahSourceSearchResultRow: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(linkAccessibilityLabel)
+        .disabled(!canLink)
     }
 
     private var asset: ImageAsset {

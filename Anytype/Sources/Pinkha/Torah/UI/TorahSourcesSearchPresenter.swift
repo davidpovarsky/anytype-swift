@@ -47,6 +47,31 @@ final class TorahSourcesSearchPresenter {
 
     var associationTargetBlockID: String? { context.blockId }
 
+    var canEditAssociations: Bool { session.canEditAssociations }
+
+    var canonicalSnapshot: [TorahStoredAssociationRecord] { session.associationRecords }
+
+    func synchronizeSnapshot() {
+        associations = session.cachedAssociations(for: context)
+    }
+
+    var visibleAssociations: [TorahAssociationItem] {
+        guard session.presentationHost == .properties else { return associations }
+        let kind: TorahAssociationKind = switch searchScope {
+        case .references: .ref
+        case .topics: .topic
+        case .words: .word
+        }
+        return associations.filter { $0.kind == kind && $0.role == .context }
+    }
+
+    func categoryDidChange() {
+        searchQuery = ""
+        searchState = .idle
+        searchEpoch &+= 1
+        openRequestID = nil
+    }
+
     func performSearch(debounce: Duration = .zero) async {
         searchEpoch &+= 1
         let requestEpoch = searchEpoch
@@ -94,7 +119,7 @@ final class TorahSourcesSearchPresenter {
     }
 
     func openReference(_ result: SearchResult) async {
-        guard result.scope == .references else { return }
+        guard result.scope == .references, searchScope == .references else { return }
         let requestID = UUID()
         openRequestID = requestID
         let query = searchQuery
@@ -114,10 +139,11 @@ final class TorahSourcesSearchPresenter {
     }
 
     func openAssociation(_ item: TorahAssociationItem) {
-        guard session.canOpenAssociation(item) else { return }
+        guard let current = session.cachedAssociations(for: context).first(where: { $0.id == item.id }),
+              session.canOpenAssociation(current) else { return }
         do {
             try session.validateSearchContext(context)
-            onOpenSelection(TorahEditorSession.inspectorSelection(for: item))
+            onOpenSelection(TorahEditorSession.inspectorSelection(for: current))
         } catch {
             session.reportSearchError(error)
         }
@@ -128,13 +154,17 @@ final class TorahSourcesSearchPresenter {
     }
 
     func link(_ result: SearchResult) async {
+        guard result.scope == searchScope, mutationRequestID == nil else { return }
         let requestID = UUID()
         mutationRequestID = requestID
+        defer { if mutationRequestID == requestID { mutationRequestID = nil } }
         let rawQuery = searchQuery
         persistenceState = .waiting
         do {
             persistenceState = .saving
-            let values = try await session.link(result, to: context, rawQuery: rawQuery)
+            let values = try await session.link(result, to: context, rawQuery: rawQuery) { [weak self] in
+                self?.mutationRequestID == requestID
+            }
             guard mutationRequestID == requestID else { return }
             associations = values
             persistenceState = .saved
@@ -146,8 +176,11 @@ final class TorahSourcesSearchPresenter {
     }
 
     func unlinkAssociation(_ item: TorahAssociationItem) async {
+        guard mutationRequestID == nil,
+              associations.contains(where: { $0.id == item.id }) else { return }
         let requestID = UUID()
         mutationRequestID = requestID
+        defer { if mutationRequestID == requestID { mutationRequestID = nil } }
         persistenceState = .waiting
         do {
             persistenceState = .saving

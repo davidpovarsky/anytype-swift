@@ -5,6 +5,7 @@ struct ObjectSettingsMenuContainer<Label: View, AdditionalMenuItems: View>: View
 
     @State private var model: ObjectSettingsCoordinatorViewModel
     private let quickCapture: Bool
+    private let torahSession: TorahEditorSession?
     private let label: () -> Label
     private let additionalMenuItems: () -> AdditionalMenuItems
 
@@ -13,11 +14,13 @@ struct ObjectSettingsMenuContainer<Label: View, AdditionalMenuItems: View>: View
         spaceId: String,
         output: (any ObjectSettingsCoordinatorOutput)?,
         quickCapture: Bool = false,
+        torahSession: TorahEditorSession? = nil,
         @ViewBuilder label: @escaping () -> Label,
         @ViewBuilder additionalMenuItems: @escaping () -> AdditionalMenuItems
     ) {
         self._model = State(initialValue: ObjectSettingsCoordinatorViewModel(objectId: objectId, spaceId: spaceId, output: output))
         self.quickCapture = quickCapture
+        self.torahSession = torahSession
         self.label = label
         self.additionalMenuItems = additionalMenuItems
     }
@@ -33,8 +36,10 @@ struct ObjectSettingsMenuContainer<Label: View, AdditionalMenuItems: View>: View
             .sheet(item: $model.blockObjectSearchData) {
                 BlockObjectSearchView(data: $0)
             }
-            .sheet(item: $model.relationsListData) {
-                PropertiesListCoordinatorView(document: $0.document, output: model)
+            .sheet(item: $model.relationsListData, onDismiss: {
+                torahSession?.dismissPropertiesPresentation()
+            }) {
+                PropertiesListCoordinatorView(document: $0.document, output: model, torahSession: torahSession)
             }
             .sheet(item: $model.versionHistoryData) {
                 VersionHistoryCoordinatorView(data: $0, output: model)

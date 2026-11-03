@@ -90,6 +90,7 @@ final class EditorPageController: UIViewController {
             viewModel?.showSyncStatusInfo()
         },
         torahSourcesAvailable: viewModel.torahSession != nil,
+        torahSession: viewModel.torahSession,
         onTorahSourcesTap: { [weak self] in
             self?.viewModel.torahSession?.presentSearch(scope: .document)
         },

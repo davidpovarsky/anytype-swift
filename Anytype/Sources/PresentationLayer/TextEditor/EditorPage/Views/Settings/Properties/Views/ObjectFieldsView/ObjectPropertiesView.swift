@@ -7,14 +7,18 @@ import Loc
 struct ObjectPropertiesView: View {
 
     @State private var model: ObjectPropertiesViewModel
+    @State private var torahProperties: PinkhaTorahPropertiesModel
 
-    init(document: some BaseDocumentProtocol, output: (any PropertiesListModuleOutput)?) {
+    init(document: some BaseDocumentProtocol, output: (any PropertiesListModuleOutput)?, torahSession: TorahEditorSession? = nil) {
+        _torahProperties = State(initialValue: PinkhaTorahPropertiesModel(document: document, session: torahSession))
         _model = State(initialValue: ObjectPropertiesViewModel(document: document, output: output))
     }
     
     var body: some View {
         content
             .task { await model.setupSubscriptions() }
+            .task { await torahProperties.observeDocument() }
+            .torahEditorHost(session: torahProperties.session, presentationHost: .properties)
             .anytypeSheet(isPresented: $model.showConflictingInfo) {
                 ObjectPropertiesBottomAlert()
             }
@@ -57,12 +61,14 @@ struct ObjectPropertiesView: View {
     private var relationsList: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0) {
-                if model.shouldShowEmptyState {
+                if torahProperties.isResolvingManifest {
+                    PinkhaTorahPropertiesLoadingState(model: torahProperties)
+                } else if model.shouldShowEmptyState && !torahProperties.isEligible {
                     emptyStateView
                         .padding(.top, 24)
                 }
                 
-                ForEach(model.sections) { section in
+                ForEach(torahProperties.visibleSections(model.sections)) { section in
                     Section {
                         if !section.isExpandable || model.isSectionExpanded(section.id) {
                             ForEach(section.relations) {
@@ -73,6 +79,8 @@ struct ObjectPropertiesView: View {
                         sectionHeader(section: section)
                     }
                 }
+
+                PinkhaTorahPropertiesSection(model: torahProperties)
             }
             .padding(.horizontal, 20)
         }

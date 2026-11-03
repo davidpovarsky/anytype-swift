@@ -77,6 +77,11 @@ enum TorahAssociationDisplayFormatter {
 @MainActor
 @Observable
 final class TorahEditorSession {
+    enum PresentationHost: Equatable {
+        case editor
+        case properties
+    }
+
     private struct PendingInspectorPresentation {
         let selection: TorahInspectorSelection
         let entryMode: TorahInspectorEntryMode
@@ -168,6 +173,7 @@ final class TorahEditorSession {
     var selectedTool: TorahStudyToolID = .commentaries
     var selectedDetent: TorahInspectorSheetDetent = .medium
     var isSearchPresented = false
+    private(set) var presentationHost: PresentationHost = .editor
     var searchScope: SearchScope = .references
     var searchQuery = ""
     private(set) var searchState: SearchState = .idle
@@ -175,6 +181,7 @@ final class TorahEditorSession {
     private(set) var associationContext: TorahAssociationContext
     var currentAssociations: [TorahAssociationItem] = []
     private(set) var documentAssociations: [TorahAssociationItem] = []
+    private(set) var associationRecords: [TorahStoredAssociationRecord] = []
     private(set) var associationsByBlockId: [String: [TorahAssociationItem]] = [:]
     var persistenceState: TorahAssociationPersistenceState?
     var inspectorEntryMode: TorahInspectorEntryMode = .sourceReader
@@ -191,6 +198,7 @@ final class TorahEditorSession {
     private var pendingInspectorPresentation: PendingInspectorPresentation?
     private var pendingSearchContext: TorahAssociationContext?
     private var isActiveDocument = true
+    private var associationEditingPolicy: () -> Bool = { true }
 
     init(spaceId: String, objectId: String) throws {
         let workspace = try AnytypeTorahWorkspace.sefaria()
@@ -264,6 +272,16 @@ final class TorahEditorSession {
         documentAssociations.filter { !Self.isNoteAssociation($0) }
     }
 
+    var documentPropertyProjection: TorahDocumentPropertyProjection {
+        TorahDocumentPropertyProjection(records: associationRecords, spaceId: spaceId, objectId: objectId)
+    }
+
+    var canEditAssociations: Bool { isActiveDocument && associationEditingPolicy() }
+
+    func installAssociationEditingPolicy(_ policy: @escaping () -> Bool) {
+        associationEditingPolicy = policy
+    }
+
     var linkedBlockIDs: Set<String> { Set(associationsByBlockId.keys) }
 
     var hostActions: TorahInspectorHostActions {
@@ -330,10 +348,23 @@ final class TorahEditorSession {
         isActiveDocument = false
         searchRequestEpoch &+= 1
         associationSnapshotEpoch &+= 1
+        isSearchPresented = false
+        selection = nil
+        pendingSearchContext = nil
+        pendingInspectorPresentation = nil
     }
 
-    func presentSearch(scope: TorahAssociationContext.Scope) {
+    func presentSearch(
+        scope: TorahAssociationContext.Scope,
+        initialCategory: SearchScope = .references,
+        host: PresentationHost = .editor
+    ) {
         guard isActiveDocument else { return }
+        presentationHost = host
+        searchScope = initialCategory
+        searchQuery = ""
+        searchState = .idle
+        searchRequestEpoch &+= 1
         let context = TorahAssociationContext(spaceId: spaceId, objectId: objectId, scope: scope)
         pendingInspectorPresentation = nil
         if selection != nil {
@@ -342,6 +373,15 @@ final class TorahEditorSession {
             return
         }
         beginSearchPresentation(context: context)
+    }
+
+    func dismissPropertiesPresentation() {
+        guard presentationHost == .properties else { return }
+        isSearchPresented = false
+        selection = nil
+        pendingSearchContext = nil
+        pendingInspectorPresentation = nil
+        presentationHost = .editor
     }
 
     private func beginSearchPresentation(context: TorahAssociationContext) {
@@ -441,9 +481,10 @@ final class TorahEditorSession {
         _ item: TorahAssociationItem,
         from context: TorahAssociationContext
     ) async throws -> [TorahAssociationItem] {
-        try validate(context: context)
         persistenceState = .waiting
         do {
+            try validate(context: context)
+            guard canEditAssociations else { throw TorahAssociationRepositoryError.permissionDenied }
             persistenceState = .saving
             try await associations.removeAssociation(
                 associationId: item.id,
@@ -709,20 +750,25 @@ final class TorahEditorSession {
     func link(
         _ result: SearchResult,
         to context: TorahAssociationContext,
-        rawQuery: String
+        rawQuery: String,
+        isCurrentRequest: () -> Bool = { true }
     ) async throws -> [TorahAssociationItem] {
         let frozenContext = context
         let frozenResult = result
         let frozenRawQuery = rawQuery
-        try validate(context: frozenContext)
         persistenceState = .waiting
         do {
+            try validate(context: frozenContext)
+            guard canEditAssociations else { throw TorahAssociationRepositoryError.permissionDenied }
+            guard isCurrentRequest() else { throw CancellationError() }
             let item = try await associationItem(
                 for: frozenResult,
                 rawQuery: frozenRawQuery
             )
             try Task.checkCancellation()
             try validate(context: frozenContext)
+            guard canEditAssociations else { throw TorahAssociationRepositoryError.permissionDenied }
+            guard isCurrentRequest() else { throw CancellationError() }
             persistenceState = .saving
             _ = try await associations.addAssociation(
                 item,
@@ -913,6 +959,7 @@ final class TorahEditorSession {
     private func apply(records: [TorahStoredAssociationRecord]) {
         let previousBlockIDs = linkedBlockIDs
         let relevant = records.filter { $0.spaceId == spaceId && $0.objectId == objectId }
+        associationRecords = relevant
         documentAssociations = relevant
             .filter { $0.blockId == nil }
             .map(\.item)

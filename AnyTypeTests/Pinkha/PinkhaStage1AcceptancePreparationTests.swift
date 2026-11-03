@@ -9,6 +9,7 @@ import UIKit
 struct PinkhaStage1AcceptancePreparationTests {
     @Test("Creates disposable Pinkha, ordinary Note and ordinary Page documents")
     func prepareRealApplicationState() async throws {
+        let propertyFixturesRequested = ProcessInfo.processInfo.environment["PINKHA_PROPERTIES_PREPARE"] == "1"
         Container.shared.serverConfigurationStorage().setupCurrentConfiguration(config: .localOnly)
 
         let auth = Container.shared.authService()
@@ -44,6 +45,10 @@ struct PinkhaStage1AcceptancePreparationTests {
         let typeId = try #require(
             manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey]
         )
+        let requiredWritingTypeIDs = propertyFixturesRequested
+            ? Set([PinkhaSchemaRoles.chiddushKey, PinkhaSchemaRoles.articleKey, PinkhaSchemaRoles.researchKey]
+                .compactMap { manifest.registeredDocumentTypes[$0] })
+            : Set([typeId])
         // Note is no longer a bundled system type in current Anytype. Provision the
         // native Note layout only in this disposable fixture Space, using original APIs.
         let noteType = try await Container.shared.typesService().createType(
@@ -71,7 +76,7 @@ struct PinkhaStage1AcceptancePreparationTests {
                 spaceId: spaceId, filters: [SearchHelper.layoutFilter([.objectType])],
                 keys: ObjectType.subscriptionKeys.map(\.rawValue), limit: 0
             ).map(ObjectType.init(details:))
-            if indexedTypes.contains(where: { $0.id == typeId }),
+            if requiredWritingTypeIDs.isSubset(of: Set(indexedTypes.map(\.id))),
                indexedTypes.contains(where: { $0.id == noteType.id }),
                indexedTypes.contains(where: { $0.uniqueKey == .page }) { break }
             try await Task.sleep(nanoseconds: 100_000_000)
@@ -134,6 +139,10 @@ struct PinkhaStage1AcceptancePreparationTests {
             try await nativeDocument.close()
         }
 
+        if propertyFixturesRequested {
+            try await prepareTorahPropertyFixtures(manifest: manifest, indexedTypes: indexedTypes)
+        }
+
         let inputProbe = try await objectActions.createObject(
             name: "Native input lifecycle probe", typeUniqueKey: .page,
             shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
@@ -153,6 +162,45 @@ struct PinkhaStage1AcceptancePreparationTests {
             "PINKHA_STAGE1_ACCEPTANCE_READY space=\(spaceId) "
             + "pinkha=\(document.id) note=\(note.id) page=\(page.id)"
         )
+    }
+
+    @MainActor
+    private func prepareTorahPropertyFixtures(manifest: PinkhaSpaceManifest, indexedTypes: [ObjectType]) async throws {
+        var environment = [
+            "PINKHA_PROPERTIES_ISOLATED_SPACE_CONFIRMED": "1",
+            "PINKHA_PROPERTIES_SPACE_ID": manifest.spaceId
+        ]
+        var nativePropertyLabels = [String: [String]]()
+        for role in [PinkhaSchemaRoles.chiddushKey, PinkhaSchemaRoles.articleKey, PinkhaSchemaRoles.researchKey] {
+            let typeID = try #require(manifest.registeredDocumentTypes[role])
+            let type = try #require(indexedTypes.first { $0.id == typeID })
+            let created = try await Container.shared.objectActionsService().createObject(
+                name: "Torah properties acceptance \(role)", typeUniqueKey: type.uniqueKey,
+                shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+                spaceId: manifest.spaceId, origin: .none, templateId: manifest.defaultTemplateIds[role]
+            )
+            let document = Container.shared.documentsProvider().document(
+                objectId: created.id, spaceId: manifest.spaceId, mode: .preview
+            )
+            try await document.open()
+            #expect(document.details?.type == typeID)
+            #expect(document.details?.resolvedLayoutValue == .basic)
+            let sections = PropertiesSectionBuilder().buildObjectSections(parsedProperties: document.parsedProperties)
+            nativePropertyLabels[created.id] = sections.filter { !$0.isExpandable }.flatMap(\.relations)
+                .filter {
+                    !TorahDocumentPropertyEligibility.isCanonicalProperty(
+                        id: $0.id, key: $0.key, spaceId: manifest.spaceId, manifest: manifest
+                    )
+                }.map(\.name)
+            #expect(nativePropertyLabels[created.id]?.isEmpty == false)
+            try await document.close()
+            environment["PINKHA_PROPERTIES_\(role.uppercased())_ID"] = created.id
+        }
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        environment["PINKHA_PROPERTIES_NATIVE_PROPERTY_LABELS"] = String(decoding: try encoder.encode(nativePropertyLabels), as: UTF8.self)
+        let json = String(decoding: try encoder.encode(environment), as: UTF8.self)
+        print("PINKHA_PROPERTIES_ACCEPTANCE_FIXTURE_JSON \(json)")
     }
 
     /// Runs the original assembly, cursor manager, keyboard handler, virtual row and real

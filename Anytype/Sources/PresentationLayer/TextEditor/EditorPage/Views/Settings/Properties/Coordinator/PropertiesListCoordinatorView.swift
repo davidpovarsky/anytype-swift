@@ -7,15 +7,18 @@ import AnytypeCore
 struct PropertiesListCoordinatorView: View {
 
     @State private var model: PropertiesListCoordinatorViewModel
+    private let torahSession: TorahEditorSession?
 
-    init(document: some BaseDocumentProtocol, output: (any PropertyValueCoordinatorOutput)?) {
+    init(document: some BaseDocumentProtocol, output: (any PropertyValueCoordinatorOutput)?, torahSession: TorahEditorSession? = nil) {
+        self.torahSession = torahSession
         _model = State(initialValue: PropertiesListCoordinatorViewModel(document: document, output: output))
     }
     
     var body: some View {
         ObjectPropertiesView(
             document: model.document,
-            output: model
+            output: model,
+            torahSession: torahSession
         )
         .sheet(item: $model.relationValueData) { data in
             PropertyValueCoordinatorView(data: data, output: model)

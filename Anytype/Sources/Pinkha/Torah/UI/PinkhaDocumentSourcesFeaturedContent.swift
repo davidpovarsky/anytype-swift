@@ -22,7 +22,7 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
 
     var body: some View {
         let presentation = PinkhaDocumentSourcesPresentation(
-            associations: session.visibleDocumentAssociations
+            associations: session.documentPropertyProjection.sources
         )
 
         ForEach(presentation.visibleAssociations) { item in
@@ -102,6 +102,7 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
         .buttonStyle(.plain)
         .accessibilityIdentifier("torah-document-sources-add")
         .accessibilityLabel(Loc.add + " " + Loc.Pinkha.Torah.sources)
+        .disabled(!session.canEditAssociations)
     }
 
     private var divider: some View {

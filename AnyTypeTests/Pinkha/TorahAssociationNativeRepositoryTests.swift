@@ -823,6 +823,190 @@ struct TorahAssociationNativeRepositoryTests {
         #expect(await store.writeCount() == 0)
     }
 
+    @MainActor
+    @Test("Property routes reset category and query while freezing the document target")
+    func propertyRoutesResetCategoryAndTarget() throws {
+        let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: ["selected-block"])
+        let session = TorahEditorSession(
+            spaceId: spaceId, objectId: objectId,
+            workspace: try AnytypeTorahWorkspace.sefaria(), associations: makeRepository(store: store)
+        )
+        session.presentSearch(scope: .block("selected-block"))
+        session.searchQuery = "old reference query"
+        for category in [TorahEditorSession.SearchScope.topics, .words, .references, .topics, .references] {
+            session.isSearchPresented = false
+            session.presentSearch(scope: .document, initialCategory: category, host: .properties)
+            let presenter = TorahSourcesSearchPresenter(
+                session: session, context: session.associationContext,
+                searchScope: session.searchScope, searchQuery: session.searchQuery, onOpenSelection: { _ in }
+            )
+            #expect(presenter.context == session.documentAssociationContext)
+            #expect(presenter.searchScope == category)
+            #expect(presenter.searchQuery.isEmpty)
+            #expect(session.presentationHost == .properties)
+            #expect(session.isSearchPresented)
+            session.searchQuery = "previous category"
+        }
+        session.dismissPropertiesPresentation()
+        #expect(session.presentationHost == .editor)
+        #expect(!session.isSearchPresented)
+        session.presentSearch(scope: .block("selected-block"))
+        #expect(session.associationTargetBlockId == "selected-block")
+        #expect(session.searchScope == .references)
+    }
+
+    @MainActor
+    @Test("Read-only property actions and stale requests never mutate canonical storage")
+    func propertyPermissionAndRequestGuards() async throws {
+        let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: [])
+        let repository = makeRepository(store: store)
+        let session = TorahEditorSession(
+            spaceId: spaceId, objectId: objectId,
+            workspace: try AnytypeTorahWorkspace.sefaria(), associations: repository
+        )
+        let item = association(0)
+        _ = try await repository.addAssociation(item, target: .object(objectId: objectId), spaceId: spaceId)
+        _ = try await session.associationSnapshot(for: session.documentAssociationContext)
+        let result = TorahEditorSession.SearchResult(
+            id: "reference", scope: .references, providerValue: "Genesis 1:1",
+            labelHe: nil, labelEn: nil, fallbackTitle: "Genesis 1:1", fallbackSubtitle: nil
+        )
+        session.installAssociationEditingPolicy { false }
+        _ = try await session.associationSnapshot(for: session.documentAssociationContext)
+        #expect(session.documentPropertyProjection.sources == [item])
+        await #expect(throws: TorahAssociationRepositoryError.permissionDenied) {
+            _ = try await session.unlinkAssociation(item, from: session.documentAssociationContext)
+        }
+        await #expect(throws: TorahAssociationRepositoryError.permissionDenied) {
+            _ = try await session.link(result, to: session.documentAssociationContext, rawQuery: "Genesis")
+        }
+        session.installAssociationEditingPolicy { true }
+        await #expect(throws: CancellationError.self) {
+            _ = try await session.link(result, to: session.documentAssociationContext, rawQuery: "Genesis", isCurrentRequest: { false })
+        }
+        #expect(await store.writeCount() == 1)
+        session.deactivateDocument()
+        session.presentSearch(scope: .document, initialCategory: .topics, host: .properties)
+        #expect(!session.isSearchPresented)
+        #expect(session.selection == nil)
+    }
+
+    @MainActor
+    @Test("Canonical property values refresh by kind after unlink and survive a new session")
+    func propertyProjectionRefreshesWithoutDuplicateStorage() async throws {
+        let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: ["block"])
+        let repository = makeRepository(store: store)
+        let session = TorahEditorSession(
+            spaceId: spaceId, objectId: objectId,
+            workspace: try AnytypeTorahWorkspace.sefaria(), associations: repository
+        )
+        let source = association(0)
+        let topic = association(1, kind: .topic)
+        let word = association(2, kind: .word)
+        for item in [source, topic, word] {
+            _ = try await repository.addAssociation(item, target: .object(objectId: objectId), spaceId: spaceId)
+        }
+        _ = try await repository.addAssociation(association(3), target: .block(objectId: objectId, blockId: "block"), spaceId: spaceId)
+        _ = try await session.associationSnapshot(for: session.documentAssociationContext)
+        #expect(session.documentPropertyProjection.sources == [source])
+        #expect(session.documentPropertyProjection.topics == [topic])
+        #expect(session.documentPropertyProjection.words == [word])
+        _ = try await session.unlinkAssociation(topic, from: session.documentAssociationContext)
+        #expect(session.documentPropertyProjection.topics.isEmpty)
+        #expect(session.documentPropertyProjection.sources == [source])
+        #expect(session.linkedAssociationCount(blockId: "block") == 1)
+        let reopened = TorahEditorSession(
+            spaceId: spaceId, objectId: objectId,
+            workspace: try AnytypeTorahWorkspace.sefaria(), associations: repository
+        )
+        await reopened.refreshAssociationSnapshot()
+        #expect(reopened.documentPropertyProjection == session.documentPropertyProjection)
+        #expect(await store.unrelatedDetails() == ["name": "untouched", "custom": "preserved"])
+    }
+
+    @MainActor
+    @Test("Dismissing during canonical resolution cancels storage and rapid taps submit once")
+    func propertyPickerCancellationAndRapidTaps() async throws {
+        let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: [])
+        let provider = DelayedResolutionSearchProvider()
+        let registry = try TorahProviderRegistry(
+            referenceProviders: [provider], topicProviders: [provider], lexicalProviders: [provider],
+            defaultProviderID: provider.providerID
+        )
+        let session = TorahEditorSession(
+            spaceId: spaceId, objectId: objectId, workspace: AnytypeTorahWorkspace(registry: registry),
+            associations: makeRepository(store: store)
+        )
+        let presenter = TorahSourcesSearchPresenter(
+            session: session, context: session.documentAssociationContext, onOpenSelection: { _ in }
+        )
+        let old = TorahEditorSession.SearchResult(
+            id: "old", scope: .references, providerValue: "old", labelHe: nil, labelEn: nil,
+            fallbackTitle: "old", fallbackSubtitle: nil
+        )
+        let cancelled = Task { await presenter.link(old) }
+        try await Task.sleep(for: .milliseconds(10))
+        presenter.cancelPendingRequests()
+        await cancelled.value
+        #expect(await store.writeCount() == 0)
+        let firstTap = Task { await presenter.link(old) }
+        try await Task.sleep(for: .milliseconds(10))
+        await presenter.link(old)
+        await firstTap.value
+        #expect(await provider.resolveCount(for: "old") == 2)
+        #expect(await store.writeCount() == 1)
+        #expect(session.documentPropertyProjection.sources.count == 1)
+    }
+
+    @MainActor
+    @Test("Property composition preserves native and hidden rows and filters only canonical JSON")
+    func propertyCompositionKeepsOriginalRows() throws {
+        let manifest = PinkhaSpaceManifest(
+            spaceId: spaceId, documentAssociationsPropertyId: "canonical-id", documentAssociationsPropertyKey: "canonical-key",
+            registeredDocumentTypes: ["chiddush": "type-chiddush", "article": "type-article", "research": "type-research"]
+        )
+        for typeID in manifest.registeredDocumentTypes.values {
+            let details = ObjectDetails(id: objectId, values: [BundledPropertyKey.type.rawValue: typeID.protobufValue])
+            let document = MockBaseDocument(objectId: objectId, details: details)
+            document.mockSpaceId = spaceId
+            let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: [])
+            let session = TorahEditorSession(
+                spaceId: spaceId, objectId: objectId, workspace: try AnytypeTorahWorkspace.sefaria(),
+                associations: makeRepository(store: store)
+            )
+            let model = PinkhaTorahPropertiesModel(
+                document: document, session: session, bootstrap: PropertiesBootstrapProbe(value: manifest)
+            )
+            #expect(model.isEligible)
+            #expect(!model.canEdit)
+            model.edit(.topic)
+            #expect(!session.isSearchPresented)
+            let originals = ["type", "tag", "links", "backlinks", "createdDate", "creator"].map { key in
+                Property.text(Property.Text(
+                    id: key, key: key, name: key, isFeatured: false, isEditable: true,
+                    canBeRemovedFromObject: false, isDeleted: false, value: key
+                ))
+            }
+            let raw = Property.text(Property.Text(
+                id: "canonical-id", key: "canonical-key", name: "הקשר תורני", isFeatured: false,
+                isEditable: true, canBeRemovedFromObject: false, isDeleted: false, value: "{\"version\":2,\"records\":[]}"
+            ))
+            let sections = [
+                PropertiesSection(id: "normal", title: "normal", relations: originals, isMissingFields: false, isExpandable: false),
+                PropertiesSection(id: "hidden", title: "hidden", relations: [raw, originals[0]], isMissingFields: false, isExpandable: true)
+            ]
+            let displayed = model.visibleSections(sections)
+            #expect(displayed[0].relations == originals)
+            #expect(displayed[1].relations == [originals[0]])
+            #expect(sections[1].relations == [raw, originals[0]])
+            document.mockPermissions.canEditRelationValues = true
+            model.edit(.topic)
+            #expect(session.isSearchPresented)
+            #expect(session.searchScope == .topics)
+            #expect(session.associationContext == session.documentAssociationContext)
+        }
+    }
+
     private func makeRepository(store: NativeStoreProbe) -> AnytypeTorahAssociationRepository {
         AnytypeTorahAssociationRepository(
             nativeStore: store,
@@ -1029,6 +1213,14 @@ private actor NativeStoreProbe: TorahAssociationNativeStore {
     func maximumConcurrentWrites() -> Int { maxConcurrentWrites }
     func unrelatedDetails() -> [String: String] { otherDetails }
     func blockFingerprints() -> [String: String] { blocks }
+}
+
+private struct PropertiesBootstrapProbe: PinkhaSpaceBootstrapServiceProtocol {
+    let value: PinkhaSpaceManifest
+
+    func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest { value }
+    func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? { value.spaceId == spaceId ? value : nil }
+    func isBootstrapped(spaceId: String) -> Bool { value.spaceId == spaceId }
 }
 
 private enum ProbeError: Error {

@@ -3,6 +3,7 @@ import TorahInspectorUI
 
 struct TorahEditorHostModifier: ViewModifier {
     let session: TorahEditorSession?
+    var presentationHost: TorahEditorSession.PresentationHost = .editor
     @Environment(\.locale) private var locale
 
     @ViewBuilder
@@ -12,13 +13,22 @@ struct TorahEditorHostModifier: ViewModifier {
 
             content
                 .sheet(
-                    isPresented: $session.isSearchPresented,
-                    onDismiss: session.searchDidDismiss
+                    isPresented: Binding(
+                        get: { session.presentationHost == presentationHost && session.isSearchPresented },
+                        set: { if session.presentationHost == presentationHost { session.isSearchPresented = $0 } }
+                    ),
+                    onDismiss: {
+                        guard session.presentationHost == presentationHost else { return }
+                        session.searchDidDismiss()
+                    }
                 ) {
                     TorahSourcesSearchView(session: session)
                 }
                 .torahInspectorSheet(
-                    selection: $session.selection,
+                    selection: Binding(
+                        get: { session.presentationHost == presentationHost ? session.selection : nil },
+                        set: { if session.presentationHost == presentationHost { session.selection = $0 } }
+                    ),
                     repository: session.repository,
                     entryMode: session.inspectorEntryMode,
                     selectedTool: $session.selectedTool,
@@ -33,7 +43,7 @@ struct TorahEditorHostModifier: ViewModifier {
                 .alert(
                     Loc.Pinkha.Torah.title,
                     isPresented: Binding(
-                        get: { session.message != nil },
+                        get: { session.presentationHost == presentationHost && session.message != nil },
                         set: { if !$0 { session.message = nil } }
                     )
                 ) {
@@ -42,17 +52,22 @@ struct TorahEditorHostModifier: ViewModifier {
                     Text(session.message ?? "")
                 }
                 .task(id: session.objectId) {
+                    guard presentationHost == .editor else { return }
                     session.activateDocument()
                     session.updateEffectiveLocale(locale)
                     await session.refreshAssociationSnapshot()
                 }
-                .onAppear { session.activateDocument() }
-                .onDisappear { session.deactivateDocument() }
+                .onAppear { if presentationHost == .editor { session.activateDocument() } }
+                .onDisappear {
+                    if presentationHost == .editor {
+                        session.deactivateDocument()
+                    }
+                }
                 .onChange(of: locale.identifier) {
                     session.updateEffectiveLocale(locale)
                 }
                 .onChange(of: session.selection?.id) { _, selectionID in
-                    guard selectionID == nil else { return }
+                    guard session.presentationHost == presentationHost, selectionID == nil else { return }
                     Task { await session.refreshAssociationSnapshot() }
                 }
         } else {
@@ -73,7 +88,10 @@ struct TorahEditorHostModifier: ViewModifier {
 }
 
 extension View {
-    func torahEditorHost(session: TorahEditorSession?) -> some View {
-        modifier(TorahEditorHostModifier(session: session))
+    func torahEditorHost(
+        session: TorahEditorSession?,
+        presentationHost: TorahEditorSession.PresentationHost = .editor
+    ) -> some View {
+        modifier(TorahEditorHostModifier(session: session, presentationHost: presentationHost))
     }
 }

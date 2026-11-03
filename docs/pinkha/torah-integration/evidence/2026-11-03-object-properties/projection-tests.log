@@ -1,0 +1,154 @@
+warning: '--skip-update' option is deprecated and will be removed in a future release
+[0/1] Planning build
+Building for debugging...
+[0/12] Write sources
+[2/12] Write swift-version-2807070033DA82CF.txt
+[4/13] Emitting module PinkhaKit
+[5/13] Compiling PinkhaKit TorahDocumentPropertyProjection.swift
+[6/14] Wrapping AST for PinkhaKit for debugging
+[8/36] Compiling PinkhaKitTests TorahHTTPTransportTests.swift
+[9/36] Compiling PinkhaKitTests TorahInspectorRepositoryBridgeTests.swift
+[10/36] Compiling PinkhaKitTests TorahTestSupport.swift
+[11/37] Compiling PinkhaKitTests resource_bundle_accessor.swift
+[12/37] Emitting module PinkhaKitTests
+[13/37] Compiling PinkhaKitTests PinkhaHierarchyTests.swift
+[14/37] Compiling PinkhaKitTests PinkhaSpaceBootstrapEngineTests.swift
+[15/37] Compiling PinkhaKitTests PinkhaSpaceManifestTests.swift
+[16/37] Compiling PinkhaKitTests PinkhaNavigationDirectionPolicyTests.swift
+[17/37] Compiling PinkhaKitTests PinkhaHierarchyCodecTests.swift
+[18/37] Compiling PinkhaKitTests PinkhaHierarchyReconciliationTests.swift
+[19/37] Compiling PinkhaKitTests PinkhaTextDirectionMarkerTests.swift
+[20/37] Compiling PinkhaKitTests PinkhaWritingDirectionPolicyTests.swift
+[21/37] Compiling PinkhaKitTests TorahCanonicalAssociationsTests.swift
+[22/37] Compiling PinkhaKitTests TorahDocumentPropertyProjectionTests.swift
+[23/37] Compiling PinkhaKitTests SefariaRelationshipProviderTests.swift
+[24/37] Compiling PinkhaKitTests SefariaTextProviderTests.swift
+[25/37] Compiling PinkhaKitTests SefariaHierarchyTests.swift
+[26/37] Compiling PinkhaKitTests SefariaReferenceProviderTests.swift
+[27/37] Compiling PinkhaKitTests SefariaTopicLexicalProviderTests.swift
+C:\Users\DAVID\Code\anytype-swift\Modules\PinkhaKit\Tests\PinkhaKitTests\Torah\Storage\TorahAssociationConcurrencyProbeTests.swift:26:34: warning: 'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item [#DeprecatedDeclaration]
+
+24 |         let repository = ProbeRepository()
+
+25 |         do {
+
+26 |             try await repository.setDocumentAssociations(objectId: "document", items: [], spaceId: "space")
+
+   |                                  `- warning: 'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item [#DeprecatedDeclaration]
+
+27 |             Issue.record("Document snapshot replacement unexpectedly succeeded")
+
+28 |         } catch let error as TorahAssociationRepositoryError {
+
+
+
+C:\Users\DAVID\Code\anytype-swift\Modules\PinkhaKit\Tests\PinkhaKitTests\Torah\Storage\TorahAssociationConcurrencyProbeTests.swift:35:34: warning: 'setBlockAssociations(objectId:blockId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item [#DeprecatedDeclaration]
+
+33 | 
+
+34 |         do {
+
+35 |             try await repository.setBlockAssociations(
+
+   |                                  `- warning: 'setBlockAssociations(objectId:blockId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item [#DeprecatedDeclaration]
+
+36 |                 objectId: "document",
+
+37 |                 blockId: "block",
+
+
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+
+[28/37] Compiling PinkhaKitTests TorahAssociationConcurrencyProbeTests.swift
+C:\Users\DAVID\Code\anytype-swift\Modules\PinkhaKit\Tests\PinkhaKitTests\Torah\Storage\TorahAssociationConcurrencyProbeTests.swift:26:34: warning: 'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item [#DeprecatedDeclaration]
+
+24 |         let repository = ProbeRepository()
+
+25 |         do {
+
+26 |             try await repository.setDocumentAssociations(objectId: "document", items: [], spaceId: "space")
+
+   |                                  `- warning: 'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item [#DeprecatedDeclaration]
+
+27 |             Issue.record("Document snapshot replacement unexpectedly succeeded")
+
+28 |         } catch let error as TorahAssociationRepositoryError {
+
+
+
+C:\Users\DAVID\Code\anytype-swift\Modules\PinkhaKit\Tests\PinkhaKitTests\Torah\Storage\TorahAssociationConcurrencyProbeTests.swift:35:34: warning: 'setBlockAssociations(objectId:blockId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item [#DeprecatedDeclaration]
+
+33 | 
+
+34 |         do {
+
+35 |             try await repository.setBlockAssociations(
+
+   |                                  `- warning: 'setBlockAssociations(objectId:blockId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item [#DeprecatedDeclaration]
+
+36 |                 objectId: "document",
+
+37 |                 blockId: "block",
+
+
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+
+[29/37] Compiling PinkhaKitTests TorahAssociationIdentityTests.swift
+[30/37] Compiling PinkhaKitTests TorahAssociationPayloadCodecTests.swift
+[31/38] C:\Users\DAVID\Code\anytype-swift\Modules\PinkhaKit\.build\x86_64-unknown-windows-msvc\debug\PinkhaKitPackageDiscoveredTests.derived\all-discovered-tests.swift
+[32/39] Write sources
+[33/39] Wrapping AST for PinkhaKitTests for debugging
+[35/42] Compiling PinkhaKitPackageDiscoveredTests PinkhaKitTests.swift
+[36/42] Emitting module PinkhaKitPackageDiscoveredTests
+[37/42] Compiling PinkhaKitPackageDiscoveredTests all-discovered-tests.swift
+[38/40] Write Objects.LinkFileList
+[39/40] Linking PinkhaKitPackageTests.xctest
+Build complete! (277.29s)
+Test Suite 'Selected tests' started at 2026-11-03 00:43:45.824
+
+Test Suite 'Selected tests' passed at 2026-11-03 00:43:45.846
+
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+
+◊ Test run started.
+
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+
+→ Target Platform: x86_64-unknown-windows-msvc
+
+◊ Suite "Canonical Torah property projections" started.
+
+◊ Test eligibilityUsesAllThreeManifestIDsAndExactSpace() started.
+
+◊ Test deduplicatesWithoutChangingStableIdentityOrInput() started.
+
+◊ Test countsAndOrdering(count:) started.
+
+◊ Test excludesOtherTargetsRolesAndNotes() started.
+
+◊ Test onlyCanonicalPropertyIdentityIsFiltered() started.
+
+◊ Test case passing 1 argument count → 2 to countsAndOrdering(count:) started.
+
+◊ Test case passing 1 argument count → 1 to countsAndOrdering(count:) started.
+
+◊ Test case passing 1 argument count → 0 to countsAndOrdering(count:) started.
+
+◊ Test case passing 1 argument count → 12 to countsAndOrdering(count:) started.
+
+√ Test onlyCanonicalPropertyIdentityIsFiltered() passed after 0.002 seconds.
+
+√ Test excludesOtherTargetsRolesAndNotes() passed after 0.004 seconds.
+
+√ Test eligibilityUsesAllThreeManifestIDsAndExactSpace() passed after 0.004 seconds.
+
+√ Test deduplicatesWithoutChangingStableIdentityOrInput() passed after 0.008 seconds.
+
+√ Test countsAndOrdering(count:) with 4 test cases passed after 0.012 seconds.
+
+√ Suite "Canonical Torah property projections" passed after 0.016 seconds.
+
+√ Test run with 5 tests in 1 suite passed after 0.018 seconds.
+
