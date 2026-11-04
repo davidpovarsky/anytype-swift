@@ -12,6 +12,7 @@ on:
           - full-acceptance
           - ipa-only
           - native-derived
+          - native-ipa-fast
           - native-diagnostics
       source_run_id:
         description: Existing native run whose XCTest attachments should be exported
@@ -48,4 +49,9 @@ jobs:
     uses: ./.github/workflows/pinkha-ipa-only.yml
     with:
       require_full_acceptance: ${{ inputs.require_full_acceptance }}
+    secrets: inherit
+
+  native-ipa-fast:
+    if: ${{ inputs.route == 'native-ipa-fast' }}
+    uses: ./.github/workflows/pinkha-native-ipa-fast.yml
     secrets: inherit
