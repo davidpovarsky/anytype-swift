@@ -1,0 +1,56 @@
+name: Export existing native XCTest evidence
+
+on:
+  workflow_call:
+    inputs:
+      source_run_id:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  export:
+    runs-on: xcode-27
+    timeout-minutes: 15
+    steps:
+      - name: Export actual failed-run screenshots and summaries
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib, subprocess, zipfile
+          run = os.environ['SOURCE_RUN_ID']
+          if not run.isdigit(): raise RuntimeError('A numeric existing run ID is required')
+          root = pathlib.Path('native-diagnostics').resolve()
+          root.mkdir()
+          subprocess.run(['gh','run','download',run,'--repo',os.environ['GITHUB_REPOSITORY'],
+            '-n','Pinkha-Native-Derived-Evidence','-D',str(root/'download')],check=True)
+          with zipfile.ZipFile(root/'download/Pinkha-Native-Derived-Evidence.zip') as archive:
+            archive.extractall(root/'source')
+          for bundle in (root/'source/app').glob('*.xcresult'):
+            target = root/bundle.stem
+            target.mkdir()
+            for mode in ['summary','tests']:
+              with (target/(mode+'.json')).open('w') as stream:
+                subprocess.run(['xcrun','xcresulttool','get','test-results',mode,
+                  '--path',str(bundle),'--format','json'],stdout=stream,check=True)
+            subprocess.run(['xcrun','xcresulttool','export','attachments','--path',str(bundle),
+              '--output-path',str(target/'attachments')],check=True)
+          (root/'source-run.json').write_text(json.dumps(dict(source_run_id=run,
+            scope='Existing XCTest evidence only; no test rerun, app build or acceptance inference'),indent=2))
+          with zipfile.ZipFile('Pinkha-Native-XCTest-Diagnostics.zip','w',zipfile.ZIP_DEFLATED) as archive:
+            for path in root.rglob('*'):
+              if path.is_file() and 'source' not in path.relative_to(root).parts and 'download' not in path.relative_to(root).parts:
+                archive.write(path,path.relative_to(root))
+          PY
+      - name: Upload actual XCTest diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Native-XCTest-Diagnostics
+          path: Pinkha-Native-XCTest-Diagnostics.zip
+          if-no-files-found: error
+          retention-days: 14

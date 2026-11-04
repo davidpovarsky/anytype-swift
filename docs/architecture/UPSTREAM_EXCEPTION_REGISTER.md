@@ -123,6 +123,15 @@ bootstrap and native-schema tests pass after the reproduced failure. No addition
 upstream iOS hook is needed. The real app suite now exercises eight concurrent
 callers and emits schema-only diagnostics on failure in its disposable Space.
 
+The owner-authorized diagnostics-only dispatcher seam is recorded separately in
+approval/ci-diagnostics/native-diagnostics-dispatch.patch, SHA-256
+`3064f4709ba5ef744a27e9a74779acbeb0f1cddadd4f626322343f26382826b8`.
+It selects a downstream workflow that exports existing XCTest attachments with
+the real Xcode tools; it neither reruns tests nor marks the source run successful.
+CI 41809890985 passed actual app/native-API acceptance after the bootstrap fix,
+then failed the first original Properties UI assertion. This narrow diagnostic
+route obtains the already-recorded UI evidence without another full app build.
+
 Exact protected boundary identities are recorded in
 `docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/protected-source-inventory.json`.
 P1/P2 query, compatibility and native Type/Set gates must be established before

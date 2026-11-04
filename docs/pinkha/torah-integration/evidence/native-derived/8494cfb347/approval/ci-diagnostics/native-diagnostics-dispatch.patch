@@ -1,0 +1,29 @@
+diff --git a/.github/workflows/torah-inspector-ipados27.yml b/.github/workflows/torah-inspector-ipados27.yml
+index c9a5103d73..0fee662657 100644
+--- a/.github/workflows/torah-inspector-ipados27.yml
++++ b/.github/workflows/torah-inspector-ipados27.yml
+@@ -12,6 +12,11 @@ on:
+           - full-acceptance
+           - ipa-only
+           - native-derived
++          - native-diagnostics
++      source_run_id:
++        description: Existing native run whose XCTest attachments should be exported
++        type: string
++        default: ''
+       require_full_acceptance:
+         description: Require Full Acceptance success before IPA packaging
+         type: boolean
+@@ -22,6 +27,12 @@ permissions:
+   actions: read
+ 
+ jobs:
++  native-diagnostics:
++    if: ${{ inputs.route == 'native-diagnostics' }}
++    uses: ./.github/workflows/pinkha-native-diagnostics.yml
++    with:
++      source_run_id: ${{ inputs.source_run_id }}
++
+   native-derived:
+     if: ${{ inputs.route == 'native-derived' }}
+     uses: ./.github/workflows/pinkha-native-derived.yml
