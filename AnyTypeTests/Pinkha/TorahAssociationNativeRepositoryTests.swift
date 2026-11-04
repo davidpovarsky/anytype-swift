@@ -1293,3 +1293,171 @@ private actor DelayedResolutionSearchProvider: ReferenceProvider, TopicProvider,
     func suggestWords(prefix: String, context: TorahLexicalContext?) async throws -> [WordCandidate] { [] }
     func resolveWord(surface: String, context: TorahLexicalContext?) async throws -> [ResolvedWord] { [] }
 }
+
+
+@Suite("Canonical Torah manifest is independent of native derived registration")
+struct TorahCanonicalManifestIsolationTests {
+    @Test("A broken native Property provisioner cannot block canonical source linking")
+    func canonicalLookupIgnoresUnrelatedNativeSchemaFailure() async throws {
+        let manifest = PinkhaSpaceManifest(
+            spaceId: "space", manifestObjectId: "manifest",
+            parentPropertyId: "parent", parentPropertyKey: "parent-key",
+            orderPropertyId: "order", orderPropertyKey: "order-key",
+            documentAssociationsPropertyId: "canonical", documentAssociationsPropertyKey: "canonical-key",
+            folderTypeId: "folder", bookFolderTypeId: "book",
+            registeredDocumentTypes: ["chiddush": "chiddush-id", "article": "article-id", "research": "research-id"],
+            defaultTemplateIds: ["chiddush": "chiddush-template", "article": "article-template", "research": "research-template"]
+        )
+        let provider = BootstrapTorahAssociationManifestProvider(
+            bootstrapService: FailedNativeSchemaBootstrapProbe(manifest: manifest)
+        )
+        let result = try await provider.manifest(spaceId: "space")
+        #expect(result == manifest)
+        #expect(result.isFullyProvisioned)
+        #expect(result.documentAssociationsPropertyKey == "canonical-key")
+        let store = NativeStoreProbe(spaceId: "space", objectId: "document", blockIds: [])
+        let repository = AnytypeTorahAssociationRepository(
+            nativeStore: store, manifestProvider: provider,
+            coordinator: TorahAssociationMutationCoordinator(),
+            statusCenter: TorahAssociationPersistenceStatusCenter()
+        )
+        let source = TorahAssociationItem(
+            id: "canonical-after-native-schema-error", kind: .ref, role: .context,
+            providerID: "sefaria", externalID: "Genesis.1.1",
+            canonicalKey: "Genesis 1:1", labelHe: "בראשית א"
+        )
+        _ = try await repository.addAssociation(
+            source, target: .object(objectId: "document"), spaceId: "space"
+        )
+        #expect(try await repository.listDocumentAssociations(
+            objectId: "document", spaceId: "space"
+        ).map(\.id) == [source.id])
+    }
+
+    @Test("Canonical lookup still rejects a foreign Space")
+    func canonicalLookupRejectsOtherSpace() async {
+        let bootstrap = FailedNativeSchemaBootstrapProbe(manifest: PinkhaSpaceManifest(
+            spaceId: "other", manifestObjectId: "manifest",
+            parentPropertyId: "parent", parentPropertyKey: "parent-key",
+            orderPropertyId: "order", orderPropertyKey: "order-key",
+            documentAssociationsPropertyId: "canonical", documentAssociationsPropertyKey: "canonical-key",
+            folderTypeId: "folder", bookFolderTypeId: "book",
+            registeredDocumentTypes: ["chiddush": "chiddush-id", "article": "article-id", "research": "research-id"],
+            defaultTemplateIds: ["chiddush": "chiddush-template", "article": "article-template", "research": "research-template"]
+        ))
+        do {
+            _ = try await BootstrapTorahAssociationManifestProvider(bootstrapService: bootstrap)
+                .manifest(spaceId: "space")
+            Issue.record("Wrong-Space canonical bootstrap was incorrectly accepted")
+        } catch let error as TorahAssociationRepositoryError {
+            #expect(error == .targetOutsideSpace)
+        } catch {
+            Issue.record("Unexpected wrong-Space error: \(error)")
+        }
+    }
+
+    @Test("Canonical linking works for source, topic, and word targets despite native schema failure")
+    func canonicalLinkingAllKindsSucceeds() async throws {
+        let manifest = PinkhaSpaceManifest(
+            spaceId: "space", manifestObjectId: "manifest",
+            parentPropertyId: "parent", parentPropertyKey: "parent-key",
+            orderPropertyId: "order", orderPropertyKey: "order-key",
+            documentAssociationsPropertyId: "canonical", documentAssociationsPropertyKey: "canonical-key",
+            folderTypeId: "folder", bookFolderTypeId: "book",
+            registeredDocumentTypes: ["chiddush": "chiddush-id", "article": "article-id", "research": "research-id"],
+            defaultTemplateIds: ["chiddush": "chiddush-template", "article": "article-template", "research": "research-template"]
+        )
+        let provider = BootstrapTorahAssociationManifestProvider(
+            bootstrapService: FailedNativeSchemaBootstrapProbe(manifest: manifest)
+        )
+        let store = NativeStoreProbe(spaceId: "space", objectId: "document", blockIds: ["block-1"])
+        let repository = AnytypeTorahAssociationRepository(
+            nativeStore: store, manifestProvider: provider,
+            coordinator: TorahAssociationMutationCoordinator(),
+            statusCenter: TorahAssociationPersistenceStatusCenter()
+        )
+        let source = TorahAssociationItem(
+            id: "canon-src", kind: .ref, role: .context,
+            providerID: "sefaria", externalID: "Genesis.1.1",
+            canonicalKey: "Genesis 1:1", labelHe: "בראשית א:א"
+        )
+        let topic = TorahAssociationItem(
+            id: "canon-top", kind: .topic, role: .context,
+            providerID: "sefaria", externalID: "creation",
+            canonicalKey: "creation", labelHe: "בריאה"
+        )
+        let word = TorahAssociationItem(
+            id: "canon-wrd", kind: .word, role: .context,
+            providerID: "sefaria", externalID: "בראשית",
+            canonicalKey: "בראשית", labelHe: "בראשית"
+        )
+
+        // Document target
+        _ = try await repository.addAssociation(source, target: .object(objectId: "document"), spaceId: "space")
+        _ = try await repository.addAssociation(topic, target: .object(objectId: "document"), spaceId: "space")
+        _ = try await repository.addAssociation(word, target: .object(objectId: "document"), spaceId: "space")
+
+        let docItems = try await repository.listDocumentAssociations(objectId: "document", spaceId: "space")
+        #expect(docItems.count == 3)
+        #expect(Set(docItems.map(\.id)) == ["canon-src", "canon-top", "canon-wrd"])
+
+        // Block target
+        let blockItem = TorahAssociationItem(
+            id: "canon-blk", kind: .ref, role: .sourceQuote,
+            providerID: "sefaria", externalID: "Exodus.1.1",
+            canonicalKey: "Exodus 1:1", labelHe: "שמות א:א"
+        )
+        _ = try await repository.addAssociation(blockItem, target: .block(objectId: "document", blockId: "block-1"), spaceId: "space")
+        let blkItems = try await repository.listBlockAssociations(objectId: "document", blockId: "block-1", spaceId: "space")
+        #expect(blkItems.map(\.id) == ["canon-blk"])
+
+        // Unlink and relink
+        try await repository.removeAssociation(associationId: "canon-top", target: .object(objectId: "document"), spaceId: "space")
+        let afterRemove = try await repository.listDocumentAssociations(objectId: "document", spaceId: "space")
+        #expect(Set(afterRemove.map(\.id)) == ["canon-src", "canon-wrd"])
+
+        _ = try await repository.addAssociation(topic, target: .object(objectId: "document"), spaceId: "space")
+        let afterRelink = try await repository.listDocumentAssociations(objectId: "document", spaceId: "space")
+        #expect(Set(afterRelink.map(\.id)) == ["canon-src", "canon-wrd", "canon-top"])
+    }
+
+    @Test("Protocol extension default implementation delegates to bootstrapSpace")
+    func protocolExtensionDefaultDelegates() async throws {
+        struct LegacyBootstrapProbe: PinkhaSpaceBootstrapServiceProtocol {
+            let manifest: PinkhaSpaceManifest
+            func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest { manifest }
+            func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? { manifest }
+            func isBootstrapped(spaceId: String) -> Bool { true }
+        }
+        let manifest = PinkhaSpaceManifest(
+            spaceId: "space", manifestObjectId: "manifest",
+            parentPropertyId: "parent", parentPropertyKey: "parent-key",
+            orderPropertyId: "order", orderPropertyKey: "order-key",
+            documentAssociationsPropertyId: "canonical", documentAssociationsPropertyKey: "canonical-key",
+            folderTypeId: "folder", bookFolderTypeId: "book",
+            registeredDocumentTypes: ["chiddush": "chiddush-id", "article": "article-id", "research": "research-id"],
+            defaultTemplateIds: ["chiddush": "chiddush-template", "article": "article-template", "research": "research-template"]
+        )
+        let probe = LegacyBootstrapProbe(manifest: manifest)
+        let result = try await probe.bootstrapCanonicalSpace(spaceId: "space")
+        #expect(result == manifest)
+    }
+
+}
+
+private struct FailedNativeSchemaBootstrapProbe: PinkhaSpaceBootstrapServiceProtocol {
+    let manifestValue: PinkhaSpaceManifest
+
+    init(manifest: PinkhaSpaceManifest) { self.manifestValue = manifest }
+
+    func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
+        throw TorahNativeSchemaError.invalidProperty("pinkhaTorahSources")
+    }
+
+    func bootstrapCanonicalSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
+        manifestValue
+    }
+
+    func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? { manifestValue }
+    func isBootstrapped(spaceId: String) -> Bool { true }
+}

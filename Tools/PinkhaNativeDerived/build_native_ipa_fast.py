@@ -7,6 +7,7 @@ import argparse
 import json
 import platform
 import plistlib
+import re
 import shutil
 import zipfile
 from pathlib import Path
@@ -101,8 +102,9 @@ def main():
         raise RuntimeError("Refusing to repackage a stale IPA output")
     payload_app.parent.mkdir(parents=True, exist_ok=True)
     shutil.copytree(built, payload_app, symlinks=True)
+    parent_bundle_id = "com.gloiiire.anytype.torahtrial"
     info.update(
-        CFBundleIdentifier="com.gloiiire.anytype.torahtrial",
+        CFBundleIdentifier=parent_bundle_id,
         CFBundleDisplayName="Pinkha Torah Trial",
         PinkhaNativeHeartPatchSHA256=heart["patch_sha256"],
         PinkhaNativeHeartMarker=heart["marker"],
@@ -110,6 +112,43 @@ def main():
     )
     with (payload_app / "Info.plist").open("wb") as stream:
         plistlib.dump(info, stream, fmt=plistlib.FMT_BINARY)
+
+    # Automatically and permanently retarget all nested extension bundle identifiers
+    # so every PlugIns/*.appex ID matches parent_bundle_id + '.' prefix.
+    plugins_dir = payload_app / "PlugIns"
+    extension_conversions = []
+    if plugins_dir.is_dir():
+        used_ids = {parent_bundle_id}
+        for appex in sorted(plugins_dir.glob("*.appex")):
+            ext_plist = appex / "Info.plist"
+            if not ext_plist.is_file():
+                continue
+            with ext_plist.open("rb") as stream:
+                ext_info = plistlib.load(stream)
+            prev_id = ext_info.get("CFBundleIdentifier")
+            if not isinstance(prev_id, str):
+                raise RuntimeError(f"Extension missing bundle ID: {ext_plist}")
+            if prev_id.startswith(parent_bundle_id + "."):
+                suffix = prev_id[len(parent_bundle_id) + 1:]
+            elif prev_id.startswith("io.anytype.app."):
+                suffix = prev_id[len("io.anytype.app."):]
+            elif prev_id == parent_bundle_id:
+                suffix = appex.stem
+            else:
+                suffix = prev_id.split(".")[-1]
+            if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9.-]*", suffix) or ".." in suffix:
+                suffix = appex.stem
+            new_id = f"{parent_bundle_id}.{suffix}"
+            if new_id in used_ids:
+                raise RuntimeError(f"Duplicate extension bundle ID: {new_id}")
+            used_ids.add(new_id)
+            if new_id != prev_id:
+                ext_info["CFBundleIdentifier"] = new_id
+                with ext_plist.open("wb") as stream:
+                    plistlib.dump(ext_info, stream, fmt=plistlib.FMT_BINARY)
+            extension_conversions.append({"extension": appex.name, "from": prev_id, "to": new_id})
+    if not extension_conversions:
+        raise RuntimeError("No app extensions found in PlugIns to package")
 
     ipa = evidence / "Pinkha-Native-Derived-iPad-Unsigned.ipa"
     command(["ditto", "-c", "-k", "--sequesterRsrc", "--keepParent",
@@ -125,6 +164,18 @@ def main():
         if (packaged["PinkhaNativeHeartMarker"] != heart["marker"]
                 or packaged["PinkhaNativeAppCommit"] != git(app, "rev-parse", "HEAD")):
             raise RuntimeError("Packaged app provenance mismatch")
+        ext_found = []
+        for name in archive.namelist():
+            match = re.fullmatch(r"^Payload/[^/]+\.app/PlugIns/([^/]+)\.appex/Info\.plist$", name)
+            if match:
+                with archive.open(name) as stream:
+                    ext_packaged = plistlib.load(stream)
+                ext_id = ext_packaged.get("CFBundleIdentifier", "")
+                if not ext_id.startswith(parent_bundle_id + "."):
+                    raise RuntimeError(f"Invalid packaged extension ID: {ext_id}")
+                ext_found.append({"path": name, "id": ext_id})
+        if not ext_found:
+            raise RuntimeError("Malformed IPA: missing PlugIns extensions in archive")
 
     result = {
         "status": "PASS",
@@ -141,6 +192,8 @@ def main():
         "ipa_sha256": digest(ipa),
         "bundle_id": packaged["CFBundleIdentifier"],
         "extensions_retained": (payload_app / "PlugIns").is_dir(),
+        "extensions": extension_conversions,
+        "extension_ids": [c["to"] for c in extension_conversions],
     }
     (evidence / "fast-ipa-receipt.json").write_text(
         json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

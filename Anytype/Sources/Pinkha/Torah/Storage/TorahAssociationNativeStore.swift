@@ -130,7 +130,9 @@ final class BootstrapTorahAssociationManifestProvider: TorahAssociationManifestP
     }
 
     func manifest(spaceId: String) async throws -> PinkhaSpaceManifest {
-        let manifest = try await bootstrapService.bootstrapSpace(spaceId: spaceId)
+        // Canonical association reads/writes must not retry optional native property
+        // registration. A broken derived schema must never block a valid source link.
+        let manifest = try await bootstrapService.bootstrapCanonicalSpace(spaceId: spaceId)
         guard manifest.spaceId == spaceId else {
             throw TorahAssociationRepositoryError.targetOutsideSpace
         }

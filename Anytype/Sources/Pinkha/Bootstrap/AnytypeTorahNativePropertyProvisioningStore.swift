@@ -43,12 +43,16 @@ public final class AnytypeTorahNativePropertyProvisioningStore: TorahNativePrope
             keys: PropertyDetails.subscriptionKeys.map(\.rawValue),
             limit: 0
         )
-        guard results.count <= 1 else { throw TorahNativeSchemaError.invalidProperty(key) }
-        guard let details = results.first else { return nil }
-        let property = PropertyDetails(details: details)
-        guard property.sourceObject == "_br" + key, !property.isDeleted else {
-            throw TorahNativeSchemaError.invalidProperty(key)
-        }
+        let matching = results
+            .map { PropertyDetails(details: $0) }
+            .filter { property in
+                property.key == key &&
+                property.spaceId == spaceId &&
+                !property.isDeleted &&
+                property.sourceObject == "_br" + key
+            }
+        guard matching.count <= 1 else { throw TorahNativeSchemaError.invalidProperty(key) }
+        guard let property = matching.first else { return nil }
         return TorahNativePropertyDescriptor(
             id: property.id, key: property.key, spaceId: property.spaceId,
             format: property.format.asMiddleware.rawValue, isReadOnlyValue: property.isReadOnlyValue
@@ -82,9 +86,12 @@ public final class AnytypeTorahNativePropertyProvisioningStore: TorahNativePrope
         let clock = ContinuousClock()
         let deadline = clock.now.advanced(by: .seconds(30))
         repeat {
-            if let created = try await property(key: definition.key, spaceId: spaceId) { return created }
+            if let created = try? await property(key: definition.key, spaceId: spaceId), created != nil {
+                return created!
+            }
             try await Task.sleep(for: .milliseconds(100))
         } while clock.now < deadline
+        if let created = try await property(key: definition.key, spaceId: spaceId) { return created }
         throw TorahNativeSchemaError.invalidProperty(definition.key)
     }
 

@@ -6,8 +6,17 @@ import Factory
 
 public protocol PinkhaSpaceBootstrapServiceProtocol: Sendable {
     func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest
+    /// The canonical associations repository does not depend on optional native schema installation.
+    func bootstrapCanonicalSpace(spaceId: String) async throws -> PinkhaSpaceManifest
     func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest?
     func isBootstrapped(spaceId: String) -> Bool
+}
+
+public extension PinkhaSpaceBootstrapServiceProtocol {
+    /// Preserve compatibility with injected test implementations of the bootstrap protocol.
+    func bootstrapCanonicalSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
+        try await bootstrapSpace(spaceId: spaceId)
+    }
 }
 
 public final class PinkhaSpaceBootstrapService: PinkhaSpaceBootstrapServiceProtocol, Sendable {
@@ -40,8 +49,12 @@ public final class PinkhaSpaceBootstrapService: PinkhaSpaceBootstrapServiceProto
         engine.isBootstrapped(spaceId: spaceId)
     }
 
+    public func bootstrapCanonicalSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
+        try await engine.bootstrapSpace(spaceId: spaceId)
+    }
+
     public func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
-        let manifest = try await engine.bootstrapSpace(spaceId: spaceId)
+        let manifest = try await bootstrapCanonicalSpace(spaceId: spaceId)
         if let nativeProperties {
             do {
                 _ = try await nativeProperties.provision(manifest: manifest)

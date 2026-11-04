@@ -53,10 +53,45 @@ public struct TorahNativePropertyDescriptor: Sendable, Equatable {
     }
 }
 
-public enum TorahNativeSchemaError: Error, Sendable, Equatable {
+public enum TorahNativeSchemaError: Error, Sendable, Equatable, LocalizedError, CustomNSError {
     case unsupportedEngine
     case invalidManifest
     case invalidProperty(String)
+
+    public static var errorDomain: String { "PinkhaKit.TorahNativeSchemaError" }
+
+    public var errorCode: Int {
+        switch self {
+        case .unsupportedEngine: 1
+        case .invalidManifest: 2
+        case .invalidProperty: 3
+        }
+    }
+
+    public var errorDescription: String? {
+        switch self {
+        case .unsupportedEngine:
+            "מנוע המאפיינים התורניים אינו זמין בגרסה המותקנת."
+        case .invalidManifest:
+            "אימות סכמת המאפיינים התורניים של המרחב נכשל (manifest/version)."
+        case .invalidProperty(let key):
+            "אימות רישום המאפיין התורני נכשל: \(key)."
+        }
+    }
+
+    public var errorUserInfo: [String: Any] {
+        var info: [String: Any] = [:]
+        if let desc = errorDescription {
+            info[NSLocalizedDescriptionKey] = desc
+        }
+        switch self {
+        case .invalidProperty(let key):
+            info["propertyKey"] = key
+        default:
+            break
+        }
+        return info
+    }
 }
 
 public protocol TorahNativePropertyProvisioningStore: Sendable {
@@ -138,8 +173,19 @@ public actor TorahNativeSchemaProvisioner {
             }
             if !additions.isEmpty {
                 try await store.addRecommendedProperties(additions, typeId: typeId, spaceId: manifest.spaceId)
-                let readback = try await store.attachedPropertyIds(typeId: typeId, spaceId: manifest.spaceId)
-                guard Set(current + nativeIds).isSubset(of: Set(readback)) else {
+                let expected = Set(current + nativeIds)
+                var satisfied = false
+                let clock = ContinuousClock()
+                let deadline = clock.now.advanced(by: .seconds(10))
+                repeat {
+                    let readback = try await store.attachedPropertyIds(typeId: typeId, spaceId: manifest.spaceId)
+                    if expected.isSubset(of: Set(readback)) {
+                        satisfied = true
+                        break
+                    }
+                    try await Task.sleep(for: .milliseconds(100))
+                } while clock.now < deadline
+                guard satisfied else {
                     throw TorahNativeSchemaError.invalidProperty(typeId)
                 }
             }
