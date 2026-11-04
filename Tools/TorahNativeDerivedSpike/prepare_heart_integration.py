@@ -119,6 +119,15 @@ edit(filter,'func makeFilter(spaceID string, rawFilter FilterRequest, store Obje
 
 func makeNativeFilter(spaceID string, rawFilter FilterRequest, store ObjectStore) (Filter, error) {''')
 
+# The original option API accepts any relation key. Canonical derived values
+# must never gain a second option-Object store, including on older clients.
+options='core/block/object/objectcreator/relation_option.go'
+edit(options,'"github.com/anyproto/anytype-heart/core/domain"','"github.com/anyproto/anytype-heart/core/domain"\n torah "github.com/anyproto/anytype-heart/core/pinkha/torah"')
+edit(options,'\tif !details.Has(bundle.RelationKeyCreatedDate) {',''' if torah.IsProperty(details.GetString(bundle.RelationKeyRelationKey)) {
+  return "", nil, fmt.Errorf("canonical derived properties do not have option Objects")
+ }
+\tif !details.Has(bundle.RelationKeyCreatedDate) {''')
+
 args.output.mkdir(parents=True,exist_ok=True)
 patch=''
 inventory=[]

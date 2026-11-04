@@ -39,7 +39,11 @@ def main():
     simulator=json.loads(subprocess.check_output(['xcrun','simctl','list','devices','available','--json'],text=True))
     devices=[device for devices in simulator['devices'].values() for device in devices]
     selected=next((device for device in devices if device['udid']==args.simulator_udid),None)
-    if not selected or 'iPad' not in selected['name']: raise RuntimeError('A disposable iPad simulator is required')
+    simulator_receipt=json.loads((evidence.parent/'disposable-simulator.json').read_text())
+    if (not selected or not selected['name'].startswith('Pinkha-Native-Derived-')
+        or simulator_receipt['udid']!=args.simulator_udid
+        or 'iPad' not in simulator_receipt['device']['name']):
+        raise RuntimeError('Use the freshly created Pinkha-Native-Derived disposable iPad simulator')
     derived=evidence/'DerivedData-NativeAcceptance'
     common=['-project','Anytype.xcodeproj','-scheme','Anytype','-configuration','Release-Anytype',
             'OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED']
@@ -74,6 +78,45 @@ def main():
             elif isinstance(value,list): pending.extend(value)
         raise RuntimeError('Missing actual test count: '+key)
     if count('passedTests')<1 or count('failedTests') or count('skippedTests'): raise RuntimeError('Native product acceptance did not pass without skips')
+    native_passed=count('passedTests')
+    # Drive the original app after its real native account/Space preparation.
+    # Only fixture IDs/names cross into the test runner; no canonical mirror or
+    # authentication secret is supplied to the UI or written into the repository.
+    container=Path(subprocess.check_output(['xcrun','simctl','get_app_container',args.simulator_udid,'io.anytype.app','data'],text=True).strip())
+    fixture_path=container/'Library/Application Support/pinkha-native-derived-ui-fixture.json'
+    fixture=json.loads(fixture_path.read_text())
+    if len(set(fixture['documents'].values()))!=3: raise RuntimeError('Native UI fixture must contain three actual writing Objects')
+    (evidence/'native-ui-fixture.json').write_text(json.dumps(fixture,indent=2)+'\n')
+    command(['xcodebuild','build-for-testing','-workspace','PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace',
+             '-scheme','PinkhaStage1Acceptance','-configuration','Release-Anytype',
+             'OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED',
+             '-destination','platform=iOS Simulator,id='+args.simulator_udid,'-derivedDataPath',str(derived),
+             '-parallel-testing-enabled','NO','ENABLE_TESTABILITY=YES','ONLY_ACTIVE_ARCH=YES'],app,evidence)
+    ui_runs=[path for path in (derived/'Build/Products').glob('*.xctestrun') if 'PinkhaStage1Acceptance' in path.name]
+    if len(ui_runs)!=1: raise RuntimeError('Expected the real application UI-test configuration')
+    with ui_runs[0].open('rb') as stream: ui_run=plistlib.load(stream)
+    def inject_ui(value):
+        if isinstance(value,dict):
+            if value.get('BlueprintName')=='PinkhaStage1AcceptanceUITests' or value.get('TestBundlePath','').endswith('PinkhaStage1AcceptanceUITests.xctest'):
+                environment=value.setdefault('EnvironmentVariables',{})
+                environment['PINKHA_NATIVE_UI_DISPOSABLE']='1'
+                environment['PINKHA_NATIVE_UI_FIXTURE_JSON']=json.dumps(fixture)
+            for child in value.values(): inject_ui(child)
+        elif isinstance(value,list):
+            for child in value: inject_ui(child)
+    inject_ui(ui_run)
+    ui_configuration=ui_runs[0].with_name('PinkhaNativeDerivedUI.xctestrun')
+    with ui_configuration.open('wb') as stream: plistlib.dump(ui_run,stream)
+    ui_result=evidence/'NativeDerivedOriginalAppUI.xcresult'
+    command(['xcodebuild','test-without-building','-xctestrun',str(ui_configuration),'-destination',
+             'platform=iOS Simulator,id='+args.simulator_udid,'-parallel-testing-enabled','NO',
+             '-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests',
+             '-resultBundlePath',str(ui_result)],app,evidence)
+    summary=json.loads(subprocess.check_output(['xcrun','xcresulttool','get','test-results','summary','--path',str(ui_result),'--format','json'],text=True))
+    (evidence/'native-ui-test-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+    if count('passedTests')<1 or count('failedTests') or count('skippedTests'): raise RuntimeError('Original application UI acceptance did not pass without skips')
+    ui_passed=count('passedTests')
+    command(['xcrun','xcresulttool','export','attachments','--path',str(ui_result),'--output-path',str(evidence/'screenshots')],app,evidence)
     device=evidence/'DerivedData-iPadDevice'
     command(['xcodebuild','build',*common,'-destination','generic/platform=iOS','-sdk','iphoneos',
              '-derivedDataPath',str(device),'CODE_SIGNING_ALLOWED=NO','CODE_SIGNING_REQUIRED=NO',
@@ -94,7 +137,8 @@ def main():
     command(['ditto','-c','-k','--sequesterRsrc','--keepParent',str(payload.parent),str(ipa)],app,evidence)
     receipt=dict(status='PASS',scope='native product API integration test + unsigned iPad build; physical device and full acceptance remain required',
                  app_base_sha=git(app,'rev-parse','HEAD'),app_branch=git(app,'branch','--show-current'),
-                 heart=heart,ipa=str(ipa),ipa_sha256=digest(ipa),passed_tests=count('passedTests'),physical_ipad_verified=False)
+                 heart=heart,ipa=str(ipa),ipa_sha256=digest(ipa),passed_native_tests=native_passed,
+                 passed_original_app_ui_tests=ui_passed,physical_ipad_verified=False)
     (evidence/'native-ipad-build.json').write_text(json.dumps(receipt,indent=2)+'\n')
     print(json.dumps(dict(ipa=str(ipa),sha256=receipt['ipa_sha256'])))
 

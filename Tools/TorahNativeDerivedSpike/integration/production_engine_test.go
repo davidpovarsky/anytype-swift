@@ -5,6 +5,13 @@ import (
  "encoding/json"
  "path/filepath"
  "testing"
+ "os"
+ "reflect"
+ "time"
+
+ "github.com/gogo/protobuf/proto"
+ "github.com/anyproto/anytype-heart/clientlibrary/service"
+ "github.com/anyproto/anytype-heart/pb"
 
  anystore "github.com/anyproto/any-store"
  "github.com/anyproto/any-store/anyenc"
@@ -15,6 +22,121 @@ import (
  engine "github.com/davidpovarsky/anytype-swift/Modules/PinkhaHeart/engine"
  torah "github.com/davidpovarsky/anytype-swift/Modules/PinkhaHeart/torah"
 )
+
+// This crosses the SAME generated protobuf command entry points used by the
+// mobile library, with the real core, account, object editor, indexer, Type and
+// subscription services. No ObjectStore fixture or mock backend is used here.
+func TestRealNativeMiddlewareDerivedProperties(t *testing.T) {
+ if os.Getenv("PINKHA_NATIVE_WIRE_ACCEPTANCE")!="1"{t.Skip("explicit disposable native wallet opt-in required")}
+ invoke:=func(call func([]byte)[]byte,req,resp proto.Message){
+  t.Helper()
+  data,err:=proto.Marshal(req);if err!=nil{t.Fatal(err)}
+  if err=proto.Unmarshal(call(data),resp);err!=nil{t.Fatal(err)}
+  field:=reflect.ValueOf(resp).Elem().FieldByName("Error")
+  if field.IsValid()&&!field.IsNil()&&field.Elem().FieldByName("Code").Int()!=0 {
+   t.Fatalf("%T error %d: %s",req,field.Elem().FieldByName("Code").Int(),field.Elem().FieldByName("Description").String())
+  }
+ }
+ root:=t.TempDir()
+ invoke(service.InitialSetParameters,&pb.RpcInitialSetParametersRequest{Platform:"ios",Version:"0.51.0",Workdir:root,DoNotSendLogs:true,DoNotSaveLogs:true,DoNotSendTelemetry:true},&pb.RpcInitialSetParametersResponse{})
+ wallet:=&pb.RpcWalletCreateResponse{}
+ invoke(service.WalletCreate,&pb.RpcWalletCreateRequest{RootPath:root},wallet)
+ // Never print or persist the synthetic wallet's mnemonic in evidence.
+ invoke(service.AccountCreate,&pb.RpcAccountCreateRequest{Name:"Disposable native Torah API test",NetworkMode:pb.RpcAccount_LocalOnly,DisableLocalNetworkSync:true},&pb.RpcAccountCreateResponse{})
+ t.Cleanup(func(){invoke(service.AppShutdown,&pb.RpcAppShutdownRequest{},&pb.RpcAppShutdownResponse{})})
+ space:=&pb.RpcWorkspaceCreateResponse{}
+ invoke(service.WorkspaceCreate,&pb.RpcWorkspaceCreateRequest{Details:domain.NewDetails().SetString(bundle.RelationKeyName,"Native derived disposable Space").ToProto()},space)
+ invoke(service.WorkspaceOpen,&pb.RpcWorkspaceOpenRequest{SpaceId:space.SpaceId},&pb.RpcWorkspaceOpenResponse{})
+ canonical:=&pb.RpcObjectCreateRelationResponse{}
+ invoke(service.ObjectCreateRelation,&pb.RpcObjectCreateRelationRequest{SpaceId:space.SpaceId,Details:domain.NewDetails().SetString(bundle.RelationKeyName,"הקשר תורני").SetString(bundle.RelationKeyRelationKey,"pinkhaWireCanonical").SetInt64(bundle.RelationKeyRelationFormat,0).SetBool(bundle.RelationKeyIsHidden,true).ToProto()},canonical)
+ typeIDs:=map[string]string{}
+ typeKeys:=map[string]string{}
+ for _,role:=range []string{"chiddush","article","research"}{
+  created:=&pb.RpcObjectCreateObjectTypeResponse{}
+  invoke(service.ObjectCreateObjectType,&pb.RpcObjectCreateObjectTypeRequest{SpaceId:space.SpaceId,Details:domain.NewDetails().SetString(bundle.RelationKeyName,role).SetInt64(bundle.RelationKeyRecommendedLayout,int64(model.ObjectType_basic)).ToProto()},created)
+  typeIDs[role]=created.ObjectId
+  typeKeys[role]=domain.NewDetailsFromProto(created.Details).GetString(bundle.RelationKeyUniqueKey)
+ }
+ // Auxiliary manifest roles are not exercised here; the iOS suite runs the
+ // existing complete bootstrap/migration. Native writing Types/property IDs
+ // below are all real Objects created through the production RPCs.
+ manifestData:=map[string]any{"schemaVersion":1,"spaceId":space.SpaceId,"provisioningState":"complete",
+  "documentAssociationsPropertyId":canonical.ObjectId,"documentAssociationsPropertyKey":"pinkhaWireCanonical",
+  "registeredDocumentTypes":typeIDs,"defaultTemplateIds":map[string]string{"chiddush":"unused-template-h","article":"unused-template-a","research":"unused-template-r"},
+  "parentPropertyId":"unused-parent","parentPropertyKey":"unusedParent","orderPropertyId":"unused-order","orderPropertyKey":"unusedOrder","folderTypeId":"unused-folder","bookFolderTypeId":"unused-book"}
+ manifestRaw,_:=json.Marshal(manifestData)
+ manifest:=&pb.RpcObjectCreateResponse{}
+ invoke(service.ObjectCreate,&pb.RpcObjectCreateRequest{SpaceId:space.SpaceId,ObjectTypeUniqueKey:"ot-page",Details:domain.NewDetails().SetString(bundle.RelationKeyName,torah.ManifestUniqueKey).SetString(bundle.RelationKeyDescription,string(manifestRaw)).SetBool(bundle.RelationKeyIsHidden,true).ToProto()},manifest)
+ show:=func(id string)*domain.Details{
+  t.Helper();response:=&pb.RpcObjectShowResponse{}
+  invoke(service.ObjectShow,&pb.RpcObjectShowRequest{SpaceId:space.SpaceId,ObjectId:id,ContextId:id},response)
+  for _,entry:=range response.ObjectView.Details{if entry.Id==id{return domain.NewDetailsFromProto(entry.Details)}}
+  t.Fatalf("ObjectShow omitted requested object");return nil
+ }
+ wait:=func(label string,predicate func()bool){
+  t.Helper();deadline:=time.Now().Add(45*time.Second)
+  for time.Now().Before(deadline){if predicate(){return};time.Sleep(100*time.Millisecond)}
+  t.Fatal("native API timeout: "+label)
+ }
+ wait("engine capability",func()bool{return show(manifest.ObjectId).GetInt64(torah.VersionKey)==1})
+ nativeIDs:=[]string{}
+ for _,definition:=range torah.Definitions{
+  property:=&pb.RpcObjectCreateRelationResponse{}
+  invoke(service.ObjectCreateRelation,&pb.RpcObjectCreateRelationRequest{SpaceId:space.SpaceId,Details:domain.NewDetails().SetString(bundle.RelationKeyName,definition.Name).SetString(bundle.RelationKeyRelationKey,definition.Key).SetInt64(bundle.RelationKeyRelationFormat,11).SetBool(bundle.RelationKeyRelationReadonlyValue,true).ToProto()},property)
+  nativeIDs=append(nativeIDs,property.ObjectId)
+  metadata:=show(property.ObjectId)
+  if metadata.GetString(bundle.RelationKeySourceObject)!="_br"+definition.Key{t.Fatal("not a genuine installed bundled Property")}
+  for _,id:=range typeIDs{
+   invoke(service.ObjectTypePropertyAdd,&pb.RpcObjectTypePropertyAddRequest{ObjectTypeId:id,Key:definition.Key,Section:pb.RpcObjectTypePropertyAddRequest_Recommended,EnableInViews:true},&pb.RpcObjectTypePropertyAddResponse{})
+  }
+ }
+ document:=&pb.RpcObjectCreateResponse{}
+ invoke(service.ObjectCreate,&pb.RpcObjectCreateRequest{SpaceId:space.SpaceId,ObjectTypeUniqueKey:typeKeys["chiddush"],Details:domain.NewDetails().SetString(bundle.RelationKeyName,"Real native document").ToProto()},document)
+ identity:=torah.Identity(torah.Ref,"sefaria","Genesis 1:1","")
+ item:=map[string]string{"id":"wire-source","kind":"ref","role":"context","providerID":"sefaria","canonicalKey":"Genesis 1:1","externalID":"Genesis 1:1","labelHe":"בראשית א:א"}
+ payload,_:=json.Marshal(map[string]any{"version":2,"records":[]any{map[string]any{"spaceId":space.SpaceId,"objectId":document.ObjectId,"item":item}}})
+ write:=func(raw string){t.Helper();invoke(service.ObjectSetDetails,&pb.RpcObjectSetDetailsRequest{ContextId:document.ObjectId,Details:[]*model.Detail{{Key:"pinkhaWireCanonical",Value:domain.String(raw).ToProto()}}},&pb.RpcObjectSetDetailsResponse{})}
+ write(string(payload))
+ wait("canonical to native ObjectShow",func()bool{values:=show(document.ObjectId).GetStringList(torah.SourcesKey);return len(values)==1&&values[0]==identity})
+ if show(document.ObjectId).GetString("pinkhaWireCanonical")!=string(payload){t.Fatal("canonical payload bytes were rewritten")}
+ filter:=&model.BlockContentDataviewFilter{RelationKey:torah.SourcesKey,Format:model.RelationFormat_tag,Condition:model.BlockContentDataviewFilter_In,Value:domain.StringList([]string{identity}).ToProto()}
+ search:=&pb.RpcObjectSearchResponse{}
+ invoke(service.ObjectSearch,&pb.RpcObjectSearchRequest{SpaceId:space.SpaceId,Filters:[]*model.BlockContentDataviewFilter{filter},Keys:[]string{"id",torah.SourcesKey,torah.LabelsKey},NeedTotal:true},search)
+ if len(search.Records)!=1||domain.NewDetailsFromProto(search.Records[0]).GetString(bundle.RelationKeyId)!=document.ObjectId{t.Fatal("actual native ObjectSearch membership mismatch")}
+ nativeSet:=&pb.RpcObjectCreateSetResponse{}
+ invoke(service.ObjectCreateSet,&pb.RpcObjectCreateSetRequest{SpaceId:space.SpaceId,Source:[]string{typeIDs["chiddush"]},Details:domain.NewDetails().SetString(bundle.RelationKeyName,"Real native Torah Set").ToProto()},nativeSet)
+ setView:=&pb.RpcObjectShowResponse{}
+ invoke(service.ObjectShow,&pb.RpcObjectShowRequest{SpaceId:space.SpaceId,ObjectId:nativeSet.ObjectId,ContextId:nativeSet.ObjectId},setView)
+ foundView:=false
+ for _,block:=range setView.ObjectView.Blocks{
+  if dv:=block.GetDataview();dv!=nil&&len(dv.Views)>0{
+   invoke(service.BlockDataviewFilterAdd,&pb.RpcBlockDataviewFilterAddRequest{ContextId:nativeSet.ObjectId,BlockId:block.Id,ViewId:dv.Views[0].Id,Filter:filter},&pb.RpcBlockDataviewFilterAddResponse{})
+   foundView=true;break
+  }
+ }
+ if !foundView{t.Fatal("native Set had no Dataview")}
+ events:=make(chan string,16)
+ service.SetEventHandler(func(event *pb.Event){for _,msg:=range event.Messages{
+  if add:=msg.GetSubscriptionAdd();add!=nil&&add.SubId=="torah-native-wire"&&add.Id==document.ObjectId{select{case events<-"add":default:}}
+  if remove:=msg.GetSubscriptionRemove();remove!=nil&&remove.SubId=="torah-native-wire"&&remove.Id==document.ObjectId{select{case events<-"remove":default:}}
+ }})
+ subscribed:=&pb.RpcObjectSearchSubscribeResponse{}
+ invoke(service.ObjectSearchSubscribe,&pb.RpcObjectSearchSubscribeRequest{SpaceId:space.SpaceId,SubId:"torah-native-wire",Filters:[]*model.BlockContentDataviewFilter{filter},Keys:[]string{"id",torah.SourcesKey,torah.LabelsKey},Limit:100},subscribed)
+ if len(subscribed.Records)!=1{t.Fatal("native subscription initial membership mismatch")}
+ waitEvent:=func(want string){t.Helper();deadline:=time.After(45*time.Second);for{select{case value:=<-events:if value==want{return};case<-deadline:t.Fatal("missing actual subscription event: "+want)}}}
+ write("")
+ waitEvent("remove")
+ write(string(payload))
+ waitEvent("add")
+ // A derived Property must never offer an alternative per-source option store,
+ // including when an older/unadapted client calls the original option API.
+ optionRequest:=&pb.RpcObjectCreateRelationOptionRequest{SpaceId:space.SpaceId,Details:domain.NewDetails().SetString(bundle.RelationKeyName,"must not exist").SetString(bundle.RelationKeyRelationKey,torah.SourcesKey).ToProto()}
+ optionData,_:=proto.Marshal(optionRequest)
+ option:=&pb.RpcObjectCreateRelationOptionResponse{}
+ if err:=proto.Unmarshal(service.ObjectCreateRelationOption(optionData),option);err!=nil{t.Fatal(err)}
+ if option.Error==nil||option.Error.Code==0{t.Fatal("derived canonical Property accepted a forbidden Tag option Object")}
+ t.Log("PASS real generated middleware APIs: Property registry, Type recommendation, ObjectSetDetails, ObjectShow, ObjectSearch, native Set filter, live remove/add; zero alternative option Objects")
+}
 
 // This verifies the actual production index lifecycle against native SQLite.
 // Product API/Set acceptance must additionally run against the approved patched

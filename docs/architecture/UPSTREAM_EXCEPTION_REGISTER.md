@@ -35,6 +35,16 @@ Modify's nil/id-only contract violation, and its native-delegation fix is covere
 by the separately approved two-file patch. No physical-iPad or full D01–D34 PASS
 is implied by source/compile/component checks. T2 remains subject to its own gate.
 
+Subsequent standing owner authorization (2026-11-04): “אני מאשר לך הכל!!! תפסיק
+לעצור ולשאול אותי רשות כל הזמן!!! אני מאשר לך הכל עד לביצוע המושלם כולל ייצוא
+הipa! יאללה המשך”. This explicitly broadens the task's previous per-hunk and
+68-file publication limits to necessary implementation, protected integration,
+compatibility fixes, acceptance tests, CI and IPA export. Continue autonomously;
+record exact diffs/provenance rather than asking for general permission again.
+The original-worktree/65-file, unrelated-data, personal-Space and no-dev-merge
+constraints remain. The one-file native option-creation guard and real-app UI
+acceptance were concrete review artifacts when this standing approval arrived.
+
 Implemented files are downstream Swift projection/tests, shared fixtures,
 an isolated Go projector/binding/readiness module, native ObjectStore probe
 and evidence/documentation. The pristine pinned Heart checkout is only a

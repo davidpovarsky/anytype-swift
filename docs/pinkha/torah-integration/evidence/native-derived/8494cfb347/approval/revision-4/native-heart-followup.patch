@@ -1,0 +1,21 @@
+diff --git a/core/block/object/objectcreator/relation_option.go b/core/block/object/objectcreator/relation_option.go
+--- a/core/block/object/objectcreator/relation_option.go
++++ b/core/block/object/objectcreator/relation_option.go
+@@ -9,6 +9,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/editor/order"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/state"
+ 	"github.com/anyproto/anytype-heart/core/domain"
++ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
+ 	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/database"
+@@ -27,6 +28,9 @@
+ 	if details.GetString(bundle.RelationKeyRelationKey) == "" {
+ 		return "", nil, fmt.Errorf("relation key is empty")
+ 	}
++ if torah.IsProperty(details.GetString(bundle.RelationKeyRelationKey)) {
++  return "", nil, fmt.Errorf("canonical derived properties do not have option Objects")
++ }
+ 	if !details.Has(bundle.RelationKeyCreatedDate) {
+ 		details.SetInt64(bundle.RelationKeyCreatedDate, time.Now().Unix())
+ 	}

@@ -63,6 +63,9 @@ func (i *Index) Update(ctx context.Context, id string, details *domain.Details) 
 	if details == nil || details.Len() == 0 {
 		return errors.New("empty details")
 	}
+	// Preserve the original native method's documented ID assignment, including
+	// callers that retain this Details pointer after the write.
+	details.SetString(bundle.RelationKeyId, id)
 	i.rememberManifest(details.Copy().SetString(bundle.RelationKeyId, id))
 	// No manifest has ever been observed in this Space. Preserve the original
 	// cheap write path; ordinary Anytype edits do not scan a Pinkha-free Space.

@@ -64,7 +64,7 @@ final class TorahSourcesSearchPresenter {
     }
 
     var visibleAssociations: [TorahAssociationItem] {
-        guard session.presentationHost == .properties else { return associations }
+        guard session.presentationHost == .properties || fixedScope else { return associations }
         let kind: TorahAssociationKind = switch searchScope {
         case .references: .ref
         case .topics: .topic

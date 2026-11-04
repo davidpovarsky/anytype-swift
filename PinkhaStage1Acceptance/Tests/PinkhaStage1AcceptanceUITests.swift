@@ -1,5 +1,138 @@
 import XCTest
 
+/// Drives the original application against the custom Heart. Its fixture is
+/// produced by the real native API suite in a freshly created simulator.
+@MainActor
+final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
+    private let app = XCUIApplication()
+    private var fixture: NativeDerivedFixture!
+
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        let env = ProcessInfo.processInfo.environment
+        XCTAssertEqual(env["PINKHA_NATIVE_UI_DISPOSABLE"], "1")
+        guard env["PINKHA_NATIVE_UI_DISPOSABLE"] == "1" else {
+            throw NSError(domain: "NativeDerivedDisposableFixtureRequired", code: 1)
+        }
+        fixture = try JSONDecoder().decode(NativeDerivedFixture.self, from: Data(try XCTUnwrap(env["PINKHA_NATIVE_UI_FIXTURE_JSON"]).utf8))
+        XCTAssertEqual(fixture.documents.count, 3)
+        XCTAssertEqual(Set(fixture.documents.values).count, 3)
+        app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+    }
+
+    func testNativePropertiesPickerChipsSetMembershipAndRelaunch() throws {
+        for role in ["chiddush", "article", "research"] {
+            let id = try XCTUnwrap(fixture.documents[role])
+            try openProperties(id)
+            for name in fixture.nativeProperties { XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 15)) }
+            XCTAssertFalse(app.buttons["torah-property-ref"].exists, "The old display-only Properties row must not replace the original native row")
+            XCTAssertFalse(app.staticTexts["הקשר תורני"].exists)
+            try selectNativeProperty("מקור/ות", query: fixture.sourceQuery)
+            XCTAssertTrue(app.staticTexts[fixture.sourceLabel].waitForExistence(timeout: 20))
+            try selectNativeProperty("נושא", query: fixture.topicQuery)
+            XCTAssertTrue(app.staticTexts[fixture.topicLabel].waitForExistence(timeout: 20))
+            try selectNativeProperty("מילה / ערך", query: fixture.wordQuery)
+            let wordLabel = try nativeValueText("מילה / ערך")
+            screenshot("native-properties-\(role)-three-values")
+            app.terminate()
+            try openProperties(id)
+            XCTAssertTrue(app.staticTexts[fixture.sourceLabel].waitForExistence(timeout: 20))
+            XCTAssertTrue(app.staticTexts[fixture.topicLabel].waitForExistence(timeout: 20))
+            XCTAssertEqual(try nativeValueText("מילה / ערך"), wordLabel)
+            XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "providerID")).firstMatch.exists)
+            screenshot("native-properties-\(role)-relaunch")
+            app.terminate()
+        }
+        try open(fixture.setId)
+        for title in fixture.names.values {
+            XCTAssertTrue(app.staticTexts[title].waitForExistence(timeout: 30), "Native Set omitted a matching writing document")
+        }
+        screenshot("native-set-three-live-members")
+        app.terminate()
+        try open(fixture.setId)
+        for title in fixture.names.values { XCTAssertTrue(app.staticTexts[title].waitForExistence(timeout: 30)) }
+        screenshot("native-set-members-after-relaunch")
+    }
+
+    private func open(_ id: String) throws {
+        if app.state == .notRunning { app.launch() }
+        var url = URLComponents()
+        url.scheme = "anytype"; url.host = "object"
+        url.queryItems = [URLQueryItem(name: "objectId", value: id), URLQueryItem(name: "spaceId", value: fixture.spaceId)]
+        app.open(try XCTUnwrap(url.url))
+        XCTAssertTrue(app.buttons["More"].firstMatch.waitForExistence(timeout: 45))
+    }
+
+    private func openProperties(_ id: String) throws {
+        try open(id)
+        app.buttons["More"].firstMatch.tap()
+        let button = app.buttons["Properties"].firstMatch
+        XCTAssertTrue(button.waitForExistence(timeout: 15)); button.tap()
+        XCTAssertTrue(propertyTitle("מקור/ות").waitForExistence(timeout: 20))
+    }
+
+    private func propertyTitle(_ name: String) -> XCUIElement {
+        let menu = app.buttons[name].firstMatch
+        return menu.exists ? menu : app.staticTexts[name].firstMatch
+    }
+
+    private func selectNativeProperty(_ name: String, query: String) throws {
+        let title = propertyTitle(name)
+        XCTAssertTrue(title.exists)
+        // The original row has a name Menu and a separate value Button. Tap the
+        // value area using its real name-column geometry, without adding a test
+        // shortcut or altering the original Anytype row implementation.
+        let x = min(app.frame.maxX - 24, title.frame.maxX + 28)
+        app.coordinate(withNormalizedOffset: .zero)
+            .withOffset(CGVector(dx: x, dy: title.frame.midY)).tap()
+        let editor = app.otherElements["torah-native-property-editor"].firstMatch
+        XCTAssertTrue(editor.waitForExistence(timeout: 15))
+        let search = app.textFields["torah-sources-search-field"].firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: 10)); search.tap(); search.typeText(query)
+        let link = app.buttons["Link to document"].firstMatch
+        XCTAssertTrue(link.waitForExistence(timeout: 45)); link.tap()
+        XCTAssertTrue(app.buttons["Remove link"].firstMatch.waitForExistence(timeout: 30))
+        editor.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02))
+            .press(forDuration: 0.05, thenDragTo: editor.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.98)))
+        XCTAssertTrue(editor.waitForNonExistence(timeout: 15))
+    }
+
+    private func screenshot(_ name: String) {
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
+    }
+
+    private func nativeValueText(_ name: String) throws -> String {
+        let title = propertyTitle(name)
+        let deadline = Date().addingTimeInterval(20)
+        repeat {
+            let values = app.staticTexts.allElementsBoundByIndex.filter {
+                abs($0.frame.midY - title.frame.midY) < 22 && $0.frame.minX >= title.frame.maxX &&
+                !$0.label.isEmpty && $0.label != name && $0.label != "Add"
+            }
+            if let value = values.first?.label {
+                XCTAssertFalse(value.contains("torah1|")); return value
+            }
+            Thread.sleep(forTimeInterval: 0.1)
+        } while Date() < deadline
+        XCTFail("The original native Property row has no human value: \(name)")
+        throw NSError(domain: "NativeDerivedMissingChip", code: 2)
+    }
+}
+
+private struct NativeDerivedFixture: Decodable {
+    let spaceId: String
+    let documents: [String: String]
+    let names: [String: String]
+    let setId: String
+    let nativeProperties: [String]
+    let sourceQuery: String
+    let sourceLabel: String
+    let topicQuery: String
+    let topicLabel: String
+    let wordQuery: String
+}
+
 @MainActor
 final class PinkhaTorahPropertiesAcceptanceUITests: XCTestCase {
     private let app = XCUIApplication()

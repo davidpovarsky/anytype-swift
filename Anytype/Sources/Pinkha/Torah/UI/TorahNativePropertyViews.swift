@@ -157,6 +157,9 @@ struct TorahNativePropertyEditorView: View {
                     .foregroundStyle(Color.Text.secondary)
             }
         }
+        .navigationTitle(definition.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .accessibilityIdentifier("torah-native-property-editor")
     }
 }
 

@@ -28,10 +28,15 @@ def command(argv, cwd, logdir, env=None):
     log = logdir / ('command-%02d.log' % len(list(logdir.glob('command-*.log'))))
     print(json.dumps(dict(command=argv, log=str(log))), flush=True)
     with log.open('w', encoding='utf8') as stream:
-        result = subprocess.run(argv, cwd=cwd, env=env, stdout=stream, stderr=subprocess.STDOUT)
-    if result.returncode:
+        with subprocess.Popen(argv,cwd=cwd,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,
+                              text=True,encoding='utf8',errors='replace',bufsize=1) as process:
+            for number,line in enumerate(process.stdout):
+                stream.write(line)
+                if number % 250 == 0 or 'error:' in line.lower(): print(line.rstrip(),flush=True)
+            returncode=process.wait()
+    if returncode:
         print(log.read_text(encoding='utf8', errors='replace')[-6000:])
-        raise subprocess.CalledProcessError(result.returncode, argv)
+        raise subprocess.CalledProcessError(returncode, argv)
 
 def git(root, *args):
     return subprocess.check_output(['git', '-C', str(root), *args], text=True).strip()
@@ -103,7 +108,7 @@ def main():
     receipt_path.write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf8')
     if args.target=='verify': return
     marker='pinkha-native-derived-v1-'+actual
-    ldflags=f'-X github.com/anyproto/anytype-heart/util/vcs.GitSummary={marker} -X github.com/anyproto/anytype-heart/util/vcs.GitCommit={PIN}'
+    ldflags=f'-X github.com/anyproto/anytype-heart/util/vcs.GitSummary={TAG}-{marker} -X github.com/anyproto/anytype-heart/util/vcs.GitCommit={PIN}'
     env=dict(os.environ,CGO_ENABLED='1',GOMAXPROCS='2')
     env.pop('GOWORK',None)
     native=[]
@@ -111,7 +116,7 @@ def main():
         arch='linux-amd64-musl' if platform.machine()=='x86_64' else 'linux-arm64-musl'
         native.append(fetch_tantivy(heart,arch))
         env['CGO_LDFLAGS']='-L'+str(heart/'deps/libs'/arch)
-        command([args.go,'test','-p','2','./core/pinkha/...','./pkg/lib/bundle','./pkg/lib/database','./pkg/lib/localstore/objectstore/spaceindex'],heart,args.evidence,env)
+        command([args.go,'test','-p','2','./core/pinkha/...','./pkg/lib/bundle','./pkg/lib/database','./pkg/lib/localstore/objectstore/spaceindex','./core/block/object/objectcreator'],heart,args.evidence,env)
         output=args.evidence.resolve()/'libpinkha-heart.so'
         command([args.go,'build','-p','2','-tags','nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg','-ldflags',ldflags,'-buildmode=c-shared','-o',str(output),'./clientlibrary/clib'],heart,args.evidence,env)
         if not contains(output,marker.encode()): raise RuntimeError('Custom identity missing from native Heart binary')
@@ -122,7 +127,7 @@ def main():
         for arch in ['darwin-arm64','darwin-amd64','ios-arm64','ios-arm64-sim','ios-amd64']: native.append(fetch_tantivy(heart,arch))
         hostarch='darwin-arm64' if platform.machine()=='arm64' else 'darwin-amd64'
         testenv=dict(env,CGO_LDFLAGS='-L'+str(heart/'deps/libs'/hostarch))
-        command([args.go,'test','-p','2','./core/pinkha/...','./pkg/lib/bundle','./pkg/lib/database','./pkg/lib/localstore/objectstore/spaceindex'],heart,args.evidence,testenv)
+        command([args.go,'test','-p','2','./core/pinkha/...','./pkg/lib/bundle','./pkg/lib/database','./pkg/lib/localstore/objectstore/spaceindex','./core/block/object/objectcreator'],heart,args.evidence,testenv)
         (heart/'deps').mkdir(exist_ok=True)
         for tool in ['gomobile','gobind']:
             command([args.go,'build','-o',str(heart/'deps'/tool),'golang.org/x/mobile/cmd/'+tool],heart,args.evidence,env)

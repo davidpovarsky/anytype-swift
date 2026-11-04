@@ -15,19 +15,19 @@ struct TorahNativeDerivedProductIntegrationTests {
     @MainActor
     @Test("Real schema, canonical writes, native Set filters, columns and live membership")
     func originalProductPipeline() async throws {
-        let root = FileManager.default.temporaryDirectory.appendingPathComponent("pinkha-native-" + UUID().uuidString)
-        let auth = Container.shared.authMiddleService()
-        _ = try await auth.createWallet(rootPath: root.path)
+        Container.shared.serverConfigurationStorage().setupCurrentConfiguration(config: .localOnly)
+        let auth = Container.shared.authService()
+        let mnemonic = try await auth.createWallet()
+        try Container.shared.seedService().saveSeed(mnemonic)
         _ = try await auth.createAccount(
-            name: "Native derived disposable acceptance", imagePath: "", iconOption: 1,
-            networkMode: .localOnly, joinStreamUrl: "", configPath: nil
+            name: "Native derived disposable acceptance", iconOption: 1, imagePath: ""
         )
         let space = try await Container.shared.workspaceService().createSpace(
             name: "Native Torah disposable test", iconOption: 1, accessType: .private,
             useCase: .none, withChat: false, spaceType: .regular
         )
         let spaceId = space.spaceID
-        _ = try await Container.shared.workspaceService().workspaceOpen(spaceId: spaceId, withChat: false)
+        _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: spaceId)
         let bootstrap = Container.shared.pinkhaBootstrapService()
         let manifest = try await bootstrap.bootstrapSpace(spaceId: spaceId)
         let schema = AnytypeTorahNativePropertyProvisioningStore()
@@ -54,16 +54,16 @@ struct TorahNativeDerivedProductIntegrationTests {
 
         let typeId = try #require(manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey])
         let search = Container.shared.searchMiddleService()
-        var writingType: ObjectType?
+        var indexedTypes: [ObjectType] = []
         try await eventually {
             let found = try await search.search(spaceId: spaceId,
                 filters: [SearchHelper.layoutFilter([.objectType])],
                 keys: ObjectType.subscriptionKeys.map(\.rawValue), limit: 0)
-            writingType = found.map(ObjectType.init(details:)).first { $0.id == typeId }
-            return writingType != nil
+            indexedTypes = found.map(ObjectType.init(details:))
+            return Set(manifest.registeredDocumentTypes.values).isSubset(of: Set(indexedTypes.map(\.id)))
         }
         let document = try await Container.shared.objectActionsService().createObject(
-            name: "Canonical native integration", typeUniqueKey: #require(writingType).uniqueKey,
+            name: "Canonical native integration", typeUniqueKey: #require(indexedTypes.first { $0.id == typeId }).uniqueKey,
             shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
             spaceId: spaceId, origin: .none, templateId: manifest.defaultTemplateIds[PinkhaSchemaRoles.chiddushKey]
         )
@@ -103,9 +103,13 @@ struct TorahNativeDerivedProductIntegrationTests {
             $0.condition = .in
             $0.value = [expected[0]].protobufValue
         }
-        let nativeSet = try await Container.shared.objectActionsService().createSet(
-            name: "Native Torah Set", iconEmoji: nil, setOfObjectType: typeId, spaceId: spaceId
-        )
+        let nativeSetResponse = try await ClientCommands.objectCreateSet(.with {
+            $0.details = Google_Protobuf_Struct(fields: [BundledPropertyKey.name.rawValue: "Native Torah Set".protobufValue])
+            $0.source = Array(manifest.registeredDocumentTypes.values)
+            $0.spaceID = spaceId
+            $0.withChat = false
+        }).invoke()
+        let nativeSet = try nativeSetResponse.details.toDetails()
         let response = try await ClientCommands.objectShow(.with {
             $0.contextID = nativeSet.id; $0.objectID = nativeSet.id; $0.spaceID = spaceId
         }).invoke()
@@ -144,6 +148,33 @@ struct TorahNativeDerivedProductIntegrationTests {
             $0.value = TorahNativePropertyDefinition.all.map(\.key).protobufValue
         }], keys: ["id", "relationKey"], limit: 0)
         #expect(Set(registryRows.map(\.id)) == Set(nativeProperties.map(\.id)))
+        // The next process drives the ORIGINAL application UI using this same
+        // disposable account and real Objects. Keep only fixture IDs/labels in
+        // its local handoff; the mnemonic and canonical payload are never copied.
+        for value in [source, topic, word] {
+            try await repository.removeAssociation(associationId: value.id, target: .object(objectId: document.id), spaceId: spaceId)
+        }
+        var fixtureDocuments = [PinkhaSchemaRoles.chiddushKey: document.id]
+        var fixtureNames = [document.id: document.name]
+        for role in [PinkhaSchemaRoles.articleKey, PinkhaSchemaRoles.researchKey] {
+            let roleType = try #require(indexedTypes.first { $0.id == manifest.registeredDocumentTypes[role] })
+            let created = try await Container.shared.objectActionsService().createObject(
+                name: "Native \(role) document", typeUniqueKey: roleType.uniqueKey,
+                shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+                spaceId: spaceId, origin: .none, templateId: manifest.defaultTemplateIds[role]
+            )
+            fixtureDocuments[role] = created.id
+            fixtureNames[created.id] = created.name
+        }
+        let directory = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        let fixture: [String: Any] = [
+            "spaceId": spaceId, "documents": fixtureDocuments, "names": fixtureNames,
+            "setId": nativeSet.id, "nativeProperties": nativeProperties.map(\.name),
+            "sourceQuery": "Genesis 1:1", "sourceLabel": "Genesis 1:1",
+            "topicQuery": "Creation", "topicLabel": "Creation", "wordQuery": "בראשית"
+        ]
+        try JSONSerialization.data(withJSONObject: fixture, options: [.sortedKeys])
+            .write(to: directory.appendingPathComponent("pinkha-native-derived-ui-fixture.json"), options: .atomic)
         print("NATIVE_DERIVED_PRODUCT_PIPELINE_PASS space=\(spaceId) document=\(document.id) set=\(nativeSet.id)")
     }
 
