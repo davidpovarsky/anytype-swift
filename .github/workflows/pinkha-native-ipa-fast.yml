@@ -1,0 +1,69 @@
+name: Pinkha custom Heart fast IPA (build only)
+run-name: Pinkha FAST IPA | ${{ github.sha }}
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-ipa-fast:
+    runs-on: xcode-27
+    timeout-minutes: 110
+    steps:
+      - name: Checkout exact Pinkha source
+        uses: actions/checkout@v4
+
+      - name: Install pinned Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache-dependency-path: Modules/PinkhaHeart/go.mod
+
+      - name: Checkout pinned Heart
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Heart-Native-Derived
+
+      - name: Build and verify CUSTOM Heart - skip native tests
+        run: |
+          python3 Tools/PinkhaNativeDerived/build_custom_heart.py \
+            --heart-source build/Heart-Native-Derived \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-12/native-heart-integration.patch \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-12/native-heart-integration.json \
+            --approved-patch-sha256 56d1daf5e6ccd37fa2220abed555196c8f75e228992681a7bbc7e3c7a578828a \
+            --apply-approved-patch \
+            --target ios \
+            --skip-native-tests \
+            --install-app "$GITHUB_WORKSPACE" \
+            --evidence build/fast-ipa-evidence/heart
+
+      - name: Build device app and package UNSIGNED IPA - NO XCTest
+        run: |
+          python3 Tools/PinkhaNativeDerived/build_native_ipa_fast.py \
+            --app-source "$GITHUB_WORKSPACE" \
+            --evidence build/fast-ipa-evidence/app
+
+      - name: Upload custom Heart trial IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Custom-Heart-Fast-Unsigned-IPA
+          path: build/fast-ipa-evidence/app/Pinkha-Native-Derived-iPad-Unsigned.ipa
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload build provenance and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Custom-Heart-Fast-Build-Evidence
+          path: |
+            build/fast-ipa-evidence/heart/*.json
+            build/fast-ipa-evidence/heart/*.log
+            build/fast-ipa-evidence/app/*.json
+            build/fast-ipa-evidence/app/*.log
+          if-no-files-found: warn
+          retention-days: 14

@@ -88,6 +88,7 @@ def main():
     parser.add_argument('--go',default='go')
     parser.add_argument('--evidence',required=True,type=Path)
     parser.add_argument('--install-app',type=Path)
+    parser.add_argument('--skip-native-tests',action='store_true',help='Build-only trial: skip Go regression tests, retain strict provenance and binary verification')
     args=parser.parse_args()
     heart=args.heart_source.resolve()
     patch=args.patch.resolve()
@@ -144,7 +145,10 @@ def main():
         for arch in ['darwin-arm64','darwin-amd64','ios-arm64','ios-arm64-sim','ios-amd64']: native.append(fetch_tantivy(heart,arch))
         hostarch='darwin-arm64' if platform.machine()=='arm64' else 'darwin-amd64'
         testenv=dict(env,CGO_LDFLAGS='-L'+str(heart/'deps/libs'/hostarch))
-        command([args.go,'test','-p','2',*NATIVE_REGRESSION_PACKAGES],heart,args.evidence,testenv)
+        if not args.skip_native_tests:
+            command([args.go,'test','-p','2',*NATIVE_REGRESSION_PACKAGES],heart,args.evidence,testenv)
+        else:
+            receipt['native_tests']='NOT_RUN_BUILD_ONLY'
         (heart/'deps').mkdir(exist_ok=True)
         for tool in ['gomobile','gobind']:
             command([args.go,'build','-o',str(heart/'deps'/tool),'golang.org/x/mobile/cmd/'+tool],heart,args.evidence,env)
