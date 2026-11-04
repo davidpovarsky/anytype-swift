@@ -116,7 +116,7 @@ def main():
         arch='linux-amd64-musl' if platform.machine()=='x86_64' else 'linux-arm64-musl'
         native.append(fetch_tantivy(heart,arch))
         env['CGO_LDFLAGS']='-L'+str(heart/'deps/libs'/arch)
-        command([args.go,'test','-p','2','./core/pinkha/...','./pkg/lib/bundle','./pkg/lib/database','./pkg/lib/localstore/objectstore/spaceindex','./core/block/object/objectcreator'],heart,args.evidence,env)
+        command([args.go,'test','-p','2','./core/pinkha/...','./pkg/lib/bundle','./pkg/lib/database','./pkg/lib/localstore/objectstore/spaceindex','./core/block/object/objectcreator','./core/block/editor/basic','./core/block/editor/smartblock'],heart,args.evidence,env)
         output=args.evidence.resolve()/'libpinkha-heart.so'
         command([args.go,'build','-p','2','-tags','nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg','-ldflags',ldflags,'-buildmode=c-shared','-o',str(output),'./clientlibrary/clib'],heart,args.evidence,env)
         if not contains(output,marker.encode()): raise RuntimeError('Custom identity missing from native Heart binary')
@@ -127,7 +127,7 @@ def main():
         for arch in ['darwin-arm64','darwin-amd64','ios-arm64','ios-arm64-sim','ios-amd64']: native.append(fetch_tantivy(heart,arch))
         hostarch='darwin-arm64' if platform.machine()=='arm64' else 'darwin-amd64'
         testenv=dict(env,CGO_LDFLAGS='-L'+str(heart/'deps/libs'/hostarch))
-        command([args.go,'test','-p','2','./core/pinkha/...','./pkg/lib/bundle','./pkg/lib/database','./pkg/lib/localstore/objectstore/spaceindex','./core/block/object/objectcreator'],heart,args.evidence,testenv)
+        command([args.go,'test','-p','2','./core/pinkha/...','./pkg/lib/bundle','./pkg/lib/database','./pkg/lib/localstore/objectstore/spaceindex','./core/block/object/objectcreator','./core/block/editor/basic','./core/block/editor/smartblock'],heart,args.evidence,testenv)
         (heart/'deps').mkdir(exist_ok=True)
         for tool in ['gomobile','gobind']:
             command([args.go,'build','-o',str(heart/'deps'/tool),'golang.org/x/mobile/cmd/'+tool],heart,args.evidence,env)

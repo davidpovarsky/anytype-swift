@@ -48,7 +48,8 @@ def main():
     common=['-project','Anytype.xcodeproj','-scheme','Anytype','-configuration','Release-Anytype',
             'OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED']
     command(['xcodebuild','build-for-testing',*common,'-destination','platform=iOS Simulator,id='+args.simulator_udid,
-             '-derivedDataPath',str(derived),'-parallel-testing-enabled','NO','ENABLE_TESTABILITY=YES','ONLY_ACTIVE_ARCH=YES'],app,evidence)
+             '-derivedDataPath',str(derived),'-parallel-testing-enabled','NO','ENABLE_TESTABILITY=YES','ONLY_ACTIVE_ARCH=YES',
+             'SWIFT_OPTIMIZATION_LEVEL=-Onone'],app,evidence)
     runs=list((derived/'Build/Products').glob('*.xctestrun'))
     if len(runs)!=1: raise RuntimeError('Expected one native test-host configuration')
     with runs[0].open('rb') as stream: run=plistlib.load(stream)
@@ -91,7 +92,8 @@ def main():
              '-scheme','PinkhaStage1Acceptance','-configuration','Release-Anytype',
              'OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED',
              '-destination','platform=iOS Simulator,id='+args.simulator_udid,'-derivedDataPath',str(derived),
-             '-parallel-testing-enabled','NO','ENABLE_TESTABILITY=YES','ONLY_ACTIVE_ARCH=YES'],app,evidence)
+             '-parallel-testing-enabled','NO','ENABLE_TESTABILITY=YES','ONLY_ACTIVE_ARCH=YES',
+             'SWIFT_OPTIMIZATION_LEVEL=-Onone'],app,evidence)
     ui_runs=[path for path in (derived/'Build/Products').glob('*.xctestrun') if 'PinkhaStage1Acceptance' in path.name]
     if len(ui_runs)!=1: raise RuntimeError('Expected the real application UI-test configuration')
     with ui_runs[0].open('rb') as stream: ui_run=plistlib.load(stream)
@@ -117,7 +119,9 @@ def main():
     if count('passedTests')<1 or count('failedTests') or count('skippedTests'): raise RuntimeError('Original application UI acceptance did not pass without skips')
     ui_passed=count('passedTests')
     command(['xcrun','xcresulttool','export','attachments','--path',str(ui_result),'--output-path',str(evidence/'screenshots')],app,evidence)
-    device=evidence/'DerivedData-iPadDevice'
+    # Reuse dependency checkouts; Xcode keeps each SDK's products separate.
+    # The real device build retains the original Release optimization settings.
+    device=derived
     command(['xcodebuild','build',*common,'-destination','generic/platform=iOS','-sdk','iphoneos',
              '-derivedDataPath',str(device),'CODE_SIGNING_ALLOWED=NO','CODE_SIGNING_REQUIRED=NO',
              'CODE_SIGN_IDENTITY=','CODE_SIGN_ENTITLEMENTS=','PROVISIONING_PROFILE_SPECIFIER=',
@@ -139,6 +143,7 @@ def main():
                  app_base_sha=git(app,'rev-parse','HEAD'),app_branch=git(app,'branch','--show-current'),
                  heart=heart,ipa=str(ipa),ipa_sha256=digest(ipa),passed_native_tests=native_passed,
                  passed_original_app_ui_tests=ui_passed,physical_ipad_verified=False)
+    receipt['simulator_swift_optimization']='-Onone'
     (evidence/'native-ipad-build.json').write_text(json.dumps(receipt,indent=2)+'\n')
     print(json.dumps(dict(ipa=str(ipa),sha256=receipt['ipa_sha256'])))
 

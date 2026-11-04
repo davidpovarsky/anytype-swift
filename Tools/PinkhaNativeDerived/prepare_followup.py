@@ -36,13 +36,15 @@ for section in sections:
             n+=1
     rendered.extend(baseline[offset:])
     final=''.join(rendered)
-    actual=(args.heart_source/path).read_text(encoding='utf8')
+    exists=(args.heart_source/path).exists()
+    actual=(args.heart_source/path).read_text(encoding='utf8') if exists else ''
     if final==actual:continue
     result+='diff --git a/'+path+' b/'+path+'\n'
-    result+=''.join(difflib.unified_diff(actual.splitlines(keepends=True),final.splitlines(keepends=True),fromfile='a/'+path,tofile='b/'+path))
+    if not exists: result+='new file mode 100644\n'
+    result+=''.join(difflib.unified_diff(actual.splitlines(keepends=True),final.splitlines(keepends=True),fromfile='a/'+path if exists else '/dev/null',tofile='b/'+path))
     inventory.append(dict(path=path,before_sha256=hashlib.sha256(actual.encode()).hexdigest(),after_sha256=hashlib.sha256(final.encode()).hexdigest()))
 args.output.mkdir(parents=True,exist_ok=True)
 data=result.encode()
 (args.output/'native-heart-followup.patch').write_bytes(data)
-(args.output/'native-heart-followup.json').write_text(json.dumps(dict(heart_sha=pin,patch_sha256=hashlib.sha256(data).hexdigest(),status='PENDING_EXACT_OWNER_APPROVAL_NOT_APPLIED',files=inventory),indent=2)+'\n')
+(args.output/'native-heart-followup.json').write_text(json.dumps(dict(heart_sha=pin,patch_sha256=hashlib.sha256(data).hexdigest(),status='REVIEW_ARTIFACT_NOT_APPLIED',files=inventory),indent=2)+'\n')
 print(json.dumps(dict(patch=str(args.output/'native-heart-followup.patch'),sha256=hashlib.sha256(data).hexdigest(),files=len(inventory))))

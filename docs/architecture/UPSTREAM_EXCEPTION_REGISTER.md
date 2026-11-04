@@ -63,6 +63,23 @@ was introduced. The latest standing owner authorization covers these task fixes
 and publication. The historical statements above remain as chronology, not gates
 that override this authorization. Physical-device and full acceptance remain open.
 
+Revision 7 is recorded as the exact 15-file Heart diff
+`7f93915d01d1d63b66f340b3ba6c0fa4b51e1710fe90e065ba47b4e7aaf4be31`
+(six-file delta `2d8b164b7ab1c61c6c5b670e89b073c94063270dbc8134f49366752c51e74bfd`).
+Actual native middleware testing demonstrated that an ordinary Details write
+could forge a derived value in the open editor while the native index correctly
+retained its canonical projection. The scoped basic/details.go validation rejects
+writes/removals only to the eight Torah-derived/private keys. The single call in
+smartblock/detailsinject.go and new downstream helper recompute live local Details
+from the current canonical editor state using the same native projector and a
+consistent read snapshot. They do not persist another payload. Exact hunks,
+before/after hashes and local application receipts accompany revision 7. Native
+validation covers the two additional original basic/smartblock test packages.
+The isolated Swift repository test also receives its missing Services import,
+identified by two real SDK build failures; the original 65-file worktree remains
+unchanged. Evidence packaging excludes DerivedData/dependency trees and preserves
+test result bundles in a zip, fixing the artifact uploader's colon-path rejection.
+
 Exact protected boundary identities are recorded in
 `docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/protected-source-inventory.json`.
 P1/P2 query, compatibility and native Type/Set gates must be established before

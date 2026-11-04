@@ -67,6 +67,8 @@ edit(store,'func (s *dsObjectStore) Init() error {','func (s *dsObjectStore) ini
 add('pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go','''package spaceindex
 
 import (
+ "context"
+ "github.com/anyproto/anytype-heart/core/domain"
  torahindex "github.com/anyproto/anytype-heart/core/pinkha/torahindex"
 )
 
@@ -75,7 +77,7 @@ func (s *dsObjectStore) Init() error {
  s.torahInitMu.Lock()
  defer s.torahInitMu.Unlock()
  if s.torah!=nil{return nil}
- index:=torahindex.New(s.spaceId,s.objects,s.WriteTx,s.updateObjectDetails)
+ index:=torahindex.New(s.spaceId,s.objects,s.WriteTx,s.updateObjectDetails,s.db.ReadTx)
  // initBase has released s.lock; post-commit notification delivery takes it.
  if err:=index.Recover(s.componentCtx);err!=nil{return err}
  s.torah=index
@@ -85,6 +87,11 @@ func (s *dsObjectStore) Init() error {
 func (s *dsObjectStore) nativeTorah()*torahindex.Index {
  s.torahInitMu.Lock();defer s.torahInitMu.Unlock()
  return s.torah
+}
+
+func (s *dsObjectStore) TorahLocalDetails(ctx context.Context, details *domain.Details) (*domain.Details, error) {
+ if index:=s.nativeTorah();index!=nil{return index.LocalDetails(ctx,details)}
+ return nil,nil
 }
 ''')
 update='pkg/lib/localstore/objectstore/spaceindex/update.go'
@@ -128,6 +135,42 @@ edit(options,'\tif !details.Has(bundle.RelationKeyCreatedDate) {',''' if torah.I
  }
 \tif !details.Has(bundle.RelationKeyCreatedDate) {''')
 
+# Keep the original editor's live state and emitted Details events consistent
+# with the same canonical projection used by the native query index.
+inject='core/block/editor/smartblock/detailsinject.go'
+edit(inject,'\tsb.updateBackLinks(s)\n','\tsb.updateBackLinks(s)\n sb.injectTorahDetails(s)\n')
+add('core/block/editor/smartblock/pinkha_torah.go','''package smartblock
+
+import (
+ "context"
+ "github.com/anyproto/anytype-heart/core/block/editor/state"
+ "github.com/anyproto/anytype-heart/core/domain"
+ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
+)
+
+func (sb *smartBlock) injectTorahDetails(s *state.State) {
+ projector,ok:=sb.spaceIndex.(interface{
+  TorahLocalDetails(context.Context,*domain.Details)(*domain.Details,error)
+ })
+ if !ok{return}
+ details,err:=projector.TorahLocalDetails(context.Background(),s.CombinedDetails())
+ if err!=nil {
+  log.Warnf("Torah local projection unavailable: %v",err)
+  details=domain.NewDetails()
+ }
+ if details==nil{return}
+ for _,key:=range torah.LocalKeys(){s.RemoveLocalDetail(domain.RelationKey(key))}
+ s.AddLocalDetails(details)
+}
+''')
+details='core/block/editor/basic/details.go'
+edit(details,'"github.com/anyproto/anytype-heart/core/domain"','"github.com/anyproto/anytype-heart/core/domain"\n torah "github.com/anyproto/anytype-heart/core/pinkha/torah"')
+edit(details,'\tfor key, value := range diff.Iterate() {',''' for _,key:=range removedKeys {
+  if torah.IsLocalKey(string(key)){return fmt.Errorf("canonical derived property cannot be removed directly: %w",domain.ErrValidationFailed)}
+ }
+\tfor key, value := range diff.Iterate() {
+  if torah.IsLocalKey(string(key)){return fmt.Errorf("canonical derived property cannot be written directly: %w",domain.ErrValidationFailed)}''')
+
 args.output.mkdir(parents=True,exist_ok=True)
 patch=''
 inventory=[]
@@ -139,5 +182,5 @@ for path,(before,after) in sorted(changes.items()):
     inventory.append(dict(path=path,before_sha256=hashlib.sha256(before.encode()).hexdigest() if before else None,after_sha256=hashlib.sha256(after.encode()).hexdigest()))
 patch_bytes=patch.encode('utf8')
 (args.output/'native-heart-integration.patch').write_bytes(patch_bytes)
-(args.output/'native-heart-integration.json').write_text(json.dumps(dict(heart_sha=PIN,patch_sha256=hashlib.sha256(patch_bytes).hexdigest(),status='PENDING_EXACT_OWNER_APPROVAL_NOT_APPLIED',files=inventory),indent=2)+'\n',encoding='utf8')
+(args.output/'native-heart-integration.json').write_text(json.dumps(dict(heart_sha=PIN,patch_sha256=hashlib.sha256(patch_bytes).hexdigest(),status='REVIEW_ARTIFACT_NOT_APPLIED',files=inventory),indent=2)+'\n',encoding='utf8')
 print(json.dumps(dict(patch=str(args.output/'native-heart-integration.patch'),sha256=hashlib.sha256(patch_bytes).hexdigest(),files=len(inventory))))

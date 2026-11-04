@@ -107,7 +107,12 @@ func TestRealNativeMiddlewareDerivedProperties(t *testing.T) {
  write(string(payload))
  t.Cleanup(func(){
   d:=show(document.ObjectId)
-  t.Logf("disposable document native diagnostics: types=%v target=%v space=%s ready=%v status=%s sources=%v canonical=%s",d.GetStringList(bundle.RelationKeyType),d.Has(bundle.RelationKeyTargetObjectType),d.GetString(bundle.RelationKeySpaceId),d.GetBool(torah.ReadyKey),d.GetString(torah.StatusKey),d.GetStringList(torah.SourcesKey),d.GetString("pinkhaWireCanonical"))
+  t.Logf("disposable document native diagnostics: scalarType=%q legacyTypes=%v expected=%v target=%v ready=%v status=%s sources=%v",d.GetString(bundle.RelationKeyType),d.GetStringList(bundle.RelationKeyType),typeIDs,d.Has(bundle.RelationKeyTargetObjectType),d.GetBool(torah.ReadyKey),d.GetString(torah.StatusKey),d.GetStringList(torah.SourcesKey))
+  if t.Failed(){
+   response:=&pb.RpcObjectSearchResponse{}
+   invoke(service.ObjectSearch,&pb.RpcObjectSearchRequest{SpaceId:space.SpaceId,Filters:[]*model.BlockContentDataviewFilter{{RelationKey:"id",Condition:model.BlockContentDataviewFilter_Equal,Value:domain.String(document.ObjectId).ToProto()}},Keys:[]string{"id","type",torah.ReadyKey,torah.StatusKey,torah.SourcesKey}},response)
+   for _,record:=range response.Records{indexed:=domain.NewDetailsFromProto(record);t.Logf("actual indexed document: scalarType=%q ready=%v status=%s sources=%v",indexed.GetString(bundle.RelationKeyType),indexed.GetBool(torah.ReadyKey),indexed.GetString(torah.StatusKey),indexed.GetStringList(torah.SourcesKey))}
+  }
  })
  wait("canonical to native ObjectShow",func()bool{values:=show(document.ObjectId).GetStringList(torah.SourcesKey);return len(values)==1&&values[0]==identity})
  if show(document.ObjectId).GetString("pinkhaWireCanonical")!=string(payload){t.Fatal("canonical payload bytes were rewritten")}
@@ -115,6 +120,16 @@ func TestRealNativeMiddlewareDerivedProperties(t *testing.T) {
  search:=&pb.RpcObjectSearchResponse{}
  invoke(service.ObjectSearch,&pb.RpcObjectSearchRequest{SpaceId:space.SpaceId,Filters:[]*model.BlockContentDataviewFilter{filter},Keys:[]string{"id",torah.SourcesKey,torah.LabelsKey},NeedTotal:true},search)
  if len(search.Records)!=1||domain.NewDetailsFromProto(search.Records[0]).GetString(bundle.RelationKeyId)!=document.ObjectId{t.Fatal("actual native ObjectSearch membership mismatch")}
+ // The original Details APIs must reject direct value and deletion writes,
+ // including the hidden readiness/label capability metadata.
+ for _,key:=range torah.LocalKeys(){
+  for _,value:=range []domain.Value{domain.StringList([]string{"forged"}),domain.Null()}{
+   request:=&pb.RpcObjectSetDetailsRequest{ContextId:document.ObjectId,Details:[]*model.Detail{{Key:key,Value:value.ToProto()}}}
+   data,_:=proto.Marshal(request);response:=&pb.RpcObjectSetDetailsResponse{}
+   if err:=proto.Unmarshal(service.ObjectSetDetails(data),response);err!=nil{t.Fatal(err)}
+   if response.Error==nil||response.Error.Code==0{t.Fatalf("native API accepted direct derived write: %s null=%v",key,value.IsNull())}
+  }
+ }
  nativeSet:=&pb.RpcObjectCreateSetResponse{}
  invoke(service.ObjectCreateSet,&pb.RpcObjectCreateSetRequest{SpaceId:space.SpaceId,Source:[]string{typeIDs["chiddush"]},Details:domain.NewDetails().SetString(bundle.RelationKeyName,"Real native Torah Set").ToProto()},nativeSet)
  setView:=&pb.RpcObjectShowResponse{}
@@ -133,8 +148,10 @@ func TestRealNativeMiddlewareDerivedProperties(t *testing.T) {
  waitEvent:=func(want string){t.Helper();deadline:=time.After(45*time.Second);for{select{case value:=<-events:if value==want{return};case<-deadline:t.Fatal("missing actual subscription event: "+want)}}}
  write("")
  waitEvent("remove")
+ wait("ObjectShow removed native value",func()bool{return len(show(document.ObjectId).GetStringList(torah.SourcesKey))==0})
  write(string(payload))
  waitEvent("add")
+ wait("ObjectShow restored native value",func()bool{values:=show(document.ObjectId).GetStringList(torah.SourcesKey);return len(values)==1&&values[0]==identity})
  // A derived Property must never offer an alternative per-source option store,
  // including when an older/unadapted client calls the original option API.
  optionRequest:=&pb.RpcObjectCreateRelationOptionRequest{SpaceId:space.SpaceId,Details:domain.NewDetails().SetString(bundle.RelationKeyName,"must not exist").SetString(bundle.RelationKeyRelationKey,torah.SourcesKey).ToProto()}
@@ -164,7 +181,7 @@ func TestProductionEngineLifecycleAndRecovery(t *testing.T) {
    _,err:=objects.UpsertId(ctx,id,query.ModifyFunc(func(a *anyenc.Arena,_ *anyenc.Value)(*anyenc.Value,bool,error){return d.ToAnyEnc(a),true,nil}))
    return err
   }
-  index=engine.New("s",objects,db.WriteTx,raw)
+  index=engine.New("s",objects,db.WriteTx,raw,db.ReadTx)
   if err=index.Recover(ctx);err!=nil{t.Fatal(err)}
  }
  open()
@@ -194,6 +211,9 @@ func TestProductionEngineLifecycleAndRecovery(t *testing.T) {
  if get("manifest").GetInt64(torah.VersionKey)!=1{t.Fatal("no native capability")}
  if get("doc").GetString("customCanonical")!=payload{t.Fatal("canonical bytes changed")}
  if !get("doc").GetBool(torah.ReadyKey){t.Fatal("eligible document not ready")}
+ live,err:=index.LocalDetails(ctx,document("").SetString(bundle.RelationKeyId,"doc"));if err!=nil{t.Fatal(err)}
+ if !live.GetBool(torah.ReadyKey)||live.Has(torah.SourcesKey){t.Fatal("editor projection reused stale indexed canonical data")}
+ if get("doc").GetStringList(torah.SourcesKey)[0]!=identity{t.Fatal("read-only editor projection changed the native index")}
  forged:=document(payload).SetStringList(torah.SourcesKey,[]string{"forged"})
  put("doc",forged)
  if get("doc").GetStringList(torah.SourcesKey)[0]!=identity{t.Fatal("forged derived value accepted")}

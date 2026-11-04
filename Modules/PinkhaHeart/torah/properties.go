@@ -30,3 +30,10 @@ func IsProperty(key string) bool {
 func LocalKeys() []string {
 	return []string{SourcesKey, TopicsKey, WordsKey, ReadyKey, LabelsKey, VersionKey, CanonicalHashKey, StatusKey}
 }
+
+func IsLocalKey(key string) bool {
+	for _, candidate := range LocalKeys() {
+		if key == candidate { return true }
+	}
+	return false
+}

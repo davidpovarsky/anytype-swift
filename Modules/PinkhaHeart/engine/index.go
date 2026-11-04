@@ -19,6 +19,7 @@ import (
 
 type Writer func(context.Context, string, *domain.Details) error
 type BeginWrite func(context.Context) (anystore.WriteTx, error)
+type BeginRead func(context.Context) (anystore.ReadTx, error)
 
 // All state is owned by one Space store. The caller supplies Heart's notifying
 // transaction so subscriptions see the canonical and derived values together,
@@ -28,12 +29,15 @@ type Index struct {
 	objects   anystore.Collection
 	begin     BeginWrite
 	write     Writer
+	snapshot  BeginRead
 	manifests sync.Map
 	active    atomic.Bool
 }
 
-func New(space string, objects anystore.Collection, begin BeginWrite, write Writer) *Index {
-	return &Index{space: space, objects: objects, begin: begin, write: write}
+func New(space string, objects anystore.Collection, begin BeginWrite, write Writer, snapshot ...BeginRead) *Index {
+	index := &Index{space: space, objects: objects, begin: begin, write: write}
+	if len(snapshot) > 0 { index.snapshot = snapshot[0] }
+	return index
 }
 
 func (i *Index) Recover(ctx context.Context) error {
@@ -118,6 +122,36 @@ func (i *Index) rememberManifest(d *domain.Details) {
 		i.manifests.Store(d.GetString(bundle.RelationKeyId), struct{}{})
 		i.active.Store(true)
 	}
+}
+
+// LocalDetails projects the current editor state, which can be newer than the
+// asynchronously indexed row. It shares the native binding and projector; it
+// never writes canonical data or introduces a second persistent repository.
+func (i *Index) LocalDetails(ctx context.Context, details *domain.Details) (*domain.Details, error) {
+	if !i.active.Load() { return nil, nil }
+	if i.snapshot != nil {
+		tx, err := i.snapshot(ctx)
+		if err != nil { return nil, err }
+		defer tx.Commit()
+		ctx = tx.Context()
+	} else {
+		tx, err := i.begin(ctx)
+		if err != nil { return nil, err }
+		defer tx.Rollback()
+		ctx = tx.Context()
+	}
+	binding, bindingErr := torah.ResolveBinding(ctx, source{index: i}, i.space)
+	result := clear(details)
+	if bindingErr == nil {
+		i.project(binding, result)
+		if isManifest(result) {
+			result.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
+			result.SetString(domain.RelationKey(torah.CanonicalHashKey), binding.Generation)
+		}
+	}
+	keys := make([]domain.RelationKey, 0, len(torah.LocalKeys()))
+	for _, key := range torah.LocalKeys() { keys = append(keys, domain.RelationKey(key)) }
+	return result.CopyOnlyKeys(keys...), nil
 }
 
 func manifestFilter() map[string]any {

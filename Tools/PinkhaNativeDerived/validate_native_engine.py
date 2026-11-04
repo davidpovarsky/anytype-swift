@@ -36,7 +36,8 @@ if args.module_cache:
     env['GOMODCACHE'] = str(args.module_cache.resolve())
 checks = [
     ('original-regression', heart, ['./core/pinkha/...', './pkg/lib/bundle', './pkg/lib/database',
-                                    './pkg/lib/localstore/objectstore/spaceindex', './core/block/object/objectcreator'], None),
+                                    './pkg/lib/localstore/objectstore/spaceindex', './core/block/object/objectcreator',
+                                    './core/block/editor/basic', './core/block/editor/smartblock'], None),
     ('product-acceptance', root/'Tools/TorahNativeDerivedSpike/integration', ['./...'],
      '^(TestProductionEngineLifecycleAndRecovery|TestNativeMembershipAndCommittedNotifications|TestRealNativeMiddlewareDerivedProperties)$'),
 ]
