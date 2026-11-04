@@ -20,6 +20,13 @@ final class PinkhaTorahPropertiesModel {
     var usesNativeProperties: Bool {
         document.details?.intValue(for: TorahNativePropertyDefinition.engineVersionKey) == TorahNativePropertyDefinition.engineVersion
     }
+    var showsLegacyProjectionRows: Bool {
+        #if PINKHA_NATIVE_DERIVED
+        false
+        #else
+        !usesNativeProperties
+        #endif
+    }
 
     init(
         document: some BaseDocumentProtocol,

@@ -118,6 +118,17 @@ struct TorahNativeDerivedProductIntegrationTests {
         })
         guard case .dataview(let data) = dataview.content else { Issue.record("Missing native Dataview"); return }
         let view = try #require(data.views.first)
+        let dataviewService = Container.shared.dataviewService()
+        // Prepare real, initially hidden native columns. The subsequent UI test
+        // enables them through the original Fields switches, not a test seam.
+        for property in nativeProperties {
+            try await dataviewService.addRelation(objectId: nativeSet.id, blockId: dataview.id, relationDetails: property)
+        }
+        let table = try #require(view.asModel).updated(type: .table, options:
+            view.relations.filter { !TorahNativePropertyDefinition.all.map(\.key).contains($0.key) }.map(\.asModel)
+            + nativeProperties.map { DataviewRelationOption(key: $0.key, isVisible: false) }
+        )
+        try await dataviewService.updateView(objectId: nativeSet.id, blockId: dataview.id, view: table)
         try await Container.shared.dataviewService().addFilter(
             objectId: nativeSet.id, blockId: dataview.id, filter: filter, viewId: view.id
         )

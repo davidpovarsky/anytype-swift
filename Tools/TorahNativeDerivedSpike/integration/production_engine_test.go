@@ -28,6 +28,14 @@ import (
 // subscription services. No ObjectStore fixture or mock backend is used here.
 func TestRealNativeMiddlewareDerivedProperties(t *testing.T) {
  if os.Getenv("PINKHA_NATIVE_WIRE_ACCEPTANCE")!="1"{t.Skip("explicit disposable native wallet opt-in required")}
+ events:=make(chan string,16)
+ // Mobile installs its event bridge before account startup. Register the real
+ // callback component at the same point; replacing it later misses the app's
+ // already-registered sender.
+ service.SetEventHandler(func(event *pb.Event){for _,msg:=range event.Messages{
+  if add:=msg.GetSubscriptionAdd();add!=nil&&add.SubId=="torah-native-wire"{select{case events<-"add":default:}}
+  if remove:=msg.GetSubscriptionRemove();remove!=nil&&remove.SubId=="torah-native-wire"{select{case events<-"remove":default:}}
+ }})
  invoke:=func(call func([]byte)[]byte,req,resp proto.Message){
   t.Helper()
   data,err:=proto.Marshal(req);if err!=nil{t.Fatal(err)}
@@ -97,6 +105,10 @@ func TestRealNativeMiddlewareDerivedProperties(t *testing.T) {
  payload,_:=json.Marshal(map[string]any{"version":2,"records":[]any{map[string]any{"spaceId":space.SpaceId,"objectId":document.ObjectId,"item":item}}})
  write:=func(raw string){t.Helper();invoke(service.ObjectSetDetails,&pb.RpcObjectSetDetailsRequest{ContextId:document.ObjectId,Details:[]*model.Detail{{Key:"pinkhaWireCanonical",Value:domain.String(raw).ToProto()}}},&pb.RpcObjectSetDetailsResponse{})}
  write(string(payload))
+ t.Cleanup(func(){
+  d:=show(document.ObjectId)
+  t.Logf("disposable document native diagnostics: types=%v target=%v space=%s ready=%v status=%s sources=%v canonical=%s",d.GetStringList(bundle.RelationKeyType),d.Has(bundle.RelationKeyTargetObjectType),d.GetString(bundle.RelationKeySpaceId),d.GetBool(torah.ReadyKey),d.GetString(torah.StatusKey),d.GetStringList(torah.SourcesKey),d.GetString("pinkhaWireCanonical"))
+ })
  wait("canonical to native ObjectShow",func()bool{values:=show(document.ObjectId).GetStringList(torah.SourcesKey);return len(values)==1&&values[0]==identity})
  if show(document.ObjectId).GetString("pinkhaWireCanonical")!=string(payload){t.Fatal("canonical payload bytes were rewritten")}
  filter:=&model.BlockContentDataviewFilter{RelationKey:torah.SourcesKey,Format:model.RelationFormat_tag,Condition:model.BlockContentDataviewFilter_In,Value:domain.StringList([]string{identity}).ToProto()}
@@ -115,11 +127,6 @@ func TestRealNativeMiddlewareDerivedProperties(t *testing.T) {
   }
  }
  if !foundView{t.Fatal("native Set had no Dataview")}
- events:=make(chan string,16)
- service.SetEventHandler(func(event *pb.Event){for _,msg:=range event.Messages{
-  if add:=msg.GetSubscriptionAdd();add!=nil&&add.SubId=="torah-native-wire"&&add.Id==document.ObjectId{select{case events<-"add":default:}}
-  if remove:=msg.GetSubscriptionRemove();remove!=nil&&remove.SubId=="torah-native-wire"&&remove.Id==document.ObjectId{select{case events<-"remove":default:}}
- }})
  subscribed:=&pb.RpcObjectSearchSubscribeResponse{}
  invoke(service.ObjectSearchSubscribe,&pb.RpcObjectSearchSubscribeRequest{SpaceId:space.SpaceId,SubId:"torah-native-wire",Filters:[]*model.BlockContentDataviewFilter{filter},Keys:[]string{"id",torah.SourcesKey,torah.LabelsKey},Limit:100},subscribed)
  if len(subscribed.Records)!=1{t.Fatal("native subscription initial membership mismatch")}
@@ -179,6 +186,9 @@ func TestProductionEngineLifecycleAndRecovery(t *testing.T) {
  put("doc",document(payload))
  if get("doc").Has(torah.SourcesKey){t.Fatal("unbound document was projected")}
  putManifest()
+ // The real pinned mobile engine uses a scalar Type; retain legacy-list parity.
+ put("native-scalar",document(payload).SetString(bundle.RelationKeyType,"h"))
+ if len(get("native-scalar").GetStringList(torah.SourcesKey))!=1{t.Fatal("native scalar Type was not projected")}
  identity:=torah.Identity(torah.Ref,"sefaria","Genesis 1:1","")
  if got:=get("doc").GetStringList(torah.SourcesKey);len(got)!=1||got[0]!=identity{t.Fatalf("manifest upgrade failed: %v",got)}
  if get("manifest").GetInt64(torah.VersionKey)!=1{t.Fatal("no native capability")}
@@ -226,5 +236,5 @@ func TestProductionEngineLifecycleAndRecovery(t *testing.T) {
  if err=index.Delete(ctx,[]string{"canonical-property"},func(ctx context.Context)error{return objects.DeleteId(ctx,"canonical-property")});err!=nil{t.Fatal(err)}
  if get("doc").GetBool(torah.ReadyKey)||get("manifest").Has(torah.VersionKey){t.Fatal("deleted canonical property left ready state")}
  count,err:=objects.Count(ctx);if err!=nil{t.Fatal(err)}
- if count!=4{t.Fatalf("unexpected generated objects/options: %d",count)}
+ if count!=5{t.Fatalf("unexpected generated objects/options: %d",count)}
 }

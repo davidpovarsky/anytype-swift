@@ -13,6 +13,7 @@ struct SetTableView: View {
         SingleAxisGeometryReader { fullWidth in
             scrollView(fullWidth: fullWidth)
         }
+        .accessibilityIdentifier("set-table")
     }
     
     private func scrollView(fullWidth: CGFloat) -> some View {

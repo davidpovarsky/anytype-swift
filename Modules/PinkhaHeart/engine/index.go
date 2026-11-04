@@ -273,6 +273,11 @@ func (i *Index) rebuild(ctx context.Context) error {
 
 func (i *Index) project(binding torah.Binding, d *domain.Details) {
 	types := d.GetStringList(bundle.RelationKeyType)
+	// The pinned product engine writes type as a scalar. Older snapshots and
+	// native list fixtures can still carry a single-element list.
+	if typeID := d.GetString(bundle.RelationKeyType); typeID != "" {
+		types = []string{typeID}
+	}
 	if len(types) != 1 {
 		return
 	}

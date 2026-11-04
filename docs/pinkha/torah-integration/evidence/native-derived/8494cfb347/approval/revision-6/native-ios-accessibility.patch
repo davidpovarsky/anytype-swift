@@ -1,0 +1,25 @@
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Header/SetHeaderSettingsView.swift b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Header/SetHeaderSettingsView.swift
+index f0fc4ae9e3..1624d1e319 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Header/SetHeaderSettingsView.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Header/SetHeaderSettingsView.swift
+@@ -35,6 +35,8 @@ struct SetHeaderSettingsView: View {
+             Image(asset: .X24.settings)
+                 .foregroundStyle(model.isActiveHeader ? Color.Control.secondary : Color.Control.tertiary)
+         }
++        .accessibilityLabel(Loc.settings)
++        .accessibilityIdentifier("set-view-settings")
+         .disabled(!model.isActiveHeader)
+     }
+     
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Table/SetTableView.swift b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Table/SetTableView.swift
+index fb84b40ca8..4f334d56ff 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Table/SetTableView.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Table/SetTableView.swift
+@@ -13,6 +13,7 @@ struct SetTableView: View {
+         SingleAxisGeometryReader { fullWidth in
+             scrollView(fullWidth: fullWidth)
+         }
++        .accessibilityIdentifier("set-table")
+     }
+     
+     private func scrollView(fullWidth: CGFloat) -> some View {

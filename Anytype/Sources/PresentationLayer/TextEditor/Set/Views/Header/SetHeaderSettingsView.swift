@@ -35,6 +35,8 @@ struct SetHeaderSettingsView: View {
             Image(asset: .X24.settings)
                 .foregroundStyle(model.isActiveHeader ? Color.Control.secondary : Color.Control.tertiary)
         }
+        .accessibilityLabel(Loc.settings)
+        .accessibilityIdentifier("set-view-settings")
         .disabled(!model.isActiveHeader)
     }
     

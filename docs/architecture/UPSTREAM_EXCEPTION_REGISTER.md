@@ -45,11 +45,23 @@ The original-worktree/65-file, unrelated-data, personal-Space and no-dev-merge
 constraints remain. The one-file native option-creation guard and real-app UI
 acceptance were concrete review artifacts when this standing approval arrived.
 
-Implemented files are downstream Swift projection/tests, shared fixtures,
-an isolated Go projector/binding/readiness module, native ObjectStore probe
-and evidence/documentation. The pristine pinned Heart checkout is only a
-test dependency; native libraries were installed in its ignored build directory
-from the pinned official release and checksum. No tracked Heart file changed.
+Current implementation includes the owner-authorized protected Heart and native
+iOS integration. The complete Heart revision-6 diff is SHA-256
+`8445b924d6c5716ac22708a9e5b4a4e71981c7743241cbab4d7a1c2141e14120`;
+its one-file delta `b69944ee3dd1fc257cbf263135808df15a47e9496fb68290755c75908387cb90`
+adds the real pinned engine's scalar Type representation while preserving legacy
+single-element lists. The actual generated middleware acceptance then passed
+Property/Type registration, canonical writes, ObjectShow, ObjectSearch, a native
+Set predicate, subscription remove/add and rejection of alternative option Objects.
+Exact patches and per-file hashes are in the approval/revision-6 evidence directory.
+The same directory records two native UI accessibility hunks: a localized label
+and stable identifier on the existing Set settings button, and an identifier on
+the existing table container. These permit the actual original UI acceptance to
+scope membership to the Set and operate its existing filter/Fields controls.
+No new application command, alternate Properties sheet or test-only product path
+was introduced. The latest standing owner authorization covers these task fixes
+and publication. The historical statements above remain as chronology, not gates
+that override this authorization. Physical-device and full acceptance remain open.
 
 Exact protected boundary identities are recorded in
 `docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/protected-source-inventory.json`.

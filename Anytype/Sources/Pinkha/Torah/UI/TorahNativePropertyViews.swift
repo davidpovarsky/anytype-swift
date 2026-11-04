@@ -215,6 +215,8 @@ struct TorahNativeFilterPickerView: View {
                             .background(Color.Shape.tertiary, in: Capsule())
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel(label(id))
+                        .accessibilityIdentifier("torah-native-filter-selected-value")
                     }
                 }
                 .padding(.horizontal, 16)
@@ -226,6 +228,7 @@ struct TorahNativeFilterPickerView: View {
                 )
             }
             StandardButton(Loc.apply, style: .primaryLarge) { onApply(selected) }
+                .accessibilityIdentifier("torah-native-filter-apply")
                 .padding(.horizontal, 20)
                 .padding(.vertical, 10)
         }

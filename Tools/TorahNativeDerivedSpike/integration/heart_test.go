@@ -12,20 +12,51 @@ import (
 	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
 	"github.com/anyproto/anytype-heart/pkg/lib/database"
 	"github.com/anyproto/anytype-heart/pkg/lib/localstore/objectstore/spaceindex"
-	derived "pinkha.local/torah-derived-spike"
+	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+	derived "github.com/davidpovarsky/anytype-swift/Modules/PinkhaHeart/torah"
 )
 
 const sources domain.RelationKey = "pinkhaTorahSources"
 const ready domain.RelationKey = "_pinkhaTorahReady"
 
+// Two metadata rows, never an Object per association. The native production
+// hook discovers this binding exactly as it discovers the application's manifest.
+func installNativeBinding(t testing.TB, store spaceindex.Store, active bool) *domain.Details {
+	t.Helper()
+	ctx := context.Background()
+	property := domain.NewDetails().SetString(bundle.RelationKeyRelationKey, "fixtureCanonical").
+		SetInt64(bundle.RelationKeyRelationFormat, 0).SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_relation))
+	if err := store.UpdateObjectDetails(ctx, "fixture-property", property); err != nil { t.Fatal(err) }
+	raw, err := json.Marshal(map[string]any{
+		"schemaVersion": 1, "spaceId": "test", "manifestObjectId": "fixture-manifest", "provisioningState": "complete",
+		"documentAssociationsPropertyId": "fixture-property", "documentAssociationsPropertyKey": "fixtureCanonical",
+		"registeredDocumentTypes": map[string]string{"chiddush":"chiddush", "article":"article", "research":"research"},
+		"defaultTemplateIds": map[string]string{"chiddush":"th", "article":"ta", "research":"tr"},
+		"parentPropertyId":"parent", "parentPropertyKey":"parentKey", "orderPropertyId":"order", "orderPropertyKey":"orderKey",
+		"folderTypeId":"folder", "bookFolderTypeId":"book",
+	})
+	if err != nil { t.Fatal(err) }
+	name := derived.ManifestUniqueKey
+	if !active { name = "inactive synthetic metadata" }
+	manifest := domain.NewDetails().SetString(bundle.RelationKeyName, name).SetString(bundle.RelationKeyDescription, string(raw))
+	if err := store.UpdateObjectDetails(ctx, "fixture-manifest", manifest); err != nil { t.Fatal(err) }
+	return manifest
+}
+
+func nativeFixtureDocument(raw string) *domain.Details {
+	return domain.NewDetails().SetString(bundle.RelationKeyName, "synthetic").
+		SetString(bundle.RelationKeySpaceId, "test").SetString(bundle.RelationKeyType, "chiddush").SetString("fixtureCanonical", raw)
+}
+
 // This exercises Heart's real SQLite-backed ObjectStore and query compiler.
 // It is not an ObjectSetDetails/Set UI end-to-end acceptance test.
 func TestNativeMembershipAndCommittedNotifications(t *testing.T) {
 	store := spaceindex.NewStoreFixture(t)
+	installNativeBinding(t, store, true)
 	ctx := context.Background()
 	put := func(id string, values []string, valid bool) {
 		t.Helper()
-		details := domain.NewDetailsFromMap(map[domain.RelationKey]domain.Value{bundle.RelationKeyId: domain.String(id), bundle.RelationKeyName: domain.String("synthetic"), ready: domain.Bool(valid)})
+		details := nativeFixtureDocument(`{"version":999}`)
 		if valid {
 			items := []map[string]string{}
 			for _, value := range values {
@@ -35,14 +66,7 @@ func TestNativeMembershipAndCommittedNotifications(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			projection, err := derived.Project(derived.Binding{SpaceID: "test-space", CanonicalKey: "fixtureCanonical", WritingTypeIDs: [3]string{"chiddush", "article", "research"}, Generation: "fixture-1"}, derived.Input{SpaceID: "test-space", ObjectID: id, TypeID: "chiddush", Raw: raw})
-			if err != nil {
-				t.Fatal(err)
-			}
 			details.SetString("fixtureCanonical", string(raw))
-			if len(projection.Sources) > 0 {
-				details.SetStringList(sources, projection.Sources)
-			}
 		}
 		if err := store.UpdateObjectDetails(ctx, id, details); err != nil {
 			t.Fatal(err)
@@ -103,8 +127,7 @@ func TestNativeMembershipAndCommittedNotifications(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	details := domain.NewDetailsFromMap(map[domain.RelationKey]domain.Value{bundle.RelationKeyId: domain.String("a"), bundle.RelationKeyName: domain.String("synthetic"), ready: domain.Bool(true)})
-	details.SetString("fixtureCanonical", `{"version":2,"records":[]}`)
+	details := nativeFixtureDocument(`{"version":2,"records":[]}`)
 	if err := store.UpdateObjectDetails(tx.Context(), "a", details); err != nil {
 		t.Fatal(err)
 	}
@@ -131,7 +154,7 @@ func TestNativeMembershipAndCommittedNotifications(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	details.SetStringList(sources, []string{refA})
+	details.SetString("fixtureCanonical", `{"version":1,"items":[{"id":"retry","kind":"ref","role":"context","providerID":"sefaria","canonicalKey":"ref-a","externalID":"ref-a","labelHe":"מקור בדיקה"}]}`)
 	if err := store.UpdateObjectDetails(tx.Context(), "a", details); err != nil {
 		t.Fatal(err)
 	}

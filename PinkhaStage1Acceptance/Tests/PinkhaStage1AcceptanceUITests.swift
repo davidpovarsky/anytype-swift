@@ -44,14 +44,78 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
             app.terminate()
         }
         try open(fixture.setId)
-        for title in fixture.names.values {
-            XCTAssertTrue(app.staticTexts[title].waitForExistence(timeout: 30), "Native Set omitted a matching writing document")
-        }
-        screenshot("native-set-three-live-members")
+        assertSetMembers(present: true)
+        try enableNativeColumns()
         app.terminate()
         try open(fixture.setId)
-        for title in fixture.names.values { XCTAssertTrue(app.staticTexts[title].waitForExistence(timeout: 30)) }
+        assertSetMembers(present: true)
+        for name in fixture.nativeProperties { XCTAssertTrue(setTable.staticTexts[name].waitForExistence(timeout: 20)) }
+        XCTAssertTrue(setTable.staticTexts[fixture.sourceLabel].firstMatch.waitForExistence(timeout: 20))
+        XCTAssertTrue(setTable.staticTexts[fixture.topicLabel].firstMatch.exists)
+        screenshot("native-set-three-live-members")
+        // Change only the native Set predicate via its actual Torah picker.
+        // None of the three documents links Genesis 1:2, so all must disappear.
+        try replaceSourceFilter(query: "Genesis 1:2")
+        app.terminate()
+        try open(fixture.setId)
+        assertSetMembers(present: false)
+        screenshot("native-set-alternate-filter-empty")
+        try replaceSourceFilter(query: fixture.sourceQuery)
+        app.terminate()
+        try open(fixture.setId)
+        assertSetMembers(present: true)
         screenshot("native-set-members-after-relaunch")
+    }
+
+    private var setTable: XCUIElement {
+        app.descendants(matching: .any).matching(identifier: "set-table").firstMatch
+    }
+
+    private func assertSetMembers(present: Bool) {
+        XCTAssertTrue(setTable.waitForExistence(timeout: 30))
+        for title in fixture.names.values {
+            let row = setTable.staticTexts[title].firstMatch
+            if present { XCTAssertTrue(row.waitForExistence(timeout: 30), "Native Set omitted \(title)") }
+            else { XCTAssertTrue(row.waitForNonExistence(timeout: 30), "Native Set included a nonmatching document") }
+        }
+    }
+
+    private func openSetSettings(_ section: String) {
+        let settings = app.buttons["set-view-settings"].firstMatch
+        XCTAssertTrue(settings.waitForExistence(timeout: 15)); settings.tap()
+        let row = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", section)).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 15)); row.tap()
+    }
+
+    private func enableNativeColumns() throws {
+        openSetSettings("Fields")
+        for name in fixture.nativeProperties {
+            let toggle = app.switches[name].firstMatch
+            XCTAssertTrue(toggle.waitForExistence(timeout: 15))
+            if toggle.value as? String == "0" { toggle.tap() }
+            XCTAssertEqual(toggle.value as? String, "1")
+        }
+        screenshot("native-set-original-fields-switches")
+    }
+
+    private func replaceSourceFilter(query: String) throws {
+        openSetSettings("Filters")
+        let source = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "מקור/ות")).firstMatch
+        XCTAssertTrue(source.waitForExistence(timeout: 15)); source.tap()
+        let picker = app.otherElements["torah-native-set-filter-picker"].firstMatch
+        XCTAssertTrue(picker.waitForExistence(timeout: 15))
+        let selected = app.buttons["torah-native-filter-selected-value"].firstMatch
+        XCTAssertTrue(selected.waitForExistence(timeout: 15)); selected.tap()
+        XCTAssertTrue(selected.waitForNonExistence(timeout: 10))
+        let search = app.textFields["torah-sources-search-field"].firstMatch
+        search.tap(); search.typeText(query)
+        let result = picker.buttons[query].firstMatch
+        XCTAssertTrue(result.waitForExistence(timeout: 45)); result.tap()
+        XCTAssertTrue(selected.waitForExistence(timeout: 20))
+        XCTAssertFalse(app.buttons["Link to document"].exists)
+        screenshot("native-set-filter-selection-\(query)")
+        app.buttons["torah-native-filter-apply"].tap()
+        XCTAssertTrue(picker.waitForNonExistence(timeout: 15))
     }
 
     private func open(_ id: String) throws {
