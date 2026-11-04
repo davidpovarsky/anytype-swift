@@ -1,0 +1,93 @@
+diff --git a/core/block/import/processor.go b/core/block/import/processor.go
+--- a/core/block/import/processor.go
++++ b/core/block/import/processor.go
+@@ -256,7 +256,8 @@
+  objects:=make([]torahtransport.Object,0,len(p.converterResponse.Snapshots))
+  for _,snapshot:=range p.converterResponse.Snapshots {
+   if snapshot.Snapshot!=nil && snapshot.Snapshot.Data!=nil {
+-   objects=append(objects,torahtransport.Object{ID:snapshot.Id,Details:snapshot.Snapshot.Data.Details})
++   data:=snapshot.Snapshot.Data
++   objects=append(objects,torahtransport.Object{ID:snapshot.Id,OriginalID:data.Details.GetString(bundle.RelationKeyOldAnytypeID),PropertyKey:data.Key,Details:data.Details})
+   }
+  }
+  if err:=torahtransport.RemapObjects(p.request.SpaceId,objects,p.oldIDToNew);err!=nil {
+diff --git a/core/pinkha/torahtransport/import.go b/core/pinkha/torahtransport/import.go
+--- a/core/pinkha/torahtransport/import.go
++++ b/core/pinkha/torahtransport/import.go
+@@ -13,8 +13,10 @@
+ )
+ 
+ type Object struct {
+-	ID      string
+-	Details *domain.Details
++	ID          string
++	OriginalID  string
++	PropertyKey string
++	Details     *domain.Details
+ }
+ 
+ type manifest struct {
+@@ -48,10 +50,22 @@
+ 	if targetSpace == "" {
+ 		return fmt.Errorf("missing destination Space")
+ 	}
+-	byID := map[string]*domain.Details{}
++	byID := map[string]Object{}
++	// The original PB converter first maps exported IDs to temporary import
++	// IDs. The processor then allocates final IDs. Compose those two stages;
++	// neither stage knows the opaque JSON's internal identity fields.
++	aliases := make(map[string]string, len(ids)+len(objects))
++	for old, next := range ids {
++		aliases[old] = next
++	}
+ 	for _, object := range objects {
+-		byID[object.ID] = object.Details
++		byID[object.ID] = object
++		if object.OriginalID != "" {
++			byID[object.OriginalID] = object
++			aliases[object.OriginalID] = mapped(ids, object.ID)
++		}
+ 	}
++	ids = aliases
+ 	type update struct {
+ 		details *domain.Details
+ 		key     domain.RelationKey
+@@ -69,7 +83,11 @@
+ 		if json.Unmarshal(raw, &source) != nil || source.SchemaVersion != 1 || source.SpaceID == "" || source.CanonicalID == "" || source.CanonicalKey == "" {
+ 			continue
+ 		}
+-		if source.ManifestID != "" && source.ManifestID != object.ID {
++		originalID := object.OriginalID
++		if originalID == "" {
++			originalID = object.ID
++		}
++		if source.ManifestID != "" && source.ManifestID != originalID {
+ 			continue
+ 		}
+ 		if source.ProvisioningState != "" && source.ProvisioningState != "complete" {
+@@ -80,7 +98,11 @@
+ 			continue
+ 		}
+ 		property := byID[source.CanonicalID]
+-		if property == nil || property.GetString(bundle.RelationKeyRelationKey) != source.CanonicalKey || !property.Has(bundle.RelationKeyRelationFormat) || property.GetInt64(bundle.RelationKeyRelationFormat) != 0 {
++		propertyKey := property.PropertyKey
++		if propertyKey == "" && property.Details != nil {
++			propertyKey = property.Details.GetString(bundle.RelationKeyRelationKey)
++		}
++		if property.Details == nil || propertyKey != source.CanonicalKey || !property.Details.Has(bundle.RelationKeyRelationFormat) || property.Details.GetInt64(bundle.RelationKeyRelationFormat) != 0 {
+ 			continue
+ 		}
+ 		if origins[source.SpaceID] {
+@@ -135,7 +157,11 @@
+ 				continue
+ 			}
+ 			canonical := []byte(document.Details.GetString(domain.RelationKey(source.CanonicalKey)))
+-			rewritten, err := remapCanonical(canonical, source.SpaceID, document.ID, targetSpace, mapped(ids, document.ID))
++			sourceID := document.OriginalID
++			if sourceID == "" {
++				sourceID = document.ID
++			}
++			rewritten, err := remapCanonical(canonical, source.SpaceID, sourceID, targetSpace, mapped(ids, document.ID))
+ 			if err != nil {
+ 				return err
+ 			}

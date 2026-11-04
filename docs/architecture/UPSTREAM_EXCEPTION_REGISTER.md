@@ -132,6 +132,44 @@ CI 41809890985 passed actual app/native-API acceptance after the bootstrap fix,
 then failed the first original Properties UI assertion. This narrow diagnostic
 route obtains the already-recorded UI evidence without another full app build.
 
+Revision 10 records the 29-file full Heart diff
+`03f72390b6b587c4a1fa8972dd2102f910049048653bedc23b7987c2bd5f97e1`
+and 11-file delta `161b44de9cc75ed1336b08225094668b26d6d5c2d20eb990b5d82ce86689f719`.
+The actual unmodified pinned engine successfully imports, edits and re-exports
+native PBC/JSON with byte-exact canonical payloads. The modified-engine consumer
+exposed missing destination identity remapping. A narrow original processor hook
+after allocation delegates to downstream transport; only known document/Space
+context and manifest schema identities are remapped. Item/provider/canonical IDs,
+unknown fields, block IDs and other raw bytes stay intact. The other changes
+cover verified local recovery caches (both inputs and outputs), one label decode
+per search fingerprint and parent-component cancellation of the full-text worker.
+All exact hunks and hashes were recorded before application under the existing
+standing owner authorization. Product validation of revision 10 is in progress.
+
+CI 41809890985's exported original UI hierarchy and recording demonstrate that
+Properties closes the Menu but never presents a sheet. The UIKit helper retained
+only the UIHostingController's view, with no controller ownership/containment.
+The exact two-file lifecycle correction is in
+approval/revision-10/native-ios-menu-containment.patch, SHA-256
+`4c2d82e5788cb3c285c4708c8c043fae9abb30e316b176ff72fc13e7a7485aaa`.
+The editor now contains and retains the original menu controller; there is no
+replacement Properties sheet. This follows Apple's UIHostingController embedding
+contract. Actual app UI validation remains required; Swift parse is insufficient.
+
+Revision 11 follows the actual revision-10 compatibility failure: the native
+PB converter first assigns temporary UUIDs, then the processor allocates final
+IDs. Its original oldAnytypeID field preserves the exported identity, while
+Data.Key preserves the property key removed from local/derived Details. The
+two-file delta composes these existing maps without changing the converter,
+protocol or generated code. Full patch SHA-256
+`fc7fa36bfe2d764a6ea39f651241479b52183146e428e5176708acbc9561407e`;
+delta `49cf73abf86e6e0e58af2135f2f152732d50a584ab311b6371723a8834fb00c2`.
+The existing explicit standing authorization covers this correction; the exact
+diff was recorded before applying to both isolated engine copies. Four transport
+tests (including both ID stages and fail-closed atomicity) and the presentation
+unit test pass. Actual import RPC validation is running; no compatibility PASS
+is inferred from these component results.
+
 Exact protected boundary identities are recorded in
 `docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/protected-source-inventory.json`.
 P1/P2 query, compatibility and native Type/Set gates must be established before

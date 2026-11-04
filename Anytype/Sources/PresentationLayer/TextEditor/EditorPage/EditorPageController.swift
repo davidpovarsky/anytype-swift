@@ -70,6 +70,7 @@ final class EditorPageController: UIViewController {
 
     private lazy var navigationBarHelper: EditorNavigationBarHelper = EditorNavigationBarHelper(
         navigationBarView: navigationBarView,
+        parentViewController: self,
         objectId: viewModel.document.objectId,
         spaceId: viewModel.document.spaceId,
         output: viewModel.router,

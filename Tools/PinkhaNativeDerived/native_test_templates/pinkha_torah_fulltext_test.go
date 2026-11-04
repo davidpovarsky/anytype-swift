@@ -143,3 +143,19 @@ func TestTorahFulltextOutboxCommitDoesNotWaitForCommonTransaction(t *testing.T) 
 		return err == nil && count == 0
 	})
 }
+
+func TestTorahFulltextWorkerStopsWithOwningComponent(t *testing.T) {
+	store := NewStoreFixture(t)
+	store.stopTorahFulltext()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	store.componentCtx = ctx
+	store.prepareTorahFulltext()
+	store.startTorahFulltext()
+	cancel()
+	select {
+	case <-store.torahFT.done:
+	case <-time.After(3 * time.Second):
+		t.Fatal("worker outlived the original ObjectStore component")
+	}
+}

@@ -131,7 +131,7 @@ func TestRealNativeMiddlewareDerivedProperties(t *testing.T) {
 	t.Cleanup(func() {
 		if t.Failed() {
 			m, p := show(manifest.ObjectId), show(canonical.ObjectId)
-			t.Logf("actual bootstrap binding: manifest name=%q uniqueKey=%q descriptionBytes=%d exactDescription=%v canonical id=%q key=%q format=%d hasFormat=%v layout=%d space=%q", m.GetString(bundle.RelationKeyName), m.GetString(bundle.RelationKeyUniqueKey),len(m.GetString(bundle.RelationKeyDescription)),m.GetString(bundle.RelationKeyDescription)==string(manifestRaw),p.GetString(bundle.RelationKeyId),p.GetString(bundle.RelationKeyRelationKey),p.GetInt64(bundle.RelationKeyRelationFormat),p.Has(bundle.RelationKeyRelationFormat),p.GetInt64(bundle.RelationKeyLayout),p.GetString(bundle.RelationKeySpaceId))
+			t.Logf("actual bootstrap binding: manifest name=%q uniqueKey=%q descriptionBytes=%d exactDescription=%v canonical id=%q key=%q format=%d hasFormat=%v layout=%d space=%q", m.GetString(bundle.RelationKeyName), m.GetString(bundle.RelationKeyUniqueKey), len(m.GetString(bundle.RelationKeyDescription)), m.GetString(bundle.RelationKeyDescription) == string(manifestRaw), p.GetString(bundle.RelationKeyId), p.GetString(bundle.RelationKeyRelationKey), p.GetInt64(bundle.RelationKeyRelationFormat), p.Has(bundle.RelationKeyRelationFormat), p.GetInt64(bundle.RelationKeyLayout), p.GetString(bundle.RelationKeySpaceId))
 		}
 	})
 	wait("engine capability", func() bool { return show(manifest.ObjectId).GetInt64(torah.VersionKey) == 1 })
@@ -323,6 +323,12 @@ func TestRealNativeMiddlewareDerivedProperties(t *testing.T) {
 		}
 		return false
 	})
+	exportIDs := []string{document.ObjectId, canonical.ObjectId, manifest.ObjectId, nativeSet.ObjectId}
+	for _, role := range []string{"chiddush", "article", "research"} {
+		exportIDs = append(exportIDs, typeIDs[role])
+	}
+	exportIDs = append(exportIDs, nativeIDs...)
+	emitCompatibilityExports(t, space.SpaceId, exportIDs, "Real native document", string(payload))
 	t.Log("PASS real generated middleware APIs: Property registry, Type recommendation, canonical writes, native search/Set/live Details, mutation rejection and native export; zero alternative option Objects")
 }
 
@@ -425,6 +431,35 @@ func TestProductionEngineLifecycleAndRecovery(t *testing.T) {
 	}
 	if get("doc").GetStringList(torah.SourcesKey)[0] != identity {
 		t.Fatal("read-only editor projection changed the native index")
+	}
+	if err = index.Recover(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if stats := index.LastRecoveryStats(); !stats.Complete || stats.Reused < 3 {
+		t.Fatalf("unchanged persisted projections were decoded again: %+v", stats)
+	}
+	// An old client can retain the old canonical hash while changing a cached
+	// list. Recovery must validate cached outputs as well as the input payload.
+	if err = raw(ctx, "doc", get("doc").SetStringList(torah.SourcesKey, []string{"older-client-forged"})); err != nil {
+		t.Fatal(err)
+	}
+	if err = index.Recover(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if got := get("doc").GetStringList(torah.SourcesKey); len(got) != 1 || got[0] != identity {
+		t.Fatal("recovery trusted a forged cache with an unchanged canonical hash")
+	}
+	if stats := index.LastRecoveryStats(); stats.Recomputed < 1 || stats.Reused < 1 {
+		t.Fatalf("cache repair/reuse not measured: %+v", stats)
+	}
+	if err = raw(ctx, "doc", get("doc").SetString("customCanonical", "")); err != nil {
+		t.Fatal(err)
+	}
+	if err = index.Recover(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if !get("doc").GetBool(torah.ReadyKey) || get("doc").Has(torah.SourcesKey) {
+		t.Fatal("recovery reused a cache after canonical bytes changed")
 	}
 	forged := document(payload).SetStringList(torah.SourcesKey, []string{"forged"})
 	put("doc", forged)

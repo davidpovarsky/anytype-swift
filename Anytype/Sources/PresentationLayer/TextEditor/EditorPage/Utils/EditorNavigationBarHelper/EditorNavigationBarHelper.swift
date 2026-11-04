@@ -99,6 +99,7 @@ final class EditorNavigationBarHelper {
     private let doneButton: UIButton
     private let selectAllButton: UIButton
 
+    private let settingsMenuController: UIViewController
     private let settingsMenuView: UIView
     private let syncStatusItem: EditorSyncStatusItem
     private let syncStatusGlassContainer: GlassEffectViewIOS26
@@ -127,6 +128,7 @@ final class EditorNavigationBarHelper {
 
     init(
         navigationBarView: EditorNavigationBarView,
+        parentViewController: UIViewController,
         objectId: String,
         spaceId: String,
         output: (any ObjectSettingsCoordinatorOutput)?,
@@ -159,6 +161,10 @@ final class EditorNavigationBarHelper {
             EditorTorahSettingsMenuItem(state: torahNavigationStateLocal)
         }
         let hostingController = UIHostingController(rootView: menuContainer)
+        // Retain and contain the original SwiftUI menu. Keeping only its view
+        // leaves native .sheet presentation without an owning controller.
+        self.settingsMenuController = hostingController
+        parentViewController.addChild(hostingController)
         hostingController.view.backgroundColor = .clear
         self.settingsMenuView = hostingController.view
 
@@ -272,6 +278,8 @@ final class EditorNavigationBarHelper {
         }
         torahSourcesGlassContainerLocal.isHidden = true
         
+        hostingController.didMove(toParent: parentViewController)
+
         navigationBarView.bannerView = webBannerItem
         navigationBarView.onContentWidthChange = { [weak self] in
             self?.updateTorahControlPlacement()

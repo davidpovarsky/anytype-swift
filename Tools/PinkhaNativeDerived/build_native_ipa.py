@@ -17,6 +17,20 @@ import zipfile
 
 from build_custom_heart import command, contains, digest, git
 
+def run_xctest(argv, app, evidence, result, prefix):
+    # Failure evidence must survive the strict acceptance gate too. Exporting
+    # diagnostics never changes the xcodebuild exit status or acceptance result.
+    try:
+        command(argv,app,evidence)
+    finally:
+        if result.exists():
+            for mode in ['summary','tests']:
+                with (evidence/(prefix+'-'+mode+'.json')).open('w') as stream:
+                    subprocess.run(['xcrun','xcresulttool','get','test-results',mode,
+                        '--path',str(result),'--format','json'],stdout=stream,stderr=subprocess.STDOUT)
+            subprocess.run(['xcrun','xcresulttool','export','attachments','--path',str(result),
+                '--output-path',str(evidence/(prefix+'-attachments'))],check=False)
+
 def main():
     parser=argparse.ArgumentParser(__doc__)
     parser.add_argument('--app-source',required=True,type=Path)
@@ -64,9 +78,9 @@ def main():
     native_run=runs[0].with_name('PinkhaNativeDerived.xctestrun')
     with native_run.open('wb') as stream: plistlib.dump(run,stream)
     result=evidence/'NativeDerivedProduct.xcresult'
-    command(['xcodebuild','test-without-building','-xctestrun',str(native_run),'-destination',
+    run_xctest(['xcodebuild','test-without-building','-xctestrun',str(native_run),'-destination',
              'platform=iOS Simulator,id='+args.simulator_udid,'-parallel-testing-enabled','NO',
-             '-only-testing:AnytypeTests/TorahNativeDerivedProductIntegrationTests','-resultBundlePath',str(result)],app,evidence)
+             '-only-testing:AnytypeTests/TorahNativeDerivedProductIntegrationTests','-resultBundlePath',str(result)],app,evidence,result,'native-product')
     summary=json.loads(subprocess.check_output(['xcrun','xcresulttool','get','test-results','summary','--path',str(result),'--format','json'],text=True))
     (evidence/'native-product-test-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
     def count(key):
@@ -110,10 +124,10 @@ def main():
     ui_configuration=ui_runs[0].with_name('PinkhaNativeDerivedUI.xctestrun')
     with ui_configuration.open('wb') as stream: plistlib.dump(ui_run,stream)
     ui_result=evidence/'NativeDerivedOriginalAppUI.xcresult'
-    command(['xcodebuild','test-without-building','-xctestrun',str(ui_configuration),'-destination',
+    run_xctest(['xcodebuild','test-without-building','-xctestrun',str(ui_configuration),'-destination',
              'platform=iOS Simulator,id='+args.simulator_udid,'-parallel-testing-enabled','NO',
              '-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests',
-             '-resultBundlePath',str(ui_result)],app,evidence)
+             '-resultBundlePath',str(ui_result)],app,evidence,ui_result,'native-ui')
     summary=json.loads(subprocess.check_output(['xcrun','xcresulttool','get','test-results','summary','--path',str(ui_result),'--format','json'],text=True))
     (evidence/'native-ui-test-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
     if count('passedTests')<1 or count('failedTests') or count('skippedTests'): raise RuntimeError('Original application UI acceptance did not pass without skips')

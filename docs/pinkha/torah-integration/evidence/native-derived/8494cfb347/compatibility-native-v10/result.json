@@ -1,0 +1,51 @@
+{
+  "status": "FAIL",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "modified_engine": true,
+  "heart_patch_sha256": "03f72390b6b587c4a1fa8972dd2102f910049048653bedc23b7987c2bd5f97e1",
+  "command": [
+    "/home/david/.cache/pinkha-native-derived/go1.26.5/go/bin/go",
+    "test",
+    "-p",
+    "2",
+    "-json",
+    "-count=1",
+    "-timeout",
+    "5m",
+    "-tags",
+    "nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg",
+    "-run",
+    "^TestActualExportImportRoundTrip$",
+    "./..."
+  ],
+  "passed": [],
+  "skipped": [],
+  "exit_code": 1,
+  "fixture_hashes": {
+    "contract.json": "87dfffd81008c85a2ebdce7383d3a8027a06b77857351fedc53017badea062f2",
+    "json/bafyreia3l6p5u6wfdvk4bjnawbqnrijwglmz2d25v7o5lkdo3jimmwrbba.json": "0e3dcac5b224c72c9856a92cd3f0ed91ca3917d9a8a91e4a0e5107214d99e4f1",
+    "json/bafyreic5jou34v5jtass7u2qjhpn2q6yicktwgg6nxn726hrjoa3nvcrje.json": "160a869f2286411386b57cad60436df7002609a53c40f21682812d35eeb857f9",
+    "json/bafyreickh3bt6uaswgfkzxiafrvpkxbgudgylutwqgbh3qxfadte2aleci.json": "2038c2e46c6d73d07f85866b906388426c21d81aa26785b3c12d891f4097642a",
+    "json/bafyreicp6232c6pcqomkhqah5qwys2szdelc5hofutfnln7lpi2cpbg26q.json": "0ffccd4cfe5aab00b33cb68b6e6074c8dc0809fe9385d44b2f6aac0745f9df5e",
+    "json/bafyreifdpfxddyikoosk2d6hgpwe7y3l6vzozrlmgllhyoojfwjill23sq.json": "9fdc11743a88c70ca17771b336dc5407b1fbc182bed67bcae64ca3ad33177e9f",
+    "json/bafyreifs2bcy3hotmg23fan3t7lz4hx22odwce7p7xdrmrxu5mhbar4rji.json": "ba2dc8d44f499170ce888ecfd6d30d036becf8d5b1ccacfb4a3d47c7dc7fefd8",
+    "json/bafyreig64hywrjskay5ormoz7ixyfdr4gmkrdvxtm2kxz7obud5t6hv6oa.json": "9baaebb2e31ad259d1fc21208f0da684c5299e38f04561fb51c9380d503c19a3",
+    "json/bafyreig6pmk6wrwqw6yeaua3q3pffgx6j7llrexgqsatpsryxtsi2nlto4.json": "df403e36740b9fb4a69211c89d425ede186378cae18708254975d9b06d9acc7c",
+    "json/bafyreigkc32plw5cgdum5rgiuwkx7jfg2zbq2plr2ejydyz6iw6qsrqf7q.json": "9f0831161a5c79aee16170a41e42efd05bde397574dba6f417e42efb3dd554b7",
+    "json/bafyreihwvsxo3odocfwozgwxuzxkouxuraltcwoplx4erb5ncvctwq76ii.json": "25053d7fdcb1bd68b316a7ec21abe1972d5e8d15460fb6a1fd7ce598a95d0b5d",
+    "pbc/bafyreia3l6p5u6wfdvk4bjnawbqnrijwglmz2d25v7o5lkdo3jimmwrbba.pb": "22d1eb821807db6852754235138b66f729da0003cbd3c0869423780dce387eb3",
+    "pbc/bafyreic5jou34v5jtass7u2qjhpn2q6yicktwgg6nxn726hrjoa3nvcrje.pb": "de6d9ac9ab08b104a3025031a70cc5b904c754a2d990f6309519d33378029a3f",
+    "pbc/bafyreickh3bt6uaswgfkzxiafrvpkxbgudgylutwqgbh3qxfadte2aleci.pb": "448c336e22691fff33fc04c8c774633124a574b0f5d68f58f74cebc2edf25509",
+    "pbc/bafyreicp6232c6pcqomkhqah5qwys2szdelc5hofutfnln7lpi2cpbg26q.pb": "112b1a8a21f328d461308a233d451494f8660b2c129c69f3651711c3e6ed8e3d",
+    "pbc/bafyreifdpfxddyikoosk2d6hgpwe7y3l6vzozrlmgllhyoojfwjill23sq.pb": "9a4cdabd03aab3754631ee2e7d392e721607636558adb56a513e2319b01368dd",
+    "pbc/bafyreifs2bcy3hotmg23fan3t7lz4hx22odwce7p7xdrmrxu5mhbar4rji.pb": "4b5e94f8f39cd637f3830c4518b290877b31102c23d7d2f49133fcdc0dcd5764",
+    "pbc/bafyreig64hywrjskay5ormoz7ixyfdr4gmkrdvxtm2kxz7obud5t6hv6oa.pb": "2aa056dc97c6a627e3ec3565ab90a2fd9eea727620aa098d4c836029b070b2be",
+    "pbc/bafyreig6pmk6wrwqw6yeaua3q3pffgx6j7llrexgqsatpsryxtsi2nlto4.pb": "739c0060700911fd01da2ffa6db7b182a139d3aa0d85cd09503cc60727f5119d",
+    "pbc/bafyreigkc32plw5cgdum5rgiuwkx7jfg2zbq2plr2ejydyz6iw6qsrqf7q.pb": "2a536a145e68e54cd0caf0779361e25bcdd9bb642484a72b6f1df2ac36b81c51",
+    "pbc/bafyreihwvsxo3odocfwozgwxuzxkouxuraltcwoplx4erb5ncvctwq76ii.pb": "dce3c84e4f0c604017c44911eabf87408ab8ccce4c74fa1ad17c790efa64a5b1"
+  },
+  "test_source_hashes": {
+    "roundtrip_test.go": "447fe8a0fbccdbd6033886d74b00bf4471b0195588f3c0a8f36dd194a812d4bb"
+  },
+  "scope": "actual original RPC import/edit/export of native snapshots in disposable accounts/Spaces; no device/UI inference"
+}

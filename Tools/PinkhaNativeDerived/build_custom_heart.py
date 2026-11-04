@@ -23,6 +23,7 @@ NATIVE_REGRESSION_PACKAGES = [
  './core/block/editor/basic', './core/block/editor/smartblock', './core/indexer',
  './core/converter/pbc', './core/converter/pbjson', './core/block/export/anyblock',
  './core/block/object/objectlink', './core/block/simple/dataview',
+ './core/block/import', './core/block/import/common', './core/block/import/pb',
 ]
 
 def digest(path):
@@ -118,6 +119,15 @@ def main():
     ldflags=f'-X github.com/anyproto/anytype-heart/util/vcs.GitSummary={TAG}-{marker} -X github.com/anyproto/anytype-heart/util/vcs.GitCommit={PIN}'
     env=dict(os.environ,CGO_ENABLED='1',GOMAXPROCS='2')
     env.pop('GOWORK',None)
+    # Downstream tests exercise the actual original Space store transaction and
+    # worker lifecycle. The review patch includes this test-only source; Go
+    # excludes it from the shipped framework.
+    test_source=Path(__file__).resolve().parent/'native_test_templates/pinkha_torah_fulltext_test.go'
+    test_destination=heart/'pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go'
+    normalized_test=test_source.read_bytes().replace(b'\r\n',b'\n')
+    if test_destination.read_bytes().replace(b'\r\n',b'\n')!=normalized_test:
+        raise RuntimeError('Applied native acceptance fixture differs from the recorded source')
+    receipt['native_test_source_sha256']=hashlib.sha256(normalized_test).hexdigest()
     native=[]
     if args.target=='linux':
         arch='linux-amd64-musl' if platform.machine()=='x86_64' else 'linux-arm64-musl'

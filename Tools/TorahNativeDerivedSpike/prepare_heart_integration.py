@@ -31,6 +31,28 @@ for source in sorted((product/'values').glob('*.go')):
     add('core/pinkha/torahvalues/'+source.name,source.read_text(encoding='utf8').replace(
         'github.com/davidpovarsky/anytype-swift/Modules/PinkhaHeart/torah',
         'github.com/anyproto/anytype-heart/core/pinkha/torah'))
+for source in sorted((product/'transport').glob('*.go')):
+    if source.name.endswith('_test.go'): continue
+    add('core/pinkha/torahtransport/'+source.name,source.read_text(encoding='utf8').replace(
+        'github.com/davidpovarsky/anytype-swift/Modules/PinkhaHeart/torah',
+        'github.com/anyproto/anytype-heart/core/pinkha/torah'))
+
+# Use the original importer's complete identity map after allocation and before
+# any schema/document object is created. Projection never rewrites user data.
+processor='core/block/import/processor.go'
+edit(processor,'"github.com/anyproto/anytype-heart/core/domain"','"github.com/anyproto/anytype-heart/core/domain"\n torahtransport "github.com/anyproto/anytype-heart/core/pinkha/torahtransport"')
+edit(processor,'\tdataObject := creator.NewDataObject(',''' objects:=make([]torahtransport.Object,0,len(p.converterResponse.Snapshots))
+ for _,snapshot:=range p.converterResponse.Snapshots {
+  if snapshot.Snapshot!=nil && snapshot.Snapshot.Data!=nil {
+   data:=snapshot.Snapshot.Data
+   objects=append(objects,torahtransport.Object{ID:snapshot.Id,OriginalID:data.Details.GetString(bundle.RelationKeyOldAnytypeID),PropertyKey:data.Key,Details:data.Details})
+  }
+ }
+ if err:=torahtransport.RemapObjects(p.request.SpaceId,objects,p.oldIDToNew);err!=nil {
+  p.errors.Add(err)
+  return nil,""
+ }
+\tdataObject := creator.NewDataObject(''')
 
 add('pkg/lib/bundle/pinkha_torah.go','''package bundle
 
@@ -128,7 +150,7 @@ type torahFulltextWorker struct {
 }
 
 func(s *dsObjectStore)prepareTorahFulltext(){
- ctx,cancel:=context.WithCancel(context.Background())
+ ctx,cancel:=context.WithCancel(s.componentCtx)
  s.torahFT=&torahFulltextWorker{ctx:ctx,cancel:cancel,wake:make(chan struct{},1),done:make(chan struct{})}
 }
 
@@ -161,8 +183,8 @@ func(s *dsObjectStore)stopTorahFulltext(){
 func (s *dsObjectStore) recordTorahFulltext(ctx context.Context,id string,before,after *domain.Details) error {
  native:=func(d *domain.Details)bool{return d!=nil&&d.GetString(domain.RelationKey(torah.CanonicalKeyKey))!=""}
  if !native(before)&&!native(after){return nil}
- if values.SearchFingerprint(before)==values.SearchFingerprint(after){return nil}
  token:=values.SearchFingerprint(after)
+ if values.SearchFingerprint(before)==token{return nil}
  _,err:=s.torahOutbox.UpsertId(ctx,id,query.ModifyFunc(func(a *anyenc.Arena,_ *anyenc.Value)(*anyenc.Value,bool,error){
   value:=a.NewObject();value.Set("id",a.NewString(id));value.Set("token",a.NewString(token));return value,true,nil
  }))
@@ -324,8 +346,9 @@ func (i *indexer) withoutTorahCanonicalText(details,indexed *domain.Details)*dom
 
 func (i *indexer) prepareTorahSearchDocs(id domain.FullID,details *domain.Details)(docs []ftsearch.SearchDoc){
  if details==nil{return nil}
+ texts:=values.SearchTexts(details)
  for _,definition:=range torah.Definitions{
-  text:=values.SearchText(details,definition.Key)
+  text:=texts[definition.Key]
   if text!=""{docs=append(docs,ftsearch.SearchDoc{Id:domain.NewObjectPathWithRelation(id.ObjectID,definition.Key).String(),SpaceId:id.SpaceID,Text:text})}
  }
  return docs

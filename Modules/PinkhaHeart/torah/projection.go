@@ -76,7 +76,7 @@ func Identity(kind Kind, provider, canonical, external string) string {
 }
 
 func (b Binding) Validate() error {
-	if b.SpaceID == "" || b.CanonicalKey == "" || b.Generation == "" {
+	if b.SpaceID == "" || b.CanonicalKey == "" || b.Generation == "" || IsLocalKey(b.CanonicalKey) {
 		return ErrBinding
 	}
 	seen := map[string]bool{}

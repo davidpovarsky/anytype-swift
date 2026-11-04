@@ -22,16 +22,30 @@ func ExportDetails(details *domain.Details) *domain.Details {
 }
 
 func SearchText(details *domain.Details, key string) string {
-	if details == nil {
+	if !torah.IsProperty(key) {
 		return ""
 	}
-	if !details.GetBool(domain.RelationKey(torah.ReadyKey)) || !torah.IsProperty(key) {
-		return ""
+	return SearchTexts(details)[key]
+}
+
+// Decode the shared label map once per document, including when hashing all
+// three search values during a large rebuild or preparing native search docs.
+func SearchTexts(details *domain.Details) map[string]string {
+	result := map[string]string{}
+	if details == nil || !details.GetBool(domain.RelationKey(torah.ReadyKey)) {
+		return result
 	}
 	var labels map[string]torah.DisplayLabel
 	if json.Unmarshal([]byte(details.GetString(domain.RelationKey(torah.LabelsKey))), &labels) != nil {
-		return ""
+		return result
 	}
+	for _, definition := range torah.Definitions {
+		result[definition.Key] = searchText(details, definition.Key, labels)
+	}
+	return result
+}
+
+func searchText(details *domain.Details, key string, labels map[string]torah.DisplayLabel) string {
 	var text []string
 	seen := map[string]bool{}
 	for _, id := range details.GetStringList(domain.RelationKey(key)) {
@@ -49,8 +63,9 @@ func SearchText(details *domain.Details, key string) string {
 
 func SearchFingerprint(details *domain.Details) string {
 	text := ""
+	values := SearchTexts(details)
 	for _, definition := range torah.Definitions {
-		text += definition.Key + "\x00" + SearchText(details, definition.Key) + "\x00"
+		text += definition.Key + "\x00" + values[definition.Key] + "\x00"
 	}
 	if details != nil {
 		text += details.GetString(domain.RelationKey(torah.CanonicalKeyKey))

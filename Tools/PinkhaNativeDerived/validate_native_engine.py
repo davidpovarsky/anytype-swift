@@ -23,6 +23,9 @@ parser.add_argument('--benchmarks', action='store_true')
 parser.add_argument('--benchmarks-only', action='store_true')
 parser.add_argument('--benchmark-pattern', default='^TestNativeBenchmarks$')
 parser.add_argument('--approved-inventory', type=Path)
+parser.add_argument('--only', choices=['projection-presentation','native-outbox','product-acceptance','original-regression'])
+parser.add_argument('--compatibility-exports', type=Path)
+parser.add_argument('--product-pattern', default='^(TestProductionEngineLifecycleAndRecovery|TestNativeMembershipAndCommittedNotifications|TestRealNativeMiddlewareDerivedProperties)$')
 args = parser.parse_args()
 if args.benchmarks_only:
     args.benchmarks = True
@@ -37,15 +40,19 @@ env = dict(os.environ, GOMAXPROCS='2', CGO_ENABLED='1',
            PINKHA_NATIVE_WIRE_ACCEPTANCE='1', PINKHA_NATIVE_BENCH='1' if args.benchmarks else '0')
 if args.module_cache:
     env['GOMODCACHE'] = str(args.module_cache.resolve())
+if args.compatibility_exports:
+    env['PINKHA_NATIVE_COMPAT_EXPORT'] = str(args.compatibility_exports.resolve())
 checks = [
     ('projection-presentation',root/'Modules/PinkhaHeart',['./...'],None),
-    ('native-outbox',heart,['./pkg/lib/localstore/objectstore/spaceindex'],'^TestTorahFulltextOutbox'),
+    ('native-outbox',heart,['./pkg/lib/localstore/objectstore/spaceindex'],'^TestTorahFulltext'),
     ('product-acceptance', root/'Tools/TorahNativeDerivedSpike/integration', ['./...'],
-     '^(TestProductionEngineLifecycleAndRecovery|TestNativeMembershipAndCommittedNotifications|TestRealNativeMiddlewareDerivedProperties)$'),
+     args.product_pattern),
     ('original-regression', heart, NATIVE_REGRESSION_PACKAGES, None),
 ]
 if args.benchmarks_only:
     checks = []
+elif args.only:
+    checks = [check for check in checks if check[0] == args.only]
 if args.benchmarks:
     checks.append(('native-benchmarks', root/'Tools/TorahNativeDerivedSpike/integration', ['./...'], args.benchmark_pattern))
 results = []
@@ -65,7 +72,13 @@ def app_revision():
     return subprocess.check_output(command, text=True).strip()
 def inputs():
     files=list((root/'Modules/PinkhaHeart').rglob('*.go'))+list((root/'Tools/TorahNativeDerivedSpike/integration').glob('*.go'))
+    files+=list((root/'Tools/PinkhaNativeDerived/native_test_templates').glob('*.go'))
     data={str(path.relative_to(root)):hashlib.sha256(path.read_bytes()).hexdigest() for path in files}
+    if any(check[0]=='native-outbox' or check[0]=='original-regression' for check in checks):
+        native_test=heart/'pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go'
+        template=root/'Tools/PinkhaNativeDerived/native_test_templates/pinkha_torah_fulltext_test.go'
+        if native_test.read_bytes().replace(b'\r\n',b'\n')!=template.read_bytes().replace(b'\r\n',b'\n'):
+            raise RuntimeError('Applied native acceptance test differs from the recorded template')
     if inventory:
         for entry in inventory['files']:
             actual=hashlib.sha256((heart/entry['path']).read_bytes().replace(b'\r\n',b'\n')).hexdigest()

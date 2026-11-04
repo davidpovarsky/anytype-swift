@@ -34,6 +34,7 @@ type Index struct {
 	changed   ChangeHook
 	manifests sync.Map
 	active    atomic.Bool
+	recovery  atomic.Pointer[RecoveryStats]
 }
 
 func (i *Index) WithChangeHook(hook ChangeHook) *Index { i.changed = hook; return i }
@@ -334,19 +335,27 @@ func (i *Index) rows(ctx context.Context, filter any, visit func(*domain.Details
 	return iter.Err()
 }
 
-func (i *Index) rebuild(ctx context.Context) error {
+func (i *Index) rebuild(ctx context.Context) (resultErr error) {
+	stats := RecoveryStats{}
+	defer func() { stats.Complete = resultErr == nil; i.recovery.Store(&stats) }()
 	binding, bindingErr := torah.ResolveBinding(ctx, source{index: i}, i.space)
 	// Keep only object IDs while traversing. Updating a live SQL cursor can skip
 	// or revisit rows. The payload stays in the original collection and tx.
-	var ids []string
-	if err := i.rows(ctx, nil, func(d *domain.Details) error { ids = append(ids, d.GetString(bundle.RelationKeyId)); return nil }); err != nil {
+	ids, err := i.objectIDs(ctx)
+	if err != nil {
 		return err
 	}
 	for _, id := range ids {
+		stats.Scanned++
 		original, err := i.read(ctx, id)
 		if err != nil {
 			return err
 		}
+		if bindingErr == nil && reusableCache(binding, original) {
+			stats.Reused++
+			continue
+		}
+		stats.Recomputed++
 		d := clear(original)
 		if key := original.GetString(domain.RelationKey(torah.CanonicalKeyKey)); key != "" {
 			d.SetString(domain.RelationKey(torah.CanonicalKeyKey), key)
@@ -368,6 +377,13 @@ func (i *Index) rebuild(ctx context.Context) error {
 }
 
 func (i *Index) project(binding torah.Binding, d *domain.Details) {
+	defer func() {
+		if isManifest(d) {
+			d.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
+			d.SetString(domain.RelationKey(torah.CanonicalHashKey), binding.Generation)
+		}
+		sealCache(binding, d)
+	}()
 	// The opaque canonical field is never search-preview text, including on
 	// templates or objects that do not qualify for document-context Properties.
 	if d.Has(domain.RelationKey(binding.CanonicalKey)) {

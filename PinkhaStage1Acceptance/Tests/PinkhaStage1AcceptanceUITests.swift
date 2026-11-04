@@ -146,8 +146,12 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     }
 
     private func propertyTitle(_ name: String) -> XCUIElement {
-        let menu = app.buttons[name].firstMatch
-        return menu.exists ? menu : app.staticTexts[name].firstMatch
+        // One lazy query follows asynchronous sheet insertion without freezing
+        // the element type before the original Menu row has appeared.
+        app.descendants(matching: .any).matching(NSPredicate(
+            format: "(elementType == %d OR elementType == %d) AND label == %@",
+            XCUIElement.ElementType.button.rawValue, XCUIElement.ElementType.staticText.rawValue, name
+        )).firstMatch
     }
 
     private func selectNativeProperty(_ name: String, query: String) throws {

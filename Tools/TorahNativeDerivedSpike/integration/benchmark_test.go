@@ -62,6 +62,9 @@ func TestNativeBenchmarks(t *testing.T){
   t.Run(fmt.Sprintf("documents-%d-links-%d",count,fanout),func(t *testing.T){
    ctx:=context.Background();baselineTB,derivedTB:=&trackingTB{T:t},&trackingTB{T:t}
    baseline,store:=spaceindex.NewStoreFixture(baselineTB),spaceindex.NewStoreFixture(derivedTB)
+   // The upstream fixture closes its DB provider but has no worker lifecycle.
+   // Close the real stores first, including the native outbox workers.
+   t.Cleanup(func(){store.Close();baseline.Close()})
    installNativeBinding(t,baseline,false);manifest:=installNativeBinding(t,store,false)
    var nativeWrites atomic.Int64
    store.SubscribeForAll(func(database.Record){nativeWrites.Add(1)})
