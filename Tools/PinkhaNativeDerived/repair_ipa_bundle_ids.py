@@ -14,8 +14,8 @@ import zipfile
 from pathlib import Path
 
 EXPECTED_PARENT = "com.gloiiire.anytype.torahtrial"
-APP_INFO = re.compile(r"^Payload/[^/]+\\.app/Info\\.plist$")
-EXT_INFO = re.compile(r"^Payload/[^/]+\\.app/PlugIns/([^/]+)\\.appex/Info\\.plist$")
+APP_INFO = re.compile(r"^Payload/[^/]+\.app/Info\.plist$")
+EXT_INFO = re.compile(r"^Payload/[^/]+\.app/PlugIns/([^/]+)\.appex/Info\.plist$")
 
 
 def sha256(path):
