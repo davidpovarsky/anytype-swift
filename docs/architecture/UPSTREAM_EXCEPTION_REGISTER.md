@@ -80,6 +80,49 @@ identified by two real SDK build failures; the original 65-file worktree remains
 unchanged. Evidence packaging excludes DerivedData/dependency trees and preserves
 test result bundles in a zip, fixing the artifact uploader's colon-path rejection.
 
+Revision 8 records the exact 25-file Heart diff
+`7d6a0a53efc21b7ea7966beb396ef5f7c677ab728f9b430364095245c3126081`
+(15-file delta `626046d11b87cf32aaf274247553f47a85960063d8db4264c7b90332bc4ab130`).
+Both isolated Windows and Linux copies were verified against every after-hash.
+Actual native export tests exposed local derived fields in PBC/JSON snapshots;
+the three original snapshot converters now strip only the nine local keys and
+preserve the canonical payload byte for byte. Native graph dependency collectors
+exclude Torah value identities while preserving Property-definition dependencies.
+The original full-text indexer receives the existing SQL projection, indexes its
+human labels, and omits the manifest-bound canonical JSON from searchable text.
+A same-Space SQL outbox stores only document IDs/retry tokens in the projection's
+transaction, forwards them after commit to the original durable full-text queue,
+and retries after failure/reopen. Its rollback/commit/injected-failure/retry test
+passes against native SQLite. A sparse canonical-key index avoids full scans of
+ordinary Spaces during startup. The current canonical-key cache is the ninth
+private field and is covered by the same direct-mutation guard. Exact paths,
+hunks and before/after hashes are in approval/revision-8; applied receipts are
+in applied-v8-windows and applied-v8-linux. This records application and the
+specific tests named above; full product, app UI and hardware gates remain open.
+
+Revision 9 fixes the native-product deadlock captured by a deliberate SIGQUIT
+of the hung disposable test process (production-v8/product-acceptance.log).
+The original space indexer holds commonTx until the per-Space Commit returns;
+synchronous outbox draining at that boundary waited for the same common DB.
+The exact full patch is
+`4fc0f1a1846363fbfa43148d9b5362e6f414c803098c5393e0f4da7074d4d731`,
+five-file delta `fae60e5963527445a5890e87e0d2c192f798a69cf400ace16c78cfd81a94e042`.
+One cancellable worker per Space now drains the durable outbox after commit,
+coalesces wakeups, automatically retries failures and joins before store Close.
+Two native SQLite outbox tests pass, including a blocked common-queue gate
+that must never block Space Commit. All three full native product tests pass,
+including incremental manifest completion with a genuinely generated canonical
+Property key, actual human-label ObjectSearchWithMeta, PBC/JSON export, Set
+membership/subscriptions, current editor projection and mutation rejection.
+This is native middleware acceptance; the app runtime/physical gates stay open.
+CI 41772954198 compiled the real app/tests with custom Heart revision 7, then
+failed the actual app bootstrap readiness wait. A separate Swift reproduction
+demonstrates duplicated schema creation from simultaneous callers on one base
+bootstrap engine. Its downstream fix coalesces per-Space work; 25 focused Swift
+bootstrap and native-schema tests pass after the reproduced failure. No additional
+upstream iOS hook is needed. The real app suite now exercises eight concurrent
+callers and emits schema-only diagnostics on failure in its disposable Space.
+
 Exact protected boundary identities are recorded in
 `docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/protected-source-inventory.json`.
 P1/P2 query, compatibility and native Type/Set gates must be established before

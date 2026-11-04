@@ -43,6 +43,16 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
             screenshot("native-properties-\(role)-relaunch")
             app.terminate()
         }
+        for (role, typeId) in fixture.types {
+            try openProperties(typeId)
+            for name in fixture.nativeProperties { XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 15)) }
+            screenshot("native-original-type-editor-\(role)")
+            app.terminate()
+        }
+        try openProperties(fixture.manySourcesDocument)
+        XCTAssertTrue(app.staticTexts["+11"].waitForExistence(timeout: 15))
+        screenshot("native-original-property-twelve-source-chips")
+        app.terminate()
         try open(fixture.setId)
         assertSetMembers(present: true)
         try enableNativeColumns()
@@ -188,6 +198,8 @@ private struct NativeDerivedFixture: Decodable {
     let spaceId: String
     let documents: [String: String]
     let names: [String: String]
+    let types: [String: String]
+    let manySourcesDocument: String
     let setId: String
     let nativeProperties: [String]
     let sourceQuery: String

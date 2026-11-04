@@ -9,6 +9,7 @@ const LabelsKey = "_pinkhaTorahLabels"
 const VersionKey = "_pinkhaTorahProjectionVersion"
 const CanonicalHashKey = "_pinkhaTorahCanonicalHash"
 const StatusKey = "_pinkhaTorahState"
+const CanonicalKeyKey = "_pinkhaTorahCanonicalPropertyKey"
 const ManifestUniqueKey = "pinkha.space.manifest"
 
 type PropertyDefinition struct {
@@ -28,12 +29,14 @@ func IsProperty(key string) bool {
 }
 
 func LocalKeys() []string {
-	return []string{SourcesKey, TopicsKey, WordsKey, ReadyKey, LabelsKey, VersionKey, CanonicalHashKey, StatusKey}
+	return []string{SourcesKey, TopicsKey, WordsKey, ReadyKey, LabelsKey, VersionKey, CanonicalHashKey, StatusKey, CanonicalKeyKey}
 }
 
 func IsLocalKey(key string) bool {
 	for _, candidate := range LocalKeys() {
-		if key == candidate { return true }
+		if key == candidate {
+			return true
+		}
 	}
 	return false
 }

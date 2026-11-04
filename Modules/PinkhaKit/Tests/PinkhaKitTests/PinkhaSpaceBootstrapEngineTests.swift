@@ -8,10 +8,15 @@ actor MockManifestStore: PinkhaSpaceManifestStoreProtocol {
     var manifests: [String: PinkhaSpaceManifest] = [:]
     var saveCallCount = 0
     var loadCallCount = 0
+    var delayEmptyLoad = false
+
+    func enableConcurrentEmptyLoad() { delayEmptyLoad = true }
 
     func loadManifest(spaceId: String) async throws -> PinkhaSpaceManifest? {
         loadCallCount += 1
-        return manifests[spaceId]
+        let result = manifests[spaceId]
+        if delayEmptyLoad && result == nil { try await Task.sleep(for: .milliseconds(30)) }
+        return result
     }
 
     func saveManifest(_ manifest: PinkhaSpaceManifest) async throws -> PinkhaSpaceManifest {
@@ -531,6 +536,24 @@ struct PinkhaSpaceBootstrapEngineTests {
         // Verify the store was NOT overwritten
         let storedAfter = await store.getManifest(spaceId: spaceId)
         #expect(storedAfter?.schemaVersion == 99)
+    }
+
+    @Test("Activation and direct callers share one bootstrap per Space")
+    func concurrentCallsOnSameEngineDoNotDuplicateSchema() async throws {
+        let (engine, store, properties, types, templates) = makeEngine()
+        await store.enableConcurrentEmptyLoad()
+        let manifests = try await withThrowingTaskGroup(of: PinkhaSpaceManifest.self) { group in
+            for _ in 0..<20 { group.addTask { try await engine.bootstrapSpace(spaceId: "same-engine-race") } }
+            var values: [PinkhaSpaceManifest] = []
+            for try await value in group { values.append(value) }
+            return values
+        }
+        #expect(manifests.count == 20)
+        #expect(manifests.allSatisfy { $0.isFullyProvisioned })
+        #expect(manifests.allSatisfy { $0.registeredDocumentTypes == manifests.first?.registeredDocumentTypes })
+        #expect(await properties.getCreateCount() == 3)
+        #expect(await types.getCreateCount() == 5)
+        #expect(await templates.getCreateCount() == 3)
     }
 
     // 13. Concurrent bootstraps select a canonical manifest in store

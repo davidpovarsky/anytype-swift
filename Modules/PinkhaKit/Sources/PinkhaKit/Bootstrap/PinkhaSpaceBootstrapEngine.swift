@@ -27,6 +27,7 @@ public final class PinkhaSpaceBootstrapEngine: PinkhaSpaceBootstrapEngineProtoco
     }
 
     private let cache = CacheContainer()
+    private let provisioning = ProvisioningTasks()
     private let store: any PinkhaSpaceManifestStoreProtocol
     private let propertyService: any PinkhaPropertyServiceProtocol
     private let typeService: any PinkhaTypeServiceProtocol
@@ -56,6 +57,27 @@ public final class PinkhaSpaceBootstrapEngine: PinkhaSpaceBootstrapEngineProtoco
     }
 
     public func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
+        try await provisioning.run(spaceId: spaceId) {
+            try await self.performBootstrap(spaceId: spaceId)
+        }
+    }
+
+    private actor ProvisioningTasks {
+        private var tasks: [String: Task<PinkhaSpaceManifest, Error>] = [:]
+
+        func run(
+            spaceId: String,
+            operation: @escaping @Sendable () async throws -> PinkhaSpaceManifest
+        ) async throws -> PinkhaSpaceManifest {
+            if let task = tasks[spaceId] { return try await task.value }
+            let task = Task { try await operation() }
+            tasks[spaceId] = task
+            defer { tasks[spaceId] = nil }
+            return try await task.value
+        }
+    }
+
+    private func performBootstrap(spaceId: String) async throws -> PinkhaSpaceManifest {
         guard PinkhaRuntime.enabled else {
             throw PinkhaBootstrapError.disabled
         }

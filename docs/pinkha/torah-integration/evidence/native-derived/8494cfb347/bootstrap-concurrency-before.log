@@ -1,0 +1,30 @@
+[0/1] Planning build
+Building for debugging...
+[0/3] Write sources
+[1/3] Write swift-version-2807070033DA82CF.txt
+[3/9] Emitting module PinkhaKitTests
+[4/9] Compiling PinkhaKitTests PinkhaSpaceBootstrapEngineTests.swift
+[5/14] Wrapping AST for PinkhaKitTests for debugging
+[6/14] C:\Users\DAVID\Code\anytype-swift-native-derived-20261103\Modules\PinkhaKit\.build\x86_64-unknown-windows-msvc\debug\PinkhaKitPackageDiscoveredTests.derived\all-discovered-tests.swift
+[7/14] Write sources
+[9/16] Compiling PinkhaKitPackageDiscoveredTests PinkhaKitTests.swift
+[10/16] Emitting module PinkhaKitPackageDiscoveredTests
+[11/17] Compiling PinkhaKitPackageDiscoveredTests all-discovered-tests.swift
+[12/14] Write Objects.LinkFileList
+[13/14] Linking PinkhaKitPackageTests.xctest
+Build complete! (197.51s)
+Test Suite 'Selected tests' started at 2026-11-04 05:56:25.992
+Test Suite 'Selected tests' passed at 2026-11-04 05:56:26.093
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◊ Test run started.
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+→ Target Platform: x86_64-unknown-windows-msvc
+◊ Suite "PinkhaSpaceBootstrapEngineTests" started.
+◊ Test "Activation and direct callers share one bootstrap per Space" started.
+× Test "Activation and direct callers share one bootstrap per Space" recorded an issue at PinkhaSpaceBootstrapEngineTests.swift:553:9: Expectation failed: manifests.allSatisfy { $0.registeredDocumentTypes == manifests.first?.registeredDocumentTypes }
+× Test "Activation and direct callers share one bootstrap per Space" recorded an issue at PinkhaSpaceBootstrapEngineTests.swift:554:9: Expectation failed: await properties.getCreateCount() == 3
+× Test "Activation and direct callers share one bootstrap per Space" recorded an issue at PinkhaSpaceBootstrapEngineTests.swift:555:9: Expectation failed: await types.getCreateCount() == 5
+× Test "Activation and direct callers share one bootstrap per Space" recorded an issue at PinkhaSpaceBootstrapEngineTests.swift:556:9: Expectation failed: await templates.getCreateCount() == 3
+× Test "Activation and direct callers share one bootstrap per Space" failed after 0.083 seconds with 4 issues.
+× Suite "PinkhaSpaceBootstrapEngineTests" failed after 0.091 seconds with 4 issues.
+× Test run with 1 test in 1 suite failed after 0.094 seconds with 4 issues.

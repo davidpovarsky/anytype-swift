@@ -20,6 +20,7 @@ import (
 type Writer func(context.Context, string, *domain.Details) error
 type BeginWrite func(context.Context) (anystore.WriteTx, error)
 type BeginRead func(context.Context) (anystore.ReadTx, error)
+type ChangeHook func(context.Context, string, *domain.Details, *domain.Details) error
 
 // All state is owned by one Space store. The caller supplies Heart's notifying
 // transaction so subscriptions see the canonical and derived values together,
@@ -30,18 +31,32 @@ type Index struct {
 	begin     BeginWrite
 	write     Writer
 	snapshot  BeginRead
+	changed   ChangeHook
 	manifests sync.Map
 	active    atomic.Bool
 }
 
+func (i *Index) WithChangeHook(hook ChangeHook) *Index { i.changed = hook; return i }
+
+func (i *Index) writeProjected(ctx context.Context, id string, before, after *domain.Details) error {
+	if i.changed != nil {
+		if err := i.changed(ctx, id, before, after); err != nil {
+			return err
+		}
+	}
+	return i.write(ctx, id, after)
+}
+
 func New(space string, objects anystore.Collection, begin BeginWrite, write Writer, snapshot ...BeginRead) *Index {
 	index := &Index{space: space, objects: objects, begin: begin, write: write}
-	if len(snapshot) > 0 { index.snapshot = snapshot[0] }
+	if len(snapshot) > 0 {
+		index.snapshot = snapshot[0]
+	}
 	return index
 }
 
 func (i *Index) Recover(ctx context.Context) error {
-	for _, key := range []string{torah.SourcesKey, torah.TopicsKey, torah.WordsKey} {
+	for _, key := range []string{torah.SourcesKey, torah.TopicsKey, torah.WordsKey, torah.CanonicalKeyKey} {
 		if err := i.objects.EnsureIndex(ctx, anystore.IndexInfo{Name: key, Fields: []string{key}, Sparse: true}); err != nil {
 			return fmt.Errorf("Torah membership index %s: %w", key, err)
 		}
@@ -53,6 +68,16 @@ func (i *Index) Recover(ctx context.Context) error {
 	defer tx.Rollback()
 	if err = i.rows(tx.Context(), manifestFilter(), func(d *domain.Details) error { i.rememberManifest(d); return nil }); err != nil {
 		return err
+	}
+	if !i.active.Load() {
+		// A never-Pinkha Space has no rows in this sparse native index. A former
+		// binding still needs cleanup/recovery after its manifest was removed.
+		if err = i.rows(tx.Context(), map[string]any{torah.CanonicalKeyKey: map[string]any{"$exists": true}}, func(*domain.Details) error { i.active.Store(true); return nil }); err != nil {
+			return err
+		}
+		if !i.active.Load() {
+			return tx.Commit()
+		}
 	}
 	if err = i.rebuild(tx.Context()); err != nil {
 		return err
@@ -87,6 +112,11 @@ func (i *Index) Update(ctx context.Context, id string, details *domain.Details) 
 		return err
 	}
 	clean := clear(details)
+	if before != nil {
+		if bindingKey := before.GetString(domain.RelationKey(torah.CanonicalKeyKey)); bindingKey != "" {
+			clean.SetString(domain.RelationKey(torah.CanonicalKeyKey), bindingKey)
+		}
+	}
 	clean.SetString(bundle.RelationKeyId, id)
 	source := source{index: i}
 	binding, bindingErr := torah.ResolveBinding(ctx, source, i.space)
@@ -100,7 +130,7 @@ func (i *Index) Update(ctx context.Context, id string, details *domain.Details) 
 		rebind = true
 	}
 	if rebind {
-		if err = i.write(ctx, id, clean); err != nil {
+		if err = i.writeProjected(ctx, id, before, clean); err != nil {
 			return err
 		}
 		if err = i.rebuild(ctx); err != nil {
@@ -110,7 +140,7 @@ func (i *Index) Update(ctx context.Context, id string, details *domain.Details) 
 		if bindingErr == nil {
 			i.project(binding, clean)
 		}
-		if err = i.write(ctx, id, clean); err != nil {
+		if err = i.writeProjected(ctx, id, before, clean); err != nil {
 			return err
 		}
 	}
@@ -128,20 +158,29 @@ func (i *Index) rememberManifest(d *domain.Details) {
 // asynchronously indexed row. It shares the native binding and projector; it
 // never writes canonical data or introduces a second persistent repository.
 func (i *Index) LocalDetails(ctx context.Context, details *domain.Details) (*domain.Details, error) {
-	if !i.active.Load() { return nil, nil }
+	if !i.active.Load() {
+		return nil, nil
+	}
 	if i.snapshot != nil {
 		tx, err := i.snapshot(ctx)
-		if err != nil { return nil, err }
+		if err != nil {
+			return nil, err
+		}
 		defer tx.Commit()
 		ctx = tx.Context()
 	} else {
 		tx, err := i.begin(ctx)
-		if err != nil { return nil, err }
+		if err != nil {
+			return nil, err
+		}
 		defer tx.Rollback()
 		ctx = tx.Context()
 	}
 	binding, bindingErr := torah.ResolveBinding(ctx, source{index: i}, i.space)
 	result := clear(details)
+	if key := details.GetString(domain.RelationKey(torah.CanonicalKeyKey)); key != "" {
+		result.SetString(domain.RelationKey(torah.CanonicalKeyKey), key)
+	}
 	if bindingErr == nil {
 		i.project(binding, result)
 		if isManifest(result) {
@@ -150,7 +189,9 @@ func (i *Index) LocalDetails(ctx context.Context, details *domain.Details) (*dom
 		}
 	}
 	keys := make([]domain.RelationKey, 0, len(torah.LocalKeys()))
-	for _, key := range torah.LocalKeys() { keys = append(keys, domain.RelationKey(key)) }
+	for _, key := range torah.LocalKeys() {
+		keys = append(keys, domain.RelationKey(key))
+	}
 	return result.CopyOnlyKeys(keys...), nil
 }
 
@@ -174,6 +215,15 @@ func (i *Index) Delete(ctx context.Context, ids []string, remove func(context.Co
 	defer tx.Rollback()
 	rebind := false
 	for _, id := range ids {
+		if i.changed != nil {
+			before, readErr := i.read(tx.Context(), id)
+			if readErr != nil && !errors.Is(readErr, anystore.ErrDocNotFound) {
+				return readErr
+			}
+			if err = i.changed(tx.Context(), id, before, nil); err != nil {
+				return err
+			}
+		}
 		_, knownManifest := i.manifests.Load(id)
 		rebind = rebind || knownManifest || (source{index: i}).isCanonicalCandidate(tx.Context(), id)
 	}
@@ -227,6 +277,15 @@ func (i *Index) Modify(ctx context.Context, id string, proc func(*domain.Details
 		}
 	} else if d.Len() > 1 {
 		if err = i.Update(tx.Context(), id, d); err != nil {
+			return err
+		}
+	}
+	if i.changed != nil {
+		final, readErr := i.read(tx.Context(), id)
+		if readErr != nil && !errors.Is(readErr, anystore.ErrDocNotFound) {
+			return readErr
+		}
+		if err = i.changed(tx.Context(), id, previous, final); err != nil {
 			return err
 		}
 	}
@@ -289,6 +348,9 @@ func (i *Index) rebuild(ctx context.Context) error {
 			return err
 		}
 		d := clear(original)
+		if key := original.GetString(domain.RelationKey(torah.CanonicalKeyKey)); key != "" {
+			d.SetString(domain.RelationKey(torah.CanonicalKeyKey), key)
+		}
 		if bindingErr == nil {
 			i.project(binding, d)
 			if isManifest(d) {
@@ -297,7 +359,7 @@ func (i *Index) rebuild(ctx context.Context) error {
 			}
 		}
 		if !d.Equal(original) {
-			if err = i.write(ctx, id, d); err != nil {
+			if err = i.writeProjected(ctx, id, original, d); err != nil {
 				return err
 			}
 		}
@@ -306,6 +368,11 @@ func (i *Index) rebuild(ctx context.Context) error {
 }
 
 func (i *Index) project(binding torah.Binding, d *domain.Details) {
+	// The opaque canonical field is never search-preview text, including on
+	// templates or objects that do not qualify for document-context Properties.
+	if d.Has(domain.RelationKey(binding.CanonicalKey)) {
+		d.SetString(domain.RelationKey(torah.CanonicalKeyKey), binding.CanonicalKey)
+	}
 	types := d.GetStringList(bundle.RelationKeyType)
 	// The pinned product engine writes type as a scalar. Older snapshots and
 	// native list fixtures can still carry a single-element list.
@@ -326,6 +393,9 @@ func (i *Index) project(binding torah.Binding, d *domain.Details) {
 		IsDeleted:  d.GetBool(bundle.RelationKeyIsDeleted), IsArchived: d.GetBool(bundle.RelationKeyIsArchived),
 		Raw: []byte(d.GetString(domain.RelationKey(binding.CanonicalKey))),
 	})
+	if err == nil || errors.Is(err, torah.ErrMalformed) || errors.Is(err, torah.ErrUnsupported) {
+		d.SetString(domain.RelationKey(torah.CanonicalKeyKey), binding.CanonicalKey)
+	}
 	if err != nil {
 		if errors.Is(err, torah.ErrMalformed) || errors.Is(err, torah.ErrUnsupported) {
 			d.SetBool(domain.RelationKey(torah.ReadyKey), false)

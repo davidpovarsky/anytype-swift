@@ -1,0 +1,171 @@
+Command line invocation:
+    /Applications/Xcode_27.1.app/Contents/Developer/usr/bin/xcodebuild test-without-building -xctestrun /Users/runner/work/anytype-swift/anytype-swift/build/native-evidence/app/DerivedData-NativeAcceptance/Build/Products/PinkhaNativeDerived.xctestrun -destination "platform=iOS Simulator,id=58B31C2A-A5F3-4A72-885D-0355B2EEEEB8" -parallel-testing-enabled NO "-only-testing:AnytypeTests/TorahNativeDerivedProductIntegrationTests" -resultBundlePath /Users/runner/work/anytype-swift/anytype-swift/build/native-evidence/app/NativeDerivedProduct.xcresult
+
+Writing result bundle at path:
+	/Users/runner/work/anytype-swift/anytype-swift/build/native-evidence/app/NativeDerivedProduct.xcresult
+
+2026-11-04 05:31:37.415 xcodebuild[56553:395751] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+mw lib: build on 0001-01-01 00:00:00 +0000 UTC at #d98420b1113536afd08cde6de9a5816f6d27ffff
+2026-11-04 05:32:42.616052+0000 Anytype[57950:400470] [framework] CoreUI: CUIThemeStore: No theme registered with id=0
+2026-11-04 05:32:42.616812+0000 Anytype[57950:400470] [framework] CoreUI: CUIThemeStore: No theme registered with id=0
+2026-11-04 05:32:43.102453+0000 Anytype[57950:399163] [plugin] AddInstanceForFactory: No factory registered for id <CFUUID 0x108e91be0> F8BB1C28-BAE8-11D6-9C31-00039315CD46
+2026-11-04 05:32:43.257243+0000 Anytype[57950:399163] [AVAudioSession Hang Risk]     AVAudioSession_iOS.mm:978   This method can lead to UI unresponsiveness if called on the main thread. Consider using the asynchronous activate/deactivate API instead for calls from the main thread.
+2026-11-04 05:32:44.406654+0000 Anytype[57950:399163] [SceneConfiguration] Info.plist contained no UIScene configuration dictionary (looking for configuration named "Default Configuration")
+2026-11-04 05:32:44.750423+0000 Anytype[57950:399163] [Assert] -[UIApplication statusBarStyle] API has been deprecated and is a no-op on 27.0 and later.
+2026-11-04 05:32:44.759435+0000 Anytype[57950:399163] [Assert] -[UIApplication statusBarStyle] API has been deprecated and is a no-op on 27.0 and later.
+2026-11-04 05:32:44.809702+0000 Anytype[57950:399163] [Assert] -[UIApplication statusBarStyle] API has been deprecated and is a no-op on 27.0 and later.
+2026-11-04 05:32:45.701225+0000 Anytype[57950:399163] [Assert] -[UIApplication statusBarStyle] API has been deprecated and is a no-op on 27.0 and later.
+2026-11-04 05:32:46.340123+0000 Anytype[57950:400543] [unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-11-04 05:32:47.161600+0000 Anytype[57950:399163] [Invalid Configuration] Bound preference FrameCatcherKey tried to update multiple times per frame.
+2026-11-04 05:32:47.288287+0000 Anytype[57950:399163] [Assert] -[UIApplication statusBarStyle] API has been deprecated and is a no-op on 27.0 and later.
+2026-11-04 05:32:47.388474+0000 Anytype[57950:399163] [API] cannot add handler to 0 from 0 - dropping
+2026-11-04 05:32:47.393102+0000 Anytype[57950:399163] [API] cannot add handler to 0 from 0 - dropping
+2026-11-04 05:32:47.393389+0000 Anytype[57950:399163] [Assert] -[UIApplication statusBarStyle] API has been deprecated and is a no-op on 27.0 and later.
+2026-11-04 05:32:51.929521+0000 Anytype[57950:399163] [XPCErrors] non-launching port is incompatible with service identifier "com.apple.PointerUI.pointeruid.default-service"
+Test Suite 'Selected tests' started at 2026-11-04 05:32:53.049.
+Test Suite 'AnytypeTests.xctest' started at 2026-11-04 05:32:53.051.
+Test Suite 'AnytypeTests.xctest' passed at 2026-11-04 05:32:53.051.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-04 05:32:53.054.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.006) seconds
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64-apple-ios17.0-simulator
+◇ Suite "Native Torah product integration" started.
+◇ Test "Real schema, canonical writes, native Set filters, columns and live membership" started.
+{"level":"INFO","ts":"2026-11-04T05:32:53.320Z","logger":"client.space.localdiscovery","msg":"local discovery: no native discovery proxy installed, using zeroconf"}
+{"level":"INFO","ts":"2026-11-04T05:32:53.344Z","logger":"anytype-app","msg":"starting app","mwVersion":"v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-7f93915d01d1d63b66f340b3ba6c0fa4b51e1710fe90e065ba47b4e7aaf4be31","appVersion":"iOS:0.49.0(0)/middle:v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-7f93915d01d1d63b66f340b3ba6c0fa4b51e1710fe90e065ba47b4e7aaf4be31/any-sync:v0.13.8"}
+{"level":"WARN","ts":"2026-11-04T05:32:53.359Z","logger":"anytype-config","msg":"using sqlite storage"}
+### lenient true
+{"level":"WARN","ts":"2026-11-04T05:32:53.698Z","logger":"common.nodeconf","msg":"periodic call error","error":"unable to connect"}
+2026/11/04 05:32:53 failed to sufficiently increase receive buffer size (was: 768 kiB, wanted: 7168 kiB, got: 6144 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+2026-11-04 05:32:53.788433+0000 Anytype[57950:400542] [os_log] 2026/11/04 05:32:53 failed to sufficiently increase receive buffer size (was: 768 kiB, wanted: 7168 kiB, got: 6144 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+{"level":"INFO","ts":"2026-11-04T05:32:53.830Z","logger":"client.space.localdiscovery","msg":"net interfaces configuration changed","ifaces":["en0"]}
+{"level":"INFO","ts":"2026-11-04T05:32:53.830Z","logger":"client.space.localdiscovery","msg":"own lan addresses","addrs":["en0 192.168.64.4/24 advertised"]}
+{"level":"INFO","ts":"2026-11-04T05:32:53.830Z","logger":"client.space.localdiscovery","msg":"starting mdns server","ips":["192.168.64.4"],"port":50413,"peerId":"12D3KooWSF8fcrifiz9JRqQ1gMmHczwddVnXRrrCZZXYChUtoQ7t","linkLocalIfaces":[]}
+{"level":"INFO","ts":"2026-11-04T05:32:54.102Z","logger":"core.block.editor.spaceview","msg":"set space persistent info","spaceId":"bafyreids2aknzonxghww2kccwu7zlcnyot6bdf3vedrst75dncl3iziriu.3u9r5prtd69tg","spaceId":"bafyreids2aknzonxghww2kccwu7zlcnyot6bdf3vedrst75dncl3iziriu.3u9r5prtd69tg","accountStatus":"Unknown"}
+{"level":"ERROR","ts":"2026-11-04T05:32:54.112Z","logger":"filesync","msg":"update space usage in background","error":"get space info: get node peer for reserved conn: no connection to any file client","spaceId":"bafyreids2aknzonxghww2kccwu7zlcnyot6bdf3vedrst75dncl3iziriu.3u9r5prtd69tg"}
+{"level":"WARN","ts":"2026-11-04T05:32:56.042Z","logger":"space.deletioncontroller","msg":"remote status check error","error":"unable to connect"}
+{"level":"WARN","ts":"2026-11-04T05:32:56.043Z","logger":"space.deletioncontroller","msg":"remote status check error","error":"unable to connect"}
+{"level":"WARN","ts":"2026-11-04T05:32:56.048Z","logger":"anytype-mw-configfetcher","msg":"periodic call error","error":"unable to connect"}
+{"level":"WARN","ts":"2026-11-04T05:32:56.083Z","logger":"anytype-app","msg":"app started","total":2738,"rpc":"AccountCreate","objectstore":6,"indexer":32,"importv2":2,"common.commonfile.fileblockstore":23,"fts":57,"common.commonspace.pubsub":3,"core.subscription.crossspacesub":2,"core.block.chats":7,"client.space":2190,"profiler":2,"backlinks-update-watcher":3,"common.metric":12,"common.acl.aclservice":2,"identity":1,"client.space.clientserver":111,"networkState":2,"net.transportpenalty":1,"space.deletioncontroller":1,"indexer_r_bundled_relations":207,"indexer_r_bundled_relations_spent":733,"indexer_r_bundled_types":30,"indexer_r_bundled_types_spent":85,"indexer_r_bundled_templates":0,"indexer_r_bundled_templates_spent":0,"indexer_r_bundled_objects":2,"indexer_r_bundled_objects_spent":0}
+{"level":"ERROR","ts":"2026-11-04T05:32:56.095Z","logger":"anytype-identity","msg":"push profile to identity registry","error":"failed to push identity: unable to connect"}
+{"level":"WARN","ts":"2026-11-04T05:32:56.095Z","logger":"common.subscribeclient","msg":"streamWatcher: trying to connect"}
+{"level":"WARN","ts":"2026-11-04T05:32:56.095Z","logger":"common.subscribeclient","msg":"streamWatcher: pool error","error":"unable to connect"}
+{"level":"ERROR","ts":"2026-11-04T05:32:56.095Z","logger":"nameservice.nameserviceclient","msg":"no ns peers configured. Maybe you're on a custom network. Node config ID: "}
+{"level":"ERROR","ts":"2026-11-04T05:32:56.096Z","logger":"anytype-identity","msg":"error fetching global name of our own identity from Naming Service","error":"no namingNode peers configured. Mayb[Sentry] [fatal] [1793770376.117754] [SentrySDKInternal:531] The SDK is disabled, so setUser doesn't work. Please ensure to start the SDK before setting the user.
+e you're on a custom network. Node config ID: "}
+{"level":"ERROR","ts":"2026-11-04T05:32:56.110Z","logger":"heart.inboxclient","msg":"inbox: fetchMessages batch error","error":"unable to connect"}
+{"level":"INFO","ts":"2026-11-04T05:32:56.558Z","logger":"core.block.editor.spaceview","msg":"set space persistent info","spaceId":"bafyreifahrsxi5e646x7fe7qjf2yjlxf4ubiaapfqp45syk5xr735lmi54.3u9r5prtd69tg","spaceId":"bafyreifahrsxi5e646x7fe7qjf2yjlxf4ubiaapfqp45syk5xr735lmi54.3u9r5prtd69tg","accountStatus":"Unknown"}
+{"level":"WARN","ts":"2026-11-04T05:32:56.572Z","logger":"space.deletioncontroller","msg":"remote status check error","error":"unable to connect"}
+{"level":"ERROR","ts":"2026-11-04T05:32:56.597Z","logger":"filesync","msg":"update space usage in background","error":"get space info: get node peer for reserved conn: no connection to any file client","spaceId":"bafyreifahrsxi5e646x7fe7qjf2yjlxf4ubiaapfqp45syk5xr735lmi54.3u9r5prtd69tg"}
+{"level":"ERROR","ts":"2026-11-04T05:32:57.096Z","logger":"common.subscribeclient","msg":"streamWatcher: subscribe watch error, retry","error":"unable to connect","waitTime":"1s"}
+{"level":"WARN","ts":"2026-11-04T05:32:57.096Z","logger":"common.subscribeclient","msg":"streamWatcher: trying to connect"}
+{"level":"WARN","ts":"2026-11-04T05:32:57.096Z","logger":"common.subscribeclient","msg":"streamWatcher: pool error","error":"unable to connect"}
+{"level":"ERROR","ts":"2026-11-04T05:32:59.121Z","logger":"common.subscribeclient","msg":"streamWatcher: subscribe watch error, retry","error":"unable to connect","waitTime":"2s"}
+{"level":"WARN","ts":"2026-11-04T05:32:59.126Z","logger":"common.subscribeclient","msg":"streamWatcher: trying to connect"}
+{"level":"WARN","ts":"2026-11-04T05:32:59.126Z","logger":"common.subscribeclient","msg":"streamWatcher: pool error","error":"unable to connect"}
+{"level":"WARN","ts":"2026-11-04T05:33:01.849Z","logger":"anytype-doc-indexer","msg":"ft consistency check completed","checked":86,"enqueued":40,"complete":true,"duration":"629.940625ms"}
+{"level":"ERROR","ts":"2026-11-04T05:33:02.130Z","logger":"common.subscribeclient","msg":"streamWatcher: subscribe watch error, retry","error":"unable to connect","waitTime":"3s"}
+{"level":"WARN","ts":"2026-11-04T05:33:02.130Z","logger":"common.subscribeclient","msg":"streamWatcher: trying to connect"}
+{"level":"WARN","ts":"2026-11-04T05:33:02.130Z","logger":"common.subscribeclient","msg":"streamWatcher: pool error","error":"unable to connect"}
+{"level":"WARN","ts":"2026-11-04T05:33:03.264Z","logger":"space.deletioncontroller","msg":"remote status check error","error":"unable to connect"}
+2026-11-04 05:33:03.421591+0000 Anytype[57950:400542] [Bootstrap] [Pinkha] Space bafyreifahrsxi5e646x7fe7qjf2yjlxf4ubiaapfqp45syk5xr735lmi54.3u9r5prtd69tg bootstrap started (provisioning)
+{"level":"WARN","ts":"2026-11-04T05:33:03.487Z","logger":"anytype-mw-smartblock","msg":"failed to get recommended layout from details of type: failed to find id of object type. Guessing the layout"}
+{"level":"WARN","ts":"2026-11-04T05:33:03.526Z","logger":"anytype-mw-smartblock","msg":"failed to get recommended layout from details of type: failed to find id of object type. Guessing the layout"}
+{"level":"WARN","ts":"2026-11-04T05:33:03.681Z","logger":"anytype-mw-smartblock","msg":"failed to get recommended layout from details of type: failed to find id of object type. Guessing the layout"}
+{"level":"WARN","ts":"2026-11-04T05:33:04.099Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:04.333Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:04.333Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:04.601Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:04.607Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:04.616Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:04.846Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:04.986Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.015Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.044Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.086Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.092Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.109Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.441Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.447Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.482Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.563Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.585Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.770Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.797Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.829Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.846Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.878Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.900Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.960Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:05.962Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.014Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.046Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.053Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"ERROR","ts":"2026-11-04T05:33:06.133Z","logger":"anytype-identity","msg":"push profile to identity registry","error":"failed to push identity: unable to connect"}
+{"level":"ERROR","ts":"2026-11-04T05:33:06.136Z","logger":"common.subscribeclient","msg":"streamWatcher: subscribe watch error, retry","error":"unable to connect","waitTime":"4s"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.136Z","logger":"common.subscribeclient","msg":"streamWatcher: trying to connect"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.136Z","logger":"common.subscribeclient","msg":"streamWatcher: pool error","error":"unable to connect"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.139Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.166Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.170Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.301Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.334Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.348Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.350Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.451Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.452Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.458Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.511Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.795Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:06.820Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+IOSurfaceClientSetSurfaceNotify failed e00002c7
+2026-11-04 05:33:07.100620+0000 Anytype[57950:400543] fopen failed for data file: errno = 2 (No such file or directory)
+{"level":"WARN","ts":"2026-11-04T05:33:07.621Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:07.815Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"WARN","ts":"2026-11-04T05:33:08.147Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+2026-11-04 05:33:08.793654+0000 Anytype[57950:400543] fopen failed for data file: errno = 2 (No such file or directory)
+{"level":"WARN","ts":"2026-11-04T05:33:08.835Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+2026-11-04 05:33:08.878658+0000 Anytype[57950:400543] [error] building pipeline primitive_color-faba9ca3ge2ba4 took 1.781613 seconds
+{"level":"WARN","ts":"2026-11-04T05:33:08.991Z","logger":"common.commonspace.synctree","msg":"failed to broadcast head update","error":"mb: overflowed"}
+{"level":"ERROR","ts":"2026-11-04T05:33:11.138Z","logger":"common.subscribeclient","msg":"streamWatcher: subscribe watch error, retry","error":"unable to connect","waitTime":"5s"}
+{"level":"WARN","ts":"2026-11-04T05:33:11.139Z","logger":"common.subscribeclient","msg":"streamWatcher: trying to connect"}
+{"level":"WARN","ts":"2026-11-04T05:33:11.139Z","logger":"common.subscribeclient","msg":"streamWatcher: pool error","error":"unable to connect"}
+{"level":"ERROR","ts":"2026-11-04T05:33:16.135Z","logger":"anytype-identity","msg":"push profile to identity registry","error":"failed to push identity: unable to connect"}
+{"level":"ERROR","ts":"2026-11-04T05:33:17.141Z","logger":"common.subscribeclient","msg":"streamWatcher: subscribe watch error, retry","error":"unable to connect","waitTime":"6s"}
+{"level":"WARN","ts":"2026-11-04T05:33:17.141Z","logger":"common.subscribeclient","msg":"streamWatcher: trying to connect"}
+{"level":"WARN","ts":"2026-11-04T05:33:17.141Z","logger":"common.subscribeclient","msg":"streamWatcher: pool error","error":"unable to connect"}
+{"level":"ERROR","ts":"2026-11-04T05:33:24.143Z","logger":"common.subscribeclient","msg":"streamWatcher: subscribe watch error, retry","error":"unable to connect","waitTime":"7s"}
+{"level":"WARN","ts":"2026-11-04T05:33:24.144Z","logger":"common.subscribeclient","msg":"streamWatcher: trying to connect"}
+{"level":"WARN","ts":"2026-11-04T05:33:24.144Z","logger":"common.subscribeclient","msg":"streamWatcher: pool error","error":"unable to connect"}
+{"level":"WARN","ts":"2026-11-04T05:33:26.128Z","logger":"anytype-mw-smartblock","msg":"apply on empty tree discarded","sbType":"DevicesObject","objectId":"bafyreidjsueg3ahoqplg3jg32iqwacrsiw7buz7kd7sritswelyun6xccy"}
+{"level":"ERROR","ts":"2026-11-04T05:33:26.128Z","logger":"deviceService","msg":"failed to apply device state: apply on empty tree disallowed"}
+{"level":"ERROR","ts":"2026-11-04T05:33:26.186Z","logger":"heart.inboxclient","msg":"inbox: fetchMessages batch error","error":"unable to connect"}
+{"level":"ERROR","ts":"2026-11-04T05:33:32.146Z","logger":"common.subscribeclient","msg":"streamWatcher: subscribe watch error, retry","error":"unable to connect","waitTime":"8s"}
+{"level":"WARN","ts":"2026-11-04T05:33:32.146Z","logger":"common.subscribeclient","msg":"streamWatcher: trying to connect"}
+{"level":"WARN","ts":"2026-11-04T05:33:32.146Z","logger":"common.subscribeclient","msg":"streamWatcher: pool error","error":"unable to connect"}
+{"level":"ERROR","ts":"2026-11-04T05:33:36.139Z","logger":"anytype-identity","msg":"push profile to identity registry","error":"failed to push identity: unable to connect"}
+2026-11-04 05:33:39.041247+0000 Anytype[57950:400469] [Bootstrap] [Pinkha] Space bafyreifahrsxi5e646x7fe7qjf2yjlxf4ubiaapfqp45syk5xr735lmi54.3u9r5prtd69tg bootstrap failed: The operation couldn’t be completed. (PinkhaKit.TorahNativeSchemaError error 2.)
+✘ Test "Real schema, canonical writes, native Set filters, columns and live membership" recorded an issue at TorahNativeDerivedProductIntegrationTests.swift:16:6: Caught error: .invalidManifest
+✘ Test "Real schema, canonical writes, native Set filters, columns and live membership" failed after 45.938 seconds with 1 issue.
+✘ Suite "Native Torah product integration" failed after 45.950 seconds with 1 issue.
+↳ /// This suite MUST run alone in a fresh test-host process with the custom Heart.
+↳ /// It creates a new local-only wallet and Space; it never opens an owner Space.
+✘ Test run with 1 test in 1 suite failed after 45.951 seconds with 1 issue.
+2026-11-04 05:33:39.506 xcodebuild[56553:395751] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-11-04 05:33:39.508 xcodebuild[56553:395751] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-11-04 05:33:39.515 xcodebuild[56553:395751] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-11-04 05:34:36.751 xcodebuild[56553:395751] [MT] IDETestOperationsObserverDebug: 183.573 elapsed -- Testing started completed.
+2026-11-04 05:34:36.752 xcodebuild[56553:395751] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-04 05:34:36.752 xcodebuild[56553:395751] [MT] IDETestOperationsObserverDebug: 183.573 sec, +183.573 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/runner/work/anytype-swift/anytype-swift/build/native-evidence/app/NativeDerivedProduct.xcresult
+
+Failing tests:
+	TorahNativeDerivedProductIntegrationTests.originalProductPipeline()
+
+** TEST EXECUTE FAILED **
+
+Testing started

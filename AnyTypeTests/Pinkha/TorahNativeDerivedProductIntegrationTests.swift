@@ -29,7 +29,36 @@ struct TorahNativeDerivedProductIntegrationTests {
         let spaceId = space.spaceID
         _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: spaceId)
         let bootstrap = Container.shared.pinkhaBootstrapService()
-        let manifest = try await bootstrap.bootstrapSpace(spaceId: spaceId)
+        let manifest: PinkhaSpaceManifest
+        do {
+            let concurrent = try await withThrowingTaskGroup(of: PinkhaSpaceManifest.self) { group in
+                for _ in 0..<8 { group.addTask { try await bootstrap.bootstrapSpace(spaceId: spaceId) } }
+                var values: [PinkhaSpaceManifest] = []
+                for try await value in group { values.append(value) }
+                return values
+            }
+            manifest = try #require(concurrent.first)
+            #expect(concurrent.allSatisfy { $0.manifestObjectId == manifest.manifestObjectId })
+        } catch {
+            // Only the newly created disposable Space is inspected. Print schema
+            // metadata needed to diagnose an actual engine/app binding failure.
+            let rows = try await Container.shared.searchMiddleService().search(
+                spaceId: spaceId, filters: [.with {
+                    $0.relationKey = "name"; $0.condition = .equal
+                    $0.value = PinkhaSchemaRoles.manifestName.protobufValue
+                }], keys: ["id", "description", TorahNativePropertyDefinition.engineVersionKey], limit: 0
+            )
+            print("Native disposable bootstrap manifest count: \(rows.count)")
+            for row in rows {
+                let parsed = try? PinkhaSpaceManifest.fromJSONString(row.stringValue(for: "description"))
+                print("Native disposable binding: decoded=\(parsed != nil) complete=\(parsed?.isFullyProvisioned == true) version=\(row.intValue(for: TorahNativePropertyDefinition.engineVersionKey) ?? 0)")
+                if let parsed {
+                    let property = try await show(parsed.documentAssociationsPropertyId, spaceId: spaceId)
+                    print("Native disposable canonical Property: format=\(property.intValue(for: "relationFormat") ?? -1) layout=\(property.intValue(for: "layout") ?? -1) keyMatches=\(property.stringValue(for: "relationKey") == parsed.documentAssociationsPropertyKey) spaceMatches=\(property.spaceId == spaceId)")
+                }
+            }
+            throw error
+        }
         let schema = AnytypeTorahNativePropertyProvisioningStore()
         // No fallback: the real native engine must advertise its capability.
         try await eventually {
@@ -177,9 +206,30 @@ struct TorahNativeDerivedProductIntegrationTests {
             fixtureDocuments[role] = created.id
             fixtureNames[created.id] = created.name
         }
+        let chipsDocument = try await Container.shared.objectActionsService().createObject(
+            name: "Native twelve-source chips", typeUniqueKey: #require(indexedTypes.first { $0.id == typeId }).uniqueKey,
+            shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+            spaceId: spaceId, origin: .none, templateId: manifest.defaultTemplateIds[PinkhaSchemaRoles.chiddushKey]
+        )
+        for number in 1...12 {
+            let reference = "Genesis 2:\(number)"
+            _ = try await repository.addAssociation(
+                item(id: "many-\(number)", kind: .ref, key: reference, label: reference),
+                target: .object(objectId: chipsDocument.id), spaceId: spaceId
+            )
+        }
+        try await eventually {
+            try await show(chipsDocument.id, spaceId: spaceId).stringArrayValue(for: key).count == 12
+        }
+        let afterMany = try await search.search(spaceId: spaceId, filters: [.with {
+            $0.relationKey = "relationKey"; $0.condition = .in
+            $0.value = TorahNativePropertyDefinition.all.map(\.key).protobufValue
+        }], keys: ["id"], limit: 0)
+        #expect(Set(afterMany.map(\.id)) == Set(nativeProperties.map(\.id)))
         let directory = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let fixture: [String: Any] = [
             "spaceId": spaceId, "documents": fixtureDocuments, "names": fixtureNames,
+            "types": manifest.registeredDocumentTypes, "manySourcesDocument": chipsDocument.id,
             "setId": nativeSet.id, "nativeProperties": nativeProperties.map(\.name),
             "sourceQuery": "Genesis 1:1", "sourceLabel": "Genesis 1:1",
             "topicQuery": "Creation", "topicLabel": "Creation", "wordQuery": "בראשית"

@@ -1,0 +1,291 @@
+diff --git a/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go b/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go
+--- a/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go
++++ b/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go
+@@ -18,7 +18,8 @@
+  // initBase has released s.lock; post-commit notification delivery takes it.
+  if err:=index.Recover(s.componentCtx);err!=nil{return err}
+  s.torah=index
+- s.drainTorahFulltext()
++ s.prepareTorahFulltext()
++ s.startTorahFulltext()
+  return nil
+ }
+ 
+diff --git a/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go b/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go
+--- a/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go
++++ b/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go
+@@ -4,6 +4,7 @@
+  "context"
+  "errors"
+  "strings"
++ "time"
+  anystore "github.com/anyproto/any-store"
+  "github.com/anyproto/any-store/anyenc"
+  "github.com/anyproto/any-store/query"
+@@ -11,6 +12,42 @@
+  torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
+  values "github.com/anyproto/anytype-heart/core/pinkha/torahvalues"
+ )
++
++type torahFulltextWorker struct {
++ ctx context.Context
++ cancel context.CancelFunc
++ wake chan struct{}
++ done chan struct{}
++}
++
++func(s *dsObjectStore)prepareTorahFulltext(){
++ ctx,cancel:=context.WithCancel(context.Background())
++ s.torahFT=&torahFulltextWorker{ctx:ctx,cancel:cancel,wake:make(chan struct{},1),done:make(chan struct{})}
++}
++
++func(s *dsObjectStore)startTorahFulltext(){
++ worker:=s.torahFT
++ go func(){
++  defer close(worker.done)
++  for {
++   retry:=s.drainTorahFulltext(worker.ctx)
++   var timer *time.Timer
++   var retryAt <-chan time.Time
++   if retry {timer=time.NewTimer(5*time.Second);retryAt=timer.C}
++   select {case <-worker.ctx.Done():if timer!=nil{timer.Stop()};return
++    case <-worker.wake:case <-retryAt:}
++   if timer!=nil{timer.Stop()}
++  }
++ }()
++}
++
++func(s *dsObjectStore)scheduleTorahFulltext(){
++ if worker:=s.torahFT;worker!=nil{select{case worker.wake<-struct{}{}:default:}}
++}
++
++func(s *dsObjectStore)stopTorahFulltext(){
++ if worker:=s.torahFT;worker!=nil{worker.cancel();<-worker.done}
++}
+ 
+ // The outbox is in the SAME per-Space DB/transaction as canonical projection.
+ // It contains only document IDs and a retry token, never association payloads.
+@@ -32,21 +69,20 @@
+ // Enqueue only AFTER the root transaction commits. Remove an outbox entry only
+ // after the native common-DB queue commits, and only if its token still matches.
+ // A crash at either boundary causes a harmless retry on the next Space open.
+-func (s *dsObjectStore) drainTorahFulltext(){
+- if s.torahOutbox==nil||s.fulltextQueue==nil{return}
+- ctx:=context.Background()
++func (s *dsObjectStore) drainTorahFulltext(ctx context.Context) bool {
++ if s.torahOutbox==nil||s.fulltextQueue==nil{return false}
+  iter,err:=s.torahOutbox.Find(nil).Iter(ctx)
+- if err!=nil{log.Warnf("Torah FT outbox read: %v",err);return}
++ if err!=nil{log.Warnf("Torah FT outbox read: %v",err);return true}
+  type entry struct{id,token string}
+  var pending []entry
+  for iter.Next(){doc,e:=iter.Doc();if e!=nil{err=e;break};pending=append(pending,entry{strings.Clone(doc.Value().GetString("id")),strings.Clone(doc.Value().GetString("token"))})}
+  if err==nil{err=iter.Err()};iter.Close()
+- if err!=nil{log.Warnf("Torah FT outbox iterate: %v",err);return}
++ if err!=nil{log.Warnf("Torah FT outbox iterate: %v",err);return true}
+  for start:=0;start<len(pending);start+=256{
+   end:=min(start+256,len(pending));batch:=pending[start:end]
+   ids:=make([]domain.FullID,0,len(batch));for _,item:=range batch{ids=append(ids,domain.FullID{SpaceID:s.spaceId,ObjectID:item.id})}
+-  if _,_,err=s.fulltextQueue.AddToIndexQueue(ctx,ids...);err!=nil{log.Warnf("Torah native FT enqueue: %v",err);return}
+-  tx,e:=s.db.WriteTx(ctx);if e!=nil{log.Warnf("Torah FT outbox transaction: %v",e);return}
++  if _,_,err=s.fulltextQueue.AddToIndexQueue(ctx,ids...);err!=nil{log.Warnf("Torah native FT enqueue: %v",err);return true}
++  tx,e:=s.db.WriteTx(ctx);if e!=nil{log.Warnf("Torah FT outbox transaction: %v",e);return true}
+   for _,item:=range batch{
+    doc,e:=s.torahOutbox.FindId(tx.Context(),item.id)
+    if errors.Is(e,anystore.ErrDocNotFound){continue}
+@@ -54,6 +90,7 @@
+    if doc.Value().GetString("token")==item.token{if e=s.torahOutbox.DeleteId(tx.Context(),item.id);e!=nil{err=e;break}}
+   }
+   if err==nil{err=tx.Commit()};tx.Rollback()
+-  if err!=nil{log.Warnf("Torah FT outbox acknowledge: %v",err);return}
++  if err!=nil{log.Warnf("Torah FT outbox acknowledge: %v",err);return true}
+  }
++ return false
+ }
+diff --git a/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go b/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go
+--- a/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go
++++ b/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go
+@@ -5,18 +5,35 @@
+ 	"errors"
+ 	"github.com/anyproto/anytype-heart/core/domain"
+ 	torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
++	"sync/atomic"
+ 	"testing"
++	"time"
+ )
+ 
+ type torahFailingFTQueue struct {
+ 	FulltextQueue
+-	fail  bool
+-	calls int
++	fail    atomic.Bool
++	calls   atomic.Int32
++	blocked <-chan struct{}
++	entered chan struct{}
+ }
+ 
+ func (q *torahFailingFTQueue) AddToIndexQueue(ctx context.Context, ids ...domain.FullID) (uint64, int, error) {
+-	q.calls++
+-	if q.fail {
++	q.calls.Add(1)
++	if q.entered != nil {
++		select {
++		case q.entered <- struct{}{}:
++		default:
++		}
++	}
++	if q.blocked != nil {
++		select {
++		case <-q.blocked:
++		case <-ctx.Done():
++			return 0, 0, ctx.Err()
++		}
++	}
++	if q.fail.Load() {
+ 		return 0, 0, errors.New("injected common-DB queue failure")
+ 	}
+ 	return q.FulltextQueue.AddToIndexQueue(ctx, ids...)
+@@ -24,8 +41,12 @@
+ 
+ func TestTorahFulltextOutboxCommitRollbackAndRetry(t *testing.T) {
+ 	store := NewStoreFixture(t)
+-	queue := &torahFailingFTQueue{FulltextQueue: store.fulltextQueue, fail: true}
++	store.stopTorahFulltext()
++	queue := &torahFailingFTQueue{FulltextQueue: store.fulltextQueue}
++	queue.fail.Store(true)
+ 	store.fulltextQueue = queue
++	store.prepareTorahFulltext()
++	store.startTorahFulltext()
+ 	ctx := context.Background()
+ 	details := domain.NewDetails().SetString(domain.RelationKey(torah.CanonicalKeyKey), "actualCanonical")
+ 	tx, err := store.WriteTx(ctx)
+@@ -35,14 +56,16 @@
+ 	if err = store.recordTorahFulltext(tx.Context(), "disposable-doc", nil, details); err != nil {
+ 		t.Fatal(err)
+ 	}
+-	if queue.calls != 0 {
++	if queue.calls.Load() != 0 {
+ 		t.Fatal("FT queue notified before commit")
+ 	}
+ 	if err = tx.Rollback(); err != nil {
+ 		t.Fatal(err)
+ 	}
+-	store.drainTorahFulltext()
+-	if queue.calls != 0 {
++	if count, err := store.torahOutbox.Count(ctx); err != nil || count != 0 {
++		t.Fatal("rollback retained an outbox entry", err)
++	}
++	if queue.calls.Load() != 0 {
+ 		t.Fatal("rolled-back projection escaped into FT queue")
+ 	}
+ 	tx, err = store.WriteTx(ctx)
+@@ -55,20 +78,68 @@
+ 	if err = tx.Commit(); err != nil {
+ 		t.Fatal(err)
+ 	}
+-	count, err := store.torahOutbox.Count(ctx)
++	waitTorahFT(t, func() bool { return queue.calls.Load() > 0 })
++	if count, err := store.torahOutbox.Count(ctx); err != nil || count != 1 {
++		t.Fatal("queue failure lost durable retry", err)
++	}
++	queue.fail.Store(false)
++	// No new edit/wake: the running worker must retry a transient failure itself.
++	waitTorahFT(t, func() bool { count, err := store.torahOutbox.Count(ctx); return err == nil && count == 0 })
++	if queue.calls.Load() < 2 {
++		t.Fatal("retry did not reach the original queue")
++	}
++}
++
++func waitTorahFT(t *testing.T, condition func() bool) {
++	t.Helper()
++	deadline := time.Now().Add(10 * time.Second)
++	for time.Now().Before(deadline) {
++		if condition() {
++			return
++		}
++		time.Sleep(10 * time.Millisecond)
++	}
++	t.Fatal("native full-text worker deadline exceeded")
++}
++
++func TestTorahFulltextOutboxCommitDoesNotWaitForCommonTransaction(t *testing.T) {
++	store := NewStoreFixture(t)
++	store.stopTorahFulltext()
++	unblock := make(chan struct{})
++	queue := &torahFailingFTQueue{FulltextQueue: store.fulltextQueue, blocked: unblock, entered: make(chan struct{}, 1)}
++	store.fulltextQueue = queue
++	store.prepareTorahFulltext()
++	store.startTorahFulltext()
++	tx, err := store.WriteTx(context.Background())
+ 	if err != nil {
+ 		t.Fatal(err)
+ 	}
+-	if count != 1 || queue.calls != 1 {
+-		t.Fatal("queue failure lost the durable retry")
+-	}
+-	queue.fail = false
+-	store.drainTorahFulltext()
+-	count, err = store.torahOutbox.Count(ctx)
+-	if err != nil {
++	defer tx.Rollback()
++	details := domain.NewDetails().SetString(domain.RelationKey(torah.CanonicalKeyKey), "actualCanonical")
++	if err = store.recordTorahFulltext(tx.Context(), "blocked-common-db", nil, details); err != nil {
+ 		t.Fatal(err)
+ 	}
+-	if count != 0 || queue.calls != 2 {
+-		t.Fatal("committed retry was not acknowledged")
++	committed := make(chan error, 1)
++	go func() { committed <- tx.Commit() }()
++	// Native indexBatch holds commonTx until this per-Space Commit returns.
++	// The queue gate models that lock ordering; synchronous drain deadlocks here.
++	select {
++	case err = <-committed:
++		if err != nil {
++			t.Fatal(err)
++		}
++	case <-time.After(3 * time.Second):
++		close(unblock)
++		t.Fatal("Space commit waited for the common DB transaction")
+ 	}
++	select {
++	case <-queue.entered:
++	case <-time.After(3 * time.Second):
++		t.Fatal("worker did not enqueue committed update")
++	}
++	close(unblock)
++	waitTorahFT(t, func() bool {
++		count, err := store.torahOutbox.Count(context.Background())
++		return err == nil && count == 0
++	})
+ }
+diff --git a/pkg/lib/localstore/objectstore/spaceindex/store.go b/pkg/lib/localstore/objectstore/spaceindex/store.go
+--- a/pkg/lib/localstore/objectstore/spaceindex/store.go
++++ b/pkg/lib/localstore/objectstore/spaceindex/store.go
+@@ -161,6 +161,7 @@
+  torahInitMu sync.Mutex
+  torah *torahindex.Index
+  torahOutbox anystore.Collection
++ torahFT *torahFulltextWorker
+ 	spaceId    string
+ 	db         anystore.DB
+ 	objects    anystore.Collection
+@@ -423,6 +424,7 @@
+ }
+ 
+ func (s *dsObjectStore) Close() error {
++ s.stopTorahFulltext()
+ 	var err error
+ 	for _, col := range s.collections {
+ 		err = errors.Join(err, col.Close())
+diff --git a/pkg/lib/localstore/objectstore/spaceindex/update.go b/pkg/lib/localstore/objectstore/spaceindex/update.go
+--- a/pkg/lib/localstore/objectstore/spaceindex/update.go
++++ b/pkg/lib/localstore/objectstore/spaceindex/update.go
+@@ -131,7 +131,7 @@
+ 	buf.pending = nil
+ 	buf.seen = nil
+ 	buf.mu.Unlock()
+- if torahFulltext {defer s.drainTorahFulltext()}
++ if torahFulltext {defer s.scheduleTorahFulltext()}
+ 
+ 	for _, id := range pending {
+ 		details, err := s.GetDetails(id)

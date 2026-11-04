@@ -1,0 +1,274 @@
+[
+  {
+    "id": "D01",
+    "requirement": "New Chiddush without associations: genuine Torah Properties with empty state, no exposed JSON, native `EMPTY` at index READY",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Native definitions and READY/EMPTY implemented; generated middleware and SQLite evidence in production-v7. Original app UI blocked by bootstrap failure in CI 41772954198.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D02",
+    "requirement": "One source added: single chip, exact native `IN(source)` returns expected document ID",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Actual generated ObjectSetDetails/ObjectShow/ObjectSearch and native Set IN pass in native-wire/native-v7-full-mutations-pass.log; actual picker/chip runtime remains unverified.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D03",
+    "requirement": "2/12 sources: readable chips/+N, full set retained, no Option objects",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Shared 0/1/2/12 fixtures pass; actual app twelve-source fixture and original-chip UI test added, not yet executed.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D04",
+    "requirement": "Article and Research: same three native Properties; no duplicate Types",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Actual middleware creates three native Properties and attaches all three real writing Types; original app bootstrap failed before UI.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D05",
+    "requirement": "Block-only source: excluded from document Source(s) and its Set query",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "TestSharedSwiftGoldenFixtures/scope-kind-role-note",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D06",
+    "requirement": "`sourceQuote`: excluded from document-context list, source quote payload preserved",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "TestSharedSwiftGoldenFixtures/scope-kind-role-note",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D07",
+    "requirement": "Same display text as source and topic: no kind leakage",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "TestSharedSwiftGoldenFixtures/kinds-and-providers",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D08",
+    "requirement": "Same label from Sefaria/Otzaria: provider identities distinct",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "TestSharedSwiftGoldenFixtures/kinds-and-providers",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D09",
+    "requirement": "Duplicate upsert/retries: stable unique index, canonical readback preserved",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "TestSharedSwiftGoldenFixtures/stable-id-and-semantic-retry",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D10",
+    "requirement": "Remove final source: native source membership false, empty true, no stale key",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Actual middleware committed remove/add changes native subscription and live ObjectShow; full UI empty-state scenario still pending.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D11",
+    "requirement": "Native `IN/ALL_IN/NOT_IN/EMPTY/NOT_EMPTY` correct, unknown/error excluded safely",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Native SQLite filter conditions and READY exclusion pass. Full UI/native predicate acceptance remains open.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D12",
+    "requirement": "AND/OR mixed source, topic, word, Type filters accurate",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Native SQLite mixed predicates pass; real original Set filter picker acceptance remains pending.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D13",
+    "requirement": "Open native Set live updates after committed association add/remove",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Actual native Set persisted predicate and generated subscription remove/add PASS in v7 wire acceptance. Original open Set UI has not run.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D14",
+    "requirement": "Document relaunch/application restart results unchanged; index rehydratable",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Native SQLite close/reopen/recovery passes. Actual application relaunch test is implemented but has not run.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D15",
+    "requirement": "Crash/restart during reindex: readiness accurate, no silent partial matches",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Atomic native recovery is implemented and tested at SQLite transaction boundaries. Process crash/restart acceptance still unverified.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D16",
+    "requirement": "Legacy v1 payload read compatible, no unsolicited destructive conversion",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "TestSharedSwiftGoldenFixtures/legacy-v1",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D17",
+    "requirement": "v2 `unknownFields` and canonical source bytes unchanged by projector/index",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "TestSharedSwiftGoldenFixtures/unknown-fields-and-raw-whitespace; read-only scope",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D18",
+    "requirement": "Malformed/future-version payload: explicit error; not treated as empty",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "TestSharedSwiftGoldenFixtures/future/malformed/null-records and Swift errorsDoNotBecomeEmpty",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D19",
+    "requirement": "Wrong Space or ineligible Object Type: no data/query/selection leakage",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Native lifecycle covers foreign Space, ineligible Types and rebind; original UI permission/selection acceptance pending.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D20",
+    "requirement": "Read-only document obeys permissions; raw canonical not editable",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "No native ACL document acceptance was run",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D21",
+    "requirement": "Attempt to mutate derived Property via ordinary API rejected; canonical picker still works",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "All three native kinds present; actual original Details value/deletion mutation attempts rejected by v7 native middleware. Actual picker editing still pending.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D22",
+    "requirement": "Type/template change never duplicates fields or loses canonical link IDs",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Native lifecycle covers manifest/property rebind and Type eligibility. Full original app upgrade/template acceptance pending.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D23",
+    "requirement": "Original Tag, Links, Backlinks, other native properties unchanged",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "957 original Heart regression assertions pass for v7, one expected nested-helper skip. Expanded v9 packages pending; full original app regressions not run.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D24",
+    "requirement": "Genuine native Type editor registration, Set column and human-readable values, not fake UI only",
+    "status": "BLOCKED",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Native schema, standard chip adapter, original Type/Set/column hooks implemented. SDK app/tests build PASS; app bootstrap FAIL in CI 41772954198, so UI not run.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D25",
+    "requirement": "Hebrew/English/RTL/LTR, accessibility, VoiceOver and category switching",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Original native components and localized strings retained. Hebrew/English, RTL, VoiceOver runtime matrix not executed for this feature.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D26",
+    "requirement": "iPad split/narrow/Stage Manager, portrait/landscape/keyboard interaction",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "No physical iPad/Stage Manager/keyboard acceptance.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D27",
+    "requirement": "Offline/provider down: stored IDs still query and human labels remain usable",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Projection/query and label cache have no provider dependency. Actual provider-down/offline UI acceptance not run.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D28",
+    "requirement": "Export/import/backup/restore/downgrade evidence; no lost canonical data",
+    "status": "BLOCKED",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Actual v7 native PBC/JSON exports exposed local caches, driving v8 export-strip implementation. v9 product export acceptance and import/restore/downgrade remain pending.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D29",
+    "requirement": "Real 10k–50k benchmark; record costs, no per-source object explosion",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "All 12 real production-hook workloads passed correctness: 100/2k/10k/50k documents x 2/10/50 mixed associations; benchmarks-v6. Worst 50k x50 query p95=4599.30ms and initial rebuild=699371ms. Component Linux performance, no iPad inference; v9 changes need remeasurement.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D30",
+    "requirement": "Unmodified old Anytype/unknown enum: no corruption or unsafe deployment",
+    "status": "BLOCKED",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Known existing wire format 11 selected; no protobuf enum/schema changes. Unmodified client/binary roundtrip not yet executed.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D31",
+    "requirement": "T2 multi-active-writer explicitly BLOCKED until separately designed and verified",
+    "status": "BLOCKED",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Existing separate T2 architecture/device gate is unchanged",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D32",
+    "requirement": "Run schema upgrade twice and after failure: same Type/Property IDs; no duplicates",
+    "status": "FAIL",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Native provisioner upgrade/interruption unit cases pass. Real app bootstrap fails invalidManifest in CI 41772954198. Same-process concurrent base bootstrap reproduction running; full app upgrade remains FAIL.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D33",
+    "requirement": "Feature disabled/rollback: canonical old flow works; no DB wipe",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Canonical sole payload retained and compile-flag fallback exists. Actual old-client/rollback roundtrip not run.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  },
+  {
+    "id": "D34",
+    "requirement": "Query paging/totals; sorting/grouping either tested supported or intentionally disabled with explanation",
+    "status": "NOT_RUN",
+    "scope": "full acceptance as specified; component tests do not close this requirement",
+    "component_evidence": "Native indexed counts/pages measured. Unsupported derived sort/group excluded in original pickers; actual UI confirmation not yet executed.",
+    "as_of": "2026-11-04; live execution status, not a completion report"
+  }
+]

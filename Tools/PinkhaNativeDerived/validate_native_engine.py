@@ -10,6 +10,8 @@ from pathlib import Path
 import platform
 import subprocess
 import tempfile
+import hashlib
+from build_custom_heart import NATIVE_REGRESSION_PACKAGES
 
 parser = argparse.ArgumentParser(__doc__)
 parser.add_argument('--heart-source', type=Path, required=True)
@@ -20,6 +22,7 @@ parser.add_argument('--evidence', type=Path, required=True)
 parser.add_argument('--benchmarks', action='store_true')
 parser.add_argument('--benchmarks-only', action='store_true')
 parser.add_argument('--benchmark-pattern', default='^TestNativeBenchmarks$')
+parser.add_argument('--approved-inventory', type=Path)
 args = parser.parse_args()
 if args.benchmarks_only:
     args.benchmarks = True
@@ -35,29 +38,54 @@ env = dict(os.environ, GOMAXPROCS='2', CGO_ENABLED='1',
 if args.module_cache:
     env['GOMODCACHE'] = str(args.module_cache.resolve())
 checks = [
-    ('original-regression', heart, ['./core/pinkha/...', './pkg/lib/bundle', './pkg/lib/database',
-                                    './pkg/lib/localstore/objectstore/spaceindex', './core/block/object/objectcreator',
-                                    './core/block/editor/basic', './core/block/editor/smartblock'], None),
+    ('projection-presentation',root/'Modules/PinkhaHeart',['./...'],None),
+    ('native-outbox',heart,['./pkg/lib/localstore/objectstore/spaceindex'],'^TestTorahFulltextOutbox'),
     ('product-acceptance', root/'Tools/TorahNativeDerivedSpike/integration', ['./...'],
      '^(TestProductionEngineLifecycleAndRecovery|TestNativeMembershipAndCommittedNotifications|TestRealNativeMiddlewareDerivedProperties)$'),
+    ('original-regression', heart, NATIVE_REGRESSION_PACKAGES, None),
 ]
 if args.benchmarks_only:
     checks = []
 if args.benchmarks:
     checks.append(('native-benchmarks', root/'Tools/TorahNativeDerivedSpike/integration', ['./...'], args.benchmark_pattern))
 results = []
+inventory=json.loads(args.approved_inventory.read_text()) if args.approved_inventory else None
+
+def app_revision():
+    # A Windows-created worktree has a Windows absolute gitdir in its .git
+    # file. Use the owning Git implementation without rewriting that metadata.
+    git_file = root / '.git'
+    windows_worktree = (platform.system() == 'Linux' and git_file.is_file()
+                        and ':/' in git_file.read_text().replace('\\', '/'))
+    if windows_worktree:
+        windows_root = subprocess.check_output(['wslpath', '-w', str(root)], text=True).strip()
+        command = ['git.exe', '-C', windows_root, 'rev-parse', 'HEAD']
+    else:
+        command = ['git', '-C', str(root), 'rev-parse', 'HEAD']
+    return subprocess.check_output(command, text=True).strip()
+def inputs():
+    files=list((root/'Modules/PinkhaHeart').rglob('*.go'))+list((root/'Tools/TorahNativeDerivedSpike/integration').glob('*.go'))
+    data={str(path.relative_to(root)):hashlib.sha256(path.read_bytes()).hexdigest() for path in files}
+    if inventory:
+        for entry in inventory['files']:
+            actual=hashlib.sha256((heart/entry['path']).read_bytes().replace(b'\r\n',b'\n')).hexdigest()
+            if actual!=entry['after_sha256']:raise RuntimeError('Native source differs: '+entry['path'])
+            data['Heart/'+entry['path']]=actual
+    return data
 with tempfile.TemporaryDirectory(prefix='pinkha-native-validation-') as directory:
     workspace = Path(directory)/'go.work'
     modules = [heart, root/'Modules/PinkhaHeart', root/'Tools/TorahNativeDerivedSpike', root/'Tools/TorahNativeDerivedSpike/integration']
     workspace.write_text('go 1.26.5\nuse (\n' + ''.join('  ' + json.dumps(str(path)) + '\n' for path in modules) + ')\n')
     env['GOWORK'] = str(workspace)
     for name, cwd, packages, pattern in checks:
-        command = [args.go, 'test', '-p', '2', '-json', '-count=1', '-timeout', '60m',
+        timeout = '60m' if name == 'native-benchmarks' else '10m' if name == 'original-regression' else '5m'
+        command = [args.go, 'test', '-p', '2', '-json', '-count=1', '-timeout', timeout,
                    '-tags', 'nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg']
         if pattern:
             command += ['-run', pattern]
         command += packages
         log = evidence/(name+'.log')
+        source_inputs=inputs()
         print(json.dumps(dict(starting=name)), flush=True)
         with log.open('w', encoding='utf8') as stream:
             result = subprocess.run(command, cwd=cwd, env=env, stdout=stream, stderr=subprocess.STDOUT)
@@ -70,9 +98,13 @@ with tempfile.TemporaryDirectory(prefix='pinkha-native-validation-') as director
         entry = dict(name=name, command=command, exit_code=result.returncode, passed=passed, skipped=skipped,
                      status='PASS' if result.returncode == 0 and passed > 0 and (skipped == 0 or pattern is None) else 'FAIL',
                      scope='real pinned native product engine; no physical iPad/UI inference', host=platform.platform())
+        entry['source_files']=source_inputs
+        entry['app_sha']=app_revision()
+        entry['heart_patch_sha256']=inventory['patch_sha256'] if inventory else None
+        if inputs()!=source_inputs:entry['status']='INVALIDATED_SOURCE_CHANGED_DURING_TEST'
         results.append(entry)
         (evidence/'results.json').write_text(json.dumps(results, indent=2)+'\n', encoding='utf8')
-        print(json.dumps(entry), flush=True)
+        print(json.dumps({key:value for key,value in entry.items() if key!='source_files'}), flush=True)
         if entry['status'] != 'PASS':
             print(log.read_text(encoding='utf8', errors='replace')[-5000:])
             break
