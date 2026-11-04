@@ -1,0 +1,121 @@
+name: Pinkha fast native Heart iPad IPA
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  fast-ipa:
+    runs-on: xcode-27
+    timeout-minutes: 120
+    steps:
+      - name: Checkout exact Pinkha source
+        uses: actions/checkout@v4
+
+      - name: Install pinned Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache-dependency-path: Modules/PinkhaHeart/go.mod
+
+      - name: Checkout pinned Anytype Heart
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Heart-Native-Fast
+
+      - name: Build and verify CUSTOM Heart for iOS
+        run: |
+          python3 Tools/PinkhaNativeDerived/build_custom_heart.py \
+            --heart-source build/Heart-Native-Fast \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-12/native-heart-integration.patch \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-12/native-heart-integration.json \
+            --approved-patch-sha256 56d1daf5e6ccd37fa2220abed555196c8f75e228992681a7bbc7e3c7a578828a \
+            --apply-approved-patch --target ios \
+            --install-app "$GITHUB_WORKSPACE" \
+            --evidence build/native-fast/heart
+
+      - name: Build actual iPad device app WITHOUT simulator tests
+        run: |
+          set -o pipefail
+          mkdir -p build/native-fast
+          xcodebuild build \
+            -project Anytype.xcodeproj \
+            -scheme Anytype \
+            -configuration Release-Anytype \
+            -destination 'generic/platform=iOS' \
+            -sdk iphoneos \
+            -derivedDataPath build/native-fast/DerivedData \
+            'OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY='' \
+            CODE_SIGN_ENTITLEMENTS='' \
+            PROVISIONING_PROFILE_SPECIFIER='' \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            2>&1 | tee build/native-fast/device-build.log
+
+      - name: Verify native custom engine and package unsigned IPA
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, plistlib, shutil
+          from pathlib import Path
+          from Tools.PinkhaNativeDerived.build_custom_heart import contains
+          root=Path('build/native-fast')
+          receipt=json.loads((root/'heart/custom-heart-build.json').read_text())
+          assert receipt['status']=='PASS' and receipt['target']=='ios', 'Custom iOS Heart was not built'
+          app=root/'DerivedData/Build/Products/Release-Anytype-iphoneos/Anytype.app'
+          assert app.is_dir(), 'iOS device app not built'
+          with (app/'Info.plist').open('rb') as f: info=plistlib.load(f)
+          assert 2 in info['UIDeviceFamily'], 'Device app does not support iPad'
+          assert not (app/'_CodeSignature').exists(), 'Expected unsigned build'
+          marker=receipt['marker'].encode()
+          binaries=[app/info['CFBundleExecutable']]+list(app.rglob('Lib'))+list(app.rglob('*.dylib'))
+          assert any(b.is_file() and contains(b,marker) for b in binaries), 'Custom Heart marker absent from built app'
+          payload=root/'Payload/Anytype.app'
+          payload.parent.mkdir(parents=True,exist_ok=True)
+          shutil.copytree(app,payload,symlinks=True)
+          with (payload/'Info.plist').open('rb') as f: info=plistlib.load(f)
+          info['PinkhaBuildCommit']=os.environ['GITHUB_SHA']
+          info['PinkhaNativeHeartPatchSHA256']=receipt['patch_sha256']
+          info['PinkhaAcceptance']='NOT_RUN_FAST_IPA_EXPORT'
+          with (payload/'Info.plist').open('wb') as f: plistlib.dump(info,f,fmt=plistlib.FMT_BINARY)
+          (root/'fast-ipa-evidence.json').write_text(json.dumps({
+            'status':'COMPILED_UNSIGNED_NOT_DEVICE_TESTED',
+            'app_sha':os.environ['GITHUB_SHA'],
+            'custom_heart_patch_sha256':receipt['patch_sha256'],
+            'custom_heart_marker':receipt['marker'],
+            'app_bundle_id':info['CFBundleIdentifier'],
+            'ipad_supported':True,
+            'tests_executed_in_fast_job':False,
+            'signed':False
+          },indent=2)+'\n')
+          print('FAST IPA: custom Heart marker verified in iOS device bundle')
+          PY
+          ditto -c -k --sequesterRsrc --keepParent build/native-fast/Payload build/native-fast/Pinkha-Native-Torah-iPad-Unsigned.ipa
+          unzip -t build/native-fast/Pinkha-Native-Torah-iPad-Unsigned.ipa > build/native-fast/ipa-archive-check.log
+          shasum -a 256 build/native-fast/Pinkha-Native-Torah-iPad-Unsigned.ipa | tee build/native-fast/ipa-sha256.txt
+
+      - name: Upload FAST custom-Heart unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Native-Torah-iPad-Unsigned-FAST
+          path: build/native-fast/Pinkha-Native-Torah-iPad-Unsigned.ipa
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload build evidence on success or failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Native-Torah-FAST-Evidence
+          path: |
+            build/native-fast/*.json
+            build/native-fast/*.txt
+            build/native-fast/*.log
+            build/native-fast/heart/*.json
+          if-no-files-found: warn
+          retention-days: 14
