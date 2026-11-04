@@ -107,3 +107,19 @@ func TestNativeImportFailsClosedWithoutPartialMutation(t *testing.T) {
 		t.Fatal("unverified canonical property was adopted")
 	}
 }
+
+func TestOrdinaryImportRetainsOriginalValidationContract(t *testing.T) {
+	for _, objects := range [][]Object{nil, {{ID: "ordinary-web-object", Details: domain.NewDetails().SetString(bundle.RelationKeyName, "Ordinary web import")}}} {
+		if err := RemapObjects("", objects, nil); err != nil {
+			t.Fatalf("Torah adapter changed an ordinary import contract: %v", err)
+		}
+	}
+	objects, ids := importFixture()
+	before := objects[0].Details.GetString(bundle.RelationKeyDescription)
+	if err := RemapObjects("", objects, ids); err == nil {
+		t.Fatal("verified Torah import has no destination Space")
+	}
+	if objects[0].Details.GetString(bundle.RelationKeyDescription) != before {
+		t.Fatal("invalid Torah destination partially mutated data")
+	}
+}

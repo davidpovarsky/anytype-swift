@@ -1,0 +1,2282 @@
+diff --git a/core/block/editor/basic/details.go b/core/block/editor/basic/details.go
+--- a/core/block/editor/basic/details.go
++++ b/core/block/editor/basic/details.go
+@@ -9,6 +9,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/editor/state"
+ 	"github.com/anyproto/anytype-heart/core/block/restriction"
+ 	"github.com/anyproto/anytype-heart/core/domain"
++ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
+ 	"github.com/anyproto/anytype-heart/core/relationutils"
+ 	"github.com/anyproto/anytype-heart/core/session"
+ 	"github.com/anyproto/anytype-heart/pb"
+@@ -75,7 +76,11 @@
+ }
+ 
+ func (bs *basic) validateUpdates(st *state.State, diff *domain.Details, removedKeys []domain.RelationKey) error {
++ for _,key:=range removedKeys {
++  if torah.IsLocalKey(string(key)){return fmt.Errorf("canonical derived property cannot be removed directly: %w",domain.ErrValidationFailed)}
++ }
+ 	for key, value := range diff.Iterate() {
++  if torah.IsLocalKey(string(key)){return fmt.Errorf("canonical derived property cannot be written directly: %w",domain.ErrValidationFailed)}
+ 		if value.Ok() {
+ 			if err := bs.validateSpecialCases(st, domain.Detail{Key: key, Value: value}); err != nil {
+ 				return fmt.Errorf("special case: %w", err)
+diff --git a/core/block/editor/smartblock/detailsinject.go b/core/block/editor/smartblock/detailsinject.go
+--- a/core/block/editor/smartblock/detailsinject.go
++++ b/core/block/editor/smartblock/detailsinject.go
+@@ -229,6 +229,7 @@
+ 	sb.injectLinksDetails(s)
+ 	sb.injectMentions(s)
+ 	sb.updateBackLinks(s)
++ sb.injectTorahDetails(s)
+ }
+ 
+ func (sb *smartBlock) deriveChatId(s *state.State) error {
+diff --git a/core/block/editor/smartblock/pinkha_torah.go b/core/block/editor/smartblock/pinkha_torah.go
+new file mode 100644
+--- /dev/null
++++ b/core/block/editor/smartblock/pinkha_torah.go
+@@ -0,0 +1,23 @@
++package smartblock
++
++import (
++ "context"
++ "github.com/anyproto/anytype-heart/core/block/editor/state"
++ "github.com/anyproto/anytype-heart/core/domain"
++ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
++)
++
++func (sb *smartBlock) injectTorahDetails(s *state.State) {
++ projector,ok:=sb.spaceIndex.(interface{
++  TorahLocalDetails(context.Context,*domain.Details)(*domain.Details,error)
++ })
++ if !ok{return}
++ details,err:=projector.TorahLocalDetails(context.Background(),s.CombinedDetails())
++ if err!=nil {
++  log.Warnf("Torah local projection unavailable: %v",err)
++  details=domain.NewDetails()
++ }
++ if details==nil{return}
++ for _,key:=range torah.LocalKeys(){s.RemoveLocalDetail(domain.RelationKey(key))}
++ s.AddLocalDetails(details)
++}
+diff --git a/core/block/export/anyblock/anyblock.go b/core/block/export/anyblock/anyblock.go
+--- a/core/block/export/anyblock/anyblock.go
++++ b/core/block/export/anyblock/anyblock.go
+@@ -40,6 +40,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/export/collect"
+ 	"github.com/anyproto/anytype-heart/core/block/export/report"
+ 	"github.com/anyproto/anytype-heart/core/domain"
++ torahvalues "github.com/anyproto/anytype-heart/core/pinkha/torahvalues"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/anyblockjson"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/anyblockjson/compose"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/anyblockjson/storeresolver"
+@@ -576,7 +577,7 @@
+ func snapshotBase(st *state.State) *model.SmartBlockSnapshotBase {
+ 	return &model.SmartBlockSnapshotBase{
+ 		Blocks:      st.BlocksToSave(),
+-		Details:     st.CombinedDetails().ToProto(),
++		Details:     torahvalues.ExportDetails(st.CombinedDetails()).ToProto(),
+ 		ObjectTypes: domain.MarshalTypeKeys(st.ObjectTypeKeys()),
+ 		Collections: st.Store(),
+ 		Key:         st.UniqueKeyInternal(),
+diff --git a/core/block/import/processor.go b/core/block/import/processor.go
+--- a/core/block/import/processor.go
++++ b/core/block/import/processor.go
+@@ -18,6 +18,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/import/web"
+ 	"github.com/anyproto/anytype-heart/core/block/process"
+ 	"github.com/anyproto/anytype-heart/core/domain"
++ torahtransport "github.com/anyproto/anytype-heart/core/pinkha/torahtransport"
+ 	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
+ 	"github.com/anyproto/anytype-heart/core/event"
+ 	"github.com/anyproto/anytype-heart/metrics"
+@@ -252,6 +253,17 @@
+ 		return nil, ""
+ 	}
+ 
++ objects:=make([]torahtransport.Object,0,len(p.converterResponse.Snapshots))
++ for _,snapshot:=range p.converterResponse.Snapshots {
++  if snapshot.Snapshot!=nil && snapshot.Snapshot.Data!=nil {
++   data:=snapshot.Snapshot.Data
++   objects=append(objects,torahtransport.Object{ID:snapshot.Id,OriginalID:data.Details.GetString(bundle.RelationKeyOldAnytypeID),PropertyKey:data.Key,Details:data.Details})
++  }
++ }
++ if err:=torahtransport.RemapObjects(p.request.SpaceId,objects,p.oldIDToNew);err!=nil {
++  p.errors.Add(err)
++  return nil,""
++ }
+ 	dataObject := creator.NewDataObject(
+ 		ctx,
+ 		p.oldIDToNew,
+diff --git a/core/block/object/objectcreator/relation_option.go b/core/block/object/objectcreator/relation_option.go
+--- a/core/block/object/objectcreator/relation_option.go
++++ b/core/block/object/objectcreator/relation_option.go
+@@ -9,6 +9,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/editor/order"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/state"
+ 	"github.com/anyproto/anytype-heart/core/domain"
++ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
+ 	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/database"
+@@ -27,6 +28,9 @@
+ 	if details.GetString(bundle.RelationKeyRelationKey) == "" {
+ 		return "", nil, fmt.Errorf("relation key is empty")
+ 	}
++ if torah.IsProperty(details.GetString(bundle.RelationKeyRelationKey)) {
++  return "", nil, fmt.Errorf("canonical derived properties do not have option Objects")
++ }
+ 	if !details.Has(bundle.RelationKeyCreatedDate) {
+ 		details.SetInt64(bundle.RelationKeyCreatedDate, time.Now().Unix())
+ 	}
+diff --git a/core/block/object/objectlink/dependent_objects.go b/core/block/object/objectlink/dependent_objects.go
+--- a/core/block/object/objectlink/dependent_objects.go
++++ b/core/block/object/objectlink/dependent_objects.go
+@@ -14,6 +14,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/editor/template"
+ 	"github.com/anyproto/anytype-heart/core/block/simple"
+ 	"github.com/anyproto/anytype-heart/core/domain"
++ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
+ 	"github.com/anyproto/anytype-heart/core/relationutils"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/logging"
+@@ -214,6 +215,7 @@
+ }
+ 
+ func collectIdsFromDetail(rel *model.RelationLink, det *domain.Details, flags Flags) (ids []string) {
++ if torah.IsProperty(rel.Key){return nil}
+ 	if flags.NoSystemRelations {
+ 		if rel.Format != model.RelationFormat_object || bundle.IsSystemRelation(domain.RelationKey(rel.Key)) {
+ 			return
+diff --git a/core/block/simple/dataview/dataview.go b/core/block/simple/dataview/dataview.go
+--- a/core/block/simple/dataview/dataview.go
++++ b/core/block/simple/dataview/dataview.go
+@@ -13,6 +13,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/simple"
+ 	"github.com/anyproto/anytype-heart/core/block/simple/base"
+ 	"github.com/anyproto/anytype-heart/pb"
++ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+ 	"github.com/anyproto/anytype-heart/util/pbtypes"
+ 	"github.com/anyproto/anytype-heart/util/slice"
+@@ -281,6 +282,7 @@
+ 
+ func getIdsFromFilters(filters []*model.BlockContentDataviewFilter) (ids []string) {
+ 	for _, filter := range filters {
++ if torah.IsProperty(filter.RelationKey){continue}
+ 		if filter.Format != model.RelationFormat_object &&
+ 			filter.Format != model.RelationFormat_status &&
+ 			filter.Format != model.RelationFormat_tag {
+diff --git a/core/converter/pbc/pbc.go b/core/converter/pbc/pbc.go
+--- a/core/converter/pbc/pbc.go
++++ b/core/converter/pbc/pbc.go
+@@ -6,6 +6,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/editor/state"
+ 	"github.com/anyproto/anytype-heart/core/converter"
+ 	"github.com/anyproto/anytype-heart/core/domain"
++ torahvalues "github.com/anyproto/anytype-heart/core/pinkha/torahvalues"
+ 	"github.com/anyproto/anytype-heart/pb"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/logging"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+@@ -30,7 +31,7 @@
+ 	snapshot := &pb.ChangeSnapshot{
+ 		Data: &model.SmartBlockSnapshotBase{
+ 			Blocks:      st.BlocksToSave(),
+-			Details:     st.CombinedDetails().ToProto(),
++			Details:     torahvalues.ExportDetails(st.CombinedDetails()).ToProto(),
+ 			ObjectTypes: domain.MarshalTypeKeys(st.ObjectTypeKeys()),
+ 			Collections: st.Store(),
+ 			Key:         p.s.UniqueKeyInternal(),
+diff --git a/core/converter/pbjson/pbjson.go b/core/converter/pbjson/pbjson.go
+--- a/core/converter/pbjson/pbjson.go
++++ b/core/converter/pbjson/pbjson.go
+@@ -6,6 +6,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/editor/state"
+ 	"github.com/anyproto/anytype-heart/core/converter"
+ 	"github.com/anyproto/anytype-heart/core/domain"
++ torahvalues "github.com/anyproto/anytype-heart/core/pinkha/torahvalues"
+ 	"github.com/anyproto/anytype-heart/pb"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/logging"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+@@ -26,7 +27,7 @@
+ 	snapshot := &pb.ChangeSnapshot{
+ 		Data: &model.SmartBlockSnapshotBase{
+ 			Blocks:      st.BlocksToSave(),
+-			Details:     st.CombinedDetails().ToProto(),
++			Details:     torahvalues.ExportDetails(st.CombinedDetails()).ToProto(),
+ 			ObjectTypes: domain.MarshalTypeKeys(st.ObjectTypeKeys()),
+ 			Collections: st.Store(),
+ 			Key:         p.s.UniqueKeyInternal(),
+diff --git a/core/indexer/fulltext.go b/core/indexer/fulltext.go
+--- a/core/indexer/fulltext.go
++++ b/core/indexer/fulltext.go
+@@ -331,7 +331,7 @@
+ 			fulltextSkipped = true
+ 			return nil
+ 		}
+-		docs = append(docs, i.prepareRelationSearchDocs(object.FullId(), sb)...)
++		docs = append(docs, i.prepareRelationSearchDocs(object.FullId(), sb, details)...)
+ 		docs = append(docs, prepareBlockSearchDocs(ctx, sb)...)
+ 		return nil
+ 	})
+@@ -408,9 +408,12 @@
+ 	}
+ }
+ 
+-func (i *indexer) prepareRelationSearchDocs(fullId domain.FullID, sb smartblock.SmartBlock) (docs []ftsearch.SearchDoc) {
++func (i *indexer) prepareRelationSearchDocs(fullId domain.FullID, sb smartblock.SmartBlock, indexed ...*domain.Details) (docs []ftsearch.SearchDoc) {
++ var native *domain.Details
++ if len(indexed)>0{native=indexed[0]}
+ 	layout, _ := sb.Layout()
+-	docs = i.prepareRelationSearchDocsFromDetails(fullId, layout, sb.Details())
++	docs = i.prepareRelationSearchDocsFromDetails(fullId, layout, i.withoutTorahCanonicalText(sb.Details(),native))
++ docs = append(docs,i.prepareTorahSearchDocs(fullId,native)...)
+ 
+ 	if layout == model.ObjectType_note {
+ 		snippet := sb.LocalDetails().GetString(bundle.RelationKeySnippet)
+diff --git a/core/indexer/pinkha_torah.go b/core/indexer/pinkha_torah.go
+new file mode 100644
+--- /dev/null
++++ b/core/indexer/pinkha_torah.go
+@@ -0,0 +1,25 @@
++package indexer
++
++import (
++ "github.com/anyproto/anytype-heart/core/domain"
++ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
++ values "github.com/anyproto/anytype-heart/core/pinkha/torahvalues"
++ "github.com/anyproto/anytype-heart/pkg/lib/localstore/ftsearch"
++)
++
++func (i *indexer) withoutTorahCanonicalText(details,indexed *domain.Details)*domain.Details{
++ if indexed==nil{return details}
++ key:=indexed.GetString(domain.RelationKey(torah.CanonicalKeyKey))
++ if key==""{return details}
++ return details.CopyWithoutKeys(domain.RelationKey(key))
++}
++
++func (i *indexer) prepareTorahSearchDocs(id domain.FullID,details *domain.Details)(docs []ftsearch.SearchDoc){
++ if details==nil{return nil}
++ texts:=values.SearchTexts(details)
++ for _,definition:=range torah.Definitions{
++  text:=texts[definition.Key]
++  if text!=""{docs=append(docs,ftsearch.SearchDoc{Id:domain.NewObjectPathWithRelation(id.ObjectID,definition.Key).String(),SpaceId:id.SpaceID,Text:text})}
++ }
++ return docs
++}
+diff --git a/core/pinkha/torah/binding.go b/core/pinkha/torah/binding.go
+new file mode 100644
+--- /dev/null
++++ b/core/pinkha/torah/binding.go
+@@ -0,0 +1,87 @@
++package torahderived
++
++import (
++	"context"
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"fmt"
++)
++
++// ManifestSource must scope both calls to the supplied Space. Implementations
++// may only read: discovery must not invoke the app's duplicate cleanup/bootstrap.
++type ManifestSource interface {
++	Manifests(context.Context, string) ([]ManifestCandidate, error)
++	CanonicalProperty(context.Context, string, string) (PropertyDescriptor, error)
++}
++
++type ManifestCandidate struct {
++	ObjectID string
++	Raw      []byte
++}
++type PropertyDescriptor struct {
++	ID     string
++	Key    string
++	Format int
++}
++
++// ResolveBinding deliberately has no cache. Each manifest/property revision
++// changes Generation, forcing callers to invalidate/rebuild the local index.
++func ResolveBinding(ctx context.Context, source ManifestSource, space string) (Binding, error) {
++	candidates, err := source.Manifests(ctx, space)
++	if err != nil {
++		return Binding{}, err
++	}
++	// Fail closed on ambiguity. Never delete competing synced manifest objects.
++	if len(candidates) != 1 {
++		return Binding{}, ErrBinding
++	}
++	candidate := candidates[0]
++	var manifest struct {
++		SchemaVersion     int               `json:"schemaVersion"`
++		SpaceID           string            `json:"spaceId"`
++		ManifestObjectID  string            `json:"manifestObjectId"`
++		ProvisioningState *string           `json:"provisioningState"`
++		CanonicalID       string            `json:"documentAssociationsPropertyId"`
++		CanonicalKey      string            `json:"documentAssociationsPropertyKey"`
++		Types             map[string]string `json:"registeredDocumentTypes"`
++		Templates         map[string]string `json:"defaultTemplateIds"`
++		ParentID          string            `json:"parentPropertyId"`
++		ParentKey         string            `json:"parentPropertyKey"`
++		OrderID           string            `json:"orderPropertyId"`
++		OrderKey          string            `json:"orderPropertyKey"`
++		FolderTypeID      string            `json:"folderTypeId"`
++		BookFolderTypeID  string            `json:"bookFolderTypeId"`
++	}
++	if err := json.Unmarshal(candidate.Raw, &manifest); err != nil {
++		return Binding{}, ErrBinding
++	}
++	if manifest.SchemaVersion != 1 {
++		return Binding{}, ErrUnsupported
++	}
++	if candidate.ObjectID == "" || !exact(manifest.SpaceID, space) || (manifest.ManifestObjectID != "" && manifest.ManifestObjectID != candidate.ObjectID) || (manifest.ProvisioningState != nil && *manifest.ProvisioningState != "complete") {
++		return Binding{}, ErrBinding
++	}
++	if manifest.CanonicalID == "" || manifest.CanonicalKey == "" || manifest.ParentID == "" || manifest.ParentKey == "" || manifest.OrderID == "" || manifest.OrderKey == "" || manifest.FolderTypeID == "" || manifest.BookFolderTypeID == "" {
++		return Binding{}, ErrBinding
++	}
++	types := [3]string{manifest.Types["chiddush"], manifest.Types["article"], manifest.Types["research"]}
++	for _, role := range []string{"chiddush", "article", "research"} {
++		if manifest.Templates[role] == "" {
++			return Binding{}, ErrBinding
++		}
++	}
++	property, err := source.CanonicalProperty(ctx, space, manifest.CanonicalKey)
++	if err != nil {
++		return Binding{}, err
++	}
++	// Heart's existing RelationFormat_longtext is 0. No new wire format here.
++	if property.ID != manifest.CanonicalID || property.Key != manifest.CanonicalKey || property.Format != 0 {
++		return Binding{}, ErrBinding
++	}
++	hash := sha256.New()
++	hash.Write(candidate.Raw)
++	fmt.Fprintf(hash, "|%d:%s|%d:%s|%d", len(candidate.ObjectID), candidate.ObjectID, len(property.ID), property.ID, property.Format)
++	binding := Binding{SpaceID: space, CanonicalKey: manifest.CanonicalKey, WritingTypeIDs: types, Generation: hex.EncodeToString(hash.Sum(nil))}
++	return binding, binding.Validate()
++}
+diff --git a/core/pinkha/torah/projection.go b/core/pinkha/torah/projection.go
+new file mode 100644
+--- /dev/null
++++ b/core/pinkha/torah/projection.go
+@@ -0,0 +1,300 @@
++// Package torahderived implements the read-only canonical projection shared by
++// the native Heart indexer and its Swift/Go compatibility fixtures.
++package torahderived
++
++import (
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"errors"
++	"fmt"
++	"sort"
++	"strings"
++	"time"
++	"unicode/utf8"
++
++	"golang.org/x/text/unicode/norm"
++)
++
++type Kind string
++
++const (
++	Ref   Kind = "ref"
++	Topic Kind = "topic"
++	Word  Kind = "word"
++)
++
++var ErrMalformed = errors.New("malformed canonical data")
++var ErrUnsupported = errors.New("unsupported canonical version")
++var ErrBinding = errors.New("invalid Space binding")
++var ErrIneligible = errors.New("ineligible document")
++
++// Binding contains validated native identifiers, never human display names.
++type Binding struct {
++	SpaceID        string
++	CanonicalKey   string
++	WritingTypeIDs [3]string
++	Generation     string
++}
++
++type Input struct {
++	SpaceID    string
++	ObjectID   string
++	TypeID     string
++	IsTemplate bool
++	IsDeleted  bool
++	IsArchived bool
++	Raw        []byte
++}
++
++type Projection struct {
++	Sources         []string                `json:"sources"`
++	Topics          []string                `json:"topics"`
++	Words           []string                `json:"words"`
++	CanonicalSHA256 string                  `json:"canonicalSHA256"`
++	Labels          map[string]DisplayLabel `json:"labels,omitempty"`
++}
++
++// Display labels are a rebuildable local cache, never synced association data.
++type DisplayLabel struct {
++	Hebrew  string `json:"he"`
++	English string `json:"en,omitempty"`
++}
++
++// Identity matches Swift's NFC identity and length-prefixes UTF-8 bytes.
++// The version prefix allows a future local rebuild without rewriting user data.
++func Identity(kind Kind, provider, canonical, external string) string {
++	if canonical == "" {
++		canonical = external
++	}
++	parts := []string{string(kind), provider, canonical}
++	for i, part := range parts {
++		part = norm.NFC.String(part)
++		parts[i] = fmt.Sprintf("%d:%s", len(part), part)
++	}
++	return "torah1|" + strings.Join(parts, "|")
++}
++
++func (b Binding) Validate() error {
++	if b.SpaceID == "" || b.CanonicalKey == "" || b.Generation == "" || IsLocalKey(b.CanonicalKey) {
++		return ErrBinding
++	}
++	seen := map[string]bool{}
++	for _, id := range b.WritingTypeIDs {
++		id = norm.NFC.String(id)
++		if id == "" || seen[id] {
++			return ErrBinding
++		}
++		seen[id] = true
++	}
++	return nil
++}
++
++func Project(b Binding, in Input) (Projection, error) {
++	if err := b.Validate(); err != nil {
++		return Projection{}, err
++	}
++	eligible := false
++	for _, id := range b.WritingTypeIDs {
++		eligible = eligible || exact(id, in.TypeID)
++	}
++	if !exact(b.SpaceID, in.SpaceID) || in.ObjectID == "" || !eligible || in.IsTemplate || in.IsDeleted || in.IsArchived {
++		return Projection{}, ErrIneligible
++	}
++	hash := sha256.Sum256(in.Raw)
++	result := Projection{Sources: []string{}, Topics: []string{}, Words: []string{}, Labels: map[string]DisplayLabel{}, CanonicalSHA256: hex.EncodeToString(hash[:])}
++	// The current repository treats absent or empty native longText as no links.
++	if len(in.Raw) == 0 {
++		return result, nil
++	}
++	if !utf8.Valid(in.Raw) {
++		return Projection{}, ErrMalformed
++	}
++	envelope, err := object(in.Raw)
++	if err != nil {
++		return Projection{}, err
++	}
++	var version int
++	if err = required(envelope, "version", &version); err != nil {
++		return Projection{}, err
++	}
++	var records []record
++	switch version {
++	case 1:
++		var items []json.RawMessage
++		if err = required(envelope, "items", &items); err != nil {
++			return Projection{}, err
++		}
++		for _, item := range items {
++			records = append(records, record{SpaceID: in.SpaceID, ObjectID: in.ObjectID, Item: item})
++		}
++	case 2:
++		var rawRecords []json.RawMessage
++		if err = required(envelope, "records", &rawRecords); err != nil {
++			return Projection{}, err
++		}
++		for _, raw := range rawRecords {
++			fields, e := object(raw)
++			if e != nil {
++				return Projection{}, e
++			}
++			var r record
++			if e = required(fields, "spaceId", &r.SpaceID); e != nil {
++				return Projection{}, e
++			}
++			if e = required(fields, "objectId", &r.ObjectID); e != nil {
++				return Projection{}, e
++			}
++			if v := fields["blockId"]; v != nil && string(v) != "null" {
++				var block string
++				if e = json.Unmarshal(v, &block); e != nil {
++					return Projection{}, ErrMalformed
++				}
++				r.BlockID = &block
++			}
++			if e = required(fields, "item", &r.Item); e != nil {
++				return Projection{}, e
++			}
++			records = append(records, r)
++		}
++	default:
++		return Projection{}, fmt.Errorf("%w: %d", ErrUnsupported, version)
++	}
++	ids, identities := map[string]bool{}, map[string]bool{}
++	for _, r := range records {
++		item, err := decodeItem(r.Item)
++		if err != nil {
++			return Projection{}, err
++		}
++		if !exact(r.SpaceID, in.SpaceID) || !exact(r.ObjectID, in.ObjectID) || r.BlockID != nil || item.Role != "context" || strings.HasPrefix(item.CanonicalKey, "anytype-note:") {
++			continue
++		}
++		identity := Identity(item.Kind, item.ProviderID, item.CanonicalKey, item.ExternalID)
++		id := norm.NFC.String(item.ID)
++		if ids[id] || identities[identity] {
++			continue
++		}
++		ids[id], identities[identity] = true, true
++		result.Labels[identity] = DisplayLabel{Hebrew: item.LabelHe, English: item.LabelEn}
++		switch item.Kind {
++		case Ref:
++			result.Sources = append(result.Sources, identity)
++		case Topic:
++			result.Topics = append(result.Topics, identity)
++		case Word:
++			result.Words = append(result.Words, identity)
++		}
++	}
++	sort.Strings(result.Sources)
++	sort.Strings(result.Topics)
++	sort.Strings(result.Words)
++	return result, nil
++}
++
++type record struct {
++	SpaceID  string
++	ObjectID string
++	BlockID  *string
++	Item     json.RawMessage
++}
++
++type item struct {
++	ID           string
++	Kind         Kind
++	Role         string
++	ProviderID   string
++	CanonicalKey string
++	ExternalID   string
++	LabelHe      string
++	LabelEn      string
++}
++
++func decodeItem(raw json.RawMessage) (item, error) {
++	fields, err := object(raw)
++	if err != nil {
++		return item{}, err
++	}
++	var value item
++	for _, f := range []struct {
++		name   string
++		target any
++	}{
++		{"id", &value.ID}, {"kind", &value.Kind}, {"role", &value.Role},
++		{"providerID", &value.ProviderID}, {"canonicalKey", &value.CanonicalKey},
++		{"externalID", &value.ExternalID}, {"labelHe", &value.LabelHe},
++	} {
++		if err := required(fields, f.name, f.target); err != nil {
++			return item{}, err
++		}
++	}
++	if value.Kind != Ref && value.Kind != Topic && value.Kind != Word {
++		return item{}, ErrMalformed
++	}
++	if value.Role == "source_quote" {
++		value.Role = "sourceQuote"
++	}
++	if value.Role != "context" && value.Role != "sourceQuote" {
++		return item{}, ErrMalformed
++	}
++	if value.ID == "" || value.ProviderID == "" || (value.CanonicalKey == "" && value.ExternalID == "") {
++		return item{}, ErrMalformed
++	}
++	// Validate the known optional fields as Swift's existing codec does. They
++	// never participate in identity, but invalid typed data must fail closed.
++	for _, key := range []string{"labelEn", "rawInput", "providerPayload"} {
++		if raw := fields[key]; raw != nil && string(raw) != "null" {
++			var text string
++			if json.Unmarshal(raw, &text) != nil {
++				return item{}, ErrMalformed
++			}
++			if key == "labelEn" {
++				value.LabelEn = text
++			}
++		}
++	}
++	for _, key := range []string{"createdAt", "updatedAt"} {
++		if raw := fields[key]; raw != nil && string(raw) != "null" {
++			var timestamp string
++			if json.Unmarshal(raw, &timestamp) != nil {
++				return item{}, ErrMalformed
++			}
++			if _, err := time.Parse(time.RFC3339Nano, timestamp); err != nil {
++				return item{}, ErrMalformed
++			}
++		}
++	}
++	if raw := fields["customMetadata"]; raw != nil && string(raw) != "null" {
++		var metadata map[string]json.RawMessage
++		if json.Unmarshal(raw, &metadata) != nil {
++			return item{}, ErrMalformed
++		}
++		for _, rawValue := range metadata {
++			var text string
++			if string(rawValue) == "null" || json.Unmarshal(rawValue, &text) != nil {
++				return item{}, ErrMalformed
++			}
++		}
++	}
++	return value, nil
++}
++
++func object(raw []byte) (map[string]json.RawMessage, error) {
++	var fields map[string]json.RawMessage
++	if err := json.Unmarshal(raw, &fields); err != nil || fields == nil {
++		return nil, ErrMalformed
++	}
++	return fields, nil
++}
++
++func required(fields map[string]json.RawMessage, key string, value any) error {
++	raw, exists := fields[key]
++	if !exists || string(raw) == "null" {
++		return ErrMalformed
++	}
++	if err := json.Unmarshal(raw, value); err != nil {
++		return ErrMalformed
++	}
++	return nil
++}
++
++func exact(a, b string) bool { return norm.NFC.String(a) == norm.NFC.String(b) }
+diff --git a/core/pinkha/torah/properties.go b/core/pinkha/torah/properties.go
+new file mode 100644
+--- /dev/null
++++ b/core/pinkha/torah/properties.go
+@@ -0,0 +1,43 @@
++package torahderived
++
++const Version = 1
++const SourcesKey = "pinkhaTorahSources"
++const TopicsKey = "pinkhaTorahTopics"
++const WordsKey = "pinkhaTorahWords"
++const ReadyKey = "_pinkhaTorahReady"
++const LabelsKey = "_pinkhaTorahLabels"
++const VersionKey = "_pinkhaTorahProjectionVersion"
++const CanonicalHashKey = "_pinkhaTorahCanonicalHash"
++const StatusKey = "_pinkhaTorahState"
++const CanonicalKeyKey = "_pinkhaTorahCanonicalPropertyKey"
++const CacheIntegrityKey = "_pinkhaTorahCacheIntegrity"
++const ManifestUniqueKey = "pinkha.space.manifest"
++
++type PropertyDefinition struct {
++	Kind Kind
++	Key  string
++	Name string
++}
++
++var Definitions = []PropertyDefinition{
++	{Ref, SourcesKey, "מקור/ות"},
++	{Topic, TopicsKey, "נושא"},
++	{Word, WordsKey, "מילה / ערך"},
++}
++
++func IsProperty(key string) bool {
++	return key == SourcesKey || key == TopicsKey || key == WordsKey
++}
++
++func LocalKeys() []string {
++	return []string{SourcesKey, TopicsKey, WordsKey, ReadyKey, LabelsKey, VersionKey, CanonicalHashKey, StatusKey, CanonicalKeyKey, CacheIntegrityKey}
++}
++
++func IsLocalKey(key string) bool {
++	for _, candidate := range LocalKeys() {
++		if key == candidate {
++			return true
++		}
++	}
++	return false
++}
+diff --git a/core/pinkha/torah/readiness.go b/core/pinkha/torah/readiness.go
+new file mode 100644
+--- /dev/null
++++ b/core/pinkha/torah/readiness.go
+@@ -0,0 +1,87 @@
++package torahderived
++
++import (
++	"errors"
++	"sync"
++)
++
++type State string
++
++const (
++	NotInitialized State = "NOT_INITIALIZED"
++	Discovering    State = "DISCOVERING"
++	Rebuilding     State = "REBUILDING"
++	Ready          State = "READY"
++	Outdated       State = "OUTDATED"
++	Error          State = "ERROR"
++	Unsupported    State = "UNSUPPORTED"
++)
++
++var ErrNotReady = errors.New("Space derived index is not ready")
++var ErrStaleGeneration = errors.New("stale rebuild generation")
++
++// Readiness is a guard for a caller-owned native index, not a second database.
++// A production integration must durably checkpoint its generation and recovery
++// status in the engine's own local store before using this guard.
++type Readiness struct {
++	mu       sync.RWMutex
++	spaces   map[string]readinessEntry
++	sequence uint64
++}
++
++type readinessEntry struct {
++	state State
++	epoch uint64
++}
++
++func (r *Readiness) Begin(space string) uint64 {
++	r.mu.Lock()
++	defer r.mu.Unlock()
++	if r.spaces == nil {
++		r.spaces = map[string]readinessEntry{}
++	}
++	r.sequence++
++	r.spaces[space] = readinessEntry{state: Rebuilding, epoch: r.sequence}
++	return r.sequence
++}
++
++func (r *Readiness) Finish(space string, epoch uint64, success bool) error {
++	r.mu.Lock()
++	defer r.mu.Unlock()
++	entry, ok := r.spaces[space]
++	if !ok || entry.epoch != epoch || entry.state != Rebuilding {
++		return ErrStaleGeneration
++	}
++	entry.state = Error
++	if success {
++		entry.state = Ready
++	}
++	r.spaces[space] = entry
++	return nil
++}
++
++func (r *Readiness) Invalidate(space string) {
++	r.mu.Lock()
++	defer r.mu.Unlock()
++	if r.spaces == nil {
++		r.spaces = map[string]readinessEntry{}
++	}
++	r.sequence++
++	r.spaces[space] = readinessEntry{state: Outdated, epoch: r.sequence}
++}
++
++func (r *Readiness) RequireReady(space string) error {
++	if r.Status(space) != Ready {
++		return ErrNotReady
++	}
++	return nil
++}
++
++func (r *Readiness) Status(space string) State {
++	r.mu.RLock()
++	defer r.mu.RUnlock()
++	if entry, ok := r.spaces[space]; ok {
++		return entry.state
++	}
++	return NotInitialized
++}
+diff --git a/core/pinkha/torahindex/index.go b/core/pinkha/torahindex/index.go
+new file mode 100644
+--- /dev/null
++++ b/core/pinkha/torahindex/index.go
+@@ -0,0 +1,511 @@
++// Package torahindex maintains local derived fields in Heart's existing native
++// Space collection. It never opens a second database or writes synced blocks.
++package torahindex
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"fmt"
++	"sync"
++	"sync/atomic"
++
++	anystore "github.com/anyproto/any-store"
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
++)
++
++type Writer func(context.Context, string, *domain.Details) error
++type BeginWrite func(context.Context) (anystore.WriteTx, error)
++type BeginRead func(context.Context) (anystore.ReadTx, error)
++type ChangeHook func(context.Context, string, *domain.Details, *domain.Details) error
++
++// All state is owned by one Space store. The caller supplies Heart's notifying
++// transaction so subscriptions see the canonical and derived values together,
++// only after the root transaction commits, including during rebuild/recovery.
++type Index struct {
++	space     string
++	objects   anystore.Collection
++	begin     BeginWrite
++	write     Writer
++	snapshot  BeginRead
++	changed   ChangeHook
++	manifests sync.Map
++	active    atomic.Bool
++	recovery  atomic.Pointer[RecoveryStats]
++}
++
++func (i *Index) WithChangeHook(hook ChangeHook) *Index { i.changed = hook; return i }
++
++func (i *Index) writeProjected(ctx context.Context, id string, before, after *domain.Details) error {
++	if i.changed != nil {
++		if err := i.changed(ctx, id, before, after); err != nil {
++			return err
++		}
++	}
++	return i.write(ctx, id, after)
++}
++
++func New(space string, objects anystore.Collection, begin BeginWrite, write Writer, snapshot ...BeginRead) *Index {
++	index := &Index{space: space, objects: objects, begin: begin, write: write}
++	if len(snapshot) > 0 {
++		index.snapshot = snapshot[0]
++	}
++	return index
++}
++
++func (i *Index) Recover(ctx context.Context) error {
++	for _, key := range []string{torah.SourcesKey, torah.TopicsKey, torah.WordsKey, torah.CanonicalKeyKey} {
++		if err := i.objects.EnsureIndex(ctx, anystore.IndexInfo{Name: key, Fields: []string{key}, Sparse: true}); err != nil {
++			return fmt.Errorf("Torah membership index %s: %w", key, err)
++		}
++	}
++	tx, err := i.begin(ctx)
++	if err != nil {
++		return err
++	}
++	defer tx.Rollback()
++	if err = i.rows(tx.Context(), manifestFilter(), func(d *domain.Details) error { i.rememberManifest(d); return nil }); err != nil {
++		return err
++	}
++	if !i.active.Load() {
++		// A never-Pinkha Space has no rows in this sparse native index. A former
++		// binding still needs cleanup/recovery after its manifest was removed.
++		if err = i.rows(tx.Context(), map[string]any{torah.CanonicalKeyKey: map[string]any{"$exists": true}}, func(*domain.Details) error { i.active.Store(true); return nil }); err != nil {
++			return err
++		}
++		if !i.active.Load() {
++			return tx.Commit()
++		}
++	}
++	if err = i.rebuild(tx.Context()); err != nil {
++		return err
++	}
++	return tx.Commit()
++}
++
++// Update is the production ObjectStore write boundary. Incoming derived values
++// are discarded, even when an older client sends them, then rebuilt from the
++// original canonical payload. Projection errors fail closed for just that row.
++func (i *Index) Update(ctx context.Context, id string, details *domain.Details) error {
++	if details == nil || details.Len() == 0 {
++		return errors.New("empty details")
++	}
++	// Preserve the original native method's documented ID assignment, including
++	// callers that retain this Details pointer after the write.
++	details.SetString(bundle.RelationKeyId, id)
++	i.rememberManifest(details.Copy().SetString(bundle.RelationKeyId, id))
++	// No manifest has ever been observed in this Space. Preserve the original
++	// cheap write path; ordinary Anytype edits do not scan a Pinkha-free Space.
++	if !i.active.Load() {
++		return i.write(ctx, id, clear(details))
++	}
++	tx, err := i.begin(ctx)
++	if err != nil {
++		return err
++	}
++	defer tx.Rollback()
++	ctx = tx.Context()
++	before, err := i.read(ctx, id)
++	if err != nil && !errors.Is(err, anystore.ErrDocNotFound) {
++		return err
++	}
++	clean := clear(details)
++	if before != nil {
++		if bindingKey := before.GetString(domain.RelationKey(torah.CanonicalKeyKey)); bindingKey != "" {
++			clean.SetString(domain.RelationKey(torah.CanonicalKeyKey), bindingKey)
++		}
++	}
++	clean.SetString(bundle.RelationKeyId, id)
++	source := source{index: i}
++	binding, bindingErr := torah.ResolveBinding(ctx, source, i.space)
++	// Changes to a manifest or its canonical property invalidate every row in
++	// this Space, in the same transaction as the triggering native write.
++	rebind := isManifest(clean) || isManifest(before) || source.isCanonicalCandidate(ctx, id)
++	if bindingErr == nil && clean.GetString(bundle.RelationKeyRelationKey) == binding.CanonicalKey {
++		rebind = true
++	}
++	if bindingErr == nil && before != nil && before.GetString(bundle.RelationKeyRelationKey) == binding.CanonicalKey {
++		rebind = true
++	}
++	if rebind {
++		if err = i.writeProjected(ctx, id, before, clean); err != nil {
++			return err
++		}
++		if err = i.rebuild(ctx); err != nil {
++			return err
++		}
++	} else {
++		if bindingErr == nil {
++			i.project(binding, clean)
++		}
++		if err = i.writeProjected(ctx, id, before, clean); err != nil {
++			return err
++		}
++	}
++	return tx.Commit()
++}
++
++func (i *Index) rememberManifest(d *domain.Details) {
++	if isManifest(d) {
++		i.manifests.Store(d.GetString(bundle.RelationKeyId), struct{}{})
++		i.active.Store(true)
++	}
++}
++
++// LocalDetails projects the current editor state, which can be newer than the
++// asynchronously indexed row. It shares the native binding and projector; it
++// never writes canonical data or introduces a second persistent repository.
++func (i *Index) LocalDetails(ctx context.Context, details *domain.Details) (*domain.Details, error) {
++	if !i.active.Load() {
++		return nil, nil
++	}
++	if i.snapshot != nil {
++		tx, err := i.snapshot(ctx)
++		if err != nil {
++			return nil, err
++		}
++		defer tx.Commit()
++		ctx = tx.Context()
++	} else {
++		tx, err := i.begin(ctx)
++		if err != nil {
++			return nil, err
++		}
++		defer tx.Rollback()
++		ctx = tx.Context()
++	}
++	binding, bindingErr := torah.ResolveBinding(ctx, source{index: i}, i.space)
++	result := clear(details)
++	if key := details.GetString(domain.RelationKey(torah.CanonicalKeyKey)); key != "" {
++		result.SetString(domain.RelationKey(torah.CanonicalKeyKey), key)
++	}
++	if bindingErr == nil {
++		i.project(binding, result)
++		if isManifest(result) {
++			result.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
++			result.SetString(domain.RelationKey(torah.CanonicalHashKey), binding.Generation)
++		}
++	}
++	keys := make([]domain.RelationKey, 0, len(torah.LocalKeys()))
++	for _, key := range torah.LocalKeys() {
++		keys = append(keys, domain.RelationKey(key))
++	}
++	return result.CopyOnlyKeys(keys...), nil
++}
++
++func manifestFilter() map[string]any {
++	return map[string]any{"$or": []any{
++		map[string]any{string(bundle.RelationKeyUniqueKey): torah.ManifestUniqueKey},
++		map[string]any{string(bundle.RelationKeyName): torah.ManifestUniqueKey},
++	}}
++}
++
++// Delete invalidates bindings before deleting the triggering row. The caller
++// uses the same notifying tx for the physical deletion and commit.
++func (i *Index) Delete(ctx context.Context, ids []string, remove func(context.Context) error) error {
++	if !i.active.Load() {
++		return remove(ctx)
++	}
++	tx, err := i.begin(ctx)
++	if err != nil {
++		return err
++	}
++	defer tx.Rollback()
++	rebind := false
++	for _, id := range ids {
++		if i.changed != nil {
++			before, readErr := i.read(tx.Context(), id)
++			if readErr != nil && !errors.Is(readErr, anystore.ErrDocNotFound) {
++				return readErr
++			}
++			if err = i.changed(tx.Context(), id, before, nil); err != nil {
++				return err
++			}
++		}
++		_, knownManifest := i.manifests.Load(id)
++		rebind = rebind || knownManifest || (source{index: i}).isCanonicalCandidate(tx.Context(), id)
++	}
++	if err = remove(tx.Context()); err != nil {
++		return err
++	}
++	if rebind {
++		if err = i.rebuild(tx.Context()); err != nil {
++			return err
++		}
++	}
++	return tx.Commit()
++}
++
++func (i *Index) Modify(ctx context.Context, id string, proc func(*domain.Details) (*domain.Details, bool, error), upsert bool,
++	nativeModify func(context.Context, string, func(*domain.Details) (*domain.Details, bool, error), bool) error) error {
++	if proc == nil {
++		return nil
++	}
++	tx, err := i.begin(ctx)
++	if err != nil {
++		return err
++	}
++	defer tx.Rollback()
++	previous, err := i.read(tx.Context(), id)
++	if errors.Is(err, anystore.ErrDocNotFound) {
++		if !upsert {
++			return nil
++		}
++	} else if err != nil {
++		return err
++	}
++	// Preserve native Modify's complete contract, including nil/id-only results,
++	// skipped missing rows, modifier failures and native notifications. Both
++	// writes remain invisible until the same root notifying transaction commits.
++	rebind := isManifest(previous) || (source{index: i}).isCanonicalCandidate(tx.Context(), id)
++	if err = nativeModify(tx.Context(), id, proc, upsert); err != nil {
++		return err
++	}
++	d, err := i.read(tx.Context(), id)
++	if errors.Is(err, anystore.ErrDocNotFound) {
++		return tx.Commit()
++	}
++	if err != nil {
++		return err
++	}
++	i.rememberManifest(d)
++	if rebind || isManifest(d) {
++		if err = i.rebuild(tx.Context()); err != nil {
++			return err
++		}
++	} else if d.Len() > 1 {
++		if err = i.Update(tx.Context(), id, d); err != nil {
++			return err
++		}
++	}
++	if i.changed != nil {
++		final, readErr := i.read(tx.Context(), id)
++		if readErr != nil && !errors.Is(readErr, anystore.ErrDocNotFound) {
++			return readErr
++		}
++		if err = i.changed(tx.Context(), id, previous, final); err != nil {
++			return err
++		}
++	}
++	return tx.Commit()
++}
++
++func clear(details *domain.Details) *domain.Details {
++	clean := details.Copy()
++	for _, key := range torah.LocalKeys() {
++		clean.Delete(domain.RelationKey(key))
++	}
++	return clean
++}
++
++func isManifest(d *domain.Details) bool {
++	return d != nil && (d.GetString(bundle.RelationKeyUniqueKey) == torah.ManifestUniqueKey || d.GetString(bundle.RelationKeyName) == torah.ManifestUniqueKey)
++}
++
++func (i *Index) read(ctx context.Context, id string) (*domain.Details, error) {
++	doc, err := i.objects.FindId(ctx, id)
++	if err != nil {
++		return nil, err
++	}
++	return domain.NewDetailsFromAnyEnc(doc.Value())
++}
++
++func (i *Index) rows(ctx context.Context, filter any, visit func(*domain.Details) error) error {
++	iter, err := i.objects.Find(filter).Iter(ctx)
++	if err != nil {
++		return err
++	}
++	defer iter.Close()
++	for iter.Next() {
++		doc, e := iter.Doc()
++		if e != nil {
++			return e
++		}
++		d, e := domain.NewDetailsFromAnyEnc(doc.Value())
++		if e != nil {
++			return e
++		}
++		if e = visit(d); e != nil {
++			return e
++		}
++	}
++	return iter.Err()
++}
++
++func (i *Index) rebuild(ctx context.Context) (resultErr error) {
++	stats := RecoveryStats{}
++	defer func() { stats.Complete = resultErr == nil; i.recovery.Store(&stats) }()
++	binding, bindingErr := torah.ResolveBinding(ctx, source{index: i}, i.space)
++	// Keep only object IDs while traversing. Updating a live SQL cursor can skip
++	// or revisit rows. The payload stays in the original collection and tx.
++	ids, err := i.objectIDs(ctx)
++	if err != nil {
++		return err
++	}
++	for _, id := range ids {
++		stats.Scanned++
++		original, err := i.read(ctx, id)
++		if err != nil {
++			return err
++		}
++		if bindingErr == nil && reusableCache(binding, original) {
++			stats.Reused++
++			continue
++		}
++		stats.Recomputed++
++		d := clear(original)
++		if key := original.GetString(domain.RelationKey(torah.CanonicalKeyKey)); key != "" {
++			d.SetString(domain.RelationKey(torah.CanonicalKeyKey), key)
++		}
++		if bindingErr == nil {
++			i.project(binding, d)
++			if isManifest(d) {
++				d.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
++				d.SetString(domain.RelationKey(torah.CanonicalHashKey), binding.Generation)
++			}
++		}
++		if !d.Equal(original) {
++			if err = i.writeProjected(ctx, id, original, d); err != nil {
++				return err
++			}
++		}
++	}
++	return nil
++}
++
++func (i *Index) project(binding torah.Binding, d *domain.Details) {
++	defer func() {
++		if isManifest(d) {
++			d.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
++			d.SetString(domain.RelationKey(torah.CanonicalHashKey), binding.Generation)
++		}
++		sealCache(binding, d)
++	}()
++	// The opaque canonical field is never search-preview text, including on
++	// templates or objects that do not qualify for document-context Properties.
++	if d.Has(domain.RelationKey(binding.CanonicalKey)) {
++		d.SetString(domain.RelationKey(torah.CanonicalKeyKey), binding.CanonicalKey)
++	}
++	types := d.GetStringList(bundle.RelationKeyType)
++	// The pinned product engine writes type as a scalar. Older snapshots and
++	// native list fixtures can still carry a single-element list.
++	if typeID := d.GetString(bundle.RelationKeyType); typeID != "" {
++		types = []string{typeID}
++	}
++	if len(types) != 1 {
++		return
++	}
++	space := d.GetString(bundle.RelationKeySpaceId)
++	// The collection itself is per Space; a conflicting explicit ID is rejected.
++	if space != "" && space != i.space {
++		return
++	}
++	p, err := torah.Project(binding, torah.Input{
++		SpaceID: i.space, ObjectID: d.GetString(bundle.RelationKeyId), TypeID: types[0],
++		IsTemplate: d.Has(bundle.RelationKeyTargetObjectType),
++		IsDeleted:  d.GetBool(bundle.RelationKeyIsDeleted), IsArchived: d.GetBool(bundle.RelationKeyIsArchived),
++		Raw: []byte(d.GetString(domain.RelationKey(binding.CanonicalKey))),
++	})
++	if err == nil || errors.Is(err, torah.ErrMalformed) || errors.Is(err, torah.ErrUnsupported) {
++		d.SetString(domain.RelationKey(torah.CanonicalKeyKey), binding.CanonicalKey)
++	}
++	if err != nil {
++		if errors.Is(err, torah.ErrMalformed) || errors.Is(err, torah.ErrUnsupported) {
++			d.SetBool(domain.RelationKey(torah.ReadyKey), false)
++			d.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
++			status := "MALFORMED"
++			if errors.Is(err, torah.ErrUnsupported) {
++				status = "UNSUPPORTED"
++			}
++			d.SetString(domain.RelationKey(torah.StatusKey), status)
++		}
++		return
++	}
++	for key, values := range map[string][]string{torah.SourcesKey: p.Sources, torah.TopicsKey: p.Topics, torah.WordsKey: p.Words} {
++		if len(values) > 0 {
++			d.SetStringList(domain.RelationKey(key), values)
++		}
++	}
++	labels, _ := json.Marshal(p.Labels)
++	d.SetString(domain.RelationKey(torah.LabelsKey), string(labels))
++	d.SetBool(domain.RelationKey(torah.ReadyKey), true)
++	d.SetString(domain.RelationKey(torah.StatusKey), "READY")
++	d.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
++	d.SetString(domain.RelationKey(torah.CanonicalHashKey), p.CanonicalSHA256)
++}
++
++type source struct{ index *Index }
++
++func (s source) isCanonicalCandidate(ctx context.Context, id string) bool {
++	candidates, err := s.Manifests(ctx, s.index.space)
++	if err != nil {
++		return false
++	}
++	for _, candidate := range candidates {
++		var m struct {
++			CanonicalID string `json:"documentAssociationsPropertyId"`
++		}
++		if json.Unmarshal(candidate.Raw, &m) == nil && m.CanonicalID == id {
++			return true
++		}
++	}
++	return false
++}
++
++func (s source) Manifests(ctx context.Context, space string) ([]torah.ManifestCandidate, error) {
++	if space != s.index.space {
++		return nil, torah.ErrBinding
++	}
++	var found []torah.ManifestCandidate
++	var readErr error
++	// Cache only candidate IDs, never a binding or payload. Read each candidate
++	// from the caller's actual transaction, so rollback/rebind cannot leave stale
++	// membership or leak another Space. A rolled-back new ID is harmless.
++	s.index.manifests.Range(func(id, _ any) bool {
++		d, err := s.index.read(ctx, id.(string))
++		if errors.Is(err, anystore.ErrDocNotFound) {
++			return true
++		}
++		if err != nil {
++			readErr = err
++			return false
++		}
++		if isManifest(d) && !d.GetBool(bundle.RelationKeyIsDeleted) && !d.GetBool(bundle.RelationKeyIsArchived) {
++			found = append(found, torah.ManifestCandidate{ObjectID: d.GetString(bundle.RelationKeyId), Raw: []byte(d.GetString(bundle.RelationKeyDescription))})
++		}
++		return true
++	})
++	return found, readErr
++}
++func (s source) CanonicalProperty(ctx context.Context, space, key string) (torah.PropertyDescriptor, error) {
++	if space != s.index.space {
++		return torah.PropertyDescriptor{}, torah.ErrBinding
++	}
++	manifests, err := s.Manifests(ctx, space)
++	if err != nil || len(manifests) != 1 {
++		return torah.PropertyDescriptor{}, torah.ErrBinding
++	}
++	var m struct {
++		CanonicalID string `json:"documentAssociationsPropertyId"`
++	}
++	if json.Unmarshal(manifests[0].Raw, &m) != nil {
++		return torah.PropertyDescriptor{}, torah.ErrBinding
++	}
++	d, err := s.index.read(ctx, m.CanonicalID)
++	if err != nil {
++		return torah.PropertyDescriptor{}, err
++	}
++	if !d.Has(bundle.RelationKeyRelationFormat) || d.GetInt64(bundle.RelationKeyLayout) != int64(model.ObjectType_relation) {
++		return torah.PropertyDescriptor{}, torah.ErrBinding
++	}
++	if d.GetBool(bundle.RelationKeyIsDeleted) || d.GetBool(bundle.RelationKeyIsArchived) {
++		return torah.PropertyDescriptor{}, torah.ErrBinding
++	}
++	if value := d.GetString(bundle.RelationKeySpaceId); value != "" && value != space {
++		return torah.PropertyDescriptor{}, torah.ErrBinding
++	}
++	return torah.PropertyDescriptor{ID: d.GetString(bundle.RelationKeyId), Key: d.GetString(bundle.RelationKeyRelationKey), Format: int(d.GetInt64(bundle.RelationKeyRelationFormat))}, nil
++}
+diff --git a/core/pinkha/torahindex/recovery_cache.go b/core/pinkha/torahindex/recovery_cache.go
+new file mode 100644
+--- /dev/null
++++ b/core/pinkha/torahindex/recovery_cache.go
+@@ -0,0 +1,93 @@
++package torahindex
++
++import (
++	"context"
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"strings"
++
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
++)
++
++// RecoveryStats describes local work, not a synced or independently ready index.
++type RecoveryStats struct {
++	Scanned    int
++	Reused     int
++	Recomputed int
++	Complete   bool
++}
++
++func (i *Index) LastRecoveryStats() RecoveryStats {
++	if result := i.recovery.Load(); result != nil {
++		return *result
++	}
++	return RecoveryStats{}
++}
++
++var cacheInputKeys = func() []domain.RelationKey {
++	keys := []domain.RelationKey{bundle.RelationKeyId, bundle.RelationKeySpaceId,
++		bundle.RelationKeyType, bundle.RelationKeyTargetObjectType,
++		bundle.RelationKeyIsDeleted, bundle.RelationKeyIsArchived}
++	for _, key := range torah.LocalKeys() {
++		if key != torah.CacheIntegrityKey {
++			keys = append(keys, domain.RelationKey(key))
++		}
++	}
++	return keys
++}()
++
++// The proof covers BOTH the canonical input and every cached output, plus the
++// manifest generation and eligibility inputs. Trusting only the canonical hash
++// would retain forged/stale arrays left by an older, unadapted client. This is a
++// disposable local cache check, not an authentication or transport signature.
++func cacheProof(binding torah.Binding, details *domain.Details) string {
++	keys := append(append([]domain.RelationKey(nil), cacheInputKeys...), domain.RelationKey(binding.CanonicalKey))
++	data, err := json.Marshal(details.CopyOnlyKeys(keys...).ToProto())
++	if err != nil {
++		return ""
++	}
++	hash := sha256.New()
++	hash.Write([]byte("pinkha-torah-cache-v1\x00" + binding.Generation + "\x00" + binding.CanonicalKey + "\x00"))
++	hash.Write(data)
++	// Preserve byte identity even for malformed UTF-8 that JSON encoding would
++	// otherwise replace. Such payloads must remain explicit errors.
++	hash.Write([]byte{0})
++	hash.Write([]byte(details.GetString(domain.RelationKey(binding.CanonicalKey))))
++	return hex.EncodeToString(hash.Sum(nil))
++}
++
++func reusableCache(binding torah.Binding, details *domain.Details) bool {
++	stored := details.GetString(domain.RelationKey(torah.CacheIntegrityKey))
++	return stored != "" && stored == cacheProof(binding, details)
++}
++
++func sealCache(binding torah.Binding, details *domain.Details) {
++	if !isManifest(details) && !details.Has(domain.RelationKey(torah.CanonicalKeyKey)) {
++		return
++	}
++	if proof := cacheProof(binding, details); proof != "" {
++		details.SetString(domain.RelationKey(torah.CacheIntegrityKey), proof)
++	}
++}
++
++// Collect only cloned IDs, without decoding/copying each canonical payload in
++// this first pass. The cursor is closed before any row changes in the same tx.
++func (i *Index) objectIDs(ctx context.Context) ([]string, error) {
++	iterator, err := i.objects.Find(nil).Iter(ctx)
++	if err != nil {
++		return nil, err
++	}
++	defer iterator.Close()
++	var ids []string
++	for iterator.Next() {
++		document, err := iterator.Doc()
++		if err != nil {
++			return nil, err
++		}
++		ids = append(ids, strings.Clone(document.Value().GetString("id")))
++	}
++	return ids, iterator.Err()
++}
+diff --git a/core/pinkha/torahtransport/import.go b/core/pinkha/torahtransport/import.go
+new file mode 100644
+--- /dev/null
++++ b/core/pinkha/torahtransport/import.go
+@@ -0,0 +1,175 @@
++// Package torahtransport remaps only known context identities at native import.
++// Normal projection/getters remain read-only and never rewrite canonical data.
++package torahtransport
++
++import (
++	"encoding/json"
++	"fmt"
++	"strings"
++
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
++)
++
++type Object struct {
++	ID          string
++	OriginalID  string
++	PropertyKey string
++	Details     *domain.Details
++}
++
++type manifest struct {
++	SchemaVersion     int               `json:"schemaVersion"`
++	SpaceID           string            `json:"spaceId"`
++	ManifestID        string            `json:"manifestObjectId"`
++	ProvisioningState string            `json:"provisioningState"`
++	CanonicalID       string            `json:"documentAssociationsPropertyId"`
++	CanonicalKey      string            `json:"documentAssociationsPropertyKey"`
++	Types             map[string]string `json:"registeredDocumentTypes"`
++}
++
++func mapped(ids map[string]string, id string) string {
++	if next := ids[id]; next != "" {
++		return next
++	}
++	return id
++}
++func mappedProperty(ids map[string]string, key string) string {
++	next := ids["rel-"+key]
++	if next == "" {
++		return key
++	}
++	return strings.TrimPrefix(next, "rel-")
++}
++
++// RemapObjects runs once after the native importer has assigned all IDs and
++// before it creates any object. Ordinary exports are untouched. The caller owns
++// the original import transaction and the authoritative old-to-new identity map.
++func RemapObjects(targetSpace string, objects []Object, ids map[string]string) error {
++	byID := map[string]Object{}
++	// The original PB converter first maps exported IDs to temporary import
++	// IDs. The processor then allocates final IDs. Compose those two stages;
++	// neither stage knows the opaque JSON's internal identity fields.
++	aliases := make(map[string]string, len(ids)+len(objects))
++	for old, next := range ids {
++		aliases[old] = next
++	}
++	for _, object := range objects {
++		byID[object.ID] = object
++		if object.OriginalID != "" {
++			byID[object.OriginalID] = object
++			aliases[object.OriginalID] = mapped(ids, object.ID)
++		}
++	}
++	ids = aliases
++	type update struct {
++		details *domain.Details
++		key     domain.RelationKey
++		value   string
++	}
++	var updates []update
++	origins := map[string]bool{}
++	for _, object := range objects {
++		details := object.Details
++		if details == nil || (details.GetString(bundle.RelationKeyName) != torah.ManifestUniqueKey && details.GetString(bundle.RelationKeyUniqueKey) != torah.ManifestUniqueKey) {
++			continue
++		}
++		raw := []byte(details.GetString(bundle.RelationKeyDescription))
++		var source manifest
++		if json.Unmarshal(raw, &source) != nil || source.SchemaVersion != 1 || source.SpaceID == "" || source.CanonicalID == "" || source.CanonicalKey == "" {
++			continue
++		}
++		originalID := object.OriginalID
++		if originalID == "" {
++			originalID = object.ID
++		}
++		if source.ManifestID != "" && source.ManifestID != originalID {
++			continue
++		}
++		if source.ProvisioningState != "" && source.ProvisioningState != "complete" {
++			continue
++		}
++		binding := torah.Binding{SpaceID: source.SpaceID, CanonicalKey: source.CanonicalKey, WritingTypeIDs: [3]string{source.Types["chiddush"], source.Types["article"], source.Types["research"]}, Generation: "native-import"}
++		if binding.Validate() != nil {
++			continue
++		}
++		property := byID[source.CanonicalID]
++		propertyKey := property.PropertyKey
++		if propertyKey == "" && property.Details != nil {
++			propertyKey = property.Details.GetString(bundle.RelationKeyRelationKey)
++		}
++		if property.Details == nil || propertyKey != source.CanonicalKey || !property.Details.Has(bundle.RelationKeyRelationFormat) || property.Details.GetInt64(bundle.RelationKeyRelationFormat) != 0 {
++			continue
++		}
++		if targetSpace == "" {
++			return fmt.Errorf("missing destination Space for imported Torah manifest")
++		}
++		if origins[source.SpaceID] {
++			return fmt.Errorf("ambiguous imported Torah manifest")
++		}
++		origins[source.SpaceID] = true
++		root, err := fields(raw)
++		if err != nil {
++			return err
++		}
++		var changes []replacement
++		for _, member := range root {
++			var value string
++			switch member.name {
++			case "spaceId":
++				value = targetSpace
++			case "manifestObjectId":
++				value = mapped(ids, object.ID)
++			case "parentPropertyId", "orderPropertyId", "documentAssociationsPropertyId", "folderTypeId", "bookFolderTypeId":
++				var old string
++				if json.Unmarshal(member.raw, &old) == nil {
++					value = mapped(ids, old)
++				}
++			case "parentPropertyKey", "orderPropertyKey", "documentAssociationsPropertyKey":
++				var old string
++				if json.Unmarshal(member.raw, &old) == nil {
++					value = mappedProperty(ids, old)
++				}
++			case "registeredDocumentTypes", "defaultTemplateIds":
++				entries, err := fields(member.raw)
++				if err != nil {
++					return err
++				}
++				for _, entry := range entries {
++					var old string
++					if json.Unmarshal(entry.raw, &old) == nil {
++						changes = append(changes, replacement{member.start + entry.start, member.start + entry.end, mapped(ids, old)})
++					}
++				}
++			}
++			if value != "" {
++				changes = append(changes, replacement{member.start, member.end, value})
++			}
++		}
++		rewritten, err := replace(raw, changes)
++		if err != nil {
++			return err
++		}
++		updates = append(updates, update{details, bundle.RelationKeyDescription, string(rewritten)})
++		for _, document := range objects {
++			if document.Details == nil || !document.Details.Has(domain.RelationKey(source.CanonicalKey)) {
++				continue
++			}
++			canonical := []byte(document.Details.GetString(domain.RelationKey(source.CanonicalKey)))
++			sourceID := document.OriginalID
++			if sourceID == "" {
++				sourceID = document.ID
++			}
++			rewritten, err := remapCanonical(canonical, source.SpaceID, sourceID, targetSpace, mapped(ids, document.ID))
++			if err != nil {
++				return err
++			}
++			updates = append(updates, update{document.Details, domain.RelationKey(source.CanonicalKey), string(rewritten)})
++		}
++	}
++	for _, change := range updates {
++		change.details.SetString(change.key, change.value)
++	}
++	return nil
++}
+diff --git a/core/pinkha/torahtransport/json_fields.go b/core/pinkha/torahtransport/json_fields.go
+new file mode 100644
+--- /dev/null
++++ b/core/pinkha/torahtransport/json_fields.go
+@@ -0,0 +1,129 @@
++package torahtransport
++
++import (
++	"bytes"
++	"encoding/json"
++	"fmt"
++	"sort"
++)
++
++type field struct {
++	name       string
++	start, end int
++	raw        json.RawMessage
++}
++type replacement struct {
++	start, end int
++	value      string
++}
++
++// Decoder offsets retain all bytes outside explicitly replaced identity values,
++// including unknown fields, object order, spacing and escaped text.
++func fields(data []byte) ([]field, error) {
++	decoder := json.NewDecoder(bytes.NewReader(data))
++	token, err := decoder.Token()
++	if err != nil || token != json.Delim('{') {
++		return nil, fmt.Errorf("expected JSON object")
++	}
++	var result []field
++	seen := map[string]bool{}
++	for decoder.More() {
++		token, err = decoder.Token()
++		if err != nil {
++			return nil, err
++		}
++		name, ok := token.(string)
++		if !ok {
++			return nil, fmt.Errorf("invalid JSON field")
++		}
++		if seen[name] {
++			return nil, fmt.Errorf("ambiguous JSON field")
++		}
++		seen[name] = true
++		var raw json.RawMessage
++		if err = decoder.Decode(&raw); err != nil {
++			return nil, err
++		}
++		end := int(decoder.InputOffset())
++		result = append(result, field{name: name, start: end - len(raw), end: end, raw: raw})
++	}
++	if _, err = decoder.Token(); err != nil {
++		return nil, err
++	}
++	return result, nil
++}
++
++func replace(data []byte, changes []replacement) ([]byte, error) {
++	sort.Slice(changes, func(i, j int) bool { return changes[i].start < changes[j].start })
++	var output bytes.Buffer
++	cursor := 0
++	for _, change := range changes {
++		if change.start < cursor || change.end > len(data) {
++			return nil, fmt.Errorf("overlapping identity replacement")
++		}
++		encoded, err := json.Marshal(change.value)
++		if err != nil {
++			return nil, err
++		}
++		output.Write(data[cursor:change.start])
++		output.Write(encoded)
++		cursor = change.end
++	}
++	output.Write(data[cursor:])
++	return output.Bytes(), nil
++}
++
++func remapCanonical(raw []byte, sourceSpace, sourceObject, targetSpace, targetObject string) ([]byte, error) {
++	var header struct {
++		Version int `json:"version"`
++	}
++	if json.Unmarshal(raw, &header) != nil || header.Version != 2 {
++		return raw, nil
++	}
++	root, err := fields(raw)
++	if err != nil {
++		return raw, nil
++	}
++	var changes []replacement
++	for _, property := range root {
++		if property.name != "records" {
++			continue
++		}
++		decoder := json.NewDecoder(bytes.NewReader(property.raw))
++		token, err := decoder.Token()
++		if err != nil || token != json.Delim('[') {
++			return raw, nil
++		}
++		for decoder.More() {
++			var record json.RawMessage
++			if err = decoder.Decode(&record); err != nil {
++				return raw, nil
++			}
++			base := property.start + int(decoder.InputOffset()) - len(record)
++			var location struct {
++				SpaceID  string `json:"spaceId"`
++				ObjectID string `json:"objectId"`
++			}
++			if json.Unmarshal(record, &location) != nil || location.SpaceID != sourceSpace || location.ObjectID != sourceObject {
++				continue
++			}
++			members, err := fields(record)
++			if err != nil {
++				return raw, nil
++			}
++			for _, member := range members {
++				target := ""
++				if member.name == "spaceId" {
++					target = targetSpace
++				}
++				if member.name == "objectId" {
++					target = targetObject
++				}
++				if target != "" {
++					changes = append(changes, replacement{base + member.start, base + member.end, target})
++				}
++			}
++		}
++	}
++	return replace(raw, changes)
++}
+diff --git a/core/pinkha/torahvalues/values.go b/core/pinkha/torahvalues/values.go
+new file mode 100644
+--- /dev/null
++++ b/core/pinkha/torahvalues/values.go
+@@ -0,0 +1,75 @@
++// Package torahvalues adapts local projections to native export and full text.
++package torahvalues
++
++import (
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"strings"
++
++	"github.com/anyproto/anytype-heart/core/domain"
++	torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
++)
++
++// ExportDetails retains canonical bytes and every ordinary Anytype detail.
++// Local index/cache fields are never transported to an older importer.
++func ExportDetails(details *domain.Details) *domain.Details {
++	result := details.Copy()
++	for _, key := range torah.LocalKeys() {
++		result.Delete(domain.RelationKey(key))
++	}
++	return result
++}
++
++func SearchText(details *domain.Details, key string) string {
++	if !torah.IsProperty(key) {
++		return ""
++	}
++	return SearchTexts(details)[key]
++}
++
++// Decode the shared label map once per document, including when hashing all
++// three search values during a large rebuild or preparing native search docs.
++func SearchTexts(details *domain.Details) map[string]string {
++	result := map[string]string{}
++	if details == nil || !details.GetBool(domain.RelationKey(torah.ReadyKey)) {
++		return result
++	}
++	var labels map[string]torah.DisplayLabel
++	if json.Unmarshal([]byte(details.GetString(domain.RelationKey(torah.LabelsKey))), &labels) != nil {
++		return result
++	}
++	for _, definition := range torah.Definitions {
++		result[definition.Key] = searchText(details, definition.Key, labels)
++	}
++	return result
++}
++
++func searchText(details *domain.Details, key string, labels map[string]torah.DisplayLabel) string {
++	var text []string
++	seen := map[string]bool{}
++	for _, id := range details.GetStringList(domain.RelationKey(key)) {
++		label := labels[id]
++		for _, value := range []string{label.Hebrew, label.English} {
++			value = strings.TrimSpace(value)
++			if value != "" && !seen[value] {
++				seen[value] = true
++				text = append(text, value)
++			}
++		}
++	}
++	return strings.Join(text, "\n")
++}
++
++func SearchFingerprint(details *domain.Details) string {
++	text := ""
++	values := SearchTexts(details)
++	for _, definition := range torah.Definitions {
++		text += definition.Key + "\x00" + values[definition.Key] + "\x00"
++	}
++	if details != nil {
++		text += details.GetString(domain.RelationKey(torah.CanonicalKeyKey))
++	}
++	sum := sha256.Sum256([]byte(text))
++	return hex.EncodeToString(sum[:])
++}
+diff --git a/pkg/lib/bundle/pinkha_torah.go b/pkg/lib/bundle/pinkha_torah.go
+new file mode 100644
+--- /dev/null
++++ b/pkg/lib/bundle/pinkha_torah.go
+@@ -0,0 +1,31 @@
++package bundle
++
++import (
++ "github.com/anyproto/anytype-heart/core/domain"
++ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
++ "github.com/anyproto/anytype-heart/pkg/lib/localstore/addr"
++ "github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++)
++
++// Package variables precede init(): the native local/derived key lists include
++// these immutable list properties. No option objects or global installed rows.
++var pinkhaTorahRegistered = func() bool {
++ for _,d:=range torah.Definitions {
++  key:=domain.RelationKey(d.Key)
++  relations[key]=&model.Relation{Id:addr.BundledRelationURLPrefix+d.Key,
++   Key:d.Key,Name:d.Name,Format:model.RelationFormat_tag,
++   DataSource:model.Relation_derived,ReadOnly:true,ReadOnlyRelation:true,
++   Scope:model.Relation_type,MaxCount:0}
++ }
++ // Private capability/label/readiness fields use the same native exclusion
++ // rules as derived properties for CRDT snapshots, export and local injection.
++ for _,key:=range torah.LocalKeys()[3:] {
++  format:=model.RelationFormat_longtext
++  if key==torah.ReadyKey{format=model.RelationFormat_checkbox}
++  if key==torah.VersionKey{format=model.RelationFormat_number}
++  relations[domain.RelationKey(key)]=&model.Relation{Id:addr.BundledRelationURLPrefix+key,
++   Key:key,Name:key,Format:format,Hidden:true,
++   DataSource:model.Relation_derived,ReadOnly:true,ReadOnlyRelation:true,Scope:model.Relation_type}
++ }
++ return true
++}()
+diff --git a/pkg/lib/database/filter.go b/pkg/lib/database/filter.go
+--- a/pkg/lib/database/filter.go
++++ b/pkg/lib/database/filter.go
+@@ -15,6 +15,7 @@
+ 	"github.com/samber/lo"
+ 
+ 	"github.com/anyproto/anytype-heart/core/domain"
++ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+ 	"github.com/anyproto/anytype-heart/util/dateutil"
+@@ -65,6 +66,14 @@
+ }
+ 
+ func makeFilter(spaceID string, rawFilter FilterRequest, store ObjectStore) (Filter, error) {
++ filter,err:=makeNativeFilter(spaceID,rawFilter,store)
++ if err!=nil||filter==nil||!torah.IsProperty(string(rawFilter.RelationKey)){return filter,err}
++ // Negative/empty predicates must not match malformed, ineligible or stale
++ // documents. Rebuilds change every row atomically at the native boundary.
++ return FiltersAnd{FilterIn{Key:domain.RelationKey(torah.ReadyKey),Value:[]domain.Value{domain.Bool(true)}},filter},nil
++}
++
++func makeNativeFilter(spaceID string, rawFilter FilterRequest, store ObjectStore) (Filter, error) {
+ 	if store == nil {
+ 		return nil, fmt.Errorf("objectStore dependency is nil")
+ 	}
+diff --git a/pkg/lib/localstore/objectstore/spaceindex/delete.go b/pkg/lib/localstore/objectstore/spaceindex/delete.go
+--- a/pkg/lib/localstore/objectstore/spaceindex/delete.go
++++ b/pkg/lib/localstore/objectstore/spaceindex/delete.go
+@@ -12,6 +12,11 @@
+ )
+ 
+ func (s *dsObjectStore) DeleteDetails(ctx context.Context, ids []string) error {
++ if index:=s.nativeTorah();index!=nil{return index.Delete(ctx,ids,func(ctx context.Context)error{return s.deleteDetails(ctx,ids)})}
++ return s.deleteDetails(ctx,ids)
++}
++
++func (s *dsObjectStore) deleteDetails(ctx context.Context, ids []string) error {
+ 	txn, err := s.db.WriteTx(ctx)
+ 	if err != nil {
+ 		return fmt.Errorf("write txn: %w", err)
+diff --git a/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go b/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go
+new file mode 100644
+--- /dev/null
++++ b/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go
+@@ -0,0 +1,34 @@
++package spaceindex
++
++import (
++ "context"
++ "github.com/anyproto/anytype-heart/core/domain"
++ torahindex "github.com/anyproto/anytype-heart/core/pinkha/torahindex"
++)
++
++func (s *dsObjectStore) Init() error {
++ if err:=s.initBase();err!=nil{return err}
++ s.torahInitMu.Lock()
++ defer s.torahInitMu.Unlock()
++ if s.torah!=nil{return nil}
++ var err error
++ s.torahOutbox,err=s.db.Collection(s.componentCtx,"_pinkhaTorahFulltextOutbox")
++ if err!=nil{return err}
++ index:=torahindex.New(s.spaceId,s.objects,s.WriteTx,s.updateObjectDetails,s.db.ReadTx).WithChangeHook(s.recordTorahFulltext)
++ // initBase has released s.lock; post-commit notification delivery takes it.
++ if err:=index.Recover(s.componentCtx);err!=nil{return err}
++ s.torah=index
++ s.prepareTorahFulltext()
++ s.startTorahFulltext()
++ return nil
++}
++
++func (s *dsObjectStore) nativeTorah()*torahindex.Index {
++ s.torahInitMu.Lock();defer s.torahInitMu.Unlock()
++ return s.torah
++}
++
++func (s *dsObjectStore) TorahLocalDetails(ctx context.Context, details *domain.Details) (*domain.Details, error) {
++ if index:=s.nativeTorah();index!=nil{return index.LocalDetails(ctx,details)}
++ return nil,nil
++}
+diff --git a/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go b/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go
+new file mode 100644
+--- /dev/null
++++ b/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go
+@@ -0,0 +1,96 @@
++package spaceindex
++
++import (
++ "context"
++ "errors"
++ "strings"
++ "time"
++ anystore "github.com/anyproto/any-store"
++ "github.com/anyproto/any-store/anyenc"
++ "github.com/anyproto/any-store/query"
++ "github.com/anyproto/anytype-heart/core/domain"
++ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
++ values "github.com/anyproto/anytype-heart/core/pinkha/torahvalues"
++)
++
++type torahFulltextWorker struct {
++ ctx context.Context
++ cancel context.CancelFunc
++ wake chan struct{}
++ done chan struct{}
++}
++
++func(s *dsObjectStore)prepareTorahFulltext(){
++ ctx,cancel:=context.WithCancel(s.componentCtx)
++ s.torahFT=&torahFulltextWorker{ctx:ctx,cancel:cancel,wake:make(chan struct{},1),done:make(chan struct{})}
++}
++
++func(s *dsObjectStore)startTorahFulltext(){
++ worker:=s.torahFT
++ go func(){
++  defer close(worker.done)
++  for {
++   retry:=s.drainTorahFulltext(worker.ctx)
++   var timer *time.Timer
++   var retryAt <-chan time.Time
++   if retry {timer=time.NewTimer(5*time.Second);retryAt=timer.C}
++   select {case <-worker.ctx.Done():if timer!=nil{timer.Stop()};return
++    case <-worker.wake:case <-retryAt:}
++   if timer!=nil{timer.Stop()}
++  }
++ }()
++}
++
++func(s *dsObjectStore)scheduleTorahFulltext(){
++ if worker:=s.torahFT;worker!=nil{select{case worker.wake<-struct{}{}:default:}}
++}
++
++func(s *dsObjectStore)stopTorahFulltext(){
++ if worker:=s.torahFT;worker!=nil{worker.cancel();<-worker.done}
++}
++
++// The outbox is in the SAME per-Space DB/transaction as canonical projection.
++// It contains only document IDs and a retry token, never association payloads.
++func (s *dsObjectStore) recordTorahFulltext(ctx context.Context,id string,before,after *domain.Details) error {
++ native:=func(d *domain.Details)bool{return d!=nil&&d.GetString(domain.RelationKey(torah.CanonicalKeyKey))!=""}
++ if !native(before)&&!native(after){return nil}
++ token:=values.SearchFingerprint(after)
++ if values.SearchFingerprint(before)==token{return nil}
++ _,err:=s.torahOutbox.UpsertId(ctx,id,query.ModifyFunc(func(a *anyenc.Arena,_ *anyenc.Value)(*anyenc.Value,bool,error){
++  value:=a.NewObject();value.Set("id",a.NewString(id));value.Set("token",a.NewString(token));return value,true,nil
++ }))
++ if err!=nil{return err}
++ if buffer,ok:=ctx.Value(txNotificationsKey{}).(*txNotifications);ok&&buffer!=nil{
++  buffer.mu.Lock();buffer.torahFulltext=true;buffer.mu.Unlock()
++ }
++ return nil
++}
++
++// Enqueue only AFTER the root transaction commits. Remove an outbox entry only
++// after the native common-DB queue commits, and only if its token still matches.
++// A crash at either boundary causes a harmless retry on the next Space open.
++func (s *dsObjectStore) drainTorahFulltext(ctx context.Context) bool {
++ if s.torahOutbox==nil||s.fulltextQueue==nil{return false}
++ iter,err:=s.torahOutbox.Find(nil).Iter(ctx)
++ if err!=nil{log.Warnf("Torah FT outbox read: %v",err);return true}
++ type entry struct{id,token string}
++ var pending []entry
++ for iter.Next(){doc,e:=iter.Doc();if e!=nil{err=e;break};pending=append(pending,entry{strings.Clone(doc.Value().GetString("id")),strings.Clone(doc.Value().GetString("token"))})}
++ if err==nil{err=iter.Err()};iter.Close()
++ if err!=nil{log.Warnf("Torah FT outbox iterate: %v",err);return true}
++ for start:=0;start<len(pending);start+=256{
++  end:=min(start+256,len(pending));batch:=pending[start:end]
++  ids:=make([]domain.FullID,0,len(batch));for _,item:=range batch{ids=append(ids,domain.FullID{SpaceID:s.spaceId,ObjectID:item.id})}
++  if _,_,err=s.fulltextQueue.AddToIndexQueue(ctx,ids...);err!=nil{log.Warnf("Torah native FT enqueue: %v",err);return true}
++  tx,e:=s.db.WriteTx(ctx);if e!=nil{log.Warnf("Torah FT outbox transaction: %v",e);return true}
++  for _,item:=range batch{
++   doc,e:=s.torahOutbox.FindId(tx.Context(),item.id)
++   if errors.Is(e,anystore.ErrDocNotFound){continue}
++   if e!=nil{err=e;break}
++   if doc.Value().GetString("token")==item.token{if e=s.torahOutbox.DeleteId(tx.Context(),item.id);e!=nil{err=e;break}}
++  }
++  if err==nil{err=tx.Commit()};tx.Rollback()
++  if err!=nil{log.Warnf("Torah FT outbox acknowledge: %v",err);return true}
++ }
++ return false
++}
+diff --git a/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go b/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go
+new file mode 100644
+--- /dev/null
++++ b/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go
+@@ -0,0 +1,161 @@
++package spaceindex
++
++import (
++	"context"
++	"errors"
++	"github.com/anyproto/anytype-heart/core/domain"
++	torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
++	"sync/atomic"
++	"testing"
++	"time"
++)
++
++type torahFailingFTQueue struct {
++	FulltextQueue
++	fail    atomic.Bool
++	calls   atomic.Int32
++	blocked <-chan struct{}
++	entered chan struct{}
++}
++
++func (q *torahFailingFTQueue) AddToIndexQueue(ctx context.Context, ids ...domain.FullID) (uint64, int, error) {
++	q.calls.Add(1)
++	if q.entered != nil {
++		select {
++		case q.entered <- struct{}{}:
++		default:
++		}
++	}
++	if q.blocked != nil {
++		select {
++		case <-q.blocked:
++		case <-ctx.Done():
++			return 0, 0, ctx.Err()
++		}
++	}
++	if q.fail.Load() {
++		return 0, 0, errors.New("injected common-DB queue failure")
++	}
++	return q.FulltextQueue.AddToIndexQueue(ctx, ids...)
++}
++
++func TestTorahFulltextOutboxCommitRollbackAndRetry(t *testing.T) {
++	store := NewStoreFixture(t)
++	store.stopTorahFulltext()
++	queue := &torahFailingFTQueue{FulltextQueue: store.fulltextQueue}
++	queue.fail.Store(true)
++	store.fulltextQueue = queue
++	store.prepareTorahFulltext()
++	store.startTorahFulltext()
++	ctx := context.Background()
++	details := domain.NewDetails().SetString(domain.RelationKey(torah.CanonicalKeyKey), "actualCanonical")
++	tx, err := store.WriteTx(ctx)
++	if err != nil {
++		t.Fatal(err)
++	}
++	if err = store.recordTorahFulltext(tx.Context(), "disposable-doc", nil, details); err != nil {
++		t.Fatal(err)
++	}
++	if queue.calls.Load() != 0 {
++		t.Fatal("FT queue notified before commit")
++	}
++	if err = tx.Rollback(); err != nil {
++		t.Fatal(err)
++	}
++	if count, err := store.torahOutbox.Count(ctx); err != nil || count != 0 {
++		t.Fatal("rollback retained an outbox entry", err)
++	}
++	if queue.calls.Load() != 0 {
++		t.Fatal("rolled-back projection escaped into FT queue")
++	}
++	tx, err = store.WriteTx(ctx)
++	if err != nil {
++		t.Fatal(err)
++	}
++	if err = store.recordTorahFulltext(tx.Context(), "disposable-doc", nil, details); err != nil {
++		t.Fatal(err)
++	}
++	if err = tx.Commit(); err != nil {
++		t.Fatal(err)
++	}
++	waitTorahFT(t, func() bool { return queue.calls.Load() > 0 })
++	if count, err := store.torahOutbox.Count(ctx); err != nil || count != 1 {
++		t.Fatal("queue failure lost durable retry", err)
++	}
++	queue.fail.Store(false)
++	// No new edit/wake: the running worker must retry a transient failure itself.
++	waitTorahFT(t, func() bool { count, err := store.torahOutbox.Count(ctx); return err == nil && count == 0 })
++	if queue.calls.Load() < 2 {
++		t.Fatal("retry did not reach the original queue")
++	}
++}
++
++func waitTorahFT(t *testing.T, condition func() bool) {
++	t.Helper()
++	deadline := time.Now().Add(10 * time.Second)
++	for time.Now().Before(deadline) {
++		if condition() {
++			return
++		}
++		time.Sleep(10 * time.Millisecond)
++	}
++	t.Fatal("native full-text worker deadline exceeded")
++}
++
++func TestTorahFulltextOutboxCommitDoesNotWaitForCommonTransaction(t *testing.T) {
++	store := NewStoreFixture(t)
++	store.stopTorahFulltext()
++	unblock := make(chan struct{})
++	queue := &torahFailingFTQueue{FulltextQueue: store.fulltextQueue, blocked: unblock, entered: make(chan struct{}, 1)}
++	store.fulltextQueue = queue
++	store.prepareTorahFulltext()
++	store.startTorahFulltext()
++	tx, err := store.WriteTx(context.Background())
++	if err != nil {
++		t.Fatal(err)
++	}
++	defer tx.Rollback()
++	details := domain.NewDetails().SetString(domain.RelationKey(torah.CanonicalKeyKey), "actualCanonical")
++	if err = store.recordTorahFulltext(tx.Context(), "blocked-common-db", nil, details); err != nil {
++		t.Fatal(err)
++	}
++	committed := make(chan error, 1)
++	go func() { committed <- tx.Commit() }()
++	// Native indexBatch holds commonTx until this per-Space Commit returns.
++	// The queue gate models that lock ordering; synchronous drain deadlocks here.
++	select {
++	case err = <-committed:
++		if err != nil {
++			t.Fatal(err)
++		}
++	case <-time.After(3 * time.Second):
++		close(unblock)
++		t.Fatal("Space commit waited for the common DB transaction")
++	}
++	select {
++	case <-queue.entered:
++	case <-time.After(3 * time.Second):
++		t.Fatal("worker did not enqueue committed update")
++	}
++	close(unblock)
++	waitTorahFT(t, func() bool {
++		count, err := store.torahOutbox.Count(context.Background())
++		return err == nil && count == 0
++	})
++}
++
++func TestTorahFulltextWorkerStopsWithOwningComponent(t *testing.T) {
++	store := NewStoreFixture(t)
++	store.stopTorahFulltext()
++	ctx, cancel := context.WithCancel(context.Background())
++	defer cancel()
++	store.componentCtx = ctx
++	store.prepareTorahFulltext()
++	store.startTorahFulltext()
++	cancel()
++	select {
++	case <-store.torahFT.done:
++	case <-time.After(3 * time.Second):
++		t.Fatal("worker outlived the original ObjectStore component")
++	}
++}
+diff --git a/pkg/lib/localstore/objectstore/spaceindex/store.go b/pkg/lib/localstore/objectstore/spaceindex/store.go
+--- a/pkg/lib/localstore/objectstore/spaceindex/store.go
++++ b/pkg/lib/localstore/objectstore/spaceindex/store.go
+@@ -10,6 +10,7 @@
+ 	"github.com/anyproto/any-store/anyenc"
+ 
+ 	"github.com/anyproto/anytype-heart/core/domain"
++ torahindex "github.com/anyproto/anytype-heart/core/pinkha/torahindex"
+ 	"github.com/anyproto/anytype-heart/core/relationutils"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/database"
+@@ -157,6 +158,10 @@
+ }
+ 
+ type dsObjectStore struct {
++ torahInitMu sync.Mutex
++ torah *torahindex.Index
++ torahOutbox anystore.Collection
++ torahFT *torahFulltextWorker
+ 	spaceId    string
+ 	db         anystore.DB
+ 	objects    anystore.Collection
+@@ -210,7 +215,7 @@
+ 	return s
+ }
+ 
+-func (s *dsObjectStore) Init() error {
++func (s *dsObjectStore) initBase() error {
+ 	s.lock.Lock()
+ 	defer s.lock.Unlock()
+ 
+@@ -419,6 +424,7 @@
+ }
+ 
+ func (s *dsObjectStore) Close() error {
++ s.stopTorahFulltext()
+ 	var err error
+ 	for _, col := range s.collections {
+ 		err = errors.Join(err, col.Close())
+diff --git a/pkg/lib/localstore/objectstore/spaceindex/update.go b/pkg/lib/localstore/objectstore/spaceindex/update.go
+--- a/pkg/lib/localstore/objectstore/spaceindex/update.go
++++ b/pkg/lib/localstore/objectstore/spaceindex/update.go
+@@ -20,6 +20,11 @@
+ )
+ 
+ func (s *dsObjectStore) UpdateObjectDetails(ctx context.Context, id string, details *domain.Details) error {
++ if index:=s.nativeTorah();index!=nil{return index.Update(ctx,id,details)}
++ return s.updateObjectDetails(ctx,id,details)
++}
++
++func (s *dsObjectStore) updateObjectDetails(ctx context.Context, id string, details *domain.Details) error {
+ 	if details == nil || details.Len() == 0 {
+ 		return fmt.Errorf("empty details")
+ 	}
+@@ -77,6 +82,7 @@
+ // sequenced, which any-store and the upstream object locks guarantee.)
+ type txNotifications struct {
+ 	mu      sync.Mutex
++ torahFulltext bool
+ 	pending []string
+ 	seen    map[string]struct{}
+ }
+@@ -120,9 +126,12 @@
+ func (s *dsObjectStore) flushTxNotifications(buf *txNotifications) {
+ 	buf.mu.Lock()
+ 	pending := buf.pending
++ torahFulltext:=buf.torahFulltext
++ buf.torahFulltext=false
+ 	buf.pending = nil
+ 	buf.seen = nil
+ 	buf.mu.Unlock()
++ if torahFulltext {defer s.scheduleTorahFulltext()}
+ 
+ 	for _, id := range pending {
+ 		details, err := s.GetDetails(id)
+@@ -272,6 +281,11 @@
+ // when the context is non-cancelable, to skip any-store's per-statement
+ // SQLite interrupt handshake.
+ func (s *dsObjectStore) ModifyObjectDetailsCtx(ctx context.Context, id string, proc func(details *domain.Details) (*domain.Details, bool, error), upsert bool) error {
++ if index:=s.nativeTorah();index!=nil{return index.Modify(ctx,id,proc,upsert,s.modifyObjectDetailsCtx)}
++ return s.modifyObjectDetailsCtx(ctx,id,proc,upsert)
++}
++
++func (s *dsObjectStore) modifyObjectDetailsCtx(ctx context.Context, id string, proc func(details *domain.Details) (*domain.Details, bool, error), upsert bool) error {
+ 	if proc == nil {
+ 		return nil
+ 	}

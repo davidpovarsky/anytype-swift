@@ -1,0 +1,9 @@
+{
+  "run": "41823844085",
+  "sha": "cd11ca82a77c25b79ae7d1206dd2766f37621715",
+  "status": "FAIL",
+  "stage": "Original native import regression before framework/app build",
+  "test": "Test_ImportWebSuccess",
+  "cause": "Custom transport rejected empty destination before checking whether the snapshot contains a verified Torah manifest.",
+  "action": "Move validation behind the verified Torah-manifest branch; retain all original regressions and rerun."
+}

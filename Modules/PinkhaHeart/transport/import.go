@@ -47,9 +47,6 @@ func mappedProperty(ids map[string]string, key string) string {
 // before it creates any object. Ordinary exports are untouched. The caller owns
 // the original import transaction and the authoritative old-to-new identity map.
 func RemapObjects(targetSpace string, objects []Object, ids map[string]string) error {
-	if targetSpace == "" {
-		return fmt.Errorf("missing destination Space")
-	}
 	byID := map[string]Object{}
 	// The original PB converter first maps exported IDs to temporary import
 	// IDs. The processor then allocates final IDs. Compose those two stages;
@@ -104,6 +101,9 @@ func RemapObjects(targetSpace string, objects []Object, ids map[string]string) e
 		}
 		if property.Details == nil || propertyKey != source.CanonicalKey || !property.Details.Has(bundle.RelationKeyRelationFormat) || property.Details.GetInt64(bundle.RelationKeyRelationFormat) != 0 {
 			continue
+		}
+		if targetSpace == "" {
+			return fmt.Errorf("missing destination Space for imported Torah manifest")
 		}
 		if origins[source.SpaceID] {
 			return fmt.Errorf("ambiguous imported Torah manifest")

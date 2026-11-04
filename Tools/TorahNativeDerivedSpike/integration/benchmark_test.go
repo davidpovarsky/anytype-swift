@@ -88,6 +88,13 @@ func TestNativeBenchmarks(t *testing.T){
    started:=time.Now()
    if err:=store.UpdateObjectDetails(ctx,"fixture-manifest",manifest);err!=nil{t.Fatal(err)}
    rebuild:=time.Since(started);rebuildWrites:=nativeWrites.Load()-writesBeforeRebuild
+   // An idempotent manifest write follows the real native rebuild boundary.
+   // Measure verified-cache reuse separately from the first full projection.
+   // This is not an OS/process cold start or an iPad launch measurement.
+   cachedWritesBefore:=nativeWrites.Load();started=time.Now()
+   if err:=store.UpdateObjectDetails(ctx,"fixture-manifest",manifest.Copy());err!=nil{t.Fatal(err)}
+   cachedRebuild:=time.Since(started);cachedWrites:=nativeWrites.Load()-cachedWritesBefore
+   if cachedWrites>2{t.Fatalf("unchanged manifest rebuild rewrote document rows: %d notifications",cachedWrites)}
    filters:=&database.Filters{FilterObj:database.FilterIn{Key:sources,Value:[]domain.Value{domain.String(torah.Identity(torah.Ref,"sefaria","shared-1",""))}}}
    latencies:=make([]time.Duration,100)
    for n:=range latencies{
@@ -122,6 +129,7 @@ func TestNativeBenchmarks(t *testing.T){
    row:=map[string]any{"documents":count,"document_refs":fanout,"additional_kind_and_block_records":5,"metadata_objects":2,
     "baseline_unbound_write_ms":baselineWrite.Milliseconds(),"candidate_unbound_write_ms":unboundWrite.Milliseconds(),"full_native_rebuild_ms":rebuild.Milliseconds(),
     "native_rebuild_write_notifications":rebuildWrites,"total_native_write_notifications":nativeWrites.Load(),
+    "repeat_manifest_rebuild_ms":cachedRebuild.Milliseconds(),"repeat_manifest_write_notifications":cachedWrites,
     "baseline_files_bytes":baselineTB.bytes(),"derived_files_before_rebuild_bytes":beforeRebuildBytes,"derived_files_bytes":derivedTB.bytes(),
     "query_count_plus_page_p50_ms":percentile(latencies,50),"query_count_plus_page_p95_ms":percentile(latencies,95),"query_count_plus_page_p99_ms":percentile(latencies,99),
     "incremental_p50_ms":percentile(incremental,50),"incremental_p95_ms":percentile(incremental,95),"incremental_p99_ms":percentile(incremental,99),

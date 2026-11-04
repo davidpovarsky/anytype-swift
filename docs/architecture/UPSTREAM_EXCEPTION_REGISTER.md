@@ -170,6 +170,18 @@ tests (including both ID stages and fail-closed atomicity) and the presentation
 unit test pass. Actual import RPC validation is running; no compatibility PASS
 is inferred from these component results.
 
+Revision 12 preserves the original ordinary-import contract. CI 41823844085
+failed the unchanged Test_ImportWebSuccess because the new adapter validated an
+empty destination before checking for Torah data. Local regression reproduced
+that failure (1,292 other checks passed; one original helper skip). The destination
+check now runs only for a fully verified imported Torah manifest. The one-file
+exact delta is `b28267f04c7728f70390cb8332b34fd07c9732a172093f7459ebc0150a77c434`;
+full patch `56d1daf5e6ccd37fa2220abed555196c8f75e228992681a7bbc7e3c7a578828a`.
+Both isolated engines were updated under the existing standing authorization.
+The new downstream regression covers ordinary empty-destination imports and
+atomic rejection of a verified Torah import with no destination. Original Web,
+PB and common import tests remain mandatory; no assertion or test was removed.
+
 Exact protected boundary identities are recorded in
 `docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/protected-source-inventory.json`.
 P1/P2 query, compatibility and native Type/Set gates must be established before

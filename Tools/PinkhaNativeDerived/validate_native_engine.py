@@ -22,10 +22,12 @@ parser.add_argument('--evidence', type=Path, required=True)
 parser.add_argument('--benchmarks', action='store_true')
 parser.add_argument('--benchmarks-only', action='store_true')
 parser.add_argument('--benchmark-pattern', default='^TestNativeBenchmarks$')
+parser.add_argument('--benchmark-timeout', default='90m')
 parser.add_argument('--approved-inventory', type=Path)
 parser.add_argument('--only', choices=['projection-presentation','native-outbox','product-acceptance','original-regression'])
 parser.add_argument('--compatibility-exports', type=Path)
 parser.add_argument('--product-pattern', default='^(TestProductionEngineLifecycleAndRecovery|TestNativeMembershipAndCommittedNotifications|TestRealNativeMiddlewareDerivedProperties)$')
+parser.add_argument('--regression-package', action='append', help='Focused original-package rerun; default remains the full native regression list')
 args = parser.parse_args()
 if args.benchmarks_only:
     args.benchmarks = True
@@ -47,7 +49,7 @@ checks = [
     ('native-outbox',heart,['./pkg/lib/localstore/objectstore/spaceindex'],'^TestTorahFulltext'),
     ('product-acceptance', root/'Tools/TorahNativeDerivedSpike/integration', ['./...'],
      args.product_pattern),
-    ('original-regression', heart, NATIVE_REGRESSION_PACKAGES, None),
+    ('original-regression', heart, args.regression_package or NATIVE_REGRESSION_PACKAGES, None),
 ]
 if args.benchmarks_only:
     checks = []
@@ -91,7 +93,7 @@ with tempfile.TemporaryDirectory(prefix='pinkha-native-validation-') as director
     workspace.write_text('go 1.26.5\nuse (\n' + ''.join('  ' + json.dumps(str(path)) + '\n' for path in modules) + ')\n')
     env['GOWORK'] = str(workspace)
     for name, cwd, packages, pattern in checks:
-        timeout = '60m' if name == 'native-benchmarks' else '10m' if name == 'original-regression' else '5m'
+        timeout = args.benchmark_timeout if name == 'native-benchmarks' else '10m' if name == 'original-regression' else '5m'
         command = [args.go, 'test', '-p', '2', '-json', '-count=1', '-timeout', timeout,
                    '-tags', 'nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg']
         if pattern:
