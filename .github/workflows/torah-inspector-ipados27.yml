@@ -13,6 +13,7 @@ on:
           - ipa-only
           - native-derived
           - native-ipa-fast
+          - native-ipa-repair
           - native-diagnostics
       source_run_id:
         description: Existing native run whose XCTest attachments should be exported
@@ -55,3 +56,45 @@ jobs:
     if: ${{ inputs.route == 'native-ipa-fast' }}
     uses: ./.github/workflows/pinkha-native-ipa-fast.yml
     secrets: inherit
+
+  native-ipa-repair:
+    if: ${{ inputs.route == 'native-ipa-repair' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout Pinkha repair script
+        uses: actions/checkout@v4
+      - name: Download already built custom Heart IPA - NO recompilation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p build/ipa-repair/input
+          gh run download 41878176487 --repo "$GITHUB_REPOSITORY" --name Pinkha-Custom-Heart-Fast-Unsigned-IPA --dir build/ipa-repair/input
+          test -s build/ipa-repair/input/Pinkha-Native-Derived-iPad-Unsigned.ipa
+      - name: Fix and validate nested extension bundle identifiers
+        run: |
+          python3 Tools/PinkhaNativeDerived/repair_ipa_bundle_ids.py \
+            --input build/ipa-repair/input/Pinkha-Native-Derived-iPad-Unsigned.ipa \
+            --output build/ipa-repair/Pinkha-Torah-iPad-Extensions-Fixed-Unsigned.ipa \
+            --receipt build/ipa-repair/repair-receipt.json
+          sha256sum build/ipa-repair/Pinkha-Torah-iPad-Extensions-Fixed-Unsigned.ipa > build/ipa-repair/sha256.txt
+      - name: Upload corrected unsigned IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Torah-iPad-Extensions-Fixed-Unsigned-IPA
+          path: build/ipa-repair/Pinkha-Torah-iPad-Extensions-Fixed-Unsigned.ipa
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload integrity receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Torah-Extension-Repair-Evidence
+          path: |
+            build/ipa-repair/repair-receipt.json
+            build/ipa-repair/sha256.txt
+          if-no-files-found: warn
+          retention-days: 14
