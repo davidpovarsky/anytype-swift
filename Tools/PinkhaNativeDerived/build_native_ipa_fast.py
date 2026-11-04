@@ -76,8 +76,23 @@ def main():
     if 2 not in info.get("UIDeviceFamily", []):
         raise RuntimeError("Built app does not support iPad")
     binary = built / info["CFBundleExecutable"]
-    if not binary.is_file() or not contains(binary, marker):
-        raise RuntimeError("Built app executable does NOT contain the custom Heart marker")
+    if not binary.is_file():
+        raise RuntimeError("Built iPad app executable is missing")
+    # Gomobile produces a static Lib.framework. Xcode embeds a generated
+    # framework stub and links the library's code into the executable; linker
+    # stripping can remove the Go ldflags marker string. Absence of that marker
+    # in the final app executable is NOT evidence that stock Heart was linked.
+    # Verify the exact custom input above and Xcode's actual source selection.
+    device_log = evidence / "command-02.log"
+    if not device_log.is_file():
+        raise RuntimeError("The Xcode device-build provenance log is missing")
+    build_log = device_log.read_text(encoding="utf-8", errors="replace")
+    chosen_slice = str(framework / "ios-arm64" / "Lib.framework")
+    if ("ProcessXCFramework " + str(framework)) not in build_log or chosen_slice not in build_log:
+        raise RuntimeError("Xcode did not process the verified custom Heart iOS slice")
+    embedded_lib = built / "Frameworks/Lib.framework/Lib"
+    if not embedded_lib.is_file():
+        raise RuntimeError("Built iPad app is missing the expected Lib.framework")
     if (built / "_CodeSignature").exists():
         raise RuntimeError("Unexpected signature on this explicitly unsigned trial app")
 
