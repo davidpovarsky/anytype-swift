@@ -49,6 +49,9 @@ final class PropertiesListCoordinatorViewModel:
             return
         }
         
+        guard !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+            propertyId: relation.id, key: relation.key, spaceId: document.spaceId
+        ) else { return }
         handlePropertyValue(relation: relation, objectDetails: objectDetails)
     }
     

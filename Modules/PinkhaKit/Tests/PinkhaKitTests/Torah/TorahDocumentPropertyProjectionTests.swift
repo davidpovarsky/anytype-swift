@@ -80,6 +80,33 @@ struct TorahDocumentPropertyProjectionTests {
         #expect(!TorahDocumentPropertyEligibility.isCanonicalProperty(id: "", key: "", spaceId: "space", manifest: PinkhaSpaceManifest(spaceId: "space")))
     }
 
+    @Test func userPropertyWithSameHebrewDisplayNameIsNotCanonical() {
+        // H03: A user-made property has the same Hebrew display name "הקשר תורני" but DIFFERENT ID/key:
+        // must not be falsely hidden or matched as canonical storage.
+        let manifest = manifest()
+        let userPropertyId = "user-prop-123"
+        let userPropertyKey = "customKey456"
+        #expect(!TorahDocumentPropertyEligibility.isCanonicalProperty(id: userPropertyId, key: userPropertyKey, spaceId: "space", manifest: manifest))
+        #expect(!TorahDocumentPropertyEligibility.isCanonicalStorage(id: userPropertyId, key: userPropertyKey, spaceId: "space", manifest: manifest))
+    }
+
+    @Test func ordinaryNoteAndGenericTypesAreIneligibleForNativeDerivedProperties() {
+        // H01, H17: Ordinary Note and other generic types are NOT eligible for native derived properties.
+        let manifest = manifest()
+        for ineligibleType in ["note", "page", "task", "journal", "custom-type"] {
+            #expect(!TorahDocumentPropertyEligibility.includes(typeId: ineligibleType, spaceId: "space", manifest: manifest))
+        }
+    }
+
+    @Test func nativeDerivedKeysAreExclusivelyVerified() {
+        for definition in TorahNativePropertyDefinition.all {
+            #expect(TorahDocumentPropertyEligibility.isNativeDerivedKey(definition.key))
+        }
+        #expect(!TorahDocumentPropertyEligibility.isNativeDerivedKey("internal-key"))
+        #expect(!TorahDocumentPropertyEligibility.isNativeDerivedKey("customKey"))
+        #expect(!TorahDocumentPropertyEligibility.isNativeDerivedKey("tag"))
+    }
+
     private func project(_ records: [TorahStoredAssociationRecord]) -> TorahDocumentPropertyProjection {
         TorahDocumentPropertyProjection(records: records, spaceId: "space", objectId: "object")
     }

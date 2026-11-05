@@ -1,6 +1,7 @@
 import SwiftUI
 import Services
 import AnytypeCore
+import PinkhaKit
 
 
 @MainActor
@@ -30,8 +31,33 @@ final class ObjectPropertiesLibraryViewModel: PropertyInfoCoordinatorViewOutput 
     }
     
     func startSubscriptions() async {
+        NotificationCenter.default.addObserver(
+            forName: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self else { return }
+            let notificationSpaceId = notification.userInfo?["spaceId"] as? String
+            if notificationSpaceId == nil || notificationSpaceId == self.spaceId {
+                let rows = self.propertyDetailsStorage.relationsDetails(spaceId: self.spaceId)
+                let visibleProperties = rows.filter {
+                    !$0.isHidden &&
+                    !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: self.spaceId)
+                }
+                self.systemProperties = visibleProperties.filter {
+                    BundledPropertyKey.systemKeys.map(\.rawValue).contains($0.key)
+                }
+                self.userProperties = visibleProperties.filter {
+                    !BundledPropertyKey.systemKeys.map(\.rawValue).contains($0.key)
+                }
+            }
+        }
+
         for await rows in propertyDetailsStorage.relationsDetailsPublisher(spaceId: spaceId).values {
-            let visibleProperties = rows.filter { !$0.isHidden }
+            let visibleProperties = rows.filter {
+                !$0.isHidden &&
+                !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: spaceId)
+            }
             
             self.systemProperties = visibleProperties.filter {
                 BundledPropertyKey.systemKeys.map(\.rawValue).contains($0.key)
@@ -43,10 +69,12 @@ final class ObjectPropertiesLibraryViewModel: PropertyInfoCoordinatorViewOutput 
     }
     
     func onRowTap(_ row: PropertyDetails) {
+        guard !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: row.id, key: row.key, spaceId: spaceId) else { return }
         guard let supportedFormat = row.format.supportedFormat else {
             anytypeAssertionFailure("Unsupported format \(row.format)")
             return
         }
+        let isNative = TorahNativePropertyDefinition.definition(for: row.key) != nil
         
         propertyInfo = PropertyInfoData(
             name: row.name,
@@ -54,7 +82,7 @@ final class ObjectPropertiesLibraryViewModel: PropertyInfoCoordinatorViewOutput 
             spaceId: row.spaceId,
             target: .library,
             mode: .edit(relationId: row.id, format: supportedFormat, limitedObjectTypes: row.objectTypes.isEmpty ? nil : row.objectTypes),
-            isReadOnly: row.isReadOnly
+            isReadOnly: isNative || row.isReadOnly
         )
     }
     

@@ -1,6 +1,7 @@
 import SwiftUI
 import Services
 import AnytypeCore
+import PinkhaKit
 
 
 @MainActor
@@ -44,8 +45,36 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
             if text.isEmpty { return true }
             return $0.title.lowercased().contains(text.lowercased())
         }
-        let existingProperties = (try? await searchService.searchRelations(text: text, excludedIds: data.excludedRelationsIds, spaceId: data.spaceId)) ?? []
-        
+
+        // Await settled canonical identity before filtering to prevent leaks on cold start
+        _ = await PinkhaTorahPropertyPolicy.shared.awaitCanonicalIdentity(spaceId: data.spaceId)
+
+        let rawExistingProperties = (try? await searchService.searchRelations(text: text, excludedIds: data.excludedRelationsIds, spaceId: data.spaceId)) ?? []
+        let existingProperties = rawExistingProperties.filter {
+            !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: data.spaceId)
+        }
+
+        let nativeProperties = await PinkhaTorahNativePropertyCatalog.shared.searchNativeProperties(
+            text: text,
+            excludedIds: data.excludedRelationsIds,
+            target: data.target,
+            spaceId: data.spaceId
+        )
+
+        // Deduplicate by real Property ID and key so native descriptors and existing properties do not collide
+        var seenIds = Set<String>()
+        var seenKeys = Set<String>()
+        var deduplicated: [PropertyDetails] = []
+
+        for prop in (nativeProperties + existingProperties) {
+            if seenIds.contains(prop.id) || (!prop.key.isEmpty && seenKeys.contains(prop.key)) {
+                continue
+            }
+            seenIds.insert(prop.id)
+            if !prop.key.isEmpty { seenKeys.insert(prop.key) }
+            deduplicated.append(prop)
+        }
+        let combinedExisting = deduplicated
         
         rows = .builder {
             if propertyFormats.isNotEmpty {
@@ -55,9 +84,9 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
                 )
             }
             
-            if existingProperties.isNotEmpty {
+            if combinedExisting.isNotEmpty {
                 SearchDataSection(
-                    searchData: existingProperties.map{ PropertySearchData.existing($0) },
+                    searchData: combinedExisting.map{ PropertySearchData.existing($0) },
                     sectionName: Loc.existingProperties
                 )
             }
@@ -68,6 +97,9 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
         Task {
             switch row {
             case .existing(let details):
+                guard await PinkhaTorahPropertyPolicy.shared.canAddPropertyAsync(
+                    propertyId: details.id, key: details.key, target: data.target, spaceId: data.spaceId
+                ) else { return }
                 try await onExistingPropertyTap(details)
                 try? await objectActionsService.updateBundledDetails(contextID: details.id, details: [ .lastUsedDate(Date.now)])
                 

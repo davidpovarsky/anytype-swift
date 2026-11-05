@@ -4,6 +4,7 @@ import SwiftProtobuf
 import UIKit
 import AnytypeCore
 import SwiftUI
+import PinkhaKit
 
 @MainActor
 @Observable
@@ -56,10 +57,21 @@ final class ObjectPropertiesViewModel {
     }
     
     func handleTapOnRelation(_ relation: Property) {
+        guard !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+            propertyId: relation.id, key: relation.key, spaceId: document.spaceId
+        ) else { return }
         output?.editRelationValueAction(document: document, relationKey: relation.key)
     }
     
     func removeRelation(_ relation: Property) {
+        guard !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+            propertyId: relation.id, key: relation.key, spaceId: document.spaceId
+        ) else { return }
+        let isNative = TorahNativePropertyDefinition.definition(for: relation.key) != nil
+        if isNative, let typeId = typeId, PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(typeId: typeId, spaceId: document.spaceId) {
+            return
+        }
+
         Task {
             try await propertiesService.removeProperty(objectId: document.objectId, propertyKey: relation.key)
             let relationDetails = try propertyDetailsStorage.relationsDetails(key: relation.key, spaceId: document.spaceId)
@@ -73,8 +85,15 @@ final class ObjectPropertiesViewModel {
     }
     
     func addRelationToType(_ relation: Property) {
-        AnytypeAnalytics.instance().logAddConflictRelation()
         guard let details = document.details else { return }
+        guard !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+            propertyId: relation.id, key: relation.key, spaceId: details.spaceId
+        ) else { return }
+        if TorahNativePropertyDefinition.definition(for: relation.key) != nil {
+            guard PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(typeId: details.objectType.id, spaceId: details.spaceId) else { return }
+        }
+
+        AnytypeAnalytics.instance().logAddConflictRelation()
         
         Task {
             let relationsDetail = try propertyDetailsStorage.relationsDetails(key: relation.key, spaceId: details.spaceId)

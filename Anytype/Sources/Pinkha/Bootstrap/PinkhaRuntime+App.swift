@@ -34,4 +34,12 @@ extension Container {
     public var pinkhaBootstrapStateManager: Factory<PinkhaBootstrapStateManager> {
         self { PinkhaBootstrapStateManager() }.singleton
     }
+
+    public var pinkhaTorahPropertyPolicy: Factory<PinkhaTorahPropertyPolicy> {
+        self { PinkhaTorahPropertyPolicy.shared }.singleton
+    }
+
+    public var pinkhaTorahNativePropertyCatalog: Factory<PinkhaTorahNativePropertyCatalog> {
+        self { PinkhaTorahNativePropertyCatalog.shared }.singleton
+    }
 }

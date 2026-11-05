@@ -24,6 +24,11 @@ final class SinglePropertyBuilder: SinglePropertyBuilderProtocol {
         propertyValuesIsLocked: Bool,
         storage: ObjectDetailsStorage
     ) -> Property? {
+        if PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+            propertyId: relationDetails.id, key: relationDetails.key, spaceId: details.spaceId
+        ) {
+            return nil
+        }
         if let native = TorahNativePropertyPresentation.property(
             definition: relationDetails, details: details,
             isFeatured: isFeatured, valuesLocked: propertyValuesIsLocked

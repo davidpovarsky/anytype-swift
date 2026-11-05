@@ -132,7 +132,7 @@ struct TorahNativeUIParityTests {
         #expect(state.showsOverflowAction)
     }
 
-    @Test("Document header bounds chips and keeps every remaining source reachable", arguments: [0, 1, 2, 12])
+    @Test("Document header bounds chips and keeps every remaining source reachable", arguments: [0, 1, 2, 3, 12])
     func boundedDocumentSources(count: Int) {
         let associations = (0..<count).map { index in
             TorahAssociationItem(
@@ -149,6 +149,7 @@ struct TorahNativeUIParityTests {
 
         #expect(presentation.visibleAssociations.map(\.id) == Array(associations.prefix(2)).map(\.id))
         #expect(presentation.remainingCount == max(0, count - 2))
+        #expect(presentation.remainingAssociations.map(\.id) == Array(associations.dropFirst(2)).map(\.id))
         #expect(presentation.visibleAssociations.count + presentation.remainingCount == count)
     }
 
@@ -172,6 +173,141 @@ struct TorahNativeUIParityTests {
         )
         #expect(PinkhaDocumentMetadataRowModel.insertionIndex(in: [.block(native)]) == nil)
     }
+
+    @Test("Policy blocks canonical storage while allowing legitimate user properties")
+    func policyCanonicalStorageDistinction() {
+        let manifest = PinkhaSpaceManifest(
+            spaceId: "space-1",
+            documentAssociationsPropertyId: "canonical-prop-id",
+            documentAssociationsPropertyKey: "canonical-prop-key",
+            registeredDocumentTypes: [
+                "chiddush": "type-chiddush",
+                "article": "type-article",
+                "research": "type-research"
+            ]
+        )
+        let probe = PolicyBootstrapProbe(manifest: manifest)
+        let policy = PinkhaTorahPropertyPolicy(bootstrapService: probe)
+
+        // H01, H02: Canonical storage is recognized and blocked from generic editing
+        #expect(policy.isCanonicalStorage(propertyId: "canonical-prop-id", key: "other-key", spaceId: "space-1"))
+        #expect(policy.isCanonicalStorage(propertyId: "other-id", key: "canonical-prop-key", spaceId: "space-1"))
+        #expect(!policy.canEditGenericPropertyValue(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "space-1"))
+        #expect(!policy.shouldRenderInHeader(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "space-1"))
+        #expect(!policy.canEditPropertyDefinition(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "space-1"))
+        #expect(!policy.canDeletePropertyDefinition(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "space-1"))
+
+        // H03: A user-made property has the same Hebrew display name "הקשר תורני" but DIFFERENT ID/key:
+        // must not be falsely hidden or blocked
+        let userPropId = "user-custom-id"
+        let userPropKey = "userCustomKey"
+        #expect(!policy.isCanonicalStorage(propertyId: userPropId, key: userPropKey, spaceId: "space-1"))
+        #expect(policy.canEditGenericPropertyValue(propertyId: userPropId, key: userPropKey, spaceId: "space-1"))
+        #expect(policy.shouldRenderInHeader(propertyId: userPropId, key: userPropKey, spaceId: "space-1"))
+        #expect(policy.canEditPropertyDefinition(propertyId: userPropId, key: userPropKey, spaceId: "space-1"))
+
+        // H04: Wrong space does not match canonical property
+        #expect(!policy.isCanonicalStorage(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "wrong-space"))
+
+        // H01, H17: Target eligibility: Writing types eligible, ordinary Note is NOT eligible
+        #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-chiddush", spaceId: "space-1"))
+        #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-article", spaceId: "space-1"))
+        #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-research", spaceId: "space-1"))
+        #expect(!policy.isTargetEligibleForNativeProperties(typeId: "note", spaceId: "space-1"))
+        #expect(!policy.isTargetEligibleForNativeProperties(typeId: "page", spaceId: "space-1"))
+    }
+
+    @Test("Canonical identity resolution handles tri-state loading, known settlement, and fail-closed gate")
+    func canonicalIdentityResolutionTriState() async {
+        final class DelayBootstrapProbe: PinkhaSpaceBootstrapServiceProtocol, @unchecked Sendable {
+            var manifestToReturn: PinkhaSpaceManifest?
+            var bootstrapCallCount = 0
+            private let lock = NSLock()
+
+            init(manifest: PinkhaSpaceManifest?) {
+                self.manifestToReturn = manifest
+            }
+
+            func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? {
+                lock.lock()
+                defer { lock.unlock() }
+                return manifestToReturn
+            }
+
+            func bootstrapCanonicalSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
+                lock.lock()
+                bootstrapCallCount += 1
+                let m = manifestToReturn
+                lock.unlock()
+                if let m {
+                    return m
+                }
+                throw PinkhaBootstrapError.invalidManifest("Manifest not ready")
+            }
+
+            func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
+                try await bootstrapCanonicalSpace(spaceId: spaceId)
+            }
+
+            func isBootstrapped(spaceId: String) -> Bool {
+                manifest(forSpaceId: spaceId) != nil
+            }
+        }
+
+        let settledManifest = PinkhaSpaceManifest(
+            spaceId: "space-cold",
+            documentAssociationsPropertyId: "canon-cold-id",
+            documentAssociationsPropertyKey: "canon-cold-key",
+            registeredDocumentTypes: [
+                "chiddush": "type-chiddush",
+                "article": "type-article",
+                "research": "type-research"
+            ]
+        )
+
+        // Case 1: Manifest absent initially -> status is loading / unavailable, actions fail closed
+        let coldProbe = DelayBootstrapProbe(manifest: nil)
+        let coldPolicy = PinkhaTorahPropertyPolicy(bootstrapService: coldProbe)
+
+        // While unready: canEditGenericPropertyValue returns false (fail closed! does not leak editable text)
+        #expect(!coldPolicy.canEditGenericPropertyValue(propertyId: "any-prop", key: "any-key", spaceId: "space-cold"))
+        #expect(!coldPolicy.canEditPropertyDefinition(propertyId: "any-prop", key: "any-key", spaceId: "space-cold"))
+        #expect(!coldPolicy.canDeletePropertyDefinition(propertyId: "any-prop", key: "any-key", spaceId: "space-cold"))
+
+        // Case 2: Manifest resolves -> status settles to .known
+        coldProbe.manifestToReturn = settledManifest
+        coldPolicy.invalidateCache(spaceId: "space-cold")
+
+        let settledStatus = await coldPolicy.awaitCanonicalIdentity(spaceId: "space-cold")
+        #expect(settledStatus == .known(propertyId: "canon-cold-id", propertyKey: "canon-cold-key"))
+
+        // Now canonical property is strictly blocked, but user property is allowed!
+        #expect(!coldPolicy.canEditGenericPropertyValue(propertyId: "canon-cold-id", key: "canon-cold-key", spaceId: "space-cold"))
+        #expect(coldPolicy.canEditGenericPropertyValue(propertyId: "user-id", key: "user-key", spaceId: "space-cold"))
+        #expect(coldPolicy.canEditPropertyDefinition(propertyId: "user-id", key: "user-key", spaceId: "space-cold"))
+        #expect(coldPolicy.canDeletePropertyDefinition(propertyId: "user-id", key: "user-key", spaceId: "space-cold"))
+
+        // Native derived property definitions cannot be renamed or deleted
+        for def in TorahNativePropertyDefinition.all {
+            #expect(!coldPolicy.canEditPropertyDefinition(propertyId: "native-id", key: def.key, spaceId: "space-cold"))
+            #expect(!coldPolicy.canDeletePropertyDefinition(propertyId: "native-id", key: def.key, spaceId: "space-cold"))
+        }
+
+        // Space switch / cache invalidation test
+        coldPolicy.invalidateCache(spaceId: "space-cold")
+        #expect(coldPolicy.canonicalIdentityStatus(spaceId: "space-cold") == .known(propertyId: "canon-cold-id", propertyKey: "canon-cold-key"))
+    }
+}
+
+private struct PolicyBootstrapProbe: PinkhaSpaceBootstrapServiceProtocol {
+    let manifest: PinkhaSpaceManifest
+
+    func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest { manifest }
+    func bootstrapCanonicalSpace(spaceId: String) async throws -> PinkhaSpaceManifest { manifest }
+    func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? {
+        manifest.spaceId == spaceId ? manifest : nil
+    }
+    func isBootstrapped(spaceId: String) -> Bool { manifest.spaceId == spaceId }
 }
 
 @MainActor

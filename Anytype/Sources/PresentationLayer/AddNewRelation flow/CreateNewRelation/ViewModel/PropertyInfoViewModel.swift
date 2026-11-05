@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Services
+import PinkhaKit
 
 @MainActor
 @Observable
@@ -15,7 +16,15 @@ final class PropertyInfoViewModel {
     }
 
     var isSaveButtonActive: Bool {
-        name.isNotEmpty
+        guard name.isNotEmpty else { return false }
+        switch mode {
+        case .create:
+            return true
+        case .edit:
+            return !isReadOnly && PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(
+                propertyId: relationId, key: "", spaceId: spaceId
+            )
+        }
     }
 
     var confirmButtonTitle: String {
@@ -41,7 +50,9 @@ final class PropertyInfoViewModel {
         case .create:
             false
         case .edit:
-            !isReadOnly
+            !isReadOnly && PinkhaTorahPropertyPolicy.shared.canDeletePropertyDefinition(
+                propertyId: relationId, key: "", spaceId: spaceId
+            )
         }
     }
 
@@ -82,7 +93,9 @@ final class PropertyInfoViewModel {
         self.relationsInteractor = relationsInteractor
         self.output = output
         self.mode = data.mode
-        self.isReadOnly = data.isReadOnly
+        self.isReadOnly = data.isReadOnly || !PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(
+            propertyId: data.mode.relationId ?? "", key: "", spaceId: data.spaceId
+        )
         
         self.name = data.name
         self.format = data.mode.format ?? SupportedPropertyFormat.object
@@ -98,19 +111,20 @@ final class PropertyInfoViewModel {
 extension PropertyInfoViewModel {
     
     func didTapFormatSection() {
+        guard PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(propertyId: relationId, key: "", spaceId: spaceId) else { return }
         output?.didAskToShowPropertyFormats(selectedFormat: format, onSelect: { [weak self] format in
             self?.updatePropertyFormat(format)
         })
     }
     
     func didTapTypesRestrictionSection() {
+        guard PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(propertyId: relationId, key: "", spaceId: spaceId) else { return }
         output?.didAskToShowObjectTypesSearch(selectedObjectTypesIds: objectTypeIds, onSelect: { [weak self] ids in
             self?.updateTypesRestriction(objectTypeIds: ids)
         })
     }
     
     func didTapAddButton() {
-        
         let relationDetails = PropertyDetails(
             id: relationId,
             key: "",
@@ -130,18 +144,26 @@ extension PropertyInfoViewModel {
         case .create:
             createRelation(relationDetails)
         case .edit:
+            guard PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(propertyId: relationId, key: "", spaceId: spaceId) else { return }
             updateRelation(relationDetails)
         }
     }
     
     func didTapDelete() async throws {
         guard case let .edit(relationId, _, _) = mode else { return }
+        guard PinkhaTorahPropertyPolicy.shared.canDeletePropertyDefinition(propertyId: relationId, key: "", spaceId: spaceId) else { return }
         
         try await objectActionsService.setArchive(objectIds: [relationId], true)
         toastData = ToastBarData(Loc.successfullyDeleted(name))
     }
     
     private func createRelation(_ relationDetails: PropertyDetails) {
+        // Prevent forging or overwriting genuinely reserved native property keys or canonical storage ID/key
+        if TorahNativePropertyDefinition.definition(for: relationDetails.key) != nil ||
+           PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: relationDetails.id, key: relationDetails.key, spaceId: spaceId) {
+            return
+        }
+
         Task {
             let createdRelation = try await relationsInteractor.createProperty(spaceId: spaceId, relation: relationDetails)
             
@@ -161,6 +183,7 @@ extension PropertyInfoViewModel {
     }
     
     private func updateRelation(_ details: PropertyDetails) {
+        guard PinkhaTorahPropertyPolicy.shared.canEditPropertyDefinition(propertyId: details.id, key: details.key, spaceId: spaceId) else { return }
         Task {
             try await relationsInteractor.updateProperty(spaceId: spaceId, relation: details)
             onSuccessfullAction(relationDetails: details)

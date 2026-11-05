@@ -3,6 +3,7 @@ import Services
 import SwiftProtobuf
 import AnytypeCore
 import SwiftUI
+import PinkhaKit
 
 
 @MainActor
@@ -47,6 +48,25 @@ final class TypePropertiesViewModel {
     }
     
     func setupSubscriptions() async {
+        NotificationCenter.default.addObserver(
+            forName: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self else { return }
+            let notificationSpaceId = notification.userInfo?["spaceId"] as? String
+            if notificationSpaceId == nil || notificationSpaceId == self.document.spaceId {
+                let newRows = self.fieldsDataBuilder.build(
+                    relations: self.filterProperties(self.parsedProperties.sidebarProperties),
+                    featured: self.filterProperties(self.parsedProperties.featuredProperties),
+                    hidden: self.filterProperties(self.parsedProperties.hiddenProperties)
+                )
+                withAnimation {
+                    self.relationRows = newRows
+                }
+            }
+        }
+
         async let relationsSubscription: () = setupRelationsSubscription()
         async let permissionSubscription: () = setupPermissionSubscription()
         async let detailsSubscription: () = setupDetailsSubscription()
@@ -54,13 +74,19 @@ final class TypePropertiesViewModel {
         (_, _, _) = await (relationsSubscription, permissionSubscription, detailsSubscription)
     }
     
+    private func filterProperties(_ properties: [Property]) -> [Property] {
+        properties.filter {
+            !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: document.spaceId)
+        }
+    }
+
     private func setupRelationsSubscription() async {
         for await properties in document.parsedPropertiesPublisherForType.values {
             parsedProperties = properties
             let newRows = fieldsDataBuilder.build(
-                relations: properties.sidebarProperties,
-                featured: properties.featuredProperties,
-                hidden: properties.hiddenProperties
+                relations: filterProperties(properties.sidebarProperties),
+                featured: filterProperties(properties.featuredProperties),
+                hidden: filterProperties(properties.hiddenProperties)
             )
             
             // do not animate on 1st appearance
@@ -87,6 +113,11 @@ final class TypePropertiesViewModel {
         guard let details = document.details else { return }
         guard let format = data.relation.format else { return }
         
+        guard !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+            propertyId: data.relation.id, key: data.relation.key, spaceId: document.spaceId
+        ) else { return }
+
+        let isNative = TorahNativePropertyDefinition.definition(for: data.relation.key) != nil
         let type = ObjectType(details: details)
         
         let typeData: PropertiesModuleTypeData = data.relation.isFeatured ? .recommendedFeaturedRelations(type) : .recommendedRelations(type)
@@ -97,7 +128,7 @@ final class TypePropertiesViewModel {
             spaceId: document.spaceId,
             target: .type(typeData),
             mode: .edit(relationId: data.relation.id, format: format, limitedObjectTypes: data.relation.limitedObjectTypes),
-            isReadOnly: !data.relation.isEditable
+            isReadOnly: isNative || !data.relation.isEditable
         )
     }
     
@@ -126,7 +157,16 @@ final class TypePropertiesViewModel {
     
     func onRelationRemove(_ row: TypePropertiesRelationRow) {
         guard let details = document.details else { return }
-        
+        guard !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+            propertyId: row.relation.id, key: row.relation.key, spaceId: document.spaceId
+        ) else { return }
+
+        let isNative = TorahNativePropertyDefinition.definition(for: row.relation.key) != nil
+        let isEligibleType = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+            typeId: details.id, spaceId: document.spaceId
+        )
+        guard !(isNative && isEligibleType) else { return }
+
         Task {
             try await propertiesService.removeTypeProperty(details: details, propertyId: row.relation.id)
             
@@ -140,6 +180,12 @@ final class TypePropertiesViewModel {
     
     func onAddConflictRelation(_ relation: PropertyDetails) {
         guard let details = document.details else { return }
+        let type = ObjectType(details: details)
+        let target = PropertiesModuleTarget.type(.recommendedRelations(type))
+        guard PinkhaTorahPropertyPolicy.shared.canAddProperty(
+            propertyId: relation.id, key: relation.key, target: target, spaceId: document.spaceId
+        ) else { return }
+
         AnytypeAnalytics.instance().logAddConflictRelation()
         
         Task {
@@ -152,12 +198,16 @@ final class TypePropertiesViewModel {
         let releationKeys = try await propertiesService.getConflictPropertiesForType(typeId: document.objectId, spaceId: document.spaceId)
         conflictRelations = propertyDetailsStorage
             .relationsDetails(ids: releationKeys, spaceId: document.spaceId)
-            .filter { !$0.isHidden && !$0.isDeleted }
+            .filter {
+                !$0.isHidden &&
+                !$0.isDeleted &&
+                !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: document.spaceId)
+            }
         
         let newRows = fieldsDataBuilder.build(
-            relations: parsedProperties.sidebarProperties,
-            featured: parsedProperties.featuredProperties,
-            hidden: parsedProperties.hiddenProperties
+            relations: filterProperties(parsedProperties.sidebarProperties),
+            featured: filterProperties(parsedProperties.featuredProperties),
+            hidden: filterProperties(parsedProperties.hiddenProperties)
         )
         
         // do not animate on 1st appearance

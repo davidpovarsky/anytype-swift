@@ -46,4 +46,12 @@ public enum TorahDocumentPropertyEligibility {
         return (!manifest.documentAssociationsPropertyId.isEmpty && id == manifest.documentAssociationsPropertyId)
             || (!manifest.documentAssociationsPropertyKey.isEmpty && key == manifest.documentAssociationsPropertyKey)
     }
+
+    public static func isCanonicalStorage(id: String, key: String, spaceId: String, manifest: PinkhaSpaceManifest?) -> Bool {
+        isCanonicalProperty(id: id, key: key, spaceId: spaceId, manifest: manifest)
+    }
+
+    public static func isNativeDerivedKey(_ key: String) -> Bool {
+        TorahNativePropertyDefinition.definition(for: key) != nil
+    }
 }

@@ -65,8 +65,11 @@ final class PinkhaTorahPropertiesModel {
 
     func isInternalProperty(_ property: Property) -> Bool {
         guard PinkhaRuntime.enabled else { return false }
-        return TorahDocumentPropertyEligibility.isCanonicalProperty(
+        if TorahDocumentPropertyEligibility.isCanonicalProperty(
             id: property.id, key: property.key, spaceId: document.spaceId, manifest: manifest
+        ) { return true }
+        return PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+            propertyId: property.id, key: property.key, spaceId: document.spaceId
         )
     }
 

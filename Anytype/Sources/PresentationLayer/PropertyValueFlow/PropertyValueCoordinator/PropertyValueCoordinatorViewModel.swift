@@ -38,6 +38,21 @@ final class PropertyValueCoordinatorViewModel:
     }
     
     func propertyModule() -> AnyView {
+        let status = PinkhaTorahPropertyPolicy.shared.canonicalIdentityStatus(spaceId: objectDetails.spaceId)
+        switch status {
+        case .loading:
+            return ProgressView().eraseToAnyView()
+        case .known(let manifestId, let manifestKey):
+            if (!manifestId.isEmpty && relation.id == manifestId) || (!manifestKey.isEmpty && relation.key == manifestKey) {
+                return EmptyView().eraseToAnyView()
+            }
+        case .unavailable:
+            if !PinkhaTorahPropertyPolicy.shared.canEditGenericPropertyValue(
+                propertyId: relation.id, key: relation.key, spaceId: objectDetails.spaceId
+            ) {
+                return EmptyView().eraseToAnyView()
+            }
+        }
         if TorahNativePropertyPresentation.definition(relation.key) != nil {
             mediumDetent = false
             return TorahNativePropertyEditorView(

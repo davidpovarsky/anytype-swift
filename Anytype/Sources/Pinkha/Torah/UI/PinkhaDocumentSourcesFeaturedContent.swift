@@ -4,10 +4,12 @@ import SwiftUI
 
 struct PinkhaDocumentSourcesPresentation {
     let visibleAssociations: [TorahAssociationItem]
+    let remainingAssociations: [TorahAssociationItem]
     let remainingCount: Int
 
     init(associations: [TorahAssociationItem]) {
         visibleAssociations = Array(associations.prefix(2))
+        remainingAssociations = Array(associations.dropFirst(2))
         remainingCount = associations.count - visibleAssociations.count
     }
 }
@@ -26,20 +28,16 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
         )
 
         ForEach(presentation.visibleAssociations) { item in
-            HStack(spacing: FeaturedPropertiesConstants.itemSpacing) {
-                sourceChip(for: item)
-                divider
-            }
+            sourceChip(for: item)
         }
 
         if presentation.remainingCount > 0 {
-            HStack(spacing: FeaturedPropertiesConstants.itemSpacing) {
-                moreSourcesChip(count: presentation.remainingCount)
-                divider
-            }
+            moreSourcesMenu(presentation: presentation)
         }
 
-        addSourceButton
+        if session.canEditAssociations {
+            addSourceButton
+        }
     }
 
     private func sourceChip(for item: TorahAssociationItem) -> some View {
@@ -56,34 +54,46 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
                     guidlines: featuredChipStyle.tagViewGuidlines
                 )
             )
-            .frame(minWidth: 44, minHeight: 44)
+            .padding(.vertical, 4)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
         .accessibilityIdentifier("torah-document-source-chip-\(item.id)")
         .accessibilityLabel(label)
+        .accessibilityAddTraits(.isButton)
+    }
+
+    private func moreSourcesMenu(presentation: PinkhaDocumentSourcesPresentation) -> some View {
+        Menu {
+            ForEach(presentation.remainingAssociations) { item in
+                Button {
+                    session.openDocumentAssociation(item)
+                } label: {
+                    Text(TorahAssociationDisplayFormatter.label(for: item, locale: locale))
+                }
+            }
+        } label: {
+            moreSourcesChip(count: presentation.remainingCount)
+                .padding(.vertical, 4)
+                .contentShape(Rectangle())
+        }
+        .accessibilityIdentifier("torah-document-sources-more")
+        .accessibilityLabel("\(presentation.remainingCount) " + Loc.Pinkha.Torah.sources)
     }
 
     private func moreSourcesChip(count: Int) -> some View {
-        Button {
-            session.presentSearch(scope: .document)
-        } label: {
-            AnytypeText("+\(count)", style: .relation2Regular)
-                .foregroundStyle(Color.Text.secondary)
-                .lineLimit(1)
-                .frame(width: 24, height: 18)
-                .background(Color.Shape.tertiary)
-                .clipShape(.rect(cornerRadius: 3))
-                .frame(minWidth: 44, minHeight: 44)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier("torah-document-sources-more")
-        .accessibilityLabel("\(count) " + Loc.Pinkha.Torah.sources)
+        AnytypeText("+\(count)", style: .relation2Regular)
+            .foregroundStyle(Color.Text.secondary)
+            .lineLimit(1)
+            .frame(width: 24, height: 18)
+            .background(Color.Shape.tertiary)
+            .clipShape(.rect(cornerRadius: 3))
+            .contentShape(Rectangle())
     }
 
     private var addSourceButton: some View {
-        let title = Loc.Pinkha.Torah.sources + " +"
+        let title = "+ " + Loc.Pinkha.Torah.sources
         return Button {
             session.presentSearch(scope: .document)
         } label: {
@@ -96,18 +106,13 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
                     guidlines: featuredChipStyle.tagViewGuidlines
                 )
             )
-            .frame(minWidth: 44, minHeight: 44)
+            .padding(.vertical, 4)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
         .accessibilityIdentifier("torah-document-sources-add")
         .accessibilityLabel(Loc.add + " " + Loc.Pinkha.Torah.sources)
-        .disabled(!session.canEditAssociations)
-    }
-
-    private var divider: some View {
-        Circle()
-            .fill(Color.Text.secondary)
-            .frame(width: 3, height: 3)
+        .accessibilityAddTraits(.isButton)
     }
 }

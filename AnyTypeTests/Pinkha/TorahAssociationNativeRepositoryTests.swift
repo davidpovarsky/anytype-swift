@@ -1443,6 +1443,61 @@ struct TorahCanonicalManifestIsolationTests {
         #expect(result == manifest)
     }
 
+    @Test("Canonical repository linking operations succeed while UI generic editing is rejected")
+    func canonicalRepositoryOperationsSucceedWhileUIEditingBlocked() async throws {
+        struct LocalBootstrapProbe: PinkhaSpaceBootstrapServiceProtocol {
+            let manifest: PinkhaSpaceManifest
+            func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest { manifest }
+            func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest? { manifest }
+            func isBootstrapped(spaceId: String) -> Bool { true }
+        }
+        let manifest = PinkhaSpaceManifest(
+            spaceId: "space", manifestObjectId: "manifest",
+            parentPropertyId: "parent", parentPropertyKey: "parent-key",
+            orderPropertyId: "order", orderPropertyKey: "order-key",
+            documentAssociationsPropertyId: "canonical-prop-id", documentAssociationsPropertyKey: "canonical-prop-key",
+            folderTypeId: "folder", bookFolderTypeId: "book",
+            registeredDocumentTypes: ["chiddush": "chiddush-id", "article": "article-id", "research": "research-id"],
+            defaultTemplateIds: ["chiddush": "chiddush-template", "article": "article-template", "research": "research-template"]
+        )
+        let probe = LocalBootstrapProbe(manifest: manifest)
+        let policy = PinkhaTorahPropertyPolicy(bootstrapService: probe)
+
+        // UI generic text editing is blocked on canonical storage (H08)
+        #expect(!policy.canEditGenericPropertyValue(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "space"))
+        #expect(policy.isCanonicalStorage(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "space"))
+
+        // Legitimate repository linking paths continue to operate without interference (H15)
+        let underlying = InMemoryTorahAssociationRepository()
+        let repository = TorahAssociationNativeRepository(
+            underlying: underlying,
+            bootstrapService: probe
+        )
+
+        let item = TorahAssociationItem(
+            id: "canon-test-item",
+            kind: .ref,
+            role: .sourceQuote,
+            providerID: "sefaria",
+            externalID: "Genesis.1.1",
+            canonicalKey: "Genesis 1:1",
+            labelHe: "בראשית א:א"
+        )
+
+        // Adding association via canonical repository succeeds
+        let stored = try await repository.addAssociation(item, target: .object(objectId: "doc-1"), spaceId: "space")
+        #expect(stored.item.id == "canon-test-item")
+
+        // Reading association returns item
+        let list = try await repository.listDocumentAssociations(objectId: "doc-1", spaceId: "space")
+        #expect(list.map(\.id) == ["canon-test-item"])
+
+        // Removing association succeeds
+        try await repository.removeAssociation(associationId: "canon-test-item", target: .object(objectId: "doc-1"), spaceId: "space")
+        let emptyList = try await repository.listDocumentAssociations(objectId: "doc-1", spaceId: "space")
+        #expect(emptyList.isEmpty)
+    }
+
 }
 
 private struct FailedNativeSchemaBootstrapProbe: PinkhaSpaceBootstrapServiceProtocol {

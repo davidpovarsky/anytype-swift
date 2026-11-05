@@ -2,6 +2,7 @@ import Foundation
 import Services
 import Combine
 import AnytypeCore
+import PinkhaKit
 
 final class SetDocument: SetDocumentProtocol, @unchecked Sendable {
     
@@ -267,6 +268,16 @@ final class SetDocument: SetDocumentProtocol, @unchecked Sendable {
             self?.triggerSync()
         }
         .store(in: &subscriptions)
+        NotificationCenter.default.publisher(for: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification)
+            .receiveOnMain()
+            .sink { [weak self] notification in
+                let noteSpaceId = notification.userInfo?["spaceId"] as? String
+                if noteSpaceId == nil || noteSpaceId == self?.spaceId {
+                    self?.updateDataViewRelations()
+                    self?.triggerSync()
+                }
+            }
+            .store(in: &subscriptions)
         
         Task { @MainActor [weak self, accountParticipantsStorage, spaceId] in
             for await canEdit in accountParticipantsStorage.canEditSequence(spaceId: spaceId) {
@@ -299,6 +310,7 @@ final class SetDocument: SetDocumentProtocol, @unchecked Sendable {
     
     private func updateDataViewRelations() {
         let relationsDetails = propertyDetailsStorage.relationsDetails(keys: dataView.relationLinks.map(\.key), spaceId: spaceId, includeDeleted: false)
+            .filter { !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: spaceId) }
         dataViewRelationsDetails = enrichedByDoneRelationIfNeeded(relationsDetails: relationsDetails)
     }
     
