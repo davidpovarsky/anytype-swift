@@ -86,8 +86,8 @@ public final class AnytypeTorahNativePropertyProvisioningStore: TorahNativePrope
         let clock = ContinuousClock()
         let deadline = clock.now.advanced(by: .seconds(30))
         repeat {
-            if let created = try? await property(key: definition.key, spaceId: spaceId), created != nil {
-                return created!
+            if let created = try? await property(key: definition.key, spaceId: spaceId) {
+                return created
             }
             try await Task.sleep(for: .milliseconds(100))
         } while clock.now < deadline
