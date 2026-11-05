@@ -370,12 +370,8 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         case let .dataview(objectId, _, typeDetails):
             return isDataviewTargetEligible(objectId: objectId, typeDetails: typeDetails, spaceId: spaceId)
         case .object(let objectId):
-            guard let details = Container.shared.detailsStorage().get(id: objectId) else {
-                let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
-                guard let typeId = doc.details?.type, !typeId.isEmpty else { return false }
-                return isTargetEligibleForNativeProperties(typeId: typeId, spaceId: spaceId)
-            }
-            guard details.spaceId == spaceId else { return false }
+            let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
+            guard let details = doc.details, details.spaceId == spaceId, !details.type.isEmpty else { return false }
             return isTargetEligibleForNativeProperties(typeId: details.type, spaceId: spaceId)
         case .library:
             return false
@@ -394,12 +390,8 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         case let .dataview(objectId, _, typeDetails):
             return await isDataviewTargetEligibleAsync(objectId: objectId, typeDetails: typeDetails, spaceId: spaceId)
         case .object(let objectId):
-            guard let details = Container.shared.detailsStorage().get(id: objectId) else {
-                let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
-                guard let typeId = doc.details?.type, !typeId.isEmpty else { return false }
-                return await isTargetEligibleForNativePropertiesAsync(typeId: typeId, spaceId: spaceId)
-            }
-            guard details.spaceId == spaceId else { return false }
+            let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
+            guard let details = doc.details, details.spaceId == spaceId, !details.type.isEmpty else { return false }
             return await isTargetEligibleForNativePropertiesAsync(typeId: details.type, spaceId: spaceId)
         case .library:
             return false
@@ -412,8 +404,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
             return isTargetEligibleForNativeProperties(typeId: typeDetails.id, spaceId: spaceId)
         }
         guard !objectId.isEmpty else { return false }
-        let setDetails = Container.shared.detailsStorage().get(id: objectId)
-            ?? Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId).details
+        let setDetails = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId).details
         guard let setDetails, setDetails.spaceId == spaceId else { return false }
         let sources = setDetails.filteredSetOf
         guard !sources.isEmpty else { return false }
@@ -431,8 +422,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
             return await isTargetEligibleForNativePropertiesAsync(typeId: typeDetails.id, spaceId: spaceId)
         }
         guard !objectId.isEmpty else { return false }
-        let setDetails = Container.shared.detailsStorage().get(id: objectId)
-            ?? Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId).details
+        let setDetails = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId).details
         guard let setDetails, setDetails.spaceId == spaceId else { return false }
         let sources = setDetails.filteredSetOf
         guard !sources.isEmpty else { return false }
