@@ -94,7 +94,7 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
             }
             if session.canEditAssociations {
                 Button {
-                    session.presentSearch(scope: .document, initialCategory: .references, host: .inspector)
+                    session.presentSearch(scope: .document, initialCategory: .references, host: .editor)
                 } label: {
                     Label(
                         TorahAssociationDisplayFormatter.prefersHebrew(locale) ? "הוסף מקור" : "Add source",
@@ -139,7 +139,7 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
 
     private var compactAddSourceButton: some View {
         Button {
-            session.presentSearch(scope: .document, initialCategory: .references, host: .inspector)
+            session.presentSearch(scope: .document, initialCategory: .references, host: .editor)
         } label: {
             AnytypeText("+", style: .relation2Regular)
                 .foregroundStyle(featuredChipStyle.fontColor)
@@ -166,7 +166,7 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
     private var addSourceButton: some View {
         let title = "+ " + Loc.Pinkha.Torah.sources
         return Button {
-            session.presentSearch(scope: .document, initialCategory: .references, host: .inspector)
+            session.presentSearch(scope: .document, initialCategory: .references, host: .editor)
         } label: {
             TagView(
                 config: TagView.Config(

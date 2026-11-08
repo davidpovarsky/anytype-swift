@@ -83,7 +83,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         storageOverride ?? defaultStorage
     }
 
-    public init(
+    init(
         policy: PinkhaTorahPropertyPolicy = .shared,
         searchService: (any SearchMiddleServiceProtocol)? = nil,
         propertyDetailsStorage: (any PropertyDetailsStorageProtocol)? = nil

@@ -506,7 +506,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
 
     // MARK: - Private Target Inspection
 
-    public func isTargetEligible(target: PropertiesModuleTarget, spaceId: String) -> Bool {
+    func isTargetEligible(target: PropertiesModuleTarget, spaceId: String) -> Bool {
         switch target {
         case .type(let typeData):
             let typeId: String
@@ -526,7 +526,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         }
     }
 
-    public func isTargetEligibleAsync(target: PropertiesModuleTarget, spaceId: String) async -> Bool {
+    func isTargetEligibleAsync(target: PropertiesModuleTarget, spaceId: String) async -> Bool {
         switch target {
         case .type(let typeData):
             let typeId: String
@@ -552,7 +552,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         }
     }
 
-    public func isDataviewEligible(typeDetails: ObjectDetails?, filteredSetOf: [String], spaceId: String) -> Bool {
+    func isDataviewEligible(typeDetails: ObjectDetails?, filteredSetOf: [String], spaceId: String) -> Bool {
         if let typeDetails, !typeDetails.id.isEmpty {
             guard typeDetails.spaceId == spaceId else { return false }
             return isTargetEligibleForNativeProperties(typeId: typeDetails.id, spaceId: spaceId)
@@ -574,7 +574,6 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         }
         guard !objectId.isEmpty else { return false }
         let setDetails = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId).details
-            ?? ObjectDetailsStorage.instance().objectDetails(for: objectId)
         guard let setDetails, setDetails.spaceId == spaceId else { return false }
         return isDataviewEligible(typeDetails: nil, filteredSetOf: setDetails.filteredSetOf, spaceId: spaceId)
     }
@@ -586,7 +585,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         }
         guard !objectId.isEmpty else { return false }
         let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
-        var setDetails = doc.details ?? ObjectDetailsStorage.instance().objectDetails(for: objectId)
+        var setDetails = doc.details
         if setDetails == nil {
             try? await doc.open()
             setDetails = doc.details
