@@ -42,7 +42,7 @@ final class ObjectPropertiesLibraryViewModel: PropertyInfoCoordinatorViewOutput 
                 let rows = self.propertyDetailsStorage.relationsDetails(spaceId: self.spaceId)
                 let visibleProperties = rows.filter {
                     !$0.isHidden &&
-                    !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: self.spaceId)
+                    !PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: $0.id, key: $0.key, spaceId: self.spaceId)
                 }
                 self.systemProperties = visibleProperties.filter {
                     BundledPropertyKey.systemKeys.map(\.rawValue).contains($0.key)
@@ -56,7 +56,7 @@ final class ObjectPropertiesLibraryViewModel: PropertyInfoCoordinatorViewOutput 
         for await rows in propertyDetailsStorage.relationsDetailsPublisher(spaceId: spaceId).values {
             let visibleProperties = rows.filter {
                 !$0.isHidden &&
-                !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: spaceId)
+                !PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: $0.id, key: $0.key, spaceId: spaceId)
             }
             
             self.systemProperties = visibleProperties.filter {
@@ -69,7 +69,7 @@ final class ObjectPropertiesLibraryViewModel: PropertyInfoCoordinatorViewOutput 
     }
     
     func onRowTap(_ row: PropertyDetails) {
-        guard !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: row.id, key: row.key, spaceId: spaceId) else { return }
+        guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: row.id, key: row.key, spaceId: spaceId) else { return }
         guard let supportedFormat = row.format.supportedFormat else {
             anytypeAssertionFailure("Unsupported format \(row.format)")
             return

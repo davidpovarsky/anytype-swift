@@ -2,6 +2,7 @@ import SwiftUI
 import Services
 import AnytypeCore
 import Loc
+import PinkhaKit
 
 
 struct ObjectPropertiesView: View {
@@ -141,6 +142,13 @@ struct ObjectPropertiesView: View {
                 } label: {
                     MoreIndicator()
                 }
+            } else if section.id == PropertiesSection.Constants.hiddenPropertiesSectionId {
+                Menu {
+                    Button(Loc.show) { model.revealHiddenRelation(relation) }
+                } label: {
+                    MoreIndicator()
+                }
+                .accessibilityIdentifier("torah-object-property-show-\(relation.key)")
             }
         }
         .divider()
@@ -160,8 +168,15 @@ struct ObjectPropertiesView: View {
             anytypeAssertionFailure("Deprecated row delete call")
         } onStarTap: { _ in
             anytypeAssertionFailure("Deprecated onStarTap call")
-        } onEditTap: {
-            model.handleTapOnRelation($0)
+        } onEditTap: { tappedRelation in
+            if let definition = TorahNativePropertyDefinition.definition(for: tappedRelation.key),
+               torahProperties.isEligible,
+               torahProperties.canEdit,
+               torahProperties.session != nil {
+                torahProperties.edit(definition.kind)
+            } else {
+                model.handleTapOnRelation(tappedRelation)
+            }
         }
     }
 }

@@ -62,7 +62,7 @@ enum TorahNativePropertyPresentation {
             definition: definition,
             ids: details.stringArrayValue(for: definition.key),
             isFeatured: isFeatured,
-            editable: !valuesLocked && !details.isReadonly && details.boolValue(for: TorahNativePropertyDefinition.readinessKey)
+            editable: !valuesLocked && !details.isReadonly
         )
     }
 

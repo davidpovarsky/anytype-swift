@@ -98,12 +98,36 @@ struct TorahNativeUIParityTests {
                 labelHe: "בראשית א"
             )
         }
-        let presentation = PinkhaDocumentSourcesPresentation(associations: associations)
+        let presentation = PinkhaDocumentSourcesPresentation(associations: associations, canEdit: true)
 
         #expect(presentation.visibleAssociations.map(\.id) == Array(associations.prefix(2)).map(\.id))
         #expect(presentation.remainingCount == max(0, count - 2))
         #expect(presentation.remainingAssociations.map(\.id) == Array(associations.dropFirst(2)).map(\.id))
         #expect(presentation.visibleAssociations.count + presentation.remainingCount == count)
+        #expect(presentation.showsEmptyPlaceholderAdd == (count == 0))
+        #expect(presentation.showsCompactAdjacentAdd == (count > 0))
+        #expect(presentation.showsOverflowMenu == (count > 2))
+        #expect(presentation.hasAnyAddControl == true)
+
+        let readOnlyPresentation = PinkhaDocumentSourcesPresentation(associations: associations, canEdit: false)
+        #expect(!readOnlyPresentation.showsEmptyPlaceholderAdd)
+        #expect(!readOnlyPresentation.showsCompactAdjacentAdd)
+        #expect(!readOnlyPresentation.hasAnyAddControl)
+        #expect(readOnlyPresentation.showsOverflowMenu == (count > 2))
+    }
+
+    @Test("Compact source-chip + control keeps visual pill compact while expanding hit target to >= 44x44")
+    func compactSourceAddButtonGeometry() {
+        #expect(PinkhaDocumentSourcesPresentation.compactAddVisualSize == CGSize(width: 22, height: 18))
+        #expect(PinkhaDocumentSourcesPresentation.compactAddLayoutSize == CGSize(width: 22, height: 26))
+        let hitWidth = PinkhaDocumentSourcesPresentation.compactAddLayoutSize.width
+            - PinkhaDocumentSourcesPresentation.compactAddHitTestingInsets.leading
+            - PinkhaDocumentSourcesPresentation.compactAddHitTestingInsets.trailing
+        let hitHeight = PinkhaDocumentSourcesPresentation.compactAddLayoutSize.height
+            - PinkhaDocumentSourcesPresentation.compactAddHitTestingInsets.top
+            - PinkhaDocumentSourcesPresentation.compactAddHitTestingInsets.bottom
+        #expect(hitWidth >= 44)
+        #expect(hitHeight >= 44)
     }
 
     private func fixedControl() -> UIView {
@@ -127,10 +151,14 @@ struct TorahNativeUIParityTests {
         #expect(PinkhaDocumentMetadataRowModel.insertionIndex(in: [.block(native)]) == nil)
     }
 
-    @Test("Policy blocks canonical storage while allowing legitimate user properties")
-    func policyCanonicalStorageDistinction() {
+    @Test("Policy blocks both canonical storage and internal סדר order storage while allowing user properties and הורה")
+    func policyCanonicalAndOrderStorageDistinction() {
         let manifest = PinkhaSpaceManifest(
             spaceId: "space-1",
+            parentPropertyId: "parent-prop-id",
+            parentPropertyKey: "parent-prop-key",
+            orderPropertyId: "order-prop-id",
+            orderPropertyKey: "order-prop-key",
             documentAssociationsPropertyId: "canonical-prop-id",
             documentAssociationsPropertyKey: "canonical-prop-key",
             registeredDocumentTypes: [
@@ -142,36 +170,66 @@ struct TorahNativeUIParityTests {
         let probe = PolicyBootstrapProbe(manifest: manifest)
         let policy = PinkhaTorahPropertyPolicy(bootstrapService: probe)
 
-        // H01, H02: Canonical storage is recognized and blocked from generic editing
+        // Canonical storage is recognized and blocked from generic editing, header, picker, rename, delete
         #expect(policy.isCanonicalStorage(propertyId: "canonical-prop-id", key: "other-key", spaceId: "space-1"))
         #expect(policy.isCanonicalStorage(propertyId: "other-id", key: "canonical-prop-key", spaceId: "space-1"))
+        #expect(policy.isInternalProperty(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "space-1"))
         #expect(!policy.canEditGenericPropertyValue(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "space-1"))
         #expect(!policy.shouldRenderInHeader(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "space-1"))
         #expect(!policy.canEditPropertyDefinition(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "space-1"))
         #expect(!policy.canDeletePropertyDefinition(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "space-1"))
 
-        // H03: A user-made property has the same Hebrew display name "הקשר תורני" but DIFFERENT ID/key:
+        // Order storage (סדר) is recognized as internal and blocked from generic editing, header, picker, rename, delete,
+        // while preserving canonical-only routing distinction (isCanonicalStorage == false for סדר)
+        #expect(policy.isOrderStorage(propertyId: "order-prop-id", key: "other-key", spaceId: "space-1"))
+        #expect(policy.isOrderStorage(propertyId: "other-id", key: "order-prop-key", spaceId: "space-1"))
+        #expect(policy.isInternalProperty(propertyId: "order-prop-id", key: "other-key", spaceId: "space-1"))
+        #expect(policy.isInternalProperty(propertyId: "other-id", key: "order-prop-key", spaceId: "space-1"))
+        #expect(!policy.isCanonicalStorage(propertyId: "order-prop-id", key: "order-prop-key", spaceId: "space-1"))
+        #expect(!policy.canEditGenericPropertyValue(propertyId: "order-prop-id", key: "order-prop-key", spaceId: "space-1"))
+        #expect(!policy.shouldRenderInHeader(propertyId: "order-prop-id", key: "order-prop-key", spaceId: "space-1"))
+        #expect(!policy.canEditPropertyDefinition(propertyId: "order-prop-id", key: "order-prop-key", spaceId: "space-1"))
+        #expect(!policy.canDeletePropertyDefinition(propertyId: "order-prop-id", key: "order-prop-key", spaceId: "space-1"))
+        #expect(!policy.shouldDisplayInPicker(propertyId: "order-prop-id", key: "order-prop-key", target: .library, spaceId: "space-1"))
+
+        // User-visible hierarchy field הורה (parentPropertyId) must NOT be hidden as internal
+        #expect(!policy.isInternalProperty(propertyId: "parent-prop-id", key: "parent-prop-key", spaceId: "space-1"))
+        #expect(policy.shouldRenderInHeader(propertyId: "parent-prop-id", key: "parent-prop-key", spaceId: "space-1"))
+
+        // User-made properties with the same Hebrew display names "הקשר תורני" or "סדר" but DIFFERENT IDs/keys
         // must not be falsely hidden or blocked
         let userPropId = "user-custom-id"
         let userPropKey = "userCustomKey"
         #expect(!policy.isCanonicalStorage(propertyId: userPropId, key: userPropKey, spaceId: "space-1"))
+        #expect(!policy.isOrderStorage(propertyId: userPropId, key: userPropKey, spaceId: "space-1"))
+        #expect(!policy.isInternalProperty(propertyId: userPropId, key: userPropKey, spaceId: "space-1"))
         #expect(policy.canEditGenericPropertyValue(propertyId: userPropId, key: userPropKey, spaceId: "space-1"))
         #expect(policy.shouldRenderInHeader(propertyId: userPropId, key: userPropKey, spaceId: "space-1"))
         #expect(policy.canEditPropertyDefinition(propertyId: userPropId, key: userPropKey, spaceId: "space-1"))
 
-        // H04: Wrong space does not match canonical property
+        // Wrong space does not match internal properties
         #expect(!policy.isCanonicalStorage(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "wrong-space"))
+        #expect(!policy.isOrderStorage(propertyId: "order-prop-id", key: "order-prop-key", spaceId: "wrong-space"))
+        #expect(!policy.isInternalProperty(propertyId: "order-prop-id", key: "order-prop-key", spaceId: "wrong-space"))
 
-        // H01, H17: Target eligibility: Writing types eligible, ordinary Note is NOT eligible
+        // Target eligibility: Writing types eligible, ordinary Note/Page NOT eligible
         #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-chiddush", spaceId: "space-1"))
         #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-article", spaceId: "space-1"))
         #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-research", spaceId: "space-1"))
         #expect(!policy.isTargetEligibleForNativeProperties(typeId: "note", spaceId: "space-1"))
         #expect(!policy.isTargetEligibleForNativeProperties(typeId: "page", spaceId: "space-1"))
+
+        // Dataview eligibility: single writing Type or writing-only filteredSetOf is eligible;
+        // Page/Note Set or mixed Set (Chiddush + Page) is NOT eligible
+        #expect(policy.isDataviewEligible(typeDetails: nil, filteredSetOf: ["type-chiddush"], spaceId: "space-1"))
+        #expect(policy.isDataviewEligible(typeDetails: nil, filteredSetOf: ["type-chiddush", "type-article", "type-research"], spaceId: "space-1"))
+        #expect(!policy.isDataviewEligible(typeDetails: nil, filteredSetOf: ["page"], spaceId: "space-1"))
+        #expect(!policy.isDataviewEligible(typeDetails: nil, filteredSetOf: ["type-chiddush", "page"], spaceId: "space-1"))
+        #expect(!policy.isDataviewEligible(typeDetails: nil, filteredSetOf: [], spaceId: "space-1"))
     }
 
-    @Test("Canonical identity resolution handles tri-state loading, known settlement, and fail-closed gate")
-    func canonicalIdentityResolutionTriState() async {
+    @Test("Internal identity resolution handles tri-state loading, failure retry, and known settlement without hiding user properties permanently")
+    func internalIdentityResolutionTriStateAndRecovery() async {
         final class DelayBootstrapProbe: PinkhaSpaceBootstrapServiceProtocol, @unchecked Sendable {
             var manifestToReturn: PinkhaSpaceManifest?
             var bootstrapCallCount = 0
@@ -209,6 +267,8 @@ struct TorahNativeUIParityTests {
 
         let settledManifest = PinkhaSpaceManifest(
             spaceId: "space-cold",
+            orderPropertyId: "order-cold-id",
+            orderPropertyKey: "order-cold-key",
             documentAssociationsPropertyId: "canon-cold-id",
             documentAssociationsPropertyKey: "canon-cold-key",
             registeredDocumentTypes: [
@@ -218,37 +278,182 @@ struct TorahNativeUIParityTests {
             ]
         )
 
-        // Case 1: Manifest absent initially -> status is loading / unavailable, actions fail closed
         let coldProbe = DelayBootstrapProbe(manifest: nil)
         let coldPolicy = PinkhaTorahPropertyPolicy(bootstrapService: coldProbe)
 
-        // While unready: canEditGenericPropertyValue returns false (fail closed! does not leak editable text)
+        // While unready: actions fail closed
         #expect(!coldPolicy.canEditGenericPropertyValue(propertyId: "any-prop", key: "any-key", spaceId: "space-cold"))
         #expect(!coldPolicy.canEditPropertyDefinition(propertyId: "any-prop", key: "any-key", spaceId: "space-cold"))
         #expect(!coldPolicy.canDeletePropertyDefinition(propertyId: "any-prop", key: "any-key", spaceId: "space-cold"))
 
-        // Case 2: Manifest resolves -> status settles to .known
+        // Await failure -> status becomes .unavailable (not stuck in .loading forever)
+        let failedStatus = await coldPolicy.awaitInternalIdentity(spaceId: "space-cold")
+        if case .unavailable = failedStatus {
+            // Expected
+        } else {
+            Issue.record("Expected .unavailable when manifest fails to load, got \(failedStatus)")
+        }
+
+        // Manifest becomes available -> awaiting again automatically retries and settles to .known
         coldProbe.manifestToReturn = settledManifest
-        coldPolicy.invalidateCache(spaceId: "space-cold")
+        let settledStatus = await coldPolicy.awaitInternalIdentity(spaceId: "space-cold")
+        #expect(settledStatus == .known(PinkhaInternalPropertyIdentities(
+            canonicalPropertyId: "canon-cold-id",
+            canonicalPropertyKey: "canon-cold-key",
+            orderPropertyId: "order-cold-id",
+            orderPropertyKey: "order-cold-key"
+        )))
 
-        let settledStatus = await coldPolicy.awaitCanonicalIdentity(spaceId: "space-cold")
-        #expect(settledStatus == .known(propertyId: "canon-cold-id", propertyKey: "canon-cold-key"))
-
-        // Now canonical property is strictly blocked, but user property is allowed!
+        // Both canonical and order properties are strictly blocked, while user properties are allowed
         #expect(!coldPolicy.canEditGenericPropertyValue(propertyId: "canon-cold-id", key: "canon-cold-key", spaceId: "space-cold"))
+        #expect(!coldPolicy.canEditGenericPropertyValue(propertyId: "order-cold-id", key: "order-cold-key", spaceId: "space-cold"))
         #expect(coldPolicy.canEditGenericPropertyValue(propertyId: "user-id", key: "user-key", spaceId: "space-cold"))
         #expect(coldPolicy.canEditPropertyDefinition(propertyId: "user-id", key: "user-key", spaceId: "space-cold"))
         #expect(coldPolicy.canDeletePropertyDefinition(propertyId: "user-id", key: "user-key", spaceId: "space-cold"))
 
-        // Native derived property definitions cannot be renamed or deleted
         for def in TorahNativePropertyDefinition.all {
             #expect(!coldPolicy.canEditPropertyDefinition(propertyId: "native-id", key: def.key, spaceId: "space-cold"))
             #expect(!coldPolicy.canDeletePropertyDefinition(propertyId: "native-id", key: def.key, spaceId: "space-cold"))
         }
+    }
 
-        // Space switch / cache invalidation test
-        coldPolicy.invalidateCache(spaceId: "space-cold")
-        #expect(coldPolicy.canonicalIdentityStatus(spaceId: "space-cold") == .known(propertyId: "canon-cold-id", propertyKey: "canon-cold-key"))
+    @Test("Native property catalog matches empty search, Hebrew variants, and English variants while enforcing strict identity guards")
+    func nativeCatalogSearchAndIdentityGuards() {
+        let spaceId = "space-catalog"
+        for def in TorahNativePropertyDefinition.all {
+            let valid = PropertyDetails(
+                id: "id-\(def.key)",
+                key: def.key,
+                name: def.name,
+                format: .tag,
+                isHidden: false,
+                isReadOnly: false,
+                isReadOnlyValue: true,
+                objectTypes: [],
+                maxCount: 0,
+                sourceObject: "_br" + def.key,
+                isDeleted: false,
+                spaceId: spaceId
+            )
+            #expect(PinkhaTorahNativePropertyCatalog.isVerifiedNativeDescriptor(valid, definition: def, spaceId: spaceId))
+            #expect(PinkhaTorahNativePropertyCatalog.matchesSearchQuery(property: valid, query: ""))
+            #expect(PinkhaTorahNativePropertyCatalog.matchesSearchQuery(property: valid, query: def.name))
+            #expect(PinkhaTorahNativePropertyCatalog.matchesSearchQuery(property: valid, query: def.englishName))
+            #expect(PinkhaTorahNativePropertyCatalog.matchesSearchQuery(property: valid, query: def.key))
+
+            // Forged/invalid descriptors are rejected by identity guard
+            let editableFake = PropertyDetails(
+                id: "fake-\(def.key)",
+                key: def.key,
+                name: def.name,
+                format: .tag,
+                isHidden: false,
+                isReadOnly: false,
+                isReadOnlyValue: false,
+                objectTypes: [],
+                maxCount: 0,
+                sourceObject: "_br" + def.key,
+                isDeleted: false,
+                spaceId: spaceId
+            )
+            #expect(!PinkhaTorahNativePropertyCatalog.isVerifiedNativeDescriptor(editableFake, definition: def, spaceId: spaceId))
+        }
+
+        let sourcesProp = PropertyDetails(
+            id: "id-sources",
+            key: TorahNativePropertyDefinition.all[0].key,
+            name: "מקור/ות",
+            format: .tag,
+            isHidden: false,
+            isReadOnly: false,
+            isReadOnlyValue: true,
+            objectTypes: [],
+            maxCount: 0,
+            sourceObject: "_brpinkhaTorahSources",
+            isDeleted: false,
+            spaceId: spaceId
+        )
+        for query in ["מקור/ות", "מקורות", "מקור", "Source(s)", "Sources", "Source"] {
+            #expect(PinkhaTorahNativePropertyCatalog.matchesSearchQuery(property: sourcesProp, query: query))
+        }
+
+        let topicsProp = PropertyDetails(
+            id: "id-topics",
+            key: TorahNativePropertyDefinition.all[1].key,
+            name: "נושא",
+            format: .tag,
+            isHidden: false,
+            isReadOnly: false,
+            isReadOnlyValue: true,
+            objectTypes: [],
+            maxCount: 0,
+            sourceObject: "_brpinkhaTorahTopics",
+            isDeleted: false,
+            spaceId: spaceId
+        )
+        for query in ["נושא", "נושאים", "Topic(s)", "Topics", "Topic"] {
+            #expect(PinkhaTorahNativePropertyCatalog.matchesSearchQuery(property: topicsProp, query: query))
+        }
+
+        let wordsProp = PropertyDetails(
+            id: "id-words",
+            key: TorahNativePropertyDefinition.all[2].key,
+            name: "מילה / ערך",
+            format: .tag,
+            isHidden: false,
+            isReadOnly: false,
+            isReadOnlyValue: true,
+            objectTypes: [],
+            maxCount: 0,
+            sourceObject: "_brpinkhaTorahWords",
+            isDeleted: false,
+            spaceId: spaceId
+        )
+        for query in ["מילה / ערך", "מילה", "ערך", "מילים", "ערכים", "Word / entry", "Words", "Entry", "Entries"] {
+            #expect(PinkhaTorahNativePropertyCatalog.matchesSearchQuery(property: wordsProp, query: query))
+        }
+    }
+
+    @Test("Fresh eligible document renders native Torah property rows as editable by the canonical Torah picker even before associations exist")
+    func freshDocumentNativeRowIsEditableByCanonicalPicker() {
+        let def = TorahNativePropertyDefinition.all[0]
+        let propDetails = PropertyDetails(
+            id: "native-sources-id",
+            key: def.key,
+            name: def.name,
+            format: .tag,
+            isHidden: false,
+            isReadOnly: false,
+            isReadOnlyValue: true,
+            objectTypes: [],
+            maxCount: 0,
+            sourceObject: "_br" + def.key,
+            isDeleted: false,
+            spaceId: "space-fresh"
+        )
+        let freshDocDetails = ObjectDetails(id: "fresh-chiddush-doc")
+        guard case .tag(let rendered) = TorahNativePropertyPresentation.property(
+            definition: propDetails,
+            details: freshDocDetails,
+            isFeatured: false,
+            valuesLocked: false
+        ) else {
+            Issue.record("Expected native .tag property row for fresh document")
+            return
+        }
+        #expect(rendered.isEditable == true)
+        #expect(rendered.selectedTags.isEmpty)
+
+        guard case .tag(let lockedRendered) = TorahNativePropertyPresentation.property(
+            definition: propDetails,
+            details: freshDocDetails,
+            isFeatured: false,
+            valuesLocked: true
+        ) else {
+            Issue.record("Expected native .tag property row when locked")
+            return
+        }
+        #expect(lockedRendered.isEditable == false)
     }
 
     @Test("Header visibility is reactive to document Type eligibility (Defect E)")
@@ -282,8 +487,8 @@ struct TorahNativeUIParityTests {
         #expect(policy.isCanonicalStorage(propertyId: "canon-id", key: "canon-key", spaceId: "space-reactive"))
     }
 
-    @Test("Presentation hides permanent add label when one or more sources exist (Defect B)")
-    func presentationSourcesNoPermanentAddLabel() {
+    @Test("Presentation hides permanent add label when one or more sources exist and exposes compact adjacent + control (Defect C)")
+    func presentationSourcesNoPermanentAddLabelAndSeparateCompactAdd() {
         let singleSource = [
             TorahAssociationItem(
                 id: "src-1",
@@ -295,10 +500,13 @@ struct TorahNativeUIParityTests {
                 labelHe: "בראשית א:א"
             )
         ]
-        let presentation = PinkhaDocumentSourcesPresentation(associations: singleSource)
+        let presentation = PinkhaDocumentSourcesPresentation(associations: singleSource, canEdit: true)
         #expect(presentation.visibleAssociations.count == 1)
         #expect(presentation.remainingCount == 0)
         #expect(presentation.visibleAssociations.first?.id == "src-1")
+        #expect(!presentation.showsEmptyPlaceholderAdd)
+        #expect(presentation.showsCompactAdjacentAdd)
+        #expect(!presentation.showsOverflowMenu)
 
         let threeSources = (1...3).map { idx in
             TorahAssociationItem(
@@ -311,10 +519,13 @@ struct TorahNativeUIParityTests {
                 labelHe: "בראשית א:\(idx)"
             )
         }
-        let pres3 = PinkhaDocumentSourcesPresentation(associations: threeSources)
+        let pres3 = PinkhaDocumentSourcesPresentation(associations: threeSources, canEdit: true)
         #expect(pres3.visibleAssociations.count == 2)
         #expect(pres3.remainingCount == 1)
         #expect(pres3.remainingAssociations.map(\.id) == ["src-3"])
+        #expect(!pres3.showsEmptyPlaceholderAdd)
+        #expect(pres3.showsCompactAdjacentAdd)
+        #expect(pres3.showsOverflowMenu)
     }
 }
 

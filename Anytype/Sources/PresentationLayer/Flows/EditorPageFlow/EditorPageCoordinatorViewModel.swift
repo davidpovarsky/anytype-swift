@@ -65,6 +65,9 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
             anytypeAssertionFailure("Details not found")
             return
         }
+        guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
+            propertyId: relation.id, key: relation.key, spaceId: document.spaceId
+        ) else { return }
         handlePropertyValue(relation: relation, objectDetails: objectDetails)
     }
     
@@ -102,10 +105,18 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
     
     func showAddPropertyInfoView(document: some BaseDocumentProtocol, onSelect: @escaping (PropertyDetails, _ isNew: Bool) -> Void) {
         guard let details = document.details else { return }
+        let visibleInstalledIds = (
+            document.parsedProperties.featuredProperties +
+            document.parsedProperties.sidebarProperties +
+            document.parsedProperties.conflictedProperties +
+            document.parsedProperties.legacyFeaturedProperties
+        ).map(\.id)
+        let hiddenIds = Set(document.parsedProperties.hiddenProperties.map(\.id))
         relationsSearchData = PropertiesSearchData(
             objectId: details.type,
             spaceId: document.spaceId,
-            excludedRelationsIds: document.parsedProperties.installed.map(\.id),
+            excludedRelationsIds: visibleInstalledIds,
+            hiddenRelationsIds: hiddenIds,
             target: .object(objectId: details.id),
             onRelationSelect: onSelect
         )

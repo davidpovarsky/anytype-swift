@@ -37,8 +37,9 @@ final class SetContentViewDataBuilder: SetContentViewDataBuilderProtocol {
     func sortedRelations(dataview: BlockDataview, view: DataviewView, spaceId: String) -> [SetProperty] {
         let storageRelationsDetails = propertyDetailsStorage.relationsDetails(keys: dataview.relationLinks.map(\.key), spaceId: spaceId)
             .filter {
-                (!$0.isHidden && !$0.isDeleted) ||
-                (view.canSwitchItemName && $0.key == BundledPropertyKey.name.rawValue)
+                !PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: $0.id, key: $0.key, spaceId: spaceId) &&
+                ((!$0.isHidden && !$0.isDeleted) ||
+                 (view.canSwitchItemName && $0.key == BundledPropertyKey.name.rawValue))
             }
         
         let relationsPresentInView: [SetProperty] = view.options
@@ -70,14 +71,23 @@ final class SetContentViewDataBuilder: SetContentViewDataBuilderProtocol {
             }
             
             guard let relationDetails = relationDetails,
-                  shouldAddPropertyDetails(relationDetails, excludeRelations: excludeRelations) else { return nil }
+                  shouldAddPropertyDetails(relationDetails, excludeRelations: excludeRelations, spaceId: spaceId) else { return nil }
             
             return relationDetails
         }
+
+        for candidate in dataViewRelationsDetails {
+            guard !relationDetails.contains(where: { $0.key == candidate.key }),
+                  shouldAddPropertyDetails(candidate, excludeRelations: excludeRelations, spaceId: spaceId) else {
+                continue
+            }
+            relationDetails.append(candidate)
+        }
+
         // force insert Done relation after the Name for all Sets/Collections if needed
         let doneRelationIsExcluded = excludeRelations.first { $0.key == BundledPropertyKey.done.rawValue }.isNotNil
         let donePropertyDetails = try? propertyDetailsStorage.relationsDetails(bundledKey: BundledPropertyKey.done, spaceId: spaceId)
-        if !doneRelationIsExcluded, let donePropertyDetails {
+        if !doneRelationIsExcluded, let donePropertyDetails, !relationDetails.contains(where: { $0.key == donePropertyDetails.key }) {
             if let index = relationDetails.firstIndex(where: { $0.key == BundledPropertyKey.name.rawValue }),
                 index < relationDetails.count
             {
@@ -268,7 +278,12 @@ final class SetContentViewDataBuilder: SetContentViewDataBuilderProtocol {
         return nil
     }
     
-    private func shouldAddPropertyDetails(_ relationDetails: PropertyDetails, excludeRelations: [PropertyDetails]) -> Bool {
+    private func shouldAddPropertyDetails(_ relationDetails: PropertyDetails, excludeRelations: [PropertyDetails], spaceId: String) -> Bool {
+        if PinkhaTorahPropertyPolicy.shared.isInternalProperty(
+            propertyId: relationDetails.id, key: relationDetails.key, spaceId: spaceId
+        ) {
+            return false
+        }
         guard excludeRelations.first(where: { $0.key == relationDetails.key }) == nil else {
             return false
         }

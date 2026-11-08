@@ -24,7 +24,7 @@ final class SinglePropertyBuilder: SinglePropertyBuilderProtocol {
         propertyValuesIsLocked: Bool,
         storage: ObjectDetailsStorage
     ) -> Property? {
-        if PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+        if PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: relationDetails.id, key: relationDetails.key, spaceId: details.spaceId
         ) {
             return nil

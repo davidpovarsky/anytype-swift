@@ -21,7 +21,7 @@ extension BaseDocumentProtocol {
                 // Do not show empty (back)Links 
                 enhancedRelations.removeAll { $0.links.isNotNil && !$0.hasValue }
                 // Never show canonical storage in featured relations
-                enhancedRelations.removeAll { PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: self.spaceId) }
+                enhancedRelations.removeAll { PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: $0.id, key: $0.key, spaceId: self.spaceId) }
                 
                 let setOfIndex = enhancedRelations.firstIndex { $0.key == BundledPropertyKey.setOf.rawValue }
                 if permissions.canEditRelationValues,
@@ -45,7 +45,7 @@ extension BaseDocumentProtocol {
         enhancedRelations.removeAll { relation in
             relation.key == BundledPropertyKey.description.rawValue ||
             (relation.links.isNotNil && !relation.hasValue) ||
-            PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: relation.id, key: relation.key, spaceId: self.spaceId)
+            PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: relation.id, key: relation.key, spaceId: self.spaceId)
         }
         
         let setOfIndex = enhancedRelations.firstIndex { $0.key == BundledPropertyKey.setOf.rawValue }

@@ -12,11 +12,19 @@ final class PinkhaTorahPropertiesModel {
     let session: TorahEditorSession?
     private(set) var isEligible = false
     private(set) var canEdit = false
+    private(set) var manifestResolutionError: String?
+    private var identityStatus: InternalIdentityStatus = .loading
     private var manifest: PinkhaSpaceManifest?
     private let document: any BaseDocumentProtocol
     private let bootstrap: any PinkhaSpaceBootstrapServiceProtocol
+    private let policy: PinkhaTorahPropertyPolicy
 
-    var isResolvingManifest: Bool { PinkhaRuntime.enabled && session != nil && manifest == nil }
+    var isResolvingManifest: Bool {
+        guard PinkhaRuntime.enabled, !document.spaceId.isEmpty else { return false }
+        if manifest != nil { return false }
+        if case .loading = identityStatus { return true }
+        return false
+    }
     var usesNativeProperties: Bool {
         document.details?.intValue(for: TorahNativePropertyDefinition.engineVersionKey) == TorahNativePropertyDefinition.engineVersion
     }
@@ -31,23 +39,47 @@ final class PinkhaTorahPropertiesModel {
     init(
         document: some BaseDocumentProtocol,
         session: TorahEditorSession?,
-        bootstrap: any PinkhaSpaceBootstrapServiceProtocol = Container.shared.pinkhaBootstrapService()
+        bootstrap: any PinkhaSpaceBootstrapServiceProtocol = Container.shared.pinkhaBootstrapService(),
+        policy: PinkhaTorahPropertyPolicy = .shared
     ) {
         self.document = document
         self.session = session.flatMap {
             $0.spaceId == document.spaceId && $0.objectId == document.objectId ? $0 : nil
         }
         self.bootstrap = bootstrap
+        self.policy = policy
         update()
     }
 
     func observeDocument() async {
         update()
         if let session { await session.refreshAssociationSnapshot() }
+        if manifest == nil {
+            _ = await policy.awaitInternalIdentity(spaceId: document.spaceId)
+        }
         update()
-        for await _ in document.syncPublisher.values {
-            guard !Task.isCancelled else { return }
-            update()
+        let identityNotifications = NotificationCenter.default.notifications(
+            named: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification
+        )
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { @MainActor [weak self] in
+                guard let self else { return }
+                for await _ in self.document.syncPublisher.values {
+                    guard !Task.isCancelled else { return }
+                    self.update()
+                }
+            }
+            group.addTask { @MainActor [weak self] in
+                guard let self else { return }
+                for await notification in identityNotifications {
+                    guard !Task.isCancelled else { return }
+                    if let notifiedSpace = notification.userInfo?["spaceId"] as? String,
+                       notifiedSpace != self.document.spaceId {
+                        continue
+                    }
+                    self.update()
+                }
+            }
         }
     }
 
@@ -65,10 +97,10 @@ final class PinkhaTorahPropertiesModel {
 
     func isInternalProperty(_ property: Property) -> Bool {
         guard PinkhaRuntime.enabled else { return false }
-        if TorahDocumentPropertyEligibility.isCanonicalProperty(
+        if TorahDocumentPropertyEligibility.isInternalProperty(
             id: property.id, key: property.key, spaceId: document.spaceId, manifest: manifest
         ) { return true }
-        return PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+        return policy.isInternalProperty(
             propertyId: property.id, key: property.key, spaceId: document.spaceId
         )
     }
@@ -85,6 +117,8 @@ final class PinkhaTorahPropertiesModel {
     }
 
     func reloadManifest() async {
+        policy.retryIdentityResolution(spaceId: document.spaceId)
+        _ = await policy.awaitInternalIdentity(spaceId: document.spaceId)
         await session?.refreshAssociationSnapshot()
         update()
     }
@@ -95,6 +129,12 @@ final class PinkhaTorahPropertiesModel {
             return document.permissions.canEditRelationValues && document.details?.isReadonly == false
         }
         manifest = bootstrap.manifest(forSpaceId: document.spaceId)
+        identityStatus = policy.internalIdentityStatus(spaceId: document.spaceId)
+        if case .unavailable(let reason) = identityStatus {
+            manifestResolutionError = reason
+        } else {
+            manifestResolutionError = nil
+        }
         isEligible = PinkhaRuntime.enabled && session != nil && TorahDocumentPropertyEligibility.includes(
             typeId: document.details?.type ?? "", spaceId: document.spaceId, manifest: manifest
         )

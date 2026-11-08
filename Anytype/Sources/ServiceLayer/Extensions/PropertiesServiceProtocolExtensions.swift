@@ -21,13 +21,15 @@ extension PropertiesServiceProtocol {
     }
     
     func addTypeRecommendedProperty(type: ObjectType, property: PropertyDetails) async throws {
-        var recommendedPropertiesDetails = type.recommendedRelationsDetails
+        var recommendedPropertiesDetails = type.recommendedRelationsDetails.filter { $0.id != property.id }
         recommendedPropertiesDetails.insert(property, at: 0)
+        let recommendedFeaturedPropertiesDetails = type.recommendedFeaturedRelationsDetails.filter { $0.id != property.id }
+        let recommendedHiddenPropertiesDetails = type.recommendedHiddenRelationsDetails.filter { $0.id != property.id }
         try await updateTypeProperties(
             typeId: type.id,
             recommendedProperties: recommendedPropertiesDetails,
-            recommendedFeaturedProperties: type.recommendedFeaturedRelationsDetails,
-            recommendedHiddenProperties: type.recommendedHiddenRelationsDetails
+            recommendedFeaturedProperties: recommendedFeaturedPropertiesDetails,
+            recommendedHiddenProperties: recommendedHiddenPropertiesDetails
         )
     }
     
@@ -36,13 +38,36 @@ extension PropertiesServiceProtocol {
     }
     
     func addTypeFeaturedRecommendedProperty(type: ObjectType, property: PropertyDetails) async throws {
-        var recommendedFeaturedPropertiesDetails = type.recommendedFeaturedRelationsDetails
+        let recommendedPropertiesDetails = type.recommendedRelationsDetails.filter { $0.id != property.id }
+        var recommendedFeaturedPropertiesDetails = type.recommendedFeaturedRelationsDetails.filter { $0.id != property.id }
         recommendedFeaturedPropertiesDetails.insert(property, at: 0)
+        let recommendedHiddenPropertiesDetails = type.recommendedHiddenRelationsDetails.filter { $0.id != property.id }
         try await updateTypeProperties(
             typeId: type.id,
-            recommendedProperties: type.recommendedRelationsDetails,
+            recommendedProperties: recommendedPropertiesDetails,
             recommendedFeaturedProperties: recommendedFeaturedPropertiesDetails,
-            recommendedHiddenProperties: type.recommendedHiddenRelationsDetails
+            recommendedHiddenProperties: recommendedHiddenPropertiesDetails
+        )
+    }
+
+    func revealTypeHiddenProperty(type: ObjectType, property: PropertyDetails, featured: Bool = false) async throws {
+        if featured {
+            try await addTypeFeaturedRecommendedProperty(type: type, property: property)
+        } else {
+            try await addTypeRecommendedProperty(type: type, property: property)
+        }
+    }
+
+    func hideTypeProperty(type: ObjectType, property: PropertyDetails) async throws {
+        let recommendedPropertiesDetails = type.recommendedRelationsDetails.filter { $0.id != property.id }
+        let recommendedFeaturedPropertiesDetails = type.recommendedFeaturedRelationsDetails.filter { $0.id != property.id }
+        var recommendedHiddenPropertiesDetails = type.recommendedHiddenRelationsDetails.filter { $0.id != property.id }
+        recommendedHiddenPropertiesDetails.insert(property, at: 0)
+        try await updateTypeProperties(
+            typeId: type.id,
+            recommendedProperties: recommendedPropertiesDetails,
+            recommendedFeaturedProperties: recommendedFeaturedPropertiesDetails,
+            recommendedHiddenProperties: recommendedHiddenPropertiesDetails
         )
     }
         

@@ -330,3 +330,47 @@ Fast41453663451: primary145/146 FAIL,0skips; preparation1/1 PASS; both SDK build
     - `Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift` (Defect D)
     - `Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/EditorNavigationBarHelper/EditorNavigationBarHelper.swift` (Defect D)
 - **Rollback:** Reversible by checking out commit `ba52b872effac74c5dea6b24a35dcc9300867146`. No database migration or stored user data rewrite occurred.
+
+## 2026-11-09 — Remaining Property Discovery, Internal Order Protection, and Source-Chip Add Control Fixes (Defects A–C)
+
+- **Worktree:** `C:\Users\DAVID\Code\anytype-swift-native-derived-20261103`
+- **Branch:** `codex/torah-native-derived-properties-20261103`
+- **Authority:** Standing owner authorization dated 2026-11-04 and explicit 2026-11-09 implementation instruction on `codex/torah-native-derived-properties-20261103`.
+- **Defects Addressed:**
+  1. *Defect A (Internal `סדר` relation exposed in native Properties UI):* Added `PinkhaInternalPropertyIdentities` and `InternalIdentityStatus` in `PinkhaTorahPropertyPolicy.swift` and `isOrderProperty`/`isInternalProperty` in `TorahDocumentPropertyProjection.swift` covering both canonical storage (`documentAssociationsPropertyId`/`documentAssociationsPropertyKey`) and internal hierarchy order storage (`orderPropertyId`/`orderPropertyKey`), while preserving canonical-only write routing (`isCanonicalStorage`) and user-visible hierarchy fields (`הורה` / `parentPropertyId`). Applied `isInternalProperty` across `SinglePropertyBuilder`, `BaseDocument`, `BaseDocument+Extensions`, `PinkhaTorahPropertiesModel`, `EditorFeaturedPropertiesView`, `TypePropertiesViewModel`, `ObjectPropertiesViewModel`, `PropertiesListCoordinatorViewModel`, `ObjectPropertiesLibraryViewModel`, `SetDocument`, `SetContentViewDataBuilder`, `PropertyCreationViewModel`, `PropertyInfoViewModel`, and `PropertyValueCoordinatorViewModel`. Handled tri-state cold start safely so manifest resolution failure does not permanently hide normal user properties and automatically retries.
+  2. *Defect B (Native Torah Properties discoverability, revealability, and canonical picker routing):* Expanded `PinkhaTorahNativePropertyCatalog` with structured lookup diagnostics, `PropertyDetailsStorage` fallback, and full Hebrew/English alias matching (`מקור/ות`, `מקורות`, `נושא`, `מילה / ערך`, `Source(s)`, `Sources`, `Topic(s)`, `Topics`, `Word / entry`, `Words`). Differentiated "not installed at all" vs "installed but hidden" across `TypePropertiesViewModel`/`TypePropertiesView`, `ObjectPropertiesViewModel`/`ObjectPropertiesView`, `EditorPageCoordinatorViewModel`, `SetPropertiesCoordinatorViewModel`, `SetPropertiesViewModel`, `PropertyCreationViewModel`, and `PropertiesServiceProtocolExtensions` (`revealTypeHiddenProperty`, `hideTypeProperty`), offering explicit `Show` actions and unhiding via the original visibility/recommended/dataview APIs without duplication. Ensured fresh eligible documents render native rows as editable by the canonical Torah picker (`TorahNativePropertyPresentation.property`, `ObjectPropertiesView`). Enforced Set eligibility in `SetDocument` and `SetContentViewDataBuilder` so single-Type and writing-only Sets support native columns/filters while mixed or ordinary Page/Note Sets exclude unsupported native projections.
+  3. *Defect C (Separate compact `+` Add control on header source chips):* Updated `PinkhaDocumentSourcesFeaturedContent.swift` so 0 sources (editable) shows `+ מקורות`, 1+ sources (editable) shows up to 2 source chips, the separate `+N` overflow menu for sources 3+, and an adjacent compact `+` icon button (`22x18` visual pill, `>= 44x44` hit target via hit-testing inset without inflating `WrappingHStack` row height) invoking `session.presentSearch(scope: .document, initialCategory: .references, host: .inspector)`. Read-only documents omit both Add controls while preserving reader and `+N` overflow.
+- **Changed Files Classification:**
+  - *Downstream (`Modules/PinkhaKit` & `Anytype/Sources/Pinkha`):*
+    - `Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahDocumentPropertyProjection.swift`
+    - `Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift`
+    - `Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift`
+    - `Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertiesModel.swift`
+    - `Anytype/Sources/Pinkha/Torah/UI/TorahNativePropertyViews.swift`
+    - `Anytype/Sources/Pinkha/Torah/UI/PinkhaDocumentSourcesFeaturedContent.swift`
+  - *Downstream Tests:*
+    - `Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahDocumentPropertyProjectionTests.swift`
+    - `AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift`
+    - `AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift`
+  - *Upstream-Owned Connection Hooks:*
+    - `Anytype/Sources/Models/Documents/Document/BaseDocument.swift`
+    - `Anytype/Sources/Models/Documents/Document/BaseDocument+Extensions.swift`
+    - `Anytype/Sources/Models/Properties/SinglePropertyBuilder.swift`
+    - `Anytype/Sources/ServiceLayer/Extensions/PropertiesServiceProtocolExtensions.swift`
+    - `Anytype/Sources/PresentationLayer/Common/SwiftUI/Relations/FeaturedRelationsView/EditorFeaturedPropertiesView.swift`
+    - `Anytype/Sources/PresentationLayer/Flows/EditorPageFlow/EditorPageCoordinatorViewModel.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorViewModel.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesView.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/Set/Models/SetDocument.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Models/SetContentViewDataBuilder.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/Coordinator/SetPropertiesCoordinatorViewModel.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertiesSearchData.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/SetPropertiesViewModel.swift`
+    - `Anytype/Sources/PresentationLayer/SpaceSettings/SpaceSettings/Views/PropertiesLibrary/ObjectPropertiesLibraryViewModel.swift`
+    - `Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/ViewModel/PropertyInfoViewModel.swift`
+    - `Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/PropertyValueCoordinatorViewModel.swift`
+- **Rollback:** Reversible by checking out commit `c085e5dac4d91cfb5fcfbfe2e47eb9b944a6da24`. No database migration or stored user data rewrite occurred.

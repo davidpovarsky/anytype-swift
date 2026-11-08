@@ -6,13 +6,69 @@ import OSLog
 
 private let logger = Logger(subsystem: "com.anytype.pinkha", category: "TorahPropertyPolicy")
 
+public struct PinkhaInternalPropertyIdentities: Equatable, Sendable {
+    public let canonicalPropertyId: String
+    public let canonicalPropertyKey: String
+    public let orderPropertyId: String
+    public let orderPropertyKey: String
+
+    public init(
+        canonicalPropertyId: String,
+        canonicalPropertyKey: String,
+        orderPropertyId: String = "",
+        orderPropertyKey: String = ""
+    ) {
+        self.canonicalPropertyId = canonicalPropertyId
+        self.canonicalPropertyKey = canonicalPropertyKey
+        self.orderPropertyId = orderPropertyId
+        self.orderPropertyKey = orderPropertyKey
+    }
+
+    public init?(manifest: PinkhaSpaceManifest) {
+        let cId = manifest.documentAssociationsPropertyId.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cKey = manifest.documentAssociationsPropertyKey.trimmingCharacters(in: .whitespacesAndNewlines)
+        let oId = manifest.orderPropertyId.trimmingCharacters(in: .whitespacesAndNewlines)
+        let oKey = manifest.orderPropertyKey.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cId.isEmpty || !cKey.isEmpty || !oId.isEmpty || !oKey.isEmpty else {
+            return nil
+        }
+        self.init(
+            canonicalPropertyId: cId,
+            canonicalPropertyKey: cKey,
+            orderPropertyId: oId,
+            orderPropertyKey: oKey
+        )
+    }
+
+    public func isCanonical(propertyId: String, key: String) -> Bool {
+        (!canonicalPropertyId.isEmpty && propertyId == canonicalPropertyId) ||
+        (!canonicalPropertyKey.isEmpty && key == canonicalPropertyKey)
+    }
+
+    public func isOrder(propertyId: String, key: String) -> Bool {
+        (!orderPropertyId.isEmpty && propertyId == orderPropertyId) ||
+        (!orderPropertyKey.isEmpty && key == orderPropertyKey)
+    }
+
+    public func isInternal(propertyId: String, key: String) -> Bool {
+        isCanonical(propertyId: propertyId, key: key) || isOrder(propertyId: propertyId, key: key)
+    }
+}
+
+public enum InternalIdentityStatus: Equatable, Sendable {
+    case known(PinkhaInternalPropertyIdentities)
+    case loading
+    case unavailable(String)
+}
+
 public enum CanonicalIdentityStatus: Equatable, Sendable {
     case known(propertyId: String, propertyKey: String)
     case loading
     case unavailable(String)
 }
 
-/// Downstream policy distinguishing canonical storage from user-facing native and custom properties.
+/// Downstream policy distinguishing internal Pinkha storage (canonical Torah JSON + hierarchy order)
+/// from user-facing native and custom properties.
 /// Enforces fail-closed rules, space isolation, target eligibility, and action permissions.
 public final class PinkhaTorahPropertyPolicy: Sendable {
     public static let shared = PinkhaTorahPropertyPolicy()
@@ -20,16 +76,16 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
 
     private final class IdentityStore: @unchecked Sendable {
         private let lock = NSLock()
-        private var statuses: [String: CanonicalIdentityStatus] = [:]
-        private var inFlightTasks: [String: Task<CanonicalIdentityStatus, Never>] = [:]
+        private var statuses: [String: InternalIdentityStatus] = [:]
+        private var inFlightTasks: [String: Task<InternalIdentityStatus, Never>] = [:]
 
-        func getStatus(_ spaceId: String) -> CanonicalIdentityStatus? {
+        func getStatus(_ spaceId: String) -> InternalIdentityStatus? {
             lock.lock()
             defer { lock.unlock() }
             return statuses[spaceId]
         }
 
-        func setStatus(_ spaceId: String, status: CanonicalIdentityStatus) {
+        func setStatus(_ spaceId: String, status: InternalIdentityStatus) {
             lock.lock()
             defer { lock.unlock() }
             statuses[spaceId] = status
@@ -47,7 +103,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
             }
         }
 
-        func getOrStartTask(spaceId: String, work: @escaping () async -> CanonicalIdentityStatus) -> Task<CanonicalIdentityStatus, Never> {
+        func getOrStartTask(spaceId: String, work: @escaping () async -> InternalIdentityStatus) -> Task<InternalIdentityStatus, Never> {
             lock.lock()
             defer { lock.unlock() }
             if let existing = inFlightTasks[spaceId] {
@@ -79,7 +135,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         self.bootstrapService = bootstrapService
     }
 
-    // MARK: - Invalidation
+    // MARK: - Invalidation & Retry
 
     public func invalidateCache(spaceId: String? = nil) {
         identityStore.invalidate(spaceId)
@@ -90,56 +146,99 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         )
     }
 
-    // MARK: - Canonical Identity Tri-State Status
+    public func retryIdentityResolution(spaceId: String) {
+        guard PinkhaRuntime.enabled, !spaceId.isEmpty else { return }
+        identityStore.invalidate(spaceId)
+        _ = resolveInternalIdentityTask(spaceId: spaceId)
+    }
 
-    /// Synchronously returns current canonical identity status for space.
+    // MARK: - Internal & Canonical Identity Tri-State Status
+
+    /// Synchronously returns current internal identity status (canonical + order) for space.
     /// If uninitialized, triggers a deduplicated async task and returns .loading.
-    public func canonicalIdentityStatus(spaceId: String) -> CanonicalIdentityStatus {
+    public func internalIdentityStatus(spaceId: String) -> InternalIdentityStatus {
         guard PinkhaRuntime.enabled, !spaceId.isEmpty else {
             return .unavailable("Pinkha disabled or empty spaceId")
         }
 
-        // Check if bootstrapService already has an in-memory manifest for this space
-        if let manifest = bootstrapService.manifest(forSpaceId: spaceId), manifest.spaceId == spaceId {
-            let pId = manifest.documentAssociationsPropertyId
-            let pKey = manifest.documentAssociationsPropertyKey
-            if !pId.isEmpty || !pKey.isEmpty {
-                let status = CanonicalIdentityStatus.known(propertyId: pId, propertyKey: pKey)
-                identityStore.setStatus(spaceId, status: status)
-                return status
+        if let manifest = bootstrapService.manifest(forSpaceId: spaceId),
+           manifest.spaceId == spaceId,
+           let identities = PinkhaInternalPropertyIdentities(manifest: manifest) {
+            let status = InternalIdentityStatus.known(identities)
+            let previous = identityStore.getStatus(spaceId)
+            identityStore.setStatus(spaceId, status: status)
+            if previous != status, previous != nil {
+                NotificationCenter.default.post(
+                    name: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
+                    object: nil,
+                    userInfo: ["spaceId": spaceId]
+                )
             }
+            return status
         }
 
         if let cached = identityStore.getStatus(spaceId) {
             return cached
         }
 
-        // Kick off single deduplicated background resolution
-        _ = resolveCanonicalIdentityTask(spaceId: spaceId)
+        _ = resolveInternalIdentityTask(spaceId: spaceId)
         return .loading
     }
 
-    /// Asynchronously awaits settled canonical identity resolution.
-    public func awaitCanonicalIdentity(spaceId: String) async -> CanonicalIdentityStatus {
+    /// Asynchronously awaits settled internal identity resolution.
+    /// Retries automatically if a previous attempt ended in `.unavailable`.
+    public func awaitInternalIdentity(spaceId: String) async -> InternalIdentityStatus {
         guard PinkhaRuntime.enabled, !spaceId.isEmpty else {
             return .unavailable("Pinkha disabled or empty spaceId")
         }
 
-        if let manifest = bootstrapService.manifest(forSpaceId: spaceId), manifest.spaceId == spaceId {
-            let pId = manifest.documentAssociationsPropertyId
-            let pKey = manifest.documentAssociationsPropertyKey
-            if !pId.isEmpty || !pKey.isEmpty {
-                let status = CanonicalIdentityStatus.known(propertyId: pId, propertyKey: pKey)
-                identityStore.setStatus(spaceId, status: status)
-                return status
-            }
+        if let manifest = bootstrapService.manifest(forSpaceId: spaceId),
+           manifest.spaceId == spaceId,
+           let identities = PinkhaInternalPropertyIdentities(manifest: manifest) {
+            let status = InternalIdentityStatus.known(identities)
+            identityStore.setStatus(spaceId, status: status)
+            return status
         }
 
-        let task = resolveCanonicalIdentityTask(spaceId: spaceId)
+        if case .unavailable = identityStore.getStatus(spaceId) {
+            identityStore.invalidate(spaceId)
+        }
+
+        let task = resolveInternalIdentityTask(spaceId: spaceId)
         return await task.value
     }
 
-    private func resolveCanonicalIdentityTask(spaceId: String) -> Task<CanonicalIdentityStatus, Never> {
+    /// Synchronously returns current canonical identity status for space.
+    public func canonicalIdentityStatus(spaceId: String) -> CanonicalIdentityStatus {
+        switch internalIdentityStatus(spaceId: spaceId) {
+        case .known(let ids):
+            if !ids.canonicalPropertyId.isEmpty || !ids.canonicalPropertyKey.isEmpty {
+                return .known(propertyId: ids.canonicalPropertyId, propertyKey: ids.canonicalPropertyKey)
+            }
+            return .unavailable("Manifest has empty canonical association IDs")
+        case .loading:
+            return .loading
+        case .unavailable(let reason):
+            return .unavailable(reason)
+        }
+    }
+
+    /// Asynchronously awaits settled canonical identity resolution.
+    public func awaitCanonicalIdentity(spaceId: String) async -> CanonicalIdentityStatus {
+        switch await awaitInternalIdentity(spaceId: spaceId) {
+        case .known(let ids):
+            if !ids.canonicalPropertyId.isEmpty || !ids.canonicalPropertyKey.isEmpty {
+                return .known(propertyId: ids.canonicalPropertyId, propertyKey: ids.canonicalPropertyKey)
+            }
+            return .unavailable("Manifest has empty canonical association IDs")
+        case .loading:
+            return .loading
+        case .unavailable(let reason):
+            return .unavailable(reason)
+        }
+    }
+
+    private func resolveInternalIdentityTask(spaceId: String) -> Task<InternalIdentityStatus, Never> {
         identityStore.getOrStartTask(spaceId: spaceId) { [weak self] in
             guard let self else { return .unavailable("Deallocated") }
             do {
@@ -153,12 +252,10 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
                 guard let manifest, manifest.spaceId == spaceId else {
                     return .unavailable("Manifest not found or space mismatch for \(spaceId)")
                 }
-                let pId = manifest.documentAssociationsPropertyId
-                let pKey = manifest.documentAssociationsPropertyKey
-                if !pId.isEmpty || !pKey.isEmpty {
-                    return .known(propertyId: pId, propertyKey: pKey)
+                if let identities = PinkhaInternalPropertyIdentities(manifest: manifest) {
+                    return .known(identities)
                 } else {
-                    return .unavailable("Manifest has empty canonical association IDs")
+                    return .unavailable("Manifest has empty internal property IDs")
                 }
             } catch {
                 logger.error("Failed to resolve canonical manifest for \(spaceId): \(error.localizedDescription)")
@@ -167,17 +264,16 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         }
     }
 
-    // MARK: - Canonical Storage Identification
+    // MARK: - Canonical, Order & Internal Storage Identification
 
-    /// Synchronously checks if a property is the internal canonical storage relation.
+    /// Synchronously checks if a property is the internal canonical Torah association storage relation.
     /// Strictly matches verified manifest property ID or Key within the same Space.
     /// Never matches purely by Hebrew/English display name.
     public func isCanonicalStorage(propertyId: String, key: String, spaceId: String) -> Bool {
         guard PinkhaRuntime.enabled, !spaceId.isEmpty else { return false }
-        switch canonicalIdentityStatus(spaceId: spaceId) {
-        case let .known(manifestId, manifestKey):
-            let matches = (!manifestId.isEmpty && propertyId == manifestId) ||
-                          (!manifestKey.isEmpty && key == manifestKey)
+        switch internalIdentityStatus(spaceId: spaceId) {
+        case .known(let identities):
+            let matches = identities.isCanonical(propertyId: propertyId, key: key)
             if matches {
                 logger.debug("Identified canonical storage relation: id=\(propertyId), key=\(key), spaceId=\(spaceId)")
             }
@@ -190,11 +286,63 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
     /// Asynchronously resolves the space manifest if needed and evaluates canonical storage.
     public func isCanonicalStorageAsync(propertyId: String, key: String, spaceId: String) async -> Bool {
         guard PinkhaRuntime.enabled, !spaceId.isEmpty else { return false }
-        let status = await awaitCanonicalIdentity(spaceId: spaceId)
-        switch status {
-        case let .known(manifestId, manifestKey):
-            return (!manifestId.isEmpty && propertyId == manifestId) ||
-                   (!manifestKey.isEmpty && key == manifestKey)
+        switch await awaitInternalIdentity(spaceId: spaceId) {
+        case .known(let identities):
+            return identities.isCanonical(propertyId: propertyId, key: key)
+        case .loading, .unavailable:
+            return false
+        }
+    }
+
+    /// Synchronously checks if a property is the internal hierarchy order (`סדר`) storage relation.
+    public func isOrderStorage(propertyId: String, key: String, spaceId: String) -> Bool {
+        guard PinkhaRuntime.enabled, !spaceId.isEmpty else { return false }
+        switch internalIdentityStatus(spaceId: spaceId) {
+        case .known(let identities):
+            let matches = identities.isOrder(propertyId: propertyId, key: key)
+            if matches {
+                logger.debug("Identified internal order relation: id=\(propertyId), key=\(key), spaceId=\(spaceId)")
+            }
+            return matches
+        case .loading, .unavailable:
+            return false
+        }
+    }
+
+    /// Asynchronously resolves the space manifest if needed and evaluates order storage.
+    public func isOrderStorageAsync(propertyId: String, key: String, spaceId: String) async -> Bool {
+        guard PinkhaRuntime.enabled, !spaceId.isEmpty else { return false }
+        switch await awaitInternalIdentity(spaceId: spaceId) {
+        case .known(let identities):
+            return identities.isOrder(propertyId: propertyId, key: key)
+        case .loading, .unavailable:
+            return false
+        }
+    }
+
+    /// Synchronously checks if a property is ANY internal Pinkha storage relation
+    /// (canonical Torah association storage OR internal hierarchy order storage).
+    /// Strictly matches verified manifest IDs/Keys within the same Space; never matches by display name.
+    public func isInternalProperty(propertyId: String, key: String, spaceId: String) -> Bool {
+        guard PinkhaRuntime.enabled, !spaceId.isEmpty else { return false }
+        switch internalIdentityStatus(spaceId: spaceId) {
+        case .known(let identities):
+            let matches = identities.isInternal(propertyId: propertyId, key: key)
+            if matches {
+                logger.debug("Identified internal Pinkha relation: id=\(propertyId), key=\(key), spaceId=\(spaceId)")
+            }
+            return matches
+        case .loading, .unavailable:
+            return false
+        }
+    }
+
+    /// Asynchronously resolves the space manifest if needed and evaluates internal property status.
+    public func isInternalPropertyAsync(propertyId: String, key: String, spaceId: String) async -> Bool {
+        guard PinkhaRuntime.enabled, !spaceId.isEmpty else { return false }
+        switch await awaitInternalIdentity(spaceId: spaceId) {
+        case .known(let identities):
+            return identities.isInternal(propertyId: propertyId, key: key)
         case .loading, .unavailable:
             return false
         }
@@ -242,12 +390,12 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
     /// Determines if adding this property to the given target is permitted.
     /// Internal access modifier: uses internal `PropertiesModuleTarget`.
     func canAddProperty(propertyId: String, key: String, target: PropertiesModuleTarget, spaceId: String) -> Bool {
-        let status = canonicalIdentityStatus(spaceId: spaceId)
+        let status = internalIdentityStatus(spaceId: spaceId)
         switch status {
         case .loading, .unavailable:
             return false
-        case let .known(manifestId, manifestKey):
-            if (!manifestId.isEmpty && propertyId == manifestId) || (!manifestKey.isEmpty && key == manifestKey) {
+        case .known(let identities):
+            if identities.isInternal(propertyId: propertyId, key: key) {
                 return false
             }
         }
@@ -258,12 +406,12 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
     }
 
     func canAddPropertyAsync(propertyId: String, key: String, target: PropertiesModuleTarget, spaceId: String) async -> Bool {
-        let status = await awaitCanonicalIdentity(spaceId: spaceId)
+        let status = await awaitInternalIdentity(spaceId: spaceId)
         switch status {
         case .loading, .unavailable:
             return false
-        case let .known(manifestId, manifestKey):
-            if (!manifestId.isEmpty && propertyId == manifestId) || (!manifestKey.isEmpty && key == manifestKey) {
+        case .known(let identities):
+            if identities.isInternal(propertyId: propertyId, key: key) {
                 return false
             }
         }
@@ -276,12 +424,12 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
     /// Determines if editing the value of this property through generic Anytype text editors is permitted.
     public func canEditGenericPropertyValue(propertyId: String, key: String, spaceId: String) -> Bool {
         guard PinkhaRuntime.enabled, !spaceId.isEmpty else { return true }
-        let status = canonicalIdentityStatus(spaceId: spaceId)
+        let status = internalIdentityStatus(spaceId: spaceId)
         switch status {
         case .loading, .unavailable:
             return false
-        case let .known(manifestId, manifestKey):
-            if (!manifestId.isEmpty && propertyId == manifestId) || (!manifestKey.isEmpty && key == manifestKey) {
+        case .known(let identities):
+            if identities.isInternal(propertyId: propertyId, key: key) {
                 return false
             }
             if TorahNativePropertyDefinition.definition(for: key) != nil {
@@ -294,12 +442,12 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
     /// Determines if editing the definition of this property (rename, change format) is permitted.
     public func canEditPropertyDefinition(propertyId: String, key: String, spaceId: String) -> Bool {
         guard PinkhaRuntime.enabled, !spaceId.isEmpty else { return true }
-        let status = canonicalIdentityStatus(spaceId: spaceId)
+        let status = internalIdentityStatus(spaceId: spaceId)
         switch status {
         case .loading, .unavailable:
             return false
-        case let .known(manifestId, manifestKey):
-            if (!manifestId.isEmpty && propertyId == manifestId) || (!manifestKey.isEmpty && key == manifestKey) {
+        case .known(let identities):
+            if identities.isInternal(propertyId: propertyId, key: key) {
                 return false
             }
             if TorahNativePropertyDefinition.definition(for: key) != nil {
@@ -312,12 +460,12 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
     /// Determines if deleting the property definition is permitted.
     public func canDeletePropertyDefinition(propertyId: String, key: String, spaceId: String) -> Bool {
         guard PinkhaRuntime.enabled, !spaceId.isEmpty else { return true }
-        let status = canonicalIdentityStatus(spaceId: spaceId)
+        let status = internalIdentityStatus(spaceId: spaceId)
         switch status {
         case .loading, .unavailable:
             return false
-        case let .known(manifestId, manifestKey):
-            if (!manifestId.isEmpty && propertyId == manifestId) || (!manifestKey.isEmpty && key == manifestKey) {
+        case .known(let identities):
+            if identities.isInternal(propertyId: propertyId, key: key) {
                 return false
             }
             if TorahNativePropertyDefinition.definition(for: key) != nil {
@@ -329,7 +477,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
 
     /// Determines if the property should be rendered in the document header.
     public func shouldRenderInHeader(propertyId: String, key: String, spaceId: String) -> Bool {
-        if isCanonicalStorage(propertyId: propertyId, key: key, spaceId: spaceId) {
+        if isInternalProperty(propertyId: propertyId, key: key, spaceId: spaceId) {
             return false
         }
         return true
@@ -338,7 +486,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
     /// Determines if the property should be displayed in the property picker for `target`.
     /// Internal access modifier: uses internal `PropertiesModuleTarget`.
     func shouldDisplayInPicker(propertyId: String, key: String, target: PropertiesModuleTarget, spaceId: String) -> Bool {
-        if isCanonicalStorage(propertyId: propertyId, key: key, spaceId: spaceId) {
+        if isInternalProperty(propertyId: propertyId, key: key, spaceId: spaceId) {
             return false
         }
         if TorahNativePropertyDefinition.definition(for: key) != nil {
@@ -358,7 +506,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
 
     // MARK: - Private Target Inspection
 
-    private func isTargetEligible(target: PropertiesModuleTarget, spaceId: String) -> Bool {
+    public func isTargetEligible(target: PropertiesModuleTarget, spaceId: String) -> Bool {
         switch target {
         case .type(let typeData):
             let typeId: String
@@ -378,7 +526,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         }
     }
 
-    private func isTargetEligibleAsync(target: PropertiesModuleTarget, spaceId: String) async -> Bool {
+    public func isTargetEligibleAsync(target: PropertiesModuleTarget, spaceId: String) async -> Bool {
         switch target {
         case .type(let typeData):
             let typeId: String
@@ -404,15 +552,12 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         }
     }
 
-    func isDataviewTargetEligible(objectId: String, typeDetails: ObjectDetails?, spaceId: String) -> Bool {
+    public func isDataviewEligible(typeDetails: ObjectDetails?, filteredSetOf: [String], spaceId: String) -> Bool {
         if let typeDetails, !typeDetails.id.isEmpty {
             guard typeDetails.spaceId == spaceId else { return false }
             return isTargetEligibleForNativeProperties(typeId: typeDetails.id, spaceId: spaceId)
         }
-        guard !objectId.isEmpty else { return false }
-        let setDetails = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId).details
-        guard let setDetails, setDetails.spaceId == spaceId else { return false }
-        let sources = setDetails.filteredSetOf
+        let sources = filteredSetOf.filter { !$0.isEmpty }
         guard !sources.isEmpty else { return false }
         for sourceTypeId in sources {
             guard isTargetEligibleForNativeProperties(typeId: sourceTypeId, spaceId: spaceId) else {
@@ -422,6 +567,18 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         return true
     }
 
+    func isDataviewTargetEligible(objectId: String, typeDetails: ObjectDetails?, spaceId: String) -> Bool {
+        if let typeDetails, !typeDetails.id.isEmpty {
+            guard typeDetails.spaceId == spaceId else { return false }
+            return isTargetEligibleForNativeProperties(typeId: typeDetails.id, spaceId: spaceId)
+        }
+        guard !objectId.isEmpty else { return false }
+        let setDetails = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId).details
+            ?? ObjectDetailsStorage.instance().objectDetails(for: objectId)
+        guard let setDetails, setDetails.spaceId == spaceId else { return false }
+        return isDataviewEligible(typeDetails: nil, filteredSetOf: setDetails.filteredSetOf, spaceId: spaceId)
+    }
+
     func isDataviewTargetEligibleAsync(objectId: String, typeDetails: ObjectDetails?, spaceId: String) async -> Bool {
         if let typeDetails, !typeDetails.id.isEmpty {
             guard typeDetails.spaceId == spaceId else { return false }
@@ -429,13 +586,13 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         }
         guard !objectId.isEmpty else { return false }
         let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
-        var setDetails = doc.details
+        var setDetails = doc.details ?? ObjectDetailsStorage.instance().objectDetails(for: objectId)
         if setDetails == nil {
             try? await doc.open()
             setDetails = doc.details
         }
         guard let setDetails, setDetails.spaceId == spaceId else { return false }
-        let sources = setDetails.filteredSetOf
+        let sources = setDetails.filteredSetOf.filter { !$0.isEmpty }
         guard !sources.isEmpty else { return false }
         for sourceTypeId in sources {
             guard await isTargetEligibleForNativePropertiesAsync(typeId: sourceTypeId, spaceId: spaceId) else {

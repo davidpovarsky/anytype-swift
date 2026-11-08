@@ -293,11 +293,32 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
         .cancellable()
         .store(in: &subscriptions)
         
+        NotificationCenter.default.publisher(for: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification)
+            .receiveOnMain()
+            .sink { [weak self] notification in
+                guard let self else { return }
+                if let notifiedSpace = notification.userInfo?["spaceId"] as? String,
+                   notifiedSpace != self.spaceId {
+                    return
+                }
+                self.triggerSync(updates: [.relationDetails])
+            }
+            .store(in: &subscriptions)
+
         propertyDetailsStorage.relationsDetailsPublisher(spaceId: spaceId)
             .sink { [weak self] details in
                 guard let self, let objectDetails = self.details else { return }
                 
-                let contains = details.contains { objectDetails.values.map(\.key).contains([$0.key]) }
+                let recommendedIds = Set(
+                    objectDetails.recommendedRelations +
+                    objectDetails.recommendedFeaturedRelations +
+                    objectDetails.recommendedHiddenRelations +
+                    objectDetails.objectType.recommendedRelations +
+                    objectDetails.objectType.recommendedFeaturedRelations +
+                    objectDetails.objectType.recommendedHiddenRelations
+                )
+                let valueKeys = Set(objectDetails.values.map(\.key) + objectDetails.featuredRelations)
+                let contains = details.contains { valueKeys.contains($0.key) || recommendedIds.contains($0.id) }
                 if contains {
                     triggerSync(updates: [.relationDetails])
                 }
@@ -308,7 +329,7 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
     private func triggerUpdateRelations(updates: [DocumentUpdate], permissionsChanged: Bool) -> [BaseDocumentUpdate] {
         guard let details else { return [] }
         
-        var updatesForRelations: [DocumentUpdate] = [.general, .details(id: objectId)]
+        var updatesForRelations: [DocumentUpdate] = [.general, .relationDetails, .details(id: objectId)]
         updatesForRelations.append(contentsOf: parsedRelationDependedDetailsEvents)
         updatesForRelations.append(.details(id: details.type))
         

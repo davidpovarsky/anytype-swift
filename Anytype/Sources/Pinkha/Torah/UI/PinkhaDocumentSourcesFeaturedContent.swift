@@ -2,15 +2,38 @@ import Loc
 import PinkhaKit
 import SwiftUI
 
-struct PinkhaDocumentSourcesPresentation {
+struct PinkhaDocumentSourcesPresentation: Equatable {
+    static let compactAddVisualSize = CGSize(width: 22, height: 18)
+    static let compactAddLayoutSize = CGSize(width: 22, height: 26)
+    static let compactAddHitTargetSize = CGSize(width: 44, height: 44)
+    static let compactAddHitTestingInsets = EdgeInsets(top: -9, leading: -11, bottom: -9, trailing: -11)
+
     let visibleAssociations: [TorahAssociationItem]
     let remainingAssociations: [TorahAssociationItem]
     let remainingCount: Int
+    let canEdit: Bool
 
-    init(associations: [TorahAssociationItem]) {
+    var showsEmptyPlaceholderAdd: Bool {
+        visibleAssociations.isEmpty && canEdit
+    }
+
+    var showsCompactAdjacentAdd: Bool {
+        !visibleAssociations.isEmpty && canEdit
+    }
+
+    var showsOverflowMenu: Bool {
+        remainingCount > 0
+    }
+
+    var hasAnyAddControl: Bool {
+        showsEmptyPlaceholderAdd || showsCompactAdjacentAdd
+    }
+
+    init(associations: [TorahAssociationItem], canEdit: Bool = true) {
         visibleAssociations = Array(associations.prefix(2))
         remainingAssociations = Array(associations.dropFirst(2))
         remainingCount = associations.count - visibleAssociations.count
+        self.canEdit = canEdit
     }
 }
 
@@ -24,20 +47,23 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
 
     var body: some View {
         let presentation = PinkhaDocumentSourcesPresentation(
-            associations: session.documentPropertyProjection.sources
+            associations: session.documentPropertyProjection.sources,
+            canEdit: session.canEditAssociations
         )
 
-        if presentation.visibleAssociations.isEmpty {
-            if session.canEditAssociations {
-                addSourceButton
-            }
-        } else {
+        if presentation.showsEmptyPlaceholderAdd {
+            addSourceButton
+        } else if !presentation.visibleAssociations.isEmpty {
             ForEach(presentation.visibleAssociations) { item in
                 sourceChip(for: item)
             }
 
-            if presentation.remainingCount > 0 {
+            if presentation.showsOverflowMenu {
                 moreSourcesMenu(presentation: presentation)
+            }
+
+            if presentation.showsCompactAdjacentAdd {
+                compactAddSourceButton
             }
         }
     }
@@ -68,7 +94,7 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
             }
             if session.canEditAssociations {
                 Button {
-                    session.presentSearch(scope: .document)
+                    session.presentSearch(scope: .document, initialCategory: .references, host: .inspector)
                 } label: {
                     Label(
                         TorahAssociationDisplayFormatter.prefersHebrew(locale) ? "הוסף מקור" : "Add source",
@@ -111,10 +137,36 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
             .contentShape(Rectangle())
     }
 
+    private var compactAddSourceButton: some View {
+        Button {
+            session.presentSearch(scope: .document, initialCategory: .references, host: .inspector)
+        } label: {
+            AnytypeText("+", style: .relation2Regular)
+                .foregroundStyle(featuredChipStyle.fontColor)
+                .lineLimit(1)
+                .frame(
+                    width: PinkhaDocumentSourcesPresentation.compactAddVisualSize.width,
+                    height: PinkhaDocumentSourcesPresentation.compactAddVisualSize.height
+                )
+                .background(Color.Shape.tertiary)
+                .clipShape(.rect(cornerRadius: 3))
+                .padding(.vertical, 4)
+                .contentShape(
+                    Rectangle().inset(by: -11)
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("torah-document-sources-add")
+        .accessibilityLabel(Loc.add + " " + Loc.Pinkha.Torah.sources)
+        .accessibilityValue("compact-icon")
+        .accessibilityAddTraits(.isButton)
+    }
+
     private var addSourceButton: some View {
         let title = "+ " + Loc.Pinkha.Torah.sources
         return Button {
-            session.presentSearch(scope: .document)
+            session.presentSearch(scope: .document, initialCategory: .references, host: .inspector)
         } label: {
             TagView(
                 config: TagView.Config(
@@ -132,6 +184,7 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("torah-document-sources-add")
         .accessibilityLabel(Loc.add + " " + Loc.Pinkha.Torah.sources)
+        .accessibilityValue("placeholder")
         .accessibilityAddTraits(.isButton)
     }
 }

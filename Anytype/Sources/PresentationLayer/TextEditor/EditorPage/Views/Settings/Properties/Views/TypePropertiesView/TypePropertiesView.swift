@@ -130,8 +130,23 @@ struct TypePropertiesView: View {
                 AnytypeText(data.relation.name, style: .uxBodyRegular)
                 
                 Spacer()
-            }.disabled(!model.canEditPropertiesList || !data.relation.isEditable)
+            }.disabled(!model.canInspectRelation(data))
             
+            if model.canEditPropertiesList && model.isRelationHidden(data) {
+                Button {
+                    model.onRelationReveal(data)
+                } label: {
+                    AnytypeText(Loc.show, style: .caption1Medium)
+                        .foregroundStyle(Color.Text.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.Shape.tertiary)
+                        .clipShape(.rect(cornerRadius: 4))
+                }
+                .accessibilityIdentifier("torah-type-property-show-\(data.relation.key)")
+                .padding(.trailing, 8)
+            }
+
             if model.canEditPropertiesList && data.canDrag {
                 MoveIndicator()
             }
@@ -142,8 +157,19 @@ struct TypePropertiesView: View {
         .padding(.horizontal, 20)
         .contextMenu {
             if model.canEditPropertiesList {
-                Button(Loc.remove, role: .destructive) {
-                    model.onRelationRemove(data)
+                if model.isRelationHidden(data) {
+                    Button(Loc.show) {
+                        model.onRelationReveal(data)
+                    }
+                } else {
+                    Button(Loc.hide) {
+                        model.onRelationHide(data)
+                    }
+                }
+                if model.canRemoveRelation(data) {
+                    Button(Loc.remove, role: .destructive) {
+                        model.onRelationRemove(data)
+                    }
                 }
             }
         }

@@ -39,6 +39,10 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     init(data: PropertiesSearchData) {
         self.data = data
     }
+
+    func isInstalledButHidden(_ relationId: String) -> Bool {
+        data.hiddenRelationsIds.contains(relationId)
+    }
     
     func search(text: String) async {
         let propertyFormats = SupportedPropertyFormat.allCases.filter {
@@ -46,12 +50,22 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
             return $0.title.lowercased().contains(text.lowercased())
         }
 
-        // Await settled canonical identity before filtering to prevent leaks on cold start
-        _ = await PinkhaTorahPropertyPolicy.shared.awaitCanonicalIdentity(spaceId: data.spaceId)
+        // Await settled internal identity (canonical + order) before filtering to prevent leaks on cold start
+        _ = await PinkhaTorahPropertyPolicy.shared.awaitInternalIdentity(spaceId: data.spaceId)
+
+        let isEligibleForNative = await PinkhaTorahPropertyPolicy.shared.canAddPropertyAsync(
+            propertyId: "", key: TorahNativePropertyDefinition.all[0].key, target: data.target, spaceId: data.spaceId
+        )
 
         let rawExistingProperties = (try? await searchService.searchRelations(text: text, excludedIds: data.excludedRelationsIds, spaceId: data.spaceId)) ?? []
         let existingProperties = rawExistingProperties.filter {
-            !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: data.spaceId)
+            if PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: $0.id, key: $0.key, spaceId: data.spaceId) {
+                return false
+            }
+            if TorahNativePropertyDefinition.definition(for: $0.key) != nil && !isEligibleForNative {
+                return false
+            }
+            return true
         }
 
         let nativeProperties = await PinkhaTorahNativePropertyCatalog.shared.searchNativeProperties(
@@ -139,8 +153,8 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     
     private func onExistingPropertyTap(_ details: PropertyDetails) async throws {
         switch data.target {
-        case let .type(data):
-            try await addPropertyToType(relation: details, typeData: data)
+        case let .type(typeData):
+            try await addPropertyToType(relation: details, typeData: typeData)
         case let .dataview(objectId, activeViewId, typeDetails):
             try await addPropertyToDataview(objectId: objectId, relation: details, activeViewId: activeViewId, typeDetails: typeDetails)
         case .object(let objectId):
@@ -151,6 +165,15 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     }
     
     private func addPropertyToType(relation: PropertyDetails, typeData: PropertiesModuleTypeData) async throws {
+        if isInstalledButHidden(relation.id) {
+            switch typeData {
+            case .recommendedFeaturedRelations(let type):
+                try await propertiesService.revealTypeHiddenProperty(type: type, property: relation, featured: true)
+            case .recommendedRelations(let type):
+                try await propertiesService.revealTypeHiddenProperty(type: type, property: relation, featured: false)
+            }
+            return
+        }
         switch typeData {
         case .recommendedFeaturedRelations(let type):
             try await propertiesService.addTypeFeaturedRecommendedProperty(type: type, property: relation)
@@ -160,19 +183,64 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     }
     
     private func addPropertyToDataview(objectId: String, relation: PropertyDetails, activeViewId: String, typeDetails: ObjectDetails?) async throws {
-        if let typeDetails {
+        let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: data.spaceId)
+        let dataviewBlock: BlockDataview? = {
+            guard let blockInfo = doc.infoContainer.get(id: SetConstants.dataviewBlockId),
+                  case .dataView(let dv) = blockInfo.content else {
+                return nil
+            }
+            return dv
+        }()
+        let alreadyInDataviewLinks = dataviewBlock?.relationLinks.contains(where: { $0.key == relation.key }) ?? false
+        let activeView = dataviewBlock?.views.first(where: { $0.id == activeViewId })
+        let alreadyInViewOptions = activeView?.options.contains(where: { $0.key == relation.key }) ?? false
+
+        if !isInstalledButHidden(relation.id) && !alreadyInDataviewLinks {
+            if let typeDetails {
+                let type = ObjectType(details: typeDetails)
+                try await addPropertyToType(relation: relation, typeData: .recommendedRelations(type))
+            } else {
+                try await dataviewService.addRelation(objectId: objectId, blockId: SetConstants.dataviewBlockId, relationDetails: relation)
+            }
+        } else if let typeDetails, isInstalledButHidden(relation.id) {
             let type = ObjectType(details: typeDetails)
-            try await addPropertyToType(relation: relation, typeData: .recommendedRelations(type))
-        } else {
-            try await dataviewService.addRelation(objectId: objectId, blockId: SetConstants.dataviewBlockId, relationDetails: relation)
+            if type.recommendedHiddenRelations.contains(relation.id) {
+                try await propertiesService.revealTypeHiddenProperty(type: type, property: relation, featured: false)
+            }
         }
         
-        let newOption = DataviewRelationOption(key: relation.key, isVisible: true)
-        try await dataviewService.addViewRelation(objectId: objectId, blockId: SetConstants.dataviewBlockId, relation: newOption.asMiddleware, viewId: activeViewId)
+        let visibleOption = DataviewRelationOption(key: relation.key, isVisible: true).asMiddleware
+        if alreadyInViewOptions {
+            try await dataviewService.replaceViewRelation(
+                objectId: objectId,
+                blockId: SetConstants.dataviewBlockId,
+                key: relation.key,
+                with: visibleOption,
+                viewId: activeViewId
+            )
+        } else {
+            try await dataviewService.addViewRelation(
+                objectId: objectId,
+                blockId: SetConstants.dataviewBlockId,
+                relation: visibleOption,
+                viewId: activeViewId
+            )
+        }
     }
     
-    
     func addPropertyToObject(objectId: String, relation: PropertyDetails) async throws {
+        let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: data.spaceId)
+        if let docDetails = doc.details {
+            let objectType = docDetails.objectType
+            if isInstalledButHidden(relation.id) || objectType.recommendedHiddenRelations.contains(relation.id) {
+                try await propertiesService.revealTypeHiddenProperty(type: objectType, property: relation, featured: false)
+                return
+            }
+            if TorahNativePropertyDefinition.definition(for: relation.key) != nil {
+                try await propertiesService.addTypeRecommendedProperty(type: objectType, property: relation)
+                return
+            }
+        }
         try await propertiesService.addProperties(objectId: objectId, propertiesDetails: [relation])
     }
 }

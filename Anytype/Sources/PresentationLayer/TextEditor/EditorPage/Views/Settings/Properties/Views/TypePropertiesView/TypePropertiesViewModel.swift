@@ -75,9 +75,42 @@ final class TypePropertiesViewModel {
     }
     
     private func filterProperties(_ properties: [Property]) -> [Property] {
-        properties.filter {
-            !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: document.spaceId)
+        let isEligibleType = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+            typeId: document.objectId, spaceId: document.spaceId
+        )
+        return properties.filter {
+            if PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: $0.id, key: $0.key, spaceId: document.spaceId) {
+                return false
+            }
+            if TorahNativePropertyDefinition.definition(for: $0.key) != nil && !isEligibleType {
+                return false
+            }
+            return true
         }
+    }
+
+    func isRelationHidden(_ row: TypePropertiesRelationRow) -> Bool {
+        parsedProperties.hiddenProperties.contains { $0.id == row.relation.id }
+    }
+
+    func canInspectRelation(_ row: TypePropertiesRelationRow) -> Bool {
+        guard canEditPropertiesList else { return false }
+        if TorahNativePropertyDefinition.definition(for: row.relation.key) != nil {
+            return true
+        }
+        return row.relation.isEditable
+    }
+
+    func canRemoveRelation(_ row: TypePropertiesRelationRow) -> Bool {
+        guard canEditPropertiesList else { return false }
+        guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
+            propertyId: row.relation.id, key: row.relation.key, spaceId: document.spaceId
+        ) else { return false }
+        let isNative = TorahNativePropertyDefinition.definition(for: row.relation.key) != nil
+        let isEligibleType = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+            typeId: document.objectId, spaceId: document.spaceId
+        )
+        return !(isNative && isEligibleType)
     }
 
     private func setupRelationsSubscription() async {
@@ -113,7 +146,7 @@ final class TypePropertiesViewModel {
         guard let details = document.details else { return }
         guard let format = data.relation.format else { return }
         
-        guard !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+        guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: data.relation.id, key: data.relation.key, spaceId: document.spaceId
         ) else { return }
 
@@ -136,11 +169,14 @@ final class TypePropertiesViewModel {
         guard let details = document.details else { return }
         let type = ObjectType(details: details)
         let typeData: PropertiesModuleTypeData = section.isFeatured ? .recommendedFeaturedRelations(type) : .recommendedRelations(type)
+        let visibleRelationIds = (filterProperties(parsedProperties.featuredProperties) + filterProperties(parsedProperties.sidebarProperties)).map(\.id)
+        let hiddenIds = Set(filterProperties(parsedProperties.hiddenProperties).map(\.id))
         
         relationsSearchData = PropertiesSearchData(
             objectId: document.objectId,
             spaceId: document.spaceId,
-            excludedRelationsIds: relationRows.compactMap(\.relationId),
+            excludedRelationsIds: visibleRelationIds,
+            hiddenRelationsIds: hiddenIds,
             target: .type(typeData),
             onRelationSelect: { details, isNew in
                 AnytypeAnalytics.instance().logAddExistingOrCreateRelation(
@@ -154,18 +190,38 @@ final class TypePropertiesViewModel {
         AnytypeAnalytics.instance().logConflictFieldHelp()
         showConflictingInfo.toggle()
     }
-    
-    func onRelationRemove(_ row: TypePropertiesRelationRow) {
+
+    func onRelationReveal(_ row: TypePropertiesRelationRow, featured: Bool = false) {
         guard let details = document.details else { return }
-        guard !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+        guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: row.relation.id, key: row.relation.key, spaceId: document.spaceId
         ) else { return }
+        let type = ObjectType(details: details)
+        Task {
+            guard let relationDetails = try? propertyDetailsStorage.relationsDetails(key: row.relation.key, spaceId: document.spaceId) else {
+                return
+            }
+            try? await propertiesService.revealTypeHiddenProperty(type: type, property: relationDetails, featured: featured)
+        }
+    }
 
-        let isNative = TorahNativePropertyDefinition.definition(for: row.relation.key) != nil
-        let isEligibleType = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
-            typeId: details.id, spaceId: document.spaceId
-        )
-        guard !(isNative && isEligibleType) else { return }
+    func onRelationHide(_ row: TypePropertiesRelationRow) {
+        guard let details = document.details else { return }
+        guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
+            propertyId: row.relation.id, key: row.relation.key, spaceId: document.spaceId
+        ) else { return }
+        let type = ObjectType(details: details)
+        Task {
+            guard let relationDetails = try? propertyDetailsStorage.relationsDetails(key: row.relation.key, spaceId: document.spaceId) else {
+                return
+            }
+            try? await propertiesService.hideTypeProperty(type: type, property: relationDetails)
+        }
+    }
+
+    func onRelationRemove(_ row: TypePropertiesRelationRow) {
+        guard let details = document.details else { return }
+        guard canRemoveRelation(row) else { return }
 
         Task {
             try await propertiesService.removeTypeProperty(details: details, propertyId: row.relation.id)
@@ -195,13 +251,17 @@ final class TypePropertiesViewModel {
     }
     
     private func updateConflictRelations(details: ObjectDetails) async throws {
+        let isEligibleType = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+            typeId: document.objectId, spaceId: document.spaceId
+        )
         let releationKeys = try await propertiesService.getConflictPropertiesForType(typeId: document.objectId, spaceId: document.spaceId)
         conflictRelations = propertyDetailsStorage
             .relationsDetails(ids: releationKeys, spaceId: document.spaceId)
             .filter {
                 !$0.isHidden &&
                 !$0.isDeleted &&
-                !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: document.spaceId)
+                !PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: $0.id, key: $0.key, spaceId: document.spaceId) &&
+                (TorahNativePropertyDefinition.definition(for: $0.key) == nil || isEligibleType)
             }
         
         let newRows = fieldsDataBuilder.build(

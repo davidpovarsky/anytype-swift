@@ -32,11 +32,16 @@ final class SetPropertiesCoordinatorViewModel: SetPropertiesCoordinatorOutput {
         if let details = setDocument.details, details.isObjectType {
             typeDetails = details
         }
+
+        let sortedRelations = setDocument.sortedRelations(for: viewId)
+        let visibleIds = sortedRelations.filter(\.option.isVisible).map(\.id)
+        let hiddenIds = Set(sortedRelations.filter { !$0.option.isVisible }.map(\.id))
         
         relationsSearchData = PropertiesSearchData(
             objectId: setDocument.objectId,
             spaceId: setDocument.spaceId,
-            excludedRelationsIds: setDocument.sortedRelations(for: viewId).map(\.id),
+            excludedRelationsIds: visibleIds,
+            hiddenRelationsIds: hiddenIds,
             target: .dataview(objectId: setDocument.objectId, activeViewId: setDocument.activeView.id, typeDetails: typeDetails),
             onRelationSelect: { relationDetails, isNew in
                 AnytypeAnalytics.instance().logAddExistingOrCreateRelation(

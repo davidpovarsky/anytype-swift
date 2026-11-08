@@ -51,6 +51,21 @@ public enum TorahDocumentPropertyEligibility {
         isCanonicalProperty(id: id, key: key, spaceId: spaceId, manifest: manifest)
     }
 
+    public static func isOrderProperty(id: String, key: String, spaceId: String, manifest: PinkhaSpaceManifest?) -> Bool {
+        guard let manifest, manifest.spaceId == spaceId else { return false }
+        return (!manifest.orderPropertyId.isEmpty && id == manifest.orderPropertyId)
+            || (!manifest.orderPropertyKey.isEmpty && key == manifest.orderPropertyKey)
+    }
+
+    public static func isOrderStorage(id: String, key: String, spaceId: String, manifest: PinkhaSpaceManifest?) -> Bool {
+        isOrderProperty(id: id, key: key, spaceId: spaceId, manifest: manifest)
+    }
+
+    public static func isInternalProperty(id: String, key: String, spaceId: String, manifest: PinkhaSpaceManifest?) -> Bool {
+        isCanonicalProperty(id: id, key: key, spaceId: spaceId, manifest: manifest)
+            || isOrderProperty(id: id, key: key, spaceId: spaceId, manifest: manifest)
+    }
+
     public static func isNativeDerivedKey(_ key: String) -> Bool {
         TorahNativePropertyDefinition.definition(for: key) != nil
     }

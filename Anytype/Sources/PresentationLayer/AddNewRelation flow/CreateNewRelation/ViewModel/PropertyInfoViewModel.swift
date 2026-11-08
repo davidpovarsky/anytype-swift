@@ -7,6 +7,8 @@ import PinkhaKit
 @Observable
 final class PropertyInfoViewModel {
 
+    private var identityRevision: Int = 0
+
     var formatModel: NewPropertyFormatSectionView.Model {
         format.asViewModel
     }
@@ -16,6 +18,7 @@ final class PropertyInfoViewModel {
     }
 
     var isSaveButtonActive: Bool {
+        _ = identityRevision
         guard name.isNotEmpty else { return false }
         switch mode {
         case .create:
@@ -46,6 +49,7 @@ final class PropertyInfoViewModel {
     }
 
     var canShowMenu: Bool {
+        _ = identityRevision
         switch mode {
         case .create:
             false
@@ -102,6 +106,17 @@ final class PropertyInfoViewModel {
         self.relationId = data.mode.relationId ?? ""
         handleFormatUpdate()
         data.mode.limitedObjectTypes.flatMap { updateTypesRestriction(objectTypeIds: $0) }
+        NotificationCenter.default.addObserver(
+            forName: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self else { return }
+            let notifiedSpace = notification.userInfo?["spaceId"] as? String
+            if notifiedSpace == nil || notifiedSpace == self.spaceId {
+                self.identityRevision &+= 1
+            }
+        }
     }
     
 }
@@ -158,9 +173,9 @@ extension PropertyInfoViewModel {
     }
     
     private func createRelation(_ relationDetails: PropertyDetails) {
-        // Prevent forging or overwriting genuinely reserved native property keys or canonical storage ID/key
+        // Prevent forging or overwriting genuinely reserved native property keys or internal storage ID/key
         if TorahNativePropertyDefinition.definition(for: relationDetails.key) != nil ||
-           PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: relationDetails.id, key: relationDetails.key, spaceId: spaceId) {
+           PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: relationDetails.id, key: relationDetails.key, spaceId: spaceId) {
             return
         }
 

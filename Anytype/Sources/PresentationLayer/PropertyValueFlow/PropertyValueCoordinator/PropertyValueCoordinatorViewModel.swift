@@ -21,6 +21,7 @@ final class PropertyValueCoordinatorViewModel:
     private var objectDateByTimestampService: any ObjectDateByTimestampServiceProtocol
 
     var mediumDetent: Bool = false
+    private var identityRevision: Int = 0
 
     private let relation: Property
     private let objectDetails: ObjectDetails
@@ -35,19 +36,32 @@ final class PropertyValueCoordinatorViewModel:
         self.objectDetails = data.objectDetails
         self.analyticsType = data.analyticsType
         self.output = output
+
+        NotificationCenter.default.addObserver(
+            forName: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self else { return }
+            let notifiedSpace = notification.userInfo?["spaceId"] as? String
+            if notifiedSpace == nil || notifiedSpace == self.objectDetails.spaceId {
+                self.identityRevision &+= 1
+            }
+        }
     }
     
     func propertyModule() -> AnyView {
-        let status = PinkhaTorahPropertyPolicy.shared.canonicalIdentityStatus(spaceId: objectDetails.spaceId)
+        _ = identityRevision
+        let status = PinkhaTorahPropertyPolicy.shared.internalIdentityStatus(spaceId: objectDetails.spaceId)
         switch status {
         case .loading:
             return ProgressView().eraseToAnyView()
-        case .known(let manifestId, let manifestKey):
-            if (!manifestId.isEmpty && relation.id == manifestId) || (!manifestKey.isEmpty && relation.key == manifestKey) {
+        case .known(let identities):
+            if identities.isInternal(propertyId: relation.id, key: relation.key) {
                 return EmptyView().eraseToAnyView()
             }
         case .unavailable:
-            if !PinkhaTorahPropertyPolicy.shared.canEditGenericPropertyValue(
+            if PinkhaTorahPropertyPolicy.shared.isInternalProperty(
                 propertyId: relation.id, key: relation.key, spaceId: objectDetails.spaceId
             ) {
                 return EmptyView().eraseToAnyView()

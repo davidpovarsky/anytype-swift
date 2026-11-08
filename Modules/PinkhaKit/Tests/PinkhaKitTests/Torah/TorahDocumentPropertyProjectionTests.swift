@@ -80,14 +80,39 @@ struct TorahDocumentPropertyProjectionTests {
         #expect(!TorahDocumentPropertyEligibility.isCanonicalProperty(id: "", key: "", spaceId: "space", manifest: PinkhaSpaceManifest(spaceId: "space")))
     }
 
-    @Test func userPropertyWithSameHebrewDisplayNameIsNotCanonical() {
-        // H03: A user-made property has the same Hebrew display name "הקשר תורני" but DIFFERENT ID/key:
-        // must not be falsely hidden or matched as canonical storage.
+    @Test func internalPropertyIdentityCoversBothCanonicalAndOrderWhilePreservingParent() {
+        let manifest = manifest()
+        // Canonical storage matches both isCanonicalProperty and isInternalProperty, but NOT isOrderProperty
+        #expect(TorahDocumentPropertyEligibility.isCanonicalProperty(id: "internal-id", key: "other", spaceId: "space", manifest: manifest))
+        #expect(!TorahDocumentPropertyEligibility.isOrderProperty(id: "internal-id", key: "internal-key", spaceId: "space", manifest: manifest))
+        #expect(TorahDocumentPropertyEligibility.isInternalProperty(id: "internal-id", key: "other", spaceId: "space", manifest: manifest))
+
+        // Order storage (סדר) matches isOrderProperty and isInternalProperty, but NOT isCanonicalProperty
+        #expect(TorahDocumentPropertyEligibility.isOrderProperty(id: "order-id", key: "other", spaceId: "space", manifest: manifest))
+        #expect(TorahDocumentPropertyEligibility.isOrderProperty(id: "other", key: "order-key", spaceId: "space", manifest: manifest))
+        #expect(TorahDocumentPropertyEligibility.isOrderStorage(id: "order-id", key: "order-key", spaceId: "space", manifest: manifest))
+        #expect(TorahDocumentPropertyEligibility.isInternalProperty(id: "order-id", key: "other", spaceId: "space", manifest: manifest))
+        #expect(TorahDocumentPropertyEligibility.isInternalProperty(id: "other", key: "order-key", spaceId: "space", manifest: manifest))
+        #expect(!TorahDocumentPropertyEligibility.isCanonicalProperty(id: "order-id", key: "order-key", spaceId: "space", manifest: manifest))
+
+        // User-visible hierarchy field הורה (parentPropertyId / parentPropertyKey) MUST NOT be treated as internal
+        #expect(!TorahDocumentPropertyEligibility.isInternalProperty(id: "parent-id", key: "parent-key", spaceId: "space", manifest: manifest))
+
+        // Cross-Space isolation
+        #expect(!TorahDocumentPropertyEligibility.isOrderProperty(id: "order-id", key: "order-key", spaceId: "other-space", manifest: manifest))
+        #expect(!TorahDocumentPropertyEligibility.isInternalProperty(id: "order-id", key: "order-key", spaceId: "other-space", manifest: manifest))
+    }
+
+    @Test func userPropertyWithSameHebrewDisplayNameIsNotCanonicalOrInternal() {
+        // H03: User-made properties with the same Hebrew display names "הקשר תורני" or "סדר" but DIFFERENT IDs/keys
+        // must not be falsely hidden or matched as canonical or internal storage.
         let manifest = manifest()
         let userPropertyId = "user-prop-123"
         let userPropertyKey = "customKey456"
         #expect(!TorahDocumentPropertyEligibility.isCanonicalProperty(id: userPropertyId, key: userPropertyKey, spaceId: "space", manifest: manifest))
         #expect(!TorahDocumentPropertyEligibility.isCanonicalStorage(id: userPropertyId, key: userPropertyKey, spaceId: "space", manifest: manifest))
+        #expect(!TorahDocumentPropertyEligibility.isOrderProperty(id: userPropertyId, key: userPropertyKey, spaceId: "space", manifest: manifest))
+        #expect(!TorahDocumentPropertyEligibility.isInternalProperty(id: userPropertyId, key: userPropertyKey, spaceId: "space", manifest: manifest))
     }
 
     @Test func ordinaryNoteAndGenericTypesAreIneligibleForNativeDerivedProperties() {
@@ -103,6 +128,7 @@ struct TorahDocumentPropertyProjectionTests {
             #expect(TorahDocumentPropertyEligibility.isNativeDerivedKey(definition.key))
         }
         #expect(!TorahDocumentPropertyEligibility.isNativeDerivedKey("internal-key"))
+        #expect(!TorahDocumentPropertyEligibility.isNativeDerivedKey("order-key"))
         #expect(!TorahDocumentPropertyEligibility.isNativeDerivedKey("customKey"))
         #expect(!TorahDocumentPropertyEligibility.isNativeDerivedKey("tag"))
     }
@@ -124,7 +150,13 @@ struct TorahDocumentPropertyProjectionTests {
 
     private func manifest() -> PinkhaSpaceManifest {
         PinkhaSpaceManifest(
-            spaceId: "space", documentAssociationsPropertyId: "internal-id", documentAssociationsPropertyKey: "internal-key",
+            spaceId: "space",
+            parentPropertyId: "parent-id",
+            parentPropertyKey: "parent-key",
+            orderPropertyId: "order-id",
+            orderPropertyKey: "order-key",
+            documentAssociationsPropertyId: "internal-id",
+            documentAssociationsPropertyKey: "internal-key",
             registeredDocumentTypes: ["chiddush": "type-chiddush", "article": "type-article", "research": "type-research"]
         )
     }

@@ -104,7 +104,19 @@ final class SetDocument: SetDocumentProtocol, @unchecked Sendable {
     
     func sortedRelations(for viewId: String) -> [SetProperty] {
         let view = view(by: viewId)
+        let isEligible = isEligibleForNativeProperties()
         return dataBuilder.sortedRelations(dataview: dataView, view: view, spaceId: spaceId)
+            .filter {
+                if PinkhaTorahPropertyPolicy.shared.isInternalProperty(
+                    propertyId: $0.relationDetails.id, key: $0.relationDetails.key, spaceId: spaceId
+                ) {
+                    return false
+                }
+                if TorahNativePropertyDefinition.definition(for: $0.relationDetails.key) != nil && !isEligible {
+                    return false
+                }
+                return true
+            }
     }
     
     func sorts(for viewId: String) -> [SetSort] {
@@ -248,6 +260,15 @@ final class SetDocument: SetDocumentProtocol, @unchecked Sendable {
     }
     
     // MARK: - Private
+
+    private func isEligibleForNativeProperties() -> Bool {
+        let typeDetails: ObjectDetails? = (details?.isObjectType == true) ? details : nil
+        return PinkhaTorahPropertyPolicy.shared.isDataviewEligible(
+            typeDetails: typeDetails,
+            filteredSetOf: details?.filteredSetOf ?? [],
+            spaceId: spaceId
+        )
+    }
     
     private func setup() {
         guard subscriptions.isEmpty else { return }
@@ -309,8 +330,28 @@ final class SetDocument: SetDocumentProtocol, @unchecked Sendable {
     }
     
     private func updateDataViewRelations() {
-        let relationsDetails = propertyDetailsStorage.relationsDetails(keys: dataView.relationLinks.map(\.key), spaceId: spaceId, includeDeleted: false)
-            .filter { !PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(propertyId: $0.id, key: $0.key, spaceId: spaceId) }
+        let isEligible = isEligibleForNativeProperties()
+        var relationsDetails = propertyDetailsStorage.relationsDetails(keys: dataView.relationLinks.map(\.key), spaceId: spaceId, includeDeleted: false)
+            .filter {
+                if PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: $0.id, key: $0.key, spaceId: spaceId) {
+                    return false
+                }
+                if TorahNativePropertyDefinition.definition(for: $0.key) != nil && !isEligible {
+                    return false
+                }
+                return true
+            }
+        if isEligible {
+            let allSpaceRelations = propertyDetailsStorage.relationsDetails(spaceId: spaceId)
+            for nativeDef in TorahNativePropertyDefinition.all {
+                if !relationsDetails.contains(where: { $0.key == nativeDef.key }),
+                   let verified = allSpaceRelations.first(where: {
+                       PinkhaTorahNativePropertyCatalog.isVerifiedNativeDescriptor($0, definition: nativeDef, spaceId: spaceId)
+                   }) {
+                    relationsDetails.append(verified)
+                }
+            }
+        }
         dataViewRelationsDetails = enrichedByDoneRelationIfNeeded(relationsDetails: relationsDetails)
     }
     

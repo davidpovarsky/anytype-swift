@@ -27,8 +27,8 @@ struct EditorFeaturedPropertiesView: View {
 
     private var filteredRelations: [Property] {
         relations.filter { relation in
-            // Canonical storage must never appear in featured header
-            if let torahSession, PinkhaTorahPropertyPolicy.shared.isCanonicalStorage(
+            // Internal Pinkha storage (canonical Torah JSON + order) must never appear in featured header
+            if let torahSession, PinkhaTorahPropertyPolicy.shared.isInternalProperty(
                 propertyId: relation.id, key: relation.key, spaceId: torahSession.spaceId
             ) {
                 return false

@@ -226,6 +226,53 @@ struct TorahNativeDerivedProductIntegrationTests {
             $0.value = TorahNativePropertyDefinition.all.map(\.key).protobufValue
         }], keys: ["id"], limit: 0)
         #expect(Set(afterMany.map(\.id)) == Set(nativeProperties.map(\.id)))
+
+        // Defect A: Verify internal סדר (order) and canonical storage are both protected by policy while הורה is preserved
+        let policy = PinkhaTorahPropertyPolicy.shared
+        policy.invalidateCache(spaceId: spaceId)
+        _ = await policy.awaitInternalIdentity(spaceId: spaceId)
+        #expect(policy.isInternalProperty(propertyId: manifest.orderPropertyId, key: manifest.orderPropertyKey, spaceId: spaceId))
+        #expect(policy.isOrderStorage(propertyId: manifest.orderPropertyId, key: manifest.orderPropertyKey, spaceId: spaceId))
+        #expect(!policy.isCanonicalStorage(propertyId: manifest.orderPropertyId, key: manifest.orderPropertyKey, spaceId: spaceId))
+        #expect(!policy.isInternalProperty(propertyId: manifest.parentPropertyId, key: manifest.parentPropertyKey, spaceId: spaceId))
+
+        // Defect B: Verify catalog discoverability across empty, Hebrew, and English queries on eligible Type
+        let chiddushType = try #require(indexedTypes.first { $0.id == typeId })
+        let eligibleTarget = PropertiesModuleTarget.type(.recommendedRelations(chiddushType))
+        let catalogAll = await PinkhaTorahNativePropertyCatalog.shared.searchNativeProperties(
+            text: "", excludedIds: [], target: eligibleTarget, spaceId: spaceId
+        )
+        #expect(Set(catalogAll.map(\.id)) == Set(nativeProperties.map(\.id)))
+        for query in ["מקור/ות", "מקורות", "נושא", "מילה / ערך", "Source(s)", "Sources", "Topic(s)", "Word / entry"] {
+            let found = await PinkhaTorahNativePropertyCatalog.shared.searchNativeProperties(
+                text: query, excludedIds: [], target: eligibleTarget, spaceId: spaceId
+            )
+            #expect(!found.isEmpty)
+        }
+        // Fresh article document has editable native rows before any association exists
+        if let freshArticleId = fixtureDocuments[PinkhaSchemaRoles.articleKey] {
+            let freshDetails = try await show(freshArticleId, spaceId: spaceId)
+            for prop in nativeProperties {
+                guard case .tag(let rendered) = TorahNativePropertyPresentation.property(
+                    definition: prop, details: freshDetails, isFeatured: false, valuesLocked: false
+                ) else { Issue.record("Fresh article native row missing"); return }
+                #expect(rendered.isEditable == true)
+            }
+        }
+        // Live Type switch (Chiddush -> Page -> Chiddush) preserves canonical associations and restores projections
+        if let pageType = indexedTypes.first(where: { $0.uniqueKey == .page }) {
+            let beforeCanonical = try await show(chipsDocument.id, spaceId: spaceId).stringValue(for: manifest.documentAssociationsPropertyKey)
+            #expect(!beforeCanonical.isEmpty)
+            try await Container.shared.objectActionsService().setObjectType(objectId: chipsDocument.id, typeUniqueKey: pageType.uniqueKey)
+            let asPageDetails = try await show(chipsDocument.id, spaceId: spaceId)
+            #expect(asPageDetails.stringValue(for: manifest.documentAssociationsPropertyKey) == beforeCanonical)
+            try await Container.shared.objectActionsService().setObjectType(objectId: chipsDocument.id, typeUniqueKey: chiddushType.uniqueKey)
+            try await eventually {
+                let restored = try await show(chipsDocument.id, spaceId: spaceId)
+                return restored.stringValue(for: manifest.documentAssociationsPropertyKey) == beforeCanonical &&
+                    restored.stringArrayValue(for: key).count == 12
+            }
+        }
         let directory = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let fixture: [String: Any] = [
             "spaceId": spaceId, "documents": fixtureDocuments, "names": fixtureNames,

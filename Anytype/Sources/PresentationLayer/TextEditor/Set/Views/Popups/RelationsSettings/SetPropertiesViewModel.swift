@@ -4,6 +4,7 @@ import ProtobufMessages
 import Services
 import AnytypeCore
 import Combine
+import PinkhaKit
 
 @MainActor
 @Observable
@@ -49,6 +50,14 @@ final class SetPropertiesViewModel {
             Task {
                 let key = relation.relationDetails.key
                 guard let details = setDocument.details else { return }
+                guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
+                    propertyId: relation.relationDetails.id, key: key, spaceId: setDocument.spaceId
+                ) else { return }
+                if details.isObjectType,
+                   TorahNativePropertyDefinition.definition(for: key) != nil,
+                   PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(typeId: details.id, spaceId: setDocument.spaceId) {
+                    return
+                }
                 
                 if details.isObjectType {
                     try await propertiesService.removeTypeProperty(
@@ -129,9 +138,13 @@ final class SetPropertiesViewModel {
             view = setDocument.view(by: viewId)
             
             let isObjectType = setDocument.details?.isObjectType ?? false
+            let isEligibleObjectType = isObjectType && PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+                typeId: setDocument.details?.id ?? "", spaceId: setDocument.spaceId
+            )
             
             relations = setDocument.sortedRelations(for: viewId).map { relation in
-                let canBeRemoved = isObjectType ? relation.relationDetails.canBeRemovedFromType : relation.relationDetails.canBeRemovedFromObject
+                let isProtectedNative = isEligibleObjectType && TorahNativePropertyDefinition.definition(for: relation.relationDetails.key) != nil
+                let canBeRemoved = !isProtectedNative && (isObjectType ? relation.relationDetails.canBeRemovedFromType : relation.relationDetails.canBeRemovedFromObject)
                 
                 return SetViewSettingsProperty(
                     id: relation.id,
@@ -150,13 +163,22 @@ final class SetPropertiesViewModel {
     private func onRelationVisibleChange(_ relation: SetProperty, isVisible: Bool) {
         Task {
             let newOption = relation.option.updated(isVisible: isVisible).asMiddleware
-            try await dataviewService.replaceViewRelation(
-                objectId: setDocument.objectId,
-                blockId: setDocument.blockId,
-                key: relation.option.key,
-                with: newOption,
-                viewId: viewId
-            )
+            if view.options.contains(where: { $0.key == relation.option.key }) {
+                try await dataviewService.replaceViewRelation(
+                    objectId: setDocument.objectId,
+                    blockId: setDocument.blockId,
+                    key: relation.option.key,
+                    with: newOption,
+                    viewId: viewId
+                )
+            } else {
+                try await dataviewService.addViewRelation(
+                    objectId: setDocument.objectId,
+                    blockId: setDocument.blockId,
+                    relation: newOption,
+                    viewId: viewId
+                )
+            }
         }
     }
 }
