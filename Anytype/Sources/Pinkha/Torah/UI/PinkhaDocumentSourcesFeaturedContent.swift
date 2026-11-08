@@ -27,16 +27,18 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
             associations: session.documentPropertyProjection.sources
         )
 
-        ForEach(presentation.visibleAssociations) { item in
-            sourceChip(for: item)
-        }
+        if presentation.visibleAssociations.isEmpty {
+            if session.canEditAssociations {
+                addSourceButton
+            }
+        } else {
+            ForEach(presentation.visibleAssociations) { item in
+                sourceChip(for: item)
+            }
 
-        if presentation.remainingCount > 0 {
-            moreSourcesMenu(presentation: presentation)
-        }
-
-        if session.canEditAssociations {
-            addSourceButton
+            if presentation.remainingCount > 0 {
+                moreSourcesMenu(presentation: presentation)
+            }
         }
     }
 
@@ -58,6 +60,23 @@ struct PinkhaDocumentSourcesFeaturedContent: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .contextMenu {
+            Button {
+                session.openDocumentAssociation(item)
+            } label: {
+                Label(label, systemImage: "book")
+            }
+            if session.canEditAssociations {
+                Button {
+                    session.presentSearch(scope: .document)
+                } label: {
+                    Label(
+                        TorahAssociationDisplayFormatter.prefersHebrew(locale) ? "הוסף מקור" : "Add source",
+                        systemImage: "plus"
+                    )
+                }
+            }
+        }
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("torah-document-source-chip-\(item.id)")
         .accessibilityLabel(label)

@@ -114,7 +114,54 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
 
         if !queryFailed && results.count == TorahNativePropertyDefinition.all.count {
             cache.set(spaceId: spaceId, properties: results)
+            return results
         }
+
+        // If not all 3 properties were found in index (e.g. unprovisioned space or cold start),
+        // ensure space is bootstrapped to provision native schema, then retry lookup once.
+        if results.count < TorahNativePropertyDefinition.all.count {
+            if (try? await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: spaceId)) != nil {
+                var retryResults: [PropertyDetails] = []
+                var retryFailed = false
+                for definition in TorahNativePropertyDefinition.all {
+                    do {
+                        let records = try await search.search(
+                            spaceId: spaceId,
+                            filters: [.with {
+                                $0.relationKey = BundledPropertyKey.relationKey.rawValue
+                                $0.condition = .equal
+                                $0.value = definition.key.protobufValue
+                            }],
+                            keys: PropertyDetails.subscriptionKeys.map(\.rawValue),
+                            limit: 0
+                        )
+                        let matching = records
+                            .map { PropertyDetails(details: $0) }
+                            .filter { property in
+                                property.key == definition.key &&
+                                property.spaceId == spaceId &&
+                                !property.isDeleted &&
+                                property.sourceObject == "_br" + definition.key &&
+                                property.format == .tag &&
+                                property.isReadOnlyValue
+                            }
+                        if let found = matching.first {
+                            retryResults.append(found)
+                        }
+                    } catch {
+                        retryFailed = true
+                    }
+                }
+                if !retryFailed && retryResults.count == TorahNativePropertyDefinition.all.count {
+                    cache.set(spaceId: spaceId, properties: retryResults)
+                    return retryResults
+                }
+                if retryResults.isNotEmpty {
+                    return retryResults
+                }
+            }
+        }
+
         return results
     }
 

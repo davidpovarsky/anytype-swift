@@ -2,80 +2,15 @@ import Foundation
 import UIKit
 import Services
 import SwiftUI
-import Observation
-
-enum EditorTorahNavigationPlacement: Equatable {
-    case hidden
-    case bar
-    case overflow
-
-    static func resolve(
-        isAvailable: Bool,
-        allowsEntry: Bool,
-        fitsInline: Bool
-    ) -> Self {
-        guard isAvailable, allowsEntry else { return .hidden }
-        return fitsInline ? .bar : .overflow
-    }
-}
-
-@MainActor
-@Observable
-final class EditorTorahNavigationState {
-    var isAvailable: Bool
-    private(set) var placement: EditorTorahNavigationPlacement = .hidden
-    private let action: () -> Void
-
-    init(isAvailable: Bool, action: @escaping () -> Void) {
-        self.isAvailable = isAvailable
-        self.action = action
-    }
-
-    var showsOverflowAction: Bool { placement == .overflow }
-
-    func update(allowsEntry: Bool, fitsInline: Bool) {
-        placement = .resolve(
-            isAvailable: isAvailable,
-            allowsEntry: allowsEntry,
-            fitsInline: fitsInline
-        )
-    }
-
-    func performAction() {
-        guard placement != .hidden else { return }
-        action()
-    }
-}
-
-@MainActor
-private struct EditorTorahSettingsMenuItem: View {
-    let state: EditorTorahNavigationState
-
-    @ViewBuilder
-    var body: some View {
-        if state.showsOverflowAction {
-            Button(action: state.performAction) {
-                Label {
-                    Text(Loc.Pinkha.Torah.title)
-                } icon: {
-                    Image(asset: .CustomIcons.book)
-                        .renderingMode(.template)
-                }
-            }
-            .accessibilityIdentifier("torah-sources-overflow-entry")
-        }
-    }
-}
 
 enum EditorNavigationBarEditingControls {
     static let spacing: CGFloat = 8
 
     static func makeStack(
         syncStatus: UIView,
-        torahSources: UIView,
         settings: UIView
     ) -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [syncStatus, torahSources, settings])
+        let stackView = UIStackView(arrangedSubviews: [syncStatus, settings])
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.spacing = spacing
@@ -90,12 +25,12 @@ enum EditorNavigationBarEditingControls {
 
 @MainActor
 final class EditorNavigationBarHelper {
-    
+
     private let navigationBarView: EditorNavigationBarView
 
     private let fakeNavigationBarBackgroundView = UIView()
     private let navigationBarTitleView = EditorNavigationBarTitleView()
-    
+
     private let doneButton: UIButton
     private let selectAllButton: UIButton
 
@@ -104,17 +39,15 @@ final class EditorNavigationBarHelper {
     private let syncStatusItem: EditorSyncStatusItem
     private let syncStatusGlassContainer: GlassEffectViewIOS26
     private let settingsGlassContainer: GlassEffectViewIOS26
-    private let torahSourcesGlassContainer: GlassEffectViewIOS26
-    private let torahNavigationState: EditorTorahNavigationState
     private let webBannerItem: EditorWebBannerItem
     private let rightContanerForEditing: UIView
     private let backButton: UIView
     private let backButtonGlassContainer: GlassEffectViewIOS26
-    
+
     private var contentOffsetObservation: NSKeyValueObservation?
-    
+
     private var isObjectHeaderWithCover = false
-    
+
     private var startAppearingOffset: CGFloat = 0.0
     private var endAppearingOffset: CGFloat = 0.0
     private var currentScrollViewOffset: CGFloat = 0.0
@@ -137,17 +70,11 @@ final class EditorNavigationBarHelper {
         onTemplatesButtonTap: @escaping () -> Void,
         onTitleTap: @escaping () -> Void,
         onSyncStatusTap: @escaping () -> Void,
-        torahSourcesAvailable: Bool,
         torahSession: TorahEditorSession? = nil,
-        onTorahSourcesTap: @escaping () -> Void,
         onWebBannerTap: @escaping () -> Void
     ) {
         self.navigationBarView = navigationBarView
 
-        let torahNavigationStateLocal = EditorTorahNavigationState(
-            isAvailable: torahSourcesAvailable,
-            action: onTorahSourcesTap
-        )
         let menuContainer = ObjectSettingsMenuContainer(
             objectId: objectId,
             spaceId: spaceId,
@@ -158,7 +85,7 @@ final class EditorNavigationBarHelper {
                 .foregroundStyle(Color.Text.primary)
                 .accessibilityLabel(Loc.more)
         } additionalMenuItems: {
-            EditorTorahSettingsMenuItem(state: torahNavigationStateLocal)
+            EmptyView()
         }
         let hostingController = UIHostingController(rootView: menuContainer)
         // Retain and contain the original SwiftUI menu. Keeping only its view
@@ -171,19 +98,10 @@ final class EditorNavigationBarHelper {
         let syncStatusItemLocal = EditorSyncStatusItem(onTap: onSyncStatusTap)
         let syncStatusGlassContainerLocal = GlassEffectViewIOS26()
         let settingsGlassContainerLocal = GlassEffectViewIOS26()
-        let torahSourcesItemLocal = UIEditorBarButtonItem(
-            imageAsset: .CustomIcons.book,
-            accessibilityLabel: Loc.Pinkha.Torah.title,
-            accessibilityIdentifier: "torah-sources-entry",
-            action: torahNavigationStateLocal.performAction
-        )
-        let torahSourcesGlassContainerLocal = GlassEffectViewIOS26()
 
         self.syncStatusItem = syncStatusItemLocal
         self.syncStatusGlassContainer = syncStatusGlassContainerLocal
         self.settingsGlassContainer = settingsGlassContainerLocal
-        self.torahSourcesGlassContainer = torahSourcesGlassContainerLocal
-        self.torahNavigationState = torahNavigationStateLocal
         self.webBannerItem = EditorWebBannerItem(onTap: onWebBannerTap)
 
         // Setup glass containers for buttons
@@ -200,14 +118,6 @@ final class EditorNavigationBarHelper {
             $0.size(CGSize(width: 44, height: 44))
         }
 
-        torahSourcesGlassContainerLocal.applyCircleShape(diameter: 44)
-        torahSourcesGlassContainerLocal.layoutUsing.anchors {
-            $0.size(CGSize(width: 44, height: 44))
-        }
-        torahSourcesGlassContainerLocal.glassContentView.addSubview(torahSourcesItemLocal) {
-            $0.center(in: torahSourcesGlassContainerLocal.glassContentView)
-        }
-
         // Done button
         var doneButtonConfig = UIButton.Configuration.glassIOS26()
         doneButtonConfig.title = Loc.done
@@ -221,16 +131,16 @@ final class EditorNavigationBarHelper {
             ),
             for: .touchUpInside
         )
-        
+
         self.onTemplatesButtonTap = onTemplatesButtonTap
         self.onTitleTap = onTitleTap
 
         self.fakeNavigationBarBackgroundView.backgroundColor = .Background.primary
         self.fakeNavigationBarBackgroundView.alpha = 0.0
         self.fakeNavigationBarBackgroundView.layer.zPosition = 1
-        
+
         self.navigationBarTitleView.setAlphaForSubviews(1.0)
-        
+
         self.rightContanerForEditing = UIView()
 
         let backButtonLocal = UIHostingController(rootView: PageNavigationBackButton()).view!
@@ -248,7 +158,7 @@ final class EditorNavigationBarHelper {
         backButtonGlassContainerLocal.glassContentView.addSubview(backButtonLocal) {
             $0.center(in: backButtonGlassContainerLocal.glassContentView)
         }
-        
+
         // Select all button
         var selectAllConfig = UIButton.Configuration.glassIOS26()
         selectAllConfig.baseForegroundColor = .Control.secondary
@@ -262,7 +172,7 @@ final class EditorNavigationBarHelper {
             ),
             for: .touchUpInside
         )
-        
+
         // Add settings menu to glass container
         settingsGlassContainerLocal.glassContentView.addSubview(settingsMenuView) {
             $0.center(in: settingsGlassContainerLocal.glassContentView)
@@ -270,37 +180,26 @@ final class EditorNavigationBarHelper {
 
         let editingControlsStack = EditorNavigationBarEditingControls.makeStack(
             syncStatus: syncStatusGlassContainerLocal,
-            torahSources: torahSourcesGlassContainerLocal,
             settings: settingsGlassContainerLocal
         )
         self.rightContanerForEditing.addSubview(editingControlsStack) {
             $0.pinToSuperview()
         }
-        torahSourcesGlassContainerLocal.isHidden = true
-        
+
         hostingController.didMove(toParent: parentViewController)
 
         navigationBarView.bannerView = webBannerItem
-        navigationBarView.onContentWidthChange = { [weak self] in
-            self?.updateTorahControlPlacement()
-        }
-    }
-    
-    func setPageNavigationHiddenBackButton(_ hidden: Bool) {
-        backButtonGlassContainer.isHidden = hidden
-        updateTorahControlPlacement()
     }
 
-    func updateTorahSourcesAvailability(_ available: Bool) {
-        torahNavigationState.isAvailable = available
-        updateTorahControlPlacement()
+    func setPageNavigationHiddenBackButton(_ hidden: Bool) {
+        backButtonGlassContainer.isHidden = hidden
     }
 }
 
 // MARK: - EditorNavigationBarHelperProtocol
 
 extension EditorNavigationBarHelper: EditorNavigationBarHelperProtocol {
-    
+
     func addFakeNavigationBarBackgroundView(to view: UIView) {
         view.addSubview(fakeNavigationBarBackgroundView) {
             $0.top.equal(to: view.topAnchor)
@@ -309,7 +208,7 @@ extension EditorNavigationBarHelper: EditorNavigationBarHelperProtocol {
             $0.bottom.equal(to: navigationBarView.bottomAnchor)
         }
     }
-    
+
     func handleViewWillAppear(scrollView: UIScrollView) {
         contentOffsetObservation = scrollView.observe(
             \.contentOffset,
@@ -320,17 +219,17 @@ extension EditorNavigationBarHelper: EditorNavigationBarHelperProtocol {
             }
         }
     }
-    
+
     func handleViewWillDisappear() {
         contentOffsetObservation?.invalidate()
         contentOffsetObservation = nil
     }
-    
+
     func configureNavigationBar(using header: ObjectHeader) {
         isObjectHeaderWithCover = header.hasCover
         startAppearingOffset = header.startAppearingOffset
         endAppearingOffset = header.endAppearingOffset
-        
+
         updateBarButtonItemsBackground(opacity: 0)
     }
 
@@ -354,9 +253,8 @@ extension EditorNavigationBarHelper: EditorNavigationBarHelperProtocol {
         navigationBarTitleView.configure(model: mode)
         updateNavigationBarAppearanceBasedOnContentOffset(currentScrollViewOffset)
         lastMode = mode
-        updateTorahControlPlacement()
     }
-    
+
     func updatePermissions(_ permissions: ObjectPermissions) {
         switch permissions.editBlocks {
         case .edit:
@@ -365,11 +263,11 @@ extension EditorNavigationBarHelper: EditorNavigationBarHelperProtocol {
             readonlyReason = reason
         }
     }
-    
+
     func updateSyncStatusData(_ statusData: SyncStatusData) {
         syncStatusItem.changeStatusData(statusData)
     }
-    
+
     func updateWebBannerVisibility(_ isVisible: Bool) {
         webBannerItem.setVisible(isVisible)
     }
@@ -423,7 +321,6 @@ extension EditorNavigationBarHelper: EditorNavigationBarHelperProtocol {
             navigationBarTitleView.setIsReadonly(nil)
             settingsGlassContainer.isHidden = true
         }
-        updateTorahControlPlacement()
     }
 }
 
@@ -431,41 +328,10 @@ extension EditorNavigationBarHelper: EditorNavigationBarHelperProtocol {
 
 private extension EditorNavigationBarHelper {
 
-    func updateTorahControlPlacement() {
-        let allowsEntry: Bool
-        switch currentEditorState {
-        case .editing, .readonly:
-            allowsEntry = true
-        default:
-            allowsEntry = false
-        }
-
-        let controlWidths = [
-            measuredWidth(of: syncStatusGlassContainer),
-            measuredWidth(of: torahSourcesGlassContainer),
-            measuredWidth(of: settingsGlassContainer)
-        ]
-        let candidateRightWidth = EditorNavigationBarEditingControls.requiredWidth(
-            controlWidths: controlWidths
-        )
-        let fitsInline = navigationBarView.canFitUntruncatedTitle(
-            width: navigationBarTitleView.minimumWidthWithoutTruncation,
-            candidateRightButtonWidth: candidateRightWidth
-        )
-
-        torahNavigationState.update(allowsEntry: allowsEntry, fitsInline: fitsInline)
-        torahSourcesGlassContainer.isHidden = torahNavigationState.placement != .bar
-    }
-
-    func measuredWidth(of view: UIView) -> CGFloat {
-        let fittedWidth = view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).width
-        return fittedWidth > 0 ? fittedWidth : view.bounds.width
-    }
-    
     func updateBarButtonItemsBackground(opacity: CGFloat) {
         // Glass containers handle their own appearance - no opacity updates needed
     }
-    
+
     func updateNavigationBarAppearanceBasedOnContentOffset(_ newOffset: CGFloat) {
         currentScrollViewOffset = newOffset
         guard let percent = countPercentOfNavigationBarAppearance(offset: newOffset) else { return }
@@ -474,7 +340,7 @@ private extension EditorNavigationBarHelper {
             case .editing, .readonly: break
             default: return
         }
-        
+
         // From 0 to 0.5 percent -> opacity 0..1
         let barButtonsOpacity = min(percent, 0.5) * 2
         // Title always visible
@@ -483,7 +349,7 @@ private extension EditorNavigationBarHelper {
         navigationBarTitleView.setAlphaForSubviews(titleAlpha)
         updateBarButtonItemsBackground(opacity: barButtonsOpacity)
     }
-    
+
     private func countPercentOfNavigationBarAppearance(offset: CGFloat) -> CGFloat? {
         let navigationBarHeight = fakeNavigationBarBackgroundView.bounds.height
         let yFullOffset = offset + navigationBarHeight
@@ -497,7 +363,7 @@ private extension EditorNavigationBarHelper {
             let max = endAppearingOffset - startAppearingOffset
             return currentDiff / max
         }
-        
+
         return nil
     }
 }
@@ -511,7 +377,7 @@ private extension EditorNavigationBarHelper {
 // MARK: - ObjectHeader
 
 private extension ObjectHeader {
-    
+
     var hasCover: Bool {
         switch self {
         case .filled(let filledState, _, _):
@@ -520,25 +386,25 @@ private extension ObjectHeader {
             return false
         }
     }
-    
+
     var startAppearingOffset: CGFloat {
         switch self {
         case .filled:
             return ObjectHeaderConstants.coverHeight - 100
-            
+
         case .empty:
             return ObjectHeaderConstants.emptyViewHeight - 50
         }
     }
-    
+
     var endAppearingOffset: CGFloat {
         switch self {
         case .filled:
             return ObjectHeaderConstants.coverHeight
-            
+
         case .empty:
             return ObjectHeaderConstants.emptyViewHeight
         }
     }
-    
+
 }

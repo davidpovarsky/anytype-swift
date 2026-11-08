@@ -90,11 +90,7 @@ final class EditorPageController: UIViewController {
             UISelectionFeedbackGenerator().selectionChanged()
             viewModel?.showSyncStatusInfo()
         },
-        torahSourcesAvailable: viewModel.torahSession != nil,
         torahSession: viewModel.torahSession,
-        onTorahSourcesTap: { [weak self] in
-            self?.viewModel.torahSession?.presentSearch(scope: .document)
-        },
         onWebBannerTap: { [weak viewModel] in
             UISelectionFeedbackGenerator().selectionChanged()
             viewModel?.onPublishingBannerTap()
@@ -110,9 +106,6 @@ final class EditorPageController: UIViewController {
             // Layout metadata must subscribe before model snapshot updates to avoid first-frame indentation fallback.
             layout.blockLayoutDetailsPublisher = viewModel.document.blockLayoutDetailsPublisher.receiveOnMain().eraseToAnyPublisher()
             viewModel.setupSubscriptions()
-            if isViewLoaded {
-                navigationBarHelper.updateTorahSourcesAvailability(viewModel.torahSession != nil)
-            }
         }
     }
     

@@ -2,25 +2,63 @@ import Combine
 import Services
 import SwiftUI
 import UIKit
+import PinkhaKit
 
 @MainActor
 final class PinkhaDocumentMetadataRowModel: ObservableObject, SystemContentConfiguationProvider {
     nonisolated let blockId: String
     nonisolated var hashable: AnyHashable { blockId }
     @Published private(set) var relations: [Property]
+    @Published private(set) var isEligible: Bool
     let session: TorahEditorSession
     let onRelationTap: (Property) -> Void
-    private var subscription: AnyCancellable?
+    private weak var document: (any BaseDocumentProtocol)?
+    private var cancellables = Set<AnyCancellable>()
 
     init(document: some BaseDocumentProtocol, session: TorahEditorSession, onRelationTap: @escaping (Property) -> Void) {
-        blockId = "PinkhaDocumentMetadataRow:\(document.spaceId):\(document.objectId)"
-        relations = document.featuredRelationsForEditor
+        self.blockId = "PinkhaDocumentMetadataRow:\(document.spaceId):\(document.objectId)"
+        self.document = document
+        self.relations = document.featuredRelationsForEditor
         self.session = session
         self.onRelationTap = onRelationTap
-        subscription = document.featuredRelationsForEditorPublisher
+
+        let typeId = document.details?.type ?? ""
+        self.isEligible = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+            typeId: typeId, spaceId: document.spaceId
+        )
+
+        document.featuredRelationsForEditorPublisher
             .receiveOnMain()
             .removeDuplicates()
             .sink { [weak self] in self?.relations = $0 }
+            .store(in: &cancellables)
+
+        document.detailsPublisher
+            .receiveOnMain()
+            .sink { [weak self] details in
+                guard let self else { return }
+                let newEligible = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+                    typeId: details.type, spaceId: details.spaceId
+                )
+                if self.isEligible != newEligible {
+                    self.isEligible = newEligible
+                }
+            }
+            .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification)
+            .receiveOnMain()
+            .sink { [weak self] _ in
+                guard let self, let doc = self.document else { return }
+                let typeId = doc.details?.type ?? ""
+                let newEligible = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+                    typeId: typeId, spaceId: doc.spaceId
+                )
+                if self.isEligible != newEligible {
+                    self.isEligible = newEligible
+                }
+            }
+            .store(in: &cancellables)
     }
 
     func makeContentConfiguration(maxWidth: CGFloat) -> any UIContentConfiguration {
@@ -54,6 +92,7 @@ private struct PinkhaDocumentMetadataRowContent: View {
         EditorFeaturedPropertiesView(
             relations: model.relations,
             torahSession: model.session,
+            isEligible: model.isEligible,
             onRelationTap: model.onRelationTap
         )
     }

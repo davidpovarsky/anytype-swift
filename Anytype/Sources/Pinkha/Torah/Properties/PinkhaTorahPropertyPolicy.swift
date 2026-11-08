@@ -353,7 +353,7 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         if let cached = bootstrapService.manifest(forSpaceId: spaceId) {
             return cached
         }
-        return try? await bootstrapService.bootstrapCanonicalSpace(spaceId: spaceId)
+        return try? await bootstrapService.bootstrapSpace(spaceId: spaceId)
     }
 
     // MARK: - Private Target Inspection
@@ -391,8 +391,14 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
             return await isDataviewTargetEligibleAsync(objectId: objectId, typeDetails: typeDetails, spaceId: spaceId)
         case .object(let objectId):
             let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
-            guard let details = doc.details, details.spaceId == spaceId, !details.type.isEmpty else { return false }
-            return await isTargetEligibleForNativePropertiesAsync(typeId: details.type, spaceId: spaceId)
+            if let details = doc.details, details.spaceId == spaceId, !details.type.isEmpty {
+                return await isTargetEligibleForNativePropertiesAsync(typeId: details.type, spaceId: spaceId)
+            }
+            try? await doc.open()
+            if let details = doc.details, details.spaceId == spaceId, !details.type.isEmpty {
+                return await isTargetEligibleForNativePropertiesAsync(typeId: details.type, spaceId: spaceId)
+            }
+            return false
         case .library:
             return false
         }
@@ -422,7 +428,12 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
             return await isTargetEligibleForNativePropertiesAsync(typeId: typeDetails.id, spaceId: spaceId)
         }
         guard !objectId.isEmpty else { return false }
-        let setDetails = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId).details
+        let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
+        var setDetails = doc.details
+        if setDetails == nil {
+            try? await doc.open()
+            setDetails = doc.details
+        }
         guard let setDetails, setDetails.spaceId == spaceId else { return false }
         let sources = setDetails.filteredSetOf
         guard !sources.isEmpty else { return false }

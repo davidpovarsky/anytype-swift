@@ -4,16 +4,25 @@ import PinkhaKit
 struct EditorFeaturedPropertiesView: View {
     let relations: [Property]
     let torahSession: TorahEditorSession?
+    let isEligible: Bool
     let onRelationTap: ((Property) -> Void)
 
     init(
         relations: [Property],
         torahSession: TorahEditorSession? = nil,
+        isEligible: Bool = false,
         onRelationTap: @escaping (Property) -> Void
     ) {
         self.relations = relations
         self.torahSession = torahSession
+        self.isEligible = isEligible
         self.onRelationTap = onRelationTap
+    }
+
+    private var isSourcesHeaderActive: Bool {
+        guard let torahSession, isEligible else { return false }
+        return torahSession.documentPropertyProjection.sources.isNotEmpty
+            || torahSession.canEditAssociations
     }
 
     private var filteredRelations: [Property] {
@@ -24,8 +33,8 @@ struct EditorFeaturedPropertiesView: View {
             ) {
                 return false
             }
-            // When torahSession is presenting sources, avoid duplicate presentation of native sources
-            if torahSession != nil && relation.key == TorahNativePropertyDefinition.all[0].key {
+            // When custom source header is actively presenting sources, avoid duplicate presentation of native sources
+            if isSourcesHeaderActive && relation.key == TorahNativePropertyDefinition.all[0].key {
                 return false
             }
             return true
@@ -33,8 +42,7 @@ struct EditorFeaturedPropertiesView: View {
     }
 
     private var hasSourcesContent: Bool {
-        guard let torahSession else { return false }
-        return torahSession.documentPropertyProjection.sources.isNotEmpty || torahSession.canEditAssociations
+        isSourcesHeaderActive
     }
 
     var body: some View {
@@ -54,7 +62,7 @@ struct EditorFeaturedPropertiesView: View {
                 PinkhaDocumentSourcesFeaturedContent(session: torahSession)
             }
             .padding(.top, 8)
-        } else {
+        } else if filteredRelations.isNotEmpty {
             FeaturedPropertiesView(
                 relations: filteredRelations,
                 view: relationContent,

@@ -2,6 +2,7 @@ import UIKit
 import Services
 import Combine
 import SwiftUI
+import PinkhaKit
 
 @MainActor
 final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
@@ -11,6 +12,7 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
 
     private let document: any BaseDocumentProtocol
     private var featuredRelations: [Property]
+    private var isEligible: Bool
     private let onRelationTap: (Property) -> Void
     private let collectionController: any EditorCollectionReloadable
     private weak var torahSession: TorahEditorSession?
@@ -30,21 +32,33 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
         self.collectionController = collectionController
         self.torahSession = torahSession
         self.onRelationTap = onRelationValueTap
+
+        let typeId = document.details?.type ?? ""
+        self.isEligible = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+            typeId: typeId, spaceId: document.spaceId
+        )
         
-        document.featuredRelationsForEditorPublisher
-            .receiveOnMain()
-            .removeDuplicates()
-            .sink { [weak self] newFeaturedRelations in
-                guard let self, featuredRelations != newFeaturedRelations else { return }
-                self.featuredRelations = newFeaturedRelations
-                // Defer reconfigure to next runloop tick so it never lands on the main queue
-                // while an animated dataSource.apply from applyBlocksSectionSnapshot is in flight
-                // (UIKit's diffable data source deadlock detector otherwise throws).
-                DispatchQueue.main.async { [weak self] in
-                    guard let self else { return }
-                    collectionController.reconfigure(items: [.block(self)])
-                }
-            }.store(in: &cancellables)
+        Publishers.Merge3(
+            document.featuredRelationsForEditorPublisher.map { _ in () }.eraseToAnyPublisher(),
+            document.detailsPublisher.map { _ in () }.eraseToAnyPublisher(),
+            NotificationCenter.default.publisher(for: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification).map { _ in () }.eraseToAnyPublisher()
+        )
+        .receiveOnMain()
+        .sink { [weak self] _ in
+            guard let self else { return }
+            let newRelations = self.document.featuredRelationsForEditor
+            let currentTypeId = self.document.details?.type ?? ""
+            let newEligibility = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+                typeId: currentTypeId, spaceId: self.document.spaceId
+            )
+            guard self.featuredRelations != newRelations || self.isEligible != newEligibility else { return }
+            self.featuredRelations = newRelations
+            self.isEligible = newEligibility
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                self.collectionController.reconfigure(items: [.block(self)])
+            }
+        }.store(in: &cancellables)
     }
     
     func makeContentConfiguration(maxWidth _: CGFloat) -> any UIContentConfiguration {
@@ -52,6 +66,7 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
             EditorFeaturedPropertiesView(
                 relations: featuredRelations,
                 torahSession: torahSession,
+                isEligible: isEligible,
                 onRelationTap: onRelationTap
             )
         }

@@ -63,6 +63,34 @@ public final class PinkhaSpaceBootstrapService: PinkhaSpaceBootstrapServiceProto
                 // never register non-derived fields against an incapable engine.
             }
         }
+        await repairWritingTypesDefaultsIfNeeded(manifest: manifest)
         return manifest
+    }
+
+    private func repairWritingTypesDefaultsIfNeeded(manifest: PinkhaSpaceManifest) async {
+        let typeKeysAndDefaults: [(String, CustomIcon, CustomIconColor)] = [
+            (PinkhaSchemaRoles.chiddushKey, .bulb, .yellow),
+            (PinkhaSchemaRoles.articleKey, .documentText, .blue),
+            (PinkhaSchemaRoles.researchKey, .library, .purple)
+        ]
+
+        let detailsService: any DetailsServiceProtocol = Container.shared.detailsService()
+        let propertiesService: any PropertiesServiceProtocol = Container.shared.propertiesService()
+
+        for (roleKey, defaultIcon, defaultColor) in typeKeysAndDefaults {
+            guard let typeId = manifest.registeredDocumentTypes[roleKey], !typeId.isEmpty else { continue }
+            try? await detailsService.updateBundledDetails(
+                objectId: typeId,
+                bundledDetails: [
+                    .recommendedLayout(DetailsLayout.basic.rawValue),
+                    .iconName(defaultIcon.stringRepresentation),
+                    .iconOption(defaultColor.iconOption)
+                ]
+            )
+
+            if let templateId = manifest.defaultTemplateIds[roleKey], !templateId.isEmpty {
+                try? await propertiesService.toggleDescription(objectId: templateId, isOn: true)
+            }
+        }
     }
 }

@@ -58,17 +58,39 @@ public final class AnytypePropertyServiceAdapter: PinkhaPropertyServiceProtocol,
 public final class AnytypeTypeServiceAdapter: PinkhaTypeServiceProtocol, Sendable {
     @Injected(\.typesService)
     private var typesService: any TypesServiceProtocol
+    @Injected(\.detailsService)
+    private var detailsService: any DetailsServiceProtocol
 
     public init() {}
 
     public func createType(name: String, pluralName: String, spaceId: String) async throws -> PinkhaTypeDescriptor {
+        let (icon, color): (CustomIcon?, CustomIconColor?) = {
+            if name.contains("חידוש") || pluralName.contains("חידושים") {
+                return (.bulb, .yellow)
+            } else if name.contains("מאמר") || pluralName.contains("מאמרים") {
+                return (.documentText, .blue)
+            } else if name.contains("מחקר") || pluralName.contains("מחקרים") {
+                return (.library, .purple)
+            } else {
+                return (nil, nil)
+            }
+        }()
+
         let created = try await typesService.createType(
             name: name,
             pluralName: pluralName,
-            icon: nil,
-            color: nil,
+            icon: icon,
+            color: color,
             spaceId: spaceId
         )
+
+        // Configure recommendedLayout as .basic on the Type so that default templates and documents
+        // inherit .basic layout (which supports native icons and descriptions)
+        try? await detailsService.updateBundledDetails(
+            objectId: created.id,
+            bundledDetails: [.recommendedLayout(DetailsLayout.basic.rawValue)]
+        )
+
         return PinkhaTypeDescriptor(id: created.id, name: created.name)
     }
 
@@ -90,6 +112,8 @@ public final class AnytypeTypeServiceAdapter: PinkhaTypeServiceProtocol, Sendabl
 public final class AnytypeTemplateServiceAdapter: PinkhaTemplateServiceProtocol, Sendable {
     @Injected(\.templatesService)
     private var templatesService: any TemplatesServiceProtocol
+    @Injected(\.propertiesService)
+    private var propertiesService: any PropertiesServiceProtocol
 
     public init() {}
 
@@ -102,6 +126,10 @@ public final class AnytypeTemplateServiceAdapter: PinkhaTemplateServiceProtocol,
             objectTypeId: typeId,
             templateId: templateId
         )
+
+        // Make description visible by default on the new default Torah template
+        try? await propertiesService.toggleDescription(objectId: templateId, isOn: true)
+
         return templateId
     }
 

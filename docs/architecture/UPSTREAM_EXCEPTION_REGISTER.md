@@ -302,3 +302,31 @@ Fast41453663451: primary145/146 FAIL,0skips; preparation1/1 PASS; both SDK build
   - *Shared Integration / Tests:* `AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift`, `AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift`, `Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahDocumentPropertyProjectionTests.swift`.
   - *Upstream-Owned Connection Hooks:* `PropertyCreationViewModel.swift`, `PropertyInfoViewModel.swift`, `TypePropertiesViewModel.swift`, `ObjectPropertiesViewModel.swift`, `ObjectPropertiesLibraryViewModel.swift`, `SetDocument.swift`, `PropertyValueCoordinatorViewModel.swift`, `PropertiesListCoordinatorViewModel.swift`, `EditorFeaturedPropertiesView.swift`, `SinglePropertyBuilder.swift`, `BaseDocument+Extensions.swift`.
 - **Rollback:** Reversible by checking out previous commit `25d0d3d56ffb90da1594a7ba76f734d2b87acb58`. No database migration or stored user data rewrite occurred.
+
+## 2026-11-08 — Five-Defect Native Torah Integration Fix (Defects A–E)
+
+- **Worktree:** `C:\Users\DAVID\Code\anytype-swift-native-derived-20261103`
+- **Branch:** `codex/torah-native-derived-properties-20261103`
+- **Authority:** Standing owner authorization dated 2026-11-04 for necessary project implementation, protected integration, compatibility, CI and IPA export.
+- **Defects Addressed:**
+  1. *Defect E (Reactive Header Gating on Type Changes):* Reactive `@Published isEligible: Bool` state observing `document.detailsPublisher` and canonical notifications in `PinkhaDocumentMetadataRowModel`, `FeaturedPropertiesBlockViewModel`, and `EditorFeaturedPropertiesView`. Preserves all stored canonical sources when Type changes to Note/Page (chips disappear live without deleting canonical data) and restores chips live when switched back to Torah writing Types. Suppresses native relation property only when custom sources header is actively presenting it.
+  2. *Defect B (Redundant `+ מקורות` Beside Existing Chips):* In `PinkhaDocumentSourcesFeaturedContent`, shows `+ מקורות` label only when source count is 0 and document is editable; hides label completely when 1+ chips exist (retaining trailing `+N` overflow menu). Added context menu to existing source chips offering "הוסף מקור" / "Add source" via `session.presentSearch(scope: .document)`.
+  3. *Defect A (Native Torah Properties in Property Picker / Type Editor):* In `PinkhaTorahPropertyPolicy`, ensured asynchronous fallback via `await doc.open()` when document details are not yet populated in memory, both for direct document target and dataview Set target, and ensured full manifest resolution via bootstrap. In `PinkhaTorahNativePropertyCatalog`, added automated schema bootstrap fallback if native schema properties count < 3 during search before returning.
+  4. *Defect C (Writing Types Icon and Description Defaults):* In `PinkhaServiceAdapters`, sets distinct default icons (`.bulb`, `.documentText`, `.library`) and colors (`.yellow`, `.blue`, `.purple`), configures `recommendedLayout = .basic` via `objectUpdateBundledDetails` on creation, and enables featured description by default via `propertiesService.toggleDescription` on the default template. In `PinkhaSpaceBootstrapService`, added idempotent `repairWritingTypesDefaultsIfNeeded(manifest:)` during Space bootstrap to retroactively update existing Spaces without touching user customizations.
+  5. *Defect D (Remove Redundant Book Icon from Toolbar & Overflow):* Cleaned up legacy redundant Book navigation button from `EditorNavigationBarHelper` and `EditorPageController`. Reduced editing controls stack width to 96pt (2 controls: syncStatus + settings), maintaining RTL physical order `[settings, sync]`. Updated tests in `TorahNativeUIParityTests`.
+- **Changed Files Classification:**
+  - *Downstream (Pinkha):*
+    - `Anytype/Sources/Pinkha/Bootstrap/PinkhaServiceAdapters.swift` (Defect C)
+    - `Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceBootstrapService.swift` (Defect C)
+    - `Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift` (Defect A)
+    - `Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift` (Defect A)
+    - `Anytype/Sources/Pinkha/Torah/UI/PinkhaDocumentMetadataRowModel.swift` (Defect E)
+    - `Anytype/Sources/Pinkha/Torah/UI/PinkhaDocumentSourcesFeaturedContent.swift` (Defect B)
+  - *Downstream Tests:*
+    - `AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift` (Defects B, D, E)
+  - *Upstream-Owned Connection Hooks:*
+    - `Anytype/Sources/PresentationLayer/Common/SwiftUI/Relations/FeaturedRelationsView/EditorFeaturedPropertiesView.swift` (Defect E)
+    - `Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/FeaturedRelations/FeaturedPropertiesBlockViewModel.swift` (Defect E)
+    - `Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift` (Defect D)
+    - `Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Utils/EditorNavigationBarHelper/EditorNavigationBarHelper.swift` (Defect D)
+- **Rollback:** Reversible by checking out commit `ba52b872effac74c5dea6b24a35dcc9300867146`. No database migration or stored user data rewrite occurred.

@@ -46,45 +46,21 @@ struct TorahNativeUIParityTests {
         #expect(invocationCount == 1)
     }
 
-    @Test("Navigation placement is exclusive across availability and editor modes")
-    func navigationPlacementIsExclusive() {
-        #expect(EditorTorahNavigationPlacement.resolve(
-            isAvailable: false,
-            allowsEntry: true,
-            fitsInline: true
-        ) == .hidden)
-        #expect(EditorTorahNavigationPlacement.resolve(
-            isAvailable: true,
-            allowsEntry: false,
-            fitsInline: true
-        ) == .hidden)
-        #expect(EditorTorahNavigationPlacement.resolve(
-            isAvailable: true,
-            allowsEntry: true,
-            fitsInline: true
-        ) == .bar)
-        #expect(EditorTorahNavigationPlacement.resolve(
-            isAvailable: true,
-            allowsEntry: true,
-            fitsInline: false
-        ) == .overflow)
-    }
-
-    @Test("Measured fit keeps a readable title before admitting the third control")
+    @Test("Measured fit calculates 2-control toolbar width accurately")
     func navigationFitUsesMeasuredWidths() {
         let rightWidth = EditorNavigationBarEditingControls.requiredWidth(
-            controlWidths: [44, 44, 44]
+            controlWidths: [44, 44]
         )
-        #expect(rightWidth == 148)
+        #expect(rightWidth == 96)
         #expect(EditorNavigationBarFit.canFit(
-            contentWidth: 408,
+            contentWidth: 356,
             leftButtonWidth: 44,
             titleWidth: 200,
             rightButtonWidth: rightWidth,
             titleSpacing: 8
         ))
         #expect(!EditorNavigationBarFit.canFit(
-            contentWidth: 407,
+            contentWidth: 355,
             leftButtonWidth: 44,
             titleWidth: 200,
             rightButtonWidth: rightWidth,
@@ -92,44 +68,21 @@ struct TorahNativeUIParityTests {
         ))
     }
 
-    @Test("Book remains physically between settings and sync in RTL")
+    @Test("Settings and sync are physically ordered in RTL with no redundant book icon")
     func rtlControlOrder() {
         let sync = fixedControl()
-        let book = fixedControl()
         let settings = fixedControl()
         let stack = EditorNavigationBarEditingControls.makeStack(
             syncStatus: sync,
-            torahSources: book,
             settings: settings
         )
         stack.semanticContentAttribute = .forceRightToLeft
-        stack.frame = CGRect(x: 0, y: 0, width: 148, height: 44)
+        stack.frame = CGRect(x: 0, y: 0, width: 96, height: 44)
         stack.layoutIfNeeded()
 
         let physicalOrder = stack.arrangedSubviews.sorted { $0.frame.minX < $1.frame.minX }
         #expect(physicalOrder[0] === settings)
-        #expect(physicalOrder[1] === book)
-        #expect(physicalOrder[2] === sync)
-    }
-
-    @Test("Navigation action resolves the active document at invocation time")
-    func navigationActionUsesCurrentDocument() {
-        var activeDocument = "document-a"
-        var dispatchedDocuments = [String]()
-        let state = EditorTorahNavigationState(isAvailable: true) {
-            dispatchedDocuments.append(activeDocument)
-        }
-        state.update(allowsEntry: true, fitsInline: true)
-
-        state.performAction()
-        activeDocument = "document-b"
-        state.performAction()
-
-        #expect(dispatchedDocuments == ["document-a", "document-b"])
-        #expect(!state.showsOverflowAction)
-
-        state.update(allowsEntry: true, fitsInline: false)
-        #expect(state.showsOverflowAction)
+        #expect(physicalOrder[1] === sync)
     }
 
     @Test("Document header bounds chips and keeps every remaining source reachable", arguments: [0, 1, 2, 3, 12])
@@ -296,6 +249,72 @@ struct TorahNativeUIParityTests {
         // Space switch / cache invalidation test
         coldPolicy.invalidateCache(spaceId: "space-cold")
         #expect(coldPolicy.canonicalIdentityStatus(spaceId: "space-cold") == .known(propertyId: "canon-cold-id", propertyKey: "canon-cold-key"))
+    }
+
+    @Test("Header visibility is reactive to document Type eligibility (Defect E)")
+    func headerVisibilityReactiveToTypeEligibility() {
+        let manifest = PinkhaSpaceManifest(
+            spaceId: "space-reactive",
+            documentAssociationsPropertyId: "canon-id",
+            documentAssociationsPropertyKey: "canon-key",
+            registeredDocumentTypes: [
+                "chiddush": "type-chiddush",
+                "article": "type-article",
+                "research": "type-research"
+            ]
+        )
+        let probe = PolicyBootstrapProbe(manifest: manifest)
+        let policy = PinkhaTorahPropertyPolicy(bootstrapService: probe)
+
+        // Writing types are strictly eligible
+        #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-chiddush", spaceId: "space-reactive"))
+        #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-article", spaceId: "space-reactive"))
+        #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-research", spaceId: "space-reactive"))
+
+        // Note and Page are NOT eligible for native derived properties
+        #expect(!policy.isTargetEligibleForNativeProperties(typeId: "type-note", spaceId: "space-reactive"))
+        #expect(!policy.isTargetEligibleForNativeProperties(typeId: "type-page", spaceId: "space-reactive"))
+        #expect(!policy.isTargetEligibleForNativeProperties(typeId: "", spaceId: "space-reactive"))
+        #expect(!policy.isTargetEligibleForNativeProperties(typeId: "type-chiddush", spaceId: "wrong-space"))
+
+        // Canonical storage check does not depend on type eligibility:
+        // Canonical data is ALWAYS protected and NEVER erased
+        #expect(policy.isCanonicalStorage(propertyId: "canon-id", key: "canon-key", spaceId: "space-reactive"))
+    }
+
+    @Test("Presentation hides permanent add label when one or more sources exist (Defect B)")
+    func presentationSourcesNoPermanentAddLabel() {
+        let singleSource = [
+            TorahAssociationItem(
+                id: "src-1",
+                kind: .ref,
+                role: .context,
+                providerID: "sefaria",
+                externalID: "Genesis 1:1",
+                canonicalKey: "Genesis 1:1",
+                labelHe: "בראשית א:א"
+            )
+        ]
+        let presentation = PinkhaDocumentSourcesPresentation(associations: singleSource)
+        #expect(presentation.visibleAssociations.count == 1)
+        #expect(presentation.remainingCount == 0)
+        #expect(presentation.visibleAssociations.first?.id == "src-1")
+
+        let threeSources = (1...3).map { idx in
+            TorahAssociationItem(
+                id: "src-\(idx)",
+                kind: .ref,
+                role: .context,
+                providerID: "sefaria",
+                externalID: "Genesis 1:\(idx)",
+                canonicalKey: "Genesis 1:\(idx)",
+                labelHe: "בראשית א:\(idx)"
+            )
+        }
+        let pres3 = PinkhaDocumentSourcesPresentation(associations: threeSources)
+        #expect(pres3.visibleAssociations.count == 2)
+        #expect(pres3.remainingCount == 1)
+        #expect(pres3.remainingAssociations.map(\.id) == ["src-3"])
     }
 }
 
