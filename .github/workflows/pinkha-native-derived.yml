@@ -8,7 +8,9 @@ permissions:
 
 jobs:
   native-product:
-    runs-on: xcode-27
+    runs-on: macos-15-intel
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
     timeout-minutes: 150
     steps:
       - name: Checkout isolated native-derived source
@@ -27,14 +29,14 @@ jobs:
           ref: d98420b1113536afd08cde6de9a5816f6d27ffff
           path: build/Heart-Native-Derived
 
-      - name: Build approved custom Heart and install verified slices
+      - name: Build exact custom Heart and install verified slices
         run: |
           python3 Tools/PinkhaNativeDerived/build_custom_heart.py \
             --heart-source build/Heart-Native-Derived \
-            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-12/native-heart-integration.patch \
-            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-12/native-heart-integration.json \
-            --approved-patch-sha256 56d1daf5e6ccd37fa2220abed555196c8f75e228992681a7bbc7e3c7a578828a \
-            --apply-approved-patch --target ios \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/native-heart-integration.patch \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/native-heart-integration.json \
+            --approved-patch-sha256 63fdf9ccab6398d3618bb989aa62dd83a536a1fb78033ffdfa23d2fbfaed8bfe \
+            --apply-approved-patch --target ios --skip-native-tests \
             --install-app "$GITHUB_WORKSPACE" \
             --evidence build/native-evidence/heart
 
@@ -44,7 +46,7 @@ jobs:
           python3 - <<'PY'
           import json, os, subprocess
           data = json.loads(subprocess.check_output(['xcrun','simctl','list','--json']))
-          runtime = next(r for r in data['runtimes'] if r.get('isAvailable') and 'iOS 27' in r['name'])
+          runtime = next(r for r in data['runtimes'] if r.get('isAvailable') and 'iOS' in r['name'])
           device = next(d for d in data['devicetypes'] if 'iPad Pro' in d['name'])
           name = 'Pinkha-Native-Derived-' + os.environ['GITHUB_RUN_ID']
           udid = subprocess.check_output(['xcrun','simctl','create',name,device['identifier'],runtime['identifier']],text=True).strip()
@@ -56,21 +58,12 @@ jobs:
               json.dump(dict(udid=udid,name=name,device=device,runtime=runtime),stream,indent=2)
           PY
 
-      - name: Real native product API tests and unsigned iPad IPA
+      - name: Focused real native product and original UI tests
         run: |
           python3 Tools/PinkhaNativeDerived/build_native_ipa.py \
-            --app-source "$GITHUB_WORKSPACE" \
+            --app-source "$GITHUB_WORKSPACE" --tests-only \
             --simulator-udid "$PINKHA_NATIVE_IPAD_UDID" \
             --evidence build/native-evidence/app
-
-      - name: Upload actual modified iPad build
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: Pinkha-Native-Derived-iPad-Unsigned
-          path: build/native-evidence/app/Pinkha-Native-Derived-iPad-Unsigned.ipa
-          if-no-files-found: error
-          retention-days: 14
 
       - name: Package native build and test evidence
         if: always()

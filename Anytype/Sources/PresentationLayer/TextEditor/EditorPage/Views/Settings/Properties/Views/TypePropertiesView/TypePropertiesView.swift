@@ -115,6 +115,8 @@ struct TypePropertiesView: View {
                 }, label: {
                     IconView(asset: .X24.plus).frame(width: 24, height: 24)
                 })
+                .accessibilityLabel(Loc.addProperty)
+                .accessibilityIdentifier("torah-type-add-property")
             }
         }
     }

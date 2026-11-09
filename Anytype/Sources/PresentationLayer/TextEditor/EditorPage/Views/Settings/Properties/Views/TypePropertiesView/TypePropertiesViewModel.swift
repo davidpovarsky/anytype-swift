@@ -135,11 +135,7 @@ final class TypePropertiesViewModel {
         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: row.relation.id, key: row.relation.key, spaceId: document.spaceId
         ) else { return false }
-        let isNative = TorahNativePropertyDefinition.definition(for: row.relation.key) != nil
-        let isEligibleType = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
-            typeId: document.objectId, spaceId: document.spaceId
-        )
-        return !(isNative && isEligibleType)
+        return true
     }
 
     private func setupRelationsSubscription() async {

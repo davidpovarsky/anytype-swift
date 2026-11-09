@@ -10,6 +10,8 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
 
     var rows: [SearchDataSection<PropertySearchData>] = []
     var newPropertyData: PropertyInfoData?
+    var nativeLookupFailed = false
+    private var lastSearchText = ""
 
     @ObservationIgnored
     var dismiss: DismissAction?
@@ -40,40 +42,51 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
         self.data = data
     }
 
+    private var searchExcludedIds: [String] {
+        data.excludedRelationsIds.filter { !data.hiddenRelationsIds.contains($0) }
+    }
+
     func isInstalledButHidden(_ relationId: String) -> Bool {
         data.hiddenRelationsIds.contains(relationId)
     }
     
     func search(text: String) async {
+        lastSearchText = text
         let propertyFormats = SupportedPropertyFormat.allCases.filter {
             if text.isEmpty { return true }
             return $0.title.lowercased().contains(text.lowercased())
         }
 
         // Await settled internal identity (canonical + order) before filtering to prevent leaks on cold start
-        _ = await PinkhaTorahPropertyPolicy.shared.awaitInternalIdentity(spaceId: data.spaceId)
+        let internalIdentity = await PinkhaTorahPropertyPolicy.shared.awaitInternalIdentity(spaceId: data.spaceId)
 
         let isEligibleForNative = await PinkhaTorahPropertyPolicy.shared.canAddPropertyAsync(
             propertyId: "", key: TorahNativePropertyDefinition.all[0].key, target: data.target, spaceId: data.spaceId
         )
 
-        let rawExistingProperties = (try? await searchService.searchRelations(text: text, excludedIds: data.excludedRelationsIds, spaceId: data.spaceId)) ?? []
+        let rawExistingProperties = (try? await searchService.searchRelations(text: text, excludedIds: searchExcludedIds, spaceId: data.spaceId)) ?? []
         let existingProperties = rawExistingProperties.filter {
             if PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: $0.id, key: $0.key, spaceId: data.spaceId) {
                 return false
             }
-            if TorahNativePropertyDefinition.definition(for: $0.key) != nil && !isEligibleForNative {
-                return false
+            if let definition = TorahNativePropertyDefinition.definition(for: $0.key) {
+                return isEligibleForNative && PinkhaTorahNativePropertyCatalog.isVerifiedNativeDescriptor($0, definition: definition, spaceId: data.spaceId)
             }
             return true
         }
 
         let nativeProperties = await PinkhaTorahNativePropertyCatalog.shared.searchNativeProperties(
             text: text,
-            excludedIds: data.excludedRelationsIds,
+            excludedIds: searchExcludedIds,
             target: data.target,
             spaceId: data.spaceId
         )
+
+        if case .unavailable = internalIdentity {
+            nativeLookupFailed = true
+        } else {
+            nativeLookupFailed = isEligibleForNative && !PinkhaTorahNativePropertyCatalog.shared.lastLookupDiagnostics(spaceId: data.spaceId).isEmpty
+        }
 
         // Deduplicate by real Property ID and key so native descriptors and existing properties do not collide
         var seenIds = Set<String>()
@@ -107,6 +120,11 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
         }
     }
     
+    func retryNativeLookup() async {
+        PinkhaTorahNativePropertyCatalog.shared.invalidate(spaceId: data.spaceId)
+        await search(text: lastSearchText)
+    }
+
     func onRowTap(_ row: PropertySearchData) {
         Task {
             switch row {
@@ -160,7 +178,7 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
         case .object(let objectId):
             try await addPropertyToObject(objectId: objectId, relation: details)
         case .library:
-            anytypeAssertionFailure("Unsupported call of \(#function) for target .library")
+            break
         }
     }
     
@@ -229,28 +247,6 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     }
     
     func addPropertyToObject(objectId: String, relation: PropertyDetails) async throws {
-        let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: data.spaceId)
-        if doc.details == nil {
-            try? await doc.open()
-        }
-        if let docDetails = doc.details {
-            let objectType = docDetails.objectType
-            let resolvedTypeRels = PinkhaTorahNativePropertyCatalog.shared.resolvedTypeRelationIds(
-                typeId: objectType.id,
-                fallbackRecommended: objectType.recommendedRelations,
-                fallbackFeatured: objectType.recommendedFeaturedRelations,
-                fallbackHidden: objectType.recommendedHiddenRelations,
-                spaceId: data.spaceId
-            )
-            if isInstalledButHidden(relation.id) || resolvedTypeRels.hidden.contains(relation.id) {
-                try await propertiesService.revealTypeHiddenProperty(type: objectType, property: relation, featured: false)
-                return
-            }
-            if TorahNativePropertyDefinition.definition(for: relation.key) != nil {
-                try await propertiesService.addTypeRecommendedProperty(type: objectType, property: relation)
-                return
-            }
-        }
         try await propertiesService.addProperties(objectId: objectId, propertiesDetails: [relation])
     }
 }

@@ -373,8 +373,6 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
 
     // MARK: - Target Eligibility
 
-    /// Checks if a type ID in the given space is eligible for native derived properties
-    /// (strictly limited to the 3 writing types: chiddush, article, research).
     public func isTargetEligibleForNativeProperties(typeId: String, spaceId: String) -> Bool {
         guard PinkhaRuntime.enabled, !spaceId.isEmpty, !typeId.isEmpty else { return false }
         let manifest = bootstrapService.manifest(forSpaceId: spaceId)
@@ -512,105 +510,91 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
 
     // MARK: - Private Target Inspection
 
+    func isNormalDocument(_ details: ObjectDetails?, spaceId: String) -> Bool {
+        guard PinkhaRuntime.enabled, let details, details.spaceId == spaceId else { return false }
+        return TorahDocumentPropertyEligibility.includesDocument(
+            objectId: details.id, typeId: details.type, spaceId: spaceId, layout: details.resolvedLayout ?? details.layout,
+            isTemplate: details.isTemplate, isDeleted: details.isDeleted, isArchived: details.isArchived,
+            isInternal: details.isHidden || !details.uniqueKey.isEmpty ||
+                details.values[BundledPropertyKey.relationKey.rawValue] != nil ||
+                details.values[BundledPropertyKey.relationFormat.rawValue] != nil ||
+                details.values[BundledPropertyKey.recommendedLayout.rawValue] != nil,
+            manifest: bootstrapService.manifest(forSpaceId: spaceId)
+        )
+    }
+
+    private func isNormalType(_ type: ObjectType, spaceId: String) -> Bool {
+        guard type.spaceId == spaceId, !type.id.isEmpty, !type.hidden,
+              !type.isDeleted, !type.isArchived,
+              let layout = type.recommendedLayout,
+              (DetailsLayout.editorLayouts + DetailsLayout.listLayouts + [.bookmark]).contains(layout) else { return false }
+        return isTargetEligibleForNativeProperties(typeId: type.id, spaceId: spaceId)
+    }
+
+    func presentsSources(on document: any BaseDocumentProtocol) -> Bool {
+        guard isNormalDocument(document.details, spaceId: document.spaceId) else { return false }
+        let key = TorahNativePropertyDefinition.all[0].key
+        let properties = document.parsedProperties
+        return (properties.featuredProperties + properties.sidebarProperties + properties.conflictedProperties + properties.legacyFeaturedProperties)
+            .contains { $0.key == key }
+    }
+
     func isTargetEligible(target: PropertiesModuleTarget, spaceId: String) -> Bool {
         switch target {
         case .type(let typeData):
-            let typeId: String
             switch typeData {
-            case .recommendedFeaturedRelations(let t): typeId = t.id
-            case .recommendedRelations(let t): typeId = t.id
+            case .recommendedFeaturedRelations(let type), .recommendedRelations(let type):
+                return isNormalType(type, spaceId: spaceId)
             }
-            return isTargetEligibleForNativeProperties(typeId: typeId, spaceId: spaceId)
         case let .dataview(objectId, _, typeDetails):
             return isDataviewTargetEligible(objectId: objectId, typeDetails: typeDetails, spaceId: spaceId)
         case .object(let objectId):
             let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
-            guard let details = doc.details, details.spaceId == spaceId, !details.type.isEmpty else { return false }
-            return isTargetEligibleForNativeProperties(typeId: details.type, spaceId: spaceId)
+            return doc.permissions.canEditRelationValues && doc.details?.isReadonly == false && isNormalDocument(doc.details, spaceId: spaceId)
         case .library:
-            return false
+            return bootstrapService.manifest(forSpaceId: spaceId)?.isComplete == true
         }
     }
 
     func isTargetEligibleAsync(target: PropertiesModuleTarget, spaceId: String) async -> Bool {
+        guard await resolveManifest(spaceId: spaceId) != nil else { return false }
         switch target {
-        case .type(let typeData):
-            let typeId: String
-            switch typeData {
-            case .recommendedFeaturedRelations(let t): typeId = t.id
-            case .recommendedRelations(let t): typeId = t.id
-            }
-            return await isTargetEligibleForNativePropertiesAsync(typeId: typeId, spaceId: spaceId)
+        case .type, .library:
+            return isTargetEligible(target: target, spaceId: spaceId)
         case let .dataview(objectId, _, typeDetails):
             return await isDataviewTargetEligibleAsync(objectId: objectId, typeDetails: typeDetails, spaceId: spaceId)
         case .object(let objectId):
             let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
-            if let details = doc.details, details.spaceId == spaceId, !details.type.isEmpty {
-                return await isTargetEligibleForNativePropertiesAsync(typeId: details.type, spaceId: spaceId)
-            }
-            try? await doc.open()
-            if let details = doc.details, details.spaceId == spaceId, !details.type.isEmpty {
-                return await isTargetEligibleForNativePropertiesAsync(typeId: details.type, spaceId: spaceId)
-            }
-            if let liveDetails = await PinkhaTorahNativePropertyCatalog.shared.fetchLiveObjectDetails(id: objectId, spaceId: spaceId),
-               !liveDetails.type.isEmpty {
-                return await isTargetEligibleForNativePropertiesAsync(typeId: liveDetails.type, spaceId: spaceId)
-            }
-            return false
-        case .library:
-            return false
+            if doc.details == nil { try? await doc.open() }
+            guard doc.permissions.canEditRelationValues else { return false }
+            if let details = doc.details { return !details.isReadonly && isNormalDocument(details, spaceId: spaceId) }
+            return isNormalDocument(await PinkhaTorahNativePropertyCatalog.shared.fetchLiveObjectDetails(id: objectId, spaceId: spaceId), spaceId: spaceId)
         }
     }
 
     func isDataviewEligible(typeDetails: ObjectDetails?, filteredSetOf: [String], spaceId: String) -> Bool {
-        if let typeDetails, !typeDetails.id.isEmpty {
-            guard typeDetails.spaceId == spaceId else { return false }
-            return isTargetEligibleForNativeProperties(typeId: typeDetails.id, spaceId: spaceId)
-        }
-        let sources = filteredSetOf.filter { !$0.isEmpty }
-        guard !sources.isEmpty else { return false }
-        for sourceTypeId in sources {
-            guard isTargetEligibleForNativeProperties(typeId: sourceTypeId, spaceId: spaceId) else {
-                return false
-            }
+        guard PinkhaRuntime.enabled, !spaceId.isEmpty,
+              bootstrapService.manifest(forSpaceId: spaceId)?.isComplete == true else { return false }
+        if let typeDetails {
+            return typeDetails.isObjectType && isNormalType(ObjectType(details: typeDetails), spaceId: spaceId)
         }
         return true
     }
 
     func isDataviewTargetEligible(objectId: String, typeDetails: ObjectDetails?, spaceId: String) -> Bool {
-        if let typeDetails, !typeDetails.id.isEmpty {
-            guard typeDetails.spaceId == spaceId else { return false }
-            return isTargetEligibleForNativeProperties(typeId: typeDetails.id, spaceId: spaceId)
-        }
-        guard !objectId.isEmpty else { return false }
-        let setDetails = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId).details
-        guard let setDetails, setDetails.spaceId == spaceId else { return false }
-        return isDataviewEligible(typeDetails: nil, filteredSetOf: setDetails.filteredSetOf, spaceId: spaceId)
+        if let typeDetails { return isDataviewEligible(typeDetails: typeDetails, filteredSetOf: [], spaceId: spaceId) }
+        let details = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId).details
+        return isNormalDocument(details, spaceId: spaceId) && details?.resolvedLayoutValue.isList == true
     }
 
     func isDataviewTargetEligibleAsync(objectId: String, typeDetails: ObjectDetails?, spaceId: String) async -> Bool {
-        if let typeDetails, !typeDetails.id.isEmpty {
-            guard typeDetails.spaceId == spaceId else { return false }
-            return await isTargetEligibleForNativePropertiesAsync(typeId: typeDetails.id, spaceId: spaceId)
-        }
-        guard !objectId.isEmpty else { return false }
+        guard await resolveManifest(spaceId: spaceId) != nil else { return false }
+        if let typeDetails { return isDataviewEligible(typeDetails: typeDetails, filteredSetOf: [], spaceId: spaceId) }
         let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: spaceId)
-        var setDetails = doc.details
-        if setDetails == nil {
-            try? await doc.open()
-            setDetails = doc.details
-        }
-        if setDetails == nil {
-            setDetails = await PinkhaTorahNativePropertyCatalog.shared.fetchLiveObjectDetails(id: objectId, spaceId: spaceId)
-        }
-        guard let setDetails, setDetails.spaceId == spaceId else { return false }
-        let sources = setDetails.filteredSetOf.filter { !$0.isEmpty }
-        guard !sources.isEmpty else { return false }
-        for sourceTypeId in sources {
-            guard await isTargetEligibleForNativePropertiesAsync(typeId: sourceTypeId, spaceId: spaceId) else {
-                return false
-            }
-        }
-        return true
+        if doc.details == nil { try? await doc.open() }
+        let details: ObjectDetails?
+        if let opened = doc.details { details = opened }
+        else { details = await PinkhaTorahNativePropertyCatalog.shared.fetchLiveObjectDetails(id: objectId, spaceId: spaceId) }
+        return isNormalDocument(details, spaceId: spaceId) && details?.resolvedLayoutValue.isList == true
     }
 }

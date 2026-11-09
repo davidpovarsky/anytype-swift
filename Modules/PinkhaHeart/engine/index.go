@@ -405,6 +405,7 @@ func (i *Index) project(binding torah.Binding, d *domain.Details) {
 	}
 	p, err := torah.Project(binding, torah.Input{
 		SpaceID: i.space, ObjectID: d.GetString(bundle.RelationKeyId), TypeID: types[0],
+		IsDocument: isUserDocument(d),
 		IsTemplate: d.Has(bundle.RelationKeyTargetObjectType),
 		IsDeleted:  d.GetBool(bundle.RelationKeyIsDeleted), IsArchived: d.GetBool(bundle.RelationKeyIsArchived),
 		Raw: []byte(d.GetString(domain.RelationKey(binding.CanonicalKey))),
@@ -438,6 +439,29 @@ func (i *Index) project(binding torah.Binding, d *domain.Details) {
 }
 
 type source struct{ index *Index }
+
+func isUserDocument(d *domain.Details) bool {
+	if d == nil || isManifest(d) ||
+		d.GetBool(bundle.RelationKeyIsHidden) || d.GetString(bundle.RelationKeyUniqueKey) != "" ||
+		d.Has(bundle.RelationKeyRelationKey) || d.Has(bundle.RelationKeyRelationFormat) ||
+		d.Has(bundle.RelationKeyRecommendedLayout) {
+		return false
+	}
+	layout, ok := d.TryInt64(bundle.RelationKeyResolvedLayout)
+	if !ok {
+		layout, ok = d.TryInt64(bundle.RelationKeyLayout)
+	}
+	if !ok {
+		return false
+	}
+	switch model.ObjectTypeLayout(layout) {
+	case model.ObjectType_basic, model.ObjectType_note, model.ObjectType_todo,
+		model.ObjectType_set, model.ObjectType_collection, model.ObjectType_bookmark, model.ObjectType_profile:
+		return true
+	default:
+		return false
+	}
+}
 
 func (s source) isCanonicalCandidate(ctx context.Context, id string) bool {
 	candidates, err := s.Manifests(ctx, s.index.space)

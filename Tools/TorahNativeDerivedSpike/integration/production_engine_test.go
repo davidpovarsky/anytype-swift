@@ -150,6 +150,12 @@ func TestRealNativeMiddlewareDerivedProperties(t *testing.T) {
 	}
 	document := &pb.RpcObjectCreateResponse{}
 	invoke(service.ObjectCreate, &pb.RpcObjectCreateRequest{SpaceId: space.SpaceId, ObjectTypeUniqueKey: typeKeys["chiddush"], Details: domain.NewDetails().SetString(bundle.RelationKeyName, "Real native document").ToProto()}, document)
+	invoke(service.ObjectRelationAdd, &pb.RpcObjectRelationAddRequest{ContextId: document.ObjectId, RelationKeys: []string{torah.SourcesKey, torah.TopicsKey, torah.WordsKey}}, &pb.RpcObjectRelationAddResponse{})
+	for _, key := range []string{torah.SourcesKey, torah.TopicsKey, torah.WordsKey} {
+		if !show(document.ObjectId).Has(domain.RelationKey(key)) {
+			t.Fatalf("attached empty row missing: %s", key)
+		}
+	}
 	identity := torah.Identity(torah.Ref, "sefaria", "Genesis 1:1", "")
 	item := map[string]string{"id": "wire-source", "kind": "ref", "role": "context", "providerID": "sefaria", "canonicalKey": "Genesis 1:1", "externalID": "Genesis 1:1", "labelHe": "בראשית א:א"}
 	topic := map[string]string{"id": "wire-topic", "kind": "topic", "role": "context", "providerID": "sefaria", "canonicalKey": "creation", "externalID": "creation", "labelHe": "בריאה"}
@@ -329,6 +335,100 @@ func TestRealNativeMiddlewareDerivedProperties(t *testing.T) {
 	}
 	exportIDs = append(exportIDs, nativeIDs...)
 	emitCompatibilityExports(t, space.SpaceId, exportIDs, "Real native document", string(payload))
+	invoke(service.WorkspaceObjectListAdd, &pb.RpcWorkspaceObjectListAddRequest{SpaceId: space.SpaceId, ObjectIds: []string{"_otnote"}}, &pb.RpcWorkspaceObjectListAddResponse{})
+	universalTypes := []string{}
+	universalDocs := []string{}
+	for _, role := range []string{"page", "note", "custom"} {
+		typeKey := "ot-" + role
+		if role == "custom" {
+			created := &pb.RpcObjectCreateObjectTypeResponse{}
+			invoke(service.ObjectCreateObjectType, &pb.RpcObjectCreateObjectTypeRequest{SpaceId: space.SpaceId, Details: domain.NewDetails().SetString(bundle.RelationKeyName, "Arbitrary user Type").SetInt64(bundle.RelationKeyRecommendedLayout, int64(model.ObjectType_note)).ToProto()}, created)
+			typeKey = domain.NewDetailsFromProto(created.Details).GetString(bundle.RelationKeyUniqueKey)
+		}
+		first, second := &pb.RpcObjectCreateResponse{}, &pb.RpcObjectCreateResponse{}
+		invoke(service.ObjectCreate, &pb.RpcObjectCreateRequest{SpaceId: space.SpaceId, ObjectTypeUniqueKey: typeKey, Details: domain.NewDetails().SetString(bundle.RelationKeyName, role+" P1").ToProto()}, first)
+		invoke(service.ObjectCreate, &pb.RpcObjectCreateRequest{SpaceId: space.SpaceId, ObjectTypeUniqueKey: typeKey, Details: domain.NewDetails().SetString(bundle.RelationKeyName, role+" P2").ToProto()}, second)
+		typeID := show(first.ObjectId).GetString(bundle.RelationKeyType)
+		beforeType := show(typeID).GetStringList(bundle.RelationKeyRecommendedRelations)
+		invoke(service.ObjectRelationAdd, &pb.RpcObjectRelationAddRequest{ContextId: first.ObjectId, RelationKeys: []string{torah.SourcesKey, torah.TopicsKey, torah.WordsKey}}, &pb.RpcObjectRelationAddResponse{})
+		for _, key := range []string{torah.SourcesKey, torah.TopicsKey, torah.WordsKey} {
+			if !show(first.ObjectId).Has(domain.RelationKey(key)) || show(second.ObjectId).Has(domain.RelationKey(key)) {
+				t.Fatalf("%s object attachment leaked or empty row absent: %s", role, key)
+			}
+		}
+		if !reflect.DeepEqual(beforeType, show(typeID).GetStringList(bundle.RelationKeyRecommendedRelations)) {
+			t.Fatal("object attachment mutated whole Type")
+		}
+		raw, _ := json.Marshal(map[string]any{"version": 1, "items": []any{item, topic, word}})
+		invoke(service.ObjectSetDetails, &pb.RpcObjectSetDetailsRequest{ContextId: first.ObjectId, Details: []*model.Detail{{Key: canonicalKey, Value: domain.String(string(raw)).ToProto()}}}, &pb.RpcObjectSetDetailsResponse{})
+		wait(role+" universal projection", func() bool { return len(show(first.ObjectId).GetStringList(torah.SourcesKey)) == 1 })
+		universalTypes = append(universalTypes, typeID)
+		universalDocs = append(universalDocs, first.ObjectId)
+		response := &pb.RpcObjectSearchResponse{}
+		typeFilter := &model.BlockContentDataviewFilter{RelationKey: "type", Condition: model.BlockContentDataviewFilter_In, Value: domain.StringList([]string{typeID}).ToProto()}
+		wait(role+" indexed membership", func() bool {
+			invoke(service.ObjectSearch, &pb.RpcObjectSearchRequest{SpaceId: space.SpaceId, Filters: []*model.BlockContentDataviewFilter{filter, typeFilter}, Keys: []string{"id"}}, response)
+			return len(response.Records) == 1 && domain.NewDetailsFromProto(response.Records[0]).GetString(bundle.RelationKeyId) == first.ObjectId
+		})
+		viewSet := &pb.RpcObjectCreateSetResponse{}
+		invoke(service.ObjectCreateSet, &pb.RpcObjectCreateSetRequest{SpaceId: space.SpaceId, Source: []string{typeID}}, viewSet)
+		for _, def := range torah.Definitions {
+			invoke(service.ObjectTypePropertyAdd, &pb.RpcObjectTypePropertyAddRequest{ObjectTypeId: typeID, Key: def.Key, Section: pb.RpcObjectTypePropertyAddRequest_Recommended, EnableInViews: true}, &pb.RpcObjectTypePropertyAddResponse{})
+		}
+		if len(show(typeID).GetStringList(bundle.RelationKeyRecommendedRelations)) < len(beforeType)+3 {
+			t.Fatal("explicit Type property attachment did not persist")
+		}
+		invoke(service.ObjectRelationDelete, &pb.RpcObjectRelationDeleteRequest{ContextId: first.ObjectId, RelationKeys: []string{torah.SourcesKey}}, &pb.RpcObjectRelationDeleteResponse{})
+		if show(first.ObjectId).GetString(domain.RelationKey(canonicalKey)) != string(raw) {
+			t.Fatal("detaching presentation deleted canonical associations")
+		}
+		if len(show(first.ObjectId).GetStringList(torah.SourcesKey)) != 1 {
+			t.Fatal("detaching presentation removed indexed membership")
+		}
+		invoke(service.ObjectRelationAdd, &pb.RpcObjectRelationAddRequest{ContextId: first.ObjectId, RelationKeys: []string{torah.SourcesKey}}, &pb.RpcObjectRelationAddResponse{})
+		if len(show(first.ObjectId).GetStringList(torah.AttachedPropertiesKey)) != 3 {
+			t.Fatal("reattachment duplicated native metadata")
+		}
+		t.Log("PASS universal native document, isolated object attachment, empty rows, canonical projection, real filtered membership and explicit Type attachment: " + role)
+	}
+	mixed := &pb.RpcObjectCreateSetResponse{}
+	invoke(service.ObjectCreateSet, &pb.RpcObjectCreateSetRequest{SpaceId: space.SpaceId, Source: universalTypes}, mixed)
+	mixedFilter := &model.BlockContentDataviewFilter{RelationKey: "type", Condition: model.BlockContentDataviewFilter_In, Value: domain.StringList(universalTypes).ToProto()}
+	mixedResult := &pb.RpcObjectSearchResponse{}
+	invoke(service.ObjectSearch, &pb.RpcObjectSearchRequest{SpaceId: space.SpaceId, Filters: []*model.BlockContentDataviewFilter{filter, mixedFilter}, Keys: []string{"id"}}, mixedResult)
+	if len(mixedResult.Records) != len(universalDocs) {
+		t.Fatalf("mixed native Set membership mismatch: %d", len(mixedResult.Records))
+	}
+	updatedSubscription := &pb.RpcObjectSearchSubscribeResponse{}
+	invoke(service.ObjectSearchSubscribe, &pb.RpcObjectSearchSubscribeRequest{SpaceId: space.SpaceId, SubId: "torah-native-wire", Filters: []*model.BlockContentDataviewFilter{filter, mixedFilter}, Keys: []string{"id", torah.SourcesKey}, Limit: 100}, updatedSubscription)
+	if len(updatedSubscription.Records) != len(universalDocs) {
+		t.Fatal("mixed subscription initial membership mismatch")
+	}
+	for _, id := range universalDocs {
+		for len(events) > 0 {
+			<-events
+		}
+		saved := show(id).GetString(domain.RelationKey(canonicalKey))
+		invoke(service.ObjectSetDetails, &pb.RpcObjectSetDetailsRequest{ContextId: id, Details: []*model.Detail{{Key: canonicalKey, Value: domain.String("").ToProto()}}}, &pb.RpcObjectSetDetailsResponse{})
+		waitEvent("remove")
+		invoke(service.ObjectSetDetails, &pb.RpcObjectSetDetailsRequest{ContextId: id, Details: []*model.Detail{{Key: canonicalKey, Value: domain.String(saved).ToProto()}}}, &pb.RpcObjectSetDetailsResponse{})
+		waitEvent("add")
+	}
+	secondSpace := &pb.RpcWorkspaceCreateResponse{}
+	invoke(service.WorkspaceCreate, &pb.RpcWorkspaceCreateRequest{Details: domain.NewDetails().SetString(bundle.RelationKeyName, "Universal isolation B").ToProto()}, secondSpace)
+	for n, definition := range torah.Definitions {
+		property := &pb.RpcObjectCreateRelationResponse{}
+		invoke(service.ObjectCreateRelation, &pb.RpcObjectCreateRelationRequest{SpaceId: secondSpace.SpaceId, Details: domain.NewDetails().SetString(bundle.RelationKeyName, definition.Name).SetString(bundle.RelationKeyRelationKey, definition.Key).SetInt64(bundle.RelationKeyRelationFormat, 11).SetBool(bundle.RelationKeyRelationReadonlyValue, true).ToProto()}, property)
+		if property.ObjectId == nativeIDs[n] {
+			t.Fatal("native Property ID crossed Space boundary")
+		}
+	}
+	isolated := &pb.RpcObjectSearchResponse{}
+	invoke(service.ObjectSearch, &pb.RpcObjectSearchRequest{SpaceId: secondSpace.SpaceId, Filters: []*model.BlockContentDataviewFilter{filter}, Keys: []string{"id"}}, isolated)
+	if len(isolated.Records) != 0 {
+		t.Fatal("native membership polluted another Space")
+	}
+	t.Log("PASS Page + Note + arbitrary custom Type mixed native membership")
 	t.Log("PASS real generated middleware APIs: Property registry, Type recommendation, canonical writes, native search/Set/live Details, mutation rejection and native export; zero alternative option Objects")
 }
 
@@ -396,7 +496,7 @@ func TestProductionEngineLifecycleAndRecovery(t *testing.T) {
 	}
 	put("canonical-property", domain.NewDetails().SetString(bundle.RelationKeyRelationKey, "customCanonical").SetInt64(bundle.RelationKeyRelationFormat, 0).SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_relation)))
 	document := func(raw string) *domain.Details {
-		return domain.NewDetails().SetString(bundle.RelationKeySpaceId, "s").SetStringList(bundle.RelationKeyType, []string{"h"}).SetString("customCanonical", raw)
+		return domain.NewDetails().SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_basic)).SetString(bundle.RelationKeySpaceId, "s").SetStringList(bundle.RelationKeyType, []string{"h"}).SetString("customCanonical", raw)
 	}
 	payload := `{"version":1,"items":[{"id":"source","kind":"ref","role":"context","providerID":"sefaria","canonicalKey":"Genesis 1:1","externalID":"Genesis 1:1","labelHe":"בראשית א:א"}]}`
 	put("doc", document(payload))
@@ -517,6 +617,38 @@ func TestProductionEngineLifecycleAndRecovery(t *testing.T) {
 	if get("foreign").GetBool(torah.ReadyKey) {
 		t.Fatal("foreign Space indexed")
 	}
+	for _, typeID := range []string{"page", "note", "arbitrary-custom-type"} {
+		put(typeID, document(payload).SetString(bundle.RelationKeyType, typeID))
+		if got := get(typeID).GetStringList(torah.SourcesKey); len(got) != 1 || got[0] != identity {
+			t.Fatalf("normal document Type %s was excluded: %v", typeID, got)
+		}
+	}
+	for name, details := range map[string]*domain.Details{
+		"type-definition":     document(payload).SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_objectType)),
+		"property-definition": document(payload).SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_relation)),
+		"space":               document(payload).SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_space)),
+		"option":              document(payload).SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_relationOption)),
+		"hidden":              document(payload).SetBool(bundle.RelationKeyIsHidden, true),
+		"system":              document(payload).SetString(bundle.RelationKeyUniqueKey, "internal-key"),
+		"template":            document(payload).SetString(bundle.RelationKeyTargetObjectType, "page"),
+		"deleted":             document(payload).SetBool(bundle.RelationKeyIsDeleted, true),
+		"unknown-layout":      document(payload).SetInt64(bundle.RelationKeyLayout, 999),
+	} {
+		put(name, details)
+		if get(name).Has(torah.SourcesKey) || get(name).GetBool(torah.ReadyKey) {
+			t.Fatalf("infrastructure record %s was projected", name)
+		}
+	}
+	put("changing-class", document(payload))
+	if err = raw(ctx, "changing-class", get("changing-class").SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_relation))); err != nil {
+		t.Fatal(err)
+	}
+	if err = index.Recover(ctx); err != nil {
+		t.Fatal(err)
+	}
+	if get("changing-class").Has(torah.SourcesKey) {
+		t.Fatal("recovery ignored changed object class")
+	}
 	// Simulate a missing/stale local index, retaining the only canonical source.
 	if err = raw(ctx, "doc", document(payload)); err != nil {
 		t.Fatal(err)
@@ -544,8 +676,8 @@ func TestProductionEngineLifecycleAndRecovery(t *testing.T) {
 	}
 	manifest["registeredDocumentTypes"] = map[string]string{"chiddush": "new-h", "article": "a", "research": "r"}
 	putManifest()
-	if get("doc").GetBool(torah.ReadyKey) || get("doc").Has(torah.SourcesKey) {
-		t.Fatal("old Type membership survived manifest change")
+	if !get("doc").GetBool(torah.ReadyKey) || !get("doc").Has(torah.SourcesKey) {
+		t.Fatal("authoring Type change removed universal membership")
 	}
 	if get("doc").GetString("customCanonical") != payload {
 		t.Fatal("rebind rewrote associations")
@@ -562,7 +694,7 @@ func TestProductionEngineLifecycleAndRecovery(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if count != 5 {
+	if count != 18 {
 		t.Fatalf("unexpected generated objects/options: %d", count)
 	}
 }

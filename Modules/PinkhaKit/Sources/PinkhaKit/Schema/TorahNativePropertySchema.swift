@@ -15,6 +15,7 @@ public struct TorahNativePropertyDefinition: Sendable, Equatable, Hashable {
     public static let readinessKey = "_pinkhaTorahReady"
     public static let labelsKey = "_pinkhaTorahLabels"
     public static let statusKey = "_pinkhaTorahState"
+    public static let attachedPropertiesKey = "_pinkhaTorahAttachedProperties"
 
     public static let all: [Self] = [
         Self(kind: .ref, key: "pinkhaTorahSources", name: "מקור/ות", englishName: "Source(s)"),

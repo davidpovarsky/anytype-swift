@@ -32,9 +32,9 @@ jobs:
         run: |
           python3 Tools/PinkhaNativeDerived/build_custom_heart.py \
             --heart-source build/Heart-Native-Fast \
-            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-12/native-heart-integration.patch \
-            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-12/native-heart-integration.json \
-            --approved-patch-sha256 56d1daf5e6ccd37fa2220abed555196c8f75e228992681a7bbc7e3c7a578828a \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/native-heart-integration.patch \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/native-heart-integration.json \
+            --approved-patch-sha256 63fdf9ccab6398d3618bb989aa62dd83a536a1fb78033ffdfa23d2fbfaed8bfe \
             --apply-approved-patch --target ios \
             --install-app "$GITHUB_WORKSPACE" \
             --evidence build/native-fast/heart

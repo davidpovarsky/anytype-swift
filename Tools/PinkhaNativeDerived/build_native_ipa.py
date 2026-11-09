@@ -36,6 +36,7 @@ def main():
     parser.add_argument('--app-source',required=True,type=Path)
     parser.add_argument('--simulator-udid',required=True)
     parser.add_argument('--evidence',required=True,type=Path)
+    parser.add_argument('--tests-only',action='store_true')
     args=parser.parse_args()
     if platform.system()!='Darwin': raise RuntimeError('Actual macOS/Xcode required')
     app=args.app_source.resolve()
@@ -94,6 +95,13 @@ def main():
         raise RuntimeError('Missing actual test count: '+key)
     if count('passedTests')<1 or count('failedTests') or count('skippedTests'): raise RuntimeError('Native product acceptance did not pass without skips')
     native_passed=count('passedTests')
+    policy_result=evidence/'NativePropertyPolicy.xcresult'
+    run_xctest(['xcodebuild','test-without-building','-xctestrun',str(native_run),'-destination',
+             'platform=iOS Simulator,id='+args.simulator_udid,'-parallel-testing-enabled','NO',
+             '-only-testing:AnytypeTests/TorahNativeUIParityTests','-resultBundlePath',str(policy_result)],app,evidence,policy_result,'native-policy')
+    summary=json.loads(subprocess.check_output(['xcrun','xcresulttool','get','test-results','summary','--path',str(policy_result),'--format','json'],text=True))
+    (evidence/'native-policy-test-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+    if count('passedTests')<1 or count('failedTests') or count('skippedTests'): raise RuntimeError('Native property policy tests did not pass without skips')
     # Drive the original app after its real native account/Space preparation.
     # Only fixture IDs/names cross into the test runner; no canonical mirror or
     # authentication secret is supplied to the UI or written into the repository.
@@ -133,6 +141,12 @@ def main():
     if count('passedTests')<1 or count('failedTests') or count('skippedTests'): raise RuntimeError('Original application UI acceptance did not pass without skips')
     ui_passed=count('passedTests')
     command(['xcrun','xcresulttool','export','attachments','--path',str(ui_result),'--output-path',str(evidence/'screenshots')],app,evidence)
+    if args.tests_only:
+        receipt=dict(status='PASS',app_base_sha=git(app,'rev-parse','HEAD'),heart=heart,
+                     passed_native_tests=native_passed,passed_original_app_ui_tests=ui_passed,
+                     physical_ipad_verified=False,ipa='NOT_BUILT_TESTS_ONLY')
+        (evidence/'native-acceptance.json').write_text(json.dumps(receipt,indent=2)+'\n')
+        return
     # Reuse dependency checkouts; Xcode keeps each SDK's products separate.
     # The real device build retains the original Release optimization settings.
     device=derived

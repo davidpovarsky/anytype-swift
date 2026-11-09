@@ -22,43 +22,20 @@ final class PinkhaDocumentMetadataRowModel: ObservableObject, SystemContentConfi
         self.session = session
         self.onRelationTap = onRelationTap
 
-        let typeId = document.details?.type ?? ""
-        self.isEligible = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
-            typeId: typeId, spaceId: document.spaceId
+        self.isEligible = PinkhaTorahPropertyPolicy.shared.presentsSources(on: document)
+
+        Publishers.Merge3(
+            document.parsedPropertiesPublisher.map { _ in () }.eraseToAnyPublisher(),
+            document.detailsPublisher.map { _ in () }.eraseToAnyPublisher(),
+            NotificationCenter.default.publisher(for: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification).map { _ in () }.eraseToAnyPublisher()
         )
-
-        document.featuredRelationsForEditorPublisher
-            .receiveOnMain()
-            .removeDuplicates()
-            .sink { [weak self] in self?.relations = $0 }
-            .store(in: &cancellables)
-
-        document.detailsPublisher
-            .receiveOnMain()
-            .sink { [weak self] details in
-                guard let self else { return }
-                let newEligible = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
-                    typeId: details.type, spaceId: details.spaceId
-                )
-                if self.isEligible != newEligible {
-                    self.isEligible = newEligible
-                }
-            }
-            .store(in: &cancellables)
-
-        NotificationCenter.default.publisher(for: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification)
-            .receiveOnMain()
-            .sink { [weak self] _ in
-                guard let self, let doc = self.document else { return }
-                let typeId = doc.details?.type ?? ""
-                let newEligible = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
-                    typeId: typeId, spaceId: doc.spaceId
-                )
-                if self.isEligible != newEligible {
-                    self.isEligible = newEligible
-                }
-            }
-            .store(in: &cancellables)
+        .receiveOnMain()
+        .sink { [weak self] _ in
+            guard let self, let document = self.document else { return }
+            self.relations = document.featuredRelationsForEditor
+            self.isEligible = PinkhaTorahPropertyPolicy.shared.presentsSources(on: document)
+        }
+        .store(in: &cancellables)
     }
 
     func makeContentConfiguration(maxWidth: CGFloat) -> any UIContentConfiguration {

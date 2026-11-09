@@ -65,7 +65,6 @@ func ResolveBinding(ctx context.Context, source ManifestSource, space string) (B
 	if manifest.CanonicalID == "" || manifest.CanonicalKey == "" || manifest.ParentID == "" || manifest.ParentKey == "" || manifest.OrderID == "" || manifest.OrderKey == "" || manifest.FolderTypeID == "" || manifest.BookFolderTypeID == "" {
 		return Binding{}, ErrBinding
 	}
-	types := [3]string{manifest.Types["chiddush"], manifest.Types["article"], manifest.Types["research"]}
 	for _, role := range []string{"chiddush", "article", "research"} {
 		if manifest.Templates[role] == "" {
 			return Binding{}, ErrBinding
@@ -82,6 +81,6 @@ func ResolveBinding(ctx context.Context, source ManifestSource, space string) (B
 	hash := sha256.New()
 	hash.Write(candidate.Raw)
 	fmt.Fprintf(hash, "|%d:%s|%d:%s|%d", len(candidate.ObjectID), candidate.ObjectID, len(property.ID), property.ID, property.Format)
-	binding := Binding{SpaceID: space, CanonicalKey: manifest.CanonicalKey, WritingTypeIDs: types, Generation: hex.EncodeToString(hash.Sum(nil))}
+	binding := Binding{SpaceID: space, CanonicalKey: manifest.CanonicalKey, Generation: hex.EncodeToString(hash.Sum(nil))}
 	return binding, binding.Validate()
 }

@@ -10,6 +10,16 @@ struct PropertyCreationView: View {
     
     var body: some View {
         content
+            .safeAreaInset(edge: .bottom) {
+                if model.nativeLookupFailed {
+                    VStack {
+                        AnytypeText(Loc.Content.Common.error, style: .uxBodyRegular)
+                        Button(Loc.Pinkha.Home.retry) { Task { await model.retryNativeLookup() } }
+                    }
+                    .padding()
+                    .background(Color.Background.primary)
+                }
+            }
             .onAppear { model.dismiss = dismiss }
             .sheet(item: $model.newPropertyData) {
                 PropertyInfoCoordinatorView(data: $0, output: model)

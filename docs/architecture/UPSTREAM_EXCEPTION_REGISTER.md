@@ -404,3 +404,14 @@ Fast41453663451: primary145/146 FAIL,0skips; preparation1/1 PASS; both SDK build
     - `Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift`
     - `Anytype/Sources/PresentationLayer/TextEditor/Set/Models/SetDocument.swift`
 - **Rollback:** Reversible by checking out commit `d956bff0ac1601283018f4afbcc2b8a057251aaa`. No database migration or stored user data rewrite occurred.
+
+
+## 2026-11-09 — Universal optional native Torah properties, revision 13
+
+[נועם | DEV] [MAIN_SESSION] — owner requested full execution of the universal-properties handoff. The standing 2026-11-04 authorization above covers necessary protected integration, scoped tests, publication and unsigned IPA. Work remains on the original isolated native-derived branch; no additional permission gate is inferred.
+
+Pinned Heart remains `d98420b1113536afd08cde6de9a5816f6d27ffff`; full exact patch SHA-256 is `63fdf9ccab6398d3618bb989aa62dd83a536a1fb78033ffdfa23d2fbfaed8bfe`. The new protected Heart connection points are `core/details.go` (dispatch the three existing derived keys to original object-attachment metadata) and `core/block/editor/state/change.go` (retain only their definition RelationLinks, never derived values). A downstream `core/block/detailservice/pinkha_torah.go` adapter performs the normal permission-checked state apply; the existing downstream smartblock helper injects empty rows and local attachment presentation metadata. Original protocol/generated files and upstream version pins are unchanged.
+
+Exact Swift hooks, ownership, before/after hashes and original hunks are retained in `docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/{source-inventory.json,swift-integration.patch}`; Swift protected diff SHA-256 is `b9e758a4bd41e26fbff9c277349f018d0cdcff261535c961946cc2f52886bed8`. The object panel reuses the original property picker, object operations leave Type lists untouched, and Type/Set controls keep native metadata semantics. The catalog does not auto-attach discovered definitions. Source header visibility follows actual attachment. Scope is fresh development Spaces; no historical migration or backfill was added.
+
+Real pinned native middleware Page/Note/custom projection, object-only attachment, empty rows, native mixed membership/subscriptions and Space isolation passed. Scoped original engine regressions: 953 passed, one existing external-tree-dump opt-in test skipped. Portable Swift: 14 passed. Xcode app/UI and the new IPA are still pending at this entry; physical iPad remains `PENDING_DEVICE`. See `docs/pinkha/torah-integration/UNIVERSAL_NATIVE_TORAH_PROPERTIES_REPORT.md` for the live acceptance matrix.

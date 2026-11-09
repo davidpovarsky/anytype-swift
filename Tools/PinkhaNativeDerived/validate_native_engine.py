@@ -24,7 +24,7 @@ parser.add_argument('--benchmarks-only', action='store_true')
 parser.add_argument('--benchmark-pattern', default='^TestNativeBenchmarks$')
 parser.add_argument('--benchmark-timeout', default='90m')
 parser.add_argument('--approved-inventory', type=Path)
-parser.add_argument('--only', choices=['projection-presentation','native-outbox','product-acceptance','original-regression'])
+parser.add_argument('--only', choices=['projection-contract','projection-presentation','native-outbox','product-acceptance','original-regression'])
 parser.add_argument('--compatibility-exports', type=Path)
 parser.add_argument('--product-pattern', default='^(TestProductionEngineLifecycleAndRecovery|TestNativeMembershipAndCommittedNotifications|TestRealNativeMiddlewareDerivedProperties)$')
 parser.add_argument('--regression-package', action='append', help='Focused original-package rerun; default remains the full native regression list')
@@ -45,6 +45,7 @@ if args.module_cache:
 if args.compatibility_exports:
     env['PINKHA_NATIVE_COMPAT_EXPORT'] = str(args.compatibility_exports.resolve())
 checks = [
+    ('projection-contract',root/'Tools/TorahNativeDerivedSpike',['./...'],None),
     ('projection-presentation',root/'Modules/PinkhaHeart',['./...'],None),
     ('native-outbox',heart,['./pkg/lib/localstore/objectstore/spaceindex'],'^TestTorahFulltext'),
     ('product-acceptance', root/'Tools/TorahNativeDerivedSpike/integration', ['./...'],

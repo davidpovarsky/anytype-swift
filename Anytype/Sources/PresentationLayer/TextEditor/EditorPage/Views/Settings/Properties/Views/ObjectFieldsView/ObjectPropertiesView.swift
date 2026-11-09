@@ -19,6 +19,7 @@ struct ObjectPropertiesView: View {
         content
             .task { await model.setupSubscriptions() }
             .task { await torahProperties.observeDocument() }
+            .sheet(item: $model.relationsSearchData) { PropertyCreationView(data: $0) }
             .torahEditorHost(session: torahProperties.session, presentationHost: .properties)
             .anytypeSheet(isPresented: $model.showConflictingInfo) {
                 ObjectPropertiesBottomAlert()
@@ -64,7 +65,7 @@ struct ObjectPropertiesView: View {
             LazyVStack(alignment: .leading, spacing: 0) {
                 if torahProperties.isResolvingManifest {
                     PinkhaTorahPropertiesLoadingState(model: torahProperties)
-                } else if model.shouldShowEmptyState && !torahProperties.isEligible {
+                } else if model.shouldShowEmptyState {
                     emptyStateView
                         .padding(.top, 24)
                 }
@@ -82,6 +83,11 @@ struct ObjectPropertiesView: View {
                 }
 
                 PinkhaTorahPropertiesSection(model: torahProperties)
+                if model.canAddProperty {
+                    Button(Loc.addProperty) { model.onAddPropertyTap() }
+                        .accessibilityIdentifier("torah-object-add-property")
+                        .padding(.vertical, 12)
+                }
             }
             .padding(.horizontal, 20)
         }
@@ -133,7 +139,13 @@ struct ObjectPropertiesView: View {
     private func row(with relation: Property, section: PropertiesSection) -> some View {
         HStack {
             rowWithoutActions(with: relation, addedToObject: section.addedToObject)
-            if section.isMissingFields {
+            if model.isObjectAttachedNative(relation) {
+                Menu {
+                    Button(Loc.Fields.removeFromObject, role: .destructive) { model.removeRelation(relation) }
+                } label: {
+                    MoreIndicator()
+                }
+            } else if section.isMissingFields {
                 Menu {
                     Button(Loc.Fields.addToType) { model.addRelationToType(relation) }
                     if relation.canBeRemovedFromObject {

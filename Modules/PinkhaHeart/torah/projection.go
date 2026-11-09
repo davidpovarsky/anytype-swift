@@ -31,16 +31,16 @@ var ErrIneligible = errors.New("ineligible document")
 
 // Binding contains validated native identifiers, never human display names.
 type Binding struct {
-	SpaceID        string
-	CanonicalKey   string
-	WritingTypeIDs [3]string
-	Generation     string
+	SpaceID      string
+	CanonicalKey string
+	Generation   string
 }
 
 type Input struct {
 	SpaceID    string
 	ObjectID   string
 	TypeID     string
+	IsDocument bool
 	IsTemplate bool
 	IsDeleted  bool
 	IsArchived bool
@@ -79,14 +79,6 @@ func (b Binding) Validate() error {
 	if b.SpaceID == "" || b.CanonicalKey == "" || b.Generation == "" || IsLocalKey(b.CanonicalKey) {
 		return ErrBinding
 	}
-	seen := map[string]bool{}
-	for _, id := range b.WritingTypeIDs {
-		id = norm.NFC.String(id)
-		if id == "" || seen[id] {
-			return ErrBinding
-		}
-		seen[id] = true
-	}
 	return nil
 }
 
@@ -94,11 +86,7 @@ func Project(b Binding, in Input) (Projection, error) {
 	if err := b.Validate(); err != nil {
 		return Projection{}, err
 	}
-	eligible := false
-	for _, id := range b.WritingTypeIDs {
-		eligible = eligible || exact(id, in.TypeID)
-	}
-	if !exact(b.SpaceID, in.SpaceID) || in.ObjectID == "" || !eligible || in.IsTemplate || in.IsDeleted || in.IsArchived {
+	if !exact(b.SpaceID, in.SpaceID) || in.ObjectID == "" || in.TypeID == "" || !in.IsDocument || in.IsTemplate || in.IsDeleted || in.IsArchived {
 		return Projection{}, ErrIneligible
 	}
 	hash := sha256.Sum256(in.Raw)

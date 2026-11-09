@@ -32,7 +32,7 @@ func fixtures(t testing.TB) []fixture {
 }
 
 func binding() Binding {
-	return Binding{SpaceID: "test-space", CanonicalKey: "native-test-key", WritingTypeIDs: [3]string{"chiddush-id", "article-id", "research-id"}, Generation: "test-generation-1"}
+	return Binding{SpaceID: "test-space", CanonicalKey: "native-test-key", Generation: "test-generation-1"}
 }
 
 func TestSharedSwiftGoldenFixtures(t *testing.T) {
@@ -40,7 +40,7 @@ func TestSharedSwiftGoldenFixtures(t *testing.T) {
 		t.Run(f.Name, func(t *testing.T) {
 			raw := []byte(f.Raw)
 			before := append([]byte(nil), raw...)
-			got, err := Project(binding(), Input{SpaceID: f.Space, ObjectID: f.Object, TypeID: "chiddush-id", Raw: raw})
+			got, err := Project(binding(), Input{SpaceID: f.Space, ObjectID: f.Object, TypeID: "chiddush-id", IsDocument: true, Raw: raw})
 			if !bytes.Equal(raw, before) {
 				t.Fatal("canonical bytes mutated")
 			}
@@ -69,26 +69,28 @@ func TestSharedSwiftGoldenFixtures(t *testing.T) {
 
 func TestBindingSpaceTypeTemplateLifecycle(t *testing.T) {
 	b := binding()
-	for _, id := range b.WritingTypeIDs {
-		got, err := Project(b, Input{SpaceID: b.SpaceID, ObjectID: "doc", TypeID: id})
+	for _, id := range []string{"chiddush-id", "article-id", "research-id", "page", "note", "custom-random-id"} {
+		got, err := Project(b, Input{SpaceID: b.SpaceID, ObjectID: "doc", TypeID: id, IsDocument: true})
 		if err != nil || len(got.Sources) != 0 {
 			t.Fatalf("empty eligible document: %v", err)
 		}
 	}
 	for _, in := range []Input{
 		{SpaceID: "wrong-space", ObjectID: "doc", TypeID: "chiddush-id"},
-		{SpaceID: b.SpaceID, ObjectID: "doc", TypeID: "page"},
-		{SpaceID: b.SpaceID, ObjectID: "doc", TypeID: "chiddush-id", IsTemplate: true},
-		{SpaceID: b.SpaceID, ObjectID: "doc", TypeID: "chiddush-id", IsDeleted: true},
-		{SpaceID: b.SpaceID, ObjectID: "doc", TypeID: "chiddush-id", IsArchived: true},
+		{SpaceID: b.SpaceID, ObjectID: "doc", TypeID: "system-record"},
+		{SpaceID: b.SpaceID, TypeID: "page", IsDocument: true},
+		{SpaceID: b.SpaceID, ObjectID: "doc", IsDocument: true},
+		{SpaceID: b.SpaceID, ObjectID: "doc", TypeID: "chiddush-id", IsDocument: true, IsTemplate: true},
+		{SpaceID: b.SpaceID, ObjectID: "doc", TypeID: "chiddush-id", IsDocument: true, IsDeleted: true},
+		{SpaceID: b.SpaceID, ObjectID: "doc", TypeID: "chiddush-id", IsDocument: true, IsArchived: true},
 	} {
 		if _, err := Project(b, in); !errors.Is(err, ErrIneligible) {
 			t.Fatalf("ineligible input was accepted: %v", err)
 		}
 	}
-	b.WritingTypeIDs[1] = b.WritingTypeIDs[0]
+	b.CanonicalKey = ""
 	if !errors.Is(b.Validate(), ErrBinding) {
-		t.Fatal("ambiguous binding was accepted")
+		t.Fatal("missing canonical binding was accepted")
 	}
 }
 
@@ -116,7 +118,7 @@ func FuzzProjectNeverMutatesOrReturnsPartialOnError(f *testing.F) {
 	}
 	f.Fuzz(func(t *testing.T, raw []byte) {
 		before := append([]byte(nil), raw...)
-		got, err := Project(binding(), Input{SpaceID: "test-space", ObjectID: "test-object", TypeID: "chiddush-id", Raw: raw})
+		got, err := Project(binding(), Input{SpaceID: "test-space", ObjectID: "test-object", TypeID: "chiddush-id", IsDocument: true, Raw: raw})
 		if !bytes.Equal(before, raw) {
 			t.Fatal("mutated input")
 		}

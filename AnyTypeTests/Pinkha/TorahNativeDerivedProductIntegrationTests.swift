@@ -107,11 +107,7 @@ struct TorahNativeDerivedProductIntegrationTests {
         // =========================================================================
         let openedDoc = Container.shared.openedDocumentProvider().document(objectId: document.id, spaceId: spaceId)
         try await openedDoc.open()
-        let coordinatorVM = PropertiesListCoordinatorViewModel(
-            data: .object(objectId: document.id),
-            spaceId: spaceId,
-            onRelationAddTap: { _, _, _ in }
-        )
+        let coordinatorVM = PropertiesListCoordinatorViewModel(document: openedDoc, output: nil)
         let objectPropertiesVM = ObjectPropertiesViewModel(document: openedDoc, output: coordinatorVM)
         let torahPropertiesModel = PinkhaTorahPropertiesModel(document: openedDoc, session: nil)
         let objectSubTask = Task { await objectPropertiesVM.setupSubscriptions() }
@@ -134,16 +130,16 @@ struct TorahNativeDerivedProductIntegrationTests {
 
         for def in TorahNativePropertyDefinition.all {
             let row = try #require(freshVisibleRelations.first { $0.key == def.key })
-            guard case .tag(let tagModel) = row.type else {
-                Issue.record("Expected native .tag row in ObjectPropertiesViewModel for \(def.key), got \(row.type)")
+            guard case .tag(let tagModel) = row else {
+                Issue.record("Expected native .tag row in ObjectPropertiesViewModel for \(def.key), got \(row)")
                 return
             }
             #expect(tagModel.isEditable == true)
             #expect(tagModel.selectedTags.isEmpty)
             // Tapping the empty native row routes through PropertiesListCoordinatorViewModel -> relationValueData
             objectPropertiesVM.handleTapOnRelation(row)
-            #expect(coordinatorVM.relationValueData?.relationKey == def.key)
-            #expect(coordinatorVM.relationValueData?.document.objectId == document.id)
+            #expect(coordinatorVM.relationValueData?.relation.key == def.key)
+            #expect(coordinatorVM.relationValueData?.objectDetails.id == document.id)
         }
 
         // =========================================================================
@@ -207,7 +203,7 @@ struct TorahNativeDerivedProductIntegrationTests {
 
         // Verify Add Property picker (PropertyCreationViewModel) when מקור/ות is hidden and the other 2 are visible:
         // excludedRelationsIds contains only visible IDs; hiddenRelationsIds contains the hidden מקור/ות ID.
-        chiddushTypeVM.onAddRelationTap(section: TypePropertiesSectionRow(id: "rec", title: " Properties", isFeatured: false, isHidden: false, isExpandable: false))
+        chiddushTypeVM.onAddRelationTap(section: .fieldsMenu)
         let searchData = try #require(chiddushTypeVM.relationsSearchData)
         #expect(searchData.hiddenRelationsIds.contains(sourcesRowInType.relation.id))
         #expect(!searchData.excludedRelationsIds.contains(sourcesRowInType.relation.id))
@@ -444,7 +440,7 @@ struct TorahNativeDerivedProductIntegrationTests {
             #expect(asPageDetails.stringValue(for: manifest.documentAssociationsPropertyKey) == beforeCanonical)
             try await eventually {
                 let keys = Set(chipsTorahModel.visibleSections(chipsObjVM.sections).flatMap(\.relations).map(\.key))
-                return keys.isDisjoint(with: expectedNativeKeys) && !chipsTorahModel.isEligible
+                return keys.isDisjoint(with: expectedNativeKeys) && chipsTorahModel.isEligible && !policy.presentsSources(on: openChipsDoc)
             }
 
             try await Container.shared.objectActionsService().setObjectType(objectId: chipsDocument.id, typeUniqueKey: chiddushType.uniqueKey)
@@ -457,9 +453,12 @@ struct TorahNativeDerivedProductIntegrationTests {
                     chipsTorahModel.isEligible
             }
         }
+        let universal = try await verifyUniversalProperties(manifest: manifest, nativeProperties: nativeProperties)
         let directory = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let fixture: [String: Any] = [
             "spaceId": spaceId, "documents": fixtureDocuments, "names": fixtureNames,
+            "universalDocuments": universal.documents, "universalTypes": universal.types,
+            "universalSetId": universal.setId,
             "types": manifest.registeredDocumentTypes, "manySourcesDocument": chipsDocument.id,
             "setId": nativeSet.id, "nativeProperties": nativeProperties.map(\.name),
             "sourceQuery": "Genesis 1:1", "sourceLabel": "Genesis 1:1",
@@ -468,6 +467,135 @@ struct TorahNativeDerivedProductIntegrationTests {
         try JSONSerialization.data(withJSONObject: fixture, options: [.sortedKeys])
             .write(to: directory.appendingPathComponent("pinkha-native-derived-ui-fixture.json"), options: .atomic)
         print("NATIVE_DERIVED_PRODUCT_PIPELINE_PASS space=\(spaceId) document=\(document.id) set=\(nativeSet.id)")
+    }
+
+    @MainActor
+    private func verifyUniversalProperties(manifest: PinkhaSpaceManifest, nativeProperties: [PropertyDetails]) async throws -> (documents: [String: String], types: [String: String], setId: String) {
+        let spaceId = manifest.spaceId
+        _ = try await ClientCommands.workspaceObjectListAdd(.with {
+            $0.spaceID = spaceId; $0.objectIds = ["_otnote"]
+        }).invoke()
+        let custom = try await ClientCommands.objectCreateObjectType(.with {
+            $0.spaceID = spaceId
+            $0.details = Google_Protobuf_Struct(fields: ["name": "Universal custom Type".protobufValue, "recommendedLayout": DetailsLayout.note.rawValue.protobufValue])
+        }).invoke()
+        let customType = ObjectType(details: try await show(custom.objectID, spaceId: spaceId))
+        let expectedKeys = Set(nativeProperties.map(\.key))
+        var documents: [String: String] = [:]
+        var types: [String: String] = [:]
+        let search = Container.shared.searchMiddleService()
+        let propertiesService = Container.shared.propertiesService()
+        let repository = AnytypeTorahAssociationRepository()
+        for (role, uniqueKey) in [("page", ObjectTypeUniqueKey(value: "ot-page")), ("note", ObjectTypeUniqueKey(value: "ot-note")), ("custom", customType.uniqueKey)] {
+            let p1 = try await Container.shared.objectActionsService().createObject(
+                name: "Universal \(role) P1", typeUniqueKey: uniqueKey,
+                shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+                spaceId: spaceId, origin: .none, templateId: nil
+            )
+            let p2 = try await Container.shared.objectActionsService().createObject(
+                name: "Universal \(role) blank", typeUniqueKey: uniqueKey,
+                shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+                spaceId: spaceId, origin: .none, templateId: nil
+            )
+            let doc = Container.shared.openedDocumentProvider().document(objectId: p1.id, spaceId: spaceId)
+            let other = Container.shared.openedDocumentProvider().document(objectId: p2.id, spaceId: spaceId)
+            try await doc.open(); try await other.open()
+            let typeId = try #require(doc.details?.type)
+            let type = ObjectType(details: try await show(typeId, spaceId: spaceId))
+            types[role] = typeId
+            documents[role] = p2.id
+            await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(spaceId: spaceId, typeId: typeId)
+            #expect(doc.parsedProperties.installed.allSatisfy { !expectedKeys.contains($0.key) })
+            #expect(!PinkhaTorahPropertyPolicy.shared.presentsSources(on: doc))
+            let coordinator = PropertiesListCoordinatorViewModel(document: doc, output: nil)
+            let vm = ObjectPropertiesViewModel(document: doc, output: coordinator)
+            let subscription = Task { await vm.setupSubscriptions() }
+            defer { subscription.cancel() }
+            vm.onAddPropertyTap()
+            let picker = PropertyCreationViewModel(data: try #require(vm.relationsSearchData))
+            await picker.search(text: "")
+            let existing = picker.rows.flatMap(\.searchData).compactMap { item -> PropertyDetails? in
+                if case .existing(let property) = item { return property }; return nil
+            }
+            #expect(Set(nativeProperties.map(\.id)).isSubset(of: Set(existing.map(\.id))))
+            let typePicker = PropertyCreationViewModel(data: PropertiesSearchData(
+                objectId: typeId, spaceId: spaceId, excludedRelationsIds: [],
+                target: .type(.recommendedRelations(type)), onRelationSelect: { _, _ in }
+            ))
+            for query in ["", "מקורות", "נושא", "מילה", "Sources", "Topics", "Word"] {
+                await typePicker.search(text: query)
+                #expect(typePicker.rows.flatMap(\.searchData).contains { row in
+                    if case .existing(let property) = row { return expectedKeys.contains(property.key) }; return false
+                })
+            }
+            for property in nativeProperties { try await picker.addPropertyToObject(objectId: p1.id, relation: property) }
+            try await eventually { expectedKeys.isSubset(of: Set(vm.sections.flatMap(\.relations).map(\.key))) }
+            let unchanged = try await show(typeId, spaceId: spaceId)
+            #expect(unchanged.recommendedRelations == type.recommendedRelations)
+            #expect(unchanged.recommendedFeaturedRelations == type.recommendedFeaturedRelations)
+            #expect(unchanged.recommendedHiddenRelations == type.recommendedHiddenRelations)
+            #expect(other.parsedProperties.installed.allSatisfy { !expectedKeys.contains($0.key) })
+            #expect(PinkhaTorahPropertyPolicy.shared.presentsSources(on: doc))
+            for row in vm.sections.flatMap(\.relations) where expectedKeys.contains(row.key) {
+                guard case .tag(let tag) = row else { Issue.record("Expected native empty tag row"); continue }
+                #expect(tag.selectedTags.isEmpty && tag.isEditable)
+                vm.handleTapOnRelation(row)
+                #expect(coordinator.relationValueData?.relation.key == row.key)
+            }
+            let source = item(id: "universal-" + role, kind: .ref, key: "Genesis 1:1", label: "בראשית א:א")
+            _ = try await repository.addAssociation(source, target: .object(objectId: p1.id), spaceId: spaceId)
+            let filter = DataviewFilter.with {
+                $0.relationKey = TorahNativePropertyDefinition.all[0].key; $0.format = .tag; $0.condition = .in
+                $0.value = [TorahDerivedQueryProjection.identity(source)].protobufValue
+            }
+            try await eventually {
+                let rows = try await search.search(spaceId: spaceId, filters: [filter, .with {
+                    $0.relationKey = "type"; $0.condition = .in; $0.value = [typeId].protobufValue
+                }], keys: ["id"], limit: 0)
+                return rows.map(\.id) == [p1.id]
+            }
+            for property in nativeProperties {
+                _ = try await ClientCommands.objectTypePropertyAdd(.with {
+                    $0.objectTypeID = typeId; $0.key = property.key; $0.section = .recommended
+                }).invoke()
+            }
+            let configured = try await show(typeId, spaceId: spaceId)
+            #expect(Set(nativeProperties.map(\.id)).isSubset(of: Set(configured.recommendedRelations)))
+            for property in nativeProperties {
+                _ = try await ClientCommands.objectTypePropertyRemove(.with { $0.objectTypeID = typeId; $0.key = property.key }).invoke()
+            }
+            PinkhaTorahNativePropertyCatalog.shared.recordUpdatedTypeRelations(
+                typeId: typeId, spaceId: spaceId, recommendedIds: type.recommendedRelations,
+                featuredIds: type.recommendedFeaturedRelations, hiddenIds: type.recommendedHiddenRelations
+            )
+            #expect(try await show(p1.id, spaceId: spaceId).stringArrayValue(for: TorahNativePropertyDefinition.attachedPropertiesKey).count == 3)
+        }
+        let mixed = try await ClientCommands.objectCreateSet(.with {
+            $0.spaceID = spaceId; $0.source = Array(types.values)
+            $0.details = Google_Protobuf_Struct(fields: ["name": "Universal Page Note custom Set".protobufValue])
+        }).invoke()
+        let mixedDoc = try mixed.details.toDetails()
+        let response = try await ClientCommands.objectShow(.with {
+            $0.contextID = mixedDoc.id; $0.objectID = mixedDoc.id; $0.spaceID = spaceId
+        }).invoke()
+        let block = try #require(response.objectView.blocks.first { if case .dataview = $0.content { return true }; return false })
+        guard case .dataview(let data) = block.content else { throw NativeAcceptanceError.timeout }
+        let view = try #require(data.views.first)
+        let dataviewService = Container.shared.dataviewService()
+        for property in nativeProperties {
+            try await dataviewService.addRelation(objectId: mixedDoc.id, blockId: block.id, relationDetails: property)
+        }
+        let table = try #require(view.asModel).updated(type: .table, options:
+            view.relations.filter { !expectedKeys.contains($0.key) }.map(\.asModel) + nativeProperties.map { DataviewRelationOption(key: $0.key, isVisible: false) }
+        )
+        try await dataviewService.updateView(objectId: mixedDoc.id, blockId: block.id, view: table)
+        let filter = DataviewFilter.with {
+            $0.id = UUID().uuidString; $0.relationKey = TorahNativePropertyDefinition.all[0].key
+            $0.format = .tag; $0.condition = .in
+            $0.value = [TorahDerivedQueryProjection.identity(item(id: "mixed", kind: .ref, key: "Genesis 1:1", label: "בראשית א:א"))].protobufValue
+        }
+        try await dataviewService.addFilter(objectId: mixedDoc.id, blockId: block.id, filter: filter, viewId: view.id)
+        return (documents, types, mixedDoc.id)
     }
 
     private func show(_ id: String, spaceId: String) async throws -> ObjectDetails {

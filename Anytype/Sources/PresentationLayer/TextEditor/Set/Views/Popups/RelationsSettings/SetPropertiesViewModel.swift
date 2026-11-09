@@ -53,9 +53,8 @@ final class SetPropertiesViewModel {
                 guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
                     propertyId: relation.relationDetails.id, key: key, spaceId: setDocument.spaceId
                 ) else { return }
-                if details.isObjectType,
-                   TorahNativePropertyDefinition.definition(for: key) != nil,
-                   PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(typeId: details.id, spaceId: setDocument.spaceId) {
+                if details.isObjectType, TorahNativePropertyDefinition.definition(for: key) != nil {
+                    try await propertiesService.removeTypeProperty(details: details, propertyId: relation.relationDetails.id)
                     return
                 }
                 
@@ -138,13 +137,10 @@ final class SetPropertiesViewModel {
             view = setDocument.view(by: viewId)
             
             let isObjectType = setDocument.details?.isObjectType ?? false
-            let isEligibleObjectType = isObjectType && PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
-                typeId: setDocument.details?.id ?? "", spaceId: setDocument.spaceId
-            )
             
             relations = setDocument.sortedRelations(for: viewId).map { relation in
-                let isProtectedNative = isEligibleObjectType && TorahNativePropertyDefinition.definition(for: relation.relationDetails.key) != nil
-                let canBeRemoved = !isProtectedNative && (isObjectType ? relation.relationDetails.canBeRemovedFromType : relation.relationDetails.canBeRemovedFromObject)
+                let isNativeProperty = TorahNativePropertyDefinition.definition(for: relation.relationDetails.key) != nil
+                let canBeRemoved = isNativeProperty || (isObjectType ? relation.relationDetails.canBeRemovedFromType : relation.relationDetails.canBeRemovedFromObject)
                 
                 return SetViewSettingsProperty(
                     id: relation.id,

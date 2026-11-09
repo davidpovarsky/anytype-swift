@@ -212,20 +212,20 @@ struct TorahNativeUIParityTests {
         #expect(!policy.isOrderStorage(propertyId: "order-prop-id", key: "order-prop-key", spaceId: "wrong-space"))
         #expect(!policy.isInternalProperty(propertyId: "order-prop-id", key: "order-prop-key", spaceId: "wrong-space"))
 
-        // Target eligibility: Writing types eligible, ordinary Note/Page NOT eligible
+        // Native definitions are available to every normal document Type.
         #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-chiddush", spaceId: "space-1"))
         #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-article", spaceId: "space-1"))
         #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-research", spaceId: "space-1"))
-        #expect(!policy.isTargetEligibleForNativeProperties(typeId: "note", spaceId: "space-1"))
-        #expect(!policy.isTargetEligibleForNativeProperties(typeId: "page", spaceId: "space-1"))
+        #expect(policy.isTargetEligibleForNativeProperties(typeId: "note", spaceId: "space-1"))
+        #expect(policy.isTargetEligibleForNativeProperties(typeId: "page", spaceId: "space-1"))
 
         // Dataview eligibility: single writing Type or writing-only filteredSetOf is eligible;
         // Page/Note Set or mixed Set (Chiddush + Page) is NOT eligible
         #expect(policy.isDataviewEligible(typeDetails: nil, filteredSetOf: ["type-chiddush"], spaceId: "space-1"))
         #expect(policy.isDataviewEligible(typeDetails: nil, filteredSetOf: ["type-chiddush", "type-article", "type-research"], spaceId: "space-1"))
-        #expect(!policy.isDataviewEligible(typeDetails: nil, filteredSetOf: ["page"], spaceId: "space-1"))
-        #expect(!policy.isDataviewEligible(typeDetails: nil, filteredSetOf: ["type-chiddush", "page"], spaceId: "space-1"))
-        #expect(!policy.isDataviewEligible(typeDetails: nil, filteredSetOf: [], spaceId: "space-1"))
+        #expect(policy.isDataviewEligible(typeDetails: nil, filteredSetOf: ["page"], spaceId: "space-1"))
+        #expect(policy.isDataviewEligible(typeDetails: nil, filteredSetOf: ["type-chiddush", "page"], spaceId: "space-1"))
+        #expect(policy.isDataviewEligible(typeDetails: nil, filteredSetOf: [], spaceId: "space-1"))
     }
 
     @Test("Internal identity resolution handles tri-state loading, failure retry, and known settlement without hiding user properties permanently")
@@ -456,7 +456,7 @@ struct TorahNativeUIParityTests {
         #expect(lockedRendered.isEditable == false)
     }
 
-    @Test("Header visibility is reactive to document Type eligibility (Defect E)")
+    @Test("Type availability includes Page, Note and custom Types")
     func headerVisibilityReactiveToTypeEligibility() {
         let manifest = PinkhaSpaceManifest(
             spaceId: "space-reactive",
@@ -476,9 +476,9 @@ struct TorahNativeUIParityTests {
         #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-article", spaceId: "space-reactive"))
         #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-research", spaceId: "space-reactive"))
 
-        // Note and Page are NOT eligible for native derived properties
-        #expect(!policy.isTargetEligibleForNativeProperties(typeId: "type-note", spaceId: "space-reactive"))
-        #expect(!policy.isTargetEligibleForNativeProperties(typeId: "type-page", spaceId: "space-reactive"))
+        // Note and Page are eligible without being registered writing Types.
+        #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-note", spaceId: "space-reactive"))
+        #expect(policy.isTargetEligibleForNativeProperties(typeId: "type-page", spaceId: "space-reactive"))
         #expect(!policy.isTargetEligibleForNativeProperties(typeId: "", spaceId: "space-reactive"))
         #expect(!policy.isTargetEligibleForNativeProperties(typeId: "type-chiddush", spaceId: "wrong-space"))
 
@@ -575,6 +575,10 @@ struct TorahNativeUIParityTests {
         )
 
         // Even when fallbackRecommended is empty (stale ObjectTypeProvider), resolvedTypeRelationIds returns the 3 attached IDs
+        let unselected = catalog.resolvedTypeRelationIds(
+            typeId: "ordinary-unconfigured-page", fallbackRecommended: [], fallbackFeatured: [], fallbackHidden: [], spaceId: spaceId
+        )
+        #expect(unselected.recommended.isEmpty && unselected.featured.isEmpty && unselected.hidden.isEmpty)
         let resolvedInitial = catalog.resolvedTypeRelationIds(
             typeId: chiddushTypeId,
             fallbackRecommended: [],

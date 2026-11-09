@@ -33,13 +33,10 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
         self.torahSession = torahSession
         self.onRelationTap = onRelationValueTap
 
-        let typeId = document.details?.type ?? ""
-        self.isEligible = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
-            typeId: typeId, spaceId: document.spaceId
-        )
+        self.isEligible = PinkhaTorahPropertyPolicy.shared.presentsSources(on: document)
         
         Publishers.Merge3(
-            document.featuredRelationsForEditorPublisher.map { _ in () }.eraseToAnyPublisher(),
+            document.parsedPropertiesPublisher.map { _ in () }.eraseToAnyPublisher(),
             document.detailsPublisher.map { _ in () }.eraseToAnyPublisher(),
             NotificationCenter.default.publisher(for: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification).map { _ in () }.eraseToAnyPublisher()
         )
@@ -47,10 +44,7 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
         .sink { [weak self] _ in
             guard let self else { return }
             let newRelations = self.document.featuredRelationsForEditor
-            let currentTypeId = self.document.details?.type ?? ""
-            let newEligibility = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
-                typeId: currentTypeId, spaceId: self.document.spaceId
-            )
+            let newEligibility = PinkhaTorahPropertyPolicy.shared.presentsSources(on: self.document)
             guard self.featuredRelations != newRelations || self.isEligible != newEligibility else { return }
             self.featuredRelations = newRelations
             self.isEligible = newEligibility

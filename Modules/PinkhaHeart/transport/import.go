@@ -90,7 +90,7 @@ func RemapObjects(targetSpace string, objects []Object, ids map[string]string) e
 		if source.ProvisioningState != "" && source.ProvisioningState != "complete" {
 			continue
 		}
-		binding := torah.Binding{SpaceID: source.SpaceID, CanonicalKey: source.CanonicalKey, WritingTypeIDs: [3]string{source.Types["chiddush"], source.Types["article"], source.Types["research"]}, Generation: "native-import"}
+		binding := torah.Binding{SpaceID: source.SpaceID, CanonicalKey: source.CanonicalKey, Generation: "native-import"}
 		if binding.Validate() != nil {
 			continue
 		}

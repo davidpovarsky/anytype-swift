@@ -30,6 +30,9 @@ func (i *Index) LastRecoveryStats() RecoveryStats {
 var cacheInputKeys = func() []domain.RelationKey {
 	keys := []domain.RelationKey{bundle.RelationKeyId, bundle.RelationKeySpaceId,
 		bundle.RelationKeyType, bundle.RelationKeyTargetObjectType,
+		bundle.RelationKeyLayout, bundle.RelationKeyIsHidden, bundle.RelationKeyUniqueKey,
+		bundle.RelationKeyResolvedLayout,
+		bundle.RelationKeyRelationKey, bundle.RelationKeyRelationFormat, bundle.RelationKeyRecommendedLayout,
 		bundle.RelationKeyIsDeleted, bundle.RelationKeyIsArchived}
 	for _, key := range torah.LocalKeys() {
 		if key != torah.CacheIntegrityKey {

@@ -56,12 +56,12 @@ struct TorahDocumentPropertyProjectionTests {
         #expect(projection.sources.first?.canonicalKey == "ref-stable")
     }
 
-    @Test func eligibilityUsesAllThreeManifestIDsAndExactSpace() {
+    @Test func eligibilityUsesUniversalDocumentTypesAndExactSpace() {
         let manifest = manifest()
-        for id in ["type-chiddush", "type-article", "type-research"] {
+        for id in ["type-chiddush", "type-article", "type-research", "page", "note", "custom-arbitrary-type"] {
             #expect(TorahDocumentPropertyEligibility.includes(typeId: id, spaceId: "space", manifest: manifest))
         }
-        for id in ["page", "note", "חידוש", "folder", ""] {
+        for id in [""] {
             #expect(!TorahDocumentPropertyEligibility.includes(typeId: id, spaceId: "space", manifest: manifest))
         }
         #expect(!TorahDocumentPropertyEligibility.includes(typeId: "type-chiddush", spaceId: "other", manifest: manifest))
@@ -115,11 +115,10 @@ struct TorahDocumentPropertyProjectionTests {
         #expect(!TorahDocumentPropertyEligibility.isInternalProperty(id: userPropertyId, key: userPropertyKey, spaceId: "space", manifest: manifest))
     }
 
-    @Test func ordinaryNoteAndGenericTypesAreIneligibleForNativeDerivedProperties() {
-        // H01, H17: Ordinary Note and other generic types are NOT eligible for native derived properties.
+    @Test func ordinaryNoteAndGenericTypesAreEligibleForNativeDerivedProperties() {
         let manifest = manifest()
         for ineligibleType in ["note", "page", "task", "journal", "custom-type"] {
-            #expect(!TorahDocumentPropertyEligibility.includes(typeId: ineligibleType, spaceId: "space", manifest: manifest))
+            #expect(TorahDocumentPropertyEligibility.includes(typeId: ineligibleType, spaceId: "space", manifest: manifest))
         }
     }
 
@@ -131,6 +130,29 @@ struct TorahDocumentPropertyProjectionTests {
         #expect(!TorahDocumentPropertyEligibility.isNativeDerivedKey("order-key"))
         #expect(!TorahDocumentPropertyEligibility.isNativeDerivedKey("customKey"))
         #expect(!TorahDocumentPropertyEligibility.isNativeDerivedKey("tag"))
+    }
+
+    @Test func normalDocumentClassificationRejectsInfrastructureAndLifecycleStates() {
+        let manifest = manifest()
+        for layout in [0, 1, 2, 3, 9, 11, 14] {
+            #expect(TorahDocumentPropertyEligibility.includesDocument(
+                objectId: "document", typeId: "arbitrary-user-type", spaceId: "space", layout: layout,
+                isTemplate: false, isDeleted: false, isArchived: false, isInternal: false, manifest: manifest
+            ))
+        }
+        for layout in [nil, 4, 5, 7, 10, 12, 13, 18, 19, 24, 999] as [Int?] {
+            #expect(!TorahDocumentPropertyEligibility.includesDocument(
+                objectId: "record", typeId: "arbitrary-user-type", spaceId: "space", layout: layout,
+                isTemplate: false, isDeleted: false, isArchived: false, isInternal: false, manifest: manifest
+            ))
+        }
+        for flag in 0..<4 {
+            #expect(!TorahDocumentPropertyEligibility.includesDocument(
+                objectId: "record", typeId: "page", spaceId: "space", layout: 0,
+                isTemplate: flag == 0, isDeleted: flag == 1, isArchived: flag == 2, isInternal: flag == 3, manifest: manifest
+            ))
+        }
+        #expect(!manifest.isRegisteredDocumentType(typeId: "page"))
     }
 
     private func project(_ records: [TorahStoredAssociationRecord]) -> TorahDocumentPropertyProjection {

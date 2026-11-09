@@ -139,9 +139,7 @@ final class PinkhaTorahPropertiesModel {
         } else {
             manifestResolutionError = nil
         }
-        isEligible = PinkhaRuntime.enabled && TorahDocumentPropertyEligibility.includes(
-            typeId: document.details?.type ?? "", spaceId: document.spaceId, manifest: manifest
-        )
+        isEligible = PinkhaRuntime.enabled && policy.isNormalDocument(document.details, spaceId: document.spaceId)
         canEdit = document.permissions.canEditRelationValues && document.details?.isReadonly == false
     }
 }

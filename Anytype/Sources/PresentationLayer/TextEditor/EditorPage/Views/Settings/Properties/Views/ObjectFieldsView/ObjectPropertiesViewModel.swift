@@ -13,6 +13,12 @@ final class ObjectPropertiesViewModel {
     var showConflictingInfo = false
     var expandedSections = Set<String>()
     var typeId: String?
+    var relationsSearchData: PropertiesSearchData?
+
+    var canAddProperty: Bool {
+        document.permissions.canEditRelationValues && document.details?.isReadonly == false &&
+            PinkhaTorahPropertyPolicy.shared.isNormalDocument(document.details, spaceId: document.spaceId)
+    }
 
     var hasOutput: Bool { output != nil }
 
@@ -103,9 +109,7 @@ final class ObjectPropertiesViewModel {
     private func rebuildSections(from properties: ParsedProperties) {
         let currentTypeId = Self.resolvedTypeId(for: document.details)
         typeId = currentTypeId
-        let isEligible = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
-            typeId: currentTypeId ?? "", spaceId: document.spaceId
-        )
+        let isEligible = PinkhaTorahPropertyPolicy.shared.isNormalDocument(document.details, spaceId: document.spaceId)
         let rawSections = sectionsBuilder.buildObjectSections(parsedProperties: properties)
         sections = rawSections.compactMap { section in
             let filtered = section.relations.filter { relation in
@@ -138,24 +142,37 @@ final class ObjectPropertiesViewModel {
     }
     
     func removeRelation(_ relation: Property) {
+        guard document.permissions.canEditRelationValues, document.details?.isReadonly == false else { return }
         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: relation.id, key: relation.key, spaceId: document.spaceId
         ) else { return }
-        let isNative = TorahNativePropertyDefinition.definition(for: relation.key) != nil
-        if isNative, let typeId = typeId, PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(typeId: typeId, spaceId: document.spaceId) {
-            return
-        }
-
         Task {
             try await propertiesService.removeProperty(objectId: document.objectId, propertyKey: relation.key)
             let relationDetails = try propertyDetailsStorage.relationsDetails(key: relation.key, spaceId: document.spaceId)
             AnytypeAnalytics.instance().logDeleteRelation(format: relationDetails.format, key: relationDetails.analyticsKey, route: .object)
         }
     }
+
+    func isObjectAttachedNative(_ relation: Property) -> Bool {
+        canAddProperty && TorahNativePropertyDefinition.definition(for: relation.key) != nil &&
+            document.details?.stringArrayValue(for: TorahNativePropertyDefinition.attachedPropertiesKey).contains(relation.key) == true
+    }
     
     func onEditTap() {
         guard let typeId else { return }
         output?.showTypeRelationsView(typeId: typeId)
+    }
+
+    func onAddPropertyTap() {
+        guard canAddProperty else { return }
+        let properties = document.parsedProperties
+        relationsSearchData = PropertiesSearchData(
+            objectId: document.objectId, spaceId: document.spaceId,
+            excludedRelationsIds: (properties.featuredProperties + properties.sidebarProperties + properties.conflictedProperties + properties.legacyFeaturedProperties).map(\.id),
+            hiddenRelationsIds: Set(properties.hiddenProperties.map(\.id)),
+            target: .object(objectId: document.objectId),
+            onRelationSelect: { _, _ in }
+        )
     }
     
     func addRelationToType(_ relation: Property) {

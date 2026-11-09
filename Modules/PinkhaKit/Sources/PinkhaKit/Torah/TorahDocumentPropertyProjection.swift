@@ -35,10 +35,19 @@ public struct TorahDocumentPropertyProjection: Sendable, Equatable {
 }
 
 public enum TorahDocumentPropertyEligibility {
+    public static func includesDocument(
+        objectId: String, typeId: String, spaceId: String, layout: Int?,
+        isTemplate: Bool, isDeleted: Bool, isArchived: Bool, isInternal: Bool,
+        manifest: PinkhaSpaceManifest?
+    ) -> Bool {
+        guard !objectId.isEmpty, !isTemplate, !isDeleted, !isArchived, !isInternal,
+              let layout, [0, 1, 2, 3, 9, 11, 14].contains(layout) else { return false }
+        return includes(typeId: typeId, spaceId: spaceId, manifest: manifest)
+    }
+
     public static func includes(typeId: String, spaceId: String, manifest: PinkhaSpaceManifest?) -> Bool {
         guard let manifest, manifest.spaceId == spaceId, manifest.isComplete, !typeId.isEmpty else { return false }
-        return [PinkhaSchemaRoles.chiddushKey, PinkhaSchemaRoles.articleKey, PinkhaSchemaRoles.researchKey]
-            .contains { manifest.registeredDocumentTypes[$0] == typeId }
+        return true
     }
 
     public static func isCanonicalProperty(id: String, key: String, spaceId: String, manifest: PinkhaSpaceManifest?) -> Bool {

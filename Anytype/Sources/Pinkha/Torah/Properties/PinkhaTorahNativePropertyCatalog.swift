@@ -39,6 +39,13 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         private var cache: [String: [PropertyDetails]] = [:]
         private var diagnostics: [String: [String: NativePropertyLookupFailureReason]] = [:]
         private var typeRelations: [String: [String: TorahTypeRelationIds]] = [:]
+        private var typeRevision = 0
+
+        func typeRelationsRevision() -> Int {
+            lock.lock()
+            defer { lock.unlock() }
+            return typeRevision
+        }
 
         func get(spaceId: String) -> [PropertyDetails]? {
             lock.lock()
@@ -71,11 +78,13 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         }
 
         @discardableResult
-        func setTypeRelations(spaceId: String, typeId: String, relations: TorahTypeRelationIds) -> Bool {
+        func setTypeRelations(spaceId: String, typeId: String, relations: TorahTypeRelationIds, expectedRevision: Int? = nil) -> Bool {
             lock.lock()
             defer { lock.unlock() }
+            if let expectedRevision, expectedRevision != typeRevision { return false }
             var spaceMap = typeRelations[spaceId] ?? [:]
             let changed = spaceMap[typeId] != relations
+            if changed { typeRevision += 1 }
             spaceMap[typeId] = relations
             typeRelations[spaceId] = spaceMap
             return changed
@@ -87,6 +96,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
             cache.removeValue(forKey: spaceId)
             diagnostics.removeValue(forKey: spaceId)
             typeRelations.removeValue(forKey: spaceId)
+            typeRevision += 1
         }
 
         func clear() {
@@ -95,6 +105,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
             cache.removeAll()
             diagnostics.removeAll()
             typeRelations.removeAll()
+            typeRevision += 1
         }
     }
 
@@ -178,6 +189,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
             cache.setDiagnostics(spaceId: manifest.spaceId, reasons: resolved.failures)
         }
         for typeId in manifest.registeredDocumentTypes.values where !typeId.isEmpty {
+            let revision = cache.typeRelationsRevision()
             if let liveDetails = await fetchLiveObjectDetails(id: typeId, spaceId: manifest.spaceId) {
                 cache.setTypeRelations(
                     spaceId: manifest.spaceId,
@@ -186,7 +198,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
                         recommended: liveDetails.recommendedRelations,
                         featured: liveDetails.recommendedFeaturedRelations,
                         hidden: liveDetails.recommendedHiddenRelations
-                    )
+                    ), expectedRevision: revision
                 )
             }
         }
@@ -217,8 +229,9 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         }
 
         if let typeId, !typeId.isEmpty, cache.getTypeRelations(spaceId: spaceId, typeId: typeId) == nil {
+            let revision = cache.typeRelationsRevision()
             if let liveDetails = await fetchLiveObjectDetails(id: typeId, spaceId: spaceId),
-               liveDetails.isObjectType || policy.isTargetEligibleForNativeProperties(typeId: typeId, spaceId: spaceId) {
+               liveDetails.isObjectType {
                 let changed = cache.setTypeRelations(
                     spaceId: spaceId,
                     typeId: typeId,
@@ -226,7 +239,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
                         recommended: liveDetails.recommendedRelations,
                         featured: liveDetails.recommendedFeaturedRelations,
                         hidden: liveDetails.recommendedHiddenRelations
-                    )
+                    ), expectedRevision: revision
                 )
                 if changed {
                     didChange = true
@@ -253,7 +266,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         hiddenIds: [String]
     ) {
         guard !spaceId.isEmpty, !typeId.isEmpty else { return }
-        cache.setTypeRelations(
+        let changed = cache.setTypeRelations(
             spaceId: spaceId,
             typeId: typeId,
             relations: TorahTypeRelationIds(
@@ -262,6 +275,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
                 hidden: hiddenIds
             )
         )
+        guard changed else { return }
         NotificationCenter.default.post(
             name: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
             object: nil,
@@ -271,7 +285,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
 
     /// Returns the best known relation ID lists (`recommended`, `featured`, `hidden`) for `typeId`.
     /// Uses cached live Type relations when available; otherwise falls back to the caller's lists and
-    /// synthesizes missing attached native property IDs if `ObjectTypeProvider` still holds the pre-provision snapshot.
+    /// uses the caller's actual lists until a live Type snapshot arrives.
     public func resolvedTypeRelationIds(
         typeId: String,
         fallbackRecommended: [String],
@@ -289,22 +303,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         if let cached = cache.getTypeRelations(spaceId: spaceId, typeId: typeId) {
             return cached
         }
-        var recommended = fallbackRecommended
-        let featured = fallbackFeatured
-        let hidden = fallbackHidden
-        if policy.isTargetEligibleForNativeProperties(typeId: typeId, spaceId: spaceId) {
-            let nativeProps = cachedNativeProperties(spaceId: spaceId)
-            let allExisting = Set(recommended + featured + hidden)
-            // If ObjectTypeProvider still holds the Step-7 snapshot before native properties were attached,
-            // none of the native properties will be in recommended/featured/hidden yet.
-            let anyNativePresent = nativeProps.contains { allExisting.contains($0.id) }
-            if !anyNativePresent {
-                for prop in nativeProps where !allExisting.contains(prop.id) {
-                    recommended.append(prop.id)
-                }
-            }
-        }
-        return TorahTypeRelationIds(recommended: recommended, featured: featured, hidden: hidden)
+        return TorahTypeRelationIds(recommended: fallbackRecommended, featured: fallbackFeatured, hidden: fallbackHidden)
     }
 
     /// Resolves `[PropertyDetails]` for `ids` using `storage` with fallback to cached verified native properties,
@@ -385,6 +384,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         var featIds = fallbackFeaturedIds
         var hidIds = fallbackHiddenIds
 
+        let revision = cache.typeRelationsRevision()
         if let liveDetails = await fetchLiveObjectDetails(id: typeId, spaceId: spaceId) {
             resolvedSpaceId = liveDetails.spaceId
             recIds = liveDetails.recommendedRelations
@@ -393,7 +393,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
             cache.setTypeRelations(
                 spaceId: resolvedSpaceId,
                 typeId: typeId,
-                relations: TorahTypeRelationIds(recommended: recIds, featured: featIds, hidden: hidIds)
+                relations: TorahTypeRelationIds(recommended: recIds, featured: featIds, hidden: hidIds), expectedRevision: revision
             )
         } else if !resolvedSpaceId.isEmpty, let cached = cache.getTypeRelations(spaceId: resolvedSpaceId, typeId: typeId) {
             recIds = cached.recommended
@@ -401,6 +401,11 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
             hidIds = cached.hidden
         }
 
+        if let current = cache.getTypeRelations(spaceId: resolvedSpaceId, typeId: typeId) {
+            recIds = current.recommended
+            featIds = current.featured
+            hidIds = current.hidden
+        }
         if !resolvedSpaceId.isEmpty {
             _ = await nativeProperties(spaceId: resolvedSpaceId)
         }
@@ -433,13 +438,12 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
     func buildParsedPropertiesForType(document: any BaseDocumentProtocol) -> ParsedProperties {
         guard let details = document.details else { return .empty }
         let storage = propertyDetailsStorage
-        let relIds = resolvedTypeRelationIds(
-            typeId: details.id,
-            fallbackRecommended: details.recommendedRelations,
-            fallbackFeatured: details.recommendedFeaturedRelations,
-            fallbackHidden: details.recommendedHiddenRelations,
-            spaceId: document.spaceId
+        let relIds = TorahTypeRelationIds(
+            recommended: details.recommendedRelations,
+            featured: details.recommendedFeaturedRelations,
+            hidden: details.recommendedHiddenRelations
         )
+        cache.setTypeRelations(spaceId: document.spaceId, typeId: details.id, relations: relIds)
         let recommendedRelations = resolveRelationDetails(ids: relIds.recommended, from: storage, spaceId: document.spaceId)
             .filter { $0.key != BundledPropertyKey.description.rawValue }
         let recommendedFeaturedRelations = resolveRelationDetails(ids: relIds.featured, from: storage, spaceId: document.spaceId)
@@ -606,7 +610,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         guard PinkhaRuntime.enabled else { return [] }
         guard !spaceId.isEmpty else { return [] }
 
-        // Only eligible targets (writing types / eligible Sets) may receive native properties
+        // Only supported native targets may receive existing properties
         guard await policy.canAddPropertyAsync(
             propertyId: "", key: TorahNativePropertyDefinition.all[0].key, target: target, spaceId: spaceId
         ) else {

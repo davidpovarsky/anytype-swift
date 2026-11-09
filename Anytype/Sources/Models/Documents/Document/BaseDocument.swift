@@ -394,9 +394,10 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
             return nil
         }
         
-        let objectRelations = propertyDetailsStorage.relationsDetails(
-            keys:  details.values.map(\.key), spaceId: spaceId
-        )
+        let objectKeys = details.values.map(\.key).filter { key in
+            TorahNativePropertyDefinition.definition(for: key) == nil || details.stringArrayValue(for: TorahNativePropertyDefinition.attachedPropertiesKey).contains(key)
+        }
+        let objectRelations = propertyDetailsStorage.relationsDetails(keys: objectKeys, spaceId: spaceId)
         
         let objectFeaturedRelations = propertyDetailsStorage.relationsDetails(
             ids:  details.featuredRelations, spaceId: spaceId
@@ -435,9 +436,10 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
     }
     
     private func buildRelationsForObject(details: ObjectDetails) -> ParsedProperties {
-        let objectRelations = propertyDetailsStorage.relationsDetails(
-            keys:  details.values.map(\.key), spaceId: spaceId
-        )
+        let objectKeys = details.values.map(\.key).filter { key in
+            TorahNativePropertyDefinition.definition(for: key) == nil || details.stringArrayValue(for: TorahNativePropertyDefinition.attachedPropertiesKey).contains(key)
+        }
+        let objectRelations = propertyDetailsStorage.relationsDetails(keys: objectKeys, spaceId: spaceId)
         
         let objectFeaturedRelations = propertyDetailsStorage.relationsDetails(
             keys: details.featuredRelations, spaceId: spaceId
@@ -463,12 +465,17 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
             ids: typeRelIds.hidden, from: propertyDetailsStorage, spaceId: spaceId
         )
         
+        let attachedNative = objectRelations.filter { TorahNativePropertyDefinition.definition(for: $0.key) != nil }
+        let attachedIds = Set(attachedNative.map(\.id))
+        let visibleRecommended = recommendedRelations + attachedNative.filter { property in
+            !recommendedRelations.contains { $0.id == property.id } && !recommendedFeaturedRelations.contains { $0.id == property.id }
+        }
         return relationBuilder.parsedProperties(
             objectProperties: objectRelations,
             objectFeaturedProperties: objectFeaturedRelations,
-            recommendedProperties: recommendedRelations,
+            recommendedProperties: visibleRecommended,
             recommendedFeaturedProperties: recommendedFeaturedRelations,
-            recommendedHiddenProperties: recommendedHiddenRelations,
+            recommendedHiddenProperties: recommendedHiddenRelations.filter { !attachedIds.contains($0.id) },
             objectId: objectId,
             propertyValuesIsLocked: !permissions.canEditRelationValues,
             storage: detailsStorage

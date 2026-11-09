@@ -295,9 +295,74 @@ func (sb *smartBlock) injectTorahDetails(s *state.State) {
  }
  if details==nil{return}
  for _,key:=range torah.LocalKeys(){s.RemoveLocalDetail(domain.RelationKey(key))}
+ if details.GetBool(domain.RelationKey(torah.ReadyKey)) {
+  attached:=[]string{}
+  for _,link:=range s.PickRelationLinks(){
+   if torah.IsProperty(link.Key){
+    attached=append(attached,link.Key)
+    if !details.Has(domain.RelationKey(link.Key)){details.Set(domain.RelationKey(link.Key),domain.Null())}
+   }
+  }
+  details.SetStringList(domain.RelationKey(torah.AttachedPropertiesKey),attached)
+ }
  s.AddLocalDetails(details)
 }
+
 ''')
+add('core/block/detailservice/pinkha_torah.go','''package detailservice
+
+import (
+ "context"
+ "fmt"
+ "github.com/anyproto/anytype-heart/core/block/cache"
+ "github.com/anyproto/anytype-heart/core/block/editor/smartblock"
+ "github.com/anyproto/anytype-heart/core/domain"
+ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
+ "github.com/anyproto/anytype-heart/core/session"
+ "github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+)
+
+func (s *service) AttachTorahProperties(ctx session.Context,id string,keys []string) error {
+ return cache.Do(s.objectGetter,id,func(object smartblock.SmartBlock)error{
+  if err:=checkDetailsEditable(object);err!=nil{return err}
+  st:=object.NewStateCtx(ctx)
+  projector,ok:=s.store.SpaceIndex(object.SpaceID()).(interface{TorahLocalDetails(context.Context,*domain.Details)(*domain.Details,error)})
+  if !ok{return fmt.Errorf("native Torah projection unavailable")}
+  details,err:=projector.TorahLocalDetails(context.Background(),st.CombinedDetails())
+  if err!=nil{return err}
+  if details==nil || !details.GetBool(domain.RelationKey(torah.ReadyKey)){return fmt.Errorf("Torah properties require a normal document in a provisioned Space")}
+  for _,key:=range keys{
+   if !torah.IsProperty(key){return fmt.Errorf("not a native Torah property: %s",key)}
+   st.AddRelationLinks(&model.RelationLink{Key:key,Format:model.RelationFormat_tag})
+  }
+  return object.Apply(st)
+ })
+}
+''')
+rpc='core/details.go'
+edit(rpc,'"github.com/anyproto/anytype-heart/core/domain"','"github.com/anyproto/anytype-heart/core/domain"\n torah "github.com/anyproto/anytype-heart/core/pinkha/torah"\n "github.com/anyproto/anytype-heart/core/session"')
+edit(rpc,'\tobjectStore := mustService[objectstore.ObjectStore](mw)\n\terr := detailsService.ModifyDetails', ''' nativeKeys:=[]string{}
+ ordinaryKeys:=[]string{}
+ for _,key:=range req.RelationKeys {
+  if torah.IsProperty(key){nativeKeys=append(nativeKeys,key)}else{ordinaryKeys=append(ordinaryKeys,key)}
+ }
+ if len(nativeKeys)>0 {
+  attacher,ok:=detailsService.(interface{AttachTorahProperties(session.Context,string,[]string)error})
+  if !ok{return &pb.RpcObjectRelationAddResponse{Error:&pb.RpcObjectRelationAddResponseError{Code:pb.RpcObjectRelationAddResponseError_BAD_INPUT,Description:"native Torah attachment unavailable"}}}
+  if err:=attacher.AttachTorahProperties(ctx,req.ContextId,nativeKeys);err!=nil {
+   return &pb.RpcObjectRelationAddResponse{Error:&pb.RpcObjectRelationAddResponseError{Code:pb.RpcObjectRelationAddResponseError_BAD_INPUT,Description:getErrorDescription(err)}}
+  }
+  if len(ordinaryKeys)==0{return &pb.RpcObjectRelationAddResponse{Error:&pb.RpcObjectRelationAddResponseError{},Event:mw.getResponseEvent(ctx)}}
+ }
+ requestCopy:=*req
+ requestCopy.RelationKeys=ordinaryKeys
+ req=&requestCopy
+\tobjectStore := mustService[objectstore.ObjectStore](mw)
+\terr := detailsService.ModifyDetails''')
+statechange='core/block/editor/state/change.go'
+edit(statechange,'"github.com/anyproto/anytype-heart/core/domain"','"github.com/anyproto/anytype-heart/core/domain"\n torah "github.com/anyproto/anytype-heart/core/pinkha/torah"')
+edit(statechange,'if !slices.Contains(bundle.LocalAndDerivedRelationKeys, domain.RelationKey(link.Key)) {','if torah.IsProperty(link.Key) || !slices.Contains(bundle.LocalAndDerivedRelationKeys, domain.RelationKey(link.Key)) {')
+edit(statechange,'if !slices.Contains(bundle.LocalAndDerivedRelationKeys, domain.RelationKey(key)) {','if torah.IsProperty(key) || !slices.Contains(bundle.LocalAndDerivedRelationKeys, domain.RelationKey(key)) {')
 details='core/block/editor/basic/details.go'
 edit(details,'"github.com/anyproto/anytype-heart/core/domain"','"github.com/anyproto/anytype-heart/core/domain"\n torah "github.com/anyproto/anytype-heart/core/pinkha/torah"')
 edit(details,'\tfor key, value := range diff.Iterate() {',''' for _,key:=range removedKeys {

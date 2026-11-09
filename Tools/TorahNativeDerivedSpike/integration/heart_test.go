@@ -44,7 +44,7 @@ func installNativeBinding(t testing.TB, store spaceindex.Store, active bool) *do
 }
 
 func nativeFixtureDocument(raw string) *domain.Details {
-	return domain.NewDetails().SetString(bundle.RelationKeyName, "synthetic").
+	return domain.NewDetails().SetInt64(bundle.RelationKeyLayout, int64(model.ObjectType_basic)).SetString(bundle.RelationKeyName, "synthetic").
 		SetString(bundle.RelationKeySpaceId, "test").SetString(bundle.RelationKeyType, "chiddush").SetString("fixtureCanonical", raw)
 }
 

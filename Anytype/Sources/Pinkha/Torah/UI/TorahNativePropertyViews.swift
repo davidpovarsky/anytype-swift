@@ -53,7 +53,7 @@ enum TorahNativePropertyPresentation {
             return .text(Property.Text(
                 id: definition.id, key: definition.key, name: definition.name,
                 isFeatured: isFeatured, isEditable: false,
-                canBeRemovedFromObject: definition.canBeRemovedFromObject,
+                canBeRemovedFromObject: !valuesLocked && !details.isReadonly,
                 isDeleted: definition.isDeleted, value: Loc.unsupportedValue
             ))
         }
@@ -73,7 +73,7 @@ enum TorahNativePropertyPresentation {
         .tag(Property.Tag(
             id: definition.id, key: definition.key, name: definition.name,
             isFeatured: isFeatured, isEditable: editable,
-            canBeRemovedFromObject: definition.canBeRemovedFromObject,
+            canBeRemovedFromObject: editable,
             isDeleted: definition.isDeleted,
             selectedTags: ids.map { id in
                 Property.Tag.Option(

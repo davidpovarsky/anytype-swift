@@ -12,6 +12,7 @@ import platform
 import shutil
 import subprocess
 import tarfile
+import tempfile
 import urllib.request
 
 PIN = 'd98420b1113536afd08cde6de9a5816f6d27ffff'
@@ -161,6 +162,19 @@ def main():
         command([args.go,'run','cmd/iosrepack/main.go'],heart,args.evidence,env)
         binaries=[path for path in framework.rglob('Lib') if path.is_file()]
         if not binaries or not all(contains(path,marker.encode()) for path in binaries): raise RuntimeError('Custom identity missing in one or more XCFramework slices')
+        slices=[]
+        with tempfile.TemporaryDirectory(prefix='pinkha-heart-slices-') as directory:
+            for binary in binaries:
+                architectures=subprocess.check_output(['xcrun','lipo','-archs',str(binary)],text=True).split()
+                if not architectures: raise RuntimeError('No Heart binary architectures')
+                for architecture in architectures:
+                    thin=binary
+                    if len(architectures)>1:
+                        thin=Path(directory)/architecture
+                        subprocess.run(['xcrun','lipo',str(binary),'-thin',architecture,'-output',str(thin)],check=True)
+                    if not contains(thin,marker.encode()): raise RuntimeError('Custom identity missing in Heart architecture '+architecture)
+                    slices.append(dict(path=str(binary.relative_to(framework)),architecture=architecture,sha256=digest(thin),marker=marker))
+        receipt['binary_slices']=slices
         receipt['artifacts']=[dict(path=str(path.relative_to(framework)),sha256=digest(path)) for path in sorted(framework.rglob('*')) if path.is_file()]
         receipt['framework']=str(framework)
         if args.install_app:

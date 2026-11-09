@@ -77,6 +77,55 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         screenshot("native-set-members-after-relaunch")
     }
 
+    func testUniversalPageNoteCustomPropertiesAndMixedSet() throws {
+        for role in ["page", "note", "custom"] {
+            let id = try XCTUnwrap(fixture.universalDocuments[role])
+            try openProperties(id, expectsSources: false)
+            for name in fixture.nativeProperties { XCTAssertFalse(propertyTitle(name).exists) }
+            screenshot("universal-blank-" + role)
+            for name in fixture.nativeProperties {
+                let add = app.buttons["torah-object-add-property"].firstMatch
+                XCTAssertTrue(add.waitForExistence(timeout: 20)); add.tap()
+                let existing = propertyTitle(name)
+                XCTAssertTrue(existing.waitForExistence(timeout: 20)); existing.tap()
+                XCTAssertTrue(add.waitForExistence(timeout: 20))
+                XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 20))
+            }
+            screenshot("universal-empty-native-rows-" + role)
+            try selectNativeProperty("מקור/ות", query: fixture.sourceQuery)
+            try selectNativeProperty("נושא", query: fixture.topicQuery)
+            try selectNativeProperty("מילה / ערך", query: fixture.wordQuery)
+            screenshot("universal-canonical-values-" + role)
+            let tree = XCTAttachment(string: app.debugDescription)
+            tree.name = "universal-property-accessibility-" + role
+            tree.lifetime = .keepAlways; add(tree)
+            app.terminate()
+            try openProperties(id)
+            XCTAssertTrue(app.staticTexts[fixture.sourceLabel].waitForExistence(timeout: 20))
+            screenshot("universal-offline-reopen-" + role)
+            app.terminate()
+        }
+        for role in ["page", "note", "custom"] {
+            try openProperties(try XCTUnwrap(fixture.universalTypes[role]), expectsSources: false)
+            let add = app.buttons["torah-type-add-property"].firstMatch
+            XCTAssertTrue(add.waitForExistence(timeout: 20)); add.tap()
+            for name in fixture.nativeProperties { XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 20)) }
+            screenshot("universal-native-Type-picker-" + role)
+            propertyTitle("מקור/ות").tap()
+            XCTAssertTrue(add.waitForExistence(timeout: 20))
+            app.terminate()
+        }
+        try open(fixture.universalSetId)
+        try enableNativeColumns()
+        app.terminate()
+        try open(fixture.universalSetId)
+        XCTAssertTrue(setTable.waitForExistence(timeout: 30))
+        for role in ["page", "note", "custom"] {
+            XCTAssertTrue(setTable.staticTexts["Universal \(role) blank"].firstMatch.waitForExistence(timeout: 30))
+        }
+        screenshot("universal-mixed-native-filter-membership")
+    }
+
     private var setTable: XCUIElement {
         app.descendants(matching: .any).matching(identifier: "set-table").firstMatch
     }
@@ -137,12 +186,12 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         XCTAssertTrue(app.buttons["More"].firstMatch.waitForExistence(timeout: 45))
     }
 
-    private func openProperties(_ id: String) throws {
+    private func openProperties(_ id: String, expectsSources: Bool = true) throws {
         try open(id)
         app.buttons["More"].firstMatch.tap()
         let button = app.buttons["Properties"].firstMatch
         XCTAssertTrue(button.waitForExistence(timeout: 15)); button.tap()
-        XCTAssertTrue(propertyTitle("מקור/ות").waitForExistence(timeout: 20))
+        if expectsSources { XCTAssertTrue(propertyTitle("מקור/ות").waitForExistence(timeout: 20)) }
     }
 
     private func propertyTitle(_ name: String) -> XCUIElement {
@@ -200,6 +249,9 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
 
 private struct NativeDerivedFixture: Decodable {
     let spaceId: String
+    let universalDocuments: [String: String]
+    let universalTypes: [String: String]
+    let universalSetId: String
     let documents: [String: String]
     let names: [String: String]
     let types: [String: String]
