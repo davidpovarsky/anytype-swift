@@ -12,8 +12,9 @@ final class ObjectPropertiesViewModel {
     var sections = [PropertiesSection]()
     var showConflictingInfo = false
     var expandedSections = Set<String>()
+    var typeId: String?
 
-    var typeId: String? { document.details?.objectType.id }
+    var hasOutput: Bool { output != nil }
 
     var shouldShowEmptyState: Bool {
         guard let firstSection = sections.first else { return true }
@@ -50,9 +51,27 @@ final class ObjectPropertiesViewModel {
     ) {
         self.document = document
         self.output = output
+        self.latestParsedProperties = document.parsedProperties
+        self.typeId = Self.resolvedTypeId(for: document.details)
+        if document.details != nil {
+            rebuildSections(from: document.parsedProperties)
+        }
     }
     
     func setupSubscriptions() async {
+        if !document.isOpened {
+            try? await document.open()
+        }
+        latestParsedProperties = document.parsedProperties
+        rebuildSections(from: document.parsedProperties)
+
+        Task { [document] in
+            await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
+                spaceId: document.spaceId,
+                typeId: Self.resolvedTypeId(for: document.details)
+            )
+        }
+
         NotificationCenter.default.addObserver(
             forName: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
             object: nil,
@@ -61,6 +80,7 @@ final class ObjectPropertiesViewModel {
             guard let self else { return }
             let notifiedSpace = notification.userInfo?["spaceId"] as? String
             if notifiedSpace == nil || notifiedSpace == self.document.spaceId {
+                self.latestParsedProperties = self.document.parsedProperties
                 self.rebuildSections(from: self.latestParsedProperties)
             }
         }
@@ -71,9 +91,20 @@ final class ObjectPropertiesViewModel {
         }
     }
 
+    private static func resolvedTypeId(for details: ObjectDetails?) -> String? {
+        guard let details else { return nil }
+        if !details.type.isEmpty {
+            return details.type
+        }
+        let objectTypeId = details.objectType.id
+        return objectTypeId.isEmpty ? nil : objectTypeId
+    }
+
     private func rebuildSections(from properties: ParsedProperties) {
+        let currentTypeId = Self.resolvedTypeId(for: document.details)
+        typeId = currentTypeId
         let isEligible = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
-            typeId: document.details?.type ?? "", spaceId: document.spaceId
+            typeId: currentTypeId ?? "", spaceId: document.spaceId
         )
         let rawSections = sectionsBuilder.buildObjectSections(parsedProperties: properties)
         sections = rawSections.compactMap { section in
@@ -139,7 +170,12 @@ final class ObjectPropertiesViewModel {
         AnytypeAnalytics.instance().logAddConflictRelation()
         
         Task {
-            let relationsDetail = try propertyDetailsStorage.relationsDetails(key: relation.key, spaceId: details.spaceId)
+            guard let relationsDetail = await PinkhaTorahNativePropertyCatalog.shared.resolvePropertyDetails(
+                id: relation.id,
+                key: relation.key,
+                from: propertyDetailsStorage,
+                spaceId: details.spaceId
+            ) else { return }
             try await propertiesService.addTypeRecommendedProperty(type: details.objectType, property: relationsDetail)
         }
     }
@@ -154,7 +190,12 @@ final class ObjectPropertiesViewModel {
         }
 
         Task {
-            let relationsDetail = try propertyDetailsStorage.relationsDetails(key: relation.key, spaceId: details.spaceId)
+            guard let relationsDetail = await PinkhaTorahNativePropertyCatalog.shared.resolvePropertyDetails(
+                id: relation.id,
+                key: relation.key,
+                from: propertyDetailsStorage,
+                spaceId: details.spaceId
+            ) else { return }
             try await propertiesService.revealTypeHiddenProperty(type: details.objectType, property: relationsDetail)
         }
     }

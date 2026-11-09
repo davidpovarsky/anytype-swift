@@ -374,3 +374,33 @@ Fast41453663451: primary145/146 FAIL,0skips; preparation1/1 PASS; both SDK build
     - `Anytype/Sources/PresentationLayer/AddNewRelation flow/CreateNewRelation/ViewModel/PropertyInfoViewModel.swift`
     - `Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/PropertyValueCoordinatorViewModel.swift`
 - **Rollback:** Reversible by checking out commit `c085e5dac4d91cfb5fcfbfe2e47eb9b944a6da24`. No database migration or stored user data rewrite occurred.
+
+## 2026-11-09 (Pass 2) — End-to-End Real UI Native Torah Properties Visibility & Live Type Sync Fix
+
+- **Worktree:** `C:\Users\DAVID\Code\anytype-swift-native-derived-20261103`
+- **Branch:** `codex/torah-native-derived-properties-20261103`
+- **Authority:** Standing owner authorization dated 2026-11-04 and explicit 2026-11-09 `PINKHA_NATIVE_PROPERTIES_VISIBLE_UI_FIX_AGENT_PROMPT_2026-11-09.md` instruction.
+- **Root Causes Addressed:**
+  1. *Initial Bootstrap `engineVersion` Race (`smartBlock` vs SQLite `spaceindex`):* In `AnytypeTorahNativePropertyProvisioningStore.engineVersion`, checked both `ClientCommands.objectShow` and `search.search` while refreshing `manifestObjectId.lastUsedDate` when `completedManifest` wrote before `CanonicalID` flushed to SQLite `spaceindex`, ensuring single-call `bootstrapSpace(spaceId:)` always provisions and attaches the three native Torah properties (`מקור/ות`, `נושא`, `מילה / ערך`).
+  2. *Bootstrap Deduplication & Cold-Start Provisioning:* Added `isNativeSchemaProvisioned(spaceId:)` and per-Space task deduplication to `PinkhaSpaceBootstrapService`, and updated `PinkhaTorahPropertyPolicy` and `PinkhaTorahPropertiesModel` so cold-start manifest resolution never bypasses native property provisioning.
+  3. *`ObjectTypeSubscriptionDataBuilder` (`noDepSubscription: true`) & `PropertyDetailsStorage` Lag:* Extended `PinkhaTorahNativePropertyCatalog` with cached verified native `PropertyDetails`, live Type relation ID tracking (`resolvedTypeRelationIds`, `recordUpdatedTypeRelations`, `resolveRelationDetails`, `resolveCurrentTypeProperties`, `buildParsedPropertiesForType`), and post-bootstrap refresh. Updated `BaseDocument`, `PropertiesServiceProtocolExtensions`, `ObjectPropertiesViewModel`, `TypePropertiesViewModel`, `PropertyCreationViewModel`, and `SetDocument` so zero-association documents (`חידוש`, `מאמר`, `מחקר`), Type editors, and Set views always display and live-update the three native properties without destructive overwrites.
+  4. *Coordinator Picker Routing (`ObjectPropertiesView`):* Routed native row taps through `model.handleTapOnRelation` whenever `output` (`PropertiesListCoordinatorViewModel`) is attached so tapping a native row in the real app presents `PropertyValueCoordinatorView` -> `TorahNativePropertyEditorView`.
+- **Changed Files Classification:**
+  - *Downstream (`Anytype/Sources/Pinkha`):*
+    - `Anytype/Sources/Pinkha/Bootstrap/AnytypeTorahNativePropertyProvisioningStore.swift`
+    - `Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceBootstrapService.swift`
+    - `Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift`
+    - `Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift`
+    - `Anytype/Sources/Pinkha/Torah/UI/PinkhaTorahPropertiesModel.swift`
+  - *Downstream Tests:*
+    - `AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift`
+    - `AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift`
+  - *Previously Registered Upstream-Owned Connection Hooks (no new upstream files):*
+    - `Anytype/Sources/Models/Documents/Document/BaseDocument.swift`
+    - `Anytype/Sources/ServiceLayer/Extensions/PropertiesServiceProtocolExtensions.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift`
+    - `Anytype/Sources/PresentationLayer/TextEditor/Set/Models/SetDocument.swift`
+- **Rollback:** Reversible by checking out commit `d956bff0ac1601283018f4afbcc2b8a057251aaa`. No database migration or stored user data rewrite occurred.

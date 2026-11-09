@@ -10,6 +10,7 @@ public protocol PinkhaSpaceBootstrapServiceProtocol: Sendable {
     func bootstrapCanonicalSpace(spaceId: String) async throws -> PinkhaSpaceManifest
     func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest?
     func isBootstrapped(spaceId: String) -> Bool
+    func isNativeSchemaProvisioned(spaceId: String) -> Bool
 }
 
 public extension PinkhaSpaceBootstrapServiceProtocol {
@@ -17,11 +18,65 @@ public extension PinkhaSpaceBootstrapServiceProtocol {
     func bootstrapCanonicalSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
         try await bootstrapSpace(spaceId: spaceId)
     }
+
+    func isNativeSchemaProvisioned(spaceId: String) -> Bool {
+        isBootstrapped(spaceId: spaceId)
+    }
 }
 
 public final class PinkhaSpaceBootstrapService: PinkhaSpaceBootstrapServiceProtocol, Sendable {
+    private final class ProvisioningStateBox: @unchecked Sendable {
+        private let lock = NSLock()
+        private var provisionedSpaces = Set<String>()
+        private var inFlightTasks: [String: Task<PinkhaSpaceManifest, any Error>] = [:]
+
+        func isProvisioned(_ spaceId: String) -> Bool {
+            lock.lock()
+            defer { lock.unlock() }
+            return provisionedSpaces.contains(spaceId)
+        }
+
+        func markProvisioned(_ spaceId: String) {
+            lock.lock()
+            defer { lock.unlock() }
+            provisionedSpaces.insert(spaceId)
+        }
+
+        func runOrJoin(
+            spaceId: String,
+            operation: @escaping @Sendable () async throws -> PinkhaSpaceManifest
+        ) async throws -> PinkhaSpaceManifest {
+            let task: Task<PinkhaSpaceManifest, any Error> = {
+                lock.lock()
+                defer { lock.unlock() }
+                if let existing = inFlightTasks[spaceId] {
+                    return existing
+                }
+                let created = Task {
+                    try await operation()
+                }
+                inFlightTasks[spaceId] = created
+                return created
+            }()
+
+            do {
+                let result = try await task.value
+                lock.lock()
+                inFlightTasks.removeValue(forKey: spaceId)
+                lock.unlock()
+                return result
+            } catch {
+                lock.lock()
+                inFlightTasks.removeValue(forKey: spaceId)
+                lock.unlock()
+                throw error
+            }
+        }
+    }
+
     private let engine: PinkhaSpaceBootstrapEngine
     private let nativeProperties: TorahNativeSchemaProvisioner?
+    private let stateBox = ProvisioningStateBox()
 
     public init(
         store: any PinkhaSpaceManifestStoreProtocol = Container.shared.pinkhaSpaceManifestStore(),
@@ -49,25 +104,38 @@ public final class PinkhaSpaceBootstrapService: PinkhaSpaceBootstrapServiceProto
         engine.isBootstrapped(spaceId: spaceId)
     }
 
+    public func isNativeSchemaProvisioned(spaceId: String) -> Bool {
+        engine.isBootstrapped(spaceId: spaceId) && stateBox.isProvisioned(spaceId)
+    }
+
     public func bootstrapCanonicalSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
         try await engine.bootstrapSpace(spaceId: spaceId)
     }
 
     public func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
-        let manifest = try await bootstrapCanonicalSpace(spaceId: spaceId)
-        if let nativeProperties {
-            do {
-                _ = try await nativeProperties.provision(manifest: manifest)
-            } catch TorahNativeSchemaError.unsupportedEngine {
-                // An older middleware retains the existing canonical picker;
-                // never register non-derived fields against an incapable engine.
+        try await stateBox.runOrJoin(spaceId: spaceId) { [engine, nativeProperties, stateBox] in
+            let manifest = try await engine.bootstrapSpace(spaceId: spaceId)
+            var provisionedNative = (nativeProperties == nil)
+            if let nativeProperties {
+                do {
+                    _ = try await nativeProperties.provision(manifest: manifest)
+                    provisionedNative = true
+                } catch TorahNativeSchemaError.unsupportedEngine {
+                    // An older middleware retains the existing canonical picker;
+                    // never register non-derived fields against an incapable engine.
+                    provisionedNative = true
+                }
             }
+            if provisionedNative {
+                stateBox.markProvisioned(spaceId)
+            }
+            await Self.repairWritingTypesDefaultsIfNeeded(manifest: manifest)
+            await PinkhaTorahNativePropertyCatalog.shared.refreshAfterBootstrap(manifest: manifest)
+            return manifest
         }
-        await repairWritingTypesDefaultsIfNeeded(manifest: manifest)
-        return manifest
     }
 
-    private func repairWritingTypesDefaultsIfNeeded(manifest: PinkhaSpaceManifest) async {
+    private static func repairWritingTypesDefaultsIfNeeded(manifest: PinkhaSpaceManifest) async {
         let typeKeysAndDefaults: [(String, CustomIcon, CustomIconColor)] = [
             (PinkhaSchemaRoles.chiddushKey, .bulb, .yellow),
             (PinkhaSchemaRoles.articleKey, .documentText, .blue),

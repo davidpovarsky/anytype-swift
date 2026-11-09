@@ -527,6 +527,117 @@ struct TorahNativeUIParityTests {
         #expect(pres3.showsCompactAdjacentAdd)
         #expect(pres3.showsOverflowMenu)
     }
+
+    @Test("Catalog live Type relation cache and PropertiesBuilder pipeline preserve all three native rows on zero-association documents and respect hide/reveal")
+    func catalogLiveTypeRelationsAndZeroAssociationPropertiesSheet() {
+        let spaceId = "space-live-sheet"
+        let chiddushTypeId = "type-chiddush-live"
+        let manifest = PinkhaSpaceManifest(
+            spaceId: spaceId,
+            orderPropertyId: "order-id-live",
+            orderPropertyKey: "orderKeyLive",
+            documentAssociationsPropertyId: "canon-id-live",
+            documentAssociationsPropertyKey: "canonKeyLive",
+            registeredDocumentTypes: [
+                PinkhaSchemaRoles.chiddushKey: chiddushTypeId,
+                PinkhaSchemaRoles.articleKey: "type-article-live",
+                PinkhaSchemaRoles.researchKey: "type-research-live"
+            ]
+        )
+        let probe = PolicyBootstrapProbe(manifest: manifest)
+        let policy = PinkhaTorahPropertyPolicy(bootstrapService: probe)
+        let catalog = PinkhaTorahNativePropertyCatalog(policy: policy)
+
+        let nativeDetails = TorahNativePropertyDefinition.all.map { def in
+            PropertyDetails(
+                id: "id-\(def.key)",
+                key: def.key,
+                name: def.name,
+                format: .tag,
+                isHidden: false,
+                isReadOnly: false,
+                isReadOnlyValue: true,
+                objectTypes: [],
+                maxCount: 0,
+                sourceObject: "_br" + def.key,
+                isDeleted: false,
+                spaceId: spaceId
+            )
+        }
+
+        // Record live Type relations (simulating post-bootstrap / post-updateTypeProperties state)
+        catalog.recordUpdatedTypeRelations(
+            typeId: chiddushTypeId,
+            spaceId: spaceId,
+            recommendedIds: nativeDetails.map(\.id),
+            featuredIds: [],
+            hiddenIds: []
+        )
+
+        // Even when fallbackRecommended is empty (stale ObjectTypeProvider), resolvedTypeRelationIds returns the 3 attached IDs
+        let resolvedInitial = catalog.resolvedTypeRelationIds(
+            typeId: chiddushTypeId,
+            fallbackRecommended: [],
+            fallbackFeatured: [],
+            fallbackHidden: [],
+            spaceId: spaceId
+        )
+        #expect(resolvedInitial.recommended == nativeDetails.map(\.id))
+        #expect(resolvedInitial.hidden.isEmpty)
+
+        // Hiding the first native property moves it to hidden and removes it from recommended without losing the other two
+        let hiddenId = nativeDetails[0].id
+        let remainingIds = Array(nativeDetails.dropFirst().map(\.id))
+        catalog.recordUpdatedTypeRelations(
+            typeId: chiddushTypeId,
+            spaceId: spaceId,
+            recommendedIds: remainingIds,
+            featuredIds: [],
+            hiddenIds: [hiddenId]
+        )
+        let resolvedAfterHide = catalog.resolvedTypeRelationIds(
+            typeId: chiddushTypeId,
+            fallbackRecommended: [],
+            fallbackFeatured: [],
+            fallbackHidden: [],
+            spaceId: spaceId
+        )
+        #expect(resolvedAfterHide.recommended == remainingIds)
+        #expect(resolvedAfterHide.hidden == [hiddenId])
+
+        // Build ParsedProperties for a zero-association document via PropertiesBuilder
+        let docId = "fresh-chiddush-doc-live"
+        let docDetails = ObjectDetails(
+            id: docId,
+            values: [
+                KeyValue(key: BundledPropertyKey.id.rawValue, value: docId.protobufValue),
+                KeyValue(key: BundledPropertyKey.spaceId.rawValue, value: spaceId.protobufValue),
+                KeyValue(key: BundledPropertyKey.type.rawValue, value: chiddushTypeId.protobufValue),
+                KeyValue(key: TorahNativePropertyDefinition.engineVersionKey, value: TorahNativePropertyDefinition.engineVersion.protobufValue)
+            ]
+        )
+        let detailsStorage = ObjectDetailsStorage()
+        detailsStorage.update(with: [docDetails])
+        let parsed = Container.shared.propertiesBuilder().parsedProperties(
+            objectProperties: [],
+            objectFeaturedProperties: [],
+            recommendedProperties: nativeDetails,
+            recommendedFeaturedProperties: [],
+            recommendedHiddenProperties: [],
+            objectId: docId,
+            propertyValuesIsLocked: false,
+            storage: detailsStorage
+        )
+        #expect(Set(parsed.sidebarProperties.map(\.key)) == Set(TorahNativePropertyDefinition.all.map(\.key)))
+
+        let mockDoc = MockBaseDocument(objectId: docId, spaceId: spaceId)
+        mockDoc.details = docDetails
+        mockDoc.parsedProperties = parsed
+        let torahModel = PinkhaTorahPropertiesModel(document: mockDoc, session: nil, bootstrap: probe, policy: policy)
+        #expect(torahModel.isEligible == true)
+        #expect(torahModel.usesNativeProperties == true)
+        #expect(torahModel.showsLegacyProjectionRows == false)
+    }
 }
 
 private struct PolicyBootstrapProbe: PinkhaSpaceBootstrapServiceProtocol {

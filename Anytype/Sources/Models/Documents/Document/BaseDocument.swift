@@ -2,6 +2,7 @@ import Services
 import Combine
 import AnytypeCore
 import Foundation
+import PinkhaKit
 
 final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
     
@@ -292,6 +293,23 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
         }
         .cancellable()
         .store(in: &subscriptions)
+
+        let initialTypeId = details?.type.isEmpty == false ? details?.type : objectId
+        Task { [spaceId, initialTypeId] in
+            await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
+                spaceId: spaceId,
+                typeId: initialTypeId
+            )
+        }
+        .cancellable()
+        .store(in: &subscriptions)
+
+        objectTypeProvider.syncPublisher
+            .receiveOnMain()
+            .sink { [weak self] _ in
+                self?.triggerSync(updates: [.relationDetails])
+            }
+            .store(in: &subscriptions)
         
         NotificationCenter.default.publisher(for: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification)
             .receiveOnMain()
@@ -306,6 +324,7 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
             .store(in: &subscriptions)
 
         propertyDetailsStorage.relationsDetailsPublisher(spaceId: spaceId)
+            .receiveOnMain()
             .sink { [weak self] details in
                 guard let self, let objectDetails = self.details else { return }
                 
@@ -318,7 +337,11 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
                     objectDetails.objectType.recommendedHiddenRelations
                 )
                 let valueKeys = Set(objectDetails.values.map(\.key) + objectDetails.featuredRelations)
-                let contains = details.contains { valueKeys.contains($0.key) || recommendedIds.contains($0.id) }
+                let contains = details.contains {
+                    valueKeys.contains($0.key) ||
+                    recommendedIds.contains($0.id) ||
+                    TorahNativePropertyDefinition.definition(for: $0.key) != nil
+                }
                 if contains {
                     triggerSync(updates: [.relationDetails])
                 }
@@ -334,6 +357,17 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
         updatesForRelations.append(.details(id: details.type))
         
         guard updates.contains(where: { updatesForRelations.contains($0) }) || permissionsChanged else { return [] }
+
+        if updates.contains(.details(id: objectId)), !details.type.isEmpty {
+            let currentSpaceId = spaceId
+            let currentTypeId = details.type
+            Task {
+                await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
+                    spaceId: currentSpaceId,
+                    typeId: currentTypeId
+                )
+            }
+        }
 
         guard let newRelations = buildRelations(details: details) else { return [] }
         
@@ -368,16 +402,24 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
             ids:  details.featuredRelations, spaceId: spaceId
         )
 
-        let recommendedRelations = propertyDetailsStorage.relationsDetails(
-            ids: targetObjectType.recommendedRelations, spaceId: spaceId
+        let typeRelIds = PinkhaTorahNativePropertyCatalog.shared.resolvedTypeRelationIds(
+            typeId: targetObjectType.id,
+            fallbackRecommended: targetObjectType.recommendedRelations,
+            fallbackFeatured: targetObjectType.recommendedFeaturedRelations,
+            fallbackHidden: targetObjectType.recommendedHiddenRelations,
+            spaceId: spaceId
+        )
+
+        let recommendedRelations = PinkhaTorahNativePropertyCatalog.shared.resolveRelationDetails(
+            ids: typeRelIds.recommended, from: propertyDetailsStorage, spaceId: spaceId
         )
         
-        let recommendedFeaturedRelations = propertyDetailsStorage.relationsDetails(
-            ids: targetObjectType.recommendedFeaturedRelations, spaceId: spaceId
+        let recommendedFeaturedRelations = PinkhaTorahNativePropertyCatalog.shared.resolveRelationDetails(
+            ids: typeRelIds.featured, from: propertyDetailsStorage, spaceId: spaceId
         )
         
-        let recommendedHiddenRelations = propertyDetailsStorage.relationsDetails(
-            ids: targetObjectType.recommendedHiddenRelations, spaceId: spaceId
+        let recommendedHiddenRelations = PinkhaTorahNativePropertyCatalog.shared.resolveRelationDetails(
+            ids: typeRelIds.hidden, from: propertyDetailsStorage, spaceId: spaceId
         )
         
         return relationBuilder.parsedProperties(
@@ -401,16 +443,24 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
             keys: details.featuredRelations, spaceId: spaceId
         )
 
-        let recommendedRelations = propertyDetailsStorage.relationsDetails(
-            ids: details.objectType.recommendedRelations, spaceId: spaceId
+        let typeRelIds = PinkhaTorahNativePropertyCatalog.shared.resolvedTypeRelationIds(
+            typeId: details.objectType.id,
+            fallbackRecommended: details.objectType.recommendedRelations,
+            fallbackFeatured: details.objectType.recommendedFeaturedRelations,
+            fallbackHidden: details.objectType.recommendedHiddenRelations,
+            spaceId: spaceId
+        )
+
+        let recommendedRelations = PinkhaTorahNativePropertyCatalog.shared.resolveRelationDetails(
+            ids: typeRelIds.recommended, from: propertyDetailsStorage, spaceId: spaceId
         )
         
-        let recommendedFeaturedRelations = propertyDetailsStorage.relationsDetails(
-            ids: details.objectType.recommendedFeaturedRelations, spaceId: spaceId
+        let recommendedFeaturedRelations = PinkhaTorahNativePropertyCatalog.shared.resolveRelationDetails(
+            ids: typeRelIds.featured, from: propertyDetailsStorage, spaceId: spaceId
         )
         
-        let recommendedHiddenRelations = propertyDetailsStorage.relationsDetails(
-            ids: details.objectType.recommendedHiddenRelations, spaceId: spaceId
+        let recommendedHiddenRelations = PinkhaTorahNativePropertyCatalog.shared.resolveRelationDetails(
+            ids: typeRelIds.hidden, from: propertyDetailsStorage, spaceId: spaceId
         )
         
         return relationBuilder.parsedProperties(

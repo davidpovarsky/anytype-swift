@@ -308,6 +308,16 @@ final class SetDocument: SetDocumentProtocol, @unchecked Sendable {
         }
         .cancellable()
         .store(in: &subscriptions)
+
+        let targetTypeId = (details?.isObjectType == true) ? details?.id : details?.filteredSetOf.first
+        Task { [spaceId, targetTypeId] in
+            await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
+                spaceId: spaceId,
+                typeId: targetTypeId
+            )
+        }
+        .cancellable()
+        .store(in: &subscriptions)
     }
     
     private func updateData() {
@@ -342,7 +352,8 @@ final class SetDocument: SetDocumentProtocol, @unchecked Sendable {
                 return true
             }
         if isEligible {
-            let allSpaceRelations = propertyDetailsStorage.relationsDetails(spaceId: spaceId)
+            let allSpaceRelations = propertyDetailsStorage.relationsDetails(spaceId: spaceId) +
+                PinkhaTorahNativePropertyCatalog.shared.cachedNativeProperties(spaceId: spaceId)
             for nativeDef in TorahNativePropertyDefinition.all {
                 if !relationsDetails.contains(where: { $0.key == nativeDef.key }),
                    let verified = allSpaceRelations.first(where: {

@@ -230,9 +230,19 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
     
     func addPropertyToObject(objectId: String, relation: PropertyDetails) async throws {
         let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: data.spaceId)
+        if doc.details == nil {
+            try? await doc.open()
+        }
         if let docDetails = doc.details {
             let objectType = docDetails.objectType
-            if isInstalledButHidden(relation.id) || objectType.recommendedHiddenRelations.contains(relation.id) {
+            let resolvedTypeRels = PinkhaTorahNativePropertyCatalog.shared.resolvedTypeRelationIds(
+                typeId: objectType.id,
+                fallbackRecommended: objectType.recommendedRelations,
+                fallbackFeatured: objectType.recommendedFeaturedRelations,
+                fallbackHidden: objectType.recommendedHiddenRelations,
+                spaceId: data.spaceId
+            )
+            if isInstalledButHidden(relation.id) || resolvedTypeRels.hidden.contains(relation.id) {
                 try await propertiesService.revealTypeHiddenProperty(type: objectType, property: relation, featured: false)
                 return
             }

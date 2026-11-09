@@ -60,11 +60,12 @@ struct TorahNativeDerivedProductIntegrationTests {
             throw error
         }
         let schema = AnytypeTorahNativePropertyProvisioningStore()
-        // No fallback: the real native engine must advertise its capability.
-        try await eventually {
-            try await schema.engineVersion(spaceId: spaceId, manifestObjectId: #require(manifest.manifestObjectId)) == 1
-        }
-        _ = try await bootstrap.bootstrapSpace(spaceId: spaceId)
+        // Verify that the single initial bootstrapSpace call already waited for engineVersion == 1,
+        // installed all 3 native properties, and attached them to all 3 writing Types without needing a second bootstrap call.
+        #expect(bootstrap.isNativeSchemaProvisioned(spaceId: spaceId))
+        let engineVer = try await schema.engineVersion(spaceId: spaceId, manifestObjectId: #require(manifest.manifestObjectId))
+        #expect(engineVer == 1)
+
         var nativeProperties: [PropertyDetails] = []
         for definition in TorahNativePropertyDefinition.all {
             let descriptor = try #require(try await schema.property(key: definition.key, spaceId: spaceId))
@@ -72,9 +73,12 @@ struct TorahNativeDerivedProductIntegrationTests {
             #expect(descriptor.format == TorahNativePropertyDefinition.wireFormat)
             nativeProperties.append(PropertyDetails(details: try await show(descriptor.id, spaceId: spaceId)))
         }
+        let expectedNativeKeys = Set(TorahNativePropertyDefinition.all.map(\.key))
+        let expectedNativeIds = Set(nativeProperties.map(\.id))
+
         for typeId in manifest.registeredDocumentTypes.values {
             let attached = try await schema.attachedPropertyIds(typeId: typeId, spaceId: spaceId)
-            #expect(Set(nativeProperties.map(\.id)).isSubset(of: Set(attached)))
+            #expect(expectedNativeIds.isSubset(of: Set(attached)))
         }
         let again = try await bootstrap.bootstrapSpace(spaceId: spaceId)
         #expect(manifest.registeredDocumentTypes == again.registeredDocumentTypes)
@@ -96,6 +100,155 @@ struct TorahNativeDerivedProductIntegrationTests {
             shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
             spaceId: spaceId, origin: .none, templateId: manifest.defaultTemplateIds[PinkhaSchemaRoles.chiddushKey]
         )
+
+        // =========================================================================
+        // REAL UI PIPELINE PROOF 1: Fresh Zero-Association Document Properties Sheet
+        // BaseDocument -> PropertiesBuilder -> ObjectPropertiesViewModel -> visibleSections
+        // =========================================================================
+        let openedDoc = Container.shared.openedDocumentProvider().document(objectId: document.id, spaceId: spaceId)
+        try await openedDoc.open()
+        let coordinatorVM = PropertiesListCoordinatorViewModel(
+            data: .object(objectId: document.id),
+            spaceId: spaceId,
+            onRelationAddTap: { _, _, _ in }
+        )
+        let objectPropertiesVM = ObjectPropertiesViewModel(document: openedDoc, output: coordinatorVM)
+        let torahPropertiesModel = PinkhaTorahPropertiesModel(document: openedDoc, session: nil)
+        let objectSubTask = Task { await objectPropertiesVM.setupSubscriptions() }
+        let torahObsTask = Task { await torahPropertiesModel.observeDocument() }
+        defer {
+            objectSubTask.cancel()
+            torahObsTask.cancel()
+        }
+
+        #expect(torahPropertiesModel.showsLegacyProjectionRows == false)
+        try await eventually {
+            let visibleRels = torahPropertiesModel.visibleSections(objectPropertiesVM.sections).flatMap(\.relations)
+            let visibleKeys = Set(visibleRels.map(\.key))
+            return expectedNativeKeys.isSubset(of: visibleKeys)
+        }
+        let freshVisibleRelations = torahPropertiesModel.visibleSections(objectPropertiesVM.sections).flatMap(\.relations)
+        #expect(torahPropertiesModel.isEligible == true)
+        #expect(!freshVisibleRelations.contains { $0.id == manifest.orderPropertyId || $0.key == manifest.orderPropertyKey })
+        #expect(!freshVisibleRelations.contains { $0.id == manifest.documentAssociationsPropertyId || $0.key == manifest.documentAssociationsPropertyKey })
+
+        for def in TorahNativePropertyDefinition.all {
+            let row = try #require(freshVisibleRelations.first { $0.key == def.key })
+            guard case .tag(let tagModel) = row.type else {
+                Issue.record("Expected native .tag row in ObjectPropertiesViewModel for \(def.key), got \(row.type)")
+                return
+            }
+            #expect(tagModel.isEditable == true)
+            #expect(tagModel.selectedTags.isEmpty)
+            // Tapping the empty native row routes through PropertiesListCoordinatorViewModel -> relationValueData
+            objectPropertiesVM.handleTapOnRelation(row)
+            #expect(coordinatorVM.relationValueData?.relationKey == def.key)
+            #expect(coordinatorVM.relationValueData?.document.objectId == document.id)
+        }
+
+        // =========================================================================
+        // REAL UI PIPELINE PROOF 2: Type Properties Editor (TypePropertiesViewModel)
+        // for all 3 Torah Writing Types (חידוש, מאמר, מחקר)
+        // =========================================================================
+        for role in [PinkhaSchemaRoles.chiddushKey, PinkhaSchemaRoles.articleKey, PinkhaSchemaRoles.researchKey] {
+            let roleTypeId = try #require(manifest.registeredDocumentTypes[role])
+            let typeDoc = Container.shared.openedDocumentProvider().document(objectId: roleTypeId, spaceId: spaceId)
+            try await typeDoc.open()
+            let typeVM = TypePropertiesViewModel(document: typeDoc)
+            let typeSubTask = Task { await typeVM.setupSubscriptions() }
+            defer { typeSubTask.cancel() }
+
+            try await eventually {
+                let rowKeys = Set(typeVM.relationRows.compactMap { row -> String? in
+                    if case .relation(let r) = row { return r.relation.key }
+                    return nil
+                })
+                return expectedNativeKeys.isSubset(of: rowKeys)
+            }
+            let typeRelRows = typeVM.relationRows.compactMap { row -> TypePropertiesRelationRow? in
+                if case .relation(let r) = row { return r }
+                return nil
+            }
+            #expect(!typeRelRows.contains { $0.relation.id == manifest.orderPropertyId || $0.relation.key == manifest.orderPropertyKey })
+            #expect(!typeRelRows.contains { $0.relation.id == manifest.documentAssociationsPropertyId || $0.relation.key == manifest.documentAssociationsPropertyKey })
+        }
+
+        // =========================================================================
+        // REAL UI PIPELINE PROOF 3: Hide, Add Property Search, and Reveal Without Duplicate
+        // =========================================================================
+        let chiddushTypeDoc = Container.shared.openedDocumentProvider().document(objectId: typeId, spaceId: spaceId)
+        let chiddushTypeVM = TypePropertiesViewModel(document: chiddushTypeDoc)
+        let chiddushTypeSubTask = Task { await chiddushTypeVM.setupSubscriptions() }
+        defer { chiddushTypeSubTask.cancel() }
+
+        try await eventually {
+            chiddushTypeVM.relationRows.contains {
+                if case .relation(let r) = $0 { return r.relation.key == TorahNativePropertyDefinition.all[0].key }
+                return false
+            }
+        }
+        let sourcesRowInType = try #require(chiddushTypeVM.relationRows.compactMap { row -> TypePropertiesRelationRow? in
+            if case .relation(let r) = row, r.relation.key == TorahNativePropertyDefinition.all[0].key { return r }
+            return nil
+        }.first)
+
+        // Hide מקור/ות on the Type
+        chiddushTypeVM.onRelationHide(sourcesRowInType)
+
+        // Verify both TypePropertiesViewModel and the open document's ObjectPropertiesViewModel move מקור/ות to Hidden
+        try await eventually {
+            let hiddenSection = objectPropertiesVM.sections.first {
+                $0.id == PropertiesSection.Constants.hiddenPropertiesSectionId
+            }
+            let isHiddenOnDoc = hiddenSection?.relations.contains { $0.key == TorahNativePropertyDefinition.all[0].key } == true
+            let isHiddenOnType = chiddushTypeVM.isRelationHidden(sourcesRowInType)
+            return isHiddenOnDoc && isHiddenOnType
+        }
+
+        // Verify Add Property picker (PropertyCreationViewModel) when מקור/ות is hidden and the other 2 are visible:
+        // excludedRelationsIds contains only visible IDs; hiddenRelationsIds contains the hidden מקור/ות ID.
+        chiddushTypeVM.onAddRelationTap(section: TypePropertiesSectionRow(id: "rec", title: " Properties", isFeatured: false, isHidden: false, isExpandable: false))
+        let searchData = try #require(chiddushTypeVM.relationsSearchData)
+        #expect(searchData.hiddenRelationsIds.contains(sourcesRowInType.relation.id))
+        #expect(!searchData.excludedRelationsIds.contains(sourcesRowInType.relation.id))
+
+        let creationVM = PropertyCreationViewModel(data: searchData)
+        await creationVM.search(text: "")
+        let emptySearchExisting = creationVM.rows.flatMap(\.searchData).compactMap { item -> PropertyDetails? in
+            if case .existing(let details) = item { return details }
+            return nil
+        }
+        #expect(emptySearchExisting.contains { $0.id == sourcesRowInType.relation.id })
+        #expect(creationVM.isInstalledButHidden(sourcesRowInType.relation.id))
+
+        for query in ["מקור/ות", "מקורות", "Source"] {
+            await creationVM.search(text: query)
+            let queryExisting = creationVM.rows.flatMap(\.searchData).compactMap { item -> PropertyDetails? in
+                if case .existing(let details) = item { return details }
+                return nil
+            }
+            #expect(queryExisting.contains { $0.id == sourcesRowInType.relation.id })
+        }
+
+        // Reveal מקור/ות directly from the open document's ObjectPropertiesViewModel
+        let hiddenDocRow = try #require(
+            objectPropertiesVM.sections
+                .first { $0.id == PropertiesSection.Constants.hiddenPropertiesSectionId }?
+                .relations
+                .first { $0.key == TorahNativePropertyDefinition.all[0].key }
+        )
+        objectPropertiesVM.revealHiddenRelation(hiddenDocRow)
+
+        try await eventually {
+            let hiddenSection = objectPropertiesVM.sections.first {
+                $0.id == PropertiesSection.Constants.hiddenPropertiesSectionId
+            }
+            let stillHidden = hiddenSection?.relations.contains { $0.key == TorahNativePropertyDefinition.all[0].key } == true
+            let visibleRels = torahPropertiesModel.visibleSections(objectPropertiesVM.sections).flatMap(\.relations)
+            let backInVisible = expectedNativeKeys.isSubset(of: Set(visibleRels.map(\.key)))
+            return !stillHidden && backInVisible && !chiddushTypeVM.isRelationHidden(sourcesRowInType)
+        }
+
         let blockId = try await Container.shared.blockService().addFirstBlock(
             contextId: document.id, info: .empty(id: "", content: .text(.plain("Preserved block", contentType: .text)))
         )
@@ -205,6 +358,22 @@ struct TorahNativeDerivedProductIntegrationTests {
             )
             fixtureDocuments[role] = created.id
             fixtureNames[created.id] = created.name
+
+            // Verify fresh zero-association מאמר and מחקר documents in ObjectPropertiesViewModel
+            let roleDoc = Container.shared.openedDocumentProvider().document(objectId: created.id, spaceId: spaceId)
+            try await roleDoc.open()
+            let roleObjVM = ObjectPropertiesViewModel(document: roleDoc, output: nil)
+            let roleTorahModel = PinkhaTorahPropertiesModel(document: roleDoc, session: nil)
+            let roleSubTask = Task { await roleObjVM.setupSubscriptions() }
+            let roleObsTask = Task { await roleTorahModel.observeDocument() }
+            defer {
+                roleSubTask.cancel()
+                roleObsTask.cancel()
+            }
+            try await eventually {
+                let relKeys = Set(roleTorahModel.visibleSections(roleObjVM.sections).flatMap(\.relations).map(\.key))
+                return expectedNativeKeys.isSubset(of: relKeys)
+            }
         }
         let chipsDocument = try await Container.shared.objectActionsService().createObject(
             name: "Native twelve-source chips", typeUniqueKey: #require(indexedTypes.first { $0.id == typeId }).uniqueKey,
@@ -249,28 +418,43 @@ struct TorahNativeDerivedProductIntegrationTests {
             )
             #expect(!found.isEmpty)
         }
-        // Fresh article document has editable native rows before any association exists
-        if let freshArticleId = fixtureDocuments[PinkhaSchemaRoles.articleKey] {
-            let freshDetails = try await show(freshArticleId, spaceId: spaceId)
-            for prop in nativeProperties {
-                guard case .tag(let rendered) = TorahNativePropertyPresentation.property(
-                    definition: prop, details: freshDetails, isFeatured: false, valuesLocked: false
-                ) else { Issue.record("Fresh article native row missing"); return }
-                #expect(rendered.isEditable == true)
-            }
-        }
-        // Live Type switch (Chiddush -> Page -> Chiddush) preserves canonical associations and restores projections
+        // Live Type switch (Chiddush -> Page -> Chiddush) on open document updates ObjectPropertiesViewModel live
+        // while preserving canonical associations and restoring projections
         if let pageType = indexedTypes.first(where: { $0.uniqueKey == .page }) {
+            let openChipsDoc = Container.shared.openedDocumentProvider().document(objectId: chipsDocument.id, spaceId: spaceId)
+            try await openChipsDoc.open()
+            let chipsObjVM = ObjectPropertiesViewModel(document: openChipsDoc, output: nil)
+            let chipsTorahModel = PinkhaTorahPropertiesModel(document: openChipsDoc, session: nil)
+            let chipsSubTask = Task { await chipsObjVM.setupSubscriptions() }
+            let chipsObsTask = Task { await chipsTorahModel.observeDocument() }
+            defer {
+                chipsSubTask.cancel()
+                chipsObsTask.cancel()
+            }
+
+            try await eventually {
+                let keys = Set(chipsTorahModel.visibleSections(chipsObjVM.sections).flatMap(\.relations).map(\.key))
+                return expectedNativeKeys.isSubset(of: keys)
+            }
+
             let beforeCanonical = try await show(chipsDocument.id, spaceId: spaceId).stringValue(for: manifest.documentAssociationsPropertyKey)
             #expect(!beforeCanonical.isEmpty)
             try await Container.shared.objectActionsService().setObjectType(objectId: chipsDocument.id, typeUniqueKey: pageType.uniqueKey)
             let asPageDetails = try await show(chipsDocument.id, spaceId: spaceId)
             #expect(asPageDetails.stringValue(for: manifest.documentAssociationsPropertyKey) == beforeCanonical)
+            try await eventually {
+                let keys = Set(chipsTorahModel.visibleSections(chipsObjVM.sections).flatMap(\.relations).map(\.key))
+                return keys.isDisjoint(with: expectedNativeKeys) && !chipsTorahModel.isEligible
+            }
+
             try await Container.shared.objectActionsService().setObjectType(objectId: chipsDocument.id, typeUniqueKey: chiddushType.uniqueKey)
             try await eventually {
                 let restored = try await show(chipsDocument.id, spaceId: spaceId)
+                let keys = Set(chipsTorahModel.visibleSections(chipsObjVM.sections).flatMap(\.relations).map(\.key))
                 return restored.stringValue(for: manifest.documentAssociationsPropertyKey) == beforeCanonical &&
-                    restored.stringArrayValue(for: key).count == 12
+                    restored.stringArrayValue(for: key).count == 12 &&
+                    expectedNativeKeys.isSubset(of: keys) &&
+                    chipsTorahModel.isEligible
             }
         }
         let directory = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)

@@ -54,8 +54,12 @@ final class PinkhaTorahPropertiesModel {
     func observeDocument() async {
         update()
         if let session { await session.refreshAssociationSnapshot() }
-        if manifest == nil {
+        if manifest == nil || !bootstrap.isNativeSchemaProvisioned(spaceId: document.spaceId) {
             _ = await policy.awaitInternalIdentity(spaceId: document.spaceId)
+            await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
+                spaceId: document.spaceId,
+                typeId: document.details?.type
+            )
         }
         update()
         let identityNotifications = NotificationCenter.default.notifications(
@@ -135,7 +139,7 @@ final class PinkhaTorahPropertiesModel {
         } else {
             manifestResolutionError = nil
         }
-        isEligible = PinkhaRuntime.enabled && session != nil && TorahDocumentPropertyEligibility.includes(
+        isEligible = PinkhaRuntime.enabled && TorahDocumentPropertyEligibility.includes(
             typeId: document.details?.type ?? "", spaceId: document.spaceId, manifest: manifest
         )
         canEdit = document.permissions.canEditRelationValues && document.details?.isReadonly == false

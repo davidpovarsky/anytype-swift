@@ -45,9 +45,24 @@ final class TypePropertiesViewModel {
     
     init(document: some BaseDocumentProtocol) {
         self.document = document
+        if document.details != nil {
+            rebuildTypeProperties(animate: false)
+        }
     }
     
     func setupSubscriptions() async {
+        if !document.isOpened {
+            try? await document.open()
+        }
+        rebuildTypeProperties(animate: false)
+
+        Task { [document] in
+            await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(
+                spaceId: document.spaceId,
+                typeId: document.objectId
+            )
+        }
+
         NotificationCenter.default.addObserver(
             forName: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
             object: nil,
@@ -56,14 +71,7 @@ final class TypePropertiesViewModel {
             guard let self else { return }
             let notificationSpaceId = notification.userInfo?["spaceId"] as? String
             if notificationSpaceId == nil || notificationSpaceId == self.document.spaceId {
-                let newRows = self.fieldsDataBuilder.build(
-                    relations: self.filterProperties(self.parsedProperties.sidebarProperties),
-                    featured: self.filterProperties(self.parsedProperties.featuredProperties),
-                    hidden: self.filterProperties(self.parsedProperties.hiddenProperties)
-                )
-                withAnimation {
-                    self.relationRows = newRows
-                }
+                self.rebuildTypeProperties(animate: self.relationRows.isNotEmpty)
             }
         }
 
@@ -72,6 +80,27 @@ final class TypePropertiesViewModel {
         async let detailsSubscription: () = setupDetailsSubscription()
         
         (_, _, _) = await (relationsSubscription, permissionSubscription, detailsSubscription)
+    }
+
+    private func rebuildTypeProperties(fallback: ParsedProperties? = nil, animate: Bool = true) {
+        let catalogBuilt = PinkhaTorahNativePropertyCatalog.shared.buildParsedPropertiesForType(document: document)
+        let effective: ParsedProperties
+        if !catalogBuilt.installed.isEmpty {
+            effective = catalogBuilt
+        } else if let fallback, !fallback.installed.isEmpty {
+            effective = fallback
+        } else {
+            effective = catalogBuilt
+        }
+        parsedProperties = effective
+        let newRows = fieldsDataBuilder.build(
+            relations: filterProperties(effective.sidebarProperties),
+            featured: filterProperties(effective.featuredProperties),
+            hidden: filterProperties(effective.hiddenProperties)
+        )
+        withAnimation(animate && relationRows.isNotEmpty ? .default : nil) {
+            relationRows = newRows
+        }
     }
     
     private func filterProperties(_ properties: [Property]) -> [Property] {
@@ -115,18 +144,7 @@ final class TypePropertiesViewModel {
 
     private func setupRelationsSubscription() async {
         for await properties in document.parsedPropertiesPublisherForType.values {
-            parsedProperties = properties
-            let newRows = fieldsDataBuilder.build(
-                relations: filterProperties(properties.sidebarProperties),
-                featured: filterProperties(properties.featuredProperties),
-                hidden: filterProperties(properties.hiddenProperties)
-            )
-            
-            // do not animate on 1st appearance
-            withAnimation(relationRows.isNotEmpty ? .default : nil) {
-                relationRows = newRows
-            }
-            
+            rebuildTypeProperties(fallback: properties, animate: relationRows.isNotEmpty)
         }
     }
     
@@ -198,7 +216,12 @@ final class TypePropertiesViewModel {
         ) else { return }
         let type = ObjectType(details: details)
         Task {
-            guard let relationDetails = try? propertyDetailsStorage.relationsDetails(key: row.relation.key, spaceId: document.spaceId) else {
+            guard let relationDetails = await PinkhaTorahNativePropertyCatalog.shared.resolvePropertyDetails(
+                id: row.relation.id,
+                key: row.relation.key,
+                from: propertyDetailsStorage,
+                spaceId: document.spaceId
+            ) else {
                 return
             }
             try? await propertiesService.revealTypeHiddenProperty(type: type, property: relationDetails, featured: featured)
@@ -212,7 +235,12 @@ final class TypePropertiesViewModel {
         ) else { return }
         let type = ObjectType(details: details)
         Task {
-            guard let relationDetails = try? propertyDetailsStorage.relationsDetails(key: row.relation.key, spaceId: document.spaceId) else {
+            guard let relationDetails = await PinkhaTorahNativePropertyCatalog.shared.resolvePropertyDetails(
+                id: row.relation.id,
+                key: row.relation.key,
+                from: propertyDetailsStorage,
+                spaceId: document.spaceId
+            ) else {
                 return
             }
             try? await propertiesService.hideTypeProperty(type: type, property: relationDetails)
@@ -264,15 +292,6 @@ final class TypePropertiesViewModel {
                 (TorahNativePropertyDefinition.definition(for: $0.key) == nil || isEligibleType)
             }
         
-        let newRows = fieldsDataBuilder.build(
-            relations: filterProperties(parsedProperties.sidebarProperties),
-            featured: filterProperties(parsedProperties.featuredProperties),
-            hidden: filterProperties(parsedProperties.hiddenProperties)
-        )
-        
-        // do not animate on 1st appearance
-        withAnimation(relationRows.isNotEmpty ? .default : nil) {
-            relationRows = newRows
-        }
+        rebuildTypeProperties(animate: relationRows.isNotEmpty)
     }
 }

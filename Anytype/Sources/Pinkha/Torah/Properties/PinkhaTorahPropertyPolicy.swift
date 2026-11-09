@@ -243,10 +243,12 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
             guard let self else { return .unavailable("Deallocated") }
             do {
                 let manifest: PinkhaSpaceManifest?
-                if let cached = self.bootstrapService.manifest(forSpaceId: spaceId), cached.spaceId == spaceId {
+                if let cached = self.bootstrapService.manifest(forSpaceId: spaceId),
+                   cached.spaceId == spaceId,
+                   self.bootstrapService.isNativeSchemaProvisioned(spaceId: spaceId) {
                     manifest = cached
                 } else {
-                    manifest = try await self.bootstrapService.bootstrapCanonicalSpace(spaceId: spaceId)
+                    manifest = try await self.bootstrapService.bootstrapSpace(spaceId: spaceId)
                 }
 
                 guard let manifest, manifest.spaceId == spaceId else {
@@ -498,10 +500,14 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
     // MARK: - Manifest Resolution
 
     public func resolveManifest(spaceId: String) async -> PinkhaSpaceManifest? {
-        if let cached = bootstrapService.manifest(forSpaceId: spaceId) {
+        if let cached = bootstrapService.manifest(forSpaceId: spaceId),
+           bootstrapService.isNativeSchemaProvisioned(spaceId: spaceId) {
             return cached
         }
-        return try? await bootstrapService.bootstrapSpace(spaceId: spaceId)
+        if let bootstrapped = try? await bootstrapService.bootstrapSpace(spaceId: spaceId) {
+            return bootstrapped
+        }
+        return bootstrapService.manifest(forSpaceId: spaceId)
     }
 
     // MARK: - Private Target Inspection
@@ -546,6 +552,10 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
             if let details = doc.details, details.spaceId == spaceId, !details.type.isEmpty {
                 return await isTargetEligibleForNativePropertiesAsync(typeId: details.type, spaceId: spaceId)
             }
+            if let liveDetails = await PinkhaTorahNativePropertyCatalog.shared.fetchLiveObjectDetails(id: objectId, spaceId: spaceId),
+               !liveDetails.type.isEmpty {
+                return await isTargetEligibleForNativePropertiesAsync(typeId: liveDetails.type, spaceId: spaceId)
+            }
             return false
         case .library:
             return false
@@ -589,6 +599,9 @@ public final class PinkhaTorahPropertyPolicy: Sendable {
         if setDetails == nil {
             try? await doc.open()
             setDetails = doc.details
+        }
+        if setDetails == nil {
+            setDetails = await PinkhaTorahNativePropertyCatalog.shared.fetchLiveObjectDetails(id: objectId, spaceId: spaceId)
         }
         guard let setDetails, setDetails.spaceId == spaceId else { return false }
         let sources = setDetails.filteredSetOf.filter { !$0.isEmpty }

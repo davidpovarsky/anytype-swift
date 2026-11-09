@@ -16,15 +16,35 @@ public final class AnytypeTorahNativePropertyProvisioningStore: TorahNativePrope
 
     public func engineVersion(spaceId: String, manifestObjectId: String) async throws -> Int {
         // The custom iOS route sets this compilation flag only after verifying
-        // the embedded custom Heart. Original middleware retains a cheap probe.
-        #if PINKHA_NATIVE_DERIVED
+        // the embedded custom Heart. Original middleware retains a bounded probe.
         let clock = ContinuousClock()
+        #if PINKHA_NATIVE_DERIVED
         let deadline = clock.now.advanced(by: .seconds(30))
+        #else
+        let deadline = clock.now.advanced(by: .seconds(5))
+        #endif
+        var attempt = 0
         repeat {
             let details = try await objectDetails(id: manifestObjectId, spaceId: spaceId)
-            if let version = details.intValue(for: TorahNativePropertyDefinition.engineVersionKey), version > 0 { return version }
+            if let version = details.intValue(for: TorahNativePropertyDefinition.engineVersionKey), version > 0 {
+                return version
+            }
+            if let indexedVersion = try? await searchManifestEngineVersion(spaceId: spaceId, manifestObjectId: manifestObjectId),
+               indexedVersion > 0 {
+                await touchManifestObject(id: manifestObjectId)
+                return indexedVersion
+            }
+            attempt += 1
+            if attempt == 2 || attempt % 10 == 0 {
+                // Step 10 of bootstrap writes completedManifest before CanonicalID may have
+                // finished flushing asynchronously to SQLite spaceindex. Touching lastUsedDate
+                // forces smartBlock.injectTorahDetails and spaceindex.Modify -> rebuild(ctx)
+                // to re-evaluate ResolveBinding once CanonicalID is in spaceindex.
+                await touchManifestObject(id: manifestObjectId)
+            }
             try await Task.sleep(for: .milliseconds(100))
         } while clock.now < deadline
+        #if PINKHA_NATIVE_DERIVED
         throw TorahNativeSchemaError.invalidManifest
         #else
         let details = try await objectDetails(id: manifestObjectId, spaceId: spaceId)
@@ -115,6 +135,36 @@ public final class AnytypeTorahNativePropertyProvisioningStore: TorahNativePrope
                 $0.enableInViews = false
             }).invoke(qos: .userInitiated)
         }
+    }
+
+    private func searchManifestEngineVersion(spaceId: String, manifestObjectId: String) async throws -> Int? {
+        let results = try await search.search(
+            spaceId: spaceId,
+            filters: [.with {
+                $0.relationKey = BundledPropertyKey.id.rawValue
+                $0.condition = .equal
+                $0.value = manifestObjectId.protobufValue
+            }],
+            keys: [
+                BundledPropertyKey.id.rawValue,
+                BundledPropertyKey.spaceId.rawValue,
+                TorahNativePropertyDefinition.engineVersionKey
+            ],
+            limit: 1
+        )
+        guard let row = results.first(where: { $0.id == manifestObjectId && $0.spaceId == spaceId }) else {
+            return nil
+        }
+        return row.intValue(for: TorahNativePropertyDefinition.engineVersionKey)
+    }
+
+    private func touchManifestObject(id: String) async {
+        _ = try? await ClientCommands.objectSetDetails(.with {
+            $0.contextID = id
+            $0.details = Google_Protobuf_Struct(fields: [
+                BundledPropertyKey.lastUsedDate.rawValue: Date.now.timeIntervalSince1970.protobufValue
+            ])
+        }).invoke(qos: .userInitiated)
     }
 
     private func objectDetails(id: String, spaceId: String) async throws -> ObjectDetails {

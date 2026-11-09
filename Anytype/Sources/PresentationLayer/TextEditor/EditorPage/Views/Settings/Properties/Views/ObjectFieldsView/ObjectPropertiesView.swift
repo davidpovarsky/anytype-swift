@@ -169,10 +169,12 @@ struct ObjectPropertiesView: View {
         } onStarTap: { _ in
             anytypeAssertionFailure("Deprecated onStarTap call")
         } onEditTap: { tappedRelation in
-            if let definition = TorahNativePropertyDefinition.definition(for: tappedRelation.key),
-               torahProperties.isEligible,
-               torahProperties.canEdit,
-               torahProperties.session != nil {
+            if model.hasOutput {
+                model.handleTapOnRelation(tappedRelation)
+            } else if let definition = TorahNativePropertyDefinition.definition(for: tappedRelation.key),
+                      torahProperties.isEligible,
+                      torahProperties.canEdit,
+                      torahProperties.session != nil {
                 torahProperties.edit(definition.kind)
             } else {
                 model.handleTapOnRelation(tappedRelation)
