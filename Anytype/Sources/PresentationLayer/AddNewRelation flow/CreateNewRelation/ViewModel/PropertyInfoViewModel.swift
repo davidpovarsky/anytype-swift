@@ -52,9 +52,9 @@ final class PropertyInfoViewModel {
         _ = identityRevision
         switch mode {
         case .create:
-            false
+            return false
         case .edit:
-            !isReadOnly && PinkhaTorahPropertyPolicy.shared.canDeletePropertyDefinition(
+            return !isReadOnly && PinkhaTorahPropertyPolicy.shared.canDeletePropertyDefinition(
                 propertyId: relationId, key: "", spaceId: spaceId
             )
         }
