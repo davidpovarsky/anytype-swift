@@ -1468,16 +1468,18 @@ struct TorahCanonicalManifestIsolationTests {
         #expect(policy.isCanonicalStorage(propertyId: "canonical-prop-id", key: "canonical-prop-key", spaceId: "space"))
 
         // Legitimate repository linking paths continue to operate without interference (H15)
-        let underlying = InMemoryTorahAssociationRepository()
-        let repository = TorahAssociationNativeRepository(
-            underlying: underlying,
-            bootstrapService: probe
+        let store = NativeStoreProbe(spaceId: "space", objectId: "doc-1", blockIds: [])
+        let repository = AnytypeTorahAssociationRepository(
+            nativeStore: store,
+            manifestProvider: BootstrapTorahAssociationManifestProvider(bootstrapService: probe),
+            coordinator: TorahAssociationMutationCoordinator(),
+            statusCenter: TorahAssociationPersistenceStatusCenter()
         )
 
         let item = TorahAssociationItem(
             id: "canon-test-item",
             kind: .ref,
-            role: .sourceQuote,
+            role: .context,
             providerID: "sefaria",
             externalID: "Genesis.1.1",
             canonicalKey: "Genesis 1:1",
@@ -1486,7 +1488,7 @@ struct TorahCanonicalManifestIsolationTests {
 
         // Adding association via canonical repository succeeds
         let stored = try await repository.addAssociation(item, target: .object(objectId: "doc-1"), spaceId: "space")
-        #expect(stored.item.id == "canon-test-item")
+        #expect(stored.id == "canon-test-item")
 
         // Reading association returns item
         let list = try await repository.listDocumentAssociations(objectId: "doc-1", spaceId: "space")

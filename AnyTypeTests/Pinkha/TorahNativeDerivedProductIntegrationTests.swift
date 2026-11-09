@@ -486,7 +486,10 @@ struct TorahNativeDerivedProductIntegrationTests {
         let search = Container.shared.searchMiddleService()
         let propertiesService = Container.shared.propertiesService()
         let repository = AnytypeTorahAssociationRepository()
-        for (role, uniqueKey) in [("page", ObjectTypeUniqueKey(value: "ot-page")), ("note", ObjectTypeUniqueKey(value: "ot-note")), ("custom", customType.uniqueKey)] {
+        let targets: [(String, ObjectTypeUniqueKey)] = [
+            ("page", .page), ("note", .note), ("custom", customType.uniqueKey)
+        ]
+        for (role, uniqueKey) in targets {
             let p1 = try await Container.shared.objectActionsService().createObject(
                 name: "Universal \(role) P1", typeUniqueKey: uniqueKey,
                 shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,

@@ -17,6 +17,25 @@ import zipfile
 
 from build_custom_heart import command, contains, digest, git
 
+def test_configuration(products, blueprint):
+    """Select Xcode's current configuration, excluding our generated copies."""
+    def contains_blueprint(value):
+        if isinstance(value, dict):
+            return value.get('BlueprintName') == blueprint or any(contains_blueprint(v) for v in value.values())
+        if isinstance(value, list):
+            return any(contains_blueprint(v) for v in value)
+        return False
+    matches = []
+    for path in products.glob('*.xctestrun'):
+        if path.name in {'PinkhaNativeDerived.xctestrun', 'PinkhaNativeDerivedUI.xctestrun'}:
+            continue
+        with path.open('rb') as stream:
+            if contains_blueprint(plistlib.load(stream)):
+                matches.append(path)
+    if len(matches) != 1:
+        raise RuntimeError('Expected one actual Xcode configuration for ' + blueprint)
+    return matches[0]
+
 def run_xctest(argv, app, evidence, result, prefix):
     # Failure evidence must survive the strict acceptance gate too. Exporting
     # diagnostics never changes the xcodebuild exit status or acceptance result.
@@ -65,9 +84,8 @@ def main():
     command(['xcodebuild','build-for-testing',*common,'-destination','platform=iOS Simulator,id='+args.simulator_udid,
              '-derivedDataPath',str(derived),'-parallel-testing-enabled','NO','ENABLE_TESTABILITY=YES','ONLY_ACTIVE_ARCH=YES',
              'SWIFT_OPTIMIZATION_LEVEL=-Onone'],app,evidence)
-    runs=list((derived/'Build/Products').glob('*.xctestrun'))
-    if len(runs)!=1: raise RuntimeError('Expected one native test-host configuration')
-    with runs[0].open('rb') as stream: run=plistlib.load(stream)
+    configuration=test_configuration(derived/'Build/Products', 'AnytypeTests')
+    with configuration.open('rb') as stream: run=plistlib.load(stream)
     def inject(value):
         if isinstance(value,dict):
             if value.get('BlueprintName')=='AnytypeTests' or value.get('TestBundlePath','').endswith('AnytypeTests.xctest'):
@@ -76,7 +94,7 @@ def main():
         elif isinstance(value,list):
             for child in value: inject(child)
     inject(run)
-    native_run=runs[0].with_name('PinkhaNativeDerived.xctestrun')
+    native_run=configuration.with_name('PinkhaNativeDerived.xctestrun')
     with native_run.open('wb') as stream: plistlib.dump(run,stream)
     result=evidence/'NativeDerivedProduct.xcresult'
     run_xctest(['xcodebuild','test-without-building','-xctestrun',str(native_run),'-destination',
@@ -98,10 +116,13 @@ def main():
     policy_result=evidence/'NativePropertyPolicy.xcresult'
     run_xctest(['xcodebuild','test-without-building','-xctestrun',str(native_run),'-destination',
              'platform=iOS Simulator,id='+args.simulator_udid,'-parallel-testing-enabled','NO',
-             '-only-testing:AnytypeTests/TorahNativeUIParityTests','-resultBundlePath',str(policy_result)],app,evidence,policy_result,'native-policy')
+             '-only-testing:AnytypeTests/TorahNativeUIParityTests',
+             '-only-testing:AnytypeTests/TorahCanonicalManifestIsolationTests',
+             '-resultBundlePath',str(policy_result)],app,evidence,policy_result,'native-policy')
     summary=json.loads(subprocess.check_output(['xcrun','xcresulttool','get','test-results','summary','--path',str(policy_result),'--format','json'],text=True))
     (evidence/'native-policy-test-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
     if count('passedTests')<1 or count('failedTests') or count('skippedTests'): raise RuntimeError('Native property policy tests did not pass without skips')
+    policy_passed=count('passedTests')
     # Drive the original app after its real native account/Space preparation.
     # Only fixture IDs/names cross into the test runner; no canonical mirror or
     # authentication secret is supplied to the UI or written into the repository.
@@ -116,9 +137,8 @@ def main():
              '-destination','platform=iOS Simulator,id='+args.simulator_udid,'-derivedDataPath',str(derived),
              '-parallel-testing-enabled','NO','ENABLE_TESTABILITY=YES','ONLY_ACTIVE_ARCH=YES',
              'SWIFT_OPTIMIZATION_LEVEL=-Onone'],app,evidence)
-    ui_runs=[path for path in (derived/'Build/Products').glob('*.xctestrun') if 'PinkhaStage1Acceptance' in path.name]
-    if len(ui_runs)!=1: raise RuntimeError('Expected the real application UI-test configuration')
-    with ui_runs[0].open('rb') as stream: ui_run=plistlib.load(stream)
+    ui_configuration_source=test_configuration(derived/'Build/Products', 'PinkhaStage1AcceptanceUITests')
+    with ui_configuration_source.open('rb') as stream: ui_run=plistlib.load(stream)
     def inject_ui(value):
         if isinstance(value,dict):
             if value.get('BlueprintName')=='PinkhaStage1AcceptanceUITests' or value.get('TestBundlePath','').endswith('PinkhaStage1AcceptanceUITests.xctest'):
@@ -129,7 +149,7 @@ def main():
         elif isinstance(value,list):
             for child in value: inject_ui(child)
     inject_ui(ui_run)
-    ui_configuration=ui_runs[0].with_name('PinkhaNativeDerivedUI.xctestrun')
+    ui_configuration=ui_configuration_source.with_name('PinkhaNativeDerivedUI.xctestrun')
     with ui_configuration.open('wb') as stream: plistlib.dump(ui_run,stream)
     ui_result=evidence/'NativeDerivedOriginalAppUI.xcresult'
     run_xctest(['xcodebuild','test-without-building','-xctestrun',str(ui_configuration),'-destination',
@@ -144,6 +164,7 @@ def main():
     if args.tests_only:
         receipt=dict(status='PASS',app_base_sha=git(app,'rev-parse','HEAD'),heart=heart,
                      passed_native_tests=native_passed,passed_original_app_ui_tests=ui_passed,
+                     passed_policy_and_repository_tests=policy_passed,
                      physical_ipad_verified=False,ipa='NOT_BUILT_TESTS_ONLY')
         (evidence/'native-acceptance.json').write_text(json.dumps(receipt,indent=2)+'\n')
         return

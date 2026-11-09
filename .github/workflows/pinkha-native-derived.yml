@@ -77,12 +77,36 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      - name: Restore focused Xcode build cache
+        id: native-app-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/native-evidence/app/DerivedData-NativeAcceptance/SourcePackages
+            build/native-evidence/app/DerivedData-NativeAcceptance/Build
+            build/native-evidence/app/DerivedData-NativeAcceptance/ModuleCache.noindex
+            build/native-evidence/app/DerivedData-NativeAcceptance/SDKStatCaches.noindex
+          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-${{ github.sha }}
+          restore-keys: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-
+
       - name: Focused real native product and original UI tests
+        id: native-app
         run: |
           python3 Tools/PinkhaNativeDerived/build_native_ipa.py \
             --app-source "$GITHUB_WORKSPACE" --tests-only \
             --simulator-udid "$PINKHA_NATIVE_IPAD_UDID" \
             --evidence build/native-evidence/app
+
+      - name: Preserve focused Xcode cache after build or test failure
+        if: ${{ always() && steps.native-app.outcome != 'skipped' && steps.native-app-cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            build/native-evidence/app/DerivedData-NativeAcceptance/SourcePackages
+            build/native-evidence/app/DerivedData-NativeAcceptance/Build
+            build/native-evidence/app/DerivedData-NativeAcceptance/ModuleCache.noindex
+            build/native-evidence/app/DerivedData-NativeAcceptance/SDKStatCaches.noindex
+          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-${{ github.sha }}
 
       - name: Package native build and test evidence
         if: always()

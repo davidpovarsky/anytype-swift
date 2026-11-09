@@ -17,9 +17,10 @@ Status: implementation published for focused Xcode verification; NOT COMPLETE. P
 | Space isolation and native Property IDs | EXECUTED_PASS | Real second Space; distinct fixed-key definition IDs; no membership leakage |
 | Swift projection, identity and initial provisioning | EXECUTED_PASS | 14 portable Swift tests; does not establish UI behavior |
 | Original Heart regressions | EXECUTED_PASS (953), SKIPPED (1) | state/basic/smartblock/detailservice/spaceindex; existing TestReplayTreeDumpShadow external-fixture opt-in skipped |
-| Swift app picker, object-vs-Type attachment, empty rows and canonical routing | NOT_RUN_XCODE | Added real modified-Heart integration scenarios for Page/Note/custom |
+| Swift app picker, object-vs-Type attachment, empty rows and canonical routing | NOT_RUN — TEST_HOST_BUILD_FAILED | Run 42687999643: stale test APIs blocked test-host compilation; repaired, focused rerun pending |
 | Original Swift UI, mixed Set columns and filters | NOT_RUN_XCODE | Added native UI scenarios, screenshots and accessibility attachments |
-| New XCFramework / app / IPA marker and hashes | NOT_RUN | No IPA before focused Xcode gates |
+| New XCFramework, exact patch and every binary architecture | EXECUTED_PASS | Runs 42682425225 and 42687999643; newly built revision-13 framework |
+| App and new unsigned IPA hashes / extension IDs | NOT_RUN | No IPA before focused Xcode gates |
 | Physical iPad | PENDING_DEVICE | Owner acceptance script below |
 
 ## Implementation
@@ -30,16 +31,19 @@ The original ObjectRelationAdd RPC uses a narrow downstream attachment adapter f
 
 The existing object Properties panel exposes its original PropertyCreation picker for object scope. Type editing keeps the original recommended/featured/hidden semantics. The catalog never synthesizes recommendations from definition discovery. Object-specific selection overrides Type hiding for that object, survives Type changes, and drives the optional Sources header. The three original writing Types retain their provisioning defaults. Hierarchy Type classification is unchanged.
 
+The main future upstream-sync risks are the original Heart RPC/state hooks that retain native property-definition RelationLinks, and the Swift BaseDocument/property-panel connection points. Custom association logic remains in downstream modules. A future Heart upgrade must review its native attachment representation before replaying the recorded narrow hooks; this change does not introduce an upgrade or migration path.
+
 ## Changed files and provenance
 
 Per-file before/after hashes and exact protected hunks: `evidence/native-derived/8494cfb347/approval/revision-13/source-inventory.json` and `swift-integration.patch`. Complete 32-file pinned Heart inventory and patch are beside them. The original worktree and all pre-existing untracked research files are untouched.
 
 | File | Ownership | Change |
 |---|---|---|
-| `.github/workflows/pinkha-native-derived.yml` | DOWNSTREAM_OWNED | Pin exact revision-13 patch and SHA; keep manual build/test routing. |
+| `.github/workflows/pinkha-native-derived.yml` | DOWNSTREAM_OWNED | Pin exact revision-13 patch and SHA; preflight iPad, verify fresh framework reuse and cache focused Xcode build outputs; keep manual routing. |
 | `.github/workflows/pinkha-native-fast-ipa.yml` | DOWNSTREAM_OWNED | Pin exact revision-13 patch and SHA; keep manual build/test routing. |
 | `.github/workflows/pinkha-native-ipa-fast.yml` | DOWNSTREAM_OWNED | Pin exact revision-13 patch and SHA; keep manual build/test routing. |
 | `AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift` | DOWNSTREAM_OWNED | Real Page/Note/custom picker, isolated attachment, empty rows and mixed Set fixtures; correct stale baseline test API calls. |
+| `AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift` | DOWNSTREAM_OWNED | Repair obsolete fixture to use the existing native adapter/store probe; preserve canonical write/read/remove assertions. |
 | `AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift` | DOWNSTREAM_OWNED | Reverse obsolete Page/Note exclusions and assert discovery does not attach properties. |
 | `Anytype/Sources/Models/Documents/Document/BaseDocument.swift` | SHARED_INTEGRATION | Build rows from actual native object attachments and Type lists. |
 | `Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift` | DOWNSTREAM_OWNED | No synthesized attachments; real live Type lists and stale-fetch protection. |
@@ -65,13 +69,12 @@ Per-file before/after hashes and exact protected hunks: `evidence/native-derived
 | `Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahDocumentPropertyProjection.swift` | DOWNSTREAM_OWNED | Universal document-Type availability plus shared layout/lifecycle eligibility. |
 | `Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahDocumentPropertyProjectionTests.swift` | DOWNSTREAM_OWNED | Universal and infrastructure/lifecycle boundary assertions; preserve hierarchy classification. |
 | `PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift` | DOWNSTREAM_OWNED | Drive original Page/Note/custom object and Type pickers, canonical values, reopen, mixed Set and accessibility evidence. |
-| `Tools/PinkhaNativeDerived/build_native_ipa.py` | DOWNSTREAM_OWNED | Add tests-only gate and focused policy run before any device packaging. |
+| `Tools/PinkhaNativeDerived/build_native_ipa.py` | DOWNSTREAM_OWNED | Add tests-only gate and focused policy/repository run; select real Xcode configurations safely across cached reruns before device packaging. |
 | `Tools/PinkhaNativeDerived/validate_native_engine.py` | DOWNSTREAM_OWNED | Expose focused projection contract validation through the existing native workspace runner. |
 | `Tools/TorahNativeDerivedSpike/integration/heart_test.go` | DOWNSTREAM_OWNED | Supply actual basic-document layout in the native SQLite fixture. |
 | `Tools/TorahNativeDerivedSpike/integration/production_engine_test.go` | DOWNSTREAM_OWNED | Actual middleware Page/Note/custom, object selection, mixed subscriptions, Space isolation and lifecycle safety. |
 | `Tools/TorahNativeDerivedSpike/prepare_heart_integration.py` | DOWNSTREAM_OWNED | Generate exact original-RPC attachment hooks, native metadata filtering and local placeholders. |
 | `Tools/TorahNativeDerivedSpike/projection_test.go` | DOWNSTREAM_OWNED | Reverse obsolete Page rejection; cover Note/custom and explicit classification. |
-
 | `Tools/PinkhaNativeDerived/build_custom_heart.py` | DOWNSTREAM_OWNED | Verify the new marker in every thin Mach-O architecture of every XCFramework binary. |
 | `docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md` | DOWNSTREAM_OWNED | Record current owner authorization, exact protected diffs and verified/open gates. |
 | `approval/revision-13/native-heart-integration.patch` | GENERATED_REVIEW_ARTIFACT | Complete exact 32-file patch against the unchanged pinned Heart. |
@@ -79,7 +82,6 @@ Per-file before/after hashes and exact protected hunks: `evidence/native-derived
 | `approval/revision-13/swift-integration.patch` | GENERATED_REVIEW_ARTIFACT | Exact nine protected Swift integration diffs plus the manual dispatcher artifact input. |
 | `approval/revision-13/source-inventory.json` | GENERATED_REVIEW_ARTIFACT | Ownership and before/after hashes for changed repository files. |
 | `UNIVERSAL_NATIVE_TORAH_PROPERTIES_REPORT.md` | DOWNSTREAM_OWNED | Verified acceptance matrix, file summary, provenance and pending device script. |
-
 | `Tools/PinkhaNativeDerived/create_disposable_ipad.py` | DOWNSTREAM_OWNED | Select a compatible available iPad/runtime and boot before expensive compilation. |
 | `Tools/PinkhaNativeDerived/install_verified_heart.py` | DOWNSTREAM_OWNED | Reinstall only this task's exact new revision-13 artifact after file, patch, source-inventory and thin-architecture verification. |
 | `.github/workflows/torah-inspector-ipados27.yml` | SHARED_INTEGRATION | Pass the existing manual source-run input to exact artifact verification; no automatic triggers added. |
@@ -98,7 +100,7 @@ Commands and exact source hashes are recorded in `evidence/universal-properties-
 2. Create Page P1, Page P2 and a Note. Before selection, verify no forced Torah rows or Sources header.
 3. On P1, Properties → Add Property: choose מקור/ות, נושא, מילה / ערך. Verify empty native rows and canonical picker routing. P2 must remain unchanged.
 4. Add reference/topic/word. Tap a source chip to read it; use the separate compact + to add more. Add 12 references and open +N overflow.
-5. Edit Page Type, add a native definition, hide and reveal it. Verify the same ID and normal effect on P1/P2 without changing Note Type.
+5. Edit Page Type, add a native definition, hide and reveal it. Verify the same ID. P1 keeps its explicit object attachment; P2 follows the Type visibility. Note Type is unchanged.
 6. Create Page-only, Note-only and Page + חידוש + custom-Type Sets. Enable columns and apply source/topic/word membership filters; verify actual matching objects and live add/remove.
 7. Switch חידוש → Page → חידוש. Verify only selected/Type-configured properties appear, object-specific Sources persists, and associations remain.
 8. Reopen the app offline and check native values, selected empty rows and filters. Check a second Space and a read-only object; canonical/order storage must stay hidden while הורה remains available.
@@ -107,4 +109,8 @@ No migrations, historical backfill, signing/release, T2 changes, default-branch 
 
 ## First Xcode attempt — 42682425225
 
-Native framework build **PASS** on Xcode 26.3, exact patch `63fdf9ccab6398d3618bb989aa62dd83a536a1fb78033ffdfa23d2fbfaed8bfe`. Marker verified separately in device arm64, simulator x86_64 and simulator arm64. The subsequent simulator setup **FAILED** because the old first-available-runtime selector paired an M5 iPad with iOS 18.5. No Swift app tests ran and no IPA was built. Selection now uses compatible installed pairs, newest runtime first, before native compilation. The new framework is preserved as an artifact for subsequent focused app fixes; current patch/source/file/architecture hashes must all match, so revision-12/stock artifacts cannot be substituted.
+Native framework build **PASS** on Xcode 26.3, exact patch `63fdf9ccab6398d3618bb989aa62dd83a536a1fb78033ffdfa23d2fbfaed8bfe`. Marker verified separately in device arm64, simulator x86_64 and simulator arm64. The subsequent simulator setup **FAILED** because the old first-available-runtime selector paired an M5 iPad with iOS 18.5. No Swift app tests ran and no IPA was built. Selection now uses compatible installed pairs, newest runtime first, before native compilation. That first run did not preserve its framework, so the second run rebuilt it from the same exact revision-13 source.
+
+## Second Xcode attempt — 42687999643
+
+Source commit `2476b44098c874e463ccbb60fbefaaa115073fee`. Compatible disposable iPad boot **PASS**. Exact custom Heart build and all architecture marker verification **PASS**. Newly built framework uploaded as `Pinkha-Universal-Verified-Heart-r13` before the app gate. Current patch/source/file/architecture hashes must all match before any focused reuse; revision-12/stock artifacts are rejected. Xcode `build-for-testing` **FAILED** in the test target after 66 minutes: the new universal fixture called an internal Services memberwise initializer, and existing policy/repository test fixtures referenced obsolete APIs/classes. No native XCTest or UI test ran. Fixtures now use the public Page/Note keys, the actual ObjectDetails/MockBaseDocument APIs, and the existing native repository adapter. The canonical isolation suite is included in the focused policy gate. The next run reuses only this exact new Heart artifact. A branch-scoped Xcode build cache now preserves compilation outputs across focused corrections; it does not cache simulator account data, test results, or acceptance receipts. Actual Xcode test configurations are selected by BlueprintName, excluding generated cached copies. All runtime gates remain mandatory.

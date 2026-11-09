@@ -614,14 +614,15 @@ struct TorahNativeUIParityTests {
         let docDetails = ObjectDetails(
             id: docId,
             values: [
-                KeyValue(key: BundledPropertyKey.id.rawValue, value: docId.protobufValue),
-                KeyValue(key: BundledPropertyKey.spaceId.rawValue, value: spaceId.protobufValue),
-                KeyValue(key: BundledPropertyKey.type.rawValue, value: chiddushTypeId.protobufValue),
-                KeyValue(key: TorahNativePropertyDefinition.engineVersionKey, value: TorahNativePropertyDefinition.engineVersion.protobufValue)
+                BundledPropertyKey.id.rawValue: docId.protobufValue,
+                BundledPropertyKey.spaceId.rawValue: spaceId.protobufValue,
+                BundledPropertyKey.type.rawValue: chiddushTypeId.protobufValue,
+                BundledPropertyKey.resolvedLayout.rawValue: DetailsLayout.basic.rawValue.protobufValue,
+                TorahNativePropertyDefinition.engineVersionKey: TorahNativePropertyDefinition.engineVersion.protobufValue
             ]
         )
         let detailsStorage = ObjectDetailsStorage()
-        detailsStorage.update(with: [docDetails])
+        detailsStorage.add(details: docDetails)
         let parsed = Container.shared.propertiesBuilder().parsedProperties(
             objectProperties: [],
             objectFeaturedProperties: [],
@@ -634,9 +635,9 @@ struct TorahNativeUIParityTests {
         )
         #expect(Set(parsed.sidebarProperties.map(\.key)) == Set(TorahNativePropertyDefinition.all.map(\.key)))
 
-        let mockDoc = MockBaseDocument(objectId: docId, spaceId: spaceId)
-        mockDoc.details = docDetails
-        mockDoc.parsedProperties = parsed
+        let mockDoc = MockBaseDocument(objectId: docId, details: docDetails)
+        mockDoc.mockSpaceId = spaceId
+        mockDoc.mockParsedProperties = parsed
         let torahModel = PinkhaTorahPropertiesModel(document: mockDoc, session: nil, bootstrap: probe, policy: policy)
         #expect(torahModel.isEligible == true)
         #expect(torahModel.usesNativeProperties == true)
