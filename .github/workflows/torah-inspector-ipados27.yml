@@ -38,6 +38,8 @@ jobs:
   native-derived:
     if: ${{ inputs.route == 'native-derived' }}
     uses: ./.github/workflows/pinkha-native-derived.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
     secrets: inherit
 
   full-acceptance:
@@ -55,6 +57,8 @@ jobs:
   native-ipa-fast:
     if: ${{ inputs.route == 'native-ipa-fast' }}
     uses: ./.github/workflows/pinkha-native-ipa-fast.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
     secrets: inherit
 
   native-ipa-repair:

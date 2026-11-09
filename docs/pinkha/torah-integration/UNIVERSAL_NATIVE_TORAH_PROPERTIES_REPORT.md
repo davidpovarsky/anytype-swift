@@ -7,7 +7,7 @@ Status: implementation published for focused Xcode verification; NOT COMPLETE. P
 - Verified upstream develop: `9115c1c054e7ebf55e08e03c2dbb12871cc84450`; merge base `d5650321577a209505a3277c8437b7608cff1cb9`.
 - Pinned Heart: `d98420b1113536afd08cde6de9a5816f6d27ffff` (unchanged).
 - Exact revision-13 Heart patch SHA-256: `63fdf9ccab6398d3618bb989aa62dd83a536a1fb78033ffdfa23d2fbfaed8bfe`.
-- Exact Swift protected integration diff SHA-256: `b9e758a4bd41e26fbff9c277349f018d0cdcff261535c961946cc2f52886bed8`.
+- Exact Swift protected integration diff SHA-256: `d8c06111e16d5d88f034b7144869cacf23bc18e12b6e578cdc3ab427f0295c84`.
 
 | Gate | Verified status | Evidence |
 |---|---|---|
@@ -76,9 +76,13 @@ Per-file before/after hashes and exact protected hunks: `evidence/native-derived
 | `docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md` | DOWNSTREAM_OWNED | Record current owner authorization, exact protected diffs and verified/open gates. |
 | `approval/revision-13/native-heart-integration.patch` | GENERATED_REVIEW_ARTIFACT | Complete exact 32-file patch against the unchanged pinned Heart. |
 | `approval/revision-13/native-heart-integration.json` | GENERATED_REVIEW_ARTIFACT | Per-file before/after hashes and exact patch SHA. |
-| `approval/revision-13/swift-integration.patch` | GENERATED_REVIEW_ARTIFACT | Exact nine protected Swift integration diffs. |
+| `approval/revision-13/swift-integration.patch` | GENERATED_REVIEW_ARTIFACT | Exact nine protected Swift integration diffs plus the manual dispatcher artifact input. |
 | `approval/revision-13/source-inventory.json` | GENERATED_REVIEW_ARTIFACT | Ownership and before/after hashes for changed repository files. |
 | `UNIVERSAL_NATIVE_TORAH_PROPERTIES_REPORT.md` | DOWNSTREAM_OWNED | Verified acceptance matrix, file summary, provenance and pending device script. |
+
+| `Tools/PinkhaNativeDerived/create_disposable_ipad.py` | DOWNSTREAM_OWNED | Select a compatible available iPad/runtime and boot before expensive compilation. |
+| `Tools/PinkhaNativeDerived/install_verified_heart.py` | DOWNSTREAM_OWNED | Reinstall only this task's exact new revision-13 artifact after file, patch, source-inventory and thin-architecture verification. |
+| `.github/workflows/torah-inspector-ipados27.yml` | SHARED_INTEGRATION | Pass the existing manual source-run input to exact artifact verification; no automatic triggers added. |
 
 ## Validation commands
 
@@ -100,3 +104,7 @@ Commands and exact source hashes are recorded in `evidence/universal-properties-
 8. Reopen the app offline and check native values, selected empty rows and filters. Check a second Space and a read-only object; canonical/order storage must stay hidden while הורה remains available.
 
 No migrations, historical backfill, signing/release, T2 changes, default-branch merge or personal-Space mutation were introduced. Rollback is the reverse of the recorded source diff on this isolated branch; no data rollback/migration is required or provided.
+
+## First Xcode attempt — 42682425225
+
+Native framework build **PASS** on Xcode 26.3, exact patch `63fdf9ccab6398d3618bb989aa62dd83a536a1fb78033ffdfa23d2fbfaed8bfe`. Marker verified separately in device arm64, simulator x86_64 and simulator arm64. The subsequent simulator setup **FAILED** because the old first-available-runtime selector paired an M5 iPad with iOS 18.5. No Swift app tests ran and no IPA was built. Selection now uses compatible installed pairs, newest runtime first, before native compilation. The new framework is preserved as an artifact for subsequent focused app fixes; current patch/source/file/architecture hashes must all match, so revision-12/stock artifacts cannot be substituted.

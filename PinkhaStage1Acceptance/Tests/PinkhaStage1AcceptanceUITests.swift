@@ -77,9 +77,22 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         screenshot("native-set-members-after-relaunch")
     }
 
+    func testSourceHeaderSelectionAndOverflow() throws {
+        try open(fixture.manySourcesDocument)
+        let addSource = app.buttons["torah-document-sources-add"].firstMatch
+        XCTAssertTrue(addSource.waitForExistence(timeout: 20))
+        XCTAssertEqual(addSource.value as? String, "compact-icon")
+        let overflow = app.buttons["torah-document-sources-more"].firstMatch
+        XCTAssertTrue(overflow.waitForExistence(timeout: 20)); overflow.tap()
+        screenshot("native-source-header-overflow-and-separate-add")
+        app.terminate()
+    }
+
     func testUniversalPageNoteCustomPropertiesAndMixedSet() throws {
         for role in ["page", "note", "custom"] {
             let id = try XCTUnwrap(fixture.universalDocuments[role])
+            try open(id)
+            XCTAssertFalse(app.buttons["torah-document-sources-add"].exists)
             try openProperties(id, expectsSources: false)
             for name in fixture.nativeProperties { XCTAssertFalse(propertyTitle(name).exists) }
             screenshot("universal-blank-" + role)
@@ -103,6 +116,12 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
             try openProperties(id)
             XCTAssertTrue(app.staticTexts[fixture.sourceLabel].waitForExistence(timeout: 20))
             screenshot("universal-offline-reopen-" + role)
+            app.terminate()
+            try open(id)
+            let headerAdd = app.buttons["torah-document-sources-add"].firstMatch
+            XCTAssertTrue(headerAdd.waitForExistence(timeout: 20))
+            XCTAssertEqual(headerAdd.value as? String, "compact-icon")
+            screenshot("universal-selected-source-header-" + role)
             app.terminate()
         }
         for role in ["page", "note", "custom"] {

@@ -2,9 +2,14 @@ name: Pinkha native derived custom Heart and iPad
 
 on:
   workflow_call:
+    inputs:
+      heart_source_run_id:
+        type: string
+        default: ''
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   native-product:
@@ -16,13 +21,18 @@ jobs:
       - name: Checkout isolated native-derived source
         uses: actions/checkout@v4
 
+      - name: Create and boot compatible disposable iPad BEFORE native build
+        run: python3 Tools/PinkhaNativeDerived/create_disposable_ipad.py --evidence build/native-evidence
+
       - name: Install pinned Go toolchain
+        if: ${{ inputs.heart_source_run_id == '' }}
         uses: actions/setup-go@v5
         with:
           go-version: '1.26.5'
           cache-dependency-path: Modules/PinkhaHeart/go.mod
 
       - name: Checkout exact Heart source
+        if: ${{ inputs.heart_source_run_id == '' }}
         uses: actions/checkout@v4
         with:
           repository: anyproto/anytype-heart
@@ -30,6 +40,7 @@ jobs:
           path: build/Heart-Native-Derived
 
       - name: Build exact custom Heart and install verified slices
+        if: ${{ inputs.heart_source_run_id == '' }}
         run: |
           python3 Tools/PinkhaNativeDerived/build_custom_heart.py \
             --heart-source build/Heart-Native-Derived \
@@ -40,23 +51,31 @@ jobs:
             --install-app "$GITHUB_WORKSPACE" \
             --evidence build/native-evidence/heart
 
-      - name: Create disposable iPad simulator
+      - name: Download this task's exact verified Heart when requested
+        if: ${{ inputs.heart_source_run_id != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_NATIVE_RUN_ID: ${{ inputs.heart_source_run_id }}
         run: |
-          mkdir -p build/native-evidence
-          python3 - <<'PY'
-          import json, os, subprocess
-          data = json.loads(subprocess.check_output(['xcrun','simctl','list','--json']))
-          runtime = next(r for r in data['runtimes'] if r.get('isAvailable') and 'iOS' in r['name'])
-          device = next(d for d in data['devicetypes'] if 'iPad Pro' in d['name'])
-          name = 'Pinkha-Native-Derived-' + os.environ['GITHUB_RUN_ID']
-          udid = subprocess.check_output(['xcrun','simctl','create',name,device['identifier'],runtime['identifier']],text=True).strip()
-          subprocess.run(['xcrun','simctl','boot',udid],check=True)
-          subprocess.run(['xcrun','simctl','bootstatus',udid,'-b'],check=True)
-          with open(os.environ['GITHUB_ENV'],'a') as stream:
-              stream.write('PINKHA_NATIVE_IPAD_UDID='+udid+'\n')
-          with open('build/native-evidence/disposable-simulator.json','w') as stream:
-              json.dump(dict(udid=udid,name=name,device=device,runtime=runtime),stream,indent=2)
-          PY
+          [[ "$SOURCE_NATIVE_RUN_ID" =~ ^[0-9]+$ ]]
+          gh run download "$SOURCE_NATIVE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name Pinkha-Universal-Verified-Heart-r13 --dir build/verified-heart
+          python3 Tools/PinkhaNativeDerived/install_verified_heart.py \
+            --archive build/verified-heart/Pinkha-Universal-Verified-Heart-r13.tar.gz \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/native-heart-integration.json \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/native-heart-integration.patch \
+            --app-source "$GITHUB_WORKSPACE" --source-run-id "$SOURCE_NATIVE_RUN_ID" --evidence build/native-evidence/heart
+
+      - name: Preserve the NEW verified native framework for focused app reruns
+        run: tar -czf build/Pinkha-Universal-Verified-Heart-r13.tar.gz -C Dependencies/Middleware Lib.xcframework PinkhaNativeHeartBuild.json
+
+      - name: Upload exact verified new Heart
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Universal-Verified-Heart-r13
+          path: build/Pinkha-Universal-Verified-Heart-r13.tar.gz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Focused real native product and original UI tests
         run: |

@@ -69,8 +69,8 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
             if PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: $0.id, key: $0.key, spaceId: data.spaceId) {
                 return false
             }
-            if let definition = TorahNativePropertyDefinition.definition(for: $0.key) {
-                return isEligibleForNative && PinkhaTorahNativePropertyCatalog.isVerifiedNativeDescriptor($0, definition: definition, spaceId: data.spaceId)
+            if TorahNativePropertyDefinition.definition(for: $0.key) != nil {
+                return false
             }
             return true
         }
