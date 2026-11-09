@@ -82,6 +82,15 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         let addSource = app.buttons["torah-document-sources-add"].firstMatch
         XCTAssertTrue(addSource.waitForExistence(timeout: 20))
         XCTAssertEqual(addSource.value as? String, "compact-icon")
+        addSource.tap()
+        let search = app.textFields.matching(NSPredicate(
+            format: "identifier == %@ OR identifier == %@", "torah-sources-search-sheet", "torah-sources-search-field"
+        )).firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: 20), "The compact + must open the existing source search")
+        XCTAssertTrue(app.staticTexts["Document links"].firstMatch.waitForExistence(timeout: 15))
+        screenshot("native-source-header-compact-add-opens-document-search")
+        app.terminate()
+        try open(fixture.manySourcesDocument)
         let overflow = app.buttons["torah-document-sources-more"].firstMatch
         XCTAssertTrue(overflow.waitForExistence(timeout: 20)); overflow.tap()
         screenshot("native-source-header-overflow-and-separate-add")
