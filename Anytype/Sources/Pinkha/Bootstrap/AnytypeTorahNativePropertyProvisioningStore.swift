@@ -159,12 +159,10 @@ public final class AnytypeTorahNativePropertyProvisioningStore: TorahNativePrope
     }
 
     private func touchManifestObject(id: String) async {
-        _ = try? await ClientCommands.objectSetDetails(.with {
-            $0.contextID = id
-            $0.details = Google_Protobuf_Struct(fields: [
-                BundledPropertyKey.lastUsedDate.rawValue: Date.now.timeIntervalSince1970.protobufValue
-            ])
-        }).invoke(qos: .userInitiated)
+        try? await Container.shared.detailsService().updateBundledDetails(
+            objectId: id,
+            bundledDetails: [.lastUsedDate(Date.now)]
+        )
     }
 
     private func objectDetails(id: String, spaceId: String) async throws -> ObjectDetails {

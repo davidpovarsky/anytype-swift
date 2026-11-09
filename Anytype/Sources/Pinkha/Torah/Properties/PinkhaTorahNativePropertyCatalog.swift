@@ -309,7 +309,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
 
     /// Resolves `[PropertyDetails]` for `ids` using `storage` with fallback to cached verified native properties,
     /// so `PropertyDetailsStorage` subscription lag never drops native Torah properties.
-    public func resolveRelationDetails(
+    func resolveRelationDetails(
         ids: [String],
         from storage: any PropertyDetailsStorageProtocol,
         spaceId: String
@@ -329,7 +329,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
     }
 
     /// Resolves a single `PropertyDetails` by `id` or `key` from `storage` or verified native catalog.
-    public func resolvePropertyDetails(
+    func resolvePropertyDetails(
         id: String,
         key: String,
         from storage: any PropertyDetailsStorageProtocol,

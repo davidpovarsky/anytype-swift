@@ -42,6 +42,12 @@ public final class PinkhaSpaceBootstrapService: PinkhaSpaceBootstrapServiceProto
             provisionedSpaces.insert(spaceId)
         }
 
+        private func clearInFlight(_ spaceId: String) {
+            lock.lock()
+            defer { lock.unlock() }
+            inFlightTasks.removeValue(forKey: spaceId)
+        }
+
         func runOrJoin(
             spaceId: String,
             operation: @escaping @Sendable () async throws -> PinkhaSpaceManifest
@@ -61,14 +67,10 @@ public final class PinkhaSpaceBootstrapService: PinkhaSpaceBootstrapServiceProto
 
             do {
                 let result = try await task.value
-                lock.lock()
-                inFlightTasks.removeValue(forKey: spaceId)
-                lock.unlock()
+                clearInFlight(spaceId)
                 return result
             } catch {
-                lock.lock()
-                inFlightTasks.removeValue(forKey: spaceId)
-                lock.unlock()
+                clearInFlight(spaceId)
                 throw error
             }
         }
