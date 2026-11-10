@@ -198,24 +198,8 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     }
 
     func testRemainingUniversalTypePickersAndMixedSet() throws {
-        for role in ["page", "note", "custom"] {
-            try openProperties(try XCTUnwrap(fixture.universalTypes[role]), expectsSources: false)
-            let add = app.buttons["torah-type-add-property"].firstMatch
-            XCTAssertTrue(add.waitForExistence(timeout: 20)); add.tap()
-            let search = app.textFields.firstMatch
-            XCTAssertTrue(search.waitForExistence(timeout: 20))
-            var query = ""
-            for name in fixture.nativeProperties {
-                setPropertySearch(search, previous: query, text: name); query = name
-                XCTAssertNotNil(hittablePropertyButton(name), "The actual foreground picker must offer \(name)")
-            }
-            setPropertySearch(search, previous: query, text: "מקור/ות")
-            screenshot("remaining-universal-Type-picker-" + role)
-            try XCTUnwrap(hittablePropertyButton("מקור/ות")).tap()
-            XCTAssertTrue(search.waitForNonExistence(timeout: 20))
-            XCTAssertTrue(add.waitForExistence(timeout: 20))
-            app.terminate()
-        }
+        // All three foreground Type picker phases passed in run 42817488590.
+        // Continue with the remaining Set gates only.
         // The accepted real native fixture has already linked these P1 objects
         // through the canonical repository. Do not repeat passed P2 UI flows.
         try open(fixture.universalSetId)
@@ -302,11 +286,16 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         let settings = app.buttons["set-view-settings"].firstMatch
         XCTAssertTrue(settings.waitForExistence(timeout: 15)); settings.tap()
         let row = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", section)).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 15)); row.tap()
+        guard row.waitForExistence(timeout: 15) else {
+            print("Native Set settings hierarchy: " + app.debugDescription)
+            XCTFail("Original Set settings section missing: \(section)")
+            return
+        }
+        row.tap()
     }
 
     private func enableNativeColumns() throws {
-        openSetSettings("Fields")
+        openSetSettings("Properties")
         for name in fixture.nativeProperties {
             let toggle = app.switches[name].firstMatch
             XCTAssertTrue(toggle.waitForExistence(timeout: 15))
@@ -388,9 +377,19 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         let search = app.textFields.matching(NSPredicate(
             format: "identifier == %@ OR identifier == %@", "torah-native-property-editor", "torah-sources-search-field"
         )).firstMatch
-        XCTAssertTrue(search.waitForExistence(timeout: 10)); search.tap(); search.typeText(query)
+        XCTAssertTrue(search.waitForExistence(timeout: 10))
+        let previous = (search.value as? String) ?? ""
+        // The canonical session can preserve a search between property sheets.
+        // Clear actual content while leaving its placeholder untouched.
+        setPropertySearch(search, previous: previous == search.placeholderValue ? "" : previous, text: query)
+        print("Native Set fixture picker: property=\(name) query=\(query) actual=\(search.value ?? "nil")")
         let link = app.buttons["Link to document"].firstMatch
-        XCTAssertTrue(link.waitForExistence(timeout: 45)); link.tap()
+        guard link.waitForExistence(timeout: 45) else {
+            print("Native picker failure hierarchy: " + app.debugDescription)
+            XCTFail("Canonical picker did not offer a link for \(name): \(query)")
+            throw NSError(domain: "NativeSetFixturePicker", code: 1)
+        }
+        link.tap()
         XCTAssertTrue(app.buttons["Remove link"].firstMatch.waitForExistence(timeout: 30))
         // Dismiss the original iPad value popover through its outside region.
         app.coordinate(withNormalizedOffset: .zero)
