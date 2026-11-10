@@ -102,8 +102,19 @@ jobs:
             build/native-evidence/app/DerivedData-NativeAcceptance/Build
             build/native-evidence/app/DerivedData-NativeAcceptance/ModuleCache.noindex
             build/native-evidence/app/DerivedData-NativeAcceptance/SDKStatCaches.noindex
-          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-${{ inputs.validation_scope == 'readonly-startup' && 'dee60eef8395a8a92998f08d7e7eb66701e7febc' || github.sha }}
+          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-${{ inputs.validation_scope == 'readonly-startup' && 'dee60eef8395a8a92998f08d7e7eb66701e7febc' || inputs.validation_scope == 'failed-ui' && '8258841dab25764c0d9cfe3bee7eec566995f79d' || github.sha }}
           restore-keys: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Retry exact accepted app cache after a transient download failure
+        if: ${{ inputs.validation_scope == 'failed-ui' && hashFiles('build/native-evidence/app/DerivedData-NativeAcceptance/Build/PinkhaSourceInputs.json') == '' }}
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/native-evidence/app/DerivedData-NativeAcceptance/SourcePackages
+            build/native-evidence/app/DerivedData-NativeAcceptance/Build
+            build/native-evidence/app/DerivedData-NativeAcceptance/ModuleCache.noindex
+            build/native-evidence/app/DerivedData-NativeAcceptance/SDKStatCaches.noindex
+          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-8258841dab25764c0d9cfe3bee7eec566995f79d
 
       - name: Focused real native product and original UI tests
         id: native-app
