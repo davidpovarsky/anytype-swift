@@ -155,6 +155,84 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         screenshot("universal-mixed-native-filter-membership")
     }
 
+    // Document/object flows already executed successfully in run 42801263371.
+    // Resume only the unproven Type presentation and Set interactions.
+    func testRemainingWritingTypePropertiesAndNativeSetFilters() throws {
+        for (role, typeId) in fixture.types {
+            try openProperties(typeId)
+            for name in fixture.nativeProperties { XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 15)) }
+            screenshot("remaining-native-Type-" + role)
+            app.terminate()
+        }
+        try openProperties(fixture.manySourcesDocument)
+        XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "label == %@", "+11")).firstMatch.waitForExistence(timeout: 15))
+        screenshot("remaining-native-properties-twelve-source-chips")
+        app.terminate()
+        // Fresh disposable data is required for membership. These are setup
+        // writes through the actual existing canonical picker, not repeated
+        // document/empty-row/reopen/type-visibility acceptance assertions.
+        var wordLabel = ""
+        for role in ["chiddush", "article", "research"] {
+            try openProperties(try XCTUnwrap(fixture.documents[role]))
+            try selectNativeProperty("מקור/ות", query: fixture.sourceQuery)
+            if role == "chiddush" {
+                try selectNativeProperty("נושא", query: fixture.topicQuery)
+                try selectNativeProperty("מילה / ערך", query: fixture.wordQuery)
+                wordLabel = try nativeValueText("מילה / ערך")
+            }
+            app.terminate()
+        }
+        try open(fixture.setId)
+        assertSetMembers(present: true)
+        try enableNativeColumns()
+        app.terminate()
+        try open(fixture.setId)
+        assertSetMembers(present: true)
+        for name in fixture.nativeProperties { XCTAssertTrue(setLabel(name).waitForExistence(timeout: 20)) }
+        XCTAssertTrue(setLabel(fixture.sourceLabel).waitForExistence(timeout: 20))
+        XCTAssertTrue(setLabel(fixture.topicLabel).waitForExistence(timeout: 20))
+        XCTAssertTrue(setLabel(wordLabel).waitForExistence(timeout: 20))
+        screenshot("remaining-native-Set-three-columns-and-members")
+        try replaceSourceFilter(query: "Genesis 1:2")
+        app.terminate()
+        try open(fixture.setId)
+        assertSetMembers(present: false)
+        screenshot("remaining-native-Set-nonmatching-filter-empty")
+        try replaceSourceFilter(query: fixture.sourceQuery)
+        app.terminate()
+        try open(fixture.setId)
+        assertSetMembers(present: true)
+        screenshot("remaining-native-Set-restored-filter-members")
+    }
+
+    func testRemainingUniversalTypePickersAndMixedSet() throws {
+        for role in ["page", "note", "custom"] {
+            try openProperties(try XCTUnwrap(fixture.universalTypes[role]), expectsSources: false)
+            let add = app.buttons["torah-type-add-property"].firstMatch
+            XCTAssertTrue(add.waitForExistence(timeout: 20)); add.tap()
+            for name in fixture.nativeProperties { XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 20)) }
+            screenshot("remaining-universal-Type-picker-" + role)
+            propertyTitle("מקור/ות").tap()
+            XCTAssertTrue(add.waitForExistence(timeout: 20))
+            app.terminate()
+        }
+        // The accepted real native fixture has already linked these P1 objects
+        // through the canonical repository. Do not repeat passed P2 UI flows.
+        try open(fixture.universalSetId)
+        try enableNativeColumns()
+        app.terminate()
+        try open(fixture.universalSetId)
+        for name in fixture.nativeProperties { XCTAssertTrue(setLabel(name).waitForExistence(timeout: 20)) }
+        for role in ["page", "note", "custom"] {
+            XCTAssertTrue(setLabel("Universal \(role) P1").waitForExistence(timeout: 30))
+        }
+        screenshot("remaining-universal-mixed-native-filter-membership")
+    }
+
+    private var navigationMore: XCUIElement {
+        app.buttons.matching(NSPredicate(format: "label == %@ OR label == %@", "More", "x24/More")).firstMatch
+    }
+
     private var setTable: XCUIElement {
         app.descendants(matching: .any).matching(identifier: "set-table").firstMatch
     }
@@ -178,7 +256,16 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     private func expectNativeValue(_ name: String, label: String, file: StaticString = #filePath, line: UInt = #line) {
         let deadline = Date().addingTimeInterval(20)
         repeat {
-            if nativeRowValues(name).contains(where: { $0.label == label }) { return }
+            let title = propertyTitle(name)
+            if title.exists {
+                let candidates = app.descendants(matching: .any).matching(NSPredicate(
+                    format: "(elementType == %d OR elementType == %d) AND label == %@",
+                    XCUIElement.ElementType.button.rawValue, XCUIElement.ElementType.staticText.rawValue, label
+                )).allElementsBoundByIndex
+                if candidates.contains(where: {
+                    abs($0.frame.midY - title.frame.midY) < 22 && $0.frame.minX >= title.frame.maxX
+                }) { return }
+            }
             Thread.sleep(forTimeInterval: 0.2)
         } while Date() < deadline
         XCTFail("The original native row \(name) did not render \(label)", file: file, line: line)
@@ -238,12 +325,22 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         url.scheme = "anytype"; url.host = "object"
         url.queryItems = [URLQueryItem(name: "objectId", value: id), URLQueryItem(name: "spaceId", value: fixture.spaceId)]
         app.open(try XCTUnwrap(url.url))
-        XCTAssertTrue(app.buttons["More"].firstMatch.waitForExistence(timeout: 45))
+        if id == fixture.setId || id == fixture.universalSetId {
+            XCTAssertTrue(setTable.waitForExistence(timeout: 45))
+        } else {
+            XCTAssertTrue(navigationMore.waitForExistence(timeout: 45))
+        }
     }
 
     private func openProperties(_ id: String, expectsSources: Bool = true, alreadyOpen: Bool = false) throws {
         if !alreadyOpen { try open(id) }
-        app.buttons["More"].firstMatch.tap()
+        if fixture.types.values.contains(id) || fixture.universalTypes.values.contains(id) {
+            let properties = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Properties,")).firstMatch
+            XCTAssertTrue(properties.waitForExistence(timeout: 20)); properties.tap()
+            if expectsSources { XCTAssertTrue(propertyTitle("מקור/ות").waitForExistence(timeout: 20)) }
+            return
+        }
+        navigationMore.tap()
         let button = app.buttons["Properties"].firstMatch
         XCTAssertTrue(button.waitForExistence(timeout: 15)); button.tap()
         if expectsSources { XCTAssertTrue(propertyTitle("מקור/ות").waitForExistence(timeout: 20)) }
