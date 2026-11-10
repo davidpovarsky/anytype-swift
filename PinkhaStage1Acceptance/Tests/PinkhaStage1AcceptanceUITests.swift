@@ -158,16 +158,8 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     // Document/object flows already executed successfully in run 42801263371.
     // Resume only the unproven Type presentation and Set interactions.
     func testRemainingWritingTypePropertiesAndNativeSetFilters() throws {
-        for (role, typeId) in fixture.types {
-            try openProperties(typeId)
-            for name in fixture.nativeProperties { XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 15)) }
-            screenshot("remaining-native-Type-" + role)
-            app.terminate()
-        }
-        try openProperties(fixture.manySourcesDocument)
-        XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "label == %@", "+11")).firstMatch.waitForExistence(timeout: 15))
-        screenshot("remaining-native-properties-twelve-source-chips")
-        app.terminate()
+        // Writing-Type property lists passed in run 42812211845; the unchanged
+        // compact header/overflow passed in run 42740484502. Retain both.
         // Fresh disposable data is required for membership. These are setup
         // writes through the actual existing canonical picker, not repeated
         // document/empty-row/reopen/type-visibility acceptance assertions.
@@ -210,9 +202,17 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
             try openProperties(try XCTUnwrap(fixture.universalTypes[role]), expectsSources: false)
             let add = app.buttons["torah-type-add-property"].firstMatch
             XCTAssertTrue(add.waitForExistence(timeout: 20)); add.tap()
-            for name in fixture.nativeProperties { XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 20)) }
+            let search = app.textFields.firstMatch
+            XCTAssertTrue(search.waitForExistence(timeout: 20))
+            var query = ""
+            for name in fixture.nativeProperties {
+                setPropertySearch(search, previous: query, text: name); query = name
+                XCTAssertNotNil(hittablePropertyButton(name), "The actual foreground picker must offer \(name)")
+            }
+            setPropertySearch(search, previous: query, text: "מקור/ות")
             screenshot("remaining-universal-Type-picker-" + role)
-            propertyTitle("מקור/ות").tap()
+            try XCTUnwrap(hittablePropertyButton("מקור/ות")).tap()
+            XCTAssertTrue(search.waitForNonExistence(timeout: 20))
             XCTAssertTrue(add.waitForExistence(timeout: 20))
             app.terminate()
         }
@@ -227,6 +227,24 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
             XCTAssertTrue(setLabel("Universal \(role) P1").waitForExistence(timeout: 30))
         }
         screenshot("remaining-universal-mixed-native-filter-membership")
+    }
+
+    private func setPropertySearch(_ search: XCUIElement, previous: String, text: String) {
+        search.tap()
+        if !previous.isEmpty {
+            search.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: previous.utf16.count))
+        }
+        search.typeText(text)
+    }
+
+    private func hittablePropertyButton(_ name: String) -> XCUIElement? {
+        let deadline = Date().addingTimeInterval(20)
+        repeat {
+            let rows = app.buttons.matching(NSPredicate(format: "label == %@", name)).allElementsBoundByIndex
+            if let row = rows.first(where: { $0.isHittable }) { return row }
+            Thread.sleep(forTimeInterval: 0.2)
+        } while Date() < deadline
+        return nil
     }
 
     private var navigationMore: XCUIElement {
@@ -327,6 +345,8 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         app.open(try XCTUnwrap(url.url))
         if id == fixture.setId || id == fixture.universalSetId {
             XCTAssertTrue(setTable.waitForExistence(timeout: 45))
+        } else if fixture.types.values.contains(id) || fixture.universalTypes.values.contains(id) {
+            XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Properties,")).firstMatch.waitForExistence(timeout: 45))
         } else {
             XCTAssertTrue(navigationMore.waitForExistence(timeout: 45))
         }
