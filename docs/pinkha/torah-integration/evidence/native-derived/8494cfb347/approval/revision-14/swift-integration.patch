@@ -1,0 +1,445 @@
+diff --git a/.github/workflows/torah-inspector-ipados27.yml b/.github/workflows/torah-inspector-ipados27.yml
+index c3765a662b..ab9279feb6 100644
+--- a/.github/workflows/torah-inspector-ipados27.yml
++++ b/.github/workflows/torah-inspector-ipados27.yml
+@@ -19,6 +19,14 @@ on:
+         description: Existing native run whose XCTest attachments should be exported
+         type: string
+         default: ''
++      native_test_scope:
++        description: Native acceptance scope (failed-ui reuses the accepted app)
++        type: choice
++        options:
++          - all
++          - failed-ui
++          - readonly-startup
++        default: all
+       require_full_acceptance:
+         description: Require Full Acceptance success before IPA packaging
+         type: boolean
+@@ -38,6 +46,9 @@ jobs:
+   native-derived:
+     if: ${{ inputs.route == 'native-derived' }}
+     uses: ./.github/workflows/pinkha-native-derived.yml
++    with:
++      heart_source_run_id: ${{ inputs.source_run_id }}
++      validation_scope: ${{ inputs.native_test_scope }}
+     secrets: inherit
+ 
+   full-acceptance:
+@@ -55,6 +66,8 @@ jobs:
+   native-ipa-fast:
+     if: ${{ inputs.route == 'native-ipa-fast' }}
+     uses: ./.github/workflows/pinkha-native-ipa-fast.yml
++    with:
++      heart_source_run_id: ${{ inputs.source_run_id }}
+     secrets: inherit
+ 
+   native-ipa-repair:
+diff --git a/Anytype/Sources/Models/Documents/Document/BaseDocument.swift b/Anytype/Sources/Models/Documents/Document/BaseDocument.swift
+index 37c0ae7090..2a4fc80da5 100644
+--- a/Anytype/Sources/Models/Documents/Document/BaseDocument.swift
++++ b/Anytype/Sources/Models/Documents/Document/BaseDocument.swift
+@@ -394,9 +394,10 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
+             return nil
+         }
+         
+-        let objectRelations = propertyDetailsStorage.relationsDetails(
+-            keys:  details.values.map(\.key), spaceId: spaceId
+-        )
++        let objectKeys = details.values.map(\.key).filter { key in
++            TorahNativePropertyDefinition.definition(for: key) == nil || details.stringArrayValue(for: TorahNativePropertyDefinition.attachedPropertiesKey).contains(key)
++        }
++        let objectRelations = propertyDetailsStorage.relationsDetails(keys: objectKeys, spaceId: spaceId)
+         
+         let objectFeaturedRelations = propertyDetailsStorage.relationsDetails(
+             ids:  details.featuredRelations, spaceId: spaceId
+@@ -435,9 +436,10 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
+     }
+     
+     private func buildRelationsForObject(details: ObjectDetails) -> ParsedProperties {
+-        let objectRelations = propertyDetailsStorage.relationsDetails(
+-            keys:  details.values.map(\.key), spaceId: spaceId
+-        )
++        let objectKeys = details.values.map(\.key).filter { key in
++            TorahNativePropertyDefinition.definition(for: key) == nil || details.stringArrayValue(for: TorahNativePropertyDefinition.attachedPropertiesKey).contains(key)
++        }
++        let objectRelations = propertyDetailsStorage.relationsDetails(keys: objectKeys, spaceId: spaceId)
+         
+         let objectFeaturedRelations = propertyDetailsStorage.relationsDetails(
+             keys: details.featuredRelations, spaceId: spaceId
+@@ -463,12 +465,17 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
+             ids: typeRelIds.hidden, from: propertyDetailsStorage, spaceId: spaceId
+         )
+         
++        let attachedNative = objectRelations.filter { TorahNativePropertyDefinition.definition(for: $0.key) != nil }
++        let attachedIds = Set(attachedNative.map(\.id))
++        let visibleRecommended = recommendedRelations + attachedNative.filter { property in
++            !recommendedRelations.contains { $0.id == property.id } && !recommendedFeaturedRelations.contains { $0.id == property.id }
++        }
+         return relationBuilder.parsedProperties(
+             objectProperties: objectRelations,
+             objectFeaturedProperties: objectFeaturedRelations,
+-            recommendedProperties: recommendedRelations,
++            recommendedProperties: visibleRecommended,
+             recommendedFeaturedProperties: recommendedFeaturedRelations,
+-            recommendedHiddenProperties: recommendedHiddenRelations,
++            recommendedHiddenProperties: recommendedHiddenRelations.filter { !attachedIds.contains($0.id) },
+             objectId: objectId,
+             propertyValuesIsLocked: !permissions.canEditRelationValues,
+             storage: detailsStorage
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/FeaturedRelations/FeaturedPropertiesBlockViewModel.swift b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/FeaturedRelations/FeaturedPropertiesBlockViewModel.swift
+index ff37aadb0b..a957d180ce 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/FeaturedRelations/FeaturedPropertiesBlockViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/FeaturedRelations/FeaturedPropertiesBlockViewModel.swift
+@@ -33,13 +33,10 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
+         self.torahSession = torahSession
+         self.onRelationTap = onRelationValueTap
+ 
+-        let typeId = document.details?.type ?? ""
+-        self.isEligible = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+-            typeId: typeId, spaceId: document.spaceId
+-        )
++        self.isEligible = PinkhaTorahPropertyPolicy.shared.presentsSources(on: document)
+         
+         Publishers.Merge3(
+-            document.featuredRelationsForEditorPublisher.map { _ in () }.eraseToAnyPublisher(),
++            document.parsedPropertiesPublisher.map { _ in () }.eraseToAnyPublisher(),
+             document.detailsPublisher.map { _ in () }.eraseToAnyPublisher(),
+             NotificationCenter.default.publisher(for: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification).map { _ in () }.eraseToAnyPublisher()
+         )
+@@ -47,10 +44,7 @@ final class FeaturedPropertiesBlockViewModel: BlockViewModelProtocol {
+         .sink { [weak self] _ in
+             guard let self else { return }
+             let newRelations = self.document.featuredRelationsForEditor
+-            let currentTypeId = self.document.details?.type ?? ""
+-            let newEligibility = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+-                typeId: currentTypeId, spaceId: self.document.spaceId
+-            )
++            let newEligibility = PinkhaTorahPropertyPolicy.shared.presentsSources(on: self.document)
+             guard self.featuredRelations != newRelations || self.isEligible != newEligibility else { return }
+             self.featuredRelations = newRelations
+             self.isEligible = newEligibility
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift
+index 4460057a86..9d0e1f91ee 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesView.swift
+@@ -19,6 +19,7 @@ struct ObjectPropertiesView: View {
+         content
+             .task { await model.setupSubscriptions() }
+             .task { await torahProperties.observeDocument() }
++            .sheet(item: $model.relationsSearchData) { PropertyCreationView(data: $0) }
+             .torahEditorHost(session: torahProperties.session, presentationHost: .properties)
+             .anytypeSheet(isPresented: $model.showConflictingInfo) {
+                 ObjectPropertiesBottomAlert()
+@@ -64,7 +65,7 @@ struct ObjectPropertiesView: View {
+             LazyVStack(alignment: .leading, spacing: 0) {
+                 if torahProperties.isResolvingManifest {
+                     PinkhaTorahPropertiesLoadingState(model: torahProperties)
+-                } else if model.shouldShowEmptyState && !torahProperties.isEligible {
++                } else if model.shouldShowEmptyState {
+                     emptyStateView
+                         .padding(.top, 24)
+                 }
+@@ -82,6 +83,11 @@ struct ObjectPropertiesView: View {
+                 }
+ 
+                 PinkhaTorahPropertiesSection(model: torahProperties)
++                if model.canAddProperty {
++                    Button(Loc.addProperty) { model.onAddPropertyTap() }
++                        .accessibilityIdentifier("torah-object-add-property")
++                        .padding(.vertical, 12)
++                }
+             }
+             .padding(.horizontal, 20)
+         }
+@@ -133,7 +139,13 @@ struct ObjectPropertiesView: View {
+     private func row(with relation: Property, section: PropertiesSection) -> some View {
+         HStack {
+             rowWithoutActions(with: relation, addedToObject: section.addedToObject)
+-            if section.isMissingFields {
++            if model.isObjectAttachedNative(relation) {
++                Menu {
++                    Button(Loc.Fields.removeFromObject, role: .destructive) { model.removeRelation(relation) }
++                } label: {
++                    MoreIndicator()
++                }
++            } else if section.isMissingFields {
+                 Menu {
+                     Button(Loc.Fields.addToType) { model.addRelationToType(relation) }
+                     if relation.canBeRemovedFromObject {
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift
+index 3fe3323883..02b2923fa1 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift
+@@ -13,6 +13,12 @@ final class ObjectPropertiesViewModel {
+     var showConflictingInfo = false
+     var expandedSections = Set<String>()
+     var typeId: String?
++    var relationsSearchData: PropertiesSearchData?
++
++    var canAddProperty: Bool {
++        document.permissions.canEditRelationValues && document.details?.isReadonly == false &&
++            PinkhaTorahPropertyPolicy.shared.isNormalDocument(document.details, spaceId: document.spaceId)
++    }
+ 
+     var hasOutput: Bool { output != nil }
+ 
+@@ -103,9 +109,7 @@ final class ObjectPropertiesViewModel {
+     private func rebuildSections(from properties: ParsedProperties) {
+         let currentTypeId = Self.resolvedTypeId(for: document.details)
+         typeId = currentTypeId
+-        let isEligible = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+-            typeId: currentTypeId ?? "", spaceId: document.spaceId
+-        )
++        let isEligible = PinkhaTorahPropertyPolicy.shared.isNormalDocument(document.details, spaceId: document.spaceId)
+         let rawSections = sectionsBuilder.buildObjectSections(parsedProperties: properties)
+         sections = rawSections.compactMap { section in
+             let filtered = section.relations.filter { relation in
+@@ -138,25 +142,38 @@ final class ObjectPropertiesViewModel {
+     }
+     
+     func removeRelation(_ relation: Property) {
++        guard document.permissions.canEditRelationValues, document.details?.isReadonly == false else { return }
+         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
+             propertyId: relation.id, key: relation.key, spaceId: document.spaceId
+         ) else { return }
+-        let isNative = TorahNativePropertyDefinition.definition(for: relation.key) != nil
+-        if isNative, let typeId = typeId, PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(typeId: typeId, spaceId: document.spaceId) {
+-            return
+-        }
+-
+         Task {
+             try await propertiesService.removeProperty(objectId: document.objectId, propertyKey: relation.key)
+             let relationDetails = try propertyDetailsStorage.relationsDetails(key: relation.key, spaceId: document.spaceId)
+             AnytypeAnalytics.instance().logDeleteRelation(format: relationDetails.format, key: relationDetails.analyticsKey, route: .object)
+         }
+     }
++
++    func isObjectAttachedNative(_ relation: Property) -> Bool {
++        canAddProperty && TorahNativePropertyDefinition.definition(for: relation.key) != nil &&
++            document.details?.stringArrayValue(for: TorahNativePropertyDefinition.attachedPropertiesKey).contains(relation.key) == true
++    }
+     
+     func onEditTap() {
+         guard let typeId else { return }
+         output?.showTypeRelationsView(typeId: typeId)
+     }
++
++    func onAddPropertyTap() {
++        guard canAddProperty else { return }
++        let properties = document.parsedProperties
++        relationsSearchData = PropertiesSearchData(
++            objectId: document.objectId, spaceId: document.spaceId,
++            excludedRelationsIds: (properties.featuredProperties + properties.sidebarProperties + properties.conflictedProperties + properties.legacyFeaturedProperties).map(\.id),
++            hiddenRelationsIds: Set(properties.hiddenProperties.map(\.id)),
++            target: .object(objectId: document.objectId),
++            onRelationSelect: { _, _ in }
++        )
++    }
+     
+     func addRelationToType(_ relation: Property) {
+         guard let details = document.details else { return }
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesView.swift b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesView.swift
+index b257ba4394..7d65b55ec4 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesView.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesView.swift
+@@ -115,6 +115,8 @@ struct TypePropertiesView: View {
+                 }, label: {
+                     IconView(asset: .X24.plus).frame(width: 24, height: 24)
+                 })
++                .accessibilityLabel(Loc.addProperty)
++                .accessibilityIdentifier("torah-type-add-property")
+             }
+         }
+     }
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift
+index f04b5a3738..eb1ce13c50 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift
+@@ -135,11 +135,7 @@ final class TypePropertiesViewModel {
+         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
+             propertyId: row.relation.id, key: row.relation.key, spaceId: document.spaceId
+         ) else { return false }
+-        let isNative = TorahNativePropertyDefinition.definition(for: row.relation.key) != nil
+-        let isEligibleType = PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+-            typeId: document.objectId, spaceId: document.spaceId
+-        )
+-        return !(isNative && isEligibleType)
++        return true
+     }
+ 
+     private func setupRelationsSubscription() async {
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift
+index eccb0a091d..0682b7e754 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationView.swift
+@@ -10,6 +10,16 @@ struct PropertyCreationView: View {
+     
+     var body: some View {
+         content
++            .safeAreaInset(edge: .bottom) {
++                if model.nativeLookupFailed {
++                    VStack {
++                        AnytypeText(Loc.Content.Common.error, style: .uxBodyRegular)
++                        Button(Loc.Pinkha.Home.retry) { Task { await model.retryNativeLookup() } }
++                    }
++                    .padding()
++                    .background(Color.Background.primary)
++                }
++            }
+             .onAppear { model.dismiss = dismiss }
+             .sheet(item: $model.newPropertyData) {
+                 PropertyInfoCoordinatorView(data: $0, output: model)
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift
+index 24fb38f1b0..1e898ca018 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/RelationCreation/PropertyCreationViewModel.swift
+@@ -10,6 +10,8 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
+ 
+     var rows: [SearchDataSection<PropertySearchData>] = []
+     var newPropertyData: PropertyInfoData?
++    var nativeLookupFailed = false
++    private var lastSearchText = ""
+ 
+     @ObservationIgnored
+     var dismiss: DismissAction?
+@@ -40,29 +42,34 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
+         self.data = data
+     }
+ 
++    private var searchExcludedIds: [String] {
++        data.excludedRelationsIds.filter { !data.hiddenRelationsIds.contains($0) }
++    }
++
+     func isInstalledButHidden(_ relationId: String) -> Bool {
+         data.hiddenRelationsIds.contains(relationId)
+     }
+     
+     func search(text: String) async {
++        lastSearchText = text
+         let propertyFormats = SupportedPropertyFormat.allCases.filter {
+             if text.isEmpty { return true }
+             return $0.title.lowercased().contains(text.lowercased())
+         }
+ 
+         // Await settled internal identity (canonical + order) before filtering to prevent leaks on cold start
+-        _ = await PinkhaTorahPropertyPolicy.shared.awaitInternalIdentity(spaceId: data.spaceId)
++        let internalIdentity = await PinkhaTorahPropertyPolicy.shared.awaitInternalIdentity(spaceId: data.spaceId)
+ 
+         let isEligibleForNative = await PinkhaTorahPropertyPolicy.shared.canAddPropertyAsync(
+             propertyId: "", key: TorahNativePropertyDefinition.all[0].key, target: data.target, spaceId: data.spaceId
+         )
+ 
+-        let rawExistingProperties = (try? await searchService.searchRelations(text: text, excludedIds: data.excludedRelationsIds, spaceId: data.spaceId)) ?? []
++        let rawExistingProperties = (try? await searchService.searchRelations(text: text, excludedIds: searchExcludedIds, spaceId: data.spaceId)) ?? []
+         let existingProperties = rawExistingProperties.filter {
+             if PinkhaTorahPropertyPolicy.shared.isInternalProperty(propertyId: $0.id, key: $0.key, spaceId: data.spaceId) {
+                 return false
+             }
+-            if TorahNativePropertyDefinition.definition(for: $0.key) != nil && !isEligibleForNative {
++            if TorahNativePropertyDefinition.definition(for: $0.key) != nil {
+                 return false
+             }
+             return true
+@@ -70,11 +77,17 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
+ 
+         let nativeProperties = await PinkhaTorahNativePropertyCatalog.shared.searchNativeProperties(
+             text: text,
+-            excludedIds: data.excludedRelationsIds,
++            excludedIds: searchExcludedIds,
+             target: data.target,
+             spaceId: data.spaceId
+         )
+ 
++        if case .unavailable = internalIdentity {
++            nativeLookupFailed = true
++        } else {
++            nativeLookupFailed = isEligibleForNative && !PinkhaTorahNativePropertyCatalog.shared.lastLookupDiagnostics(spaceId: data.spaceId).isEmpty
++        }
++
+         // Deduplicate by real Property ID and key so native descriptors and existing properties do not collide
+         var seenIds = Set<String>()
+         var seenKeys = Set<String>()
+@@ -107,6 +120,11 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
+         }
+     }
+     
++    func retryNativeLookup() async {
++        PinkhaTorahNativePropertyCatalog.shared.invalidate(spaceId: data.spaceId)
++        await search(text: lastSearchText)
++    }
++
+     func onRowTap(_ row: PropertySearchData) {
+         Task {
+             switch row {
+@@ -160,7 +178,7 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
+         case .object(let objectId):
+             try await addPropertyToObject(objectId: objectId, relation: details)
+         case .library:
+-            anytypeAssertionFailure("Unsupported call of \(#function) for target .library")
++            break
+         }
+     }
+     
+@@ -229,28 +247,6 @@ final class PropertyCreationViewModel: PropertyInfoCoordinatorViewOutput {
+     }
+     
+     func addPropertyToObject(objectId: String, relation: PropertyDetails) async throws {
+-        let doc = Container.shared.openedDocumentProvider().document(objectId: objectId, spaceId: data.spaceId)
+-        if doc.details == nil {
+-            try? await doc.open()
+-        }
+-        if let docDetails = doc.details {
+-            let objectType = docDetails.objectType
+-            let resolvedTypeRels = PinkhaTorahNativePropertyCatalog.shared.resolvedTypeRelationIds(
+-                typeId: objectType.id,
+-                fallbackRecommended: objectType.recommendedRelations,
+-                fallbackFeatured: objectType.recommendedFeaturedRelations,
+-                fallbackHidden: objectType.recommendedHiddenRelations,
+-                spaceId: data.spaceId
+-            )
+-            if isInstalledButHidden(relation.id) || resolvedTypeRels.hidden.contains(relation.id) {
+-                try await propertiesService.revealTypeHiddenProperty(type: objectType, property: relation, featured: false)
+-                return
+-            }
+-            if TorahNativePropertyDefinition.definition(for: relation.key) != nil {
+-                try await propertiesService.addTypeRecommendedProperty(type: objectType, property: relation)
+-                return
+-            }
+-        }
+         try await propertiesService.addProperties(objectId: objectId, propertiesDetails: [relation])
+     }
+ }
+diff --git a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/SetPropertiesViewModel.swift b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/SetPropertiesViewModel.swift
+index a4711882cb..b95a4dd295 100644
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/SetPropertiesViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Set/Views/Popups/RelationsSettings/SetPropertiesViewModel.swift
+@@ -53,9 +53,8 @@ final class SetPropertiesViewModel {
+                 guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
+                     propertyId: relation.relationDetails.id, key: key, spaceId: setDocument.spaceId
+                 ) else { return }
+-                if details.isObjectType,
+-                   TorahNativePropertyDefinition.definition(for: key) != nil,
+-                   PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(typeId: details.id, spaceId: setDocument.spaceId) {
++                if details.isObjectType, TorahNativePropertyDefinition.definition(for: key) != nil {
++                    try await propertiesService.removeTypeProperty(details: details, propertyId: relation.relationDetails.id)
+                     return
+                 }
+                 
+@@ -138,13 +137,10 @@ final class SetPropertiesViewModel {
+             view = setDocument.view(by: viewId)
+             
+             let isObjectType = setDocument.details?.isObjectType ?? false
+-            let isEligibleObjectType = isObjectType && PinkhaTorahPropertyPolicy.shared.isTargetEligibleForNativeProperties(
+-                typeId: setDocument.details?.id ?? "", spaceId: setDocument.spaceId
+-            )
+             
+             relations = setDocument.sortedRelations(for: viewId).map { relation in
+-                let isProtectedNative = isEligibleObjectType && TorahNativePropertyDefinition.definition(for: relation.relationDetails.key) != nil
+-                let canBeRemoved = !isProtectedNative && (isObjectType ? relation.relationDetails.canBeRemovedFromType : relation.relationDetails.canBeRemovedFromObject)
++                let isNativeProperty = TorahNativePropertyDefinition.definition(for: relation.relationDetails.key) != nil
++                let canBeRemoved = isNativeProperty || (isObjectType ? relation.relationDetails.canBeRemovedFromType : relation.relationDetails.canBeRemovedFromObject)
+                 
+                 return SetViewSettingsProperty(
+                     id: relation.id,

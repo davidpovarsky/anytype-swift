@@ -20,6 +20,43 @@ def edit(path, old, new):
 def add(path, content):
     changes[path] = ['', content]
 
+# The original startup maintenance targets ordinary writable Tag/Status
+# definitions. Our three immutable derived definitions must not be rewritten.
+fixer = 'space/internal/components/migration/readonlyfixer/relationsfixer.go'
+edit(fixer, 'return store.Query(database.Query{Filters: []database.FilterRequest{',
+     'return preserveNativeDerivedDefinitions(store.Query(database.Query{Filters: []database.FilterRequest{')
+edit(fixer, '\t}})\n}', '\t}}))\n}')
+add('space/internal/components/migration/readonlyfixer/pinkha_torah.go', '''package readonlyfixer
+
+import (
+ torah "github.com/anyproto/anytype-heart/core/pinkha/torah"
+ "github.com/anyproto/anytype-heart/pkg/lib/bundle"
+ "github.com/anyproto/anytype-heart/pkg/lib/database"
+ "github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+)
+
+// Exclude only genuine fixed-key native definitions. Display-name collisions,
+// user properties and ordinary Tag/Status maintenance keep original semantics.
+// This does not repair old data or introduce any new migration/backfill.
+func preserveNativeDerivedDefinitions(records []database.Record, err error) ([]database.Record, error) {
+ if err != nil { return records, err }
+ kept := records[:0]
+ for _, record := range records {
+  details := record.Details
+  key := details.GetString(bundle.RelationKeyRelationKey)
+  if torah.IsProperty(key) && details.GetString(bundle.RelationKeySourceObject) == "_br"+key &&
+   details.GetInt64(bundle.RelationKeyRelationFormat) == int64(model.RelationFormat_tag) {
+   continue
+  }
+  kept = append(kept, record)
+ }
+ return kept, nil
+}
+''')
+add('space/internal/components/migration/readonlyfixer/pinkha_torah_test.go',
+    (root/'Tools/TorahNativeDerivedSpike/integration/readonlyfixer_test.go').read_text(encoding='utf8')
+        .replace('//go:build pinkha_readonlyfixer\n\n', ''))
+
 for source in sorted((product/'torah').glob('*.go')):
     add('core/pinkha/torah/'+source.name,source.read_text(encoding='utf8'))
 for source in sorted((product/'engine').glob('*.go')):

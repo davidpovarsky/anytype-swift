@@ -36,6 +36,8 @@ def prepare_source_cache(app, derived):
     inputs = {}
     restored = 0
     paths = subprocess.check_output(['git', '-C', str(app), 'ls-files', '-z']).decode('utf8').split('\0')
+    framework = app/'Dependencies/Middleware/Lib.xcframework'
+    paths += [str(path.relative_to(app)) for path in framework.rglob('*') if path.is_file()]
     for relative in filter(None, paths):
         path = app/relative
         if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(app):
@@ -92,6 +94,7 @@ def main():
     parser.add_argument('--simulator-udid',required=True)
     parser.add_argument('--evidence',required=True,type=Path)
     parser.add_argument('--tests-only',action='store_true')
+    parser.add_argument('--reuse-policy-and-header-from-run', type=int)
     args=parser.parse_args()
     if platform.system()!='Darwin': raise RuntimeError('Actual macOS/Xcode required')
     app=args.app_source.resolve()
@@ -150,16 +153,46 @@ def main():
         raise RuntimeError('Missing actual test count: '+key)
     if count('passedTests')<1 or count('failedTests') or count('skippedTests'): raise RuntimeError('Native product acceptance did not pass without skips')
     native_passed=count('passedTests')
-    policy_result=evidence/'NativePropertyPolicy.xcresult'
-    run_xctest(['xcodebuild','test-without-building','-xctestrun',str(native_run),'-destination',
-             'platform=iOS Simulator,id='+args.simulator_udid,'-parallel-testing-enabled','NO',
-             '-only-testing:AnytypeTests/TorahNativeUIParityTests',
-             '-only-testing:AnytypeTests/TorahCanonicalManifestIsolationTests',
-             '-resultBundlePath',str(policy_result)],app,evidence,policy_result,'native-policy')
-    summary=json.loads(subprocess.check_output(['xcrun','xcresulttool','get','test-results','summary','--path',str(policy_result),'--format','json'],text=True))
-    (evidence/'native-policy-test-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
-    if count('passedTests')<1 or count('failedTests') or count('skippedTests'): raise RuntimeError('Native property policy tests did not pass without skips')
-    policy_passed=count('passedTests')
+    policy_passed=0
+    policy_reused=0
+    header_reused=0
+    if args.reuse_policy_and_header_from_run:
+        if args.reuse_policy_and_header_from_run != 42740484502:
+            raise RuntimeError('Unknown accepted policy/header evidence')
+        accepted_sha='dee60eef8395a8a92998f08d7e7eb66701e7febc'
+        changed=git(app,'diff','--name-only',accepted_sha,'--','Anytype/Sources','Modules',
+            'AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift',
+            'AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift',
+            '*.xcconfig','Anytype.xcodeproj').splitlines()
+        if any(path.endswith(('.swift','.xcconfig','.pbxproj','.xcscheme')) for path in changed):
+            raise RuntimeError('Swift policy/header dependencies changed; cannot reuse their acceptance')
+        source=app/'docs/pinkha/torah-integration/evidence/universal-properties-r13/xcode-42740484502'
+        prior=json.loads((source/'native-policy-summary.json').read_text())
+        if prior['passedTests'] != 19 or prior['failedTests'] or prior['skippedTests']:
+            raise RuntimeError('Prior policy acceptance did not pass')
+        ui_nodes=json.loads((source/'native-ui-tests.json').read_text())
+        def header_passed(value):
+            if isinstance(value,dict):
+                return (value.get('name')=='testSourceHeaderSelectionAndOverflow()' and value.get('result')=='Passed') or any(header_passed(v) for v in value.values())
+            if isinstance(value,list): return any(header_passed(v) for v in value)
+            return False
+        if not header_passed(ui_nodes): raise RuntimeError('Prior compact-header UI acceptance did not pass')
+        policy_reused=19
+        header_reused=1
+        (evidence/'reused-policy-and-header.json').write_text(json.dumps(dict(status='REUSED_VERIFIED_PASS',
+            source_run_id=42740484502, source_sha=accepted_sha, policy_tests=19,
+            header_ui_tests=1, unchanged_swift_dependencies=True),indent=2)+'\n')
+    else:
+        policy_result=evidence/'NativePropertyPolicy.xcresult'
+        run_xctest(['xcodebuild','test-without-building','-xctestrun',str(native_run),'-destination',
+                 'platform=iOS Simulator,id='+args.simulator_udid,'-parallel-testing-enabled','NO',
+                 '-only-testing:AnytypeTests/TorahNativeUIParityTests',
+                 '-only-testing:AnytypeTests/TorahCanonicalManifestIsolationTests',
+                 '-resultBundlePath',str(policy_result)],app,evidence,policy_result,'native-policy')
+        summary=json.loads(subprocess.check_output(['xcrun','xcresulttool','get','test-results','summary','--path',str(policy_result),'--format','json'],text=True))
+        (evidence/'native-policy-test-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
+        if count('passedTests')<1 or count('failedTests') or count('skippedTests'): raise RuntimeError('Native property policy tests did not pass without skips')
+        policy_passed=count('passedTests')
     # Drive the original app after its real native account/Space preparation.
     # Only fixture IDs/names cross into the test runner; no canonical mirror or
     # authentication secret is supplied to the UI or written into the repository.
@@ -168,17 +201,23 @@ def main():
     fixture=json.loads(fixture_path.read_text())
     if len(set(fixture['documents'].values()))!=3: raise RuntimeError('Native UI fixture must contain three actual writing Objects')
     (evidence/'native-ui-fixture.json').write_text(json.dumps(fixture,indent=2)+'\n')
-    command(['xcodebuild','build-for-testing','-workspace','PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcworkspace',
-             '-scheme','PinkhaStage1Acceptance','-configuration','Release-Anytype',
+    from rerun_original_ui import ui_only_project, export_ui_console
+    ui_project=ui_only_project(app)
+    command(['xcodebuild','build-for-testing','-project',str(ui_project),
+             '-scheme','PinkhaPrebuiltUI','-configuration','Release-Anytype',
              'OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED',
              '-destination','platform=iOS Simulator,id='+args.simulator_udid,'-derivedDataPath',str(derived),
              '-parallel-testing-enabled','NO','ENABLE_TESTABILITY=YES','ONLY_ACTIVE_ARCH=YES',
              'SWIFT_OPTIMIZATION_LEVEL=-Onone'],app,evidence)
-    ui_configuration_source=test_configuration(derived/'Build/Products', 'PinkhaStage1AcceptanceUITests')
+    ui_configurations=list((derived/'Build/Products').glob('PinkhaPrebuiltUI_*.xctestrun'))
+    if len(ui_configurations)!=1: raise RuntimeError('Expected the generated UI-only configuration')
+    ui_configuration_source=ui_configurations[0]
     with ui_configuration_source.open('rb') as stream: ui_run=plistlib.load(stream)
     def inject_ui(value):
         if isinstance(value,dict):
             if value.get('BlueprintName')=='PinkhaStage1AcceptanceUITests' or value.get('TestBundlePath','').endswith('PinkhaStage1AcceptanceUITests.xctest'):
+                value['UITargetAppPath']=str(derived/'Build/Products/Release-Anytype-iphonesimulator/Anytype.app')
+                value['UITargetAppBundleIdentifier']='io.anytype.app'
                 environment=value.setdefault('EnvironmentVariables',{})
                 environment['PINKHA_NATIVE_UI_DISPOSABLE']='1'
                 environment['PINKHA_NATIVE_UI_FIXTURE_JSON']=json.dumps(fixture)
@@ -189,19 +228,29 @@ def main():
     ui_configuration=ui_configuration_source.with_name('PinkhaNativeDerivedUI.xctestrun')
     with ui_configuration.open('wb') as stream: plistlib.dump(ui_run,stream)
     ui_result=evidence/'NativeDerivedOriginalAppUI.xcresult'
-    run_xctest(['xcodebuild','test-without-building','-xctestrun',str(ui_configuration),'-destination',
-             'platform=iOS Simulator,id='+args.simulator_udid,'-parallel-testing-enabled','NO',
-             '-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests',
-             '-resultBundlePath',str(ui_result)],app,evidence,ui_result,'native-ui')
+    ui_selection=['-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests']
+    if header_reused:
+        ui_selection=[
+            '-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testNativePropertiesPickerChipsSetMembershipAndRelaunch',
+            '-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testUniversalPageNoteCustomPropertiesAndMixedSet']
+    try:
+        run_xctest(['xcodebuild','test-without-building','-xctestrun',str(ui_configuration),'-destination',
+                 'platform=iOS Simulator,id='+args.simulator_udid,'-parallel-testing-enabled','NO',
+                 *ui_selection,
+                 '-resultBundlePath',str(ui_result)],app,evidence,ui_result,'native-ui')
+    finally:
+        export_ui_console(args.simulator_udid, evidence)
     summary=json.loads(subprocess.check_output(['xcrun','xcresulttool','get','test-results','summary','--path',str(ui_result),'--format','json'],text=True))
     (evidence/'native-ui-test-summary.json').write_text(json.dumps(summary,indent=2)+'\n')
-    if count('passedTests')<1 or count('failedTests') or count('skippedTests'): raise RuntimeError('Original application UI acceptance did not pass without skips')
+    if count('passedTests')!=(2 if header_reused else 3) or count('failedTests') or count('skippedTests'): raise RuntimeError('Original application UI acceptance did not pass without skips')
     ui_passed=count('passedTests')
     command(['xcrun','xcresulttool','export','attachments','--path',str(ui_result),'--output-path',str(evidence/'screenshots')],app,evidence)
     if args.tests_only:
         receipt=dict(status='PASS',app_base_sha=git(app,'rev-parse','HEAD'),heart=heart,
                      passed_native_tests=native_passed,passed_original_app_ui_tests=ui_passed,
                      passed_policy_and_repository_tests=policy_passed,
+                     reused_policy_and_repository_tests=policy_reused,
+                     reused_original_app_ui_tests=header_reused,
                      physical_ipad_verified=False,ipa='NOT_BUILT_TESTS_ONLY')
         (evidence/'native-acceptance.json').write_text(json.dumps(receipt,indent=2)+'\n')
         return

@@ -1,0 +1,16 @@
+{
+  "run_id": 42751586692,
+  "head_sha": "0eca3054d4d0468edebb1b72916914b5884d4a79",
+  "app_reuse": "PASS: 5627 identical production inputs; compiled app retained",
+  "build_graph": "ONE TARGET: PinkhaStage1AcceptanceUITests only; no application/package compilation",
+  "fixture": "compiled disposable setup passed",
+  "original_ui": {
+    "passed": 0,
+    "failed": 2,
+    "skipped": 0
+  },
+  "failure": "cold native definitions returned readOnlyValue=false; canonical bootstrap rejected registration; next case also saw the previous open document",
+  "root_cause": "Original ReadonlyRelationsFixer startup maintenance resets readonly Tag/Status flags indiscriminately",
+  "next": "Narrowly exempt the three actual fixed-key bundled derived definitions; no new migration/backfill",
+  "ipa": "NOT_BUILT"
+}

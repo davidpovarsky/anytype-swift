@@ -6,8 +6,8 @@ Status: implementation published for focused Xcode verification; NOT COMPLETE. P
 - Baseline: `eee21ca08707137360a4dec5174df6133ebfbdaf`.
 - Verified upstream develop: `9115c1c054e7ebf55e08e03c2dbb12871cc84450`; merge base `d5650321577a209505a3277c8437b7608cff1cb9`.
 - Pinned Heart: `d98420b1113536afd08cde6de9a5816f6d27ffff` (unchanged).
-- Exact revision-13 Heart patch SHA-256: `63fdf9ccab6398d3618bb989aa62dd83a536a1fb78033ffdfa23d2fbfaed8bfe`.
-- Exact Swift protected integration diff SHA-256: `d8c06111e16d5d88f034b7144869cacf23bc18e12b6e578cdc3ab427f0295c84`.
+- Current revision-14 Heart patch SHA-256: `fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077`. Historical revision-13 receipts retain their original hash.
+- Exact Swift protected integration diff SHA-256: `ef03244203b78b77135855addb510c4b73835a0cdf84387546bbddb0fc2259a7` (nine unchanged production hooks; updated manual scope input).
 
 | Gate | Verified status | Evidence |
 |---|---|---|
@@ -35,7 +35,7 @@ The main future upstream-sync risks are the original Heart RPC/state hooks that 
 
 ## Changed files and provenance
 
-Per-file before/after hashes and exact protected hunks: `evidence/native-derived/8494cfb347/approval/revision-13/source-inventory.json` and `swift-integration.patch`. Complete 32-file pinned Heart inventory and patch are beside them. The original worktree and all pre-existing untracked research files are untouched.
+Current per-file before/after hashes and exact protected hunks: `evidence/native-derived/8494cfb347/approval/revision-14/source-inventory.json` and `swift-integration.patch`. Complete 35-file pinned Heart inventory and patch are beside them. Historical revision-13 evidence is immutable. The original worktree and all pre-existing untracked research files are untouched.
 
 | File | Ownership | Change |
 |---|---|---|
@@ -138,3 +138,19 @@ Only the downstream integration fixture changes in this correction: assert the e
 Source `dee60eef8395a8a92998f08d7e7eb66701e7febc`: actual native API **1 passed / 0 failed / 0 skipped**; policy/canonical isolation **19 tests passed** (23 invocations including parameterized cases), no failure or skip. Original UI: **1 passed / 2 failed / 0 skipped**. The compact Sources + opened the actual document-scoped search, and overflow passed; screenshots are retained. The first failure searched for an Other container although the real canonical picker was open and its identifier propagated to the text field. The second failure displayed the original property picker with a real Retry diagnostic, so its cold lookup still requires investigation. Page/Note universal native API behavior is now genuinely proven, but UI acceptance and unsigned IPA remain open.
 
 The restored cache still caused substantial module work: the native project log compiled only a small set of targets, while the subsequent workspace UI build rebuilt many package modules. Focused continuation therefore reuses the accepted simulator app and unchanged compiled fixture directly. A generated copy of the downstream UI test project removes the app build dependency and builds only the XCTest UI runner, guarded by equality of every production source input with the accepted cache. It runs only the two failed UI methods; the 19 policy tests and compact-header case are retained as REUSED_VERIFIED_PASS. The compiled fixture is invoked solely to prepare a new disposable account/Space on a new simulator, without rebuilding or claiming additional coverage. Passive simulator logging and disposable lookup-state diagnostics are retained if it fails. Original app/project/Heart sources are unchanged.
+
+## Startup read-only maintenance correction — revision 14
+
+[נועם | DEV] [MAIN_SESSION]
+
+Run [42751586692](https://github.com/davidpovarsky/anytype-swift/actions/runs/42751586692) proved reuse of the accepted simulator app: 5,627 identical production inputs and a generated Xcode graph containing only the UI test target, with no application/package compilation. Fresh fixture preparation passed. Both remaining UI methods failed; no new UI PASS is claimed. Passive native logs identified the cause: the three actual fixed-key definitions returned `readOnlyValue=false`, and the catalog correctly rejected them. The existing Heart `ReadonlyRelationsFixer` startup maintenance rewrote all read-only Tag/Status definitions, including these immutable derived definitions.
+
+Revision 14 adds a two-line wrapper around the original query in `space/internal/components/migration/readonlyfixer/relationsfixer.go`. Downstream `pinkha_torah.go` excludes only the three exact fixed keys with matching bundled source identity and Tag format. Ordinary properties, display-name collisions, errors and all other maintenance remain unchanged. This prevents rewriting fresh native definitions; it does not repair historical false flags, introduce a new migration, or backfill existing Spaces.
+
+Focused validation already passed against the exact new patch: **13 readonlyfixer tests, 0 skips**, and **1 real generated-middleware two-process restart test, 0 skips**. The second process waits until an ordinary same-name read-only Tag becomes writable, proving original maintenance ran, then verifies all three native flags/IDs and native search still agree. Test account data and seed stay in automatically deleted temporary files; no owner Space is used. Receipts are `evidence/universal-properties-r14/readonly-startup/results.json` and `native-readonly-restart-v2/results.json`. Those receipts record pre-commit HEAD plus exact tested source hashes; unchanged sources are not rerun just to update HEAD.
+
+Retained verified passes: Go contract 48, projection/presentation/import 6, original engine 953 (one existing external-fixture opt-in skip), portable Swift 14, native policy/canonical isolation 19, and original compact-header add/search/overflow 1. The new Go implementation requires a new XCFramework and real native integration plus the two still-unproven UI methods. No other suite is rerun. The accepted r13 framework is used only to compare byte-identical interface header timestamps for cached Swift compilation; all runtime binaries must come from the new r14 build and differ from r13.
+
+Additional changed downstream files: `Tools/TorahNativeDerivedSpike/integration/readonlyfixer_test.go` (startup exclusion and collision guards); `readonly_restart_test.go` (actual process restart); `Tools/PinkhaNativeDerived/reuse_matching_framework_headers.py` (hash-verified headers only, never old binaries). Existing app build tooling snapshots framework inputs, retains the 19/1 passes with unchanged Swift dependency guards, compiles the UI runner alone using the same dependency cache, and records reused counts separately. UI fixtures terminate the previous test app and avoid opening the same document twice. Manual dispatcher adds explicit `all`, `failed-ui` and `readonly-startup` scopes without automatic triggers. Framework identity moves to r14 in the three downstream workflows. The nine protected production Swift hooks remain unchanged; only the existing manual dispatcher input changes in the protected aggregate diff.
+
+Status at publication: focused Go restart correction **PASS**; new r14 Xcode framework/native/UI gates **PENDING**; unsigned IPA **NOT_BUILT**; physical iPad **PENDING_DEVICE**. No completion is claimed before the remaining gates pass.

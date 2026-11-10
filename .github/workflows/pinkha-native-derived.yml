@@ -6,6 +6,9 @@ on:
       heart_source_run_id:
         type: string
         default: ''
+      validation_scope:
+        type: string
+        default: all
 
 permissions:
   contents: read
@@ -25,14 +28,14 @@ jobs:
         run: python3 Tools/PinkhaNativeDerived/create_disposable_ipad.py --evidence build/native-evidence
 
       - name: Install pinned Go toolchain
-        if: ${{ inputs.heart_source_run_id == '' }}
+        if: ${{ inputs.validation_scope != 'failed-ui' && inputs.heart_source_run_id == '' }}
         uses: actions/setup-go@v5
         with:
           go-version: '1.26.5'
           cache-dependency-path: Modules/PinkhaHeart/go.mod
 
       - name: Checkout exact Heart source
-        if: ${{ inputs.heart_source_run_id == '' }}
+        if: ${{ inputs.validation_scope != 'failed-ui' && inputs.heart_source_run_id == '' }}
         uses: actions/checkout@v4
         with:
           repository: anyproto/anytype-heart
@@ -40,39 +43,52 @@ jobs:
           path: build/Heart-Native-Derived
 
       - name: Build exact custom Heart and install verified slices
-        if: ${{ inputs.heart_source_run_id == '' }}
+        if: ${{ inputs.validation_scope != 'failed-ui' && inputs.heart_source_run_id == '' }}
         run: |
           python3 Tools/PinkhaNativeDerived/build_custom_heart.py \
             --heart-source build/Heart-Native-Derived \
-            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/native-heart-integration.patch \
-            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/native-heart-integration.json \
-            --approved-patch-sha256 63fdf9ccab6398d3618bb989aa62dd83a536a1fb78033ffdfa23d2fbfaed8bfe \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
+            --approved-patch-sha256 fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077 \
             --apply-approved-patch --target ios --skip-native-tests \
             --install-app "$GITHUB_WORKSPACE" \
             --evidence build/native-evidence/heart
 
       - name: Download this task's exact verified Heart when requested
-        if: ${{ inputs.heart_source_run_id != '' }}
+        if: ${{ inputs.validation_scope != 'failed-ui' && inputs.heart_source_run_id != '' }}
         env:
           GH_TOKEN: ${{ github.token }}
           SOURCE_NATIVE_RUN_ID: ${{ inputs.heart_source_run_id }}
         run: |
           [[ "$SOURCE_NATIVE_RUN_ID" =~ ^[0-9]+$ ]]
-          gh run download "$SOURCE_NATIVE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name Pinkha-Universal-Verified-Heart-r13 --dir build/verified-heart
+          gh run download "$SOURCE_NATIVE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name Pinkha-Universal-Verified-Heart-r14 --dir build/verified-heart
           python3 Tools/PinkhaNativeDerived/install_verified_heart.py \
-            --archive build/verified-heart/Pinkha-Universal-Verified-Heart-r13.tar.gz \
-            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/native-heart-integration.json \
-            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/native-heart-integration.patch \
+            --archive build/verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
             --app-source "$GITHUB_WORKSPACE" --source-run-id "$SOURCE_NATIVE_RUN_ID" --evidence build/native-evidence/heart
 
+      - name: Reuse identical accepted headers for the Swift cache - NEVER old binaries
+        if: ${{ inputs.validation_scope == 'readonly-startup' && inputs.heart_source_run_id == '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 42740484502 --repo "$GITHUB_REPOSITORY" --name Pinkha-Universal-Verified-Heart-r13 --dir build/previous-header-inputs
+          python3 Tools/PinkhaNativeDerived/reuse_matching_framework_headers.py \
+            --app-source "$GITHUB_WORKSPACE" \
+            --previous-archive build/previous-header-inputs/Pinkha-Universal-Verified-Heart-r13.tar.gz \
+            --evidence build/native-evidence/heart
+
       - name: Preserve the NEW verified native framework for focused app reruns
-        run: tar -czf build/Pinkha-Universal-Verified-Heart-r13.tar.gz -C Dependencies/Middleware Lib.xcframework PinkhaNativeHeartBuild.json
+        if: ${{ inputs.validation_scope != 'failed-ui' }}
+        run: tar -czf build/Pinkha-Universal-Verified-Heart-r14.tar.gz -C Dependencies/Middleware Lib.xcframework PinkhaNativeHeartBuild.json
 
       - name: Upload exact verified new Heart
+        if: ${{ inputs.validation_scope != 'failed-ui' }}
         uses: actions/upload-artifact@v4
         with:
-          name: Pinkha-Universal-Verified-Heart-r13
-          path: build/Pinkha-Universal-Verified-Heart-r13.tar.gz
+          name: Pinkha-Universal-Verified-Heart-r14
+          path: build/Pinkha-Universal-Verified-Heart-r14.tar.gz
           compression-level: 0
           if-no-files-found: error
           retention-days: 7
@@ -91,6 +107,21 @@ jobs:
 
       - name: Focused real native product and original UI tests
         id: native-app
+        if: ${{ inputs.validation_scope != 'failed-ui' }}
+        env:
+          NATIVE_SCOPE: ${{ inputs.validation_scope }}
+        run: |
+          args=()
+          if [[ "$NATIVE_SCOPE" == 'readonly-startup' ]]; then
+            args+=(--reuse-policy-and-header-from-run 42740484502)
+          fi
+          python3 Tools/PinkhaNativeDerived/build_native_ipa.py \
+            --app-source "$GITHUB_WORKSPACE" --tests-only \
+            --simulator-udid "$PINKHA_NATIVE_IPAD_UDID" \
+            --evidence build/native-evidence/app "${args[@]}"
+
+      - name: Resume only failed UI cases using accepted app - NO app build
+        if: ${{ inputs.validation_scope == 'failed-ui' }}
         run: |
           python3 Tools/PinkhaNativeDerived/rerun_original_ui.py \
             --app-source "$GITHUB_WORKSPACE" \

@@ -11,6 +11,7 @@ import plistlib
 import re
 import shutil
 import subprocess
+import sys
 import xml.etree.ElementTree as ET
 
 from build_custom_heart import command, digest, git
@@ -21,8 +22,8 @@ VERIFIED_RUN = 42740484502
 
 
 def production_path(path):
-    return not path.startswith(('AnytypeTests/', 'AnyTypeTests/', 'PinkhaStage1Acceptance/',
-        'Tools/', 'docs/', '.github/', '.agents/', '.claude/', '.codex/')) and not path.endswith('.md')
+    return not path.startswith(('AnytypeTests/', 'AnyTypeTests/', 'PinkhaStage1Acceptance/', 'Dependencies/Middleware/Lib.xcframework/',
+        'docs/', '.github/', '.agents/', '.claude/', '.codex/')) and path != 'Tools/PinkhaNativeDerived/rerun_original_ui.py' and not path.endswith('.md')
 
 
 def ui_only_project(app):
@@ -73,6 +74,16 @@ def visit_targets(value, blueprint, action):
             visit_targets(child, blueprint, action)
 
 
+def export_ui_console(simulator, evidence):
+    with (evidence/'pinkha-ui-console.log').open('w') as stream:
+        try:
+            subprocess.run(['xcrun', 'simctl', 'spawn', simulator, 'log', 'show', '--last', '30m',
+                '--style', 'compact', '--info', '--predicate', 'subsystem == "com.anytype.pinkha"'],
+                stdout=stream, stderr=subprocess.STDOUT, timeout=60, check=False)
+        except subprocess.TimeoutExpired:
+            stream.write('\nPassive console export timed out.\n')
+
+
 def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--app-source', required=True, type=Path)
@@ -80,6 +91,8 @@ def main():
     parser.add_argument('--evidence', required=True, type=Path)
     args = parser.parse_args()
     app = args.app_source.resolve()
+    if git(app, 'branch', '--show-current') != 'codex/torah-native-derived-properties-20261103':
+        raise RuntimeError('Wrong application branch')
     evidence = args.evidence.resolve()
     evidence.mkdir(parents=True, exist_ok=True)
     derived = evidence/'DerivedData-NativeAcceptance'
@@ -90,16 +103,25 @@ def main():
     current = {p: digest(app/p) for p in current_paths if p and production_path(p) and (app/p).is_file()}
     cached = {p: entry['sha256'] for p, entry in previous['inputs'].items() if production_path(p)}
     if current != cached:
-        raise RuntimeError('Production inputs changed; cannot reuse the simulator app')
+        differences = sorted(p for p in set(current) | set(cached) if current.get(p) != cached.get(p))
+        raise RuntimeError('Production inputs changed; cannot reuse the simulator app: '+', '.join(differences))
     receipts = app/f'docs/pinkha/torah-integration/evidence/universal-properties-r13/xcode-{VERIFIED_RUN}'
     for name, expected in [('native-product-summary.json', 1), ('native-policy-summary.json', 19)]:
         summary = json.loads((receipts/name).read_text())
         if summary['passedTests'] != expected or summary['failedTests'] or summary['skippedTests']:
             raise RuntimeError('Required verified acceptance evidence is missing')
-    heart = json.loads((app/'Dependencies/Middleware/PinkhaNativeHeartBuild.json').read_text())
     source_heart = json.loads((receipts/'custom-heart-build.json').read_text())
-    if heart != source_heart:
-        raise RuntimeError('Framework differs from the accepted simulator build')
+    patch = app/'docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/native-heart-integration.patch'
+    if digest(patch) != source_heart['patch_sha256']:
+        raise RuntimeError('Heart patch differs from the accepted simulator build')
+    installed = app/'Dependencies/Middleware/PinkhaNativeHeartBuild.json'
+    if installed.exists() and json.loads(installed.read_text()) != source_heart:
+        raise RuntimeError('Installed framework differs from the accepted simulator build')
+    # The accepted app already contains Heart. UI-only work needs neither a
+    # second framework download/verification nor another framework upload.
+    heart_evidence = evidence.parent/'heart'
+    heart_evidence.mkdir(parents=True, exist_ok=True)
+    (heart_evidence/'custom-heart-build.json').write_text(json.dumps(source_heart, indent=2)+'\n')
     products = derived/'Build/Products'
     built_app = products/'Release-Anytype-iphonesimulator/Anytype.app'
     with (built_app/'Info.plist').open('rb') as stream:
@@ -132,12 +154,15 @@ def main():
     fixture = json.loads((container/'Library/Application Support/pinkha-native-derived-ui-fixture.json').read_text())
     (evidence/'native-ui-fixture.json').write_text(json.dumps(fixture, indent=2)+'\n')
     project = ui_only_project(app)
-    ui_derived = evidence/'DerivedData-UIOnly'
+    ui_derived = derived
     command(['xcodebuild', 'build-for-testing', '-project', str(project), '-scheme', 'PinkhaPrebuiltUI',
         '-configuration', 'Release-Anytype', '-destination', 'platform=iOS Simulator,id='+args.simulator_udid,
         '-derivedDataPath', str(ui_derived), '-parallel-testing-enabled', 'NO',
         'ONLY_ACTIVE_ARCH=YES', 'SWIFT_OPTIMIZATION_LEVEL=-Onone'], app, evidence)
-    configuration = test_configuration(ui_derived/'Build/Products', 'PinkhaStage1AcceptanceUITests')
+    configurations = list((ui_derived/'Build/Products').glob('PinkhaPrebuiltUI_*.xctestrun'))
+    if len(configurations) != 1:
+        raise RuntimeError('Expected the current generated UI-only configuration')
+    configuration = configurations[0]
     with configuration.open('rb') as stream:
         ui_run = plistlib.load(stream)
 
@@ -151,36 +176,14 @@ def main():
     with generated.open('wb') as stream:
         plistlib.dump(ui_run, stream)
     result = evidence/'NativeDerivedOriginalAppUI.xcresult'
-    ui_failed = True
     try:
         run_xctest(['xcodebuild', 'test-without-building', '-xctestrun', str(generated), '-destination',
             'platform=iOS Simulator,id='+args.simulator_udid, '-parallel-testing-enabled', 'NO',
             '-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testNativePropertiesPickerChipsSetMembershipAndRelaunch',
             '-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testUniversalPageNoteCustomPropertiesAndMixedSet',
             '-resultBundlePath', str(result)], app, evidence, result, 'native-ui')
-        ui_failed = False
     finally:
-        with (evidence/'pinkha-ui-console.log').open('w') as stream:
-            subprocess.run(['xcrun', 'simctl', 'spawn', args.simulator_udid, 'log', 'show', '--last', '30m',
-                '--style', 'compact', '--info', '--predicate', 'subsystem == "com.anytype.pinkha"'],
-                stdout=stream, stderr=subprocess.STDOUT, timeout=60, check=False)
-        if ui_failed:
-            # Read only this disposable app's existing lookup diagnostics. No
-            # credentials, canonical payload or owner account is inspected.
-            jobs = subprocess.run(['xcrun', 'simctl', 'spawn', args.simulator_udid, 'launchctl', 'list'],
-                capture_output=True, text=True, timeout=15).stdout.splitlines()
-            pid = next((line.split()[0] for line in jobs if 'UIKitApplication:io.anytype.app' in line
-                        and line.split()[0].isdigit()), None)
-            if pid:
-                with (evidence/'native-lookup-diagnostics.txt').open('w') as stream:
-                    try:
-                        subprocess.run(['xcrun', 'lldb', '--batch', '-p', pid,
-                            '-o', 'expr -l Swift -- import Anytype',
-                            '-o', 'expr -l Swift -- print(Anytype.PinkhaTorahNativePropertyCatalog.shared.lastLookupDiagnostics(spaceId: '+json.dumps(fixture['spaceId'])+'))',
-                            '-o', 'expr -l Swift -- print(Anytype.PinkhaTorahPropertyPolicy.shared.internalIdentityStatus(spaceId: '+json.dumps(fixture['spaceId'])+'))',
-                            '-o', 'detach'], stdout=stream, stderr=subprocess.STDOUT, timeout=45, check=False)
-                    except subprocess.TimeoutExpired:
-                        stream.write('\nRead-only debugger diagnostics timed out.\n')
+        export_ui_console(args.simulator_udid, evidence)
     summary = json.loads((evidence/'native-ui-summary.json').read_text())
     if summary['passedTests'] != 2 or summary['failedTests'] or summary['skippedTests']:
         raise RuntimeError('The two failed original UI scenarios have not passed')
@@ -192,4 +195,12 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as error:
+        if '--evidence' in sys.argv:
+            evidence = Path(sys.argv[sys.argv.index('--evidence')+1]).resolve()
+            evidence.mkdir(parents=True, exist_ok=True)
+            (evidence/'ui-resume-error.json').write_text(json.dumps(dict(
+                error_type=type(error).__name__, error=str(error)), indent=2)+'\n')
+        raise

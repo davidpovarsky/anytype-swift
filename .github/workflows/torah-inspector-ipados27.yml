@@ -19,6 +19,14 @@ on:
         description: Existing native run whose XCTest attachments should be exported
         type: string
         default: ''
+      native_test_scope:
+        description: Native acceptance scope (failed-ui reuses the accepted app)
+        type: choice
+        options:
+          - all
+          - failed-ui
+          - readonly-startup
+        default: all
       require_full_acceptance:
         description: Require Full Acceptance success before IPA packaging
         type: boolean
@@ -40,6 +48,7 @@ jobs:
     uses: ./.github/workflows/pinkha-native-derived.yml
     with:
       heart_source_run_id: ${{ inputs.source_run_id }}
+      validation_scope: ${{ inputs.native_test_scope }}
     secrets: inherit
 
   full-acceptance:

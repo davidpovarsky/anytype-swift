@@ -9,6 +9,7 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
 
     override func setUpWithError() throws {
         continueAfterFailure = false
+        if app.state != .notRunning { app.terminate() }
         let env = ProcessInfo.processInfo.environment
         XCTAssertEqual(env["PINKHA_NATIVE_UI_DISPOSABLE"], "1")
         guard env["PINKHA_NATIVE_UI_DISPOSABLE"] == "1" else {
@@ -102,7 +103,7 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
             let id = try XCTUnwrap(fixture.universalDocuments[role])
             try open(id)
             XCTAssertFalse(app.buttons["torah-document-sources-add"].exists)
-            try openProperties(id, expectsSources: false)
+            try openProperties(id, expectsSources: false, alreadyOpen: true)
             for name in fixture.nativeProperties { XCTAssertFalse(propertyTitle(name).exists) }
             screenshot("universal-blank-" + role)
             for name in fixture.nativeProperties {
@@ -215,8 +216,8 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         XCTAssertTrue(app.buttons["More"].firstMatch.waitForExistence(timeout: 45))
     }
 
-    private func openProperties(_ id: String, expectsSources: Bool = true) throws {
-        try open(id)
+    private func openProperties(_ id: String, expectsSources: Bool = true, alreadyOpen: Bool = false) throws {
+        if !alreadyOpen { try open(id) }
         app.buttons["More"].firstMatch.tap()
         let button = app.buttons["Properties"].firstMatch
         XCTAssertTrue(button.waitForExistence(timeout: 15)); button.tap()
