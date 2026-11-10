@@ -95,6 +95,7 @@ def main():
     parser.add_argument('--evidence',required=True,type=Path)
     parser.add_argument('--tests-only',action='store_true')
     parser.add_argument('--reuse-policy-and-header-from-run', type=int)
+    parser.add_argument('--relink-verified-swift-from-run', type=int)
     args=parser.parse_args()
     if platform.system()!='Darwin': raise RuntimeError('Actual macOS/Xcode required')
     app=args.app_source.resolve()
@@ -118,12 +119,19 @@ def main():
         or 'iPad' not in simulator_receipt['device']['name']):
         raise RuntimeError('Use the freshly created Pinkha-Native-Derived disposable iPad simulator')
     derived=evidence/'DerivedData-NativeAcceptance'
-    prepare_source_cache(app, derived)
     common=['-project','Anytype.xcodeproj','-scheme','Anytype','-configuration','Release-Anytype',
             'OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED']
-    command(['xcodebuild','build-for-testing',*common,'-destination','platform=iOS Simulator,id='+args.simulator_udid,
-             '-derivedDataPath',str(derived),'-parallel-testing-enabled','NO','ENABLE_TESTABILITY=YES','ONLY_ACTIVE_ARCH=YES',
-             'SWIFT_OPTIMIZATION_LEVEL=-Onone'],app,evidence)
+    if args.relink_verified_swift_from_run:
+        if args.relink_verified_swift_from_run != 42740484502:
+            raise RuntimeError('Unknown accepted compiled Swift authority')
+        from relink_verified_simulator import relink
+        relink(app, derived, evidence, heart)
+        prepare_source_cache(app, derived)
+    else:
+        prepare_source_cache(app, derived)
+        command(['xcodebuild','build-for-testing',*common,'-destination','platform=iOS Simulator,id='+args.simulator_udid,
+                 '-derivedDataPath',str(derived),'-parallel-testing-enabled','NO','ENABLE_TESTABILITY=YES','ONLY_ACTIVE_ARCH=YES',
+                 'SWIFT_OPTIMIZATION_LEVEL=-Onone'],app,evidence)
     configuration=test_configuration(derived/'Build/Products', 'AnytypeTests')
     with configuration.open('rb') as stream: run=plistlib.load(stream)
     def inject(value):
@@ -247,6 +255,7 @@ def main():
     command(['xcrun','xcresulttool','export','attachments','--path',str(ui_result),'--output-path',str(evidence/'screenshots')],app,evidence)
     if args.tests_only:
         receipt=dict(status='PASS',app_base_sha=git(app,'rev-parse','HEAD'),heart=heart,
+                     simulator_build_mode='RELINK_VERIFIED_SWIFT' if args.relink_verified_swift_from_run else 'XCODE_BUILD',
                      passed_native_tests=native_passed,passed_original_app_ui_tests=ui_passed,
                      passed_policy_and_repository_tests=policy_passed,
                      reused_policy_and_repository_tests=policy_reused,

@@ -102,7 +102,7 @@ jobs:
             build/native-evidence/app/DerivedData-NativeAcceptance/Build
             build/native-evidence/app/DerivedData-NativeAcceptance/ModuleCache.noindex
             build/native-evidence/app/DerivedData-NativeAcceptance/SDKStatCaches.noindex
-          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-${{ github.sha }}
+          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-${{ inputs.validation_scope == 'readonly-startup' && '0eca3054d4d0468edebb1b72916914b5884d4a79' || github.sha }}
           restore-keys: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Focused real native product and original UI tests
@@ -113,7 +113,7 @@ jobs:
         run: |
           args=()
           if [[ "$NATIVE_SCOPE" == 'readonly-startup' ]]; then
-            args+=(--reuse-policy-and-header-from-run 42740484502)
+            args+=(--reuse-policy-and-header-from-run 42740484502 --relink-verified-swift-from-run 42740484502)
           fi
           python3 Tools/PinkhaNativeDerived/build_native_ipa.py \
             --app-source "$GITHUB_WORKSPACE" --tests-only \
@@ -142,7 +142,7 @@ jobs:
           retention-days: 14
 
       - name: Preserve focused Xcode cache after build or test failure
-        if: ${{ always() && steps.native-app.outcome != 'skipped' && steps.native-app-cache.outputs.cache-hit != 'true' }}
+        if: ${{ always() && steps.native-app.outcome != 'skipped' && (inputs.validation_scope == 'readonly-startup' || steps.native-app-cache.outputs.cache-hit != 'true') }}
         uses: actions/cache/save@v4
         with:
           path: |
