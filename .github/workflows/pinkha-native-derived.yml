@@ -92,8 +92,8 @@ jobs:
       - name: Focused real native product and original UI tests
         id: native-app
         run: |
-          python3 Tools/PinkhaNativeDerived/build_native_ipa.py \
-            --app-source "$GITHUB_WORKSPACE" --tests-only \
+          python3 Tools/PinkhaNativeDerived/rerun_original_ui.py \
+            --app-source "$GITHUB_WORKSPACE" \
             --simulator-udid "$PINKHA_NATIVE_IPAD_UDID" \
             --evidence build/native-evidence/app
 

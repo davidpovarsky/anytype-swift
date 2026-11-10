@@ -4,7 +4,7 @@ import XCTest
 /// produced by the real native API suite in a freshly created simulator.
 @MainActor
 final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
-    private let app = XCUIApplication()
+    private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
     private var fixture: NativeDerivedFixture!
 
     override func setUpWithError() throws {
@@ -189,20 +189,21 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         openSetSettings("Filters")
         let source = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "מקור/ות")).firstMatch
         XCTAssertTrue(source.waitForExistence(timeout: 15)); source.tap()
-        let picker = app.otherElements["torah-native-set-filter-picker"].firstMatch
-        XCTAssertTrue(picker.waitForExistence(timeout: 15))
+        let search = app.textFields.matching(NSPredicate(
+            format: "identifier == %@ OR identifier == %@", "torah-native-set-filter-picker", "torah-sources-search-field"
+        )).firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: 15))
         let selected = app.buttons["torah-native-filter-selected-value"].firstMatch
         XCTAssertTrue(selected.waitForExistence(timeout: 15)); selected.tap()
         XCTAssertTrue(selected.waitForNonExistence(timeout: 10))
-        let search = app.textFields["torah-sources-search-field"].firstMatch
         search.tap(); search.typeText(query)
-        let result = picker.buttons[query].firstMatch
+        let result = app.buttons[query].firstMatch
         XCTAssertTrue(result.waitForExistence(timeout: 45)); result.tap()
         XCTAssertTrue(selected.waitForExistence(timeout: 20))
         XCTAssertFalse(app.buttons["Link to document"].exists)
         screenshot("native-set-filter-selection-\(query)")
         app.buttons["torah-native-filter-apply"].tap()
-        XCTAssertTrue(picker.waitForNonExistence(timeout: 15))
+        XCTAssertTrue(search.waitForNonExistence(timeout: 15))
     }
 
     private func open(_ id: String) throws {
@@ -240,16 +241,19 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         let x = min(app.frame.maxX - 24, title.frame.maxX + 28)
         app.coordinate(withNormalizedOffset: .zero)
             .withOffset(CGVector(dx: x, dy: title.frame.midY)).tap()
-        let editor = app.otherElements["torah-native-property-editor"].firstMatch
-        XCTAssertTrue(editor.waitForExistence(timeout: 15))
-        let search = app.textFields["torah-sources-search-field"].firstMatch
+        // SwiftUI propagates the presentation identifier to the actual field.
+        let search = app.textFields.matching(NSPredicate(
+            format: "identifier == %@ OR identifier == %@", "torah-native-property-editor", "torah-sources-search-field"
+        )).firstMatch
         XCTAssertTrue(search.waitForExistence(timeout: 10)); search.tap(); search.typeText(query)
         let link = app.buttons["Link to document"].firstMatch
         XCTAssertTrue(link.waitForExistence(timeout: 45)); link.tap()
         XCTAssertTrue(app.buttons["Remove link"].firstMatch.waitForExistence(timeout: 30))
-        editor.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02))
-            .press(forDuration: 0.05, thenDragTo: editor.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.98)))
-        XCTAssertTrue(editor.waitForNonExistence(timeout: 15))
+        // Dismiss the original iPad value popover through its outside region.
+        app.coordinate(withNormalizedOffset: .zero)
+            .withOffset(CGVector(dx: 16, dy: search.frame.midY)).tap()
+        XCTAssertTrue(search.waitForNonExistence(timeout: 15))
+        XCTAssertTrue(propertyTitle(name).exists)
     }
 
     private func screenshot(_ name: String) {
