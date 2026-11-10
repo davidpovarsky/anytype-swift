@@ -320,7 +320,14 @@ struct TorahNativeDerivedProductIntegrationTests {
             objectId: nativeSet.id, blockId: dataview.id, filter: filter, viewId: view.id
         )
         let rows = try await search.search(spaceId: spaceId, filters: [filter], keys: ["id", key], limit: 0)
-        #expect(rows.map(\.id) == [document.id])
+        let expectedSpaceMembers = Set(universal.linkedDocuments.values).union([document.id])
+        #expect(Set(rows.map(\.id)) == expectedSpaceMembers)
+        let writingTypeFilter = DataviewFilter.with {
+            $0.relationKey = "type"; $0.condition = .in
+            $0.value = Array(manifest.registeredDocumentTypes.values).protobufValue
+        }
+        let writingRows = try await search.search(spaceId: spaceId, filters: [filter, writingTypeFilter], keys: ["id"], limit: 0)
+        #expect(writingRows.map(\.id) == [document.id])
 
         // The same native subscription/storage stack used by the real Set.
         let subId = "native-derived-" + UUID().uuidString
@@ -447,9 +454,17 @@ struct TorahNativeDerivedProductIntegrationTests {
             try await Container.shared.objectActionsService().setObjectType(objectId: chipsDocument.id, typeUniqueKey: pageType.uniqueKey)
             let asPageDetails = try await show(chipsDocument.id, spaceId: spaceId)
             #expect(asPageDetails.stringValue(for: manifest.documentAssociationsPropertyKey) == beforeCanonical)
+            let pageConfiguration = try await show(pageType.id, spaceId: spaceId)
+            let visibleTypeIds = Set(pageConfiguration.recommendedRelations + pageConfiguration.recommendedFeaturedRelations)
+                .subtracting(pageConfiguration.recommendedHiddenRelations)
+            let typeKeys = Set(nativeProperties.filter { visibleTypeIds.contains($0.id) }.map(\.key))
+            let attachedKeys = Set(asPageDetails.stringArrayValue(for: TorahNativePropertyDefinition.attachedPropertiesKey))
+            let expectedPageKeys = typeKeys.union(attachedKeys)
             try await eventually {
                 let keys = Set(chipsTorahModel.visibleSections(chipsObjVM.sections).flatMap(\.relations).map(\.key))
-                return keys.isDisjoint(with: expectedNativeKeys) && chipsTorahModel.isEligible && !policy.presentsSources(on: openChipsDoc)
+                return openChipsDoc.details?.type == pageType.id &&
+                    keys.intersection(expectedNativeKeys) == expectedPageKeys && chipsTorahModel.isEligible &&
+                    policy.presentsSources(on: openChipsDoc) == expectedPageKeys.contains(TorahNativePropertyDefinition.all[0].key)
             }
 
             try await Container.shared.objectActionsService().setObjectType(objectId: chipsDocument.id, typeUniqueKey: chiddushType.uniqueKey)
@@ -478,7 +493,7 @@ struct TorahNativeDerivedProductIntegrationTests {
     }
 
     @MainActor
-    private func verifyUniversalProperties(manifest: PinkhaSpaceManifest, nativeProperties: [PropertyDetails]) async throws -> (documents: [String: String], types: [String: String], setId: String) {
+    private func verifyUniversalProperties(manifest: PinkhaSpaceManifest, nativeProperties: [PropertyDetails]) async throws -> (documents: [String: String], linkedDocuments: [String: String], types: [String: String], setId: String) {
         let spaceId = manifest.spaceId
         _ = try await ClientCommands.workspaceObjectListAdd(.with {
             $0.spaceID = spaceId; $0.objectIds = ["_otnote"]
@@ -490,6 +505,7 @@ struct TorahNativeDerivedProductIntegrationTests {
         let customType = ObjectType(details: try await show(custom.objectID, spaceId: spaceId))
         let expectedKeys = Set(nativeProperties.map(\.key))
         var documents: [String: String] = [:]
+        var linkedDocuments: [String: String] = [:]
         var types: [String: String] = [:]
         let search = Container.shared.searchMiddleService()
         let propertiesService = Container.shared.propertiesService()
@@ -515,6 +531,7 @@ struct TorahNativeDerivedProductIntegrationTests {
             let type = ObjectType(details: try await show(typeId, spaceId: spaceId))
             types[role] = typeId
             documents[role] = p2.id
+            linkedDocuments[role] = p1.id
             await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(spaceId: spaceId, typeId: typeId)
             try await eventually {
                 doc.permissions.canEditRelationValues && other.permissions.canEditRelationValues
@@ -578,6 +595,10 @@ struct TorahNativeDerivedProductIntegrationTests {
             for property in nativeProperties {
                 _ = try await ClientCommands.objectTypePropertyRemove(.with { $0.objectTypeID = typeId; $0.key = property.key }).invoke()
             }
+            let restoredType = try await show(typeId, spaceId: spaceId)
+            #expect(restoredType.recommendedRelations == type.recommendedRelations)
+            #expect(restoredType.recommendedFeaturedRelations == type.recommendedFeaturedRelations)
+            #expect(restoredType.recommendedHiddenRelations == type.recommendedHiddenRelations)
             PinkhaTorahNativePropertyCatalog.shared.recordUpdatedTypeRelations(
                 typeId: typeId, spaceId: spaceId, recommendedIds: type.recommendedRelations,
                 featuredIds: type.recommendedFeaturedRelations, hiddenIds: type.recommendedHiddenRelations
@@ -609,7 +630,7 @@ struct TorahNativeDerivedProductIntegrationTests {
             $0.value = [TorahDerivedQueryProjection.identity(item(id: "mixed", kind: .ref, key: "Genesis 1:1", label: "בראשית א:א"))].protobufValue
         }
         try await dataviewService.addFilter(objectId: mixedDoc.id, blockId: block.id, filter: filter, viewId: view.id)
-        return (documents, types, mixedDoc.id)
+        return (documents, linkedDocuments, types, mixedDoc.id)
     }
 
     private func show(_ id: String, spaceId: String) async throws -> ObjectDetails {
