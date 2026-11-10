@@ -19,6 +19,7 @@ def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument("--app-source", required=True, type=Path)
     parser.add_argument("--evidence", required=True, type=Path)
+    parser.add_argument("--derived-data", type=Path)
     args = parser.parse_args()
     if platform.system() != "Darwin":
         raise RuntimeError("macOS/Xcode is required to build an iOS IPA")
@@ -51,7 +52,10 @@ def main():
     command(["xcodebuild", "-version"], app, evidence)
     command(["xcrun", "--sdk", "iphoneos", "--show-sdk-version"], app, evidence)
 
-    derived = evidence / "DerivedData-iPad"
+    derived = args.derived_data.resolve() if args.derived_data else evidence / "DerivedData-iPad"
+    if args.derived_data:
+        from build_native_ipa import prepare_source_cache
+        prepare_source_cache(app, derived)
     command([
         "xcodebuild", "build",
         "-project", "Anytype.xcodeproj",
@@ -187,6 +191,7 @@ def main():
         "heart_marker": heart["marker"],
         "heart_patch_sha256": heart["patch_sha256"],
         "app_sha": git(app, "rev-parse", "HEAD"),
+        "app_executable_sha256": digest(binary),
         "branch": git(app, "branch", "--show-current"),
         "ipa": str(ipa),
         "ipa_sha256": digest(ipa),

@@ -76,10 +76,22 @@ jobs:
             --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
             --app-source "$GITHUB_WORKSPACE" --source-run-id "$SOURCE_NATIVE_RUN_ID" --evidence build/fast-ipa-evidence/heart
 
+      - name: Reuse accepted dependency checkouts and matching Xcode inputs
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/native-evidence/app/DerivedData-NativeAcceptance/SourcePackages
+            build/native-evidence/app/DerivedData-NativeAcceptance/Build
+            build/native-evidence/app/DerivedData-NativeAcceptance/ModuleCache.noindex
+            build/native-evidence/app/DerivedData-NativeAcceptance/SDKStatCaches.noindex
+          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-${{ github.sha }}
+          restore-keys: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-
+
       - name: Build device app and package UNSIGNED IPA - NO XCTest
         run: |
           python3 Tools/PinkhaNativeDerived/build_native_ipa_fast.py \
             --app-source "$GITHUB_WORKSPACE" \
+            --derived-data "$GITHUB_WORKSPACE/build/native-evidence/app/DerivedData-NativeAcceptance" \
             --evidence build/fast-ipa-evidence/app
 
       - name: Upload custom Heart trial IPA
