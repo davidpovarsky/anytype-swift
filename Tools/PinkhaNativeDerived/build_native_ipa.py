@@ -17,6 +17,42 @@ import zipfile
 
 from build_custom_heart import command, contains, digest, git
 
+def prepare_source_cache(app, derived):
+    """Restore source timestamps only when cached and current bytes match.
+
+    A fresh checkout otherwise invalidates unchanged Swift targets in restored
+    DerivedData. This affects build inputs only, never simulator/test results.
+    """
+    manifest = derived/'Build/PinkhaSourceInputs.json'
+    previous = {}
+    if manifest.exists():
+        try:
+            decoded = json.loads(manifest.read_text())
+            previous = decoded.get('inputs', {}) if isinstance(decoded, dict) else {}
+        except (ValueError, OSError):
+            pass  # A missing/invalid cache merely requires normal compilation.
+    if not isinstance(previous, dict):
+        previous = {}
+    inputs = {}
+    restored = 0
+    paths = subprocess.check_output(['git', '-C', str(app), 'ls-files', '-z']).decode('utf8').split('\0')
+    for relative in filter(None, paths):
+        path = app/relative
+        if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(app):
+            continue
+        sha = digest(path)
+        cached = previous.get(relative, {})
+        if not isinstance(cached, dict):
+            cached = {}
+        modified = cached.get('mtime_ns')
+        if cached.get('sha256') == sha and isinstance(modified, int) and modified >= 0:
+            os.utime(path, ns=(path.stat().st_atime_ns, modified))
+            restored += 1
+        inputs[relative] = dict(sha256=sha, mtime_ns=path.stat().st_mtime_ns)
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    manifest.write_text(json.dumps(dict(source_sha=git(app, 'rev-parse', 'HEAD'), inputs=inputs), indent=2)+'\n')
+    print(json.dumps(dict(content_verified_source_timestamps=restored)), flush=True)
+
 def test_configuration(products, blueprint):
     """Select Xcode's current configuration, excluding our generated copies."""
     def contains_blueprint(value):
@@ -79,6 +115,7 @@ def main():
         or 'iPad' not in simulator_receipt['device']['name']):
         raise RuntimeError('Use the freshly created Pinkha-Native-Derived disposable iPad simulator')
     derived=evidence/'DerivedData-NativeAcceptance'
+    prepare_source_cache(app, derived)
     common=['-project','Anytype.xcodeproj','-scheme','Anytype','-configuration','Release-Anytype',
             'OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED']
     command(['xcodebuild','build-for-testing',*common,'-destination','platform=iOS Simulator,id='+args.simulator_udid,

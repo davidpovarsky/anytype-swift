@@ -85,6 +85,9 @@ struct TorahNativeDerivedProductIntegrationTests {
         #expect(manifest.defaultTemplateIds == again.defaultTemplateIds)
         #expect(manifest.documentAssociationsPropertyId == again.documentAssociationsPropertyId)
 
+        print("Native product stage: Page, Note, custom Type and mixed Set")
+        let universal = try await verifyUniversalProperties(manifest: manifest, nativeProperties: nativeProperties)
+        print("Native product stage: original writing-Type object rows")
         let typeId = try #require(manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey])
         let search = Container.shared.searchMiddleService()
         var indexedTypes: [ObjectType] = []
@@ -121,7 +124,9 @@ struct TorahNativeDerivedProductIntegrationTests {
         try await eventually {
             let visibleRels = torahPropertiesModel.visibleSections(objectPropertiesVM.sections).flatMap(\.relations)
             let visibleKeys = Set(visibleRels.map(\.key))
-            return expectedNativeKeys.isSubset(of: visibleKeys)
+            return openedDoc.permissions.canEditRelationValues &&
+                expectedNativeKeys.isSubset(of: visibleKeys) &&
+                visibleRels.filter { expectedNativeKeys.contains($0.key) }.allSatisfy(\.isEditable)
         }
         let freshVisibleRelations = torahPropertiesModel.visibleSections(objectPropertiesVM.sections).flatMap(\.relations)
         #expect(torahPropertiesModel.isEligible == true)
@@ -146,10 +151,13 @@ struct TorahNativeDerivedProductIntegrationTests {
         // REAL UI PIPELINE PROOF 2: Type Properties Editor (TypePropertiesViewModel)
         // for all 3 Torah Writing Types (חידוש, מאמר, מחקר)
         // =========================================================================
+        print("Native product stage: original Type editors")
+        var retainedTypeDocuments: [String: any BaseDocumentProtocol] = [:]
         for role in [PinkhaSchemaRoles.chiddushKey, PinkhaSchemaRoles.articleKey, PinkhaSchemaRoles.researchKey] {
             let roleTypeId = try #require(manifest.registeredDocumentTypes[role])
             let typeDoc = Container.shared.openedDocumentProvider().document(objectId: roleTypeId, spaceId: spaceId)
             try await typeDoc.open()
+            retainedTypeDocuments[roleTypeId] = typeDoc
             let typeVM = TypePropertiesViewModel(document: typeDoc)
             let typeSubTask = Task { await typeVM.setupSubscriptions() }
             defer { typeSubTask.cancel() }
@@ -159,7 +167,7 @@ struct TorahNativeDerivedProductIntegrationTests {
                     if case .relation(let r) = row { return r.relation.key }
                     return nil
                 })
-                return expectedNativeKeys.isSubset(of: rowKeys)
+                return typeVM.canEditPropertiesList && expectedNativeKeys.isSubset(of: rowKeys)
             }
             let typeRelRows = typeVM.relationRows.compactMap { row -> TypePropertiesRelationRow? in
                 if case .relation(let r) = row { return r }
@@ -172,7 +180,8 @@ struct TorahNativeDerivedProductIntegrationTests {
         // =========================================================================
         // REAL UI PIPELINE PROOF 3: Hide, Add Property Search, and Reveal Without Duplicate
         // =========================================================================
-        let chiddushTypeDoc = Container.shared.openedDocumentProvider().document(objectId: typeId, spaceId: spaceId)
+        print("Native product stage: Type hide and reveal")
+        let chiddushTypeDoc = try #require(retainedTypeDocuments[typeId])
         let chiddushTypeVM = TypePropertiesViewModel(document: chiddushTypeDoc)
         let chiddushTypeSubTask = Task { await chiddushTypeVM.setupSubscriptions() }
         defer { chiddushTypeSubTask.cancel() }
@@ -453,7 +462,6 @@ struct TorahNativeDerivedProductIntegrationTests {
                     chipsTorahModel.isEligible
             }
         }
-        let universal = try await verifyUniversalProperties(manifest: manifest, nativeProperties: nativeProperties)
         let directory = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let fixture: [String: Any] = [
             "spaceId": spaceId, "documents": fixtureDocuments, "names": fixtureNames,
@@ -508,6 +516,9 @@ struct TorahNativeDerivedProductIntegrationTests {
             types[role] = typeId
             documents[role] = p2.id
             await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(spaceId: spaceId, typeId: typeId)
+            try await eventually {
+                doc.permissions.canEditRelationValues && other.permissions.canEditRelationValues
+            }
             #expect(doc.parsedProperties.installed.allSatisfy { !expectedKeys.contains($0.key) })
             #expect(!PinkhaTorahPropertyPolicy.shared.presentsSources(on: doc))
             let coordinator = PropertiesListCoordinatorViewModel(document: doc, output: nil)
@@ -609,14 +620,16 @@ struct TorahNativeDerivedProductIntegrationTests {
     }
 
     @MainActor
-    private func eventually(_ predicate: () async throws -> Bool) async throws {
+    private func eventually(file: StaticString = #fileID, line: UInt = #line, _ predicate: () async throws -> Bool) async throws {
         let clock = ContinuousClock()
         let deadline = clock.now.advanced(by: .seconds(30))
         repeat {
             if try await predicate() { return }
             try await Task.sleep(for: .milliseconds(100))
         } while clock.now < deadline
-        throw NativeAcceptanceError.timeout
+        let location = "\(file):\(line)"
+        print("Native acceptance timeout at \(location); real participant count=\(Container.shared.participantsStorage().participants.count)")
+        throw NativeAcceptanceError.conditionTimeout(location)
     }
 
     private func item(id: String, kind: TorahAssociationKind, key: String, label: String) -> TorahAssociationItem {
@@ -629,4 +642,7 @@ private actor NativeMembershipStates {
     private(set) var latest: [String]?
     func receive(_ ids: [String]) { latest = ids }
 }
-private enum NativeAcceptanceError: Error { case timeout }
+private enum NativeAcceptanceError: Error {
+    case timeout
+    case conditionTimeout(String)
+}

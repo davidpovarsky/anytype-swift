@@ -17,7 +17,7 @@ Status: implementation published for focused Xcode verification; NOT COMPLETE. P
 | Space isolation and native Property IDs | EXECUTED_PASS | Real second Space; distinct fixed-key definition IDs; no membership leakage |
 | Swift projection, identity and initial provisioning | EXECUTED_PASS | 14 portable Swift tests; does not establish UI behavior |
 | Original Heart regressions | EXECUTED_PASS (953), SKIPPED (1) | state/basic/smartblock/detailservice/spaceindex; existing TestReplayTreeDumpShadow external-fixture opt-in skipped |
-| Swift app picker, object-vs-Type attachment, empty rows and canonical routing | NOT_RUN — TEST_HOST_BUILD_FAILED | Run 42687999643: stale test APIs blocked test-host compilation; repaired, focused rerun pending |
+| Swift app picker, object-vs-Type attachment, empty rows and canonical routing | EXECUTED_FAIL — native API gate | Run 42710042670 compiled; 0 passed / 1 failed. Initial row editability and an unnamed timeout failed before Page/Note scenarios. Rerun pending |
 | Original Swift UI, mixed Set columns and filters | NOT_RUN_XCODE | Added native UI scenarios, screenshots and accessibility attachments |
 | New XCFramework, exact patch and every binary architecture | EXECUTED_PASS | Runs 42682425225 and 42687999643; newly built revision-13 framework |
 | App and new unsigned IPA hashes / extension IDs | NOT_RUN | No IPA before focused Xcode gates |
@@ -69,7 +69,8 @@ Per-file before/after hashes and exact protected hunks: `evidence/native-derived
 | `Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahDocumentPropertyProjection.swift` | DOWNSTREAM_OWNED | Universal document-Type availability plus shared layout/lifecycle eligibility. |
 | `Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahDocumentPropertyProjectionTests.swift` | DOWNSTREAM_OWNED | Universal and infrastructure/lifecycle boundary assertions; preserve hierarchy classification. |
 | `PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift` | DOWNSTREAM_OWNED | Drive original Page/Note/custom object and Type pickers, canonical values, reopen, mixed Set and accessibility evidence. |
-| `Tools/PinkhaNativeDerived/build_native_ipa.py` | DOWNSTREAM_OWNED | Add tests-only gate and focused policy/repository run; select real Xcode configurations safely across cached reruns before device packaging. |
+| `Tools/PinkhaNativeDerived/build_native_ipa.py` | DOWNSTREAM_OWNED | Tests-only runtime gates; real configuration selection and content-verified source timestamp cache for focused reruns. |
+| `Tools/PinkhaNativeDerived/package_evidence.py` | DOWNSTREAM_OWNED | Include exported accessibility text alongside original xcresults, JSON and screenshots. |
 | `Tools/PinkhaNativeDerived/validate_native_engine.py` | DOWNSTREAM_OWNED | Expose focused projection contract validation through the existing native workspace runner. |
 | `Tools/TorahNativeDerivedSpike/integration/heart_test.go` | DOWNSTREAM_OWNED | Supply actual basic-document layout in the native SQLite fixture. |
 | `Tools/TorahNativeDerivedSpike/integration/production_engine_test.go` | DOWNSTREAM_OWNED | Actual middleware Page/Note/custom, object selection, mixed subscriptions, Space isolation and lifecycle safety. |
@@ -118,3 +119,9 @@ Source commit `2476b44098c874e463ccbb60fbefaaa115073fee`. Compatible disposable 
 ## Focused rerun — 42707755876
 
 Exact framework artifact reinstall **PASS**, including every thin-architecture hash. The run was stopped early during app preparation to strengthen the existing compact source-add UI scenario: it now actually taps `+`, verifies the original document-scoped search, captures it, reopens the document and checks overflow separately. No native test or UI PASS is attributed to this cancelled attempt. All validation continues through GitHub CLI/API.
+
+## Native runtime attempt — 42710042670
+
+Source `661fbf3541950235868309c37f09165c5bc6d844`; real Xcode 26.3 test-host compilation **PASS** with the exact verified revision-13 Heart. Actual iPad Pro 13-inch M5 simulator, iOS 26.2. Native API suite: **0 passed, 1 failed, 0 skipped**. Three empty native rows were present, but their first snapshots reported `isEditable == false`; a later eventually condition timed out. The previous helper omitted its call site, so the exact later condition is not inferred. Policy and original app UI suites did not run; no IPA exists. Raw xcresult, summaries, full native test log and framework/install receipts are retained in this run artifact.
+
+The fixture now waits for real participant-derived editing permissions and editable rows, retains the opened Type documents for the full scenario, and records the exact file/line for any future timeout. Page/Note/custom/mixed-Set checks run before the older writing-Type scenarios. Production permission checks are unchanged. Evidence is uploaded before the large build-cache save; exported accessibility text is included. Cache timestamp restoration is permitted only after matching each current source file SHA-256 to the cached source-input manifest, so changed source remains a normal build input. These changes have syntax/helper checks only until the next real Xcode execution.

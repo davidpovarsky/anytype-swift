@@ -19,6 +19,6 @@ with zipfile.ZipFile(destination, 'w', compression=zipfile.ZIP_DEFLATED) as arch
         parts = path.relative_to(root).parts
         if any(part.startswith('DerivedData') or part == 'SourcePackages' for part in parts):
             continue
-        if path.suffix in {'.log', '.json', '.png'} or any(part.endswith('.xcresult') for part in parts):
+        if path.suffix in {'.log', '.json', '.png', '.txt'} or any(part.endswith('.xcresult') for part in parts):
             archive.write(path, path.relative_to(root).as_posix())
 print(destination)
