@@ -42,6 +42,16 @@ def ui_only_project(app):
     if count != 4:
         raise RuntimeError('Unexpected UI configurations')
     source = source.replace('TestTargetID = 0303ECFA22D8EDAA005C552B;', '')
+    # Even an unused subproject file/scheme causes SwiftPM to resolve the app's
+    # binary dependencies. This generated copy is an independent UI runner.
+    for section in ['PBXContainerItemProxy', 'PBXTargetDependency']:
+        source, count = re.subn(r'/\* Begin '+section+r' section \*/.*?/\* End '+section+r' section \*/\n',
+                                '', source, flags=re.S)
+        if count != 1:
+            raise RuntimeError('Unexpected original UI proxy/dependency section')
+    source, count = re.subn(r'^.*A10000000000000000000004 /\* Anytype\.xcodeproj \*/.*\n', '', source, flags=re.M)
+    if count != 2 or 'Anytype.xcodeproj' in source:
+        raise RuntimeError('Unexpected original UI subproject references')
     project.write_text(source)
     original_scheme = target/'xcshareddata/xcschemes/PinkhaStage1Acceptance.xcscheme'
     tree = ET.parse(original_scheme)
@@ -60,6 +70,7 @@ def ui_only_project(app):
             raise RuntimeError('App build remains in the UI-only scheme')
         reference.set('ReferencedContainer', 'container:PinkhaPrebuiltUI.xcodeproj')
     tree.write(target/'xcshareddata/xcschemes/PinkhaPrebuiltUI.xcscheme', encoding='utf-8', xml_declaration=True)
+    original_scheme.unlink()  # Only the generated copy; the source scheme is untouched.
     return target
 
 
