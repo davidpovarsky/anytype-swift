@@ -1,6 +1,6 @@
 # Universal native Torah properties — implementation and acceptance
 
-Status: product implementation and document/Type UI phases verified; original Set UI and final device IPA pending; NOT COMPLETE. Physical iPad: `PENDING_DEVICE`.
+Status: product implementation and document/Type UI phases verified; final source-filter UI edit and device IPA pending; NOT COMPLETE. Physical iPad: `PENDING_DEVICE`.
 
 - Branch: `codex/torah-native-derived-properties-20261103`.
 - Baseline: `eee21ca08707137360a4dec5174df6133ebfbdaf`.
@@ -21,7 +21,9 @@ Status: product implementation and document/Type UI phases verified; original Se
 | Original document UI and canonical row rendering | EXECUTED_PHASE_PASS | 42801263371: all six writing/Page/Note/custom document phases, empty rows, canonical ref/topic/word values and reopen; compound methods later failed at Type navigation |
 | Original Type property lists and normal-Type pickers | EXECUTED_PHASE_PASS | Writing lists: 42812211845; Page/Note/custom foreground search/select/dismiss: 42817488590. Preserve completed phases separately from compound method results |
 | Original Sources header + and overflow | REUSED_EXECUTED_PASS | 42740484502: 1 original UI test, 0 failures; unchanged production inputs |
-| Original Set columns and editable native filters | PENDING_FOCUSED_UI | 42824296900 resumes only Set gates using accepted app/runtime; no app/Go build |
+| Original mixed Page/Note/custom Set | EXECUTED_PASS | 42830150133: full original UI case passed; all three native columns and actual filtered P1 membership |
+| Original writing Set columns and human values | EXECUTED_PHASE_PASS | 42830150133: all three enabled columns, source/topic/word chips, persisted reopen, positive and negative membership controls; screenshot retained |
+| Original native source filter edit/reopen | PENDING_FOCUSED_UI | Only remaining UI scenario; foreground-row locator corrected; no replay of passed mixed Set, columns, Type or document phases |
 | New XCFramework, exact patch and every binary architecture | EXECUTED_PASS | Revision-14 run 42760706087: device arm64, simulator arm64/x86_64; actual embedded r14 runtime/native API pass 42786374694 |
 | App and new unsigned IPA hashes / extension IDs | NOT_RUN | No IPA before focused Xcode gates |
 | Physical iPad | PENDING_DEVICE | Owner acceptance script below |
@@ -212,3 +214,10 @@ All three normal Type picker search/select/dismiss phases (Page, Note, custom) a
 ## Original Set controls reached; targeted automation correction — 42824296900
 
 Exact accepted app reuse verified **5,654 identical production inputs**, runtime unchanged. UI runner-only compilation succeeded. Actual UI 0 passed / 2 failed / 0 skipped. The real Set Properties panel and native switch were reached; the centered Switch tap left Sources at 0. The test now targets the trailing native switch and waits for its value, then verifies persisted headers after reopen. Chiddush source/topic/word canonical setup and human word extraction all succeeded; the next unnecessary article cold launch hit an accessibility snapshot timeout. Remaining writing-Set setup now uses one linked chiddush and two unlinked article/research controls, asserting both inclusion and exclusion in the original three-Type Set. Previously proved full document/Type loops remain retained. Duplicate app launch before XCUIApplication.open is removed, and repeated row-title geometry queries are cached. No product source, framework or app build changes. The 31m21s job included about 8 minutes of cache download/extraction, 5 minutes of fixture setup and 6m22s actual UI cases; the delay was not a broad test rerun. Set gates remain pending; no new IPA is claimed.
+
+
+## Mixed Set full pass; retain writing columns; source-filter edit only — 42830150133
+
+Actual UI **1 passed / 1 failed / 0 skipped**. `testRemainingUniversalTypePickersAndMixedSet` passed fully: Page/Note/custom actual P1 membership under the native source predicate and all three native columns, persisted after reopen. The writing Set enabled all three columns and displayed human source/topic/word chips after reopen; its one linked chiddush appeared and unlinked article/research controls stayed excluded. Two original screenshots are retained and visually inspected. Later source-filter editing failed because a global contains-name query selected the underlying `Filters, מקור/ות` settings button instead of the foreground `מקור/ות, Has any of, Genesis 1:1` row. The actual accessibility tree records both.
+
+Resume only the source-filter method using a hittable foreground button. The full mixed-Set case is now omitted from dispatch and its exact Passed test node is required before reuse. Writing column/value phases are retained, so fresh setup needs just one source link; topic/word setup, column enabling, and their passed assertions are no longer replayed. The remaining gate changes the native predicate to a nonmatching source, reopens and verifies exclusion, then restores the matching predicate and verifies membership after reopen. No product/runtime/build inputs changed. Physical iPad PENDING_DEVICE; final IPA remains gated.

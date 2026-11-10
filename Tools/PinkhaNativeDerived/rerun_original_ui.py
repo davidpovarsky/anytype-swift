@@ -141,6 +141,14 @@ def main():
         summary = json.loads((location/name).read_text())
         if summary['passedTests'] != expected or summary['failedTests'] or summary['skippedTests']:
             raise RuntimeError('Required verified acceptance evidence is missing')
+    retained_set = app/'docs/pinkha/torah-integration/evidence/universal-properties-r14/xcode-42830150133/app'
+    def has_mixed_set_pass(value):
+        if isinstance(value, dict):
+            return (value.get('nodeIdentifier') == 'PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()'
+                    and value.get('result') == 'Passed') or any(has_mixed_set_pass(v) for v in value.values())
+        return isinstance(value, list) and any(has_mixed_set_pass(v) for v in value)
+    if not has_mixed_set_pass(json.loads((retained_set/'native-ui-tests.json').read_text())):
+        raise RuntimeError('The unchanged mixed-Set UI case has no actual passing receipt')
     source_heart = json.loads((app/'docs/pinkha/torah-integration/evidence/universal-properties-r14/xcode-42760706087/heart/custom-heart-build.json').read_text())
     patch = app/'docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch'
     if digest(patch) != source_heart['patch_sha256']:
@@ -227,7 +235,6 @@ def main():
         run_xctest(['xcodebuild', 'test-without-building', '-xctestrun', str(generated), '-destination',
             'platform=iOS Simulator,id='+args.simulator_udid, '-parallel-testing-enabled', 'NO',
             '-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testRemainingWritingTypePropertiesAndNativeSetFilters',
-            '-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet',
             '-resultBundlePath', str(result)], app, evidence, result, 'native-ui')
     finally:
         # Keep compact proof and actionable failures in the job log even when
@@ -243,12 +250,14 @@ def main():
                     print('\n'.join(lines[index:index+90]), flush=True)
         export_ui_console(args.simulator_udid, evidence)
     summary = json.loads((evidence/'native-ui-summary.json').read_text())
-    if summary['passedTests'] != 2 or summary['failedTests'] or summary['skippedTests']:
-        raise RuntimeError('The two failed original UI scenarios have not passed')
+    if summary['passedTests'] != 1 or summary['failedTests'] or summary['skippedTests']:
+        raise RuntimeError('The remaining native source-filter UI scenario has not passed')
     if binaries != {name: digest(built_app/name) for name in binaries}:
         raise RuntimeError('A reused app executable changed during the UI-only build')
     (evidence/'native-acceptance.json').write_text(json.dumps(dict(status='PASS', app_reuse=reuse,
-        passed_original_app_ui_tests=2, reused_original_app_ui_tests=1,
+        passed_original_app_ui_tests=1, reused_original_app_ui_tests=2,
+        reused_mixed_set_ui_run=42830150133,
+        retained_ui_phases=json.loads((app/'docs/pinkha/torah-integration/evidence/universal-properties-r14/retained-ui-phases.json').read_text()),
         reused_native_api_tests=1, reused_policy_tests=19, physical_ipad_verified=False), indent=2)+'\n')
 
 

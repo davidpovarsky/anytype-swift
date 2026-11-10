@@ -163,26 +163,14 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         // Fresh disposable data is required for membership. These are setup
         // writes through the actual existing canonical picker, not repeated
         // document/empty-row/reopen/type-visibility acceptance assertions.
-        // One matching document and two unlinked controls cover both positive
-        // and negative membership in the same three-Type native Set. The full
-        // three-document picker/reopen phases are already retained.
+        // Three visible columns and their human source/topic/word values passed
+        // in run 42830150133. Prepare only the source needed for filter edits.
+        // Article/research stay unlinked as negative membership controls.
         try openProperties(try XCTUnwrap(fixture.documents["chiddush"]))
         try selectNativeProperty("מקור/ות", query: fixture.sourceQuery)
-        try selectNativeProperty("נושא", query: fixture.topicQuery)
-        try selectNativeProperty("מילה / ערך", query: fixture.wordQuery)
-        let wordLabel = try nativeValueText("מילה / ערך")
         app.terminate()
         try open(fixture.setId)
         assertSetMembers(present: true, matchingRoles: ["chiddush"])
-        try enableNativeColumns()
-        app.terminate()
-        try open(fixture.setId)
-        assertSetMembers(present: true, matchingRoles: ["chiddush"])
-        for name in fixture.nativeProperties { XCTAssertTrue(setLabel(name).waitForExistence(timeout: 20)) }
-        XCTAssertTrue(setLabel(fixture.sourceLabel).waitForExistence(timeout: 20))
-        XCTAssertTrue(setLabel(fixture.topicLabel).waitForExistence(timeout: 20))
-        XCTAssertTrue(setLabel(wordLabel).waitForExistence(timeout: 20))
-        screenshot("remaining-native-Set-three-columns-and-members")
         try replaceSourceFilter(query: "Genesis 1:2")
         app.terminate()
         try open(fixture.setId)
@@ -219,10 +207,10 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         search.typeText(text)
     }
 
-    private func hittablePropertyButton(_ name: String) -> XCUIElement? {
+    private func hittablePropertyButton(_ name: String, exact: Bool = true) -> XCUIElement? {
         let deadline = Date().addingTimeInterval(20)
         repeat {
-            let rows = app.buttons.matching(NSPredicate(format: "label == %@", name)).allElementsBoundByIndex
+            let rows = app.buttons.matching(NSPredicate(format: exact ? "label == %@" : "label CONTAINS %@", name)).allElementsBoundByIndex
             if let row = rows.first(where: { $0.isHittable }) { return row }
             Thread.sleep(forTimeInterval: 0.2)
         } while Date() < deadline
@@ -318,8 +306,10 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
 
     private func replaceSourceFilter(query: String) throws {
         openSetSettings("Filters")
-        let source = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "מקור/ות")).firstMatch
-        XCTAssertTrue(source.waitForExistence(timeout: 15)); source.tap()
+        // The underlying Edit view also says "Filters, מקור/ות". Select the
+        // actual foreground filter row instead of the first background match.
+        let source = try XCTUnwrap(hittablePropertyButton("מקור/ות", exact: false))
+        source.tap()
         let search = app.textFields.matching(NSPredicate(
             format: "identifier == %@ OR identifier == %@", "torah-native-set-filter-picker", "torah-sources-search-field"
         )).firstMatch
