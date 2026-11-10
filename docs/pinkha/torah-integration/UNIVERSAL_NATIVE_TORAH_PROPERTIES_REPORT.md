@@ -1,6 +1,6 @@
 # Universal native Torah properties — implementation and acceptance
 
-Status: product implementation and document/Type UI phases verified; final source-filter UI edit and device IPA pending; NOT COMPLETE. Physical iPad: `PENDING_DEVICE`.
+Status: all scoped software/engine/native API/original UI acceptance gates verified; final unsigned device IPA pending. Physical acceptance remains separate. Physical iPad: `PENDING_DEVICE`.
 
 - Branch: `codex/torah-native-derived-properties-20261103`.
 - Baseline: `eee21ca08707137360a4dec5174df6133ebfbdaf`.
@@ -23,7 +23,7 @@ Status: product implementation and document/Type UI phases verified; final sourc
 | Original Sources header + and overflow | REUSED_EXECUTED_PASS | 42740484502: 1 original UI test, 0 failures; unchanged production inputs |
 | Original mixed Page/Note/custom Set | EXECUTED_PASS | 42830150133: full original UI case passed; all three native columns and actual filtered P1 membership |
 | Original writing Set columns and human values | EXECUTED_PHASE_PASS | 42830150133: all three enabled columns, source/topic/word chips, persisted reopen, positive and negative membership controls; screenshot retained |
-| Original native source filter edit/reopen | PENDING_FOCUSED_UI | Only remaining UI scenario; foreground-row locator corrected; no replay of passed mixed Set, columns, Type or document phases |
+| Original native source filter edit/reopen | EXECUTED_PASS | 42843522096: 1 passed / 0 failed / 0 skipped. Real Page/Note/custom P1 members disappear for Genesis 1:2 and return for Genesis 1:1 after reopen; blank P2 controls stay excluded |
 | New XCFramework, exact patch and every binary architecture | EXECUTED_PASS | Revision-14 run 42760706087: device arm64, simulator arm64/x86_64; actual embedded r14 runtime/native API pass 42786374694 |
 | App and new unsigned IPA hashes / extension IDs | NOT_RUN | No IPA before focused Xcode gates |
 | Physical iPad | PENDING_DEVICE | Owner acceptance script below |
@@ -231,3 +231,12 @@ Actual UI 0 passed / 1 failed / 0 skipped. Failure was initial document navigati
 ## Cache transport timeout; no tests ran — 42841465303
 
 No compiler or XCTest ran. The accepted 2,618,482,816-byte cache still exists (Actions cache ID 10285925581). Restore matched its exact 8258841 source but timed out at 1,312,817,152 bytes (50.1%); no Build/PinkhaSourceInputs.json was extracted. The strict UI route stopped instead of falling back to an app build. The downstream manual workflow now requests the accepted 8258841 key directly for failed-ui and retries that exact cache once within the same job only when its manifest is absent. This retries transport, not passed tests, and avoids repeating simulator setup after a transient download. All source/runtime validation and the no-build fallback remain unchanged. Only the existing one native source-filter UI case is selected. No trigger or protected production hook changes.
+
+
+## All focused software gates closed — 42843522096
+
+Actual original UI **1 passed / 0 failed / 0 skipped** (`testRemainingNativeSourceFilterEditing`), overall manual run SUCCESS. The real original Set filter picker changed the predicate to Genesis 1:2: all three linked Page/Note/custom P1 documents disappeared after reopen. Restoring Genesis 1:1 returned all three; blank P2 controls remained excluded throughout. The picker is selection-only and exposed no Link to document action. Empty/restored table screenshots and the full acceptance receipt are retained; screenshots were visually inspected. **5,654 production inputs and actual app executable hashes remained identical** to the accepted r14 simulator app. No app or Go compiler ran. The one changed UI-runner target compiled; native fixture invocation prepared only fresh disposable data.
+
+All retained document/Type/writing-column phases and full mixed-Set/header passes remain separate in the receipt. The old failed compound methods are not relabeled as whole passes. Current acceptance reuses native API 1, policy/canonical isolation 19, compact header UI 1 and full mixed-Set UI 1, plus the recorded completed phases; only the final source-filter case was executed.
+
+Next and final operation is the existing `native-ipa-fast` route with exact framework source run 42760706087, no XCTest. It uses the accepted 8258841 dependency/build cache directly and retries only a failed transport once, following the observed timeout in 42841465303. Device-SDK compilation is required because the existing app products are simulator binaries. No Go rebuild, signing, release, T2, default-branch merge or personal-Space mutation. Final archive/actual app/runtime SHA values will be filled from the actual device receipt; physical iPad stays PENDING_DEVICE.

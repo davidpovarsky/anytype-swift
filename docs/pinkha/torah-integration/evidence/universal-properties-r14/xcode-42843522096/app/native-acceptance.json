@@ -1,0 +1,91 @@
+{
+  "status": "PASS",
+  "app_reuse": {
+    "status": "REUSED_VERIFIED_PASS",
+    "source_run_id": 42786374694,
+    "compiled_source_sha": "8258841dab25764c0d9cfe3bee7eec566995f79d",
+    "current_source_sha": "0a7dfcdad8b669f9ea6430762bab21412cb0a737",
+    "identical_production_inputs": 5654,
+    "app_binaries": {
+      "Anytype": "79084982466abdddfbe02b8d0fa7e66fab884ddc4861a480ff75d1c074758bc8",
+      "__preview.dylib": "aae04fb10fb1ffcce82c49f0612ccdd83ad5c3c049296b7bfdc86cbc83462976",
+      "Anytype.debug.dylib": "5f182ea542f3555c29fb4fe6336646c30c61080567a78189b5a218405b907689"
+    },
+    "policy_tests": "REUSED_VERIFIED_PASS",
+    "compact_header_ui": "REUSED_VERIFIED_PASS"
+  },
+  "passed_original_app_ui_tests": 1,
+  "reused_original_app_ui_tests": 2,
+  "reused_mixed_set_ui_run": 42830150133,
+  "retained_ui_phases": {
+    "status": "RETAIN_COMPLETED_PHASES",
+    "production_app_source": "8258841dab25764c0d9cfe3bee7eec566995f79d",
+    "native_patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+    "runtime_sha256": "ec563a8fb21189d3d46827b50615ed7249ae4b41ed0ee661146b3b4e66ef0b65",
+    "phases": [
+      {
+        "run_id": 42801263371,
+        "targets": [
+          "chiddush",
+          "article",
+          "research",
+          "page",
+          "note",
+          "custom"
+        ],
+        "completed": "original document native rows, canonical source/topic/word picker and rendering, relaunch; normal optional object attachment and selected Sources header",
+        "whole_method_status": "FAILED_LATER_AT_TYPE_NAVIGATION"
+      },
+      {
+        "run_id": 42812211845,
+        "targets": [
+          "chiddush",
+          "article",
+          "research"
+        ],
+        "completed": "original Type property list includes all three native definitions",
+        "whole_method_status": "FAILED_LATER_DURING_UNNECESSARY_SOURCE_PROPERTIES_REPLAY"
+      },
+      {
+        "run_id": 42817488590,
+        "targets": [
+          "page",
+          "note",
+          "custom"
+        ],
+        "completed": "foreground original Type Add Property searches all three native definitions, selects Sources, verifies dismissal",
+        "whole_method_status": "FAILED_LATER_AT_SET_SETTINGS_LINE_305",
+        "source_commit": "297286e37b64cf6c038e5e5e61baa17e328870e0"
+      },
+      {
+        "run_id": 42830150133,
+        "targets": [
+          "three-Type writing Set"
+        ],
+        "completed": "all three native columns enabled and persisted after reopen; human source/topic/word values; linked chiddush included and unlinked article/research excluded",
+        "whole_method_status": "FAILED_LATER_WHEN_BACKGROUND_SETTINGS_ROW_MATCHED_SOURCE_FILTER_QUERY",
+        "source_commit": "24fd853f68a128b770ec46065c9ab97d17d4b231"
+      }
+    ],
+    "full_test_passes_reused": [
+      {
+        "run_id": 42740484502,
+        "test": "testSourceHeaderSelectionAndOverflow",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "run_id": 42830150133,
+        "test": "testRemainingUniversalTypePickersAndMixedSet",
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      }
+    ],
+    "reason_not_repeated": "Identical product source inputs and actual r14 runtime; current changes affect only test locator/search setup and build provenance tooling. No full compound-method PASS is inferred from partial phases."
+  },
+  "reused_native_api_tests": 1,
+  "reused_policy_tests": 19,
+  "physical_ipad_verified": false
+}

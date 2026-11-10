@@ -84,8 +84,19 @@ jobs:
             build/native-evidence/app/DerivedData-NativeAcceptance/Build
             build/native-evidence/app/DerivedData-NativeAcceptance/ModuleCache.noindex
             build/native-evidence/app/DerivedData-NativeAcceptance/SDKStatCaches.noindex
-          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-${{ github.sha }}
+          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-8258841dab25764c0d9cfe3bee7eec566995f79d
           restore-keys: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Retry accepted dependency cache if transport timed out
+        if: ${{ hashFiles('build/native-evidence/app/DerivedData-NativeAcceptance/Build/PinkhaSourceInputs.json') == '' }}
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/native-evidence/app/DerivedData-NativeAcceptance/SourcePackages
+            build/native-evidence/app/DerivedData-NativeAcceptance/Build
+            build/native-evidence/app/DerivedData-NativeAcceptance/ModuleCache.noindex
+            build/native-evidence/app/DerivedData-NativeAcceptance/SDKStatCaches.noindex
+          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-8258841dab25764c0d9cfe3bee7eec566995f79d
 
       - name: Build device app and package UNSIGNED IPA - NO XCTest
         run: |
