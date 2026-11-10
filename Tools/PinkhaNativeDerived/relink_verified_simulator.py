@@ -68,7 +68,7 @@ def relink(app, derived, evidence, heart):
     if not objects or any(not p.is_file() or not p.resolve().is_relative_to(derived) for p in objects):
         raise RuntimeError('A verified Swift object is missing or outside DerivedData')
     for value in argv:
-        if value.startswith('@') and not Path(value[1:]).is_file():
+        if value.startswith('@/') and not Path(value[1:]).is_file():
             raise RuntimeError('Missing accepted linker response file: '+value)
     search = [Path(v[2:]) for v in argv if v.startswith('-F') and len(v)>2]
     candidates = [p/'Lib.framework/Lib' for p in search if (p/'Lib.framework/Lib').is_file()]
