@@ -13,6 +13,7 @@ import platform
 import plistlib
 import shutil
 import subprocess
+import sys
 import zipfile
 
 from build_custom_heart import command, contains, digest, git
@@ -168,6 +169,8 @@ def main():
         if args.reuse_policy_and_header_from_run != 42740484502:
             raise RuntimeError('Unknown accepted policy/header evidence')
         accepted_sha='dee60eef8395a8a92998f08d7e7eb66701e7febc'
+        from relink_verified_simulator import ensure_accepted_commit
+        ensure_accepted_commit(app,evidence,accepted_sha)
         changed=git(app,'diff','--name-only',accepted_sha,'--','Anytype/Sources','Modules',
             'AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift',
             'AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift',
@@ -291,4 +294,13 @@ def main():
     (evidence/'native-ipad-build.json').write_text(json.dumps(receipt,indent=2)+'\n')
     print(json.dumps(dict(ipa=str(ipa),sha256=receipt['ipa_sha256'])))
 
-if __name__=='__main__': main()
+if __name__=='__main__':
+    try:
+        main()
+    except Exception as error:
+        if '--evidence' in sys.argv:
+            target=Path(sys.argv[sys.argv.index('--evidence')+1]).resolve()
+            target.mkdir(parents=True,exist_ok=True)
+            (target/'native-build-error.json').write_text(json.dumps(dict(
+                error_type=type(error).__name__,error=str(error)),indent=2)+'\n')
+        raise

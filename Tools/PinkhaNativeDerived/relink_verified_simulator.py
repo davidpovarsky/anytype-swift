@@ -13,12 +13,22 @@ import subprocess
 from build_custom_heart import command, contains, digest, git
 
 
+def ensure_accepted_commit(app, evidence, sha):
+    # actions/checkout is intentionally shallow. Fetch only the known accepted
+    # commit needed for exact tree comparison, leaving HEAD and the branch intact.
+    present = subprocess.run(['git', 'cat-file', '-e', sha+'^{commit}'], cwd=app,
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if present.returncode:
+        command(['git', 'fetch', '--no-tags', '--depth=1', 'origin', sha], app, evidence)
+
+
 def relink(app, derived, evidence, heart):
     if platform.system() != 'Darwin' or platform.machine() != 'x86_64':
         raise RuntimeError('Real Xcode/macOS simulator linker is required')
     authority = app/'docs/pinkha/torah-integration/evidence/universal-properties-r14/relink/accepted-simulator-link.json'
     accepted = json.loads(authority.read_text())
     baseline = accepted['accepted_swift_source_sha']
+    ensure_accepted_commit(app, evidence, baseline)
     changed = git(app, 'diff', '--name-only', baseline, 'HEAD', '--', 'Anytype', 'Modules',
                   'AnyTypeTests', 'Anytype.xcodeproj', 'Configurations', 'Libraryfile').splitlines()
     if changed:

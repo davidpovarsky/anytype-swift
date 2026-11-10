@@ -83,11 +83,12 @@ def main():
     binary = built / info["CFBundleExecutable"]
     if not binary.is_file():
         raise RuntimeError("Built iPad app executable is missing")
-    # Gomobile produces a static Lib.framework. Xcode embeds a generated
-    # framework stub and links the library's code into the executable; linker
-    # stripping can remove the Go ldflags marker string. Absence of that marker
-    # in the final app executable is NOT evidence that stock Heart was linked.
-    # Verify the exact custom input above and Xcode's actual source selection.
+    # The static Go archive is linked into dynamic ProtobufMessages.framework,
+    # as shown by the original Xcode link command. The main app executable is
+    # not the runtime carrier. Record its actual framework hash and marker too.
+    runtime = built / "Frameworks/ProtobufMessages.framework/ProtobufMessages"
+    if not runtime.is_file():
+        raise RuntimeError("Built app is missing its actual native runtime carrier")
     device_log = evidence / "command-02.log"
     if not device_log.is_file():
         raise RuntimeError("The Xcode device-build provenance log is missing")
@@ -192,6 +193,8 @@ def main():
         "heart_patch_sha256": heart["patch_sha256"],
         "app_sha": git(app, "rev-parse", "HEAD"),
         "app_executable_sha256": digest(binary),
+        "runtime_framework_sha256": digest(runtime),
+        "runtime_marker_present": contains(runtime, marker),
         "branch": git(app, "branch", "--show-current"),
         "ipa": str(ipa),
         "ipa_sha256": digest(ipa),

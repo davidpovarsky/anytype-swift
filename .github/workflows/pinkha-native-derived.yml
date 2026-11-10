@@ -80,11 +80,11 @@ jobs:
             --evidence build/native-evidence/heart
 
       - name: Preserve the NEW verified native framework for focused app reruns
-        if: ${{ inputs.validation_scope != 'failed-ui' }}
+        if: ${{ inputs.validation_scope != 'failed-ui' && inputs.heart_source_run_id == '' }}
         run: tar -czf build/Pinkha-Universal-Verified-Heart-r14.tar.gz -C Dependencies/Middleware Lib.xcframework PinkhaNativeHeartBuild.json
 
       - name: Upload exact verified new Heart
-        if: ${{ inputs.validation_scope != 'failed-ui' }}
+        if: ${{ inputs.validation_scope != 'failed-ui' && inputs.heart_source_run_id == '' }}
         uses: actions/upload-artifact@v4
         with:
           name: Pinkha-Universal-Verified-Heart-r14
@@ -102,7 +102,7 @@ jobs:
             build/native-evidence/app/DerivedData-NativeAcceptance/Build
             build/native-evidence/app/DerivedData-NativeAcceptance/ModuleCache.noindex
             build/native-evidence/app/DerivedData-NativeAcceptance/SDKStatCaches.noindex
-          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-${{ inputs.validation_scope == 'readonly-startup' && '0eca3054d4d0468edebb1b72916914b5884d4a79' || github.sha }}
+          key: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-${{ inputs.validation_scope == 'readonly-startup' && 'dee60eef8395a8a92998f08d7e7eb66701e7febc' || github.sha }}
           restore-keys: pinkha-universal-r13-sim-xcode26.3-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Focused real native product and original UI tests
@@ -142,7 +142,7 @@ jobs:
           retention-days: 14
 
       - name: Preserve focused Xcode cache after build or test failure
-        if: ${{ always() && steps.native-app.outcome != 'skipped' && (inputs.validation_scope == 'readonly-startup' || steps.native-app-cache.outputs.cache-hit != 'true') }}
+        if: ${{ always() && steps.native-app.outcome != 'skipped' && (steps.native-app-cache.outputs.cache-hit != 'true' || (inputs.validation_scope == 'readonly-startup' && hashFiles('build/native-evidence/app/relinked-simulator.json') != '')) }}
         uses: actions/cache/save@v4
         with:
           path: |
