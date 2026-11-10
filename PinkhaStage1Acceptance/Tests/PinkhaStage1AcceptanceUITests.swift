@@ -157,29 +157,21 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
 
     // Document/object flows already executed successfully in run 42801263371.
     // Resume only the unproven Type presentation and Set interactions.
-    func testRemainingWritingTypePropertiesAndNativeSetFilters() throws {
-        // Writing-Type property lists passed in run 42812211845; the unchanged
-        // compact header/overflow passed in run 42740484502. Retain both.
-        // Fresh disposable data is required for membership. These are setup
-        // writes through the actual existing canonical picker, not repeated
-        // document/empty-row/reopen/type-visibility acceptance assertions.
-        // Three visible columns and their human source/topic/word values passed
-        // in run 42830150133. Prepare only the source needed for filter edits.
-        // Article/research stay unlinked as negative membership controls.
-        try openProperties(try XCTUnwrap(fixture.documents["chiddush"]))
-        try selectNativeProperty("מקור/ות", query: fixture.sourceQuery)
-        app.terminate()
-        try open(fixture.setId)
-        assertSetMembers(present: true, matchingRoles: ["chiddush"])
+    func testRemainingNativeSourceFilterEditing() throws {
+        // The compiled native fixture already links the three P1 documents.
+        // Reuse them for the remaining filter edits; do not replay successful
+        // object pickers, writing columns, or mixed-Set column configuration.
+        try open(fixture.universalSetId)
+        assertUniversalSetMembers(present: true)
         try replaceSourceFilter(query: "Genesis 1:2")
         app.terminate()
-        try open(fixture.setId)
-        assertSetMembers(present: false)
+        try open(fixture.universalSetId)
+        assertUniversalSetMembers(present: false)
         screenshot("remaining-native-Set-nonmatching-filter-empty")
         try replaceSourceFilter(query: fixture.sourceQuery)
         app.terminate()
-        try open(fixture.setId)
-        assertSetMembers(present: true, matchingRoles: ["chiddush"])
+        try open(fixture.universalSetId)
+        assertUniversalSetMembers(present: true)
         screenshot("remaining-native-Set-restored-filter-members")
     }
 
@@ -276,6 +268,16 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         }
     }
 
+    private func assertUniversalSetMembers(present: Bool) {
+        XCTAssertTrue(setTable.waitForExistence(timeout: 30))
+        for role in ["page", "note", "custom"] {
+            let linked = setLabel("Universal \(role) P1")
+            if present { XCTAssertTrue(linked.waitForExistence(timeout: 30)) }
+            else { XCTAssertTrue(linked.waitForNonExistence(timeout: 30)) }
+            XCTAssertTrue(setLabel("Universal \(role) blank").waitForNonExistence(timeout: 30))
+        }
+    }
+
     private func openSetSettings(_ section: String) {
         let settings = app.buttons["set-view-settings"].firstMatch
         XCTAssertTrue(settings.waitForExistence(timeout: 15)); settings.tap()
@@ -328,7 +330,9 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     }
 
     private func open(_ id: String) throws {
-        // open launches/activates the target with this URL; avoid two launches.
+        // Initialize the restored account/window before cold-start deep links.
+        // open(URL) alone can deliver the route before the editor is ready.
+        if app.state == .notRunning { app.launch() }
         var url = URLComponents()
         url.scheme = "anytype"; url.host = "object"
         url.queryItems = [URLQueryItem(name: "objectId", value: id), URLQueryItem(name: "spaceId", value: fixture.spaceId)]

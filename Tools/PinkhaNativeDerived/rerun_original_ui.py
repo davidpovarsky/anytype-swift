@@ -234,7 +234,7 @@ def main():
     try:
         run_xctest(['xcodebuild', 'test-without-building', '-xctestrun', str(generated), '-destination',
             'platform=iOS Simulator,id='+args.simulator_udid, '-parallel-testing-enabled', 'NO',
-            '-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testRemainingWritingTypePropertiesAndNativeSetFilters',
+            '-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing',
             '-resultBundlePath', str(result)], app, evidence, result, 'native-ui')
     finally:
         # Keep compact proof and actionable failures in the job log even when
