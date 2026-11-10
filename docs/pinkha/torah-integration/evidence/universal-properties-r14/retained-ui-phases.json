@@ -1,0 +1,52 @@
+{
+  "status": "RETAIN_COMPLETED_PHASES",
+  "production_app_source": "8258841dab25764c0d9cfe3bee7eec566995f79d",
+  "native_patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+  "runtime_sha256": "ec563a8fb21189d3d46827b50615ed7249ae4b41ed0ee661146b3b4e66ef0b65",
+  "phases": [
+    {
+      "run_id": 42801263371,
+      "targets": [
+        "chiddush",
+        "article",
+        "research",
+        "page",
+        "note",
+        "custom"
+      ],
+      "completed": "original document native rows, canonical source/topic/word picker and rendering, relaunch; normal optional object attachment and selected Sources header",
+      "whole_method_status": "FAILED_LATER_AT_TYPE_NAVIGATION"
+    },
+    {
+      "run_id": 42812211845,
+      "targets": [
+        "chiddush",
+        "article",
+        "research"
+      ],
+      "completed": "original Type property list includes all three native definitions",
+      "whole_method_status": "FAILED_LATER_DURING_UNNECESSARY_SOURCE_PROPERTIES_REPLAY"
+    },
+    {
+      "run_id": 42817488590,
+      "targets": [
+        "page",
+        "note",
+        "custom"
+      ],
+      "completed": "foreground original Type Add Property searches all three native definitions, selects Sources, verifies dismissal",
+      "whole_method_status": "FAILED_LATER_AT_SET_SETTINGS_LINE_305",
+      "source_commit": "297286e37b64cf6c038e5e5e61baa17e328870e0"
+    }
+  ],
+  "full_test_passes_reused": [
+    {
+      "run_id": 42740484502,
+      "test": "testSourceHeaderSelectionAndOverflow",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "reason_not_repeated": "Identical product source inputs and actual r14 runtime; current changes affect only test locator/search setup and build provenance tooling. No full compound-method PASS is inferred from partial phases."
+}

@@ -1,6 +1,6 @@
 # Universal native Torah properties — implementation and acceptance
 
-Status: implementation published for focused Xcode verification; NOT COMPLETE. Physical iPad: `PENDING_DEVICE`.
+Status: product implementation and document/Type UI phases verified; original Set UI and final device IPA pending; NOT COMPLETE. Physical iPad: `PENDING_DEVICE`.
 
 - Branch: `codex/torah-native-derived-properties-20261103`.
 - Baseline: `eee21ca08707137360a4dec5174df6133ebfbdaf`.
@@ -17,11 +17,16 @@ Status: implementation published for focused Xcode verification; NOT COMPLETE. P
 | Space isolation and native Property IDs | EXECUTED_PASS | Real second Space; distinct fixed-key definition IDs; no membership leakage |
 | Swift projection, identity and initial provisioning | EXECUTED_PASS | 14 portable Swift tests; does not establish UI behavior |
 | Original Heart regressions | EXECUTED_PASS (953), SKIPPED (1) | state/basic/smartblock/detailservice/spaceindex; existing TestReplayTreeDumpShadow external-fixture opt-in skipped |
-| Swift app picker, object-vs-Type attachment, empty rows and canonical routing | EXECUTED_PASS | Real Xcode native integration 42740484502: 1 passed, 0 failed, 0 skipped; Page/Note/custom actual native objects and filters |
-| Original Swift UI, mixed Set columns and filters | EXECUTED_FAIL (2), EXECUTED_PASS (1) | Compact header add/document search/overflow passed. Native row picker locator and Page property lookup require focused UI follow-up |
-| New XCFramework, exact patch and every binary architecture | EXECUTED_PASS | Runs 42682425225 and 42687999643; newly built revision-13 framework |
+| Swift app picker, object-vs-Type attachment, empty rows and canonical routing | EXECUTED_PASS | Real Xcode r14 native integration 42786374694: 1 passed, 0 failed, 0 skipped; Page/Note/custom actual native objects and filters; unchanged 19 policy/canonical isolation tests retained from 42740484502 |
+| Original document UI and canonical row rendering | EXECUTED_PHASE_PASS | 42801263371: all six writing/Page/Note/custom document phases, empty rows, canonical ref/topic/word values and reopen; compound methods later failed at Type navigation |
+| Original Type property lists and normal-Type pickers | EXECUTED_PHASE_PASS | Writing lists: 42812211845; Page/Note/custom foreground search/select/dismiss: 42817488590. Preserve completed phases separately from compound method results |
+| Original Sources header + and overflow | REUSED_EXECUTED_PASS | 42740484502: 1 original UI test, 0 failures; unchanged production inputs |
+| Original Set columns and editable native filters | PENDING_FOCUSED_UI | 42824296900 resumes only Set gates using accepted app/runtime; no app/Go build |
+| New XCFramework, exact patch and every binary architecture | EXECUTED_PASS | Revision-14 run 42760706087: device arm64, simulator arm64/x86_64; actual embedded r14 runtime/native API pass 42786374694 |
 | App and new unsigned IPA hashes / extension IDs | NOT_RUN | No IPA before focused Xcode gates |
 | Physical iPad | PENDING_DEVICE | Owner acceptance script below |
+
+Completed UI phases and their originating failed compound methods are recorded separately in `evidence/universal-properties-r14/retained-ui-phases.json`; their method failures are not relabeled as full test passes.
 
 ## Implementation
 
@@ -35,13 +40,13 @@ The main future upstream-sync risks are the original Heart RPC/state hooks that 
 
 ## Changed files and provenance
 
-Current per-file before/after hashes and exact protected hunks: `evidence/native-derived/8494cfb347/approval/revision-14/source-inventory.json` and `swift-integration.patch`. Complete 35-file pinned Heart inventory and patch are beside them. Historical revision-13 evidence is immutable. The original worktree and all pre-existing untracked research files are untouched.
+Current per-file before/after hashes and exact protected hunks: `evidence/native-derived/8494cfb347/approval/revision-14/source-inventory.json` and `swift-integration.patch`. Complete 35-file pinned Heart inventory and patch are beside them. Historical revision-14 evidence is immutable. The original worktree and all pre-existing untracked research files are untouched.
 
 | File | Ownership | Change |
 |---|---|---|
-| `.github/workflows/pinkha-native-derived.yml` | DOWNSTREAM_OWNED | Pin exact revision-13 patch and SHA; preflight iPad, verify fresh framework reuse and cache focused Xcode build outputs; keep manual routing. |
-| `.github/workflows/pinkha-native-fast-ipa.yml` | DOWNSTREAM_OWNED | Pin exact revision-13 patch and SHA; keep manual build/test routing. |
-| `.github/workflows/pinkha-native-ipa-fast.yml` | DOWNSTREAM_OWNED | Pin exact revision-13 patch and SHA; keep manual build/test routing. |
+| `.github/workflows/pinkha-native-derived.yml` | DOWNSTREAM_OWNED | Pin exact revision-14 patch and SHA; preflight iPad, verify fresh framework reuse and cache focused Xcode build outputs; keep manual routing. |
+| `.github/workflows/pinkha-native-fast-ipa.yml` | DOWNSTREAM_OWNED | Pin exact revision-14 patch and SHA; keep manual build/test routing. |
+| `.github/workflows/pinkha-native-ipa-fast.yml` | DOWNSTREAM_OWNED | Pin exact revision-14 patch and SHA; keep manual build/test routing. |
 | `AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift` | DOWNSTREAM_OWNED | Real Page/Note/custom picker, isolated attachment, empty rows and mixed Set fixtures; correct stale baseline test API calls. |
 | `AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift` | DOWNSTREAM_OWNED | Repair obsolete fixture to use the existing native adapter/store probe; preserve canonical write/read/remove assertions. |
 | `AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift` | DOWNSTREAM_OWNED | Reverse obsolete Page/Note exclusions and assert discovery does not attach properties. |
@@ -79,14 +84,21 @@ Current per-file before/after hashes and exact protected hunks: `evidence/native
 | `Tools/TorahNativeDerivedSpike/projection_test.go` | DOWNSTREAM_OWNED | Reverse obsolete Page rejection; cover Note/custom and explicit classification. |
 | `Tools/PinkhaNativeDerived/build_custom_heart.py` | DOWNSTREAM_OWNED | Verify the new marker in every thin Mach-O architecture of every XCFramework binary. |
 | `docs/architecture/UPSTREAM_EXCEPTION_REGISTER.md` | DOWNSTREAM_OWNED | Record current owner authorization, exact protected diffs and verified/open gates. |
-| `approval/revision-13/native-heart-integration.patch` | GENERATED_REVIEW_ARTIFACT | Complete exact 32-file patch against the unchanged pinned Heart. |
-| `approval/revision-13/native-heart-integration.json` | GENERATED_REVIEW_ARTIFACT | Per-file before/after hashes and exact patch SHA. |
-| `approval/revision-13/swift-integration.patch` | GENERATED_REVIEW_ARTIFACT | Exact nine protected Swift integration diffs plus the manual dispatcher artifact input. |
-| `approval/revision-13/source-inventory.json` | GENERATED_REVIEW_ARTIFACT | Ownership and before/after hashes for changed repository files. |
-| `UNIVERSAL_NATIVE_TORAH_PROPERTIES_REPORT.md` | DOWNSTREAM_OWNED | Verified acceptance matrix, file summary, provenance and pending device script. |
+| `approval/revision-14/native-heart-integration.patch` | GENERATED_REVIEW_ARTIFACT | Complete exact 35-file patch against the unchanged pinned Heart. |
+| `approval/revision-14/native-heart-integration.json` | GENERATED_REVIEW_ARTIFACT | Per-file before/after hashes and exact patch SHA. |
+| `approval/revision-14/swift-integration.patch` | GENERATED_REVIEW_ARTIFACT | Exact nine protected Swift integration diffs plus the manual dispatcher artifact input. |
+| `approval/revision-14/source-inventory.json` | GENERATED_REVIEW_ARTIFACT | Ownership and before/after hashes for changed repository files. |
+| `docs/pinkha/torah-integration/UNIVERSAL_NATIVE_TORAH_PROPERTIES_REPORT.md` | DOWNSTREAM_OWNED | Verified acceptance matrix, file summary, provenance and pending device script. |
 | `Tools/PinkhaNativeDerived/create_disposable_ipad.py` | DOWNSTREAM_OWNED | Select a compatible available iPad/runtime and boot before expensive compilation. |
-| `Tools/PinkhaNativeDerived/install_verified_heart.py` | DOWNSTREAM_OWNED | Reinstall only this task's exact new revision-13 artifact after file, patch, source-inventory and thin-architecture verification. |
+| `Tools/PinkhaNativeDerived/install_verified_heart.py` | DOWNSTREAM_OWNED | Reinstall only this task's exact new revision-14 artifact after file, patch, source-inventory and thin-architecture verification. |
 | `.github/workflows/torah-inspector-ipados27.yml` | SHARED_INTEGRATION | Pass the existing manual source-run input to exact artifact verification; no automatic triggers added. |
+
+| `Tools/TorahNativeDerivedSpike/integration/readonly_restart_test.go` | DOWNSTREAM_OWNED | Two-process real native bootstrap/reopen verifies native readonly identity while original ordinary Tag fixing continues. |
+| `Tools/PinkhaNativeDerived/build_native_ipa_fast.py` | DOWNSTREAM_OWNED | Reuse dependency checkouts, build device SDK once, verify actual runtime marker/hash, ZIP and nested extension IDs. |
+
+| `Tools/PinkhaNativeDerived/reuse_matching_framework_headers.py` | DOWNSTREAM_OWNED | Restore timestamps only for byte-identical ABI headers/metadata; never reuse old native binaries. |
+| `Tools/TorahNativeDerivedSpike/integration/readonlyfixer_test.go` | DOWNSTREAM_OWNED | Cover exact native key/bundled identity exclusions and preserve ordinary same-name Tag behavior. |
+| `Tools/PinkhaNativeDerived/relink_verified_simulator.py` | DOWNSTREAM_OWNED | Verify accepted source/ABI/object hashes and relink only the actual ProtobufMessages runtime with the new r14 archive. |
 
 ## Validation commands
 

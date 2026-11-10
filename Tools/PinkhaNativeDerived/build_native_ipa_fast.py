@@ -89,6 +89,8 @@ def main():
     runtime = built / "Frameworks/ProtobufMessages.framework/ProtobufMessages"
     if not runtime.is_file():
         raise RuntimeError("Built app is missing its actual native runtime carrier")
+    if not contains(runtime, marker):
+        raise RuntimeError("The built app runtime lacks the verified custom Heart marker")
     device_log = evidence / "command-02.log"
     if not device_log.is_file():
         raise RuntimeError("The Xcode device-build provenance log is missing")
