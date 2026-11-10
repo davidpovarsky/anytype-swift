@@ -29,16 +29,16 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
             XCTAssertFalse(app.buttons["torah-property-ref"].exists, "The old display-only Properties row must not replace the original native row")
             XCTAssertFalse(app.staticTexts["הקשר תורני"].exists)
             try selectNativeProperty("מקור/ות", query: fixture.sourceQuery)
-            XCTAssertTrue(app.staticTexts[fixture.sourceLabel].waitForExistence(timeout: 20))
+            expectNativeValue("מקור/ות", label: fixture.sourceLabel)
             try selectNativeProperty("נושא", query: fixture.topicQuery)
-            XCTAssertTrue(app.staticTexts[fixture.topicLabel].waitForExistence(timeout: 20))
+            expectNativeValue("נושא", label: fixture.topicLabel)
             try selectNativeProperty("מילה / ערך", query: fixture.wordQuery)
             let wordLabel = try nativeValueText("מילה / ערך")
             screenshot("native-properties-\(role)-three-values")
             app.terminate()
             try openProperties(id)
-            XCTAssertTrue(app.staticTexts[fixture.sourceLabel].waitForExistence(timeout: 20))
-            XCTAssertTrue(app.staticTexts[fixture.topicLabel].waitForExistence(timeout: 20))
+            expectNativeValue("מקור/ות", label: fixture.sourceLabel)
+            expectNativeValue("נושא", label: fixture.topicLabel)
             XCTAssertEqual(try nativeValueText("מילה / ערך"), wordLabel)
             XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "providerID")).firstMatch.exists)
             screenshot("native-properties-\(role)-relaunch")
@@ -60,9 +60,9 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         app.terminate()
         try open(fixture.setId)
         assertSetMembers(present: true)
-        for name in fixture.nativeProperties { XCTAssertTrue(setTable.staticTexts[name].waitForExistence(timeout: 20)) }
-        XCTAssertTrue(setTable.staticTexts[fixture.sourceLabel].firstMatch.waitForExistence(timeout: 20))
-        XCTAssertTrue(setTable.staticTexts[fixture.topicLabel].firstMatch.exists)
+        for name in fixture.nativeProperties { XCTAssertTrue(setLabel(name).waitForExistence(timeout: 20)) }
+        XCTAssertTrue(setLabel(fixture.sourceLabel).waitForExistence(timeout: 20))
+        XCTAssertTrue(setLabel(fixture.topicLabel).exists)
         screenshot("native-set-three-live-members")
         // Change only the native Set predicate via its actual Torah picker.
         // None of the three documents links Genesis 1:2, so all must disappear.
@@ -124,7 +124,7 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
             tree.lifetime = .keepAlways; add(tree)
             app.terminate()
             try openProperties(id)
-            XCTAssertTrue(app.staticTexts[fixture.sourceLabel].waitForExistence(timeout: 20))
+            expectNativeValue("מקור/ות", label: fixture.sourceLabel)
             screenshot("universal-offline-reopen-" + role)
             app.terminate()
             try open(id)
@@ -157,6 +157,31 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
 
     private var setTable: XCUIElement {
         app.descendants(matching: .any).matching(identifier: "set-table").firstMatch
+    }
+
+    private func setLabel(_ label: String) -> XCUIElement {
+        setTable.descendants(matching: .any).matching(NSPredicate(format: "label == %@", label)).firstMatch
+    }
+
+    private func nativeRowValues(_ name: String) -> [XCUIElement] {
+        let title = propertyTitle(name)
+        guard title.exists else { return [] }
+        return app.descendants(matching: .any).matching(NSPredicate(
+            format: "elementType == %d OR elementType == %d",
+            XCUIElement.ElementType.button.rawValue, XCUIElement.ElementType.staticText.rawValue
+        )).allElementsBoundByIndex.filter {
+            abs($0.frame.midY - title.frame.midY) < 22 && $0.frame.minX >= title.frame.maxX &&
+            !$0.label.isEmpty && $0.label != name && $0.label != "Add" && $0.label != "x24/More"
+        }.sorted { $0.frame.minX < $1.frame.minX }
+    }
+
+    private func expectNativeValue(_ name: String, label: String, file: StaticString = #filePath, line: UInt = #line) {
+        let deadline = Date().addingTimeInterval(20)
+        repeat {
+            if nativeRowValues(name).contains(where: { $0.label == label }) { return }
+            Thread.sleep(forTimeInterval: 0.2)
+        } while Date() < deadline
+        XCTFail("The original native row \(name) did not render \(label)", file: file, line: line)
     }
 
     private func assertSetMembers(present: Bool) {
@@ -263,13 +288,9 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     }
 
     private func nativeValueText(_ name: String) throws -> String {
-        let title = propertyTitle(name)
         let deadline = Date().addingTimeInterval(20)
         repeat {
-            let values = app.staticTexts.allElementsBoundByIndex.filter {
-                abs($0.frame.midY - title.frame.midY) < 22 && $0.frame.minX >= title.frame.maxX &&
-                !$0.label.isEmpty && $0.label != name && $0.label != "Add"
-            }
+            let values = nativeRowValues(name)
             if let value = values.first?.label {
                 XCTAssertFalse(value.contains("torah1|")); return value
             }
