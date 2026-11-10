@@ -212,7 +212,7 @@ def main():
     fixture=json.loads(fixture_path.read_text())
     if len(set(fixture['documents'].values()))!=3: raise RuntimeError('Native UI fixture must contain three actual writing Objects')
     (evidence/'native-ui-fixture.json').write_text(json.dumps(fixture,indent=2)+'\n')
-    from rerun_original_ui import ui_only_project, export_ui_console
+    from rerun_original_ui import ui_only_project, export_ui_console, install_ui_runner
     ui_project=ui_only_project(app)
     command(['xcodebuild','build-for-testing','-project',str(ui_project),
              '-scheme','PinkhaPrebuiltUI','-configuration','Release-Anytype',
@@ -238,6 +238,8 @@ def main():
     inject_ui(ui_run)
     ui_configuration=ui_configuration_source.with_name('PinkhaNativeDerivedUI.xctestrun')
     with ui_configuration.open('wb') as stream: plistlib.dump(ui_run,stream)
+    (evidence/'ui-xctestrun-source.json').write_text(json.dumps(ui_run,default=str,indent=2)+'\n')
+    install_ui_runner(args.simulator_udid,derived/'Build/Products',app,evidence)
     ui_result=evidence/'NativeDerivedOriginalAppUI.xcresult'
     ui_selection=['-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests']
     if header_reused:

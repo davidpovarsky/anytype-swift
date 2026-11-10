@@ -17,13 +17,13 @@ import xml.etree.ElementTree as ET
 from build_custom_heart import command, digest, git
 from build_native_ipa import run_xctest, test_configuration
 
-VERIFIED_SHA = 'dee60eef8395a8a92998f08d7e7eb66701e7febc'
-VERIFIED_RUN = 42740484502
+VERIFIED_SHA = '8258841dab25764c0d9cfe3bee7eec566995f79d'
+VERIFIED_RUN = 42786374694
 
 
 def production_path(path):
     return not path.startswith(('AnytypeTests/', 'AnyTypeTests/', 'PinkhaStage1Acceptance/', 'Dependencies/Middleware/Lib.xcframework/',
-        'docs/', '.github/', '.agents/', '.claude/', '.codex/')) and path != 'Tools/PinkhaNativeDerived/rerun_original_ui.py' and not path.endswith('.md')
+        'docs/', '.github/', '.agents/', '.claude/', '.codex/', 'Tools/PinkhaNativeDerived/')) and not path.endswith('.md')
 
 
 def ui_only_project(app):
@@ -84,6 +84,24 @@ def export_ui_console(simulator, evidence):
             stream.write('\nPassive console export timed out.\n')
 
 
+def install_ui_runner(simulator, products, app, evidence):
+    """Register the actual built XCTest runner before Xcode asks FrontBoard to launch it."""
+    runner = products/'Release-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app'
+    with (runner/'Info.plist').open('rb') as stream:
+        info = plistlib.load(stream)
+    identifier = info['CFBundleIdentifier']
+    if identifier != 'com.gloiiire.PinkhaStage1AcceptanceUITests.xctrunner':
+        raise RuntimeError('Unexpected real UI runner bundle identifier: '+identifier)
+    command(['xcrun','simctl','install',simulator,str(runner)],app,evidence)
+    registered = subprocess.check_output(['xcrun','simctl','get_app_container',simulator,
+                                         identifier,'app'],text=True).strip()
+    if not registered:
+        raise RuntimeError('The UI runner was not registered in the disposable simulator')
+    (evidence/'ui-runner-installation.json').write_text(json.dumps(dict(
+        status='REGISTERED',bundle_identifier=identifier,built_runner=str(runner),
+        registered_runner=registered),indent=2)+'\n')
+
+
 def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--app-source', required=True, type=Path)
@@ -105,13 +123,15 @@ def main():
     if current != cached:
         differences = sorted(p for p in set(current) | set(cached) if current.get(p) != cached.get(p))
         raise RuntimeError('Production inputs changed; cannot reuse the simulator app: '+', '.join(differences))
-    receipts = app/f'docs/pinkha/torah-integration/evidence/universal-properties-r13/xcode-{VERIFIED_RUN}'
-    for name, expected in [('native-product-summary.json', 1), ('native-policy-summary.json', 19)]:
-        summary = json.loads((receipts/name).read_text())
+    receipts = app/f'docs/pinkha/torah-integration/evidence/universal-properties-r14/xcode-{VERIFIED_RUN}/app'
+    policy_receipts = app/'docs/pinkha/torah-integration/evidence/universal-properties-r13/xcode-42740484502'
+    for location, name, expected in [(receipts,'native-product-summary.json',1),
+                                     (policy_receipts,'native-policy-summary.json',19)]:
+        summary = json.loads((location/name).read_text())
         if summary['passedTests'] != expected or summary['failedTests'] or summary['skippedTests']:
             raise RuntimeError('Required verified acceptance evidence is missing')
-    source_heart = json.loads((receipts/'custom-heart-build.json').read_text())
-    patch = app/'docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-13/native-heart-integration.patch'
+    source_heart = json.loads((app/'docs/pinkha/torah-integration/evidence/universal-properties-r14/xcode-42760706087/heart/custom-heart-build.json').read_text())
+    patch = app/'docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch'
     if digest(patch) != source_heart['patch_sha256']:
         raise RuntimeError('Heart patch differs from the accepted simulator build')
     installed = app/'Dependencies/Middleware/PinkhaNativeHeartBuild.json'
@@ -128,6 +148,12 @@ def main():
         info = plistlib.load(stream)
     if info['CFBundleIdentifier'] != 'io.anytype.app':
         raise RuntimeError('Unexpected cached application')
+    link = json.loads((receipts/'relinked-simulator.json').read_text())
+    runtime = 'Frameworks/ProtobufMessages.framework/ProtobufMessages'
+    if (link['native_patch_sha256'] != source_heart['patch_sha256']
+            or digest(built_app/runtime) != link['embedded_runtime_sha256'][runtime]
+            or not link['actual_runtime_marker_present']):
+        raise RuntimeError('The cached app does not contain the accepted new runtime')
     binaries = {p.name: digest(p) for p in built_app.iterdir()
                 if p.is_file() and (p.name == info['CFBundleExecutable'] or p.suffix == '.dylib')}
     reuse = dict(status='REUSED_VERIFIED_PASS', source_run_id=VERIFIED_RUN, compiled_source_sha=VERIFIED_SHA,
@@ -153,18 +179,27 @@ def main():
         'io.anytype.app', 'data'], text=True).strip())
     fixture = json.loads((container/'Library/Application Support/pinkha-native-derived-ui-fixture.json').read_text())
     (evidence/'native-ui-fixture.json').write_text(json.dumps(fixture, indent=2)+'\n')
-    project = ui_only_project(app)
     ui_derived = derived
-    command(['xcodebuild', 'build-for-testing', '-project', str(project), '-scheme', 'PinkhaPrebuiltUI',
-        '-configuration', 'Release-Anytype', '-destination', 'platform=iOS Simulator,id='+args.simulator_udid,
-        '-derivedDataPath', str(ui_derived), '-parallel-testing-enabled', 'NO',
-        'ONLY_ACTIVE_ARCH=YES', 'SWIFT_OPTIMIZATION_LEVEL=-Onone'], app, evidence)
     configurations = list((ui_derived/'Build/Products').glob('PinkhaPrebuiltUI_*.xctestrun'))
+    ui_sources = [p for p in current_paths if p.startswith('PinkhaStage1Acceptance/') and (app/p).is_file()]
+    same_ui = ui_sources and all(previous['inputs'].get(p,{}).get('sha256')==digest(app/p) for p in ui_sources)
+    if len(configurations)==1 and same_ui:
+        (evidence/'ui-runner-reuse.json').write_text(json.dumps(dict(
+            status='REUSED_COMPILED_UI_RUNNER',source_run_id=VERIFIED_RUN,
+            unchanged_inputs={p:digest(app/p) for p in ui_sources}),indent=2)+'\n')
+    else:
+        project = ui_only_project(app)
+        command(['xcodebuild', 'build-for-testing', '-project', str(project), '-scheme', 'PinkhaPrebuiltUI',
+            '-configuration', 'Release-Anytype', '-destination', 'platform=iOS Simulator,id='+args.simulator_udid,
+            '-derivedDataPath', str(ui_derived), '-parallel-testing-enabled', 'NO',
+            'ONLY_ACTIVE_ARCH=YES', 'SWIFT_OPTIMIZATION_LEVEL=-Onone'], app, evidence)
+        configurations = list((ui_derived/'Build/Products').glob('PinkhaPrebuiltUI_*.xctestrun'))
     if len(configurations) != 1:
         raise RuntimeError('Expected the current generated UI-only configuration')
     configuration = configurations[0]
     with configuration.open('rb') as stream:
         ui_run = plistlib.load(stream)
+    (evidence/'ui-xctestrun-source.json').write_text(json.dumps(ui_run,default=str,indent=2)+'\n')
 
     def inject(value):
         value['UITargetAppPath'] = str(built_app)
@@ -175,6 +210,7 @@ def main():
     generated = configuration.with_name('PinkhaNativeDerivedUI.xctestrun')
     with generated.open('wb') as stream:
         plistlib.dump(ui_run, stream)
+    install_ui_runner(args.simulator_udid,products,app,evidence)
     result = evidence/'NativeDerivedOriginalAppUI.xcresult'
     try:
         run_xctest(['xcodebuild', 'test-without-building', '-xctestrun', str(generated), '-destination',
