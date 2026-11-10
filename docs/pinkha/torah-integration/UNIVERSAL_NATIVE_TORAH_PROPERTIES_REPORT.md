@@ -1,6 +1,6 @@
 # Universal native Torah properties — implementation and acceptance
 
-Status: all scoped software/engine/native API/original UI acceptance gates verified; final unsigned device IPA pending. Physical acceptance remains separate. Physical iPad: `PENDING_DEVICE`.
+Software delivery: **COMPLETE**. Focused software acceptance and the new unsigned device IPA are verified. Physical owner iPad: **PENDING_DEVICE**.
 
 - Branch: `codex/torah-native-derived-properties-20261103`.
 - Baseline: `eee21ca08707137360a4dec5174df6133ebfbdaf`.
@@ -25,8 +25,33 @@ Status: all scoped software/engine/native API/original UI acceptance gates verif
 | Original writing Set columns and human values | EXECUTED_PHASE_PASS | 42830150133: all three enabled columns, source/topic/word chips, persisted reopen, positive and negative membership controls; screenshot retained |
 | Original native source filter edit/reopen | EXECUTED_PASS | 42843522096: 1 passed / 0 failed / 0 skipped. Real Page/Note/custom P1 members disappear for Genesis 1:2 and return for Genesis 1:1 after reopen; blank P2 controls stay excluded |
 | New XCFramework, exact patch and every binary architecture | EXECUTED_PASS | Revision-14 run 42760706087: device arm64, simulator arm64/x86_64; actual embedded r14 runtime/native API pass 42786374694 |
-| App and new unsigned IPA hashes / extension IDs | NOT_RUN | No IPA before focused Xcode gates |
+| New unsigned device IPA, actual app/runtime hashes, ZIP and extension IDs | EXECUTED_PASS | 42848851625 SUCCESS; first final build after UI gates; local archive verified; no XCTest in this route |
 | Physical iPad | PENDING_DEVICE | Owner acceptance script below |
+
+## Final unsigned iPad delivery
+
+[Download the verified unsigned IPA](https://github.com/davidpovarsky/anytype-swift/actions/runs/42848851625/artifacts/13782818014) · [Build evidence](https://github.com/davidpovarsky/anytype-swift/actions/runs/42848851625/artifacts/13783257007) · [Successful final build](https://github.com/davidpovarsky/anytype-swift/actions/runs/42848851625).
+
+The final build ran once after the software/UI gates closed. It reused exact revision-14 Heart from run 42760706087 and accepted dependency checkouts, compiled the actual device SDK target, and ran **no XCTest**. Local verification independently checked all ZIP CRCs, actual app/runtime bytes, the native marker, device arm64 Mach-O headers, iPad support and all three extension IDs. The root app is unsigned. Physical installation/use has not been verified.
+
+| Item | Exact value |
+|---|---|
+| IPA | `Pinkha-Native-Derived-iPad-Unsigned.ipa` (155,904,076 bytes) |
+| IPA SHA-256 | `5bef5c373ebc2f88def326cf5fd2880050b27e8da463312a6c426b5dcadb4678` |
+| Built Git source | `f7718890edbcc2eeedf4e3f862de682762020a5e` |
+| Actual `Anytype` executable SHA-256 | `5f166b1283b70e73f45246841d590e2e0907673c9a52d6cdbfb7042e72c42475` |
+| Actual `ProtobufMessages.framework` runtime SHA-256 | `74cb781447a432beed1bb66cec2616bcac83960023967be1b7478af359f00ae6` |
+| Heart patch SHA-256 | `fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077` |
+| Native marker | `pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077` (present in actual runtime) |
+| Parent bundle ID | `com.gloiiire.anytype.torahtrial` |
+| Notification extension | `com.gloiiire.anytype.torahtrial.AnytypeNotificationExtension` |
+| Share extension | `com.gloiiire.anytype.torahtrial.AnytypeShareExtension` |
+| Widget extension | `com.gloiiire.anytype.torahtrial.homewidget` |
+| Physical iPad | `PENDING_DEVICE` |
+
+Exact receipts: `evidence/universal-properties-r14/final-delivery/{source-equivalence.json,local-archive-verification.json,device-build-provenance.json,build-evidence/app/fast-ipa-receipt.json,build-evidence/heart/heart-installation.json}`. All 49 inventory entries and both exact patch hashes were checked before delivery. The built source differs from successful UI source `0a7dfcdad8b669f9ea6430762bab21412cb0a737` only in documentation/evidence/manual cache transport configuration; production code changes: zero. Subsequent delivery-record commits do not require rebuilding the identical product.
+
+The physical-iPad script below is the remaining owner acceptance step. No signing, release, T2 change, personal-Space mutation, default-branch merge or historical migration was performed.
 
 Completed UI phases and their originating failed compound methods are recorded separately in `evidence/universal-properties-r14/retained-ui-phases.json`; their method failures are not relabeled as full test passes.
 
@@ -199,7 +224,7 @@ Run 42798231887 reused the new app and prepared fresh disposable data. The chang
 
 ## Document UI phases proved; resume only remaining Type/Set interactions — 42801263371
 
-Independent UI runner compilation **PASS**. The actual source/topic/word native-row assertions, canonical picker interaction and offline relaunch succeeded across all three writing documents and Page/Note/custom documents. Normal-document optionality, selected empty rows and selected Sources header assertions advanced successfully. Both compound methods then failed at Type-page navigation: the original Type page exposes `x24/More` and a direct `Properties, <count>` button, while the helper waited for document-only `More`. Actual Type-page accessibility is retained. No production defect is inferred from that locator failure; the whole old methods remain failed.
+Independent UI runner compilation **PASS**. The actual source/topic/word native-row assertions, canonical picker interaction and relaunch succeeded across all three writing documents and Page/Note/custom documents. Normal-document optionality, selected empty rows and selected Sources header assertions advanced successfully. Both compound methods then failed at Type-page navigation: the original Type page exposes `x24/More` and a direct `Properties, <count>` button, while the helper waited for document-only `More`. Actual Type-page accessibility is retained. No production defect is inferred from that locator failure; the whole old methods remain failed.
 
 Preserve those executed document phases; do not repeat their full loops. The next two methods cover only the unproven original Type property lists/pickers, 12-chip Properties presentation and real native Set fields/membership/filter edits. Type navigation uses its existing Properties control; Set opening waits for its actual table. A few canonical picker writes prepare fresh writing-Set members; they are setup, not repeated document/reopen acceptance. The mixed Set uses real P1 Page/Note/custom objects already linked by the native fixture. Exact-label queries now filter before inspecting geometry, avoiding expensive traversal of unrelated accessibility elements. All checks remain on the accepted app/new native runtime; only the UI target recompiles. Existing successful phases are identified separately from the remaining method counts.
 
@@ -240,3 +265,8 @@ Actual original UI **1 passed / 0 failed / 0 skipped** (`testRemainingNativeSour
 All retained document/Type/writing-column phases and full mixed-Set/header passes remain separate in the receipt. The old failed compound methods are not relabeled as whole passes. Current acceptance reuses native API 1, policy/canonical isolation 19, compact header UI 1 and full mixed-Set UI 1, plus the recorded completed phases; only the final source-filter case was executed.
 
 Next and final operation is the existing `native-ipa-fast` route with exact framework source run 42760706087, no XCTest. It uses the accepted 8258841 dependency/build cache directly and retries only a failed transport once, following the observed timeout in 42841465303. Device-SDK compilation is required because the existing app products are simulator binaries. No Go rebuild, signing, release, T2, default-branch merge or personal-Space mutation. Final archive/actual app/runtime SHA values will be filled from the actual device receipt; physical iPad stays PENDING_DEVICE.
+
+
+## Final device artifact verified — 42848851625
+
+SUCCESS in 49m39s, first final device build/packaging dispatch after real UI acceptance. No Go rebuild or XCTest. Actual input slice is `Lib.xcframework/ios-arm64/Lib.framework`; exact frame archive and per-file hashes were verified. Independent local archive verification PASS: IPA/app/runtime SHA values match the CI receipt, actual new native marker present, device arm64/iPhoneOS/iPad family verified, ZIP intact and all three extension identifiers/executables retained. The IPA is downloaded locally in the owner Downloads directory. This closes the software/build delivery; physical iPad remains PENDING_DEVICE. Earlier failed compound outcomes and the one existing unrelated Go fixture skip remain documented accurately.
