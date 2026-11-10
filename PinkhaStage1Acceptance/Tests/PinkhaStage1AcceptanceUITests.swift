@@ -163,23 +163,21 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         // Fresh disposable data is required for membership. These are setup
         // writes through the actual existing canonical picker, not repeated
         // document/empty-row/reopen/type-visibility acceptance assertions.
-        var wordLabel = ""
-        for role in ["chiddush", "article", "research"] {
-            try openProperties(try XCTUnwrap(fixture.documents[role]))
-            try selectNativeProperty("מקור/ות", query: fixture.sourceQuery)
-            if role == "chiddush" {
-                try selectNativeProperty("נושא", query: fixture.topicQuery)
-                try selectNativeProperty("מילה / ערך", query: fixture.wordQuery)
-                wordLabel = try nativeValueText("מילה / ערך")
-            }
-            app.terminate()
-        }
+        // One matching document and two unlinked controls cover both positive
+        // and negative membership in the same three-Type native Set. The full
+        // three-document picker/reopen phases are already retained.
+        try openProperties(try XCTUnwrap(fixture.documents["chiddush"]))
+        try selectNativeProperty("מקור/ות", query: fixture.sourceQuery)
+        try selectNativeProperty("נושא", query: fixture.topicQuery)
+        try selectNativeProperty("מילה / ערך", query: fixture.wordQuery)
+        let wordLabel = try nativeValueText("מילה / ערך")
+        app.terminate()
         try open(fixture.setId)
-        assertSetMembers(present: true)
+        assertSetMembers(present: true, matchingRoles: ["chiddush"])
         try enableNativeColumns()
         app.terminate()
         try open(fixture.setId)
-        assertSetMembers(present: true)
+        assertSetMembers(present: true, matchingRoles: ["chiddush"])
         for name in fixture.nativeProperties { XCTAssertTrue(setLabel(name).waitForExistence(timeout: 20)) }
         XCTAssertTrue(setLabel(fixture.sourceLabel).waitForExistence(timeout: 20))
         XCTAssertTrue(setLabel(fixture.topicLabel).waitForExistence(timeout: 20))
@@ -193,7 +191,7 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         try replaceSourceFilter(query: fixture.sourceQuery)
         app.terminate()
         try open(fixture.setId)
-        assertSetMembers(present: true)
+        assertSetMembers(present: true, matchingRoles: ["chiddush"])
         screenshot("remaining-native-Set-restored-filter-members")
     }
 
@@ -246,13 +244,17 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     private func nativeRowValues(_ name: String) -> [XCUIElement] {
         let title = propertyTitle(name)
         guard title.exists else { return [] }
+        let titleFrame = title.frame
         return app.descendants(matching: .any).matching(NSPredicate(
             format: "elementType == %d OR elementType == %d",
             XCUIElement.ElementType.button.rawValue, XCUIElement.ElementType.staticText.rawValue
-        )).allElementsBoundByIndex.filter {
-            abs($0.frame.midY - title.frame.midY) < 22 && $0.frame.minX >= title.frame.maxX &&
-            !$0.label.isEmpty && $0.label != name && $0.label != "Add" && $0.label != "x24/More"
-        }.sorted { $0.frame.minX < $1.frame.minX }
+        )).allElementsBoundByIndex.compactMap { element -> (XCUIElement, CGRect)? in
+            let label = element.label
+            guard !label.isEmpty, label != name, label != "Add", label != "x24/More" else { return nil }
+            let frame = element.frame
+            guard abs(frame.midY - titleFrame.midY) < 22, frame.minX >= titleFrame.maxX else { return nil }
+            return (element, frame)
+        }.sorted { $0.1.minX < $1.1.minX }.map { $0.0 }
     }
 
     private func expectNativeValue(_ name: String, label: String, file: StaticString = #filePath, line: UInt = #line) {
@@ -273,12 +275,16 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         XCTFail("The original native row \(name) did not render \(label)", file: file, line: line)
     }
 
-    private func assertSetMembers(present: Bool) {
+    private func assertSetMembers(present: Bool, matchingRoles: Set<String> = ["chiddush", "article", "research"]) {
         XCTAssertTrue(setTable.waitForExistence(timeout: 30))
-        for title in fixture.names.values {
-            let row = setTable.staticTexts[title].firstMatch
-            if present { XCTAssertTrue(row.waitForExistence(timeout: 30), "Native Set omitted \(title)") }
-            else { XCTAssertTrue(row.waitForNonExistence(timeout: 30), "Native Set included a nonmatching document") }
+        for (role, id) in fixture.documents {
+            guard let title = fixture.names[id] else { XCTFail("Missing fixture title"); continue }
+            let row = setLabel(title)
+            if present && matchingRoles.contains(role) {
+                XCTAssertTrue(row.waitForExistence(timeout: 30), "Native Set omitted \(title)")
+            } else {
+                XCTAssertTrue(row.waitForNonExistence(timeout: 30), "Native Set included a nonmatching document: \(title)")
+            }
         }
     }
 
@@ -299,8 +305,13 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         for name in fixture.nativeProperties {
             let toggle = app.switches[name].firstMatch
             XCTAssertTrue(toggle.waitForExistence(timeout: 15))
-            if toggle.value as? String == "0" { toggle.tap() }
-            XCTAssertEqual(toggle.value as? String, "1")
+            if toggle.value as? String == "0" {
+                // SwiftUI's accessibility frame includes the text label.
+                // Tap the native switch at its trailing edge.
+                toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
+            }
+            let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", "1"), object: toggle)
+            XCTAssertEqual(XCTWaiter.wait(for: [enabled], timeout: 15), .completed, "Native column did not enable: \(name)")
         }
         screenshot("native-set-original-fields-switches")
     }
@@ -327,7 +338,7 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     }
 
     private func open(_ id: String) throws {
-        if app.state == .notRunning { app.launch() }
+        // open launches/activates the target with this URL; avoid two launches.
         var url = URLComponents()
         url.scheme = "anytype"; url.host = "object"
         url.queryItems = [URLQueryItem(name: "objectId", value: id), URLQueryItem(name: "spaceId", value: fixture.spaceId)]

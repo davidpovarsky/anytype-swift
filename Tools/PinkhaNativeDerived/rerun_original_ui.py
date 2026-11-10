@@ -230,18 +230,18 @@ def main():
             '-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet',
             '-resultBundlePath', str(result)], app, evidence, result, 'native-ui')
     finally:
-        export_ui_console(args.simulator_udid, evidence)
         # Keep compact proof and actionable failures in the job log even when
         # GitHub's artifact service is temporarily unavailable.
         for name in ['native-ui-summary.json', 'prebuilt-app-reuse.json']:
             receipt = evidence/name
             if receipt.exists():
                 print(name+': '+receipt.read_text(), flush=True)
-        for log in sorted(evidence.glob('command-*.log'))[-1:]:
+        for log in sorted(evidence.glob('command-*.log')):
             lines = log.read_text(errors='replace').splitlines()
             for index, line in enumerate(lines):
                 if 'Native Set fixture picker:' in line or 'Native picker failure hierarchy:' in line or 'Native Set settings hierarchy:' in line:
                     print('\n'.join(lines[index:index+90]), flush=True)
+        export_ui_console(args.simulator_udid, evidence)
     summary = json.loads((evidence/'native-ui-summary.json').read_text())
     if summary['passedTests'] != 2 or summary['failedTests'] or summary['skippedTests']:
         raise RuntimeError('The two failed original UI scenarios have not passed')
