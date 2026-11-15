@@ -49,6 +49,7 @@ class UIExecutionControls(unittest.TestCase):
         result = self.exercise()
         self.assertEqual(result['status'], 'PASS')
         self.assertEqual(result['passed'], 3)
+        self.assertEqual(result['command_exit_code'], 0)
 
     def test_zero_test_green_command_is_rejected(self):
         self.assertEqual(self.exercise(passed=0, methods=[])['status'], 'FAIL')
@@ -60,6 +61,7 @@ class UIExecutionControls(unittest.TestCase):
         result = self.exercise(passed=2, failed=1, command_failure=True)
         self.assertEqual(result['status'], 'FAIL')
         self.assertEqual((result['passed'], result['failed'], result['skipped']), (2, 1, 0))
+        self.assertEqual(result['command_exit_code'], 65)
 
     def test_stale_pass_evidence_is_refused_without_overwrite(self):
         with tempfile.TemporaryDirectory() as directory:

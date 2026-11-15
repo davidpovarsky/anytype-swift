@@ -14,6 +14,7 @@ from build_custom_heart import command, digest, git, contains
 from build_native_ipa import prepare_source_cache, run_xctest
 from validate_wave1 import verify_runtime_copies
 from validate_release import method_results, candidate_identity
+from simulator_identity import read_simulator_entitlements, verify_simulator_keychain_identity
 from rerun_original_ui import ui_only_project, install_ui_runner, export_ui_console
 
 SMOKE = ['testObjectAddPropertyButtonAndPickerSearch', 'testDocumentSourceSearchPresentation',
@@ -47,7 +48,7 @@ def run_selection(app, configuration, blueprint, udid, selections, environment, 
     if evidence.exists() and any(evidence.iterdir()):
         raise RuntimeError('Refuse stale selection evidence; use a fresh attempt directory')
     evidence.mkdir(parents=True, exist_ok=True)
-    result = dict(status='FAIL', selected=selections, phase='EXECUTION', prefix=prefix)
+    result = dict(status='FAIL', selected=selections, phase='EXECUTION', prefix=prefix, command_exit_code=None)
     write(evidence / 'result.json', result)
     try:
         with configuration.open('rb') as source:
@@ -64,6 +65,7 @@ def run_selection(app, configuration, blueprint, udid, selections, environment, 
                     '-maximum-test-execution-time-allowance', '300',
                     *['-only-testing:' + blueprint + '/' + name for name in filters],
                     '-resultBundlePath', str(bundle)], app, evidence, bundle, prefix)
+        result['command_exit_code'] = 0
         summary = json.loads((evidence / (prefix + '-summary.json')).read_text())
         devices = [row['device'] for row in summary.get('devicesAndConfigurations', [])]
         if not devices or any(d.get('osVersion', '').split('.')[0] != '27'
@@ -80,6 +82,8 @@ def run_selection(app, configuration, blueprint, udid, selections, environment, 
         result.update(status='PASS', passed=len(expected), failed=0, skipped=0, actual_methods=methods)
     except BaseException as error:
         result.update(status='FAIL', error_type=type(error).__name__, error=str(error))
+        if isinstance(error, subprocess.CalledProcessError):
+            result['command_exit_code'] = error.returncode
     summary_path = evidence / (prefix + '-summary.json')
     tests_path = evidence / (prefix + '-tests.json')
     if summary_path.exists() and tests_path.exists():
@@ -115,10 +119,16 @@ def verify_signed_simulator(app_bundle, evidence):
     result = subprocess.run(['/usr/bin/codesign', '--display', '--entitlements', '-', '--xml', str(app_bundle)],
                             capture_output=True, check=True)
     entitlements = plistlib.loads(result.stdout)
-    identifier = entitlements.get('application-identifier') or entitlements.get('com.apple.application-identifier', '')
-    if not identifier.endswith('.io.anytype.app'):
-        raise RuntimeError('Actual simulator app lacks its Keychain application identity')
-    write(evidence / 'signed-simulator-entitlements.json', entitlements)
+    write(evidence / 'code-signature-entitlements.json', entitlements)
+    info = plistlib.loads((app_bundle / 'Info.plist').read_bytes())
+    if info['CFBundleIdentifier'] != 'io.anytype.app':
+        raise RuntimeError('Actual simulator app bundle identity differs')
+    executable = app_bundle / info['CFBundleExecutable']
+    simulated = read_simulator_entitlements(executable)
+    write(evidence / 'simulator-entitlements.json', dict(
+        status='SIMULATOR_IDENTITY_INSPECTED_KEYCHAIN_NOT_RUN', evidence_source='MACHO___TEXT___entitlements',
+        codesign_verify_exit_code=0, executable_sha256=digest(executable), **simulated))
+    verify_simulator_keychain_identity(simulated)
 
 
 def live_runtime(udid, evidence, built):
@@ -184,6 +194,8 @@ def execute(args, receipt):
     products = derived / 'Build/Products'
     ui_products = ui_derived / 'Build/Products'
     built = products / 'Release-Anytype-iphonesimulator/Anytype.app'
+    receipt['app_executable_sha256'] = digest(built / 'Anytype')
+    write(evidence / 'execution.json', receipt)
     verify_signed_simulator(built, evidence)
     verify_runtime_copies(built, MARKER.encode(), evidence)
     checkout = derived / 'SourcePackages/checkouts/TorahInspectorKit'
@@ -195,7 +207,6 @@ def execute(args, receipt):
     if next(p['state']['revision'] for p in lock['pins'] if p['identity'] == 'torahinspectorkit') != KIT:
         raise RuntimeError('Actual resolved Kit lock differs')
     write(evidence / 'actual-package-pins.json', lock)
-    receipt['app_executable_sha256'] = digest(built / 'Anytype')
     native_configuration = test_configuration(products, 'AnytypeTests')
     ui_configuration = test_configuration(ui_products, 'PinkhaStage1AcceptanceUITests')
     receipt['phase'] = 'EXECUTION'
