@@ -2,6 +2,10 @@ name: Real OS27 native and iPhone iPad UI smoke
 
 on:
   workflow_call:
+    inputs:
+      ui_scope:
+        type: string
+        default: FULL_SMOKE
 
 permissions:
   contents: read
@@ -13,6 +17,7 @@ jobs:
     timeout-minutes: 150
     env:
       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      UI27_SCOPE: ${{ inputs.ui_scope }}
     steps:
       - name: Checkout exact integration source
         uses: actions/checkout@v4
@@ -42,12 +47,12 @@ jobs:
           key: pinkha-ui27-arm64-xcode27.0-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}-${{ github.sha }}
           restore-keys: |
             pinkha-ui27-arm64-xcode27.0-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}-
-      - name: Build once then execute real native fixture and six explicitly selected UI methods
+      - name: Build once and execute the declared native and UI selection
         id: actual-execution
         timeout-minutes: 105
         run: |
           python3 Tools/PinkhaSimulatorGate/run_ui27.py --app "$GITHUB_WORKSPACE" \
-            --evidence build/ui27-evidence --derived build/ui27-derived
+            --evidence build/ui27-evidence --derived build/ui27-derived --ui-scope "$UI27_SCOPE"
       - name: Package actual logs screenshots xcresult even on failure
         if: always()
         run: python3 Tools/PinkhaNativeDerived/package_evidence.py build/ui27-evidence
@@ -55,7 +60,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Pinkha-UI27-Smoke-${{ github.run_id }}-${{ github.run_attempt }}
+          name: Pinkha-UI27-${{ inputs.ui_scope }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: build/ui27-evidence/Pinkha-Native-Derived-Evidence.zip
           if-no-files-found: error
           retention-days: 14

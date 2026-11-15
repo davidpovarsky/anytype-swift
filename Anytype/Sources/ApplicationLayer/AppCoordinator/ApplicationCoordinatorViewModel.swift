@@ -54,9 +54,13 @@ final class ApplicationCoordinatorViewModel {
     }
     
     func startAppStateHandler() async {
+        observeUI27Startup("state-consumer-start")
         for await state in applicationStateService.statePublisher.removeDuplicates().values {
+            observeUI27Startup("state-consumed-entry", consumed: state)
             await handleApplicationState(state)
+            observeUI27Startup("state-consumed-exit", consumed: state)
         }
+        observeUI27Startup("state-consumer-ended")
     }
     
     func startAccountStateHandler() async {
@@ -114,24 +118,36 @@ final class ApplicationCoordinatorViewModel {
     // MARK: - Process
 
     private func loginProcess() async {
+        observeUI27Startup("login-entry")
         let userId = basicUserInfoStorage.usersId
         guard userId.isNotEmpty else {
+            observeUI27Startup("login-account-absent")
             applicationStateService.state = .auth
             return
         }
 
         do {
+            observeUI27Startup("seed-read-begin")
             let seed = try seedService.obtainSeed()
+            observeUI27Startup("seed-read-completed")
+            observeUI27Startup("wallet-recovery-begin")
             try await authService.walletRecovery(mnemonic: seed)
+            observeUI27Startup("wallet-recovery-completed")
+            observeUI27Startup("select-call-begin")
             await selectAccount(id: userId)
+            observeUI27Startup("select-call-returned")
         } catch {
+            observeUI27Startup("login-error", error: error)
             applicationStateService.state = .auth
+            observeUI27Startup("login-auth-assigned")
         }
     }
     
     func selectAccount(id: String) async {
         do {
+            observeUI27Startup("select-auth-begin")
             let account = try await authService.selectAccount(id: id, preferredSpaceId: preferredSpaceId())
+            observeUI27Startup("select-auth-returned")
             
             switch account.status {
             case .active:
@@ -141,11 +157,16 @@ final class ApplicationCoordinatorViewModel {
             case .deleted:
                 applicationStateService.state = .auth
             }
+            observeUI27Startup("select-state-assigned")
             
+            observeUI27Startup("notification-registration-begin")
             await pushNotificationsPermissionService.registerForRemoteNotificationsIfNeeded()
+            observeUI27Startup("notification-registration-returned")
         } catch is CancellationError {
+            observeUI27Startup("select-cancellation")
             // Ignore cancellations
         } catch SelectAccountError.accountStoreNotMigrated {
+            observeUI27Startup("select-store-not-migrated")
             migrationData = MigrationModuleData(
                 id: id,
                 onFinish: { [weak self] in
@@ -153,8 +174,17 @@ final class ApplicationCoordinatorViewModel {
                 }
             )
         } catch {
+            observeUI27Startup("select-error", error: error)
             applicationStateService.state = .auth
+            observeUI27Startup("select-auth-assigned")
         }
+    }
+
+    private func observeUI27Startup(_ phase: String, consumed: ApplicationState? = nil, error: Error? = nil) {
+        guard PinkhaUI27StartupDiagnostics.isEnabled else { return }
+        PinkhaUI27StartupDiagnostics.record(phase, consumed: consumed, model: applicationState,
+            service: applicationStateService.state, errorType: error.map { String(reflecting: type(of: $0)) },
+            taskCancelled: Task.isCancelled)
     }
 
     // Space the middleware should load eagerly on AccountSelect, the rest are deferred.

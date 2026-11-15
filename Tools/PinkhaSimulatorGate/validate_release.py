@@ -50,6 +50,8 @@ def method_results(value):
 
 
 def validate_record(required, configuration, record, files, candidate_inputs, reviews):
+    require(not json.loads(files.get('execution.json', b'{}')).get('ui_scope', '').endswith('_DIAGNOSTIC'),
+            'Diagnostic UI selection cannot satisfy release acceptance')
     require(record.get('status') in ['EXECUTED_PASS', 'REUSED_VERIFIED_PASS'], 'Case is not an actual verified pass')
     require(record.get('case_id') == required['id'] and record.get('configuration_id') == configuration,
             'Case/configuration identity differs')

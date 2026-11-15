@@ -142,7 +142,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         guard let expected = ProcessInfo.processInfo.environment["PINKHA_UI27_EXPECTED_APP_PID"] else { return }
         let expectedPID = try XCTUnwrap(Int(expected), "Expected app PID must be a positive integer")
         XCTAssertGreaterThan(expectedPID, 0)
-        let expression = try NSRegularExpression(pattern: "(?m)^\\s*Application,\\s*0x[0-9a-fA-F]+,\\s*pid:\\s*([0-9]+)")
+        let expression = try NSRegularExpression(pattern: "\\A\\s*(?:Attributes:\\s*)?Application,\\s*0x[0-9a-fA-F]+,\\s*pid:\\s*([0-9]+)")
         let range = NSRange(hierarchy.startIndex..., in: hierarchy)
         let match = try XCTUnwrap(expression.firstMatch(in: hierarchy, range: range), "Target application PID missing from hierarchy")
         let pidRange = try XCTUnwrap(Range(match.range(at: 1), in: hierarchy))
@@ -160,7 +160,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         let finalHierarchy = app.debugDescription
         attachHierarchy(finalHierarchy, name: "final-hierarchy")
         if let expected = ProcessInfo.processInfo.environment["PINKHA_UI27_EXPECTED_APP_PID"] {
-            let expression = try? NSRegularExpression(pattern: "(?m)^\\s*Application,\\s*0x[0-9a-fA-F]+,\\s*pid:\\s*([0-9]+)")
+            let expression = try? NSRegularExpression(pattern: "\\A\\s*(?:Attributes:\\s*)?Application,\\s*0x[0-9a-fA-F]+,\\s*pid:\\s*([0-9]+)")
             let range = NSRange(finalHierarchy.startIndex..., in: finalHierarchy)
             let match = expression?.firstMatch(in: finalHierarchy, range: range)
             let pidRange = match.flatMap { Range($0.range(at: 1), in: finalHierarchy) }
@@ -197,8 +197,13 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
                 add(attachment)
             }
             if !more.exists {
-                XCTAssertTrue(home.waitForExistence(timeout: 120),
-                              "Restored home did not become ready before the deep link")
+                guard home.waitForExistence(timeout: 120) else {
+                    // Throw so Swift unwinds both timing and final-evidence defers.
+                    // XCTest still records the missing readiness as a failed test.
+                    throw NSError(domain: "UI27Readiness", code: 1, userInfo: [
+                        NSLocalizedDescriptionKey: "Restored home did not become ready before the deep link"
+                    ])
+                }
             }
             Self.readyPID = expectedPID
         }

@@ -46,10 +46,12 @@ struct TorahWave1IntegrationTests {
             _ = try await associations.addAssociation(source.item, target: .object(objectId: document.id), spaceId: spaceID)
         }
         let otherVerse = try await create(type: .page, spaceID: spaceID)
-        _ = try await associations.addAssociation(
-            T5SourceIdentity(providerID: "sefaria", canonicalReference: "Genesis 3:4").item,
-            target: .object(objectId: otherVerse.id), spaceId: spaceID
-        )
+        _ = try await observed("other-verse-association") {
+            try await associations.addAssociation(
+                T5SourceIdentity(providerID: "sefaria", canonicalReference: "Genesis 3:4").item,
+                target: .object(objectId: otherVerse.id), spaceId: spaceID
+            )
+        }
         let selection = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Genesis 3:3")
         let session = TorahEditorSession(
             spaceId: spaceID, objectId: try #require(documentIDs.first),
@@ -57,10 +59,14 @@ struct TorahWave1IntegrationTests {
         )
         let baseline = Set(documentIDs)
         try await eventually {
-            let result = try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+            let result = try await observed("initial-index-poll") {
+                try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+            }
             return result.documents.count == 3 && Set(result.documents.map(\.objectID)) == baseline
         }
-        let initial = try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+        let initial = try await observed("initial-index-snapshot") {
+            try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+        }
         #expect(initial.coverage == .indexedDocumentsOnly)
         #expect(Set(initial.limitations).isSuperset(of: [
             .blockAssociationsNotIndexed, .sourceQuotesNotIndexed, .indexFreshnessUnverified
@@ -71,31 +77,61 @@ struct TorahWave1IntegrationTests {
         var openedID: String?
         session.installOpenObjectHandler { openedID = $0 }
         let addNote = try #require(session.hostActions.onAddNote)
-        addNote(selection, {})
+        addNote(selection, {
+            print("WAVE1_PHASE add-note-completion-callback utc=\(Date().timeIntervalSince1970) monotonic=\(ProcessInfo.processInfo.systemUptime) cancelled=\(Task.isCancelled)")
+        })
+        print("WAVE1_PHASE add-note-requested cancelled=\(Task.isCancelled)")
         try await eventually { openedID != nil }
         let noteID = try #require(openedID)
         #expect(!baseline.contains(noteID))
-        let noteLinks = try await associations.listDocumentAssociations(objectId: noteID, spaceId: spaceID)
+        let noteLinks = try await observed("created-note-associations") {
+            try await associations.listDocumentAssociations(objectId: noteID, spaceId: spaceID)
+        }
         #expect(noteLinks.contains(where: source.matches))
         try await eventually {
-            let result = try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+            let result = try await observed("linked-note-index-poll") {
+                try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+            }
             return result.documents.count == 4 && Set(result.documents.map(\.objectID)) == baseline.union([noteID])
         }
-        let linked = try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+        let linked = try await observed("linked-note-index-snapshot") {
+            try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+        }
         let noteRow = try #require(linked.documents.first { $0.objectID == noteID })
         #expect(noteRow.kind == .note && noteRow.canUnlink)
         openedID = nil
         session.hostActions.onOpenRelatedDocument?(noteRow)
         #expect(openedID == noteID)
         let unlink = try #require(session.hostActions.onUnlinkRelatedDocument)
-        unlink(noteRow, selection, {})
+        unlink(noteRow, selection, {
+            print("WAVE1_PHASE unlink-completion-callback utc=\(Date().timeIntervalSince1970) monotonic=\(ProcessInfo.processInfo.systemUptime) cancelled=\(Task.isCancelled)")
+        })
+        print("WAVE1_PHASE unlink-requested cancelled=\(Task.isCancelled)")
         try await eventually {
-            let result = try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+            let result = try await observed("unlinked-note-index-poll") {
+                try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+            }
             return result.documents.count == 3 && Set(result.documents.map(\.objectID)) == baseline
         }
-        let retainedNote = try await show(noteID, spaceID: spaceID)
+        let retainedNote = try await observed("retained-note-show") {
+            try await show(noteID, spaceID: spaceID)
+        }
         #expect(!retainedNote.isDeleted && retainedNote.spaceId == spaceID)
         session.deactivateDocument()
+    }
+
+    @MainActor
+    private func observed<Value>(_ operation: String, _ body: @MainActor () async throws -> Value) async throws -> Value {
+        let started = ProcessInfo.processInfo.systemUptime
+        print("WAVE1_PHASE begin=\(operation) utc=\(Date().timeIntervalSince1970) monotonic=\(started) cancelled=\(Task.isCancelled)")
+        do {
+            let value = try await body()
+            print("WAVE1_PHASE end=\(operation) utc=\(Date().timeIntervalSince1970) elapsed=\(ProcessInfo.processInfo.systemUptime - started) cancelled=\(Task.isCancelled)")
+            return value
+        } catch {
+            print("WAVE1_PHASE error=\(operation) type=\(String(reflecting: type(of: error))) utc=\(Date().timeIntervalSince1970) elapsed=\(ProcessInfo.processInfo.systemUptime - started) cancelled=\(Task.isCancelled)")
+            throw error
+        }
     }
 
     @MainActor
@@ -128,7 +164,9 @@ struct TorahWave1IntegrationTests {
         repeat {
             do { if try await predicate() { return } }
             catch T5SpaceRelatedDocumentsError.indexUnavailable { }
-            try await Task.sleep(for: .milliseconds(100))
+            try await observed("eventually-poll-interval") {
+                try await Task.sleep(for: .milliseconds(100))
+            }
         } while clock.now < deadline
         Issue.record("Disposable native integration did not reach the expected state")
         throw T5SpaceRelatedDocumentsError.indexUnavailable

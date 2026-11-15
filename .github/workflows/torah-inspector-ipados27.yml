@@ -16,6 +16,14 @@ on:
           - native-ipa-repair
           - native-diagnostics
           - simulator-ui27
+      ui_scope:
+        description: UI27 focused diagnostic selection; no release or full matrix acceptance
+        type: choice
+        options:
+          - FULL_SMOKE
+          - STARTUP_IPAD_DIAGNOSTIC
+          - NATIVE_CANCELLATION_DIAGNOSTIC
+        default: FULL_SMOKE
       source_run_id:
         description: Existing native run whose XCTest attachments should be exported
         type: string
@@ -42,6 +50,8 @@ jobs:
   simulator-ui27:
     if: ${{ inputs.route == 'simulator-ui27' }}
     uses: ./.github/workflows/pinkha-simulator-ui27.yml
+    with:
+      ui_scope: ${{ inputs.ui_scope }}
 
   native-diagnostics:
     if: ${{ inputs.route == 'native-diagnostics' }}

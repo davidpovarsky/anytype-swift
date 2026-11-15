@@ -41,6 +41,13 @@ class ReleaseGateTests(unittest.TestCase):
     def validate(self):
         return gate.validate_record(self.required, self.configuration, self.record, self.files, self.candidate, self.reviews)
 
+    def test_diagnostic_run_cannot_supply_release_evidence(self):
+        for scope in ['STARTUP_IPAD_DIAGNOSTIC', 'NATIVE_CANCELLATION_DIAGNOSTIC']:
+            with self.subTest(scope=scope):
+                self.files['execution.json'] = json.dumps(dict(ui_scope=scope)).encode()
+                with self.assertRaisesRegex(ValueError, 'Diagnostic UI selection'):
+                    self.validate()
+
     def test_consistent_control_record(self):
         self.assertEqual(self.validate()['status'], 'EXECUTED_PASS')
 
