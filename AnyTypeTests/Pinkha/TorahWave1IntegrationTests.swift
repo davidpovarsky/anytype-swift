@@ -18,7 +18,9 @@ struct TorahWave1IntegrationTests {
         Container.shared.serverConfigurationStorage().setupCurrentConfiguration(config: .localOnly)
         let auth = Container.shared.authService()
         let mnemonic = try await auth.createWallet()
-        try Container.shared.seedService().saveSeed(mnemonic)
+        try #require(!mnemonic.isEmpty)
+        // This in-process fixture needs no credential persistence or later wallet recovery.
+        // Keep the real native wallet/account; never save its disposable seed to Keychain.
         _ = try await auth.createAccount(name: "Wave 1 disposable", iconOption: 1, imagePath: "")
         let space = try await Container.shared.workspaceService().createSpace(
             name: "Wave 1 disposable Space", iconOption: 1, accessType: .private,
