@@ -58,7 +58,31 @@ def contains(path, value):
             previous=chunk[-len(value):]
     return False
 
-def verify_framework_slices(framework, marker):
+def t5_related_capability(inventory, patch_sha256):
+    version = inventory.get('features', {}).get('t5_related_lookup')
+    if version is None:
+        return None
+    if (version != 1 or inventory.get('patch_sha256') != patch_sha256
+            or inventory.get('public_projection_version') != 1
+            or inventory.get('cache_proof_generation') != 'pinkha-torah-cache-v2'
+            or inventory.get('required_client_feature_flag') != 'PINKHA_NATIVE_T5_LOOKUP_V1'
+            or inventory.get('client_enablement') != 'DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF'):
+        raise RuntimeError('Unrecognized T5 native capability/inventory pairing')
+    required = {'core/pinkha/torah/properties.go', 'core/pinkha/torah/projection.go',
+                'core/pinkha/torah/binding.go', 'core/pinkha/torahindex/recovery_cache.go',
+                'pkg/lib/database/filter.go', 'pkg/lib/bundle/pinkha_torah.go',
+                'core/details.go', 'core/relations.go',
+                'core/block/object/objectcreator/relation.go',
+                'core/block/object/objectcreator/relation_option.go',
+                'pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_related_test.go'}
+    if not required.issubset({entry['path'] for entry in inventory['files']}):
+        raise RuntimeError('T5 native inventory omits required implementation/proof sources')
+    return dict(version=1, marker='pinkha-native-t5-lookup-v1-' + patch_sha256,
+                required_client_feature_flag='PINKHA_NATIVE_T5_LOOKUP_V1',
+                client_enablement='DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF')
+
+
+def verify_framework_slices(framework, marker, feature_marker=None):
     binaries=[path for path in framework.rglob('Lib') if path.is_file()]
     if not binaries: raise RuntimeError('No Heart framework binaries')
     slices=[]
@@ -72,6 +96,8 @@ def verify_framework_slices(framework, marker):
                     thin=Path(directory)/architecture
                     subprocess.run(['xcrun','lipo',str(binary),'-thin',architecture,'-output',str(thin)],check=True)
                 if not contains(thin,marker.encode()): raise RuntimeError('Custom identity missing in Heart architecture '+architecture)
+                if feature_marker and not contains(thin, feature_marker.encode()):
+                    raise RuntimeError('T5 feature identity missing in Heart architecture '+architecture)
                 slices.append(dict(path=str(binary.relative_to(framework)),architecture=architecture,sha256=digest(thin),marker=marker))
     return slices
 
@@ -113,6 +139,7 @@ def main():
     inventory=json.loads(args.inventory.read_text(encoding='utf8'))
     actual=digest(patch)
     if actual!=args.approved_patch_sha256 or actual!=inventory['patch_sha256']: raise RuntimeError('Patch differs from exact approved diff')
+    related_capability=t5_related_capability(inventory, actual)
     if git(heart,'rev-parse','HEAD')!=PIN: raise RuntimeError('Wrong Heart SHA')
     if args.target=='ios' and platform.system()!='Darwin': raise RuntimeError('Actual Xcode/macOS SDK required for iOS; no source was modified')
     if args.target=='linux' and platform.system()!='Linux': raise RuntimeError('Linux native build requires Linux')
@@ -131,11 +158,15 @@ def main():
     if set(git(heart,'diff','--name-only').splitlines())-approved_paths: raise RuntimeError('Unreviewed Heart changes')
     if git(heart,'diff','--cached','--name-only'): raise RuntimeError('Heart index must stay untouched')
     receipt=dict(heart_sha=PIN,heart_tag=TAG,patch_sha256=actual,target=args.target,files=inventory['files'],status='SOURCE_VERIFIED_BUILD_NOT_RUN')
+    if related_capability:
+        receipt['t5_related_lookup']=related_capability
     receipt_path=args.evidence/'custom-heart-build.json'
     receipt_path.write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf8')
     if args.target=='verify': return
     marker='pinkha-native-derived-v1-'+actual
-    ldflags=f'-X github.com/anyproto/anytype-heart/util/vcs.GitSummary={TAG}-{marker} -X github.com/anyproto/anytype-heart/util/vcs.GitCommit={PIN}'
+    feature_marker=related_capability['marker'] if related_capability else None
+    summary=f'{TAG}-{marker}' + ('-' + feature_marker if feature_marker else '')
+    ldflags=f'-X github.com/anyproto/anytype-heart/util/vcs.GitSummary={summary} -X github.com/anyproto/anytype-heart/util/vcs.GitCommit={PIN}'
     env=dict(os.environ,CGO_ENABLED='1',GOMAXPROCS='2')
     env.pop('GOWORK',None)
     # Downstream tests exercise the actual original Space store transaction and
@@ -147,6 +178,13 @@ def main():
     if test_destination.read_bytes().replace(b'\r\n',b'\n')!=normalized_test:
         raise RuntimeError('Applied native acceptance fixture differs from the recorded source')
     receipt['native_test_source_sha256']=hashlib.sha256(normalized_test).hexdigest()
+    if related_capability:
+        related_test=Path(__file__).resolve().parent/'native_test_templates/pinkha_torah_related_test.go'
+        related_destination=heart/'pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_related_test.go'
+        related_bytes=related_test.read_bytes().replace(b'\r\n', b'\n')
+        if related_destination.read_bytes().replace(b'\r\n', b'\n') != related_bytes:
+            raise RuntimeError('Applied T5 native proof fixture differs from the recorded source')
+        receipt['t5_related_native_test_source_sha256']=hashlib.sha256(related_bytes).hexdigest()
     native=[]
     if args.target=='linux':
         arch='linux-amd64-musl' if platform.machine()=='x86_64' else 'linux-arm64-musl'
@@ -156,6 +194,7 @@ def main():
         output=args.evidence.resolve()/'libpinkha-heart.so'
         command([args.go,'build','-p','2','-tags','nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg','-ldflags',ldflags,'-buildmode=c-shared','-o',str(output),'./clientlibrary/clib'],heart,args.evidence,env)
         if not contains(output,marker.encode()): raise RuntimeError('Custom identity missing from native Heart binary')
+        if feature_marker and not contains(output, feature_marker.encode()): raise RuntimeError('T5 feature identity missing from native Heart binary')
         receipt['artifacts']=[dict(path=str(output),sha256=digest(output))]
     else:
         command(['xcodebuild','-version'],heart,args.evidence)
@@ -179,7 +218,8 @@ def main():
         command([args.go,'run','cmd/iosrepack/main.go'],heart,args.evidence,env)
         binaries=[path for path in framework.rglob('Lib') if path.is_file()]
         if not binaries or not all(contains(path,marker.encode()) for path in binaries): raise RuntimeError('Custom identity missing in one or more XCFramework slices')
-        receipt['binary_slices']=verify_framework_slices(framework,marker)
+        if feature_marker and not all(contains(path, feature_marker.encode()) for path in binaries): raise RuntimeError('T5 feature identity missing in one or more XCFramework slices')
+        receipt['binary_slices']=verify_framework_slices(framework,marker,feature_marker)
         receipt['artifacts']=[dict(path=str(path.relative_to(framework)),sha256=digest(path)) for path in sorted(framework.rglob('*')) if path.is_file()]
         receipt['framework']=str(framework)
         if args.install_app:

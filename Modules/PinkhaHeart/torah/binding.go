@@ -81,6 +81,6 @@ func ResolveBinding(ctx context.Context, source ManifestSource, space string) (B
 	hash := sha256.New()
 	hash.Write(candidate.Raw)
 	fmt.Fprintf(hash, "|%d:%s|%d:%s|%d", len(candidate.ObjectID), candidate.ObjectID, len(property.ID), property.ID, property.Format)
-	binding := Binding{SpaceID: space, CanonicalKey: manifest.CanonicalKey, Generation: hex.EncodeToString(hash.Sum(nil))}
+	binding := Binding{SpaceID: space, CanonicalKey: manifest.CanonicalKey, Generation: hex.EncodeToString(hash.Sum(nil)), ManifestObjectID: candidate.ObjectID}
 	return binding, binding.Validate()
 }

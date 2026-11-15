@@ -53,7 +53,7 @@ func cacheProof(binding torah.Binding, details *domain.Details) string {
 		return ""
 	}
 	hash := sha256.New()
-	hash.Write([]byte("pinkha-torah-cache-v1\x00" + binding.Generation + "\x00" + binding.CanonicalKey + "\x00"))
+	hash.Write([]byte("pinkha-torah-cache-v2\x00" + binding.Generation + "\x00" + binding.CanonicalKey + "\x00"))
 	hash.Write(data)
 	// Preserve byte identity even for malformed UTF-8 that JSON encoding would
 	// otherwise replace. Such payloads must remain explicit errors.
@@ -63,6 +63,10 @@ func cacheProof(binding torah.Binding, details *domain.Details) string {
 }
 
 func reusableCache(binding torah.Binding, details *domain.Details) bool {
+	if (isManifest(details) || details.GetBool(domain.RelationKey(torah.ReadyKey))) &&
+		details.GetInt64(domain.RelationKey(torah.RelatedVersionKey)) != torah.RelatedVersion {
+		return false
+	}
 	stored := details.GetString(domain.RelationKey(torah.CacheIntegrityKey))
 	return stored != "" && stored == cacheProof(binding, details)
 }

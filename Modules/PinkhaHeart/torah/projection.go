@@ -31,9 +31,10 @@ var ErrIneligible = errors.New("ineligible document")
 
 // Binding contains validated native identifiers, never human display names.
 type Binding struct {
-	SpaceID      string
-	CanonicalKey string
-	Generation   string
+	SpaceID          string
+	CanonicalKey     string
+	Generation       string
+	ManifestObjectID string
 }
 
 type Input struct {
@@ -53,6 +54,8 @@ type Projection struct {
 	Words           []string                `json:"words"`
 	CanonicalSHA256 string                  `json:"canonicalSHA256"`
 	Labels          map[string]DisplayLabel `json:"labels,omitempty"`
+	RelatedSources  []string                `json:"-"`
+	RelatedError    error                   `json:"-"`
 }
 
 // Display labels are a rebuildable local cache, never synced association data.
@@ -90,7 +93,7 @@ func Project(b Binding, in Input) (Projection, error) {
 		return Projection{}, ErrIneligible
 	}
 	hash := sha256.Sum256(in.Raw)
-	result := Projection{Sources: []string{}, Topics: []string{}, Words: []string{}, Labels: map[string]DisplayLabel{}, CanonicalSHA256: hex.EncodeToString(hash[:])}
+	result := Projection{Sources: []string{}, Topics: []string{}, Words: []string{}, Labels: map[string]DisplayLabel{}, CanonicalSHA256: hex.EncodeToString(hash[:]), RelatedSources: []string{}}
 	// The current repository treats absent or empty native longText as no links.
 	if len(in.Raw) == 0 {
 		return result, nil
@@ -149,10 +152,23 @@ func Project(b Binding, in Input) (Projection, error) {
 		return Projection{}, fmt.Errorf("%w: %d", ErrUnsupported, version)
 	}
 	ids, identities := map[string]bool{}, map[string]bool{}
+	related := map[string]bool{}
 	for _, r := range records {
 		item, err := decodeItem(r.Item)
 		if err != nil {
 			return Projection{}, err
+		}
+		if exact(r.SpaceID, in.SpaceID) && exact(r.ObjectID, in.ObjectID) {
+			if r.BlockID != nil && *r.BlockID == "" {
+				result.RelatedError = ErrMalformed
+			}
+			canonical := item.CanonicalKey
+			if canonical == "" {
+				canonical = item.ExternalID
+			}
+			if item.Kind == Ref && !strings.HasPrefix(canonical, "anytype-note:") {
+				related[Identity(item.Kind, item.ProviderID, item.CanonicalKey, item.ExternalID)] = true
+			}
 		}
 		if !exact(r.SpaceID, in.SpaceID) || !exact(r.ObjectID, in.ObjectID) || r.BlockID != nil || item.Role != "context" || strings.HasPrefix(item.CanonicalKey, "anytype-note:") {
 			continue
@@ -176,6 +192,14 @@ func Project(b Binding, in Input) (Projection, error) {
 	sort.Strings(result.Sources)
 	sort.Strings(result.Topics)
 	sort.Strings(result.Words)
+	if result.RelatedError == nil {
+		for identity := range related {
+			result.RelatedSources = append(result.RelatedSources, identity)
+		}
+		sort.Strings(result.RelatedSources)
+	} else {
+		result.RelatedSources = nil
+	}
 	return result, nil
 }
 

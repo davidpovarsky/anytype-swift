@@ -135,7 +135,13 @@ func TestActualExportImportRoundTrip(t *testing.T) {
 				} else if err = jsonpb.UnmarshalString(response.Result, snapshot); err != nil {
 					t.Fatal(err)
 				}
-				canonicalKey(domain.NewDetailsFromProto(snapshot.Snapshot.Data.Details))
+				exportedDetails := domain.NewDetailsFromProto(snapshot.Snapshot.Data.Details)
+				canonicalKey(exportedDetails)
+				for _, privateKey := range []string{"_pinkhaTorahRelatedSources", "_pinkhaTorahRelatedVersion"} {
+					if exportedDetails.Has(domain.RelationKey(privateKey)) {
+						t.Fatalf("native compatibility export promoted private lookup key: %s", privateKey)
+					}
+				}
 			}
 			if os.Getenv("PINKHA_COMPATIBILITY_EXPECT_NATIVE") == "1" {
 				details = show()
@@ -147,6 +153,16 @@ func TestActualExportImportRoundTrip(t *testing.T) {
 					invoke(service.ObjectSearch, &pb.RpcObjectSearchRequest{SpaceId: space.SpaceId, Filters: []*model.BlockContentDataviewFilter{{RelationKey: relation, Condition: model.BlockContentDataviewFilter_In, Value: domain.StringList(details.GetStringList(domain.RelationKey(relation))).ToProto()}}, Keys: []string{"id"}}, found)
 					if len(found.Records) != 1 || domain.NewDetailsFromProto(found.Records[0]).GetString(bundle.RelationKeyId) != id {
 						t.Fatalf("imported %s membership is not queryable", relation)
+					}
+				}
+				if os.Getenv("PINKHA_COMPATIBILITY_EXPECT_T5") == "1" {
+					if details.GetInt64("_pinkhaTorahRelatedVersion") != 1 {
+						t.Fatal("matching new runtime did not rebuild independent private capability")
+					}
+					private := &pb.RpcObjectSearchResponse{}
+					invoke(service.ObjectSearch, &pb.RpcObjectSearchRequest{SpaceId: space.SpaceId, Filters: []*model.BlockContentDataviewFilter{{RelationKey: "_pinkhaTorahRelatedSources", Condition: model.BlockContentDataviewFilter_In, Value: domain.StringList(details.GetStringList("pinkhaTorahSources")).ToProto()}}, Keys: []string{"id"}}, private)
+					if len(private.Records) != 1 || domain.NewDetailsFromProto(private.Records[0]).GetString(bundle.RelationKeyId) != id {
+						t.Fatal("imported new private membership is not queryable")
 					}
 				}
 			}

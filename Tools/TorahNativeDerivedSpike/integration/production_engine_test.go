@@ -429,6 +429,9 @@ func TestRealNativeMiddlewareDerivedProperties(t *testing.T) {
 		t.Fatal("native membership polluted another Space")
 	}
 	t.Log("PASS Page + Note + arbitrary custom Type mixed native membership")
+	if os.Getenv("PINKHA_NATIVE_T5_LOOKUP_ACCEPTANCE") == "1" {
+		exerciseRelatedNativeRPC(t, space.SpaceId, manifest.ObjectId, canonicalKey, typeKeys["chiddush"])
+	}
 	t.Log("PASS real generated middleware APIs: Property registry, Type recommendation, canonical writes, native search/Set/live Details, mutation rejection and native export; zero alternative option Objects")
 }
 

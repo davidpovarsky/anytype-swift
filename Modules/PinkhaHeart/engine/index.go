@@ -57,7 +57,7 @@ func New(space string, objects anystore.Collection, begin BeginWrite, write Writ
 }
 
 func (i *Index) Recover(ctx context.Context) error {
-	for _, key := range []string{torah.SourcesKey, torah.TopicsKey, torah.WordsKey, torah.CanonicalKeyKey} {
+	for _, key := range []string{torah.SourcesKey, torah.TopicsKey, torah.WordsKey, torah.CanonicalKeyKey, torah.RelatedSourcesKey} {
 		if err := i.objects.EnsureIndex(ctx, anystore.IndexInfo{Name: key, Fields: []string{key}, Sparse: true}); err != nil {
 			return fmt.Errorf("Torah membership index %s: %w", key, err)
 		}
@@ -380,6 +380,11 @@ func (i *Index) project(binding torah.Binding, d *domain.Details) {
 	defer func() {
 		if isManifest(d) {
 			d.SetInt64(domain.RelationKey(torah.VersionKey), torah.Version)
+			if binding.ManifestObjectID != "" && d.GetString(bundle.RelationKeyId) == binding.ManifestObjectID &&
+				d.GetString(bundle.RelationKeySpaceId) == binding.SpaceID &&
+				!d.GetBool(bundle.RelationKeyIsDeleted) && !d.GetBool(bundle.RelationKeyIsArchived) {
+				d.SetInt64(domain.RelationKey(torah.RelatedVersionKey), torah.RelatedVersion)
+			}
 			d.SetString(domain.RelationKey(torah.CanonicalHashKey), binding.Generation)
 		}
 		sealCache(binding, d)
@@ -429,6 +434,12 @@ func (i *Index) project(binding torah.Binding, d *domain.Details) {
 		if len(values) > 0 {
 			d.SetStringList(domain.RelationKey(key), values)
 		}
+	}
+	if p.RelatedError == nil {
+		if len(p.RelatedSources) > 0 {
+			d.SetStringList(domain.RelationKey(torah.RelatedSourcesKey), p.RelatedSources)
+		}
+		d.SetInt64(domain.RelationKey(torah.RelatedVersionKey), torah.RelatedVersion)
 	}
 	labels, _ := json.Marshal(p.Labels)
 	d.SetString(domain.RelationKey(torah.LabelsKey), string(labels))
