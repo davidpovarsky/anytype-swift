@@ -63,6 +63,34 @@ class T5ValidationReceiptTests(unittest.TestCase):
             self.assertNotEqual(receipt['reason'], 'ATTEMPT_NOT_COMPLETED')
             self.assertEqual(receipt['client_enablement'], 'DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF')
 
+    def test_reopen_overlay_adds_only_supplemental_test_without_touching_native_tree(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            source = directory / 'Tools/PinkhaNativeDerived/native_test_templates/pinkha_torah_reopen_test.go'
+            source.parent.mkdir(parents=True)
+            source.write_text('package spaceindex\n')
+            heart = directory / 'heart'
+            overlay = validate_t5_coverage.native_index_overlay(directory, heart, directory)
+            destination = heart / 'pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_reopen_test.go'
+            self.assertEqual(json.loads(overlay.read_text()), {'Replace': {str(destination): str(source)}})
+            self.assertFalse(heart.exists())
+
+    def test_reopen_overlay_refuses_missing_fixture_or_existing_native_file(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            heart = directory / 'heart'
+            with self.assertRaises(RuntimeError):
+                validate_t5_coverage.native_index_overlay(directory, heart, directory)
+            source = directory / 'Tools/PinkhaNativeDerived/native_test_templates/pinkha_torah_reopen_test.go'
+            source.parent.mkdir(parents=True)
+            source.write_text('package spaceindex\n')
+            destination = heart / 'pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_reopen_test.go'
+            destination.parent.mkdir(parents=True)
+            destination.write_text('preserve existing native test\n')
+            with self.assertRaises(RuntimeError):
+                validate_t5_coverage.native_index_overlay(directory, heart, directory)
+            self.assertEqual(destination.read_text(), 'preserve existing native test\n')
+
 
 if __name__ == '__main__':
     unittest.main()

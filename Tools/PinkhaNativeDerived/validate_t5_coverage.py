@@ -10,6 +10,16 @@ from datetime import datetime, timezone
 from uuid import uuid4
 
 
+def native_index_overlay(root, heart, directory):
+    source = root / 'Tools/PinkhaNativeDerived/native_test_templates/pinkha_torah_reopen_test.go'
+    destination = heart / 'pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_reopen_test.go'
+    if not source.is_file() or destination.exists():
+        raise RuntimeError('Supplemental reopen fixture missing or would shadow native source')
+    overlay = directory / 'native-index-overlay.json'
+    overlay.write_text(json.dumps({'Replace': {str(destination): str(source)}}, indent=2) + '\n', encoding='utf8')
+    return overlay
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--heart-source', required=True, type=Path)
@@ -64,13 +74,14 @@ def execute(args, root, evidence):
         source_hashes[entry['path']] = actual
     components = {
         'projection-cache': (heart, ['-run', '^TestRelated', './core/pinkha/torah', './core/pinkha/torahindex']),
-        'native-index': (heart, ['-run', '^TestTorahRelatedNativeIndexFilterCommitAndRecovery$', './pkg/lib/localstore/objectstore/spaceindex']),
+        'native-index': (heart, ['-run', '^TestTorahRelatedNative(IndexFilterCommitAndRecovery|OnDiskCloseAndReopen)$', './pkg/lib/localstore/objectstore/spaceindex']),
         'native-rpc': (root / 'Tools/TorahNativeDerivedSpike/integration', ['-run', '^TestRealNativeMiddlewareDerivedProperties$', './...']),
     }
     cwd, selection = components[args.component]
     def fixture_hashes():
         paths = list((root / 'Modules/PinkhaHeart').rglob('*.go'))
         paths += list((root / 'Tools/TorahNativeDerivedSpike/integration').glob('*.go'))
+        paths += list((root / 'Tools/PinkhaNativeDerived/native_test_templates').glob('*.go'))
         return {str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest() for path in paths}
     before_fixtures = fixture_hashes()
     with tempfile.TemporaryDirectory(prefix='pinkha-t5-focused-') as directory:
@@ -82,7 +93,10 @@ def execute(args, root, evidence):
                    CGO_LDFLAGS='-L' + str(args.tantivy_directory.resolve()),
                    PINKHA_NATIVE_WIRE_ACCEPTANCE='1', PINKHA_NATIVE_T5_LOOKUP_ACCEPTANCE='1')
         command = [args.go, 'test', '-p', '1', '-json', '-count=1', '-timeout', '5m',
-                   '-tags', 'nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg', *selection]
+                   '-tags', 'nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg']
+        if args.component == 'native-index':
+            command += ['-overlay', str(native_index_overlay(root, heart, Path(directory)))]
+        command += selection
         log = evidence / (args.component + '.log')
         with log.open('x', encoding='utf8') as output:
             result = subprocess.run(command, cwd=cwd, env=env, stdout=output, stderr=subprocess.STDOUT)
@@ -101,13 +115,14 @@ def execute(args, root, evidence):
                             'TestRelatedCacheInvalidatesR14AndSealsNewOutputs',
                             'TestRelatedInvalidPrivateTargetPreservesPublicReadiness',
                             'TestRelatedManifestCapabilityAndMalformedCleanup'},
-        'native-index': {'TestTorahRelatedNativeIndexFilterCommitAndRecovery'},
+        'native-index': {'TestTorahRelatedNativeIndexFilterCommitAndRecovery',
+                         'TestTorahRelatedNativeOnDiskCloseAndReopen'},
         'native-rpc': {'TestRealNativeMiddlewareDerivedProperties'},
     }
     valid = valid and required[args.component].issubset(set(passed))
     expected_counts = {
         'projection-cache': dict(packages=2, top_level_tests=10, subcases=21),
-        'native-index': dict(packages=1, top_level_tests=1, subcases=0),
+        'native-index': dict(packages=1, top_level_tests=2, subcases=0),
         'native-rpc': dict(packages=1, top_level_tests=1, subcases=0),
     }[args.component]
     passed_packages = [event['Package'] for event in events if event.get('Action') == 'pass' and not event.get('Test')]
@@ -120,6 +135,8 @@ def execute(args, root, evidence):
     if args.component == 'native-rpc':
         valid = valid and 'PASS T5 real native ObjectCreate/BlockCreate/ObjectSetDetails/ObjectShow/private ObjectSearch' in output
         valid = valid and 'PASS T5 actual native private option/Property creation and object/Type attachment rejection' in output
+    if args.component == 'native-index':
+        valid = valid and 'PASS T5 actual on-disk store/provider close/reopen: canonical/public/private/cache/readiness/index preserved' in output
     receipt = dict(component=args.component, status='PASS' if valid else 'FAIL', command=command,
         heart_sha=inventory['heart_sha'], patch_sha256=inventory['patch_sha256'], passed=passed, skipped=skipped,
         exit_code=result.returncode, source_hashes=source_hashes, fixture_hashes=before_fixtures,
