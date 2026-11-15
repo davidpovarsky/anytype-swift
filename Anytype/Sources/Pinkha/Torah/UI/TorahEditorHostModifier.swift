@@ -1,3 +1,4 @@
+import Foundation
 import SwiftUI
 import TorahInspectorUI
 
@@ -5,13 +6,14 @@ struct TorahEditorHostModifier: ViewModifier {
     let session: TorahEditorSession?
     var presentationHost: TorahEditorSession.PresentationHost = .editor
     @Environment(\.locale) private var locale
+    @State private var routeIsMounted = false
 
     @ViewBuilder
     func body(content: Content) -> some View {
         if let session {
             @Bindable var session = session
 
-            content
+            routeObserved(content, session: session)
                 .sheet(
                     isPresented: Binding(
                         get: { session.presentationHost == presentationHost && session.isSearchPresented },
@@ -57,10 +59,20 @@ struct TorahEditorHostModifier: ViewModifier {
                     session.updateEffectiveLocale(locale)
                     await session.refreshAssociationSnapshot()
                 }
-                .onAppear { if presentationHost == .editor { session.activateDocument() } }
+                .onAppear {
+                    if presentationHost == .editor {
+                        session.activateDocument()
+                        if ProcessInfo.processInfo.environment["PINKHA_UI27_ROUTE_OBSERVATION"] == "1" {
+                            routeIsMounted = true
+                        }
+                    }
+                }
                 .onDisappear {
                     if presentationHost == .editor {
                         session.deactivateDocument()
+                        if ProcessInfo.processInfo.environment["PINKHA_UI27_ROUTE_OBSERVATION"] == "1" {
+                            routeIsMounted = false
+                        }
                     }
                 }
                 .onChange(of: locale.identifier) {
@@ -70,6 +82,22 @@ struct TorahEditorHostModifier: ViewModifier {
                     guard session.presentationHost == presentationHost, selectionID == nil else { return }
                     Task { await session.refreshAssociationSnapshot() }
                 }
+        } else {
+            content
+        }
+    }
+
+    /// Observe the mounted session, rather than infer its identity from a requested URL.
+    /// The ordinary application accessibility tree is unchanged unless explicitly opted in.
+    @ViewBuilder
+    private func routeObserved(_ content: Content, session: TorahEditorSession) -> some View {
+        if presentationHost == .editor,
+           ProcessInfo.processInfo.environment["PINKHA_UI27_ROUTE_OBSERVATION"] == "1" {
+            content
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier(routeIsMounted
+                    ? "pinkha-ui27-editor:\(session.spaceId):\(session.objectId)"
+                    : "pinkha-ui27-editor-unmounted")
         } else {
             content
         }

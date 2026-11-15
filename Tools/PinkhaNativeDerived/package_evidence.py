@@ -19,6 +19,10 @@ with zipfile.ZipFile(destination, 'w', compression=zipfile.ZIP_DEFLATED) as arch
         parts = path.relative_to(root).parts
         if any(part.startswith('DerivedData') or part == 'SourcePackages' for part in parts):
             continue
-        if path.suffix in {'.log', '.json', '.png', '.txt'} or any(part.endswith('.xcresult') for part in parts):
+        # xcresulttool exports media and UI snapshots with several suffixes,
+        # including no suffix. Preserve the whole exported attachment set so
+        # its manifest never points at files omitted by this archive filter.
+        if (path.suffix in {'.log', '.json', '.png', '.txt'}
+                or any(part.endswith(('.xcresult', '-attachments')) for part in parts)):
             archive.write(path, path.relative_to(root).as_posix())
 print(destination)

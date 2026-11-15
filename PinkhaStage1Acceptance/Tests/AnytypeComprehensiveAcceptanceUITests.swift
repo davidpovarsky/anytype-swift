@@ -9,6 +9,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         let manySourcesDocument: String
     }
 
+    private static var readyPID: Int?
     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
     private var fixture: Fixture!
 
@@ -20,14 +21,13 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         }
         let json = try XCTUnwrap(env["PINKHA_NATIVE_UI_FIXTURE_JSON"])
         fixture = try JSONDecoder().decode(Fixture.self, from: Data(json.utf8))
-        if app.state != .notRunning { app.terminate() }
         XCTAssertFalse(fixture.spaceId.isEmpty)
         XCTAssertFalse(try XCTUnwrap(fixture.universalDocuments["page"]).isEmpty)
-        app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
     }
 
     func testObjectAddPropertyButtonAndPickerSearch() throws {
         defer { attachFinalEvidence() }
+        try recordEntryEvidence()
         try openPageProperties()
         let add = app.buttons["torah-object-add-property"]
         XCTAssertTrue(add.waitForExistence(timeout: 20))
@@ -48,6 +48,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
 
     func testDocumentSourceSearchPresentation() throws {
         defer { attachFinalEvidence() }
+        try recordEntryEvidence()
         try openDocument(fixture.manySourcesDocument)
         let add = app.buttons["torah-document-sources-add"]
         XCTAssertTrue(add.waitForExistence(timeout: 20), "Fixture must have Sources attached")
@@ -63,6 +64,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
 
     func testDocumentSourceSearchEmptyAndClear() throws {
         defer { attachFinalEvidence() }
+        try recordEntryEvidence()
         try openDocument(fixture.manySourcesDocument)
         let add = app.buttons["torah-document-sources-add"]
         XCTAssertTrue(add.waitForExistence(timeout: 20))
@@ -87,6 +89,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
     }
     func testSourceChipOpensAndClosesInspector() throws {
         defer { attachFinalEvidence() }
+        try recordEntryEvidence()
         try openDocument(fixture.manySourcesDocument)
         let chip = app.buttons.matching(NSPredicate(
             format: "identifier BEGINSWITH %@", "torah-document-source-chip-"
@@ -111,6 +114,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
     }
     func testInspectorShowsIndexedRelatedDocument() throws {
         defer { attachFinalEvidence() }
+        try recordEntryEvidence()
         try openDocument(fixture.manySourcesDocument)
         let chip = app.buttons.matching(NSPredicate(
             format: "identifier BEGINSWITH %@", "torah-document-source-chip-"
@@ -131,13 +135,41 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         XCTAssertTrue(linkedDocument.isHittable)
         attach("inspector-indexed-document-results")
     }
-    private func attachFinalEvidence() {
-        guard app.state == .runningForeground else { return }
-        attach("final-screen")
-        let hierarchy = XCTAttachment(string: app.debugDescription)
-        hierarchy.name = "final-hierarchy"
+    private func recordEntryEvidence() throws {
+        let hierarchy = app.debugDescription
+        attachHierarchy(hierarchy, name: "entry-hierarchy")
+        XCTAssertEqual(app.state, .runningForeground, "Runner must prelaunch the actual app in the foreground")
+        guard let expected = ProcessInfo.processInfo.environment["PINKHA_UI27_EXPECTED_APP_PID"] else { return }
+        let expectedPID = try XCTUnwrap(Int(expected), "Expected app PID must be a positive integer")
+        XCTAssertGreaterThan(expectedPID, 0)
+        let expression = try NSRegularExpression(pattern: "(?m)^\\s*Application,\\s*0x[0-9a-fA-F]+,\\s*pid:\\s*([0-9]+)")
+        let range = NSRange(hierarchy.startIndex..., in: hierarchy)
+        let match = try XCTUnwrap(expression.firstMatch(in: hierarchy, range: range), "Target application PID missing from hierarchy")
+        let pidRange = try XCTUnwrap(Range(match.range(at: 1), in: hierarchy))
+        XCTAssertEqual(Int(hierarchy[pidRange]), expectedPID, "Target app PID must match the runner's verified process")
+    }
+
+    private func attachHierarchy(_ description: String, name: String) {
+        let hierarchy = XCTAttachment(string: description)
+        hierarchy.name = name
         hierarchy.lifetime = .keepAlways
         add(hierarchy)
+    }
+
+    private func attachFinalEvidence() {
+        let finalHierarchy = app.debugDescription
+        attachHierarchy(finalHierarchy, name: "final-hierarchy")
+        if let expected = ProcessInfo.processInfo.environment["PINKHA_UI27_EXPECTED_APP_PID"] {
+            let expression = try? NSRegularExpression(pattern: "(?m)^\\s*Application,\\s*0x[0-9a-fA-F]+,\\s*pid:\\s*([0-9]+)")
+            let range = NSRange(finalHierarchy.startIndex..., in: finalHierarchy)
+            let match = expression?.firstMatch(in: finalHierarchy, range: range)
+            let pidRange = match.flatMap { Range($0.range(at: 1), in: finalHierarchy) }
+            let actual = pidRange.flatMap { Int(finalHierarchy[$0]) }
+            XCTAssertEqual(actual, Int(expected), "Final target app PID must match the runner's verified process")
+            XCTAssertNotNil(actual, "Final target application PID missing from hierarchy")
+        }
+        guard app.state == .runningForeground else { return }
+        attach("final-screen")
     }
 
     private func openPage() throws {
@@ -145,7 +177,31 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
     }
 
     private func openDocument(_ objectID: String) throws {
-        if app.state == .notRunning { app.launch() }
+        XCTAssertEqual(app.state, .runningForeground, "Runner must prelaunch the actual app in the foreground")
+        // Wait for a source-backed home control, or an already-open editor from a
+        // preceding smoke method. A foreground LaunchView alone is not readiness.
+        let home = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@",
+            "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton"
+        )).firstMatch
+        let expectedPID = ProcessInfo.processInfo.environment["PINKHA_UI27_EXPECTED_APP_PID"].flatMap(Int.init)
+        if expectedPID == nil || Self.readyPID != expectedPID {
+            let waitStart = ProcessInfo.processInfo.systemUptime
+            let startedAt = Date()
+            defer {
+                let formatter = ISO8601DateFormatter()
+                let details = "expectedAppPID=\(expectedPID.map { String($0) } ?? "not-supplied"); waitStartedUTC=\(formatter.string(from: startedAt)); waitEndedUTC=\(formatter.string(from: Date())); elapsedSeconds=\(ProcessInfo.processInfo.systemUptime - waitStart); homeObserved=\(home.exists); editorMoreObserved=\(more.exists)"
+                let attachment = XCTAttachment(string: details)
+                attachment.name = "startup-readiness-timing"
+                attachment.lifetime = .keepAlways
+                add(attachment)
+            }
+            if !more.exists {
+                XCTAssertTrue(home.waitForExistence(timeout: 120),
+                              "Restored home did not become ready before the deep link")
+            }
+            Self.readyPID = expectedPID
+        }
         var url = URLComponents()
         url.scheme = "anytype"
         url.host = "object"
@@ -155,6 +211,19 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         ]
         app.open(try XCTUnwrap(url.url))
         XCTAssertTrue(more.waitForExistence(timeout: 45), "Disposable document did not open")
+        let editorIdentity = "pinkha-ui27-editor:\(fixture.spaceId):\(objectID)"
+        let editor = app.descendants(matching: .any).matching(identifier: editorIdentity).firstMatch
+        XCTAssertTrue(editor.waitForExistence(timeout: 45),
+                      "The mounted editor must match the requested disposable Space and object")
+        XCTAssertEqual(app.descendants(matching: .any).matching(identifier: editorIdentity).count, 1,
+                       "Exactly one mounted editor must match the disposable Space and object")
+        XCTAssertTrue(editor.isHittable, "The expected editor identity must be visible and current")
+        XCTAssertTrue(more.isHittable, "Document controls must not be blocked by a previous sheet")
+        let title = objectID == fixture.manySourcesDocument ? "UI27 source document" : "UI27 blank Page"
+        let actualTitle = app.descendants(matching: .any).matching(NSPredicate(
+            format: "label == %@ OR value == %@", title, title
+        )).firstMatch
+        XCTAssertTrue(actualTitle.waitForExistence(timeout: 45), "Expected disposable document title was not visible")
     }
 
     private func openPageProperties() throws {

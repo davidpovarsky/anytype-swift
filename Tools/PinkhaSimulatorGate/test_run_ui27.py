@@ -72,6 +72,80 @@ class UIExecutionControls(unittest.TestCase):
                 runner.run_selection(root, root / 'unused', 'AnytypeTests', 'disposable', [], {}, root, 'control')
             self.assertEqual(json.loads(receipt.read_text())['run'], 'old')
 
+    def exercise_runtime(self, mapped_pid=123, changed_identity=False):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            installed = root / 'Installed' / 'Anytype.app'
+            runtime = installed / 'Frameworks/ProtobufMessages.framework/ProtobufMessages'
+            identity = 'Sun Nov 15 09:00:00 2026 ' + str(installed / 'Anytype')
+            def output(argv, **kwargs):
+                if argv[:3] == ['xcrun', 'simctl', 'get_app_container']:
+                    return str(installed)
+                if argv[:3] == ['xcrun', 'simctl', 'launch']:
+                    self.assertEqual(argv[3], '--terminate-running-process')
+                    self.assertEqual(argv[-4:], ['-AppleLanguages', '(he)', '-AppleLocale', 'he_IL'])
+                    self.assertEqual(kwargs['env']['SIMCTL_CHILD_PINKHA_UI27_ROUTE_OBSERVATION'], '1')
+                    return 'io.anytype.app: 123'
+                self.assertEqual(argv[:4], ['ps', '-ww', '-p', '123'])
+                if len(argv) == 6:
+                    return str(installed / 'Anytype')
+                return identity + (' changed' if changed_identity and output.calls else '')
+            output.calls = 0
+            def counted_output(argv, **kwargs):
+                result = output(argv, **kwargs)
+                if argv[0] == 'ps' and len(argv) == 8:
+                    output.calls += 1
+                return result
+            mapping = subprocess.CompletedProcess([], 0, 'Process: Anytype [' + str(mapped_pid) + ']\n' + str(runtime), '')
+            with patch.object(runner.subprocess, 'check_output', side_effect=counted_output), \
+                    patch.object(runner.subprocess, 'run', return_value=mapping), \
+                    patch.object(runner, 'digest', return_value='same-bytes'), \
+                    patch.object(runner, 'contains', return_value=True):
+                return runner.live_runtime('disposable', root, root / 'Anytype.app', 'he')
+
+    def test_runtime_mapping_is_bound_to_target_pid_and_stable_process_start(self):
+        result = self.exercise_runtime()
+        self.assertEqual(result['pid'], 123)
+        self.assertTrue(result['runtime_loaded'])
+        self.assertTrue(result['process_identity_unchanged'])
+        self.assertFalse(result['every_launch_verified'])
+
+    def test_another_pid_mapping_or_recycled_identity_is_rejected(self):
+        for arguments in [dict(mapped_pid=124), dict(changed_identity=True)]:
+            with self.subTest(arguments=arguments), self.assertRaisesRegex(RuntimeError, 'process identity/runtime'):
+                self.exercise_runtime(**arguments)
+
+    def test_actual_boundary_attachments_must_bind_all_selected_methods_to_mapped_pid(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            attachments = root / 'smoke-attachments'
+            attachments.mkdir()
+            names = ['Suite/one', 'Suite/two']
+            manifest = []
+            for index, name in enumerate(names):
+                rows = []
+                for label in ['entry-hierarchy', 'final-hierarchy']:
+                    filename = str(index) + '-' + label + '.txt'
+                    (attachments / filename).write_text("Application, 0x10369b340, pid: 68005, label: 'Anytype'\n")
+                    rows.append(dict(suggestedHumanReadableName=label, exportedFileName=filename))
+                manifest.append(dict(testIdentifier=name + '()', attachments=rows))
+            (attachments / 'manifest.json').write_text(json.dumps(manifest))
+            live = dict(pid=68005, installed_app='/installed/Anytype.app',
+                        process_start_identity='start /installed/Anytype.app/Anytype', runtime_sha256='runtime')
+            with patch.object(runner, 'read_process_identity', return_value=live['process_start_identity']):
+                result = runner.verify_ui_process_continuity(root, 'smoke', live, names)
+            self.assertEqual(set(result['methods']), set(names))
+            self.assertFalse(result['every_launch_verified'])
+            with patch.object(runner, 'read_process_identity', return_value='recycled process start'), \
+                    self.assertRaisesRegex(RuntimeError, 'start identity changed'):
+                runner.verify_ui_process_continuity(root, 'smoke', live, names)
+            (attachments / '1-final-hierarchy.txt').write_text("Application, 0x10369b340, pid: 99999, label: 'Anytype'\n")
+            with self.assertRaisesRegex(RuntimeError, 'differs from the mapped'):
+                runner.verify_ui_process_continuity(root, 'smoke', live, names)
+            (attachments / 'manifest.json').write_text(json.dumps(manifest[:1]))
+            with self.assertRaisesRegex(RuntimeError, 'missing selected UI methods'):
+                runner.verify_ui_process_continuity(root, 'smoke', live, names)
+
 
 if __name__ == '__main__':
     unittest.main()

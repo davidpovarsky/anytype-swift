@@ -58,6 +58,9 @@ def run_selection(app, configuration, blueprint, udid, selections, environment, 
         selected = configuration.with_name('UI27-' + prefix + '.xctestrun')
         with selected.open('wb') as target:
             plistlib.dump(data, target)
+        write(evidence / 'selection-inputs.json', dict(blueprint=blueprint, selections=selections,
+            environment=environment, xctestrun_sha256=digest(selected), xctestrun_path=str(selected),
+            device_udid=udid))
         bundle = evidence / (prefix + '.xcresult')
         filters = sorted({name.split('/')[0] for name in selections}) if blueprint == 'AnytypeTests' else selections
         run_xctest(['xcodebuild', 'test-without-building', '-xctestrun', str(selected),
@@ -115,6 +118,52 @@ def test_configuration(products, blueprint):
     return candidates[0]
 
 
+def read_process_identity(pid, executable):
+    identity = subprocess.check_output(['ps', '-ww', '-p', str(pid), '-o', 'lstart=', '-o', 'comm='], text=True).strip()
+    actual_executable = subprocess.check_output(['ps', '-ww', '-p', str(pid), '-o', 'comm='], text=True).strip()
+    if not identity or actual_executable != str(executable):
+        raise RuntimeError('Actual process executable identity differs')
+    return identity
+
+
+def verify_ui_process_continuity(evidence, prefix, live, selections):
+    """Bind ordinary, non-relaunch UI methods to the process mapped before execution."""
+    attachments = evidence / (prefix + '-attachments')
+    manifest = json.loads((attachments / 'manifest.json').read_text())
+    expected = {name.removesuffix('()') for name in selections}
+    cases = {}
+    for case in manifest:
+        name = case.get('testIdentifier', '').removesuffix('()')
+        if name not in expected:
+            continue
+        if name in cases:
+            raise RuntimeError('Duplicate UI process evidence for a selected method')
+        observations = {}
+        for label in ['entry-hierarchy', 'final-hierarchy']:
+            matches = [a for a in case.get('attachments', []) if a.get('suggestedHumanReadableName') == label]
+            if len(matches) != 1:
+                raise RuntimeError('Exactly one actual ' + label + ' attachment is required per method')
+            path = attachments / matches[0]['exportedFileName']
+            if path.resolve().parent != attachments.resolve():
+                raise RuntimeError('UI process attachment path escapes its evidence directory')
+            raw = path.read_bytes()
+            header = re.search(r'^\s*Application,\s*(?:0x[0-9a-fA-F]+,\s*)?pid:\s*(\d+)', raw.decode('utf-8'), re.M)
+            if header is None or int(header.group(1)) != live['pid']:
+                raise RuntimeError('Actual UI target process differs from the mapped process')
+            observations[label] = dict(path=path.relative_to(evidence).as_posix(), sha256=digest(path), pid=live['pid'])
+        cases[name] = observations
+    if set(cases) != expected:
+        raise RuntimeError('Actual entry/final process evidence missing selected UI methods')
+    after = read_process_identity(live['pid'], Path(live['installed_app']) / 'Anytype')
+    if after != live['process_start_identity']:
+        raise RuntimeError('App process start identity changed during UI execution')
+    result = dict(status='PASS', scope='ORDINARY_NON_RELAUNCH_METHOD_BOUNDARIES', pid=live['pid'],
+                  process_start_identity=live['process_start_identity'], runtime_sha256=live['runtime_sha256'],
+                  post_ui_process_start_identity=after, methods=cases, every_launch_verified=False)
+    write(evidence / 'ui-process-continuity.json', result)
+    return result
+
+
 def verify_signed_simulator(app_bundle, evidence):
     command(['/usr/bin/codesign', '--verify', '--deep', '--strict', str(app_bundle)], app_bundle.parent, evidence)
     result = subprocess.run(['/usr/bin/codesign', '--display', '--entitlements', '-', '--xml', str(app_bundle)],
@@ -132,21 +181,36 @@ def verify_signed_simulator(app_bundle, evidence):
     verify_simulator_keychain_identity(simulated)
 
 
-def live_runtime(udid, evidence, built):
+def live_runtime(udid, evidence, built, language='en'):
+    if language not in {'en', 'he'}:
+        raise ValueError('Unsupported UI app language')
     installed = Path(subprocess.check_output(['xcrun', 'simctl', 'get_app_container', udid,
                                              'io.anytype.app', 'app'], text=True).strip())
     runtime = installed / 'Frameworks/ProtobufMessages.framework/ProtobufMessages'
-    launch = subprocess.check_output(['xcrun', 'simctl', 'launch', udid, 'io.anytype.app'], text=True)
+    launch_started_at = datetime.now(timezone.utc).isoformat()
+    launch = subprocess.check_output(['xcrun', 'simctl', 'launch', '--terminate-running-process', udid, 'io.anytype.app',
+        '-AppleLanguages', '(' + language + ')', '-AppleLocale', 'he_IL' if language == 'he' else 'en_US'], text=True,
+        env={**os.environ, 'SIMCTL_CHILD_PINKHA_UI27_ROUTE_OBSERVATION': '1'})
     pid = int(re.search(r':\s*(\d+)', launch).group(1))
+    identity = read_process_identity(pid, installed / 'Anytype')
     mapping = subprocess.run(['/usr/bin/vmmap', '-w', str(pid)], capture_output=True, text=True)
     (evidence / 'live-runtime-vmmap.log').write_text(mapping.stdout + mapping.stderr)
-    loaded = mapping.returncode == 0 and str(runtime) in mapping.stdout
+    loaded = (mapping.returncode == 0 and str(runtime) in mapping.stdout
+              and re.search(r'\[\s*' + str(pid) + r'\s*\]', mapping.stdout) is not None)
+    identity_after = read_process_identity(pid, installed / 'Anytype')
     record = dict(pid=pid, installed_app=str(installed), runtime_path=str(runtime),
                   runtime_sha256=digest(runtime), marker_present=contains(runtime, MARKER.encode()),
-                  runtime_loaded=loaded, vmmap_exit_code=mapping.returncode)
+                    runtime_loaded=loaded, vmmap_exit_code=mapping.returncode,
+                    process_start_identity=identity,
+                    process_identity_unchanged=identity == identity_after,
+                    requested_app_language=language, route_observation_requested=True,
+                    launch_started_at=launch_started_at, runtime_verified_at=datetime.now(timezone.utc).isoformat(),
+                    every_launch_verified=False)
     write(evidence / 'live-runtime.json', record)
     if not record['marker_present'] or record['runtime_sha256'] != digest(built / 'Frameworks/ProtobufMessages.framework/ProtobufMessages'):
         raise RuntimeError('Installed runtime bytes/marker differ from the verified build')
+    if not loaded or not record['process_identity_unchanged']:
+        raise RuntimeError('Actual app process identity/runtime mapping is unverified')
     return record
 
 
@@ -240,11 +304,20 @@ def execute(args, receipt):
         try:
             result = run_selection(app, ui_configuration, 'PinkhaStage1AcceptanceUITests', udid,
                 ['AnytypeComprehensiveAcceptanceUITests/' + name for name in SMOKE],
-                {'PINKHA_NATIVE_UI_DISPOSABLE': '1', 'PINKHA_NATIVE_UI_FIXTURE_JSON': json.dumps(fixture)},
+                {'PINKHA_NATIVE_UI_DISPOSABLE': '1', 'PINKHA_NATIVE_UI_FIXTURE_JSON': json.dumps(fixture),
+                 'PINKHA_UI27_APP_LANGUAGE': 'en', 'PINKHA_UI27_EXPECTED_APP_PID': str(live['pid'])},
                 device_evidence / 'ui', 'smoke-' + kind, built)
         finally:
             export_ui_console(udid, device_evidence)
         receipt[kind].update(ui_status=result['status'], ui=result, configuration_id=kind + '-en-portrait-os27')
+        try:
+            receipt[kind]['ui_process_continuity'] = verify_ui_process_continuity(
+                device_evidence / 'ui', 'smoke-' + kind, live,
+                ['AnytypeComprehensiveAcceptanceUITests/' + name for name in SMOKE])
+        except Exception as error:
+            receipt[kind]['ui_process_continuity'] = dict(status='FAIL', error_type=type(error).__name__, error=str(error))
+            receipt[kind]['ui_status'] = 'FAIL'
+            write(device_evidence / 'ui/ui-process-continuity.json', receipt[kind]['ui_process_continuity'])
         write(evidence / 'execution.json', receipt)
     for label, key in [('passed', 'actual_ui_passed'), ('failed', 'actual_ui_failed'), ('skipped', 'actual_ui_skipped')]:
         receipt[key] = sum(receipt.get(k, {}).get('ui', {}).get(label) or 0 for k in ['iphone', 'ipad'])
