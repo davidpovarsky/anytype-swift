@@ -29,6 +29,12 @@ struct TorahWave1IntegrationTests {
         let spaceID = space.spaceID
         _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: spaceID)
         let manifest = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: spaceID)
+        // Note is a bundled, optional Type in this native baseline, not a system Type.
+        // Match the existing universal-properties fixture's real Space installation.
+        _ = try await ClientCommands.workspaceObjectListAdd(.with {
+            $0.spaceID = spaceID; $0.objectIds = ["_otnote"]
+        }).invoke()
+        print("WAVE1_FIXTURE_READY native-account-space-schema-and-note-type")
         let writingTypeID = try #require(manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey])
         let writingType = ObjectType(details: try await show(writingTypeID, spaceID: spaceID))
         let associations = AnytypeTorahAssociationRepository()
@@ -94,11 +100,18 @@ struct TorahWave1IntegrationTests {
 
     @MainActor
     private func create(type: ObjectTypeUniqueKey, spaceID: String) async throws -> ObjectDetails {
-        try await Container.shared.objectActionsService().createObject(
-            name: "Wave 1 fixture", typeUniqueKey: type,
-            shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
-            spaceId: spaceID, origin: .none, templateId: nil
-        )
+        do {
+            let created = try await Container.shared.objectActionsService().createObject(
+                name: "Wave 1 fixture", typeUniqueKey: type,
+                shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+                spaceId: spaceID, origin: .none, templateId: nil
+            )
+            print("WAVE1_CREATED_NATIVE_FIXTURE type=\(type.value)")
+            return created
+        } catch let error as Anytype_Rpc.Object.Create.Response.Error {
+            print("WAVE1_NATIVE_CREATE_FAILED type=\(type.value) response=\((try? error.jsonString()) ?? "unavailable")")
+            throw error
+        }
     }
 
     private func show(_ id: String, spaceID: String) async throws -> ObjectDetails {

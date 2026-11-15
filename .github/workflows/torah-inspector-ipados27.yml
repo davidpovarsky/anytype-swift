@@ -15,6 +15,7 @@ on:
           - native-ipa-fast
           - native-ipa-repair
           - native-diagnostics
+          - simulator-ui27
       source_run_id:
         description: Existing native run whose XCTest attachments should be exported
         type: string
@@ -38,6 +39,10 @@ permissions:
   actions: read
 
 jobs:
+  simulator-ui27:
+    if: ${{ inputs.route == 'simulator-ui27' }}
+    uses: ./.github/workflows/pinkha-simulator-ui27.yml
+
   native-diagnostics:
     if: ${{ inputs.route == 'native-diagnostics' }}
     uses: ./.github/workflows/pinkha-native-diagnostics.yml

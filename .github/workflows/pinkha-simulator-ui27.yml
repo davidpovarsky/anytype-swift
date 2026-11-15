@@ -1,0 +1,67 @@
+name: Real OS27 native and iPhone iPad UI smoke
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  actual-native-and-ui:
+    runs-on: xcode-27
+    timeout-minutes: 150
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+    steps:
+      - name: Checkout exact integration source
+        uses: actions/checkout@v4
+      - name: Select compatible native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Verify actual Xcode27 and create disposable OS27 iPhone and iPad
+        run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/ui27-evidence/preflight
+      - name: Install exact already verified universal r14 runtime
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 42760706087 --repo "$GITHUB_REPOSITORY" --name Pinkha-Universal-Verified-Heart-r14 --dir build/verified-heart
+          python3 Tools/PinkhaNativeDerived/install_verified_heart.py \
+            --archive build/verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
+            --app-source "$GITHUB_WORKSPACE" --source-run-id 42760706087 \
+            --expected-app-branch codex/anytype-wave1-integration-20261115 --evidence build/ui27-evidence/heart
+      - name: Restore compatible ARM64 Xcode27 compiled dependencies
+        id: ui27-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: build/ui27-derived
+          key: pinkha-ui27-arm64-xcode27.0-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}-${{ github.sha }}
+          restore-keys: |
+            pinkha-ui27-arm64-xcode27.0-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}-
+      - name: Build once then execute real native fixture and six explicitly selected UI methods
+        id: actual-execution
+        timeout-minutes: 105
+        run: |
+          python3 Tools/PinkhaSimulatorGate/run_ui27.py --app "$GITHUB_WORKSPACE" \
+            --evidence build/ui27-evidence --derived build/ui27-derived
+      - name: Package actual logs screenshots xcresult even on failure
+        if: always()
+        run: python3 Tools/PinkhaNativeDerived/package_evidence.py build/ui27-evidence
+      - name: Retain real UI evidence remotely
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-UI27-Smoke-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/ui27-evidence/Pinkha-Native-Derived-Evidence.zip
+          if-no-files-found: error
+          retention-days: 14
+      - name: Preserve compatible compilation cache after success or failed tests
+        if: ${{ always() && steps.actual-execution.outcome != 'skipped' && steps.ui27-cache.outputs.cache-hit != 'true' && hashFiles('build/ui27-derived/Build/PinkhaSourceInputs.json') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: build/ui27-derived
+          key: ${{ steps.ui27-cache.outputs.cache-primary-key }}

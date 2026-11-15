@@ -1,0 +1,31 @@
+name: Required OS27 simulator UI evidence
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  accepted-ui-evidence:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact distribution candidate
+        uses: actions/checkout@v4
+      - name: Verify actual required UI case and visual evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 Tools/PinkhaSimulatorGate/validate_release.py \
+            --ledger docs/pinkha/torah-integration/ui27/accepted-ledger.json \
+            --evidence build/ui27-release-gate
+      - name: Preserve gate outcome including rejected evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-UI27-Release-Gate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/ui27-release-gate/
+          if-no-files-found: error
+          retention-days: 14

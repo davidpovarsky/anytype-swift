@@ -13,7 +13,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  ui27-acceptance-gate:
+    permissions:
+      contents: read
+      actions: read
+    uses: ./.github/workflows/pinkha-ui27-release-gate.yml
+
   main:
+    needs: ui27-acceptance-gate
     runs-on: macos-26
 
     steps:
