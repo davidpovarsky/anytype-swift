@@ -15,6 +15,8 @@ final class AnytypeTorahNotesService {
     let spaceId: String
     let objectId: String
     private let associations: any TorahAssociationRepository
+    private let relatedDocumentsService: AnytypeTorahSpaceRelatedDocumentsService
+    private let noteCreationFlow = T5NoteCreationFlow()
 
     @Injected(\.objectActionsService)
     private var objectActionsService: any ObjectActionsServiceProtocol
@@ -29,6 +31,7 @@ final class AnytypeTorahNotesService {
         self.spaceId = spaceId
         self.objectId = objectId
         self.associations = associations
+        self.relatedDocumentsService = AnytypeTorahSpaceRelatedDocumentsService(associations: associations)
     }
 
     func notes(for selection: TorahInspectorSelection) async throws -> [TorahInspectorNote] {
@@ -45,83 +48,62 @@ final class AnytypeTorahNotesService {
     func relatedDocuments(
         for selection: TorahInspectorSelection
     ) async throws -> TorahRelatedDocumentsSnapshot {
-        let documents = try await noteItems(for: selection).compactMap { item -> TorahRelatedDocument? in
-            guard let noteObjectId = item.customMetadata?[MetadataKey.noteObjectId],
-                  !noteObjectId.isEmpty else { return nil }
-            return TorahRelatedDocument(
-                id: item.id,
-                spaceID: spaceId,
-                objectID: noteObjectId,
-                title: item.labelHe,
-                snippet: selection.relationshipRef,
-                sourceReference: selection.relationshipRef,
-                kind: .note
-            )
-        }
-        // The host currently has no global reverse-index API. Returning the
-        // real current-document objects with explicit coverage prevents an
-        // empty collection from being presented as a space-wide zero.
-        return TorahRelatedDocumentsSnapshot(
-            documents: documents,
-            coverage: .currentDocumentOnly
-        )
+        try await relatedDocumentsService.relatedDocuments(spaceID: spaceId, selection: selection)
     }
 
-    func createNote(for selection: TorahInspectorSelection) async throws -> TorahInspectorNote {
+    func createNote(for selection: TorahInspectorSelection) async throws -> T5NoteCreationOutcome {
+        let source = T5SourceIdentity(providerID: selection.providerID, canonicalReference: selection.relationshipRef)
         let title = "הערה על \(selection.relationshipRef)"
-        let details = try await objectActionsService.createObject(
-            name: title,
-            typeUniqueKey: .note,
-            shouldDeleteEmptyObject: false,
-            shouldSelectType: false,
-            shouldSelectTemplate: false,
-            spaceId: spaceId,
-            origin: .none,
-            templateId: nil
+        return try await noteCreationFlow.create(
+            source: source,
+            createObject: { [self] in
+                let details = try await objectActionsService.createObject(
+                    name: title,
+                    typeUniqueKey: .note,
+                    shouldDeleteEmptyObject: false,
+                    shouldSelectType: false,
+                    shouldSelectTemplate: false,
+                    spaceId: spaceId,
+                    origin: .none,
+                    templateId: nil
+                )
+                return details.id
+            },
+            linkSource: { [self] noteObjectID in
+                _ = try await associations.addAssociation(
+                    source.item, target: .object(objectId: noteObjectID), spaceId: spaceId
+                )
+            },
+            addSourceLine: { [self] noteObjectID in
+                let sourceLine = BlockInformation.empty(
+                    content: .text(.plain("מקור: \(selection.relationshipRef)", contentType: .text))
+                )
+                let lastBlockId = try await blockService.lastBlockId(from: noteObjectID, spaceId: spaceId)
+                try Task.checkCancellation()
+                _ = try await blockService.add(
+                    contextId: noteObjectID, targetId: lastBlockId, info: sourceLine, position: .bottom
+                )
+            },
+            linkOrigin: { [self] noteObjectID in
+                let item = TorahAssociationItem(
+                    kind: .ref,
+                    role: .context,
+                    providerID: selection.providerID,
+                    externalID: noteObjectID,
+                    canonicalKey: "anytype-note:\(noteObjectID)",
+                    labelHe: title,
+                    labelEn: "Note on \(selection.relationshipRef)",
+                    createdAt: Date(),
+                    customMetadata: [
+                        MetadataKey.noteObjectId: noteObjectID,
+                        MetadataKey.selectionId: selection.id
+                    ]
+                )
+                _ = try await associations.addAssociation(
+                    item, target: .object(objectId: objectId), spaceId: spaceId
+                )
+            }
         )
-
-        let sourceLine = BlockInformation.empty(
-            content: .text(.plain("מקור: \(selection.relationshipRef)", contentType: .text))
-        )
-        let lastBlockId = try await blockService.lastBlockId(from: details.id, spaceId: spaceId)
-        _ = try await blockService.add(
-            contextId: details.id,
-            targetId: lastBlockId,
-            info: sourceLine,
-            position: .bottom
-        )
-
-        let item = TorahAssociationItem(
-            kind: .ref,
-            role: .context,
-            providerID: selection.providerID,
-            externalID: details.id,
-            canonicalKey: "anytype-note:\(details.id)",
-            labelHe: title,
-            labelEn: "Note on \(selection.relationshipRef)",
-            createdAt: Date(),
-            customMetadata: [
-                MetadataKey.noteObjectId: details.id,
-                MetadataKey.selectionId: selection.id
-            ]
-        )
-
-        do {
-            let saved = try await associations.addAssociation(
-                item,
-                target: .object(objectId: objectId),
-                spaceId: spaceId
-            )
-            return TorahInspectorNote(
-                id: saved.id,
-                selectedText: selection.relationshipRef,
-                note: title,
-                tag: "Anytype"
-            )
-        } catch {
-            try? await objectActionsService.delete(objectIds: [details.id])
-            throw error
-        }
     }
 
     func noteObjectId(noteId: String, for selection: TorahInspectorSelection) async throws -> String? {
@@ -131,7 +113,14 @@ final class AnytypeTorahNotesService {
     }
 
     func unlink(noteId: String, for selection: TorahInspectorSelection) async throws {
-        guard try await noteItems(for: selection).contains(where: { $0.id == noteId }) else { return }
+        guard let noteObjectID = try await noteObjectId(noteId: noteId, for: selection) else { return }
+        let source = T5SourceIdentity(providerID: selection.providerID, canonicalReference: selection.relationshipRef)
+        let sourceItems = try await associations.listDocumentAssociations(objectId: noteObjectID, spaceId: spaceId)
+        for item in sourceItems where source.matches(item) {
+            try await associations.removeAssociation(
+                associationId: item.id, target: .object(objectId: noteObjectID), spaceId: spaceId
+            )
+        }
         try await associations.removeAssociation(
             associationId: noteId,
             target: .object(objectId: objectId),
@@ -140,7 +129,7 @@ final class AnytypeTorahNotesService {
     }
 
     func unlink(document: TorahRelatedDocument, for selection: TorahInspectorSelection) async throws {
-        try await unlink(noteId: document.id, for: selection)
+        try await relatedDocumentsService.unlink(document: document, selection: selection, spaceID: spaceId)
     }
 
     private func noteItems(for selection: TorahInspectorSelection) async throws -> [TorahAssociationItem] {

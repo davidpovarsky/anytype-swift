@@ -59,6 +59,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           SOURCE_NATIVE_RUN_ID: ${{ inputs.heart_source_run_id }}
+          EXPECTED_APP_BRANCH: ${{ inputs.validation_scope == 't5-wave1' && 'codex/anytype-wave1-integration-20261115' || 'codex/torah-native-derived-properties-20261103' }}
         run: |
           [[ "$SOURCE_NATIVE_RUN_ID" =~ ^[0-9]+$ ]]
           gh run download "$SOURCE_NATIVE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name Pinkha-Universal-Verified-Heart-r14 --dir build/verified-heart
@@ -66,7 +67,8 @@ jobs:
             --archive build/verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz \
             --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
             --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
-            --app-source "$GITHUB_WORKSPACE" --source-run-id "$SOURCE_NATIVE_RUN_ID" --evidence build/native-evidence/heart
+            --app-source "$GITHUB_WORKSPACE" --source-run-id "$SOURCE_NATIVE_RUN_ID" --evidence build/native-evidence/heart \
+            --expected-app-branch "$EXPECTED_APP_BRANCH"
 
       - name: Reuse identical accepted headers for the Swift cache - NEVER old binaries
         if: ${{ inputs.validation_scope == 'readonly-startup' && inputs.heart_source_run_id == '' }}
@@ -118,7 +120,7 @@ jobs:
 
       - name: Focused real native product and original UI tests
         id: native-app
-        if: ${{ inputs.validation_scope != 'failed-ui' }}
+        if: ${{ inputs.validation_scope != 'failed-ui' && inputs.validation_scope != 't5-wave1' }}
         env:
           NATIVE_SCOPE: ${{ inputs.validation_scope }}
         run: |
@@ -130,6 +132,15 @@ jobs:
             --app-source "$GITHUB_WORKSPACE" --tests-only \
             --simulator-udid "$PINKHA_NATIVE_IPAD_UDID" \
             --evidence build/native-evidence/app "${args[@]}"
+
+      - name: Focused Wave 1 native query and host integration
+        id: native-wave1
+        if: ${{ inputs.validation_scope == 't5-wave1' }}
+        run: |
+          python3 Tools/PinkhaNativeDerived/validate_wave1.py \
+            --app-source "$GITHUB_WORKSPACE" \
+            --simulator-udid "$PINKHA_NATIVE_IPAD_UDID" \
+            --evidence build/native-evidence/app
 
       - name: Resume only failed UI cases using accepted app - NO app build
         if: ${{ inputs.validation_scope == 'failed-ui' }}
@@ -153,7 +164,7 @@ jobs:
           retention-days: 14
 
       - name: Preserve focused Xcode cache after build or test failure
-        if: ${{ always() && steps.native-app.outcome != 'skipped' && (steps.native-app-cache.outputs.cache-hit != 'true' || (inputs.validation_scope == 'readonly-startup' && hashFiles('build/native-evidence/app/relinked-simulator.json') != '')) }}
+        if: ${{ always() && (steps.native-app.outcome != 'skipped' || steps.native-wave1.outcome != 'skipped') && (steps.native-app-cache.outputs.cache-hit != 'true' || (inputs.validation_scope == 'readonly-startup' && hashFiles('build/native-evidence/app/relinked-simulator.json') != '')) }}
         uses: actions/cache/save@v4
         with:
           path: |

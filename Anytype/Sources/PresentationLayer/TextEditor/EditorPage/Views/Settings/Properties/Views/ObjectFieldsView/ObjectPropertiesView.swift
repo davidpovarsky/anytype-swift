@@ -84,9 +84,14 @@ struct ObjectPropertiesView: View {
 
                 PinkhaTorahPropertiesSection(model: torahProperties)
                 if model.canAddProperty {
-                    Button(Loc.addProperty) { model.onAddPropertyTap() }
-                        .accessibilityIdentifier("torah-object-add-property")
-                        .padding(.vertical, 12)
+                    Button {
+                        model.onAddPropertyTap()
+                    } label: {
+                        Text(verbatim: Loc.addProperty)
+                            .anytypeStyle(.uxBodyRegular)
+                    }
+                    .accessibilityIdentifier("torah-object-add-property")
+                    .padding(.vertical, 12)
                 }
             }
             .padding(.horizontal, 20)

@@ -15,12 +15,16 @@ parser.add_argument('--patch', required=True, type=Path)
 parser.add_argument('--app-source', required=True, type=Path)
 parser.add_argument('--source-run-id', required=True)
 parser.add_argument('--evidence', required=True, type=Path)
+parser.add_argument('--expected-app-branch',
+                    choices=['codex/torah-native-derived-properties-20261103',
+                             'codex/anytype-wave1-integration-20261115'],
+                    default='codex/torah-native-derived-properties-20261103')
 args = parser.parse_args()
 inventory = json.loads(args.inventory.read_text())
 patch_sha = digest(args.patch)
 if patch_sha != inventory['patch_sha256']:
     raise RuntimeError('Current source inventory does not match its exact patch')
-if git(args.app_source, 'branch', '--show-current') != 'codex/torah-native-derived-properties-20261103':
+if git(args.app_source, 'branch', '--show-current') != args.expected_app_branch:
     raise RuntimeError('Wrong application branch')
 with tempfile.TemporaryDirectory(prefix='pinkha-verified-heart-') as directory:
     staging = Path(directory)

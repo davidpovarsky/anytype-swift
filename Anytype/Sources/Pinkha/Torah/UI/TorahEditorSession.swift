@@ -194,6 +194,8 @@ final class TorahEditorSession {
     private var associationSnapshotHandler: ((Set<String>) -> Void)?
     private var associationSnapshotEpoch: UInt = 0
     private var searchRequestEpoch: UInt = 0
+    private var noteActionEpoch: UInt = 0
+    private var isCreatingNote = false
     private var effectiveLocale = Locale.autoupdatingCurrent
     private var pendingInspectorPresentation: PendingInspectorPresentation?
     private var pendingSearchContext: TorahAssociationContext?
@@ -346,6 +348,8 @@ final class TorahEditorSession {
 
     func deactivateDocument() {
         isActiveDocument = false
+        noteActionEpoch &+= 1
+        repository.invalidateRelatedDocuments()
         searchRequestEpoch &+= 1
         associationSnapshotEpoch &+= 1
         isSearchPresented = false
@@ -410,6 +414,8 @@ final class TorahEditorSession {
         selection nextSelection: TorahInspectorSelection,
         entryMode: TorahInspectorEntryMode
     ) {
+        noteActionEpoch &+= 1
+        repository.invalidateRelatedDocuments(for: nextSelection)
         pendingSearchContext = nil
         if isSearchPresented {
             pendingInspectorPresentation = PendingInspectorPresentation(
@@ -913,21 +919,38 @@ final class TorahEditorSession {
         for selection: TorahInspectorSelection,
         didChange: @escaping TorahInspectorHostActions.NotesDidChange
     ) async {
+        guard isActiveDocument, canEditAssociations, !isCreatingNote else { return }
+        isCreatingNote = true
+        defer { isCreatingNote = false }
+        let requestEpoch = noteActionEpoch
+        let inspectorSelectionID = self.selection?.id
         do {
-            _ = try await notesService.createNote(for: selection)
+            let outcome = try await notesService.createNote(for: selection)
             await refreshAssociationSnapshot()
             repository.invalidateNotes(for: selection)
+            repository.invalidateRelatedDocuments(for: selection)
+            guard isActiveDocument, noteActionEpoch == requestEpoch,
+                  self.selection?.id == inspectorSelectionID, !Task.isCancelled else { return }
             didChange()
+            if let error = outcome.recoveryError { message = error.localizedDescription }
+            openObjectHandler?(outcome.objectID)
         } catch {
+            repository.invalidateRelatedDocuments(for: selection)
             message = error.localizedDescription
         }
     }
 
     private func open(note: TorahInspectorNote, for selection: TorahInspectorSelection) async {
+        guard isActiveDocument, !Task.isCancelled else { return }
+        let requestEpoch = noteActionEpoch
+        let inspectorSelectionID = self.selection?.id
         do {
             guard let objectId = try await notesService.noteObjectId(noteId: note.id, for: selection) else {
                 throw SessionError.staleDocument
             }
+            try Task.checkCancellation()
+            guard isActiveDocument, noteActionEpoch == requestEpoch,
+                  self.selection?.id == inspectorSelectionID else { return }
             openObjectHandler?(objectId)
         } catch {
             message = error.localizedDescription
@@ -943,6 +966,7 @@ final class TorahEditorSession {
             try await notesService.unlink(noteId: note.id, for: selection)
             await refreshAssociationSnapshot()
             repository.invalidateNotes(for: selection)
+            repository.invalidateRelatedDocuments(for: selection)
             didChange()
         } catch {
             message = error.localizedDescription
@@ -966,6 +990,7 @@ final class TorahEditorSession {
     }
 
     private func apply(records: [TorahStoredAssociationRecord]) {
+        repository.invalidateRelatedDocuments()
         let previousBlockIDs = linkedBlockIDs
         let relevant = records.filter { $0.spaceId == spaceId && $0.objectId == objectId }
         associationRecords = relevant

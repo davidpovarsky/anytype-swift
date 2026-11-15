@@ -1,0 +1,121 @@
+import Foundation
+import AnytypeCore
+import PinkhaKit
+import ProtobufMessages
+import Services
+import SwiftProtobuf
+import Testing
+import TorahInspectorCore
+@testable import Anytype
+
+/// Run alone in the freshly created CI simulator; never open an existing wallet.
+@Suite("Wave 1 actual native query and host", .serialized,
+       .enabled(if: ProcessInfo.processInfo.environment["PINKHA_WAVE1_ACCEPTANCE"] == "1"))
+struct TorahWave1IntegrationTests {
+    @MainActor
+    @Test("Published V3, native cross-document query and host Note create/open/unlink")
+    func realNativeQueryAndNoteLifecycle() async throws {
+        Container.shared.serverConfigurationStorage().setupCurrentConfiguration(config: .localOnly)
+        let auth = Container.shared.authService()
+        let mnemonic = try await auth.createWallet()
+        try Container.shared.seedService().saveSeed(mnemonic)
+        _ = try await auth.createAccount(name: "Wave 1 disposable", iconOption: 1, imagePath: "")
+        let space = try await Container.shared.workspaceService().createSpace(
+            name: "Wave 1 disposable Space", iconOption: 1, accessType: .private,
+            useCase: .none, withChat: false, spaceType: .regular
+        )
+        let spaceID = space.spaceID
+        _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: spaceID)
+        let manifest = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: spaceID)
+        let writingTypeID = try #require(manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey])
+        let writingType = ObjectType(details: try await show(writingTypeID, spaceID: spaceID))
+        let associations = AnytypeTorahAssociationRepository()
+        let source = T5SourceIdentity(providerID: "sefaria", canonicalReference: "Genesis 3:3")
+        var documentIDs: [String] = []
+        for type in [ObjectTypeUniqueKey.page, .note, writingType.uniqueKey] {
+            let document = try await create(type: type, spaceID: spaceID)
+            documentIDs.append(document.id)
+            _ = try await associations.addAssociation(source.item, target: .object(objectId: document.id), spaceId: spaceID)
+        }
+        let otherVerse = try await create(type: .page, spaceID: spaceID)
+        _ = try await associations.addAssociation(
+            T5SourceIdentity(providerID: "sefaria", canonicalReference: "Genesis 3:4").item,
+            target: .object(objectId: otherVerse.id), spaceId: spaceID
+        )
+        let selection = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Genesis 3:3")
+        let session = TorahEditorSession(
+            spaceId: spaceID, objectId: try #require(documentIDs.first),
+            workspace: try AnytypeTorahWorkspace.sefaria(), associations: associations
+        )
+        let baseline = Set(documentIDs)
+        try await eventually {
+            let result = try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+            return result.documents.count == 3 && Set(result.documents.map(\.objectID)) == baseline
+        }
+        let initial = try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+        #expect(initial.coverage == .indexedDocumentsOnly)
+        #expect(Set(initial.limitations).isSuperset(of: [
+            .blockAssociationsNotIndexed, .sourceQuotesNotIndexed, .indexFreshnessUnverified
+        ]))
+        #expect(initial.documents.allSatisfy { $0.spaceID == spaceID && $0.typeID?.isEmpty == false })
+        #expect(!initial.documents.contains { $0.objectID == otherVerse.id })
+
+        var openedID: String?
+        session.installOpenObjectHandler { openedID = $0 }
+        let addNote = try #require(session.hostActions.onAddNote)
+        addNote(selection, {})
+        try await eventually { openedID != nil }
+        let noteID = try #require(openedID)
+        #expect(!baseline.contains(noteID))
+        let noteLinks = try await associations.listDocumentAssociations(objectId: noteID, spaceId: spaceID)
+        #expect(noteLinks.contains(where: source.matches))
+        try await eventually {
+            let result = try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+            return result.documents.count == 4 && Set(result.documents.map(\.objectID)) == baseline.union([noteID])
+        }
+        let linked = try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+        let noteRow = try #require(linked.documents.first { $0.objectID == noteID })
+        #expect(noteRow.kind == .note && noteRow.canUnlink)
+        openedID = nil
+        session.hostActions.onOpenRelatedDocument?(noteRow)
+        #expect(openedID == noteID)
+        let unlink = try #require(session.hostActions.onUnlinkRelatedDocument)
+        unlink(noteRow, selection, {})
+        try await eventually {
+            let result = try await session.repository.relatedDocuments(for: selection, forceRefresh: true)
+            return result.documents.count == 3 && Set(result.documents.map(\.objectID)) == baseline
+        }
+        let retainedNote = try await show(noteID, spaceID: spaceID)
+        #expect(!retainedNote.isDeleted && retainedNote.spaceId == spaceID)
+        session.deactivateDocument()
+    }
+
+    @MainActor
+    private func create(type: ObjectTypeUniqueKey, spaceID: String) async throws -> ObjectDetails {
+        try await Container.shared.objectActionsService().createObject(
+            name: "Wave 1 fixture", typeUniqueKey: type,
+            shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+            spaceId: spaceID, origin: .none, templateId: nil
+        )
+    }
+
+    private func show(_ id: String, spaceID: String) async throws -> ObjectDetails {
+        let response = try await ClientCommands.objectShow(.with {
+            $0.contextID = id; $0.objectID = id; $0.spaceID = spaceID
+        }).invoke()
+        return try ObjectDetails(protobufStruct: #require(response.objectView.details.first { $0.id == id }).details)
+    }
+
+    @MainActor
+    private func eventually(_ predicate: () async throws -> Bool) async throws {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(45))
+        repeat {
+            do { if try await predicate() { return } }
+            catch T5SpaceRelatedDocumentsError.indexUnavailable { }
+            try await Task.sleep(for: .milliseconds(100))
+        } while clock.now < deadline
+        Issue.record("Disposable native integration did not reach the expected state")
+        throw T5SpaceRelatedDocumentsError.indexUnavailable
+    }
+}
