@@ -27,6 +27,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
     }
 
     func testObjectAddPropertyButtonAndPickerSearch() throws {
+        defer { attachFinalEvidence() }
         try openPageProperties()
         let add = app.buttons["torah-object-add-property"]
         XCTAssertTrue(add.waitForExistence(timeout: 20))
@@ -46,6 +47,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
     }
 
     func testDocumentSourceSearchPresentation() throws {
+        defer { attachFinalEvidence() }
         try openDocument(fixture.manySourcesDocument)
         let add = app.buttons["torah-document-sources-add"]
         XCTAssertTrue(add.waitForExistence(timeout: 20), "Fixture must have Sources attached")
@@ -60,6 +62,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
     }
 
     func testDocumentSourceSearchEmptyAndClear() throws {
+        defer { attachFinalEvidence() }
         try openDocument(fixture.manySourcesDocument)
         let add = app.buttons["torah-document-sources-add"]
         XCTAssertTrue(add.waitForExistence(timeout: 20))
@@ -83,6 +86,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         attach("document-sources-search-cleared")
     }
     func testSourceChipOpensAndClosesInspector() throws {
+        defer { attachFinalEvidence() }
         try openDocument(fixture.manySourcesDocument)
         let chip = app.buttons.matching(NSPredicate(
             format: "identifier BEGINSWITH %@", "torah-document-source-chip-"
@@ -105,14 +109,35 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         XCTAssertTrue(more.waitForExistence(timeout: 20), "Closing Inspector should return to the document")
         attach("source-chip-inspector-closed")
     }
-    override func tearDownWithError() throws {
-        if app.state == .runningForeground {
-            attach("final-screen-\(name)")
-            let hierarchy = XCTAttachment(string: app.debugDescription)
-            hierarchy.name = "final-hierarchy-\(name)"
-            hierarchy.lifetime = .keepAlways
-            add(hierarchy)
-        }
+    func testInspectorShowsIndexedRelatedDocument() throws {
+        defer { attachFinalEvidence() }
+        try openDocument(fixture.manySourcesDocument)
+        let chip = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "torah-document-source-chip-"
+        )).firstMatch
+        XCTAssertTrue(chip.waitForExistence(timeout: 30))
+        chip.tap()
+        let expand = app.buttons["torah-inspector-expand-medium"]
+        if expand.waitForExistence(timeout: 10) { expand.tap() }
+        let showTools = app.buttons["torah-inspector-show-tools"]
+        if showTools.exists && showTools.isHittable { showTools.tap() }
+        let documents = app.buttons["In Documents"].firstMatch
+        XCTAssertTrue(documents.waitForExistence(timeout: 30), "The existing Inspector must expose its document tool")
+        documents.tap()
+        let add = app.buttons["torah-inspector-related-add-note"]
+        XCTAssertTrue(add.waitForExistence(timeout: 30), "Document tool must expose the real Note action")
+        let linkedDocument = app.buttons["UI27 source document"].firstMatch
+        XCTAssertTrue(linkedDocument.waitForExistence(timeout: 45), "The canonical document source should appear in the current Space")
+        XCTAssertTrue(linkedDocument.isHittable)
+        attach("inspector-indexed-document-results")
+    }
+    private func attachFinalEvidence() {
+        guard app.state == .runningForeground else { return }
+        attach("final-screen")
+        let hierarchy = XCTAttachment(string: app.debugDescription)
+        hierarchy.name = "final-hierarchy"
+        hierarchy.lifetime = .keepAlways
+        add(hierarchy)
     }
 
     private func openPage() throws {

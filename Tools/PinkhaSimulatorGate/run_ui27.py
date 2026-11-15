@@ -173,10 +173,16 @@ def execute(args, receipt):
         '-only-testing:AnytypeTests/TorahWave1IntegrationTests',
         '-only-testing:AnytypeTests/SimulatorAcceptancePreparationTests', *flags], app, evidence)
     ui_project = ui_only_project(app)
-    command([*base, '-project', str(ui_project), '-scheme', 'PinkhaPrebuiltUI',
+    # Xcode prunes products absent from an independent project's build graph.
+    # Keep its runner products separate from the already built app/test host.
+    ui_derived = derived.with_name(derived.name + '-ui')
+    ui_base = list(base)
+    ui_base[ui_base.index('-derivedDataPath') + 1] = str(ui_derived)
+    command([*ui_base, '-project', str(ui_project), '-scheme', 'PinkhaPrebuiltUI',
         *['-only-testing:PinkhaStage1AcceptanceUITests/AnytypeComprehensiveAcceptanceUITests/' + name for name in SMOKE],
         *flags], app, evidence)
     products = derived / 'Build/Products'
+    ui_products = ui_derived / 'Build/Products'
     built = products / 'Release-Anytype-iphonesimulator/Anytype.app'
     verify_signed_simulator(built, evidence)
     verify_runtime_copies(built, MARKER.encode(), evidence)
@@ -191,7 +197,7 @@ def execute(args, receipt):
     write(evidence / 'actual-package-pins.json', lock)
     receipt['app_executable_sha256'] = digest(built / 'Anytype')
     native_configuration = test_configuration(products, 'AnytypeTests')
-    ui_configuration = test_configuration(products, 'PinkhaStage1AcceptanceUITests')
+    ui_configuration = test_configuration(ui_products, 'PinkhaStage1AcceptanceUITests')
     receipt['phase'] = 'EXECUTION'
     receipt['native'] = run_selection(app, native_configuration, 'AnytypeTests', native_udid,
         ['TorahWave1IntegrationTests/realNativeQueryAndNoteLifecycle'], {'PINKHA_WAVE1_ACCEPTANCE': '1'},
@@ -214,7 +220,7 @@ def execute(args, receipt):
         write(device_evidence / 'fixture-ids.json', fixture)
         live = live_runtime(udid, device_evidence, built)
         receipt[kind]['live_runtime'] = live
-        install_ui_runner(udid, products, app, device_evidence)
+        install_ui_runner(udid, ui_products, app, device_evidence)
         try:
             result = run_selection(app, ui_configuration, 'PinkhaStage1AcceptanceUITests', udid,
                 ['AnytypeComprehensiveAcceptanceUITests/' + name for name in SMOKE],
