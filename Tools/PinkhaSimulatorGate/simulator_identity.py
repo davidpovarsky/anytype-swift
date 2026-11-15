@@ -58,8 +58,12 @@ def verify_simulator_keychain_identity(result):
     require(identifier.endswith('.io.anytype.app') and identifier.partition('.')[0],
             'Actual simulator Mach-O lacks the expected application identity')
     groups = result['entitlements'].get('keychain-access-groups', [])
-    require(isinstance(groups, list) and identifier in groups,
-            'Actual simulator Mach-O lacks its default Keychain access group')
+    require(isinstance(groups, list) and all(isinstance(group, str) and group for group in groups),
+            'Actual simulator Mach-O has invalid Keychain access groups')
+    # SeedService supplies no explicit access group. Apple's documented default
+    # is the first listed group, or the application identifier when none exist.
+    require((groups[0] if groups else identifier) == identifier,
+            'Actual simulator Mach-O selects an unexpected default Keychain access group')
     return identifier
 
 

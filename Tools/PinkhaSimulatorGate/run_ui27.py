@@ -15,6 +15,7 @@ from build_native_ipa import prepare_source_cache, run_xctest
 from validate_wave1 import verify_runtime_copies
 from validate_release import method_results, candidate_identity
 from simulator_identity import read_simulator_entitlements, verify_simulator_keychain_identity
+from compiled_products import capture_products
 from rerun_original_ui import ui_only_project, install_ui_runner, export_ui_console
 
 SMOKE = ['testObjectAddPropertyButtonAndPickerSearch', 'testDocumentSourceSearchPresentation',
@@ -179,9 +180,13 @@ def execute(args, receipt):
             '-destination', 'platform=iOS Simulator,id=' + native_udid, '-derivedDataPath', str(derived),
             '-parallel-testing-enabled', 'NO']
     receipt['phase'] = 'BUILD'
+    prior_logs = set(evidence.glob('command-*.log'))
     command([*base, '-project', 'Anytype.xcodeproj', '-scheme', 'Anytype',
         '-only-testing:AnytypeTests/TorahWave1IntegrationTests',
         '-only-testing:AnytypeTests/SimulatorAcceptancePreparationTests', *flags], app, evidence)
+    new_logs = set(evidence.glob('command-*.log')) - prior_logs
+    receipt.update(native_build_succeeded=True, native_build_flags=flags,
+                   native_build_log=next(iter(new_logs)).name if len(new_logs) == 1 else None)
     ui_project = ui_only_project(app)
     # Xcode prunes products absent from an independent project's build graph.
     # Keep its runner products separate from the already built app/test host.
@@ -266,6 +271,12 @@ def main():
         execute(args, receipt)
     except BaseException as error:
         receipt.update(status='FAIL', error_type=type(error).__name__, error=str(error))
+    if receipt.get('native_build_succeeded'):
+        try:
+            receipt['compiled_products'] = capture_products(args.derived.resolve(), args.evidence,
+                receipt['source_sha'], receipt['native_build_flags'])
+        except Exception as error:
+            receipt['compiled_products'] = dict(status='CAPTURE_FAILED_NO_BUILD_REUSE_ALLOWED', error=str(error))
     receipt['finished_at'] = datetime.now(timezone.utc).isoformat()
     write(args.evidence / 'execution.json', receipt)
     print(json.dumps(receipt))

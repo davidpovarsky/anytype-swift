@@ -34,10 +34,19 @@ class SimulatorIdentityControls(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'expected application identity'):
             verify_simulator_keychain_identity(result)
 
-    def test_missing_keychain_group_is_rejected_after_raw_section_inspection(self):
-        self.entitlements['keychain-access-groups'] = []
+    def test_implicit_app_id_default_keychain_group_is_accepted(self):
+        for groups in [[], None]:
+            if groups is None:
+                self.entitlements.pop('keychain-access-groups', None)
+            else:
+                self.entitlements['keychain-access-groups'] = groups
+            result = inspect_simulator_entitlements(control_binary(self.entitlements))
+            self.assertEqual(verify_simulator_keychain_identity(result), 'FAKETEAMID.io.anytype.app')
+
+    def test_foreign_default_keychain_group_is_rejected(self):
+        self.entitlements['keychain-access-groups'] = ['OTHER.group', 'FAKETEAMID.io.anytype.app']
         result = inspect_simulator_entitlements(control_binary(self.entitlements))
-        with self.assertRaisesRegex(ValueError, 'default Keychain access group'):
+        with self.assertRaisesRegex(ValueError, 'unexpected default Keychain access group'):
             verify_simulator_keychain_identity(result)
 
     def test_invalid_section_offset_cannot_be_treated_as_an_entitlement(self):

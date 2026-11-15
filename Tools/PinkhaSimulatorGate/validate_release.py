@@ -144,6 +144,7 @@ def source_inputs(root):
     proof_inputs = {'Tools/PinkhaSimulatorGate/run_ui27.py', 'Tools/PinkhaSimulatorGate/preflight.py',
                     'Tools/PinkhaSimulatorGate/validate_release.py', 'Tools/PinkhaSimulatorGate/required-coverage.json',
                     'Tools/PinkhaSimulatorGate/simulator_identity.py',
+                    'Tools/PinkhaSimulatorGate/compiled_products.py',
                     '.github/workflows/pinkha-simulator-ui27.yml',
                     *('Tools/PinkhaNativeDerived/' + name for name in [
                         'build_native_ipa.py', 'rerun_original_ui.py', 'install_verified_heart.py',
