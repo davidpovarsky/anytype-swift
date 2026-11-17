@@ -293,7 +293,7 @@ extension Container {
     }
     
     var authService: Factory<any AuthServiceProtocol> {
-        self { AuthService() }.shared
+        self { PinkhaHanlinAuthService(base: AuthService()) }.shared
     }
     
     var appActionStorage: Factory<AppActionStorage> {
