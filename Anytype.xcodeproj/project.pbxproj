@@ -83,6 +83,18 @@
 		C960DFB328D88618002898AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C960DFB228D88618002898AE /* Assets.xcassets */; };
 		C960DFB928D88618002898AE /* AnytypeWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C960DFA928D88615002898AE /* AnytypeWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C99A53AC28A1380300B3E5F4 /* ShimmerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C99A53AB28A1380300B3E5F4 /* ShimmerSwift */; };
+		FA6300012F111800006805CC /* HanlinHostContracts in Frameworks */ = {isa = PBXBuildFile; productRef = FA6200012F111800006805CC /* HanlinHostContracts */; };
+		FA6300022F111800006805CC /* HanlinPlatformContracts in Frameworks */ = {isa = PBXBuildFile; productRef = FA6200022F111800006805CC /* HanlinPlatformContracts */; };
+		FA6300032F111800006805CC /* HanlinAgentCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA6200032F111800006805CC /* HanlinAgentCore */; };
+		FA6300042F111800006805CC /* HanlinPersistenceAdapters in Frameworks */ = {isa = PBXBuildFile; productRef = FA6200042F111800006805CC /* HanlinPersistenceAdapters */; };
+		FA6300052F111800006805CC /* HanlinChatCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA6200052F111800006805CC /* HanlinChatCore */; };
+		FA6300062F111800006805CC /* HanlinScriptUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA6200062F111800006805CC /* HanlinScriptUI */; };
+		FA6300072F111800006805CC /* HanlinChatUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA6200072F111800006805CC /* HanlinChatUI */; };
+		FA6300082F111800006805CC /* HanlinPresentationKit in Frameworks */ = {isa = PBXBuildFile; productRef = FA6200082F111800006805CC /* HanlinPresentationKit */; };
+		FA6301012F111800006805CC /* HanlinHostContracts in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201012F111800006805CC /* HanlinHostContracts */; };
+		FA6301022F111800006805CC /* HanlinPlatformContracts in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201022F111800006805CC /* HanlinPlatformContracts */; };
+		FA6301032F111800006805CC /* HanlinAgentCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201032F111800006805CC /* HanlinAgentCore */; };
+		FA6301042F111800006805CC /* HanlinChatCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201042F111800006805CC /* HanlinChatCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -267,6 +279,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA6300012F111800006805CC /* HanlinHostContracts in Frameworks */,
+				FA6300022F111800006805CC /* HanlinPlatformContracts in Frameworks */,
+				FA6300032F111800006805CC /* HanlinAgentCore in Frameworks */,
+				FA6300042F111800006805CC /* HanlinPersistenceAdapters in Frameworks */,
+				FA6300052F111800006805CC /* HanlinChatCore in Frameworks */,
+				FA6300062F111800006805CC /* HanlinScriptUI in Frameworks */,
+				FA6300072F111800006805CC /* HanlinChatUI in Frameworks */,
+				FA6300082F111800006805CC /* HanlinPresentationKit in Frameworks */,
 				7434DAC32D3916FF00E18A0C /* AppTarget in Frameworks */,
 				3DC133F22CAFE5DD000FF065 /* Factory in Frameworks */,
 				3DC133F12CAFE5DD000FF065 /* SharedContentManager in Frameworks */,
@@ -313,6 +333,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA6301012F111800006805CC /* HanlinHostContracts in Frameworks */,
+				FA6301022F111800006805CC /* HanlinPlatformContracts in Frameworks */,
+				FA6301032F111800006805CC /* HanlinAgentCore in Frameworks */,
+				FA6301042F111800006805CC /* HanlinChatCore in Frameworks */,
 				2A90C46D285B5A9100B6B44E /* ProtobufMessages in Frameworks */,
 				3DF266E12BE9382F0038249A /* Factory in Frameworks */,
 				2A90C46A285B5A9100B6B44E /* Services in Frameworks */,
@@ -480,6 +504,14 @@
 			);
 			name = Anytype;
 			packageProductDependencies = (
+				FA6200012F111800006805CC /* HanlinHostContracts */,
+				FA6200022F111800006805CC /* HanlinPlatformContracts */,
+				FA6200032F111800006805CC /* HanlinAgentCore */,
+				FA6200042F111800006805CC /* HanlinPersistenceAdapters */,
+				FA6200052F111800006805CC /* HanlinChatCore */,
+				FA6200062F111800006805CC /* HanlinScriptUI */,
+				FA6200072F111800006805CC /* HanlinChatUI */,
+				FA6200082F111800006805CC /* HanlinPresentationKit */,
 				5333421B262E249100238121 /* FloatingPanel */,
 				1259300426F3A5C500B115CD /* Highlightr */,
 				1259300D26F3A6AE00B115CD /* Kingfisher */,
@@ -540,6 +572,10 @@
 			);
 			name = AnytypeTests;
 			packageProductDependencies = (
+				FA6201012F111800006805CC /* HanlinHostContracts */,
+				FA6201022F111800006805CC /* HanlinPlatformContracts */,
+				FA6201032F111800006805CC /* HanlinAgentCore */,
+				FA6201042F111800006805CC /* HanlinChatCore */,
 				2A90C465285B5A9100B6B44E /* AnytypeCore */,
 				2A90C469285B5A9100B6B44E /* Services */,
 				2A90C46C285B5A9100B6B44E /* ProtobufMessages */,
@@ -671,6 +707,9 @@
 			);
 			mainGroup = 0303ECF222D8EDAA005C552B;
 			packageReferences = (
+				FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */,
+				FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */,
+				FA6100032F111800006805CC /* XCLocalSwiftPackageReference "HanlinPresentationSDK" */,
 				5333421A262E249100238121 /* XCRemoteSwiftPackageReference "FloatingPanel" */,
 				1259300326F3A5C500B115CD /* XCRemoteSwiftPackageReference "Highlightr" */,
 				1259300C26F3A6AE00B115CD /* XCRemoteSwiftPackageReference "Kingfisher" */,
@@ -1054,7 +1093,7 @@
 				GOOGLE_SERVICE_INFO_PLIST = "$(SRCROOT)/$(PROJECT_NAME)/Supporting files/GoogleServices/GoogleService-Info-Anytype-Dev.plist";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Anytype/Supporting files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1098,7 +1137,7 @@
 				GOOGLE_SERVICE_INFO_PLIST = "$(SRCROOT)/$(PROJECT_NAME)/Supporting files/GoogleServices/GoogleService-Info-Anytype-Release.plist";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Anytype/Supporting files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1125,7 +1164,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AnytypeTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1150,7 +1189,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AnytypeTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1267,7 +1306,7 @@
 				GOOGLE_SERVICE_INFO_PLIST = "$(SRCROOT)/$(PROJECT_NAME)/Supporting files/GoogleServices/GoogleService-Info-Anytype-Dev.plist";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Anytype/Supporting files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1294,7 +1333,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AnytypeTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1605,7 +1644,7 @@
 				GOOGLE_SERVICE_INFO_PLIST = "$(SRCROOT)/$(PROJECT_NAME)/Supporting files/GoogleServices/GoogleService-Info-Anytype-Release.plist";
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Anytype/Supporting files/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1631,7 +1670,7 @@
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = AnytypeTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2041,6 +2080,21 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Dependencies/Hanlin/Packages/HanlinAgentSDK;
+		};
+		FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Dependencies/Hanlin/Packages/HanlinPlatform;
+		};
+		FA6100032F111800006805CC /* XCLocalSwiftPackageReference "HanlinPresentationSDK" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Dependencies/Hanlin/Packages/HanlinPresentationSDK;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		1259300326F3A5C500B115CD /* XCRemoteSwiftPackageReference "Highlightr" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -2431,6 +2485,66 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C9BFBA8C28A133320003D9E6 /* XCRemoteSwiftPackageReference "ShimmerSwift" */;
 			productName = ShimmerSwift;
+		};
+		FA6200012F111800006805CC /* HanlinHostContracts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */;
+			productName = HanlinHostContracts;
+		};
+		FA6200022F111800006805CC /* HanlinPlatformContracts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */;
+			productName = HanlinPlatformContracts;
+		};
+		FA6200032F111800006805CC /* HanlinAgentCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */;
+			productName = HanlinAgentCore;
+		};
+		FA6200042F111800006805CC /* HanlinPersistenceAdapters */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */;
+			productName = HanlinPersistenceAdapters;
+		};
+		FA6200052F111800006805CC /* HanlinChatCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */;
+			productName = HanlinChatCore;
+		};
+		FA6200062F111800006805CC /* HanlinScriptUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */;
+			productName = HanlinScriptUI;
+		};
+		FA6200072F111800006805CC /* HanlinChatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA6100032F111800006805CC /* XCLocalSwiftPackageReference "HanlinPresentationSDK" */;
+			productName = HanlinChatUI;
+		};
+		FA6200082F111800006805CC /* HanlinPresentationKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA6100032F111800006805CC /* XCLocalSwiftPackageReference "HanlinPresentationSDK" */;
+			productName = HanlinPresentationKit;
+		};
+		FA6201012F111800006805CC /* HanlinHostContracts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */;
+			productName = HanlinHostContracts;
+		};
+		FA6201022F111800006805CC /* HanlinPlatformContracts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */;
+			productName = HanlinPlatformContracts;
+		};
+		FA6201032F111800006805CC /* HanlinAgentCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */;
+			productName = HanlinAgentCore;
+		};
+		FA6201042F111800006805CC /* HanlinChatCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */;
+			productName = HanlinChatCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

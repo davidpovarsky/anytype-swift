@@ -208,7 +208,7 @@ struct SpaceHubCoordinatorView: View {
                 },
                 bottomPanel: {
                     if let spaceInfo = model.spaceInfo, !model.hidesBottomPanelForSearch {
-                        HomeBottomNavigationPanelView(homePath: model.navigationPath, info: spaceInfo, output: model)
+                        HomeBottomNavigationPanelView(homePath: model.navigationPath, info: spaceInfo, output: model, hanlinRouteOwner: model)
                     }
                 }
             )

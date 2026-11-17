@@ -8,9 +8,10 @@ struct HomeBottomNavigationPanelView: View {
     let homePath: HomePath
     let info: AccountInfo
     weak var output: (any HomeBottomNavigationPanelModuleOutput)?
+    var hanlinRouteOwner: SpaceHubCoordinatorViewModel? = nil
     
     var body: some View {
-        HomeBottomNavigationPanelViewInternal(homePath: homePath, info: info, output: output)
+        HomeBottomNavigationPanelViewInternal(homePath: homePath, info: info, output: output, hanlinRouteOwner: hanlinRouteOwner)
             .id(info.accountSpaceId)
     }
 }
@@ -23,8 +24,11 @@ private struct HomeBottomNavigationPanelViewInternal: View {
     @State private var model: HomeBottomNavigationPanelViewModel
     @State private var showTypeSearch = false
     @Environment(\.pageNavigation) private var pageNavigation
+    private let hanlinRouteOwner: SpaceHubCoordinatorViewModel?
 
-    init(homePath: HomePath, info: AccountInfo, output: (any HomeBottomNavigationPanelModuleOutput)?) {
+    init(homePath: HomePath, info: AccountInfo, output: (any HomeBottomNavigationPanelModuleOutput)?,
+         hanlinRouteOwner: SpaceHubCoordinatorViewModel?) {
+        self.hanlinRouteOwner = hanlinRouteOwner
         self.homePath = homePath
         _model = State(initialValue: HomeBottomNavigationPanelViewModel(info: info, output: output))
     }
@@ -41,6 +45,11 @@ private struct HomeBottomNavigationPanelViewInternal: View {
                     searchButton
                         .glassEffectIDIOS26("search", in: glassNamespace)
                     Spacer()
+                    if let hanlinRouteOwner {
+                        PinkhaHanlinLaunchButton(routeOwner: hanlinRouteOwner)
+                            .glassEffectIDIOS26("hanlin", in: glassNamespace)
+                        Spacer()
+                    }
                     if model.showDiscussButton {
                         discussIsland
                             .glassEffectIDIOS26("discussIsland", in: glassNamespace)
