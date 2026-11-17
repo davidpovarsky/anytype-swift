@@ -62,7 +62,12 @@ final class AnytypeTorahSpaceRelatedDocumentsService {
         )
     }
 
-    func unlink(document: TorahRelatedDocument, selection: TorahInspectorSelection, spaceID: String) async throws {
+    func unlink(
+        document: TorahRelatedDocument, selection: TorahInspectorSelection, spaceID: String,
+        authorize: @MainActor () throws -> Void
+    ) async throws {
+        try Task.checkCancellation()
+        try authorize()
         guard document.spaceID == spaceID, document.blockID == nil, document.canUnlink else {
             throw TorahAssociationRepositoryError.permissionDenied
         }
@@ -71,8 +76,11 @@ final class AnytypeTorahSpaceRelatedDocumentsService {
             throw TorahAssociationRepositoryError.targetNotFound
         }
         let items = try await associations.listDocumentAssociations(objectId: document.objectID, spaceId: spaceID)
+        try Task.checkCancellation()
+        try authorize()
         for item in items where source.matches(item) {
             try Task.checkCancellation()
+            try authorize()
             try await associations.removeAssociation(
                 associationId: item.id, target: .object(objectId: document.objectID), spaceId: spaceID
             )

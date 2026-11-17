@@ -287,7 +287,8 @@ final class TorahEditorSession {
     var linkedBlockIDs: Set<String> { Set(associationsByBlockId.keys) }
 
     var hostActions: TorahInspectorHostActions {
-        TorahInspectorHostActions(
+        let actionEpoch = noteActionEpoch
+        return TorahInspectorHostActions(
             onClose: { [weak self] in self?.inspectorDidDismiss() },
             onInsertSegment: { [weak self] transfer in
                 Task { @MainActor in
@@ -297,25 +298,29 @@ final class TorahEditorSession {
             onOpenInNewTab: nil,
             onAddNote: { [weak self] selection, didChange in
                 Task { @MainActor in
-                    await self?.addNote(for: selection, didChange: didChange)
+                    guard let self, self.noteActionEpoch == actionEpoch else { return }
+                    await self.addNote(for: selection, didChange: didChange)
                 }
             },
             onOpenNote: { [weak self] note, selection, _ in
                 Task { @MainActor in
-                    await self?.open(note: note, for: selection)
+                    guard let self, self.noteActionEpoch == actionEpoch else { return }
+                    await self.open(note: note, for: selection)
                 }
             },
             onDeleteNote: { [weak self] note, selection, didChange in
                 Task { @MainActor in
-                    await self?.unlink(note: note, for: selection, didChange: didChange)
+                    guard let self, self.noteActionEpoch == actionEpoch else { return }
+                    await self.unlink(note: note, for: selection, didChange: didChange)
                 }
             },
             onOpenRelatedDocument: { [weak self] document in
-                self?.openObjectHandler?(document.objectID)
+                self?.openRelatedDocument(document, actionEpoch: actionEpoch)
             },
             onUnlinkRelatedDocument: { [weak self] document, selection, didChange in
                 Task { @MainActor in
-                    await self?.unlink(document: document, for: selection, didChange: didChange)
+                    guard let self, self.noteActionEpoch == actionEpoch else { return }
+                    await self.unlink(document: document, for: selection, didChange: didChange)
                 }
             },
             showsCloseButton: true
@@ -924,8 +929,10 @@ final class TorahEditorSession {
         defer { isCreatingNote = false }
         let requestEpoch = noteActionEpoch
         let inspectorSelectionID = self.selection?.id
+        let authorize = noteMutationAuthorization()
         do {
-            let outcome = try await notesService.createNote(for: selection)
+            let outcome = try await notesService.createNote(for: selection, authorize: authorize)
+            try authorize()
             await refreshAssociationSnapshot()
             repository.invalidateNotes(for: selection)
             repository.invalidateRelatedDocuments(for: selection)
@@ -936,7 +943,9 @@ final class TorahEditorSession {
             openObjectHandler?(outcome.objectID)
         } catch {
             repository.invalidateRelatedDocuments(for: selection)
-            message = error.localizedDescription
+            if isActiveDocument, noteActionEpoch == requestEpoch {
+                recordAssociationError(error)
+            }
         }
     }
 
@@ -957,19 +966,39 @@ final class TorahEditorSession {
         }
     }
 
+    private func openRelatedDocument(_ document: TorahRelatedDocument, actionEpoch: UInt) {
+        guard isActiveDocument, noteActionEpoch == actionEpoch, !Task.isCancelled,
+              document.spaceID == spaceId, !document.objectID.isEmpty else { return }
+        openObjectHandler?(document.objectID)
+    }
+
+    private func noteMutationAuthorization() -> @MainActor () throws -> Void {
+        let requestEpoch = noteActionEpoch
+        let inspectorSelectionID = selection?.id
+        return { [weak self] in
+            try Task.checkCancellation()
+            guard let self, self.isActiveDocument, self.noteActionEpoch == requestEpoch,
+                  self.selection?.id == inspectorSelectionID else { throw CancellationError() }
+            guard self.canEditAssociations else { throw TorahAssociationRepositoryError.permissionDenied }
+        }
+    }
+
     private func unlink(
         note: TorahInspectorNote,
         for selection: TorahInspectorSelection,
         didChange: @escaping TorahInspectorHostActions.NotesDidChange
     ) async {
+        let authorize = noteMutationAuthorization()
         do {
-            try await notesService.unlink(noteId: note.id, for: selection)
+            try await notesService.unlink(noteId: note.id, for: selection, authorize: authorize)
+            try authorize()
             await refreshAssociationSnapshot()
             repository.invalidateNotes(for: selection)
             repository.invalidateRelatedDocuments(for: selection)
+            try authorize()
             didChange()
         } catch {
-            message = error.localizedDescription
+            recordAssociationError(error)
         }
     }
 
@@ -978,14 +1007,17 @@ final class TorahEditorSession {
         for selection: TorahInspectorSelection,
         didChange: @escaping TorahInspectorHostActions.NotesDidChange
     ) async {
+        let authorize = noteMutationAuthorization()
         do {
-            try await notesService.unlink(document: document, for: selection)
+            try await notesService.unlink(document: document, for: selection, authorize: authorize)
+            try authorize()
             await refreshAssociationSnapshot()
             repository.invalidateNotes(for: selection)
             repository.invalidateRelatedDocuments(for: selection)
+            try authorize()
             didChange()
         } catch {
-            message = error.localizedDescription
+            recordAssociationError(error)
         }
     }
 
