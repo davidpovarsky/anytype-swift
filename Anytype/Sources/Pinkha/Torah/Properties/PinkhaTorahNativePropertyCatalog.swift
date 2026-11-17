@@ -512,6 +512,8 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
                 if retryAttempt.properties.isNotEmpty {
                     return retryAttempt.properties
                 }
+                // Keep the latest failure even when the first attempt supplied usable rows.
+                return firstAttempt.properties
             }
         }
 
