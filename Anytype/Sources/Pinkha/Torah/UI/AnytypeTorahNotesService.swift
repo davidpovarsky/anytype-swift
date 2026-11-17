@@ -59,9 +59,8 @@ final class AnytypeTorahNotesService {
         let source = T5SourceIdentity(providerID: selection.providerID, canonicalReference: selection.relationshipRef)
         let title = "הערה על \(selection.relationshipRef)"
         return try await noteCreationFlow.create(
-            source: source,
+            source: source, authorize: authorize,
             createObject: { [self] in
-                try authorize()
                 let details = try await objectActionsService.createObject(
                     name: title,
                     typeUniqueKey: .note,
@@ -75,13 +74,11 @@ final class AnytypeTorahNotesService {
                 return details.id
             },
             linkSource: { [self] noteObjectID in
-                try authorize()
                 _ = try await associations.addAssociation(
                     source.item, target: .object(objectId: noteObjectID), spaceId: spaceId
                 )
             },
             addSourceLine: { [self] noteObjectID in
-                try authorize()
                 let sourceLine = BlockInformation.empty(
                     content: .text(.plain("מקור: \(selection.relationshipRef)", contentType: .text))
                 )
@@ -93,7 +90,6 @@ final class AnytypeTorahNotesService {
                 )
             },
             linkOrigin: { [self] noteObjectID in
-                try authorize()
                 let item = TorahAssociationItem(
                     kind: .ref,
                     role: .context,

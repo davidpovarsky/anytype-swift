@@ -1,0 +1,114 @@
+[0/1] Planning build
+Building for debugging...
+[0/15] Write swift-version-2807070033DA82CF.txt
+[1/15] Write sources
+[4/15] Wrapping AST for TorahInspectorCore for debugging
+[6/16] Emitting module PinkhaKit
+[7/38] Compiling PinkhaKit PinkhaBootstrapProtocols.swift
+[8/38] Compiling PinkhaKit PinkhaSchemaMigrator.swift
+[9/38] Compiling PinkhaKit PinkhaSpaceBootstrapEngine.swift
+[10/38] Compiling PinkhaKit PinkhaRuntime.swift
+[11/38] Compiling PinkhaKit PinkhaHierarchyBuilder.swift
+[12/38] Compiling PinkhaKit PinkhaHierarchyCodec.swift
+[13/38] Compiling PinkhaKit PinkhaHierarchyKeyBuilder.swift
+[14/38] Compiling PinkhaKit PinkhaHierarchyModels.swift
+[15/38] Compiling PinkhaKit PinkhaHierarchyMutationValidator.swift
+[16/38] Compiling PinkhaKit PinkhaHierarchyOrdering.swift
+[17/38] Compiling PinkhaKit PinkhaHierarchyReconciler.swift
+[18/38] Compiling PinkhaKit PinkhaNavigationDirectionPolicy.swift
+[19/38] Compiling PinkhaKit PinkhaTextDirectionMarker.swift
+[20/38] Compiling PinkhaKit PinkhaWritingDirectionPolicy.swift
+[21/38] Compiling PinkhaKit PinkhaSchemaRoles.swift
+[22/38] Compiling PinkhaKit PinkhaSpaceManifest.swift
+[23/38] Compiling PinkhaKit TorahNativePropertySchema.swift
+[24/38] Compiling PinkhaKit AnytypeTorahWorkspace.swift
+[25/38] Compiling PinkhaKit SefariaHierarchyProvider.swift
+[26/38] Compiling PinkhaKit TorahSourceHierarchy.swift
+[27/38] Compiling PinkhaKit SefariaClient.swift
+[28/38] Compiling PinkhaKit SefariaDisplayText.swift
+[29/60] Compiling PinkhaKit SefariaJSONText.swift
+[30/60] Compiling PinkhaKit SefariaLexicalProvider.swift
+[31/60] Compiling PinkhaKit SefariaReferenceProvider.swift
+[32/60] Compiling PinkhaKit SefariaRelationshipProvider.swift
+[33/60] Compiling PinkhaKit SefariaTextProvider.swift
+[34/60] Compiling PinkhaKit SefariaTopicProvider.swift
+[35/60] Compiling PinkhaKit TorahHTTPTransport.swift
+[36/60] Compiling PinkhaKit TorahTopicCache.swift
+[37/60] Compiling PinkhaKit T5NoteCreationFlow.swift
+[38/60] Compiling PinkhaKit T5SpaceRelatedDocumentsQuery.swift
+[39/60] Compiling PinkhaKit TorahAssociationIdentity.swift
+[40/60] Compiling PinkhaKit TorahAssociationModels.swift
+[41/60] Compiling PinkhaKit TorahAssociationPayloadCodec.swift
+[42/60] Compiling PinkhaKit TorahAssociationRepository.swift
+[43/60] Compiling PinkhaKit TorahCanonicalAssociations.swift
+[44/60] Compiling PinkhaKit TorahDerivedQueryProjection.swift
+[45/60] Compiling PinkhaKit TorahDocumentPropertyProjection.swift
+[46/60] Compiling PinkhaKit TorahInspectorRepositoryFactory.swift
+[47/60] Compiling PinkhaKit TorahProviderModels.swift
+[48/60] Compiling PinkhaKit TorahProviderProtocols.swift
+[49/60] Compiling PinkhaKit TorahProviderRegistry.swift
+[50/60] Compiling PinkhaKit TorahReferenceUtil.swift
+[51/61] Wrapping AST for PinkhaKit for debugging
+[53/62] Emitting module PinkhaKitTests
+[54/63] Compiling PinkhaKitTests T5NoteCreationFlowTests.swift
+C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\Tests\PinkhaKitTests\T5NoteCreationFlowTests.swift:124:19: warning: 'permitted' mutated after capture by sendable closure
+ 84 |         let flow = T5NoteCreationFlow()
+ 85 |         let barrier = T5NoteWriteBarrier()
+ 86 |         var permitted = true
+    |             `- note: variable defined here
+ 87 |         var creates = 0
+ 88 |         var sourceWrites = 0
+ 89 |         var textWrites = 0
+ 90 |         var originWrites = 0
+ 91 |         let authorize: T5NoteCreationFlow.Authorize = {
+    |                                                       `- note: variable captured by sendable closure
+ 92 |             guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
+    |                   `- note: capturing use
+ 93 |         }
+ 94 |         let request = Task { @MainActor in
+    :
+122 |         #expect(originWrites == 0)
+123 | 
+124 |         permitted = true
+    |                   `- warning: 'permitted' mutated after capture by sendable closure
+125 |         let resumed = try await flow.create(
+126 |             source: source, authorize: authorize,
+[55/64] C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\.build\x86_64-unknown-windows-msvc\debug\T5AuthorizationComponentProofPackageDiscoveredTests.derived\all-discovered-tests.swift
+[56/64] Wrapping AST for PinkhaKitTests for debugging
+[57/64] Write sources
+[59/65] Emitting module T5AuthorizationComponentProofPackageDiscoveredTests
+[60/67] Compiling T5AuthorizationComponentProofPackageDiscoveredTests PinkhaKitTests.swift
+[61/67] Compiling T5AuthorizationComponentProofPackageDiscoveredTests all-discovered-tests.swift
+[62/68] C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\.build\x86_64-unknown-windows-msvc\debug\T5AuthorizationComponentProofPackageTests.derived\runner.swift
+[63/68] Wrapping AST for T5AuthorizationComponentProofPackageDiscoveredTests for debugging
+[64/68] Write sources
+[66/69] Emitting module T5AuthorizationComponentProofPackageTests
+[67/70] Compiling T5AuthorizationComponentProofPackageTests runner.swift
+[68/71] Wrapping AST for T5AuthorizationComponentProofPackageTests for debugging
+[69/71] Write Objects.LinkFileList
+[70/71] Linking T5AuthorizationComponentProofPackageTests.xctest
+Build complete! (69.28s)
+Test Suite 'Selected tests' started at 2026-11-17 22:49:19.283
+Test Suite 'Selected tests' passed at 2026-11-17 22:49:19.285
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◊ Test run started.
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+→ Target Platform: x86_64-unknown-windows-msvc
+◊ Suite "T5 Note self-association and partial recovery" started.
+◊ Test "Revoked authority before creation cannot allocate or mutate a Note" started.
+◊ Test uncertainTextWriteIsNotBlindlyRepeatedOnRetry() started.
+◊ Test failedObjectCreationThrowsWithoutFabricatingRecoveryObject() started.
+◊ Test failedSelfLinkPreservesObjectIDAndRetryReusesNote() started.
+◊ Test sourceIsLinkedOnNewNoteBeforeTextAndOriginReference() started.
+◊ Test "Revocation after each suspended write preserves the Note and stops later writes" started.
+◊ Test case passing 1 argument stage → 0 to "Revocation after each suspended write preserves the Note and stops later writes" started.
+◊ Test case passing 1 argument stage → 1 to "Revocation after each suspended write preserves the Note and stops later writes" started.
+◊ Test case passing 1 argument stage → 2 to "Revocation after each suspended write preserves the Note and stops later writes" started.
+√ Test uncertainTextWriteIsNotBlindlyRepeatedOnRetry() passed after 0.004 seconds.
+√ Test sourceIsLinkedOnNewNoteBeforeTextAndOriginReference() passed after 0.004 seconds.
+√ Test failedSelfLinkPreservesObjectIDAndRetryReusesNote() passed after 0.004 seconds.
+√ Test "Revoked authority before creation cannot allocate or mutate a Note" passed after 0.004 seconds.
+√ Test failedObjectCreationThrowsWithoutFabricatingRecoveryObject() passed after 0.004 seconds.
+√ Test "Revocation after each suspended write preserves the Note and stops later writes" with 3 test cases passed after 0.004 seconds.
+√ Suite "T5 Note self-association and partial recovery" passed after 0.005 seconds.
+√ Test run with 6 tests in 1 suite passed after 0.005 seconds.

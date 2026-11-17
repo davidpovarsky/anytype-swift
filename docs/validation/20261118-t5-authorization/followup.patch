@@ -1,0 +1,510 @@
+diff --git a/AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift b/AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift
+index 7dc0a576ae..d381c09ae5 100644
+--- a/AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift
++++ b/AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift
+@@ -35,6 +35,80 @@ struct TorahRelatedDocumentActionTests {
+         #expect(opened == ["related", "related"])
+     }
+ 
++    @Test("Replacing the root selection invalidates captured navigation and close callbacks")
++    func changedRootSelectionRejectsCapturedCallbacks() throws {
++        let probe = T5ActionAssociationProbe(items: [:])
++        let session = TorahEditorSession(
++            spaceId: "space", objectId: "origin",
++            workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
++        )
++        var opened: [String] = []
++        session.installOpenObjectHandler { opened.append($0) }
++        session.selection = selection
++        let previousActions = session.hostActions
++        let replacement = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Exodus 1")
++        session.selection = replacement
++
++        previousActions.onOpenRelatedDocument?(row())
++        previousActions.onClose?()
++        #expect(opened.isEmpty)
++        #expect(session.selection?.id == replacement.id)
++        session.hostActions.onOpenRelatedDocument?(row())
++        #expect(opened == ["related"])
++    }
++
++    @Test("Dismissed inspector callbacks cannot navigate or close a new presentation")
++    func dismissedInspectorCallbacksAreRetired() throws {
++        let probe = T5ActionAssociationProbe(items: [:])
++        let session = TorahEditorSession(
++            spaceId: "space", objectId: "origin",
++            workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
++        )
++        var opened: [String] = []
++        session.installOpenObjectHandler { opened.append($0) }
++        session.openResolvedReferenceFromStandaloneSearch(selection)
++        let dismissedActions = session.hostActions
++        dismissedActions.onClose?()
++        #expect(session.selection == nil)
++        dismissedActions.onOpenRelatedDocument?(row())
++        #expect(opened.isEmpty)
++
++        session.openResolvedReferenceFromStandaloneSearch(selection)
++        dismissedActions.onClose?()
++        #expect(session.selection?.id == selection.id)
++        session.hostActions.onOpenRelatedDocument?(row())
++        #expect(opened == ["related"])
++    }
++
++    @Test("Late Note and related-document failures cannot replace a new session message", arguments: [false, true])
++    func lateUnlinkFailureIsIgnoredAfterDocumentLifetimeEnds(isNote: Bool) async throws {
++        let probe = T5ActionAssociationProbe(items: [:], heldRead: 1, failingRead: 1)
++        let session = TorahEditorSession(
++            spaceId: "space", objectId: "origin",
++            workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
++        )
++        session.selection = selection
++        var didChange = false
++        let request = Task { @MainActor in
++            if isNote {
++                let note = TorahInspectorNote(id: "note-link", selectedText: "", note: "Note", tag: "Anytype")
++                await session.unlink(note: note, for: selection) { didChange = true }
++            } else {
++                await session.unlink(document: row(), for: selection) { didChange = true }
++            }
++        }
++        await probe.waitUntilReadIsHeld()
++        session.deactivateDocument()
++        session.activateDocument()
++        session.message = "Current document message"
++        await probe.releaseRead()
++        await request.value
++
++        #expect(session.message == "Current document message")
++        #expect(!didChange)
++        #expect(await probe.effects().removals.isEmpty)
++    }
++
+     @Test("Unlink rejects revoked authority before reading or mutating a related document")
+     func unlinkRejectsDeniedAuthorityAtEntry() async throws {
+         let probe = T5ActionAssociationProbe(items: ["related": [source.item]])
+@@ -148,15 +222,17 @@ private actor T5ActionAssociationProbe: AnytypeTorahAssociationSnapshotRepositor
+ 
+     private let items: [String: [TorahAssociationItem]]
+     private let heldRead: Int?
++    private let failingRead: Int?
+     private var readCount = 0
+     private var removals: [String] = []
+     private var readIsHeld = false
+     private var readWaiter: CheckedContinuation<Void, Never>?
+     private var releaseContinuation: CheckedContinuation<Void, Never>?
+ 
+-    init(items: [String: [TorahAssociationItem]], heldRead: Int? = nil) {
++    init(items: [String: [TorahAssociationItem]], heldRead: Int? = nil, failingRead: Int? = nil) {
+         self.items = items
+         self.heldRead = heldRead
++        self.failingRead = failingRead
+     }
+ 
+     func waitUntilReadIsHeld() async {
+@@ -175,7 +251,8 @@ private actor T5ActionAssociationProbe: AnytypeTorahAssociationSnapshotRepositor
+ 
+     func listDocumentAssociations(objectId: String, spaceId: String) async throws -> [TorahAssociationItem] {
+         readCount += 1
+-        if readCount == heldRead {
++        let currentRead = readCount
++        if currentRead == heldRead {
+             await withCheckedContinuation { continuation in
+                 releaseContinuation = continuation
+                 readIsHeld = true
+@@ -183,6 +260,9 @@ private actor T5ActionAssociationProbe: AnytypeTorahAssociationSnapshotRepositor
+                 readWaiter = nil
+             }
+         }
++        if currentRead == failingRead {
++            throw TorahAssociationRepositoryError.backendFailure("Delayed canonical read failure")
++        }
+         return items[objectId] ?? []
+     }
+ 
+diff --git a/Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift b/Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift
+index 575c8a4f71..a468f25f99 100644
+--- a/Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift
++++ b/Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift
+@@ -59,9 +59,8 @@ final class AnytypeTorahNotesService {
+         let source = T5SourceIdentity(providerID: selection.providerID, canonicalReference: selection.relationshipRef)
+         let title = "הערה על \(selection.relationshipRef)"
+         return try await noteCreationFlow.create(
+-            source: source,
++            source: source, authorize: authorize,
+             createObject: { [self] in
+-                try authorize()
+                 let details = try await objectActionsService.createObject(
+                     name: title,
+                     typeUniqueKey: .note,
+@@ -75,13 +74,11 @@ final class AnytypeTorahNotesService {
+                 return details.id
+             },
+             linkSource: { [self] noteObjectID in
+-                try authorize()
+                 _ = try await associations.addAssociation(
+                     source.item, target: .object(objectId: noteObjectID), spaceId: spaceId
+                 )
+             },
+             addSourceLine: { [self] noteObjectID in
+-                try authorize()
+                 let sourceLine = BlockInformation.empty(
+                     content: .text(.plain("מקור: \(selection.relationshipRef)", contentType: .text))
+                 )
+@@ -93,7 +90,6 @@ final class AnytypeTorahNotesService {
+                 )
+             },
+             linkOrigin: { [self] noteObjectID in
+-                try authorize()
+                 let item = TorahAssociationItem(
+                     kind: .ref,
+                     role: .context,
+diff --git a/Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift b/Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift
+index f673d99ae2..269db02eda 100644
+--- a/Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift
++++ b/Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift
+@@ -288,8 +288,12 @@ final class TorahEditorSession {
+ 
+     var hostActions: TorahInspectorHostActions {
+         let actionEpoch = noteActionEpoch
++        let inspectorSelectionID = selection?.id
+         return TorahInspectorHostActions(
+-            onClose: { [weak self] in self?.inspectorDidDismiss() },
++            onClose: { [weak self] in
++                guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
++                self.inspectorDidDismiss()
++            },
+             onInsertSegment: { [weak self] transfer in
+                 Task { @MainActor in
+                     await self?.insert(transfer, targetBlockId: nil)
+@@ -298,28 +302,28 @@ final class TorahEditorSession {
+             onOpenInNewTab: nil,
+             onAddNote: { [weak self] selection, didChange in
+                 Task { @MainActor in
+-                    guard let self, self.noteActionEpoch == actionEpoch else { return }
++                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
+                     await self.addNote(for: selection, didChange: didChange)
+                 }
+             },
+             onOpenNote: { [weak self] note, selection, _ in
+                 Task { @MainActor in
+-                    guard let self, self.noteActionEpoch == actionEpoch else { return }
++                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
+                     await self.open(note: note, for: selection)
+                 }
+             },
+             onDeleteNote: { [weak self] note, selection, didChange in
+                 Task { @MainActor in
+-                    guard let self, self.noteActionEpoch == actionEpoch else { return }
++                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
+                     await self.unlink(note: note, for: selection, didChange: didChange)
+                 }
+             },
+             onOpenRelatedDocument: { [weak self] document in
+-                self?.openRelatedDocument(document, actionEpoch: actionEpoch)
++                self?.openRelatedDocument(document, actionEpoch: actionEpoch, inspectorSelectionID: inspectorSelectionID)
+             },
+             onUnlinkRelatedDocument: { [weak self] document, selection, didChange in
+                 Task { @MainActor in
+-                    guard let self, self.noteActionEpoch == actionEpoch else { return }
++                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
+                     await self.unlink(document: document, for: selection, didChange: didChange)
+                 }
+             },
+@@ -409,6 +413,7 @@ final class TorahEditorSession {
+     }
+ 
+     private func inspectorDidDismiss() {
++        noteActionEpoch &+= 1
+         selection = nil
+         guard let context = pendingSearchContext else { return }
+         pendingSearchContext = nil
+@@ -943,7 +948,7 @@ final class TorahEditorSession {
+             openObjectHandler?(outcome.objectID)
+         } catch {
+             repository.invalidateRelatedDocuments(for: selection)
+-            if isActiveDocument, noteActionEpoch == requestEpoch {
++            if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
+                 recordAssociationError(error)
+             }
+         }
+@@ -962,16 +967,24 @@ final class TorahEditorSession {
+                   self.selection?.id == inspectorSelectionID else { return }
+             openObjectHandler?(objectId)
+         } catch {
+-            message = error.localizedDescription
++            if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
++                recordAssociationError(error)
++            }
+         }
+     }
+ 
+-    private func openRelatedDocument(_ document: TorahRelatedDocument, actionEpoch: UInt) {
+-        guard isActiveDocument, noteActionEpoch == actionEpoch, !Task.isCancelled,
++    private func openRelatedDocument(
++        _ document: TorahRelatedDocument, actionEpoch: UInt, inspectorSelectionID: String?
++    ) {
++        guard isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID),
+               document.spaceID == spaceId, !document.objectID.isEmpty else { return }
+         openObjectHandler?(document.objectID)
+     }
+ 
++    private func isCurrentNoteAction(epoch: UInt, selectionID: String?) -> Bool {
++        isActiveDocument && noteActionEpoch == epoch && selection?.id == selectionID && !Task.isCancelled
++    }
++
+     private func noteMutationAuthorization() -> @MainActor () throws -> Void {
+         let requestEpoch = noteActionEpoch
+         let inspectorSelectionID = selection?.id
+@@ -983,11 +996,13 @@ final class TorahEditorSession {
+         }
+     }
+ 
+-    private func unlink(
++    func unlink(
+         note: TorahInspectorNote,
+         for selection: TorahInspectorSelection,
+         didChange: @escaping TorahInspectorHostActions.NotesDidChange
+     ) async {
++        let requestEpoch = noteActionEpoch
++        let inspectorSelectionID = self.selection?.id
+         let authorize = noteMutationAuthorization()
+         do {
+             try await notesService.unlink(noteId: note.id, for: selection, authorize: authorize)
+@@ -998,15 +1013,19 @@ final class TorahEditorSession {
+             try authorize()
+             didChange()
+         } catch {
+-            recordAssociationError(error)
++            if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
++                recordAssociationError(error)
++            }
+         }
+     }
+ 
+-    private func unlink(
++    func unlink(
+         document: TorahRelatedDocument,
+         for selection: TorahInspectorSelection,
+         didChange: @escaping TorahInspectorHostActions.NotesDidChange
+     ) async {
++        let requestEpoch = noteActionEpoch
++        let inspectorSelectionID = self.selection?.id
+         let authorize = noteMutationAuthorization()
+         do {
+             try await notesService.unlink(document: document, for: selection, authorize: authorize)
+@@ -1017,7 +1036,9 @@ final class TorahEditorSession {
+             try authorize()
+             didChange()
+         } catch {
+-            recordAssociationError(error)
++            if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
++                recordAssociationError(error)
++            }
+         }
+     }
+ 
+diff --git a/Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift b/Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift
+index 02f276c837..33974736a1 100644
+--- a/Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift
++++ b/Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift
+@@ -7,6 +7,7 @@ public struct T5NoteCreationOutcome: Sendable {
+ 
+ @MainActor
+ public final class T5NoteCreationFlow {
++    public typealias Authorize = @MainActor () throws -> Void
+     public typealias Create = @MainActor () async throws -> String
+     public typealias Write = @MainActor (String) async throws -> Void
+ 
+@@ -20,7 +21,7 @@ public final class T5NoteCreationFlow {
+     public init() {}
+ 
+     public func create(
+-        source: T5SourceIdentity, createObject: Create,
++        source: T5SourceIdentity, authorize: Authorize, createObject: Create,
+         linkSource: Write, addSourceLine: Write, linkOrigin: Write
+     ) async throws -> T5NoteCreationOutcome {
+         guard !source.providerID.isEmpty, !source.canonicalReference.isEmpty else {
+@@ -31,18 +32,22 @@ public final class T5NoteCreationFlow {
+             objectID = existing.objectID
+         } else {
+             try Task.checkCancellation()
++            try authorize()
+             objectID = try await createObject()
+             pending[source] = PendingNote(objectID: objectID)
+         }
+         do {
+             try Task.checkCancellation()
++            try authorize()
+             try await linkSource(objectID)
+             try Task.checkCancellation()
+             if pending[source]?.sourceLineAttempted == false {
++                try authorize()
+                 pending[source]?.sourceLineAttempted = true
+                 try await addSourceLine(objectID)
+             }
+             try Task.checkCancellation()
++            try authorize()
+             try await linkOrigin(objectID)
+             pending.removeValue(forKey: source)
+             return .init(objectID: objectID, recoveryError: nil)
+diff --git a/Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift b/Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift
+index f9f9aed1e3..58740dd9ef 100644
+--- a/Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift
++++ b/Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift
+@@ -10,7 +10,7 @@ struct T5NoteCreationFlowTests {
+         let flow = T5NoteCreationFlow()
+         var calls: [String] = []
+         let result = try await flow.create(
+-            source: source,
++            source: source, authorize: {},
+             createObject: { calls.append("create"); return "new-note" },
+             linkSource: { calls.append("source:\($0)") },
+             addSourceLine: { calls.append("text:\($0)") },
+@@ -25,7 +25,7 @@ struct T5NoteCreationFlowTests {
+         let flow = T5NoteCreationFlow()
+         var creates = 0
+         let first = try await flow.create(
+-            source: source,
++            source: source, authorize: {},
+             createObject: { creates += 1; return "recoverable-note" },
+             linkSource: { _ in throw T5SpaceRelatedDocumentsError.indexUnavailable },
+             addSourceLine: { _ in Issue.record("Source write failed before text") },
+@@ -34,7 +34,7 @@ struct T5NoteCreationFlowTests {
+         #expect(first.objectID == "recoverable-note")
+         #expect(first.recoveryError != nil)
+         let retry = try await flow.create(
+-            source: source,
++            source: source, authorize: {},
+             createObject: { creates += 1; return "duplicate-note" },
+             linkSource: { #expect($0 == "recoverable-note") },
+             addSourceLine: { #expect($0 == "recoverable-note") },
+@@ -50,7 +50,7 @@ struct T5NoteCreationFlowTests {
+         var creates = 0
+         var textAttempts = 0
+         let first = try await flow.create(
+-            source: source,
++            source: source, authorize: {},
+             createObject: { creates += 1; return "note" }, linkSource: { _ in },
+             addSourceLine: { _ in textAttempts += 1; throw T5SpaceRelatedDocumentsError.indexUnavailable },
+             linkOrigin: { _ in Issue.record("Text write failed before origin") }
+@@ -58,7 +58,7 @@ struct T5NoteCreationFlowTests {
+         #expect(first.objectID == "note")
+         #expect(first.recoveryError != nil)
+         let retry = try await flow.create(
+-            source: source,
++            source: source, authorize: {},
+             createObject: { creates += 1; return "duplicate" }, linkSource: { _ in },
+             addSourceLine: { _ in textAttempts += 1 }, linkOrigin: { #expect($0 == "note") }
+         )
+@@ -71,7 +71,7 @@ struct T5NoteCreationFlowTests {
+         let flow = T5NoteCreationFlow()
+         await #expect(throws: T5SpaceRelatedDocumentsError.indexUnavailable) {
+             try await flow.create(
+-                source: source,
++                source: source, authorize: {},
+                 createObject: { throw T5SpaceRelatedDocumentsError.indexUnavailable },
+                 linkSource: { _ in Issue.record("No object exists") },
+                 addSourceLine: { _ in Issue.record("No object exists") },
+@@ -79,4 +79,101 @@ struct T5NoteCreationFlowTests {
+             )
+         }
+     }
++    @Test("Revocation after each suspended write preserves the Note and stops later writes", arguments: [0, 1, 2])
++    func revokedBetweenWritesPreservesRecoverableNote(stage: Int) async throws {
++        let flow = T5NoteCreationFlow()
++        let barrier = T5NoteWriteBarrier()
++        var permitted = true
++        var creates = 0
++        var sourceWrites = 0
++        var textWrites = 0
++        var originWrites = 0
++        let authorize: T5NoteCreationFlow.Authorize = {
++            guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
++        }
++        let request = Task { @MainActor in
++            try await flow.create(
++                source: source, authorize: authorize,
++                createObject: {
++                    creates += 1
++                    if stage == 0 { await barrier.hold() }
++                    return "recoverable-note"
++                },
++                linkSource: { _ in
++                    sourceWrites += 1
++                    if stage == 1 { await barrier.hold() }
++                },
++                addSourceLine: { _ in
++                    textWrites += 1
++                    if stage == 2 { await barrier.hold() }
++                },
++                linkOrigin: { _ in originWrites += 1 }
++            )
++        }
++        await barrier.waitUntilHeld()
++        permitted = false
++        await barrier.release()
++        let result = try await request.value
++        #expect(result.objectID == "recoverable-note")
++        #expect(result.recoveryError as? TorahAssociationRepositoryError == .permissionDenied)
++        #expect(creates == 1)
++        #expect(sourceWrites == (stage == 0 ? 0 : 1))
++        #expect(textWrites == (stage == 2 ? 1 : 0))
++        #expect(originWrites == 0)
++
++        permitted = true
++        let resumed = try await flow.create(
++            source: source, authorize: authorize,
++            createObject: { creates += 1; return "duplicate-note" },
++            linkSource: { _ in sourceWrites += 1 },
++            addSourceLine: { _ in textWrites += 1 },
++            linkOrigin: { _ in originWrites += 1 }
++        )
++        #expect(resumed.objectID == "recoverable-note")
++        #expect(resumed.recoveryError == nil)
++        #expect(creates == 1)
++        #expect(textWrites == 1)
++        #expect(originWrites == 1)
++    }
++
++    @Test("Revoked authority before creation cannot allocate or mutate a Note")
++    func revokedBeforeCreationProducesNoObject() async {
++        let flow = T5NoteCreationFlow()
++        await #expect(throws: TorahAssociationRepositoryError.permissionDenied) {
++            try await flow.create(
++                source: source,
++                authorize: { throw TorahAssociationRepositoryError.permissionDenied },
++                createObject: { Issue.record("Revoked action allocated a Note"); return "unexpected-note" },
++                linkSource: { _ in Issue.record("Revoked action linked a source") },
++                addSourceLine: { _ in Issue.record("Revoked action wrote text") },
++                linkOrigin: { _ in Issue.record("Revoked action linked its origin") }
++            )
++        }
++    }
++
++}
++
++private actor T5NoteWriteBarrier {
++    private var held = false
++    private var waiter: CheckedContinuation<Void, Never>?
++    private var continuation: CheckedContinuation<Void, Never>?
++
++    func hold() async {
++        await withCheckedContinuation { continuation in
++            self.continuation = continuation
++            held = true
++            waiter?.resume()
++            waiter = nil
++        }
++    }
++
++    func waitUntilHeld() async {
++        if held { return }
++        await withCheckedContinuation { waiter = $0 }
++    }
++
++    func release() {
++        continuation?.resume()
++        continuation = nil
++    }
+ }

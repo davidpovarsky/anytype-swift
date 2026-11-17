@@ -1,0 +1,93 @@
+{
+  "followup.patch": {
+    "base": "56be32bd491ad635c3e734ffdf767b14ac073486",
+    "sha256": "11e90fa05181ebcc0a6821bbbe44efa313df5cf31fc2a23b0ce254e49492e986",
+    "bytes": 23685,
+    "paths": [
+      "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+      "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift",
+      "AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift",
+      "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift"
+    ]
+  },
+  "complete-t5.patch": {
+    "base": "5f023e9dc8d33cad7fac73103acd763cdcba8730",
+    "sha256": "65f8662946d79263cd94efe0bef148c285df0561f30fbb50b2edbaf45cb81ce3",
+    "bytes": 51506,
+    "paths": [
+      "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+      "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift",
+      "AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift",
+      "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift",
+      "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+      ".github/workflows/torah-inspector-ipados27.yml",
+      ".github/workflows/pinkha-t5-coverage-proof.yml",
+      "Tools/PinkhaNativeDerived/run_t5_coverage_ci.py",
+      "Tools/PinkhaNativeDerived/test_run_t5_coverage_ci.py"
+    ]
+  },
+  "committed_host_anchor": "8797be2575eb12954340611240a6fefd43eaeac2",
+  "committed_proof_anchor": "56be32bd491ad635c3e734ffdf767b14ac073486",
+  "branch": "codex/chatgpt-wave15-t5-20261118",
+  "uncommitted_source_sha256": {
+    "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift": "a31edd1ee0c2d140c5b388322dc467ea8f7580777d217bfe12948a5d08bc7dbe",
+    "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift": "9f081585fa9d3c72b564cbbb0883a945b3d70180c5481e2c2831d29080dd5864",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift": "23a6b0562a31cd7d8ae35a8e76e35dddf75b094086b3cf6e2936fadfb2520546",
+    "AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift": "28180047dfb1e0323fe1499ae6fdfd16ba8bd753db4d4bdd71c218c308d86ff3",
+    "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift": "51b61a56c229ccbc4b8fcfce928ba25494e83c3c8d0331f1a98ce89594bfb66b"
+  },
+  "limits": [
+    "Authorize checks precede dispatch; this does not establish atomic native ACL enforcement.",
+    "Native r15/R02 old-new binary compatibility and runtime gate remain unproven; client capability stays disabled.",
+    "Apple app host tests, actual Inspector UI and physical iPad are not executed by the Windows component harness."
+  ],
+  "verification": {
+    "portable_flow": {
+      "status": "PASS",
+      "test_functions": 6,
+      "test_cases": 8,
+      "failures": 0,
+      "source_files_verified": 52,
+      "job": "job_8686f92ed6df",
+      "receipt": "component-complete.json",
+      "log": "component-complete.log"
+    },
+    "initial_cold_compile": {
+      "status": "INCOMPLETE_TIMEOUT",
+      "tests_started": 0,
+      "job": "job_be31ba8cfda3",
+      "receipt": "component.json"
+    },
+    "host_tests": {
+      "status": "NOT_RUN",
+      "test_functions": 10,
+      "test_cases": 11
+    },
+    "swift_parse": {
+      "status": "PASS",
+      "followup_files": 5
+    },
+    "ci_control_tests": {
+      "status": "PASS",
+      "tests": 5
+    },
+    "immutable_native_proof_inputs": {
+      "status": "PASS",
+      "hashes": 6
+    },
+    "native_r15": {
+      "status": "NOT_RUN"
+    },
+    "apple_host_and_ui": {
+      "status": "NOT_RUN"
+    }
+  },
+  "evidence_sha256": {
+    "component-complete.json": "a8054cc535f48e49bf2ff061b3dfbc9578fca1ab710cf67b725c7e8682b6dba1",
+    "component-complete.log": "dcbe00a670232a21ff9b8ff8044b9f9d1eb966b89f4ce582eaf72fbbf417a6b7",
+    "README.md": "1c73eb15f78244ddc31f8f75deeb91c266393b0d225a8713a491fe2798ecb52c",
+    "portable-Package.swift": "08b91817ca94e2e9cfd8ede87bffbffd72c4ba2bb1948a3998539687efc39a20"
+  }
+}

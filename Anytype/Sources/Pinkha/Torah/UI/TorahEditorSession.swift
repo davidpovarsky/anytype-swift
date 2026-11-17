@@ -288,8 +288,12 @@ final class TorahEditorSession {
 
     var hostActions: TorahInspectorHostActions {
         let actionEpoch = noteActionEpoch
+        let inspectorSelectionID = selection?.id
         return TorahInspectorHostActions(
-            onClose: { [weak self] in self?.inspectorDidDismiss() },
+            onClose: { [weak self] in
+                guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
+                self.inspectorDidDismiss()
+            },
             onInsertSegment: { [weak self] transfer in
                 Task { @MainActor in
                     await self?.insert(transfer, targetBlockId: nil)
@@ -298,28 +302,28 @@ final class TorahEditorSession {
             onOpenInNewTab: nil,
             onAddNote: { [weak self] selection, didChange in
                 Task { @MainActor in
-                    guard let self, self.noteActionEpoch == actionEpoch else { return }
+                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
                     await self.addNote(for: selection, didChange: didChange)
                 }
             },
             onOpenNote: { [weak self] note, selection, _ in
                 Task { @MainActor in
-                    guard let self, self.noteActionEpoch == actionEpoch else { return }
+                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
                     await self.open(note: note, for: selection)
                 }
             },
             onDeleteNote: { [weak self] note, selection, didChange in
                 Task { @MainActor in
-                    guard let self, self.noteActionEpoch == actionEpoch else { return }
+                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
                     await self.unlink(note: note, for: selection, didChange: didChange)
                 }
             },
             onOpenRelatedDocument: { [weak self] document in
-                self?.openRelatedDocument(document, actionEpoch: actionEpoch)
+                self?.openRelatedDocument(document, actionEpoch: actionEpoch, inspectorSelectionID: inspectorSelectionID)
             },
             onUnlinkRelatedDocument: { [weak self] document, selection, didChange in
                 Task { @MainActor in
-                    guard let self, self.noteActionEpoch == actionEpoch else { return }
+                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
                     await self.unlink(document: document, for: selection, didChange: didChange)
                 }
             },
@@ -409,6 +413,7 @@ final class TorahEditorSession {
     }
 
     private func inspectorDidDismiss() {
+        noteActionEpoch &+= 1
         selection = nil
         guard let context = pendingSearchContext else { return }
         pendingSearchContext = nil
@@ -943,7 +948,7 @@ final class TorahEditorSession {
             openObjectHandler?(outcome.objectID)
         } catch {
             repository.invalidateRelatedDocuments(for: selection)
-            if isActiveDocument, noteActionEpoch == requestEpoch {
+            if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
                 recordAssociationError(error)
             }
         }
@@ -962,14 +967,22 @@ final class TorahEditorSession {
                   self.selection?.id == inspectorSelectionID else { return }
             openObjectHandler?(objectId)
         } catch {
-            message = error.localizedDescription
+            if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
+                recordAssociationError(error)
+            }
         }
     }
 
-    private func openRelatedDocument(_ document: TorahRelatedDocument, actionEpoch: UInt) {
-        guard isActiveDocument, noteActionEpoch == actionEpoch, !Task.isCancelled,
+    private func openRelatedDocument(
+        _ document: TorahRelatedDocument, actionEpoch: UInt, inspectorSelectionID: String?
+    ) {
+        guard isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID),
               document.spaceID == spaceId, !document.objectID.isEmpty else { return }
         openObjectHandler?(document.objectID)
+    }
+
+    private func isCurrentNoteAction(epoch: UInt, selectionID: String?) -> Bool {
+        isActiveDocument && noteActionEpoch == epoch && selection?.id == selectionID && !Task.isCancelled
     }
 
     private func noteMutationAuthorization() -> @MainActor () throws -> Void {
@@ -983,11 +996,13 @@ final class TorahEditorSession {
         }
     }
 
-    private func unlink(
+    func unlink(
         note: TorahInspectorNote,
         for selection: TorahInspectorSelection,
         didChange: @escaping TorahInspectorHostActions.NotesDidChange
     ) async {
+        let requestEpoch = noteActionEpoch
+        let inspectorSelectionID = self.selection?.id
         let authorize = noteMutationAuthorization()
         do {
             try await notesService.unlink(noteId: note.id, for: selection, authorize: authorize)
@@ -998,15 +1013,19 @@ final class TorahEditorSession {
             try authorize()
             didChange()
         } catch {
-            recordAssociationError(error)
+            if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
+                recordAssociationError(error)
+            }
         }
     }
 
-    private func unlink(
+    func unlink(
         document: TorahRelatedDocument,
         for selection: TorahInspectorSelection,
         didChange: @escaping TorahInspectorHostActions.NotesDidChange
     ) async {
+        let requestEpoch = noteActionEpoch
+        let inspectorSelectionID = self.selection?.id
         let authorize = noteMutationAuthorization()
         do {
             try await notesService.unlink(document: document, for: selection, authorize: authorize)
@@ -1017,7 +1036,9 @@ final class TorahEditorSession {
             try authorize()
             didChange()
         } catch {
-            recordAssociationError(error)
+            if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
+                recordAssociationError(error)
+            }
         }
     }
 
