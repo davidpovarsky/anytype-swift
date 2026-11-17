@@ -15,7 +15,17 @@ on:
           - native-ipa-fast
           - native-ipa-repair
           - native-diagnostics
+          - t5-coverage-proof
           - simulator-ui27
+          - heart-runtime
+      t5_component:
+        description: One bounded native T5 proof component
+        type: choice
+        options:
+          - native-index
+          - projection-cache
+          - native-rpc
+        default: native-index
       ui_scope:
         description: UI27 focused diagnostic selection; no release or full matrix acceptance
         type: choice
@@ -25,7 +35,7 @@ on:
           - NATIVE_CANCELLATION_DIAGNOSTIC
         default: FULL_SMOKE
       source_run_id:
-        description: Existing native run whose XCTest attachments should be exported
+        description: Verified Heart runtime run, or native evidence source for diagnostics
         type: string
         default: ''
       native_test_scope:
@@ -52,6 +62,17 @@ jobs:
     uses: ./.github/workflows/pinkha-simulator-ui27.yml
     with:
       ui_scope: ${{ inputs.ui_scope }}
+      heart_source_run_id: ${{ inputs.source_run_id }}
+
+  heart-runtime:
+    if: ${{ inputs.route == 'heart-runtime' }}
+    uses: ./.github/workflows/pinkha-heart-runtime.yml
+
+  t5-coverage-proof:
+    if: ${{ inputs.route == 't5-coverage-proof' }}
+    uses: ./.github/workflows/pinkha-t5-coverage-proof.yml
+    with:
+      component: ${{ inputs.t5_component }}
 
   native-diagnostics:
     if: ${{ inputs.route == 'native-diagnostics' }}

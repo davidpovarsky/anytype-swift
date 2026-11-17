@@ -6,6 +6,9 @@ on:
       ui_scope:
         type: string
         default: FULL_SMOKE
+      heart_source_run_id:
+        type: string
+        required: true
 
 permissions:
   contents: read
@@ -31,14 +34,16 @@ jobs:
       - name: Install exact already verified universal r14 runtime
         env:
           GH_TOKEN: ${{ github.token }}
+          HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}
         run: |
-          gh run download 42760706087 --repo "$GITHUB_REPOSITORY" --name Pinkha-Universal-Verified-Heart-r14 --dir build/verified-heart
+          [[ "$HEART_SOURCE_RUN_ID" =~ ^[0-9]+$ ]] || { echo "Supply source_run_id from the heart-runtime route." >&2; exit 1; }
+          gh run download "$HEART_SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name Pinkha-Universal-Verified-Heart-r14 --dir build/verified-heart
           python3 Tools/PinkhaNativeDerived/install_verified_heart.py \
             --archive build/verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz \
             --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
             --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
-            --app-source "$GITHUB_WORKSPACE" --source-run-id 42760706087 \
-            --expected-app-branch codex/anytype-wave1-integration-20261115 --evidence build/ui27-evidence/heart
+            --app-source "$GITHUB_WORKSPACE" --source-run-id "$HEART_SOURCE_RUN_ID" \
+            --expected-app-branch codex/chatgpt-wave15-startup-20261118 --evidence build/ui27-evidence/heart
       - name: Restore compatible ARM64 Xcode27 compiled dependencies
         id: ui27-cache
         uses: actions/cache/restore@v4

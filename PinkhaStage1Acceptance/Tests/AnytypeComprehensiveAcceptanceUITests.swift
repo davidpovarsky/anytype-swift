@@ -214,7 +214,10 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
             URLQueryItem(name: "objectId", value: objectID),
             URLQueryItem(name: "spaceId", value: fixture.spaceId)
         ]
-        app.open(try XCTUnwrap(url.url))
+        // Route through the OS without entering XCUIApplication's launch handshake.
+        // The runner already launched and verified this app process; assertions below
+        // still require its exact disposable Space, object, title, and hittable editor.
+        XCUIDevice.shared.system.open(try XCTUnwrap(url.url))
         XCTAssertTrue(more.waitForExistence(timeout: 45), "Disposable document did not open")
         let editorIdentity = "pinkha-ui27-editor:\(fixture.spaceId):\(objectID)"
         let editor = app.descendants(matching: .any).matching(identifier: editorIdentity).firstMatch
