@@ -1,0 +1,13 @@
+diff --git a/Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift b/Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift
+index b59e60ae46..1b77c70d0c 100644
+--- a/Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift
++++ b/Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift
+@@ -512,6 +512,8 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
+                 if retryAttempt.properties.isNotEmpty {
+                     return retryAttempt.properties
+                 }
++                // Keep the latest failure even when the first attempt supplied usable rows.
++                return firstAttempt.properties
+             }
+         }
+ 
