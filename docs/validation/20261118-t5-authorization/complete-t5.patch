@@ -1,0 +1,1089 @@
+diff --git a/.github/workflows/pinkha-t5-coverage-proof.yml b/.github/workflows/pinkha-t5-coverage-proof.yml
+new file mode 100644
+index 0000000000..73b07b09ca
+--- /dev/null
++++ b/.github/workflows/pinkha-t5-coverage-proof.yml
+@@ -0,0 +1,62 @@
++name: Pinkha bounded T5 native source proof
++
++on:
++  workflow_call:
++    inputs:
++      component:
++        type: string
++        default: native-index
++
++permissions:
++  contents: read
++
++jobs:
++  component:
++    runs-on: ubuntu-22.04
++    timeout-minutes: 60
++    steps:
++      - name: Checkout integration proof control
++        uses: actions/checkout@v4
++        with:
++          path: control
++      - name: Checkout exact reviewed T5 fixtures
++        uses: actions/checkout@v4
++        with:
++          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1
++          path: source
++      - name: Checkout exact native Heart source
++        uses: actions/checkout@v4
++        with:
++          repository: anyproto/anytype-heart
++          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
++          path: heart
++      - name: Install pinned Go toolchain
++        uses: actions/setup-go@v5
++        with:
++          go-version: '1.26.5'
++          cache: false
++      - name: Restore compiled dependencies only
++        uses: actions/cache@v4
++        with:
++          path: |
++            ~/go/pkg/mod
++            ~/.cache/go-build
++          key: t5-linux-go1.26.5-${{ hashFiles('heart/tantivity_sha256.txt', 'heart/go.sum', 'source/**/go.sum') }}-947fbde2-${{ inputs.component }}
++          restore-keys: |
++            t5-linux-go1.26.5-${{ hashFiles('heart/tantivity_sha256.txt', 'heart/go.sum', 'source/**/go.sum') }}-
++      - name: Execute one real native component with fresh evidence
++        env:
++          T5_COMPONENT: ${{ inputs.component }}
++        run: |
++          python3 control/Tools/PinkhaNativeDerived/test_run_t5_coverage_ci.py
++          python3 control/Tools/PinkhaNativeDerived/run_t5_coverage_ci.py \
++            --source source --heart heart --component "$T5_COMPONENT" \
++            --evidence "proof/$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT/$T5_COMPONENT"
++      - name: Upload attempt evidence including failures
++        if: always()
++        uses: actions/upload-artifact@v4
++        with:
++          name: Pinkha-T5-${{ inputs.component }}-${{ github.run_id }}-${{ github.run_attempt }}
++          path: proof/
++          if-no-files-found: warn
++          retention-days: 14
+diff --git a/.github/workflows/torah-inspector-ipados27.yml b/.github/workflows/torah-inspector-ipados27.yml
+index b67df6e5bb..5e4072f62e 100644
+--- a/.github/workflows/torah-inspector-ipados27.yml
++++ b/.github/workflows/torah-inspector-ipados27.yml
+@@ -15,7 +15,16 @@ on:
+           - native-ipa-fast
+           - native-ipa-repair
+           - native-diagnostics
++          - t5-coverage-proof
+           - simulator-ui27
++      t5_component:
++        description: One bounded native T5 proof component
++        type: choice
++        options:
++          - native-index
++          - projection-cache
++          - native-rpc
++        default: native-index
+       ui_scope:
+         description: UI27 focused diagnostic selection; no release or full matrix acceptance
+         type: choice
+@@ -53,6 +62,12 @@ jobs:
+     with:
+       ui_scope: ${{ inputs.ui_scope }}
+ 
++  t5-coverage-proof:
++    if: ${{ inputs.route == 't5-coverage-proof' }}
++    uses: ./.github/workflows/pinkha-t5-coverage-proof.yml
++    with:
++      component: ${{ inputs.t5_component }}
++
+   native-diagnostics:
+     if: ${{ inputs.route == 'native-diagnostics' }}
+     uses: ./.github/workflows/pinkha-native-diagnostics.yml
+diff --git a/AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift b/AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift
+new file mode 100644
+index 0000000000..d381c09ae5
+--- /dev/null
++++ b/AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift
+@@ -0,0 +1,292 @@
++import Foundation
++import PinkhaKit
++import Testing
++import TorahInspectorCore
++@testable import Anytype
++
++@Suite("T5 related-document action lifetime and authority")
++@MainActor
++struct TorahRelatedDocumentActionTests {
++    private let source = T5SourceIdentity(providerID: "sefaria", canonicalReference: "Genesis 3:3")
++    private let selection = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Genesis 3:3")
++
++    @Test("Related navigation rejects a foreign Space and callbacks from a previous document lifetime")
++    func relatedNavigationRequiresCurrentSpaceAndLifetime() throws {
++        let probe = T5ActionAssociationProbe(items: [:])
++        let session = TorahEditorSession(
++            spaceId: "space", objectId: "origin",
++            workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
++        )
++        var opened: [String] = []
++        session.installOpenObjectHandler { opened.append($0) }
++        let originalAction = try #require(session.hostActions.onOpenRelatedDocument)
++
++        originalAction(row(spaceID: "other-space"))
++        #expect(opened.isEmpty)
++        originalAction(row())
++        #expect(opened == ["related"])
++        session.deactivateDocument()
++        originalAction(row())
++        #expect(opened == ["related"])
++        session.activateDocument()
++        originalAction(row())
++        #expect(opened == ["related"])
++        session.hostActions.onOpenRelatedDocument?(row())
++        #expect(opened == ["related", "related"])
++    }
++
++    @Test("Replacing the root selection invalidates captured navigation and close callbacks")
++    func changedRootSelectionRejectsCapturedCallbacks() throws {
++        let probe = T5ActionAssociationProbe(items: [:])
++        let session = TorahEditorSession(
++            spaceId: "space", objectId: "origin",
++            workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
++        )
++        var opened: [String] = []
++        session.installOpenObjectHandler { opened.append($0) }
++        session.selection = selection
++        let previousActions = session.hostActions
++        let replacement = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Exodus 1")
++        session.selection = replacement
++
++        previousActions.onOpenRelatedDocument?(row())
++        previousActions.onClose?()
++        #expect(opened.isEmpty)
++        #expect(session.selection?.id == replacement.id)
++        session.hostActions.onOpenRelatedDocument?(row())
++        #expect(opened == ["related"])
++    }
++
++    @Test("Dismissed inspector callbacks cannot navigate or close a new presentation")
++    func dismissedInspectorCallbacksAreRetired() throws {
++        let probe = T5ActionAssociationProbe(items: [:])
++        let session = TorahEditorSession(
++            spaceId: "space", objectId: "origin",
++            workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
++        )
++        var opened: [String] = []
++        session.installOpenObjectHandler { opened.append($0) }
++        session.openResolvedReferenceFromStandaloneSearch(selection)
++        let dismissedActions = session.hostActions
++        dismissedActions.onClose?()
++        #expect(session.selection == nil)
++        dismissedActions.onOpenRelatedDocument?(row())
++        #expect(opened.isEmpty)
++
++        session.openResolvedReferenceFromStandaloneSearch(selection)
++        dismissedActions.onClose?()
++        #expect(session.selection?.id == selection.id)
++        session.hostActions.onOpenRelatedDocument?(row())
++        #expect(opened == ["related"])
++    }
++
++    @Test("Late Note and related-document failures cannot replace a new session message", arguments: [false, true])
++    func lateUnlinkFailureIsIgnoredAfterDocumentLifetimeEnds(isNote: Bool) async throws {
++        let probe = T5ActionAssociationProbe(items: [:], heldRead: 1, failingRead: 1)
++        let session = TorahEditorSession(
++            spaceId: "space", objectId: "origin",
++            workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
++        )
++        session.selection = selection
++        var didChange = false
++        let request = Task { @MainActor in
++            if isNote {
++                let note = TorahInspectorNote(id: "note-link", selectedText: "", note: "Note", tag: "Anytype")
++                await session.unlink(note: note, for: selection) { didChange = true }
++            } else {
++                await session.unlink(document: row(), for: selection) { didChange = true }
++            }
++        }
++        await probe.waitUntilReadIsHeld()
++        session.deactivateDocument()
++        session.activateDocument()
++        session.message = "Current document message"
++        await probe.releaseRead()
++        await request.value
++
++        #expect(session.message == "Current document message")
++        #expect(!didChange)
++        #expect(await probe.effects().removals.isEmpty)
++    }
++
++    @Test("Unlink rejects revoked authority before reading or mutating a related document")
++    func unlinkRejectsDeniedAuthorityAtEntry() async throws {
++        let probe = T5ActionAssociationProbe(items: ["related": [source.item]])
++        let service = AnytypeTorahSpaceRelatedDocumentsService(associations: probe)
++        await #expect(throws: TorahAssociationRepositoryError.permissionDenied) {
++            try await service.unlink(document: row(), selection: selection, spaceID: "space") {
++                throw TorahAssociationRepositoryError.permissionDenied
++            }
++        }
++        let effects = await probe.effects()
++        #expect(effects.reads == 0)
++        #expect(effects.removals.isEmpty)
++    }
++
++    @Test("A foreign-Space row is rejected before any association read")
++    func unlinkRejectsForeignSpaceBeforeRead() async throws {
++        let probe = T5ActionAssociationProbe(items: ["related": [source.item]])
++        let service = AnytypeTorahSpaceRelatedDocumentsService(associations: probe)
++        await #expect(throws: TorahAssociationRepositoryError.permissionDenied) {
++            try await service.unlink(document: row(spaceID: "other-space"), selection: selection, spaceID: "space", authorize: {})
++        }
++        let effects = await probe.effects()
++        #expect(effects.reads == 0)
++        #expect(effects.removals.isEmpty)
++    }
++
++    @Test("Revocation while a canonical read is pending prevents the following unlink")
++    func unlinkRechecksAuthorityAfterSuspendedRead() async throws {
++        let probe = T5ActionAssociationProbe(items: ["related": [source.item]], heldRead: 1)
++        let service = AnytypeTorahSpaceRelatedDocumentsService(associations: probe)
++        var permitted = true
++        let request = Task { @MainActor in
++            try await service.unlink(document: row(), selection: selection, spaceID: "space") {
++                guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
++            }
++        }
++        await probe.waitUntilReadIsHeld()
++        permitted = false
++        await probe.releaseRead()
++        await #expect(throws: TorahAssociationRepositoryError.permissionDenied) {
++            try await request.value
++        }
++        #expect(await probe.effects().removals.isEmpty)
++    }
++
++    @Test("Cancellation after a noncooperative canonical read cannot dispatch unlink")
++    func cancelledUnlinkDoesNotMutateAfterRead() async throws {
++        let probe = T5ActionAssociationProbe(items: ["related": [source.item]], heldRead: 1)
++        let service = AnytypeTorahSpaceRelatedDocumentsService(associations: probe)
++        let request = Task { @MainActor in
++            try await service.unlink(document: row(), selection: selection, spaceID: "space", authorize: {})
++        }
++        await probe.waitUntilReadIsHeld()
++        request.cancel()
++        await probe.releaseRead()
++        await #expect(throws: CancellationError.self) {
++            try await request.value
++        }
++        #expect(await probe.effects().removals.isEmpty)
++    }
++
++    @Test("Unlink removes only the selected canonical source")
++    func unlinkRemovesOnlyTheSelectedCanonicalSource() async throws {
++        let selected = source.item
++        let other = T5SourceIdentity(providerID: "sefaria", canonicalReference: "Genesis 3:4").item
++        let probe = T5ActionAssociationProbe(items: ["related": [selected, other]])
++        let service = AnytypeTorahSpaceRelatedDocumentsService(associations: probe)
++        try await service.unlink(document: row(), selection: selection, spaceID: "space", authorize: {})
++        #expect(await probe.effects().removals == [selected.id])
++    }
++
++    @Test("Note unlink rechecks authority after resolving the Note's canonical links")
++    func noteUnlinkStopsBeforeBothSourceAndOriginMutationWhenRevoked() async throws {
++        let originLink = TorahAssociationItem(
++            id: "note-link", kind: .ref, role: .context, providerID: "sefaria",
++            externalID: "related", canonicalKey: "anytype-note:related", labelHe: "Note",
++            customMetadata: ["anytypeNoteObjectId": "related", "torahSelectionId": selection.id]
++        )
++        let probe = T5ActionAssociationProbe(
++            items: ["origin": [originLink], "related": [source.item]], heldRead: 2
++        )
++        let service = AnytypeTorahNotesService(spaceId: "space", objectId: "origin", associations: probe)
++        var permitted = true
++        let request = Task { @MainActor in
++            try await service.unlink(noteId: "note-link", for: selection) {
++                guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
++            }
++        }
++        await probe.waitUntilReadIsHeld()
++        permitted = false
++        await probe.releaseRead()
++        await #expect(throws: TorahAssociationRepositoryError.permissionDenied) {
++            try await request.value
++        }
++        #expect(await probe.effects().removals.isEmpty)
++    }
++
++    private func row(spaceID: String = "space") -> TorahRelatedDocument {
++        TorahRelatedDocument(
++            id: "related-row", spaceID: spaceID, objectID: "related", title: "Related",
++            sourceReference: source.canonicalReference, canUnlink: true
++        )
++    }
++}
++
++private actor T5ActionAssociationProbe: AnytypeTorahAssociationSnapshotRepository {
++    struct Effects: Sendable {
++        let reads: Int
++        let removals: [String]
++    }
++
++    private let items: [String: [TorahAssociationItem]]
++    private let heldRead: Int?
++    private let failingRead: Int?
++    private var readCount = 0
++    private var removals: [String] = []
++    private var readIsHeld = false
++    private var readWaiter: CheckedContinuation<Void, Never>?
++    private var releaseContinuation: CheckedContinuation<Void, Never>?
++
++    init(items: [String: [TorahAssociationItem]], heldRead: Int? = nil, failingRead: Int? = nil) {
++        self.items = items
++        self.heldRead = heldRead
++        self.failingRead = failingRead
++    }
++
++    func waitUntilReadIsHeld() async {
++        if readIsHeld { return }
++        await withCheckedContinuation { readWaiter = $0 }
++    }
++
++    func releaseRead() {
++        releaseContinuation?.resume()
++        releaseContinuation = nil
++    }
++
++    func effects() -> Effects {
++        Effects(reads: readCount, removals: removals)
++    }
++
++    func listDocumentAssociations(objectId: String, spaceId: String) async throws -> [TorahAssociationItem] {
++        readCount += 1
++        let currentRead = readCount
++        if currentRead == heldRead {
++            await withCheckedContinuation { continuation in
++                releaseContinuation = continuation
++                readIsHeld = true
++                readWaiter?.resume()
++                readWaiter = nil
++            }
++        }
++        if currentRead == failingRead {
++            throw TorahAssociationRepositoryError.backendFailure("Delayed canonical read failure")
++        }
++        return items[objectId] ?? []
++    }
++
++    func listAssociationRecords(objectId: String, spaceId: String) async throws -> [TorahStoredAssociationRecord] {
++        []
++    }
++
++    func listBlockAssociations(objectId: String, blockId: String, spaceId: String) async throws -> [TorahAssociationItem] {
++        []
++    }
++
++    func removeAssociation(associationId: String, target: TorahAssociationTarget, spaceId: String) async throws {
++        removals.append(associationId)
++    }
++
++    func addAssociation(_ item: TorahAssociationItem, target: TorahAssociationTarget, spaceId: String) async throws -> TorahAssociationItem {
++        throw TorahAssociationRepositoryError.backendFailure("Unexpected add")
++    }
++
++    func upsertAssociation(_ item: TorahAssociationItem, target: TorahAssociationTarget, spaceId: String) async throws -> TorahAssociationItem {
++        throw TorahAssociationRepositoryError.backendFailure("Unexpected upsert")
++    }
++
++    func updateAssociation(_ item: TorahAssociationItem, target: TorahAssociationTarget, spaceId: String) async throws -> TorahAssociationItem {
++        throw TorahAssociationRepositoryError.backendFailure("Unexpected update")
++    }
++}
+diff --git a/Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift b/Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift
+index e01ec0ea66..a468f25f99 100644
+--- a/Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift
++++ b/Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift
+@@ -51,11 +51,15 @@ final class AnytypeTorahNotesService {
+         try await relatedDocumentsService.relatedDocuments(spaceID: spaceId, selection: selection)
+     }
+ 
+-    func createNote(for selection: TorahInspectorSelection) async throws -> T5NoteCreationOutcome {
++    func createNote(
++        for selection: TorahInspectorSelection, authorize: @MainActor () throws -> Void
++    ) async throws -> T5NoteCreationOutcome {
++        try Task.checkCancellation()
++        try authorize()
+         let source = T5SourceIdentity(providerID: selection.providerID, canonicalReference: selection.relationshipRef)
+         let title = "הערה על \(selection.relationshipRef)"
+         return try await noteCreationFlow.create(
+-            source: source,
++            source: source, authorize: authorize,
+             createObject: { [self] in
+                 let details = try await objectActionsService.createObject(
+                     name: title,
+@@ -80,6 +84,7 @@ final class AnytypeTorahNotesService {
+                 )
+                 let lastBlockId = try await blockService.lastBlockId(from: noteObjectID, spaceId: spaceId)
+                 try Task.checkCancellation()
++                try authorize()
+                 _ = try await blockService.add(
+                     contextId: noteObjectID, targetId: lastBlockId, info: sourceLine, position: .bottom
+                 )
+@@ -112,15 +117,27 @@ final class AnytypeTorahNotesService {
+             .customMetadata?[MetadataKey.noteObjectId]
+     }
+ 
+-    func unlink(noteId: String, for selection: TorahInspectorSelection) async throws {
+-        guard let noteObjectID = try await noteObjectId(noteId: noteId, for: selection) else { return }
++    func unlink(
++        noteId: String, for selection: TorahInspectorSelection,
++        authorize: @MainActor () throws -> Void
++    ) async throws {
++        try Task.checkCancellation()
++        try authorize()
++        let resolvedNoteID = try await noteObjectId(noteId: noteId, for: selection)
++        try Task.checkCancellation()
++        try authorize()
++        guard let noteObjectID = resolvedNoteID else { return }
+         let source = T5SourceIdentity(providerID: selection.providerID, canonicalReference: selection.relationshipRef)
+         let sourceItems = try await associations.listDocumentAssociations(objectId: noteObjectID, spaceId: spaceId)
+         for item in sourceItems where source.matches(item) {
++            try Task.checkCancellation()
++            try authorize()
+             try await associations.removeAssociation(
+                 associationId: item.id, target: .object(objectId: noteObjectID), spaceId: spaceId
+             )
+         }
++        try Task.checkCancellation()
++        try authorize()
+         try await associations.removeAssociation(
+             associationId: noteId,
+             target: .object(objectId: objectId),
+@@ -128,8 +145,13 @@ final class AnytypeTorahNotesService {
+         )
+     }
+ 
+-    func unlink(document: TorahRelatedDocument, for selection: TorahInspectorSelection) async throws {
+-        try await relatedDocumentsService.unlink(document: document, selection: selection, spaceID: spaceId)
++    func unlink(
++        document: TorahRelatedDocument, for selection: TorahInspectorSelection,
++        authorize: @MainActor () throws -> Void
++    ) async throws {
++        try await relatedDocumentsService.unlink(
++            document: document, selection: selection, spaceID: spaceId, authorize: authorize
++        )
+     }
+ 
+     private func noteItems(for selection: TorahInspectorSelection) async throws -> [TorahAssociationItem] {
+diff --git a/Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift b/Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift
+index 2f0dafd055..2a7c2ece98 100644
+--- a/Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift
++++ b/Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift
+@@ -62,7 +62,12 @@ final class AnytypeTorahSpaceRelatedDocumentsService {
+         )
+     }
+ 
+-    func unlink(document: TorahRelatedDocument, selection: TorahInspectorSelection, spaceID: String) async throws {
++    func unlink(
++        document: TorahRelatedDocument, selection: TorahInspectorSelection, spaceID: String,
++        authorize: @MainActor () throws -> Void
++    ) async throws {
++        try Task.checkCancellation()
++        try authorize()
+         guard document.spaceID == spaceID, document.blockID == nil, document.canUnlink else {
+             throw TorahAssociationRepositoryError.permissionDenied
+         }
+@@ -71,8 +76,11 @@ final class AnytypeTorahSpaceRelatedDocumentsService {
+             throw TorahAssociationRepositoryError.targetNotFound
+         }
+         let items = try await associations.listDocumentAssociations(objectId: document.objectID, spaceId: spaceID)
++        try Task.checkCancellation()
++        try authorize()
+         for item in items where source.matches(item) {
+             try Task.checkCancellation()
++            try authorize()
+             try await associations.removeAssociation(
+                 associationId: item.id, target: .object(objectId: document.objectID), spaceId: spaceID
+             )
+diff --git a/Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift b/Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift
+index d003bc79ef..269db02eda 100644
+--- a/Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift
++++ b/Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift
+@@ -287,8 +287,13 @@ final class TorahEditorSession {
+     var linkedBlockIDs: Set<String> { Set(associationsByBlockId.keys) }
+ 
+     var hostActions: TorahInspectorHostActions {
+-        TorahInspectorHostActions(
+-            onClose: { [weak self] in self?.inspectorDidDismiss() },
++        let actionEpoch = noteActionEpoch
++        let inspectorSelectionID = selection?.id
++        return TorahInspectorHostActions(
++            onClose: { [weak self] in
++                guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
++                self.inspectorDidDismiss()
++            },
+             onInsertSegment: { [weak self] transfer in
+                 Task { @MainActor in
+                     await self?.insert(transfer, targetBlockId: nil)
+@@ -297,25 +302,29 @@ final class TorahEditorSession {
+             onOpenInNewTab: nil,
+             onAddNote: { [weak self] selection, didChange in
+                 Task { @MainActor in
+-                    await self?.addNote(for: selection, didChange: didChange)
++                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
++                    await self.addNote(for: selection, didChange: didChange)
+                 }
+             },
+             onOpenNote: { [weak self] note, selection, _ in
+                 Task { @MainActor in
+-                    await self?.open(note: note, for: selection)
++                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
++                    await self.open(note: note, for: selection)
+                 }
+             },
+             onDeleteNote: { [weak self] note, selection, didChange in
+                 Task { @MainActor in
+-                    await self?.unlink(note: note, for: selection, didChange: didChange)
++                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
++                    await self.unlink(note: note, for: selection, didChange: didChange)
+                 }
+             },
+             onOpenRelatedDocument: { [weak self] document in
+-                self?.openObjectHandler?(document.objectID)
++                self?.openRelatedDocument(document, actionEpoch: actionEpoch, inspectorSelectionID: inspectorSelectionID)
+             },
+             onUnlinkRelatedDocument: { [weak self] document, selection, didChange in
+                 Task { @MainActor in
+-                    await self?.unlink(document: document, for: selection, didChange: didChange)
++                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
++                    await self.unlink(document: document, for: selection, didChange: didChange)
+                 }
+             },
+             showsCloseButton: true
+@@ -404,6 +413,7 @@ final class TorahEditorSession {
+     }
+ 
+     private func inspectorDidDismiss() {
++        noteActionEpoch &+= 1
+         selection = nil
+         guard let context = pendingSearchContext else { return }
+         pendingSearchContext = nil
+@@ -924,8 +934,10 @@ final class TorahEditorSession {
+         defer { isCreatingNote = false }
+         let requestEpoch = noteActionEpoch
+         let inspectorSelectionID = self.selection?.id
++        let authorize = noteMutationAuthorization()
+         do {
+-            let outcome = try await notesService.createNote(for: selection)
++            let outcome = try await notesService.createNote(for: selection, authorize: authorize)
++            try authorize()
+             await refreshAssociationSnapshot()
+             repository.invalidateNotes(for: selection)
+             repository.invalidateRelatedDocuments(for: selection)
+@@ -936,7 +948,9 @@ final class TorahEditorSession {
+             openObjectHandler?(outcome.objectID)
+         } catch {
+             repository.invalidateRelatedDocuments(for: selection)
+-            message = error.localizedDescription
++            if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
++                recordAssociationError(error)
++            }
+         }
+     }
+ 
+@@ -953,39 +967,78 @@ final class TorahEditorSession {
+                   self.selection?.id == inspectorSelectionID else { return }
+             openObjectHandler?(objectId)
+         } catch {
+-            message = error.localizedDescription
++            if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
++                recordAssociationError(error)
++            }
++        }
++    }
++
++    private func openRelatedDocument(
++        _ document: TorahRelatedDocument, actionEpoch: UInt, inspectorSelectionID: String?
++    ) {
++        guard isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID),
++              document.spaceID == spaceId, !document.objectID.isEmpty else { return }
++        openObjectHandler?(document.objectID)
++    }
++
++    private func isCurrentNoteAction(epoch: UInt, selectionID: String?) -> Bool {
++        isActiveDocument && noteActionEpoch == epoch && selection?.id == selectionID && !Task.isCancelled
++    }
++
++    private func noteMutationAuthorization() -> @MainActor () throws -> Void {
++        let requestEpoch = noteActionEpoch
++        let inspectorSelectionID = selection?.id
++        return { [weak self] in
++            try Task.checkCancellation()
++            guard let self, self.isActiveDocument, self.noteActionEpoch == requestEpoch,
++                  self.selection?.id == inspectorSelectionID else { throw CancellationError() }
++            guard self.canEditAssociations else { throw TorahAssociationRepositoryError.permissionDenied }
+         }
+     }
+ 
+-    private func unlink(
++    func unlink(
+         note: TorahInspectorNote,
+         for selection: TorahInspectorSelection,
+         didChange: @escaping TorahInspectorHostActions.NotesDidChange
+     ) async {
++        let requestEpoch = noteActionEpoch
++        let inspectorSelectionID = self.selection?.id
++        let authorize = noteMutationAuthorization()
+         do {
+-            try await notesService.unlink(noteId: note.id, for: selection)
++            try await notesService.unlink(noteId: note.id, for: selection, authorize: authorize)
++            try authorize()
+             await refreshAssociationSnapshot()
+             repository.invalidateNotes(for: selection)
+             repository.invalidateRelatedDocuments(for: selection)
++            try authorize()
+             didChange()
+         } catch {
+-            message = error.localizedDescription
++            if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
++                recordAssociationError(error)
++            }
+         }
+     }
+ 
+-    private func unlink(
++    func unlink(
+         document: TorahRelatedDocument,
+         for selection: TorahInspectorSelection,
+         didChange: @escaping TorahInspectorHostActions.NotesDidChange
+     ) async {
++        let requestEpoch = noteActionEpoch
++        let inspectorSelectionID = self.selection?.id
++        let authorize = noteMutationAuthorization()
+         do {
+-            try await notesService.unlink(document: document, for: selection)
++            try await notesService.unlink(document: document, for: selection, authorize: authorize)
++            try authorize()
+             await refreshAssociationSnapshot()
+             repository.invalidateNotes(for: selection)
+             repository.invalidateRelatedDocuments(for: selection)
++            try authorize()
+             didChange()
+         } catch {
+-            message = error.localizedDescription
++            if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
++                recordAssociationError(error)
++            }
+         }
+     }
+ 
+diff --git a/Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift b/Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift
+index 02f276c837..33974736a1 100644
+--- a/Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift
++++ b/Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift
+@@ -7,6 +7,7 @@ public struct T5NoteCreationOutcome: Sendable {
+ 
+ @MainActor
+ public final class T5NoteCreationFlow {
++    public typealias Authorize = @MainActor () throws -> Void
+     public typealias Create = @MainActor () async throws -> String
+     public typealias Write = @MainActor (String) async throws -> Void
+ 
+@@ -20,7 +21,7 @@ public final class T5NoteCreationFlow {
+     public init() {}
+ 
+     public func create(
+-        source: T5SourceIdentity, createObject: Create,
++        source: T5SourceIdentity, authorize: Authorize, createObject: Create,
+         linkSource: Write, addSourceLine: Write, linkOrigin: Write
+     ) async throws -> T5NoteCreationOutcome {
+         guard !source.providerID.isEmpty, !source.canonicalReference.isEmpty else {
+@@ -31,18 +32,22 @@ public final class T5NoteCreationFlow {
+             objectID = existing.objectID
+         } else {
+             try Task.checkCancellation()
++            try authorize()
+             objectID = try await createObject()
+             pending[source] = PendingNote(objectID: objectID)
+         }
+         do {
+             try Task.checkCancellation()
++            try authorize()
+             try await linkSource(objectID)
+             try Task.checkCancellation()
+             if pending[source]?.sourceLineAttempted == false {
++                try authorize()
+                 pending[source]?.sourceLineAttempted = true
+                 try await addSourceLine(objectID)
+             }
+             try Task.checkCancellation()
++            try authorize()
+             try await linkOrigin(objectID)
+             pending.removeValue(forKey: source)
+             return .init(objectID: objectID, recoveryError: nil)
+diff --git a/Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift b/Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift
+index f9f9aed1e3..58740dd9ef 100644
+--- a/Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift
++++ b/Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift
+@@ -10,7 +10,7 @@ struct T5NoteCreationFlowTests {
+         let flow = T5NoteCreationFlow()
+         var calls: [String] = []
+         let result = try await flow.create(
+-            source: source,
++            source: source, authorize: {},
+             createObject: { calls.append("create"); return "new-note" },
+             linkSource: { calls.append("source:\($0)") },
+             addSourceLine: { calls.append("text:\($0)") },
+@@ -25,7 +25,7 @@ struct T5NoteCreationFlowTests {
+         let flow = T5NoteCreationFlow()
+         var creates = 0
+         let first = try await flow.create(
+-            source: source,
++            source: source, authorize: {},
+             createObject: { creates += 1; return "recoverable-note" },
+             linkSource: { _ in throw T5SpaceRelatedDocumentsError.indexUnavailable },
+             addSourceLine: { _ in Issue.record("Source write failed before text") },
+@@ -34,7 +34,7 @@ struct T5NoteCreationFlowTests {
+         #expect(first.objectID == "recoverable-note")
+         #expect(first.recoveryError != nil)
+         let retry = try await flow.create(
+-            source: source,
++            source: source, authorize: {},
+             createObject: { creates += 1; return "duplicate-note" },
+             linkSource: { #expect($0 == "recoverable-note") },
+             addSourceLine: { #expect($0 == "recoverable-note") },
+@@ -50,7 +50,7 @@ struct T5NoteCreationFlowTests {
+         var creates = 0
+         var textAttempts = 0
+         let first = try await flow.create(
+-            source: source,
++            source: source, authorize: {},
+             createObject: { creates += 1; return "note" }, linkSource: { _ in },
+             addSourceLine: { _ in textAttempts += 1; throw T5SpaceRelatedDocumentsError.indexUnavailable },
+             linkOrigin: { _ in Issue.record("Text write failed before origin") }
+@@ -58,7 +58,7 @@ struct T5NoteCreationFlowTests {
+         #expect(first.objectID == "note")
+         #expect(first.recoveryError != nil)
+         let retry = try await flow.create(
+-            source: source,
++            source: source, authorize: {},
+             createObject: { creates += 1; return "duplicate" }, linkSource: { _ in },
+             addSourceLine: { _ in textAttempts += 1 }, linkOrigin: { #expect($0 == "note") }
+         )
+@@ -71,7 +71,7 @@ struct T5NoteCreationFlowTests {
+         let flow = T5NoteCreationFlow()
+         await #expect(throws: T5SpaceRelatedDocumentsError.indexUnavailable) {
+             try await flow.create(
+-                source: source,
++                source: source, authorize: {},
+                 createObject: { throw T5SpaceRelatedDocumentsError.indexUnavailable },
+                 linkSource: { _ in Issue.record("No object exists") },
+                 addSourceLine: { _ in Issue.record("No object exists") },
+@@ -79,4 +79,101 @@ struct T5NoteCreationFlowTests {
+             )
+         }
+     }
++    @Test("Revocation after each suspended write preserves the Note and stops later writes", arguments: [0, 1, 2])
++    func revokedBetweenWritesPreservesRecoverableNote(stage: Int) async throws {
++        let flow = T5NoteCreationFlow()
++        let barrier = T5NoteWriteBarrier()
++        var permitted = true
++        var creates = 0
++        var sourceWrites = 0
++        var textWrites = 0
++        var originWrites = 0
++        let authorize: T5NoteCreationFlow.Authorize = {
++            guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
++        }
++        let request = Task { @MainActor in
++            try await flow.create(
++                source: source, authorize: authorize,
++                createObject: {
++                    creates += 1
++                    if stage == 0 { await barrier.hold() }
++                    return "recoverable-note"
++                },
++                linkSource: { _ in
++                    sourceWrites += 1
++                    if stage == 1 { await barrier.hold() }
++                },
++                addSourceLine: { _ in
++                    textWrites += 1
++                    if stage == 2 { await barrier.hold() }
++                },
++                linkOrigin: { _ in originWrites += 1 }
++            )
++        }
++        await barrier.waitUntilHeld()
++        permitted = false
++        await barrier.release()
++        let result = try await request.value
++        #expect(result.objectID == "recoverable-note")
++        #expect(result.recoveryError as? TorahAssociationRepositoryError == .permissionDenied)
++        #expect(creates == 1)
++        #expect(sourceWrites == (stage == 0 ? 0 : 1))
++        #expect(textWrites == (stage == 2 ? 1 : 0))
++        #expect(originWrites == 0)
++
++        permitted = true
++        let resumed = try await flow.create(
++            source: source, authorize: authorize,
++            createObject: { creates += 1; return "duplicate-note" },
++            linkSource: { _ in sourceWrites += 1 },
++            addSourceLine: { _ in textWrites += 1 },
++            linkOrigin: { _ in originWrites += 1 }
++        )
++        #expect(resumed.objectID == "recoverable-note")
++        #expect(resumed.recoveryError == nil)
++        #expect(creates == 1)
++        #expect(textWrites == 1)
++        #expect(originWrites == 1)
++    }
++
++    @Test("Revoked authority before creation cannot allocate or mutate a Note")
++    func revokedBeforeCreationProducesNoObject() async {
++        let flow = T5NoteCreationFlow()
++        await #expect(throws: TorahAssociationRepositoryError.permissionDenied) {
++            try await flow.create(
++                source: source,
++                authorize: { throw TorahAssociationRepositoryError.permissionDenied },
++                createObject: { Issue.record("Revoked action allocated a Note"); return "unexpected-note" },
++                linkSource: { _ in Issue.record("Revoked action linked a source") },
++                addSourceLine: { _ in Issue.record("Revoked action wrote text") },
++                linkOrigin: { _ in Issue.record("Revoked action linked its origin") }
++            )
++        }
++    }
++
++}
++
++private actor T5NoteWriteBarrier {
++    private var held = false
++    private var waiter: CheckedContinuation<Void, Never>?
++    private var continuation: CheckedContinuation<Void, Never>?
++
++    func hold() async {
++        await withCheckedContinuation { continuation in
++            self.continuation = continuation
++            held = true
++            waiter?.resume()
++            waiter = nil
++        }
++    }
++
++    func waitUntilHeld() async {
++        if held { return }
++        await withCheckedContinuation { waiter = $0 }
++    }
++
++    func release() {
++        continuation?.resume()
++        continuation = nil
++    }
+ }
+diff --git a/Tools/PinkhaNativeDerived/run_t5_coverage_ci.py b/Tools/PinkhaNativeDerived/run_t5_coverage_ci.py
+new file mode 100644
+index 0000000000..466c86193c
+--- /dev/null
++++ b/Tools/PinkhaNativeDerived/run_t5_coverage_ci.py
+@@ -0,0 +1,131 @@
++"""Run one pinned native source fixture; never build an Apple SDK or enable clients."""
++import argparse
++from datetime import datetime, timezone
++import hashlib
++import importlib.util
++import json
++import os
++from pathlib import Path
++import re
++import subprocess
++import sys
++
++SOURCE = '947fbde24d5657d0e1229f45bb3993648884a8a1'
++HEART = 'd98420b1113536afd08cde6de9a5816f6d27ffff'
++PATCH = '5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2'
++APPROVAL = 'docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-15/'
++HASHES = {
++    'Tools/PinkhaNativeDerived/build_custom_heart.py': '8534f5a3ecc1df8321dc3820409f1c8812d876bfe7989877bf121681d04955fd',
++    'Tools/PinkhaNativeDerived/validate_t5_coverage.py': '6d7e21402f381bc613663f90ab669253e276cc9608c9c66de900ae371896edf1',
++    'Tools/PinkhaNativeDerived/native_test_templates/pinkha_torah_reopen_test.go': '89f6096355cefdd342ec44ba0bef21b87e832566d85172b25a92d33f51b5fa79',
++    'Tools/PinkhaNativeDerived/test_t5_validation_receipts.py': 'a1bbe2842f9572ba9789f2b01a7af7e660928eb5396a2aa8ee6139e791468d05',
++    APPROVAL + 'native-heart-integration.json': 'f0e4a4c2d1b4c1baa11347362cfd18368ad272a8902b2beaf8de52270f809ee7',
++    APPROVAL + 'native-heart-integration.patch': PATCH,
++}
++
++
++def git(root, *args):
++    return subprocess.check_output(['git', '-C', str(root), *args], text=True).strip()
++
++
++def digest(path):
++    return hashlib.sha256(path.read_bytes().replace(b'\r\n', b'\n')).hexdigest()
++
++
++def write_receipt(path, receipt):
++    temporary = path.with_suffix('.tmp')
++    temporary.write_text(json.dumps(receipt, indent=2) + '\n', encoding='utf8')
++    temporary.replace(path)
++
++
++def require_identity(control):
++    run_id = os.environ.get('GITHUB_RUN_ID', '')
++    attempt = os.environ.get('GITHUB_RUN_ATTEMPT', '')
++    sha = os.environ.get('GITHUB_SHA', '')
++    if not run_id.isdigit() or not attempt.isdigit() or not re.fullmatch('[0-9a-f]{40}', sha):
++        raise RuntimeError('A real GitHub run/attempt/full source identity is required')
++    if git(control, 'rev-parse', 'HEAD') != sha:
++        raise RuntimeError('Integration checkout differs from this GitHub run')
++    return dict(github_run_id=run_id, github_run_attempt=attempt, integration_sha=sha)
++
++
++def execute(args, control, evidence):
++    identity = require_identity(control)
++    source, heart = args.source.resolve(), args.heart.resolve()
++    if git(source, 'rev-parse', 'HEAD') != SOURCE or git(heart, 'rev-parse', 'HEAD') != HEART:
++        raise RuntimeError('Reviewed source/native pin mismatch')
++    if git(source, 'status', '--porcelain') or git(heart, 'status', '--porcelain'):
++        raise RuntimeError('Proof requires clean fresh source and native checkouts')
++    for path, expected in HASHES.items():
++        if digest(source / path) != expected:
++            raise RuntimeError('Reviewed input differs: ' + path)
++    version = subprocess.check_output(['go', 'version'], text=True).strip()
++    if not version.startswith('go version go1.26.5 linux/amd64'):
++        raise RuntimeError('Expected pinned Linux Go 1.26.5, got ' + version)
++    def run(command, name, cwd=source):
++        with (evidence / (name + '.log')).open('x', encoding='utf8') as output:
++            result = subprocess.run(command, cwd=cwd, stdout=output, stderr=subprocess.STDOUT)
++        if result.returncode:
++            raise RuntimeError(name + ' failed; see its retained log')
++    helper = source / 'Tools/PinkhaNativeDerived'
++    inventory = source / (APPROVAL + 'native-heart-integration.json')
++    run([sys.executable, str(helper / 'build_custom_heart.py'), '--heart-source', str(heart),
++         '--patch', str(source / (APPROVAL + 'native-heart-integration.patch')),
++         '--inventory', str(inventory), '--approved-patch-sha256', PATCH,
++         '--apply-approved-patch', '--target', 'verify', '--evidence', str(evidence / 'source-preflight')], 'source-preflight')
++    spec = importlib.util.spec_from_file_location('pinned_heart_helper', helper / 'build_custom_heart.py')
++    module = importlib.util.module_from_spec(spec)
++    spec.loader.exec_module(module)
++    tantivy = module.fetch_tantivy(heart, 'linux-amd64')
++    (evidence / 'tantivy.json').write_text(json.dumps(tantivy, indent=2) + '\n', encoding='utf8')
++    run([sys.executable, str(helper / 'test_t5_validation_receipts.py')], 'driver-controls')
++    run([sys.executable, str(helper / 'validate_t5_coverage.py'), '--heart-source', str(heart),
++         '--inventory', str(inventory), '--go', 'go', '--tantivy-directory', str(heart / 'deps/libs/linux-amd64'),
++         '--component', args.component, '--evidence', str(evidence)], 'native-component')
++    component = json.loads((evidence / (args.component + '-result.json')).read_text())
++    expected = {'projection-cache': dict(packages=2, top_level_tests=10, subcases=21),
++                'native-index': dict(packages=1, top_level_tests=2, subcases=0),
++                'native-rpc': dict(packages=1, top_level_tests=1, subcases=0)}[args.component]
++    if (component.get('status') != 'PASS' or component.get('exit_code') != 0
++            or component.get('actual_counts') != expected or component.get('skipped') != []
++            or component.get('heart_sha') != HEART or component.get('patch_sha256') != PATCH
++            or component.get('component') != args.component
++            or component.get('client_enablement') != 'DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF'):
++        raise RuntimeError('Native component receipt failed independent CI outcome checks')
++    if require_identity(control) != identity or git(source, 'diff', 'HEAD'):
++        raise RuntimeError('Source/run identity changed during proof')
++    for path, expected_hash in HASHES.items():
++        if digest(source / path) != expected_hash:
++            raise RuntimeError('Reviewed source changed during proof: ' + path)
++    return dict(status='PASS', **identity, source_sha=SOURCE, heart_sha=HEART, patch_sha256=PATCH,
++                driver_hashes=HASHES, go_version=version, tantivy=tantivy,
++                actual_counts=component['actual_counts'], passed=component['passed'],
++                component_receipt_sha256=digest(evidence / (args.component + '-result.json')))
++
++
++def main(argv=None):
++    parser = argparse.ArgumentParser(__doc__)
++    parser.add_argument('--source', type=Path, required=True)
++    parser.add_argument('--heart', type=Path, required=True)
++    parser.add_argument('--component', choices=['projection-cache', 'native-index', 'native-rpc'], required=True)
++    parser.add_argument('--evidence', type=Path, required=True)
++    args = parser.parse_args(argv)
++    evidence = args.evidence.resolve()
++    evidence.mkdir(parents=True, exist_ok=False)
++    receipt_path = evidence / 'ci-result.json'
++    receipt = dict(status='RUNNING', component=args.component, started_at=datetime.now(timezone.utc).isoformat(),
++                   client_enablement='DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF',
++                   limits=['native source fixtures only', 'no packaged old/new binaries', 'no Swift/UI/physical acceptance'])
++    write_receipt(receipt_path, receipt)
++    try:
++        receipt.update(execute(args, Path(__file__).resolve().parents[2], evidence))
++    except BaseException as error:
++        receipt.update(status='FAIL', error_type=type(error).__name__, error=str(error))
++    receipt['finished_at'] = datetime.now(timezone.utc).isoformat()
++    write_receipt(receipt_path, receipt)
++    print(json.dumps(receipt))
++    return 0 if receipt['status'] == 'PASS' else 1
++
++
++if __name__ == '__main__':
++    raise SystemExit(main())
+diff --git a/Tools/PinkhaNativeDerived/test_run_t5_coverage_ci.py b/Tools/PinkhaNativeDerived/test_run_t5_coverage_ci.py
+new file mode 100644
+index 0000000000..7d46ed10b4
+--- /dev/null
++++ b/Tools/PinkhaNativeDerived/test_run_t5_coverage_ci.py
+@@ -0,0 +1,64 @@
++"""CI control checks; these never execute a native fixture."""
++import contextlib
++import importlib.util
++import io
++import json
++import os
++from pathlib import Path
++import tempfile
++import unittest
++from unittest.mock import patch
++
++spec = importlib.util.spec_from_file_location('t5_ci', Path(__file__).with_name('run_t5_coverage_ci.py'))
++ci = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(ci)
++
++
++class CIReceiptTests(unittest.TestCase):
++    def test_missing_run_identity_is_rejected(self):
++        with patch.dict(os.environ, {}, clear=True):
++            with self.assertRaisesRegex(RuntimeError, 'real GitHub'):
++                ci.require_identity(Path('.'))
++
++    def test_mismatching_checkout_is_rejected(self):
++        with patch.dict(os.environ, dict(GITHUB_RUN_ID='123', GITHUB_RUN_ATTEMPT='2', GITHUB_SHA='a' * 40)), \
++                patch.object(ci, 'git', return_value='b' * 40):
++            with self.assertRaisesRegex(RuntimeError, 'differs'):
++                ci.require_identity(Path('.'))
++
++    def test_exact_current_run_identity_is_recorded(self):
++        with patch.dict(os.environ, dict(GITHUB_RUN_ID='123', GITHUB_RUN_ATTEMPT='2', GITHUB_SHA='a' * 40)), \
++                patch.object(ci, 'git', return_value='a' * 40):
++            self.assertEqual(ci.require_identity(Path('.')), dict(
++                github_run_id='123', github_run_attempt='2', integration_sha='a' * 40))
++
++    def test_interruption_finalizes_current_attempt_as_failure(self):
++        with tempfile.TemporaryDirectory() as directory:
++            evidence = Path(directory) / 'new-attempt'
++            def interrupted(*args):
++                self.assertEqual(json.loads((evidence / 'ci-result.json').read_text())['status'], 'RUNNING')
++                raise KeyboardInterrupt('interrupted native proof')
++            with patch.object(ci, 'execute', side_effect=interrupted), contextlib.redirect_stdout(io.StringIO()):
++                result = ci.main(['--source', '.', '--heart', '.', '--component', 'native-index',
++                                  '--evidence', str(evidence)])
++            receipt = json.loads((evidence / 'ci-result.json').read_text())
++            self.assertEqual(result, 1)
++            self.assertEqual(receipt['status'], 'FAIL')
++            self.assertEqual(receipt['error_type'], 'KeyboardInterrupt')
++            self.assertIn('finished_at', receipt)
++
++    def test_existing_pass_evidence_is_immutable_and_refused(self):
++        with tempfile.TemporaryDirectory() as directory:
++            evidence = Path(directory)
++            old = evidence / 'ci-result.json'
++            old.write_text('{"status":"PASS","github_run_id":"old"}')
++            with patch.object(ci, 'execute') as execute:
++                with self.assertRaises(FileExistsError):
++                    ci.main(['--source', '.', '--heart', '.', '--component', 'native-index',
++                             '--evidence', str(evidence)])
++                execute.assert_not_called()
++            self.assertEqual(json.loads(old.read_text())['github_run_id'], 'old')
++
++
++if __name__ == '__main__':
++    unittest.main()

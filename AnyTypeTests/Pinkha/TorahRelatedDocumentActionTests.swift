@@ -35,6 +35,80 @@ struct TorahRelatedDocumentActionTests {
         #expect(opened == ["related", "related"])
     }
 
+    @Test("Replacing the root selection invalidates captured navigation and close callbacks")
+    func changedRootSelectionRejectsCapturedCallbacks() throws {
+        let probe = T5ActionAssociationProbe(items: [:])
+        let session = TorahEditorSession(
+            spaceId: "space", objectId: "origin",
+            workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
+        )
+        var opened: [String] = []
+        session.installOpenObjectHandler { opened.append($0) }
+        session.selection = selection
+        let previousActions = session.hostActions
+        let replacement = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Exodus 1")
+        session.selection = replacement
+
+        previousActions.onOpenRelatedDocument?(row())
+        previousActions.onClose?()
+        #expect(opened.isEmpty)
+        #expect(session.selection?.id == replacement.id)
+        session.hostActions.onOpenRelatedDocument?(row())
+        #expect(opened == ["related"])
+    }
+
+    @Test("Dismissed inspector callbacks cannot navigate or close a new presentation")
+    func dismissedInspectorCallbacksAreRetired() throws {
+        let probe = T5ActionAssociationProbe(items: [:])
+        let session = TorahEditorSession(
+            spaceId: "space", objectId: "origin",
+            workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
+        )
+        var opened: [String] = []
+        session.installOpenObjectHandler { opened.append($0) }
+        session.openResolvedReferenceFromStandaloneSearch(selection)
+        let dismissedActions = session.hostActions
+        dismissedActions.onClose?()
+        #expect(session.selection == nil)
+        dismissedActions.onOpenRelatedDocument?(row())
+        #expect(opened.isEmpty)
+
+        session.openResolvedReferenceFromStandaloneSearch(selection)
+        dismissedActions.onClose?()
+        #expect(session.selection?.id == selection.id)
+        session.hostActions.onOpenRelatedDocument?(row())
+        #expect(opened == ["related"])
+    }
+
+    @Test("Late Note and related-document failures cannot replace a new session message", arguments: [false, true])
+    func lateUnlinkFailureIsIgnoredAfterDocumentLifetimeEnds(isNote: Bool) async throws {
+        let probe = T5ActionAssociationProbe(items: [:], heldRead: 1, failingRead: 1)
+        let session = TorahEditorSession(
+            spaceId: "space", objectId: "origin",
+            workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
+        )
+        session.selection = selection
+        var didChange = false
+        let request = Task { @MainActor in
+            if isNote {
+                let note = TorahInspectorNote(id: "note-link", selectedText: "", note: "Note", tag: "Anytype")
+                await session.unlink(note: note, for: selection) { didChange = true }
+            } else {
+                await session.unlink(document: row(), for: selection) { didChange = true }
+            }
+        }
+        await probe.waitUntilReadIsHeld()
+        session.deactivateDocument()
+        session.activateDocument()
+        session.message = "Current document message"
+        await probe.releaseRead()
+        await request.value
+
+        #expect(session.message == "Current document message")
+        #expect(!didChange)
+        #expect(await probe.effects().removals.isEmpty)
+    }
+
     @Test("Unlink rejects revoked authority before reading or mutating a related document")
     func unlinkRejectsDeniedAuthorityAtEntry() async throws {
         let probe = T5ActionAssociationProbe(items: ["related": [source.item]])
@@ -148,15 +222,17 @@ private actor T5ActionAssociationProbe: AnytypeTorahAssociationSnapshotRepositor
 
     private let items: [String: [TorahAssociationItem]]
     private let heldRead: Int?
+    private let failingRead: Int?
     private var readCount = 0
     private var removals: [String] = []
     private var readIsHeld = false
     private var readWaiter: CheckedContinuation<Void, Never>?
     private var releaseContinuation: CheckedContinuation<Void, Never>?
 
-    init(items: [String: [TorahAssociationItem]], heldRead: Int? = nil) {
+    init(items: [String: [TorahAssociationItem]], heldRead: Int? = nil, failingRead: Int? = nil) {
         self.items = items
         self.heldRead = heldRead
+        self.failingRead = failingRead
     }
 
     func waitUntilReadIsHeld() async {
@@ -175,13 +251,17 @@ private actor T5ActionAssociationProbe: AnytypeTorahAssociationSnapshotRepositor
 
     func listDocumentAssociations(objectId: String, spaceId: String) async throws -> [TorahAssociationItem] {
         readCount += 1
-        if readCount == heldRead {
+        let currentRead = readCount
+        if currentRead == heldRead {
             await withCheckedContinuation { continuation in
                 releaseContinuation = continuation
                 readIsHeld = true
                 readWaiter?.resume()
                 readWaiter = nil
             }
+        }
+        if currentRead == failingRead {
+            throw TorahAssociationRepositoryError.backendFailure("Delayed canonical read failure")
         }
         return items[objectId] ?? []
     }
