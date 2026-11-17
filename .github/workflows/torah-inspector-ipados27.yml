@@ -15,7 +15,16 @@ on:
           - native-ipa-fast
           - native-ipa-repair
           - native-diagnostics
+          - t5-coverage-proof
           - simulator-ui27
+      t5_component:
+        description: One bounded native T5 proof component
+        type: choice
+        options:
+          - native-index
+          - projection-cache
+          - native-rpc
+        default: native-index
       ui_scope:
         description: UI27 focused diagnostic selection; no release or full matrix acceptance
         type: choice
@@ -52,6 +61,12 @@ jobs:
     uses: ./.github/workflows/pinkha-simulator-ui27.yml
     with:
       ui_scope: ${{ inputs.ui_scope }}
+
+  t5-coverage-proof:
+    if: ${{ inputs.route == 't5-coverage-proof' }}
+    uses: ./.github/workflows/pinkha-t5-coverage-proof.yml
+    with:
+      component: ${{ inputs.t5_component }}
 
   native-diagnostics:
     if: ${{ inputs.route == 'native-diagnostics' }}
