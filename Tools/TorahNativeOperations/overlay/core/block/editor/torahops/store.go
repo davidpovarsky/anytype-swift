@@ -114,6 +114,24 @@ func (s *Store) AppendLocal(ctx context.Context, op Operation, native NativeChan
 	if len(resolution.Claims) != 0 {
 		return AppendResult{Disposition: CollisionDifferentPayload, ClaimID: claim.ID, Resolution: resolution}, nil
 	}
+	// A local caller may only remove/replace claims present in this transaction
+	// at the same target. Replay cannot impose this arrival-order prerequisite.
+	for _, observedID := range op.Observed {
+		observed, findErr := s.claims.FindId(tx.Context(), observedID)
+		if errors.Is(findErr, anystore.ErrDocNotFound) {
+			return AppendResult{}, fmt.Errorf("unobserved predecessor: %w", ErrInvalid)
+		}
+		if findErr != nil {
+			return AppendResult{}, fmt.Errorf("lookup observed predecessor: %w", findErr)
+		}
+		predecessor, parseErr := claimFromValue(observed.Value())
+		if parseErr != nil {
+			return AppendResult{}, parseErr
+		}
+		if predecessor.Operation.Target != op.Target {
+			return AppendResult{}, fmt.Errorf("predecessor target mismatch: %w", ErrInvalid)
+		}
+	}
 	if err = apply(tx, claim.ID, string(wire), native); err != nil {
 		return AppendResult{}, err
 	}

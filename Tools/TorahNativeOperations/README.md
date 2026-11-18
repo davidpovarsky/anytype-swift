@@ -103,6 +103,10 @@ insert. It returns `created`, `already_exists_same_payload`, or
 without adding another physical record or receipt. If a remote conflict already
 exists, an identical retry is still successful and its returned `Resolution`
 explicitly has `Conflict=true` and includes every stored variant.
+Before a new local remove/replacement is inserted, every observed predecessor
+must already exist in that same transaction and name the same target. Unknown
+or cross-target predecessors are rejected without a write. Native signed-history
+causality and permission verification remain host responsibilities.
 
 `Replay` accepts a change that the eventual native host must already have
 authorized. It stores every valid variant. Different replay orders converge to

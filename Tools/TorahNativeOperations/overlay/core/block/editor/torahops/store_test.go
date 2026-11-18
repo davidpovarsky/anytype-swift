@@ -295,9 +295,10 @@ func TestHandlerRejectsModifyDeleteAndRollsBackPartialBatch(t *testing.T) {
 	for _, action := range []string{"modify", "delete"} {
 		tx, err := fx.store.state.NewTx(testContext)
 		require.NoError(t, err)
+		t.Cleanup(func() { _ = tx.Rollback() })
 		build := &storestate.Builder{}
 		if action == "modify" {
-			require.NoError(t, build.Modify(CollectionName, id, []string{"operation", "payload"}, pb.ModifyOp_Set, "overwritten"))
+			require.NoError(t, build.Modify(CollectionName, id, []string{"operation", "payload"}, pb.ModifyOp_Set, `"overwritten"`))
 		} else {
 			build.Delete(CollectionName, id)
 		}
@@ -309,6 +310,7 @@ func TestHandlerRejectsModifyDeleteAndRollsBackPartialBatch(t *testing.T) {
 	require.Equal(t, "original", string(projection(t, fx).Live[0].Operation.Payload))
 	tx, err := fx.store.state.NewTx(testContext)
 	require.NoError(t, err)
+	t.Cleanup(func() { _ = tx.Rollback() })
 	build := &storestate.Builder{}
 	newID, wire, err := EncodeClaim(add(2, "must roll back"))
 	require.NoError(t, err)
@@ -339,6 +341,7 @@ func TestNativeValidationCannotBeBypassedByGenericBuilder(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			tx, beginErr := fx.store.state.NewTx(testContext)
 			require.NoError(t, beginErr)
+			t.Cleanup(func() { _ = tx.Rollback() })
 			err := apply(tx, id, malformed, native(name))
 			require.Error(t, err)
 			require.NoError(t, tx.Rollback())
@@ -351,6 +354,7 @@ func TestNativeValidationCannotBeBypassedByGenericBuilder(t *testing.T) {
 		require.NoError(t, encodeErr)
 		tx, beginErr := fx.store.state.NewTx(testContext)
 		require.NoError(t, beginErr)
+		t.Cleanup(func() { _ = tx.Rollback() })
 		require.ErrorIs(t, apply(tx, foreignID, foreignWire, native("foreign")), storestate.ErrValidation)
 		require.NoError(t, tx.Rollback())
 	}
@@ -368,6 +372,25 @@ func TestNativeProvenanceCannotBeRewritten(t *testing.T) {
 	receipts, err := fx.store.Receipts(testContext, claimID(t, op))
 	require.NoError(t, err)
 	require.Equal(t, "verified-native-acl-head", receipts[0].ACLHeadID)
+}
+
+func TestLocalRemoveRequiresObservedPredecessorAtSameTarget(t *testing.T) {
+	fx := openFixture(t, "")
+	old := add(1, "predecessor")
+	remove := add(2, "")
+	remove.Kind, remove.Source, remove.Observed = Remove, Source{}, []string{claimID(t, old)}
+	_, err := fx.store.AppendLocal(testContext, remove, native("unseen-remove"))
+	require.ErrorIs(t, err, ErrInvalid)
+	counts(t, fx, 0, 0)
+	appendLocal(t, fx, old, "old")
+	remove.Target.BlockID = "different-block"
+	_, err = fx.store.AppendLocal(testContext, remove, native("wrong-target"))
+	require.ErrorIs(t, err, ErrInvalid)
+	counts(t, fx, 1, 1)
+	remove.Target = old.Target
+	require.Equal(t, Created, appendLocal(t, fx, remove, "observed-remove").Disposition)
+	counts(t, fx, 2, 2)
+	require.Empty(t, projection(t, fx).Live)
 }
 
 func TestSpaceIsolationReadBoundsAndNativeIndex(t *testing.T) {

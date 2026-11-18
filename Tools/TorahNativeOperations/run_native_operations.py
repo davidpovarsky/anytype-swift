@@ -9,6 +9,7 @@ import os
 import platform
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import time
@@ -21,6 +22,24 @@ PACKAGE = "./core/block/editor/torahops"
 
 def output(command: list[str], cwd: Path, env: dict | None = None) -> str:
     return subprocess.check_output(command, cwd=cwd, env=env, text=True, encoding="utf-8").strip()
+
+
+def run_bounded(command: list[str], cwd: Path, env: dict, log, seconds: int) -> int:
+    process = subprocess.Popen(command, cwd=cwd, env=env, stdout=log, stderr=subprocess.STDOUT,
+                               start_new_session=os.name != "nt")
+    try:
+        return process.wait(timeout=seconds)
+    except subprocess.TimeoutExpired:
+        if os.name == "nt":
+            subprocess.run(["taskkill", "/PID", str(process.pid), "/T", "/F"],
+                           stdout=log, stderr=subprocess.STDOUT, check=False)
+        else:
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+        process.wait()
+        raise
 
 
 def main() -> int:
@@ -94,8 +113,7 @@ def main() -> int:
         receipt["command"] = command
         receipt["status"] = "RUNNING"
         with (evidence / "go-test.jsonl").open("w", encoding="utf-8", newline="") as log:
-            completed = subprocess.run(command, cwd=heart, env=env, stdout=log, stderr=subprocess.STDOUT, timeout=900)
-        code = completed.returncode
+            code = run_bounded(command, heart, env, log, seconds=900)
         events = []
         for line in (evidence / "go-test.jsonl").read_text(encoding="utf-8", errors="replace").splitlines():
             try:
