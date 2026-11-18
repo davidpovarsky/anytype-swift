@@ -1,0 +1,12 @@
+{
+  "run_id": "44206578182",
+  "control_sha": "e501746752fb4826eed59366fff3cfe3ea82ec5d",
+  "component": "native-index",
+  "status": "LINK_FAILURE_BEFORE_NATIVE_TESTS",
+  "native_tests_executed": 0,
+  "artifact_id": "14383657999",
+  "artifact_sha256": "dc722168176cf2ded71014f1f257c1bd758d7823eea806faa411894120ac159d",
+  "cause": "Ubuntu musl wrapper linked GCC13 glibc libgcc_eh, which requires _dl_find_object; the real native test could not link. qsort_r probe and musl1.2.4 were successful.",
+  "correction": "Use the official pinned Go1.26.5/Alpine amd64 image with a complete musl C and unwind runtime. Read-only control/proof fixture mounts; disposable Heart/evidence/cache mounts only.",
+  "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF"
+}
