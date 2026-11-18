@@ -40,11 +40,19 @@ def phase_report(phase, role):
         calls["ObjectSetDetails"] = 1
     if phase == "new-recover":
         calls.update(BlockListDelete=1, SpaceDelete=1)
-    observation = {"private_registry": "UNKNOWN_CHANGE_TYPE_REJECTED", "private_read": "NOT_AVAILABLE_ON_LEGACY"}
+    observation = {"private_registry": "UNKNOWN_CHANGE_TYPE_REJECTED", "private_read": "NOT_AVAILABLE_ON_LEGACY",
+                   "handler_boundary": {"scope": "UNSUPPORTED_LEGACY"}}
     if role == "new":
         observation = {"private_registry": "ACTUAL_NATIVE_FACTORY", "private_read": "EXACT_PERSISTED_CLAIM",
                        "idempotent_retry": "already_exists_same_payload", "operation_sha256": original["OperationSHA256"],
-                       "claim_id": original["ClaimID"], "signed_change_id": original["ChangeID"], "private_type": 0x504B0001}
+                       "claim_id": original["ClaimID"], "signed_change_id": original["ChangeID"], "private_type": 0x504B0001,
+                       "handler_boundary": {"scope": "ACCOUNT_SCOPED_TYPED_BOUNDARY_NOT_REGISTERED_RPC",
+                                              "creation": ("INVALID_CALLS_NO_ROOT_THEN_VALID_APPEND_CREATED_ROOT"
+                                                           if phase == "new-create" else "EXISTING_HISTORY_REOPENED"),
+                                              "read": "EXACT_PERSISTED_CLAIM_NATIVE_AUTHOR",
+                                              "read_guards": "VERSION_AND_LIMIT_REJECTED",
+                                              "retry": "already_exists_same_payload", "collision": "collision_different_payload",
+                                              "after_stop": "NATIVE_READ_AND_APPEND_NOT_LOGGED_IN"}}
     return {**identity(role), "protocol": runner.PROTOCOL, "phase": phase, "pid": 42, "nonce": "fresh-nonce",
             "account_root": str(Path("/disposable/account-root")), "state_sha256": "f" * 64,
             "account_id": original["AccountID"], "space_id": original["SpaceID"], "document_id": original["DocumentID"],
@@ -116,6 +124,27 @@ class AccountControllerControls(unittest.TestCase):
     def test_legacy_cannot_claim_new_host_read(self):
         report = phase_report("legacy-edit", "legacy")
         report["runtime_observation"] = phase_report("new-reopen", "new")["runtime_observation"]
+        with self.assertRaises(ValueError):
+            validate(report, "legacy-edit", "legacy")
+
+    def test_handler_receipt_cannot_be_missing_or_upgraded_to_registered_rpc(self):
+        for phase in ["new-create", "new-reopen", "new-recover"]:
+            complete = phase_report(phase, "new")["runtime_observation"]["handler_boundary"]
+            for key in complete:
+                with self.subTest(phase=phase, missing=key):
+                    report = phase_report(phase, "new")
+                    del report["runtime_observation"]["handler_boundary"][key]
+                    with self.assertRaises(ValueError):
+                        validate(report, phase, "new")
+            for key, value in [("scope", "REGISTERED_RPC"), ("after_stop", "NOT_RUN"),
+                               ("collision", "created"), ("read", "EMPTY_SNAPSHOT")]:
+                with self.subTest(phase=phase, invalid=key):
+                    report = phase_report(phase, "new")
+                    report["runtime_observation"]["handler_boundary"][key] = value
+                    with self.assertRaises(ValueError):
+                        validate(report, phase, "new")
+        report = phase_report("legacy-edit", "legacy")
+        report["runtime_observation"]["handler_boundary"] = {"scope": "ACCOUNT_SCOPED_TYPED_BOUNDARY_NOT_REGISTERED_RPC"}
         with self.assertRaises(ValueError):
             validate(report, "legacy-edit", "legacy")
 

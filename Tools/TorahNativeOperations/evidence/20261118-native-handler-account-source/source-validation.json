@@ -1,0 +1,37 @@
+{
+  "exact_context_apply": "PASS",
+  "canonical_source_hashes_verified": {
+    "account_lifecycle/new_runtime_test.go": "cb96f578e3adcbaaa5716cf2b89bed035a0075cbf7e321aecf57686ecef97ef6",
+    "account_lifecycle/legacy_runtime_test.go": "0cbb1899a3c17d83899fa5f2ff437695ff3e5b95b9bbe91c4fb4f5921f601d7d",
+    "account_lifecycle/account_phase_test.go": "8a85b6453344c0a81bc3e472514fcaf494c460a52e41d889faf3ec40eddab339",
+    "run_account_lifecycle.py": "8d2b1bcbeb34f555df9bcc4ea6ac5f5cf431cd4fed446570bce40691ff8589f6",
+    "test_account_lifecycle.py": "b95710aded60157b92f85b5c4498bd3a1b9f487b81b6ea3ac10d24c3ca477922",
+    "account_lifecycle/native_handler_test.go": "853e2ae1ce660e320929349bac4783905ef1e229309ee61dfebdebc41b6a4b65"
+  },
+  "gofmt": "PASS_AFTER_GIT_CRLF_NORMALIZATION",
+  "python_parse": "PASS",
+  "export_assertions": "UNCHANGED",
+  "heart_written": false,
+  "native": "NOT_RUN",
+  "controller_controls": {
+    "runtime": "Scratch Linux Python 3.12",
+    "tests": 17,
+    "passed": 17,
+    "failed": 0,
+    "skipped": 0,
+    "log": "Ran 17 tests in 0.563s; OK",
+    "includes": "2 actual POSIX owned-process controls; new strict native_handler receipt control"
+  },
+  "review": {
+    "root": "all five exact-context hunks and complete new helper; requested per-call absence observations added",
+    "t5": "complete helper, 186-line patch and new runtime reviewed read-only; no blocker",
+    "new_helper_sha256": "853e2ae1ce660e320929349bac4783905ef1e229309ee61dfebdebc41b6a4b65",
+    "existing_patch_sha256": "7f690eac92a84898c8e456c73864fe7fa8455b935aaa3617b5088a9d57142714"
+  },
+  "baseline_account_run": "44245137022",
+  "baseline_account_source": "e7bb02742cb188cda1d5b44a8700b51fa2930421",
+  "baseline_proof_applies_to_new_fixture": false,
+  "app_capability": "OFF",
+  "generated_rpc": "NOT_RUN",
+  "two_app_clients": "NOT_RUN"
+}
