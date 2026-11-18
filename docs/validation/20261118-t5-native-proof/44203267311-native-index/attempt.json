@@ -1,0 +1,23 @@
+{
+  "run_id": "44203267311",
+  "attempt": 1,
+  "control_sha": "b5dc53b799a70269b8082734106d8cd30a99fc44",
+  "source_sha": "947fbde24d5657d0e1229f45bb3993648884a8a1",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "component": "native-index",
+  "result": "INFRA_FAILURE_BEFORE_NATIVE_TESTS",
+  "native_tests_executed": 0,
+  "controller_tests_passed": 5,
+  "artifact_id": "14380834850",
+  "artifact_sha256": "2840b77500c07db0819e559c47950f38abeb2bf9ddec232b4d7f7bf2ddabe69c",
+  "cause": "CI requested linux-amd64.tar.gz, which is absent. Pinned Heart and its official Tantivy release both specify linux-amd64-musl.tar.gz.",
+  "resolved_asset": {
+    "name": "linux-amd64-musl.tar.gz",
+    "size": 16347426,
+    "digest": "sha256:88b34e006707bfec2d29e8b26405f67cbb975d06fd4ea164da856d0084aaabbc",
+    "browser_download_url": "https://github.com/anyproto/tantivy-go/releases/download/v1.0.6/linux-amd64-musl.tar.gz"
+  },
+  "upstream_linux_build_contract": "Pinned Heart makefiles/ci-cross-compile-library.mk and Tantivy v1.0.6 Makefile use a musl C compiler and static external linkage.",
+  "change_scope": "Control driver/workflow only; no dependency version, Heart source, approved patch, expected native cases or fixture hashes changed.",
+  "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF"
+}
