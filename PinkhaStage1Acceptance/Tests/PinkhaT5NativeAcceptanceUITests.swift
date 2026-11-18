@@ -162,7 +162,8 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
         let unlinkRow = relatedRow(noteResultID)
         try require(unlinkRow.isHittable, "The Note result cannot expose its real context menu")
         unlinkRow.press(forDuration: 1.0)
-        let unlink = app.buttons["torah-inspector-related-unlink-" + noteResultID]
+        let unlink = app.buttons.matching(NSPredicate(format: "identifier == %@",
+            "torah-inspector-related-unlink-" + noteResultID)).firstMatch
         try require(unlink.waitForExistence(timeout: 20) && unlink.isHittable, "The source unlink action is missing")
         try require(unlink.label == "Unlink source", "The menu must describe unlinking, not document deletion")
         attachEvidence("t5-note-unlink-menu")
