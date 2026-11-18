@@ -17,5 +17,6 @@ EOF
 gcc -static /workspace/qsort-probe.c -o /workspace/qsort-probe > /workspace/evidence/toolchain/qsort-link.log 2>&1
 /workspace/qsort-probe
 exec python3 -B /workspace/control/Tools/TorahNativeOperations/run_native_clients.py build \
+  --scenario "${T2_NATIVE_SCENARIO:-bootstrap}" \
   --approved-source /workspace/approved-source --heart-legacy /workspace/heart-legacy --heart-new /workspace/heart-new \
   --work /workspace/work/native-clients-build --evidence /workspace/evidence --expected-app-sha "$EXPECTED_APP_SHA"

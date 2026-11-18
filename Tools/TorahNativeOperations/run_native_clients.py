@@ -26,10 +26,13 @@ import run_account_lifecycle as base
 import run_account_rpc as account
 
 PROTOCOL = "pinkha-t2-two-native-clients-bootstrap-v1"
+OFFLINE_PROTOCOL = "pinkha-t2-native-offline-conflict-reopen-v1"
 METHOD = "TestT2NativeClientBootstrapPhase"
+REOPEN_METHOD = "TestT2NativeClientOfflineReopenPhase"
 IMAGE = "golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8"
 OWNER_LABEL = "pinkha.t2.native-clients.owner"
-GO_FILES = {"native_client_phase_test.go", "native_client_boundary_test.go"}
+GO_FILES = {"native_client_phase_test.go", "native_client_boundary_test.go",
+            "native_client_offline_test.go", "native_client_reopen_test.go"}
 STATE_KEYS = {"AccountID", "SpaceID", "DocumentID", "BlockID", "RootID", "OperationID",
               "OperationSHA256", "ClaimID", "ChangeID", "RawChanges", "Heads"}
 CONTROL_METHODS = {
@@ -40,6 +43,13 @@ CONTROL_METHODS = {
         "expected_claim_and_head_ready", "root_only_prefix_is_not_convergence", "history_unavailable_can_wait",
         "permission_denial_is_immediate_failure", "joined_denial_cannot_hide_in_transient_error",
         "foreign_claim_is_not_eventual_readiness", "failed_read_must_not_expose_a_snapshot"},
+    "TestT2OfflineSnapshotConvergenceControls": {
+        "complete_variants_and_unique_adds_converge", "local_sequence_is_not_a_cross_client_clock",
+        "known_local_prefix_waits_without_convergence", "projection_catchup_can_wait",
+        "known_account_history_cannot_disappear", "joined_permission_denial_is_not_retryable",
+        "failed_read_cannot_expose_snapshot", "author_cannot_be_substituted", "opaque_payload_cannot_be_replaced",
+        "removed_original_cannot_reappear", "duplicate_live_claims_are_rejected",
+        "conflict_must_preserve_both_variants", "duplicate_conflict_variant_is_rejected", "conflict_has_no_live_winner"},
 }
 require, digest, write = base.require, base.digest, base.write_json
 
@@ -101,18 +111,25 @@ def build(args, receipt, run) -> dict:
             "fixture_sha256": manifest["fixture_sha256"], "two_native_clients": "NOT_RUN"}
 
 
-def validate_container(info: dict, owner: str, role: str, network: dict, private: Path, binary: Path,
-                       image_id: str, uid: int, gid: int) -> None:
+def native_arguments(scenario="bootstrap", method=METHOD) -> list[str]:
+    require(scenario in {"bootstrap", "offline"} and method in {METHOD, REOPEN_METHOD}, "Unknown fixed native scenario")
+    require(method == METHOD or scenario == "offline", "Reopen is exclusive to the offline scenario")
+    limit = "480s" if method == REOPEN_METHOD else ("2000s" if scenario == "offline" else "1000s")
+    return ["-test.run", "^" + method + "$", "-test.count=1", "-test.v", "-test.timeout=" + limit]
+
+
+def validate_container(info: dict, owner: str, role: str, network: dict | None, private: Path, binary: Path,
+                       image_id: str, uid: int, gid: int, *, scenario="bootstrap", method=METHOD) -> None:
     require(info.get("Config", {}).get("Labels", {}).get(OWNER_LABEL) == owner, "Foreign container ownership")
     require(info["Config"].get("Image") == IMAGE and info.get("Image") == image_id, "Different runtime image")
     require(info["Config"].get("User") == f"{uid}:{gid}" and info.get("Path") == "/fixture/native.test",
             "Container must directly run the native ELF as the owner")
-    require(info.get("Args") == ["-test.run", "^" + METHOD + "$", "-test.count=1", "-test.v", "-test.timeout=1000s"],
+    require(info.get("Args") == native_arguments(scenario, method),
             "Unexpected native executable arguments")
     host = info["HostConfig"]
     require(host.get("ReadonlyRootfs") is True and host.get("Privileged") is False
             and host.get("CapDrop") == ["ALL"] and "no-new-privileges" in host.get("SecurityOpt", [])
-            and host.get("NetworkMode") == network["Name"] and not host.get("PortBindings")
+            and host.get("NetworkMode") == (network["Name"] if network else "none") and not host.get("PortBindings")
             and not host.get("PidMode") and not host.get("Init"), "Unexpected native container isolation")
     mounts = info.get("Mounts", [])
     binds = {m["Destination"]: m for m in mounts if m.get("Type") == "bind"}
@@ -123,11 +140,17 @@ def validate_container(info: dict, owner: str, role: str, network: dict, private
     require(all(m.get("Type") == "bind" or (m.get("Type") == "tmpfs" and m.get("Destination") == "/tmp") for m in mounts),
             "Unexpected data volume")
     networks = info["NetworkSettings"]["Networks"]
-    require(set(networks) == {network["Name"]} and networks[network["Name"]]["NetworkID"] == network["Id"],
-            "Native client is not isolated to its owned internal LAN")
+    if network:
+        require(set(networks) == {network["Name"]} and networks[network["Name"]]["NetworkID"] == network["Id"],
+                "Native client is not isolated to its owned internal LAN")
+    else:
+        require(set(networks) == {"none"} and not networks["none"].get("IPAddress"),
+                "Reopen must have no network capable of peer repair")
     env = dict(value.split("=", 1) for value in info["Config"]["Env"] if "=" in value)
     require(env.get("PINKHA_T2_CLIENT_ROLE") == role and env.get("PINKHA_T2_CLIENT_NONCE") == owner,
             "Native container role/nonce differs")
+    require(env.get("PINKHA_T2_CLIENT_SCENARIO") == (OFFLINE_PROTOCOL if scenario == "offline" else None),
+            "Native scenario differs from the explicit controller selection")
 
 
 def validate_ready(report: dict, role: str, nonce: str, state: dict, state_hash: str,
@@ -172,7 +195,7 @@ def validate_pair(reports: dict, inspections: dict) -> None:
     require(reports["creator"]["raw_changes_sha256"] == reports["recovered"]["raw_changes_sha256"], "Private history differs")
 
 
-def validate_final(ready: dict, final: dict, log: str, role: str) -> None:
+def validate_final(ready: dict, final: dict, log: str, role: str, *, scenario="bootstrap") -> None:
     require(all(final.get(key) == value for key, value in ready.items()), "Readiness facts changed before AccountStop")
     require(final.get("closed") is True and final.get("account_stop_verified") is True and final.get("test_passed") is True
             and final.get("post_stop_rpc") == "READ_AND_APPEND_NOT_LOGGED_IN", "Actual native shutdown/denial proof missing")
@@ -180,11 +203,12 @@ def validate_final(ready: dict, final: dict, log: str, role: str) -> None:
             and "--- FAIL:" not in log and "--- SKIP:" not in log, "Exact native named PASS required")
     calls = final.get("rpc_calls", {})
     require(calls == final.get("returned_byte_calls"), "Native byte call did not return")
-    common = {"InitialSetParameters": 1, "AppGetVersion": 1, "WorkspaceOpen": 1, "DeviceNetworkStateSet": 1,
+    common = {"InitialSetParameters": 1, "AppGetVersion": 1, "WorkspaceOpen": 1,
+              "DeviceNetworkStateSet": 3 if scenario == "offline" and role == "recovered" else 1,
               "ObjectShow": 1, "AccountStop": 1, "AppShutdown": 1,
-              "PinkhaTorahOperationsAppend": 2 if role == "creator" else 1}
+              "PinkhaTorahOperationsAppend": (2 if role == "creator" else 1) + (7 if scenario == "offline" else 0)}
     require(all(calls.get(key) == count for key, count in common.items())
-            and calls.get("PinkhaTorahOperationsReadTarget", 0) >= 2, "Native call boundary incomplete")
+            and calls.get("PinkhaTorahOperationsReadTarget", 0) >= (8 if scenario == "offline" else 2), "Native call boundary incomplete")
     creator = {"WalletCreate", "AccountCreate", "WorkspaceCreate", "ObjectCreate", "BlockCreate"}
     recovery = {"WalletRecover", "AccountSelect"}
     require(all(calls.get(key, 0) == (1 if role == "creator" else 0) for key in creator)
@@ -196,7 +220,7 @@ def validate_final(ready: dict, final: dict, log: str, role: str) -> None:
             "Unexpected native operation outside LAN bootstrap")
 
 
-def publish_native_evidence(private: Path, evidence: Path) -> dict:
+def publish_native_evidence(private: Path, evidence: Path, *, scenario="bootstrap") -> dict:
     needle_path = private / "creator/sensitive-needles.private"
     if not needle_path.is_file() or needle_path.is_symlink():
         return {"status": "WITHHELD_NO_SECRET_INVENTORY", "files_sha256": {}}
@@ -205,7 +229,11 @@ def publish_native_evidence(private: Path, evidence: Path) -> dict:
             and all(isinstance(n, str) and len(n) >= 10 for n in needles), "Incomplete synthetic secret inventory")
     candidates = []
     for role in ["creator", "recovered"]:
-        for name in ["ownership.json", "state.json", "ready.json", "final.json", "cancel.json", "native.log"]:
+        names = ["ownership.json", "state.json", "ready.json", "final.json", "cancel.json", "native.log"]
+        if scenario == "offline":
+            names += ["partitioned.json", "diverged.json", "reconnected.json", "converged.json",
+                      "reopen-ready.json", "reopened.json", "reopen-native.log"]
+        for name in names:
             path = private / role / name
             if not path.exists():
                 continue
@@ -228,7 +256,7 @@ def publish_native_evidence(private: Path, evidence: Path) -> dict:
 
 
 class OwnedDocker:
-    def __init__(self, private: Path, receipt: dict, checkpoint):
+    def __init__(self, private: Path, receipt: dict, checkpoint, *, scenario="bootstrap"):
         self.private, self.receipt, self.checkpoint = private, receipt, checkpoint
         self.owner = uuid4().hex
         self.prefix = "pinkha-t2-" + self.owner[:16]
@@ -236,6 +264,8 @@ class OwnedDocker:
         self.receipt["owned_resources"] = self.resources
         self.receipt["owner_nonce"] = self.owner
         self.command_index = 0
+        require(scenario in {"bootstrap", "offline"}, "Unknown fixed native scenario")
+        self.scenario = scenario
 
     def command(self, args, name, timeout=30, destination=None):
         self.command_index += 1
@@ -298,27 +328,33 @@ class OwnedDocker:
                 "Fresh internal native LAN required")
         return resource, info
 
-    def start(self, role, network, directory, binary, fixture_sha, deadline):
-        resource = {"kind": "container", "name": self.prefix + "-" + role, "id": None, "role": role,
-                    "private": str(directory)}
+    def start(self, role, network, directory, binary, fixture_sha, deadline, *, method=METHOD):
+        reopening = method == REOPEN_METHOD
+        resource = {"kind": "container", "name": self.prefix + "-" + role + ("-reopen" if reopening else ""),
+                    "id": None, "role": role, "private": str(directory),
+                    "log": "reopen-native.log" if reopening else "native.log"}
         self.resources.append(resource)
         args = ["container", "create", "--name", resource["name"], "--label", OWNER_LABEL + "=" + self.owner,
-                "--platform", "linux/amd64", "--network", network["Name"], "--read-only", "--init=false",
+                "--platform", "linux/amd64", "--network", network["Name"] if network else "none", "--read-only", "--init=false",
                 "--cap-drop", "ALL", "--security-opt", "no-new-privileges", "--user", f"{os.getuid()}:{os.getgid()}",
                 "--cpus", "1", "--memory", "2g", "--pids-limit", "256", "--workdir", "/private",
                 "--tmpfs", "/tmp:rw,nosuid,nodev,size=128m,mode=1777",
                 "--mount", f"type=bind,src={directory},dst=/private",
                 "--mount", f"type=bind,src={binary},dst=/fixture/native.test,readonly",
                 "-e", "PINKHA_T2_CLIENT_ROLE=" + role, "-e", "PINKHA_T2_CLIENT_NONCE=" + self.owner,
-                "-e", "PINKHA_T2_CLIENT_FIXTURE_SHA=" + fixture_sha, "-e", "GOMAXPROCS=2", "-e", "GOMEMLIMIT=768MiB",
-                IMAGE, "/fixture/native.test", "-test.run", "^" + METHOD + "$", "-test.count=1", "-test.v", "-test.timeout=1000s"]
+                "-e", "PINKHA_T2_CLIENT_FIXTURE_SHA=" + fixture_sha, "-e", "GOMAXPROCS=2", "-e", "GOMEMLIMIT=768MiB"]
+        if self.scenario == "offline":
+            args += ["-e", "PINKHA_T2_CLIENT_SCENARIO=" + OFFLINE_PROTOCOL]
+        args += [IMAGE, "/fixture/native.test", *native_arguments(self.scenario, method)]
         resource["id"] = self.command(args, "create-" + role, self.remaining(deadline))
         require(re.fullmatch(r"[0-9a-f]{64}", resource["id"]), "Missing actual native container identity")
         self.command(["container", "start", resource["id"]], "start-" + role, self.remaining(deadline))
         return resource
 
-    def wait_ready(self, resource, deadline):
-        path = Path(resource["private"]) / "ready.json"
+    def wait_ready(self, resource, deadline, *, filename="ready.json"):
+        require(filename in {"ready.json", "partitioned.json", "diverged.json", "reconnected.json", "converged.json", "reopen-ready.json"},
+                "Unexpected native receipt selection")
+        path = Path(resource["private"]) / filename
         next_check = 0
         while time.monotonic() < deadline:
             if path.exists():
@@ -344,7 +380,7 @@ class OwnedDocker:
                             # The successful path already used native AccountStop.
                             # This is bounded failure/cancellation cleanup only.
                             self.command(["container", "stop", "--time", "1", resource["id"]], "stop-owned", 10)
-                        log = Path(resource["private"]) / "native.log"
+                        log = Path(resource["private"]) / resource.get("log", "native.log")
                         if not log.exists():
                             self.command(["container", "logs", resource["id"]], "capture-owned-log", 10, log)
                     except Exception as error:
@@ -362,12 +398,235 @@ class OwnedDocker:
         require(not errors, "Owned native resource cleanup failed")
 
 
+def validate_offline_report(report: dict, phase: str, role: str, ready: dict, expected_ips: list[str]) -> None:
+    require(report.get("protocol") == OFFLINE_PROTOCOL and report.get("phase") == phase
+            and report.get("role") == role and report.get("nonce") == ready["nonce"]
+            and report.get("pid") == 1 and report.get("client_fixture_sha256") == ready["client_fixture_sha256"]
+            and report.get("peer_id") == ready["peer_id"], "Foreign offline phase receipt")
+    require(report.get("actual_ipv4") == expected_ips
+            and report.get("native_network_state") == ("WIFI" if expected_ips else "NOT_CONNECTED"),
+            "Native network notification does not match actual attachment")
+    require(report.get("app_capability") == "OFF" and report.get("full_t2_acceptance") == "NOT_RUN", "Offline phase overclaims acceptance")
+
+
+def merge_offline_histories(reports: dict, state: dict) -> dict:
+    require(set(reports) == {"creator", "recovered"}, "Two original branch histories required")
+    common = set(state["RawChanges"])
+    changes, parents, heads, branch_ids, claim_ids = dict(state["RawChanges"]), {}, [], set(), set()
+    for role, report in reports.items():
+        history, new_changes, new_claims = report["history"], report["created_change_ids"], report["created_claim_ids"]
+        require(len(new_changes) == len(set(new_changes)) == 3 and len(new_claims) == len(set(new_claims)) == 3,
+                "Each disconnected client must commit three distinct changes/claims")
+        require(all(isinstance(value, str) and value and value not in common for value in new_changes)
+                and not branch_ids.intersection(new_changes), "Private branches were shared or overwritten")
+        require(all(re.fullmatch(r"[0-9a-f]{64}/[0-9a-f]{64}", value) for value in new_claims)
+                and not claim_ids.intersection(new_claims), "Physical immutable claims must remain distinct")
+        branch_ids.update(new_changes); claim_ids.update(new_claims)
+        require(set(history) == {"changes_sha256", "parents", "heads"}
+                and set(history["changes_sha256"]) == common | set(new_changes)
+                and all(re.fullmatch(r"[0-9a-f]{64}", value) for value in history["changes_sha256"].values()),
+                "Only exact native change hashes may cross the expectation boundary")
+        require(all(history["changes_sha256"][key] == value for key, value in state["RawChanges"].items()), "Original history changed offline")
+        expected_parents = {state["ChangeID"]: [state["RootID"]], new_changes[0]: [state["ChangeID"]],
+                            new_changes[1]: [new_changes[0]], new_changes[2]: [new_changes[1]]}
+        require(history["parents"] == expected_parents and history["heads"] == [new_changes[2]],
+                "Offline branch is not the independently signed three-operation chain")
+        require(report.get("retry_and_collision") == "PASS_LOCAL_EXACT_RETRY_AND_REJECTED_DIFFERENT_BYTES"
+                and report.get("removed_observed_original") is True
+                and re.fullmatch(r"[0-9a-f]{64}", report.get("local_snapshot_sha256", "")), "Offline append/retry/remove proof incomplete")
+        changes.update(history["changes_sha256"]); parents.update(expected_parents); heads += history["heads"]
+    require(reports["creator"]["created_claim_ids"][1][:64] == reports["recovered"]["created_claim_ids"][1][:64],
+            "Different-payload collision must use the same logical operation ID")
+    require(reports["creator"]["local_snapshot_sha256"] != reports["recovered"]["local_snapshot_sha256"],
+            "Disconnected clients did not observe different local states")
+    require(len(changes) == 8 and len(parents) == 7 and len(set(heads)) == 2, "Complete original branch union required")
+    return {"changes_sha256": changes, "parents": parents, "heads": sorted(heads)}
+
+
+def validate_convergence(reports: dict, expected: dict) -> str:
+    require(set(reports) == {"creator", "recovered"}, "Two actual convergence receipts required")
+    hashes = set()
+    for report in reports.values():
+        require(report.get("history") == expected and report.get("live_count") == 2
+                and report.get("conflict_count") == 1 and report.get("conflict_variants") == 2,
+                "Native convergence dropped history, a concurrent add or a conflict variant")
+        require(report.get("retry_and_collision") == "PASS_CONFLICT_VARIANTS_PRESERVED_IDEMPOTENT_REPLAY"
+                and report.get("concurrent_remove_add_remove") == "OBSERVED_ORIGINAL_REMOVED_CONCURRENT_UNIQUE_ADDS_RETAINED"
+                and report.get("restart") == "NOT_RUN" and report.get("crash_after_commit") == "NOT_RUN",
+                "Native convergence assertion scope differs")
+        value = report.get("snapshot_sha256_without_local_sequence", "")
+        require(re.fullmatch(r"[0-9a-f]{64}", value) and type(report.get("local_applied_sequence")) is int
+                and report["local_applied_sequence"] > 0, "Missing complete semantic snapshot/local sequence")
+        hashes.add(value)
+    require(len(hashes) == 1, "Native clients did not converge to the same complete semantic snapshot")
+    return hashes.pop()
+
+
+def offline_command(directory: Path, role: str, owner: str, phase: str, history: dict | None = None) -> None:
+    require(phase in {"partition", "write", "reconnect", "reopen-stop"}, "Unknown fixed offline command")
+    require((phase == "reconnect") == (history is not None), "History expectations belong only to reconnect")
+    if history is not None:
+        require(set(history) == {"changes_sha256", "parents", "heads"}, "Expected history cannot carry native bytes or extra fields")
+        changes, parents, heads = history["changes_sha256"], history["parents"], history["heads"]
+        require(isinstance(changes, dict) and len(changes) == 8
+                and all(isinstance(key, str) and 0 < len(key) <= 512 and "\x00" not in key for key in changes)
+                and all(isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) for value in changes.values()),
+                "Expected changes must contain exactly eight native identifiers and SHA256 hashes")
+        require(isinstance(parents, dict) and len(parents) == 7 and set(parents) < set(changes)
+                and all(isinstance(value, list) and len(value) == 1 and value[0] in changes and value[0] != key
+                        for key, value in parents.items()), "Expected native parents differ from the two reviewed branches")
+        require(isinstance(heads, list) and len(heads) == 2 and len(set(heads)) == 2 and heads == sorted(heads)
+                and set(heads) == set(changes) - {value[0] for value in parents.values()}, "Expected native heads are not the exact two branch tips")
+    path = directory / (phase + ".command.json")
+    require(not path.exists(), "Offline command cannot be replayed or replaced")
+    write(path, {"protocol": OFFLINE_PROTOCOL, "nonce": owner, "role": role, "phase": phase,
+                 "expected_history": history or {"changes_sha256": {}, "parents": {}, "heads": []}})
+
+
+def offline_sequence(docker: OwnedDocker, resources: dict, network_resource: dict, network: dict,
+                     reports: dict, directories: dict, state: dict) -> dict:
+    # One bounded phase budget covers all partition/write/reconnect operations.
+    overall = time.monotonic() + 630
+    deadline = min(overall, time.monotonic() + 90)
+    b = docker.find(resources["recovered"], deadline)
+    lan = docker.find(network_resource, deadline)
+    require(b and b["State"].get("Running") is True and b["State"]["Pid"] == docker.receipt["native_peers"]["recovered"]["host_pid"]
+            and set(b["NetworkSettings"]["Networks"]) == {network["Name"]}
+            and set(lan.get("Containers", {})) == {r["id"] for r in resources.values()}, "Original owned native LAN membership changed")
+    docker.command(["network", "disconnect", network["Id"], resources["recovered"]["id"]], "detach-owned-recovered", docker.remaining(deadline))
+    detached = docker.find(resources["recovered"], deadline)
+    lan = docker.find(network_resource, deadline)
+    require(detached["State"].get("Running") is True and detached["State"]["Pid"] == b["State"]["Pid"]
+            and detached["NetworkSettings"]["Networks"] == {} and set(lan.get("Containers", {})) == {resources["creator"]["id"]},
+            "Actual native peer partition was not established")
+    docker.receipt["native_partition"] = {"status": "OBSERVED_NETWORK_DETACH", "container_id": resources["recovered"]["id"],
+                                          "host_pid": detached["State"]["Pid"], "network_ids": [], "network_id": network["Id"]}
+    docker.checkpoint()
+    for role in resources: offline_command(directories[role], role, docker.owner, "partition")
+    for role, resource in resources.items():
+        part = docker.wait_ready(resource, deadline, filename="partitioned.json")
+        validate_offline_report(part, "partitioned", role, reports[role], [reports[role]["bridge_ipv4"]] if role == "creator" else [])
+        require(part.get("network_detach_acknowledged") is (role == "recovered"), "Wrong native partition acknowledgment")
+    deadline = min(overall, time.monotonic() + 240)
+    for role in resources: offline_command(directories[role], role, docker.owner, "write")
+    diverged = {}
+    for role, resource in resources.items():
+        diverged[role] = docker.wait_ready(resource, deadline, filename="diverged.json")
+        validate_offline_report(diverged[role], "diverged", role, reports[role], [reports[role]["bridge_ipv4"]] if role == "creator" else [])
+    expected = merge_offline_histories(diverged, state)
+    # Recheck the real partition after both native write receipts exist.
+    require(docker.find(resources["recovered"], deadline)["NetworkSettings"]["Networks"] == {}, "Native writes were not isolated")
+    deadline = min(overall, time.monotonic() + 300)
+    docker.command(["network", "connect", network["Id"], resources["recovered"]["id"]], "rejoin-owned-recovered", docker.remaining(deadline))
+    infos = {role: docker.find(resource, deadline) for role, resource in resources.items()}
+    lan = docker.find(network_resource, deadline)
+    require(lan["Internal"] is True and set(lan.get("Containers", {})) == {r["id"] for r in resources.values()}, "Owned LAN reconnect failed")
+    ips = {}
+    for role, info in infos.items():
+        require(info["State"].get("Running") is True and info["State"]["Pid"] == docker.receipt["native_peers"][role]["host_pid"]
+                and set(info["NetworkSettings"]["Networks"]) == {network["Name"]}, "Reconnected native process is not the original process on the isolated LAN")
+        endpoint = info["NetworkSettings"]["Networks"][network["Name"]]
+        require(endpoint["NetworkID"] == network["Id"] and endpoint["IPAddress"], "Actual owned network attachment missing")
+        ips[role] = [endpoint["IPAddress"]]
+    require(infos["recovered"]["State"]["Pid"] == b["State"]["Pid"] and ips["creator"] != ips["recovered"], "Reconnect replaced a process or shared an interface")
+    docker.receipt["native_reconnect"] = {"status": "OBSERVED_NATIVE_CLIENT_REATTACH", "network_id": network["Id"], "ipv4": ips}
+    docker.checkpoint()
+    for role in resources: offline_command(directories[role], role, docker.owner, "reconnect", expected)
+    for role, resource in resources.items():
+        report = docker.wait_ready(resource, deadline, filename="reconnected.json")
+        validate_offline_report(report, "reconnected", role, reports[role], ips[role])
+        require(report.get("actual_reconnect_acknowledged") is True, "Native reconnect acknowledgment missing")
+    converged = {}
+    for role, resource in resources.items():
+        converged[role] = docker.wait_ready(resource, deadline, filename="converged.json")
+        validate_offline_report(converged[role], "converged", role, reports[role], ips[role])
+    semantic_hash = validate_convergence(converged, expected)
+    return {"history": expected, "snapshot_sha256_without_local_sequence": semantic_hash,
+            "converged": converged, "offline_writes": "TWO_DISTINCT_BRANCHES_OBSERVED", "network_state": "DETACH_AND_NATIVE_NOT_CONNECTED_THEN_ATTACH_AND_NATIVE_WIFI"}
+
+
+def validate_reopen_ready(report: dict, role: str, original: dict, converged: dict, convergence_hash: str,
+                          state_hash: str, identity: dict, info: dict) -> None:
+    require(report.get("protocol") == OFFLINE_PROTOCOL and report.get("phase") == "reopened"
+            and report.get("role") == role and report.get("nonce") == original["nonce"]
+            and report.get("pid") == 1 and info["State"].get("Running") is True and info["State"].get("Pid", 0) > 0,
+            "Actual new native reopen process missing")
+    require(report.get("network_namespace") == os.readlink(f"/proc/{info['State']['Pid']}/ns/net")
+            and report.get("actual_ipv4") == [] and report.get("native_network_mode") == "DISCONNECTED_REOPEN_NO_PEER_REPAIR",
+            "Reopen may have received peer repair")
+    require(report.get("peer_id") == original["peer_id"] and report.get("client_fixture_sha256") == original["client_fixture_sha256"]
+            and report.get("state_sha256") == state_hash and report.get("convergence_receipt_sha256") == convergence_hash,
+            "Original native device/source/expected state changed on reopen")
+    for key in ["heart_sha", "runtime_version", "rpc_manifest_sha256", "registration_patch_sha256"]:
+        require(report.get(key) == identity[key], "Reopened native source differs")
+    require(report.get("history") == converged["history"]
+            and report.get("snapshot_sha256_without_local_sequence") == converged["snapshot_sha256_without_local_sequence"],
+            "Native disk reopen lost signed history or a conflict variant")
+    require(type(report.get("local_applied_sequence")) is int and report["local_applied_sequence"] > 0
+            and report.get("app_capability") == "OFF" and report.get("crash_after_commit") == "NOT_RUN"
+            and report.get("two_ios_apps") == "NOT_RUN" and report.get("full_t2_acceptance") == "NOT_RUN"
+            and not report.get("test_passed"), "Reopen readiness overstates acceptance")
+
+
+def validate_reopen_final(ready: dict, final: dict, log: str) -> None:
+    require(all(final.get(key) == value for key, value in ready.items()), "Reopen facts changed before native closure")
+    require(final.get("closed") is True and final.get("account_stop_verified") is True and final.get("test_passed") is True
+            and final.get("post_stop_rpc") == "READ_AND_APPEND_NOT_LOGGED_IN", "Reopened account was not closed and fenced")
+    require(("--- PASS: " + REOPEN_METHOD + " ") in log and log.count("--- PASS:") == 1
+            and "--- FAIL:" not in log and "--- SKIP:" not in log, "Exact reopened native named PASS required")
+    expected = {name: 1 for name in ["InitialSetParameters", "AppGetVersion", "WalletRecover", "AccountSelect", "WorkspaceOpen",
+                                    "DeviceNetworkStateSet", "AccountStop", "AppShutdown", "PinkhaTorahOperationsAppend"]}
+    expected["PinkhaTorahOperationsReadTarget"] = 2
+    require(final.get("rpc_calls") == final.get("returned_byte_calls") == expected,
+            "Reopen created, repaired, appended active data or missed its native shutdown boundary")
+
+
+def offline_reopen(docker: OwnedDocker, resources: dict, directories: dict, binary: Path, fixture_sha: str,
+                   original: dict, identity: dict, image_id: str, state_hash: str, key_hash: str, converged: dict) -> dict:
+    deadline = time.monotonic() + 400
+    original_ids = {resource["id"] for resource in resources.values()}
+    for resource in resources.values():
+        stopped = docker.find(resource, deadline)
+        require(stopped and stopped["State"].get("Running") is False and stopped["State"].get("ExitCode") == 0,
+                "Original native account still owns the database")
+        docker.command(["container", "rm", resource["id"]], "retire-original-native-client", docker.remaining(deadline))
+    restarted = {role: docker.start(role, None, directories[role], binary, fixture_sha, deadline, method=REOPEN_METHOD) for role in resources}
+    require(not original_ids.intersection(resource["id"] for resource in restarted.values()), "Reopen reused the old native process")
+    ready, infos = {}, {}
+    for role, resource in restarted.items():
+        ready[role] = docker.wait_ready(resource, deadline, filename="reopen-ready.json")
+        infos[role] = docker.find(resource, deadline)
+        validate_container(infos[role], docker.owner, role, None, directories[role], binary, image_id, os.getuid(), os.getgid(),
+                           scenario="offline", method=REOPEN_METHOD)
+        validate_reopen_ready(ready[role], role, original[role], converged[role], digest(directories[role] / "converged.json"),
+                              state_hash, identity, infos[role])
+    require(len({info["State"]["Pid"] for info in infos.values()}) == 2
+            and len({report["network_namespace"] for report in ready.values()}) == 2, "Reopen processes do not have independent namespaces")
+    for role in restarted: offline_command(directories[role], role, docker.owner, "reopen-stop")
+    results = {}
+    for role, resource in restarted.items():
+        require(docker.command(["container", "wait", resource["id"]], "wait-native-reopen-" + role, docker.remaining(deadline, 90)) == "0",
+                "Native disconnected reopen failed")
+        final_info = docker.find(resource, deadline)
+        require(final_info["State"].get("Running") is False and final_info["State"].get("ExitCode") == 0, "Reopen did not exit normally")
+        log = directories[role] / "reopen-native.log"
+        docker.command(["container", "logs", resource["id"]], "read-native-reopen-" + role, docker.remaining(deadline), log)
+        final = json.loads((directories[role] / "reopened.json").read_text())
+        validate_reopen_final(ready[role], final, log.read_text())
+        require(digest(directories[role] / "state.json") == state_hash and digest(directories[role] / "account-key.private") == key_hash,
+                "Original native recovery inputs changed on reopen")
+        results[role] = {"container_id": resource["id"], "host_pid": infos[role]["State"]["Pid"], "network_namespace": ready[role]["network_namespace"],
+                         "peer_id": ready[role]["peer_id"], "receipt_sha256": digest(directories[role] / "reopened.json"), "native_named_pass": 1}
+    return {"status": "PASS_TWO_ORIGINAL_STORES_REOPENED_WITHOUT_NETWORK", "results": results}
+
+
 def clients(args, receipt, docker: OwnedDocker):
     manifest, _ = source_inputs(args.control)
     build_path = args.evidence / "native-clients-build.json"
     built = json.loads(build_path.read_text())
     require(built.get("status") == "PASS_NATIVE_BUILD_AND_BASELINE_ONLY" and built.get("app_sha") == args.expected_app_sha
             and built.get("run_id") == receipt["run_id"] and built.get("run_attempt") == receipt["run_attempt"]
+            and built.get("scenario") == args.scenario
             and built.get("fixture_sha256") == manifest["fixture_sha256"], "Foreign or unsuccessful native build receipt")
     require(built["runtime"]["relative_path"] == "client-runtime/native.test", "Unexpected native runtime path")
     binary = args.native_work / built["runtime"]["relative_path"]
@@ -416,7 +675,8 @@ def clients(args, receipt, docker: OwnedDocker):
     require(set(current_network.get("Containers", {})) == {r["id"] for r in resources.values()}, "Unexpected peer in the owned LAN")
     identity = built["baseline"]["identities"]["new"]
     for role in resources:
-        validate_container(inspections[role], docker.owner, role, network, directories[role], binary, image["Id"], os.getuid(), os.getgid())
+        validate_container(inspections[role], docker.owner, role, network, directories[role], binary, image["Id"], os.getuid(), os.getgid(),
+                           scenario=args.scenario)
         validate_ready(reports[role], role, docker.owner, state, state_hash, identity, manifest["fixture_sha256"], inspections[role], network)
     validate_pair(reports, inspections)
     receipt.update(state_sha256=state_hash, seed_files=["account-key.private", "state.json"],
@@ -426,6 +686,12 @@ def clients(args, receipt, docker: OwnedDocker):
                    original_signed_history_matches=True, independent_empty_roots=True)
     docker.checkpoint()
     docker.remaining(recovered_deadline)
+    offline = None
+    if args.scenario == "offline":
+        offline = offline_sequence(docker, resources, network_resource, network, reports, directories, state)
+        receipt["offline_convergence"] = {"history": offline["history"], "snapshot_sha256_without_local_sequence": offline["snapshot_sha256_without_local_sequence"],
+                                           "offline_writes": offline["offline_writes"], "network_state": offline["network_state"], "restart": "NOT_RUN"}
+        docker.checkpoint()
     for role in resources:
         write(directories[role] / "stop.json", {"protocol": PROTOCOL, "nonce": docker.owner})
     shutdown_deadline = time.monotonic() + 90
@@ -440,7 +706,13 @@ def clients(args, receipt, docker: OwnedDocker):
         log = directories[role] / "native.log"
         docker.command(["container", "logs", resource["id"]], "read-native-" + role, docker.remaining(shutdown_deadline), log)
         final = json.loads((directories[role] / "final.json").read_text())
-        validate_final(reports[role], final, log.read_text(), role)
+        validate_final(reports[role], final, log.read_text(), role, scenario=args.scenario)
+        if offline is not None:
+            phase = final.get("offline_scenario", {})
+            require(all(offline["converged"][role].get(key) == value for key, value in phase.items())
+                    and set(phase) == {"history", "snapshot_sha256_without_local_sequence", "local_applied_sequence", "live_count",
+                                      "conflict_count", "conflict_variants", "retry_and_collision", "concurrent_remove_add_remove",
+                                      "restart", "crash_after_commit", "full_t2_acceptance"}, "Final native process lost its original offline proof")
         require(digest(directories[role] / "state.json") == state_hash
                 and digest(directories[role] / "account-key.private") == key_hash, "Recovery input changed")
         db_files = list((directories[role] / "account-root").rglob("*.db"))
@@ -449,6 +721,15 @@ def clients(args, receipt, docker: OwnedDocker):
         final_reports[role] = {"sha256": digest(directories[role] / "final.json"), "native_named_pass": 1,
                                "actual_database_files": len(db_files), "account_stop_verified": True}
     require(not db_inodes["creator"].intersection(db_inodes["recovered"]), "Native clients share a database inode")
+    if offline is not None:
+        reopen = offline_reopen(docker, resources, directories, binary, manifest["fixture_sha256"], reports, identity,
+                                image["Id"], state_hash, key_hash, offline["converged"])
+        require(source_inputs(args.control)[0] == manifest, "Native client source changed during disconnected reopen")
+        return {"native_results": final_reports, "disconnected_reopen": reopen,
+                "actual_counts": {"independent_native_clients": 2, "native_processes": 4, "native_named_pass": 4, "native_fail": 0, "native_skip": 0},
+                "distinct_database_inodes": True, "offline_conflict_merge": "PASS_NATIVE_TWO_CLIENTS_NO_WINNER_OR_LOST_ADD",
+                "restart": "PASS_TWO_ORIGINAL_STORES_REOPENED_WITHOUT_NETWORK",
+                "transport_scope": "NATIVE_LAN_PARTITION_RECONNECT_CONFLICT_CONVERGENCE_THEN_DISCONNECTED_DISK_REOPEN"}
     require(source_inputs(args.control)[0] == manifest, "Native client source changed during execution")
     return {"native_results": final_reports, "actual_counts": {"independent_native_clients": 2, "native_named_pass": 2,
             "native_fail": 0, "native_skip": 0}, "distinct_database_inodes": True,
@@ -458,6 +739,7 @@ def clients(args, receipt, docker: OwnedDocker):
 def main(argv=None):
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument("stage", choices=["build", "clients"])
+    parser.add_argument("--scenario", choices=["bootstrap", "offline"], default="bootstrap")
     parser.add_argument("--control", type=Path, default=Path(__file__).resolve().parents[2])
     parser.add_argument("--evidence", type=Path, required=True)
     parser.add_argument("--expected-app-sha", required=True)
@@ -479,7 +761,7 @@ def main(argv=None):
     args.evidence.mkdir(parents=True, exist_ok=True)
     path = args.evidence / ("native-clients-" + args.stage + ".json")
     require(not path.exists(), "Fresh native client receipt required")
-    receipt = {"protocol": PROTOCOL, "status": "NOT_RUN_PREFLIGHT", "stage": args.stage, "app_sha": args.expected_app_sha,
+    receipt = {"protocol": PROTOCOL, "status": "NOT_RUN_PREFLIGHT", "stage": args.stage, "scenario": args.scenario, "app_sha": args.expected_app_sha,
                "run_id": run_id, "run_attempt": attempt, "started_at": datetime.now(timezone.utc).isoformat(), "commands": [],
                "two_native_clients": "NOT_RUN", "app_capability": "OFF", "two_app_clients": "NOT_RUN",
                "offline_conflict_merge": "NOT_RUN", "ios_acceptance": "NOT_RUN", "full_t2_acceptance": "NOT_RUN"}
@@ -521,7 +803,7 @@ def main(argv=None):
                     "Fresh separate native client work required")
             require(shutil.disk_usage(args.native_work).free >= base.RESERVE, "Native disk reserve below 8 GiB")
             private.mkdir(mode=0o700)
-            docker = OwnedDocker(private, receipt, checkpoint)
+            docker = OwnedDocker(private, receipt, checkpoint, scenario=args.scenario)
             receipt.update(clients(args, receipt, docker))
         candidate = True
     except BaseException as error:
@@ -535,7 +817,7 @@ def main(argv=None):
                     candidate = False
                     receipt.update(status="CANCELLED", error_type="KeyboardInterrupt")
                     docker.cleanup()
-                receipt["native_publication"] = publish_native_evidence(docker.private, args.evidence)
+                receipt["native_publication"] = publish_native_evidence(docker.private, args.evidence, scenario=args.scenario)
                 if candidate:
                     require(receipt["native_publication"]["status"] == "PASS_SECRET_SCANNED_EXACT_ALLOWLIST", "Native evidence withheld")
             except BaseException as error:
@@ -544,7 +826,8 @@ def main(argv=None):
                                cleanup_or_publication_error_type=type(error).__name__)
         if candidate and not cancelled:
             if args.stage == "clients":
-                receipt.update(status="PASS_TWO_NATIVE_CLIENTS_LAN_COLD_BOOTSTRAP", two_native_clients="PASS_LAN_COLD_BOOTSTRAP")
+                receipt.update(status="PASS_TWO_NATIVE_CLIENTS_OFFLINE_CONFLICT_REOPEN" if args.scenario == "offline"
+                               else "PASS_TWO_NATIVE_CLIENTS_LAN_COLD_BOOTSTRAP", two_native_clients="PASS_LAN_COLD_BOOTSTRAP")
             result = 0
         def finish():
             receipt["finished_at"] = datetime.now(timezone.utc).isoformat()
