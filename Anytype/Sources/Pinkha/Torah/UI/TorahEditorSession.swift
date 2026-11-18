@@ -334,6 +334,7 @@ final class TorahEditorSession {
                     await self.unlink(note: note, for: selection, didChange: didChange)
                 }
             },
+            noteActionUnlinksSource: true,
             onOpenRelatedDocument: { [weak self] document in
                 self?.openRelatedDocument(document, actionEpoch: actionEpoch, inspectorSelectionID: inspectorSelectionID)
             },
