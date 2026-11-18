@@ -221,35 +221,64 @@ def validate_sequence(reports, build_receipts):
     return dict(app_builds=2, actual_native_processes=4, named_swift_tests_passed=4, failed=0, skipped=0)
 
 
+def terminate_owned(process):
+    """Signal only the new session created for this command, including its children."""
+    try:
+        os.killpg(process.pid, signal.SIGTERM)
+    except ProcessLookupError:
+        pass
+    try:
+        process.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        pass
+    # A TERM-exited parent does not prove that TERM-ignoring descendants stopped.
+    try:
+        os.killpg(process.pid, signal.SIGKILL)
+    except ProcessLookupError:
+        pass
+    process.wait(timeout=10)
+
+
 def run_logged(argv, cwd, directory, name, timeout, check=True, output=None):
     directory.mkdir(parents=True, exist_ok=True)
     log_path = output or directory / (name + ".log")
     require(not log_path.exists(), "Refuse stale command output")
-    metadata = dict(argv=[str(item) for item in argv], cwd=str(cwd),
+    metadata = dict(argv=[str(item) for item in argv], cwd=str(cwd), status="FAILED",
                     started_at=datetime.now(timezone.utc).isoformat(), timeout_seconds=timeout)
     env = dict(os.environ, GH_PROMPT_DISABLED="1")
     env.pop("GH_DEBUG", None)
-    with log_path.open("xb") as stream:
-        process = subprocess.Popen(argv, cwd=cwd, stdout=stream, stderr=subprocess.STDOUT,
-                                   env=env, start_new_session=True)
-        metadata["controller_process_id"] = process.pid
-        try:
-            metadata["return_code"] = process.wait(timeout=timeout)
-        except subprocess.TimeoutExpired:
-            metadata["timed_out"] = True
-            os.killpg(process.pid, signal.SIGTERM)
+    process = None
+    try:
+        with log_path.open("xb") as stream:
             try:
-                process.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                os.killpg(process.pid, signal.SIGKILL)
-                process.wait(timeout=10)
-            metadata["return_code"] = process.returncode
-    metadata["finished_at"] = datetime.now(timezone.utc).isoformat()
-    write(directory / (name + ".command.json"), metadata)
+                process = subprocess.Popen(argv, cwd=cwd, stdout=stream, stderr=subprocess.STDOUT,
+                                           env=env, start_new_session=True)
+                metadata["controller_process_id"] = process.pid
+                metadata["return_code"] = process.wait(timeout=timeout)
+                metadata["status"] = "SUCCESS" if process.returncode == 0 else "FAILED"
+            except BaseException as exc:
+                metadata["status"] = ("CANCELLED" if isinstance(exc, KeyboardInterrupt) else
+                                      "TIMED_OUT" if isinstance(exc, subprocess.TimeoutExpired) else "FAILED")
+                metadata["error_type"] = type(exc).__name__
+                metadata["timed_out"] = isinstance(exc, subprocess.TimeoutExpired)
+                if process is not None:
+                    try:
+                        terminate_owned(process)
+                        metadata["owned_group_termination"] = "TERM_THEN_KILL"
+                    except BaseException as cleanup_error:
+                        metadata["cleanup_error_type"] = type(cleanup_error).__name__
+                raise
+            finally:
+                if process is not None:
+                    metadata["return_code"] = process.returncode
+                stream.flush()
+                os.fsync(stream.fileno())
+    finally:
+        metadata["finished_at"] = datetime.now(timezone.utc).isoformat()
+        write(directory / (name + ".command.json"), metadata)
     if check:
-        require(metadata["return_code"] == 0 and not metadata.get("timed_out"), name + " failed; original private output retained")
+        require(metadata["return_code"] == 0, name + " failed; original private output retained")
     return metadata, log_path
-
 
 def download_runtime(role, run_id, work, proof, repo):
     require(run_id.isdigit() and (role != "old" or run_id == OLD_RUN), "Explicit original runtime run IDs required")
