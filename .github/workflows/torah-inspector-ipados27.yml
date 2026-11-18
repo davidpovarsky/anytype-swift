@@ -18,6 +18,7 @@ on:
           - t5-coverage-proof
           - simulator-ui27
           - heart-runtime
+          - sdk06-tests
       t5_component:
         description: One bounded native T5 proof component
         type: choice
@@ -63,6 +64,13 @@ jobs:
     with:
       ui_scope: ${{ inputs.ui_scope }}
       heart_source_run_id: ${{ inputs.source_run_id }}
+
+  sdk06-tests:
+    if: ${{ inputs.route == 'sdk06-tests' }}
+    uses: ./.github/workflows/pinkha-sdk06-tests.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      expected_app_branch: codex/chatgpt-wave15-integration-20261118
 
   heart-runtime:
     if: ${{ inputs.route == 'heart-runtime' }}

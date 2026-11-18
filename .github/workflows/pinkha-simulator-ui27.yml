@@ -29,6 +29,19 @@ jobs:
         with:
           python-version: '3.12'
           architecture: arm64
+      - name: Checkout the immutable canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: e195ef50fbf741d339f4bf515869a1ee6a038fc2
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Prepare the exact SDK before resolving the integrated application
+        run: |
+          python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
+          python3 Tools/Hanlin/prepare_sdk.py --check
+          mkdir -p build/ui27-evidence
+          cp Dependencies/Hanlin/.pinkha-source.json build/ui27-evidence/hanlin-snapshot.json
       - name: Verify actual Xcode27 and create disposable OS27 iPhone and iPad
         run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/ui27-evidence/preflight
       - name: Install exact already verified universal r14 runtime
