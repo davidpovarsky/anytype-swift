@@ -804,9 +804,14 @@ func TestNativeHostRejectsUnboundAuthorityAndInvalidHistory(t *testing.T) {
 			data, err := build.StoreChange.Marshal()
 			require.NoError(t, err)
 			f.tree.Lock()
-			_, err = f.tree.AddContent(context.Background(), objecttree.SignableChangeContent{Data: data, Key: f.keys.SignKey, ShouldBeEncrypted: test != "plaintext", IsSnapshot: test == "snapshot"})
+			ctx, _, guardErr := nativeCommitContext(context.Background(), f.tree, f.keys.SignKey.GetPublic())
+			if guardErr == nil {
+				_, err = f.tree.AddContent(ctx, objecttree.SignableChangeContent{Data: data, Key: f.keys.SignKey, ShouldBeEncrypted: test != "plaintext", IsSnapshot: test == "snapshot"})
+			}
 			f.tree.Unlock()
+			require.NoError(t, guardErr)
 			require.Error(t, err)
+			require.NotErrorIs(t, err, ErrNativeCommitGuard)
 			require.Equal(t, before, f.stats().TreeChanges)
 		})
 	}

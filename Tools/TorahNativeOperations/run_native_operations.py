@@ -30,7 +30,18 @@ REQUIRED = {
                   "TestNativeCurrentReadAuthority", "TestNativeCurrentWriteAuthority",
                   "TestNativeAccountBoundaryACLUsesCurrentSignedMembership",
                   "TestNativeLockedConstructorRecoversWhileCallerOwnsTree",
-                  "TestNativeReceivingValidatorPreservesSignedHistory"},
+                  "TestNativeReceivingValidatorPreservesSignedHistory",
+                  "TestNativeLocalAppendRequiresCommitGuard",
+                  "TestNativeLocalAppendRequiresCommitGuard/unguarded_AddContent",
+                  "TestNativeLocalAppendRequiresCommitGuard/unguarded_AddContentWithValidator",
+                  "TestNativeLocalAppendRequiresCommitGuard/foreign_guard_cannot_authorize_local_append",
+                  "TestNativeLocalAppendRequiresCommitGuard/unbound_host_constructor_fails_before_replay",
+                  "TestNativeACLCommitFence",
+                  "TestNativeACLCommitFence/revocation_after_preparation_denies_before_durable_write",
+                  "TestNativeACLCommitFence/ACL_head_advance_while_still_writer_requires_fresh_preparation",
+                  "TestNativeACLCommitFence/cancellation_after_preparation_denies_before_durable_write",
+                  "TestNativeCommitReceiptAfterHeadUpdateFailure",
+                  "TestNativeCommitGuardKeepsHistoricalReplay"},
     "registration": {"TestPrivateRootIdentityAndSpaceBinding", "TestPrivateRootRejectsNoncanonicalEnvelope",
                      "TestPinkhaPrivateTypeAllocationAndIndexPolicy", "TestPinkhaTorahOperationsUniqueKeyIsDedicated",
                      "TestPinkhaPrivateRegistryRequiresCanonicalSpaceRoot", "TestPinkhaPrivateRegistryRejectsGenericEnumForgery",
@@ -184,6 +195,8 @@ def main() -> int:
         "native_signed_tree_contract": "NOT_RUN",
         "current_local_read_authority": "NOT_RUN",
         "current_local_write_authority": "NOT_RUN",
+        "native_acl_commit_fence": "NOT_RUN",
+        "durable_receipt_after_head_update_failure": "NOT_RUN",
         "run_id": os.environ.get("GITHUB_RUN_ID"),
         "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
         "workflow_ref": os.environ.get("GITHUB_WORKFLOW_REF"),
@@ -241,7 +254,9 @@ def main() -> int:
                 receipt["two_client_transport_acceptance"] = "PASS_ISOLATED_LOOPBACK_PROTOCOL_ONLY"
                 receipt["native_signed_tree_contract"] = "PASS_ISOLATED_NATIVE_HOST"
                 receipt["current_local_read_authority"] = "PASS_CURRENT_LOCALLY_VERIFIED_ACL"
-                receipt["current_local_write_authority"] = "PASS_CURRENT_ACL_AT_NATIVE_PREPARATION"
+                receipt["current_local_write_authority"] = "PASS_CURRENT_LOCALLY_VERIFIED_ACL_THROUGH_NATIVE_COMMIT"
+                receipt["native_acl_commit_fence"] = "PASS_PRIVATE_LOCAL_ENTRY_AND_STORAGE_GUARD"
+                receipt["durable_receipt_after_head_update_failure"] = "PASS_NATIVE_COMPONENT_RECEIPT_AND_EXACT_RETRY"
             else:
                 receipt["status"] = "PASS_PRIVATE_NATIVE_REGISTRY_ADAPTER"
                 receipt["private_registry_adapter"] = "PASS_FACTORY_SOURCE_STORAGE_BOUNDARIES"

@@ -95,9 +95,11 @@ func NativeTreeBuilder(spaceID string) objecttree.BuildObjectTreeFunc {
 			}
 			return validateNativeStoreChange(spaceID, ch, change)
 		})
-		tree, err := build(storage, acl)
+		guardedStorage := &nativeCommitStorage{Storage: storage, acl: acl, header: root}
+		tree, err := build(guardedStorage, acl)
 		if err == nil {
 			tree.SetFlusher(objecttree.MarkNewChangeFlusher())
+			return &nativeCommitTree{ObjectTree: tree, storage: guardedStorage}, nil
 		}
 		return tree, err
 	}
@@ -191,6 +193,11 @@ func OpenNativeHostLocked(ctx context.Context, db anystore.DB, spaceID string, t
 	if tree.Id() != root.Id || !bytes.Equal(root.RawChange, tree.Header().RawChange) {
 		return nil, ErrInvalid
 	}
+	// A valid private root alone is insufficient: this host requires the
+	// NativeTreeBuilder's mandatory local-entry and storage-commit guard.
+	if _, err = boundNativeCommitStorage(tree); err != nil {
+		return nil, err
+	}
 	acl := tree.AclList()
 	acl.RLock()
 	defer acl.RUnlock()
@@ -258,7 +265,11 @@ func (h *NativeHost) Append(ctx context.Context, op Operation) (NativeAppendResu
 	if len(data) > 64 {
 		data, dataType = snappy.Encode(nil, data), nativeSnappy
 	}
-	added, err := h.tree.AddContentWithValidator(ctx, objecttree.SignableChangeContent{
+	appendCtx, commitGuard, err := nativeCommitContext(ctx, h.tree, h.key.GetPublic())
+	if err != nil {
+		return NativeAppendResult{}, err
+	}
+	added, err := h.tree.AddContentWithValidator(appendCtx, objecttree.SignableChangeContent{
 		Data: data, DataType: dataType, Key: h.key, ShouldBeEncrypted: true, Timestamp: time.Now().Unix(),
 	}, func(raw objecttree.StorageChange) error {
 		// Read creator and captured ACL head from the signed bytes produced by
@@ -276,18 +287,25 @@ func (h *NativeHost) Append(ctx context.Context, op Operation) (NativeAppendResu
 			Timestamp: ch.Timestamp, Changes: build.ChangeSet,
 		})
 	})
-	if err != nil {
+	if commitGuard.committed == nil {
+		if err == nil {
+			err = ErrNativeCommitGuard
+		}
 		return NativeAppendResult{}, err
 	}
-	if len(added.Added) != 1 {
-		return NativeAppendResult{}, fmt.Errorf("unexpected native append result: %w", ErrProjectionBehind)
+	// SyncTree can return a populated AddResult AND an error after storage has
+	// committed (for example CreateHeadUpdate). Preserve the durable receipt and
+	// the original error; neither broadcast nor projection can undo that commit.
+	committed := commitGuard.committed
+	response := NativeAppendResult{AppendResult: result, ChangeID: committed.Id}
+	if err == nil && (len(added.Added) != 1 || added.Added[0].Id != committed.Id) {
+		err = fmt.Errorf("unexpected native append result: %w", ErrInvalid)
 	}
-	response := NativeAppendResult{AppendResult: result, ChangeID: added.Added[0].Id}
-	tx.UpdateMaxAddSeq(added.Added[0].AddSeq)
-	if err = tx.Commit(); err != nil {
-		return response, errors.Join(ErrProjectionBehind, err)
+	tx.UpdateMaxAddSeq(committed.AddSeq)
+	if projectionErr := tx.Commit(); projectionErr != nil {
+		return response, errors.Join(err, ErrProjectionBehind, projectionErr)
 	}
-	return response, nil
+	return response, err
 }
 
 // Update/Rebuild are called by the actual SyncTree protocol while it holds the
