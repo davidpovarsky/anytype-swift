@@ -140,7 +140,7 @@ def verify_rpc_binary(role: str, identity: dict, registration_sha: str, schema_s
     require(identity.get("rpc_manifest_sha256") == (schema_sha if role == "new" else "none"), "Wrong RPC binary role")
 
 
-def execute(args, receipt, run) -> dict:
+def execute(args, receipt, run, *, native_client_fixtures: dict[str, Path] | None = None) -> dict:
     control = Path(__file__).resolve().parents[2]
     tools = control / "Tools/TorahNativeOperations"
     source, work, evidence = args.approved_source, args.work, args.evidence
@@ -156,6 +156,16 @@ def execute(args, receipt, run) -> dict:
     require(shutil.disk_usage(work.parent).free >= base.RESERVE, "Disk reserve below 8 GiB")
     work.mkdir(mode=0o700, exist_ok=False)
     manifest, fixture_sha, folder = fixture_inputs(control)
+    client_sources = {}
+    if native_client_fixtures is not None:
+        require(set(native_client_fixtures) == {"native_client_phase_test.go", "native_client_boundary_test.go"},
+                "Only the two explicit native-client test overlays are supported")
+        for name, path in native_client_fixtures.items():
+            require(path == tools / "two_clients" / name and path.is_file() and not path.is_symlink(),
+                    "Native-client fixtures must be the exact source-bound test files")
+            client_sources[name] = digest(path)
+    client_fixture_sha = (hashlib.sha256(json.dumps(client_sources, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+                          if client_sources else "none")
     rpc_manifest, registry = rpc.source_inputs(control, tools / "rpc")
     schema_sha = manifest["rpc_manifest_sha256"]
     generation_path = evidence / "generation/generation-receipt.json"
@@ -213,6 +223,11 @@ def execute(args, receipt, run) -> dict:
             target = heart / "clientlibrary/service" / ("pinkha_t2_" + name)
             require(not target.exists(), "Account fixture would replace native source")
             replacements[str(target)] = str(fixture_root / name)
+        if role == "new" and native_client_fixtures:
+            for name, path in native_client_fixtures.items():
+                target = heart / "clientlibrary/service" / ("pinkha_t2_" + name)
+                require(not target.exists(), "Native-client fixture would replace native source")
+                replacements[str(target)] = str(path)
         overlay = role_work / "overlay.json"
         write_json(overlay, {"Replace": replacements})
         summary = base.runtime_version(role, registration_sha)
@@ -224,14 +239,21 @@ def execute(args, receipt, run) -> dict:
                  + " -X github.com/anyproto/anytype-heart/clientlibrary/service.t2AccountRegistrationSHA=" + linked_registration)
         if role == "new":
             flags += " -X github.com/anyproto/anytype-heart/clientlibrary/service.t2RPCAccountSchemaSHA=" + schema_sha
+        if role == "new" and client_sources:
+            flags += " -X github.com/anyproto/anytype-heart/clientlibrary/service.t2NativeClientFixtureSHA=" + client_fixture_sha
         binary = role_work / ("pinkha-t2-rpc-" + role + ".test")
         run(["go", "test", "-c", "-p", "1", "-tags", base.TAGS, "-overlay", str(overlay), "-ldflags", flags,
              "-o", str(binary), "./clientlibrary/service"], role + "-compile", heart, env, 1800)
         identity = {"role": role, "heart_sha": base.HEART, "legacy_patch_sha256": base.LEGACY_PATCH,
                     "registration_patch_sha256": linked_registration, "fixture_sha256": fixture_sha,
                     "runtime_version": summary, "binary": str(binary), "binary_sha256": digest(binary),
-                    "rpc_manifest_sha256": schema_sha if role == "new" else "none"}
+                    "rpc_manifest_sha256": schema_sha if role == "new" else "none",
+                    "native_client_fixture_sha256": client_fixture_sha if role == "new" else "none"}
         verify_rpc_binary(role, identity, registration_sha, schema_sha)
+        if client_sources:
+            require(base.contains(binary, client_fixture_sha) == (role == "new"), "Native-client test linked into the wrong binary")
+            require({name: digest(path) for name, path in native_client_fixtures.items()} == client_sources,
+                    "Native-client test source changed during compilation")
         verify_fixture_copy(new_fixtures, manifest)
         require(base.verify_source(heart, expected[role], builds[role]["module_hashes"]) == builds[role]["source_hashes"],
                 "Native source changed during compilation")
@@ -249,7 +271,11 @@ def execute(args, receipt, run) -> dict:
     verify_fixture_copy(new_fixtures, manifest)
     for root, pin in [(control, args.expected_app_sha), (source, base.APPROVED_SOURCE)]:
         require(base.git(root, "rev-parse", "HEAD") == pin and not base.git(root, "status", "--porcelain"), "Input source changed")
+    if native_client_fixtures is not None:
+        require({name: digest(path) for name, path in native_client_fixtures.items()} == client_sources,
+                "Native-client test source changed during baseline account proof")
     return {"status": PASS, "actual_counts": sequence["actual_counts"], "identities": identities,
+            "native_client_fixture_sha256": client_fixture_sha, "native_client_source_sha256": client_sources,
             "account_receipt_sha256": digest(evidence / "account-sequence/result.json"),
             "account_wire_acceptance": "PASS_REGISTERED_NATIVE_BYTES_SAME_ACCOUNT_FOUR_PROCESSES",
             "unknown_client_preservation": "PASS_R14_PRIVATE_HISTORY_BYTES",
