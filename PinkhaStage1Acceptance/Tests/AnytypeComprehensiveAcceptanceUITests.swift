@@ -135,6 +135,176 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         XCTAssertTrue(linkedDocument.isHittable)
         attach("inspector-indexed-document-results")
     }
+    func testInspectorEmbeddedSearchOpenReturnAndDocumentLink() throws {
+        defer { attachFinalEvidence() }
+        try recordEntryEvidence()
+        try openDocument(fixture.manySourcesDocument)
+        let originalChips = Set(documentSourceChips.allElementsBoundByIndex.map(\.identifier))
+        try requireEmbedded(!originalChips.isEmpty, "A real document source must exist before the embedded search")
+        let reference = "Genesis 1:2"
+        try requireEmbedded(!documentSourceChips.matching(NSPredicate(format: "label CONTAINS %@", reference)).firstMatch.exists,
+                            "The new source is already linked in the supposedly fresh native fixture")
+
+        var controls = try openEmbeddedSourceSearch()
+        let result = try embeddedSourceResult(reference, search: controls.search)
+        let resultID = result.identifier
+        let suffix = String(resultID.dropFirst("torah-search-open-".count))
+        try requireEmbedded(!suffix.isEmpty, "The provider result has no stable identity")
+        let linkID = "torah-search-link-" + suffix
+        let link = app.buttons.matching(NSPredicate(format: "identifier == %@", linkID)).firstMatch
+        try requireEmbedded(link.waitForExistence(timeout: 20) && link.isEnabled,
+                            "The existing document-link action is unavailable")
+        try requireEmbedded(link.label.lowercased().contains("document") && !link.label.lowercased().contains("block"),
+                            "Embedded search must expose an explicit document association target")
+        attach("inspector-embedded-real-source-result")
+
+        result.tap()
+        let segment = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier == %@", "torah-reader-segment-" + reference
+        )).firstMatch
+        try requireEmbedded(segment.waitForExistence(timeout: 60), "Open did not reach the real provider reader")
+        try requireEmbedded(!segment.label.isEmpty && segment.label != reference,
+                            "The provider reader must contain actual source text")
+        try requireOneInspector()
+        try requireEmbedded(!embeddedSearch.exists, "Reader navigation left the search destination on screen")
+        attach("inspector-embedded-open-within-panel")
+
+        try inspectorBack(controls.inspector)
+        try requireEmbedded(embeddedSearch.waitForExistence(timeout: 20), "Native Back did not restore embedded search")
+        try requireEmbedded(controls.search.value as? String == reference,
+                            "Returning within the same panel lost the source query")
+        try requireEmbedded(app.buttons.matching(NSPredicate(format: "identifier == %@", resultID)).firstMatch.waitForExistence(timeout: 30),
+                            "Returning within the panel lost the provider results")
+        try closeEmbeddedInspector(controls.inspector)
+        try requireEmbedded(Set(documentSourceChips.allElementsBoundByIndex.map(\.identifier)) == originalChips,
+                            "Opening a search result wrote an unrequested document association")
+        attach("inspector-open-left-document-links-unchanged")
+
+        controls = try openEmbeddedSourceSearch()
+        _ = try embeddedSourceResult(reference, search: controls.search)
+        let confirmedLink = app.buttons.matching(NSPredicate(format: "identifier == %@", linkID)).firstMatch
+        try requireEmbedded(confirmedLink.waitForExistence(timeout: 20) && confirmedLink.isHittable,
+                            "The matching provider result lost its document-link action")
+        confirmedLink.tap()
+        let strip = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier == %@", "torah-existing-associations-strip"
+        )).firstMatch
+        let association = strip.buttons.matching(NSPredicate(format: "label CONTAINS %@", reference)).firstMatch
+        try requireEmbedded(association.waitForExistence(timeout: 30),
+                            "The native canonical association was not read back in the current document context")
+        try requireOneInspector()
+        try requireEmbedded(embeddedSearch.exists, "Linking unexpectedly changed the Inspector route")
+        attach("inspector-embedded-document-link-readback")
+        try closeEmbeddedInspector(controls.inspector)
+        let newChip = documentSourceChips.matching(NSPredicate(format: "label CONTAINS %@", reference)).firstMatch
+        try requireEmbedded(newChip.waitForExistence(timeout: 30), "The current document did not receive its new source chip")
+        let linkedChips = Set(documentSourceChips.allElementsBoundByIndex.map(\.identifier))
+        try requireEmbedded(linkedChips.count == originalChips.count + 1 && originalChips.isSubset(of: linkedChips),
+                            "Linking replaced another source or created duplicate document associations")
+        try requireEmbedded(!app.keyboards.firstMatch.exists, "Closing source search unexpectedly focused the editor keyboard")
+        newChip.tap()
+        let reopenFull = app.buttons["torah-inspector-open-full-source"]
+        let reopenedSegment = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier == %@", "torah-reader-segment-" + reference
+        )).firstMatch
+        let expand = app.buttons["torah-inspector-expand-medium"]
+        if expand.waitForExistence(timeout: 5) { expand.tap() }
+        if !reopenedSegment.waitForExistence(timeout: 5) {
+            try requireEmbedded(reopenFull.waitForExistence(timeout: 30) && reopenFull.isHittable,
+                                "The linked source did not expose its existing full-reader route")
+            reopenFull.tap()
+        }
+        try requireEmbedded(reopenedSegment.waitForExistence(timeout: 60),
+                            "Reopening the new document chip did not recover the same source")
+        try requireOneInspector()
+        attach("inspector-linked-source-reopened")
+        try closeInspectorFromReader()
+    }
+
+    private var documentSourceChips: XCUIElementQuery {
+        app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "torah-document-source-chip-"))
+    }
+
+    private var embeddedSearch: XCUIElement {
+        app.descendants(matching: .any).matching(NSPredicate(format: "identifier == %@", "torah-sources-search-embedded")).firstMatch
+    }
+
+    private func requireOneInspector() throws {
+        let panels = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "torah-inspector-sheet-"))
+        try requireEmbedded(panels.firstMatch.waitForExistence(timeout: 30) && panels.count == 1,
+                            "Exactly one native Inspector must contain the search/reader route")
+        try requireEmbedded(!app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier == %@", "torah-sources-search-standalone"
+        )).firstMatch.exists, "Embedded search presented a second standalone search")
+    }
+
+    private func openEmbeddedSourceSearch() throws -> (inspector: XCUIElement, search: XCUIElement) {
+        let original = documentSourceChips.matching(NSPredicate(format: "label CONTAINS %@", "Genesis 1:1")).firstMatch
+        try requireEmbedded(original.waitForExistence(timeout: 30) && original.isHittable, "The original document source is unavailable")
+        original.tap()
+        try requireOneInspector()
+        let entry = app.buttons.matching(NSPredicate(format: "identifier == %@ OR identifier == %@",
+            "torah-inspector-search-entry", "torah-inspector-search-entry-peek")).firstMatch
+        try requireEmbedded(entry.waitForExistence(timeout: 30) && entry.isHittable, "The existing Inspector search action is unavailable")
+        entry.tap()
+        try requireEmbedded(embeddedSearch.waitForExistence(timeout: 30), "The search action did not enter the same Inspector")
+        try requireOneInspector()
+        let field = app.textFields.matching(NSPredicate(format: "identifier == %@", "torah-sources-search-field")).firstMatch
+        try requireEmbedded(field.waitForExistence(timeout: 20) && field.isHittable, "Embedded search field is unreachable")
+        let panel = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@", "torah-inspector-sheet-")).firstMatch
+        return (panel, field)
+    }
+
+    private func embeddedSourceResult(_ reference: String, search: XCUIElement) throws -> XCUIElement {
+        search.tap()
+        let previous = (search.value as? String) ?? ""
+        if !previous.isEmpty && previous != search.placeholderValue {
+            search.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: previous.utf16.count))
+        }
+        search.typeText(reference)
+        let result = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND label == %@", "torah-search-open-", reference
+        )).firstMatch
+        try requireEmbedded(result.waitForExistence(timeout: 60) && result.isHittable,
+                            "The real provider did not return the requested source")
+        try requireEmbedded(!app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier == %@", "torah-search-error"
+        )).firstMatch.exists, "A provider failure cannot count as search acceptance")
+        return result
+    }
+
+    private func inspectorBack(_ inspector: XCUIElement) throws {
+        let candidates = inspector.buttons.matching(NSPredicate(
+            format: "label == %@ OR label == %@ OR identifier == %@", "Search Torah sources", "Back", "Back"
+        )).allElementsBoundByIndex.filter(\.isHittable)
+        try requireEmbedded(candidates.count == 1, "The Inspector must expose exactly one existing native Back control")
+        try XCTUnwrap(candidates.first).tap()
+    }
+
+    private func closeEmbeddedInspector(_ inspector: XCUIElement) throws {
+        try inspectorBack(inspector)
+        try requireEmbedded(embeddedSearch.waitForNonExistence(timeout: 20), "The embedded search did not leave its route")
+        try closeInspectorFromReader()
+    }
+
+    private func closeInspectorFromReader() throws {
+        let close = app.buttons.matching(NSPredicate(format: "identifier == %@ OR identifier == %@",
+            "torah-inspector-close", "torah-inspector-peek-close")).firstMatch
+        try requireEmbedded(close.waitForExistence(timeout: 20) && close.isHittable, "The existing Inspector close control is unavailable")
+        close.tap()
+        try requireEmbedded(app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "torah-inspector-sheet-"
+        )).firstMatch.waitForNonExistence(timeout: 20), "The native Inspector did not finish dismissal")
+        try requireEmbedded(more.waitForExistence(timeout: 20) && more.isHittable, "Inspector dismissal did not restore document editing")
+    }
+
+    private func requireEmbedded(_ condition: @autoclosure () throws -> Bool, _ message: String) throws {
+        guard try condition() else {
+            throw NSError(domain: "PinkhaEmbeddedInspectorAcceptance", code: 1,
+                          userInfo: [NSLocalizedDescriptionKey: message])
+        }
+    }
+
     private func recordEntryEvidence() throws {
         let hierarchy = app.debugDescription
         attachHierarchy(hierarchy, name: "entry-hierarchy")

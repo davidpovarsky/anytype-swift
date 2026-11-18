@@ -33,6 +33,13 @@ LANES = {
         "preparation_environment": {"PINKHA_SIMULATOR_ACCEPTANCE_PREPARATION": "1", "PINKHA_SIMULATOR_UI_DISPOSABLE": "1"},
         "fixture": "pinkha-simulator-ui27-fixture.json",
     },
+    "inspector-search": {
+        "suite": "AnytypeComprehensiveAcceptanceUITests",
+        "methods": ["testInspectorEmbeddedSearchOpenReturnAndDocumentLink"],
+        "preparation": "SimulatorAcceptancePreparationTests/prepareRealUIFixture",
+        "preparation_environment": {"PINKHA_SIMULATOR_ACCEPTANCE_PREPARATION": "1", "PINKHA_SIMULATOR_UI_DISPOSABLE": "1"},
+        "fixture": "pinkha-simulator-ui27-fixture.json",
+    },
     "inspector": {
         "suite": "AnytypeComprehensiveAcceptanceUITests",
         "methods": shared.SMOKE + ["testDocumentSourceSearchEmptyAndClear", "testInspectorShowsIndexedRelatedDocument"],
@@ -106,7 +113,7 @@ def nonempty(value, name):
 
 def fixture_environment(lane, value, language):
     nonempty(value.get("spaceId"), "Space")
-    if lane in {"inspector", "quote-drop", "properties", "properties-set"}:
+    if lane in {"inspector", "inspector-search", "quote-drop", "properties", "properties-set"}:
         docs = value.get("universalDocuments", {})
         page = nonempty(docs.get("page"), "Page")
         source = nonempty(value.get("manySourcesDocument"), "source document")

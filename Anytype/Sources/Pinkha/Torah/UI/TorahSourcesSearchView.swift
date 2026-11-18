@@ -421,6 +421,7 @@ private struct TorahSourceSearchResultRow: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel(primaryAccessibilityLabel)
+            .accessibilityIdentifier("torah-search-open-\(result.id)")
             .accessibilityHint(primaryAccessibilityHint ?? "")
         } else {
             rowContent
@@ -472,6 +473,7 @@ private struct TorahSourceSearchResultRow: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(linkAccessibilityLabel)
+        .accessibilityIdentifier("torah-search-link-\(result.id)")
         .disabled(!canLink)
     }
 
