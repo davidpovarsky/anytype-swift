@@ -1,0 +1,181 @@
+{
+  "schema": "pinkha-t2-native-clients-original-artifact-reconciliation-v1",
+  "observed_result": "FAIL_AT_FIRST_RECOVERED_PRIVATE_READ",
+  "run": {
+    "id": "44272980092",
+    "attempt": 1,
+    "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44272980092",
+    "head_sha": "a7305fb510d70129724f7fe98daf1471058cdb91",
+    "source_commit": "f43ab23dda7f1ae5d7f1b06528aeaa7b7fa5fe40",
+    "created_at": "2026-11-18T09:07:32Z",
+    "completed_at": "2026-11-18T09:18:43Z",
+    "conclusion": "failure",
+    "job_id": 134693956363
+  },
+  "original_artifact": {
+    "id": 14412789700,
+    "name": "Pinkha-T2-Native-Clients-44272980092-1",
+    "bytes": 80755,
+    "sha256": "4ed2be84dedb4b53bbf89740efa10efe6ec447cb5f8ee8176df18af0834cd54a",
+    "files": 59,
+    "handling": "Original ZIP read in RAM on connected owner host; raw bytes/logs remain on GitHub. This document contains selected metadata, counts and hashes only."
+  },
+  "build": {
+    "receipt_sha256": "cc33d89cd31bec8d309b94fdc50a39e6b74e38b269941887e696185539b52afb",
+    "status": "PASS_NATIVE_BUILD_AND_BASELINE_ONLY",
+    "app_sha": "a7305fb510d70129724f7fe98daf1471058cdb91",
+    "run_id": "44272980092",
+    "run_attempt": "1",
+    "started_at": "2026-11-18T09:09:25.474208+00:00",
+    "finished_at": "2026-11-18T09:18:25.791510+00:00",
+    "native_controls": {
+      "top_level": 2,
+      "subcases": 11,
+      "pass_terminals": 13,
+      "fail": 0,
+      "skip": 0
+    },
+    "runtime": {
+      "relative_path": "client-runtime/native.test",
+      "sha256": "dceeba3d55234e57fd13bd8f0b330e615b54cc8d47ad80369a61333af708fd22",
+      "uploaded": false
+    },
+    "fixture_sha256": "667458204ca94c4e7cb4a9596b35dae4922d535a668505946e769bc23bb28636",
+    "two_native_clients": "NOT_RUN",
+    "baseline": {
+      "status": "PASS_NATIVE_ACCOUNT_GENERATED_RPC_LIFECYCLE",
+      "actual_counts": {
+        "binaries": 2,
+        "native_processes": 4,
+        "passing_test_invocations": 4,
+        "actual_export_files": 8
+      },
+      "account_wire_acceptance": "PASS_REGISTERED_NATIVE_BYTES_SAME_ACCOUNT_FOUR_PROCESSES",
+      "unknown_client_preservation": "PASS_R14_PRIVATE_HISTORY_BYTES",
+      "search_export_cleanup": "PASS_UNCHANGED_BASELINE_ASSERTIONS"
+    }
+  },
+  "bootstrap": {
+    "receipt_sha256": "f67cd3d6dc0b9f521ba8b486ca6361e6b2b07e75ca3f537eaa45a019f8433c41",
+    "status": "FAIL",
+    "started_at": "2026-11-18T09:18:27.499928+00:00",
+    "finished_at": "2026-11-18T09:18:36.664586+00:00",
+    "error_type": "ValueError",
+    "ready_roles": [
+      "creator"
+    ],
+    "final_roles": [],
+    "actual_named_pass": 0,
+    "recovered_named_fail": 1,
+    "recovered_duration_seconds": 2.21,
+    "failure_location": "clientlibrary/service/pinkha_t2_native_client_phase_test.go:311",
+    "observed_failure": "unexpected native read error during LAN bootstrap: code=1",
+    "diagnostic_limit": "Original fixture records the wire primary code but not issue enums. The underlying internal cause is not established; no unknown error is converted to a readiness retry.",
+    "creator_native_log_sha256": "eb7f572d169126d6d9c59d70cc9a41cc56e390b116eb1bc1212fe418020e7639",
+    "recovered_native_log_sha256": "3f958b6ac25cfa98b474df5acafde19c1633821f4e55f622a66c55fe00f59d62",
+    "cleanup": {
+      "status": "PASS",
+      "errors": []
+    },
+    "publication_status": "PASS_SECRET_SCANNED_EXACT_ALLOWLIST"
+  },
+  "raw_log_reconciliation": {
+    "controller-controls.log": {
+      "bytes": 6327,
+      "sha256": "20e8ef42ea967cdeaf60e7b5b9e85e9c4871df95944a6b771a8d77c878517610",
+      "go_pass": [],
+      "go_fail": 0,
+      "go_skip": 0,
+      "python_totals": [
+        "Ran 35 tests in 1.011s",
+        "OK"
+      ]
+    },
+    "native-client-boundary-controls.log": {
+      "bytes": 2389,
+      "sha256": "1279cd423a5f3428d12716ecd90f93d214fa2dcd84ecd7f01f597084e840c16d",
+      "go_pass": [
+        "TestT2NativeClientByteBoundaryControls (0.03s)",
+        "TestT2NativeClientByteBoundaryControls/success_owns_request_and_does_not_stop (0.00s)",
+        "TestT2NativeClientByteBoundaryControls/panic_is_redacted_and_native_stop_joins (0.00s)",
+        "TestT2NativeClientByteBoundaryControls/cancel_calls_stop_then_joins_original (0.00s)",
+        "TestT2NativeClientByteBoundaryControls/stuck_stop_and_call_leave_explicit_unjoined_failure (0.03s)",
+        "TestT2NativeClientReadReadinessControls (0.00s)",
+        "TestT2NativeClientReadReadinessControls/expected_claim_and_head_ready (0.00s)",
+        "TestT2NativeClientReadReadinessControls/root_only_prefix_is_not_convergence (0.00s)",
+        "TestT2NativeClientReadReadinessControls/history_unavailable_can_wait (0.00s)",
+        "TestT2NativeClientReadReadinessControls/permission_denial_is_immediate_failure (0.00s)",
+        "TestT2NativeClientReadReadinessControls/joined_denial_cannot_hide_in_transient_error (0.00s)",
+        "TestT2NativeClientReadReadinessControls/foreign_claim_is_not_eventual_readiness (0.00s)",
+        "TestT2NativeClientReadReadinessControls/failed_read_must_not_expose_a_snapshot (0.00s)"
+      ],
+      "go_fail": 0,
+      "go_skip": 0,
+      "python_totals": []
+    },
+    "account-sequence/new-create.log": {
+      "bytes": 53735,
+      "sha256": "88b3babd8ccb7f20a961d87d16a9ac2f5198a0ea101266fb1bdea31e962d829a",
+      "go_pass": [
+        "TestT2AccountLifecyclePhase (1.64s)"
+      ],
+      "go_fail": 0,
+      "go_skip": 0,
+      "python_totals": []
+    },
+    "account-sequence/new-reopen.log": {
+      "bytes": 8241,
+      "sha256": "78a2178e7bb0250ef76e5d933c167242b09ede9d5ee78730900fc875fb1fc6ba",
+      "go_pass": [
+        "TestT2AccountLifecyclePhase (0.13s)"
+      ],
+      "go_fail": 0,
+      "go_skip": 0,
+      "python_totals": []
+    },
+    "account-sequence/legacy-edit.log": {
+      "bytes": 7868,
+      "sha256": "d711f988f589c0933c3f8d1c87b4715c7f923eae1b57bdcd3bfb07bb4c4c2c51",
+      "go_pass": [
+        "TestT2AccountLifecyclePhase (0.57s)"
+      ],
+      "go_fail": 0,
+      "go_skip": 0,
+      "python_totals": []
+    },
+    "account-sequence/new-recover.log": {
+      "bytes": 12428,
+      "sha256": "f44001610877f15295d544b3e511423e4af212df072ae92c12a097033828eddd",
+      "go_pass": [
+        "TestT2AccountLifecyclePhase (31.04s)"
+      ],
+      "go_fail": 0,
+      "go_skip": 0,
+      "python_totals": []
+    }
+  },
+  "exported_files": {
+    "count": 8,
+    "sha256": {
+      "account-sequence/exports/legacy-edit/document.pbc": "d687ffbd53df47439aaa992de829a184d71920ca66e816b14c596f03f69a1862",
+      "account-sequence/exports/legacy-edit/document.json": "1ad07d994c9202800bc7fdeb42372ae6c30922cb3e33a1baabcbedb081e3cdc3",
+      "account-sequence/exports/new-create/document.json": "3c0b75363e2ff30cbb545bc7eee17526b2e316c9926618b03b8376cd530e9b14",
+      "account-sequence/exports/new-create/document.pbc": "ef5425b917fcb1bda2fe4e1d78f93dd5fff9b8bc4b82b42dab657f70fc4f63f0",
+      "account-sequence/exports/new-recover/document.json": "1ad07d994c9202800bc7fdeb42372ae6c30922cb3e33a1baabcbedb081e3cdc3",
+      "account-sequence/exports/new-recover/document.pbc": "993a0fb592a551e2af6a6a145578298f78ef4c78e4824f4f068bb993aa4ac201",
+      "account-sequence/exports/new-reopen/document.json": "8317ffa781a78e96f5162562ffe3515306f4d9ab07f6e8c6a152c5c26d26459a",
+      "account-sequence/exports/new-reopen/document.pbc": "600c3ed3310475c52c434fde71ae9ff1daf7b394d30fcf5c95338b4acc89b0c5"
+    }
+  },
+  "scope": {
+    "two_native_clients": "ATTEMPTED_FAILED",
+    "four_sequential_account_processes": "PASS_EXISTING_BASELINE",
+    "offline_conflict_merge": "NOT_RUN",
+    "process_restart": "NOT_RUN",
+    "two_app_clients": "NOT_RUN",
+    "ios_acceptance": "NOT_RUN",
+    "app_capability": "OFF",
+    "full_t2_acceptance": "OPEN"
+  },
+  "asana_comment": "1220656131260614"
+}
