@@ -65,6 +65,7 @@ def main() -> int:
         "native_host_rpc_acl_hidden_lifecycle": "NOT_BOUND_TO_APP",
         "native_signed_tree_contract": "NOT_RUN",
         "current_local_read_authority": "NOT_RUN",
+        "current_local_write_authority": "NOT_RUN",
         "run_id": os.environ.get("GITHUB_RUN_ID"),
         "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
         "workflow_ref": os.environ.get("GITHUB_WORKFLOW_REF"),
@@ -85,7 +86,8 @@ def main() -> int:
         overlay = Path(__file__).resolve().parent / "overlay/core/block/editor/torahops"
         files = sorted(overlay.glob("*.go"))
         expected = {"operation.go", "operation_test.go", "projection.go", "store.go", "store_test.go",
-                    "native_host.go", "native_transport_test.go", "native_read_authority_test.go"}
+                    "native_host.go", "native_transport_test.go", "native_read_authority_test.go",
+                    "native_write_authority_test.go"}
         if {p.name for p in files} != expected:
             raise ValueError("unexpected or missing overlay source")
         receipt["source_sha256"] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
@@ -129,12 +131,13 @@ def main() -> int:
         receipt["skipped_tests"] = sorted(e["Test"] for e in events if e.get("Action") == "skip" and e.get("Test"))
         package_pass = any(e.get("Action") == "pass" and not e.get("Test") for e in events)
         required = {"TestNativeTwoProcessTreeSync", "TestNativeHostRejectsUnboundAuthorityAndInvalidHistory",
-                    "TestNativeCurrentReadAuthority"}
+                    "TestNativeCurrentReadAuthority", "TestNativeCurrentWriteAuthority"}
         if code == 0 and package_pass and required.issubset(receipt["passed_tests"]) and not receipt["failed_tests"]:
             receipt["status"] = "PASS_NATIVE_COMPONENT_AND_LOOPBACK_TRANSPORT"
             receipt["two_client_transport_acceptance"] = "PASS_ISOLATED_LOOPBACK_PROTOCOL_ONLY"
             receipt["native_signed_tree_contract"] = "PASS_ISOLATED_NATIVE_HOST"
             receipt["current_local_read_authority"] = "PASS_CURRENT_LOCALLY_VERIFIED_ACL"
+            receipt["current_local_write_authority"] = "PASS_CURRENT_ACL_AT_NATIVE_PREPARATION"
         else:
             receipt["status"] = "FAIL"
             code = code or 1
