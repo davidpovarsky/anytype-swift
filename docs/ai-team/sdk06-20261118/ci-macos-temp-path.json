@@ -1,0 +1,23 @@
+{
+  "source_run": "44208890476",
+  "source_run_sha": "9fd7fbca2ca7084d7fb96dcaf7f9eec33a60356b",
+  "failure_phase": "PYTHON_CONTROLS_BEFORE_APP_BUILD",
+  "native_compile": "NOT_RUN",
+  "native_acceptance": "NOT_RUN",
+  "cause": "Fixture expected unresolved temporary paths while xctest_products intentionally returned resolved paths; macOS /var is exposed through /private/var.",
+  "fix": "Normalize expected paths without changing the product guard.",
+  "negative_control": {
+    "original_selected_test_methods": 1,
+    "expected_failure_subcases": 2,
+    "observed_failure_subcases": 2
+  },
+  "positive_control": {
+    "host": "linux",
+    "temporary_directory_symlink": true,
+    "tests": 14,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "test_source_sha256": "af02aee506d2eef9d2f4a31723c58bfd41f36d63afd4135ae8714599b1498af5"
+}
