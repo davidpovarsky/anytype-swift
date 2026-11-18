@@ -50,12 +50,17 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         if app.state != .notRunning { app.terminate() }
         app.launch()
         XCTAssertTrue(app.wait(for: .runningForeground, timeout: 30))
+        let home = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@",
+            "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton"
+        )).firstMatch
+        XCTAssertTrue(home.waitForExistence(timeout: 45), "The actual Home must finish its native account/Space handshake")
         var route = URLComponents()
         route.scheme = "anytype"
         route.host = "object"
         route.queryItems = [URLQueryItem(name: "objectId", value: fixture.sourceObjectID),
                             URLQueryItem(name: "spaceId", value: fixture.spaceID)]
-        app.open(try XCTUnwrap(route.url))
+        XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
         // Full native identifiers may exceed XCTest's direct identifier-query
         // limit. Preserve every byte and use the exact predicate route.
         let editorID = "pinkha-ui27-editor:\(fixture.spaceID):\(fixture.sourceObjectID)"
