@@ -1,0 +1,49 @@
+{
+	"Module": {
+		"Path": "gobind"
+	},
+	"Go": "1.26.5",
+	"Require": [
+		{
+			"Path": "example.test/a",
+			"Version": "v1.0.0"
+		},
+		{
+			"Path": "example.test/b",
+			"Version": "v1.0.0"
+		}
+	],
+	"Exclude": null,
+	"Replace": [
+		{
+			"Old": {
+				"Path": "example.test/a",
+				"Version": "v1.0.0"
+			},
+			"New": {
+				"Path": "../a"
+			}
+		},
+		{
+			"Old": {
+				"Path": "example.test/b",
+				"Version": "v1.0.0"
+			},
+			"New": {
+				"Path": "../b1"
+			}
+		},
+		{
+			"Old": {
+				"Path": "example.test/b",
+				"Version": "v1.1.0"
+			},
+			"New": {
+				"Path": "../b2"
+			}
+		}
+	],
+	"Retract": null,
+	"Tool": null,
+	"Ignore": null
+}

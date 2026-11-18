@@ -1,0 +1,101 @@
+{
+  "status": "PASS_METADATA_BEHAVIOR_ONLY",
+  "at": "2026-11-18T07:17:43.455033+00:00",
+  "go_version": "go version go1.26.5 windows/amd64",
+  "go_mod_download_updates_mvs_requirement": true,
+  "only_require_changed": true,
+  "original_go_mod_sha256": "d046cedfb452e62156842ccb11f99e627635b0b28e6a0f3cd9e8e525a58f4b52",
+  "hydrated_go_mod_sha256": "dfbbca6f59d495a2c1778110bb585d5869ff785a0645d5fcdfe0211d3d0e600d",
+  "network": "GOPROXY=off",
+  "compile_invocations": 0,
+  "module_zip_downloads": 0,
+  "source_file": "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.26.5.windows-amd64\\src\\cmd\\go\\internal\\modcmd\\download.go",
+  "source_sha256": "c31998a4c5d47e6e8205bda13a2abc1ef9c00944ada0e965053e4fa4af303ebf",
+  "source_context": [
+    {
+      "line": 117,
+      "context": [
+        "",
+        "\t// Check whether modules are enabled and whether we're in a module.",
+        "\tmoduleLoaderState.ForceUseModules = true",
+        "\tmodload.ExplicitWriteGoMod = true",
+        "\thaveExplicitArgs := len(args) > 0",
+        "",
+        "\tif moduleLoaderState.HasModRoot() || modload.WorkFilePath(moduleLoaderState) != \"\" {"
+      ]
+    },
+    {
+      "line": 235,
+      "context": [
+        "\t\t// TODO(#64008): In the future, report an error if go.mod or go.sum need to",
+        "\t\t// be updated after loading the build list. This may require setting",
+        "\t\t// the mode to \"mod\" or \"readonly\" depending on haveExplicitArgs.",
+        "\t\tif err := modload.WriteGoMod(moduleLoaderState, ctx, modload.WriteOpts{}); err != nil {",
+        "\t\t\tbase.Fatal(err)",
+        "\t\t}",
+        "\t}"
+      ]
+    },
+    {
+      "line": 352,
+      "context": [
+        "\t// Don't save sums for 'go mod download' without arguments unless we're in",
+        "\t// workspace mode; see comment above.",
+        "\tif haveExplicitArgs || modload.WorkFilePath(moduleLoaderState) != \"\" {",
+        "\t\tif err := modload.WriteGoMod(moduleLoaderState, ctx, modload.WriteOpts{}); err != nil {",
+        "\t\t\tbase.Error(err)",
+        "\t\t}",
+        "\t}"
+      ]
+    }
+  ],
+  "commands": [
+    {
+      "name": "before-manifest",
+      "argv": [
+        "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.26.5.windows-amd64\\bin\\go.exe",
+        "mod",
+        "edit",
+        "-json"
+      ],
+      "return_code": 0
+    },
+    {
+      "name": "download-all",
+      "argv": [
+        "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.26.5.windows-amd64\\bin\\go.exe",
+        "mod",
+        "download",
+        "-json",
+        "all"
+      ],
+      "return_code": 0
+    },
+    {
+      "name": "after-manifest",
+      "argv": [
+        "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.26.5.windows-amd64\\bin\\go.exe",
+        "mod",
+        "edit",
+        "-json"
+      ],
+      "return_code": 0
+    },
+    {
+      "name": "effective-modules",
+      "argv": [
+        "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.26.5.windows-amd64\\bin\\go.exe",
+        "list",
+        "-m",
+        "-json",
+        "all"
+      ],
+      "return_code": 0
+    }
+  ],
+  "limitations": [
+    "Synthetic local modules; not full original generated graph",
+    "Windows Go1.26.5 metadata behavior; not Apple runtime acceptance",
+    "Original failed CI did not retain its post-hydration go.mod"
+  ]
+}

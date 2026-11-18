@@ -468,5 +468,79 @@ class R15RuntimeControls(unittest.TestCase):
                         launcher.load_seed_contract(path, expected, heart, generated)
 
 
+    def test_generated_hydration_copy_preserves_exact_original_bind_input(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work, heart, mobile, rows = self.generated_fixture(Path(directory).resolve())
+            seed, receipt = runtime.generated_dependency_seed(work, "\n".join(json.dumps(item) for item in rows), heart, mobile)
+            original = (seed / "go.mod").read_bytes()
+            hydrated = runtime.prepare_generated_hydration(work, seed, receipt["initial_go_mod_sha256"])
+            self.assertNotEqual(seed, hydrated)
+            self.assertEqual((hydrated / "go.mod").read_bytes(), original)
+            # Emulate the observed Go metadata operation, not a native build.
+            (hydrated / "go.mod").write_text("mutated disposable hydration declaration")
+            self.assertEqual((seed / "go.mod").read_bytes(), original)
+            self.assertEqual(runtime.digest(seed / "go.mod"), receipt["initial_go_mod_sha256"])
+            self.assertEqual((heart / "preserve-native").read_bytes(), b"unchanged native input")
+
+    def test_generated_hydration_requires_original_bytes_and_fresh_owned_copy(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work, heart, mobile, rows = self.generated_fixture(Path(directory).resolve())
+            seed, receipt = runtime.generated_dependency_seed(work, "\n".join(json.dumps(item) for item in rows), heart, mobile)
+            for location, expected in [(work.parent, receipt["initial_go_mod_sha256"]), (work, "0" * 64)]:
+                with self.subTest(location=location, expected=expected), self.assertRaises(RuntimeError):
+                    runtime.prepare_generated_hydration(location, seed, expected)
+            runtime.prepare_generated_hydration(work, seed, receipt["initial_go_mod_sha256"])
+            with self.assertRaises(FileExistsError):
+                runtime.prepare_generated_hydration(work, seed, receipt["initial_go_mod_sha256"])
+
+    def hydration_manifests(self):
+        original = dict(Module={"Path": "gobind"}, Go="1.26.5", Exclude=None, Retract=None,
+                        Replace=[dict(Old={"Path": "original.example/dependency", "Version": "v1.0.0"},
+                                      New={"Path": "reviewed.example/fork", "Version": "v1.0.1"})],
+                        Require=[dict(Path="example.test/a", Version="v1.0.0"),
+                                 dict(Path="example.test/b", Version="v1.0.0")])
+        hydrated = copy.deepcopy(original)
+        hydrated["Require"][1]["Version"] = "v1.1.0"
+        hydrated["Require"].append(dict(Path="example.test/c", Version="v1.2.0", Indirect=True))
+        # These versions model already independently checksum-verified selection.
+        graph = {path: dict(version=version) for path, version in
+                 [("example.test/a", "v1.0.0"), ("example.test/b", "v1.1.0"), ("example.test/c", "v1.2.0")]}
+        return original, hydrated, graph
+
+    def test_generated_hydration_records_only_selected_mvs_and_indirect_additions(self):
+        original, hydrated, graph = self.hydration_manifests()
+        before, after = copy.deepcopy(original), copy.deepcopy(hydrated)
+        receipt = runtime.validate_generated_hydration_manifest(original, hydrated, graph)
+        self.assertEqual(original, before)
+        self.assertEqual(hydrated, after)
+        self.assertEqual(receipt["selected_version_updates"], [dict(path="example.test/b", original="v1.0.0", hydrated="v1.1.0")])
+        self.assertEqual(receipt["selected_indirect_additions"], [dict(path="example.test/c", hydrated="v1.2.0")])
+        self.assertEqual((receipt["original_requirements"], receipt["hydrated_requirements"]), (2, 3))
+        self.assertTrue(receipt["original_non_require_declarations_preserved"])
+
+    def test_generated_hydration_rejects_other_declaration_or_selection_changes(self):
+        changes = {
+            "module": lambda value: value.update(Module={"Path": "other"}),
+            "toolchain": lambda value: value.update(Toolchain="go1.27.0"),
+            "go": lambda value: value.update(Go="1.27.0"),
+            "replace": lambda value: value["Replace"][0]["New"].update(Version="v2.0.0"),
+            "exclude": lambda value: value.update(Exclude=[dict(Path="example.test/a", Version="v1.0.0")]),
+            "removed-original": lambda value: value["Require"].pop(0),
+            "version-drift": lambda value: value["Require"][1].update(Version="v1.0.9"),
+            "directness": lambda value: value["Require"][0].update(Indirect=True),
+            "new-direct": lambda value: value["Require"][2].update(Indirect=False),
+            "unselected-module": lambda value: value["Require"].append(dict(Path="unknown.test/module", Version="v1.0.0", Indirect=True)),
+            "duplicate": lambda value: value["Require"].append(copy.deepcopy(value["Require"][0])),
+            "unknown-require-field": lambda value: value["Require"][0].update(Changed=True),
+            "invalid-indirect": lambda value: value["Require"][2].update(Indirect=1),
+        }
+        for name, change in changes.items():
+            with self.subTest(case=name):
+                original, hydrated, graph = self.hydration_manifests()
+                change(hydrated)
+                with self.assertRaises(RuntimeError):
+                    runtime.validate_generated_hydration_manifest(original, hydrated, graph)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
