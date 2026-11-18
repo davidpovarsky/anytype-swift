@@ -2,6 +2,7 @@
 import copy
 from pathlib import Path
 import unittest
+import tempfile
 
 import build_t5_r15_runtime as runtime
 import r15_runtime_go as launcher
@@ -116,6 +117,74 @@ class R15RuntimeControls(unittest.TestCase):
         native["Replace"]["Dir"] = str(Path("/different/heart").resolve())
         with self.assertRaises(RuntimeError):
             launcher.validate_modules(native, selected, downloaded, heart)
+
+
+    def mobile_fixture(self, root):
+        work, cache, gobind = root / "work", root / "module-cache", root / "deps/gobind"
+        work.mkdir()
+        cache.mkdir()
+        gobind.parent.mkdir()
+        gobind.write_bytes(b"fixture pinned gobind binary")
+        env = dict(GOPROXY="off", GOFLAGS="-mod=readonly", GOWORK="reviewed.work",
+                   GOPATH="original-shared-path", PATH="unchanged-path")
+        return work, cache, gobind, runtime.digest(gobind), env
+
+    def test_apple_workspace_preserves_original_module_cache_and_pinned_gobind(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            work, cache, gobind, expected, env = self.mobile_fixture(Path(temporary).resolve())
+            original = dict(env)
+            selected, receipt = runtime.prepare_apple_bind(work, cache, gobind, str(gobind), expected, env)
+            self.assertEqual(env, original)
+            self.assertEqual(selected["GOMODCACHE"], str(cache))
+            self.assertEqual(selected["GOPROXY"], "off")
+            self.assertEqual(selected["GOFLAGS"], "-mod=readonly")
+            self.assertEqual(selected["GOWORK"], "reviewed.work")
+            self.assertTrue((Path(selected["GOPATH"]) / "pkg/gomobile").is_dir())
+            self.assertEqual(receipt["gobind_sha256"], expected)
+            self.assertEqual(receipt["gomobile_init"], "NOT_INVOKED_UNPINNED_LATEST_INSTALL")
+            self.assertEqual(receipt["mobile_version"], runtime.MOBILE_VERSION)
+
+    def test_foreign_path_tool_or_changed_pinned_binary_is_rejected_before_workspace_creation(self):
+        for change in ["foreign-path", "changed-binary", "missing-path"]:
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temporary:
+                work, cache, gobind, expected, env = self.mobile_fixture(Path(temporary).resolve())
+                selected = str(gobind)
+                if change == "foreign-path":
+                    selected = str(gobind.parent / "different-gobind")
+                elif change == "changed-binary":
+                    gobind.write_bytes(b"unexpected replacement binary")
+                else:
+                    selected = None
+                with self.assertRaises(RuntimeError):
+                    runtime.prepare_apple_bind(work, cache, gobind, selected, expected, env)
+                self.assertFalse((work / "gomobile-gopath").exists())
+
+    def test_apple_preparation_cannot_enable_network_or_replace_missing_module_cache(self):
+        for change in ["network", "mutable-modules", "missing-cache", "relative-cache"]:
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temporary:
+                work, cache, gobind, expected, env = self.mobile_fixture(Path(temporary).resolve())
+                if change == "network":
+                    env["GOPROXY"] = "https://proxy.golang.org"
+                elif change == "mutable-modules":
+                    env["GOFLAGS"] = "-mod=mod"
+                elif change == "missing-cache":
+                    cache = cache / "absent"
+                else:
+                    cache = Path("relative-cache")
+                with self.assertRaises(RuntimeError):
+                    runtime.prepare_apple_bind(work, cache, gobind, str(gobind), expected, env)
+                self.assertFalse((work / "gomobile-gopath").exists())
+
+    def test_existing_mobile_workspace_is_not_reused_or_deleted(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            work, cache, gobind, expected, env = self.mobile_fixture(Path(temporary).resolve())
+            previous = work / "gomobile-gopath"
+            previous.mkdir()
+            marker = previous / "preserve-existing"
+            marker.write_text("must remain")
+            with self.assertRaises(FileExistsError):
+                runtime.prepare_apple_bind(work, cache, gobind, str(gobind), expected, env)
+            self.assertEqual(marker.read_text(), "must remain")
 
 
 if __name__ == "__main__":

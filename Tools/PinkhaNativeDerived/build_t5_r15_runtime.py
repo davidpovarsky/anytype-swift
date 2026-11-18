@@ -85,6 +85,28 @@ def validate_framework(plist, slices):
                 verified_architecture_count=3)
 
 
+def prepare_apple_bind(work, module_cache, gobind, selected_gobind, expected_sha256, env):
+    """Prepare only the Apple workspace; init would install an unpinned latest gobind."""
+    if env.get("GOPROXY") != "off" or env.get("GOFLAGS") != "-mod=readonly":
+        raise RuntimeError("Offline read-only module resolution must remain enabled")
+    if not module_cache.is_absolute() or not module_cache.is_dir():
+        raise RuntimeError("Original resolved Go module cache is required")
+    if (not selected_gobind or Path(selected_gobind).resolve() != gobind.resolve()
+            or not gobind.is_file() or digest(gobind) != expected_sha256):
+        raise RuntimeError("PATH must select the exact already-built pinned gobind")
+    gopath = work / "gomobile-gopath"
+    gopath.mkdir(exist_ok=False)
+    mobile_cache = gopath / "pkg/gomobile"
+    mobile_cache.mkdir(parents=True)
+    selected = dict(env, GOPATH=str(gopath), GOMODCACHE=str(module_cache))
+    receipt = dict(strategy="PINNED_GOBIND_AND_OWNED_APPLE_WORKSPACE",
+                   gomobile_init="NOT_INVOKED_UNPINNED_LATEST_INSTALL",
+                   mobile_version=MOBILE_VERSION, gobind=str(gobind), gobind_sha256=expected_sha256,
+                   gopath=str(gopath), gomobile_cache=str(mobile_cache),
+                   preserved_gomodcache=str(module_cache), goproxy=selected["GOPROXY"])
+    return selected, receipt
+
+
 def execute(args, control, evidence):
     if platform.system() != "Darwin" or platform.machine() != "arm64":
         raise RuntimeError("Actual ARM64 macOS/Xcode environment required; no native source modified")
@@ -127,7 +149,7 @@ def execute(args, control, evidence):
     def run(command, name, env=None, cwd=heart, timeout=900):
         commands.append(dict(name=name, argv=[str(item) for item in command], cwd=str(cwd),
                              environment={key: (env or os.environ).get(key) for key in
-                                          ["GOWORK", "GOFLAGS", "GOPROXY", "GOTOOLCHAIN", "GOMAXPROCS",
+                                          ["GOWORK", "GOFLAGS", "GOPROXY", "GOTOOLCHAIN", "GOMAXPROCS", "GOPATH", "GOMODCACHE",
                                            "CGO_ENABLED", "TMPDIR", "DEVELOPER_DIR"]}))
         coverage.write_receipt(evidence / "commands.json", commands)
         log_path = evidence / (name + ".log")
@@ -189,7 +211,12 @@ def execute(args, control, evidence):
                TMPDIR=str(temporary), PINKHA_T5_REAL_GO=str(real_go), PINKHA_T5_HEART=str(heart),
                PINKHA_T5_GOWORK=str(gowork), PINKHA_T5_MOBILE_TMP=str(temporary),
                PINKHA_T5_GO_AUDIT=str(audit))
-    run([str(heart / "deps/gomobile"), "init"], "gomobile-init", env)
+    cache_log = run([str(real_go), "env", "GOMODCACHE"], "original-module-cache", env)
+    module_cache = Path(cache_log.read_text(encoding="utf8").strip())
+    env, mobile_preparation = prepare_apple_bind(
+        work, module_cache, heart / "deps/gobind", shutil.which("gobind", path=env["PATH"]),
+        tools["gobind"]["sha256"], env)
+    coverage.write_receipt(evidence / "gomobile-preparation.json", mobile_preparation)
     framework = heart / "dist/ios/Lib.xcframework"
     if framework.exists():
         raise RuntimeError("Stale framework output is forbidden")
@@ -240,6 +267,7 @@ def execute(args, control, evidence):
                    app_compile_flag="NOT_SET_BY_RUNTIME_BUILD", helper_sha256=HELPER_SHA,
                    go_version=version, xcode=xcode, sdk_versions=sdk_versions, native_dependencies=dependencies,
                    genproto_resolution=genproto, mobile_selection=mobile, tool_binaries=tools,
+                   mobile_preparation=mobile_preparation,
                    go_launcher_sha256=digest(shim_source, True), generated_module_proofs=verified_generated,
                    binary_slices=slices, architecture_proof=architecture_proof, framework=str(framework),
                    artifacts=[dict(path=str(path.relative_to(framework)), sha256=helper.digest(path))
