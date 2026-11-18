@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -19,6 +20,7 @@ import (
 	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
 	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahopscontract"
+	"github.com/anyproto/anytype-heart/space"
 	"github.com/anyproto/anytype-heart/space/spacecore/clientserver"
 	"github.com/anyproto/anytype-heart/util/vcs"
 	"github.com/stretchr/testify/require"
@@ -118,6 +120,37 @@ func t2NativeClientCreateOperation(c *t2NativeClientCaller, state *t2AccountStat
 		Source: torahops.Source{ProviderID: "fixture", CanonicalRef: "fixture:t2-account:1"}, Payload: []byte(t2PrivatePayload)}).CanonicalBytes()
 	require.NoError(c.t, err)
 	state.OperationSHA256 = t2Hash(canonical)
+}
+
+// This failure-only trace never authorizes a retry or changes signed history.
+// Wire issues are enum labels; native error strings and request/response bytes
+// are deliberately absent. Storage presence is a later diagnostic observation,
+// not proof of the state at the original failed call.
+func t2NativeClientTraceReadFailure(t *testing.T, state *t2AccountState, read *pb.RpcPinkhaTorahOperationsReadTargetResponse) {
+	t.Helper()
+	if read != nil && read.Error != nil {
+		t.Logf("T2_READ_FAILURE wire_code=%d wire_issues=%v snapshot_present=%t", read.Error.Code, read.Error.Issues, read.Snapshot != nil)
+	}
+	application := mw.GetApp()
+	if application == nil {
+		t.Log("T2_READ_FAILURE current_account=false")
+		return
+	}
+	spaces, err := app.GetComponent[space.Service](application)
+	if err != nil {
+		t.Logf("T2_READ_FAILURE space_service=false error_type=%T", err)
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	spc, err := spaces.Get(ctx, state.SpaceID)
+	if err != nil || spc == nil {
+		t.Logf("T2_READ_FAILURE space_lookup=false error_type=%T", err)
+		return
+	}
+	targetPresent, targetErr := spc.Storage().HasTree(ctx, state.DocumentID)
+	rootPresent, rootErr := spc.Storage().HasTree(ctx, state.RootID)
+	t.Logf("T2_READ_FAILURE later_storage_presence target=%t target_error_type=%T private_root=%t root_error_type=%T", targetPresent, targetErr, rootPresent, rootErr)
 }
 
 func t2NativeClientReadReady(state *t2AccountState, read *pb.RpcPinkhaTorahOperationsReadTargetResponse) (bool, error) {
@@ -308,6 +341,9 @@ func TestT2NativeClientBootstrapPhase(t *testing.T) {
 		read = &pb.RpcPinkhaTorahOperationsReadTargetResponse{}
 		c.raw("PinkhaTorahOperationsReadTarget", PinkhaTorahOperationsReadTarget, readRequest, read, min(20*time.Second, remaining))
 		ready, err := t2NativeClientReadReady(state, read)
+		if err != nil {
+			t2NativeClientTraceReadFailure(t, state, read)
+		}
 		require.NoError(t, err)
 		return ready
 	})
