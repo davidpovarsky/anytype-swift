@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "full_t2_acceptance": "NOT_RUN",
+  "files": {
+    "windows-host.go-test.jsonl": "0c316d009674b68d0c8c4440781a043ff32da99a76c97390e273cdbccbce8081",
+    "windows-host.receipt.json": "bff9f2fef562818c0a2818af6a8bd2f96934807ba14850762eb521db29c59527",
+    "linux-component.go-test.jsonl": "b6957df982864d89085baff1691479ca483b25d78db92c8defa8b5d094817320",
+    "linux-component.receipt.json": "e41765760977721ac85326beae44934e95db589bd75c5fb7f9d29e4856b02611"
+  },
+  "sources": {
+    "windows-host": {
+      "app_sha": "12bef033a3fd217b67c0e9f2af77e242b487fad6",
+      "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "status": "PASS_NATIVE_COMPONENT_AND_LOOPBACK_TRANSPORT",
+      "overlay_sha256": "eca2d62e635d24ba6f7f131b8b61ac5db902c17ae3a79544ba302006b4d55faa"
+    },
+    "linux-component": {
+      "app_sha": "c39be59df0513359ca8571397fd964fbd6a61a8c",
+      "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "status": "PASS_COMPONENT_ONLY",
+      "overlay_sha256": "5c471c2f260d2218c0c219f649b0583b202cc6bd76e4b273fc3b92124ed2bd47"
+    }
+  },
+  "linux_artifact": {
+    "run_id": 44209921762,
+    "attempt": 1,
+    "artifact_id": 14385472370,
+    "name": "Pinkha-T2-Native-Operations-44209921762-1",
+    "zip_sha256": "bb27a88aba8d31b6ab1bda109a4fa33ba965454fa1ccdf7a2d2e092a2bc705b4"
+  },
+  "windows_job": {
+    "sentinel_job_id": "job_9f7050cb35b1",
+    "exit_code": 0,
+    "processes_terminated": 0,
+    "transport_test_seconds": 2.98,
+    "initial_client_pids": [
+      2692,
+      32664
+    ],
+    "final_tree_changes": [
+      13,
+      13
+    ],
+    "client_b_requests": 8,
+    "client_b_responses": 8,
+    "client_b_payload_bytes": 11941,
+    "client_b_received_changes": 8
+  }
+}
