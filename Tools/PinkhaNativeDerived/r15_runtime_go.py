@@ -38,6 +38,7 @@ def validate_modules(native, selected, downloaded, heart):
     effective = selected.get("Replace", selected)
     if (selected.get("Path") != GENPROTO or effective.get("Path") != GENPROTO
             or effective.get("Version") != VERSION
+            or effective.get("Sum") != MODULE_SUM or effective.get("GoModSum") != MOD_SUM
             or downloaded.get("Path") != GENPROTO or downloaded.get("Version") != VERSION
             or downloaded.get("Sum") != MODULE_SUM or downloaded.get("GoModSum") != MOD_SUM):
         raise RuntimeError("Generated gobind module changed the reviewed genproto identity or checksum")
@@ -59,10 +60,12 @@ def audit_modules(real_go, env, cwd, heart):
         return json.loads(result.stdout)
 
     native = query(["list", "-m", "-json", NATIVE_MODULE])
-    selected = query(["list", "-m", "-json", GENPROTO])
-    # The selection is checked independently: this exact download cannot conceal
-    # a different selected version. GOPROXY=off forbids fetching a new module.
+    # Hydrate only the reviewed cached module before listing the selected graph,
+    # so go list includes both checksums. GOPROXY=off forbids any new download.
     downloaded = query(["mod", "download", "-json", GENPROTO + "@" + VERSION])
+    selected = query(["list", "-m", "-json", GENPROTO])
+    # Both the selected graph and cached archive must prove the exact hashes.
+    # A correct cached download cannot conceal a different selected dependency.
     verified = validate_modules(native, selected, downloaded, heart)
     verified["go_mod_sha256"] = hashlib.sha256(mod.read_bytes()).hexdigest()
     verified["go_mod_text"] = mod.read_text(encoding="utf8")

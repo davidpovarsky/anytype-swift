@@ -26,7 +26,8 @@ def module_inputs():
     heart = Path("/owned/heart").resolve()
     native = dict(Path=launcher.NATIVE_MODULE, Replace=dict(Dir=str(heart), Path=str(heart)))
     selected = dict(Path=launcher.GENPROTO, Version="obsolete-root-version",
-                    Replace=dict(Path=launcher.GENPROTO, Version=launcher.VERSION))
+                    Replace=dict(Path=launcher.GENPROTO, Version=launcher.VERSION,
+                                 Sum=launcher.MODULE_SUM, GoModSum=launcher.MOD_SUM))
     downloaded = dict(Path=launcher.GENPROTO, Version=launcher.VERSION,
                       Sum=launcher.MODULE_SUM, GoModSum=launcher.MOD_SUM)
     return heart, native, selected, downloaded
@@ -97,6 +98,18 @@ class R15RuntimeControls(unittest.TestCase):
         selected["Replace"]["Version"] = "wrong-selected-version"
         with self.assertRaises(RuntimeError):
             launcher.validate_modules(native, selected, downloaded, heart)
+
+    def test_correct_download_cannot_hide_selected_checksum_drift_or_absence(self):
+        for field in ["Sum", "GoModSum"]:
+            for value in ["h1:wrong", None]:
+                with self.subTest(field=field, value=value):
+                    heart, native, selected, downloaded = module_inputs()
+                    if value is None:
+                        selected["Replace"].pop(field)
+                    else:
+                        selected["Replace"][field] = value
+                    with self.assertRaises(RuntimeError):
+                        launcher.validate_modules(native, selected, downloaded, heart)
 
     def test_native_module_cannot_be_replaced_by_another_checkout(self):
         heart, native, selected, downloaded = module_inputs()
