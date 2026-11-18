@@ -114,3 +114,14 @@ their separate acceptance gates.
 The fifth-phase evidence uses the same explicit allowlist and complete credential
 scan as the first four phases. Raw xcresults, private account data, keys, and
 mnemonics remain outside the uploaded proof and compilation cache.
+
+## Optional real Inspector UI after the fifth phase
+
+The default pair remains unchanged. The additive `--include-native-ui` option
+requires `--include-freshness` and preserves an independent pair-result receipt
+before reusing the exact retained r15 App on a separate fresh iPad account.
+The UI runner alone is rebuilt. UI failure/cancellation fails the optional route
+without replacing the already completed pair evidence. See
+[T5_NATIVE_UI_CONTRACT.md](T5_NATIVE_UI_CONTRACT.md) for the exact methods,
+container/source boundaries, original screenshot receipts and secret policy.
+Automated UI PASS still requires separate visual review; product lookup stays OFF.

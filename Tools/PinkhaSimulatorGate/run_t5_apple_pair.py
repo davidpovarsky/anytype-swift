@@ -778,6 +778,11 @@ def execute(args, result):
                   freshness_report=reports[-1] if args.include_freshness else None,
                   host_freshness_status=FRESHNESS_STATUS if args.include_freshness else "NOT_REQUESTED",
                   exact_same_app_source=True, full_F10="NOT_PROVEN", product_lookup_flag="OFF")
+    if args.include_native_ui:
+        from run_t5_native_ui import continue_with_native_ui
+        continue_with_native_ui(app=app, work=work, proof=proof, result=result, build=builds["new"],
+                                pair_container=container, selection=selection, pair=sys.modules[__name__],
+                                ui=ui, method_results=method_results)
 
 
 def main(argv=None):
@@ -787,10 +792,14 @@ def main(argv=None):
     for name in ["heart-r14-run-id", "heart-r15-run-id"]:
         parser.add_argument("--" + name, required=True)
     parser.add_argument("--include-freshness", action="store_true")
+    parser.add_argument("--include-native-ui", action="store_true")
     args = parser.parse_args(argv)
+    if args.include_native_ui and not args.include_freshness:
+        parser.error("--include-native-ui requires the actual optional fifth freshness phase")
     args.evidence.mkdir(parents=True, exist_ok=True)
     result = dict(status="RUNNING", phase="PREFLIGHT", started_at=datetime.now(timezone.utc).isoformat(),
                   completed_builds=[], completed_phases=[], actual_counts=None, include_freshness=args.include_freshness,
+                  include_native_ui=args.include_native_ui, native_ui_status="NOT_RUN" if args.include_native_ui else "NOT_REQUESTED",
                   product_lookup_flag="OFF", test_only_lookup_flag="IDENTICAL_BOTH_APP_BUILDS",
                   full_F10="NOT_PROVEN", release_accepted=False, full_matrix_accepted=False,
                   scope="same exact app source; two original Apple runtimes; four compatibility processes on one fresh OS27 iPad account"
@@ -806,7 +815,8 @@ def main(argv=None):
     write(args.evidence / "result.json", result)
     print(json.dumps({key: result[key] for key in ["status", "completed_builds", "completed_phases", "actual_counts",
                                                     "product_lookup_flag", "full_F10"]}))
-    return 0 if result["status"] == "APPLE_SAME_ACCOUNT_RUNTIME_PAIR_PASS" else 1
+    return 0 if result["status"] in {"APPLE_SAME_ACCOUNT_RUNTIME_PAIR_PASS",
+                                    "APPLE_SAME_ACCOUNT_RUNTIME_PAIR_AND_UI_PASS_VISUAL_REVIEW_PENDING"} else 1
 
 
 if __name__ == "__main__":
