@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import plistlib
 import re
 import subprocess
 import sys
@@ -130,6 +131,54 @@ def verify_packages(app, derived, evidence, pin, git):
     return actual
 
 
+def xctest_products(configuration):
+    """Resolve the actual Xcode TestHostPath/TestBundlePath, then their executables.
+
+    Placeholder semantics follow Apple's TN2339, Listing 20. No binary name or
+    embedded PlugIns layout is inferred from a target's display name.
+    """
+    products = configuration.parent.resolve()
+    entries = []
+
+    def visit(value):
+        if isinstance(value, dict):
+            if value.get("BlueprintName") == "AnytypeTests" and "TestBundlePath" in value:
+                entries.append(value)
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(plistlib.loads(configuration.read_bytes()))
+    require(len(entries) == 1, "Expected one actual AnytypeTests product declaration")
+
+    def resolve(raw, host=None):
+        require(isinstance(raw, str) and raw, "Missing actual Xcode product path")
+        value = raw.replace("__TESTROOT__", str(products))
+        if host is not None:
+            value = value.replace("__TESTHOST__", str(host))
+        require("__" not in value, "Unsupported Xcode product placeholder")
+        path = Path(value).resolve()
+        require(path.is_dir() and path.is_relative_to(products), "Xcode product missing or outside fresh products")
+        return path
+
+    host = resolve(entries[0].get("TestHostPath"))
+    bundle = resolve(entries[0].get("TestBundlePath"), host)
+    require(host.suffix == ".app" and bundle.name == "AnytypeTests.xctest", "Unexpected actual test host/bundle")
+
+    def executable(owner):
+        info = plistlib.loads((owner / "Info.plist").read_bytes())
+        name = info.get("CFBundleExecutable")
+        require(isinstance(name, str) and name not in {"", ".", ".."} and Path(name).name == name
+                and "\\" not in name, "Unsafe or missing CFBundleExecutable")
+        path = (owner / name).resolve()
+        require(path.is_relative_to(owner) and path.is_file(), "Declared product executable is missing")
+        return path
+
+    return host, executable(host), bundle, executable(bundle)
+
+
 def execute(args, receipt):
     app, evidence, derived = args.app.resolve(), args.evidence.resolve(), args.derived.resolve()
     require(platform.system() == "Darwin" and platform.machine() == "arm64", "Actual Apple silicon Mac required")
@@ -181,21 +230,23 @@ def execute(args, receipt):
              "-configuration", CONFIGURATION, "-destination", "platform=iOS Simulator,id=" + udid,
              "-derivedDataPath", str(derived), "-parallel-testing-enabled", "NO", *selection, *flags]
     receipt["build_command"] = build
+    command(["xcrun", "simctl", "boot", udid], app, evidence)
+    command(["xcrun", "simctl", "bootstatus", udid, "-b"], app, evidence)
     command(build, app, evidence)
     receipt["build_succeeded"] = True
-    built = derived / "Build/Products/Debug-Anytype-iphonesimulator/Anytype.app"
-    receipt["app_executable_sha256"] = digest(built / "Anytype")
-    receipt["test_executable_sha256"] = digest(built / "PlugIns/AnytypeTests.xctest/AnytypeTests")
+    configuration = test_configuration(derived / "Build/Products", "AnytypeTests")
+    built, app_executable, test_bundle, test_executable = xctest_products(configuration)
+    receipt["actual_product_paths"] = dict(app=str(built), test_bundle=str(test_bundle),
+                                          app_executable=str(app_executable), test_executable=str(test_executable))
+    receipt["app_executable_sha256"] = digest(app_executable)
+    receipt["test_executable_sha256"] = digest(test_executable)
     command(["codesign", "--verify", "--strict", str(built)], app, evidence)
     verify_runtime_copies(built, installation["marker"].encode(), evidence)
     receipt["dependency_checkouts"] = verify_packages(app, derived, evidence, pin, git)
     verify(app / "Dependencies/Hanlin")
-    configuration = test_configuration(derived / "Build/Products", "AnytypeTests")
     receipt["xctestrun_sha256"] = digest(configuration)
     result = evidence / "SDK06.xcresult"
     require(not result.exists(), "Refuse an existing SDK xcresult")
-    command(["xcrun", "simctl", "boot", udid], app, evidence)
-    command(["xcrun", "simctl", "bootstatus", udid, "-b"], app, evidence)
     receipt["phase"] = "EXECUTION"
     test = ["xcodebuild", "test-without-building", "-xctestrun", str(configuration),
             "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO",

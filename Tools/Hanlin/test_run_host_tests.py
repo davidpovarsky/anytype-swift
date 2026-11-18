@@ -1,8 +1,11 @@
 """Synthetic adversarial controls for the SDK CI gate, never native acceptance."""
 import copy
+from pathlib import Path
+import plistlib
+import tempfile
 import unittest
 
-from run_host_tests import BRANCH, SUITES, require_identity, validate_results
+from run_host_tests import BRANCH, SUITES, require_identity, validate_results, xctest_products
 
 
 class SDKResultGateTests(unittest.TestCase):
@@ -89,6 +92,44 @@ class SDKResultGateTests(unittest.TestCase):
                 values[index] = replacement
                 with self.assertRaises(ValueError):
                     require_identity(*values)
+
+
+class XcodeProductIdentityTests(unittest.TestCase):
+    def fixture(self, root, embedded=True, executable="ActualTestExecutable"):
+        host = root / "Debug-Anytype-iphonesimulator/Anytype.app"
+        bundle = (host / "PlugIns" if embedded else host.parent) / "AnytypeTests.xctest"
+        host.mkdir(parents=True)
+        bundle.mkdir(parents=True)
+        for owner, name in ((host, "Anytype"), (bundle, executable)):
+            (owner / "Info.plist").write_bytes(plistlib.dumps(dict(CFBundleExecutable=name)))
+            if name == Path(name).name:
+                (owner / name).write_bytes(b"synthetic gate fixture only")
+        entry = dict(BlueprintName="AnytypeTests", TestHostPath="__TESTROOT__/Debug-Anytype-iphonesimulator/Anytype.app",
+                     TestBundlePath="__TESTHOST__/PlugIns/AnytypeTests.xctest" if embedded
+                     else "__TESTROOT__/Debug-Anytype-iphonesimulator/AnytypeTests.xctest")
+        configuration = root / "Actual.xctestrun"
+        configuration.write_bytes(plistlib.dumps(dict(TestConfigurations=[dict(TestTargets=[entry])])))
+        return configuration, host, bundle
+
+    def test_actual_xctestrun_and_plist_select_embedded_or_separate_test_binary(self):
+        for embedded in (True, False):
+            with self.subTest(embedded=embedded), tempfile.TemporaryDirectory() as temp:
+                configuration, host, bundle = self.fixture(Path(temp), embedded=embedded)
+                self.assertEqual(xctest_products(configuration),
+                                 (host, host / "Anytype", bundle, bundle / "ActualTestExecutable"))
+
+    def test_missing_executable_cannot_be_reported_as_built(self):
+        with tempfile.TemporaryDirectory() as temp:
+            configuration, _, bundle = self.fixture(Path(temp))
+            (bundle / "ActualTestExecutable").unlink()
+            with self.assertRaisesRegex(ValueError, "executable is missing"):
+                xctest_products(configuration)
+
+    def test_executable_cannot_escape_its_bundle(self):
+        with tempfile.TemporaryDirectory() as temp:
+            configuration, _, _ = self.fixture(Path(temp), executable="../foreign")
+            with self.assertRaisesRegex(ValueError, "Unsafe or missing"):
+                xctest_products(configuration)
 
 
 if __name__ == "__main__":

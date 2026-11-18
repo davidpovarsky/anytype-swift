@@ -1,0 +1,25 @@
+{
+  "status": "PYTHON_GATE_CONTROLS_PASS",
+  "timestamp": "2026-11-18T00:08:29.363345+00:00",
+  "source_base": "48acffe762f1767e8a9b8c1e2241260bb5540288",
+  "native_compilation": "NOT_RUN",
+  "swift_tests": "NOT_RUN",
+  "command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "Tools/Hanlin",
+    "-p",
+    "test_run_host_tests.py",
+    "-v"
+  ],
+  "exit_code": 0,
+  "output": "test_all_four_suites_pass_with_actual_method_identity (test_run_host_tests.SDKResultGateTests.test_all_four_suites_pass_with_actual_method_identity) ... ok\ntest_boolean_counts_are_not_real_test_counts (test_run_host_tests.SDKResultGateTests.test_boolean_counts_are_not_real_test_counts) ... ok\ntest_duplicate_identifiers_are_not_counted_twice (test_run_host_tests.SDKResultGateTests.test_duplicate_identifiers_are_not_counted_twice) ... ok\ntest_false_or_missing_or_skipped_results_are_rejected (test_run_host_tests.SDKResultGateTests.test_false_or_missing_or_skipped_results_are_rejected) ... ok\ntest_missing_raw_device_os_or_architecture_fails (test_run_host_tests.SDKResultGateTests.test_missing_raw_device_os_or_architecture_fails) ... ok\ntest_missing_suite_cannot_hide_in_successful_summary (test_run_host_tests.SDKResultGateTests.test_missing_suite_cannot_hide_in_successful_summary) ... ok\ntest_parameter_cases_can_cover_one_declaration_with_actual_passes (test_run_host_tests.SDKResultGateTests.test_parameter_cases_can_cover_one_declaration_with_actual_passes) ... ok\ntest_summary_failure_or_skip_cannot_be_hidden_by_passing_methods (test_run_host_tests.SDKResultGateTests.test_summary_failure_or_skip_cannot_be_hidden_by_passing_methods) ... ok\ntest_unrelated_success_does_not_substitute_for_sdk_test (test_run_host_tests.SDKResultGateTests.test_unrelated_success_does_not_substitute_for_sdk_test) ... ok\ntest_wrong_source_or_branch_or_missing_run_is_rejected (test_run_host_tests.SDKResultGateTests.test_wrong_source_or_branch_or_missing_run_is_rejected) ... ok\ntest_zero_counts_cannot_pass_even_with_named_tree (test_run_host_tests.SDKResultGateTests.test_zero_counts_cannot_pass_even_with_named_tree) ... ok\ntest_actual_xctestrun_and_plist_select_embedded_or_separate_test_binary (test_run_host_tests.XcodeProductIdentityTests.test_actual_xctestrun_and_plist_select_embedded_or_separate_test_binary) ... ok\ntest_executable_cannot_escape_its_bundle (test_run_host_tests.XcodeProductIdentityTests.test_executable_cannot_escape_its_bundle) ... ok\ntest_missing_executable_cannot_be_reported_as_built (test_run_host_tests.XcodeProductIdentityTests.test_missing_executable_cannot_be_reported_as_built) ... ok\n\n----------------------------------------------------------------------\nRan 14 tests in 0.086s\n\nOK\n",
+  "file_hashes": {
+    "Tools/Hanlin/run_host_tests.py": "64dbf360cbf561f214a8ce906cd9b236d5e6e285328cb4eeab298b78805b237e",
+    "Tools/Hanlin/test_run_host_tests.py": "ff8b1a5a0fa12d29308087707067f00cb8e3a9f3fdd03ba6fe46ba96f33220c8",
+    "Tools/Hanlin/APPLE_TESTS.md": "75f90a254dea51f228cfdd0911fa0cfcdb400bfc82a43bd73e16b699e20f9689"
+  }
+}
