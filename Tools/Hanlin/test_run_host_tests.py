@@ -124,11 +124,18 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
         "nativeSelectionTableAndNonselectionModesUseTheEmittedValue",
     }
 
+    consent_methods = {
+        "nativePromptAllowsBeforeDisappearanceAndRevalidatesOwner",
+        "nativePromptProgrammaticDismissalDeniesPendingAllow",
+        "oldNativeAllowCannotResolveReplacementPrompt",
+        "taskCancellationWinsBeforeQueuedNativeAllow",
+    }
+
     def source_fixture(self, root):
         files, expected = [], set()
-        for suite, count in (("HanlinHostAdapterTests", 32), ("HanlinHostWriteTests", 12),
+        for suite, count in (("HanlinHostAdapterTests", 35), ("HanlinHostWriteTests", 12),
                              ("HanlinHostReadWriteTests", 17), ("HanlinSDKConsumerTests", 6)):
-            names = sorted(self.return_methods | self.selection_methods) if suite == "HanlinHostAdapterTests" else []
+            names = sorted(self.return_methods | self.selection_methods | self.consent_methods) if suite == "HanlinHostAdapterTests" else []
             names += ["existingMethod" + str(i) for i in range(count - len(names))]
             relative = "AnytypeTests/Pinkha/" + suite + ".swift"
             target = root / relative
@@ -144,7 +151,7 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
             files, expected = self.source_fixture(root)
             with patch.object(subprocess, "check_output", return_value=("\0".join(files) + "\0").encode()):
                 actual, hashes = expected_methods(root)
-                self.assertEqual(len(actual), 67)
+                self.assertEqual(len(actual), 70)
                 self.assertEqual(actual, expected)
                 self.assertEqual(set(hashes), set(files))
                 adapter = root / files[0]
@@ -158,12 +165,12 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
     def test_each_new_return_method_requires_an_actual_pass_not_a_successful_aggregate(self):
         with tempfile.TemporaryDirectory() as temp:
             _, expected = self.source_fixture(Path(temp))
-        summary = dict(totalTestCount=67, passedTests=67, failedTests=0, skippedTests=0,
+        summary = dict(totalTestCount=70, passedTests=70, failedTests=0, skippedTests=0,
                        devicesAndConfigurations=[dict(device=dict(deviceId="disposable-id", osVersion="27.0",
                        osBuildNumber="24A-test", architecture="arm64", modelName="iPad (A16)"))])
         tree = dict(children=[dict(nodeType="Test Case", nodeIdentifier=name + "()", result="Passed")
                               for name in sorted(expected)])
-        self.assertEqual(len(validate_results(summary, tree, expected, "disposable-id")["methods"]), 67)
+        self.assertEqual(len(validate_results(summary, tree, expected, "disposable-id")["methods"]), 70)
         for name in self.return_methods:
             with self.subTest(missing=name):
                 incomplete = copy.deepcopy(tree)
@@ -189,7 +196,7 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
     def test_selection_transition_cases_require_actual_passes_despite_successful_total(self):
         with tempfile.TemporaryDirectory() as temp:
             _, expected = self.source_fixture(Path(temp))
-        summary = dict(totalTestCount=67, passedTests=67, failedTests=0, skippedTests=0,
+        summary = dict(totalTestCount=70, passedTests=70, failedTests=0, skippedTests=0,
                        devicesAndConfigurations=[dict(device=dict(deviceId="disposable-id", osVersion="27.0",
                        osBuildNumber="24A-test", architecture="arm64", modelName="iPad (A16)"))])
         tree = dict(children=[dict(nodeType="Test Case", nodeIdentifier=name + "()", result="Passed")
@@ -201,6 +208,21 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
                                            if node["nodeIdentifier"] != "HanlinHostAdapterTests/" + name + "()"]
                 with self.assertRaisesRegex(ValueError, "Missing SDK test methods"):
                     validate_results(summary, incomplete, expected, "disposable-id")
+
+
+    def test_native_consent_names_cannot_be_replaced_by_four_unreviewed_methods(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            files, expected = self.source_fixture(root)
+            adapter = root / files[0]
+            original = adapter.read_text()
+            with patch.object(subprocess, "check_output", return_value=("\0".join(files) + "\0").encode()):
+                self.assertEqual(expected_methods(root)[0], expected)
+                for name in self.consent_methods:
+                    with self.subTest(missing=name):
+                        adapter.write_text(original.replace(name, "unreviewedConsentReplacement"))
+                        with self.assertRaisesRegex(ValueError, "native consent test declarations"):
+                            expected_methods(root)
 
 
 class EditorResultGateTests(unittest.TestCase):

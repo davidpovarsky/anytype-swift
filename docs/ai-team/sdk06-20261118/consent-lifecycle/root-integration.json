@@ -1,0 +1,85 @@
+{
+  "source_integration": "8d22b900e6e5252979de7db0ad2379bbd0265e02",
+  "profile_files": [
+    {
+      "path": "Tools/Hanlin/run_host_tests.py",
+      "before_lf_sha256": "56b10b4e3b3991dfbd23682d702adb7c122a71b7e0b8ead0bb398e6d7fc35fac",
+      "after_lf_sha256": "8f5619b4a1d6c0c89a1aca0eaafc3cc7fd0a9153d7451092427070f5a08b0d5d"
+    },
+    {
+      "path": "Tools/Hanlin/test_run_host_tests.py",
+      "before_lf_sha256": "dfd571e3ce020e161190feef780614b468b7031c28f0af0eb881cb40122ec38b",
+      "after_lf_sha256": "f5f6408adc123d8087f7b68861a0600bc2a8e1600c4b5c56e1d4583b3128ee5a"
+    }
+  ],
+  "profile_review": "independent t5_native review PASS; patch 2e4dab35d5c722c1406f948aababe98670e19de383f47e39d59d204db555e00d",
+  "source_profiles": {
+    "sdk06": {
+      "methods": 70,
+      "source_files": {
+        "AnyTypeTests/Pinkha/HanlinHostAdapterTests.swift": "13778f1292bf32652b468b98356ac33100a44feda0f09d508cdd30eb6f534c83",
+        "AnyTypeTests/Pinkha/HanlinHostWriteTests.swift": "ecadfe415f14812d7aada106e8bae294fab12b0af8e9435a3ddada8720e0ac72",
+        "AnyTypeTests/Pinkha/HanlinHostReadWriteTests.swift": "421b316a7c631feb61e13f63421585bd010b10c2bfbf34ed617e3a501ff55597",
+        "AnyTypeTests/Pinkha/HanlinSDKConsumerTests.swift": "4e3374c654905979fc2488880b48f5d0e4042ad17725d63051c77e30e2f7feab"
+      }
+    },
+    "editor": {
+      "methods": 10,
+      "source_files": {
+        "AnyTypeTests/Pinkha/TorahQuoteInsertionTests.swift": "4216816409892f0ec723b0dde9c5c8cb07153054e6c9ab935917091b5e1f7f27"
+      }
+    },
+    "wave15-core": {
+      "methods": 41,
+      "source_files": {
+        "AnyTypeTests/Pinkha/PinkhaTextDirectionPersistenceTests.swift": "8be5c1ed250f950a712806ccb33697d93e8044e0842f723dd2c604281147abd6",
+        "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift": "9a414477085e7bcb8ec509684d09d73d328e63c1f3895bfb558697c3484939e0",
+        "AnyTypeTests/Pinkha/PinkhaTextBlockLeadingMarkerAdapterTests.swift": "e56e5978d419475a80af18a010b14ac52ccd4d82a180b604c3f57a7806ad7ac9",
+        "AnyTypeTests/Pinkha/PinkhaNavigationGestureBridgeTests.swift": "e68341de5999d06f779607d9b962637f9347df588b6ab1b13b0d05954520ea3e",
+        "AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift": "5444b1c4ef2813e3a5958c4b03276fd1990c3011221860676ae2e897016f6ff6"
+      }
+    },
+    "wave15-components": {
+      "methods": 121,
+      "source_files": {
+        "AnyTypeTests/Pinkha/HanlinHostAdapterTests.swift": "13778f1292bf32652b468b98356ac33100a44feda0f09d508cdd30eb6f534c83",
+        "AnyTypeTests/Pinkha/HanlinHostWriteTests.swift": "ecadfe415f14812d7aada106e8bae294fab12b0af8e9435a3ddada8720e0ac72",
+        "AnyTypeTests/Pinkha/HanlinHostReadWriteTests.swift": "421b316a7c631feb61e13f63421585bd010b10c2bfbf34ed617e3a501ff55597",
+        "AnyTypeTests/Pinkha/HanlinSDKConsumerTests.swift": "4e3374c654905979fc2488880b48f5d0e4042ad17725d63051c77e30e2f7feab",
+        "AnyTypeTests/Pinkha/TorahQuoteInsertionTests.swift": "4216816409892f0ec723b0dde9c5c8cb07153054e6c9ab935917091b5e1f7f27",
+        "AnyTypeTests/Pinkha/PinkhaTextDirectionPersistenceTests.swift": "8be5c1ed250f950a712806ccb33697d93e8044e0842f723dd2c604281147abd6",
+        "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift": "9a414477085e7bcb8ec509684d09d73d328e63c1f3895bfb558697c3484939e0",
+        "AnyTypeTests/Pinkha/PinkhaTextBlockLeadingMarkerAdapterTests.swift": "e56e5978d419475a80af18a010b14ac52ccd4d82a180b604c3f57a7806ad7ac9",
+        "AnyTypeTests/Pinkha/PinkhaNavigationGestureBridgeTests.swift": "e68341de5999d06f779607d9b962637f9347df588b6ab1b13b0d05954520ea3e",
+        "AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift": "5444b1c4ef2813e3a5958c4b03276fd1990c3011221860676ae2e897016f6ff6"
+      }
+    }
+  },
+  "declared_case_counts": {
+    "sdk06": 71,
+    "editor": 12,
+    "wave15-core": 57,
+    "wave15-components": 140
+  },
+  "controls": {
+    "functions": 50,
+    "passed": 48,
+    "skipped": [
+      {
+        "case": "test_sigterm_flushes_partial_log_and_stops_only_the_owned_child_group (test_run_host_tests.SDKCommandProcessTests.test_sigterm_flushes_partial_log_and_stops_only_the_owned_child_group)",
+        "reason": "Actual isolated process-group controls require POSIX"
+      },
+      {
+        "case": "test_success_and_failure_keep_output_and_distinct_completed_receipts (test_run_host_tests.SDKCommandProcessTests.test_success_and_failure_keep_output_and_distinct_completed_receipts)",
+        "reason": "Actual isolated process-group controls require POSIX"
+      }
+    ],
+    "errors": 0,
+    "failures": 0,
+    "platform": "Windows"
+  },
+  "original_files_byte_verified": 9,
+  "apple_after_fix": "NOT_RUN",
+  "created_at": "2026-11-18T09:22:51.216914+00:00",
+  "source_profiles_hash_scope": "Actual Windows checkout bytes for source declaration validation; reviewed Git LF source identities remain in source-manifest.json."
+}

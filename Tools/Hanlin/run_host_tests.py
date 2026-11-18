@@ -24,7 +24,7 @@ import wave15_core_profile as core_profile
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 CONFIGURATION = "Debug-Anytype"
 SUITES = {
-    "HanlinHostAdapterTests": 32,
+    "HanlinHostAdapterTests": 35,
     "HanlinHostWriteTests": 12,
     "HanlinHostReadWriteTests": 17,
     "HanlinSDKConsumerTests": 6,
@@ -42,6 +42,12 @@ SDK_SELECTION_METHODS = {
     "nativeSelectionDoneAndReselectCannotRestoreEitherFence",
     "nativeSelectionChangedOrderAndUnicodeAliasCannotRearmAuthority",
     "nativeSelectionTableAndNonselectionModesUseTheEmittedValue",
+}
+SDK_CONSENT_METHODS = {
+    "nativePromptAllowsBeforeDisappearanceAndRevalidatesOwner",
+    "nativePromptProgrammaticDismissalDeniesPendingAllow",
+    "oldNativeAllowCannotResolveReplacementPrompt",
+    "taskCancellationWinsBeforeQueuedNativeAllow",
 }
 SDK_BUDGET_METHOD = "HanlinSDKConsumerTests/canonicalDispatcherBudgetsReachReadAndReplayOnlyReceipt"
 SDK_BUDGET_ARGUMENTS = ("1048576", "8388608")
@@ -149,6 +155,7 @@ def expected_methods(app, profile=HostTestProfile.SDK06):
         if profile is HostTestProfile.SDK06 and suite == "HanlinHostAdapterTests":
             require(SDK_RETURN_METHODS.issubset(names), "Reviewed native return test declarations disappeared")
             require(SDK_SELECTION_METHODS.issubset(names), "Reviewed native selection test declarations disappeared")
+            require(SDK_CONSENT_METHODS.issubset(names), "Reviewed native consent test declarations disappeared")
         if profile is HostTestProfile.EDITOR:
             declarations = re.findall(r"@Test(?:\(([^\n]*)\))?\s+func\s+(\w+)\s*\(([^)]*)\)", text)
             require(set(names) == set(EDITOR_METHODS), "Reviewed editor method set changed")
