@@ -326,7 +326,11 @@ private final class TextBlockFocusWindow {
         window = UIWindow(windowScene: scene)
         window.frame = CGRect(x: 0, y: 0, width: 390, height: 844)
         window.rootViewController = controller
-        if makeKey { window.makeKeyAndVisible() }
+        if makeKey {
+            window.makeKeyAndVisible()
+        } else {
+            window.isHidden = false
+        }
         controller.view.layoutIfNeeded()
     }
 
