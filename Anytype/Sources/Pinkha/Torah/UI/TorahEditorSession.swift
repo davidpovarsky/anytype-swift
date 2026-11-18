@@ -190,7 +190,7 @@ final class TorahEditorSession {
     private let notesService: AnytypeTorahNotesService
     private var insertionHandler: ((TorahSourceTransfer, String?) async throws -> String)?
     private var claimedDropIDs = Set<String>()
-    private var openObjectHandler: ((String) -> Void)?
+    private var openObjectHandler: ((String, String?) -> Void)?
     private var associationSnapshotHandler: ((Set<String>) -> Void)?
     private var associationSnapshotEpoch: UInt = 0
     private var searchRequestEpoch: UInt = 0
@@ -337,7 +337,7 @@ final class TorahEditorSession {
         insertionHandler = handler
     }
 
-    func installOpenObjectHandler(_ handler: @escaping (String) -> Void) {
+    func installOpenObjectHandler(_ handler: @escaping (String, String?) -> Void) {
         openObjectHandler = handler
     }
 
@@ -945,7 +945,7 @@ final class TorahEditorSession {
                   self.selection?.id == inspectorSelectionID, !Task.isCancelled else { return }
             didChange()
             if let error = outcome.recoveryError { message = error.localizedDescription }
-            openObjectHandler?(outcome.objectID)
+            openObjectHandler?(outcome.objectID, nil)
         } catch {
             repository.invalidateRelatedDocuments(for: selection)
             if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
@@ -965,7 +965,7 @@ final class TorahEditorSession {
             try Task.checkCancellation()
             guard isActiveDocument, noteActionEpoch == requestEpoch,
                   self.selection?.id == inspectorSelectionID else { return }
-            openObjectHandler?(objectId)
+            openObjectHandler?(objectId, nil)
         } catch {
             if isCurrentNoteAction(epoch: requestEpoch, selectionID: inspectorSelectionID) {
                 recordAssociationError(error)
@@ -978,7 +978,12 @@ final class TorahEditorSession {
     ) {
         guard isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID),
               document.spaceID == spaceId, !document.objectID.isEmpty else { return }
-        openObjectHandler?(document.objectID)
+        if let blockID = document.blockID {
+            guard !blockID.isEmpty, blockID != document.objectID else { return }
+        }
+        // This dispatches an exact navigation request; only the destination
+        // editor can confirm that the requested block was actually displayed.
+        openObjectHandler?(document.objectID, document.blockID)
     }
 
     private func isCurrentNoteAction(epoch: UInt, selectionID: String?) -> Bool {

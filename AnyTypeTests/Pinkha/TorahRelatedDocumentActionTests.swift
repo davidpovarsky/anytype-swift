@@ -18,7 +18,7 @@ struct TorahRelatedDocumentActionTests {
             workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
         )
         var opened: [String] = []
-        session.installOpenObjectHandler { opened.append($0) }
+        session.installOpenObjectHandler { objectID, _ in opened.append(objectID) }
         let originalAction = try #require(session.hostActions.onOpenRelatedDocument)
 
         originalAction(row(spaceID: "other-space"))
@@ -35,6 +35,33 @@ struct TorahRelatedDocumentActionTests {
         #expect(opened == ["related", "related"])
     }
 
+    @Test("Related block navigation preserves the exact target without opening its document as a fallback")
+    func relatedNavigationPreservesBlockTarget() throws {
+        let probe = T5ActionAssociationProbe(items: [:])
+        let session = TorahEditorSession(
+            spaceId: "space", objectId: "origin",
+            workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
+        )
+        var opened: [(objectID: String, blockID: String?)] = []
+        session.installOpenObjectHandler { opened.append(($0, $1)) }
+        let action = try #require(session.hostActions.onOpenRelatedDocument)
+
+        action(row(blockID: "exact-quote-block"))
+        #expect(opened.count == 1)
+        #expect(opened[0].objectID == "related")
+        #expect(opened[0].blockID == "exact-quote-block")
+        action(row(blockID: ""))
+        action(row(blockID: "related"))
+        action(row(spaceID: "foreign", blockID: "exact-quote-block"))
+        #expect(opened.count == 1)
+        action(row())
+        #expect(opened.count == 2)
+        #expect(opened[1].objectID == "related" && opened[1].blockID == nil)
+        session.deactivateDocument()
+        action(row(blockID: "exact-quote-block"))
+        #expect(opened.count == 2)
+    }
+
     @Test("Replacing the root selection invalidates captured navigation and close callbacks")
     func changedRootSelectionRejectsCapturedCallbacks() throws {
         let probe = T5ActionAssociationProbe(items: [:])
@@ -43,7 +70,7 @@ struct TorahRelatedDocumentActionTests {
             workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
         )
         var opened: [String] = []
-        session.installOpenObjectHandler { opened.append($0) }
+        session.installOpenObjectHandler { objectID, _ in opened.append(objectID) }
         session.selection = selection
         let previousActions = session.hostActions
         let replacement = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Exodus 1")
@@ -65,7 +92,7 @@ struct TorahRelatedDocumentActionTests {
             workspace: try AnytypeTorahWorkspace.sefaria(), associations: probe
         )
         var opened: [String] = []
-        session.installOpenObjectHandler { opened.append($0) }
+        session.installOpenObjectHandler { objectID, _ in opened.append(objectID) }
         session.openResolvedReferenceFromStandaloneSearch(selection)
         let dismissedActions = session.hostActions
         dismissedActions.onClose?()
@@ -206,10 +233,10 @@ struct TorahRelatedDocumentActionTests {
         #expect(await probe.effects().removals.isEmpty)
     }
 
-    private func row(spaceID: String = "space") -> TorahRelatedDocument {
+    private func row(spaceID: String = "space", blockID: String? = nil) -> TorahRelatedDocument {
         TorahRelatedDocument(
             id: "related-row", spaceID: spaceID, objectID: "related", title: "Related",
-            sourceReference: source.canonicalReference, canUnlink: true
+            sourceReference: source.canonicalReference, blockID: blockID, canUnlink: true
         )
     }
 }
