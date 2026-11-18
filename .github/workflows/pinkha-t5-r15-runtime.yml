@@ -1,0 +1,75 @@
+name: Build the pinned r15 Heart runtime for T5 pairing
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime-r15:
+    runs-on: xcode-27
+    timeout-minutes: 150
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      T5_RUNTIME_ATTEMPT: build/t5-r15-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout exact integration control source
+        uses: actions/checkout@v4
+        with:
+          path: build/t5-r15-${{ github.run_id }}-${{ github.run_attempt }}/control
+      - name: Checkout exact reviewed r15 patch and inventory
+        uses: actions/checkout@v4
+        with:
+          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1
+          path: build/t5-r15-${{ github.run_id }}-${{ github.run_attempt }}/source
+      - name: Select compatible native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install the pinned native Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout the exact native Heart source
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/t5-r15-${{ github.run_id }}-${{ github.run_attempt }}/heart-r15
+      - name: Check runtime controls without claiming native acceptance
+        run: |
+          mkdir -p "$T5_RUNTIME_ATTEMPT/proof/controls" "$T5_RUNTIME_ATTEMPT/work" "$T5_RUNTIME_ATTEMPT/artifacts"
+          python3 -B "$T5_RUNTIME_ATTEMPT/control/Tools/PinkhaNativeDerived/test_t5_r15_runtime.py" > "$T5_RUNTIME_ATTEMPT/proof/controls/runtime-controls.log" 2>&1
+          cat "$T5_RUNTIME_ATTEMPT/proof/controls/runtime-controls.log"
+      - name: Build and verify all three r15 Apple binary architectures
+        run: |
+          python3 -B "$T5_RUNTIME_ATTEMPT/control/Tools/PinkhaNativeDerived/build_t5_r15_runtime.py" \
+            --heart-source "$T5_RUNTIME_ATTEMPT/heart-r15" \
+            --source "$T5_RUNTIME_ATTEMPT/source" \
+            --work "$T5_RUNTIME_ATTEMPT/work" \
+            --artifacts "$T5_RUNTIME_ATTEMPT/artifacts" \
+            --evidence "$T5_RUNTIME_ATTEMPT/proof/runtime"
+      - name: Retain the r15 runtime for later source-bound application pairing
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Universal-Verified-Heart-r15
+          path: build/t5-r15-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/Pinkha-Universal-Verified-Heart-r15.tar.gz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 14
+      - name: Package original build evidence including failures
+        if: always()
+        run: |
+          mkdir -p "$T5_RUNTIME_ATTEMPT/proof"
+          python3 "$T5_RUNTIME_ATTEMPT/control/Tools/PinkhaNativeDerived/package_evidence.py" "$T5_RUNTIME_ATTEMPT/proof"
+      - name: Retain original r15 build receipts and module provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-T5-R15-Runtime-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/t5-r15-${{ github.run_id }}-${{ github.run_attempt }}/proof/Pinkha-Native-Derived-Evidence.zip
+          if-no-files-found: warn
+          retention-days: 14
