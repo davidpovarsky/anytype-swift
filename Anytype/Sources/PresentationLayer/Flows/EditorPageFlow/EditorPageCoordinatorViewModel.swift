@@ -37,10 +37,10 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
         self.data = data
         self.showHeader = showHeader
         self.torahSession = try? TorahEditorSession(spaceId: data.spaceId, objectId: data.objectId)
-        self.torahSession?.installOpenObjectHandler { [weak self] objectId in
+        self.torahSession?.installOpenObjectHandler { [weak self] objectId, blockId in
             guard let self else { return }
             pageNavigation?.open(
-                .editor(.page(EditorPageObject(objectId: objectId, spaceId: data.spaceId)))
+                .editor(.page(EditorPageObject(objectId: objectId, spaceId: data.spaceId, blockId: blockId)))
             )
         }
     }

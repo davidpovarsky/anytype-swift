@@ -1,0 +1,230 @@
+[0/1] Planning build
+Building for debugging...
+[0/13] Write swift-version-2807070033DA82CF.txt
+[1/13] Write sources
+[5/14] Emitting module TorahInspectorCore
+[6/21] Compiling TorahInspectorCore Models.swift
+[7/21] Compiling TorahInspectorCore ProviderProtocols.swift
+[8/21] Compiling TorahInspectorCore TorahInspectorCoordinator.swift
+[9/21] Compiling TorahInspectorCore TorahInspectorRepository.swift
+[10/21] Compiling TorahInspectorCore TorahReaderScrollStateMachine.swift
+[11/21] Compiling TorahInspectorCore TorahSourceTransfer.swift
+[12/21] Compiling TorahInspectorCore TorahToolSelectorStateMachine.swift
+[14/22] Emitting module PinkhaKit
+[15/46] Compiling PinkhaKit PinkhaBootstrapProtocols.swift
+[16/46] Compiling PinkhaKit PinkhaSchemaMigrator.swift
+[17/46] Compiling PinkhaKit PinkhaSpaceBootstrapEngine.swift
+[18/46] Compiling PinkhaKit PinkhaRuntime.swift
+[19/46] Compiling PinkhaKit PinkhaHierarchyBuilder.swift
+[20/46] Compiling PinkhaKit PinkhaHierarchyCodec.swift
+[21/46] Compiling PinkhaKit PinkhaHierarchyKeyBuilder.swift
+[22/46] Compiling PinkhaKit PinkhaHierarchyModels.swift
+[23/46] Compiling PinkhaKit PinkhaHierarchyMutationValidator.swift
+[24/46] Compiling PinkhaKit PinkhaHierarchyOrdering.swift
+[25/46] Compiling PinkhaKit PinkhaHierarchyReconciler.swift
+[26/46] Compiling PinkhaKit PinkhaNavigationDirectionPolicy.swift
+[27/46] Compiling PinkhaKit PinkhaTextDirectionMarker.swift
+[28/46] Compiling PinkhaKit PinkhaWritingDirectionPolicy.swift
+[29/46] Compiling PinkhaKit PinkhaSchemaRoles.swift
+[30/46] Compiling PinkhaKit PinkhaSpaceManifest.swift
+[31/46] Compiling PinkhaKit TorahNativePropertySchema.swift
+[32/46] Compiling PinkhaKit AnytypeTorahWorkspace.swift
+[33/46] Compiling PinkhaKit SefariaHierarchyProvider.swift
+[34/46] Compiling PinkhaKit TorahSourceHierarchy.swift
+[35/46] Compiling PinkhaKit SefariaClient.swift
+[36/46] Compiling PinkhaKit SefariaDisplayText.swift
+[37/46] Compiling PinkhaKit SefariaJSONText.swift
+[38/46] Compiling PinkhaKit SefariaLexicalProvider.swift
+[39/69] Compiling PinkhaKit SefariaReferenceProvider.swift
+[40/69] Compiling PinkhaKit SefariaRelationshipProvider.swift
+[41/69] Compiling PinkhaKit SefariaTextProvider.swift
+[42/69] Compiling PinkhaKit SefariaTopicProvider.swift
+[43/69] Compiling PinkhaKit TorahHTTPTransport.swift
+[44/69] Compiling PinkhaKit TorahTopicCache.swift
+[45/69] Compiling PinkhaKit T5BlockReachability.swift
+[46/69] Compiling PinkhaKit T5ExpandedRelatedDocumentsQuery.swift
+[47/69] Compiling PinkhaKit T5ExpandedRelatedTargets.swift
+[48/69] Compiling PinkhaKit T5NoteCreationFlow.swift
+[49/69] Compiling PinkhaKit T5SpaceRelatedDocumentsQuery.swift
+[50/69] Compiling PinkhaKit TorahAssociationIdentity.swift
+[51/69] Compiling PinkhaKit TorahAssociationModels.swift
+[52/69] Compiling PinkhaKit TorahAssociationPayloadCodec.swift
+[53/69] Compiling PinkhaKit TorahAssociationRepository.swift
+[54/69] Compiling PinkhaKit TorahCanonicalAssociations.swift
+[55/69] Compiling PinkhaKit TorahDerivedQueryProjection.swift
+[56/69] Compiling PinkhaKit TorahDocumentPropertyProjection.swift
+[57/69] Compiling PinkhaKit TorahInspectorRepositoryFactory.swift
+[58/69] Compiling PinkhaKit TorahProviderModels.swift
+[59/69] Compiling PinkhaKit TorahProviderProtocols.swift
+[60/69] Compiling PinkhaKit TorahProviderRegistry.swift
+[61/69] Compiling PinkhaKit TorahReferenceUtil.swift
+[62/70] Wrapping AST for PinkhaKit for debugging
+[64/71] Emitting module PinkhaKitTests
+[65/75] Compiling PinkhaKitTests T5BlockReachabilityTests.swift
+C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\Tests\PinkhaKitTests\T5NoteCreationFlowTests.swift:124:19: warning: 'permitted' mutated after capture by sendable closure
+ 84 |         let flow = T5NoteCreationFlow()
+ 85 |         let barrier = T5NoteWriteBarrier()
+ 86 |         var permitted = true
+    |             `- note: variable defined here
+ 87 |         var creates = 0
+ 88 |         var sourceWrites = 0
+ 89 |         var textWrites = 0
+ 90 |         var originWrites = 0
+ 91 |         let authorize: T5NoteCreationFlow.Authorize = {
+    |                                                       `- note: variable captured by sendable closure
+ 92 |             guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
+    |                   `- note: capturing use
+ 93 |         }
+ 94 |         let request = Task { @MainActor in
+    :
+122 |         #expect(originWrites == 0)
+123 | 
+124 |         permitted = true
+    |                   `- warning: 'permitted' mutated after capture by sendable closure
+125 |         let resumed = try await flow.create(
+126 |             source: source, authorize: authorize,
+[66/75] Compiling PinkhaKitTests T5ExpandedRelatedDocumentsQueryTests.swift
+C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\Tests\PinkhaKitTests\T5NoteCreationFlowTests.swift:124:19: warning: 'permitted' mutated after capture by sendable closure
+ 84 |         let flow = T5NoteCreationFlow()
+ 85 |         let barrier = T5NoteWriteBarrier()
+ 86 |         var permitted = true
+    |             `- note: variable defined here
+ 87 |         var creates = 0
+ 88 |         var sourceWrites = 0
+ 89 |         var textWrites = 0
+ 90 |         var originWrites = 0
+ 91 |         let authorize: T5NoteCreationFlow.Authorize = {
+    |                                                       `- note: variable captured by sendable closure
+ 92 |             guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
+    |                   `- note: capturing use
+ 93 |         }
+ 94 |         let request = Task { @MainActor in
+    :
+122 |         #expect(originWrites == 0)
+123 | 
+124 |         permitted = true
+    |                   `- warning: 'permitted' mutated after capture by sendable closure
+125 |         let resumed = try await flow.create(
+126 |             source: source, authorize: authorize,
+[67/75] Compiling PinkhaKitTests T5ExpandedRelatedTargetsTests.swift
+C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\Tests\PinkhaKitTests\T5NoteCreationFlowTests.swift:124:19: warning: 'permitted' mutated after capture by sendable closure
+ 84 |         let flow = T5NoteCreationFlow()
+ 85 |         let barrier = T5NoteWriteBarrier()
+ 86 |         var permitted = true
+    |             `- note: variable defined here
+ 87 |         var creates = 0
+ 88 |         var sourceWrites = 0
+ 89 |         var textWrites = 0
+ 90 |         var originWrites = 0
+ 91 |         let authorize: T5NoteCreationFlow.Authorize = {
+    |                                                       `- note: variable captured by sendable closure
+ 92 |             guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
+    |                   `- note: capturing use
+ 93 |         }
+ 94 |         let request = Task { @MainActor in
+    :
+122 |         #expect(originWrites == 0)
+123 | 
+124 |         permitted = true
+    |                   `- warning: 'permitted' mutated after capture by sendable closure
+125 |         let resumed = try await flow.create(
+126 |             source: source, authorize: authorize,
+[68/75] Compiling PinkhaKitTests T5NoteCreationFlowTests.swift
+C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\Tests\PinkhaKitTests\T5NoteCreationFlowTests.swift:124:19: warning: 'permitted' mutated after capture by sendable closure
+ 84 |         let flow = T5NoteCreationFlow()
+ 85 |         let barrier = T5NoteWriteBarrier()
+ 86 |         var permitted = true
+    |             `- note: variable defined here
+ 87 |         var creates = 0
+ 88 |         var sourceWrites = 0
+ 89 |         var textWrites = 0
+ 90 |         var originWrites = 0
+ 91 |         let authorize: T5NoteCreationFlow.Authorize = {
+    |                                                       `- note: variable captured by sendable closure
+ 92 |             guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
+    |                   `- note: capturing use
+ 93 |         }
+ 94 |         let request = Task { @MainActor in
+    :
+122 |         #expect(originWrites == 0)
+123 | 
+124 |         permitted = true
+    |                   `- warning: 'permitted' mutated after capture by sendable closure
+125 |         let resumed = try await flow.create(
+126 |             source: source, authorize: authorize,
+[69/76] C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\.build\x86_64-unknown-windows-msvc\debug\T5AuthorizationComponentProofPackageDiscoveredTests.derived\all-discovered-tests.swift
+[70/77] Wrapping AST for PinkhaKitTests for debugging
+[71/77] Write sources
+[73/78] Emitting module T5AuthorizationComponentProofPackageDiscoveredTests
+[74/80] Compiling T5AuthorizationComponentProofPackageDiscoveredTests PinkhaKitTests.swift
+[75/80] Compiling T5AuthorizationComponentProofPackageDiscoveredTests all-discovered-tests.swift
+[76/78] Write Objects.LinkFileList
+[77/78] Linking T5AuthorizationComponentProofPackageTests.xctest
+Build complete! (64.01s)
+Test Suite 'Selected tests' started at 2026-11-18 00:17:11.997
+Test Suite 'Selected tests' passed at 2026-11-18 00:17:12.089
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◊ Test run started.
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+→ Target Platform: x86_64-unknown-windows-msvc
+◊ Suite "T5 explicit expanded target materialization" started.
+◊ Suite "T5 authorized block tree reachability" started.
+◊ Suite "T5 expanded native candidate pagination" started.
+◊ Test documentAndBlocksRemainSeparateWithRoleBucketsAndReadOnlyQuotes() started.
+◊ Test invalidForeignAndOrphanBlockTargetsNeverBecomeDocumentRows() started.
+◊ Test wideTreeAndLargeMalformedChildListStayWithinTreeValidation() started.
+◊ Test malformedReachableGraphsNeverYieldUsableTargets() started.
+◊ Test reachableDescendantsExcludeRootAndOrphans() started.
+◊ Test globalDateAndStableIDRankIsIndependentOfAppendOrder() started.
+◊ Test deepDocumentUsesIterativeTraversal() started.
+◊ Test missingAndEarliestDatesStillUseStableTargetIDTieBreak() started.
+◊ Test cancelledEvaluationDoesNotPublishGraph() started.
+◊ Test legacyQuoteCodecIsConsumedWithoutChangingContextOnlyIdentityPolicy() started.
+◊ Test cancellationAfterFetchCannotPublishTargets() started.
+◊ Test scopeAndNodeBoundFailExplicitly() started.
+◊ Test cancellationDoesNotPublishPartialAppendState() started.
+◊ Test resolvedReferenceUsesCanonicalBeforeExternalFallback() started.
+◊ Test explicitCapabilityAndRowVersionAreRequiredDespiteDefaultReadyDTO() started.
+◊ Test independentTargetCapIsDeterministicAndKeepsRetainedQuoteIDs() started.
+◊ Test internalSelectedIdentityIsRejectedForCanonicalAndExternalFallbackRecords() started.
+◊ Test unavailableRuntimeDoesNotQueryEvenWhenRowsWouldAdvertiseVersionOne() started.
+◊ Test refreshReadsCanonicalMembershipAgainAndDoesNotResurrectRemovedBlocks() started.
+◊ Test reservedInternalIdentityCannotTriggerANativeSearch() started.
+◊ Test duplicateAndOversizedPagesFailWithoutPublishingPartialResults(oversized:) started.
+◊ Test pagesRetainExactBlocksAndQuotesWhileRejectingUnreadyCanonicalDocuments() started.
+◊ Test laterPageFailureDoesNotReturnTheEarlierTargetsAsACompleteSnapshot() started.
+◊ Test candidateAndTargetCapsAreIndependentAndDisclosed() started.
+◊ Test mixedDocumentQuoteGroupCannotUseContextOnlyUnlink() started.
+◊ Test requestSpaceRecordSpaceObjectAndExactIdentityAreEnforced() started.
+◊ Test case passing 1 argument oversized → false to duplicateAndOversizedPagesFailWithoutPublishingPartialResults(oversized:) started.
+◊ Test case passing 1 argument oversized → true to duplicateAndOversizedPagesFailWithoutPublishingPartialResults(oversized:) started.
+√ Test scopeAndNodeBoundFailExplicitly() passed after 0.002 seconds.
+√ Test reachableDescendantsExcludeRootAndOrphans() passed after 0.003 seconds.
+√ Test cancelledEvaluationDoesNotPublishGraph() passed after 0.003 seconds.
+√ Test cancellationAfterFetchCannotPublishTargets() passed after 0.003 seconds.
+√ Test unavailableRuntimeDoesNotQueryEvenWhenRowsWouldAdvertiseVersionOne() passed after 0.003 seconds.
+√ Test internalSelectedIdentityIsRejectedForCanonicalAndExternalFallbackRecords() passed after 0.003 seconds.
+√ Test resolvedReferenceUsesCanonicalBeforeExternalFallback() passed after 0.003 seconds.
+√ Test mixedDocumentQuoteGroupCannotUseContextOnlyUnlink() passed after 0.003 seconds.
+√ Test reservedInternalIdentityCannotTriggerANativeSearch() passed after 0.003 seconds.
+√ Test requestSpaceRecordSpaceObjectAndExactIdentityAreEnforced() passed after 0.003 seconds.
+√ Test duplicateAndOversizedPagesFailWithoutPublishingPartialResults(oversized:) with 2 test cases passed after 0.003 seconds.
+√ Test cancellationDoesNotPublishPartialAppendState() passed after 0.004 seconds.
+√ Test documentAndBlocksRemainSeparateWithRoleBucketsAndReadOnlyQuotes() passed after 0.005 seconds.
+√ Test refreshReadsCanonicalMembershipAgainAndDoesNotResurrectRemovedBlocks() passed after 0.003 seconds.
+√ Test explicitCapabilityAndRowVersionAreRequiredDespiteDefaultReadyDTO() passed after 0.004 seconds.
+√ Test pagesRetainExactBlocksAndQuotesWhileRejectingUnreadyCanonicalDocuments() passed after 0.004 seconds.
+√ Test candidateAndTargetCapsAreIndependentAndDisclosed() passed after 0.003 seconds.
+√ Test malformedReachableGraphsNeverYieldUsableTargets() passed after 0.005 seconds.
+√ Test legacyQuoteCodecIsConsumedWithoutChangingContextOnlyIdentityPolicy() passed after 0.005 seconds.
+√ Test laterPageFailureDoesNotReturnTheEarlierTargetsAsACompleteSnapshot() passed after 0.004 seconds.
+√ Suite "T5 expanded native candidate pagination" passed after 0.006 seconds.
+√ Test globalDateAndStableIDRankIsIndependentOfAppendOrder() passed after 0.006 seconds.
+√ Test invalidForeignAndOrphanBlockTargetsNeverBecomeDocumentRows() passed after 0.006 seconds.
+√ Test missingAndEarliestDatesStillUseStableTargetIDTieBreak() passed after 0.005 seconds.
+√ Test wideTreeAndLargeMalformedChildListStayWithinTreeValidation() passed after 0.018 seconds.
+√ Test deepDocumentUsesIterativeTraversal() passed after 0.021 seconds.
+√ Suite "T5 authorized block tree reachability" passed after 0.023 seconds.
+√ Test independentTargetCapIsDeterministicAndKeepsRetainedQuoteIDs() passed after 0.105 seconds.
+√ Suite "T5 explicit expanded target materialization" passed after 0.107 seconds.
+√ Test run with 26 tests in 3 suites passed after 0.108 seconds.

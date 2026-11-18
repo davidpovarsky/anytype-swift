@@ -75,7 +75,10 @@ struct TorahWave1IntegrationTests {
         #expect(!initial.documents.contains { $0.objectID == otherVerse.id })
 
         var openedID: String?
-        session.installOpenObjectHandler { openedID = $0 }
+        session.installOpenObjectHandler { objectID, blockID in
+            #expect(blockID == nil)
+            openedID = objectID
+        }
         let addNote = try #require(session.hostActions.onAddNote)
         addNote(selection, {
             print("WAVE1_PHASE add-note-completion-callback utc=\(Date().timeIntervalSince1970) monotonic=\(ProcessInfo.processInfo.systemUptime) cancelled=\(Task.isCancelled)")
