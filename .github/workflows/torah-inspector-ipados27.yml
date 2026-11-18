@@ -19,6 +19,7 @@ on:
           - t2-native-operations
           - simulator-ui27
           - heart-runtime
+          - t5-r15-runtime
           - sdk06-tests
           - wave15-acceptance
       t5_component:
@@ -113,6 +114,10 @@ jobs:
   heart-runtime:
     if: ${{ inputs.route == 'heart-runtime' }}
     uses: ./.github/workflows/pinkha-heart-runtime.yml
+
+  t5-r15-runtime:
+    if: ${{ inputs.route == 't5-r15-runtime' }}
+    uses: ./.github/workflows/pinkha-t5-r15-runtime.yml
 
   t2-native-operations:
     if: ${{ inputs.route == 't2-native-operations' }}
