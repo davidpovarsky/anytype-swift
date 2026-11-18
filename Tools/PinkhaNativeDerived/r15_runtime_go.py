@@ -2,9 +2,9 @@
 """Build-local Go launcher for pinned gomobile's generated modules.
 
 The native workspace's reviewed genproto replacement must also apply in each
-generated module. Verify gomobile's immutable original declarations, then carry
-only that versionless replacement into the disposable gobind scope. Generated
-modules build offline with GOWORK=off and prove exact selection and checksums.
+generated module. Verify gomobile's immutable original declarations, then prepare
+only the pinned native Go requirement and versionless replacement in the disposable
+gobind scope. Modules build offline with GOWORK=off and prove exact selection and checksums.
 """
 import base64
 import hashlib
@@ -20,6 +20,10 @@ GENPROTO = "google.golang.org/genproto"
 VERSION = "v0.0.0-20241021214115-324edc3d5d38"
 MODULE_SUM = "h1:Q3nlH8iSQSRUwOskjbcSMcF2jiYMNiQYZ0c2KEJLKKU="
 MOD_SUM = "h1:xBI+tzfqGGN2JBeSebfKXFSdBpWVQ7sLW40PTupVRm4="
+# Pinned gomobile's ensureGoVersion formats only the Go major/minor. The
+# separately verified compiler is Go 1.26.5; its generated input says go 1.26.
+GENERATED_GO_DIRECTIVE = "1.26"
+PREPARED_GO_DIRECTIVE = "1.26.5"
 
 
 def select_scope(cwd, heart, generated, workspace):
@@ -133,10 +137,12 @@ def validate_seeded_graph(actual, expected):
                 policy="ALLOW_UNUSED_MODULE_PRUNING_ONLY")
 
 
-def canonical_manifest(document):
+def canonical_manifest(document, *, prepared=False):
+    expected_go = PREPARED_GO_DIRECTIVE if prepared else GENERATED_GO_DIRECTIVE
     if (not isinstance(document, dict) or document.get("Module") != {"Path": "gobind"}
-            or document.get("Go") != "1.26.5"):
-        raise RuntimeError("Pinned gomobile-generated module/go directive differs")
+            or document.get("Go") != expected_go):
+        raise RuntimeError("Pinned " + ("prepared" if prepared else "original")
+                           + " gomobile module/go directive differs (expected " + expected_go + ")")
     result = dict(document)
     for key in ["Require", "Replace"]:
         if not isinstance(result.get(key), list):
@@ -146,7 +152,7 @@ def canonical_manifest(document):
 
 
 def reviewed_generated_manifest(original):
-    """Carry the native workspace's reviewed override into the generated scope."""
+    """Prepare only the pinned native Go directive and reviewed genproto override."""
     before = canonical_manifest(original)
     matches = [item for item in before["Replace"]
                if isinstance(item, dict) and item.get("Old", {}).get("Path") == GENPROTO]
@@ -159,18 +165,22 @@ def reviewed_generated_manifest(original):
             or source["New"] != {"Path": GENPROTO, "Version": VERSION}):
         raise RuntimeError("Original generated genproto replacement is not the reviewed native dependency")
     prepared = json.loads(json.dumps(before))
+    prepared["Go"] = PREPARED_GO_DIRECTIVE
     prepared["Replace"] = [
         {"Old": {"Path": GENPROTO}, "New": {"Path": GENPROTO, "Version": VERSION}}
         if item == source else item for item in prepared["Replace"]]
-    return canonical_manifest(prepared)
+    return canonical_manifest(prepared, prepared=True)
 
 
-def validate_genproto_override_receipt(receipt, original):
+def validate_generated_preparation_receipt(receipt, original):
     prepared = reviewed_generated_manifest(original)
-    if (receipt.get("status") != "REVIEWED_GENPROTO_OVERRIDE_APPLIED"
+    if (receipt.get("status") != "REVIEWED_GO_AND_GENPROTO_PREPARATION_APPLIED"
             or receipt.get("original_manifest") != canonical_manifest(original)
-            or receipt.get("prepared_manifest") != prepared):
-        raise RuntimeError("Generated genproto override receipt changed its exact declaration contract")
+            or receipt.get("prepared_manifest") != prepared
+            or receipt.get("go_directive_preparation") != dict(
+                original=GENERATED_GO_DIRECTIVE, prepared=PREPARED_GO_DIRECTIVE,
+                basis="PINNED_NATIVE_GO_MOD_AND_TOOLCHAIN")):
+        raise RuntimeError("Generated preparation receipt changed its exact declaration contract")
     for prefix in ["original", "prepared"]:
         raw = receipt.get(prefix + "_go_mod_text")
         if (not isinstance(raw, str) or not raw
@@ -179,7 +189,7 @@ def validate_genproto_override_receipt(receipt, original):
     return prepared
 
 
-def prepare_generated_genproto_override(real_go, env, cwd, original):
+def prepare_generated_module(real_go, env, cwd, original):
     """Edit only a verified disposable module; never change the immutable seed."""
     original = canonical_manifest(original)
     prepared = reviewed_generated_manifest(original)
@@ -200,18 +210,21 @@ def prepare_generated_genproto_override(real_go, env, cwd, original):
         raise RuntimeError("Generated input changed before the reviewed dependency override")
     before = mod.read_bytes()
     source = next(item for item in original["Replace"] if item["Old"]["Path"] == GENPROTO)
-    edit(["-dropreplace=" + GENPROTO + "@" + source["Old"]["Version"],
+    edit(["-go=" + PREPARED_GO_DIRECTIVE,
+          "-dropreplace=" + GENPROTO + "@" + source["Old"]["Version"],
           "-replace=" + GENPROTO + "=" + GENPROTO + "@" + VERSION])
-    if canonical_manifest(json.loads(edit(["-json"]))) != prepared:
+    if canonical_manifest(json.loads(edit(["-json"])), prepared=True) != prepared:
         raise RuntimeError("Reviewed override changed another generated module declaration")
     after = mod.read_bytes()
-    receipt = dict(status="REVIEWED_GENPROTO_OVERRIDE_APPLIED",
+    receipt = dict(status="REVIEWED_GO_AND_GENPROTO_PREPARATION_APPLIED",
                    original_manifest=original, prepared_manifest=prepared,
+                   go_directive_preparation=dict(original=GENERATED_GO_DIRECTIVE, prepared=PREPARED_GO_DIRECTIVE,
+                                                 basis="PINNED_NATIVE_GO_MOD_AND_TOOLCHAIN"),
                    original_go_mod_text=before.decode("utf8"),
                    original_go_mod_sha256=hashlib.sha256(before).hexdigest(),
                    prepared_go_mod_text=after.decode("utf8"),
                    prepared_go_mod_sha256=hashlib.sha256(after).hexdigest())
-    validate_genproto_override_receipt(receipt, original)
+    validate_generated_preparation_receipt(receipt, original)
     return receipt
 
 
@@ -279,6 +292,8 @@ def audit_modules(real_go, env, cwd, heart, contract):
     validate_downloaded_graph(graph, downloads)
     verified["seed_graph_comparison"] = validate_seeded_graph(graph, contract["selected_dependencies"])
     verified["selected_dependency_graph"] = graph
+    manifest = canonical_manifest(query(["mod", "edit", "-json"]), prepared=True)
+    verified["prepared_go_directive"] = manifest["Go"]
     verified["go_mod_sha256"] = hashlib.sha256(mod.read_bytes()).hexdigest()
     verified["go_mod_text"] = mod.read_text(encoding="utf8")
     sums = cwd / "go.sum"
@@ -316,7 +331,7 @@ def main(argv=None):
             receipt["generated_contract_sha256"] = os.environ["PINKHA_T5_GENERATED_CONTRACT_SHA256"]
             if arguments[:2] == ["mod", "tidy"]:
                 receipt["before_tidy_seed"] = audit_initial_manifest(real_go, env, cwd, contract)
-                receipt["prepared_tidy_override"] = prepare_generated_genproto_override(
+                receipt["prepared_tidy_override"] = prepare_generated_module(
                     real_go, env, cwd, contract["before_tidy_manifest"])
         if scope == "generated-gobind" and arguments and arguments[0] in ["build", "install", "run", "test"]:
             receipt["before_build_modules"] = audit_modules(real_go, env, cwd, heart, contract)

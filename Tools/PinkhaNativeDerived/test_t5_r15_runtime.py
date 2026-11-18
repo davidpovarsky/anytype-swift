@@ -272,7 +272,11 @@ class R15RuntimeControls(unittest.TestCase):
         for path in runtime.MOBILE_BIND_SOURCES:
             target = mobile / path
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes((proof / "dependency-source" / ("gomobile-" + Path(path).name)).read_bytes())
+            if path == "cmd/gomobile/main.go":
+                primary = Path(__file__).resolve().parent / "fixtures/gomobile-cd096645fcd3/main.go"
+            else:
+                primary = proof / "dependency-source" / ("gomobile-" + Path(path).name)
+            target.write_bytes(primary.read_bytes())
         module = dict(Path="golang.org/x/mobile", Version=runtime.MOBILE_VERSION,
                       Sum=runtime.MOBILE_MODULE_SUM, GoModSum=runtime.MOBILE_MOD_SUM, Dir=str(mobile))
         source = proof / "unpacked/Pinkha-Native-Derived-Evidence/runtime/resolved-native-modules.log"
@@ -298,11 +302,31 @@ class R15RuntimeControls(unittest.TestCase):
         return heart, rows, graph, downloads
 
     def manifest_fixture(self, heart):
-        return dict(Module={"Path": "gobind"}, Go="1.26.5",
+        return dict(Module={"Path": "gobind"}, Go="1.26",
                     Require=[dict(Path="example.org/dependency", Version="v1.2.3")],
                     Replace=[dict(Old={"Path": launcher.NATIVE_MODULE}, New={"Path": str(heart)}),
                              dict(Old={"Path": launcher.GENPROTO, "Version": "v0.0.0-20240903143218-8af14fe29dc1"},
                                   New={"Path": launcher.GENPROTO, "Version": launcher.VERSION})])
+
+    def test_original_generated_go_directive_is_minor_only_and_never_a_version_range(self):
+        original = self.manifest_fixture(Path("/owned/heart"))
+        self.assertEqual(launcher.canonical_manifest(original)["Go"], "1.26")
+        for changed in ["1.26.5", "1.26.0", "1.25", "1.27", "", None]:
+            with self.subTest(go=changed):
+                candidate = copy.deepcopy(original)
+                candidate["Go"] = changed
+                with self.assertRaises(RuntimeError):
+                    launcher.canonical_manifest(candidate)
+
+    def test_prepared_go_directive_requires_the_exact_pinned_native_patch(self):
+        prepared = launcher.reviewed_generated_manifest(self.manifest_fixture(Path("/owned/heart")))
+        self.assertEqual(launcher.canonical_manifest(prepared, prepared=True)["Go"], "1.26.5")
+        for changed in ["1.26", "1.26.0", "1.26.4", "1.26.6", "1.27.0", "", None]:
+            with self.subTest(go=changed):
+                candidate = copy.deepcopy(prepared)
+                candidate["Go"] = changed
+                with self.assertRaises(RuntimeError):
+                    launcher.canonical_manifest(candidate, prepared=True)
 
     def test_generated_seed_keeps_original_native_floors_and_exact_gomobile_rules(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -313,6 +337,10 @@ class R15RuntimeControls(unittest.TestCase):
             self.assertEqual(rows, before)
             self.assertEqual(receipt["source_module_count"], 882)
             text = (seed / "go.mod").read_text()
+            self.assertTrue(text.startswith("module gobind\n\ngo 1.26\n"))
+            self.assertNotIn("go 1.26.5", text)
+            self.assertEqual(receipt["bind_source_sha256"]["cmd/gomobile/main.go"],
+                             "7e28b18d4d3791bf05fe11d6323777fe7ad344baa54f57894442afeccd7e6a5c")
             self.assertIn("git.sr.ht/~sbinet/gg v0.3.1", text)
             self.assertNotIn("git.sr.ht/~sbinet/gg v0.6.0", text)
             self.assertIn("gonum.org/v1/gonum v0.17.0", text)
@@ -323,13 +351,15 @@ class R15RuntimeControls(unittest.TestCase):
             self.assertEqual((heart / "preserve-native").read_bytes(), b"unchanged native input")
 
     def test_invalid_native_graph_or_changed_generator_is_rejected_before_seed_creation(self):
-        for change in ["duplicate", "foreign-native", "foreign-local", "newline-path", "mobile", "genproto", "source"]:
+        for change in ["duplicate", "foreign-native", "native-go", "foreign-local", "newline-path", "mobile", "genproto", "source", "source-main"]:
             with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
                 work, heart, mobile, rows = self.generated_fixture(Path(directory).resolve())
                 if change == "duplicate":
                     rows.append(copy.deepcopy(rows[-1]))
                 elif change == "foreign-native":
                     rows[0]["Dir"] = str(heart.parent / "other")
+                elif change == "native-go":
+                    rows[0]["GoVersion"] = "1.27.0"
                 elif change == "foreign-local":
                     rows[1]["Replace"] = dict(Path="../foreign", Dir="/foreign")
                 elif change == "newline-path":
@@ -338,6 +368,8 @@ class R15RuntimeControls(unittest.TestCase):
                     next(item for item in rows if item["Path"] == "golang.org/x/mobile")["Version"] = "v1.2.3"
                 elif change == "genproto":
                     next(item for item in rows if item["Path"] == launcher.GENPROTO)["Replace"]["Sum"] = "h1:wrong"
+                elif change == "source-main":
+                    (Path(mobile["Dir"]) / "cmd/gomobile/main.go").write_bytes(b"changed pinned version generator")
                 else:
                     (Path(mobile["Dir"]) / "cmd/gomobile/bind.go").write_bytes(b"changed pinned generator")
                 with self.assertRaises(RuntimeError):
@@ -422,7 +454,7 @@ class R15RuntimeControls(unittest.TestCase):
             manifest = self.manifest_fixture(root / "heart")
             contract = dict(before_tidy_manifest=launcher.canonical_manifest(manifest),
                             input_native_graph_sha256="a" * 64)
-            (root / "go.mod").write_text("module gobind\n\ngo 1.26.5\n", encoding="utf8")
+            (root / "go.mod").write_text("module gobind\n\ngo 1.26\n", encoding="utf8")
             env = dict(GOWORK="off", GOPROXY="off")
             for change in ["unchanged", "require", "replace", "go"]:
                 with self.subTest(change=change):
@@ -507,9 +539,10 @@ class R15RuntimeControls(unittest.TestCase):
         original["Exclude"] = [dict(Path="example.org/excluded", Version="v1.0.0")]
         preserved = copy.deepcopy(original)
         expected = copy.deepcopy(original)
+        expected["Go"] = "1.26.5"
         expected["Replace"][1]["Old"].pop("Version")
         prepared = launcher.reviewed_generated_manifest(original)
-        self.assertEqual(prepared, launcher.canonical_manifest(expected))
+        self.assertEqual(prepared, launcher.canonical_manifest(expected, prepared=True))
         self.assertEqual(original, preserved)
 
     def test_missing_ambiguous_or_changed_original_override_is_rejected(self):
@@ -545,7 +578,10 @@ class R15RuntimeControls(unittest.TestCase):
             if args[-1] == "-json":
                 return subprocess.CompletedProcess(args, 0, stdout=json.dumps(responses.pop(0)), stderr="")
             self.assertEqual(args[1:3], ["mod", "edit"])
-            self.assertEqual(args[-1], "-replace=" + launcher.GENPROTO + "=" + launcher.GENPROTO + "@" + launcher.VERSION)
+            self.assertEqual(args[3:], [
+                "-go=1.26.5",
+                "-dropreplace=" + launcher.GENPROTO + "@" + original["Replace"][1]["Old"]["Version"],
+                "-replace=" + launcher.GENPROTO + "=" + launcher.GENPROTO + "@" + launcher.VERSION])
             (root / "go.mod").write_bytes(after)
             return subprocess.CompletedProcess(args, 0, stdout="", stderr="")
         return before, after, command
@@ -556,11 +592,13 @@ class R15RuntimeControls(unittest.TestCase):
             original = self.manifest_fixture(root / "heart")
             before, after, command = self.override_command_fixture(root, original)
             with mock.patch.object(launcher.subprocess, "run", side_effect=command) as invoked:
-                receipt = launcher.prepare_generated_genproto_override(root / "go", {"GOWORK": "off"}, root, original)
+                receipt = launcher.prepare_generated_module(root / "go", {"GOWORK": "off"}, root, original)
             self.assertEqual(invoked.call_count, 3)
             self.assertEqual(receipt["original_go_mod_sha256"], hashlib.sha256(before).hexdigest())
             self.assertEqual(receipt["prepared_go_mod_sha256"], hashlib.sha256(after).hexdigest())
-            self.assertEqual(launcher.validate_genproto_override_receipt(receipt, original),
+            self.assertEqual(receipt["go_directive_preparation"], dict(
+                original="1.26", prepared="1.26.5", basis="PINNED_NATIVE_GO_MOD_AND_TOOLCHAIN"))
+            self.assertEqual(launcher.validate_generated_preparation_receipt(receipt, original),
                              launcher.reviewed_generated_manifest(original))
 
     def test_changed_preimage_or_native_workspace_cannot_be_edited(self):
@@ -574,7 +612,7 @@ class R15RuntimeControls(unittest.TestCase):
                     (root / "go.mod").unlink()
                 with mock.patch.object(launcher.subprocess, "run", side_effect=command) as invoked:
                     with self.assertRaises(RuntimeError):
-                        launcher.prepare_generated_genproto_override(root / "go", env, root, original)
+                        launcher.prepare_generated_module(root / "go", env, root, original)
                 self.assertEqual(invoked.call_count, 1 if case == "preimage" else 0)
                 if case != "missing-file":
                     self.assertEqual((root / "go.mod").read_bytes(), before)
@@ -592,7 +630,7 @@ class R15RuntimeControls(unittest.TestCase):
                 _, _, command = self.override_command_fixture(root, original, changed_after=change)
                 with mock.patch.object(launcher.subprocess, "run", side_effect=command):
                     with self.assertRaises(RuntimeError):
-                        launcher.prepare_generated_genproto_override(root / "go", {"GOWORK": "off"}, root, original)
+                        launcher.prepare_generated_module(root / "go", {"GOWORK": "off"}, root, original)
 
     def test_override_receipt_cannot_drop_or_change_either_declaration_boundary(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -600,7 +638,7 @@ class R15RuntimeControls(unittest.TestCase):
             original = self.manifest_fixture(root / "heart")
             _, _, command = self.override_command_fixture(root, original)
             with mock.patch.object(launcher.subprocess, "run", side_effect=command):
-                receipt = launcher.prepare_generated_genproto_override(root / "go", {"GOWORK": "off"}, root, original)
+                receipt = launcher.prepare_generated_module(root / "go", {"GOWORK": "off"}, root, original)
             changes = {
                 "status": lambda value: value.update(status="unverified"),
                 "original-manifest": lambda value: value["original_manifest"]["Require"][0].update(Version="v9.9.9"),
@@ -609,13 +647,15 @@ class R15RuntimeControls(unittest.TestCase):
                 "prepared-text": lambda value: value.update(prepared_go_mod_text="changed"),
                 "original-sha": lambda value: value.pop("original_go_mod_sha256"),
                 "prepared-sha": lambda value: value.pop("prepared_go_mod_sha256"),
+                "go-preparation-missing": lambda value: value.pop("go_directive_preparation"),
+                "go-preparation-changed": lambda value: value["go_directive_preparation"].update(prepared="1.26.0"),
             }
             for name, change in changes.items():
                 with self.subTest(case=name):
                     changed = copy.deepcopy(receipt)
                     change(changed)
                     with self.assertRaises(RuntimeError):
-                        launcher.validate_genproto_override_receipt(changed, original)
+                        launcher.validate_generated_preparation_receipt(changed, original)
 
     def hydration_manifests(self):
         original = dict(Module={"Path": "gobind"}, Go="1.26.5", Exclude=None, Retract=None,
@@ -647,6 +687,7 @@ class R15RuntimeControls(unittest.TestCase):
             "module": lambda value: value.update(Module={"Path": "other"}),
             "toolchain": lambda value: value.update(Toolchain="go1.27.0"),
             "go": lambda value: value.update(Go="1.27.0"),
+            "original-go-in-prepared-scope": lambda value: value.update(Go="1.26"),
             "replace": lambda value: value["Replace"][0]["New"].update(Version="v2.0.0"),
             "exclude": lambda value: value.update(Exclude=[dict(Path="example.test/a", Version="v1.0.0")]),
             "removed-original": lambda value: value["Require"].pop(0),

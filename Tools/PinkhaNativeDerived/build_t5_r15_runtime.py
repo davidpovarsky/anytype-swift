@@ -39,6 +39,7 @@ MOBILE_GRAPH_REQUIRED = {
 }
 
 MOBILE_BIND_SOURCES = {
+    "cmd/gomobile/main.go": "7e28b18d4d3791bf05fe11d6323777fe7ad344baa54f57894442afeccd7e6a5c",
     "cmd/gomobile/bind.go": "f9039cc240190ee7cabd2a89f3b7d479d51bd40a18e79f1a032177ce803b64b0",
     "cmd/gomobile/bind_iosapp.go": "17cb5ce95d4194126099c94613f4f2769a7ede696f0b36f062ed985d7245e977",
 }
@@ -212,6 +213,7 @@ def generated_dependency_seed(work, text, heart, mobile):
         seen.add(path)
         if item.get("Main"):
             if (path != launcher.NATIVE_MODULE or item.get("Version") or item.get("Replace")
+                    or item.get("GoVersion") != launcher.PREPARED_GO_DIRECTIVE
                     or not item.get("Dir") or Path(item["Dir"]).resolve() != heart.resolve()):
                 raise RuntimeError("Original native main module is not the exact owned Heart checkout")
             native_count += 1
@@ -235,12 +237,14 @@ def generated_dependency_seed(work, text, heart, mobile):
     pair_ci.validate_genproto_selection(selected.get(pair_ci.GENPROTO_PATH, {}))
     seed = work / "generated-dependency-seed"
     seed.mkdir(exist_ok=False)
-    raw = ("module gobind\n\ngo 1.26.5\n\nrequire (\n"
+    raw = ("module gobind\n\ngo " + launcher.GENERATED_GO_DIRECTIVE + "\n\nrequire (\n"
            + "".join("\t" + line + "\n" for line in requires) + ")\n\nreplace (\n"
            + "".join("\t" + line + "\n" for line in replacements) + ")\n")
     (seed / "go.mod").write_text(raw, encoding="utf8", newline="\n")
     return seed, dict(strategy="EXACT_PINNED_GOMOBILE_FLATTENED_MODULE_GRAPH",
                       graph_role="GENERATED_GRAPH_NOT_ORIGINAL_NATIVE_GRAPH",
+                      native_go_directive=launcher.PREPARED_GO_DIRECTIVE,
+                      original_generated_go_directive=launcher.GENERATED_GO_DIRECTIVE,
                       input_native_graph_sha256=hashlib.sha256(text.encode()).hexdigest(),
                       source_module_count=len(records), initial_go_mod_sha256=digest(seed / "go.mod"),
                       go_mod_text=raw, bind_source_sha256=dict(MOBILE_BIND_SOURCES),
@@ -263,8 +267,8 @@ def prepare_generated_hydration(work, original, expected_sha):
 
 def validate_generated_hydration_manifest(original, hydrated, graph):
     """Allow only selected MVS requirements; keep the original bind manifest separate."""
-    before = launcher.canonical_manifest(original)
-    after = launcher.canonical_manifest(hydrated)
+    before = launcher.canonical_manifest(original, prepared=True)
+    after = launcher.canonical_manifest(hydrated, prepared=True)
     if {key: value for key, value in before.items() if key != "Require"} != {
             key: value for key, value in after.items() if key != "Require"}:
         raise RuntimeError("Hydration changed original module/go/replacement or other non-require declarations")
@@ -420,11 +424,12 @@ def execute(args, control, evidence):
     initial_mod = run([str(real_go), "mod", "edit", "-json"],
                       "generated-graph-original-manifest", graph_env, cwd=graph_seed)
     manifest = launcher.canonical_manifest(json.loads(initial_mod.read_text(encoding="utf8")))
-    # gomobile narrows workspace replacements to one original selected version.
-    # Restore only the reviewed genproto override after verifying its exact input.
-    scope_override = launcher.prepare_generated_genproto_override(real_go, graph_env, hydration, manifest)
+    # gomobile drops the compiler patch version and narrows workspace replacements.
+    # Verify the original first, then explicitly prepare only the pinned native Go
+    # requirement and reviewed genproto override in this separate mutable copy.
+    scope_override = launcher.prepare_generated_module(real_go, graph_env, hydration, manifest)
     coverage.write_receipt(evidence / "generated-genproto-override.json", scope_override)
-    prepared_manifest = launcher.validate_genproto_override_receipt(scope_override, manifest)
+    prepared_manifest = launcher.validate_generated_preparation_receipt(scope_override, manifest)
     # go mod download may write MVS requirements even with GOFLAGS=-mod=readonly.
     # Preserve the original gomobile declarations and hydrate only this owned copy.
     graph_download = run([str(real_go), "mod", "download", "-json", "all"],
@@ -517,7 +522,7 @@ def execute(args, control, evidence):
                     or record["before_tidy_seed"].get("status") != "EXACT_GENERATED_INPUT"):
                 raise RuntimeError("Original generated input was not bound to the hydrated graph")
             actual_override = record.get("prepared_tidy_override", {})
-            if (launcher.validate_genproto_override_receipt(actual_override, manifest) != prepared_manifest
+            if (launcher.validate_generated_preparation_receipt(actual_override, manifest) != prepared_manifest
                     or actual_override["original_go_mod_sha256"] != record["before_tidy_seed"]["go_mod_sha256"]):
                 raise RuntimeError("Actual generated dependency override differs from the verified input")
             after_tidy = record["after_tidy_modules"]
