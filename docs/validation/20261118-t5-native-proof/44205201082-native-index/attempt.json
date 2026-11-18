@@ -1,0 +1,22 @@
+{
+  "run_id": "44205201082",
+  "attempt": 1,
+  "control_sha": "7a636325350cad48409621fec4ec616701ba768a",
+  "source_sha": "947fbde24d5657d0e1229f45bb3993648884a8a1",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "component": "native-index",
+  "status": "LINK_FAILURE_BEFORE_NATIVE_TESTS",
+  "native_tests_executed": 0,
+  "ci_controller_tests_passed": 5,
+  "artifact_id": "14383123966",
+  "artifact_sha256": "b7647ac6d8ad7c78a89c4ac1ce2d732fb642070b83897059b10797da47b47977",
+  "tantivy_archive_sha256": "88b34e006707bfec2d29e8b26405f67cbb975d06fd4ea164da856d0084aaabbc",
+  "cause": "Pinned Tantivy archive requires qsort_r; Ubuntu 22.04 musl 1.2.2 lacks it. The actual spaceindex test binary failed to link before any test executed.",
+  "correction": "Use Ubuntu 24.04 musl 1.2.4; record compiler versions and require a real static qsort_r link/run before the Go component. No native sources, dependency pins or assertions changed.",
+  "primary_sources": [
+    "https://www.openwall.com/lists/musl/2022/04/07/1",
+    "https://packages.ubuntu.com/jammy/musl-tools",
+    "https://packages.ubuntu.com/noble/musl-tools"
+  ],
+  "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF"
+}

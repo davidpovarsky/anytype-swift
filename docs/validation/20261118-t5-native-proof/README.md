@@ -15,3 +15,11 @@ The driver requested `linux-amd64.tar.gz`, absent from the official pinned relea
 Pinned upstream [Heart Linux build rules](https://github.com/anyproto/anytype-heart/blob/d98420b1113536afd08cde6de9a5816f6d27ffff/makefiles/ci-cross-compile-library.mk) and [Tantivy build rules](https://github.com/anyproto/tantivy-go/blob/v1.0.6/Makefile) use a musl C compiler and static linkage. The Linux proof job now installs `musl-tools`, records its compiler/package versions, and sets `CC=musl-gcc`, `GOFLAGS=-ldflags=-extldflags=-static`, and `GOTOOLCHAIN=local`.
 
 No dependency revision, checksum pin, Heart source, approved patch, native fixture, expected test count, or native assertion changed. The five existing controller tests passed after the correction; source whitespace validation passed. The corrected native run remains pending at this checkpoint. Client enablement stays disabled pending real runtime, reopen, and old/new compatibility evidence.
+
+## Second actual attempt: linker requirement exposed
+
+Run [44205201082](https://github.com/davidpovarsky/anytype-swift/actions/runs/44205201082), control `7a636325350cad48409621fec4ec616701ba768a`, successfully downloaded and verified the unchanged Tantivy archive. It reached the real native test link, then failed because the archive uses `qsort_r`, absent from Ubuntu 22.04's musl 1.2.2. No native test ran: actual package/top-level/subcase pass counts are all zero. This is a build/link failure, not a T5 assertion result.
+
+The [musl maintainer's 1.2.3 announcement](https://www.openwall.com/lists/musl/2022/04/07/1) identifies the introduction of `qsort_r`. [Ubuntu 24.04 provides musl-tools 1.2.4-2](https://packages.ubuntu.com/noble/musl-tools), while [22.04 provides 1.2.2-4](https://packages.ubuntu.com/jammy/musl-tools). The job therefore moves to Ubuntu 24.04, records the actual toolchain, and links/runs a small static qsort_r probe before compiling the native test. The dependency cache key distinguishes the toolchain. The asset/hash, native source, patch, fixtures and test assertions remain unchanged.
+
+The complete second artifact and extracted receipts/logs are retained in `44205201082-native-index`; its immutable GitHub digest is `b7647ac6d8ad7c78a89c4ac1ce2d732fb642070b83897059b10797da47b47977` (artifact `14383123966`). Corrected native execution remains pending at this checkpoint.
