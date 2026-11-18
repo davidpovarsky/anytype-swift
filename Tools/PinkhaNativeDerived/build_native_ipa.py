@@ -75,13 +75,19 @@ def test_configuration(products, blueprint):
         raise RuntimeError('Expected one actual Xcode configuration for ' + blueprint)
     return matches[0]
 
-def run_xctest(argv, app, evidence, result, prefix):
+def run_xctest(argv, app, evidence, result, prefix, command_runner=None):
     # Failure evidence must survive the strict acceptance gate too. Exporting
     # diagnostics never changes the xcodebuild exit status or acceptance result.
+    interrupted = False
     try:
-        command(argv,app,evidence)
+        (command_runner or command)(argv,app,evidence)
+    except KeyboardInterrupt:
+        # Keep any raw xcresult, but do not launch diagnostics while the runner
+        # is cancelling. SDK CommandCancelled also follows this exception path.
+        interrupted = True
+        raise
     finally:
-        if result.exists():
+        if result.exists() and not interrupted:
             for mode in ['summary','tests']:
                 with (evidence/(prefix+'-'+mode+'.json')).open('w') as stream:
                     subprocess.run(['xcrun','xcresulttool','get','test-results',mode,

@@ -1,9 +1,20 @@
 """Synthetic adversarial controls for the SDK CI gate, never native acceptance."""
+import ast
 import copy
+import json
+import os
 from pathlib import Path
 import plistlib
+import signal
+import subprocess
+import sys
 import tempfile
+import time
 import unittest
+from unittest.mock import Mock, patch
+
+import run_host_tests
+from host_command import CommandCancelled, command
 
 from run_host_tests import BRANCH, SUITES, require_identity, validate_results, xctest_products
 
@@ -128,11 +139,158 @@ class XcodeProductIdentityTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "executable is missing"):
                 xctest_products(configuration)
 
+    def test_real_products_directory_with_double_underscores_is_not_a_placeholder(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "actual__products__directory"
+            root.mkdir()
+            configuration, host, bundle = self.fixture(root)
+            self.assertEqual(xctest_products(configuration), tuple(path.resolve() for path in
+                             (host, host / "Anytype", bundle, bundle / "ActualTestExecutable")))
+
+    def test_unknown_xcode_placeholder_is_still_rejected_before_path_resolution(self):
+        with tempfile.TemporaryDirectory() as temp:
+            configuration, _, _ = self.fixture(Path(temp))
+            value = plistlib.loads(configuration.read_bytes())
+            entry = value["TestConfigurations"][0]["TestTargets"][0]
+            entry["TestHostPath"] = entry["TestHostPath"].replace("__TESTROOT__", "__UNKNOWN_ROOT__")
+            configuration.write_bytes(plistlib.dumps(value))
+            with self.assertRaisesRegex(ValueError, "Unsupported Xcode product placeholder"):
+                xctest_products(configuration)
+
     def test_executable_cannot_escape_its_bundle(self):
         with tempfile.TemporaryDirectory() as temp:
             configuration, _, _ = self.fixture(Path(temp), executable="../foreign")
             with self.assertRaisesRegex(ValueError, "Unsafe or missing"):
                 xctest_products(configuration)
+
+
+class SDKCancellationReceiptTests(unittest.TestCase):
+    def test_cancelled_execution_is_not_initial_fail_or_pass_and_starts_no_cleanup_commands(self):
+        with tempfile.TemporaryDirectory() as temp:
+            evidence = Path(temp) / "evidence"
+            argv = ["run_host_tests.py", "--app", temp, "--evidence", str(evidence),
+                    "--derived", str(Path(temp) / "derived"), "--expected-app-branch", BRANCH,
+                    "--heart-source-run-id", "123"]
+            previous = {sig: signal.getsignal(sig) for sig in (signal.SIGINT, signal.SIGTERM)}
+            with patch.object(sys, "argv", argv), patch.object(run_host_tests, "execute",
+                    side_effect=CommandCancelled(signal.SIGTERM)), patch.object(run_host_tests, "cleanup") as cleanup:
+                self.assertEqual(run_host_tests.main(), 1)
+            receipt = json.loads((evidence / "execution.json").read_text())
+            self.assertEqual(receipt["status"], "CANCELLED")
+            self.assertEqual(receipt["cancellation_signal"], signal.SIGTERM)
+            self.assertFalse(receipt["build_succeeded"])
+            self.assertIsNone(receipt["test_command_exit_code"])
+            cleanup.assert_not_called()
+            self.assertEqual({sig: signal.getsignal(sig) for sig in previous}, previous)
+
+    def test_injected_xctest_runner_preserves_failure_exports_and_skips_commands_after_cancel(self):
+        # Exercise the actual small shared wrapper without importing its Apple
+        # build dependencies into these portable controller controls.
+        source = Path(__file__).resolve().parents[1] / "PinkhaNativeDerived/build_native_ipa.py"
+        if not source.is_file():
+            source = Path(__file__).with_name("build_native_ipa.py")
+        tree = ast.parse(source.read_text(encoding="utf-8"))
+        function = next(node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "run_xctest")
+        process_api, default = Mock(), Mock()
+        namespace = {"subprocess": process_api, "command": default}
+        exec(compile(ast.Module(body=[function], type_ignores=[]), str(source), "exec"), namespace)
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            result = root / "actual.xcresult"
+            result.mkdir()
+            runner = Mock(side_effect=CommandCancelled(signal.SIGINT))
+            with self.assertRaises(CommandCancelled):
+                namespace["run_xctest"](["xcodebuild"], root, root, result, "sdk06", command_runner=runner)
+            runner.assert_called_once_with(["xcodebuild"], root, root)
+            default.assert_not_called()
+            process_api.run.assert_not_called()
+            runner.side_effect = subprocess.CalledProcessError(65, ["xcodebuild"])
+            with self.assertRaises(subprocess.CalledProcessError):
+                namespace["run_xctest"](["xcodebuild"], root, root, result, "sdk06", command_runner=runner)
+            self.assertEqual(process_api.run.call_count, 3)
+            process_api.reset_mock()
+            namespace["run_xctest"](["xcodebuild"], root, root, result, "sdk06")
+            default.assert_called_once_with(["xcodebuild"], root, root)
+            self.assertEqual(process_api.run.call_count, 3)
+
+
+@unittest.skipUnless(os.name == "posix", "Actual isolated process-group controls require POSIX")
+class SDKCommandProcessTests(unittest.TestCase):
+    def test_success_and_failure_keep_output_and_distinct_completed_receipts(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            command([sys.executable, "-c", "print('completed command')"], root, root)
+            first = json.loads((root / "command-00.json").read_text())
+            self.assertEqual((first["status"], first["exit_code"]), ("SUCCEEDED", 0))
+            self.assertEqual((root / "command-00.log").read_text(), "completed command\n")
+            with self.assertRaises(subprocess.CalledProcessError) as raised:
+                command([sys.executable, "-c", "print('error: actual exit seven'); raise SystemExit(7)"], root, root)
+            self.assertEqual(raised.exception.returncode, 7)
+            second = json.loads((root / "command-01.json").read_text())
+            self.assertEqual((second["status"], second["exit_code"]), ("FAILED", 7))
+            self.assertIn("actual exit seven", (root / "command-01.log").read_text())
+            self.assertEqual(json.loads((root / "command-00.json").read_text()), first)
+
+    def test_sigterm_flushes_partial_log_and_stops_only_the_owned_child_group(self):
+        module = Path(__file__).resolve().parent
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            child = root / "child.py"
+            descendant = ("import os,signal,time;from pathlib import Path;"
+                          "signal.signal(signal.SIGTERM,signal.SIG_IGN);"
+                          "Path('descendant.pid').write_text(str(os.getpid()));"
+                          "print('descendant ready',flush=True);time.sleep(60)")
+            child.write_text("import subprocess,sys,time\n"
+                             "subprocess.Popen([sys.executable,'-c'," + repr(descendant) + "])\n"
+                             "print('live child before cancellation',flush=True)\n"
+                             "time.sleep(60)\n")
+            harness = ("import sys;from pathlib import Path;sys.path.insert(0," + repr(str(module)) + ");"
+                       "from host_command import command,cancellation_signals,CommandCancelled\n"
+                       "with cancellation_signals():\n"
+                       " try: command([sys.executable," + repr(str(child)) + "],Path(" + repr(temp)
+                       + "),Path(" + repr(temp) + "))\n"
+                       " except CommandCancelled as error: raise SystemExit(128+error.signum)\n")
+            unrelated = subprocess.Popen([sys.executable, "-c", "import time;time.sleep(60)"],
+                                          start_new_session=True)
+            owner = subprocess.Popen([sys.executable, "-c", harness], stdout=subprocess.PIPE,
+                                     stderr=subprocess.STDOUT, start_new_session=True)
+            owned_pgid = None
+            try:
+                log, metadata = root / "command-00.log", root / "command-00.json"
+                deadline = time.monotonic() + 8
+                while time.monotonic() < deadline:
+                    if log.exists() and "descendant ready" in log.read_text():
+                        break
+                    self.assertIsNone(owner.poll(), "Command owner exited before the live-output check")
+                    time.sleep(0.02)
+                self.assertIn("live child before cancellation", log.read_text())
+                self.assertIn("descendant ready", log.read_text())
+                started = json.loads(metadata.read_text())
+                self.assertEqual(started["status"], "RUNNING")
+                owned_pgid = started["pgid"]
+                descendant_pid = int((root / "descendant.pid").read_text())
+                owner.send_signal(signal.SIGTERM)
+                output, _ = owner.communicate(timeout=6)
+                self.assertEqual(owner.returncode, 128 + signal.SIGTERM, output.decode())
+                receipt = json.loads(metadata.read_text())
+                self.assertEqual(receipt["status"], "CANCELLED")
+                self.assertEqual(receipt["signal"], signal.SIGTERM)
+                self.assertEqual(receipt["owned_group_cleanup"]["pgid"], owned_pgid)
+                self.assertTrue(receipt["owned_group_cleanup"]["child_reaped"])
+                self.assertIsNone(unrelated.poll(), "A different process group must remain untouched")
+                state = subprocess.run(["ps", "-p", str(descendant_pid), "-o", "stat="],
+                                       capture_output=True, text=True, timeout=2).stdout.strip()
+                self.assertTrue(not state or state.startswith("Z"), "Owned descendant is still running: " + state)
+                self.assertIn("live child before cancellation", log.read_text())
+            finally:
+                for pgid in (owned_pgid, owner.pid, unrelated.pid):
+                    if pgid is not None:
+                        try:
+                            os.killpg(pgid, signal.SIGKILL)
+                        except ProcessLookupError:
+                            pass
+                owner.communicate(timeout=3)
+                unrelated.wait(timeout=3)
 
 
 if __name__ == "__main__":
