@@ -61,13 +61,29 @@ final class PinkhaTorahQuoteAcceptanceUITests: XCTestCase {
         try requireBody(anchorID, text: anchorText)
         attachEvidence("quote-native-insert-and-citation")
 
+        // The existing native APIs record block creation and canonical source
+        // metadata as two separate history actions. Verify both observable
+        // intermediate states instead of claiming single-step atomic insertion.
+        try performHistoryAction("editor-undo")
+        try require(element(identifier: "torah-linked-source-" + blockID(originalID)).waitForNonExistence(timeout: 20),
+                    "The first native Undo did not remove the source metadata")
+        try requireBody(originalID, text: sourceText)
+        try requireBody(anchorID, text: anchorText)
+        attachEvidence("quote-native-undo-source-metadata")
+
         try performHistoryAction("editor-undo")
         try require(quoteRows(sourceText).firstMatch.waitForNonExistence(timeout: 20),
-                    "One native Undo must remove the inserted quote")
-        try require(element(identifier: "torah-linked-source-" + blockID(originalID)).waitForNonExistence(timeout: 20),
-                    "Undo left a source ornament for the removed block")
+                    "The second native Undo did not remove the quote block")
         try requireBody(anchorID, text: anchorText)
-        attachEvidence("quote-native-undo")
+        attachEvidence("quote-native-undo-block")
+
+        try performHistoryAction("editor-redo")
+        try requireBody(originalID, text: sourceText)
+        try require(quoteRows(sourceText).count == 1, "Redo of block creation changed the quote count")
+        try require(!element(identifier: "torah-linked-source-" + blockID(originalID)).exists,
+                    "Redo of block creation unexpectedly restored a later metadata action")
+        try requireBody(anchorID, text: anchorText)
+        attachEvidence("quote-native-redo-block")
 
         try performHistoryAction("editor-redo")
         let restoredIDs = try requireQuotes(sourceText, count: 1)
