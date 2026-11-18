@@ -1,0 +1,42 @@
+{
+  "status": "CONTROLS_AND_SYNTAX_PASS_APPLE_UI_NOT_RUN",
+  "controls": {
+    "command": [
+      "py",
+      "-3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "Tools/PinkhaSimulatorGate",
+      "-p",
+      "test_run_wave15_acceptance.py"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.028s\n\nOK\n"
+  },
+  "swift_syntax": {
+    "command": [
+      "swiftc",
+      "-frontend",
+      "-parse",
+      "-swift-version",
+      "5",
+      "-D",
+      "PINKHA_NATIVE_DERIVED",
+      "PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "source_sha256": {
+    "PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift": "34be1438d48a77f4dd2fd3dd5a814d5312dfc0f176d517f00b3613d585c7cd74",
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": "8c76a9deb4540fab7aa3503d12426b866fca9a01875068c17239822303418ae3",
+    "Tools/PinkhaSimulatorGate/test_run_wave15_acceptance.py": "62aa3e31b7f3bc3fc453e43cf8b89e3d98d23dfbc38e93ef79abd0c84823fe7d",
+    "Tools/PinkhaSimulatorGate/WAVE15_ACCEPTANCE.md": "fc193cfe8536dae9b4cd7bf31dac5f3022617662201abe379b6f3e2499c24de3",
+    ".github/workflows/torah-inspector-ipados27.yml": "8f213e7889dc0de248e8ee08d305d37fc9a01d24574cb2e2c1ce7ed8a8b28efa"
+  },
+  "reason": "Separate incompatible mutable fixtures; remove phone-incompatible dismissal; require exact mounted regular-document identity."
+}

@@ -6,6 +6,7 @@ import XCTest
 final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
     private var fixture: NativeDerivedFixture!
+    private var currentObjectID: String?
 
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -18,6 +19,8 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         fixture = try JSONDecoder().decode(NativeDerivedFixture.self, from: Data(try XCTUnwrap(env["PINKHA_NATIVE_UI_FIXTURE_JSON"]).utf8))
         XCTAssertEqual(fixture.documents.count, 3)
         XCTAssertEqual(Set(fixture.documents.values).count, 3)
+        currentObjectID = nil
+        app.launchEnvironment["PINKHA_UI27_ROUTE_OBSERVATION"] = "1"
         app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
     }
 
@@ -342,8 +345,12 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         } else if fixture.types.values.contains(id) || fixture.universalTypes.values.contains(id) {
             XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Properties,")).firstMatch.waitForExistence(timeout: 45))
         } else {
+            let editor = app.otherElements["pinkha-ui27-editor:\(fixture.spaceId):\(id)"]
+            XCTAssertTrue(editor.waitForExistence(timeout: 45), "The exact disposable document must be mounted")
+            XCTAssertTrue(editor.isHittable)
             XCTAssertTrue(navigationMore.waitForExistence(timeout: 45))
         }
+        currentObjectID = id
     }
 
     private func openProperties(_ id: String, expectsSources: Bool = true, alreadyOpen: Bool = false) throws {
@@ -396,11 +403,13 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         }
         link.tap()
         XCTAssertTrue(app.buttons["Remove link"].firstMatch.waitForExistence(timeout: 30))
-        // Dismiss the original iPad value popover through its outside region.
-        app.coordinate(withNormalizedOffset: .zero)
-            .withOffset(CGVector(dx: 16, dy: search.frame.midY)).tap()
-        XCTAssertTrue(search.waitForNonExistence(timeout: 15))
-        XCTAssertTrue(propertyTitle(name).exists)
+        // The canonical mutation has completed. Cold-open the same actual
+        // fixture on phone or pad and verify its persisted native property.
+        // Interactive sheet dismissal remains a separate acceptance criterion.
+        let objectID = try XCTUnwrap(currentObjectID)
+        app.terminate()
+        try openProperties(objectID)
+        XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 15))
     }
 
     private func screenshot(_ name: String) {

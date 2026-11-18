@@ -27,8 +27,17 @@ LANES = {
     "properties": {
         "suite": "PinkhaNativeDerivedAcceptanceUITests",
         "methods": ["testNativePropertiesPickerChipsSetMembershipAndRelaunch", "testSourceHeaderSelectionAndOverflow",
-                    "testUniversalPageNoteCustomPropertiesAndMixedSet", "testRemainingNativeSourceFilterEditing",
-                    "testRemainingUniversalTypePickersAndMixedSet"],
+                    "testUniversalPageNoteCustomPropertiesAndMixedSet"],
+        "preparation": "TorahNativeDerivedProductIntegrationTests/originalProductPipeline",
+        "preparation_environment": {"PINKHA_NATIVE_DERIVED_ACCEPTANCE": "1"},
+        "fixture": "pinkha-native-derived-ui-fixture.json",
+    },
+    # The historical Set-resume methods require untouched universal blank
+    # fixtures. Their separate job creates a fresh native fixture; execution order
+    # must never determine whether a method passes.
+    "properties-set": {
+        "suite": "PinkhaNativeDerivedAcceptanceUITests",
+        "methods": ["testRemainingNativeSourceFilterEditing", "testRemainingUniversalTypePickersAndMixedSet"],
         "preparation": "TorahNativeDerivedProductIntegrationTests/originalProductPipeline",
         "preparation_environment": {"PINKHA_NATIVE_DERIVED_ACCEPTANCE": "1"},
         "fixture": "pinkha-native-derived-ui-fixture.json",
@@ -80,12 +89,12 @@ def nonempty(value, name):
 
 def fixture_environment(lane, value, language):
     nonempty(value.get("spaceId"), "Space")
-    if lane in {"inspector", "properties"}:
+    if lane in {"inspector", "properties", "properties-set"}:
         docs = value.get("universalDocuments", {})
         page = nonempty(docs.get("page"), "Page")
         source = nonempty(value.get("manySourcesDocument"), "source document")
         require(page != source, "Page and source document must be distinct")
-        if lane == "properties":
+        if lane in {"properties", "properties-set"}:
             writing = value.get("documents", {})
             require(len(writing) == 3 and len(set(writing.values())) == 3
                     and all(isinstance(v, str) and v for v in writing.values()), "Missing distinct writing-type documents")
