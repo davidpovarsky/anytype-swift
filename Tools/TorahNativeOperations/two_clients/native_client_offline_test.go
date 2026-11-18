@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -195,9 +196,15 @@ func t2OfflineSnapshotHash(t *testing.T, snapshot *pb.RpcPinkhaTorahOperationsSn
 	return t2Hash(raw)
 }
 
-func t2OfflineHistoryRead(t *testing.T, state *t2AccountState) t2OfflineHistory {
+func t2OfflineHistoryRead(t *testing.T, state *t2AccountState, limits ...time.Duration) t2OfflineHistory {
 	t.Helper()
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	limit := 20 * time.Second
+	if len(limits) > 0 {
+		require.Len(t, limits, 1)
+		require.Greater(t, limits[0], time.Duration(0))
+		limit = min(limit, limits[0])
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), limit)
 	defer cancel()
 	spc, err := app.MustComponent[space.Service](mw.GetApp()).Get(ctx, state.SpaceID)
 	require.NoError(t, err)
@@ -361,6 +368,233 @@ func t2OfflineRetryCollision(c *t2NativeClientCaller, state *t2AccountState, ope
 	require.True(c.t, proto.Equal(before, after), "retry and rejected collision must preserve every local field and signed head")
 }
 
+type t2DroppedClientReply struct {
+	requestSHA string
+	calls      int
+	replyBytes int
+	returned   bool
+}
+
+// The fault is at the client byte-return boundary. Invoke the real generated
+// entry, but never decode, replace or expose its first reply to the caller.
+// This is not a network packet loss or a process/power failure simulation.
+func t2DropClientReply(entry func([]byte) []byte, observed *t2DroppedClientReply) func([]byte) []byte {
+	return func(request []byte) []byte {
+		observed.calls++
+		observed.requestSHA = t2Hash(request)
+		reply := entry(request)
+		observed.replyBytes = len(reply)
+		observed.returned = true
+		return nil
+	}
+}
+
+func t2LostReplyCommittedChange(before, after t2OfflineHistory) (string, error) {
+	if len(before.Changes) != 2 || len(before.Parents) != 1 || len(before.Heads) != 1 ||
+		len(after.Changes) != 3 || len(after.Parents) != 2 || len(after.Heads) != 1 {
+		return "", fmt.Errorf("lost-reply proof requires the original history plus exactly one signed commit")
+	}
+	for id, hash := range before.Changes {
+		if after.Changes[id] != hash {
+			return "", fmt.Errorf("original signed change changed during lost-reply append")
+		}
+	}
+	for id, parents := range before.Parents {
+		if !slices.Equal(after.Parents[id], parents) {
+			return "", fmt.Errorf("original signed parentage changed during lost-reply append")
+		}
+	}
+	changeID := ""
+	for id := range after.Changes {
+		if _, existed := before.Changes[id]; !existed {
+			changeID = id
+		}
+	}
+	if changeID == "" || !slices.Equal(after.Heads, []string{changeID}) ||
+		!slices.Equal(after.Parents[changeID], before.Heads) {
+		return "", fmt.Errorf("lost-reply append is not one new signed child of the original head")
+	}
+	return changeID, nil
+}
+
+func t2OfflineAppendLostReply(c *t2NativeClientCaller, state *t2AccountState, operation torahops.Operation) (string, string, map[string]any) {
+	c.t.Helper()
+	deadline := time.Now().Add(60 * time.Second)
+	remaining := func() time.Duration {
+		left := time.Until(deadline)
+		require.Greater(c.t, left, time.Duration(0), "one fixed lost-reply proof deadline")
+		return min(20*time.Second, left)
+	}
+	require.Equal(c.t, torahops.Add, operation.Kind)
+	beforeHistory := t2OfflineHistoryRead(c.t, state, remaining())
+	beforeRead := t2OfflineRead(c, state, remaining())
+	require.NotNil(c.t, beforeRead.Error)
+	require.Equal(c.t, pb.RpcPinkhaTorahOperationsReadTargetResponseError_NULL, beforeRead.Error.Code)
+	require.Empty(c.t, beforeRead.Error.Issues)
+	t2NativeClientBaseline(c.t, state, beforeRead.Snapshot)
+	require.Equal(c.t, beforeHistory, t2OfflineHistoryRead(c.t, state, remaining()), "pre-write read must not add signed state")
+	encoded, err := proto.Marshal(t2OfflineRequest(operation))
+	require.NoError(c.t, err)
+	original := slices.Clone(encoded)
+	const method = "PinkhaTorahOperationsAppend"
+	initialCalls := c.returnedCalls[method]
+	dropped := &t2DroppedClientReply{}
+	c.rpc.calls[method]++
+	returned := c.callBytes(method, t2DropClientReply(PinkhaTorahOperationsAppend, dropped), encoded, remaining())
+	require.Nil(c.t, returned)
+	require.True(c.t, dropped.returned)
+	require.Equal(c.t, 1, dropped.calls)
+	require.Greater(c.t, dropped.replyBytes, 0)
+	require.Equal(c.t, t2Hash(original), dropped.requestSHA)
+	require.True(c.t, bytes.Equal(original, encoded))
+
+	// Inspect native signed storage before ReadTarget. A read cannot create the
+	// evidence used to declare this write committed. Any failed assertion ends
+	// this test before a second mutation request can be issued.
+	committedHistory := t2OfflineHistoryRead(c.t, state, remaining())
+	changeID, err := t2LostReplyCommittedChange(beforeHistory, committedHistory)
+	require.NoError(c.t, err)
+	committed := t2OfflineRead(c, state, remaining())
+	require.NotNil(c.t, committed.Error)
+	require.Equal(c.t, pb.RpcPinkhaTorahOperationsReadTargetResponseError_NULL, committed.Error.Code)
+	require.Empty(c.t, committed.Error.Issues)
+	require.NotNil(c.t, committed.Snapshot)
+	require.Equal(c.t, pb.RpcPinkhaTorahOperations_LOCAL_VERIFIED_TREE, committed.Snapshot.Scope)
+	require.Empty(c.t, committed.Snapshot.Conflicts)
+	require.Empty(c.t, committed.Snapshot.PendingObservedClaimIds)
+	require.Len(c.t, committed.Snapshot.Live, 2)
+	require.Equal(c.t, []string{changeID}, committed.Snapshot.VerifiedLocalHeads)
+	require.Greater(c.t, committed.Snapshot.LocalAppliedSeq, beforeRead.Snapshot.LocalAppliedSeq)
+	claimID, _, err := t2OfflineClaim(operation)
+	require.NoError(c.t, err)
+	seenOriginal, seenNew := 0, 0
+	for _, claim := range committed.Snapshot.Live {
+		require.NotNil(c.t, claim)
+		if claim.ClaimId == state.ClaimID {
+			require.True(c.t, proto.Equal(beforeRead.Snapshot.Live[0], claim))
+			seenOriginal++
+		} else {
+			require.True(c.t, t2OfflineClaimMatches(claim, operation))
+			seenNew++
+		}
+	}
+	require.Equal(c.t, 1, seenOriginal)
+	require.Equal(c.t, 1, seenNew)
+	afterReadHistory := t2OfflineHistoryRead(c.t, state, remaining())
+	require.Equal(c.t, committedHistory, afterReadHistory, "ReadTarget must not manufacture the committed history")
+	beforeRetryBytes, err := proto.Marshal(committed)
+	require.NoError(c.t, err)
+
+	// Reuse the exact original encoded bytes, not a request reconstructed from
+	// the read or the dropped response. Observe the actual second entry input.
+	retrySHA, retryCalls := "", 0
+	c.rpc.calls[method]++
+	reply := c.callBytes(method, func(data []byte) []byte {
+		retrySHA, retryCalls = t2Hash(data), retryCalls+1
+		return PinkhaTorahOperationsAppend(data)
+	}, encoded, remaining())
+	require.Equal(c.t, 1, retryCalls)
+	require.Equal(c.t, dropped.requestSHA, retrySHA)
+	require.True(c.t, bytes.Equal(original, encoded))
+	retry := &pb.RpcPinkhaTorahOperationsAppendResponse{}
+	require.NoError(c.t, proto.Unmarshal(reply, retry))
+	require.Equal(c.t, uint32(1), retry.ProtocolVersion)
+	require.NotNil(c.t, retry.Error)
+	require.Equal(c.t, pb.RpcPinkhaTorahOperationsAppendResponseError_NULL, retry.Error.Code)
+	require.Empty(c.t, retry.Error.Issues)
+	require.NotNil(c.t, retry.Receipt)
+	require.Equal(c.t, pb.RpcPinkhaTorahOperations_ALREADY_EXISTS_SAME_PAYLOAD, retry.Receipt.Disposition)
+	require.Equal(c.t, claimID, retry.Receipt.ClaimId)
+	require.Empty(c.t, retry.Receipt.ChangeId)
+	require.NotNil(c.t, retry.Receipt.Resolution)
+	require.Equal(c.t, operation.OperationID, retry.Receipt.Resolution.OperationId)
+	require.False(c.t, retry.Receipt.Resolution.Conflict)
+	require.Len(c.t, retry.Receipt.Resolution.Claims, 1)
+	require.True(c.t, t2OfflineClaimMatches(retry.Receipt.Resolution.Claims[0], operation))
+	afterRetry := t2OfflineRead(c, state, remaining())
+	require.True(c.t, proto.Equal(committed, afterRetry), "lost-reply retry must preserve every snapshot field, including the local sequence")
+	afterRetryHistory := t2OfflineHistoryRead(c.t, state, remaining())
+	require.Equal(c.t, committedHistory, afterRetryHistory)
+	afterRetryBytes, err := proto.Marshal(afterRetry)
+	require.NoError(c.t, err)
+	require.Equal(c.t, 2, c.returnedCalls[method]-initialCalls)
+	_ = remaining()
+	proof := map[string]any{"protocol": "pinkha-t2-lost-client-reply-v1",
+		"scope": "DROPPED_CLIENT_BYTE_REPLY_NOT_PACKET_LOSS_OR_CRASH", "first_reply_decoded": false,
+		"fixed_deadline_ms":   60000,
+		"discarded_responses": 1, "discarded_response_bytes": dropped.replyBytes, "native_append_attempts": 2,
+		"request_sha256": dropped.requestSHA, "retry_request_sha256": retrySHA, "request_bytes": len(original),
+		"claim_id": claimID, "committed_change_id": changeID, "commit_observed_before_read": true,
+		"history_before": beforeHistory, "history_committed": committedHistory,
+		"history_after_read": afterReadHistory, "history_after_retry": afterRetryHistory,
+		"retry_disposition": "ALREADY_EXISTS_SAME_PAYLOAD", "retry_change_id": retry.Receipt.ChangeId,
+		"snapshot_before_retry_sha256": t2Hash(beforeRetryBytes), "snapshot_after_retry_sha256": t2Hash(afterRetryBytes),
+		"local_sequence_before_retry": committed.Snapshot.LocalAppliedSeq, "local_sequence_after_retry": afterRetry.Snapshot.LocalAppliedSeq,
+		"crash_after_commit": "NOT_RUN"}
+	return claimID, changeID, proof
+}
+
+func TestT2NativeLostReplyControls(t *testing.T) {
+	t.Run("exact_bytes_forwarded_once_reply_discarded", func(t *testing.T) {
+		input := []byte("synthetic-exact-encoded-request")
+		var received []byte
+		observed := &t2DroppedClientReply{}
+		result := t2AwaitClientBytes(context.Background(), t2DropClientReply(func(data []byte) []byte {
+			received = slices.Clone(data)
+			return []byte("opaque-invalid-protobuf-reply-must-not-be-decoded")
+		}, observed), input, nil, nil, time.Second)
+		require.Equal(t, input, received)
+		require.Empty(t, result.failure)
+		require.True(t, result.originalReturned)
+		require.Nil(t, result.data)
+		require.Equal(t, 1, observed.calls)
+		require.True(t, observed.returned)
+		require.Equal(t, t2Hash(input), observed.requestSHA)
+		require.Greater(t, observed.replyBytes, 0)
+	})
+	t.Run("panic_is_not_a_dropped_reply", func(t *testing.T) {
+		observed := &t2DroppedClientReply{}
+		result := t2AwaitClientBytes(context.Background(), t2DropClientReply(func([]byte) []byte {
+			panic("synthetic-private-call-failure")
+		}, observed), []byte("synthetic-input"), nil, nil, time.Second)
+		require.Equal(t, "CALL_PANIC", result.failure)
+		require.False(t, observed.returned)
+		require.Zero(t, observed.replyBytes)
+		require.Nil(t, result.data)
+	})
+	before := t2OfflineHistory{Changes: map[string]string{"root": "root-hash", "original": "original-hash"},
+		Parents: map[string][]string{"original": {"root"}}, Heads: []string{"original"}}
+	valid := t2OfflineHistory{Changes: map[string]string{"root": "root-hash", "original": "original-hash", "new": "new-hash"},
+		Parents: map[string][]string{"original": {"root"}, "new": {"original"}}, Heads: []string{"new"}}
+	t.Run("single_signed_commit_is_observed", func(t *testing.T) {
+		change, err := t2LostReplyCommittedChange(before, valid)
+		require.NoError(t, err)
+		require.Equal(t, "new", change)
+	})
+	for _, test := range []struct {
+		name   string
+		change func(*t2OfflineHistory)
+	}{
+		{"missing_commit_is_rejected", func(h *t2OfflineHistory) { *h = before }},
+		{"additional_commit_is_rejected", func(h *t2OfflineHistory) { h.Changes["extra"] = "extra-hash" }},
+		{"changed_original_is_rejected", func(h *t2OfflineHistory) { h.Changes["original"] = "changed-hash" }},
+		{"wrong_parent_is_rejected", func(h *t2OfflineHistory) { h.Parents["new"] = []string{"root"} }},
+		{"changed_original_parent_is_rejected", func(h *t2OfflineHistory) { h.Parents["original"] = []string{"new"} }},
+		{"wrong_head_is_rejected", func(h *t2OfflineHistory) { h.Heads = []string{"original"} }},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			encoded, err := json.Marshal(valid)
+			require.NoError(t, err)
+			var changed t2OfflineHistory
+			require.NoError(t, json.Unmarshal(encoded, &changed))
+			test.change(&changed)
+			change, err := t2LostReplyCommittedChange(before, changed)
+			require.Error(t, err)
+			require.Empty(t, change)
+		})
+	}
+}
+
 func t2NativeOfflineRun(c *t2NativeClientCaller, state *t2AccountState, parent string) map[string]any {
 	c.t.Helper()
 	partitionWait := 60 * time.Second
@@ -380,7 +614,14 @@ func t2NativeOfflineRun(c *t2NativeClientCaller, state *t2AccountState, parent s
 	operations := t2OfflineExpected(state, author, c.role)
 	changes := []string{}
 	claims := []string{}
-	for _, operation := range operations {
+	var lostReply map[string]any
+	for index, operation := range operations {
+		if index == 0 {
+			claimID, changeID, proof := t2OfflineAppendLostReply(c, state, operation)
+			changes, claims = append(changes, changeID), append(claims, claimID)
+			lostReply = proof
+			continue
+		}
 		response := t2OfflineAppend(c, t2OfflineRequest(operation))
 		require.Equal(c.t, pb.RpcPinkhaTorahOperationsAppendResponseError_NULL, response.Error.Code)
 		require.Empty(c.t, response.Error.Issues)
@@ -413,6 +654,7 @@ func t2NativeOfflineRun(c *t2NativeClientCaller, state *t2AccountState, parent s
 	require.Equal(c.t, history.Heads, local.Snapshot.VerifiedLocalHeads)
 	t2OfflineReport(c, parent, "diverged", map[string]any{"history": history, "created_claim_ids": claims,
 		"created_change_ids": changes, "local_snapshot_sha256": t2OfflineSnapshotHash(c.t, local.Snapshot),
+		"lost_client_reply":   lostReply,
 		"retry_and_collision": "PASS_LOCAL_EXACT_RETRY_AND_REJECTED_DIFFERENT_BYTES", "removed_observed_original": true})
 	command = t2OfflineWaitCommand(c, parent, "reconnect", 240*time.Second)
 	require.Len(c.t, command.History.Changes, 8)

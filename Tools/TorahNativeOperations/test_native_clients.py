@@ -64,9 +64,21 @@ def offline_branch_fixture(role):
     history = {"changes_sha256": {**state["RawChanges"], **{name: str(index + 7) * 64 for index, name in enumerate(ids)}},
                "parents": {state["ChangeID"]: [state["RootID"]], ids[0]: [state["ChangeID"]], ids[1]: [ids[0]], ids[2]: [ids[1]]},
                "heads": [ids[2]]}
+    before = {"changes_sha256": state["RawChanges"], "parents": {state["ChangeID"]: [state["RootID"]]}, "heads": state["Heads"]}
+    committed = {"changes_sha256": {**state["RawChanges"], ids[0]: history["changes_sha256"][ids[0]]},
+                 "parents": {state["ChangeID"]: [state["RootID"]], ids[0]: state["Heads"]}, "heads": [ids[0]]}
+    lost = {"protocol": "pinkha-t2-lost-client-reply-v1", "scope": "DROPPED_CLIENT_BYTE_REPLY_NOT_PACKET_LOSS_OR_CRASH",
+            "first_reply_decoded": False, "fixed_deadline_ms": 60000, "discarded_responses": 1, "discarded_response_bytes": 100,
+            "native_append_attempts": 2, "request_sha256": "a" * 64, "retry_request_sha256": "a" * 64, "request_bytes": 90,
+            "claim_id": claims[0], "committed_change_id": ids[0], "commit_observed_before_read": True,
+            "history_before": copy.deepcopy(before), "history_committed": copy.deepcopy(committed),
+            "history_after_read": copy.deepcopy(committed), "history_after_retry": copy.deepcopy(committed),
+            "retry_disposition": "ALREADY_EXISTS_SAME_PAYLOAD", "retry_change_id": "",
+            "snapshot_before_retry_sha256": "b" * 64, "snapshot_after_retry_sha256": "b" * 64,
+            "local_sequence_before_retry": 2, "local_sequence_after_retry": 2, "crash_after_commit": "NOT_RUN"}
     return {"history": history, "created_change_ids": ids, "created_claim_ids": claims,
             "local_snapshot_sha256": suffix * 64, "retry_and_collision": "PASS_LOCAL_EXACT_RETRY_AND_REJECTED_DIFFERENT_BYTES",
-            "removed_observed_original": True}
+            "removed_observed_original": True, "lost_client_reply": lost}
 
 
 def convergence_fixture(history):
@@ -402,7 +414,7 @@ class NativeClientControls(unittest.TestCase):
         names = set(lane.CONTROL_METHODS)
         names.update(parent + "/" + child for parent, children in lane.CONTROL_METHODS.items() for child in children)
         output = "\n".join("--- PASS: " + name + " (0.01s)" for name in sorted(names))
-        self.assertEqual(lane.validate_native_controls(output)["pass_terminals"], 32)
+        self.assertEqual(lane.validate_native_controls(output)["pass_terminals"], 42)
         for bad in [output.replace(sorted(names)[0], "OtherTest", 1), output + "\n--- SKIP: ignored (0s)",
                     output + "\n--- FAIL: ignored (0s)", output + "\n--- PASS: OtherTest (0s)"]:
             with self.subTest(bad=bad[-40:]):
@@ -554,6 +566,63 @@ class NativeClientControls(unittest.TestCase):
                          lambda x: x["creator"]["history"].update(raw_signed_bytes="forbidden")]:
             bad = copy.deepcopy(reports); mutation(bad)
             with self.assertRaises(ValueError): lane.merge_offline_histories(bad, state_fixture())
+
+    def test_lost_reply_requires_unread_response_exact_bytes_and_no_duplicate_commit(self):
+        reports = {role: offline_branch_fixture(role) for role in ["creator", "recovered"]}
+        self.assertEqual(len(lane.merge_offline_histories(reports, state_fixture())["changes_sha256"]), 8)
+        mutations = {
+            "missing-proof": lambda p: p.clear(),
+            "already-acknowledged": lambda p: p.update(first_reply_decoded=True),
+            "different-retry-bytes": lambda p: p.update(retry_request_sha256="c" * 64),
+            "no-request-bytes": lambda p: p.update(request_bytes=0),
+            "no-lost-response": lambda p: p.update(discarded_responses=0),
+            "no-response-returned": lambda p: p.update(discarded_response_bytes=0),
+            "extra-mutation-attempt": lambda p: p.update(native_append_attempts=3),
+            "boolean-count": lambda p: p.update(discarded_responses=True),
+            "commit-only-after-read": lambda p: p.update(commit_observed_before_read=False),
+            "missing-original-history": lambda p: p["history_before"]["changes_sha256"].pop("root"),
+            "no-signed-commit": lambda p: p.update(history_committed=p["history_before"]),
+            "read-added-state": lambda p: p["history_after_read"]["changes_sha256"].update(extra="c" * 64),
+            "retry-added-state": lambda p: p["history_after_retry"]["changes_sha256"].update(extra="c" * 64),
+            "retry-new-sequence": lambda p: p.update(local_sequence_after_retry=3),
+            "retry-new-snapshot": lambda p: p.update(snapshot_after_retry_sha256="c" * 64),
+            "retry-created": lambda p: p.update(retry_disposition="CREATED"),
+            "retry-new-change": lambda p: p.update(retry_change_id="duplicate"),
+            "wrong-claim": lambda p: p.update(claim_id=state_fixture()["ClaimID"]),
+            "wrong-commit": lambda p: p.update(committed_change_id="foreign"),
+            "changed-deadline": lambda p: p.update(fixed_deadline_ms=120000),
+            "packet-loss-overclaim": lambda p: p.update(scope="PACKET_LOSS"),
+            "crash-overclaim": lambda p: p.update(crash_after_commit="PASS"),
+        }
+        for role in reports:
+            for name, mutate in mutations.items():
+                with self.subTest(role=role, mutation=name):
+                    changed = copy.deepcopy(reports)
+                    mutate(changed[role]["lost_client_reply"])
+                    with self.assertRaises(ValueError):
+                        lane.merge_offline_histories(changed, state_fixture())
+
+    def test_offline_final_counts_include_one_dropped_call_and_one_identical_retry(self):
+        for role in ["creator", "recovered"]:
+            with self.subTest(role=role):
+                _, _, ready = ready_fixture(role)
+                calls = {name: 1 for name in ["InitialSetParameters", "AppGetVersion", "WorkspaceOpen", "ObjectShow", "AccountStop", "AppShutdown"]}
+                calls["DeviceNetworkStateSet"] = 1 if role == "creator" else 3
+                calls["PinkhaTorahOperationsAppend"] = 10 if role == "creator" else 9
+                calls["PinkhaTorahOperationsReadTarget"] = 11
+                names = ["WalletCreate", "AccountCreate", "WorkspaceCreate", "ObjectCreate", "BlockCreate", "ObjectSearch"] if role == "creator" else ["WalletRecover", "AccountSelect"]
+                calls.update({name: 1 for name in names})
+                final = {**ready, "closed": True, "account_stop_verified": True, "test_passed": True,
+                         "post_stop_rpc": "READ_AND_APPEND_NOT_LOGGED_IN", "rpc_calls": dict(calls), "returned_byte_calls": dict(calls)}
+                log = "--- PASS: " + lane.METHOD + " (1.0s)\n"
+                lane.validate_final(ready, final, log, role, scenario="offline")
+                for field, count in [("PinkhaTorahOperationsAppend", calls["PinkhaTorahOperationsAppend"] - 1),
+                                     ("PinkhaTorahOperationsAppend", calls["PinkhaTorahOperationsAppend"] + 1),
+                                     ("PinkhaTorahOperationsReadTarget", 10)]:
+                    changed = copy.deepcopy(final)
+                    changed["rpc_calls"][field] = changed["returned_byte_calls"][field] = count
+                    with self.assertRaises(ValueError):
+                        lane.validate_final(ready, changed, log, role, scenario="offline")
 
     def test_convergence_requires_both_variants_and_preserves_local_clock_semantics(self):
         branches = {role: offline_branch_fixture(role) for role in ["creator", "recovered"]}

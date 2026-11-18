@@ -55,6 +55,10 @@ CONTROL_METHODS = {
         "failed_read_cannot_expose_snapshot", "author_cannot_be_substituted", "opaque_payload_cannot_be_replaced",
         "removed_original_cannot_reappear", "duplicate_live_claims_are_rejected",
         "conflict_must_preserve_both_variants", "duplicate_conflict_variant_is_rejected", "conflict_has_no_live_winner"},
+    "TestT2NativeLostReplyControls": {
+        "exact_bytes_forwarded_once_reply_discarded", "panic_is_not_a_dropped_reply", "single_signed_commit_is_observed",
+        "missing_commit_is_rejected", "additional_commit_is_rejected", "changed_original_is_rejected",
+        "wrong_parent_is_rejected", "changed_original_parent_is_rejected", "wrong_head_is_rejected"},
 }
 require, digest, write = base.require, base.digest, base.write_json
 
@@ -222,9 +226,9 @@ def validate_final(ready: dict, final: dict, log: str, role: str, *, scenario="b
     common = {"InitialSetParameters": 1, "AppGetVersion": 1, "WorkspaceOpen": 1,
               "DeviceNetworkStateSet": 3 if scenario == "offline" and role == "recovered" else 1,
               "ObjectShow": 1, "AccountStop": 1, "AppShutdown": 1,
-              "PinkhaTorahOperationsAppend": (2 if role == "creator" else 1) + (7 if scenario == "offline" else 0)}
+              "PinkhaTorahOperationsAppend": (2 if role == "creator" else 1) + (8 if scenario == "offline" else 0)}
     require(all(calls.get(key) == count for key, count in common.items())
-            and calls.get("PinkhaTorahOperationsReadTarget", 0) >= (8 if scenario == "offline" else 2), "Native call boundary incomplete")
+            and calls.get("PinkhaTorahOperationsReadTarget", 0) >= (11 if scenario == "offline" else 2), "Native call boundary incomplete")
     creator = {"WalletCreate", "AccountCreate", "WorkspaceCreate", "ObjectCreate", "BlockCreate"}
     recovery = {"WalletRecover", "AccountSelect"}
     require(all(calls.get(key, 0) == (1 if role == "creator" else 0) for key in creator)
@@ -425,6 +429,40 @@ def validate_offline_report(report: dict, phase: str, role: str, ready: dict, ex
     require(report.get("app_capability") == "OFF" and report.get("full_t2_acceptance") == "NOT_RUN", "Offline phase overclaims acceptance")
 
 
+def validate_lost_client_reply(proof: dict, report: dict, state: dict) -> None:
+    expected_keys = {"protocol", "scope", "first_reply_decoded", "fixed_deadline_ms", "discarded_responses",
+                     "discarded_response_bytes", "native_append_attempts", "request_sha256", "retry_request_sha256",
+                     "request_bytes", "claim_id", "committed_change_id", "commit_observed_before_read", "history_before",
+                     "history_committed", "history_after_read", "history_after_retry", "retry_disposition", "retry_change_id",
+                     "snapshot_before_retry_sha256", "snapshot_after_retry_sha256", "local_sequence_before_retry",
+                     "local_sequence_after_retry", "crash_after_commit"}
+    require(isinstance(proof, dict) and set(proof) == expected_keys, "Exact lost client-reply observations required")
+    require(proof["protocol"] == "pinkha-t2-lost-client-reply-v1"
+            and proof["scope"] == "DROPPED_CLIENT_BYTE_REPLY_NOT_PACKET_LOSS_OR_CRASH"
+            and proof["first_reply_decoded"] is False and proof["commit_observed_before_read"] is True
+            and proof["crash_after_commit"] == "NOT_RUN", "Lost-reply observation changed its acceptance scope")
+    for key, count in {"discarded_responses": 1, "native_append_attempts": 2, "fixed_deadline_ms": 60000}.items():
+        require(type(proof[key]) is int and proof[key] == count, "Lost-reply boundary count/deadline differs")
+    for key in ["discarded_response_bytes", "request_bytes", "local_sequence_before_retry", "local_sequence_after_retry"]:
+        require(type(proof[key]) is int and proof[key] > 0, "Lost-reply byte or sequence observation missing")
+    for key in ["request_sha256", "retry_request_sha256", "snapshot_before_retry_sha256", "snapshot_after_retry_sha256"]:
+        require(isinstance(proof[key], str) and re.fullmatch(r"[0-9a-f]{64}", proof[key]), "Lost-reply byte identity missing")
+    require(proof["request_sha256"] == proof["retry_request_sha256"]
+            and proof["snapshot_before_retry_sha256"] == proof["snapshot_after_retry_sha256"]
+            and proof["local_sequence_before_retry"] == proof["local_sequence_after_retry"],
+            "Lost-reply retry changed the request, complete snapshot or local sequence")
+    change_id, claim_id = report["created_change_ids"][0], report["created_claim_ids"][0]
+    before = {"changes_sha256": state["RawChanges"], "parents": {state["ChangeID"]: [state["RootID"]]}, "heads": state["Heads"]}
+    committed = {"changes_sha256": {**state["RawChanges"], change_id: report["history"]["changes_sha256"][change_id]},
+                 "parents": {state["ChangeID"]: [state["RootID"]], change_id: state["Heads"]}, "heads": [change_id]}
+    require(proof["history_before"] == before and proof["history_committed"] == committed
+            and proof["history_after_read"] == committed and proof["history_after_retry"] == committed,
+            "Commit must precede ReadTarget; read and retry cannot add, remove or replace signed history")
+    require(proof["claim_id"] == claim_id and proof["committed_change_id"] == change_id
+            and proof["retry_disposition"] == "ALREADY_EXISTS_SAME_PAYLOAD" and proof["retry_change_id"] == "",
+            "Lost-reply retry did not recover the one existing native claim")
+
+
 def merge_offline_histories(reports: dict, state: dict) -> dict:
     require(set(reports) == {"creator", "recovered"}, "Two original branch histories required")
     common = set(state["RawChanges"])
@@ -450,6 +488,7 @@ def merge_offline_histories(reports: dict, state: dict) -> dict:
         require(report.get("retry_and_collision") == "PASS_LOCAL_EXACT_RETRY_AND_REJECTED_DIFFERENT_BYTES"
                 and report.get("removed_observed_original") is True
                 and re.fullmatch(r"[0-9a-f]{64}", report.get("local_snapshot_sha256", "")), "Offline append/retry/remove proof incomplete")
+        validate_lost_client_reply(report.get("lost_client_reply"), report, state)
         changes.update(history["changes_sha256"]); parents.update(expected_parents); heads += history["heads"]
     require(reports["creator"]["created_claim_ids"][1][:64] == reports["recovered"]["created_claim_ids"][1][:64],
             "Different-payload collision must use the same logical operation ID")
@@ -558,7 +597,9 @@ def offline_sequence(docker: OwnedDocker, resources: dict, network_resource: dic
         validate_offline_report(converged[role], "converged", role, reports[role], ips[role])
     semantic_hash = validate_convergence(converged, expected)
     return {"history": expected, "snapshot_sha256_without_local_sequence": semantic_hash,
-            "converged": converged, "offline_writes": "TWO_DISTINCT_BRANCHES_OBSERVED", "network_state": "DETACH_AND_NATIVE_NOT_CONNECTED_THEN_ATTACH_AND_NATIVE_WIFI"}
+            "converged": converged, "offline_writes": "TWO_DISTINCT_BRANCHES_OBSERVED", "network_state": "DETACH_AND_NATIVE_NOT_CONNECTED_THEN_ATTACH_AND_NATIVE_WIFI",
+            "lost_client_reply": {"scope": "DROPPED_CLIENT_BYTE_REPLY_NOT_PACKET_LOSS_OR_CRASH",
+                                  "clients": {role: value["lost_client_reply"] for role, value in diverged.items()}}}
 
 
 def validate_reopen_ready(report: dict, role: str, original: dict, converged: dict, convergence_hash: str,
@@ -715,7 +756,8 @@ def clients(args, receipt, docker: OwnedDocker):
         receipt["diagnostic_stage"] = "OFFLINE_SEQUENCE"
         offline = offline_sequence(docker, resources, network_resource, network, reports, directories, state)
         receipt["offline_convergence"] = {"history": offline["history"], "snapshot_sha256_without_local_sequence": offline["snapshot_sha256_without_local_sequence"],
-                                           "offline_writes": offline["offline_writes"], "network_state": offline["network_state"], "restart": "NOT_RUN"}
+                                           "offline_writes": offline["offline_writes"], "network_state": offline["network_state"], "restart": "NOT_RUN",
+                                           "lost_client_reply": offline["lost_client_reply"]}
         docker.checkpoint()
     receipt["diagnostic_stage"] = "REQUEST_NATIVE_STOP"
     for role in resources:

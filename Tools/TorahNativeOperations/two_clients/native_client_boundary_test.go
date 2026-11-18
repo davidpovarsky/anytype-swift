@@ -105,48 +105,53 @@ type t2NativeClientCaller struct {
 	returnedCalls  map[string]int
 }
 
+func (c *t2NativeClientCaller) callBytes(name string, entry func([]byte) []byte, data []byte, limit time.Duration) []byte {
+	c.t.Helper()
+	ctx, cancel := context.WithTimeout(context.Background(), limit)
+	defer cancel()
+	stopRequest, err := proto.Marshal(&pb.RpcAccountStopRequest{RemoveData: false})
+	require.NoError(c.t, err)
+	var stop func([]byte) []byte
+	if name != "AccountStop" && !c.stopAttempted {
+		stop = AccountStop
+	}
+	result := t2AwaitClientBytes(ctx, entry, data, stop, stopRequest, 15*time.Second)
+	if result.failure == "" {
+		c.returnedCalls[name]++
+		return result.data
+	}
+	if result.stopRequested {
+		c.stopAttempted = true
+	}
+	stopCode := int32(-1)
+	if result.stopReturned && !result.stopPanicked {
+		stopped := &pb.RpcAccountStopResponse{}
+		if proto.Unmarshal(result.stopData, stopped) == nil && stopped.Error != nil {
+			stopCode = int32(stopped.Error.Code)
+			c.closed = stopped.Error.Code == pb.RpcAccountStopResponseError_NULL && result.originalReturned
+		}
+	}
+	receipt := map[string]any{"protocol": t2NativeClientProtocol, "role": c.role, "nonce": c.nonce,
+		"status": result.failure, "call": name, "limit_ms": limit.Milliseconds(),
+		"original_call_joined": result.originalReturned, "native_stop_requested": result.stopRequested,
+		"native_stop_joined": result.stopReturned, "native_stop_error_code": stopCode,
+		"owned_container_termination_required": !c.closed, "returned_byte_calls": c.returnedCalls,
+		"request_or_response_bytes_in_receipt": false, "test_passed": false,
+		"finished_at": time.Now().UTC().Format(time.RFC3339Nano)}
+	path := filepath.Join("/private", "cancel.json")
+	if _, statErr := os.Lstat(path); os.IsNotExist(statErr) {
+		encoded, marshalErr := json.MarshalIndent(receipt, "", "  ")
+		require.NoError(c.t, marshalErr)
+		t2NativeClientReport(c.t, path, encoded)
+	}
+	c.t.Fatalf("bounded native byte call failed: %s/%s; private bytes withheld", name, result.failure)
+	return nil
+}
+
 func (c *t2NativeClientCaller) raw(name string, entry func([]byte) []byte, request, response proto.Message, limit time.Duration) {
 	c.t.Helper()
 	c.rpc.raw(func(data []byte) []byte {
-		ctx, cancel := context.WithTimeout(context.Background(), limit)
-		defer cancel()
-		stopRequest, err := proto.Marshal(&pb.RpcAccountStopRequest{RemoveData: false})
-		require.NoError(c.t, err)
-		var stop func([]byte) []byte
-		if name != "AccountStop" && !c.stopAttempted {
-			stop = AccountStop
-		}
-		result := t2AwaitClientBytes(ctx, entry, data, stop, stopRequest, 15*time.Second)
-		if result.failure == "" {
-			c.returnedCalls[name]++
-			return result.data
-		}
-		if result.stopRequested {
-			c.stopAttempted = true
-		}
-		stopCode := int32(-1)
-		if result.stopReturned && !result.stopPanicked {
-			stopped := &pb.RpcAccountStopResponse{}
-			if proto.Unmarshal(result.stopData, stopped) == nil && stopped.Error != nil {
-				stopCode = int32(stopped.Error.Code)
-				c.closed = stopped.Error.Code == pb.RpcAccountStopResponseError_NULL && result.originalReturned
-			}
-		}
-		receipt := map[string]any{"protocol": t2NativeClientProtocol, "role": c.role, "nonce": c.nonce,
-			"status": result.failure, "call": name, "limit_ms": limit.Milliseconds(),
-			"original_call_joined": result.originalReturned, "native_stop_requested": result.stopRequested,
-			"native_stop_joined": result.stopReturned, "native_stop_error_code": stopCode,
-			"owned_container_termination_required": !c.closed, "returned_byte_calls": c.returnedCalls,
-			"request_or_response_bytes_in_receipt": false, "test_passed": false,
-			"finished_at": time.Now().UTC().Format(time.RFC3339Nano)}
-		path := filepath.Join("/private", "cancel.json")
-		if _, statErr := os.Lstat(path); os.IsNotExist(statErr) {
-			encoded, marshalErr := json.MarshalIndent(receipt, "", "  ")
-			require.NoError(c.t, marshalErr)
-			t2NativeClientReport(c.t, path, encoded)
-		}
-		c.t.Fatalf("bounded native byte call failed: %s/%s; private bytes withheld", name, result.failure)
-		return nil
+		return c.callBytes(name, entry, data, limit)
 	}, request, response)
 }
 
