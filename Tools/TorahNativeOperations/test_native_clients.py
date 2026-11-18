@@ -5,6 +5,8 @@ These controls do not create accounts or claim Docker/Native acceptance.
 import copy
 import json
 from pathlib import Path
+import shutil
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -52,6 +54,51 @@ def ready_fixture(role="recovered"):
 
 
 class NativeClientControls(unittest.TestCase):
+    def test_original_read_observation_is_exact_compile_overlay_and_preserves_source(self):
+        tools = Path(lane.__file__).parent
+        original = tools / "rpc/overlay/core/pinkha_torah_rpc.go"
+        observation_patch = tools / "two_clients/native-read-observation.patch"
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            heart, work = root / "heart", root / "work"
+            source = heart / lane.account.NATIVE_READ_OBSERVATION["source_path"]
+            source.parent.mkdir(parents=True)
+            shutil.copyfile(original, source)
+            work.mkdir()
+            calls = []
+            def run(command, label, cwd, env):
+                calls.append(label)
+                subprocess.run(command, cwd=cwd, env=env, check=True, timeout=10,
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            replacement, receipt = lane.account.prepare_native_read_observation(heart, observation_patch, work, run)
+            self.assertEqual(lane.digest(source), lane.account.NATIVE_READ_OBSERVATION["before_sha256"])
+            self.assertEqual(lane.digest(replacement), lane.account.NATIVE_READ_OBSERVATION["after_sha256"])
+            self.assertEqual(calls, ["native-read-observation-check", "native-read-observation-apply"])
+            self.assertEqual(receipt["scope"], "TEST_COMPILE_OVERLAY_ONLY_ORIGINAL_READ_ERROR")
+            self.assertEqual(replacement.read_text().count("mw.NativeTorahTargetRead(ctx, native)"), 1)
+            self.assertEqual(replacement.read_text().count("return pinkhaTorahReadToWire(result, err)"), 1)
+            with self.assertRaises(ValueError):
+                lane.account.prepare_native_read_observation(heart, observation_patch, work, run)
+
+    def test_changed_read_source_or_observation_patch_rejected_before_copy(self):
+        tools = Path(lane.__file__).parent
+        original = tools / "rpc/overlay/core/pinkha_torah_rpc.go"
+        good_patch = tools / "two_clients/native-read-observation.patch"
+        for changed in ["source", "patch"]:
+            with self.subTest(changed=changed), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                heart, work = root / "heart", root / "work"
+                source = heart / lane.account.NATIVE_READ_OBSERVATION["source_path"]
+                source.parent.mkdir(parents=True)
+                source.write_bytes(original.read_bytes() + (b"\n// drift\n" if changed == "source" else b""))
+                observation_patch = root / "native-read-observation.patch"
+                observation_patch.write_bytes(good_patch.read_bytes() + (b"\n# drift\n" if changed == "patch" else b""))
+                work.mkdir()
+                def forbidden(*args): self.fail("Git patch must not run after source/patch drift")
+                with self.assertRaises(ValueError):
+                    lane.account.prepare_native_read_observation(heart, observation_patch, work, forbidden)
+                self.assertEqual(list(work.iterdir()), [])
+
     def test_public_seed_rejects_device_database_and_signed_history_payloads(self):
         lane.validate_public_state(state_fixture())
         for field in ["DeviceKey", "PortKey", "Database", "RawTreeBytes"]:

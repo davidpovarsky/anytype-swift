@@ -1,0 +1,37 @@
+diff --git a/core/pinkha_torah_rpc.go b/core/pinkha_torah_rpc.go
+--- a/core/pinkha_torah_rpc.go
++++ b/core/pinkha_torah_rpc.go
+@@ -3,8 +3,13 @@
+ import (
+ 	"context"
+ 	"errors"
++	"fmt"
+ 
+ 	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/tree/synctree"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
++	"github.com/anyproto/any-sync/commonspace/objecttreebuilder"
++	"github.com/anyproto/any-sync/net/peer"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/torahops"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/torahopsobject"
+ 	"github.com/anyproto/anytype-heart/pb"
+@@ -34,6 +39,19 @@
+ 		return pinkhaTorahReadToWire(torahops.NativeSnapshot{}, err)
+ 	}
+ 	result, err := mw.NativeTorahTargetRead(ctx, native)
++	if err != nil {
++		// TEST-FIXTURE OBSERVATION ONLY: preserve the exact result/error and
++		// original call order. Never print Error(), target IDs or private bytes.
++		contextPeerMissing := false
++		if ctx != nil {
++			_, peerErr := peer.CtxPeerId(ctx)
++			contextPeerMissing = errors.Is(peerErr, peer.ErrPeerIdNotFoundInContext)
++		}
++		fmt.Printf("T2_NATIVE_READ_BOUNDARY error_type=%T unwrap_type=%T unknown_tree=%t no_responsible_peers=%t tree_closed=%t tree_deleted=%t space_closed=%t cancelled=%t deadline=%t context_nil=%t context_peer_missing=%t\n",
++			err, errors.Unwrap(err), errors.Is(err, treestorage.ErrUnknownTreeId), errors.Is(err, synctree.ErrNoResponsiblePeers),
++			errors.Is(err, synctree.ErrSyncTreeClosed), errors.Is(err, synctree.ErrSyncTreeDeleted), errors.Is(err, objecttreebuilder.ErrSpaceClosed),
++			errors.Is(err, context.Canceled), errors.Is(err, context.DeadlineExceeded), ctx == nil, contextPeerMissing)
++	}
+ 	return pinkhaTorahReadToWire(result, err)
+ }
+ 
