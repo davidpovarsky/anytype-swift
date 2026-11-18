@@ -1,0 +1,45 @@
+{
+  "schema": "pinkha-t2-native-handler-source-v1",
+  "base_app_sha": "964fb0f6d0ea19b54e259c6bd383954b2bf3902b",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "native_patch_sha256": "8706ff898474ca227947caa0f199300919b7bc93b954cb7ef9e3d1a9ad0ece10",
+  "inventory_sha256": "5fadaac6dd3a2ad2d7687eec4c1ce80e95b40e05050d369a365d18bc854c3275",
+  "runner_sha256": "2b84a8b4f27d49fb18d045fd46fce5227139c0de642c75ea412a76ef3a68fdbe",
+  "overlay_count": 31,
+  "tracked_patch_count": 11,
+  "source_hash_validation": "PASS",
+  "r14_paths": 35,
+  "r15_paths": 42,
+  "path_collisions": [],
+  "formatter": "gofmt PASS",
+  "diff_check": "PASS",
+  "controller_tests": {
+    "linux": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    },
+    "windows": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "independent_source_review": {
+    "reviewer": "direct ChatGPT SDK agent",
+    "scope": "handler/current ACL/shared native target validation/application Stop lock contract",
+    "result": "NO_BLOCKING_FINDING",
+    "native_execution": false
+  },
+  "root_minimal_diff_review": {
+    "sha256": "74bd945c45471dd9087105d0215b5198ad308e7f9492172db389489d28a114db",
+    "result": "REVIEWED_AND_ASSIGNED"
+  },
+  "mutation_scope": "single isolated App tree; new assistant-authored files and exact-context edits; no Heart writes",
+  "new_native_tests": "NOT_RUN",
+  "handler_account_acceptance": "NOT_RUN",
+  "generated_rpc": "NOT_IMPLEMENTED",
+  "app_capability": "OFF",
+  "two_app_clients": "NOT_RUN",
+  "full_t2_acceptance": "NOT_ACCEPTED"
+}
