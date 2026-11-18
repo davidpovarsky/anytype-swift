@@ -1,0 +1,17 @@
+{
+  "module": "golang.org/x/mobile",
+  "version": "v0.0.0-20250218173827-cd096645fcd3",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/golang/mobile/cd096645fcd3/cmd/gomobile/bind_iosapp.go",
+      "sha256": "17cb5ce95d4194126099c94613f4f2769a7ede696f0b36f062ed985d7245e977",
+      "contract": "Original pinned gomobile copies source to per-architecture temporary directories, writes a module, runs go mod tidy, then builds the archive."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/golang/mobile/cd096645fcd3/cmd/gomobile/bind.go",
+      "sha256": "f9039cc240190ee7cabd2a89f3b7d479d51bd40a18e79f1a032177ce803b64b0",
+      "contract": "getModuleVersions reads the effective native module graph, copies replacement directives including local native source, and writes the generated gobind module."
+    }
+  ],
+  "native_build_outputs": "Pinned deps/.gitignore ignores tool outputs; dist/.gitignore ignores ios/*, verified with git check-ignore. No extra native source exclusions were added."
+}
