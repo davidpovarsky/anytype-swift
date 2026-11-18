@@ -1,0 +1,64 @@
+--- a/new_runtime_test.go
++++ b/new_runtime_test.go
+@@ -17,7 +17,7 @@
+ )
+ 
+ // Only the new binary compiles this file. It exercises the account's real
+-// Space/cache/factory and provider-owned CRDT database, without adding an RPC.
++// Space/cache/factory and provider-owned CRDT database with generated RPC proof.
+ func t2ExerciseRuntime(t *testing.T, state *t2AccountState, create bool) (map[string]any, func(), func()) {
+ 	t.Helper()
+ 	ctx, cancel := context.WithTimeout(context.Background(), 90*time.Second)
+@@ -31,7 +31,7 @@
+ 		require.NoError(t, err)
+ 		require.False(t, exists, "normal account/Space startup must not create a private host")
+ 		state.RootID, state.OperationID = root.Id, fmt.Sprintf("%032x", 1)
+-		t2CreateNativeHandlerOperation(t, ctx, state)
++		t2CreateNativeRPCOperation(t, ctx, state)
+ 		object, err = spc.GetObject(ctx, state.RootID)
+ 		require.NoError(t, err)
+ 	} else {
+@@ -63,7 +63,11 @@
+ 	} else {
+ 		require.Equal(t, state.OperationSHA256, t2Hash(canonical))
+ 	}
+-	handlerObservation := t2CheckNativeHandlerOperation(t, ctx, state, create)
++	wireObservation := t2CheckNativeRPCOperation(t, state, create)
++	handlerObservation := t2CheckNativeHandlerOperation(t, ctx, state, false)
++	if create {
++		handlerObservation["creation"] = "EXISTING_HISTORY_CREATED_THROUGH_GENERATED_RPC"
++	}
+ 	// Read before retry: a reopened process must recover existing signed history,
+ 	// not recreate a missing projection by accidentally adding another operation.
+ 	snapshot, err := host.ReadTorahTarget(ctx, op.Target, 100)
+@@ -86,6 +90,7 @@
+ 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+ 		defer cancel()
+ 		t2AssertNativeHandlerUnavailable(t, ctx, state, true)
++		t2AssertNativeRPCUnavailable(t, state, true)
+ 		_, err := host.ReadTorahTarget(ctx, op.Target, 100)
+ 		require.ErrorIs(t, err, torahopsobject.ErrTargetUnavailable)
+ 		_, err = host.AppendTorahOperation(ctx, op)
+@@ -95,6 +100,7 @@
+ 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+ 		defer cancel()
+ 		t2AssertNativeHandlerUnavailable(t, ctx, state, false)
++		t2AssertNativeRPCUnavailable(t, state, false)
+ 		_, err := host.ReadTorahTarget(ctx, op.Target, 100)
+ 		require.Error(t, err, "closed/deleted Space must not serve a cached private projection")
+ 		_, err = host.AppendTorahOperation(ctx, op)
+@@ -104,5 +110,5 @@
+ 		"idempotent_retry": string(retried.Disposition), "operation_sha256": state.OperationSHA256,
+ 		"claim_id": state.ClaimID, "signed_change_id": state.ChangeID,
+ 		"private_type":     uint32(coresb.SmartBlockTypePinkhaTorahOperations),
+-		"handler_boundary": handlerObservation}, assertRemoved, assertDeleted
++		"handler_boundary": handlerObservation, "wire_boundary": wireObservation}, assertRemoved, assertDeleted
+ }
+--- a/native_handler_test.go
++++ b/native_handler_test.go
+@@ -162,4 +162,5 @@
+ 	handler, ok := observation["handler_boundary"].(map[string]any)
+ 	require.True(t, ok)
+ 	handler["after_stop"] = "NATIVE_READ_AND_APPEND_NOT_LOGGED_IN"
++	t2RecordStoppedRPC(t, state, observation)
+ }

@@ -246,7 +246,8 @@ def validate_state(state: dict) -> None:
 
 
 def validate_phase(report: dict, phase: str, role: str, identity: dict, nonce: str,
-                   account_root: Path, pid: int, state: dict, state_hash: str) -> None:
+                   account_root: Path, pid: int, state: dict, state_hash: str,
+                   expected_observation: dict | None = None) -> None:
     validate_state(state)
     require((phase, role) in PHASES and report.get("protocol") == PROTOCOL and report.get("phase") == phase
             and report.get("role") == role, "Wrong native phase/role/protocol")
@@ -266,7 +267,9 @@ def validate_phase(report: dict, phase: str, role: str, identity: dict, nonce: s
     require(report.get("app_capability") == "OFF" and report.get("two_app_clients") == "NOT_RUN"
             and report.get("ios_acceptance") == "NOT_RUN", "Receipt overstates App acceptance")
     observation = report.get("runtime_observation", {})
-    if role == "new":
+    if expected_observation is not None:
+        require(observation == expected_observation, "Explicit native boundary observation differs")
+    elif role == "new":
         require(observation == {"private_registry": "ACTUAL_NATIVE_FACTORY", "private_read": "EXACT_PERSISTED_CLAIM",
                                 "idempotent_retry": "already_exists_same_payload", "operation_sha256": state["OperationSHA256"],
                                 "claim_id": state["ClaimID"], "signed_change_id": state["ChangeID"], "private_type": 0x504B0001,
@@ -365,7 +368,8 @@ def preserve_account_evidence(work: Path, destination: Path) -> dict:
     return {"secret_scan": "PASS" if needles else "NATIVE_OUTPUT_WITHHELD_NO_SECRET_INVENTORY", "files_sha256": files}
 
 
-def run_sequence(identities: dict, registration_hash: str, work: Path, evidence: Path) -> dict:
+def run_sequence(identities: dict, registration_hash: str, work: Path, evidence: Path,
+                 phase_validator=validate_phase) -> dict:
     work.mkdir(mode=0o700, exist_ok=False)
     owner = {"protocol": PROTOCOL, "nonce": str(uuid4()), "synthetic_only": True}
     write_json(work / "ownership.json", owner)
@@ -400,7 +404,7 @@ def run_sequence(identities: dict, registration_hash: str, work: Path, evidence:
                 state_hash, key_hash = digest(state_path), digest(key_path)
             require(digest(state_path) == state_hash and digest(key_path) == key_hash, "Original account state/key was replaced")
             report = json.loads(path.read_text())
-            validate_phase(report, phase, role, identity, nonce, root, pid, state, state_hash)
+            phase_validator(report, phase, role, identity, nonce, root, pid, state, state_hash)
             for name, expected in report["visibility"]["exports"].items():
                 file = work / "exports" / phase / name
                 require(digest(file) == expected, "Actual native export missing or changed")
