@@ -29,6 +29,7 @@ on:
           - projection-cache
           - native-rpc
           - compatibility-pairs
+          - account-pairs
         default: native-index
       ui_scope:
         description: UI27 focused diagnostic selection; no release or full matrix acceptance
@@ -120,7 +121,7 @@ jobs:
       source_sha: ${{ github.sha }}
 
   t5-coverage-proof:
-    if: ${{ inputs.route == 't5-coverage-proof' && inputs.t5_component != 'compatibility-pairs' }}
+    if: ${{ inputs.route == 't5-coverage-proof' && inputs.t5_component != 'compatibility-pairs' && inputs.t5_component != 'account-pairs' }}
     uses: ./.github/workflows/pinkha-t5-coverage-proof.yml
     with:
       component: ${{ inputs.t5_component }}
@@ -128,6 +129,10 @@ jobs:
   t5-compatibility-pairs:
     if: ${{ inputs.route == 't5-coverage-proof' && inputs.t5_component == 'compatibility-pairs' }}
     uses: ./.github/workflows/pinkha-t5-compatibility-pairs.yml
+
+  t5-account-pairs:
+    if: ${{ inputs.route == 't5-coverage-proof' && inputs.t5_component == 'account-pairs' }}
+    uses: ./.github/workflows/pinkha-t5-account-pairs.yml
 
   native-diagnostics:
     if: ${{ inputs.route == 'native-diagnostics' }}
