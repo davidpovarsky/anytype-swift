@@ -327,6 +327,11 @@ def main():
             else:
                 try:
                     cleanup(args.evidence, receipt)
+                except KeyboardInterrupt as error:
+                    receipt.update(status="CANCELLED", error_type=type(error).__name__, error=str(error),
+                                   simulator_cleanup="INTERRUPTED_DURING_DISPOSABLE_SIMULATOR_CLEANUP")
+                    if isinstance(error, CommandCancelled):
+                        receipt["cancellation_signal"] = error.signum
                 except Exception as error:
                     receipt["cleanup_error"] = str(error)
             receipt["finished_at"] = datetime.now(timezone.utc).isoformat()

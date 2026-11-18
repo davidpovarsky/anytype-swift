@@ -165,6 +165,29 @@ class XcodeProductIdentityTests(unittest.TestCase):
 
 
 class SDKCancellationReceiptTests(unittest.TestCase):
+    def test_cancellation_during_cleanup_keeps_completed_build_and_test_facts(self):
+        with tempfile.TemporaryDirectory() as temp:
+            evidence = Path(temp) / "evidence"
+            argv = ["run_host_tests.py", "--app", temp, "--evidence", str(evidence),
+                    "--derived", str(Path(temp) / "derived"), "--expected-app-branch", BRANCH,
+                    "--heart-source-run-id", "123"]
+
+            def completed(args, receipt):
+                receipt.update(status="SDK06_COMPONENT_PASS", phase="COMPLETE", build_succeeded=True,
+                               test_command_exit_code=0, actual={"completed_control_sentinel": True})
+
+            with patch.object(sys, "argv", argv), patch.object(run_host_tests, "execute", side_effect=completed), \
+                    patch.object(run_host_tests, "cleanup", side_effect=CommandCancelled(signal.SIGINT)):
+                self.assertEqual(run_host_tests.main(), 1)
+            receipt = json.loads((evidence / "execution.json").read_text())
+            self.assertEqual(receipt["status"], "CANCELLED")
+            self.assertEqual(receipt["cancellation_signal"], signal.SIGINT)
+            self.assertEqual(receipt["phase"], "COMPLETE")
+            self.assertTrue(receipt["build_succeeded"])
+            self.assertEqual(receipt["test_command_exit_code"], 0)
+            self.assertEqual(receipt["actual"], {"completed_control_sentinel": True})
+            self.assertTrue(receipt["finished_at"])
+
     def test_cancelled_execution_is_not_initial_fail_or_pass_and_starts_no_cleanup_commands(self):
         with tempfile.TemporaryDirectory() as temp:
             evidence = Path(temp) / "evidence"

@@ -1,0 +1,16 @@
+{
+  "base_commit": "0fc8a9af5e528c5926d7da882835eb486ae62f74",
+  "finding": "Cancellation during simulator cleanup escaped final execution receipt",
+  "fix": "Catch KeyboardInterrupt during cleanup, preserve completed build/test facts, write CANCELLED and finished_at",
+  "scope": "Controller only; no Apple application execution",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "exit_code": 0,
+  "tests": 21,
+  "skipped": 0,
+  "source_sha256": {
+    "Tools/Hanlin/run_host_tests.py": "035705e1f080a241aaf2d0413d9d042d2370627b993751c309974b06534796ce",
+    "Tools/Hanlin/test_run_host_tests.py": "a5abbb2722b44da6aae84f1fdb64271bb1f3aea1d1d66151c5b6bbb9b66f56ea"
+  },
+  "raw_log_sha256": "6c917067cd3e5548ba5788f889dc957049544ad1e092d0443bd0dc198d798e3d"
+}
