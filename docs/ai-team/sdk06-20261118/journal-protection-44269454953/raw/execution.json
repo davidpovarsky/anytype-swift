@@ -1,0 +1,388 @@
+{
+  "actual_process_id": 5859,
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "elapsed_seconds": 0.022,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:05:15.156109+00:00",
+      "log_bytes": 41,
+      "name": "source-head",
+      "pid": 4401,
+      "started_at": "2026-11-18T09:05:15.134245+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "elapsed_seconds": 0.281,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:05:15.439518+00:00",
+      "log_bytes": 0,
+      "name": "source-status",
+      "pid": 4409,
+      "started_at": "2026-11-18T09:05:15.158239+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcodebuild",
+        "-version"
+      ],
+      "elapsed_seconds": 4.448,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:05:19.888452+00:00",
+      "log_bytes": 33,
+      "name": "xcode-version",
+      "pid": 4421,
+      "started_at": "2026-11-18T09:05:15.440967+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swiftc",
+        "--version"
+      ],
+      "elapsed_seconds": 3.909,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:05:23.802988+00:00",
+      "log_bytes": 128,
+      "name": "swift-version",
+      "pid": 4446,
+      "started_at": "2026-11-18T09:05:19.893942+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-version"
+      ],
+      "elapsed_seconds": 2.896,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:05:26.701996+00:00",
+      "log_bytes": 5,
+      "name": "sdk-version",
+      "pid": 4456,
+      "started_at": "2026-11-18T09:05:23.806307+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-path"
+      ],
+      "elapsed_seconds": 0.034,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:05:26.738730+00:00",
+      "log_bytes": 120,
+      "name": "sdk-path",
+      "pid": 4723,
+      "started_at": "2026-11-18T09:05:26.704939+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "runtimes",
+        "--json"
+      ],
+      "elapsed_seconds": 4.964,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:05:31.703690+00:00",
+      "log_bytes": 60604,
+      "name": "runtimes",
+      "pid": 4724,
+      "started_at": "2026-11-18T09:05:26.739851+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devices",
+        "--json"
+      ],
+      "elapsed_seconds": 0.428,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:05:32.134322+00:00",
+      "log_bytes": 22084,
+      "name": "devices-before",
+      "pid": 4813,
+      "started_at": "2026-11-18T09:05:31.706825+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "create",
+        "Pinkha-Hanlin-Journal-Probe-44269454953-216bd188",
+        "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+        "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
+      ],
+      "elapsed_seconds": 0.606,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:05:32.755565+00:00",
+      "log_bytes": 37,
+      "name": "create-owned-simulator",
+      "pid": 4822,
+      "started_at": "2026-11-18T09:05:32.149854+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devices",
+        "--json"
+      ],
+      "elapsed_seconds": 0.376,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:05:33.134203+00:00",
+      "log_bytes": 22655,
+      "name": "devices-after",
+      "pid": 4841,
+      "started_at": "2026-11-18T09:05:32.758276+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "boot",
+        "96734199-1010-4A1D-8ED2-00950CA6EC28"
+      ],
+      "elapsed_seconds": 2.574,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:05:35.710086+00:00",
+      "log_bytes": 0,
+      "name": "boot-owned-simulator",
+      "pid": 4850,
+      "started_at": "2026-11-18T09:05:33.136537+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "96734199-1010-4A1D-8ED2-00950CA6EC28",
+        "-b"
+      ],
+      "elapsed_seconds": 92.235,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:07:08.618446+00:00",
+      "log_bytes": 635,
+      "name": "boot-ready",
+      "pid": 4940,
+      "started_at": "2026-11-18T09:05:36.383595+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 180
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swiftc",
+        "-v",
+        "-swift-version",
+        "6",
+        "-parse-as-library",
+        "-sdk",
+        "/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+        "-target",
+        "arm64-apple-ios27.0-simulator",
+        "-framework",
+        "UIKit",
+        "-framework",
+        "Foundation",
+        "-module-cache-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/hanlin-journal-probe-work/ModuleCache",
+        "/Users/runner/work/anytype-swift/anytype-swift/Tools/Hanlin/JournalFilesystemProbe.swift",
+        "-o",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/hanlin-journal-probe-work/JournalProbe.app/JournalProbe"
+      ],
+      "elapsed_seconds": 208.059,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:10:37.005247+00:00",
+      "log_bytes": 2920,
+      "name": "compile-probe-only",
+      "pid": 5140,
+      "started_at": "2026-11-18T09:07:08.948167+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 600
+    },
+    {
+      "argv": [
+        "codesign",
+        "--force",
+        "--sign",
+        "-",
+        "--timestamp=none",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/hanlin-journal-probe-work/JournalProbe.app"
+      ],
+      "elapsed_seconds": 0.366,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:10:37.447616+00:00",
+      "log_bytes": 126,
+      "name": "sign-probe",
+      "pid": 5723,
+      "started_at": "2026-11-18T09:10:37.083629+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "install",
+        "96734199-1010-4A1D-8ED2-00950CA6EC28",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/hanlin-journal-probe-work/JournalProbe.app"
+      ],
+      "elapsed_seconds": 19.138,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:10:56.602993+00:00",
+      "log_bytes": 0,
+      "name": "install-probe",
+      "pid": 5724,
+      "started_at": "2026-11-18T09:10:37.465346+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "get_app_container",
+        "96734199-1010-4A1D-8ED2-00950CA6EC28",
+        "io.anytype.sdk06.journal-probe",
+        "data"
+      ],
+      "elapsed_seconds": 5.822,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:11:02.508816+00:00",
+      "log_bytes": 161,
+      "name": "probe-container",
+      "pid": 5772,
+      "started_at": "2026-11-18T09:10:56.688054+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "launch",
+        "--terminate-running-process",
+        "96734199-1010-4A1D-8ED2-00950CA6EC28",
+        "io.anytype.sdk06.journal-probe"
+      ],
+      "elapsed_seconds": 2.561,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:11:05.079906+00:00",
+      "log_bytes": 37,
+      "name": "launch-probe",
+      "pid": 5821,
+      "started_at": "2026-11-18T09:11:02.518653+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 120
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "shutdown",
+        "96734199-1010-4A1D-8ED2-00950CA6EC28"
+      ],
+      "elapsed_seconds": 11.56,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:11:17.691973+00:00",
+      "log_bytes": 0,
+      "name": "shutdown-owned-simulator",
+      "pid": 5870,
+      "started_at": "2026-11-18T09:11:06.132052+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 60
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "delete",
+        "96734199-1010-4A1D-8ED2-00950CA6EC28"
+      ],
+      "elapsed_seconds": 18.525,
+      "exit_code": 0,
+      "finished_at": "2026-11-18T09:11:36.381247+00:00",
+      "log_bytes": 0,
+      "name": "delete-owned-simulator",
+      "pid": 5978,
+      "started_at": "2026-11-18T09:11:17.856373+00:00",
+      "status": "SUCCEEDED",
+      "timeout_seconds": 60
+    }
+  ],
+  "finished_at": "2026-11-18T09:11:36.398921+00:00",
+  "first_unsatisfied_stage": "application-support.root.attributes",
+  "first_unsatisfied_stage_by_storage_scope": {
+    "application-support": "application-support.root.attributes",
+    "temporary-directory": "temporary-directory.root.attributes"
+  },
+  "native_write_accepted": false,
+  "owned_simulator": {
+    "device_type": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+    "name": "Pinkha-Hanlin-Journal-Probe-44269454953-216bd188",
+    "udid": "96734199-1010-4A1D-8ED2-00950CA6EC28"
+  },
+  "physical_device_accepted": false,
+  "platform_receipt_sha256": "f85f94871511fc3ae8e3318bf3b7c0597b4198969e6daba35a3ebf2ecb044d25",
+  "probe_executable_sha256": "81d4a97a3ce870657813a2b48636ec4465ffc8222d6472a72427bb7a5db39318",
+  "removed_owned_simulator": "96734199-1010-4A1D-8ED2-00950CA6EC28",
+  "run_attempt": "1",
+  "run_id": "44269454953",
+  "runtime": {
+    "buildversion": "24A434",
+    "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+    "version": "27.0"
+  },
+  "sdk_acceptance": false,
+  "source_sha": "e30371162f7ddc41a0aa71dbfc81e5cd61c68636",
+  "source_sha256": {
+    ".github/workflows/pinkha-hanlin-journal-probe.yml": "b4513c01b64ddf83a2742d93e3b33fc98962e34886c4618f960e86499184fa43",
+    "Tools/Hanlin/JournalFilesystemProbe.swift": "dfd90d3a27ba031e9883644329c1e8095f674cf00ba2bdf98d51b88f369ebef4",
+    "Tools/Hanlin/run_journal_probe.py": "5f15396be94f998f00edf3511b203aa679e622f3cdd10fb01af7a44892848f2f",
+    "Tools/Hanlin/test_journal_probe.py": "5ece5ef0f4d762f0c3bd25a7e29c678d73a5a8248115f3415a66ee976e320c38"
+  },
+  "started_at": "2026-11-18T09:05:15.133106+00:00",
+  "status": "DIAGNOSTIC_COMPLETE_NOT_SDK_ACCEPTANCE",
+  "swift": "swift-driver version: 1.168.6 Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "token": "216bd188c862429da71b4c7e3e3d82d0",
+  "xcode": "Xcode 27.0\nBuild version 27A266a"
+}

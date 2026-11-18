@@ -85,6 +85,60 @@ struct HanlinHostWriteTests {
             .appendingPathComponent(PinkhaHanlinCreatePagePlan.digest(try encoder.encode(namespace)), isDirectory: true)
     }
 
+    @Test func protectionReadbackRejectsWrongPresentValues() {
+        let expected = FileProtectionType.completeUntilFirstUserAuthentication
+        #expect(PinkhaHanlinMetadataProtection.acceptsReadback([.protectionKey: expected]))
+        #expect(PinkhaHanlinMetadataProtection.acceptsReadback([.protectionKey: expected.rawValue]))
+        let invalid: [Any] = [FileProtectionType.none, FileProtectionType.complete,
+                              FileProtectionType.completeUnlessOpen, "", "unknown", NSNumber(value: 0), NSNull()]
+        for value in invalid {
+            #expect(!PinkhaHanlinMetadataProtection.acceptsReadback([.protectionKey: value]))
+        }
+        #if targetEnvironment(simulator)
+        // This is an explicit metadata-unavailable platform case, not evidence
+        // that a Simulator provides physical-device Data Protection.
+        #expect(PinkhaHanlinMetadataProtection.acceptsReadback([:]))
+        #else
+        #expect(!PinkhaHanlinMetadataProtection.acceptsReadback([:]))
+        #endif
+    }
+
+    @Test func journalReopenRejectsChangedDirectoryAndRecordModes() async throws {
+        for target in ["root", "scope", "namespace", "reservation"] {
+            let parent = try directory()
+            defer { try? FileManager.default.removeItem(at: parent) }
+            let session = try session()
+            let plan = try PinkhaHanlinCreatePagePlan(invocation: invocation(session: session))
+            var journal: PinkhaHanlinWriteJournal? = try await PinkhaHanlinWriteJournal.openInTestDirectory(
+                parent, namespace: session.context.namespace)
+            try await journal?.reserve(plan.identity)
+            journal = nil
+            let scope = try scopeDirectory(parent, namespace: session.context.namespace)
+            let marker = scope.appendingPathComponent("namespace.json")
+            let reservation = scope.appendingPathComponent(plan.identity.key + ".reserved")
+            let markerBytes = try Data(contentsOf: marker)
+            let reservationBytes = try Data(contentsOf: reservation)
+            let targets = ["root": scope.deletingLastPathComponent(), "scope": scope,
+                           "namespace": marker, "reservation": reservation]
+            let changed = try #require(targets[target])
+            let isDirectory = target == "root" || target == "scope"
+            let wrongMode = isDirectory ? 0o755 : 0o644
+            try FileManager.default.setAttributes([.posixPermissions: wrongMode], ofItemAtPath: changed.path)
+            do {
+                _ = try await PinkhaHanlinWriteJournal.openInTestDirectory(parent, namespace: session.context.namespace)
+                Issue.record("Changed journal ownership mode was accepted")
+            } catch PinkhaHanlinWriteError.unavailable {
+                #expect(isDirectory)
+            } catch PinkhaHanlinWriteError.corruptJournal {
+                #expect(!isDirectory)
+            }
+            let after = try FileManager.default.attributesOfItem(atPath: changed.path)
+            #expect((after[.posixPermissions] as? NSNumber)?.intValue == wrongMode)
+            #expect(try Data(contentsOf: marker) == markerBytes)
+            #expect(try Data(contentsOf: reservation) == reservationBytes)
+        }
+    }
+
     @Test func reservationBlocksAllNewWritesUntilOriginalOutcomeIsKnown() async throws {
         let parent = try directory()
         defer { try? FileManager.default.removeItem(at: parent) } // Only this test's exact owned directory.
@@ -191,7 +245,15 @@ struct HanlinHostWriteTests {
         let attributes = try FileManager.default.attributesOfItem(atPath: path.path)
         let protection = (attributes[.protectionKey] as? FileProtectionType)?.rawValue
             ?? (attributes[.protectionKey] as? String)
+        #expect((attributes[.posixPermissions] as? NSNumber)?.intValue == 0o600)
+        #if targetEnvironment(simulator)
+        // Missing protection metadata is the measured Simulator limitation;
+        // an unexpected present value must still fail, with no device claim.
+        #expect(attributes[.protectionKey] == nil
+            || protection == FileProtectionType.completeUntilFirstUserAuthentication.rawValue)
+        #else
         #expect(protection == FileProtectionType.completeUntilFirstUserAuthentication.rawValue)
+        #endif
     }
 
     @Test func failedExclusiveAppendNeverAcknowledgesReservationAndPoisonsOwnerWithoutCleanup() async throws {
