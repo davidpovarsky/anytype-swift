@@ -1,5 +1,6 @@
 #if DEBUG && targetEnvironment(simulator)
 import Foundation
+@preconcurrency import Combine
 import UIKit
 import Factory
 import AnytypeCore
@@ -24,6 +25,24 @@ final class PinkhaHanlinNativeAcceptanceDriver {
     private let statusLabel: UILabel
     private var task: Task<Void, Never>?
     private var receipt: Receipt
+    private weak var scene: UIWindowScene?
+    private var sceneSubscriptions: [AnyCancellable] = []
+    private var presentations: [UUID: MountedPresentation] = [:]
+    private var awaitingPresentation = false
+    private var nextPresentation: MountedPresentation?
+
+    @MainActor
+    private final class MountedPresentation {
+        let host: PinkhaHanlinReadWriteHost
+        let presentation: PinkhaHanlinChatPresentation
+        weak var controller: PinkhaHanlinChatController?
+        weak var editor: EditorPageController?
+        init(host: PinkhaHanlinReadWriteHost, presentation: PinkhaHanlinChatPresentation,
+             controller: PinkhaHanlinChatController, editor: EditorPageController) {
+            self.host = host; self.presentation = presentation
+            self.controller = controller; self.editor = editor
+        }
+    }
 
     struct Receipt: Codable {
         let fixtureID: UUID
@@ -39,6 +58,23 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         var createdObjectID: String?
         var failure: String?
         var providerConfigured = false
+        var backgroundSessionID: UUID?
+        var staleConsentSessionID: UUID?
+        var freshSessionID: UUID?
+        var sceneEventCounts: [String: Int] = [:]
+        var backgroundCycleSceneDelta: [String: Int] = [:]
+        var documentExitSceneDelta: [String: Int] = [:]
+        var documentExitAttribution: String?
+        var invalidationCauses: [String: String] = [:]
+    }
+
+    /// Observation only: records the first existing production invalidation call.
+    /// This hook never invalidates a session, dismisses UI, or supplies consent.
+    static func observedInvalidation(sessionID: UUID, cause: String) {
+        guard let active, sessionID == active.host.session.id || active.presentations[sessionID] != nil else { return }
+        if active.receipt.invalidationCauses[sessionID.uuidString] == nil {
+            active.receipt.invalidationCauses[sessionID.uuidString] = cause
+        }
     }
 
     static func startIfRequested(host: PinkhaHanlinReadWriteHost,
@@ -48,7 +84,12 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         guard ProcessInfo.processInfo.environment["PINKHA_HANLIN_NATIVE_UI"] == "1" else { return }
         do {
             // viewDidAppear may repeat when an actual native alert disappears.
-            if let active, active.host.session == host.session { return }
+            if let active {
+                if active.host.session == host.session || active.presentations[host.session.id] != nil { return }
+                try active.captureNextPresentation(host: host, presentation: presentation,
+                    controller: controller, source: source, routeOwner: routeOwner)
+                return
+            }
             guard active == nil, let editor = source as? EditorPageController, let routeOwner else {
                 throw HanlinNativeAcceptanceError.invalidFixture
             }
@@ -87,6 +128,61 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         self.receipt = Receipt(fixtureID: fixture.fixtureID, sourceSHA: fixture.sourceSHA,
             runID: fixture.runID, runAttempt: fixture.runAttempt, sessionID: host.session.id,
             processID: ProcessInfo.processInfo.processIdentifier, startedAt: Date())
+        self.scene = window.windowScene
+        if let scene = window.windowScene { observeScene(scene) }
+    }
+
+    private func observeScene(_ scene: UIWindowScene) {
+        let events: [(Notification.Name, AnyObject?, String)] = [
+            (UIScene.willDeactivateNotification, scene, "sceneWillDeactivate"),
+            (UIScene.didEnterBackgroundNotification, scene, "sceneDidEnterBackground"),
+            (UIScene.willEnterForegroundNotification, scene, "sceneWillEnterForeground"),
+            (UIScene.didActivateNotification, scene, "sceneDidActivate"),
+            (UIApplication.willResignActiveNotification, nil, "applicationWillResignActive"),
+            (UIApplication.didBecomeActiveNotification, nil, "applicationDidBecomeActive")
+        ]
+        for (notification, object, key) in events {
+            receipt.sceneEventCounts[key] = 0
+            NotificationCenter.default.publisher(for: notification, object: object)
+                .sink { [weak self] _ in
+                    self?.receipt.sceneEventCounts[key, default: 0] += 1
+                }.store(in: &sceneSubscriptions)
+        }
+    }
+
+    private func captureNextPresentation(host: PinkhaHanlinReadWriteHost, presentation: PinkhaHanlinChatPresentation,
+                                         controller: PinkhaHanlinChatController, source: UIViewController?,
+                                         routeOwner: SpaceHubCoordinatorViewModel?) throws {
+        guard awaitingPresentation, nextPresentation == nil,
+              let editor = source as? EditorPageController, let routeOwner, routeOwner === self.routeOwner,
+              let scene, scene.activationState == .foregroundActive,
+              controller.viewIfLoaded?.window?.windowScene === scene,
+              editor.viewIfLoaded?.window?.windowScene === scene,
+              Container.shared.serverConfigurationStorage().currentConfiguration() == .localOnly,
+              Container.shared.accountManager().account.id == fixture.accountID,
+              host.session == presentation.session, host.session.id != self.host.session.id,
+              host.session.context.namespace == self.host.session.context.namespace,
+              host.session.context.objectReference == fixture.sourceObjectID,
+              host.session.context.selectionReferences.isEmpty,
+              editor.viewModel?.document.objectId == fixture.sourceObjectID,
+              !presentation.isConfigured, !presentation.readAllowed else {
+            throw HanlinNativeAcceptanceError.invalidFixture
+        }
+        try presentation.validateInstallation(for: host.session)
+        let mounted = MountedPresentation(host: host, presentation: presentation, controller: controller, editor: editor)
+        presentations[host.session.id] = mounted
+        nextPresentation = mounted
+    }
+
+    private func awaitPresentation(_ phase: String) async throws -> MountedPresentation {
+        try require(nextPresentation == nil && !awaitingPresentation, "overlapping_native_presentation_expectations")
+        awaitingPresentation = true
+        defer { awaitingPresentation = false; nextPresentation = nil }
+        try emit(phase)
+        try await waitUntil { self.nextPresentation != nil }
+        let mounted = try requireValue(nextPresentation, "missing_real_native_presentation")
+        try mounted.presentation.validateInstallation(for: mounted.host.session)
+        return mounted
     }
 
     private static func makeStatusLabel(in window: UIWindow) -> UILabel {
@@ -177,6 +273,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
             try await denied(host: host, invocation: makeReadInvocation())
             try await denied(host: host, invocation: copyCreationForDeniedAttempt(createdCall))
             receipt.checks["closed_presentation_denies_read_and_create"] = true
+            try await verifyNativeUILifetimes(createdCall: createdCall, createdID: objectID)
             try emit("CHECKING_NATIVE_AUTHORITY")
             try await verifyNativeAuthorityChanges()
             let retained = try await journal.receipt(for: plan.identity)
@@ -193,7 +290,121 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         }
     }
 
-    private func verifyRead(_ result: HanlinHostExecutionResult) throws {
+    private func verifyNativeUILifetimes(createdCall: HanlinHostInvocation, createdID: String) async throws {
+        // H2 is opened through the existing product button, then explicitly
+        // consented by XCTest. A host already denied before background is not proof.
+        let background = try await awaitPresentation("AWAIT_BACKGROUND_PRESENTATION")
+        receipt.backgroundSessionID = background.host.session.id
+        try await requireFreshConsent(background)
+        try emit("AWAIT_BACKGROUND_READ_CONSENT")
+        try await readAfterNativeConsent(background)
+        receipt.checks["background_presentation_had_live_read_access"] = true
+        let beforeBackground = receipt.sceneEventCounts
+        try emit("READY_FOR_BACKGROUND")
+        // Only XCUIDevice.press(.home) followed by app.activate() drives this.
+        try await waitUntil {
+            self.receipt.sceneEventCounts["sceneDidEnterBackground", default: 0] > beforeBackground["sceneDidEnterBackground", default: 0]
+                && self.receipt.sceneEventCounts["sceneDidActivate", default: 0] > beforeBackground["sceneDidActivate", default: 0]
+                && self.scene?.activationState == .foregroundActive
+                && background.controller?.presentingViewController == nil
+        }
+        receipt.backgroundCycleSceneDelta = sceneDelta(since: beforeBackground)
+        try require(receipt.backgroundCycleSceneDelta["sceneWillEnterForeground", default: 0] > 0,
+                    "foreground_notification_not_observed")
+        receipt.checks["native_background_foreground_observed"] = true
+        try await denied(host: background.host, invocation: makeReadInvocation(session: background.host.session))
+        try await denied(host: background.host, invocation: copyCreationForDeniedAttempt(createdCall, session: background.host.session))
+        try require(receipt.invalidationCauses[background.host.session.id.uuidString] != nil,
+                    "background_invalidation_call_not_observed")
+        receipt.checks["backgrounded_presentation_denies_read_and_create"] = true
+
+        // H3 is a new, initially unconsented presentation. Its actual native
+        // read alert is left pending while the production object URL is opened.
+        let stale = try await awaitPresentation("AWAIT_STALE_CONSENT_PRESENTATION")
+        receipt.staleConsentSessionID = stale.host.session.id
+        try await requireFreshConsent(stale)
+        try emit("AWAIT_STALE_READ_CONSENT")
+        try await waitUntil {
+            guard let alert = stale.controller?.presentedViewController as? UIAlertController else { return false }
+            return alert.title == "Allow document text access?" && alert.viewIfLoaded?.window != nil
+        }
+        try require(!stale.presentation.readAllowed, "pending_consent_was_already_allowed")
+        let pendingAlert = stale.controller?.presentedViewController
+        let beforeDocumentExit = receipt.sceneEventCounts
+        try emit("READY_TO_LEAVE_WITH_PENDING_CONSENT")
+        try await waitUntil {
+            self.hasCurrentDocument(createdID)
+                && stale.controller?.presentingViewController == nil
+                && pendingAlert?.viewIfLoaded?.window == nil
+                && self.scene?.activationState == .foregroundActive
+        }
+        receipt.documentExitSceneDelta = sceneDelta(since: beforeDocumentExit)
+        receipt.documentExitAttribution = receipt.documentExitSceneDelta.values.contains(where: { $0 > 0 })
+            ? "navigationWithSceneTransition" : "navigationWithoutSceneTransition"
+        try require(!stale.presentation.readAllowed, "departed_document_received_pending_consent")
+        try require(receipt.invalidationCauses[stale.host.session.id.uuidString] != nil,
+                    "departed_presentation_invalidation_call_not_observed")
+        receipt.checks["pending_read_consent_dismissed_on_document_exit"] = true
+        try await denied(host: stale.host, invocation: makeReadInvocation(session: stale.host.session))
+        try await denied(host: stale.host, invocation: copyCreationForDeniedAttempt(createdCall, session: stale.host.session))
+        receipt.checks["departed_document_presentation_denies_read_and_create"] = true
+
+        // H4 is mounted after XCTest returns to the exact original document.
+        // The old presentation/consent cannot authorize this new lifetime.
+        let fresh = try await awaitPresentation("AWAIT_FRESH_PRESENTATION")
+        receipt.freshSessionID = fresh.host.session.id
+        try await requireFreshConsent(fresh)
+        receipt.checks["fresh_presentation_requires_new_native_consent"] = true
+        try emit("AWAIT_FRESH_READ_CONSENT")
+        try await readAfterNativeConsent(fresh)
+        receipt.checks["fresh_presentation_reads_original_document_only"] = true
+        try await verifyNativeIndex(createdID: createdID) // No denied create may duplicate the original page.
+        try emit("READY_TO_CLOSE_FRESH")
+        try await waitUntil { fresh.controller?.presentingViewController == nil }
+        try await denied(host: fresh.host, invocation: makeReadInvocation(session: fresh.host.session))
+        guard let editor = fresh.editor, editor.viewIfLoaded?.window?.windowScene === scene else {
+            throw HanlinNativeAcceptanceError.failed("fresh_original_editor_unmounted")
+        }
+        self.editor = editor
+    }
+
+    private func requireFreshConsent(_ mounted: MountedPresentation) async throws {
+        try require(!mounted.presentation.readAllowed && !mounted.presentation.isConfigured,
+                    "new_presentation_inherited_consent_or_provider")
+        _ = try await mounted.host.context(for: mounted.host.session)
+        let catalog = try await mounted.host.catalog(for: mounted.host.session.context)
+        try require(Set(catalog.tools.map(\.route.alias)) == [PinkhaHanlinCreatePagePlan.alias],
+                    "fresh_native_catalog_must_have_create_without_read")
+        try await denied(host: mounted.host, invocation: makeReadInvocation(session: mounted.host.session))
+    }
+
+    private func readAfterNativeConsent(_ mounted: MountedPresentation) async throws {
+        try await waitUntil { mounted.presentation.readAllowed && mounted.controller?.presentedViewController == nil }
+        try mounted.presentation.validateInstallation(for: mounted.host.session)
+        try require(!mounted.presentation.isConfigured, "lifecycle_provider_was_configured")
+        let catalog = try await mounted.host.catalog(for: mounted.host.session.context)
+        try require(Set(catalog.tools.map(\.route.alias)) == ["anytype_read_context_text", PinkhaHanlinCreatePagePlan.alias],
+                    "consented_lifecycle_catalog_missing_read_or_create")
+        let dispatcher = HanlinHostDispatcher(host: mounted.host)
+        let read = try await dispatcher.dispatch(alias: "anytype_read_context_text", argumentsJSON: "{}",
+            providerCallID: "native-lifecycle-read", runID: UUID(), step: 0,
+            session: mounted.host.session, catalog: catalog, limits: try HanlinToolInvocationLimits())
+        try verifyRead(read, receiptHost: mounted.host)
+    }
+
+    private func hasCurrentDocument(_ objectID: String) -> Bool {
+        guard let screen = routeOwner?.navigationPath.path.last?.base as? EditorScreenData,
+              case .page(let object) = screen else { return false }
+        return object.objectId == objectID && object.spaceId == fixture.spaceID
+    }
+
+    private func sceneDelta(since previous: [String: Int]) -> [String: Int] {
+        receipt.sceneEventCounts.reduce(into: [:]) { result, entry in
+            result[entry.key] = entry.value - previous[entry.key, default: 0]
+        }
+    }
+
+    private func verifyRead(_ result: HanlinHostExecutionResult, receiptHost: PinkhaHanlinReadWriteHost? = nil) throws {
         try require(result.effectState == .confirmedNoEffect, "read_effect_mismatch")
         guard case .completed(let content) = result.result.outcome, content.count == 1,
               case .text(let text) = content[0] else { throw HanlinNativeAcceptanceError.failed("read_payload_missing") }
@@ -202,7 +413,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
                     && snapshot.title == fixture.sourceTitle && snapshot.coverage == "documentTextBlocksOnly"
                     && snapshot.blocks.contains { $0.reference == fixture.sourceBlockID && $0.text == fixture.sourceText },
                     "native_read_did_not_match_prepared_body")
-        guard case .completed(let metadata) = host.metadataReceipt(for: result.result.invocationID)?.result.outcome,
+        guard case .completed(let metadata) = (receiptHost ?? host).metadataReceipt(for: result.result.invocationID)?.result.outcome,
               metadata.isEmpty else { throw HanlinNativeAcceptanceError.failed("read_receipt_retained_payload") }
     }
 
@@ -292,24 +503,24 @@ final class PinkhaHanlinNativeAcceptanceDriver {
           catch HanlinHostError.denied {}
     }
 
-    private func makeReadInvocation() throws -> HanlinHostInvocation {
+    private func makeReadInvocation(session: HanlinHostSession? = nil) throws -> HanlinHostInvocation {
         let id = try HanlinToolInvocationID(validating: UUID().uuidString.lowercased())
         return .init(request: .init(id: id,
             logicalToolID: .init(providerInstanceID: try .init(validating: "anytype.host"), localToolID: try .init(validating: "read-context-text")),
             aliasUsed: "anytype_read_context_text", descriptorRevision: try .init(1), routingTableRevision: .init(1),
             arguments: .object([:]), origin: .assistantModel, idempotencyKey: id.rawValue,
             deadline: Date().addingTimeInterval(30), limits: try .init()),
-            session: host.session, runID: UUID(), step: 0, providerCallID: UUID().uuidString,
+            session: session ?? host.session, runID: UUID(), step: 0, providerCallID: UUID().uuidString,
             writeGuarantee: .readOnly, originalArgumentsJSON: Data("{}".utf8))
     }
 
-    private func copyCreationForDeniedAttempt(_ original: HanlinHostInvocation) throws -> HanlinHostInvocation {
+    private func copyCreationForDeniedAttempt(_ original: HanlinHostInvocation, session: HanlinHostSession? = nil) throws -> HanlinHostInvocation {
         let id = try HanlinToolInvocationID(validating: UUID().uuidString.lowercased())
         return .init(request: .init(id: id, logicalToolID: original.request.logicalToolID,
             aliasUsed: original.request.aliasUsed, descriptorRevision: original.request.descriptorRevision,
             routingTableRevision: original.request.routingTableRevision, arguments: original.request.arguments,
             origin: .assistantModel, idempotencyKey: id.rawValue, deadline: Date().addingTimeInterval(30), limits: try .init()),
-            session: host.session, runID: UUID(), step: 0, providerCallID: UUID().uuidString,
+            session: session ?? host.session, runID: UUID(), step: 0, providerCallID: UUID().uuidString,
             writeGuarantee: .independentObjectCreation, originalArgumentsJSON: original.originalArgumentsJSON)
     }
 
@@ -328,7 +539,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
 
     private func emit(_ phase: String) throws {
         receipt.phase = phase
-        receipt.providerConfigured = presentation.isConfigured
+        receipt.providerConfigured = presentation.isConfigured || presentations.values.contains { $0.presentation.isConfigured }
         let data = try JSONEncoder().encode(receipt)
         try data.write(to: PinkhaHanlinNativeAcceptanceFixture.fileURL(PinkhaHanlinNativeAcceptanceFixture.resultFileName), options: .atomic)
         statusLabel.text = phase

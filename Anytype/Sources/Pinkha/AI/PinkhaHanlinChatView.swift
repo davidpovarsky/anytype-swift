@@ -131,10 +131,18 @@ final class PinkhaHanlinChatController: UIHostingController<PinkhaHanlinChatView
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        if isBeingDismissed || presentingViewController == nil { presentation.invalidate() }
+        if isBeingDismissed || presentingViewController == nil {
+            #if DEBUG && targetEnvironment(simulator)
+            PinkhaHanlinNativeAcceptanceDriver.observedInvalidation(sessionID: presentation.session.id, cause: "presentationRemoved")
+            #endif
+            presentation.invalidate()
+        }
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        #if DEBUG && targetEnvironment(simulator)
+        PinkhaHanlinNativeAcceptanceDriver.observedInvalidation(sessionID: presentation.session.id, cause: "interactivePresentationDismissal")
+        #endif
         presentation.invalidate()
     }
 }
