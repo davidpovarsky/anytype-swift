@@ -1,0 +1,420 @@
+diff --git a/core/block/editor/factory.go b/core/block/editor/factory.go
+--- a/core/block/editor/factory.go
++++ b/core/block/editor/factory.go
+@@ -33,6 +33,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/editor/converter"
+ 	pfeditor "github.com/anyproto/anytype-heart/core/block/editor/personalfavorites"
+ 	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
++	"github.com/anyproto/anytype-heart/core/block/editor/torahopsobject"
+ 	"github.com/anyproto/anytype-heart/core/block/migration"
+ 	"github.com/anyproto/anytype-heart/core/block/object/idresolver"
+ 	"github.com/anyproto/anytype-heart/core/block/objectgc"
+@@ -193,6 +194,12 @@
+ 	err = sb.Init(initCtx)
+ 	if err != nil {
+ 		return nil, fmt.Errorf("init smartblock: %w", err)
++	}
++
++	// Private immutable operations are initialized by their dedicated adapter.
++	// Never run document migrations or a generic block Apply on this history.
++	if sb.Type() == coresb.SmartBlockTypePinkhaTorahOperations {
++		return sb, nil
+ 	}
+ 
+ 	// NoSpaceConfigCheck: init is our own code, and its writes must never be able to fail object
+@@ -289,6 +296,16 @@
+ 			return nil, fmt.Errorf("get crdt db: %w", err)
+ 		}
+ 		return accountobject.New(sb, f.accountService.Keys(), spaceIndex, f.layoutConverter, f.fileObjectService, db, f.config), nil
++	case coresb.SmartBlockTypePinkhaTorahOperations:
++		crdtDb, err := f.dbProvider.GetCrdtDb(space.Id()).Wait()
++		if err != nil {
++			return nil, fmt.Errorf("get torah projection db: %w", err)
++		}
++		keys := f.accountService.Keys()
++		if keys == nil {
++			return nil, fmt.Errorf("missing native account keys")
++		}
++		return torahopsobject.New(sb, space, crdtDb, keys.SignKey), nil
+ 	case coresb.SmartBlockTypeTechSpaceObject:
+ 		crdtDb, err := f.dbProvider.GetCrdtDb(space.Id()).Wait()
+ 		if err != nil {
+diff --git a/core/block/object/objectcache/payload.go b/core/block/object/objectcache/payload.go
+--- a/core/block/object/objectcache/payload.go
++++ b/core/block/object/objectcache/payload.go
+@@ -10,12 +10,16 @@
+ 	"github.com/anyproto/anytype-heart/core/domain"
+ 	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahopscontract"
+ 	"github.com/anyproto/anytype-heart/space/spacedomain"
+ )
+ 
+ const ChangeType = "anytype.object"
+ 
+ func createChangePayload(sbType coresb.SmartBlockType, key domain.UniqueKey) (data []byte, err error) {
++	if sbType == coresb.SmartBlockTypePinkhaTorahOperations {
++		return nil, torahopscontract.ErrPrivateRoot
++	}
+ 	var keyStr string
+ 	if key != nil {
+ 		if key.SmartblockType() != sbType {
+diff --git a/core/block/object/objectcache/tree.go b/core/block/object/objectcache/tree.go
+--- a/core/block/object/objectcache/tree.go
++++ b/core/block/object/objectcache/tree.go
+@@ -6,11 +6,13 @@
+ 	"time"
+ 
+ 	"github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
++	"github.com/anyproto/anytype-heart/space/spacecore/typeprovider"
+ 
+ 	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
+ 	"github.com/anyproto/anytype-heart/core/block/object/payloadcreator"
+ 	"github.com/anyproto/anytype-heart/core/domain"
+ 	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahopscontract"
+ )
+ 
+ // TreeDerivationParams is a struct for deriving a tree
+@@ -29,6 +31,9 @@
+ 
+ // CreateTreePayload creates a tree payload for a given space and smart block type
+ func (c *objectCache) CreateTreePayload(ctx context.Context, params payloadcreator.PayloadCreationParams) (treestorage.TreeStorageCreatePayload, error) {
++	if params.SmartblockType == coresb.SmartBlockTypePinkhaTorahOperations {
++		return treestorage.TreeStorageCreatePayload{}, torahopscontract.ErrPrivateOperation
++	}
+ 	changePayload, err := createChangePayload(params.SmartblockType, nil)
+ 	if err != nil {
+ 		return treestorage.TreeStorageCreatePayload{}, err
+@@ -54,6 +59,17 @@
+ 
+ // CreateTreeObjectWithPayload creates a tree object with a given payload and object init func
+ func (c *objectCache) CreateTreeObjectWithPayload(ctx context.Context, payload treestorage.TreeStorageCreatePayload, initFunc InitFunc) (sb smartblock.SmartBlock, err error) {
++	tp, _, err := typeprovider.GetTypeAndKeyFromRootForSpace(c.space.Id(), payload.RootRawChange)
++	if err != nil {
++		return nil, err
++	}
++	// Creation accepts only the canonical empty private root. Existing private
++	// history enters through the receiving source builder/validator, never the
++	// generic PutTree builder. This also refuses cross-Space import of this root.
++	if tp == coresb.SmartBlockTypePinkhaTorahOperations &&
++		(len(payload.Changes) != 0 || len(payload.Heads) != 1 || payload.Heads[0] != payload.RootRawChange.Id) {
++		return nil, torahopscontract.ErrPrivateRoot
++	}
+ 	tr, err := c.space.TreeBuilder().PutTree(ctx, payload, nil)
+ 	if err != nil {
+ 		return nil, fmt.Errorf("put tree: %w", err)
+@@ -70,6 +86,16 @@
+ // it takes into account whether it is for personal space and if so uses old derivation logic
+ // to maintain backward compatibility
+ func (c *objectCache) DeriveTreePayload(ctx context.Context, params payloadcreator.PayloadDerivationParams) (storagePayload treestorage.TreeStorageCreatePayload, err error) {
++	if params.Key != nil && params.Key.SmartblockType() == coresb.SmartBlockTypePinkhaTorahOperations {
++		if params.Key.InternalKey() != torahopscontract.UniqueKeyVersion || params.ParentId != "" || params.UseAccountSignature {
++			return storagePayload, torahopscontract.ErrPrivateRoot
++		}
++		root, err := torahopscontract.Root(c.space.Id())
++		if err != nil {
++			return storagePayload, err
++		}
++		return treestorage.TreeStorageCreatePayload{RootRawChange: root, Heads: []string{root.Id}}, nil
++	}
+ 	changePayload, err := createChangePayload(params.Key.SmartblockType(), params.Key)
+ 	if err != nil {
+ 		return treestorage.TreeStorageCreatePayload{}, err
+diff --git a/core/block/restriction/object.go b/core/block/restriction/object.go
+--- a/core/block/restriction/object.go
++++ b/core/block/restriction/object.go
+@@ -51,30 +51,31 @@
+ 	}
+ 
+ 	objectRestrictionsBySBType = map[smartblock.SmartBlockType]ObjectRestrictions{
+-		smartblock.SmartBlockTypeIdentity:             objRestrictAll,
+-		smartblock.SmartBlockTypeAnytypeProfile:       objRestrictAll,
+-		smartblock.SmartBlockTypeArchive:              objRestrictAll,
+-		smartblock.SmartBlockTypeBundledRelation:      objRestrictAll,
+-		smartblock.SmartBlockTypeBundledObjectType:    objRestrictAll,
+-		smartblock.SmartBlockTypeBundledTemplate:      objRestrictAll,
+-		smartblock.SmartBlockTypeMissingObject:        objRestrictAll,
+-		smartblock.SmartBlockTypeDate:                 objRestrictAll,
+-		smartblock.SmartBlockTypeParticipant:          objRestrictAll,
+-		smartblock.SmartBlockTypeAccountOld:           objRestrictAll, // new value
+-		smartblock.SmartBlockTypeAccountObject:        objRestrictAll, // new
+-		smartblock.SmartBlockTypeSpaceView:            objRestrictAll, // new
+-		smartblock.SmartBlockTypeNotificationObject:   objRestrictAll, // new
+-		smartblock.SmartBlockTypeDevicesObject:        objRestrictAll, // new
+-		smartblock.SmartBlockTypeChatDerivedObject:    objRestrictEditAndDuplicate,
+-		smartblock.SmartBlockTypeDiscussionObject:     objRestrictEditAndDuplicate,
+-		smartblock.SmartBlockTypeChatObjectDeprecated: objRestrictEditAndDuplicate,
+-		smartblock.SmartBlockTypeFileObject:           objRestrictEditAndDuplicate,
+-		smartblock.SmartBlockTypeSubObject:            objRestrictEditAndTemplate,
+-		smartblock.SmartBlockTypeObjectType:           objRestrictEditAndTemplate,
+-		smartblock.SmartBlockTypeRelation:             objRestrictEditAndTemplate,
+-		smartblock.SmartBlockTypeHome:                 objRestrictAll.Copy().Remove(model.Restrictions_Blocks),
+-		smartblock.SmartBlockTypeWidget:               objRestrictAll.Copy().Remove(model.Restrictions_Blocks),
+-		smartblock.SmartBlockTypeWorkspace:            objRestrictAll.Copy().Remove(model.Restrictions_Details),
++		smartblock.SmartBlockTypeIdentity:              objRestrictAll,
++		smartblock.SmartBlockTypePinkhaTorahOperations: objRestrictAll,
++		smartblock.SmartBlockTypeAnytypeProfile:        objRestrictAll,
++		smartblock.SmartBlockTypeArchive:               objRestrictAll,
++		smartblock.SmartBlockTypeBundledRelation:       objRestrictAll,
++		smartblock.SmartBlockTypeBundledObjectType:     objRestrictAll,
++		smartblock.SmartBlockTypeBundledTemplate:       objRestrictAll,
++		smartblock.SmartBlockTypeMissingObject:         objRestrictAll,
++		smartblock.SmartBlockTypeDate:                  objRestrictAll,
++		smartblock.SmartBlockTypeParticipant:           objRestrictAll,
++		smartblock.SmartBlockTypeAccountOld:            objRestrictAll, // new value
++		smartblock.SmartBlockTypeAccountObject:         objRestrictAll, // new
++		smartblock.SmartBlockTypeSpaceView:             objRestrictAll, // new
++		smartblock.SmartBlockTypeNotificationObject:    objRestrictAll, // new
++		smartblock.SmartBlockTypeDevicesObject:         objRestrictAll, // new
++		smartblock.SmartBlockTypeChatDerivedObject:     objRestrictEditAndDuplicate,
++		smartblock.SmartBlockTypeDiscussionObject:      objRestrictEditAndDuplicate,
++		smartblock.SmartBlockTypeChatObjectDeprecated:  objRestrictEditAndDuplicate,
++		smartblock.SmartBlockTypeFileObject:            objRestrictEditAndDuplicate,
++		smartblock.SmartBlockTypeSubObject:             objRestrictEditAndTemplate,
++		smartblock.SmartBlockTypeObjectType:            objRestrictEditAndTemplate,
++		smartblock.SmartBlockTypeRelation:              objRestrictEditAndTemplate,
++		smartblock.SmartBlockTypeHome:                  objRestrictAll.Copy().Remove(model.Restrictions_Blocks),
++		smartblock.SmartBlockTypeWidget:                objRestrictAll.Copy().Remove(model.Restrictions_Blocks),
++		smartblock.SmartBlockTypeWorkspace:             objRestrictAll.Copy().Remove(model.Restrictions_Details),
+ 		smartblock.SmartBlockTypeProfilePage: {
+ 			model.Restrictions_LayoutChange: {},
+ 			model.Restrictions_TypeChange:   {},
+diff --git a/core/block/source/interface.go b/core/block/source/interface.go
+--- a/core/block/source/interface.go
++++ b/core/block/source/interface.go
+@@ -17,7 +17,6 @@
+ 	"github.com/anyproto/anytype-heart/core/domain"
+ 	"github.com/anyproto/anytype-heart/pb"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+-	"github.com/anyproto/anytype-heart/space/spacecore/typeprovider"
+ )
+ 
+ var (
+@@ -142,24 +141,7 @@
+ }
+ 
+ func (b *BuildOptions) BuildTreeOpts() objecttreebuilder.BuildTreeOpts {
+-	return objecttreebuilder.BuildTreeOpts{
+-		Listener: b.Listener,
+-		TreeBuilder: func(treeStorage objecttree.Storage, aclList list.AclList) (objecttree.ObjectTree, error) {
+-			ot, err := objecttree.BuildKeyFilterableObjectTree(treeStorage, aclList)
+-			if err != nil {
+-				return nil, err
+-			}
+-			sbt, _, err := typeprovider.GetTypeAndKeyFromRoot(ot.Header())
+-			if err != nil {
+-				return nil, err
+-			}
+-			if sbt.IsStoreBacked() {
+-				ot.SetFlusher(objecttree.MarkNewChangeFlusher())
+-			}
+-			return ot, nil
+-		},
+-		TreeValidator: objecttree.ValidateFilterRawTree,
+-	}
++	return b.BuildTreeOptsForSpace("")
+ }
+ 
+ type StaticSourceParams struct {
+diff --git a/core/block/source/sourceimpl/service.go b/core/block/source/sourceimpl/service.go
+--- a/core/block/source/sourceimpl/service.go
++++ b/core/block/source/sourceimpl/service.go
+@@ -181,7 +181,7 @@
+ 		return staticSrc, nil
+ 	}
+ 
+-	return s.newTreeSource(ctx, space, id, buildOptions.BuildTreeOpts())
++	return s.newTreeSource(ctx, space, id, buildOptions.BuildTreeOptsForSpace(space.Id()))
+ }
+ 
+ func (s *service) IDsListerBySmartblockType(space source.Space, blockType smartblock.SmartBlockType) (source.IDsLister, error) {
+diff --git a/core/block/source/sourceimpl/source.go b/core/block/source/sourceimpl/source.go
+--- a/core/block/source/sourceimpl/source.go
++++ b/core/block/source/sourceimpl/source.go
+@@ -35,6 +35,7 @@
+ 	"github.com/anyproto/anytype-heart/pkg/lib/localstore/objectstore/spaceindex"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/logging"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahopscontract"
+ 	"github.com/anyproto/anytype-heart/space/spacecore/typeprovider"
+ 	"github.com/anyproto/anytype-heart/util/reflection"
+ 	"github.com/anyproto/anytype-heart/util/slice"
+@@ -150,7 +151,7 @@
+ 		return nil, fmt.Errorf("build tree: %w", err)
+ 	}
+ 
+-	sbt, _, err := typeprovider.GetTypeAndKeyFromRoot(ot.Header())
++	sbt, _, err := typeprovider.GetTypeAndKeyFromRootForSpace(space.Id(), ot.Header())
+ 	if err != nil {
+ 		return nil, err
+ 	}
+@@ -169,6 +170,9 @@
+ 		spaceIndex:         s.objectStore.SpaceIndex(space.Id()),
+ 		fileObjectMigrator: s.fileObjectMigrator,
+ 		formatFetcher:      s.formatFetcher,
++	}
++	if sbt == smartblock.SmartBlockTypePinkhaTorahOperations {
++		return &torahOperationsSource{treeSource: src}, nil
+ 	}
+ 	if sbt.IsStoreBacked() {
+ 		return &store{treeSource: src, sbType: sbt, diffManagers: map[string]*diffManager{}, spaceService: s.spaceService}, nil
+@@ -626,8 +630,13 @@
+ 	}()
+ 
+ 	// todo: can we avoid unmarshaling here? we already had this data
+-	sbt, uniqueKeyInternalKey, err := typeprovider.GetTypeAndKeyFromRoot(ot.Header())
+-	if err != nil {
++	sbt, uniqueKeyInternalKey, err := typeprovider.GetTypeAndKeyFromRootForSpace(spaceId, ot.Header())
++	if err != nil {
++		return
++	}
++
++	if sbt == smartblock.SmartBlockTypePinkhaTorahOperations {
++		err = torahopscontract.ErrPrivateOperation
+ 		return
+ 	}
+ 
+diff --git a/core/domain/uniquekey.go b/core/domain/uniquekey.go
+--- a/core/domain/uniquekey.go
++++ b/core/domain/uniquekey.go
+@@ -29,6 +29,7 @@
+ 	smartblock.SmartBlockTypeAccountObject:          "account",
+ 	smartblock.SmartBlockTypeTechSpaceObject:        "techObj",
+ 	smartblock.SmartBlockTypeTechSpaceVirtualObject: "techVirtual",
++	smartblock.SmartBlockTypePinkhaTorahOperations:  "pinkhaTorahOps",
+ }
+ 
+ // UniqueKey is unique key composed of two parts: smartblock type and internal key.
+diff --git a/pkg/lib/core/smartblock/smartblock.go b/pkg/lib/core/smartblock/smartblock.go
+--- a/pkg/lib/core/smartblock/smartblock.go
++++ b/pkg/lib/core/smartblock/smartblock.go
+@@ -50,6 +50,9 @@
+ var ErrNoSuchSmartblock = errors.New("this id does not relate to any smartblock type")
+ 
+ func (sbt SmartBlockType) String() string {
++	if sbt == SmartBlockTypePinkhaTorahOperations {
++		return "PinkhaTorahOperations"
++	}
+ 	return sbt.ToProto().String()
+ }
+ 
+@@ -58,6 +61,9 @@
+ }
+ 
+ func (sbt SmartBlockType) Valid() (err error) {
++	if sbt == SmartBlockTypePinkhaTorahOperations {
++		return nil
++	}
+ 	if _, ok := model.SmartBlockType_name[int32(sbt)]; ok {
+ 		return nil
+ 	}
+@@ -82,7 +88,8 @@
+ 	case SmartBlockTypeChatDerivedObject,
+ 		SmartBlockTypeAccountObject,
+ 		SmartBlockTypeDiscussionObject,
+-		SmartBlockTypeTechSpaceObject:
++		SmartBlockTypeTechSpaceObject,
++		SmartBlockTypePinkhaTorahOperations:
+ 		return true
+ 	}
+ 	return false
+@@ -91,7 +98,7 @@
+ // Indexable determines if the object of specific type need to be proceeded by the indexer in order to appear in sets
+ func (sbt SmartBlockType) Indexable() (fulltext, details, outgoingLinks bool) {
+ 	switch sbt {
+-	case SmartBlockTypeDate, SmartBlockTypeAccountOld, SmartBlockTypeNotificationObject, SmartBlockTypeDevicesObject:
++	case SmartBlockTypeDate, SmartBlockTypeAccountOld, SmartBlockTypeNotificationObject, SmartBlockTypeDevicesObject, SmartBlockTypePinkhaTorahOperations:
+ 		return false, false, false
+ 	case SmartBlockTypeWidget, SmartBlockTypeArchive, SmartBlockTypeHome, SmartBlockTypeTechSpaceObject, SmartBlockTypeTechSpaceVirtualObject:
+ 		return false, true, false
+diff --git a/space/spacecore/typeprovider/typeprovider.go b/space/spacecore/typeprovider/typeprovider.go
+--- a/space/spacecore/typeprovider/typeprovider.go
++++ b/space/spacecore/typeprovider/typeprovider.go
+@@ -35,6 +35,7 @@
+ 	"github.com/anyproto/anytype-heart/pkg/lib/localstore/addr"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/logging"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahopscontract"
+ 	"github.com/anyproto/anytype-heart/space/spacecore"
+ 	"github.com/anyproto/anytype-heart/space/spacecore/storage/anystorage"
+ 	"github.com/anyproto/anytype-heart/space/spacedomain"
+@@ -120,9 +121,21 @@
+ func (p *provider) Type(spaceID string, id string) (tp smartblock.SmartBlockType, err error) {
+ 	tp, err = SmartblockTypeFromID(id)
+ 	if err == nil && tp != smartblock.SmartBlockTypePage {
+-		return
+-	}
+-	return p.objectTypeFromSpace(spaceID, id)
++		// Private hosts have only canonical per-Space CIDs; a virtual or static
++		// prefix cannot allocate this fork-local type.
++		if tp == smartblock.SmartBlockTypePinkhaTorahOperations {
++			return 0, torahopscontract.ErrPrivateRoot
++		}
++		return
++	}
++	tp, err = p.objectTypeFromSpace(spaceID, id)
++	if err == nil && tp == smartblock.SmartBlockTypePinkhaTorahOperations {
++		root, rootErr := torahopscontract.Root(spaceID)
++		if rootErr != nil || root.Id != id {
++			return 0, torahopscontract.ErrPrivateRoot
++		}
++	}
++	return tp, err
+ }
+ 
+ func (p *provider) RegisterStaticType(id string, tp smartblock.SmartBlockType) {
+@@ -207,7 +220,7 @@
+ 	if err != nil {
+ 		return
+ 	}
+-	tp, _, err = GetTypeAndKeyFromRoot(rawRoot)
++	tp, _, err = GetTypeAndKeyFromRootForSpace(spaceID, rawRoot)
+ 	if err != nil {
+ 		return
+ 	}
+@@ -231,6 +244,15 @@
+ }
+ 
+ func GetTypeAndKeyFromRootChange(root *treechangeproto.RootChange) (sbt smartblock.SmartBlockType, key string, err error) {
++	if root == nil {
++		return 0, "", torahopscontract.ErrPrivateRoot
++	}
++	if root.ChangeType == torahopscontract.ChangeType {
++		if err = torahopscontract.ValidateRootChange(root); err != nil {
++			return 0, "", err
++		}
++		return smartblock.SmartBlockTypePinkhaTorahOperations, torahopscontract.UniqueKeyVersion, nil
++	}
+ 	if root.ChangeType != spacedomain.ChangeType {
+ 		err = ErrUnknownChangeType
+ 		return 0, "", err
+@@ -238,6 +260,9 @@
+ 	payload, err := objectType(root.ChangePayload)
+ 	if err != nil {
+ 		return 0, "", fmt.Errorf("get object type: %w", err)
++	}
++	if smartblock.SmartBlockType(payload.SmartBlockType) == smartblock.SmartBlockTypePinkhaTorahOperations {
++		return 0, "", torahopscontract.ErrPrivateRoot
+ 	}
+ 	return smartblock.SmartBlockType(payload.SmartBlockType), payload.Key, nil
+ }
+@@ -271,3 +296,18 @@
+ 	err = payload.Unmarshal(changePayload)
+ 	return
+ }
++
++// GetTypeAndKeyFromRootForSpace binds a private root to its receiving Space.
++// Legacy object formats keep their existing resolution behavior.
++func GetTypeAndKeyFromRootForSpace(spaceID string, rawRoot *treechangeproto.RawTreeChangeWithId) (smartblock.SmartBlockType, string, error) {
++	tp, key, err := GetTypeAndKeyFromRoot(rawRoot)
++	if err != nil {
++		return 0, "", err
++	}
++	if tp == smartblock.SmartBlockTypePinkhaTorahOperations {
++		if err := torahopscontract.ValidateRoot(spaceID, rawRoot); err != nil {
++			return 0, "", err
++		}
++	}
++	return tp, key, nil
++}
