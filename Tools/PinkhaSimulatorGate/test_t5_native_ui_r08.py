@@ -36,7 +36,7 @@ def receipt(fixture, appearance):
             {"stage": r08.STAGES[1], "objectID": probe["objectID"], "blockID": probe["blockID"],
              "actualText": probe["text"], "resultID": target["page"]["resultID"],
              "actualDirectionLabel": "app-language-he;swiftui-rtl;navigation-rtl;uikit-rtl;content-rtl"},
-            {"stage": r08.STAGES[2], **retained_note(fixture), "sourceChipExists": False},
+            {"stage": r08.STAGES[2], **retained_note(fixture), "sourceChipExists": False, "sourceChipCount": 0},
             {"stage": r08.STAGES[3], "originObjectID": target["writing"]["objectID"], "actualRows": rows}]}
 
 
@@ -111,6 +111,9 @@ class R08EvidenceControls(unittest.TestCase):
                      lambda v: v["observations"][1].update(blockID="other-block"),
                      lambda v: v["observations"][1].update(actualText="rewritten"),
                      lambda v: v["observations"][2].update(sourceChipExists=True),
+                     lambda v: v["observations"][2].update(sourceChipCount=1),
+                     lambda v: v["observations"][2].update(sourceChipCount=True),
+                     lambda v: v["observations"][2].pop("sourceChipCount"),
                      lambda v: v["observations"][2].update(actualText="changed core Note"),
                      lambda v: v["observations"][2].update(objectID="another Note")]
         for index, mutate in enumerate(mutations):
@@ -120,7 +123,7 @@ class R08EvidenceControls(unittest.TestCase):
 
     def test_original_attachments_require_complete_ax_content_and_new_same_process(self):
         fixture = baseline.fixture()
-        for mutation in ("none", "old-pid", "different-pid", "title", "direction", "note", "missing-image"):
+        for mutation in ("none", "old-pid", "different-pid", "title", "direction", "note", "missing-image", "localized-chip"):
             with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as temp:
                 directory = Path(temp) / "attachments"; manifest = attachments(directory, fixture, "light", 104)
                 entries = manifest[0]["attachments"]
@@ -131,6 +134,10 @@ class R08EvidenceControls(unittest.TestCase):
                     p = directory / entries[index]["exportedFileName"]
                     p.write_text("Application, 0x123, pid: 104\nmissing actual target content")
                 elif mutation == "missing-image": (directory / entries[1]["exportedFileName"]).unlink()
+                elif mutation == "localized-chip":
+                    # A receipt saying false cannot hide an actual Hebrew chip.
+                    p = directory / entries[8]["exportedFileName"]
+                    p.write_text(p.read_text() + "\nButton, identifier: torah-document-source-chip-revived, label: בראשית א:א\n")
                 forbidden = {100, 101, 102, 103} | ({104} if mutation == "old-pid" else set())
                 if mutation == "none":
                     report, files = r08.read_receipt(directory, "light", fixture, retained_note(fixture), forbidden)

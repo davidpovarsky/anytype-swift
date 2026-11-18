@@ -81,7 +81,8 @@ def validate_receipt(value, appearance, fixture, retained):
     core.require(isinstance(direction, str) and {"app-language-he", "swiftui-rtl", "navigation-rtl", "uikit-rtl", "content-rtl"}
                  <= set(direction.split(";")), "Actual App/editor language and direction differ")
     core.require(all(note.get(key) == retained[key] for key in ("objectID", "blockID", "actualText"))
-                 and note.get("sourceChipExists") is False, "R08 changed/lost the unlinked core Note")
+                 and note.get("sourceChipExists") is False and type(note.get("sourceChipCount")) is int
+                 and note["sourceChipCount"] == 0, "R08 changed/lost the fully unlinked core Note")
     return value
 
 
@@ -120,8 +121,9 @@ def read_receipt(directory, appearance, fixture, retained, forbidden_processes):
                          and receipt["observations"][1]["actualDirectionLabel"] in text,
                          "Actual RTL body observations are absent from original AX evidence")
         else:
-            core.require("pinkha.stage1.body." + retained["blockID"] in text and retained["actualText"] in text,
-                         "Retained core Note is absent from original AX evidence")
+            core.require("pinkha.stage1.body." + retained["blockID"] in text and retained["actualText"] in text
+                         and "torah-document-source-chip-" not in text,
+                         "Retained core Note is absent or still has a source chip in original AX evidence")
         records.append(dict(label=label, image=image.name, image_sha256=core.digest(image),
                             accessibility=tree.name, accessibility_sha256=core.digest(tree), process_id=pids[-1]))
     core.require(len(set(pids)) == 1 and pids[0] not in forbidden_processes,

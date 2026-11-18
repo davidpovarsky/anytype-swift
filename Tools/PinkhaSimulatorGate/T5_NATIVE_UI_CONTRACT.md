@@ -227,8 +227,10 @@ The four ordered observations per selection are:
    `navigation-rtl`, `uikit-rtl` and `content-rtl`. The corresponding original AX
    snapshot must contain that native body ID and the observed direction label.
 3. Ordinary navigation reopens the core-created, already-unlinked Note. Its
-   object ID, body ID, exact UI-typed text and absent canonical source chip are
-   unchanged. This step is not claimed as navigation from a related result.
+   object ID, body ID and exact UI-typed text are unchanged, and it has zero
+   source chips of any label. The original retained-note AX snapshot must also
+   contain no `torah-document-source-chip-` identifier; a false receipt cannot
+   hide a localized Hebrew source chip. This step is not claimed as navigation from a related result.
 4. Reopening the original source's real Inspector tab again shows exactly the
    baseline five rows, with no resurrected Note relationship or foreign result.
 
