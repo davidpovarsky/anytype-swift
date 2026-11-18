@@ -258,12 +258,13 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
         // is a read-only preservation check, not a related-result navigation claim.
         try enterObject(retained.objectID)
         try requireBody(retained.blockID, text: retained.actualText, hittable: true)
-        let chip = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND label CONTAINS %@",
-            "torah-document-source-chip-", fixture.canonicalReference)).firstMatch
-        try require(!chip.exists, "R08 found a canonical link restored on the core Note")
+        // This fresh core Note had exactly one source and the core unlinked it.
+        // Hebrew source labels differ from the English canonical reference.
+        let chips = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", "torah-document-source-chip-"))
+        try require(chips.count == 0, "R08 found a source link restored on the core Note")
         observations.append(["stage": "r08-retained-unlinked-note", "objectID": retained.objectID,
                              "blockID": retained.blockID, "actualText": body(retained.blockID).value as? String ?? "",
-                             "sourceChipExists": chip.exists])
+                             "sourceChipExists": chips.firstMatch.exists, "sourceChipCount": chips.count])
         attachEvidence("t5-" + scope + "-retained-unlinked-note")
         try enterObject(origin.objectID)
         try openRelatedDocuments(associationID: origin.associationID)
