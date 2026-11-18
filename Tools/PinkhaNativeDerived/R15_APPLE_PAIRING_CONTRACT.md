@@ -98,3 +98,13 @@ external-write freshness and spaceWide completeness still require separate proof
 Actual application startup, UI navigation/acknowledgment, permissions, cancellation,
 and physical-device acceptance retain their own gates. This build-only route does
 not turn those requirements into passes.
+
+## Offline Apple workspace after the first r15 build failure
+
+Actual run44225433140 (source c727575ad67c83ec96c3178ab926681fbba22ae9) failed at gomobile init after compiling both pinned tools. Its original log records an attempted `go install golang.org/x/mobile/cmd/gobind@latest` while GOPROXY=off. No Heart slices or App tests had executed.
+
+The pinned upstream source explains this exactly: [init.go at cd096645fcd3](https://github.com/golang/mobile/blob/cd096645fcd3/cmd/gomobile/init.go) unconditionally installs latest gobind. [bind.go](https://github.com/golang/mobile/blob/cd096645fcd3/cmd/gomobile/bind.go) resolves gobind from PATH, and [env.go](https://github.com/golang/mobile/blob/cd096645fcd3/cmd/gomobile/env.go) initializes the Apple toolchain directly from buildEnvInit. The remaining optional init work builds Android OpenAL.
+
+This Apple-only wrapper therefore prepares a fresh job-owned GOPATH/pkg/gomobile directory and uses its already compiled, hash-verified pinned gobind. It queries and preserves the original GOMODCACHE explicitly before switching GOPATH. PATH must resolve to that exact binary, and both GOPROXY=off and GOFLAGS=-mod=readonly remain mandatory. It records this preparation separately before bind and in the final runtime receipt. Existing workspace reuse, a different/changed gobind, absent module cache, or network-enabled resolution fail before build. The original r14 helper, Heart sources, native inventories, x/mobile revision, and generated-module genproto constraints are unchanged.
+
+Source blobs reviewed: init.go48642e22b3afaf45c2542144f34e6d4ab891b6de; bind.go4e1c453f418589afc1576045140946fb878a3868; env.go320597994e7c7cfef14fc295a074700fee0ca02b. This is a build-input correction; a successful Apple runtime build and the same-source four-process Apple pairing still require actual execution.
