@@ -139,6 +139,13 @@ struct PinkhaStage1AcceptancePreparationTests {
             try await nativeDocument.close()
         }
 
+        // Ordinary Note/Page documents intentionally have no Sources header until
+        // the native property is attached. Use the real Add Property path in this
+        // disposable Space before the UI suite exercises document-source search.
+        for objectID in [note.id, page.id] {
+            try await attachSourcesForDocumentSearch(objectID: objectID, spaceID: spaceId)
+        }
+
         if propertyFixturesRequested {
             try await prepareTorahPropertyFixtures(manifest: manifest, indexedTypes: indexedTypes)
         }
@@ -165,6 +172,65 @@ struct PinkhaStage1AcceptancePreparationTests {
     }
 
     @MainActor
+    private func attachSourcesForDocumentSearch(objectID: String, spaceID: String) async throws {
+        let document = Container.shared.openedDocumentProvider().document(objectId: objectID, spaceId: spaceID)
+        try await document.open()
+        do {
+            let typeID = try #require(document.details?.type)
+            await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(spaceId: spaceID, typeId: typeID)
+            let sourceKey = TorahNativePropertyDefinition.all[0].key
+            try #require(!document.parsedProperties.installed.contains { $0.key == sourceKey })
+            try #require(!PinkhaTorahPropertyPolicy.shared.presentsSources(on: document))
+
+            let coordinator = PropertiesListCoordinatorViewModel(document: document, output: nil)
+            let model = ObjectPropertiesViewModel(document: document, output: coordinator)
+            let subscription = Task { await model.setupSubscriptions() }
+            defer { subscription.cancel() }
+            try await waitForNativeFixtureState { document.permissions.canEditRelationValues }
+            model.onAddPropertyTap()
+            let picker = PropertyCreationViewModel(data: try #require(model.relationsSearchData))
+            await picker.search(text: "")
+            let matches = picker.rows.flatMap(\.searchData).compactMap { row -> PropertyDetails? in
+                if case .existing(let property) = row, property.key == sourceKey { return property }
+                return nil
+            }
+            try #require(matches.count == 1)
+            let source = try #require(matches.first)
+            try await picker.addPropertyToObject(objectId: objectID, relation: source)
+            try await waitForNativeFixtureState {
+                model.sections.flatMap(\.relations).contains { $0.key == sourceKey } &&
+                    PinkhaTorahPropertyPolicy.shared.presentsSources(on: document)
+            }
+
+            // The subsequent UI process must observe persisted native installation,
+            // not merely this preparation process's live property view model.
+            try await document.close()
+            try await document.open()
+            try await waitForNativeFixtureState {
+                document.parsedProperties.installed.contains { $0.key == sourceKey } &&
+                    PinkhaTorahPropertyPolicy.shared.presentsSources(on: document)
+            }
+            try #require(document.details?.stringArrayValue(for: sourceKey).isEmpty == true)
+            print("PINKHA_ACCEPTANCE_NATIVE_SOURCES_ATTACHED object=\(objectID) space=\(spaceID)")
+        } catch {
+            try? await document.close()
+            throw error
+        }
+        try await document.close()
+    }
+
+    @MainActor
+    private func waitForNativeFixtureState(_ condition: () -> Bool) async throws {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(15))
+        repeat {
+            if condition() { return }
+            try await Task.sleep(for: .milliseconds(50))
+        } while clock.now < deadline
+        try #require(condition(), "The actual native property fixture did not become ready")
+    }
+
+    @MainActor
     private func prepareTorahPropertyFixtures(manifest: PinkhaSpaceManifest, indexedTypes: [ObjectType]) async throws {
         var environment = [
             "PINKHA_PROPERTIES_ISOLATED_SPACE_CONFIRMED": "1",
@@ -185,6 +251,15 @@ struct PinkhaStage1AcceptancePreparationTests {
             try await document.open()
             #expect(document.details?.type == typeID)
             #expect(document.details?.resolvedLayoutValue == .basic)
+            await PinkhaTorahNativePropertyCatalog.shared.ensureSpaceAndTypeReady(spaceId: manifest.spaceId, typeId: typeID)
+            let nativeKeys = Set(TorahNativePropertyDefinition.all.map(\.key))
+            try await waitForNativeFixtureState {
+                let sections = PropertiesSectionBuilder().buildObjectSections(parsedProperties: document.parsedProperties)
+                return nativeKeys.isSubset(of: Set(sections.flatMap(\.relations).map(\.key)))
+            }
+            for key in nativeKeys {
+                try #require(document.details?.stringArrayValue(for: key).isEmpty == true)
+            }
             let sections = PropertiesSectionBuilder().buildObjectSections(parsedProperties: document.parsedProperties)
             nativePropertyLabels[created.id] = sections.filter { !$0.isExpandable }.flatMap(\.relations)
                 .filter {
