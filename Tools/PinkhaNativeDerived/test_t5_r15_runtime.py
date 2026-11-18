@@ -656,10 +656,12 @@ class R15RuntimeControls(unittest.TestCase):
                     return subprocess.CompletedProcess(args, 0, stdout=json.dumps(value), stderr="")
 
                 observation = {}
+                contract = dict(selected_dependencies=graph, prepared_tidy_manifest=manifest,
+                                post_tidy_manifest=copy.deepcopy(manifest))
                 with mock.patch.object(launcher.subprocess, "run", side_effect=command):
                     if change == "unchanged":
                         result = launcher.audit_modules(root / "go", dict(GOWORK="off", GOPROXY="off"),
-                                                        root, heart, {"selected_dependencies": graph}, observation)
+                                                        root, heart, contract, observation)
                         self.assertEqual(result["genproto_selection"]["Replace"]["Sum"], launcher.MODULE_SUM)
                         self.assertEqual(result["selected_dependency_graph"], graph)
                         self.assertEqual(result["go_mod_sha256"], hashlib.sha256(mod).hexdigest())
@@ -667,10 +669,196 @@ class R15RuntimeControls(unittest.TestCase):
                     else:
                         with self.assertRaises(RuntimeError):
                             launcher.audit_modules(root / "go", dict(GOWORK="off", GOPROXY="off"),
-                                                   root, heart, {"selected_dependencies": graph}, observation)
+                                                   root, heart, contract, observation)
                         self.assertEqual(observation["status"], "FAIL")
                 self.assertEqual(state["full_download_calls"], 1)
                 self.assertEqual((root / "go.mod").read_bytes(), mod)
+
+    def test_post_tidy_identity_rejects_each_stale_native_toolchain_or_input_field(self):
+        current = runtime.post_tidy_source_inputs()
+        runtime.validate_post_tidy_inputs(current, runtime.POST_TIDY_ORIGINAL_MANIFEST_SHA)
+        for field in current:
+            with self.subTest(field=field):
+                changed = copy.deepcopy(current)
+                if field == "bind_sources":
+                    changed[field]["cmd/gomobile/bind.go"] = "0" * 64
+                else:
+                    changed[field] = "stale-" + changed[field]
+                with self.assertRaises(RuntimeError):
+                    runtime.validate_post_tidy_inputs(changed, runtime.POST_TIDY_ORIGINAL_MANIFEST_SHA)
+        for original_sha in ["", "0" * 64, runtime.POST_TIDY_MANIFEST_SHA]:
+            with self.subTest(original_sha=original_sha), self.assertRaises(RuntimeError):
+                runtime.validate_post_tidy_inputs(current, original_sha)
+
+    def test_post_tidy_normalization_rejects_missing_duplicate_and_extra_local_replacements(self):
+        heart = Path("/owned/heart").resolve()
+        original = self.manifest_fixture(heart)
+        saved = copy.deepcopy(original)
+        normalized = runtime.normalized_native_manifest(original, heart)
+        self.assertEqual(original, saved)
+        local = next(item for item in normalized["Replace"] if item["Old"]["Path"] == launcher.NATIVE_MODULE)
+        self.assertEqual(local["New"], {"Path": runtime.POST_TIDY_PLACEHOLDER})
+        for change in ["missing", "duplicate", "different-directory", "local-version", "extra-local"]:
+            with self.subTest(change=change):
+                candidate = copy.deepcopy(original)
+                if change == "missing":
+                    candidate["Replace"].pop(0)
+                elif change == "duplicate":
+                    candidate["Replace"].append(copy.deepcopy(candidate["Replace"][0]))
+                elif change == "different-directory":
+                    candidate["Replace"][0]["New"]["Path"] = "/other/heart"
+                elif change == "local-version":
+                    candidate["Replace"][0]["New"]["Version"] = "v1.0.0"
+                else:
+                    candidate["Replace"].append(dict(Old={"Path": "example.org/local"}, New={"Path": "/other"}))
+                with self.assertRaises(RuntimeError):
+                    runtime.normalized_native_manifest(candidate, heart)
+
+    def test_post_tidy_seed_changes_only_the_owned_heart_path_and_preserves_the_fixture(self):
+        fixture = Path(__file__).resolve().parents[2] / runtime.POST_TIDY_FIXTURE
+        original_bytes = fixture.read_bytes()
+        self.assertEqual(hashlib.sha256(original_bytes).hexdigest(), runtime.POST_TIDY_FIXTURE_SHA)
+        with tempfile.TemporaryDirectory() as temporary:
+            work = Path(temporary).resolve()
+            heart = work / "Heart with spaces"
+            original = self.manifest_fixture(heart)
+            normalized_sha = runtime.manifest_digest(runtime.normalized_native_manifest(original, heart))
+            with mock.patch.object(runtime, "POST_TIDY_ORIGINAL_MANIFEST_SHA", normalized_sha):
+                seed, receipt = runtime.prepare_post_tidy_seed(work, fixture.parents[4], heart, original)
+                materialized = (seed / "go.mod").read_text(encoding="utf8")
+                self.assertNotIn(runtime.POST_TIDY_PLACEHOLDER, materialized)
+                self.assertEqual(materialized.replace(json.dumps(str(heart)), runtime.POST_TIDY_PLACEHOLDER),
+                                 original_bytes.decode("utf8"))
+                self.assertEqual(receipt["source_inputs"], runtime.POST_TIDY_INPUTS)
+                self.assertEqual(receipt["initial_go_mod_sha256"], runtime.digest(seed / "go.mod"))
+                with self.assertRaises(FileExistsError):
+                    runtime.prepare_post_tidy_seed(work, fixture.parents[4], heart, original)
+        self.assertEqual(fixture.read_bytes(), original_bytes)
+
+    def test_post_tidy_seed_rejects_stale_bytes_and_unresolved_or_extra_placeholders(self):
+        fixture = Path(__file__).resolve().parents[2] / runtime.POST_TIDY_FIXTURE
+        original_bytes = fixture.read_bytes()
+        for change in ["stale", "missing", "duplicate", "misplaced"]:
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temporary:
+                control = Path(temporary).resolve()
+                work = control / "work"
+                work.mkdir()
+                heart = control / "heart"
+                original = self.manifest_fixture(heart)
+                target = control / runtime.POST_TIDY_FIXTURE
+                target.parent.mkdir(parents=True)
+                raw = original_bytes
+                if change == "stale":
+                    raw += b"\n// changed\n"
+                elif change == "missing":
+                    raw = raw.replace(runtime.POST_TIDY_PLACEHOLDER.encode(), b"/unreviewed/heart")
+                elif change == "duplicate":
+                    raw += ("\n// " + runtime.POST_TIDY_PLACEHOLDER + "\n").encode()
+                else:
+                    raw = raw.replace((" => " + runtime.POST_TIDY_PLACEHOLDER).encode(),
+                                      (" => \"" + runtime.POST_TIDY_PLACEHOLDER + "\"").encode())
+                target.write_bytes(raw)
+                normalized_sha = runtime.manifest_digest(runtime.normalized_native_manifest(original, heart))
+                expected_fixture = runtime.POST_TIDY_FIXTURE_SHA if change == "stale" else hashlib.sha256(raw).hexdigest()
+                with (mock.patch.object(runtime, "POST_TIDY_ORIGINAL_MANIFEST_SHA", normalized_sha),
+                      mock.patch.object(runtime, "POST_TIDY_FIXTURE_SHA", expected_fixture),
+                      self.assertRaises(RuntimeError)):
+                    runtime.prepare_post_tidy_seed(work, control, heart, original)
+                self.assertFalse((work / "post-tidy-dependency-seed").exists())
+
+    def test_post_tidy_manifest_requires_exact_roots_and_all_original_replacements(self):
+        heart = Path("/owned/heart").resolve()
+        prepared = launcher.reviewed_generated_manifest(self.manifest_fixture(heart))
+        expected = copy.deepcopy(prepared)
+        sha = runtime.manifest_digest(runtime.normalized_native_manifest(expected, heart, prepared=True))
+        for change in ["unchanged", "require-version", "missing-require", "extra-require", "indirect",
+                       "extra-replace", "local-replace", "remote-replace", "module", "go"]:
+            with self.subTest(change=change):
+                value = copy.deepcopy(expected)
+                if change == "require-version":
+                    value["Require"][0]["Version"] = "v9.9.9"
+                elif change == "missing-require":
+                    value["Require"].clear()
+                elif change == "extra-require":
+                    value["Require"].append(dict(Path="example.org/unexpected", Version="v1.0.0"))
+                elif change == "indirect":
+                    value["Require"][0]["Indirect"] = True
+                elif change == "extra-replace":
+                    value["Replace"].append(dict(Old={"Path": "example.org/extra"}, New={"Path": "example.org/fork", "Version": "v1.0.0"}))
+                elif change == "local-replace":
+                    next(item for item in value["Replace"] if item["Old"]["Path"] == launcher.NATIVE_MODULE)["New"]["Path"] = "/foreign"
+                elif change == "remote-replace":
+                    next(item for item in value["Replace"] if item["Old"]["Path"] == launcher.GENPROTO)["New"]["Version"] = "v9.9.9"
+                elif change == "module":
+                    value["Module"]["Path"] = "other"
+                elif change == "go":
+                    value["Go"] = "1.26.6"
+                with mock.patch.object(runtime, "POST_TIDY_MANIFEST_SHA", sha):
+                    if change == "unchanged":
+                        self.assertEqual(runtime.validate_post_tidy_manifest(value, prepared, heart), expected)
+                    else:
+                        with self.assertRaises(RuntimeError):
+                            runtime.validate_post_tidy_manifest(value, prepared, heart)
+
+    def test_post_tidy_seed_requires_actual_checksums_for_both_missing_archives(self):
+        graph = {path: dict(fields, version=fields["effective_version"], replaced=False)
+                 for path, fields in runtime.POST_TIDY_GRAPH_REQUIRED.items()}
+        downloads = {value["effective_path"] + "@" + value["effective_version"]: dict(
+            Path=value["effective_path"], Version=value["effective_version"], Sum=value["sum"], GoModSum=value["go_mod_sum"])
+            for value in graph.values()}
+        self.assertEqual(runtime.validate_post_tidy_seed_graph(graph, downloads)["selected_module_count"], 3)
+        for path in graph:
+            for change in ["missing", "version", "sum", "go_mod_sum"]:
+                with self.subTest(path=path, change=change):
+                    selected, cached = copy.deepcopy(graph), copy.deepcopy(downloads)
+                    if change == "missing":
+                        selected.pop(path)
+                    elif change == "version":
+                        selected[path]["effective_version"] = "v9.9.9"
+                    else:
+                        # Even internally matching wrong download/selection hashes
+                        # must fail against the fixed authoritative dependency.
+                        selected[path][change] = launcher.MODULE_SUM
+                        key = selected[path]["effective_path"] + "@" + selected[path]["effective_version"]
+                        cached[key]["Sum" if change == "sum" else "GoModSum"] = launcher.MODULE_SUM
+                    with self.assertRaises(RuntimeError):
+                        runtime.validate_post_tidy_seed_graph(selected, cached)
+
+    def test_actual_post_tidy_selection_rejects_pruning_drift_and_missing_contract(self):
+        heart, _, graph, _ = self.graph_fixture()
+        manifest = launcher.reviewed_generated_manifest(self.manifest_fixture(heart))
+        contract = dict(selected_dependencies=graph, prepared_tidy_manifest=copy.deepcopy(manifest),
+                        post_tidy_manifest=copy.deepcopy(manifest))
+        proof = launcher.validate_post_tidy_selection(graph, manifest, contract)
+        self.assertEqual(proof["policy"], "EXACT_PREPARED_POST_TIDY_GRAPH_AND_MANIFEST")
+        for change in ["extra", "missing", "version", "replacement", "checksum", "require",
+                       "local", "extra-replacement", "missing-manifest", "changed-contract-replacement"]:
+            with self.subTest(change=change):
+                actual, declaration, bound = copy.deepcopy(graph), copy.deepcopy(manifest), copy.deepcopy(contract)
+                key = next(iter(actual))
+                if change == "extra":
+                    actual["example.org/unexpected"] = copy.deepcopy(actual[key])
+                elif change == "missing":
+                    actual.pop(key)
+                elif change == "version":
+                    actual[key]["version"] = "v9.9.9"
+                elif change == "replacement":
+                    actual[key]["replaced"] = not actual[key]["replaced"]
+                elif change == "checksum":
+                    actual[key]["sum"] = launcher.MOD_SUM
+                elif change == "require":
+                    declaration["Require"][0]["Version"] = "v9.9.9"
+                elif change == "local":
+                    next(item for item in declaration["Replace"] if item["Old"]["Path"] == launcher.NATIVE_MODULE)["New"]["Path"] = "/foreign"
+                elif change == "extra-replacement":
+                    declaration["Replace"].append(dict(Old={"Path": "example.org/a"}, New={"Path": "example.org/b", "Version": "v1.0.0"}))
+                elif change == "missing-manifest":
+                    bound.pop("post_tidy_manifest")
+                else:
+                    bound["post_tidy_manifest"]["Replace"].append(dict(Old={"Path": "example.org/a"}, New={"Path": "example.org/b", "Version": "v1.0.0"}))
+                    declaration = copy.deepcopy(bound["post_tidy_manifest"])
+                with self.assertRaises((RuntimeError, KeyError)):
+                    launcher.validate_post_tidy_selection(actual, declaration, bound)
 
     def test_original_generated_go_directive_is_minor_only_and_never_a_version_range(self):
         original = self.manifest_fixture(Path("/owned/heart"))

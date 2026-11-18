@@ -179,6 +179,23 @@ def canonical_manifest(document, *, prepared=False):
     return result
 
 
+def validate_post_tidy_selection(actual, manifest, contract):
+    expected = contract["selected_dependencies"]
+    # Keep the original version/replacement/checksum guard and strengthen it:
+    # the separately hydrated post-tidy graph must now match in full.
+    validate_seeded_graph(actual, expected)
+    if actual != expected:
+        raise RuntimeError("Actual post-tidy graph has missing prepared dependencies")
+    prepared = canonical_manifest(contract["prepared_tidy_manifest"], prepared=True)
+    expected_manifest = canonical_manifest(contract["post_tidy_manifest"], prepared=True)
+    if ({key: value for key, value in expected_manifest.items() if key != "Require"}
+            != {key: value for key, value in prepared.items() if key != "Require"}
+            or canonical_manifest(manifest, prepared=True) != expected_manifest):
+        raise RuntimeError("Actual generated scope differs from the exact prepared post-tidy declaration")
+    return dict(selected_modules=len(actual), seeded_modules=len(expected), pruned_seed_modules=[],
+                policy="EXACT_PREPARED_POST_TIDY_GRAPH_AND_MANIFEST")
+
+
 def reviewed_generated_manifest(original):
     """Prepare only the pinned native Go directive and reviewed genproto override."""
     before = canonical_manifest(original)
@@ -365,9 +382,10 @@ def audit_modules(real_go, env, cwd, heart, contract, observation=None):
         verified = validate_modules(native, selected, downloaded, heart)
         graph = selected_graph(query(["list", "-m", "-json", "all"], stream=True), heart)
         validate_downloaded_graph(graph, downloads)
-        verified["seed_graph_comparison"] = validate_seeded_graph(graph, contract["selected_dependencies"])
-        verified["selected_dependency_graph"] = graph
         manifest = canonical_manifest(query(["mod", "edit", "-json"]), prepared=True)
+        verified["seed_graph_comparison"] = validate_post_tidy_selection(graph, manifest, contract)
+        verified["selected_dependency_graph"] = graph
+        verified["post_tidy_manifest"] = manifest
         verified["prepared_go_directive"] = manifest["Go"]
         verified["go_mod_sha256"] = hashlib.sha256(mod.read_bytes()).hexdigest()
         verified["go_mod_text"] = mod.read_text(encoding="utf8")
