@@ -308,8 +308,8 @@ final class PinkhaTorahQuoteAcceptanceUITests: XCTestCase {
         app.descendants(matching: .any).matching(NSPredicate(format: "identifier == %@", identifier)).firstMatch
     }
 
-    private func require(_ condition: @autoclosure () throws -> Bool, _ message: String) throws {
-        guard try condition() else {
+    nonisolated private func require(_ condition: Bool, _ message: String) throws {
+        guard condition else {
             throw NSError(domain: "PinkhaNativeQuoteAcceptance", code: 1,
                           userInfo: [NSLocalizedDescriptionKey: message])
         }

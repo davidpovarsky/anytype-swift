@@ -1,0 +1,53 @@
+{
+  "source_run_id": "44245608599",
+  "source_sha": "d325987d1fe721938d8991b2e086cb0de6adcfd3",
+  "artifact_id": "14403850318",
+  "artifact_sha256": "a99e80682d8d62aa6ca14018f6d6fe1dbae2e0da373b29a319e895a631ccf28c",
+  "inner_sha256": "755672a21f8ae09124ddb7f2e4a5b52b53c8bb32f50b78f47bcbad10f8d71df7",
+  "ui_compile_log_sha256": "10908c478bb93c27d1764966e34491fbd08c1cf83c26861ff99112cb04a9cf8a",
+  "native_build_succeeded": true,
+  "preparation": {
+    "status": "PASS",
+    "selected": [
+      "SimulatorAcceptancePreparationTests/prepareRealUIFixture"
+    ],
+    "phase": "EXECUTION",
+    "prefix": "prepare",
+    "command_exit_code": 0,
+    "actual_devices": [
+      {
+        "architecture": "arm64",
+        "deviceId": "BB31C03A-9269-4686-857F-EF02B0ACC274",
+        "deviceName": "Pinkha-UI27-44245608599-ipad",
+        "modelName": "iPad Pro 13-inch (M5)",
+        "osBuildNumber": "24A434",
+        "osVersion": "27.0",
+        "platform": "iOS Simulator"
+      }
+    ],
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "actual_methods": {
+      "SimulatorAcceptancePreparationTests/prepareRealUIFixture()": "Passed"
+    }
+  },
+  "ui_execution": "NOT_RUN_UI_PROJECT_COMPILE_FAILED",
+  "original_compiler_diagnostics": [
+    "/Users/runner/work/anytype-swift/anytype-swift/PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift:21:13: error: sending 'self' risks causing data races [#RegionIsolation::SendingRisksDataRace]",
+    "/Users/runner/work/anytype-swift/anytype-swift/PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift:22:13: error: sending 'self' risks causing data races [#RegionIsolation::SendingRisksDataRace]",
+    "/Users/runner/work/anytype-swift/anytype-swift/PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift:25:13: error: sending value of non-Sendable type '() throws -> Bool' risks causing data races [#RegionIsolation::SendingRisksDataRace]",
+    "/Users/runner/work/anytype-swift/anytype-swift/PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift:25:13: error: sending 'self' risks causing data races [#RegionIsolation::SendingRisksDataRace]",
+    "/Users/runner/work/anytype-swift/anytype-swift/PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift:26:13: error: sending value of non-Sendable type '() throws -> Bool' risks causing data races [#RegionIsolation::SendingRisksDataRace]",
+    "/Users/runner/work/anytype-swift/anytype-swift/PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift:26:13: error: sending 'self' risks causing data races [#RegionIsolation::SendingRisksDataRace]"
+  ],
+  "correction": {
+    "base_sha": "0e53e311cd73d7ad183d019a897cced44d9be6b0",
+    "file": "PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift",
+    "before_sha256": "53412cbd8d0ca48869d86d2d047f9f95a8b381e6acd4d281457d756aaa7dadd4",
+    "after_sha256": "84ce38f69f4eac25e19a768f1fc63cfd4bde0b7c6f78e46a7bc7f23f33d1f477",
+    "ui_typecheck": "NOT_RUN_ON_CORRECTION",
+    "ui_acceptance": "NOT_RUN_ON_CORRECTION",
+    "behavior": "Eager Bool evaluated at caller; pure synchronous nonisolated predicate rejection preserves every assertion."
+  }
+}
