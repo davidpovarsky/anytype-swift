@@ -121,6 +121,48 @@ diff --git a/core/block/object/objectcache/tree.go b/core/block/object/objectcac
  	changePayload, err := createChangePayload(params.Key.SmartblockType(), params.Key)
  	if err != nil {
  		return treestorage.TreeStorageCreatePayload{}, err
+diff --git a/core/block/object/treemanager/treemanager.go b/core/block/object/treemanager/treemanager.go
+--- a/core/block/object/treemanager/treemanager.go
++++ b/core/block/object/treemanager/treemanager.go
+@@ -2,6 +2,7 @@
+ 
+ import (
+ 	"context"
++	"errors"
+ 
+ 	"github.com/anyproto/any-sync/app"
+ 	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
+@@ -14,8 +15,11 @@
+ 	"github.com/anyproto/anytype-heart/core/domain"
+ 	"github.com/anyproto/anytype-heart/core/event"
+ 	"github.com/anyproto/anytype-heart/pb"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/logging"
++	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahopscontract"
+ 	"github.com/anyproto/anytype-heart/space"
++	"github.com/anyproto/anytype-heart/space/spacecore/typeprovider"
+ )
+ 
+ var log = logging.Logger("anytype-mw-tree-manager")
+@@ -81,6 +85,18 @@
+ }
+ 
+ func (m *treeManager) ValidateAndPutTree(ctx context.Context, spaceId string, payload treestorage.TreeStorageCreatePayload) error {
++	// PutTree uses the default builder and writes storage before constructing a
++	// tree. Private history must enter through source.BuildTree with the native
++	// private validator, never this generic import/debug boundary.
++	tp, _, typeErr := typeprovider.GetTypeAndKeyFromRootForSpace(spaceId, payload.RootRawChange)
++	if errors.Is(typeErr, torahopscontract.ErrPrivateRoot) {
++		return typeErr
++	}
++	if typeErr == nil && tp == coresb.SmartBlockTypePinkhaTorahOperations {
++		return torahopscontract.ErrPrivateOperation
++	}
++	// Preserve the upstream validation behavior for every non-private format,
++	// including opaque change types unknown to this client's type registry.
+ 	// TODO: this should be better done inside cache
+ 	spc, err := m.spaceService.Get(ctx, spaceId)
+ 	if err != nil {
 diff --git a/core/block/restriction/object.go b/core/block/restriction/object.go
 --- a/core/block/restriction/object.go
 +++ b/core/block/restriction/object.go

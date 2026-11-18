@@ -21,7 +21,8 @@ PACKAGES = {
     "component": ["./core/block/editor/torahops"],
     "registration": ["./pkg/lib/pinkha/torahopscontract", "./pkg/lib/core/smartblock",
                      "./core/domain", "./space/spacecore/typeprovider", "./core/block/restriction",
-                     "./core/block/object/objectcache", "./core/block/source/sourceimpl", "./core/block/editor"],
+                     "./core/block/object/objectcache", "./core/block/object/treemanager",
+                     "./core/block/source/sourceimpl", "./core/block/editor"],
 }
 REQUIRED = {
     "component": {"TestNativeTwoProcessTreeSync", "TestNativeHostRejectsUnboundAuthorityAndInvalidHistory",
@@ -34,6 +35,8 @@ REQUIRED = {
                      "TestPinkhaPrivateCachedTypeStillRequiresReceivingSpace", "TestPinkhaPrivateHostDeniesGenericObjectMutations",
                      "TestPinkhaPrivateCreationIsCanonicalAndLazy", "TestPinkhaPrivateCreationRefusesForeignOrPopulatedPayload",
                      "TestPinkhaPrivateSourceOwnsNoGenericBlockOrStorePath", "TestPinkhaPrivateSourceRejectsForeignReceivingSpace",
+                     "TestPinkhaPrivateTreeManagerRejectsGenericImportBeforeStorage",
+                     "TestPinkhaPrivateTreeManagerPreservesLegacyPutTreeBoundary",
                      "TestPinkhaPrivateFactoryNativeStorageAndTargetLifecycle"},
 }
 MODULE = "github.com/anyproto/anytype-heart"

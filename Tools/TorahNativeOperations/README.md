@@ -18,7 +18,8 @@ is rejected before inserting either a claim or provenance receipt.
 `overlay/core/block/editor/torahops` provides the native operation host. The
 source-bound `heart-registration.patch` now adds the approved private type,
 receiving-Space checks, source selection, factory dispatch, restrictions and
-canonical cache derivation to exactly ten pinned Heart files. Additional Go
+canonical cache derivation and a private generic-import guard to exactly eleven
+pinned Heart files. Additional Go
 files implement and test the private adapter. Generic StoreState, fulltext/index,
 T5, account/wallet and public RPC sources remain unchanged. The replay handler hooks into
 `Handler.BeforeCreate`, inside the existing StoreState/any-store write transaction,
