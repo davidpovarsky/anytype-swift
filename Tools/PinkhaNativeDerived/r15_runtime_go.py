@@ -324,18 +324,19 @@ def audit_modules(real_go, env, cwd, heart, contract, observation=None):
 
     try:
         native = query(["list", "-m", "-json", NATIVE_MODULE], identity="native")
-        # Hydrate only the reviewed cached module before listing the selected graph,
-        # so go list includes both checksums. GOPROXY=off forbids any new download.
+        # Read the reviewed cached module, then hydrate the full selected graph
+        # before reading checksum fields. An explicit module@version download can
+        # leave a non-root zip sum out of go.sum in Go's lazy module graph;
+        # download all loads that graph and retains its selected zip sums.
+        # GOPROXY=off requires every archive and metadata file to be cached already.
         downloaded = query(["mod", "download", "-json", GENPROTO + "@" + VERSION], identity="downloaded")
+        download_records = query(["mod", "download", "-json", "all"], stream=True)
+        downloads = downloaded_modules("\n".join(json.dumps(item) for item in download_records))
         selected = query(["list", "-m", "-json", GENPROTO], identity="selected")
         observation["public_genproto_checks"] = public_genproto_checks(selected, downloaded)
         # Both the selected graph and cached archive must prove the exact hashes.
         # A correct cached download cannot conceal a different selected dependency.
         verified = validate_modules(native, selected, downloaded, heart)
-        # An offline full download adds only checksums to this disposable generated
-        # module. The seed must already contain every selected archive.
-        download_records = query(["mod", "download", "-json", "all"], stream=True)
-        downloads = downloaded_modules("\n".join(json.dumps(item) for item in download_records))
         graph = selected_graph(query(["list", "-m", "-json", "all"], stream=True), heart)
         validate_downloaded_graph(graph, downloads)
         verified["seed_graph_comparison"] = validate_seeded_graph(graph, contract["selected_dependencies"])

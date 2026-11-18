@@ -140,6 +140,7 @@ class R15RuntimeControls(unittest.TestCase):
                 query_values = [native, downloaded, selected]
                 responses = [subprocess.CompletedProcess([], 0, stdout=json.dumps(value), stderr="")
                              for value in query_values]
+                responses.insert(2, subprocess.CompletedProcess([], 0, stdout=json.dumps(downloaded), stderr=""))
                 if arguments[0] == "mod":
                     responses.insert(0, subprocess.CompletedProcess([], 0))
                 env = dict(PINKHA_T5_REAL_GO=str(root / "go"), PINKHA_T5_HEART=str(heart),
@@ -163,10 +164,10 @@ class R15RuntimeControls(unittest.TestCase):
                 self.assertNotIn(phase + "_modules", receipt)
                 if phase == "after_tidy":
                     self.assertEqual(receipt["command_return_code"], 0)
-                    self.assertEqual(invoked.call_count, 4)
+                    self.assertEqual(invoked.call_count, 5)
                 else:
                     self.assertNotIn("command_return_code", receipt)
-                    self.assertEqual(invoked.call_count, 3)
+                    self.assertEqual(invoked.call_count, 4)
                 observation = receipt[phase + "_observation"]
                 self.assertEqual(observation["status"], "FAIL")
                 self.assertEqual(observation["public_genproto_checks"]["effective_sum"], "MISSING")
@@ -478,6 +479,74 @@ class R15RuntimeControls(unittest.TestCase):
                     Replace=[dict(Old={"Path": launcher.NATIVE_MODULE}, New={"Path": str(heart)}),
                              dict(Old={"Path": launcher.GENPROTO, "Version": "v0.0.0-20240903143218-8af14fe29dc1"},
                                   New={"Path": launcher.GENPROTO, "Version": launcher.VERSION})])
+
+    def test_full_graph_hydration_precedes_strict_selected_checksum_and_seed_checks(self):
+        changes = ["unchanged", "selected-still-missing", "selected-sum-drift", "pinned-download-drift",
+                   "full-download-drift", "selected-graph-drift", "offline-cache-miss"]
+        for change in changes:
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary).resolve()
+                heart, rows, graph, downloads = self.graph_fixture()
+                _, _, selected, pinned_download = module_inputs()
+                manifest = launcher.reviewed_generated_manifest(self.manifest_fixture(heart))
+                mod = b"module gobind\n\ngo 1.26.5\n"
+                (root / "go.mod").write_bytes(mod)
+                (root / "go.sum").write_text("", encoding="utf8")
+                state = {"hydrated": False, "full_download_calls": 0}
+
+                def command(args, **kwargs):
+                    self.assertEqual(kwargs["env"]["GOPROXY"], "off")
+                    self.assertEqual(kwargs["env"]["GOWORK"], "off")
+                    selection = args[1:]
+                    if selection == ["list", "-m", "-json", launcher.NATIVE_MODULE]:
+                        value = rows[1]
+                    elif selection == ["mod", "download", "-json", launcher.GENPROTO + "@" + launcher.VERSION]:
+                        value = copy.deepcopy(pinned_download)
+                        if change == "pinned-download-drift":
+                            value["Sum"] = launcher.MOD_SUM
+                    elif selection == ["mod", "download", "-json", "all"]:
+                        state["full_download_calls"] += 1
+                        if change == "offline-cache-miss":
+                            return subprocess.CompletedProcess(args, 1, stdout='{"Error":"module lookup disabled by GOPROXY=off"}', stderr="")
+                        state["hydrated"] = True
+                        values = copy.deepcopy(list(downloads.values()))
+                        if change == "full-download-drift":
+                            values[0]["Sum"] = launcher.MODULE_SUM
+                        (root / "go.sum").write_text("\n".join(item["Path"] + " " + item["Version"] + " " + item["Sum"] for item in values) + "\n", encoding="utf8")
+                        return subprocess.CompletedProcess(args, 0, stdout="\n".join(json.dumps(item) for item in values), stderr="")
+                    elif selection == ["list", "-m", "-json", launcher.GENPROTO]:
+                        value = copy.deepcopy(selected)
+                        if not state["hydrated"] or change == "selected-still-missing":
+                            value["Replace"].pop("Sum")
+                        elif change == "selected-sum-drift":
+                            value["Replace"]["Sum"] = launcher.MOD_SUM
+                    elif selection == ["list", "-m", "-json", "all"]:
+                        values = copy.deepcopy(rows)
+                        if change == "selected-graph-drift":
+                            values[2]["Version"] = "v9.9.9"
+                        return subprocess.CompletedProcess(args, 0, stdout="\n".join(json.dumps(item) for item in values), stderr="")
+                    elif selection == ["mod", "edit", "-json"]:
+                        value = manifest
+                    else:
+                        raise AssertionError("Unexpected metadata command")
+                    return subprocess.CompletedProcess(args, 0, stdout=json.dumps(value), stderr="")
+
+                observation = {}
+                with mock.patch.object(launcher.subprocess, "run", side_effect=command):
+                    if change == "unchanged":
+                        result = launcher.audit_modules(root / "go", dict(GOWORK="off", GOPROXY="off"),
+                                                        root, heart, {"selected_dependencies": graph}, observation)
+                        self.assertEqual(result["genproto_selection"]["Replace"]["Sum"], launcher.MODULE_SUM)
+                        self.assertEqual(result["selected_dependency_graph"], graph)
+                        self.assertEqual(result["go_mod_sha256"], hashlib.sha256(mod).hexdigest())
+                        self.assertEqual(observation["status"], "PASS")
+                    else:
+                        with self.assertRaises(RuntimeError):
+                            launcher.audit_modules(root / "go", dict(GOWORK="off", GOPROXY="off"),
+                                                   root, heart, {"selected_dependencies": graph}, observation)
+                        self.assertEqual(observation["status"], "FAIL")
+                self.assertEqual(state["full_download_calls"], 1)
+                self.assertEqual((root / "go.mod").read_bytes(), mod)
 
     def test_original_generated_go_directive_is_minor_only_and_never_a_version_range(self):
         original = self.manifest_fixture(Path("/owned/heart"))
