@@ -354,8 +354,12 @@ def execute(args, receipt):
     shared.write(evidence / "fixture-ids.json", fixture)
     project = shared.ui_only_project(app)
     ui_derived = derived.with_name(derived.name + "-ui")
+    receipt["phase"] = "UI_BUILD"
+    shared.write(evidence / "execution.json", receipt)
     shared.command([*base, "-project", str(project), "-scheme", "PinkhaPrebuiltUI", "-derivedDataPath", str(ui_derived),
                     *["-only-testing:PinkhaStage1AcceptanceUITests/" + method for method in selection["methods"]], *flags], app, evidence)
+    receipt["phase"] = "UI_RUNTIME_PREPARATION"
+    shared.write(evidence / "execution.json", receipt)
     live = shared.live_runtime(udid, evidence, built, args.language, source_identity={
         "source_sha": head, "run_id": receipt["run_id"], "run_attempt": receipt["run_attempt"],
         "kit_sha": shared.KIT, "native_marker": shared.MARKER,
