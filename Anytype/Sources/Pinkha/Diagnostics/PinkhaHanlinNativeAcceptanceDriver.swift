@@ -402,8 +402,9 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         try await requireFreshConsent(stale)
         try emit("AWAIT_STALE_READ_CONSENT")
         try await waitUntil {
-            guard let alert = stale.controller?.presentedViewController as? UIAlertController else { return false }
-            return alert.title == "Allow document text access?" && alert.viewIfLoaded?.window != nil
+            guard let prompt = stale.controller?.presentedViewController as? PinkhaHanlinConsentController else { return false }
+            return prompt.purpose == .readContext && prompt.title == "Allow document text access?"
+                && prompt.viewIfLoaded?.window != nil
         }
         try require(!stale.presentation.readAllowed, "pending_consent_was_already_allowed")
         let pendingAlert = stale.controller?.presentedViewController
