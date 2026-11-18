@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "component": "native-rpc",
+  "started_at": "2026-11-18T00:49:17.613549+00:00",
+  "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF",
+  "limits": [
+    "native source fixtures only",
+    "no packaged old/new binaries",
+    "no Swift/UI/physical acceptance"
+  ],
+  "github_run_id": "44210847426",
+  "github_run_attempt": "1",
+  "integration_sha": "fc0fca21f3299d60ac5e9c982f7109dce4f79568",
+  "source_sha": "947fbde24d5657d0e1229f45bb3993648884a8a1",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "patch_sha256": "5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2",
+  "driver_hashes": {
+    "Tools/PinkhaNativeDerived/build_custom_heart.py": "8534f5a3ecc1df8321dc3820409f1c8812d876bfe7989877bf121681d04955fd",
+    "Tools/PinkhaNativeDerived/validate_t5_coverage.py": "6d7e21402f381bc613663f90ab669253e276cc9608c9c66de900ae371896edf1",
+    "Tools/PinkhaNativeDerived/native_test_templates/pinkha_torah_reopen_test.go": "89f6096355cefdd342ec44ba0bef21b87e832566d85172b25a92d33f51b5fa79",
+    "Tools/PinkhaNativeDerived/test_t5_validation_receipts.py": "a1bbe2842f9572ba9789f2b01a7af7e660928eb5396a2aa8ee6139e791468d05",
+    "docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-15/native-heart-integration.json": "f0e4a4c2d1b4c1baa11347362cfd18368ad272a8902b2beaf8de52270f809ee7",
+    "docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-15/native-heart-integration.patch": "5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2"
+  },
+  "go_version": "go version go1.26.5 linux/amd64",
+  "tantivy": {
+    "architecture": "linux-amd64-musl",
+    "archive_sha256": "88b34e006707bfec2d29e8b26405f67cbb975d06fd4ea164da856d0084aaabbc"
+  },
+  "actual_counts": {
+    "packages": 1,
+    "top_level_tests": 1,
+    "subcases": 0
+  },
+  "passed": [
+    "TestRealNativeMiddlewareDerivedProperties"
+  ],
+  "component_receipt_sha256": "3ce90a776062cd9f593084612849a72a2267de3e36a8a21d280db0cff9b96a16",
+  "finished_at": "2026-11-18T00:52:35.229196+00:00"
+}
