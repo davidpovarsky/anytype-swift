@@ -133,7 +133,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
     }
 
     private func observeScene(_ scene: UIWindowScene) {
-        let events: [(Notification.Name, AnyObject?, String)] = [
+        let events: [(Foundation.Notification.Name, AnyObject?, String)] = [
             (UIScene.willDeactivateNotification, scene, "sceneWillDeactivate"),
             (UIScene.didEnterBackgroundNotification, scene, "sceneDidEnterBackground"),
             (UIScene.willEnterForegroundNotification, scene, "sceneWillEnterForeground"),
