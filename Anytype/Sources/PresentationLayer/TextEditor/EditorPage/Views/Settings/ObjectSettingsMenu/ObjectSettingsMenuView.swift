@@ -110,6 +110,7 @@ struct ObjectSettingsMenuView<LabelView: View, AdditionalMenuItems: View>: View 
                     }
                 }
             }
+            .accessibilityIdentifier("editor-object-action-\(action.id)")
         }
     }
 

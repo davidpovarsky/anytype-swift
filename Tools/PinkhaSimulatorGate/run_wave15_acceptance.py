@@ -26,6 +26,13 @@ LANES = {
             "PINKHA_SIMULATOR_ACCEPTANCE_PREPARATION": "1", "PINKHA_SIMULATOR_UI_DISPOSABLE": "1"},
         "fixture": "pinkha-hanlin-native-fixture.json",
     },
+    "quote-drop": {
+        "suite": "PinkhaTorahQuoteAcceptanceUITests",
+        "methods": ["testNativeQuoteUndoRedoDragAndRelaunch"],
+        "preparation": "SimulatorAcceptancePreparationTests/prepareRealUIFixture",
+        "preparation_environment": {"PINKHA_SIMULATOR_ACCEPTANCE_PREPARATION": "1", "PINKHA_SIMULATOR_UI_DISPOSABLE": "1"},
+        "fixture": "pinkha-simulator-ui27-fixture.json",
+    },
     "inspector": {
         "suite": "AnytypeComprehensiveAcceptanceUITests",
         "methods": shared.SMOKE + ["testDocumentSourceSearchEmptyAndClear", "testInspectorShowsIndexedRelatedDocument"],
@@ -99,7 +106,7 @@ def nonempty(value, name):
 
 def fixture_environment(lane, value, language):
     nonempty(value.get("spaceId"), "Space")
-    if lane in {"inspector", "properties", "properties-set"}:
+    if lane in {"inspector", "quote-drop", "properties", "properties-set"}:
         docs = value.get("universalDocuments", {})
         page = nonempty(docs.get("page"), "Page")
         source = nonempty(value.get("manySourcesDocument"), "source document")
@@ -282,7 +289,7 @@ def execute(args, receipt):
                    passed_ui_methods=result["passed"], failed_ui_methods=0, skipped_ui_methods=0,
                    full_matrix_accepted=False, release_accepted=False,
                    limitations=["This result covers only its named methods and actual configuration.",
-                                "Screenshots require visual review. IME/Undo/drop and other unselected criteria remain open.",
+                                "Screenshots require visual review; criteria outside the named methods remain open.",
                                 "Device-language mismatch and every relaunch's live mapping are not established by a requested label."])
 
 

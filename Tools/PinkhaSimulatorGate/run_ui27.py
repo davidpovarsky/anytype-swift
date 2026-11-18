@@ -21,7 +21,7 @@ from rerun_original_ui import ui_only_project, install_ui_runner, export_ui_cons
 
 SMOKE = ['testObjectAddPropertyButtonAndPickerSearch', 'testDocumentSourceSearchPresentation',
          'testSourceChipOpensAndClosesInspector']
-KIT = '356c6af25d81bb6503ee3fa13aa09a48be386c8b'
+KIT = '07bdf7ca3f3318d729a855c0c75137773f16d0bf'
 MARKER = 'pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077'
 
 

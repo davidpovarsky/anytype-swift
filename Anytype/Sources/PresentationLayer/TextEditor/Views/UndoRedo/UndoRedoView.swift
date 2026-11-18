@@ -19,6 +19,7 @@ struct UndoRedoView: View {
                     title: Loc.undo
                 )
             }
+            .accessibilityIdentifier("editor-undo")
             
             AsyncButton {
                 try await model.redo()
@@ -28,6 +29,7 @@ struct UndoRedoView: View {
                     title: Loc.redo
                 )
             }
+            .accessibilityIdentifier("editor-redo")
         }
         .snackbar(toastBarData: $model.toastData)
         .padding(.init(top: 16, leading: 16, bottom: 8, trailing: 16))

@@ -8,13 +8,13 @@ from run_wave15_acceptance import plan, fixture_environment, property_environmen
 
 class AcceptanceSelectionTests(unittest.TestCase):
     def test_english_label_methods_cannot_claim_hebrew_coverage(self):
-        for lane in ["inspector", "properties", "properties-set", "canonical-properties", "hanlin-native"]:
+        for lane in ["inspector", "quote-drop", "properties", "properties-set", "canonical-properties", "hanlin-native"]:
             with self.subTest(lane=lane), self.assertRaisesRegex(ValueError, "English labels"):
                 plan(lane, "ipad", "he")
         self.assertEqual(plan("editor", "ipad", "he")["expected_ui_executions"], 3)
 
     def test_named_selections_remain_partial_acceptance(self):
-        for lane, count in [("inspector", 5), ("properties", 3), ("properties-set", 2), ("editor", 3), ("canonical-properties", 1), ("hanlin-native", 1)]:
+        for lane, count in [("inspector", 5), ("quote-drop", 1), ("properties", 3), ("properties-set", 2), ("editor", 3), ("canonical-properties", 1), ("hanlin-native", 1)]:
             with self.subTest(lane=lane):
                 value = plan(lane, "iphone", "en")
                 self.assertEqual(len(set(value["methods"])), count)
@@ -37,6 +37,16 @@ class AcceptanceSelectionTests(unittest.TestCase):
         self.assertEqual(value["PINKHA_ACCEPTANCE_PINKHA_ID"], "a")
         self.assertEqual(value["PINKHA_ACCEPTANCE_NOTE_ID"], "b")
         self.assertEqual(value["PINKHA_ACCEPTANCE_PAGE_ID"], "c")
+
+    def test_quote_drop_requires_the_native_disposable_source_document(self):
+        fixture = {"spaceId": "s", "universalDocuments": {"page": "blank"}, "manySourcesDocument": "source"}
+        environment = fixture_environment("quote-drop", fixture, "en")
+        self.assertEqual(environment["PINKHA_NATIVE_UI_DISPOSABLE"], "1")
+        self.assertEqual(json.loads(environment["PINKHA_NATIVE_UI_FIXTURE_JSON"]), fixture)
+        self.assertEqual(plan("quote-drop", "ipad", "en")["methods"],
+                         ["PinkhaTorahQuoteAcceptanceUITests/testNativeQuoteUndoRedoDragAndRelaunch"])
+        with self.assertRaisesRegex(ValueError, "distinct"):
+            fixture_environment("quote-drop", {**fixture, "manySourcesDocument": "blank"}, "en")
 
     def test_property_fixture_from_another_space_cannot_be_used(self):
         with tempfile.TemporaryDirectory() as directory:
