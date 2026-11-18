@@ -1,0 +1,221 @@
+{
+  "status": "VERIFIED_ACTUAL_TYPED_HANDLER_ACCOUNT_LIFECYCLE",
+  "run_id": "44247736314",
+  "app_sha": "189d8c6ff4376967ef22c1b58edd5e6f7670ea12",
+  "source_commit": "5083aa2e853132c49fa51454ba4cad258f308d60",
+  "artifact_id": 14402628407,
+  "artifact_sha256": "806182967137fd683c8792a8c5227a5ce93a462e587dfd88d91e85f9d22a7254",
+  "receipt_sha256": "633e54623381e39c15cc3b304b463b974c92c229dba52813d6b16dbbe9918dfb",
+  "sequence_sha256": "e1be59d7b532d53e0d4aa925902b221bb938b146d55cb71d90574b0f768d5c98",
+  "state_sha256": "c6225a842f7b516e00b5a950b4636227ccabe2cb773d5ea61aac47a1e51929be",
+  "fixture_sha256": "05280d61703b7749bdc086d0ce2d4c49d22a8cb8c39ed8a3e94cd33ce440e4cc",
+  "fixture_hashes": {
+    "account_phase_test.go": "8a85b6453344c0a81bc3e472514fcaf494c460a52e41d889faf3ec40eddab339",
+    "legacy_runtime_test.go": "0cbb1899a3c17d83899fa5f2ff437695ff3e5b95b9bbe91c4fb4f5921f601d7d",
+    "native_handler_test.go": "853e2ae1ce660e320929349bac4783905ef1e229309ee61dfebdebc41b6a4b65",
+    "new_runtime_test.go": "cb96f578e3adcbaaa5716cf2b89bed035a0075cbf7e321aecf57686ecef97ef6"
+  },
+  "actual_counts": {
+    "binaries": 2,
+    "native_processes": 4,
+    "passing_test_invocations": 4,
+    "actual_export_files": 8
+  },
+  "same_account_and_signed_history": true,
+  "native_handler_success": "PASS_ACCOUNT_SCOPED_TYPED_BOUNDARY",
+  "secret_scan": "PASS",
+  "raw_artifacts_remain_on_github": true,
+  "builds": {
+    "legacy": {
+      "binary_sha256": "79b3d3f1c28489064f818ef64a2df4dc15a7cfb79ea87b1741c98648f53e5b22",
+      "build_receipt_sha256": "d00bfef63a96d8621f8f8e938e288a6646daa101791e5bd9910894c632f27622",
+      "native_source_files": 35,
+      "fixture_overlay_paths": [
+        "pinkha_t2_account_phase_test.go",
+        "pinkha_t2_legacy_runtime_test.go"
+      ]
+    },
+    "new": {
+      "binary_sha256": "0f64d06fa0235304e3d034cad5da1f1720acfb15bfbbccd319ba3663a6be44e8",
+      "build_receipt_sha256": "01bd45bda852aa93c3a235c06e312221bd0bc13de52e3855951b55cef1b8fee3",
+      "native_source_files": 81,
+      "fixture_overlay_paths": [
+        "pinkha_t2_account_phase_test.go",
+        "pinkha_t2_native_handler_test.go",
+        "pinkha_t2_new_runtime_test.go"
+      ]
+    }
+  },
+  "phases": [
+    {
+      "phase": "new-create",
+      "role": "new",
+      "pid": 16040,
+      "phase_sha256": "83ccea0720987bf657f6f451edaec2462bb380caa5a9d3eadf97ea9943a648d0",
+      "log_sha256": "c47780b5ba3c340918e4f1ba1046c82bb8192c9aa9876bbb22a5c080892a1abe",
+      "handler_boundary": {
+        "after_stop": "NATIVE_READ_AND_APPEND_NOT_LOGGED_IN",
+        "collision": "collision_different_payload",
+        "creation": "INVALID_CALLS_NO_ROOT_THEN_VALID_APPEND_CREATED_ROOT",
+        "read": "EXACT_PERSISTED_CLAIM_NATIVE_AUTHOR",
+        "read_guards": "VERSION_AND_LIMIT_REJECTED",
+        "retry": "already_exists_same_payload",
+        "scope": "ACCOUNT_SCOPED_TYPED_BOUNDARY_NOT_REGISTERED_RPC"
+      },
+      "private_export": {
+        "json_and_protobuf": "REJECTED",
+        "rpc_codes": [
+          1,
+          1
+        ],
+        "result_bytes": [
+          0,
+          0
+        ],
+        "result_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "ordinary_exports": [
+        {
+          "name": "document.json",
+          "bytes": 2207,
+          "sha256": "272b7da9f6143c79575cb9d303c0ae46d75d1e19e755455917a55003a0e44939"
+        },
+        {
+          "name": "document.pbc",
+          "bytes": 1183,
+          "sha256": "397ff2c9fa1698fa7075a59b34489aee1fe368e0991ac15d104d6b4fd623e253"
+        }
+      ],
+      "cleanup": "NOT_REQUESTED_IN_THIS_PHASE",
+      "closed": true,
+      "account_stop_verified": true
+    },
+    {
+      "phase": "new-reopen",
+      "role": "new",
+      "pid": 16069,
+      "phase_sha256": "2cd4494935d62ca6e0c493bb6470817af993e53d2708ccec03e87b7e7396db9c",
+      "log_sha256": "5a32bbc0fb83547196e5067d6aee86f513712e6f755e7d5f1a32cfbea665627a",
+      "handler_boundary": {
+        "after_stop": "NATIVE_READ_AND_APPEND_NOT_LOGGED_IN",
+        "collision": "collision_different_payload",
+        "creation": "EXISTING_HISTORY_REOPENED",
+        "read": "EXACT_PERSISTED_CLAIM_NATIVE_AUTHOR",
+        "read_guards": "VERSION_AND_LIMIT_REJECTED",
+        "retry": "already_exists_same_payload",
+        "scope": "ACCOUNT_SCOPED_TYPED_BOUNDARY_NOT_REGISTERED_RPC"
+      },
+      "private_export": {
+        "json_and_protobuf": "REJECTED",
+        "rpc_codes": [
+          1,
+          1
+        ],
+        "result_bytes": [
+          0,
+          0
+        ],
+        "result_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "ordinary_exports": [
+        {
+          "name": "document.json",
+          "bytes": 2207,
+          "sha256": "272b7da9f6143c79575cb9d303c0ae46d75d1e19e755455917a55003a0e44939"
+        },
+        {
+          "name": "document.pbc",
+          "bytes": 1183,
+          "sha256": "e204a9c3276520c94522ba47f15b4ea0769bb28665767374cc930ac88e9160d0"
+        }
+      ],
+      "cleanup": "NOT_REQUESTED_IN_THIS_PHASE",
+      "closed": true,
+      "account_stop_verified": true
+    },
+    {
+      "phase": "legacy-edit",
+      "role": "legacy",
+      "pid": 16086,
+      "phase_sha256": "9a0a299e25f76057d0a6d2bf4e5b744b6cd8088e9e7a0200519cbce02aeccc84",
+      "log_sha256": "dd6dd45cd05857b52b8d50d3d450dd47d9094828585f43b598a4407c19988f1a",
+      "handler_boundary": {
+        "scope": "UNSUPPORTED_LEGACY"
+      },
+      "private_export": {
+        "json_and_protobuf": "REJECTED",
+        "rpc_codes": [
+          1,
+          1
+        ],
+        "result_bytes": [
+          0,
+          0
+        ],
+        "result_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "ordinary_exports": [
+        {
+          "name": "document.json",
+          "bytes": 2224,
+          "sha256": "5776f79126a32b112f24c779bbac959032a9f00d2a9450d101f8189e0df9e967"
+        },
+        {
+          "name": "document.pbc",
+          "bytes": 1200,
+          "sha256": "ae5932ebd3465132e225194b44c206b81b7115e664d8d4ded4f5de1ef9e772ca"
+        }
+      ],
+      "cleanup": "NOT_REQUESTED_IN_THIS_PHASE",
+      "closed": true,
+      "account_stop_verified": true
+    },
+    {
+      "phase": "new-recover",
+      "role": "new",
+      "pid": 16104,
+      "phase_sha256": "4cda04bff28754b93c9302dc62715385aa8e90a2b74bc1c57eaa645e8243516f",
+      "log_sha256": "00feffbb4f8f9d385b40e94ee9f5a4f97d8943666c19e122b430f5eb71d4c543",
+      "handler_boundary": {
+        "after_stop": "NATIVE_READ_AND_APPEND_NOT_LOGGED_IN",
+        "collision": "collision_different_payload",
+        "creation": "EXISTING_HISTORY_REOPENED",
+        "read": "EXACT_PERSISTED_CLAIM_NATIVE_AUTHOR",
+        "read_guards": "VERSION_AND_LIMIT_REJECTED",
+        "retry": "already_exists_same_payload",
+        "scope": "ACCOUNT_SCOPED_TYPED_BOUNDARY_NOT_REGISTERED_RPC"
+      },
+      "private_export": {
+        "json_and_protobuf": "REJECTED",
+        "rpc_codes": [
+          1,
+          1
+        ],
+        "result_bytes": [
+          0,
+          0
+        ],
+        "result_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "ordinary_exports": [
+        {
+          "name": "document.json",
+          "bytes": 2224,
+          "sha256": "5776f79126a32b112f24c779bbac959032a9f00d2a9450d101f8189e0df9e967"
+        },
+        {
+          "name": "document.pbc",
+          "bytes": 1200,
+          "sha256": "3043c7f00dd6a5b3f44ea421b3c7e521910aac97b6514c8dc9648577d847198b"
+        }
+      ],
+      "cleanup": "TARGET_ORPHAN_PRESERVED_THEN_SPACE_AND_PROJECTION_REMOVED",
+      "closed": true,
+      "account_stop_verified": true
+    }
+  ],
+  "generated_rpc": "NOT_RUN",
+  "two_app_clients": "NOT_RUN",
+  "ios_acceptance": "NOT_RUN",
+  "app_capability": "OFF"
+}
