@@ -22,7 +22,8 @@ PACKAGES = {
     "registration": ["./pkg/lib/pinkha/torahopscontract", "./pkg/lib/core/smartblock",
                      "./core/domain", "./space/spacecore/typeprovider", "./core/block/restriction",
                      "./core/block/object/objectcache", "./core/block/object/treemanager",
-                     "./core/block/source/sourceimpl", "./core/block/editor", "./core", "./core/block/export"],
+                     "./core/block/source/sourceimpl", "./core/block/editor", "./core", "./core/block/export",
+                     "./core/block/editor/torahopsobject"],
 }
 REQUIRED = {
     "component": {"TestNativeTwoProcessTreeSync", "TestNativeHostRejectsUnboundAuthorityAndInvalidHistory",
@@ -45,7 +46,12 @@ REQUIRED = {
                      "TestPinkhaExportGetterPreservesNativeTypeAndCacheLifecycle",
                      "TestPinkhaExportContextGuardIsScopedAndCopied",
                      "TestPinkhaPrivateObjectSingleExportDenied",
-                     "TestPinkhaPrivateObjectListAndCollectDenied"},
+                     "TestPinkhaPrivateObjectListAndCollectDenied",
+                     "TestPinkhaNativeTargetLoadReceivesCancellationContext",
+                     "TestPinkhaNativeTargetRejectsContextlessLoader",
+                     "TestPinkhaNativeTargetPreservesErrorsAndChecksCancelledCallback",
+                     "TestPinkhaNativeTargetPreservesErrorsAndChecksCancelledCallback/original_load_error_is_not_reclassified_as_missing",
+                     "TestPinkhaNativeTargetPreservesErrorsAndChecksCancelledCallback/cancelled_callback_does_not_inspect_native_target"},
 }
 MODULE = "github.com/anyproto/anytype-heart"
 

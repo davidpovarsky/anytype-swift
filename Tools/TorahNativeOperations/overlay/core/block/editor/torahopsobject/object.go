@@ -90,7 +90,15 @@ func ValidateNativeTarget(ctx context.Context, space smartblock.Space, privateID
 	if space == nil || target.ObjectID == "" || target.ObjectID == privateID {
 		return ErrTargetUnavailable
 	}
-	return space.Do(target.ObjectID, func(sb smartblock.SmartBlock) error {
+	loader, ok := space.(interface {
+		DoCtx(context.Context, string, func(smartblock.SmartBlock) error) error
+	})
+	if !ok {
+		// The real clientspace.Space exposes DoCtx. A narrower legacy wrapper
+		// must not silently discard the current request's cancellation context.
+		return ErrTargetUnavailable
+	}
+	return loader.DoCtx(ctx, target.ObjectID, func(sb smartblock.SmartBlock) error {
 		if err := ctx.Err(); err != nil {
 			return err
 		}

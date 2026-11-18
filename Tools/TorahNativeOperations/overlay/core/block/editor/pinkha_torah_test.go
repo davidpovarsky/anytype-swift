@@ -88,6 +88,13 @@ type privateFactorySpace struct {
 
 func (s *privateFactorySpace) Id() string         { return s.id }
 func (*privateFactorySpace) CanManageSpace() bool { return true }
+func (s *privateFactorySpace) DoCtx(ctx context.Context, id string, fn func(smartblock.SmartBlock) error) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	// Targets are already materialized in this explicitly bounded test adapter.
+	return s.Do(id, fn)
+}
 func (s *privateFactorySpace) Do(id string, fn func(smartblock.SmartBlock) error) error {
 	target := s.targets[id]
 	if target == nil {
