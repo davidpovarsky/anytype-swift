@@ -247,6 +247,62 @@ def generated_dependency_seed(work, text, heart, mobile):
                       original_versions={item["Path"]: item.get("Version") for item in records})
 
 
+def prepare_generated_hydration(work, original, expected_sha):
+    """Give go mod download its own mutable declaration without changing bind input."""
+    source = original / "go.mod"
+    if (original.is_symlink() or source.is_symlink() or not source.is_file()
+            or original.resolve().parent != work.resolve() or digest(source) != expected_sha):
+        raise RuntimeError("Original owned generated module input changed before hydration")
+    hydration = work / "generated-dependency-hydration"
+    hydration.mkdir(exist_ok=False)
+    shutil.copyfile(source, hydration / "go.mod")
+    if digest(hydration / "go.mod") != expected_sha:
+        raise RuntimeError("Generated hydration did not start from identical original declarations")
+    return hydration
+
+
+def validate_generated_hydration_manifest(original, hydrated, graph):
+    """Allow only selected MVS requirements; keep the original bind manifest separate."""
+    before = launcher.canonical_manifest(original)
+    after = launcher.canonical_manifest(hydrated)
+    if {key: value for key, value in before.items() if key != "Require"} != {
+            key: value for key, value in after.items() if key != "Require"}:
+        raise RuntimeError("Hydration changed original module/go/replacement or other non-require declarations")
+
+    def requirements(document):
+        values = {}
+        for item in document["Require"]:
+            if (not isinstance(item, dict) or set(item) - {"Path", "Version", "Indirect"}
+                    or not isinstance(item.get("Path"), str) or not item["Path"]
+                    or not isinstance(item.get("Version"), str) or not item["Version"]
+                    or type(item.get("Indirect", False)) is not bool or item["Path"] in values):
+                raise RuntimeError("Malformed or duplicate generated requirement")
+            values[item["Path"]] = dict(version=item["Version"], indirect=item.get("Indirect", False))
+        return values
+
+    initial, resolved = requirements(before), requirements(after)
+    if not initial or not set(initial).issubset(resolved):
+        raise RuntimeError("Hydration removed an original generated requirement")
+    changes, additions = [], []
+    for path, actual in resolved.items():
+        if actual["version"] != graph.get(path, {}).get("version"):
+            raise RuntimeError("Hydrated requirement is not the checksum-verified selected version: " + path)
+        if path in initial:
+            if actual["indirect"] != initial[path]["indirect"]:
+                raise RuntimeError("Hydration changed an original direct/indirect requirement")
+            if actual["version"] != initial[path]["version"]:
+                changes.append(dict(path=path, original=initial[path]["version"], hydrated=actual["version"]))
+        else:
+            if not actual["indirect"]:
+                raise RuntimeError("Hydration added a new direct requirement")
+            additions.append(dict(path=path, hydrated=actual["version"]))
+    return dict(status="VERIFIED_SELECTED_MVS_REQUIREMENTS_ONLY",
+                original_requirements=len(initial), hydrated_requirements=len(resolved),
+                selected_version_updates=sorted(changes, key=lambda item: item["path"]),
+                selected_indirect_additions=sorted(additions, key=lambda item: item["path"]),
+                original_non_require_declarations_preserved=True)
+
+
 def validate_generated_seed_graph(graph, downloads):
     launcher.validate_downloaded_graph(graph, downloads)
     for path, fields in GENERATED_GRAPH_REQUIRED.items():
@@ -351,6 +407,9 @@ def execute(args, control, evidence):
                            "original-native-graph-for-gomobile", env)
     graph_seed, graph_preparation = generated_dependency_seed(
         work, native_graph_log.read_text(encoding="utf8"), heart, mobile)
+    coverage.write_receipt(evidence / "generated-original-input.json", graph_preparation)
+    shutil.copyfile(graph_seed / "go.mod", evidence / "generated-original.go.mod")
+    hydration = prepare_generated_hydration(work, graph_seed, graph_preparation["initial_go_mod_sha256"])
     graph_env = dict(env, GOWORK="off")
     checksum_log = run([str(real_go), "env", "-json", "GOSUMDB", "GONOSUMDB", "GOPRIVATE"],
                        "generated-graph-checksum-authority", graph_env, cwd=graph_seed)
@@ -361,16 +420,23 @@ def execute(args, control, evidence):
     initial_mod = run([str(real_go), "mod", "edit", "-json"],
                       "generated-graph-original-manifest", graph_env, cwd=graph_seed)
     manifest = launcher.canonical_manifest(json.loads(initial_mod.read_text(encoding="utf8")))
+    # go mod download may write MVS requirements even with GOFLAGS=-mod=readonly.
+    # Preserve the original gomobile declarations and hydrate only this owned copy.
     graph_download = run([str(real_go), "mod", "download", "-json", "all"],
-                         "generated-graph-module-download", graph_env, cwd=graph_seed)
+                         "generated-graph-module-download", graph_env, cwd=hydration)
     graph_env["GOPROXY"] = "off"
     graph_selection = run([str(real_go), "list", "-m", "-json", "all"],
-                          "generated-graph-effective-modules", graph_env, cwd=graph_seed)
+                          "generated-graph-effective-modules", graph_env, cwd=hydration)
+    hydrated_mod = run([str(real_go), "mod", "edit", "-json"],
+                      "generated-graph-hydrated-manifest", graph_env, cwd=hydration)
+    shutil.copyfile(hydration / "go.mod", evidence / "generated-hydrated.go.mod")
     graph = launcher.selected_graph(launcher.module_records(graph_selection.read_text(encoding="utf8")), heart)
     graph_preparation.update(validate_generated_seed_graph(
         graph, launcher.downloaded_modules(graph_download.read_text(encoding="utf8"))))
     if digest(graph_seed / "go.mod") != graph_preparation["initial_go_mod_sha256"]:
         raise RuntimeError("Generated cache hydration changed its original module declarations")
+    hydration_delta = validate_generated_hydration_manifest(
+        manifest, json.loads(hydrated_mod.read_text(encoding="utf8")), graph)
     selected_seed_genproto = next(item for item in launcher.module_records(graph_selection.read_text(encoding="utf8"))
                                  if item["Path"] == pair_ci.GENPROTO_PATH)
     pair_ci.validate_genproto_selection(selected_seed_genproto)
@@ -385,7 +451,9 @@ def execute(args, control, evidence):
     graph_preparation.update(
         checksum_authority=checksum_authority, contract_sha256=graph_contract_sha,
         original_manifest_sha256=digest(initial_mod), download_receipt_sha256=digest(graph_download),
-        effective_graph_sha256=digest(graph_selection), resolved_go_sum_sha256=digest(graph_seed / "go.sum"),
+        effective_graph_sha256=digest(graph_selection), resolved_go_sum_sha256=digest(hydration / "go.sum"),
+        hydrated_go_mod_sha256=digest(hydration / "go.mod"), hydrated_manifest_sha256=digest(hydrated_mod),
+        hydration_delta=hydration_delta, immutable_bind_input_preserved=True,
         selected_dependencies=graph,
         selected_version_changes=[dict(path=path, original=original_versions.get(path), generated=value["version"])
                                   for path, value in graph.items() if original_versions.get(path) != value["version"]])
