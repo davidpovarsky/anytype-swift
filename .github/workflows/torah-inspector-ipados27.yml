@@ -24,6 +24,7 @@ on:
           - t5-apple-pairs
           - sdk06-tests
           - editor-host-tests
+          - wave15-core-tests
           - wave15-acceptance
       t5_component:
         description: One bounded native T5 proof component
@@ -121,6 +122,14 @@ jobs:
       heart_source_run_id: ${{ inputs.source_run_id }}
       expected_app_branch: codex/chatgpt-wave15-integration-20261118
       profile: editor
+
+  wave15-core-tests:
+    if: ${{ inputs.route == 'wave15-core-tests' }}
+    uses: ./.github/workflows/pinkha-sdk06-tests.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      expected_app_branch: codex/chatgpt-wave15-integration-20261118
+      profile: wave15-core
 
   sdk06-tests:
     if: ${{ inputs.route == 'sdk06-tests' }}

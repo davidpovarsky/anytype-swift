@@ -18,6 +18,7 @@ import subprocess
 import sys
 
 from host_command import CommandCancelled, cancellation_signals, command
+import wave15_core_profile as core_profile
 
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
@@ -46,18 +47,24 @@ EDITOR_METHODS = {
 class HostTestProfile(str, Enum):
     SDK06 = "sdk06"
     EDITOR = "editor"
+    CORE = "wave15-core"
 
     @property
     def suites(self):
-        return SUITES if self is self.SDK06 else {EDITOR_SUITE: len(EDITOR_METHODS)}
+        if self is self.SDK06:
+            return SUITES
+        if self is self.EDITOR:
+            return {EDITOR_SUITE: len(EDITOR_METHODS)}
+        return core_profile.suite_counts()
 
     @property
     def result_prefix(self):
-        return "sdk06" if self is self.SDK06 else "editor-host"
+        return {self.SDK06: "sdk06", self.EDITOR: "editor-host", self.CORE: "wave15-core"}[self]
 
     @property
     def pass_status(self):
-        return "SDK06_COMPONENT_PASS" if self is self.SDK06 else "EDITOR_COMPONENT_PASS"
+        return {self.SDK06: "SDK06_COMPONENT_PASS", self.EDITOR: "EDITOR_COMPONENT_PASS",
+                self.CORE: "WAVE15_CORE_COMPONENT_PASS"}[self]
 
 
 class EditorEvidenceReviewPending(ValueError):
@@ -100,7 +107,9 @@ def expected_methods(app, profile=HostTestProfile.SDK06):
         synced = app / "AnytypeTests/Pinkha" / (suite + ".swift")
         require(synced.is_file() and actual.samefile(synced), "Suite absent from Xcode synchronized root: " + suite)
         text = actual.read_text(encoding="utf-8")
-        names = re.findall(r"@Test(?:\([^\n]*\))?\s+func\s+(\w+)\s*\(", text)
+        names = (sorted(core_profile.validate_source(text, core_profile.load_manifest()[suite]))
+                 if profile is HostTestProfile.CORE else
+                 re.findall(r"@Test(?:\([^\n]*\))?\s+func\s+(\w+)\s*\(", text))
         require(len(set(names)) == len(names) and len(names) >= minimum,
                 "Reviewed SDK test declarations disappeared: " + suite)
         if profile is HostTestProfile.EDITOR:
@@ -170,6 +179,10 @@ def validate_results(summary, tree, expected, udid, profile=HostTestProfile.SDK0
         # never infer execution of an argument from this aggregate alone.
         require(counts["totalTestCount"] in {len(EDITOR_METHODS), result["declared_case_count"]},
                 "Editor summary does not describe the exact methods or argument cases")
+    if profile is HostTestProfile.CORE:
+        result.update(core_profile.validate_arguments(tree, expected))
+        require(counts["totalTestCount"] in {41, 57},
+                "Core summary differs from its exact method or literal-case scope")
     return result
 
 
@@ -350,6 +363,8 @@ def execute(args, receipt):
                    expected_methods=sorted(expected),
                    test_source_hashes=sources, hanlin_revision=pin["revision"], heart=installation,
                    hanlin_snapshot_sha256=sha256(evidence / "hanlin-snapshot.json"), phase="SIMULATOR_BOOT")
+    if profile is HostTestProfile.CORE:
+        receipt["core_manifest_sha256"] = sha256(core_profile.MANIFEST_PATH)
     write(evidence / "execution.json", receipt)
     flags = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED", "ENABLE_TESTABILITY=YES",
              "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-",
@@ -378,7 +393,9 @@ def execute(args, receipt):
     receipt["dependency_checkouts"] = verify_packages(app, derived, evidence, pin, git)
     verify(app / "Dependencies/Hanlin")
     receipt["xctestrun_sha256"] = digest(configuration)
-    result = evidence / ("SDK06.xcresult" if profile is HostTestProfile.SDK06 else "EditorHost.xcresult")
+    result = evidence / {HostTestProfile.SDK06: "SDK06.xcresult",
+                         HostTestProfile.EDITOR: "EditorHost.xcresult",
+                         HostTestProfile.CORE: "Wave15Core.xcresult"}[profile]
     require(not result.exists(), "Refuse an existing SDK xcresult")
     receipt["phase"] = "EXECUTION"
     test = ["xcodebuild", "test-without-building", "-xctestrun", str(configuration),
@@ -404,6 +421,9 @@ def execute(args, receipt):
     limitation = ("Native write dispatch, mounted document/account/scene lifetime UI, provider networking and full UI acceptance remain NOT_RUN"
                   if profile is HostTestProfile.SDK06 else
                   "Editor component tests use controlled store and insertion fixtures; native drag/drop UI, real middleware writes, and all SDK06 acceptance remain NOT_RUN by this profile")
+    if profile is HostTestProfile.CORE:
+        limitation = ("Existing UIKit direction, gesture, marker and native Properties component tests; "
+                      "real multi-block UI, Add Property UI, native account writes and physical devices remain NOT_RUN by this profile")
     receipt.update(status=profile.pass_status, phase="COMPLETE", release_accepted=False, limitations=[limitation])
 
 
@@ -452,6 +472,8 @@ def main():
             receipt.update(status="CANCELLED", error_type=type(error).__name__, error=str(error))
             if isinstance(error, CommandCancelled):
                 receipt["cancellation_signal"] = error.signum
+        except core_profile.CoreEvidenceReviewPending as error:
+            receipt.update(status="CORE_EVIDENCE_REVIEW_PENDING", error_type=type(error).__name__, error=str(error))
         except EditorEvidenceReviewPending as error:
             receipt.update(status="EDITOR_EVIDENCE_REVIEW_PENDING", error_type=type(error).__name__, error=str(error))
         except BaseException as error:

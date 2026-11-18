@@ -12,7 +12,7 @@ on:
         required: true
         type: string
       profile:
-        description: Explicit reviewed profile, sdk06 or editor; never an arbitrary test selection
+        description: Explicit reviewed profile sdk06/editor/wave15-core; no arbitrary test selection
         required: false
         type: string
         default: sdk06
@@ -30,8 +30,8 @@ jobs:
       HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}
       EXPECTED_APP_BRANCH: ${{ inputs.expected_app_branch }}
       HOST_PROFILE: ${{ inputs.profile }}
-      HOST_EVIDENCE: build/${{ inputs.profile == 'editor' && 'editor-host' || 'sdk06' }}-evidence
-      HOST_DERIVED: build/${{ inputs.profile == 'editor' && 'editor-host' || 'sdk06' }}-derived-${{ github.run_id }}-${{ github.run_attempt }}
+      HOST_EVIDENCE: build/${{ inputs.profile == 'editor' && 'editor-host' || inputs.profile == 'wave15-core' && 'wave15-core' || 'sdk06' }}-evidence
+      HOST_DERIVED: build/${{ inputs.profile == 'editor' && 'editor-host' || inputs.profile == 'wave15-core' && 'wave15-core' || 'sdk06' }}-derived-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - name: Checkout the immutable caller commit
         uses: actions/checkout@v4
@@ -47,7 +47,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          case "$HOST_PROFILE" in sdk06|editor) ;; *) echo 'Unsupported host test profile' >&2; exit 1 ;; esac
+          case "$HOST_PROFILE" in sdk06|editor|wave15-core) ;; *) echo 'Unsupported host test profile' >&2; exit 1 ;; esac
           test "$EXPECTED_APP_BRANCH" = codex/chatgpt-wave15-integration-20261118
           test "$GITHUB_REF" = "refs/heads/$EXPECTED_APP_BRANCH"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
@@ -69,7 +69,7 @@ jobs:
         run: |
           python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
           python3 Tools/Hanlin/prepare_sdk.py --check
-          python3 -m unittest discover -s Tools/Hanlin -p test_run_host_tests.py -v
+          python3 -m unittest discover -s Tools/Hanlin -p 'test_run_host*.py' -v
       - name: Verify actual Xcode27 and create disposable OS27 devices
         run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence "$HOST_EVIDENCE/preflight"
       - name: Install explicit verified Heart source without a stale fallback
@@ -102,7 +102,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.profile == 'editor' && 'Pinkha-Editor-Host' || 'Pinkha-SDK06' }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: ${{ inputs.profile == 'editor' && 'Pinkha-Editor-Host' || inputs.profile == 'wave15-core' && 'Pinkha-Wave15-Core' || 'Pinkha-SDK06' }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ env.HOST_EVIDENCE }}/Pinkha-Native-Derived-Evidence.zip
           if-no-files-found: error
           retention-days: 14
