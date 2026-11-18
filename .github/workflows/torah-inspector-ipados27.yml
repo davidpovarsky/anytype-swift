@@ -17,6 +17,7 @@ on:
           - native-diagnostics
           - t5-coverage-proof
           - t2-native-operations
+          - t2-account-lifecycle
           - simulator-ui27
           - heart-runtime
           - t5-r15-runtime
@@ -128,6 +129,12 @@ jobs:
   t5-r15-runtime:
     if: ${{ inputs.route == 't5-r15-runtime' }}
     uses: ./.github/workflows/pinkha-t5-r15-runtime.yml
+
+  t2-account-lifecycle:
+    if: ${{ inputs.route == 't2-account-lifecycle' }}
+    uses: ./.github/workflows/pinkha-t2-account-lifecycle.yml
+    with:
+      source_sha: ${{ github.sha }}
 
   t2-native-operations:
     if: ${{ inputs.route == 't2-native-operations' }}
