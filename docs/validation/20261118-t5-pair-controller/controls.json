@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "scope": "Python controller tests and source/YAML/shell parse only; native pairing NOT_RUN",
+  "base_sha": "211289049d3d25665cb1ec6ce9699eac33254b56",
+  "checks": [
+    {
+      "name": "preserved-controls",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "Tools/PinkhaNativeDerived/compatibility_pairs/test_controls.py"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "ci-controls",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "Tools/PinkhaNativeDerived/test_run_t5_pairs_ci.py"
+      ],
+      "returncode": 0
+    }
+  ],
+  "source_sha256_lf": {
+    "Tools/PinkhaNativeDerived/run_t5_pairs_ci.py": "fe369e6da1046c6c168ef5c2b526841e71758eab226c7268cae2b4380bb1e57a",
+    "Tools/PinkhaNativeDerived/test_run_t5_pairs_ci.py": "e3e5622bfe30303cc5876b57759174b21d289d9a345ef3ee99cb8c1253ed5c2d",
+    "Tools/PinkhaNativeDerived/run_t5_pairs_linux_container.sh": "dd3ca86007989bcfc7d80be2a486ee225d13e2710f013f8edde987678c8bf973",
+    ".github/workflows/pinkha-t5-compatibility-pairs.yml": "63aa8906c2500b9565dec9414764deaa79f4eb31cb5f45afcd42bfeb974b9a98",
+    ".github/workflows/torah-inspector-ipados27.yml": "e9ac664545ac2cc0f6d30730c8b1270fdca6deb2c32107b118bab546361eb8c8",
+    "Tools/PinkhaNativeDerived/compatibility_pairs/manifest.template.json": "af516a2fcf963bd8fc385d42333e252643a5b963f697eaea43811b89ba0d8dc6",
+    "Tools/PinkhaNativeDerived/compatibility_pairs/pair_phase_test.go": "eeb6bb048470a6805c35d7f6f574750ebe8873196b8b447f6345a3649113e4e8",
+    "Tools/PinkhaNativeDerived/compatibility_pairs/README.md": "3609e7122b9d8c3c6ad2738dfaeef3b68c3722680849b6a886c52f2a7d530457",
+    "Tools/PinkhaNativeDerived/compatibility_pairs/run_pairs.py": "815ed7e197a7c5443e5da2bae3a39ad392f7d2c3686cb3191c1a9f9c382513d4",
+    "Tools/PinkhaNativeDerived/compatibility_pairs/test_controls.py": "9840895c252c71447349924020b4c8c72c57ba5224fe76a695b877e7ab345c7d"
+  },
+  "checked_at": "2026-11-18T00:56:16.098671+00:00"
+}
