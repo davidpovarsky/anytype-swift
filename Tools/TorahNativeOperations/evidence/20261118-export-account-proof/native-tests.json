@@ -1,0 +1,88 @@
+{
+  "run_id": "44245133433",
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44245133433",
+  "raw_artifacts_remain_on_github": true,
+  "suites": [
+    {
+      "artifact_id": 14400684148,
+      "zip_sha256": "231ab8894c77d65f61a5e62b78b769ace85ab523b27cf3224accda8717218bd9",
+      "receipt_sha256": "1577b279cf59ed298054e79206f42ce499681edf7824b42a8535b840b2bfb478",
+      "raw_go_test_sha256": "1be44cf3d44ebaca6ce39ab8d2a2a4c112396e488fa37b963c4a5c3699685b96",
+      "status": "PASS_PRIVATE_NATIVE_REGISTRY_ADAPTER",
+      "suite": "registration",
+      "app_sha": "e7bb02742cb188cda1d5b44a8700b51fa2930421",
+      "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "inventory_sha256": "be2805bc76e87a6fb96b4b3d40794c677e1620e2e23f6a33a68d97720f433637",
+      "patch_sha256": "4d470b31854ae2af3360676a1dabb06d60207ed2d4afddabad412bdc35adebc3",
+      "counts": {
+        "pass": 58
+      },
+      "top_level": {
+        "pass": 22
+      },
+      "subcases": {
+        "pass": 36
+      },
+      "skipped_names": [],
+      "export_control_passes": [
+        "TestPinkhaExportGetterPreservesNativeTypeAndCacheLifecycle/id/private",
+        "TestPinkhaExportGetterPreservesNativeTypeAndCacheLifecycle/id/ordinary",
+        "TestPinkhaExportGetterPreservesNativeTypeAndCacheLifecycle/id/lookup_error",
+        "TestPinkhaExportGetterPreservesNativeTypeAndCacheLifecycle/id/nil_result",
+        "TestPinkhaExportGetterPreservesNativeTypeAndCacheLifecycle/full_id/private",
+        "TestPinkhaExportGetterPreservesNativeTypeAndCacheLifecycle/full_id/ordinary",
+        "TestPinkhaExportGetterPreservesNativeTypeAndCacheLifecycle/full_id/lookup_error",
+        "TestPinkhaExportGetterPreservesNativeTypeAndCacheLifecycle/full_id/nil_result",
+        "TestPinkhaExportGetterPreservesNativeTypeAndCacheLifecycle",
+        "TestPinkhaExportContextGuardIsScopedAndCopied",
+        "TestPinkhaPrivateObjectSingleExportDenied/Protobuf",
+        "TestPinkhaPrivateObjectSingleExportDenied/JSON",
+        "TestPinkhaPrivateObjectSingleExportDenied/Markdown",
+        "TestPinkhaPrivateObjectSingleExportDenied/AnyBlockV2",
+        "TestPinkhaPrivateObjectSingleExportDenied",
+        "TestPinkhaPrivateObjectListAndCollectDenied/Collect",
+        "TestPinkhaPrivateObjectListAndCollectDenied/List/Protobuf",
+        "TestPinkhaPrivateObjectListAndCollectDenied/List/AnyBlockV2",
+        "TestPinkhaPrivateObjectListAndCollectDenied"
+      ],
+      "package_failures": 0,
+      "full_t2_acceptance": "NOT_RUN",
+      "middleware_acceptance": "NOT_RUN",
+      "ios_acceptance": "NOT_RUN",
+      "two_client_transport_acceptance": "NOT_RUN"
+    },
+    {
+      "artifact_id": 14401232398,
+      "zip_sha256": "16d4deff9c57342f693c9f86b20daa5472a36d13d5f48c37ad5c2da4727b808c",
+      "receipt_sha256": "cf9569cca755e29511b774a7665de82495bd3e395a503bc73364aab2e4a80f58",
+      "raw_go_test_sha256": "fceae152608d630db56c3944db895d2d738ea78c183830a4d38af740bed9f546",
+      "status": "PASS_NATIVE_COMPONENT_AND_LOOPBACK_TRANSPORT",
+      "suite": "component",
+      "app_sha": "e7bb02742cb188cda1d5b44a8700b51fa2930421",
+      "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "inventory_sha256": "be2805bc76e87a6fb96b4b3d40794c677e1620e2e23f6a33a68d97720f433637",
+      "patch_sha256": "4d470b31854ae2af3360676a1dabb06d60207ed2d4afddabad412bdc35adebc3",
+      "counts": {
+        "pass": 68,
+        "skip": 2
+      },
+      "top_level": {
+        "pass": 23,
+        "skip": 2
+      },
+      "subcases": {
+        "pass": 45
+      },
+      "skipped_names": [
+        "TestNativeTreeProcessHelper",
+        "TestCommittedProcessExitHelper"
+      ],
+      "export_control_passes": [],
+      "package_failures": 0,
+      "full_t2_acceptance": "NOT_RUN",
+      "middleware_acceptance": "NOT_RUN",
+      "ios_acceptance": "NOT_RUN",
+      "two_client_transport_acceptance": "PASS_ISOLATED_LOOPBACK_PROTOCOL_ONLY"
+    }
+  ]
+}
