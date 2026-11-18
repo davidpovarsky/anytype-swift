@@ -1,0 +1,49 @@
+{
+  "schema": "pinkha-t2-account-failure-v1",
+  "run_id": 44233581579,
+  "run_attempt": 1,
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44233581579",
+  "app_sha": "9b320715b4835c9f1045c6d1680ca8e71417a66d",
+  "fixture_source_commit": "1fdae34a6aaa06861a3702acf58718e06db89f98",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "status": "FAIL",
+  "finished_at": "2026-11-18T04:03:23.863212+00:00",
+  "artifact": {
+    "id": 14397011527,
+    "name": "Pinkha-T2-Account-Lifecycle-44233581579-1",
+    "zip_sha256": "a0a52376790c541b62ef1e4ac5787e798e72263cf727bfa2c064ae01671185f5",
+    "receipt_sha256": "ffcf4c908694724d011d4e418ddc8c457686629c8ee91b939d225ff99d26fc80",
+    "native_log_sha256": "0368394bd5a484eba67384a6dfaab8e2977838765910612f4493e5c648ebafa2",
+    "raw_location": "GitHub Actions artifact only; inspected in memory on connected host"
+  },
+  "native_builds": {
+    "legacy_binary_sha256": "154a46b7c6f9d7cb062c3556033dd67db6c44030704720a787726ff0b514da9b",
+    "new_binary_sha256": "7abcf7d10ed4ad6bca51eb39e3ddc967a345fc328ae17d97a12bcc300dda78c5",
+    "fixture_sha256": "2d5db693653b5d86a2067434797e7fc955032274a09bf43500bd34fbe84973cf",
+    "both_compiled": true
+  },
+  "phases": {
+    "new-create": "FAIL",
+    "new-reopen": "NOT_RUN",
+    "legacy-edit": "NOT_RUN",
+    "new-recover": "NOT_RUN"
+  },
+  "finding": {
+    "kind": "fixture_missing_required_creation_callback",
+    "crash_source": "core/block/object/objectcache/cache.go:123",
+    "fixture_callsite": "clientlibrary/service/pinkha_t2_new_runtime_test.go:36",
+    "explanation": "DeriveTreeObject passes TreeDerivationParams.InitFunc through to cacheLoad createObject, which invokes it unconditionally. Fixture supplied nil.",
+    "fix": "Supply a non-nil callback returning an empty smartblock.InitContext; cache supplies Ctx, SpaceID and BuildOpts. Production cache/registry/contracts unchanged."
+  },
+  "verification": {
+    "artifact_digest_matches_metadata": true,
+    "run_app_sha_matches_receipt": true,
+    "changed_go_file_gofmt": "PASS",
+    "fixed_native_runtime": "NOT_RUN",
+    "controller_unchanged": true
+  },
+  "app_capability": "OFF",
+  "two_app_clients": "NOT_RUN",
+  "ios_acceptance": "NOT_RUN",
+  "full_t2_acceptance": "NOT_ACCEPTED"
+}

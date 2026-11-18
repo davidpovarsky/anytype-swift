@@ -35,6 +35,9 @@ func t2ExerciseRuntime(t *testing.T, state *t2AccountState, create bool) (map[st
 		state.RootID, state.OperationID = root.Id, fmt.Sprintf("%032x", 1)
 		object, err = spc.DeriveTreeObject(ctx, objectcache.TreeDerivationParams{
 			Key: domain.MustUniqueKey(coresb.SmartBlockTypePinkhaTorahOperations, torahopscontract.UniqueKeyVersion),
+			// objectCache's create path invokes InitFunc unconditionally. The
+			// cache fills Ctx/SpaceID/BuildOpts before the private factory runs.
+			InitFunc: func(string) *smartblock.InitContext { return &smartblock.InitContext{} },
 		})
 		require.NoError(t, err)
 	} else {
