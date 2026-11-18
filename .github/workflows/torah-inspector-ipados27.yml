@@ -27,7 +27,7 @@ on:
           - wave15-core-tests
           - wave15-acceptance
       t5_component:
-        description: One bounded native T5 proof component
+        description: Bounded T5 component; index-freshness also selects the fifth Apple phase
         type: choice
         options:
           - native-index
@@ -148,6 +148,7 @@ jobs:
     with:
       heart_r14_run_id: ${{ inputs.source_run_id }}
       heart_r15_run_id: ${{ inputs.t5_r15_run_id }}
+      include_freshness: ${{ inputs.t5_component == 'index-freshness' }}
 
   t5-r15-runtime:
     if: ${{ inputs.route == 't5-r15-runtime' }}
