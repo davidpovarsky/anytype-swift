@@ -33,10 +33,10 @@ jobs:
       HOST_EVIDENCE: build/${{ inputs.profile == 'editor' && 'editor-host' || 'sdk06' }}-evidence
       HOST_DERIVED: build/${{ inputs.profile == 'editor' && 'editor-host' || 'sdk06' }}-derived-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
-      - name: Checkout the caller integration branch
+      - name: Checkout the immutable caller commit
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.sha }}
           persist-credentials: false
       - name: Select existing native ARM64 Python contract
         uses: actions/setup-python@v5
@@ -50,6 +50,10 @@ jobs:
           case "$HOST_PROFILE" in sdk06|editor) ;; *) echo 'Unsupported host test profile' >&2; exit 1 ;; esac
           test "$EXPECTED_APP_BRANCH" = codex/chatgpt-wave15-integration-20261118
           test "$GITHUB_REF" = "refs/heads/$EXPECTED_APP_BRANCH"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          # This disposable CI checkout keeps its local branch at the dispatched commit.
+          # Advancing the remote integration branch while queued cannot change this source.
+          git switch --force-create "$EXPECTED_APP_BRANCH" "$GITHUB_SHA"
           test "$(git branch --show-current)" = "$EXPECTED_APP_BRANCH"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           [[ "$HEART_SOURCE_RUN_ID" =~ ^[1-9][0-9]*$ ]]
