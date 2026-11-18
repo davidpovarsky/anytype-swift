@@ -17,6 +17,7 @@ import run_host_tests
 from host_command import CommandCancelled, command
 
 from run_host_tests import BRANCH, SUITES, require_identity, validate_results, xctest_products
+from run_host_tests import EditorEvidenceReviewPending, HostTestProfile, expected_methods
 
 
 class SDKResultGateTests(unittest.TestCase):
@@ -103,6 +104,157 @@ class SDKResultGateTests(unittest.TestCase):
                 values[index] = replacement
                 with self.assertRaises(ValueError):
                     require_identity(*values)
+
+
+class EditorResultGateTests(unittest.TestCase):
+    # Full signatures from root fcdf0cb5; deliberately independent of the
+    # runner's method registry. Display labels are not method identities.
+    signatures = [
+        "delayedDropDoesNotRegainAuthorityOnReactivation()",
+        "staleInspectorInsertionIsRejected(dismiss:)",
+        "deniedDropDoesNotCreateTextOrMetadata()",
+        "dropDeduplicationIsPerGesture()",
+        "dropLifetimeIsIndependentOfInspectorPresentation()",
+        "revocationDuringBlockResponseStopsMetadata()",
+        "lateBlockResponseDoesNotMutateTheNewLifetime()",
+        "lateInspectorResponseDoesNotReplaceNewSelectionStatus()",
+        "metadataWriteRevalidatesAfterSuspendedNativeRead(cancel:)",
+        "inspectorInsertionPersistsConfirmedCanonicalMetadata()",
+    ]
+
+    def setUp(self):
+        self.expected = {"TorahQuoteInsertionTests/" + signature.split("(")[0] for signature in self.signatures}
+        self.summary = dict(totalTestCount=10, passedTests=10, failedTests=0, skippedTests=0,
+                            devicesAndConfigurations=[dict(device=dict(deviceId="disposable-id", osVersion="27.0",
+                            osBuildNumber="24A-test", architecture="arm64", modelName="iPad (A16)"))])
+        nodes = []
+        for signature in self.signatures:
+            node = dict(nodeType="Test Case", nodeIdentifier="TorahQuoteInsertionTests/" + signature,
+                        name="Reviewed display label", result="Passed")
+            if ":)" in signature:
+                node["children"] = [dict(nodeType="Arguments", name=value, result="Passed") for value in ("false", "true")]
+            nodes.append(node)
+        self.tree = dict(testNodes=[dict(nodeType="Test Suite", children=nodes)])
+
+    def validate(self):
+        return validate_results(self.summary, self.tree, self.expected, "disposable-id", HostTestProfile.EDITOR)
+
+    def test_ten_methods_require_twelve_distinct_declared_cases_independently_of_summary_unit(self):
+        for total in (10, 12):
+            with self.subTest(raw_summary_total=total):
+                self.summary.update(totalTestCount=total, passedTests=total)
+                actual = self.validate()
+                self.assertEqual(actual["actual_method_count"], 10)
+                self.assertEqual(actual["declared_case_count"], 12)
+                self.assertEqual(set(actual["methods"]), self.expected)
+                self.assertEqual(actual["counts"]["totalTestCount"], total)
+
+    def test_missing_duplicate_skipped_or_failed_argument_cannot_hide_under_a_passing_method(self):
+        original = copy.deepcopy(self.tree)
+        for corruption in ("missing", "duplicate", "skipped", "failed-run"):
+            with self.subTest(corruption=corruption):
+                self.tree = copy.deepcopy(original)
+                arguments = self.tree["testNodes"][0]["children"][1]["children"]
+                if corruption == "missing":
+                    arguments.pop()
+                elif corruption == "duplicate":
+                    arguments[1]["name"] = "false"
+                elif corruption == "skipped":
+                    arguments[1]["result"] = "Skipped"
+                else:
+                    arguments[1]["children"] = [dict(nodeType="Test Case Run", result="Failed")]
+                with self.assertRaises(ValueError):
+                    self.validate()
+
+    def test_unrecognized_argument_representation_is_review_pending_not_pass(self):
+        for arguments in ([], [dict(nodeType="Arguments", name="dismiss: false", result="Passed")]):
+            with self.subTest(arguments=arguments):
+                self.tree["testNodes"][0]["children"][1]["children"] = arguments
+                with self.assertRaises(EditorEvidenceReviewPending):
+                    self.validate()
+
+    def test_unknown_execution_child_cannot_hide_failed_or_unrecognized_run_evidence(self):
+        argument = self.tree["testNodes"][0]["children"][1]["children"][1]
+        for result in ("Passed", "Failed"):
+            with self.subTest(result=result):
+                argument["children"] = [dict(nodeType="Unknown Execution Schema", result=result)]
+                error = EditorEvidenceReviewPending if result == "Passed" else ValueError
+                with self.assertRaises(error):
+                    self.validate()
+
+    def test_extra_summary_count_foreign_method_and_wrong_full_parameter_label_are_rejected(self):
+        self.summary.update(totalTestCount=11, passedTests=11)
+        with self.assertRaisesRegex(ValueError, "Editor summary"):
+            self.validate()
+        self.summary.update(totalTestCount=10, passedTests=10)
+        node = self.tree["testNodes"][0]["children"][1]
+        node["nodeIdentifier"] = "TorahQuoteInsertionTests/staleInspectorInsertionIsRejected(foreign:)"
+        with self.assertRaisesRegex(ValueError, "full editor method identity"):
+            self.validate()
+        node["nodeIdentifier"] = "HanlinHostAdapterTests/unrelatedSDKMethod()"
+        with self.assertRaisesRegex(ValueError, "Unexpected xcresult editor"):
+            self.validate()
+
+    def test_source_contract_requires_exact_methods_and_both_bool_arguments(self):
+        lines = []
+        for signature in self.signatures:
+            parameters = signature[signature.index("(") + 1:-1]
+            attribute = '@Test("source fixture", arguments: [false, true])' if parameters else "@Test"
+            lines.append(attribute + "\nfunc " + signature.replace(":)", ": Bool)") + " {}\n")
+        source = "\n".join(lines)
+        path = "AnytypeTests/Pinkha/TorahQuoteInsertionTests.swift"
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / path
+            target.parent.mkdir(parents=True)
+            with patch.object(subprocess, "check_output", return_value=(path + "\0").encode()):
+                target.write_text(source)
+                expected, hashes = expected_methods(root, HostTestProfile.EDITOR)
+                self.assertEqual(expected, self.expected)
+                self.assertEqual(set(hashes), {path})
+                for bad in (source.replace("[false, true]", "[false, false]"),
+                            source.replace("dismiss: Bool", "foreign: Bool"),
+                            source.replace("deniedDropDoesNotCreateTextOrMetadata", "substitutedMethod")):
+                    with self.subTest(source=bad[:80]):
+                        target.write_text(bad)
+                        with self.assertRaises(ValueError):
+                            expected_methods(root, HostTestProfile.EDITOR)
+
+    def test_profile_bound_receipts_cannot_turn_editor_success_into_sdk_acceptance(self):
+        with tempfile.TemporaryDirectory() as temp:
+            evidence = Path(temp) / "evidence"
+            argv = ["run_host_tests.py", "--app", temp, "--evidence", str(evidence),
+                    "--derived", str(Path(temp) / "derived"), "--expected-app-branch", BRANCH,
+                    "--heart-source-run-id", "123", "--profile", "editor"]
+            for status, code in (("SDK06_COMPONENT_PASS", 1), ("EDITOR_COMPONENT_PASS", 0)):
+                def completed(args, receipt):
+                    receipt.update(status=status, phase="COMPLETE", build_succeeded=True, test_command_exit_code=0)
+                with self.subTest(status=status), patch.object(sys, "argv", argv), \
+                        patch.object(run_host_tests, "execute", side_effect=completed), patch.object(run_host_tests, "cleanup"):
+                    self.assertEqual(run_host_tests.main(), code)
+                    receipt = json.loads((evidence / "execution.json").read_text())
+                    self.assertEqual(receipt["profile"], "editor")
+                    self.assertEqual(receipt["status"], "FAIL" if code else "EDITOR_COMPONENT_PASS")
+
+    def test_unknown_apple_argument_schema_preserves_raw_evidence_receipt_for_review(self):
+        with tempfile.TemporaryDirectory() as temp:
+            evidence = Path(temp) / "evidence"
+            argv = ["run_host_tests.py", "--app", temp, "--evidence", str(evidence),
+                    "--derived", str(Path(temp) / "derived"), "--expected-app-branch", BRANCH,
+                    "--heart-source-run-id", "123", "--profile", "editor"]
+            def review_pending(args, receipt):
+                receipt.update(phase="RESULT_REVIEW", build_succeeded=True, test_command_exit_code=0,
+                               raw_tests_sha256="a" * 64, post_execution_source_verified=True)
+                raise EditorEvidenceReviewPending("unrecognized raw Apple schema")
+            with patch.object(sys, "argv", argv), patch.object(run_host_tests, "execute", side_effect=review_pending), \
+                    patch.object(run_host_tests, "cleanup"):
+                self.assertEqual(run_host_tests.main(), 1)
+            receipt = json.loads((evidence / "execution.json").read_text())
+            self.assertEqual(receipt["status"], "EDITOR_EVIDENCE_REVIEW_PENDING")
+            self.assertEqual(receipt["raw_tests_sha256"], "a" * 64)
+            self.assertTrue(receipt["post_execution_source_verified"])
+            self.assertEqual(receipt["test_command_exit_code"], 0)
+            self.assertTrue(receipt["finished_at"])
 
 
 class XcodeProductIdentityTests(unittest.TestCase):

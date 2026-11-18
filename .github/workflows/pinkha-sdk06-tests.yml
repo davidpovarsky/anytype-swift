@@ -1,4 +1,4 @@
-name: SDK06 canonical Hanlin Apple component tests
+name: Source-bound Apple host component tests
 
 on:
   workflow_call:
@@ -11,6 +11,11 @@ on:
         description: Reviewed isolated integration branch; producer branches are not accepted
         required: true
         type: string
+      profile:
+        description: Explicit reviewed profile, sdk06 or editor; never an arbitrary test selection
+        required: false
+        type: string
+        default: sdk06
 
 permissions:
   contents: read
@@ -24,6 +29,9 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
       HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}
       EXPECTED_APP_BRANCH: ${{ inputs.expected_app_branch }}
+      HOST_PROFILE: ${{ inputs.profile }}
+      HOST_EVIDENCE: build/${{ inputs.profile == 'editor' && 'editor-host' || 'sdk06' }}-evidence
+      HOST_DERIVED: build/${{ inputs.profile == 'editor' && 'editor-host' || 'sdk06' }}-derived-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - name: Checkout the caller integration branch
         uses: actions/checkout@v4
@@ -39,12 +47,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          case "$HOST_PROFILE" in sdk06|editor) ;; *) echo 'Unsupported host test profile' >&2; exit 1 ;; esac
           test "$EXPECTED_APP_BRANCH" = codex/chatgpt-wave15-integration-20261118
           test "$GITHUB_REF" = "refs/heads/$EXPECTED_APP_BRANCH"
           test "$(git branch --show-current)" = "$EXPECTED_APP_BRANCH"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           [[ "$HEART_SOURCE_RUN_ID" =~ ^[1-9][0-9]*$ ]]
-          mkdir -p build/sdk06-evidence
+          mkdir -p "$HOST_EVIDENCE"
       - name: Checkout immutable public canonical Hanlin source
         uses: actions/checkout@v4
         with:
@@ -58,7 +67,7 @@ jobs:
           python3 Tools/Hanlin/prepare_sdk.py --check
           python3 -m unittest discover -s Tools/Hanlin -p test_run_host_tests.py -v
       - name: Verify actual Xcode27 and create disposable OS27 devices
-        run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/sdk06-evidence/preflight
+        run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence "$HOST_EVIDENCE/preflight"
       - name: Install explicit verified Heart source without a stale fallback
         env:
           GH_TOKEN: ${{ github.token }}
@@ -72,23 +81,24 @@ jobs:
             --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
             --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
             --app-source "$GITHUB_WORKSPACE" --source-run-id "$HEART_SOURCE_RUN_ID" \
-            --expected-app-branch "$EXPECTED_APP_BRANCH" --evidence build/sdk06-evidence/heart
-      - name: Build Debug-Anytype and execute all four actual SDK06 suites
+            --expected-app-branch "$EXPECTED_APP_BRANCH" --evidence "$HOST_EVIDENCE/heart"
+      - name: Build Debug-Anytype and execute the exact reviewed component profile
         timeout-minutes: 100
         run: |
           python3 Tools/Hanlin/run_host_tests.py --app "$GITHUB_WORKSPACE" \
-            --evidence build/sdk06-evidence --derived "build/sdk06-derived-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" \
-            --expected-app-branch "$EXPECTED_APP_BRANCH" --heart-source-run-id "$HEART_SOURCE_RUN_ID"
+            --evidence "$HOST_EVIDENCE" --derived "$HOST_DERIVED" \
+            --expected-app-branch "$EXPECTED_APP_BRANCH" --heart-source-run-id "$HEART_SOURCE_RUN_ID" \
+            --profile "$HOST_PROFILE"
       - name: Package actual logs and xcresult even on failure
         if: always()
         run: |
-          mkdir -p build/sdk06-evidence
-          python3 Tools/PinkhaNativeDerived/package_evidence.py build/sdk06-evidence
-      - name: Retain source-bound SDK evidence
+          mkdir -p "$HOST_EVIDENCE"
+          python3 Tools/PinkhaNativeDerived/package_evidence.py "$HOST_EVIDENCE"
+      - name: Retain source-bound profile evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Pinkha-SDK06-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: build/sdk06-evidence/Pinkha-Native-Derived-Evidence.zip
+          name: ${{ inputs.profile == 'editor' && 'Pinkha-Editor-Host' || 'Pinkha-SDK06' }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.HOST_EVIDENCE }}/Pinkha-Native-Derived-Evidence.zip
           if-no-files-found: error
           retention-days: 14
