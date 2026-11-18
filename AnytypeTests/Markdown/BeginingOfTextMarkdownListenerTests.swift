@@ -87,7 +87,7 @@ class BeginingOfTextMarkdownListenerTests: XCTestCase {
     }
 
     private func buildData(text: String, carretPosition: Int) -> TextViewAccessoryConfiguration {
-        let textView = UITextView()
+        let textView = MarkdownTestTextView()
         textView.text = text
         textView.selectedRange = NSRange(location: carretPosition, length: 0)
         

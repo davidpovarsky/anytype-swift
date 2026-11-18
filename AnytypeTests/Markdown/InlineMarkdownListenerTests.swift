@@ -61,7 +61,7 @@ class InlineMarkdownListenerTests: XCTestCase {
             .addStyle(.strikethrough, text: NSAttributedString(string: "AAAbbb ccc"), range: range, focusRange: focusRange)
         ]
         
-        let textView = UITextView()
+        let textView = MarkdownTestTextView()
         
         let results = cases.map {
             textView.text = $0.text

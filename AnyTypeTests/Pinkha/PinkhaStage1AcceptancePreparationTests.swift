@@ -282,6 +282,10 @@ struct PinkhaStage1AcceptancePreparationTests {
     /// middleware in the disposable Space. No no-op TextBlock actions stand in for input.
     @MainActor
     private func exerciseOriginalEditorInput(objectId: String, spaceId: String) async throws {
+        // A test-target-wide UITextView override previously made every row report
+        // first-responder status and prevented the real native focus path from running.
+        // An unattached ordinary UIKit view must retain UIKit's actual responder state.
+        try #require(!UITextView().isFirstResponder, "Native preparation requires unmodified UIKit responder semantics")
         let state = EditorPageModuleAssembly().buildStateModel(
             data: EditorPageObject(objectId: objectId, spaceId: spaceId),
             output: nil, showHeader: true, torahSession: nil
@@ -340,10 +344,12 @@ struct PinkhaStage1AcceptancePreparationTests {
         var textView = try await focusedEmptyTextView(in: controller.view, phase: "initial-empty-area-tap")
         let lines = ["שלום בדיקת הקלדה", "English input lifecycle", "שורה שלישית", "Fourth native line", "שלום 👩🏽‍💻 final"]
         for (index, line) in lines.enumerated() {
+            try requireNativeInputTarget(textView, in: controller)
             let emptyCaret = textView.caretRect(for: textView.beginningOfDocument)
             #expect(emptyCaret.midX > textView.bounds.midX)
             #expect((textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection == .rightToLeft)
             for character in line {
+                try requireNativeInputTarget(textView, in: controller)
                 let replacement = String(character)
                 let accepted = textView.delegate?.textView?(
                     textView, shouldChangeTextIn: textView.selectedRange, replacementText: replacement
@@ -362,6 +368,7 @@ struct PinkhaStage1AcceptancePreparationTests {
             #expect(document.infoContainer.recursiveChildren(of: objectId).filter { $0.textContent?.text == line }.count == 1)
             print("PINKHA_NATIVE_EDITOR_INPUT line=\(index + 1) length=\(textView.text.utf16.count) caret=\(textView.selectedRange.location)")
             let previous = textView
+            try requireNativeInputTarget(textView, in: controller)
             let acceptedReturn = textView.delegate?.textView?(
                 textView, shouldChangeTextIn: textView.selectedRange, replacementText: "\n"
             ) ?? true
@@ -383,11 +390,25 @@ struct PinkhaStage1AcceptancePreparationTests {
     }
 
     @MainActor
+    private func requireNativeInputTarget(_ textView: UITextView, in controller: EditorPageController) throws {
+        let responders = inputTextViews(in: controller.view).filter(\.isFirstResponder)
+        try #require(responders.count == 1 && responders.first === textView,
+                     "Native input must address the editor's unique actual first responder")
+        try #require(controller.firstResponderView === textView,
+                     "The original editor must observe the same text view beginning editing")
+        try #require(textView.window != nil && textView.window === controller.view.window,
+                     "Native input must not continue in a detached or replaced row")
+    }
+
+    @MainActor
     private func focusedEmptyTextView(
         in root: UIView, excluding previous: UITextView? = nil, phase: String
     ) async throws -> UITextView {
         for _ in 0..<200 {
-            if let view = inputTextViews(in: root).first(where: { $0 !== previous && $0.isFirstResponder && $0.textStorage.length == 0 }) {
+            let responders = inputTextViews(in: root).filter(\.isFirstResponder)
+            if responders.count == 1, let view = responders.first,
+               view !== previous, view.textStorage.length == 0,
+               view.window != nil, view.window === root.window {
                 return view
             }
             try await Task.sleep(for: .milliseconds(50))
