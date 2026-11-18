@@ -11,7 +11,7 @@ import subprocess
 from build_custom_heart import command, contains, digest, git
 from build_native_ipa import prepare_source_cache, run_xctest, test_configuration
 
-KIT_SHA = '3beb271230ba104f0cad741984403568f1ee9980'
+KIT_SHA = '4e59e909dd22685bb46f9396bc57e5f8c627d773'
 BRANCH = 'codex/anytype-wave1-integration-20261115'
 SELECTION = 'AnytypeTests/TorahWave1IntegrationTests'
 

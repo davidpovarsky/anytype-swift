@@ -12,7 +12,7 @@ synthetic metadata only and cannot count as native, runtime or UI acceptance.
 The product lookup capability stays **OFF**. Both paired App builds already use
 the identical test-only `PINKHA_NATIVE_T5_LOOKUP_V1` compile flag.
 
-The Kit dependency is `3beb271230ba104f0cad741984403568f1ee9980`. It adds stable
+The Kit dependency is `4e59e909dd22685bb46f9396bc57e5f8c627d773`. It adds stable
 related-row/unlink identifiers and an additive `noteActionUnlinksSource` option
 that defaults to false. Anytype opts in in its Session alongside all six Kit
 pins. Other hosts keep their existing Delete behavior. The parent integration
@@ -110,9 +110,10 @@ After terminating and relaunching the App, the source list stays at five rows.
 Ordinary navigation to the retained Note must show the same typed body without
 a source chip; focusing the actual text view must reveal the keyboard.
 
-The UI suite is English-only and simulator-only. Other display modes, Hebrew
-RTL, VoiceOver, physical iPad, cancellation/permission edge cases, full-Space
-freshness and the remaining R01-R09 criteria remain separate open acceptance.
+The two core UI methods are English-only and simulator-only. The separate R08
+extension below adds bounded Hebrew/light/dark selections. VoiceOver, physical
+iPad, cancellation/permission edge cases, full-Space freshness and remaining
+R01-R09 criteria keep their explicitly separate acceptance boundaries.
 
 ## Evidence and failure behavior
 

@@ -16,7 +16,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/davidpovarsky/TorahInspectorKit.git",
-            revision: "3beb271230ba104f0cad741984403568f1ee9980"
+            revision: "4e59e909dd22685bb46f9396bc57e5f8c627d773"
         )
     ],
     targets: [

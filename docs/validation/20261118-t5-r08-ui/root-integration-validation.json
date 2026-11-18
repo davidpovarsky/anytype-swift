@@ -1,0 +1,111 @@
+{
+  "status": "SOURCE_INTEGRATED_APPLE_PENDING",
+  "root_before_pin": "980aca48f29c7e17ed5d99a61bd01ec52130eda2",
+  "app_commits": [
+    {
+      "source": "885a1bb5d8f146432a9aeafd93e92e632d07e8b3",
+      "integration": "82142bd9ec918c2f234d55931603b1e522ba90f1"
+    },
+    {
+      "source": "7da1aea55d7b255b96693766700de30b0f4a9357",
+      "integration": "980aca48f29c7e17ed5d99a61bd01ec52130eda2"
+    }
+  ],
+  "kit_sha": "4e59e909dd22685bb46f9396bc57e5f8c627d773",
+  "kit_delta": "Only title Text lineLimit(2) and full accessibilityLabel; parent Button metadata, ID and navigation remain intact.",
+  "pin_changes": [
+    {
+      "path": "Modules/PinkhaKit/Package.swift",
+      "occurrences": 1,
+      "before_sha256": "a69487fe82f81c3d5c995d0757e3b19ed249ce1086435e85fd2d53481411ad05",
+      "after_sha256": "b55b68f53f33db07281e54fb30f29cd235877e855d333ad675057f52be2d8d7a"
+    },
+    {
+      "path": "Anytype.xcodeproj/project.pbxproj",
+      "occurrences": 1,
+      "before_sha256": "4dc2ca8af059d14407bfa0c15771adad9d67c0226777ebf3ffde0ae496b7b98d",
+      "after_sha256": "642ad88f07489340d8a13f257809dacef4d650a886ea30e167d6432c5fa892a8"
+    },
+    {
+      "path": "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+      "occurrences": 1,
+      "before_sha256": "64785b7fced03f038f4faa8684b678bfb245d2b2b60305ef44c72df92ce76a25",
+      "after_sha256": "40ca492b5160fdb76c6dec0bc3281d03e23999b542bfae1df3cfbaf0f6897f3c"
+    },
+    {
+      "path": "Tools/PinkhaNativeDerived/validate_wave1.py",
+      "occurrences": 1,
+      "before_sha256": "5833ad4e438fe501bd3beaf7652c5fbc1222e120c3f8282e3000a72265e6079f",
+      "after_sha256": "743ddea3e4e42640070035fe7d149d148dfff1cbdc852ef464c8c19da07253a0"
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/required-coverage.json",
+      "occurrences": 1,
+      "before_sha256": "f50a6feaecc59edfa9e4ddcf9a518d800b90750d1b588030ab2e17bebf496952",
+      "after_sha256": "7571d934170768e5027e8f5be5fbdb24d2c3e9e59208b6b9294e3b4202aca77a"
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/run_ui27.py",
+      "occurrences": 1,
+      "before_sha256": "54297451bc24301db0e483b28a7ea5ed0d105b7530ddec06f42d053e5e6fbe47",
+      "after_sha256": "1c86f51a228341e1ae8b9791352dab1cf775079c5d93e046ddc1255f83ecbb9e"
+    }
+  ],
+  "review": "Root reviewed all source deltas and SDK independently reviewed helper, validator and UI. Root localized-chip finding fixed and original AX negative control now rejects the false receipt.",
+  "commands": [
+    {
+      "argv": [
+        "py",
+        "-3",
+        "-X",
+        "utf8",
+        "-m",
+        "unittest",
+        "test_t5_native_ui",
+        "test_t5_native_ui_r08",
+        "-v"
+      ],
+      "cwd": "C:\\Users\\DAVID\\Code\\anytype-swift-chatgpt-integration-20261118\\Tools\\PinkhaSimulatorGate",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "test_attachment_names_accept_observed_export_suffix_but_not_ambiguous_matches (test_t5_native_ui.NativeUIEvidenceControls.test_attachment_names_accept_observed_export_suffix_but_not_ambiguous_matches) ... ok\ntest_attachment_path_escape_and_symlink_are_rejected (test_t5_native_ui.NativeUIEvidenceControls.test_attachment_path_escape_and_symlink_are_rejected) ... ok\ntest_cancellation_during_cleanup_or_publication_is_recorded_and_propagated (test_t5_native_ui.NativeUIEvidenceControls.test_cancellation_during_cleanup_or_publication_is_recorded_and_propagated) ... ok\ntest_exact_named_xctest_counts_and_device (test_t5_native_ui.NativeUIEvidenceControls.test_exact_named_xctest_counts_and_device) ... ok\ntest_note_receipt_requires_ui_created_identity_edit_unlink_and_retention (test_t5_native_ui.NativeUIEvidenceControls.test_note_receipt_requires_ui_created_identity_edit_unlink_and_retention) ... ok\ntest_original_attachments_bind_receipts_screenshots_and_distinct_ui_lifetimes (test_t5_native_ui.NativeUIEvidenceControls.test_original_attachments_bind_receipts_screenshots_and_distinct_ui_lifetimes) ... ok\ntest_original_pair_ledger_is_hash_bound_and_never_rewritten (test_t5_native_ui.NativeUIEvidenceControls.test_original_pair_ledger_is_hash_bound_and_never_rewritten) ... ok\ntest_post_pair_hook_freezes_pair_before_ui_and_preserves_counts (test_t5_native_ui.NativeUIEvidenceControls.test_post_pair_hook_freezes_pair_before_ui_and_preserves_counts) ... ok\ntest_post_pair_hook_retains_independent_pass_on_ui_failure_and_cancel (test_t5_native_ui.NativeUIEvidenceControls.test_post_pair_hook_retains_independent_pass_on_ui_failure_and_cancel) ... ok\ntest_publication_preserves_exact_allowed_bytes_and_excludes_secrets_or_raw_xcresult (test_t5_native_ui.NativeUIEvidenceControls.test_publication_preserves_exact_allowed_bytes_and_excludes_secrets_or_raw_xcresult) ... ok\ntest_publication_scans_every_candidate_before_any_copy_and_all_credential_encodings (test_t5_native_ui.NativeUIEvidenceControls.test_publication_scans_every_candidate_before_any_copy_and_all_credential_encodings) ... ok\ntest_receipt_rejects_wrong_attempt_and_expanded_acceptance_claim (test_t5_native_ui.NativeUIEvidenceControls.test_receipt_rejects_wrong_attempt_and_expanded_acceptance_claim) ... ok\ntest_rejects_duplicate_wrong_block_and_incomplete_negative_fixtures (test_t5_native_ui.NativeUIEvidenceControls.test_rejects_duplicate_wrong_block_and_incomplete_negative_fixtures) ... ok\ntest_rejects_labeled_counts_missing_freshness_or_reused_process (test_t5_native_ui.NativeUIEvidenceControls.test_rejects_labeled_counts_missing_freshness_or_reused_process) ... ok\ntest_rejects_preexisting_or_wrong_type_simulator (test_t5_native_ui.NativeUIEvidenceControls.test_rejects_preexisting_or_wrong_type_simulator) ... ok\ntest_rejects_reused_relaunch_pid_and_duplicate_test_attachment_entry (test_t5_native_ui.NativeUIEvidenceControls.test_rejects_reused_relaunch_pid_and_duplicate_test_attachment_entry) ... ok\ntest_related_receipt_requires_true_offscreen_to_exact_visible_block (test_t5_native_ui.NativeUIEvidenceControls.test_related_receipt_requires_true_offscreen_to_exact_visible_block) ... ok\ntest_requires_actual_five_phase_prerequisite_and_same_build (test_t5_native_ui.NativeUIEvidenceControls.test_requires_actual_five_phase_prerequisite_and_same_build) ... ok\ntest_requires_fresh_account_source_and_real_runtime (test_t5_native_ui.NativeUIEvidenceControls.test_requires_fresh_account_source_and_real_runtime) ... ok\ntest_selected_configuration_keeps_testroot_and_replaces_old_suite_in_both_formats (test_t5_native_ui.NativeUIEvidenceControls.test_selected_configuration_keeps_testroot_and_replaces_old_suite_in_both_formats) ... ok\ntest_complete_titles_compact_frames_and_hit_targets_are_required (test_t5_native_ui_r08.R08EvidenceControls.test_complete_titles_compact_frames_and_hit_targets_are_required) ... ok\ntest_original_attachments_require_complete_ax_content_and_new_same_process (test_t5_native_ui_r08.R08EvidenceControls.test_original_attachments_require_complete_ax_content_and_new_same_process) ... ok\ntest_read_only_baseline_note_and_navigation_identity_cannot_change (test_t5_native_ui_r08.R08EvidenceControls.test_read_only_baseline_note_and_navigation_identity_cannot_change) ... ok\ntest_requested_language_is_insufficient_without_every_actual_direction (test_t5_native_ui_r08.R08EvidenceControls.test_requested_language_is_insufficient_without_every_actual_direction) ... ok\ntest_separate_hebrew_receipts_keep_actual_identity_and_acceptance_boundaries (test_t5_native_ui_r08.R08EvidenceControls.test_separate_hebrew_receipts_keep_actual_identity_and_acceptance_boundaries) ... ok\ntest_simulator_readback_must_be_exact_actual_setting (test_t5_native_ui_r08.R08EvidenceControls.test_simulator_readback_must_be_exact_actual_setting) ... ok\ntest_two_selections_keep_core_receipt_and_propagate_failure_cancel_and_readback_mismatch (test_t5_native_ui_r08.R08EvidenceControls.test_two_selections_keep_core_receipt_and_propagate_failure_cancel_and_readback_mismatch) ... ok\ntest_ui_selection_cannot_inherit_or_expand_the_two_core_methods (test_t5_native_ui_r08.R08EvidenceControls.test_ui_selection_cannot_inherit_or_expand_the_two_core_methods) ... ok\ntest_visual_voiceover_physical_and_dynamic_type_claims_cannot_expand (test_t5_native_ui_r08.R08EvidenceControls.test_visual_voiceover_physical_and_dynamic_type_claims_cannot_expand) ... ok\n\n----------------------------------------------------------------------\nRan 29 tests in 1.197s\n\nOK\n"
+    },
+    {
+      "argv": [
+        "swiftc",
+        "-frontend",
+        "-parse",
+        "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift",
+        "PinkhaStage1Acceptance/Tests/PinkhaT5NativeAcceptanceUITests.swift"
+      ],
+      "cwd": "C:\\Users\\DAVID\\Code\\anytype-swift-chatgpt-integration-20261118",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "C:\\Users\\DAVID\\Code\\anytype-swift-chatgpt-integration-20261118",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "warning: in the working copy of 'Anytype.xcodeproj/project.pbxproj', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Modules/PinkhaKit/Package.swift', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Tools/PinkhaNativeDerived/validate_wave1.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Tools/PinkhaSimulatorGate/T5_NATIVE_UI_CONTRACT.md', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Tools/PinkhaSimulatorGate/required-coverage.json', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Tools/PinkhaSimulatorGate/run_ui27.py', LF will be replaced by CRLF the next time Git touches it\n"
+    }
+  ],
+  "controller_counts": {
+    "functions": 29,
+    "passed": 29,
+    "failed": 0,
+    "skipped": 0
+  },
+  "source_manifest_originals": "Original 885a and7da manifests are preserved. Living contract pin/scope wording updated in this integration commit.",
+  "apple_ui": "NOT_RUN",
+  "native_pair": "NOT_RUN",
+  "visual_review": "PENDING",
+  "voice_over": "NOT_RUN",
+  "physical_ipad": "NOT_RUN",
+  "product_lookup": "OFF"
+}
