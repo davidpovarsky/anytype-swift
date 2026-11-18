@@ -21,6 +21,7 @@ on:
           - simulator-ui27
           - heart-runtime
           - t5-r15-runtime
+          - t5-apple-pairs
           - sdk06-tests
           - editor-host-tests
           - wave15-acceptance
@@ -70,6 +71,10 @@ on:
         default: en
       source_run_id:
         description: Verified Heart runtime run, or native evidence source for diagnostics
+        type: string
+        default: ''
+      t5_r15_run_id:
+        description: Original successful r15 runtime build for same-source Apple pairing
         type: string
         default: ''
       native_test_scope:
@@ -125,6 +130,13 @@ jobs:
   heart-runtime:
     if: ${{ inputs.route == 'heart-runtime' }}
     uses: ./.github/workflows/pinkha-heart-runtime.yml
+
+  t5-apple-pairs:
+    if: ${{ inputs.route == 't5-apple-pairs' }}
+    uses: ./.github/workflows/pinkha-t5-apple-pair.yml
+    with:
+      heart_r14_run_id: ${{ inputs.source_run_id }}
+      heart_r15_run_id: ${{ inputs.t5_r15_run_id }}
 
   t5-r15-runtime:
     if: ${{ inputs.route == 't5-r15-runtime' }}
