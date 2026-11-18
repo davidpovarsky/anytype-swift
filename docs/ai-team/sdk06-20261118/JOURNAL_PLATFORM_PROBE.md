@@ -1,0 +1,13 @@
+# Separate journal platform diagnosis
+
+The actual SDK63 run 44246586673 built successfully, then ten journal-dependent methods threw the same `.unavailable` error. The current error does not identify its guard or errno. This one-use diagnostic measures those platform operations before another full Anytype build.
+
+The workflow uses the same xcode-27 runner, Xcode 27.0 build 27A266a, iOS Simulator 27.0 runtime build 24A434, ARM64 and iPad device type as the failing run. It builds only a minimal Swift/UIKit application in a new simulator and its own new app container. It does not import Anytype, Hanlin, Heart, models or providers, create an account, change production guards or claim SDK acceptance.
+
+The application measures two independent new parent locations inside the same app container and process: Application Support/Anytype, matching production, and FileManager.temporaryDirectory plus a fresh UUID with intermediate-directory creation disabled, matching the failing component tests. Each runs directory creation/protection/mode checks, backup exclusion, lock flags/flock/fstat, metadata-only append, FileHandle synchronize, F_FULLFSYNC and each parent-directory fsync. The receipt separates their fixed scope labels and first unsatisfied stage; no inference about temporary-directory behavior is made from Application Support alone. It captures errno immediately after each syscall, before closing descriptors or logging. Foundation failures expose only domain/code. It never exports paths, file contents, userInfo or descriptions from the application.
+
+An observed attribute mismatch does not stop this separate synthetic probe from measuring independent later syscalls; the first unsatisfied production-path requirement is retained. No production path is changed or bypassed. A successful workflow means the original diagnostic receipt was obtained and identity-checked, not that the journal, SDK or device protections passed.
+
+The controller binds source SHA, run/attempt/token, exact runtime, signed probe executable and real launch PID. It creates and removes only its new verified simulator, handles cancellation for its own process groups, and preserves original receipt bytes. Evidence contains command logs and diagnostic metadata; app/container/module-cache bytes are excluded.
+
+Source parsing and workflow structure can be checked locally. Actual Swift typechecking, UIKit execution and platform diagnosis remain NOT_RUN until the one-use Apple job produces a receipt. Physical-device encryption and power-loss durability remain outside the probe's acceptance scope.
