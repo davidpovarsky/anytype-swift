@@ -1,0 +1,39 @@
+mw lib: build on 0001-01-01 00:00:00 +0000 UTC at #d98420b1113536afd08cde6de9a5816f6d27ffff
+=== RUN   TestT5AccountCompatibilityPairPhase
+2026-11-18T04:57:09.997Z	[34mINFO[0m	client.space.localdiscovery	local discovery: no native discovery proxy installed, using zeroconf
+2026-11-18T04:57:09.997Z	[34mINFO[0m	anytype-app	starting app	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2", "appVersion": "ios:0.51.0/middle:v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2/any-sync:"}
+2026-11-18T04:57:09.998Z	[33mWARN[0m	anytype-config	using sqlite storage
+### lenient true
+2026-11-18T04:57:10.014Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreieycugg77azdzm5cknj3k7a32m3bkxljhw3jx345wfylady6wuw4a.fbgz7n4mc2qh"}
+2026-11-18T04:57:10.014Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh"}
+2026-11-18T04:57:10.014Z	[31mERROR[0m	filesync	init space usage manager	{"error": "get space info: get node peer for reserved conn: no connection to any file client"}
+2026-11-18T04:57:10.021Z	[33mWARN[0m	common.nodeconf	periodic call error	{"error": "unable to connect"}
+2026/11/18 04:57:10 failed to sufficiently increase receive buffer size (was: 1024 kiB, wanted: 7168 kiB, got: 2048 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+2026-11-18T04:57:10.022Z	[34mINFO[0m	client.space.localdiscovery	net interfaces configuration changed	{"ifaces": ["eth0"]}
+2026-11-18T04:57:10.022Z	[34mINFO[0m	client.space.localdiscovery	own lan addresses	{"addrs": ["eth0 172.17.0.2/16 advertised"]}
+2026-11-18T04:57:10.022Z	[34mINFO[0m	client.space.localdiscovery	starting mdns server	{"ips": ["172.17.0.2"], "port": 38193, "peerId": "12D3KooWDWs5TbQj31Wyakxc6qMF1bnUx5qDaGH6nHfVN8uRqNcR", "linkLocalIfaces": []}
+2026-11-18T04:57:10.040Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh", "spaceId": "bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh", "accountStatus": "Unknown"}
+2026-11-18T04:57:10.043Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-18T04:57:10.044Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-18T04:57:10.044Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-18T04:57:10.044Z	[33mWARN[0m	anytype-mw-configfetcher	periodic call error	{"error": "unable to connect"}
+2026-11-18T04:57:10.044Z	[31mERROR[0m	nameservice.nameserviceclient	no ns peers configured. Maybe you're on a custom network. Node config ID: 
+2026-11-18T04:57:10.044Z	[31mERROR[0m	anytype-identity	error fetching global name of our own identity from Naming Service	{"error": "no namingNode peers configured. Maybe you're on a custom network. Node config ID: "}
+2026-11-18T04:57:10.044Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-18T04:57:10.044Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-18T04:57:10.045Z	[31mERROR[0m	heart.inboxclient	inbox: fetchMessages batch error	{"error": "unable to connect"}
+2026-11-18T04:57:10.135Z	[34mINFO[0m	anytype-core-account	closing app: initiated	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2"}
+2026-11-18T04:57:10.140Z	[31mERROR[0m	deviceService	failed to get device object: failed to derive device object: put tree: context canceled
+2026-11-18T04:57:10.140Z	[31mERROR[0m	notifications	failed to derive notification object: put tree: context canceled
+2026-11-18T04:57:10.305Z	[31mERROR[0m	common.acl.aclservice	wait message	{"error": "context canceled"}
+2026-11-18T04:57:10.305Z	[31mERROR[0m	fileobject	index loop: wait for index request: context canceled
+2026-11-18T04:57:10.306Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh", "error": "context canceled"}
+2026-11-18T04:57:10.306Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreibr4gdva5tzuquqyomd37qtzxzu3cabaxayrkzctmw3qfukqs7ica.fbgz7n4mc2qh", "error": "context canceled"}
+2026-11-18T04:57:10.308Z	[33mWARN[0m	common.commonspace	call space.Close on closed space	{"id": "bafyreibr4gdva5tzuquqyomd37qtzxzu3cabaxayrkzctmw3qfukqs7ica.fbgz7n4mc2qh"}
+2026-11-18T04:57:10.308Z	[31mERROR[0m	net.transport.quic	listener closed with error	{"localAddr": "[::]:38193", "error": "context canceled"}
+2026-11-18T04:57:10.308Z	[31mERROR[0m	net.transport.yamux	listener closed with error	{"localAddr": "[::]:38193", "error": "accept tcp [::]:38193: use of closed network connection"}
+2026-11-18T04:57:10.343Z	[34mINFO[0m	anytype-core-account	closing app: finished	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2", "tookMs": 203}
+[anytype-heart] Shutdown: graceful shutdown finished
+    pinkha_t5_account_pair_phase_test.go:905: PASS same native account and exact object/block identities; actual JSON/Protobuf exports and closed app
+--- PASS: TestT5AccountCompatibilityPairPhase (0.35s)
+PASS
