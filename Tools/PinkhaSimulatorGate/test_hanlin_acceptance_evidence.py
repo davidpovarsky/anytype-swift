@@ -3,12 +3,14 @@ import copy
 import json
 import unittest
 from hanlin_acceptance_evidence import (
-    APPLE_DATE_EPOCH, REQUIRED_CHECKS, fixture_environment, validate_fixture, validate_result,
+    APPLE_DATE_EPOCH, REQUIRED_CHECKS, SCENE_EVENT_KEYS, fixture_environment, validate_fixture, validate_result,
 )
 
 SHA = "1" * 40
 NOW = APPLE_DATE_EPOCH + 800000000
 NONCE = "6302CF05-5264-4C9F-99BE-49F81B7D28EF"
+SESSIONS = ["BDAAC613-26E5-4CAB-9A3B-58D38181E43A", "8BE24B77-F28F-4A80-A407-E6E33F74F502",
+            "5E2DF89A-8D85-41DC-9722-1115FC3C07B5", "19A777F6-6F4D-4788-8E29-3A324B060554"]
 
 
 def fixture():
@@ -21,7 +23,13 @@ def fixture():
 
 def result():
     return dict(fixtureID=NONCE, sourceSHA=SHA, runID="123", runAttempt="1",
-                sessionID="BDAAC613-26E5-4CAB-9A3B-58D38181E43A", processID=1234,
+                sessionID=SESSIONS[0], backgroundSessionID=SESSIONS[1],
+                staleConsentSessionID=SESSIONS[2], freshSessionID=SESSIONS[3], processID=1234,
+                invalidationCauses={session: "nativeAuthorityChanged" for session in SESSIONS},
+                sceneEventCounts={key: 3 for key in SCENE_EVENT_KEYS},
+                backgroundCycleSceneDelta={key: 1 for key in SCENE_EVENT_KEYS},
+                documentExitSceneDelta={key: 1 for key in SCENE_EVENT_KEYS},
+                documentExitAttribution="navigationWithSceneTransition",
                 startedAt=799999910, finishedAt=799999990, phase="NATIVE_ACCEPTANCE_PASS",
                 checks={key: True for key in REQUIRED_CHECKS}, createdObjectID="created-page",
                 providerConfigured=False)
@@ -33,9 +41,58 @@ class HanlinNativeEvidenceTests(unittest.TestCase):
 
     def test_complete_receipt_does_not_itself_claim_sdk_acceptance(self):
         verified = self.verify(result())
-        self.assertEqual(verified["required_checks"], 14)
+        self.assertEqual(verified["required_checks"], 21)
+        self.assertEqual(verified["presentation_count"], 4)
+        self.assertEqual(verified["document_exit_attribution"], "navigationWithSceneTransition")
         self.assertFalse(verified["full_sdk_acceptance"])
         self.assertIn("XCTEST_REQUIRED_SEPARATELY", verified["status"])
+
+    def test_four_real_presentation_identities_cannot_be_missing_or_reused(self):
+        for key in ["backgroundSessionID", "staleConsentSessionID", "freshSessionID"]:
+            for replacement in [None, "invalid", SESSIONS[0], SESSIONS[0].lower()]:
+                with self.subTest(key=key, replacement=replacement), self.assertRaises(ValueError):
+                    candidate = result(); candidate[key] = replacement
+                    self.verify(candidate)
+
+    def test_invalidation_must_be_observed_for_exactly_the_four_presentations(self):
+        for mutation in ["missing", "foreign", "extra", "unknown-cause"]:
+            candidate = result()
+            if mutation == "missing": del candidate["invalidationCauses"][SESSIONS[0]]
+            elif mutation == "foreign":
+                del candidate["invalidationCauses"][SESSIONS[0]]
+                candidate["invalidationCauses"][NONCE] = "presentationRemoved"
+            elif mutation == "extra": candidate["invalidationCauses"][NONCE] = "explicitCloseOrOwner"
+            else: candidate["invalidationCauses"][SESSIONS[0]] = "assumedDocumentFence"
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                self.verify(candidate)
+
+    def test_scene_evidence_requires_exact_nonnegative_integer_counters(self):
+        for field in ["sceneEventCounts", "backgroundCycleSceneDelta", "documentExitSceneDelta"]:
+            for mutation in ["missing", "extra", "negative", "boolean", "fraction"]:
+                candidate = result(); counts = candidate[field]; key = "sceneDidActivate"
+                if mutation == "missing": del counts[key]
+                elif mutation == "extra": counts["inventedEvent"] = 1
+                elif mutation == "negative": counts[key] = -1
+                elif mutation == "boolean": counts[key] = True
+                else: counts[key] = 0.5
+                with self.subTest(field=field, mutation=mutation), self.assertRaises(ValueError):
+                    self.verify(candidate)
+
+    def test_background_requires_both_directions_and_disjoint_deltas_fit_total(self):
+        for missing in ["sceneDidEnterBackground", "sceneWillEnterForeground", "sceneDidActivate"]:
+            candidate = result(); candidate["backgroundCycleSceneDelta"][missing] = 0
+            with self.subTest(missing=missing), self.assertRaises(ValueError): self.verify(candidate)
+        candidate = result(); candidate["sceneEventCounts"]["sceneDidActivate"] = 1
+        with self.assertRaisesRegex(ValueError, "exceed"): self.verify(candidate)
+
+    def test_document_exit_retains_observed_causal_scope(self):
+        candidate = result(); candidate["documentExitAttribution"] = "navigationWithoutSceneTransition"
+        with self.assertRaisesRegex(ValueError, "attribution"): self.verify(candidate)
+        candidate["documentExitSceneDelta"] = {key: 0 for key in SCENE_EVENT_KEYS}
+        verified = self.verify(candidate)
+        self.assertEqual(verified["document_exit_attribution"], "navigationWithoutSceneTransition")
+        candidate["documentExitAttribution"] = "navigationWithSceneTransition"
+        with self.assertRaisesRegex(ValueError, "attribution"): self.verify(candidate)
 
     def test_fixture_preserves_exact_native_json(self):
         value = fixture()

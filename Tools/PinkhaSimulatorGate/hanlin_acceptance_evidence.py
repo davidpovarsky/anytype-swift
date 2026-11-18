@@ -17,6 +17,17 @@ REQUIRED_CHECKS = frozenset({
     "no_provider_configuration", "closed_presentation_denies_read_and_create",
     "native_source_permission_change_denied", "native_active_space_change_denied",
     "native_account_logout_denied", "original_commit_metadata_survives_logout",
+    "background_presentation_had_live_read_access", "native_background_foreground_observed",
+    "backgrounded_presentation_denies_read_and_create", "pending_read_consent_dismissed_on_document_exit",
+    "departed_document_presentation_denies_read_and_create", "fresh_presentation_requires_new_native_consent",
+    "fresh_presentation_reads_original_document_only",
+})
+SCENE_EVENT_KEYS = frozenset({
+    "sceneWillDeactivate", "sceneDidEnterBackground", "sceneWillEnterForeground", "sceneDidActivate",
+    "applicationWillResignActive", "applicationDidBecomeActive",
+})
+INVALIDATION_CAUSES = frozenset({
+    "nativeAuthorityChanged", "presentationRemoved", "interactivePresentationDismissal", "explicitCloseOrOwner",
 })
 
 
@@ -98,7 +109,31 @@ def validate_result(value, fixture, source_sha, run_id, run_attempt, now):
             and all(flag is True for flag in checks.values()), "Native checks are incomplete or failed")
     created = bounded_text(value.get("createdObjectID"), "created object")
     require(created != fixture["sourceObjectID"], "Native create reused the source object")
-    uuid_text(value.get("sessionID"), "session ID")
+    sessions = [uuid_text(value.get(key), key) for key in
+                ["sessionID", "backgroundSessionID", "staleConsentSessionID", "freshSessionID"]]
+    require(len(set(sessions)) == 4, "Native presentations reused a session identity")
+    causes = value.get("invalidationCauses")
+    require(isinstance(causes, dict) and len(causes) == 4
+            and {uuid_text(key, "invalidation session") for key in causes} == set(sessions)
+            and all(cause in INVALIDATION_CAUSES for cause in causes.values()),
+            "Native invalidation observations differ from the four presentations")
+    for key in ["sceneEventCounts", "backgroundCycleSceneDelta", "documentExitSceneDelta"]:
+        counts = value.get(key)
+        require(isinstance(counts, dict) and set(counts) == SCENE_EVENT_KEYS
+                and all(type(count) is int and count >= 0 for count in counts.values()),
+                "Invalid native scene observations: " + key)
+    totals = value["sceneEventCounts"]
+    background = value["backgroundCycleSceneDelta"]
+    document_exit = value["documentExitSceneDelta"]
+    require(all(background[key] + document_exit[key] <= totals[key] for key in SCENE_EVENT_KEYS),
+            "Native disjoint scene deltas exceed their total observations")
+    require(all(background[key] > 0 for key in
+                ["sceneDidEnterBackground", "sceneWillEnterForeground", "sceneDidActivate"]),
+            "Native background and foreground transitions were not observed")
+    attribution = ("navigationWithSceneTransition" if any(document_exit.values())
+                   else "navigationWithoutSceneTransition")
+    require(value.get("documentExitAttribution") == attribution,
+            "Native document-exit attribution contradicts the observed scene transitions")
     require(type(value.get("processID")) is int and value["processID"] > 0,
             "Native result has no actual process identity")
     started = apple_timestamp(value.get("startedAt"), "start date")
@@ -109,4 +144,6 @@ def validate_result(value, fixture, source_sha, run_id, run_attempt, now):
                 fixture_id=value["fixtureID"], session_id=value["sessionID"], process_id=value["processID"],
                 created_object_id=created, required_checks=len(REQUIRED_CHECKS),
                 source_sha=source_sha, run_id=run_id, run_attempt=run_attempt,
-                provider_configured=False, full_sdk_acceptance=False)
+                provider_configured=False, presentation_count=len(sessions),
+                document_exit_attribution=attribution, invalidation_causes=causes,
+                full_sdk_acceptance=False)

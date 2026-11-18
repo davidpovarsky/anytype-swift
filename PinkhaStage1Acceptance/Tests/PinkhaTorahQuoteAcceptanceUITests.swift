@@ -51,8 +51,12 @@ final class PinkhaTorahQuoteAcceptanceUITests: XCTestCase {
                     "The original Insert action was not available in the source context menu")
         insert.tap()
         try require(insert.waitForNonExistence(timeout: 20), "The insertion context menu did not finish dismissing")
-        try closeInspector()
+        // Keep this Inspector lifetime alive until both native text and source
+        // metadata are observable; dismissal intentionally cancels pending work.
         let originalIDs = try requireQuotes(sourceText, count: 1)
+        try closeInspector()
+        try require(try requireQuotes(sourceText, count: 1) == originalIDs,
+                    "Closing the completed Inspector changed the native quote")
         let originalID = try XCTUnwrap(originalIDs.first)
         try requireBody(anchorID, text: anchorText)
         attachEvidence("quote-native-insert-and-citation")
