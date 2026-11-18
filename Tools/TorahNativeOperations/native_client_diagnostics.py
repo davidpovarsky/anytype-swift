@@ -15,7 +15,8 @@ import stat
 
 STAGES = frozenset({"PREFLIGHT", "VERIFY_BUILD", "CREATE_NETWORK", "START_CREATOR", "WAIT_CREATOR",
                     "SEED_RECOVERED", "START_RECOVERED", "WAIT_RECOVERED", "VERIFY_PAIR",
-                    "REQUEST_NATIVE_STOP", "WAIT_NATIVE_STOP", "VERIFY_FINAL", "COMPLETE"})
+                    "REQUEST_NATIVE_STOP", "WAIT_NATIVE_STOP", "VERIFY_FINAL", "COMPLETE",
+                    "OFFLINE_SEQUENCE", "OFFLINE_REOPEN"})
 ERRORS = {"ValueError": "CHECK_FAILED", "TimeoutError": "DEADLINE", "KeyboardInterrupt": "CANCELLED",
           "FileNotFoundError": "MISSING_FILE", "CalledProcessError": "PROCESS_FAILED",
           "PermissionError": "PERMISSION_FAILURE", "OSError": "FILESYSTEM_ERROR"}

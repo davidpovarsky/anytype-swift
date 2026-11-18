@@ -55,6 +55,28 @@ def ready_fixture(role="recovered"):
     return state, identity, report
 
 
+def offline_branch_fixture(role):
+    state = state_fixture()
+    ids = [role + "-change-" + str(index) for index in range(3)]
+    prefixes = ["7", "9", "c"] if role == "creator" else ["8", "9", "d"]
+    suffix = "e" if role == "creator" else "f"
+    claims = [prefix * 64 + "/" + suffix * 64 for prefix in prefixes]
+    history = {"changes_sha256": {**state["RawChanges"], **{name: str(index + 7) * 64 for index, name in enumerate(ids)}},
+               "parents": {state["ChangeID"]: [state["RootID"]], ids[0]: [state["ChangeID"]], ids[1]: [ids[0]], ids[2]: [ids[1]]},
+               "heads": [ids[2]]}
+    return {"history": history, "created_change_ids": ids, "created_claim_ids": claims,
+            "local_snapshot_sha256": suffix * 64, "retry_and_collision": "PASS_LOCAL_EXACT_RETRY_AND_REJECTED_DIFFERENT_BYTES",
+            "removed_observed_original": True}
+
+
+def convergence_fixture(history):
+    return {"history": history, "live_count": 2, "conflict_count": 1, "conflict_variants": 2,
+            "retry_and_collision": "PASS_CONFLICT_VARIANTS_PRESERVED_IDEMPOTENT_REPLAY",
+            "concurrent_remove_add_remove": "OBSERVED_ORIGINAL_REMOVED_CONCURRENT_UNIQUE_ADDS_RETAINED",
+            "restart": "NOT_RUN", "crash_after_commit": "NOT_RUN", "snapshot_sha256_without_local_sequence": "a" * 64,
+            "local_applied_sequence": 7}
+
+
 class NativeClientControls(unittest.TestCase):
     @unittest.skipUnless(hasattr(lane.os, "geteuid"), "POSIX publication modes")
     def test_exact_existing_publication_modes_do_not_attempt_foreign_chmod(self):
@@ -380,7 +402,7 @@ class NativeClientControls(unittest.TestCase):
         names = set(lane.CONTROL_METHODS)
         names.update(parent + "/" + child for parent, children in lane.CONTROL_METHODS.items() for child in children)
         output = "\n".join("--- PASS: " + name + " (0.01s)" for name in sorted(names))
-        self.assertEqual(lane.validate_native_controls(output)["pass_terminals"], 17)
+        self.assertEqual(lane.validate_native_controls(output)["pass_terminals"], 32)
         for bad in [output.replace(sorted(names)[0], "OtherTest", 1), output + "\n--- SKIP: ignored (0s)",
                     output + "\n--- FAIL: ignored (0s)", output + "\n--- PASS: OtherTest (0s)"]:
             with self.subTest(bad=bad[-40:]):
@@ -517,6 +539,101 @@ class NativeClientControls(unittest.TestCase):
             self.assertEqual(lane.OwnedDocker.remaining(10), 9)
             self.assertEqual(lane.OwnedDocker.remaining(10), 1)
             with self.assertRaises(ValueError): lane.OwnedDocker.remaining(10)
+
+    def test_offline_union_requires_two_original_disjoint_signed_branches(self):
+        reports = {role: offline_branch_fixture(role) for role in ["creator", "recovered"]}
+        actual = lane.merge_offline_histories(reports, state_fixture())
+        self.assertEqual(len(actual["changes_sha256"]), 8)
+        self.assertEqual(len(actual["parents"]), 7)
+        self.assertEqual(len(actual["heads"]), 2)
+        for mutation in [lambda x: x["recovered"]["history"]["changes_sha256"].update(root="0" * 64),
+                         lambda x: x["recovered"]["history"]["parents"].update({"recovered-change-1": ["creator-change-0"]}),
+                         lambda x: x["recovered"].update(created_change_ids=x["creator"]["created_change_ids"]),
+                         lambda x: x["recovered"]["created_claim_ids"].__setitem__(1, "0" * 64 + "/" + "f" * 64),
+                         lambda x: x["recovered"].update(local_snapshot_sha256=x["creator"]["local_snapshot_sha256"]),
+                         lambda x: x["creator"]["history"].update(raw_signed_bytes="forbidden")]:
+            bad = copy.deepcopy(reports); mutation(bad)
+            with self.assertRaises(ValueError): lane.merge_offline_histories(bad, state_fixture())
+
+    def test_convergence_requires_both_variants_and_preserves_local_clock_semantics(self):
+        branches = {role: offline_branch_fixture(role) for role in ["creator", "recovered"]}
+        history = lane.merge_offline_histories(branches, state_fixture())
+        reports = {role: convergence_fixture(history) for role in branches}
+        reports["recovered"]["local_applied_sequence"] = 99
+        self.assertEqual(lane.validate_convergence(reports, history), "a" * 64)
+        for key, value in [("live_count", 1), ("conflict_variants", 1), ("conflict_count", 0), ("history", {}),
+                           ("snapshot_sha256_without_local_sequence", "b" * 64), ("restart", "PASS"), ("local_applied_sequence", True)]:
+            bad = copy.deepcopy(reports); bad["recovered"][key] = value
+            with self.subTest(field=key):
+                with self.assertRaises(ValueError): lane.validate_convergence(bad, history)
+
+    def test_native_network_state_cannot_substitute_for_actual_attachment(self):
+        _, _, ready = ready_fixture()
+        good = {"protocol": lane.OFFLINE_PROTOCOL, "phase": "partitioned", "role": "recovered", "nonce": "owner",
+                "pid": 1, "client_fixture_sha256": ready["client_fixture_sha256"], "peer_id": ready["peer_id"],
+                "actual_ipv4": [], "native_network_state": "NOT_CONNECTED", "app_capability": "OFF", "full_t2_acceptance": "NOT_RUN"}
+        lane.validate_offline_report(good, "partitioned", "recovered", ready, [])
+        for key, value in [("actual_ipv4", ["172.30.0.3"]), ("native_network_state", "WIFI"), ("nonce", "foreign"),
+                           ("phase", "converged"), ("peer_id", "other-device"), ("full_t2_acceptance", "PASS")]:
+            bad = dict(good); bad[key] = value
+            with self.assertRaises(ValueError): lane.validate_offline_report(bad, "partitioned", "recovered", ready, [])
+
+    def test_reopen_container_cannot_repair_data_through_a_peer_network(self):
+        info = container_fixture()
+        info["Args"] = lane.native_arguments("offline", lane.REOPEN_METHOD)
+        info["Config"]["Env"].append("PINKHA_T2_CLIENT_SCENARIO=" + lane.OFFLINE_PROTOCOL)
+        info["HostConfig"]["NetworkMode"] = "none"
+        info["NetworkSettings"]["Networks"] = {"none": {"IPAddress": ""}}
+        def validate(value):
+            lane.validate_container(value, "owner", "recovered", None, Path("/owned/recovered"), Path("/owned/native.test"),
+                                    "pinned-image-id", 1001, 1001, scenario="offline", method=lane.REOPEN_METHOD)
+        validate(info)
+        for change in [lambda x: x["NetworkSettings"]["Networks"].update({"owned-network": {"IPAddress": "172.30.0.3"}}),
+                       lambda x: x["NetworkSettings"]["Networks"]["none"].update(IPAddress="172.30.0.3"),
+                       lambda x: x["HostConfig"].update(NetworkMode="owned-network")]:
+            bad = copy.deepcopy(info); change(bad)
+            with self.assertRaises(ValueError): validate(bad)
+
+    def test_fixed_offline_commands_cannot_be_replaced_or_import_history_bytes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            lane.offline_command(root, "recovered", "owner", "partition")
+            with self.assertRaises(ValueError): lane.offline_command(root, "recovered", "owner", "partition")
+            with self.assertRaises(ValueError): lane.offline_command(root, "recovered", "owner", "import-signed-history")
+            payload = json.loads((root / "partition.command.json").read_text())
+            self.assertEqual(set(payload), {"protocol", "nonce", "role", "phase", "expected_history"})
+            self.assertEqual(payload["expected_history"], {"changes_sha256": {}, "parents": {}, "heads": []})
+        expected = lane.merge_offline_histories({role: offline_branch_fixture(role) for role in ["creator", "recovered"]}, state_fixture())
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            lane.offline_command(root, "recovered", "owner", "reconnect", expected)
+            self.assertEqual(json.loads((root / "reconnect.command.json").read_text())["expected_history"], expected)
+        for change in [lambda x: x.update(raw_signed_bytes="forbidden"),
+                       lambda x: x["changes_sha256"].update(root="signed-payload-not-a-hash"),
+                       lambda x: x["parents"].update({"creator-change-0": ["unknown-parent"]}),
+                       lambda x: x.update(heads=[x["heads"][0]] * 2)]:
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp); bad = copy.deepcopy(expected); change(bad)
+                with self.assertRaises(ValueError): lane.offline_command(root, "recovered", "owner", "reconnect", bad)
+                self.assertFalse((root / "reconnect.command.json").exists())
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with self.assertRaises(ValueError): lane.offline_command(root, "recovered", "owner", "write", expected)
+            with self.assertRaises(ValueError): lane.offline_command(root, "recovered", "owner", "reconnect")
+
+    def test_reopened_final_requires_exact_read_only_calls_and_actual_native_pass(self):
+        ready = {"pid": 1, "peer_id": "original-peer", "native_network_mode": "DISCONNECTED_REOPEN_NO_PEER_REPAIR"}
+        calls = {name: 1 for name in ["InitialSetParameters", "AppGetVersion", "WalletRecover", "AccountSelect", "WorkspaceOpen",
+                                      "DeviceNetworkStateSet", "AccountStop", "AppShutdown", "PinkhaTorahOperationsAppend"]}
+        calls["PinkhaTorahOperationsReadTarget"] = 2
+        final = {**ready, "rpc_calls": calls, "returned_byte_calls": dict(calls), "closed": True,
+                 "account_stop_verified": True, "test_passed": True, "post_stop_rpc": "READ_AND_APPEND_NOT_LOGGED_IN"}
+        log = "--- PASS: " + lane.REOPEN_METHOD + " (0.1s)\nPASS\n"
+        lane.validate_reopen_final(ready, final, log)
+        bad = copy.deepcopy(final)
+        bad["rpc_calls"]["PinkhaTorahOperationsAppend"] = bad["returned_byte_calls"]["PinkhaTorahOperationsAppend"] = 2
+        with self.assertRaises(ValueError): lane.validate_reopen_final(ready, bad, log)
+        with self.assertRaises(ValueError): lane.validate_reopen_final(ready, final, "PASS\n")
 
 
 if __name__ == "__main__":
