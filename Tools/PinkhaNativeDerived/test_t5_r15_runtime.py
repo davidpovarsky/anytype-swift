@@ -300,7 +300,9 @@ class R15RuntimeControls(unittest.TestCase):
     def manifest_fixture(self, heart):
         return dict(Module={"Path": "gobind"}, Go="1.26.5",
                     Require=[dict(Path="example.org/dependency", Version="v1.2.3")],
-                    Replace=[dict(Old={"Path": launcher.NATIVE_MODULE}, New={"Path": str(heart)})])
+                    Replace=[dict(Old={"Path": launcher.NATIVE_MODULE}, New={"Path": str(heart)}),
+                             dict(Old={"Path": launcher.GENPROTO, "Version": "v0.0.0-20240903143218-8af14fe29dc1"},
+                                  New={"Path": launcher.GENPROTO, "Version": launcher.VERSION})])
 
     def test_generated_seed_keeps_original_native_floors_and_exact_gomobile_rules(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -441,7 +443,7 @@ class R15RuntimeControls(unittest.TestCase):
                                 launcher.audit_initial_manifest(root / "go", env, root, contract)
 
     def test_seed_contract_is_owned_hashed_and_tied_to_native_identity(self):
-        for change in ["unchanged", "outside", "hash", "native", "schema"]:
+        for change in ["unchanged", "outside", "hash", "native", "schema", "override-missing", "override-changed"]:
             with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory).resolve()
                 work, heart = root / "work", root / "heart"
@@ -449,13 +451,18 @@ class R15RuntimeControls(unittest.TestCase):
                 generated = work / "gomobile-tmp"
                 generated.mkdir()
                 _, _, graph, _ = self.graph_fixture()
-                data = dict(schema="pinkha-generated-module-graph-v1", native_directory=str(heart),
+                data = dict(schema="pinkha-generated-module-graph-v2", native_directory=str(heart),
                             selected_dependencies=graph,
-                            before_tidy_manifest=self.manifest_fixture(heart))
+                            before_tidy_manifest=self.manifest_fixture(heart),
+                            prepared_tidy_manifest=launcher.reviewed_generated_manifest(self.manifest_fixture(heart)))
                 if change == "native":
                     data["native_directory"] = str(root / "foreign")
                 elif change == "schema":
                     data["schema"] = "unrelated"
+                elif change == "override-missing":
+                    data.pop("prepared_tidy_manifest")
+                elif change == "override-changed":
+                    data["prepared_tidy_manifest"]["Replace"][1]["New"]["Version"] = "v9.9.9"
                 path = (root if change == "outside" else work) / "contract.json"
                 path.write_text(json.dumps(data), encoding="utf8")
                 expected = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -492,6 +499,123 @@ class R15RuntimeControls(unittest.TestCase):
             runtime.prepare_generated_hydration(work, seed, receipt["initial_go_mod_sha256"])
             with self.assertRaises(FileExistsError):
                 runtime.prepare_generated_hydration(work, seed, receipt["initial_go_mod_sha256"])
+
+    def test_reviewed_scope_override_keeps_original_and_all_other_declarations(self):
+        original = self.manifest_fixture(Path("/owned/heart"))
+        original["Replace"].append(dict(Old={"Path": launcher.GENPROTO + "/googleapis/rpc", "Version": "v0.0.0-20260819154853-08b0e4226688"},
+                                       New={"Path": launcher.GENPROTO + "/googleapis/rpc", "Version": launcher.VERSION}))
+        original["Exclude"] = [dict(Path="example.org/excluded", Version="v1.0.0")]
+        preserved = copy.deepcopy(original)
+        expected = copy.deepcopy(original)
+        expected["Replace"][1]["Old"].pop("Version")
+        prepared = launcher.reviewed_generated_manifest(original)
+        self.assertEqual(prepared, launcher.canonical_manifest(expected))
+        self.assertEqual(original, preserved)
+
+    def test_missing_ambiguous_or_changed_original_override_is_rejected(self):
+        changes = {
+            "missing": lambda value: value["Replace"].pop(1),
+            "duplicate": lambda value: value["Replace"].append(copy.deepcopy(value["Replace"][1])),
+            "already-normalized": lambda value: value["Replace"][1]["Old"].pop("Version"),
+            "wrong-version": lambda value: value["Replace"][1]["New"].update(Version="v9.9.9"),
+            "wrong-path": lambda value: value["Replace"][1]["New"].update(Path="other.example/genproto"),
+            "extra-old-field": lambda value: value["Replace"][1]["Old"].update(Unexpected=True),
+        }
+        for name, change in changes.items():
+            with self.subTest(case=name):
+                original = self.manifest_fixture(Path("/owned/heart"))
+                change(original)
+                with self.assertRaises(RuntimeError):
+                    launcher.reviewed_generated_manifest(original)
+
+    def override_command_fixture(self, root, original, changed_preimage=False, changed_after=None):
+        before, after = b"original declaration bytes\n", b"prepared declaration bytes\n"
+        (root / "go.mod").write_bytes(before)
+        prepared = launcher.reviewed_generated_manifest(original)
+        responses = [copy.deepcopy(original), copy.deepcopy(prepared)]
+        if changed_preimage:
+            responses[0]["Require"][0]["Version"] = "v9.9.9"
+        if changed_after:
+            changed_after(responses[1])
+
+        def command(args, **kwargs):
+            self.assertEqual(kwargs["env"]["GOWORK"], "off")
+            self.assertEqual(kwargs["env"]["GOPROXY"], "off")
+            self.assertEqual(kwargs["env"]["GOTOOLCHAIN"], "local")
+            if args[-1] == "-json":
+                return subprocess.CompletedProcess(args, 0, stdout=json.dumps(responses.pop(0)), stderr="")
+            self.assertEqual(args[1:3], ["mod", "edit"])
+            self.assertEqual(args[-1], "-replace=" + launcher.GENPROTO + "=" + launcher.GENPROTO + "@" + launcher.VERSION)
+            (root / "go.mod").write_bytes(after)
+            return subprocess.CompletedProcess(args, 0, stdout="", stderr="")
+        return before, after, command
+
+    def test_generated_override_records_exact_before_after_bytes_and_manifest(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            original = self.manifest_fixture(root / "heart")
+            before, after, command = self.override_command_fixture(root, original)
+            with mock.patch.object(launcher.subprocess, "run", side_effect=command) as invoked:
+                receipt = launcher.prepare_generated_genproto_override(root / "go", {"GOWORK": "off"}, root, original)
+            self.assertEqual(invoked.call_count, 3)
+            self.assertEqual(receipt["original_go_mod_sha256"], hashlib.sha256(before).hexdigest())
+            self.assertEqual(receipt["prepared_go_mod_sha256"], hashlib.sha256(after).hexdigest())
+            self.assertEqual(launcher.validate_genproto_override_receipt(receipt, original),
+                             launcher.reviewed_generated_manifest(original))
+
+    def test_changed_preimage_or_native_workspace_cannot_be_edited(self):
+        for case in ["preimage", "workspace", "missing-file"]:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory).resolve()
+                original = self.manifest_fixture(root / "heart")
+                before, _, command = self.override_command_fixture(root, original, changed_preimage=True)
+                env = {"GOWORK": "off" if case != "workspace" else "original-native-workspace"}
+                if case == "missing-file":
+                    (root / "go.mod").unlink()
+                with mock.patch.object(launcher.subprocess, "run", side_effect=command) as invoked:
+                    with self.assertRaises(RuntimeError):
+                        launcher.prepare_generated_genproto_override(root / "go", env, root, original)
+                self.assertEqual(invoked.call_count, 1 if case == "preimage" else 0)
+                if case != "missing-file":
+                    self.assertEqual((root / "go.mod").read_bytes(), before)
+
+    def test_override_cannot_hide_changes_to_requires_go_or_other_replacements(self):
+        changes = {
+            "require": lambda value: value["Require"][0].update(Version="v9.9.9"),
+            "go": lambda value: value.update(Go="1.27.0"),
+            "native": lambda value: value["Replace"][0]["New"].update(Path="/foreign/heart"),
+        }
+        for name, change in changes.items():
+            with self.subTest(case=name), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory).resolve()
+                original = self.manifest_fixture(root / "heart")
+                _, _, command = self.override_command_fixture(root, original, changed_after=change)
+                with mock.patch.object(launcher.subprocess, "run", side_effect=command):
+                    with self.assertRaises(RuntimeError):
+                        launcher.prepare_generated_genproto_override(root / "go", {"GOWORK": "off"}, root, original)
+
+    def test_override_receipt_cannot_drop_or_change_either_declaration_boundary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            original = self.manifest_fixture(root / "heart")
+            _, _, command = self.override_command_fixture(root, original)
+            with mock.patch.object(launcher.subprocess, "run", side_effect=command):
+                receipt = launcher.prepare_generated_genproto_override(root / "go", {"GOWORK": "off"}, root, original)
+            changes = {
+                "status": lambda value: value.update(status="unverified"),
+                "original-manifest": lambda value: value["original_manifest"]["Require"][0].update(Version="v9.9.9"),
+                "prepared-manifest": lambda value: value["prepared_manifest"]["Replace"][1]["New"].update(Version="v9.9.9"),
+                "original-text": lambda value: value.update(original_go_mod_text="changed"),
+                "prepared-text": lambda value: value.update(prepared_go_mod_text="changed"),
+                "original-sha": lambda value: value.pop("original_go_mod_sha256"),
+                "prepared-sha": lambda value: value.pop("prepared_go_mod_sha256"),
+            }
+            for name, change in changes.items():
+                with self.subTest(case=name):
+                    changed = copy.deepcopy(receipt)
+                    change(changed)
+                    with self.assertRaises(RuntimeError):
+                        launcher.validate_genproto_override_receipt(changed, original)
 
     def hydration_manifests(self):
         original = dict(Module={"Path": "gobind"}, Go="1.26.5", Exclude=None, Retract=None,

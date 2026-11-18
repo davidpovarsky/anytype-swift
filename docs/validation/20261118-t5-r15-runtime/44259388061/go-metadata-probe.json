@@ -1,0 +1,334 @@
+{
+  "status": "PASS_METADATA_ONLY",
+  "scope": "SYNTHETIC_LOCAL_FILE_PROXY_NOT_NATIVE_DEPENDENCY_CHECKSUM_ACCEPTANCE",
+  "go_version": "go version go1.26.5 windows/amd64",
+  "native_compiles": 0,
+  "native_tests": 0,
+  "network_downloads": 0,
+  "captured_original_seed_sha256": "e377f29a295bc62fa3d332a697238d5eb8b23df0b7852e4ed67b06d1cc7b5474",
+  "captured_exact_original_manifest": true,
+  "captured_actual_go_edit_override": "PASS",
+  "phases": {
+    "version-qualified": {
+      "selected": {
+        "Path": "google.golang.org/genproto",
+        "Version": "v0.0.0-20260128011058-8636f8732409",
+        "Time": "2026-01-28T01:10:58Z",
+        "Indirect": true,
+        "Dir": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\google.golang.org\\genproto@v0.0.0-20260128011058-8636f8732409",
+        "GoMod": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\cache\\download\\google.golang.org\\genproto\\@v\\v0.0.0-20260128011058-8636f8732409.mod",
+        "GoVersion": "1.26.5",
+        "Sum": "h1:1MyIpB6oOGQNTJlprqzlFBi/Vo8z0P3QkUfyMTDjqIM=",
+        "GoModSum": "h1:xImsdDEVqhf50dMBhTsgvRF6n+KbxXLFO4uG58j43YQ="
+      },
+      "download_records": [
+        {
+          "Path": "google.golang.org/genproto",
+          "Version": "v0.0.0-20260128011058-8636f8732409",
+          "Info": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\cache\\download\\google.golang.org\\genproto\\@v\\v0.0.0-20260128011058-8636f8732409.info",
+          "GoMod": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\cache\\download\\google.golang.org\\genproto\\@v\\v0.0.0-20260128011058-8636f8732409.mod",
+          "Zip": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\cache\\download\\google.golang.org\\genproto\\@v\\v0.0.0-20260128011058-8636f8732409.zip",
+          "Dir": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\google.golang.org\\genproto@v0.0.0-20260128011058-8636f8732409",
+          "Sum": "h1:1MyIpB6oOGQNTJlprqzlFBi/Vo8z0P3QkUfyMTDjqIM=",
+          "GoModSum": "h1:xImsdDEVqhf50dMBhTsgvRF6n+KbxXLFO4uG58j43YQ="
+        }
+      ],
+      "final_manifest": {
+        "Module": {
+          "Path": "gobind"
+        },
+        "Go": "1.26.5",
+        "Require": [
+          {
+            "Path": "example.test/consumer",
+            "Version": "v1.0.0"
+          }
+        ],
+        "Exclude": null,
+        "Replace": [
+          {
+            "Old": {
+              "Path": "example.test/consumer"
+            },
+            "New": {
+              "Path": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\consumer"
+            }
+          },
+          {
+            "Old": {
+              "Path": "google.golang.org/genproto",
+              "Version": "v0.0.0-20240903143218-8af14fe29dc1"
+            },
+            "New": {
+              "Path": "google.golang.org/genproto",
+              "Version": "v0.0.0-20241021214115-324edc3d5d38"
+            }
+          }
+        ],
+        "Retract": null,
+        "Tool": null,
+        "Ignore": null
+      }
+    },
+    "reviewed-versionless": {
+      "override": {
+        "status": "REVIEWED_GENPROTO_OVERRIDE_APPLIED",
+        "original_manifest": {
+          "Module": {
+            "Path": "gobind"
+          },
+          "Go": "1.26.5",
+          "Require": [
+            {
+              "Path": "example.test/consumer",
+              "Version": "v1.0.0"
+            }
+          ],
+          "Exclude": null,
+          "Replace": [
+            {
+              "Old": {
+                "Path": "example.test/consumer"
+              },
+              "New": {
+                "Path": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\consumer"
+              }
+            },
+            {
+              "Old": {
+                "Path": "google.golang.org/genproto",
+                "Version": "v0.0.0-20240903143218-8af14fe29dc1"
+              },
+              "New": {
+                "Path": "google.golang.org/genproto",
+                "Version": "v0.0.0-20241021214115-324edc3d5d38"
+              }
+            }
+          ],
+          "Retract": null,
+          "Tool": null,
+          "Ignore": null
+        },
+        "prepared_manifest": {
+          "Module": {
+            "Path": "gobind"
+          },
+          "Go": "1.26.5",
+          "Require": [
+            {
+              "Path": "example.test/consumer",
+              "Version": "v1.0.0"
+            }
+          ],
+          "Exclude": null,
+          "Replace": [
+            {
+              "Old": {
+                "Path": "example.test/consumer"
+              },
+              "New": {
+                "Path": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\consumer"
+              }
+            },
+            {
+              "Old": {
+                "Path": "google.golang.org/genproto"
+              },
+              "New": {
+                "Path": "google.golang.org/genproto",
+                "Version": "v0.0.0-20241021214115-324edc3d5d38"
+              }
+            }
+          ],
+          "Retract": null,
+          "Tool": null,
+          "Ignore": null
+        },
+        "original_go_mod_text": "module gobind\n\ngo 1.26.5\n\nrequire example.test/consumer v1.0.0\n\nreplace example.test/consumer => \"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\chatgpt-t5-20261118-probes\\\\genproto-scope-44259388061\\\\consumer\"\nreplace google.golang.org/genproto v0.0.0-20240903143218-8af14fe29dc1 => google.golang.org/genproto v0.0.0-20241021214115-324edc3d5d38\n",
+        "original_go_mod_sha256": "e4eb13d1466de343dfc30254f81497c0ce06af6cff23f1d2f6c666d426f43e4b",
+        "prepared_go_mod_text": "module gobind\n\ngo 1.26.5\n\nrequire example.test/consumer v1.0.0\n\nreplace example.test/consumer => C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\consumer\n\nreplace google.golang.org/genproto => google.golang.org/genproto v0.0.0-20241021214115-324edc3d5d38\n",
+        "prepared_go_mod_sha256": "cf43e22e4b4918075c25eb3df299e83e461009a1ebfca8dae56e2af87baf8c44"
+      },
+      "selected": {
+        "Path": "google.golang.org/genproto",
+        "Version": "v0.0.0-20260128011058-8636f8732409",
+        "Replace": {
+          "Path": "google.golang.org/genproto",
+          "Version": "v0.0.0-20241021214115-324edc3d5d38",
+          "Time": "2024-10-21T21:41:15Z",
+          "Dir": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\google.golang.org\\genproto@v0.0.0-20241021214115-324edc3d5d38",
+          "GoMod": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\cache\\download\\google.golang.org\\genproto\\@v\\v0.0.0-20241021214115-324edc3d5d38.mod",
+          "GoVersion": "1.26.5",
+          "Sum": "h1:1tVpg4C6ljkPYHY+H/ivlq0zPNbSoP5TrCjymT8t/iQ=",
+          "GoModSum": "h1:xImsdDEVqhf50dMBhTsgvRF6n+KbxXLFO4uG58j43YQ="
+        },
+        "Indirect": true,
+        "Dir": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\google.golang.org\\genproto@v0.0.0-20241021214115-324edc3d5d38",
+        "GoMod": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\cache\\download\\google.golang.org\\genproto\\@v\\v0.0.0-20241021214115-324edc3d5d38.mod",
+        "GoVersion": "1.26.5"
+      },
+      "download_records": [
+        {
+          "Path": "google.golang.org/genproto",
+          "Version": "v0.0.0-20241021214115-324edc3d5d38",
+          "Info": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\cache\\download\\google.golang.org\\genproto\\@v\\v0.0.0-20241021214115-324edc3d5d38.info",
+          "GoMod": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\cache\\download\\google.golang.org\\genproto\\@v\\v0.0.0-20241021214115-324edc3d5d38.mod",
+          "Zip": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\cache\\download\\google.golang.org\\genproto\\@v\\v0.0.0-20241021214115-324edc3d5d38.zip",
+          "Dir": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\modcache\\google.golang.org\\genproto@v0.0.0-20241021214115-324edc3d5d38",
+          "Sum": "h1:1tVpg4C6ljkPYHY+H/ivlq0zPNbSoP5TrCjymT8t/iQ=",
+          "GoModSum": "h1:xImsdDEVqhf50dMBhTsgvRF6n+KbxXLFO4uG58j43YQ="
+        }
+      ],
+      "final_manifest": {
+        "Module": {
+          "Path": "gobind"
+        },
+        "Go": "1.26.5",
+        "Require": [
+          {
+            "Path": "example.test/consumer",
+            "Version": "v1.0.0"
+          }
+        ],
+        "Exclude": null,
+        "Replace": [
+          {
+            "Old": {
+              "Path": "example.test/consumer"
+            },
+            "New": {
+              "Path": "C:\\ProgramData\\SentinelX\\uploads\\chatgpt-t5-20261118-probes\\genproto-scope-44259388061\\consumer"
+            }
+          },
+          {
+            "Old": {
+              "Path": "google.golang.org/genproto"
+            },
+            "New": {
+              "Path": "google.golang.org/genproto",
+              "Version": "v0.0.0-20241021214115-324edc3d5d38"
+            }
+          }
+        ],
+        "Retract": null,
+        "Tool": null,
+        "Ignore": null
+      }
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "version"
+      ],
+      "cwd": ".",
+      "returncode": 0,
+      "stdout_sha256": "32548da15c96ca04063f71e04f4ad607e3ca4f142d12b4388704952d1f9d3012",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "mod",
+        "edit",
+        "-json"
+      ],
+      "cwd": "captured-generated-original",
+      "returncode": 0,
+      "stdout_sha256": "ad2624dc58c7d0f194494723113ef22a462a7b115d3cd9fff5ad4ea3c862520d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "mod",
+        "edit",
+        "-json"
+      ],
+      "cwd": "version-qualified",
+      "returncode": 0,
+      "stdout_sha256": "324d3d646b951956264856c0e3a03b711b13954a378e470af5b85910c322da22",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "mod",
+        "download",
+        "-json",
+        "all"
+      ],
+      "cwd": "version-qualified",
+      "returncode": 0,
+      "stdout_sha256": "80970aaf671ae3ed3c9e323ba2adee9b5df30bd349b77dc7657ec9facd26726c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "list",
+        "-m",
+        "-json",
+        "all"
+      ],
+      "cwd": "version-qualified",
+      "returncode": 0,
+      "stdout_sha256": "cf9ca0762c97c984d66a1153a140bf6f3aa96497fbeaf3a8829ef669d9209984",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "mod",
+        "edit",
+        "-json"
+      ],
+      "cwd": "version-qualified",
+      "returncode": 0,
+      "stdout_sha256": "324d3d646b951956264856c0e3a03b711b13954a378e470af5b85910c322da22",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "mod",
+        "edit",
+        "-json"
+      ],
+      "cwd": "reviewed-versionless",
+      "returncode": 0,
+      "stdout_sha256": "324d3d646b951956264856c0e3a03b711b13954a378e470af5b85910c322da22",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "mod",
+        "download",
+        "-json",
+        "all"
+      ],
+      "cwd": "reviewed-versionless",
+      "returncode": 0,
+      "stdout_sha256": "81b1a07be827a538f9cf47a63bc4d60f820bcceba24ddba992869d669bd86a94",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "list",
+        "-m",
+        "-json",
+        "all"
+      ],
+      "cwd": "reviewed-versionless",
+      "returncode": 0,
+      "stdout_sha256": "b347c61ed00850d4dc5d17d7898626e8407c65f80999b246a7edd573792c8c79",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "mod",
+        "edit",
+        "-json"
+      ],
+      "cwd": "reviewed-versionless",
+      "returncode": 0,
+      "stdout_sha256": "b510f7f7aadeb9250f7d56c050fcc175a395c00601859c133454318b0d7d9d71",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "created_file_bytes": 43289
+}
