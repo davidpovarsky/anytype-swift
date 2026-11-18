@@ -201,7 +201,7 @@ final class PinkhaHanlinNativeAccess: PinkhaHanlinHostAccess {
         return result
     }
 
-    private static func isMounted(_ controller: UIViewController, in scene: UIWindowScene) -> Bool {
+    static func isMounted(_ controller: UIViewController, in scene: UIWindowScene) -> Bool {
         guard let view = controller.viewIfLoaded, isMounted(view, in: scene) else { return false }
         var child = controller
         while true {
