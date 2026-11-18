@@ -139,6 +139,57 @@ struct HanlinHostWriteTests {
         }
     }
 
+    @Test func journalReopenRejectsExistingFilesAndSymlinksWithoutMutation() async throws {
+        for target in ["root", "scope"] {
+            for kind in ["file", "symlink"] {
+                let parent = try directory()
+                defer { try? FileManager.default.removeItem(at: parent) }
+                let namespace = try session().context.namespace
+                let scope = try scopeDirectory(parent, namespace: namespace)
+                let root = scope.deletingLastPathComponent()
+                let attributes: [FileAttributeKey: Any] = [
+                    .posixPermissions: 0o700,
+                    .protectionKey: FileProtectionType.completeUntilFirstUserAuthentication
+                ]
+                if target == "scope" {
+                    try FileManager.default.createDirectory(at: root, withIntermediateDirectories: false,
+                        attributes: attributes)
+                }
+                let foreign = parent.appendingPathComponent("unrelated-owned-directory", isDirectory: true)
+                try FileManager.default.createDirectory(at: foreign, withIntermediateDirectories: false,
+                    attributes: attributes)
+                let sentinel = Data("preserve unrelated owned bytes".utf8)
+                let marker = foreign.appendingPathComponent("preserve.txt")
+                try sentinel.write(to: marker)
+                let blocked = target == "root"
+                    ? parent.appendingPathComponent("HanlinHostMetadataV1", isDirectory: false)
+                    : root.appendingPathComponent(scope.lastPathComponent, isDirectory: false)
+                if kind == "file" {
+                    try sentinel.write(to: blocked)
+                    try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: blocked.path)
+                } else {
+                    try FileManager.default.createSymbolicLink(at: blocked, withDestinationURL: foreign)
+                }
+                do {
+                    _ = try await PinkhaHanlinWriteJournal.openInTestDirectory(parent, namespace: namespace)
+                    Issue.record("An existing file or symlink was accepted as a metadata directory")
+                } catch PinkhaHanlinWriteError.unavailable {}
+                if kind == "file" {
+                    #expect(try Data(contentsOf: blocked) == sentinel)
+                    let mode = try FileManager.default.attributesOfItem(atPath: blocked.path)[.posixPermissions]
+                    #expect((mode as? NSNumber)?.intValue == 0o600)
+                } else {
+                    #expect(try blocked.resourceValues(forKeys: [.isSymbolicLinkKey]).isSymbolicLink == true)
+                    #expect(try FileManager.default.destinationOfSymbolicLink(atPath: blocked.path) == foreign.path)
+                }
+                #expect(try Data(contentsOf: marker) == sentinel)
+                #expect(try FileManager.default.contentsOfDirectory(atPath: foreign.path) == ["preserve.txt"])
+                let foreignMode = try FileManager.default.attributesOfItem(atPath: foreign.path)[.posixPermissions]
+                #expect((foreignMode as? NSNumber)?.intValue == 0o700)
+            }
+        }
+    }
+
     @Test func reservationBlocksAllNewWritesUntilOriginalOutcomeIsKnown() async throws {
         let parent = try directory()
         defer { try? FileManager.default.removeItem(at: parent) } // Only this test's exact owned directory.

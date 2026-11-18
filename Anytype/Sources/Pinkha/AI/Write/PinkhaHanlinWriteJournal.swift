@@ -241,8 +241,14 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
         let root = parent.appendingPathComponent("HanlinHostMetadataV1", isDirectory: true)
         let directory = root.appendingPathComponent(scope, isDirectory: true)
         for folder in [root, directory] {
-            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: false,
-                attributes: [.posixPermissions: 0o700, .protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
+            do {
+                try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: false,
+                    attributes: [.posixPermissions: 0o700, .protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
+            } catch let error as CocoaError where error.code == .fileWriteFileExists {
+                // Reopening a scope, or sharing this feature root with another
+                // account, must validate the existing entry below. Never repair
+                // its permissions or treat a file/symlink as a valid directory.
+            }
             let values = try folder.resourceValues(forKeys: [.isSymbolicLinkKey, .isDirectoryKey])
             guard values.isSymbolicLink != true, values.isDirectory == true else { throw PinkhaHanlinWriteError.unavailable }
             var url = folder; var backup = URLResourceValues(); backup.isExcludedFromBackup = true

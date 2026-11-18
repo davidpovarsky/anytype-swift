@@ -134,11 +134,12 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
     journal_methods = {
         "protectionReadbackRejectsWrongPresentValues",
         "journalReopenRejectsChangedDirectoryAndRecordModes",
+        "journalReopenRejectsExistingFilesAndSymlinksWithoutMutation",
     }
 
     def source_fixture(self, root):
         files, expected = [], set()
-        for suite, count in (("HanlinHostAdapterTests", 35), ("HanlinHostWriteTests", 14),
+        for suite, count in (("HanlinHostAdapterTests", 35), ("HanlinHostWriteTests", 15),
                              ("HanlinHostReadWriteTests", 17), ("HanlinSDKConsumerTests", 6)):
             names = []
             if suite == "HanlinHostAdapterTests":
@@ -160,7 +161,7 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
             files, expected = self.source_fixture(root)
             with patch.object(subprocess, "check_output", return_value=("\0".join(files) + "\0").encode()):
                 actual, hashes = expected_methods(root)
-                self.assertEqual(len(actual), 72)
+                self.assertEqual(len(actual), 73)
                 self.assertEqual(actual, expected)
                 self.assertEqual(set(hashes), set(files))
                 adapter = root / files[0]
@@ -174,12 +175,12 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
     def test_each_new_return_method_requires_an_actual_pass_not_a_successful_aggregate(self):
         with tempfile.TemporaryDirectory() as temp:
             _, expected = self.source_fixture(Path(temp))
-        summary = dict(totalTestCount=72, passedTests=72, failedTests=0, skippedTests=0,
+        summary = dict(totalTestCount=73, passedTests=73, failedTests=0, skippedTests=0,
                        devicesAndConfigurations=[dict(device=dict(deviceId="disposable-id", osVersion="27.0",
                        osBuildNumber="24A-test", architecture="arm64", modelName="iPad (A16)"))])
         tree = dict(children=[dict(nodeType="Test Case", nodeIdentifier=name + "()", result="Passed")
                               for name in sorted(expected)])
-        self.assertEqual(len(validate_results(summary, tree, expected, "disposable-id")["methods"]), 72)
+        self.assertEqual(len(validate_results(summary, tree, expected, "disposable-id")["methods"]), 73)
         for name in self.return_methods:
             with self.subTest(missing=name):
                 incomplete = copy.deepcopy(tree)
@@ -205,7 +206,7 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
     def test_selection_transition_cases_require_actual_passes_despite_successful_total(self):
         with tempfile.TemporaryDirectory() as temp:
             _, expected = self.source_fixture(Path(temp))
-        summary = dict(totalTestCount=72, passedTests=72, failedTests=0, skippedTests=0,
+        summary = dict(totalTestCount=73, passedTests=73, failedTests=0, skippedTests=0,
                        devicesAndConfigurations=[dict(device=dict(deviceId="disposable-id", osVersion="27.0",
                        osBuildNumber="24A-test", architecture="arm64", modelName="iPad (A16)"))])
         tree = dict(children=[dict(nodeType="Test Case", nodeIdentifier=name + "()", result="Passed")

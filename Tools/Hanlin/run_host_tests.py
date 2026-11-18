@@ -25,7 +25,7 @@ BRANCH = "codex/chatgpt-wave15-integration-20261118"
 CONFIGURATION = "Debug-Anytype"
 SUITES = {
     "HanlinHostAdapterTests": 35,
-    "HanlinHostWriteTests": 14,
+    "HanlinHostWriteTests": 15,
     "HanlinHostReadWriteTests": 17,
     "HanlinSDKConsumerTests": 6,
 }
@@ -52,6 +52,7 @@ SDK_CONSENT_METHODS = {
 SDK_JOURNAL_METHODS = {
     "protectionReadbackRejectsWrongPresentValues",
     "journalReopenRejectsChangedDirectoryAndRecordModes",
+    "journalReopenRejectsExistingFilesAndSymlinksWithoutMutation",
 }
 SDK_BUDGET_METHOD = "HanlinSDKConsumerTests/canonicalDispatcherBudgetsReachReadAndReplayOnlyReceipt"
 SDK_BUDGET_ARGUMENTS = ("1048576", "8388608")
