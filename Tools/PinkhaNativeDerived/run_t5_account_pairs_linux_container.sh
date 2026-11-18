@@ -33,7 +33,13 @@ gcc -static -Werror /tmp/t5-account-qsort-probe.c -o /tmp/t5-account-qsort-probe
 /tmp/t5-account-qsort-probe
 python3 -B control/Tools/PinkhaNativeDerived/test_run_t5_pairs_ci.py > proof/toolchain/pair-ci-controls.log 2>&1
 cat proof/toolchain/pair-ci-controls.log
+set --
+case "${PINKHA_T5_INCLUDE_FRESHNESS:-false}" in
+  true) set -- --include-freshness ;;
+  false) ;;
+  *) echo "Explicit true/false freshness mode required" >&2; exit 1 ;;
+esac
 python3 -B control/Tools/PinkhaNativeDerived/run_t5_account_pairs_ci.py \
   --source source --heart-old heart-old --heart-new heart-new \
   --work pair-work --artifacts artifacts \
-  --evidence "proof/$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT/account-pairs"
+  --evidence "proof/$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT/account-pairs" "$@"

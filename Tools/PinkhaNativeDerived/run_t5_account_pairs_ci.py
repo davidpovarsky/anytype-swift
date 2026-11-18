@@ -14,9 +14,10 @@ import run_t5_pairs_ci as store_ci
 ACCOUNT_DIRECTORY = "Tools/PinkhaNativeDerived/account_pairs"
 
 
-def validate_account_result(result):
+def validate_account_result(result, include_freshness=False):
     reports = result.get("phase_reports", [])
-    counts = dict(binaries=2, native_processes=4, passing_test_invocations=4, actual_export_files=24)
+    total = 5 if include_freshness else 4
+    counts = dict(binaries=2, native_processes=total, passing_test_invocations=total, actual_export_files=24)
     if (result.get("status") != "NATIVE_ACCOUNT_PAIR_PASS"
             or result.get("actual_counts") != counts
             or result.get("export_status") != "ACTUAL_JSON_AND_PROTOBUF"
@@ -31,6 +32,34 @@ def validate_account_result(result):
     pids = [report.get("pid") for report in reports]
     if len(set(pids)) != 4 or any(type(pid) is not int or pid <= 0 for pid in pids):
         raise RuntimeError("Four distinct completed actual native process identities required")
+    if result.get("include_freshness", False) is not include_freshness:
+        raise RuntimeError("Controller freshness mode differs from the requested route")
+    freshness = result.get("freshness_report")
+    if include_freshness:
+        if (not isinstance(freshness, dict)
+                or result.get("freshness_status") != "PASS_NATIVE_RPC_MUTATIONS"
+                or freshness.get("freshness_status") != "PASS_NATIVE_RPC_MUTATIONS"
+                or freshness.get("phase") != "new-freshness"
+                or len(freshness.get("checks", [])) != 16
+                or freshness.get("coverage") != "indexedTargetsOnly"
+                or freshness.get("space_wide_freshness") != "NOT_PROVEN"
+                or freshness.get("host_target_exclusion_status") != "NOT_RUN_SWIFT_HOST"
+                or freshness.get("swift_pairing_status") != "NOT_RUN"
+                or freshness.get("client_enablement") != store_ci.CLIENT_DISABLED
+                or any(freshness.get(key) is not True for key in
+                       ["closed", "test_passed", "account_stop_completed", "application_cleared"])
+                or any(freshness.get(key) != reports[-1].get(key) for key in
+                       ["protocol", "heart_sha", "patch_sha256", "fixture_sha256", "runtime_version",
+                        "account_root", "account_id", "space_id", "state_sha256"])):
+            raise RuntimeError("Optional same-account native freshness process missing or overstates coverage")
+        pids.append(freshness.get("pid"))
+        nonces = [report.get("nonce") for report in reports] + [freshness.get("nonce")]
+        if (len(set(pids)) != total or any(type(pid) is not int or pid <= 0 for pid in pids)
+                or len(set(nonces)) != total
+                or any(not isinstance(nonce, str) or not nonce for nonce in nonces)):
+            raise RuntimeError("Fifth native process/nonce must be distinct and source-bound")
+    elif freshness is not None or result.get("freshness_status", "NOT_REQUESTED") != "NOT_REQUESTED":
+        raise RuntimeError("Unrequested freshness cannot silently widen the four-process receipt")
     return counts
 
 
@@ -87,9 +116,10 @@ def execute(args, control, evidence):
     fixture = pair_root / "account_pair_phase_test.go"
     fixture_sha = coverage.digest(fixture)
     fixture_inputs = {name: coverage.digest(pair_root / name) for name in
-                      ["account_pair_phase_test.go", "run_account_pairs.py", "test_controls.py"]}
-    run([sys.executable, "-B", str(pair_root / "test_controls.py")], "account-controller-controls", cwd=pair_root)
-    manifest = {"schema": 1, "protocol": account.PROTOCOL}
+                      ["account_pair_phase_test.go", "run_account_pairs.py", "test_controls.py", "test_freshness_controls.py"]}
+    run([sys.executable, "-B", "-m", "unittest", "discover", "-s", str(pair_root), "-p", "test_*controls.py", "-v"],
+        "account-controller-controls", cwd=pair_root)
+    manifest = {"schema": 1, "protocol": account.PROTOCOL, "include_freshness": args.include_freshness}
     verified_builds = {}
     for role, revision in [("old", 14), ("new", 15)]:
         heart = hearts[role]
@@ -150,14 +180,14 @@ def execute(args, control, evidence):
         run([sys.executable, "-B", str(pair_root / "run_account_pairs.py"),
              "--manifest", str(manifest_path), "--workspace", str(workspace)],
             "native-account-controller", cwd=control,
-            env=dict(os.environ, GOTOOLCHAIN="local", GOPROXY="off", GOMAXPROCS="2"), timeout=1500)
+            env=dict(os.environ, GOTOOLCHAIN="local", GOPROXY="off", GOMAXPROCS="2"), timeout=1800 if args.include_freshness else 1500)
     finally:
         if workspace.is_dir():
-            copy_receipt = account.preserve_evidence(workspace, evidence / "account-sequence")
+            copy_receipt = account.preserve_evidence(workspace, evidence / "account-sequence", args.include_freshness)
             coverage.write_receipt(evidence / "evidence-copy.json", copy_receipt)
     result_path = evidence / "account-sequence/result.json"
     result = json.loads(result_path.read_text(encoding="utf8"))
-    counts = validate_account_result(result)
+    counts = validate_account_result(result, args.include_freshness)
     store_ci.verify_pair_inputs(control)
     if coverage.require_identity(control) != identity or coverage.git(source, "status", "--porcelain"):
         raise RuntimeError("Source/control identity changed during actual account pairing")
@@ -175,20 +205,24 @@ def execute(args, control, evidence):
                 heart_sha=coverage.HEART, fixture_inputs=fixture_inputs, actual_counts=counts,
                 binary_sha256={role: manifest[role]["binary_sha256"] for role in hearts},
                 account_receipt_sha256=coverage.digest(result_path), go_version=version,
-                export_status="ACTUAL_JSON_AND_PROTOBUF")
+                export_status="ACTUAL_JSON_AND_PROTOBUF", include_freshness=args.include_freshness,
+                freshness_status=result["freshness_status"],
+                host_target_exclusion_status="NOT_RUN_SWIFT_HOST", space_wide_freshness="NOT_PROVEN")
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(__doc__)
     for name in ["source", "heart-old", "heart-new", "work", "artifacts", "evidence"]:
         parser.add_argument("--" + name, type=Path, required=True)
+    parser.add_argument("--include-freshness", action="store_true")
     args = parser.parse_args(argv)
     evidence = args.evidence.resolve()
     evidence.mkdir(parents=True, exist_ok=False)
     receipt = dict(status="RUNNING", started_at=datetime.now(timezone.utc).isoformat(),
-                   component="account-pairs", full_F10="NOT_PROVEN", export_status="NOT_RUN",
+                   component="index-freshness" if args.include_freshness else "account-pairs", full_F10="NOT_PROVEN", export_status="NOT_RUN",
                    swift_pairing_status="NOT_RUN", client_enablement=store_ci.CLIENT_DISABLED,
-                   scope="two exact Linux RPC binaries reopen one synthetic account in four processes")
+                   scope="two exact Linux RPC binaries reopen one synthetic account in four compatibility processes"
+                         + (" followed by a fifth native mutation process; Swift target exclusion NOT_RUN" if args.include_freshness else ""))
     path = evidence / "ci-result.json"
     coverage.write_receipt(path, receipt)
     try:

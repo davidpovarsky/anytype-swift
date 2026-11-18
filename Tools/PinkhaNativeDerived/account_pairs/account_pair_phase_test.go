@@ -316,6 +316,290 @@ func (r *t5AccountPairRPC) create(state *t5AccountPairState) {
 	}
 }
 
+// The optional fifth process mutates only the already-owned disposable account.
+// It never creates a replacement account, calls a projection/reindex helper, or
+// asks Swift to invalidate a cache. Index observations precede live ObjectShow.
+func (r *t5AccountPairRPC) freshnessQuery(space, key, identity string, expected []string) []string {
+	r.t.Helper()
+	want := append([]string{}, expected...)
+	sort.Strings(want)
+	observed := []string{}
+	r.wait("freshness index "+key+" "+identity, func() bool {
+		response := &pb.RpcObjectSearchResponse{}
+		r.invoke(ObjectSearch, &pb.RpcObjectSearchRequest{SpaceId: space,
+			Filters: []*model.BlockContentDataviewFilter{{RelationKey: key,
+				Condition: model.BlockContentDataviewFilter_In, Value: domain.StringList([]string{identity}).ToProto()}},
+			Keys: []string{"id", "spaceId", "_pinkhaTorahRelatedVersion"}, Limit: 20}, response)
+		observed = []string{}
+		for _, row := range response.Records {
+			details := domain.NewDetailsFromProto(row)
+			if details.GetString(bundle.RelationKeySpaceId) != space || details.GetString(bundle.RelationKeyId) == "" ||
+				details.GetInt64("_pinkhaTorahRelatedVersion") != 1 {
+				r.t.Fatal("freshness query returned a foreign, unidentified, or unready native row")
+			}
+			observed = append(observed, details.GetString(bundle.RelationKeyId))
+		}
+		sort.Strings(observed)
+		return reflect.DeepEqual(observed, want)
+	})
+	return observed
+}
+
+func t5FreshnessCanonical(t *testing.T, doc t5AccountPairDocument, mode, foreignObject string) string {
+	t.Helper()
+	if mode == "malformed" {
+		return "{"
+	}
+	var root map[string]any
+	if json.Unmarshal([]byte(doc.Canonical), &root) != nil {
+		t.Fatal("original canonical fixture is not JSON")
+	}
+	records, ok := root["records"].([]any)
+	if !ok || len(records) != 1 {
+		t.Fatal("one exact original canonical record required")
+	}
+	record, ok := records[0].(map[string]any)
+	if !ok {
+		t.Fatal("original canonical record missing")
+	}
+	item, ok := record["item"].(map[string]any)
+	if !ok {
+		t.Fatal("original canonical item missing")
+	}
+	switch mode {
+	case "other-verse":
+		item["canonicalKey"], item["externalID"] = "Genesis 3:4", "Genesis 3:4"
+	case "unlink":
+		root["records"] = []any{}
+	case "label-alias":
+		item["labelHe"], item["labelEn"] = "\u05db\u05d5\u05ea\u05e8\u05ea \u05d0\u05d7\u05e8\u05ea", "A different English display label"
+	case "other-provider":
+		item["providerID"] = "fixture-other-provider"
+	case "foreign-space":
+		record["spaceId"] = "not-the-current-fixture-space"
+	case "foreign-object":
+		record["objectId"] = foreignObject
+	default:
+		t.Fatal("unsupported declared freshness mutation")
+	}
+	raw, err := json.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(raw)
+}
+
+func t5FreshnessGraph(t *testing.T, root, target string, blocks []*model.Block) (bool, []map[string]any) {
+	t.Helper()
+	byID := map[string]*model.Block{}
+	for _, block := range blocks {
+		if block == nil || block.Id == "" || byID[block.Id] != nil {
+			t.Fatal("native ObjectShow returned an invalid block graph")
+		}
+		byID[block.Id] = block
+	}
+	if byID[root] == nil || root == target || target == "" {
+		t.Fatal("actual root and distinct original leaf target required")
+	}
+	queue, seen := []string{root}, map[string]bool{}
+	for len(queue) > 0 {
+		id := queue[0]
+		queue = queue[1:]
+		if seen[id] {
+			continue
+		}
+		if byID[id] == nil {
+			t.Fatal("native graph contains an unresolved child")
+		}
+		seen[id] = true
+		queue = append(queue, byID[id].ChildrenIds...)
+	}
+	ids := make([]string, 0, len(byID))
+	for id := range byID {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	nodes := []map[string]any{}
+	for _, id := range ids {
+		nodes = append(nodes, map[string]any{"id": id, "child_ids": append([]string{}, byID[id].ChildrenIds...)})
+	}
+	return seen[target], nodes
+}
+
+func (r *t5AccountPairRPC) verifyFreshness(state *t5AccountPairState) []map[string]any {
+	r.t.Helper()
+	documents := state.Documents
+	all := []string{documents[0].ID, documents[1].ID, documents[2].ID}
+	for index, doc := range documents {
+		view, details := r.show(state.SpaceID, doc.ID)
+		wantName := doc.Name
+		if index == 0 {
+			wantName = "T5 ordinary title edited by r14"
+		}
+		if details.GetString(domain.RelationKey(state.CanonicalKey)) != doc.Canonical ||
+			details.GetString(bundle.RelationKeyName) != wantName {
+			r.t.Fatal("freshness process did not reopen the original post-compatibility state")
+		}
+		if doc.BlockID != "" {
+			t5PairBlock(r.t, doc.ID, doc.BlockID, view.ObjectView.Blocks)
+		}
+	}
+	identities := map[string]string{
+		"primary":  torah.Identity(torah.Ref, "sefaria", "Genesis 3:3", ""),
+		"verse":    torah.Identity(torah.Ref, "sefaria", "Genesis 3:4", ""),
+		"provider": torah.Identity(torah.Ref, "fixture-other-provider", "Genesis 3:3", ""),
+	}
+	snapshot := func(private, public map[string][]string) map[string][]string {
+		observed := map[string][]string{}
+		for _, name := range []string{"primary", "verse", "provider"} {
+			observed["private_"+name] = r.freshnessQuery(state.SpaceID, "_pinkhaTorahRelatedSources", identities[name], private[name])
+			observed["public_"+name] = r.freshnessQuery(state.SpaceID, torah.SourcesKey, identities[name], public[name])
+		}
+		return observed
+	}
+	baseline := func() map[string][]string {
+		return snapshot(map[string][]string{"primary": all}, map[string][]string{"primary": {documents[0].ID}})
+	}
+	checks := []map[string]any{}
+	initial := baseline()
+	for _, probe := range []struct {
+		name  string
+		index int
+		mode  string
+	}{
+		{"document_ref_update", 0, "other-verse"},
+		{"document_unlink", 0, "unlink"},
+		{"label_alias", 0, "label-alias"},
+		{"provider_separation", 0, "other-provider"},
+		{"block_ref_update", 1, "other-verse"},
+		{"note_block_unlink", 1, "unlink"},
+		{"source_quote_ref_update", 2, "other-verse"},
+		{"source_quote_unlink", 2, "unlink"},
+		{"foreign_record_space", 2, "foreign-space"},
+		{"foreign_record_object", 2, "foreign-object"},
+		{"malformed_payload", 2, "malformed"},
+	} {
+		doc := documents[probe.index]
+		raw := t5FreshnessCanonical(r.t, doc, probe.mode, documents[0].ID)
+		remaining := []string{}
+		for index, other := range documents {
+			if index != probe.index || probe.mode == "label-alias" {
+				remaining = append(remaining, other.ID)
+			}
+		}
+		private, public := map[string][]string{"primary": remaining}, map[string][]string{}
+		if probe.index != 0 || probe.mode == "label-alias" {
+			public["primary"] = []string{documents[0].ID}
+		}
+		if probe.mode == "other-verse" || probe.mode == "other-provider" {
+			key := "verse"
+			if probe.mode == "other-provider" {
+				key = "provider"
+			}
+			private[key] = []string{doc.ID}
+			if probe.index == 0 {
+				public[key] = []string{doc.ID}
+			}
+		}
+		r.invoke(ObjectSetDetails, &pb.RpcObjectSetDetailsRequest{ContextId: doc.ID,
+			Details: []*model.Detail{{Key: state.CanonicalKey, Value: domain.String(raw).ToProto()}}}, &pb.RpcObjectSetDetailsResponse{})
+		observed := snapshot(private, public)
+		view, live := r.show(state.SpaceID, doc.ID)
+		actualRaw := live.GetString(domain.RelationKey(state.CanonicalKey))
+		if actualRaw != raw || live.GetBool(bundle.RelationKeyIsDeleted) || live.GetBool(bundle.RelationKeyIsArchived) {
+			r.t.Fatal("canonical edit/unlink deleted the document or changed the intended payload")
+		}
+		if doc.BlockID != "" {
+			t5PairBlock(r.t, doc.ID, doc.BlockID, view.ObjectView.Blocks)
+		}
+		if probe.mode == "malformed" && (live.GetBool(torah.ReadyKey) || live.GetString(torah.StatusKey) != "MALFORMED") {
+			r.t.Fatal("malformed canonical payload was not visibly unavailable")
+		}
+		r.invoke(ObjectSetDetails, &pb.RpcObjectSetDetailsRequest{ContextId: doc.ID,
+			Details: []*model.Detail{{Key: state.CanonicalKey, Value: domain.String(doc.Canonical).ToProto()}}}, &pb.RpcObjectSetDetailsResponse{})
+		restored := baseline()
+		_, live = r.show(state.SpaceID, doc.ID)
+		if live.GetString(domain.RelationKey(state.CanonicalKey)) != doc.Canonical {
+			r.t.Fatal("restoration rewrote original canonical/unknown fields")
+		}
+		checks = append(checks, map[string]any{"name": probe.name, "object_id": doc.ID,
+			"canonical_raw": actualRaw, "canonical_sha256": t5PairHash([]byte(actualRaw)),
+			"members": observed, "restored_members": restored, "object_retained": true,
+			"canonical_restored_sha256": t5PairHash([]byte(live.GetString(domain.RelationKey(state.CanonicalKey))))})
+	}
+	note := documents[1]
+	r.invoke(ObjectListSetIsArchived, &pb.RpcObjectListSetIsArchivedRequest{ObjectIds: []string{note.ID}, IsArchived: true},
+		&pb.RpcObjectListSetIsArchivedResponse{})
+	archived := snapshot(map[string][]string{"primary": {documents[0].ID, documents[2].ID}},
+		map[string][]string{"primary": {documents[0].ID}})
+	_, archiveDetails := r.show(state.SpaceID, note.ID)
+	if !archiveDetails.GetBool(bundle.RelationKeyIsArchived) {
+		r.t.Fatal("archive RPC did not archive the actual object")
+	}
+	r.invoke(ObjectListSetIsArchived, &pb.RpcObjectListSetIsArchivedRequest{ObjectIds: []string{note.ID}, IsArchived: false},
+		&pb.RpcObjectListSetIsArchivedResponse{})
+	unarchived := baseline()
+	_, archiveDetails = r.show(state.SpaceID, note.ID)
+	if archiveDetails.GetBool(bundle.RelationKeyIsArchived) || archiveDetails.GetString(domain.RelationKey(state.CanonicalKey)) != note.Canonical {
+		r.t.Fatal("unarchive failed or lost the original source link")
+	}
+	checks = append(checks, map[string]any{"name": "archive_cycle", "object_id": note.ID, "members": archived,
+		"restored_members": unarchived, "archive_observed": true, "unarchive_observed": true})
+	page := documents[0]
+	noteType, pageType := r.indexedType(state.SpaceID, "ot-note"), r.indexedType(state.SpaceID, "ot-page")
+	r.invoke(ObjectSetObjectType, &pb.RpcObjectSetObjectTypeRequest{ContextId: page.ID, ObjectTypeUniqueKey: "ot-note"},
+		&pb.RpcObjectSetObjectTypeResponse{})
+	noteMembers := baseline()
+	_, typeDetails := r.show(state.SpaceID, page.ID)
+	if typeDetails.GetString(bundle.RelationKeyType) != noteType {
+		r.t.Fatal("native object type change did not reach the actual Note type")
+	}
+	r.invoke(ObjectSetObjectType, &pb.RpcObjectSetObjectTypeRequest{ContextId: page.ID, ObjectTypeUniqueKey: "ot-page"},
+		&pb.RpcObjectSetObjectTypeResponse{})
+	pageMembers := baseline()
+	_, typeDetails = r.show(state.SpaceID, page.ID)
+	if typeDetails.GetString(bundle.RelationKeyType) != pageType || typeDetails.GetString(domain.RelationKey(state.CanonicalKey)) != page.Canonical {
+		r.t.Fatal("native type restoration lost the original source link")
+	}
+	checks = append(checks, map[string]any{"name": "type_cycle", "object_id": page.ID, "members": noteMembers,
+		"restored_members": pageMembers, "note_type_id": noteType, "page_type_id": pageType})
+	for _, index := range []int{1, 2} {
+		doc := documents[index]
+		r.invoke(BlockListDelete, &pb.RpcBlockListDeleteRequest{ContextId: doc.ID, BlockIds: []string{doc.BlockID}},
+			&pb.RpcBlockListDeleteResponse{})
+		// r15 indexes canonical references, not editor graph reachability.
+		// The App must reject this real candidate using the live graph below.
+		members := baseline()
+		view, details := r.show(state.SpaceID, doc.ID)
+		reachable, nodes := t5FreshnessGraph(r.t, doc.ID, doc.BlockID, view.ObjectView.Blocks)
+		if reachable || details.GetString(domain.RelationKey(state.CanonicalKey)) != doc.Canonical {
+			r.t.Fatal("target deletion did not preserve the canonical reference and remove its real leaf")
+		}
+		name := "block_target_removed"
+		if index == 2 {
+			name = "source_quote_target_removed"
+		}
+		checks = append(checks, map[string]any{"name": name, "object_id": doc.ID, "block_id": doc.BlockID,
+			"members": members, "canonical_sha256": t5PairHash([]byte(doc.Canonical)),
+			"live_root_id": view.ObjectView.RootId, "live_graph_nodes": nodes, "target_reachable": false,
+			"host_target_exclusion_status": "NOT_RUN_SWIFT_HOST"})
+	}
+	r.invoke(ObjectListDelete, &pb.RpcObjectListDeleteRequest{ObjectIds: []string{page.ID}}, &pb.RpcObjectListDeleteResponse{})
+	deletedMembers := snapshot(map[string][]string{"primary": {documents[1].ID, documents[2].ID}}, map[string][]string{})
+	deleted := &pb.RpcObjectShowResponse{}
+	r.raw(ObjectShow, &pb.RpcObjectShowRequest{SpaceId: state.SpaceID, ObjectId: page.ID, ContextId: page.ID}, deleted)
+	if deleted.Error == nil || (deleted.Error.Code != pb.RpcObjectShowResponseError_NOT_FOUND &&
+		deleted.Error.Code != pb.RpcObjectShowResponseError_OBJECT_DELETED) {
+		r.t.Fatal("deleted object did not return a specific native not-found/deleted response")
+	}
+	checks = append(checks, map[string]any{"name": "object_deleted", "object_id": page.ID,
+		"members": deletedMembers, "object_show_error": int(deleted.Error.Code)})
+	if len(checks) != 16 || !reflect.DeepEqual(initial, checks[12]["restored_members"]) {
+		r.t.Fatal("exact declared freshness checks and restored pre-deletion baseline required")
+	}
+	return checks
+}
+
 // Four real application processes must reopen the same synthetic account and
 // original object/block identities. No account is recreated in later phases.
 func TestT5AccountCompatibilityPairPhase(t *testing.T) {
@@ -323,7 +607,7 @@ func TestT5AccountCompatibilityPairPhase(t *testing.T) {
 	phase, role := os.Getenv("PINKHA_ACCOUNT_PAIR_PHASE"), os.Getenv("PINKHA_ACCOUNT_PAIR_ROLE")
 	root, reportPath := os.Getenv("PINKHA_ACCOUNT_PAIR_ROOT"), os.Getenv("PINKHA_ACCOUNT_PAIR_REPORT")
 	nonce, patch := os.Getenv("PINKHA_ACCOUNT_PAIR_NONCE"), os.Getenv("PINKHA_ACCOUNT_PAIR_PATCH_SHA")
-	roles := map[string]string{"old-create": "old", "new-upgrade": "new", "old-edit": "old", "new-recover": "new"}
+	roles := map[string]string{"old-create": "old", "new-upgrade": "new", "old-edit": "old", "new-recover": "new", "new-freshness": "new"}
 	patches := map[string]string{"old": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
 		"new": "5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2"}
 	if roles[phase] != role || patches[role] != patch || nonce == "" || root == "" || reportPath == "" ||
@@ -444,6 +728,34 @@ func TestT5AccountCompatibilityPairPhase(t *testing.T) {
 			t.Fatal("reopened a different native account")
 		}
 		rpc.invoke(WorkspaceOpen, &pb.RpcWorkspaceOpenRequest{SpaceId: state.SpaceID}, &pb.RpcWorkspaceOpenResponse{})
+	}
+	if phase == "new-freshness" {
+		checks := rpc.verifyFreshness(&state)
+		shutdown()
+		if !closed {
+			t.Fatal("freshness process did not close the original account")
+		}
+		stateBytes, err := os.ReadFile(statePath)
+		if err != nil {
+			t.Fatal(err)
+		}
+		report := map[string]any{"protocol": protocol, "phase": phase, "pid": os.Getpid(), "nonce": nonce,
+			"heart_sha": vcs.GitCommit, "patch_sha256": patch, "fixture_sha256": accountPairFixtureSHA,
+			"runtime_version": version.Version, "account_root": root, "account_id": state.AccountID,
+			"space_id": state.SpaceID, "state_sha256": t5PairHash(stateBytes), "closed": true, "test_passed": true,
+			"account_stop_completed": true, "application_cleared": true, "rpc_calls": rpc.calls,
+			"freshness_status": "PASS_NATIVE_RPC_MUTATIONS", "checks": checks, "coverage": "indexedTargetsOnly",
+			"space_wide_freshness": "NOT_PROVEN", "host_target_exclusion_status": "NOT_RUN_SWIFT_HOST",
+			"write_origin":      "NATIVE_RPC_WITHOUT_SWIFT_INVALIDATION_OR_EXPLICIT_REINDEX",
+			"client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF", "swift_pairing_status": "NOT_RUN",
+			"scope": "fifth same-account native process; intentional disposable mutations after four closed compatibility phases"}
+		data, err := json.MarshalIndent(report, "", "  ")
+		if err != nil {
+			t.Fatal(err)
+		}
+		t5PairWrite(t, reportPath, data)
+		t.Log("PASS actual native RPC updates/unlinks/archive/type/removal; dangling host exclusion remains a Swift gate")
+		return
 	}
 	if phase == "old-edit" {
 		rpc.invoke(ObjectSetDetails, &pb.RpcObjectSetDetailsRequest{ContextId: state.Documents[0].ID,
