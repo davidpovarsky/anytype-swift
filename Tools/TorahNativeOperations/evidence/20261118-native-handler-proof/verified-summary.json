@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "status": "PASS_SCOPED_NATIVE_HANDLER_CONTROLS",
+  "run_id": 44239002534,
+  "run_attempt": 1,
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44239002534",
+  "source_commit": "1f0c134c7986dd637540569eb1bd1192919070b4",
+  "integrated_app_sha": "f8cf3551eb66c725d9241917d778b52a647c71c2",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "inventory_sha256": "5fadaac6dd3a2ad2d7687eec4c1ce80e95b40e05050d369a365d18bc854c3275",
+  "patch_sha256": "8706ff898474ca227947caa0f199300919b7bc93b954cb7ef9e3d1a9ad0ece10",
+  "verification": "GitHub artifacts read in memory on the connected host; SHA-256 recomputed against API digests; actual go-test JSON terminal events counted; receipts checked against exact source. Raw artifacts remain on GitHub.",
+  "registry": {
+    "artifact_id": 14399255657,
+    "zip_sha256": "b15ec6173416328d7bb8aecc9fd9f6a49125612820a7cef5e1c2392bdce580e4",
+    "receipt_sha256": "11a6b99363a926c82e50223c69ed670b22e46e6027de7f69b85e16947911b758",
+    "go_test_sha256": "06766b9298de0d10c8081f3d582dff2f7522c3accfd67c1ed9622dd16789f5a9",
+    "top_level_pass": 18,
+    "subcase_pass": 21,
+    "total_pass": 39,
+    "fail": 0,
+    "skip": 0
+  },
+  "component": {
+    "artifact_id": 14398272806,
+    "zip_sha256": "b0e0b587bd1ab77354d42f9614983a92b56b078bebfec67cf66cced397f88444",
+    "receipt_sha256": "6dada4dc96952112220afba57ce4a97895e6d0d70f13c932475396c6c1dc05a0",
+    "go_test_sha256": "b10c7b65f21ab37ca5c4cfbbdec663eaf7f7d6b774b13c3f5ff26d2e1359c17b",
+    "top_level_pass": 23,
+    "subcase_pass": 45,
+    "total_pass": 68,
+    "fail": 0,
+    "skip": 2,
+    "skipped": [
+      "TestNativeTreeProcessHelper",
+      "TestCommittedProcessExitHelper"
+    ],
+    "non_json_preamble": "34 verified go: downloading lines; no unclassified output ignored"
+  },
+  "new_named_controls_passed": [
+    "TestPinkhaNativeHandlerRejectsVersionBeforeAccountAccess",
+    "TestPinkhaNativeHandlerRequiresRunningAccount",
+    "TestPinkhaNativeReadShapeAndCancellationBeforeAccountAccess",
+    "TestNativeAccountBoundaryACLUsesCurrentSignedMembership"
+  ],
+  "acceptance": {
+    "handler_happy_path_with_real_account": "NOT_RUN",
+    "generated_rpc": "NOT_IMPLEMENTED",
+    "app_binding": "OFF",
+    "ios": "NOT_RUN",
+    "two_app_clients": "NOT_RUN",
+    "full_t2": "NOT_RUN",
+    "transport": "PASS_ISOLATED_LOOPBACK_PROTOCOL_ONLY"
+  },
+  "asana_comments": {
+    "architecture": "1220663259194749",
+    "full_t2": "1220652002132094",
+    "two_client": "1220663259194454"
+  }
+}

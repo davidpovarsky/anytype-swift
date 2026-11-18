@@ -460,3 +460,25 @@ diff --git a/space/spacecore/typeprovider/typeprovider.go b/space/spacecore/type
 +	}
 +	return tp, key, nil
 +}
+diff --git a/core/block/export/collection.go b/core/block/export/collection.go
+--- a/core/block/export/collection.go
++++ b/core/block/export/collection.go
+@@ -41,6 +41,7 @@
+ // formats reach the same code through exportContext.docsForExport; the
+ // native AnyBlock JSON exporter consumes only this method.
+ func (e *export) Collect(ctx context.Context, req collect.Request) (collect.Docs, error) {
++	e = withPrivateTorahExportGuard(e)
+ 	ec := &exportContext{
+ 		spaceId:          req.SpaceId,
+ 		docs:             Docs{},
+diff --git a/core/block/export/export.go b/core/block/export/export.go
+--- a/core/block/export/export.go
++++ b/core/block/export/export.go
+@@ -266,6 +266,7 @@
+ }
+ 
+ func newExportContext(e *export, req pb.RpcObjectListExportRequest) *exportContext {
++	e = withPrivateTorahExportGuard(e)
+ 	ec := &exportContext{
+ 		report:                       new(report.Collector),
+ 		path:                         req.Path,

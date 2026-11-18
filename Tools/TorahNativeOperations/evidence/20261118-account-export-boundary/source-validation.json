@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "status": "SOURCE_READY_NATIVE_NOT_RUN",
+  "base_app_sha": "1f0c134c7986dd637540569eb1bd1192919070b4",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "inventory_sha256": "16489253653462646a333f42c2ff364aeb877fa64b2db82dca0565ae14091a79",
+  "patch_sha256": "4d470b31854ae2af3360676a1dabb06d60207ed2d4afddabad412bdc35adebc3",
+  "runner_sha256": "7e0ba59d25a731a3ebb2a8e713598928cc9ac98f42a3b65ae09f1fa444e2ebeb",
+  "account_fixture_sha256": "ec7ffd7ede3958b7b1d2c89728bdbc688ac981181ed05019012204b15ca3f796",
+  "checks": {
+    "strict_in_memory_patch_application": "PASS",
+    "tracked_base_and_result_hashes_verified": 13,
+    "overlay_hashes_verified": 33,
+    "controller_tests": 5,
+    "controller_failures": 0,
+    "gofmt": "PASS",
+    "git_diff_check": "PASS",
+    "existing_acceptance_assertions_preserved": true
+  },
+  "composition": {
+    "t2_paths": 46,
+    "r14_go_paths": 35,
+    "r15_go_paths": 41,
+    "overlap": []
+  },
+  "scope": {
+    "heart_worktree_written": false,
+    "t5_source_written": false,
+    "native_execution": "NOT_RUN",
+    "real_account_phase_acceptance": "NOT_RUN",
+    "app_capability": "OFF",
+    "direct_anyblock_helper_outside_export_service": "NOT_COVERED"
+  },
+  "selected_new_tests": [
+    "TestPinkhaExportGetterPreservesNativeTypeAndCacheLifecycle",
+    "TestPinkhaExportContextGuardIsScopedAndCopied",
+    "TestPinkhaPrivateObjectSingleExportDenied",
+    "TestPinkhaPrivateObjectListAndCollectDenied"
+  ]
+}
