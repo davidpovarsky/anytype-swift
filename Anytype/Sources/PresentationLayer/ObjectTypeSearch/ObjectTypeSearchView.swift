@@ -38,7 +38,8 @@ struct ObjectTypeSearchView: View {
     var body: some View {
         VStack(spacing: 0) {
             header
-            SearchBar(text: $viewModel.searchText, focused: false, placeholder: Loc.search)
+            SearchBar(text: $viewModel.searchText, focused: false, placeholder: Loc.search,
+                      textFieldAccessibilityIdentifier: "pinkha-object-type-search-field")
             content
             pasteButton
         }
@@ -191,6 +192,7 @@ struct ObjectTypeSearchView: View {
                 }
                 .padding(.bottom, 8)
                 .id(typeData.type.id)
+                .accessibilityIdentifier("pinkha-object-type-choice:\(typeData.type.id)")
             }
         }
         .padding(.horizontal, 20)

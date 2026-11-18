@@ -156,6 +156,7 @@ def fixture_environment(lane, value, language, observed_device_language=None):
             nonempty(value.get("setId"), "native Set")
             nonempty(value.get("universalSetId"), "mixed Set")
             validate_source_header_cases(value)
+            validate_type_switch_fixture(value)
         return {"PINKHA_NATIVE_UI_DISPOSABLE": "1", "PINKHA_NATIVE_UI_FIXTURE_JSON": json.dumps(value)}
     ids = [nonempty(value.get(key), key) for key in ("pinkhaObjectId", "noteObjectId", "pageObjectId")]
     require(len(set(ids)) == 3, "Editor fixtures must be three distinct native objects")
@@ -198,6 +199,73 @@ def validate_source_header_cases(value):
         reserved.update(mapping.values())
     require(set(object_ids).isdisjoint(reserved),
             "Source header fixture reused a writing, universal, Type or Set object")
+
+
+def validate_type_switch_fixture(value):
+    """Bind the independent UI Type-switch target to its real native readback."""
+    target = value.get("typeSwitch")
+    require(isinstance(target, dict) and set(target) == {
+        "schemaVersion", "objectId", "spaceId", "name", "initialTypeId", "types", "values", "nativeReadback"
+    }, "Type-switch fixture has an unknown schema")
+    require(type(target["schemaVersion"]) is int and target["schemaVersion"] == 1,
+            "Type-switch fixture version differs")
+    object_id = nonempty(target["objectId"], "Type-switch object")
+    require(target["spaceId"] == value["spaceId"], "Type-switch fixture belongs to another Space")
+    require(target["name"] == "Native Type-switch preserved properties", "Type-switch fixture name differs")
+    reserved = {value["setId"], value["universalSetId"], value["manySourcesDocument"]}
+    reserved.update(case["objectId"] for case in value["sourceHeaderCases"])
+    for key in ["documents", "universalDocuments", "types", "universalTypes"]:
+        reserved.update(value[key].values())
+    require(object_id not in reserved, "Type-switch reused a writing, header, universal, Type or Set object")
+    roles = {"chiddush", "article", "research"}
+    types = target["types"]
+    require(isinstance(types, dict) and set(types) == roles and set(value["types"]) == roles,
+            "Type-switch must bind all three writing Types")
+    type_ids, type_labels = [], []
+    for role, choice in types.items():
+        require(isinstance(choice, dict) and set(choice) == {
+            "id", "label", "propertyName", "sectionId", "sectionTitle", "sectionExpandable"
+        }, "Type-switch choice has an unknown schema")
+        require(choice["id"] == value["types"][role], "Type-switch choice differs from the native registered Type")
+        type_ids.append(nonempty(choice["id"], "Type-switch Type identity"))
+        type_labels.append(nonempty(choice["label"], "Type-switch Type label"))
+        nonempty(choice["propertyName"], "Type-switch native Type property name")
+        nonempty(choice["sectionId"], "Type-switch native section identity")
+        require(type(choice["sectionExpandable"]) is bool and isinstance(choice["sectionTitle"], str),
+                "Type-switch section observation is invalid")
+        if choice["sectionExpandable"]:
+            nonempty(choice["sectionTitle"], "Type-switch expandable section title")
+    require(len(set(type_ids)) == 3 and len(set(type_labels)) == 3,
+            "Type-switch writing Type identities or labels are ambiguous")
+    require(target["initialTypeId"] == types["chiddush"]["id"], "Type-switch did not start as Chiddush")
+    expected = [
+        ("ref", "Genesis 3:1", "Genesis 3:1", "מקור/ות"),
+        ("topic", "creation", "Creation", "נושא"),
+        ("word", "בראשית", "בראשית", "מילה / ערך"),
+    ]
+    values = target["values"]
+    require(isinstance(values, list) and len(values) == 3, "Type-switch requires three native values")
+    projection, identities = {}, []
+    for record, (kind, canonical, label, name) in zip(values, expected):
+        require(isinstance(record, dict) and set(record) == {
+            "kind", "canonicalKey", "propertyKey", "propertyName", "identity", "label"
+        }, "Type-switch value has an unknown schema")
+        require((record["kind"], record["canonicalKey"], record["label"], record["propertyName"]) ==
+                (kind, canonical, label, name), "Type-switch native value differs from its independently seeded association")
+        key = nonempty(record["propertyKey"], "Type-switch native property key")
+        identity = nonempty(record["identity"], "Type-switch canonical identity")
+        require(key not in projection, "Type-switch reused a native property key")
+        projection[key] = [identity]
+        identities.append(identity)
+    require(len(set(identities)) == 3, "Type-switch reused a canonical identity")
+    readback = target["nativeReadback"]
+    require(isinstance(readback, dict) and set(readback) == {
+        "method", "objectId", "spaceId", "typeId", "canonicalNonempty", "projections"
+    }, "Type-switch native readback has an unknown schema")
+    require(readback["method"] == "ObjectShow" and readback["objectId"] == object_id and
+            readback["spaceId"] == value["spaceId"] and readback["typeId"] == target["initialTypeId"] and
+            readback["canonicalNonempty"] is True and readback["projections"] == projection,
+            "Type-switch native readback is missing, foreign or differs from the seeded values")
 
 
 def property_environment(preparation, expected_space):

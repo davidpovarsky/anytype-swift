@@ -176,7 +176,7 @@ class AcceptanceSelectionTests(unittest.TestCase):
     def source_header_fixture():
         roles = ["chiddush", "article", "research"]
         universal = ["page", "note", "custom"]
-        return {"spaceId": "s",
+        fixture = {"spaceId": "s",
                 "documents": {role: "writing-" + role for role in roles},
                 "types": {role: "type-" + role for role in roles},
                 "universalDocuments": {role: "universal-" + role for role in universal},
@@ -187,6 +187,102 @@ class AcceptanceSelectionTests(unittest.TestCase):
                     {"count": count, "objectId": "header-" + str(count),
                      "labels": ["Genesis 2:" + str(index) for index in range(1, count + 1)]}
                     for count in [0, 1, 2, 12]]}
+        values = [
+            {"kind": kind, "canonicalKey": canonical, "propertyKey": "native-" + kind,
+             "propertyName": name, "identity": "canonical-" + kind, "label": label}
+            for kind, canonical, label, name in [
+                ("ref", "Genesis 3:1", "Genesis 3:1", "מקור/ות"),
+                ("topic", "creation", "Creation", "נושא"),
+                ("word", "בראשית", "בראשית", "מילה / ערך")]
+        ]
+        fixture["typeSwitch"] = {
+            "schemaVersion": 1, "objectId": "type-switch-document", "spaceId": "s",
+            "name": "Native Type-switch preserved properties", "initialTypeId": "type-chiddush",
+            "types": {role: {"id": "type-" + role, "label": role.title(), "propertyName": "Type",
+                              "sectionId": "featured", "sectionTitle": "", "sectionExpandable": False}
+                      for role in roles},
+            "values": values,
+            "nativeReadback": {"method": "ObjectShow", "objectId": "type-switch-document", "spaceId": "s",
+                               "typeId": "type-chiddush", "canonicalNonempty": True,
+                               "projections": {record["propertyKey"]: [record["identity"]] for record in values}},
+        }
+        return fixture
+
+    def test_type_switch_preserves_native_identity_and_real_expandable_section_metadata(self):
+        fixture = self.source_header_fixture()
+        fixture["typeSwitch"]["types"]["article"].update(
+            sectionId="hidden", sectionTitle="Hidden", sectionExpandable=True)
+        for lane in ["properties", "properties-set"]:
+            with self.subTest(lane=lane):
+                result = fixture_environment(lane, fixture, "en")
+                self.assertEqual(json.loads(result["PINKHA_NATIVE_UI_FIXTURE_JSON"]), fixture)
+        self.assertEqual(plan("properties-set", "ipad", "en")["methods"], [
+            "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing",
+            "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet",
+        ])
+
+    def test_type_switch_rejects_reused_targets_and_unproven_native_readback_before_ui(self):
+        def field(key, value):
+            return lambda fixture: fixture["typeSwitch"].update({key: value})
+        def choice(key, value):
+            return lambda fixture: fixture["typeSwitch"]["types"]["article"].update({key: value})
+        def association(index, key, value):
+            return lambda fixture: fixture["typeSwitch"]["values"][index].update({key: value})
+        def readback(key, value):
+            return lambda fixture: fixture["typeSwitch"]["nativeReadback"].update({key: value})
+        changes = {
+            "missing": lambda f: f.pop("typeSwitch"),
+            "unknown_field": field("unobserved", True),
+            "boolean_version": field("schemaVersion", True),
+            "future_version": field("schemaVersion", 2),
+            "foreign_space": field("spaceId", "other-space"),
+            "empty_object": field("objectId", ""),
+            "wrong_name": field("name", "source header"),
+            "writing_object": field("objectId", "writing-chiddush"),
+            "header_object": field("objectId", "header-1"),
+            "universal_object": field("objectId", "universal-page"),
+            "type_object": field("objectId", "type-article"),
+            "set_object": field("objectId", "universal-set"),
+            "wrong_initial_type": field("initialTypeId", "type-article"),
+            "missing_type": lambda f: f["typeSwitch"]["types"].pop("research"),
+            "extra_type": lambda f: f["typeSwitch"]["types"].update(page={}),
+            "foreign_type": choice("id", "another-type"),
+            "duplicate_label": choice("label", "Chiddush"),
+            "empty_type_label": choice("label", ""),
+            "missing_section": choice("sectionId", ""),
+            "numeric_expansion": choice("sectionExpandable", 1),
+            "empty_expandable_title": choice("sectionExpandable", True),
+            "unknown_choice_field": choice("selectedByFixture", True),
+            "missing_value": lambda f: f["typeSwitch"]["values"].pop(),
+            "extra_value": lambda f: f["typeSwitch"]["values"].append({}),
+            "reordered_values": lambda f: f["typeSwitch"]["values"].reverse(),
+            "wrong_kind": association(0, "kind", "topic"),
+            "source_from_set": association(0, "canonicalKey", "Genesis 1:1"),
+            "word_placeholder": association(2, "label", "Select options"),
+            "wrong_property": association(1, "propertyName", "מקור/ות"),
+            "reused_property_key": association(1, "propertyKey", "native-ref"),
+            "reused_canonical_identity": association(1, "identity", "canonical-ref"),
+            "empty_identity": association(2, "identity", ""),
+            "unknown_value_field": association(0, "passed", True),
+            "missing_readback": field("nativeReadback", None),
+            "foreign_readback_object": readback("objectId", "writing-chiddush"),
+            "foreign_readback_space": readback("spaceId", "other-space"),
+            "wrong_readback_type": readback("typeId", "type-research"),
+            "no_native_call": readback("method", "Fixture"),
+            "empty_canonical": readback("canonicalNonempty", False),
+            "numeric_canonical": readback("canonicalNonempty", 1),
+            "missing_projections": readback("projections", {}),
+            "wrong_projection": lambda f: f["typeSwitch"]["nativeReadback"]["projections"].update({"native-word": ["other"]}),
+            "extra_projection": lambda f: f["typeSwitch"]["nativeReadback"]["projections"].update({"extra": ["other"]}),
+            "unknown_readback_field": readback("accepted", True),
+        }
+        for name, change in changes.items():
+            for lane in ["properties", "properties-set"]:
+                with self.subTest(change=name, lane=lane):
+                    fixture = self.source_header_fixture()
+                    change(fixture)
+                    with self.assertRaisesRegex(ValueError, "Type-switch"):
+                        fixture_environment(lane, fixture, "en")
 
     def test_missing_native_preparation_output_is_not_a_fixture(self):
         with tempfile.TemporaryDirectory() as directory:

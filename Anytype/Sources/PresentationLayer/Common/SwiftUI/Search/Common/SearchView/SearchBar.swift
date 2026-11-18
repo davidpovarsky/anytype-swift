@@ -5,17 +5,22 @@ struct SearchBar: View {
     let focused: Bool
     var placeholder: String = Loc.search
     var shouldShowDivider = true
+    var textFieldAccessibilityIdentifier: String? = nil
 
     var body: some View {
         Group {
             if focused {
-                AutofocusedTextField(placeholder: placeholder, font: .uxBodyRegular, text: $text)
-                    .disableAutocorrection(true)
-                    .autocapitalization(.none)
+                identifiedField(
+                    AutofocusedTextField(placeholder: placeholder, font: .uxBodyRegular, text: $text)
+                        .disableAutocorrection(true)
+                        .autocapitalization(.none)
+                )
             } else {
-                AnytypeTextField(placeholder: placeholder, font: .uxBodyRegular, text: $text)
-                    .disableAutocorrection(true)
-                    .autocapitalization(.none)
+                identifiedField(
+                    AnytypeTextField(placeholder: placeholder, font: .uxBodyRegular, text: $text)
+                        .disableAutocorrection(true)
+                        .autocapitalization(.none)
+                )
             }
         }
         .padding(8)
@@ -44,6 +49,15 @@ struct SearchBar: View {
         .padding(.vertical, 10)
         .if(shouldShowDivider) {
             $0.divider()
+        }
+    }
+
+    @ViewBuilder
+    private func identifiedField<Content: View>(_ field: Content) -> some View {
+        if let textFieldAccessibilityIdentifier {
+            field.accessibilityIdentifier(textFieldAccessibilityIdentifier)
+        } else {
+            field
         }
     }
 }

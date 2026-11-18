@@ -221,11 +221,55 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     }
 
     func testRemainingUniversalTypePickersAndMixedSet() throws {
-        // The historical method name is retained for the exact selector contract.
-        // This method proves Set columns/membership only. Current Type picker and
-        // persistence assertions run in testUniversalPageNoteCustomPropertiesAndMixedSet.
+        let preserved = fixture.typeSwitch
+        XCTAssertEqual(preserved.spaceId, fixture.spaceId)
+        XCTAssertEqual(preserved.initialTypeId, fixture.types["chiddush"])
+        XCTAssertEqual(preserved.values.map(\.kind), ["ref", "topic", "word"])
+        var currentType = try XCTUnwrap(preserved.types["chiddush"])
+        try openProperties(preserved.objectId)
+        try expectTypeSwitchValues(preserved)
+        _ = try typeValueButton(currentType, expandSection: true)
+        captureTypeSwitch("initial-chiddush")
+        for role in ["article", "research", "chiddush"] {
+            let nextType = try XCTUnwrap(preserved.types[role])
+            let current = try typeValueButton(currentType, expandSection: false)
+            current.tap()
+            // Use the original Type picker and its real search. Its native
+            // choice ID is read from ObjectShow, not inferred from a label.
+            let search = app.textFields.matching(NSPredicate(
+                format: "identifier == %@", "pinkha-object-type-search-field"
+            )).firstMatch
+            try requireHittable([search], until: Date().addingTimeInterval(15),
+                                diagnosticName: "type-switch-search-\(role)")
+            XCTAssertTrue(search.isHittable)
+            let previous = (search.value as? String).flatMap { $0 == "Search" ? nil : $0 } ?? ""
+            setPropertySearch(search, previous: previous, text: nextType.label)
+            let choices = app.buttons.matching(NSPredicate(
+                format: "identifier == %@", "pinkha-object-type-choice:\(nextType.id)"
+            ))
+            let choice = choices.firstMatch
+            try requireHittable([choice], until: Date().addingTimeInterval(20),
+                                diagnosticName: "type-switch-choice-\(role)")
+            XCTAssertEqual(choices.count, 1)
+            XCTAssertTrue(choice.isHittable)
+            XCTAssertTrue(choice.label.contains(nextType.label))
+            choice.tap()
+            XCTAssertTrue(choice.waitForNonExistence(timeout: 15))
+            // Await the actual Type value before terminating the process. The
+            // existing Properties model retains expansion for an unchanged section.
+            _ = try typeValueButton(nextType, expandSection: nextType.sectionId != currentType.sectionId)
+            captureTypeSwitch("changed-\(role)")
+            app.terminate()
+            try openProperties(preserved.objectId)
+            try expectTypeSwitchValues(preserved)
+            _ = try typeValueButton(nextType, expandSection: true)
+            captureTypeSwitch("cold-reopen-\(role)")
+            currentType = nextType
+        }
+        app.terminate()
         // The accepted real native fixture has already linked these P1 objects
-        // through the canonical repository. Do not repeat passed P2 UI flows.
+        // through the canonical repository. Preserve the existing mixed-Set
+        // assertions; the Type-switch document has a different source reference.
         try open(fixture.universalSetId)
         try enableNativeColumns()
         app.terminate()
@@ -235,6 +279,98 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
             XCTAssertTrue(setLabel("Universal \(role) P1").waitForExistence(timeout: 30))
         }
         screenshot("remaining-universal-mixed-native-filter-membership")
+    }
+
+    private func expectTypeSwitchValues(_ preserved: NativeTypeSwitchFixture) throws {
+        XCTAssertEqual(currentObjectID, preserved.objectId)
+        for value in preserved.values {
+            expectNativeValue(value.propertyName, label: value.label)
+        }
+    }
+
+    private func typeValueButton(_ type: NativeTypeSwitchChoice, expandSection: Bool) throws -> XCUIElement {
+        let deadline = Date().addingTimeInterval(20)
+        let identity = "pinkha-properties-type-value:\(type.id)"
+        let predicate = NSPredicate(format: "identifier == %@", identity)
+        let choices = app.buttons.matching(predicate)
+        let value = choices.firstMatch
+        if expandSection && type.sectionExpandable &&
+            !value.waitForExistence(timeout: min(2, max(0, deadline.timeIntervalSinceNow))) {
+            let header = app.buttons.matching(NSPredicate(format: "label == %@", type.sectionTitle)).firstMatch
+            try requireHittable([header], until: min(deadline, Date().addingTimeInterval(15)),
+                                diagnosticName: "type-switch-section")
+            XCTAssertTrue(header.isHittable)
+            header.tap()
+        }
+        // One 20s budget covers section readiness, positioning and hit testing.
+        // An on-screen value can be temporarily unhittable during animation;
+        // this alone must never cause a swipe.
+        var swipes = 0
+        while Date() < deadline {
+            if value.exists && value.isHittable && choices.count == 1 && Date() < deadline {
+                XCTAssertEqual(choices.count, 1)
+                XCTAssertTrue(value.isHittable)
+                XCTAssertTrue(value.label.contains(type.label))
+                return value
+            }
+            if value.exists && !value.isHittable && swipes < 4 {
+                // Preserve the complete native identity in the container query.
+                let scroll = app.scrollViews.containing(predicate).firstMatch
+                if scroll.exists && scroll.isHittable {
+                    let viewport = scroll.frame.intersection(app.frame)
+                    let frame = value.frame
+                    if !viewport.isEmpty && !frame.isEmpty && Date() < deadline {
+                        if frame.maxY <= viewport.minY {
+                            scroll.swipeDown()
+                            swipes += 1
+                        } else if frame.minY >= viewport.maxY {
+                            scroll.swipeUp()
+                            swipes += 1
+                        }
+                    }
+                }
+            }
+            let remaining = deadline.timeIntervalSinceNow
+            if remaining > 0 { Thread.sleep(forTimeInterval: min(0.1, remaining)) }
+        }
+        try failReadiness([value], diagnosticName: "type-switch-current-value",
+                          message: "The exact native Type value did not become unique and hittable within its 20-second budget")
+    }
+
+    private func requireHittable(_ controls: [XCUIElement], until deadline: Date,
+                                diagnosticName: String) throws {
+        let expectations = controls.map {
+            XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == true AND hittable == true"), object: $0)
+        }
+        let remaining = deadline.timeIntervalSinceNow
+        let result: XCTWaiter.Result = remaining > 0 && !controls.isEmpty
+            ? XCTWaiter.wait(for: expectations, timeout: remaining) : .timedOut
+        guard result == .completed, Date() <= deadline,
+              controls.allSatisfy({ $0.exists && $0.isHittable }) else {
+            try failReadiness(controls, diagnosticName: diagnosticName,
+                              message: "The original native controls did not become hittable within their existing deadline")
+        }
+        for control in controls { XCTAssertTrue(control.exists); XCTAssertTrue(control.isHittable) }
+    }
+
+    private func failReadiness(_ controls: [XCUIElement], diagnosticName: String,
+                               message: String) throws -> Never {
+        let targets = controls.map(\.debugDescription).joined(separator: "\n\n")
+        let hierarchy = XCTAttachment(string: "App:\n" + app.debugDescription + "\n\nTargets:\n" + targets)
+        hierarchy.name = diagnosticName + "-failure-accessibility"
+        hierarchy.lifetime = .keepAlways
+        add(hierarchy)
+        screenshot(diagnosticName + "-failure")
+        XCTFail(message)
+        throw NSError(domain: "NativePropertiesControlReadiness", code: 1)
+    }
+
+    private func captureTypeSwitch(_ phase: String) {
+        screenshot("native-type-switch-\(phase)")
+        let hierarchy = XCTAttachment(string: app.debugDescription)
+        hierarchy.name = "native-type-switch-\(phase)-accessibility"
+        hierarchy.lifetime = .keepAlways
+        add(hierarchy)
     }
 
     private func setPropertySearch(_ search: XCUIElement, previous: String, text: String) {
@@ -371,12 +507,15 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         if id == fixture.setId || id == fixture.universalSetId {
             XCTAssertTrue(setTable.waitForExistence(timeout: 45))
         } else if fixture.types.values.contains(id) || fixture.universalTypes.values.contains(id) {
-            XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Properties,")).firstMatch.waitForExistence(timeout: 45))
+            let properties = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Properties,")).firstMatch
+            try requireHittable([properties], until: Date().addingTimeInterval(45),
+                                diagnosticName: "native-type-editor-properties")
         } else {
             let editor = app.otherElements.matching(NSPredicate(format: "identifier == %@", "pinkha-ui27-editor:\(fixture.spaceId):\(id)")).firstMatch
-            XCTAssertTrue(editor.waitForExistence(timeout: 45), "The exact disposable document must be mounted")
+            try requireHittable([editor, navigationMore], until: Date().addingTimeInterval(45),
+                                diagnosticName: "native-exact-document-navigation")
             XCTAssertTrue(editor.isHittable)
-            XCTAssertTrue(navigationMore.waitForExistence(timeout: 45))
+            XCTAssertTrue(navigationMore.isHittable)
         }
         currentObjectID = id
     }
@@ -385,13 +524,20 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         if !alreadyOpen { try open(id) }
         if fixture.types.values.contains(id) || fixture.universalTypes.values.contains(id) {
             let properties = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Properties,")).firstMatch
-            XCTAssertTrue(properties.waitForExistence(timeout: 20)); properties.tap()
+            try requireHittable([properties], until: Date().addingTimeInterval(20),
+                                diagnosticName: "native-type-properties-open")
+            properties.tap()
             if expectsSources { XCTAssertTrue(propertyTitle("מקור/ות").waitForExistence(timeout: 20)) }
             return
         }
+        let menuDeadline = Date().addingTimeInterval(15)
+        try requireHittable([navigationMore], until: menuDeadline,
+                            diagnosticName: "native-document-more-open")
         navigationMore.tap()
         let button = app.buttons["Properties"].firstMatch
-        XCTAssertTrue(button.waitForExistence(timeout: 15)); button.tap()
+        try requireHittable([button], until: menuDeadline,
+                            diagnosticName: "native-document-properties-open")
+        button.tap()
         if expectsSources { XCTAssertTrue(propertyTitle("מקור/ות").waitForExistence(timeout: 20)) }
     }
 
@@ -538,6 +684,7 @@ private struct NativeDerivedFixture: Decodable {
     let types: [String: String]
     let manySourcesDocument: String
     let sourceHeaderCases: [NativeSourceHeaderCase]
+    let typeSwitch: NativeTypeSwitchFixture
     let setId: String
     let nativeProperties: [String]
     let sourceQuery: String
@@ -551,6 +698,29 @@ private struct NativeSourceHeaderCase: Decodable {
     let count: Int
     let objectId: String
     let labels: [String]
+}
+
+private struct NativeTypeSwitchFixture: Decodable {
+    let objectId: String
+    let spaceId: String
+    let initialTypeId: String
+    let types: [String: NativeTypeSwitchChoice]
+    let values: [NativeTypeSwitchValue]
+}
+
+private struct NativeTypeSwitchChoice: Decodable {
+    let id: String
+    let label: String
+    let propertyName: String
+    let sectionId: String
+    let sectionTitle: String
+    let sectionExpandable: Bool
+}
+
+private struct NativeTypeSwitchValue: Decodable {
+    let kind: String
+    let propertyName: String
+    let label: String
 }
 
 @MainActor

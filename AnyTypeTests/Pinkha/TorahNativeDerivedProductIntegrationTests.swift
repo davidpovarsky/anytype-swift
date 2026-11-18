@@ -512,6 +512,15 @@ struct TorahNativeDerivedProductIntegrationTests {
                     chipsTorahModel.isEligible
             }
         }
+        let reservedTypeSwitchIDs = Set(fixtureDocuments.values)
+            .union(universal.documents.values).union(universal.linkedDocuments.values)
+            .union(manifest.registeredDocumentTypes.values).union(universal.types.values)
+            .union(sourceHeaderCases.compactMap { $0["objectId"] as? String })
+            .union([nativeSet.id, universal.setId])
+        let typeSwitchFixture = try await prepareTypeSwitchFixture(
+            manifest: manifest, nativeProperties: nativeProperties, indexedTypes: indexedTypes,
+            writingDocuments: fixtureDocuments, reservedIDs: reservedTypeSwitchIDs
+        )
         let directory = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
         let fixture: [String: Any] = [
             "spaceId": spaceId, "documents": fixtureDocuments, "names": fixtureNames,
@@ -519,6 +528,7 @@ struct TorahNativeDerivedProductIntegrationTests {
             "universalSetId": universal.setId,
             "types": manifest.registeredDocumentTypes, "manySourcesDocument": chipsDocument.id,
             "sourceHeaderCases": sourceHeaderCases,
+            "typeSwitch": typeSwitchFixture,
             "setId": nativeSet.id, "nativeProperties": nativeProperties.map(\.name),
             "sourceQuery": "Genesis 1:1", "sourceLabel": "Genesis 1:1",
             "topicQuery": "Creation", "topicLabel": "Creation", "wordQuery": "בראשית"
@@ -526,6 +536,113 @@ struct TorahNativeDerivedProductIntegrationTests {
         try JSONSerialization.data(withJSONObject: fixture, options: [.sortedKeys])
             .write(to: directory.appendingPathComponent("pinkha-native-derived-ui-fixture.json"), options: .atomic)
         print("NATIVE_DERIVED_PRODUCT_PIPELINE_PASS space=\(spaceId) document=\(document.id) set=\(nativeSet.id)")
+    }
+
+    @MainActor
+    private func prepareTypeSwitchFixture(
+        manifest: PinkhaSpaceManifest, nativeProperties: [PropertyDetails], indexedTypes: [ObjectType],
+        writingDocuments: [String: String], reservedIDs: Set<String>
+    ) async throws -> [String: Any] {
+        let spaceId = manifest.spaceId
+        let chiddushId = try #require(manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey])
+        let chiddush = try #require(indexedTypes.first { $0.id == chiddushId })
+        // This document is never a writing, header or Set fixture. Only the UI
+        // changes its Type; preparation seeds real canonical associations once.
+        let document = try await Container.shared.objectActionsService().createObject(
+            name: "Native Type-switch preserved properties", typeUniqueKey: chiddush.uniqueKey,
+            shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+            spaceId: spaceId, origin: .none, templateId: manifest.defaultTemplateIds[PinkhaSchemaRoles.chiddushKey]
+        )
+        try #require(!reservedIDs.contains(document.id))
+        let kinds = ["ref", "topic", "word"]
+        let values = [
+            item(id: "type-switch-source", kind: .ref, key: "Genesis 3:1", label: "Genesis 3:1"),
+            item(id: "type-switch-topic", kind: .topic, key: "creation", label: "Creation"),
+            item(id: "type-switch-word", kind: .word, key: "בראשית", label: "בראשית")
+        ]
+        try #require(nativeProperties.count == values.count)
+        let repository = AnytypeTorahAssociationRepository()
+        for value in values {
+            _ = try await repository.addAssociation(value, target: .object(objectId: document.id), spaceId: spaceId)
+        }
+        let expectedIdentities = values.map(TorahDerivedQueryProjection.identity)
+        try await eventually {
+            let details = try await show(document.id, spaceId: spaceId)
+            return details.id == document.id && details.spaceId == spaceId && details.type == chiddushId &&
+                !details.stringValue(for: manifest.documentAssociationsPropertyKey).isEmpty &&
+                zip(nativeProperties, expectedIdentities).allSatisfy {
+                    details.stringArrayValue(for: $0.0.key) == [$0.1]
+                }
+        }
+        let details = try await show(document.id, spaceId: spaceId)
+        let persisted = try await repository.listDocumentAssociations(objectId: document.id, spaceId: spaceId)
+        try #require(persisted.count == values.count)
+        try #require(Set(persisted.map(TorahDerivedQueryProjection.identity)) == Set(expectedIdentities))
+        var valueRecords = [[String: Any]]()
+        var projectionReadback = [String: [String]]()
+        for index in values.indices {
+            let property = nativeProperties[index]
+            let rendered = try #require(TorahNativePropertyPresentation.property(
+                definition: property, details: details, isFeatured: false, valuesLocked: false
+            ))
+            guard case .tag(let tag) = rendered else {
+                Issue.record("Type-switch native value did not use the original property renderer")
+                throw NativeAcceptanceError.conditionTimeout("type-switch native renderer")
+            }
+            try #require(tag.selectedTags.count == 1)
+            try #require(tag.selectedTags[0].text == values[index].labelHe)
+            projectionReadback[property.key] = details.stringArrayValue(for: property.key)
+            valueRecords.append([
+                "kind": kinds[index], "canonicalKey": values[index].canonicalKey,
+                "propertyKey": property.key, "propertyName": property.name,
+                "identity": expectedIdentities[index], "label": tag.selectedTags[0].text
+            ])
+        }
+        // Observe the real Type row/section for each writing Type, without
+        // changing a Type through the API or making a hidden row visible in data.
+        var typeRecords = [String: [String: Any]]()
+        for role in [PinkhaSchemaRoles.chiddushKey, PinkhaSchemaRoles.articleKey, PinkhaSchemaRoles.researchKey] {
+            let typeId = try #require(manifest.registeredDocumentTypes[role])
+            let probeId: String
+            if role == PinkhaSchemaRoles.chiddushKey { probeId = document.id }
+            else { probeId = try #require(writingDocuments[role]) }
+            let probe = Container.shared.openedDocumentProvider().document(objectId: probeId, spaceId: spaceId)
+            try await probe.open()
+            let model = ObjectPropertiesViewModel(document: probe, output: nil)
+            let subscription = Task { await model.setupSubscriptions() }
+            defer { subscription.cancel() }
+            try await eventually {
+                guard probe.details?.type == typeId, probe.permissions.canChangeType else { return false }
+                let rows = model.sections.flatMap(\.relations).filter { $0.key == BundledPropertyKey.type.rawValue }
+                guard rows.count == 1, case .object(let value) = rows[0] else { return false }
+                return value.selectedObjects.count == 1 && value.selectedObjects[0].id == typeId
+            }
+            let section = try #require(model.sections.first {
+                $0.relations.contains { $0.key == BundledPropertyKey.type.rawValue }
+            })
+            let row = try #require(section.relations.first { $0.key == BundledPropertyKey.type.rawValue })
+            let typeDetails = try await show(typeId, spaceId: spaceId)
+            try #require(typeDetails.id == typeId && typeDetails.spaceId == spaceId)
+            let type = ObjectType(details: typeDetails)
+            guard case .object(let typeValue) = row else {
+                throw NativeAcceptanceError.conditionTimeout("type-switch Type row")
+            }
+            try #require(typeValue.selectedObjects.map(\.title) == [type.displayName])
+            typeRecords[role] = [
+                "id": type.id, "label": type.displayName, "propertyName": row.name,
+                "sectionId": section.id, "sectionTitle": section.title, "sectionExpandable": section.isExpandable
+            ]
+        }
+        let readback: [String: Any] = [
+            "method": "ObjectShow", "objectId": details.id, "spaceId": details.spaceId,
+            "typeId": details.type, "canonicalNonempty": !details.stringValue(for: manifest.documentAssociationsPropertyKey).isEmpty,
+            "projections": projectionReadback
+        ]
+        return [
+            "schemaVersion": 1, "objectId": document.id, "spaceId": spaceId,
+            "name": document.name, "initialTypeId": details.type, "types": typeRecords,
+            "values": valueRecords, "nativeReadback": readback
+        ]
     }
 
     @MainActor

@@ -1,4 +1,5 @@
 import SwiftUI
+import Services
 
 struct PropertiesListRowView: View {
     
@@ -69,7 +70,18 @@ struct PropertiesListRowView: View {
         }
     }
     
+    @ViewBuilder
     private var valueViewButton: some View {
+        if relation.key == BundledPropertyKey.type.rawValue,
+           case .object(let value) = relation, value.selectedObjects.count == 1 {
+            editValueButton
+                .accessibilityIdentifier("pinkha-properties-type-value:\(value.selectedObjects[0].id)")
+        } else {
+            editValueButton
+        }
+    }
+
+    private var editValueButton: some View {
         Button {
             onEditTap(relation)
         } label: {
