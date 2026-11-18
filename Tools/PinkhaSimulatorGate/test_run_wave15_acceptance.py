@@ -127,6 +127,67 @@ class AcceptanceSelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "another Space"):
                 property_environment(root, "expected")
 
+    def test_exact_native_header_cases_reach_only_the_existing_property_lanes(self):
+        fixture = self.source_header_fixture()
+        for lane in ["properties", "properties-set"]:
+            with self.subTest(lane=lane):
+                environment = fixture_environment(lane, fixture, "en")
+                self.assertEqual(json.loads(environment["PINKHA_NATIVE_UI_FIXTURE_JSON"]), fixture)
+        self.assertEqual(plan("properties", "ipad", "en")["expected_ui_executions"], 3)
+        # Other lanes retain their own real preparation contract.
+        simple = {"spaceId": "s", "universalDocuments": {"page": "page"}, "manySourcesDocument": "source"}
+        self.assertEqual(json.loads(fixture_environment("inspector", simple, "en")["PINKHA_NATIVE_UI_FIXTURE_JSON"]), simple)
+
+    def test_missing_foreign_or_ambiguous_header_cases_fail_before_ui(self):
+        def changed(case_index, key, value):
+            def apply(fixture):
+                fixture["sourceHeaderCases"][case_index][key] = value
+            return apply
+        changes = {
+            "missing": lambda f: f.pop("sourceHeaderCases"),
+            "not_list": lambda f: f.update(sourceHeaderCases={}),
+            "missing_case": lambda f: f["sourceHeaderCases"].pop(),
+            "extra_case": lambda f: f["sourceHeaderCases"].append(f["sourceHeaderCases"][0]),
+            "reordered": lambda f: f["sourceHeaderCases"].reverse(),
+            "unknown_field": changed(0, "unobserved", True),
+            "boolean_count": changed(1, "count", True),
+            "float_count": changed(2, "count", 2.0),
+            "string_count": changed(2, "count", "2"),
+            "missing_label": changed(2, "labels", ["Genesis 2:1"]),
+            "duplicate_label": changed(2, "labels", ["Genesis 2:1", "Genesis 2:1"]),
+            "different_reference": changed(1, "labels", ["Genesis 1:1"]),
+            "empty_object": changed(0, "objectId", ""),
+            "same_object": changed(0, "objectId", "header-1"),
+            "other_many_object": changed(3, "objectId", "not-the-native-twelve-object"),
+            "writing_object": changed(0, "objectId", "writing-chiddush"),
+            "page_object": changed(0, "objectId", "universal-page"),
+            "type_object": changed(0, "objectId", "type-article"),
+            "set_object": changed(0, "objectId", "writing-set"),
+        }
+        for name, change in changes.items():
+            for lane in ["properties", "properties-set"]:
+                with self.subTest(change=name, lane=lane):
+                    fixture = self.source_header_fixture()
+                    change(fixture)
+                    with self.assertRaisesRegex(ValueError, "[Ss]ource header"):
+                        fixture_environment(lane, fixture, "en")
+
+    @staticmethod
+    def source_header_fixture():
+        roles = ["chiddush", "article", "research"]
+        universal = ["page", "note", "custom"]
+        return {"spaceId": "s",
+                "documents": {role: "writing-" + role for role in roles},
+                "types": {role: "type-" + role for role in roles},
+                "universalDocuments": {role: "universal-" + role for role in universal},
+                "universalTypes": {role: "universal-type-" + role for role in universal},
+                "setId": "writing-set", "universalSetId": "universal-set",
+                "manySourcesDocument": "header-12",
+                "sourceHeaderCases": [
+                    {"count": count, "objectId": "header-" + str(count),
+                     "labels": ["Genesis 2:" + str(index) for index in range(1, count + 1)]}
+                    for count in [0, 1, 2, 12]]}
+
     def test_missing_native_preparation_output_is_not_a_fixture(self):
         with tempfile.TemporaryDirectory() as directory:
             with self.assertRaisesRegex(ValueError, "one actual"):

@@ -33,6 +33,9 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         fixture = try JSONDecoder().decode(NativeDerivedFixture.self, from: Data(try XCTUnwrap(env["PINKHA_NATIVE_UI_FIXTURE_JSON"]).utf8))
         XCTAssertEqual(fixture.documents.count, 3)
         XCTAssertEqual(Set(fixture.documents.values).count, 3)
+        XCTAssertEqual(fixture.sourceHeaderCases.map(\.count), [0, 1, 2, 12])
+        XCTAssertEqual(Set(fixture.sourceHeaderCases.map(\.objectId)).count, 4)
+        XCTAssertEqual(fixture.sourceHeaderCases.last?.objectId, fixture.manySourcesDocument)
         currentObjectID = nil
         app.launchEnvironment["PINKHA_UI27_ROUTE_OBSERVATION"] = "1"
         app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
@@ -97,7 +100,15 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     }
 
     func testSourceHeaderSelectionAndOverflow() throws {
+        for value in fixture.sourceHeaderCases where value.count < 12 {
+            try open(value.objectId)
+            try expectSourceHeader(value)
+            screenshot("native-source-header-count-\(value.count)")
+            app.terminate()
+        }
+        let many = try XCTUnwrap(fixture.sourceHeaderCases.first { $0.count == 12 })
         try open(fixture.manySourcesDocument)
+        try expectSourceHeader(many)
         let addSource = app.buttons["torah-document-sources-add"].firstMatch
         XCTAssertTrue(addSource.waitForExistence(timeout: 20))
         XCTAssertEqual(addSource.value as? String, "compact-icon")
@@ -110,8 +121,10 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         screenshot("native-source-header-compact-add-opens-document-search")
         app.terminate()
         try open(fixture.manySourcesDocument)
+        let visibleLabels = try expectSourceHeader(many)
         let overflow = app.buttons["torah-document-sources-more"].firstMatch
         XCTAssertTrue(overflow.waitForExistence(timeout: 20)); overflow.tap()
+        try expectOverflowSources(Set(many.labels).subtracting(visibleLabels))
         screenshot("native-source-header-overflow-and-separate-add")
         app.terminate()
     }
@@ -466,6 +479,53 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
 
+    @discardableResult
+    private func expectSourceHeader(_ value: NativeSourceHeaderCase) throws -> Set<String> {
+        let expected = Set(value.labels)
+        XCTAssertEqual(expected.count, value.count)
+        let add = app.buttons["torah-document-sources-add"].firstMatch
+        let more = app.buttons["torah-document-sources-more"].firstMatch
+        let chips = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "torah-document-source-chip-"
+        ))
+        let deadline = Date().addingTimeInterval(20)
+        repeat {
+            let visible = chips.allElementsBoundByIndex
+            let labels = Set(visible.map(\.label))
+            let remainder = max(0, value.count - 2)
+            let overflowMatches = remainder == 0 ? !more.exists :
+                (more.exists && more.isHittable && more.label == "\(remainder) Sources")
+            if visible.count == min(value.count, 2), labels.count == visible.count,
+               labels.isSubset(of: expected), visible.allSatisfy({ $0.isHittable }),
+               add.exists, add.isHittable,
+               add.value as? String == (value.count == 0 ? "placeholder" : "compact-icon"),
+               overflowMatches {
+                return labels
+            }
+            Thread.sleep(forTimeInterval: 0.2)
+        } while Date() < deadline
+        XCTFail("The exact native document header did not render source count \(value.count)")
+        throw NSError(domain: "NativeSourceHeaderCardinality", code: value.count)
+    }
+
+    private func expectOverflowSources(_ expected: Set<String>) throws {
+        XCTAssertEqual(expected.count, 10)
+        // The two document chips are excluded from this set. Only the actual
+        // opened native Menu can expose the remaining ten fixture source labels.
+        // A native Menu may scroll: require its exact contents and an actionable
+        // visible choice, without requiring all ten rows in one viewport.
+        let choices = app.buttons.matching(NSPredicate(format: "label IN %@", expected.sorted()))
+        let deadline = Date().addingTimeInterval(20)
+        repeat {
+            let visible = choices.allElementsBoundByIndex
+            if visible.count == expected.count, Set(visible.map(\.label)) == expected,
+               visible.contains(where: { $0.isHittable }) { return }
+            Thread.sleep(forTimeInterval: 0.2)
+        } while Date() < deadline
+        XCTFail("The source overflow Menu did not expose the exact ten remaining source choices")
+        throw NSError(domain: "NativeSourceHeaderOverflow", code: 1)
+    }
+
 }
 
 private struct NativeDerivedFixture: Decodable {
@@ -477,6 +537,7 @@ private struct NativeDerivedFixture: Decodable {
     let names: [String: String]
     let types: [String: String]
     let manySourcesDocument: String
+    let sourceHeaderCases: [NativeSourceHeaderCase]
     let setId: String
     let nativeProperties: [String]
     let sourceQuery: String
@@ -484,6 +545,12 @@ private struct NativeDerivedFixture: Decodable {
     let topicQuery: String
     let topicLabel: String
     let wordQuery: String
+}
+
+private struct NativeSourceHeaderCase: Decodable {
+    let count: Int
+    let objectId: String
+    let labels: [String]
 }
 
 @MainActor

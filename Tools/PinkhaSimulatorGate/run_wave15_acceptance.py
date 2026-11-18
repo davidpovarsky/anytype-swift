@@ -155,6 +155,7 @@ def fixture_environment(lane, value, language, observed_device_language=None):
                     and all(isinstance(v, str) and v for v in writing.values()), "Missing distinct writing-type documents")
             nonempty(value.get("setId"), "native Set")
             nonempty(value.get("universalSetId"), "mixed Set")
+            validate_source_header_cases(value)
         return {"PINKHA_NATIVE_UI_DISPOSABLE": "1", "PINKHA_NATIVE_UI_FIXTURE_JSON": json.dumps(value)}
     ids = [nonempty(value.get(key), key) for key in ("pinkhaObjectId", "noteObjectId", "pageObjectId")]
     require(len(set(ids)) == 3, "Editor fixtures must be three distinct native objects")
@@ -169,6 +170,34 @@ def fixture_environment(lane, value, language, observed_device_language=None):
         "PINKHA_ACCEPTANCE_DIRECTION": "rtl" if language == "he" else "ltr",
         "PINKHA_ACCEPTANCE_DEVICE_LANGUAGE": observed_device_language or "",
     }
+
+
+def validate_source_header_cases(value):
+    """Only the four independently prepared native header fixtures are valid."""
+    cases = value.get("sourceHeaderCases")
+    require(isinstance(cases, list) and len(cases) == 4,
+            "Source header fixture must contain exactly four cases")
+    object_ids = []
+    for case, count in zip(cases, [0, 1, 2, 12]):
+        require(isinstance(case, dict) and set(case) == {"count", "objectId", "labels"},
+                "Source header fixture has an unknown record schema")
+        require(type(case["count"]) is int and case["count"] == count,
+                "Source header fixture must declare the exact ordered 0/1/2/12 counts")
+        require(case["labels"] == ["Genesis 2:" + str(index) for index in range(1, count + 1)],
+                "Source header labels differ from the independently seeded native references")
+        object_ids.append(nonempty(case["objectId"], "source header object"))
+    require(len(set(object_ids)) == 4, "Source header cases reused an object")
+    require(object_ids[-1] == value["manySourcesDocument"],
+            "Source header twelve-source object differs from the native fixture")
+    reserved = {value["setId"], value["universalSetId"]}
+    for key in ["documents", "universalDocuments", "types", "universalTypes"]:
+        mapping = value.get(key, {})
+        require(isinstance(mapping, dict), "Source header isolation requires native fixture mappings")
+        require(all(isinstance(item, str) and item for item in mapping.values()),
+                "Source header isolation has an invalid native object identity")
+        reserved.update(mapping.values())
+    require(set(object_ids).isdisjoint(reserved),
+            "Source header fixture reused a writing, universal, Type or Set object")
 
 
 def property_environment(preparation, expected_space):

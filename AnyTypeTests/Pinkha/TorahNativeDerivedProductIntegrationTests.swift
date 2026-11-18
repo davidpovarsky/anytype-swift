@@ -402,6 +402,41 @@ struct TorahNativeDerivedProductIntegrationTests {
         try await eventually {
             try await show(chipsDocument.id, spaceId: spaceId).stringArrayValue(for: key).count == 12
         }
+        // The header cases must not reuse writing documents that another UI
+        // method mutates. They share only this freshly created disposable Space.
+        var sourceHeaderCases = [[String: Any]]()
+        for count in [0, 1, 2, 12] {
+            let labels = (0..<count).map { "Genesis 2:\($0 + 1)" }
+            let values = labels.enumerated().map { index, label in
+                item(id: "header-\(count)-\(index)", kind: .ref, key: label, label: label)
+            }
+            let headerObjectID: String
+            if count == 12 {
+                headerObjectID = chipsDocument.id
+            } else {
+                let created = try await Container.shared.objectActionsService().createObject(
+                    name: "Native source header count \(count)",
+                    typeUniqueKey: #require(indexedTypes.first { $0.id == typeId }).uniqueKey,
+                    shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+                    spaceId: spaceId, origin: .none,
+                    templateId: manifest.defaultTemplateIds[PinkhaSchemaRoles.chiddushKey]
+                )
+                headerObjectID = created.id
+                for value in values {
+                    _ = try await repository.addAssociation(
+                        value, target: .object(objectId: headerObjectID), spaceId: spaceId
+                    )
+                }
+            }
+            let expectedIdentities = Set(values.map(TorahDerivedQueryProjection.identity))
+            try await eventually {
+                let details = try await show(headerObjectID, spaceId: spaceId)
+                let actual = details.stringArrayValue(for: key)
+                return details.id == headerObjectID && details.spaceId == spaceId && details.type == typeId &&
+                    actual.count == count && Set(actual) == expectedIdentities
+            }
+            sourceHeaderCases.append(["count": count, "objectId": headerObjectID, "labels": labels])
+        }
         let afterMany = try await search.search(spaceId: spaceId, filters: [.with {
             $0.relationKey = "relationKey"; $0.condition = .in
             $0.value = TorahNativePropertyDefinition.all.map(\.key).protobufValue
@@ -483,6 +518,7 @@ struct TorahNativeDerivedProductIntegrationTests {
             "universalDocuments": universal.documents, "universalTypes": universal.types,
             "universalSetId": universal.setId,
             "types": manifest.registeredDocumentTypes, "manySourcesDocument": chipsDocument.id,
+            "sourceHeaderCases": sourceHeaderCases,
             "setId": nativeSet.id, "nativeProperties": nativeProperties.map(\.name),
             "sourceQuery": "Genesis 1:1", "sourceLabel": "Genesis 1:1",
             "topicQuery": "Creation", "topicLabel": "Creation", "wordQuery": "בראשית"
