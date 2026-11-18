@@ -37,8 +37,11 @@ reviewed root genproto replacement
 use GOWORK=off. Before each generated archive build, the launcher uses the original
 Go executable to verify that the selected native module resolves to the exact Heart
 checkout and that the selected genproto resolves to the reviewed version and both
-known h1 checksums. GOPROXY is off after the pinned dependency download. Downloading
-the correct cached version alone cannot conceal a different selected version.
+known h1 checksums in both the effective selection and the cached module download.
+The launcher hydrates the reviewed module from the cache before listing the selected
+graph; missing or different selection checksums fail validation. GOPROXY is off after
+the pinned dependency download. Downloading the correct cached version alone cannot
+conceal a different selected version or checksum.
 
 This does not patch Heart go.mod, gomobile sources, global Go settings, or the r14
 builder. The original generated go.mod text and hash remain in the receipt even after
