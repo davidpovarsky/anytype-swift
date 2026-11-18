@@ -1,0 +1,85 @@
+failed: caught "NSInternalInconsistencyException", "Invalid query - string identifier 'pinkha-ui27-editor:bafyreib7aka6ekqfyems6cyf6eqnnzt7cdfy5r7znwr3sj5nkgpdjepqvq.2x0w6n3c7zlee:bafyreihpxsumkundgqudcta6aexbmk6o5qf2ybuws3wggd65ytkjlxyx5u' exceeds maximum length of 128 characters. You can work around this limitation by constructing a query with a custom NSPredicate that specifies the property (label, title, value, placeholderValue, or identifier) to match against."
+(
+	0   CoreFoundation                      0x00000001c0287f24 __exceptionPreprocess + 172
+	1   libobjc.A.dylib                     0x00000001c008194c objc_exception_throw + 72
+	2   Foundation                          0x00000001c0507308 _userInfoForFileAndLine + 0
+	3   XCUIAutomation                      0x000000010355f3d4 -[XCUIElementQuery _predicateWithType:identifier:].cold.1 + 92
+	4   XCUIAutomation                      0x000000010350a890 -[XCUIElementQuery _predicateWithType:identifier:] + 212
+	5   XCUIAutomation                      0x000000010350aa04 -[XCUIElementQuery matchingIdentifier:] + 64
+	6   PinkhaStage1AcceptanceUITests       0x00000001045fe738 $s29PinkhaStage1AcceptanceUITests020AnytypeComprehensivecD0C12openDocument33_48E38C2E2702678D69BE57DC7BF6D5D8LLyySSKF + 4356
+	7   PinkhaStage1AcceptanceUITests       0x00000001045fd0b4 $s29PinkhaStage1AcceptanceUITests020AnytypeComprehensivecD0C36testDocumentSourceSearchPresentationyyKF + 412
+	8   PinkhaStage1AcceptanceUITests       0x00000001045fefb8 $s29PinkhaStage1AcceptanceUITests020AnytypeComprehensivecD0C36testDocumentSourceSearchPresentationyyKFTo + 144
+	9   CoreFoundation                      0x00000001c028e840 __invoking___ + 144
+	10  CoreFoundation                      0x00000001c028ba10 -[NSInvocation invoke] + 276
+	11  XCTestCore                          0x00000001032cfb94 +[XCTFailableInvocation invokeErrorConventionInvocation:completion:] + 84
+	12  XCTestCore                          0x00000001032cfb38 __90+[XCTFailableInvocation invokeInvocation:withTestMethodConvention:lastObservedErrorIssue:]_block_invoke + 24
+	13  XCTestCore                          0x00000001032cf610 __81+[XCTFailableInvocation invokeWithAsynchronousWait:lastObservedErrorIssue:block:]_block_invoke + 292
+	14  XCTestCore                          0x00000001032c0fa8 __49+[XCTSwiftErrorObservation observeErrorsInBlock:]_block_invoke + 28
+	15  XCTestCore                          0x000000010333243c $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZ12$sIyB_Ieg_TRIyB_Tf1cn_n + 172
+	16  XCTestCore                          0x0000000103332490 $sSo24XCTSwiftErrorObservationC10XCTestCoreE14_observeErrors33_4641E344ACA55A25D2B1EC985574C54DLL2inSo0abC6ResultCSgyyXE_tFZTo + 28
+	17  XCTestCore                          0x00000001032c0ecc +[XCTSwiftErrorObservation observeErrorsInBlock:] + 156
+	18  XCTestCore                          0x00000001032cf414 +[XCTFailableInvocation invokeWithAsynchronousWait:lastObservedErrorIssue:block:] + 176
+	19  XCTestCore                          0x00000001032cf9bc +[XCTFailableInvocation invokeInvocation:withTestMethodConvention:lastObservedErrorIssue:] + 140
+	20  XCTestCore                          0x00000001032cfe04 +[XCTFailableInvocation invokeInvocation:lastObservedErrorIssue:] + 64
+	21  XCTestCore                          0x00000001032e24fc -[XCTestCase invokeTestMethod:] + 56
+	22  XCTestCore                          0x00000001032e2ad8 __24-[XCTestCase invokeTest]_block_invoke.98 + 60
+	23  XCTestCore                          0x00000001032e7d80 -[XCTestCase(XCTIssueHandling) _caughtUnhandledDeveloperExceptionPermittingControlFlowInterruptions:caughtInterruptionException:whileExecutingBlock:] + 144
+	24  XCTestCore                          0x00000001032e2708 -[XCTestCase invokeTest] + 476
+	25  XCTestCore                          0x00000001032e3e74 __45-[XCTestCase _invokeTestIfSupportedOSVersion]_block_invoke + 32
+	26  XCTestCore                          0x00000001032e7d80 -[XCTestCase(XCTIssueHandling) _caughtUnhandledDeveloperExceptionPermittingControlFlowInterruptions:caughtInterruptionException:whileExecutingBlock:] + 144
+	27  XCTestCore                          0x00000001032e3d4c -[XCTestCase _invokeTestIfSupportedOSVersion] + 156
+	28  XCTestCore                          0x00000001032e3844 __26-[XCTestCase performTest:]_block_invoke.125 + 324
+	29  XCTestCore                          0x00000001032be434 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 152
+	30  XCTestCore                          0x00000001032be358 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 88
+	31  XCTestCore                          0x00000001032e3444 -[XCTestCase performTest:] + 236
+	32  XCTestCore                          0x00000001032dfb5c -[XCTest runTest] + 44
+	33  XCTestCore                          0x00000001032edae4 -[XCTestSuite runTestBasedOnRepetitionPolicy:testRun:] + 60
+	34  XCTestCore                          0x00000001032ed91c __27-[XCTestSuite performTest:]_block_invoke + 172
+	35  XCTestCore                          0x00000001032ed024 __59-[XCTestSuite _performProtectedSectionForTest:testSection:]_block_invoke + 40
+	36  XCTestCore                          0x00000001032be434 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 152
+	37  XCTestCore                          0x00000001032be358 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 88
+	38  XCTestCore                          0x00000001032ecfa4 -[XCTestSuite _performProtectedSectionForTest:testSection:] + 140
+	39  XCTestCore                          0x00000001032ed45c -[XCTestSuite performTest:] + 208
+	40  XCTestCore                          0x00000001032dfb5c -[XCTest runTest] + 44
+	41  XCTestCore                          0x00000001032edae4 -[XCTestSuite runTestBasedOnRepetitionPolicy:testRun:] + 60
+	42  XCTestCore                          0x00000001032ed91c __27-[XCTestSuite performTest:]_block_invoke + 172
+	43  XCTestCore                          0x00000001032ed024 __59-[XCTestSuite _performProtectedSectionForTest:testSection:]_block_invoke + 40
+	44  XCTestCore                          0x00000001032be434 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 152
+	45  XCTestCore                          0x00000001032be358 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 88
+	46  XCTestCore                          0x00000001032ecfa4 -[XCTestSuite _performProtectedSectionForTest:testSection:] + 140
+	47  XCTestCore                          0x00000001032ed45c -[XCTestSuite performTest:] + 208
+	48  XCTestCore                          0x00000001032dfb5c -[XCTest runTest] + 44
+	49  XCTestCore                          0x00000001032edae4 -[XCTestSuite runTestBasedOnRepetitionPolicy:testRun:] + 60
+	50  XCTestCore                          0x00000001032ed91c __27-[XCTestSuite performTest:]_block_invoke + 172
+	51  XCTestCore                          0x00000001032ed024 __59-[XCTestSuite _performProtectedSectionForTest:testSection:]_block_invoke + 40
+	52  XCTestCore                          0x00000001032be434 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 152
+	53  XCTestCore                          0x00000001032be358 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 88
+	54  XCTestCore                          0x00000001032ecfa4 -[XCTestSuite _performProtectedSectionForTest:testSection:] + 140
+	55  XCTestCore                          0x00000001032ed45c -[XCTestSuite performTest:] + 208
+	56  XCTestCore                          0x00000001032dfb5c -[XCTest runTest] + 44
+	57  XCTestCore                          0x00000001033075fc __89-[XCTTestRunSession executeTestsWithIdentifiers:skippingTestsWithIdentifiers:completion:]_block_invoke + 100
+	58  XCTestCore                          0x00000001032be434 +[XCTContext _runInChildOfContext:forTestCase:markAsReportingBase:block:] + 152
+	59  XCTestCore                          0x00000001032be358 +[XCTContext runInContextForTestCase:markAsReportingBase:block:] + 88
+	60  XCTestCore                          0x00000001033074bc -[XCTTestRunSession executeTestsWithIdentifiers:skippingTestsWithIdentifiers:completion:] + 288
+	61  XCTestCore                          0x00000001032fe288 __72-[XCTExecutionWorker enqueueTestIdentifiersToRun:testIdentifiersToSkip:]_block_invoke_2 + 116
+	62  XCTestCore                          0x00000001032ff098 __XCTAsyncEnumerateWithWaiter_block_invoke + 212
+	63  XCTestCore                          0x00000001032ff204 __XCTAsyncEnumerate_block_invoke.99 + 52
+	64  XCTestCore                          0x00000001032fe120 XCTAsyncEnumerateWithWaiter + 464
+	65  XCTestCore                          0x00000001032fdf04 __72-[XCTExecutionWorker enqueueTestIdentifiersToRun:testIdentifiersToSkip:]_block_invoke + 108
+	66  XCTestCore                          0x00000001032fe398 -[XCTExecutionWorker runWithError:] + 68
+	67  XCTestCore                          0x00000001032fc3ec __25-[XCTestDriver _runTests]_block_invoke.324 + 52
+	68  XCTestCore                          0x000000010330c0d0 -[XCTestObservationCenter _observeTestExecutionForTestBundle:inBlock:] + 92
+	69  XCTestCore                          0x00000001032fbf28 -[XCTestDriver _runTests] + 932
+	70  XCTestCore                          0x00000001032fdc1c _XCTestMain + 84
+	71  PinkhaStage1AcceptanceUITests-Runne 0x00000001022a5e6c _XCTRunnerRunTests + 372
+	72  PinkhaStage1AcceptanceUITests-Runne 0x00000001022a5cf8 _XCTRunnerRunTests + 0
+	73  CoreFoundation                      0x00000001c01e4578 __CFRUNLOOP_IS_CALLING_OUT_TO_A_BLOCK__ + 20
+	74  CoreFoundation                      0x00000001c01e3d04 __CFRunLoopDoBlocks + 340
+	75  CoreFoundation                      0x00000001c01e307c __CFRunLoopRun + 744
+	76  CoreFoundation                      0x00000001c01de040 _CFRunLoopRunSpecificWithOptions + 496
+	77  GraphicsServices                    0x00000002219199ac GSEventRunModal + 116
+	78  UIKitCore                           0x00000001c5535e30 UIApplicationMain + 124
+	79  PinkhaStage1AcceptanceUITests-Runne 0x00000001022a6190 main + 160
+	80  dyld                                0x0000000102508350 dyld-internal + 20
+	81  ???                                 0x0000000102311e80 0x0 + 4331740800
+)
