@@ -14,6 +14,10 @@ jobs:
   component:
     runs-on: ubuntu-22.04
     timeout-minutes: 60
+    env:
+      CC: musl-gcc
+      GOTOOLCHAIN: local
+      GOFLAGS: -ldflags=-extldflags=-static
     steps:
       - name: Checkout integration proof control
         uses: actions/checkout@v4
@@ -30,6 +34,12 @@ jobs:
           repository: anyproto/anytype-heart
           ref: d98420b1113536afd08cde6de9a5816f6d27ffff
           path: heart
+      - name: Install the Linux musl C toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends musl-tools
+          musl-gcc -v
+          dpkg-query -W musl musl-dev musl-tools
       - name: Install pinned Go toolchain
         uses: actions/setup-go@v5
         with:
