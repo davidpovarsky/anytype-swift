@@ -1,0 +1,36 @@
+/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift:136:23: error: 'Notification' is ambiguous for type lookup in this context
+134 | 
+135 |     private func observeScene(_ scene: UIWindowScene) {
+136 |         let events: [(Notification.Name, AnyObject?, String)] = [
+    |                       `- error: 'Notification' is ambiguous for type lookup in this context
+137 |             (UIScene.willDeactivateNotification, scene, "sceneWillDeactivate"),
+138 |             (UIScene.didEnterBackgroundNotification, scene, "sceneDidEnterBackground"),
+
+Foundation.Notification:2:15: note: found this candidate
+ 1 | @available(macOS 10.10, iOS 8.0, watchOS 2.0, tvOS 9.0, *)
+ 2 | public struct Notification : ReferenceConvertible, Equatable, Hashable {
+   |               `- note: found this candidate
+ 3 |     public typealias ReferenceType = NSNotification
+ 4 |     public var name: Notification.Name
+
+Services.Notification:1:15: note: found this candidate
+1 | public struct Notification : Sendable {
+  |               `- note: found this candidate
+2 |     public var id: String
+3 |     public var createTime: Date
+
+/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift:141:58: error: 'nil' requires a contextual type
+139 |             (UIScene.willEnterForegroundNotification, scene, "sceneWillEnterForeground"),
+140 |             (UIScene.didActivateNotification, scene, "sceneDidActivate"),
+141 |             (UIApplication.willResignActiveNotification, nil, "applicationWillResignActive"),
+    |                                                          `- error: 'nil' requires a contextual type
+142 |             (UIApplication.didBecomeActiveNotification, nil, "applicationDidBecomeActive")
+143 |         ]
+
+/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift:142:57: error: 'nil' requires a contextual type
+140 |             (UIScene.didActivateNotification, scene, "sceneDidActivate"),
+141 |             (UIApplication.willResignActiveNotification, nil, "applicationWillResignActive"),
+142 |             (UIApplication.didBecomeActiveNotification, nil, "applicationDidBecomeActive")
+    |                                                         `- error: 'nil' requires a contextual type
+143 |         ]
+144 |         for (notification, object, key) in events {
