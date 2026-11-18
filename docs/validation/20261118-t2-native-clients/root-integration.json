@@ -1,0 +1,78 @@
+{
+  "source_commit": "f43ab23dda7f1ae5d7f1b06528aeaa7b7fa5fe40",
+  "integration_commit": "9370d928a032080a67f21b54ccac169612538213",
+  "source_files": {
+    ".github/workflows/pinkha-t2-native-clients.yml": {
+      "sha256": "2864ae887277717d25dff0e9040e28525285427ec6e6106472be15d509c776bd",
+      "bytes": 6001
+    },
+    "Tools/TorahNativeOperations/NATIVE_CLIENTS_20261118.md": {
+      "sha256": "ffee8513000e6c64499f38009c81837813843c7e0778d7b1a66201ac4ad374f5",
+      "bytes": 9297
+    },
+    "Tools/TorahNativeOperations/run_account_rpc.py": {
+      "sha256": "da39f0110965262435bb9249cd2675e6ab7940fe25bcf4dc58a8fb8a83fe8777",
+      "bytes": 23187
+    },
+    "Tools/TorahNativeOperations/run_native_clients.py": {
+      "sha256": "5d4b5a773688ac79c0f41b4e78e00ca19648a3cf6667ecb65647d6ec6035cbeb",
+      "bytes": 36605
+    },
+    "Tools/TorahNativeOperations/run_native_clients_container.sh": {
+      "sha256": "0368aa0d53556dd46c015976058ac9c3ab8cc26fa0b40ad515424485de2a125c",
+      "bytes": 1279
+    },
+    "Tools/TorahNativeOperations/test_native_clients.py": {
+      "sha256": "d633df8b08b2cbb6af696508463934bb0fd476a10654a6040e7ceb1f1d38f696",
+      "bytes": 13984
+    },
+    "Tools/TorahNativeOperations/two_clients/fixture.json": {
+      "sha256": "fe2703285798fe341c2a91fb0c2d751f82c1325caee453ce453f85d7a8458fd2",
+      "bytes": 598
+    },
+    "Tools/TorahNativeOperations/two_clients/native_client_boundary_test.go": {
+      "sha256": "f36a77160b0fcce9ee0444ece3175f307605b61e2c838125de289c3cc5a9e819",
+      "bytes": 10300
+    },
+    "Tools/TorahNativeOperations/two_clients/native_client_phase_test.go": {
+      "sha256": "9edf454e2ff4840a0935b1b7d4f635121d9b3f5a1d2bd788bc6f302d044462d7",
+      "bytes": 20415
+    }
+  },
+  "source_review": "PASS_NO_BLOCKING_FINDING",
+  "scope": [
+    "owned separate containers, namespace, PeerID and empty native databases",
+    "recovery key plus public IDs/hashes only; no database/device key/signed history seeding",
+    "fixed native phase deadlines and exact owned cleanup",
+    "native evidence allowlist and secret scan before publication"
+  ],
+  "controller_tests": {
+    "platform": "Windows",
+    "functions": 35,
+    "passed": 32,
+    "skipped": 3,
+    "skipped_cases": [
+      {
+        "case": "test_sigterm_while_command_runs_cannot_be_reported_as_account_wire_pass (test_account_rpc.AccountRPCControls.test_sigterm_while_command_runs_cannot_be_reported_as_account_wire_pass)",
+        "reason": "Real SIGTERM through account-RPC command ownership"
+      },
+      {
+        "case": "test_actual_child_pid_exit_and_log_flush (test_account_lifecycle.AccountControllerControls.test_actual_child_pid_exit_and_log_flush)",
+        "reason": "Actual process-group control requires POSIX"
+      },
+      {
+        "case": "test_timeout_kills_owned_term_ignoring_descendant_and_preserves_other_group (test_account_lifecycle.AccountControllerControls.test_timeout_kills_owned_term_ignoring_descendant_and_preserves_other_group)",
+        "reason": "Owned descendant proof uses Linux proc state"
+      }
+    ],
+    "failures": 0,
+    "errors": 0,
+    "log_sha256": "9c9b1bd2e39e8be40b4d7efffdccf79b0536b489d2f56b831d9fd65828b7870d"
+  },
+  "dispatcher_added": "t2-native-clients",
+  "native_execution": "NOT_RUN_AT_INTEGRATION",
+  "app_capability": "OFF",
+  "offline_conflict_merge": "NOT_RUN",
+  "full_t2_acceptance": "NOT_RUN",
+  "completed_at": "2026-11-18T09:07:27.437546+00:00"
+}

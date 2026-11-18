@@ -19,6 +19,7 @@ on:
           - t2-native-operations
           - t2-native-rpc
           - t2-account-rpc
+          - t2-native-clients
           - t2-account-lifecycle
           - simulator-ui27
           - heart-runtime
@@ -148,6 +149,12 @@ jobs:
   hanlin-journal-probe:
     if: ${{ inputs.route == 'hanlin-journal-probe' }}
     uses: ./.github/workflows/pinkha-hanlin-journal-probe.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-native-clients:
+    if: ${{ inputs.route == 't2-native-clients' }}
+    uses: ./.github/workflows/pinkha-t2-native-clients.yml
     with:
       source_sha: ${{ github.sha }}
 
