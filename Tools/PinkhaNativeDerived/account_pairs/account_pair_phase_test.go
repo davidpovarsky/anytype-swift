@@ -169,12 +169,56 @@ func t5PairBlock(t *testing.T, root, target string, blocks []*model.Block) strin
 	return ""
 }
 
+// ObjectCreate resolves the recommended layout from the actual Space index.
+// Wait on that read prerequisite; never retry an object-creation side effect.
+func (r *t5AccountPairRPC) indexedType(space, key string) string {
+	r.t.Helper()
+	parsed, err := domain.GetTypeKeyFromRawUniqueKey(key)
+	if err != nil || parsed.String() == "" {
+		r.t.Fatal("native fixture received an invalid object type unique key")
+	}
+	id := ""
+	r.wait("indexed native type "+key, func() bool {
+		response := &pb.RpcObjectSearchResponse{}
+		r.invoke(ObjectSearch, &pb.RpcObjectSearchRequest{
+			SpaceId: space, Filters: []*model.BlockContentDataviewFilter{{
+				RelationKey: string(bundle.RelationKeyUniqueKey),
+				Condition:   model.BlockContentDataviewFilter_Equal,
+				Value:       domain.String(key).ToProto(),
+			}}, Keys: []string{"id", "spaceId", "uniqueKey"}, Limit: 2,
+		}, response)
+		if len(response.Records) == 0 {
+			return false
+		}
+		if len(response.Records) != 1 {
+			r.t.Fatal("native fixture type has ambiguous indexed identity")
+		}
+		d := domain.NewDetailsFromProto(response.Records[0])
+		id = d.GetString(bundle.RelationKeyId)
+		if id == "" || d.GetString(bundle.RelationKeySpaceId) != space ||
+			d.GetString(bundle.RelationKeyUniqueKey) != key {
+			r.t.Fatal("native fixture type index returned the wrong identity")
+		}
+		return true
+	})
+	_, details := r.show(space, id)
+	if details.GetString(bundle.RelationKeyUniqueKey) != key {
+		r.t.Fatal("native type ObjectShow disagrees with indexed unique key")
+	}
+	return id
+}
+
 func (r *t5AccountPairRPC) create(state *t5AccountPairState) {
 	space := &pb.RpcWorkspaceCreateResponse{}
 	r.invoke(WorkspaceCreate, &pb.RpcWorkspaceCreateRequest{Details: domain.NewDetails().
 		SetString(bundle.RelationKeyName, "T5 disposable same-account pair").ToProto()}, space)
 	state.SpaceID = space.SpaceId
 	r.invoke(WorkspaceOpen, &pb.RpcWorkspaceOpenRequest{SpaceId: state.SpaceID}, &pb.RpcWorkspaceOpenResponse{})
+	// Note is bundled but is not a mandatory new-Space type. Use the same
+	// native installation RPC as the existing application acceptance fixture.
+	r.invoke(WorkspaceObjectListAdd, &pb.RpcWorkspaceObjectListAddRequest{
+		SpaceId: state.SpaceID, ObjectIds: []string{bundle.TypeKeyNote.BundledURL()},
+	}, &pb.RpcWorkspaceObjectListAddResponse{})
 	manifest := &pb.RpcObjectCreateResponse{}
 	initial, _ := json.Marshal(map[string]any{"schemaVersion": 1, "spaceId": state.SpaceID, "provisioningState": "inProgress"})
 	r.invoke(ObjectCreate, &pb.RpcObjectCreateRequest{SpaceId: state.SpaceID, ObjectTypeUniqueKey: "ot-page",
@@ -221,10 +265,19 @@ func (r *t5AccountPairRPC) create(state *t5AccountPairState) {
 				SetBool(bundle.RelationKeyRelationReadonlyValue, true).ToProto()}, &pb.RpcObjectCreateRelationResponse{})
 	}
 	for index, typeKey := range []string{"ot-page", "ot-note", typeKeys["chiddush"]} {
+		typeID := r.indexedType(state.SpaceID, typeKey)
+		if index == 2 && typeID != typeIDs["chiddush"] {
+			r.t.Fatal("indexed custom type differs from the actual created type")
+		}
 		doc := t5AccountPairDocument{Name: "T5 preserved document", Role: "context"}
 		created := &pb.RpcObjectCreateResponse{}
-		r.invoke(ObjectCreate, &pb.RpcObjectCreateRequest{SpaceId: state.SpaceID, ObjectTypeUniqueKey: typeKey,
+		r.raw(ObjectCreate, &pb.RpcObjectCreateRequest{SpaceId: state.SpaceID, ObjectTypeUniqueKey: typeKey,
 			Details: domain.NewDetails().SetString(bundle.RelationKeyName, doc.Name).ToProto()}, created)
+		if created.Error != nil && created.Error.Code != 0 {
+			// Only this non-secret RPC's error is printed; never wallet responses.
+			r.t.Fatalf("fixture ObjectCreate index=%d type=%q code=%d: %s",
+				index, typeKey, created.Error.Code, created.Error.Description)
+		}
 		doc.ID = created.ObjectId
 		if index > 0 {
 			block := &pb.RpcBlockCreateResponse{}

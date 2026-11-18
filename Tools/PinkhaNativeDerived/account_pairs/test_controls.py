@@ -33,7 +33,8 @@ def report_for(phase, role):
     calls = dict(InitialSetParameters=1, AppGetVersion=1, AppShutdown=1, WorkspaceOpen=1,
                  ObjectExport=6, ObjectShow=7, ObjectSearch=2 if role == "new" else 1)
     if initial:
-        calls.update(WalletCreate=1, AccountCreate=1, WorkspaceCreate=1, BlockCreate=2, ObjectCreate=4)
+        calls.update(WalletCreate=1, AccountCreate=1, WorkspaceCreate=1,
+                     WorkspaceObjectListAdd=1, BlockCreate=2, ObjectCreate=4)
     else:
         calls.update(WalletRecover=1, AccountSelect=1)
         if phase == "old-edit":
@@ -111,6 +112,17 @@ class AccountPairControls(unittest.TestCase):
                 report["rpc_calls"][method] = 1
                 with self.assertRaises(RuntimeError):
                     self.validate(report)
+
+    def test_note_installation_is_required_once_and_forbidden_after_creation(self):
+        for phase, role, count in [("old-create", "old", 0), ("new-upgrade", "new", 1)]:
+            with self.subTest(phase=phase):
+                report = report_for(phase, role)
+                if count:
+                    report["rpc_calls"]["WorkspaceObjectListAdd"] = count
+                else:
+                    report["rpc_calls"].pop("WorkspaceObjectListAdd")
+                with self.assertRaises(RuntimeError):
+                    self.validate(report, phase, role)
 
     def test_missing_shutdown_or_export_and_unproven_apple_claim_are_rejected(self):
         for change in ["shutdown", "export-count", "export-bytes", "swift", "enabled"]:
