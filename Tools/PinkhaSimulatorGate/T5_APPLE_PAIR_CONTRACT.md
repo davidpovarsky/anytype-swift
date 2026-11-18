@@ -53,3 +53,64 @@ The original build logs and runtime receipts remain in proof. The workflow packa
 A passing run proves only this same-source Apple account/reopen/fallback sequence. Actual Linux JSON/Protobuf export coverage is a separate gate. This route does not establish Space-wide index freshness, full R01-R09 acceptance, visual UI navigation acknowledgement, physical-iPad behavior, the complete required UI matrix, TestFlight or release acceptance. Coverage remains explicitly incomplete indexedTargetsOnly on r15 and indexedDocumentsOnly on r14.
 
 The parent dispatcher must add a route to this reusable workflow after integration review. It owns dispatch coordination; this producer does not modify the existing dispatcher or start another heavy Apple job.
+
+## Optional fifth process: production host freshness
+
+The reusable workflow adds boolean input `include_freshness`, default false.
+The parent can use its existing `t5_component=index-freshness` selector under
+`route=t5-apple-pairs`; no additional workflow_dispatch input is required.
+The same two application builds and identical test-only flags are used. The
+controller completes and validates old-create, new-upgrade, old-edit and
+new-recover before launching a distinct r15 new-freshness process.
+
+That fifth process selects the original account and verifies the original
+ledger/source/root/Space, canonical bytes, block identities and r14 title edit.
+It retains the same production AnytypeTorahSpaceRelatedDocumentsService instance
+through every mutation. Writes go directly through ClientCommands; there is no
+explicit host/repository invalidation or reconstruction after a write.
+
+Every observation first reads the actual native private index, queries the
+production Swift service, and reads the native index again. It checks exact
+current-Space identities and targets, and then records live ObjectShow canonical
+bytes and actual block graph nodes where relevant.
+
+| Order | Actual observation |
+| --- | --- |
+| 1 | Original document, Note block, and sourceQuote block all appear. |
+| 2–3 | Note unlink removes its result without deleting the Note/block; exact original canonical bytes restore its result. |
+| 4–6 | SourceQuote reference changes from Genesis 3:3 to 3:4; both source queries are checked, then original bytes restore the original result. |
+| 7–8 | Native archive removes the Note; unarchive restores it and its original canonical payload/block. |
+| 9 | Deleting the Note block retains the canonical native candidate but removes its exact target from Swift. |
+| 10 | Deleting the quote block does the same for sourceQuote. |
+| 11 | Deleting the Page leaves two dangling native candidates and no Swift targets; native ObjectShow must specifically report not-found/deleted. |
+
+After block deletion, both native membership reads must still include all three
+canonical candidates. The production service must exclude the absent exact
+block targets and return staleCandidates alongside indexFreshnessUnverified.
+The original graph nodes are included in the receipt; the Python controller
+independently computes reachability and rejects a merely asserted false bool.
+Canonical unknown fields must survive updates and exact restoration.
+
+The fifth process records exactly four ObjectSetDetails calls, two archive calls,
+two BlockListDelete calls and one ObjectListDelete call. It does not recreate the
+account, Space, objects or blocks. The final removals intentionally affect only
+the disposable fixture, after the four compatibility phases passed.
+
+The first four reports remain in phase_reports. The optional report is separately
+published as freshness_report. Its ordinary readbacks and targets are explicitly
+labelled BEFORE_FRESHNESS_MUTATIONS, so they cannot be interpreted as preservation
+after intentional deletions. Native account stop, not-running verification, and
+AppShutdown still precede publication. Ledger hashes and five distinct process
+IDs/nonces bind the whole sequence.
+
+If accepted on Apple, the counts are two builds, five named passing Swift/native
+invocations and eleven host freshness observations, with zero failures/skips.
+Eleven observations are not eleven XCTest invocations. The phase's status is
+PASS_ACTUAL_SWIFT_NATIVE_LOOKUP; coverage remains indexedTargetsOnly,
+spaceWideFreshness=NOT_PROVEN and navigationStatus=NOT_RUN. The product flag
+remains OFF. UI navigation acknowledgements and physical-device behavior retain
+their separate acceptance gates.
+
+The fifth-phase evidence uses the same explicit allowlist and complete credential
+scan as the first four phases. Raw xcresults, private account data, keys, and
+mnemonics remain outside the uploaded proof and compilation cache.

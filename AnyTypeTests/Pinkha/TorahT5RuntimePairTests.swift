@@ -18,8 +18,9 @@ private enum T5ApplePairPhase: String, CaseIterable {
     case newUpgrade = "new-upgrade"
     case oldEdit = "old-edit"
     case newRecover = "new-recover"
+    case newFreshness = "new-freshness"
 
-    var expanded: Bool { self == .newUpgrade || self == .newRecover }
+    var expanded: Bool { self == .newUpgrade || self == .newRecover || self == .newFreshness }
 
     var expectedVersion: String {
         if expanded { return T5NativeRelatedLookupCapability.runtimeVersion }
@@ -77,6 +78,50 @@ private struct T5ApplePairReadback: Codable {
     let title: String
 }
 
+
+private struct T5AppleFreshnessGraphNode: Codable {
+    let id: String
+    let childIDs: [String]
+}
+
+private struct T5AppleFreshnessGraph: Codable {
+    let spaceID: String
+    let rootID: String
+    let targetID: String
+    let targetReachable: Bool
+    let nodes: [T5AppleFreshnessGraphNode]
+}
+
+private struct T5AppleFreshnessObservation: Codable {
+    let name: String
+    let sourceReference: String
+    let spaceID: String
+    let nativeCandidatesBefore: [String]
+    let nativeCandidatesAfter: [String]
+    let targets: [T5ApplePairTarget]
+    let coverage: String
+    let limitations: [String]
+    let objectID: String?
+    let canonicalRaw: String?
+    let canonicalSHA256: String?
+    let objectRetained: Bool?
+    let isArchived: Bool?
+    let graph: T5AppleFreshnessGraph?
+    let objectShowError: Int?
+}
+
+private struct T5AppleFreshnessReceipt: Codable {
+    let status: String
+    let writeOrigin: String
+    let serviceScope: String
+    let coverage: String
+    let spaceWideFreshness: String
+    let navigationStatus: String
+    let originalCanonical: [String: String]
+    let nativeMutationCounts: [String: Int]
+    let observations: [T5AppleFreshnessObservation]
+}
+
 private struct T5ApplePairReceipt: Codable {
     let protocolVersion: String
     let status: String
@@ -107,13 +152,15 @@ private struct T5ApplePairReceipt: Codable {
     let appShutdownCompleted: Bool
     let documents: [T5ApplePairReadback]
     let targets: [T5ApplePairTarget]
+    let readbackBoundary: String
+    let freshness: T5AppleFreshnessReceipt?
 }
 
 @Suite("T5 real same-account Apple runtime pair", .serialized,
        .enabled(if: ProcessInfo.processInfo.environment["PINKHA_T5_APPLE_PAIR"] == "1"))
 struct TorahT5RuntimePairTests {
     @MainActor
-    @Test("Same source, runtime-derived capability and canonical data across four native processes")
+    @Test("Same source, runtime-derived capability, account continuity and optional host freshness")
     func realSameAccountRuntimePairPhase() async throws {
         #if PINKHA_NATIVE_T5_LOOKUP_V1
         let environment = ProcessInfo.processInfo.environment
@@ -259,10 +306,12 @@ struct TorahT5RuntimePairTests {
                 "fixture-results-incomplete"
             )
             var readbacks: [T5ApplePairReadback] = []
+            var canonicalByID: [String: String] = [:]
             for (index, document) in ledger.documents.enumerated() {
                 let response = try await show(document.objectID, spaceID: ledger.spaceID)
                 let value = try rootDetails(response, objectID: document.objectID, spaceID: ledger.spaceID)
                 let canonical = try #require(value.values[ledger.canonicalKey]?.stringValue)
+                canonicalByID[document.objectID] = canonical
                 let canonicalSHA = hash(Data(canonical.utf8))
                 let publicSHA = try publicHash(value)
                 try require(canonicalSHA == document.canonicalSHA256, "canonical-or-unknown-fields-changed")
@@ -281,7 +330,7 @@ struct TorahT5RuntimePairTests {
                     }
                     try require(content.text == text, "quoted-block-text-changed")
                 }
-                let expectedName = index == 0 && (phase == .oldEdit || phase == .newRecover)
+                let expectedName = index == 0 && (phase == .oldEdit || phase == .newRecover || phase == .newFreshness)
                     ? "T5 ordinary edit by r14" : document.initialName
                 try require(value.name == expectedName, "ordinary-title-or-old-client-edit-not-preserved")
                 readbacks.append(.init(
@@ -289,6 +338,12 @@ struct TorahT5RuntimePairTests {
                     blockID: document.blockID, blockTextSHA256: document.blockText.map { hash(Data($0.utf8)) },
                     nativeRelatedVersion: privateVersion.map(Int.init), title: value.name
                 ))
+            }
+            let freshness: T5AppleFreshnessReceipt?
+            if phase == .newFreshness {
+                freshness = try await verifyHostFreshness(ledger: ledger, originalCanonical: canonicalByID, service: service)
+            } else {
+                freshness = nil
             }
             _ = try await ClientCommands.accountStop(.with { $0.removeData = false }).invoke()
             do {
@@ -312,7 +367,9 @@ struct TorahT5RuntimePairTests {
                 accountStopCompleted: true, accountNotRunningConfirmed: true, appShutdownCompleted: true,
                 documents: readbacks, targets: snapshot.documents.map {
                     .init(objectID: $0.objectID, blockID: $0.blockID, canUnlink: $0.canUnlink)
-                }.sorted { $0.objectID < $1.objectID }
+                }.sorted { $0.objectID < $1.objectID },
+                readbackBoundary: phase == .newFreshness ? "BEFORE_FRESHNESS_MUTATIONS" : "BEFORE_ACCOUNT_STOP",
+                freshness: freshness
             )
             try writePrivate(receipt, to: resultURL)
             print("T5_APPLE_PAIR_PHASE_PASS phase=\(phase.rawValue) pid=\(receipt.processID) capability=\(receipt.actualCapability)")
@@ -323,6 +380,217 @@ struct TorahT5RuntimePairTests {
         #else
         throw T5ApplePairFailure.invariant("test-only-lookup-build-flag-missing")
         #endif
+    }
+
+
+    @MainActor
+    private func verifyHostFreshness(
+        ledger: T5ApplePairLedger, originalCanonical: [String: String],
+        service: AnytypeTorahSpaceRelatedDocumentsService
+    ) async throws -> T5AppleFreshnessReceipt {
+        try require(ledger.documents.count == 3, "freshness-original-targets-missing")
+        let documents = ledger.documents
+        let allIDs = documents.map(\.objectID)
+        let original = try documents.map { document in
+            let raw = try #require(originalCanonical[document.objectID])
+            try require(hash(Data(raw.utf8)) == document.canonicalSHA256, "freshness-original-payload-differs")
+            return raw
+        }
+        var mutations: [String: Int] = [:]
+        var observations: [T5AppleFreshnessObservation] = []
+        func targets(_ indices: [Int]) -> [T5ApplePairTarget] {
+            indices.map { index in
+                let document = documents[index]
+                return .init(objectID: document.objectID, blockID: document.blockID, canUnlink: document.blockID == nil)
+            }
+        }
+        @MainActor
+        func writeCanonical(_ index: Int, raw: String) async throws {
+            _ = try await ClientCommands.objectSetDetails(.with {
+                $0.contextID = documents[index].objectID
+                $0.details = [.with {
+                    $0.key = ledger.canonicalKey
+                    $0.value = raw.protobufValue
+                }]
+            }).invoke()
+            mutations["ObjectSetDetails", default: 0] += 1
+        }
+        @MainActor
+        func observe(
+            _ name: String, reference: String = "Genesis 3:3", candidates: [String], host: [Int],
+            stale: Bool = false, inspect: Int? = nil, expectedRaw: String? = nil,
+            reachable: Bool? = nil, archived: Bool = false, deleted: Bool = false
+        ) async throws {
+            let before = try await waitForNativeCandidates(
+                spaceID: ledger.spaceID, reference: reference, expected: candidates
+            )
+            let selection = TorahInspectorSelection(providerID: "sefaria", canonicalRef: reference)
+            // The same retained production service performs every lookup. There
+            // is no direct repository/cache invalidation after the native writes.
+            let snapshot = try await waitForSnapshot(
+                service: service, spaceID: ledger.spaceID, selection: selection, expected: targets(host)
+            )
+            let after = try await waitForNativeCandidates(
+                spaceID: ledger.spaceID, reference: reference, expected: candidates
+            )
+            let limitations = snapshot.limitations.map { String(describing: $0) }.sorted()
+            let expectedLimits = stale ? ["indexFreshnessUnverified", "staleCandidates"] : ["indexFreshnessUnverified"]
+            try require(snapshot.coverage == .indexedTargetsOnly && limitations == expectedLimits,
+                        "freshness-host-coverage-or-stale-disclosure-differs")
+            var objectID: String?
+            var canonicalRaw: String?
+            var retained: Bool?
+            var observedArchive: Bool?
+            var graph: T5AppleFreshnessGraph?
+            var deletedError: Int?
+            if let index = inspect {
+                let document = documents[index]
+                objectID = document.objectID
+                if deleted {
+                    do {
+                        _ = try await show(document.objectID, spaceID: ledger.spaceID)
+                        throw T5ApplePairFailure.invariant("deleted-page-still-opens")
+                    } catch let error as Anytype_Rpc.Object.Show.Response.Error
+                        where error.code == .notFound || error.code == .objectDeleted {
+                        deletedError = error.code.rawValue
+                    }
+                } else {
+                    let response = try await show(document.objectID, spaceID: ledger.spaceID)
+                    let value = try rootDetails(response, objectID: document.objectID, spaceID: ledger.spaceID)
+                    let raw = try #require(value.values[ledger.canonicalKey]?.stringValue)
+                    try require(raw == expectedRaw, "freshness-live-canonical-bytes-differ")
+                    try require(value.isArchived == archived, "freshness-live-archive-state-differs")
+                    canonicalRaw = raw
+                    retained = true
+                    observedArchive = value.isArchived
+                    if let blockID = document.blockID, let shouldReach = reachable {
+                        let nodes = response.objectView.blocks.map {
+                            T5AppleFreshnessGraphNode(id: $0.id, childIDs: $0.childrenIds)
+                        }
+                        let actual = try await T5BlockReachability.evaluate(
+                            spaceID: ledger.spaceID, rootID: document.objectID,
+                            nodes: nodes.map { .init(id: $0.id, childIDs: $0.childIDs) }
+                        )
+                        try require(actual.isVerified && actual.reachableBlockIDs.contains(blockID) == shouldReach,
+                                    "freshness-live-block-reachability-differs")
+                        if shouldReach {
+                            let block = try #require(response.objectView.blocks.first { $0.id == blockID })
+                            guard case .text(let text) = block.content, text.text == document.blockText else {
+                                throw T5ApplePairFailure.invariant("freshness-retained-block-text-changed")
+                            }
+                        }
+                        graph = .init(spaceID: ledger.spaceID, rootID: response.objectView.rootID,
+                                      targetID: blockID, targetReachable: shouldReach, nodes: nodes)
+                    }
+                }
+            }
+            observations.append(.init(
+                name: name, sourceReference: reference, spaceID: ledger.spaceID,
+                nativeCandidatesBefore: before, nativeCandidatesAfter: after,
+                targets: snapshot.documents.map {
+                    .init(objectID: $0.objectID, blockID: $0.blockID, canUnlink: $0.canUnlink)
+                }.sorted { $0.objectID < $1.objectID }, coverage: snapshot.coverage.rawValue,
+                limitations: limitations, objectID: objectID, canonicalRaw: canonicalRaw,
+                canonicalSHA256: canonicalRaw.map { hash(Data($0.utf8)) }, objectRetained: retained,
+                isArchived: observedArchive, graph: graph, objectShowError: deletedError
+            ))
+        }
+        try await observe("baseline", candidates: allIDs, host: [0, 1, 2])
+        let unlink = try changedCanonical(original[1], unlink: true)
+        try await writeCanonical(1, raw: unlink)
+        try await observe("note_unlink", candidates: [allIDs[0], allIDs[2]], host: [0, 2],
+                          inspect: 1, expectedRaw: unlink, reachable: true)
+        try await writeCanonical(1, raw: original[1])
+        try await observe("note_restore", candidates: allIDs, host: [0, 1, 2],
+                          inspect: 1, expectedRaw: original[1], reachable: true)
+        let quoteUpdate = try changedCanonical(original[2], unlink: false)
+        try await writeCanonical(2, raw: quoteUpdate)
+        try await observe("quote_update_original", candidates: [allIDs[0], allIDs[1]], host: [0, 1],
+                          inspect: 2, expectedRaw: quoteUpdate, reachable: true)
+        try await observe("quote_update_other", reference: "Genesis 3:4", candidates: [allIDs[2]], host: [2],
+                          inspect: 2, expectedRaw: quoteUpdate, reachable: true)
+        try await writeCanonical(2, raw: original[2])
+        try await observe("quote_restore", candidates: allIDs, host: [0, 1, 2],
+                          inspect: 2, expectedRaw: original[2], reachable: true)
+        for archived in [true, false] {
+            _ = try await ClientCommands.objectListSetIsArchived(.with {
+                $0.objectIds = [allIDs[1]]
+                $0.isArchived = archived
+            }).invoke()
+            mutations["ObjectListSetIsArchived", default: 0] += 1
+            try await observe(archived ? "note_archive" : "note_unarchive",
+                              candidates: archived ? [allIDs[0], allIDs[2]] : allIDs,
+                              host: archived ? [0, 2] : [0, 1, 2],
+                              inspect: 1, expectedRaw: original[1], reachable: true, archived: archived)
+        }
+        for index in [1, 2] {
+            let blockID = try #require(documents[index].blockID)
+            _ = try await ClientCommands.blockListDelete(.with {
+                $0.contextID = allIDs[index]
+                $0.blockIds = [blockID]
+            }).invoke()
+            mutations["BlockListDelete", default: 0] += 1
+            // The index still contains the canonical reference. Only the live
+            // graph in the production service can exclude this exact target.
+            try await observe(index == 1 ? "note_block_removed" : "quote_block_removed",
+                              candidates: allIDs, host: index == 1 ? [0, 2] : [0], stale: true,
+                              inspect: index, expectedRaw: original[index], reachable: false)
+        }
+        _ = try await ClientCommands.objectListDelete(.with { $0.objectIds = [allIDs[0]] }).invoke()
+        mutations["ObjectListDelete", default: 0] += 1
+        try await observe("page_deleted", candidates: [allIDs[1], allIDs[2]], host: [], stale: true,
+                          inspect: 0, deleted: true)
+        try require(observations.count == 11 && mutations == [
+            "ObjectSetDetails": 4, "ObjectListSetIsArchived": 2, "BlockListDelete": 2, "ObjectListDelete": 1
+        ], "freshness-native-mutation-sequence-differs")
+        return .init(
+            status: "PASS_ACTUAL_SWIFT_NATIVE_LOOKUP",
+            writeOrigin: "DIRECT_NATIVE_RPC_WITHOUT_EXPLICIT_HOST_INVALIDATION",
+            serviceScope: "ONE_REUSED_PRODUCTION_SERVICE", coverage: "indexedTargetsOnly",
+            spaceWideFreshness: "NOT_PROVEN", navigationStatus: "NOT_RUN",
+            originalCanonical: originalCanonical, nativeMutationCounts: mutations, observations: observations
+        )
+    }
+
+    private func changedCanonical(_ original: String, unlink: Bool) throws -> String {
+        var root = try #require(JSONSerialization.jsonObject(with: Data(original.utf8)) as? [String: Any])
+        var records = try #require(root["records"] as? [[String: Any]])
+        try require(records.count == 1, "freshness-single-original-canonical-record-required")
+        if unlink {
+            records = []
+        } else {
+            var item = try #require(records[0]["item"] as? [String: Any])
+            item["canonicalKey"] = "Genesis 3:4"
+            item["externalID"] = "Genesis 3:4"
+            records[0]["item"] = item
+        }
+        root["records"] = records
+        let data = try JSONSerialization.data(withJSONObject: root, options: [.sortedKeys, .withoutEscapingSlashes])
+        return try #require(String(data: data, encoding: .utf8))
+    }
+
+    @MainActor
+    private func waitForNativeCandidates(spaceID: String, reference: String, expected: [String]) async throws -> [String] {
+        let identity = T5SourceIdentity(providerID: "sefaria", canonicalReference: reference).indexValue
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(45))
+        repeat {
+            let records = try await Container.shared.searchMiddleService().search(
+                spaceId: spaceID, filters: [.with {
+                    $0.relationKey = "_pinkhaTorahRelatedSources"
+                    $0.condition = .in
+                    $0.value = [identity].protobufValue
+                }], keys: [BundledPropertyKey.id.rawValue, BundledPropertyKey.spaceId.rawValue,
+                           "_pinkhaTorahRelatedVersion"], limit: 20
+            )
+            try require(records.allSatisfy {
+                !$0.id.isEmpty && $0.spaceId == spaceID && $0.values["_pinkhaTorahRelatedVersion"]?.numberValue == 1
+            }, "freshness-native-candidate-identity-or-version-differs")
+            let identifiers = records.map(\.id).sorted()
+            if identifiers == expected.sorted() { return identifiers }
+            try await Task.sleep(for: .milliseconds(100))
+        } while clock.now < deadline
+        throw T5ApplePairFailure.invariant("freshness-native-index-did-not-converge")
     }
 
     @MainActor
