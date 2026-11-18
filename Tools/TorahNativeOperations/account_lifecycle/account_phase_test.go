@@ -213,6 +213,7 @@ func t2RawHistory(t *testing.T, state *t2AccountState) (map[string]string, []str
 	spc := t2Space(t, state.SpaceID)
 	storage, err := spc.Storage().TreeStorage(ctx, state.RootID)
 	require.NoError(t, err)
+	require.Equal(t, state.RootID, storage.Id())
 	root, err := storage.Root(ctx)
 	require.NoError(t, err)
 	require.Equal(t, state.RootID, root.Id)
@@ -225,7 +226,11 @@ func t2RawHistory(t *testing.T, state *t2AccountState) (map[string]string, []str
 	// Hash the root directly, then enumerate every appended native change.
 	values := map[string]string{root.Id: t2Hash(root.RawChange)}
 	err = storage.GetAfterAddSeq(ctx, 0, func(_ context.Context, change objecttree.StorageChange) (bool, error) {
-		require.Equal(t, state.RootID, change.TreeId)
+		// GetAfterAddSeq is filtered by this storage ID. Upstream
+		// changeFromDoc does not populate TreeId; verify the actual
+		// acknowledged change and its parent in the retained history.
+		require.Equal(t, state.ChangeID, change.Id)
+		require.Equal(t, []string{state.RootID}, change.PrevIds)
 		require.NotContains(t, values, change.Id)
 		values[change.Id] = t2Hash(change.RawChange)
 		return true, nil
