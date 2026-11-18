@@ -15,9 +15,12 @@ is rejected before inserting either a claim or provenance receipt.
 
 ## Files and execution
 
-`overlay/core/block/editor/torahops` is a new package added to an otherwise
-unchanged upstream Heart checkout. No generic StoreState, fulltext/index, T5,
-application or RPC source is modified. The replay handler hooks into
+`overlay/core/block/editor/torahops` provides the native operation host. The
+source-bound `heart-registration.patch` now adds the approved private type,
+receiving-Space checks, source selection, factory dispatch, restrictions and
+canonical cache derivation to exactly ten pinned Heart files. Additional Go
+files implement and test the private adapter. Generic StoreState, fulltext/index,
+T5, account/wallet and public RPC sources remain unchanged. The replay handler hooks into
 `Handler.BeforeCreate`, inside the existing StoreState/any-store write transaction,
 before generic StoreState would ignore `ErrDocExists`.
 
@@ -41,9 +44,13 @@ python3 Tools/TorahNativeOperations/run_native_operations.py \
 workflow. It accepts an optional immutable `source_sha`, preserves the GitHub run
 ID/attempt/workflow ref, and uploads the raw Go event log and receipt for 14 days.
 It has only repository read permission and no release, simulator or user-account
-steps. Only this package is tested, including its isolated native host and
-two-process loopback protocol fixture. No Tantivy artifact is required by this
-source; a transitive dependency failure must be reported as such.
+steps. The `component` suite tests this package and its isolated loopback
+protocol without Tantivy. A separate `native-registry` job uses the same pinned
+Go1.26.5 Alpine image, Tantivy archive and temporary genproto resolution already
+used by the T5 Linux proof. It executes focused registry/source/factory tests.
+Dependency or compile failure is never counted as native acceptance. See
+[REGISTRY_BINDING_20261118.md](REGISTRY_BINDING_20261118.md) for the exact adapter
+contract and the narrower boundary-fixture scope.
 
 ## Exact identity and encoding
 
@@ -272,24 +279,27 @@ checks real disposable native object roots; cross-object deletion races and
 block authorization remain an explicit App binding dependency. Unknown-format
 rejection must be included in the eventual mixed-version capability contract.
 
-Receipt schema 2 distinguishes `PASS_NATIVE_COMPONENT_AND_LOOPBACK_TRANSPORT`
-from full T2 acceptance, which remains `NOT_RUN`. It requires both focused native
-host/transport tests to pass; missing/skipped transport is not a success. Historical
-schema-1 component receipts remain unchanged and retain their narrower scope.
+Receipt schema 3 separates `PASS_NATIVE_COMPONENT_AND_LOOPBACK_TRANSPORT`
+from `PASS_PRIVATE_NATIVE_REGISTRY_ADAPTER`; full T2 acceptance remains `NOT_RUN`.
+Each suite requires its exact test identities and every package result. Missing
+or skipped required execution cannot pass. Historical schema-1/schema-2 evidence
+remains byte-preserved with its original scope.
 
 ## Remaining acceptance before app binding
 
-T2 stays open. A signed-tree host candidate and genuine two-process native
-protocol harness now exist. The dedicated application SmartBlock registration,
-atomic cross-object/block target contract, public RPC/capability contract, bounded
-indexed RPC pagination, production peer/ACL transport, hidden lifecycle/cleanup
-and ordinary search/export/undo behavior, encrypted backup/retention,
-mixed-version migration, and Swift binding still require implementation and
-acceptance. The existing scalar association path is not made concurrency-safe
-by this isolated host candidate.
+T2 stays open. The private fork-local SmartBlock allocation and source/factory
+adapter are implemented in this isolated overlay, with source-bound tests ready
+for Linux execution. Their current acceptance state is recorded only by the
+corresponding actual registry receipt. The previous 61-pass Linux writer proof
+predates this registry change and cannot accept it.
 
-The next integration step must choose a collision-checked SmartBlock allocation
-and register the sanctioned host with an explicit mixed-version capability,
-then bind the native RPC and execute the remaining AB01–08 gates using actual
-Heart middleware and disposable accounts. No existing user data should be
-migrated until that evidence and the version/capability contract exist.
+Still required: actual older-client preservation, ordinary search/export/undo
+and account/Space removal behavior through full middleware, production peer/ACL
+transport, public RPC/capability contract and indexed bounded pagination,
+concurrent target lifecycle acceptance, encrypted backup/retention, performance
+and Swift binding. The adapter checks current native target lookup but has no
+cross-tree atomic transaction. It preserves orphaned claims and does not silently
+retarget or erase them. The existing scalar association path remains unchanged.
+
+App capability stays OFF and the private host is not created during startup.
+No user data migration or release is requested by this native proof.

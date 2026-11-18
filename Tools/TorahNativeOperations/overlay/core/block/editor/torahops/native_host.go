@@ -18,12 +18,13 @@ import (
 
 	"github.com/anyproto/anytype-heart/core/block/editor/storestate"
 	"github.com/anyproto/anytype-heart/pb"
+	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahopscontract"
 )
 
-// This independent AnySync namespace is experimental. It is not a registered
-// SmartBlockType, an application RPC, or evidence of hidden-object lifecycle.
-const NativeChangeType = "pinkha.torah.operations.v1"
-const nativePayload = "store-change/immutable-claims-v1"
+// This private AnySync namespace is bound by the fork-local registry adapter.
+// It is not an application RPC or evidence of completed hidden-object lifecycle.
+const NativeChangeType = torahopscontract.ChangeType
+const nativePayload = torahopscontract.Payload
 const nativeSnappy = "1/s" // Heart sourceimpl's StoreChange wire format.
 const maxNativeBytes = MaxWireBytes + 4096
 
@@ -42,10 +43,7 @@ func NativeRoot(spaceID string) (*treechangeproto.RawTreeChangeWithId, error) {
 	if !validText(spaceID, true, 1024) {
 		return nil, ErrInvalid
 	}
-	return objecttree.DeriveObjectTreeRoot(objecttree.ObjectTreeDerivePayload{
-		SpaceId: spaceID, ChangeType: NativeChangeType, ChangePayload: []byte(nativePayload),
-		IsEncrypted: true,
-	}, nil)
+	return torahopscontract.Root(spaceID)
 }
 
 // NativeTreeBuilder keeps AnySync's CID, signature and historical ACL checks.
@@ -56,6 +54,13 @@ func NativeTreeBuilder(spaceID string) objecttree.BuildObjectTreeFunc {
 		root, err := NativeRoot(spaceID)
 		if err != nil || storage.Id() != root.Id {
 			return nil, errors.Join(ErrInvalid, err)
+		}
+		header, err := storage.Root(context.Background())
+		if err != nil {
+			return nil, err
+		}
+		if err = torahopscontract.ValidateRoot(spaceID, header.RawTreeChangeWithId()); err != nil {
+			return nil, err
 		}
 		build := objecttree.BuildObjectTreeWithContentValidator(func(ch *objecttree.Change, acl list.AclList) error {
 			if ch.IsSnapshot || ch.ReadKeyId == "" || ch.Identity == nil {
@@ -167,12 +172,22 @@ func OpenNativeHost(ctx context.Context, db anystore.DB, spaceID string, tree sy
 	if tree == nil || key == nil || validate == nil {
 		return nil, ErrInvalid
 	}
+	tree.Lock()
+	defer tree.Unlock()
+	return OpenNativeHostLocked(ctx, db, spaceID, tree, key, validate)
+}
+
+// OpenNativeHostLocked is for the native factory, which already holds this
+// exact tree's lock. It must never be called with an unlocked tree. The usual
+// public constructor above remains the safe entry for independent callers.
+func OpenNativeHostLocked(ctx context.Context, db anystore.DB, spaceID string, tree synctree.SyncTree, key crypto.PrivKey, validate TargetValidator) (*NativeHost, error) {
+	if tree == nil || key == nil || validate == nil {
+		return nil, ErrInvalid
+	}
 	root, err := NativeRoot(spaceID)
 	if err != nil {
 		return nil, err
 	}
-	tree.Lock()
-	defer tree.Unlock()
 	if tree.Id() != root.Id || !bytes.Equal(root.RawChange, tree.Header().RawChange) {
 		return nil, ErrInvalid
 	}
