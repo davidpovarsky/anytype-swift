@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 import plistlib
+import re
 import subprocess
 import tempfile
 import unittest
@@ -12,6 +13,105 @@ import run_ui27 as runner
 
 
 class UIExecutionControls(unittest.TestCase):
+    def test_only_exact_properties_target_and_method_names_get_longer_ceilings(self):
+        expected = {
+            'PinkhaNativeDerivedAcceptanceUITests/testNativePropertiesPickerChipsSetMembershipAndRelaunch',
+            'PinkhaNativeDerivedAcceptanceUITests/testUniversalPageNoteCustomPropertiesAndMixedSet',
+        }
+        self.assertEqual(runner.LONG_PROPERTIES_METHODS, expected)
+        for method in expected:
+            with self.subTest(method=method):
+                budget = runner.selection_time_budget('PinkhaStage1AcceptanceUITests', [method])
+                self.assertEqual(budget, dict(default_seconds=300, maximum_seconds=900,
+                    method_seconds={method: 900}, total_method_seconds=900))
+            foreign = [method + '()', method + 'Other', 'OtherSuite/' + method.split('/')[1],
+                       method.split('/')[1], 'PinkhaStage1AcceptanceUITests/' + method]
+            for name in foreign:
+                with self.subTest(foreign=name):
+                    self.assertEqual(runner.selection_time_budget('PinkhaStage1AcceptanceUITests', [name])['maximum_seconds'], 300)
+            for target in ['AnytypeTests', 'OtherTests', 'PinkhaStage1AcceptanceUITestsOther']:
+                with self.subTest(target=target):
+                    self.assertEqual(runner.selection_time_budget(target, [method])['maximum_seconds'], 300)
+
+    def test_selection_budget_sums_exact_ceilings_and_preserves_default(self):
+        short = 'PinkhaNativeDerivedAcceptanceUITests/testSourceHeaderSelectionAndOverflow'
+        methods = [*sorted(runner.LONG_PROPERTIES_METHODS), short]
+        budget = runner.selection_time_budget('PinkhaStage1AcceptanceUITests', methods)
+        self.assertEqual(budget['default_seconds'], 300)
+        self.assertEqual(budget['maximum_seconds'], 900)
+        self.assertEqual(budget['method_seconds'][short], 300)
+        self.assertEqual(budget['total_method_seconds'], 2100)
+        preparation = runner.selection_time_budget('AnytypeTests',
+            ['TorahNativeDerivedProductIntegrationTests/originalProductPipeline'])
+        self.assertEqual(preparation['total_method_seconds'], 300)
+        self.assertEqual(budget['total_method_seconds'] + preparation['total_method_seconds'] + 180, 2580)
+
+    def test_selection_time_budget_rejects_empty_duplicate_or_malformed_inputs(self):
+        for names in [[], (), None, 'Suite/test', ['Suite/test', 'Suite/test'], [''], [None], [1], [' Suite/test']]:
+            with self.subTest(names=names), self.assertRaises(ValueError):
+                runner.selection_time_budget('PinkhaStage1AcceptanceUITests', names)
+        for target in ['', None, 1, ' AnytypeTests']:
+            with self.subTest(target=target), self.assertRaises(ValueError):
+                runner.selection_time_budget(target, ['Suite/test'])
+
+    def test_swift_explicit_allowances_are_only_the_two_reviewed_methods(self):
+        source = Path(runner.__file__).resolve().parents[2] / 'PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift'
+        text = source.read_text(encoding='utf8')
+        declarations = re.findall(r'func (test\w+)\(\) throws \{\s+executionTimeAllowance = (\d+)', text)
+        expected = {(name.split('/')[1], '900') for name in runner.LONG_PROPERTIES_METHODS}
+        self.assertEqual(set(declarations), expected)
+        self.assertEqual(len(declarations), len(expected))
+        self.assertEqual(len(re.findall(r'\bexecutionTimeAllowance\s*=', text)), 2)
+
+    def budget_execution(self, selected, *, failed=0, skipped=0, missing=False):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            configuration = root / 'Original.xctestrun'
+            configuration.write_bytes(plistlib.dumps(dict(BlueprintName='PinkhaStage1AcceptanceUITests')))
+            original = configuration.read_bytes()
+            calls = []
+            def command(argv, app, evidence, bundle, prefix):
+                calls.append(argv)
+                count = len(selected) - int(missing)
+                (evidence / (prefix + '-summary.json')).write_text(json.dumps(dict(
+                    totalTestCount=count, passedTests=count - failed - skipped, failedTests=failed, skippedTests=skipped,
+                    devicesAndConfigurations=[dict(device=dict(deviceId='disposable', osVersion='27.0', architecture='arm64'))])))
+                cases = [dict(nodeType='Test Case', nodeIdentifier=name + '()',
+                    result='Failed' if i < failed else 'Skipped' if i < failed + skipped else 'Passed')
+                    for i, name in enumerate(selected[:count])]
+                (evidence / (prefix + '-tests.json')).write_text(json.dumps(cases))
+            with patch.object(runner, 'run_xctest', side_effect=command):
+                result = runner.run_selection(root, configuration, 'PinkhaStage1AcceptanceUITests', 'disposable',
+                    selected, {'PINKHA_UI27_SELECTION_SCOPE': 'WAVE15_ACCEPTANCE'}, root / 'fresh', 'budget')
+            self.assertEqual(configuration.read_bytes(), original)
+            inputs = json.loads((root / 'fresh/selection-inputs.json').read_text())
+            self.assertEqual(inputs['time_budget'], result['time_budget'])
+            self.assertEqual(inputs['selections'], selected)
+            self.assertEqual(len(calls), 1)
+            self.assertEqual([v for v in calls[0] if v.startswith('-only-testing:')],
+                ['-only-testing:PinkhaStage1AcceptanceUITests/' + name for name in selected])
+            return result, calls[0]
+
+    def test_recorded_xcode_budget_changes_only_maximum_for_exact_long_selections(self):
+        long = sorted(runner.LONG_PROPERTIES_METHODS)
+        short = 'PinkhaNativeDerivedAcceptanceUITests/testSourceHeaderSelectionAndOverflow'
+        for methods, maximum, total in [(long + [short], 900, 2100), ([short], 300, 300)]:
+            with self.subTest(methods=methods):
+                result, argv = self.budget_execution(methods)
+                self.assertEqual(result['status'], 'PASS')
+                self.assertEqual(argv[argv.index('-default-test-execution-time-allowance') + 1], '300')
+                self.assertEqual(argv[argv.index('-maximum-test-execution-time-allowance') + 1], str(maximum))
+                self.assertEqual(argv[argv.index('-test-timeouts-enabled') + 1], 'YES')
+                self.assertEqual(result['time_budget']['total_method_seconds'], total)
+
+    def test_longer_budget_does_not_accept_failed_skipped_or_missing_methods(self):
+        methods = sorted(runner.LONG_PROPERTIES_METHODS)
+        for arguments in [dict(failed=1), dict(skipped=1), dict(missing=True)]:
+            with self.subTest(arguments=arguments):
+                result, _ = self.budget_execution(methods, **arguments)
+                self.assertEqual(result['status'], 'FAIL')
+                self.assertEqual(result['time_budget']['maximum_seconds'], 900)
+
     def test_diagnostic_selection_keeps_default_and_cannot_claim_six_passes_or_release(self):
         devices = dict(iphone=dict(udid='phone'), ipad=dict(udid='pad'))
         full = runner.ui_scope_plan('FULL_SMOKE', devices)

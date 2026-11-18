@@ -85,6 +85,98 @@ def fresh_receipt(directory, udid):
 
 
 class BatchControls(unittest.TestCase):
+    def tracked_fixture(self, root):
+        def git(directory, *args):
+            return subprocess.check_output(["git", "-C", str(directory), *args], text=True).strip()
+        git(root, "init", "-q")
+        git(root, "config", "user.name", "Controller fixture")
+        git(root, "config", "user.email", "controller@example.invalid")
+        lock = root / "Project/Package.resolved"
+        lock.parent.mkdir()
+        lock.write_text('{"pins": [], "version": 3}\n')
+        snapshot = root / "Dependencies/Hanlin/.pinkha-source.json"
+        snapshot.parent.mkdir(parents=True)
+        snapshot.write_text("{}\n")
+        (root / "source with spaces.swift").write_text("// Controller-only source fixture\n")
+        git(root, "add", ".")
+        git(root, "commit", "-qm", "Controller fixture")
+        return types.SimpleNamespace(git=git), lock
+
+    def test_real_git_lock_mutation_is_rejected_and_retained_before_any_lane(self):
+        # Reproduce the observed incomplete lock's three missing dependencies
+        # and originHash using the reviewed production lock, without Xcode.
+        path = Path(__file__).resolve().parents[2] / "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+        selected = json.loads(path.read_text())
+        added = {"swift-ai-sdk", "swift-argument-parser", "swiftyjson"}
+        self.assertTrue(added.issubset({item["identity"] for item in selected["pins"]}))
+        old = {key: value for key, value in selected.items() if key != "originHash"}
+        old["pins"] = [item for item in old["pins"] if item["identity"] not in added]
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            shared, lock = self.tracked_fixture(root)
+            lock.write_text(json.dumps(old))
+            shared.git(root, "add", "Project/Package.resolved")
+            shared.git(root, "commit", "-qm", "Incomplete controller fixture lock")
+            original = batch.digest(lock)
+            frozen_source = batch.source_snapshot(root, shared)
+            lock.write_text(json.dumps(selected))
+            with self.assertRaises(batch.TrackedSourceChanged) as raised:
+                batch.source_snapshot(root, shared, stage="AFTER_APP_AND_NATIVE_TEST_BUILD")
+            observed = raised.exception.observation
+            self.assertEqual(observed["stage"], "AFTER_APP_AND_NATIVE_TEST_BUILD")
+            self.assertEqual(observed["source_sha"], frozen_source["source_sha"])
+            self.assertEqual(observed["changed_path_count"], 1)
+            self.assertNotIn("diagnostic_error_type", observed)
+            item, = observed["changes"]
+            self.assertEqual(item["path"], "Project/Package.resolved")
+            self.assertEqual(item["head_sha256"], original)
+            self.assertEqual(item["worktree_sha256"], batch.digest(lock))
+            self.assertNotEqual(item["head_sha256"], item["worktree_sha256"])
+            self.assertEqual(frozen_source["package_locks"]["Project/Package.resolved"], original)
+            args = argparse.Namespace(app=root, evidence=root / "evidence", derived=root / "build/derived",
+                                      deadline=time.monotonic() + batch.WORKER_SECONDS - 1)
+            lane = types.SimpleNamespace(plan=selection, execute=Mock())
+            with patch.object(batch, "build_once", side_effect=raised.exception):
+                code = batch.worker(args, lane, {"parent_pid": os.getppid()})
+            receipt = json.loads((args.evidence / "batch-worker.json").read_text())
+            self.assertEqual(code, 1)
+            self.assertEqual(receipt["status"], "BATCH_ABORTED_SETUP_OR_IDENTITY")
+            self.assertEqual(receipt["tracked_source_change"], observed)
+            self.assertEqual(set(receipt["lane_statuses"].values()), {"NOT_RUN_SETUP"})
+            lane.execute.assert_not_called()
+
+    def test_unexpected_tracked_changes_still_fail_with_names_and_hashes_only(self):
+        for mutation in ("edit", "delete", "staged"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                shared, _ = self.tracked_fixture(root)
+                path = root / "source with spaces.swift"
+                original = batch.digest(path)
+                if mutation == "delete":
+                    path.unlink()
+                else:
+                    path.write_text("// Changed controller-only source fixture\n")
+                    if mutation == "staged":
+                        shared.git(root, "add", path.name)
+                with self.assertRaises(batch.TrackedSourceChanged) as raised:
+                    batch.source_snapshot(root, shared)
+                observed = raised.exception.observation
+                self.assertEqual(observed["changed_path_count"], 1)
+                self.assertNotIn("diagnostic_error_type", observed)
+                item, = observed["changes"]
+                self.assertEqual(item["path"], path.name)
+                self.assertEqual(item["head_sha256"], original)
+                self.assertEqual(item["worktree_kind"], "missing" if mutation == "delete" else "file")
+                self.assertNotIn("Controller-only source", json.dumps(observed))
+                self.assertNotIn("Changed controller-only source", json.dumps(observed))
+
+    def test_diagnostic_error_cannot_make_dirty_source_pass(self):
+        shared = types.SimpleNamespace(git=Mock(side_effect=[" M source.swift", OSError("diagnostic unavailable")]))
+        with self.assertRaises(batch.TrackedSourceChanged) as raised:
+            batch.source_snapshot(Path("."), shared)
+        self.assertEqual(raised.exception.observation["diagnostic_error_type"], "OSError")
+        self.assertEqual(raised.exception.observation["porcelain_observation"], " M source.swift")
+
     def test_canonical_lane_module_declares_the_untrimmed_six_lanes(self):
         if importlib.util.find_spec("run_wave15_acceptance") is None:
             self.skipTest("Canonical lane source is not copied into Scratch; run this control in the repository")
@@ -298,6 +390,12 @@ class BatchControls(unittest.TestCase):
         self.assertEqual(batch.STEP_SECONDS, 120 * 60)
         self.assertEqual(batch.minimum_lane_budget(selection("inspector")), 6 * 300 + 180)
         self.assertEqual(batch.minimum_lane_budget(selection("properties-set")), 3 * 300 + 180)
+        self.assertEqual(batch.minimum_lane_budget(selection("properties")), 2100 + 300 + 180)
+        self.assertEqual(batch.minimum_lane_budget(selection("editor")), 4 * 300 + 180)
+        changed = selection("properties")
+        changed["expected_ui_executions"] += 1
+        with self.assertRaisesRegex(RuntimeError, "exact declared UI method"):
+            batch.minimum_lane_budget(changed)
 
     def test_batch_pass_requires_six_original_preparations_and_fifteen_original_ui_cases(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -457,6 +555,8 @@ class BatchControls(unittest.TestCase):
 
         if mode == "budget":
             args.deadline = time.monotonic() + 20
+        elif mode == "properties_budget":
+            args.deadline = time.monotonic() + 2200
         verification = Mock(side_effect=[None, None, RuntimeError("shared source changed")]) if mode == "drift" else Mock()
         with patch.object(batch, "build_once", side_effect=build_once), \
              patch.object(batch.FrozenBuild, "verify_current", verification), \
@@ -499,6 +599,16 @@ class BatchControls(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertEqual(receipt["status"], "BATCH_BUDGET_EXHAUSTED")
         self.assertEqual(set(receipt["lane_statuses"].values()), {"NOT_RUN_BUDGET"})
+
+    def test_long_properties_ceiling_preserves_prior_lanes_without_overrunning_worker(self):
+        _, calls, code, receipt = self.worker_case("properties_budget")
+        self.assertEqual(calls, ["inspector", "inspector-search"])
+        self.assertEqual(code, 1)
+        self.assertEqual(receipt["status"], "BATCH_BUDGET_EXHAUSTED")
+        self.assertTrue(all(receipt["lane_statuses"][name] == "LANE_PASS_ACCEPTANCE_REVIEW_PENDING"
+                            for name in calls))
+        self.assertTrue(all(receipt["lane_statuses"][name] == "NOT_RUN_BUDGET"
+                            for name in batch.LANES[2:]))
 
 
 def process_running(pid):

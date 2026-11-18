@@ -23,6 +23,32 @@ SMOKE = ['testObjectAddPropertyButtonAndPickerSearch', 'testDocumentSourceSearch
          'testSourceChipOpensAndClosesInspector']
 KIT = '4e59e909dd22685bb46f9396bc57e5f8c627d773'
 MARKER = 'pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077'
+DEFAULT_METHOD_SECONDS = 300
+PROPERTIES_METHOD_SECONDS = 900
+LONG_PROPERTIES_METHODS = frozenset({
+    'PinkhaNativeDerivedAcceptanceUITests/testNativePropertiesPickerChipsSetMembershipAndRelaunch',
+    'PinkhaNativeDerivedAcceptanceUITests/testUniversalPageNoteCustomPropertiesAndMixedSet',
+})
+
+
+def selection_time_budget(blueprint, selections):
+    """Bound the two measured multi-document flows without raising the default.
+
+    Run 44271564420 reached its second document while still making progress at
+    the 300-second cap. Only these exact UI methods also opt into 900 in Swift.
+    The batch supervisor uses the sum, not maximum multiplied by method count.
+    """
+    if not isinstance(blueprint, str) or not blueprint or blueprint != blueprint.strip():
+        raise ValueError('One explicit test target is required for the time budget')
+    if (not isinstance(selections, (list, tuple)) or not selections
+            or any(not isinstance(name, str) or not name or name != name.strip() for name in selections)
+            or len(set(selections)) != len(selections)):
+        raise ValueError('Time budget requires distinct nonempty exact test selections')
+    seconds = {name: PROPERTIES_METHOD_SECONDS
+               if blueprint == 'PinkhaStage1AcceptanceUITests' and name in LONG_PROPERTIES_METHODS
+               else DEFAULT_METHOD_SECONDS for name in selections}
+    return dict(default_seconds=DEFAULT_METHOD_SECONDS, maximum_seconds=max(seconds.values()),
+                method_seconds=seconds, total_method_seconds=sum(seconds.values()))
 
 
 def ui_scope_plan(scope, devices):
@@ -79,8 +105,10 @@ def inject(value, blueprint, environment, app_path=None):
 def run_selection(app, configuration, blueprint, udid, selections, environment, evidence, prefix, app_path=None):
     if evidence.exists() and any(evidence.iterdir()):
         raise RuntimeError('Refuse stale selection evidence; use a fresh attempt directory')
+    time_budget = selection_time_budget(blueprint, selections)
     evidence.mkdir(parents=True, exist_ok=True)
-    result = dict(status='FAIL', selected=selections, phase='EXECUTION', prefix=prefix, command_exit_code=None)
+    result = dict(status='FAIL', selected=selections, phase='EXECUTION', prefix=prefix, command_exit_code=None,
+                  time_budget=time_budget)
     if blueprint == 'PinkhaStage1AcceptanceUITests':
         scope = environment.get('PINKHA_UI27_SELECTION_SCOPE', 'FULL_SMOKE')
         if scope not in {'FULL_SMOKE', 'STARTUP_IPAD_DIAGNOSTIC', 'WAVE15_ACCEPTANCE'}:
@@ -97,13 +125,14 @@ def run_selection(app, configuration, blueprint, udid, selections, environment, 
             plistlib.dump(data, target)
         write(evidence / 'selection-inputs.json', dict(blueprint=blueprint, selections=selections,
             environment=environment, xctestrun_sha256=digest(selected), xctestrun_path=str(selected),
-            device_udid=udid))
+            device_udid=udid, time_budget=time_budget))
         bundle = evidence / (prefix + '.xcresult')
         filters = sorted({name.split('/')[0] for name in selections}) if blueprint == 'AnytypeTests' else selections
         run_xctest(['xcodebuild', 'test-without-building', '-xctestrun', str(selected),
                     '-destination', 'platform=iOS Simulator,id=' + udid, '-parallel-testing-enabled', 'NO',
-                    '-test-timeouts-enabled', 'YES', '-default-test-execution-time-allowance', '300',
-                    '-maximum-test-execution-time-allowance', '300',
+                    '-test-timeouts-enabled', 'YES',
+                    '-default-test-execution-time-allowance', str(time_budget['default_seconds']),
+                    '-maximum-test-execution-time-allowance', str(time_budget['maximum_seconds']),
                     *['-only-testing:' + blueprint + '/' + name for name in filters],
                     '-resultBundlePath', str(bundle)], app, evidence, bundle, prefix)
         result['command_exit_code'] = 0

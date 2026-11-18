@@ -39,6 +39,7 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     }
 
     func testNativePropertiesPickerChipsSetMembershipAndRelaunch() throws {
+        executionTimeAllowance = 900
         for role in ["chiddush", "article", "research"] {
             let id = try XCTUnwrap(fixture.documents[role])
             try openProperties(id)
@@ -116,6 +117,7 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     }
 
     func testUniversalPageNoteCustomPropertiesAndMixedSet() throws {
+        executionTimeAllowance = 900
         for role in ["page", "note", "custom"] {
             let id = try XCTUnwrap(fixture.universalDocuments[role])
             try open(id)

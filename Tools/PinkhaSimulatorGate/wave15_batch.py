@@ -84,9 +84,13 @@ def plan(lane):
 
 
 def minimum_lane_budget(selection):
-    # Every native preparation and UI method retains the existing 300s XCTest
-    # ceiling; allow a further 180s for simulator launch, evidence and cleanup.
-    return 300 * (1 + selection["expected_ui_executions"]) + 180
+    from run_ui27 import selection_time_budget
+    require(len(selection["methods"]) == selection["expected_ui_executions"],
+            "Lane budget requires its exact declared UI method selection")
+    budget = selection_time_budget("PinkhaStage1AcceptanceUITests", selection["methods"])
+    # Native preparation retains 300s. UI ceilings come from the same whitelist
+    # used by the executor; two long Properties methods require 900s each.
+    return 300 + budget["total_method_seconds"] + 180
 
 
 def canonical_hash(value):
@@ -110,9 +114,57 @@ def bundle_manifest(root):
     return {"sha256": canonical_hash(entries), "entries": entries}
 
 
-def source_snapshot(app, shared):
-    require(not shared.git(app, "status", "--porcelain", "--untracked-files=no"),
-            "Tracked source changed during the same-job build")
+class TrackedSourceChanged(RuntimeError):
+    def __init__(self, observation):
+        super().__init__("Tracked source changed during the same-job build")
+        self.observation = observation
+
+
+def tracked_source_change(app, shared, status, stage):
+    """Record names/modes/hashes only; never accept or reset a changed source."""
+    observation = {"stage": stage, "porcelain_observation": status, "changes": []}
+    try:
+        observation["source_sha"] = shared.git(app, "rev-parse", "HEAD")
+        paths = sorted(filter(None, shared.git(app, "diff", "--name-only", "--no-renames", "-z",
+                                               "HEAD", "--").split("\0")))
+        observation.update(changed_path_count=len(paths), changed_paths_sha256=canonical_hash(paths),
+                           omitted_path_count=max(0, len(paths) - 64))
+        for name in paths[:64]:
+            entry = {"path": name}
+            observation["changes"].append(entry)
+            original = shared.git(app, "ls-tree", "-z", "HEAD", "--", name)
+            entry["head_tree_entry"] = original
+            if original:
+                metadata, original_name = original.rstrip("\0").split("\t", 1)
+                mode, kind, blob = metadata.split()
+                require(original_name == name, "Changed source tree entry is ambiguous")
+                entry.update(head_mode=mode, head_kind=kind, head_blob=blob)
+                if kind == "blob":
+                    content = subprocess.check_output(["git", "-C", str(app), "cat-file", "blob", blob], timeout=30)
+                    entry.update(head_sha256=hashlib.sha256(content).hexdigest(), head_bytes=len(content))
+            path = app / name
+            if path.is_symlink():
+                content = os.readlink(path).encode("utf8", errors="surrogateescape")
+                entry.update(worktree_kind="symlink", worktree_sha256=hashlib.sha256(content).hexdigest(),
+                             worktree_bytes=len(content))
+            elif not path.resolve().is_relative_to(app.resolve()):
+                entry["worktree_kind"] = "OUTSIDE_CHECKOUT_NOT_READ"
+            elif path.is_file():
+                entry.update(worktree_kind="file", worktree_sha256=digest(path),
+                             worktree_bytes=path.stat().st_size, worktree_mode=oct(path.stat().st_mode & 0o7777))
+            else:
+                entry["worktree_kind"] = "directory" if path.exists() else "missing"
+    except Exception as error:
+        # A diagnostic failure cannot make dirty source acceptable or replace
+        # the original identity failure. Cancellation remains interruptible.
+        observation["diagnostic_error_type"] = type(error).__name__
+    return observation
+
+
+def source_snapshot(app, shared, *, stage="SHARED_INPUTS_BETWEEN_PHASES"):
+    status = shared.git(app, "status", "--porcelain", "--untracked-files=no")
+    if status:
+        raise TrackedSourceChanged(tracked_source_change(app, shared, status, stage))
     tracked = shared.git(app, "ls-files").splitlines()
     locks = {name: digest(app / name) for name in tracked if name.endswith("Package.resolved")}
     require(locks, "Tracked package locks are missing")
@@ -320,7 +372,7 @@ def build_once(args, lane, selections, receipt):
     runtime = json.loads(runtime_path.read_text())
     require(runtime.get("status") == "PASS" and runtime.get("app_source_sha") == head
             and runtime.get("marker") == shared.MARKER, "Exact r14 runtime installation is required")
-    source = source_snapshot(app, shared)
+    source = source_snapshot(app, shared, stage="BEFORE_BUILD")
     matrix = json.loads((app / "Tools/PinkhaSimulatorGate/required-coverage.json").read_text())
     identity = shared.candidate_identity(app, matrix)
     methods = [method for selection in selections for method in selection["methods"]]
@@ -334,16 +386,22 @@ def build_once(args, lane, selections, receipt):
     shared.command(["xcrun", "simctl", "boot", udid], app, common)
     shared.command(["xcrun", "simctl", "bootstatus", udid, "-b"], app, common)
     shared.prepare_source_cache(app, derived)
+    require(source_snapshot(app, shared, stage="AFTER_SOURCE_CACHE") == source,
+            "Source or package inputs changed during cache preparation")
     base = ["xcodebuild", "build-for-testing", "-configuration", CONFIGURATION,
             "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO"]
     native_suites = sorted({selection["preparation"].split("/")[0] for selection in selections})
     shared.command([*base, "-project", "Anytype.xcodeproj", "-scheme", "Anytype", "-derivedDataPath", str(derived),
                     *["-only-testing:AnytypeTests/" + name for name in native_suites], *FLAGS], app, common)
+    require(source_snapshot(app, shared, stage="AFTER_APP_AND_NATIVE_TEST_BUILD") == source,
+            "Source or package inputs changed during App/native test build")
     built = derived / "Build/Products" / (CONFIGURATION + "-iphonesimulator/Anytype.app")
     shared.verify_signed_simulator(built, common)
     shared.verify_runtime_copies(built, shared.MARKER.encode(), common)
     native_configuration = shared.test_configuration(derived / "Build/Products", "AnytypeTests")
     project = shared.ui_only_project(app)
+    require(source_snapshot(app, shared, stage="AFTER_UI_PROJECT_GENERATION") == source,
+            "Source or package inputs changed during UI-only project generation")
     ui_derived = derived.with_name(derived.name + "-ui")
     shared.command([*base, "-project", str(project), "-scheme", "PinkhaPrebuiltUI", "-derivedDataPath", str(ui_derived),
                     *["-only-testing:PinkhaStage1AcceptanceUITests/" + method for method in methods], *FLAGS], app, common)
@@ -351,7 +409,8 @@ def build_once(args, lane, selections, receipt):
     shared.command(["xcrun", "simctl", "shutdown", udid], app, common)
     native_bundles = tuple(sorted((derived / "Build/Products").rglob("AnytypeTests.xctest")))
     require(native_bundles, "Built native XCTest bundle is missing")
-    require(source_snapshot(app, shared) == source, "Source or package inputs changed during build")
+    require(source_snapshot(app, shared, stage="AFTER_UI_RUNNER_BUILD") == source,
+            "Source or package inputs changed during UI runner build")
     frozen = FrozenBuild(app, derived, ui_derived, built, native_configuration, ui_configuration, shared,
                          source, identity["hashes"], {}, native_bundles, runtime_path, digest(runtime_path), {})
     frozen = replace(frozen, artifacts=frozen.observed_artifacts())
@@ -484,6 +543,8 @@ def worker(args, lane, intent):
     except BaseException as error:
         receipt.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else "BATCH_ABORTED_SETUP_OR_IDENTITY",
                        error_type=type(error).__name__, error=str(error))
+        if isinstance(error, TrackedSourceChanged):
+            receipt["tracked_source_change"] = error.observation
         if receipt.get("current_lane") and receipt["lane_statuses"][receipt["current_lane"]] == "IN_PROGRESS":
             receipt["lane_statuses"][receipt["current_lane"]] = "NOT_COMPLETED_SETUP_OR_IDENTITY"
         if isinstance(error, KeyboardInterrupt):
