@@ -1,0 +1,89 @@
+{
+  "run_id": 44217298120,
+  "control_sha": "c8e5a0e148021662dd943f93faeb3195c6086888",
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44217298120",
+  "status": "COMPONENT_STORE_PAIR_PASS",
+  "actual_counts": {
+    "binaries": 2,
+    "native_processes": 4,
+    "passing_test_invocations": 4
+  },
+  "artifact_id": 14389765034,
+  "artifact_sha256": "33807a55ef2b0d26f1ef2e16f5d72b187cfd507ebb9cb7eef122a618db75f038",
+  "binary_sha256": {
+    "old": "bf114fb0b06e198d3176a5c503196c401c85526ea7f902adcabd16874c99b47b",
+    "new": "8ffa803c2b9b4da3a38ae3ddad72c695354a89d2408a7b3852fd2f72611bca2f"
+  },
+  "phases": [
+    {
+      "phase": "old-create",
+      "pid": 9790,
+      "test_passed": true,
+      "closed": true,
+      "runtime_capability": 0,
+      "private_query_status": "NOT_ATTEMPTED_RUNTIME_UNAVAILABLE",
+      "public_members": [
+        "pair-document"
+      ],
+      "private_members": [],
+      "private_index_used": false,
+      "recovery_complete": false,
+      "recomputed": 0
+    },
+    {
+      "phase": "new-upgrade",
+      "pid": 9811,
+      "test_passed": true,
+      "closed": true,
+      "runtime_capability": 1,
+      "private_query_status": "EXECUTED",
+      "public_members": [
+        "pair-document"
+      ],
+      "private_members": [
+        "pair-block",
+        "pair-document"
+      ],
+      "private_index_used": true,
+      "recovery_complete": true,
+      "recomputed": 4
+    },
+    {
+      "phase": "old-edit",
+      "pid": 9832,
+      "test_passed": true,
+      "closed": true,
+      "runtime_capability": 0,
+      "private_query_status": "NOT_ATTEMPTED_RUNTIME_UNAVAILABLE",
+      "public_members": [
+        "pair-document"
+      ],
+      "private_members": [],
+      "private_index_used": false,
+      "recovery_complete": true,
+      "recomputed": 4
+    },
+    {
+      "phase": "new-recover",
+      "pid": 9853,
+      "test_passed": true,
+      "closed": true,
+      "runtime_capability": 1,
+      "private_query_status": "EXECUTED",
+      "public_members": [
+        "pair-document"
+      ],
+      "private_members": [
+        "pair-block",
+        "pair-document"
+      ],
+      "private_index_used": true,
+      "recovery_complete": true,
+      "recomputed": 4
+    }
+  ],
+  "export_status": "NOT_RUN_COMPONENT_NO_RPC",
+  "swift_pairing_status": "NOT_RUN",
+  "full_F10": "NOT_PROVEN",
+  "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF"
+}
