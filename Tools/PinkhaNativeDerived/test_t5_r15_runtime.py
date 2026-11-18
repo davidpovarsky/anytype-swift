@@ -1,8 +1,11 @@
 """Pure build-control checks. No Apple framework or runtime is executed here."""
 import copy
+import hashlib
 import json
 from pathlib import Path
 import unittest
+import subprocess
+from unittest import mock
 import tempfile
 
 import build_t5_r15_runtime as runtime
@@ -257,6 +260,212 @@ class R15RuntimeControls(unittest.TestCase):
                     values[-1][field] = "old-native-only-receipt"
                 with self.assertRaises(RuntimeError):
                     runtime.validate_mobile_dependency_download("\n".join(json.dumps(value) for value in values))
+
+
+
+    def generated_fixture(self, root):
+        work, heart, mobile = root / "owned-work", root / "owned-heart", root / "pinned-mobile"
+        for directory in [work, heart, mobile]:
+            directory.mkdir()
+        (heart / "preserve-native").write_bytes(b"unchanged native input")
+        proof = Path(__file__).resolve().parents[2] / "docs/validation/20261118-t5-r15-runtime/44240654969"
+        for path in runtime.MOBILE_BIND_SOURCES:
+            target = mobile / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes((proof / "dependency-source" / ("gomobile-" + Path(path).name)).read_bytes())
+        module = dict(Path="golang.org/x/mobile", Version=runtime.MOBILE_VERSION,
+                      Sum=runtime.MOBILE_MODULE_SUM, GoModSum=runtime.MOBILE_MOD_SUM, Dir=str(mobile))
+        source = proof / "unpacked/Pinkha-Native-Derived-Evidence/runtime/resolved-native-modules.log"
+        records = launcher.module_records(source.read_text(encoding="utf8"))
+        # This is a controller fixture. Only the machine-local root path changes;
+        # all captured remote module/version/replacement data remains original.
+        records[0]["Dir"] = str(heart)
+        return work, heart, module, records
+
+    def graph_fixture(self):
+        heart, native, genproto, _ = module_inputs()
+        fields = runtime.GENERATED_GRAPH_REQUIRED["git.sr.ht/~sbinet/gg"]
+        gg = dict(Path=fields["effective_path"], Version=fields["effective_version"],
+                  Sum=fields["sum"], GoModSum=fields["go_mod_sum"])
+        rows = [dict(Path="gobind", Main=True), native, gg, genproto]
+        graph = launcher.selected_graph(rows, heart)
+        downloads = {
+            value["effective_path"] + "@" + value["effective_version"]: dict(
+                Path=value["effective_path"], Version=value["effective_version"],
+                Sum=value["sum"], GoModSum=value["go_mod_sum"])
+            for value in graph.values()
+        }
+        return heart, rows, graph, downloads
+
+    def manifest_fixture(self, heart):
+        return dict(Module={"Path": "gobind"}, Go="1.26.5",
+                    Require=[dict(Path="example.org/dependency", Version="v1.2.3")],
+                    Replace=[dict(Old={"Path": launcher.NATIVE_MODULE}, New={"Path": str(heart)})])
+
+    def test_generated_seed_keeps_original_native_floors_and_exact_gomobile_rules(self):
+        with tempfile.TemporaryDirectory() as directory:
+            work, heart, mobile, rows = self.generated_fixture(Path(directory).resolve())
+            before = copy.deepcopy(rows)
+            seed, receipt = runtime.generated_dependency_seed(
+                work, "\n".join(json.dumps(item) for item in rows), heart, mobile)
+            self.assertEqual(rows, before)
+            self.assertEqual(receipt["source_module_count"], 882)
+            text = (seed / "go.mod").read_text()
+            self.assertIn("git.sr.ht/~sbinet/gg v0.3.1", text)
+            self.assertNotIn("git.sr.ht/~sbinet/gg v0.6.0", text)
+            self.assertIn("gonum.org/v1/gonum v0.17.0", text)
+            self.assertIn("replace (", text)
+            genproto = next(item for item in rows if item["Path"] == launcher.GENPROTO)
+            self.assertIn(launcher.GENPROTO + " " + genproto["Version"] + " => "
+                          + launcher.GENPROTO + " " + launcher.VERSION, text)
+            self.assertEqual((heart / "preserve-native").read_bytes(), b"unchanged native input")
+
+    def test_invalid_native_graph_or_changed_generator_is_rejected_before_seed_creation(self):
+        for change in ["duplicate", "foreign-native", "foreign-local", "newline-path", "mobile", "genproto", "source"]:
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                work, heart, mobile, rows = self.generated_fixture(Path(directory).resolve())
+                if change == "duplicate":
+                    rows.append(copy.deepcopy(rows[-1]))
+                elif change == "foreign-native":
+                    rows[0]["Dir"] = str(heart.parent / "other")
+                elif change == "foreign-local":
+                    rows[1]["Replace"] = dict(Path="../foreign", Dir="/foreign")
+                elif change == "newline-path":
+                    rows[1]["Path"] += "\nreplace injected"
+                elif change == "mobile":
+                    next(item for item in rows if item["Path"] == "golang.org/x/mobile")["Version"] = "v1.2.3"
+                elif change == "genproto":
+                    next(item for item in rows if item["Path"] == launcher.GENPROTO)["Replace"]["Sum"] = "h1:wrong"
+                else:
+                    (Path(mobile["Dir"]) / "cmd/gomobile/bind.go").write_bytes(b"changed pinned generator")
+                with self.assertRaises(RuntimeError):
+                    runtime.generated_dependency_seed(
+                        work, "\n".join(json.dumps(item) for item in rows), heart, mobile)
+                self.assertFalse((work / "generated-dependency-seed").exists())
+
+    def test_selected_graph_and_authoritative_expanded_dependency_hashes_are_bound(self):
+        _, _, graph, downloads = self.graph_fixture()
+        receipt = runtime.validate_generated_seed_graph(graph, downloads)
+        self.assertEqual(receipt["selected_module_count"], 2)
+        self.assertEqual(receipt["downloaded_module_count"], 2)
+
+    def test_changed_or_missing_selected_and_downloaded_hashes_are_rejected(self):
+        for field in ["sum", "go_mod_sum", "effective_version", "effective_path"]:
+            with self.subTest(field=field):
+                _, _, graph, downloads = self.graph_fixture()
+                graph["git.sr.ht/~sbinet/gg"][field] = "changed"
+                with self.assertRaises(RuntimeError):
+                    runtime.validate_generated_seed_graph(graph, downloads)
+        for field in ["Sum", "GoModSum"]:
+            with self.subTest(download_field=field):
+                _, _, graph, downloads = self.graph_fixture()
+                downloads["git.sr.ht/~sbinet/gg@v0.6.0"].pop(field)
+                with self.assertRaises(RuntimeError):
+                    launcher.validate_downloaded_graph(graph, downloads)
+
+    def test_post_tidy_graph_allows_pruning_but_no_selection_drift(self):
+        _, _, expected, _ = self.graph_fixture()
+        only_genproto = {launcher.GENPROTO: expected[launcher.GENPROTO]}
+        result = launcher.validate_seeded_graph(only_genproto, expected)
+        self.assertEqual(result["pruned_seed_modules"], ["git.sr.ht/~sbinet/gg"])
+        for field in ["version", "replaced", "effective_path", "effective_version", "sum", "go_mod_sum", "new-module"]:
+            with self.subTest(field=field):
+                actual = copy.deepcopy(only_genproto)
+                if field == "new-module":
+                    actual["unexpected.org/new"] = copy.deepcopy(actual[launcher.GENPROTO])
+                elif field == "replaced":
+                    actual[launcher.GENPROTO][field] = False
+                else:
+                    actual[launcher.GENPROTO][field] = "changed"
+                with self.assertRaises(RuntimeError):
+                    launcher.validate_seeded_graph(actual, expected)
+
+    def test_selected_graph_cannot_hide_duplicate_or_foreign_local_modules(self):
+        for change in ["duplicate", "foreign-native", "missing-main", "other-main", "sum", "mod-sum"]:
+            with self.subTest(change=change):
+                heart, rows, _, _ = self.graph_fixture()
+                if change == "duplicate":
+                    rows.append(copy.deepcopy(rows[-1]))
+                elif change == "foreign-native":
+                    rows[1]["Replace"]["Dir"] = str(heart.parent / "different-heart")
+                elif change == "missing-main":
+                    rows.pop(0)
+                elif change == "other-main":
+                    rows[0]["Path"] = "other-main"
+                else:
+                    rows[2].pop("Sum" if change == "sum" else "GoModSum")
+                with self.assertRaises(RuntimeError):
+                    launcher.selected_graph(rows, heart)
+
+    def test_failed_conflicting_or_unverified_download_streams_are_rejected(self):
+        _, _, _, downloads = self.graph_fixture()
+        original = list(downloads.values())
+        for change in ["error", "conflict", "missing-sum", "bad-mod-sum"]:
+            with self.subTest(change=change):
+                rows = copy.deepcopy(original)
+                if change == "error":
+                    rows[0]["Error"] = "not downloaded"
+                elif change == "conflict":
+                    rows.append(dict(rows[0], Sum=launcher.MODULE_SUM))
+                elif change == "missing-sum":
+                    rows[0].pop("Sum")
+                else:
+                    rows[0]["GoModSum"] = "h1:not-a-real-hash"
+                with self.assertRaises(RuntimeError):
+                    launcher.downloaded_modules("\n".join(json.dumps(item) for item in rows))
+
+    def test_actual_pre_tidy_manifest_is_checked_before_the_command(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            manifest = self.manifest_fixture(root / "heart")
+            contract = dict(before_tidy_manifest=launcher.canonical_manifest(manifest),
+                            input_native_graph_sha256="a" * 64)
+            (root / "go.mod").write_text("module gobind\n\ngo 1.26.5\n", encoding="utf8")
+            env = dict(GOWORK="off", GOPROXY="off")
+            for change in ["unchanged", "require", "replace", "go"]:
+                with self.subTest(change=change):
+                    actual = copy.deepcopy(manifest)
+                    if change == "require":
+                        actual["Require"][0]["Version"] = "v9.9.9"
+                    elif change == "replace":
+                        actual["Replace"][0]["New"]["Path"] = "/different/heart"
+                    elif change == "go":
+                        actual["Go"] = "1.25.6"
+                    response = subprocess.CompletedProcess([], 0, stdout=json.dumps(actual), stderr="")
+                    with mock.patch.object(launcher.subprocess, "run", return_value=response):
+                        if change == "unchanged":
+                            result = launcher.audit_initial_manifest(root / "go", env, root, contract)
+                            self.assertEqual(result["status"], "EXACT_GENERATED_INPUT")
+                        else:
+                            with self.assertRaises(RuntimeError):
+                                launcher.audit_initial_manifest(root / "go", env, root, contract)
+
+    def test_seed_contract_is_owned_hashed_and_tied_to_native_identity(self):
+        for change in ["unchanged", "outside", "hash", "native", "schema"]:
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory).resolve()
+                work, heart = root / "work", root / "heart"
+                work.mkdir()
+                generated = work / "gomobile-tmp"
+                generated.mkdir()
+                _, _, graph, _ = self.graph_fixture()
+                data = dict(schema="pinkha-generated-module-graph-v1", native_directory=str(heart),
+                            selected_dependencies=graph,
+                            before_tidy_manifest=self.manifest_fixture(heart))
+                if change == "native":
+                    data["native_directory"] = str(root / "foreign")
+                elif change == "schema":
+                    data["schema"] = "unrelated"
+                path = (root if change == "outside" else work) / "contract.json"
+                path.write_text(json.dumps(data), encoding="utf8")
+                expected = hashlib.sha256(path.read_bytes()).hexdigest()
+                if change == "hash":
+                    expected = "0" * 64
+                if change == "unchanged":
+                    self.assertEqual(launcher.load_seed_contract(path, expected, heart, generated), data)
+                else:
+                    with self.assertRaises(RuntimeError):
+                        launcher.load_seed_contract(path, expected, heart, generated)
 
 
 if __name__ == "__main__":

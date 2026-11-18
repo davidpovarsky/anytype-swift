@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import platform
 import plistlib
+import re
 import shutil
 import subprocess
 import sys
@@ -34,6 +35,18 @@ MOBILE_GRAPH_REQUIRED = {
         "Version": "v0.0.0-20221208032759-85de2813cf6b",
         "Sum": "h1:a26Bdkl2B9PmYN6vGXnnfB2UGKjz0Moif1aEg+xTd7M=",
         "GoModSum": "h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=",
+    },
+}
+
+MOBILE_BIND_SOURCES = {
+    "cmd/gomobile/bind.go": "f9039cc240190ee7cabd2a89f3b7d479d51bd40a18e79f1a032177ce803b64b0",
+    "cmd/gomobile/bind_iosapp.go": "17cb5ce95d4194126099c94613f4f2769a7ede696f0b36f062ed985d7245e977",
+}
+GENERATED_GRAPH_REQUIRED = {
+    "git.sr.ht/~sbinet/gg": {
+        "effective_path": "git.sr.ht/~sbinet/gg", "effective_version": "v0.6.0",
+        "sum": "h1:RIzgkizAk+9r7uPzf/VfbJHBMKUr0F5hRFxTUGMnt38=",
+        "go_mod_sum": "h1:uucygbfC9wVPQIfrmwM2et0imr8L7KQWywX0xpFMm94=",
     },
 }
 
@@ -173,6 +186,76 @@ def validate_mobile_dependency_download(text):
     return dict(downloaded_module_count=len(modules), modules=modules)
 
 
+def generated_dependency_seed(work, text, heart, mobile):
+    """Mirror pinned getModuleVersions in owned files; do not edit native declarations."""
+    if (mobile.get("Path") != "golang.org/x/mobile" or mobile.get("Version") != MOBILE_VERSION
+            or mobile.get("Sum") != MOBILE_MODULE_SUM or mobile.get("GoModSum") != MOBILE_MOD_SUM
+            or mobile.get("Replace") or not mobile.get("Dir")):
+        raise RuntimeError("Exact pinned mobile source required for generated-graph preparation")
+    for path, expected in MOBILE_BIND_SOURCES.items():
+        target = Path(mobile["Dir"]) / path
+        if target.is_symlink() or not target.is_file() or digest(target) != expected:
+            raise RuntimeError("Pinned gomobile graph-generation source changed: " + path)
+    records = launcher.module_records(text)
+    requires, replacements, seen, native_count = [], [], set(), 0
+
+    def token(value, version=False):
+        pattern = r"v[0-9]+\.[0-9]+\.[0-9]+(?:[-+][A-Za-z0-9.+-]+)?" if version else r"[A-Za-z0-9_~+./-]+"
+        if not isinstance(value, str) or not re.fullmatch(pattern, value):
+            raise RuntimeError("Unsafe or missing module path/version in original native graph")
+        return value
+
+    for item in records:
+        path = token(item.get("Path"))
+        if path in seen:
+            raise RuntimeError("Duplicate original native module path")
+        seen.add(path)
+        if item.get("Main"):
+            if (path != launcher.NATIVE_MODULE or item.get("Version") or item.get("Replace")
+                    or not item.get("Dir") or Path(item["Dir"]).resolve() != heart.resolve()):
+                raise RuntimeError("Original native main module is not the exact owned Heart checkout")
+            native_count += 1
+            replacements.append(path + " => " + json.dumps(str(heart.resolve())))
+            continue
+        version = token(item.get("Version"), version=True)
+        if item.get("Replace"):
+            replacement = item["Replace"]
+            # The reviewed native graph has no local dependency replacement
+            # except its main Heart module. Versioned remote forks remain exact.
+            target = token(replacement.get("Path"))
+            selected_version = token(replacement.get("Version"), version=True)
+            replacements.append(path + " " + version + " => " + target + " " + selected_version)
+        else:
+            requires.append(path + " " + version)
+    if native_count != 1 or not requires or not replacements:
+        raise RuntimeError("One native main module and its complete module declarations required")
+    selected = {item["Path"]: item for item in records}
+    if selected.get("golang.org/x/mobile", {}).get("Version") != MOBILE_VERSION:
+        raise RuntimeError("Native graph changed the pinned mobile module")
+    pair_ci.validate_genproto_selection(selected.get(pair_ci.GENPROTO_PATH, {}))
+    seed = work / "generated-dependency-seed"
+    seed.mkdir(exist_ok=False)
+    raw = ("module gobind\n\ngo 1.26.5\n\nrequire (\n"
+           + "".join("\t" + line + "\n" for line in requires) + ")\n\nreplace (\n"
+           + "".join("\t" + line + "\n" for line in replacements) + ")\n")
+    (seed / "go.mod").write_text(raw, encoding="utf8", newline="\n")
+    return seed, dict(strategy="EXACT_PINNED_GOMOBILE_FLATTENED_MODULE_GRAPH",
+                      graph_role="GENERATED_GRAPH_NOT_ORIGINAL_NATIVE_GRAPH",
+                      input_native_graph_sha256=hashlib.sha256(text.encode()).hexdigest(),
+                      source_module_count=len(records), initial_go_mod_sha256=digest(seed / "go.mod"),
+                      go_mod_text=raw, bind_source_sha256=dict(MOBILE_BIND_SOURCES),
+                      original_versions={item["Path"]: item.get("Version") for item in records})
+
+
+def validate_generated_seed_graph(graph, downloads):
+    launcher.validate_downloaded_graph(graph, downloads)
+    for path, fields in GENERATED_GRAPH_REQUIRED.items():
+        if any(graph.get(path, {}).get(key) != value for key, value in fields.items()):
+            raise RuntimeError("Authoritative pinned generated dependency/checksums differ: " + path)
+    return dict(selected_module_count=len(graph), downloaded_module_count=len(downloads))
+
+
+
 def execute(args, control, evidence):
     if platform.system() != "Darwin" or platform.machine() != "arm64":
         raise RuntimeError("Actual ARM64 macOS/Xcode environment required; no native source modified")
@@ -264,6 +347,49 @@ def execute(args, control, evidence):
     mobile_dependencies.update(resolved_go_sum_sha256=digest(seed / "go.sum"),
                                download_receipt_sha256=digest(download_log))
     coverage.write_receipt(evidence / "mobile-dependency-preparation.json", mobile_dependencies)
+    native_graph_log = run([str(real_go), "list", "-m", "-json", "all"],
+                           "original-native-graph-for-gomobile", env)
+    graph_seed, graph_preparation = generated_dependency_seed(
+        work, native_graph_log.read_text(encoding="utf8"), heart, mobile)
+    graph_env = dict(env, GOWORK="off")
+    checksum_log = run([str(real_go), "env", "-json", "GOSUMDB", "GONOSUMDB", "GOPRIVATE"],
+                       "generated-graph-checksum-authority", graph_env, cwd=graph_seed)
+    checksum_authority = json.loads(checksum_log.read_text(encoding="utf8"))
+    if (checksum_authority.get("GOSUMDB") != "sum.golang.org"
+            or any(checksum_authority.get(key) for key in ["GONOSUMDB", "GOPRIVATE"])):
+        raise RuntimeError("Public generated dependencies need the standard checksum database; no bypass is added")
+    initial_mod = run([str(real_go), "mod", "edit", "-json"],
+                      "generated-graph-original-manifest", graph_env, cwd=graph_seed)
+    manifest = launcher.canonical_manifest(json.loads(initial_mod.read_text(encoding="utf8")))
+    graph_download = run([str(real_go), "mod", "download", "-json", "all"],
+                         "generated-graph-module-download", graph_env, cwd=graph_seed)
+    graph_env["GOPROXY"] = "off"
+    graph_selection = run([str(real_go), "list", "-m", "-json", "all"],
+                          "generated-graph-effective-modules", graph_env, cwd=graph_seed)
+    graph = launcher.selected_graph(launcher.module_records(graph_selection.read_text(encoding="utf8")), heart)
+    graph_preparation.update(validate_generated_seed_graph(
+        graph, launcher.downloaded_modules(graph_download.read_text(encoding="utf8"))))
+    if digest(graph_seed / "go.mod") != graph_preparation["initial_go_mod_sha256"]:
+        raise RuntimeError("Generated cache hydration changed its original module declarations")
+    selected_seed_genproto = next(item for item in launcher.module_records(graph_selection.read_text(encoding="utf8"))
+                                 if item["Path"] == pair_ci.GENPROTO_PATH)
+    pair_ci.validate_genproto_selection(selected_seed_genproto)
+    graph_contract = dict(schema="pinkha-generated-module-graph-v1",
+                          native_directory=str(heart), before_tidy_manifest=manifest,
+                          input_native_graph_sha256=graph_preparation["input_native_graph_sha256"],
+                          selected_dependencies=graph)
+    graph_contract_path = graph_seed / "bind-contract.json"
+    coverage.write_receipt(graph_contract_path, graph_contract)
+    graph_contract_sha = digest(graph_contract_path)
+    original_versions = graph_preparation.pop("original_versions")
+    graph_preparation.update(
+        checksum_authority=checksum_authority, contract_sha256=graph_contract_sha,
+        original_manifest_sha256=digest(initial_mod), download_receipt_sha256=digest(graph_download),
+        effective_graph_sha256=digest(graph_selection), resolved_go_sum_sha256=digest(graph_seed / "go.sum"),
+        selected_dependencies=graph,
+        selected_version_changes=[dict(path=path, original=original_versions.get(path), generated=value["version"])
+                                  for path, value in graph.items() if original_versions.get(path) != value["version"]])
+    coverage.write_receipt(evidence / "generated-dependency-preparation.json", graph_preparation)
     env["GOPROXY"] = "off"
     run([str(real_go), "list", "-m", "-json", "all"], "resolved-native-modules", env)
     selection_path = run([str(real_go), "list", "-m", "-json", pair_ci.GENPROTO_PATH], "genproto-selection", env)
@@ -287,7 +413,9 @@ def execute(args, control, evidence):
     env.update(PATH=str(shim) + os.pathsep + str(heart / "deps") + os.pathsep + env["PATH"],
                TMPDIR=str(temporary), PINKHA_T5_REAL_GO=str(real_go), PINKHA_T5_HEART=str(heart),
                PINKHA_T5_GOWORK=str(gowork), PINKHA_T5_MOBILE_TMP=str(temporary),
-               PINKHA_T5_GO_AUDIT=str(audit))
+               PINKHA_T5_GO_AUDIT=str(audit),
+               PINKHA_T5_GENERATED_CONTRACT=str(graph_contract_path),
+               PINKHA_T5_GENERATED_CONTRACT_SHA256=graph_contract_sha)
     cache_log = run([str(real_go), "env", "GOMODCACHE"], "original-module-cache", env)
     module_cache = Path(cache_log.read_text(encoding="utf8").strip())
     env, mobile_preparation = prepare_apple_bind(
@@ -307,17 +435,26 @@ def execute(args, control, evidence):
         "gomobile-bind", env, timeout=5400)
     run([str(real_go), "run", "cmd/iosrepack/main.go"], "original-ios-repack", env)
     records = [json.loads(path.read_text(encoding="utf8")) for path in sorted(audit.glob("*.json"))]
-    verified_generated = {}
+    verified_generated, original_generated = {}, {}
     for record in records:
+        if "before_tidy_seed" in record and record.get("return_code") == 0:
+            if (record.get("generated_contract_sha256") != graph_contract_sha
+                    or record["before_tidy_seed"].get("status") != "EXACT_GENERATED_INPUT"):
+                raise RuntimeError("Original generated input was not bound to the hydrated graph")
+            after_tidy = record["after_tidy_modules"]
+            launcher.validate_seeded_graph(after_tidy["selected_dependency_graph"], graph)
+            original_generated[record["cwd"]] = record["before_tidy_seed"]
         if "before_build_modules" in record and record.get("return_code") == 0:
             if record.get("scope") != "generated-gobind" or record.get("selected_gowork") != "off":
                 raise RuntimeError("Generated module scope was not recorded explicitly")
             checked = record["before_build_modules"]
+            launcher.validate_seeded_graph(checked["selected_dependency_graph"], graph)
             launcher.validate_modules(checked["native"], checked["genproto_selection"], checked["genproto_download"], heart)
             if hashlib.sha256(checked["go_mod_text"].encode()).hexdigest() != checked["go_mod_sha256"]:
                 raise RuntimeError("Original generated go.mod receipt bytes differ")
             verified_generated[record["cwd"]] = checked
-    if len(verified_generated) != 3:
+    if (len(verified_generated) != 3 or set(original_generated) != set(verified_generated)
+            or digest(graph_contract_path) != graph_contract_sha):
         raise RuntimeError("All three original generated architecture modules need exact dependency proofs")
     slices = helper.verify_framework_slices(framework, VERSION)
     source_slices = helper.verify_framework_slices(framework, coverage.HEART)
@@ -345,6 +482,7 @@ def execute(args, control, evidence):
                    go_version=version, xcode=xcode, sdk_versions=sdk_versions, native_dependencies=dependencies,
                    genproto_resolution=genproto, mobile_selection=mobile, tool_binaries=tools,
                    mobile_preparation=mobile_preparation, mobile_dependency_preparation=mobile_dependencies,
+                   generated_dependency_preparation=graph_preparation, generated_input_proofs=original_generated,
                    go_launcher_sha256=digest(shim_source, True), generated_module_proofs=verified_generated,
                    binary_slices=slices, architecture_proof=architecture_proof, framework=str(framework),
                    artifacts=[dict(path=str(path.relative_to(framework)), sha256=helper.digest(path))
