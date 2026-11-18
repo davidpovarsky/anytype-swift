@@ -18,6 +18,7 @@ from validate_release import method_results, candidate_identity
 from simulator_identity import read_simulator_entitlements, verify_simulator_keychain_identity
 from compiled_products import capture_products
 from rerun_original_ui import ui_only_project, install_ui_runner, export_ui_console
+import wave15_diagnostics as diagnostics
 
 SMOKE = ['testObjectAddPropertyButtonAndPickerSearch', 'testDocumentSourceSearchPresentation',
          'testSourceChipOpensAndClosesInspector']
@@ -156,13 +157,18 @@ def run_selection(app, configuration, blueprint, udid, selections, environment, 
             result['command_exit_code'] = error.returncode
     summary_path = evidence / (prefix + '-summary.json')
     tests_path = evidence / (prefix + '-tests.json')
+    diagnostic_summary = None
     if summary_path.exists() and tests_path.exists():
         try:
             raw = json.loads(summary_path.read_text())
+            diagnostic_summary = raw
             result.update(passed=raw.get('passedTests'), failed=raw.get('failedTests'), skipped=raw.get('skippedTests'),
                           actual_methods=method_results(json.loads(tests_path.read_text())))
         except (ValueError, KeyError) as error:
             result.update(status='FAIL', evidence_error=str(error))
+    observation = diagnostics.emit_selection(result, diagnostic_summary)
+    if observation is not None:
+        result['public_diagnostics'] = observation
     write(evidence / 'result.json', result)
     return result
 

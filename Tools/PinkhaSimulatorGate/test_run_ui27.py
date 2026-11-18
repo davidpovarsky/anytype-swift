@@ -292,6 +292,16 @@ class UIExecutionControls(unittest.TestCase):
         self.assertEqual((result['passed'], result['failed'], result['skipped']), (2, 1, 0))
         self.assertEqual(result['command_exit_code'], 65)
 
+    def test_failed_diagnostic_projection_does_not_change_actual_failure_or_counts(self):
+        with patch.object(runner.diagnostics, 'selection_observation', side_effect=ValueError('private diagnostic error')):
+            result = self.exercise(passed=2, failed=1, command_failure=True)
+        self.assertEqual(result['status'], 'FAIL')
+        self.assertEqual((result['passed'], result['failed'], result['skipped']), (2, 1, 0))
+        self.assertEqual(result['command_exit_code'], 65)
+        self.assertEqual(result['error_type'], 'CalledProcessError')
+        self.assertNotIn('public_diagnostics', result)
+        self.assertNotIn('private diagnostic error', result['error'])
+
     def test_stale_pass_evidence_is_refused_without_overwrite(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

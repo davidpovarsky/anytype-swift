@@ -454,7 +454,7 @@ class BatchControls(unittest.TestCase):
                 batch.validate_worker_conclusion(receipt, intent, evidence, lane)
 
     def test_first_cancellation_in_cleanup_or_publication_is_not_swallowed(self):
-        for phase in ["cleanup", "publication", "signals_worker", "signals_cleanup", "signals_publication"]:
+        for phase in ["cleanup", "publication", "signals_worker", "signals_cleanup", "signals_publication", "diagnostics"]:
             with self.subTest(phase=phase), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
                 args = argparse.Namespace(app=root, evidence=root / "build/evidence", derived=root / "build/derived",
@@ -464,6 +464,7 @@ class BatchControls(unittest.TestCase):
                              "status": "PREFLIGHT_PASS_UI_NOT_RUN", "selected": {"ipad": preflight_device}}
                 batch.write(args.evidence / "preflight/preflight.json", preflight)
                 original_write = batch.write
+                original_diagnostics = batch.publish_batch_observations
                 cancellation_sent = False
                 cleanup_finished = False
 
@@ -497,12 +498,18 @@ class BatchControls(unittest.TestCase):
                     cleanup_finished = True
                     return {"status": "PASS"}
 
+                def publish_diagnostics(*values):
+                    if phase == "diagnostics":
+                        raise KeyboardInterrupt()
+                    return original_diagnostics(*values)
+
                 previous = {number: signal.getsignal(number) for number in (signal.SIGTERM, signal.SIGINT)}
                 with patch.object(batch.sys, "platform", "darwin"), \
                      patch.dict(os.environ, {"GITHUB_SHA": "a" * 40, "GITHUB_RUN_ID": "123", "GITHUB_RUN_ATTEMPT": "1"}), \
                      patch.object(batch.subprocess, "check_output", return_value=json.dumps(inventory([preflight_device])).encode()), \
                      patch.object(batch, "run_worker_command", side_effect=mock_worker), \
-                     patch.object(batch, "cleanup_owned", side_effect=cleanup), patch.object(batch, "write", side_effect=publish):
+                     patch.object(batch, "cleanup_owned", side_effect=cleanup), patch.object(batch, "write", side_effect=publish), \
+                     patch.object(batch, "publish_batch_observations", side_effect=publish_diagnostics):
                     with self.assertRaises(KeyboardInterrupt):
                         batch.run(args, types.SimpleNamespace(plan=selection))
                 for number, handler in previous.items():
@@ -510,6 +517,84 @@ class BatchControls(unittest.TestCase):
                 if phase.startswith("signals_"):
                     self.assertTrue(cleanup_finished, "A later cancellation signal interrupted owned cleanup")
                 self.assertEqual(json.loads((args.evidence / "execution.json").read_text())["status"], "CANCELLED")
+
+    def test_parent_diagnostics_ignore_external_symlink_and_cannot_rewrite_results(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            evidence = root / "evidence"
+            evidence.mkdir()
+            result = {"status": "BATCH_ABORTED_SETUP_OR_IDENTITY", "error": "original failure",
+                      "source_sha": "a" * 40, "run_id": "123", "run_attempt": "1"}
+            worker = {"protocol": batch.PROTOCOL, "profile": batch.PROFILE,
+                      "status": "BATCH_ABORTED_SETUP_OR_IDENTITY", "phase": "BUILD",
+                      "lane_receipts": {"editor": {"path": "lanes/editor/execution.json", "sha256": "a" * 64}}}
+            batch.write(evidence / "batch-worker.json", worker)
+            result["retained_worker_receipt"] = {"sha256": batch.digest(evidence / "batch-worker.json")}
+            original = copy.deepcopy(result)
+            external = root / "external.json"
+            external.write_text('{"status":"EXTERNAL_PRIVATE_VALUE"}')
+            lane = evidence / "lanes" / "editor"
+            lane.mkdir(parents=True)
+            (lane / "execution.json").symlink_to(external)
+            with patch.object(batch.diagnostics, "emit_execution") as emit:
+                batch.publish_batch_observations(evidence, result)
+            self.assertEqual(result, original)
+            self.assertEqual(json.loads((evidence / "batch-worker.json").read_text()), worker)
+            records = [call.args for call in emit.call_args_list]
+            self.assertEqual(records, [(original, batch.PROFILE), (worker, batch.PROFILE),
+                ({"status": "DIAGNOSTIC_READ_FAILED"}, "editor")])
+            self.assertNotIn("EXTERNAL_PRIVATE_VALUE", str(records))
+
+    def test_parent_diagnostics_require_current_worker_reference_hash_and_lane_identity(self):
+        for mode in ["unreferenced-old-lane", "foreign-run", "changed-bytes", "current"]:
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as temporary:
+                evidence = Path(temporary)
+                result = {"status": "BATCH_ABORTED_SETUP_OR_IDENTITY", "source_sha": "a" * 40,
+                          "run_id": "123", "run_attempt": "1"}
+                value = {**result, "status": "LANE_PASS_ACCEPTANCE_REVIEW_PENDING", "passed_ui_methods": 3}
+                if mode in {"unreferenced-old-lane", "foreign-run"}:
+                    value.update(source_sha="b" * 40, run_id="999")
+                lane_path = evidence / "lanes/editor/execution.json"
+                batch.write(lane_path, value)
+                references = {} if mode == "unreferenced-old-lane" else {
+                    "editor": {"path": "lanes/editor/execution.json", "sha256": batch.digest(lane_path)}}
+                worker = {"protocol": batch.PROTOCOL, "profile": batch.PROFILE,
+                          "status": "BATCH_ABORTED_SETUP_OR_IDENTITY", "phase": "BUILD",
+                          "lane_receipts": references}
+                batch.write(evidence / "batch-worker.json", worker)
+                result["retained_worker_receipt"] = {"sha256": batch.digest(evidence / "batch-worker.json")}
+                if mode == "changed-bytes":
+                    batch.write(lane_path, {**value, "passed_ui_methods": 99})
+                with patch.object(batch.diagnostics, "emit_execution") as emit:
+                    batch.publish_batch_observations(evidence, result)
+                records = [call.args for call in emit.call_args_list]
+                self.assertEqual(records[:2], [(result, batch.PROFILE), (worker, batch.PROFILE)])
+                if mode == "unreferenced-old-lane":
+                    self.assertEqual(len(records), 2)
+                elif mode == "current":
+                    self.assertEqual(records[2], (value, "editor"))
+                else:
+                    self.assertEqual(records[2], ({"status": "DIAGNOSTIC_READ_FAILED"}, "editor"))
+
+    def test_old_worker_or_lane_data_is_rejected_before_any_command(self):
+        for name in ["execution.json", "batch-intent.json", "batch-worker.json", "lanes", "broken-worker"]:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
+                evidence = Path(temporary)
+                if name == "lanes":
+                    (evidence / name).mkdir()
+                elif name == "broken-worker":
+                    (evidence / "batch-worker.json").symlink_to(evidence / "missing")
+                else:
+                    (evidence / name).write_text("original data")
+                args = argparse.Namespace(app=evidence, evidence=evidence, derived=evidence / "derived",
+                                          device="ipad", language="en")
+                with patch.object(batch.sys, "platform", "darwin"), \
+                     patch.object(batch.subprocess, "check_output") as command, \
+                     self.assertRaisesRegex(RuntimeError, "stale batch evidence"):
+                    batch.run(args, types.SimpleNamespace(plan=selection))
+                command.assert_not_called()
+                if name not in {"lanes", "broken-worker"}:
+                    self.assertEqual((evidence / name).read_text(), "original data")
 
     def worker_case(self, mode):
         temporary = tempfile.TemporaryDirectory()

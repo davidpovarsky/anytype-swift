@@ -17,6 +17,7 @@ import subprocess
 import sys
 import time
 from uuid import uuid4
+import wave15_diagnostics as diagnostics
 
 
 PROFILE = "remaining-release"
@@ -721,12 +722,68 @@ def validate_worker_conclusion(receipt, intent, evidence, lane):
     require(totals == {"native_preparations": PREPARATION_COUNT, "ui_methods": UI_COUNT}, "Original batch execution counts differ")
 
 
+def publish_batch_observations(evidence, result):
+    """Project only this fresh execution's fixed receipt paths to annotations.
+
+    Worker stdout is retained in its private log. The parent publishes the
+    same bounded schema without forwarding that log or reading old artifacts.
+    Diagnostic faults never change the original controller result.
+    """
+    diagnostics.emit_execution(result, PROFILE)
+    root = evidence.resolve()
+
+    def read_receipt(path, expected_sha):
+        if (path.is_symlink() or not path.resolve().is_relative_to(root)
+                or not path.is_file()):
+            raise ValueError("Diagnostic receipt is unavailable")
+        with path.open("rb") as stream:
+            raw = stream.read(2 * 1024 * 1024 + 1)
+        if len(raw) > 2 * 1024 * 1024 or hashlib.sha256(raw).hexdigest() != expected_sha:
+            raise ValueError("Diagnostic receipt identity differs")
+        value = json.loads(raw)
+        if type(value) is not dict:
+            raise ValueError("Diagnostic receipt is not a record")
+        return value
+
+    worker_path = root / "batch-worker.json"
+    if not worker_path.exists():
+        return
+    try:
+        retained = result.get("retained_worker_receipt", {})
+        worker = read_receipt(worker_path, retained.get("sha256"))
+        if worker.get("protocol") != PROTOCOL or worker.get("profile") != PROFILE:
+            raise ValueError("Diagnostic worker profile differs")
+        diagnostics.emit_execution(worker, PROFILE)
+        references = worker.get("lane_receipts", {})
+        if type(references) is not dict:
+            raise ValueError("Diagnostic worker lane references differ")
+    except Exception:
+        diagnostics.emit_execution({"status": "DIAGNOSTIC_READ_FAILED"}, PROFILE)
+        return
+    for name in LANES:
+        if name not in references:
+            continue
+        try:
+            reference = references[name]
+            relative = "lanes/" + name + "/execution.json"
+            if type(reference) is not dict or reference.get("path") != relative:
+                raise ValueError("Diagnostic lane reference differs")
+            value = read_receipt(root / relative, reference.get("sha256"))
+            if any(key not in result or value.get(key) != result[key]
+                   for key in ("source_sha", "run_id", "run_attempt")):
+                raise ValueError("Diagnostic lane source/run identity differs")
+            diagnostics.emit_execution(value, name)
+        except Exception:
+            diagnostics.emit_execution({"status": "DIAGNOSTIC_READ_FAILED"}, name)
+
+
 def run(args, lane):
     require(sys.platform == "darwin", "Actual Apple host required")
     require(args.device == "ipad" and args.language == "en", "Batch is only the existing iPad English Release lanes")
     require(WORKER_SECONDS + CLEANUP_SECONDS < STEP_SECONDS, "Batch exceeds the existing execution cap")
     evidence = args.evidence.resolve()
-    require(not (evidence / "execution.json").exists() and not (evidence / "batch-intent.json").exists(),
+    require(not any(path.exists() or path.is_symlink() for path in
+                    (evidence / name for name in ("execution.json", "batch-intent.json", "batch-worker.json", "lanes"))),
             "Refuse stale batch evidence")
     plan(lane)
     preflight = json.loads((evidence / "preflight/preflight.json").read_text())
@@ -827,6 +884,13 @@ def run(args, lane):
         finally:
             for number, previous in previous_handlers.items():
                 signal.signal(number, previous)
+    try:
+        publish_batch_observations(evidence, result)
+    except KeyboardInterrupt as error:
+        result["status"], cancellation = "CANCELLED", cancellation or error
+        write(evidence / "execution.json", result)
+    except Exception:
+        diagnostics.emit_execution({"status": "DIAGNOSTIC_READ_FAILED"}, PROFILE)
     if cancellation is not None:
         raise cancellation
     print(json.dumps(result))

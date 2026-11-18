@@ -18,6 +18,7 @@ import sys
 import run_ui27 as shared
 import hanlin_acceptance_evidence as hanlin
 import hanlin_selection_evidence as hanlin_selection
+import wave15_diagnostics as diagnostics
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 LANES = {
@@ -458,6 +459,7 @@ def main():
             receipt["compiled_products"] = dict(status="CAPTURE_FAILED_NO_BUILD_REUSE_ALLOWED", error=str(error))
     receipt["finished_at"] = datetime.now(timezone.utc).isoformat()
     shared.write(args.evidence / "execution.json", receipt)
+    diagnostics.emit_execution(receipt, args.lane)
     print(json.dumps(receipt))
     return 0 if receipt["status"] == "LANE_PASS_ACCEPTANCE_REVIEW_PENDING" else 1
 
