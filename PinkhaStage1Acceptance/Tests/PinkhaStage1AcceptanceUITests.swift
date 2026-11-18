@@ -442,7 +442,10 @@ private struct NativeDerivedFixture: Decodable {
 
 @MainActor
 final class PinkhaTorahPropertiesAcceptanceUITests: XCTestCase {
-    private let app = XCUIApplication()
+    private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
+    private let sourceName = "מקור/ות"
+    private let topicName = "נושא"
+    private let emptyNativeValue = "Select options"
     private var spaceID = ""
     private var objectIDs: [String] = []
     private var sourceQuery = ""
@@ -470,114 +473,149 @@ final class PinkhaTorahPropertiesAcceptanceUITests: XCTestCase {
         nativePropertyLabels = try JSONDecoder().decode([String: [String]].self, from: Data(labelsJSON.utf8))
         XCTAssertFalse(spaceID.isEmpty)
         XCTAssertEqual(Set(objectIDs).count, 3)
-        app.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launchEnvironment["PINKHA_UI27_ROUTE_OBSERVATION"] = "1"
+        app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
     }
 
     func testOriginalPropertiesCanonicalLinkUnlinkAndRelaunchForAllWritingTypes() throws {
         for objectID in objectIDs {
-            try openProperties(objectID: objectID)
+            try reopenProperties(objectID: objectID)
             assertNativePropertiesPresent(objectID: objectID)
-            let source = app.buttons["torah-property-ref"]
-            let topic = app.buttons["torah-property-topic"]
-            XCTAssertTrue(source.waitForExistence(timeout: 15))
-            XCTAssertTrue(topic.exists)
-            XCTAssertEqual(source.value as? String, "")
-            XCTAssertEqual(topic.value as? String, "")
+            try expectNativeValue(emptyNativeValue, property: sourceName)
+            try expectNativeValue(emptyNativeValue, property: topicName)
 
-            try openPicker(row: topic, category: "Topics")
-            try link(query: topicQuery)
-            dismissPicker()
-            expectValue(topicLabel, on: topic)
-            XCTAssertEqual(source.value as? String, "")
+            try openNativePicker(property: topicName, value: emptyNativeValue)
+            try link(query: topicQuery, expectedLabel: topicLabel)
+            try reopenProperties(objectID: objectID)
+            try expectNativeValue(topicLabel, property: topicName)
+            try expectNativeValue(emptyNativeValue, property: sourceName)
 
-            try openPicker(row: source, category: "Sources")
-            try link(query: sourceQuery)
-            dismissPicker()
-            expectValue(sourceLabel, on: source)
-            expectValue(topicLabel, on: topic)
-            attachPropertiesScreenshot(name: "\(objectID)-linked")
-
-            app.terminate()
-            try openProperties(objectID: objectID)
-            expectValue(sourceLabel, on: source)
-            expectValue(topicLabel, on: topic)
+            try openNativePicker(property: sourceName, value: emptyNativeValue)
+            try link(query: sourceQuery, expectedLabel: sourceLabel)
+            try reopenProperties(objectID: objectID)
+            try expectNativeValue(sourceLabel, property: sourceName)
+            try expectNativeValue(topicLabel, property: topicName)
             assertNativePropertiesPresent(objectID: objectID)
+            attachPropertiesScreenshot(name: "\(objectID)-native-linked-after-relaunch")
 
-            try openPicker(row: source, category: "Sources")
-            let remove = app.buttons["Remove link"].firstMatch
-            XCTAssertTrue(remove.waitForExistence(timeout: 10))
-            remove.tap()
-            XCTAssertTrue(remove.waitForNonExistence(timeout: 15))
-            dismissPicker()
-            expectValue("", on: source)
-            expectValue(topicLabel, on: topic)
+            try openNativePicker(property: sourceName, value: sourceLabel)
+            unlink(expectedLabel: sourceLabel)
+            try reopenProperties(objectID: objectID)
+            try expectNativeValue(emptyNativeValue, property: sourceName)
+            try expectNativeValue(topicLabel, property: topicName)
 
-            try openPicker(row: topic, category: "Topics")
-            let removeTopic = app.buttons["Remove link"].firstMatch
-            XCTAssertTrue(removeTopic.waitForExistence(timeout: 10))
-            removeTopic.tap()
-            XCTAssertTrue(removeTopic.waitForNonExistence(timeout: 15))
-            dismissPicker()
-            expectValue("", on: topic)
-            attachPropertiesScreenshot(name: "\(objectID)-unlinked")
+            try openNativePicker(property: topicName, value: topicLabel)
+            unlink(expectedLabel: topicLabel)
+            try reopenProperties(objectID: objectID)
+            try expectNativeValue(emptyNativeValue, property: sourceName)
+            try expectNativeValue(emptyNativeValue, property: topicName)
+            assertNativePropertiesPresent(objectID: objectID)
+            attachPropertiesScreenshot(name: "\(objectID)-native-unlinked-after-relaunch")
         }
     }
 
-    private func openProperties(objectID: String) throws {
-        if app.state == .notRunning { app.launch() }
+    private func reopenProperties(objectID: String) throws {
+        // Reopen after each completed canonical mutation to verify persistence.
+        // This also avoids an iPad-only outside-popover dismissal assumption.
+        if app.state != .notRunning { app.terminate() }
+        app.launch()
         var components = URLComponents()
         components.scheme = "anytype"
         components.host = "object"
         components.queryItems = [URLQueryItem(name: "objectId", value: objectID), URLQueryItem(name: "spaceId", value: spaceID)]
         app.open(try XCTUnwrap(components.url))
-        let settings = app.buttons["More"].firstMatch
+        let editor = app.otherElements["pinkha-ui27-editor:\(spaceID):\(objectID)"]
+        XCTAssertTrue(editor.waitForExistence(timeout: 45), "The exact disposable document must be mounted")
+        XCTAssertTrue(editor.isHittable)
+        let settings = app.buttons.matching(NSPredicate(format: "label == %@ OR label == %@", "More", "x24/More")).firstMatch
         XCTAssertTrue(settings.waitForExistence(timeout: 30))
         settings.tap()
         let properties = app.buttons["Properties"].firstMatch
         XCTAssertTrue(properties.waitForExistence(timeout: 10))
         properties.tap()
-        XCTAssertTrue(app.buttons["torah-property-ref"].waitForExistence(timeout: 15))
+        XCTAssertTrue(propertyTitle(sourceName).waitForExistence(timeout: 15))
+        XCTAssertTrue(propertyTitle(topicName).exists)
+        XCTAssertFalse(app.buttons["torah-property-ref"].exists, "Acceptance must use the original native property rows")
     }
 
-    private func openPicker(row: XCUIElement, category: String) throws {
-        XCTAssertTrue(row.isEnabled)
-        row.tap()
-        let segment = app.segmentedControls.buttons[category]
-        XCTAssertTrue(segment.waitForExistence(timeout: 10))
-        XCTAssertEqual(segment.value as? String, "1")
-        for title in ["Sources", "Topics", "Words"] {
-            XCTAssertTrue(app.segmentedControls.buttons[title].exists)
-        }
-        XCTAssertEqual(app.textFields.firstMatch.value as? String, "Search Sefaria")
+    private var nativeSearch: XCUIElement {
+        app.textFields.matching(NSPredicate(
+            format: "identifier == %@ OR identifier == %@",
+            "torah-native-property-editor", "torah-sources-search-field"
+        )).firstMatch
     }
 
-    private func link(query: String) throws {
-        let search = app.textFields.firstMatch
+    private func propertyTitle(_ name: String) -> XCUIElement {
+        app.descendants(matching: .any).matching(NSPredicate(
+            format: "(elementType == %d OR elementType == %d) AND label == %@",
+            XCUIElement.ElementType.button.rawValue, XCUIElement.ElementType.staticText.rawValue, name
+        )).firstMatch
+    }
+
+    private func openNativePicker(property: String, value: String) throws {
+        let nativeValue = try findNativeValue(value, property: property)
+        XCTAssertTrue(nativeValue.isEnabled)
+        nativeValue.tap()
+        XCTAssertTrue(nativeSearch.waitForExistence(timeout: 15))
+        // Native property editors fix the source/topic scope themselves. The old
+        // projection row's three-way segmented picker is no longer this contract.
+        XCTAssertFalse(app.segmentedControls.firstMatch.exists)
+    }
+
+    private func link(query: String, expectedLabel: String) throws {
+        let search = nativeSearch
+        let previous = (search.value as? String) ?? ""
         search.tap()
+        if !previous.isEmpty && previous != search.placeholderValue {
+            search.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: previous.utf16.count))
+        }
         search.typeText(query)
         let link = app.buttons["Link to document"].firstMatch
-        XCTAssertTrue(link.waitForExistence(timeout: 30))
+        XCTAssertTrue(link.waitForExistence(timeout: 45))
         link.tap()
+        // The preview appears after the canonical repository mutation returns.
+        XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label == %@", expectedLabel)).firstMatch.waitForExistence(timeout: 30))
         XCTAssertTrue(app.buttons["Remove link"].firstMatch.waitForExistence(timeout: 30))
     }
 
-    private func dismissPicker() {
-        let picker = app.otherElements["torah-sources-search-sheet"].firstMatch
-        XCTAssertTrue(picker.exists)
-        picker.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02))
-            .press(forDuration: 0.05, thenDragTo: picker.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.95)))
-        XCTAssertTrue(app.segmentedControls.firstMatch.waitForNonExistence(timeout: 15))
+    private func unlink(expectedLabel: String) {
+        XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label == %@", expectedLabel)).firstMatch.waitForExistence(timeout: 20))
+        let remove = app.buttons["Remove link"].firstMatch
+        XCTAssertTrue(remove.waitForExistence(timeout: 20))
+        XCTAssertEqual(app.buttons.matching(NSPredicate(format: "label == %@", "Remove link")).count, 1,
+                       "The fixed native scope must contain exactly the fixture association")
+        remove.tap()
+        XCTAssertTrue(remove.waitForNonExistence(timeout: 20))
     }
 
-    private func expectValue(_ value: String, on element: XCUIElement) {
-        expectation(for: NSPredicate(format: "value == %@", value), evaluatedWith: element)
-        waitForExpectations(timeout: 20)
+    private func findNativeValue(_ value: String, property: String) throws -> XCUIElement {
+        let title = propertyTitle(property)
+        XCTAssertTrue(title.waitForExistence(timeout: 15))
+        let candidates = app.descendants(matching: .any).matching(NSPredicate(
+            format: "(elementType == %d OR elementType == %d) AND label == %@",
+            XCUIElement.ElementType.button.rawValue, XCUIElement.ElementType.staticText.rawValue, value
+        ))
+        let deadline = Date().addingTimeInterval(20)
+        repeat {
+            let titleFrame = title.frame
+            if let match = candidates.allElementsBoundByIndex.first(where: {
+                let frame = $0.frame
+                return $0.isHittable && abs(frame.midY - titleFrame.midY) < 22 && frame.minX >= titleFrame.maxX
+            }) { return match }
+            Thread.sleep(forTimeInterval: 0.2)
+        } while Date() < deadline
+        XCTFail("The original native \(property) row did not render \(value)")
+        throw NSError(domain: "PinkhaCanonicalNativeValueMissing", code: 1)
+    }
+
+    private func expectNativeValue(_ value: String, property: String) throws {
+        _ = try findNativeValue(value, property: property)
     }
 
     private func assertNativePropertiesPresent(objectID: String) {
         let labels = nativePropertyLabels[objectID] ?? []
         XCTAssertFalse(labels.isEmpty)
-        for label in labels { XCTAssertTrue(app.staticTexts[label].exists, "Original native property disappeared: \(label)") }
+        for label in labels { XCTAssertTrue(propertyTitle(label).exists, "Original native property disappeared: \(label)") }
         XCTAssertFalse(app.staticTexts["הקשר תורני"].exists)
     }
 
@@ -666,6 +704,8 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
     }
 
     func testDocumentSourcesEntryOpensExistingSearch() throws {
+        // Native preparation attaches Sources through Add Property to these
+        // ordinary Note/Page fixtures; blank documents remain header-free.
         launch(document: .pinkha)
         for kind in DocumentKind.allCases {
             if kind != .pinkha { launch(document: kind) }
@@ -679,12 +719,13 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             add.tap()
             // The native sheet's identifier propagates to its descendants in SwiftUI.
             // Match the actual editable field within that presentation, not an overridden ID.
-            let field = app.textFields.matching(identifier: "torah-sources-search-sheet").firstMatch
+            let field = app.textFields.matching(NSPredicate(
+                format: "identifier == %@ OR identifier == %@", "torah-sources-search-sheet", "torah-sources-search-field"
+            )).firstMatch
             XCTAssertTrue(field.waitForExistence(timeout: 20), "Sources must open the existing document search presenter")
             XCTAssertTrue(app.staticTexts.matching(NSPredicate(
-                format: "identifier == %@ AND label == %@", "torah-sources-search-sheet",
-                expectsRTL ? "קישורים במסמך" : "Document links"
-            )).firstMatch.exists, "The opened search must explicitly show document scope")
+                format: "label == %@", expectsRTL ? "קישורים במסמך" : "Document links"
+            )).firstMatch.waitForExistence(timeout: 15), "The opened search must explicitly show document scope")
             attachScreenshot(named: "\(directionName)-\(kind.rawValue)-sources-search")
         }
     }
