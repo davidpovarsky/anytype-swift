@@ -1,0 +1,178 @@
+# SDK06 real native read/create acceptance lane
+
+## Scope and current evidence
+
+This adds a narrow opt-in native integration lane. It complements, and does not
+replace, the four SDK component suites. The supported write is creation of a
+new standard Page with its title only. Existing document edits, body insertion
+by Hanlin, external models, provider configuration, release builds, and user
+accounts are outside this lane.
+
+The fixture preparation writes a known paragraph through Anytype's real native
+block service into a freshly created disposable Page. The tested Hanlin host
+reads that paragraph only after the XCTest presses its existing native consent
+alert. The XCTest then cancels one real create-page prompt and approves another.
+It never constructs `PinkhaHanlinCreateApproval` or changes a production gate.
+
+The app driver is compiled only for `DEBUG && targetEnvironment(simulator)`.
+It is activated only by the exact opt-in environment and a recent single-use
+fixture, bound to the actual local account, original Space, mounted editor,
+unselected document, presentation session, CI SHA, run ID and attempt. It starts
+after the actual host installation. An invisible or ambiguous document, existing
+result, wrong account, nonlocal server, configured provider, or mismatched fixture
+fails setup. A small diagnostic label exposes metadata and phases to XCTest.
+
+The canonical `HanlinHostDispatcher` calls the installed production
+`PinkhaHanlinReadWriteHost`. Its forwarding observer records call identities and
+counts without changing context, catalog, approvals, results or cancellation.
+The actual shared native write journal supplies the created object's opaque ID;
+that ID is used to read back the actual Page. Native exact-title search is used
+only to detect duplicates and an unwanted cancelled page, never to infer which
+object the write created. Normal 30-second host invocation limits remain intact.
+
+After the product Close action, new read and create requests must be denied by
+that closed host. Three distinct fresh native authority objects first validate,
+then must reject after a real source lock, real Space change, and actual logout
+of this disposable account. Each negative case has its own initially valid
+authority, so the previous revocation cannot make the next case pass. These
+three checks exercise the native authority boundary directly; they do not claim
+three separate approved host writes. The original committed metadata must still
+be readable from its original journal after ordinary logout.
+
+Native execution is pending the focused Apple lane after Startup smoke. The
+preceding four-suite SDK Apple run `44209702553` stopped at TEST BUILD FAILED:
+canonical Hanlin `OpenUIBlock.swift` lines 55/115 pass completion closures to
+`WKWebView.callAsyncJavaScript` that the selected Xcode 27 API does not accept.
+No SDK test cases ran. This dependency compilation failure must be resolved
+before the new native lane can execute. Source parse evidence is separate and
+is not native acceptance. Selection entry and
+scene-background behavior still require their own native acceptance evidence.
+
+## Build and preparation contract
+
+Use a **fresh disposable iOS 27 simulator per device/lane**, the reviewed exact
+integration commit, the pinned Hanlin bootstrap before SPM, and rebuilt Heart
+artifact `Pinkha-Universal-Verified-Heart-r14` from run `44203168617`.
+Use `Debug-Anytype` for the app, app-hosted tests, and UI test project with
+`PINKHA_NATIVE_DERIVED` and `DEBUG` in active Swift compilation conditions. The
+diagnostic is intentionally absent from `Release-Anytype`. Do not mix binaries
+or fixtures from the existing Release UI lane.
+
+First run exactly:
+
+```
+AnytypeTests/HanlinNativeAcceptancePreparationTests/prepareRealHostFixture()
+```
+
+For Swift Testing selection, selecting the suite
+`-only-testing:AnytypeTests/HanlinNativeAcceptancePreparationTests` is sufficient;
+the result must contain **exactly one passed preparation case** and no failures
+or skips. This method invokes the existing native
+`SimulatorAcceptancePreparationTests.prepareRealUIFixture()` as an ordinary
+function; do not separately schedule that suite, or preparation will execute
+twice against the same fixture.
+
+Inject these environment values into the actual app-hosted test target in the
+generated `.xctestrun`, following the existing native preparation path:
+
+```
+PINKHA_HANLIN_NATIVE_PREPARATION=1
+PINKHA_SIMULATOR_ACCEPTANCE_PREPARATION=1
+PINKHA_SIMULATOR_UI_DISPOSABLE=1
+PINKHA_HANLIN_NATIVE_SOURCE_SHA=<exact checked-out integration SHA>
+PINKHA_HANLIN_NATIVE_RUN_ID=<actual GitHub run ID>
+PINKHA_HANLIN_NATIVE_RUN_ATTEMPT=<actual GitHub run attempt>
+```
+
+Preparation rejects an existing account or fixture, turns off middleware
+request logging through the existing feature setting and actual message handler,
+and calls the existing local-only account/Space preparation. It adds the known
+body block through the real native service, verifies its readback, creates a
+separate disposable alternate Space, restores the original Space, and writes:
+
+```
+<actual app data container>/Library/Application Support/pinkha-hanlin-native-fixture.json
+```
+
+Obtain the **actual** app data container with the existing `simctl get_app_container`
+route for `io.anytype.app`. Read this JSON from that exact container and verify
+its SHA/run/attempt against the runner's independent values. The file contains
+only disposable object metadata and test text, no wallet/credential material.
+It expires after one hour and cannot overwrite an earlier fixture or result.
+
+## UI selection and environment
+
+Run exactly this one method in the separate existing UI test project:
+
+```
+PinkhaStage1AcceptanceUITests/HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation
+```
+
+Inject into the UI test runner's `.xctestrun` environment:
+
+```
+PINKHA_HANLIN_NATIVE_UI_TESTING=1
+PINKHA_SIMULATOR_UI_DISPOSABLE=1
+PINKHA_HANLIN_NATIVE_FIXTURE_JSON=<unmodified actual fixture JSON>
+PINKHA_HANLIN_NATIVE_SOURCE_SHA=<exact checked-out integration SHA>
+PINKHA_HANLIN_NATIVE_RUN_ID=<actual GitHub run ID>
+PINKHA_HANLIN_NATIVE_RUN_ATTEMPT=<actual GitHub run attempt>
+```
+
+The test cold-launches `io.anytype.app` with the exact fixture nonce and CI
+identity, `PINKHA_HANLIN_NATIVE_UI=1`, and `PINKHA_UI27_ROUTE_OBSERVATION=1`.
+It requests English app labels and portrait orientation. Actual device language
+must be observed separately if reported; this is not Hebrew UI acceptance.
+It opens the fixture's exact native object route, requires its actual mounted
+editor diagnostic, and taps the production Home-panel Hanlin entry while that
+editor remains mounted. It presses the existing Share context, Allow, Cancel,
+Create page, and Close actions. Every create prompt must show its exact title
+and original Space. Provider configuration and model invocation never occur.
+This lane does not claim reuse of an earlier Inspector process.
+
+The new file `PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift`
+is registered in that project's existing Sources phase. It does not change the
+older Stage1 acceptance class or the root-owned Python/workflow dispatcher.
+
+## Result guard
+
+Require exactly one actual passed XCTest method, zero failures/skips, and a
+nonempty matching `.xcresult`. Preserve actual simulator UDID, model, OS and
+architecture, source SHA, resolved package identities, executable identity,
+preparation result and UI result. Do not count the diagnostic label alone as
+success.
+
+The app atomically writes metadata after each phase to:
+
+```
+<actual app data container>/Library/Application Support/pinkha-hanlin-native-result.json
+```
+
+Require `phase == NATIVE_ACCEPTANCE_PASS`, no `failure`, nonempty
+`createdObjectID`, `finishedAt`, `providerConfigured == false`, positive process
+ID, and the exact independent fixture ID, SHA, run ID and attempt. Require this
+**exact set of 14 keys**, each true, with no missing/extra keys:
+
+```
+middleware_logging_disabled
+read_denied_before_native_consent
+real_native_context_text_read
+native_cancel_prevents_write
+native_confirm_creates_exact_page
+created_page_read_back_by_journal_id
+replay_does_not_create_duplicate
+cancelled_title_absent_from_native_index
+no_provider_configuration
+closed_presentation_denies_read_and_create
+native_source_permission_change_denied
+native_active_space_change_denied
+native_account_logout_denied
+original_commit_metadata_survives_logout
+```
+
+The XCTest independently checks this exact set, preserves the same session and
+process across the close/revocation sequence, and attaches the metadata JSON
+and screenshots of the actual prompts and final state. An uncertainty, invalid
+context, native write mismatch, absent prompt, deadline expiry, unavailable
+index or missing evidence fails this lane. Acceptance remains open until the
+actual Apple results satisfy these conditions on the requested devices.

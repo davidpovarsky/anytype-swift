@@ -1,0 +1,58 @@
+{
+  "time_utc": "2026-11-18T01:16:54.121647+00:00",
+  "base_sha": "0fb4c90dc26ce9dc21657c93390b441bc888fb28",
+  "swift_version": "Swift version 6.3.3 (swift-6.3.3-RELEASE)\nTarget: x86_64-unknown-windows-msvc\nBuild config: +assertions\n",
+  "scope": "Swift frontend syntax parsing only; no Apple SDK typecheck/build/runtime acceptance",
+  "target": "arm64-apple-ios27.0-simulator",
+  "files": {
+    "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift": "6c33eecfbd6aacb8be5051ff780abf6047365c4b52adbae69aace3f5089f0c58",
+    "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceFixture.swift": "78e0a29de8a9d50cc6e7606cc7d61d5c870ec45b748592b9b3e44734f02c91c7",
+    "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift": "791cb539c9a2bf3a2e09386739e3db45671511f37f53f246c9de0a4c523733be",
+    "AnyTypeTests/Pinkha/HanlinNativeAcceptancePreparationTests.swift": "9f31065f9e1a07bb81e99234c0381b5c561f3f8827430cf8d3306d8d2aaeca60",
+    "PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift": "4ea96731036b32f25cd1f2f30014302cc072d9c82d276e6604e0e02709a8b14c"
+  },
+  "runs": [
+    {
+      "swift_language_version": "5",
+      "arguments": [
+        "-frontend",
+        "-parse",
+        "-target",
+        "arm64-apple-ios27.0-simulator",
+        "-swift-version",
+        "5",
+        "-D",
+        "DEBUG",
+        "-D",
+        "PINKHA_NATIVE_DERIVED",
+        "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
+        "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceFixture.swift",
+        "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift",
+        "AnyTypeTests/Pinkha/HanlinNativeAcceptancePreparationTests.swift"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "<unknown>:0: warning: SDK settings were ignored as 'SDKSettings.json' could not be parsed\n<unknown>:0: warning: using sysroot for 'Windows' but targeting 'iPhone'\n"
+    },
+    {
+      "swift_language_version": "6",
+      "arguments": [
+        "-frontend",
+        "-parse",
+        "-target",
+        "arm64-apple-ios27.0-simulator",
+        "-swift-version",
+        "6",
+        "-D",
+        "DEBUG",
+        "-D",
+        "PINKHA_NATIVE_DERIVED",
+        "PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "<unknown>:0: warning: SDK settings were ignored as 'SDKSettings.json' could not be parsed\n<unknown>:0: warning: using sysroot for 'Windows' but targeting 'iPhone'\n"
+    }
+  ],
+  "apple_native_execution": "NOT_RUN"
+}
