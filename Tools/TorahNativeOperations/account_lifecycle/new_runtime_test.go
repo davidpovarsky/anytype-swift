@@ -11,8 +11,6 @@ import (
 	"github.com/anyproto/anytype-heart/core/block/editor/smartblock"
 	"github.com/anyproto/anytype-heart/core/block/editor/torahops"
 	"github.com/anyproto/anytype-heart/core/block/editor/torahopsobject"
-	"github.com/anyproto/anytype-heart/core/block/object/objectcache"
-	"github.com/anyproto/anytype-heart/core/domain"
 	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
 	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahopscontract"
 	"github.com/stretchr/testify/require"
@@ -33,12 +31,8 @@ func t2ExerciseRuntime(t *testing.T, state *t2AccountState, create bool) (map[st
 		require.NoError(t, err)
 		require.False(t, exists, "normal account/Space startup must not create a private host")
 		state.RootID, state.OperationID = root.Id, fmt.Sprintf("%032x", 1)
-		object, err = spc.DeriveTreeObject(ctx, objectcache.TreeDerivationParams{
-			Key: domain.MustUniqueKey(coresb.SmartBlockTypePinkhaTorahOperations, torahopscontract.UniqueKeyVersion),
-			// objectCache's create path invokes InitFunc unconditionally. The
-			// cache fills Ctx/SpaceID/BuildOpts before the private factory runs.
-			InitFunc: func(string) *smartblock.InitContext { return &smartblock.InitContext{} },
-		})
+		t2CreateNativeHandlerOperation(t, ctx, state)
+		object, err = spc.GetObject(ctx, state.RootID)
 		require.NoError(t, err)
 	} else {
 		require.Equal(t, root.Id, state.RootID)
@@ -63,13 +57,13 @@ func t2ExerciseRuntime(t *testing.T, state *t2AccountState, create bool) (map[st
 		state.OperationSHA256 = t2Hash(canonical)
 		created, err := host.AppendTorahOperation(ctx, op)
 		require.NoError(t, err)
-		require.Equal(t, torahops.Created, created.Disposition)
-		require.NotEmpty(t, created.ClaimID)
-		require.NotEmpty(t, created.ChangeID)
-		state.ClaimID, state.ChangeID = created.ClaimID, created.ChangeID
+		require.Equal(t, torahops.AlreadyExistsSamePayload, created.Disposition)
+		require.Equal(t, state.ClaimID, created.ClaimID)
+		require.Empty(t, created.ChangeID, "handler already committed the only signed operation")
 	} else {
 		require.Equal(t, state.OperationSHA256, t2Hash(canonical))
 	}
+	handlerObservation := t2CheckNativeHandlerOperation(t, ctx, state, create)
 	// Read before retry: a reopened process must recover existing signed history,
 	// not recreate a missing projection by accidentally adding another operation.
 	snapshot, err := host.ReadTorahTarget(ctx, op.Target, 100)
@@ -91,6 +85,7 @@ func t2ExerciseRuntime(t *testing.T, state *t2AccountState, create bool) (map[st
 	assertRemoved := func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
+		t2AssertNativeHandlerUnavailable(t, ctx, state, true)
 		_, err := host.ReadTorahTarget(ctx, op.Target, 100)
 		require.ErrorIs(t, err, torahopsobject.ErrTargetUnavailable)
 		_, err = host.AppendTorahOperation(ctx, op)
@@ -99,6 +94,7 @@ func t2ExerciseRuntime(t *testing.T, state *t2AccountState, create bool) (map[st
 	assertDeleted := func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
+		t2AssertNativeHandlerUnavailable(t, ctx, state, false)
 		_, err := host.ReadTorahTarget(ctx, op.Target, 100)
 		require.Error(t, err, "closed/deleted Space must not serve a cached private projection")
 		_, err = host.AppendTorahOperation(ctx, op)
@@ -107,5 +103,6 @@ func t2ExerciseRuntime(t *testing.T, state *t2AccountState, create bool) (map[st
 	return map[string]any{"private_registry": "ACTUAL_NATIVE_FACTORY", "private_read": "EXACT_PERSISTED_CLAIM",
 		"idempotent_retry": string(retried.Disposition), "operation_sha256": state.OperationSHA256,
 		"claim_id": state.ClaimID, "signed_change_id": state.ChangeID,
-		"private_type": uint32(coresb.SmartBlockTypePinkhaTorahOperations)}, assertRemoved, assertDeleted
+		"private_type":     uint32(coresb.SmartBlockTypePinkhaTorahOperations),
+		"handler_boundary": handlerObservation}, assertRemoved, assertDeleted
 }

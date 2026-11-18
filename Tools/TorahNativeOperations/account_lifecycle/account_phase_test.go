@@ -479,6 +479,7 @@ func TestT2AccountLifecyclePhase(t *testing.T) {
 	}
 	shutdown()
 	require.True(t, closed)
+	t2RecordStoppedRuntime(t, state, observation)
 	stateBytes, err := os.ReadFile(statePath)
 	require.NoError(t, err)
 	report := map[string]any{"protocol": t2AccountProtocol, "phase": phase, "role": role, "pid": os.Getpid(), "nonce": nonce,

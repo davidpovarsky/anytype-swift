@@ -25,3 +25,8 @@ func t2ExerciseRuntime(t *testing.T, state *t2AccountState, create bool) (map[st
 	return map[string]any{"private_registry": "UNKNOWN_CHANGE_TYPE_REJECTED", "private_read": "NOT_AVAILABLE_ON_LEGACY"},
 		notApplicable, notApplicable
 }
+
+// The old binary cannot call the new typed boundary and must not claim it did.
+func t2RecordStoppedRuntime(_ *testing.T, _ *t2AccountState, observation map[string]any) {
+	observation["handler_boundary"] = map[string]any{"scope": "UNSUPPORTED_LEGACY"}
+}

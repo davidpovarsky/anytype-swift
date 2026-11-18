@@ -33,7 +33,7 @@ BUILDER_SHA = "8534f5a3ecc1df8321dc3820409f1c8812d876bfe7989877bf121681d04955fd"
 PROTOCOL = "pinkha-t2-account-lifecycle-v1"
 METHOD = "TestT2AccountLifecyclePhase"
 PHASES = [("new-create", "new"), ("new-reopen", "new"), ("legacy-edit", "legacy"), ("new-recover", "new")]
-FIXTURES = ("account_phase_test.go", "legacy_runtime_test.go", "new_runtime_test.go")
+FIXTURES = ("account_phase_test.go", "legacy_runtime_test.go", "new_runtime_test.go", "native_handler_test.go")
 EXPORTS = {"document.json", "document.pbc"}
 VISIBLE = "t2visiblejournalcontrolc729"
 PRIVATE = "t2privatejournalcontentc729"
@@ -269,10 +269,18 @@ def validate_phase(report: dict, phase: str, role: str, identity: dict, nonce: s
     if role == "new":
         require(observation == {"private_registry": "ACTUAL_NATIVE_FACTORY", "private_read": "EXACT_PERSISTED_CLAIM",
                                 "idempotent_retry": "already_exists_same_payload", "operation_sha256": state["OperationSHA256"],
-                                "claim_id": state["ClaimID"], "signed_change_id": state["ChangeID"], "private_type": 0x504B0001},
+                                "claim_id": state["ClaimID"], "signed_change_id": state["ChangeID"], "private_type": 0x504B0001,
+                                "handler_boundary": {"scope": "ACCOUNT_SCOPED_TYPED_BOUNDARY_NOT_REGISTERED_RPC",
+                                                       "creation": ("INVALID_CALLS_NO_ROOT_THEN_VALID_APPEND_CREATED_ROOT"
+                                                                    if phase == "new-create" else "EXISTING_HISTORY_REOPENED"),
+                                                       "read": "EXACT_PERSISTED_CLAIM_NATIVE_AUTHOR",
+                                                       "read_guards": "VERSION_AND_LIMIT_REJECTED",
+                                                       "retry": "already_exists_same_payload", "collision": "collision_different_payload",
+                                                       "after_stop": "NATIVE_READ_AND_APPEND_NOT_LOGGED_IN"}},
                 "New native host did not recover exact private history")
     else:
-        require(observation == {"private_registry": "UNKNOWN_CHANGE_TYPE_REJECTED", "private_read": "NOT_AVAILABLE_ON_LEGACY"},
+        require(observation == {"private_registry": "UNKNOWN_CHANGE_TYPE_REJECTED", "private_read": "NOT_AVAILABLE_ON_LEGACY",
+                                "handler_boundary": {"scope": "UNSUPPORTED_LEGACY"}},
                 "Legacy runtime recognized or claimed the unavailable private host")
     visible = report.get("visibility", {})
     require(visible.get("ordinary_name") == VISIBLE + (" edited by legacy" if phase in {"legacy-edit", "new-recover"} else ""),
@@ -472,7 +480,10 @@ def execute(args: argparse.Namespace, receipt: dict) -> dict:
                 and effective.get("GoModSum") == closure.GENPROTO_MOD_SUM, "Unreviewed genproto module resolution")
         overlay = role_work / "overlay.json"
         replacements = {}
-        for name in ["account_phase_test.go", role + "_runtime_test.go"]:
+        fixture_sources = ["account_phase_test.go", role + "_runtime_test.go"]
+        if role == "new":
+            fixture_sources.append("native_handler_test.go")
+        for name in fixture_sources:
             target = heart / "clientlibrary/service" / ("pinkha_t2_" + name)
             require(not target.exists(), "Account fixture would replace native production/test source")
             replacements[str(target)] = str(tools_root / "account_lifecycle" / name)
