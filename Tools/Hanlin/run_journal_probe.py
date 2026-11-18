@@ -22,7 +22,8 @@ RUNTIME_BUILD = "24A434"
 DEVICE = "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB"
 XCODE = "Xcode 27.0\nBuild version 27A266a"
 SOURCE = "Tools/Hanlin/JournalFilesystemProbe.swift"
-SOURCE_FILES = [SOURCE, "Tools/Hanlin/run_journal_probe.py", ".github/workflows/pinkha-hanlin-journal-probe.yml"]
+SOURCE_FILES = [SOURCE, "Tools/Hanlin/run_journal_probe.py", "Tools/Hanlin/test_journal_probe.py",
+                ".github/workflows/pinkha-hanlin-journal-probe.yml"]
 
 
 def require(value, reason):
@@ -56,6 +57,21 @@ def terminate_owned(process):
         except subprocess.TimeoutExpired:
             pass
     process.wait(timeout=5)
+
+
+def wait_owned_command(process, timeout, progress, heartbeat_seconds=30):
+    """Keep one fixed command deadline while exposing progress from a silent compiler."""
+    require(timeout > 0 and heartbeat_seconds > 0, "Positive command bounds required")
+    started = time.monotonic()
+    deadline = started + timeout
+    while True:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise subprocess.TimeoutExpired(process.args, timeout)
+        try:
+            return process.wait(timeout=min(remaining, heartbeat_seconds))
+        except subprocess.TimeoutExpired:
+            progress(round(time.monotonic() - started, 3))
 
 
 def main():
@@ -93,16 +109,23 @@ def main():
     def run(argv, name, timeout=120, check=True, env=None):
         log = evidence / (name + ".log")
         require(not log.exists(), "Refuse reused command evidence")
-        entry = {"name": name, "argv": list(map(str, argv)), "status": "RUNNING"}
+        started = time.monotonic()
+        entry = {"name": name, "argv": list(map(str, argv)), "status": "RUNNING",
+                 "started_at": datetime.now(timezone.utc).isoformat(), "timeout_seconds": timeout}
         receipt["commands"].append(entry)
         write(path, receipt)
         process = None
+        def progress(elapsed):
+            print(json.dumps({"probe_command": name, "status": "RUNNING", "pid": entry.get("pid"),
+                              "elapsed_seconds": elapsed, "log_bytes": log.stat().st_size}), flush=True)
+        print(json.dumps({"probe_command": name, "status": "STARTING",
+                          "started_at": entry["started_at"], "timeout_seconds": timeout}), flush=True)
         with log.open("xb") as stream:
             try:
                 process = subprocess.Popen(list(map(str, argv)), cwd=root, env=env,
                     stdout=stream, stderr=subprocess.STDOUT, start_new_session=True)
                 entry["pid"] = process.pid
-                entry["exit_code"] = process.wait(timeout=timeout)
+                entry["exit_code"] = wait_owned_command(process, timeout, progress)
                 entry["status"] = "SUCCEEDED" if process.returncode == 0 else "FAILED"
             except BaseException as error:
                 entry.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else "FAILED",
@@ -113,7 +136,11 @@ def main():
             finally:
                 stream.flush()
                 os.fsync(stream.fileno())
+                entry.update(finished_at=datetime.now(timezone.utc).isoformat(),
+                             elapsed_seconds=round(time.monotonic() - started, 3), log_bytes=log.stat().st_size)
                 write(path, receipt)
+                print(json.dumps({key: entry.get(key) for key in ["name", "status", "started_at", "finished_at",
+                      "elapsed_seconds", "exit_code", "error_type", "log_bytes"]}), flush=True)
         if check:
             require(entry["exit_code"] == 0, "Probe command failed: " + name)
         return log.read_text(encoding="utf-8").strip()
@@ -155,9 +182,9 @@ def main():
                 "UIApplicationSceneManifest": {"UIApplicationSupportsMultipleScenes": False,
                     "UISceneConfigurations": {"UIWindowSceneSessionRoleApplication": [{"UISceneConfigurationName": "JournalProbe"}]}}}
         (app / "Info.plist").write_bytes(plistlib.dumps(info))
-        run(["xcrun", "swiftc", "-swift-version", "6", "-parse-as-library", "-sdk", sdk,
+        run(["xcrun", "swiftc", "-v", "-swift-version", "6", "-parse-as-library", "-sdk", sdk,
              "-target", "arm64-apple-ios27.0-simulator", "-framework", "UIKit", "-framework", "Foundation",
-             "-module-cache-path", private / "ModuleCache", root / SOURCE, "-o", executable], "compile-probe-only", 240)
+             "-module-cache-path", private / "ModuleCache", root / SOURCE, "-o", executable], "compile-probe-only", 600)
         run(["codesign", "--force", "--sign", "-", "--timestamp=none", app], "sign-probe")
         receipt["probe_executable_sha256"] = digest(executable)
         run(["xcrun", "simctl", "install", owned, app], "install-probe")
@@ -230,7 +257,7 @@ def main():
         finally:
             for number, previous in old_handlers.items():
                 signal.signal(number, previous)
-    print(json.dumps({k: receipt.get(k) for k in ["status", "source_sha", "run_id", "first_unsatisfied_stage", "error_type"]}))
+    print(json.dumps({k: receipt.get(k) for k in ["status", "source_sha", "run_id", "first_unsatisfied_stage", "error_type"]}), flush=True)
     return result
 
 

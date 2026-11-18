@@ -1,0 +1,229 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "name": "source-head",
+      "pid": 16304,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain",
+        "--untracked-files=no"
+      ],
+      "exit_code": 0,
+      "name": "source-status",
+      "pid": 16305,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "xcodebuild",
+        "-version"
+      ],
+      "exit_code": 0,
+      "name": "xcode-version",
+      "pid": 16306,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swiftc",
+        "--version"
+      ],
+      "exit_code": 0,
+      "name": "swift-version",
+      "pid": 16315,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-version"
+      ],
+      "exit_code": 0,
+      "name": "sdk-version",
+      "pid": 16333,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-path"
+      ],
+      "exit_code": 0,
+      "name": "sdk-path",
+      "pid": 16663,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "runtimes",
+        "--json"
+      ],
+      "exit_code": 0,
+      "name": "runtimes",
+      "pid": 16664,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devices",
+        "--json"
+      ],
+      "exit_code": 0,
+      "name": "devices-before",
+      "pid": 16768,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "create",
+        "Pinkha-Hanlin-Journal-Probe-44260625052-ae7d71f1",
+        "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+        "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
+      ],
+      "exit_code": 0,
+      "name": "create-owned-simulator",
+      "pid": 16794,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "list",
+        "devices",
+        "--json"
+      ],
+      "exit_code": 0,
+      "name": "devices-after",
+      "pid": 16837,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "boot",
+        "AE317C63-23EA-44FA-BBB2-54BD2F17D280"
+      ],
+      "exit_code": 0,
+      "name": "boot-owned-simulator",
+      "pid": 16870,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "AE317C63-23EA-44FA-BBB2-54BD2F17D280",
+        "-b"
+      ],
+      "exit_code": 0,
+      "name": "boot-ready",
+      "pid": 17042,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "swiftc",
+        "-swift-version",
+        "6",
+        "-parse-as-library",
+        "-sdk",
+        "/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+        "-target",
+        "arm64-apple-ios27.0-simulator",
+        "-framework",
+        "UIKit",
+        "-framework",
+        "Foundation",
+        "-module-cache-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/hanlin-journal-probe-work/ModuleCache",
+        "/Users/runner/work/anytype-swift/anytype-swift/Tools/Hanlin/JournalFilesystemProbe.swift",
+        "-o",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/hanlin-journal-probe-work/JournalProbe.app/JournalProbe"
+      ],
+      "error_type": "TimeoutExpired",
+      "name": "compile-probe-only",
+      "pid": 17536,
+      "status": "FAILED"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "shutdown",
+        "AE317C63-23EA-44FA-BBB2-54BD2F17D280"
+      ],
+      "exit_code": 0,
+      "name": "shutdown-owned-simulator",
+      "pid": 17839,
+      "status": "SUCCEEDED"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "delete",
+        "AE317C63-23EA-44FA-BBB2-54BD2F17D280"
+      ],
+      "exit_code": 0,
+      "name": "delete-owned-simulator",
+      "pid": 18110,
+      "status": "SUCCEEDED"
+    }
+  ],
+  "error_type": "TimeoutExpired",
+  "finished_at": "2026-11-18T08:22:54.224642+00:00",
+  "native_write_accepted": false,
+  "owned_simulator": {
+    "device_type": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+    "name": "Pinkha-Hanlin-Journal-Probe-44260625052-ae7d71f1",
+    "udid": "AE317C63-23EA-44FA-BBB2-54BD2F17D280"
+  },
+  "physical_device_accepted": false,
+  "removed_owned_simulator": "AE317C63-23EA-44FA-BBB2-54BD2F17D280",
+  "run_attempt": "1",
+  "run_id": "44260625052",
+  "runtime": {
+    "buildversion": "24A434",
+    "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+    "version": "27.0"
+  },
+  "sdk_acceptance": false,
+  "source_sha": "a16bdc5de003aff97209c83d5fbc6a5934c5e873",
+  "source_sha256": {
+    ".github/workflows/pinkha-hanlin-journal-probe.yml": "82419204e944da97cef75ec641a50c98fa0f6e44df8c14fdac2330a2c99a1383",
+    "Tools/Hanlin/JournalFilesystemProbe.swift": "dfd90d3a27ba031e9883644329c1e8095f674cf00ba2bdf98d51b88f369ebef4",
+    "Tools/Hanlin/run_journal_probe.py": "f59fd32ceb074fe5598d2f485e3cb50671ee84d1668d2343f1d6981843c4a738"
+  },
+  "started_at": "2026-11-18T08:13:05.731811+00:00",
+  "status": "FAIL",
+  "swift": "swift-driver version: 1.168.6 Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "token": "ae7d71f19310478aa383c79f43e18fda",
+  "xcode": "Xcode 27.0\nBuild version 27A266a"
+}
