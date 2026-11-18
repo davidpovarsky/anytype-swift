@@ -7,6 +7,7 @@ not modified. This route does not prove Apple packaged-app or Swift fallback.
 import argparse
 from datetime import datetime, timezone
 import importlib.util
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -184,7 +185,164 @@ def validate_phase(report, phase, role, identity, nonce, account_root, pid, stat
                 "Later phase made an unexpected fixture write")
 
 
-def preserve_evidence(workspace, destination):
+
+FRESHNESS_STATUS = "PASS_NATIVE_RPC_MUTATIONS"
+FRESHNESS_ORIGIN = "NATIVE_RPC_WITHOUT_SWIFT_INVALIDATION_OR_EXPLICIT_REINDEX"
+FRESHNESS_CASES = [
+    ("document_ref_update", 0, "other-verse"), ("document_unlink", 0, "unlink"),
+    ("label_alias", 0, "label-alias"), ("provider_separation", 0, "other-provider"),
+    ("block_ref_update", 1, "other-verse"), ("note_block_unlink", 1, "unlink"),
+    ("source_quote_ref_update", 2, "other-verse"), ("source_quote_unlink", 2, "unlink"),
+    ("foreign_record_space", 2, "foreign-space"), ("foreign_record_object", 2, "foreign-object"),
+    ("malformed_payload", 2, "malformed"),
+]
+
+
+def freshness_members(private=(), public=(), private_verse=(), public_verse=(),
+                      private_provider=(), public_provider=()):
+    return {name: sorted(values) for name, values in dict(
+        private_primary=private, public_primary=public, private_verse=private_verse,
+        public_verse=public_verse, private_provider=private_provider,
+        public_provider=public_provider).items()}
+
+
+def validate_unreachable_graph(check, document):
+    """Derive reachability again from the actual graph, rather than trusting a bool."""
+    root, target = document["ID"], document["BlockID"]
+    require(check.get("live_root_id") == root and check.get("block_id") == target
+            and check.get("target_reachable") is False
+            and check.get("host_target_exclusion_status") == "NOT_RUN_SWIFT_HOST",
+            "Actual graph and unclaimed Swift target exclusion required")
+    nodes = check.get("live_graph_nodes", [])
+    require(isinstance(nodes, list) and 0 < len(nodes) <= 10000, "Missing or unbounded native graph")
+    by_id = {}
+    for node in nodes:
+        require(isinstance(node, dict) and set(node) == {"id", "child_ids"}
+                and isinstance(node["id"], str) and node["id"] and node["id"] not in by_id
+                and isinstance(node["child_ids"], list)
+                and all(isinstance(child, str) and child for child in node["child_ids"]),
+                "Invalid or duplicate actual graph node")
+        by_id[node["id"]] = node["child_ids"]
+    require(root in by_id and target and root != target, "Missing actual root/target identity")
+    pending, seen = [root], set()
+    while pending:
+        node_id = pending.pop()
+        if node_id in seen:
+            continue
+        require(node_id in by_id, "Unresolved native graph child")
+        seen.add(node_id)
+        pending.extend(by_id[node_id])
+    require(target not in seen, "Removed target remains reachable in the actual native graph")
+
+
+def validate_freshness_phase(report, identity, nonce, account_root, pid, state, state_sha):
+    require(report.get("protocol") == PROTOCOL and report.get("phase") == "new-freshness",
+            "Wrong optional freshness protocol/phase")
+    require(report.get("nonce") == nonce and report.get("pid") == pid,
+            "Stale or foreign freshness process report")
+    for key in ["heart_sha", "patch_sha256", "fixture_sha256", "runtime_version"]:
+        require(report.get(key) == identity[key], "Freshness native identity mismatch: " + key)
+    require(report.get("account_root") == str(account_root)
+            and report.get("account_id") == state["AccountID"]
+            and report.get("space_id") == state["SpaceID"]
+            and report.get("state_sha256") == state_sha, "Freshness changed the original account/Space/state")
+    require(all(report.get(key) is True for key in
+                ["closed", "test_passed", "account_stop_completed", "application_cleared"]),
+            "Freshness actual test/account stop did not complete")
+    require(report.get("freshness_status") == FRESHNESS_STATUS
+            and report.get("coverage") == "indexedTargetsOnly"
+            and report.get("space_wide_freshness") == "NOT_PROVEN"
+            and report.get("host_target_exclusion_status") == "NOT_RUN_SWIFT_HOST"
+            and report.get("write_origin") == FRESHNESS_ORIGIN
+            and report.get("swift_pairing_status") == "NOT_RUN"
+            and report.get("client_enablement") == DISABLED,
+            "Freshness receipt overstates host/Space-wide/client acceptance")
+    documents = validate_state(state)
+    ids = [doc["ID"] for doc in documents]
+    baseline = freshness_members(ids, ids[:1])
+    checks = report.get("checks", [])
+    names = [name for name, _, _ in FRESHNESS_CASES] + [
+        "archive_cycle", "type_cycle", "block_target_removed",
+        "source_quote_target_removed", "object_deleted"]
+    require(isinstance(checks, list) and [check.get("name") for check in checks] == names,
+            "Exact sixteen actual mutation observations required")
+    for check, (_, index, mode) in zip(checks, FRESHNESS_CASES):
+        doc = documents[index]
+        require(check.get("object_id") == doc["ID"] and check.get("object_retained") is True,
+                "Edit/unlink replaced or deleted the original object")
+        original = json.loads(doc["Canonical"])
+        expected = json.loads(doc["Canonical"])
+        record = expected["records"][0]
+        if mode == "other-verse":
+            record["item"].update(canonicalKey="Genesis 3:4", externalID="Genesis 3:4")
+        elif mode == "unlink":
+            expected["records"] = []
+        elif mode == "label-alias":
+            record["item"].update(labelHe="\u05db\u05d5\u05ea\u05e8\u05ea \u05d0\u05d7\u05e8\u05ea",
+                                  labelEn="A different English display label")
+        elif mode == "other-provider":
+            record["item"]["providerID"] = "fixture-other-provider"
+        elif mode == "foreign-space":
+            record["spaceId"] = "not-the-current-fixture-space"
+        elif mode == "foreign-object":
+            record["objectId"] = ids[0]
+        raw = check.get("canonical_raw")
+        require(isinstance(raw, str) and check.get("canonical_sha256") == hashlib.sha256(raw.encode()).hexdigest(),
+                "Actual post-write canonical bytes/digest missing")
+        if mode == "malformed":
+            require(raw == "{", "Malformed native observation was replaced")
+        else:
+            require(json.loads(raw) == expected and original["unknownRoot"] == expected["unknownRoot"],
+                    "Observed canonical mutation or unknown fields differ")
+        remaining = ids if mode == "label-alias" else [item for item in ids if item != doc["ID"]]
+        expected_members = freshness_members(remaining, ids[:1] if index != 0 or mode == "label-alias" else [])
+        if mode in ["other-verse", "other-provider"]:
+            suffix = "verse" if mode == "other-verse" else "provider"
+            expected_members["private_" + suffix] = [doc["ID"]]
+            if index == 0:
+                expected_members["public_" + suffix] = [doc["ID"]]
+        require(check.get("members") == expected_members and check.get("restored_members") == baseline,
+                "Native canonical mutation/index restoration not observed")
+        require(check.get("canonical_restored_sha256") == hashlib.sha256(doc["Canonical"].encode()).hexdigest(),
+                "Original exact canonical/unknown fields were not restored")
+    archive, type_cycle = checks[11:13]
+    require(archive.get("object_id") == ids[1]
+            and archive.get("members") == freshness_members([ids[0], ids[2]], ids[:1])
+            and archive.get("restored_members") == baseline
+            and archive.get("archive_observed") is True and archive.get("unarchive_observed") is True,
+            "Actual archive/unarchive index cycle missing")
+    require(type_cycle.get("object_id") == ids[0] and type_cycle.get("members") == baseline
+            and type_cycle.get("restored_members") == baseline
+            and all(isinstance(type_cycle.get(key), str) and type_cycle[key] for key in ["note_type_id", "page_type_id"])
+            and type_cycle["note_type_id"] != type_cycle["page_type_id"], "Actual indexed Note/Page type cycle missing")
+    for check, doc in zip(checks[13:15], documents[1:]):
+        require(check.get("object_id") == doc["ID"] and check.get("members") == baseline
+                and check.get("canonical_sha256") == hashlib.sha256(doc["Canonical"].encode()).hexdigest(),
+                "Canonical candidate and actual removed target were not distinguished")
+        validate_unreachable_graph(check, doc)
+    deleted = checks[15]
+    require(deleted.get("object_id") == ids[0]
+            and deleted.get("members") == freshness_members(ids[1:])
+            and type(deleted.get("object_show_error")) is int and deleted["object_show_error"] in [3, 4],
+            "Deleted object remained indexed or lacked a specific native deletion response")
+    calls = report.get("rpc_calls", {})
+    exact = dict(InitialSetParameters=1, AppGetVersion=1, WalletRecover=1, WorkspaceOpen=1,
+                 AccountStop=1, AccountPreloadRemainingSpaces=1, AppShutdown=1,
+                 ObjectSetDetails=22, ObjectListSetIsArchived=2, ObjectSetObjectType=2,
+                 BlockListDelete=2, ObjectListDelete=1)
+    allowed = set(exact) | {"AccountSelect", "AccountMigrate", "ObjectShow", "ObjectSearch"}
+    require(isinstance(calls, dict) and set(calls) <= allowed
+            and all(type(value) is int and value > 0 for value in calls.values()),
+            "Unexpected native creation, reindex, export, or unrelated RPC")
+    require(all(calls.get(key) == count for key, count in exact.items()),
+            "Declared actual native mutation/stop calls differ")
+    require(calls.get("AccountSelect") in [1, 2]
+            and calls.get("AccountMigrate", 0) == calls["AccountSelect"] - 1
+            and calls.get("ObjectShow", 0) >= 32 and calls.get("ObjectSearch", 0) >= 182,
+            "Actual existing-account selection and live index/graph reads required")
+
+
+def preserve_evidence(workspace, destination, include_freshness=False):
     """Copy only explicit nonsensitive evidence, after checking every candidate."""
     require(not destination.exists(), "Fresh evidence destination required")
     needles_path = workspace / "sensitive-needles.private"
@@ -198,6 +356,8 @@ def preserve_evidence(workspace, destination):
         for phase, _ in PHASES:
             candidates += [workspace / (phase + extension) for extension in [".json", ".log"]]
             candidates += [workspace / "exports" / phase / name for name in sorted(EXPORT_NAMES)]
+        if include_freshness:
+            candidates += [workspace / ("new-freshness" + extension) for extension in [".json", ".log"]]
     else:
         # An early wallet failure has no safe secret inventory: retain the
         # controller result, but do not upload the unverified native output.
@@ -228,13 +388,17 @@ def execute(manifest, workspace):
     require(os.name == "posix", "Actual account pairing requires the POSIX CI lane")
     config = json.loads(manifest.read_text(encoding="utf8"))
     require(config.get("schema") == 1 and config.get("protocol") == PROTOCOL, "Wrong native account-pair manifest")
+    include_freshness = config.get("include_freshness", False)
+    require(type(include_freshness) is bool, "Explicit boolean freshness mode required")
     identities = {role: verify_artifact(role, config[role]) for role in ["old", "new"]}
     require(identities["old"]["binary"] != identities["new"]["binary"], "Two distinct exact native binaries required")
     root = (workspace / "account-root").resolve()
     root.mkdir(mode=0o700)
     reports, pids = [], set()
+    freshness_report = None
     state_sha, key_sha = None, None
-    for phase, role in PHASES:
+    phases = list(PHASES) + ([("new-freshness", "new")] if include_freshness else [])
+    for phase, role in phases:
         require(shutil.disk_usage(workspace).free >= shared.RESERVE, "Disk reserve below 8 GiB")
         current = verify_artifact(role, config[role])
         require(current == identities[role], "Native artifact/source changed during pairing")
@@ -264,6 +428,10 @@ def execute(manifest, workspace):
         require(digest(state_path) == state_sha and digest(key_path) == key_sha,
                 "Original account state/key was replaced between processes")
         report = json.loads(report_path.read_text(encoding="utf8"))
+        if phase == "new-freshness":
+            validate_freshness_phase(report, current, nonce, root, pid, state, state_sha)
+            freshness_report = report
+            continue
         validate_phase(report, phase, role, current, nonce, root, pid, state, state_sha,
                        reports[0] if reports else None)
         for name, expected in report["exports"].items():
@@ -273,8 +441,10 @@ def execute(manifest, workspace):
         reports.append(report)
     require(all(verify_artifact(role, config[role]) == identities[role] for role in identities),
             "Native inputs changed after actual account pairing")
-    return dict(status=STATUS, scope=SCOPE, identities=identities, phase_reports=reports,
-                actual_counts=dict(binaries=2, native_processes=4, passing_test_invocations=4,
+    return dict(status=STATUS, scope=SCOPE + ("; optional fifth process checks sixteen native index mutations, with Swift target exclusion NOT_RUN" if include_freshness else ""), identities=identities, phase_reports=reports,
+                include_freshness=include_freshness, freshness_report=freshness_report,
+                freshness_status=FRESHNESS_STATUS if include_freshness else "NOT_REQUESTED",
+                actual_counts=dict(binaries=2, native_processes=len(phases), passing_test_invocations=len(phases),
                                    actual_export_files=24),
                 export_status="ACTUAL_JSON_AND_PROTOBUF", swift_pairing_status="NOT_RUN",
                 full_F10="NOT_PROVEN", client_enablement=DISABLED)
@@ -302,7 +472,7 @@ def main(argv=None):
         receipt.update(status="FAIL", reason=type(error).__name__, error=str(error))
     receipt["finished_at"] = datetime.now(timezone.utc).isoformat()
     result_path.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf8")
-    print(json.dumps({key: value for key, value in receipt.items() if key not in ["identities", "phase_reports"]}))
+    print(json.dumps({key: value for key, value in receipt.items() if key not in ["identities", "phase_reports", "freshness_report"]}))
     return 0 if receipt["status"] == STATUS else 1
 
 

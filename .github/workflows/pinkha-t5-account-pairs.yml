@@ -2,6 +2,11 @@ name: Pinkha bounded T5 native account and export pairing
 
 on:
   workflow_call:
+    inputs:
+      include_freshness:
+        description: Run a fifth process with native index mutations after the compatibility sequence
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -11,6 +16,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
+      PINKHA_T5_INCLUDE_FRESHNESS: ${{ inputs.include_freshness && 'true' || 'false' }}
       T5_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8
     steps:
       - name: Checkout integration proof control
@@ -56,7 +62,7 @@ jobs:
             --mount "type=bind,src=$GITHUB_WORKSPACE/artifacts,dst=/workspace/artifacts" \
             --mount "type=bind,src=$GITHUB_WORKSPACE/pair-work,dst=/workspace/pair-work" \
             --mount "type=bind,src=$GITHUB_WORKSPACE/.t5-cache,dst=/cache" \
-            -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_SHA -e GITHUB_ACTIONS \
+            -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_SHA -e GITHUB_ACTIONS -e PINKHA_T5_INCLUDE_FRESHNESS \
             -e CC=gcc -e CXX=g++ -e GOTOOLCHAIN=local \
             -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
             -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \
