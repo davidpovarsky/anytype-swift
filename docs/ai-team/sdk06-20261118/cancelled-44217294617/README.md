@@ -97,3 +97,15 @@ These are controller tests, not Apple application acceptance. No new Apple run,
 provider call, live account operation or release occurred during this repair.
 Actual SDK compilation, all 57 host test methods, and the separate native
 consent/create/read/lifetime UI lane remain open.
+
+## Cleanup cancellation review follow-up
+
+Independent review reproduced a second cancellation path: SIGINT/SIGTERM during
+simulator cleanup could escape before the final receipt was written. The narrow
+follow-up also catches that interruption, reports CANCELLED and finished_at, and
+preserves build/test results that completed before cleanup. It does not convert
+those facts back into a preflight failure or overall acceptance. The focused
+source now passes all 21 Linux controls; Windows passes 19 with the same two
+POSIX tests skipped. Original and follow-up logs remain separate in
+`controls-cleanup-linux.*` and `controls-cleanup-windows.*`. No new Apple run is
+represented by these controller results.
