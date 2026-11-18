@@ -76,18 +76,25 @@ func (o *object) Init(ctx *smartblock.InitContext) error {
 }
 
 func (o *object) validateTarget(ctx context.Context, target torahops.Target) error {
+	return ValidateNativeTarget(ctx, o.space, o.Id(), target)
+}
+
+// ValidateNativeTarget is shared by the account-scoped boundary before lazy
+// root creation and by NativeHost immediately before a write/read. It does not
+// grant ACL authority and must receive a native Space, never RPC lookup data.
+func ValidateNativeTarget(ctx context.Context, space smartblock.Space, privateID string, target torahops.Target) error {
 	if err := ctx.Err(); err != nil {
 		return err
 	}
 	// Reject our own ID before Space.Do can try to acquire this same tree lock.
-	if target.ObjectID == "" || target.ObjectID == o.Id() {
+	if space == nil || target.ObjectID == "" || target.ObjectID == privateID {
 		return ErrTargetUnavailable
 	}
-	return o.space.Do(target.ObjectID, func(sb smartblock.SmartBlock) error {
+	return space.Do(target.ObjectID, func(sb smartblock.SmartBlock) error {
 		if err := ctx.Err(); err != nil {
 			return err
 		}
-		if sb.SpaceID() != o.space.Id() || sb.IsDeleted() || sb.Details().GetBool(bundle.RelationKeyIsDeleted) ||
+		if sb.SpaceID() != space.Id() || sb.IsDeleted() || sb.Details().GetBool(bundle.RelationKeyIsDeleted) ||
 			sb.Details().GetBool(bundle.RelationKeyIsUninstalled) ||
 			!sb.Type().IsOneOf(coresb.SmartBlockTypePage, coresb.SmartBlockTypeTemplate) {
 			return ErrTargetUnavailable

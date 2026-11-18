@@ -22,11 +22,12 @@ PACKAGES = {
     "registration": ["./pkg/lib/pinkha/torahopscontract", "./pkg/lib/core/smartblock",
                      "./core/domain", "./space/spacecore/typeprovider", "./core/block/restriction",
                      "./core/block/object/objectcache", "./core/block/object/treemanager",
-                     "./core/block/source/sourceimpl", "./core/block/editor"],
+                     "./core/block/source/sourceimpl", "./core/block/editor", "./core"],
 }
 REQUIRED = {
     "component": {"TestNativeTwoProcessTreeSync", "TestNativeHostRejectsUnboundAuthorityAndInvalidHistory",
                   "TestNativeCurrentReadAuthority", "TestNativeCurrentWriteAuthority",
+                  "TestNativeAccountBoundaryACLUsesCurrentSignedMembership",
                   "TestNativeLockedConstructorRecoversWhileCallerOwnsTree",
                   "TestNativeReceivingValidatorPreservesSignedHistory"},
     "registration": {"TestPrivateRootIdentityAndSpaceBinding", "TestPrivateRootRejectsNoncanonicalEnvelope",
@@ -37,7 +38,10 @@ REQUIRED = {
                      "TestPinkhaPrivateSourceOwnsNoGenericBlockOrStorePath", "TestPinkhaPrivateSourceRejectsForeignReceivingSpace",
                      "TestPinkhaPrivateTreeManagerRejectsGenericImportBeforeStorage",
                      "TestPinkhaPrivateTreeManagerPreservesLegacyPutTreeBoundary",
-                     "TestPinkhaPrivateFactoryNativeStorageAndTargetLifecycle"},
+                     "TestPinkhaPrivateFactoryNativeStorageAndTargetLifecycle",
+                     "TestPinkhaNativeHandlerRejectsVersionBeforeAccountAccess",
+                     "TestPinkhaNativeHandlerRequiresRunningAccount",
+                     "TestPinkhaNativeReadShapeAndCancellationBeforeAccountAccess"},
 }
 MODULE = "github.com/anyproto/anytype-heart"
 
