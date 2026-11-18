@@ -1,0 +1,41 @@
+{
+  "recorded_at_utc": "2026-11-18T03:44:36.902517+00:00",
+  "kind": "controller/source checks only; no Heart compilation",
+  "native_account_lifecycle": "NOT_RUN",
+  "app_capability": "OFF",
+  "two_app_clients": "NOT_RUN",
+  "ios_acceptance": "NOT_RUN",
+  "controller_source_sha256": {
+    ".github/workflows/pinkha-t2-account-lifecycle.yml": "23bd6e3a2aee116ca15137af594f5e0e68058b6bcc1a90ebb610fcc90707e917",
+    "Tools/TorahNativeOperations/ACCOUNT_LIFECYCLE_20261118.md": "5812ff45dca39d2c2f5d8395db64e441c2a273af3df998e6933c80fe27d35970",
+    "Tools/TorahNativeOperations/account_lifecycle/account_phase_test.go": "16a9a3dfdcfa261c5d78511f31a5b605b47dddc21293f0641f20c7bce25f02cb",
+    "Tools/TorahNativeOperations/account_lifecycle/legacy_runtime_test.go": "dac0496da32aa83439cdc8e2907ce4067f0bd1569a371092802e0fd5fcd3ead0",
+    "Tools/TorahNativeOperations/account_lifecycle/new_runtime_test.go": "a2b5216ce2a0e6dcc5260da03122c74dab504ec5ac4fb564282d23cbbfad4908",
+    "Tools/TorahNativeOperations/run_account_lifecycle.py": "19de272a5f2efd0b6830d98f77d14b8eaa50bdc51e30d1057065ef8cf2f4d375",
+    "Tools/TorahNativeOperations/run_account_lifecycle_container.sh": "4a40794daec10183d651104606ac47309a9a742ce30c073454ddbcf86c80b406",
+    "Tools/TorahNativeOperations/test_account_lifecycle.py": "99ead2b94081686b3e3734e9e63d9fe3dc49878a0b51e5bcc7d7c47a1fa8399d"
+  },
+  "observed_controls": {
+    "linux": {
+      "tests": 16,
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "actual_posix_process_controls": 2
+    },
+    "windows": {
+      "tests": 16,
+      "passed": 14,
+      "failed": 0,
+      "skipped": 2,
+      "skip_reason": "POSIX/Linux process-group controls"
+    }
+  },
+  "source_checks": {
+    "gofmt": "PASS",
+    "python_ast": "PASS",
+    "workflow_yaml": "PASS",
+    "shell_syntax": "PASS"
+  },
+  "resolved_controller_issue": "Windows test fixture literal path differed from native Path rendering; positive controls now use str(Path(...)), production path comparison unchanged."
+}
