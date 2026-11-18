@@ -368,4 +368,141 @@ struct HanlinHostAdapterTests {
         #expect(!decision.authorized)
         #expect(decisions == [false, true])
     }
+
+    @Test func nativeReturnReceiptCompletesOnceWithoutRearmingExecution() throws {
+        let context = try context()
+        let ledger = PinkhaHanlinNavigationLedger(context: context)
+        let target = HanlinHostDestination(context: context, objectReference: "doc", blockReference: "K")
+        #expect(try ledger.enqueue(target))
+        let execution = PinkhaHanlinRevocationFence()
+        var mountChecks = 0
+        let handoff = try ledger.makeHandoff(for: target) {
+            mountChecks += 1
+            #expect(execution.isRevoked)
+            return .presented(requestID: target.requestID, context: context, objectReference: "doc", blockReference: "K")
+        }
+        execution.revoke() // Ordinary Chat close remains final for all execution authority.
+        #expect(!(try ledger.result(for: target)).presentationAcknowledged)
+        let receipt = try handoff.acknowledgeMounted()
+        #expect(receipt.presentationAcknowledged)
+        #expect(try handoff.acknowledgeMounted() == receipt)
+        handoff.cancel() // Later lifecycle changes cannot rewrite an already observed mount.
+        #expect(handoff.receipt == receipt && handoff.state == .mounted)
+        #expect(execution.isRevoked && mountChecks == 1)
+        #expect(try ledger.result(for: target) == receipt)
+    }
+
+    @Test func nativeReturnHandoffCannotBeMintedTwiceOrForAnAliasedTarget() throws {
+        let context = try context()
+        let ledger = PinkhaHanlinNavigationLedger(context: context)
+        let target = HanlinHostDestination(context: context, objectReference: "doc", blockReference: "e\u{301}")
+        #expect(try ledger.enqueue(target))
+        let handoff = try ledger.makeHandoff(for: target) {
+            Issue.record("Uncompleted handoff must not validate a mount")
+            return .queued(requestID: target.requestID, context: context)
+        }
+        defer { handoff.cancel() }
+        #expect(throws: HanlinHostError.resultMismatch) {
+            try ledger.makeHandoff(for: target) { .queued(requestID: target.requestID, context: context) }
+        }
+        let alias = HanlinHostDestination(requestID: target.requestID, context: context,
+            objectReference: "doc", blockReference: "\u{E9}")
+        #expect(throws: HanlinHostError.resultMismatch) { try ledger.enqueue(alias) }
+        #expect(throws: HanlinHostError.resultMismatch) { try ledger.result(for: alias) }
+        #expect(throws: HanlinHostError.resultMismatch) {
+            try ledger.makeHandoff(for: alias) { .queued(requestID: alias.requestID, context: context) }
+        }
+    }
+
+    @Test func nativeReturnCannotAcknowledgeQueuedOrDifferentMountedTargets() throws {
+        let context = try context()
+        let foreign = try self.context(account: "another-account")
+        for mismatch in 0..<4 {
+            let ledger = PinkhaHanlinNavigationLedger(context: context)
+            let target = HanlinHostDestination(context: context, objectReference: "doc", blockReference: "K")
+            _ = try ledger.enqueue(target)
+            var mountChecks = 0
+            let handoff = try ledger.makeHandoff(for: target) {
+                mountChecks += 1
+                switch mismatch {
+                case 0: return .queued(requestID: target.requestID, context: context)
+                case 1: return .presented(requestID: target.requestID, context: foreign, objectReference: "doc", blockReference: "K")
+                case 2: return .presented(requestID: target.requestID, context: context, objectReference: "another-doc", blockReference: "K")
+                default: return .presented(requestID: target.requestID, context: context, objectReference: "doc", blockReference: "another-block")
+                }
+            }
+            #expect(throws: HanlinHostError.resultMismatch) { try handoff.acknowledgeMounted() }
+            #expect(throws: HanlinHostError.resultMismatch) { try handoff.acknowledgeMounted() }
+            #expect(handoff.state == .cancelled && handoff.receipt == nil && mountChecks == 1)
+            #expect(!(try ledger.result(for: target)).presentationAcknowledged)
+        }
+    }
+
+    @Test func cancelledOrExpiredNativeReturnNeverRunsMountValidation() throws {
+        let context = try context()
+        for expires in [false, true] {
+            let ledger = PinkhaHanlinNavigationLedger(context: context)
+            let target = HanlinHostDestination(context: context, objectReference: "doc")
+            _ = try ledger.enqueue(target)
+            var mountChecks = 0
+            let handoff = try ledger.makeHandoff(for: target, timeout: expires ? .zero : .seconds(10)) {
+                mountChecks += 1
+                return .presented(requestID: target.requestID, context: context, objectReference: "doc", blockReference: nil)
+            }
+            if !expires { handoff.cancel() }
+            #expect(throws: HanlinHostError.staleContext) { try handoff.acknowledgeMounted() }
+            #expect(throws: HanlinHostError.staleContext) { try handoff.acknowledgeMounted() }
+            #expect(handoff.state == .cancelled && handoff.receipt == nil && mountChecks == 0)
+            #expect(!(try ledger.result(for: target)).presentationAcknowledged)
+        }
+
+        // A layout/reveal callback can cross the deadline while blocking the expiry task.
+        // Advancing the injected monotonic clock proves this without wall-clock sleeps.
+        let ledger = PinkhaHanlinNavigationLedger(context: context)
+        let target = HanlinHostDestination(context: context, objectReference: "doc")
+        _ = try ledger.enqueue(target)
+        var instant = ContinuousClock.now
+        var mountChecks = 0
+        let handoff = try ledger.makeHandoff(for: target, now: { instant }) {
+            mountChecks += 1
+            instant = instant.advanced(by: .seconds(11))
+            return .presented(requestID: target.requestID, context: context, objectReference: "doc", blockReference: nil)
+        }
+        #expect(throws: HanlinHostError.staleContext) { try handoff.acknowledgeMounted() }
+        #expect(throws: HanlinHostError.staleContext) { try handoff.acknowledgeMounted() }
+        #expect(handoff.state == .cancelled && handoff.receipt == nil && mountChecks == 1)
+        #expect(!(try ledger.result(for: target)).presentationAcknowledged)
+    }
+
+    @Test func nativeReturnScopeLossPreservesQueuedReceiptWithoutRetry() throws {
+        let context = try context()
+        let ledger = PinkhaHanlinNavigationLedger(context: context)
+        let target = HanlinHostDestination(context: context, objectReference: "doc")
+        _ = try ledger.enqueue(target)
+        var mountChecks = 0
+        let handoff = try ledger.makeHandoff(for: target) {
+            mountChecks += 1
+            throw HanlinHostError.staleContext // The real native owner rejects account/Space/scene/editor changes.
+        }
+        #expect(throws: HanlinHostError.staleContext) { try handoff.acknowledgeMounted() }
+        #expect(throws: HanlinHostError.staleContext) { try handoff.acknowledgeMounted() }
+        #expect(handoff.state == .cancelled && handoff.receipt == nil && mountChecks == 1)
+        #expect(!(try ledger.result(for: target)).presentationAcknowledged)
+    }
+
+    @Test func reentrantNativeReturnCancellationCannotPublishMountedReceipt() throws {
+        let context = try context()
+        let ledger = PinkhaHanlinNavigationLedger(context: context)
+        let target = HanlinHostDestination(context: context, objectReference: "doc")
+        _ = try ledger.enqueue(target)
+        var retained: PinkhaHanlinNavigationHandoff?
+        let handoff = try ledger.makeHandoff(for: target) {
+            retained?.cancel()
+            return .presented(requestID: target.requestID, context: context, objectReference: "doc", blockReference: nil)
+        }
+        retained = handoff
+        #expect(throws: HanlinHostError.staleContext) { try handoff.acknowledgeMounted() }
+        #expect(handoff.state == .cancelled && handoff.receipt == nil)
+        #expect(!(try ledger.result(for: target)).presentationAcknowledged)
+    }
 }

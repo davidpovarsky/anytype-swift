@@ -14,6 +14,8 @@ final class EditorPageController: UIViewController {
     private(set) lazy var dataSource = makeCollectionViewDataSource()
     private(set) weak var firstResponderView: UIView?
     private weak var pinkhaHanlinRouteOwner: SpaceHubCoordinatorViewModel?
+    // A later Chat or a detached/rebound editor cannot complete an earlier native return.
+    var pinkhaHanlinPresentationID: UUID?
     private let layout = EditorCollectionFlowLayout()
     @Injected(\.keyboardHeightListener)
     private var keyboardListener: KeyboardHeightListener
@@ -108,6 +110,7 @@ final class EditorPageController: UIViewController {
     private let showHeader: Bool
     var viewModel: (any EditorPageViewModelProtocol)! {
         didSet {
+            pinkhaHanlinPresentationID = nil
             // Layout metadata must subscribe before model snapshot updates to avoid first-frame indentation fallback.
             layout.blockLayoutDetailsPublisher = viewModel.document.blockLayoutDetailsPublisher.receiveOnMain().eraseToAnyPublisher()
             viewModel.setupSubscriptions()
@@ -171,6 +174,11 @@ final class EditorPageController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         viewModel.viewDidAppear()
+    }
+
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+        if parent == nil { pinkhaHanlinPresentationID = nil }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -324,6 +332,7 @@ final class EditorPageController: UIViewController {
     }
 
     func setPinkhaHanlinRouteOwner(_ owner: SpaceHubCoordinatorViewModel?) {
+        if pinkhaHanlinRouteOwner !== owner { pinkhaHanlinPresentationID = nil }
         pinkhaHanlinRouteOwner = owner
         navigationBarHelper.setHanlinSelectionAvailable(owner != nil)
     }

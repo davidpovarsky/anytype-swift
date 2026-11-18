@@ -18,6 +18,7 @@ final class PinkhaHanlinChatPresentation {
     private(set) var isStreaming = false
     private(set) var isConfigured = false
     private(set) var readAllowed = false
+    private(set) var isReturningToSource = false
     private(set) var errorMessage: String?
 
     @ObservationIgnored private let host: PinkhaHanlinReadWriteHost
@@ -28,6 +29,7 @@ final class PinkhaHanlinChatPresentation {
     @ObservationIgnored private var running: Task<Void, Never>?
     @ObservationIgnored private var closed = false
     @ObservationIgnored private var receiptIDs = Set<UUID>()
+    @ObservationIgnored private(set) var returnReceipt: PinkhaHanlinNavigationHandoff?
     #if DEBUG && targetEnvironment(simulator)
     @ObservationIgnored private weak var acceptanceSource: UIViewController?
     @ObservationIgnored private weak var acceptanceRouteOwner: SpaceHubCoordinatorViewModel?
@@ -172,7 +174,38 @@ final class PinkhaHanlinChatPresentation {
         }
     }
 
+    /// The native Return action completes its queued request before closing the SDK session.
+    /// The later UI receipt is never delivered as a response to that invalidated SDK session.
+    func returnToSource() {
+        guard !closed, !isReturningToSource, let object = session.context.objectReference else { return }
+        isReturningToSource = true
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                try validateInstallation(for: session)
+                let selection = session.context.selectionReferences
+                let destination = HanlinHostDestination(context: session.context, objectReference: object,
+                    blockReference: selection.count == 1 ? selection.first : nil)
+                let queued = try await host.open(destination)
+                guard case .queued = queued else { throw HanlinHostError.resultMismatch }
+                try validateInstallation(for: session)
+                guard let controller else { throw HanlinHostError.staleContext }
+                let handoff = try host.makeReturnHandoff(destination, controller: controller)
+                returnReceipt = handoff
+                close { _ = try? handoff.acknowledgeMounted() }
+            } catch {
+                guard !closed else { return }
+                isReturningToSource = false
+                errorMessage = PinkhaHanlinStrings.returnFailed
+            }
+        }
+    }
+
     func invalidate() {
+        close(completion: nil)
+    }
+
+    private func close(completion: (@MainActor @Sendable () -> Void)?) {
         guard !closed else { return }
         #if DEBUG && targetEnvironment(simulator)
         PinkhaHanlinNativeAcceptanceDriver.observedInvalidation(sessionID: session.id, cause: "explicitCloseOrOwner")
@@ -189,7 +222,7 @@ final class PinkhaHanlinChatPresentation {
         receiptIDs.removeAll()
         isConfigured = false
         PinkhaHanlinAccountOwner.shared.unregister(session.id)
-        controller?.dismiss(animated: true)
+        controller?.dismiss(animated: true, completion: completion)
         Task { [host] in
             await agent?.invalidate()
             await host.invalidate()

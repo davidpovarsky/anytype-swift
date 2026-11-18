@@ -24,10 +24,18 @@ import wave15_core_profile as core_profile
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 CONFIGURATION = "Debug-Anytype"
 SUITES = {
-    "HanlinHostAdapterTests": 22,
+    "HanlinHostAdapterTests": 28,
     "HanlinHostWriteTests": 12,
     "HanlinHostReadWriteTests": 17,
     "HanlinSDKConsumerTests": 6,
+}
+SDK_RETURN_METHODS = {
+    "nativeReturnReceiptCompletesOnceWithoutRearmingExecution",
+    "nativeReturnHandoffCannotBeMintedTwiceOrForAnAliasedTarget",
+    "nativeReturnCannotAcknowledgeQueuedOrDifferentMountedTargets",
+    "cancelledOrExpiredNativeReturnNeverRunsMountValidation",
+    "nativeReturnScopeLossPreservesQueuedReceiptWithoutRetry",
+    "reentrantNativeReturnCancellationCannotPublishMountedReceipt",
 }
 EDITOR_SUITE = "TorahQuoteInsertionTests"
 EDITOR_METHODS = {
@@ -112,6 +120,8 @@ def expected_methods(app, profile=HostTestProfile.SDK06):
                  re.findall(r"@Test(?:\([^\n]*\))?\s+func\s+(\w+)\s*\(", text))
         require(len(set(names)) == len(names) and len(names) >= minimum,
                 "Reviewed SDK test declarations disappeared: " + suite)
+        if profile is HostTestProfile.SDK06 and suite == "HanlinHostAdapterTests":
+            require(SDK_RETURN_METHODS.issubset(names), "Reviewed native return test declarations disappeared")
         if profile is HostTestProfile.EDITOR:
             declarations = re.findall(r"@Test(?:\(([^\n]*)\))?\s+func\s+(\w+)\s*\(([^)]*)\)", text)
             require(set(names) == set(EDITOR_METHODS), "Reviewed editor method set changed")
