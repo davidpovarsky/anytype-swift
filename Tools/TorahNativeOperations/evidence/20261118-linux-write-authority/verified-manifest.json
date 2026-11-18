@@ -1,0 +1,32 @@
+{
+  "run_id": 44218461051,
+  "run_attempt": 1,
+  "source_sha": "13efa130ca547f69b4550205295f795790ae6c88",
+  "artifact_id": 14389815915,
+  "artifact_archive_sha256": "bdf099b292b74cdcb8a0e23da69a67fbce791c5198a9515ade160a32515b203e",
+  "status": "PASS_NATIVE_COMPONENT_AND_LOOPBACK_TRANSPORT",
+  "go_version": "go version go1.26.5 linux/amd64",
+  "top_level_pass": 20,
+  "subtest_pass": 41,
+  "fail": 0,
+  "receipt_sha256": "07ade0c88eee894aeaf196fd37d3f161f4a1cc950ac46416c88d655d950fe8a5",
+  "go_test_sha256": "36d5af34529959b8558ff936c9462b366ab865365962982199d4101e8a25bf65",
+  "verified_source_sha256": {
+    "native_host.go": "eb24ef45bd0809193e735ec0f77099b172f29d1178075f3447363066169296cc",
+    "native_read_authority_test.go": "6b6cc335bb43181dbfdcc813f19c57f392d94bfe9e1c00a51e1426009f83d6e7",
+    "native_transport_test.go": "bc23d3c867a9defbd02a23a8577d42218a2e3be02d201291aabc04ae241bef45",
+    "native_write_authority_test.go": "6534ce7705a77b04c724bbc01bf4735d9a6d0089633cb89107df6035a66caf3e",
+    "operation.go": "cd8cb9dbd662691cb3c4ed6f5c95c29bbdc8e02698acb64b805afe804609193a",
+    "operation_test.go": "9eaf4f96167a4305f386d8ce6273927b7728304989b7a80ab020ca547f8defba",
+    "projection.go": "f8e78a673ad696f8dba567e60a87b6865a8ef1819e8da48abac5d838d19d4496",
+    "store.go": "943b16ee869409223d0881d627475a7123cde0a6065f1df7f45704e9b029be93",
+    "store_test.go": "49354a8d09bd74a313784ab42f0651b518bd6e1a8ec1b4f02c029eb977d1f16c"
+  },
+  "write_tests": [
+    "TestNativeCurrentWriteAuthority/locally_removed_writer_cannot_append_or_replay_an_acknowledged_operation",
+    "TestNativeCurrentWriteAuthority/native_preparation_rechecks_removal_after_host_preflight",
+    "TestNativeCurrentWriteAuthority"
+  ],
+  "full_t2": "NOT_RUN",
+  "ios": "NOT_RUN"
+}
