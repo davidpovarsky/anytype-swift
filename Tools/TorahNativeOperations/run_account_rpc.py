@@ -140,7 +140,40 @@ def verify_rpc_binary(role: str, identity: dict, registration_sha: str, schema_s
     require(identity.get("rpc_manifest_sha256") == (schema_sha if role == "new" else "none"), "Wrong RPC binary role")
 
 
-def execute(args, receipt, run, *, native_client_fixtures: dict[str, Path] | None = None) -> dict:
+NATIVE_READ_OBSERVATION = {
+    "source_path": "core/pinkha_torah_rpc.go",
+    "before_sha256": "3e3325bb724c75ae9023b6386416278af4327de8243be90ce245c6de6b22a8e5",
+    "after_sha256": "8a33180223b57dc79c8c7aa8bd8cca628b43f00cededb6f4010b2a095784eb93",
+    "patch_sha256": "3b68ed7a7dc51f4fa90b096c1be4d454b522661ae9c615d9dbf06eb8d71034ec",
+}
+
+
+def prepare_native_read_observation(heart: Path, patch: Path, work: Path, run) -> tuple[Path, dict]:
+    """Observe the original native error only in an explicitly bound test binary.
+
+    The checked Heart source remains untouched. A copied, exact-context patch is
+    used solely through Go's compile overlay; it neither repeats the read nor
+    changes its result/error. No production/source inventory is relabelled.
+    """
+    source = heart / NATIVE_READ_OBSERVATION["source_path"]
+    require(source.is_file() and not source.is_symlink()
+            and digest(source) == NATIVE_READ_OBSERVATION["before_sha256"], "Unexpected native read source")
+    require(patch.is_file() and not patch.is_symlink()
+            and digest(patch) == NATIVE_READ_OBSERVATION["patch_sha256"], "Unexpected native read observation patch")
+    target = work / "native-read-observation"
+    require(not target.exists(), "Fresh native read observation work required")
+    replacement = target / NATIVE_READ_OBSERVATION["source_path"]
+    replacement.parent.mkdir(parents=True, mode=0o700)
+    shutil.copyfile(source, replacement)
+    run(["git", "apply", "--check", str(patch)], "native-read-observation-check", target, os.environ.copy())
+    run(["git", "apply", str(patch)], "native-read-observation-apply", target, os.environ.copy())
+    require(digest(replacement) == NATIVE_READ_OBSERVATION["after_sha256"]
+            and digest(source) == NATIVE_READ_OBSERVATION["before_sha256"], "Native read observation changed unexpected bytes")
+    return replacement, {**NATIVE_READ_OBSERVATION, "scope": "TEST_COMPILE_OVERLAY_ONLY_ORIGINAL_READ_ERROR"}
+
+
+def execute(args, receipt, run, *, native_client_fixtures: dict[str, Path] | None = None,
+            native_read_observation: Path | None = None) -> dict:
     control = Path(__file__).resolve().parents[2]
     tools = control / "Tools/TorahNativeOperations"
     source, work, evidence = args.approved_source, args.work, args.evidence
@@ -164,6 +197,12 @@ def execute(args, receipt, run, *, native_client_fixtures: dict[str, Path] | Non
             require(path == tools / "two_clients" / name and path.is_file() and not path.is_symlink(),
                     "Native-client fixtures must be the exact source-bound test files")
             client_sources[name] = digest(path)
+    if native_read_observation is not None:
+        require(native_client_fixtures is not None
+                and native_read_observation == tools / "two_clients/native-read-observation.patch"
+                and digest(native_read_observation) == NATIVE_READ_OBSERVATION["patch_sha256"],
+                "Observation requires the explicit source-bound native-client fixture")
+        client_sources["native-read-observation.patch"] = digest(native_read_observation)
     client_fixture_sha = (hashlib.sha256(json.dumps(client_sources, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
                           if client_sources else "none")
     rpc_manifest, registry = rpc.source_inputs(control, tools / "rpc")
@@ -187,10 +226,14 @@ def execute(args, receipt, run, *, native_client_fixtures: dict[str, Path] | Non
                        "source_hashes": base.verify_source(hearts["new"], expected["new"], generation["module_sha256"])}}
     builds["legacy"] = base.apply_composition(hearts["legacy"], old_patch, tools / "heart-registration.patch",
                                                tools / "overlay", registry, old, "legacy")
+    observed_source, observation = None, None
+    if native_read_observation is not None:
+        observed_source, observation = prepare_native_read_observation(hearts["new"], native_read_observation, work, run)
     receipt.update(generation_receipt_sha256=digest(generation_path), fixture_sha256=fixture_sha,
                    rpc_manifest_sha256=schema_sha, generated_sha256=generation["generated_sha256"],
                    legacy_patch_sha256=base.LEGACY_PATCH, registration_patch_sha256=registration_sha,
-                   composition_paths={role: sorted(value) for role, value in expected.items()})
+                   composition_paths={role: sorted(value) for role, value in expected.items()},
+                   native_read_observation=observation)
     spec = importlib.util.spec_from_file_location("t2_account_rpc_builder", source / base.BUILDER)
     helper = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(helper)
@@ -228,6 +271,8 @@ def execute(args, receipt, run, *, native_client_fixtures: dict[str, Path] | Non
                 target = heart / "clientlibrary/service" / ("pinkha_t2_" + name)
                 require(not target.exists(), "Native-client fixture would replace native source")
                 replacements[str(target)] = str(path)
+        if role == "new" and observed_source is not None:
+            replacements[str(heart / NATIVE_READ_OBSERVATION["source_path"])] = str(observed_source)
         overlay = role_work / "overlay.json"
         write_json(overlay, {"Replace": replacements})
         summary = base.runtime_version(role, registration_sha)
@@ -248,11 +293,16 @@ def execute(args, receipt, run, *, native_client_fixtures: dict[str, Path] | Non
                     "registration_patch_sha256": linked_registration, "fixture_sha256": fixture_sha,
                     "runtime_version": summary, "binary": str(binary), "binary_sha256": digest(binary),
                     "rpc_manifest_sha256": schema_sha if role == "new" else "none",
-                    "native_client_fixture_sha256": client_fixture_sha if role == "new" else "none"}
+                    "native_client_fixture_sha256": client_fixture_sha if role == "new" else "none",
+                    "native_read_observation": observation if role == "new" else None}
         verify_rpc_binary(role, identity, registration_sha, schema_sha)
         if client_sources:
             require(base.contains(binary, client_fixture_sha) == (role == "new"), "Native-client test linked into the wrong binary")
-            require({name: digest(path) for name, path in native_client_fixtures.items()} == client_sources,
+            actual_client_sources = {name: digest(path) for name, path in native_client_fixtures.items()}
+            if native_read_observation is not None:
+                actual_client_sources["native-read-observation.patch"] = digest(native_read_observation)
+                require(digest(observed_source) == NATIVE_READ_OBSERVATION["after_sha256"], "Native observation source changed")
+            require(actual_client_sources == client_sources,
                     "Native-client test source changed during compilation")
         verify_fixture_copy(new_fixtures, manifest)
         require(base.verify_source(heart, expected[role], builds[role]["module_hashes"]) == builds[role]["source_hashes"],
@@ -272,10 +322,15 @@ def execute(args, receipt, run, *, native_client_fixtures: dict[str, Path] | Non
     for root, pin in [(control, args.expected_app_sha), (source, base.APPROVED_SOURCE)]:
         require(base.git(root, "rev-parse", "HEAD") == pin and not base.git(root, "status", "--porcelain"), "Input source changed")
     if native_client_fixtures is not None:
-        require({name: digest(path) for name, path in native_client_fixtures.items()} == client_sources,
+        actual_client_sources = {name: digest(path) for name, path in native_client_fixtures.items()}
+        if native_read_observation is not None:
+            actual_client_sources["native-read-observation.patch"] = digest(native_read_observation)
+            require(digest(observed_source) == NATIVE_READ_OBSERVATION["after_sha256"], "Native observation source changed")
+        require(actual_client_sources == client_sources,
                 "Native-client test source changed during baseline account proof")
     return {"status": PASS, "actual_counts": sequence["actual_counts"], "identities": identities,
             "native_client_fixture_sha256": client_fixture_sha, "native_client_source_sha256": client_sources,
+            "native_read_observation": observation,
             "account_receipt_sha256": digest(evidence / "account-sequence/result.json"),
             "account_wire_acceptance": "PASS_REGISTERED_NATIVE_BYTES_SAME_ACCOUNT_FOUR_PROCESSES",
             "unknown_client_preservation": "PASS_R14_PRIVATE_HISTORY_BYTES",

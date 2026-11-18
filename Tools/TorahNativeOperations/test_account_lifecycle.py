@@ -266,7 +266,13 @@ class AccountControllerControls(unittest.TestCase):
                 deadline = time.monotonic() + 3
                 while time.monotonic() < deadline:
                     stat = Path("/proc") / str(child_pid) / "stat"
-                    if not stat.exists() or stat.read_text().split()[2] == "Z":
+                    try:
+                        exited = stat.read_text().split()[2] == "Z"
+                    except FileNotFoundError:
+                        # The owned child may be reaped between observation and
+                        # read. Absence is the same expected exit as before.
+                        exited = True
+                    if exited:
                         break
                     time.sleep(0.02)
                 else:

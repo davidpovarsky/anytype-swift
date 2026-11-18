@@ -53,7 +53,12 @@ def source_inputs(control: Path) -> tuple[dict, dict[str, Path]]:
     files = {name: folder / name for name in GO_FILES}
     require(all(path.is_file() and not path.is_symlink() and digest(path) == manifest["go_sources_sha256"][name]
                 for name, path in files.items()), "Native-client test bytes differ")
-    combined = hashlib.sha256(json.dumps(manifest["go_sources_sha256"], sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    patch = folder / "native-read-observation.patch"
+    require(patch.is_file() and not patch.is_symlink()
+            and digest(patch) == manifest["native_read_observation_patch_sha256"] == account.NATIVE_READ_OBSERVATION["patch_sha256"],
+            "Original native read observation differs")
+    inputs = {**manifest["go_sources_sha256"], "native-read-observation.patch": digest(patch)}
+    combined = hashlib.sha256(json.dumps(inputs, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     require(combined == manifest["fixture_sha256"], "Native-client fixture identity differs")
     require(digest(tools / "run_account_rpc.py") == manifest["account_rpc_controller_sha256"], "Account build extension differs")
     return manifest, files
@@ -76,10 +81,13 @@ def validate_public_state(state: dict) -> None:
 
 def build(args, receipt, run) -> dict:
     manifest, files = source_inputs(args.control)
-    result = account.execute(args, receipt, run, native_client_fixtures=files)
+    result = account.execute(args, receipt, run, native_client_fixtures=files,
+                             native_read_observation=args.control / "Tools/TorahNativeOperations/two_clients/native-read-observation.patch")
     require(result["status"] == account.PASS and result["native_client_fixture_sha256"] == manifest["fixture_sha256"],
             "Exact account baseline or native-client fixture linkage failed")
     receipt["baseline"] = result
+    require(result["native_read_observation"] == {**account.NATIVE_READ_OBSERVATION,
+            "scope": "TEST_COMPILE_OVERLAY_ONLY_ORIGINAL_READ_ERROR"}, "Original read observation source linkage failed")
     binary = Path(result["identities"]["new"]["binary"])
     methods = "^(" + "|".join(CONTROL_METHODS) + ")$"
     run([binary, "-test.run", methods, "-test.count=1", "-test.v", "-test.timeout=60s"],
