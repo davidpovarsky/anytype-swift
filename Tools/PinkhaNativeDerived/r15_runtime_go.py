@@ -290,6 +290,27 @@ def audit_initial_manifest(real_go, env, cwd, contract):
                 input_native_graph_sha256=contract["input_native_graph_sha256"])
 
 
+def observe_module_files(cwd):
+    """Retain owned generated inputs without changing the audit's outcome."""
+    files = {}
+    for name in ["go.mod", "go.sum"]:
+        try:
+            raw = (cwd / name).read_bytes()
+            item = dict(status="CAPTURED", size_bytes=len(raw),
+                        sha256=hashlib.sha256(raw).hexdigest())
+            try:
+                item["utf8_text"] = raw.decode("utf8")
+            except UnicodeDecodeError:
+                item["base64"] = base64.b64encode(raw).decode("ascii")
+            files[name] = item
+        except FileNotFoundError:
+            files[name] = dict(status="MISSING")
+        except Exception as error:
+            # A diagnostic read must not replace a Go error or relax a guard.
+            files[name] = dict(status="UNREADABLE", error_type=type(error).__name__)
+    return files
+
+
 def audit_modules(real_go, env, cwd, heart, contract, observation=None):
     if env.get("GOWORK") != "off" or env.get("GOPROXY") != "off":
         raise RuntimeError("Generated module proof requires explicit workspace isolation and offline module cache")
@@ -301,25 +322,30 @@ def audit_modules(real_go, env, cwd, heart, contract, observation=None):
     # can fail. A failed RHS assignment must not discard the selected identity.
     if observation is None:
         observation = {}
-    observation.update(status="RUNNING", queries=[])
+    observation.update(status="RUNNING", queries=[], supporting_queries=[],
+                       input_module_files=observe_module_files(cwd))
 
     def query(arguments, stream=False, identity=None):
-        captured = None
+        captured = dict(argv=arguments, status="RUNNING")
         if identity is not None:
-            captured = dict(identity=identity, argv=arguments, status="RUNNING")
+            captured["identity"] = identity
             observation["queries"].append(captured)
+        else:
+            # Keep the three identity queries' schema unchanged. Full-graph
+            # commands can report a dependency Error only in their JSON stdout.
+            observation["supporting_queries"].append(captured)
         result = subprocess.run([str(real_go), *arguments], cwd=cwd, env=env, text=True,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60)
-        if captured is not None:
-            captured.update(return_code=result.returncode, stdout=result.stdout, stderr=result.stderr,
-                            stdout_utf8_sha256=hashlib.sha256(result.stdout.encode("utf8")).hexdigest(),
-                            stderr_utf8_sha256=hashlib.sha256(result.stderr.encode("utf8")).hexdigest(),
-                            status="COMMAND_COMPLETED")
+        captured.update(return_code=result.returncode, stdout=result.stdout, stderr=result.stderr,
+                        stdout_utf8_sha256=hashlib.sha256(result.stdout.encode("utf8")).hexdigest(),
+                        stderr_utf8_sha256=hashlib.sha256(result.stderr.encode("utf8")).hexdigest(),
+                        status="COMMAND_COMPLETED")
         if result.returncode:
             raise RuntimeError("Offline generated-module identity query failed: " + " ".join(arguments) + ": " + result.stderr.strip())
         parsed = module_records(result.stdout) if stream else json.loads(result.stdout)
-        if captured is not None:
-            captured.update(status="PARSED", module=parsed)
+        captured["status"] = "PARSED"
+        if identity is not None:
+            captured["module"] = parsed
         return parsed
 
     try:
@@ -354,6 +380,8 @@ def audit_modules(real_go, env, cwd, heart, contract, observation=None):
     except Exception as error:
         observation.update(status="FAIL", error_type=type(error).__name__)
         raise
+    finally:
+        observation["output_module_files"] = observe_module_files(cwd)
 
 
 def main(argv=None):

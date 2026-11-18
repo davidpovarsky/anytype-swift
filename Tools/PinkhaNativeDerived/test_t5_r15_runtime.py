@@ -194,6 +194,130 @@ class R15RuntimeControls(unittest.TestCase):
                 self.assertEqual(captured["stderr"], response.stderr)
                 self.assertEqual(captured["return_code"], response.returncode)
 
+    def test_full_graph_failure_retains_go_error_and_actual_post_tidy_module_files(self):
+        # Exact JSON shape produced by the real Go 1.26.5 offline synthetic probe;
+        # this is an error-channel fixture, not a claim about the CI dependency.
+        original_stdout = ('{\n\t"Path": "example.invalid/pinkha-t5-missing",\n'
+                           '\t"Version": "v1.0.0",\n'
+                           '\t"Error": "module lookup disabled by GOPROXY=off"\n}\n')
+        for arguments in [["mod", "tidy"], ["build", "example.invalid/unused"]]:
+            for original_stderr in ["", "go: offline dependency lookup failed\n"]:
+                with self.subTest(arguments=arguments, stderr=bool(original_stderr)), tempfile.TemporaryDirectory() as temporary:
+                    root = Path(temporary).resolve()
+                    heart, generated, audit = root / "heart", root / "generated", root / "audit"
+                    cwd = generated / "ios-arm64"
+                    cwd.mkdir(parents=True)
+                    audit.mkdir()
+                    post_tidy = b"module gobind\n\ngo 1.26.5\n\nrequire example.invalid/pinkha-t5-missing v1.0.0\n"
+                    before_sums, after_sums = b"checksums before query\n", b"checksums after failed query\n"
+                    (cwd / "go.mod").write_bytes(post_tidy if arguments[0] == "build" else b"module gobind\n")
+                    (cwd / "go.sum").write_bytes(before_sums)
+                    _, native, _, downloaded = module_inputs()
+                    native["Replace"].update(Dir=str(heart), Path=str(heart))
+                    calls = []
+
+                    def invoke(command, **kwargs):
+                        current = command[1:]
+                        calls.append(current)
+                        self.assertEqual(kwargs["env"]["GOWORK"], "off")
+                        self.assertEqual(kwargs["env"]["GOPROXY"], "off")
+                        if current == ["mod", "tidy"]:
+                            (cwd / "go.mod").write_bytes(post_tidy)
+                            return subprocess.CompletedProcess(command, 0)
+                        self.assertEqual(kwargs["timeout"], 60)
+                        if current == ["list", "-m", "-json", launcher.NATIVE_MODULE]:
+                            return subprocess.CompletedProcess(command, 0, json.dumps(native), "")
+                        if current == ["mod", "download", "-json", launcher.GENPROTO + "@" + launcher.VERSION]:
+                            return subprocess.CompletedProcess(command, 0, json.dumps(downloaded), "")
+                        self.assertEqual(current, ["mod", "download", "-json", "all"])
+                        (cwd / "go.sum").write_bytes(after_sums)
+                        return subprocess.CompletedProcess(command, 1, original_stdout, original_stderr)
+
+                    env = dict(PINKHA_T5_REAL_GO=str(root / "go"), PINKHA_T5_HEART=str(heart),
+                               PINKHA_T5_GOWORK=str(root / "go.work"), PINKHA_T5_MOBILE_TMP=str(generated),
+                               PINKHA_T5_GO_AUDIT=str(audit), PINKHA_T5_GENERATED_CONTRACT=str(root / "contract.json"),
+                               PINKHA_T5_GENERATED_CONTRACT_SHA256="a" * 64, GOPROXY="off")
+                    with (mock.patch.dict(launcher.os.environ, env),
+                          mock.patch.object(launcher.Path, "cwd", return_value=cwd),
+                          mock.patch.object(launcher, "load_seed_contract", return_value={"before_tidy_manifest": {}}),
+                          mock.patch.object(launcher, "audit_initial_manifest", return_value={}),
+                          mock.patch.object(launcher, "prepare_generated_module", return_value={}),
+                          mock.patch.object(launcher.subprocess, "run", side_effect=invoke),
+                          redirect_stderr(io.StringIO())):
+                        self.assertEqual(launcher.main(arguments), 91)
+                    receipts = list(audit.glob("*.json"))
+                    self.assertEqual(len(receipts), 1)
+                    receipt = json.loads(receipts[0].read_text(encoding="utf8"))
+                    phase = "after_tidy" if arguments[0] == "mod" else "before_build"
+                    if phase == "after_tidy":
+                        self.assertEqual(receipt["command_return_code"], 0)
+                        self.assertEqual(len(calls), 4)
+                    else:
+                        self.assertNotIn("command_return_code", receipt)
+                        self.assertEqual(len(calls), 3)
+                    self.assertNotIn(phase + "_modules", receipt)
+                    observation = receipt[phase + "_observation"]
+                    self.assertEqual(observation["status"], "FAIL")
+                    self.assertNotIn("public_genproto_checks", observation)
+                    self.assertEqual([item["identity"] for item in observation["queries"]], ["native", "downloaded"])
+                    self.assertEqual(len(observation["supporting_queries"]), 1)
+                    query = observation["supporting_queries"][0]
+                    self.assertEqual(query["argv"], ["mod", "download", "-json", "all"])
+                    self.assertEqual(query["status"], "COMMAND_COMPLETED")
+                    self.assertEqual(query["return_code"], 1)
+                    self.assertEqual(query["stdout"], original_stdout)
+                    self.assertEqual(query["stderr"], original_stderr)
+                    self.assertEqual(query["stdout_utf8_sha256"], hashlib.sha256(original_stdout.encode()).hexdigest())
+                    self.assertEqual(query["stderr_utf8_sha256"], hashlib.sha256(original_stderr.encode()).hexdigest())
+                    self.assertEqual(json.loads(query["stdout"])["Error"], "module lookup disabled by GOPROXY=off")
+                    for stage, sums in [("input", before_sums), ("output", after_sums)]:
+                        for name, expected in [("go.mod", post_tidy), ("go.sum", sums)]:
+                            captured = observation[stage + "_module_files"][name]
+                            self.assertEqual(captured["status"], "CAPTURED")
+                            self.assertEqual(captured["utf8_text"].encode(), expected)
+                            self.assertEqual(captured["size_bytes"], len(expected))
+                            self.assertEqual(captured["sha256"], hashlib.sha256(expected).hexdigest())
+
+    def test_full_graph_parse_failure_retains_raw_stdout_without_accepting_a_dependency_error(self):
+        for output in ["invalid json", '{"Path":"example.invalid/missing","Error":"offline error"}\n']:
+            with self.subTest(output=output), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary).resolve()
+                (root / "go.mod").write_text("module gobind\n", encoding="utf8")
+                heart, native, _, downloaded = module_inputs()
+                responses = [subprocess.CompletedProcess([], 0, json.dumps(value), "") for value in [native, downloaded]]
+                responses.append(subprocess.CompletedProcess([], 0, output, ""))
+                observation = {}
+                with mock.patch.object(launcher.subprocess, "run", side_effect=responses) as invoked:
+                    with self.assertRaises((RuntimeError, ValueError)):
+                        launcher.audit_modules(root / "go", dict(GOWORK="off", GOPROXY="off"), root, heart, {}, observation)
+                self.assertEqual(invoked.call_count, 3)
+                self.assertEqual(observation["status"], "FAIL")
+                self.assertNotIn("public_genproto_checks", observation)
+                query = observation["supporting_queries"][0]
+                self.assertEqual(query["status"], "COMMAND_COMPLETED")
+                self.assertEqual(query["stdout"], output)
+                self.assertEqual(query["return_code"], 0)
+                self.assertEqual(query["stdout_utf8_sha256"], hashlib.sha256(output.encode()).hexdigest())
+                self.assertEqual(observation["output_module_files"]["go.sum"]["status"], "MISSING")
+
+    def test_module_snapshot_read_error_cannot_mask_the_original_go_failure(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            (root / "go.mod").write_text("module gobind\n", encoding="utf8")
+            observation = {}
+            response = subprocess.CompletedProcess([], 1, '{"Error":"original Go failure"}', "original stderr")
+            with (mock.patch.object(launcher.Path, "read_bytes", side_effect=PermissionError("diagnostic denied")),
+                  mock.patch.object(launcher.subprocess, "run", return_value=response)):
+                with self.assertRaisesRegex(RuntimeError, "original stderr"):
+                    launcher.audit_modules(root / "go", dict(GOWORK="off", GOPROXY="off"), root, root / "heart", {}, observation)
+            self.assertEqual(observation["status"], "FAIL")
+            self.assertEqual(observation["error_type"], "RuntimeError")
+            self.assertEqual(observation["queries"][0]["stdout"], response.stdout)
+            for stage in ["input", "output"]:
+                for name in ["go.mod", "go.sum"]:
+                    self.assertEqual(observation[stage + "_module_files"][name],
+                                     dict(status="UNREADABLE", error_type="PermissionError"))
+
     def test_public_checks_cannot_export_arbitrary_module_values_or_annotation_text(self):
         _, _, selected, downloaded = module_inputs()
         private = "PRIVATE_SENTINEL%0A::warning::/private/runner/token"
