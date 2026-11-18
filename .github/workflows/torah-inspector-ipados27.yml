@@ -19,6 +19,7 @@ on:
           - simulator-ui27
           - heart-runtime
           - sdk06-tests
+          - wave15-acceptance
       t5_component:
         description: One bounded native T5 proof component
         type: choice
@@ -35,6 +36,28 @@ on:
           - STARTUP_IPAD_DIAGNOSTIC
           - NATIVE_CANCELLATION_DIAGNOSTIC
         default: FULL_SMOKE
+      acceptance_lane:
+        description: Existing Wave-15 UI suite to execute after Startup is working
+        type: choice
+        options:
+          - inspector
+          - properties
+          - editor
+        default: inspector
+      acceptance_device:
+        description: Disposable OS27 device family
+        type: choice
+        options:
+          - ipad
+          - iphone
+        default: ipad
+      acceptance_language:
+        description: Actual app language; current non-editor methods require en
+        type: choice
+        options:
+          - en
+          - he
+        default: en
       source_run_id:
         description: Verified Heart runtime run, or native evidence source for diagnostics
         type: string
@@ -64,6 +87,15 @@ jobs:
     with:
       ui_scope: ${{ inputs.ui_scope }}
       heart_source_run_id: ${{ inputs.source_run_id }}
+
+  wave15-acceptance:
+    if: ${{ inputs.route == 'wave15-acceptance' }}
+    uses: ./.github/workflows/pinkha-simulator-ui27.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      acceptance_lane: ${{ inputs.acceptance_lane }}
+      acceptance_device: ${{ inputs.acceptance_device }}
+      acceptance_language: ${{ inputs.acceptance_language }}
 
   sdk06-tests:
     if: ${{ inputs.route == 'sdk06-tests' }}

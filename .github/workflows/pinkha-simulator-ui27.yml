@@ -9,6 +9,15 @@ on:
       heart_source_run_id:
         type: string
         required: true
+      acceptance_lane:
+        type: string
+        default: ''
+      acceptance_device:
+        type: string
+        default: ipad
+      acceptance_language:
+        type: string
+        default: en
 
 permissions:
   contents: read
@@ -21,6 +30,9 @@ jobs:
     env:
       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
       UI27_SCOPE: ${{ inputs.ui_scope }}
+      UI27_ACCEPTANCE_LANE: ${{ inputs.acceptance_lane }}
+      UI27_DEVICE_FAMILY: ${{ inputs.acceptance_device }}
+      UI27_LANGUAGE: ${{ inputs.acceptance_language }}
     steps:
       - name: Checkout exact integration source
         uses: actions/checkout@v4
@@ -66,11 +78,18 @@ jobs:
           restore-keys: |
             pinkha-ui27-arm64-xcode27.0-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}-
       - name: Build once and execute the declared native and UI selection
+        if: ${{ inputs.acceptance_lane == '' }}
         id: actual-execution
         timeout-minutes: 105
         run: |
           python3 Tools/PinkhaSimulatorGate/run_ui27.py --app "$GITHUB_WORKSPACE" \
             --evidence build/ui27-evidence --derived build/ui27-derived --ui-scope "$UI27_SCOPE"
+      - name: Execute the selected existing Wave-15 acceptance lane
+        if: ${{ inputs.acceptance_lane != '' }}
+        id: wave15-execution
+        timeout-minutes: 120
+        run: |
+          python3 Tools/PinkhaSimulatorGate/run_wave15_acceptance.py --app "$GITHUB_WORKSPACE"             --evidence build/ui27-evidence --derived build/ui27-derived             --lane "$UI27_ACCEPTANCE_LANE" --device "$UI27_DEVICE_FAMILY" --language "$UI27_LANGUAGE"
       - name: Package actual logs screenshots xcresult even on failure
         if: always()
         run: python3 Tools/PinkhaNativeDerived/package_evidence.py build/ui27-evidence
@@ -78,12 +97,12 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Pinkha-UI27-${{ inputs.ui_scope }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: Pinkha-UI27-${{ inputs.acceptance_lane || inputs.ui_scope }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: build/ui27-evidence/Pinkha-Native-Derived-Evidence.zip
           if-no-files-found: error
           retention-days: 14
       - name: Preserve compatible compilation cache after success or failed tests
-        if: ${{ always() && steps.actual-execution.outcome != 'skipped' && steps.ui27-cache.outputs.cache-hit != 'true' && hashFiles('build/ui27-derived/Build/PinkhaSourceInputs.json') != '' }}
+        if: ${{ always() && (steps.actual-execution.outcome != 'skipped' || steps.wave15-execution.outcome != 'skipped') && steps.ui27-cache.outputs.cache-hit != 'true' && hashFiles('build/ui27-derived/Build/PinkhaSourceInputs.json') != '' }}
         uses: actions/cache/save@v4
         with:
           path: build/ui27-derived

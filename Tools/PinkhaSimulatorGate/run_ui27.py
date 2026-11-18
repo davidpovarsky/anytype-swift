@@ -83,7 +83,7 @@ def run_selection(app, configuration, blueprint, udid, selections, environment, 
     result = dict(status='FAIL', selected=selections, phase='EXECUTION', prefix=prefix, command_exit_code=None)
     if blueprint == 'PinkhaStage1AcceptanceUITests':
         scope = environment.get('PINKHA_UI27_SELECTION_SCOPE', 'FULL_SMOKE')
-        if scope not in {'FULL_SMOKE', 'STARTUP_IPAD_DIAGNOSTIC'}:
+        if scope not in {'FULL_SMOKE', 'STARTUP_IPAD_DIAGNOSTIC', 'WAVE15_ACCEPTANCE'}:
             raise ValueError('Unsupported recorded UI selection scope')
         result.update(ui_scope=scope, expected_selected_methods=len(selections),
                       release_accepted=False, full_matrix_accepted=False)
