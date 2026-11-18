@@ -1,0 +1,34 @@
+{
+  "command": [
+    "xcodebuild",
+    "test-without-building",
+    "-xctestrun",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44246586673-1/Build/Products/Anytype_AnytypeTests_iphonesimulator27.0-arm64.xctestrun",
+    "-destination",
+    "platform=iOS Simulator,id=C273E9B7-621C-4F84-87CF-D61BB85671C5",
+    "-parallel-testing-enabled",
+    "NO",
+    "-only-testing:AnytypeTests/HanlinHostAdapterTests",
+    "-only-testing:AnytypeTests/HanlinHostWriteTests",
+    "-only-testing:AnytypeTests/HanlinHostReadWriteTests",
+    "-only-testing:AnytypeTests/HanlinSDKConsumerTests",
+    "-resultBundlePath",
+    "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-evidence/SDK06.xcresult"
+  ],
+  "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+  "error": "Command '['xcodebuild', 'test-without-building', '-xctestrun', '/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44246586673-1/Build/Products/Anytype_AnytypeTests_iphonesimulator27.0-arm64.xctestrun', '-destination', 'platform=iOS Simulator,id=C273E9B7-621C-4F84-87CF-D61BB85671C5', '-parallel-testing-enabled', 'NO', '-only-testing:AnytypeTests/HanlinHostAdapterTests', '-only-testing:AnytypeTests/HanlinHostWriteTests', '-only-testing:AnytypeTests/HanlinHostReadWriteTests', '-only-testing:AnytypeTests/HanlinSDKConsumerTests', '-resultBundlePath', '/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-evidence/SDK06.xcresult']' returned non-zero exit status 65.",
+  "error_type": "CalledProcessError",
+  "exit_code": 65,
+  "finished_at": "2026-11-18T06:53:52.295211+00:00",
+  "log": "/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-evidence/command-04.log",
+  "owned_group_cleanup": {
+    "child_reaped": true,
+    "kill_sent": false,
+    "pgid": 20612,
+    "term_sent": false
+  },
+  "pgid": 20612,
+  "pid": 20612,
+  "started_at": "2026-11-18T06:52:30.841308+00:00",
+  "status": "FAILED"
+}

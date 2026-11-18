@@ -1,0 +1,17 @@
+Test Suite 'AnytypeTests.xctest' passed at 2026-11-18 06:53:21.275.
+Test Suite 'Selected tests' passed at 2026-11-18 06:53:21.277.
+✔ Suite "Anytype Hanlin read-only adapter boundaries" passed after 0.457 seconds.
+✘ Test journalReadinessQueryCannotAdmitUnresolvedOrForeignScope() recorded an issue at HanlinHostReadWriteTests.swift:255:6: Caught error: .unavailable
+✘ Suite "Hanlin combined host port and unavailable-write boundaries" failed after 2.211 seconds with 1 issue.
+✘ Test reservationBlocksAllNewWritesUntilOriginalOutcomeIsKnown() recorded an issue at HanlinHostWriteTests.swift:88:6: Caught error: .unavailable
+✘ Test replayConflictAndProviderCallRemintAreRejected() recorded an issue at HanlinHostWriteTests.swift:103:6: Caught error: .unavailable
+✘ Test uncertainMayRefineToCommittedButCannotBeDowngradedOrRetargeted() recorded an issue at HanlinHostWriteTests.swift:123:6: Caught error: .unavailable
+✘ Test pendingReservationSurvivesOwnerReopenAndNeverAutoRetries() recorded an issue at HanlinHostWriteTests.swift:140:6: Caught error: .unavailable
+✘ Test partialAndUnknownRecordsFailClosedWithoutDeletion() recorded an issue at HanlinHostWriteTests.swift:155:6: Caught error: .unavailable
+✘ Test originalScopeAndExclusiveOwnerCannotBeReplacedByAnotherSceneOrSpace() recorded an issue at HanlinHostWriteTests.swift:174:6: Caught error: .unavailable
+✘ Test failedExclusiveAppendNeverAcknowledgesReservationAndPoisonsOwnerWithoutCleanup() recorded an issue at HanlinHostWriteTests.swift:197:6: Caught error: .unavailable
+✘ Test explicitRemovalErasesOnlyOriginalAccountAndLateCallbackCannotRecreateIt() recorded an issue at HanlinHostWriteTests.swift:214:6: Caught error: .unavailable
+✘ Test removalPreservesMetadataWhoseAccountOwnershipCannotBeVerified() recorded an issue at HanlinHostWriteTests.swift:241:6: Caught error: .unavailable
+✘ Suite "Hanlin host write preparation and metadata recovery" failed after 0.085 seconds with 9 issues.
+✔ Suite "Canonical Hanlin SDK consumer integration" passed after 0.099 seconds.
+✘ Test run with 63 tests in 4 suites failed after 2.871 seconds with 10 issues.
