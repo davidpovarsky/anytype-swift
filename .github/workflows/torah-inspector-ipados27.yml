@@ -29,6 +29,7 @@ on:
           - hanlin-journal-probe
           - editor-host-tests
           - wave15-core-tests
+          - wave15-component-tests
           - wave15-acceptance
       t5_component:
         description: Bounded T5 component; index-freshness also selects the fifth Apple phase
@@ -135,6 +136,14 @@ jobs:
       heart_source_run_id: ${{ inputs.source_run_id }}
       expected_app_branch: codex/chatgpt-wave15-integration-20261118
       profile: wave15-core
+
+  wave15-component-tests:
+    if: ${{ inputs.route == 'wave15-component-tests' }}
+    uses: ./.github/workflows/pinkha-sdk06-tests.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      expected_app_branch: codex/chatgpt-wave15-integration-20261118
+      profile: wave15-components
 
   hanlin-journal-probe:
     if: ${{ inputs.route == 'hanlin-journal-probe' }}

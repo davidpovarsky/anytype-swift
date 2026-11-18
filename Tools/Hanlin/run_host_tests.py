@@ -43,6 +43,8 @@ SDK_SELECTION_METHODS = {
     "nativeSelectionChangedOrderAndUnicodeAliasCannotRearmAuthority",
     "nativeSelectionTableAndNonselectionModesUseTheEmittedValue",
 }
+SDK_BUDGET_METHOD = "HanlinSDKConsumerTests/canonicalDispatcherBudgetsReachReadAndReplayOnlyReceipt"
+SDK_BUDGET_ARGUMENTS = ("1048576", "8388608")
 EDITOR_SUITE = "TorahQuoteInsertionTests"
 EDITOR_METHODS = {
     "delayedDropDoesNotRegainAuthorityOnReactivation": None,
@@ -62,9 +64,13 @@ class HostTestProfile(str, Enum):
     SDK06 = "sdk06"
     EDITOR = "editor"
     CORE = "wave15-core"
+    COMPONENTS = "wave15-components"
 
     @property
     def suites(self):
+        if self is self.COMPONENTS:
+            return {name: count for part in (self.SDK06, self.EDITOR, self.CORE)
+                    for name, count in part.suites.items()}
         if self is self.SDK06:
             return SUITES
         if self is self.EDITOR:
@@ -73,12 +79,14 @@ class HostTestProfile(str, Enum):
 
     @property
     def result_prefix(self):
-        return {self.SDK06: "sdk06", self.EDITOR: "editor-host", self.CORE: "wave15-core"}[self]
+        return {self.SDK06: "sdk06", self.EDITOR: "editor-host", self.CORE: "wave15-core",
+                self.COMPONENTS: "wave15-components"}[self]
 
     @property
     def pass_status(self):
         return {self.SDK06: "SDK06_COMPONENT_PASS", self.EDITOR: "EDITOR_COMPONENT_PASS",
-                self.CORE: "WAVE15_CORE_COMPONENT_PASS"}[self]
+                self.CORE: "WAVE15_CORE_COMPONENT_PASS",
+                self.COMPONENTS: "WAVE15_ALL_COMPONENTS_PASS"}[self]
 
 
 class EditorEvidenceReviewPending(ValueError):
@@ -113,6 +121,18 @@ def require_identity(head, expected_sha, branch, expected_branch, run_id, attemp
 def expected_methods(app, profile=HostTestProfile.SDK06):
     """Read tracked sources; editor additionally requires exact reviewed arguments."""
     methods, files = set(), {}
+    if profile is HostTestProfile.COMPONENTS:
+        for part in (HostTestProfile.SDK06, HostTestProfile.EDITOR, HostTestProfile.CORE):
+            part_methods, part_files = expected_methods(app, part)
+            if part is HostTestProfile.SDK06:
+                require(SDK_BUDGET_METHOD in part_methods, "Reviewed SDK budget method disappeared")
+                for path in part_files:
+                    validate_sdk_declarations((app / path).read_text(encoding="utf-8"), Path(path).stem)
+            require(not methods.intersection(part_methods) and not files.keys() & part_files.keys(),
+                    "Component source scopes overlap")
+            methods.update(part_methods)
+            files.update(part_files)
+        return methods, files
     tracked = subprocess.check_output(["git", "-C", str(app), "ls-files", "-z"]).decode().split("\0")
     for suite, minimum in profile.suites.items():
         candidates = [p for p in tracked if p.casefold() == f"AnytypeTests/Pinkha/{suite}.swift".casefold()]
@@ -200,7 +220,108 @@ def validate_results(summary, tree, expected, udid, profile=HostTestProfile.SDK0
         result.update(core_profile.validate_arguments(tree, expected))
         require(counts["totalTestCount"] in {41, 57},
                 "Core summary differs from its exact method or literal-case scope")
+    if profile is HostTestProfile.COMPONENTS:
+        result["components"] = validate_component_arguments(tree, expected)
+        result["actual_method_count"] = len(expected)
+        result["declared_case_count"] = sum(part["declared_case_count"] for part in result["components"].values())
+        require(counts["totalTestCount"] in {len(expected), result["declared_case_count"]},
+                "Combined summary differs from exact source-bound method or argument execution count")
     return result
+
+
+def validate_component_arguments(tree, expected):
+    """Keep original case nodes and apply each existing argument contract.
+
+    The combined raw summary is retained once. No per-component xcresult summary
+    or passed-test aggregate is invented from that total.
+    """
+    nodes = []
+
+    def visit(value):
+        if isinstance(value, dict):
+            if value.get("nodeType") == "Test Case":
+                nodes.append(value)
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(tree)
+    components, assigned = {}, set()
+    for part in (HostTestProfile.SDK06, HostTestProfile.EDITOR, HostTestProfile.CORE):
+        names = {name for name in expected if name.split("/", 1)[0] in part.suites}
+        require(names and not assigned.intersection(names), "Missing or overlapping component selection")
+        selected = [node for node in nodes if any(re.search(
+            r"(?:^|/)" + re.escape(name) + r"(?:\(|/|$)", node["nodeIdentifier"]) for name in names)]
+        require(len(selected) == len(names), "Component method has missing or duplicate actual terminals")
+        detail = dict(methods=sorted(names), actual_method_count=len(selected),
+                      actual_cases={node["nodeIdentifier"]: node["result"] for node in selected})
+        if part is HostTestProfile.SDK06:
+            detail.update(validate_sdk_arguments(selected, names))
+        elif part is HostTestProfile.EDITOR:
+            detail.update(validate_editor_arguments(selected, names))
+        elif part is HostTestProfile.CORE:
+            detail.update(core_profile.validate_arguments(selected, names))
+        components[part.value] = detail
+        assigned.update(names)
+    require(assigned == expected and len(nodes) == len(expected),
+            "Combined execution includes unassigned or repeated methods")
+    return components
+
+
+def validate_sdk_declarations(text, suite):
+    """The combined count uses the one reviewed SDK literal argument matrix."""
+    declarations = re.findall(r"@Test(?:\(([^\n]*)\))?\s+func\s+(\w+)\s*\(([^)]*)\)", text)
+    require(len(declarations) == text.count("@Test"), "Unrecognized combined SDK test declaration")
+    for attributes, name, parameters in declarations:
+        if suite + "/" + name == SDK_BUDGET_METHOD:
+            require(parameters.strip() == "budget: Int" and re.fullmatch(
+                r"\s*arguments:\s*\[\s*1_048_576\s*,\s*8\s*\*\s*1_048_576\s*\]\s*", attributes),
+                "Reviewed SDK literal budget declarations changed")
+        else:
+            require(not parameters.strip() and "arguments:" not in attributes,
+                    "Unreviewed SDK argument declaration in combined profile")
+
+
+def validate_sdk_arguments(nodes, expected):
+    """Bind SDK argument counts to the exact values seen in original Apple evidence."""
+    require(SDK_BUDGET_METHOD in expected, "Missing SDK budget selection")
+    actual, seen = {}, set()
+    for node in nodes:
+        identifier = node["nodeIdentifier"]
+        names = [name for name in expected if identifier in {
+            name + ("(budget:)" if name == SDK_BUDGET_METHOD else "()"),
+            "AnytypeTests/" + name + ("(budget:)" if name == SDK_BUDGET_METHOD else "()")}]
+        require(len(names) == 1 and names[0] not in seen, "Unknown or repeated SDK method signature")
+        name = names[0]
+        seen.add(name)
+        descendants = []
+        def descend(child):
+            require(isinstance(child, dict) and child.get("nodeType") in
+                    {"Arguments", "Repetition", "Test Case Run"} and child.get("result") == "Passed",
+                    "Unknown, failed or skipped SDK execution descendant")
+            descendants.append(child)
+            children = child.get("children", [])
+            require(isinstance(children, list), "Malformed SDK execution children")
+            for value in children:
+                descend(value)
+        children = node.get("children", [])
+        require(isinstance(children, list), "Malformed SDK method children")
+        for child in children:
+            descend(child)
+        arguments = [child for child in descendants if child["nodeType"] == "Arguments"]
+        if name == SDK_BUDGET_METHOD:
+            require(len(arguments) == 2 and {child.get("name") for child in arguments} == set(SDK_BUDGET_ARGUMENTS),
+                    "SDK budget arguments differ from the two exact source-bound executions")
+            actual[name] = [dict(node_identifier=identifier, argument_display=child["name"], result="Passed")
+                            for child in arguments]
+        else:
+            require(not arguments, "Nonparameterized SDK method gained argument execution")
+            actual[name] = [dict(node_identifier=identifier, result="Passed")]
+    require(seen == expected, "Missing actual SDK method")
+    return dict(declared_case_count=sum(len(values) for values in actual.values()), sdk_cases=actual,
+                argument_evidence="EXACT_1_MIB_AND_8_MIB_SOURCE_BOUND_VALUES_AND_ACTUAL_TERMINALS")
 
 
 def validate_editor_arguments(tree, expected):
@@ -380,7 +501,7 @@ def execute(args, receipt):
                    expected_methods=sorted(expected),
                    test_source_hashes=sources, hanlin_revision=pin["revision"], heart=installation,
                    hanlin_snapshot_sha256=sha256(evidence / "hanlin-snapshot.json"), phase="SIMULATOR_BOOT")
-    if profile is HostTestProfile.CORE:
+    if profile in {HostTestProfile.CORE, HostTestProfile.COMPONENTS}:
         receipt["core_manifest_sha256"] = sha256(core_profile.MANIFEST_PATH)
     write(evidence / "execution.json", receipt)
     flags = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED", "ENABLE_TESTABILITY=YES",
@@ -412,7 +533,8 @@ def execute(args, receipt):
     receipt["xctestrun_sha256"] = digest(configuration)
     result = evidence / {HostTestProfile.SDK06: "SDK06.xcresult",
                          HostTestProfile.EDITOR: "EditorHost.xcresult",
-                         HostTestProfile.CORE: "Wave15Core.xcresult"}[profile]
+                         HostTestProfile.CORE: "Wave15Core.xcresult",
+                         HostTestProfile.COMPONENTS: "Wave15Components.xcresult"}[profile]
     require(not result.exists(), "Refuse an existing SDK xcresult")
     receipt["phase"] = "EXECUTION"
     test = ["xcodebuild", "test-without-building", "-xctestrun", str(configuration),
@@ -441,6 +563,10 @@ def execute(args, receipt):
     if profile is HostTestProfile.CORE:
         limitation = ("Existing UIKit direction, gesture, marker and native Properties component tests; "
                       "real multi-block UI, Add Property UI, native account writes and physical devices remain NOT_RUN by this profile")
+    if profile is HostTestProfile.COMPONENTS:
+        limitation = ("SDK06, editor and UIKit/Properties component contracts on one fresh source-bound build; "
+                      "native consent/write/drag/drop UI, live provider networking, two clients and physical "
+                      "device guarantees remain NOT_RUN by this profile")
     receipt.update(status=profile.pass_status, phase="COMPLETE", release_accepted=False, limitations=[limitation])
 
 
