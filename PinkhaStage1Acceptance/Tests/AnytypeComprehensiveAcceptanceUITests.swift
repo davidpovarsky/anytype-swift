@@ -220,10 +220,10 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         XCUIDevice.shared.system.open(try XCTUnwrap(url.url))
         XCTAssertTrue(more.waitForExistence(timeout: 45), "Disposable document did not open")
         let editorIdentity = "pinkha-ui27-editor:\(fixture.spaceId):\(objectID)"
-        let editor = app.descendants(matching: .any).matching(identifier: editorIdentity).firstMatch
+        let editor = app.descendants(matching: .any).matching(NSPredicate(format: "identifier == %@", editorIdentity)).firstMatch
         XCTAssertTrue(editor.waitForExistence(timeout: 45),
                       "The mounted editor must match the requested disposable Space and object")
-        XCTAssertEqual(app.descendants(matching: .any).matching(identifier: editorIdentity).count, 1,
+        XCTAssertEqual(app.descendants(matching: .any).matching(NSPredicate(format: "identifier == %@", editorIdentity)).count, 1,
                        "Exactly one mounted editor must match the disposable Space and object")
         XCTAssertTrue(editor.isHittable, "The expected editor identity must be visible and current")
         XCTAssertTrue(more.isHittable, "Document controls must not be blocked by a previous sheet")
