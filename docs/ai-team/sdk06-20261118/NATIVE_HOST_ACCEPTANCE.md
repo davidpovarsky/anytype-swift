@@ -44,7 +44,9 @@ preceding four-suite SDK Apple run `44209702553` stopped at TEST BUILD FAILED:
 canonical Hanlin `OpenUIBlock.swift` lines 55/115 pass completion closures to
 `WKWebView.callAsyncJavaScript` that the selected Xcode 27 API does not accept.
 No SDK test cases ran. This dependency compilation failure must be resolved
-before the new native lane can execute. Source parse evidence is separate and
+before the new native lane can execute. The minimal published correction is now
+pinned at `116cc6be0654a5d11bc56ba00e0310031107ee36`; its Apple build is pending
+(see `CANONICAL_PIN_UPDATE.md`). Source parse evidence is separate and
 is not native acceptance. Selection entry and
 scene-background behavior still require their own native acceptance evidence.
 
@@ -123,7 +125,9 @@ The test cold-launches `io.anytype.app` with the exact fixture nonce and CI
 identity, `PINKHA_HANLIN_NATIVE_UI=1`, and `PINKHA_UI27_ROUTE_OBSERVATION=1`.
 It requests English app labels and portrait orientation. Actual device language
 must be observed separately if reported; this is not Hebrew UI acceptance.
-It opens the fixture's exact native object route, requires its actual mounted
+It waits for the actual SpaceHub/NewSpaceButton Home control after cold launch,
+then uses XCUIDevice.shared.system.open for the fixture's exact native object
+route, requires its actual mounted
 editor diagnostic, and taps the production Home-panel Hanlin entry while that
 editor remains mounted. It presses the existing Share context, Allow, Cancel,
 Create page, and Close actions. Every create prompt must show its exact title
