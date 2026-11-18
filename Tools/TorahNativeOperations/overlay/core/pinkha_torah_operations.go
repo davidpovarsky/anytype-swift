@@ -123,7 +123,7 @@ func (s *pinkhaTorahScope) host(ctx context.Context, spaceID string, target tora
 	}
 	// Resolve the actual native Page/Template and live block before an append
 	// can create an empty root. The host checks the target again before writing.
-	if err = torahopsobject.ValidateNativeTarget(ctx, spc, root.Id, target); err != nil {
+	if err = validatePinkhaTorahTargetBeforeHost(ctx, spc, root.Id, target); err != nil {
 		return nil, err
 	}
 	if err = s.current(ctx); err != nil {
