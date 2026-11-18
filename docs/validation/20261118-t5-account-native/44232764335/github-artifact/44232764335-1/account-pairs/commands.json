@@ -1,0 +1,302 @@
+[
+  {
+    "name": "account-controller-controls",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "/workspace/control/Tools/PinkhaNativeDerived/account_pairs/test_controls.py"
+    ],
+    "cwd": "/workspace/control/Tools/PinkhaNativeDerived/account_pairs",
+    "environment": {
+      "GOWORK": null,
+      "GOFLAGS": null,
+      "GOPROXY": null,
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": null,
+      "CGO_ENABLED": null,
+      "CGO_LDFLAGS": null,
+      "CC": "gcc",
+      "CXX": "g++"
+    }
+  },
+  {
+    "name": "old-source-preflight",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "/workspace/source/Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "--heart-source",
+      "/workspace/heart-old",
+      "--patch",
+      "/workspace/source/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch",
+      "--inventory",
+      "/workspace/source/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json",
+      "--approved-patch-sha256",
+      "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+      "--apply-approved-patch",
+      "--target",
+      "verify",
+      "--evidence",
+      "/workspace/proof/44232764335-1/account-pairs/old-source"
+    ],
+    "cwd": "/workspace/source",
+    "environment": {
+      "GOWORK": null,
+      "GOFLAGS": null,
+      "GOPROXY": null,
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": null,
+      "CGO_ENABLED": null,
+      "CGO_LDFLAGS": null,
+      "CC": "gcc",
+      "CXX": "g++"
+    }
+  },
+  {
+    "name": "old-pinned-module-download",
+    "argv": [
+      "go",
+      "mod",
+      "download"
+    ],
+    "cwd": "/workspace/heart-old",
+    "environment": {
+      "GOWORK": "/workspace/pair-work/build/old/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": null,
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "CGO_ENABLED": "1",
+      "CGO_LDFLAGS": "-L/workspace/heart-old/deps/libs/linux-amd64-musl",
+      "CC": "gcc",
+      "CXX": "g++"
+    }
+  },
+  {
+    "name": "old-resolved-modules",
+    "argv": [
+      "go",
+      "list",
+      "-m",
+      "-json",
+      "all"
+    ],
+    "cwd": "/workspace/heart-old",
+    "environment": {
+      "GOWORK": "/workspace/pair-work/build/old/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "CGO_ENABLED": "1",
+      "CGO_LDFLAGS": "-L/workspace/heart-old/deps/libs/linux-amd64-musl",
+      "CC": "gcc",
+      "CXX": "g++"
+    }
+  },
+  {
+    "name": "old-genproto-selection",
+    "argv": [
+      "go",
+      "list",
+      "-m",
+      "-json",
+      "google.golang.org/genproto"
+    ],
+    "cwd": "/workspace/heart-old",
+    "environment": {
+      "GOWORK": "/workspace/pair-work/build/old/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "CGO_ENABLED": "1",
+      "CGO_LDFLAGS": "-L/workspace/heart-old/deps/libs/linux-amd64-musl",
+      "CC": "gcc",
+      "CXX": "g++"
+    }
+  },
+  {
+    "name": "old-compile",
+    "argv": [
+      "go",
+      "test",
+      "-c",
+      "-p",
+      "1",
+      "-tags",
+      "nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg",
+      "-overlay",
+      "/workspace/pair-work/build/old/overlay.json",
+      "-ldflags",
+      "-extldflags=-static -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=d98420b1113536afd08cde6de9a5816f6d27ffff -X github.com/anyproto/anytype-heart/util/vcs.GitSummary=v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077 -X github.com/anyproto/anytype-heart/clientlibrary/service.accountPairFixtureSHA=3be9f107415ba4e4596ea6d8fd9de486f9ce75a1538e2071b3bbe96b2bd9a61f",
+      "-o",
+      "/workspace/artifacts/pinkha-r14-native-account.test",
+      "./clientlibrary/service"
+    ],
+    "cwd": "/workspace/heart-old",
+    "environment": {
+      "GOWORK": "/workspace/pair-work/build/old/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "CGO_ENABLED": "1",
+      "CGO_LDFLAGS": "-L/workspace/heart-old/deps/libs/linux-amd64-musl",
+      "CC": "gcc",
+      "CXX": "g++"
+    }
+  },
+  {
+    "name": "new-source-preflight",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "/workspace/source/Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "--heart-source",
+      "/workspace/heart-new",
+      "--patch",
+      "/workspace/source/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-15/native-heart-integration.patch",
+      "--inventory",
+      "/workspace/source/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-15/native-heart-integration.json",
+      "--approved-patch-sha256",
+      "5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2",
+      "--apply-approved-patch",
+      "--target",
+      "verify",
+      "--evidence",
+      "/workspace/proof/44232764335-1/account-pairs/new-source"
+    ],
+    "cwd": "/workspace/source",
+    "environment": {
+      "GOWORK": null,
+      "GOFLAGS": null,
+      "GOPROXY": null,
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": null,
+      "CGO_ENABLED": null,
+      "CGO_LDFLAGS": null,
+      "CC": "gcc",
+      "CXX": "g++"
+    }
+  },
+  {
+    "name": "new-pinned-module-download",
+    "argv": [
+      "go",
+      "mod",
+      "download"
+    ],
+    "cwd": "/workspace/heart-new",
+    "environment": {
+      "GOWORK": "/workspace/pair-work/build/new/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": null,
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "CGO_ENABLED": "1",
+      "CGO_LDFLAGS": "-L/workspace/heart-new/deps/libs/linux-amd64-musl",
+      "CC": "gcc",
+      "CXX": "g++"
+    }
+  },
+  {
+    "name": "new-resolved-modules",
+    "argv": [
+      "go",
+      "list",
+      "-m",
+      "-json",
+      "all"
+    ],
+    "cwd": "/workspace/heart-new",
+    "environment": {
+      "GOWORK": "/workspace/pair-work/build/new/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "CGO_ENABLED": "1",
+      "CGO_LDFLAGS": "-L/workspace/heart-new/deps/libs/linux-amd64-musl",
+      "CC": "gcc",
+      "CXX": "g++"
+    }
+  },
+  {
+    "name": "new-genproto-selection",
+    "argv": [
+      "go",
+      "list",
+      "-m",
+      "-json",
+      "google.golang.org/genproto"
+    ],
+    "cwd": "/workspace/heart-new",
+    "environment": {
+      "GOWORK": "/workspace/pair-work/build/new/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "CGO_ENABLED": "1",
+      "CGO_LDFLAGS": "-L/workspace/heart-new/deps/libs/linux-amd64-musl",
+      "CC": "gcc",
+      "CXX": "g++"
+    }
+  },
+  {
+    "name": "new-compile",
+    "argv": [
+      "go",
+      "test",
+      "-c",
+      "-p",
+      "1",
+      "-tags",
+      "nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg",
+      "-overlay",
+      "/workspace/pair-work/build/new/overlay.json",
+      "-ldflags",
+      "-extldflags=-static -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=d98420b1113536afd08cde6de9a5816f6d27ffff -X github.com/anyproto/anytype-heart/util/vcs.GitSummary=v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2 -X github.com/anyproto/anytype-heart/clientlibrary/service.accountPairFixtureSHA=3be9f107415ba4e4596ea6d8fd9de486f9ce75a1538e2071b3bbe96b2bd9a61f",
+      "-o",
+      "/workspace/artifacts/pinkha-r15-native-account.test",
+      "./clientlibrary/service"
+    ],
+    "cwd": "/workspace/heart-new",
+    "environment": {
+      "GOWORK": "/workspace/pair-work/build/new/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "CGO_ENABLED": "1",
+      "CGO_LDFLAGS": "-L/workspace/heart-new/deps/libs/linux-amd64-musl",
+      "CC": "gcc",
+      "CXX": "g++"
+    }
+  },
+  {
+    "name": "native-account-controller",
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "/workspace/control/Tools/PinkhaNativeDerived/account_pairs/run_account_pairs.py",
+      "--manifest",
+      "/workspace/proof/44232764335-1/account-pairs/manifest.json",
+      "--workspace",
+      "/workspace/pair-work/account-sequence"
+    ],
+    "cwd": "/workspace/control",
+    "environment": {
+      "GOWORK": null,
+      "GOFLAGS": null,
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "CGO_ENABLED": null,
+      "CGO_LDFLAGS": null,
+      "CC": "gcc",
+      "CXX": "g++"
+    }
+  }
+]
