@@ -3,6 +3,10 @@ name: Same source T5 Apple r14 r15 account pair
 on:
   workflow_call:
     inputs:
+      include_native_ui:
+        description: After five passing native phases reuse the retained r15 App for real Inspector UI on a separate fresh iPad
+        type: boolean
+        default: false
       include_freshness:
         description: After four passing compatibility phases run bounded host freshness in a fifth process
         type: boolean
@@ -54,6 +58,7 @@ jobs:
       - name: Check rejection controls without claiming Apple execution
         run: |
           python3 -B -m unittest discover -s Tools/PinkhaSimulatorGate -p 'test_t5_apple_pair*.py' -v > build/t5-apple-pair-proof/controller-controls.log 2>&1
+          python3 -B -m unittest discover -s Tools/PinkhaSimulatorGate -p 'test_t5_native_ui.py' -v >> build/t5-apple-pair-proof/controller-controls.log 2>&1
           cat build/t5-apple-pair-proof/controller-controls.log
       - name: Verify actual Xcode27 and create fresh owned OS27 simulators
         run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/t5-apple-pair-proof/preflight
@@ -73,12 +78,19 @@ jobs:
           HEART_R14_RUN_ID: ${{ inputs.heart_r14_run_id }}
           HEART_R15_RUN_ID: ${{ inputs.heart_r15_run_id }}
           INCLUDE_FRESHNESS: ${{ inputs.include_freshness && 'true' || 'false' }}
+          INCLUDE_NATIVE_UI: ${{ inputs.include_native_ui && 'true' || 'false' }}
         run: |
           set --
           case "$INCLUDE_FRESHNESS" in
             true) set -- --include-freshness ;;
             false) ;;
             *) echo "Explicit true/false freshness mode required" >&2; exit 1 ;;
+          esac
+          case "$INCLUDE_NATIVE_UI" in
+            true) test "$INCLUDE_FRESHNESS" = true || { echo "Native UI requires all five native phases" >&2; exit 1; }
+                  set -- "$@" --include-native-ui ;;
+            false) ;;
+            *) echo "Explicit true/false native UI mode required" >&2; exit 1 ;;
           esac
           python3 -B Tools/PinkhaSimulatorGate/run_t5_apple_pair.py \
             --app "$GITHUB_WORKSPACE" --native-source build/t5-apple-native-source \
