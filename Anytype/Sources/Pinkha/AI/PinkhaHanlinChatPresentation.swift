@@ -28,6 +28,10 @@ final class PinkhaHanlinChatPresentation {
     @ObservationIgnored private var running: Task<Void, Never>?
     @ObservationIgnored private var closed = false
     @ObservationIgnored private var receiptIDs = Set<UUID>()
+    #if DEBUG && targetEnvironment(simulator)
+    @ObservationIgnored private weak var acceptanceSource: UIViewController?
+    @ObservationIgnored private weak var acceptanceRouteOwner: SpaceHubCoordinatorViewModel?
+    #endif
 
     var canSend: Bool {
         isConfigured && !closed && !isStreaming && !draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -42,6 +46,10 @@ final class PinkhaHanlinChatPresentation {
         self.host = host
         self.session = host.session
         self.scene = presenter.viewIfLoaded?.window?.windowScene
+        #if DEBUG && targetEnvironment(simulator)
+        self.acceptanceSource = presenter
+        self.acceptanceRouteOwner = routeOwner
+        #endif
         try PinkhaHanlinAccountOwner.shared.register(self)
         host.observeInvalidation { [weak self] in self?.invalidate() }
     }
@@ -49,7 +57,13 @@ final class PinkhaHanlinChatPresentation {
     func didMount(_ controller: PinkhaHanlinChatController) {
         guard !closed else { controller.dismiss(animated: false); return }
         self.controller = controller
-        do { try host.install(self, controller: controller) }
+        do {
+            try host.install(self, controller: controller)
+            #if DEBUG && targetEnvironment(simulator)
+            PinkhaHanlinNativeAcceptanceDriver.startIfRequested(host: host, presentation: self,
+                controller: controller, source: acceptanceSource, routeOwner: acceptanceRouteOwner)
+            #endif
+        }
         catch { invalidate() }
     }
 
