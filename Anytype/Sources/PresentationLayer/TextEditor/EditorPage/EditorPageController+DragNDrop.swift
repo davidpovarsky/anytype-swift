@@ -85,13 +85,11 @@ extension EditorPageController: UICollectionViewDropDelegate {
         targetBlockId: String?
     ) {
         dividerCursorController.moveCursorView.isHidden = true
+        guard let insertSource = viewModel.makeExternalTorahDropInsertion(targetBlockId: targetBlockId) else { return }
         let providers = coordinator.items.map(\.dragItem.itemProvider)
-        TorahSourceTransfer.decode(providers) { [weak self] transfer in
+        TorahSourceTransfer.decode(providers) { transfer in
             Task { @MainActor in
-                await self?.viewModel.insertExternalTorahSource(
-                    transfer,
-                    targetBlockId: targetBlockId
-                )
+                await insertSource(transfer)
             }
         }
     }

@@ -4,8 +4,19 @@ import PinkhaKit
 /// Native Anytype association repository for the deliberately bounded
 /// single-active-writer track. Canonical data remains one native document
 /// property; full multi-client T2 remains independently blocked.
+typealias TorahAssociationWriteAuthorization = @MainActor @Sendable () throws -> Void
+
 protocol AnytypeTorahAssociationSnapshotRepository: TorahAssociationRepository {
     func listAssociationRecords(objectId: String, spaceId: String) async throws -> [TorahStoredAssociationRecord]
+
+    /// Revalidate after queued native reads, immediately before dispatching a
+    /// quote's metadata write. This does not make block and property writes atomic.
+    func addAssociation(
+        _ item: TorahAssociationItem,
+        target: TorahAssociationTarget,
+        spaceId: String,
+        authorize: @escaping TorahAssociationWriteAuthorization
+    ) async throws -> TorahAssociationItem
 }
 
 final class AnytypeTorahAssociationRepository: AnytypeTorahAssociationSnapshotRepository, @unchecked Sendable {
@@ -87,6 +98,17 @@ final class AnytypeTorahAssociationRepository: AnytypeTorahAssociationSnapshotRe
         try await mutate(.add(item), location: .init(spaceId: spaceId, target: target)) ?? item
     }
 
+    func addAssociation(
+        _ item: TorahAssociationItem,
+        target: TorahAssociationTarget,
+        spaceId: String,
+        authorize: @escaping TorahAssociationWriteAuthorization
+    ) async throws -> TorahAssociationItem {
+        try await mutate(
+            .add(item), location: .init(spaceId: spaceId, target: target), authorize: authorize
+        ) ?? item
+    }
+
     func upsertAssociation(
         _ item: TorahAssociationItem,
         target: TorahAssociationTarget,
@@ -124,7 +146,8 @@ final class AnytypeTorahAssociationRepository: AnytypeTorahAssociationSnapshotRe
 
     private func mutate(
         _ mutation: Mutation,
-        location: TorahAssociationLocation
+        location: TorahAssociationLocation,
+        authorize: TorahAssociationWriteAuthorization? = nil
     ) async throws -> TorahAssociationItem? {
         let event: @Sendable (TorahAssociationPersistenceState) -> TorahAssociationPersistenceEvent = { state in
             TorahAssociationPersistenceEvent(
@@ -137,8 +160,12 @@ final class AnytypeTorahAssociationRepository: AnytypeTorahAssociationSnapshotRe
 
         do {
             let result = try await coordinator.enqueue(key: documentKey(for: location)) { [self] in
+                try Task.checkCancellation()
+                try await authorize?()
                 await statusCenter.publish(event(.saving))
                 let loaded = try await load(location: location, requiresWrite: true)
+                try Task.checkCancellation()
+                try await authorize?()
                 let change = try apply(mutation, to: loaded.payload, at: location)
                 let encoded = try codec.encodeCanonicalDocument(change.payload)
                 guard let encodedString = String(data: encoded, encoding: .utf8) else {

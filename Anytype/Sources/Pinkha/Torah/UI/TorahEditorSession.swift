@@ -74,9 +74,22 @@ enum TorahAssociationDisplayFormatter {
     }
 }
 
+typealias TorahSourceInsertionAction = @MainActor @Sendable (TorahSourceTransfer) async -> Void
+
 @MainActor
 @Observable
 final class TorahEditorSession {
+    @MainActor
+    private final class DropClaim {
+        var used = false
+    }
+
+    private struct InsertionContext: Sendable {
+        let documentEpoch: UInt
+        let inspectorEpoch: UInt?
+        let selectionID: String?
+    }
+
     enum PresentationHost: Equatable {
         case editor
         case properties
@@ -189,7 +202,8 @@ final class TorahEditorSession {
     private let associations: any AnytypeTorahAssociationSnapshotRepository
     private let notesService: AnytypeTorahNotesService
     private var insertionHandler: ((TorahSourceTransfer, String?) async throws -> String)?
-    private var claimedDropIDs = Set<String>()
+    private var documentActionEpoch: UInt = 0
+    private var insertionEditingPolicy: () -> Bool = { true }
     private var openObjectHandler: ((String, String?) -> Void)?
     private var associationSnapshotHandler: ((Set<String>) -> Void)?
     private var associationSnapshotEpoch: UInt = 0
@@ -289,6 +303,7 @@ final class TorahEditorSession {
     var hostActions: TorahInspectorHostActions {
         let actionEpoch = noteActionEpoch
         let inspectorSelectionID = selection?.id
+        let insertSource = makeInspectorSourceInsertionAction()
         return TorahInspectorHostActions(
             onClose: { [weak self] in
                 guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
@@ -296,7 +311,8 @@ final class TorahEditorSession {
             },
             onInsertSegment: { [weak self] transfer in
                 Task { @MainActor in
-                    await self?.insert(transfer, targetBlockId: nil)
+                    guard let self, self.isCurrentNoteAction(epoch: actionEpoch, selectionID: inspectorSelectionID) else { return }
+                    await insertSource(transfer)
                 }
             },
             onOpenInNewTab: nil,
@@ -337,6 +353,10 @@ final class TorahEditorSession {
         insertionHandler = handler
     }
 
+    func installInsertionEditingPolicy(_ policy: @escaping () -> Bool) {
+        insertionEditingPolicy = policy
+    }
+
     func installOpenObjectHandler(_ handler: @escaping (String, String?) -> Void) {
         openObjectHandler = handler
     }
@@ -357,6 +377,7 @@ final class TorahEditorSession {
 
     func deactivateDocument() {
         isActiveDocument = false
+        documentActionEpoch &+= 1
         noteActionEpoch &+= 1
         repository.invalidateRelatedDocuments()
         searchRequestEpoch &+= 1
@@ -800,19 +821,54 @@ final class TorahEditorSession {
         }
     }
 
-    func insertExternalDrop(_ transfer: TorahSourceTransfer, targetBlockId: String?) async {
-        let dropID = "\(transfer.id):\(transfer.retrievedAt.timeIntervalSinceReferenceDate)"
-        guard claimedDropIDs.insert(dropID).inserted else { return }
-        await insert(transfer, targetBlockId: targetBlockId)
+    /// Capture this action before loading an asynchronous item provider. A new
+    /// drop gets a new claim, so a later deliberate drop of the same text works.
+    func makeExternalDropInsertionAction(targetBlockId: String?) -> TorahSourceInsertionAction {
+        let context = InsertionContext(documentEpoch: documentActionEpoch, inspectorEpoch: nil, selectionID: nil)
+        let authorize = insertionAuthorization(context: context)
+        let claim = DropClaim()
+        return { [weak self] transfer in
+            guard let self, !claim.used else { return }
+            claim.used = true
+            await self.insert(transfer, targetBlockId: targetBlockId, context: context, authorize: authorize)
+        }
     }
 
-    private func insert(_ transfer: TorahSourceTransfer, targetBlockId: String?) async {
-        guard let insertionHandler else {
-            message = SessionError.insertionUnavailable.localizedDescription
-            return
+    func makeInspectorSourceInsertionAction() -> TorahSourceInsertionAction {
+        let context = InsertionContext(
+            documentEpoch: documentActionEpoch, inspectorEpoch: noteActionEpoch, selectionID: selection?.id
+        )
+        let authorize = insertionAuthorization(context: context)
+        return { [weak self] transfer in
+            await self?.insert(transfer, targetBlockId: nil, context: context, authorize: authorize)
         }
+    }
 
+    private func isCurrentInsertion(_ context: InsertionContext) -> Bool {
+        guard isActiveDocument, documentActionEpoch == context.documentEpoch else { return false }
+        guard let inspectorEpoch = context.inspectorEpoch else { return true }
+        return noteActionEpoch == inspectorEpoch && selection?.id == context.selectionID
+    }
+
+    private func insertionAuthorization(context: InsertionContext) -> TorahAssociationWriteAuthorization {
+        return { [weak self] in
+            try Task.checkCancellation()
+            guard let self, self.isCurrentInsertion(context) else { throw CancellationError() }
+            guard self.insertionEditingPolicy() else {
+                throw TorahAssociationRepositoryError.permissionDenied
+            }
+        }
+    }
+
+    private func insert(
+        _ transfer: TorahSourceTransfer,
+        targetBlockId: String?,
+        context: InsertionContext,
+        authorize: @escaping TorahAssociationWriteAuthorization
+    ) async {
         do {
+            try authorize()
+            guard let insertionHandler else { throw SessionError.insertionUnavailable }
             persistenceState = .waiting
             let blockId = try await insertionHandler(transfer, targetBlockId)
             let item = TorahAssociationItem(
@@ -834,19 +890,28 @@ final class TorahEditorSession {
                 ]
             )
             do {
+                // The block may already be committed. Revalidate before the
+                // separate metadata write; never delete user text as rollback.
+                try authorize()
                 persistenceState = .saving
                 _ = try await associations.addAssociation(
                     item,
                     target: .block(objectId: objectId, blockId: blockId),
-                    spaceId: spaceId
+                    spaceId: spaceId,
+                    authorize: authorize
                 )
+                guard isCurrentInsertion(context) else { return }
                 persistenceState = .saved
                 await refreshAssociationSnapshot()
             } catch {
+                guard isCurrentInsertion(context) else { return }
                 persistenceState = .uncertain(SessionError.partialInsertion.localizedDescription)
                 message = SessionError.partialInsertion.localizedDescription
             }
+        } catch is CancellationError {
+            // A retired action must not replace the current document's status.
         } catch {
+            guard isCurrentInsertion(context) else { return }
             persistenceState = .error(error.localizedDescription)
             message = error.localizedDescription
         }

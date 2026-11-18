@@ -1,0 +1,81 @@
+{
+  "status": "SWIFT_SYNTAX_CHECK_PASS_APPLE_NOT_RUN",
+  "base_source": "9f600ac63041543b1093a2aea34fb6529c4e6fa3",
+  "checks": [
+    {
+      "file": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+      "swift_parse_exit": 0,
+      "stderr": "",
+      "sha256": "9eb01b928a2a397540ea7e1010e1170d07b8d80cce59cd74f1601f68ea2d8cef"
+    },
+    {
+      "file": "AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift",
+      "swift_parse_exit": 0,
+      "stderr": "",
+      "sha256": "77490f5445edfc93519e9d7553b0b605c43a7f15d7efe3e0c21251a3a7de98c2"
+    },
+    {
+      "file": "AnyTypeTests/Pinkha/TorahSearchLayoutTests.swift",
+      "swift_parse_exit": 0,
+      "stderr": "",
+      "sha256": "ddae4514f2d903cdb05c89c388de2af6913d09be06ee8d23ed222e6e96f0e8d8"
+    },
+    {
+      "file": "Anytype/Sources/Pinkha/Torah/Storage/AnytypeTorahAssociationRepository.swift",
+      "swift_parse_exit": 0,
+      "stderr": "",
+      "sha256": "7b04bc26a5b2e7aed3f34b1986348731fcaa18a5cce6499c141f450add1b6f3e"
+    },
+    {
+      "file": "Anytype/Sources/Pinkha/Torah/Storage/TorahAssociationMutationCoordinator.swift",
+      "swift_parse_exit": 0,
+      "stderr": "",
+      "sha256": "ca34430482480d8d5ed340f90d7bcc996a03c39108590fa10e44ef4b55f222c0"
+    },
+    {
+      "file": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+      "swift_parse_exit": 0,
+      "stderr": "",
+      "sha256": "db85203d1a6d21d9db9c29b71aac53e24858a7bcbcef6b2bb0880f25fdf16725"
+    },
+    {
+      "file": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController+DragNDrop.swift",
+      "swift_parse_exit": 0,
+      "stderr": "",
+      "sha256": "4336c31b6fa2191c9953bd599ced57598caf72502d25381d848db03c6765ac49"
+    },
+    {
+      "file": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
+      "swift_parse_exit": 0,
+      "stderr": "",
+      "sha256": "f6aca68e3c59b0657e1d1093f1f551c20de58f1340ad463e6fae97e28a5d49e5"
+    },
+    {
+      "file": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModelProtocol.swift",
+      "swift_parse_exit": 0,
+      "stderr": "",
+      "sha256": "ae67cbb1b731318a7032951a9d7a8e31c7d59649bf25a03073d5ce600ffd3f9a"
+    },
+    {
+      "file": "AnyTypeTests/Pinkha/TorahQuoteInsertionTests.swift",
+      "swift_parse_exit": 0,
+      "stderr": "",
+      "sha256": "008199fb7c372cb9dc5f381a48ce6b9d17502e35227db49e9bc55fb704186961"
+    },
+    {
+      "kind": "diff-check",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "declared_swift_test_functions": 10,
+  "declared_swift_test_cases_including_arguments": 12,
+  "actual_apple_test_executions": 0,
+  "independent_source_review": "T5 agent read production paths, probes and new tests; no blocking finding. Does not replace compiler/runtime testing.",
+  "limitations": [
+    "Swift -frontend -parse does not typecheck imported Apple modules or execute tests.",
+    "Block creation and metadata commit remain separate native writes. A completed text write is preserved if later metadata authorization fails.",
+    "Current native engine remains the existing bounded writer implementation; this change does not establish multi-client T2."
+  ]
+}

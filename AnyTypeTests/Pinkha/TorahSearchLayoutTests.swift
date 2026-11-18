@@ -628,6 +628,16 @@ private actor TorahSearchLayoutRepository: AnytypeTorahAssociationSnapshotReposi
         return item
     }
 
+    func addAssociation(
+        _ item: TorahAssociationItem,
+        target: TorahAssociationTarget,
+        spaceId: String,
+        authorize: @escaping TorahAssociationWriteAuthorization
+    ) async throws -> TorahAssociationItem {
+        try await authorize()
+        return try await addAssociation(item, target: target, spaceId: spaceId)
+    }
+
     func upsertAssociation(_ item: TorahAssociationItem, target: TorahAssociationTarget, spaceId: String) async throws -> TorahAssociationItem {
         records.removeAll { $0.item.id == item.id }
         return try await addAssociation(item, target: target, spaceId: spaceId)

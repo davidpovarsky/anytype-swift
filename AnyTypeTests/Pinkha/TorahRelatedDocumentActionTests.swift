@@ -309,6 +309,16 @@ private actor T5ActionAssociationProbe: AnytypeTorahAssociationSnapshotRepositor
         throw TorahAssociationRepositoryError.backendFailure("Unexpected add")
     }
 
+    func addAssociation(
+        _ item: TorahAssociationItem,
+        target: TorahAssociationTarget,
+        spaceId: String,
+        authorize: @escaping TorahAssociationWriteAuthorization
+    ) async throws -> TorahAssociationItem {
+        try await authorize()
+        return try await addAssociation(item, target: target, spaceId: spaceId)
+    }
+
     func upsertAssociation(_ item: TorahAssociationItem, target: TorahAssociationTarget, spaceId: String) async throws -> TorahAssociationItem {
         throw TorahAssociationRepositoryError.backendFailure("Unexpected upsert")
     }

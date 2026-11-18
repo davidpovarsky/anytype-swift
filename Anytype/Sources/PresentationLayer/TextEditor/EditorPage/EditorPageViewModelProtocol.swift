@@ -41,5 +41,5 @@ protocol EditorPageViewModelProtocol: AnyObject {
     func onPublishingBannerTap()
 
     func torahDropTargetBlockId(at indexPath: IndexPath?) -> String?
-    func insertExternalTorahSource(_ transfer: TorahSourceTransfer, targetBlockId: String?) async
+    func makeExternalTorahDropInsertion(targetBlockId: String?) -> TorahSourceInsertionAction?
 }

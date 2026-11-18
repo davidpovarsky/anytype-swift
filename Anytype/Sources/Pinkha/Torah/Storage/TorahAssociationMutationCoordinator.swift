@@ -31,6 +31,7 @@ actor TorahAssociationMutationCoordinator {
             if let predecessor {
                 await predecessor.value
             }
+            try Task.checkCancellation()
             return try await operation()
         }
         let completion = Task<Void, Never> {
@@ -38,7 +39,11 @@ actor TorahAssociationMutationCoordinator {
         }
         tails[key] = Tail(token: token, task: completion)
 
-        let result = await work.result
+        let result = await withTaskCancellationHandler {
+            await work.result
+        } onCancel: {
+            work.cancel()
+        }
         if tails[key]?.token == token {
             tails.removeValue(forKey: key)
         }

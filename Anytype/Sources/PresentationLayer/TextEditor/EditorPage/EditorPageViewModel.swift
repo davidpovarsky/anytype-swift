@@ -1,3 +1,4 @@
+import PinkhaKit
 import Foundation
 import SwiftUI
 @preconcurrency import Combine
@@ -104,6 +105,12 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
         self.output = output
         self.actionHandler = actionHandler
 
+        torahSession?.installInsertionEditingPolicy { [weak document] in
+            guard let document else { return false }
+            return document.permissions.canEditBlocks
+                && document.permissions.canEditRelationValues
+                && document.details?.isReadonly == false
+        }
         torahSession?.installInsertionHandler { [weak self] transfer, targetBlockId in
             guard let self else { throw CancellationError() }
             return try await self.insertTorahSource(transfer, targetBlockId: targetBlockId)
@@ -130,14 +137,19 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
             .first
     }
 
-    func insertExternalTorahSource(_ transfer: TorahSourceTransfer, targetBlockId: String?) async {
-        await torahSession?.insertExternalDrop(transfer, targetBlockId: targetBlockId)
+    func makeExternalTorahDropInsertion(targetBlockId: String?) -> TorahSourceInsertionAction? {
+        torahSession?.makeExternalDropInsertionAction(targetBlockId: targetBlockId)
     }
 
     private func insertTorahSource(
         _ transfer: TorahSourceTransfer,
         targetBlockId: String?
     ) async throws -> String {
+        try Task.checkCancellation()
+        guard document.permissions.canEditBlocks, document.permissions.canEditRelationValues,
+              document.details?.isReadonly == false else {
+            throw TorahAssociationRepositoryError.permissionDenied
+        }
         let text = TorahQuoteContentPolicy.editableBody(for: transfer)
         let info = BlockInformation.empty(
             content: .text(.plain(text, contentType: .quote))
