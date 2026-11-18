@@ -13,6 +13,7 @@ import platform
 import plistlib
 import re
 import subprocess
+import sys
 
 import run_ui27 as shared
 import hanlin_acceptance_evidence as hanlin
@@ -259,7 +260,11 @@ def source_methods(app, selection):
                 "Selected real UI method absent from tracked source: " + method)
 
 
-def execute(args, receipt):
+class SelectionFailure(ValueError):
+    """The selected XCTest phase failed; the batch still verifies its raw result."""
+
+
+def execute(args, receipt, *, build_context=None):
     require(platform.system() == "Darwin", "Actual Apple host required")
     app, evidence, derived = args.app.resolve(), args.evidence.resolve(), args.derived.resolve()
     selection = plan(args.lane, args.device, args.language)
@@ -275,8 +280,11 @@ def execute(args, receipt):
             and preflight.get("run_id") == os.environ["GITHUB_RUN_ID"], "OS27 preflight is not from this source/run")
     selected = preflight["selected"][args.device]
     udid = selected["udid"]
-    require(selected["name"] == "Pinkha-UI27-" + os.environ["GITHUB_RUN_ID"] + "-" + args.device,
-            "Refuse a non-disposable simulator")
+    require(build_context is None or selected == build_context.device,
+            "Same-job lane does not use its newly created simulator")
+    expected_name = ("Pinkha-UI27-" + os.environ["GITHUB_RUN_ID"] + "-" + args.device
+                     if build_context is None else build_context.device["name"])
+    require(selected["name"] == expected_name, "Refuse a non-disposable simulator")
     installation = json.loads((evidence / "heart/heart-installation.json").read_text())
     require(installation.get("status") == "PASS" and installation.get("app_source_sha") == head
             and installation.get("marker") == shared.MARKER, "Exact native runtime was not installed")
@@ -289,6 +297,8 @@ def execute(args, receipt):
     shared.write(evidence / "execution.json", receipt)
     shared.command(["xcrun", "simctl", "boot", udid], app, evidence)
     shared.command(["xcrun", "simctl", "bootstatus", udid, "-b"], app, evidence)
+    if build_context is not None:
+        build_context.confirm_empty_container(udid, evidence)
     observed_device_language = None
     if args.lane == "editor":
         receipt["phase"] = "DEVICE_LANGUAGE_CONFIGURATION"
@@ -306,7 +316,8 @@ def execute(args, receipt):
         shared.write(evidence / "device-language-observation.json",
                      dict(command_exit_code=device_language.returncode, observed=device_language.stdout,
                           error=device_language.stderr, acceptance=False))
-    shared.prepare_source_cache(app, derived)
+    if build_context is None:
+        shared.prepare_source_cache(app, derived)
     flags = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED", "ENABLE_TESTABILITY=YES",
              "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-",
              "CODE_SIGNING_ALLOWED=YES", "CODE_SIGNING_REQUIRED=YES", "PROVISIONING_PROFILE_SPECIFIER="]
@@ -316,8 +327,13 @@ def execute(args, receipt):
     native_suite = LANES[args.lane]["preparation"].split("/")[0]
     base = ["xcodebuild", "build-for-testing", "-configuration", configuration_name,
             "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO"]
-    shared.command([*base, "-project", "Anytype.xcodeproj", "-scheme", "Anytype",
-                    "-derivedDataPath", str(derived), "-only-testing:AnytypeTests/" + native_suite, *flags], app, evidence)
+    if build_context is None:
+        shared.command([*base, "-project", "Anytype.xcodeproj", "-scheme", "Anytype",
+                        "-derivedDataPath", str(derived), "-only-testing:AnytypeTests/" + native_suite, *flags], app, evidence)
+    else:
+        require(derived == build_context.derived, "Same-job native product directory differs")
+        build_context.verify(app, head, identity, flags, configuration_name)
+        receipt["build_mode"] = "SAME_JOB_FROZEN_BUILD"
     receipt.update(native_build_succeeded=True, native_build_flags=flags)
     built = derived / "Build/Products" / (configuration_name + "-iphonesimulator/Anytype.app")
     shared.verify_signed_simulator(built, evidence)
@@ -334,16 +350,20 @@ def execute(args, receipt):
     native_configuration = shared.test_configuration(derived / "Build/Products", "AnytypeTests")
     receipt["phase"] = "PREPARATION"
     native_environment = preparation_environment(args.lane, head, receipt["run_id"], receipt["run_attempt"])
-    preparation = shared.run_selection(app, native_configuration, "AnytypeTests", udid,
+    run_selection = shared.run_selection if build_context is None else build_context.run_selection
+    preparation = run_selection(app, native_configuration, "AnytypeTests", udid,
         [LANES[args.lane]["preparation"]], native_environment, evidence / "preparation", "prepare")
     receipt["preparation"] = preparation
     shared.write(evidence / "execution.json", receipt)
-    require(preparation["status"] == "PASS", "The actual native fixture did not pass")
+    if preparation["status"] != "PASS":
+        raise SelectionFailure("The actual native fixture did not pass")
     container = Path(subprocess.check_output(["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "data"], text=True).strip())
     raw_fixture = (container / "Library/Application Support" / LANES[args.lane]["fixture"]).read_text(encoding="utf-8")
     if hanlin_lane is not None:
         require(len(raw_fixture.encode("utf-8")) <= 16384, "Oversized native SDK fixture")
     fixture = json.loads(raw_fixture)
+    if build_context is not None:
+        build_context.observe_fixture(fixture, container, evidence)
     if hanlin_lane is not None:
         environment = hanlin_lane[0].fixture_environment(fixture, head, receipt["run_id"], receipt["run_attempt"],
                                                datetime.now(timezone.utc).timestamp(), raw_fixture)
@@ -352,12 +372,17 @@ def execute(args, receipt):
     if args.lane == "canonical-properties":
         environment.update(property_environment(evidence / "preparation", fixture["spaceId"]))
     shared.write(evidence / "fixture-ids.json", fixture)
-    project = shared.ui_only_project(app)
     ui_derived = derived.with_name(derived.name + "-ui")
     receipt["phase"] = "UI_BUILD"
     shared.write(evidence / "execution.json", receipt)
-    shared.command([*base, "-project", str(project), "-scheme", "PinkhaPrebuiltUI", "-derivedDataPath", str(ui_derived),
-                    *["-only-testing:PinkhaStage1AcceptanceUITests/" + method for method in selection["methods"]], *flags], app, evidence)
+    if build_context is None:
+        project = shared.ui_only_project(app)
+        shared.command([*base, "-project", str(project), "-scheme", "PinkhaPrebuiltUI", "-derivedDataPath", str(ui_derived),
+                        *["-only-testing:PinkhaStage1AcceptanceUITests/" + method for method in selection["methods"]], *flags], app, evidence)
+    else:
+        require(ui_derived == build_context.ui_derived, "Same-job UI runner directory differs")
+        build_context.verify(app, head, identity, flags, configuration_name)
+        receipt["ui_build_mode"] = "SAME_JOB_FROZEN_BUILD"
     receipt["phase"] = "UI_RUNTIME_PREPARATION"
     shared.write(evidence / "execution.json", receipt)
     live = shared.live_runtime(udid, evidence, built, args.language, source_identity={
@@ -373,7 +398,7 @@ def execute(args, receipt):
     receipt["phase"] = "UI"
     shared.write(evidence / "execution.json", receipt)
     try:
-        result = shared.run_selection(app, configuration, "PinkhaStage1AcceptanceUITests", udid,
+        result = run_selection(app, configuration, "PinkhaStage1AcceptanceUITests", udid,
             selection["methods"], environment, evidence / "ui", "wave15-" + args.lane, built)
         receipt["ui"] = result
     finally:
@@ -383,8 +408,8 @@ def execute(args, receipt):
             if result_path.is_file():
                 # Preserve failure receipts too; copying a label does not qualify it.
                 (evidence / hanlin_lane[2]).write_bytes(result_path.read_bytes())
-    require(result["status"] == "PASS" and result["passed"] == selection["expected_ui_executions"],
-            "Actual named UI selection did not pass")
+    if result["status"] != "PASS" or result["passed"] != selection["expected_ui_executions"]:
+        raise SelectionFailure("Actual named UI selection did not pass")
     if hanlin_lane is not None:
         native_result = json.loads((evidence / hanlin_lane[2]).read_text(encoding="utf-8"))
         receipt[hanlin_lane[3]] = hanlin_lane[0].validate_result(native_result, fixture, head,
@@ -410,10 +435,13 @@ def main():
     parser.add_argument("--app", type=Path, required=True)
     parser.add_argument("--evidence", type=Path, required=True)
     parser.add_argument("--derived", type=Path, required=True)
-    parser.add_argument("--lane", choices=list(LANES), required=True)
+    parser.add_argument("--lane", choices=[*LANES, "remaining-release"], required=True)
     parser.add_argument("--device", choices=["iphone", "ipad"], required=True)
     parser.add_argument("--language", choices=["en", "he"], required=True)
     args = parser.parse_args()
+    if args.lane == "remaining-release":
+        import wave15_batch
+        return wave15_batch.run(args, sys.modules[__name__])
     args.evidence.mkdir(parents=True, exist_ok=True)
     require(not (args.evidence / "execution.json").exists(), "Refuse stale execution evidence")
     receipt = dict(status="FAIL", phase="PREFLIGHT", full_matrix_accepted=False, release_accepted=False,

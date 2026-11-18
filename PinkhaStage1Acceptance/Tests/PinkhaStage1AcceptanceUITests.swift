@@ -45,18 +45,18 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
             for name in fixture.nativeProperties { XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 15)) }
             XCTAssertFalse(app.buttons["torah-property-ref"].exists, "The old display-only Properties row must not replace the original native row")
             XCTAssertFalse(app.staticTexts["הקשר תורני"].exists)
-            try selectNativeProperty("מקור/ות", query: fixture.sourceQuery)
+            try selectNativeProperty("מקור/ות", query: fixture.sourceQuery, expectedLabel: fixture.sourceLabel)
             expectNativeValue("מקור/ות", label: fixture.sourceLabel)
-            try selectNativeProperty("נושא", query: fixture.topicQuery)
+            try selectNativeProperty("נושא", query: fixture.topicQuery, expectedLabel: fixture.topicLabel)
             expectNativeValue("נושא", label: fixture.topicLabel)
-            try selectNativeProperty("מילה / ערך", query: fixture.wordQuery)
-            let wordLabel = try nativeValueText("מילה / ערך")
+            let wordLabel = try selectNativeProperty("מילה / ערך", query: fixture.wordQuery)
+            expectNativeValue("מילה / ערך", label: wordLabel)
             screenshot("native-properties-\(role)-three-values")
             app.terminate()
             try openProperties(id)
             expectNativeValue("מקור/ות", label: fixture.sourceLabel)
             expectNativeValue("נושא", label: fixture.topicLabel)
-            XCTAssertEqual(try nativeValueText("מילה / ערך"), wordLabel)
+            expectNativeValue("מילה / ערך", label: wordLabel)
             XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "providerID")).firstMatch.exists)
             screenshot("native-properties-\(role)-relaunch")
             app.terminate()
@@ -132,9 +132,9 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
                 XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 20))
             }
             screenshot("universal-empty-native-rows-" + role)
-            try selectNativeProperty("מקור/ות", query: fixture.sourceQuery)
-            try selectNativeProperty("נושא", query: fixture.topicQuery)
-            try selectNativeProperty("מילה / ערך", query: fixture.wordQuery)
+            try selectNativeProperty("מקור/ות", query: fixture.sourceQuery, expectedLabel: fixture.sourceLabel)
+            try selectNativeProperty("נושא", query: fixture.topicQuery, expectedLabel: fixture.topicLabel)
+            let wordLabel = try selectNativeProperty("מילה / ערך", query: fixture.wordQuery)
             screenshot("universal-canonical-values-" + role)
             let tree = XCTAttachment(string: app.debugDescription)
             tree.name = "universal-property-accessibility-" + role
@@ -142,6 +142,8 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
             app.terminate()
             try openProperties(id)
             expectNativeValue("מקור/ות", label: fixture.sourceLabel)
+            expectNativeValue("נושא", label: fixture.topicLabel)
+            expectNativeValue("מילה / ערך", label: wordLabel)
             screenshot("universal-offline-reopen-" + role)
             app.terminate()
             try open(id)
@@ -152,13 +154,24 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
             app.terminate()
         }
         for role in ["page", "note", "custom"] {
-            try openProperties(try XCTUnwrap(fixture.universalTypes[role]), expectsSources: false)
+            let typeID = try XCTUnwrap(fixture.universalTypes[role])
+            try openProperties(typeID, expectsSources: false)
             let add = app.buttons["torah-type-add-property"].firstMatch
-            XCTAssertTrue(add.waitForExistence(timeout: 20)); add.tap()
+            XCTAssertTrue(add.waitForExistence(timeout: 20))
+            for name in fixture.nativeProperties {
+                XCTAssertFalse(propertyTitle(name).exists,
+                               "Adding a property to the earlier document must not also configure its Type")
+            }
+            add.tap()
             for name in fixture.nativeProperties { XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 20)) }
             screenshot("universal-native-Type-picker-" + role)
             propertyTitle("מקור/ות").tap()
             XCTAssertTrue(add.waitForExistence(timeout: 20))
+            app.terminate()
+            try openProperties(typeID)
+            XCTAssertTrue(propertyTitle("מקור/ות").waitForExistence(timeout: 20),
+                          "The Type source property must survive a real cold reopen")
+            screenshot("universal-native-Type-source-persisted-" + role)
             app.terminate()
         }
         try open(fixture.universalSetId)
@@ -193,8 +206,9 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
     }
 
     func testRemainingUniversalTypePickersAndMixedSet() throws {
-        // All three foreground Type picker phases passed in run 42817488590.
-        // Continue with the remaining Set gates only.
+        // The historical method name is retained for the exact selector contract.
+        // This method proves Set columns/membership only. Current Type picker and
+        // persistence assertions run in testUniversalPageNoteCustomPropertiesAndMixedSet.
         // The accepted real native fixture has already linked these P1 objects
         // through the canonical repository. Do not repeat passed P2 UI flows.
         try open(fixture.universalSetId)
@@ -238,22 +252,6 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         setTable.descendants(matching: .any).matching(NSPredicate(format: "label == %@", label)).firstMatch
     }
 
-    private func nativeRowValues(_ name: String) -> [XCUIElement] {
-        let title = propertyTitle(name)
-        guard title.exists else { return [] }
-        let titleFrame = title.frame
-        return app.descendants(matching: .any).matching(NSPredicate(
-            format: "elementType == %d OR elementType == %d",
-            XCUIElement.ElementType.button.rawValue, XCUIElement.ElementType.staticText.rawValue
-        )).allElementsBoundByIndex.compactMap { element -> (XCUIElement, CGRect)? in
-            let label = element.label
-            guard !label.isEmpty, label != name, label != "Add", label != "x24/More" else { return nil }
-            let frame = element.frame
-            guard abs(frame.midY - titleFrame.midY) < 22, frame.minX >= titleFrame.maxX else { return nil }
-            return (element, frame)
-        }.sorted { $0.1.minX < $1.1.minX }.map { $0.0 }
-    }
-
     private func expectNativeValue(_ name: String, label: String, file: StaticString = #filePath, line: UInt = #line) {
         let deadline = Date().addingTimeInterval(20)
         repeat {
@@ -264,7 +262,7 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
                     XCUIElement.ElementType.button.rawValue, XCUIElement.ElementType.staticText.rawValue, label
                 )).allElementsBoundByIndex
                 if candidates.contains(where: {
-                    abs($0.frame.midY - title.frame.midY) < 22 && $0.frame.minX >= title.frame.maxX
+                    $0.isHittable && abs($0.frame.midY - title.frame.midY) < 22 && $0.frame.minX >= title.frame.maxX
                 }) { return }
             }
             Thread.sleep(forTimeInterval: 0.2)
@@ -391,7 +389,8 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         )).firstMatch
     }
 
-    private func selectNativeProperty(_ name: String, query: String) throws {
+    @discardableResult
+    private func selectNativeProperty(_ name: String, query: String, expectedLabel: String? = nil) throws -> String {
         let title = propertyTitle(name)
         XCTAssertTrue(title.exists)
         // The original row has a name Menu and a separate value Button. Tap the
@@ -409,6 +408,8 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         // The canonical session can preserve a search between property sheets.
         // Clear actual content while leaving its placeholder untouched.
         setPropertySearch(search, previous: previous == search.placeholderValue ? "" : previous, text: query)
+        XCTAssertFalse(app.buttons["Remove link"].firstMatch.exists,
+                       "This fixed-scope fixture must begin without an existing association")
         print("Native Set fixture picker: property=\(name) query=\(query) actual=\(search.value ?? "nil")")
         let link = app.buttons["Link to document"].firstMatch
         guard link.waitForExistence(timeout: 45) else {
@@ -418,6 +419,12 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         }
         link.tap()
         XCTAssertTrue(app.buttons["Remove link"].firstMatch.waitForExistence(timeout: 30))
+        // Read the actual selected canonical item before dismissing its picker.
+        // A word's localized label may be a lexicon description, not its query.
+        // The property row is checked against this independent expectation after
+        // a new App process loads the saved native value.
+        let selectedLabel = try selectedCanonicalLabel(property: name)
+        if let expectedLabel { XCTAssertEqual(selectedLabel, expectedLabel) }
         // The canonical mutation has completed. Cold-open the same actual
         // fixture on phone or pad and verify its persisted native property.
         // Interactive sheet dismissal remains a separate acceptance criterion.
@@ -425,6 +432,31 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         app.terminate()
         try openProperties(objectID)
         XCTAssertTrue(propertyTitle(name).waitForExistence(timeout: 15))
+        expectNativeValue(name, label: selectedLabel)
+        return selectedLabel
+    }
+
+    private func selectedCanonicalLabel(property name: String) throws -> String {
+        let preview = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier == %@", "torah-existing-associations-strip"
+        )).firstMatch
+        XCTAssertTrue(preview.waitForExistence(timeout: 15))
+        let remove = preview.buttons.matching(NSPredicate(format: "label == %@", "Remove link"))
+        XCTAssertEqual(remove.count, 1, "The fixed native scope must contain exactly the newly selected canonical item")
+        let chips = preview.buttons.matching(NSPredicate(format: "label != %@", "Remove link"))
+        XCTAssertEqual(chips.count, 1, "Read the selected canonical item, not a result row or a property placeholder")
+        guard remove.count == 1, chips.count == 1 else {
+            throw NSError(domain: "NativeCanonicalSelectionAmbiguous", code: 1)
+        }
+        let chip = chips.firstMatch
+        let label = chip.label.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !label.isEmpty, !["Select options", "Add", name].contains(label),
+              !label.contains("torah1|"), !chip.frame.isEmpty,
+              preview.frame.intersects(chip.frame) else {
+            XCTFail("The selected canonical item has no visible human label")
+            throw NSError(domain: "NativeCanonicalSelectionLabelMissing", code: 1)
+        }
+        return label
     }
 
     private func screenshot(_ name: String) {
@@ -432,18 +464,6 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         attachment.name = name; attachment.lifetime = .keepAlways; add(attachment)
     }
 
-    private func nativeValueText(_ name: String) throws -> String {
-        let deadline = Date().addingTimeInterval(20)
-        repeat {
-            let values = nativeRowValues(name)
-            if let value = values.first?.label {
-                XCTAssertFalse(value.contains("torah1|")); return value
-            }
-            Thread.sleep(forTimeInterval: 0.1)
-        } while Date() < deadline
-        XCTFail("The original native Property row has no human value: \(name)")
-        throw NSError(domain: "NativeDerivedMissingChip", code: 2)
-    }
 }
 
 private struct NativeDerivedFixture: Decodable {

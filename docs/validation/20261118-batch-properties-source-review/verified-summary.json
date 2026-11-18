@@ -1,0 +1,61 @@
+{
+  "status": "SOURCE_REVIEW_AND_CONTROLLER_VALIDATION_COMPLETE_APPLE_NOT_RUN",
+  "base_source_sha": "09e4287e78fb79937a83f5ed50b5d34800bc50f6",
+  "integration_parent_remote": "f4478e475658323ce8db235c0e737f83c5ef257f",
+  "controls": {
+    "command": "python -B -m unittest -v test_wave15_batch test_run_wave15_acceptance test_hanlin_lane_routing",
+    "environment": "ChatGPT Scratch Linux Python 3.12; canonical source and imports exported read-only from the clean integration worktree",
+    "functions": 38,
+    "passed": 38,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 1.929,
+    "batch_functions": 22,
+    "existing_selection_functions": 12,
+    "existing_hanlin_routing_functions": 4,
+    "real_posix_owned_process_controls": 2
+  },
+  "validation": {
+    "python_ast": "PASS",
+    "yaml": "PASS",
+    "workflow_dispatch_input_count": 10,
+    "all_property_test_method_names_unchanged": true,
+    "property_test_methods_in_file": 9,
+    "apple_compile": "NOT_RUN",
+    "apple_ui": "NOT_RUN",
+    "swift_parse": "NOT_RUN; Windows Swift6.3.3 asserts on stdin input before parsing; no source syntax conclusion"
+  },
+  "profile": {
+    "name": "remaining-release",
+    "build": "Same-job verified Release-Anytype build; no previous artifact reuse",
+    "ui_methods": 15,
+    "native_preparations": 6,
+    "lanes": [
+      "inspector",
+      "inspector-search",
+      "properties",
+      "properties-set",
+      "canonical-properties",
+      "editor"
+    ],
+    "device": "ipad",
+    "language": "en",
+    "freshness": "Six freshly created owned simulators, distinct observed Spaces/containers; creation before first install is the basis, not classification of nonzero simctl status",
+    "worker_seconds": 6300,
+    "cleanup_seconds": 180,
+    "full_matrix_accepted": false
+  },
+  "publication": {
+    "transport": "GitHub Git Data API via SentinelX inline RAM-only command",
+    "reason": "Windows C and G volumes report zero free bytes; no local worktree/index mutation",
+    "allowed_branch": "codex/chatgpt-wave15-integration-20261118",
+    "force_push": false,
+    "local_head_left_at": "09e4287e78fb79937a83f5ed50b5d34800bc50f6"
+  },
+  "limits": [
+    "Controller tests do not execute native or UI tests.",
+    "Properties changes verify persistence of the actual canonical Word selected, all three Universal values, and Type Source addition after cold reopen; remaining UI criteria are in properties-criteria-audit.md.",
+    "A passing batch requires original named xcresult counts: 15 UI and six native preparations; a failed or not-run lane cannot count as acceptance.",
+    "Physical iPad, full language/device/appearance matrix, T5 r15, T2 concurrent sync, and Hanlin UI are outside this batch acceptance."
+  ]
+}

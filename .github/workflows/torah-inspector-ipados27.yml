@@ -52,7 +52,7 @@ on:
           - NATIVE_CANCELLATION_DIAGNOSTIC
         default: FULL_SMOKE
       acceptance_lane:
-        description: Existing Wave-15 UI suite to execute after Startup is working
+        description: Existing Wave-15 lane or six isolated Release lanes after Startup is working
         type: choice
         options:
           - inspector
@@ -64,6 +64,7 @@ on:
           - canonical-properties
           - hanlin-native
           - hanlin-selection
+          - remaining-release
         default: inspector
       acceptance_device:
         description: Disposable OS27 device family
