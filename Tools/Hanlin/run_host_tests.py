@@ -16,6 +16,8 @@ import re
 import subprocess
 import sys
 
+from host_command import CommandCancelled, cancellation_signals, command
+
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 CONFIGURATION = "Debug-Anytype"
@@ -155,10 +157,12 @@ def xctest_products(configuration):
 
     def resolve(raw, host=None):
         require(isinstance(raw, str) and raw, "Missing actual Xcode product path")
+        allowed = {"__TESTROOT__"} | ({"__TESTHOST__"} if host is not None else set())
+        require(set(re.findall(r"__[A-Za-z][A-Za-z0-9_]*?__", raw)).issubset(allowed),
+                "Unsupported Xcode product placeholder")
         value = raw.replace("__TESTROOT__", str(products))
         if host is not None:
             value = value.replace("__TESTHOST__", str(host))
-        require("__" not in value, "Unsupported Xcode product placeholder")
         path = Path(value).resolve()
         require(path.is_dir() and path.is_relative_to(products), "Xcode product missing or outside fresh products")
         return path
@@ -183,7 +187,7 @@ def execute(args, receipt):
     app, evidence, derived = args.app.resolve(), args.evidence.resolve(), args.derived.resolve()
     require(platform.system() == "Darwin" and platform.machine() == "arm64", "Actual Apple silicon Mac required")
     sys.path.insert(0, str(app / "Tools/PinkhaNativeDerived"))
-    from build_custom_heart import command, digest, git
+    from build_custom_heart import digest, git
     from build_native_ipa import prepare_source_cache, run_xctest, test_configuration
     from validate_wave1 import verify_runtime_copies
     from prepare_sdk import verify
@@ -219,7 +223,7 @@ def execute(args, receipt):
     receipt.update(source_sha=head, preflight=preflight, configuration=CONFIGURATION,
                    selection=["AnytypeTests/" + name for name in SUITES], expected_methods=sorted(expected),
                    test_source_hashes=sources, hanlin_revision=pin["revision"], heart=installation,
-                   hanlin_snapshot_sha256=sha256(evidence / "hanlin-snapshot.json"), phase="BUILD")
+                   hanlin_snapshot_sha256=sha256(evidence / "hanlin-snapshot.json"), phase="SIMULATOR_BOOT")
     write(evidence / "execution.json", receipt)
     flags = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED", "ENABLE_TESTABILITY=YES",
              "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-",
@@ -230,8 +234,11 @@ def execute(args, receipt):
              "-configuration", CONFIGURATION, "-destination", "platform=iOS Simulator,id=" + udid,
              "-derivedDataPath", str(derived), "-parallel-testing-enabled", "NO", *selection, *flags]
     receipt["build_command"] = build
+    write(evidence / "execution.json", receipt)
     command(["xcrun", "simctl", "boot", udid], app, evidence)
     command(["xcrun", "simctl", "bootstatus", udid, "-b"], app, evidence)
+    receipt["phase"] = "BUILD"
+    write(evidence / "execution.json", receipt)
     command(build, app, evidence)
     receipt["build_succeeded"] = True
     configuration = test_configuration(derived / "Build/Products", "AnytypeTests")
@@ -253,7 +260,7 @@ def execute(args, receipt):
             *selection, "-resultBundlePath", str(result)]
     receipt["test_command"] = test
     write(evidence / "execution.json", receipt)
-    run_xctest(test, app, evidence, result, "sdk06")
+    run_xctest(test, app, evidence, result, "sdk06", command_runner=command)
     receipt["test_command_exit_code"] = 0
     summary = json.loads((evidence / "sdk06-summary.json").read_text())
     tree = json.loads((evidence / "sdk06-tests.json").read_text())
@@ -299,20 +306,31 @@ def main():
     args = parser.parse_args()
     args.evidence.mkdir(parents=True, exist_ok=True)
     require(re.fullmatch(r"[1-9][0-9]*", args.heart_source_run_id), "Explicit Heart source run is required")
-    receipt = dict(status="FAIL", phase="PREFLIGHT", build_succeeded=False, test_command_exit_code=None,
+    receipt = dict(status="RUNNING", phase="PREFLIGHT", build_succeeded=False, test_command_exit_code=None,
                    source_sha=os.environ.get("GITHUB_SHA"), run_id=os.environ.get("GITHUB_RUN_ID"),
                    run_attempt=os.environ.get("GITHUB_RUN_ATTEMPT"), started_at=datetime.now(timezone.utc).isoformat())
-    try:
-        execute(args, receipt)
-    except BaseException as error:
-        receipt.update(status="FAIL", error_type=type(error).__name__, error=str(error))
-    finally:
+    with cancellation_signals():
         try:
-            cleanup(args.evidence, receipt)
-        except Exception as error:
-            receipt["cleanup_error"] = str(error)
-        receipt["finished_at"] = datetime.now(timezone.utc).isoformat()
-        write(args.evidence / "execution.json", receipt)
+            write(args.evidence / "execution.json", receipt)
+            execute(args, receipt)
+        except KeyboardInterrupt as error:
+            receipt.update(status="CANCELLED", error_type=type(error).__name__, error=str(error))
+            if isinstance(error, CommandCancelled):
+                receipt["cancellation_signal"] = error.signum
+        except BaseException as error:
+            receipt.update(status="FAIL", error_type=type(error).__name__, error=str(error))
+        finally:
+            # The command has already stopped/reaped its own process group.
+            # Do not start more simctl/XCTest processes during runner cancellation.
+            if receipt["status"] == "CANCELLED":
+                receipt["simulator_cleanup"] = "DEFERRED_TO_EPHEMERAL_RUNNER_AFTER_CANCELLATION"
+            else:
+                try:
+                    cleanup(args.evidence, receipt)
+                except Exception as error:
+                    receipt["cleanup_error"] = str(error)
+            receipt["finished_at"] = datetime.now(timezone.utc).isoformat()
+            write(args.evidence / "execution.json", receipt)
     print(json.dumps(receipt, indent=2))
     return 0 if receipt["status"] == "SDK06_COMPONENT_PASS" else 1
 
