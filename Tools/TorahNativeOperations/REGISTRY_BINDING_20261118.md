@@ -134,6 +134,17 @@ Neither fixture is a full middleware account or production coordinator test.
 A green registry suite cannot claim old-client preservation, full search/export,
 production peer authentication, atomic target lifecycle, App/RPC or iOS coverage.
 
+## Composition with the existing native revisions
+
+The private initializer is named `core/block/editor/smartblock/pinkha_torah_operations.go`.
+The original name `pinkha_torah.go` collides with an existing new file in both
+immutable r14 and r15. This rename changes no Go bytes or behavior. The complete
+T2 inventory (tracked plus overlay paths) is disjoint from all 35 r14 and 42 r15
+inventory paths at source `947fbde24d5657d0e1229f45bb3993648884a8a1`.
+The forthcoming account lifecycle fixture must verify this entire composition
+before applying either patch. This source/path audit is not a combined native
+runtime acceptance result.
+
 ## Reproducible source and dependencies
 
 `heart-registration.json` hashes the exact patch, eleven original/patched Heart
