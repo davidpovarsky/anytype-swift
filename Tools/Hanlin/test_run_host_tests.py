@@ -106,6 +106,67 @@ class SDKResultGateTests(unittest.TestCase):
                     require_identity(*values)
 
 
+class SDKReturnReceiptGateTests(unittest.TestCase):
+    # Review inventory independent of the controller registry: all six must be
+    # present in tracked Swift source AND observed as passing actual methods.
+    return_methods = {
+        "nativeReturnReceiptCompletesOnceWithoutRearmingExecution",
+        "nativeReturnHandoffCannotBeMintedTwiceOrForAnAliasedTarget",
+        "nativeReturnCannotAcknowledgeQueuedOrDifferentMountedTargets",
+        "cancelledOrExpiredNativeReturnNeverRunsMountValidation",
+        "nativeReturnScopeLossPreservesQueuedReceiptWithoutRetry",
+        "reentrantNativeReturnCancellationCannotPublishMountedReceipt",
+    }
+
+    def source_fixture(self, root):
+        files, expected = [], set()
+        for suite, count in (("HanlinHostAdapterTests", 28), ("HanlinHostWriteTests", 12),
+                             ("HanlinHostReadWriteTests", 17), ("HanlinSDKConsumerTests", 6)):
+            names = sorted(self.return_methods) if suite == "HanlinHostAdapterTests" else []
+            names += ["existingMethod" + str(i) for i in range(count - len(names))]
+            relative = "AnytypeTests/Pinkha/" + suite + ".swift"
+            target = root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text("\n".join("@Test func " + name + "() {}" for name in names))
+            files.append(relative)
+            expected.update(suite + "/" + name for name in names)
+        return files, expected
+
+    def test_all_six_return_methods_are_required_even_when_declaration_count_is_preserved(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            files, expected = self.source_fixture(root)
+            with patch.object(subprocess, "check_output", return_value=("\0".join(files) + "\0").encode()):
+                actual, hashes = expected_methods(root)
+                self.assertEqual(len(actual), 63)
+                self.assertEqual(actual, expected)
+                self.assertEqual(set(hashes), set(files))
+                adapter = root / files[0]
+                original = adapter.read_text()
+                for name in self.return_methods:
+                    with self.subTest(missing=name):
+                        adapter.write_text(original.replace(name, "substitutedUnreviewedMethod"))
+                        with self.assertRaisesRegex(ValueError, "native return test declarations"):
+                            expected_methods(root)
+
+    def test_each_new_return_method_requires_an_actual_pass_not_a_successful_aggregate(self):
+        with tempfile.TemporaryDirectory() as temp:
+            _, expected = self.source_fixture(Path(temp))
+        summary = dict(totalTestCount=63, passedTests=63, failedTests=0, skippedTests=0,
+                       devicesAndConfigurations=[dict(device=dict(deviceId="disposable-id", osVersion="27.0",
+                       osBuildNumber="24A-test", architecture="arm64", modelName="iPad (A16)"))])
+        tree = dict(children=[dict(nodeType="Test Case", nodeIdentifier=name + "()", result="Passed")
+                              for name in sorted(expected)])
+        self.assertEqual(len(validate_results(summary, tree, expected, "disposable-id")["methods"]), 63)
+        for name in self.return_methods:
+            with self.subTest(missing=name):
+                incomplete = copy.deepcopy(tree)
+                incomplete["children"] = [node for node in incomplete["children"]
+                                           if node["nodeIdentifier"] != "HanlinHostAdapterTests/" + name + "()"]
+                with self.assertRaisesRegex(ValueError, "Missing SDK test methods"):
+                    validate_results(summary, incomplete, expected, "disposable-id")
+
+
 class EditorResultGateTests(unittest.TestCase):
     # Full signatures from root fcdf0cb5; deliberately independent of the
     # runner's method registry. Display labels are not method identities.

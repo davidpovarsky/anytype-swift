@@ -37,6 +37,15 @@ struct PinkhaHanlinChatView: View {
                     }
                     .accessibilityIdentifier("pinkha.hanlin.close")
                 }
+                if presentation.hasSource {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button(action: presentation.returnToSource) {
+                            AnytypeText(PinkhaHanlinStrings.returnToSource, style: .bodyRegular)
+                        }
+                        .disabled(presentation.isReturningToSource)
+                        .accessibilityIdentifier("pinkha.hanlin.return-to-source")
+                    }
+                }
             }
         }
         .accessibilityIdentifier("pinkha.hanlin.chat")

@@ -19,11 +19,13 @@ final class PinkhaHanlinNativeAccess: PinkhaHanlinHostAccess {
     private weak var document: (any BaseDocumentProtocol)?
     private weak var selection: (any EditorPageBlocksStateManagerProtocol)?
     private let fence = PinkhaHanlinRevocationFence()
+    private let navigationScopeFence = PinkhaHanlinRevocationFence()
     private let readConsent = PinkhaHanlinReadConsent()
     private let objectWasBound: Bool
     private let initialSource: Data?
     private var subscriptions: [AnyCancellable] = []
     private let navigation: PinkhaHanlinNavigationLedger
+    private var returnHandoff: PinkhaHanlinNavigationHandoff?
     private var onInvalidation: (@MainActor () -> Void)?
 
     private let accounts = Container.shared.accountManager()
@@ -66,7 +68,11 @@ final class PinkhaHanlinNativeAccess: PinkhaHanlinHostAccess {
                 self?.onInvalidation?()
             }
         }
+        navigationScopeFence.onRevoke { [weak self] in
+            Task { @MainActor in self?.returnHandoff?.cancel() }
+        }
         try validate(session.context)
+        editor?.pinkhaHanlinPresentationID = session.id
         installInvalidation(document: document, selection: selection, routeOwner: routeOwner, scene: scene)
     }
 
@@ -100,7 +106,14 @@ final class PinkhaHanlinNativeAccess: PinkhaHanlinHostAccess {
     }
 
     func validate(_ context: HanlinHostContext) throws {
-        guard !fence.isRevoked, context == session.context,
+        guard !fence.isRevoked else { throw HanlinHostError.staleContext }
+        try validateNativeOwner(context)
+    }
+
+    /// Native ownership only. The sole post-close caller records a previously authorized UI receipt.
+    /// All SDK context/read/write entry points still require the presentation fence above.
+    private func validateNativeOwner(_ context: HanlinHostContext) throws {
+        guard context == session.context,
               PinkhaHanlinAccountOwner.shared.isAvailable(account: context.namespace.account),
               let presenter, let scene, let routeOwner,
               presenter.viewIfLoaded?.window?.windowScene === scene,
@@ -154,23 +167,55 @@ final class PinkhaHanlinNativeAccess: PinkhaHanlinHostAccess {
     func navigate(_ destination: HanlinHostDestination) throws -> HanlinHostNavigationResult {
         try validate(destination.context)
         guard let object = session.context.objectReference, Self.exact(destination.objectReference, object),
-              let document, let routeOwner else { throw HanlinHostError.denied }
+              let document, sourceEditor != nil else { throw HanlinHostError.denied }
         if let block = destination.blockReference {
             guard !block.isEmpty, try Self.reachableBlocks(document).contains(where: { Self.exact($0.id, block) }) else {
                 throw HanlinHostError.resultMismatch
             }
         }
-        if try navigation.enqueue(destination) {
-            routeOwner.pageNavigation.open(.editor(.page(EditorPageObject(objectId: object,
-                spaceId: destination.context.namespace.space, blockId: destination.blockReference))))
-        }
+        // The original editor already owns this document. A hidden route push cannot acknowledge
+        // it. The native Return action consumes this queue only after open() has returned.
+        _ = try navigation.enqueue(destination)
         return try navigation.result(for: destination)
+    }
+
+    func makeReturnHandoff(_ destination: HanlinHostDestination,
+                           controller: PinkhaHanlinChatController) throws -> PinkhaHanlinNavigationHandoff {
+        try validate(destination.context)
+        try controller.presentation.validateInstallation(for: session)
+        guard !navigationScopeFence.isRevoked, returnHandoff == nil,
+              promptOwner === controller, controller.presentedViewController == nil,
+              let editor = sourceEditor, editor.pinkhaHanlinPresentationID == session.id else {
+            throw HanlinHostError.staleContext
+        }
+        let handoff = try navigation.makeHandoff(for: destination) { [self, weak editor] in
+            guard !navigationScopeFence.isRevoked, let editor, editor === sourceEditor,
+                  editor.pinkhaHanlinPresentationID == session.id else { throw HanlinHostError.staleContext }
+            try validateNativeOwner(destination.context)
+            editor.viewIfLoaded?.layoutIfNeeded()
+            editor.collectionView.layoutIfNeeded()
+            if let block = destination.blockReference { editor.revealBlock(blockId: block) }
+            guard !navigationScopeFence.isRevoked, editor.pinkhaHanlinPresentationID == session.id else {
+                throw HanlinHostError.staleContext
+            }
+            try validateNativeOwner(destination.context)
+            return try mountedTargetResult(destination, controller: editor)
+        }
+        returnHandoff = handoff
+        return handoff
     }
 
     /// Only the actual target UI owner can call this after exact-target mount, not from queue completion.
     func acknowledgeMounted(_ destination: HanlinHostDestination,
                             controller: EditorPageController) throws -> HanlinHostNavigationResult {
         try validate(destination.context)
+        let result = try mountedTargetResult(destination, controller: controller)
+        try navigation.acknowledge(result, for: destination)
+        return result
+    }
+
+    private func mountedTargetResult(_ destination: HanlinHostDestination,
+                                     controller: EditorPageController) throws -> HanlinHostNavigationResult {
         _ = try navigation.result(for: destination)
         guard let scene, let model = controller.viewModel,
               Self.isMounted(controller, in: scene) else { throw HanlinHostError.resultMismatch }
@@ -200,7 +245,6 @@ final class PinkhaHanlinNativeAccess: PinkhaHanlinHostAccess {
         let result = HanlinHostNavigationResult.presented(requestID: destination.requestID, context: destination.context,
             objectReference: destination.objectReference, blockReference: destination.blockReference)
         try result.validate(for: destination)
-        try navigation.acknowledge(result, for: destination)
         return result
     }
 
@@ -233,33 +277,37 @@ final class PinkhaHanlinNativeAccess: PinkhaHanlinHostAccess {
                                      selection: (any EditorPageBlocksStateManagerProtocol)?,
                                      routeOwner: SpaceHubCoordinatorViewModel, scene: UIWindowScene) {
         let fence = fence
+        let navigationScopeFence = navigationScopeFence
+        let revoke: @Sendable () -> Void = { fence.revoke(); navigationScopeFence.revoke() }
         let context = session.context
         accounts.accountPublisher.sink { account in
-            if !Self.exact(account.id, context.namespace.account) || account.status != .active { fence.revoke() }
+            if !Self.exact(account.id, context.namespace.account) || account.status != .active { revoke() }
         }.store(in: &subscriptions)
         application.statePublisher.sink { state in
-            if case .home = state {} else { fence.revoke() }
+            if case .home = state {} else { revoke() }
         }.store(in: &subscriptions)
         let initialMember = spaces.participantSpaceView(spaceId: context.namespace.space)
         spaces.allParticipantSpacesPublisher.sink { members in
             let member = members.first { Self.exact($0.spaceView.targetSpaceId, context.namespace.space) }
-            if member != initialMember { fence.revoke() }
+            if member != initialMember { revoke() }
         }.store(in: &subscriptions)
         withObservationTracking {
             _ = routeOwner.currentSpaceId
-        } onChange: { fence.revoke() } // One-way fence; no rearming/poll loop.
+        } onChange: { revoke() } // One-way fence; no rearming/poll loop.
         NotificationCenter.default.publisher(for: UIScene.didEnterBackgroundNotification, object: scene)
-            .sink { _ in fence.revoke() }.store(in: &subscriptions)
+            .sink { _ in revoke() }.store(in: &subscriptions)
+        NotificationCenter.default.publisher(for: UIScene.willDeactivateNotification, object: scene)
+            .sink { _ in navigationScopeFence.revoke() }.store(in: &subscriptions)
         if let document {
             let initial = initialSource
             document.syncPublisher.sink { [weak document] _ in
                 guard let document, (try? Self.sourceFence(document: document, selection: context.selectionReferences)) == initial else {
-                    fence.revoke(); return
+                    revoke(); return
                 }
             }.store(in: &subscriptions)
         }
         selection?.editorSelectedBlocks.sink { ids in
-            if ids.map({ Data($0.utf8) }) != context.selectionReferences.map({ Data($0.utf8) }) { fence.revoke() }
+            if ids.map({ Data($0.utf8) }) != context.selectionReferences.map({ Data($0.utf8) }) { revoke() }
         }.store(in: &subscriptions)
     }
 

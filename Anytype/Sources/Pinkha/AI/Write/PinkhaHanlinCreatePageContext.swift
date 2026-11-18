@@ -111,6 +111,11 @@ final class PinkhaHanlinCreatePageContext {
         try authority.acknowledgeMounted(destination, controller: controller)
     }
 
+    func makeReturnHandoff(_ destination: HanlinHostDestination,
+                           controller: PinkhaHanlinChatController) throws -> PinkhaHanlinNavigationHandoff {
+        try authority.makeReturnHandoff(destination, controller: controller)
+    }
+
     func validate(_ plan: PinkhaHanlinCreatePagePlan) throws -> ObjectType {
         try Task.checkCancellation()
         guard !invalidated, plan.identity.session == session, plan.identity.deadline > .now else {

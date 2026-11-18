@@ -206,6 +206,14 @@ final class PinkhaHanlinReadWriteHost: HanlinHostIntegration {
         return try write.targetDidMount(destination, controller: controller)
     }
 
+    /// Native UI ownership only, after a queued SDK open has completed while the session is current.
+    func makeReturnHandoff(_ destination: HanlinHostDestination,
+                           controller: PinkhaHanlinChatController) throws -> PinkhaHanlinNavigationHandoff {
+        try validateLocal(session)
+        guard destination.context == session.context, let write else { throw HanlinHostError.staleContext }
+        return try write.makeReturnHandoff(destination, controller: controller)
+    }
+
     func requestContextReadConsent() async throws {
         try validateLocal(session)
         guard let write else { throw HanlinHostError.denied }
@@ -414,5 +422,10 @@ private final class PinkhaHanlinCreateBinding {
     func targetDidMount(_ destination: HanlinHostDestination,
                         controller: EditorPageController) throws -> HanlinHostNavigationResult {
         try context.targetDidMount(destination, controller: controller)
+    }
+
+    func makeReturnHandoff(_ destination: HanlinHostDestination,
+                           controller: PinkhaHanlinChatController) throws -> PinkhaHanlinNavigationHandoff {
+        try context.makeReturnHandoff(destination, controller: controller)
     }
 }

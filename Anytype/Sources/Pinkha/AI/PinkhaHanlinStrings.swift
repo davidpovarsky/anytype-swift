@@ -4,6 +4,8 @@ import Foundation
 enum PinkhaHanlinStrings {
     static var title: String { String(localized: "pinkha.hanlin.title", table: "PinkhaHanlin") }
     static var close: String { String(localized: "pinkha.hanlin.close", table: "PinkhaHanlin") }
+    static var returnToSource: String { String(localized: "pinkha.hanlin.returnToSource", table: "PinkhaHanlin") }
+    static var returnFailed: String { String(localized: "pinkha.hanlin.returnFailed", table: "PinkhaHanlin") }
     static var prompt: String { String(localized: "pinkha.hanlin.prompt", table: "PinkhaHanlin") }
     static var shareContext: String { String(localized: "pinkha.hanlin.shareContext", table: "PinkhaHanlin") }
     static var contextShared: String { String(localized: "pinkha.hanlin.contextShared", table: "PinkhaHanlin") }
