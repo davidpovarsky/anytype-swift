@@ -1,0 +1,330 @@
+[
+  {
+    "name": "xcode-version",
+    "argv": [
+      "xcodebuild",
+      "-version"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": null,
+      "GOFLAGS": null,
+      "GOPROXY": null,
+      "GOTOOLCHAIN": null,
+      "GOMAXPROCS": null,
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": null,
+      "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "iphoneos-version",
+    "argv": [
+      "xcrun",
+      "--sdk",
+      "iphoneos",
+      "--show-sdk-version"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": null,
+      "GOFLAGS": null,
+      "GOPROXY": null,
+      "GOTOOLCHAIN": null,
+      "GOMAXPROCS": null,
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": null,
+      "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "iphonesimulator-version",
+    "argv": [
+      "xcrun",
+      "--sdk",
+      "iphonesimulator",
+      "--show-sdk-version"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": null,
+      "GOFLAGS": null,
+      "GOPROXY": null,
+      "GOTOOLCHAIN": null,
+      "GOMAXPROCS": null,
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": null,
+      "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "source-preflight",
+    "argv": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "-B",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/control/Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "--heart-source",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+      "--patch",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/source/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-15/native-heart-integration.patch",
+      "--inventory",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/source/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-15/native-heart-integration.json",
+      "--approved-patch-sha256",
+      "5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2",
+      "--apply-approved-patch",
+      "--target",
+      "verify",
+      "--evidence",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/proof/runtime/source-preflight"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": null,
+      "GOFLAGS": null,
+      "GOPROXY": null,
+      "GOTOOLCHAIN": null,
+      "GOMAXPROCS": null,
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": null,
+      "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "pinned-module-download",
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "mod",
+      "download"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": null,
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": "1",
+      "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "resolved-native-modules",
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "list",
+      "-m",
+      "-json",
+      "all"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": "1",
+      "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "genproto-selection",
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "list",
+      "-m",
+      "-json",
+      "google.golang.org/genproto"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": "1",
+      "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "mobile-selection",
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "list",
+      "-m",
+      "-json",
+      "golang.org/x/mobile"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": "1",
+      "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "gomobile-compile",
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "build",
+      "-o",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15/deps/gomobile",
+      "golang.org/x/mobile/cmd/gomobile"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": "1",
+      "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "gomobile-identity",
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "version",
+      "-m",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15/deps/gomobile"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": "1",
+      "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "gobind-compile",
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "build",
+      "-o",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15/deps/gobind",
+      "golang.org/x/mobile/cmd/gobind"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": "1",
+      "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "gobind-identity",
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "version",
+      "-m",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15/deps/gobind"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": "1",
+      "TMPDIR": "/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "original-module-cache",
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "env",
+      "GOMODCACHE"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "GOPATH": null,
+      "GOMODCACHE": null,
+      "CGO_ENABLED": "1",
+      "TMPDIR": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/gomobile-tmp",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  },
+  {
+    "name": "gomobile-bind",
+    "argv": [
+      "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15/deps/gomobile",
+      "bind",
+      "-tags",
+      "nogrpcserver gomobile nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg",
+      "-ldflags",
+      "-X github.com/anyproto/anytype-heart/util/vcs.GitSummary=v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2 -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "-target=ios",
+      "-o",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15/dist/ios/Lib.xcframework",
+      "github.com/anyproto/anytype-heart/clientlibrary/service",
+      "github.com/anyproto/anytype-heart/core"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/heart-r15",
+    "environment": {
+      "GOWORK": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/go.work",
+      "GOFLAGS": "-mod=readonly",
+      "GOPROXY": "off",
+      "GOTOOLCHAIN": "local",
+      "GOMAXPROCS": "2",
+      "GOPATH": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/gomobile-gopath",
+      "GOMODCACHE": "/Users/runner/go/pkg/mod",
+      "CGO_ENABLED": "1",
+      "TMPDIR": "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r15-44235484816-1/work/gomobile-tmp",
+      "DEVELOPER_DIR": "/Applications/Xcode_27.app/Contents/Developer"
+    }
+  }
+]
