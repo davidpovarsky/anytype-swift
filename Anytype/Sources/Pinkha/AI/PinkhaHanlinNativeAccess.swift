@@ -184,7 +184,10 @@ final class PinkhaHanlinNativeAccess: PinkhaHanlinHostAccess {
         if let block = destination.blockReference {
             let collection = controller.collectionView
             guard try Self.reachableBlocks(target).contains(where: { Self.exact($0.id, block) }),
-                  let item = controller.dataSourceItem(for: block),
+                  let item = controller.dataSource.snapshot().itemIdentifiers.first(where: {
+                      guard case .block(let mounted) = $0 else { return false }
+                      return Self.exact(mounted.info.id, block)
+                  }),
                   case .block(let mountedBlock) = item, Self.exact(mountedBlock.info.id, block),
                   let index = controller.dataSource.indexPath(for: item),
                   collection.indexPathsForVisibleItems.contains(index),

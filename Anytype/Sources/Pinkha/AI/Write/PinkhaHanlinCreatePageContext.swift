@@ -6,6 +6,7 @@ import Services
 import ProtobufMessages
 import UIKit
 import HanlinHostContracts
+import HanlinPlatformContracts
 
 /// In-memory, one-use approval. Only this file's real mounted native confirmation may issue it.
 /// It grants no SDK authority and cannot be decoded, persisted or constructed from model arguments.
