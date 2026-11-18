@@ -1,5 +1,19 @@
 import XCTest
 
+@MainActor
+private func waitForPinkhaNativeNavigation(_ app: XCUIApplication) -> Bool {
+    // A restored Home or an existing native editor must be mounted before the
+    // OS route is sent. A foreground launch screen alone is not readiness.
+    let ready = app.descendants(matching: .any).matching(NSPredicate(
+        format: "identifier == %@ OR label == %@ OR identifier == %@ OR label == %@ OR (elementType == %d AND (label == %@ OR label == %@))",
+        "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton",
+        XCUIElement.ElementType.button.rawValue, "More", "x24/More"
+    )).firstMatch
+    let observed = ready.waitForExistence(timeout: 120)
+    XCTAssertTrue(observed, "The restored native navigation must be ready before opening a fixture")
+    return observed
+}
+
 /// Drives the original application against the custom Heart. Its fixture is
 /// produced by the real native API suite in a freshly created simulator.
 @MainActor
@@ -339,13 +353,14 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         var url = URLComponents()
         url.scheme = "anytype"; url.host = "object"
         url.queryItems = [URLQueryItem(name: "objectId", value: id), URLQueryItem(name: "spaceId", value: fixture.spaceId)]
-        app.open(try XCTUnwrap(url.url))
+        guard waitForPinkhaNativeNavigation(app) else { return }
+        XCUIDevice.shared.system.open(try XCTUnwrap(url.url))
         if id == fixture.setId || id == fixture.universalSetId {
             XCTAssertTrue(setTable.waitForExistence(timeout: 45))
         } else if fixture.types.values.contains(id) || fixture.universalTypes.values.contains(id) {
             XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Properties,")).firstMatch.waitForExistence(timeout: 45))
         } else {
-            let editor = app.otherElements["pinkha-ui27-editor:\(fixture.spaceId):\(id)"]
+            let editor = app.otherElements.matching(NSPredicate(format: "identifier == %@", "pinkha-ui27-editor:\(fixture.spaceId):\(id)")).firstMatch
             XCTAssertTrue(editor.waitForExistence(timeout: 45), "The exact disposable document must be mounted")
             XCTAssertTrue(editor.isHittable)
             XCTAssertTrue(navigationMore.waitForExistence(timeout: 45))
@@ -532,8 +547,9 @@ final class PinkhaTorahPropertiesAcceptanceUITests: XCTestCase {
         components.scheme = "anytype"
         components.host = "object"
         components.queryItems = [URLQueryItem(name: "objectId", value: objectID), URLQueryItem(name: "spaceId", value: spaceID)]
-        app.open(try XCTUnwrap(components.url))
-        let editor = app.otherElements["pinkha-ui27-editor:\(spaceID):\(objectID)"]
+        guard waitForPinkhaNativeNavigation(app) else { return }
+        XCUIDevice.shared.system.open(try XCTUnwrap(components.url))
+        let editor = app.otherElements.matching(NSPredicate(format: "identifier == %@", "pinkha-ui27-editor:\(spaceID):\(objectID)")).firstMatch
         XCTAssertTrue(editor.waitForExistence(timeout: 45), "The exact disposable document must be mounted")
         XCTAssertTrue(editor.isHittable)
         let settings = app.buttons.matching(NSPredicate(format: "label == %@ OR label == %@", "More", "x24/More")).firstMatch
@@ -671,6 +687,7 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
         XCTAssertFalse(fixtureSpaceID.isEmpty)
         XCTAssertEqual(Set(fixtureObjectIDs.values).count, 3)
         app.launchEnvironment["PINKHA_STAGE1_ACCEPTANCE"] = "1"
+        app.launchEnvironment["PINKHA_UI27_ROUTE_OBSERVATION"] = "1"
         app.launchEnvironment["PINKHA_ACCEPTANCE_DEVICE_LANGUAGE"] = deviceLanguage
         app.launchArguments += [
             "-AppleLanguages", "(\(appLanguage))",
@@ -865,10 +882,17 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
         let identity = kind == .note ? editorBody(containing: expectedTitle) : app.textViews.matching(
             NSPredicate(format: "identifier BEGINSWITH %@ AND value CONTAINS %@", "pinkha.stage1.title.", expectedTitle)
         ).firstMatch
-        if identity.exists { return }
-
         guard let objectID = fixtureObjectIDs[kind] else {
             XCTFail("Missing prepared native document ID")
+            return
+        }
+        let editorMatches = app.otherElements.matching(NSPredicate(
+            format: "identifier == %@", "pinkha-ui27-editor:\(fixtureSpaceID):\(objectID)"
+        ))
+        let editor = editorMatches.firstMatch
+        if identity.exists && editor.exists {
+            XCTAssertEqual(editorMatches.count, 1)
+            XCTAssertTrue(editor.isHittable)
             return
         }
         var components = URLComponents()
@@ -883,7 +907,11 @@ final class PinkhaStage1AcceptanceUITests: XCTestCase {
             return
         }
         print("PINKHA_ACCEPTANCE_OPEN kind=\(kind.rawValue) space=\(fixtureSpaceID) object=\(objectID)")
-        app.open(url)
+        guard waitForPinkhaNativeNavigation(app) else { return }
+        XCUIDevice.shared.system.open(url)
+        XCTAssertTrue(editor.waitForExistence(timeout: 45), "The exact native Space and document must be mounted")
+        XCTAssertEqual(editorMatches.count, 1)
+        XCTAssertTrue(editor.isHittable)
 
         if kind == .note {
             // Native Note has no title. Wait for the previous Page to leave before seeding
