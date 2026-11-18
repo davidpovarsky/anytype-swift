@@ -1,0 +1,1049 @@
+{
+  "status": "NATIVE_ACCOUNT_PAIR_PASS",
+  "reason": "ACTUAL_ACCOUNT_SEQUENCE_COMPLETED",
+  "scope": "two exact Linux native RPC binaries; four processes reopen one synthetic account with real JSON/Protobuf exports; Apple and Swift pairing NOT_RUN; optional fifth process checks sixteen native index mutations, with Swift target exclusion NOT_RUN",
+  "started_at": "2026-11-18T04:57:04.626266+00:00",
+  "full_F10": "NOT_PROVEN",
+  "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF",
+  "swift_pairing_status": "NOT_RUN",
+  "protocol": "pinkha-t5-account-pair-v1",
+  "run_id": "e34aa894-bfea-4a17-8eeb-8f9b1fbfa6d5",
+  "synthetic_only": true,
+  "identities": {
+    "old": {
+      "binary": "/workspace/artifacts/pinkha-r14-native-account.test",
+      "binary_sha256": "e33291fbf671de2ef8a7a76e33d775228c2c991ac23ec05f1aec113d1aaa1b65",
+      "source": "/workspace/heart-old",
+      "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+      "fixture_sha256": "06efcae55c1838a326e80a3a86df49470433f175490b08bd9ba569dd32041a81",
+      "inventory_sha256": "952073d8dccc991f21bffe5d3ded4e1d5369bb2c30f247ae5204d47cb03aee14",
+      "source_hashes": {
+        "core/block/detailservice/pinkha_torah.go": "d39dd006cb20dcbdd91a851a96faf82a42e277b80d0f190a4a7e532831a4768e",
+        "core/block/editor/basic/details.go": "0ac058091f7ab161aec3d462d3cfa3e844af980cb0d5cecf2400b64360f7f033",
+        "core/block/editor/smartblock/detailsinject.go": "53b53b277535498564d400d02be348b89cbef6486b2ffeae4b66a8a355aa5503",
+        "core/block/editor/smartblock/pinkha_torah.go": "32ee6f74b5fe63c8e2c5bb612d32ce532f8caf1c3059338cf97373d20db43174",
+        "core/block/editor/state/change.go": "51395574aa5d4f96f1dc5cc279b61925dc5de0b2efe0727a96836f57b5a6081f",
+        "core/block/export/anyblock/anyblock.go": "340f5f9f21ecc0d9ee43077650cf07ce6cdbf378ca1077263bff426132577cbe",
+        "core/block/import/processor.go": "8c565a3ebc0a230ea359894d1e059bb1fc708af952c6b723c0c1496b3257a256",
+        "core/block/object/objectcreator/relation_option.go": "bcdee6e9747c14361c80153ade1ab969650c689db2f8219e3bef061a3c7e32e7",
+        "core/block/object/objectlink/dependent_objects.go": "7ae9edb1d19dadae1d9585ed2b3f2b8f637ef67b51912fc23edc0c91a6891602",
+        "core/block/simple/dataview/dataview.go": "6459c7fa58099622bec3edeb467820f5526f04c7879c21d047c4630109c1c472",
+        "core/converter/pbc/pbc.go": "5d3c6e415b74b29a81e60d31a08b5df4cd96b095647691d9539c8dcc2562a8a2",
+        "core/converter/pbjson/pbjson.go": "c8303134c3ed0d4d5358084d220c55d0e9bbebf097822e7b1fd660a8d7c502d6",
+        "core/details.go": "f22d46a91823b2eb907979a86ed43ea80d7387e434ea7eb971e6d57f201748ff",
+        "core/indexer/fulltext.go": "002421ab874f4eec996c9cb5101872bdbe52148e2a80ad430c71896b0d3ec48d",
+        "core/indexer/pinkha_torah.go": "dde290e4296b611bb65677427b8e3cea8f9c911467ae5868a5b16fc058222240",
+        "core/pinkha/torah/binding.go": "109508f4cbe04202df229f849368681ca26f994836ee7c1712ac1fbc133ffb0a",
+        "core/pinkha/torah/projection.go": "2c8467fbd635160f3c40d9bab2b82b8f6a2b07d70590c2c3357663b51af90a62",
+        "core/pinkha/torah/properties.go": "55b2be3324f2214381ca8a239f5cf27b740f0dfd94388aa156e747bb2f6b0c45",
+        "core/pinkha/torah/readiness.go": "100afcfcbc5db369599311471ebdab29228a489153b515c2c0ab910b58f247a2",
+        "core/pinkha/torahindex/index.go": "670ecfcf17bff3b1ba817906d291465aac6556cea8e42cc2b29b37dd79c509f8",
+        "core/pinkha/torahindex/recovery_cache.go": "6dc34a839f8fdea1773b6f162ab5b274403646b41f3eaa6570902c0b248d59c2",
+        "core/pinkha/torahtransport/import.go": "70b2d75d6653ed3fea239d594ba0f7fe50607f609894709eac409f7f68b0e916",
+        "core/pinkha/torahtransport/json_fields.go": "b45af6cef9c6f4babeea95458a2c4d11c4ee58da13b23881d6d977442569cbb6",
+        "core/pinkha/torahvalues/values.go": "104a073446d888a13fed3deef8ba5015ee906eaabd07c30161f5900258de8721",
+        "pkg/lib/bundle/pinkha_torah.go": "de000ddaee720d9333962b396f35304a51f7712efe72c3bf341e86648b462c6d",
+        "pkg/lib/database/filter.go": "0ed1a710c331db36bead7a4b7f515d00d383b2af3c2f0243ea7efbb42629ec16",
+        "pkg/lib/localstore/objectstore/spaceindex/delete.go": "2e51f49c2b7a1a588f148c805e467cd724e983db04f23f97a1dd2b1a81a746d9",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go": "0c9bee77ecbc524a73311fc36431a64bdbc35d757db829b4df1a50813b002c02",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go": "ba767700b9a3597c904bc3ad79da01a45874d5bb6337e5c035afecfcc0e8fe7c",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go": "58718c037fdb6fa8c3e117b163b5b068d9b6b365258d18223d483b795afe3106",
+        "pkg/lib/localstore/objectstore/spaceindex/store.go": "1ad36d01f2b7233d8edd835ea876fa27dab503e6a476bb4cf22deeea3cb6b341",
+        "pkg/lib/localstore/objectstore/spaceindex/update.go": "50aa3ed27c4754e559930a04d93c0c976c65722d378ff89681635577b97a9a5f",
+        "space/internal/components/migration/readonlyfixer/pinkha_torah.go": "139a822fa2c0bc7eaca0f7701be2741b147a84f4519eefcf55b48fb6a5f8c319",
+        "space/internal/components/migration/readonlyfixer/pinkha_torah_test.go": "8e4994925686b8ba48743f8fa7c16f258cd47adc9c497f429d594f17d1059ea5",
+        "space/internal/components/migration/readonlyfixer/relationsfixer.go": "003cfd50944f9b31920ae4060146bbbaf42c713191595b51582a16f5d94935b8"
+      },
+      "runtime_capability": 0,
+      "runtime_version": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077"
+    },
+    "new": {
+      "binary": "/workspace/artifacts/pinkha-r15-native-account.test",
+      "binary_sha256": "1a021a435b613a5d5d3b2cb428c1fac9ce122ad24f4600ec6ffe0d835984cd8d",
+      "source": "/workspace/heart-new",
+      "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "patch_sha256": "5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2",
+      "fixture_sha256": "06efcae55c1838a326e80a3a86df49470433f175490b08bd9ba569dd32041a81",
+      "inventory_sha256": "f0e4a4c2d1b4c1baa11347362cfd18368ad272a8902b2beaf8de52270f809ee7",
+      "source_hashes": {
+        "core/block/detailservice/pinkha_torah.go": "d39dd006cb20dcbdd91a851a96faf82a42e277b80d0f190a4a7e532831a4768e",
+        "core/block/editor/basic/details.go": "0ac058091f7ab161aec3d462d3cfa3e844af980cb0d5cecf2400b64360f7f033",
+        "core/block/editor/smartblock/detailsinject.go": "53b53b277535498564d400d02be348b89cbef6486b2ffeae4b66a8a355aa5503",
+        "core/block/editor/smartblock/pinkha_torah.go": "32ee6f74b5fe63c8e2c5bb612d32ce532f8caf1c3059338cf97373d20db43174",
+        "core/block/editor/state/change.go": "51395574aa5d4f96f1dc5cc279b61925dc5de0b2efe0727a96836f57b5a6081f",
+        "core/block/export/anyblock/anyblock.go": "340f5f9f21ecc0d9ee43077650cf07ce6cdbf378ca1077263bff426132577cbe",
+        "core/block/import/processor.go": "8c565a3ebc0a230ea359894d1e059bb1fc708af952c6b723c0c1496b3257a256",
+        "core/block/object/objectcreator/relation.go": "d53bb71f138996f73bd9648571039ddaac242395b16eacbc5732345ce0e09541",
+        "core/block/object/objectcreator/relation_option.go": "88b3b1e04689464c802f2c5b81871b868d88139167dce63044cd8634dbbbb6f0",
+        "core/block/object/objectlink/dependent_objects.go": "7ae9edb1d19dadae1d9585ed2b3f2b8f637ef67b51912fc23edc0c91a6891602",
+        "core/block/simple/dataview/dataview.go": "6459c7fa58099622bec3edeb467820f5526f04c7879c21d047c4630109c1c472",
+        "core/converter/pbc/pbc.go": "5d3c6e415b74b29a81e60d31a08b5df4cd96b095647691d9539c8dcc2562a8a2",
+        "core/converter/pbjson/pbjson.go": "c8303134c3ed0d4d5358084d220c55d0e9bbebf097822e7b1fd660a8d7c502d6",
+        "core/details.go": "1661dcaab53cfeac26bf7b0a322616737fcebcb5495d83df50ea46cf7f6981ab",
+        "core/indexer/fulltext.go": "002421ab874f4eec996c9cb5101872bdbe52148e2a80ad430c71896b0d3ec48d",
+        "core/indexer/pinkha_torah.go": "dde290e4296b611bb65677427b8e3cea8f9c911467ae5868a5b16fc058222240",
+        "core/pinkha/torah/binding.go": "30322f55d4aab1b3ff6adfb3920945e5eae8be298ad9cfac338d257c82248c00",
+        "core/pinkha/torah/projection.go": "4bc54b70a75d4c1dc5ae87cc85271d7304ee4f64216ce14150ed2bba3685e679",
+        "core/pinkha/torah/properties.go": "5985c43c4da7ef2baaabe6f0ee3e9606c0ee2b1af87563f2b2af4b9535a8a5d0",
+        "core/pinkha/torah/readiness.go": "100afcfcbc5db369599311471ebdab29228a489153b515c2c0ab910b58f247a2",
+        "core/pinkha/torah/related_binding_test.go": "83db1873ff2944d4d5f2fdd95a4f5969883f0db12f05538f788c208b88b2247a",
+        "core/pinkha/torah/related_sources_test.go": "0a82733fd0e7e8db50db0cab0723ee202393d2479f1276c237fe52045ffc2d8f",
+        "core/pinkha/torah/testdata/derived-query-golden.json": "57270a2eeee6c48eddcf3a1ce497c7d2e634b005ad4be473a091b9d9405cbfb3",
+        "core/pinkha/torahindex/index.go": "9873f508c27021157c17b28b04ee6f18c74a0cf1bea7028e355696f31c42f929",
+        "core/pinkha/torahindex/recovery_cache.go": "325fb4f2b2abcbaa9afdc5bd32dd42f1c95b8fa524641d624bed9c309fe13352",
+        "core/pinkha/torahindex/related_cache_test.go": "7e1c9ac52b67ceee64e9680da98e29966930465af2317b8269839f4c43fd0810",
+        "core/pinkha/torahtransport/import.go": "70b2d75d6653ed3fea239d594ba0f7fe50607f609894709eac409f7f68b0e916",
+        "core/pinkha/torahtransport/json_fields.go": "b45af6cef9c6f4babeea95458a2c4d11c4ee58da13b23881d6d977442569cbb6",
+        "core/pinkha/torahvalues/values.go": "104a073446d888a13fed3deef8ba5015ee906eaabd07c30161f5900258de8721",
+        "core/relations.go": "61cce8b257f9766ee4d1972c971721b2da41934aac680d9e1c330cf861221900",
+        "pkg/lib/bundle/pinkha_torah.go": "5f8f9f747a2b8158af2c8d36367d4f923c3b152a2ebead79e72a063cf7536ef5",
+        "pkg/lib/database/filter.go": "57b36ce584fa255aa92ba7319f6ae2b2eca4c473ff238596f1e5ca36bd3d85c6",
+        "pkg/lib/localstore/objectstore/spaceindex/delete.go": "2e51f49c2b7a1a588f148c805e467cd724e983db04f23f97a1dd2b1a81a746d9",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go": "0c9bee77ecbc524a73311fc36431a64bdbc35d757db829b4df1a50813b002c02",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go": "ba767700b9a3597c904bc3ad79da01a45874d5bb6337e5c035afecfcc0e8fe7c",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go": "58718c037fdb6fa8c3e117b163b5b068d9b6b365258d18223d483b795afe3106",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_related_test.go": "37b3b5b7a05d0c417396d1f7150ab922fd41b9e28fdf87848c4c393c07cabfa9",
+        "pkg/lib/localstore/objectstore/spaceindex/store.go": "1ad36d01f2b7233d8edd835ea876fa27dab503e6a476bb4cf22deeea3cb6b341",
+        "pkg/lib/localstore/objectstore/spaceindex/update.go": "50aa3ed27c4754e559930a04d93c0c976c65722d378ff89681635577b97a9a5f",
+        "space/internal/components/migration/readonlyfixer/pinkha_torah.go": "139a822fa2c0bc7eaca0f7701be2741b147a84f4519eefcf55b48fb6a5f8c319",
+        "space/internal/components/migration/readonlyfixer/pinkha_torah_test.go": "8e4994925686b8ba48743f8fa7c16f258cd47adc9c497f429d594f17d1059ea5",
+        "space/internal/components/migration/readonlyfixer/relationsfixer.go": "003cfd50944f9b31920ae4060146bbbaf42c713191595b51582a16f5d94935b8"
+      },
+      "runtime_capability": 1,
+      "runtime_version": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2"
+    }
+  },
+  "phase_reports": [
+    {
+      "account_id": "A631ZhmbUpAHkQnDqDUT8q7Qabrzn2HRWAzkNcVnY8efkwnp",
+      "account_root": "/workspace/pair-work/account-sequence/account-root",
+      "account_stop_completed": true,
+      "application_cleared": true,
+      "block_sha256": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "c8b3084cd0e7ddedfb7b31e2138d52915dbeea70ff2300bfb8f981a7407d0098",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": "398b230ea2b744254491f9bd5bf6226cddeb307a689b005ad5c5588d90ef2f99"
+      },
+      "canonical_sha256": {
+        "bafyreidcqie2nnyypxsb7y2sv5jpnammntbvjhwwqlpnuf2vxdezisaese": "583ecc248da3863cf4a3e230c6b555ff570f1bd393763e2e89a1780a289f59ff",
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "b5c9514caade32d6a3ec61f9cf41256a2d6a03a14b5a3def1032c9fd48c488f2",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": "7d3aa101f88816acacf9f6b438218072fb092e1fc45474159d04c7b7206d2b1f",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": "2ef58859c581358c77d6952e9ffb758ad92fbc68e225c5beaec68aa14882af44"
+      },
+      "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF",
+      "closed": true,
+      "export_status": "ACTUAL_JSON_AND_PROTOBUF",
+      "exports": {
+        "block.json": "af36e0e9c75a4bd39135da4a82e753b2893037be7bf8cb3ffc52a36ac7859268",
+        "block.pbc": "b062f163268b91a9c34a9d4f04ef21adfe23fc122e9b64ae81879ed228f482fb",
+        "document.json": "4e9495686f55e56fa25512b2c0ab9966d2105e5a1ae53aff972177dba0137d6b",
+        "document.pbc": "5946d766373abd25346ad84bfb5117a62ea9221617fe822dbb107478710f5791",
+        "quote.json": "3cfc1bfa5fa6791b2ea4aff10806d853fe502e42f3dac6f709fb291a6a391202",
+        "quote.pbc": "72ced397cb9f1ec6396e02b348efccdfa46b2574e84bc5c5899f30967d5e7576"
+      },
+      "fixture_sha256": "06efcae55c1838a326e80a3a86df49470433f175490b08bd9ba569dd32041a81",
+      "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "nonce": "b5c40470-0ba0-4563-b878-efc49c18e32e",
+      "ordinary_names": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "T5 preserved document",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": "T5 preserved document",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": ""
+      },
+      "patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+      "phase": "old-create",
+      "pid": 333,
+      "private_members": [],
+      "private_query_status": "NOT_ATTEMPTED_RUNTIME_UNAVAILABLE",
+      "private_versions": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": 0,
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": 0,
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": 0
+      },
+      "protocol": "pinkha-t5-account-pair-v1",
+      "public_members": [
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+      ],
+      "public_sha256": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "b38d40e37afa15c5ded4f3ade49ae023f3ef4270a2600ba161669034d42ffd35",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": "51aadb966a60b9ff624e2912e6f57322ce3f67edd41f301421cafd3ea72c775e",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": "ae521ee7677884709416e7b8090c2fdd92303ed6205ad3cb4bef0c20495c5afe"
+      },
+      "rpc_calls": {
+        "AccountCreate": 1,
+        "AccountPreloadRemainingSpaces": 1,
+        "AccountStop": 1,
+        "AppGetVersion": 1,
+        "AppShutdown": 1,
+        "BlockCreate": 2,
+        "InitialSetParameters": 1,
+        "ObjectCreate": 4,
+        "ObjectCreateObjectType": 3,
+        "ObjectCreateRelation": 4,
+        "ObjectExport": 6,
+        "ObjectSearch": 4,
+        "ObjectSetDetails": 4,
+        "ObjectShow": 15,
+        "WalletCreate": 1,
+        "WorkspaceCreate": 1,
+        "WorkspaceObjectListAdd": 1,
+        "WorkspaceOpen": 1
+      },
+      "runtime_version": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+      "scope": "actual native RPC same-account processes; no Apple packaged app or physical UI proof",
+      "space_id": "bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh",
+      "state_sha256": "88f4acf7a6dfc6af1893c0622b3a015d45266ad018bded47f549d58d997c5d3c",
+      "swift_pairing_status": "NOT_RUN",
+      "test_passed": true
+    },
+    {
+      "account_id": "A631ZhmbUpAHkQnDqDUT8q7Qabrzn2HRWAzkNcVnY8efkwnp",
+      "account_root": "/workspace/pair-work/account-sequence/account-root",
+      "account_stop_completed": true,
+      "application_cleared": true,
+      "block_sha256": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "c8b3084cd0e7ddedfb7b31e2138d52915dbeea70ff2300bfb8f981a7407d0098",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": "398b230ea2b744254491f9bd5bf6226cddeb307a689b005ad5c5588d90ef2f99"
+      },
+      "canonical_sha256": {
+        "bafyreidcqie2nnyypxsb7y2sv5jpnammntbvjhwwqlpnuf2vxdezisaese": "583ecc248da3863cf4a3e230c6b555ff570f1bd393763e2e89a1780a289f59ff",
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "b5c9514caade32d6a3ec61f9cf41256a2d6a03a14b5a3def1032c9fd48c488f2",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": "7d3aa101f88816acacf9f6b438218072fb092e1fc45474159d04c7b7206d2b1f",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": "2ef58859c581358c77d6952e9ffb758ad92fbc68e225c5beaec68aa14882af44"
+      },
+      "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF",
+      "closed": true,
+      "export_status": "ACTUAL_JSON_AND_PROTOBUF",
+      "exports": {
+        "block.json": "fd8a65808a890291fe227656ab68dafd6de6372ab136367b84973c4d93232d24",
+        "block.pbc": "9730694f042a9f4fa4237bd408810abf5864b31c9451faaa4a576ed3064e0600",
+        "document.json": "4e9495686f55e56fa25512b2c0ab9966d2105e5a1ae53aff972177dba0137d6b",
+        "document.pbc": "00718cd669d28611b91fe226172709e9ffe250582a313700b39bdb2b2d573bc4",
+        "quote.json": "50422a7ca6a012b0031668453c622a0f5d6facc835bb830089f3c10fdc6e159b",
+        "quote.pbc": "3826c68efda3d557030d459cffc13d94dfff2916c085a6469280a431dd7b6e8a"
+      },
+      "fixture_sha256": "06efcae55c1838a326e80a3a86df49470433f175490b08bd9ba569dd32041a81",
+      "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "nonce": "1a97a9a6-94f5-4126-b68f-38933d46b84d",
+      "ordinary_names": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "T5 preserved document",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": "T5 preserved document",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": ""
+      },
+      "patch_sha256": "5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2",
+      "phase": "new-upgrade",
+      "pid": 370,
+      "private_members": [
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+      ],
+      "private_query_status": "EXECUTED",
+      "private_versions": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": 1,
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": 1,
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": 1
+      },
+      "protocol": "pinkha-t5-account-pair-v1",
+      "public_members": [
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+      ],
+      "public_sha256": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "b38d40e37afa15c5ded4f3ade49ae023f3ef4270a2600ba161669034d42ffd35",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": "51aadb966a60b9ff624e2912e6f57322ce3f67edd41f301421cafd3ea72c775e",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": "ae521ee7677884709416e7b8090c2fdd92303ed6205ad3cb4bef0c20495c5afe"
+      },
+      "rpc_calls": {
+        "AccountPreloadRemainingSpaces": 1,
+        "AccountSelect": 1,
+        "AccountStop": 1,
+        "AppGetVersion": 1,
+        "AppShutdown": 1,
+        "InitialSetParameters": 1,
+        "ObjectExport": 6,
+        "ObjectSearch": 2,
+        "ObjectShow": 7,
+        "WalletRecover": 1,
+        "WorkspaceOpen": 1
+      },
+      "runtime_version": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2",
+      "scope": "actual native RPC same-account processes; no Apple packaged app or physical UI proof",
+      "space_id": "bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh",
+      "state_sha256": "88f4acf7a6dfc6af1893c0622b3a015d45266ad018bded47f549d58d997c5d3c",
+      "swift_pairing_status": "NOT_RUN",
+      "test_passed": true
+    },
+    {
+      "account_id": "A631ZhmbUpAHkQnDqDUT8q7Qabrzn2HRWAzkNcVnY8efkwnp",
+      "account_root": "/workspace/pair-work/account-sequence/account-root",
+      "account_stop_completed": true,
+      "application_cleared": true,
+      "block_sha256": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "c8b3084cd0e7ddedfb7b31e2138d52915dbeea70ff2300bfb8f981a7407d0098",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": "398b230ea2b744254491f9bd5bf6226cddeb307a689b005ad5c5588d90ef2f99"
+      },
+      "canonical_sha256": {
+        "bafyreidcqie2nnyypxsb7y2sv5jpnammntbvjhwwqlpnuf2vxdezisaese": "583ecc248da3863cf4a3e230c6b555ff570f1bd393763e2e89a1780a289f59ff",
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "b5c9514caade32d6a3ec61f9cf41256a2d6a03a14b5a3def1032c9fd48c488f2",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": "7d3aa101f88816acacf9f6b438218072fb092e1fc45474159d04c7b7206d2b1f",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": "2ef58859c581358c77d6952e9ffb758ad92fbc68e225c5beaec68aa14882af44"
+      },
+      "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF",
+      "closed": true,
+      "export_status": "ACTUAL_JSON_AND_PROTOBUF",
+      "exports": {
+        "block.json": "fd8a65808a890291fe227656ab68dafd6de6372ab136367b84973c4d93232d24",
+        "block.pbc": "1b9b4b74f0cb74a4eb1fb9563fea4ef454090b4650bb7dec53ebf8446676df44",
+        "document.json": "8ef1eaee60afc6344fa8bab8d452362b177e0dacc2cdb23531f0898e6c9970f5",
+        "document.pbc": "4df92b1f367b4a1ac1d1fc5f051bfdff476e6fdf10ca60ed11c449cade72920d",
+        "quote.json": "50422a7ca6a012b0031668453c622a0f5d6facc835bb830089f3c10fdc6e159b",
+        "quote.pbc": "0a2de3ebfb469405d14d1e8724568194b7bdfa23316a5b875440e7d8f6de40e8"
+      },
+      "fixture_sha256": "06efcae55c1838a326e80a3a86df49470433f175490b08bd9ba569dd32041a81",
+      "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "nonce": "57e3b46c-1af9-4e29-927e-38e97e833ccb",
+      "ordinary_names": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "T5 preserved document",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": "T5 ordinary title edited by r14",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": ""
+      },
+      "patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+      "phase": "old-edit",
+      "pid": 396,
+      "private_members": [],
+      "private_query_status": "NOT_ATTEMPTED_RUNTIME_UNAVAILABLE",
+      "private_versions": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": 0,
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": 0,
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": 0
+      },
+      "protocol": "pinkha-t5-account-pair-v1",
+      "public_members": [
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+      ],
+      "public_sha256": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "b38d40e37afa15c5ded4f3ade49ae023f3ef4270a2600ba161669034d42ffd35",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": "51aadb966a60b9ff624e2912e6f57322ce3f67edd41f301421cafd3ea72c775e",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": "ae521ee7677884709416e7b8090c2fdd92303ed6205ad3cb4bef0c20495c5afe"
+      },
+      "rpc_calls": {
+        "AccountPreloadRemainingSpaces": 1,
+        "AccountSelect": 1,
+        "AccountStop": 1,
+        "AppGetVersion": 1,
+        "AppShutdown": 1,
+        "InitialSetParameters": 1,
+        "ObjectExport": 6,
+        "ObjectSearch": 1,
+        "ObjectSetDetails": 1,
+        "ObjectShow": 7,
+        "WalletRecover": 1,
+        "WorkspaceOpen": 1
+      },
+      "runtime_version": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+      "scope": "actual native RPC same-account processes; no Apple packaged app or physical UI proof",
+      "space_id": "bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh",
+      "state_sha256": "88f4acf7a6dfc6af1893c0622b3a015d45266ad018bded47f549d58d997c5d3c",
+      "swift_pairing_status": "NOT_RUN",
+      "test_passed": true
+    },
+    {
+      "account_id": "A631ZhmbUpAHkQnDqDUT8q7Qabrzn2HRWAzkNcVnY8efkwnp",
+      "account_root": "/workspace/pair-work/account-sequence/account-root",
+      "account_stop_completed": true,
+      "application_cleared": true,
+      "block_sha256": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "c8b3084cd0e7ddedfb7b31e2138d52915dbeea70ff2300bfb8f981a7407d0098",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": "398b230ea2b744254491f9bd5bf6226cddeb307a689b005ad5c5588d90ef2f99"
+      },
+      "canonical_sha256": {
+        "bafyreidcqie2nnyypxsb7y2sv5jpnammntbvjhwwqlpnuf2vxdezisaese": "583ecc248da3863cf4a3e230c6b555ff570f1bd393763e2e89a1780a289f59ff",
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "b5c9514caade32d6a3ec61f9cf41256a2d6a03a14b5a3def1032c9fd48c488f2",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": "7d3aa101f88816acacf9f6b438218072fb092e1fc45474159d04c7b7206d2b1f",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": "2ef58859c581358c77d6952e9ffb758ad92fbc68e225c5beaec68aa14882af44"
+      },
+      "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF",
+      "closed": true,
+      "export_status": "ACTUAL_JSON_AND_PROTOBUF",
+      "exports": {
+        "block.json": "fd8a65808a890291fe227656ab68dafd6de6372ab136367b84973c4d93232d24",
+        "block.pbc": "daac58f8c7a538ea7595e290ef4dcc0328823467fbfd7f2481d95c62dc5b2923",
+        "document.json": "8ef1eaee60afc6344fa8bab8d452362b177e0dacc2cdb23531f0898e6c9970f5",
+        "document.pbc": "2159dd93257ea81f3caf3e610137f2657156211918479b14d255b21e71fae7f1",
+        "quote.json": "50422a7ca6a012b0031668453c622a0f5d6facc835bb830089f3c10fdc6e159b",
+        "quote.pbc": "14c074903b3b014bcc55e55af57dfab2ff69734a7cd6241a4782e3c94f8b6d4b"
+      },
+      "fixture_sha256": "06efcae55c1838a326e80a3a86df49470433f175490b08bd9ba569dd32041a81",
+      "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "nonce": "d34cec8d-8b39-43ef-9903-6fe679067338",
+      "ordinary_names": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "T5 preserved document",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": "T5 ordinary title edited by r14",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": ""
+      },
+      "patch_sha256": "5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2",
+      "phase": "new-recover",
+      "pid": 417,
+      "private_members": [
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+      ],
+      "private_query_status": "EXECUTED",
+      "private_versions": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": 1,
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": 1,
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": 1
+      },
+      "protocol": "pinkha-t5-account-pair-v1",
+      "public_members": [
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+      ],
+      "public_sha256": {
+        "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti": "b38d40e37afa15c5ded4f3ade49ae023f3ef4270a2600ba161669034d42ffd35",
+        "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei": "51aadb966a60b9ff624e2912e6f57322ce3f67edd41f301421cafd3ea72c775e",
+        "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge": "ae521ee7677884709416e7b8090c2fdd92303ed6205ad3cb4bef0c20495c5afe"
+      },
+      "rpc_calls": {
+        "AccountPreloadRemainingSpaces": 1,
+        "AccountSelect": 1,
+        "AccountStop": 1,
+        "AppGetVersion": 1,
+        "AppShutdown": 1,
+        "InitialSetParameters": 1,
+        "ObjectExport": 6,
+        "ObjectSearch": 2,
+        "ObjectShow": 7,
+        "WalletRecover": 1,
+        "WorkspaceOpen": 1
+      },
+      "runtime_version": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2",
+      "scope": "actual native RPC same-account processes; no Apple packaged app or physical UI proof",
+      "space_id": "bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh",
+      "state_sha256": "88f4acf7a6dfc6af1893c0622b3a015d45266ad018bded47f549d58d997c5d3c",
+      "swift_pairing_status": "NOT_RUN",
+      "test_passed": true
+    }
+  ],
+  "include_freshness": true,
+  "freshness_report": {
+    "account_id": "A631ZhmbUpAHkQnDqDUT8q7Qabrzn2HRWAzkNcVnY8efkwnp",
+    "account_root": "/workspace/pair-work/account-sequence/account-root",
+    "account_stop_completed": true,
+    "application_cleared": true,
+    "checks": [
+      {
+        "canonical_raw": "{\"records\":[{\"item\":{\"canonicalKey\":\"Genesis 3:4\",\"externalID\":\"Genesis 3:4\",\"id\":\"pair-ref\",\"kind\":\"ref\",\"labelHe\":\"source\",\"providerID\":\"sefaria\",\"role\":\"context\",\"unknownItem\":\"preserve\"},\"objectId\":\"bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei\",\"spaceId\":\"bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh\",\"unknownRecord\":{\"preserve\":\"unchanged\"}}],\"unknownRoot\":\"preserve\",\"version\":2}",
+        "canonical_restored_sha256": "7d3aa101f88816acacf9f6b438218072fb092e1fc45474159d04c7b7206d2b1f",
+        "canonical_sha256": "9196dee5b469639cc806d3a305fde534cae202f4a23310280d0f18280d98ab04",
+        "members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_primary": [],
+          "public_provider": [],
+          "public_verse": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ]
+        },
+        "name": "document_ref_update",
+        "object_id": "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+        "object_retained": true,
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        }
+      },
+      {
+        "canonical_raw": "{\"records\":[],\"unknownRoot\":\"preserve\",\"version\":2}",
+        "canonical_restored_sha256": "7d3aa101f88816acacf9f6b438218072fb092e1fc45474159d04c7b7206d2b1f",
+        "canonical_sha256": "d68b260403aa5f6963f1d9dc17f2ab5772f810830d5bbaebffd225e17bda4900",
+        "members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "document_unlink",
+        "object_id": "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+        "object_retained": true,
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        }
+      },
+      {
+        "canonical_raw": "{\"records\":[{\"item\":{\"canonicalKey\":\"Genesis 3:3\",\"externalID\":\"Genesis 3:3\",\"id\":\"pair-ref\",\"kind\":\"ref\",\"labelEn\":\"A different English display label\",\"labelHe\":\"\u05db\u05d5\u05ea\u05e8\u05ea \u05d0\u05d7\u05e8\u05ea\",\"providerID\":\"sefaria\",\"role\":\"context\",\"unknownItem\":\"preserve\"},\"objectId\":\"bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei\",\"spaceId\":\"bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh\",\"unknownRecord\":{\"preserve\":\"unchanged\"}}],\"unknownRoot\":\"preserve\",\"version\":2}",
+        "canonical_restored_sha256": "7d3aa101f88816acacf9f6b438218072fb092e1fc45474159d04c7b7206d2b1f",
+        "canonical_sha256": "20df6f946ca8593b72126208c0a03b9709924c01b36856398b9b5310edd6fd86",
+        "members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "label_alias",
+        "object_id": "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+        "object_retained": true,
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        }
+      },
+      {
+        "canonical_raw": "{\"records\":[{\"item\":{\"canonicalKey\":\"Genesis 3:3\",\"externalID\":\"Genesis 3:3\",\"id\":\"pair-ref\",\"kind\":\"ref\",\"labelHe\":\"source\",\"providerID\":\"fixture-other-provider\",\"role\":\"context\",\"unknownItem\":\"preserve\"},\"objectId\":\"bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei\",\"spaceId\":\"bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh\",\"unknownRecord\":{\"preserve\":\"unchanged\"}}],\"unknownRoot\":\"preserve\",\"version\":2}",
+        "canonical_restored_sha256": "7d3aa101f88816acacf9f6b438218072fb092e1fc45474159d04c7b7206d2b1f",
+        "canonical_sha256": "66335db0bcce96f0b7a7b652ee35304d164b3485c2ae1c02bdd38fdcd4183120",
+        "members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "private_verse": [],
+          "public_primary": [],
+          "public_provider": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_verse": []
+        },
+        "name": "provider_separation",
+        "object_id": "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+        "object_retained": true,
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        }
+      },
+      {
+        "canonical_raw": "{\"records\":[{\"blockId\":\"6afd3024ba4f26014da77a24\",\"item\":{\"canonicalKey\":\"Genesis 3:4\",\"externalID\":\"Genesis 3:4\",\"id\":\"pair-ref\",\"kind\":\"ref\",\"labelHe\":\"source\",\"providerID\":\"sefaria\",\"role\":\"context\",\"unknownItem\":\"preserve\"},\"objectId\":\"bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge\",\"spaceId\":\"bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh\",\"unknownRecord\":{\"preserve\":\"unchanged\"}}],\"unknownRoot\":\"preserve\",\"version\":2}",
+        "canonical_restored_sha256": "2ef58859c581358c77d6952e9ffb758ad92fbc68e225c5beaec68aa14882af44",
+        "canonical_sha256": "dee481b785320012e2e62063072f731666115a9181dfab3be3bbbfbf4c81a8ec",
+        "members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "private_provider": [],
+          "private_verse": [
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "block_ref_update",
+        "object_id": "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge",
+        "object_retained": true,
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        }
+      },
+      {
+        "canonical_raw": "{\"records\":[],\"unknownRoot\":\"preserve\",\"version\":2}",
+        "canonical_restored_sha256": "2ef58859c581358c77d6952e9ffb758ad92fbc68e225c5beaec68aa14882af44",
+        "canonical_sha256": "d68b260403aa5f6963f1d9dc17f2ab5772f810830d5bbaebffd225e17bda4900",
+        "members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "note_block_unlink",
+        "object_id": "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge",
+        "object_retained": true,
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        }
+      },
+      {
+        "canonical_raw": "{\"records\":[{\"blockId\":\"6afd3024ba4f26014da77a25\",\"item\":{\"canonicalKey\":\"Genesis 3:4\",\"externalID\":\"Genesis 3:4\",\"id\":\"pair-ref\",\"kind\":\"ref\",\"labelHe\":\"source\",\"providerID\":\"sefaria\",\"role\":\"sourceQuote\",\"unknownItem\":\"preserve\"},\"objectId\":\"bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti\",\"spaceId\":\"bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh\",\"unknownRecord\":{\"preserve\":\"unchanged\"}}],\"unknownRoot\":\"preserve\",\"version\":2}",
+        "canonical_restored_sha256": "b5c9514caade32d6a3ec61f9cf41256a2d6a03a14b5a3def1032c9fd48c488f2",
+        "canonical_sha256": "2c5928fdc10f23b65178c58eabed29df2a71c2f3a599bb27015691ed608988d7",
+        "members": {
+          "private_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti"
+          ],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "source_quote_ref_update",
+        "object_id": "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+        "object_retained": true,
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        }
+      },
+      {
+        "canonical_raw": "{\"records\":[],\"unknownRoot\":\"preserve\",\"version\":2}",
+        "canonical_restored_sha256": "b5c9514caade32d6a3ec61f9cf41256a2d6a03a14b5a3def1032c9fd48c488f2",
+        "canonical_sha256": "d68b260403aa5f6963f1d9dc17f2ab5772f810830d5bbaebffd225e17bda4900",
+        "members": {
+          "private_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "source_quote_unlink",
+        "object_id": "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+        "object_retained": true,
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        }
+      },
+      {
+        "canonical_raw": "{\"records\":[{\"blockId\":\"6afd3024ba4f26014da77a25\",\"item\":{\"canonicalKey\":\"Genesis 3:3\",\"externalID\":\"Genesis 3:3\",\"id\":\"pair-ref\",\"kind\":\"ref\",\"labelHe\":\"source\",\"providerID\":\"sefaria\",\"role\":\"sourceQuote\",\"unknownItem\":\"preserve\"},\"objectId\":\"bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti\",\"spaceId\":\"not-the-current-fixture-space\",\"unknownRecord\":{\"preserve\":\"unchanged\"}}],\"unknownRoot\":\"preserve\",\"version\":2}",
+        "canonical_restored_sha256": "b5c9514caade32d6a3ec61f9cf41256a2d6a03a14b5a3def1032c9fd48c488f2",
+        "canonical_sha256": "e204fe86007a4d76d0c06b7b51f50b1df7f34d396646e271ae98dace540cd65d",
+        "members": {
+          "private_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "foreign_record_space",
+        "object_id": "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+        "object_retained": true,
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        }
+      },
+      {
+        "canonical_raw": "{\"records\":[{\"blockId\":\"6afd3024ba4f26014da77a25\",\"item\":{\"canonicalKey\":\"Genesis 3:3\",\"externalID\":\"Genesis 3:3\",\"id\":\"pair-ref\",\"kind\":\"ref\",\"labelHe\":\"source\",\"providerID\":\"sefaria\",\"role\":\"sourceQuote\",\"unknownItem\":\"preserve\"},\"objectId\":\"bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei\",\"spaceId\":\"bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh\",\"unknownRecord\":{\"preserve\":\"unchanged\"}}],\"unknownRoot\":\"preserve\",\"version\":2}",
+        "canonical_restored_sha256": "b5c9514caade32d6a3ec61f9cf41256a2d6a03a14b5a3def1032c9fd48c488f2",
+        "canonical_sha256": "948672d80d62305692a640931d2bf990bf19f0442cdc738cf6377c8f89c90ce9",
+        "members": {
+          "private_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "foreign_record_object",
+        "object_id": "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+        "object_retained": true,
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        }
+      },
+      {
+        "canonical_raw": "{",
+        "canonical_restored_sha256": "b5c9514caade32d6a3ec61f9cf41256a2d6a03a14b5a3def1032c9fd48c488f2",
+        "canonical_sha256": "021fb596db81e6d02bf3d2586ee3981fe519f275c0ac9ca76bbcf2ebb4097d96",
+        "members": {
+          "private_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "malformed_payload",
+        "object_id": "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+        "object_retained": true,
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        }
+      },
+      {
+        "archive_observed": true,
+        "members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "archive_cycle",
+        "object_id": "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge",
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "unarchive_observed": true
+      },
+      {
+        "members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "type_cycle",
+        "note_type_id": "bafyreichafuyddtrp7zmmu5c3uwwcweqqwbbi6zfd3b56pqix6ntqe47fi",
+        "object_id": "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+        "page_type_id": "bafyreiemqtjplou6xoj6gr342mtkirknuygnvlbkgdzvwsu2zuhtr6f2sq",
+        "restored_members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        }
+      },
+      {
+        "block_id": "6afd3024ba4f26014da77a24",
+        "canonical_sha256": "2ef58859c581358c77d6952e9ffb758ad92fbc68e225c5beaec68aa14882af44",
+        "host_target_exclusion_status": "NOT_RUN_SWIFT_HOST",
+        "live_graph_nodes": [
+          {
+            "child_ids": [],
+            "id": "6afd3024ba4f26014da77a23"
+          },
+          {
+            "child_ids": [
+              "header",
+              "6afd3024ba4f26014da77a23"
+            ],
+            "id": "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          },
+          {
+            "child_ids": [],
+            "id": "featuredRelations"
+          },
+          {
+            "child_ids": [
+              "featuredRelations"
+            ],
+            "id": "header"
+          }
+        ],
+        "live_root_id": "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge",
+        "members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "block_target_removed",
+        "object_id": "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge",
+        "target_reachable": false
+      },
+      {
+        "block_id": "6afd3024ba4f26014da77a25",
+        "canonical_sha256": "b5c9514caade32d6a3ec61f9cf41256a2d6a03a14b5a3def1032c9fd48c488f2",
+        "host_target_exclusion_status": "NOT_RUN_SWIFT_HOST",
+        "live_graph_nodes": [
+          {
+            "child_ids": [
+              "header"
+            ],
+            "id": "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti"
+          },
+          {
+            "child_ids": [],
+            "id": "featuredRelations"
+          },
+          {
+            "child_ids": [
+              "title",
+              "featuredRelations"
+            ],
+            "id": "header"
+          },
+          {
+            "child_ids": [],
+            "id": "title"
+          }
+        ],
+        "live_root_id": "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+        "members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [
+            "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei"
+          ],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "source_quote_target_removed",
+        "object_id": "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+        "target_reachable": false
+      },
+      {
+        "members": {
+          "private_primary": [
+            "bafyreifrh6bspquhjtmo7krfmsmlgfi4h2tm2sw6rvud5os2lkqewepiti",
+            "bafyreigz7mdiluwg563jh7k43t6bwfwipf5lguysly2gbnra4hotqxtlge"
+          ],
+          "private_provider": [],
+          "private_verse": [],
+          "public_primary": [],
+          "public_provider": [],
+          "public_verse": []
+        },
+        "name": "object_deleted",
+        "object_id": "bafyreigd4gkcfkq3nx4r33izyyxf5felhquyzrjdwukqxglaz5u6ld26ei",
+        "object_show_error": 4
+      }
+    ],
+    "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF",
+    "closed": true,
+    "coverage": "indexedTargetsOnly",
+    "fixture_sha256": "06efcae55c1838a326e80a3a86df49470433f175490b08bd9ba569dd32041a81",
+    "freshness_status": "PASS_NATIVE_RPC_MUTATIONS",
+    "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+    "host_target_exclusion_status": "NOT_RUN_SWIFT_HOST",
+    "nonce": "db471696-3f23-41b1-8248-e7c2465c816d",
+    "patch_sha256": "5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2",
+    "phase": "new-freshness",
+    "pid": 441,
+    "protocol": "pinkha-t5-account-pair-v1",
+    "rpc_calls": {
+      "AccountPreloadRemainingSpaces": 1,
+      "AccountSelect": 1,
+      "AccountStop": 1,
+      "AppGetVersion": 1,
+      "AppShutdown": 1,
+      "BlockListDelete": 2,
+      "InitialSetParameters": 1,
+      "ObjectListDelete": 1,
+      "ObjectListSetIsArchived": 2,
+      "ObjectSearch": 185,
+      "ObjectSetDetails": 22,
+      "ObjectSetObjectType": 2,
+      "ObjectShow": 34,
+      "WalletRecover": 1,
+      "WorkspaceOpen": 1
+    },
+    "runtime_version": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2",
+    "scope": "fifth same-account native process; intentional disposable mutations after four closed compatibility phases",
+    "space_id": "bafyreidmc2oeikricw3flhhff3btyqar7i5djix3rjfrsbj2epb67zlzbe.fbgz7n4mc2qh",
+    "space_wide_freshness": "NOT_PROVEN",
+    "state_sha256": "88f4acf7a6dfc6af1893c0622b3a015d45266ad018bded47f549d58d997c5d3c",
+    "swift_pairing_status": "NOT_RUN",
+    "test_passed": true,
+    "write_origin": "NATIVE_RPC_WITHOUT_SWIFT_INVALIDATION_OR_EXPLICIT_REINDEX"
+  },
+  "freshness_status": "PASS_NATIVE_RPC_MUTATIONS",
+  "actual_counts": {
+    "binaries": 2,
+    "native_processes": 5,
+    "passing_test_invocations": 5,
+    "actual_export_files": 24
+  },
+  "export_status": "ACTUAL_JSON_AND_PROTOBUF",
+  "finished_at": "2026-11-18T04:57:15.987624+00:00"
+}

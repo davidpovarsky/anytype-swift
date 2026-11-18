@@ -1,0 +1,94 @@
+{
+  "status": "PASS_ACTUAL_NATIVE_INDEX_FRESHNESS",
+  "run_id": 44240651687,
+  "integration_sha": "15656bf3faeef0659fb8639a2e7f73727ad443b0",
+  "native_source_sha": "947fbde24d5657d0e1229f45bb3993648884a8a1",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "artifact_id": 14399013977,
+  "artifact_sha256": "1be4feb94abc6771e1350d2b010963a8e8b8dd7a9d8b75ad793f7152794909f6",
+  "raw_members_verified": 69,
+  "actual_counts": {
+    "binaries": 2,
+    "native_processes": 5,
+    "passing_test_invocations": 5,
+    "actual_export_files": 24
+  },
+  "phases": [
+    {
+      "phase": "old-create",
+      "pid": 333,
+      "closed": true,
+      "account_stop_completed": true,
+      "application_cleared": true
+    },
+    {
+      "phase": "new-upgrade",
+      "pid": 370,
+      "closed": true,
+      "account_stop_completed": true,
+      "application_cleared": true
+    },
+    {
+      "phase": "old-edit",
+      "pid": 396,
+      "closed": true,
+      "account_stop_completed": true,
+      "application_cleared": true
+    },
+    {
+      "phase": "new-recover",
+      "pid": 417,
+      "closed": true,
+      "account_stop_completed": true,
+      "application_cleared": true
+    },
+    {
+      "phase": "new-freshness",
+      "pid": 441,
+      "closed": true,
+      "account_stop_completed": true,
+      "application_cleared": true
+    }
+  ],
+  "native_freshness_checks": [
+    "document_ref_update",
+    "document_unlink",
+    "label_alias",
+    "provider_separation",
+    "block_ref_update",
+    "note_block_unlink",
+    "source_quote_ref_update",
+    "source_quote_unlink",
+    "foreign_record_space",
+    "foreign_record_object",
+    "malformed_payload",
+    "archive_cycle",
+    "type_cycle",
+    "block_target_removed",
+    "source_quote_target_removed",
+    "object_deleted"
+  ],
+  "native_freshness_rpc_calls": {
+    "AccountPreloadRemainingSpaces": 1,
+    "AccountSelect": 1,
+    "AccountStop": 1,
+    "AppGetVersion": 1,
+    "AppShutdown": 1,
+    "BlockListDelete": 2,
+    "InitialSetParameters": 1,
+    "ObjectListDelete": 1,
+    "ObjectListSetIsArchived": 2,
+    "ObjectSearch": 185,
+    "ObjectSetDetails": 22,
+    "ObjectSetObjectType": 2,
+    "ObjectShow": 34,
+    "WalletRecover": 1,
+    "WorkspaceOpen": 1
+  },
+  "receipt_revalidation": "PASS_ORIGINAL_CONTROLLER_AND_ALL_EXPORT_HASHES",
+  "native_binary_archive_downloaded": false,
+  "swift_pairing_status": "NOT_RUN",
+  "host_target_exclusion_status": "NOT_RUN_SWIFT_HOST",
+  "space_wide_freshness": "NOT_PROVEN",
+  "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF"
+}
