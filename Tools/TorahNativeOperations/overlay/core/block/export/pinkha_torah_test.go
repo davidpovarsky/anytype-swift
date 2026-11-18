@@ -205,7 +205,7 @@ func TestPinkhaPrivateObjectListAndCollectDenied(t *testing.T) {
 			directory := t.TempDir()
 			path, diagnostics, err := fx.Export(context.Background(), pb.RpcObjectListExportRequest{
 				SpaceId: spaceId, ObjectIds: []string{"private-root"}, Format: format,
-				Path: directory, Zip: true, NoProgress: true,
+				Path: directory, Zip: true,
 			})
 			require.ErrorIs(t, err, torahopscontract.ErrPrivateOperation)
 			require.Empty(t, path)
