@@ -289,7 +289,19 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         // the same explicit production control; no coordinate or consent bypass.
         let button = app.buttons.matching(NSPredicate(format: "identifier == %@ OR label == %@",
                                                        identifier, label)).firstMatch
-        XCTAssertTrue(button.waitForExistence(timeout: 10))
+        // The existing element must also become touch-ready after native
+        // presentation. Keep the same 10-second budget and the exact query.
+        let ready = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "exists == true AND hittable == true"), object: button)
+        let result = XCTWaiter.wait(for: [ready], timeout: 10)
+        if result != .completed {
+            let attachment = XCTAttachment(string: button.debugDescription)
+            attachment.name = "hanlin-native-chat-control-readiness"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+            attachScreenshot("hanlin-native-chat-control-readiness-failure")
+        }
+        XCTAssertEqual(result, .completed, "The exact native chat control must become hittable within 10 seconds")
         XCTAssertTrue(button.isHittable)
         return button
     }
