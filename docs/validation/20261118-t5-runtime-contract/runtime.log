@@ -1,0 +1,222 @@
+[0/1] Planning build
+Building for debugging...
+[0/17] Write swift-version-2807070033DA82CF.txt
+[1/17] Write sources
+[6/18] Emitting module TorahInspectorCore
+[7/25] Compiling TorahInspectorCore Models.swift
+[8/25] Compiling TorahInspectorCore ProviderProtocols.swift
+[9/25] Compiling TorahInspectorCore TorahInspectorCoordinator.swift
+[10/25] Compiling TorahInspectorCore TorahInspectorRepository.swift
+[11/25] Compiling TorahInspectorCore TorahReaderScrollStateMachine.swift
+[12/25] Compiling TorahInspectorCore TorahSourceTransfer.swift
+[13/25] Compiling TorahInspectorCore TorahToolSelectorStateMachine.swift
+[14/26] Wrapping AST for TorahInspectorCore for debugging
+[16/27] Emitting module TorahInspectorCoreTests
+[17/28] Compiling TorahInspectorCoreTests RelatedDocumentsRefreshTests.swift
+[19/30] Emitting module PinkhaKit
+[20/54] Compiling PinkhaKit PinkhaBootstrapProtocols.swift
+[21/54] Compiling PinkhaKit PinkhaSchemaMigrator.swift
+[22/54] Compiling PinkhaKit PinkhaSpaceBootstrapEngine.swift
+[23/54] Compiling PinkhaKit PinkhaRuntime.swift
+[24/54] Compiling PinkhaKit PinkhaHierarchyBuilder.swift
+[25/54] Compiling PinkhaKit PinkhaHierarchyCodec.swift
+[26/54] Compiling PinkhaKit PinkhaHierarchyKeyBuilder.swift
+[27/54] Compiling PinkhaKit PinkhaHierarchyModels.swift
+[28/54] Compiling PinkhaKit PinkhaHierarchyMutationValidator.swift
+[29/54] Compiling PinkhaKit PinkhaHierarchyOrdering.swift
+[30/54] Compiling PinkhaKit PinkhaHierarchyReconciler.swift
+[31/54] Compiling PinkhaKit PinkhaNavigationDirectionPolicy.swift
+[32/54] Compiling PinkhaKit PinkhaTextDirectionMarker.swift
+[33/54] Compiling PinkhaKit PinkhaWritingDirectionPolicy.swift
+[34/54] Compiling PinkhaKit PinkhaSchemaRoles.swift
+[35/54] Compiling PinkhaKit PinkhaSpaceManifest.swift
+[36/54] Compiling PinkhaKit TorahNativePropertySchema.swift
+[37/54] Compiling PinkhaKit AnytypeTorahWorkspace.swift
+[38/54] Compiling PinkhaKit SefariaHierarchyProvider.swift
+[39/54] Compiling PinkhaKit TorahSourceHierarchy.swift
+[40/54] Compiling PinkhaKit SefariaClient.swift
+[41/54] Compiling PinkhaKit SefariaDisplayText.swift
+[42/54] Compiling PinkhaKit SefariaJSONText.swift
+[43/54] Compiling PinkhaKit SefariaLexicalProvider.swift
+[44/78] Compiling PinkhaKit SefariaReferenceProvider.swift
+[45/78] Compiling PinkhaKit SefariaRelationshipProvider.swift
+[46/78] Compiling PinkhaKit SefariaTextProvider.swift
+[47/78] Compiling PinkhaKit SefariaTopicProvider.swift
+[48/78] Compiling PinkhaKit TorahHTTPTransport.swift
+[49/78] Compiling PinkhaKit TorahTopicCache.swift
+[50/78] Compiling PinkhaKit T5BlockReachability.swift
+[51/78] Compiling PinkhaKit T5ExpandedRelatedDocumentsQuery.swift
+[52/78] Compiling PinkhaKit T5ExpandedRelatedTargets.swift
+[53/78] Compiling PinkhaKit T5NativeRelatedLookupCapability.swift
+[54/78] Compiling PinkhaKit T5NoteCreationFlow.swift
+[55/78] Compiling PinkhaKit T5SpaceRelatedDocumentsQuery.swift
+[56/78] Compiling PinkhaKit TorahAssociationIdentity.swift
+[57/78] Compiling PinkhaKit TorahAssociationModels.swift
+[58/78] Compiling PinkhaKit TorahAssociationPayloadCodec.swift
+[59/78] Compiling PinkhaKit TorahAssociationRepository.swift
+[60/78] Compiling PinkhaKit TorahCanonicalAssociations.swift
+[61/78] Compiling PinkhaKit TorahDerivedQueryProjection.swift
+[62/78] Compiling PinkhaKit TorahDocumentPropertyProjection.swift
+[63/78] Compiling PinkhaKit TorahInspectorRepositoryFactory.swift
+[64/78] Compiling PinkhaKit TorahProviderModels.swift
+[65/78] Compiling PinkhaKit TorahProviderProtocols.swift
+[66/78] Compiling PinkhaKit TorahProviderRegistry.swift
+[67/78] Compiling PinkhaKit TorahReferenceUtil.swift
+[68/79] Wrapping AST for TorahInspectorCoreTests for debugging
+[69/79] Wrapping AST for PinkhaKit for debugging
+[71/80] Emitting module PinkhaKitTests
+[72/85] Compiling PinkhaKitTests T5BlockReachabilityTests.swift
+C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\Tests\PinkhaKitTests\T5NoteCreationFlowTests.swift:124:19: warning: 'permitted' mutated after capture by sendable closure
+ 84 |         let flow = T5NoteCreationFlow()
+ 85 |         let barrier = T5NoteWriteBarrier()
+ 86 |         var permitted = true
+    |             `- note: variable defined here
+ 87 |         var creates = 0
+ 88 |         var sourceWrites = 0
+ 89 |         var textWrites = 0
+ 90 |         var originWrites = 0
+ 91 |         let authorize: T5NoteCreationFlow.Authorize = {
+    |                                                       `- note: variable captured by sendable closure
+ 92 |             guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
+    |                   `- note: capturing use
+ 93 |         }
+ 94 |         let request = Task { @MainActor in
+    :
+122 |         #expect(originWrites == 0)
+123 | 
+124 |         permitted = true
+    |                   `- warning: 'permitted' mutated after capture by sendable closure
+125 |         let resumed = try await flow.create(
+126 |             source: source, authorize: authorize,
+[73/85] Compiling PinkhaKitTests T5ExpandedRelatedDocumentsQueryTests.swift
+C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\Tests\PinkhaKitTests\T5NoteCreationFlowTests.swift:124:19: warning: 'permitted' mutated after capture by sendable closure
+ 84 |         let flow = T5NoteCreationFlow()
+ 85 |         let barrier = T5NoteWriteBarrier()
+ 86 |         var permitted = true
+    |             `- note: variable defined here
+ 87 |         var creates = 0
+ 88 |         var sourceWrites = 0
+ 89 |         var textWrites = 0
+ 90 |         var originWrites = 0
+ 91 |         let authorize: T5NoteCreationFlow.Authorize = {
+    |                                                       `- note: variable captured by sendable closure
+ 92 |             guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
+    |                   `- note: capturing use
+ 93 |         }
+ 94 |         let request = Task { @MainActor in
+    :
+122 |         #expect(originWrites == 0)
+123 | 
+124 |         permitted = true
+    |                   `- warning: 'permitted' mutated after capture by sendable closure
+125 |         let resumed = try await flow.create(
+126 |             source: source, authorize: authorize,
+[74/85] Compiling PinkhaKitTests T5ExpandedRelatedTargetsTests.swift
+C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\Tests\PinkhaKitTests\T5NoteCreationFlowTests.swift:124:19: warning: 'permitted' mutated after capture by sendable closure
+ 84 |         let flow = T5NoteCreationFlow()
+ 85 |         let barrier = T5NoteWriteBarrier()
+ 86 |         var permitted = true
+    |             `- note: variable defined here
+ 87 |         var creates = 0
+ 88 |         var sourceWrites = 0
+ 89 |         var textWrites = 0
+ 90 |         var originWrites = 0
+ 91 |         let authorize: T5NoteCreationFlow.Authorize = {
+    |                                                       `- note: variable captured by sendable closure
+ 92 |             guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
+    |                   `- note: capturing use
+ 93 |         }
+ 94 |         let request = Task { @MainActor in
+    :
+122 |         #expect(originWrites == 0)
+123 | 
+124 |         permitted = true
+    |                   `- warning: 'permitted' mutated after capture by sendable closure
+125 |         let resumed = try await flow.create(
+126 |             source: source, authorize: authorize,
+[75/85] Compiling PinkhaKitTests T5NativeRelatedLookupCapabilityTests.swift
+C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\Tests\PinkhaKitTests\T5NoteCreationFlowTests.swift:124:19: warning: 'permitted' mutated after capture by sendable closure
+ 84 |         let flow = T5NoteCreationFlow()
+ 85 |         let barrier = T5NoteWriteBarrier()
+ 86 |         var permitted = true
+    |             `- note: variable defined here
+ 87 |         var creates = 0
+ 88 |         var sourceWrites = 0
+ 89 |         var textWrites = 0
+ 90 |         var originWrites = 0
+ 91 |         let authorize: T5NoteCreationFlow.Authorize = {
+    |                                                       `- note: variable captured by sendable closure
+ 92 |             guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
+    |                   `- note: capturing use
+ 93 |         }
+ 94 |         let request = Task { @MainActor in
+    :
+122 |         #expect(originWrites == 0)
+123 | 
+124 |         permitted = true
+    |                   `- warning: 'permitted' mutated after capture by sendable closure
+125 |         let resumed = try await flow.create(
+126 |             source: source, authorize: authorize,
+[76/85] Compiling PinkhaKitTests T5NoteCreationFlowTests.swift
+C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\Tests\PinkhaKitTests\T5NoteCreationFlowTests.swift:124:19: warning: 'permitted' mutated after capture by sendable closure
+ 84 |         let flow = T5NoteCreationFlow()
+ 85 |         let barrier = T5NoteWriteBarrier()
+ 86 |         var permitted = true
+    |             `- note: variable defined here
+ 87 |         var creates = 0
+ 88 |         var sourceWrites = 0
+ 89 |         var textWrites = 0
+ 90 |         var originWrites = 0
+ 91 |         let authorize: T5NoteCreationFlow.Authorize = {
+    |                                                       `- note: variable captured by sendable closure
+ 92 |             guard permitted else { throw TorahAssociationRepositoryError.permissionDenied }
+    |                   `- note: capturing use
+ 93 |         }
+ 94 |         let request = Task { @MainActor in
+    :
+122 |         #expect(originWrites == 0)
+123 | 
+124 |         permitted = true
+    |                   `- warning: 'permitted' mutated after capture by sendable closure
+125 |         let resumed = try await flow.create(
+126 |             source: source, authorize: authorize,
+[77/86] C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\.build\x86_64-unknown-windows-msvc\debug\T5AuthorizationComponentProofPackageDiscoveredTests.derived\all-discovered-tests.swift
+[78/86] Wrapping AST for PinkhaKitTests for debugging
+[79/86] Write sources
+[81/87] Emitting module T5AuthorizationComponentProofPackageDiscoveredTests
+[82/90] Compiling T5AuthorizationComponentProofPackageDiscoveredTests PinkhaKitTests.swift
+[83/90] Compiling T5AuthorizationComponentProofPackageDiscoveredTests TorahInspectorCoreTests.swift
+[84/90] Compiling T5AuthorizationComponentProofPackageDiscoveredTests all-discovered-tests.swift
+[85/91] C:\Users\DAVID\Code\anytype-swift-chatgpt-t5-20261118\.build\portable-t5-authorization\.build\x86_64-unknown-windows-msvc\debug\T5AuthorizationComponentProofPackageTests.derived\runner.swift
+[86/91] Wrapping AST for T5AuthorizationComponentProofPackageDiscoveredTests for debugging
+[87/91] Write sources
+[89/92] Emitting module T5AuthorizationComponentProofPackageTests
+[90/93] Compiling T5AuthorizationComponentProofPackageTests runner.swift
+[91/93] Write Objects.LinkFileList
+[92/93] Linking T5AuthorizationComponentProofPackageTests.xctest
+Build complete! (57.33s)
+Test Suite 'Selected tests' started at 2026-11-18 00:33:05.495
+Test Suite 'Selected tests' passed at 2026-11-18 00:33:05.538
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◊ Test run started.
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+→ Target Platform: x86_64-unknown-windows-msvc
+◊ Suite "T5 running Heart capability boundary" started.
+◊ Test exactRuntimeCannotEnableAnUnapprovedHostBuild() started.
+◊ Test olderPartialForeignAndExtendedRuntimeIdentitiesCannotGrantCapability(version:) started.
+◊ Test separatelyEnabledHostAcceptsTheExactReviewedRuntime() started.
+◊ Test case passing 1 argument version → "pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2" to olderPartialForeignAndExtendedRuntimeIdentitiesCannotGrantCapability(version:) started.
+◊ Test case passing 1 argument version → "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-different-build" to olderPartialForeignAndExtendedRuntimeIdentitiesCannotGrantCapability(version:) started.
+◊ Test case passing 1 argument version → "" to olderPartialForeignAndExtendedRuntimeIdentitiesCannotGrantCapability(version:) started.
+◊ Test case passing 1 argument version → "v0.51.7-nightly.20261014.1" to olderPartialForeignAndExtendedRuntimeIdentitiesCannotGrantCapability(version:) started.
+◊ Test case passing 1 argument version → "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077" to olderPartialForeignAndExtendedRuntimeIdentitiesCannotGrantCapability(version:) started.
+◊ Test case passing 1 argument version → "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2" to olderPartialForeignAndExtendedRuntimeIdentitiesCannotGrantCapability(version:) started.
+◊ Test case passing 1 argument version → "unverified-v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2" to olderPartialForeignAndExtendedRuntimeIdentitiesCannotGrantCapability(version:) started.
+√ Test separatelyEnabledHostAcceptsTheExactReviewedRuntime() passed after 0.001 seconds.
+√ Test exactRuntimeCannotEnableAnUnapprovedHostBuild() passed after 0.001 seconds.
+◊ Test case passing 1 argument version → "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2
+" to olderPartialForeignAndExtendedRuntimeIdentitiesCannotGrantCapability(version:) started.
+◊ Test case passing 1 argument version → "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-000000008569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2-pinkha-native-t5-lookup-v1-000000008569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2" to olderPartialForeignAndExtendedRuntimeIdentitiesCannotGrantCapability(version:) started.
+√ Test olderPartialForeignAndExtendedRuntimeIdentitiesCannotGrantCapability(version:) with 9 test cases passed after 0.001 seconds.
+√ Suite "T5 running Heart capability boundary" passed after 0.002 seconds.
+√ Test run with 3 tests in 1 suite passed after 0.002 seconds.

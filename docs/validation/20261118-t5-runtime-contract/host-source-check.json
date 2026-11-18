@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "check": "Swift parse only; not Apple host typecheck",
+  "base_sha": "e36794a4088844fe91bd1ba47616d90fbbd59994",
+  "kit_dependency_sha": "356c6af25d81bb6503ee3fa13aa09a48be386c8b",
+  "checks": [
+    {
+      "flags": [],
+      "returncode": 0
+    },
+    {
+      "flags": [
+        "-D",
+        "PINKHA_NATIVE_T5_LOOKUP_V1"
+      ],
+      "returncode": 0
+    }
+  ],
+  "source_sha256": {
+    "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift": "ee3d35fa87d98811aa56e7ff56ace97078f3a972412ea0e14ed443def7d87a3b",
+    "Anytype/Sources/Pinkha/Torah/UI/AnytypeT5NativeRelatedLookup.swift": "3426d539bfb2d40847225a38149af5f61e2e79144b935dde913b629086ba4c5e",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift": "3256c3be767c7b54640f9f3156bc91767ee8d0a5e821c54f1ef106fcd98ebad5",
+    "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NativeRelatedLookupCapabilityTests.swift": "b472a4f3fe0ea24aa8621a770e6c2f4e8e35b138bafdb3db25ab0fb793892079"
+  },
+  "checked_at": "2026-11-18T00:45:27.066210+00:00"
+}
