@@ -16,6 +16,7 @@ on:
           - native-ipa-repair
           - native-diagnostics
           - t5-coverage-proof
+          - t2-native-operations
           - simulator-ui27
           - heart-runtime
           - sdk06-tests
@@ -107,6 +108,12 @@ jobs:
   heart-runtime:
     if: ${{ inputs.route == 'heart-runtime' }}
     uses: ./.github/workflows/pinkha-heart-runtime.yml
+
+  t2-native-operations:
+    if: ${{ inputs.route == 't2-native-operations' }}
+    uses: ./.github/workflows/pinkha-t2-native-operations.yml
+    with:
+      source_sha: ${{ github.sha }}
 
   t5-coverage-proof:
     if: ${{ inputs.route == 't5-coverage-proof' }}
