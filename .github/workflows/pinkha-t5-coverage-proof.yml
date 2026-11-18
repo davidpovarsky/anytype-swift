@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   component:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
       CC: musl-gcc
@@ -38,8 +38,24 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --yes --no-install-recommends musl-tools
-          musl-gcc -v
-          dpkg-query -W musl musl-dev musl-tools
+          mkdir -p proof/toolchain
+          musl-gcc -v > proof/toolchain/compiler.log 2>&1
+          dpkg-query -W musl musl-dev musl-tools | tee proof/toolchain/packages.txt
+          cat > "$RUNNER_TEMP/t5-qsort-probe.c" <<'C'
+          #define _GNU_SOURCE
+          #include <stdlib.h>
+          static int compare(const void *a, const void *b, void *context) {
+              (void)context;
+              return (*(const int *)a > *(const int *)b) - (*(const int *)a < *(const int *)b);
+          }
+          int main(void) {
+              int values[] = {2, 1};
+              qsort_r(values, 2, sizeof(values[0]), compare, NULL);
+              return values[0] != 1 || values[1] != 2;
+          }
+          C
+          musl-gcc -static -Werror "$RUNNER_TEMP/t5-qsort-probe.c" -o "$RUNNER_TEMP/t5-qsort-probe" > proof/toolchain/qsort-link.log 2>&1
+          "$RUNNER_TEMP/t5-qsort-probe"
       - name: Install pinned Go toolchain
         uses: actions/setup-go@v5
         with:
@@ -51,9 +67,9 @@ jobs:
           path: |
             ~/go/pkg/mod
             ~/.cache/go-build
-          key: t5-linux-go1.26.5-${{ hashFiles('heart/tantivity_sha256.txt', 'heart/go.sum', 'source/**/go.sum') }}-947fbde2-${{ inputs.component }}
+          key: t5-ubuntu24-musl-go1.26.5-${{ hashFiles('heart/tantivity_sha256.txt', 'heart/go.sum', 'source/**/go.sum') }}-947fbde2-${{ inputs.component }}
           restore-keys: |
-            t5-linux-go1.26.5-${{ hashFiles('heart/tantivity_sha256.txt', 'heart/go.sum', 'source/**/go.sum') }}-
+            t5-ubuntu24-musl-go1.26.5-${{ hashFiles('heart/tantivity_sha256.txt', 'heart/go.sum', 'source/**/go.sum') }}-
       - name: Execute one real native component with fresh evidence
         env:
           T5_COMPONENT: ${{ inputs.component }}

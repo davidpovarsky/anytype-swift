@@ -1,0 +1,603 @@
+t5-coverage-proof / component	UNKNOWN STEP	﻿2026-11-18T00:07:36.5529281Z Current runner version: '2.338.2'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5556560Z ##[group]Runner Image Provisioner
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5557473Z Hosted Compute Agent
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5558140Z Version: 20261103.629
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5558953Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5559799Z Build Date: 2026-11-03T17:26:59Z
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5560682Z Worker ID: {a4a2e4a5-2f82-4bae-840d-23975dbfc5e9}
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5561837Z Region: northcentralus
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5562492Z Cloud: Azure
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5563203Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5564693Z ##[group]Operating System
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5565446Z Ubuntu
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5566049Z 22.04.5
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5566649Z LTS
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5567287Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5567927Z ##[group]Runner Image
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5569124Z Image: ubuntu-22.04
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5569786Z Version: 20261111.360.2
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5571490Z Included Software: https://github.com/actions/runner-images/blob/ubuntu22/20261111.360/images/ubuntu/Ubuntu2204-Readme.md
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5573157Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu22%2F20261111.360
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5574312Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5575513Z ##[group]GITHUB_TOKEN Permissions
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5577629Z Contents: read
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5578311Z Metadata: read
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5578960Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5581450Z Secret source: Actions
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5582535Z Cache mode: write
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.5583405Z Prepare workflow directory
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.6107684Z Prepare all required actions
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.6181777Z Getting action download info
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:36.8430532Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:37.0876817Z Download action repository 'actions/setup-go@v5' (SHA:40f1582b2485089dde7abd97c1529aa768e1baff)
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:37.3916045Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:37.7254842Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.1580536Z Uses: davidpovarsky/anytype-swift/.github/workflows/pinkha-t5-coverage-proof.yml@refs/heads/codex/chatgpt-wave15-startup-20261118 (7a636325350cad48409621fec4ec616701ba768a)
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.1587132Z ##[group] Inputs
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.1588084Z   component: native-index
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.1589058Z   route: t5-coverage-proof
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.1590041Z   t5_component: native-index
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.1591302Z   ui_scope: FULL_SMOKE
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.1592206Z   native_test_scope: all
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.1593586Z   require_full_acceptance: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.1594606Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.1595575Z Complete job name: t5-coverage-proof / component
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2630131Z ##[group]Run actions/checkout@v4
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2631814Z with:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2632592Z   path: control
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2633476Z   repository: davidpovarsky/anytype-swift
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2642041Z   token: ***
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2642842Z   ssh-strict: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2643659Z   ssh-user: git
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2644482Z   persist-credentials: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2645397Z   clean: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2646229Z   sparse-checkout-cone-mode: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2647203Z   fetch-depth: 1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2647994Z   fetch-tags: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2648812Z   show-progress: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2649634Z   lfs: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2650494Z   submodules: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2651448Z   set-safe-directory: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2652417Z   allow-unsafe-pr-checkout: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2653677Z env:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2654390Z   CC: musl-gcc
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2655171Z   GOTOOLCHAIN: local
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2656150Z   GOFLAGS: -ldflags=-extldflags=-static
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.2657172Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7465311Z Syncing repository: davidpovarsky/anytype-swift
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7468978Z ##[group]Getting Git version info
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7470612Z Working directory is '/home/runner/work/anytype-swift/anytype-swift/control'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7473262Z [command]/usr/bin/git version
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7812009Z git version 2.56.1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7836163Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7852252Z Temporarily overriding HOME='/home/runner/work/_temp/856e9c3d-6c80-414d-af56-e8b7f4f7f021' before making global git config changes
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7857037Z Adding repository directory to the temporary git global config as a safe directory
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7860665Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/anytype-swift/anytype-swift/control
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7904371Z ##[group]Initializing the repository
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7909099Z [command]/usr/bin/git init /home/runner/work/anytype-swift/anytype-swift/control
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7997030Z hint: Using 'master' as the name for the initial branch. This default branch name
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.7999580Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8002657Z hint: to use in all of your new repositories, which will suppress this warning,
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8005222Z hint: call:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8006527Z hint:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8008442Z hint: 	git config --global init.defaultBranch <name>
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8009889Z hint:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8011838Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8014344Z hint: 'development'. The just-created branch can be renamed via this command:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8015898Z hint:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8016805Z hint: 	git branch -m <name>
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8017947Z hint:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8019664Z hint: Disable this message with "git config set advice.defaultBranchName false"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8023296Z Initialized empty Git repository in /home/runner/work/anytype-swift/anytype-swift/control/.git/
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8033599Z [command]/usr/bin/git remote add origin https://github.com/davidpovarsky/anytype-swift
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8224568Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8226877Z ##[group]Disabling automatic garbage collection
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8229467Z [command]/usr/bin/git config --local gc.auto 0
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8271827Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8274072Z ##[group]Setting up auth
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8279976Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8320461Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8924942Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.8970176Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.9247764Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.9293601Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.9572178Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.9644876Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.9646484Z ##[group]Fetching the repository
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:38.9654962Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +7a636325350cad48409621fec4ec616701ba768a:refs/remotes/origin/codex/chatgpt-wave15-startup-20261118
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:40.9545585Z From https://github.com/davidpovarsky/anytype-swift
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:40.9547223Z  * [new ref]         7a636325350cad48409621fec4ec616701ba768a -> origin/codex/chatgpt-wave15-startup-20261118
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:40.9551040Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:40.9552604Z ##[group]Determining the checkout info
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:40.9554442Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:40.9560601Z [command]/usr/bin/git sparse-checkout disable
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:40.9678693Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:40.9716463Z ##[group]Checking out the ref
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:40.9730173Z [command]/usr/bin/git checkout --progress --force -B codex/chatgpt-wave15-startup-20261118 refs/remotes/origin/codex/chatgpt-wave15-startup-20261118
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.5643267Z Switched to a new branch 'codex/chatgpt-wave15-startup-20261118'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.5646303Z branch 'codex/chatgpt-wave15-startup-20261118' set up to track 'origin/codex/chatgpt-wave15-startup-20261118'.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.5673539Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.5724748Z [command]/usr/bin/git log -1 --format=%H
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.5759482Z 7a636325350cad48409621fec4ec616701ba768a
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6039615Z ##[group]Run actions/checkout@v4
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6039934Z with:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6040166Z   ref: 947fbde24d5657d0e1229f45bb3993648884a8a1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6040463Z   path: source
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6040700Z   repository: davidpovarsky/anytype-swift
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6043228Z   token: ***
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6043449Z   ssh-strict: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6043670Z   ssh-user: git
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6043902Z   persist-credentials: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6044145Z   clean: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6044376Z   sparse-checkout-cone-mode: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6044649Z   fetch-depth: 1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6044865Z   fetch-tags: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6045089Z   show-progress: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6045328Z   lfs: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6045553Z   submodules: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6045804Z   set-safe-directory: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6046059Z   allow-unsafe-pr-checkout: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6046317Z env:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6046522Z   CC: musl-gcc
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6046768Z   GOTOOLCHAIN: local
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6047015Z   GOFLAGS: -ldflags=-extldflags=-static
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6047301Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6932844Z Syncing repository: davidpovarsky/anytype-swift
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6933792Z ##[group]Getting Git version info
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6934456Z Working directory is '/home/runner/work/anytype-swift/anytype-swift/source'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.6973550Z [command]/usr/bin/git version
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7020095Z git version 2.56.1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7051779Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7058363Z Temporarily overriding HOME='/home/runner/work/_temp/772e1dee-b061-4a9a-9ff0-1f5e51d1aaa7' before making global git config changes
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7059352Z Adding repository directory to the temporary git global config as a safe directory
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7064447Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/anytype-swift/anytype-swift/source
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7104901Z ##[group]Initializing the repository
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7109701Z [command]/usr/bin/git init /home/runner/work/anytype-swift/anytype-swift/source
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7156825Z hint: Using 'master' as the name for the initial branch. This default branch name
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7157977Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7159179Z hint: to use in all of your new repositories, which will suppress this warning,
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7160072Z hint: call:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7160461Z hint:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7161492Z hint: 	git config --global init.defaultBranch <name>
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7162265Z hint:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7162724Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7163465Z hint: 'development'. The just-created branch can be renamed via this command:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7164088Z hint:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7164407Z hint: 	git branch -m <name>
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7164748Z hint:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7165352Z hint: Disable this message with "git config set advice.defaultBranchName false"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7166607Z Initialized empty Git repository in /home/runner/work/anytype-swift/anytype-swift/source/.git/
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7182446Z [command]/usr/bin/git remote add origin https://github.com/davidpovarsky/anytype-swift
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7220971Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7221822Z ##[group]Disabling automatic garbage collection
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7226472Z [command]/usr/bin/git config --local gc.auto 0
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7269764Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7270439Z ##[group]Setting up auth
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7274679Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7322974Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7823443Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.7868556Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.8174749Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.8219103Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.8498372Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.8546540Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.8547120Z ##[group]Fetching the repository
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:41.8557032Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 947fbde24d5657d0e1229f45bb3993648884a8a1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:43.7893115Z From https://github.com/davidpovarsky/anytype-swift
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:43.7893720Z  * branch            947fbde24d5657d0e1229f45bb3993648884a8a1 -> FETCH_HEAD
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:43.7897304Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:43.7897730Z ##[group]Determining the checkout info
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:43.7900094Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:43.7906290Z [command]/usr/bin/git sparse-checkout disable
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:43.7958215Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:43.7998008Z ##[group]Checking out the ref
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:43.8003693Z [command]/usr/bin/git checkout --progress --force 947fbde24d5657d0e1229f45bb3993648884a8a1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3916358Z Note: switching to '947fbde24d5657d0e1229f45bb3993648884a8a1'.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3916845Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3917161Z You are in 'detached HEAD' state. You can look around, make experimental
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3917886Z changes and commit them, and you can discard any commits you make in this
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3918663Z state without impacting any branches by switching back to a branch.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3919106Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3919400Z If you want to create a new branch to retain commits you create, you may
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3920091Z do so (now or later) by using -c with the switch command. Example:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3920483Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3920650Z   git switch -c <new-branch-name>
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3921167Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3921332Z Or undo this operation with:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3921583Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3921707Z   git switch -
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3921927Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3922629Z Turn off this advice by setting config variable advice.detachedHead to false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3923206Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3923696Z HEAD is now at 947fbde Add supplemental native on-disk T5 reopen proof
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.3949892Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4006733Z [command]/usr/bin/git log -1 --format=%H
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4040075Z 947fbde24d5657d0e1229f45bb3993648884a8a1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4243202Z ##[group]Run actions/checkout@v4
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4243462Z with:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4243680Z   repository: anyproto/anytype-heart
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4244165Z   ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4244451Z   path: heart
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4246687Z   token: ***
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4246893Z   ssh-strict: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4247107Z   ssh-user: git
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4247330Z   persist-credentials: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4247571Z   clean: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4247796Z   sparse-checkout-cone-mode: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4248058Z   fetch-depth: 1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4248266Z   fetch-tags: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4248484Z   show-progress: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4248709Z   lfs: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4248911Z   submodules: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4249142Z   set-safe-directory: true
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4249400Z   allow-unsafe-pr-checkout: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4249648Z env:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4249838Z   CC: musl-gcc
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4250093Z   GOTOOLCHAIN: local
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4250342Z   GOFLAGS: -ldflags=-extldflags=-static
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.4250642Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5161427Z Syncing repository: anyproto/anytype-heart
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5162338Z ##[group]Getting Git version info
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5163013Z Working directory is '/home/runner/work/anytype-swift/anytype-swift/heart'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5194421Z [command]/usr/bin/git version
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5240303Z git version 2.56.1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5263368Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5278365Z Temporarily overriding HOME='/home/runner/work/_temp/82f93393-29d6-48ad-be3b-c12b4c71c9f4' before making global git config changes
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5279291Z Adding repository directory to the temporary git global config as a safe directory
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5284457Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/anytype-swift/anytype-swift/heart
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5325771Z ##[group]Initializing the repository
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5330325Z [command]/usr/bin/git init /home/runner/work/anytype-swift/anytype-swift/heart
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5378088Z hint: Using 'master' as the name for the initial branch. This default branch name
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5379156Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5381487Z hint: to use in all of your new repositories, which will suppress this warning,
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5382277Z hint: call:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5382553Z hint:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5382910Z hint: 	git config --global init.defaultBranch <name>
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5383384Z hint:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5383833Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5384613Z hint: 'development'. The just-created branch can be renamed via this command:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5385194Z hint:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5385481Z hint: 	git branch -m <name>
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5385821Z hint:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5386330Z hint: Disable this message with "git config set advice.defaultBranchName false"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5387238Z Initialized empty Git repository in /home/runner/work/anytype-swift/anytype-swift/heart/.git/
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5393809Z [command]/usr/bin/git remote add origin https://github.com/anyproto/anytype-heart
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5433518Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5434100Z ##[group]Disabling automatic garbage collection
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5439242Z [command]/usr/bin/git config --local gc.auto 0
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5476092Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5476646Z ##[group]Setting up auth
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5484396Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5526030Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5835363Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.5878487Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.6182682Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.6228728Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.6508025Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.6557972Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.6558573Z ##[group]Fetching the repository
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:44.6567242Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin d98420b1113536afd08cde6de9a5816f6d27ffff
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.0138434Z From https://github.com/anyproto/anytype-heart
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.0138969Z  * branch            d98420b1113536afd08cde6de9a5816f6d27ffff -> FETCH_HEAD
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.0144701Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.0145300Z ##[group]Determining the checkout info
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.0147554Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.0155576Z [command]/usr/bin/git sparse-checkout disable
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.0208988Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.0258729Z ##[group]Checking out the ref
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.0263178Z [command]/usr/bin/git checkout --progress --force d98420b1113536afd08cde6de9a5816f6d27ffff
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3434441Z Note: switching to 'd98420b1113536afd08cde6de9a5816f6d27ffff'.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3434876Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3435161Z You are in 'detached HEAD' state. You can look around, make experimental
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3435916Z changes and commit them, and you can discard any commits you make in this
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3436682Z state without impacting any branches by switching back to a branch.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3437137Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3437347Z If you want to create a new branch to retain commits you create, you may
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3437827Z do so (now or later) by using -c with the switch command. Example:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3438085Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3438199Z   git switch -c <new-branch-name>
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3438385Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3438489Z Or undo this operation with:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3438656Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3438745Z   git switch -
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3438880Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3439103Z Turn off this advice by setting config variable advice.detachedHead to false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3439400Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3439662Z HEAD is now at d98420b Merge pull request #3327 from anyproto/go-0000-bump-any-sync-any-store
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3457986Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3509839Z [command]/usr/bin/git log -1 --format=%H
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3543710Z d98420b1113536afd08cde6de9a5816f6d27ffff
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3715521Z ##[group]Run sudo apt-get update
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3715882Z ^[[36;1msudo apt-get update^[[0m
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3716279Z ^[[36;1msudo apt-get install --yes --no-install-recommends musl-tools^[[0m
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3716683Z ^[[36;1mmusl-gcc -v^[[0m
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3716943Z ^[[36;1mdpkg-query -W musl musl-dev musl-tools^[[0m
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3802177Z shell: /usr/bin/bash -e {0}
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3802448Z env:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3802645Z   CC: musl-gcc
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3802861Z   GOTOOLCHAIN: local
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3803115Z   GOFLAGS: -ldflags=-extldflags=-static
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.3803385Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.6770324Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.7295143Z Hit:2 http://azure.archive.ubuntu.com/ubuntu jammy InRelease
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.7309608Z Get:6 https://packages.microsoft.com/ubuntu/22.04/prod jammy InRelease [3632 B]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.7354970Z Get:3 http://azure.archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.7373648Z Get:4 http://azure.archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.7413601Z Get:5 http://azure.archive.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:47.9834782Z Get:7 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages [1088 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:48.0162352Z Get:8 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main arm64 Packages [809 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:48.0771447Z Get:9 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [3983 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:48.0984789Z Get:10 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main Translation-en [585 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:48.1028177Z Get:11 http://azure.archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1290 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:48.1116499Z Get:12 http://azure.archive.ubuntu.com/ubuntu jammy-updates/universe Translation-en [326 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:48.2683399Z Get:13 http://azure.archive.ubuntu.com/ubuntu jammy-security/main amd64 Packages [3718 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:48.2890127Z Get:14 http://azure.archive.ubuntu.com/ubuntu jammy-security/main Translation-en [519 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:48.2930498Z Get:15 http://azure.archive.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [6613 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:48.3281602Z Get:16 http://azure.archive.ubuntu.com/ubuntu jammy-security/restricted Translation-en [1272 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:48.3361782Z Get:17 http://azure.archive.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1057 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:07:59.0720082Z Fetched 21.6 MB in 3s (7995 kB/s)
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:00.8163959Z Reading package lists...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:00.8931834Z Reading package lists...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.2447291Z Building dependency tree...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.2459128Z Reading state information...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.4362222Z The following additional packages will be installed:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.4362924Z   musl musl-dev
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.4369371Z Recommended packages:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.4369736Z   linux-musl-dev
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.4611079Z The following NEW packages will be installed:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.4611651Z   musl musl-dev musl-tools
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.4803969Z 0 upgraded, 3 newly installed, 0 to remove and 22 not upgraded.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.4804609Z Need to get 1018 kB of archives.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.4805144Z After this operation, 4100 kB of additional disk space will be used.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.4805798Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.5248885Z Get:2 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 musl amd64 1.2.2-4 [407 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.5780412Z Get:3 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 musl-dev amd64 1.2.2-4 [605 kB]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:01.6655637Z Get:4 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 musl-tools amd64 1.2.2-4 [5520 B]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.0134464Z Fetched 1018 kB in 0s (5119 kB/s)
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.0536609Z Selecting previously unselected package musl:amd64.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.2197835Z (Reading database ... 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.2198276Z (Reading database ... 5%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.2198637Z (Reading database ... 10%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.2199003Z (Reading database ... 15%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.2199290Z (Reading database ... 20%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.2199512Z (Reading database ... 25%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.2199742Z (Reading database ... 30%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.2199961Z (Reading database ... 35%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.2200243Z (Reading database ... 40%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.2200568Z (Reading database ... 45%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.2201093Z (Reading database ... 50%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:02.6022160Z (Reading database ... 55%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:03.0462700Z (Reading database ... 60%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:03.4937593Z (Reading database ... 65%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:04.0311845Z (Reading database ... 70%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:04.8040015Z (Reading database ... 75%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:05.7722509Z (Reading database ... 80%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:06.8547297Z (Reading database ... 85%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:07.9005575Z (Reading database ... 90%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.0512985Z (Reading database ... 95%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.0513413Z (Reading database ... 100%
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.0513907Z (Reading database ... 264803 files and directories currently installed.)
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.0587136Z Preparing to unpack .../musl_1.2.2-4_amd64.deb ...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.0637595Z Unpacking musl:amd64 (1.2.2-4) ...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.2259554Z Selecting previously unselected package musl-dev:amd64.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.2485700Z Preparing to unpack .../musl-dev_1.2.2-4_amd64.deb ...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.2494092Z Unpacking musl-dev:amd64 (1.2.2-4) ...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.3302395Z Selecting previously unselected package musl-tools.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.3530914Z Preparing to unpack .../musl-tools_1.2.2-4_amd64.deb ...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.3536766Z Unpacking musl-tools (1.2.2-4) ...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.4358157Z Setting up musl:amd64 (1.2.2-4) ...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.4387760Z Setting up musl-dev:amd64 (1.2.2-4) ...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.4416432Z Setting up musl-tools (1.2.2-4) ...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.4437682Z Processing triggers for man-db (2.10.2-1) ...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:09.4520114Z Not building database; man-db/auto-update is not 'true'.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:10.8420179Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:10.8420958Z Running kernel seems to be up-to-date.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:10.8421332Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:10.8421492Z No services need to be restarted.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:10.8421753Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:10.8421887Z No containers need to be restarted.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:10.8422145Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:10.8422470Z No user sessions are running outdated binaries.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:10.8425356Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:10.8426132Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5427750Z Using built-in specs.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5428328Z Reading specs from /usr/lib/x86_64-linux-musl/musl-gcc.specs
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5428924Z rename spec cpp_options to old_cpp_options
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5429385Z COLLECT_GCC=x86_64-linux-gnu-gcc
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5429956Z COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5430511Z OFFLOAD_TARGET_NAMES=nvptx-none:amdgcn-amdhsa
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5431090Z OFFLOAD_TARGET_DEFAULT=1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5431423Z Target: x86_64-linux-gnu
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5437642Z Configured with: ../src/configure -v --with-pkgversion='Ubuntu 11.4.0-1ubuntu1~22.04.3' --with-bugurl=file:///usr/share/doc/gcc-11/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-11 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --disable-werror --enable-cet --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none=/build/gcc-11-0odw26/gcc-11-11.4.0/debian/tmp-nvptx/usr,amdgcn-amdhsa=/build/gcc-11-0odw26/gcc-11-11.4.0/debian/tmp-gcn/usr --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=2
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5442734Z Thread model: posix
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5442999Z Supported LTO compression algorithms: zlib zstd
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5443341Z gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04.3) 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5571920Z musl:amd64	1.2.2-4
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5572291Z musl-dev:amd64	1.2.2-4
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5572649Z musl-tools	1.2.2-4
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5657077Z ##[group]Run actions/setup-go@v5
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5657341Z with:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5657547Z   go-version: 1.26.5
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5657768Z   cache: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5657981Z   check-latest: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5660212Z   token: ***
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5660418Z env:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5660606Z   CC: musl-gcc
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5661235Z   GOTOOLCHAIN: local
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5661475Z   GOFLAGS: -ldflags=-extldflags=-static
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.5661751Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.7062304Z Setup go version spec 1.26.5
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.7071895Z Attempting to download 1.26.5...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.7217856Z (node:2819) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:12.7218984Z (Use `node --trace-deprecation ...` to show where the warning was created)
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:13.3304225Z matching 1.26.5...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:13.3341323Z Acquiring 1.26.5 from https://github.com/actions/go-versions/releases/download/1.26.5-28913679792/go-1.26.5-linux-x64.tar.gz
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:13.8548225Z Extracting Go...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:13.8675108Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/3976f4f2-bf0c-4842-b98a-3940add1a891 -f /home/runner/work/_temp/ccde08e2-f2a4-4d85-8e02-6255b9fda2dc
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:15.6282281Z Successfully extracted go to /home/runner/work/_temp/3976f4f2-bf0c-4842-b98a-3940add1a891
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:15.6283053Z Adding to the cache ...
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:20.3844202Z Successfully cached go to /opt/hostedtoolcache/go/1.26.5/x64
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:20.3847210Z Added go to the path
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:20.3850354Z Successfully set up Go version 1.26.5
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:20.4123215Z go version go1.26.5 linux/amd64
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:20.4123503Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:20.4123913Z ##[group]go env
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0770428Z AR='ar'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0770957Z CC='musl-gcc'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0771412Z CGO_CFLAGS='-O2 -g'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0771755Z CGO_CPPFLAGS=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0772038Z CGO_CXXFLAGS='-O2 -g'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0772331Z CGO_ENABLED='1'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0772598Z CGO_FFLAGS='-O2 -g'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0772889Z CGO_LDFLAGS='-O2 -g'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0773178Z CXX='g++'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0773470Z GCCGO='gccgo'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0773753Z GO111MODULE=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0774035Z GOAMD64='v1'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0774319Z GOARCH='amd64'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0774582Z GOAUTH='netrc'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0774837Z GOBIN=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0775125Z GOCACHE='/home/runner/.cache/go-build'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0775532Z GOCACHEPROG=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0775768Z GODEBUG=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0776170Z GOENV='/home/runner/.config/go/env'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0776558Z GOEXE=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0776858Z GOEXPERIMENT=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0777189Z GOFIPS140='off'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0777538Z GOFLAGS='-ldflags=-extldflags=-static'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0778449Z GOGCCFLAGS='-fPIC -m64 -pthread -Wl,--no-gc-sections -fmessage-length=0 -ffile-prefix-map=/tmp/go-build228995228=/tmp/go-build -gno-record-gcc-switches'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0779103Z GOHOSTARCH='amd64'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0779318Z GOHOSTOS='linux'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0779520Z GOINSECURE=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0779733Z GOMOD='/dev/null'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0779976Z GOMODCACHE='/home/runner/go/pkg/mod'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0780241Z GONOPROXY=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0780447Z GONOSUMDB=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0780644Z GOOS='linux'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0781070Z GOPATH='/home/runner/go'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0781297Z GOPRIVATE=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0781582Z GOPROXY='https://proxy.golang.org,direct'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0781930Z GOROOT='/opt/hostedtoolcache/go/1.26.5/x64'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0782226Z GOSUMDB='sum.golang.org'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0782456Z GOTELEMETRY='local'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0782730Z GOTELEMETRYDIR='/home/runner/.config/go/telemetry'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0783031Z GOTMPDIR=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0783230Z GOTOOLCHAIN='local'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0783885Z GOTOOLDIR='/opt/hostedtoolcache/go/1.26.5/x64/pkg/tool/linux_amd64'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0784245Z GOVCS=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0784446Z GOVERSION='go1.26.5'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0784658Z GOWORK=''
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0784865Z PKG_CONFIG='pkg-config'
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0785006Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:21.0785373Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5143654Z ##[group]Run actions/cache@v4
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5143931Z with:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5144366Z   path: ~/go/pkg/mod
+t5-coverage-proof / component	UNKNOWN STEP	~/.cache/go-build
+t5-coverage-proof / component	UNKNOWN STEP	
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5144933Z   key: t5-linux-go1.26.5-3a09651de0ea6f45c97579cd88ff051646aeb0408398d5a45bb7168175c277a1-947fbde2-native-index
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5145681Z   restore-keys: t5-linux-go1.26.5-3a09651de0ea6f45c97579cd88ff051646aeb0408398d5a45bb7168175c277a1-
+t5-coverage-proof / component	UNKNOWN STEP	
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5146195Z   enableCrossOsArchive: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5146454Z   fail-on-cache-miss: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5146694Z   lookup-only: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5146911Z   save-always: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5147114Z env:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5147297Z   CC: musl-gcc
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5147495Z   GOTOOLCHAIN: local
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5147727Z   GOFLAGS: -ldflags=-extldflags=-static
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.5148002Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.6310362Z (node:2903) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.6311370Z (Use `node --trace-deprecation ...` to show where the warning was created)
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7423504Z Cache not found for input keys: t5-linux-go1.26.5-3a09651de0ea6f45c97579cd88ff051646aeb0408398d5a45bb7168175c277a1-947fbde2-native-index, t5-linux-go1.26.5-3a09651de0ea6f45c97579cd88ff051646aeb0408398d5a45bb7168175c277a1-
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7521542Z ##[group]Run python3 control/Tools/PinkhaNativeDerived/test_run_t5_coverage_ci.py
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7522185Z ^[[36;1mpython3 control/Tools/PinkhaNativeDerived/test_run_t5_coverage_ci.py^[[0m
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7522706Z ^[[36;1mpython3 control/Tools/PinkhaNativeDerived/run_t5_coverage_ci.py \^[[0m
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7523187Z ^[[36;1m  --source source --heart heart --component "$T5_COMPONENT" \^[[0m
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7523814Z ^[[36;1m  --evidence "proof/$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT/$T5_COMPONENT"^[[0m
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7591962Z shell: /usr/bin/bash -e {0}
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7592229Z env:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7592434Z   CC: musl-gcc
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7592648Z   GOTOOLCHAIN: local
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7592907Z   GOFLAGS: -ldflags=-extldflags=-static
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7593194Z   T5_COMPONENT: native-index
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.7593440Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.9280631Z .....
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.9281381Z ----------------------------------------------------------------------
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.9281918Z Ran 5 tests in 0.006s
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.9282122Z 
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:08:22.9282230Z OK
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8465275Z {"status": "FAIL", "component": "native-index", "started_at": "2026-11-18T00:08:22.973878+00:00", "client_enablement": "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF", "limits": ["native source fixtures only", "no packaged old/new binaries", "no Swift/UI/physical acceptance"], "error_type": "RuntimeError", "error": "native-component failed; see its retained log", "finished_at": "2026-11-18T00:11:32.845809+00:00"}
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8587471Z ##[error]Process completed with exit code 1.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8658687Z ##[group]Run actions/upload-artifact@v4
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8659016Z with:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8659272Z   name: Pinkha-T5-native-index-44205201082-1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8659570Z   path: proof/
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8659787Z   if-no-files-found: warn
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8660027Z   retention-days: 14
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8660248Z   compression-level: 6
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8660479Z   overwrite: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8660711Z   include-hidden-files: false
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8661205Z env:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8661394Z   CC: musl-gcc
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8661599Z   GOTOOLCHAIN: local
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8661834Z   GOFLAGS: -ldflags=-extldflags=-static
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:32.8662103Z ##[endgroup]
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.0455045Z (node:11041) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.0456972Z (Use `node --trace-deprecation ...` to show where the warning was created)
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.0581696Z With the provided path, there will be 10 files uploaded
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.0582609Z Artifact name is valid!
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.0583611Z Root directory input is valid!
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.3901299Z Beginning upload of artifact content to blob storage
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.4224203Z (node:11041) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.5270284Z Uploaded bytes 13070
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.5645369Z Finished uploading artifact content to blob storage!
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.5646621Z SHA256 digest of uploaded artifact zip is b7647ac6d8ad7c78a89c4ac1ce2d732fb642070b83897059b10797da47b47977
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.5648321Z Finalizing artifact upload
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.9266886Z Artifact Pinkha-T5-native-index-44205201082-1.zip successfully finalized. Artifact ID 14383123966
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.9268193Z Artifact Pinkha-T5-native-index-44205201082-1 has been successfully uploaded! Final size is 13070 bytes. Artifact ID is 14383123966
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.9274291Z Artifact download URL: https://github.com/davidpovarsky/anytype-swift/actions/runs/44205201082/artifacts/14383123966
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:33.9493632Z Post job cleanup.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.0390717Z [command]/usr/bin/git version
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.0440155Z git version 2.56.1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.0478861Z Temporarily overriding HOME='/home/runner/work/_temp/a0c2f318-9832-4e07-8454-21a30fcc2217' before making global git config changes
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.0480296Z Adding repository directory to the temporary git global config as a safe directory
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.0484362Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/anytype-swift/anytype-swift/heart
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.0529811Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.0570593Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.0891959Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.0920459Z http.https://github.com/.extraheader
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.0932675Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.0984140Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.1296454Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.1346746Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.1837219Z Post job cleanup.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.2781874Z [command]/usr/bin/git version
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.2821744Z git version 2.56.1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.2912329Z Temporarily overriding HOME='/home/runner/work/_temp/844ae0d3-9f10-417b-9914-d6a012d03b94' before making global git config changes
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.2938213Z Adding repository directory to the temporary git global config as a safe directory
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.2952558Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/anytype-swift/anytype-swift/source
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.2987070Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.3062550Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.3373466Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.3406898Z http.https://github.com/.extraheader
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.3436333Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.3467566Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.3820127Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.3873142Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.4369317Z Post job cleanup.
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.5482140Z [command]/usr/bin/git version
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.5529378Z git version 2.56.1
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.5572759Z Temporarily overriding HOME='/home/runner/work/_temp/c899c053-91e1-41f6-87c7-5d8c2d8271fc' before making global git config changes
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.5573771Z Adding repository directory to the temporary git global config as a safe directory
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.5578866Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/anytype-swift/anytype-swift/control
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.5628581Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.5670139Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.5994469Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.6031915Z http.https://github.com/.extraheader
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.6046013Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.6089961Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.6471884Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.6510242Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.7001539Z Cleaning up orphan processes
+t5-coverage-proof / component	UNKNOWN STEP	2026-11-18T00:11:34.7400001Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/cache@v4, actions/checkout@v4, actions/setup-go@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
