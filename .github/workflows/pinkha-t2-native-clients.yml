@@ -1,0 +1,126 @@
+name: Pinkha T2 two native clients LAN cold bootstrap
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  native-clients:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}
+      T2_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact native-client source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha || github.sha }}
+          path: control
+          persist-credentials: false
+      - name: Checkout immutable r14 and builder source
+        uses: actions/checkout@v4
+        with:
+          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1
+          path: approved-source
+          persist-credentials: false
+      - name: Checkout pinned legacy Heart
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: heart-legacy
+          persist-credentials: false
+      - name: Checkout pinned new Heart
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: heart-new
+          persist-credentials: false
+      - name: Install pinned Go for protobuf generation
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Verify rejection controls and generate exact native bindings
+        run: |
+          mkdir -p evidence/toolchain
+          cd control/Tools/TorahNativeOperations
+          python3 -B -m unittest -v test_native_clients test_account_rpc test_account_lifecycle > "$GITHUB_WORKSPACE/evidence/controller-controls.log" 2>&1
+          python3 -B run_native_rpc.py generate \
+            --control "$GITHUB_WORKSPACE/control" --heart-source "$GITHUB_WORKSPACE/heart-new" \
+            --work "$GITHUB_WORKSPACE/generator-work" --evidence "$GITHUB_WORKSPACE/evidence/generation" \
+            --expected-app-sha "$EXPECTED_APP_SHA"
+      - name: Restore compiled musl dependencies only
+        uses: actions/cache@v4
+        with:
+          path: .t2-cache
+          key: t2-native-clients-alpine-111d7915-go1.26.5-${{ hashFiles('heart-new/go.sum', 'heart-new/tantivity_sha256.txt') }}
+          restore-keys: |
+            t2-account-rpc-alpine-111d7915-go1.26.5-
+            t2-account-alpine-111d7915-go1.26.5-
+            t2-rpc-alpine-111d7915-go1.26.5-
+            t2-registry-alpine-111d7915-go1.26.5-
+      - name: Build exact runtimes and retain the four-phase account-wire baseline
+        run: |
+          mkdir -p .t2-cache native-work
+          docker pull --platform linux/amd64 "$T2_GO_IMAGE"
+          docker image inspect "$T2_GO_IMAGE" > evidence/toolchain/image.json
+          docker run --rm --platform linux/amd64 --cpus=2 --memory=6g --pids-limit=512 \
+            --workdir /workspace \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/control,dst=/workspace/control,readonly" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/approved-source,dst=/workspace/approved-source,readonly" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/heart-legacy,dst=/workspace/heart-legacy" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/heart-new,dst=/workspace/heart-new" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/native-work,dst=/workspace/work" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/evidence,dst=/workspace/evidence" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/.t2-cache,dst=/cache" \
+            -e EXPECTED_APP_SHA -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_WORKFLOW_REF \
+            -e CC=gcc -e CXX=g++ -e GOTOOLCHAIN=local \
+            -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
+            -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \
+            "$T2_GO_IMAGE" sh control/Tools/TorahNativeOperations/run_native_clients_container.sh
+      - name: Bootstrap two empty native clients over an owned internal LAN
+        run: |
+          python3 -B control/Tools/TorahNativeOperations/run_native_clients.py clients \
+            --control "$GITHUB_WORKSPACE/control" --native-work "$GITHUB_WORKSPACE/native-work" \
+            --evidence "$GITHUB_WORKSPACE/evidence" --expected-app-sha "$EXPECTED_APP_SHA"
+      - name: Preserve honest native-client bootstrap status
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          directory = Path('evidence')
+          directory.mkdir(parents=True, exist_ok=True)
+          path = directory / 'native-clients-clients.json'
+          if not path.exists():
+              path.write_text(json.dumps({
+                  'protocol': 'pinkha-t2-two-native-clients-bootstrap-v1',
+                  'status': 'NOT_RUN_NATIVE_CLIENT_BOOTSTRAP_FAILED',
+                  'run_id': os.environ.get('GITHUB_RUN_ID'),
+                  'run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT'),
+                  'app_sha': os.environ.get('EXPECTED_APP_SHA'),
+                  'finished_at': datetime.now(timezone.utc).isoformat(),
+                  'two_native_clients': 'NOT_RUN', 'app_capability': 'OFF',
+                  'offline_conflict_merge': 'NOT_RUN', 'two_app_clients': 'NOT_RUN',
+                  'ios_acceptance': 'NOT_RUN', 'full_t2_acceptance': 'NOT_RUN'
+              }, indent=2) + '\n')
+          PY
+      - name: Upload source-bound and secret-scanned evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-T2-Native-Clients-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/
+          retention-days: 14
+          if-no-files-found: error
