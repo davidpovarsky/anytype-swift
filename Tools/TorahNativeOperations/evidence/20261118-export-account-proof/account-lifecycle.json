@@ -1,0 +1,268 @@
+{
+  "status": "VERIFIED_ACTUAL_ACCOUNT_LIFECYCLE",
+  "run_id": "44245137022",
+  "app_sha": "e7bb02742cb188cda1d5b44a8700b51fa2930421",
+  "artifact_id": 14401512374,
+  "artifact_sha256": "f196240f6d4f5ad115e51564267957590852db666ee27e8ad80ad3f02a41c37e",
+  "receipt_sha256": "0718027a00009d4eb5088c0f0ce53613156e059c1c89b0738c09d29f70fed8a6",
+  "sequence_sha256": "421d1ec69fd697650ddf55376a4ae8cc8d8781ef5089bec93d93637fee6877c3",
+  "state_sha256": "32b4c14c11b107ca3e404826e2c565b15f84bbf38e614372c88bcf42867b11fd",
+  "fixture_sha256": "91f263a3da9520612ebdd4616a6f318b7773300086a2a528a39aed5f2fd5f576",
+  "fixture_hashes_verified_against_exact_git_source": {
+    "account_phase_test.go": "ec7ffd7ede3958b7b1d2c89728bdbc688ac981181ed05019012204b15ca3f796",
+    "legacy_runtime_test.go": "dac0496da32aa83439cdc8e2907ce4067f0bd1569a371092802e0fd5fcd3ead0",
+    "new_runtime_test.go": "bbb87557e52a147023cdcdd7ed4e0141ff7161f1d28fb611c8ddfc3997e2095d"
+  },
+  "actual_counts": {
+    "binaries": 2,
+    "native_processes": 4,
+    "passing_test_invocations": 4,
+    "actual_export_files": 8
+  },
+  "identity_and_signed_history_preserved": true,
+  "distinct_phase_nonces": 4,
+  "history_entries": 2,
+  "same_account_root": true,
+  "ordinary_legacy_edit_recovered": true,
+  "secret_scan": "PASS",
+  "secret_files_uploaded": false,
+  "builds": {
+    "legacy": {
+      "binary_sha256": "5b2a430043489988d1ca30960e83e82b40d4387b855e5cd25635b266df454fcf",
+      "build_receipt_sha256": "ad6bf87a359914a45cdd7cf1c453fa489aa7fa537ee5378d0f978523397f7f9c",
+      "source_files": 35,
+      "fixture_overlay_paths": [
+        "pinkha_t2_account_phase_test.go",
+        "pinkha_t2_legacy_runtime_test.go"
+      ],
+      "module_hashes": {
+        "go.mod": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+        "go.sum": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d"
+      },
+      "tantivy_sha256": "88b34e006707bfec2d29e8b26405f67cbb975d06fd4ea164da856d0084aaabbc"
+    },
+    "new": {
+      "binary_sha256": "7b0d2692e94ebd3b9e6bbdc68e16e1864c8e2c006278fe5b634c7976b3c558c5",
+      "build_receipt_sha256": "ddda682478fbf055450cce78fdf44acaba1692bd27664dd9cb236f92e188183b",
+      "source_files": 81,
+      "fixture_overlay_paths": [
+        "pinkha_t2_account_phase_test.go",
+        "pinkha_t2_new_runtime_test.go"
+      ],
+      "module_hashes": {
+        "go.mod": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+        "go.sum": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d"
+      },
+      "tantivy_sha256": "88b34e006707bfec2d29e8b26405f67cbb975d06fd4ea164da856d0084aaabbc"
+    }
+  },
+  "phases": [
+    {
+      "phase": "new-create",
+      "role": "new",
+      "pid": 16036,
+      "phase_sha256": "592069f30cdf43c060729c5f0155a7d3cd8d9373ad4c9af1ac5269bb565f3c18",
+      "log_sha256": "f91964e329eaa3365ee36441936c1f0444c3f5d6a67295d8616d25597d0e3f20",
+      "native_passes": 1,
+      "runtime": {
+        "idempotent_retry": "already_exists_same_payload",
+        "operation_sha256": "fa2bded05215c67ac84af7ba876d59b85e47aad68e32f9d6a6e68a08c75d0ec2",
+        "private_read": "EXACT_PERSISTED_CLAIM",
+        "private_registry": "ACTUAL_NATIVE_FACTORY",
+        "private_type": 1347092481
+      },
+      "private_export_diagnostics": [
+        "pinkha_t2_account_phase_test.go:313: T2_PRIVATE_EXPORT format=Protobuf result_bytes=0 result_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pinkha_t2_account_phase_test.go:315: T2_PRIVATE_EXPORT rpc_code=1",
+        "pinkha_t2_account_phase_test.go:318: T2_PRIVATE_EXPORT report_status=FAILED succeed=0 object_errors=1 file_errors=0 issues=2",
+        "pinkha_t2_account_phase_test.go:313: T2_PRIVATE_EXPORT format=JSON result_bytes=0 result_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pinkha_t2_account_phase_test.go:315: T2_PRIVATE_EXPORT rpc_code=1",
+        "pinkha_t2_account_phase_test.go:318: T2_PRIVATE_EXPORT report_status=FAILED succeed=0 object_errors=1 file_errors=0 issues=2"
+      ],
+      "rpc_calls": {
+        "AccountCreate": 1,
+        "AccountStop": 1,
+        "AppGetVersion": 1,
+        "AppShutdown": 1,
+        "BlockCreate": 1,
+        "InitialSetParameters": 1,
+        "ObjectCreate": 1,
+        "ObjectExport": 4,
+        "ObjectSearch": 5,
+        "ObjectShow": 2,
+        "WalletCreate": 1,
+        "WorkspaceCreate": 1,
+        "WorkspaceOpen": 1
+      },
+      "exports": [
+        {
+          "name": "document.json",
+          "bytes": 2135,
+          "sha256": "ddb5cdd51064a84114c2128fdc8c920fac44ae89fd1f56670f9848b4d59496fc"
+        },
+        {
+          "name": "document.pbc",
+          "bytes": 1111,
+          "sha256": "527f5ac3536eb6515cea8376b4a9e4472aed921d7423048270263c9775e00449"
+        }
+      ],
+      "cleanup": "NOT_REQUESTED_IN_THIS_PHASE",
+      "account_stop_verified": true,
+      "closed": true
+    },
+    {
+      "phase": "new-reopen",
+      "role": "new",
+      "pid": 16061,
+      "phase_sha256": "c8a9e1d7b19777fbb26ffd08a1bc45e68c2de71e5db1f4fbdbbda4960a44bcee",
+      "log_sha256": "6ba1c74c3de4ff2b2d1d2e02af1b6dc069dfe2300ed306abf2b270a2d40651fd",
+      "native_passes": 1,
+      "runtime": {
+        "idempotent_retry": "already_exists_same_payload",
+        "operation_sha256": "fa2bded05215c67ac84af7ba876d59b85e47aad68e32f9d6a6e68a08c75d0ec2",
+        "private_read": "EXACT_PERSISTED_CLAIM",
+        "private_registry": "ACTUAL_NATIVE_FACTORY",
+        "private_type": 1347092481
+      },
+      "private_export_diagnostics": [
+        "pinkha_t2_account_phase_test.go:313: T2_PRIVATE_EXPORT format=Protobuf result_bytes=0 result_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pinkha_t2_account_phase_test.go:315: T2_PRIVATE_EXPORT rpc_code=1",
+        "pinkha_t2_account_phase_test.go:318: T2_PRIVATE_EXPORT report_status=FAILED succeed=0 object_errors=1 file_errors=0 issues=2",
+        "pinkha_t2_account_phase_test.go:313: T2_PRIVATE_EXPORT format=JSON result_bytes=0 result_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pinkha_t2_account_phase_test.go:315: T2_PRIVATE_EXPORT rpc_code=1",
+        "pinkha_t2_account_phase_test.go:318: T2_PRIVATE_EXPORT report_status=FAILED succeed=0 object_errors=1 file_errors=0 issues=2"
+      ],
+      "rpc_calls": {
+        "AccountSelect": 1,
+        "AccountStop": 1,
+        "AppGetVersion": 1,
+        "AppShutdown": 1,
+        "InitialSetParameters": 1,
+        "ObjectExport": 4,
+        "ObjectSearch": 4,
+        "ObjectShow": 2,
+        "WalletRecover": 1,
+        "WorkspaceOpen": 1
+      },
+      "exports": [
+        {
+          "name": "document.json",
+          "bytes": 2207,
+          "sha256": "341d9fdd1398de029636b3d3ca26af08560403510241df50c32fd850b69adb4e"
+        },
+        {
+          "name": "document.pbc",
+          "bytes": 1183,
+          "sha256": "ad9e859466229ee5365fcdd86756aa61bf8db14a8ba7bb6f7d3309952d1c5263"
+        }
+      ],
+      "cleanup": "NOT_REQUESTED_IN_THIS_PHASE",
+      "account_stop_verified": true,
+      "closed": true
+    },
+    {
+      "phase": "legacy-edit",
+      "role": "legacy",
+      "pid": 16078,
+      "phase_sha256": "1843d1a8098c087ca6a00fd69369f30d83da3fcecd5428d966fd232124d3935c",
+      "log_sha256": "03d4abcd8687ca2defe733af4ef7d170864e97df1fa346de5d5af06c12cb8eb6",
+      "native_passes": 1,
+      "runtime": {
+        "private_read": "NOT_AVAILABLE_ON_LEGACY",
+        "private_registry": "UNKNOWN_CHANGE_TYPE_REJECTED"
+      },
+      "private_export_diagnostics": [
+        "pinkha_t2_account_phase_test.go:313: T2_PRIVATE_EXPORT format=Protobuf result_bytes=0 result_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pinkha_t2_account_phase_test.go:315: T2_PRIVATE_EXPORT rpc_code=1",
+        "pinkha_t2_account_phase_test.go:318: T2_PRIVATE_EXPORT report_status=FAILED succeed=0 object_errors=1 file_errors=0 issues=2",
+        "pinkha_t2_account_phase_test.go:313: T2_PRIVATE_EXPORT format=JSON result_bytes=0 result_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pinkha_t2_account_phase_test.go:315: T2_PRIVATE_EXPORT rpc_code=1",
+        "pinkha_t2_account_phase_test.go:318: T2_PRIVATE_EXPORT report_status=FAILED succeed=0 object_errors=1 file_errors=0 issues=2"
+      ],
+      "rpc_calls": {
+        "AccountSelect": 1,
+        "AccountStop": 1,
+        "AppGetVersion": 1,
+        "AppShutdown": 1,
+        "InitialSetParameters": 1,
+        "ObjectExport": 4,
+        "ObjectSearch": 4,
+        "ObjectSetDetails": 1,
+        "ObjectShow": 2,
+        "WalletRecover": 1,
+        "WorkspaceOpen": 1
+      },
+      "exports": [
+        {
+          "name": "document.json",
+          "bytes": 2224,
+          "sha256": "585d90fc504ac386588ceef8b9f165f5196342a294480525717d5b53610737b6"
+        },
+        {
+          "name": "document.pbc",
+          "bytes": 1200,
+          "sha256": "8319beb02889638a55c24febd5e33faa7254920376a1525da10c8199a1c50617"
+        }
+      ],
+      "cleanup": "NOT_REQUESTED_IN_THIS_PHASE",
+      "account_stop_verified": true,
+      "closed": true
+    },
+    {
+      "phase": "new-recover",
+      "role": "new",
+      "pid": 16093,
+      "phase_sha256": "2318cfa0bcf6ad13ca5ec93eee2601eab1d102f52ce54ce75d15c63e8957e7da",
+      "log_sha256": "79cf0728bd0b50adb2ad924c4c636a5f7210de070324d0b919b507bb94e2052a",
+      "native_passes": 1,
+      "runtime": {
+        "idempotent_retry": "already_exists_same_payload",
+        "operation_sha256": "fa2bded05215c67ac84af7ba876d59b85e47aad68e32f9d6a6e68a08c75d0ec2",
+        "private_read": "EXACT_PERSISTED_CLAIM",
+        "private_registry": "ACTUAL_NATIVE_FACTORY",
+        "private_type": 1347092481
+      },
+      "private_export_diagnostics": [
+        "pinkha_t2_account_phase_test.go:313: T2_PRIVATE_EXPORT format=Protobuf result_bytes=0 result_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pinkha_t2_account_phase_test.go:315: T2_PRIVATE_EXPORT rpc_code=1",
+        "pinkha_t2_account_phase_test.go:318: T2_PRIVATE_EXPORT report_status=FAILED succeed=0 object_errors=1 file_errors=0 issues=2",
+        "pinkha_t2_account_phase_test.go:313: T2_PRIVATE_EXPORT format=JSON result_bytes=0 result_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pinkha_t2_account_phase_test.go:315: T2_PRIVATE_EXPORT rpc_code=1",
+        "pinkha_t2_account_phase_test.go:318: T2_PRIVATE_EXPORT report_status=FAILED succeed=0 object_errors=1 file_errors=0 issues=2"
+      ],
+      "rpc_calls": {
+        "AccountSelect": 1,
+        "AccountStop": 1,
+        "AppGetVersion": 1,
+        "AppShutdown": 1,
+        "BlockListDelete": 1,
+        "InitialSetParameters": 1,
+        "ObjectExport": 4,
+        "ObjectSearch": 4,
+        "ObjectShow": 2,
+        "SpaceDelete": 1,
+        "WalletRecover": 1,
+        "WorkspaceOpen": 1
+      },
+      "exports": [
+        {
+          "name": "document.json",
+          "bytes": 2224,
+          "sha256": "585d90fc504ac386588ceef8b9f165f5196342a294480525717d5b53610737b6"
+        },
+        {
+          "name": "document.pbc",
+          "bytes": 1200,
+          "sha256": "b63670fb2eb0d7ae6c7b7cd7a34e27fbff409ed512b6b0c6177acd5f5827f25e"
+        }
+      ],
+      "cleanup": "TARGET_ORPHAN_PRESERVED_THEN_SPACE_AND_PROJECTION_REMOVED",
+      "account_stop_verified": true,
+      "closed": true
+    }
+  ],
+  "app_capability": "OFF",
+  "two_app_clients": "NOT_RUN",
+  "ios_acceptance": "NOT_RUN",
+  "typed_handler_success_path": "NOT_RUN_IN_THIS_SOURCE"
+}
