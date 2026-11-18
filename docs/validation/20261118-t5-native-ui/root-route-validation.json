@@ -1,0 +1,34 @@
+{
+  "status": "SOURCE_ROUTE_AND_CONTROLLER_CONTROLS_PASS_APPLE_NOT_RUN",
+  "utc": "2026-11-18T07:15:43.997628+00:00",
+  "reviewed_agent_source": "60276139de360c20272dc77d70e51fbf6c46b492",
+  "integration_source_before_root_wiring": "2b086115d9a6c43dc71f15403624af047efd8b8b",
+  "route": "t5-apple-ui",
+  "input_count": 10,
+  "include_native_ui": true,
+  "include_freshness": true,
+  "ui_registration": "B90000000000000000000001/B90000000000000000000002",
+  "tests": [
+    {
+      "pattern": "test_t5_native_ui.py",
+      "returncode": 0,
+      "log": "root-native-ui-controls.log",
+      "log_sha256": "fff08ff2a80195d9f8d3d8c219a863a85f84b69066986c97d378f71dd0300dfa",
+      "tail": "_candidate_before_any_copy_and_all_credential_encodings) ... ok\r\ntest_receipt_rejects_wrong_attempt_and_expanded_acceptance_claim (test_t5_native_ui.NativeUIEvidenceControls.test_receipt_rejects_wrong_attempt_and_expanded_acceptance_claim) ... ok\r\ntest_rejects_duplicate_wrong_block_and_incomplete_negative_fixtures (test_t5_native_ui.NativeUIEvidenceControls.test_rejects_duplicate_wrong_block_and_incomplete_negative_fixtures) ... ok\r\ntest_rejects_labeled_counts_missing_freshness_or_reused_process (test_t5_native_ui.NativeUIEvidenceControls.test_rejects_labeled_counts_missing_freshness_or_reused_process) ... ok\r\ntest_rejects_preexisting_or_wrong_type_simulator (test_t5_native_ui.NativeUIEvidenceControls.test_rejects_preexisting_or_wrong_type_simulator) ... ok\r\ntest_rejects_reused_relaunch_pid_and_duplicate_test_attachment_entry (test_t5_native_ui.NativeUIEvidenceControls.test_rejects_reused_relaunch_pid_and_duplicate_test_attachment_entry) ... ok\r\ntest_related_receipt_requires_true_offscreen_to_exact_visible_block (test_t5_native_ui.NativeUIEvidenceControls.test_related_receipt_requires_true_offscreen_to_exact_visible_block) ... ok\r\ntest_requires_actual_five_phase_prerequisite_and_same_build (test_t5_native_ui.NativeUIEvidenceControls.test_requires_actual_five_phase_prerequisite_and_same_build) ... ok\r\ntest_requires_fresh_account_source_and_real_runtime (test_t5_native_ui.NativeUIEvidenceControls.test_requires_fresh_account_source_and_real_runtime) ... ok\r\ntest_selected_configuration_keeps_testroot_and_replaces_old_suite_in_both_formats (test_t5_native_ui.NativeUIEvidenceControls.test_selected_configuration_keeps_testroot_and_replaces_old_suite_in_both_formats) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 20 tests in 0.539s\r\n\r\nOK\r\n"
+    },
+    {
+      "pattern": "test_t5_apple_pair*.py",
+      "returncode": 0,
+      "log": "root-apple-pair-controls.log",
+      "log_sha256": "bed4e2c6e2fbda2d236f24f47dbb84bee28d21d09a83cd050a01130ff3a82802",
+      "tail": "nothing (test_t5_apple_pair_freshness.AppleFreshnessControls.test_fifth_phase_secret_scan_is_explicit_and_all_or_nothing) ... ok\r\ntest_missing_phase_identity_or_recreated_account_cannot_claim_host_freshness (test_t5_apple_pair_freshness.AppleFreshnessControls.test_missing_phase_identity_or_recreated_account_cannot_claim_host_freshness) ... ok\r\ntest_no_freshness_or_navigation_completion_can_be_inferred_from_partial_observations (test_t5_apple_pair_freshness.AppleFreshnessControls.test_no_freshness_or_navigation_completion_can_be_inferred_from_partial_observations) ... ok\r\ntest_sequence_requires_fifth_process_and_keeps_four_phase_default (test_t5_apple_pair_freshness.AppleFreshnessControls.test_sequence_requires_fifth_process_and_keeps_four_phase_default) ... ok\r\ntest_unlink_and_restore_must_keep_note_unknown_fields_and_original_block (test_t5_apple_pair_freshness.AppleFreshnessControls.test_unlink_and_restore_must_keep_note_unknown_fields_and_original_block) ... ok\r\ntest_failed_process_start_preserves_failure_receipt_and_empty_log (test_t5_apple_pair_process.ApplePairProcessControls.test_failed_process_start_preserves_failure_receipt_and_empty_log) ... skipped 'Owned process groups require POSIX'\r\ntest_keyboard_interrupt_preserves_log_and_stops_owned_descendants (test_t5_apple_pair_process.ApplePairProcessControls.test_keyboard_interrupt_preserves_log_and_stops_owned_descendants) ... skipped 'Owned process groups require POSIX'\r\ntest_timeout_kills_owned_descendants_after_parent_exits_on_term (test_t5_apple_pair_process.ApplePairProcessControls.test_timeout_kills_owned_descendants_after_parent_exits_on_term) ... skipped 'Owned process groups require POSIX'\r\n\r\n----------------------------------------------------------------------\r\nRan 26 tests in 0.162s\r\n\r\nOK (skipped=3)\r\n"
+    }
+  ],
+  "changes_sha256": {
+    ".github/workflows/torah-inspector-ipados27.yml": "e6df5d8e45806a820b8ee8f02e1b81e185696f7ba23e30c9a2efbd55e8c8aa12",
+    "PinkhaStage1Acceptance/PinkhaStage1Acceptance.xcodeproj/project.pbxproj": "ca11d3d5749384b846ed0df32b5c4ff2aab276fc478d7b283711bae13d593c7c"
+  },
+  "native_ui_executed": false,
+  "required_r15_build": "NOT_YET_PASS",
+  "product_lookup_flag": "OFF"
+}

@@ -23,6 +23,7 @@ on:
           - heart-runtime
           - t5-r15-runtime
           - t5-apple-pairs
+          - t5-apple-ui
           - sdk06-tests
           - editor-host-tests
           - wave15-core-tests
@@ -145,12 +146,13 @@ jobs:
     uses: ./.github/workflows/pinkha-heart-runtime.yml
 
   t5-apple-pairs:
-    if: ${{ inputs.route == 't5-apple-pairs' }}
+    if: ${{ inputs.route == 't5-apple-pairs' || inputs.route == 't5-apple-ui' }}
     uses: ./.github/workflows/pinkha-t5-apple-pair.yml
     with:
       heart_r14_run_id: ${{ inputs.source_run_id }}
       heart_r15_run_id: ${{ inputs.t5_r15_run_id }}
-      include_freshness: ${{ inputs.t5_component == 'index-freshness' }}
+      include_freshness: ${{ inputs.route == 't5-apple-ui' || inputs.t5_component == 'index-freshness' }}
+      include_native_ui: ${{ inputs.route == 't5-apple-ui' }}
 
   t5-r15-runtime:
     if: ${{ inputs.route == 't5-r15-runtime' }}
