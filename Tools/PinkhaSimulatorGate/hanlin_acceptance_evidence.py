@@ -21,6 +21,11 @@ REQUIRED_CHECKS = frozenset({
     "backgrounded_presentation_denies_read_and_create", "pending_read_consent_dismissed_on_document_exit",
     "departed_document_presentation_denies_read_and_create", "fresh_presentation_requires_new_native_consent",
     "fresh_presentation_reads_original_document_only",
+    "native_return_mounted_original_document",
+})
+NAVIGATION_CONTEXT_KEYS = frozenset({
+    "app", "account", "workspace", "space", "sceneID", "generation", "objectReference",
+    "selectionReferences", "sourceRevision",
 })
 SCENE_EVENT_KEYS = frozenset({
     "sceneWillDeactivate", "sceneDidEnterBackground", "sceneWillEnterForeground", "sceneDidActivate",
@@ -96,6 +101,40 @@ def fixture_environment(value, source_sha, run_id, run_attempt, now, raw_json):
     }
 
 
+def validate_native_return(value, fixture):
+    original = value.get("navigationContext")
+    require(isinstance(original, dict) and set(original) == NAVIGATION_CONTEXT_KEYS,
+            "Original native navigation context schema missing or changed")
+    for key, expected in [("app", "anytype"), ("account", fixture["accountID"]),
+                          ("workspace", fixture["spaceID"]), ("space", fixture["spaceID"]),
+                          ("objectReference", fixture["sourceObjectID"])]:
+        require(original.get(key) == expected, "Original native navigation context differs in " + key)
+    scene = uuid_text(original.get("sceneID"), "navigation scene")
+    generation = uuid_text(original.get("generation"), "navigation generation")
+    require(original.get("selectionReferences") == [], "This native return fixture requires whole-document scope")
+    require(isinstance(original.get("sourceRevision"), str)
+            and re.fullmatch(r"[0-9a-f]{64}", original["sourceRevision"]),
+            "Original native navigation source revision missing")
+    returned = value.get("nativeReturn")
+    required = {"requestID", "queuedRequestID", "sessionID", "context", "objectReference",
+                "presentationAcknowledged"}
+    require(isinstance(returned, dict) and required <= set(returned)
+            and set(returned) <= required | {"blockReference"}, "Actual native return receipt missing or changed")
+    request = uuid_text(returned.get("requestID"), "return request")
+    queued = uuid_text(returned.get("queuedRequestID"), "queued return request")
+    require(request == queued, "Native return acknowledged a different queued request")
+    require(uuid_text(returned.get("sessionID"), "return session")
+            == uuid_text(value.get("sessionID"), "original return session"),
+            "Native return belongs to a different presentation")
+    require(returned.get("context") == original, "Native return changed the original context")
+    require(returned.get("objectReference") == fixture["sourceObjectID"]
+            and returned.get("blockReference") is None, "Native return changed the original document-only target")
+    require(returned.get("presentationAcknowledged") is True, "Queued or unmounted native return is not accepted")
+    return dict(request_id=request, context_scene_id=scene, context_generation=generation,
+                object_reference=fixture["sourceObjectID"], block_reference=None,
+                scope="originalDocumentOnly", selected_block_ui_verified=False)
+
+
 def validate_result(value, fixture, source_sha, run_id, run_attempt, now):
     validate_fixture(fixture, source_sha, run_id, run_attempt, now)
     require(isinstance(value, dict), "Native result must be an object")
@@ -107,6 +146,7 @@ def validate_result(value, fixture, source_sha, run_id, run_attempt, now):
     checks = value.get("checks")
     require(isinstance(checks, dict) and set(checks) == REQUIRED_CHECKS
             and all(flag is True for flag in checks.values()), "Native checks are incomplete or failed")
+    native_return = validate_native_return(value, fixture)
     created = bounded_text(value.get("createdObjectID"), "created object")
     require(created != fixture["sourceObjectID"], "Native create reused the source object")
     sessions = [uuid_text(value.get(key), key) for key in
@@ -145,5 +185,6 @@ def validate_result(value, fixture, source_sha, run_id, run_attempt, now):
                 created_object_id=created, required_checks=len(REQUIRED_CHECKS),
                 source_sha=source_sha, run_id=run_id, run_attempt=run_attempt,
                 provider_configured=False, presentation_count=len(sessions),
+                native_return=native_return,
                 document_exit_attribution=attribution, invalidation_causes=causes,
                 full_sdk_acceptance=False)

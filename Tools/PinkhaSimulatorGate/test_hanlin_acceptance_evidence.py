@@ -11,6 +11,7 @@ NOW = APPLE_DATE_EPOCH + 800000000
 NONCE = "6302CF05-5264-4C9F-99BE-49F81B7D28EF"
 SESSIONS = ["BDAAC613-26E5-4CAB-9A3B-58D38181E43A", "8BE24B77-F28F-4A80-A407-E6E33F74F502",
             "5E2DF89A-8D85-41DC-9722-1115FC3C07B5", "19A777F6-6F4D-4788-8E29-3A324B060554"]
+RETURN_REQUEST = "CD5057ED-9D9F-4F07-B709-58E30F6073D3"
 
 
 def fixture():
@@ -22,6 +23,10 @@ def fixture():
 
 
 def result():
+    context = dict(app="anytype", account="disposable-account", workspace="origin-space", space="origin-space",
+                   sceneID="6D4E7287-9813-4AFC-A1B4-48FFED9B82B3",
+                   generation="B6F807B5-0266-4020-B086-A68CF13F4F5B", objectReference="source-page",
+                   selectionReferences=[], sourceRevision="a" * 64)
     return dict(fixtureID=NONCE, sourceSHA=SHA, runID="123", runAttempt="1",
                 sessionID=SESSIONS[0], backgroundSessionID=SESSIONS[1],
                 staleConsentSessionID=SESSIONS[2], freshSessionID=SESSIONS[3], processID=1234,
@@ -32,6 +37,10 @@ def result():
                 documentExitAttribution="navigationWithSceneTransition",
                 startedAt=799999910, finishedAt=799999990, phase="NATIVE_ACCEPTANCE_PASS",
                 checks={key: True for key in REQUIRED_CHECKS}, createdObjectID="created-page",
+                navigationContext=context,
+                nativeReturn=dict(requestID=RETURN_REQUEST, queuedRequestID=RETURN_REQUEST,
+                                  sessionID=SESSIONS[0], context=copy.deepcopy(context),
+                                  objectReference="source-page", presentationAcknowledged=True),
                 providerConfigured=False)
 
 
@@ -41,11 +50,82 @@ class HanlinNativeEvidenceTests(unittest.TestCase):
 
     def test_complete_receipt_does_not_itself_claim_sdk_acceptance(self):
         verified = self.verify(result())
-        self.assertEqual(verified["required_checks"], 21)
+        self.assertEqual(verified["required_checks"], 22)
         self.assertEqual(verified["presentation_count"], 4)
         self.assertEqual(verified["document_exit_attribution"], "navigationWithSceneTransition")
         self.assertFalse(verified["full_sdk_acceptance"])
         self.assertIn("XCTEST_REQUIRED_SEPARATELY", verified["status"])
+        self.assertEqual(verified["native_return"]["request_id"], RETURN_REQUEST)
+        self.assertEqual(verified["native_return"]["scope"], "originalDocumentOnly")
+        self.assertFalse(verified["native_return"]["selected_block_ui_verified"])
+
+    def test_missing_or_unmounted_native_return_cannot_pass_from_label(self):
+        for mutation in ["missing", "null", "empty", "queued", "numeric-ack"]:
+            candidate = result()
+            if mutation == "missing": del candidate["nativeReturn"]
+            elif mutation == "null": candidate["nativeReturn"] = None
+            elif mutation == "empty": candidate["nativeReturn"] = {}
+            elif mutation == "queued": candidate["nativeReturn"]["presentationAcknowledged"] = False
+            else: candidate["nativeReturn"]["presentationAcknowledged"] = 1
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                self.verify(candidate)
+
+    def test_native_return_requires_the_queued_request_and_original_session(self):
+        for key, replacement in [("requestID", None), ("requestID", "invalid"),
+                                 ("queuedRequestID", "invalid"), ("requestID", NONCE),
+                                 ("queuedRequestID", NONCE), ("sessionID", SESSIONS[1])]:
+            candidate = result(); candidate["nativeReturn"][key] = replacement
+            with self.subTest(key=key, replacement=replacement), self.assertRaises(ValueError):
+                self.verify(candidate)
+
+    def test_native_return_cannot_change_any_original_context_field(self):
+        replacements = dict(app="other-app", account="other-account", workspace="alternate-space",
+                            space="alternate-space", sceneID=NONCE, generation=NONCE,
+                            objectReference="created-page", selectionReferences=["source-block"],
+                            sourceRevision="b" * 64)
+        for key, replacement in replacements.items():
+            candidate = result(); candidate["nativeReturn"]["context"][key] = replacement
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, "original context"):
+                self.verify(candidate)
+
+    def test_original_navigation_anchor_must_match_fixture_and_document_only_scope(self):
+        replacements = dict(app="other-app", account="other-account", workspace="alternate-space",
+                            space="alternate-space", sceneID="invalid", generation="invalid",
+                            objectReference="created-page", selectionReferences=["source-block"], sourceRevision=None)
+        for key, replacement in replacements.items():
+            candidate = result()
+            candidate["navigationContext"][key] = replacement
+            candidate["nativeReturn"]["context"][key] = replacement
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                self.verify(candidate)
+
+    def test_native_return_rejects_foreign_object_or_selected_block_target(self):
+        for key, replacement in [("objectReference", "created-page"), ("objectReference", None),
+                                 ("blockReference", "source-block"), ("blockReference", "")]:
+            candidate = result(); candidate["nativeReturn"][key] = replacement
+            with self.subTest(key=key, replacement=replacement), self.assertRaises(ValueError):
+                self.verify(candidate)
+        candidate = result(); candidate["nativeReturn"]["blockReference"] = None
+        self.verify(candidate)  # Codable may omit nil; an explicit JSON null is equivalent.
+
+    def test_native_return_and_anchor_schemas_cannot_drop_fields_or_add_claims(self):
+        for field in ["navigationContext", "nativeReturn"]:
+            for key in result()[field]:
+                candidate = result(); del candidate[field][key]
+                with self.subTest(field=field, key=key), self.assertRaises(ValueError):
+                    self.verify(candidate)
+            candidate = result(); candidate[field]["sdkAuthorityRestored"] = True
+            with self.subTest(field=field, mutation="extra"), self.assertRaises(ValueError):
+                self.verify(candidate)
+
+    def test_actual_return_still_requires_closed_host_read_and_create_denial(self):
+        for key in ["native_return_mounted_original_document", "closed_presentation_denies_read_and_create"]:
+            for mutation in ["missing", "false"]:
+                candidate = result()
+                if mutation == "missing": del candidate["checks"][key]
+                else: candidate["checks"][key] = False
+                with self.subTest(key=key, mutation=mutation), self.assertRaisesRegex(ValueError, "incomplete"):
+                    self.verify(candidate)
 
     def test_four_real_presentation_identities_cannot_be_missing_or_reused(self):
         for key in ["backgroundSessionID", "staleConsentSessionID", "freshSessionID"]:
