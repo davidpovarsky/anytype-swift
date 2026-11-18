@@ -222,15 +222,7 @@ final class PinkhaTorahQuoteAcceptanceUITests: XCTestCase {
     }
 
     private func closeInspector() throws {
-        let close = app.buttons.matching(NSPredicate(
-            format: "identifier == %@ OR identifier == %@", "torah-inspector-close", "torah-inspector-peek-close"
-        )).firstMatch
-        try require(close.waitForExistence(timeout: 20) && close.isHittable, "The real Inspector close control is missing")
-        close.tap()
-        let sheet = app.descendants(matching: .any).matching(NSPredicate(
-            format: "identifier BEGINSWITH %@", "torah-inspector-sheet-"
-        )).firstMatch
-        try require(sheet.waitForNonExistence(timeout: 20), "The Inspector dismissal animation did not complete")
+        try app.dismissNativeTorahInspector()
         try requireCurrentDocument()
     }
 

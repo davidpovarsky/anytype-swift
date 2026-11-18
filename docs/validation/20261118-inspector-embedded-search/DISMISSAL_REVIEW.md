@@ -1,0 +1,7 @@
+# Source review: native Inspector dismissal
+
+Independent review of 7a1cf0bd22982ed590b2c3660037a9ec174fcca4 found that the test expected a visible Close button that does not exist in the configured product. In Kit07bdf7, TorahSegmentDetailView, TorahSourceReaderView and the peek view choose the Search button when actions.search is present. The Search button offers Close as a custom accessibility action; it is not a separate visible button. Nested reader routes may also set showsCloseButton=false.
+
+The tests now use the existing interactive native sheet dismissal. The Kit source explicitly enables a visible drag indicator and three detents (large, medium, peek). A shared XCTest helper observes the current sheet/application frames, performs a real fast downward pan from the top of the sheet, and verifies dismissal. If a gesture changes only the detent, it observes the new frame before another gesture, bounded to three. Failure to dismiss remains an actual test failure. No controller service, private accessibility selector, direct session mutation, extra visible Close control or product behavior change is introduced.
+
+The helper is defined in the already registered Comprehensive UI source and is also used by the quote test and the earlier source-chip smoke method. Caller checks still require the original document to become visible and hittable. Actual gesture behavior on OS27 remains NOT_RUN until the Apple UI lane executes; source geometry is not visual acceptance.

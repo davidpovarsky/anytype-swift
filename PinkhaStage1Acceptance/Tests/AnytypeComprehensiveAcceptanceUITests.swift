@@ -102,12 +102,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         )).firstMatch
         XCTAssertTrue(inspector.waitForExistence(timeout: 30), "Source chip must open the original Inspector")
         attach("source-chip-inspector-open")
-        let close = app.buttons.matching(NSPredicate(
-            format: "identifier == %@ OR identifier == %@", "torah-inspector-close", "torah-inspector-peek-close"
-        )).firstMatch
-        XCTAssertTrue(close.waitForExistence(timeout: 20))
-        XCTAssertTrue(close.isHittable)
-        close.tap()
+        try app.dismissNativeTorahInspector()
         XCTAssertTrue(inspector.waitForNonExistence(timeout: 20))
         XCTAssertTrue(more.waitForExistence(timeout: 20), "Closing Inspector should return to the document")
         attach("source-chip-inspector-closed")
@@ -288,13 +283,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
     }
 
     private func closeInspectorFromReader() throws {
-        let close = app.buttons.matching(NSPredicate(format: "identifier == %@ OR identifier == %@",
-            "torah-inspector-close", "torah-inspector-peek-close")).firstMatch
-        try requireEmbedded(close.waitForExistence(timeout: 20) && close.isHittable, "The existing Inspector close control is unavailable")
-        close.tap()
-        try requireEmbedded(app.descendants(matching: .any).matching(NSPredicate(
-            format: "identifier BEGINSWITH %@", "torah-inspector-sheet-"
-        )).firstMatch.waitForNonExistence(timeout: 20), "The native Inspector did not finish dismissal")
+        try app.dismissNativeTorahInspector()
         try requireEmbedded(more.waitForExistence(timeout: 20) && more.isHittable, "Inspector dismissal did not restore document editing")
     }
 
@@ -421,5 +410,43 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         shot.name = name
         shot.lifetime = .keepAlways
         add(shot)
+    }
+}
+
+extension XCUIApplication {
+    /// Search replaces the visible Close button in the existing Kit toolbar.
+    /// Exercise the native sheet pan, observing its live frame after each detent.
+    @MainActor
+    func dismissNativeTorahInspector() throws {
+        let panels = descendants(matching: .any).matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "torah-inspector-sheet-"
+        ))
+        guard panels.firstMatch.waitForExistence(timeout: 20), panels.count == 1 else {
+            throw NSError(domain: "NativeInspectorDismissal", code: 1,
+                          userInfo: [NSLocalizedDescriptionKey: "One real Inspector is required for native dismissal"])
+        }
+        // The source has exactly large, medium and peek detents. A pan may move
+        // to the next detent first; observe it and make at most three real gestures.
+        for _ in 0..<3 {
+            let panel = panels.firstMatch
+            let sheetFrame = panel.frame
+            let appFrame = frame
+            let inset = min(CGFloat(12), sheetFrame.height * 0.04)
+            guard sheetFrame.width > 44, sheetFrame.height > 44,
+                  sheetFrame.midX >= appFrame.minX, sheetFrame.midX <= appFrame.maxX,
+                  appFrame.maxY - 12 > sheetFrame.minY + inset + 30 else {
+                throw NSError(domain: "NativeInspectorDismissal", code: 2,
+                              userInfo: [NSLocalizedDescriptionKey: "The observed native sheet has no reachable downward pan path"])
+            }
+            let start = panel.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0))
+                .withOffset(CGVector(dx: 0, dy: inset))
+            let end = coordinate(withNormalizedOffset: .zero).withOffset(CGVector(
+                dx: sheetFrame.midX - appFrame.minX, dy: appFrame.height - 12
+            ))
+            start.press(forDuration: 0.05, thenDragTo: end, withVelocity: .fast, thenHoldForDuration: 0)
+            if panels.firstMatch.waitForNonExistence(timeout: 5) { return }
+        }
+        throw NSError(domain: "NativeInspectorDismissal", code: 3,
+                      userInfo: [NSLocalizedDescriptionKey: "The native Inspector remained after its bounded dismissal gestures"])
     }
 }
