@@ -46,6 +46,25 @@ class PairCIControlTests(unittest.TestCase):
                 with self.assertRaises(RuntimeError):
                     subject.validate_pair_result(result)
 
+    def test_genproto_effective_content_matches_the_reviewed_dependency(self):
+        effective = dict(Path=subject.GENPROTO_PATH, Version=subject.GENPROTO_VERSION,
+                         Sum=subject.GENPROTO_SUM, GoModSum=subject.GENPROTO_MOD_SUM)
+        for selection in [effective, dict(Path=subject.GENPROTO_PATH,
+                                          Version="v0.0.0-20210917145530-b395a37504d4",
+                                          Replace=effective)]:
+            self.assertEqual(subject.validate_genproto_selection(selection), effective)
+
+    def test_genproto_revision_fork_and_checksums_are_fail_closed(self):
+        effective = dict(Path=subject.GENPROTO_PATH, Version=subject.GENPROTO_VERSION,
+                         Sum=subject.GENPROTO_SUM, GoModSum=subject.GENPROTO_MOD_SUM)
+        for field, value in [("Path", "unreviewed.invalid/genproto"),
+                             ("Version", "v0.0.0-20210917145530-b395a37504d4"),
+                             ("Sum", "h1:wrong"), ("GoModSum", "")]:
+            with self.subTest(field=field):
+                changed = dict(effective, **{field: value})
+                with self.assertRaises(RuntimeError):
+                    subject.validate_genproto_selection(dict(Path=subject.GENPROTO_PATH, Replace=changed))
+
     def test_preserved_fixture_modification_is_rejected_before_native_build(self):
         source = Path(__file__).resolve().parents[2]
         subject.verify_pair_inputs(source)
