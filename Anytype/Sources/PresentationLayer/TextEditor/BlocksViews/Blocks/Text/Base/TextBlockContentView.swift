@@ -34,6 +34,11 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     private var torahAccessoryBottomConstraint: NSLayoutConstraint?
     private var focusSubscription: AnyCancellable?
     private var resetSubscription: AnyCancellable?
+    private var configuredBlockId: String?
+    private var focusContext: EditorCursorManager?
+    private var pendingFocus: (id: UUID, position: BlockFocusPosition, requestId: UUID?)?
+    private var focusLifetimeId = UUID()
+    private var focusReadinessSubscriptions = [AnyCancellable]()
     private var torahAccessoryAction: (() -> Void)?
     
     private(set) var actions: TextBlockContentConfiguration.Actions?
@@ -55,10 +60,19 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         applyNewConfiguration(configuration: configuration)
     }
 
+    override func willMove(toWindow newWindow: UIWindow?) {
+        if window != nil, window !== newWindow {
+            cancelPendingFocus()
+        }
+        super.willMove(toWindow: newWindow)
+    }
+
     override func didMoveToWindow() {
         super.didMoveToWindow()
         guard window != nil else { return }
         PinkhaTextDirectionUIKitAdapter.refreshAfterAttachment(in: textView.textView)
+        observeFocusReadiness()
+        schedulePendingFocus()
     }
     
     func update(with state: UICellConfigurationState) {
@@ -67,6 +81,9 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         textBlockLeadingView.checkboxView?.isUserInteractionEnabled = !state.isLocked
         textBlockLeadingView.calloutIconView?.isUserInteractionEnabled = !state.isLocked
         textView.textView.isUserInteractionEnabled = state.isEditing
+        if state.isLocked || !state.isEditing {
+            cancelPendingFocus()
+        }
     }
 
     func updateTorahAccessory(_ configuration: TorahBlockAccessoryConfiguration?) {
@@ -145,10 +162,97 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     /// after the apply that inserted this cell — outside the dequeue pass, where a synchronous
     /// becomeFirstResponder is unsafe (see applyNewConfiguration).
     func takeFocus(at position: BlockFocusPosition) {
-        textView.textView.setFocus(position)
+        requestFocus(position, requestId: focusContext?.registerFocusRequest(), deferred: false)
+    }
+
+    func didTakeNativeFocus() {
+        cancelPendingFocus()
+        focusContext?.registerFocusRequest()
+    }
+
+    private func requestFocus(_ position: BlockFocusPosition, requestId: UUID?, deferred: Bool) {
+        guard canReceiveFocus, let pendingId = retainFocus(position, requestId: requestId) else { return }
+        if deferred {
+            schedulePendingFocus()
+        } else {
+            applyPendingFocus(id: pendingId)
+        }
+    }
+
+    private func retainFocus(_ position: BlockFocusPosition, requestId: UUID?) -> UUID? {
+        guard configuredBlockId != nil else { return nil }
+        if let focusContext {
+            guard let requestId, focusContext.focusRequestId == requestId else { return nil }
+        }
+        let pendingId = UUID()
+        focusLifetimeId = pendingId
+        pendingFocus = (pendingId, position, requestId)
+        observeFocusReadiness()
+        return pendingId
+    }
+
+    private var canReceiveFocus: Bool {
+        !textView.textView.isLockedForEditing && textView.textView.isUserInteractionEnabled && textView.textView.isEditable
+    }
+
+    private func schedulePendingFocus() {
+        guard window != nil, let pendingId = pendingFocus?.id else { return }
+        // Attachment can occur during dequeue too; delegate side effects must wait for its return.
+        DispatchQueue.main.async { [weak self] in
+            self?.applyPendingFocus(id: pendingId)
+        }
+    }
+
+    private func cancelPendingFocus() {
+        focusLifetimeId = UUID()
+        pendingFocus = nil
+        focusReadinessSubscriptions.removeAll()
+    }
+
+    private func observeFocusReadiness() {
+        focusReadinessSubscriptions.removeAll()
+        guard pendingFocus != nil, let window else { return }
+        NotificationCenter.default.publisher(for: UIWindow.didBecomeKeyNotification, object: window)
+            .sink { [weak self] _ in self?.schedulePendingFocus() }
+            .store(in: &focusReadinessSubscriptions)
+        if let scene = window.windowScene {
+            NotificationCenter.default.publisher(for: UIScene.didActivateNotification, object: scene)
+                .sink { [weak self] _ in self?.schedulePendingFocus() }
+                .store(in: &focusReadinessSubscriptions)
+        }
+    }
+
+    private func applyPendingFocus(id: UUID) {
+        guard let pendingFocus, pendingFocus.id == id, focusLifetimeId == id else { return }
+        if let focusContext, focusContext.focusRequestId != pendingFocus.requestId {
+            cancelPendingFocus()
+            return
+        }
+        guard canReceiveFocus else {
+            cancelPendingFocus()
+            return
+        }
+        guard let window, textView.textView.window === window, window.isKeyWindow,
+              window.windowScene?.activationState == .foregroundActive else { return }
+        // Consume before UIKit delegates run, so its successful begin-editing cannot replay a caret.
+        self.pendingFocus = nil
+        focusReadinessSubscriptions.removeAll()
+        textView.textView.setFocus(pendingFocus.position)
+        if !textView.textView.isFirstResponder, focusLifetimeId == id,
+           focusContext?.focusRequestId == pendingFocus.requestId {
+            // A native refusal is not success. Retain only this still-current request, and
+            // wait for attachment/key/activation events; never loop or add a timed retry.
+            self.pendingFocus = pendingFocus
+            observeFocusReadiness()
+        }
     }
 
     private func applyNewConfiguration(configuration: TextBlockContentConfiguration) {
+        if configuredBlockId != configuration.blockId || focusContext !== configuration.focusContext {
+            cancelPendingFocus()
+        }
+        configuredBlockId = configuration.blockId
+        focusContext = configuration.focusContext
         applyTextStorage(configuration.attributedString)
 
         textBlockLeadingView.update(blockId: configuration.blockId, style: TextBlockLeadingStyle(with: configuration))
@@ -178,9 +282,10 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         
         focusSubscription = configuration
             .focusPublisher
-            .receiveOnMain()
             .sink { [weak self] focus in
-                self?.textView.textView.setFocus(focus)
+                guard let self else { return }
+                // Editor focus senders are MainActor-bound. Capture ownership now, before the UI deferral.
+                requestFocus(focus, requestId: focusContext?.focusRequestId, deferred: true)
             }
         
         resetSubscription = configuration.resetPublisher.sink { [weak self] configuration in
@@ -190,9 +295,10 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         }
         
         if let position = configuration.initialBlockFocusPosition {
-            // Defer: applyNewConfiguration runs during cell dequeue; synchronous becomeFirstResponder triggers delegate side effects that crash on iOS 26.
-            DispatchQueue.main.async { [weak self] in
-                self?.textView.textView.setFocus(position)
+            // EditorContentView applies the cell state after its content configuration. Keep the
+            // new request through that ordering; the state callback and execution both enforce it.
+            if retainFocus(position, requestId: configuration.initialFocusRequestId) != nil {
+                schedulePendingFocus()
             }
         }
     }

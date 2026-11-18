@@ -406,7 +406,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
                     try await actionHandler.turnInto(style, blockId: info.id)
                     try await setNewText(attributedString: newText.sendable())
                     resetSubject.send(nil)
-                    textView.setFocus(.beginning)
+                    cursorManager.focus(in: textView, position: .beginning)
                 }
             case let .addBlock(type, newText):
                 Task { @MainActor in
@@ -414,7 +414,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
                     try await setNewText(attributedString: newText.sendable())
                     try await actionHandler.addBlock(type, blockId: info.id, blockText: newText.sendable(), position: .top)
                     resetSubject.send(nil)
-                    textView.setFocus(.beginning)
+                    cursorManager.focus(in: textView, position: .beginning)
                 }
             case let .addStyle(style, currentText, styleRange, focusRange):
                 Task { @MainActor in
@@ -427,7 +427,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
                         contentType: info.content.type
                     )
                     resetSubject.send(newText.value)
-                    textView.setFocus(.at(focusRange))
+                    cursorManager.focus(in: textView, position: .at(focusRange))
                 }
             }
             
@@ -452,13 +452,13 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
             guard let content = info.textContent, content.contentType != style else { return }
             guard BlockRestrictionsBuilder.build(content: info.content).canApplyTextStyle(style) else { return }
             resetSubject.send(newText)
-            focusSubject.send(.beginning)
+            cursorManager.focus(at: info.id, position: .beginning)
             Task { @MainActor in
                 try await materializeVirtualBlock(carrying: newText, style: style)
             }
         case let .addBlock(type, newText):
             resetSubject.send(newText)
-            focusSubject.send(.beginning)
+            cursorManager.focus(at: info.id, position: .beginning)
             Task { @MainActor in
                 try await materializeVirtualBlock(carrying: newText)
                 try await actionHandler.addBlock(type, blockId: info.id, blockText: newText.sendable(), position: .top)
@@ -471,7 +471,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
                 contentType: info.content.type
             )
             resetSubject.send(styledText)
-            focusSubject.send(.at(focusRange))
+            cursorManager.focus(at: info.id, position: .at(focusRange))
             Task { @MainActor in
                 try await materializeVirtualBlock(carrying: styledText)
             }
@@ -648,7 +648,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
 
             if pasteResult.isSameBlockCaret || pasteResult.blockIds.isEmpty {
                 let range = NSRange(location: pasteResult.caretPosition, length: 0)
-                textView.setFocus(.at(range))
+                self?.cursorManager.focus(in: textView, position: .at(range))
             }
 
             SharingTip.didCopyText = true
@@ -911,7 +911,7 @@ extension TextBlockActionHandler: AccessoryViewOutput {
         let newAttributedString = anytypeText.attrString
                 
         try await setNewText(attributedString: newAttributedString.sendable())
-        focusSubject.send(.at(.init(location: position + mention.name.count + 2, length: 0)))
+        cursorManager.focus(at: info.id, position: .at(.init(location: position + mention.name.count + 2, length: 0)))
     }
     
     func didSelectSlashAction(

@@ -4,6 +4,7 @@ import Foundation
 struct BlockFocus {
     let id: String
     let position: BlockFocusPosition
+    let requestId = UUID()
 }
 
 enum EditorCursorFocusPolicy {
@@ -20,8 +21,22 @@ final class EditorCursorManager {
     private var currentType: String?
     private var didAppearedOnce = false
     private var lastBlockFocus: BlockFocus?
+    private var pendingBlockFocus: BlockFocus?
 
-    var blockFocus: BlockFocus?
+    private(set) var focusRequestId: UUID?
+
+    var blockFocus: BlockFocus? {
+        get { pendingBlockFocus }
+        set {
+            let previousRequestId = pendingBlockFocus?.requestId
+            pendingBlockFocus = newValue
+            if let newValue {
+                focusRequestId = newValue.requestId
+            } else if focusRequestId == previousRequestId {
+                focusRequestId = nil
+            }
+        }
+    }
 
     init(focusSubjectHolder: FocusSubjectsHolder, focusPolicy: EditorCursorFocusPolicy = .firstEmptyTextBlock) {
         self.focusSubjectHolder = focusSubjectHolder
@@ -49,22 +64,42 @@ final class EditorCursorManager {
 
     func applyCurrentFocus(shouldInvalidateFocus: Bool = true) {
         guard let blockFocus = blockFocus else { return }
+        guard blockFocus.requestId == focusRequestId else {
+            pendingBlockFocus = nil
+            return
+        }
         let focusSubject = focusSubjectHolder.focusSubject(for: blockFocus.id)
-
+        if shouldInvalidateFocus { pendingBlockFocus = nil }
         focusSubject.send(blockFocus.position)
-    
-        if shouldInvalidateFocus { self.blockFocus = nil }
+    }
+
+    /// Transfers ownership to a row configuration without cancelling its deferred focus.
+    func consumeBlockFocus(for blockId: String) -> BlockFocus? {
+        guard let focus = pendingBlockFocus, focus.id == blockId else { return nil }
+        pendingBlockFocus = nil
+        return focus.requestId == focusRequestId ? focus : nil
+    }
+
+    @discardableResult
+    func registerFocusRequest() -> UUID {
+        let requestId = UUID()
+        focusRequestId = requestId
+        return requestId
+    }
+
+    func focus(in textView: some TextViewManagingFocus, position: BlockFocusPosition) {
+        registerFocusRequest()
+        textView.setFocus(position)
     }
     
     func restoreLastFocus(at blockId: String) {
         
         guard let lastBlockFocus = lastBlockFocus, lastBlockFocus.id == blockId else { return }
-        let focusSubject = focusSubjectHolder.focusSubject(for: lastBlockFocus.id)
-
-        focusSubject.send(lastBlockFocus.position)
+        focus(at: lastBlockFocus.id, position: lastBlockFocus.position)
     }
     
     func focus(at blockId: String, position: BlockFocusPosition = .end) {
+        registerFocusRequest()
         let focusSubject = focusSubjectHolder.focusSubject(for: blockId)
 
         focusSubject.send(position)

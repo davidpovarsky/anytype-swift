@@ -43,6 +43,9 @@ struct TextBlockContentConfiguration: BlockConfiguration {
     var isChecked: Bool
     var shouldDisplayPlaceholder: Bool
     var initialBlockFocusPosition: BlockFocusPosition?
+    var initialFocusRequestId: UUID?
+    @EquatableNoop private(set) var focusContext: EditorCursorManager?
+    private let focusContextIdentity: ObjectIdentifier?
     var alignment: NSTextAlignment
     var pinkhaWritingContext: PinkhaTextBlockWritingContext?
     @EquatableNoop var textContainerInsets: UIEdgeInsets
@@ -66,6 +69,8 @@ struct TextBlockContentConfiguration: BlockConfiguration {
         isChecked: Bool,
         shouldDisplayPlaceholder: Bool,
         initialBlockFocusPosition: BlockFocusPosition?,
+        initialFocusRequestId: UUID? = nil,
+        focusContext: EditorCursorManager? = nil,
         focusPublisher: AnyPublisher<BlockFocusPosition, Never>,
         resetPublisher: AnyPublisher<TextBlockContentConfiguration?, Never>,
         actions: Actions
@@ -83,6 +88,9 @@ struct TextBlockContentConfiguration: BlockConfiguration {
         self.isChecked = isChecked
         self.shouldDisplayPlaceholder = shouldDisplayPlaceholder
         self.initialBlockFocusPosition = initialBlockFocusPosition
+        self.initialFocusRequestId = initialFocusRequestId
+        self.focusContext = focusContext
+        self.focusContextIdentity = focusContext.map { ObjectIdentifier($0) }
         self.focusPublisher = focusPublisher
         self.resetPublisher = resetPublisher
         

@@ -323,6 +323,94 @@
           "case_count": 1
         }
       }
+    },
+    "TextBlockFocusLifecycleTests": {
+      "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+      "source_lf_sha256": "23ba74b4aab3a95bcd3b8b1f92d6fe9a82b8be158a9914dc4dc229f370e68a5a",
+      "methods": {
+        "initialFocusWaitsForAttachment": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "pendingFocusWaitsForKeyWindow": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "refusedFocusWaitsForWindowReadiness": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "explicitHandoffDoesNotReplayInitialCaret": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "staleFocusDoesNotSurviveRowLifetime": {
+          "parameters": [
+            {
+              "name": "change",
+              "type": "String"
+            }
+          ],
+          "argument_collections": [
+            [
+              "rebind",
+              "detach",
+              "editorContext"
+            ]
+          ],
+          "case_count": 3
+        },
+        "laterFocusSupersedesDetachedRequest": {
+          "parameters": [
+            {
+              "name": "useNativeEditing",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "editingDenialCancelsPendingFocus": {
+          "parameters": [
+            {
+              "name": "locked",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "focusedTextViewDoesNotReplayResponderAcquisition": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "consumedAndNewerFocusSurviveOldCallbacks": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "requestIdentityParticipatesInCellConfigurationEquality": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        }
+      }
     }
-  }
+  },
+  "focus_regression_source_base": "7ecc723c3334c5361c25216ed97161b7d221c5e4"
 }

@@ -232,7 +232,7 @@ def validate_results(summary, tree, expected, udid, profile=HostTestProfile.SDK0
                 "Editor summary does not describe the exact methods or argument cases")
     if profile is HostTestProfile.CORE:
         result.update(core_profile.validate_arguments(tree, expected))
-        require(counts["totalTestCount"] in {41, 57},
+        require(counts["totalTestCount"] in {51, 71},
                 "Core summary differs from its exact method or literal-case scope")
     if profile is HostTestProfile.COMPONENTS:
         result["components"] = validate_component_arguments(tree, expected)
@@ -575,7 +575,7 @@ def execute(args, receipt):
                   if profile is HostTestProfile.SDK06 else
                   "Editor component tests use controlled store and insertion fixtures; native drag/drop UI, real middleware writes, and all SDK06 acceptance remain NOT_RUN by this profile")
     if profile is HostTestProfile.CORE:
-        limitation = ("Existing UIKit direction, gesture, marker and native Properties component tests; "
+        limitation = ("UIKit direction, gesture, marker, focus lifetime and native Properties component tests; "
                       "real multi-block UI, Add Property UI, native account writes and physical devices remain NOT_RUN by this profile")
     if profile is HostTestProfile.COMPONENTS:
         limitation = ("SDK06, editor and UIKit/Properties component contracts on one fresh source-bound build; "

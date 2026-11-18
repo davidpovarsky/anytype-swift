@@ -30,6 +30,7 @@ extension TextBlockContentView: CustomTextViewDelegate {
     }
 
     func didBeginEditing() {
+        didTakeNativeFocus()
         actions?.textViewDidBeginEditing(textView.textView)
     }
     

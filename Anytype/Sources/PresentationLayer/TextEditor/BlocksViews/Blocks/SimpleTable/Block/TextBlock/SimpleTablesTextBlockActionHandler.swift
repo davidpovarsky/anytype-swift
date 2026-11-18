@@ -192,7 +192,7 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
                 Task { @MainActor in
                     try await actionHandler.turnInto(style, blockId: info.id)
                     try await setNewText(attributedString: newText.sendable())
-                    textView.setFocus(.beginning)
+                    cursorManager.focus(in: textView, position: .beginning)
                 }
             case let .addBlock(type, newText):
                 Task { @MainActor in
@@ -210,7 +210,7 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
                         contentType: info.content.type
                     )
                     resetSubject.send(newText.value)
-                    textView.setFocus(.at(focusRange))
+                    cursorManager.focus(in: textView, position: .at(focusRange))
                 }
             }
             
@@ -265,7 +265,7 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
             
             if pasteResult.isSameBlockCaret || pasteResult.blockIds.isEmpty {
                 let range = NSRange(location: pasteResult.caretPosition, length: 0)
-                textView.setFocus(.at(range))
+                self?.cursorManager.focus(in: textView, position: .at(range))
             }
         }
         return false
@@ -415,7 +415,7 @@ extension SimpleTablesTextBlockActionHandler: AccessoryViewOutput {
         let newAttributedString = anytypeText.attrString
         
         try await setNewText(attributedString: newAttributedString.sendable())
-        focusSubject.send(.at(.init(location: position + mention.name.count + 2, length: 0)))
+        cursorManager.focus(at: info.id, position: .at(.init(location: position + mention.name.count + 2, length: 0)))
     }
     
     func didSelectSlashAction(

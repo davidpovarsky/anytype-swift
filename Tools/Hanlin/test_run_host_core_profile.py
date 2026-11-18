@@ -26,7 +26,7 @@ class CoreScopeGateTests(unittest.TestCase):
                         for values in product(*method["argument_collections"])]
                 self.nodes.append(node)
         self.tree = dict(testNodes=self.nodes)
-        self.summary = dict(totalTestCount=41, passedTests=41, failedTests=0, skippedTests=0,
+        self.summary = dict(totalTestCount=51, passedTests=51, failedTests=0, skippedTests=0,
             devicesAndConfigurations=[dict(device=dict(deviceId="core-disposable", osVersion="27.0",
                 osBuildNumber="24A-control", architecture="arm64", modelName="iPad (A16)"))])
 
@@ -35,10 +35,10 @@ class CoreScopeGateTests(unittest.TestCase):
                                 "core-disposable", HostTestProfile.CORE)
 
     def test_actual_distinct_cases_required_independently_of_summary_unit(self):
-        for total in (41, 57):
+        for total in (51, 71):
             value = self.validate(summary=dict(self.summary, totalTestCount=total, passedTests=total))
-            self.assertEqual(value["actual_method_count"], 41)
-            self.assertEqual(value["declared_case_count"], 57)
+            self.assertEqual(value["actual_method_count"], 51)
+            self.assertEqual(value["declared_case_count"], 71)
         self.assertEqual(HostTestProfile.CORE.pass_status, "WAVE15_CORE_COMPONENT_PASS")
         self.assertEqual(HostTestProfile.CORE.result_prefix, "wave15-core")
 
@@ -92,7 +92,7 @@ class CoreScopeGateTests(unittest.TestCase):
 
     def test_wrong_summary_unit_and_unknown_selection_are_rejected(self):
         with self.assertRaises(ValueError):
-            self.validate(summary=dict(self.summary, totalTestCount=58, passedTests=58))
+            self.validate(summary=dict(self.summary, totalTestCount=72, passedTests=72))
         with self.assertRaises(ValueError):
             core.validate_arguments(self.tree, {"OtherSuite/method"})
 

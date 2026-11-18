@@ -90,7 +90,7 @@ final class TextBlockViewModel: BlockViewModelProtocol {
     }
 
     func set(focus: BlockFocusPosition) {
-        actionHandler.focusSubject.send(focus)
+        cursorManager.focus(at: info.id, position: focus)
     }
 
     /// Rebinds this row to the block that replaced its current one in place. The instance —
@@ -138,11 +138,7 @@ final class TextBlockViewModel: BlockViewModelProtocol {
             .foregroundColor: UIColor.Text.tertiary,
         ]
         
-        var position: BlockFocusPosition?
-        if cursorManager.blockFocus?.id == info.id {
-            position = cursorManager.blockFocus?.position
-            cursorManager.blockFocus = nil
-        }
+        let initialFocus = cursorManager.consumeBlockFocus(for: info.id)
         
         let contentConfiguration = TextBlockContentConfiguration(
             blockId: info.id,
@@ -164,7 +160,9 @@ final class TextBlockViewModel: BlockViewModelProtocol {
             isToggled: info.isToggled,
             isChecked: content.checked,
             shouldDisplayPlaceholder: info.isToggled && info.childrenIds.isEmpty, 
-            initialBlockFocusPosition: position,
+            initialBlockFocusPosition: initialFocus?.position,
+            initialFocusRequestId: initialFocus?.requestId,
+            focusContext: cursorManager,
             focusPublisher: actionHandler.focusSubject.eraseToAnyPublisher(),
             resetPublisher: actionHandler.resetSubject
                 .map { [weak self] attributedString in

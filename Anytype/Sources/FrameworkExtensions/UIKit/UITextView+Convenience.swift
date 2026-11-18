@@ -57,16 +57,9 @@ extension UITextView {
             selectedTextRange = textRange(from: beginningOfDocument, to: beginningOfDocument)
         }
 
+        // The caller owns deferred focus and its lifetime; a view-local retry can steal a newer responder.
         if !isFirstResponder && canBecomeFirstResponder {
             becomeFirstResponder()
-        } else {
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                
-                if !isFirstResponder && canBecomeFirstResponder {
-                    becomeFirstResponder()
-                }
-            }
         }
         typingAttributes = oldTypingAttributes
     }
