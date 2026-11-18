@@ -1,0 +1,55 @@
+{
+  "schema": "pinkha-t2-account-failure-v1",
+  "run_id": 44235227539,
+  "run_attempt": 1,
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44235227539",
+  "app_sha": "b0330ec412606568cfe6c6bccdf920504aafd142",
+  "fixture_source_commit": "63847ad7e9645c6e61e66aa8f1f6c234586e8556",
+  "status": "FAIL",
+  "finished_at": "2026-11-18T04:18:13.734188+00:00",
+  "artifact": {
+    "id": 14396909479,
+    "zip_sha256": "eba76863cc3dbc3f14b740636bb3121e7b202257f86b66b5596cb359860b0e37",
+    "receipt_sha256": "2ae2a09f9eef55b15fa557f40f318b0803a57ebc18398349410a82f352f3990f",
+    "native_log_sha256": "1cc829b2147afd6f2f987d959167a191bdf65ab334a1c3436f9009c8df335e35",
+    "digest_matches_github": true,
+    "raw_location": "GitHub Actions artifact only"
+  },
+  "native_builds": {
+    "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+    "legacy_binary_sha256": "bcc37cc8e5b0e0a1c577a61df2bd67a00f5f17905b7c80fdaa086bc51d3f73de",
+    "new_binary_sha256": "db9342fac2066438808959e0eea46d43f33fa0fec6d4e950eb07899eb1356487",
+    "fixture_sha256": "c7efe1213dd97ff776bacdc911ae1a2fda1b22ce18dc0c27dffc8ac1c2c5787e",
+    "both_compiled": true
+  },
+  "phases": {
+    "new-create": "FAIL",
+    "new-reopen": "NOT_RUN",
+    "legacy-edit": "NOT_RUN",
+    "new-recover": "NOT_RUN"
+  },
+  "finding": {
+    "kind": "fixture_assumed_unhydrated_TreeId_field",
+    "source": "account_lifecycle/account_phase_test.go:228",
+    "expected": "private root ID",
+    "actual": "empty string",
+    "observed_progress": "Reached raw history enumeration after native host factory/append/read/idempotent routine returned; no full phase PASS.",
+    "upstream_module": "github.com/anyproto/any-sync@v0.13.8",
+    "upstream_h1": "h1:VVcAX/8VHwIB3D3mEaO0v3ojyixrYvaGI1nwgLja3zc=",
+    "upstream_verified": true,
+    "contract": "objecttree/storage.go GetAfterAddSeq filters TreeKey by storage ID; changeFromDoc hydrates Id/PrevIds/RawChange but omits TreeId. objecttree/objecttree.go persists native PreviousIds into StorageChange.PrevIds.",
+    "fix": "Assert storage.Id == expected root, callback change.Id == acknowledged native ChangeID, and PrevIds == [root]; retain all raw byte hashes, exact 2 entries, derived/parent/deletion metadata and heads."
+  },
+  "verification": {
+    "before_worktree_sha256": "16a9a3dfdcfa261c5d78511f31a5b605b47dddc21293f0641f20c7bce25f02cb",
+    "after_sha256": "008e54cf51785953a5136759de90dd735aa0f4ef291221c22b4f7607bc583bbc",
+    "gofmt": "PASS",
+    "diff_check": "PASS",
+    "corrected_native_runtime": "NOT_RUN",
+    "mutation_scope": "one existing fixture file only; exact-context local patch; no Heart or inventory mutation"
+  },
+  "app_capability": "OFF",
+  "full_t2_acceptance": "NOT_ACCEPTED",
+  "two_app_clients": "NOT_RUN",
+  "ios_acceptance": "NOT_RUN"
+}
