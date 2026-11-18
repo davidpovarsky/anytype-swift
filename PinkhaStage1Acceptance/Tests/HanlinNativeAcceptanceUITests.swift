@@ -56,7 +56,10 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         route.queryItems = [URLQueryItem(name: "objectId", value: fixture.sourceObjectID),
                             URLQueryItem(name: "spaceId", value: fixture.spaceID)]
         app.open(try XCTUnwrap(route.url))
-        let editor = app.otherElements["pinkha-ui27-editor:\(fixture.spaceID):\(fixture.sourceObjectID)"]
+        // Full native identifiers may exceed XCTest's direct identifier-query
+        // limit. Preserve every byte and use the exact predicate route.
+        let editorID = "pinkha-ui27-editor:\(fixture.spaceID):\(fixture.sourceObjectID)"
+        let editor = app.otherElements.matching(NSPredicate(format: "identifier == %@", editorID)).firstMatch
         XCTAssertTrue(editor.waitForExistence(timeout: 45), "The exact prepared native editor must be mounted")
         XCTAssertTrue(editor.isHittable)
         let entry = app.buttons["pinkha.hanlin.open"].firstMatch
