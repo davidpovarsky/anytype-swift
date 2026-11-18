@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "verification": "Original GitHub ZIPs retrieved in RAM on the connected repository host; ZIP digest, run/source identity, original receipt/log hashes and actual test terminal events reconciled. This file is a metadata summary, not a replacement raw artifact.",
+  "raw_artifacts_location": "GitHub Actions only. No raw private ZIPs, account roots, logs, keys or payloads copied into this proof.",
+  "context_preservation": {
+    "source_commit": "ad51263f31aaeaa8d9605394db4961fd64ba54b8",
+    "integration_sha": "09e4287e78fb79937a83f5ed50b5d34800bc50f6",
+    "run_id": 44282367113,
+    "attempt": 1,
+    "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44282367113",
+    "terminal_conclusion": "success",
+    "finished_at": "2026-11-18T10:14:48Z",
+    "artifacts": [
+      {
+        "artifact_id": 14417707371,
+        "zip_sha256": "51ea262ad6921fdffbb10affa504cd92d1a5fe130187c76b87d818c4badabf91",
+        "raw_go_log_sha256": "d1e9b634d79384ff9752da6ed85b23a6dc41c1ba936a81f546b942398ddaa3aa",
+        "raw_go_log_bytes": 79428,
+        "receipt_sha256": "0e4c701bf0819512991794ca64ff0b2271d63dde13aa552bd05bea9975953dbe",
+        "status": "PASS_PRIVATE_NATIVE_REGISTRY_ADAPTER",
+        "counts": {
+          "pass": 63,
+          "fail": 0,
+          "skip": 0,
+          "top_level_pass": 25,
+          "subcase_pass": 38
+        },
+        "skipped_test_ids": [],
+        "context_test_ids": [
+          "TestPinkhaNativeTargetLoadReceivesCancellationContext",
+          "TestPinkhaNativeTargetRejectsContextlessLoader",
+          "TestPinkhaNativeTargetPreservesErrorsAndChecksCancelledCallback/original_load_error_is_not_reclassified_as_missing",
+          "TestPinkhaNativeTargetPreservesErrorsAndChecksCancelledCallback/cancelled_callback_does_not_inspect_native_target",
+          "TestPinkhaNativeTargetPreservesErrorsAndChecksCancelledCallback"
+        ],
+        "non_json_preamble_lines": 0,
+        "inventory_sha256": "14261dcc974addb60664772d75be12f63f96ea5768bd245b803d522e17575642",
+        "source_sha": "09e4287e78fb79937a83f5ed50b5d34800bc50f6",
+        "scope": {
+          "middleware_acceptance": "NOT_RUN",
+          "two_client_transport_acceptance": "NOT_RUN",
+          "full_t2_acceptance": "NOT_RUN",
+          "ios_acceptance": "NOT_RUN",
+          "target_lifecycle_scope": "NON_ATOMIC_NATIVE_ADAPTER_ONLY"
+        }
+      },
+      {
+        "artifact_id": 14416524799,
+        "zip_sha256": "27e8424824791972cab4c19ba22c7138b77564471befb86688d12bb114c28124",
+        "raw_go_log_sha256": "604fd836bd9db9c534b4360e2f7370d9ddf9ccc9fca9c158b73ad2c36c583005",
+        "raw_go_log_bytes": 87138,
+        "receipt_sha256": "df6edb7d6fbad703d8d94d9d3df2f795755442dec2717eed67fc1b6ecf798846",
+        "status": "PASS_NATIVE_COMPONENT_AND_LOOPBACK_TRANSPORT",
+        "counts": {
+          "pass": 68,
+          "fail": 0,
+          "skip": 2,
+          "top_level_pass": 23,
+          "subcase_pass": 45
+        },
+        "skipped_test_ids": [
+          "TestNativeTreeProcessHelper",
+          "TestCommittedProcessExitHelper"
+        ],
+        "context_test_ids": [],
+        "non_json_preamble_lines": 69,
+        "inventory_sha256": "14261dcc974addb60664772d75be12f63f96ea5768bd245b803d522e17575642",
+        "source_sha": "09e4287e78fb79937a83f5ed50b5d34800bc50f6",
+        "scope": {
+          "middleware_acceptance": "NOT_RUN",
+          "two_client_transport_acceptance": "PASS_ISOLATED_LOOPBACK_PROTOCOL_ONLY",
+          "full_t2_acceptance": "NOT_RUN",
+          "ios_acceptance": "NOT_RUN",
+          "target_lifecycle_scope": "NON_ATOMIC_NATIVE_ADAPTER_ONLY"
+        }
+      }
+    ],
+    "source_hashes": {
+      "core/block/editor/torahopsobject/object.go": "57f2b45aedb0bcd1fe3ad68ab491eaa4ac4516b7439a72ed2dc878347f38a0b7",
+      "core/block/editor/torahopsobject/target_context_test.go": "c30aa64116e5c6b3f94a479b3e38d61b4d4f07a796758b4cd2ea7b2a355cc8da",
+      "core/block/editor/pinkha_torah_test.go": "9a381797f03d87efede5d3d7814e4ab919c7c02a838f13a9a7ba4d34412c290d"
+    },
+    "limits": [
+      "Native object lock is not cancellable.",
+      "No atomic logout or target-lifecycle transaction is claimed.",
+      "This run is not account transport, iOS or full T2 acceptance.",
+      "DoCtx is not established as the cause or fix of the separate B bootstrap failure."
+    ]
+  },
+  "cold_client_diagnostic": {
+    "source_commit": "225cb5075b9c91dc92e4634ee47b063a5c4bae63",
+    "integration_sha": "743ae42f7b8ec8181efe5e87f3bb5ccbc1b4ad63",
+    "run_id": 44280905417,
+    "attempt": 1,
+    "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44280905417",
+    "terminal_conclusion": "failure",
+    "finished_at": "2026-11-18T10:08:19Z",
+    "artifact_id": 14417666408,
+    "artifact_bytes": 75828,
+    "zip_sha256": "fac12f85cfa0a350583661c8c17c785cc481bf3db230f3f0108537bb0fb5f8c3",
+    "actual_controls": {
+      "python_pass": 35,
+      "go_boundary_top_level_pass": 2,
+      "go_boundary_subcase_pass": 11,
+      "go_boundary_terminal_pass": 13,
+      "go_boundary_fail": 0,
+      "go_boundary_skip": 0
+    },
+    "same_account_baseline": {
+      "binaries": 2,
+      "processes": 4,
+      "passing_test_invocations": 4,
+      "ordinary_export_files": 8
+    },
+    "concurrent_clients": {
+      "creator_ready": true,
+      "recovered_ready": false,
+      "client_phase_pass": 0,
+      "recovered_phase_fail": 1,
+      "recovered_failure_seconds": 2.6,
+      "final_receipts": 0
+    },
+    "exact_categorical_lines": [
+      {
+        "line": 36,
+        "text": "pinkha_t2_native_client_phase_test.go:345: T2_READ_FAILURE wire_code=1 wire_issues=[ISSUE_UNKNOWN_INTERNAL] snapshot_present=false"
+      },
+      {
+        "line": 37,
+        "text": "pinkha_t2_native_client_phase_test.go:345: T2_READ_FAILURE later_storage_presence target=false target_error_type=<nil> private_root=false root_error_type=<nil>"
+      }
+    ],
+    "source_hashes": {
+      "native_client_phase_test.go": "497313fc0919e84582240767b2cb70fc67309cd8e81763bacb702f7b5ab52638",
+      "fixture.json": "b17ad46252cfb3e9105b1170feac852fa9e8d5c17ff5b228c8cc7eeeb9d89f39"
+    },
+    "evidence_hashes": {
+      "controller-controls.log": "7847850de4bfd8dcfb09ef3b94e0ff15f44a4dc35113fde47b087683d3296f60",
+      "native-client-boundary-controls.log": "1279cd423a5f3428d12716ecd90f93d214fa2dcd84ecd7f01f597084e840c16d",
+      "account-sequence/new-create.log": "13d6dea436b8834632a55bb430590707d6428289d9884fc79d624854179e9476",
+      "account-sequence/legacy-edit.log": "7474d1b5b8c44a9c8a29a3b2d89640e4e4f6560f7ccffc7c98574740c4826ff8",
+      "account-sequence/new-recover.log": "02ab73004ecc35f66a6ffcd253f5ac27182c1e2ba8922d008e464b136e80aab6",
+      "account-sequence/new-reopen.log": "e38dc629109160ab0ec85bb42debaa7876400cb13fbea9a886ac1614aa3aeba5",
+      "native-clients-build.json": "9e9f55c9903823be024044974f2b5c78cbe6098ab190b6eead83206015a862bc",
+      "native-clients-clients.json": "bb0f44407d0d280d097d934d8d219e13d78198fa115f039dea1f034c86e1aca4",
+      "native-clients/creator/native.log": "c41d0083680657d3cabd61c559ffa1b7c54736066ebb4b93cb55d4375206c3f0",
+      "native-clients/recovered/native.log": "2948f8d27cfc53c2df809834fd5a83c67710634ba1d2bfc94a0640d6170805f9"
+    },
+    "cleanup": "PASS",
+    "publication": "PASS_SECRET_SCANNED_EXACT_ALLOWLIST",
+    "interpretation": "The original wire response was INTERNAL_ERROR with ISSUE_UNKNOWN_INTERNAL and no snapshot. Later local HasTree observations found neither the target nor private root and returned nil storage errors. These are later observations, not a proven wrapped error cause. No retry or production error classification changed.",
+    "prior_failure_run": 44272980092
+  },
+  "acceptance": {
+    "app_capability": "OFF",
+    "two_native_accounts": "FAIL_BOOTSTRAP",
+    "offline_conflict_restart": "NOT_RUN",
+    "two_ios_apps": "NOT_RUN",
+    "full_t2": "OPEN"
+  }
+}
