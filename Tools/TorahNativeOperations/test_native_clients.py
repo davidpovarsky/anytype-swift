@@ -3,6 +3,8 @@
 These controls do not create accounts or claim Docker/Native acceptance.
 """
 import copy
+from contextlib import redirect_stdout
+import io
 import json
 from pathlib import Path
 import shutil
@@ -54,6 +56,133 @@ def ready_fixture(role="recovered"):
 
 
 class NativeClientControls(unittest.TestCase):
+    def test_live_diagnostic_uses_only_fixed_records_and_labels_the_outer_context(self):
+        raw = (b"unrelated synthetic-private-payload /private/account-id\n"
+               b"T2_NATIVE_READ_BOUNDARY error_type=*private.syntheticType unwrap_type=*private.secretType "
+               b"unknown_tree=true no_responsible_peers=false tree_closed=false tree_deleted=false "
+               b"space_closed=false cancelled=false deadline=false context_nil=false context_peer_missing=true\n"
+               b"    native_client_phase_test.go:381: T2_READ_OBSERVATION code=HISTORY_UNAVAILABLE snapshot_present=false readiness=WAIT\n")
+        result = lane.diagnostics.parse_fixed_records(raw)
+        self.assertEqual(result["last_read"], {"wire_code": "HISTORY_UNAVAILABLE", "snapshot_present": False, "readiness": "WAIT"})
+        self.assertTrue(result["last_native_error"]["unknown_tree"])
+        self.assertTrue(result["last_native_error"]["outer_context_peer_missing"])
+        self.assertNotIn("context_peer_missing", result["last_native_error"])
+        for private in ["private", "payload", "account-id", "syntheticType", "secretType"]:
+            self.assertNotIn(private, json.dumps(result))
+
+    def test_malformed_or_unknown_diagnostic_records_never_echo_raw_values(self):
+        good = b"T2_READ_OBSERVATION code=NULL snapshot_present=true readiness=READY\n"
+        for invalid in [b"T2_READ_OBSERVATION code=synthetic-private-code snapshot_present=false readiness=WAIT",
+                        b"T2_READ_OBSERVATION code=NULL snapshot_present=true readiness=READY extra=synthetic-private-id",
+                        b"T2_NATIVE_READ_BOUNDARY error_type=synthetic-private-error\n::error::synthetic-private-content",
+                        b"T2_READ_OBSERVATION code=FUTURE_CODE snapshot_present=false readiness=WAIT"]:
+            result = lane.diagnostics.parse_fixed_records(good + invalid)
+            self.assertEqual(result, {"records": "MALFORMED_FIXED_RECORD", "last_read": "WITHHELD", "last_native_error": "WITHHELD"})
+
+    def test_live_diagnostic_does_not_read_before_owned_cleanup_and_secret_scan(self):
+        for cleanup, publication in [("FAIL", "PASS_SECRET_SCANNED_EXACT_ALLOWLIST"),
+                                     ("PASS", "WITHHELD_NO_SECRET_INVENTORY"), (None, None)]:
+            receipt = {"diagnostic_stage": "WAIT_RECOVERED", "owned_cleanup": {"status": cleanup},
+                       "native_publication": {"status": publication}}
+            with patch.object(lane.diagnostics, "read_current_published_log", side_effect=AssertionError("must not read")) as reader:
+                result = lane.diagnostics.summarize(receipt, Path("unused"))
+            reader.assert_not_called()
+            self.assertEqual(result["log_publication"], "WITHHELD")
+            self.assertEqual(result["roles"], {role: {"source": "WITHHELD"} for role in ["creator", "recovered"]})
+
+    def test_live_diagnostic_requires_the_exact_current_published_log_hash(self):
+        with tempfile.TemporaryDirectory() as temp:
+            evidence = Path(temp)
+            target = evidence / "native-clients/recovered/native.log"
+            target.parent.mkdir(parents=True)
+            target.write_bytes(b"T2_READ_OBSERVATION code=PROJECTION_BEHIND snapshot_present=false readiness=WAIT\n")
+            receipt = {"diagnostic_stage": "WAIT_RECOVERED", "status": "FAIL", "error_type": "TimeoutError",
+                       "owned_cleanup": {"status": "PASS"}, "native_publication": {
+                           "status": "PASS_SECRET_SCANNED_EXACT_ALLOWLIST", "files_sha256": {"recovered/native.log": lane.digest(target)}}}
+            before = copy.deepcopy(receipt)
+            result = lane.diagnostics.summarize(receipt, evidence)
+            self.assertEqual(result["roles"]["recovered"]["last_read"]["wire_code"], "PROJECTION_BEHIND")
+            self.assertEqual(result["roles"]["creator"]["source"], "UNAVAILABLE_OR_HASH_MISMATCH")
+            self.assertEqual(receipt, before, "diagnostics cannot rewrite acceptance, source or cleanup")
+            target.write_bytes(target.read_bytes() + b"changed synthetic run\n")
+            result = lane.diagnostics.summarize(receipt, evidence)
+            self.assertEqual(result["roles"]["recovered"], {"source": "UNAVAILABLE_OR_HASH_MISMATCH"})
+
+    def test_diagnostic_notice_is_fixed_json_and_cannot_turn_failure_into_success(self):
+        receipt = {"status": "FAIL", "diagnostic_stage": "private-stage\n::error::injected",
+                   "error_type": "private-error-name", "cleanup_or_publication_error_type": "private-cleanup-name",
+                   "run_id": "private-run-id", "app_sha": "private-source", "full_t2_acceptance": "NOT_RUN"}
+        before = copy.deepcopy(receipt)
+        output = io.StringIO()
+        with redirect_stdout(output):
+            lane.diagnostics.emit_current_run_notice(receipt, Path("unused"))
+        lines = output.getvalue().splitlines()
+        self.assertEqual(len(lines), 1)
+        prefix = "::notice title=Pinkha T2 diagnostic::"
+        self.assertTrue(lines[0].startswith(prefix))
+        result = json.loads(lines[0][len(prefix):])
+        self.assertEqual(result["controller_stage"], "UNRECOGNIZED_STAGE")
+        self.assertEqual(result["controller_error"], "OTHER_ERROR")
+        self.assertEqual(result["scope"], "DIAGNOSTIC_ONLY_NO_ACCEPTANCE")
+        self.assertNotIn("private", output.getvalue())
+        self.assertNotIn("::error", output.getvalue())
+        self.assertEqual(receipt, before)
+
+    def test_diagnostic_cancellation_reaches_existing_controller_finalization(self):
+        receipt = {"status": "FAIL", "owned_cleanup": {"status": "PASS"},
+                   "native_publication": {"status": "PASS_SECRET_SCANNED_EXACT_ALLOWLIST", "files_sha256": {}}}
+        before = copy.deepcopy(receipt)
+        with patch.object(lane.diagnostics, "read_current_published_log", side_effect=KeyboardInterrupt):
+            with self.assertRaises(KeyboardInterrupt):
+                lane.diagnostics.emit_current_run_notice(receipt, Path("unused"))
+        self.assertEqual(receipt, before)
+        with patch.object(lane.diagnostics, "summarize", side_effect=RuntimeError("synthetic-private-error")):
+            output = io.StringIO()
+            with redirect_stdout(output):
+                lane.diagnostics.emit_current_run_notice(receipt, Path("unused"))
+            self.assertIn('"diagnostic":"UNAVAILABLE"', output.getvalue())
+            self.assertNotIn("synthetic-private", output.getvalue())
+        self.assertEqual(receipt, before)
+
+    def test_closed_diagnostic_output_and_serialization_cannot_mask_original_result(self):
+        for status, error in [("FAIL", "TimeoutError"), ("CANCELLED", "KeyboardInterrupt")]:
+            receipt = {"status": status, "error_type": error, "full_t2_acceptance": "NOT_RUN"}
+            before = copy.deepcopy(receipt)
+            output = io.StringIO()
+            output.close()
+            with redirect_stdout(output):
+                lane.diagnostics.emit_current_run_notice(receipt, Path("unused"))
+            self.assertEqual(receipt, before)
+            with patch.object(lane.diagnostics.json, "dumps", side_effect=TypeError("synthetic-private-serialization-error")):
+                lane.diagnostics.emit_current_run_notice(receipt, Path("unused"))
+            self.assertEqual(receipt, before)
+        for stop in [KeyboardInterrupt, SystemExit]:
+            with patch.object(lane.diagnostics.json, "dumps", side_effect=stop):
+                with self.assertRaises(stop):
+                    lane.diagnostics.emit_current_run_notice(receipt, Path("unused"))
+            with patch("builtins.print", side_effect=stop):
+                with self.assertRaises(stop):
+                    lane.diagnostics.emit_current_run_notice(receipt, Path("unused"))
+            self.assertEqual(receipt, before)
+
+    def test_changed_diagnostic_decoder_is_rejected_by_source_identity(self):
+        tools = Path(lane.__file__).parent
+        lane.source_inputs(tools.parents[1])
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "Tools/TorahNativeOperations"
+            for relative in ["two_clients/fixture.json", "two_clients/native-read-observation.patch",
+                             *["two_clients/" + name for name in lane.GO_FILES],
+                             "run_account_rpc.py", "native_client_diagnostics.py"]:
+                path = target / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(tools / relative, path)
+            lane.source_inputs(root)
+            decoder = target / "native_client_diagnostics.py"
+            decoder.write_bytes(decoder.read_bytes() + b"\n# source drift\n")
+            with self.assertRaisesRegex(ValueError, "Fixed-schema diagnostic decoder differs"):
+                lane.source_inputs(root)
+
     def test_original_read_observation_is_exact_compile_overlay_and_preserves_source(self):
         tools = Path(lane.__file__).parent
         original = tools / "rpc/overlay/core/pinkha_torah_rpc.go"
@@ -114,7 +243,7 @@ class NativeClientControls(unittest.TestCase):
         names = set(lane.CONTROL_METHODS)
         names.update(parent + "/" + child for parent, children in lane.CONTROL_METHODS.items() for child in children)
         output = "\n".join("--- PASS: " + name + " (0.01s)" for name in sorted(names))
-        self.assertEqual(lane.validate_native_controls(output)["pass_terminals"], 13)
+        self.assertEqual(lane.validate_native_controls(output)["pass_terminals"], 17)
         for bad in [output.replace(sorted(names)[0], "OtherTest", 1), output + "\n--- SKIP: ignored (0s)",
                     output + "\n--- FAIL: ignored (0s)", output + "\n--- PASS: OtherTest (0s)"]:
             with self.subTest(bad=bad[-40:]):

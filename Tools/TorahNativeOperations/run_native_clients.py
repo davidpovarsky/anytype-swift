@@ -24,6 +24,7 @@ from uuid import uuid4
 
 import run_account_lifecycle as base
 import run_account_rpc as account
+import native_client_diagnostics as diagnostics
 
 PROTOCOL = "pinkha-t2-two-native-clients-bootstrap-v1"
 METHOD = "TestT2NativeClientBootstrapPhase"
@@ -40,6 +41,9 @@ CONTROL_METHODS = {
         "expected_claim_and_head_ready", "root_only_prefix_is_not_convergence", "history_unavailable_can_wait",
         "permission_denial_is_immediate_failure", "joined_denial_cannot_hide_in_transient_error",
         "foreign_claim_is_not_eventual_readiness", "failed_read_must_not_expose_a_snapshot"},
+    "TestT2NativeClientReadObservationControls": {
+        "invalid_envelope_is_fixed", "known_code_and_predicate_are_observed_without_private_fields",
+        "unknown_code_is_not_exported"},
 }
 require, digest, write = base.require, base.digest, base.write_json
 
@@ -61,6 +65,9 @@ def source_inputs(control: Path) -> tuple[dict, dict[str, Path]]:
     combined = hashlib.sha256(json.dumps(inputs, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     require(combined == manifest["fixture_sha256"], "Native-client fixture identity differs")
     require(digest(tools / "run_account_rpc.py") == manifest["account_rpc_controller_sha256"], "Account build extension differs")
+    decoder = tools / "native_client_diagnostics.py"
+    require(decoder.is_file() and not decoder.is_symlink()
+            and digest(decoder) == manifest["diagnostic_decoder_sha256"], "Fixed-schema diagnostic decoder differs")
     return manifest, files
 
 
@@ -371,6 +378,7 @@ class OwnedDocker:
 
 
 def clients(args, receipt, docker: OwnedDocker):
+    receipt["diagnostic_stage"] = "VERIFY_BUILD"
     manifest, _ = source_inputs(args.control)
     build_path = args.evidence / "native-clients-build.json"
     built = json.loads(build_path.read_text())
@@ -386,6 +394,7 @@ def clients(args, receipt, docker: OwnedDocker):
     docker.checkpoint()
     image = json.loads(docker.command(["image", "inspect", IMAGE], "inspect-pinned-image"))[0]
     require(image.get("Os") == "linux" and image.get("Architecture") == "amd64", "Wrong runtime image platform")
+    receipt["diagnostic_stage"] = "CREATE_NETWORK"
     network_resource, network = docker.network()
     directories = {}
     for role in ["creator", "recovered"]:
@@ -395,9 +404,12 @@ def clients(args, receipt, docker: OwnedDocker):
         write(directory / "ownership.json", {"protocol": PROTOCOL, "nonce": docker.owner, "role": role, "synthetic_only": True})
         directories[role] = directory
     creator_deadline = time.monotonic() + 360
+    receipt["diagnostic_stage"] = "START_CREATOR"
     creator = docker.start("creator", network, directories["creator"], binary, manifest["fixture_sha256"], creator_deadline)
+    receipt["diagnostic_stage"] = "WAIT_CREATOR"
     reports = {"creator": docker.wait_ready(creator, creator_deadline)}
     recovered_deadline = time.monotonic() + 540
+    receipt["diagnostic_stage"] = "SEED_RECOVERED"
     state_bytes = (directories["creator"] / "state.json").read_bytes()
     state = json.loads(state_bytes)
     validate_public_state(state)
@@ -416,8 +428,11 @@ def clients(args, receipt, docker: OwnedDocker):
             stream.flush()
             os.fsync(stream.fileno())
         path.chmod(0o600)
+    receipt["diagnostic_stage"] = "START_RECOVERED"
     recovered = docker.start("recovered", network, directories["recovered"], binary, manifest["fixture_sha256"], recovered_deadline)
+    receipt["diagnostic_stage"] = "WAIT_RECOVERED"
     reports["recovered"] = docker.wait_ready(recovered, recovered_deadline)
+    receipt["diagnostic_stage"] = "VERIFY_PAIR"
     resources = {"creator": creator, "recovered": recovered}
     inspections = {role: docker.find(resource, recovered_deadline) for role, resource in resources.items()}
     current_network = docker.find(network_resource, recovered_deadline)
@@ -434,14 +449,17 @@ def clients(args, receipt, docker: OwnedDocker):
                    original_signed_history_matches=True, independent_empty_roots=True)
     docker.checkpoint()
     docker.remaining(recovered_deadline)
+    receipt["diagnostic_stage"] = "REQUEST_NATIVE_STOP"
     for role in resources:
         write(directories[role] / "stop.json", {"protocol": PROTOCOL, "nonce": docker.owner})
     shutdown_deadline = time.monotonic() + 90
     final_reports = {}
     db_inodes = {}
     for role, resource in resources.items():
+        receipt["diagnostic_stage"] = "WAIT_NATIVE_STOP"
         require(docker.command(["container", "wait", resource["id"]], "wait-native-" + role,
                                docker.remaining(shutdown_deadline, 90)) == "0", "Native process failed")
+        receipt["diagnostic_stage"] = "VERIFY_FINAL"
         stopped = docker.find(resource, shutdown_deadline)
         require(stopped["State"].get("Running") is False and stopped["State"].get("ExitCode") == 0,
                 "Native process did not complete cleanly")
@@ -458,6 +476,7 @@ def clients(args, receipt, docker: OwnedDocker):
                                "actual_database_files": len(db_files), "account_stop_verified": True}
     require(not db_inodes["creator"].intersection(db_inodes["recovered"]), "Native clients share a database inode")
     require(source_inputs(args.control)[0] == manifest, "Native client source changed during execution")
+    receipt["diagnostic_stage"] = "COMPLETE"
     return {"native_results": final_reports, "actual_counts": {"independent_native_clients": 2, "native_named_pass": 2,
             "native_fail": 0, "native_skip": 0}, "distinct_database_inodes": True,
             "transport_scope": "NATIVE_LOCAL_DISCOVERY_AND_AUTHENTICATED_PEER_TRANSPORT_ON_OWNED_INTERNAL_LAN"}
@@ -487,7 +506,7 @@ def main(argv=None):
     args.evidence.mkdir(parents=True, exist_ok=True)
     path = args.evidence / ("native-clients-" + args.stage + ".json")
     require(not path.exists(), "Fresh native client receipt required")
-    receipt = {"protocol": PROTOCOL, "status": "NOT_RUN_PREFLIGHT", "stage": args.stage, "app_sha": args.expected_app_sha,
+    receipt = {"protocol": PROTOCOL, "status": "NOT_RUN_PREFLIGHT", "stage": args.stage, "diagnostic_stage": "PREFLIGHT", "app_sha": args.expected_app_sha,
                "run_id": run_id, "run_attempt": attempt, "started_at": datetime.now(timezone.utc).isoformat(), "commands": [],
                "two_native_clients": "NOT_RUN", "app_capability": "OFF", "two_app_clients": "NOT_RUN",
                "offline_conflict_merge": "NOT_RUN", "ios_acceptance": "NOT_RUN", "full_t2_acceptance": "NOT_RUN"}
@@ -560,6 +579,8 @@ def main(argv=None):
             for item in args.evidence.rglob("*"):
                 if item.is_dir(): item.chmod(0o755)
                 elif item.is_file() and not item.is_symlink(): item.chmod(0o644)
+            if args.stage == "clients":
+                diagnostics.emit_current_run_notice(receipt, args.evidence)
         try:
             try:
                 finish()

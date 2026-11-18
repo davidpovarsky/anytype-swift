@@ -197,6 +197,39 @@ func t2NativeClientReadReady(state *t2AccountState, read *pb.RpcPinkhaTorahOpera
 	return true, nil
 }
 
+// Observe only the response and readiness decision that already occurred.
+// Descriptions, payloads, IDs and the error text never enter this fixed record.
+func t2NativeClientReadObservation(read *pb.RpcPinkhaTorahOperationsReadTargetResponse, ready bool, err error) string {
+	code := "INVALID_ENVELOPE"
+	if read != nil && read.ProtocolVersion == 1 && read.Error != nil {
+		code = "UNRECOGNIZED_CODE"
+		switch read.Error.Code {
+		case pb.RpcPinkhaTorahOperationsReadTargetResponseError_NULL,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_UNKNOWN_ERROR,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_BAD_INPUT,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_UNSUPPORTED_VERSION,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_PERMISSION_DENIED,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_NOT_LOGGED_IN,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_ACCOUNT_CHANGED,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_TARGET_UNAVAILABLE,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_HISTORY_UNAVAILABLE,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_PROJECTION_BEHIND,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_READ_LIMIT,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_CANCELLED,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_DEADLINE_EXCEEDED,
+			pb.RpcPinkhaTorahOperationsReadTargetResponseError_COLLISION:
+			code = read.Error.Code.String()
+		}
+	}
+	readiness := "WAIT"
+	if err != nil {
+		readiness = "REJECTED"
+	} else if ready {
+		readiness = "READY"
+	}
+	return fmt.Sprintf("T2_READ_OBSERVATION code=%s snapshot_present=%t readiness=%s", code, read != nil && read.Snapshot != nil, readiness)
+}
+
 func t2NativeClientBaseline(t *testing.T, state *t2AccountState, snapshot *pb.RpcPinkhaTorahOperationsSnapshot) {
 	t.Helper()
 	require.NotNil(t, snapshot)
@@ -341,6 +374,7 @@ func TestT2NativeClientBootstrapPhase(t *testing.T) {
 		read = &pb.RpcPinkhaTorahOperationsReadTargetResponse{}
 		c.raw("PinkhaTorahOperationsReadTarget", PinkhaTorahOperationsReadTarget, readRequest, read, min(20*time.Second, remaining))
 		ready, err := t2NativeClientReadReady(state, read)
+		t.Log(t2NativeClientReadObservation(read, ready, err))
 		if err != nil {
 			t2NativeClientTraceReadFailure(t, state, read)
 		}

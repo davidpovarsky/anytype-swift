@@ -274,3 +274,33 @@ func TestT2NativeClientReadReadinessControls(t *testing.T) {
 		require.False(t, ready)
 	})
 }
+
+func TestT2NativeClientReadObservationControls(t *testing.T) {
+	t.Run("invalid_envelope_is_fixed", func(t *testing.T) {
+		for _, response := range []*pb.RpcPinkhaTorahOperationsReadTargetResponse{nil, {}, {ProtocolVersion: 1}} {
+			require.Equal(t, "T2_READ_OBSERVATION code=INVALID_ENVELOPE snapshot_present=false readiness=REJECTED",
+				t2NativeClientReadObservation(response, false, context.Canceled))
+		}
+	})
+	t.Run("known_code_and_predicate_are_observed_without_private_fields", func(t *testing.T) {
+		response := &pb.RpcPinkhaTorahOperationsReadTargetResponse{ProtocolVersion: 1,
+			Error: &pb.RpcPinkhaTorahOperationsReadTargetResponseError{
+				Code: pb.RpcPinkhaTorahOperationsReadTargetResponseError_HISTORY_UNAVAILABLE, Description: "synthetic-private-error"},
+			Snapshot: &pb.RpcPinkhaTorahOperationsSnapshot{VerifiedLocalHeads: []string{"synthetic-private-head"}}}
+		before := proto.Clone(response)
+		require.Equal(t, "T2_READ_OBSERVATION code=HISTORY_UNAVAILABLE snapshot_present=true readiness=WAIT",
+			t2NativeClientReadObservation(response, false, nil))
+		require.Equal(t, "T2_READ_OBSERVATION code=HISTORY_UNAVAILABLE snapshot_present=true readiness=REJECTED",
+			t2NativeClientReadObservation(response, false, context.Canceled))
+		require.Equal(t, before, response, "observation must not alter the already returned response")
+		response.Error.Code = pb.RpcPinkhaTorahOperationsReadTargetResponseError_NULL
+		require.Equal(t, "T2_READ_OBSERVATION code=NULL snapshot_present=true readiness=READY",
+			t2NativeClientReadObservation(response, true, nil))
+	})
+	t.Run("unknown_code_is_not_exported", func(t *testing.T) {
+		response := &pb.RpcPinkhaTorahOperationsReadTargetResponse{ProtocolVersion: 1,
+			Error: &pb.RpcPinkhaTorahOperationsReadTargetResponseError{Code: 730001, Description: "synthetic-private-error"}}
+		require.Equal(t, "T2_READ_OBSERVATION code=UNRECOGNIZED_CODE snapshot_present=false readiness=REJECTED",
+			t2NativeClientReadObservation(response, false, context.Canceled))
+	})
+}
