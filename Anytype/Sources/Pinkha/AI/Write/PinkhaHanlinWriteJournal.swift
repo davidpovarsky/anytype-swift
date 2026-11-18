@@ -237,7 +237,7 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
         let lockURL = directory.appendingPathComponent("owner.lock")
         let fd = Darwin.open(lockURL.path, O_RDWR | O_CREAT | O_NOFOLLOW | O_CLOEXEC, mode_t(0o600))
         guard fd >= 0 else { throw PinkhaHanlinWriteError.unavailable }
-        guard Darwin.flock(fd, LOCK_EX | LOCK_NB) == 0 else { Darwin.close(fd); throw PinkhaHanlinWriteError.unavailable }
+        guard flock(fd, LOCK_EX | LOCK_NB) == 0 else { Darwin.close(fd); throw PinkhaHanlinWriteError.unavailable }
         do {
             var info = stat()
             guard fstat(fd, &info) == 0, (info.st_mode & S_IFMT) == S_IFREG else { throw PinkhaHanlinWriteError.unavailable }
@@ -301,7 +301,7 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
     func releaseOwnershipForRemoval() {
         #if os(iOS)
         // The containing journal actor is already poisoned. No operation can append afterward.
-        _ = Darwin.flock(lockFD, LOCK_UN)
+        _ = flock(lockFD, LOCK_UN)
         #endif
     }
 
@@ -327,7 +327,7 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
             let fd = Darwin.open(directory.appendingPathComponent("owner.lock").path, O_RDWR | O_NOFOLLOW | O_CLOEXEC)
             guard fd >= 0 else { throw PinkhaHanlinWriteError.unavailable }
             defer { Darwin.close(fd) }
-            guard Darwin.flock(fd, LOCK_EX | LOCK_NB) == 0 else { throw PinkhaHanlinWriteError.unavailable }
+            guard flock(fd, LOCK_EX | LOCK_NB) == 0 else { throw PinkhaHanlinWriteError.unavailable }
             try FileManager.default.removeItem(at: directory)
         }
         #else
