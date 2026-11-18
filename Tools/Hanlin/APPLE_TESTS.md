@@ -46,6 +46,9 @@ three local packages before any SPM resolution. It never changes the producer
 repository. No certificate, model key, middleware download secret, or provider
 call is introduced. Simulator signing uses the existing native lane's ad-hoc
 flags. Fresh DerivedData prevents accepting stale test products.
+The disposable simulator is booted before `build-for-testing`. App/test binary
+paths come from the actual Xcode `.xctestrun` and each bundle's
+`CFBundleExecutable`, following [Apple TN2339, Listing 20](https://developer.apple.com/library/archive/technotes/tn2339/_index.html).
 
 ## Evidence and limits
 
