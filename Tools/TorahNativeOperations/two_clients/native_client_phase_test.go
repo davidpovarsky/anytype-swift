@@ -378,12 +378,18 @@ func TestT2NativeClientBootstrapPhase(t *testing.T) {
 	readyBytes, err := json.MarshalIndent(report, "", "  ")
 	require.NoError(t, err)
 	t2NativeClientReport(t, filepath.Join(parent, "ready.json"), readyBytes)
+	if os.Getenv("PINKHA_T2_CLIENT_SCENARIO") == t2OfflineProtocol {
+		report["offline_scenario"] = t2NativeOfflineRun(c, state, parent)
+	}
 	// B's wallet (30s), cold AccountSelect (180s), workspace/network/server
 	// readiness (90s), private read (150s), Show (30s), and owner bookkeeping
 	// fit inside A's 600s peer wait. The host controller uses a 540s B bound.
 	peerWait := 60 * time.Second
 	if role == "creator" {
 		peerWait = 600 * time.Second
+	}
+	if os.Getenv("PINKHA_T2_CLIENT_SCENARIO") == t2OfflineProtocol {
+		peerWait = 360 * time.Second
 	}
 	t2NativeClientWait(t, "owner-controlled stop after both native clients are ready", peerWait, func(time.Duration) bool {
 		data, readErr := os.ReadFile(filepath.Join(parent, "stop.json"))

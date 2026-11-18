@@ -6,6 +6,9 @@ on:
       source_sha:
         type: string
         default: ''
+      scenario:
+        type: string
+        default: bootstrap
 
 permissions:
   contents: read
@@ -18,6 +21,7 @@ jobs:
       EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}
       T2_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8
       PYTHONDONTWRITEBYTECODE: '1'
+      T2_NATIVE_SCENARIO: ${{ inputs.scenario }}
     steps:
       - name: Checkout exact native-client source
         uses: actions/checkout@v4
@@ -83,7 +87,7 @@ jobs:
             --mount "type=bind,src=$GITHUB_WORKSPACE/native-work,dst=/workspace/work" \
             --mount "type=bind,src=$GITHUB_WORKSPACE/evidence,dst=/workspace/evidence" \
             --mount "type=bind,src=$GITHUB_WORKSPACE/.t2-cache,dst=/cache" \
-            -e EXPECTED_APP_SHA -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_WORKFLOW_REF \
+            -e EXPECTED_APP_SHA -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_WORKFLOW_REF -e T2_NATIVE_SCENARIO \
             -e CC=gcc -e CXX=g++ -e GOTOOLCHAIN=local \
             -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
             -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \
@@ -91,6 +95,7 @@ jobs:
       - name: Bootstrap two empty native clients over an owned internal LAN
         run: |
           python3 -B control/Tools/TorahNativeOperations/run_native_clients.py clients \
+            --scenario "$T2_NATIVE_SCENARIO" \
             --control "$GITHUB_WORKSPACE/control" --native-work "$GITHUB_WORKSPACE/native-work" \
             --evidence "$GITHUB_WORKSPACE/evidence" --expected-app-sha "$EXPECTED_APP_SHA"
       - name: Preserve honest native-client bootstrap status
