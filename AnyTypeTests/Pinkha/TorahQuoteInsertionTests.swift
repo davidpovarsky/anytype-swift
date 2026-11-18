@@ -37,7 +37,8 @@ struct TorahQuoteInsertionTests {
         fixture.session.openResolvedReferenceFromStandaloneSearch(selection)
         let delayed = fixture.session.makeInspectorSourceInsertionAction()
         if dismiss {
-            fixture.session.inspectorDidDismiss()
+            fixture.session.hostActions.onClose?()
+            #expect(fixture.session.selection == nil)
             fixture.session.openResolvedReferenceFromStandaloneSearch(selection)
         } else {
             fixture.session.selection = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Exodus 1")
@@ -80,7 +81,7 @@ struct TorahQuoteInsertionTests {
         #expect(records.allSatisfy {
             $0.spaceId == "space" && $0.objectId == "document"
                 && $0.item.role == .sourceQuote
-                && $0.item.customMetadata["snapshotText"] == transfer.text
+                && $0.item.customMetadata?["snapshotText"] == transfer.text
         })
         #expect(fixture.session.persistenceState == .saved)
     }
@@ -90,7 +91,8 @@ struct TorahQuoteInsertionTests {
         let fixture = try QuoteInsertionFixture()
         fixture.session.selection = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Genesis 3")
         let action = fixture.session.makeExternalDropInsertionAction(targetBlockId: "anchor")
-        fixture.session.inspectorDidDismiss()
+        fixture.session.hostActions.onClose?()
+        #expect(fixture.session.selection == nil)
 
         await action(transfer)
 
@@ -189,7 +191,7 @@ struct TorahQuoteInsertionTests {
         #expect(record.blockId == "quote-1")
         #expect(record.item.canonicalKey == transfer.canonicalRef)
         #expect(record.item.providerID == transfer.providerID)
-        #expect(record.item.customMetadata["snapshotText"] == transfer.text)
+        #expect(record.item.customMetadata?["snapshotText"] == transfer.text)
         #expect(fixture.session.persistenceState == .saved)
     }
 }
