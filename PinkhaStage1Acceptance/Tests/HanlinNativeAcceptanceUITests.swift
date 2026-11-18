@@ -62,16 +62,9 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         route.queryItems = [URLQueryItem(name: "objectId", value: fixture.sourceObjectID),
                             URLQueryItem(name: "spaceId", value: fixture.spaceID)]
         XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
-        // Full native identifiers may exceed XCTest's direct identifier-query
-        // limit. Preserve every byte and use the exact predicate route.
-        let editorID = "pinkha-ui27-editor:\(fixture.spaceID):\(fixture.sourceObjectID)"
-        let editor = app.otherElements.matching(NSPredicate(format: "identifier == %@", editorID)).firstMatch
-        XCTAssertTrue(editor.waitForExistence(timeout: 45), "The exact prepared native editor must be mounted")
-        XCTAssertTrue(editor.isHittable)
-        let entry = app.buttons["pinkha.hanlin.open"].firstMatch
-        XCTAssertTrue(entry.waitForExistence(timeout: 15))
-        XCTAssertTrue(entry.isHittable, "The real Home-panel entry must remain reachable in this document")
-        entry.tap()
+        // The first entry uses the same exact document and touch-readiness
+        // requirements as later presentations, within the existing 45s + 15s.
+        try openHanlinOnOriginalDocument()
 
         try waitForPhase("AWAIT_READ_CONSENT", timeout: 20)
         try chatButton(identifier: "pinkha.hanlin.share-context",
@@ -237,8 +230,8 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
     private func openHanlinOnOriginalDocument() throws {
         try requireMountedDocument(fixture.sourceObjectID)
         let button = app.buttons["pinkha.hanlin.open"].firstMatch
-        let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == true AND hittable == true"), object: button)
-        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 15), .completed)
+        try requireReady(controls: [button], timeout: 15,
+                         diagnosticName: "hanlin-native-entry-readiness")
         button.tap()
     }
 
@@ -260,10 +253,11 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
 
     private func requireMountedDocument(_ objectID: String) throws {
         let identifier = "pinkha-ui27-editor:\(fixture.spaceID):\(objectID)"
+        // Keep the full native identifier; direct identifier queries have a
+        // length limit that these real Space/object identities can exceed.
         let editor = app.otherElements.matching(NSPredicate(format: "identifier == %@", identifier)).firstMatch
-        let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == true AND hittable == true"), object: editor)
-        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 45), .completed,
-                       "The exact native document must be mounted and hittable")
+        try requireReady(controls: [editor], timeout: 45,
+                         diagnosticName: "hanlin-native-editor-readiness")
     }
 
     private var status: XCUIElement {
@@ -289,48 +283,68 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         // the same explicit production control; no coordinate or consent bypass.
         let button = app.buttons.matching(NSPredicate(format: "identifier == %@ OR label == %@",
                                                        identifier, label)).firstMatch
-        // The existing element must also become touch-ready after native
-        // presentation. Keep the same 10-second budget and the exact query.
-        let ready = XCTNSPredicateExpectation(
-            predicate: NSPredicate(format: "exists == true AND hittable == true"), object: button)
-        let result = XCTWaiter.wait(for: [ready], timeout: 10)
-        if result != .completed {
-            let attachment = XCTAttachment(string: button.debugDescription)
-            attachment.name = "hanlin-native-chat-control-readiness"
-            attachment.lifetime = .keepAlways
-            add(attachment)
-            attachScreenshot("hanlin-native-chat-control-readiness-failure")
-        }
-        XCTAssertEqual(result, .completed, "The exact native chat control must become hittable within 10 seconds")
-        XCTAssertTrue(button.isHittable)
+        try requireReady(controls: [button], timeout: 10,
+                         diagnosticName: "hanlin-native-chat-control-readiness")
         return button
     }
 
     private func readConsentPrompt() throws -> XCUIElement {
         let identifier = "pinkha.hanlin.consent.read-context"
         let prompt = app.otherElements[identifier].firstMatch
-        XCTAssertTrue(prompt.waitForExistence(timeout: 15))
-        XCTAssertEqual(prompt.staticTexts[identifier + ".title"].label, "Allow document text access?")
+        let title = prompt.staticTexts[identifier + ".title"]
         let allow = prompt.buttons[identifier + ".allow"]
+        try requireReady(controls: [allow], existing: [prompt, title], timeout: 15,
+                         diagnosticName: "hanlin-native-read-consent-readiness")
+        XCTAssertEqual(title.label, "Allow document text access?")
         XCTAssertEqual(allow.label, "Allow for this presentation")
-        XCTAssertTrue(allow.isHittable)
         return prompt
     }
 
     private func createAlert(for title: String) throws -> XCUIElement {
         let identifier = "pinkha.hanlin.consent.create-page"
         let alert = app.otherElements[identifier].firstMatch
-        XCTAssertTrue(alert.waitForExistence(timeout: 15))
-        XCTAssertEqual(alert.staticTexts[identifier + ".title"].label, "Create a new page?")
+        let promptTitle = alert.staticTexts[identifier + ".title"]
+        try requireReady(controls: [], existing: [alert, promptTitle], timeout: 15,
+                         diagnosticName: "hanlin-native-create-prompt-readiness")
+        XCTAssertEqual(promptTitle.label, "Create a new page?")
         let exactOperation = alert.staticTexts.matching(NSPredicate(
             format: "label CONTAINS %@ AND label CONTAINS %@", title, fixture.spaceID
         )).firstMatch
-        XCTAssertTrue(exactOperation.waitForExistence(timeout: 15), "The actual consent must name this title and original Space")
-        XCTAssertEqual(alert.buttons[identifier + ".cancel"].label, "Cancel")
-        XCTAssertEqual(alert.buttons[identifier + ".allow"].label, "Create page")
-        XCTAssertTrue(alert.buttons[identifier + ".cancel"].isHittable)
-        XCTAssertTrue(alert.buttons[identifier + ".allow"].isHittable)
+        let cancel = alert.buttons[identifier + ".cancel"]
+        let allow = alert.buttons[identifier + ".allow"]
+        // Reuse the existing second 15s window for this exact operation and
+        // both choices; readiness does not replace title/Space/label assertions.
+        try requireReady(controls: [cancel, allow], existing: [exactOperation], timeout: 15,
+                         diagnosticName: "hanlin-native-create-operation-readiness")
+        XCTAssertTrue(exactOperation.exists, "The actual consent must name this title and original Space")
+        XCTAssertEqual(cancel.label, "Cancel")
+        XCTAssertEqual(allow.label, "Create page")
         return alert
+    }
+
+    /// All expectations share one caller-owned deadline. Existence alone can
+    /// precede hit testing during native navigation or presentation transitions.
+    private func requireReady(controls: [XCUIElement], existing: [XCUIElement] = [],
+                              timeout: TimeInterval, diagnosticName: String) throws {
+        let touchReady = controls.map {
+            XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "exists == true AND hittable == true"), object: $0)
+        }
+        let present = existing.map {
+            XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == true"), object: $0)
+        }
+        let result = XCTWaiter.wait(for: touchReady + present, timeout: timeout)
+        if result != .completed {
+            let queries = (controls + existing).map(\.debugDescription).joined(separator: "\n\n")
+            let attachment = XCTAttachment(string: "App:\n" + app.debugDescription + "\n\nTargets:\n" + queries)
+            attachment.name = diagnosticName
+            attachment.lifetime = .keepAlways
+            add(attachment)
+            attachScreenshot(diagnosticName + "-failure")
+        }
+        XCTAssertEqual(result, .completed,
+                       "The exact native controls must become ready within their existing \(timeout)-second budget")
+        for control in controls { XCTAssertTrue(control.isHittable) }
     }
 
     private func attachScreenshot(_ name: String) {
