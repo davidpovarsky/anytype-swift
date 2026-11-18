@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run only the T2 native StoreState component at the immutable Heart source pin."""
+"""Run the T2 native component and isolated two-process AnySync transport proof."""
 from __future__ import annotations
 
 import argparse
@@ -52,16 +52,18 @@ def main() -> int:
     heart, evidence = args.heart_source.resolve(), args.evidence.resolve()
     evidence.mkdir(parents=True, exist_ok=True)
     receipt = {
-        "schema_version": 1,
+        "schema_version": 2,
         "status": "NOT_RUN",
         "heart_sha_expected": HEART_SHA,
         "app_sha_expected": args.expected_app_sha,
         "platform": platform.platform(),
-        "evidence_scope": "native StoreState / any-store disk component",
+        "evidence_scope": "native StoreState / any-store component and two-process signed AnySync loopback transport",
         "middleware_acceptance": "NOT_RUN",
         "two_client_transport_acceptance": "NOT_RUN",
+        "full_t2_acceptance": "NOT_RUN",
         "ios_acceptance": "NOT_RUN",
-        "native_host_rpc_acl_hidden_lifecycle": "NOT_IMPLEMENTED",
+        "native_host_rpc_acl_hidden_lifecycle": "NOT_BOUND_TO_APP",
+        "native_signed_tree_contract": "NOT_RUN",
         "run_id": os.environ.get("GITHUB_RUN_ID"),
         "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
         "workflow_ref": os.environ.get("GITHUB_WORKFLOW_REF"),
@@ -81,7 +83,8 @@ def main() -> int:
                 raise ValueError(f"tracked source modifications in {source}")
         overlay = Path(__file__).resolve().parent / "overlay/core/block/editor/torahops"
         files = sorted(overlay.glob("*.go"))
-        expected = {"operation.go", "operation_test.go", "projection.go", "store.go", "store_test.go"}
+        expected = {"operation.go", "operation_test.go", "projection.go", "store.go", "store_test.go",
+                    "native_host.go", "native_transport_test.go"}
         if {p.name for p in files} != expected:
             raise ValueError("unexpected or missing overlay source")
         receipt["source_sha256"] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in files}
@@ -124,8 +127,11 @@ def main() -> int:
         receipt["failed_tests"] = sorted(e["Test"] for e in events if e.get("Action") == "fail" and e.get("Test"))
         receipt["skipped_tests"] = sorted(e["Test"] for e in events if e.get("Action") == "skip" and e.get("Test"))
         package_pass = any(e.get("Action") == "pass" and not e.get("Test") for e in events)
-        if code == 0 and package_pass and receipt["passed_tests"] and not receipt["failed_tests"]:
-            receipt["status"] = "PASS_COMPONENT_ONLY"
+        required = {"TestNativeTwoProcessTreeSync", "TestNativeHostRejectsUnboundAuthorityAndInvalidHistory"}
+        if code == 0 and package_pass and required.issubset(receipt["passed_tests"]) and not receipt["failed_tests"]:
+            receipt["status"] = "PASS_NATIVE_COMPONENT_AND_LOOPBACK_TRANSPORT"
+            receipt["two_client_transport_acceptance"] = "PASS_ISOLATED_LOOPBACK_PROTOCOL_ONLY"
+            receipt["native_signed_tree_contract"] = "PASS_ISOLATED_NATIVE_HOST"
         else:
             receipt["status"] = "FAIL"
             code = code or 1

@@ -97,7 +97,24 @@ func (s *Store) AppendLocal(ctx context.Context, op Operation, native NativeChan
 		return AppendResult{}, fmt.Errorf("begin local append: %w", err)
 	}
 	defer func() { _ = tx.Rollback() }()
-	resolution, err := s.ReadOperation(tx.Context(), op.OperationID)
+	result, err := s.checkLocal(tx.Context(), claim)
+	if err != nil || result.Disposition != Created {
+		return result, err
+	}
+	if err = apply(tx, claim.ID, string(wire), native); err != nil {
+		return AppendResult{}, err
+	}
+	if err = tx.Commit(); err != nil {
+		return AppendResult{}, fmt.Errorf("commit local append: %w", err)
+	}
+	return result, nil
+}
+
+// checkLocal is shared by the projection component and the signed native host.
+// The caller must pass its real StoreState write transaction's context.
+func (s *Store) checkLocal(ctx context.Context, claim Claim) (AppendResult, error) {
+	op := claim.Operation
+	resolution, err := s.ReadOperation(ctx, op.OperationID)
 	if err != nil {
 		return AppendResult{}, err
 	}
@@ -117,7 +134,7 @@ func (s *Store) AppendLocal(ctx context.Context, op Operation, native NativeChan
 	// A local caller may only remove/replace claims present in this transaction
 	// at the same target. Replay cannot impose this arrival-order prerequisite.
 	for _, observedID := range op.Observed {
-		observed, findErr := s.claims.FindId(tx.Context(), observedID)
+		observed, findErr := s.claims.FindId(ctx, observedID)
 		if errors.Is(findErr, anystore.ErrDocNotFound) {
 			return AppendResult{}, fmt.Errorf("unobserved predecessor: %w", ErrInvalid)
 		}
@@ -131,12 +148,6 @@ func (s *Store) AppendLocal(ctx context.Context, op Operation, native NativeChan
 		if predecessor.Operation.Target != op.Target {
 			return AppendResult{}, fmt.Errorf("predecessor target mismatch: %w", ErrInvalid)
 		}
-	}
-	if err = apply(tx, claim.ID, string(wire), native); err != nil {
-		return AppendResult{}, err
-	}
-	if err = tx.Commit(); err != nil {
-		return AppendResult{}, fmt.Errorf("commit local append: %w", err)
 	}
 	return AppendResult{Disposition: Created, ClaimID: claim.ID,
 		Resolution: Resolution{OperationID: op.OperationID, Claims: []Claim{claim}}}, nil

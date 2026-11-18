@@ -1,4 +1,4 @@
-name: Pinkha T2 native immutable operation component
+name: Pinkha T2 native operations and two-process transport
 
 on:
   workflow_call:
@@ -33,7 +33,7 @@ jobs:
           go-version: '1.26.5'
           cache-dependency-path: build/Heart-T2-Operations/go.sum
 
-      - name: Run real StoreState and any-store disk component tests
+      - name: Run native disk and isolated two-process AnySync tests
         env:
           EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}
         run: |
@@ -62,7 +62,7 @@ jobs:
               }, indent=2) + '\n', encoding='utf-8')
           PY
 
-      - name: Upload source-bound native component evidence
+      - name: Upload source-bound native and transport evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
