@@ -117,7 +117,7 @@ func TestPinkhaTargetLookupPropagatesCancellationDuringLoad(t *testing.T) {
 func TestPinkhaTargetLookupRejectsEndedContextBeforeAccess(t *testing.T) {
 	for _, item := range []struct {
 		name string
-		ctx func() (context.Context, context.CancelFunc)
+		ctx  func() (context.Context, context.CancelFunc)
 		want error
 	}{
 		{"cancelled", func() (context.Context, context.CancelFunc) {
