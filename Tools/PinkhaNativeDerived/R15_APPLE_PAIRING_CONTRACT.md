@@ -144,3 +144,23 @@ Primary declarations and immutable blob/hash provenance are preserved in
 Original failed-run evidence is preserved beside them. Controller rejection
 tests, actual cache readback, and actual Apple runtime acceptance remain
 separate receipts.
+
+## Generated-module closure after runtime attempt 44240654969
+
+The latest actual Apple attempt is preserved under `docs/validation/20261118-t5-r15-runtime/44240654969`. Its pinned mobile dependency preparation succeeded, including all 14 modules and the authoritative MTL checksums. All three generated architecture modules then failed `go mod tidy` offline on `git.sr.ht/~sbinet/gg@v0.6.0`. There is no accepted r15 framework artifact and no Apple/Swift runtime execution from that attempt.
+
+The pinned `cmd/gomobile/bind.go` function `getModuleVersions` copies every original `go list -m -json all` module into a direct generated requirement, except replacements and the local main module, whose exact replacement declarations are copied. That creates a distinct generated module graph. The observed original graph contains 882 modules and gg v0.3.1; the same original graph includes gonum v0.17.0, whose authoritative module declaration requires gg v0.6.0. The original native graph and generated graph must be retained as separate inputs and must never be conflated with an intentional native source/dependency revision.
+
+The builder now mirrors this exact pinned generator into a fresh owned `generated-dependency-seed`, verifies both relevant mobile source files by SHA-256, and records the original native graph hash and unmodified seed go.mod. It hydrates the generated graph before the offline boundary with `go mod download -json all`, then records the selected module list. The public checksum authority must be enabled; no disabled checksum database or private bypass is silently accepted or changed. Selected graph identities and downloaded archives must agree on effective path, version, module h1 and go.mod h1. The observed gg v0.6.0 hashes are independently bound to gonum v0.17.0's primary go.sum.
+
+Every actual generated module must match the parsed seed declarations before its own tidy. After tidy and again before compilation, the launcher reads the effective module graph with `GOWORK=off` and `GOPROXY=off` and checks it against the hydrated graph. Only removal of unused seed modules is permitted; a different path, logical/effective version, replacement or checksum fails. Full pre/post-tidy module text and identities remain in evidence. The separate exact native Heart directory and selected/downloaded genproto h1 guards remain mandatory. All three architecture modules must have both original-input and successful pre-build receipts.
+
+This changes owned build/cache preparation only. The native checkout, native go.mod/go.sum, mobile revision, Go 1.26.5 requirement, r14 builder helper, r15 patch/inventory and runtime markers remain unchanged. No product capability flag is enabled. Local checks are controller validation and a small Go 1.25.6 metadata probe; full generated-graph hydration, Apple build and runtime pairing remain **NOT_RUN locally**. They are acceptance gates for the next reviewed CI run.
+
+Primary sources:
+
+- https://github.com/golang/mobile/blob/cd096645fcd3/cmd/gomobile/bind.go
+- https://github.com/golang/mobile/blob/cd096645fcd3/cmd/gomobile/bind_iosapp.go
+- https://github.com/gonum/gonum/blob/v0.17.0/go.mod
+- https://github.com/gonum/gonum/blob/v0.17.0/go.sum
+- https://go.dev/ref/mod#go-mod-tidy
