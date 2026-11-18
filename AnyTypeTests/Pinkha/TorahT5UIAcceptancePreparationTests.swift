@@ -17,6 +17,7 @@ struct TorahT5UIAcceptancePreparationTests {
         let role: String
         let objectID: String
         let typeKey: String
+        let title: String
         let blockID: String?
         let blockText: String?
         let firstBlockID: String?
@@ -30,6 +31,12 @@ struct TorahT5UIAcceptancePreparationTests {
         let objectID: String
         let spaceID: String
         let reason: String
+    }
+
+    private struct PresentationProbe: Codable {
+        let objectID: String
+        let blockID: String
+        let text: String
     }
 
     private struct Fixture: Codable {
@@ -49,6 +56,7 @@ struct TorahT5UIAcceptancePreparationTests {
         let limitations: [String]
         let targets: [Target]
         let excluded: [Excluded]
+        let presentationProbe: PresentationProbe
         let productLookupFlag: String
     }
 
@@ -122,9 +130,11 @@ struct TorahT5UIAcceptancePreparationTests {
         try await waitForType(.note, spaceID: spaceID)
         let associations = AnytypeTorahAssociationRepository()
         var targets: [Target] = []
+        var presentationProbe: PresentationProbe?
         for (role, type) in [("page", ObjectTypeUniqueKey.page), ("note", .note), ("writing", writingType),
                              ("block", .page), ("quote", .page)] {
-            let object = try await create(type: type, name: "T5 UI " + role, spaceID: spaceID)
+            let title = presentationTitle(role: role, token: token)
+            let object = try await create(type: type, name: title, spaceID: spaceID)
             var blockID: String?
             var blockText: String?
             var firstID: String?
@@ -144,6 +154,10 @@ struct TorahT5UIAcceptancePreparationTests {
                 blockText = text
             } else if role == "note" {
                 _ = try await append("T5 existing Note " + token, objectID: object.id, spaceID: spaceID)
+            } else if role == "page" {
+                let text = "פסקה עברית לקריאה בלבד עם טקסט מעורב T5 — " + token
+                let id = try await append(text, objectID: object.id, spaceID: spaceID)
+                presentationProbe = .init(objectID: object.id, blockID: id, text: text)
             }
             var item = source.item
             if role == "quote" {
@@ -172,6 +186,7 @@ struct TorahT5UIAcceptancePreparationTests {
                 "canonical-role-readback-differs")
             let response = try await show(object.id, spaceID: spaceID)
             let value = try rootDetails(response, objectID: object.id, spaceID: spaceID)
+            try require(value.name == title, "native-title-readback-differs")
             let canonical = try #require(value.values[manifest.documentAssociationsPropertyKey]?.stringValue)
             if let blockID, let blockText {
                 let graph = try await T5BlockReachability.evaluate(spaceID: spaceID, rootID: object.id,
@@ -181,7 +196,16 @@ struct TorahT5UIAcceptancePreparationTests {
                 guard case .text(let content) = nativeBlock.content else { throw Failure.invariant("native-target-not-text") }
                 try require(content.text == blockText, "native-target-text-differs")
             }
-            targets.append(.init(role: role, objectID: object.id, typeKey: type.value, blockID: blockID,
+            if role == "page" {
+                let probe = try #require(presentationProbe)
+                let graph = try await T5BlockReachability.evaluate(spaceID: spaceID, rootID: object.id,
+                    nodes: response.objectView.blocks.map { .init(id: $0.id, childIDs: $0.childrenIds) })
+                try require(graph.isVerified && graph.reachableBlockIDs.contains(probe.blockID), "presentation-probe-unreachable")
+                let nativeBlock = try #require(response.objectView.blocks.first { $0.id == probe.blockID })
+                guard case .text(let content) = nativeBlock.content else { throw Failure.invariant("presentation-probe-not-text") }
+                try require(content.text == probe.text, "presentation-probe-readback-differs")
+            }
+            targets.append(.init(role: role, objectID: object.id, typeKey: type.value, title: value.name, blockID: blockID,
                 blockText: blockText, firstBlockID: firstID, firstBlockText: firstText, associationID: saved.id,
                 canonicalSHA256: hash(Data(canonical.utf8)), resultID: nil))
         }
@@ -215,6 +239,7 @@ struct TorahT5UIAcceptancePreparationTests {
             })
             try require(row.spaceID == spaceID && row.canUnlink == (targets[index].blockID == nil), "native-row-authority-differs")
             try require((row.kind == .note) == (targets[index].role == "note"), "native-row-type-differs")
+            try require(row.title == targets[index].title, "native-row-title-differs")
             targets[index].resultID = row.id
         }
         let fixture = Fixture(protocolVersion: 1, token: token, appSourceSHA: sourceSHA, runID: runID,
@@ -222,11 +247,18 @@ struct TorahT5UIAcceptancePreparationTests {
             accountID: account.id, spaceID: spaceID, foreignSpaceID: foreignSpace,
             accountRootPathSHA256: hash(Data(root.utf8)), providerID: source.providerID,
             canonicalReference: source.canonicalReference, coverage: "indexedTargetsOnly",
-            limitations: ["indexFreshnessUnverified"], targets: targets, excluded: excluded, productLookupFlag: "OFF")
+            limitations: ["indexFreshnessUnverified"], targets: targets, excluded: excluded,
+            presentationProbe: try #require(presentationProbe), productLookupFlag: "OFF")
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         try encoder.encode(fixture).write(to: fixtureURL, options: .withoutOverwriting)
         print("T5_UI_PREPARED real_native_targets=5 excluded=3 keychain_readback=matched coverage=indexedTargetsOnly")
+    }
+
+    private func presentationTitle(role: String, token: String) -> String {
+        guard role == "page" || role == "writing" else { return "T5 UI " + role }
+        return "כותרת עברית ארוכה למסמך " + role + " — "
+            + String(repeating: "מקור קנוני והערות עם טקסט מעורב T5. ", count: 5) + String(token.prefix(8))
     }
 
     @MainActor

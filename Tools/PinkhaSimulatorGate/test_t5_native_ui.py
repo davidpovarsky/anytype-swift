@@ -46,10 +46,11 @@ def fixture():
              "runtimeVersion": RUNTIME, "preparationProcessID": 100, "accountID": "fresh-account", "spaceID": "fresh-space",
              "foreignSpaceID": "other-space", "accountRootPathSHA256": "c" * 64, "providerID": "sefaria",
              "canonicalReference": "Genesis 1:1", "coverage": "indexedTargetsOnly", "limitations": ["indexFreshnessUnverified"],
-             "productLookupFlag": "OFF", "targets": [], "excluded": []}
+             "productLookupFlag": "OFF", "targets": [], "excluded": [],
+             "presentationProbe": {"objectID": "object-page", "blockID": "presentation-block", "text": gates.presentation_probe_text(TOKEN)}}
     for role in gates.TARGET_ROLES:
         block = "block-" + role if role in {"block", "quote"} else None
-        value["targets"].append({"role": role, "objectID": "object-" + role,
+        value["targets"].append({"role": role, "objectID": "object-" + role, "title": gates.presentation_title(role, TOKEN),
             "typeKey": "note" if role == "note" else "writing" if role == "writing" else "page", "blockID": block,
             "blockText": "T5 native " + role + " target " + TOKEN if block else None,
             "firstBlockID": "first-" + role if block else None, "firstBlockText": "First actual paragraph" if block else None,
@@ -275,10 +276,11 @@ class NativeUIEvidenceControls(unittest.TestCase):
 
     def test_exact_named_xctest_counts_and_device(self):
         methods = {name + "()": "Passed" for name in gates.METHODS.values()}
-        summary = {"passedTests": 2, "failedTests": 0, "skippedTests": 0,
+        summary = {"totalTestCount": 2, "passedTests": 2, "failedTests": 0, "skippedTests": 0,
                    "devicesAndConfigurations": [{"device": {"deviceId": UDID, "architecture": "arm64", "osVersion": "27.0"}}]}
         self.assertEqual(gates.validate_selection(summary, methods, list(gates.METHODS.values()), UDID)["passed"], 2)
-        for key, bad in [("passedTests", 0), ("failedTests", 1), ("skippedTests", 1), ("passedTests", True)]:
+        for key, bad in [("passedTests", 0), ("failedTests", 1), ("skippedTests", 1), ("passedTests", True),
+                         ("totalTestCount", 999), ("totalTestCount", 3), ("totalTestCount", None), ("totalTestCount", True)]:
             with self.subTest(key=key, bad=bad), self.assertRaises(ValueError):
                 value = dict(summary); value[key] = bad
                 gates.validate_selection(value, methods, list(gates.METHODS.values()), UDID)
