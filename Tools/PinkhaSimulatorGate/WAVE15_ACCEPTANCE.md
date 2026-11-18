@@ -29,3 +29,31 @@ Inputs in the manual dispatcher:
 - acceptance_language=en or he (editor only for he)
 
 Keep each job's raw xcresult, screenshots, selection plan, native fixture, actual package pins and runtime installation receipt. Failed preparation must stop UI execution. Unselected methods and configurations stay NOT_RUN.
+
+## Hanlin native host lane
+
+The hanlin-native lane uses Debug-Anytype for both the application and the
+real UI runner, with DEBUG and PINKHA_NATIVE_DERIVED. Other lanes retain
+Release-Anytype. Cache identity includes the actual build configuration and
+canonical Hanlin source pin.
+
+It executes only HanlinNativeAcceptancePreparationTests/prepareRealHostFixture
+(one real native fixture), then
+HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation
+(one real XCTest UI method). The existing simulator fixture is called normally
+inside the preparation function, not scheduled as a second Swift Testing test.
+The fixture requires a fresh disposable local-only account; source SHA, actual
+CI run and attempt, nonce, body/title markers, distinct Spaces and creation time
+are checked before any UI action. Its exact native JSON is passed unchanged.
+
+A passing XCTest and its xcresult are required. Independently,
+hanlin_acceptance_evidence.py validates the native result's 14 exact Boolean
+checks, source/run/attempt/fixture identity, a distinct native created ID,
+session/PID, no provider, no failure and consistent real dates. Raw native
+results are retained on failure too. A status label or a complete native JSON
+without the named passing XCTest is not accepted.
+
+The component result does not claim provider/model operation, real selection
+UI, background lifecycle or full SDK acceptance. The native driver and fixture
+are excluded from production Release builds. The documented cold launch within
+this lane does not reuse the earlier Inspector process mapping.

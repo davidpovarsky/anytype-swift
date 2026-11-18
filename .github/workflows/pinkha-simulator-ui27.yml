@@ -74,9 +74,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: build/ui27-derived
-          key: pinkha-ui27-arm64-xcode27.0-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}-${{ github.sha }}
+          key: pinkha-ui27-arm64-xcode27.0-${{ inputs.acceptance_lane == 'hanlin-native' && 'Debug-Anytype' || 'Release-Anytype' }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-${{ github.sha }}
           restore-keys: |
-            pinkha-ui27-arm64-xcode27.0-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}-
+            pinkha-ui27-arm64-xcode27.0-${{ inputs.acceptance_lane == 'hanlin-native' && 'Debug-Anytype' || 'Release-Anytype' }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
       - name: Build once and execute the declared native and UI selection
         if: ${{ inputs.acceptance_lane == '' }}
         id: actual-execution

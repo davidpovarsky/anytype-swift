@@ -95,9 +95,11 @@ def export_ui_console(simulator, evidence):
             stream.write('\nPassive console export timed out.\n')
 
 
-def install_ui_runner(simulator, products, app, evidence):
+def install_ui_runner(simulator, products, app, evidence, configuration='Release-Anytype'):
     """Register the actual built XCTest runner before Xcode asks FrontBoard to launch it."""
-    runner = products/'Release-Anytype-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app'
+    if configuration not in {'Release-Anytype', 'Debug-Anytype'}:
+        raise ValueError('Unsupported actual UI runner configuration')
+    runner = products/(configuration+'-iphonesimulator/PinkhaStage1AcceptanceUITests-Runner.app')
     with (runner/'Info.plist').open('rb') as stream:
         info = plistlib.load(stream)
     identifier = info['CFBundleIdentifier']
@@ -109,7 +111,7 @@ def install_ui_runner(simulator, products, app, evidence):
     if not registered:
         raise RuntimeError('The UI runner was not registered in the disposable simulator')
     (evidence/'ui-runner-installation.json').write_text(json.dumps(dict(
-        status='REGISTERED',bundle_identifier=identifier,built_runner=str(runner),
+        status='REGISTERED',configuration=configuration,bundle_identifier=identifier,built_runner=str(runner),
         registered_runner=registered),indent=2)+'\n')
 
 
