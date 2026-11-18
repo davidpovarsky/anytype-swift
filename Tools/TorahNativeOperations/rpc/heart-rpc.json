@@ -1,0 +1,54 @@
+{
+  "protocol_version": 1,
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "patch_sha256": "034b1087bf8153160d79694a64a134adbe52d52292b08dccd4746c61e08d51de",
+  "tracked": {
+    "pb/protos/commands.proto": {
+      "before_sha256": "a2cc54ff676f5d290267cabaa6fab52c7bb5737417c4911828d7f89b64217499",
+      "after_sha256": "eaae470a41472edbe682fcfc8f83e6dea49defb219ff6203ff17ff30faaaa5e9"
+    },
+    "pb/protos/service/service.proto": {
+      "before_sha256": "e6def87f94fe2946524c836926b89eab1673b89ff28adf4b1eb6ced247d74ba5",
+      "after_sha256": "8afbe1223a8d457a37f0c77f6aaca2db87bf11ac4843b8981c551a92f8743886"
+    }
+  },
+  "registration_inventory_sha256": "be2805bc76e87a6fb96b4b3d40794c677e1620e2e23f6a33a68d97720f433637",
+  "registration_patch_sha256": "4d470b31854ae2af3360676a1dabb06d60207ed2d4afddabad412bdc35adebc3",
+  "generation": {
+    "go": "go1.26.5",
+    "host": "linux/amd64 glibc",
+    "protoc": {
+      "version": "libprotoc 3.21.12",
+      "url": "https://github.com/protocolbuffers/protobuf/releases/download/v21.12/protoc-21.12-linux-x86_64.zip",
+      "zip_sha256": "3a4c1e5f2516c639d3079b1586e703fc7bcfa2136d58bda24d1d54f949c315e8",
+      "binary_sha256": "e6a75cf6660945fbfec0d321808442ce3649cd7820079eece1098c881b315f55"
+    },
+    "gogo": {
+      "module": "github.com/gogo/protobuf",
+      "replace_module": "github.com/anyproto/protobuf",
+      "version": "v1.3.3-0.20240201225420-6e325cf0ac38",
+      "sum": "h1:80jke82/c+bNQQpnx4VO3Mi/lAxARyyfUpZvFaPxdzE=",
+      "go_mod_sum": "h1:P1XiOD3dCwIKUDQYPy72D8LYyHL2YPYrpS2s69NZV8Q="
+    },
+    "generated_paths": [
+      "pb/commands.pb.go",
+      "pb/service/service.pb.go",
+      "clientlibrary/service/service.pb.go"
+    ],
+    "environment": {
+      "GOGO_NO_UNDERSCORE": "1",
+      "GOGO_EXPORT_ONEOF_INTERFACE": "1",
+      "PACKAGE_PATH": "github.com/anyproto/anytype-heart/pb"
+    },
+    "generated_files": "NOT_GENERATED_OR_EXECUTED"
+  },
+  "registered_rpc_acceptance": "NOT_RUN",
+  "account_wire_acceptance": "NOT_RUN",
+  "app_capability": "OFF",
+  "two_app_clients": "NOT_RUN",
+  "overlay": {
+    "core/pinkha_torah_rpc.go": "3e3325bb724c75ae9023b6386416278af4327de8243be90ce245c6de6b22a8e5",
+    "core/pinkha_torah_rpc_test.go": "6d986e0d9ae7ae32c44980e0e8f5027ebcfa82f9e51a32c402633ef781c27d42",
+    "clientlibrary/service/pinkha_torah_rpc_wire_test.go": "c7a2d49c76953683a0cb4155da68305c44f19ef84973ea54885857c0b250b2a5"
+  }
+}
