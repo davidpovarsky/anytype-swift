@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Run the four SDK06 host suites on a fresh, source-bound OS27 test host.
+"""Run one reviewed component profile on a fresh, source-bound OS27 test host.
 
-This is component acceptance only. It does not exercise provider networking,
-real accounts, mounted document UI, or native page creation.
+The default SDK06 profile and the optional editor profile have separate receipts.
+Neither profile proves native UI, real account writes, or provider networking.
 """
 import argparse
 from datetime import datetime, timezone
+from enum import Enum
 import hashlib
 import json
 import os
@@ -27,6 +28,42 @@ SUITES = {
     "HanlinHostReadWriteTests": 17,
     "HanlinSDKConsumerTests": 6,
 }
+EDITOR_SUITE = "TorahQuoteInsertionTests"
+EDITOR_METHODS = {
+    "delayedDropDoesNotRegainAuthorityOnReactivation": None,
+    "staleInspectorInsertionIsRejected": "dismiss",
+    "deniedDropDoesNotCreateTextOrMetadata": None,
+    "dropDeduplicationIsPerGesture": None,
+    "dropLifetimeIsIndependentOfInspectorPresentation": None,
+    "revocationDuringBlockResponseStopsMetadata": None,
+    "lateBlockResponseDoesNotMutateTheNewLifetime": None,
+    "lateInspectorResponseDoesNotReplaceNewSelectionStatus": None,
+    "metadataWriteRevalidatesAfterSuspendedNativeRead": "cancel",
+    "inspectorInsertionPersistsConfirmedCanonicalMetadata": None,
+}
+
+
+class HostTestProfile(str, Enum):
+    SDK06 = "sdk06"
+    EDITOR = "editor"
+
+    @property
+    def suites(self):
+        return SUITES if self is self.SDK06 else {EDITOR_SUITE: len(EDITOR_METHODS)}
+
+    @property
+    def result_prefix(self):
+        return "sdk06" if self is self.SDK06 else "editor-host"
+
+    @property
+    def pass_status(self):
+        return "SDK06_COMPONENT_PASS" if self is self.SDK06 else "EDITOR_COMPONENT_PASS"
+
+
+class EditorEvidenceReviewPending(ValueError):
+    """Raw Apple evidence exists, but its argument representation is unrecognized."""
+
+
 LOCK = "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
 
 
@@ -52,11 +89,11 @@ def require_identity(head, expected_sha, branch, expected_branch, run_id, attemp
             "Missing actual run/attempt identity")
 
 
-def expected_methods(app):
-    """Read the actual four source files, requiring the currently reviewed floor."""
+def expected_methods(app, profile=HostTestProfile.SDK06):
+    """Read tracked sources; editor additionally requires exact reviewed arguments."""
     methods, files = set(), {}
     tracked = subprocess.check_output(["git", "-C", str(app), "ls-files", "-z"]).decode().split("\0")
-    for suite, minimum in SUITES.items():
+    for suite, minimum in profile.suites.items():
         candidates = [p for p in tracked if p.casefold() == f"AnytypeTests/Pinkha/{suite}.swift".casefold()]
         require(len(candidates) == 1, "Missing or case-colliding tracked SDK suite: " + suite)
         actual = app / candidates[0]
@@ -66,6 +103,19 @@ def expected_methods(app):
         names = re.findall(r"@Test(?:\([^\n]*\))?\s+func\s+(\w+)\s*\(", text)
         require(len(set(names)) == len(names) and len(names) >= minimum,
                 "Reviewed SDK test declarations disappeared: " + suite)
+        if profile is HostTestProfile.EDITOR:
+            declarations = re.findall(r"@Test(?:\(([^\n]*)\))?\s+func\s+(\w+)\s*\(([^)]*)\)", text)
+            require(set(names) == set(EDITOR_METHODS), "Reviewed editor method set changed")
+            require(len(declarations) == len(EDITOR_METHODS), "Unrecognized editor test declaration")
+            for attributes, name, parameters in declarations:
+                parameter = EDITOR_METHODS[name]
+                if parameter is None:
+                    require(not parameters.strip() and "arguments:" not in attributes,
+                            "Unexpected editor argument declaration: " + name)
+                else:
+                    require(parameters.strip() == parameter + ": Bool"
+                            and re.search(r"\barguments\s*:\s*\[\s*false\s*,\s*true\s*\]", attributes),
+                            "Reviewed editor Bool arguments changed: " + name)
         methods.update(suite + "/" + name for name in names)
         files[candidates[0]] = sha256(actual)
     return methods, files
@@ -91,7 +141,7 @@ def test_cases(tree):
     return found
 
 
-def validate_results(summary, tree, expected, udid):
+def validate_results(summary, tree, expected, udid, profile=HostTestProfile.SDK06):
     counts = {key: summary.get(key) for key in ("totalTestCount", "passedTests", "failedTests", "skippedTests")}
     require(all(type(value) is int for value in counts.values()), "Missing integer xcresult counts")
     require(counts["totalTestCount"] >= len(expected) > 0, "Zero or incomplete SDK test selection")
@@ -108,10 +158,84 @@ def validate_results(summary, tree, expected, udid):
     observed = set()
     for identifier in cases:
         matches = [method for method in expected if re.search(r"(?:^|/)" + re.escape(method) + r"(?:\(|/|$)", identifier)]
-        require(len(matches) == 1, "Unexpected xcresult test outside the four SDK suites: " + identifier)
+        require(len(matches) == 1, ("Unexpected xcresult test outside the four SDK suites: "
+                                  if profile is HostTestProfile.SDK06 else "Unexpected xcresult editor test: ") + identifier)
         observed.add(matches[0])
     require(observed == expected, "Missing SDK test methods: " + ", ".join(sorted(expected - observed)))
-    return dict(counts=counts, methods=sorted(observed), actual_cases=cases, device=device)
+    result = dict(counts=counts, methods=sorted(observed), actual_cases=cases, device=device)
+    if profile is HostTestProfile.EDITOR:
+        result.update(validate_editor_arguments(tree, expected))
+        # Some xcresult versions summarize parameterized methods, while the
+        # tree contains the distinct argument cases. Preserve the raw count;
+        # never infer execution of an argument from this aggregate alone.
+        require(counts["totalTestCount"] in {len(EDITOR_METHODS), result["declared_case_count"]},
+                "Editor summary does not describe the exact methods or argument cases")
+    return result
+
+
+def validate_editor_arguments(tree, expected):
+    """Recognize actual Test Case -> Arguments nodes, never count a method twice.
+
+    Xcode's Arguments children have display values, not unique nodeIdentifier
+    fields. Unknown representations remain review-pending with raw data retained.
+    """
+    require(expected == {EDITOR_SUITE + "/" + name for name in EDITOR_METHODS},
+            "Editor result contract differs from the reviewed method set")
+    nodes = []
+
+    def visit(value):
+        if isinstance(value, dict):
+            if value.get("nodeType") == "Test Case":
+                nodes.append(value)
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(tree)
+    if len(nodes) != len(EDITOR_METHODS):
+        raise EditorEvidenceReviewPending("Unrecognized editor method/argument tree; expected ten method nodes")
+    actual = {}
+    for node in nodes:
+        identifier = node["nodeIdentifier"]
+        names = [name for name, parameter in EDITOR_METHODS.items()
+                 if identifier in {EDITOR_SUITE + "/" + name + "(" + (parameter + ":" if parameter else "") + ")",
+                                   "AnytypeTests/" + EDITOR_SUITE + "/" + name + "(" + (parameter + ":" if parameter else "") + ")"}]
+        require(len(names) == 1 and names[0] not in actual, "Unexpected or duplicate full editor method identity")
+        name = names[0]
+        descendants = []
+
+        def descend(value):
+            require(isinstance(value, dict), "Malformed editor result descendant")
+            descendants.append(value)
+            children = value.get("children", [])
+            require(isinstance(children, list), "Malformed editor result children")
+            for child in children:
+                descend(child)
+
+        for child in node.get("children", []):
+            descend(child)
+        for child in descendants:
+            if "result" in child:
+                require(child["result"] == "Passed", "Failed or skipped editor descendant result")
+            if child.get("nodeType") not in {"Arguments", "Repetition", "Test Case Run"}:
+                raise EditorEvidenceReviewPending("Unrecognized editor execution child: " + str(child.get("nodeType")))
+            require(child.get("result") == "Passed", "Failed, skipped, or missing editor argument/run result")
+        arguments = [child for child in descendants if child.get("nodeType") == "Arguments"]
+        if EDITOR_METHODS[name] is None:
+            require(not arguments, "Unexpected arguments for a nonparameterized editor method")
+            actual[name] = [dict(node_identifier=identifier, result=node["result"])]
+        else:
+            if not arguments or any(child.get("name") not in {"false", "true"} for child in arguments):
+                raise EditorEvidenceReviewPending("Unrecognized Bool argument representation: " + identifier)
+            require(len(arguments) == 2 and {child["name"] for child in arguments} == {"false", "true"},
+                    "Missing or duplicate editor Bool case: " + identifier)
+            actual[name] = [dict(node_identifier=identifier, argument=child["name"], result=child["result"])
+                            for child in sorted(arguments, key=lambda item: item["name"])]
+    count = sum(len(cases) for cases in actual.values())
+    require(count == 12, "Expected exactly twelve distinct editor argument cases")
+    return dict(actual_method_count=len(actual), declared_case_count=count, editor_cases=actual)
 
 
 def verify_packages(app, derived, evidence, pin, git):
@@ -185,6 +309,7 @@ def xctest_products(configuration):
 
 def execute(args, receipt):
     app, evidence, derived = args.app.resolve(), args.evidence.resolve(), args.derived.resolve()
+    profile = HostTestProfile(args.profile)
     require(platform.system() == "Darwin" and platform.machine() == "arm64", "Actual Apple silicon Mac required")
     sys.path.insert(0, str(app / "Tools/PinkhaNativeDerived"))
     from build_custom_heart import digest, git
@@ -207,7 +332,7 @@ def execute(args, receipt):
             and preflight.get("run_attempt") == os.environ["GITHUB_RUN_ATTEMPT"], "Actual preflight identity differs")
     ipad = preflight["selected"]["ipad"]
     udid = ipad["udid"]
-    expected, sources = expected_methods(app)
+    expected, sources = expected_methods(app, profile)
     pin = json.loads((app / "Tools/Hanlin/source.json").read_text())
     snapshot = verify(app / "Dependencies/Hanlin")
     write(evidence / "hanlin-snapshot.json", snapshot)
@@ -221,7 +346,8 @@ def execute(args, receipt):
         require(digest(app / "Dependencies/Middleware/Lib.xcframework" / item["path"]) == item["sha256"],
                 "Installed Heart bytes changed after verification")
     receipt.update(source_sha=head, preflight=preflight, configuration=CONFIGURATION,
-                   selection=["AnytypeTests/" + name for name in SUITES], expected_methods=sorted(expected),
+                   profile=profile.value, selection=["AnytypeTests/" + name for name in profile.suites],
+                   expected_methods=sorted(expected),
                    test_source_hashes=sources, hanlin_revision=pin["revision"], heart=installation,
                    hanlin_snapshot_sha256=sha256(evidence / "hanlin-snapshot.json"), phase="SIMULATOR_BOOT")
     write(evidence / "execution.json", receipt)
@@ -252,7 +378,7 @@ def execute(args, receipt):
     receipt["dependency_checkouts"] = verify_packages(app, derived, evidence, pin, git)
     verify(app / "Dependencies/Hanlin")
     receipt["xctestrun_sha256"] = digest(configuration)
-    result = evidence / "SDK06.xcresult"
+    result = evidence / ("SDK06.xcresult" if profile is HostTestProfile.SDK06 else "EditorHost.xcresult")
     require(not result.exists(), "Refuse an existing SDK xcresult")
     receipt["phase"] = "EXECUTION"
     test = ["xcodebuild", "test-without-building", "-xctestrun", str(configuration),
@@ -260,19 +386,25 @@ def execute(args, receipt):
             *selection, "-resultBundlePath", str(result)]
     receipt["test_command"] = test
     write(evidence / "execution.json", receipt)
-    run_xctest(test, app, evidence, result, "sdk06", command_runner=command)
+    prefix = profile.result_prefix
+    run_xctest(test, app, evidence, result, prefix, command_runner=command)
     receipt["test_command_exit_code"] = 0
-    summary = json.loads((evidence / "sdk06-summary.json").read_text())
-    tree = json.loads((evidence / "sdk06-tests.json").read_text())
-    receipt["actual"] = validate_results(summary, tree, expected, udid)
+    receipt.update(phase="RESULT_REVIEW", raw_summary_sha256=sha256(evidence / (prefix + "-summary.json")),
+                   raw_tests_sha256=sha256(evidence / (prefix + "-tests.json")))
+    write(evidence / "execution.json", receipt)
+    summary = json.loads((evidence / (prefix + "-summary.json")).read_text())
+    tree = json.loads((evidence / (prefix + "-tests.json")).read_text())
     identity()
     require(set(git(app, "diff", "--name-only", "HEAD").splitlines()).issubset({LOCK}),
             "Tracked source changed during SDK build/test")
     verify(app / "Dependencies/Hanlin")
-    receipt.update(status="SDK06_COMPONENT_PASS", phase="COMPLETE", release_accepted=False,
-                   raw_summary_sha256=sha256(evidence / "sdk06-summary.json"),
-                   raw_tests_sha256=sha256(evidence / "sdk06-tests.json"),
-                   limitations=["Native write dispatch, mounted document/account/scene lifetime UI, provider networking and full UI acceptance remain NOT_RUN"])
+    receipt["post_execution_source_verified"] = True
+    write(evidence / "execution.json", receipt)
+    receipt["actual"] = validate_results(summary, tree, expected, udid, profile)
+    limitation = ("Native write dispatch, mounted document/account/scene lifetime UI, provider networking and full UI acceptance remain NOT_RUN"
+                  if profile is HostTestProfile.SDK06 else
+                  "Editor component tests use controlled store and insertion fixtures; native drag/drop UI, real middleware writes, and all SDK06 acceptance remain NOT_RUN by this profile")
+    receipt.update(status=profile.pass_status, phase="COMPLETE", release_accepted=False, limitations=[limitation])
 
 
 def cleanup(evidence, receipt):
@@ -303,20 +435,25 @@ def main():
     parser.add_argument("--derived", required=True, type=Path)
     parser.add_argument("--expected-app-branch", required=True, choices=[BRANCH])
     parser.add_argument("--heart-source-run-id", required=True)
+    parser.add_argument("--profile", choices=[profile.value for profile in HostTestProfile], default=HostTestProfile.SDK06.value)
     args = parser.parse_args()
     args.evidence.mkdir(parents=True, exist_ok=True)
     require(re.fullmatch(r"[1-9][0-9]*", args.heart_source_run_id), "Explicit Heart source run is required")
-    receipt = dict(status="RUNNING", phase="PREFLIGHT", build_succeeded=False, test_command_exit_code=None,
+    receipt = dict(status="RUNNING", phase="PREFLIGHT", profile=args.profile, build_succeeded=False, test_command_exit_code=None,
                    source_sha=os.environ.get("GITHUB_SHA"), run_id=os.environ.get("GITHUB_RUN_ID"),
                    run_attempt=os.environ.get("GITHUB_RUN_ATTEMPT"), started_at=datetime.now(timezone.utc).isoformat())
     with cancellation_signals():
         try:
             write(args.evidence / "execution.json", receipt)
             execute(args, receipt)
+            require(receipt.get("profile") == args.profile and receipt["status"] == HostTestProfile(args.profile).pass_status,
+                    "Completed receipt does not match its explicit component profile")
         except KeyboardInterrupt as error:
             receipt.update(status="CANCELLED", error_type=type(error).__name__, error=str(error))
             if isinstance(error, CommandCancelled):
                 receipt["cancellation_signal"] = error.signum
+        except EditorEvidenceReviewPending as error:
+            receipt.update(status="EDITOR_EVIDENCE_REVIEW_PENDING", error_type=type(error).__name__, error=str(error))
         except BaseException as error:
             receipt.update(status="FAIL", error_type=type(error).__name__, error=str(error))
         finally:
@@ -337,7 +474,7 @@ def main():
             receipt["finished_at"] = datetime.now(timezone.utc).isoformat()
             write(args.evidence / "execution.json", receipt)
     print(json.dumps(receipt, indent=2))
-    return 0 if receipt["status"] == "SDK06_COMPONENT_PASS" else 1
+    return 0 if receipt["status"] == HostTestProfile(args.profile).pass_status else 1
 
 
 if __name__ == "__main__":
