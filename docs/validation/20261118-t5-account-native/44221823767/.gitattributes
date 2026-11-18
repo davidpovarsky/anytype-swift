@@ -1,0 +1,4 @@
+# Preserve byte-original CI evidence, including native log whitespace.
+original-artifact/** -text
+original-artifact/**/*.log whitespace=-trailing-space,cr-at-eol
+original-artifact.zip -text
