@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "source_sha": "70a505d68ca839b44c5215e809b1f059d64f4068",
+  "run_id": "44268689146",
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44268689146",
+  "artifact_id": 14415555855,
+  "artifact_bytes": 7972274,
+  "artifact_sha256": "07bc088a3e2def7366d2ae9d2aec16fa6a80053fc7a03b86a8ab853e906db86c",
+  "nested_bytes": 8007920,
+  "nested_sha256": "80bf0c51a88dd9211b847d20c5bb896facfa6ddf27e055c4a26122046200d90f",
+  "job_log_sha256": "fb4fe8bce970cbcb94202634e1b7a14fbcee89197c2ad47174e74beda56dbe0d",
+  "visual_review": {
+    "configuration": "iPad Pro 13-inch (M5), iOS 27.0 Simulator, English app, portrait, light",
+    "reviewed_pngs": [
+      "29DCC48A-7606-4007-B8FC-D29E519226B3.png",
+      "462FC38A-D3C9-46EB-BFF6-08489C8E270E.png",
+      "F8AEFC51-2114-480A-B5DE-E515CF1922FF.png",
+      "3A630BF5-8505-4927-A148-ED48DEE901F2.png",
+      "10C6BE8C-95E9-46DC-B6A4-44A3E47FD126.png",
+      "F969D1AB-0FF4-4902-8A5C-EA7ECFBDD592.png"
+    ],
+    "findings": [
+      "Add property button is readable and not clipped in this captured configuration.",
+      "The Hebrew source property row is readable after the Hebrew search query.",
+      "The indexed document row is visible in In Documents; the r14 limitations remain visible.",
+      "Clearing the query visibly restores the search prompt.",
+      "The no-match screen only says that results come from the configured provider; it does not tell the user that no matches were found.",
+      "The opened Inspector screenshot shows its header and tabs with a loading spinner; it does not prove provider commentaries finished loading."
+    ]
+  },
+  "full_matrix_accepted": false,
+  "release_accepted": false,
+  "inspector_parent_complete": false,
+  "followup": {
+    "source_base_sha": "10fb06193d17aca43bd020094beaaf61d466d031",
+    "patch_sha256": "a58a2aefa4082fc89caf03318f66ee5be82ceddf95ed4110fc65ee462660af4e",
+    "change": "Use existing localized Loc.noMatchesFound for nonword empty searches and require the actual visible message in the existing UI test.",
+    "apple_acceptance": "NOT_RUN",
+    "source_review": "SDK agent independent review: no blocking finding",
+    "swift_frontend_parse": {
+      "passed": true,
+      "files": 2,
+      "exit_code": 0,
+      "duration_seconds": 0.969,
+      "apple_typecheck": false,
+      "apple_ui": false
+    }
+  },
+  "ui": {
+    "status": "PASS",
+    "selected": [
+      "AnytypeComprehensiveAcceptanceUITests/testObjectAddPropertyButtonAndPickerSearch",
+      "AnytypeComprehensiveAcceptanceUITests/testDocumentSourceSearchPresentation",
+      "AnytypeComprehensiveAcceptanceUITests/testSourceChipOpensAndClosesInspector",
+      "AnytypeComprehensiveAcceptanceUITests/testDocumentSourceSearchEmptyAndClear",
+      "AnytypeComprehensiveAcceptanceUITests/testInspectorShowsIndexedRelatedDocument"
+    ],
+    "phase": "EXECUTION",
+    "prefix": "wave15-inspector",
+    "command_exit_code": 0,
+    "ui_scope": "WAVE15_ACCEPTANCE",
+    "expected_selected_methods": 5,
+    "release_accepted": false,
+    "full_matrix_accepted": false,
+    "actual_devices": [
+      {
+        "architecture": "arm64",
+        "deviceId": "D96A47EC-D5B4-4645-8A86-899C8D06426C",
+        "deviceName": "Pinkha-UI27-44268689146-ipad",
+        "modelName": "iPad Pro 13-inch (M5)",
+        "osBuildNumber": "24A434",
+        "osVersion": "27.0",
+        "platform": "iOS Simulator"
+      }
+    ],
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "actual_methods": {
+      "AnytypeComprehensiveAcceptanceUITests/testDocumentSourceSearchEmptyAndClear()": "Passed",
+      "AnytypeComprehensiveAcceptanceUITests/testDocumentSourceSearchPresentation()": "Passed",
+      "AnytypeComprehensiveAcceptanceUITests/testInspectorShowsIndexedRelatedDocument()": "Passed",
+      "AnytypeComprehensiveAcceptanceUITests/testObjectAddPropertyButtonAndPickerSearch()": "Passed",
+      "AnytypeComprehensiveAcceptanceUITests/testSourceChipOpensAndClosesInspector()": "Passed"
+    }
+  },
+  "preparation": {
+    "status": "PASS",
+    "selected": [
+      "SimulatorAcceptancePreparationTests/prepareRealUIFixture"
+    ],
+    "phase": "EXECUTION",
+    "prefix": "prepare",
+    "command_exit_code": 0,
+    "actual_devices": [
+      {
+        "architecture": "arm64",
+        "deviceId": "D96A47EC-D5B4-4645-8A86-899C8D06426C",
+        "deviceName": "Pinkha-UI27-44268689146-ipad",
+        "modelName": "iPad Pro 13-inch (M5)",
+        "osBuildNumber": "24A434",
+        "osVersion": "27.0",
+        "platform": "iOS Simulator"
+      }
+    ],
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "actual_methods": {
+      "SimulatorAcceptancePreparationTests/prepareRealUIFixture()": "Passed"
+    }
+  },
+  "kit_sha": "4e59e909dd22685bb46f9396bc57e5f8c627d773",
+  "live_app_pid": 14836,
+  "home_elapsed_seconds": 1.1453381249998529,
+  "original_files_verified": 44,
+  "original_bytes": 5435423,
+  "followup_source_files": [
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift",
+      "canonical_lf_sha256": "2e249fa829d94012732acc05a2b8e04c1b7d402b174c4685c9402446868b352f"
+    },
+    {
+      "path": "PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift",
+      "canonical_lf_sha256": "c07f549a39ea3069098353776bb7bb78766cdc0136b3b25257e591ae6d586579"
+    }
+  ]
+}

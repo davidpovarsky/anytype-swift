@@ -163,7 +163,7 @@ struct TorahSourcesSearchContentView: View {
             EmptyStateView(
                 title: presenter.searchScope == .words
                     ? Loc.Pinkha.Torah.Error.noResolvedWord
-                    : Loc.Pinkha.Torah.searchDescription,
+                    : Loc.noMatchesFound,
                 style: .plain
             )
             .accessibilityElement(children: .contain)

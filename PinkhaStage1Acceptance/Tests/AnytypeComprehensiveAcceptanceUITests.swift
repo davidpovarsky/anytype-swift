@@ -83,6 +83,11 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         try requireEmbedded(search.value as? String == noMatch, "The original search field must contain the complete no-match query")
         let empty = app.descendants(matching: .any).matching(identifier: "torah-search-empty").firstMatch
         try requireEmbedded(empty.waitForExistence(timeout: 45), "A real no-match search should expose its empty state")
+        let noMatchesMessage = empty.staticTexts.matching(NSPredicate(
+            format: "label CONTAINS %@", "No matches found."
+        )).firstMatch
+        try requireEmbedded(noMatchesMessage.waitForExistence(timeout: 10) && noMatchesMessage.isHittable,
+                            "The empty result must visibly explain that no matches were found")
         attach("document-sources-empty-search")
         search.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: noMatch.utf16.count))
         let idle = app.descendants(matching: .any).matching(identifier: "torah-search-idle").firstMatch
