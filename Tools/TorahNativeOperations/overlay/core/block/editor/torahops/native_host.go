@@ -176,6 +176,12 @@ func OpenNativeHost(ctx context.Context, db anystore.DB, spaceID string, tree sy
 	if tree.Id() != root.Id || !bytes.Equal(root.RawChange, tree.Header().RawChange) {
 		return nil, ErrInvalid
 	}
+	acl := tree.AclList()
+	acl.RLock()
+	defer acl.RUnlock()
+	if err = requireCurrentReadAccess(acl, key); err != nil {
+		return nil, err
+	}
 	store, err := New(ctx, db, spaceID)
 	if err != nil {
 		return nil, err
@@ -338,6 +344,12 @@ func (h *NativeHost) ReadTarget(ctx context.Context, target Target, limit uint) 
 	}
 	h.tree.Lock()
 	defer h.tree.Unlock()
+	acl := h.tree.AclList()
+	acl.RLock()
+	defer acl.RUnlock()
+	if err := requireCurrentReadAccess(acl, h.key); err != nil {
+		return NativeSnapshot{}, err
+	}
 	seq, err := h.recoverLocked(ctx, h.tree)
 	if err != nil {
 		return NativeSnapshot{}, err
@@ -349,4 +361,24 @@ func (h *NativeHost) ReadTarget(ctx context.Context, target Target, limit uint) 
 	heads := slices.Clone(h.tree.Heads())
 	slices.Sort(heads)
 	return NativeSnapshot{Projection: projection, Heads: heads, AppliedSeq: seq}, nil
+}
+
+// Caller holds the ACL read lock through the complete open/read operation.
+// Permissions is the CURRENT locally verified ACL state. HadReadPermissions is
+// deliberately unsuitable: a removed member can retain historical decryption
+// keys and a populated local projection. Known local removal must deny access.
+// Holding the lock prevents a local revocation from completing between this
+// authorization check and returning a cached/recovered snapshot. This does not
+// claim knowledge of revocations that have not reached this offline client.
+func requireCurrentReadAccess(acl list.AclList, key crypto.PrivKey) error {
+	if key == nil {
+		return list.ErrInsufficientPermissions
+	}
+	switch acl.AclState().Permissions(key.GetPublic()) {
+	case list.AclPermissionsReader, list.AclPermissionsGuest, list.AclPermissionsWriter,
+		list.AclPermissionsAdmin, list.AclPermissionsOwner:
+		return nil
+	default:
+		return list.ErrInsufficientPermissions
+	}
 }

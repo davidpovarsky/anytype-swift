@@ -230,6 +230,19 @@ sequence under the tree lock. The sequence is local to one peer and must not be
 compared between peers or advertised as a global version. There is no partial
 success when projection catch-up fails.
 
+Opening the host and reading a target also require the supplied internal host
+key to have **current locally verified ACL read permission**. Reader, Guest,
+Writer, Admin and Owner are allowed; missing, removed and unknown permissions
+are denied. Both operations hold the ACL read lock from authorization through
+the complete projection open/read, in tree-then-ACL lock order. Historical
+`HadReadPermissions` and possession of old decryption keys are not authorization.
+This closes a review finding in source `12bef033`: that source's preserved
+54-pass transport proof did not test the current-read guard. The added regression
+cases apply actual signed account-add/remove ACL records and retain a populated
+projection: current readers/guests can read but cannot write; a foreign key and
+a member whose removal is already known locally cannot open or return a cached
+snapshot. This is not a claim that an offline client knows remote revocations.
+
 `native_transport_test.go` launches two OS processes with separate peer keys,
 native SQLite stores, projection stores and loopback TCP listeners. They are two
 devices of the same disposable account, with a real signed owner ACL root. It
