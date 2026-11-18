@@ -304,6 +304,14 @@ func (r *t5AccountPairRPC) create(state *t5AccountPairState) {
 		doc.Canonical = string(raw)
 		r.invoke(ObjectSetDetails, &pb.RpcObjectSetDetailsRequest{ContextId: doc.ID,
 			Details: []*model.Detail{{Key: state.CanonicalKey, Value: domain.String(doc.Canonical).ToProto()}}}, &pb.RpcObjectSetDetailsResponse{})
+		_, baseline := r.show(state.SpaceID, doc.ID)
+		actualName := baseline.GetString(bundle.RelationKeyName)
+		if index != 1 && actualName != doc.Name {
+			r.t.Fatalf("unexpected initial non-Note title at index=%d", index)
+		}
+		// A native Note moves its requested name into a text block and removes
+		// the name detail. Preserve the actual post-creation value, including empty.
+		doc.Name = actualName
 		state.Documents = append(state.Documents, doc)
 	}
 }
@@ -372,9 +380,16 @@ func TestT5AccountCompatibilityPairPhase(t *testing.T) {
 	if version.Version != expectedVersion || vcs.GitSummary != expectedVersion {
 		t.Fatal("running native AppGetVersion and linked revision differ")
 	}
-	started, closed := false, false
+	started, closed, stopAttempted := false, false, false
 	shutdown := func() {
-		if started && !closed {
+		if started && !closed && !stopAttempted {
+			stopAttempted = true
+			rpc.invoke(AccountStop, &pb.RpcAccountStopRequest{RemoveData: false}, &pb.RpcAccountStopResponse{})
+			stopped := &pb.RpcAccountPreloadRemainingSpacesResponse{}
+			rpc.raw(AccountPreloadRemainingSpaces, &pb.RpcAccountPreloadRemainingSpacesRequest{}, stopped)
+			if stopped.Error == nil || stopped.Error.Code != pb.RpcAccountPreloadRemainingSpacesResponseError_ACCOUNT_IS_NOT_RUNNING {
+				t.Fatal("native account application remains active after successful AccountStop")
+			}
 			rpc.invoke(AppShutdown, &pb.RpcAppShutdownRequest{}, &pb.RpcAppShutdownResponse{})
 			closed = true
 		}
@@ -460,7 +475,8 @@ func TestT5AccountCompatibilityPairPhase(t *testing.T) {
 			wantName = "T5 ordinary title edited by r14"
 		}
 		if d.GetString(bundle.RelationKeyName) != wantName {
-			t.Fatal("ordinary title edit was lost or changed at the wrong phase")
+			t.Fatalf("ordinary title changed phase=%s index=%d expected=%q actual=%q",
+				phase, index, wantName, d.GetString(bundle.RelationKeyName))
 		}
 		ordinaryNames[doc.ID] = d.GetString(bundle.RelationKeyName)
 		canonical[doc.ID] = t5PairHash([]byte(d.GetString(domain.RelationKey(state.CanonicalKey))))
@@ -562,6 +578,7 @@ func TestT5AccountCompatibilityPairPhase(t *testing.T) {
 		"heart_sha": vcs.GitCommit, "patch_sha256": patch, "fixture_sha256": accountPairFixtureSHA,
 		"runtime_version": version.Version, "account_root": root, "account_id": state.AccountID,
 		"space_id": state.SpaceID, "state_sha256": t5PairHash(stateBytes), "closed": true, "test_passed": true,
+		"account_stop_completed": true, "application_cleared": true,
 		"canonical_sha256": canonical, "public_sha256": public, "block_sha256": blockHashes,
 		"private_versions": versions, "private_query_status": privateStatus, "exports": exports,
 		"ordinary_names": ordinaryNames, "public_members": publicMembers, "private_members": privateMembers,

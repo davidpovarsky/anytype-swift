@@ -30,8 +30,8 @@ def identity(role):
 
 def report_for(phase, role):
     initial = phase == "old-create"
-    calls = dict(InitialSetParameters=1, AppGetVersion=1, AppShutdown=1, WorkspaceOpen=1,
-                 ObjectExport=6, ObjectShow=7, ObjectSearch=2 if role == "new" else 1)
+    calls = dict(InitialSetParameters=1, AppGetVersion=1, AccountStop=1, AppShutdown=1, WorkspaceOpen=1,
+                 AccountPreloadRemainingSpaces=1, ObjectExport=6, ObjectShow=7, ObjectSearch=2 if role == "new" else 1)
     if initial:
         calls.update(WalletCreate=1, AccountCreate=1, WorkspaceCreate=1,
                      WorkspaceObjectListAdd=1, BlockCreate=2, ObjectCreate=4)
@@ -45,6 +45,7 @@ def report_for(phase, role):
     return dict(protocol=controller.PROTOCOL, phase=phase, nonce="current-nonce", pid=123,
                 **identity(role), account_root=str(Path("/fresh/account-root")), account_id="original-account",
                 space_id="original-space", state_sha256="e" * 64, closed=True, test_passed=True,
+                account_stop_completed=True, application_cleared=True,
                 export_status="ACTUAL_JSON_AND_PROTOBUF", swift_pairing_status="NOT_RUN",
                 client_enablement=controller.DISABLED, rpc_calls=calls, ordinary_names=names,
                 canonical_sha256={key: "a" * 64 for key in ["manifest", "document", "block", "quote"]},
@@ -141,11 +142,38 @@ class AccountPairControls(unittest.TestCase):
                 with self.assertRaises(RuntimeError):
                     self.validate(report)
 
+    def test_unconditional_app_shutdown_acknowledgement_does_not_prove_account_stop(self):
+        for change in ["stop-missing", "stop-duplicated", "stop-failed", "app-retained"]:
+            with self.subTest(change=change):
+                report = report_for("new-upgrade", "new")
+                if change == "stop-missing":
+                    del report["rpc_calls"]["AccountStop"]
+                elif change == "stop-duplicated":
+                    report["rpc_calls"]["AccountStop"] = 2
+                elif change == "stop-failed":
+                    report["account_stop_completed"] = False
+                else:
+                    report["application_cleared"] = False
+                with self.assertRaises(RuntimeError):
+                    self.validate(report)
+
     def test_old_runtime_title_edit_must_survive_the_new_runtime(self):
         report = report_for("new-recover", "new")
         report["ordinary_names"]["document"] = "original title"
         with self.assertRaises(RuntimeError):
             self.validate(report, "new-recover", "new")
+
+    def test_native_note_postcreation_name_is_preserved_even_when_empty(self):
+        for phase, role in controller.PHASES[1:]:
+            with self.subTest(phase=phase):
+                state = sample_state()
+                state["Documents"][1]["Name"] = ""
+                report = report_for(phase, role)
+                report["ordinary_names"]["block"] = ""
+                self.validate(report, phase, role, state)
+                report["ordinary_names"]["block"] = "invented requested name"
+                with self.assertRaises(RuntimeError):
+                    self.validate(report, phase, role, state)
 
     def test_initial_state_requires_real_distinct_targets_and_unknown_data(self):
         for change in ["target", "sourceQuote", "unknown", "duplicate-block"]:

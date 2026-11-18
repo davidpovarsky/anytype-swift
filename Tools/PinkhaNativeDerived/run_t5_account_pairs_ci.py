@@ -24,7 +24,9 @@ def validate_account_result(result):
             or result.get("full_F10") != "NOT_PROVEN"
             or result.get("client_enablement") != store_ci.CLIENT_DISABLED
             or [report.get("phase") for report in reports] != store_ci.PHASES
-            or any(report.get("closed") is not True or report.get("test_passed") is not True for report in reports)):
+            or any(report.get("closed") is not True or report.get("test_passed") is not True
+                   or report.get("account_stop_completed") is not True or report.get("application_cleared") is not True
+                   for report in reports)):
         raise RuntimeError("Actual native account receipt incomplete or overstates Apple acceptance")
     pids = [report.get("pid") for report in reports]
     if len(set(pids)) != 4 or any(type(pid) is not int or pid <= 0 for pid in pids):

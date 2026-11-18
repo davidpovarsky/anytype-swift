@@ -120,6 +120,8 @@ def validate_phase(report, phase, role, identity, nonce, account_root, pid, stat
             and report.get("space_id") == state["SpaceID"]
             and report.get("state_sha256") == state_sha, "Different account, Space, or original state")
     require(report.get("closed") is True and report.get("test_passed") is True, "Native app/test not closed/passed")
+    require(report.get("account_stop_completed") is True and report.get("application_cleared") is True,
+            "AppShutdown acknowledgement alone does not prove a successful account stop")
     require(report.get("export_status") == "ACTUAL_JSON_AND_PROTOBUF", "Actual native exports not proven")
     require(report.get("swift_pairing_status") == "NOT_RUN" and report.get("client_enablement") == DISABLED,
             "Native receipt overstates Swift/client enablement")
@@ -158,8 +160,8 @@ def validate_phase(report, phase, role, identity, nonce, account_root, pid, stat
     calls = report.get("rpc_calls", {})
     require(all(isinstance(key, str) and type(value) is int and value > 0 for key, value in calls.items()),
             "Invalid actual RPC counters")
-    for key, count in {"InitialSetParameters": 1, "AppGetVersion": 1, "AppShutdown": 1,
-                       "WorkspaceOpen": 1, "ObjectExport": 6}.items():
+    for key, count in {"InitialSetParameters": 1, "AppGetVersion": 1, "AccountStop": 1, "AppShutdown": 1,
+                       "AccountPreloadRemainingSpaces": 1, "WorkspaceOpen": 1, "ObjectExport": 6}.items():
         require(calls.get(key) == count, "Required native RPC count differs: " + key)
     require(calls.get("ObjectShow", 0) >= 4 and calls.get("ObjectSearch", 0) >= (2 if role == "new" else 1),
             "Actual live reads/searches not observed")
