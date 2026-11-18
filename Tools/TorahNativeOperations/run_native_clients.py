@@ -31,10 +31,21 @@ PROTOCOL = "pinkha-t2-two-native-clients-bootstrap-v1"
 OFFLINE_PROTOCOL = "pinkha-t2-native-offline-conflict-reopen-v1"
 METHOD = "TestT2NativeClientBootstrapPhase"
 REOPEN_METHOD = "TestT2NativeClientOfflineReopenPhase"
+CRASH_COMMIT_METHOD = "TestT2NativeClientCrashCommitPhase"
+CRASH_RECOVER_METHOD = "TestT2NativeClientCrashRecoverPhase"
+CRASH_PROTOCOL = "pinkha-t2-native-process-crash-after-commit-v1"
+CRASH_METHODS = {CRASH_COMMIT_METHOD: ("crash-commit", "crash-native.log", "commit"),
+                 CRASH_RECOVER_METHOD: ("crash-recover", "crash-recover-native.log", "recover")}
+CRASH_CONTROL_METHODS = {
+    "TestT2NativeCrashByteGateControls": {"actual_reply_is_held_until_failure_cancellation", "native_panic_never_arms_a_committed_reply",
+                                         "fatal_close_still_runs_bounded_join"},
+    "TestT2NativeCrashHistoryControls": {"one_signed_child_joins_both_existing_heads", "missing_commit", "extra_commit",
+                                       "changed_original_bytes", "changed_original_parent", "missing_second_parent", "wrong_head"},
+}
 IMAGE = "golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8"
 OWNER_LABEL = "pinkha.t2.native-clients.owner"
 GO_FILES = {"native_client_phase_test.go", "native_client_boundary_test.go",
-            "native_client_offline_test.go", "native_client_reopen_test.go"}
+            "native_client_offline_test.go", "native_client_reopen_test.go", "native_client_crash_test.go"}
 STATE_KEYS = {"AccountID", "SpaceID", "DocumentID", "BlockID", "RootID", "OperationID",
               "OperationSHA256", "ClaimID", "ChangeID", "RawChanges", "Heads"}
 CONTROL_METHODS = {
@@ -115,6 +126,12 @@ def build(args, receipt, run) -> dict:
     run([binary, "-test.run", methods, "-test.count=1", "-test.v", "-test.timeout=60s"],
         "native-client-boundary-controls", args.work, dict(os.environ, GOMAXPROCS="2"), 90)
     controls = validate_native_controls((args.evidence / "native-client-boundary-controls.log").read_text())
+    crash_controls = {"status": "NOT_RUN"}
+    if args.crash_after_commit:
+        methods = "^(" + "|".join(CRASH_CONTROL_METHODS) + ")$"
+        run([binary, "-test.run", methods, "-test.count=1", "-test.v", "-test.timeout=60s"],
+            "native-client-crash-controls", args.work, dict(os.environ, GOMAXPROCS="2"), 90)
+        crash_controls = validate_crash_native_controls((args.evidence / "native-client-crash-controls.log").read_text())
     require(source_inputs(args.control)[0] == manifest, "Native-client source changed during build")
     # This one executable is made readable to the host. Private account stores,
     # keys, build caches and generated source remain in their private work dirs.
@@ -127,14 +144,15 @@ def build(args, receipt, run) -> dict:
     target.chmod(0o555)
     require(digest(target) == result["identities"]["new"]["binary_sha256"], "Runtime copy differs from compiled binary")
     return {"status": "PASS_NATIVE_BUILD_AND_BASELINE_ONLY", "baseline": result, "native_controls": controls,
+            "crash_native_controls": crash_controls,
             "runtime": {"relative_path": "client-runtime/native.test", "sha256": digest(target), "uploaded": False},
             "fixture_sha256": manifest["fixture_sha256"], "two_native_clients": "NOT_RUN"}
 
 
 def native_arguments(scenario="bootstrap", method=METHOD) -> list[str]:
-    require(scenario in {"bootstrap", "offline"} and method in {METHOD, REOPEN_METHOD}, "Unknown fixed native scenario")
+    require(scenario in {"bootstrap", "offline"} and method in {METHOD, REOPEN_METHOD, *CRASH_METHODS}, "Unknown fixed native scenario")
     require(method == METHOD or scenario == "offline", "Reopen is exclusive to the offline scenario")
-    limit = "480s" if method == REOPEN_METHOD else ("2000s" if scenario == "offline" else "1000s")
+    limit = "480s" if method != METHOD else ("2000s" if scenario == "offline" else "1000s")
     return ["-test.run", "^" + method + "$", "-test.count=1", "-test.v", "-test.timeout=" + limit]
 
 
@@ -171,6 +189,8 @@ def validate_container(info: dict, owner: str, role: str, network: dict | None, 
             "Native container role/nonce differs")
     require(env.get("PINKHA_T2_CLIENT_SCENARIO") == (OFFLINE_PROTOCOL if scenario == "offline" else None),
             "Native scenario differs from the explicit controller selection")
+    require(env.get("PINKHA_T2_CRASH_PHASE") == (CRASH_METHODS[method][2] if method in CRASH_METHODS else None),
+            "Native crash phase differs from the exact selected method")
 
 
 def validate_ready(report: dict, role: str, nonce: str, state: dict, state_hash: str,
@@ -240,7 +260,7 @@ def validate_final(ready: dict, final: dict, log: str, role: str, *, scenario="b
             "Unexpected native operation outside LAN bootstrap")
 
 
-def publish_native_evidence(private: Path, evidence: Path, *, scenario="bootstrap") -> dict:
+def publish_native_evidence(private: Path, evidence: Path, *, scenario="bootstrap", crash_after_commit=False) -> dict:
     needle_path = private / "creator/sensitive-needles.private"
     if not needle_path.is_file() or needle_path.is_symlink():
         return {"status": "WITHHELD_NO_SECRET_INVENTORY", "files_sha256": {}}
@@ -253,6 +273,8 @@ def publish_native_evidence(private: Path, evidence: Path, *, scenario="bootstra
         if scenario == "offline":
             names += ["partitioned.json", "diverged.json", "reconnected.json", "converged.json",
                       "reopen-ready.json", "reopened.json", "reopen-native.log"]
+        if crash_after_commit and role == "creator":
+            names += ["crash-armed.json", "crash-recover-ready.json", "crash-recovered.json", "crash-native.log", "crash-recover-native.log"]
         for name in names:
             path = private / role / name
             if not path.exists():
@@ -276,7 +298,7 @@ def publish_native_evidence(private: Path, evidence: Path, *, scenario="bootstra
 
 
 class OwnedDocker:
-    def __init__(self, private: Path, receipt: dict, checkpoint, *, scenario="bootstrap"):
+    def __init__(self, private: Path, receipt: dict, checkpoint, *, scenario="bootstrap", crash_after_commit=False):
         self.private, self.receipt, self.checkpoint = private, receipt, checkpoint
         self.owner = uuid4().hex
         self.prefix = "pinkha-t2-" + self.owner[:16]
@@ -285,7 +307,8 @@ class OwnedDocker:
         self.receipt["owner_nonce"] = self.owner
         self.command_index = 0
         require(scenario in {"bootstrap", "offline"}, "Unknown fixed native scenario")
-        self.scenario = scenario
+        require(not crash_after_commit or scenario == "offline", "Crash tail requires the complete offline baseline")
+        self.scenario, self.crash_after_commit = scenario, crash_after_commit
 
     def command(self, args, name, timeout=30, destination=None):
         self.command_index += 1
@@ -350,9 +373,13 @@ class OwnedDocker:
 
     def start(self, role, network, directory, binary, fixture_sha, deadline, *, method=METHOD):
         reopening = method == REOPEN_METHOD
-        resource = {"kind": "container", "name": self.prefix + "-" + role + ("-reopen" if reopening else ""),
-                    "id": None, "role": role, "private": str(directory),
-                    "log": "reopen-native.log" if reopening else "native.log"}
+        require(method not in CRASH_METHODS or (self.crash_after_commit and role == "creator" and network is None),
+                "Crash process requires its explicit creator-only disconnected tail")
+        suffix, log_name = ("reopen", "reopen-native.log") if reopening else ("", "native.log")
+        if method in CRASH_METHODS:
+            suffix, log_name, _ = CRASH_METHODS[method]
+        resource = {"kind": "container", "name": self.prefix + "-" + role + ("-" + suffix if suffix else ""),
+                    "id": None, "role": role, "private": str(directory), "log": log_name}
         self.resources.append(resource)
         args = ["container", "create", "--name", resource["name"], "--label", OWNER_LABEL + "=" + self.owner,
                 "--platform", "linux/amd64", "--network", network["Name"] if network else "none", "--read-only", "--init=false",
@@ -365,6 +392,8 @@ class OwnedDocker:
                 "-e", "PINKHA_T2_CLIENT_FIXTURE_SHA=" + fixture_sha, "-e", "GOMAXPROCS=2", "-e", "GOMEMLIMIT=768MiB"]
         if self.scenario == "offline":
             args += ["-e", "PINKHA_T2_CLIENT_SCENARIO=" + OFFLINE_PROTOCOL]
+        if method in CRASH_METHODS:
+            args += ["-e", "PINKHA_T2_CRASH_PHASE=" + CRASH_METHODS[method][2]]
         args += [IMAGE, "/fixture/native.test", *native_arguments(self.scenario, method)]
         resource["id"] = self.command(args, "create-" + role, self.remaining(deadline))
         require(re.fullmatch(r"[0-9a-f]{64}", resource["id"]), "Missing actual native container identity")
@@ -372,7 +401,7 @@ class OwnedDocker:
         return resource
 
     def wait_ready(self, resource, deadline, *, filename="ready.json"):
-        require(filename in {"ready.json", "partitioned.json", "diverged.json", "reconnected.json", "converged.json", "reopen-ready.json"},
+        require(filename in {"ready.json", "partitioned.json", "diverged.json", "reconnected.json", "converged.json", "reopen-ready.json", "crash-armed.json", "crash-recover-ready.json"},
                 "Unexpected native receipt selection")
         path = Path(resource["private"]) / filename
         next_check = 0
@@ -677,6 +706,286 @@ def offline_reopen(docker: OwnedDocker, resources: dict, directories: dict, bina
     return {"status": "PASS_TWO_ORIGINAL_STORES_REOPENED_WITHOUT_NETWORK", "results": results}
 
 
+# Inserted into the existing native-client controller; not a second dispatcher.
+CRASH_COMMON_KEYS = {"protocol", "phase", "role", "nonce", "pid", "network_namespace", "actual_ipv4", "native_network_mode",
+                     "peer_id", "heart_sha", "runtime_version", "client_fixture_sha256", "rpc_manifest_sha256",
+                     "registration_patch_sha256", "state_sha256", "clean_reopen_receipt_sha256", "app_capability",
+                     "power_loss", "two_ios_apps", "full_t2_acceptance"}
+CRASH_ARM_KEYS = {"history_before", "history_committed", "baseline_snapshot_sha256", "request_sha256", "request_bytes",
+                 "withheld_response_bytes", "claim_id", "committed_change_id", "first_reply_decoded", "client_append_returned",
+                 "read_target_after_commit", "native_append_attempts", "rpc_calls", "returned_byte_calls",
+                 "kill_deadline_unix_ns", "expected_termination", "test_passed"}
+CRASH_RECOVER_KEYS = {"armed_receipt_sha256", "request_sha256", "retry_request_sha256", "request_bytes", "claim_id",
+                     "committed_change_id", "history_before_read", "history_after_retry", "snapshot_before_retry_sha256",
+                     "snapshot_after_retry_sha256", "local_sequence_before_retry", "local_sequence_after_retry",
+                     "retry_disposition", "retry_change_id", "rpc_calls", "returned_byte_calls", "test_passed"}
+
+
+def validate_crash_native_controls(text: str) -> dict:
+    actual = re.findall(r"^\s*--- PASS: (\S+) \(", text, re.M)
+    expected = set(CRASH_CONTROL_METHODS)
+    expected.update(name + "/" + subcase for name, cases in CRASH_CONTROL_METHODS.items() for subcase in cases)
+    require(set(actual) == expected and len(actual) == len(expected)
+            and "--- FAIL:" not in text and "--- SKIP:" not in text, "Native crash controls incomplete")
+    return {"top_level": 2, "subcases": 10, "pass_terminals": 12, "fail": 0, "skip": 0}
+
+
+def crash_base_calls() -> dict:
+    return {name: 1 for name in ["InitialSetParameters", "AppGetVersion", "WalletRecover", "AccountSelect",
+                                "WorkspaceOpen", "DeviceNetworkStateSet"]}
+
+
+def validate_crash_common(report: dict, phase: str, baseline: dict, baseline_hash: str, identity: dict) -> None:
+    require(report.get("protocol") == CRASH_PROTOCOL and report.get("phase") == phase
+            and report.get("role") == "creator" and report.get("nonce") == baseline["nonce"], "Foreign crash phase")
+    require(type(report.get("pid")) is int and report["pid"] == 1
+            and isinstance(report.get("network_namespace"), str) and report["network_namespace"]
+            and report.get("actual_ipv4") == []
+            and report.get("native_network_mode") == "DISCONNECTED_PROCESS_CRASH_NO_PEER_REPAIR", "Crash process isolation missing")
+    require(report.get("peer_id") == baseline["peer_id"]
+            and report.get("client_fixture_sha256") == baseline["client_fixture_sha256"]
+            and report.get("state_sha256") == baseline["state_sha256"]
+            and report.get("clean_reopen_receipt_sha256") == baseline_hash, "Crash phase changed its original store/device/source")
+    for key in ["heart_sha", "runtime_version", "rpc_manifest_sha256", "registration_patch_sha256"]:
+        require(report.get(key) == identity[key], "Crash native source mismatch")
+    require(report.get("app_capability") == "OFF" and all(report.get(key) == "NOT_RUN"
+            for key in ["power_loss", "two_ios_apps", "full_t2_acceptance"]), "Crash phase overclaims acceptance")
+
+
+def validate_crash_arm(report: dict, baseline: dict, baseline_hash: str, identity: dict, now_ns: int) -> None:
+    require(set(report) == CRASH_COMMON_KEYS | CRASH_ARM_KEYS, "Exact crash arm schema required")
+    validate_crash_common(report, "armed_after_signed_commit_before_client_ack", baseline, baseline_hash, identity)
+    require(report["test_passed"] is False and report["first_reply_decoded"] is False
+            and report["client_append_returned"] is False and report["expected_termination"] == "OWNED_CONTAINER_SIGKILL",
+            "Armed interrupted invocation cannot be a completed or acknowledged PASS")
+    require(type(report["read_target_after_commit"]) is int and report["read_target_after_commit"] == 0
+            and type(report["native_append_attempts"]) is int and report["native_append_attempts"] == 1,
+            "Commit must precede any read or second mutation")
+    require(type(report["kill_deadline_unix_ns"]) is int and 0 < report["kill_deadline_unix_ns"] - now_ns <= 31_000_000_000,
+            "Crash arm is expired or outside its fixed kill window")
+    require(re.fullmatch(r"[0-9a-f]{64}", report["request_sha256"])
+            and type(report["request_bytes"]) is int and 0 < report["request_bytes"] <= 16384
+            and type(report["withheld_response_bytes"]) is int and report["withheld_response_bytes"] > 0,
+            "Actual encoded request and held reply observation missing")
+    require(re.fullmatch(r"[0-9a-f]{64}/[0-9a-f]{64}", report["claim_id"]), "Native crash claim identity missing")
+    before, after, new_id = report["history_before"], report["history_committed"], report["committed_change_id"]
+    require(before == baseline["history"] and report["baseline_snapshot_sha256"] == baseline["snapshot_sha256_without_local_sequence"],
+            "Crash phase did not start from the complete clean offline baseline")
+    require(set(before) == set(after) == {"changes_sha256", "parents", "heads"}
+            and len(before["changes_sha256"]) == 8 and len(before["parents"]) == 7 and len(set(before["heads"])) == 2,
+            "Complete baseline signed history required")
+    require(isinstance(new_id, str) and new_id and new_id not in before["changes_sha256"]
+            and set(after["changes_sha256"]) == set(before["changes_sha256"]) | {new_id}
+            and all(after["changes_sha256"][key] == value for key, value in before["changes_sha256"].items())
+            and re.fullmatch(r"[0-9a-f]{64}", after["changes_sha256"][new_id]), "Exactly one unchanged-old/new signed commit required")
+    require(after["parents"] == {**before["parents"], new_id: sorted(before["heads"])} and after["heads"] == [new_id],
+            "Crash commit did not join both old heads")
+    returned = {**crash_base_calls(), "PinkhaTorahOperationsReadTarget": 1}
+    require(report["returned_byte_calls"] == returned
+            and report["rpc_calls"] == {**returned, "PinkhaTorahOperationsAppend": 1},
+            "Crash arm acknowledged its append, stopped the account or made extra native calls")
+
+
+def crash_request_identity(path: Path) -> dict:
+    metadata = path.lstat()
+    require(stat.S_ISREG(metadata.st_mode) and stat.S_IMODE(metadata.st_mode) == 0o600
+            and 0 < metadata.st_size <= 16384, "Retained original request must be private and bounded")
+    return {"sha256": digest(path), "bytes": metadata.st_size}
+
+
+def crash_store_identity(directory: Path) -> dict:
+    root = directory / "account-root"
+    metadata = root.lstat()
+    require(stat.S_ISDIR(metadata.st_mode) and not root.is_symlink(), "Original crash account root missing")
+    files = {}
+    for path in root.rglob("*.db"):
+        entry = path.lstat()
+        require(stat.S_ISREG(entry.st_mode) and path.resolve().is_relative_to(root.resolve()), "Unsafe crash store entry")
+        files[path.relative_to(root).as_posix()] = [entry.st_dev, entry.st_ino]
+    require(files, "Actual original native databases required")
+    return {"root_inode": [metadata.st_dev, metadata.st_ino], "databases": files}
+
+
+def crash_live_identity(info: dict, report: dict) -> dict:
+    state = info["State"]
+    require(state.get("Running") is True and type(state.get("Pid")) is int and state["Pid"] > 0
+            and info.get("RestartCount") == 0 and isinstance(state.get("StartedAt"), str) and state["StartedAt"],
+            "Original crash process is not currently running")
+    namespace = os.readlink(f"/proc/{state['Pid']}/ns/net")
+    require(namespace == report["network_namespace"], "Crash native receipt belongs to another process namespace")
+    return {"container_id": info["Id"], "host_pid": state["Pid"], "network_namespace": namespace,
+            "started_at": state["StartedAt"]}
+
+
+def kill_owned_crash_process(docker: OwnedDocker, resource: dict, live: dict, arm: dict, arm_hash: str,
+                             baseline: dict, baseline_hash: str, identity: dict, directory: Path,
+                             binary: Path, image_id: str, deadline: float) -> dict:
+    info = docker.find(resource, deadline)  # Enforces exact owner label, name and immutable resource ID.
+    require(info is not None, "Armed owned container disappeared before injection")
+    validate_container(info, docker.owner, "creator", None, directory, binary, image_id, os.getuid(), os.getgid(),
+                       scenario="offline", method=CRASH_COMMIT_METHOD)
+    require(crash_live_identity(info, arm) == live and resource["id"] == live["container_id"],
+            "Refuse to kill a replaced process or container")
+    require(digest(directory / "crash-armed.json") == arm_hash, "Crash arm changed before injection")
+    armed_monotonic, armed_wall_ns = time.monotonic(), time.time_ns()
+    validate_crash_arm(arm, baseline, baseline_hash, identity, armed_wall_ns)
+    # Fix a monotonic deadline once; later clock samples may shorten the arm's
+    # remaining budget, never renew it or extend the existing phase deadline.
+    kill_deadline = min(deadline, armed_monotonic + (arm["kill_deadline_unix_ns"] - armed_wall_ns) / 1_000_000_000)
+    def kill_remaining(maximum):
+        wall_remaining = (arm["kill_deadline_unix_ns"] - time.time_ns()) / 1_000_000_000
+        require(wall_remaining > 0, "Crash termination was not observed inside its fixed arm window")
+        return min(docker.remaining(kill_deadline, maximum), wall_remaining)
+    # The only deliberate signal target is this revalidated immutable container
+    # ID. No host PID, process name, wildcard or unrelated resource is signalled.
+    docker.command(["container", "kill", "--signal", "KILL", resource["id"]], "inject-owned-crash", kill_remaining(10))
+    require(docker.command(["container", "wait", resource["id"]], "wait-owned-crash", kill_remaining(15)) == "137",
+            "Expected injected SIGKILL exit was not observed")
+    kill_remaining(30)
+    stopped = docker.find(resource, kill_deadline)
+    termination_observed_ns = time.time_ns()
+    require(termination_observed_ns < arm["kill_deadline_unix_ns"] and time.monotonic() < kill_deadline,
+            "Crash termination was not observed inside its fixed arm window")
+    require(stopped is not None, "Killed owned container disappeared before termination observation")
+    state = stopped["State"]
+    require(stopped["Id"] == live["container_id"] and state.get("Running") is False and state.get("ExitCode") == 137
+            and state.get("OOMKilled") is False and state.get("StartedAt") == live["started_at"]
+            and state.get("FinishedAt") and stopped.get("RestartCount") == 0, "Crash was not the intended owned process termination")
+    log = directory / "crash-native.log"
+    docker.command(["container", "logs", resource["id"]], "capture-owned-crash", docker.remaining(deadline), log)
+    text = log.read_text()
+    require(len(re.findall(r"^=== RUN:\s+" + re.escape(CRASH_COMMIT_METHOD) + r"\s*$", text, re.M)) == 1
+            and not re.search(r"--- (?:PASS|FAIL|SKIP):", text), "Interrupted native invocation cannot be counted as a terminal PASS")
+    require(digest(directory / "crash-armed.json") == arm_hash, "Armed facts changed after process kill")
+    return {"status": "OBSERVED_OWNED_CONTAINER_SIGKILL", **live, "exit_code": 137, "oom_killed": False,
+            "intentional_kill_count": 1, "native_named_pass": 0, "normal_native_terminal_count": 0,
+            "termination_observed_unix_ns": termination_observed_ns, "kill_deadline_unix_ns": arm["kill_deadline_unix_ns"],
+            "armed_receipt_sha256": arm_hash, "log_sha256": digest(log)}
+
+
+def validate_crash_recovery(report: dict, baseline: dict, baseline_hash: str, identity: dict, arm: dict, arm_hash: str,
+                            *, finished: bool) -> None:
+    extras = {"closed", "account_stop_verified", "post_stop_rpc"} if finished else set()
+    require(set(report) == CRASH_COMMON_KEYS | CRASH_RECOVER_KEYS | extras, "Exact crash recovery schema required")
+    validate_crash_common(report, "recovered_after_owned_sigkill" if finished else "recovered_state_before_native_stop",
+                          baseline, baseline_hash, identity)
+    require(report["armed_receipt_sha256"] == arm_hash
+            and report["request_sha256"] == report["retry_request_sha256"] == arm["request_sha256"]
+            and report["request_bytes"] == arm["request_bytes"]
+            and report["claim_id"] == arm["claim_id"] and report["committed_change_id"] == arm["committed_change_id"],
+            "Recovery changed the exact request, committed claim or signed change")
+    require(report["history_before_read"] == report["history_after_retry"] == arm["history_committed"],
+            "Recovery read/retry created, lost or replaced signed history")
+    require(report["retry_disposition"] == "ALREADY_EXISTS_SAME_PAYLOAD" and report["retry_change_id"] == "",
+            "Crash retry did not recover exactly the existing claim")
+    require(re.fullmatch(r"[0-9a-f]{64}", report["snapshot_before_retry_sha256"])
+            and report["snapshot_before_retry_sha256"] == report["snapshot_after_retry_sha256"]
+            and type(report["local_sequence_before_retry"]) is int and report["local_sequence_before_retry"] > 0
+            and report["local_sequence_before_retry"] == report["local_sequence_after_retry"],
+            "Crash retry changed the complete snapshot or local sequence")
+    calls = {**crash_base_calls(), "PinkhaTorahOperationsReadTarget": 3 if finished else 2,
+             "PinkhaTorahOperationsAppend": 2 if finished else 1}
+    if finished:
+        calls.update(AccountStop=1, AppShutdown=1)
+        require(report["closed"] is True and report["account_stop_verified"] is True
+                and report["post_stop_rpc"] == "READ_AND_APPEND_NOT_LOGGED_IN", "Recovered account did not close and revoke authority")
+    require(report["test_passed"] is finished and report["rpc_calls"] == report["returned_byte_calls"] == calls,
+            "Crash recovery recreated data, lost a byte return or miscounted its native boundary")
+
+
+def crash_sequence(docker: OwnedDocker, directory: Path, binary: Path, fixture_sha: str, identity: dict,
+                   image_id: str, state_hash: str, key_hash: str, reopen: dict) -> dict:
+    require(docker.crash_after_commit and docker.scenario == "offline", "Crash tail was not explicitly selected")
+    overall = time.monotonic() + 600
+    progress = {"status": "NOT_RUN_CRASH_PREFLIGHT", "scope": "OWNED_NATIVE_PROCESS_SIGKILL_NOT_POWER_LOSS",
+                "killed_invocation_is_native_pass": False, "power_loss": "NOT_RUN", "full_t2_acceptance": "NOT_RUN"}
+    docker.receipt["crash_after_commit"] = progress
+    baseline_path = directory / "reopened.json"
+    baseline_hash, baseline = digest(baseline_path), json.loads(baseline_path.read_text())
+    require(reopen["status"] == "PASS_TWO_ORIGINAL_STORES_REOPENED_WITHOUT_NETWORK"
+            and baseline_hash == reopen["results"]["creator"]["receipt_sha256"]
+            and baseline["test_passed"] is True and baseline["closed"] is True
+            and baseline["state_sha256"] == state_hash, "Complete clean baseline must precede crash injection")
+    previous = [r for r in docker.resources if r.get("id") == reopen["results"]["creator"]["container_id"]]
+    require(len(previous) == 1, "Original completed creator process missing")
+    stopped = docker.find(previous[0], overall)
+    require(stopped and stopped["State"].get("Running") is False and stopped["State"].get("ExitCode") == 0,
+            "Another process still owns the original crash database")
+    docker.command(["container", "rm", previous[0]["id"]], "retire-clean-creator-reopen", docker.remaining(overall))
+    for name in ["crash-request.private", "crash-armed.json", "crash-recover-ready.json", "crash-recovered.json",
+                 "crash-recover-stop.command.json", "crash-native.log", "crash-recover-native.log"]:
+        require(not (directory / name).exists(), "Fresh independent crash phase required")
+    original_store = crash_store_identity(directory)
+    docker.receipt["diagnostic_stage"] = "CRASH_ARM"
+    docker.checkpoint()
+    deadline = min(overall, time.monotonic() + 300)
+    commit = docker.start("creator", None, directory, binary, fixture_sha, deadline, method=CRASH_COMMIT_METHOD)
+    arm = docker.wait_ready(commit, deadline, filename="crash-armed.json")
+    info = docker.find(commit, deadline)
+    validate_container(info, docker.owner, "creator", None, directory, binary, image_id, os.getuid(), os.getgid(),
+                       scenario="offline", method=CRASH_COMMIT_METHOD)
+    validate_crash_arm(arm, baseline, baseline_hash, identity, time.time_ns())
+    live = crash_live_identity(info, arm)
+    require(live["host_pid"] not in {v["host_pid"] for v in reopen["results"].values()}, "Crash phase reused an old native process")
+    request = crash_request_identity(directory / "crash-request.private")
+    require(request == {"sha256": arm["request_sha256"], "bytes": arm["request_bytes"]}
+            and crash_store_identity(directory) == original_store, "Crash request or original native store identity changed")
+    arm_hash = digest(directory / "crash-armed.json")
+    progress.update(status="ARMED_NATIVE_SIGNED_COMMIT_BEFORE_CLIENT_ACK", armed_receipt_sha256=arm_hash,
+                    request=request, committed_signed_entries=9, client_acknowledged=False)
+    docker.receipt["diagnostic_stage"] = "CRASH_KILL"
+    docker.checkpoint()
+    killed = kill_owned_crash_process(docker, commit, live, arm, arm_hash, baseline, baseline_hash, identity,
+                                      directory, binary, image_id, deadline)
+    require(crash_store_identity(directory) == original_store and crash_request_identity(directory / "crash-request.private") == request,
+            "Original native store/request changed at the kill boundary")
+    progress.update(status="EXPECTED_PROCESS_KILL_OBSERVED_RECOVERY_NOT_RUN", injected_termination=killed)
+    docker.checkpoint()
+    docker.command(["container", "rm", commit["id"]], "retire-injected-crash-container", docker.remaining(overall))
+    docker.receipt["diagnostic_stage"] = "CRASH_RECOVER"
+    docker.checkpoint()
+    deadline = min(overall, time.monotonic() + 300)
+    recovery = docker.start("creator", None, directory, binary, fixture_sha, deadline, method=CRASH_RECOVER_METHOD)
+    ready = docker.wait_ready(recovery, deadline, filename="crash-recover-ready.json")
+    info = docker.find(recovery, deadline)
+    validate_container(info, docker.owner, "creator", None, directory, binary, image_id, os.getuid(), os.getgid(),
+                       scenario="offline", method=CRASH_RECOVER_METHOD)
+    validate_crash_recovery(ready, baseline, baseline_hash, identity, arm, arm_hash, finished=False)
+    recovered_live = crash_live_identity(info, ready)
+    require(recovery["id"] != commit["id"] and recovered_live["host_pid"] != live["host_pid"], "Recovery reused the killed process")
+    require(crash_store_identity(directory) == original_store and digest(directory / "state.json") == state_hash
+            and digest(directory / "account-key.private") == key_hash
+            and crash_request_identity(directory / "crash-request.private") == request, "Recovery repaired or replaced original input/storage")
+    write(directory / "crash-recover-stop.command.json", {"protocol": OFFLINE_PROTOCOL, "nonce": docker.owner,
+          "role": "creator", "phase": "crash-recover-stop", "expected_history": {"changes_sha256": {}, "parents": {}, "heads": []}})
+    require(docker.command(["container", "wait", recovery["id"]], "wait-crash-recovery", docker.remaining(deadline, 90)) == "0",
+            "Actual crash recovery did not finish normally")
+    stopped = docker.find(recovery, deadline)
+    require(stopped["State"].get("Running") is False and stopped["State"].get("ExitCode") == 0
+            and stopped["State"].get("OOMKilled") is False, "Recovery process did not exit normally")
+    log = directory / "crash-recover-native.log"
+    docker.command(["container", "logs", recovery["id"]], "capture-crash-recovery", docker.remaining(deadline), log)
+    final = json.loads((directory / "crash-recovered.json").read_text())
+    validate_crash_recovery(final, baseline, baseline_hash, identity, arm, arm_hash, finished=True)
+    require(all(final.get(key) == value for key, value in ready.items()
+                if key not in {"phase", "rpc_calls", "returned_byte_calls", "test_passed"}), "Recovery facts changed during native Stop")
+    text = log.read_text()
+    require(("--- PASS: " + CRASH_RECOVER_METHOD + " ") in text and text.count("--- PASS:") == 1
+            and "--- FAIL:" not in text and "--- SKIP:" not in text, "Recovery requires exactly one actual Native PASS")
+    require(crash_store_identity(directory) == original_store and digest(baseline_path) == baseline_hash
+            and digest(directory / "crash-armed.json") == arm_hash
+            and digest(directory / "state.json") == state_hash and digest(directory / "account-key.private") == key_hash
+            and crash_request_identity(directory / "crash-request.private") == request, "Final crash evidence or original inputs changed")
+    progress.update(status="PASS_NATIVE_OWNED_PROCESS_CRASH_EXACT_RETRY", recovery={**recovered_live,
+        "receipt_sha256": digest(directory / "crash-recovered.json"), "log_sha256": digest(log), "native_named_pass": 1},
+        actual_counts={"native_processes": 2, "native_named_pass": 1, "intentional_sigkill": 1, "unexpected_native_failure": 0, "native_skip": 0},
+        original_store_identity=original_store, retry_disposition="ALREADY_EXISTS_SAME_PAYLOAD", new_change_id_on_retry=False,
+        signed_history_entries_before_read=9, signed_history_and_complete_snapshot_unchanged=True,
+        native_shutdown_and_post_stop_denial="PASS", app_capability="OFF")
+    docker.checkpoint()
+    return progress
+
+
 def clients(args, receipt, docker: OwnedDocker):
     receipt["diagnostic_stage"] = "VERIFY_BUILD"
     manifest, _ = source_inputs(args.control)
@@ -684,7 +993,7 @@ def clients(args, receipt, docker: OwnedDocker):
     built = json.loads(build_path.read_text())
     require(built.get("status") == "PASS_NATIVE_BUILD_AND_BASELINE_ONLY" and built.get("app_sha") == args.expected_app_sha
             and built.get("run_id") == receipt["run_id"] and built.get("run_attempt") == receipt["run_attempt"]
-            and built.get("scenario") == args.scenario
+            and built.get("scenario") == args.scenario and built.get("crash_after_commit_requested", False) == args.crash_after_commit
             and built.get("fixture_sha256") == manifest["fixture_sha256"], "Foreign or unsuccessful native build receipt")
     require(built["runtime"]["relative_path"] == "client-runtime/native.test", "Unexpected native runtime path")
     binary = args.native_work / built["runtime"]["relative_path"]
@@ -796,6 +1105,17 @@ def clients(args, receipt, docker: OwnedDocker):
         reopen = offline_reopen(docker, resources, directories, binary, manifest["fixture_sha256"], reports, identity,
                                 image["Id"], state_hash, key_hash, offline["converged"])
         require(source_inputs(args.control)[0] == manifest, "Native client source changed during disconnected reopen")
+        if args.crash_after_commit:
+            require(built.get("crash_native_controls") == {"top_level": 2, "subcases": 10, "pass_terminals": 12, "fail": 0, "skip": 0},
+                    "Exact new crash Native controls must precede injection")
+            receipt["completed_offline_baseline"] = {"native_results": final_reports, "disconnected_reopen": reopen,
+                "actual_counts": {"independent_native_clients": 2, "native_processes": 4, "native_named_pass": 4, "native_fail": 0, "native_skip": 0}}
+            receipt["actual_counts_scope"] = "UNCHANGED_TWO_NATIVE_CLIENTS_OFFLINE_BASELINE"
+            docker.checkpoint()
+            receipt["crash_after_commit"] = crash_sequence(docker, directories["creator"], binary, manifest["fixture_sha256"],
+                                                          identity, image["Id"], state_hash, key_hash, reopen)
+            require(receipt["crash_after_commit"].get("status") == "PASS_NATIVE_OWNED_PROCESS_CRASH_EXACT_RETRY",
+                    "Optional crash tail did not complete")
         receipt["diagnostic_stage"] = "COMPLETE"
         return {"native_results": final_reports, "disconnected_reopen": reopen,
                 "actual_counts": {"independent_native_clients": 2, "native_processes": 4, "native_named_pass": 4, "native_fail": 0, "native_skip": 0},
@@ -858,12 +1178,14 @@ def main(argv=None):
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument("stage", choices=["build", "clients"])
     parser.add_argument("--scenario", choices=["bootstrap", "offline"], default="bootstrap")
+    parser.add_argument("--crash-after-commit", action="store_true")
     parser.add_argument("--control", type=Path, default=Path(__file__).resolve().parents[2])
     parser.add_argument("--evidence", type=Path, required=True)
     parser.add_argument("--expected-app-sha", required=True)
     for name in ["approved-source", "heart-legacy", "heart-new", "work", "native-work"]:
         parser.add_argument("--" + name, type=Path)
     args = parser.parse_args(argv)
+    require(not args.crash_after_commit or args.scenario == "offline", "Crash tail requires the complete offline baseline")
     for name in ["control", "evidence", "approved_source", "heart_legacy", "heart_new", "work", "native_work"]:
         if getattr(args, name) is not None:
             setattr(args, name, getattr(args, name).resolve())
@@ -879,7 +1201,8 @@ def main(argv=None):
     args.evidence.mkdir(parents=True, exist_ok=True)
     path = args.evidence / ("native-clients-" + args.stage + ".json")
     require(not path.exists(), "Fresh native client receipt required")
-    receipt = {"protocol": PROTOCOL, "status": "NOT_RUN_PREFLIGHT", "stage": args.stage, "diagnostic_stage": "PREFLIGHT", "scenario": args.scenario, "app_sha": args.expected_app_sha,
+    receipt = {"protocol": PROTOCOL, "status": "NOT_RUN_PREFLIGHT", "stage": args.stage, "diagnostic_stage": "PREFLIGHT", "scenario": args.scenario,
+               "crash_after_commit_requested": args.crash_after_commit, "app_sha": args.expected_app_sha,
                "run_id": run_id, "run_attempt": attempt, "started_at": datetime.now(timezone.utc).isoformat(), "commands": [],
                "two_native_clients": "NOT_RUN", "app_capability": "OFF", "two_app_clients": "NOT_RUN",
                "offline_conflict_merge": "NOT_RUN", "ios_acceptance": "NOT_RUN", "full_t2_acceptance": "NOT_RUN"}
@@ -921,7 +1244,7 @@ def main(argv=None):
                     "Fresh separate native client work required")
             require(shutil.disk_usage(args.native_work).free >= base.RESERVE, "Native disk reserve below 8 GiB")
             private.mkdir(mode=0o700)
-            docker = OwnedDocker(private, receipt, checkpoint, scenario=args.scenario)
+            docker = OwnedDocker(private, receipt, checkpoint, scenario=args.scenario, crash_after_commit=args.crash_after_commit)
             receipt.update(clients(args, receipt, docker))
         candidate = True
     except BaseException as error:
@@ -935,7 +1258,7 @@ def main(argv=None):
                     candidate = False
                     receipt.update(status="CANCELLED", error_type="KeyboardInterrupt")
                     docker.cleanup()
-                receipt["native_publication"] = publish_native_evidence(docker.private, args.evidence, scenario=args.scenario)
+                receipt["native_publication"] = publish_native_evidence(docker.private, args.evidence, scenario=args.scenario, crash_after_commit=args.crash_after_commit)
                 if candidate:
                     require(receipt["native_publication"]["status"] == "PASS_SECRET_SCANNED_EXACT_ALLOWLIST", "Native evidence withheld")
             except BaseException as error:

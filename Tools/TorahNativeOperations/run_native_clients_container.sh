@@ -16,7 +16,12 @@ int main(void) { int values[] = {2,1}; qsort_r(values, 2, sizeof(int), cmp, NULL
 EOF
 gcc -static /workspace/qsort-probe.c -o /workspace/qsort-probe > /workspace/evidence/toolchain/qsort-link.log 2>&1
 /workspace/qsort-probe
-exec python3 -B /workspace/control/Tools/TorahNativeOperations/run_native_clients.py build \
+case "${T2_NATIVE_CRASH_AFTER_COMMIT:-false}" in
+  true) set -- --crash-after-commit ;;
+  false) set -- ;;
+  *) echo "Unsupported explicit crash selection"; exit 2 ;;
+esac
+exec python3 -B /workspace/control/Tools/TorahNativeOperations/run_native_clients.py build "$@" \
   --scenario "${T2_NATIVE_SCENARIO:-bootstrap}" \
   --approved-source /workspace/approved-source --heart-legacy /workspace/heart-legacy --heart-new /workspace/heart-new \
   --work /workspace/work/native-clients-build --evidence /workspace/evidence --expected-app-sha "$EXPECTED_APP_SHA"
