@@ -1,9 +1,10 @@
-# T2 native immutable operation component
+# T2 native immutable operations and signed-tree transport
 
-This is a new, isolated **native storage component**, built against Heart
+This is an isolated **native storage and signed-tree host candidate**, built against Heart
 `d98420b1113536afd08cde6de9a5816f6d27ffff`, any-store `v1.0.3`, and Go `1.26.5`.
 It implements real StoreState handlers, native write transactions and SQLite
-queries. It does not replace the existing Swift association repository or enable
+queries. The new host also uses real AnySync encrypted, signed history and
+TreeSync replication. It does not replace the existing Swift association repository or enable
 a new application capability.
 
 The November 18 contract decision explicitly accepts a claim set for AB03:
@@ -40,8 +41,9 @@ python3 Tools/TorahNativeOperations/run_native_operations.py \
 workflow. It accepts an optional immutable `source_sha`, preserves the GitHub run
 ID/attempt/workflow ref, and uploads the raw Go event log and receipt for 14 days.
 It has only repository read permission and no release, simulator or user-account
-steps. Only the component package is tested. No Tantivy artifact is required by
-the component source; a transitive dependency failure must be reported as such.
+steps. Only this package is tested, including its isolated native host and
+two-process loopback protocol fixture. No Tantivy artifact is required by this
+source; a transitive dependency failure must be reported as such.
 
 ## Exact identity and encoding
 
@@ -122,12 +124,11 @@ ACL head change content identity. Reusing the same native change ID with a
 different receipt is a critical error. The receipt collection has no generic
 StoreState handler, so it cannot be mutated via a client StoreChange.
 
-**Author equality and receipt persistence are not ACL verification.** This
-component cannot decide whether a signer currently has write permission or
-whether a target exists. The future signed host must supply and validate native
-metadata, bind the active account/space and perform target/permission checks in
-the appropriate native transaction. The current helper must not become a raw
-client-controlled RPC.
+**Author equality and receipt persistence alone are not ACL verification.**
+The original projection component cannot decide whether a signer has native
+write permission or whether a target exists. `NativeHost` below adds native
+signed-tree authority. The projection helpers remain unsuitable as raw
+client-controlled RPCs.
 
 ## Removal, replacement and conflicts
 
@@ -159,14 +160,15 @@ Operation and target indexes are actual any-store indexes. All target reads use
 one native read snapshot. Results are bounded, and exceeding a bound returns
 `ErrReadLimit` with no partial result. `ReadOperation`/receipts are limited to 256
 variants/receipts; `ReadTarget` takes an explicit limit from 1 to 10,000. Replay
-does not discard extra valid claims because of read bounds. There is no cursor,
-native synchronization watermark or performance acceptance claim yet.
+does not discard extra valid claims because of read bounds. There is no RPC
+cursor or performance acceptance claim. The native host adds a local applied
+sequence and verified tree-head snapshot, neither of which is an RPC cursor.
 
 The collection namespace binds the space and is intended for an already
 account-scoped DB. Tests use only fresh temporary databases. An isolated namespace
 does not establish product invisibility, account-switch cleanup or security.
 
-## What the tests prove
+## Original component evidence
 
 The tests use the actual pinned Heart StoreState, real any-store SQLite files,
 native transactions and reopen. They cover independent disk projections plus
@@ -176,23 +178,105 @@ immutability; concurrent local writers; observed remove; concurrent replacement;
 late delivery; tombstone retention; raw generic-builder attacks; batch rollback;
 cross-space namespaces; native index selection; cancellation and bounded reads.
 
-The two-store case manually delivers operations to each native projection. It is
+The original two-store case manually delivers operations to each native projection. It is
 **not** a network transport, middleware, two-device or full AB01–08 proof. The
 subprocess-exit test is a real process exit after commit, not a power-loss/fsync
 guarantee. These are useful native component tests (Tier B plus on-disk/process
 durability evidence), not Tier C/D/E product acceptance.
 
+## Signed native host and actual two-process protocol fixture
+
+`native_host.go` derives one AnySync tree per Space with ChangeType
+`pinkha.torah.operations.v1` and exact UTF-8 ChangePayload
+`store-change/immutable-claims-v1`. The root includes the Space ID and has no
+parent page. It is a separate experimental namespace: no existing SmartBlock
+numeric type, chat, account object, favorites object or T5 manifest is reused.
+The root is deterministic; all operation changes after it are encrypted and
+signed by the actual account key. This is not yet an application object-type
+registration or a claim of hidden-object lifecycle support.
+
+The canonical durable source is the native tree. Each operation is one real
+Heart `pb.StoreChange` containing one create into the immutable claims collection.
+The wire uses Heart's existing protobuf/Snappy format (`DataType="1/s"`, compressed
+above 64 bytes). Decoding is bounded before decompression. `NativeTreeBuilder`
+retains upstream CID/signature/historical-ACL verification and adds content
+validation before changes are persisted: no plaintext operations, snapshots,
+foreign Space, mismatched author, generic modify/delete, unrelated collection,
+unknown format or malformed canonical claim. Tree encryption uses AnySync's
+derived tree key, not a new encryption scheme.
+
+`NativeHost.Append` locks the native tree, catches the projection up, opens a real
+StoreState transaction, checks logical operation identity/observed predecessors,
+and invokes the required native target-validator dependency. It appends through
+`SyncTree.AddContentWithValidator`. Creator and captured ACL head are decoded
+from the newly signed bytes; neither comes from untrusted RPC metadata. The
+native tree checks current write permissions and historical ACL authority. A
+successful identical retry does not create another signed change. Different
+offline changes remain separate signed records and merge into the same conflict
+set on every client.
+
+Native tree and projection use separate native databases, as Heart's existing
+store-backed source does. Native storage commits before projection commit. A
+projection commit error must return `ErrProjectionBehind`, preserving the native
+change ID; it must never be overwritten by a subsequent successful lookup.
+Reopening/catching up uses native tree iteration, actual signed author/ACL
+metadata and StoreState's `MarkFullyReplayed`/`AddSeq` machinery. The first replay
+walks complete genesis history; incremental reads follow the real local add
+sequence only after that replay. `Update`/`Rebuild` are actual SyncTree listeners.
+The transport tests never call the component `Replay` helper to exchange changes.
+
+`ReadTarget` returns the projection, sorted verified tree heads and local applied
+sequence under the tree lock. The sequence is local to one peer and must not be
+compared between peers or advertised as a global version. There is no partial
+success when projection catch-up fails.
+
+`native_transport_test.go` launches two OS processes with separate peer keys,
+native SQLite stores, projection stores and loopback TCP listeners. They are two
+devices of the same disposable account, with a real signed owner ACL root. It
+uses generated `SpaceSync.ObjectSyncRequestStream` DRPC messages, the upstream
+TreeSync request factory/response producer/collector, real verified SyncTrees
+and native update listeners. The fixture suppresses background head broadcasts
+to schedule an offline partition explicitly, then performs actual full-sync
+requests in both directions. It does not transport operation JSON over a custom
+mock channel. Standard input is only test control, never peer replication.
+
+Focused checks cover disconnected union, duplicate native delivery, both process
+restarts; offline operation-ID conflicts and later ordered rejection; observed
+remove with an unseen add; concurrent replacements; process exit after commit
+before replying, retry on both devices and one native provenance receipt;
+corrupted native wire rejection; and rebuilding a new projection DB from signed
+history. Additional native host cases reject wrong author/Space, absent target,
+unbound block, canceled request, an unauthorized signing key, plaintext,
+snapshot and unrelated collection writes. The logs record process IDs and real
+DRPC request/response/byte/change counts. Disposable private keys are written only
+inside the test temporary directories and are never part of evidence artifacts.
+
+These are AB01–05 **native protocol subsets**, not completion of those acceptance
+rows. The fixture does not run Heart middleware, a coordinator, production peer
+authentication, ACL invitation/revocation transport, an actual editor block
+graph, ordinary hidden/search/export/undo behavior or iOS. Target validation
+checks real disposable native object roots; cross-object deletion races and
+block authorization remain an explicit App binding dependency. Unknown-format
+rejection must be included in the eventual mixed-version capability contract.
+
+Receipt schema 2 distinguishes `PASS_NATIVE_COMPONENT_AND_LOOPBACK_TRANSPORT`
+from full T2 acceptance, which remains `NOT_RUN`. It requires both focused native
+host/transport tests to pass; missing/skipped transport is not a success. Historical
+schema-1 component receipts remain unchanged and retain their narrower scope.
+
 ## Remaining acceptance before app binding
 
-T2 stays open. The dedicated native hidden object type/Space host and signed
-change-tree append are not implemented. Neither are the atomic native ACL/target
-checks, public RPC/capability contract, bounded indexed RPC pagination/watermarks,
-true two-process same-Space transport harness, hidden lifecycle/cleanup and
-ordinary search/export/undo behavior, encrypted backup/retention, mixed-version
-migration, or Swift binding. The existing scalar association path is not made
-concurrency-safe by this standalone component.
+T2 stays open. A signed-tree host candidate and genuine two-process native
+protocol harness now exist. The dedicated application SmartBlock registration,
+atomic cross-object/block target contract, public RPC/capability contract, bounded
+indexed RPC pagination, production peer/ACL transport, hidden lifecycle/cleanup
+and ordinary search/export/undo behavior, encrypted backup/retention,
+mixed-version migration, and Swift binding still require implementation and
+acceptance. The existing scalar association path is not made concurrency-safe
+by this isolated host candidate.
 
-The next integration step must register the sanctioned host and bind append/read
-to native authority and signed history, then execute AB01–08 using two independent
-Heart processes and stores in a disposable synced Space. No existing user data
-should be migrated until that evidence and the version/capability contract exist.
+The next integration step must choose a collision-checked SmartBlock allocation
+and register the sanctioned host with an explicit mixed-version capability,
+then bind the native RPC and execute the remaining AB01–08 gates using actual
+Heart middleware and disposable accounts. No existing user data should be
+migrated until that evidence and the version/capability contract exist.
