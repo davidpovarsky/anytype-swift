@@ -1,0 +1,288 @@
+{
+  "status": "PASS_ORIGINAL_RAW_ACCOUNT_WIRE_ARTIFACT",
+  "run_id": 44260628655,
+  "attempt": 1,
+  "app_sha": "a16bdc5de003aff97209c83d5fbc6a5934c5e873",
+  "artifact_id": 14408891304,
+  "artifact_zip_bytes": 59192,
+  "artifact_zip_sha256": "9cd9bffb074b9bce6a96791c1392410df83f4b99df1092c3132169517ada80e1",
+  "receipt_sha256": "d87221c8071065b0338c1fbafe893125f4356e7d7a8656ec2368dd916e4bc8c3",
+  "sequence_sha256": "c37714c539ceed4b4f3a3c0bfcd26ada4adc2ae630952ea92fc0bcfdaaa3d4cd",
+  "generation_sha256": "a55e8f7c0d10a8beb30ac90931f5a9b5da817674a6f5904ff903067a31c49a1f",
+  "state_sha256": "b78a750da2b6ae965eb26a834c8e2e1c16a6cc825d88c1e7d3a12268e0e97338",
+  "actual_counts": {
+    "binaries": 2,
+    "native_processes": 4,
+    "passing_test_invocations": 4,
+    "actual_export_files": 8
+  },
+  "pids": [
+    9688,
+    9709,
+    9722,
+    9735
+  ],
+  "distinct_nonces": 4,
+  "private_export_rejections_with_empty_results": 8,
+  "phase_evidence": [
+    {
+      "phase": "new-create",
+      "role": "new",
+      "pid": 9688,
+      "report_sha256": "3e0dfa15f66c0ada1e44beb2ec31cfc9282a9fa6f1086af20beaf37ee3a464fc",
+      "log_sha256": "816685c409c3e5feb719af7fb513b5075f02ca461c7eb4722c1e4550ed14b1f0",
+      "native_named_pass": 1,
+      "native_fail": 0,
+      "native_skip": 0,
+      "same_original_state_history": true,
+      "wire_observation": {
+        "after_stop": "GENERATED_READ_AND_APPEND_NOT_LOGGED_IN",
+        "collision": "NON_NULL_COLLISION_WITH_COMPLETE_RECEIPT",
+        "creation": "REJECTED_WIRE_CALLS_NO_ROOT_THEN_VALID_WIRE_APPEND_CREATED_ROOT",
+        "read": "EXACT_PERSISTED_CLAIM_NATIVE_AUTHOR",
+        "read_guards": "VERSION_AND_LIMIT_REJECTED",
+        "retry": "ALREADY_EXISTS_SAME_PAYLOAD",
+        "schema_inventory_sha256": "4557adc8257b5209610e9281da092e0a9b3a5141296b89035c252ba5e08482cf",
+        "scope": "ACCOUNT_SCOPED_GENERATED_BYTE_RPC_NOT_TWO_CLIENTS",
+        "snapshot_scope": "LOCAL_VERIFIED_TREE"
+      },
+      "strict_visibility": {
+        "ordinary_fulltext_control": "PASS",
+        "private_search": "ABSENT",
+        "private_show": "REJECTED",
+        "private_export": "REJECTED_JSON_AND_PROTOBUF"
+      },
+      "private_export_diagnostics": [
+        {
+          "format": "Protobuf",
+          "result_bytes": 0,
+          "result_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "rpc_error_code": 1
+        },
+        {
+          "format": "JSON",
+          "result_bytes": 0,
+          "result_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "rpc_error_code": 1
+        }
+      ],
+      "ordinary_exports_sha256": {
+        "document.json": "8ed9ba41d7812da8450fd57a8206f24462805e0a8b277cb2a4722ef3502b1def",
+        "document.pbc": "50ae8bdc9dea7c575b68f0e9354d5dca814aa5f368bf5ac15a26285d764ad5e5"
+      },
+      "cleanup": "NOT_REQUESTED_IN_THIS_PHASE",
+      "account_stop_verified": true
+    },
+    {
+      "phase": "new-reopen",
+      "role": "new",
+      "pid": 9709,
+      "report_sha256": "f2cfdc82843080b2d38450fa2db553b6900b2cf6c1293c926c3bbf71f9216ee7",
+      "log_sha256": "a6bd843ff90f66875dc91aae916922447b844735050dd2efd3ee9f3bf31945f2",
+      "native_named_pass": 1,
+      "native_fail": 0,
+      "native_skip": 0,
+      "same_original_state_history": true,
+      "wire_observation": {
+        "after_stop": "GENERATED_READ_AND_APPEND_NOT_LOGGED_IN",
+        "collision": "NON_NULL_COLLISION_WITH_COMPLETE_RECEIPT",
+        "creation": "EXISTING_HISTORY_REOPENED_THROUGH_GENERATED_RPC",
+        "read": "EXACT_PERSISTED_CLAIM_NATIVE_AUTHOR",
+        "read_guards": "VERSION_AND_LIMIT_REJECTED",
+        "retry": "ALREADY_EXISTS_SAME_PAYLOAD",
+        "schema_inventory_sha256": "4557adc8257b5209610e9281da092e0a9b3a5141296b89035c252ba5e08482cf",
+        "scope": "ACCOUNT_SCOPED_GENERATED_BYTE_RPC_NOT_TWO_CLIENTS",
+        "snapshot_scope": "LOCAL_VERIFIED_TREE"
+      },
+      "strict_visibility": {
+        "ordinary_fulltext_control": "PASS",
+        "private_search": "ABSENT",
+        "private_show": "REJECTED",
+        "private_export": "REJECTED_JSON_AND_PROTOBUF"
+      },
+      "private_export_diagnostics": [
+        {
+          "format": "Protobuf",
+          "result_bytes": 0,
+          "result_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "rpc_error_code": 1
+        },
+        {
+          "format": "JSON",
+          "result_bytes": 0,
+          "result_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "rpc_error_code": 1
+        }
+      ],
+      "ordinary_exports_sha256": {
+        "document.json": "1b872a476103861595eb522ddc9ed07204bd53a9f2d57d1e8cf7060bb7d25e28",
+        "document.pbc": "402cbea586ce86d5aa84bc78cd5385982346b4e86f59eedc035bf71182f581cf"
+      },
+      "cleanup": "NOT_REQUESTED_IN_THIS_PHASE",
+      "account_stop_verified": true
+    },
+    {
+      "phase": "legacy-edit",
+      "role": "legacy",
+      "pid": 9722,
+      "report_sha256": "3b8f28bc8994f3a028707589b4f66da4a86deeb3a492b1426a0944346803a575",
+      "log_sha256": "f7ee36d3dbeea2017c86e00b4910e0ce051098fd23f4b5b45fbef1ac81b4ca38",
+      "native_named_pass": 1,
+      "native_fail": 0,
+      "native_skip": 0,
+      "same_original_state_history": true,
+      "wire_observation": "UNSUPPORTED_LEGACY",
+      "strict_visibility": {
+        "ordinary_fulltext_control": "PASS",
+        "private_search": "ABSENT",
+        "private_show": "REJECTED",
+        "private_export": "REJECTED_JSON_AND_PROTOBUF"
+      },
+      "private_export_diagnostics": [
+        {
+          "format": "Protobuf",
+          "result_bytes": 0,
+          "result_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "rpc_error_code": 1
+        },
+        {
+          "format": "JSON",
+          "result_bytes": 0,
+          "result_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "rpc_error_code": 1
+        }
+      ],
+      "ordinary_exports_sha256": {
+        "document.json": "93936aec7b796c04be4bb49f4662bdfada10d2e3660581ae89c51f87f9ce674e",
+        "document.pbc": "d77ebac34986117a254798397725573e8255ef352714c0fb3e4db982faac2d38"
+      },
+      "cleanup": "NOT_REQUESTED_IN_THIS_PHASE",
+      "account_stop_verified": true
+    },
+    {
+      "phase": "new-recover",
+      "role": "new",
+      "pid": 9735,
+      "report_sha256": "42287cc1897ab8337a29aa9a5562f30fa59ba10c3e8fbc0312747c891668475a",
+      "log_sha256": "24bae612e6a54d63f74b74537bfe2424cd398996682ce35c98a21d976feb0f1d",
+      "native_named_pass": 1,
+      "native_fail": 0,
+      "native_skip": 0,
+      "same_original_state_history": true,
+      "wire_observation": {
+        "after_stop": "GENERATED_READ_AND_APPEND_NOT_LOGGED_IN",
+        "collision": "NON_NULL_COLLISION_WITH_COMPLETE_RECEIPT",
+        "creation": "EXISTING_HISTORY_REOPENED_THROUGH_GENERATED_RPC",
+        "read": "EXACT_PERSISTED_CLAIM_NATIVE_AUTHOR",
+        "read_guards": "VERSION_AND_LIMIT_REJECTED",
+        "retry": "ALREADY_EXISTS_SAME_PAYLOAD",
+        "schema_inventory_sha256": "4557adc8257b5209610e9281da092e0a9b3a5141296b89035c252ba5e08482cf",
+        "scope": "ACCOUNT_SCOPED_GENERATED_BYTE_RPC_NOT_TWO_CLIENTS",
+        "snapshot_scope": "LOCAL_VERIFIED_TREE"
+      },
+      "strict_visibility": {
+        "ordinary_fulltext_control": "PASS",
+        "private_search": "ABSENT",
+        "private_show": "REJECTED",
+        "private_export": "REJECTED_JSON_AND_PROTOBUF"
+      },
+      "private_export_diagnostics": [
+        {
+          "format": "Protobuf",
+          "result_bytes": 0,
+          "result_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "rpc_error_code": 1
+        },
+        {
+          "format": "JSON",
+          "result_bytes": 0,
+          "result_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "rpc_error_code": 1
+        }
+      ],
+      "ordinary_exports_sha256": {
+        "document.json": "93936aec7b796c04be4bb49f4662bdfada10d2e3660581ae89c51f87f9ce674e",
+        "document.pbc": "8614ad6be3a768357595c16ef329b894c539601bee696dce23c847ba0fd0061d"
+      },
+      "cleanup": "TARGET_ORPHAN_PRESERVED_THEN_SPACE_AND_PROJECTION_REMOVED",
+      "account_stop_verified": true
+    }
+  ],
+  "controller_controls": [
+    {
+      "name": "controller-controls.log",
+      "sha256": "fb2bd1d046304acd7905f88b9000546135ca07d204b2d619f587de27391e9af7",
+      "test_counts": [
+        23
+      ],
+      "ok": true,
+      "skip_summary": []
+    }
+  ],
+  "secret_publication": {
+    "original_controller_secret_scan": "PASS",
+    "independently_verified_exact_allowlist": true,
+    "private_artifacts_present": false
+  },
+  "started_at": "2026-11-18T07:41:22.274270+00:00",
+  "finished_at": "2026-11-18T07:52:19.091478+00:00",
+  "account_wire_acceptance": "PASS_REGISTERED_NATIVE_BYTES_SAME_ACCOUNT_FOUR_PROCESSES",
+  "app_capability": "OFF",
+  "two_app_clients": "NOT_RUN",
+  "ios_acceptance": "NOT_RUN",
+  "full_t2_acceptance": "NOT_RUN",
+  "raw_artifacts_retained_on_github": true,
+  "source_verification": {
+    "status": "PASS_EXACT_GIT_SOURCE_AND_GENERATION",
+    "run_id": 44260628655,
+    "app_sha": "a16bdc5de003aff97209c83d5fbc6a5934c5e873",
+    "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+    "source_sha256_counts": {
+      "generated_rpc": 54,
+      "legacy": 35,
+      "new": 89
+    },
+    "compiler": {
+      "protoc": {
+        "version": "libprotoc 3.21.12",
+        "url": "https://github.com/protocolbuffers/protobuf/releases/download/v21.12/protoc-21.12-linux-x86_64.zip",
+        "zip_sha256": "3a4c1e5f2516c639d3079b1586e703fc7bcfa2136d58bda24d1d54f949c315e8",
+        "binary_sha256": "e6a75cf6660945fbfec0d321808442ce3649cd7820079eece1098c881b315f55"
+      },
+      "generator_module": {
+        "module": "github.com/gogo/protobuf",
+        "replace_module": "github.com/anyproto/protobuf",
+        "version": "v1.3.3-0.20240201225420-6e325cf0ac38",
+        "sum": "h1:80jke82/c+bNQQpnx4VO3Mi/lAxARyyfUpZvFaPxdzE=",
+        "go_mod_sum": "h1:P1XiOD3dCwIKUDQYPy72D8LYyHL2YPYrpS2s69NZV8Q="
+      },
+      "generator_binary_sha256": "5864d05df83e5f06dc63b9afae0c5cee42fd0cd8a4e817255156f33316af85a8"
+    },
+    "protobuf_input_count": 8,
+    "protobuf_inputs_and_compiler_match_previously_verified_rpc_artifact": 14405574920,
+    "generated_sha256": {
+      "pb/commands.pb.go": "d4a4edbf0aabe1ad027bc43605961b512ef66265c6ac1e1ddc8479e98b10f111",
+      "pb/service/service.pb.go": "d374d8bf0dc7d86bac5024f23ce491be0774babd30f271943e3cc794dac94ab4",
+      "clientlibrary/service/service.pb.go": "0bbbcc48f351b4af816673434857314eaffdc3bf2db2fd26a7b9f741f6da00a1"
+    },
+    "binary_sha256": {
+      "legacy": "e18d3277059653c38952b9c9f54a1e3acd41de085ed54dde3381f5dac4a7dbb5",
+      "new": "be8d8b2da0258a6a6b9da03398153a5465c493d8d17c3746489203990946bec6"
+    },
+    "fixture_sha256": "e60c56a007b65a51afcce14a851d97ed347c5ebb77e42fd2231f5f5857415030",
+    "rpc_manifest_sha256": "4557adc8257b5209610e9281da092e0a9b3a5141296b89035c252ba5e08482cf",
+    "registration_patch_sha256": "4d470b31854ae2af3360676a1dabb06d60207ed2d4afddabad412bdc35adebc3",
+    "module_hashes": {
+      "go.mod": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+      "go.sum": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d"
+    },
+    "generation_receipt_sha256": "a55e8f7c0d10a8beb30ac90931f5a9b5da817674a6f5904ff903067a31c49a1f",
+    "source_overlay_hashes_independently_verified": true,
+    "baseline_fixture_hashes_independently_verified": true,
+    "same_run_generation": true
+  },
+  "source_fixture_commit": "38edcbf61131b3f34316a4c0323ddf86a2a4d99c",
+  "integration_source_commit": "d4ed32f3aee33afe190acebb5ded5596acc87cd9",
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44260628655",
+  "raw_artifact_policy": "Original ZIP, native logs and exports remain on GitHub. Verification read the original ZIP in connected-host memory; only this sanitized metadata is persisted."
+}
