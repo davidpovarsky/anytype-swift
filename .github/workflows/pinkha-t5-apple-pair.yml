@@ -49,7 +49,7 @@ jobs:
           cp Dependencies/Hanlin/.pinkha-source.json build/t5-apple-pair-proof/hanlin-snapshot.json
       - name: Check rejection controls without claiming Apple execution
         run: |
-          python3 -B Tools/PinkhaSimulatorGate/test_t5_apple_pair.py > build/t5-apple-pair-proof/controller-controls.log 2>&1
+          python3 -B -m unittest discover -s Tools/PinkhaSimulatorGate -p 'test_t5_apple_pair*.py' -v > build/t5-apple-pair-proof/controller-controls.log 2>&1
           cat build/t5-apple-pair-proof/controller-controls.log
       - name: Verify actual Xcode27 and create fresh owned OS27 simulators
         run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/t5-apple-pair-proof/preflight
