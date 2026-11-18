@@ -1,0 +1,33 @@
+{
+  "status": "PYTHON_GATE_CONTROLS_PASS",
+  "timestamp": "2026-11-18T00:04:09.748431+00:00",
+  "source_base": "d75fb3cb7e529f50f52753237dfd44e56a2e25a6",
+  "native_compilation": "NOT_RUN",
+  "swift_tests": "NOT_RUN",
+  "actual_source_declarations": 57,
+  "actual_source_files": {
+    "AnyTypeTests/Pinkha/HanlinHostAdapterTests.swift": "520437586278e29fbc0275646a18f526f0e40ed5eb6698398244afc99b2e1ee2",
+    "AnyTypeTests/Pinkha/HanlinHostWriteTests.swift": "1ed250d6cdca6df136215f86c0c192957dd8a32e319e0e92eec6ba1ab97a9100",
+    "AnyTypeTests/Pinkha/HanlinHostReadWriteTests.swift": "a0ac47ece4424bd539aa2d5ec6a1e8c2a0ab81429aa08f04674939bfae270444",
+    "AnyTypeTests/Pinkha/HanlinSDKConsumerTests.swift": "c5228f618204114716ec54803599161902b46de766f4c016980e8eee94b1e28a"
+  },
+  "command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "Tools/Hanlin",
+    "-p",
+    "test_run_host_tests.py",
+    "-v"
+  ],
+  "exit_code": 0,
+  "output": "test_all_four_suites_pass_with_actual_method_identity (test_run_host_tests.SDKResultGateTests.test_all_four_suites_pass_with_actual_method_identity) ... ok\ntest_boolean_counts_are_not_real_test_counts (test_run_host_tests.SDKResultGateTests.test_boolean_counts_are_not_real_test_counts) ... ok\ntest_duplicate_identifiers_are_not_counted_twice (test_run_host_tests.SDKResultGateTests.test_duplicate_identifiers_are_not_counted_twice) ... ok\ntest_false_or_missing_or_skipped_results_are_rejected (test_run_host_tests.SDKResultGateTests.test_false_or_missing_or_skipped_results_are_rejected) ... ok\ntest_missing_raw_device_os_or_architecture_fails (test_run_host_tests.SDKResultGateTests.test_missing_raw_device_os_or_architecture_fails) ... ok\ntest_missing_suite_cannot_hide_in_successful_summary (test_run_host_tests.SDKResultGateTests.test_missing_suite_cannot_hide_in_successful_summary) ... ok\ntest_parameter_cases_can_cover_one_declaration_with_actual_passes (test_run_host_tests.SDKResultGateTests.test_parameter_cases_can_cover_one_declaration_with_actual_passes) ... ok\ntest_summary_failure_or_skip_cannot_be_hidden_by_passing_methods (test_run_host_tests.SDKResultGateTests.test_summary_failure_or_skip_cannot_be_hidden_by_passing_methods) ... ok\ntest_unrelated_success_does_not_substitute_for_sdk_test (test_run_host_tests.SDKResultGateTests.test_unrelated_success_does_not_substitute_for_sdk_test) ... ok\ntest_wrong_source_or_branch_or_missing_run_is_rejected (test_run_host_tests.SDKResultGateTests.test_wrong_source_or_branch_or_missing_run_is_rejected) ... ok\ntest_zero_counts_cannot_pass_even_with_named_tree (test_run_host_tests.SDKResultGateTests.test_zero_counts_cannot_pass_even_with_named_tree) ... ok\n\n----------------------------------------------------------------------\nRan 11 tests in 0.002s\n\nOK\n",
+  "file_hashes": {
+    ".github/workflows/pinkha-sdk06-tests.yml": "1db4170f243871fbf312e50d188d2dedd6f01b6e84ae77fb30b16917036f69f0",
+    "Tools/Hanlin/run_host_tests.py": "184c64d7d5beca50b18b8dec98aaaf0965c563be269bb541a595a4b3322aad94",
+    "Tools/Hanlin/test_run_host_tests.py": "3d9b59fd188a7363700346661a7528eba9d6ab977157fa082ba058a6c10b3e24",
+    "Tools/Hanlin/APPLE_TESTS.md": "8bfec6cccab155a1135753265db585840922fa0345519d7b1e994788929fc099"
+  }
+}

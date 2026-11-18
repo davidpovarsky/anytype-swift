@@ -1,0 +1,94 @@
+name: SDK06 canonical Hanlin Apple component tests
+
+on:
+  workflow_call:
+    inputs:
+      heart_source_run_id:
+        description: Successful run containing the exact verified universal r14 runtime
+        required: true
+        type: string
+      expected_app_branch:
+        description: Reviewed isolated integration branch; producer branches are not accepted
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  sdk06-host-tests:
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}
+      EXPECTED_APP_BRANCH: ${{ inputs.expected_app_branch }}
+    steps:
+      - name: Checkout the caller integration branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          persist-credentials: false
+      - name: Select existing native ARM64 Python contract
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Verify exact caller identity before preparing dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$EXPECTED_APP_BRANCH" = codex/chatgpt-wave15-integration-20261118
+          test "$GITHUB_REF" = "refs/heads/$EXPECTED_APP_BRANCH"
+          test "$(git branch --show-current)" = "$EXPECTED_APP_BRANCH"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          [[ "$HEART_SOURCE_RUN_ID" =~ ^[1-9][0-9]*$ ]]
+          mkdir -p build/sdk06-evidence
+      - name: Checkout immutable public canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: e195ef50fbf741d339f4bf515869a1ee6a038fc2
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Materialize and verify the exact SDK before any SPM resolution
+        run: |
+          python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
+          python3 Tools/Hanlin/prepare_sdk.py --check
+          python3 -m unittest discover -s Tools/Hanlin -p test_run_host_tests.py -v
+      - name: Verify actual Xcode27 and create disposable OS27 devices
+        run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/sdk06-evidence/preflight
+      - name: Install explicit verified Heart source without a stale fallback
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh run download "$HEART_SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name Pinkha-Universal-Verified-Heart-r14 --dir build/sdk06-verified-heart
+          python3 Tools/PinkhaNativeDerived/install_verified_heart.py \
+            --archive build/sdk06-verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
+            --app-source "$GITHUB_WORKSPACE" --source-run-id "$HEART_SOURCE_RUN_ID" \
+            --expected-app-branch "$EXPECTED_APP_BRANCH" --evidence build/sdk06-evidence/heart
+      - name: Build Debug-Anytype and execute all four actual SDK06 suites
+        timeout-minutes: 100
+        run: |
+          python3 Tools/Hanlin/run_host_tests.py --app "$GITHUB_WORKSPACE" \
+            --evidence build/sdk06-evidence --derived "build/sdk06-derived-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" \
+            --expected-app-branch "$EXPECTED_APP_BRANCH" --heart-source-run-id "$HEART_SOURCE_RUN_ID"
+      - name: Package actual logs and xcresult even on failure
+        if: always()
+        run: |
+          mkdir -p build/sdk06-evidence
+          python3 Tools/PinkhaNativeDerived/package_evidence.py build/sdk06-evidence
+      - name: Retain source-bound SDK evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-SDK06-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/sdk06-evidence/Pinkha-Native-Derived-Evidence.zip
+          if-no-files-found: error
+          retention-days: 14
