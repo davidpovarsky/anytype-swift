@@ -1,0 +1,596 @@
+Command line invocation:
+    /Applications/Xcode_27.app/Contents/Developer/usr/bin/xcodebuild test-without-building -xctestrun /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived-ui/Build/Products/UI27-wave15-hanlin-selection.xctestrun -destination "platform=iOS Simulator,id=82F0D327-3B70-4DAE-B07B-DB158E714F10" -parallel-testing-enabled NO -test-timeouts-enabled YES -default-test-execution-time-allowance 300 -maximum-test-execution-time-allowance 300 "-only-testing:PinkhaStage1AcceptanceUITests/HanlinSelectionAcceptanceUITests/testRealSelectedBlockReadAndReturn" -resultBundlePath /Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/ui/wave15-hanlin-selection.xcresult
+
+Writing result bundle at path:
+	/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/ui/wave15-hanlin-selection.xcresult
+
+2026-11-18 08:07:11.499359+0000 PinkhaStage1AcceptanceUITests-Runner[19139:293875] [Default] Running tests...
+2026-11-18 08:07:11.582261+0000 PinkhaStage1AcceptanceUITests-Runner[19139:293875] [UIKit App Config] Update the Info.plist: Launch screens will soon be required.
+objc[19139]: Class UIAccessibilityLoaderWebShared is implemented in both /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.mm8WoL/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebKit.axbundle/WebKit (0x109a7c398) and /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.mm8WoL/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/AccessibilityBundles/WebCore.axbundle/WebCore (0x109bac310). This may cause spurious casting failures and mysterious crashes. One of the duplicates must be removed or renamed.
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'Selected tests' started at 2026-11-18 08:07:19.801.
+Test Suite 'PinkhaStage1AcceptanceUITests.xctest' started at 2026-11-18 08:07:19.802.
+Test Suite 'HanlinSelectionAcceptanceUITests' started at 2026-11-18 08:07:19.802.
+Test Case '-[PinkhaStage1AcceptanceUITests.HanlinSelectionAcceptanceUITests testRealSelectedBlockReadAndReturn]' started.
+    t =     0.00s Start Test at 2026-11-18 08:07:19.807
+    t =     1.17s Set Up
+    t =     1.19s     Setting device orientation to Portrait
+    t =     1.23s         Device orientation changed to Portrait
+    t =     1.34s         Wait for io.anytype.app to idle
+    t =     1.50s         Wait for com.apple.springboard to idle
+    t =     1.63s Terminate io.anytype.app:18484
+    t =     2.73s Open io.anytype.app
+    t =     2.73s     Launch io.anytype.app
+    t =     3.37s         Setting up automation session
+    t =     8.18s         Wait for io.anytype.app to idle
+    t =    11.51s Wait for io.anytype.app to become Running Foreground
+    t =    11.52s Waiting 45.0s for Any (First Match) to exist
+    t =    12.57s     Checking `Expect predicate `existsNoRetry == 1` for object Any (First Match)`
+    t =    12.57s         Checking existence of `Any (First Match)`
+    t =    12.80s Opening default application for URL anytype://object?objectId=bafyreigovxqrr42silaqutlsvkzlcahojanoh4fwudv3vf45pyfggu26j4&spaceId=bafyreidx3ahq2yv27ilgn4iuwovycjsf2lju25ilcgqpbao3cqusqsbl2i.1kg1y1yzocn1d
+    t =    12.89s     Wait for io.anytype.app to idle
+    t =    13.77s     Wait for com.apple.springboard to idle
+    t =    14.79s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Other (First Match)`
+    t =    14.80s     Checking existence of `Other (First Match)`
+    t =    15.78s     Find the Other (First Match)
+    t =    16.82s Waiting 20.0s for TextView (First Match) to exist
+    t =    17.87s     Checking `Expect predicate `existsNoRetry == 1` for object TextView (First Match)`
+    t =    17.87s         Checking existence of `TextView (First Match)`
+    t =    17.96s Waiting 20.0s for TextView (First Match) to exist
+    t =    18.99s     Checking `Expect predicate `existsNoRetry == 1` for object TextView (First Match)`
+    t =    18.99s         Checking existence of `TextView (First Match)`
+    t =    19.02s Find the TextView (First Match)
+    t =    19.08s Press "Hanlin native body 06A61A21-A3B9-4267-BD58-7EF221092BD2" TextView for 0.6 seconds
+    t =    19.08s     Wait for io.anytype.app to idle
+    t =    19.08s     Find the "Hanlin native body 06A61A21-A3B9-4267-BD58-7EF221092BD2" TextView
+    t =    19.12s     Check for interrupting elements affecting "Hanlin native body 06A61A21-A3B9-4267-BD58-7EF221092BD2" TextView
+    t =    19.17s         Wait for com.apple.springboard to idle
+    t =    19.26s     Synthesize event
+    t =    20.24s     Wait for io.anytype.app to idle
+    t =    21.91s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.open.selection" Button`
+    t =    21.91s     Checking existence of `"pinkha.hanlin.open.selection" Button`
+    t =    21.99s     Find the "pinkha.hanlin.open.selection" Button
+    t =    22.06s     Capturing element debug description
+    t =    22.23s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    22.34s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    22.41s         Find: Descendants matching type Button
+    t =    22.41s         Find: Elements matching predicate '"pinkha.hanlin.open.selection" IN identifiers'
+    t =    22.42s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    22.49s         Find: Descendants matching type Button
+    t =    22.49s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    22.87s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.open.selection" Button`
+    t =    22.87s     Checking existence of `"pinkha.hanlin.open.selection" Button`
+    t =    22.91s     Find the "pinkha.hanlin.open.selection" Button
+    t =    22.97s     Capturing element debug description
+    t =    23.14s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    23.21s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    23.29s         Find: Descendants matching type Button
+    t =    23.29s         Find: Elements matching predicate '"pinkha.hanlin.open.selection" IN identifiers'
+    t =    23.30s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    23.36s         Find: Descendants matching type Button
+    t =    23.37s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    23.92s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.open.selection" Button`
+    t =    23.93s     Checking existence of `"pinkha.hanlin.open.selection" Button`
+    t =    24.01s     Find the "pinkha.hanlin.open.selection" Button
+    t =    24.08s     Capturing element debug description
+    t =    24.26s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    24.34s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    24.43s         Find: Descendants matching type Button
+    t =    24.43s         Find: Elements matching predicate '"pinkha.hanlin.open.selection" IN identifiers'
+    t =    24.43s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    24.52s         Find: Descendants matching type Button
+    t =    24.53s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    24.96s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.open.selection" Button`
+    t =    24.96s     Checking existence of `"pinkha.hanlin.open.selection" Button`
+    t =    25.00s     Find the "pinkha.hanlin.open.selection" Button
+    t =    25.07s     Capturing element debug description
+    t =    25.22s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    25.30s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    25.38s         Find: Descendants matching type Button
+    t =    25.38s         Find: Elements matching predicate '"pinkha.hanlin.open.selection" IN identifiers'
+    t =    25.39s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    25.47s         Find: Descendants matching type Button
+    t =    25.47s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    25.95s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.open.selection" Button`
+    t =    25.95s     Checking existence of `"pinkha.hanlin.open.selection" Button`
+    t =    25.99s     Find the "pinkha.hanlin.open.selection" Button
+    t =    26.05s     Capturing element debug description
+    t =    26.29s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    26.38s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    26.48s         Find: Descendants matching type Button
+    t =    26.48s         Find: Elements matching predicate '"pinkha.hanlin.open.selection" IN identifiers'
+    t =    26.49s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    26.57s         Find: Descendants matching type Button
+    t =    26.57s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    26.89s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.open.selection" Button`
+    t =    26.89s     Checking existence of `"pinkha.hanlin.open.selection" Button`
+    t =    26.93s     Find the "pinkha.hanlin.open.selection" Button
+    t =    27.02s     Capturing element debug description
+    t =    27.26s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    27.41s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    27.50s         Find: Descendants matching type Button
+    t =    27.50s         Find: Elements matching predicate '"pinkha.hanlin.open.selection" IN identifiers'
+    t =    27.51s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    27.60s         Find: Descendants matching type Button
+    t =    27.60s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    27.87s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.open.selection" Button`
+    t =    27.88s     Checking existence of `"pinkha.hanlin.open.selection" Button`
+    t =    27.93s     Find the "pinkha.hanlin.open.selection" Button
+    t =    27.98s     Capturing element debug description
+    t =    28.14s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    28.23s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    28.30s         Find: Descendants matching type Button
+    t =    28.30s         Find: Elements matching predicate '"pinkha.hanlin.open.selection" IN identifiers'
+    t =    28.30s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    28.37s         Find: Descendants matching type Button
+    t =    28.38s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    28.95s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "pinkha.hanlin.open.selection" Button`
+    t =    28.95s     Checking existence of `"pinkha.hanlin.open.selection" Button`
+    t =    29.02s     Find the "pinkha.hanlin.open.selection" Button
+    t =    29.14s Find the Application 'io.anytype.app'
+    t =    29.52s Added attachment named 'hanlin-selected-block-native-selection'
+    t =    29.53s Tap "pinkha.hanlin.open.selection" Button
+    t =    29.53s     Wait for io.anytype.app to idle
+    t =    29.53s     Find the "pinkha.hanlin.open.selection" Button
+    t =    29.56s     Check for interrupting elements affecting "pinkha.hanlin.open.selection" Button
+    t =    29.61s         Wait for com.apple.springboard to idle
+    t =    29.67s Ignoring failure to get hierarchy for remote element in process 20441 (Error getting main window kAXErrorServerNotFound)
+    t =    29.68s Ignoring failure to get hierarchy for remote element in process 20441 (Error getting main window kAXErrorServerNotFound)
+    t =    29.70s     Synthesize event
+    t =    30.00s     Wait for io.anytype.app to idle
+    t =    32.16s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_AWAIT_READ_CONSENT", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    32.16s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    32.17s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    32.18s Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    32.19s Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    33.26s Checking `Expect predicate `exists == 1 AND hittable == 1` for object Button (First Match)`
+    t =    33.26s     Checking existence of `Button (First Match)`
+    t =    33.34s     Find the Button (First Match)
+    t =    33.43s Tap "pinkha.hanlin.share-context" Button
+    t =    33.43s     Wait for io.anytype.app to idle
+    t =    33.44s     Find the "pinkha.hanlin.share-context" Button
+    t =    33.47s     Check for interrupting elements affecting "pinkha.hanlin.share-context" Button
+    t =    33.55s         Wait for com.apple.springboard to idle
+    t =    33.59s Ignoring failure to get hierarchy for remote element in process 20441 (Error getting main window kAXErrorServerNotFound)
+    t =    33.60s Ignoring failure to get hierarchy for remote element in process 20441 (Error getting main window kAXErrorServerNotFound)
+    t =    33.61s     Synthesize event
+    t =    33.94s     Wait for io.anytype.app to idle
+    t =    34.40s Waiting 15.0s for "Allow document text access?" Alert to exist
+    t =    35.50s     Checking `Expect predicate `existsNoRetry == 1` for object "Allow document text access?" Alert`
+    t =    35.50s         Checking existence of `"Allow document text access?" Alert`
+    t =    36.56s Checking `Expect predicate `exists == 1 AND hittable == 1` for object "Allow for this presentation" Button`
+    t =    36.56s     Checking existence of `"Allow for this presentation" Button`
+    t =    36.58s     Find the "Allow for this presentation" Button
+    t =    36.61s Find the Application 'io.anytype.app'
+    t =    36.99s Added attachment named 'hanlin-selected-block-native-read-consent'
+    t =    37.00s Tap "Allow for this presentation" Button
+    t =    37.00s     Wait for io.anytype.app to idle
+    t =    37.00s     Find the "Allow for this presentation" Button
+    t =    37.02s     Check for interrupting elements affecting "Allow for this presentation" Button
+    t =    37.11s         Wait for com.apple.springboard to idle
+    t =    37.14s Ignoring failure to get hierarchy for remote element in process 20441 (Error getting main window kAXErrorServerNotFound)
+    t =    37.15s Ignoring failure to get hierarchy for remote element in process 20441 (Error getting main window kAXErrorServerNotFound)
+    t =    37.15s     Synthesize event
+    t =    37.46s     Wait for io.anytype.app to idle
+    t =    38.82s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    38.82s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    38.83s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    38.83s     Capturing element debug description
+    t =    38.85s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    38.99s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    39.11s         Find: Descendants matching type StaticText
+    t =    39.11s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    39.11s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    39.22s         Find: Descendants matching type StaticText
+    t =    39.23s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    39.82s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    39.82s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    39.83s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    39.84s     Capturing element debug description
+    t =    39.87s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    39.99s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    40.08s         Find: Descendants matching type StaticText
+    t =    40.08s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    40.09s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    40.19s         Find: Descendants matching type StaticText
+    t =    40.20s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    40.82s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    40.83s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    40.83s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    40.84s     Capturing element debug description
+    t =    40.86s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    40.97s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    41.07s         Find: Descendants matching type StaticText
+    t =    41.07s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    41.08s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    41.19s         Find: Descendants matching type StaticText
+    t =    41.20s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    41.79s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    41.79s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    41.80s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    41.80s     Capturing element debug description
+    t =    41.82s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    41.93s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    42.03s         Find: Descendants matching type StaticText
+    t =    42.03s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    42.04s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    42.14s         Find: Descendants matching type StaticText
+    t =    42.15s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    42.84s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    42.84s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    42.85s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    42.85s     Capturing element debug description
+    t =    42.87s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    42.99s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    43.10s         Find: Descendants matching type StaticText
+    t =    43.11s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    43.11s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    43.22s         Find: Descendants matching type StaticText
+    t =    43.23s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    43.84s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    43.84s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    43.85s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    43.86s     Capturing element debug description
+    t =    43.88s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    44.00s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    44.10s         Find: Descendants matching type StaticText
+    t =    44.10s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    44.11s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    44.21s         Find: Descendants matching type StaticText
+    t =    44.21s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    44.79s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    44.79s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    44.80s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    44.81s     Capturing element debug description
+    t =    44.83s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    44.93s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    45.04s         Find: Descendants matching type StaticText
+    t =    45.04s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    45.04s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    45.15s         Find: Descendants matching type StaticText
+    t =    45.15s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    45.86s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    45.86s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    45.86s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    45.87s     Capturing element debug description
+    t =    45.90s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    46.00s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    46.10s         Find: Descendants matching type StaticText
+    t =    46.10s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    46.11s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    46.24s         Find: Descendants matching type StaticText
+    t =    46.24s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    46.84s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    46.84s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    46.85s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    46.85s     Capturing element debug description
+    t =    46.88s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    46.98s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    47.08s         Find: Descendants matching type StaticText
+    t =    47.08s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    47.08s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    47.22s         Find: Descendants matching type StaticText
+    t =    47.23s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    47.82s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    47.83s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    47.84s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    47.84s     Capturing element debug description
+    t =    47.87s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    47.99s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    48.11s         Find: Descendants matching type StaticText
+    t =    48.11s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    48.12s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    48.22s         Find: Descendants matching type StaticText
+    t =    48.22s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    48.86s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    48.86s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    48.87s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    48.88s     Capturing element debug description
+    t =    48.96s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    49.12s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    49.28s         Find: Descendants matching type StaticText
+    t =    49.28s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    49.29s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    49.46s         Find: Descendants matching type StaticText
+    t =    49.47s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    50.85s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    50.85s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    50.86s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    50.87s     Capturing element debug description
+    t =    50.90s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    51.05s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    51.18s         Find: Descendants matching type StaticText
+    t =    51.18s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    51.18s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    51.35s         Find: Descendants matching type StaticText
+    t =    51.36s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    51.86s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    51.86s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    51.87s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    51.87s     Capturing element debug description
+    t =    51.91s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    52.11s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    52.25s         Find: Descendants matching type StaticText
+    t =    52.25s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    52.26s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    52.40s         Find: Descendants matching type StaticText
+    t =    52.40s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    52.79s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    52.79s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    52.80s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    52.82s     Capturing element debug description
+    t =    52.85s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    53.02s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    53.18s         Find: Descendants matching type StaticText
+    t =    53.18s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    53.19s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    53.37s         Find: Descendants matching type StaticText
+    t =    53.38s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    54.81s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    54.81s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    54.82s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    54.83s     Capturing element debug description
+    t =    54.87s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    55.04s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    55.20s         Find: Descendants matching type StaticText
+    t =    55.20s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    55.21s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    55.38s         Find: Descendants matching type StaticText
+    t =    55.40s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    55.86s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    55.86s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    55.87s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    55.88s     Capturing element debug description
+    t =    55.92s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    56.07s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    56.24s         Find: Descendants matching type StaticText
+    t =    56.24s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    56.25s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    56.41s         Find: Descendants matching type StaticText
+    t =    56.42s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    56.79s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    56.79s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    56.80s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    56.81s     Capturing element debug description
+    t =    56.86s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    57.05s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    57.20s         Find: Descendants matching type StaticText
+    t =    57.20s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    57.21s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    57.36s         Find: Descendants matching type StaticText
+    t =    57.37s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    57.85s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    57.86s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    57.86s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    57.87s     Capturing element debug description
+    t =    57.90s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    58.06s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    58.20s         Find: Descendants matching type StaticText
+    t =    58.20s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    58.20s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    58.34s         Find: Descendants matching type StaticText
+    t =    58.35s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    58.81s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    58.81s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    58.82s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    58.83s     Capturing element debug description
+    t =    58.87s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    59.01s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    59.15s         Find: Descendants matching type StaticText
+    t =    59.16s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    59.16s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    59.30s         Find: Descendants matching type StaticText
+    t =    59.30s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    59.85s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    59.85s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    59.85s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    59.86s     Capturing element debug description
+    t =    59.90s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    60.03s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    60.16s         Find: Descendants matching type StaticText
+    t =    60.16s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    60.17s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    60.29s         Find: Descendants matching type StaticText
+    t =    60.29s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    60.78s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    60.78s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    60.79s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    60.80s     Capturing element debug description
+    t =    60.84s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    60.99s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    61.13s         Find: Descendants matching type StaticText
+    t =    61.13s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    61.14s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    61.28s         Find: Descendants matching type StaticText
+    t =    61.28s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    61.79s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    61.79s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    61.81s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    61.82s     Capturing element debug description
+    t =    61.87s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    62.04s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    62.26s         Find: Descendants matching type StaticText
+    t =    62.27s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    62.28s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    62.42s         Find: Descendants matching type StaticText
+    t =    62.43s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    62.81s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    62.82s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    62.83s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    62.84s     Capturing element debug description
+    t =    62.87s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    63.01s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    63.20s         Find: Descendants matching type StaticText
+    t =    63.21s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    63.22s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    63.40s         Find: Descendants matching type StaticText
+    t =    63.41s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    63.79s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    63.79s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    63.80s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    63.82s     Capturing element debug description
+    t =    63.95s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    64.15s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    64.30s         Find: Descendants matching type StaticText
+    t =    64.30s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    64.30s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    64.49s         Find: Descendants matching type StaticText
+    t =    64.49s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    64.86s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    64.86s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    64.87s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    64.88s     Capturing element debug description
+    t =    64.90s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    65.07s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    65.21s         Find: Descendants matching type StaticText
+    t =    65.21s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    65.22s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    65.33s         Find: Descendants matching type StaticText
+    t =    65.34s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    65.86s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    65.86s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    65.87s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    65.87s     Capturing element debug description
+    t =    65.91s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    66.06s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    66.21s         Find: Descendants matching type StaticText
+    t =    66.21s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    66.21s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    66.41s         Find: Descendants matching type StaticText
+    t =    66.42s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    66.81s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    66.81s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    66.82s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    66.83s     Capturing element debug description
+    t =    66.86s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    67.02s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    67.19s         Find: Descendants matching type StaticText
+    t =    67.19s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    67.20s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    67.35s         Find: Descendants matching type StaticText
+    t =    67.36s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    67.80s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    67.80s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    67.81s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    67.81s     Capturing element debug description
+    t =    67.84s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    67.99s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    68.11s         Find: Descendants matching type StaticText
+    t =    68.11s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    68.12s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    68.26s         Find: Descendants matching type StaticText
+    t =    68.28s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    68.84s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    68.84s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    68.85s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    68.86s     Capturing element debug description
+    t =    68.88s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    69.00s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    69.12s         Find: Descendants matching type StaticText
+    t =    69.12s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    69.13s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    69.24s         Find: Descendants matching type StaticText
+    t =    69.25s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    69.86s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    69.86s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    69.87s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    69.88s     Capturing element debug description
+    t =    69.90s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    70.04s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    70.17s         Find: Descendants matching type StaticText
+    t =    70.17s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    70.18s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    70.32s         Find: Descendants matching type StaticText
+    t =    70.33s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    70.79s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    70.79s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    70.80s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    70.80s     Capturing element debug description
+    t =    70.83s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    70.94s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    71.06s         Find: Descendants matching type StaticText
+    t =    71.06s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    71.06s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    71.17s         Find: Descendants matching type StaticText
+    t =    71.18s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    71.81s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    71.81s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    71.82s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    71.82s     Capturing element debug description
+    t =    71.84s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    71.97s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    72.08s         Find: Descendants matching type StaticText
+    t =    72.08s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    72.09s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    72.20s         Find: Descendants matching type StaticText
+    t =    72.21s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    72.79s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    72.79s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    72.80s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    72.84s     Capturing element debug description
+    t =    72.86s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    72.97s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    73.06s         Find: Descendants matching type StaticText
+    t =    73.06s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    73.06s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    73.16s         Find: Descendants matching type StaticText
+    t =    73.17s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    73.81s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    73.81s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    73.81s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    73.82s     Capturing element debug description
+    t =    73.85s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    73.97s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    74.12s         Find: Descendants matching type StaticText
+    t =    74.13s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    74.13s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    74.27s         Find: Descendants matching type StaticText
+    t =    74.27s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    74.79s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    74.79s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    74.80s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    74.80s     Capturing element debug description
+    t =    74.82s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    74.96s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    75.05s         Find: Descendants matching type StaticText
+    t =    75.06s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    75.06s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    75.16s         Find: Descendants matching type StaticText
+    t =    75.17s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    75.85s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    75.85s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    75.85s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    75.86s     Capturing element debug description
+    t =    75.88s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    76.02s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    76.13s         Find: Descendants matching type StaticText
+    t =    76.13s         Find: Elements matching predicate '"pinkha.hanlin.selection-acceptance-status" IN identifiers'
+    t =    76.13s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    76.25s         Find: Descendants matching type StaticText
+    t =    76.30s         Requesting snapshot of accessibility hierarchy for app with pid 19510
+    t =    76.82s Checking `Expect predicate `exists == 1 AND label IN {"SELECTION_READY_TO_RETURN", "SELECTION_SETUP_FAIL", "HANLIN_SELECTION_ACCEPTANCE_FAIL"}` for object "pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    76.82s     Checking existence of `"pinkha.hanlin.selection-acceptance-status" StaticText`
+    t =    76.83s     Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+    t =    76.84s Find the "pinkha.hanlin.selection-acceptance-status" StaticText
+/Users/runner/work/anytype-swift/anytype-swift/PinkhaStage1Acceptance/Tests/HanlinSelectionAcceptanceUITests.swift:193: error: -[PinkhaStage1AcceptanceUITests.HanlinSelectionAcceptanceUITests testRealSelectedBlockReadAndReturn] : XCTAssertEqual failed: ("HANLIN_SELECTION_ACCEPTANCE_FAIL") is not equal to ("SELECTION_READY_TO_RETURN")
+    t =    77.59s Tear Down
+Test Case '-[PinkhaStage1AcceptanceUITests.HanlinSelectionAcceptanceUITests testRealSelectedBlockReadAndReturn]' failed (77.920 seconds).
+Test Suite 'HanlinSelectionAcceptanceUITests' failed at 2026-11-18 08:08:37.727.
+	 Executed 1 test, with 1 failure (0 unexpected) in 77.920 (77.925) seconds
+Test Suite 'PinkhaStage1AcceptanceUITests.xctest' failed at 2026-11-18 08:08:37.731.
+	 Executed 1 test, with 1 failure (0 unexpected) in 77.920 (77.929) seconds
+Test Suite 'Selected tests' failed at 2026-11-18 08:08:37.732.
+	 Executed 1 test, with 1 failure (0 unexpected) in 77.920 (77.931) seconds
+2026-11-18 08:09:09.665 xcodebuild[18926:293263] [MT] IDETestOperationsObserverDebug: 120.862 elapsed -- Testing started completed.
+2026-11-18 08:09:09.665 xcodebuild[18926:293263] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-11-18 08:09:09.665 xcodebuild[18926:293263] [MT] IDETestOperationsObserverDebug: 120.862 sec, +120.862 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/ui/wave15-hanlin-selection.xcresult
+
+Failing tests:
+	HanlinSelectionAcceptanceUITests.testRealSelectedBlockReadAndReturn()
+
+** TEST EXECUTE FAILED **
+
+Testing started

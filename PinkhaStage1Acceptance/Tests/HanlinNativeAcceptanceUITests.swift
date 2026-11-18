@@ -76,19 +76,17 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         try waitForPhase("AWAIT_READ_CONSENT", timeout: 20)
         try chatButton(identifier: "pinkha.hanlin.share-context",
                        label: "Allow access to this document or selection").tap()
-        let readAlert = app.alerts["Allow document text access?"].firstMatch
-        XCTAssertTrue(readAlert.waitForExistence(timeout: 15))
-        XCTAssertTrue(readAlert.buttons["Allow for this presentation"].isHittable)
-        readAlert.buttons["Allow for this presentation"].tap()
+        let readAlert = try readConsentPrompt()
+        readAlert.buttons["pinkha.hanlin.consent.read-context.allow"].tap()
 
         // Inspect the actual requested title AND original Space before each
         // decision. An old alert with the same title cannot satisfy the next step.
         let cancelled = try createAlert(for: fixture.cancelledTitle)
         attachScreenshot("hanlin-native-create-cancel-prompt")
-        cancelled.buttons["Cancel"].tap()
+        cancelled.buttons["pinkha.hanlin.consent.create-page.cancel"].tap()
         let confirmed = try createAlert(for: fixture.createdTitle)
         attachScreenshot("hanlin-native-create-confirm-prompt")
-        confirmed.buttons["Create page"].tap()
+        confirmed.buttons["pinkha.hanlin.consent.create-page.allow"].tap()
 
         try waitForPhase("READY_TO_CLOSE", timeout: 45)
         let beforeClose = try currentReceipt()
@@ -207,9 +205,7 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         try waitForPhase("AWAIT_STALE_READ_CONSENT", timeout: 20)
         try chatButton(identifier: "pinkha.hanlin.share-context",
                        label: "Allow access to this document or selection").tap()
-        let oldAlert = app.alerts["Allow document text access?"].firstMatch
-        XCTAssertTrue(oldAlert.waitForExistence(timeout: 15))
-        XCTAssertTrue(oldAlert.buttons["Allow for this presentation"].isHittable)
+        let oldAlert = try readConsentPrompt()
         try waitForPhase("READY_TO_LEAVE_WITH_PENDING_CONSENT", timeout: 20)
         let pending = try currentReceipt()
         attachScreenshot("hanlin-native-pending-consent-before-document-exit")
@@ -249,10 +245,8 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
     private func allowNativeReadConsent() throws {
         try chatButton(identifier: "pinkha.hanlin.share-context",
                        label: "Allow access to this document or selection").tap()
-        let alert = app.alerts["Allow document text access?"].firstMatch
-        XCTAssertTrue(alert.waitForExistence(timeout: 15))
-        XCTAssertTrue(alert.buttons["Allow for this presentation"].isHittable)
-        alert.buttons["Allow for this presentation"].tap()
+        let alert = try readConsentPrompt()
+        alert.buttons["pinkha.hanlin.consent.read-context.allow"].tap()
     }
 
     private func openDocument(_ objectID: String) throws {
@@ -300,15 +294,30 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         return button
     }
 
+    private func readConsentPrompt() throws -> XCUIElement {
+        let identifier = "pinkha.hanlin.consent.read-context"
+        let prompt = app.otherElements[identifier].firstMatch
+        XCTAssertTrue(prompt.waitForExistence(timeout: 15))
+        XCTAssertEqual(prompt.staticTexts[identifier + ".title"].label, "Allow document text access?")
+        let allow = prompt.buttons[identifier + ".allow"]
+        XCTAssertEqual(allow.label, "Allow for this presentation")
+        XCTAssertTrue(allow.isHittable)
+        return prompt
+    }
+
     private func createAlert(for title: String) throws -> XCUIElement {
-        let alert = app.alerts["Create a new page?"].firstMatch
+        let identifier = "pinkha.hanlin.consent.create-page"
+        let alert = app.otherElements[identifier].firstMatch
         XCTAssertTrue(alert.waitForExistence(timeout: 15))
+        XCTAssertEqual(alert.staticTexts[identifier + ".title"].label, "Create a new page?")
         let exactOperation = alert.staticTexts.matching(NSPredicate(
             format: "label CONTAINS %@ AND label CONTAINS %@", title, fixture.spaceID
         )).firstMatch
         XCTAssertTrue(exactOperation.waitForExistence(timeout: 15), "The actual consent must name this title and original Space")
-        XCTAssertTrue(alert.buttons["Cancel"].isHittable)
-        XCTAssertTrue(alert.buttons["Create page"].isHittable)
+        XCTAssertEqual(alert.buttons[identifier + ".cancel"].label, "Cancel")
+        XCTAssertEqual(alert.buttons[identifier + ".allow"].label, "Create page")
+        XCTAssertTrue(alert.buttons[identifier + ".cancel"].isHittable)
+        XCTAssertTrue(alert.buttons[identifier + ".allow"].isHittable)
         return alert
     }
 

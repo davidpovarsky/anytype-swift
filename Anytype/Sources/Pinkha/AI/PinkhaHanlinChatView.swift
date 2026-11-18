@@ -138,6 +138,13 @@ final class PinkhaHanlinChatController: UIHostingController<PinkhaHanlinChatView
         presentation.didMount(self)
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if isBeingDismissed || isMovingFromParent || presentingViewController == nil {
+            presentation.ownerWillDisappear()
+        }
+    }
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         if isBeingDismissed || presentingViewController == nil {

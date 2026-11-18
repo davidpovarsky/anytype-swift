@@ -207,7 +207,13 @@ final class PinkhaHanlinChatPresentation {
         close(completion: nil)
     }
 
-    private func close(completion: (@MainActor @Sendable () -> Void)?) {
+    /// UIKit/its coordinator has already started dismissing this owned host.
+    /// Revoke synchronously before any queued Allow action without another dismiss.
+    func ownerWillDisappear() {
+        close(completion: nil, dismissController: false)
+    }
+
+    private func close(completion: (@MainActor @Sendable () -> Void)?, dismissController: Bool = true) {
         guard !closed else { return }
         #if DEBUG && targetEnvironment(simulator)
         PinkhaHanlinNativeAcceptanceDriver.observedInvalidation(sessionID: session.id, cause: "explicitCloseOrOwner")
@@ -224,7 +230,7 @@ final class PinkhaHanlinChatPresentation {
         receiptIDs.removeAll()
         isConfigured = false
         PinkhaHanlinAccountOwner.shared.unregister(session.id)
-        controller?.dismiss(animated: true, completion: completion)
+        if dismissController { controller?.dismiss(animated: true, completion: completion) }
         Task { [host] in
             await agent?.invalidate()
             await host.invalidate()

@@ -40,7 +40,7 @@ final class PinkhaHanlinCreatePageContext {
     private let types = Container.shared.objectTypeProvider()
     private var subscriptions: [AnyCancellable] = []
     private var invalidated = false
-    private var alert: UIAlertController?
+    private var alert: PinkhaHanlinConsentController?
     private var decision: PinkhaHanlinReadConsentDecision?
     private var pendingPlan: PinkhaHanlinCreatePagePlan?
 
@@ -185,21 +185,15 @@ final class PinkhaHanlinCreatePageContext {
                 let title = hebrew ? "ליצור דף חדש?" : "Create a new page?"
                 // Exact title and ORIGINAL native Space are visible to the user; neither is logged/persisted.
                 let message = "\(plan.title)\n\n\(member.spaceView.name)\n\(session.context.namespace.space)"
-                let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-                self.alert = alert
-                let observer = PinkhaHanlinWritePromptObserver()
-                observer.isUserInteractionEnabled = false; observer.isAccessibilityElement = false
-                observer.onDisappearance = { [weak current] in current?.resolve(false) }
-                alert.view.addSubview(observer)
-                alert.addAction(UIAlertAction(title: hebrew ? "ביטול" : "Cancel", style: .cancel) { _ in current.resolve(false) })
-                alert.addAction(UIAlertAction(title: hebrew ? "יצירת דף" : "Create page", style: .default) { [weak self] _ in
-                    do {
-                        guard let self else { current.resolve(false); return }
+                let alert = PinkhaHanlinConsentController(purpose: .createPage,
+                    title: title, explanation: message,
+                    allowTitle: hebrew ? "יצירת דף" : "Create page",
+                    cancelTitle: hebrew ? "ביטול" : "Cancel", decision: current) { [weak self] in
+                        guard let self else { throw HanlinHostError.staleContext }
                         let live = try self.validate(plan)
                         guard live.id.utf8.elementsEqual(type.id.utf8) else { throw HanlinHostError.staleContext }
-                        current.resolve(true)
-                    } catch { current.resolve(false) }
-                })
+                }
+                self.alert = alert
                 presenter.present(alert, animated: true) { [weak current, weak alert] in
                     if alert?.viewIfLoaded?.window == nil { current?.resolve(false) }
                 }
@@ -208,18 +202,5 @@ final class PinkhaHanlinCreatePageContext {
         let live = try validate(plan)
         guard allowed, live.id.utf8.elementsEqual(type.id.utf8) else { throw HanlinHostError.denied }
         return .init(identity: plan.identity, typeID: live.id)
-    }
-}
-
-@MainActor
-private final class PinkhaHanlinWritePromptObserver: UIView {
-    var onDisappearance: (() -> Void)?
-    private var wasMounted = false
-    override func didMoveToWindow() {
-        super.didMoveToWindow()
-        if window != nil { wasMounted = true }
-        else if wasMounted {
-            let callback = onDisappearance; onDisappearance = nil; callback?()
-        }
     }
 }

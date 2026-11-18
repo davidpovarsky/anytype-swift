@@ -80,9 +80,12 @@ final class HanlinSelectionAcceptanceUITests: XCTestCase {
             format: "identifier == %@ OR label == %@", "pinkha.hanlin.share-context", "Allow access to this document or selection")).firstMatch
         try requireHittable(share)
         share.tap()
-        let alert = app.alerts["Allow document text access?"].firstMatch
+        let identifier = "pinkha.hanlin.consent.read-context"
+        let alert = app.otherElements[identifier].firstMatch
         XCTAssertTrue(alert.waitForExistence(timeout: 15))
-        let allow = alert.buttons["Allow for this presentation"]
+        XCTAssertEqual(alert.staticTexts[identifier + ".title"].label, "Allow document text access?")
+        let allow = alert.buttons[identifier + ".allow"]
+        XCTAssertEqual(allow.label, "Allow for this presentation")
         try requireHittable(allow)
         attachScreenshot("hanlin-selected-block-native-read-consent")
         allow.tap()

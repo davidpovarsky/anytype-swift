@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import UIKit
 import Testing
 import HanlinHostContracts
 import HanlinPlatformContracts
@@ -417,26 +418,135 @@ struct HanlinHostAdapterTests {
         for _ in 0..<10 where decision.isPending { await Task.yield() }
         #expect(!decision.isPending)
         #expect(decisions == [false])
-        decision.resolve(true)
+        var validations = 0
+        decision.resolveAllow { validations += 1 }
         #expect(!decision.authorized)
         #expect(!decision.begin { decisions.append($0) })
-        #expect(decisions == [false])
+        #expect(decisions == [false] && validations == 0)
     }
 
-    @Test func promptDisappearanceUsesSameSingleCompletionAndAllowsFreshDecision() {
-        let decision = PinkhaHanlinReadConsentDecision()
+    private func consentController(_ decision: PinkhaHanlinReadConsentDecision,
+                                   purpose: PinkhaHanlinConsentController.Purpose = .readContext,
+                                   validate: @escaping @MainActor () throws -> Void) -> PinkhaHanlinConsentController {
+        let controller = PinkhaHanlinConsentController(purpose: purpose, title: "Synthetic permission",
+            explanation: "Component control only", allowTitle: "Allow", cancelTitle: "Cancel",
+            decision: decision, validate: validate)
+        controller.loadViewIfNeeded()
+        #expect(controller.isModalInPresentation)
+        #expect(controller.sheetPresentationController?.prefersGrabberVisible != true)
+        // Exercise the owned controller's supported lifecycle in the component
+        // host. This is not a native user gesture/account acceptance claim.
+        controller.beginAppearanceTransition(true, animated: false)
+        controller.endAppearanceTransition()
+        return controller
+    }
+
+    private func consentButton(_ suffix: String, in controller: PinkhaHanlinConsentController) throws -> UIButton {
+        var pending = [try #require(controller.viewIfLoaded)]
+        let identifier = "pinkha.hanlin.consent." + controller.purpose.rawValue + "." + suffix
+        while let view = pending.popLast() {
+            if let button = view as? UIButton, button.accessibilityIdentifier == identifier { return button }
+            pending.append(contentsOf: view.subviews)
+        }
+        Issue.record("Owned native consent control missing")
+        throw HanlinHostError.invalidContext
+    }
+
+    @Test func nativePromptAllowsBeforeDisappearanceAndRevalidatesOwner() throws {
+        let current = PinkhaHanlinReadConsentDecision()
         var decisions: [Bool] = []
-        #expect(decision.begin { decisions.append($0) })
-        decision.resolve(false) // The real window-removal observer uses this same completion.
-        decision.resolve(true)
-        #expect(decisions == [false])
-        #expect(!decision.authorized)
-        #expect(decision.begin { decisions.append($0) })
-        decision.resolve(true)
-        #expect(decision.authorized)
-        decision.revoke()
-        #expect(!decision.authorized)
-        #expect(decisions == [false, true])
+        var validations = 0
+        #expect(current.begin { decisions.append($0) })
+        let controller = consentController(current) { validations += 1 }
+        let allow = try consentButton("allow", in: controller)
+        allow.sendActions(for: .touchUpInside)
+        controller.beginAppearanceTransition(false, animated: false)
+        controller.endAppearanceTransition()
+        allow.sendActions(for: .touchUpInside)
+        #expect(current.authorized && decisions == [true] && validations == 1)
+
+        let stale = PinkhaHanlinReadConsentDecision()
+        var denied: [Bool] = []
+        #expect(stale.begin { denied.append($0) })
+        let staleController = consentController(stale) { throw HanlinHostError.staleContext }
+        try consentButton("allow", in: staleController).sendActions(for: .touchUpInside)
+        #expect(denied == [false] && !stale.authorized)
+        let cancelledDuringValidation = PinkhaHanlinReadConsentDecision()
+        var reentrant: [Bool] = []
+        #expect(cancelledDuringValidation.begin { reentrant.append($0) })
+        cancelledDuringValidation.resolveAllow { cancelledDuringValidation.revoke() }
+        #expect(reentrant == [false] && !cancelledDuringValidation.authorized)
+        current.revoke()
+        #expect(!current.authorized)
+    }
+
+    @Test func nativePromptProgrammaticDismissalDeniesPendingAllow() throws {
+        for purpose in [PinkhaHanlinConsentController.Purpose.readContext, .createPage] {
+            let current = PinkhaHanlinReadConsentDecision()
+            var completions: [Bool] = []
+            var validations = 0
+            #expect(current.begin { completions.append($0) })
+            let controller = consentController(current, purpose: purpose) { validations += 1 }
+            let allow = try consentButton("allow", in: controller)
+            controller.beginAppearanceTransition(false, animated: false)
+            controller.endAppearanceTransition()
+            allow.sendActions(for: .touchUpInside)
+            #expect(completions == [false] && !current.authorized && !current.isPending && validations == 0)
+
+            let cancelled = PinkhaHanlinReadConsentDecision()
+            var cancelledValues: [Bool] = []
+            #expect(cancelled.begin { cancelledValues.append($0) })
+            let cancelledController = consentController(cancelled, purpose: purpose) { validations += 1 }
+            try consentButton("cancel", in: cancelledController).sendActions(for: .touchUpInside)
+            try consentButton("allow", in: cancelledController).sendActions(for: .touchUpInside)
+            #expect(cancelledValues == [false] && !cancelled.authorized && validations == 0)
+        }
+    }
+
+    @Test func oldNativeAllowCannotResolveReplacementPrompt() throws {
+        let original = PinkhaHanlinReadConsentDecision()
+        var first: [Bool] = []
+        var validations = 0
+        #expect(original.begin { first.append($0) })
+        let originalController = consentController(original) { validations += 1 }
+        let oldAction = try consentButton("allow", in: originalController)
+        originalController.beginAppearanceTransition(false, animated: false)
+        originalController.endAppearanceTransition()
+        let replacement = PinkhaHanlinReadConsentDecision()
+        var second: [Bool] = []
+        #expect(replacement.begin { second.append($0) })
+        let newController = consentController(replacement) { validations += 1 }
+        oldAction.sendActions(for: .touchUpInside)
+        #expect(first == [false] && second.isEmpty && replacement.isPending)
+        #expect(!original.authorized && !replacement.authorized && validations == 0)
+        try consentButton("allow", in: newController).sendActions(for: .touchUpInside)
+        #expect(second == [true] && replacement.authorized && validations == 1)
+    }
+
+    @Test func taskCancellationWinsBeforeQueuedNativeAllow() async throws {
+        let current = PinkhaHanlinReadConsentDecision()
+        var validations = 0
+        let controller = consentController(current) { validations += 1 }
+        let nativeAction = try consentButton("allow", in: controller)
+        let task = Task<Bool, Never> { @MainActor in
+            await withTaskCancellationHandler {
+                await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+                    guard current.begin({ continuation.resume(returning: $0) }) else {
+                        Issue.record("Fresh native consent decision failed to begin")
+                        continuation.resume(returning: false)
+                        return
+                    }
+                }
+            } onCancel: {
+                Task { @MainActor in current.revoke() }
+            }
+        }
+        for _ in 0..<100 where !current.isPending { await Task.yield() }
+        #expect(current.isPending)
+        task.cancel()
+        #expect(await task.value == false)
+        nativeAction.sendActions(for: .touchUpInside)
+        #expect(current.revoked && !current.authorized && !current.isPending && validations == 0)
     }
 
     @Test func nativeReturnReceiptCompletesOnceWithoutRearmingExecution() throws {

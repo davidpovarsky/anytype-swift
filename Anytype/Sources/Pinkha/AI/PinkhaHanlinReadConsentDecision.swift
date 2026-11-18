@@ -21,6 +21,18 @@ final class PinkhaHanlinReadConsentDecision {
         completion(authorized)
     }
 
+    /// Invoked by the explicit native Allow button before its owned sheet is
+    /// dismissed. The exact pending request must still have a current owner.
+    func resolveAllow(validating validate: @MainActor () throws -> Void) {
+        guard !revoked, isPending else { return }
+        do {
+            try validate()
+            resolve(true)
+        } catch {
+            resolve(false)
+        }
+    }
+
     func revoke() {
         revoked = true
         authorized = false
