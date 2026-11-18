@@ -165,7 +165,8 @@ def validate_phase(report, phase, role, identity, nonce, account_root, pid, stat
             "Actual live reads/searches not observed")
     if phase == "old-create":
         require(calls.get("WalletCreate") == 1 and calls.get("AccountCreate") == 1
-                and calls.get("WorkspaceCreate") == 1 and calls.get("BlockCreate") == 2
+                and calls.get("WorkspaceCreate") == 1 and calls.get("WorkspaceObjectListAdd") == 1
+                and calls.get("BlockCreate") == 2
                 and calls.get("ObjectCreate") == 4
                 and calls.get("WalletRecover", 0) == 0 and calls.get("AccountSelect", 0) == 0,
                 "Initial account creation contract differs")
@@ -175,7 +176,7 @@ def validate_phase(report, phase, role, identity, nonce, account_root, pid, stat
                 "Exact existing account was not selected through native RPC")
         require(all(calls.get(key, 0) == 0 for key in
                     ["WalletCreate", "AccountCreate", "WorkspaceCreate", "ObjectCreate",
-                     "BlockCreate", "ObjectCreateRelation", "ObjectCreateObjectType"]),
+                     "BlockCreate", "ObjectCreateRelation", "ObjectCreateObjectType", "WorkspaceObjectListAdd"]),
                 "Later phase recreated the account, Space, object, or block")
         require(calls.get("ObjectSetDetails", 0) == (1 if phase == "old-edit" else 0),
                 "Later phase made an unexpected fixture write")
