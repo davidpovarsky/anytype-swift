@@ -42,6 +42,22 @@ Cache derivation accepts only the canonical `v1` root. Direct creation/import
 cannot inject private populated history through generic PutTree; imported native
 history must enter the receiving private builder and validator.
 
+Independent review of the initial registry source (`1ead39fd4a8cd8f588e6938bb7b2b710d0cd7430`)
+found the second generic entry point in
+`core/block/object/treemanager.ValidateAndPutTree`. It now rejects canonical
+private roots, foreign/missing Space bindings, noncanonical private contracts and
+forged generic enum payloads before loading a Space or calling its writable
+builder. Every non-private format retains upstream PutTree behavior, including
+opaque formats unknown to this client's registry.
+
+The pinned AnySync `v0.13.8` module was verified against
+`h1:VVcAX/8VHwIB3D3mEaO0v3ojyixrYvaGI1nwgLja3zc=`. Its
+`commonspace/objecttreebuilder/treebuilder.go` shows that BuildTree forwards the
+selected validator, while PutTree only forwards the default builder. Inspection
+of that module and pinned Heart found no production call to ValidateAndPutTree;
+this is a closed API boundary before App enablement, not an observed App exploit.
+Normal private receive still uses BuildTree with the private validator.
+
 `BuildTreeOptsForSpace` chooses the private NativeTreeBuilder/NativeTreeValidator
 before interpreting history. They retain actual AnySync CID/signature/ACL checks
 and validate the operation collection/author/Space/encryption/content contract.
@@ -106,6 +122,10 @@ storage and provider-owned CRDT databases. It checks generic mutation denial,
 no initialization changes, separate physical SQLite files, reopen into a fresh
 projection, provider cleanup/tombstones, source refusal to decode block history,
 foreign/missing/removed targets, block removal and retained orphan history.
+The direct tree-manager tests use real signed native history plus observable
+service-boundary adapters. They require rejection before any Space/backend call,
+preserve existing history/projection bytes, and verify unchanged Page/opaque
+generic forwarding. These tests do not claim a production import occurred.
 
 The factory fixture uses explicit service-boundary adapters for source lookup
 and target lookup; target documents are real Heart State values. The separate
@@ -116,8 +136,8 @@ production peer authentication, atomic target lifecycle, App/RPC or iOS coverage
 
 ## Reproducible source and dependencies
 
-`heart-registration.json` hashes the exact patch, ten original/patched Heart
-files and all 26 Go overlay files. The runner requires exact app/Heart SHAs,
+`heart-registration.json` hashes the exact patch, eleven original/patched Heart
+files and all 27 Go overlay files. The runner requires exact app/Heart SHAs,
 clean tracked inputs, matching baseline hashes, a successful git-apply check,
 matching applied hashes, unchanged Go modules and Go1.26.5. It checks formatting
 and every suite's required test identities/package results; partial or empty
