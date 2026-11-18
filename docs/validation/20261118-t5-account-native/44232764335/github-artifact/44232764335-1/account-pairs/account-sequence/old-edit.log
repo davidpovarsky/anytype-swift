@@ -1,0 +1,40 @@
+mw lib: build on 0001-01-01 00:00:00 +0000 UTC at #d98420b1113536afd08cde6de9a5816f6d27ffff
+=== RUN   TestT5AccountCompatibilityPairPhase
+2026-11-18T03:53:34.449Z	[34mINFO[0m	client.space.localdiscovery	local discovery: no native discovery proxy installed, using zeroconf
+2026-11-18T03:53:34.449Z	[34mINFO[0m	anytype-app	starting app	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077", "appVersion": "ios:0.51.0/middle:v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077/any-sync:"}
+2026-11-18T03:53:34.450Z	[33mWARN[0m	anytype-config	using sqlite storage
+### lenient true
+2026-11-18T03:53:34.462Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreihg4b3vmtdgbryzlnzqeyvl5n6oqbuunipxkeuhd5xo4dmaduvdya.1zhp4rxpjnb1o"}
+2026-11-18T03:53:34.462Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreieommsamzl4p4j6kyvi5ji32j3rldvx4gyjamiwz6c2jpdq57wpau.1zhp4rxpjnb1o"}
+2026-11-18T03:53:34.463Z	[31mERROR[0m	filesync	init space usage manager	{"error": "get space info: get node peer for reserved conn: no connection to any file client"}
+2026-11-18T03:53:34.467Z	[33mWARN[0m	common.nodeconf	periodic call error	{"error": "unable to connect"}
+2026-11-18T03:53:34.468Z	[34mINFO[0m	client.space.localdiscovery	net interfaces configuration changed	{"ifaces": ["eth0"]}
+2026-11-18T03:53:34.468Z	[34mINFO[0m	client.space.localdiscovery	own lan addresses	{"addrs": ["eth0 172.17.0.2/16 advertised"]}
+2026-11-18T03:53:34.468Z	[34mINFO[0m	client.space.localdiscovery	starting mdns server	{"ips": ["172.17.0.2"], "port": 36085, "peerId": "12D3KooWKqRkmzD5y16pcTYs14GxucHJMGkkpqLaX6EsZMZo11P8", "linkLocalIfaces": []}
+2026-11-18T03:53:34.483Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreihg4b3vmtdgbryzlnzqeyvl5n6oqbuunipxkeuhd5xo4dmaduvdya.1zhp4rxpjnb1o", "spaceId": "bafyreihg4b3vmtdgbryzlnzqeyvl5n6oqbuunipxkeuhd5xo4dmaduvdya.1zhp4rxpjnb1o", "accountStatus": "Unknown"}
+2026-11-18T03:53:34.484Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-18T03:53:34.484Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-18T03:53:34.484Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-18T03:53:34.485Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-18T03:53:34.486Z	[33mWARN[0m	anytype-mw-configfetcher	periodic call error	{"error": "unable to connect"}
+2026-11-18T03:53:34.486Z	[31mERROR[0m	nameservice.nameserviceclient	no ns peers configured. Maybe you're on a custom network. Node config ID: 
+2026-11-18T03:53:34.486Z	[31mERROR[0m	anytype-identity	error fetching global name of our own identity from Naming Service	{"error": "no namingNode peers configured. Maybe you're on a custom network. Node config ID: "}
+2026-11-18T03:53:34.486Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-18T03:53:34.486Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-18T03:53:34.486Z	[31mERROR[0m	heart.inboxclient	inbox: fetchMessages batch error	{"error": "unable to connect"}
+2026-11-18T03:53:34.540Z	[34mINFO[0m	anytype-core-account	closing app: initiated	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077"}
+2026-11-18T03:53:34.543Z	[31mERROR[0m	notifications	failed to derive notification object: put tree: context canceled
+2026-11-18T03:53:34.543Z	[31mERROR[0m	deviceService	failed to get device object: failed to derive device object: put tree: context canceled
+2026-11-18T03:53:35.005Z	[31mERROR[0m	common.acl.aclservice	wait message	{"error": "context canceled"}
+2026-11-18T03:53:35.006Z	[31mERROR[0m	fileobject	index loop: wait for index request: context canceled
+2026-11-18T03:53:35.006Z	[31mERROR[0m	fileobject	list non indexed files{error 26 0  wait stores loaded: context canceled}
+2026-11-18T03:53:35.006Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreihg4b3vmtdgbryzlnzqeyvl5n6oqbuunipxkeuhd5xo4dmaduvdya.1zhp4rxpjnb1o", "error": "context canceled"}
+2026-11-18T03:53:35.006Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreicgfscr7j3rzc6v2gxiwt5o7hjqnv6qyctm6zdzuas5csdigksiku.1zhp4rxpjnb1o", "error": "context canceled"}
+2026-11-18T03:53:35.007Z	[33mWARN[0m	common.commonspace	call space.Close on closed space	{"id": "bafyreicgfscr7j3rzc6v2gxiwt5o7hjqnv6qyctm6zdzuas5csdigksiku.1zhp4rxpjnb1o"}
+2026-11-18T03:53:35.007Z	[31mERROR[0m	net.transport.quic	listener closed with error	{"localAddr": "[::]:36085", "error": "context canceled"}
+2026-11-18T03:53:35.007Z	[31mERROR[0m	net.transport.yamux	listener closed with error	{"localAddr": "[::]:36085", "error": "accept tcp [::]:36085: use of closed network connection"}
+2026-11-18T03:53:35.010Z	[34mINFO[0m	anytype-core-account	closing app: finished	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077", "tookMs": 466}
+[anytype-heart] Shutdown: graceful shutdown finished
+    pinkha_t5_account_pair_phase_test.go:593: PASS same native account and exact object/block identities; actual JSON/Protobuf exports and closed app
+--- PASS: TestT5AccountCompatibilityPairPhase (0.56s)
+PASS
