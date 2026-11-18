@@ -100,7 +100,7 @@ struct HanlinSDKConsumerTests {
         return .init(request: .init(id: request.id, logicalToolID: request.logicalToolID,
             aliasUsed: request.aliasUsed, descriptorRevision: request.descriptorRevision,
             routingTableRevision: request.routingTableRevision, arguments: request.arguments,
-            origin: .assistantModel, idempotencyKey: key, deadline: .now.addingTimeInterval(30), limits: .init()),
+            origin: .assistantModel, idempotencyKey: key, deadline: .now.addingTimeInterval(30), limits: try .init()),
             session: value.session, runID: value.runID, step: value.step, providerCallID: value.providerCallID,
             writeGuarantee: value.writeGuarantee, originalArgumentsJSON: try request.arguments.canonicalJSONData(),
             resultID: value.resultID)

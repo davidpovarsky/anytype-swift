@@ -1,0 +1,11 @@
+/Users/runner/work/anytype-swift/anytype-swift/AnytypeTests/Pinkha/HanlinSDKConsumerTests.swift:103:106: error: call can throw but is not marked with 'try'
+101 |             aliasUsed: request.aliasUsed, descriptorRevision: request.descriptorRevision,
+102 |             routingTableRevision: request.routingTableRevision, arguments: request.arguments,
+103 |             origin: .assistantModel, idempotencyKey: key, deadline: .now.addingTimeInterval(30), limits: .init()),
+    |                                                                                                          |- error: call can throw but is not marked with 'try'
+    |                                                                                                          |- note: did you mean to use 'try'?
+    |                                                                                                          |- note: did you mean to handle error as optional value?
+    |                                                                                                          `- note: did you mean to disable error propagation?
+104 |             session: value.session, runID: value.runID, step: value.step, providerCallID: value.providerCallID,
+105 |             writeGuarantee: value.writeGuarantee, originalArgumentsJSON: try request.arguments.canonicalJSONData(),
+
