@@ -420,6 +420,11 @@ def execute(args, control, evidence):
     initial_mod = run([str(real_go), "mod", "edit", "-json"],
                       "generated-graph-original-manifest", graph_env, cwd=graph_seed)
     manifest = launcher.canonical_manifest(json.loads(initial_mod.read_text(encoding="utf8")))
+    # gomobile narrows workspace replacements to one original selected version.
+    # Restore only the reviewed genproto override after verifying its exact input.
+    scope_override = launcher.prepare_generated_genproto_override(real_go, graph_env, hydration, manifest)
+    coverage.write_receipt(evidence / "generated-genproto-override.json", scope_override)
+    prepared_manifest = launcher.validate_genproto_override_receipt(scope_override, manifest)
     # go mod download may write MVS requirements even with GOFLAGS=-mod=readonly.
     # Preserve the original gomobile declarations and hydrate only this owned copy.
     graph_download = run([str(real_go), "mod", "download", "-json", "all"],
@@ -436,12 +441,13 @@ def execute(args, control, evidence):
     if digest(graph_seed / "go.mod") != graph_preparation["initial_go_mod_sha256"]:
         raise RuntimeError("Generated cache hydration changed its original module declarations")
     hydration_delta = validate_generated_hydration_manifest(
-        manifest, json.loads(hydrated_mod.read_text(encoding="utf8")), graph)
+        prepared_manifest, json.loads(hydrated_mod.read_text(encoding="utf8")), graph)
     selected_seed_genproto = next(item for item in launcher.module_records(graph_selection.read_text(encoding="utf8"))
                                  if item["Path"] == pair_ci.GENPROTO_PATH)
     pair_ci.validate_genproto_selection(selected_seed_genproto)
-    graph_contract = dict(schema="pinkha-generated-module-graph-v1",
+    graph_contract = dict(schema="pinkha-generated-module-graph-v2",
                           native_directory=str(heart), before_tidy_manifest=manifest,
+                          prepared_tidy_manifest=prepared_manifest,
                           input_native_graph_sha256=graph_preparation["input_native_graph_sha256"],
                           selected_dependencies=graph)
     graph_contract_path = graph_seed / "bind-contract.json"
@@ -454,6 +460,7 @@ def execute(args, control, evidence):
         effective_graph_sha256=digest(graph_selection), resolved_go_sum_sha256=digest(hydration / "go.sum"),
         hydrated_go_mod_sha256=digest(hydration / "go.mod"), hydrated_manifest_sha256=digest(hydrated_mod),
         hydration_delta=hydration_delta, immutable_bind_input_preserved=True,
+        generated_scope_override=scope_override,
         selected_dependencies=graph,
         selected_version_changes=[dict(path=path, original=original_versions.get(path), generated=value["version"])
                                   for path, value in graph.items() if original_versions.get(path) != value["version"]])
@@ -509,6 +516,10 @@ def execute(args, control, evidence):
             if (record.get("generated_contract_sha256") != graph_contract_sha
                     or record["before_tidy_seed"].get("status") != "EXACT_GENERATED_INPUT"):
                 raise RuntimeError("Original generated input was not bound to the hydrated graph")
+            actual_override = record.get("prepared_tidy_override", {})
+            if (launcher.validate_genproto_override_receipt(actual_override, manifest) != prepared_manifest
+                    or actual_override["original_go_mod_sha256"] != record["before_tidy_seed"]["go_mod_sha256"]):
+                raise RuntimeError("Actual generated dependency override differs from the verified input")
             after_tidy = record["after_tidy_modules"]
             launcher.validate_seeded_graph(after_tidy["selected_dependency_graph"], graph)
             original_generated[record["cwd"]] = record["before_tidy_seed"]
