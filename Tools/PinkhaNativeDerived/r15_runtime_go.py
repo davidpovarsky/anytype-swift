@@ -50,6 +50,34 @@ def validate_modules(native, selected, downloaded, heart):
     return dict(native=native, genproto_selection=selected, genproto_download=downloaded)
 
 
+IDENTITY_CHECK_FIELDS = (
+    "selected_path", "effective_path", "effective_version", "effective_sum", "effective_go_mod_sum",
+    "downloaded_path", "downloaded_version", "downloaded_sum", "downloaded_go_mod_sum",
+)
+IDENTITY_CHECK_STATES = {"MATCH", "MISSING", "DIFFERENT", "INVALID_RECORD", "INVALID_VALUE"}
+
+
+def public_genproto_checks(selected, downloaded):
+    """Only fixed field names and comparison states may leave the raw receipt."""
+    def state(record, key, expected):
+        if not isinstance(record, dict):
+            return "INVALID_RECORD"
+        if key not in record:
+            return "MISSING"
+        if not isinstance(record[key], str):
+            return "INVALID_VALUE"
+        return "MATCH" if record[key] == expected else "DIFFERENT"
+
+    effective = selected.get("Replace", selected) if isinstance(selected, dict) else None
+    return dict(zip(IDENTITY_CHECK_FIELDS, [
+        state(selected, "Path", GENPROTO),
+        state(effective, "Path", GENPROTO), state(effective, "Version", VERSION),
+        state(effective, "Sum", MODULE_SUM), state(effective, "GoModSum", MOD_SUM),
+        state(downloaded, "Path", GENPROTO), state(downloaded, "Version", VERSION),
+        state(downloaded, "Sum", MODULE_SUM), state(downloaded, "GoModSum", MOD_SUM),
+    ]))
+
+
 
 def module_records(text):
     decoder, position, records = json.JSONDecoder(), 0, []
@@ -262,45 +290,69 @@ def audit_initial_manifest(real_go, env, cwd, contract):
                 input_native_graph_sha256=contract["input_native_graph_sha256"])
 
 
-def audit_modules(real_go, env, cwd, heart, contract):
+def audit_modules(real_go, env, cwd, heart, contract, observation=None):
     if env.get("GOWORK") != "off" or env.get("GOPROXY") != "off":
         raise RuntimeError("Generated module proof requires explicit workspace isolation and offline module cache")
     mod = cwd / "go.mod"
     if not mod.is_file() or "module gobind" not in mod.read_text(encoding="utf8"):
         raise RuntimeError("The pinned gomobile-generated gobind module is missing")
 
-    def query(arguments, stream=False):
+    # Attach the observation to the caller's receipt before any query or guard
+    # can fail. A failed RHS assignment must not discard the selected identity.
+    if observation is None:
+        observation = {}
+    observation.update(status="RUNNING", queries=[])
+
+    def query(arguments, stream=False, identity=None):
+        captured = None
+        if identity is not None:
+            captured = dict(identity=identity, argv=arguments, status="RUNNING")
+            observation["queries"].append(captured)
         result = subprocess.run([str(real_go), *arguments], cwd=cwd, env=env, text=True,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=60)
+        if captured is not None:
+            captured.update(return_code=result.returncode, stdout=result.stdout, stderr=result.stderr,
+                            stdout_utf8_sha256=hashlib.sha256(result.stdout.encode("utf8")).hexdigest(),
+                            stderr_utf8_sha256=hashlib.sha256(result.stderr.encode("utf8")).hexdigest(),
+                            status="COMMAND_COMPLETED")
         if result.returncode:
             raise RuntimeError("Offline generated-module identity query failed: " + " ".join(arguments) + ": " + result.stderr.strip())
-        return module_records(result.stdout) if stream else json.loads(result.stdout)
+        parsed = module_records(result.stdout) if stream else json.loads(result.stdout)
+        if captured is not None:
+            captured.update(status="PARSED", module=parsed)
+        return parsed
 
-    native = query(["list", "-m", "-json", NATIVE_MODULE])
-    # Hydrate only the reviewed cached module before listing the selected graph,
-    # so go list includes both checksums. GOPROXY=off forbids any new download.
-    downloaded = query(["mod", "download", "-json", GENPROTO + "@" + VERSION])
-    selected = query(["list", "-m", "-json", GENPROTO])
-    # Both the selected graph and cached archive must prove the exact hashes.
-    # A correct cached download cannot conceal a different selected dependency.
-    verified = validate_modules(native, selected, downloaded, heart)
-    # An offline full download adds only checksums to this disposable generated
-    # module. The seed must already contain every selected archive.
-    download_records = query(["mod", "download", "-json", "all"], stream=True)
-    downloads = downloaded_modules("\n".join(json.dumps(item) for item in download_records))
-    graph = selected_graph(query(["list", "-m", "-json", "all"], stream=True), heart)
-    validate_downloaded_graph(graph, downloads)
-    verified["seed_graph_comparison"] = validate_seeded_graph(graph, contract["selected_dependencies"])
-    verified["selected_dependency_graph"] = graph
-    manifest = canonical_manifest(query(["mod", "edit", "-json"]), prepared=True)
-    verified["prepared_go_directive"] = manifest["Go"]
-    verified["go_mod_sha256"] = hashlib.sha256(mod.read_bytes()).hexdigest()
-    verified["go_mod_text"] = mod.read_text(encoding="utf8")
-    sums = cwd / "go.sum"
-    if not sums.is_file():
-        raise RuntimeError("Generated module has no checksum file")
-    verified["go_sum_sha256"] = hashlib.sha256(sums.read_bytes()).hexdigest()
-    return verified
+    try:
+        native = query(["list", "-m", "-json", NATIVE_MODULE], identity="native")
+        # Hydrate only the reviewed cached module before listing the selected graph,
+        # so go list includes both checksums. GOPROXY=off forbids any new download.
+        downloaded = query(["mod", "download", "-json", GENPROTO + "@" + VERSION], identity="downloaded")
+        selected = query(["list", "-m", "-json", GENPROTO], identity="selected")
+        observation["public_genproto_checks"] = public_genproto_checks(selected, downloaded)
+        # Both the selected graph and cached archive must prove the exact hashes.
+        # A correct cached download cannot conceal a different selected dependency.
+        verified = validate_modules(native, selected, downloaded, heart)
+        # An offline full download adds only checksums to this disposable generated
+        # module. The seed must already contain every selected archive.
+        download_records = query(["mod", "download", "-json", "all"], stream=True)
+        downloads = downloaded_modules("\n".join(json.dumps(item) for item in download_records))
+        graph = selected_graph(query(["list", "-m", "-json", "all"], stream=True), heart)
+        validate_downloaded_graph(graph, downloads)
+        verified["seed_graph_comparison"] = validate_seeded_graph(graph, contract["selected_dependencies"])
+        verified["selected_dependency_graph"] = graph
+        manifest = canonical_manifest(query(["mod", "edit", "-json"]), prepared=True)
+        verified["prepared_go_directive"] = manifest["Go"]
+        verified["go_mod_sha256"] = hashlib.sha256(mod.read_bytes()).hexdigest()
+        verified["go_mod_text"] = mod.read_text(encoding="utf8")
+        sums = cwd / "go.sum"
+        if not sums.is_file():
+            raise RuntimeError("Generated module has no checksum file")
+        verified["go_sum_sha256"] = hashlib.sha256(sums.read_bytes()).hexdigest()
+        observation["status"] = "PASS"
+        return verified
+    except Exception as error:
+        observation.update(status="FAIL", error_type=type(error).__name__)
+        raise
 
 
 def main(argv=None):
@@ -334,11 +386,16 @@ def main(argv=None):
                 receipt["prepared_tidy_override"] = prepare_generated_module(
                     real_go, env, cwd, contract["before_tidy_manifest"])
         if scope == "generated-gobind" and arguments and arguments[0] in ["build", "install", "run", "test"]:
-            receipt["before_build_modules"] = audit_modules(real_go, env, cwd, heart, contract)
+            receipt["before_build_observation"] = {}
+            receipt["before_build_modules"] = audit_modules(
+                real_go, env, cwd, heart, contract, receipt["before_build_observation"])
         result = subprocess.run([str(real_go), *arguments], cwd=cwd, env=env)
+        receipt["command_return_code"] = result.returncode
         receipt["return_code"] = result.returncode
         if result.returncode == 0 and scope == "generated-gobind" and arguments[:2] == ["mod", "tidy"]:
-            receipt["after_tidy_modules"] = audit_modules(real_go, env, cwd, heart, contract)
+            receipt["after_tidy_observation"] = {}
+            receipt["after_tidy_modules"] = audit_modules(
+                real_go, env, cwd, heart, contract, receipt["after_tidy_observation"])
         return result.returncode
     except Exception as error:
         receipt.update(return_code=91, error_type=type(error).__name__, error=str(error))

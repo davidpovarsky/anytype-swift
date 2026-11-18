@@ -588,6 +588,39 @@ def execute(args, control, evidence):
     return artifact
 
 
+def failed_module_identity_diagnostics(evidence):
+    """Expose comparison states, never raw module values, paths, or command output."""
+    diagnostics = []
+    for path in sorted((evidence / "go-launcher").glob("*.json")):
+        if path.is_symlink() or path.stat().st_size > 2 * 1024 * 1024:
+            continue
+        raw = path.read_bytes()
+        record = json.loads(raw)
+        if (not isinstance(record, dict) or record.get("scope") != "generated-gobind"
+                or record.get("return_code") != 91):
+            continue
+        for phase, key in [("AFTER_TIDY", "after_tidy_observation"), ("BEFORE_BUILD", "before_build_observation")]:
+            observation = record.get(key)
+            if not isinstance(observation, dict) or observation.get("status") != "FAIL":
+                continue
+            queries = observation.get("queries")
+            if (not isinstance(queries, list) or len(queries) != 3
+                    or any(not isinstance(query, dict) for query in queries)
+                    or [query.get("identity") for query in queries] != ["native", "downloaded", "selected"]
+                    or any(query.get("status") != "PARSED" or query.get("return_code") != 0 for query in queries)):
+                continue
+            checks = launcher.public_genproto_checks(queries[2].get("module"), queries[1].get("module"))
+            diagnostic = dict(phase=phase, checks=checks, receipt_sha256=hashlib.sha256(raw).hexdigest())
+            for field, allowed in [("goos", {"ios", "darwin"}), ("goarch", {"arm64", "amd64"}),
+                                   ("darwin_sdk", {"iphoneos", "iphonesimulator"})]:
+                value = record.get(field)
+                diagnostic[field] = value if isinstance(value, str) and value in allowed else "UNRECOGNIZED"
+            code = record.get("command_return_code")
+            diagnostic["command_return_code"] = code if type(code) is int and -255 <= code <= 255 else "NOT_RECORDED"
+            diagnostics.append(diagnostic)
+    return diagnostics
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(__doc__)
     for name in ["source", "heart-source", "work", "artifacts", "evidence"]:
@@ -604,6 +637,17 @@ def main(argv=None):
         receipt.update(execute(args, Path(__file__).resolve().parents[2], evidence))
     except BaseException as error:
         receipt.update(status="FAIL", error_type=type(error).__name__, error=str(error))
+        # The bind command captures child output in its retained log. Emit only
+        # these fixed-schema comparisons here so GitHub annotations can identify
+        # a failed field without transferring the original private receipt.
+        try:
+            diagnostics = failed_module_identity_diagnostics(evidence)
+            receipt["module_identity_diagnostics"] = diagnostics
+            receipt["module_identity_diagnostic_status"] = "RECORDED" if diagnostics else "NO_COMPLETED_IDENTITY_OBSERVATION"
+            for diagnostic in diagnostics:
+                print("::error title=R15 generated module identity::" + json.dumps(diagnostic, sort_keys=True))
+        except Exception:
+            receipt["module_identity_diagnostic_status"] = "DIAGNOSTIC_READ_FAILED"
     receipt["finished_at"] = datetime.now(timezone.utc).isoformat()
     coverage.write_receipt(path, receipt)
     print(json.dumps(receipt))

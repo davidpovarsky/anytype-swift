@@ -1,6 +1,8 @@
 """Pure build-control checks. No Apple framework or runtime is executed here."""
 import copy
+from contextlib import redirect_stderr, redirect_stdout
 import hashlib
+import io
 import json
 from pathlib import Path
 import unittest
@@ -121,6 +123,175 @@ class R15RuntimeControls(unittest.TestCase):
         native["Replace"]["Dir"] = str(Path("/different/heart").resolve())
         with self.assertRaises(RuntimeError):
             launcher.validate_modules(native, selected, downloaded, heart)
+
+
+    def test_launcher_retains_failed_selected_query_before_losing_the_verified_result(self):
+        for arguments in [["mod", "tidy"], ["build", "example.invalid/unused"]]:
+            with self.subTest(arguments=arguments), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary).resolve()
+                heart, generated, audit = root / "heart", root / "generated", root / "audit"
+                cwd = generated / "ios-arm64"
+                cwd.mkdir(parents=True)
+                audit.mkdir()
+                (cwd / "go.mod").write_text("module gobind\n\ngo 1.26.5\n", encoding="utf8")
+                _, native, selected, downloaded = module_inputs()
+                native["Replace"].update(Dir=str(heart), Path=str(heart))
+                selected["Replace"].pop("Sum")
+                query_values = [native, downloaded, selected]
+                responses = [subprocess.CompletedProcess([], 0, stdout=json.dumps(value), stderr="")
+                             for value in query_values]
+                if arguments[0] == "mod":
+                    responses.insert(0, subprocess.CompletedProcess([], 0))
+                env = dict(PINKHA_T5_REAL_GO=str(root / "go"), PINKHA_T5_HEART=str(heart),
+                           PINKHA_T5_GOWORK=str(root / "go.work"), PINKHA_T5_MOBILE_TMP=str(generated),
+                           PINKHA_T5_GO_AUDIT=str(audit), PINKHA_T5_GENERATED_CONTRACT=str(root / "contract.json"),
+                           PINKHA_T5_GENERATED_CONTRACT_SHA256="a" * 64, GOPROXY="off")
+                with (mock.patch.dict(launcher.os.environ, env),
+                      mock.patch.object(launcher.Path, "cwd", return_value=cwd),
+                      mock.patch.object(launcher, "load_seed_contract", return_value={"before_tidy_manifest": {}}),
+                      mock.patch.object(launcher, "audit_initial_manifest", return_value={}),
+                      mock.patch.object(launcher, "prepare_generated_module", return_value={}),
+                      mock.patch.object(launcher.subprocess, "run", side_effect=responses) as invoked,
+                      redirect_stderr(io.StringIO())):
+                    self.assertEqual(launcher.main(arguments), 91)
+                receipts = list(audit.glob("*.json"))
+                self.assertEqual(len(receipts), 1)
+                receipt = json.loads(receipts[0].read_text(encoding="utf8"))
+                phase = "after_tidy" if arguments[0] == "mod" else "before_build"
+                self.assertEqual(receipt["return_code"], 91)
+                self.assertEqual(receipt["error"], "Generated gobind module changed the reviewed genproto identity or checksum")
+                self.assertNotIn(phase + "_modules", receipt)
+                if phase == "after_tidy":
+                    self.assertEqual(receipt["command_return_code"], 0)
+                    self.assertEqual(invoked.call_count, 4)
+                else:
+                    self.assertNotIn("command_return_code", receipt)
+                    self.assertEqual(invoked.call_count, 3)
+                observation = receipt[phase + "_observation"]
+                self.assertEqual(observation["status"], "FAIL")
+                self.assertEqual(observation["public_genproto_checks"]["effective_sum"], "MISSING")
+                self.assertEqual(observation["public_genproto_checks"]["downloaded_sum"], "MATCH")
+                self.assertEqual([item["module"] for item in observation["queries"]], query_values)
+                for captured, value in zip(observation["queries"], query_values):
+                    self.assertEqual(captured["stdout"], json.dumps(value))
+                    self.assertEqual(captured["stdout_utf8_sha256"], hashlib.sha256(json.dumps(value).encode()).hexdigest())
+
+    def test_identity_query_failure_or_invalid_json_retains_original_output_and_still_fails(self):
+        for response in [subprocess.CompletedProcess([], 1, stdout="partial", stderr="private path diagnostic"),
+                         subprocess.CompletedProcess([], 0, stdout="invalid json", stderr="")]:
+            with self.subTest(return_code=response.returncode), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary).resolve()
+                (root / "go.mod").write_text("module gobind\n", encoding="utf8")
+                observation = {}
+                with mock.patch.object(launcher.subprocess, "run", return_value=response), self.assertRaises((RuntimeError, ValueError)):
+                    launcher.audit_modules(root / "go", dict(GOWORK="off", GOPROXY="off"), root, root / "heart", {}, observation)
+                self.assertEqual(observation["status"], "FAIL")
+                self.assertNotIn("public_genproto_checks", observation)
+                self.assertEqual(len(observation["queries"]), 1)
+                captured = observation["queries"][0]
+                self.assertEqual(captured["stdout"], response.stdout)
+                self.assertEqual(captured["stderr"], response.stderr)
+                self.assertEqual(captured["return_code"], response.returncode)
+
+    def test_public_checks_cannot_export_arbitrary_module_values_or_annotation_text(self):
+        _, _, selected, downloaded = module_inputs()
+        private = "PRIVATE_SENTINEL%0A::warning::/private/runner/token"
+        selected["Replace"].update(Version=private, Sum=private, Dir=private)
+        selected["Replace"].pop("GoModSum")
+        downloaded["GoModSum"] = {"private": private}
+        checks = launcher.public_genproto_checks(selected, downloaded)
+        self.assertEqual(set(checks), set(launcher.IDENTITY_CHECK_FIELDS))
+        self.assertTrue(set(checks.values()) <= launcher.IDENTITY_CHECK_STATES)
+        self.assertEqual(checks["effective_version"], "DIFFERENT")
+        self.assertEqual(checks["effective_sum"], "DIFFERENT")
+        self.assertEqual(checks["effective_go_mod_sum"], "MISSING")
+        self.assertEqual(checks["downloaded_go_mod_sum"], "INVALID_VALUE")
+        self.assertNotIn(private, json.dumps(checks))
+        self.assertEqual(set(launcher.public_genproto_checks(None, []).values()), {"INVALID_RECORD"})
+
+    def diagnostic_record(self):
+        _, native, selected, downloaded = module_inputs()
+        selected["Replace"].pop("Sum")
+        queries = [dict(identity=identity, status="PARSED", return_code=0, module=value)
+                   for identity, value in [("native", native), ("downloaded", downloaded), ("selected", selected)]]
+        return dict(scope="generated-gobind", return_code=91, command_return_code=0,
+                    goos="ios", goarch="arm64", darwin_sdk="iphoneos",
+                    after_tidy_observation=dict(status="FAIL", queries=queries))
+
+    def test_builder_publishes_only_sanitized_comparisons_and_keeps_original_failure(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            record = self.diagnostic_record()
+            private = "PRIVATE_SENTINEL%0A::warning::/private/runner/token"
+            record.update(cwd=private, error=private, goarch=private)
+            record["after_tidy_observation"]["queries"][2]["module"]["Replace"]["GoModSum"] = private
+            def fail(args, control, evidence):
+                audit = evidence / "go-launcher"
+                audit.mkdir()
+                (audit / "observed.json").write_text(json.dumps(record), encoding="utf8")
+                raise RuntimeError("gomobile-bind failed; see original retained log")
+            output = io.StringIO()
+            with mock.patch.object(runtime, "execute", side_effect=fail), redirect_stdout(output):
+                code = runtime.main(["--source", str(root / "source"), "--heart-source", str(root / "heart"),
+                                     "--work", str(root / "work"), "--artifacts", str(root / "artifacts"),
+                                     "--evidence", str(root / "evidence")])
+            receipt = json.loads((root / "evidence/runtime-build-result.json").read_text(encoding="utf8"))
+            self.assertEqual(code, 1)
+            self.assertEqual(receipt["status"], "FAIL")
+            self.assertEqual(receipt["error"], "gomobile-bind failed; see original retained log")
+            self.assertEqual(receipt["native_test_invocations"], 0)
+            self.assertEqual(receipt["swift_pairing_status"], "NOT_RUN")
+            self.assertEqual(receipt["client_enablement"], runtime.pair_ci.CLIENT_DISABLED)
+            self.assertEqual(receipt["module_identity_diagnostic_status"], "RECORDED")
+            self.assertNotIn(private, output.getvalue())
+            annotations = [line for line in output.getvalue().splitlines() if line.startswith("::error")]
+            self.assertEqual(len(annotations), 1)
+            diagnostic = json.loads(annotations[0].split("::", 2)[2])
+            self.assertEqual(diagnostic["phase"], "AFTER_TIDY")
+            self.assertEqual(diagnostic["command_return_code"], 0)
+            self.assertEqual(diagnostic["goarch"], "UNRECOGNIZED")
+            self.assertEqual(diagnostic["checks"]["effective_sum"], "MISSING")
+            self.assertEqual(diagnostic["checks"]["effective_go_mod_sum"], "DIFFERENT")
+            self.assertEqual(diagnostic["receipt_sha256"], runtime.digest(root / "evidence/go-launcher/observed.json"))
+
+    def test_missing_or_incomplete_observation_cannot_be_fabricated_from_legacy_error_text(self):
+        for change in ["legacy", "incomplete", "duplicate", "command-failed", "phase-passed"]:
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary).resolve()
+                audit = root / "go-launcher"
+                audit.mkdir()
+                record = self.diagnostic_record()
+                observation = record["after_tidy_observation"]
+                if change == "legacy":
+                    record.pop("after_tidy_observation")
+                    record["error"] = "Generated gobind module changed the reviewed genproto identity or checksum"
+                elif change == "incomplete":
+                    observation["queries"].pop()
+                elif change == "duplicate":
+                    observation["queries"][2] = copy.deepcopy(observation["queries"][1])
+                elif change == "command-failed":
+                    observation["queries"][2]["return_code"] = 1
+                else:
+                    observation["status"] = "PASS"
+                (audit / "observed.json").write_text(json.dumps(record), encoding="utf8")
+                self.assertEqual(runtime.failed_module_identity_diagnostics(root), [])
+
+    def test_diagnostic_read_failure_never_replaces_original_build_failure(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            with (mock.patch.object(runtime, "execute", side_effect=RuntimeError("original build failure")),
+                  mock.patch.object(runtime, "failed_module_identity_diagnostics", side_effect=ValueError("private invalid receipt")),
+                  redirect_stdout(io.StringIO()) as output):
+                code = runtime.main(["--source", str(root / "source"), "--heart-source", str(root / "heart"),
+                                     "--work", str(root / "work"), "--artifacts", str(root / "artifacts"),
+                                     "--evidence", str(root / "evidence")])
+            receipt = json.loads((root / "evidence/runtime-build-result.json").read_text(encoding="utf8"))
+            self.assertEqual(code, 1)
+            self.assertEqual(receipt["status"], "FAIL")
+            self.assertEqual(receipt["error"], "original build failure")
+            self.assertEqual(receipt["module_identity_diagnostic_status"], "DIAGNOSTIC_READ_FAILED")
+            self.assertEqual(receipt["native_test_invocations"], 0)
+            self.assertNotIn("private invalid receipt", output.getvalue())
 
 
     def mobile_fixture(self, root):
