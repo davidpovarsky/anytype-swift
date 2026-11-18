@@ -15,9 +15,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
-      CC: musl-gcc
-      GOTOOLCHAIN: local
-      GOFLAGS: -ldflags=-extldflags=-static
+      # Official golang:1.26.5-alpine, exact linux/amd64 manifest from Docker Hub.
+      T5_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8
     steps:
       - name: Checkout integration proof control
         uses: actions/checkout@v4
@@ -34,50 +33,32 @@ jobs:
           repository: anyproto/anytype-heart
           ref: d98420b1113536afd08cde6de9a5816f6d27ffff
           path: heart
-      - name: Install the Linux musl C toolchain
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends musl-tools
-          mkdir -p proof/toolchain
-          musl-gcc -v > proof/toolchain/compiler.log 2>&1
-          dpkg-query -W musl musl-dev musl-tools | tee proof/toolchain/packages.txt
-          cat > "$RUNNER_TEMP/t5-qsort-probe.c" <<'C'
-          #define _GNU_SOURCE
-          #include <stdlib.h>
-          static int compare(const void *a, const void *b, void *context) {
-              (void)context;
-              return (*(const int *)a > *(const int *)b) - (*(const int *)a < *(const int *)b);
-          }
-          int main(void) {
-              int values[] = {2, 1};
-              qsort_r(values, 2, sizeof(values[0]), compare, NULL);
-              return values[0] != 1 || values[1] != 2;
-          }
-          C
-          musl-gcc -static -Werror "$RUNNER_TEMP/t5-qsort-probe.c" -o "$RUNNER_TEMP/t5-qsort-probe" > proof/toolchain/qsort-link.log 2>&1
-          "$RUNNER_TEMP/t5-qsort-probe"
-      - name: Install pinned Go toolchain
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.26.5'
-          cache: false
       - name: Restore compiled dependencies only
         uses: actions/cache@v4
         with:
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-          key: t5-ubuntu24-musl-go1.26.5-${{ hashFiles('heart/tantivity_sha256.txt', 'heart/go.sum', 'source/**/go.sum') }}-947fbde2-${{ inputs.component }}
+          path: .t5-cache
+          key: t5-alpine-111d7915-go1.26.5-${{ hashFiles('heart/tantivity_sha256.txt', 'heart/go.sum', 'source/**/go.sum') }}-947fbde2-${{ inputs.component }}
           restore-keys: |
-            t5-ubuntu24-musl-go1.26.5-${{ hashFiles('heart/tantivity_sha256.txt', 'heart/go.sum', 'source/**/go.sum') }}-
-      - name: Execute one real native component with fresh evidence
+            t5-alpine-111d7915-go1.26.5-${{ hashFiles('heart/tantivity_sha256.txt', 'heart/go.sum', 'source/**/go.sum') }}-
+      - name: Execute one real native component in the pinned musl environment
         env:
           T5_COMPONENT: ${{ inputs.component }}
         run: |
-          python3 control/Tools/PinkhaNativeDerived/test_run_t5_coverage_ci.py
-          python3 control/Tools/PinkhaNativeDerived/run_t5_coverage_ci.py \
-            --source source --heart heart --component "$T5_COMPONENT" \
-            --evidence "proof/$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT/$T5_COMPONENT"
+          mkdir -p proof/toolchain .t5-cache
+          docker pull --platform linux/amd64 "$T5_GO_IMAGE"
+          docker image inspect "$T5_GO_IMAGE" > proof/toolchain/image.json
+          docker run --rm --platform linux/amd64 --cpus=2 --memory=6g --pids-limit=512 \
+            --workdir /workspace \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/control,dst=/workspace/control,readonly" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/source,dst=/workspace/source,readonly" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/heart,dst=/workspace/heart" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/proof,dst=/workspace/proof" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/.t5-cache,dst=/cache" \
+            -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_SHA -e GITHUB_ACTIONS -e T5_COMPONENT \
+            -e CC=gcc -e CXX=g++ -e GOTOOLCHAIN=local -e GOFLAGS=-ldflags=-extldflags=-static \
+            -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
+            -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \
+            "$T5_GO_IMAGE" sh control/Tools/PinkhaNativeDerived/run_t5_linux_container.sh
       - name: Upload attempt evidence including failures
         if: always()
         uses: actions/upload-artifact@v4
