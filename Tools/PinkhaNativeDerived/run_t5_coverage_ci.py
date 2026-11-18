@@ -76,11 +76,11 @@ def execute(args, control, evidence):
     spec = importlib.util.spec_from_file_location('pinned_heart_helper', helper / 'build_custom_heart.py')
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    tantivy = module.fetch_tantivy(heart, 'linux-amd64')
+    tantivy = module.fetch_tantivy(heart, 'linux-amd64-musl')
     (evidence / 'tantivy.json').write_text(json.dumps(tantivy, indent=2) + '\n', encoding='utf8')
     run([sys.executable, str(helper / 'test_t5_validation_receipts.py')], 'driver-controls')
     run([sys.executable, str(helper / 'validate_t5_coverage.py'), '--heart-source', str(heart),
-         '--inventory', str(inventory), '--go', 'go', '--tantivy-directory', str(heart / 'deps/libs/linux-amd64'),
+         '--inventory', str(inventory), '--go', 'go', '--tantivy-directory', str(heart / 'deps/libs/linux-amd64-musl'),
          '--component', args.component, '--evidence', str(evidence)], 'native-component')
     component = json.loads((evidence / (args.component + '-result.json')).read_text())
     expected = {'projection-cache': dict(packages=2, top_level_tests=10, subcases=21),
