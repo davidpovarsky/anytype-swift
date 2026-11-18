@@ -27,6 +27,12 @@ PAIR_HASHES = {
 APPROVAL_ROOT = "docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval"
 OLD_PATCH = "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077"
 OLD_INVENTORY = "952073d8dccc991f21bffe5d3ded4e1d5369bb2c30f247ae5204d47cb03aee14"
+GENPROTO_PATH = "google.golang.org/genproto"
+GENPROTO_VERSION = "v0.0.0-20241021214115-324edc3d5d38"
+GENPROTO_SUM = "h1:Q3nlH8iSQSRUwOskjbcSMcF2jiYMNiQYZ0c2KEJLKKU="
+GENPROTO_MOD_SUM = "h1:xBI+tzfqGGN2JBeSebfKXFSdBpWVQ7sLW40PTupVRm4="
+GENPROTO_DECLARATION = "Tools/PinkhaNativeDerived/compatibility/go.mod"
+GENPROTO_DECLARATION_SHA = "6616b2ae644a325a32edaae1528c5e5c2d41a1ff17c1ed4d1b84beec5242958d"
 TANTIVY = "88b34e006707bfec2d29e8b26405f67cbb975d06fd4ea164da856d0084aaabbc"
 PHASES = ["old-create", "new-upgrade", "old-edit", "new-recover"]
 CLIENT_DISABLED = "DISABLED_PENDING_RUNTIME_COMPATIBILITY_PROOF"
@@ -44,6 +50,17 @@ def verify_pair_inputs(control):
     for name, expected in PAIR_HASHES.items():
         if coverage.digest(control / PAIR_DIRECTORY / name) != expected:
             raise RuntimeError("Preserved pair input differs: " + name)
+
+
+def validate_genproto_selection(selection):
+    effective = selection.get("Replace", selection)
+    if (selection.get("Path") != GENPROTO_PATH
+            or effective.get("Path") != GENPROTO_PATH
+            or effective.get("Version") != GENPROTO_VERSION
+            or effective.get("Sum") != GENPROTO_SUM
+            or effective.get("GoModSum") != GENPROTO_MOD_SUM):
+        raise RuntimeError("Selected genproto differs from the existing reviewed dependency and checksum")
+    return effective
 
 
 def validate_pair_result(result):
@@ -77,6 +94,7 @@ def execute(args, control, evidence):
         if coverage.git(tree, "rev-parse", "HEAD") != pin or coverage.git(tree, "status", "--porcelain"):
             raise RuntimeError("Exact clean fresh checkout required: " + str(tree))
     frozen = dict(coverage.HASHES)
+    frozen[GENPROTO_DECLARATION] = GENPROTO_DECLARATION_SHA
     frozen[APPROVAL_ROOT + "/revision-14/native-heart-integration.patch"] = OLD_PATCH
     frozen[APPROVAL_ROOT + "/revision-14/native-heart-integration.json"] = OLD_INVENTORY
     for path, expected in frozen.items():
@@ -132,7 +150,12 @@ def execute(args, control, evidence):
         role_work = build_root / role
         role_work.mkdir()
         gowork = role_work / "go.work"
-        gowork.write_text("go 1.26.5\n\nuse " + str(heart) + "\n", encoding="utf8")
+        # The existing 947 compatibility probe already pins this post-split
+        # genproto. Keep only this role's Heart module in the workspace, and
+        # resolve the obsolete root-module overlap without overriding native code.
+        gowork.write_text("go 1.26.5\n\nuse " + str(heart) + "\n\nreplace "
+                          + GENPROTO_PATH + " => " + GENPROTO_PATH + " " + GENPROTO_VERSION + "\n",
+                          encoding="utf8")
         overlay_destination = heart / "pkg/lib/localstore/objectstore/spaceindex/pinkha_t5_pair_phase_test.go"
         if overlay_destination.exists():
             raise RuntimeError("Preserved pair overlay would replace a native source file")
@@ -147,6 +170,9 @@ def execute(args, control, evidence):
         run(["go", "mod", "download"], role + "-pinned-module-download", cwd=heart, env=env)
         env["GOPROXY"] = "off"
         run(["go", "list", "-m", "-json", "all"], role + "-resolved-modules", cwd=heart, env=env)
+        run(["go", "list", "-m", "-json", GENPROTO_PATH], role + "-genproto-selection", cwd=heart, env=env)
+        selected = json.loads((evidence / (role + "-genproto-selection.log")).read_text(encoding="utf8"))
+        genproto = validate_genproto_selection(selected)
         summary = native_helper.TAG + "-pinkha-native-derived-v1-" + patch_sha
         if role == "new":
             summary += "-pinkha-native-t5-lookup-v1-" + patch_sha
@@ -166,6 +192,7 @@ def execute(args, control, evidence):
         manifest[role] = entry
         build_receipts[role] = dict(status="BINARY_BUILT_SOURCE_VERIFIED", **verified,
                                     go_version=version, linked_summary=summary, tantivy=tantivy,
+                                    genproto_resolution=genproto,
                                     overlay=json.loads(overlay.read_text()), gowork=gowork.read_text())
         coverage.write_receipt(evidence / (role + "-build.json"), build_receipts[role])
     manifest_path = evidence / "manifest.json"

@@ -33,3 +33,13 @@ This route creates synthetic native Details, not an application account or real 
 Windows Python control validation: 18 preserved controller tests and 4 wrapper tests passed. The new wrapper tests include 10 rejection subcases. Python AST, two YAML files and shell syntax parsed successfully. Original logs and normalized hashes of ten implementation/workflow files are retained beside this document.
 
 These are control checks only. Actual two-binary compilation and process pairing are NOT_RUN at this source-publication milestone. A subsequent CI run must retain the real receipts, executable hashes and nonzero native counts.
+
+## First real pairing attempt and the existing dependency pin
+
+Run 44213836790 on integration 45f890c72edcc8d37802077c353ec4d5a05041ae reached old-binary compilation, then failed at package setup: the obsolete root genproto 202109 module and the split googleapis/rpc module both supplied the status package. No binary or native phase was completed. Original evidence artifact 14387372852 is retained under 44213836790; its verified archive SHA-256 is c38c9a55633283dfdd40f87ef2b1ac7f76bd1a0b3ec8341336fb2be57dfd9106.
+
+The already reviewed source947 integration and compatibility modules both explicitly require google.golang.org/genproto v0.0.0-20241021214115-324edc3d5d38. The three passing native component runs resolved that version. The revised pair wrapper uses a targeted replacement to this same root-module version in each temporary go.work, keeping only the corresponding Heart module in use. Heart go.mod/source, native package selection and the preserved fixture are unchanged. The canonical compatibility declaration is additionally checked by SHA-256 6616b2ae644a325a32edaae1528c5e5c2d41a1ff17c1ed4d1b84beec5242958d.
+
+The exact module and go.mod h1 checksums were read from the official Go checksum database; original lookup bytes are preserved in genproto-sumdb.txt. Before either binary is compiled, the actual go list -m -json selection must match the reviewed module path/version and both checksums. Each role retains that selection and all resolved module metadata in its build receipt.
+
+Six updated CI-control tests passed, including rejection of wrong revision, fork and checksums. Python parse passed. This is control validation; the corrected native pair still needs its own new run and nonzero phase evidence.
