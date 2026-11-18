@@ -304,14 +304,40 @@ struct PinkhaStage1AcceptancePreparationTests {
         let document = Container.shared.openedDocumentProvider().document(
             objectId: objectId, spaceId: spaceId, mode: .handling
         )
+        // A nonempty collection can still contain only the loading shimmer. Wait for
+        // the native document's editable state and its actual rendered title before
+        // dispatching the one empty-area tap; the production handler ignores a tap
+        // while canEditBlocks is false. Never repair focus or replay the tap here.
+        let probeTitle = "Native input lifecycle probe"
+        var inputReady = false
+        var readinessObservation = ""
         for _ in 0..<200 {
-            if document.isOpened, controller.collectionView.numberOfSections > 0,
-               controller.collectionView.numberOfItems(inSection: 0) > 0 { break }
+            let nativeTitleReady = document.details?.name == probeTitle
+                && document.infoContainer.recursiveChildren(of: objectId).contains {
+                    $0.textContent?.contentType == .title
+                }
+            let renderedTitleReady = inputTextViews(in: controller.collectionView).contains {
+                $0.text == probeTitle && $0.window === window && !$0.isHidden && $0.alpha > 0
+                    && $0.bounds.width.isFinite && $0.bounds.width > 1 && $0.bounds.height > 1
+            }
+            let hostReady = scene.activationState == .foregroundActive && window.isKeyWindow
+                && !window.isHidden && controller.view.window === window
+                && controller.collectionView.window === window
+                && controller.collectionView.bounds.width.isFinite
+                && controller.collectionView.bounds.width > 1 && controller.collectionView.bounds.height > 1
+            inputReady = document.isOpened && document.permissions.canEditBlocks
+                && nativeTitleReady && renderedTitleReady && hostReady
+            readinessObservation = "opened=\(document.isOpened) canEditBlocks=\(document.permissions.canEditBlocks) "
+                + "nativeTitle=\(nativeTitleReady) renderedTitle=\(renderedTitleReady) hostReady=\(hostReady) "
+                + "keyWindow=\(window.isKeyWindow) sceneActive=\(scene.activationState == .foregroundActive)"
+            if inputReady { break }
             try await Task.sleep(for: .milliseconds(50))
         }
         try #require(document.isOpened)
+        try #require(inputReady, "Original editor input readiness failed: \(readinessObservation)")
+        print("PINKHA_NATIVE_EDITOR_READY \(readinessObservation)")
         state.model.tapOnEmptyPlace(isBelowContent: true)
-        var textView = try await focusedEmptyTextView(in: controller.view)
+        var textView = try await focusedEmptyTextView(in: controller.view, phase: "initial-empty-area-tap")
         let lines = ["שלום בדיקת הקלדה", "English input lifecycle", "שורה שלישית", "Fourth native line", "שלום 👩🏽‍💻 final"]
         for (index, line) in lines.enumerated() {
             let emptyCaret = textView.caretRect(for: textView.beginningOfDocument)
@@ -340,7 +366,9 @@ struct PinkhaStage1AcceptancePreparationTests {
                 textView, shouldChangeTextIn: textView.selectedRange, replacementText: "\n"
             ) ?? true
             #expect(!acceptedReturn, "The original keyboard handler must own Return and create the next block")
-            textView = try await focusedEmptyTextView(in: controller.view, excluding: previous)
+            textView = try await focusedEmptyTextView(
+                in: controller.view, excluding: previous, phase: "return-after-line-\(index + 1)"
+            )
         }
         for line in lines {
             #expect(document.infoContainer.recursiveChildren(of: objectId).filter { $0.textContent?.text == line }.count == 1)
@@ -350,17 +378,27 @@ struct PinkhaStage1AcceptancePreparationTests {
     }
 
     @MainActor
-    private func focusedEmptyTextView(in root: UIView, excluding previous: UITextView? = nil) async throws -> UITextView {
-        func descendants(_ view: UIView) -> [UITextView] {
-            (view as? UITextView).map { [$0] } ?? view.subviews.flatMap(descendants)
-        }
+    private func inputTextViews(in root: UIView) -> [UITextView] {
+        (root as? UITextView).map { [$0] } ?? root.subviews.flatMap { inputTextViews(in: $0) }
+    }
+
+    @MainActor
+    private func focusedEmptyTextView(
+        in root: UIView, excluding previous: UITextView? = nil, phase: String
+    ) async throws -> UITextView {
         for _ in 0..<200 {
-            if let view = descendants(root).first(where: { $0 !== previous && $0.isFirstResponder && $0.textStorage.length == 0 }) {
+            if let view = inputTextViews(in: root).first(where: { $0 !== previous && $0.isFirstResponder && $0.textStorage.length == 0 }) {
                 return view
             }
             try await Task.sleep(for: .milliseconds(50))
         }
-        Issue.record("The real editor did not focus a distinct empty block")
+        let views = inputTextViews(in: root)
+        let observation = "phase=\(phase) textViews=\(views.count) "
+            + "firstResponders=\(views.filter(\.isFirstResponder).count) "
+            + "emptyTextViews=\(views.filter { $0.textStorage.length == 0 }.count) "
+            + "keyWindow=\(root.window?.isKeyWindow == true) previousFocused=\(previous?.isFirstResponder == true)"
+        print("PINKHA_NATIVE_EDITOR_FOCUS_FAILED \(observation)")
+        Issue.record("The real editor did not focus a distinct empty block; \(observation)")
         throw NativeInputProbeError.missingFocusedBlock
     }
 }
