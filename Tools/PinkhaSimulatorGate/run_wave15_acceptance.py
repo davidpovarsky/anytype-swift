@@ -16,9 +16,19 @@ import subprocess
 
 import run_ui27 as shared
 import hanlin_acceptance_evidence as hanlin
+import hanlin_selection_evidence as hanlin_selection
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 LANES = {
+    "hanlin-selection": {
+        "suite": "HanlinSelectionAcceptanceUITests",
+        "methods": ["testRealSelectedBlockReadAndReturn"],
+        "preparation": "HanlinSelectionAcceptancePreparationTests/prepareSelectedBlockFixture",
+        "preparation_environment": {"PINKHA_PREPARE_HANLIN_SELECTION_UI": "1",
+            "PINKHA_HANLIN_NATIVE_PREPARATION": "1", "PINKHA_SIMULATOR_ACCEPTANCE_PREPARATION": "1",
+            "PINKHA_SIMULATOR_UI_DISPOSABLE": "1"},
+        "fixture": "pinkha-hanlin-selection-fixture.json",
+    },
     "hanlin-native": {
         "suite": "HanlinNativeAcceptanceUITests",
         "methods": ["testRealNativeConsentCreatePageAndAuthorityRevocation"],
@@ -85,6 +95,13 @@ LANES = {
 }
 
 
+HANLIN_LANES = {
+    "hanlin-native": (hanlin, "pinkha-hanlin-native-result.json", "hanlin-native-result.json", "hanlin_native_receipt"),
+    "hanlin-selection": (hanlin_selection, "pinkha-hanlin-selection-result.json",
+                         "hanlin-selection-result.json", "hanlin_selection_receipt"),
+}
+
+
 def require(condition, reason):
     if not condition:
         raise ValueError(reason)
@@ -99,12 +116,23 @@ def plan(lane, device, language):
     methods = [spec["suite"] + "/" + name for name in spec["methods"]]
     require(methods and len(methods) == len(set(methods)), "Empty or duplicate named UI selection")
     return dict(lane=lane, device_family=device, app_language=language,
-                build_configuration="Debug-Anytype" if lane == "hanlin-native" else "Release-Anytype",
+                build_configuration="Debug-Anytype" if lane in HANLIN_LANES else "Release-Anytype",
                 configuration_id=device + "-" + language + "-portrait-os27",
                 methods=methods, expected_ui_executions=len(methods),
                 preparation=spec["preparation"], expected_preparation_executions=1,
                 release_accepted=False, full_matrix_accepted=False,
                 device_language_verified=False)
+
+
+def preparation_environment(lane, source_sha, run_id, run_attempt):
+    environment = dict(LANES[lane]["preparation_environment"])
+    if lane in HANLIN_LANES:
+        environment.update(PINKHA_HANLIN_NATIVE_SOURCE_SHA=source_sha,
+            PINKHA_HANLIN_NATIVE_RUN_ID=run_id, PINKHA_HANLIN_NATIVE_RUN_ATTEMPT=run_attempt)
+    if lane == "hanlin-selection":
+        environment.update(PINKHA_HANLIN_SELECTION_SOURCE_SHA=source_sha,
+            PINKHA_HANLIN_SELECTION_RUN_ID=run_id, PINKHA_HANLIN_SELECTION_RUN_ATTEMPT=run_attempt)
+    return environment
 
 
 def nonempty(value, name):
@@ -235,6 +263,7 @@ def execute(args, receipt):
     require(platform.system() == "Darwin", "Actual Apple host required")
     app, evidence, derived = args.app.resolve(), args.evidence.resolve(), args.derived.resolve()
     selection = plan(args.lane, args.device, args.language)
+    hanlin_lane = HANLIN_LANES.get(args.lane)
     source_methods(app, selection["methods"])
     head = shared.git(app, "rev-parse", "HEAD")
     require(head == os.environ.get("GITHUB_SHA") and shared.git(app, "branch", "--show-current") == BRANCH,
@@ -282,7 +311,7 @@ def execute(args, receipt):
              "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-",
              "CODE_SIGNING_ALLOWED=YES", "CODE_SIGNING_REQUIRED=YES", "PROVISIONING_PROFILE_SPECIFIER="]
     configuration_name = selection["build_configuration"]
-    if args.lane == "hanlin-native":
+    if hanlin_lane is not None:
         flags[0] += " -D DEBUG"
     native_suite = LANES[args.lane]["preparation"].split("/")[0]
     base = ["xcodebuild", "build-for-testing", "-configuration", configuration_name,
@@ -304,22 +333,19 @@ def execute(args, receipt):
     shared.write(evidence / "built-code-carriers.json", before)
     native_configuration = shared.test_configuration(derived / "Build/Products", "AnytypeTests")
     receipt["phase"] = "PREPARATION"
-    preparation_environment = dict(LANES[args.lane]["preparation_environment"])
-    if args.lane == "hanlin-native":
-        preparation_environment.update(PINKHA_HANLIN_NATIVE_SOURCE_SHA=head,
-            PINKHA_HANLIN_NATIVE_RUN_ID=receipt["run_id"], PINKHA_HANLIN_NATIVE_RUN_ATTEMPT=receipt["run_attempt"])
+    native_environment = preparation_environment(args.lane, head, receipt["run_id"], receipt["run_attempt"])
     preparation = shared.run_selection(app, native_configuration, "AnytypeTests", udid,
-        [LANES[args.lane]["preparation"]], preparation_environment, evidence / "preparation", "prepare")
+        [LANES[args.lane]["preparation"]], native_environment, evidence / "preparation", "prepare")
     receipt["preparation"] = preparation
     shared.write(evidence / "execution.json", receipt)
     require(preparation["status"] == "PASS", "The actual native fixture did not pass")
     container = Path(subprocess.check_output(["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "data"], text=True).strip())
     raw_fixture = (container / "Library/Application Support" / LANES[args.lane]["fixture"]).read_text(encoding="utf-8")
-    if args.lane == "hanlin-native":
+    if hanlin_lane is not None:
         require(len(raw_fixture.encode("utf-8")) <= 16384, "Oversized native SDK fixture")
     fixture = json.loads(raw_fixture)
-    if args.lane == "hanlin-native":
-        environment = hanlin.fixture_environment(fixture, head, receipt["run_id"], receipt["run_attempt"],
+    if hanlin_lane is not None:
+        environment = hanlin_lane[0].fixture_environment(fixture, head, receipt["run_id"], receipt["run_attempt"],
                                                datetime.now(timezone.utc).timestamp(), raw_fixture)
     else:
         environment = fixture_environment(args.lane, fixture, args.language, observed_device_language)
@@ -348,16 +374,16 @@ def execute(args, receipt):
         receipt["ui"] = result
     finally:
         shared.export_ui_console(udid, evidence)
-        if args.lane == "hanlin-native":
-            result_path = container / "Library/Application Support/pinkha-hanlin-native-result.json"
+        if hanlin_lane is not None:
+            result_path = container / "Library/Application Support" / hanlin_lane[1]
             if result_path.is_file():
                 # Preserve failure receipts too; copying a label does not qualify it.
-                (evidence / "hanlin-native-result.json").write_bytes(result_path.read_bytes())
+                (evidence / hanlin_lane[2]).write_bytes(result_path.read_bytes())
     require(result["status"] == "PASS" and result["passed"] == selection["expected_ui_executions"],
             "Actual named UI selection did not pass")
-    if args.lane == "hanlin-native":
-        native_result = json.loads((evidence / "hanlin-native-result.json").read_text(encoding="utf-8"))
-        receipt["hanlin_native_receipt"] = hanlin.validate_result(native_result, fixture, head,
+    if hanlin_lane is not None:
+        native_result = json.loads((evidence / hanlin_lane[2]).read_text(encoding="utf-8"))
+        receipt[hanlin_lane[3]] = hanlin_lane[0].validate_result(native_result, fixture, head,
             receipt["run_id"], receipt["run_attempt"], datetime.now(timezone.utc).timestamp())
     if args.lane == "inspector":
         receipt["ui_process_continuity"] = shared.verify_ui_process_continuity(
