@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import Testing
 import HanlinHostContracts
 import HanlinPlatformContracts
@@ -254,6 +255,75 @@ struct HanlinHostAdapterTests {
         #expect(!fence.isRevoked)
         fence.revoke(); fence.revoke()
         #expect(fence.isRevoked)
+    }
+
+    @Test func nativeSelectionCurrentValueIsCheckedWithoutSkippingFirstEmission() {
+        for initiallyMatches in [true, false] {
+            let execution = PinkhaHanlinRevocationFence()
+            let navigation = PinkhaHanlinRevocationFence()
+            let states = CurrentValueSubject<EditorEditingState, Never>(
+                .selecting(blocks: [initiallyMatches ? "K" : "foreign"], allSelected: false))
+            let observation = PinkhaHanlinNativeAccess.observeSelection(states.eraseToAnyPublisher(), expected: ["K"]) {
+                execution.revoke(); navigation.revoke()
+            }
+            defer { observation.cancel() }
+            #expect(execution.isRevoked == !initiallyMatches && navigation.isRevoked == !initiallyMatches)
+            states.send(.selecting(blocks: ["K"], allSelected: true))
+            #expect(execution.isRevoked == !initiallyMatches && navigation.isRevoked == !initiallyMatches)
+        }
+    }
+
+    @Test func nativeSelectionDoneAndReselectCannotRestoreEitherFence() {
+        let execution = PinkhaHanlinRevocationFence()
+        let navigation = PinkhaHanlinRevocationFence()
+        let states = CurrentValueSubject<EditorEditingState, Never>(.selecting(blocks: ["K"], allSelected: false))
+        let observation = PinkhaHanlinNativeAccess.observeSelection(states.eraseToAnyPublisher(), expected: ["K"]) {
+            execution.revoke(); navigation.revoke()
+        }
+        defer { observation.cancel() }
+        #expect(!execution.isRevoked && !navigation.isRevoked)
+        states.send(.editing) // The production Done action emits this without resetting selectedBlocks.
+        #expect(execution.isRevoked && navigation.isRevoked)
+        states.send(.selecting(blocks: ["K"], allSelected: false))
+        #expect(execution.isRevoked && navigation.isRevoked)
+    }
+
+    @Test func nativeSelectionChangedOrderAndUnicodeAliasCannotRearmAuthority() {
+        for (original, changed) in [(["K"], ["other"]), (["K", "Q"], ["Q", "K"]),
+                                     (["e\u{301}"], ["\u{E9}"])] {
+            let execution = PinkhaHanlinRevocationFence()
+            let navigation = PinkhaHanlinRevocationFence()
+            let states = CurrentValueSubject<EditorEditingState, Never>(.selecting(blocks: original, allSelected: false))
+            let observation = PinkhaHanlinNativeAccess.observeSelection(states.eraseToAnyPublisher(), expected: original) {
+                execution.revoke(); navigation.revoke()
+            }
+            defer { observation.cancel() }
+            #expect(!execution.isRevoked && !navigation.isRevoked)
+            states.send(.selecting(blocks: changed, allSelected: false))
+            #expect(execution.isRevoked && navigation.isRevoked)
+            states.send(.selecting(blocks: original, allSelected: false))
+            #expect(execution.isRevoked && navigation.isRevoked)
+        }
+    }
+
+    @Test func nativeSelectionTableAndNonselectionModesUseTheEmittedValue() {
+        let menu = SimpleTableMenuModel(tabs: [], items: [], onDone: {})
+        let initial = EditorEditingState.simpleTablesSelection(block: "table", selectedBlocks: ["K"], simpleTableMenuModel: menu)
+        for changed in [EditorEditingState.editing, .readonly, .loading, .moving(indexPaths: []),
+                        .simpleTablesSelection(block: "table", selectedBlocks: ["other"], simpleTableMenuModel: menu)] {
+            let execution = PinkhaHanlinRevocationFence()
+            let navigation = PinkhaHanlinRevocationFence()
+            let states = CurrentValueSubject<EditorEditingState, Never>(initial)
+            let observation = PinkhaHanlinNativeAccess.observeSelection(states.eraseToAnyPublisher(), expected: ["K"]) {
+                execution.revoke(); navigation.revoke()
+            }
+            defer { observation.cancel() }
+            #expect(!execution.isRevoked && !navigation.isRevoked)
+            states.send(changed)
+            #expect(execution.isRevoked && navigation.isRevoked)
+            states.send(initial)
+            #expect(execution.isRevoked && navigation.isRevoked)
+        }
     }
 
     @MainActor

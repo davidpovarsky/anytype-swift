@@ -306,9 +306,21 @@ final class PinkhaHanlinNativeAccess: PinkhaHanlinHostAccess {
                 }
             }.store(in: &subscriptions)
         }
-        selection?.editorSelectedBlocks.sink { ids in
-            if ids.map({ Data($0.utf8) }) != context.selectionReferences.map({ Data($0.utf8) }) { revoke() }
-        }.store(in: &subscriptions)
+        if let selection {
+            Self.observeSelection(selection.editorEditingStatePublisher,
+                expected: context.selectionReferences, revoke: revoke).store(in: &subscriptions)
+        }
+    }
+
+    /// Observe every emitted mode, including Done/editing between equal block IDs.
+    /// @Published emits before the property changes: reading the manager again here
+    /// could miss that transition. Keep delivery synchronous and both fences final.
+    static func observeSelection(_ states: AnyPublisher<EditorEditingState, Never>,
+                                 expected: [String], revoke: @escaping @Sendable () -> Void) -> AnyCancellable {
+        let identity = expected.map { Data($0.utf8) }
+        return states.sink { state in
+            if Self.selectedIDs(in: state).map({ Data($0.utf8) }) != identity { revoke() }
+        }
     }
 
     nonisolated private static func exact(_ left: String, _ right: String) -> Bool {
@@ -327,7 +339,11 @@ final class PinkhaHanlinNativeAccess: PinkhaHanlinHostAccess {
 
     private static func selectedIDs(_ selection: (any EditorPageBlocksStateManagerProtocol)?) -> [String] {
         guard let selection else { return [] }
-        switch selection.editingState {
+        return selectedIDs(in: selection.editingState)
+    }
+
+    nonisolated private static func selectedIDs(in state: EditorEditingState) -> [String] {
+        switch state {
         case .selecting(let blocks, _): return blocks
         case .simpleTablesSelection(_, let selected, _): return selected
         default: return []
