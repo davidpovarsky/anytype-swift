@@ -1,5 +1,6 @@
 """Pure build-control checks. No Apple framework or runtime is executed here."""
 import copy
+import json
 from pathlib import Path
 import unittest
 import tempfile
@@ -185,6 +186,77 @@ class R15RuntimeControls(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 runtime.prepare_apple_bind(work, cache, gobind, str(gobind), expected, env)
             self.assertEqual(marker.read_text(), "must remain")
+
+
+    def dependency_fixture(self, root):
+        source, work = root / "cached-mobile", root / "owned-work"
+        source.mkdir()
+        work.mkdir()
+        primary = Path(__file__).resolve().parents[2] / (
+            "docs/validation/20261118-t5-r15-runtime/44235484816/dependency-source")
+        for name in runtime.MOBILE_SEED_HASHES:
+            (source / name).write_bytes((primary / ("mobile." + name)).read_bytes())
+        selected = dict(Path="golang.org/x/mobile", Version=runtime.MOBILE_VERSION,
+                        Sum=runtime.MOBILE_MODULE_SUM, GoModSum=runtime.MOBILE_MOD_SUM, Dir=str(source))
+        return source, work, selected
+
+    def test_mobile_seed_uses_exact_primary_files_without_mutating_the_cache(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            source, work, selected = self.dependency_fixture(Path(temporary).resolve())
+            before = {name: (source / name).read_bytes() for name in runtime.MOBILE_SEED_HASHES}
+            seed, receipt = runtime.prepare_mobile_dependency_seed(work, selected)
+            self.assertEqual({name: (seed / name).read_bytes() for name in before}, before)
+            self.assertEqual({name: (source / name).read_bytes() for name in before}, before)
+            self.assertEqual(receipt["seed_sha256"], runtime.MOBILE_SEED_HASHES)
+            self.assertEqual(seed.parent, work)
+
+    def test_mobile_selection_or_cached_declaration_drift_is_rejected_before_copy(self):
+        for change in ["module", "version", "sum", "mod-sum", "replace", "go.mod", "go.sum"]:
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temporary:
+                source, work, selected = self.dependency_fixture(Path(temporary).resolve())
+                if change in ["go.mod", "go.sum"]:
+                    (source / change).write_bytes(b"changed declaration bytes")
+                elif change == "replace":
+                    selected["Replace"] = {"Path": "foreign/mobile"}
+                else:
+                    field = {"module": "Path", "version": "Version", "sum": "Sum", "mod-sum": "GoModSum"}[change]
+                    selected[field] = "unexpected"
+                with self.assertRaises(RuntimeError):
+                    runtime.prepare_mobile_dependency_seed(work, selected)
+                self.assertFalse((work / "mobile-dependency-seed").exists())
+
+    def test_existing_dependency_seed_is_never_overwritten(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            _, work, selected = self.dependency_fixture(Path(temporary).resolve())
+            target = work / "mobile-dependency-seed"
+            target.mkdir()
+            marker = target / "preserve"
+            marker.write_text("existing owned state")
+            with self.assertRaises(FileExistsError):
+                runtime.prepare_mobile_dependency_seed(work, selected)
+            self.assertEqual(marker.read_text(), "existing owned state")
+
+    def test_pinned_shiny_and_metal_download_receipts_bind_both_checksums(self):
+        values = [dict(Path=path, **fields) for path, fields in runtime.MOBILE_GRAPH_REQUIRED.items()]
+        receipt = runtime.validate_mobile_dependency_download("\n".join(json.dumps(value) for value in values))
+        self.assertEqual(receipt["modules"], runtime.MOBILE_GRAPH_REQUIRED)
+        self.assertEqual(receipt["downloaded_module_count"], 2)
+
+    def test_missing_old_or_ambiguous_metal_cache_receipt_cannot_pass(self):
+        for change in ["missing", "version", "sum", "mod-sum", "error", "duplicate"]:
+            with self.subTest(change=change):
+                values = [dict(Path=path, **fields) for path, fields in runtime.MOBILE_GRAPH_REQUIRED.items()]
+                if change == "missing":
+                    values.pop()
+                elif change == "duplicate":
+                    values.append(copy.deepcopy(values[-1]))
+                elif change == "error":
+                    values[-1]["Error"] = "not downloaded"
+                else:
+                    field = {"version": "Version", "sum": "Sum", "mod-sum": "GoModSum"}[change]
+                    values[-1][field] = "old-native-only-receipt"
+                with self.assertRaises(RuntimeError):
+                    runtime.validate_mobile_dependency_download("\n".join(json.dumps(value) for value in values))
 
 
 if __name__ == "__main__":

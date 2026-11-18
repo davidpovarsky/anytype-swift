@@ -18,6 +18,25 @@ import r15_runtime_go as launcher
 HELPER_SHA = "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669"
 INVENTORY_SHA = "f0e4a4c2d1b4c1baa11347362cfd18368ad272a8902b2beaf8de52270f809ee7"
 MOBILE_VERSION = "v0.0.0-20250218173827-cd096645fcd3"
+MOBILE_MODULE_SUM = "h1:0V/7Y1FEaFdAzb9DkVDh4QFp4vL4yYCiJ5cjk80lZyA="
+MOBILE_MOD_SUM = "h1:j5VYNgQ6lZYZlzHFjdgS2UeqRSZunDk+/zXVTAIA3z4="
+MOBILE_SEED_HASHES = {
+    "go.mod": "c66fe96bdc57fb4a025ac8dc2cc612d3a0dbd52cd81d4470251c08c103297672",
+    "go.sum": "371be5a55bf2fe640a45030b4254022a30f1bac6b3d0428c6767a82dfafe32f9",
+}
+MOBILE_GRAPH_REQUIRED = {
+    "golang.org/x/exp/shiny": {
+        "Version": "v0.0.0-20230817173708-d852ddb80c63",
+        "Sum": "h1:3AGKexOYqL+ztdWdkB1bDwXgPBuTS/S8A4WzuTvJ8Cg=",
+        "GoModSum": "h1:UH99kUObWAZkDnWqppdQe5ZhPYESUw8I0zVV1uWBR+0=",
+    },
+    "dmitri.shuralyov.com/gpu/mtl": {
+        "Version": "v0.0.0-20221208032759-85de2813cf6b",
+        "Sum": "h1:a26Bdkl2B9PmYN6vGXnnfB2UGKjz0Moif1aEg+xTd7M=",
+        "GoModSum": "h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=",
+    },
+}
+
 MARKER = "pinkha-native-derived-v1-" + coverage.PATCH
 CAPABILITY_MARKER = "pinkha-native-t5-lookup-v1-" + coverage.PATCH
 VERSION = "v0.51.7-nightly.20261014.1-" + MARKER + "-" + CAPABILITY_MARKER
@@ -107,6 +126,53 @@ def prepare_apple_bind(work, module_cache, gobind, selected_gobind, expected_sha
     return selected, receipt
 
 
+def prepare_mobile_dependency_seed(work, mobile):
+    """Copy the exact tool's module declarations; never edit the native or cached source."""
+    if (mobile.get("Path") != "golang.org/x/mobile" or mobile.get("Version") != MOBILE_VERSION
+            or mobile.get("Sum") != MOBILE_MODULE_SUM or mobile.get("GoModSum") != MOBILE_MOD_SUM
+            or "Replace" in mobile or not mobile.get("Dir")):
+        raise RuntimeError("Exact pinned mobile source and both checksums required before cache hydration")
+    source = Path(mobile["Dir"])
+    if not source.is_absolute() or not source.is_dir():
+        raise RuntimeError("Original cached pinned mobile source directory required")
+    data = {}
+    for name, expected in MOBILE_SEED_HASHES.items():
+        path = source / name
+        if path.is_symlink() or not path.is_file() or digest(path) != expected:
+            raise RuntimeError("Pinned mobile dependency declaration bytes differ: " + name)
+        data[name] = path.read_bytes()
+    target = work / "mobile-dependency-seed"
+    target.mkdir(exist_ok=False)
+    for name, raw in data.items():
+        (target / name).write_bytes(raw)
+    return target, dict(strategy="PINNED_MOBILE_GRAPH_BEFORE_OFFLINE_NATIVE_BIND",
+                        mobile_version=MOBILE_VERSION, mobile_module_sum=MOBILE_MODULE_SUM,
+                        mobile_go_mod_sum=MOBILE_MOD_SUM, source_directory=str(source),
+                        owned_seed_directory=str(target), seed_sha256=dict(MOBILE_SEED_HASHES))
+
+
+def validate_mobile_dependency_download(text):
+    decoder, position, modules = json.JSONDecoder(), 0, {}
+    while position < len(text):
+        while position < len(text) and text[position].isspace():
+            position += 1
+        if position == len(text):
+            break
+        value, position = decoder.raw_decode(text, position)
+        if (not isinstance(value, dict) or value.get("Error") or value.get("Replace")
+                or not isinstance(value.get("Path"), str) or not value["Path"]
+                or not isinstance(value.get("Version"), str) or not value["Version"]
+                or value["Path"] in modules
+                or any(not isinstance(value.get(key), str) or not value[key].startswith("h1:")
+                       for key in ["Sum", "GoModSum"])):
+            raise RuntimeError("Pinned mobile dependency download has an invalid or duplicate module receipt")
+        modules[value["Path"]] = {key: value[key] for key in ["Version", "Sum", "GoModSum"]}
+    for path, expected in MOBILE_GRAPH_REQUIRED.items():
+        if modules.get(path) != expected:
+            raise RuntimeError("Pinned tool transitive dependency/checksums differ: " + path)
+    return dict(downloaded_module_count=len(modules), modules=modules)
+
+
 def execute(args, control, evidence):
     if platform.system() != "Darwin" or platform.machine() != "arm64":
         raise RuntimeError("Actual ARM64 macOS/Xcode environment required; no native source modified")
@@ -183,14 +249,25 @@ def execute(args, control, evidence):
     env = dict(os.environ, CGO_ENABLED="1", GOMAXPROCS="2", GOTOOLCHAIN="local",
                GOWORK=str(gowork), GOFLAGS="-mod=readonly")
     run([str(real_go), "mod", "download"], "pinned-module-download", env)
+    mobile_path = run([str(real_go), "list", "-m", "-json", "golang.org/x/mobile"], "mobile-selection", env)
+    mobile = json.loads(mobile_path.read_text(encoding="utf8"))
+    # The lazy native graph omits platform dependencies needed by gomobile's
+    # generated-module tidy. Hydrate the pinned tool's own complete graph in an
+    # owned copy while downloads are still allowed, then keep all bind work offline.
+    seed, mobile_dependencies = prepare_mobile_dependency_seed(work, mobile)
+    seed_env = dict(env, GOWORK="off")
+    download_log = run([str(real_go), "mod", "download", "-json", "all"],
+                       "pinned-mobile-dependency-download", seed_env, cwd=seed)
+    mobile_dependencies.update(validate_mobile_dependency_download(download_log.read_text(encoding="utf8")))
+    if digest(seed / "go.mod") != MOBILE_SEED_HASHES["go.mod"]:
+        raise RuntimeError("Cache hydration changed the pinned tool's module declaration")
+    mobile_dependencies.update(resolved_go_sum_sha256=digest(seed / "go.sum"),
+                               download_receipt_sha256=digest(download_log))
+    coverage.write_receipt(evidence / "mobile-dependency-preparation.json", mobile_dependencies)
     env["GOPROXY"] = "off"
     run([str(real_go), "list", "-m", "-json", "all"], "resolved-native-modules", env)
     selection_path = run([str(real_go), "list", "-m", "-json", pair_ci.GENPROTO_PATH], "genproto-selection", env)
     genproto = pair_ci.validate_genproto_selection(json.loads(selection_path.read_text(encoding="utf8")))
-    mobile_path = run([str(real_go), "list", "-m", "-json", "golang.org/x/mobile"], "mobile-selection", env)
-    mobile = json.loads(mobile_path.read_text(encoding="utf8"))
-    if mobile.get("Path") != "golang.org/x/mobile" or mobile.get("Version") != MOBILE_VERSION or "Replace" in mobile:
-        raise RuntimeError("Pinned gomobile source selection changed")
     tools = {}
     for tool in ["gomobile", "gobind"]:
         target = heart / "deps" / tool
@@ -267,7 +344,7 @@ def execute(args, control, evidence):
                    app_compile_flag="NOT_SET_BY_RUNTIME_BUILD", helper_sha256=HELPER_SHA,
                    go_version=version, xcode=xcode, sdk_versions=sdk_versions, native_dependencies=dependencies,
                    genproto_resolution=genproto, mobile_selection=mobile, tool_binaries=tools,
-                   mobile_preparation=mobile_preparation,
+                   mobile_preparation=mobile_preparation, mobile_dependency_preparation=mobile_dependencies,
                    go_launcher_sha256=digest(shim_source, True), generated_module_proofs=verified_generated,
                    binary_slices=slices, architecture_proof=architecture_proof, framework=str(framework),
                    artifacts=[dict(path=str(path.relative_to(framework)), sha256=helper.digest(path))

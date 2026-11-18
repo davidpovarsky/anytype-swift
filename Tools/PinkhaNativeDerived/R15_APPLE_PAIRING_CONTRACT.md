@@ -108,3 +108,39 @@ The pinned upstream source explains this exactly: [init.go at cd096645fcd3](http
 This Apple-only wrapper therefore prepares a fresh job-owned GOPATH/pkg/gomobile directory and uses its already compiled, hash-verified pinned gobind. It queries and preserves the original GOMODCACHE explicitly before switching GOPATH. PATH must resolve to that exact binary, and both GOPROXY=off and GOFLAGS=-mod=readonly remain mandatory. It records this preparation separately before bind and in the final runtime receipt. Existing workspace reuse, a different/changed gobind, absent module cache, or network-enabled resolution fail before build. The original r14 helper, Heart sources, native inventories, x/mobile revision, and generated-module genproto constraints are unchanged.
 
 Source blobs reviewed: init.go48642e22b3afaf45c2542144f34e6d4ab891b6de; bind.go4e1c453f418589afc1576045140946fb878a3868; env.go320597994e7c7cfef14fc295a074700fee0ca02b. This is a build-input correction; a successful Apple runtime build and the same-source four-process Apple pairing still require actual execution.
+
+## Pinned tool dependency cache after the bind attempt
+
+Actual run 44235484816, source
+793d09a8d3e22c3ce29cc94e16c614f476cb73d8, passed the owned Apple workspace
+preparation and compiled both pinned tools. It then failed during the generated
+modules' offline `go mod tidy`: the native workspace's lazy graph had cached MTL
+revision 2019, while the pinned mobile tool's Shiny dependency requires MTL
+`v0.0.0-20221208032759-85de2813cf6b`. All three architecture tidies returned 1.
+This attempt produced no verified runtime slices or AppGetVersion/Swift evidence.
+
+The required version is already declared by the selected
+`golang.org/x/exp/shiny v0.0.0-20230817173708-d852ddb80c63`, which is required
+by pinned mobile cd096645fcd3. Its primary go.sum supplies the archive and go.mod
+h1 checksums. This is a tool dependency cache gap, not a requested native/tool
+revision upgrade.
+
+The wrapper now verifies the selected mobile version and both h1 hashes, then
+copies its exact go.mod/go.sum bytes to an owned dependency seed directory.
+Those primary file SHA-256 values are hard-bound in the wrapper. It runs
+`go mod download -json all` from this isolated seed with GOWORK=off before
+switching the native build to GOPROXY=off. The native workspace, native go.mod,
+and cached source files are unchanged. The resulting download receipts must
+include the exact Shiny and MTL revisions and both expected h1 checksums;
+duplicate, missing, failed, or mismatched receipts fail before bind.
+
+A bounded real cache experiment on Windows Go 1.25.6 downloaded the declared
+14-module tool graph and successfully read it back with GOPROXY=off. Its owned
+122,281,825-byte cache was removed after the experiment. This is dependency
+cache evidence only: Apple still requires the actual Go 1.26.5 macOS build.
+
+Primary declarations and immutable blob/hash provenance are preserved in
+`docs/validation/20261118-t5-r15-runtime/44235484816/dependency-source`.
+Original failed-run evidence is preserved beside them. Controller rejection
+tests, actual cache readback, and actual Apple runtime acceptance remain
+separate receipts.
