@@ -18,6 +18,7 @@ on:
           - t5-coverage-proof
           - t2-native-operations
           - t2-native-rpc
+          - t2-account-rpc
           - t2-account-lifecycle
           - simulator-ui27
           - heart-runtime
@@ -25,6 +26,7 @@ on:
           - t5-apple-pairs
           - t5-apple-ui
           - sdk06-tests
+          - hanlin-journal-probe
           - editor-host-tests
           - wave15-core-tests
           - wave15-acceptance
@@ -133,6 +135,18 @@ jobs:
       heart_source_run_id: ${{ inputs.source_run_id }}
       expected_app_branch: codex/chatgpt-wave15-integration-20261118
       profile: wave15-core
+
+  hanlin-journal-probe:
+    if: ${{ inputs.route == 'hanlin-journal-probe' }}
+    uses: ./.github/workflows/pinkha-hanlin-journal-probe.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-account-rpc:
+    if: ${{ inputs.route == 't2-account-rpc' }}
+    uses: ./.github/workflows/pinkha-t2-account-rpc.yml
+    with:
+      source_sha: ${{ github.sha }}
 
   sdk06-tests:
     if: ${{ inputs.route == 'sdk06-tests' }}
