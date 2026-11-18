@@ -115,8 +115,11 @@ class XcodeProductIdentityTests(unittest.TestCase):
         for embedded in (True, False):
             with self.subTest(embedded=embedded), tempfile.TemporaryDirectory() as temp:
                 configuration, host, bundle = self.fixture(Path(temp), embedded=embedded)
+                # macOS exposes its temporary directory through /var -> /private/var.
+                # The product guard returns canonical filesystem paths intentionally.
                 self.assertEqual(xctest_products(configuration),
-                                 (host, host / "Anytype", bundle, bundle / "ActualTestExecutable"))
+                                 tuple(path.resolve() for path in
+                                       (host, host / "Anytype", bundle, bundle / "ActualTestExecutable")))
 
     def test_missing_executable_cannot_be_reported_as_built(self):
         with tempfile.TemporaryDirectory() as temp:
