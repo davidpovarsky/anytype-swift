@@ -13,6 +13,7 @@ import shutil
 from uuid import uuid4
 
 import t5_native_ui_evidence as evidence
+import t5_native_ui_r08 as r08
 
 PASS = "T5_NATIVE_UI_PASS_VISUAL_REVIEW_PENDING"
 PAIR_PASS = "APPLE_SAME_ACCOUNT_RUNTIME_PAIR_PASS"
@@ -148,6 +149,61 @@ def select_tests(*, pair, ui, method_results, app, configuration, udid, blueprin
     return evidence.validate_selection(summary, methods, selections, udid)
 
 
+def run_r08(*, private, app, build, container, ui_udid, configuration, environment,
+            fixture, observed, pair, ui, method_results, command):
+    """Two read-only selections, reusing the retained App and completed core UI."""
+    retained = observed["receipts"]["note-lifecycle"]["observations"][-1]
+    retained = {key: retained[key] for key in ["objectID", "blockID", "actualText"]}
+    used_processes = {fixture["preparationProcessID"]}
+    used_processes.update(pid for values in observed["actual_processes"].values() for pid in values)
+    fixture_path = container / "Library/Application Support/pinkha-t5-native-ui-fixture.json"
+    fixture_hash = evidence.digest(fixture_path)
+    result = {"status": "RUNNING", "selections": {}, "voice_over_status": "NOT_RUN", "visual_review_status": "PENDING",
+              "dynamic_type_scope": "fixed-large-only", "physical_device_accepted": False,
+              "app_source_sha": fixture["appSourceSHA"], "run_id": fixture["runID"], "token": fixture["token"],
+              "fixture_sha256": fixture_hash, "retained_core_note": retained}
+    current = None
+    try:
+        for appearance in r08.APPEARANCES:
+            scope = "r08-he-" + appearance
+            current = {"status": "RUNNING", "requested_appearance": appearance, "requested_app_language": "he"}
+            result["selections"][appearance] = current
+            pair.write(private / "r08-result.json", result)
+            command(["xcrun", "simctl", "ui", ui_udid, "appearance", appearance], scope + "-set-appearance")
+            command(["xcrun", "simctl", "ui", ui_udid, "content_size", "large"], scope + "-set-content-size")
+            for timing in ("before", "after"):
+                for setting, expected in [("appearance", appearance), ("content_size", "large")]:
+                    _, log = command(["xcrun", "simctl", "ui", ui_udid, setting], scope + "-" + setting + "-" + timing)
+                    current[setting + "_" + timing] = r08.actual_setting(log.read_text(encoding="utf8"), expected, setting)
+                    current[setting + "_" + timing + "_sha256"] = evidence.digest(log)
+                if timing == "before":
+                    selection_environment = dict(environment, PINKHA_UI27_APP_LANGUAGE="he",
+                        PINKHA_T5_UI_PRESENTATION_MODE="R08", PINKHA_T5_UI_APPEARANCE=appearance,
+                        PINKHA_T5_R08_RETAINED_NOTE_JSON=json.dumps(retained, ensure_ascii=False, sort_keys=True))
+                    current["xctest"] = select_tests(pair=pair, ui=ui, method_results=method_results, app=app,
+                        configuration=configuration, udid=ui_udid, blueprint="PinkhaStage1AcceptanceUITests",
+                        selections=[r08.METHOD], environment=selection_environment, directory=private / scope,
+                        app_path=Path(build["app"]))
+            evidence.require(pair.app_container(ui_udid, "data") == container
+                             and evidence.digest(fixture_path) == fixture_hash, "R08 replaced the UI account/fixture")
+            evidence.require(ui.code_carriers(pair.app_container(ui_udid, "app"))["sha256"] == build["code_sha256"],
+                             "R08 installed different App executable bytes")
+            report, _ = r08.read_receipt(private / scope / "attachments", appearance, fixture, retained, used_processes)
+            used_processes.add(report["process_id"])
+            current.update(status=r08.PASS, observations=report)
+            pair.write(private / "r08-result.json", result)
+        result.update(status=r08.PASS, actual_counts={"ui_method_executions": 2, "new_app_lifetimes": 2,
+                      "required_original_screenshots": 8, "actual_observations": 8, "failed": 0, "skipped": 0})
+    except BaseException as error:
+        result.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else "FAIL", error_type=type(error).__name__)
+        if current is not None and current.get("status") == "RUNNING":
+            current.update(status=result["status"], error_type=type(error).__name__)
+        raise
+    finally:
+        pair.write(private / "r08-result.json", result)
+    return result
+
+
 def run_after_pair(*, app, work, proof, pair_result, build, pair_container, selection, pair, ui, method_results):
     source = pair_result["app_source_sha"]
     run_id = pair_result["run_id"]
@@ -171,6 +227,8 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
     original_hash = None
     generated_project = None
     additional_files = []
+    core_result_path = None
+    core_result_hash = None
     cancellation = None
 
     def record_failure(error, key):
@@ -248,7 +306,7 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
         command(["xcodebuild", "build-for-testing", "-project", str(generated_project), "-scheme", "PinkhaPrebuiltUI",
                  "-configuration", "Release-Anytype", "-destination", "platform=iOS Simulator,id=" + ui_udid,
                  "-derivedDataPath", str(ui_derived), "-parallel-testing-enabled", "NO",
-                 *["-only-testing:PinkhaStage1AcceptanceUITests/" + method for method in evidence.METHODS.values()],
+                 *["-only-testing:PinkhaStage1AcceptanceUITests/" + method for method in [*evidence.METHODS.values(), r08.METHOD]],
                  *pair.FLAGS], "build-ui-runner-only", 900)
         evidence.require(evidence.digest(original_project) == original_project_hash, "Original UI project changed during runner preparation")
         evidence.require(ui.code_carriers(Path(build["app"]))["sha256"] == build["code_sha256"], "UI runner build changed the retained App")
@@ -275,11 +333,27 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
         pair.write(private / "post-ui-code-carriers.json", carriers)
         evidence.require(pair.git(app, "rev-parse", "HEAD") == source
                          and not pair.git(app, "status", "--porcelain", "--untracked-files=no"), "Tracked App source changed during actual UI")
+        core_record = json.loads(json.dumps(record))
+        core_record.update(status=PASS, phase="CORE_COMPLETE", actual_observation_counts={"related_targets": 7, "note_lifecycle": 6},
+                           actual_ui_lifetimes=3, installed_code_sha256=carriers["sha256"], r08_status="NOT_RUN")
+        core_result_path = private / "core-result.json"
+        evidence.require(not core_result_path.exists(), "Refuse to replace independent core UI evidence")
+        pair.write(core_result_path, core_record)
+        core_result_hash = evidence.digest(core_result_path)
+        record.update(core_ui_status=PASS, core_result_sha256=core_result_hash, phase="R08_NATIVE_UI")
+        record["r08"] = run_r08(private=private, app=app, build=build, container=container, ui_udid=ui_udid,
+            configuration=configuration, environment=environment, fixture=fixture, observed=observed,
+            pair=pair, ui=ui, method_results=method_results, command=command)
         record.update(status=PASS, phase="COMPLETE", actual_observation_counts={"related_targets": 7, "note_lifecycle": 6},
-                      actual_ui_lifetimes=3, installed_code_sha256=carriers["sha256"])
+                      actual_ui_lifetimes=5, installed_code_sha256=carriers["sha256"])
     except BaseException as error:
         record_failure(error, "error_type")
     finally:
+        if core_result_path is not None:
+            try:
+                evidence.require(evidence.digest(core_result_path) == core_result_hash, "Independent core UI receipt changed during R08")
+            except BaseException as receipt_error:
+                record_failure(receipt_error, "core_receipt_error_type")
         try:
             if original_path is not None:
                 record["pair_ledger_sha256_after"] = evidence.digest(original_path)
@@ -302,10 +376,10 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
             if secret_path and secret_path.is_file():
                 secrets = json.loads(secret_path.read_text(encoding="utf8"))
                 allowed = [private / "execution.json"]
-                for name in ["fixture.json", "actual-ui-observations.json", "post-ui-code-carriers.json"]:
+                for name in ["fixture.json", "actual-ui-observations.json", "post-ui-code-carriers.json", "core-result.json", "r08-result.json"]:
                     if (private / name).is_file():
                         allowed.append(private / name)
-                for directory in [private / "commands", private / "preparation", private / "ui"]:
+                for directory in [private / "commands", private / "preparation", private / "ui", *[private / ("r08-he-" + x) for x in r08.APPEARANCES]]:
                     if directory.is_dir():
                         allowed.extend(path for path in directory.iterdir() if path.is_file()
                                        and (path.name.endswith(".log") or path.name.endswith(".command.json")
@@ -313,16 +387,17 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
                                                              "simulators-before.json", "simulators-after-create.json", "simulators-final.json"}))
                 # A failed UI run may still have useful original attachments.
                 # Validate every manifest reference before any publication.
-                attachment_directory = private / "ui/attachments"
-                manifest_path = attachment_directory / "manifest.json"
-                if manifest_path.is_file():
-                    manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
-                    evidence.require(isinstance(manifest, list), "Unexpected failed UI attachment manifest")
-                    allowed.append(manifest_path)
-                    for case in manifest:
-                        if case.get("testIdentifier", "").removesuffix("()") in evidence.METHODS.values():
-                            allowed.extend(evidence.attachment_path(attachment_directory, item.get("exportedFileName"))
-                                           for item in case.get("attachments", []))
+                for scope, methods in [("ui", list(evidence.METHODS.values())), *[("r08-he-" + x, [r08.METHOD]) for x in r08.APPEARANCES]]:
+                    attachment_directory = private / scope / "attachments"
+                    manifest_path = attachment_directory / "manifest.json"
+                    if manifest_path.is_file():
+                        manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
+                        evidence.require(isinstance(manifest, list), "Unexpected failed UI attachment manifest")
+                        allowed.append(manifest_path)
+                        for case in manifest:
+                            if case.get("testIdentifier", "").removesuffix("()") in methods:
+                                allowed.extend(evidence.attachment_path(attachment_directory, item.get("exportedFileName"))
+                                               for item in case.get("attachments", []))
                 policy = evidence.publish_evidence(private, public / "actual", allowed,
                     secret_record=secrets, token=token, contains_secret=pair.contains_secret)
             evidence.require(policy["status"] == "PASS", "Complete fresh-account secret inventory required")

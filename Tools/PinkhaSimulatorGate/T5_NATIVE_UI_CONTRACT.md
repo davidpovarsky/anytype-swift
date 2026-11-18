@@ -154,3 +154,112 @@ Root reviewed both Swift fixtures; the SDK agent independently reviewed the
 helper/evidence contract and the two concrete fixes. No local Swift compilation
 was attempted during the Windows disk/RAM incident. Native preparation, the two
 UI methods and visual acceptance still require their actual Apple run.
+
+
+## R08 extension: Hebrew, long titles, Light and Dark
+
+The two original English core UI methods remain separate and keep their exact
+seven related-target and six Note-lifecycle observations. After they both pass,
+the runner freezes `core-result.json` with its original source, device, counts
+and installed executable identity. R08 cannot rewrite that receipt. The
+independent `pair-result.json` remains protected by the existing pair hook.
+
+R08 adds one XCTest method, selected twice without rebuilding the App or the UI
+runner: `testHebrewRelatedRowsLongTitlesAndReadOnlyNavigation`, first with Hebrew
+App language and Light appearance, then Hebrew and Dark. It runs on the same
+fresh, job-owned UI iPad/account. The paired account remains on its shut-down
+simulator and its final ledger hash remains unchanged. This is two bounded
+presentation selections, not a device or full accessibility matrix.
+
+### Reuse and the exact gap
+
+The existing production Inspector already provides Hebrew localization, stable
+related-row/source/unlink identifiers, source coverage notices and the Anytype
+theme. Existing App observations expose actual preferred App localization and
+SwiftUI/navigation/UIKit writing direction in the native editor's AX label.
+Those components are reused; no additional theme, Inspector or direction
+implementation is introduced.
+
+Before this extension the T5 UI selection hard-required English, generated only
+short document names and did not set/read simulator appearance. The production
+related-row title also had no line limit, while its context snippet already had
+a two-line limit. The isolated Kit delta adds a two-line limit to the title Text
+and an explicit full-title accessibility label on that Text. The parent Button,
+its stable identifier, context/date accessibility content and navigation closure
+are unchanged.
+
+### Actual fixture additions
+
+The fresh native fixture retains the same five positive targets, three negative
+controls and canonical source. Its Page and writing targets receive fixed long
+Hebrew/English titles, each over 160 characters. Their exact names are read back
+from real ObjectShow details and from the actual related-query rows. The Page
+also receives one Hebrew/mixed-text paragraph whose actual ID, text and graph
+reachability are checked before exporting `presentationProbe`. This does not
+turn the Page's document association into a block association. Original block
+and quote offscreen navigation controls retain their original text and scope.
+
+No fixture or account is recreated between the core methods and the two R08
+selections. R08 only opens existing documents, taps existing related rows,
+scrolls and reads controls. It never taps Add Note or Unlink and never types.
+The Note ID, body ID and text come from the already-validated final core Note
+receipt; both R08 selections must reopen that same unlinked Note unchanged.
+
+### Presentation evidence
+
+Before and after each R08 selection the controller queries the exact owned
+simulator through `simctl ui`. Appearance must read back the requested `light`
+or `dark`; content size is set and read back as `large`. Original command logs
+and their hashes are retained. An unknown CLI representation fails closed.
+This is actual simulator setting evidence, not an App trait assertion: visual
+review of the original screenshots must still confirm the App and Inspector
+rendered the corresponding appearance.
+
+The four ordered observations per selection are:
+
+1. Five exact current-Space rows, a Hebrew Add Note label, complete native title
+   accessibility labels, reachable/enabled controls and original row frames.
+   The row must be fully visible after bounded native scrolling, at least
+   44 points high and 160 points wide, and no more than 160 points high at the
+   fixed Large content size. Both long titles have original screenshots.
+2. An actual related-row tap opens the fixture Page. Its real paragraph has the
+   exact native text and App observations `app-language-he`, `swiftui-rtl`,
+   `navigation-rtl`, `uikit-rtl` and `content-rtl`. The corresponding original AX
+   snapshot must contain that native body ID and the observed direction label.
+3. Ordinary navigation reopens the core-created, already-unlinked Note. Its
+   object ID, body ID, exact UI-typed text and absent canonical source chip are
+   unchanged. This step is not claimed as navigation from a related result.
+4. Reopening the original source's real Inspector tab again shows exactly the
+   baseline five rows, with no resurrected Note relationship or foreign result.
+
+Four required named original screenshots and four AX snapshots are bound to
+each method's original XCTest attachment manifest: the Page title, writing
+title, native RTL navigation and retained Note. The existing final attachment
+helper may retain an additional final screenshot/AX snapshot. A selection must
+use one actual App PID across its four required snapshots. Light and Dark use
+two distinct App PIDs, neither reused from preparation or any of the three
+core UI lifetimes. Per-selection XCTest counts are exactly 1 passed, 0 failed,
+0 skipped and 1 total; the two core methods remain exactly 2/0/0/2.
+
+### Separate outcomes and limitations
+
+`r08-result.json` records the two actual selections separately from core. A
+failed/cancelled R08 selection retains its original failure evidence and cannot
+rewrite or delete the prior pair/core receipts. All new command logs, summaries,
+receipts and selected attachments pass the existing complete credential scan
+before publication. Account data, secrets, raw xcresults and App bundles stay
+private. No additional App build is introduced.
+
+The successful execution state is `R08_HEBREW_UI_PASS_VISUAL_REVIEW_PENDING`.
+Original images require visual inspection for Light/Dark rendering, readable
+compact rows, mirroring, clipping and contrast. AX metadata and hit-target
+checks do **not** constitute actual VoiceOver interaction. Every R08 receipt
+requires `voiceOverStatus=NOT_RUN`, `visualReviewStatus=PENDING`,
+`physicalDeviceAccepted=false` and `dynamicTypeScope=fixed-large-only`.
+Physical iPad, real VoiceOver traversal, larger accessibility text sizes and
+full dynamic type coverage remain open. Coverage stays `indexedTargetsOnly`
+with its existing incompleteness notice; the product lookup flag remains OFF.
+
+At source handoff, all new Swift compilation, native fixture additions and
+R08 XCTest executions are NOT_RUN. Python negative controls verify only the
+evidence and orchestration gates and must not be counted as Apple UI passes.

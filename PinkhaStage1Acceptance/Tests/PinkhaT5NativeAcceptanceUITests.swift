@@ -8,11 +8,23 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
     private struct Target: Decodable {
         let role: String
         let objectID: String
+        let title: String
+        let associationID: String
         let blockID: String?
         let blockText: String?
         let firstBlockID: String?
         let firstBlockText: String?
         let resultID: String
+    }
+    private struct PresentationProbe: Decodable {
+        let objectID: String
+        let blockID: String
+        let text: String
+    }
+    private struct RetainedNote: Decodable {
+        let objectID: String
+        let blockID: String
+        let actualText: String
     }
     private struct Fixture: Decodable {
         let protocolVersion: Int
@@ -25,18 +37,23 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
         let coverage: String
         let limitations: [String]
         let targets: [Target]
+        let presentationProbe: PresentationProbe
     }
     private let app = XCUIApplication(bundleIdentifier: "io.anytype.app")
     private let bodyPrefix = "pinkha.stage1.body."
     private let rowPrefix = "torah-inspector-related-row-"
     private var fixture: Fixture!
     private var observations: [[String: Any]] = []
+    private var appLanguage: String { ProcessInfo.processInfo.environment["PINKHA_UI27_APP_LANGUAGE"] ?? "en" }
 
     override func setUpWithError() throws {
         continueAfterFailure = false
         let environment = ProcessInfo.processInfo.environment
         try require(environment["PINKHA_NATIVE_UI_DISPOSABLE"] == "1", "A fresh disposable native fixture is required")
-        try require(environment["PINKHA_UI27_APP_LANGUAGE"] == "en", "This UI selection proves English only")
+        let language = environment["PINKHA_UI27_APP_LANGUAGE"]
+        try require(language == "en" || language == "he", "Only the reviewed English/Hebrew selections are permitted")
+        try require(language == "en" || environment["PINKHA_T5_UI_PRESENTATION_MODE"] == "R08",
+                    "Hebrew requires the separately reported R08 selection")
         let raw = try XCTUnwrap(environment["PINKHA_T5_NATIVE_UI_FIXTURE_JSON"])
         fixture = try JSONDecoder().decode(Fixture.self, from: Data(raw.utf8))
         try require(fixture.protocolVersion == 1 && fixture.token == environment["PINKHA_T5_UI_TOKEN"], "Fixture attempt differs")
@@ -51,10 +68,12 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
         app.launchEnvironment["PINKHA_STAGE1_ACCEPTANCE"] = "1"
         app.launchEnvironment["PINKHA_ACCEPTANCE_DOCUMENT_KIND"] = "pinkha"
         app.launchEnvironment["PINKHA_UI27_ROUTE_OBSERVATION"] = "1"
-        app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launchArguments = ["-AppleLanguages", language == "he" ? "(he)" : "(en)",
+                               "-AppleLocale", language == "he" ? "he_IL" : "en_US"]
     }
 
     func testCurrentSpaceRowsAndExactBlockNavigation() throws {
+        try require(appLanguage == "en", "Core related-target acceptance retains its English selection")
         var status = "FAIL"
         defer { attachReceipt("related-targets", status: status) }
         try launch()
@@ -101,6 +120,7 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
     }
 
     func testAddNoteEditOpenUnlinkAndRetainAfterRelaunch() throws {
+        try require(appLanguage == "en", "Core Note acceptance retains its English selection")
         var status = "FAIL"
         defer { attachReceipt("note-lifecycle", status: status) }
         try launch()
@@ -178,6 +198,99 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
         status = "PASS"
     }
 
+    /// Read-only R08 extension. Appearance is set/read back by simctl outside the
+    /// App; original screenshots still require visual review. AX is not VoiceOver.
+    func testHebrewRelatedRowsLongTitlesAndReadOnlyNavigation() throws {
+        let environment = ProcessInfo.processInfo.environment
+        let appearance = try XCTUnwrap(environment["PINKHA_T5_UI_APPEARANCE"])
+        try require(appLanguage == "he" && ["light", "dark"].contains(appearance), "Exact Hebrew appearance selection required")
+        let scope = "r08-he-" + appearance
+        var status = "FAIL"
+        defer { attachReceipt(scope, status: status) }
+        let raw = try XCTUnwrap(environment["PINKHA_T5_R08_RETAINED_NOTE_JSON"])
+        let retained = try JSONDecoder().decode(RetainedNote.self, from: Data(raw.utf8))
+        try require(!retained.objectID.isEmpty && !retained.blockID.isEmpty
+                    && !fixture.targets.contains { $0.objectID == retained.objectID }, "The original core Note identity is required")
+        try launch()
+        let origin = try target("writing")
+        try enterObject(origin.objectID)
+        try openRelatedDocuments(associationID: origin.associationID)
+        try requireRows(expected: baselineRows)
+        try requirePartialCoverage()
+        let add = app.buttons["torah-inspector-related-add-note"]
+        try require(add.label == "הוסף הערה למקור" && add.isEnabled, "The actual source action is not localized to Hebrew")
+        var rows: [[String: Any]] = []
+        for destination in fixture.targets {
+            let row = relatedRow(destination.resultID)
+            try revealRelatedRow(row)
+            try require(row.label.contains(destination.title) && row.isEnabled, "The actual accessibility label lost the complete native title")
+            let frame = row.frame
+            try require(frame.width >= 160 && frame.height >= 44 && frame.height <= 160,
+                        "The native related row is not a compact reachable control at the fixed Large content size")
+            rows.append(["role": destination.role, "resultID": destination.resultID,
+                         "actualLabel": row.label, "hittable": row.isHittable, "enabled": row.isEnabled,
+                         "frame": frameValue(frame)])
+            if destination.role == "page" || destination.role == "writing" {
+                try require(destination.title.count >= 160, "The actual native title does not exercise wrapping")
+                attachEvidence("t5-" + scope + "-long-title-" + destination.role)
+            }
+        }
+        observations.append(["stage": "r08-related-rows", "originObjectID": origin.objectID,
+                             "actualRows": actualRows.sorted(), "rows": rows,
+                             "addNoteLabel": add.label, "appFrame": frameValue(app.frame)])
+        let page = try target("page")
+        let row = relatedRow(page.resultID)
+        try revealRelatedRow(row)
+        row.tap()
+        let probe = fixture.presentationProbe
+        try require(probe.objectID == page.objectID, "The presentation probe belongs to another native Page")
+        try requireCurrentDocument(page.objectID)
+        try requireBody(probe.blockID, text: probe.text, hittable: true)
+        let direction = body(probe.blockID).label
+        let fields = Set(direction.split(separator: ";").map(String.init))
+        try require(Set(["app-language-he", "swiftui-rtl", "navigation-rtl", "uikit-rtl", "content-rtl"]).isSubset(of: fields),
+                    "Actual App/editor direction observations do not prove Hebrew RTL")
+        observations.append(["stage": "r08-native-rtl-navigation", "objectID": page.objectID,
+                             "blockID": probe.blockID, "resultID": page.resultID,
+                             "actualText": body(probe.blockID).value as? String ?? "", "actualDirectionLabel": direction])
+        attachEvidence("t5-" + scope + "-native-rtl-navigation")
+        // The core-created Note is already unlinked. Ordinary navigation here
+        // is a read-only preservation check, not a related-result navigation claim.
+        try enterObject(retained.objectID)
+        try requireBody(retained.blockID, text: retained.actualText, hittable: true)
+        let chip = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND label CONTAINS %@",
+            "torah-document-source-chip-", fixture.canonicalReference)).firstMatch
+        try require(!chip.exists, "R08 found a canonical link restored on the core Note")
+        observations.append(["stage": "r08-retained-unlinked-note", "objectID": retained.objectID,
+                             "blockID": retained.blockID, "actualText": body(retained.blockID).value as? String ?? "",
+                             "sourceChipExists": chip.exists])
+        attachEvidence("t5-" + scope + "-retained-unlinked-note")
+        try enterObject(origin.objectID)
+        try openRelatedDocuments(associationID: origin.associationID)
+        try requireRows(expected: baselineRows)
+        observations.append(["stage": "r08-related-rows-after-return", "originObjectID": origin.objectID,
+                             "actualRows": actualRows.sorted()])
+        status = "PASS"
+    }
+
+    private func frameValue(_ frame: CGRect) -> [String: Double] {
+        ["x": Double(frame.minX), "y": Double(frame.minY), "width": Double(frame.width), "height": Double(frame.height)]
+    }
+    private func revealRelatedRow(_ row: XCUIElement) throws {
+        let scroll = app.scrollViews.containing(NSPredicate(format: "elementType == %d AND identifier == %@",
+            XCUIElement.ElementType.button.rawValue, row.identifier)).firstMatch
+        try require(scroll.waitForExistence(timeout: 20), "The actual Inspector scroll container is missing")
+        for _ in 0..<8 {
+            let frame = row.frame
+            let visible = scroll.frame.intersection(app.frame)
+            if row.isHittable && frame.width > 0 && frame.height > 0
+                && visible.insetBy(dx: -1, dy: -1).contains(frame) { return }
+            if frame.minY < visible.minY { scroll.swipeDown() } else { scroll.swipeUp() }
+        }
+        throw NSError(domain: "PinkhaT5NativeUI", code: 2,
+                      userInfo: [NSLocalizedDescriptionKey: "The real related row did not become fully visible after bounded scrolling"])
+    }
+
     private var baselineRows: Set<String> { Set(fixture.targets.map { rowPrefix + $0.resultID }) }
     private var actualRows: Set<String> {
         Set(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", rowPrefix)).allElementsBoundByIndex.map(\.identifier))
@@ -199,7 +312,8 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
     private func requirePartialCoverage() throws {
         let notice = app.descendants(matching: .any).matching(NSPredicate(
             format: "identifier == %@ AND label CONTAINS %@", "torah-inspector-related-documents-unavailable",
-            "Indexed documents and blocks in this Space; results may be incomplete")).firstMatch
+            appLanguage == "he" ? "מסמכים ובלוקים שנוספו לאינדקס במרחב זה; ייתכן שהתוצאות אינן מלאות."
+                : "Indexed documents and blocks in this Space; results may be incomplete")).firstMatch
         try require(notice.waitForExistence(timeout: 20), "Expanded results lost their incomplete-coverage disclosure")
     }
     private func launch() throws {
@@ -225,14 +339,17 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
                  timeout: 45, message: "The native editor does not match the actual Space and object")
         try require(editors.count == 1, "Exactly one editor must match the actual Space and object")
     }
-    private func openRelatedDocuments() throws {
-        let chip = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND label CONTAINS %@",
-            "torah-document-source-chip-", fixture.canonicalReference)).firstMatch
+    private func openRelatedDocuments(associationID: String? = nil) throws {
+        let chip = associationID.map { id in
+            app.buttons.matching(NSPredicate(format: "identifier == %@", "torah-document-source-chip-" + id)).firstMatch
+        }
+            ?? app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@ AND label CONTAINS %@",
+                "torah-document-source-chip-", fixture.canonicalReference)).firstMatch
         try require(chip.waitForExistence(timeout: 30) && chip.isHittable, "The native canonical source chip is unavailable")
         chip.tap()
         let expand = app.buttons["torah-inspector-expand-medium"]
         if expand.waitForExistence(timeout: 10) { expand.tap() }
-        let documents = app.buttons["In Documents"].firstMatch
+        let documents = app.buttons[appLanguage == "he" ? "במסמכים" : "In Documents"].firstMatch
         if !documents.exists || !documents.isHittable {
             let tools = app.buttons["torah-inspector-show-tools"]
             try require(tools.waitForExistence(timeout: 30) && tools.isHittable, "The existing Inspector tools are unavailable")
@@ -314,10 +431,17 @@ final class PinkhaT5NativeAcceptanceUITests: XCTestCase {
     }
     private func attachReceipt(_ name: String, status: String) {
         attachEvidence("t5-" + name + "-final")
-        let receipt: [String: Any] = ["protocolVersion": 1, "status": status, "scope": name,
+        var receipt: [String: Any] = ["protocolVersion": 1, "status": status, "scope": name,
             "token": fixture?.token ?? "", "appSourceSHA": fixture?.appSourceSHA ?? "", "runID": fixture?.runID ?? "",
             "spaceID": fixture?.spaceID ?? "", "observations": observations,
             "coverage": "indexedTargetsOnly", "productLookupFlag": "OFF", "physicalDeviceAccepted": false]
+        if name.hasPrefix("r08-") {
+            receipt["requestedAppLanguage"] = appLanguage
+            receipt["requestedAppearance"] = ProcessInfo.processInfo.environment["PINKHA_T5_UI_APPEARANCE"] ?? ""
+            receipt["voiceOverStatus"] = "NOT_RUN"
+            receipt["visualReviewStatus"] = "PENDING"
+            receipt["dynamicTypeScope"] = "fixed-large-only"
+        }
         if let data = try? JSONSerialization.data(withJSONObject: receipt, options: [.sortedKeys]) {
             let attachment = XCTAttachment(data: data, uniformTypeIdentifier: "public.json")
             attachment.name = "t5-native-ui-" + name + "-receipt"

@@ -32,6 +32,17 @@ SCREENSHOTS = {
 UUID = r"[0-9A-Fa-f]{8}(?:-[0-9A-Fa-f]{4}){3}-[0-9A-Fa-f]{12}"
 
 
+def presentation_title(role, token):
+    if role not in {"page", "writing"}:
+        return "T5 UI " + role
+    return ("כותרת עברית ארוכה למסמך " + role + " — "
+            + "מקור קנוני והערות עם טקסט מעורב T5. " * 5 + token[:8])
+
+
+def presentation_probe_text(token):
+    return "פסקה עברית לקריאה בלבד עם טקסט מעורב T5 — " + token
+
+
 def require(condition, message):
     if not condition:
         raise ValueError(message)
@@ -56,7 +67,7 @@ def is_hash(value):
 def validate_fixture(value, *, source, run_id, token, runtime, pair_report):
     keys = {"protocolVersion", "token", "appSourceSHA", "runID", "runtimeVersion", "preparationProcessID",
             "accountID", "spaceID", "foreignSpaceID", "accountRootPathSHA256", "providerID", "canonicalReference",
-            "coverage", "limitations", "targets", "excluded", "productLookupFlag"}
+            "coverage", "limitations", "targets", "excluded", "presentationProbe", "productLookupFlag"}
     require(set(value) == keys and type(value.get("protocolVersion")) is int
             and value.get("protocolVersion") == 1, "Unexpected native UI fixture schema")
     require(value["appSourceSHA"] == source and value["runID"] == run_id and value["token"] == token,
@@ -83,6 +94,7 @@ def validate_fixture(value, *, source, run_id, token, runtime, pair_report):
         for key in ["objectID", "typeKey", "associationID", "resultID"]:
             require(nonempty(item.get(key)), "Native UI target identity is missing")
         require(is_hash(item.get("canonicalSHA256")), "Canonical readback hash is absent")
+        require(item.get("title") == presentation_title(item["role"], token), "Actual native presentation title differs")
         if item["role"] in {"block", "quote"}:
             require(all(nonempty(item.get(key)) for key in ["blockID", "blockText", "firstBlockID", "firstBlockText"]),
                     "Actual distant block/negative-control content is missing")
@@ -97,6 +109,11 @@ def validate_fixture(value, *, source, run_id, token, runtime, pair_report):
         require(item["resultID"] == "|".join(str(len(part.encode("utf8"))) + ":" + part for part in identity),
                 "Native result does not identify the exact Space/object/block")
     by_role = {item["role"]: item for item in targets}
+    probe = value["presentationProbe"]
+    require(isinstance(probe, dict) and set(probe) == {"objectID", "blockID", "text"}
+            and probe["objectID"] == by_role["page"]["objectID"] and nonempty(probe["blockID"])
+            and probe["blockID"] != probe["objectID"] and probe["text"] == presentation_probe_text(token),
+            "Native Hebrew presentation probe identity/content differs")
     require(by_role["page"]["typeKey"] == by_role["block"]["typeKey"] == by_role["quote"]["typeKey"]
             and len({by_role[role]["typeKey"] for role in ["page", "note", "writing"]}) == 3,
             "Page, Note and writing type identity is ambiguous")
@@ -117,8 +134,9 @@ def validate_selection(summary, methods, expected, udid):
     normalized = {name.removesuffix("()"): result for name, result in methods.items()}
     require(len(methods) == len(expected) and normalized == {name: "Passed" for name in expected},
             "Actual named XCTest selection differs")
-    require(all(type(summary.get(key)) is int for key in ["passedTests", "failedTests", "skippedTests"])
-            and summary["passedTests"] == len(expected) and summary["failedTests"] == 0 and summary["skippedTests"] == 0,
+    require(all(type(summary.get(key)) is int for key in ["totalTestCount", "passedTests", "failedTests", "skippedTests"])
+            and summary["totalTestCount"] == summary["passedTests"] == len(expected)
+            and summary["failedTests"] == 0 and summary["skippedTests"] == 0,
             "Exact nonzero XCTest counts are required")
     devices = [entry.get("device", {}) for entry in summary.get("devicesAndConfigurations", [])]
     require(devices and all(entry.get("deviceId", "").lower() == udid.lower()
