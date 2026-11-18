@@ -96,13 +96,143 @@ def target_key(value):
     return value["objectID"], value.get("blockID") or ""
 
 
+FRESHNESS_PHASE = ("new-freshness", "new")
+FRESHNESS_STATUS = "PASS_ACTUAL_SWIFT_NATIVE_LOOKUP"
+
+
+def phases(include_freshness=False):
+    return PHASES + ([FRESHNESS_PHASE] if include_freshness else [])
+
+
+def validate_freshness_graph(graph, document, space, reachable):
+    require(isinstance(graph, dict) and graph.get("spaceID") == space
+            and graph.get("rootID") == document["objectID"]
+            and graph.get("targetID") == document.get("blockID")
+            and graph.get("targetReachable") is reachable, "Foreign or unproven actual host graph")
+    nodes = graph.get("nodes", [])
+    require(isinstance(nodes, list) and 0 < len(nodes) <= 10000, "Actual bounded ObjectShow graph required")
+    by_id = {}
+    for node in nodes:
+        require(isinstance(node, dict) and set(node) == {"id", "childIDs"}
+                and isinstance(node.get("id"), str) and node["id"] and node["id"] not in by_id
+                and isinstance(node["childIDs"], list)
+                and all(isinstance(child, str) and child for child in node["childIDs"]),
+                "Invalid actual graph node or duplicate identity")
+        by_id[node["id"]] = node["childIDs"]
+    pending, seen = [document["objectID"]], set()
+    require(graph["targetID"] and graph["targetID"] != graph["rootID"], "Original distinct block identity required")
+    while pending:
+        identifier = pending.pop()
+        if identifier in seen:
+            continue
+        require(identifier in by_id, "Unresolved child in the original native graph")
+        seen.add(identifier)
+        pending.extend(by_id[identifier])
+    require((graph["targetID"] in seen) is reachable, "Claimed target exclusion contradicts the actual live graph")
+
+
+def validate_host_freshness(freshness, ledger):
+    require(isinstance(freshness, dict) and freshness.get("status") == FRESHNESS_STATUS
+            and freshness.get("writeOrigin") == "DIRECT_NATIVE_RPC_WITHOUT_EXPLICIT_HOST_INVALIDATION"
+            and freshness.get("serviceScope") == "ONE_REUSED_PRODUCTION_SERVICE"
+            and freshness.get("coverage") == "indexedTargetsOnly"
+            and freshness.get("spaceWideFreshness") == "NOT_PROVEN"
+            and freshness.get("navigationStatus") == "NOT_RUN",
+            "Actual same-service Swift freshness missing or acceptance scope widened")
+    require(freshness.get("nativeMutationCounts") == {
+        "ObjectSetDetails": 4, "ObjectListSetIsArchived": 2, "BlockListDelete": 2, "ObjectListDelete": 1},
+        "Actual direct-native mutation sequence differs or recreated a fixture")
+    documents, original = ledger["documents"], freshness.get("originalCanonical", {})
+    ids = [doc["objectID"] for doc in documents]
+    require(set(original) == set(ids), "Original native canonical payloads missing")
+    parsed = []
+    for index, doc in enumerate(documents):
+        raw = original[doc["objectID"]]
+        require(isinstance(raw, str) and sha_bytes(raw.encode()) == doc["canonicalSHA256"],
+                "Freshness substituted the original canonical bytes")
+        root = json.loads(raw)
+        records = root.get("records", [])
+        require(root.get("version") == 2 and len(records) == 1, "One original canonical v2 record required")
+        record = records[0]
+        require(record.get("spaceId") == ledger["spaceID"] and record.get("objectId") == doc["objectID"]
+                and record.get("blockId") == doc.get("blockID")
+                and record.get("item", {}).get("kind") == "ref"
+                and record["item"].get("providerID") == "sefaria"
+                and record["item"].get("canonicalKey") == "Genesis 3:3"
+                and record["item"].get("role") == ("sourceQuote" if index == 2 else "context"),
+                "Original canonical source/target binding differs")
+        parsed.append(root)
+    # name, native members, host targets, inspected object, payload, reachable, archived, verse, stale
+    spec = [
+        ("baseline", [0, 1, 2], [0, 1, 2], None, None, None, False, "Genesis 3:3", False),
+        ("note_unlink", [0, 2], [0, 2], 1, "unlink", True, False, "Genesis 3:3", False),
+        ("note_restore", [0, 1, 2], [0, 1, 2], 1, "original", True, False, "Genesis 3:3", False),
+        ("quote_update_original", [0, 1], [0, 1], 2, "verse", True, False, "Genesis 3:3", False),
+        ("quote_update_other", [2], [2], 2, "verse", True, False, "Genesis 3:4", False),
+        ("quote_restore", [0, 1, 2], [0, 1, 2], 2, "original", True, False, "Genesis 3:3", False),
+        ("note_archive", [0, 2], [0, 2], 1, "original", True, True, "Genesis 3:3", False),
+        ("note_unarchive", [0, 1, 2], [0, 1, 2], 1, "original", True, False, "Genesis 3:3", False),
+        ("note_block_removed", [0, 1, 2], [0, 2], 1, "original", False, False, "Genesis 3:3", True),
+        ("quote_block_removed", [0, 1, 2], [0], 2, "original", False, False, "Genesis 3:3", True),
+        ("page_deleted", [1, 2], [], 0, "deleted", None, False, "Genesis 3:3", True),
+    ]
+    observed = freshness.get("observations", [])
+    require(isinstance(observed, list) and [row.get("name") for row in observed] == [row[0] for row in spec],
+            "Exactly eleven ordered actual Swift/native observations required")
+    for row, (_, native, host, index, payload, reachable, archived, verse, stale) in zip(observed, spec):
+        require(row.get("spaceID") == ledger["spaceID"] and row.get("sourceReference") == verse
+                and row.get("coverage") == "indexedTargetsOnly", "Host observation source/Space/coverage differs")
+        require(row.get("nativeCandidatesBefore") == sorted(ids[i] for i in native)
+                and row.get("nativeCandidatesAfter") == sorted(ids[i] for i in native),
+                "Actual native membership before and after the production service differs")
+        expected_targets = [dict(objectID=ids[i], blockID=documents[i].get("blockID"),
+                                 canUnlink=documents[i].get("blockID") is None) for i in host]
+        targets = row.get("targets", [])
+        require(isinstance(targets, list) and all(type(item.get("canUnlink")) is bool for item in targets)
+                and sorted([dict(objectID=item.get("objectID"), blockID=item.get("blockID"),
+                                 canUnlink=item["canUnlink"]) for item in targets], key=target_key)
+                == sorted(expected_targets, key=target_key), "Actual production service returned an invalid target")
+        expected_limits = ["indexFreshnessUnverified"] + (["staleCandidates"] if stale else [])
+        require(row.get("limitations") == expected_limits, "Missing exact host incompleteness/stale disclosure")
+        if index is None:
+            require(all(row.get(key) is None for key in ["objectID", "canonicalRaw", "canonicalSHA256",
+                    "objectRetained", "isArchived", "graph", "objectShowError"]),
+                    "Baseline claimed an unrelated native mutation/readback")
+            continue
+        doc = documents[index]
+        require(row.get("objectID") == doc["objectID"], "Mutation inspected a different original object")
+        if payload == "deleted":
+            require(type(row.get("objectShowError")) is int and row["objectShowError"] in [3, 4]
+                    and all(row.get(key) is None for key in
+                            ["canonicalRaw", "canonicalSHA256", "objectRetained", "isArchived", "graph"]),
+                    "Deleted Page did not return a specific native deletion response")
+            continue
+        require(row.get("objectRetained") is True and row.get("isArchived") is archived
+                and row.get("objectShowError") is None, "Unlink/archive mutated or removed the original live object")
+        raw = row.get("canonicalRaw")
+        require(isinstance(raw, str) and sha_bytes(raw.encode()) == row.get("canonicalSHA256"),
+                "Actual canonical mutation bytes and digest differ")
+        if payload == "original":
+            require(raw == original[doc["objectID"]], "Restoration/removal changed original canonical unknown fields")
+        else:
+            expected = json.loads(original[doc["objectID"]])
+            if payload == "unlink":
+                expected["records"] = []
+            else:
+                expected["records"][0]["item"].update(canonicalKey="Genesis 3:4", externalID="Genesis 3:4")
+            require(json.loads(raw) == expected, "Host observed a different canonical mutation or lost unknown fields")
+        validate_freshness_graph(row.get("graph"), doc, ledger["spaceID"], reachable)
+    return len(observed)
+
+
 def validate_ledger(ledger, token, source, phase):
     require(ledger.get("token") == token and ledger.get("appSourceSHA") == source, "Foreign ledger owner/source")
     for key in ["rootPathSHA256", "manifestSHA256"]:
         require(is_digest(ledger.get(key)), "Invalid original ledger digest")
     for key in ["accountID", "spaceID", "manifestID", "canonicalKey"]:
         require(isinstance(ledger.get(key), str) and ledger[key], "Missing original native identity")
-    expected_phases = [name for name, _ in PHASES[:[name for name, _ in PHASES].index(phase) + 1]]
+    all_phases = phases(True)
+    expected_phases = [name for name, _ in all_phases[:[name for name, _ in all_phases].index(phase) + 1]]
     require(ledger.get("completedPhases") == expected_phases, "Actual persisted phase sequence differs")
     documents = ledger.get("documents", [])
     require(len(documents) == 3 and len({item.get("objectID") for item in documents}) == 3,
@@ -172,7 +302,7 @@ def validate_phase(report, phase, role, token, nonce, source, ledger, ledger_sha
         if expanded:
             require(type(item.get("nativeRelatedVersion")) is int and item["nativeRelatedVersion"] == 1,
                     "New native private projection did not recover")
-        expected_name = ("T5 ordinary edit by r14" if index == 0 and phase in ["old-edit", "new-recover"]
+        expected_name = ("T5 ordinary edit by r14" if index == 0 and phase in ["old-edit", "new-recover", "new-freshness"]
                          else original["initialName"])
         require(item.get("title") == expected_name, "Actual initial title or ordinary old-runtime edit was lost")
     expected = [dict(objectID=item["objectID"], blockID=item.get("blockID") if expanded else None,
@@ -182,6 +312,15 @@ def validate_phase(report, phase, role, token, nonce, source, ledger, ledger_sha
             sorted([dict(objectID=item.get("objectID"), blockID=item.get("blockID"),
                          canUnlink=item.get("canUnlink")) for item in targets], key=target_key)
             == sorted(expected, key=target_key), "Actual app lookup returned the wrong native targets")
+
+    if phase == "new-freshness":
+        require(role == "new" and report.get("readbackBoundary") == "BEFORE_FRESHNESS_MUTATIONS",
+                "Freshness cannot relabel compatibility readbacks as post-mutation preservation")
+        validate_host_freshness(report.get("freshness"), ledger)
+    else:
+        require(report.get("freshness") is None
+                and report.get("readbackBoundary", "BEFORE_ACCOUNT_STOP") == "BEFORE_ACCOUNT_STOP",
+                "Default compatibility phase unexpectedly performed freshness mutations")
 
 
 def validate_xcresult(summary, methods, udid):
@@ -197,12 +336,14 @@ def validate_xcresult(summary, methods, udid):
             "Actual XCTest device/architecture/runtime differs")
 
 
-def validate_sequence(reports, build_receipts):
-    require([report.get("phase") for report in reports] == [name for name, _ in PHASES],
-            "All four actual Apple phases are required")
+def validate_sequence(reports, build_receipts, include_freshness=False):
+    require([report.get("phase") for report in reports] == [name for name, _ in phases(include_freshness)],
+            "Exact requested Apple phase sequence is required")
     pids = [report["processID"] for report in reports]
     nonces = [report["nonce"] for report in reports]
-    require(len(set(pids)) == 4 and len(set(nonces)) == 4, "Four distinct native processes/nonces required")
+    total = 5 if include_freshness else 4
+    require(len(set(pids)) == total and len(set(nonces)) == total,
+            "Every actual native phase requires a distinct process and nonce")
     for key in ["appSourceSHA", "token", "rootPathSHA256", "accountID", "spaceID", "manifestID", "manifestSHA256", "canonicalKey"]:
         require(len({report[key] for report in reports}) == 1, "Native account/source continuity was lost")
     preserved = ["objectID", "canonicalSHA256", "publicSHA256", "blockID", "blockTextSHA256"]
@@ -218,7 +359,15 @@ def validate_sequence(reports, build_receipts):
     require(old.get("code_sha256") != new.get("code_sha256"), "The supposedly different packaged runtimes are identical")
     for role in ["old", "new"]:
         require(build_receipts[role].get("runtime_version") == runtime_version(role), "Packaged runtime pairing differs")
-    return dict(app_builds=2, actual_native_processes=4, named_swift_tests_passed=4, failed=0, skipped=0)
+    counts = dict(app_builds=2, actual_native_processes=total, named_swift_tests_passed=total, failed=0, skipped=0)
+    if include_freshness:
+        fresh = reports[-1]
+        require(fresh.get("readbackBoundary") == "BEFORE_FRESHNESS_MUTATIONS"
+                and fresh.get("freshness", {}).get("status") == FRESHNESS_STATUS
+                and len(fresh["freshness"].get("observations", [])) == 11,
+                "Fifth process lacks actual bounded host freshness")
+        counts["host_freshness_observations"] = 11
+    return counts
 
 
 def terminate_owned(process):
@@ -459,7 +608,7 @@ def contains_secret(path, needles):
     return False
 
 
-def preserve_native_evidence(work, proof, container, token):
+def preserve_native_evidence(work, proof, container, token, include_freshness=False):
     destination = proof / "actual-phases"
     require(not destination.exists(), "Refuse stale public native evidence")
     candidates = []
@@ -476,7 +625,7 @@ def preserve_native_evidence(work, proof, container, token):
     allowed = ["test.log", "test.command.json", "summary.json", "tests.json", "receipt.json",
                "result.json", "selection.json", "install.log", "install.command.json",
                "terminate.log", "terminate.command.json", "export-summary.command.json", "export-tests.command.json"]
-    for phase, _ in PHASES:
+    for phase, _ in phases(include_freshness):
         directory = work / "phases" / phase
         for filename in allowed:
             path = directory / filename
@@ -606,7 +755,7 @@ def execute(args, result):
     result["phase"] = "ACTUAL_NATIVE_EXECUTION"
     write(proof / "result.json", result)
     try:
-        for phase, role in PHASES:
+        for phase, role in phases(args.include_freshness):
             result["active_phase"] = phase
             write(proof / "result.json", result)
             report, container = run_phase(phase, role, builds[role], app, work, udid, source,
@@ -614,18 +763,20 @@ def execute(args, result):
             reports.append(report)
             result["completed_phases"] = [item["phase"] for item in reports]
             write(proof / "result.json", result)
-        result["actual_counts"] = validate_sequence(reports, builds)
+        result["actual_counts"] = validate_sequence(reports, builds, args.include_freshness)
         require(git(app, "rev-parse", "HEAD") == source and not git(app, "status", "--porcelain"),
                 "Application source changed during the actual native sequence")
     finally:
         if container is None:
             container = app_container(udid, "data", required=False)
         try:
-            secret_scan_passed = preserve_native_evidence(work, proof, container, token)
+            secret_scan_passed = preserve_native_evidence(work, proof, container, token, args.include_freshness)
         finally:
             run_logged(["xcrun", "simctl", "shutdown", udid], app, proof / "simulator", "shutdown", 120, check=False)
     require(secret_scan_passed, "Complete private credential inventory required before public acceptance")
-    result.update(status="APPLE_SAME_ACCOUNT_RUNTIME_PAIR_PASS", phase_reports=reports,
+    result.update(status="APPLE_SAME_ACCOUNT_RUNTIME_PAIR_PASS", phase_reports=reports[:len(PHASES)],
+                  freshness_report=reports[-1] if args.include_freshness else None,
+                  host_freshness_status=FRESHNESS_STATUS if args.include_freshness else "NOT_REQUESTED",
                   exact_same_app_source=True, full_F10="NOT_PROVEN", product_lookup_flag="OFF")
 
 
@@ -635,13 +786,15 @@ def main(argv=None):
         parser.add_argument("--" + name, type=Path, required=True)
     for name in ["heart-r14-run-id", "heart-r15-run-id"]:
         parser.add_argument("--" + name, required=True)
+    parser.add_argument("--include-freshness", action="store_true")
     args = parser.parse_args(argv)
     args.evidence.mkdir(parents=True, exist_ok=True)
     result = dict(status="RUNNING", phase="PREFLIGHT", started_at=datetime.now(timezone.utc).isoformat(),
-                  completed_builds=[], completed_phases=[], actual_counts=None,
+                  completed_builds=[], completed_phases=[], actual_counts=None, include_freshness=args.include_freshness,
                   product_lookup_flag="OFF", test_only_lookup_flag="IDENTICAL_BOTH_APP_BUILDS",
                   full_F10="NOT_PROVEN", release_accepted=False, full_matrix_accepted=False,
-                  scope="same exact app source; two original Apple runtimes; four native test processes on one fresh OS27 iPad account",
+                  scope="same exact app source; two original Apple runtimes; four compatibility processes on one fresh OS27 iPad account"
+                        + ("; optional fifth process proves bounded host freshness after intentional disposable mutations" if args.include_freshness else ""),
                   limitations=["Actual Linux account/export proof is separate", "Space-wide index freshness remains unproven",
                                "No visual UI, physical-device, TestFlight or release acceptance from this route"])
     write(args.evidence / "result.json", result)

@@ -3,6 +3,10 @@ name: Same source T5 Apple r14 r15 account pair
 on:
   workflow_call:
     inputs:
+      include_freshness:
+        description: After four passing compatibility phases run bounded host freshness in a fifth process
+        type: boolean
+        default: false
       heart_r14_run_id:
         type: string
         required: true
@@ -68,12 +72,19 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           HEART_R14_RUN_ID: ${{ inputs.heart_r14_run_id }}
           HEART_R15_RUN_ID: ${{ inputs.heart_r15_run_id }}
+          INCLUDE_FRESHNESS: ${{ inputs.include_freshness && 'true' || 'false' }}
         run: |
+          set --
+          case "$INCLUDE_FRESHNESS" in
+            true) set -- --include-freshness ;;
+            false) ;;
+            *) echo "Explicit true/false freshness mode required" >&2; exit 1 ;;
+          esac
           python3 -B Tools/PinkhaSimulatorGate/run_t5_apple_pair.py \
             --app "$GITHUB_WORKSPACE" --native-source build/t5-apple-native-source \
             --work build/t5-apple-pair-private --evidence build/t5-apple-pair-proof \
             --derived build/ui27-derived \
-            --heart-r14-run-id "$HEART_R14_RUN_ID" --heart-r15-run-id "$HEART_R15_RUN_ID"
+            --heart-r14-run-id "$HEART_R14_RUN_ID" --heart-r15-run-id "$HEART_R15_RUN_ID" "$@"
       - name: Keep XCTest activity logs out of the compilation cache
         if: always()
         id: cache-log-boundary
