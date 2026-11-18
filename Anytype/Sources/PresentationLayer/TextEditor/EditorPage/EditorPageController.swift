@@ -13,6 +13,7 @@ final class EditorPageController: UIViewController {
     let bottomNavigationManager: any EditorBottomNavigationManagerProtocol
     private(set) lazy var dataSource = makeCollectionViewDataSource()
     private(set) weak var firstResponderView: UIView?
+    private weak var pinkhaHanlinRouteOwner: SpaceHubCoordinatorViewModel?
     private let layout = EditorCollectionFlowLayout()
     @Injected(\.keyboardHeightListener)
     private var keyboardListener: KeyboardHeightListener
@@ -91,6 +92,10 @@ final class EditorPageController: UIViewController {
             viewModel?.showSyncStatusInfo()
         },
         torahSession: viewModel.torahSession,
+        onHanlinSelectionTap: { [weak self] in
+            guard let self, let owner = self.pinkhaHanlinRouteOwner else { return }
+            PinkhaHanlinSelectionEntry.open(editor: self, routeOwner: owner)
+        },
         onWebBannerTap: { [weak viewModel] in
             UISelectionFeedbackGenerator().selectionChanged()
             viewModel?.onPublishingBannerTap()
@@ -316,6 +321,11 @@ final class EditorPageController: UIViewController {
     
     func setPageNavigationHiddenBackButton(_ hidden: Bool) {
         navigationBarHelper.setPageNavigationHiddenBackButton(hidden)
+    }
+
+    func setPinkhaHanlinRouteOwner(_ owner: SpaceHubCoordinatorViewModel?) {
+        pinkhaHanlinRouteOwner = owner
+        navigationBarHelper.setHanlinSelectionAvailable(owner != nil)
     }
 }
 

@@ -166,6 +166,7 @@ struct SpaceHubCoordinatorView: View {
                         builder.appendBuilder(for: EditorScreenData.self) { data in
                             searchOverlayHost(for: data) {
                                 EditorCoordinatorView(data: data)
+                                    .environment(\.pinkhaHanlinRouteOwner, model)
                             }
                         }
                         builder.appendBuilder(for: SpaceHubNavigationItem.self) { item in

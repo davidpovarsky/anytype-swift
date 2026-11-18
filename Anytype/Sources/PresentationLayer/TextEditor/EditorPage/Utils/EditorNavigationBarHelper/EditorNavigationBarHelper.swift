@@ -32,6 +32,7 @@ final class EditorNavigationBarHelper {
     private let navigationBarTitleView = EditorNavigationBarTitleView()
 
     private let doneButton: UIButton
+    private let rightContainerForSelection: PinkhaHanlinSelectionControls
     private let selectAllButton: UIButton
 
     private let settingsMenuController: UIViewController
@@ -71,6 +72,7 @@ final class EditorNavigationBarHelper {
         onTitleTap: @escaping () -> Void,
         onSyncStatusTap: @escaping () -> Void,
         torahSession: TorahEditorSession? = nil,
+        onHanlinSelectionTap: @escaping () -> Void = {},
         onWebBannerTap: @escaping () -> Void
     ) {
         self.navigationBarView = navigationBarView
@@ -133,6 +135,7 @@ final class EditorNavigationBarHelper {
         )
 
         self.onTemplatesButtonTap = onTemplatesButtonTap
+        self.rightContainerForSelection = PinkhaHanlinSelectionControls(doneButton: doneButton, onOpen: onHanlinSelectionTap)
         self.onTitleTap = onTitleTap
 
         self.fakeNavigationBarBackgroundView.backgroundColor = .Background.primary
@@ -193,6 +196,10 @@ final class EditorNavigationBarHelper {
 
     func setPageNavigationHiddenBackButton(_ hidden: Bool) {
         backButtonGlassContainer.isHidden = hidden
+    }
+
+    func setHanlinSelectionAvailable(_ available: Bool) {
+        rightContainerForSelection.setAvailable(available)
     }
 }
 
@@ -284,11 +291,12 @@ extension EditorNavigationBarHelper: EditorNavigationBarHelperProtocol {
             updateNavigationBarAppearanceBasedOnContentOffset(currentScrollViewOffset)
             settingsGlassContainer.isHidden = false
         case .selecting(let blocks, let allSelected):
+            rightContainerForSelection.setSelectionPresent(!blocks.isEmpty)
             navigationBarTitleView.setAlphaForSubviews(1)
             updateBarButtonItemsBackground(opacity: 1)
             selectAllButton.setTitle(allSelected ? Loc.deselect : Loc.selectAll, for: .normal)
             navigationBarView.leftButton = selectAllButton
-            navigationBarView.rightButton = doneButton
+            navigationBarView.rightButton = rightContainerForSelection
             let title = Loc.selectedBlocks(blocks.count)
             navigationBarTitleView.configure(model: .modeTitle(title))
             navigationBarTitleView.setIsReadonly(nil)
@@ -307,10 +315,11 @@ extension EditorNavigationBarHelper: EditorNavigationBarHelperProtocol {
             updateNavigationBarAppearanceBasedOnContentOffset(currentScrollViewOffset)
             settingsGlassContainer.isHidden = false
         case let .simpleTablesSelection(_, selectedBlocks, _):
+            rightContainerForSelection.setSelectionPresent(!selectedBlocks.isEmpty)
             navigationBarTitleView.setAlphaForSubviews(1)
             updateBarButtonItemsBackground(opacity: 1)
             navigationBarView.leftButton = selectAllButton
-            navigationBarView.rightButton = doneButton
+            navigationBarView.rightButton = rightContainerForSelection
             let title = Loc.selectedBlocks(selectedBlocks.count)
             navigationBarTitleView.configure(model: .modeTitle(title))
             navigationBarTitleView.setIsReadonly(nil)

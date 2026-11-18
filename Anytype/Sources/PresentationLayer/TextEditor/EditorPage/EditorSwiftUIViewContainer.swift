@@ -14,6 +14,7 @@ struct EditorSwiftUIViewContainer: UIViewControllerRepresentable {
     
     @Environment(\.pageEditorAdditionalSafeAreaInsets) private var pageEditorAdditionalSafeAreaInsets
     @Environment(\.pageNavigationHiddenBackButton) private var pageNavigationHiddenBackButton
+    @Environment(\.pinkhaHanlinRouteOwner) private var pinkhaHanlinRouteOwner
     
     let viewController: EditorPageController
 
@@ -24,5 +25,6 @@ struct EditorSwiftUIViewContainer: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: EditorPageController, context: Context) {
         viewController.additionalSafeAreaInsets = pageEditorAdditionalSafeAreaInsets
         viewController.setPageNavigationHiddenBackButton(pageNavigationHiddenBackButton)
+        viewController.setPinkhaHanlinRouteOwner(pinkhaHanlinRouteOwner)
     }
 }
