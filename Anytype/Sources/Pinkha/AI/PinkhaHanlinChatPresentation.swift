@@ -71,6 +71,8 @@ final class PinkhaHanlinChatPresentation {
             #if DEBUG && targetEnvironment(simulator)
             PinkhaHanlinNativeAcceptanceDriver.startIfRequested(host: host, presentation: self,
                 controller: controller, source: acceptanceSource, routeOwner: acceptanceRouteOwner)
+            PinkhaHanlinSelectionAcceptanceDriver.startIfRequested(host: host, presentation: self,
+                controller: controller, source: acceptanceSource)
             #endif
         }
         catch { invalidate() }
