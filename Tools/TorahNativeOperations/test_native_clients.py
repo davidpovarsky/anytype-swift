@@ -344,7 +344,7 @@ class NativeClientControls(unittest.TestCase):
             target = root / "Tools/TorahNativeOperations"
             for relative in ["two_clients/fixture.json", "two_clients/native-read-observation.patch",
                              *["two_clients/" + name for name in lane.GO_FILES],
-                             "run_account_rpc.py", "native_client_diagnostics.py"]:
+                             "run_account_rpc.py", "native_client_diagnostics.py", "native_client_observed_remove.py"]:
                 path = target / relative
                 path.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(tools / relative, path)

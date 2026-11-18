@@ -1,5 +1,11 @@
 #!/bin/sh
 set -eu
+case "${T2_NATIVE_SCENARIO:-bootstrap}:${T2_NATIVE_CRASH_AFTER_COMMIT:-false}:${T2_NATIVE_OBSERVED_REMOVE_AFTER_REOPEN:-false}" in
+  bootstrap:false:false|offline:false:false) set -- ;;
+  offline:true:false) set -- --crash-after-commit ;;
+  offline:false:true) set -- --observed-remove-after-reopen ;;
+  *) echo "Unsupported or mutually exclusive native tail selection"; exit 2 ;;
+esac
 apk add --no-cache python3 git build-base > /workspace/evidence/toolchain/apk-install.log 2>&1
 for source in control approved-source heart-legacy heart-new; do
   git config --global --add safe.directory "/workspace/$source"
@@ -16,11 +22,6 @@ int main(void) { int values[] = {2,1}; qsort_r(values, 2, sizeof(int), cmp, NULL
 EOF
 gcc -static /workspace/qsort-probe.c -o /workspace/qsort-probe > /workspace/evidence/toolchain/qsort-link.log 2>&1
 /workspace/qsort-probe
-case "${T2_NATIVE_CRASH_AFTER_COMMIT:-false}" in
-  true) set -- --crash-after-commit ;;
-  false) set -- ;;
-  *) echo "Unsupported explicit crash selection"; exit 2 ;;
-esac
 exec python3 -B /workspace/control/Tools/TorahNativeOperations/run_native_clients.py build "$@" \
   --scenario "${T2_NATIVE_SCENARIO:-bootstrap}" \
   --approved-source /workspace/approved-source --heart-legacy /workspace/heart-legacy --heart-new /workspace/heart-new \
