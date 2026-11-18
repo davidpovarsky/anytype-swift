@@ -1,0 +1,81 @@
+name: Pinkha bounded T5 native account and export pairing
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  account-pairs:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      T5_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8
+    steps:
+      - name: Checkout integration proof control
+        uses: actions/checkout@v4
+        with:
+          path: control
+      - name: Checkout exact reviewed native inventories
+        uses: actions/checkout@v4
+        with:
+          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1
+          path: source
+      - name: Checkout exact old native Heart source
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: heart-old
+      - name: Checkout exact new native Heart source
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: heart-new
+      - name: Restore compiled dependencies only
+        uses: actions/cache@v4
+        with:
+          path: .t5-cache
+          key: t5-alpine-111d7915-go1.26.5-${{ hashFiles('heart-old/tantivity_sha256.txt', 'heart-old/go.sum', 'source/**/go.sum') }}-947fbde2-account-pairs
+          restore-keys: |
+            t5-alpine-111d7915-go1.26.5-
+      - name: Compile two exact RPC binaries and reopen one disposable account
+        run: |
+          mkdir -p proof/toolchain artifacts pair-work .t5-cache
+          docker pull --platform linux/amd64 "$T5_GO_IMAGE"
+          docker image inspect "$T5_GO_IMAGE" > proof/toolchain/image.json
+          docker run --rm --platform linux/amd64 --cpus=2 --memory=6g --pids-limit=512 \
+            --workdir /workspace \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/control,dst=/workspace/control,readonly" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/source,dst=/workspace/source,readonly" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/heart-old,dst=/workspace/heart-old" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/heart-new,dst=/workspace/heart-new" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/proof,dst=/workspace/proof" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/artifacts,dst=/workspace/artifacts" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/pair-work,dst=/workspace/pair-work" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/.t5-cache,dst=/cache" \
+            -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_SHA -e GITHUB_ACTIONS \
+            -e CC=gcc -e CXX=g++ -e GOTOOLCHAIN=local \
+            -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
+            -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \
+            "$T5_GO_IMAGE" sh control/Tools/PinkhaNativeDerived/run_t5_account_pairs_linux_container.sh
+      - name: Upload attempt evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-T5-Account-Pair-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: proof/
+          # Only allowlisted receipts, checked native logs, and synthetic exports.
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Preserve actual native RPC binaries separately from evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-T5-Account-Pair-Binaries-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/
+          # Account root, account keys, and private phase work are excluded.
+          if-no-files-found: warn
+          retention-days: 14
