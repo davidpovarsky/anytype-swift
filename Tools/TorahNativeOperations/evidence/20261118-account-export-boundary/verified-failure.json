@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "status": "FAIL_PRIVATE_OBJECT_EXPORT_ASSERTION",
+  "run_id": 44237407166,
+  "run_attempt": 1,
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44237407166",
+  "app_sha": "285bb717eae9d4a031d704da7dee5907c037e418",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "artifact_id": 14398047642,
+  "artifact_sha256": "65c9bd634624f7dc7c1818b6fb9a42226b6e71b95882e2e9799e17fdbef413c9",
+  "receipt_sha256": "f702602e00ecfe9aefbcd3363c6a30ad8b84369f1ed95655e3674ac90a2bc356",
+  "new_create_log_sha256": "3ba3697fbee8b84e83de53337ff063c3cb7550f4acb3a64023b86b6d982857f0",
+  "finished_at": "2026-11-18T04:36:57.150161+00:00",
+  "binaries": {
+    "legacy_sha256": "c6f09540836b955c9efd2ad370af620ed4b34f98b3624b64e7f2a79901b3d3b3",
+    "new_sha256": "0f1a191a334b6002173047ec934ada0278433564db0cb50d13f1ce697bb3a26a"
+  },
+  "fixture_sha256": "f8ea41b216c528416b66ab91b4c3b8a07103a36ba9c227107b82b39c298b5b35",
+  "native_patch_sha256": "8706ff898474ca227947caa0f199300919b7bc93b954cb7ef9e3d1a9ad0ece10",
+  "failure": {
+    "phase": "new-create",
+    "source": "account_lifecycle/account_phase_test.go:314",
+    "assertion": "normal export must reject a private journal host",
+    "actual_top_level_error": "NULL",
+    "private_result": "NOT_RECORDED",
+    "private_export_leak": "NOT_ESTABLISHED",
+    "private_export_omission": "NOT_ESTABLISHED"
+  },
+  "observations_before_failure": [
+    "Private factory/native append/read/idempotent retry routine completed",
+    "Raw signed history storage ID/change ID/parent assertions completed",
+    "Ordinary Page Protobuf export decoded and document.pbc was written"
+  ],
+  "phase_passes": 0,
+  "later_phases": "NOT_RUN",
+  "verification": "Artifact digest and source-bound result verified in memory on the connected host; raw evidence remains on GitHub."
+}

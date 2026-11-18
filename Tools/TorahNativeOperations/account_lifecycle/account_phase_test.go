@@ -310,6 +310,13 @@ func (r *t2AccountRPC) visibleAndHiddenEvidence(state *t2AccountState, phase, pa
 		exports[name] = t2Hash(raw)
 		denied := &pb.RpcObjectExportResponse{}
 		r.raw(ObjectExport, &pb.RpcObjectExportRequest{SpaceId: state.SpaceID, ObjectId: state.RootID, Format: format}, denied)
+		r.t.Logf("T2_PRIVATE_EXPORT format=%s result_bytes=%d result_sha256=%s", format.String(), len(denied.Result), t2Hash([]byte(denied.Result)))
+		if denied.Error != nil {
+			r.t.Logf("T2_PRIVATE_EXPORT rpc_code=%d", denied.Error.Code)
+		}
+		if denied.Report != nil {
+			r.t.Logf("T2_PRIVATE_EXPORT report_status=%s succeed=%d object_errors=%d file_errors=%d issues=%d", denied.Report.Status.String(), denied.Report.Succeed, denied.Report.ObjectErrors, denied.Report.FileErrors, len(denied.Report.Issues))
+		}
 		require.NotNil(r.t, denied.Error)
 		require.NotZero(r.t, denied.Error.Code, "normal export must reject a private journal host")
 		require.Empty(r.t, denied.Result)
