@@ -55,7 +55,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         XCTAssertTrue(add.isHittable)
         add.tap()
         let search = app.textFields.matching(NSPredicate(
-            format: "identifier == %@ OR identifier == %@", "torah-sources-search-field", "torah-sources-search-sheet"
+            format: "identifier == %@", "torah-sources-search-field"
         )).firstMatch
         XCTAssertTrue(search.waitForExistence(timeout: 20))
         XCTAssertTrue(app.staticTexts["Document links"].waitForExistence(timeout: 20))
@@ -70,7 +70,7 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         XCTAssertTrue(add.waitForExistence(timeout: 20))
         add.tap()
         let search = app.textFields.matching(NSPredicate(
-            format: "identifier == %@ OR identifier == %@", "torah-sources-search-field", "torah-sources-search-sheet"
+            format: "identifier == %@", "torah-sources-search-field"
         )).firstMatch
         XCTAssertTrue(search.waitForExistence(timeout: 20))
         search.tap()
@@ -80,11 +80,16 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         }
         let noMatch = "zzqvnonexistent123456789"
         search.typeText(noMatch)
+        try requireEmbedded(search.value as? String == noMatch, "The original search field must contain the complete no-match query")
         let empty = app.descendants(matching: .any).matching(identifier: "torah-search-empty").firstMatch
-        XCTAssertTrue(empty.waitForExistence(timeout: 45), "A real no-match search should expose its empty state")
+        try requireEmbedded(empty.waitForExistence(timeout: 45), "A real no-match search should expose its empty state")
         attach("document-sources-empty-search")
         search.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: noMatch.utf16.count))
-        XCTAssertTrue(empty.waitForNonExistence(timeout: 20), "Clearing the search should leave the empty-result state")
+        let idle = app.descendants(matching: .any).matching(identifier: "torah-search-idle").firstMatch
+        try requireEmbedded(idle.waitForExistence(timeout: 20), "Clearing the search must restore its original prompt")
+        try requireEmbedded(empty.waitForNonExistence(timeout: 20), "Clearing the search should leave the empty-result state")
+        try requireEmbedded(!app.descendants(matching: .any).matching(identifier: "torah-search-error").firstMatch.exists,
+                            "Clearing the search must not replace the empty result with an error")
         attach("document-sources-search-cleared")
     }
     func testSourceChipOpensAndClosesInspector() throws {
@@ -125,9 +130,18 @@ final class AnytypeComprehensiveAcceptanceUITests: XCTestCase {
         documents.tap()
         let add = app.buttons["torah-inspector-related-add-note"]
         XCTAssertTrue(add.waitForExistence(timeout: 30), "Document tool must expose the real Note action")
-        let linkedDocument = app.buttons["UI27 source document"].firstMatch
-        XCTAssertTrue(linkedDocument.waitForExistence(timeout: 45), "The canonical document source should appear in the current Space")
-        XCTAssertTrue(linkedDocument.isHittable)
+        let targetID = [fixture.spaceId, fixture.manySourcesDocument, ""]
+            .map { "\($0.utf8.count):\($0)" }.joined(separator: "|")
+        let rows = app.buttons.matching(NSPredicate(
+            format: "identifier == %@", "torah-inspector-related-row-" + targetID
+        ))
+        let linkedDocument = rows.firstMatch
+        try requireEmbedded(linkedDocument.waitForExistence(timeout: 45),
+                            "The canonical document source should appear in the current Space")
+        try requireEmbedded(rows.count == 1, "The exact Space/document must have one indexed row")
+        try requireEmbedded(linkedDocument.label.contains("UI27 source document"),
+                            "The indexed row must retain the native title alongside its metadata")
+        try requireEmbedded(linkedDocument.isHittable, "The indexed document row must be reachable")
         attach("inspector-indexed-document-results")
     }
     func testInspectorEmbeddedSearchOpenReturnAndDocumentLink() throws {

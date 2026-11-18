@@ -1,0 +1,29 @@
+{
+  "status": "FAIL",
+  "selected": [
+    "AnytypeComprehensiveAcceptanceUITests/testObjectAddPropertyButtonAndPickerSearch",
+    "AnytypeComprehensiveAcceptanceUITests/testDocumentSourceSearchPresentation",
+    "AnytypeComprehensiveAcceptanceUITests/testSourceChipOpensAndClosesInspector",
+    "AnytypeComprehensiveAcceptanceUITests/testDocumentSourceSearchEmptyAndClear",
+    "AnytypeComprehensiveAcceptanceUITests/testInspectorShowsIndexedRelatedDocument"
+  ],
+  "phase": "EXECUTION",
+  "prefix": "wave15-inspector",
+  "command_exit_code": 65,
+  "ui_scope": "WAVE15_ACCEPTANCE",
+  "expected_selected_methods": 5,
+  "release_accepted": false,
+  "full_matrix_accepted": false,
+  "error_type": "CalledProcessError",
+  "error": "Command '['xcodebuild', 'test-without-building', '-xctestrun', '/Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived-ui/Build/Products/UI27-wave15-inspector.xctestrun', '-destination', 'platform=iOS Simulator,id=186EE52D-F4EA-41FA-99A8-D4DD5530773A', '-parallel-testing-enabled', 'NO', '-test-timeouts-enabled', 'YES', '-default-test-execution-time-allowance', '300', '-maximum-test-execution-time-allowance', '300', '-only-testing:PinkhaStage1AcceptanceUITests/AnytypeComprehensiveAcceptanceUITests/testObjectAddPropertyButtonAndPickerSearch', '-only-testing:PinkhaStage1AcceptanceUITests/AnytypeComprehensiveAcceptanceUITests/testDocumentSourceSearchPresentation', '-only-testing:PinkhaStage1AcceptanceUITests/AnytypeComprehensiveAcceptanceUITests/testSourceChipOpensAndClosesInspector', '-only-testing:PinkhaStage1AcceptanceUITests/AnytypeComprehensiveAcceptanceUITests/testDocumentSourceSearchEmptyAndClear', '-only-testing:PinkhaStage1AcceptanceUITests/AnytypeComprehensiveAcceptanceUITests/testInspectorShowsIndexedRelatedDocument', '-resultBundlePath', '/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/ui/wave15-inspector.xcresult']' returned non-zero exit status 65.",
+  "passed": 3,
+  "failed": 2,
+  "skipped": 0,
+  "actual_methods": {
+    "AnytypeComprehensiveAcceptanceUITests/testDocumentSourceSearchEmptyAndClear()": "Failed",
+    "AnytypeComprehensiveAcceptanceUITests/testDocumentSourceSearchPresentation()": "Passed",
+    "AnytypeComprehensiveAcceptanceUITests/testInspectorShowsIndexedRelatedDocument()": "Failed",
+    "AnytypeComprehensiveAcceptanceUITests/testObjectAddPropertyButtonAndPickerSearch()": "Passed",
+    "AnytypeComprehensiveAcceptanceUITests/testSourceChipOpensAndClosesInspector()": "Passed"
+  }
+}

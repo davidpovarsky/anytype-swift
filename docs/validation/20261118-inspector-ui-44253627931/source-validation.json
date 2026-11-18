@@ -1,0 +1,37 @@
+{
+  "status": "SOURCE_VALIDATED_PENDING_APPLE_UI",
+  "base_sha": "2676efaa652ac7a1b4e3fd43817bacd08dd6c695",
+  "source_sha256": {
+    "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift": "cee6d6deb8e207ecfe4e4b3deab521dec8489ab31fa0622f083fb3b28f7dbf1f",
+    "PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift": "888fcf75c55490e4218b419e4c07fbfc04377176cfd0677c62a99868a2a948d6"
+  },
+  "commands": [
+    {
+      "argv": [
+        "swiftc",
+        "-frontend",
+        "-parse",
+        "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift",
+        "PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift"
+      ],
+      "exit": 0,
+      "scope": "Windows Swift syntax only"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit": 0
+    }
+  ],
+  "original_run_id": 44253627931,
+  "original_ui_counts": {
+    "passed": 3,
+    "failed": 2,
+    "skipped": 0
+  },
+  "fresh_apple_ui": "NOT_RUN",
+  "providers_and_native_query": "UNCHANGED"
+}

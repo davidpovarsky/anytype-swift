@@ -35,6 +35,8 @@ struct TorahSourcesSearchView: View {
                 accessibilityIdentifier: "torah-sources-search-standalone"
             )
         }
+        // Keep the container identity from replacing its child controls and states.
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("torah-sources-search-sheet")
     }
 }
@@ -89,6 +91,7 @@ struct TorahSourcesSearchContentView: View {
             results
         }
         .background(Color.Background.secondary)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier(accessibilityIdentifier)
         .onChange(of: presenter.persistenceState) { _, state in
             guard state == .saved else { return }
@@ -149,10 +152,13 @@ struct TorahSourcesSearchContentView: View {
                 subtitle: Loc.Pinkha.Torah.searchDescription,
                 style: .plain
             )
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("torah-search-idle")
         case .loading:
             ProgressView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .accessibilityLabel(Loc.Pinkha.Torah.searching)
+                .accessibilityIdentifier("torah-search-loading")
         case .empty:
             EmptyStateView(
                 title: presenter.searchScope == .words
@@ -160,6 +166,7 @@ struct TorahSourcesSearchContentView: View {
                     : Loc.Pinkha.Torah.searchDescription,
                 style: .plain
             )
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("torah-search-empty")
         case .error(let message):
             EmptyStateView(
@@ -171,6 +178,7 @@ struct TorahSourcesSearchContentView: View {
                     action: { await presenter.performSearch() }
                 )
             )
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("torah-search-error")
         case .results(let values):
             PlainList {
