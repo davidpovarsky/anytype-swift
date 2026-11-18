@@ -1,0 +1,366 @@
+{
+  "allInitialJournalRequirementsObserved" : false,
+  "bundleIdentifier" : "io.anytype.sdk06.journal-probe",
+  "expectedProtectionRawValue" : "NSFileProtectionCompleteUntilFirstUserAuthentication",
+  "firstUnsatisfiedStage" : "application-support.root.attributes",
+  "firstUnsatisfiedStageByStorageScope" : {
+    "application-support" : "application-support.root.attributes",
+    "temporary-directory" : "temporary-directory.root.attributes"
+  },
+  "nativeWriteAccepted" : false,
+  "physicalDeviceProtectionAccepted" : false,
+  "physicalPowerLossDurabilityAccepted" : false,
+  "processID" : 5859,
+  "protectedDataAvailable" : true,
+  "protocolVersion" : 1,
+  "runAttempt" : "1",
+  "runID" : "44269454953",
+  "sdkAcceptance" : false,
+  "simulator" : true,
+  "sourceSHA" : "e30371162f7ddc41a0aa71dbfc81e5cd61c68636",
+  "stages" : [
+    {
+      "name" : "application-support.host.create",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "isDirectory" : true,
+      "isSymbolicLink" : false,
+      "name" : "application-support.parent.kind",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.root.create",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "isDirectory" : true,
+      "isSymbolicLink" : false,
+      "name" : "application-support.root.kind",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.root.backup-exclusion",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.root.attributes",
+      "permissions" : 448,
+      "requiredForInitialJournal" : true,
+      "satisfied" : false
+    },
+    {
+      "name" : "application-support.scope.create",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "isDirectory" : true,
+      "isSymbolicLink" : false,
+      "name" : "application-support.scope.kind",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.scope.backup-exclusion",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.scope.attributes",
+      "permissions" : 448,
+      "requiredForInitialJournal" : true,
+      "satisfied" : false
+    },
+    {
+      "name" : "application-support.lock.open",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 6,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.lock.exclusive",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.lock.regular-file",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.lock.set-attributes",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.namespace.exclusive-open",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 7,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.namespace.set-protection",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.namespace.write",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.namespace.filehandle-synchronize",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.namespace.fullfsync-before-directories",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.scope.directory-open",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 8,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.scope.directory-fsync",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.root.directory-open",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 8,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.root.directory-fsync",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.parent.directory-open",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 8,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.parent.directory-fsync",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.namespace.fullfsync-after-directories",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "application-support.namespace.readback-attributes",
+      "permissions" : 384,
+      "requiredForInitialJournal" : false,
+      "satisfied" : false
+    },
+    {
+      "name" : "temporary-directory.host.create",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "isDirectory" : true,
+      "isSymbolicLink" : false,
+      "name" : "temporary-directory.parent.kind",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.root.create",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "isDirectory" : true,
+      "isSymbolicLink" : false,
+      "name" : "temporary-directory.root.kind",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.root.backup-exclusion",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.root.attributes",
+      "permissions" : 448,
+      "requiredForInitialJournal" : true,
+      "satisfied" : false
+    },
+    {
+      "name" : "temporary-directory.scope.create",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "isDirectory" : true,
+      "isSymbolicLink" : false,
+      "name" : "temporary-directory.scope.kind",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.scope.backup-exclusion",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.scope.attributes",
+      "permissions" : 448,
+      "requiredForInitialJournal" : true,
+      "satisfied" : false
+    },
+    {
+      "name" : "temporary-directory.lock.open",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 6,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.lock.exclusive",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.lock.regular-file",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.lock.set-attributes",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.namespace.exclusive-open",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 7,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.namespace.set-protection",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.namespace.write",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.namespace.filehandle-synchronize",
+      "requiredForInitialJournal" : true,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.namespace.fullfsync-before-directories",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.scope.directory-open",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 4,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.scope.directory-fsync",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.root.directory-open",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 4,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.root.directory-fsync",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.parent.directory-open",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 4,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.parent.directory-fsync",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.namespace.fullfsync-after-directories",
+      "posixErrno" : 0,
+      "requiredForInitialJournal" : true,
+      "returnCode" : 0,
+      "satisfied" : true
+    },
+    {
+      "name" : "temporary-directory.namespace.readback-attributes",
+      "permissions" : 384,
+      "requiredForInitialJournal" : false,
+      "satisfied" : false
+    }
+  ],
+  "status" : "SYNTHETIC_PLATFORM_OBSERVATION_COMPLETE",
+  "storageScopes" : [
+    "application-support",
+    "temporary-directory"
+  ],
+  "systemVersion" : "27.0",
+  "token" : "216bd188c862429da71b4c7e3e3d82d0"
+}

@@ -210,6 +210,23 @@ actor PinkhaHanlinWriteJournal {
     }
 }
 
+#if os(iOS)
+enum PinkhaHanlinMetadataProtection {
+    static func acceptsReadback(_ attributes: [FileAttributeKey: Any]) -> Bool {
+        #if targetEnvironment(simulator)
+        // The verified iOS 27 UIKit probe returned no protectionKey after a
+        // successful protection write, in both supported storage locations.
+        // This permits missing Simulator metadata only; it proves no physical
+        // data protection. All mode, ownership and durability guards still run.
+        if attributes[.protectionKey] == nil { return true }
+        #endif
+        let raw = (attributes[.protectionKey] as? FileProtectionType)?.rawValue
+            ?? (attributes[.protectionKey] as? String)
+        return raw == FileProtectionType.completeUntilFirstUserAuthentication.rawValue
+    }
+}
+#endif
+
 /// File ownership is exclusive for this actor's lifetime; advisory lock coordinates this feature's
 /// cooperating owners, not arbitrary code in the app. On unsupported platforms it fails closed.
 private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
@@ -231,7 +248,7 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
             var url = folder; var backup = URLResourceValues(); backup.isExcludedFromBackup = true
             try url.setResourceValues(backup)
             let attributes = try FileManager.default.attributesOfItem(atPath: folder.path)
-            guard Self.hasExpectedProtection(attributes),
+            guard PinkhaHanlinMetadataProtection.acceptsReadback(attributes),
                   (attributes[.posixPermissions] as? NSNumber)?.intValue == 0o700 else { throw PinkhaHanlinWriteError.unavailable }
         }
         let lockURL = directory.appendingPathComponent("owner.lock")
@@ -273,7 +290,7 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
                 throw PinkhaHanlinWriteError.corruptJournal
             }
             let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
-            guard Self.hasExpectedProtection(attributes) else {
+            guard PinkhaHanlinMetadataProtection.acceptsReadback(attributes) else {
                 throw PinkhaHanlinWriteError.corruptJournal
             }
             return (url.lastPathComponent, bytes)
@@ -374,7 +391,7 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
               let bytes = try handle.read(upToCount: 4_097), bytes.count <= 4_096 else {
             throw PinkhaHanlinWriteError.corruptJournal
         }
-        guard Self.hasExpectedProtection(try FileManager.default.attributesOfItem(atPath: url.path)) else {
+        guard PinkhaHanlinMetadataProtection.acceptsReadback(try FileManager.default.attributesOfItem(atPath: url.path)) else {
             throw PinkhaHanlinWriteError.corruptJournal
         }
         let namespace = try JSONDecoder().decode(HanlinConversationNamespace.self, from: bytes)
@@ -383,10 +400,5 @@ private final class PinkhaHanlinProtectedMetadataFiles: Sendable {
         return namespace
     }
 
-    private static func hasExpectedProtection(_ attributes: [FileAttributeKey: Any]) -> Bool {
-        let raw = (attributes[.protectionKey] as? FileProtectionType)?.rawValue
-            ?? (attributes[.protectionKey] as? String)
-        return raw == FileProtectionType.completeUntilFirstUserAuthentication.rawValue
-    }
     #endif
 }
