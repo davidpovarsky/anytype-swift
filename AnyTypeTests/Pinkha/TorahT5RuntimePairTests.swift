@@ -1,0 +1,506 @@
+import Foundation
+import CryptoKit
+import AnytypeCore
+import PinkhaKit
+import ProtobufMessages
+import Services
+import SwiftProtobuf
+import Testing
+import TorahInspectorCore
+@testable import Anytype
+
+private enum T5ApplePairFailure: Error {
+    case invariant(String)
+}
+
+private enum T5ApplePairPhase: String, CaseIterable {
+    case oldCreate = "old-create"
+    case newUpgrade = "new-upgrade"
+    case oldEdit = "old-edit"
+    case newRecover = "new-recover"
+
+    var expanded: Bool { self == .newUpgrade || self == .newRecover }
+
+    var expectedVersion: String {
+        if expanded { return T5NativeRelatedLookupCapability.runtimeVersion }
+        return "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-"
+            + "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077"
+    }
+
+    var predecessors: [String] {
+        Self.allCases.prefix { $0 != self }.map(\.rawValue)
+    }
+}
+
+private struct T5ApplePairSecrets: Codable {
+    let token: String
+    let mnemonic: String
+    let accountKey: String
+}
+
+private struct T5ApplePairDocument: Codable {
+    let objectID: String
+    let typeKey: String
+    let initialName: String
+    let blockID: String?
+    let blockText: String?
+    let canonicalSHA256: String
+    let publicSHA256: String
+}
+
+private struct T5ApplePairLedger: Codable {
+    let token: String
+    let appSourceSHA: String
+    let rootPathSHA256: String
+    let accountID: String
+    let spaceID: String
+    let manifestID: String
+    let manifestSHA256: String
+    let canonicalKey: String
+    let documents: [T5ApplePairDocument]
+    var completedPhases: [String]
+}
+
+private struct T5ApplePairTarget: Codable, Equatable {
+    let objectID: String
+    let blockID: String?
+    let canUnlink: Bool
+}
+
+private struct T5ApplePairReadback: Codable {
+    let objectID: String
+    let canonicalSHA256: String
+    let publicSHA256: String
+    let blockID: String?
+    let blockTextSHA256: String?
+    let nativeRelatedVersion: Int?
+    let title: String
+}
+
+private struct T5ApplePairReceipt: Codable {
+    let protocolVersion: String
+    let status: String
+    let phase: String
+    let token: String
+    let nonce: String
+    let processID: Int32
+    let appSourceSHA: String
+    let runtimeVersion: String
+    let actualCapability: String
+    let coverage: String
+    let limitations: [String]
+    let rootPathSHA256: String
+    let accountID: String
+    let spaceID: String
+    let manifestID: String
+    let manifestSHA256: String
+    let canonicalKey: String
+    let previousLedgerSHA256: String?
+    let nextLedgerSHA256: String
+    let migrationPerformed: Bool
+    let walletCreated: Bool
+    let walletRecovered: Bool
+    let accountCreated: Bool
+    let accountSelected: Bool
+    let accountStopCompleted: Bool
+    let accountNotRunningConfirmed: Bool
+    let appShutdownCompleted: Bool
+    let documents: [T5ApplePairReadback]
+    let targets: [T5ApplePairTarget]
+}
+
+@Suite("T5 real same-account Apple runtime pair", .serialized,
+       .enabled(if: ProcessInfo.processInfo.environment["PINKHA_T5_APPLE_PAIR"] == "1"))
+struct TorahT5RuntimePairTests {
+    @MainActor
+    @Test("Same source, runtime-derived capability and canonical data across four native processes")
+    func realSameAccountRuntimePairPhase() async throws {
+        #if PINKHA_NATIVE_T5_LOOKUP_V1
+        let environment = ProcessInfo.processInfo.environment
+        let phase = try #require(T5ApplePairPhase(rawValue: environment["PINKHA_T5_PAIR_PHASE"] ?? ""))
+        let token = try requiredEnvironment("PINKHA_T5_PAIR_TOKEN", environment)
+        let nonce = try requiredEnvironment("PINKHA_T5_PAIR_NONCE", environment)
+        let sourceSHA = try requiredEnvironment("PINKHA_T5_PAIR_APP_SHA", environment)
+        try require(sourceSHA.count == 40 && sourceSHA.allSatisfy(\.isHexDigit), "invalid-source-identity")
+        try require(token.count == 32 && nonce.count == 32, "invalid-attempt-identity")
+        let support = try #require(FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first)
+        let directory = support.appendingPathComponent("pinkha-t5-runtime-pair", isDirectory: true)
+        let ledgerURL = directory.appendingPathComponent("ledger.json")
+        let secretsURL = directory.appendingPathComponent("secrets.json")
+        let resultURL = directory.appendingPathComponent("result-" + phase.rawValue + ".json")
+        try require(!FileManager.default.fileExists(atPath: resultURL.path), "phase-result-already-exists")
+        let root = Container.shared.localRepoService().middlewareRepoURL.resolvingSymlinksInPath().path
+        let rootSHA = hash(Data(root.utf8))
+        let version = try await ClientCommands.appGetVersion().invoke().version
+        try require(version == phase.expectedVersion, "actual-runtime-version-differs")
+        let capability = try await AnytypeT5NativeRelatedLookup.current()
+        let expanded: Bool
+        switch capability {
+        case .verified: expanded = true
+        case .unavailable: expanded = false
+        }
+        try require(expanded == phase.expanded, "production-runtime-capability-differs")
+        Container.shared.serverConfigurationStorage().setupCurrentConfiguration(config: .localOnly)
+        let auth = Container.shared.authService()
+        var ledger: T5ApplePairLedger
+        var migration = false
+        var previousLedgerSHA: String?
+
+        do {
+            if phase == .oldCreate {
+                try require(!FileManager.default.fileExists(atPath: directory.path), "existing-pair-directory")
+                try FileManager.default.createDirectory(
+                    at: directory, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700]
+                )
+                let wallet = try await ClientCommands.walletCreate(.with {
+                    $0.rootPath = root
+                }).invoke(responseMask: {
+                    $0.mnemonic = "***"
+                    $0.accountKey = "***"
+                })
+                try require(!wallet.mnemonic.isEmpty && !wallet.accountKey.isEmpty, "empty-disposable-wallet")
+                try writePrivate(T5ApplePairSecrets(
+                    token: token, mnemonic: wallet.mnemonic, accountKey: wallet.accountKey
+                ), to: secretsURL)
+                let account = try await auth.createAccount(name: "T5 runtime pair", iconOption: 1, imagePath: "")
+                let space = try await Container.shared.workspaceService().createSpace(
+                    name: "T5 runtime pair", iconOption: 1, accessType: .private,
+                    useCase: .none, withChat: false, spaceType: .regular
+                )
+                _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: space.spaceID)
+                ledger = try await prepareFixture(
+                    token: token, sourceSHA: sourceSHA, rootSHA: rootSHA,
+                    accountID: account.id, spaceID: space.spaceID
+                )
+                try writePrivate(ledger, to: ledgerURL)
+            } else {
+                let previous = try Data(contentsOf: ledgerURL)
+                previousLedgerSHA = hash(previous)
+                ledger = try JSONDecoder().decode(T5ApplePairLedger.self, from: previous)
+                try require(
+                    ledger.token == token && ledger.appSourceSHA == sourceSHA && ledger.rootPathSHA256 == rootSHA,
+                    "existing-ledger-identity-differs"
+                )
+                try require(ledger.completedPhases == phase.predecessors, "invalid-native-process-sequence")
+                let secrets = try JSONDecoder().decode(T5ApplePairSecrets.self, from: Data(contentsOf: secretsURL))
+                try require(
+                    secrets.token == token && !secrets.mnemonic.isEmpty && !secrets.accountKey.isEmpty,
+                    "invalid-private-credential-record"
+                )
+                _ = try await ClientCommands.walletRecover(.with {
+                    $0.rootPath = root
+                    $0.accountKey = secrets.accountKey
+                }).invoke(requestMask: {
+                    $0.mnemonic = "***"
+                    $0.accountKey = "***"
+                })
+                let account: AccountData
+                do {
+                    account = try await auth.selectAccount(id: ledger.accountID, preferredSpaceId: ledger.spaceID)
+                } catch SelectAccountError.accountStoreNotMigrated {
+                    migration = true
+                    _ = try await ClientCommands.accountMigrate(.with {
+                        $0.id = ledger.accountID
+                        $0.rootPath = root
+                    }).invoke()
+                    account = try await auth.selectAccount(id: ledger.accountID, preferredSpaceId: ledger.spaceID)
+                }
+                try require(account.id == ledger.accountID, "reopened-account-identity-differs")
+                _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: ledger.spaceID)
+            }
+
+            let manifest = try await details(ledger.manifestID, spaceID: ledger.spaceID)
+            let manifestRaw = try #require(manifest.values[BundledPropertyKey.description.rawValue]?.stringValue)
+            try require(hash(Data(manifestRaw.utf8)) == ledger.manifestSHA256, "manifest-changed")
+            let decodedManifest = try PinkhaSpaceManifest.fromJSONString(manifestRaw)
+            try require(
+                decodedManifest.spaceId == ledger.spaceID
+                    && decodedManifest.documentAssociationsPropertyKey == ledger.canonicalKey,
+                "canonical-manifest-contract-changed"
+            )
+            if phase == .oldEdit {
+                let document = try #require(ledger.documents.first)
+                _ = try await ClientCommands.objectSetDetails(.with {
+                    $0.contextID = document.objectID
+                    $0.details = [.with {
+                        $0.key = BundledPropertyKey.name.rawValue
+                        $0.value = "T5 ordinary edit by r14".protobufValue
+                    }]
+                }).invoke()
+            }
+            let service = AnytypeTorahSpaceRelatedDocumentsService(associations: AnytypeTorahAssociationRepository())
+            let selection = TorahInspectorSelection(providerID: "sefaria", canonicalRef: "Genesis 3:3")
+            let expected = ledger.documents.prefix(expanded ? 3 : 1).map {
+                T5ApplePairTarget(objectID: $0.objectID, blockID: expanded ? $0.blockID : nil, canUnlink: $0.blockID == nil)
+            }
+            let snapshot = try await waitForSnapshot(
+                service: service, spaceID: ledger.spaceID, selection: selection, expected: expected
+            )
+            try require(
+                snapshot.coverage == (expanded ? .indexedTargetsOnly : .indexedDocumentsOnly),
+                "actual-host-coverage-differs"
+            )
+            try require(snapshot.limitations.contains(.indexFreshnessUnverified), "unproven-freshness-was-hidden")
+            if expanded {
+                try require(
+                    !snapshot.limitations.contains(.blockAssociationsNotIndexed)
+                        && !snapshot.limitations.contains(.sourceQuotesNotIndexed),
+                    "expanded-lookup-retained-legacy-limitations"
+                )
+            } else {
+                try require(
+                    snapshot.limitations.contains(.blockAssociationsNotIndexed)
+                        && snapshot.limitations.contains(.sourceQuotesNotIndexed),
+                    "old-runtime-lost-fallback-disclosure"
+                )
+            }
+            try require(
+                !snapshot.limitations.contains(.staleCandidates) && !snapshot.limitations.contains(.resultLimitReached),
+                "fixture-results-incomplete"
+            )
+            var readbacks: [T5ApplePairReadback] = []
+            for (index, document) in ledger.documents.enumerated() {
+                let response = try await show(document.objectID, spaceID: ledger.spaceID)
+                let value = try rootDetails(response, objectID: document.objectID, spaceID: ledger.spaceID)
+                let canonical = try #require(value.values[ledger.canonicalKey]?.stringValue)
+                let canonicalSHA = hash(Data(canonical.utf8))
+                let publicSHA = try publicHash(value)
+                try require(canonicalSHA == document.canonicalSHA256, "canonical-or-unknown-fields-changed")
+                try require(publicSHA == document.publicSHA256, "public-derived-projection-changed")
+                let privateVersion = value.values["_pinkhaTorahRelatedVersion"]?.numberValue
+                if expanded { try require(privateVersion == 1, "new-runtime-private-projection-missing") }
+                if let blockID = document.blockID, let text = document.blockText {
+                    let graph = try await T5BlockReachability.evaluate(
+                        spaceID: ledger.spaceID, rootID: document.objectID,
+                        nodes: response.objectView.blocks.map { .init(id: $0.id, childIDs: $0.childrenIds) }
+                    )
+                    try require(graph.isVerified && graph.reachableBlockIDs.contains(blockID), "block-no-longer-reachable")
+                    let block = try #require(response.objectView.blocks.first { $0.id == blockID })
+                    guard case .text(let content) = block.content else {
+                        throw T5ApplePairFailure.invariant("quoted-block-content-type-changed")
+                    }
+                    try require(content.text == text, "quoted-block-text-changed")
+                }
+                let expectedName = index == 0 && (phase == .oldEdit || phase == .newRecover)
+                    ? "T5 ordinary edit by r14" : document.initialName
+                try require(value.name == expectedName, "ordinary-title-or-old-client-edit-not-preserved")
+                readbacks.append(.init(
+                    objectID: document.objectID, canonicalSHA256: canonicalSHA, publicSHA256: publicSHA,
+                    blockID: document.blockID, blockTextSHA256: document.blockText.map { hash(Data($0.utf8)) },
+                    nativeRelatedVersion: privateVersion.map(Int.init), title: value.name
+                ))
+            }
+            _ = try await ClientCommands.accountStop(.with { $0.removeData = false }).invoke()
+            do {
+                _ = try await ClientCommands.accountPreloadRemainingSpaces().invoke(ignoreLogErrors: .accountIsNotRunning)
+                throw T5ApplePairFailure.invariant("native-account-remains-running-after-stop")
+            } catch let error as Anytype_Rpc.Account.PreloadRemainingSpaces.Response.Error
+                where error.code == .accountIsNotRunning { }
+            _ = try await ClientCommands.appShutdown().invoke()
+            ledger.completedPhases.append(phase.rawValue)
+            try writePrivate(ledger, to: ledgerURL)
+            let receipt = T5ApplePairReceipt(
+                protocolVersion: "pinkha-t5-apple-runtime-pair-v1", status: "PASS", phase: phase.rawValue,
+                token: token, nonce: nonce, processID: ProcessInfo.processInfo.processIdentifier,
+                appSourceSHA: sourceSHA, runtimeVersion: version, actualCapability: expanded ? "verified" : "unavailable",
+                coverage: snapshot.coverage.rawValue, limitations: snapshot.limitations.map { String(describing: $0) }.sorted(),
+                rootPathSHA256: rootSHA, accountID: ledger.accountID, spaceID: ledger.spaceID,
+                manifestID: ledger.manifestID, manifestSHA256: ledger.manifestSHA256, canonicalKey: ledger.canonicalKey,
+                previousLedgerSHA256: previousLedgerSHA, nextLedgerSHA256: hash(try Data(contentsOf: ledgerURL)),
+                migrationPerformed: migration, walletCreated: phase == .oldCreate, walletRecovered: phase != .oldCreate,
+                accountCreated: phase == .oldCreate, accountSelected: phase != .oldCreate,
+                accountStopCompleted: true, accountNotRunningConfirmed: true, appShutdownCompleted: true,
+                documents: readbacks, targets: snapshot.documents.map {
+                    .init(objectID: $0.objectID, blockID: $0.blockID, canUnlink: $0.canUnlink)
+                }.sorted { $0.objectID < $1.objectID }
+            )
+            try writePrivate(receipt, to: resultURL)
+            print("T5_APPLE_PAIR_PHASE_PASS phase=\(phase.rawValue) pid=\(receipt.processID) capability=\(receipt.actualCapability)")
+        } catch {
+            _ = try? await ClientCommands.appShutdown().invoke()
+            throw error
+        }
+        #else
+        throw T5ApplePairFailure.invariant("test-only-lookup-build-flag-missing")
+        #endif
+    }
+
+    @MainActor
+    private func prepareFixture(
+        token: String, sourceSHA: String, rootSHA: String, accountID: String, spaceID: String
+    ) async throws -> T5ApplePairLedger {
+        let manifest = try await Container.shared.pinkhaBootstrapService().bootstrapSpace(spaceId: spaceID)
+        let manifestID = try #require(manifest.manifestObjectId)
+        _ = try await ClientCommands.workspaceObjectListAdd(.with {
+            $0.spaceID = spaceID
+            $0.objectIds = ["_otnote"]
+        }).invoke()
+        let customID = try #require(manifest.registeredDocumentTypes[PinkhaSchemaRoles.chiddushKey])
+        let custom = ObjectType(details: try await details(customID, spaceID: spaceID)).uniqueKey
+        let source = T5SourceIdentity(providerID: "sefaria", canonicalReference: "Genesis 3:3")
+        let repository = AnytypeTorahAssociationRepository()
+        var documents: [T5ApplePairDocument] = []
+        for (index, type) in [ObjectTypeUniqueKey.page, .note, custom].enumerated() {
+            try await waitForType(type, spaceID: spaceID)
+            let document = try await Container.shared.objectActionsService().createObject(
+                name: "T5 runtime fixture \(index)", typeUniqueKey: type,
+                shouldDeleteEmptyObject: false, shouldSelectType: false, shouldSelectTemplate: false,
+                spaceId: spaceID, origin: .none, templateId: nil
+            )
+            var blockID: String?
+            var blockText: String?
+            var item = source.item
+            item.unknownFields["futurePairField"] = .object(["token": .string(token), "preserve": .bool(true)])
+            if index > 0 {
+                let text = index == 1 ? "Block context survives both runtimes" : "Source quote survives both runtimes"
+                blockID = try await Container.shared.blockService().addFirstBlock(
+                    contextId: document.id, info: .empty(id: "", content: .text(.plain(text, contentType: .text)))
+                )
+                blockText = text
+            }
+            if index == 2 {
+                item.role = .sourceQuote
+                item.providerPayload = String(decoding: try TorahAssociationPayloadCodec().encodeSourceQuote(.init(
+                    providerID: source.providerID, externalID: source.canonicalReference,
+                    canonicalKey: source.canonicalReference, labelHe: source.canonicalReference,
+                    snapshotText: blockText, unknownFields: ["futureQuoteField": .string(token)]
+                )), as: UTF8.self)
+            }
+            let target: TorahAssociationTarget
+            if let blockID { target = .block(objectId: document.id, blockId: blockID) }
+            else { target = .object(objectId: document.id) }
+            _ = try await repository.addAssociation(item, target: target, spaceId: spaceID)
+            let ready = try await waitForReady(document.id, spaceID: spaceID)
+            let canonical = try #require(ready.values[manifest.documentAssociationsPropertyKey]?.stringValue)
+            documents.append(.init(
+                objectID: document.id, typeKey: type.value, initialName: ready.name, blockID: blockID, blockText: blockText,
+                canonicalSHA256: hash(Data(canonical.utf8)), publicSHA256: try publicHash(ready)
+            ))
+        }
+        try require(Set(documents.map(\.objectID)).count == 3, "native-created-document-ids-not-distinct")
+        let manifestDetails = try await details(manifestID, spaceID: spaceID)
+        let raw = try #require(manifestDetails.values[BundledPropertyKey.description.rawValue]?.stringValue)
+        return .init(
+            token: token, appSourceSHA: sourceSHA, rootPathSHA256: rootSHA, accountID: accountID, spaceID: spaceID,
+            manifestID: manifestID, manifestSHA256: hash(Data(raw.utf8)),
+            canonicalKey: manifest.documentAssociationsPropertyKey, documents: documents, completedPhases: []
+        )
+    }
+
+    @MainActor
+    private func waitForType(_ type: ObjectTypeUniqueKey, spaceID: String) async throws {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(45))
+        repeat {
+            let results = try await Container.shared.searchMiddleService().search(
+                spaceId: spaceID, filters: [.with {
+                    $0.relationKey = BundledPropertyKey.uniqueKey.rawValue
+                    $0.condition = .equal
+                    $0.value = type.value.protobufValue
+                }], keys: [BundledPropertyKey.id, .spaceId, .uniqueKey].map(\.rawValue), limit: 2
+            )
+            if results.count == 1, let indexed = results.first, indexed.spaceId == spaceID,
+               ObjectType(details: try await details(indexed.id, spaceID: spaceID)).uniqueKey == type {
+                return
+            }
+            try await Task.sleep(for: .milliseconds(100))
+        } while clock.now < deadline
+        throw T5ApplePairFailure.invariant("native-type-index-did-not-become-ready-\(type.value)")
+    }
+
+    @MainActor
+    private func waitForReady(_ objectID: String, spaceID: String) async throws -> ObjectDetails {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(45))
+        repeat {
+            let value = try await details(objectID, spaceID: spaceID)
+            if value.values[TorahNativePropertyDefinition.readinessKey]?.boolValue == true,
+               value.values[TorahNativePropertyDefinition.statusKey]?.stringValue == "READY" {
+                return value
+            }
+            try await Task.sleep(for: .milliseconds(100))
+        } while clock.now < deadline
+        throw T5ApplePairFailure.invariant("native-public-projection-did-not-become-ready")
+    }
+
+    @MainActor
+    private func waitForSnapshot(
+        service: AnytypeTorahSpaceRelatedDocumentsService, spaceID: String,
+        selection: TorahInspectorSelection, expected: [T5ApplePairTarget]
+    ) async throws -> TorahRelatedDocumentsSnapshot {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(45))
+        repeat {
+            do {
+                let result = try await service.relatedDocuments(spaceID: spaceID, selection: selection)
+                let targets = result.documents.map {
+                    T5ApplePairTarget(objectID: $0.objectID, blockID: $0.blockID, canUnlink: $0.canUnlink)
+                }.sorted { $0.objectID < $1.objectID }
+                if targets == expected.sorted(by: { $0.objectID < $1.objectID }),
+                   result.documents.allSatisfy({ $0.spaceID == spaceID && $0.typeID?.isEmpty == false }) {
+                    return result
+                }
+            } catch T5SpaceRelatedDocumentsError.indexUnavailable { }
+            try await Task.sleep(for: .milliseconds(100))
+        } while clock.now < deadline
+        throw T5ApplePairFailure.invariant("actual-app-related-lookup-did-not-converge")
+    }
+
+    private func show(_ objectID: String, spaceID: String) async throws -> Anytype_Rpc.Object.Show.Response {
+        try await ClientCommands.objectShow(.with {
+            $0.contextID = objectID
+            $0.objectID = objectID
+            $0.spaceID = spaceID
+        }).invoke()
+    }
+
+    private func details(_ objectID: String, spaceID: String) async throws -> ObjectDetails {
+        try rootDetails(try await show(objectID, spaceID: spaceID), objectID: objectID, spaceID: spaceID)
+    }
+
+    private func rootDetails(
+        _ response: Anytype_Rpc.Object.Show.Response, objectID: String, spaceID: String
+    ) throws -> ObjectDetails {
+        try require(response.objectView.rootID == objectID, "native-root-identity-differs")
+        let raw = try #require(response.objectView.details.first { $0.id == objectID }?.details)
+        let value = try ObjectDetails(protobufStruct: raw)
+        try require(value.id == objectID && value.spaceId == spaceID && !value.isDeleted, "native-space-identity-differs")
+        return value
+    }
+
+    private func publicHash(_ details: ObjectDetails) throws -> String {
+        let keys = TorahNativePropertyDefinition.all.map(\.key) + [
+            TorahNativePropertyDefinition.engineVersionKey, TorahNativePropertyDefinition.readinessKey,
+            TorahNativePropertyDefinition.labelsKey, TorahNativePropertyDefinition.statusKey,
+            TorahNativePropertyDefinition.attachedPropertiesKey
+        ]
+        var object: [String: Any] = [:]
+        for key in keys {
+            if let value = details.values[key] {
+                object[key] = try JSONSerialization.jsonObject(with: value.jsonUTF8Data(), options: [.fragmentsAllowed])
+            }
+        }
+        return hash(try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys, .withoutEscapingSlashes]))
+    }
+
+    private func writePrivate<T: Encodable>(_ value: T, to url: URL) throws {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+        try encoder.encode(value).write(to: url, options: [.atomic, .completeFileProtectionUnlessOpen])
+        try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
+    }
+
+    private func requiredEnvironment(_ key: String, _ environment: [String: String]) throws -> String {
+        let value = try #require(environment[key])
+        try require(!value.isEmpty, "empty-required-environment")
+        return value
+    }
+
+    private func require(_ predicate: Bool, _ label: String) throws {
+        guard predicate else { throw T5ApplePairFailure.invariant(label) }
+    }
+
+    private func hash(_ data: Data) -> String {
+        SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    }
+}
