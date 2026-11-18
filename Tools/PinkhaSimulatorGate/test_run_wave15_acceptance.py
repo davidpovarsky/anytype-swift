@@ -1,17 +1,20 @@
 """Controls for real-fixture selection; these are not application acceptance."""
+import json
+from pathlib import Path
+import tempfile
 import unittest
-from run_wave15_acceptance import plan, fixture_environment
+from run_wave15_acceptance import plan, fixture_environment, property_environment
 
 
 class AcceptanceSelectionTests(unittest.TestCase):
     def test_english_label_methods_cannot_claim_hebrew_coverage(self):
-        for lane in ["inspector", "properties"]:
+        for lane in ["inspector", "properties", "canonical-properties"]:
             with self.subTest(lane=lane), self.assertRaisesRegex(ValueError, "English labels"):
                 plan(lane, "ipad", "he")
-        self.assertEqual(plan("editor", "ipad", "he")["expected_ui_executions"], 2)
+        self.assertEqual(plan("editor", "ipad", "he")["expected_ui_executions"], 3)
 
     def test_named_selections_remain_partial_acceptance(self):
-        for lane, count in [("inspector", 5), ("properties", 5), ("editor", 2)]:
+        for lane, count in [("inspector", 5), ("properties", 5), ("editor", 3), ("canonical-properties", 1)]:
             with self.subTest(lane=lane):
                 value = plan(lane, "iphone", "en")
                 self.assertEqual(len(set(value["methods"])), count)
@@ -33,9 +36,18 @@ class AcceptanceSelectionTests(unittest.TestCase):
         self.assertEqual(value["PINKHA_ACCEPTANCE_NOTE_ID"], "b")
         self.assertEqual(value["PINKHA_ACCEPTANCE_PAGE_ID"], "c")
 
-    def test_obsolete_legacy_property_lane_is_not_selectable(self):
-        with self.assertRaisesRegex(ValueError, "Unknown acceptance lane"):
-            plan("canonical-properties", "ipad", "en")
+    def test_property_fixture_from_another_space_cannot_be_used(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "command-00.log").write_text("PINKHA_PROPERTIES_ACCEPTANCE_FIXTURE_JSON " + json.dumps(
+                {"PINKHA_PROPERTIES_SPACE_ID": "another"}))
+            with self.assertRaisesRegex(ValueError, "another Space"):
+                property_environment(root, "expected")
+
+    def test_missing_native_preparation_output_is_not_a_fixture(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaisesRegex(ValueError, "one actual"):
+                property_environment(Path(directory), "expected")
 
 
 if __name__ == "__main__":

@@ -35,12 +35,20 @@ LANES = {
     },
     "editor": {
         "suite": "PinkhaStage1AcceptanceUITests",
-        "methods": ["testAppWideDirectionPersistenceAndInteractiveBack", "testMultiBlockEnterCreationAndTypingLifecycle"],
+        "methods": ["testAppWideDirectionPersistenceAndInteractiveBack", "testMultiBlockEnterCreationAndTypingLifecycle",
+                    "testDocumentSourcesEntryOpensExistingSearch"],
         "preparation": "PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState",
         "preparation_environment": {},
         "fixture": "pinkha-stage1-acceptance-state.json",
     },
 
+    "canonical-properties": {
+        "suite": "PinkhaTorahPropertiesAcceptanceUITests",
+        "methods": ["testOriginalPropertiesCanonicalLinkUnlinkAndRelaunchForAllWritingTypes"],
+        "preparation": "PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState",
+        "preparation_environment": {"PINKHA_PROPERTIES_PREPARE": "1"},
+        "fixture": "pinkha-stage1-acceptance-state.json",
+    },
 }
 
 
@@ -94,6 +102,27 @@ def fixture_environment(lane, value, language):
         "PINKHA_ACCEPTANCE_DIRECTION": "rtl" if language == "he" else "ltr",
         "PINKHA_ACCEPTANCE_DEVICE_LANGUAGE": "en" if language == "he" else "he",
     }
+
+
+def property_environment(preparation, expected_space):
+    marker = "PINKHA_PROPERTIES_ACCEPTANCE_FIXTURE_JSON "
+    observed = {}
+    for path in sorted(preparation.glob("command-*.log")):
+        for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+            if marker in line:
+                value = json.loads(line.split(marker, 1)[1].strip())
+                observed[json.dumps(value, sort_keys=True)] = value
+    require(len(observed) == 1, "Expected one actual native property fixture")
+    value = next(iter(observed.values()))
+    require(value.get("PINKHA_PROPERTIES_SPACE_ID") == expected_space, "Property fixture belongs to another Space")
+    require(value.get("PINKHA_PROPERTIES_ISOLATED_SPACE_CONFIRMED") == "1", "Disposable property fixture confirmation missing")
+    ids = [nonempty(value.get("PINKHA_PROPERTIES_" + role + "_ID"), role) for role in ("CHIDDUSH", "ARTICLE", "RESEARCH")]
+    require(len(set(ids)) == 3, "Property documents must be distinct")
+    labels = json.loads(nonempty(value.get("PINKHA_PROPERTIES_NATIVE_PROPERTY_LABELS"), "native property labels"))
+    require(all(isinstance(labels.get(i), list) and labels[i] for i in ids), "Native original property labels missing")
+    value.update(PINKHA_PROPERTIES_SOURCE_QUERY="Genesis 1:1", PINKHA_PROPERTIES_SOURCE_LABEL="Genesis 1:1",
+                 PINKHA_PROPERTIES_TOPIC_QUERY="Creation", PINKHA_PROPERTIES_TOPIC_LABEL="Creation")
+    return value
 
 
 def source_methods(app, selection):
@@ -172,6 +201,8 @@ def execute(args, receipt):
     container = Path(subprocess.check_output(["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "data"], text=True).strip())
     fixture = json.loads((container / "Library/Application Support" / LANES[args.lane]["fixture"]).read_text())
     environment = fixture_environment(args.lane, fixture, args.language)
+    if args.lane == "canonical-properties":
+        environment.update(property_environment(evidence / "preparation", fixture["spaceId"]))
     shared.write(evidence / "fixture-ids.json", fixture)
     project = shared.ui_only_project(app)
     ui_derived = derived.with_name(derived.name + "-ui")

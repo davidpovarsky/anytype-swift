@@ -6,9 +6,10 @@ This controller runs the existing application and existing XCTest methods on a d
 | --- | --- | --- | --- |
 | inspector | SimulatorAcceptancePreparationTests | 5 comprehensive search/Inspector/property methods | en |
 | properties | TorahNativeDerivedProductIntegrationTests | 5 native property, picker, source header and Set methods | en |
-| editor | PinkhaStage1AcceptancePreparationTests | 2 direction and five-block Enter methods | en / he |
+| editor | PinkhaStage1AcceptancePreparationTests | 3 direction, five-block Enter and native document-source entry methods | en / he |
+| canonical-properties | PinkhaStage1AcceptancePreparationTests with native properties preparation | 1 native link/unlink/relaunch method across all 3 writing types | en |
 
-The former canonical-property test expects removed legacy rows, and the former document-sources entry method expects a source header on blank Note/Page fixtures. Both need ports to the current native property and source-attachment behavior; they are excluded from this initial selection and their acceptance remains open.
+The canonical-property method now uses the actual native rows and fixed-scope picker, verifies completed mutations and persistence across cold reopen, and rejects the retired projection row. Native Stage1 preparation attaches Sources to its disposable ordinary Note/Page fixtures through the real Add Property path and verifies persisted installation. These ports were integrated at a8665d6220c016d85652a8bcf2f7bf309ee7af83; selecting them does not establish UI acceptance.
 
 Select iphone or ipad explicitly. A successful lane is LANE_PASS_ACCEPTANCE_REVIEW_PENDING, not full-matrix or release acceptance. English-label tests cannot be requested as Hebrew coverage. The editor's requested device-language diagnostic is not treated as proof of actual device-language mismatch. The real observation is retained separately.
 
