@@ -1,0 +1,102 @@
+{
+  "run_id": "44255980141",
+  "run_attempt": 1,
+  "source_sha": "c0c1215f11e5d1fde04ebe6bf4a175ab7ed9410f",
+  "source_commit": "553692b68a7ac27b8276dfa287fbbb1aa0012e79",
+  "artifact_id": 14405574920,
+  "artifact_sha256": "e74ebbb8bf180ae22b849a28c719d72d6d66f2a0d1b8726f264037872c16bddd",
+  "artifact_bytes": 16818,
+  "raw_artifacts_location": "GitHub only; verified in host memory",
+  "receipt_sha256": "5c3c220a19636c28847354fa6e4750f75f2b759b7473e8eb2daab9483b889cb0",
+  "generation_receipt_sha256": "a5ee3941cd2e12072deca4027f50649337bcd4143b75a62bd3e66588b68568d1",
+  "raw_go_log_sha256": "360b13705aaf14b52604b9ac053dc46216034bc6021b3a3306d730613a1279ae",
+  "controller_log_sha256": "62ebedd68d2110edb1ae4945666dd94cb9a7891cff03160b38e7c7ee224c5131",
+  "status": "PASS_GENERATED_NATIVE_RPC_BOUNDARY",
+  "counts_recomputed_from_raw_go": {
+    "pass": 18,
+    "top_level_pass": 7,
+    "subcase_pass": 11,
+    "fail": 0,
+    "skip": 0
+  },
+  "required_tests": [
+    "TestPinkhaTorahGeneratedByteBoundaryRejectsWithoutAccount",
+    "TestPinkhaTorahRPCBoundsNeverTruncateSuccessfulHistory",
+    "TestPinkhaTorahRPCDoesNotExpandExternalScope",
+    "TestPinkhaTorahRPCPreservesCommittedReceiptAndJoinedIssues",
+    "TestPinkhaTorahRPCRejectsUnknownContractBeforeNativeAuthority",
+    "TestPinkhaTorahRPCSchemaAndOpaqueRequestRoundTrip",
+    "TestPinkhaTorahRPCSeparatesRetryCollisionAndRemoteVariants"
+  ],
+  "passed_packages": [
+    "github.com/anyproto/anytype-heart/clientlibrary/service",
+    "github.com/anyproto/anytype-heart/core"
+  ],
+  "controller_controls": {
+    "pass": 6,
+    "fail": 0,
+    "skip": 0
+  },
+  "generated_sha256": {
+    "pb/commands.pb.go": "d4a4edbf0aabe1ad027bc43605961b512ef66265c6ac1e1ddc8479e98b10f111",
+    "pb/service/service.pb.go": "d374d8bf0dc7d86bac5024f23ce491be0774babd30f271943e3cc794dac94ab4",
+    "clientlibrary/service/service.pb.go": "0bbbcc48f351b4af816673434857314eaffdc3bf2db2fd26a7b9f741f6da00a1"
+  },
+  "proto_inputs_count": 8,
+  "composed_source_count": 54,
+  "registry_inventory_sha256": "be2805bc76e87a6fb96b4b3d40794c677e1620e2e23f6a33a68d97720f433637",
+  "registry_patch_sha256": "4d470b31854ae2af3360676a1dabb06d60207ed2d4afddabad412bdc35adebc3",
+  "rpc_manifest_sha256": "4557adc8257b5209610e9281da092e0a9b3a5141296b89035c252ba5e08482cf",
+  "rpc_patch_sha256": "034b1087bf8153160d79694a64a134adbe52d52292b08dccd4746c61e08d51de",
+  "compiler": {
+    "protoc": {
+      "version": "libprotoc 3.21.12",
+      "url": "https://github.com/protocolbuffers/protobuf/releases/download/v21.12/protoc-21.12-linux-x86_64.zip",
+      "zip_sha256": "3a4c1e5f2516c639d3079b1586e703fc7bcfa2136d58bda24d1d54f949c315e8",
+      "binary_sha256": "e6a75cf6660945fbfec0d321808442ce3649cd7820079eece1098c881b315f55"
+    },
+    "generator_module": {
+      "module": "github.com/gogo/protobuf",
+      "replace_module": "github.com/anyproto/protobuf",
+      "version": "v1.3.3-0.20240201225420-6e325cf0ac38",
+      "sum": "h1:80jke82/c+bNQQpnx4VO3Mi/lAxARyyfUpZvFaPxdzE=",
+      "go_mod_sum": "h1:P1XiOD3dCwIKUDQYPy72D8LYyHL2YPYrpS2s69NZV8Q="
+    },
+    "generator_binary_sha256": "5864d05df83e5f06dc63b9afae0c5cee42fd0cd8a4e817255156f33316af85a8"
+  },
+  "genproto": {
+    "Path": "google.golang.org/genproto",
+    "Version": "v0.0.0-20241021214115-324edc3d5d38",
+    "Sum": "h1:Q3nlH8iSQSRUwOskjbcSMcF2jiYMNiQYZ0c2KEJLKKU=",
+    "GoModSum": "h1:xBI+tzfqGGN2JBeSebfKXFSdBpWVQ7sLW40PTupVRm4="
+  },
+  "app_capability": "OFF",
+  "account_wire_acceptance": "NOT_RUN",
+  "two_app_clients": "NOT_RUN",
+  "ios_acceptance": "NOT_RUN",
+  "native_finished_at": "2026-11-18T07:12:13.241878+00:00",
+  "artifact_members": [
+    "build-gogo.log",
+    "controller-controls.log",
+    "generate-gomobile.log",
+    "generate-grpc.log",
+    "generate-messages.log",
+    "generated-grpc-compile.log",
+    "generation-receipt.json",
+    "gogo-download.log",
+    "gogo-selection.log",
+    "native-genproto-selection.log",
+    "native-module-download.log",
+    "native-rpc-tests.log",
+    "receipt.json",
+    "schema-apply.log",
+    "schema-check.log",
+    "toolchain/apk-install.log",
+    "toolchain/compiler-target.txt",
+    "toolchain/compiler.txt",
+    "toolchain/go-version.txt",
+    "toolchain/image.json",
+    "toolchain/packages.txt",
+    "toolchain/qsort-link.log"
+  ]
+}
