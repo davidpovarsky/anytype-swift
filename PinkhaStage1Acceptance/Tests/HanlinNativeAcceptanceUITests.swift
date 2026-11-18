@@ -97,6 +97,7 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         XCTAssertFalse(beforeClose.providerConfigured)
         attachScreenshot("hanlin-native-read-and-create-complete")
         try chatButton(identifier: "pinkha.hanlin.close", label: "Close").tap()
+        try verifyBackgroundAndPendingConsent(createdObjectID: try XCTUnwrap(beforeClose.createdObjectID))
 
         try waitForPhase("NATIVE_ACCEPTANCE_PASS", timeout: 90)
         let final = try currentReceipt()
@@ -113,12 +114,128 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         XCTAssertNotNil(final.finishedAt)
         XCTAssertEqual(Set(final.checks.keys), Self.requiredChecks)
         XCTAssertTrue(final.checks.values.allSatisfy { $0 })
+        let sessions = [final.sessionID, try XCTUnwrap(final.backgroundSessionID),
+                        try XCTUnwrap(final.staleConsentSessionID), try XCTUnwrap(final.freshSessionID)]
+        XCTAssertEqual(Set(sessions).count, 4, "Each UI presentation must have fresh authority")
+        XCTAssertEqual(Set(final.invalidationCauses.keys), Set(sessions.map(\.uuidString)))
+        XCTAssertTrue(final.invalidationCauses.values.allSatisfy {
+            ["nativeAuthorityChanged", "presentationRemoved", "interactivePresentationDismissal", "explicitCloseOrOwner"].contains($0)
+        })
+        XCTAssertEqual(Set(final.sceneEventCounts.keys), Self.sceneEventKeys)
+        XCTAssertEqual(Set(final.backgroundCycleSceneDelta.keys), Self.sceneEventKeys)
+        XCTAssertEqual(Set(final.documentExitSceneDelta.keys), Self.sceneEventKeys)
+        XCTAssertTrue(final.sceneEventCounts.values.allSatisfy { $0 >= 0 })
+        XCTAssertTrue(final.backgroundCycleSceneDelta.values.allSatisfy { $0 >= 0 })
+        XCTAssertTrue(final.documentExitSceneDelta.values.allSatisfy { $0 >= 0 })
+        for event in Self.sceneEventKeys {
+            XCTAssertGreaterThanOrEqual(final.sceneEventCounts[event, default: -1], final.backgroundCycleSceneDelta[event, default: 0])
+            XCTAssertGreaterThanOrEqual(final.sceneEventCounts[event, default: -1], final.documentExitSceneDelta[event, default: 0])
+        }
+        for event in ["sceneDidEnterBackground", "sceneWillEnterForeground", "sceneDidActivate"] {
+            XCTAssertGreaterThan(final.backgroundCycleSceneDelta[event, default: 0], 0)
+        }
+        XCTAssertEqual(final.documentExitAttribution,
+            final.documentExitSceneDelta.values.contains(where: { $0 > 0 })
+                ? "navigationWithSceneTransition" : "navigationWithoutSceneTransition")
         let attachment = XCTAttachment(data: try JSONEncoder().encode(final),
                                        uniformTypeIdentifier: "public.json")
         attachment.name = "hanlin-native-source-bound-result"
         attachment.lifetime = .keepAlways
         add(attachment)
         attachScreenshot("hanlin-native-authority-revocations-complete")
+    }
+
+    private func verifyBackgroundAndPendingConsent(createdObjectID: String) throws {
+        try waitForPhase("AWAIT_BACKGROUND_PRESENTATION", timeout: 20)
+        try openHanlinOnOriginalDocument()
+        try waitForPhase("AWAIT_BACKGROUND_READ_CONSENT", timeout: 20)
+        try allowNativeReadConsent()
+        try waitForPhase("READY_FOR_BACKGROUND", timeout: 30)
+        let beforeBackground = try currentReceipt()
+        XCTAssertEqual(beforeBackground.checks["background_presentation_had_live_read_access"], true)
+        XCTAssertNotNil(beforeBackground.backgroundSessionID)
+        attachScreenshot("hanlin-native-before-background")
+
+        XCUIDevice.shared.press(.home)
+        XCTAssertTrue(app.wait(for: .runningBackground, timeout: 10) || app.state == .runningBackgroundSuspended,
+                      "The actual app must leave the foreground without being terminated")
+        app.activate()
+        XCTAssertTrue(app.wait(for: .runningForeground, timeout: 20))
+        try waitForPhase("AWAIT_STALE_CONSENT_PRESENTATION", timeout: 30)
+        let returned = try currentReceipt()
+        XCTAssertEqual(returned.processID, beforeBackground.processID, "activate must preserve the tested process")
+        XCTAssertEqual(returned.backgroundSessionID, beforeBackground.backgroundSessionID)
+        XCTAssertEqual(returned.checks["native_background_foreground_observed"], true)
+        XCTAssertEqual(returned.checks["backgrounded_presentation_denies_read_and_create"], true)
+        attachScreenshot("hanlin-native-foreground-old-authority-denied")
+
+        try openHanlinOnOriginalDocument()
+        try waitForPhase("AWAIT_STALE_READ_CONSENT", timeout: 20)
+        try chatButton(identifier: "pinkha.hanlin.share-context",
+                       label: "Allow access to this document or selection").tap()
+        let oldAlert = app.alerts["Allow document text access?"].firstMatch
+        XCTAssertTrue(oldAlert.waitForExistence(timeout: 15))
+        XCTAssertTrue(oldAlert.buttons["Allow for this presentation"].isHittable)
+        try waitForPhase("READY_TO_LEAVE_WITH_PENDING_CONSENT", timeout: 20)
+        let pending = try currentReceipt()
+        attachScreenshot("hanlin-native-pending-consent-before-document-exit")
+        // Do not press Allow or manufacture a response. The ordinary object URL
+        // traverses SpaceHub's native dismiss-all-presented and document route.
+        try openDocument(createdObjectID)
+        XCTAssertFalse(oldAlert.exists, "The old native consent must not cover the new document")
+        try waitForPhase("AWAIT_FRESH_PRESENTATION", timeout: 30)
+        let departed = try currentReceipt()
+        XCTAssertEqual(departed.staleConsentSessionID, pending.staleConsentSessionID)
+        XCTAssertEqual(departed.processID, pending.processID)
+        XCTAssertEqual(departed.checks["pending_read_consent_dismissed_on_document_exit"], true)
+        XCTAssertEqual(departed.checks["departed_document_presentation_denies_read_and_create"], true)
+        attachScreenshot("hanlin-native-new-document-old-consent-denied")
+
+        try openDocument(fixture.sourceObjectID)
+        try openHanlinOnOriginalDocument()
+        try waitForPhase("AWAIT_FRESH_READ_CONSENT", timeout: 20)
+        let fresh = try currentReceipt()
+        XCTAssertEqual(fresh.checks["fresh_presentation_requires_new_native_consent"], true)
+        XCTAssertNotEqual(fresh.freshSessionID, fresh.staleConsentSessionID)
+        try allowNativeReadConsent()
+        try waitForPhase("READY_TO_CLOSE_FRESH", timeout: 30)
+        XCTAssertEqual(try currentReceipt().checks["fresh_presentation_reads_original_document_only"], true)
+        attachScreenshot("hanlin-native-fresh-original-document-consent")
+        try chatButton(identifier: "pinkha.hanlin.close", label: "Close").tap()
+    }
+
+    private func openHanlinOnOriginalDocument() throws {
+        try requireMountedDocument(fixture.sourceObjectID)
+        let button = app.buttons["pinkha.hanlin.open"].firstMatch
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == true AND hittable == true"), object: button)
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 15), .completed)
+        button.tap()
+    }
+
+    private func allowNativeReadConsent() throws {
+        try chatButton(identifier: "pinkha.hanlin.share-context",
+                       label: "Allow access to this document or selection").tap()
+        let alert = app.alerts["Allow document text access?"].firstMatch
+        XCTAssertTrue(alert.waitForExistence(timeout: 15))
+        XCTAssertTrue(alert.buttons["Allow for this presentation"].isHittable)
+        alert.buttons["Allow for this presentation"].tap()
+    }
+
+    private func openDocument(_ objectID: String) throws {
+        var route = URLComponents()
+        route.scheme = "anytype"; route.host = "object"
+        route.queryItems = [URLQueryItem(name: "objectId", value: objectID),
+                            URLQueryItem(name: "spaceId", value: fixture.spaceID)]
+        XCUIDevice.shared.system.open(try XCTUnwrap(route.url))
+        try requireMountedDocument(objectID)
+    }
+
+    private func requireMountedDocument(_ objectID: String) throws {
+        let identifier = "pinkha-ui27-editor:\(fixture.spaceID):\(objectID)"
+        let editor = app.otherElements.matching(NSPredicate(format: "identifier == %@", identifier)).firstMatch
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == true AND hittable == true"), object: editor)
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 45), .completed,
+                       "The exact native document must be mounted and hittable")
     }
 
     private var status: XCUIElement {
@@ -175,7 +292,16 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         "replay_does_not_create_duplicate", "cancelled_title_absent_from_native_index",
         "no_provider_configuration", "closed_presentation_denies_read_and_create",
         "native_source_permission_change_denied", "native_active_space_change_denied",
-        "native_account_logout_denied", "original_commit_metadata_survives_logout"
+        "native_account_logout_denied", "original_commit_metadata_survives_logout",
+        "background_presentation_had_live_read_access", "native_background_foreground_observed",
+        "backgrounded_presentation_denies_read_and_create", "pending_read_consent_dismissed_on_document_exit",
+        "departed_document_presentation_denies_read_and_create", "fresh_presentation_requires_new_native_consent",
+        "fresh_presentation_reads_original_document_only"
+    ]
+
+    private static let sceneEventKeys: Set<String> = [
+        "sceneWillDeactivate", "sceneDidEnterBackground", "sceneWillEnterForeground", "sceneDidActivate",
+        "applicationWillResignActive", "applicationDidBecomeActive"
     ]
 
     private struct Fixture: Decodable {
@@ -204,5 +330,13 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         let createdObjectID: String?
         let failure: String?
         let providerConfigured: Bool
+        let backgroundSessionID: UUID?
+        let staleConsentSessionID: UUID?
+        let freshSessionID: UUID?
+        let sceneEventCounts: [String: Int]
+        let backgroundCycleSceneDelta: [String: Int]
+        let documentExitSceneDelta: [String: Int]
+        let documentExitAttribution: String?
+        let invalidationCauses: [String: String]
     }
 }

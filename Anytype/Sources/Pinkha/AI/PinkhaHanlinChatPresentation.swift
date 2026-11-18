@@ -51,7 +51,14 @@ final class PinkhaHanlinChatPresentation {
         self.acceptanceRouteOwner = routeOwner
         #endif
         try PinkhaHanlinAccountOwner.shared.register(self)
-        host.observeInvalidation { [weak self] in self?.invalidate() }
+        host.observeInvalidation { [weak self] in
+            #if DEBUG && targetEnvironment(simulator)
+            if let self {
+                PinkhaHanlinNativeAcceptanceDriver.observedInvalidation(sessionID: self.session.id, cause: "nativeAuthorityChanged")
+            }
+            #endif
+            self?.invalidate()
+        }
     }
 
     func didMount(_ controller: PinkhaHanlinChatController) {
@@ -167,6 +174,9 @@ final class PinkhaHanlinChatPresentation {
 
     func invalidate() {
         guard !closed else { return }
+        #if DEBUG && targetEnvironment(simulator)
+        PinkhaHanlinNativeAcceptanceDriver.observedInvalidation(sessionID: session.id, cause: "explicitCloseOrOwner")
+        #endif
         closed = true
         host.revokePresentation()
         running?.cancel()

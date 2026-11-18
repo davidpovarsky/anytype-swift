@@ -31,7 +31,32 @@ only to detect duplicates and an unwanted cancelled page, never to infer which
 object the write created. Normal 30-second host invocation limits remain intact.
 
 After the product Close action, new read and create requests must be denied by
-that closed host. Three distinct fresh native authority objects first validate,
+that closed host. The same XCTest then exercises three further actual product
+presentations, all in the original process and disposable account:
+
+* H2 opens through the existing Hanlin button, obtains native read consent, and
+  successfully reads the prepared document before `XCUIDevice.press(.home)`.
+  `app.activate()` returns the same process to the foreground. The original H2
+  host must then reject new reads and creates; activation cannot restore consent.
+* H3 opens with no inherited read grant. Its actual read-consent alert remains
+  pending while `XCUIDevice.shared.system.open` opens the Page created by H1.
+  The ordinary SpaceHub object route dismisses existing presentations. XCTest
+  requires the exact new editor to be hittable and the old prompt to disappear
+  without pressing Allow. H3 must still deny reads and creates.
+* H4 opens after XCTest returns to the original document. It must require new
+  consent, then read the original native body after an actual Allow action.
+  Its native index check must still find exactly the one originally created Page.
+
+The driver observes scene/application notifications and first production
+presentation-invalidation call sites; it never posts lifecycle notifications,
+supplies an approval, or changes navigation. Scene inactivity can itself revoke
+the host before a background event. Therefore the H3 receipt records all six
+event deltas and distinguishes navigation with/without a scene transition. This
+is evidence that old consent is rejected after navigation, not a claim that the
+document fence was the sole cause. The recorded invalidation cause is the first
+observed presentation call site, not an inferred hidden fence origin.
+
+Three distinct fresh native authority objects then first validate,
 then must reject after a real source lock, real Space change, and actual logout
 of this disposable account. Each negative case has its own initially valid
 authority, so the previous revocation cannot make the next case pass. These
@@ -47,8 +72,10 @@ No SDK test cases ran. This dependency compilation failure must be resolved
 before the new native lane can execute. The minimal published correction is now
 pinned at `116cc6be0654a5d11bc56ba00e0310031107ee36`; its Apple build is pending
 (see `CANONICAL_PIN_UPDATE.md`). Source parse evidence is separate and
-is not native acceptance. Selection entry and
-scene-background behavior still require their own native acceptance evidence.
+is not native acceptance. The later run `44217294617` was cancelled before any
+completed SDK case evidence; the corrected source-bound SDK run is
+`44227955159`. Neither run is evidence that this UI lifecycle extension passed.
+Selection entry still requires its own native acceptance evidence.
 
 ## Build and preparation contract
 
@@ -130,7 +157,8 @@ then uses XCUIDevice.shared.system.open for the fixture's exact native object
 route, requires its actual mounted
 editor diagnostic, and taps the production Home-panel Hanlin entry while that
 editor remains mounted. It presses the existing Share context, Allow, Cancel,
-Create page, and Close actions. Every create prompt must show its exact title
+Create page, and Close actions, then Home/activate and the existing object route.
+Every create prompt must show its exact title
 and original Space. Provider configuration and model invocation never occur.
 This lane does not claim reuse of an earlier Inspector process.
 
@@ -155,7 +183,7 @@ The app atomically writes metadata after each phase to:
 Require `phase == NATIVE_ACCEPTANCE_PASS`, no `failure`, nonempty
 `createdObjectID`, `finishedAt`, `providerConfigured == false`, positive process
 ID, and the exact independent fixture ID, SHA, run ID and attempt. Require this
-**exact set of 14 keys**, each true, with no missing/extra keys:
+**exact set of 21 keys**, each true, with no missing/extra keys:
 
 ```
 middleware_logging_disabled
@@ -172,10 +200,36 @@ native_source_permission_change_denied
 native_active_space_change_denied
 native_account_logout_denied
 original_commit_metadata_survives_logout
+background_presentation_had_live_read_access
+native_background_foreground_observed
+backgrounded_presentation_denies_read_and_create
+pending_read_consent_dismissed_on_document_exit
+departed_document_presentation_denies_read_and_create
+fresh_presentation_requires_new_native_consent
+fresh_presentation_reads_original_document_only
 ```
 
-The XCTest independently checks this exact set, preserves the same session and
-process across the close/revocation sequence, and attaches the metadata JSON
+Require four distinct UUIDs: the original `sessionID` and the new
+`backgroundSessionID`, `staleConsentSessionID`, and `freshSessionID`. The original
+session field remains H1; the process must stay unchanged across Home/activate
+and the document routes. `invalidationCauses` must have exactly these four UUID
+keys. Its values are existing observed call sites: `nativeAuthorityChanged`,
+`presentationRemoved`, `interactivePresentationDismissal`, or
+`explicitCloseOrOwner`.
+
+`sceneEventCounts`, `backgroundCycleSceneDelta`, and `documentExitSceneDelta`
+must each have exactly these six keys with nonnegative integer values:
+`sceneWillDeactivate`, `sceneDidEnterBackground`, `sceneWillEnterForeground`,
+`sceneDidActivate`, `applicationWillResignActive`, `applicationDidBecomeActive`.
+Every delta must be bounded by its total count. The background cycle requires
+positive `sceneDidEnterBackground`, `sceneWillEnterForeground`, and
+`sceneDidActivate` deltas. `documentExitAttribution` must equal
+`navigationWithSceneTransition` if any document-exit delta is positive, and
+`navigationWithoutSceneTransition` otherwise. Do not relabel the former as an
+isolated document-fence test or discard the early inactivity counters.
+
+The XCTest independently checks these invariants and the exact check set,
+preserves the process across the close/revocation sequence, and attaches metadata JSON
 and screenshots of the actual prompts and final state. An uncertainty, invalid
 context, native write mismatch, absent prompt, deadline expiry, unavailable
 index or missing evidence fails this lane. Acceptance remains open until the
