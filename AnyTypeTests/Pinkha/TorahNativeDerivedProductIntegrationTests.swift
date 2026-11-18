@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 import AnytypeCore
 import PinkhaKit
 import ProtobufMessages
@@ -522,6 +523,15 @@ struct TorahNativeDerivedProductIntegrationTests {
             writingDocuments: fixtureDocuments, reservedIDs: reservedTypeSwitchIDs
         )
         let directory = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        if ProcessInfo.processInfo.environment["PINKHA_PREPARE_TYPE_PRESERVATION"] == "1" {
+            let subjectID = try #require(typeSwitchFixture["objectId"] as? String)
+            try await NativeTypePreservation.prepare(
+                subjectID: subjectID, spaceID: spaceId,
+                chiddushTypeID: #require(typeSwitchFixture["initialTypeId"] as? String),
+                canonicalKey: manifest.documentAssociationsPropertyKey,
+                reservedIDs: reservedTypeSwitchIDs.union([subjectID])
+            )
+        }
         let fixture: [String: Any] = [
             "spaceId": spaceId, "documents": fixtureDocuments, "names": fixtureNames,
             "universalDocuments": universal.documents, "universalTypes": universal.types,
@@ -819,4 +829,307 @@ private actor NativeMembershipStates {
 private enum NativeAcceptanceError: Error {
     case timeout
     case conditionTimeout(String)
+}
+
+
+/// Runs only after the real Type UI roundtrip, in a new host process. Unlike
+/// preparation, this verifier never creates/restores/selects an account itself.
+@Suite("Native Type roundtrip preservation", .serialized,
+       .enabled(if: ProcessInfo.processInfo.environment["PINKHA_TYPE_PRESERVATION_POSTFLIGHT"] == "1"))
+struct TorahStage2TypePreservationTests {
+    @MainActor
+    @Test("Existing account retains original canonical bytes, Tag and native links")
+    func verifyExistingTypeRoundtrip() async throws {
+        try await NativeTypePreservation.verify()
+    }
+}
+
+private enum NativeTypePreservation {
+    static let baselineName = "pinkha-type-preservation-baseline.json"
+    static let disabledFlags = [
+        "PINKHA_NATIVE_DERIVED_ACCEPTANCE", "PINKHA_PREPARE_TYPE_PRESERVATION",
+        "PINKHA_SIMULATOR_ACCEPTANCE_PREPARATION", "PINKHA_SIMULATOR_UI_DISPOSABLE",
+        "PINKHA_HANLIN_NATIVE_PREPARATION", "PINKHA_PREPARE_HANLIN_SELECTION_UI",
+        "PINKHA_PROPERTIES_PREPARE", "PINKHA_T5_UI_PREPARATION", "PINKHA_T5_APPLE_PAIR"
+    ]
+
+    struct Binding: Codable, Equatable {
+        let sourceSHA: String
+        let runID: String
+        let runAttempt: String
+        let nonce: String
+    }
+
+    struct DirectoryIdentity: Codable, Equatable {
+        let path: String
+        let device: String
+        let inode: String
+        let createdAt: Double
+    }
+
+    struct Link: Codable, Equatable {
+        let blockID: String
+        let targetID: String
+    }
+
+    struct ObjectState: Codable, Equatable {
+        let objectID: String
+        let spaceID: String
+        let typeID: String
+        let tags: [String]
+        let links: [String]
+        let backlinks: [String]
+        let seededLinks: [Link]
+    }
+
+    struct TagOption: Codable, Equatable {
+        let objectID: String
+        let spaceID: String
+        let name: String
+        let relationKey: String
+        let color: String
+    }
+
+    struct State: Codable, Equatable {
+        let accountID: String
+        let spaceID: String
+        let subjectID: String
+        let chiddushTypeID: String
+        let canonicalPropertyKey: String
+        let canonicalRaw: String
+        let canonicalSHA256: String
+        let container: DirectoryIdentity
+        let middleware: DirectoryIdentity
+        let objects: [ObjectState] // subject, outgoing peer, incoming peer
+        let tagOption: TagOption
+    }
+
+    struct Baseline: Codable {
+        let schemaVersion: Int
+        let binding: Binding
+        let preparationPID: Int32
+        let state: State
+    }
+
+    struct Receipt: Codable {
+        let schemaVersion: Int
+        let status: String
+        let scope: String
+        let binding: Binding
+        let baselineSHA256: String
+        let preparationPID: Int32
+        let postflightPID: Int32
+        let verifierCallsMutationAPI: Bool
+        let state: State
+    }
+
+    static func sha256(_ data: Data) -> String {
+        SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    }
+
+    static func binding() throws -> Binding {
+        let env = ProcessInfo.processInfo.environment
+        func value(_ key: String) throws -> String {
+            let value = try #require(env["PINKHA_TYPE_PRESERVATION_" + key])
+            try #require(!value.isEmpty)
+            return value
+        }
+        let result = Binding(sourceSHA: try value("SOURCE_SHA"), runID: try value("RUN_ID"),
+                             runAttempt: try value("RUN_ATTEMPT"), nonce: try value("NONCE"))
+        try #require(result.sourceSHA.count == 40 && result.sourceSHA.allSatisfy(\.isHexDigit))
+        try #require(result.nonce.count == 32 && result.nonce.allSatisfy(\.isHexDigit))
+        try #require(result.runID.allSatisfy(\.isNumber) && result.runAttempt.allSatisfy(\.isNumber))
+        return result
+    }
+
+    static func supportURL() throws -> URL {
+        try #require(FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first)
+    }
+
+    static func directory(_ url: URL) throws -> DirectoryIdentity {
+        let canonical = url.standardizedFileURL.resolvingSymlinksInPath()
+        let attributes = try FileManager.default.attributesOfItem(atPath: canonical.path)
+        try #require(attributes[.type] as? FileAttributeType == .typeDirectory)
+        let device = try #require(attributes[.systemNumber] as? NSNumber)
+        let inode = try #require(attributes[.systemFileNumber] as? NSNumber)
+        let created = try #require(attributes[.creationDate] as? Date)
+        try #require(created.timeIntervalSince1970.isFinite && inode.uint64Value > 0)
+        return .init(path: canonical.path, device: device.stringValue, inode: inode.stringValue,
+                     createdAt: created.timeIntervalSince1970)
+    }
+
+    static func directories() throws -> (DirectoryIdentity, DirectoryIdentity) {
+        let support = try supportURL()
+        // Pure URLs: LocalRepoService's getter would create/update storage.
+        return (try directory(support.deletingLastPathComponent().deletingLastPathComponent()),
+                try directory(support.appendingPathComponent("Anytype/middleware-go")))
+    }
+
+    static func validateCanonical(_ raw: String, subjectID: String, spaceID: String) throws {
+        let data = Data(raw.utf8)
+        let envelope = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+        try #require(envelope["version"] as? Int == 2)
+        let payload = try TorahAssociationPayloadCodec().decodeCanonicalDocument(
+            data, legacyLocation: .init(spaceId: spaceID, target: .object(objectId: subjectID)))
+        try #require(payload.records.count == 3 && Set(payload.records.map { $0.item.id }).count == 3)
+        try #require(payload.records.allSatisfy {
+            $0.spaceId == spaceID && $0.objectId == subjectID && $0.blockId == nil &&
+            !$0.item.id.isEmpty && $0.item.providerID == "sefaria" && $0.item.createdAt != nil
+        })
+        try #require(Set(payload.records.map { $0.item.kind.rawValue + ":" + $0.item.canonicalKey }) ==
+                     Set(["ref:Genesis 3:1", "topic:creation", "word:בראשית"]))
+    }
+
+    @MainActor
+    static func readState(spaceID: String, subjectID: String, chiddushTypeID: String,
+                          canonicalKey: String, objectIDs: [String], seedLinks: [String: [Link]],
+                          tagID: String) async throws -> State {
+        try #require(objectIDs.count == 3 && objectIDs[0] == subjectID && Set(objectIDs).count == 3)
+        var objects: [ObjectState] = []
+        var canonicalRaw = ""
+        for objectID in objectIDs {
+            let response = try await ClientCommands.objectShow(.with {
+                $0.contextID = objectID; $0.objectID = objectID; $0.spaceID = spaceID
+            }).invoke()
+            let details = try ObjectDetails(protobufStruct: #require(response.objectView.details.first {
+                $0.id == objectID
+            }).details)
+            try #require(details.id == objectID && details.spaceId == spaceID)
+            if objectID == subjectID { canonicalRaw = details.stringValue(for: canonicalKey) }
+            let blocks = response.objectView.blocks
+            try #require(Set(blocks.map(\.id)).count == blocks.count && blocks.count <= 1000)
+            var reached = Set<String>(), pending = [objectID]
+            while let current = pending.popLast() {
+                if reached.contains(current) { continue }
+                let block = try #require(blocks.first { $0.id == current })
+                reached.insert(current)
+                pending.append(contentsOf: block.childrenIds)
+            }
+            var observedLinks: [Link] = []
+            for expected in seedLinks[objectID, default: []] {
+                try #require(reached.contains(expected.blockID))
+                let block = try #require(blocks.first { $0.id == expected.blockID })
+                guard case .link(let link) = block.content else {
+                    throw NativeAcceptanceError.conditionTimeout("preserved native link block")
+                }
+                observedLinks.append(.init(blockID: block.id, targetID: link.targetBlockID))
+            }
+            objects.append(.init(objectID: objectID, spaceID: details.spaceId, typeID: details.type,
+                                 tags: details.stringArrayValue(for: "tag").sorted(),
+                                 links: details.stringArrayValue(for: "links").sorted(),
+                                 backlinks: details.stringArrayValue(for: "backlinks").sorted(),
+                                 seededLinks: observedLinks))
+        }
+        let tagResponse = try await ClientCommands.objectShow(.with {
+            $0.contextID = tagID; $0.objectID = tagID; $0.spaceID = spaceID
+        }).invoke()
+        let tag = try ObjectDetails(protobufStruct: #require(tagResponse.objectView.details.first {
+            $0.id == tagID
+        }).details)
+        try #require(tag.id == tagID && tag.spaceId == spaceID && tag.stringValue(for: "relationKey") == "tag")
+        let dirs = try directories()
+        return .init(accountID: Container.shared.accountManager().account.id, spaceID: spaceID,
+                     subjectID: subjectID, chiddushTypeID: chiddushTypeID, canonicalPropertyKey: canonicalKey,
+                     canonicalRaw: canonicalRaw, canonicalSHA256: sha256(Data(canonicalRaw.utf8)),
+                     container: dirs.0, middleware: dirs.1, objects: objects,
+                     tagOption: .init(objectID: tag.id, spaceID: tag.spaceId, name: tag.name,
+                                      relationKey: tag.stringValue(for: "relationKey"),
+                                      color: tag.stringValue(for: "relationOptionColor")))
+    }
+
+    @MainActor
+    static func prepare(subjectID: String, spaceID: String, chiddushTypeID: String,
+                        canonicalKey: String, reservedIDs: Set<String>) async throws {
+        let binding = try binding()
+        let accountID = Container.shared.accountManager().account.id
+        try #require(!accountID.isEmpty && reservedIDs.contains(subjectID))
+        var peers: [String] = []
+        for name in ["Type preservation outgoing peer", "Type preservation incoming peer"] {
+            let object = try await Container.shared.objectActionsService().createObject(
+                name: name, typeUniqueKey: .page, shouldDeleteEmptyObject: false,
+                shouldSelectType: false, shouldSelectTemplate: false, spaceId: spaceID, origin: .none, templateId: nil)
+            try #require(!reservedIDs.contains(object.id) && !peers.contains(object.id))
+            peers.append(object.id)
+        }
+        let properties = Container.shared.propertiesService()
+        let tagID = try #require(try await properties.addPropertyOption(
+            spaceId: spaceID, propertyKey: "tag", optionText: "Original native Type-preservation Tag", color: nil))
+        try #require(!tagID.isEmpty)
+        try await properties.addProperties(objectId: subjectID, propertyKeys: ["tag"])
+        try await properties.updateProperty(objectId: subjectID, propertyKey: "tag", value: [tagID].protobufValue)
+        let blocks = Container.shared.blockService()
+        let outgoing = try await blocks.addFirstBlock(contextId: subjectID, info: .empty(content: .link(.empty(targetBlockID: peers[0]))))
+        let incoming = try await blocks.addFirstBlock(contextId: peers[1], info: .empty(content: .link(.empty(targetBlockID: subjectID))))
+        let seedLinks = [subjectID: [Link(blockID: outgoing, targetID: peers[0])],
+                         peers[1]: [Link(blockID: incoming, targetID: subjectID)]]
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(30))
+        var accepted: State?
+        repeat {
+            let state = try await readState(spaceID: spaceID, subjectID: subjectID, chiddushTypeID: chiddushTypeID,
+                                            canonicalKey: canonicalKey, objectIDs: [subjectID] + peers,
+                                            seedLinks: seedLinks, tagID: tagID)
+            if state.objects[0].typeID == chiddushTypeID && state.objects[0].tags == [tagID] &&
+               state.objects[0].links.contains(peers[0]) && state.objects[1].backlinks.contains(subjectID) &&
+               state.objects[2].links.contains(subjectID) && state.objects[0].backlinks.contains(peers[1]) &&
+               state.objects[0].seededLinks == seedLinks[subjectID, default: []] && state.objects[2].seededLinks == seedLinks[peers[1], default: []] {
+                accepted = state; break
+            }
+            try await Task.sleep(for: .milliseconds(100))
+        } while clock.now < deadline
+        let state = try #require(accepted)
+        try #require(state.accountID == accountID)
+        try validateCanonical(state.canonicalRaw, subjectID: subjectID, spaceID: spaceID)
+        let baseline = Baseline(schemaVersion: 1, binding: binding,
+                                preparationPID: ProcessInfo.processInfo.processIdentifier, state: state)
+        let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+        let data = try encoder.encode(baseline)
+        try #require(data.count <= 65_536)
+        let path = try supportURL().appendingPathComponent(baselineName)
+        try #require(!FileManager.default.fileExists(atPath: path.path))
+        try data.write(to: path, options: .atomic)
+    }
+
+    @MainActor
+    static func verify() async throws {
+        let env = ProcessInfo.processInfo.environment
+        try #require(disabledFlags.allSatisfy { env[$0] == "0" })
+        let binding = try binding()
+        let input = try #require(env["PINKHA_TYPE_PRESERVATION_BASELINE_BASE64"])
+        try #require(input.utf8.count <= 87_384)
+        let data = try #require(Data(base64Encoded: input))
+        try #require(data.count <= 65_536 && sha256(data) == env["PINKHA_TYPE_PRESERVATION_BASELINE_SHA256"])
+        let baseline = try JSONDecoder().decode(Baseline.self, from: data)
+        try #require(baseline.schemaVersion == 1 && baseline.binding == binding)
+        let expected = baseline.state
+        let before = try directories()
+        try #require(before.0 == expected.container && before.1 == expected.middleware)
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(45))
+        while Container.shared.accountManager().account.id.isEmpty && clock.now < deadline {
+            try await Task.sleep(for: .milliseconds(100))
+        }
+        try #require(Container.shared.accountManager().account.id == expected.accountID && !expected.accountID.isEmpty)
+        let restored = try directories()
+        try #require(restored.0 == expected.container && restored.1 == expected.middleware)
+        try validateCanonical(expected.canonicalRaw, subjectID: expected.subjectID, spaceID: expected.spaceID)
+        let actual = try await readState(spaceID: expected.spaceID, subjectID: expected.subjectID,
+            chiddushTypeID: expected.chiddushTypeID, canonicalKey: expected.canonicalPropertyKey,
+            objectIDs: expected.objects.map(\.objectID),
+            seedLinks: Dictionary(uniqueKeysWithValues: expected.objects.map { ($0.objectID, $0.seededLinks) }),
+            tagID: expected.tagOption.objectID)
+        try validateCanonical(actual.canonicalRaw, subjectID: expected.subjectID, spaceID: expected.spaceID)
+        try #require(actual == expected)
+        let after = try directories()
+        try #require(after.0 == expected.container && after.1 == expected.middleware)
+        let pid = ProcessInfo.processInfo.processIdentifier
+        try #require(pid != baseline.preparationPID)
+        let receipt = Receipt(schemaVersion: 1, status: "PASS", scope: "FINAL_UI_TYPE_ROUNDTRIP",
+                              binding: binding, baselineSHA256: sha256(data), preparationPID: baseline.preparationPID,
+                              postflightPID: pid, verifierCallsMutationAPI: false, state: actual)
+        let path = try supportURL().appendingPathComponent("pinkha-type-preservation-result-" + binding.nonce + ".json")
+        try #require(!FileManager.default.fileExists(atPath: path.path))
+        let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+        try encoder.encode(receipt).write(to: path, options: .atomic)
+    }
 }

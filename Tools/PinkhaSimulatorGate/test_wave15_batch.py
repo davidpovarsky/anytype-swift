@@ -17,6 +17,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 import wave15_batch as batch
+import test_type_preservation as preservation_controls
 
 
 SPECS = [
@@ -44,6 +45,8 @@ def selection(name, device="ipad", language="en"):
     return {"lane": name, "device_family": device, "app_language": language,
             "build_configuration": batch.CONFIGURATION, "expected_ui_executions": len(names),
             "expected_preparation_executions": 1, "preparation": batch.PREPARATIONS[index],
+            "expected_postflight_executions": 1 if name == "properties-set" else 0,
+            "postflight": batch.preservation.METHOD if name == "properties-set" else None,
             "methods": [suite + "/" + method for method in names]}
 
 
@@ -389,13 +392,20 @@ class BatchControls(unittest.TestCase):
         self.assertLess(batch.WORKER_SECONDS + batch.CLEANUP_SECONDS, 120 * 60)
         self.assertEqual(batch.STEP_SECONDS, 120 * 60)
         self.assertEqual(batch.minimum_lane_budget(selection("inspector")), 6 * 300 + 180)
-        self.assertEqual(batch.minimum_lane_budget(selection("properties-set")), 3 * 300 + 180)
+        self.assertEqual(batch.minimum_lane_budget(selection("properties-set")), 4 * 300 + 180)
         self.assertEqual(batch.minimum_lane_budget(selection("properties")), 2100 + 300 + 180)
         self.assertEqual(batch.minimum_lane_budget(selection("editor")), 4 * 300 + 180)
         changed = selection("properties")
         changed["expected_ui_executions"] += 1
         with self.assertRaisesRegex(RuntimeError, "exact declared UI method"):
             batch.minimum_lane_budget(changed)
+
+    def test_properties_set_cannot_omit_postflight_from_budget_or_profile(self):
+        for key, value in [("expected_postflight_executions", 0), ("postflight", None),
+                           ("postflight", "TorahNativeDerivedProductIntegrationTests/originalProductPipeline")]:
+            selected = selection("properties-set"); selected[key] = value
+            with self.subTest(key=key, value=value), self.assertRaises(RuntimeError):
+                batch.minimum_lane_budget(selected)
 
     def test_batch_pass_requires_six_original_preparations_and_fifteen_original_ui_cases(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -410,7 +420,7 @@ class BatchControls(unittest.TestCase):
             build_sha = batch.digest(build_path)
             receipt = {"protocol": batch.PROTOCOL, "profile": batch.PROFILE, "source": source,
                        "status": "BATCH_PASS_ACCEPTANCE_REVIEW_PENDING", "planned_ui_methods": 15,
-                       "planned_native_preparations": 6, "build_receipt_sha256": build_sha,
+                       "planned_native_preparations": 6, "planned_native_postflights": 1, "build_receipt_sha256": build_sha,
                        "lane_statuses": {name: "LANE_PASS_ACCEPTANCE_REVIEW_PENDING" for name in batch.LANES},
                        "lane_receipts": {}}
             for index, name in enumerate(batch.LANES):
@@ -423,6 +433,32 @@ class BatchControls(unittest.TestCase):
                     "space_id": "synthetic-controller-space-" + name, "container": "synthetic-controller-container-" + name})
                 original = {"status": "LANE_PASS_ACCEPTANCE_REVIEW_PENDING", "source_sha": source["source_sha"],
                             "run_id": "123", "run_attempt": "1", "same_job_build_receipt_sha256": build_sha}
+                if name == "properties-set":
+                    gate = batch.preservation
+                    bound = gate.binding(source["source_sha"], "123", "1", "b" * 32)
+                    identity = {"path": "/controller-only", "device": "1", "inode": "2", "createdAt": 1700000000.0}
+                    directories = {"container": identity, "middleware": identity}
+                    baseline = preservation_controls.baseline(directories)
+                    baseline["binding"] = bound
+                    raw = json.dumps(baseline).encode()
+                    (directory / "type-preservation-baseline.json").write_bytes(raw)
+                    baseline_sha = gate.sha256(raw)
+                    native = preservation_controls.native_receipt(baseline, baseline_sha)
+                    raw_native = json.dumps(native).encode()
+                    (directory / "postflight").mkdir()
+                    (directory / "postflight/native-result.json").write_bytes(raw_native)
+                    post = preservation_controls.result()
+                    post["actual_devices"][0]["deviceId"] = device["udid"]
+                    original.update(postflight_binding=bound, preservation_baseline_sha256=baseline_sha,
+                                    preservation_native_receipt_sha256=gate.sha256(raw_native), postflight=post)
+                    original["type_preservation"] = gate.validate_native_receipt(baseline, baseline_sha, device["udid"], native, post)
+                    batch.write(directory / "fixture-ids.json", preservation_controls.fixture())
+                    batch.write(directory / "type-preservation-inputs.json", {"binding": bound,
+                        "baseline_sha256": baseline_sha, "directories": directories,
+                        "simulator_udid": device["udid"], "source": "FROZEN_BEFORE_UI"})
+                    methods = {gate.METHOD + "()": "Passed"}
+                    batch.write(directory / "postflight" / (gate.PREFIX + "-summary.json"), summary(methods, device["udid"]))
+                    batch.write(directory / "postflight" / (gate.PREFIX + "-tests.json"), methods)
                 batch.write(directory / "execution.json", original)
                 receipt["lane_receipts"][name] = {"path": "lanes/" + name + "/execution.json",
                                                    "sha256": batch.digest(directory / "execution.json")}
@@ -434,6 +470,12 @@ class BatchControls(unittest.TestCase):
                     batch.write(directory / phase / (prefix + "-tests.json"), methods)
             lane = types.SimpleNamespace(plan=selection, shared=types.SimpleNamespace(method_results=lambda value: value))
             batch.validate_worker_conclusion(receipt, intent, evidence, lane)
+            post_summary = evidence / "lanes/properties-set/postflight" / (batch.preservation.PREFIX + "-summary.json")
+            saved_post = post_summary.read_bytes()
+            post_summary.unlink()
+            with self.assertRaises(FileNotFoundError):
+                batch.validate_worker_conclusion(receipt, intent, evidence, lane)
+            post_summary.write_bytes(saved_post)
             missing = copy.deepcopy(receipt)
             missing["lane_receipts"].pop("properties")
             with self.assertRaisesRegex(RuntimeError, "six passing"):
@@ -471,7 +513,7 @@ class BatchControls(unittest.TestCase):
                 def mock_worker(*values):
                     original_write(args.evidence / "batch-worker.json", {"protocol": batch.PROTOCOL,
                         "profile": batch.PROFILE, "status": "BATCH_ABORTED_SETUP_OR_IDENTITY",
-                        "planned_ui_methods": 15, "planned_native_preparations": 6,
+                        "planned_ui_methods": 15, "planned_native_preparations": 6, "planned_native_postflights": 1,
                         "lane_statuses": {name: "NOT_RUN_SETUP" for name in batch.LANES}})
                     if phase == "signals_worker":
                         signal.getsignal(signal.SIGTERM)(signal.SIGTERM, None)

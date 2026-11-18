@@ -18,6 +18,7 @@ import sys
 import time
 from uuid import uuid4
 import wave15_diagnostics as diagnostics
+import type_preservation as preservation
 
 
 PROFILE = "remaining-release"
@@ -26,6 +27,7 @@ LANES = ("inspector", "inspector-search", "properties", "properties-set", "canon
 COUNTS = (5, 1, 3, 2, 1, 3)
 UI_COUNT = 15
 PREPARATION_COUNT = 6
+POSTFLIGHT_COUNT = 1
 PREPARATIONS = (
     "SimulatorAcceptancePreparationTests/prepareRealUIFixture",
     "SimulatorAcceptancePreparationTests/prepareRealUIFixture",
@@ -74,7 +76,9 @@ def plan(lane):
         require(item["build_configuration"] == CONFIGURATION
                 and item["expected_ui_executions"] == count
                 and item["expected_preparation_executions"] == 1
-                and item["preparation"] == preparation,
+                and item["preparation"] == preparation
+                and item.get("expected_postflight_executions") == (1 if name == "properties-set" else 0)
+                and item.get("postflight") == (preservation.METHOD if name == "properties-set" else None),
                 "An existing lane changed; review the bounded batch profile")
         result.append(item)
     methods = [method for item in result for method in item["methods"]]
@@ -91,7 +95,11 @@ def minimum_lane_budget(selection):
     budget = selection_time_budget("PinkhaStage1AcceptanceUITests", selection["methods"])
     # Native preparation retains 300s. UI ceilings come from the same whitelist
     # used by the executor; two long Properties methods require 900s each.
-    return 300 + budget["total_method_seconds"] + 180
+    postflight = selection.get("postflight")
+    expected = 1 if selection["lane"] == "properties-set" else 0
+    require(selection.get("expected_postflight_executions") == expected
+            and postflight == (preservation.METHOD if expected else None), "Lane postflight budget contract differs")
+    return 300 + budget["total_method_seconds"] + preservation.SECONDS * expected + 180
 
 
 def canonical_hash(value):
@@ -199,6 +207,9 @@ def explicit_selection(configuration, blueprint, selections, environment, shared
     require(filters and len(filters) == len(set(filters)), "Nonempty unique XCTest selection required")
     targets[0]["OnlyTestIdentifiers"] = filters
     targets[0]["SkipTestIdentifiers"] = []
+    if selections == [preservation.METHOD]:
+        require(blueprint == "AnytypeTests", "Postflight must select the actual native target")
+        preservation.configure_target(targets[0], environment)
     selected = configuration.with_name("UI27-Batch-" + uuid4().hex + ".xctestrun")
     with selected.open("xb") as stream:
         plistlib.dump(data, stream)
@@ -392,8 +403,10 @@ def build_once(args, lane, selections, receipt):
     base = ["xcodebuild", "build-for-testing", "-configuration", CONFIGURATION,
             "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO"]
     native_suites = sorted({selection["preparation"].split("/")[0] for selection in selections})
+    postflight_suites = sorted({selection["postflight"].split("/")[0] for selection in selections if selection["postflight"]})
+    require(postflight_suites == [preservation.SUITE], "Exactly one isolated postflight suite required")
     shared.command([*base, "-project", "Anytype.xcodeproj", "-scheme", "Anytype", "-derivedDataPath", str(derived),
-                    *["-only-testing:AnytypeTests/" + name for name in native_suites], *FLAGS], app, common)
+                    *["-only-testing:AnytypeTests/" + name for name in native_suites + postflight_suites], *FLAGS], app, common)
     require(source_snapshot(app, shared, stage="AFTER_APP_AND_NATIVE_TEST_BUILD") == source,
             "Source or package inputs changed during App/native test build")
     built = derived / "Build/Products" / (CONFIGURATION + "-iphonesimulator/Anytype.app")
@@ -417,7 +430,8 @@ def build_once(args, lane, selections, receipt):
     frozen = replace(frozen, artifacts=frozen.observed_artifacts())
     build_record = {"status": "SAME_JOB_SUCCESSFUL_BUILD_WITH_FROZEN_PRODUCTS", "source": source,
                     "build_flags": FLAGS, "configuration": CONFIGURATION,
-                    "native_preparation_suites_built": native_suites, "ui_methods_built": methods,
+                    "native_preparation_suites_built": native_suites, "native_postflight_suites_built": postflight_suites,
+                    "ui_methods_built": methods,
                     "artifacts": frozen.artifacts, "runtime_receipt_sha256": frozen.runtime_receipt_sha256,
                     "native_acceptance_reused": False, "ui_acceptance_reused": False,
                     "previous_artifact_reuse": False}
@@ -428,11 +442,14 @@ def build_once(args, lane, selections, receipt):
 
 def qualify_functional_failure(lane_receipt, directory, selection, device, shared):
     phase = lane_receipt.get("phase")
-    require(phase in {"PREPARATION", "UI"}, "Failure is outside a named XCTest phase")
+    require(phase in {"PREPARATION", "UI", "POSTFLIGHT"}, "Failure is outside a named XCTest phase")
     native = phase == "PREPARATION"
     prefix = "prepare" if native else "wave15-" + selection["lane"]
     evidence = directory / ("preparation" if native else "ui")
     expected = [selection["preparation"]] if native else selection["methods"]
+    if phase == "POSTFLIGHT":
+        require(selection.get("postflight") == preservation.METHOD, "Unexpected postflight failure lane")
+        prefix, evidence, expected = preservation.PREFIX, directory / "postflight", [preservation.METHOD]
     summary = json.loads((evidence / (prefix + "-summary.json")).read_text())
     methods = shared.method_results(json.loads((evidence / (prefix + "-tests.json")).read_text()))
     return validate_observed_result(summary, methods, expected, device["udid"], passing=False)
@@ -449,8 +466,12 @@ def validate_lane_pass(receipt, directory, selection, context):
             and receipt["selection"].get("build_configuration") == CONFIGURATION,
             "Passing lane source selection/configuration differs")
     observations = {}
-    for phase, prefix, expected in [("preparation", "prepare", [selection["preparation"]]),
-                                    ("ui", "wave15-" + selection["lane"], selection["methods"])]:
+    phases = [("preparation", "prepare", [selection["preparation"]]),
+              ("ui", "wave15-" + selection["lane"], selection["methods"])]
+    if selection["postflight"]:
+        phases.append(("postflight", preservation.PREFIX, [preservation.METHOD]))
+        preservation.validate_saved(directory, receipt, context.device["udid"])
+    for phase, prefix, expected in phases:
         require(receipt.get(phase, {}).get("status") == "PASS", "Passing lane has no passing actual phase")
         original = directory / phase
         summary_path, tests_path = original / (prefix + "-summary.json"), original / (prefix + "-tests.json")
@@ -472,6 +493,7 @@ def worker(args, lane, intent):
     selections = plan(lane)
     receipt = {"protocol": PROTOCOL, "status": "FAIL", "phase": "SETUP", "started_at": now(),
                "profile": PROFILE, "planned_ui_methods": UI_COUNT, "planned_native_preparations": PREPARATION_COUNT,
+               "planned_native_postflights": POSTFLIGHT_COUNT,
                "lane_statuses": {name: "NOT_RUN_SETUP" for name in LANES},
                "lane_receipts": {}, "full_matrix_accepted": False, "release_accepted": False}
     evidence = args.evidence.resolve()
@@ -667,6 +689,7 @@ def cleanup_owned(intent, evidence):
 def validate_worker_conclusion(receipt, intent, evidence, lane):
     require(receipt.get("protocol") == PROTOCOL and receipt.get("profile") == PROFILE
             and receipt.get("planned_ui_methods") == UI_COUNT and receipt.get("planned_native_preparations") == PREPARATION_COUNT
+            and receipt.get("planned_native_postflights") == POSTFLIGHT_COUNT
             and set(receipt.get("lane_statuses", {})) == set(LANES), "Worker receipt profile differs")
     if receipt.get("status") != "BATCH_PASS_ACCEPTANCE_REVIEW_PENDING":
         require(receipt.get("status") in {"BATCH_FAILED_OBSERVED_TESTS", "BATCH_BUDGET_EXHAUSTED",
@@ -683,7 +706,7 @@ def validate_worker_conclusion(receipt, intent, evidence, lane):
             and build.get("configuration") == CONFIGURATION and build.get("previous_artifact_reuse") is False,
             "Passing worker has no exact successful same-job build")
     observed_udids, observed_spaces, observed_containers = set(), set(), set()
-    totals = {"native_preparations": 0, "ui_methods": 0}
+    totals = {"native_preparations": 0, "ui_methods": 0, "native_postflights": 0}
     for selection in plan(lane):
         name = selection["lane"]
         reference = receipt["lane_receipts"][name]
@@ -711,15 +734,18 @@ def validate_worker_conclusion(receipt, intent, evidence, lane):
                 "Passing lanes do not retain independent fresh fixture evidence")
         observed_spaces.add(fixture["space_id"])
         observed_containers.add(fixture["container"])
-        for phase, prefix, expected, total_key in [
-            ("preparation", "prepare", [selection["preparation"]], "native_preparations"),
-            ("ui", "wave15-" + name, selection["methods"], "ui_methods")]:
+        phases = [("preparation", "prepare", [selection["preparation"]], "native_preparations"),
+                  ("ui", "wave15-" + name, selection["methods"], "ui_methods")]
+        if selection["postflight"]:
+            phases.append(("postflight", preservation.PREFIX, [preservation.METHOD], "native_postflights"))
+            preservation.validate_saved(path.parent, original, device["udid"])
+        for phase, prefix, expected, total_key in phases:
             summary_path = path.parent / phase / (prefix + "-summary.json")
             tests_path = path.parent / phase / (prefix + "-tests.json")
             observed = validate_observed_result(json.loads(summary_path.read_text()),
                 lane.shared.method_results(json.loads(tests_path.read_text())), expected, device["udid"], passing=True)
             totals[total_key] += observed["original_counts"]["passedTests"]
-    require(totals == {"native_preparations": PREPARATION_COUNT, "ui_methods": UI_COUNT}, "Original batch execution counts differ")
+    require(totals == {"native_preparations": PREPARATION_COUNT, "ui_methods": UI_COUNT, "native_postflights": POSTFLIGHT_COUNT}, "Original batch execution counts differ")
 
 
 def publish_batch_observations(evidence, result):
@@ -814,6 +840,7 @@ def run(args, lane):
     result = {"protocol": PROTOCOL, "profile": PROFILE, "status": "FAIL", "started_at": now(),
               "source_sha": intent["source_sha"], "run_id": intent["run_id"], "run_attempt": intent["run_attempt"],
               "planned_ui_methods": UI_COUNT, "planned_native_preparations": PREPARATION_COUNT,
+               "planned_native_postflights": POSTFLIGHT_COUNT,
               "full_matrix_accepted": False, "release_accepted": False, "visual_review": "PENDING"}
     write(evidence / "execution.json", result)
     cancellation = None

@@ -41,6 +41,25 @@ final class PinkhaNativeDerivedAcceptanceUITests: XCTestCase {
         app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
     }
 
+    override func tearDownWithError() throws {
+        if app.state != .notRunning { app.terminate() }
+        guard app.wait(for: .notRunning, timeout: 15) else {
+            // Keep the XCTest lifecycle override self-contained: its inherited
+            // isolation must not send self to a MainActor instance helper.
+            let hierarchy = XCTAttachment(string: app.debugDescription)
+            hierarchy.name = "native-properties-owned-app-exit-failure-accessibility"
+            hierarchy.lifetime = .keepAlways
+            add(hierarchy)
+            let image = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            image.name = "native-properties-owned-app-exit-failure"
+            image.lifetime = .keepAlways
+            add(image)
+            XCTFail("The owned App did not exit before the next native host could open its store")
+            throw NSError(domain: "NativePropertiesOwnedAppExit", code: 1)
+        }
+        try super.tearDownWithError()
+    }
+
     func testNativePropertiesPickerChipsSetMembershipAndRelaunch() throws {
         executionTimeAllowance = 900
         for role in ["chiddush", "article", "research"] {

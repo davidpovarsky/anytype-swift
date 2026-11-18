@@ -19,6 +19,7 @@ import run_ui27 as shared
 import hanlin_acceptance_evidence as hanlin
 import hanlin_selection_evidence as hanlin_selection
 import wave15_diagnostics as diagnostics
+import type_preservation as preservation
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 LANES = {
@@ -122,6 +123,8 @@ def plan(lane, device, language):
                 configuration_id=device + "-" + language + "-portrait-os27",
                 methods=methods, expected_ui_executions=len(methods),
                 preparation=spec["preparation"], expected_preparation_executions=1,
+                postflight=preservation.METHOD if lane == "properties-set" else None,
+                expected_postflight_executions=1 if lane == "properties-set" else 0,
                 release_accepted=False, full_matrix_accepted=False,
                 device_language_verified=False)
 
@@ -427,7 +430,8 @@ def execute(args, receipt, *, build_context=None):
             "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO"]
     if build_context is None:
         shared.command([*base, "-project", "Anytype.xcodeproj", "-scheme", "Anytype",
-                        "-derivedDataPath", str(derived), "-only-testing:AnytypeTests/" + native_suite, *flags], app, evidence)
+                        "-derivedDataPath", str(derived), "-only-testing:AnytypeTests/" + native_suite,
+                        *(["-only-testing:AnytypeTests/" + preservation.SUITE] if args.lane == "properties-set" else []), *flags], app, evidence)
     else:
         require(derived == build_context.derived, "Same-job native product directory differs")
         build_context.verify(app, head, identity, flags, configuration_name)
@@ -448,6 +452,14 @@ def execute(args, receipt, *, build_context=None):
     native_configuration = shared.test_configuration(derived / "Build/Products", "AnytypeTests")
     receipt["phase"] = "PREPARATION"
     native_environment = preparation_environment(args.lane, head, receipt["run_id"], receipt["run_attempt"])
+    preservation_binding = None
+    frozen_preservation = None
+    if args.lane == "properties-set":
+        preservation_binding = preservation.binding(head, receipt["run_id"], receipt["run_attempt"])
+        receipt.update(postflight_binding=preservation_binding,
+                       postflight={"status": "NOT_RUN", "reason": "REQUIRES_PREPARATION_AND_BOTH_UI_METHODS_PASS"})
+        native_environment.update(preservation.binding_environment(preservation_binding))
+        native_environment["PINKHA_PREPARE_TYPE_PRESERVATION"] = "1"
     run_selection = shared.run_selection if build_context is None else build_context.run_selection
     preparation = run_selection(app, native_configuration, "AnytypeTests", udid,
         [LANES[args.lane]["preparation"]], native_environment, evidence / "preparation", "prepare")
@@ -470,6 +482,14 @@ def execute(args, receipt, *, build_context=None):
     if args.lane == "canonical-properties":
         environment.update(property_environment(evidence / "preparation", fixture["spaceId"]))
     shared.write(evidence / "fixture-ids.json", fixture)
+    if args.lane == "properties-set":
+        frozen_preservation = preservation.freeze(container, evidence, preservation_binding, fixture, udid)
+        receipt["preservation_baseline_sha256"] = frozen_preservation.sha256
+        shared.write(evidence / "type-preservation-inputs.json", {
+            "binding": preservation_binding, "baseline_sha256": frozen_preservation.sha256,
+            "directories": frozen_preservation.directories, "container": str(frozen_preservation.container),
+            "simulator_udid": udid, "source": "FROZEN_BEFORE_UI"})
+
     ui_derived = derived.with_name(derived.name + "-ui")
     receipt["phase"] = "UI_BUILD"
     shared.write(evidence / "execution.json", receipt)
@@ -515,6 +535,42 @@ def execute(args, receipt, *, build_context=None):
     if args.lane == "inspector":
         receipt["ui_process_continuity"] = shared.verify_ui_process_continuity(
             evidence / "ui", "wave15-" + args.lane, live, selection["methods"])
+    if args.lane == "properties-set":
+        # Both original UI methods include bounded termination of their own
+        # XCUIApplication. A failed exit fails UI and never reaches this phase.
+        preservation.require_ui_passed(result, selection["methods"])
+        receipt["phase"] = "POSTFLIGHT"
+        shared.write(evidence / "execution.json", receipt)
+        current_container = Path(subprocess.check_output(
+            ["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "data"], text=True).strip())
+        preservation.verify_frozen(frozen_preservation, current_container)
+        installed_before = Path(subprocess.check_output(
+            ["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "app"], text=True).strip())
+        require(shared.code_carriers(installed_before)["sha256"] == before["sha256"],
+                "Installed executable bytes changed before native postflight")
+        if build_context is not None:
+            build_context.verify_current()
+        post_environment = preservation.environment(frozen_preservation)
+        post_configuration = native_configuration if build_context is not None else preservation.selected_configuration(
+            native_configuration, post_environment)
+        postflight = run_selection(app, post_configuration, "AnytypeTests", udid,
+            [preservation.METHOD], post_environment, evidence / "postflight", preservation.PREFIX)
+        receipt["postflight"] = postflight
+        shared.write(evidence / "execution.json", receipt)
+        current_container = Path(subprocess.check_output(
+            ["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "data"], text=True).strip())
+        preservation.verify_frozen(frozen_preservation, current_container)
+        if postflight["status"] != "PASS":
+            raise SelectionFailure("Actual existing-account preservation postflight did not pass")
+        raw_receipt = preservation.read_bytes(current_container / "Library/Application Support" /
+            ("pinkha-type-preservation-result-" + preservation_binding["nonce"] + ".json"))
+        with (evidence / "postflight/native-result.json").open("xb") as stream:
+            stream.write(raw_receipt)
+        receipt["preservation_native_receipt_sha256"] = preservation.sha256(raw_receipt)
+        receipt["type_preservation"] = preservation.validate_result(
+            frozen_preservation, preservation.decode(raw_receipt), postflight)
+        if build_context is not None:
+            build_context.verify_current()
     installed = Path(subprocess.check_output(["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "app"], text=True).strip())
     after = shared.code_carriers(installed)
     shared.write(evidence / "post-ui-installed-code-carriers.json", after)
