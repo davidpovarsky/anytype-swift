@@ -17,6 +17,7 @@ from pathlib import Path
 import re
 import shutil
 import signal
+import stat
 import subprocess
 import sys
 import time
@@ -482,6 +483,51 @@ def clients(args, receipt, docker: OwnedDocker):
             "transport_scope": "NATIVE_LOCAL_DISCOVERY_AND_AUTHENTICATED_PEER_TRANSPORT_ON_OWNED_INTERNAL_LAN"}
 
 
+def normalize_evidence_entry(item: Path) -> None:
+    metadata = item.lstat()
+    require(stat.S_ISDIR(metadata.st_mode) or stat.S_ISREG(metadata.st_mode), "Unsafe evidence publication entry")
+    wanted = 0o755 if stat.S_ISDIR(metadata.st_mode) else 0o644
+    if stat.S_IMODE(metadata.st_mode) == wanted:
+        # Build-stage files can belong to the container user. Even a no-op
+        # chmod by a different host user may fail; verified mode is enough.
+        return
+    require(metadata.st_uid == os.geteuid(), "Foreign-owned evidence has an unsafe publication mode")
+    item.chmod(wanted)
+
+
+def normalize_evidence_permissions(evidence: Path) -> None:
+    for item in evidence.rglob("*"):
+        normalize_evidence_entry(item)
+
+
+def finish_evidence(receipt: dict, evidence: Path, receipt_path: Path, checkpoint, *, emit_notice: bool) -> bool:
+    receipt["finished_at"] = datetime.now(timezone.utc).isoformat()
+    succeeded = True
+
+    def attempt(error_key, operation):
+        nonlocal succeeded
+        try:
+            operation()
+        except Exception as error:
+            succeeded = False
+            receipt[error_key] = type(error).__name__
+            if receipt.get("status") != "CANCELLED":
+                receipt["status"] = "FAIL"
+
+    # Atomic checkpoints create a new 0600 inode under the controller's
+    # umask(077). Normalize after writing, never before the final replacement.
+    attempt("receipt_write_error_type", checkpoint)
+    attempt("evidence_permissions_error_type", lambda: normalize_evidence_permissions(evidence))
+    if not succeeded:
+        # Persist failure metadata once. This second replacement also needs its
+        # own mode check; failure of either operation cannot restore success.
+        attempt("receipt_write_error_type", checkpoint)
+        attempt("evidence_permissions_error_type", lambda: normalize_evidence_entry(receipt_path))
+    if emit_notice:
+        diagnostics.emit_current_run_notice(receipt, evidence)
+    return succeeded
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument("stage", choices=["build", "clients"])
@@ -574,13 +620,9 @@ def main(argv=None):
                 receipt.update(status="PASS_TWO_NATIVE_CLIENTS_LAN_COLD_BOOTSTRAP", two_native_clients="PASS_LAN_COLD_BOOTSTRAP")
             result = 0
         def finish():
-            receipt["finished_at"] = datetime.now(timezone.utc).isoformat()
-            checkpoint()
-            for item in args.evidence.rglob("*"):
-                if item.is_dir(): item.chmod(0o755)
-                elif item.is_file() and not item.is_symlink(): item.chmod(0o644)
-            if args.stage == "clients":
-                diagnostics.emit_current_run_notice(receipt, args.evidence)
+            nonlocal result
+            if not finish_evidence(receipt, args.evidence, path, checkpoint, emit_notice=args.stage == "clients"):
+                result = 1
         try:
             try:
                 finish()

@@ -45,8 +45,8 @@ one predicate result; it is not a final two-client or full T2 acceptance result.
 
 ## Validation scope
 
-The local Python run passed 22 controls with no failures or skips: 14 existing
-controls and eight focused diagnostics controls. The first local attempt exposed
+The local Python run passed 26 controls with no failures or skips: 14 existing
+controls and twelve focused diagnostics/finalization controls. The first local attempt exposed
 an outdated expected count (13 rather than 17) in one existing control; only that
 expected count was corrected before the successful run.
 
@@ -56,6 +56,35 @@ serialization/output exceptions and adds an actual closed-stream regression
 with unchanged FAIL/CANCELLED receipts. KeyboardInterrupt and SystemExit during
 serialization or output still propagate. The pre-correction source and local
 21-control result were retained separately; they are superseded by this result.
+
+The subsequent finalization correction avoids chmod when an entry already has
+its exact 0644/0755 publication mode. A mode change is allowed only for the
+current process owner; an incorrectly permissioned foreign entry, symlink, or
+unsupported file type still fails. Ordinary permission and receipt-write errors
+are retained separately from the original controller error, force failure, and
+do not suppress the fixed notice. The final checkpoint precedes normalization:
+the actual JSON writer atomically replaces the receipt with a new 0600 inode
+under umask 077. If writing or normalization fails, one additional checkpoint
+records FAIL (or preserves CANCELLED), then the replacement receipt's own mode
+is checked. This bounded failure checkpoint cannot restore success. If its
+permission change also fails, the controller still returns failure and emits
+the fixed diagnostic; it does not claim readable publication.
+BaseException cancellation still reaches the existing outer guard.
+
+Both independent reviewers caught the superseded normalization-before-write
+ordering. Its source and 25-control result are preserved separately. The final
+26-control run includes the actual atomic JSON writer under umask 077, checking
+the final on-disk mode and content after success, original failure/cancellation,
+one failed receipt chmod, and persistent receipt chmod failure. Previously
+completed command results and the original error class remain unchanged.
+
+The workflow's build uses Docker without a user override and the client stage
+runs on the host. Unconditional chmod of inherited evidence is therefore a
+concrete unsafe finalization path under mixed ownership. The latest failed CI
+metadata does not prove that this exception occurred. No held image-user or
+ownership receipt was available. Controls use actual local modes/symlinks plus
+injected foreign UID and filesystem errors; an actual cross-UID execution is
+NOT_RUN. No elevation or mutation of unrelated files was attempted.
 
 Three new named Go subcases plus their top-level method are required by the
 existing native-controls gate, increasing expected pass events from 13 to 17.

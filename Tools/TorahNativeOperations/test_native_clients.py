@@ -3,7 +3,7 @@
 These controls do not create accounts or claim Docker/Native acceptance.
 """
 import copy
-from contextlib import redirect_stdout
+from contextlib import nullcontext, redirect_stdout
 import io
 import json
 from pathlib import Path
@@ -56,6 +56,143 @@ def ready_fixture(role="recovered"):
 
 
 class NativeClientControls(unittest.TestCase):
+    @unittest.skipUnless(hasattr(lane.os, "geteuid"), "POSIX publication modes")
+    def test_exact_existing_publication_modes_do_not_attempt_foreign_chmod(self):
+        with tempfile.TemporaryDirectory() as temp:
+            evidence = Path(temp)
+            folder = evidence / "build"
+            folder.mkdir(mode=0o755)
+            path = folder / "receipt.json"
+            path.write_text("{}")
+            path.chmod(0o644)
+            folder.chmod(0o755)
+            # The actual files/modes are local; foreign process ownership and
+            # the kernel's non-owner chmod failure are injected, not claimed
+            # as an actual cross-UID filesystem execution.
+            with patch.object(lane.os, "geteuid", return_value=path.stat().st_uid + 1), \
+                    patch.object(Path, "chmod", side_effect=PermissionError("synthetic non-owner chmod")) as chmod:
+                lane.normalize_evidence_permissions(evidence)
+            chmod.assert_not_called()
+            self.assertEqual(path.read_text(), "{}")
+
+    @unittest.skipUnless(hasattr(lane.os, "geteuid"), "POSIX publication modes")
+    def test_wrong_foreign_mode_and_symlink_remain_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            parent = Path(temp)
+            evidence = parent / "evidence"
+            evidence.mkdir()
+            path = evidence / "receipt.json"
+            path.write_text("{}")
+            path.chmod(0o600)
+            with patch.object(lane.os, "geteuid", return_value=path.stat().st_uid + 1), \
+                    patch.object(Path, "chmod", side_effect=AssertionError("foreign chmod must not run")) as chmod:
+                with self.assertRaisesRegex(ValueError, "Foreign-owned evidence"):
+                    lane.normalize_evidence_permissions(evidence)
+            chmod.assert_not_called()
+            self.assertEqual(lane.stat.S_IMODE(path.stat().st_mode), 0o600)
+            lane.normalize_evidence_permissions(evidence)
+            self.assertEqual(lane.stat.S_IMODE(path.stat().st_mode), 0o644)
+            outside = parent / "outside.private"
+            outside.write_text("synthetic private bytes")
+            outside.chmod(0o600)
+            (evidence / "link").symlink_to(outside)
+            with self.assertRaisesRegex(ValueError, "Unsafe evidence publication entry"):
+                lane.normalize_evidence_permissions(evidence)
+            self.assertEqual(lane.stat.S_IMODE(outside.stat().st_mode), 0o600)
+
+    def test_finalization_faults_emit_diagnostics_preserve_failure_and_propagate_cancellation(self):
+        prefix = "::notice title=Pinkha T2 diagnostic::"
+        for status, original_error in [("FAIL", "TimeoutError"), ("CANCELLED", "KeyboardInterrupt"),
+                                       ("PASS_TWO_NATIVE_CLIENTS_LAN_COLD_BOOTSTRAP", None)]:
+            receipt = {"status": status, "error_type": original_error, "diagnostic_stage": "WAIT_RECOVERED"}
+            saved = []
+            output = io.StringIO()
+            with patch.object(lane, "normalize_evidence_permissions", side_effect=PermissionError("synthetic private path")), \
+                    patch.object(lane, "normalize_evidence_entry"), \
+                    redirect_stdout(output):
+                accepted = lane.finish_evidence(receipt, Path("unused"), Path("unused/receipt.json"),
+                                                lambda: saved.append(copy.deepcopy(receipt)), emit_notice=True)
+            self.assertFalse(accepted)
+            self.assertEqual(receipt["status"], "CANCELLED" if status == "CANCELLED" else "FAIL")
+            self.assertEqual(receipt["error_type"], original_error)
+            self.assertEqual(len(saved), 2)
+            self.assertEqual(saved[-1], receipt)
+            notice = json.loads(output.getvalue().strip()[len(prefix):])
+            self.assertEqual(notice["finalization"]["permissions_error"], "PERMISSION_FAILURE")
+            self.assertNotIn("synthetic private", output.getvalue())
+        receipt = {"status": "FAIL", "error_type": "TimeoutError"}
+        output = io.StringIO()
+        with patch.object(lane, "normalize_evidence_permissions"), \
+                patch.object(lane, "normalize_evidence_entry"), \
+                patch("builtins.print", wraps=print) as emitted, redirect_stdout(output):
+            checkpoint = unittest.mock.Mock(side_effect=OSError("synthetic receipt write"))
+            self.assertFalse(lane.finish_evidence(receipt, Path("unused"), Path("unused/receipt.json"), checkpoint, emit_notice=True))
+        self.assertEqual(checkpoint.call_count, 2)
+        self.assertEqual(emitted.call_count, 1)
+        self.assertEqual(receipt["error_type"], "TimeoutError")
+        notice = json.loads(output.getvalue().strip()[len(prefix):])
+        self.assertEqual(notice["finalization"]["receipt_error"], "FILESYSTEM_ERROR")
+        for stopped_at in ["permissions", "checkpoint"]:
+            for stop in [KeyboardInterrupt, SystemExit]:
+                with patch.object(lane, "normalize_evidence_permissions", side_effect=stop if stopped_at == "permissions" else None), \
+                        patch.object(lane.diagnostics, "emit_current_run_notice") as emitted:
+                    checkpoint = unittest.mock.Mock(side_effect=stop if stopped_at == "checkpoint" else None)
+                    with self.assertRaises(stop):
+                        lane.finish_evidence(receipt, Path("unused"), Path("unused/receipt.json"), checkpoint, emit_notice=True)
+                emitted.assert_not_called()
+
+    @unittest.skipUnless(hasattr(lane.os, "geteuid"), "POSIX publication modes and umask")
+    def test_atomic_receipt_mode_after_success_failure_and_failed_receipt_chmod(self):
+        self.assertIs(lane.write, lane.base.write_json)
+        cases = [
+            ("PASS_TWO_NATIVE_CLIENTS_LAN_COLD_BOOTSTRAP", None, None),
+            ("FAIL", "TimeoutError", "evidence"),
+            ("CANCELLED", "KeyboardInterrupt", "evidence"),
+            ("PASS_TWO_NATIVE_CLIENTS_LAN_COLD_BOOTSTRAP", None, "receipt_once"),
+            ("PASS_TWO_NATIVE_CLIENTS_LAN_COLD_BOOTSTRAP", None, "receipt_always"),
+        ]
+        original_chmod = Path.chmod
+        for status, original_error, fault in cases:
+            with self.subTest(status=status, fault=fault), tempfile.TemporaryDirectory() as temp:
+                evidence = Path(temp)
+                path = evidence / "native-clients-build.json"
+                receipt = {"status": status, "error_type": original_error,
+                           "commands": [{"name": "completed-build", "status": "PASS_EXIT_0"}]}
+                old_umask = lane.os.umask(0o077)
+                try:
+                    lane.write(path, receipt)
+                    self.assertEqual(lane.stat.S_IMODE(path.stat().st_mode), 0o600)
+                    chmod_calls = []
+
+                    def controlled_chmod(item, mode, **kwargs):
+                        if item == path:
+                            chmod_calls.append(mode)
+                            if fault == "receipt_always" or (fault == "receipt_once" and len(chmod_calls) == 1):
+                                raise PermissionError("synthetic receipt mode failure")
+                        return original_chmod(item, mode, **kwargs)
+
+                    checkpoint = unittest.mock.Mock(side_effect=lambda: lane.write(path, receipt))
+                    normalize = (patch.object(lane, "normalize_evidence_permissions", side_effect=PermissionError("synthetic evidence mode"))
+                                 if fault == "evidence" else nullcontext())
+                    with normalize, patch.object(Path, "chmod", controlled_chmod), \
+                            patch.object(lane.diagnostics, "emit_current_run_notice") as emitted:
+                        accepted = lane.finish_evidence(receipt, evidence, path, checkpoint, emit_notice=True)
+                    self.assertEqual(accepted, fault is None)
+                    self.assertEqual(checkpoint.call_count, 1 if fault is None else 2)
+                    saved = json.loads(path.read_text())
+                    self.assertEqual(saved["status"], status if fault is None or status == "CANCELLED" else "FAIL")
+                    self.assertEqual(saved["error_type"], original_error)
+                    self.assertEqual(saved["commands"], [{"name": "completed-build", "status": "PASS_EXIT_0"}])
+                    self.assertTrue(saved["finished_at"])
+                    if fault is not None:
+                        self.assertEqual(saved["evidence_permissions_error_type"], "PermissionError")
+                    # A persistent filesystem denial remains FAIL with a private
+                    # file; it is never treated as successful publication.
+                    self.assertEqual(lane.stat.S_IMODE(path.stat().st_mode), 0o600 if fault == "receipt_always" else 0o644)
+                    emitted.assert_called_once_with(receipt, evidence)
+                finally:
+                    lane.os.umask(old_umask)
+
     def test_live_diagnostic_uses_only_fixed_records_and_labels_the_outer_context(self):
         raw = (b"unrelated synthetic-private-payload /private/account-id\n"
                b"T2_NATIVE_READ_BOUNDARY error_type=*private.syntheticType unwrap_type=*private.secretType "

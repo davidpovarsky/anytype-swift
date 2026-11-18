@@ -17,7 +17,8 @@ STAGES = frozenset({"PREFLIGHT", "VERIFY_BUILD", "CREATE_NETWORK", "START_CREATO
                     "SEED_RECOVERED", "START_RECOVERED", "WAIT_RECOVERED", "VERIFY_PAIR",
                     "REQUEST_NATIVE_STOP", "WAIT_NATIVE_STOP", "VERIFY_FINAL", "COMPLETE"})
 ERRORS = {"ValueError": "CHECK_FAILED", "TimeoutError": "DEADLINE", "KeyboardInterrupt": "CANCELLED",
-          "FileNotFoundError": "MISSING_FILE", "CalledProcessError": "PROCESS_FAILED"}
+          "FileNotFoundError": "MISSING_FILE", "CalledProcessError": "PROCESS_FAILED",
+          "PermissionError": "PERMISSION_FAILURE", "OSError": "FILESYSTEM_ERROR"}
 READ_CODES = frozenset({"NULL", "UNKNOWN_ERROR", "BAD_INPUT", "UNSUPPORTED_VERSION", "PERMISSION_DENIED",
                         "NOT_LOGGED_IN", "ACCOUNT_CHANGED", "TARGET_UNAVAILABLE", "HISTORY_UNAVAILABLE",
                         "PROJECTION_BEHIND", "READ_LIMIT", "CANCELLED", "DEADLINE_EXCEEDED", "COLLISION",
@@ -79,6 +80,9 @@ def summarize(receipt: dict, evidence: Path) -> dict:
               "controller_error": ERRORS.get(receipt.get("error_type"), "OTHER_ERROR" if receipt.get("error_type") else "NONE_OBSERVED"),
               "cleanup_error": ERRORS.get(receipt.get("cleanup_or_publication_error_type"),
                                            "OTHER_ERROR" if receipt.get("cleanup_or_publication_error_type") else "NONE_OBSERVED"),
+              "finalization": {name: ERRORS.get(receipt.get(key), "OTHER_ERROR" if receipt.get(key) else "NONE_OBSERVED")
+                               for name, key in [("permissions_error", "evidence_permissions_error_type"),
+                                                 ("receipt_error", "receipt_write_error_type")]},
               "cleanup": {"PASS": "COMPLETE", "FAIL": "FAILED"}.get(cleanup, "NOT_OBSERVED"),
               "log_publication": "WITHHELD", "roles": {role: {"source": "WITHHELD"} for role in ["creator", "recovered"]}}
     if cleanup != "PASS" or publication.get("status") != "PASS_SECRET_SCANNED_EXACT_ALLOWLIST":
