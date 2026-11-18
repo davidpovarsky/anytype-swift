@@ -1,9 +1,14 @@
 """Controls for real-fixture selection; these are not application acceptance."""
 import json
+import hashlib
+import plistlib
+import subprocess
 from pathlib import Path
 import tempfile
 import unittest
-from run_wave15_acceptance import plan, fixture_environment, property_environment
+from unittest.mock import patch
+from run_wave15_acceptance import (plan, fixture_environment, property_environment,
+                                   validate_device_language, configure_editor_device_language)
 
 
 class AcceptanceSelectionTests(unittest.TestCase):
@@ -32,11 +37,77 @@ class AcceptanceSelectionTests(unittest.TestCase):
             fixture_environment("inspector", {"spaceId": "", "universalDocuments": {"page": "p"}, "manySourcesDocument": "d"}, "en")
 
     def test_editor_environment_uses_actual_persisted_fixture_ids(self):
-        value = fixture_environment("editor", {"spaceId": "s", "pinkhaObjectId": "a", "noteObjectId": "b", "pageObjectId": "c"}, "he")
+        value = fixture_environment("editor", {"spaceId": "s", "pinkhaObjectId": "a", "noteObjectId": "b", "pageObjectId": "c"}, "he", observed_device_language="en")
         self.assertEqual(value["PINKHA_ACCEPTANCE_DIRECTION"], "rtl")
         self.assertEqual(value["PINKHA_ACCEPTANCE_PINKHA_ID"], "a")
         self.assertEqual(value["PINKHA_ACCEPTANCE_NOTE_ID"], "b")
         self.assertEqual(value["PINKHA_ACCEPTANCE_PAGE_ID"], "c")
+
+    def test_editor_cannot_use_an_unobserved_or_matching_device_language(self):
+        fixture = {"spaceId": "s", "pinkhaObjectId": "a", "noteObjectId": "b", "pageObjectId": "c"}
+        for actual in [None, "", "he", "fr", True]:
+            with self.subTest(actual=actual), self.assertRaisesRegex(ValueError, "verified"):
+                fixture_environment("editor", fixture, "he", observed_device_language=actual)
+        value = fixture_environment("editor", fixture, "he", observed_device_language="en")
+        self.assertEqual(value["PINKHA_ACCEPTANCE_DEVICE_LANGUAGE"], "en")
+
+    def test_actual_language_globals_support_both_mismatch_directions(self):
+        for app_language, device_language, locale in [("en", "he-IL", "he_IL"), ("he", "en-US", "en_US")]:
+            with self.subTest(app_language=app_language):
+                raw = plistlib.dumps({"AppleLanguages": [device_language], "AppleLocale": locale})
+                value = validate_device_language(raw, app_language)
+                self.assertNotEqual(value["device_language"], app_language)
+                self.assertEqual(value["verification_scope"], "SIMULATOR_GLOBAL_PREFERENCES_AFTER_REBOOT")
+                self.assertFalse(value["app_override_verified_by_this_observation"])
+                self.assertEqual(value["preferences_sha256"], hashlib.sha256(raw).hexdigest())
+
+    def test_wrong_missing_or_unreadable_device_preferences_fail_closed(self):
+        cases = [
+            b"", b"not a property list", plistlib.dumps(["en"]),
+            plistlib.dumps({"AppleLocale": "en_US"}),
+            plistlib.dumps({"AppleLanguages": "en", "AppleLocale": "en_US"}),
+            plistlib.dumps({"AppleLanguages": [], "AppleLocale": "en_US"}),
+            plistlib.dumps({"AppleLanguages": [True], "AppleLocale": "en_US"}),
+            plistlib.dumps({"AppleLanguages": ["he"], "AppleLocale": "he_IL"}),
+            plistlib.dumps({"AppleLanguages": ["en"], "AppleLocale": "he_IL"}),
+        ]
+        for raw in cases:
+            with self.subTest(raw=raw[:80]), self.assertRaises(ValueError):
+                validate_device_language(raw, "he")
+
+    def test_device_readback_happens_after_reboot_and_does_not_publish_other_globals(self):
+        raw = plistlib.dumps({"AppleLanguages": ["en"], "AppleLocale": "en_US",
+                              "UnrelatedPrivateFixture": "do-not-publish"})
+        events = []
+        def command(argv, *_):
+            events.append(argv)
+        def observe(argv, **_):
+            events.append(argv)
+            return subprocess.CompletedProcess(argv, 0, raw, b"")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with patch("run_wave15_acceptance.shared.command", side_effect=command), \
+                    patch("run_wave15_acceptance.subprocess.run", side_effect=observe):
+                value = configure_editor_device_language(root, root, "fixture-udid", "he")
+            output = (root / "device-language-observation.json").read_text()
+        self.assertEqual([event[2] for event in events], ["spawn", "spawn", "shutdown", "boot", "bootstatus", "spawn"])
+        self.assertEqual(events[-1][-3:], ["export", "NSGlobalDomain", "-"])
+        self.assertEqual(value["status"], "DEVICE_LANGUAGE_PREFERENCES_VERIFIED")
+        self.assertNotIn("do-not-publish", output)
+        self.assertNotIn("UnrelatedPrivateFixture", output)
+
+    def test_device_readback_failure_keeps_failure_receipt_and_cannot_claim_language(self):
+        for code, raw in [(1, b""), (0, plistlib.dumps({"AppleLanguages": ["he"], "AppleLocale": "he_IL"}))]:
+            with self.subTest(code=code), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                result = subprocess.CompletedProcess([], code, raw, b"read failed" if code else b"")
+                with patch("run_wave15_acceptance.shared.command"), \
+                        patch("run_wave15_acceptance.subprocess.run", return_value=result), \
+                        self.assertRaises(ValueError):
+                    configure_editor_device_language(root, root, "fixture-udid", "he")
+                value = json.loads((root / "device-language-observation.json").read_text())
+                self.assertEqual(value["status"], "FAIL")
+                self.assertNotIn("device_language", value)
 
     def test_quote_drop_requires_the_native_disposable_source_document(self):
         fixture = {"spaceId": "s", "universalDocuments": {"page": "blank"}, "manySourcesDocument": "source"}

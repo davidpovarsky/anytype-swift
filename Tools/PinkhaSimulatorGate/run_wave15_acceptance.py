@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import plistlib
 import re
 import subprocess
 
@@ -111,7 +112,7 @@ def nonempty(value, name):
     return value
 
 
-def fixture_environment(lane, value, language):
+def fixture_environment(lane, value, language, observed_device_language=None):
     nonempty(value.get("spaceId"), "Space")
     if lane in {"inspector", "inspector-search", "quote-drop", "properties", "properties-set"}:
         docs = value.get("universalDocuments", {})
@@ -127,13 +128,16 @@ def fixture_environment(lane, value, language):
         return {"PINKHA_NATIVE_UI_DISPOSABLE": "1", "PINKHA_NATIVE_UI_FIXTURE_JSON": json.dumps(value)}
     ids = [nonempty(value.get(key), key) for key in ("pinkhaObjectId", "noteObjectId", "pageObjectId")]
     require(len(set(ids)) == 3, "Editor fixtures must be three distinct native objects")
+    if lane == "editor":
+        require(observed_device_language in {"en", "he"} and observed_device_language != language,
+                "Actual opposite device language must be verified before creating the editor environment")
     return {
         "PINKHA_ACCEPTANCE_SPACE_ID": value["spaceId"],
         "PINKHA_ACCEPTANCE_PINKHA_ID": ids[0],
         "PINKHA_ACCEPTANCE_NOTE_ID": ids[1],
         "PINKHA_ACCEPTANCE_PAGE_ID": ids[2],
         "PINKHA_ACCEPTANCE_DIRECTION": "rtl" if language == "he" else "ltr",
-        "PINKHA_ACCEPTANCE_DEVICE_LANGUAGE": "en" if language == "he" else "he",
+        "PINKHA_ACCEPTANCE_DEVICE_LANGUAGE": observed_device_language or "",
     }
 
 
@@ -156,6 +160,67 @@ def property_environment(preparation, expected_space):
     value.update(PINKHA_PROPERTIES_SOURCE_QUERY="Genesis 1:1", PINKHA_PROPERTIES_SOURCE_LABEL="Genesis 1:1",
                  PINKHA_PROPERTIES_TOPIC_QUERY="Creation", PINKHA_PROPERTIES_TOPIC_LABEL="Creation")
     return value
+
+
+def validate_device_language(preferences, app_language):
+    """Verify the actual disposable simulator globals independently of UI labels."""
+    require(app_language in {"en", "he"}, "Unsupported editor app language")
+    require(isinstance(preferences, bytes) and 0 < len(preferences) <= 1024 * 1024,
+            "Missing or oversized simulator language preferences")
+    try:
+        value = plistlib.loads(preferences)
+    except Exception as error:
+        raise ValueError("Simulator globals are not a valid property list") from error
+    require(isinstance(value, dict), "Simulator globals must be a dictionary")
+    languages, locale = value.get("AppleLanguages"), value.get("AppleLocale")
+    require(isinstance(languages, list) and languages
+            and all(isinstance(item, str) and item for item in languages),
+            "Actual simulator AppleLanguages are missing")
+    actual = languages[0].replace("_", "-").split("-", 1)[0].lower()
+    expected = "en" if app_language == "he" else "he"
+    expected_locale = "en_US" if expected == "en" else "he_IL"
+    require(actual == expected and actual != app_language,
+            "Actual simulator language does not differ from the app language")
+    require(locale == expected_locale, "Actual simulator locale differs from the configured locale")
+    return dict(status="DEVICE_LANGUAGE_PREFERENCES_VERIFIED", device_language=actual,
+                app_language=app_language, observed_languages=languages, observed_locale=locale,
+                preferences_sha256=hashlib.sha256(preferences).hexdigest(),
+                verification_scope="SIMULATOR_GLOBAL_PREFERENCES_AFTER_REBOOT",
+                app_override_verified_by_this_observation=False)
+
+
+def configure_editor_device_language(app, evidence, udid, app_language):
+    """Only called after the exact fresh run-owned simulator identity is verified."""
+    language = "en" if app_language == "he" else "he"
+    locale = "en_US" if language == "en" else "he_IL"
+    path = evidence / "device-language-observation.json"
+    observation = dict(status="CONFIGURING_DISPOSABLE_SIMULATOR", simulator_udid=udid,
+                       requested_device_language=language, requested_locale=locale,
+                       app_language=app_language)
+    shared.write(path, observation)
+    try:
+        for command in [
+            ["xcrun", "simctl", "spawn", udid, "defaults", "write", "-g", "AppleLanguages", "-array", language],
+            ["xcrun", "simctl", "spawn", udid, "defaults", "write", "-g", "AppleLocale", "-string", locale],
+            ["xcrun", "simctl", "shutdown", udid],
+            ["xcrun", "simctl", "boot", udid],
+            ["xcrun", "simctl", "bootstatus", udid, "-b"],
+        ]:
+            shared.command(command, app, evidence)
+        command = ["xcrun", "simctl", "spawn", udid, "defaults", "export", "NSGlobalDomain", "-"]
+        observed = subprocess.run(command, capture_output=True, timeout=30)
+        observation.update(command=command, command_exit_code=observed.returncode,
+                           error=observed.stderr.decode("utf-8", errors="replace"),
+                           preferences_sha256=hashlib.sha256(observed.stdout).hexdigest())
+        require(observed.returncode == 0, "Could not read actual simulator language after reboot")
+        # Publish only the language/locale fields and digest, never the whole globals plist.
+        observation.update(validate_device_language(observed.stdout, app_language))
+        shared.write(path, observation)
+        return observation
+    except BaseException as error:
+        observation.update(status="FAIL", failure_type=type(error).__name__, failure=str(error))
+        shared.write(path, observation)
+        raise
 
 
 def source_methods(app, selection):
@@ -195,13 +260,23 @@ def execute(args, receipt):
     shared.write(evidence / "execution.json", receipt)
     shared.command(["xcrun", "simctl", "boot", udid], app, evidence)
     shared.command(["xcrun", "simctl", "bootstatus", udid, "-b"], app, evidence)
-    device_language = subprocess.run(["xcrun", "simctl", "spawn", udid, "defaults", "read", "-g", "AppleLanguages"],
-                                    capture_output=True, text=True)
-    shared.write(evidence / "device-language-observation.json",
-                 dict(command_exit_code=device_language.returncode, observed=device_language.stdout,
-                      error=device_language.stderr, requested_device_language_label=(("en" if args.language == "he" else "he")
-                                                       if args.lane == "editor" else None),
-                      acceptance=False))
+    observed_device_language = None
+    if args.lane == "editor":
+        receipt["phase"] = "DEVICE_LANGUAGE_CONFIGURATION"
+        shared.write(evidence / "execution.json", receipt)
+        language_observation = configure_editor_device_language(app, evidence, udid, args.language)
+        observed_device_language = language_observation["device_language"]
+        selection.update(device_language_verified=True, device_language=observed_device_language,
+                         device_language_scope=language_observation["verification_scope"])
+        receipt["phase"] = "BUILD"
+        shared.write(evidence / "selection-plan.json", selection)
+        shared.write(evidence / "execution.json", receipt)
+    else:
+        device_language = subprocess.run(["xcrun", "simctl", "spawn", udid, "defaults", "read", "-g", "AppleLanguages"],
+                                        capture_output=True, text=True)
+        shared.write(evidence / "device-language-observation.json",
+                     dict(command_exit_code=device_language.returncode, observed=device_language.stdout,
+                          error=device_language.stderr, acceptance=False))
     shared.prepare_source_cache(app, derived)
     flags = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED", "ENABLE_TESTABILITY=YES",
              "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-",
@@ -247,7 +322,7 @@ def execute(args, receipt):
         environment = hanlin.fixture_environment(fixture, head, receipt["run_id"], receipt["run_attempt"],
                                                datetime.now(timezone.utc).timestamp(), raw_fixture)
     else:
-        environment = fixture_environment(args.lane, fixture, args.language)
+        environment = fixture_environment(args.lane, fixture, args.language, observed_device_language)
     if args.lane == "canonical-properties":
         environment.update(property_environment(evidence / "preparation", fixture["spaceId"]))
     shared.write(evidence / "fixture-ids.json", fixture)
