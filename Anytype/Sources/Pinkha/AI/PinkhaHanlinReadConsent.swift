@@ -23,7 +23,7 @@ final class PinkhaHanlinReadConsent {
                 continuation.resume(returning: allowed)
             }) else { continuation.resume(returning: false); return }
             let alert = UIAlertController(title: hebrew ? "לאפשר קריאת טקסט?" : "Allow document text access?",
-                message: hebrew ? "לאפשר לצ׳אט הזה לקרוא טקסט מהמסמך הנוכחי או מהבלוקים שנבחרו? כתיבה למסמכים אינה זמינה." : "Allow this chat presentation to read plain text from the current document or selected text blocks? No document writes are enabled.",
+                message: hebrew ? "לאפשר לצ׳אט הזה לקרוא טקסט מהמסמך הנוכחי או מהבלוקים שנבחרו? יצירת דף חדש דורשת אישור נפרד." : "Allow this chat presentation to read plain text from the current document or selected text blocks? Creating a new page requires a separate confirmation.",
                 preferredStyle: .alert)
             self.alert = alert
             // A supported UIView lifecycle observer detects programmatic removal too; no UIAlertController subclass.
