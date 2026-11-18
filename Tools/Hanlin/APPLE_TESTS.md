@@ -41,7 +41,7 @@ actual startup job; adapt the job dependency to the reviewed dispatcher.
 
 The workflow uses only `github.token` with contents/actions read permission.
 Hanlin is public and is checked out at immutable revision
-`e195ef50fbf741d339f4bf515869a1ee6a038fc2`. `prepare_sdk.py` materializes the exact
+`116cc6be0654a5d11bc56ba00e0310031107ee36`. `prepare_sdk.py` materializes the exact
 three local packages before any SPM resolution. It never changes the producer
 repository. No certificate, model key, middleware download secret, or provider
 call is introduced. Simulator signing uses the existing native lane's ad-hoc

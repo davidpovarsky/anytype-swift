@@ -4,13 +4,13 @@
 
 Task: https://app.asana.com/0/0/1220542414733348/f
 
-The source is ready for review in `C:/Users/DAVID/Code/anytype-swift-chatgpt-sdk06-20261118`, branch `codex/chatgpt-wave15-sdk06-20261118`, based on `5f023e9dc8d33cad7fac73103acd763cdcba8730`. It is uncommitted. No staging, commit, push, merge, release or user-Space operation was performed. Root's automatic approval review rejected Git publication; explicit Git approval is the next gate. This handoff does **not** declare SDK06 accepted.
+The source was first reviewed at base `5f023e9dc8d33cad7fac73103acd763cdcba8730` in `C:/Users/DAVID/Code/anytype-swift-chatgpt-sdk06-20261118`, branch `codex/chatgpt-wave15-sdk06-20261118`. The owner subsequently explicitly authorized Git staging, commits, pushes and integration; the initial publication block is resolved. The core source, component lane, selection entry and native acceptance source have been published on that branch. SDK06 remains open pending actual acceptance.
 
 The original 17 source/test files were imported byte-for-byte from the preserved `anytype-swift-hanlin-adapter-20261115` tree before changes. Its replay-fix manifest SHA256 is `901883ea225e8d74e03f4bc5efa7d8d154412f6421aed2c4f4f837d1607b2975`. The original producer worktree and the separately active Hanlin worktree were never edited. The new host is developed from those components.
 
 ## Canonical dependency contract
 
-`Tools/Hanlin/source.json` pins the published Hanlin commit `e195ef50fbf741d339f4bf515869a1ee6a038fc2` from https://github.com/davidpovarsky/hanlin-ai. GitHub Commit API returned this exact SHA; repository API returned `private=false`, `visibility=public`. There is no fallback to a moving branch.
+`Tools/Hanlin/source.json` pins the published Hanlin commit `116cc6be0654a5d11bc56ba00e0310031107ee36` from https://github.com/davidpovarsky/hanlin-ai. GitHub Commit API returned this exact SHA; repository API returned `private=false`, `visibility=public`. There is no fallback to a moving branch. The initial source manifest/review patch records the earlier `e195ef50` snapshot as historical evidence; the current pin and new complete snapshot verification are documented in `CANONICAL_PIN_UPDATE.md` and `canonical-pin-116cc6-verify.json`.
 
 The canonical products come from these existing nested packages:
 
@@ -73,13 +73,15 @@ Native writes remain limited to creation of one standard Page with a confirmed n
 | Canonical dependency snapshot and complete hash recheck | PASS, SentinelX `job_29359ee4dabd47629de04587ed3e33d7`, exit0 |
 | Windows Swift syntax,24 host/test files, Swift6.3.3, Swift5 mode, `-D DEBUG` | PASS, `job_70aa1d8a35c540a0a09b34159c74a32c`, exit0; `swift-parse.log` |
 | Python setup script syntax | PASS (`py_compile`) |
-| Actual Apple host compile/link | NOT_RUN |
+| Actual Apple host compile/link | Old pin: TEST BUILD FAILED in run44209702553 (canonical OpenUIBlock); revised pin: NOT_RUN |
 | XCTest/Swift Testing execution | NOT_RUN |
 | Native iPhone/iPad chat, consent, writes, selection/lifetime and navigation ACK | NOT_RUN |
 
 The code contains57 test declarations across four suites (one is parameterized with two budget values, so58 cases are expected when supported iOS/DEBUG branches execute). The preserved suites contribute49 original declarations; eight declarations were added: six canonical consumer tests and two account-removal journal tests. The dispatcher tests exercise the real SDK dispatcher with the existing native-access fixture; they do not manufacture actual native authorization or claim native write proof.
 
-The latest Apple preflight reported by root, run44192464820 on base5f023e9, reached Mac27.0.1/Xcode27/Swift6.4 and an iOS27 simulator, then stopped with INFRA_ERROR before build because the required Heart artifact was unavailable. The requested artifact is absent from run42760706087 and from the repository artifact search. Its seven-day retention is consistent with expiry, but the cause of removal has not been verified. Root owns the pinned runtime recovery workflow. Windows syntax parsing neither resolves Apple modules nor typechecks SwiftUI/UIKit, links, runs tests or validates native UI.
+The historical Apple preflight reported by root, run44192464820 on base5f023e9, reached Mac27.0.1/Xcode27/Swift6.4 and an iOS27 simulator, then stopped with INFRA_ERROR before build because the required Heart artifact was unavailable. The requested artifact is absent from run42760706087 and from the repository artifact search. Its seven-day retention is consistent with expiry, but the cause of removal has not been verified. Root owns the pinned runtime recovery workflow. Windows syntax parsing neither resolves Apple modules nor typechecks SwiftUI/UIKit, links, runs tests or validates native UI.
+
+The runtime was subsequently rebuilt successfully in run44203168617. Actual SDK Apple run44209702553 reached compilation and failed in canonical Hanlin OpenUIBlock at the older pin before any test ran. The minimal published canonical correction is now pinned; its Apple rerun is still pending. The separate native consent/create lane and its exact Debug fixture contract are in `NATIVE_HOST_ACCEPTANCE.md`.
 
 ### Exact focused Apple command after runtime restoration
 
