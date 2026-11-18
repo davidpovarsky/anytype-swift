@@ -30,8 +30,14 @@ that ID is used to read back the actual Page. Native exact-title search is used
 only to detect duplicates and an unwanted cancelled page, never to infer which
 object the write created. Normal 30-second host invocation limits remain intact.
 
-After the product Close action, new read and create requests must be denied by
-that closed host. The same XCTest then exercises three further actual product
+H1 now presses the production **Return to document** action after its read/create
+checks. A queued request completes while the SDK session is current; the native
+Close path then revokes that execution authority. The driver only observes the
+separate native metadata receipt after the real UIKit dismissal and its native
+mount validation. It never calls `acknowledgeMounted`, constructs a navigation
+result, or supplies a presentation callback. XCTest requires the exact original
+editor to be hittable, and new read/create requests must be denied by that closed
+host. The same XCTest then exercises three further actual product
 presentations, all in the original process and disposable account:
 
 * H2 opens through the existing Hanlin button, obtains native read consent, and
@@ -46,6 +52,12 @@ presentations, all in the original process and disposable account:
 * H4 opens after XCTest returns to the original document. It must require new
   consent, then read the original native body after an actual Allow action.
   Its native index check must still find exactly the one originally created Page.
+
+H1 read/create denial is checked again after H4's fresh consent and closure,
+before source locks, Space changes or logout can explain that denial. H1's
+original return metadata must remain unchanged across these later presentations.
+This fixture deliberately has no selected blocks: the new return check proves
+document return only. Actual selected-block return remains **NOT_RUN**.
 
 The driver observes scene/application notifications and first production
 presentation-invalidation call sites; it never posts lifecycle notifications,
@@ -64,18 +76,19 @@ three checks exercise the native authority boundary directly; they do not claim
 three separate approved host writes. The original committed metadata must still
 be readable from its original journal after ordinary logout.
 
-Native execution is pending the focused Apple lane after Startup smoke. The
-preceding four-suite SDK Apple run `44209702553` stopped at TEST BUILD FAILED:
-canonical Hanlin `OpenUIBlock.swift` lines 55/115 pass completion closures to
-`WKWebView.callAsyncJavaScript` that the selected Xcode 27 API does not accept.
-No SDK test cases ran. This dependency compilation failure must be resolved
-before the new native lane can execute. The minimal published correction is now
-pinned at `116cc6be0654a5d11bc56ba00e0310031107ee36`; its Apple build is pending
-(see `CANONICAL_PIN_UPDATE.md`). Source parse evidence is separate and
-is not native acceptance. The later run `44217294617` was cancelled before any
-completed SDK case evidence; the corrected source-bound SDK run is
-`44227955159`. Neither run is evidence that this UI lifecycle extension passed.
-Selection entry still requires its own native acceptance evidence.
+Native UI22 execution remains **NOT_RUN**. Canonical Hanlin is pinned at
+`116cc6be0654a5d11bc56ba00e0310031107ee36`; its earlier WebKit API correction is
+documented in `CANONICAL_PIN_UPDATE.md`. Later SDK run `44238998798` failed during
+Debug test-host compilation because a canonical limits initializer in the test
+helper lacked `try`; `f048a33718506763b8097255a98ef742e445cfd3` corrects that exact
+line. Its original build receipt and diagnostics are retained separately.
+The next SDK run `44245129998` was cancelled while queued after an independent
+Release run exposed shared quote-test compilation errors. Root repaired those
+in `d325987d1fe721938d8991b2e086cb0de6adcfd3`. Cancelled runs are not functional
+failure or test acceptance. The next UI22/SDK runs must use a source containing
+those corrections and the native return implementation
+`9f6c786263d6cc4a72b715a7212ccd8f964bf47a`. Source controls are separate from actual
+Apple test execution. Selection entry still needs its own native UI evidence.
 
 ## Build and preparation contract
 
@@ -157,7 +170,7 @@ then uses XCUIDevice.shared.system.open for the fixture's exact native object
 route, requires its actual mounted
 editor diagnostic, and taps the production Home-panel Hanlin entry while that
 editor remains mounted. It presses the existing Share context, Allow, Cancel,
-Create page, and Close actions, then Home/activate and the existing object route.
+Create page, Return to document, and Close actions, then Home/activate and the existing object route.
 Every create prompt must show its exact title
 and original Space. Provider configuration and model invocation never occur.
 This lane does not claim reuse of an earlier Inspector process.
@@ -183,7 +196,7 @@ The app atomically writes metadata after each phase to:
 Require `phase == NATIVE_ACCEPTANCE_PASS`, no `failure`, nonempty
 `createdObjectID`, `finishedAt`, `providerConfigured == false`, positive process
 ID, and the exact independent fixture ID, SHA, run ID and attempt. Require this
-**exact set of 21 keys**, each true, with no missing/extra keys:
+**exact set of 22 keys**, each true, with no missing/extra keys:
 
 ```
 middleware_logging_disabled
@@ -207,7 +220,34 @@ pending_read_consent_dismissed_on_document_exit
 departed_document_presentation_denies_read_and_create
 fresh_presentation_requires_new_native_consent
 fresh_presentation_reads_original_document_only
+native_return_mounted_original_document
 ```
+
+`navigationContext` is captured from H1's actual host context before the Return
+button is pressed. Its exact keys are `app`, `account`, `workspace`, `space`,
+`sceneID`, `generation`, `objectReference`, `selectionReferences` and
+`sourceRevision`. Require app `anytype`, the original fixture account and Space
+(both workspace and space), original source object, valid scene/generation UUIDs,
+an empty selection array, and the native 64-character lowercase revision hash.
+Scene/generation are host context identities; they are not OS scene identifiers.
+
+`nativeReturn` is absent before the user action and required in the final receipt.
+Its required keys are `requestID`, `queuedRequestID`, `sessionID`, `context`,
+`objectReference` and `presentationAcknowledged`; optional `blockReference` may be
+absent or null in this whole-document fixture. The actual presented request ID
+must equal the original queued destination ID, the session must equal H1, and the
+observed returned context must exactly equal `navigationContext`. Require the
+original source object, no block target, and acknowledgement exactly true.
+Unknown or missing schema fields, a queued/unmounted response, mismatched
+request/context/target, or absence of the existing closed-host denial check fail
+validation. A valid receipt still does not replace actual passing XCTest and
+source/executable identity checks.
+
+The driver reads `handoff.destination` and `handoff.receipt` produced by the
+native Return action, validates the real result against the real queued request,
+and independently checks the original editor after dismissal. The diagnostic
+does not mint or replay a mount acknowledgement. The Python validator reports
+`scope=originalDocumentOnly` and `selected_block_ui_verified=false`.
 
 Require four distinct UUIDs: the original `sessionID` and the new
 `backgroundSessionID`, `staleConsentSessionID`, and `freshSessionID`. The original
@@ -221,7 +261,7 @@ keys. Its values are existing observed call sites: `nativeAuthorityChanged`,
 must each have exactly these six keys with nonnegative integer values:
 `sceneWillDeactivate`, `sceneDidEnterBackground`, `sceneWillEnterForeground`,
 `sceneDidActivate`, `applicationWillResignActive`, `applicationDidBecomeActive`.
-Every delta must be bounded by its total count. The background cycle requires
+The sum of the two disjoint deltas must be bounded by its total count. The background cycle requires
 positive `sceneDidEnterBackground`, `sceneWillEnterForeground`, and
 `sceneDidActivate` deltas. `documentExitAttribution` must equal
 `navigationWithSceneTransition` if any document-exit delta is positive, and

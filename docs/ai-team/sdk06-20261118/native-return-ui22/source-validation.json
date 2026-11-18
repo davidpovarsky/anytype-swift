@@ -1,0 +1,51 @@
+{
+  "checked_at": "2026-11-18T05:42:57.925264+00:00",
+  "direct_acknowledgement_from_diagnostic_or_ui": false,
+  "driver_ui_validator_check_parity": "PASS",
+  "native_ui": "NOT_RUN",
+  "original_source_sha256": {
+    "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift": "2dd30ca488390e29f230fd4f4848051e3404a36ab200f96bfeaff24ac989dd75",
+    "PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift": "bedb479b18085af39450c88663d354b491fbfd223ea761c6db397ff7cdacf0e0",
+    "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py": "3ee6b74388d900dfd361902384bf9a13aaa008107bb230a7a6e5f28372bc50df",
+    "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py": "4b8010845db9953c982af7df4325147456f33beb3270ea06c7e7a1d02eeb09a3",
+    "docs/ai-team/sdk06-20261118/NATIVE_HOST_ACCEPTANCE.md": "3d15f2088fb24924dbc371a3b660c7d4828e2a9de9b8cadda5b86cc1e7f43d99"
+  },
+  "producer_parent": "9f6c786263d6cc4a72b715a7212ccd8f964bf47a",
+  "real_ui_selection": "PinkhaStage1AcceptanceUITests/HanlinNativeAcceptanceUITests/testRealNativeConsentCreatePageAndAuthorityRevocation",
+  "required_check_count": 22,
+  "required_checks": [
+    "background_presentation_had_live_read_access",
+    "backgrounded_presentation_denies_read_and_create",
+    "cancelled_title_absent_from_native_index",
+    "closed_presentation_denies_read_and_create",
+    "created_page_read_back_by_journal_id",
+    "departed_document_presentation_denies_read_and_create",
+    "fresh_presentation_reads_original_document_only",
+    "fresh_presentation_requires_new_native_consent",
+    "middleware_logging_disabled",
+    "native_account_logout_denied",
+    "native_active_space_change_denied",
+    "native_background_foreground_observed",
+    "native_cancel_prevents_write",
+    "native_confirm_creates_exact_page",
+    "native_return_mounted_original_document",
+    "native_source_permission_change_denied",
+    "no_provider_configuration",
+    "original_commit_metadata_survives_logout",
+    "pending_read_consent_dismissed_on_document_exit",
+    "read_denied_before_native_consent",
+    "real_native_context_text_read",
+    "replay_does_not_create_duplicate"
+  ],
+  "scope": "Whole-document native return; all prior21 checks and H2-H4 unchanged; no provider calls",
+  "selected_block_native_ui": "NOT_RUN",
+  "source_sha256": {
+    "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift": "a742de3dfe68d082687117b850757853851e4ee0a4483de3363672b460aae529",
+    "PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift": "3e0f8adb818ec3df69ee4a2e1527168fc48c2d3afa4524a1e97c23251bd61133",
+    "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py": "77d565e0e2a96fa45d49444c7c0d75b863072bf82441834b444b95ad730668f2",
+    "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py": "706aeb8910a2bb7c8c4117b3d6f4b09a9aafb4af758b35e7032630aeb411c9c6",
+    "docs/ai-team/sdk06-20261118/NATIVE_HOST_ACCEPTANCE.md": "8ca2422cca31be25d6edc2055656a1174003fc157151bd6b101f80d354182b10"
+  },
+  "swift_parse": "NOT_RUN",
+  "swift_typecheck": "NOT_RUN"
+}

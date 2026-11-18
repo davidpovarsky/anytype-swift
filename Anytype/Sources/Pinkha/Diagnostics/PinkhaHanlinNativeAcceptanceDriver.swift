@@ -11,7 +11,7 @@ import HanlinHostContracts
 import HanlinPlatformContracts
 
 /// Disposable simulator diagnostic. XCTest still presses the production consent,
-/// Cancel, Create page and Close controls. This code cannot issue an approval.
+/// Cancel, Create page, Return and Close controls. This code cannot issue an approval.
 @MainActor
 final class PinkhaHanlinNativeAcceptanceDriver {
     private static var active: PinkhaHanlinNativeAcceptanceDriver?
@@ -44,12 +44,43 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         }
     }
 
+    struct NavigationContext: Codable, Equatable {
+        let app: String
+        let account: String
+        let workspace: String
+        let space: String
+        let sceneID: UUID
+        let generation: UUID
+        let objectReference: String?
+        let selectionReferences: [String]
+        let sourceRevision: String?
+
+        init(_ context: HanlinHostContext) {
+            app = context.namespace.app; account = context.namespace.account
+            workspace = context.namespace.workspace; space = context.namespace.space
+            sceneID = context.sceneID; generation = context.generation
+            objectReference = context.objectReference; selectionReferences = context.selectionReferences
+            sourceRevision = context.sourceRevision
+        }
+    }
+
+    struct NativeReturnReceipt: Codable {
+        let requestID: UUID
+        let queuedRequestID: UUID
+        let sessionID: UUID
+        let context: NavigationContext
+        let objectReference: String
+        let blockReference: String?
+        let presentationAcknowledged: Bool
+    }
+
     struct Receipt: Codable {
         let fixtureID: UUID
         let sourceSHA: String
         let runID: String
         let runAttempt: String
         let sessionID: UUID
+        let navigationContext: NavigationContext
         let processID: Int32
         let startedAt: Date
         var finishedAt: Date?
@@ -58,6 +89,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         var createdObjectID: String?
         var failure: String?
         var providerConfigured = false
+        var nativeReturn: NativeReturnReceipt?
         var backgroundSessionID: UUID?
         var staleConsentSessionID: UUID?
         var freshSessionID: UUID?
@@ -115,10 +147,13 @@ final class PinkhaHanlinNativeAcceptanceDriver {
               Container.shared.serverConfigurationStorage().currentConfiguration() == .localOnly,
               Container.shared.accountManager().account.id == fixture.accountID,
               host.session == presentation.session,
+              host.session.context.namespace.app == "anytype",
               host.session.context.namespace.account == fixture.accountID,
+              host.session.context.namespace.workspace == fixture.spaceID,
               host.session.context.namespace.space == fixture.spaceID,
               host.session.context.objectReference == fixture.sourceObjectID,
               host.session.context.selectionReferences.isEmpty,
+              host.session.context.sourceRevision?.isEmpty == false,
               editor.viewModel?.document.objectId == fixture.sourceObjectID,
               !presentation.isConfigured else { throw HanlinNativeAcceptanceError.invalidFixture }
         self.fixture = fixture; self.host = host; self.presentation = presentation
@@ -127,6 +162,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         self.statusLabel = Self.makeStatusLabel(in: window)
         self.receipt = Receipt(fixtureID: fixture.fixtureID, sourceSHA: fixture.sourceSHA,
             runID: fixture.runID, runAttempt: fixture.runAttempt, sessionID: host.session.id,
+            navigationContext: NavigationContext(host.session.context),
             processID: ProcessInfo.processInfo.processIdentifier, startedAt: Date())
         self.scene = window.windowScene
         if let scene = window.windowScene { observeScene(scene) }
@@ -267,13 +303,20 @@ final class PinkhaHanlinNativeAcceptanceDriver {
             receipt.checks["cancelled_title_absent_from_native_index"] = true
             try require(!presentation.isConfigured, "provider_was_configured")
             receipt.checks["no_provider_configuration"] = true
+            try require(presentation.returnReceipt == nil, "native_return_preceded_user_action")
             try emit("READY_TO_CLOSE")
-            // Only the existing product Close button ends this presentation.
-            try await waitUntil { self.controller?.presentingViewController == nil }
+            // XCTest presses Return. Observe only the receipt created by the
+            // production dismissal callback; never invoke its acknowledgement.
+            try await observeNativeReturn()
             try await denied(host: host, invocation: makeReadInvocation())
             try await denied(host: host, invocation: copyCreationForDeniedAttempt(createdCall))
             receipt.checks["closed_presentation_denies_read_and_create"] = true
+            receipt.checks["native_return_mounted_original_document"] = true
             try await verifyNativeUILifetimes(createdCall: createdCall, createdID: objectID)
+            // Fresh native consent in H4 must not rearm H1. Recheck while its
+            // original account/Space/document still exist, before authority mutations.
+            try await denied(host: host, invocation: makeReadInvocation())
+            try await denied(host: host, invocation: copyCreationForDeniedAttempt(createdCall))
             try emit("CHECKING_NATIVE_AUTHORITY")
             try await verifyNativeAuthorityChanges()
             let retained = try await journal.receipt(for: plan.identity)
@@ -288,6 +331,40 @@ final class PinkhaHanlinNativeAcceptanceDriver {
             receipt.finishedAt = Date()
             try? emit("NATIVE_ACCEPTANCE_FAIL")
         }
+    }
+
+    private func observeNativeReturn() async throws {
+        try await waitUntil {
+            guard let handoff = self.presentation.returnReceipt else { return false }
+            return handoff.state != .awaitingMount
+        }
+        let handoff = try requireValue(presentation.returnReceipt, "native_return_missing")
+        try require(handoff.state == .mounted, "native_return_not_mounted")
+        let result = try requireValue(handoff.receipt, "native_return_receipt_missing")
+        let destination = handoff.destination
+        try result.validate(for: destination)
+        guard case .presented(let requestID, let context, let object, let block) = result else {
+            throw HanlinNativeAcceptanceError.failed("native_return_only_queued")
+        }
+        try require(destination.context == host.session.context && context == host.session.context,
+                    "native_return_context_changed")
+        try require(requestID == destination.requestID && object == fixture.sourceObjectID
+                    && destination.objectReference == fixture.sourceObjectID
+                    && block == nil && destination.blockReference == nil
+                    && context.selectionReferences.isEmpty,
+                    "native_return_target_or_request_changed")
+        try await waitUntil { self.controller?.presentingViewController == nil }
+        guard let editor, let scene, scene.activationState == .foregroundActive,
+              editor.viewModel?.document.objectId == fixture.sourceObjectID,
+              editor.viewModel?.document.spaceId == fixture.spaceID,
+              PinkhaHanlinNativeAccess.isMounted(editor, in: scene) else {
+            throw HanlinNativeAcceptanceError.failed("native_return_original_editor_not_visible")
+        }
+        try require(receipt.nativeReturn == nil && NavigationContext(context) == receipt.navigationContext,
+                    "native_return_original_metadata_changed")
+        receipt.nativeReturn = NativeReturnReceipt(requestID: requestID, queuedRequestID: destination.requestID,
+            sessionID: host.session.id, context: NavigationContext(context), objectReference: object,
+            blockReference: block, presentationAcknowledged: result.presentationAcknowledged)
     }
 
     private func verifyNativeUILifetimes(createdCall: HanlinHostInvocation, createdID: String) async throws {

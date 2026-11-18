@@ -26,6 +26,7 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         XCTAssertEqual(fixture.runAttempt, try XCTUnwrap(environment["PINKHA_HANLIN_NATIVE_RUN_ATTEMPT"]))
         XCTAssertEqual(fixture.sourceSHA.count, 40)
         XCTAssertTrue(fixture.sourceSHA.allSatisfy(\.isHexDigit))
+        XCTAssertFalse(fixture.accountID.isEmpty)
         XCTAssertNotEqual(fixture.spaceID, fixture.alternateSpaceID)
         XCTAssertFalse(fixture.sourceObjectID.isEmpty)
         XCTAssertEqual(fixture.createdTitle, "Hanlin native created " + fixture.fixtureID.uuidString)
@@ -95,8 +96,9 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         XCTAssertEqual(beforeClose.checks["native_confirm_creates_exact_page"], true)
         XCTAssertFalse(try XCTUnwrap(beforeClose.createdObjectID).isEmpty)
         XCTAssertFalse(beforeClose.providerConfigured)
+        XCTAssertNil(beforeClose.nativeReturn, "A queued request or retained editor is not a native return receipt")
         attachScreenshot("hanlin-native-read-and-create-complete")
-        try chatButton(identifier: "pinkha.hanlin.close", label: "Close").tap()
+        let nativeReturn = try verifyNativeReturn(before: beforeClose)
         try verifyBackgroundAndPendingConsent(createdObjectID: try XCTUnwrap(beforeClose.createdObjectID))
 
         try waitForPhase("NATIVE_ACCEPTANCE_PASS", timeout: 90)
@@ -109,6 +111,8 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         XCTAssertEqual(final.processID, beforeClose.processID)
         XCTAssertGreaterThan(final.processID, 0)
         XCTAssertEqual(final.createdObjectID, beforeClose.createdObjectID)
+        XCTAssertEqual(final.navigationContext, beforeClose.navigationContext)
+        XCTAssertEqual(final.nativeReturn, nativeReturn, "Later presentations must preserve the original return metadata")
         XCTAssertNil(final.failure)
         XCTAssertFalse(final.providerConfigured)
         XCTAssertNotNil(final.finishedAt)
@@ -143,6 +147,36 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         attachment.lifetime = .keepAlways
         add(attachment)
         attachScreenshot("hanlin-native-authority-revocations-complete")
+    }
+
+    private func verifyNativeReturn(before: Receipt) throws -> NativeReturnReceipt {
+        let original = before.navigationContext
+        XCTAssertEqual(original.app, "anytype")
+        XCTAssertEqual(original.account, fixture.accountID)
+        XCTAssertEqual(original.workspace, fixture.spaceID)
+        XCTAssertEqual(original.space, fixture.spaceID)
+        XCTAssertEqual(original.objectReference, fixture.sourceObjectID)
+        XCTAssertTrue(original.selectionReferences.isEmpty, "This fixture proves document return only")
+        XCTAssertFalse(try XCTUnwrap(original.sourceRevision).isEmpty)
+        try chatButton(identifier: "pinkha.hanlin.return-to-source", label: "Return to document").tap()
+        try waitForPhase("AWAIT_BACKGROUND_PRESENTATION", timeout: 20)
+        try requireMountedDocument(fixture.sourceObjectID)
+        let after = try currentReceipt()
+        let nativeReturn = try XCTUnwrap(after.nativeReturn)
+        XCTAssertEqual(after.sessionID, before.sessionID)
+        XCTAssertEqual(after.processID, before.processID)
+        XCTAssertEqual(after.navigationContext, original)
+        XCTAssertEqual(nativeReturn.sessionID, before.sessionID)
+        XCTAssertEqual(nativeReturn.requestID, nativeReturn.queuedRequestID)
+        XCTAssertEqual(nativeReturn.context, original)
+        XCTAssertEqual(nativeReturn.objectReference, fixture.sourceObjectID)
+        XCTAssertNil(nativeReturn.blockReference)
+        XCTAssertTrue(nativeReturn.presentationAcknowledged)
+        XCTAssertEqual(after.checks["native_return_mounted_original_document"], true)
+        XCTAssertEqual(after.checks["closed_presentation_denies_read_and_create"], true)
+        XCTAssertFalse(after.providerConfigured)
+        attachScreenshot("hanlin-native-original-document-return")
+        return nativeReturn
     }
 
     private func verifyBackgroundAndPendingConsent(createdObjectID: String) throws {
@@ -296,7 +330,7 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         "background_presentation_had_live_read_access", "native_background_foreground_observed",
         "backgrounded_presentation_denies_read_and_create", "pending_read_consent_dismissed_on_document_exit",
         "departed_document_presentation_denies_read_and_create", "fresh_presentation_requires_new_native_consent",
-        "fresh_presentation_reads_original_document_only"
+        "fresh_presentation_reads_original_document_only", "native_return_mounted_original_document"
     ]
 
     private static let sceneEventKeys: Set<String> = [
@@ -309,11 +343,34 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         let sourceSHA: String
         let runID: String
         let runAttempt: String
+        let accountID: String
         let spaceID: String
         let alternateSpaceID: String
         let sourceObjectID: String
         let createdTitle: String
         let cancelledTitle: String
+    }
+
+    private struct NavigationContext: Codable, Equatable {
+        let app: String
+        let account: String
+        let workspace: String
+        let space: String
+        let sceneID: UUID
+        let generation: UUID
+        let objectReference: String?
+        let selectionReferences: [String]
+        let sourceRevision: String?
+    }
+
+    private struct NativeReturnReceipt: Codable, Equatable {
+        let requestID: UUID
+        let queuedRequestID: UUID
+        let sessionID: UUID
+        let context: NavigationContext
+        let objectReference: String
+        let blockReference: String?
+        let presentationAcknowledged: Bool
     }
 
     private struct Receipt: Codable {
@@ -322,6 +379,7 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         let runID: String
         let runAttempt: String
         let sessionID: UUID
+        let navigationContext: NavigationContext
         let processID: Int32
         let startedAt: Date
         let finishedAt: Date?
@@ -330,6 +388,7 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         let createdObjectID: String?
         let failure: String?
         let providerConfigured: Bool
+        let nativeReturn: NativeReturnReceipt?
         let backgroundSessionID: UUID?
         let staleConsentSessionID: UUID?
         let freshSessionID: UUID?
