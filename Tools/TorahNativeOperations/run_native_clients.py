@@ -854,7 +854,7 @@ def kill_owned_crash_process(docker: OwnedDocker, resource: dict, live: dict, ar
     log = directory / "crash-native.log"
     docker.command(["container", "logs", resource["id"]], "capture-owned-crash", docker.remaining(deadline), log)
     text = log.read_text()
-    require(len(re.findall(r"^=== RUN:\s+" + re.escape(CRASH_COMMIT_METHOD) + r"\s*$", text, re.M)) == 1
+    require(len(re.findall(r"^=== RUN[ \t]+" + re.escape(CRASH_COMMIT_METHOD) + r"[ \t]*$", text, re.M)) == 1
             and not re.search(r"--- (?:PASS|FAIL|SKIP):", text), "Interrupted native invocation cannot be counted as a terminal PASS")
     require(digest(directory / "crash-armed.json") == arm_hash, "Armed facts changed after process kill")
     return {"status": "OBSERVED_OWNED_CONTAINER_SIGKILL", **live, "exit_code": 137, "oom_killed": False,

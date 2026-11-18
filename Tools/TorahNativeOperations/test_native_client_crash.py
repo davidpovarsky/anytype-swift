@@ -132,7 +132,7 @@ class CrashTailControls(unittest.TestCase):
                 lane.validate_crash_recovery(value, baseline, "a" * 64, identity, arm, "9" * 64, finished=not finished)
 
     def run_kill_fixture(self, temp, *, mutate=None, exit_code=137, oom=False, terminal="",
-                         arm_age_seconds=0, phase_seconds=60, elapsed_after_kill=None, command_budgets=None):
+                         arm_age_seconds=0, phase_seconds=60, elapsed_after_kill=None, command_budgets=None, start_record=None):
         directory, binary = Path(temp), Path(temp) / "native.test"
         baseline, identity, arm = crash_fixture()
         path = directory / "crash-armed.json"
@@ -179,7 +179,8 @@ class CrashTailControls(unittest.TestCase):
             if args[:2] == ["container", "wait"]:
                 return str(exit_code)
             if args[:2] == ["container", "logs"]:
-                destination.write_text("=== RUN:   " + lane.CRASH_COMMIT_METHOD + "\n" + terminal)
+                header = "=== RUN   " + lane.CRASH_COMMIT_METHOD + "\n" if start_record is None else start_record
+                destination.write_text(header + terminal)
                 return ""
             self.fail("Unexpected unit-fixture Docker operation")
         with patch.object(docker, "command", side_effect=command), patch.object(lane.os, "readlink", return_value=namespace), \
@@ -247,6 +248,13 @@ class CrashTailControls(unittest.TestCase):
         for case in [{"exit_code": 0}, {"oom": True},
                      {"terminal": "--- PASS: " + lane.CRASH_COMMIT_METHOD + " (1s)\n"},
                      {"terminal": "--- FAIL: " + lane.CRASH_COMMIT_METHOD + " (1s)\n"},
+                     {"terminal": "--- SKIP: " + lane.CRASH_COMMIT_METHOD + " (1s)\n"},
+                     {"start_record": ""},
+                     {"start_record": "=== RUN:   " + lane.CRASH_COMMIT_METHOD + "\n"},
+                     {"start_record": ("=== RUN   " + lane.CRASH_COMMIT_METHOD + "\n") * 2},
+                     {"start_record": "=== RUN   " + lane.CRASH_COMMIT_METHOD + "Suffix\n"},
+                     {"start_record": "prefix === RUN   " + lane.CRASH_COMMIT_METHOD + "\n"},
+                     {"start_record": "=== RUN\n" + lane.CRASH_COMMIT_METHOD + "\n"},
                      {"elapsed_after_kill": {"inject-owned-crash": 30}},
                      {"elapsed_after_kill": {"wait-owned-crash": 30}},
                      {"elapsed_after_kill": {"inject-owned-crash": 29.75, "wait-owned-crash": 0.25}},
