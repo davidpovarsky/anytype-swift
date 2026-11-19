@@ -70,3 +70,28 @@ def verify_simulator_keychain_identity(result):
 def read_simulator_entitlements(path):
     with path.open('rb') as source, mmap.mmap(source.fileno(), 0, access=mmap.ACCESS_READ) as data:
         return inspect_simulator_entitlements(data)
+
+
+def verify_simulator_shared_app_group(result, info, *, application_prefix, compilation_condition):
+    """Bind the actual group entitlement to the original runtime target selection.
+
+    CoreEnvironment reads CompilationCondition from the built bundle; DEBUG and
+    RELEASE_NIGHTLY use TargetsConstants' existing development group.
+    This checks metadata only; native preparation checks container availability.
+    """
+    condition = info.get('CompilationCondition')
+    require(condition in {'DEBUG', 'RELEASE_NIGHTLY', 'RELEASE_ANYTYPE'},
+            'Actual simulator bundle has an unsupported compilation condition')
+    require(condition == compilation_condition,
+            'Actual simulator app and extension compilation conditions differ')
+    bundle = info.get('CFBundleIdentifier')
+    require(bundle in {'io.anytype.app', 'io.anytype.app.AnytypeShareExtension',
+                       'io.anytype.app.AnytypeNotificationExtension'},
+            'Unexpected actual shared-group simulator bundle identity')
+    expected = 'group.io.anytype.app' + ('' if condition == 'RELEASE_ANYTYPE' else '.dev')
+    require(result['entitlements'].get('application-identifier') == application_prefix + '.' + bundle,
+            'Actual shared-group simulator application identity differs')
+    require(result['entitlements'].get('com.apple.security.application-groups') == [expected],
+            'Actual simulator app group differs from the original runtime target selection')
+    return dict(bundle_identifier=bundle, compilation_condition=condition,
+                application_group=expected, entitlement_section_sha256=result['section_sha256'])

@@ -22,6 +22,12 @@ struct HanlinNativeAcceptancePreparationTests {
         try #require(UInt64(runID).map { $0 > 0 } == true && UInt64(runAttempt).map { $0 > 0 } == true)
         try #require(Container.shared.accountManager().account.id.isEmpty,
                      "This preparation requires a fresh simulator with no existing account")
+        try #require(Bundle.main.object(forInfoDictionaryKey: "CompilationCondition") as? String == "DEBUG")
+        try #require(TargetsConstants.appGroup == "group.io.anytype.app.dev")
+        let sharedContainer = try #require(FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: TargetsConstants.appGroup))
+        try #require(try sharedContainer.resourceValues(forKeys: [.isDirectoryKey]).isDirectory == true)
+        print("PINKHA_HANLIN_SHARED_GROUP_AVAILABLE group=\(TargetsConstants.appGroup) pid=\(ProcessInfo.processInfo.processIdentifier) source=\(sourceSHA) run=\(runID)")
         for name in [PinkhaHanlinNativeAcceptanceFixture.fileName,
                      PinkhaHanlinNativeAcceptanceFixture.resultFileName] {
             let path = try PinkhaHanlinNativeAcceptanceFixture.fileURL(name).path

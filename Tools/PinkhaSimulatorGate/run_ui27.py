@@ -15,7 +15,8 @@ from build_custom_heart import command, digest, git, contains
 from build_native_ipa import prepare_source_cache, run_xctest
 from validate_wave1 import verify_runtime_copies
 from validate_release import method_results, candidate_identity
-from simulator_identity import read_simulator_entitlements, verify_simulator_keychain_identity
+from simulator_identity import (read_simulator_entitlements, verify_simulator_keychain_identity,
+                                verify_simulator_shared_app_group)
 from compiled_products import capture_products
 from rerun_original_ui import ui_only_project, install_ui_runner, export_ui_console
 import wave15_diagnostics as diagnostics
@@ -369,7 +370,44 @@ def verify_signed_simulator(app_bundle, evidence):
     write(evidence / 'simulator-entitlements.json', dict(
         status='SIMULATOR_IDENTITY_INSPECTED_KEYCHAIN_NOT_RUN', evidence_source='MACHO___TEXT___entitlements',
         codesign_verify_exit_code=0, executable_sha256=digest(executable), **simulated))
-    verify_simulator_keychain_identity(simulated)
+    identifier = verify_simulator_keychain_identity(simulated)
+    prefix = identifier.partition('.')[0]
+    condition = info.get('CompilationCondition')
+    identities = [dict(
+        **verify_simulator_shared_app_group(simulated, info,
+            application_prefix=prefix, compilation_condition=condition),
+        executable_sha256=digest(executable), bundle_role='application')]
+    expected_extensions = {
+        'io.anytype.app.AnytypeShareExtension',
+        'io.anytype.app.AnytypeNotificationExtension',
+        'io.anytype.app.homewidget',
+    }
+    found_extensions = set()
+    for extension in sorted((app_bundle / 'PlugIns').glob('*.appex')):
+        extension_info = plistlib.loads((extension / 'Info.plist').read_bytes())
+        bundle = extension_info.get('CFBundleIdentifier')
+        if bundle not in expected_extensions or bundle in found_extensions:
+            raise RuntimeError('Unexpected or duplicate actual simulator extension identity')
+        found_extensions.add(bundle)
+        if extension_info.get('CompilationCondition') != condition:
+            raise RuntimeError('Actual simulator app and extension compilation conditions differ')
+        extension_executable = extension / extension_info['CFBundleExecutable']
+        if bundle == 'io.anytype.app.homewidget':
+            # The original widget has no shared-group entitlement or container use.
+            # Preserve it; do not grant a new capability just for this verification.
+            identities.append(dict(bundle_identifier=bundle, compilation_condition=condition,
+                executable_sha256=digest(extension_executable), bundle_role='widget_without_shared_group'))
+        else:
+            extension_simulated = read_simulator_entitlements(extension_executable)
+            identities.append(dict(
+                **verify_simulator_shared_app_group(extension_simulated, extension_info,
+                    application_prefix=prefix, compilation_condition=condition),
+                executable_sha256=digest(extension_executable), bundle_role='shared_group_extension'))
+    if found_extensions != expected_extensions:
+        raise RuntimeError('An original simulator extension is missing from the actual app')
+    write(evidence / 'simulator-shared-group-identities.json', dict(
+        status='CONFIGURATION_AND_ENTITLEMENTS_MATCH_CONTAINER_ACCESS_NOT_YET_RUN',
+        identities=identities))
 
 
 def live_runtime(udid, evidence, built, language='en', *, source_identity):
