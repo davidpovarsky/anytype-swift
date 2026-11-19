@@ -98,6 +98,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         var documentExitSceneDelta: [String: Int] = [:]
         var documentExitAttribution: String?
         var invalidationCauses: [String: String] = [:]
+        var logoutRootState: String?
     }
 
     /// Observation only: records the first existing production invalidation call.
@@ -563,6 +564,14 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         try require(!PinkhaHanlinAccountOwner.shared.isAvailable(account: fixture.accountID), "account_owner_not_revoked")
         try denied(account)
         receipt.checks["native_account_logout_denied"] = true
+
+        // Complete the original Settings logout owner's route, after the real
+        // service succeeded. Leaving SpaceHub mounted is not a completed UI logout.
+        // InitialCoordinator decides the next root; do not force an auth screen.
+        let applicationState = Container.shared.applicationStateService()
+        applicationState.state = .initial
+        try await waitUntil { applicationState.state == .auth }
+        receipt.logoutRootState = "auth"
     }
 
     private func denied(_ authority: PinkhaHanlinNativeAccess) throws {

@@ -274,3 +274,13 @@ and screenshots of the actual prompts and final state. An uncertainty, invalid
 context, native write mismatch, absent prompt, deadline expiry, unavailable
 index or missing evidence fails this lane. Acceptance remains open until the
 actual Apple results satisfy these conditions on the requested devices.
+
+## 2026-11-19 follow-up: finish the original logout route
+
+The original22-check run44437308455 at833dddee4d5c4e6cd0f89354e5a73096750d8e77 passed its native method and receipt checks. Its final screenshot still showed WorkspaceService.workspaceOpen panic recovered (unknownError), with later bootstrap/catalog activity after middleware logout. Those original observations remain preserved; they are not reclassified as a clean full-app logout.
+
+Source review found that the diagnostic driver called the real authService.logout but omitted the next action performed by SettingsCoordinatorViewModel.onLogoutConfirmTap: applicationStateService.state = .initial. The original app's InitialCoordinator then selects the actual next root. The diagnostic now performs that same existing route transition after successful service logout and observes .auth without directly setting it. Its window-attached receipt adds logoutRootState; all22 original checks, authority denials, original journal identity and UI interactions remain mandatory.
+
+The same original XCTest additionally requires both real PrimaryAuthView controls with their exact English source labels (I already have a key / I am new here) to be unique and touch-ready, and requires the former SpaceHub/NewSpaceButton and original editor to be absent. It does not activate either auth button. The existing final screenshot therefore records the actual logged-out root, while raw logs and previous screenshots remain available. The Python validator rejects absent or non-auth root state and still states that UIKit/XCTest evidence is required separately.
+
+This diagnostic correction does not establish which asynchronous task caused the original banner. ActiveSpaceManager task cancellation and Pinkha bootstrap account lifetimes are separate unproven gaps; their production behavior is unchanged. App Group source8b79d35cf35dd7feef5d0a3021c9fef13e0cc8c2 is retained. Native results for this follow-up, physical device protection, provider networking, clean arbitrary account switching and release acceptance remain pending until separately verified.

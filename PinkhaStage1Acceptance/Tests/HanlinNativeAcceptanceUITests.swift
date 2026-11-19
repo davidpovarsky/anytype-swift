@@ -93,7 +93,9 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         try verifyBackgroundAndPendingConsent(createdObjectID: try XCTUnwrap(beforeClose.createdObjectID))
 
         try waitForPhase("NATIVE_ACCEPTANCE_PASS", timeout: 90)
+        try requireLoggedOutRoot()
         let final = try currentReceipt()
+        XCTAssertEqual(final.logoutRootState, "auth")
         XCTAssertEqual(final.fixtureID, fixture.fixtureID)
         XCTAssertEqual(final.sourceSHA, fixture.sourceSHA)
         XCTAssertEqual(final.runID, fixture.runID)
@@ -138,6 +140,24 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         attachment.lifetime = .keepAlways
         add(attachment)
         attachScreenshot("hanlin-native-authority-revocations-complete")
+    }
+
+    private func requireLoggedOutRoot() throws {
+        // These are the exact English labels of the two original PrimaryAuthView
+        // actions. Observe them; do not create an account or supply credentials.
+        let login = app.buttons.matching(NSPredicate(format: "label == %@", "I already have a key"))
+        let join = app.buttons.matching(NSPredicate(format: "label == %@", "I am new here"))
+        try requireReady(controls: [login.firstMatch, join.firstMatch], timeout: 20,
+                         diagnosticName: "hanlin-native-logged-out-root")
+        XCTAssertEqual(login.count, 1)
+        XCTAssertEqual(join.count, 1)
+        let home = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier == %@ OR identifier == %@", "SpaceHub", "NewSpaceButton"))
+        XCTAssertEqual(home.count, 0, "The old authenticated Space root must be unmounted")
+        let originalEditor = "pinkha-ui27-editor:\(fixture.spaceID):\(fixture.sourceObjectID)"
+        XCTAssertFalse(app.otherElements.matching(NSPredicate(
+            format: "identifier == %@", originalEditor)).firstMatch.exists,
+            "The original source editor must not remain mounted after logout")
     }
 
     private func verifyNativeReturn(before: Receipt) throws -> NativeReturnReceipt {
@@ -432,5 +452,6 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         let documentExitSceneDelta: [String: Int]
         let documentExitAttribution: String?
         let invalidationCauses: [String: String]
+        let logoutRootState: String?
     }
 }

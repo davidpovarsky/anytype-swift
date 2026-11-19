@@ -143,6 +143,8 @@ def validate_result(value, fixture, source_sha, run_id, run_attempt, now):
     require(value.get("phase") == "NATIVE_ACCEPTANCE_PASS", "Native result did not finish successfully")
     require(value.get("failure") is None, "Native result records a failure")
     require(value.get("providerConfigured") is False, "Native test configured an AI provider")
+    require(value.get("logoutRootState") == "auth",
+            "Native logout did not observe the original auth root state")
     checks = value.get("checks")
     require(isinstance(checks, dict) and set(checks) == REQUIRED_CHECKS
             and all(flag is True for flag in checks.values()), "Native checks are incomplete or failed")
@@ -186,5 +188,6 @@ def validate_result(value, fixture, source_sha, run_id, run_attempt, now):
                 source_sha=source_sha, run_id=run_id, run_attempt=run_attempt,
                 provider_configured=False, presentation_count=len(sessions),
                 native_return=native_return,
+                logout_root_state=value["logoutRootState"], logout_root_ui_verified=False,
                 document_exit_attribution=attribution, invalidation_causes=causes,
                 full_sdk_acceptance=False)

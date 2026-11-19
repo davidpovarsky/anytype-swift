@@ -41,7 +41,7 @@ def result():
                 nativeReturn=dict(requestID=RETURN_REQUEST, queuedRequestID=RETURN_REQUEST,
                                   sessionID=SESSIONS[0], context=copy.deepcopy(context),
                                   objectReference="source-page", presentationAcknowledged=True),
-                providerConfigured=False)
+                providerConfigured=False, logoutRootState="auth")
 
 
 class HanlinNativeEvidenceTests(unittest.TestCase):
@@ -58,6 +58,21 @@ class HanlinNativeEvidenceTests(unittest.TestCase):
         self.assertEqual(verified["native_return"]["request_id"], RETURN_REQUEST)
         self.assertEqual(verified["native_return"]["scope"], "originalDocumentOnly")
         self.assertFalse(verified["native_return"]["selected_block_ui_verified"])
+
+    def test_completed_authority_checks_cannot_replace_the_original_logout_root_transition(self):
+        for state in [None, "initial", "launch", "home", "delete", True]:
+            candidate = result()
+            candidate["logoutRootState"] = state
+            with self.subTest(state=state), self.assertRaisesRegex(ValueError, "original auth root"):
+                self.verify(candidate)
+        candidate = result()
+        del candidate["logoutRootState"]
+        with self.assertRaisesRegex(ValueError, "original auth root"):
+            self.verify(candidate)
+        verified = self.verify(result())
+        self.assertEqual(verified["required_checks"], 22)
+        self.assertEqual(verified["logout_root_state"], "auth")
+        self.assertFalse(verified["logout_root_ui_verified"])
 
     def test_missing_or_unmounted_native_return_cannot_pass_from_label(self):
         for mutation in ["missing", "null", "empty", "queued", "numeric-ack"]:
