@@ -1,0 +1,39 @@
+{
+  "status": "SOURCE_AND_CONTROLLER_CONTROLS_PASS_APPLE_EXECUTION_NOT_RUN",
+  "base_commit": "46a956a81f1d5ab29f5bd49c7eff0f14199dde41",
+  "base_controller_sha256": "cea85600368ed652f212a9d068dc87e7e91fe9494da83deccd297377673be03e",
+  "source_files_sha256": {
+    "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py": "b399f1b173ca2607277caa92fca1c75ba090ac95c1fec3a11233a5f289a653f2",
+    "Tools/PinkhaSimulatorGate/test_t5_apple_pair_cleanup.py": "33f7649c6bc6a520e57f20e9609e31d42b7837a12a7f98438dc763d86e738a26"
+  },
+  "controller_diff_sha256": "d9bea85f04b7d1035a6cee0730a9a690cfdad1f0f17ff2537a3662e3e2209a8b",
+  "controls": {
+    "total_pass": 60,
+    "new_cleanup_pass": 19,
+    "unchanged_pass": 41,
+    "skipped": 0,
+    "failed": 0,
+    "log_sha256": "8bf886bf66a1d32e4d90efe87ad1b225de31b76cfb14b88fe0b679a9bf384a76",
+    "initial_harness_error_log_sha256": "c0deeed33849f926ed896a53287bbed9e99e1b03245bb4f6a4c0c873f689bc3a",
+    "initial_error": "19 new controls did not execute because the test patch helper lacked positional arguments; fixed helper, then all60 passed"
+  },
+  "changes": [
+    "Outer finalizer begins immediately before first owned simulator boot, after existing source/preflight/name/helper checks",
+    "One original exact-UDID shutdown command, original120 second bound, check=False with explicit nonzero rejection",
+    "Primary exception preserved if shutdown or cleanup receipt write fails; secondary type recorded",
+    "Native account/credential evidence finalizer stays inside actual native phases; preflight/build failure does not enter it",
+    "Optional native UI continuation remains after successful pair shutdown"
+  ],
+  "unchanged": [
+    "Product and native fixture sources",
+    "Boot and bootstatus timeouts120/180",
+    "Runtime pins, source checks and app build flags",
+    "Native phase assertions and receipt acceptance",
+    "No erase/delete/global simulator query/retry"
+  ],
+  "limitations": [
+    "Linux controller controls simulate Apple commands; this is not Apple acceptance",
+    "Original T5 diagnostic44575876933 failed before native builds; no simulator deletion is claimed",
+    "Existing native evidence finalizer behavior is unchanged beyond outer shutdown coverage"
+  ]
+}

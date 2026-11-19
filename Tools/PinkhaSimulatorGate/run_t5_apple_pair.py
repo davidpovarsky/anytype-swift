@@ -817,6 +817,33 @@ def run_phase(phase, role, build, app, work, udid, source, token, nonce, contain
         write(directory / "result.json", record)
 
 
+def shutdown_owned_simulator(udid, app, proof, result, primary_error):
+    """Shut down only the validated job-owned device without masking a primary failure."""
+    record = dict(status="RUNNING", action="shutdown", device_udid=udid,
+                  primary_error_type=type(primary_error).__name__ if primary_error is not None else None,
+                  started_at=datetime.now(timezone.utc).isoformat())
+    result["simulator_cleanup"] = record
+    cleanup_error = None
+    try:
+        metadata, _ = run_logged(["xcrun", "simctl", "shutdown", udid], app,
+                                 proof / "simulator", "shutdown", 120, check=False)
+        record["return_code"] = metadata["return_code"]
+        require(metadata["return_code"] == 0, "Job-owned simulator shutdown failed; original command output retained")
+        record["status"] = "PASS"
+    except BaseException as error:
+        record.update(status="FAIL", error_type=type(error).__name__)
+        cleanup_error = error
+    record["finished_at"] = datetime.now(timezone.utc).isoformat()
+    try:
+        write(proof / "simulator/cleanup.json", record)
+    except BaseException as error:
+        record.update(status="FAIL", receipt_error_type=type(error).__name__)
+        if cleanup_error is None:
+            cleanup_error = error
+    if cleanup_error is not None and primary_error is None:
+        raise cleanup_error
+
+
 def execute(args, result):
     require(platform.system() == "Darwin" and platform.machine() == "arm64", "Actual Apple silicon Mac required")
     require(sys.version_info >= (3, 12), "Python3.12 required for safe original archive extraction")
@@ -847,41 +874,41 @@ def execute(args, result):
     result.update(app_source_sha=source, run_id=os.environ["GITHUB_RUN_ID"], device_udid=udid,
                   app_flags=FLAGS, expected_runtime_versions={role: runtime_version(role) for role in ["old", "new"]})
     write(proof / "result.json", result)
-    run_logged(["xcrun", "simctl", "boot", udid], app, proof / "simulator", "boot", 120)
-    run_logged(["xcrun", "simctl", "bootstatus", udid, "-b"], app, proof / "simulator", "boot-status", 180)
-    require(app_container(udid, "data", required=False) is None, "Fresh simulator unexpectedly contains an app account")
-    builds = {}
-    for role, run_id in [("old", args.heart_r14_run_id), ("new", args.heart_r15_run_id)]:
-        runtime_proof = proof / ("runtime-" + role)
-        archive, source_run = download_runtime(role, run_id, work, runtime_proof, os.environ["GITHUB_REPOSITORY"])
-        installed = install_runtime(role, archive, source_run, app, native_source, work, runtime_proof, heart_helper)
-        builds[role] = build_app(role, app, derived, work, proof / ("build-" + role), udid, source, (ui, native_helper))
-        shutil.move(str(installed), work / ("installed-framework-" + role))
-        result["completed_builds"] = list(builds)
-        write(proof / "result.json", result)
-    token, reports, container, credential_inventory = uuid4().hex, [], None, None
-    result["phase"] = "ACTUAL_NATIVE_EXECUTION"
-    write(proof / "result.json", result)
     try:
-        for phase, role in phases(args.include_freshness):
-            result["active_phase"] = phase
+        run_logged(["xcrun", "simctl", "boot", udid], app, proof / "simulator", "boot", 120)
+        run_logged(["xcrun", "simctl", "bootstatus", udid, "-b"], app, proof / "simulator", "boot-status", 180)
+        require(app_container(udid, "data", required=False) is None, "Fresh simulator unexpectedly contains an app account")
+        builds = {}
+        for role, run_id in [("old", args.heart_r14_run_id), ("new", args.heart_r15_run_id)]:
+            runtime_proof = proof / ("runtime-" + role)
+            archive, source_run = download_runtime(role, run_id, work, runtime_proof, os.environ["GITHUB_REPOSITORY"])
+            installed = install_runtime(role, archive, source_run, app, native_source, work, runtime_proof, heart_helper)
+            builds[role] = build_app(role, app, derived, work, proof / ("build-" + role), udid, source, (ui, native_helper))
+            shutil.move(str(installed), work / ("installed-framework-" + role))
+            result["completed_builds"] = list(builds)
             write(proof / "result.json", result)
-            report, container = run_phase(phase, role, builds[role], app, work, udid, source,
-                                         token, uuid4().hex, container, reports[-1] if reports else None, ui, method_results)
-            credential_inventory = preserve_private_credential_inventory(container, work, token)
-            reports.append(report)
-            result["completed_phases"] = [item["phase"] for item in reports]
-            write(proof / "result.json", result)
-        result["actual_counts"] = validate_sequence(reports, builds, args.include_freshness)
-        require(git(app, "rev-parse", "HEAD") == source and not git(app, "status", "--porcelain"),
-                "Application source changed during the actual native sequence")
-    finally:
-        container = app_container(udid, "data", required=False)
+        token, reports, container, credential_inventory = uuid4().hex, [], None, None
+        result["phase"] = "ACTUAL_NATIVE_EXECUTION"
+        write(proof / "result.json", result)
         try:
+            for phase, role in phases(args.include_freshness):
+                result["active_phase"] = phase
+                write(proof / "result.json", result)
+                report, container = run_phase(phase, role, builds[role], app, work, udid, source,
+                                             token, uuid4().hex, container, reports[-1] if reports else None, ui, method_results)
+                credential_inventory = preserve_private_credential_inventory(container, work, token)
+                reports.append(report)
+                result["completed_phases"] = [item["phase"] for item in reports]
+                write(proof / "result.json", result)
+            result["actual_counts"] = validate_sequence(reports, builds, args.include_freshness)
+            require(git(app, "rev-parse", "HEAD") == source and not git(app, "status", "--porcelain"),
+                    "Application source changed during the actual native sequence")
+        finally:
+            container = app_container(udid, "data", required=False)
             secret_scan_passed = preserve_native_evidence(work, proof, container, token, args.include_freshness,
                                                          credential_inventory=credential_inventory)
-        finally:
-            run_logged(["xcrun", "simctl", "shutdown", udid], app, proof / "simulator", "shutdown", 120, check=False)
+    finally:
+        shutdown_owned_simulator(udid, app, proof, result, primary_error=sys.exc_info()[1])
     require(secret_scan_passed, "Complete private credential inventory required before public acceptance")
     result.update(status="APPLE_SAME_ACCOUNT_RUNTIME_PAIR_PASS", phase_reports=reports[:len(PHASES)],
                   freshness_report=reports[-1] if args.include_freshness else None,

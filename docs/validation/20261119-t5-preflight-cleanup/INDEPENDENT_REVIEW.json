@@ -1,0 +1,70 @@
+{
+  "author_initial_harness_error_retained": {
+    "scope": "Nineteen new controls initially did not execute due to a test helper argument mismatch; author corrected helper before final60-pass source freeze and independent replay.",
+    "sha256": "c0deeed33849f926ed896a53287bbed9e99e1b03245bb4f6a4c0c873f689bc3a"
+  },
+  "author_validation_sha256": "ca4e9f51cd901fa6fd0c046c8b3fa77d3a83d5bbc0c4a1e63f957c6187e4eef0",
+  "base_commit": "46a956a81f1d5ab29f5bd49c7eff0f14199dde41",
+  "base_controller_sha256": "cea85600368ed652f212a9d068dc87e7e91fe9494da83deccd297377673be03e",
+  "controller_diff_sha256": "d9bea85f04b7d1035a6cee0730a9a690cfdad1f0f17ff2537a3662e3e2209a8b",
+  "independent_controls": {
+    "command": "python -B -m unittest -v test_t5_apple_pair test_t5_apple_pair_source test_t5_apple_pair_storage test_t5_apple_pair_process test_t5_apple_pair_freshness test_t5_apple_pair_cleanup",
+    "elapsed_seconds": 3.515,
+    "exact_controller_unified_diff_independently_reconstructed": true,
+    "failed": 0,
+    "five_existing_test_files_byte_unchanged": true,
+    "log_sha256": "53ca005666a2a65eb0ce9949a8d7664be0f440acd1efb0090647b6c35a91ba0c",
+    "new_cleanup_controls": 19,
+    "passed": 60,
+    "platform": "Linux Python3.12",
+    "skipped": 0,
+    "unchanged_controls": 41,
+    "unchanged_posix_process_controls": 3
+  },
+  "limits": {
+    "actual_apple_cleanup": "NOT_RUN_CURRENT_CANDIDATE",
+    "native_ui_or_product_acceptance": "NOT_RUN_CURRENT_CANDIDATE",
+    "optional_native_ui_cleanup_implementation": "UNCHANGED_NOT_EXTENDED_BY_THIS_PATCH",
+    "original_zero_execution_not_requalified_as_product_failure": true,
+    "preexisting_inner_native_evidence_exception_behavior": "UNCHANGED; the new helper preserves the exception active at the outer shutdown boundary",
+    "reviewer_ci_dispatch": false,
+    "reviewer_remote_mutations": false,
+    "reviewer_source_edits": false,
+    "simulator_deletion_claimed": false
+  },
+  "original_failure_checked": {
+    "artifact_id": "14559328808",
+    "bootstatus_timeout_seconds": 180,
+    "both_zip_crcs": "PASS",
+    "completed_builds": 0,
+    "inner_members": 11,
+    "native_phases": 0,
+    "native_ui": "NOT_RUN",
+    "original_explicit_shutdown_receipt": "ABSENT",
+    "outer_sha256": "7d786e0351a755a85e0efa6bcd180faba3f6a2f777904fd9427747aee491bdbf",
+    "owned_command_group_termination": "TERM_THEN_KILL",
+    "owned_ipad_udid": "B54D9C20-8430-4905-85A1-A4E6BC8F43B5",
+    "owned_name": "Pinkha-UI27-44575876933-ipad",
+    "run_id": "44575876933"
+  },
+  "original_failure_source": "47ca2c01774c65ee05f852bf2a62025957861438",
+  "remaining_findings": [],
+  "reviewed_at_utc": "2026-11-19T18:40:27.211356+00:00",
+  "reviewer": "/root/asana_audit",
+  "schema": "t5-apple-owned-preflight-cleanup-independent-review-v1",
+  "source_files_sha256": {
+    "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py": "b399f1b173ca2607277caa92fca1c75ba090ac95c1fec3a11233a5f289a653f2",
+    "Tools/PinkhaSimulatorGate/test_t5_apple_pair_cleanup.py": "33f7649c6bc6a520e57f20e9609e31d42b7837a12a7f98438dc763d86e738a26"
+  },
+  "status": "SOURCE_REVIEW_PASS",
+  "verified_behavior": [
+    "Outer cleanup starts immediately before first boot, after unchanged platform/source/preflight/job-owned-name/disk/helper checks. Untrusted source, mismatched preflight or foreign simulator name causes no simulator command.",
+    "The one original exact-UDID shutdown is moved to the outer finalizer. Command is xcrun simctl shutdown <validated UDID>, timeout120 and check=False. No retry, delete, erase, list-all or global simulator action is added.",
+    "Boot120 and bootstatus180 command limits are unchanged. Boot timeout/cancellation, post-boot lookup failure and runtime download/build failure reach shutdown without entering native account/credential evidence finalization.",
+    "Original native phase, final-container lookup and native evidence failures still reach outer shutdown. Native evidence and credential finalization remain scoped inside the actual native lifecycle.",
+    "A primary exception active when shutdown begins remains the propagated exception if shutdown or its receipt write raises. Secondary cleanup error types are retained in the result. With no primary, a cleanup error still raises and blocks a successful lane.",
+    "Nonzero shutdown return is now explicitly rejected and recorded FAIL even though run_logged uses check=False. No failed command is labeled successful cleanup.",
+    "Successful native pair phase order is unchanged. Required private evidence is finalized before shutdown; optional native UI continuation remains after successful pair shutdown.",
+    "Product/Go/Swift fixtures, runtime pins, native acceptance checks, app build flags and source validations are unchanged. Only controller cleanup coverage and its targeted tests change."
+  ]
+}
