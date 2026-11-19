@@ -18,6 +18,7 @@ import time
 
 import run_ui27 as shared
 import hanlin_acceptance_evidence as hanlin
+import hanlin_ui_runtime
 import hanlin_selection_evidence as hanlin_selection
 import wave15_diagnostics as diagnostics
 import type_preservation as preservation
@@ -523,11 +524,21 @@ def execute(args, receipt, *, build_context=None):
         receipt["ui_build_mode"] = "SAME_JOB_FROZEN_BUILD"
     receipt["phase"] = "UI_RUNTIME_PREPARATION"
     shared.write(evidence / "execution.json", receipt)
-    live = shared.live_runtime(udid, evidence, built, args.language, source_identity={
+    runtime_identity = {
         "source_sha": head, "run_id": receipt["run_id"], "run_attempt": receipt["run_attempt"],
         "kit_sha": shared.KIT, "native_marker": shared.MARKER,
-        "candidate_inputs_sha256": hashlib.sha256(json.dumps(identity["hashes"], sort_keys=True).encode()).hexdigest()})
-    receipt["live_runtime_before_ui"] = live
+        "candidate_inputs_sha256": hashlib.sha256(json.dumps(identity["hashes"], sort_keys=True).encode()).hexdigest()}
+    ui_runtime_observer = None
+    if args.lane == "hanlin-native":
+        # This UI method cold-launches its own app. Observe that actual process
+        # during its original native journey; a preflight probe cannot bind it.
+        ui_runtime_observer = hanlin_ui_runtime.NativeUIRuntimeObserver(
+            udid, evidence, built, fixture, raw_fixture, runtime_identity, shared)
+        receipt["live_runtime_before_ui"] = {"status": "ACTUAL_UI_PROCESS_OBSERVATION_REQUIRED",
+                                            "extra_app_launches": 0}
+    else:
+        live = shared.live_runtime(udid, evidence, built, args.language, source_identity=runtime_identity)
+        receipt["live_runtime_before_ui"] = live
     shared.install_ui_runner(udid, ui_derived / "Build/Products", app, evidence, configuration=configuration_name)
     configuration = shared.test_configuration(ui_derived / "Build/Products", "PinkhaStage1AcceptanceUITests")
     environment.update(PINKHA_UI27_APP_LANGUAGE=args.language, PINKHA_UI27_SELECTION_SCOPE="WAVE15_ACCEPTANCE")
@@ -536,22 +547,32 @@ def execute(args, receipt, *, build_context=None):
     receipt["phase"] = "UI"
     shared.write(evidence / "execution.json", receipt)
     try:
+        if ui_runtime_observer is not None:
+            ui_runtime_observer.start()
         result = run_selection(app, configuration, "PinkhaStage1AcceptanceUITests", udid,
             selection["methods"], environment, evidence / "ui", "wave15-" + args.lane, built)
         receipt["ui"] = result
     finally:
-        shared.export_ui_console(udid, evidence)
-        if hanlin_lane is not None:
-            result_path = container / "Library/Application Support" / hanlin_lane[1]
-            if result_path.is_file():
+        if ui_runtime_observer is not None:
+            ui_runtime_observer.finalize(receipt, evidence / hanlin_lane[2],
+                lambda: shared.export_ui_console(udid, evidence), sys.exception())
+        else:
+            shared.export_ui_console(udid, evidence)
+            if hanlin_lane is not None:
+                result_path = container / "Library/Application Support" / hanlin_lane[1]
                 # Preserve failure receipts too; copying a label does not qualify it.
-                (evidence / hanlin_lane[2]).write_bytes(result_path.read_bytes())
+                if result_path.is_file():
+                    (evidence / hanlin_lane[2]).write_bytes(result_path.read_bytes())
     if result["status"] != "PASS" or result["passed"] != selection["expected_ui_executions"]:
         raise SelectionFailure("Actual named UI selection did not pass")
     if hanlin_lane is not None:
-        native_result = json.loads((evidence / hanlin_lane[2]).read_text(encoding="utf-8"))
+        raw_result = (evidence / hanlin_lane[2]).read_bytes()
+        native_result = hanlin_ui_runtime.decode(raw_result) if ui_runtime_observer is not None else json.loads(raw_result)
         receipt[hanlin_lane[3]] = hanlin_lane[0].validate_result(native_result, fixture, head,
             receipt["run_id"], receipt["run_attempt"], datetime.now(timezone.utc).timestamp())
+        if ui_runtime_observer is not None:
+            receipt["actual_ui_runtime"] = ui_runtime_observer.qualify(native_result, raw_result,
+                evidence / "ui", "wave15-hanlin-native", selection["methods"])
     if args.lane == "inspector":
         receipt["ui_process_continuity"] = shared.verify_ui_process_continuity(
             evidence / "ui", "wave15-" + args.lane, live, selection["methods"])

@@ -1,0 +1,120 @@
+{
+  "actual_same_ui_process_runtime_acceptance": "NOT_RUN",
+  "apple_typecheck": "NOT_RUN",
+  "base_commit": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8",
+  "candidate_diff_sha256": "e4c51a2a9f8db77a33612d9be03bfdc4291ec08de16b99b9d263afcdd2ea03e3",
+  "failure_log_packaging": "PASS_EXACT_ORIGINAL_BYTES_IN_ARCHIVE",
+  "files": {
+    ".github/workflows/pinkha-simulator-ui27.yml": {
+      "after_sha256": "750fd48e90d9942eae43c8aaf259df221e1fa90ef89ad0623304c353e0c45a7b",
+      "before_sha256": "529a4f698caa4cd05a8650cabbb63067bfcf4a09241039c6f5e39cb1b055d5a6",
+      "bytes": 6298,
+      "ownership": "DOWNSTREAM_ACCEPTANCE_ONLY"
+    },
+    "PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift": {
+      "after_sha256": "8af3eea788ab5383d754bd8fdd8ca8443e9cbf44cde34eb5ae2323bd90849824",
+      "before_sha256": "3133ddacc55bf184a14d25877b7653f1afcd7d8835ca7a460b724bc462c0c12d",
+      "bytes": 26662,
+      "ownership": "DOWNSTREAM_ACCEPTANCE_ONLY"
+    },
+    "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py": {
+      "after_sha256": "d053a2f8b0635460bb61121c36e5f8ac3a467c2803bc9b99cf9f985c4f606c8e",
+      "before_sha256": null,
+      "bytes": 15261,
+      "ownership": "DOWNSTREAM_ACCEPTANCE_ONLY"
+    },
+    "Tools/PinkhaSimulatorGate/run_ui27.py": {
+      "after_sha256": "e5ab251c48179411ba994f4d30f6a6f80cea8815c3cae9a2c90d115a95602403",
+      "before_sha256": "de13dfeefbaa5cd224247142bb87b31ec956e70fb71fd4b28422bddeaf8c4a34",
+      "bytes": 42984,
+      "ownership": "DOWNSTREAM_ACCEPTANCE_ONLY"
+    },
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
+      "after_sha256": "1ccdbec99576abd7b3873272eb14dc36c5c139805c241c411007167c0a635200",
+      "before_sha256": "90a3e3eeb11a8a634e773f99c62d811494bd1c3616eb25698884e6f9a1a2a7ca",
+      "bytes": 41823,
+      "ownership": "DOWNSTREAM_ACCEPTANCE_ONLY"
+    },
+    "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py": {
+      "after_sha256": "719d1b0f4f4c813676c312059bdd32061be47d9617a7bbad65d54680cfdce7f0",
+      "before_sha256": null,
+      "bytes": 28444,
+      "ownership": "DOWNSTREAM_ACCEPTANCE_ONLY"
+    }
+  },
+  "independent_controls": {
+    "command": "python -B -m unittest test_hanlin_ui_runtime test_hanlin_acceptance_evidence test_run_wave15_acceptance test_type_preservation test_wave15_batch -v",
+    "elapsed_seconds": 2.266,
+    "failed": 0,
+    "log": "/workspace/scratch/5e78163ba431/asana-audit/sdk06-t2-independent/v3-controller-controls.log",
+    "log_sha256": "0816a809af8009bd33cabf75af20b25e278b3607e39b710549ee7a6972583db7",
+    "passed": 133,
+    "properties_and_batch_regressions": 84,
+    "runtime_controls": 29,
+    "skipped": 0,
+    "unchanged_native_receipt_controls": 20
+  },
+  "limits": [
+    "Filesystem hashing cooperatively checks deadlines; it is not forcibly preempted. A live or nonjoining observer cannot qualify.",
+    "Same actual app process must remain observable after its UI method; missing/replaced process fails closed.",
+    "No physical-device, every-launch, full-SDK, release or full-bundle-equivalence acceptance is established by these source/controller checks."
+  ],
+  "packager_sha256": "0faf11a18f2c8a220fab570ef3a199e2016091340c0b261148dd7c581294c895",
+  "prior_review_status": "v2 source approval was held until the new finalizer finding was resolved; this report supersedes it.",
+  "properties_ast_sections_identical": 3,
+  "properties_baseline_report_sha256": "e22e279bb10356ebb670a89f60b513460da14ce16d293fdc34d65626c2a3f3ad",
+  "remaining_source_findings": [],
+  "resolved_findings": [
+    {
+      "finding": "Observer start outside cleanup boundary could leave a worker alive after partial-start cancellation.",
+      "initial_source_reproduction": "/workspace/scratch/5e78163ba431/asana-audit/sdk06-t2-independent/partial-start-cancellation-reproduction.json",
+      "resolution": "The same once-only start now occurs inside existing try/finally. Stop tolerates an unstarted Thread and joins a worker with a retained ident. Two controls execute the actual controller AST boundary and preserve original failure/export behavior."
+    },
+    {
+      "finding": "New observer stop/final-bytes errors could replace an active original start/selection exception and skip later original evidence export.",
+      "resolution": "Only the new observer branch uses a once-only four-stage finalizer. Each action is independently attempted; fixed stage/error_type metadata records secondary failures, the active exception observed by sys.exception() is preserved, and absence of a primary raises the first finalizer failure after clearing observation. Other lane cleanup is unchanged.",
+      "verification": "Read complete finalizer and actual call boundary; six new controls execute the controller AST with real worker lifecycle and assert original exception object identity, exact evidence continuation, one call per failed action and selection, no-primary refusal, and private error text exclusion."
+    }
+  ],
+  "reviewed_at_utc": "2026-11-19T18:54:17.011251+00:00",
+  "reviewer": "t2_finish",
+  "source_binding_verification": "All six final files, exact reverse patch to each declared base, and all23 unchanged baseline inputs verified independently.",
+  "source_report_sha256": "239a033b6fecba6d2723ebdb6ca625bc0499417936da19ecdc62c0bd65f883fc",
+  "status": "SOURCE_REVIEW_PASS",
+  "unchanged_baseline_files_sha256": {
+    "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": "5b2dc85295e14c33e750d9a9b33e2422ef0a56af8049cdc4638b8508c8ddfb07",
+    "Tools/Hanlin/host_command.py": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807",
+    "Tools/Hanlin/wave15_core_profile.py": "e8a797c2d379905b2e45f9844b9e4e3e65e7df20cc9a24b4fe7fd1e675e94afa",
+    "Tools/PinkhaNativeDerived/build_custom_heart.py": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+    "Tools/PinkhaNativeDerived/build_native_ipa.py": "c9e35a228779ae761d36cef204a32148ffdd3a338c9ede11dde6df4ebee21055",
+    "Tools/PinkhaNativeDerived/build_native_ipa_fast.py": "086d70747ce4af85715341569aaca188c6655dddf904b73cbadd0806956252a6",
+    "Tools/PinkhaNativeDerived/rerun_original_ui.py": "ec5688909921942e94f792cdde0a02baa7b5f9b2f9e0b3bde3df3a877f299279",
+    "Tools/PinkhaNativeDerived/validate_native_engine.py": "4eab4c61582d7daa03dda8f15f51633f2b4473085f2deb37fa4fec85159bc0f0",
+    "Tools/PinkhaNativeDerived/validate_wave1.py": "743ddea3e4e42640070035fe7d149d148dfff1cbdc852ef464c8c19da07253a0",
+    "Tools/PinkhaSimulatorGate/compiled_products.py": "fecbf688eef39388aef7fac6990cfa6b391b72be35f34bee9aaa9f7c96eae7cf",
+    "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py": "8552b94f2034d4a1ddfcd363ca02526ff7c843030d65790ceb048efcde2056e4",
+    "Tools/PinkhaSimulatorGate/hanlin_selection_evidence.py": "25afba17f7083d0e41481f9464217ab665c4d8f11f20c94c4b99ce3f2a3c3336",
+    "Tools/PinkhaSimulatorGate/preflight.py": "0e1c6491e8bb30d9e97cf65cf3b820a8860d0a32237676f2c3a7613668ddee66",
+    "Tools/PinkhaSimulatorGate/simulator_identity.py": "930330e48559e4c3e016e005ea03bdb89d030e239b9fc3e14e5a76aa31aa561e",
+    "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py": "68ba603f2d41e3b249d66cbeb51432c25a9680309e5a682a1f634aae879bf9c8",
+    "Tools/PinkhaSimulatorGate/test_run_wave15_acceptance.py": "7277f7feae1d27b5b973f4cf7071ca75688f81c6efade34d77ddaaea25573c05",
+    "Tools/PinkhaSimulatorGate/test_type_preservation.py": "c8649ebf54a58bbdddeba80471a278b2b676fecf0fedcfdf6530a9f144daa600",
+    "Tools/PinkhaSimulatorGate/test_wave15_batch.py": "40817475ae9dfdacaeebfca535b1e29110281f29d04e2b3afdf6a89b1d55f57e",
+    "Tools/PinkhaSimulatorGate/test_wave15_diagnostics.py": "bad5994cba89b7899fe5b691e282d85e90140650bc229d42a33b91c6d6bae81a",
+    "Tools/PinkhaSimulatorGate/type_preservation.py": "7b51ce452f743cfbe45a9ccc562ca871c5e7a072dade292cdf501494c9cead9e",
+    "Tools/PinkhaSimulatorGate/validate_release.py": "2b4162be85c3164a4d75869f67b3bfe9e58fac033a581d6f6f57d38e639961e0",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": "20daa269697d859b92d089f4ccadc5165d13a5f77ad951c94b9cbb8480bde586",
+    "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": "b1d5d51c43db21ea35b47c994fd49064ac4aad0e746a2e1af99d329c0fcf8703"
+  },
+  "verified_invariants": [
+    "Actual in-flight native phase receipt supplies the mapped PID; the new observer neither launches nor terminates an app. The old non-SDK wrapper retains its original single launch.",
+    "Original fixture bytes plus source/run/attempt, account/Space/document, native session/start and process identity are checked before, during and after mapping; atomic receipt replacement never qualifies a partial snapshot.",
+    "Installed/built executable and code-carrier hashes are bound before UI, during mapping and after UI. vmmap must show the actual PID, runtime and app entrypoint; actual entry/final UI hierarchy PIDs and post-UI process start identity must agree.",
+    "Mapping completion must fall within original native startedAt/finishedAt. The exact original final native receipt bytes are retained and hashed. No every-launch or full-bundle claim is introduced.",
+    "All 22 native checks and their independent validator are byte-unchanged; the actual driver remains unchanged and writes phase receipts atomically. Only entry/final hierarchy attachments were added to its existing UI method.",
+    "Every Properties branch in the acceptance controller is AST-identical to reconstructed exact Properties baseline; all 23 unchanged input files match their pins. Shared helpers preserve original default behavior outside the SDK lane.",
+    "Observation has 420-second waiting and 45-second shared mapping budget; read-only subprocesses use at most10 seconds and stop joins at most15 seconds. No app activation, account mutation or provider/consent injection was added.",
+    "New hanlin-native-only controls write into the precreated top-level evidence directory. Existing always-package and always-upload retain original failure-log bytes, verified using exact unchanged packager.",
+    "Partial-start and secondary-finalizer failures cannot qualify runtime success: observation is absent or cleared, worker lifecycle is bounded, and actual original error identity plus remaining evidence export are preserved by the new SDK branch."
+  ]
+}

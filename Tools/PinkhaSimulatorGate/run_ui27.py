@@ -191,9 +191,11 @@ def test_configuration(products, blueprint):
     return candidates[0]
 
 
-def read_process_identity(pid, executable):
-    identity = subprocess.check_output(['ps', '-ww', '-p', str(pid), '-o', 'lstart=', '-o', 'comm='], text=True).strip()
-    actual_executable = subprocess.check_output(['ps', '-ww', '-p', str(pid), '-o', 'comm='], text=True).strip()
+def read_process_identity(pid, executable, *, command_timeout=lambda: None):
+    identity = subprocess.check_output(['ps', '-ww', '-p', str(pid), '-o', 'lstart=', '-o', 'comm='],
+                                       text=True, timeout=command_timeout()).strip()
+    actual_executable = subprocess.check_output(['ps', '-ww', '-p', str(pid), '-o', 'comm='],
+                                                text=True, timeout=command_timeout()).strip()
     if not identity or actual_executable != str(executable):
         raise RuntimeError(f'Actual process executable identity differs: PID {pid}, expected {executable}, observed {actual_executable!r}')
     return identity
@@ -300,8 +302,12 @@ def mapped_app_code(installed, carriers, mapping):
                 all_carriers_executed=False)
 
 
-def verify_ui_process_continuity(evidence, prefix, live, selections):
-    """Bind ordinary, non-relaunch UI methods to the process mapped before execution."""
+def verify_ui_process_continuity(evidence, prefix, live, selections, *,
+                                 scope='ORDINARY_NON_RELAUNCH_METHOD_BOUNDARIES',
+                                 command_timeout=lambda: None):
+    """Bind actual entry/final UI hierarchies to one verified live process."""
+    if scope not in {'ORDINARY_NON_RELAUNCH_METHOD_BOUNDARIES', 'ACTUAL_COLD_LAUNCH_UI_METHOD_BOUNDARIES'}:
+        raise ValueError('Unknown UI process continuity scope')
     attachments = evidence / (prefix + '-attachments')
     manifest = json.loads((attachments / 'manifest.json').read_text())
     expected = {name.removesuffix('()') for name in selections}
@@ -333,7 +339,8 @@ def verify_ui_process_continuity(evidence, prefix, live, selections):
         cases[name] = observations
     if set(cases) != expected:
         raise RuntimeError('Actual entry/final process evidence missing selected UI methods')
-    after = read_process_identity(live['pid'], Path(live['installed_app']) / 'Anytype')
+    after = read_process_identity(live['pid'], Path(live['installed_app']) / 'Anytype',
+                                  command_timeout=command_timeout)
     if after != live['process_start_identity']:
         raise RuntimeError('App process start identity changed during UI execution')
     post_main = digest(Path(live['installed_app']) / 'Anytype')
@@ -344,7 +351,8 @@ def verify_ui_process_continuity(evidence, prefix, live, selections):
     if (post_carriers['sha256'] != live['installed_code_carriers']['sha256']
             or post_carriers['sha256'] != live['built_code_carriers']['sha256']):
         raise RuntimeError('Installed executable code carriers changed during UI execution')
-    result = dict(status='PASS', scope='ORDINARY_NON_RELAUNCH_METHOD_BOUNDARIES', pid=live['pid'],
+    command_timeout()
+    result = dict(status='PASS', scope=scope, pid=live['pid'],
                   process_start_identity=live['process_start_identity'], runtime_sha256=live['runtime_sha256'],
                   post_ui_process_start_identity=after, post_ui_app_executable_sha256=post_main,
                   post_ui_code_carriers_sha256=post_carriers['sha256'], full_bundle_equivalence=False,
@@ -410,12 +418,10 @@ def verify_signed_simulator(app_bundle, evidence):
         identities=identities))
 
 
-def live_runtime(udid, evidence, built, language='en', *, source_identity):
-    if language not in {'en', 'he'}:
-        raise ValueError('Unsupported UI app language')
+def installed_runtime_source(udid, evidence, built, source_identity, *, command_timeout=lambda: None):
     installed = Path(subprocess.check_output(['xcrun', 'simctl', 'get_app_container', udid,
-                                             'io.anytype.app', 'app'], text=True).strip())
-    runtime = installed / 'Frameworks/ProtobufMessages.framework/ProtobufMessages'
+                                             'io.anytype.app', 'app'], text=True,
+                                             timeout=command_timeout()).strip())
     source = dict(**source_identity, installed_app=str(installed),
                   installed_app_executable_sha256=digest(installed / 'Anytype'),
                   built_app_executable_sha256=digest(built / 'Anytype'),
@@ -430,26 +436,28 @@ def live_runtime(udid, evidence, built, language='en', *, source_identity):
         source['status'] = 'FAIL'
         write(evidence / 'installed-app-source.json', source)
         raise RuntimeError('Installed executable code carriers differ from the fresh build')
-    launch_started_at = datetime.now(timezone.utc).isoformat()
-    launch = subprocess.check_output(['xcrun', 'simctl', 'launch', '--terminate-running-process', udid, 'io.anytype.app',
-        '-AppleLanguages', '(' + language + ')', '-AppleLocale', 'he_IL' if language == 'he' else 'en_US'], text=True,
-        env={**os.environ, 'SIMCTL_CHILD_PINKHA_UI27_ROUTE_OBSERVATION': '1',
-             'SIMCTL_CHILD_PINKHA_UI27_STARTUP_OBSERVATION': '1'})
-    pid = int(re.search(r':\s*(\d+)', launch).group(1))
-    identity = read_process_identity(pid, installed / 'Anytype')
-    mapping = subprocess.run(['/usr/bin/vmmap', '-w', str(pid)], capture_output=True, text=True)
+    return source
+
+
+def observe_running_runtime(pid, evidence, built, source, *, command_timeout=lambda: None, metadata=None):
+    """Map one supplied live PID. This function never launches or activates an app."""
+    if type(pid) is not int or pid <= 1:
+        raise ValueError('Actual app process ID is missing')
+    installed = Path(source['installed_app'])
+    runtime = installed / 'Frameworks/ProtobufMessages.framework/ProtobufMessages'
+    identity = read_process_identity(pid, installed / 'Anytype', command_timeout=command_timeout)
+    mapping = subprocess.run(['/usr/bin/vmmap', '-w', str(pid)], capture_output=True, text=True,
+                             timeout=command_timeout())
     (evidence / 'live-runtime-vmmap.log').write_text(mapping.stdout + mapping.stderr)
     loaded = (mapping.returncode == 0 and str(runtime) in mapping.stdout
               and re.search(r'\[\s*' + str(pid) + r'\s*\]', mapping.stdout) is not None)
-    identity_after = read_process_identity(pid, installed / 'Anytype')
+    identity_after = read_process_identity(pid, installed / 'Anytype', command_timeout=command_timeout)
     record = dict(pid=pid, installed_app=str(installed), runtime_path=str(runtime),
                   runtime_sha256=digest(runtime), marker_present=contains(runtime, MARKER.encode()),
-                    runtime_loaded=loaded, vmmap_exit_code=mapping.returncode,
-                    process_start_identity=identity,
-                    process_identity_unchanged=identity == identity_after,
-                    requested_app_language=language, route_observation_requested=True,
-                    launch_started_at=launch_started_at, runtime_verified_at=datetime.now(timezone.utc).isoformat(),
-                    every_launch_verified=False)
+                  runtime_loaded=loaded, vmmap_exit_code=mapping.returncode,
+                  process_start_identity=identity, process_identity_unchanged=identity == identity_after,
+                  runtime_verified_at=datetime.now(timezone.utc).isoformat(), every_launch_verified=False,
+                  **(metadata or {}))
     write(evidence / 'live-runtime.json', record)
     if not record['marker_present'] or record['runtime_sha256'] != digest(built / 'Frameworks/ProtobufMessages.framework/ProtobufMessages'):
         raise RuntimeError('Installed runtime bytes/marker differ from the verified build')
@@ -459,8 +467,23 @@ def live_runtime(udid, evidence, built, language='en', *, source_identity):
         raise RuntimeError('Installed app main executable changed during runtime mapping')
     record['mapped_app_code'] = mapped_app_code(installed, source['installed_code_carriers'], mapping.stdout)
     record.update({key: value for key, value in source.items() if key != 'status'})
+    command_timeout()
     write(evidence / 'live-runtime.json', record)
     return record
+
+
+def live_runtime(udid, evidence, built, language='en', *, source_identity):
+    if language not in {'en', 'he'}:
+        raise ValueError('Unsupported UI app language')
+    source = installed_runtime_source(udid, evidence, built, source_identity)
+    launch_started_at = datetime.now(timezone.utc).isoformat()
+    launch = subprocess.check_output(['xcrun', 'simctl', 'launch', '--terminate-running-process', udid, 'io.anytype.app',
+        '-AppleLanguages', '(' + language + ')', '-AppleLocale', 'he_IL' if language == 'he' else 'en_US'], text=True,
+        env={**os.environ, 'SIMCTL_CHILD_PINKHA_UI27_ROUTE_OBSERVATION': '1',
+             'SIMCTL_CHILD_PINKHA_UI27_STARTUP_OBSERVATION': '1'})
+    pid = int(re.search(r':\s*(\d+)', launch).group(1))
+    return observe_running_runtime(pid, evidence, built, source, metadata=dict(
+        requested_app_language=language, route_observation_requested=True, launch_started_at=launch_started_at))
 
 
 def execute(args, receipt):

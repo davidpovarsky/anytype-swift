@@ -1,0 +1,138 @@
+{
+  "schema": "sdk06-actual-ui-runtime-source-candidate-v3",
+  "status": "SOURCE_CANDIDATE_CONTROLS_PASS_NATIVE_NOT_RUN",
+  "prepared_at_utc": "2026-11-19T18:49:34.561355+00:00",
+  "base": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8",
+  "original_gap": {
+    "run_id": "44476680808",
+    "source_sha": "586c98bcc17dee425664224e508fc0e8df277678",
+    "verified_receipt_sha256": "3783f34a03a0228fd098a70bc171cfccf990b73527e90696808eeb6fed215699",
+    "pre_ui_probe_pid": 49959,
+    "actual_ui_receipt_pid": 51457,
+    "prior_native_ui_checks": 22,
+    "historical_same_ui_pid_runtime_mapping": "NOT_PROVEN"
+  },
+  "changed_files": {
+    ".github/workflows/pinkha-simulator-ui27.yml": {
+      "before_sha256": "529a4f698caa4cd05a8650cabbb63067bfcf4a09241039c6f5e39cb1b055d5a6",
+      "after_sha256": "750fd48e90d9942eae43c8aaf259df221e1fa90ef89ad0623304c353e0c45a7b",
+      "bytes": 6298,
+      "ownership": "DOWNSTREAM_ACCEPTANCE_ONLY"
+    },
+    "PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift": {
+      "before_sha256": "3133ddacc55bf184a14d25877b7653f1afcd7d8835ca7a460b724bc462c0c12d",
+      "after_sha256": "8af3eea788ab5383d754bd8fdd8ca8443e9cbf44cde34eb5ae2323bd90849824",
+      "bytes": 26662,
+      "ownership": "DOWNSTREAM_ACCEPTANCE_ONLY"
+    },
+    "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py": {
+      "before_sha256": null,
+      "after_sha256": "d053a2f8b0635460bb61121c36e5f8ac3a467c2803bc9b99cf9f985c4f606c8e",
+      "bytes": 15261,
+      "ownership": "DOWNSTREAM_ACCEPTANCE_ONLY"
+    },
+    "Tools/PinkhaSimulatorGate/run_ui27.py": {
+      "before_sha256": "de13dfeefbaa5cd224247142bb87b31ec956e70fb71fd4b28422bddeaf8c4a34",
+      "after_sha256": "e5ab251c48179411ba994f4d30f6a6f80cea8815c3cae9a2c90d115a95602403",
+      "bytes": 42984,
+      "ownership": "DOWNSTREAM_ACCEPTANCE_ONLY"
+    },
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
+      "before_sha256": "90a3e3eeb11a8a634e773f99c62d811494bd1c3616eb25698884e6f9a1a2a7ca",
+      "after_sha256": "1ccdbec99576abd7b3873272eb14dc36c5c139805c241c411007167c0a635200",
+      "bytes": 41823,
+      "ownership": "DOWNSTREAM_ACCEPTANCE_ONLY"
+    },
+    "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py": {
+      "before_sha256": null,
+      "after_sha256": "719d1b0f4f4c813676c312059bdd32061be47d9617a7bbad65d54680cfdce7f0",
+      "bytes": 28444,
+      "ownership": "DOWNSTREAM_ACCEPTANCE_ONLY"
+    }
+  },
+  "candidate_diff_sha256": "e4c51a2a9f8db77a33612d9be03bfdc4291ec08de16b99b9d263afcdd2ea03e3",
+  "changes": [
+    "Extract existing installed-code and runtime mapping checks into non-launching helpers; legacy probe wrapper keeps its one launch and existing byte/marker/entrypoint checks.",
+    "Only hanlin-native observes the actual native phase receipt during the original UI method; no substitute launch, activation, account mutation, consent injection or SDK/provider/engine change.",
+    "Fresh exact original fixture bytes and source/run/attempt, original document/account/Space and native session/process/start identity are required. Initial stale result is rejected; atomic receipt replacement never qualifies a partial read.",
+    "Installed and built main/code-carrier hashes are checked before UI and again during actual PID mapping. Original process executable/start identity and mapped runtime/entrypoint are required.",
+    "Final original native receipt, actual entry/final application hierarchy PIDs, post-UI process start identity and unchanged installed code carriers must all agree with the mapped PID. Mapping must complete within the native journey start/finish interval.",
+    "All22 existing native checks and their validator remain mandatory and unchanged. Only two hierarchy attachments are added to the original UI method.",
+    "The new observer has420s waiting budget,45s mapping budget,10s command ceilings and15s stop join; it reads only the exact owned simulator and never kills or launches an app. Existing workflow/native/UI method deadlines and branch admission are unchanged.",
+    "The hanlin-native-only CI step runs the exact29 new and20 existing receipt controls; its log is placed in the already-created top-level evidence directory, not a fresh worker subdirectory. Existing always-package/always-upload retains the log even when controls fail.",
+    "The observer start is inside the existing stop/export try/finally. A started worker is joined on cancellation; an unstarted Thread is not joined, and a delayed worker sees cancellation before its first command. Failure receipt export preserves the original start exception.",
+    "Only the new SDK observer branch isolates stop, summary, console export and original native-byte export. An active start/selection exception is preserved; fixed stage/error_type records describe secondary failures, remaining export is attempted once, and a finalizer-only failure still raises. Other lanes retain their previous finally path."
+  ],
+  "verification": {
+    "total_controls": 133,
+    "passed": 133,
+    "failed": 0,
+    "skipped": 0,
+    "new_runtime_controls": 29,
+    "unchanged_native_receipt_controls": 20,
+    "properties_acceptance_batch_regressions": 84,
+    "linux_python": "3.12",
+    "control_log_sha256": "e577b8bc3893221bf1e5b1a524290570af5d3057983fe128c8ebd2b4b018165c",
+    "exact_two_ci_commands": "PASS_49_CONTROLS",
+    "ci_command_log_sha256": "e5bf1f1811dfb05b2c579e4d79c5d06d653f9f206df28191d5f416b249a2650d",
+    "failure_log_packaging": "PASS_ORIGINAL_BYTES_RETAINED_BY_EXACT_EXISTING_PACKAGER",
+    "packager_source_sha256": "0faf11a18f2c8a220fab570ef3a199e2016091340c0b261148dd7c581294c895",
+    "whitespace": "PASS"
+  },
+  "adversarial_controls": [
+    "stale/completed/wrong-source/wrong-fixture receipt",
+    "changed actual process/session/start/source or final original bytes",
+    "atomic native receipt replacement during read",
+    "changed original fixture bytes",
+    "changed executable carriers between pre-UI validation and mapping",
+    "another simulator application path",
+    "wrong vmmap PID or missing app entrypoint/runtime marker",
+    "wrong executable or changed process start identity",
+    "original probe PID reused as UI-boundary proof",
+    "missing UI hierarchy or changed post-UI code carrier",
+    "mapping after native finish",
+    "bounded cancellation and exhausted shared mapping deadline",
+    "actual controller partial-start KeyboardInterrupt joins a real bounded worker, skips UI selection, preserves the original exception and exports failure bytes",
+    "Thread.start fails before starting: no invalid join, original error preserved and failure evidence still exported",
+    "actual controller stop-write failure preserves primary KeyboardInterrupt and exports original native bytes; without primary it fails closed",
+    "actual controller final_bytes RuntimeError/ReceiptReplaced preserves the original SelectionFailure/KeyboardInterrupt; without primary it fails closed",
+    "console export failure preserves the primary cancellation and still exports original native bytes",
+    "secondary evidence reports contain only fixed stage/error_type; the failed action and UI selection are attempted once"
+  ],
+  "preserved": {
+    "properties_source_hunks": true,
+    "original_22_native_checks": true,
+    "native_driver_source": true,
+    "sdk_and_product_sources": true,
+    "kit_pins": true,
+    "source_branch_admission": true,
+    "original_method_deadlines": true,
+    "no_new_app_launch": true
+  },
+  "limits": {
+    "apple_typecheck": "NOT_RUN",
+    "actual_native_ui_runtime_gate": "NOT_RUN",
+    "physical_device": "NOT_RUN",
+    "every_launch_verified": false,
+    "full_sdk_acceptance": false,
+    "release_accepted": false,
+    "full_bundle_equivalence": false,
+    "remote_publication": "NOT_DONE",
+    "ci_dispatch": "NOT_DONE",
+    "post_ui_process_requirement": "The same actual app process must still be observable after its UI method; absent/replaced process fails closed.",
+    "observer_deadline": "Subprocesses are timed; filesystem/hash work cooperatively checks the same deadline. A nonjoining observer cannot qualify and existing workflow bounds remain outer process limits."
+  },
+  "independent_review_followup": {
+    "v1_report_sha256": "7e2c916e2805e679e28046ab30c23b0f183b6d18d183a48baa8110b2cbbad284",
+    "finding": "Partial start cancellation before the existing try/finally bypassed observer stop and failure export.",
+    "peer_reproduction_path": "asana-audit/sdk06-t2-independent/partial-start-cancellation-reproduction.json",
+    "resolution": "BOTH_SOURCE_FINDINGS_FIXED_AND_EIGHT_ADDED_REGRESSION_CONTROLS_PASS_PENDING_INDEPENDENT_REVIEW",
+    "changed_from_v1": [
+      "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py",
+      "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+      "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py"
+    ],
+    "v2_report_sha256": "e8b2d39438a4745966ac01cde2e0a8a4eba1ee1ef7e36d21a0010389b02629dc",
+    "second_finding": "New observer finalizer failures could mask an active start/selection error or prevent remaining evidence export."
+  }
+}

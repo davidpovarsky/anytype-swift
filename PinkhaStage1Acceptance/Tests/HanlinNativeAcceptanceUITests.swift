@@ -56,6 +56,7 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
             "SpaceHub", "SpaceHub", "NewSpaceButton", "NewSpaceButton"
         )).firstMatch
         XCTAssertTrue(home.waitForExistence(timeout: 45), "The actual Home must finish its native account/Space handshake")
+        attachHierarchy("entry-hierarchy")
         var route = URLComponents()
         route.scheme = "anytype"
         route.host = "object"
@@ -140,6 +141,7 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         attachment.lifetime = .keepAlways
         add(attachment)
         attachScreenshot("hanlin-native-authority-revocations-complete")
+        attachHierarchy("final-hierarchy")
     }
 
     private func requireLoggedOutRoot() throws {
@@ -376,6 +378,13 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
         XCTAssertEqual(result, .completed,
                        "The exact native controls must become ready within their existing \(timeout)-second budget")
         for control in controls { XCTAssertTrue(control.isHittable) }
+    }
+
+    private func attachHierarchy(_ name: String) {
+        let attachment = XCTAttachment(string: app.debugDescription)
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
     }
 
     private func attachScreenshot(_ name: String) {
