@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the built app's declared single-scene ownership boundary."""
+"""Verify built app ownership and narrowly scoped loopback transport."""
 from pathlib import Path
 import argparse, hashlib, json, plistlib
 
@@ -11,6 +11,11 @@ def main():
     plist = args.bundle / "Info.plist"
     raw = plist.read_bytes()
     values = plistlib.loads(raw)
+    transport = values.get("NSAppTransportSecurity", {})
+    expected_transport = {"NSExceptionDomains": {
+        "127.0.0.1": {"NSExceptionAllowsInsecureHTTPLoads": True}}}
+    if transport != expected_transport:
+        raise SystemExit("The native HTTP exception must be limited to its literal IPv4 loopback host")
     manifest = values.get("UIApplicationSceneManifest", {})
     if manifest.get("UIApplicationSupportsMultipleScenes") is not False:
         raise SystemExit("The built native app must explicitly disable simultaneous scenes")
@@ -33,6 +38,9 @@ def main():
         "bundleIdentifier": values["CFBundleIdentifier"],
         "infoPlistSHA256": hashlib.sha256(raw).hexdigest(),
         "multipleScenes": False,
+        "transportExceptionDomains": ["127.0.0.1"],
+        "transportConfiguration": transport,
+        "transportReference": "https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity/nsexceptiondomains",
         "minimumOSVersion": values["MinimumOSVersion"],
         "deviceFamilies": families,
         "executable": executable,

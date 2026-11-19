@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "status": "PATCHED_RUNTIME_3_PASS_UI_BUILD_FAILED",
+  "archivedAt": "2026-11-19T21:39:47.725345+00:00",
+  "run": 44609865615,
+  "job": 135864438075,
+  "jobConclusion": "failure",
+  "artifact": 14575582598,
+  "nativeFrameworkArtifact": 14576992065,
+  "commit": "27b4b2c3917aa6802ca042e6e63914b2f0aac52c",
+  "profiles": {
+    "runtime": {
+      "status": "PASS",
+      "counts": {
+        "totalTestCount": 3,
+        "passedTests": 3,
+        "failedTests": 0,
+        "skippedTests": 0
+      },
+      "failure": null
+    },
+    "hanlin-ios": {
+      "status": "FAIL",
+      "counts": null,
+      "failure": {
+        "kind": "RuntimeError",
+        "description": "Zero or incomplete test execution"
+      }
+    },
+    "ui-ios": {
+      "status": "FAIL",
+      "counts": null,
+      "failure": {
+        "kind": "RuntimeError",
+        "description": "Zero or incomplete test execution"
+      }
+    },
+    "application": {
+      "status": "FAIL",
+      "counts": null,
+      "failure": {
+        "kind": "RuntimeError",
+        "description": "Zero or incomplete test execution"
+      }
+    },
+    "native-ui": {
+      "status": "FAIL",
+      "counts": null,
+      "failure": {
+        "kind": "RuntimeError",
+        "description": "Zero or incomplete test execution"
+      }
+    }
+  },
+  "scope": "Patched v7 AnyLib actually passed3 lifecycle/control tests on arm64 iOS Simulator27.2. No Hanlin/UIKit/application/NativeLaunch acceptance.",
+  "observedBlockers": [
+    "PinkhaAnyHanlin product scheme is not configured for test action; no protected iOS tests executed.",
+    "AnyNativePropertiesView unlinkAssociation lacks try/error handling; UIKit and NativeApplication test builds fail.",
+    "App target and library both produce PinkhaAnyNative.swiftmodule; app build fails before launch."
+  ],
+  "sourceWarnings": [
+    "AnyDocumentPresentation Sendable conformance added through another-file extension; a checked declaration at its MainActor class definition is being added."
+  ],
+  "artifactURL": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44609865615/artifacts/14575582598",
+  "nativeFrameworkURL": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44609865615/artifacts/14576992065",
+  "files": [
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/application-named-execution.json",
+      "sha256": "2a0b4df0c8a3ba1201899b1fd9294678ee4a80c207ba0d02444e9b7e1768aed6",
+      "bytes": 1034
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/application-test-counts.json",
+      "sha256": "dc3293a2a714016118b5142827942f7ca3c9c53acb8aa0d8ccccf149394a4180",
+      "bytes": 466
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/application-test-methods.json",
+      "sha256": "5421d13116a58ca2d5ef3a6a91e15e7f308c97a65ee33eed96d0a0a8254aa9ee",
+      "bytes": 379
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/application.log",
+      "sha256": "e2577160e1428619a9f65a3e11f56e100c305b287bde3af12cc46406ad3bda85",
+      "bytes": 1695427
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/artifact-metadata.json",
+      "sha256": "7204bade5b5cd4921bdc7e42047b87d7e0aa69ef478fa4ad79554cbfac506a00",
+      "bytes": 784
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/hanlin-ios-named-execution.json",
+      "sha256": "211d9ebc05c0d84420e88f56b4d1800c2bed30076906299ada63ae3e2ab2bc4b",
+      "bytes": 722
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/hanlin-ios-test-counts.json",
+      "sha256": "064824d6af68e82ab5e9ef8b8ea919cee0be1b8131aae91279234f987570d8d8",
+      "bytes": 439
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/hanlin-ios-test-methods.json",
+      "sha256": "410ad17f24efc5095ca1ba1e1e472290bb12eaf0c1a4cc5f471c7139ed525ce0",
+      "bytes": 242
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/hanlin-ios.log",
+      "sha256": "408a558b353cefd2ff7853495e59c637b3fe4b9e0ecd94fda41fe1c1daa758b3",
+      "bytes": 3955
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/native-build.log",
+      "sha256": "44f58d8a0f14f50b32765eccc87778d5cd8540fa043b143673f1a700462b65bd",
+      "bytes": 1760
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/native-framework-artifact-metadata.json",
+      "sha256": "492636029240a5833c639e7469ce0ec4b9093fd6e0fd9020a8d086fc85a899cc",
+      "bytes": 780
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/native-source.json",
+      "sha256": "ef3a584370709614724c0bb8f9884b140110ff404328ab2a0e06fe957038abc5",
+      "bytes": 21238
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/native-ui-named-execution.json",
+      "sha256": "2553370502d995bb0895e40bded19e33788a8ab348c7491f424fc738697af136",
+      "bytes": 679
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/native-ui-test-counts.json",
+      "sha256": "908d39e1568e5e5be14d82c9d583f7d4cefa2ffbfd4da5eb4b5395b279fc580b",
+      "bytes": 472
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/native-ui-test-methods.json",
+      "sha256": "5421d13116a58ca2d5ef3a6a91e15e7f308c97a65ee33eed96d0a0a8254aa9ee",
+      "bytes": 379
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/native-ui.log",
+      "sha256": "51c82740d1c6303677f9b064d5b399527216cdba6bbca1142849d09f8597dabc",
+      "bytes": 48040
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/runtime-named-execution.json",
+      "sha256": "4e3936ca60939ae736e117c618c18fce53fccae3f9b6a567564eeb8d1504bb66",
+      "bytes": 1846
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/runtime-test-counts.json",
+      "sha256": "fda85c9464bb6ee36c5e104521201685c24602ddfbdec601b6c325d783bdeec1",
+      "bytes": 1034
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/runtime-test-methods.json",
+      "sha256": "9315a4bff46848aad3c09e851ec617cdd3161c5d541bde3e14c08d8d01179b24",
+      "bytes": 2981
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/runtime.log",
+      "sha256": "5a7fef92be2d77401f7f404e2675897fa008b68494a927f8f8a187950214d614",
+      "bytes": 234677
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/simulator.json",
+      "sha256": "3d93ad14eaf7634e165f71b4e479148bbc2edffa51db5d32357a2c143bdccf4c",
+      "bytes": 184
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/source-sha.txt",
+      "sha256": "3ec6348ff94fa2c078978c09e92b460e95832aa5666acd320ac09a74b9892fb9",
+      "bytes": 41
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/ui-ios-named-execution.json",
+      "sha256": "af3c55598330d8155da2a1d555df79a78870caca5a8417436f9ae75f21d59c77",
+      "bytes": 861
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/ui-ios-test-counts.json",
+      "sha256": "a4ff9961fae279dd59b99b09be0b62e000df6b083ed75a19f92552fa28f5d46a",
+      "bytes": 458
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/ui-ios-test-methods.json",
+      "sha256": "5421d13116a58ca2d5ef3a6a91e15e7f308c97a65ee33eed96d0a0a8254aa9ee",
+      "bytes": 379
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/ui-ios.log",
+      "sha256": "9db9843716aef479a6589a1ca4c5cccfcfe1599bbc643f04e8a741a6a28e0199",
+      "bytes": 2617201
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/workflow-job.log",
+      "sha256": "f60f55c75475ebeefd1bd86c2288a069dac94eb731a93d20a93df4dbaeaaa42c",
+      "bytes": 5271918
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-patched-runtime-v1/xcode-version.txt",
+      "sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77",
+      "bytes": 33
+    }
+  ]
+}

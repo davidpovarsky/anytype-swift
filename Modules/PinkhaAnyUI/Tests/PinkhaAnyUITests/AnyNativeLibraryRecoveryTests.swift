@@ -11,8 +11,9 @@ struct AnyNativeLibraryRecoveryTests {
     private func workspace(_ account: String = "account", _ space: String = "space") throws -> AnyTorahWorkspace {
         try .init(accountID: account, spaceID: space)
     }
-    private func block(text: String = "old", version: String = "v1") throws -> AnyEditorBlock {
-        try .init(native: .object(["id": .string("block"), "type": .string("paragraph"),
+    private func block(text: String = "old", version: String = "v1",
+                       type: String = "paragraph") throws -> AnyEditorBlock {
+        try .init(native: .object(["id": .string("block"), "type": .string(type),
             "text": .string(text), "nav": .object(["parentId": .string(""), "pos": .string("PPPP")]),
             "style": .object(["future": .object(["exact": .integer(9_007_199_254_740_993)])]),
             "_ver": .object(["text": .string(version), "style": .object(["future": .string("style-v1")])])]))
@@ -87,6 +88,24 @@ struct AnyNativeLibraryRecoveryTests {
             try AnyNativeDocumentRecoverySnapshot(workspace: workspace(), objectID: "document",
                 dataset: "other-part", drafts: [draft()], selectedBlockIDs: [], focusedBlockID: nil,
                 selection: .init(location: 0, length: 0))
+        }
+    }
+    @Test func scalarBoundariesAreValidatedOnDisplayedAndCodeText() throws {
+        for (base, source) in [(try block(), "**😀**"), (try block(type: "code"), "😀")] {
+            for range in [NSRange(location: 1, length: 0), NSRange(location: 0, length: 1),
+                          NSRange(location: 1, length: 1)] {
+                #expect(throws: AnyNativeRecoveryError.invalidSnapshot) {
+                    try AnyNativeRecoveredBlockDraft(base: base, inlineMarkdown: source,
+                        selection: range, revision: 0)
+                }
+            }
+            for range in [NSRange(location: 0, length: 0), NSRange(location: 0, length: 2),
+                          NSRange(location: 2, length: 0)] {
+                let value = try AnyNativeRecoveredBlockDraft(base: base, inlineMarkdown: source,
+                    selection: range, revision: 0)
+                #expect(value.selection == range)
+                #expect(value.inlineMarkdown == source)
+            }
         }
     }
     @Test func capacityFailureNeverEvictsOlderUnsavedContent() throws {

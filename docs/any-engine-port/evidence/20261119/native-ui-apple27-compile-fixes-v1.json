@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-11-19T21:37:21.712106+00:00",
+  "status": "PARSE_PASS_APPLE_REBUILD_PENDING",
+  "trigger": "Actual Apple27 UIKit/NativeApplication diagnostics: missing try in property unlink and cross-file Sendable conformance warning",
+  "scope": "Two exact source corrections with syntax-only validation; no UIKit semantic build or test execution",
+  "sourcesBeforeCorrection": {
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift": "5bc414090b93845045f8923df083d5d41b476be45bc68a00fcd6b87c0e633e91",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift": "81dfe4bdae4a8b5a80da867268342922b9aaa8ca5a50030e7e9c41614d200109"
+  },
+  "sources": {
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift": "9f74301fbf8bcf25aabb773250a248ae15f22dc08da06402d3db8655091bf02a",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift": "02f4fb36d9f7b366dc8a2fc373b2de48f15735fe86fbec381e840b0ed5956f56"
+  },
+  "sourceStable": true,
+  "command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+    "-frontend",
+    "-parse",
+    "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\Modules\\PinkhaAnyUI\\Sources\\PinkhaAnyUI\\AnyNativePropertiesView.swift",
+    "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\Modules\\PinkhaAnyUI\\Sources\\PinkhaAnyUI\\AnyDocumentPresentation.swift"
+  ],
+  "exitCode": 0,
+  "diagnostics": "",
+  "error": null,
+  "mainActorIsolationPreserved": true,
+  "uncheckedSendableAdded": false,
+  "errorFeedback": "Existing shared-session localized error retained; absent message receives visible error fallback; no retry",
+  "readOnlyConformanceFile": {
+    "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+    "sha256": "fa52c9cd1386acd2bd7d8fa26c6214e2d125c95c302f8e82be76cd8c4bb5bef0"
+  },
+  "testsExecuted": 0
+}

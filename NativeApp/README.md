@@ -35,6 +35,13 @@ suite uses Modules/PinkhaAnyNative, scheme PinkhaAnyNative.
 
 ## Ownership and recovery
 
+The executable declares an HTTP exception only for the literal `127.0.0.1`
+address used by its embedded Any server. The built-bundle gate verifies that
+exact transport configuration; ordinary provider connections keep the default
+ATS policy. The runtime's per-boot control token and account/run checks still
+apply to every native request. See Apple's
+[IP-address exception contract](https://developer.apple.com/documentation/bundleresources/information-property-list/nsapptransportsecurity/nsexceptiondomains).
+
 The app owns one managed runtime generation, one authenticated account and one
 active Space. The Keychain service is specific to this executable. Recovery
 phrases are handed only to explicit backup/recovery UI; control tokens are
@@ -85,7 +92,7 @@ Do not stack historical v1–v6 patches on top of this overlay.
 | Apple package execution at a5a4a6 | Engine 67; Integration 107; Host 55 XCTest + 11 SwiftTesting; Hanlin 28; PinkhaKit 217 | All passed on macOS/Xcode 27; the same run's Presentation and AnyUI dependency compilation failed on the shared Sendable contract |
 | New native application acceptance | 5 real AnyLib/Keychain/journal tests written | Includes the full T5/quote/reopen path; Apple execution pending |
 | Native AnyUI composition and focus | Dedicated UIKit acceptance suite written | Pure composition checks passed separately; actual UIKit execution remains pending |
-| Separate executable acceptance | 4 XCUITests written | Real onboarding, Hebrew edit, Hanlin consent, hierarchy move, property visibility, background and cold reopen pending Apple execution |
+| Separate executable acceptance | 5 XCUITests written | Real onboarding, Hebrew edit, Hanlin consent, hierarchy/property workflow, live source inspector quote/Note flow, background and cold reopen pending Apple execution |
 
 Read the source-bound receipts rather than adding these counts together: scopes,
 versions and fixtures differ, and later features are not certified by an older run.

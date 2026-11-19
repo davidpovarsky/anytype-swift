@@ -359,8 +359,25 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          xcodebuild -list -json \
+            > "$GITHUB_WORKSPACE/build/any-patched-evidence/hanlin-schemes.json"
+          python3 - "$GITHUB_WORKSPACE/build/any-patched-evidence/hanlin-schemes.json" <<'PY'
+          import json, pathlib, sys
+          source = pathlib.Path(sys.argv[1])
+          data = json.loads(source.read_text())
+          containers = [data, data.get("workspace", {}), data.get("project", {})]
+          schemes = {scheme for item in containers if isinstance(item, dict)
+                     for scheme in item.get("schemes", []) if isinstance(scheme, str)}
+          expected = "PinkhaAnyHanlin-Package"
+          if expected not in schemes:
+              raise SystemExit("Missing documented aggregate test scheme: " + expected)
+          source.with_name("hanlin-scheme-selected.json").write_text(json.dumps({
+              "selected": expected, "observedSchemes": sorted(schemes),
+              "scope": "generated_scheme_preflight_not_test_execution"
+          }, indent=2) + "\n")
+          PY
           xcodebuild test \
-            -scheme PinkhaAnyHanlin \
+            -scheme PinkhaAnyHanlin-Package \
             -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
             -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/hanlin-ios.xcresult" \

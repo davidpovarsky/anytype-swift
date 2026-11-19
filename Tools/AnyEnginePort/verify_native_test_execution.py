@@ -59,6 +59,7 @@ PROFILES = {
             "testBackgroundAndForegroundReopenTheOwnedRuntime",
             "testCreateEditHanlinConsentBackgroundAndColdReopen",
             "testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+            "testSourceInspectorQuoteAndNoteSurviveColdReopen",
         ],
     },
 }

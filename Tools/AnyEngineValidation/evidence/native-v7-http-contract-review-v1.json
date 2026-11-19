@@ -1,0 +1,109 @@
+{
+  "status": "SOURCE_REVIEW_COMPLETE_CAUSE_UNRESOLVED",
+  "scope": "Independent read-only current AnyHTTPClient/native Echo contract review; no new requests, probes, compilation or production setting change.",
+  "nativeCommit": "51660ece686df64f59f18d42bcd67e541ba7fa99",
+  "nativeBinarySHA256": "12c7fb62164c830410331aabf616194edb0711a083250f8e8dd34c3cba52078b",
+  "nativeManifestSHA256": "62a13310a474d93d728258d0631618b09056a20c4454bd7be303f3ec071fb77c",
+  "compiledHTTPAndProbeSourceMatch": true,
+  "files": [
+    {
+      "root": "app",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "sha256": "5da381da640730ffcb82c60cd6effc0ced56710deefe743cd2fe20d4ed0a8c57"
+    },
+    {
+      "root": "app",
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegrationProbe/GuardedHierarchyProbe.swift",
+      "sha256": "7c12b224fb36a584e4a808b7d355cd8ecf3bfcaca830aa54890499e443e09e39"
+    },
+    {
+      "root": "native-v7",
+      "path": "internal/server/server.go",
+      "sha256": "cf47feb061a5541d38f36b53a82288e1eb19669f93b179669393137e78f7e651"
+    },
+    {
+      "root": "native-v7",
+      "path": "internal/server/routes.go",
+      "sha256": "298cecd808ac2b28ca90dc5ab2e3632c221f33ff4647b726e99d7ff7875c4225"
+    },
+    {
+      "root": "native-v7",
+      "path": "internal/server/handlers_auth.go",
+      "sha256": "9d8d3a14334e033f248aaf81d6205aeba6ae5718ca1ae6c5619dab833526f744"
+    },
+    {
+      "root": "native-v7",
+      "path": "internal/server/handlers_meta.go",
+      "sha256": "cc46dc417918f1e963f9e184e6f9fb304d6b7d86fc711f74cc0e2072f01f1bfc"
+    },
+    {
+      "root": "native-v7",
+      "path": "internal/server/gate.go",
+      "sha256": "56daf9b982281f7b6ee8d5aac3a1ef8c22bb587ca44b494afd1bf2d6e3a3ccee"
+    },
+    {
+      "root": "native-v7",
+      "path": "internal/server/control.go",
+      "sha256": "02c930ea7a19cac4ff75ace7338c5688b39641e7ad007d67624053ae05bf120e"
+    },
+    {
+      "root": "native-v7",
+      "path": "internal/server/pinkha_gateway.go",
+      "sha256": "c256ebf6b3c304edfb531ab5dda95dfb7a5ce26779322fc1714c5d1d4a27cee8"
+    },
+    {
+      "root": "native-v7",
+      "path": "internal/server/pinkha_gateway_mobile.go",
+      "sha256": "10100dc0e960483bf190c6230932b1486bfd769137d5326c0627dad73a930272"
+    },
+    {
+      "root": "native-v7",
+      "path": "internal/server/pinkha_gateway_desktop.go",
+      "sha256": "5e438b552c2a48f7cad5780a57be7c6eb4d94cc8c22f282fc73098482d3c99d8"
+    },
+    {
+      "root": "echo-v4.13.4",
+      "path": "json.go",
+      "sha256": "03dcdd8e2c46746fb6bba8cdfa97c82686ebbf26229e7786c38230d8c4de4760"
+    },
+    {
+      "root": "echo-v4.13.4",
+      "path": "response.go",
+      "sha256": "b1de3c59c9a6e50f317a500f19600904f8e4760b2ccb6a70530035962f103114"
+    }
+  ],
+  "inference": {
+    "kind": "static control-flow inference, not captured request trace",
+    "request": "GET /v1/auth",
+    "phase": "preflight before the second guarded object creation",
+    "basis": [
+      "The first folder ID was appended only after requestJSON returned successfully; the custom child call is next.",
+      "The second create uses an empty authorize closure.",
+      "raw catches every non-GET transport error and replaces it with writeUncertain.",
+      "The post-response account check converts its failure to known-ID recovery or writeUncertain for POST.",
+      "An unchanged Foundation.URLError therefore propagates from the initial checkAccount raw GET before POST dispatch."
+    ],
+    "rootCause": "unresolved"
+  },
+  "findings": [
+    "URLRequest.timeoutInterval is30 seconds. URLSession is ephemeral, cookies/cache disabled; the code changes no keepalive, pipelining, connection-count or framing setting.",
+    "The redirect delegate is stateless and only declines redirects. No application lock, semaphore or blocked main-actor delegate is held around data(for:).",
+    "Managed GET /auth returns gated account identity plus static capabilities immediately; it skips standalone account/wallet enumeration. Gate enter/leave lock only a generation admission counter and do not wait for SDK writes.",
+    "Echo server.Run/buildEcho configure no ordinary read/write/idle deadline. The one-second response write deadline belongs only to engine teardown cancellation.",
+    "Echo serializes JSON through encoding/json.Encoder and delegates Write to the underlying Go ResponseWriter; no hand-written content length or chunk framing was found.",
+    "Retained Python controls on the same native fixture successfully read fixed-length and chunked responses over one persistent HTTP/1.1 connection. This does not prove FoundationNetworking behavior."
+  ],
+  "separateRoutingObservation": {
+    "path": "/debug/pprof/*",
+    "tokenGatewayScope": "/v1 group only",
+    "sourceFact": "The pprof route is mounted on root Echo outside the mobile-managed token gateway.",
+    "probed": false,
+    "causalToTimeout": false
+  },
+  "unsupportedConclusions": [
+    "No demonstrated native storage deadlock",
+    "No demonstrated malformed response framing",
+    "No justified blanket keepalive-off or longer deadline fix",
+    "No hierarchy20 PASS or Windows transport reliability claim"
+  ]
+}

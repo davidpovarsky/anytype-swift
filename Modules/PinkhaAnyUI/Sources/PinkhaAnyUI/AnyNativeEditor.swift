@@ -243,6 +243,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         cell.textView.inputAccessoryView = toolbar(for: cell.textView)
         let label = presentation.torah.linkedAssociationLabel(blockId: block.id)
         cell.sourceButton.isHidden = label == nil
+        cell.sourceButton.accessibilityIdentifier = "any-native-block-sources-" + block.id
         cell.sourceButton.setTitle(label, for: .normal)
         cell.sourceAction = { [weak presentation] in presentation?.torah.openLinkedAssociations(blockId: block.id) }
         cell.stateLabel.isHidden = supported && projection.isEditable

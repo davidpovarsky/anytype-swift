@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+"""Compile exact inline codec, exact Hanlin renderer, and all 13 exact XCTest methods.
+This is a component proof with hashed cached dependency objects, not SwiftPM or UIKit.
+The cached PinkhaAnyHanlin implementation objects are deliberately excluded.
+"""
+from pathlib import Path
+from datetime import datetime, timezone
+import argparse, hashlib, json, os, re, subprocess, sys, time
+
+def sha(p):
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+def now():
+    return datetime.now(timezone.utc).isoformat()
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", type=Path, required=True)
+    parser.add_argument("--swiftc", type=Path, required=True)
+    args = parser.parse_args()
+    root = args.root.resolve()
+    retained = root / "build/any-engine-port/hanlin-component-cached-dependencies-v1"
+    debug = retained / "x86_64-unknown-windows-msvc/debug"
+    work = root / "build/any-engine-port/inline-hanlin-components-v5"
+    work.mkdir(parents=True, exist_ok=True)
+    output = work / "receipt.json"
+    originals = [
+        "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyInlineMarkdown.swift",
+        "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinPlainText.swift",
+        "Modules/PinkhaAnyHanlin/Tests/PinkhaAnyHanlinTests/AnyHanlinPlainTextTests.swift",
+    ]
+    before = {p: sha(root / p) for p in originals}
+    for p in originals:
+        (work / Path(p).name).write_bytes((root / p).read_bytes())
+    tests_source = (work / "AnyHanlinPlainTextTests.swift").read_text(encoding="utf-8")
+    tests = re.findall(r"    func (test\w+)\(\)", tests_source)
+    assert len(tests) == 13 and len(set(tests)) == 13
+    main_source = "import XCTest\n@main struct InlineHanlinComponents {\n    static func main() {\n        XCTMain([testCase([\n"
+    main_source += ",\n".join('            ("' + n + '", AnyHanlinPlainTextTests.' + n + ')' for n in tests)
+    main_source += "\n        ])])\n    }\n}\n"
+    (work / "Run.swift").write_text(main_source, encoding="utf-8")
+    retained_receipt = json.loads((retained / "manifest.json").read_text())
+    assert retained_receipt["status"] == "PRESERVED_AND_RELEASED_ENGINE_CACHE"
+    objects = [retained / p for p in retained_receipt["originalObjectList"]]
+    excluded = []
+    assert all(p.is_file() for p in objects)
+    assert not any("PinkhaAnyHanlin.build" in str(p) for p in objects)
+    deps = {p.relative_to(root).as_posix(): sha(p) for p in objects}
+    for p in (debug / "Modules").glob("*.swiftmodule"):
+        deps[p.relative_to(root).as_posix()] = sha(p)
+    (work / "objects.rsp").write_text("\n".join('"' + str(p) + '"' for p in objects), encoding="utf-8")
+    command = [
+        str(args.swiftc), "-parse-as-library", "-swift-version", "6",
+        "-module-name", "PinkhaInlineHanlinValidation", "-enable-testing",
+        "-I", str(debug / "Modules"), "-module-cache-path", str(work / "ModuleCache"),
+        "-sdk", r"C:\Users\DAVID\AppData\Local\Programs\Swift\Platforms\6.3.3\Windows.platform\Developer\SDKs\Windows.sdk",
+        "-use-ld=lld",
+    ]
+    xctest = Path(r"C:\Users\DAVID\AppData\Local\Programs\Swift\Platforms\6.3.3\Windows.platform\Developer\Library\XCTest-6.3.3\usr")
+    command += ["-I", str(xctest / "lib/swift/windows"), "-I", str(xctest / "lib/swift/windows/x86_64"), "-L", str(xctest / "lib/swift/windows/x86_64")]
+    for module in [
+        "swift-crypto/Sources/CCryptoBoringSSLShims/include",
+        "swift-crypto/Sources/CCryptoBoringSSL/include",
+        "swift-cmark/src/include", "swift-cmark/extensions/include",
+        "swift-markdown/Sources/CAtomic/include",
+    ]:
+        path = retained / "checkouts" / module
+        command += ["-Xcc", "-fmodule-map-file=" + str(path / "module.modulemap"), "-Xcc", "-I" + str(path)]
+    command += [str(work / "Run.swift")]
+    command += [str(work / Path(p).name) for p in originals]
+    command += ["@" + str(work / "objects.rsp"), "-o", str(work / "validation.exe")]
+    receipt = {
+        "status": "RUNNING", "startedAt": now(), "scope": "exact production inline codec and Hanlin renderer with exact 13 XCTest method source; cached dependency contracts; component namespace",
+        "sourceManifest": before, "copiedSourceManifest": {p: sha(work / Path(p).name) for p in originals},
+        "cachedDependencyManifest": deps, "excludedCachedHanlinImplementationObjects": "all PinkhaAnyHanlin.build and probe implementation objects excluded by preserved dependency manifest", "preservedDependencyManifestSHA256": sha(retained / "manifest.json"),
+        "testNames": tests, "expectedTestCount": 13, "runnerSHA256": sha(Path(__file__)),
+        "driverSHA256": sha(work / "Run.swift"), "command": command,
+        "limitations": [
+            "Does not claim a complete SwiftPM package build or UIKit/native engine execution.",
+            "Fresh source is compiled in a component namespace. Original test imports remain unchanged; locally compiled declarations take precedence.",
+            "Cached PinkhaAnyHanlin implementation objects are excluded, so the renderer under test is the freshly compiled source.",
+            "Shared Host-to-AnyUI aliases are independently compiled and exercised by component33.",
+        ],
+    }
+    output.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+    env = os.environ.copy()
+    env["PATH"] = str(xctest / "bin64") + os.pathsep + str(args.swiftc.parent) + os.pathsep + env.get("PATH", "")
+    build_log = work / "build.log"; run_log = work / "test.log"
+    build_code = None; run_code = None; harness_error = None
+    def bounded_run(command, stream, deadline):
+        process = subprocess.Popen(command, cwd=work, env=env, stdout=stream, stderr=subprocess.STDOUT)
+        try:
+            return subprocess.CompletedProcess(command, process.wait(timeout=deadline))
+        except subprocess.TimeoutExpired:
+            if process.poll() is None:
+                subprocess.run(["taskkill", "/PID", str(process.pid), "/T", "/F"], stdout=stream, stderr=subprocess.STDOUT, timeout=30)
+                process.wait(timeout=30)
+            raise
+    started = time.monotonic()
+    try:
+        with build_log.open("wb") as stream:
+            built = bounded_run(command, stream, 180)
+        build_code = built.returncode
+        if build_code == 0:
+            with run_log.open("wb") as stream:
+                ran = bounded_run([str(work / "validation.exe")], stream, 60)
+            run_code = ran.returncode
+    except Exception as error:
+        harness_error = type(error).__name__
+    text = run_log.read_text(encoding="utf-8", errors="replace") if run_log.is_file() else ""
+    summaries = re.findall(r"Executed (\d+) tests?, with (\d+) failures", text)
+    count, failures = tuple(map(int, summaries[-1])) if summaries else (0, 0)
+    passed = re.findall(r"Test Case '[^']*\.(test\w+)' passed", text)
+    source_stable = before == {p: sha(root / p) for p in originals}
+    deps_stable = all((root / p).is_file() and sha(root / p) == digest for p, digest in deps.items())
+    valid = build_code == 0 and run_code == 0 and count == 13 and failures == 0 and set(passed) == set(tests) and len(passed) == 13
+    receipt.update({
+        "status": "PASS" if valid and source_stable and deps_stable else "FAIL",
+        "finishedAt": now(), "elapsedSeconds": round(time.monotonic() - started, 3),
+        "buildExitCode": build_code, "testExitCode": run_code, "harnessError": harness_error,
+        "sourceStable": source_stable, "cachedDependenciesStable": deps_stable,
+        "executedTestCount": count, "failureCount": failures, "passed": passed,
+        "buildLogSHA256": sha(build_log) if build_log.is_file() else None,
+        "testLogSHA256": sha(run_log) if run_log.is_file() else None,
+        "binarySHA256": sha(work / "validation.exe") if (work / "validation.exe").is_file() else None,
+    })
+    output.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps({k: receipt[k] for k in ("status", "executedTestCount", "failureCount", "sourceStable", "cachedDependenciesStable", "buildExitCode", "testExitCode", "harnessError")}), flush=True)
+    if receipt["status"] != "PASS":
+        print(build_log.read_text(encoding="utf-8", errors="replace")[-16000:] if build_log.is_file() else "")
+        print(text[-16000:])
+    return 0 if receipt["status"] == "PASS" else 1
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -45,7 +45,7 @@ private struct AnyDocumentComposition {
 /// One mounted native document. All native work has an account/run lease; each
 /// mutation additionally rechecks this UI epoch at the actual dispatch seam.
 @MainActor @Observable
-public final class AnyDocumentPresentation {
+public final class AnyDocumentPresentation: Sendable {
     public let objectID: String
     public let workspace: AnyTorahWorkspace
     public let torah: TorahEditorSession
@@ -69,6 +69,7 @@ public final class AnyDocumentPresentation {
     public var sourceDocumentsTitle: String?
     public private(set) var nativeProperties: AnyNativeDerivedDocumentProperties?
     public var onOpenObject: ((String, String?) -> Void)?
+    private var navigation = AnyNativeDocumentNavigation()
     @ObservationIgnored public weak var surface: (any AnyEditorMountedSurface)?
     @ObservationIgnored public let client: AnyHTTPClient
     @ObservationIgnored public let nativeSession: AnyApplicationSession
@@ -157,7 +158,9 @@ public final class AnyDocumentPresentation {
             guard let self else { throw AnyHostError.sessionClosed }
             return try await self.insertQuote(transfer, before: target)
         }
-        torah.installOpenObjectHandler { [weak self] id, blockID in self?.onOpenObject?(id, blockID) }
+        torah.installOpenObjectHandler { [weak self] id, blockID in
+            self?.requestOpenObject(id, blockID: blockID)
+        }
         torah.installAssociationSnapshotHandler { [weak self] _ in self?.contentRevision &+= 1 }
         registration = try lifetime.register(revoke: { [weak self] in self?.revoke() },
                                               drain: { [weak self] in await self?.drain() })
@@ -176,7 +179,8 @@ public final class AnyDocumentPresentation {
         }
     }
     public var title: String { read?.snapshot.title ?? "" }
-    public var canMutate: Bool { isMounted && lifetime.isActive && canWrite && !requiresDraftReview && !isComposing && surface?.isForegroundMounted == true }
+    public var isNavigating: Bool { navigation.isPending }
+    public var canMutate: Bool { isMounted && lifetime.isActive && canWrite && !isNavigating && !requiresDraftReview && !isComposing && surface?.isForegroundMounted == true }
     public var hasPendingEdits: Bool { !drafts.isEmpty || !unmappedDrafts.isEmpty || isComposing || saving }
     public var orderedBlocks: [AnyEditorBlock] {
         guard let snapshot = read?.snapshot else { return [] }
@@ -193,10 +197,68 @@ public final class AnyDocumentPresentation {
     func unmappedDisplay(for blockID: String) -> String? { unmappedDrafts[blockID]?.display }
 
     public func mount(surface: any AnyEditorMountedSurface) {
-        guard lifetime.isActive else { return }
+        guard lifetime.isActive, !isNavigating else { return }
         if !isMounted { epoch = UUID() }
         self.surface = surface; isMounted = true
         torah.activateDocument()
+    }
+
+    /// The normal Note/related-document route closes the actual owned sheets
+    /// before changing the NavigationStack. A push alone does not remove the
+    /// source editor from its parent or dismiss its presented inspector.
+    public func requestOpenObject(_ objectID: String, blockID: String?) {
+        let ownerID = epoch
+        do {
+            try requireMounted(ownerID)
+            guard !isNavigating, !showsArchiveTransfer, !showsDraftReview,
+                  AnyEditorBlock.validID(objectID),
+                  blockID.map(AnyEditorBlock.validID) ?? true else { return }
+            let host: AnyNativeNavigationHost = torah.presentationHost == .properties ? .properties : .editor
+            let dismissals = AnyNativeDocumentNavigation.dismissalOrder(
+                inspectorHost: torah.selection == nil ? nil : host,
+                searchHost: torah.isSearchPresented ? host : nil,
+                showsProperties: showsProperties, showsSourceDocuments: sourceDocumentsTitle != nil)
+            guard navigation.begin(ownerID: ownerID,
+                                   route: .init(objectID: objectID, blockID: blockID),
+                                   dismissals: dismissals) else { return }
+            // Retire captured source actions now; their native durable receipts
+            // retain their original scope. No pending draft is auto-saved.
+            torah.deactivateDocument()
+            invalidateSourceScope()
+            continueNavigation(ownerID: ownerID)
+        } catch {
+            navigation.cancel()
+            message = AnyUIErrorText.describe(error)
+        }
+    }
+
+    func ownedPresentationDidDismiss(_ sheet: AnyNativeNavigationDismissal, ownerID: UUID) {
+        guard navigation.isOwned(by: ownerID) else { return }
+        do {
+            try requireMounted(ownerID)
+            guard navigation.didDismiss(sheet, ownerID: ownerID) else { return }
+            continueNavigation(ownerID: ownerID)
+        } catch { unmount() }
+    }
+
+    private func continueNavigation(ownerID: UUID) {
+        guard navigation.isOwned(by: ownerID) else { return }
+        do {
+            try requireMounted(ownerID)
+            switch navigation.nextDismissal {
+            case .editorInspector, .propertyInspector: torah.selection = nil
+            case .editorSearch, .propertySearch: torah.isSearchPresented = false
+            case .properties: showsProperties = false
+            case .sourceDocuments: sourceDocumentsTitle = nil
+            case nil:
+                guard let route = navigation.take(ownerID: ownerID) else { return }
+                let open = onOpenObject
+                // Revoke the old mounted scope synchronously before publishing
+                // a new route; reopening it later creates a fresh owner epoch.
+                unmount()
+                open?(route.objectID, route.blockID)
+            }
+        } catch { unmount() }
     }
 
     public func load() async {
@@ -628,6 +690,9 @@ public final class AnyDocumentPresentation {
     public func showDocuments(with item: TorahAssociationItem) async {
         let requestEpoch = epoch
         do {
+            try requireMounted(requestEpoch)
+            guard showsProperties, !isNavigating, torah.selection == nil,
+                  !torah.isSearchPresented, sourceDocumentsTitle == nil else { return }
             let index = index, metadata = metadata
             let output = try await nativeSession.perform { lease in
                 let initial = try await index.documents(with: item)
@@ -646,6 +711,8 @@ public final class AnyDocumentPresentation {
                 return (rows, final.readiness.complete)
             }
             try requireMounted(requestEpoch)
+            guard showsProperties, !isNavigating, torah.selection == nil,
+                  !torah.isSearchPresented, sourceDocumentsTitle == nil else { return }
             sourceDocuments = output.0
             sourceDocumentsTitle = TorahAssociationDisplayFormatter.label(for: item, locale: .autoupdatingCurrent)
             if !output.1 { message = AnyUIErrorText.incompleteIndex }
@@ -756,6 +823,7 @@ public final class AnyDocumentPresentation {
     }
 
     public func unmount() {
+        navigation.cancel()
         surface?.captureActiveCompositionForRecovery()
         retainRecovery()
         guard isMounted else { return }

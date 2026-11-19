@@ -126,12 +126,20 @@ func runNativeTorahWorkflowProbe(client: AnyHTTPClient, workspace: AnyTorahWorks
                     "native source property for the Note")
         checks.append("native_derived_source_property_matches_original_t5_identity")
 
+        FileHandle.standardError.write(Data("T5_PROGRESS before_retry_claims.begin\n".utf8))
         let beforeRetryClaims = try await operations.snapshot().all.count
+        FileHandle.standardError.write(Data("T5_PROGRESS before_retry_claims.end\n".utf8))
+        FileHandle.standardError.write(Data("T5_PROGRESS second_create_note.begin\n".utf8))
         let completedAgain = try await owner.perform { lease in
             try await notes.createNote(plan: plan) { try await lease.validate() }
         }
+        FileHandle.standardError.write(Data("T5_PROGRESS second_create_note.end\n".utf8))
+        FileHandle.standardError.write(Data("T5_PROGRESS after_retry_document_read.begin\n".utf8))
         let afterRetry = try await owner.perform { try await documents.read(objectID: noteID, lease: $0) }
+        FileHandle.standardError.write(Data("T5_PROGRESS after_retry_document_read.end\n".utf8))
+        FileHandle.standardError.write(Data("T5_PROGRESS after_retry_claims.begin\n".utf8))
         let afterRetryClaims = try await operations.snapshot().all.count
+        FileHandle.standardError.write(Data("T5_PROGRESS after_retry_claims.end\n".utf8))
         try require(completedAgain.objectID == noteID && completedAgain.recoveryError == nil &&
                     beforeRetryClaims == afterRetryClaims &&
                     noteRead.snapshot.blocks.map(\.id) == afterRetry.snapshot.blocks.map(\.id) &&

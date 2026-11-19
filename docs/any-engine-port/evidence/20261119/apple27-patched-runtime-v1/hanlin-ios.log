@@ -1,0 +1,82 @@
+Command line invocation:
+    /Applications/Xcode_27.app/Contents/Developer/usr/bin/xcodebuild test -scheme PinkhaAnyHanlin -destination "platform=iOS Simulator,id=4D25745D-CA60-47C9-9187-417C10035B9D" -derivedDataPath /Users/runner/work/anytype-swift/anytype-swift/build/any-native-app-derived -resultBundlePath /Users/runner/work/anytype-swift/anytype-swift/build/any-patched-evidence/hanlin-ios.xcresult -parallel-testing-enabled NO -test-timeouts-enabled YES -default-test-execution-time-allowance 180 -maximum-test-execution-time-allowance 180
+
+Resolve Package Graph
+
+Fetching from https://github.com/swiftlang/swift-markdown.git
+
+Fetching from https://github.com/davidpovarsky/swift-ai-sdk.git
+
+Fetching from https://github.com/davidpovarsky/TorahInspectorKit.git
+
+Fetching from https://github.com/apple/swift-crypto.git (cached)
+
+Fetching from https://github.com/apple/swift-argument-parser
+
+Fetching from https://github.com/apple/swift-asn1.git (cached)
+
+Fetching from https://github.com/weichsel/ZIPFoundation.git
+
+Fetching from https://github.com/SwiftyJSON/SwiftyJSON.git
+
+Fetching from https://github.com/swiftlang/swift-cmark.git
+
+Creating working copy of package ‘TorahInspectorKit’
+
+Checking out 4e59e909dd22685bb46f9396bc57e5f8c627d773 of package ‘TorahInspectorKit’
+
+Creating working copy of package ‘swift-argument-parser’
+
+Checking out 1.8.2 of package ‘swift-argument-parser’
+
+Creating working copy of package ‘swift-cmark’
+
+Checking out 0.9.0 of package ‘swift-cmark’
+
+Creating working copy of package ‘swift-asn1’
+
+Checking out 1.7.4 of package ‘swift-asn1’
+
+Creating working copy of package ‘SwiftyJSON’
+
+Checking out 5.0.1 of package ‘SwiftyJSON’
+
+Creating working copy of package ‘swift-ai-sdk’
+
+Checking out e7bf34111e603ca977becd007dd4e5bb109af857 of package ‘swift-ai-sdk’
+
+Creating working copy of package ‘swift-crypto’
+
+Checking out 3.12.3 of package ‘swift-crypto’
+
+Creating working copy of package ‘ZIPFoundation’
+
+Checking out 0.9.19 of package ‘ZIPFoundation’
+
+Creating working copy of package ‘swift-markdown’
+
+Checking out 25cb61d3482054b09ae76ca4f281b1bfe7fe5a43 of package ‘swift-markdown’
+
+2026-11-19 21:26:18.080 xcodebuild[17873:66831] [MT] IDERunDestination: Supported platforms for the buildables in the current scheme is empty.
+
+Resolved source packages:
+  PinkhaAnyIntegration: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyIntegration @ local
+  swift-asn1: https://github.com/apple/swift-asn1.git @ 1.7.4
+  HanlinPlatform: /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin/Packages/HanlinPlatform @ local
+  SwiftAISDK: https://github.com/davidpovarsky/swift-ai-sdk.git @ e7bf341
+  PinkhaAnyEngine: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyEngine @ local
+  swift-crypto: https://github.com/apple/swift-crypto.git @ 3.12.3
+  PinkhaAnyHanlin: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyHanlin
+  swift-markdown: https://github.com/swiftlang/swift-markdown.git @ 25cb61d
+  HanlinAgentSDK: /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin/Packages/HanlinAgentSDK @ local
+  ZIPFoundation: https://github.com/weichsel/ZIPFoundation.git @ 0.9.19
+  TorahInspectorKit: https://github.com/davidpovarsky/TorahInspectorKit.git @ 4e59e90
+  SwiftyJSON: https://github.com/SwiftyJSON/SwiftyJSON.git @ 5.0.1
+  cmark-gfm: https://github.com/swiftlang/swift-cmark.git @ 0.9.0
+  PinkhaAnyHost: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyHost @ local
+  PinkhaKit: /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaKit @ local
+  HanlinPresentationSDK: /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin/Packages/HanlinPresentationSDK @ local
+  swift-argument-parser: https://github.com/apple/swift-argument-parser @ 1.8.2
+
+xcodebuild: error: Scheme PinkhaAnyHanlin is not currently configured for the test action.
+

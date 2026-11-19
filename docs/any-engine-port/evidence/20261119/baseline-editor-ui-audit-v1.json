@@ -1,0 +1,83 @@
+{
+  "schema": "pinkha-baseline-editor-ui-audit-v1",
+  "createdAt": "2026-11-19T21:11:15.060935+00:00",
+  "scope": "Read-only exact baseline/history source classification plus current native host wiring review; no new runtime or Apple test execution",
+  "baseline": "586c98bcc17dee425664224e508fc0e8df277678",
+  "historicalAnchor": "0c14bcf4ac06466b88ba9c823cac8e0002109898",
+  "unchangedGeneralEditorSources": [
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/Markup/BlockMarkupChanger.swift",
+      "anchorBlob": "a6747eccc0a5739ab6cb67352363819cc5f0c82c",
+      "baselineBlob": "a6747eccc0a5739ab6cb67352363819cc5f0c82c",
+      "same": true
+    },
+    {
+      "path": "Anytype/Sources/Design system/TextComponents/Markup/MarkStyleModifier.swift",
+      "anchorBlob": "6d363b547782c1efd576595848b83021300fd624",
+      "baselineBlob": "6d363b547782c1efd576595848b83021300fd624",
+      "same": true
+    },
+    {
+      "path": "Anytype/Sources/Models/Documents/Parsers/AttributedTextConverter.swift",
+      "anchorBlob": "950f3525b0310234b23edf9e91141ff4ab4a0edf",
+      "baselineBlob": "950f3525b0310234b23edf9e91141ff4ab4a0edf",
+      "same": true
+    },
+    {
+      "path": "Anytype/Sources/Design system/TextComponents/Markup/MarkupState/NSAttributedString+Markup.swift",
+      "anchorBlob": "147dd4ab2ca2d3c2053eaf823190c9313b16e992",
+      "baselineBlob": "147dd4ab2ca2d3c2053eaf823190c9313b16e992",
+      "same": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/AccessoryView/EditorAccessoryView/MarkupModeView/MarkupAccessoryViewModel.swift",
+      "anchorBlob": "44d1602c759f0bcd38a603871e67c1169e7235d5",
+      "baselineBlob": "44d1602c759f0bcd38a603871e67c1169e7235d5",
+      "same": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/AccessoryView/EditorAccessoryView/MarkupModeView/MarkupKind.swift",
+      "anchorBlob": "525957df20c7a3ff8c5e6a5a9fa8e640b7540106",
+      "baselineBlob": "525957df20c7a3ff8c5e6a5a9fa8e640b7540106",
+      "same": true
+    },
+    {
+      "path": "AnytypeTests/TextBlockApplyMarkup/MarkStyleModifierTests.swift",
+      "anchorBlob": "1441b6828ba406a1b0b2a0b8bd75e1e2958793fc",
+      "baselineBlob": "1441b6828ba406a1b0b2a0b8bd75e1e2958793fc",
+      "same": true
+    }
+  ],
+  "implementedQuoteAndHostSources": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
+      "baselineBlob": "8baf1dbe2cb71db66589b0f2ac6f74908124cab3"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift",
+      "baselineBlob": "05e3e4c43a7cb8c75e17472c2ec03a058ca4b1f2"
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/TorahQuoteInsertionTests.swift",
+      "baselineBlob": "c9736b8faf0835f6f49557a49f8ad342f9a82881"
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift",
+      "baselineBlob": "c324e390f31bf794e5fdc44869481667fde5b788"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+      "baselineBlob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc"
+    },
+    {
+      "path": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift",
+      "baselineBlob": "7ca51ec42fd9d77168ab0b776858910127a204f8"
+    }
+  ],
+  "inlineListenerTestDiff": "diff --git a/AnytypeTests/Markdown/InlineMarkdownListenerTests.swift b/AnytypeTests/Markdown/InlineMarkdownListenerTests.swift\nindex d96175ca1d..9fa9f645c3 100644\n--- a/AnytypeTests/Markdown/InlineMarkdownListenerTests.swift\n+++ b/AnytypeTests/Markdown/InlineMarkdownListenerTests.swift\n@@ -61,7 +61,7 @@ class InlineMarkdownListenerTests: XCTestCase {\n             .addStyle(.strikethrough, text: NSAttributedString(string: \"AAAbbb ccc\"), range: range, focusRange: focusRange)\n         ]\n         \n-        let textView = UITextView()\n+        let textView = MarkdownTestTextView()\n         \n         let results = cases.map {\n             textView.text = $0.text\n",
+  "quoteBodyEditability": "editable_native_quote_without_forced_focus",
+  "partialFormattingLimitation": "broader_original_general_editor_not_identified_as_custom_added_capability",
+  "nativeUIExecution": false,
+  "auditDocument": "docs\\any-engine-port\\BASELINE_EDITOR_AND_UI_ACCEPTANCE_AUDIT.md",
+  "auditDocumentSHA256": "c286ade566469593de76d36ed42fe3e9ca73b455a89c80ea5dde420d1220a858"
+}

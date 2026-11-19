@@ -1,0 +1,195 @@
+{
+  "status": "UNRESOLVED_ACCESS_LOG_DISABLED",
+  "scope": "Read-only retrospective correlation of the actual hierarchy health timeout; no requests, retries, configuration changes or account mutations.",
+  "nativeBinarySHA256": "12c7fb62164c830410331aabf616194edb0711a083250f8e8dd34c3cba52078b",
+  "nativeManifestSHA256": "62a13310a474d93d728258d0631618b09056a20c4454bd7be303f3ec071fb77c",
+  "probeSHA256": "5ea3f16e810937d25cb806c3c4584fac5a8acca8a58e16065fb25d9ae60b78de",
+  "runtimeReceiptSHA256": "2d60f43840d245f2a8fd2c48910f217689d2581e5b4e77c7c0250aa94e101a42",
+  "traceSHA256": "f9ff50203f2da192d2906c6700d9787e465dd2d830b282a18de6e5b477bba0c3",
+  "reportSHA256": "5687ca739efaf935726697342543af5d9d2b05a1388426f87a45f3ca0497d9fc",
+  "runtimeSourceStable": true,
+  "runtimeNativeBinaryStable": true,
+  "passedCount": 11,
+  "requiredCount": 20,
+  "passedChecks": [
+    "current_guarded_capabilities_and_account",
+    "custom_document_and_preserved_property_definitions",
+    "four_native_conditional_writers_have_one_winner",
+    "guarded_hierarchy_atomic_initial",
+    "guarded_hierarchy_cycle_refused",
+    "guarded_rename_and_live_native_query",
+    "guarded_reorder_and_exact_retry_preserve_native_version",
+    "guarded_wiki_tree_with_page_and_custom_document",
+    "native_full_version_refuses_stale_direct_write",
+    "prepared_placement_rejects_actual_native_aba",
+    "retired_hierarchy_generation_rejected"
+  ],
+  "requestEvents": {
+    "begin": 837,
+    "response": 836,
+    "error": 1
+  },
+  "errors": [
+    {
+      "elapsedMs": 30000,
+      "errorCode": -1001,
+      "errorDomain": "NSURLErrorDomain",
+      "id": "E8B38D0B-B2D1-413E-8692-9464F2B72AF6",
+      "method": "GET",
+      "path": "/v1/health",
+      "phase": "error",
+      "line": 1685
+    }
+  ],
+  "lastEvents": [
+    {
+      "elapsedMs": 0,
+      "id": "062B6ECE-B5C9-4EE7-9E95-928DB388B6B8",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "begin",
+      "line": 1676
+    },
+    {
+      "elapsedMs": 0,
+      "framing": {
+        "Content-Length": "187"
+      },
+      "id": "062B6ECE-B5C9-4EE7-9E95-928DB388B6B8",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "response",
+      "status": 200,
+      "line": 1677
+    },
+    {
+      "elapsedMs": 0,
+      "id": "3949CDF2-CAED-4A74-BC4C-0F71154C6740",
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "phase": "begin",
+      "line": 1678
+    },
+    {
+      "elapsedMs": 0,
+      "framing": {
+        "Content-Length": "1262"
+      },
+      "id": "3949CDF2-CAED-4A74-BC4C-0F71154C6740",
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "phase": "response",
+      "status": 200,
+      "line": 1679
+    },
+    {
+      "elapsedMs": 0,
+      "id": "10291464-BFE0-4ACB-A1B4-7FFE45C33C1E",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "begin",
+      "line": 1680
+    },
+    {
+      "elapsedMs": 0,
+      "framing": {
+        "Content-Length": "187"
+      },
+      "id": "10291464-BFE0-4ACB-A1B4-7FFE45C33C1E",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "response",
+      "status": 200,
+      "line": 1681
+    },
+    {
+      "elapsedMs": 0,
+      "id": "C5D4C34F-0317-42AF-A7E6-D7062430B0C2",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "begin",
+      "line": 1682
+    },
+    {
+      "elapsedMs": 0,
+      "framing": {
+        "Content-Length": "187"
+      },
+      "id": "C5D4C34F-0317-42AF-A7E6-D7062430B0C2",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "response",
+      "status": 200,
+      "line": 1683
+    },
+    {
+      "elapsedMs": 0,
+      "id": "E8B38D0B-B2D1-413E-8692-9464F2B72AF6",
+      "method": "GET",
+      "path": "/v1/health",
+      "phase": "begin",
+      "line": 1684
+    },
+    {
+      "elapsedMs": 30000,
+      "errorCode": -1001,
+      "errorDomain": "NSURLErrorDomain",
+      "id": "E8B38D0B-B2D1-413E-8692-9464F2B72AF6",
+      "method": "GET",
+      "path": "/v1/health",
+      "phase": "error",
+      "line": 1685
+    }
+  ],
+  "nativeLogConfiguration": {
+    "defaultLevel": "error",
+    "format": 2
+  },
+  "nativeLogMetadata": [
+    {
+      "path": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\peer-native-v7-guarded-hierarchy\\stdout.private.log",
+      "bytes": 105,
+      "sha256": "99799213b1c461fd3f26f05c036082e58fb4b0fcfa6e57bb3aa4dd152afab7ea",
+      "structuredRecordCount": 0,
+      "contentsCopied": false
+    },
+    {
+      "path": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\peer-native-v7-guarded-hierarchy\\stderr.private.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "structuredRecordCount": 0,
+      "contentsCopied": false
+    }
+  ],
+  "matchingNativeHealthRecords": [],
+  "sourceFiles": [
+    {
+      "path": "internal/server/logger_echo.go",
+      "sha256": "13f9121e9f194b93022238846e12730b9657a8c9f1ba7c209ff2b6b5815da60b"
+    },
+    {
+      "path": "internal/server/handlers_meta.go",
+      "sha256": "cc46dc417918f1e963f9e184e6f9fb304d6b7d86fc711f74cc0e2072f01f1bfc"
+    },
+    {
+      "path": "internal/server/handlers_auth.go",
+      "sha256": "9d8d3a14334e033f248aaf81d6205aeba6ae5718ca1ae6c5619dab833526f744"
+    },
+    {
+      "path": "internal/server/gate.go",
+      "sha256": "56daf9b982281f7b6ee8d5aac3a1ef8c22bb587ca44b494afd1bf2d6e3a3ccee"
+    },
+    {
+      "path": "internal/server/routes.go",
+      "sha256": "298cecd808ac2b28ca90dc5ab2e3632c221f33ff4647b726e99d7ff7875c4225"
+    }
+  ],
+  "limits": [
+    "Successful native access records are emitted at Info, but this fixture configured the default level Error. Its retained logs cannot establish arrival/status/timing for the failed request.",
+    "The Swift begin event is immediately before URLSession.data(for:), not proof that bytes reached native HTTP. Response events occur after the full data await.",
+    "The Swift trace has only per-request elapsedMs, no absolute request timestamp. No precise wall-clock begin time is invented.",
+    "The failed await itself has no response/framing metadata. Prior fixed-length responses are separate requests.",
+    "The earlier2-check auth-preflight inference and this observed11-check health failure are distinct runs.",
+    "No blind retry in either failed Space; both fixtures and all partial synthetic state remain retained."
+  ]
+}

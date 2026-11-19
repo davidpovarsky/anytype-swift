@@ -21,6 +21,7 @@ public struct AnyNativePropertiesView: View {
     @State private var model: AnyNativePropertyPresentation
     @State private var editing: AnyPropertyValueSelection?
     @State private var showsCustomization = false
+    @State private var propertyChildReserved = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.locale) private var locale
 
@@ -86,7 +87,11 @@ public struct AnyNativePropertiesView: View {
                 ToolbarItem(placement: .topBarLeading) {
                     Menu {
                         Button(AnyUIErrorText.text("בחירת המאפיינים המוצגים", "Choose visible properties"),
-                               systemImage: "slider.horizontal.3") { showsCustomization = true }
+                               systemImage: "slider.horizontal.3") {
+                            guard reservePropertyChild() else { return }
+                            showsCustomization = true
+                        }
+                            .disabled(!canPresentPropertyChild)
                             .accessibilityIdentifier("any-native-property-customize")
                         Button(AnyUIErrorText.text("ביטול שינוי במאפיינים", "Undo property change"),
                                systemImage: "arrow.uturn.backward") { Task { await model.undoLastChange() } }
@@ -99,11 +104,40 @@ public struct AnyNativePropertiesView: View {
                         .accessibilityIdentifier("any-native-property-close")
                 }
             }
-            .modifier(AnyTorahInspectorLayer(session: presentation.torah, host: .properties))
-            .sheet(item: $editing) { selection in
+            .modifier(AnyTorahInspectorLayer(session: presentation.torah, host: .properties,
+                onInspectorDismissed: { [ownerID = presentation.mountedOwnerID] in
+                    releasePropertyChildIfAbsent()
+                    presentation.ownedPresentationDidDismiss(.propertyInspector, ownerID: ownerID)
+                }, onSearchDismissed: { [ownerID = presentation.mountedOwnerID] in
+                    releasePropertyChildIfAbsent()
+                    presentation.ownedPresentationDidDismiss(.propertySearch, ownerID: ownerID)
+                }))
+            .sheet(isPresented: Binding(get: { presentation.sourceDocumentsTitle != nil },
+                set: { if !$0 { presentation.sourceDocumentsTitle = nil } }),
+                onDismiss: { [ownerID = presentation.mountedOwnerID] in
+                    releasePropertyChildIfAbsent()
+                    presentation.ownedPresentationDidDismiss(.sourceDocuments, ownerID: ownerID)
+                }) {
+                NavigationStack {
+                    List(presentation.sourceDocuments) { item in
+                        Button {
+                            presentation.requestOpenObject(item.objectID, blockID: item.blockID)
+                        } label: {
+                            Label(item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
+                                  systemImage: item.kind == .note ? "note.text" : "doc.text")
+                        }
+                    }
+                    .navigationTitle(presentation.sourceDocumentsTitle ?? "")
+                    .toolbar { ToolbarItem(placement: .confirmationAction) {
+                        Button(AnyUIErrorText.text("סיום", "Done")) { presentation.sourceDocumentsTitle = nil }
+                    }}
+                }
+            }
+            .sheet(item: $editing, onDismiss: { releasePropertyChildIfAbsent() }) { selection in
                 AnyNativePropertyValueEditor(model: model, selection: selection)
             }
-            .sheet(isPresented: $showsCustomization) { customization }
+            .sheet(isPresented: $showsCustomization,
+                   onDismiss: { releasePropertyChildIfAbsent() }) { customization }
             .alert(AnyUIErrorText.text("מאפיינים", "Properties"),
                    isPresented: Binding(get: { model.message != nil }, set: { if !$0 { model.message = nil } })) {
                 Button(AnyUIErrorText.text("אישור", "OK"), role: .cancel) { model.message = nil }
@@ -120,6 +154,27 @@ public struct AnyNativePropertiesView: View {
         }
     }
 
+    private var canPresentPropertyChild: Bool {
+        AnyNativeDocumentNavigation.canBeginOwnedPresentation(
+            isReserved: propertyChildReserved,
+            hasInspector: presentation.torah.selection != nil,
+            hasSearch: presentation.torah.isSearchPresented,
+            hasNativeChild: presentation.sourceDocumentsTitle != nil || editing != nil || showsCustomization,
+            isNavigating: presentation.isNavigating)
+    }
+
+    private func reservePropertyChild() -> Bool {
+        guard canPresentPropertyChild else { return false }
+        propertyChildReserved = true
+        return true
+    }
+
+    private func releasePropertyChildIfAbsent() {
+        guard presentation.torah.selection == nil, !presentation.torah.isSearchPresented,
+              presentation.sourceDocumentsTitle == nil, editing == nil, !showsCustomization else { return }
+        propertyChildReserved = false
+    }
+
     @ViewBuilder private func propertyRow(_ row: AnyNativePropertyRow,
                                           snapshot: AnyNativePropertySnapshot) -> some View {
         if row.isReadOnly {
@@ -129,8 +184,10 @@ public struct AnyNativePropertiesView: View {
         } else {
             Button {
                 do {
+                    let text = try AnyNativePropertyValueCodec.text(row.value, kind: row.definition.kind)
+                    guard reservePropertyChild() else { return }
                     editing = .init(snapshot: snapshot, row: row,
-                        text: try AnyNativePropertyValueCodec.text(row.value, kind: row.definition.kind))
+                        text: text)
                 } catch { model.message = AnyUIErrorText.describe(error) }
             } label: {
                 HStack(alignment: .top) {
@@ -140,7 +197,7 @@ public struct AnyNativePropertiesView: View {
                     Image(systemName: "chevron.forward").font(.caption).foregroundStyle(.tertiary)
                 }
             }
-            .disabled(!model.canWrite)
+            .disabled(!model.canWrite || !canPresentPropertyChild)
             .accessibilityIdentifier(row.id.ownerID == "any" && row.id.propertyID == "name"
                 ? "any-native-property-name" : "any-native-property-" + row.id.visibilityKey)
             .accessibilityValue(Text(display(row)))
@@ -226,22 +283,41 @@ public struct AnyNativePropertiesView: View {
                     Menu {
                         if presentation.torah.canOpenAssociation(item) {
                             Button(AnyUIErrorText.text("פתיחת מקור", "Open source")) {
+                                guard reservePropertyChild() else { return }
                                 presentation.torah.openDocumentAssociation(item)
-                            }
+                                releasePropertyChildIfAbsent()
+                            }.disabled(!canPresentPropertyChild)
                         }
                         Button(AnyUIErrorText.text("מסמכים מקושרים", "Related documents")) {
-                            Task { await presentation.showDocuments(with: item) }
-                        }
+                            guard reservePropertyChild() else { return }
+                            Task {
+                                await presentation.showDocuments(with: item)
+                                releasePropertyChildIfAbsent()
+                            }
+                        }.disabled(!canPresentPropertyChild)
                         Button(AnyUIErrorText.text("הסרת קישור", "Unlink"), role: .destructive) {
-                            Task { await presentation.torah.unlinkAssociation(item, from: presentation.torah.documentAssociationContext) }
+                            Task {
+                                do {
+                                    _ = try await presentation.torah.unlinkAssociation(
+                                        item, from: presentation.torah.documentAssociationContext)
+                                } catch {
+                                    // Keep the shared session's localized failure
+                                    // and supply visible feedback if it has none.
+                                    if presentation.torah.message == nil {
+                                        presentation.torah.message = AnyUIErrorText.describe(error)
+                                    }
+                                }
+                            }
                         }.disabled(!presentation.canMutate)
                     } label: { Image(systemName: "ellipsis.circle") }
                 }
             }
             Button {
+                guard reservePropertyChild() else { return }
                 presentation.torah.presentSearch(scope: .document, initialCategory: scope, host: .properties)
+                releasePropertyChildIfAbsent()
             } label: { Label(AnyUIErrorText.text("הוספה", "Add"), systemImage: "plus") }
-                .disabled(!presentation.canMutate)
+                .disabled(!presentation.canMutate || !canPresentPropertyChild)
         }
     }
 }

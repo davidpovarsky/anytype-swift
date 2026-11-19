@@ -1,0 +1,108 @@
+{
+  "schema": "pinkha-native-inspector-ui-source-v3",
+  "createdAt": "2026-11-19T21:28:08.710581+00:00",
+  "status": "PASS",
+  "scope": "Final ten-file Swift parser plus unchanged earlier four UI test bodies, whitespace, pinned Inspector source identity and exact baseline/native Note title rule. No UIKit semantic compile or Apple interaction execution.",
+  "sourceStable": true,
+  "sources": {
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift": "81dfe4bdae4a8b5a80da867268342922b9aaa8ca5a50030e7e9c41614d200109",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift": "c7de201ebd001b51bf2f857ddd4b69b88a460c6fc01b1d1628778d2f1beecb8f",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift": "5bc414090b93845045f8923df083d5d41b476be45bc68a00fcd6b87c0e633e91",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift": "fa52c9cd1386acd2bd7d8fa26c6214e2d125c95c302f8e82be76cd8c4bb5bef0",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentNavigation.swift": "6a8671a5e230243e92fc0f2b80871fdaa031d1050ab3807b095593bd879566b9",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeDocumentNavigationTests.swift": "e5bda23ac5153a7d39216d8911cda99eee4a528736626daadff930227ab2aba3",
+    "NativeApp/UITests/NativeLaunchTests.swift": "4e692a48954d64d060a4be32b621100d06b8ec90a131848e5a75f2617fa20a9a",
+    "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift": "db9e5d9e37253b223e77206aef885f6c4d8e66fe57ece77783948556c3d28a86",
+    "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeHanlinCreationTests.swift": "040a39953263a95a2eb2bbcdf93669a980bb4aed50f8d6cdeeb1eae7604c356b",
+    "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeTorahWorkflowTests.swift": "b290a3d8e1e9fe8876e2d8f83dac6daba051c684c8c5b9c72e83f0989208a3ba"
+  },
+  "parse": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "exitCode": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "exitCode": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+      "exitCode": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "exitCode": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentNavigation.swift",
+      "exitCode": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeDocumentNavigationTests.swift",
+      "exitCode": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "NativeApp/UITests/NativeLaunchTests.swift",
+      "exitCode": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift",
+      "exitCode": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeHanlinCreationTests.swift",
+      "exitCode": 0,
+      "diagnostics": ""
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeTorahWorkflowTests.swift",
+      "exitCode": 0,
+      "diagnostics": ""
+    }
+  ],
+  "executedUIKitTests": 0,
+  "diffCheck": {
+    "exitCode": 0,
+    "output": "warning: in the working copy of 'Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'NativeApp/UITests/NativeLaunchTests.swift', LF will be replaced by CRLF the next time Git touches it\n"
+  },
+  "preservedEarlierFourTests": true,
+  "preservationProof": {
+    "previousReceipt": "docs/any-engine-port/evidence/20261119/native-inspector-ui-source-v2.json",
+    "sha256": "b9fbfda6a1ec4607460bbbadff7b59bda54569db27f4c6faa1b07161018bb1e7",
+    "currentUITestFileUnchangedSincePriorProof": true
+  },
+  "uiTestMethods": [
+    "testFreshNativeExecutableShowsAccountAndRecoveryEntryPoints",
+    "testBackgroundAndForegroundReopenTheOwnedRuntime",
+    "testCreateEditHanlinConsentBackgroundAndColdReopen",
+    "testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+    "testSourceInspectorQuoteAndNoteSurviveColdReopen"
+  ],
+  "newPureRouteTestCount": 8,
+  "routeReceipt": "docs/any-engine-port/evidence/20261119/native-navigation-components-v3.json",
+  "pinnedInspectorSources": {
+    "TorahSourceReaderView.swift": "2ff7964982253a403ce2f5e5f21dae62a25975e9bf530680955fcac6becb2a4f",
+    "TorahSegmentDetailView.swift": "2075bba618f2253f973423ab31eb2e4728604354cd2b2de0b8135cd04f8fe626"
+  },
+  "pinnedInspectorSourcesUnchanged": true,
+  "noteTitleRule": {
+    "rule": "הערה על \\(selection.relationshipRef)",
+    "sources": {
+      "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift": "235538924ca2c4122c075c68fed64986c76b0961f0cd1bc1ac2cef13ea197e49",
+      "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyTorahPresentationBridge.swift": "986b8076bfd7ae81888135bb0f2d61f84bb8549fc14e3379955711ef99a5fd59"
+    }
+  },
+  "limitations": [
+    "Actual five NativeLaunch scenarios and eleven marked-text/focus UIKit methods remain pending Apple execution.",
+    "The parser does not semantically validate UIKit/SwiftUI branches.",
+    "The separate eight-case receipt exercises production pure planning/owner/presentation policy, not UIKit dismissal."
+  ]
+}

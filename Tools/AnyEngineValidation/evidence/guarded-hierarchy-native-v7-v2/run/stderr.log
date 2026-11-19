@@ -1,0 +1,18 @@
+PASS current_guarded_capabilities_and_account
+PASS custom_document_and_preserved_property_definitions
+Swift/ErrorType.swift:254: Fatal error: Error raised at top level: PinkhaAnyIntegrationProbe.GuardedHierarchyProbe.(unknown context at $7ff6d7d03290).Failure.assertion("guarded_hierarchy_probe_failed")
+Current stack trace:
+0    swiftCore.dll                      0x00007ffd11c2e730 swift_reportError + 94
+1    swiftCore.dll                      0x00007ffd11ccdc00 swift_stdlib_reportFatalErrorInFile + 132
+2    swiftCore.dll                      0x00007ffd119073e0 StaticString.withUTF8Buffer<A>(_:) + 872
+3    swiftCore.dll                      0x00007ffd119067b0 _assertionFailure(_:_:file:line:flags:) + 262
+4    swiftCore.dll                      0x00007ffd1197dd00 swift_errorInMain + 784
+5    guarded-hierarchy-probe.exe        0x00007ff6d7c8c3ea <unavailable> + 7062506
+6    swift_Concurrency.dll              0x00007ffd716a2cb0 UnimplementedTaskExecutor.__deallocating_deinit + 25902
+7    swift_Concurrency.dll              0x00007ffd716a9d60 swift_job_run + 114
+8    dispatch.dll                       0x00007ffd7fe4d6d0 dispatch_queue_set_width + 1952
+9    dispatch.dll                       0x00007ffd7fe4d6d0 dispatch_queue_set_width + 4994
+10   dispatch.dll                       0x00007ffd7fe52b70 dispatch_prohibit_transition_to_multithreaded + 8630
+11   ucrtbase.dll                       0x00007ffe035ecbe0 wcsrchr + 336
+12   KERNEL32.DLL                       0x00007ffe05bfdd90 BaseThreadInitThunk + 23
+13   ntdll.dll                          0x00007ffe05e99c30 RtlUserThreadStart + 44

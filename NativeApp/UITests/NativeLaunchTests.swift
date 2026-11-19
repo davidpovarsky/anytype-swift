@@ -209,6 +209,131 @@ final class NativeLaunchTests: XCTestCase {
         XCTAssertEqual(blocks.firstMatch.value as? String, body)
     }
 
+    func testSourceInspectorQuoteAndNoteSurviveColdReopen() {
+        let scope = UUID()
+        let suffix = String(scope.uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        let spaceName = "Torah UI Space " + suffix
+        let documentName = "Torah UI Document " + suffix
+        let reference = "Genesis 1:1"
+        let noteName = "הערה על " + reference
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+        waitUntilEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+
+        // Use the retained production provider facade and the actual pinned
+        // inspector. No seed data, injected transfer, or replacement search.
+        tapWhenEnabled(app.buttons["any-native-document-sources"])
+        let search = app.searchFields.firstMatch
+        waitUntilEnabled(search)
+        search.tap(); search.typeText(reference)
+        let result = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND value == %@",
+            "any-native-source-result-", reference)).firstMatch
+        tapWhenEnabled(result, timeout: 60)
+        let segment = app.buttons["torah-reader-segment-sefaria:" + reference]
+        waitUntilEnabled(segment, timeout: 60)
+        // Embedded search is the same retained presenter inside the pinned
+        // inspector's navigation stack, not another host-owned modal sheet.
+        tapWhenEnabled(app.buttons["torah-inspector-search-entry"])
+        waitUntilEnabled(search)
+        search.tap(); search.typeText(reference)
+        tapWhenEnabled(result, timeout: 60)
+        waitUntilEnabled(segment, timeout: 60)
+        XCTAssertFalse(app.buttons["any-native-source-search-done"].exists)
+        let providerText = segment.label
+        XCTAssertFalse(providerText.isEmpty)
+        XCTAssertNotEqual(providerText, reference)
+        segment.press(forDuration: 1.1)
+        tapWhenEnabled(app.buttons["torah-reader-insert-sefaria:" + reference])
+
+        // The inspector allows background interaction. A real source badge is
+        // exposed only after canonical association readback, so the next source
+        // action cannot race ahead of that separate metadata write.
+        let sourceBadges = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-sources-"))
+        waitFor(NSPredicate(format: "exists == true"), object: sourceBadges.firstMatch, timeout: 60)
+        let blocks = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        waitFor(NSPredicate(format: "exists == true AND value == %@", providerText),
+                object: blocks.firstMatch, timeout: 45)
+        XCTAssertEqual(blocks.count, 1)
+        XCTAssertEqual(sourceBadges.count, 1)
+        XCTAssertEqual(app.keyboards.count, 0, "Source insertion must not acquire editor focus.")
+        let quoteIdentifier = blocks.firstMatch.identifier
+        let quoteBlockID = String(quoteIdentifier.dropFirst("any-native-block-".count))
+        let quoteBadgeIdentifier = "any-native-block-sources-" + quoteBlockID
+        XCTAssertEqual(sourceBadges.firstMatch.identifier, quoteBadgeIdentifier)
+
+        // Open the quote's retained association, then use the real Notes tool.
+        // The normal T5 action creates and navigates to the native Note.
+        tapWhenEnabled(segment)
+        selectInspectorTool(app, hebrew: "הערות", english: "Notes")
+        tapWhenEnabled(app.buttons["torah-inspector-add-note"], timeout: 60)
+        waitFor(NSPredicate(format: "exists == true"),
+                object: app.navigationBars[noteName], timeout: 60)
+        let sourceLine = blocks.matching(NSPredicate(format: "value CONTAINS %@", reference)).firstMatch
+        waitFor(NSPredicate(format: "exists == true"), object: sourceLine, timeout: 45)
+        let noteSourceIdentifier = sourceLine.identifier
+        let noteSourceText = sourceLine.value as? String ?? ""
+        XCTAssertFalse(noteSourceText.isEmpty)
+        tapWhenEnabled(app.buttons["any-native-document-sources"])
+        let linkedReference = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND value == %@",
+            "any-native-linked-source-", reference)).firstMatch
+        tapWhenEnabled(linkedReference, timeout: 45)
+        tapWhenEnabled(segment, timeout: 60)
+        selectInspectorTool(app, hebrew: "במסמכים", english: "In Documents")
+        let originRelated = relatedDocumentRow(app, title: documentName)
+        let noteRelated = relatedDocumentRow(app, title: noteName)
+        waitFor(NSPredicate(format: "exists == true"), object: originRelated, timeout: 60)
+        waitFor(NSPredicate(format: "exists == true"), object: noteRelated, timeout: 60)
+
+        // Reopen the same owned account and Space from disk. The original
+        // quote ID/text, the origin's Note backlink, and the Note's source
+        // context must all survive without issuing a second create action.
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
+        let reopenedQuote = app.textViews[quoteIdentifier]
+        waitFor(NSPredicate(format: "exists == true AND value == %@", providerText),
+                object: reopenedQuote, timeout: 60)
+        XCTAssertEqual(blocks.count, 1)
+        tapWhenEnabled(app.buttons[quoteBadgeIdentifier], timeout: 45)
+        selectInspectorTool(app, hebrew: "הערות", english: "Notes")
+        let notes = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND label == %@",
+            "torah-inspector-note-", noteName))
+        waitUntilEnabled(notes.firstMatch, timeout: 60)
+        XCTAssertEqual(notes.count, 1, "Cold reopen must expose exactly the committed Note backlink.")
+        notes.firstMatch.tap()
+        waitFor(NSPredicate(format: "exists == true"),
+                object: app.navigationBars[noteName], timeout: 60)
+        waitFor(NSPredicate(format: "exists == true AND value == %@", noteSourceText),
+                object: app.textViews[noteSourceIdentifier], timeout: 45)
+        tapWhenEnabled(app.buttons["any-native-document-sources"])
+        tapWhenEnabled(linkedReference, timeout: 45)
+        tapWhenEnabled(segment, timeout: 60)
+        selectInspectorTool(app, hebrew: "במסמכים", english: "In Documents")
+        waitFor(NSPredicate(format: "exists == true"), object: originRelated, timeout: 60)
+        waitFor(NSPredicate(format: "exists == true"), object: noteRelated, timeout: 60)
+    }
+
+    private func selectInspectorTool(_ app: XCUIApplication, hebrew: String, english: String) {
+        let tools = app.descendants(matching: .any)
+            .matching(identifier: "torah-inspector-tools").firstMatch
+        waitUntilEnabled(tools, timeout: 60)
+        tapWhenEnabled(tools.buttons.matching(NSPredicate(
+            format: "label == %@ OR label == %@", hebrew, english)).firstMatch)
+    }
+
+    private func relatedDocumentRow(_ app: XCUIApplication, title: String) -> XCUIElement {
+        app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND label CONTAINS %@",
+            "torah-inspector-related-row-", title)).firstMatch
+    }
+
     private func createOwnedWorkspace(_ app: XCUIApplication, spaceName: String) {
         tapWhenEnabled(app.buttons["any-native-account-create"])
         let backup = app.switches["any-native-backup-acknowledged"]

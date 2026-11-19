@@ -11,6 +11,7 @@ import Loc
 
 public struct AnyNativeDocumentView: View {
     @Bindable private var presentation: AnyDocumentPresentation
+    @State private var documentChildReserved = false
     public init(presentation: AnyDocumentPresentation) { self.presentation = presentation }
 
     public var body: some View {
@@ -38,17 +39,30 @@ public struct AnyNativeDocumentView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
-                Button { presentation.torah.presentSearch(scope: .document) } label: {
+                Button {
+                    guard reserveDocumentChild() else { return }
+                    presentation.torah.presentSearch(scope: .document)
+                    releaseDocumentChildIfAbsent()
+                } label: {
                     Image(systemName: "books.vertical")
                 }.accessibilityLabel(Loc.Pinkha.Torah.sources)
                     .accessibilityIdentifier("any-native-document-sources")
-                Button { presentation.showsProperties = true } label: { Image(systemName: "slider.horizontal.3") }
+                    .disabled(!canPresentDocumentChild)
+                Button {
+                    guard reserveDocumentChild() else { return }
+                    presentation.showsProperties = true
+                } label: { Image(systemName: "slider.horizontal.3") }
                     .accessibilityLabel(AnyUIErrorText.text("מאפיינים", "Properties"))
                     .accessibilityIdentifier("any-native-document-properties")
+                    .disabled(!canPresentDocumentChild)
                 Menu {
                     Button(AnyUIErrorText.text("העברת קישורי מקורות", "Transfer source associations"),
-                           systemImage: "arrow.up.arrow.down") { presentation.showsArchiveTransfer = true }
+                           systemImage: "arrow.up.arrow.down") {
+                        guard reserveDocumentChild() else { return }
+                        presentation.showsArchiveTransfer = true
+                    }
                         .accessibilityIdentifier("any-native-canonical-transfer")
+                        .disabled(!canPresentDocumentChild)
                     Button(AnyUIErrorText.text("הוספת פסקה", "Add paragraph"), systemImage: "plus") {
                         Task { await presentation.addParagraph() }
                     }.disabled(!presentation.canMutate)
@@ -82,49 +96,77 @@ public struct AnyNativeDocumentView: View {
                         Task { await presentation.retryObservation() }
                     }
                 } label: { Image(systemName: "ellipsis.circle") }
-                Button { presentation.presentHanlin() } label: { Image(systemName: "bubble.left.and.bubble.right") }
+                Button {
+                    guard canPresentDocumentChild else { return }
+                    presentation.presentHanlin()
+                } label: { Image(systemName: "bubble.left.and.bubble.right") }
                     .accessibilityLabel("Hanlin")
                     .accessibilityIdentifier("any-native-hanlin")
-                    .disabled(!presentation.isMounted || presentation.read == nil || presentation.hasPendingEdits)
+                    .disabled(!presentation.isMounted || presentation.read == nil || presentation.hasPendingEdits || !canPresentDocumentChild)
             }
         }
-        .modifier(AnyTorahInspectorLayer(session: presentation.torah, host: .editor))
-        .sheet(isPresented: $presentation.showsArchiveTransfer) {
+        .modifier(AnyTorahInspectorLayer(session: presentation.torah, host: .editor,
+            onInspectorDismissed: { [ownerID = presentation.mountedOwnerID] in
+                releaseDocumentChildIfAbsent()
+                presentation.ownedPresentationDidDismiss(.editorInspector, ownerID: ownerID)
+            }, onSearchDismissed: { [ownerID = presentation.mountedOwnerID] in
+                releaseDocumentChildIfAbsent()
+                presentation.ownedPresentationDidDismiss(.editorSearch, ownerID: ownerID)
+            }))
+        .sheet(isPresented: $presentation.showsArchiveTransfer,
+               onDismiss: { releaseDocumentChildIfAbsent() }) {
             AnyNativeArchiveTransferView(document: presentation)
         }
-        .sheet(isPresented: $presentation.showsDraftReview) { draftReview }
-        .sheet(isPresented: $presentation.showsProperties) {
+        .sheet(isPresented: $presentation.showsDraftReview,
+               onDismiss: { releaseDocumentChildIfAbsent() }) { draftReview }
+        .sheet(isPresented: $presentation.showsProperties,
+               onDismiss: { [ownerID = presentation.mountedOwnerID] in
+                   releaseDocumentChildIfAbsent()
+                   presentation.ownedPresentationDidDismiss(.properties, ownerID: ownerID)
+               }) {
             AnyNativePropertiesView(presentation: presentation)
         }
-        .sheet(isPresented: Binding(get: { presentation.sourceDocumentsTitle != nil },
-                                     set: { if !$0 { presentation.sourceDocumentsTitle = nil } })) {
-            NavigationStack {
-                List(presentation.sourceDocuments) { item in
-                    Button {
-                        presentation.sourceDocumentsTitle = nil
-                        presentation.showsProperties = false
-                        presentation.onOpenObject?(item.objectID, item.blockID)
-                    } label: {
-                        Label(item.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : item.title,
-                              systemImage: item.kind == .note ? "note.text" : "doc.text")
-                    }
-                }
-                .navigationTitle(presentation.sourceDocumentsTitle ?? "")
-                .toolbar { ToolbarItem(placement: .confirmationAction) {
-                    Button(AnyUIErrorText.text("סיום", "Done")) { presentation.sourceDocumentsTitle = nil }
-                }}
-            }
-        }
         .alert(AnyUIErrorText.text("הודעה", "Message"),
-               isPresented: Binding(get: { presentation.message != nil || presentation.torah.message != nil },
-                                    set: { if !$0 { presentation.message = nil; presentation.torah.message = nil } })) {
+               isPresented: Binding(get: { presentation.message != nil },
+                                    set: { if !$0 { presentation.message = nil } })) {
             Button(AnyUIErrorText.text("אישור", "OK"), role: .cancel) {
-                presentation.message = nil; presentation.torah.message = nil
+                presentation.message = nil
             }
-        } message: { Text(presentation.message ?? presentation.torah.message ?? "") }
+        } message: { Text(presentation.message ?? "") }
         .task { await presentation.load() }
+        // Block-source buttons can open the retained Inspector directly. Keep
+        // its ownership until onDismiss, including the closing animation.
+        .onChange(of: presentation.torah.selection?.id) { _, value in
+            if value != nil { documentChildReserved = true }
+        }
+        .onChange(of: presentation.torah.isSearchPresented) { _, value in
+            if value { documentChildReserved = true }
+        }
+        .disabled(presentation.isNavigating)
         // The UIKit controller/dismantle hook owns actual removal. Owned
         // property/inspector sheets may cover this view without retiring it.
+    }
+
+    private var canPresentDocumentChild: Bool {
+        AnyNativeDocumentNavigation.canBeginOwnedPresentation(
+            isReserved: documentChildReserved,
+            hasInspector: presentation.torah.selection != nil,
+            hasSearch: presentation.torah.isSearchPresented,
+            hasNativeChild: presentation.showsProperties || presentation.showsArchiveTransfer || presentation.showsDraftReview,
+            isNavigating: presentation.isNavigating)
+    }
+
+    private func reserveDocumentChild() -> Bool {
+        guard canPresentDocumentChild else { return false }
+        documentChildReserved = true
+        return true
+    }
+
+    private func releaseDocumentChildIfAbsent() {
+        guard presentation.torah.selection == nil, !presentation.torah.isSearchPresented,
+              !presentation.showsProperties, !presentation.showsArchiveTransfer,
+              !presentation.showsDraftReview else { return }
+        documentChildReserved = false
     }
 
     private var draftReview: some View {
@@ -186,8 +228,10 @@ public struct AnyNativeDocumentView: View {
                 HStack {
                     if presentation.requiresDraftReview {
                         Button(AnyUIErrorText.text("בדיקת השינויים ששוחזרו", "Review recovered edits")) {
+                            guard reserveDocumentChild() else { return }
                             presentation.showsDraftReview = true
                         }.accessibilityIdentifier("any-native-review-recovered-drafts")
+                            .disabled(!canPresentDocumentChild)
                     } else {
                         Button(AnyUIErrorText.text("ניסיון נוסף", "Retry")) { Task { await presentation.flush() } }
                     }
@@ -207,6 +251,9 @@ public struct AnyNativeDocumentView: View {
 struct AnyTorahInspectorLayer: ViewModifier {
     @Bindable var session: TorahEditorSession
     let host: TorahEditorSession.PresentationHost
+    var onInspectorDismissed: (() -> Void)?
+    var onSearchDismissed: (() -> Void)?
+    @Environment(\.locale) private var locale
     private var owns: Bool { session.presentationHost == host }
     private var selection: Binding<TorahInspectorSelection?> {
         .init(get: { owns ? session.selection : nil },
@@ -216,9 +263,24 @@ struct AnyTorahInspectorLayer: ViewModifier {
         .init(get: { owns && session.isSearchPresented },
               set: { if owns { session.isSearchPresented = $0 } })
     }
+    private var actions: TorahInspectorHostActions {
+        var value = session.hostActions
+        let close = value.onClose
+        let didDismiss = onInspectorDismissed
+        // The pinned Kit calls this only from its real sheet onDismiss. Its
+        // close button separately clears the selection binding first.
+        value.onClose = { close?(); didDismiss?() }
+        value.search = TorahInspectorSearchCapability { navigation in
+            AnyNativeSourceSearchView(session: session, navigation: navigation)
+        }
+        return value
+    }
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: search, onDismiss: session.searchDidDismiss) {
+            .sheet(isPresented: search, onDismiss: {
+                guard owns else { return }
+                session.searchDidDismiss(); onSearchDismissed?()
+            }) {
                 AnyNativeSourceSearchView(session: session)
             }
             .torahInspectorSheet(selection: selection, repository: session.repository,
@@ -226,35 +288,67 @@ struct AnyTorahInspectorLayer: ViewModifier {
                 selectedDetent: $session.selectedDetent,
                 configuration: .init(availableTools: [.commentaries, .links, .relatedDocuments, .notes],
                                      allowsInlineFullSourceNavigation: true),
-                actions: session.hostActions)
+                actions: actions)
+            .alert(Loc.Pinkha.Torah.title,
+                isPresented: Binding(get: { owns && session.message != nil },
+                    set: { if owns && !$0 { session.message = nil } })) {
+                Button(Loc.ok) { session.message = nil }
+            } message: { Text(session.message ?? "") }
+            .task { if owns { session.updateEffectiveLocale(locale) } }
+            .onChange(of: locale.identifier) { _, _ in
+                if owns { session.updateEffectiveLocale(locale) }
+            }
     }
 }
 
 public struct AnyNativeSourceSearchView: View {
     @State private var presenter: TorahSourcesSearchPresenter
     private let session: TorahEditorSession
+    private let isEmbedded: Bool
     @Environment(\.dismiss) private var dismiss
     @Environment(\.locale) private var locale
 
     public init(session: TorahEditorSession, fixedScope: Bool = false,
-                onSelectValue: ((TorahAssociationItem) -> Void)? = nil) {
+                onSelectValue: ((TorahAssociationItem) -> Void)? = nil,
+                navigation: TorahInspectorSearchNavigation? = nil) {
         self.session = session
+        isEmbedded = navigation != nil
         _presenter = State(initialValue: TorahSourcesSearchPresenter(session: session,
-            context: session.associationContext, searchScope: session.searchScope,
+            context: navigation == nil ? session.associationContext : session.documentAssociationContext,
+            searchScope: navigation == nil ? session.searchScope : .references,
             fixedScope: fixedScope, onSelectValue: onSelectValue,
             onOpenSelection: { [weak session] selection in
-                session?.openResolvedReferenceFromStandaloneSearch(selection)
+                if let navigation { navigation.navigateToFullSource(selection) }
+                else { session?.openResolvedReferenceFromStandaloneSearch(selection) }
             }))
     }
 
     public var body: some View {
+        Group {
+            if isEmbedded { searchContent }
+            else { NavigationStack { searchContent } }
+        }
+    }
+
+    @ViewBuilder private var searchContent: some View {
         @Bindable var presenter = presenter
-        NavigationStack {
             List {
                 if !presenter.fixedScope {
                     Picker(Loc.Pinkha.Torah.sources, selection: $presenter.searchScope) {
                         ForEach(TorahEditorSession.SearchScope.allCases) { scope in Text(scope.title).tag(scope) }
                     }.pickerStyle(.segmented)
+                }
+                if !presenter.isSelectionOnly, let label = persistenceLabel {
+                    Section {
+                        HStack {
+                            if presenter.persistenceState == .waiting || presenter.persistenceState == .saving {
+                                ProgressView().accessibilityHidden(true)
+                            }
+                            Text(label).font(.caption).foregroundStyle(.secondary)
+                        }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityIdentifier("any-native-source-persistence-status")
+                    }
                 }
                 if !presenter.visibleAssociations.isEmpty {
                     Section(AnyUIErrorText.text("מקושרים", "Linked")) {
@@ -263,10 +357,14 @@ public struct AnyNativeSourceSearchView: View {
                                 Button(TorahAssociationDisplayFormatter.label(for: item, locale: locale)) {
                                     presenter.openAssociation(item)
                                 }.disabled(!presenter.canOpenAssociation(item))
+                                    .buttonStyle(.plain)
+                                    .accessibilityIdentifier("any-native-linked-source-\(item.id)")
+                                    .accessibilityValue(Text(verbatim: item.canonicalKey))
                                 Spacer()
                                 Button(role: .destructive) { Task { await presenter.unlinkAssociation(item) } }
                                     label: { Image(systemName: "link.badge.minus") }
                                     .disabled(!presenter.canEditAssociations)
+                                    .buttonStyle(.plain)
                             }
                         }
                     }
@@ -290,11 +388,15 @@ public struct AnyNativeSourceSearchView: View {
                                         }
                                     }
                                 }.disabled(result.scope != .references || presenter.isSelectionOnly)
+                                    .buttonStyle(.plain)
+                                    .accessibilityIdentifier("any-native-source-result-\(result.id)")
+                                    .accessibilityValue(Text(verbatim: result.providerValue))
                                 Spacer()
                                 Button {
                                     Task { await presenter.link(result) }
                                 } label: { Image(systemName: presenter.isSelectionOnly ? "checkmark.circle" : "plus.circle") }
                                     .disabled(!presenter.canEditAssociations)
+                                    .buttonStyle(.plain)
                             }
                         }
                     }
@@ -302,15 +404,36 @@ public struct AnyNativeSourceSearchView: View {
             }
             .searchable(text: $presenter.searchQuery)
             .navigationTitle(presenter.fixedScope ? presenter.searchScope.title : Loc.Pinkha.Torah.sources)
-            .toolbar { ToolbarItem(placement: .confirmationAction) {
-                Button(AnyUIErrorText.text("סיום", "Done")) { dismiss() }
-            }}
+            .toolbar {
+                if !isEmbedded {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(AnyUIErrorText.text("סיום", "Done")) { dismiss() }
+                            .accessibilityIdentifier("any-native-source-search-done")
+                    }
+                }
+            }
             .onChange(of: presenter.searchScope) { _, _ in presenter.categoryDidChange() }
+            .onChange(of: presenter.canonicalSnapshot) { _, _ in presenter.synchronizeSnapshot() }
+            .onChange(of: presenter.persistenceState) { _, state in
+                if state == .saved {
+                    UIAccessibility.post(notification: .announcement, argument: Loc.Pinkha.Torah.Persistence.saved)
+                }
+            }
             .onChange(of: presenter.searchQuery) { _, _ in
                 Task { await presenter.performSearch(debounce: .milliseconds(300)) }
             }
             .task { session.updateEffectiveLocale(locale); await presenter.refreshAssociations() }
             .onDisappear { presenter.cancelPendingRequests() }
+    }
+
+    private var persistenceLabel: String? {
+        switch presenter.persistenceState {
+        case .waiting: Loc.Pinkha.Torah.Persistence.waiting
+        case .saving: Loc.Pinkha.Torah.Persistence.saving
+        case .conflict(let message): message.isEmpty ? Loc.Pinkha.Torah.Persistence.conflict : message
+        case .uncertain(let message): message.isEmpty ? Loc.Pinkha.Torah.Persistence.uncertain : message
+        case .error(let message): message.isEmpty ? Loc.Pinkha.Torah.Persistence.error : message
+        case .saved, nil: nil
         }
     }
 }

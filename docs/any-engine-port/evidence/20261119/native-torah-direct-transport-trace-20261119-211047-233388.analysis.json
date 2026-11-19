@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "scope": "successful_direct_trace_observation_not_liveness_fix",
+  "receipt": "docs/any-engine-port/evidence/20261119/native-torah-direct-transport-trace-20261119-211047-233388.json",
+  "receiptSHA256": "92775225c050b2199803897d6f675f6fb77e7ef310438fbcf0b6f11a625e224f",
+  "requestCount": 2229,
+  "eventCount": 4458,
+  "errors": [],
+  "unfinished": [],
+  "latencyPercentileMethod": "nearest_rank",
+  "allResponses": {
+    "count": 2229,
+    "p50Ms": 0,
+    "p95Ms": 16,
+    "p99Ms": 16,
+    "maxMs": 452,
+    "sumMs": 3851
+  },
+  "authResponses": {
+    "count": 1486,
+    "p50Ms": 0,
+    "p95Ms": 15,
+    "p99Ms": 16,
+    "maxMs": 78,
+    "sumMs": 1755
+  },
+  "otherResponses": {
+    "count": 743,
+    "p50Ms": 0,
+    "p95Ms": 16,
+    "p99Ms": 30,
+    "maxMs": 452,
+    "sumMs": 2096
+  },
+  "statusCounts": {
+    "200": 2223,
+    "201": 4,
+    "204": 2
+  },
+  "framingCounts": {
+    "content-length": 2185,
+    "chunked": 42,
+    "other": 2
+  },
+  "connectionHeaderCounts": {
+    "absent": 2229
+  },
+  "slowestResponses": [
+    {
+      "method": "POST",
+      "route": "/v1/spaces/:id/bundles",
+      "elapsedMs": 452,
+      "status": 200,
+      "framing": {
+        "Content-Length": "233"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/v1/spaces/:id/pinkha/objects",
+      "elapsedMs": 218,
+      "status": 201,
+      "framing": {
+        "Content-Length": "75"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/v1/spaces/:id/pinkha/install",
+      "elapsedMs": 186,
+      "status": 200,
+      "framing": {
+        "Content-Length": "217"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/v1/auth",
+      "elapsedMs": 78,
+      "status": 200,
+      "framing": {
+        "Content-Length": "187"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/v1/spaces/:id/members/me",
+      "elapsedMs": 47,
+      "status": 200,
+      "framing": {
+        "Content-Length": "103"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/v1/spaces/:id/pinkha/objects/:id/editor/editor_blocks/blocks",
+      "elapsedMs": 32,
+      "status": 201,
+      "framing": {
+        "Content-Length": "127"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/v1/spaces/:id/bundles/pinkha/torah-native/v1",
+      "elapsedMs": 32,
+      "status": 200,
+      "framing": {
+        "Content-Length": "255"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/v1/spaces/:id/objects/:id",
+      "elapsedMs": 31,
+      "status": 200,
+      "framing": {
+        "Content-Length": "724"
+      }
+    }
+  ],
+  "runtimeDLLsMatchOriginalControl": true,
+  "productionSettingsChanged": false,
+  "productionTimeoutsChanged": false
+}

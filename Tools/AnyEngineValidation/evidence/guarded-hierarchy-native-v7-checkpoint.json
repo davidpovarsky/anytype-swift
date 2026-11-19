@@ -1,0 +1,358 @@
+{
+  "status": "FAIL_REAL_HTTP_PENDING_DIAGNOSIS",
+  "scope": "Production guarded hierarchy bin/restore implementation and unchanged20-case actual v7 HTTP acceptance. No full hierarchy PASS.",
+  "nativeBinarySHA256": "12c7fb62164c830410331aabf616194edb0711a083250f8e8dd34c3cba52078b",
+  "nativeManifestSHA256": "62a13310a474d93d728258d0631618b09056a20c4454bd7be303f3ec071fb77c",
+  "probeSHA256": "57144ce3da70b4bc3fb9375e78f299eb9043fcec0e44696f8f63b826c640fd3b",
+  "buildStatus": "PASS_EXACT_SOURCE_COMPONENT_BUILD",
+  "objectCount": 542,
+  "buildSourceStable": true,
+  "runtimeSourceStable": true,
+  "runtimeNativeBinaryStable": true,
+  "runtimeReceipt": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v2/result.json",
+  "passedChecks": [
+    "current_guarded_capabilities_and_account",
+    "custom_document_and_preserved_property_definitions"
+  ],
+  "passedCount": 2,
+  "requiredCount": 20,
+  "errorType": "Foundation.URLError",
+  "exactFailedRequest": "unresolved; after returned folder ID, before custom child call completes, including its surrounding account checks",
+  "retainedFailures": [
+    "original SwiftPM build stopped during disk exhaustion",
+    "direct build preflight lacked newly added probe object",
+    "normal debug link180-second deadline",
+    "actual direct HTTP after2checks"
+  ],
+  "diagnosis": "Independent Python reused one HTTP/1.1 connection for health/auth/health and objects/query. All200<=16ms including valid4214-byte chunked response. Complete5-row query showed the returned folder and no bootstrapped custom child; this does not exclude root-only ambiguous creation. No retry/mutation of that Space after failure.",
+  "diagnosticV1Limit": "First query used wrong /query route and returned400; only its three successful health/auth responses are meaningful. V2 uses the actual /objects/query.",
+  "crossObjectAtomicity": false,
+  "fixtureRetained": true,
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyGuardedHTTPHierarchyRecordStore.swift",
+      "sha256": "fcebea4c4fb45c0365819fc68fff284cfd39ca2d05b2d2a197f7c5d9e07890e0",
+      "bytes": 7871
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegrationProbe/GuardedHierarchyProbe.swift",
+      "sha256": "7c12b224fb36a584e4a808b7d355cd8ecf3bfcaca830aa54890499e443e09e39",
+      "bytes": 20765
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegrationProbe/Probe.swift",
+      "sha256": "8b70b5fb1785959c12fbad4006a64d9aaffa245d2b8cfbca04dc2d19bc6ff25d",
+      "bytes": 19282
+    },
+    {
+      "path": "Tools/AnyEngineValidation/archive_guarded_hierarchy_builds.py",
+      "sha256": "fb624c578542c6ad9e278c37eeed23d7009685b937814f6db91f32337eb88334",
+      "bytes": 2605
+    },
+    {
+      "path": "Tools/AnyEngineValidation/build_guarded_hierarchy_components.py",
+      "sha256": "ae1998aa5329bd51c0142d879eef369d4de7935cec30e42360e9e8bf1ea355a9",
+      "bytes": 14265
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/archive.json",
+      "sha256": "bcce1c7fede30bc4efc21d4018a3b7dc642fee50fb2a10f4d1096b4dd3a82ff7",
+      "bytes": 14285
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v1/executed-build-runner.py",
+      "sha256": "e9b3458ffc5f14f666a815d5f57b11a0cd0d7f3f1a6bde1e2918695a079422dd",
+      "bytes": 8624
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v1/executed-process-helper.py",
+      "sha256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67",
+      "bytes": 18216
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v1/PinkhaAnyIntegration/output-file-map.json",
+      "sha256": "9418a127a341c48d1a63301497a4b80f8647a288e3384bc10ae0acfc0129f2cb",
+      "bytes": 6321
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v1/PinkhaAnyIntegration/process/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v1/PinkhaAnyIntegration/process/stdout.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v1/PinkhaAnyIntegrationProbe/output-file-map.json",
+      "sha256": "ca49d9e3f5b020199a559f74ed7fb58b879457bbabba5c646cd6c829b45e27f0",
+      "bytes": 1391
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v1/PinkhaAnyIntegrationProbe/process/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v1/PinkhaAnyIntegrationProbe/process/stdout.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v1/result.json",
+      "sha256": "f14d0ac5471f00d0904d0e405a9f66604589e1fe1b440677444cdfe4ffa0f02d",
+      "bytes": 26429
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v1/source-after.json",
+      "sha256": "a073553d4b709908e56d8dd1f680a5906f5cdbc2520670b9b67bafd7e019f53d",
+      "bytes": 18688
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v1/source-before.json",
+      "sha256": "a073553d4b709908e56d8dd1f680a5906f5cdbc2520670b9b67bafd7e019f53d",
+      "bytes": 18688
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v2/executed-build-runner.py",
+      "sha256": "ae1998aa5329bd51c0142d879eef369d4de7935cec30e42360e9e8bf1ea355a9",
+      "bytes": 14265
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v2/executed-process-helper.py",
+      "sha256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67",
+      "bytes": 18216
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v2/link/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v2/link/stdout.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v2/Objects.LinkFileList",
+      "sha256": "fcfec2362c965c7f1c6623de09352c28ae7891e1c5208b6a2f91f71efe08db5b",
+      "bytes": 93714
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v2/result.json",
+      "sha256": "4918a5efaef7e36c16e08a8f91cf28fa58dca9ac57f940acec746901ab93aea8",
+      "bytes": 172502
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v2/source-after.json",
+      "sha256": "5c8ade975fb91af7dbf7b12d997d265ab18bb149547db6f7ee83169efe974897",
+      "bytes": 18689
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v2/source-before.json",
+      "sha256": "5c8ade975fb91af7dbf7b12d997d265ab18bb149547db6f7ee83169efe974897",
+      "bytes": 18689
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v2/wrap-PinkhaAnyIntegration/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v2/wrap-PinkhaAnyIntegration/stdout.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v2/wrap-PinkhaAnyIntegrationProbe/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v2/wrap-PinkhaAnyIntegrationProbe/stdout.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v3/executed-link-retry.py",
+      "sha256": "d970f6828cf014ad5639e4813bc4f29a5829cf43b8e94b09971c8c4ab3929b29",
+      "bytes": 5922
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v3/executed-process-helper.py",
+      "sha256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67",
+      "bytes": 18216
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v3/link/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v3/link/stdout.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v3/result.json",
+      "sha256": "bb88fa0d3e2b47f4ed8a8d379edde50afc9f049cfc30f38d7cc4c41d316c81f6",
+      "bytes": 158371
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v3/source-after.json",
+      "sha256": "99c4416f860643e25a247f17f5cf89cb5a2ff8499c6cedfe20a6a1de920e78b7",
+      "bytes": 18682
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-builds/guarded-hierarchy-components-v3/source-before.json",
+      "sha256": "99c4416f860643e25a247f17f5cf89cb5a2ff8499c6cedfe20a6a1de920e78b7",
+      "bytes": 18682
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v1/build/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v1/build/stdout.json",
+      "sha256": "ea0f1d437489b444a2183ced731eeced253550e1800c2b4e47ceb43cb9108c8f",
+      "bytes": 365
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v1/executed-guarded-store.swift",
+      "sha256": "fcebea4c4fb45c0365819fc68fff284cfd39ca2d05b2d2a197f7c5d9e07890e0",
+      "bytes": 7871
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v1/executed-process-helper.py",
+      "sha256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67",
+      "bytes": 18216
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v1/executed-runner.py",
+      "sha256": "c396aa14828a3c10761e20a3e8831ab3a0962c0fdab0fce3e572eb3b9149f95d",
+      "bytes": 11954
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v1/executed-swift-probe.swift",
+      "sha256": "7c12b224fb36a584e4a808b7d355cd8ecf3bfcaca830aa54890499e443e09e39",
+      "bytes": 20765
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v1/result.json",
+      "sha256": "fd21da4c0bbe8c5206d078f472287933e7ef0407575c7a3a4dad70a03e7375fa",
+      "bytes": 1556
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v1/source-after.json",
+      "sha256": "e45fc2eada366d24dd32ac56087bcee142f37994834816414cdc681a0f36858e",
+      "bytes": 18854
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v1/source-before.json",
+      "sha256": "e45fc2eada366d24dd32ac56087bcee142f37994834816414cdc681a0f36858e",
+      "bytes": 18854
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v1/stalled-build-stop.json",
+      "sha256": "6f17adfe39d0bf411cc84c14f08a09cca9903fdf70cb5b60cf434a83d9dbcc4f",
+      "bytes": 304
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v2/allocated-space.json",
+      "sha256": "40dbcd98b1048fe75d376df878ad1222891a7152a0f111435cf2af0b5bf7a9f7",
+      "bytes": 317
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v2/component-build-receipt.json",
+      "sha256": "bb88fa0d3e2b47f4ed8a8d379edde50afc9f049cfc30f38d7cc4c41d316c81f6",
+      "bytes": 158371
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v2/executed-guarded-store.swift",
+      "sha256": "fcebea4c4fb45c0365819fc68fff284cfd39ca2d05b2d2a197f7c5d9e07890e0",
+      "bytes": 7871
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v2/executed-process-helper.py",
+      "sha256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67",
+      "bytes": 18216
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v2/executed-runner.py",
+      "sha256": "0f39e5e861c5e3354f3988508f7930078823142fc0e626392d26d8129a53dc9c",
+      "bytes": 13013
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v2/executed-swift-probe.swift",
+      "sha256": "7c12b224fb36a584e4a808b7d355cd8ecf3bfcaca830aa54890499e443e09e39",
+      "bytes": 20765
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v2/result.json",
+      "sha256": "cdae6986b77f8e8ed3d8b5948afa479cdadcefb9438353b9bee41c22a39d1e0b",
+      "bytes": 2163
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v2/run/stderr.log",
+      "sha256": "9b3f040fa6e7b82fbdbc237fbc920cd2b6563be65adaa47651a423a10b8ad748",
+      "bytes": 1623
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v2/run/stdout.json",
+      "sha256": "7dcf1d6e939e48426ca7c7eaeee2c9df852fcc888ac0b86f909bb7d7b3e55c2f",
+      "bytes": 504
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v2/source-after.json",
+      "sha256": "7b3344575553ba6b1b36cdd6207be3ab9703ee4ec99f4eafac465e0f38c88158",
+      "bytes": 18854
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/guarded-hierarchy-native-v7-v2/source-before.json",
+      "sha256": "7b3344575553ba6b1b36cdd6207be3ab9703ee4ec99f4eafac465e0f38c88158",
+      "bytes": 18854
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/native-document-metadata-v7-source.json",
+      "sha256": "62a13310a474d93d728258d0631618b09056a20c4454bd7be303f3ec071fb77c",
+      "bytes": 23601
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/native-v7-hierarchy-fixture.json",
+      "sha256": "7a0aa4204d5a8b76b3ed983d0bcd32ec8c2b03ff890f365255bf86954e109621",
+      "bytes": 622
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/native-v7-hierarchy-transport-diagnosis-v1.json",
+      "sha256": "5d91a8432ae7463a24bdc15a3c997444c2f492cd65269c8f30330ffa55cba41e",
+      "bytes": 2288
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/native-v7-hierarchy-transport-diagnosis-v1.py",
+      "sha256": "1e4cb469fce7224b2b93a4e77114cd1f346ea054bd7ec3be2730715d44de0757",
+      "bytes": 2700
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/native-v7-hierarchy-transport-diagnosis-v2.json",
+      "sha256": "30deb14d7d7a20ea19c9178e2e7f99348f1dd34135876c8b300346a5cb343f91",
+      "bytes": 2540
+    },
+    {
+      "path": "Tools/AnyEngineValidation/evidence/native-v7-hierarchy-transport-diagnosis-v2.py",
+      "sha256": "9bb76fc4c8f1595149ed9decb5c093417901fb2abc951c65fb4f8c0f56690455",
+      "bytes": 2901
+    },
+    {
+      "path": "Tools/AnyEngineValidation/retry_guarded_hierarchy_link.py",
+      "sha256": "d970f6828cf014ad5639e4813bc4f29a5829cf43b8e94b09971c8c4ab3929b29",
+      "bytes": 5922
+    },
+    {
+      "path": "Tools/AnyEngineValidation/run_guarded_hierarchy_probe.py",
+      "sha256": "0f39e5e861c5e3354f3988508f7930078823142fc0e626392d26d8129a53dc9c",
+      "bytes": 13013
+    }
+  ]
+}

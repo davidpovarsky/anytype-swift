@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "status": "PACKAGE_BEHAVIOR_EXECUTED_ONE_UI_RECOVERY_FAILURE",
+  "archivedAt": "2026-11-19T21:49:18.282477+00:00",
+  "run": 44609865615,
+  "job": 135864438257,
+  "jobConclusion": "failure",
+  "artifact": 14577210559,
+  "commit": "27b4b2c3917aa6802ca042e6e63914b2f0aac52c",
+  "profiles": {
+    "any-engine-tests": {
+      "xctest": {
+        "total": 67,
+        "failed": 0
+      },
+      "swiftTesting": {
+        "total": 0,
+        "suites": 0,
+        "status": "passed"
+      },
+      "issues": []
+    },
+    "any-hanlin-tests": {
+      "xctest": {
+        "total": 33,
+        "failed": 0
+      },
+      "swiftTesting": {
+        "total": 0,
+        "suites": 0,
+        "status": "passed"
+      },
+      "issues": []
+    },
+    "any-host-tests": {
+      "xctest": {
+        "total": 55,
+        "failed": 0
+      },
+      "swiftTesting": {
+        "total": 11,
+        "suites": 1,
+        "status": "passed"
+      },
+      "issues": []
+    },
+    "any-integration-tests": {
+      "xctest": {
+        "total": 0,
+        "failed": 0
+      },
+      "swiftTesting": {
+        "total": 107,
+        "suites": 9,
+        "status": "passed"
+      },
+      "issues": []
+    },
+    "any-ui-tests": {
+      "xctest": {
+        "total": 4,
+        "failed": 0
+      },
+      "swiftTesting": {
+        "total": 84,
+        "suites": 15,
+        "status": "failed"
+      },
+      "issues": [
+        "\u2718 Test invalidSelectionAndMultipartRecoveryAreRefused() recorded an issue at AnyNativeLibraryRecoveryTests.swift:82:9: Expectation failed: an error was expected but none was thrown and \"AnyNativeRecoveredBlockDraft(baseNative: PinkhaAnyEngine.AnyJSON.object([\"id\": PinkhaAnyEngine.AnyJSON.string(\"block\"), \"text\": PinkhaAnyEngine.AnyJSON.string(\"old\"), \"nav\": PinkhaAnyEngine.AnyJSON.object([\"pos\": PinkhaAnyEngine.AnyJSON.string(\"PPPP\"), \"parentId\": PinkhaAnyEngine.AnyJSON.string(\"\")]), \"style\": PinkhaAnyEngine.AnyJSON.object([\"future\": PinkhaAnyEngine.AnyJSON.object([\"exact\": PinkhaAnyEngine.AnyJSON.integer(9007199254740993)])]), \"type\": PinkhaAnyEngine.AnyJSON.string(\"paragraph\"), \"_ver\": PinkhaAnyEngine.AnyJSON.object([\"style\": PinkhaAnyEngine.AnyJSON.object([\"future\": PinkhaAnyEngine.AnyJSON.string(\"style-v1\")]), \"text\": PinkhaAnyEngine.AnyJSON.string(\"v1\")])]), inlineMarkdown: \"\ud83d\ude00\", selectionLocation: 1, selectionLength: 0, revision: 0, blockID: \"block\")\" was returned"
+      ]
+    },
+    "pinkhakit-tests": {
+      "xctest": {
+        "total": 0,
+        "failed": 0
+      },
+      "swiftTesting": {
+        "total": 217,
+        "suites": 29,
+        "status": "passed"
+      },
+      "issues": []
+    },
+    "torah-presentation-tests": {
+      "xctest": {
+        "total": 1,
+        "failed": 0
+      },
+      "swiftTesting": {
+        "total": 10,
+        "suites": 1,
+        "status": "passed"
+      },
+      "issues": []
+    }
+  },
+  "scope": "Actual macOS Apple Swift package tests. This does not execute UIKit/iOS application or NativeLaunch tests.",
+  "observedFailure": "invalidSelectionAndMultipartRecoveryAreRefused accepted UTF-16 selection at offset1 inside the surrogate pair for an emoji. Existing assertion retained; production recovery validation is being corrected.",
+  "artifactURL": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44609865615/artifacts/14577210559",
+  "files": [
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/any-engine-tests.log",
+      "sha256": "d9f3605727c87d4050633926211c398616bbfe9ab4b11e5b3f7394484152dafb",
+      "bytes": 21376
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/any-hanlin-tests.log",
+      "sha256": "24e10a977890d3638eabe33689156df06f280f06133bf7e31f3f54c747599147",
+      "bytes": 19350
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/any-host-tests.log",
+      "sha256": "c12df492147697cb5b41ba26087af768331df2c8e64e2ebbb96e7b475a89d564",
+      "bytes": 20881
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/any-integration-tests.log",
+      "sha256": "a58a793cc2fa401f3fa76dc3f35cd8f93d35c3c251c722bfe971c9cf6b45093e",
+      "bytes": 26102
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/any-ui-tests.log",
+      "sha256": "b4e3008b8b4f0265d05e0e3bd39fbab3b17ebc6cfd69661bd947143e4b9c2913",
+      "bytes": 28784
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/artifact-metadata.json",
+      "sha256": "0517fb635390cd173b982a397b01d47719eea400422b0fcfbc46949bffddabad",
+      "bytes": 778
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/live-public-provider/result.json",
+      "sha256": "bd40bbfb30f714c0ebd06fcf4ea5a64b3b53d14d0c189590a0dcdce8160a76d1",
+      "bytes": 5320
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/live-public-provider/source-after.json",
+      "sha256": "991dcaaf0c6f84cf49e0e122ad974bac7c25f1552bdf66445057d2dd99fc1edc",
+      "bytes": 18289
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/live-public-provider/source-before.json",
+      "sha256": "991dcaaf0c6f84cf49e0e122ad974bac7c25f1552bdf66445057d2dd99fc1edc",
+      "bytes": 18289
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/live-public-provider/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/live-public-provider/stdout.json",
+      "sha256": "6b0ec1bcb97bcc640c947414774dce647706d2e17ed4d04ab66dc2ec7f5e0600",
+      "bytes": 2455
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/pinkhakit-tests.log",
+      "sha256": "2916b36198a0ae2259d09f1cf36ba3645dbb469d7a66abd5ab668956020d3f0b",
+      "bytes": 54419
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/source-retention.json",
+      "sha256": "b386c3c759af8ad5c57ef4de1a39af5836bee5912c7d2be55538da70773a852c",
+      "bytes": 11450
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/source-sha.txt",
+      "sha256": "3ec6348ff94fa2c078978c09e92b460e95832aa5666acd320ac09a74b9892fb9",
+      "bytes": 41
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/swift-version.txt",
+      "sha256": "04630ab8fa201f57c63c59730e638135e32584a97e16e004a417eb8ed283dc83",
+      "bytes": 98
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/torah-presentation-tests.log",
+      "sha256": "60d85bc54d7c9ffd13c44d9f38b75ceaf38aeeccde7738be1e6bda04a8546f33",
+      "bytes": 6618
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/workflow-job.log",
+      "sha256": "56d3b76a4b1de163a9727e81b12d20650387fdb436fc303f206070a0137cf5d4",
+      "bytes": 305722
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261119/apple27-packages-v1/xcode-version.txt",
+      "sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77",
+      "bytes": 33
+    }
+  ]
+}

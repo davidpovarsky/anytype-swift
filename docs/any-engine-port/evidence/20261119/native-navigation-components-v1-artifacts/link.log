@@ -1,0 +1,239 @@
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:16:64: note: expanded code originates here
+ 14 |         var value = AnyNativeDocumentNavigation()
+ 15 |         value.begin(ownerID: owner, route: route, dismissals: order)
+ 16 |         #expect(!value.didDismiss(.properties, ownerID: owner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.properties,owner,expression: .__fromNegation(.__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".properties")),("ownerID",.__fromSyntaxNode("owner"))), false),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 17 |         #expect(value.didDismiss(.sourceDocuments, ownerID: owner))
+ 18 |         #expect(value.take(ownerID: owner) == nil)
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:17:68: note: expanded code originates here
+ 15 |         value.begin(ownerID: owner, route: route, dismissals: order)
+ 16 |         #expect(!value.didDismiss(.properties, ownerID: owner))
+ 17 |         #expect(value.didDismiss(.sourceDocuments, ownerID: owner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.sourceDocuments,owner,expression: .__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".sourceDocuments")),("ownerID",.__fromSyntaxNode("owner"))),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 18 |         #expect(value.take(ownerID: owner) == nil)
+ 19 |         #expect(value.didDismiss(.properties, ownerID: owner))
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:19:63: note: expanded code originates here
+ 17 |         #expect(value.didDismiss(.sourceDocuments, ownerID: owner))
+ 18 |         #expect(value.take(ownerID: owner) == nil)
+ 19 |         #expect(value.didDismiss(.properties, ownerID: owner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.properties,owner,expression: .__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".properties")),("ownerID",.__fromSyntaxNode("owner"))),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 20 |         #expect(value.take(ownerID: owner) == route)
+ 21 |     }
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:35:106: note: expanded code originates here
+ 33 |         let owner = UUID()
+ 34 |         var value = AnyNativeDocumentNavigation()
+ 35 |         #expect(value.begin(ownerID: owner, route: route, dismissals: [.propertyInspector, .properties]))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.begin(ownerID: $1,route: $2,dismissals: $3)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },owner,route,[.propertyInspector, .properties],expression: .__fromFunctionCall(.__fromSyntaxNode("value"),"begin",("ownerID",.__fromSyntaxNode("owner")),("route",.__fromSyntaxNode("route")),("dismissals",.__fromSyntaxNode("[.propertyInspector, .properties]"))),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 36 |         #expect(value.nextDismissal == .propertyInspector)
+ 37 |         #expect(value.take(ownerID: owner) == nil)
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:38:64: note: expanded code originates here
+ 36 |         #expect(value.nextDismissal == .propertyInspector)
+ 37 |         #expect(value.take(ownerID: owner) == nil)
+ 38 |         #expect(!value.didDismiss(.properties, ownerID: owner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.properties,owner,expression: .__fromNegation(.__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".properties")),("ownerID",.__fromSyntaxNode("owner"))), false),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 39 |         #expect(value.didDismiss(.propertyInspector, ownerID: owner))
+ 40 |         #expect(value.nextDismissal == .properties)
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:39:70: note: expanded code originates here
+ 37 |         #expect(value.take(ownerID: owner) == nil)
+ 38 |         #expect(!value.didDismiss(.properties, ownerID: owner))
+ 39 |         #expect(value.didDismiss(.propertyInspector, ownerID: owner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.propertyInspector,owner,expression: .__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".propertyInspector")),("ownerID",.__fromSyntaxNode("owner"))),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 40 |         #expect(value.nextDismissal == .properties)
+ 41 |         #expect(value.take(ownerID: owner) == nil)
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:42:63: note: expanded code originates here
+ 40 |         #expect(value.nextDismissal == .properties)
+ 41 |         #expect(value.take(ownerID: owner) == nil)
+ 42 |         #expect(value.didDismiss(.properties, ownerID: owner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.properties,owner,expression: .__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".properties")),("ownerID",.__fromSyntaxNode("owner"))),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 43 |         #expect(value.take(ownerID: owner) == route)
+ 44 |     }
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:50:69: note: expanded code originates here
+ 48 |         var value = AnyNativeDocumentNavigation()
+ 49 |         value.begin(ownerID: owner, route: route, dismissals: [.editorInspector])
+ 50 |         #expect(!value.didDismiss(.editorInspector, ownerID: stale))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.editorInspector,stale,expression: .__fromNegation(.__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".editorInspector")),("ownerID",.__fromSyntaxNode("stale"))), false),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 51 |         #expect(value.nextDismissal == .editorInspector)
+ 52 |         #expect(value.take(ownerID: stale) == nil)
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:53:68: note: expanded code originates here
+ 51 |         #expect(value.nextDismissal == .editorInspector)
+ 52 |         #expect(value.take(ownerID: stale) == nil)
+ 53 |         #expect(value.didDismiss(.editorInspector, ownerID: owner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.editorInspector,owner,expression: .__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".editorInspector")),("ownerID",.__fromSyntaxNode("owner"))),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 54 |         #expect(value.take(ownerID: owner) == route)
+ 55 |     }
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:61:68: note: expanded code originates here
+ 59 |         var value = AnyNativeDocumentNavigation()
+ 60 |         value.begin(ownerID: owner, route: route, dismissals: [.editorInspector])
+ 61 |         #expect(value.didDismiss(.editorInspector, ownerID: owner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.editorInspector,owner,expression: .__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".editorInspector")),("ownerID",.__fromSyntaxNode("owner"))),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 62 |         #expect(!value.didDismiss(.editorInspector, ownerID: owner))
+ 63 |         #expect(value.take(ownerID: owner) == route)
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:62:69: note: expanded code originates here
+ 60 |         value.begin(ownerID: owner, route: route, dismissals: [.editorInspector])
+ 61 |         #expect(value.didDismiss(.editorInspector, ownerID: owner))
+ 62 |         #expect(!value.didDismiss(.editorInspector, ownerID: owner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.editorInspector,owner,expression: .__fromNegation(.__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".editorInspector")),("ownerID",.__fromSyntaxNode("owner"))), false),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 63 |         #expect(value.take(ownerID: owner) == route)
+ 64 |         #expect(value.take(ownerID: owner) == nil)
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:72:109: note: expanded code originates here
+ 70 |         var value = AnyNativeDocumentNavigation()
+ 71 |         value.begin(ownerID: owner, route: route, dismissals: [.editorSearch])
+ 72 |         #expect(!value.begin(ownerID: owner, route: .init(objectID: "other", blockID: nil), dismissals: []))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.begin(ownerID: $1,route: $2,dismissals: $3)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },owner,.init(objectID: "other", blockID: nil),[],expression: .__fromNegation(.__fromFunctionCall(.__fromSyntaxNode("value"),"begin",("ownerID",.__fromSyntaxNode("owner")),("route",.__fromSyntaxNode(#".init(objectID: "other", blockID: nil)"#)),("dismissals",.__fromSyntaxNode("[]"))), false),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 73 |         #expect(value.nextDismissal == .editorSearch)
+ 74 |         #expect(value.didDismiss(.editorSearch, ownerID: owner))
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:74:65: note: expanded code originates here
+ 72 |         #expect(!value.begin(ownerID: owner, route: .init(objectID: "other", blockID: nil), dismissals: []))
+ 73 |         #expect(value.nextDismissal == .editorSearch)
+ 74 |         #expect(value.didDismiss(.editorSearch, ownerID: owner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.editorSearch,owner,expression: .__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".editorSearch")),("ownerID",.__fromSyntaxNode("owner"))),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 75 |         #expect(value.take(ownerID: owner) == route)
+ 76 |     }
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:83:72: note: expanded code originates here
+ 81 |         value.begin(ownerID: oldOwner, route: route, dismissals: [.editorInspector])
+ 82 |         value.cancel()
+ 83 |         #expect(!value.didDismiss(.editorInspector, ownerID: oldOwner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.editorInspector,oldOwner,expression: .__fromNegation(.__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".editorInspector")),("ownerID",.__fromSyntaxNode("oldOwner"))), false),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 84 |         #expect(value.take(ownerID: reopenedOwner) == nil)
+ 85 |         value.begin(ownerID: reopenedOwner, route: route, dismissals: [.sourceDocuments])
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:86:72: note: expanded code originates here
+ 84 |         #expect(value.take(ownerID: reopenedOwner) == nil)
+ 85 |         value.begin(ownerID: reopenedOwner, route: route, dismissals: [.sourceDocuments])
+ 86 |         #expect(!value.didDismiss(.sourceDocuments, ownerID: oldOwner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.sourceDocuments,oldOwner,expression: .__fromNegation(.__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".sourceDocuments")),("ownerID",.__fromSyntaxNode("oldOwner"))), false),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 87 |         #expect(value.didDismiss(.sourceDocuments, ownerID: reopenedOwner))
+ 88 |         #expect(value.take(ownerID: reopenedOwner) == route)
+
+macro expansion #expect:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Tests\PinkhaAnyUITests\AnyNativeDocumentNavigationTests.swift:87:76: note: expanded code originates here
+ 85 |         value.begin(ownerID: reopenedOwner, route: route, dismissals: [.sourceDocuments])
+ 86 |         #expect(!value.didDismiss(.sourceDocuments, ownerID: oldOwner))
+ 87 |         #expect(value.didDismiss(.sourceDocuments, ownerID: reopenedOwner))
+    |         `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkFunctionCall(value.self,calling: {
+    |2 |   $0.didDismiss($1,ownerID: $2)
+    |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+    |3 | },.sourceDocuments,reopenedOwner,expression: .__fromFunctionCall(.__fromSyntaxNode("value"),"didDismiss",(nil,.__fromSyntaxNode(".sourceDocuments")),("ownerID",.__fromSyntaxNode("reopenedOwner"))),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    +-------------------------------------------------------------------
+ 88 |         #expect(value.take(ownerID: reopenedOwner) == route)
+ 89 |     }

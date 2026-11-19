@@ -29,11 +29,13 @@ public struct AnyNativeRecoveredBlockDraft: Sendable, Equatable, Encodable {
                 revision: UInt64) throws {
         let projection = base.type == "code" ? AnyInlineMarkdown(literal: inlineMarkdown) :
                                               AnyInlineMarkdown(inlineMarkdown)
+        // Use the same scalar-safe UTF-16 boundary check as live composition.
+        // Foundation range conversion alone accepted a split surrogate on Apple.
         guard inlineMarkdown.utf8.count <= 65_536, projection.isEditable,
               selection.location >= 0, selection.length >= 0,
               selection.location <= projection.display.utf16.count,
               selection.length <= projection.display.utf16.count - selection.location,
-              Range(selection, in: projection.display) != nil else {
+              (try? AnyInlineMarkdown(literal: projection.display).sourceRange(for: selection)) != nil else {
             throw AnyNativeRecoveryError.invalidSnapshot
         }
         self.baseNative = base.native; self.blockID = base.id; self.inlineMarkdown = inlineMarkdown

@@ -1,0 +1,31 @@
+{
+  "scope": "Read-only native v7 HTTP/1.1 framing on isolated hierarchy fixture; Python client only, not a Swift transport PASS",
+  "nativeBinarySHA256": "12c7fb62164c830410331aabf616194edb0711a083250f8e8dd34c3cba52078b",
+  "requests": [],
+  "status": "FAIL_NATIVE_HTTP_FRAMING_DIAGNOSIS",
+  "errorType": "TimeoutError",
+  "sourceFiles": {
+    "anyServer": {
+      "path": "C:/Users/DAVID/Code/any-pinkha-runtime-20261119/internal/server/server.go",
+      "sha256": "cf47feb061a5541d38f36b53a82288e1eb19669f93b179669393137e78f7e651"
+    },
+    "anyRoutes": {
+      "path": "C:/Users/DAVID/Code/any-pinkha-runtime-20261119/internal/server/routes.go",
+      "sha256": "298cecd808ac2b28ca90dc5ab2e3632c221f33ff4647b726e99d7ff7875c4225"
+    },
+    "echoServer": {
+      "path": "C:/Users/DAVID/go/pkg/mod/github.com/labstack/echo/v4@v4.13.4/echo.go",
+      "sha256": "3d727100f16abbf95142821a46dee35f4f4b6be2a90df7fb937fdd4ae59e7893"
+    },
+    "echoJSON": {
+      "path": "C:/Users/DAVID/go/pkg/mod/github.com/labstack/echo/v4@v4.13.4/json.go",
+      "sha256": "03dcdd8e2c46746fb6bba8cdfa97c82686ebbf26229e7786c38230d8c4de4760"
+    }
+  },
+  "sourceFindings": [
+    "Any uses echo.New and e.Start without setting ReadTimeout, ReadHeaderTimeout, WriteTimeout or IdleTimeout.",
+    "Echo v4.13.4 initializes new(http.Server) and configureServer does not set those timeouts.",
+    "JSON uses encoding/json Encoder on the response writer, with standard net/http response framing; no custom JSON serializer configured.",
+    "The one-second write deadline in the engine gate is armed only for engine teardown, not ordinary live requests."
+  ]
+}

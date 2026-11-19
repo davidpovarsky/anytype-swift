@@ -1,0 +1,56 @@
+build-xcframework: any v0.5.0-pinkha.1 (commit 88fae2e)
+== building device slice (CC=clangwrap-ios.sh, -miphoneos-version-min=18.4) ==
+== building sim slice (CC=clangwrap-iossim.sh, -mios-simulator-version-min=18.4) ==
+== device slice: every member has minos 18.4 ==
+== sim slice: every member has minos 18.4 ==
+== assembling any.xcframework ==
+xcframework successfully written out to: /Users/runner/work/anytype-swift/anytype-swift/.ci/any-source/any.xcframework
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AvailableLibraries</key>
+	<array>
+		<dict>
+			<key>BinaryPath</key>
+			<string>anylib.a</string>
+			<key>HeadersPath</key>
+			<string>Headers</string>
+			<key>LibraryIdentifier</key>
+			<string>ios-arm64-simulator</string>
+			<key>LibraryPath</key>
+			<string>anylib.a</string>
+			<key>SupportedArchitectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>SupportedPlatform</key>
+			<string>ios</string>
+			<key>SupportedPlatformVariant</key>
+			<string>simulator</string>
+		</dict>
+		<dict>
+			<key>BinaryPath</key>
+			<string>anylib.a</string>
+			<key>HeadersPath</key>
+			<string>Headers</string>
+			<key>LibraryIdentifier</key>
+			<string>ios-arm64</string>
+			<key>LibraryPath</key>
+			<string>anylib.a</string>
+			<key>SupportedArchitectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>SupportedPlatform</key>
+			<string>ios</string>
+		</dict>
+	</array>
+	<key>CFBundlePackageType</key>
+	<string>XFWK</string>
+	<key>XCFrameworkFormatVersion</key>
+	<string>1.0</string>
+</dict>
+</plist>
+== zipping → dist/any.xcframework.zip ==
+build-xcframework: → dist/any.xcframework.zip
