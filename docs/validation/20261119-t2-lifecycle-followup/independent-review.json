@@ -1,0 +1,85 @@
+{
+  "all_prior_reviewed_product_and_rpc_sources_unchanged": true,
+  "base_app_sha": "36757c8389006c6d30bf8f73997fcd928330601d",
+  "base_controller_sha256": "ca6cd10822ccd3d6c1f91120a97a94c574e7735e299342705e824e503b6347bb",
+  "blocking_findings": [],
+  "candidate_files_sha256": {
+    "account_rpc/fixture.json": "3c970648c0421df7c78370291409a8e5ea1ff3d8aedeea0b7fa5c3e828c8057a",
+    "heart-registration.json": "f57fb369c687d06aaa3fad8411ed3a080c358103bfd0da01c2431fab6bdbc494",
+    "native_client_concurrent_replace.py": "40d0ab5c9dc23d2cc43c6de4407383d6f984dc438cc963605d145f138a698e17",
+    "overlay/core/block/object/objectcache/pinkha_torah_lifecycle_test.go": "569ff67213c5e8ebe3c19031277bfbf0a8dbdf8f669a5ebe53de5f8935ed7dc6",
+    "rpc/heart-rpc.json": "5c9400464b832e1249894de3485088e22296b9dc9cfd7df1e8665d579b00e7d1",
+    "test_native_client_concurrent_replace.py": "959d8d5eb6f24ef6cdfe86a6d72ae433c2fa7c4b2d447ab83b265bebce647d10",
+    "two_clients/fixture.json": "8b5780573e2f90c99aa4264a61ce0f1a5c47433fe3787b9f83a254201dfdc93f"
+  },
+  "limitations": {
+    "corrected_native_registry_test_execution": "NOT_RUN",
+    "lifecycle_acceptance": false,
+    "new_client_native_execution": "NOT_RUN",
+    "original_client_run": 44570372111,
+    "original_failure_cause": "UNRESOLVED_LIVE_METADATA_COMPARISON_REJECTION; no retained raw inspect snapshots or daemon version",
+    "product_edited_by_reviewer": false,
+    "retroactive_acceptance": false
+  },
+  "mount_identity": {
+    "destination_requirements": "Absolute nonempty string, no NUL, unique; duplicate destinations rejected rather than deduplicated.",
+    "diagnostics": "Fixed-schema role/phase/check labels and booleans only, DIAGNOSTIC_ONLY_NO_ACCEPTANCE; no private mount contents or raw errors copied.",
+    "existing_guards": "Exact process, executable, arguments, environment, host configuration, account-root ownership, initial container validation, reconnect validation, signed history/provenance, retry bytes, phase counts and mandatory shutdown unchanged.",
+    "normalization": "Only a deep copy of the top-level Mounts list is sorted by exact Destination. All fields and values, including unknown fields and nested list order, remain compared.",
+    "ordered_lists_retained": [
+      "Args",
+      "Config.Env",
+      "Config.Cmd",
+      "Config.Entrypoint",
+      "HostConfig lists",
+      "lists nested within Mounts records"
+    ],
+    "primary_evidence": "Official Moby change sorts map-derived GetMountPoints output to remove arbitrary inspect enumeration order.",
+    "primary_source": "https://github.com/moby/moby/commit/ff0b471f2091c7b7be351cee44c2a013fb6914d7",
+    "review": "PASS"
+  },
+  "overlay_pin_counts": {
+    "native_client_scenarios": 7,
+    "registration": 52,
+    "rpc": 3
+  },
+  "prior_reviewed_sources_changed": {
+    "overlay/core/block/object/objectcache/pinkha_torah_lifecycle_test.go": {
+      "after": "569ff67213c5e8ebe3c19031277bfbf0a8dbdf8f669a5ebe53de5f8935ed7dc6",
+      "before": "49ac77d0cdae36262543836f068a3ac48ae29fb6d495748b9c49bdfeb47ce4b2"
+    }
+  },
+  "reviewed_at": "2026-11-19T17:26:07.152214+00:00",
+  "reviewer": "/root/asana_audit",
+  "root_guard_test": {
+    "finding_resolved": "SpaceStorage has no HasTree. Use TreeStorage before and after rejection and require both nil returned storage and errors.Is(treestorage.ErrUnknownTreeId).",
+    "native_commonspace_absent_root_fixture": "UNCHANGED",
+    "pinned_api": "github.com/anyproto/any-sync@v0.13.8",
+    "pinned_objecttree_storage_sha256": "2f53235a74ab3f23dcc5166124205080c9c98f86bcc54382a6c870cd201300f9",
+    "review": "PASS"
+  },
+  "schema": "t2-lifecycle-followup-independent-review-v1",
+  "scope": "Narrow native test API correction plus unordered Docker Mounts enumeration correction and bounded phase diagnostics. No native acceptance or exact original-failure causality claim.",
+  "status": "SOURCE_AND_CONTROLLER_REVIEW_PASS",
+  "supersedes": "Preliminary asana-audit/t2-lifecycle-followup-source-analysis.json; this review binds exact pre-change controller ca6cd108... and frozen candidate40d0ab5c....",
+  "validation": {
+    "command": "python -B -m unittest -v test_native_client_concurrent_replace",
+    "diff_path": "/workspace/scratch/5e78163ba431/asana-audit/t2-mount-identity-candidate.diff",
+    "diff_sha256": "2f594f5569f9fc5e0c7fe4b6cb2cacd90fdbb8b33ce9d6a303b984a3621bcf06",
+    "duration_seconds": 0.294,
+    "failed": 0,
+    "independently_executed": true,
+    "log_path": "/workspace/scratch/5e78163ba431/asana-audit/t2-mount-controller-independent-tests.log",
+    "log_sha256": "d07e24c87d84232c123f0bbdde9d4bfcb10055e47ec0f5e4282344c70e3c418b",
+    "new_controls": [
+      "mount permutations accepted, original input unchanged, every mount field mutation and other ordered-list permutations rejected",
+      "duplicate/malformed mount schema rejected",
+      "full synthetic phase orchestration accepts only mount-order permutations",
+      "private diagnostic string not emitted",
+      "actual failed identity/process check retained in bounded diagnostics"
+    ],
+    "passed": 25,
+    "skipped": 0,
+    "tests": 25
+  }
+}
