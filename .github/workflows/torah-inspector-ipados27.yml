@@ -25,6 +25,7 @@ on:
           - t2-native-clients-observed-remove
           - t2-native-clients-concurrent-replace
           - t2-account-lifecycle
+          - t2-rpc-lifecycle-races
           - simulator-ui27
           - heart-runtime
           - t5-r15-runtime
@@ -312,3 +313,9 @@ jobs:
             build/ipa-repair/sha256.txt
           if-no-files-found: warn
           retention-days: 14
+
+  t2-rpc-lifecycle-races:
+    if: ${{ inputs.route == 't2-rpc-lifecycle-races' }}
+    uses: ./.github/workflows/pinkha-t2-rpc-lifecycle-races.yml
+    with:
+      source_sha: ${{ github.sha }}

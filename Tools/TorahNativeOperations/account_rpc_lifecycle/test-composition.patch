@@ -1,0 +1,108 @@
+--- a/core/pinkha_torah_operations.go
++++ b/core/pinkha_torah_operations.go
+@@ -21,6 +21,7 @@
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahopscontract"
+ 	"github.com/anyproto/anytype-heart/space"
+ 	"github.com/anyproto/anytype-heart/space/clientspace"
++	"github.com/anyproto/anytype-heart/util/pinkhat2test"
+ )
+ 
+ // These typed native handlers are deliberately not registered in ClientCommands.
+@@ -153,6 +154,9 @@
+ 	if err = s.current(ctx); err != nil {
+ 		return nil, nil, nil, err
+ 	}
++	if write {
++		pinkhat2test.Point(ctx, "prelease", target.ObjectID, "write", s.application)
++	}
+ 	leaseCtx, release, err := torahopsobject.AcquireNativeTargetLease(ctx, spc, root.Id, target)
+ 	if err != nil {
+ 		return nil, nil, nil, err
+@@ -254,6 +258,7 @@
+ 	}
+ 	defer release()
+ 	result, appendErr := host.AppendTorahOperation(hostCtx, op)
++	pinkhat2test.Point(ctx, "append-native-return", req.Target.ObjectID, "write", scope.application)
+ 	return result, errors.Join(appendErr, scope.current(ctx))
+ }
+ 
+--- a/core/block/editor/torahops/native_commit_guard.go
++++ b/core/block/editor/torahops/native_commit_guard.go
+@@ -10,6 +10,7 @@
+ 	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
+ 	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
+ 	"github.com/anyproto/any-sync/util/crypto"
++	"github.com/anyproto/anytype-heart/util/pinkhat2test"
+ )
+ 
+ var (
+@@ -184,7 +185,10 @@
+ 		if head == nil || change.AclHeadId != head.Id {
+ 			return errors.Join(ErrNativeACLChanged, list.ErrInsufficientPermissions)
+ 		}
+-		return s.Storage.AddAll(ctx, changes, heads, snapshot)
++		pinkhat2test.Point(ctx, "commit-before-storage", s.header.Id, "", s)
++		err := s.Storage.AddAll(ctx, changes, heads, snapshot)
++		pinkhat2test.Point(ctx, "commit-after-storage", s.header.Id, "", s)
++		return err
+ 	}()
+ 	if err != nil {
+ 		return err
+--- a/core/application/pinkha_torah_lifecycle.go
++++ b/core/application/pinkha_torah_lifecycle.go
+@@ -5,6 +5,7 @@
+ 	"sync"
+ 
+ 	"github.com/anyproto/any-sync/app"
++	"github.com/anyproto/anytype-heart/util/pinkhat2test"
+ )
+ 
+ // LeasePinkhaTorahApp holds the application lifetime lock outside all native
+@@ -24,6 +25,7 @@
+ 		s.lock.RUnlock()
+ 		return nil, nil, nil
+ 	}
++	pinkhat2test.Point(ctx, "app-lease-held", "", "", s)
+ 	var once sync.Once
+ 	return s.app, func() { once.Do(s.lock.RUnlock) }, nil
+ }
+--- a/core/block/cache/cache.go
++++ b/core/block/cache/cache.go
+@@ -10,6 +10,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/editor/state"
+ 	"github.com/anyproto/anytype-heart/core/domain"
+ 	"github.com/anyproto/anytype-heart/core/session"
++	"github.com/anyproto/anytype-heart/util/pinkhat2test"
+ )
+ 
+ type ObjectGetterComponent interface {
+@@ -50,7 +51,9 @@
+ 		return fmt.Errorf("the interface %T is not implemented in %T", dummy, sb)
+ 	}
+ 
++	pinkhat2test.Point(ctx, "delete-lock-attempt", objectID, pinkhat2test.TypeName[t](), sb)
+ 	sb.Lock()
++	pinkhat2test.Point(ctx, "delete-lock-acquired", objectID, pinkhat2test.TypeName[t](), sb)
+ 	defer sb.Unlock()
+ 	return apply(bb)
+ }
+--- a/core/application/account_stop.go
++++ b/core/application/account_stop.go
+@@ -15,6 +15,7 @@
+ 	walletComp "github.com/anyproto/anytype-heart/core/wallet"
+ 	"github.com/anyproto/anytype-heart/pb"
+ 	"github.com/anyproto/anytype-heart/util/anyerror"
++	"github.com/anyproto/anytype-heart/util/pinkhat2test"
+ )
+ 
+ var (
+@@ -40,7 +41,9 @@
+ 	if cancelled && !req.RemoveData {
+ 		return nil
+ 	}
++	pinkhat2test.Point(context.Background(), "stop-lock-attempt", "", "", s)
+ 	s.lock.Lock()
++	pinkhat2test.Point(context.Background(), "stop-lock-acquired", "", "", s)
+ 	defer s.lock.Unlock()
+ 
+ 	if s.app == nil {

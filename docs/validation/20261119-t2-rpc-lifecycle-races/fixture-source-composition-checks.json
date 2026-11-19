@@ -1,0 +1,26 @@
+{
+  "status": "PASS_SOURCE_COMPOSITION_ONLY",
+  "app_sha": "16b7493fa05bdc3abbae190c6e6c364c81874eea",
+  "candidate_sha256": "b021c51a0541a4603036a579bb339318d15e6fbb0f100cd913db480aa3259799",
+  "controls": [
+    {
+      "case": "exact_composition",
+      "status": "PASS_7_COMPILE_ENTRIES_5_ORIGINAL_FILES_UNCHANGED_THEN_PATCH_MATCHED_ALL_5_HASHES"
+    },
+    {
+      "case": "wrong_native_hash",
+      "status": "PASS_REJECTED_BEFORE_ANY_HELPER_OUTPUT_OR_SOURCE_MUTATION"
+    },
+    {
+      "case": "existing_overlay_collision",
+      "status": "PASS_REJECTED_BEFORE_ANY_HELPER_OUTPUT_OR_SOURCE_MUTATION"
+    },
+    {
+      "case": "existing_output",
+      "status": "PASS_REJECTED_BEFORE_ANY_HELPER_OUTPUT_OR_SOURCE_MUTATION"
+    }
+  ],
+  "go_compilation": "NOT_RUN",
+  "native_races": "NOT_RUN",
+  "remote_writes": 0
+}
