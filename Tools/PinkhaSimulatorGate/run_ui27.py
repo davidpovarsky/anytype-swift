@@ -23,7 +23,7 @@ import wave15_diagnostics as diagnostics
 
 SMOKE = ['testObjectAddPropertyButtonAndPickerSearch', 'testDocumentSourceSearchPresentation',
          'testSourceChipOpensAndClosesInspector']
-KIT = '4e59e909dd22685bb46f9396bc57e5f8c627d773'
+KIT = '158acb295f832e96907cdadc813a1c2a4bb6a03c'
 MARKER = 'pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077'
 DEFAULT_METHOD_SECONDS = 300
 PROPERTIES_METHOD_SECONDS = 900

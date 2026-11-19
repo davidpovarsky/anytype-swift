@@ -1,0 +1,40 @@
+{
+  "head": "a701521fc2b05057f8866ffa438be88c2f6b67e8",
+  "files": [
+    {
+      "path": "Anytype.xcodeproj/project.pbxproj",
+      "before_sha256": "3ac341d384fccfb583474b64c07a6369a13428d1a9791c624c781ff188cb0bf4",
+      "raw_sha256": "29b625a119eddd27728248dbad314b4f4a3672961397b9468a95a3d59196d9d1",
+      "after_sha256": "d051bbc11c82705b4f473b1d51c2e5fedbce015b8ccaa2d5eca00f16fdd1cd59",
+      "diff": "--- a/Anytype.xcodeproj/project.pbxproj\n+++ b/Anytype.xcodeproj/project.pbxproj\n@@ -2245,7 +2245,7 @@\n \t\t\trepositoryURL = \"https://github.com/davidpovarsky/TorahInspectorKit.git\";\n \t\t\trequirement = {\n \t\t\t\tkind = revision;\n-\t\t\t\trevision = 4e59e909dd22685bb46f9396bc57e5f8c627d773;\n+\t\t\t\trevision = 158acb295f832e96907cdadc813a1c2a4bb6a03c;\n \t\t\t};\n \t\t};\n /* End XCRemoteSwiftPackageReference section */\n"
+    },
+    {
+      "path": "Modules/PinkhaKit/Package.swift",
+      "before_sha256": "b55b68f53f33db07281e54fb30f29cd235877e855d333ad675057f52be2d8d7a",
+      "raw_sha256": "d5e4ccbeaadf2db81bedd15a9f7406fe2ef2130701d53709b8c2181061abae5e",
+      "after_sha256": "efedd1dfb73e8d8ea72ed8066f78a14f093395d81fadacfceae352494db62108",
+      "diff": "--- a/Modules/PinkhaKit/Package.swift\n+++ b/Modules/PinkhaKit/Package.swift\n@@ -16,7 +16,7 @@\n     dependencies: [\n         .package(\n             url: \"https://github.com/davidpovarsky/TorahInspectorKit.git\",\n-            revision: \"4e59e909dd22685bb46f9396bc57e5f8c627d773\"\n+            revision: \"158acb295f832e96907cdadc813a1c2a4bb6a03c\"\n         )\n     ],\n     targets: [\n"
+    },
+    {
+      "path": "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+      "before_sha256": "3af05a825cb37b9618f95b69917e2431f0c47a7c36ccd46185bf6cdff8af5502",
+      "raw_sha256": "42d58a1b4e8d75a9d2cc9d3ff2a9eca214aa2b09a4da26bc5f0b85717f13207e",
+      "after_sha256": "5b2dc85295e14c33e750d9a9b33e2422ef0a56af8049cdc4638b8508c8ddfb07",
+      "diff": "--- a/Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved\n+++ b/Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved\n@@ -374,7 +374,7 @@\n       \"kind\" : \"remoteSourceControl\",\n       \"location\" : \"https://github.com/davidpovarsky/TorahInspectorKit.git\",\n       \"state\" : {\n-        \"revision\" : \"4e59e909dd22685bb46f9396bc57e5f8c627d773\"\n+        \"revision\" : \"158acb295f832e96907cdadc813a1c2a4bb6a03c\"\n       }\n     },\n     {\n"
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/required-coverage.json",
+      "before_sha256": "7571d934170768e5027e8f5be5fbdb24d2c3e9e59208b6b9294e3b4202aca77a",
+      "raw_sha256": "94b1a17f3c6f19e4bd158ce9b3c2bdb3b8997618ea7a26716bc49800088115e5",
+      "after_sha256": "de6c4b76b54c62bde13d400ba0233eca7da2d0409fe1a9f817fc45800bdca76b",
+      "diff": "--- a/Tools/PinkhaSimulatorGate/required-coverage.json\n+++ b/Tools/PinkhaSimulatorGate/required-coverage.json\n@@ -1,7 +1,7 @@\n {\n   \"schema_version\": 1,\n   \"os_major\": 27,\n-  \"kit_sha\": \"4e59e909dd22685bb46f9396bc57e5f8c627d773\",\n+  \"kit_sha\": \"158acb295f832e96907cdadc813a1c2a4bb6a03c\",\n   \"native_patch_sha256\": \"fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077\",\n   \"cases\": [\n     {\"id\":\"UI01\",\"configurations\":[\"iphone-en-portrait-os27\",\"ipad-en-portrait-os27\"],\"criteria\":[\"real-launch\",\"disposable-account-space\",\"home-identity\"],\"visual\":false},\n"
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/run_ui27.py",
+      "before_sha256": "0310b8003c1f508e10fbb77d3c5ce0eecf00d5e1e670e4059a82ed62523b33c4",
+      "raw_sha256": "a7565564d42b9ebe1c5a964ecaa655179f236052fccb8349ccf54cf25a92d868",
+      "after_sha256": "de13dfeefbaa5cd224247142bb87b31ec956e70fb71fd4b28422bddeaf8c4a34",
+      "diff": "--- a/Tools/PinkhaSimulatorGate/run_ui27.py\n+++ b/Tools/PinkhaSimulatorGate/run_ui27.py\n@@ -23,7 +23,7 @@\n \n SMOKE = ['testObjectAddPropertyButtonAndPickerSearch', 'testDocumentSourceSearchPresentation',\n          'testSourceChipOpensAndClosesInspector']\n-KIT = '4e59e909dd22685bb46f9396bc57e5f8c627d773'\n+KIT = '158acb295f832e96907cdadc813a1c2a4bb6a03c'\n MARKER = 'pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077'\n DEFAULT_METHOD_SECONDS = 300\n PROPERTIES_METHOD_SECONDS = 900\n"
+    }
+  ]
+}
