@@ -1,0 +1,1186 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-11-19T15:13:54.648968+00:00",
+  "purpose": "Preservation contract, not evidence of port completion.",
+  "baseline": {
+    "repository": "davidpovarsky/anytype-swift",
+    "branch": "codex/chatgpt-wave15-hanlin-consumer-20261119",
+    "commit": "586c98bcc17dee425664224e508fc0e8df277678",
+    "tree": "f520ec6e6e6cf57b4a9caaac811074ae8b64ed67",
+    "integration_commit": "90fcb6033ca4f8aecf8e04d4959cf06fb104adf9",
+    "heart_library": "v0.51.7-nightly.20261014.1",
+    "kit_revision": "4e59e909dd22685bb46f9396bc57e5f8c627d773",
+    "hanlin_revision": "116cc6be0654a5d11bc56ba00e0310031107ee36",
+    "swift_ai_sdk_revision": "e7bf34111e603ca977becd007dd4e5bb109af857"
+  },
+  "port": {
+    "branch": "codex/any-engine-port-20261119",
+    "complete": false,
+    "user_data_touched": false,
+    "whole_app_engine_switched": false
+  },
+  "capabilities": [
+    {
+      "id": "BOOT-01",
+      "name": "Space-local schema and role manifest",
+      "layer": "adapter",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaSpaceBootstrapEngine.swift",
+          "git_blob": "9e275ff2a06c9ae8ad38728322021c9d20178ec2"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+          "git_blob": "69220b20ad4a55b9b4d10c62793c66b9521ce1af"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift",
+          "git_blob": "52a209301aebac5f365543de7d3966b021dd611f"
+        }
+      ],
+      "adaptation": "Use a pinned Any bundle and explicit per-Space binding instead of Heart property/type/template RPC; retain version validation.",
+      "acceptance": [
+        "Repeated bootstrap converges",
+        "Wrong Space rejected",
+        "Unsupported schema version rejected"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/PinkhaSpaceBootstrapEngineTests.swift",
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/PinkhaSpaceManifestTests.swift"
+      ]
+    },
+    {
+      "id": "BOOT-02",
+      "name": "Bootstrap cancellation and account lifecycle",
+      "layer": "host",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
+          "git_blob": "865126d851cc3401b20e8eb917799230f032f414"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapStateManager.swift",
+          "git_blob": "0d71e0cf034f4671998f5210f2c1e655c2588512"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaSpaceBootstrapService.swift",
+          "git_blob": "620b6806b57d0fd9ac54504bf39855ed8ed65017"
+        }
+      ],
+      "adaptation": "Keep app lifetime ownership and drain bootstrap before logout; independent Any account state.",
+      "acceptance": [
+        "Logout prevents deferred writes",
+        "Switch invalidates prior session",
+        "Optional derived provisioning cannot block canonical links"
+      ],
+      "baseline_tests": [
+        "AnyTypeTests/Pinkha/PinkhaBootstrapStateManagerTests.swift"
+      ]
+    },
+    {
+      "id": "HIER-01",
+      "name": "Folders, books, documents and explicit hierarchy",
+      "layer": "portable_and_adapter",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyModels.swift",
+          "git_blob": "cb66f68729acd953f5428a4cb336ae93a1a787d7"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyBuilder.swift",
+          "git_blob": "16e01dc11697203ff99949e59370d8af3539ac8d"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyCodec.swift",
+          "git_blob": "10e07df6b2fa7ab539429f950c4a130b826f84cb"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Hierarchy/PinkhaHierarchyRepository.swift",
+          "git_blob": "aacdc56e85eee3fd5fc5db99c3e3f0536559eb0e"
+        }
+      ],
+      "adaptation": "Reuse hierarchy model; query explicit Any parent relation, not backlinks.",
+      "acceptance": [
+        "Parent determines hierarchy",
+        "Breadcrumbs survive reopen",
+        "Malformed/orphan handling preserved"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Hierarchy/PinkhaHierarchyCodecTests.swift",
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Hierarchy/PinkhaHierarchyTests.swift"
+      ]
+    },
+    {
+      "id": "HIER-02",
+      "name": "Ordering, cycle prevention and safe folder deletion",
+      "layer": "portable_and_adapter",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyOrdering.swift",
+          "git_blob": "66d7d2048abfd644dbbf11055bb78e76824332ce"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyMutationValidator.swift",
+          "git_blob": "99a98540c359719078c01b8af080f701c68f2b9f"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Hierarchy/PinkhaHierarchyMutationService.swift",
+          "git_blob": "35d0af3237e75114da68a46f747327bea39f030c"
+        }
+      ],
+      "adaptation": "Retain rank/rebalance/reparent plans, translate persistence.",
+      "acceptance": [
+        "Deep/self cycles rejected",
+        "Dense ranks rebalance",
+        "Deleting folder retains children"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Hierarchy/PinkhaHierarchyTests.swift"
+      ]
+    },
+    {
+      "id": "HIER-03",
+      "name": "Optimistic reconciliation and live hierarchy",
+      "layer": "portable_and_adapter",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyReconciler.swift",
+          "git_blob": "e8ca2185eba2d2d9b669fb7d079955695302bb21"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Hierarchy/PinkhaHierarchySubscriptionConfiguration.swift",
+          "git_blob": "57b2942b5b9b9a1bbed5f1e0a7620dd974473a15"
+        }
+      ],
+      "adaptation": "Use Any atomic snapshot/subscription plus optimistic acknowledgements.",
+      "acceptance": [
+        "Late snapshot cannot erase acknowledged item",
+        "Displaced row not deletion",
+        "Streams cancelled on session change"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Hierarchy/PinkhaHierarchyReconciliationTests.swift"
+      ]
+    },
+    {
+      "id": "ASSOC-01",
+      "name": "Document/block canonical item CRUD",
+      "layer": "portable_domain",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationModels.swift",
+          "git_blob": "e9bcec8e147ccd196d6d585bc5d1198b7d023078"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahCanonicalAssociations.swift",
+          "git_blob": "fbbd77cb935c64fff73e096575a0d0393ef6d49d"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift",
+          "git_blob": "47e0b1b6b1274d70f8106f8f2d4589ce05ae65c4"
+        }
+      ],
+      "adaptation": "Use actual domain models and immutable Any operations, keeping item-level repository API.",
+      "acceptance": [
+        "Exact document/block/Space scope",
+        "No full stale snapshot replacement",
+        "CRUD readback equivalent"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/TorahCanonicalAssociationsTests.swift"
+      ]
+    },
+    {
+      "id": "ASSOC-02",
+      "name": "Semantic identity and separate quote instances",
+      "layer": "portable_domain",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift",
+          "git_blob": "94c331df5db784c05e8e06e2b983d11ec909ae2c"
+        }
+      ],
+      "adaptation": "Reuse NFC/UTF8 length-prefixed identity; context dedup and distinct stable quote IDs.",
+      "acceptance": [
+        "Unicode normalization",
+        "Separator collision rejection",
+        "Different quote IDs retained",
+        "Retry same quote deduplicates"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/TorahAssociationIdentityTests.swift"
+      ]
+    },
+    {
+      "id": "ASSOC-03",
+      "name": "Lossless codecs, unknown fields and provenance",
+      "layer": "portable_domain",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift",
+          "git_blob": "dda50e00278ed024f7c30416c8beae36d705d723"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahCanonicalAssociations.swift",
+          "git_blob": "fbbd77cb935c64fff73e096575a0d0393ef6d49d"
+        }
+      ],
+      "adaptation": "Preserve original bytes and envelope/record/item unknown fields in migration; never invent metadata.",
+      "acceptance": [
+        "v1/v2 roundtrip",
+        "Unsupported version fails",
+        "Nested unknown data preserved",
+        "Invalid typed fields fail closed"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/TorahAssociationPayloadCodecTests.swift"
+      ]
+    },
+    {
+      "id": "ASSOC-04",
+      "name": "Authorization, readback and uncertain writes",
+      "layer": "adapter",
+      "baseline_status": "ACTIVE_SINGLE_WRITER_MULTI_CLIENT_UNPROVEN",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/Storage/AnytypeTorahAssociationRepository.swift",
+          "git_blob": "2284761604e2b85b144576f8d7921bfb9e5c413f"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/Storage/TorahAssociationNativeStore.swift",
+          "git_blob": "29eb7aed61023e7d2ad10660957e76f6fe07617a"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/Storage/TorahAssociationMutationCoordinator.swift",
+          "git_blob": "426348a96cc36c0352bfa41cb22e4062f384bc91"
+        }
+      ],
+      "adaptation": "Replace single scalar JSON storage while retaining post-await authorization, stable identities and explicit uncertain/conflict states.",
+      "acceptance": [
+        "Revoke before dispatch",
+        "Lost reply exact reconciliation",
+        "Conflicting retry surfaced",
+        "Queued cancellation"
+      ],
+      "baseline_tests": [
+        "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift"
+      ]
+    },
+    {
+      "id": "T2-01",
+      "name": "Immutable operations and retry/collision retention",
+      "layer": "candidate",
+      "baseline_status": "CANDIDATE_APP_CAPABILITY_OFF",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/operation.go",
+          "git_blob": "1ed032a4fd59604a83f2ba2fadeed79cb0714660"
+        },
+        {
+          "path": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/store.go",
+          "git_blob": "d4e9cd17c6183a06b9525e62107760ef7dfdb6b1"
+        }
+      ],
+      "adaptation": "Translate semantics into Any records; Heart registration patches are obsolete.",
+      "acceptance": [
+        "Exact retry no duplicate",
+        "Different payload same op quarantined",
+        "Reopen retains receipt"
+      ],
+      "baseline_tests": [
+        "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/operation_test.go"
+      ]
+    },
+    {
+      "id": "T2-02",
+      "name": "Observed remove and concurrent replacements",
+      "layer": "candidate",
+      "baseline_status": "CANDIDATE_APP_CAPABILITY_OFF",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/projection.go",
+          "git_blob": "f6668952e7881c3fb4f9f99325b37c11f6bec793"
+        },
+        {
+          "path": "Tools/TorahNativeOperations/native_client_observed_remove.py",
+          "git_blob": "d6f88fac6fbda7574c0b990a58735a1518f24b74"
+        },
+        {
+          "path": "Tools/TorahNativeOperations/native_client_concurrent_replace.py",
+          "git_blob": "2f1ee234259d9954b2339120eb7106c77daac5e6"
+        }
+      ],
+      "adaptation": "Immutable observed claim IDs and multiple live successors; no scalar LWW replacement.",
+      "acceptance": [
+        "Unobserved concurrent add survives",
+        "Concurrent replace both retained",
+        "No tombstone resurrection",
+        "New add after remove"
+      ],
+      "baseline_tests": []
+    },
+    {
+      "id": "T2-03",
+      "name": "Native signer/ACL and commit fence",
+      "layer": "candidate",
+      "baseline_status": "CANDIDATE_APP_CAPABILITY_OFF",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_host.go",
+          "git_blob": "bb36d0e65dec64a2c05033ead140f8a896f7bf20"
+        },
+        {
+          "path": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_commit_guard.go",
+          "git_blob": "dab12f6feca39455a2e9ef36c54f2e0d99d98c37"
+        }
+      ],
+      "adaptation": "Verify Any native creator/ACL and target authority; caller-provided author not proof.",
+      "acceptance": [
+        "Read revoked membership",
+        "ACL revoke before commit",
+        "Spoofed author rejected",
+        "Deleted/read-only target rejected"
+      ],
+      "baseline_tests": []
+    },
+    {
+      "id": "T2-04",
+      "name": "Real two-client offline, reopen and crash proof",
+      "layer": "acceptance",
+      "baseline_status": "NOT_PORTED_NOT_RUN",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Tools/TorahNativeOperations/run_native_clients.py",
+          "git_blob": "0154175baad0c9f992eba073eb01893b96ca79f2"
+        },
+        {
+          "path": "Tools/TorahNativeOperations/two_clients/native_client_phase_test.go",
+          "git_blob": "2f9f897c61dad8cd2e595c0dcd3f612997e80235"
+        }
+      ],
+      "adaptation": "Port adversarial scenarios to native Any sync processes; reducer/mock tests cannot prove sync.",
+      "acceptance": [
+        "Offline convergence",
+        "Crash after commit before reply",
+        "Cold reopen",
+        "Mixed-version refusal"
+      ],
+      "baseline_tests": []
+    },
+    {
+      "id": "T2-05",
+      "name": "Cancellation during target loading",
+      "layer": "candidate",
+      "baseline_status": "CANDIDATE_APP_CAPABILITY_OFF",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Tools/TorahNativeOperations/overlay/core/block/editor/torahopsobject/object.go",
+          "git_blob": "7e7d71fcfaaffcc9996d92d33a0042a7243bf29e"
+        },
+        {
+          "path": "Tools/TorahNativeOperations/overlay/core/block/editor/torahopsobject/target_context_test.go",
+          "git_blob": "bec521fc91ab28cfdd4b2cc59cdcefe685b3f4f3"
+        }
+      ],
+      "adaptation": "Carry deadline/cancellation into Any target validation.",
+      "acceptance": [
+        "Cancelled lookup propagates",
+        "No later orphan write"
+      ],
+      "baseline_tests": []
+    },
+    {
+      "id": "PROP-01",
+      "name": "Native Source/Topic/Word indexed properties",
+      "layer": "engine_adapter",
+      "baseline_status": "NATIVE_DERIVED_PRESENT_DEVICE_QA_OPEN",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaHeart/torah/projection.go",
+          "git_blob": "76edbac0b8cc8b31ec38ca9ebdb580980bde7f2d"
+        },
+        {
+          "path": "Modules/PinkhaHeart/torah/properties.go",
+          "git_blob": "07b700b4c7947b97e7ead1d5325591c1f1ca2753"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahDerivedQueryProjection.swift",
+          "git_blob": "647244e7997fa0078d2ab5f71173eb385a96b9ff"
+        }
+      ],
+      "adaptation": "Derive only document context links; exclude blocks, sourceQuote, internal notes, templates/deleted/archived. Use real indexed Any records where custom property secondary indexes absent.",
+      "acceptance": [
+        "Canonical identity equivalence",
+        "Native filter correctness",
+        "Wrong Space excluded",
+        "Labels remain cache"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahDerivedQueryProjectionTests.swift"
+      ]
+    },
+    {
+      "id": "PROP-02",
+      "name": "Rebuildable projection and stale cache detection",
+      "layer": "engine_adapter",
+      "baseline_status": "NATIVE_DERIVED_PRESENT_DEVICE_QA_OPEN",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaHeart/engine/index.go",
+          "git_blob": "e06feaaa3cee47d100ca30c5ac565854e818f6c4"
+        },
+        {
+          "path": "Modules/PinkhaHeart/engine/recovery_cache.go",
+          "git_blob": "8794c23fa2bd2a780abd087bb2a23b4632fbd1e6"
+        },
+        {
+          "path": "Modules/PinkhaHeart/torah/readiness.go",
+          "git_blob": "aaac30ea5b742f92f35d8528dfdff4a625e868b9"
+        }
+      ],
+      "adaptation": "Rebuild from claims, pin generation/hash; do not sync local cache as source.",
+      "acceptance": [
+        "Delete cache/reopen",
+        "Edit/remove invalidation",
+        "Stale generation not ready",
+        "Malformed fails closed"
+      ],
+      "baseline_tests": []
+    },
+    {
+      "id": "PROP-03",
+      "name": "Universal property picker, hide/attach and Type retention",
+      "layer": "host",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
+          "git_blob": "0e964aae5c7b8c939201ff30bba19bdb272b590f"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahPropertyPolicy.swift",
+          "git_blob": "8a5abc0a225ab9ca2d3db9fe9670b5f35753886e"
+        }
+      ],
+      "adaptation": "Retain ordinary Note/Page/custom Type behavior and read-only fields; explicitly translate Any type/collection rules.",
+      "acceptance": [
+        "All document Types",
+        "Type change retains explicit selection",
+        "Late refresh cannot overwrite acknowledged Type list",
+        "Generic writes denied"
+      ],
+      "baseline_tests": [
+        "AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift",
+        "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift"
+      ]
+    },
+    {
+      "id": "PROP-04",
+      "name": "Import/export canonical versus local fields",
+      "layer": "engine_adapter",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaHeart/transport/import.go",
+          "git_blob": "91df481f1605c2ffbfc8e1584130e978e2006a75"
+        },
+        {
+          "path": "Modules/PinkhaHeart/transport/json_fields.go",
+          "git_blob": "d1a3fdfa0ae3943dacf6dc90c365eddfdfe12c3c"
+        }
+      ],
+      "adaptation": "Explicit migration filtering, no database copying; keep canonical metadata.",
+      "acceptance": [
+        "Lossless canonical roundtrip",
+        "Local cache excluded",
+        "Old export untouched"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaHeart/transport/import_test.go"
+      ]
+    },
+    {
+      "id": "PROVIDER-01",
+      "name": "Sefaria canonical references and hierarchy",
+      "layer": "portable_provider",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaReferenceProvider.swift",
+          "git_blob": "b96e245bdcb1231ffb1cd8ca55fe24cb83996bc6"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahReferenceUtil.swift",
+          "git_blob": "225b606f1656cffc1f60c1f039674ae01b584c2b"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Hierarchy/SefariaHierarchyProvider.swift",
+          "git_blob": "94627f95b4891d90a0ff9a99adccb96b963bddc9"
+        }
+      ],
+      "adaptation": "Reuse providers; Any URI is not canonical Torah normalization.",
+      "acceptance": [
+        "Hebrew/English resolution",
+        "Book/section/segment",
+        "First available embeddable section"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaReferenceProviderTests.swift",
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaHierarchyTests.swift"
+      ]
+    },
+    {
+      "id": "PROVIDER-02",
+      "name": "Texts, commentaries and source metadata",
+      "layer": "portable_provider",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaTextProvider.swift",
+          "git_blob": "32f76a891ed6a98d8643685adbb9c697d67c0ef0"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaRelationshipProvider.swift",
+          "git_blob": "a98e7c5244c35d2e1bf51739eb48f3a7845312ee"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaJSONText.swift",
+          "git_blob": "7b5e0c61fbe7ea964db316cc147b08ac4cf0f99f"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaDisplayText.swift",
+          "git_blob": "524b2892f717cfbcd9a679caef1b17f4afec22b8"
+        }
+      ],
+      "adaptation": "Keep provider and version/license/raw payload behavior.",
+      "acceptance": [
+        "Nested segments",
+        "Canonical relationship dedup",
+        "Provenance retained"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaTextProviderTests.swift",
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaRelationshipProviderTests.swift"
+      ]
+    },
+    {
+      "id": "PROVIDER-03",
+      "name": "Topics, words and registry",
+      "layer": "portable_provider",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaTopicProvider.swift",
+          "git_blob": "6d5c610804747b4ad61acdde0b03794a2f9fc0ae"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaLexicalProvider.swift",
+          "git_blob": "ab7d808ee6a1d8410148e8334583bbcb68214dc3"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/TorahTopicCache.swift",
+          "git_blob": "c4e4695ee333020556347033f78fc1386bc75ec4"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahProviderRegistry.swift",
+          "git_blob": "3f054dd548ca2f5a9c42fcf0ce9143f47375fd9a"
+        }
+      ],
+      "adaptation": "Keep provider registry and locale-specific caches.",
+      "acceptance": [
+        "Hebrew/English titles",
+        "Contextual word resolution",
+        "Unknown provider explicit"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaTopicLexicalProviderTests.swift"
+      ]
+    },
+    {
+      "id": "PROVIDER-04",
+      "name": "HTTP retry/cancellation and metrics",
+      "layer": "portable_provider",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaClient.swift",
+          "git_blob": "bd6e6fca06c878a81b1d5dd5a772ba15288c971f"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/TorahHTTPTransport.swift",
+          "git_blob": "6014694433fe21c76543ca2e41798a310c235e35"
+        }
+      ],
+      "adaptation": "Preserve bounded retry, Retry-After cap and cancellation.",
+      "acceptance": [
+        "Cancellation stops retries",
+        "429/5xx bounds",
+        "URL escaping",
+        "Invalid response rejected"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahHTTPTransportTests.swift"
+      ]
+    },
+    {
+      "id": "INSPECT-01",
+      "name": "Native Inspector, search and request fencing",
+      "layer": "host_ui",
+      "baseline_status": "SOURCE_PRESENT_BROAD_DEVICE_QA_OPEN",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
+          "git_blob": "bf6063cbc59ab5f689486d29c9dd1661b44173bc"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+          "git_blob": "7f758686f68268e36e97f6455105f136204b8068"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchPresenter.swift",
+          "git_blob": "78ffb0306652b260c4aa130da45e48ee436264c8"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchView.swift",
+          "git_blob": "7ca51ec42fd9d77168ab0b776858910127a204f8"
+        }
+      ],
+      "adaptation": "Retain Kit native UI; use one Any-owned session for all editor actions.",
+      "acceptance": [
+        "Sheet/rotation",
+        "Search request identity",
+        "Stale callbacks cannot write elsewhere",
+        "Correct segment opens"
+      ],
+      "baseline_tests": [
+        "AnyTypeTests/Pinkha/TorahSearchLayoutTests.swift",
+        "AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift"
+      ]
+    },
+    {
+      "id": "QUOTE-01",
+      "name": "Quote/drop insertion, focus and provenance",
+      "layer": "host_adapter",
+      "baseline_status": "SOURCE_PRESENT_BROAD_DEVICE_QA_OPEN",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+          "git_blob": "7f758686f68268e36e97f6455105f136204b8068"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSafetyPolicy.swift",
+          "git_blob": "f5f2c4811d643ac1048aa9e1f5bf6a505d130c68"
+        }
+      ],
+      "adaptation": "Translate editor record insertion while preserving quote data; Markdown append alone is insufficient.",
+      "acceptance": [
+        "Exact excerpt/source/version",
+        "One-time drop",
+        "Partial failure explicit",
+        "Undo/drop/focus real UI"
+      ],
+      "baseline_tests": [
+        "AnyTypeTests/Pinkha/TorahQuoteInsertionTests.swift",
+        "PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift"
+      ]
+    },
+    {
+      "id": "EDITOR-01",
+      "name": "Editor selection, focus and native ownership",
+      "layer": "host_ui",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_OPEN",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+          "git_blob": "fd6a031c343d39d21dec10af38dff66b2ca1db79"
+        },
+        {
+          "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift",
+          "git_blob": "98e3b6cda8a4e40bba0bbc0c320e06ea53302df6"
+        }
+      ],
+      "adaptation": "Preserve UIKit/SwiftUI behavior and translate whole editor service/undo transactions.",
+      "acceptance": [
+        "No focus steal",
+        "Current cell ownership",
+        "Selection/copy/paste",
+        "Undo/redo"
+      ],
+      "baseline_tests": []
+    },
+    {
+      "id": "EDITOR-02",
+      "name": "Captured offsets versus durable semantic anchors",
+      "layer": "domain_limit",
+      "baseline_status": "DURABLE_TEXT_ANCHORS_NOT_IMPLEMENTED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationModels.swift",
+          "git_blob": "e9bcec8e147ccd196d6d585bc5d1198b7d023078"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+          "git_blob": "7f758686f68268e36e97f6455105f136204b8068"
+        }
+      ],
+      "adaptation": "Preserve UTF16 offsets and excerpt; never call them edit-stable anchors.",
+      "acceptance": [
+        "Emoji/combining Hebrew",
+        "Captured context",
+        "Stale selection not silently relinked"
+      ],
+      "baseline_tests": []
+    },
+    {
+      "id": "RTL-01",
+      "name": "Direction and explicit alignment persistence",
+      "layer": "portable_host",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/RTL/PinkhaWritingDirectionPolicy.swift",
+          "git_blob": "a2cbf6045e2276f96ddb18de3743d32ca4482b8e"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/RTL/PinkhaTextDirectionMarker.swift",
+          "git_blob": "740cc5ce014f66c798fc76c63e2b80dad9bb8912"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/RTL/PinkhaTextDirectionPersistence.swift",
+          "git_blob": "d13165d1f8db7913e2a9e2b361a15f6f353c18ab"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/RTL/PinkhaTextDirectionUIKitAdapter.swift",
+          "git_blob": "e87be1d0635a15cf8988b847cadcf72b7b51d78b"
+        }
+      ],
+      "adaptation": "Reuse direction policy; Any marker write must preserve unrelated fields.",
+      "acceptance": [
+        "Auto direction",
+        "Explicit alignment after reopen",
+        "Rendering never writes formatting",
+        "Other metadata retained"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/RTL/PinkhaWritingDirectionPolicyTests.swift",
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/RTL/PinkhaTextDirectionMarkerTests.swift",
+        "AnyTypeTests/Pinkha/PinkhaTextDirectionPersistenceTests.swift"
+      ]
+    },
+    {
+      "id": "RTL-02",
+      "name": "Navigation direction and leading markers",
+      "layer": "portable_host",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/RTL/PinkhaNavigationDirectionPolicy.swift",
+          "git_blob": "56dc75c1ea23375f100d70209d7c0d97dce50913"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/RTL/PinkhaNavigationGestureBridge.swift",
+          "git_blob": "d6524f2344322fd713aedbcd2190e54db773e406"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/RTL/PinkhaTextBlockLeadingMarkerAdapter.swift",
+          "git_blob": "66bbab551ad611e557cc69758d699d4f1d17ae1e"
+        }
+      ],
+      "adaptation": "Keep native gestures/markers independent from engine.",
+      "acceptance": [
+        "RTL/LTR navigation",
+        "List/quote markers",
+        "Accessibility"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/RTL/PinkhaNavigationDirectionPolicyTests.swift",
+        "AnyTypeTests/Pinkha/PinkhaNavigationGestureBridgeTests.swift"
+      ]
+    },
+    {
+      "id": "T5-01",
+      "name": "Native note creation and recovery",
+      "layer": "portable_adapter",
+      "baseline_status": "SOURCE_PRESENT_CRASH_IDEMPOTENCY_LIMITED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift",
+          "git_blob": "33974736a19869537b6ac7d8528133a86a1bb6d8"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+          "git_blob": "a468f25f991134984ae2963b23b649f0c8018f6f"
+        }
+      ],
+      "adaptation": "Replace every create/link/block callback with Any; retain recovery and add durable receipt for crash-safe retries.",
+      "acceptance": [
+        "Reuse partially created note",
+        "No duplicate source line",
+        "Authorization between steps",
+        "Unlink does not delete"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift"
+      ]
+    },
+    {
+      "id": "T5-02",
+      "name": "Space-wide related documents",
+      "layer": "portable_adapter",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5SpaceRelatedDocumentsQuery.swift",
+          "git_blob": "ca524d6e31c3aaf4f67215bf880cdb21c4974ecd"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahSpaceRelatedDocumentsService.swift",
+          "git_blob": "4fdb3aec1b4bfecabdf612695bc6a264a0311aae"
+        }
+      ],
+      "adaptation": "Query indexed canonical records; generic capped backlinks insufficient.",
+      "acceptance": [
+        "All eligible Types",
+        "Exclude archived/deleted/foreign",
+        "Bounded complete or explicit incomplete",
+        "Unlink revalidates"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5SpaceRelatedDocumentsQueryTests.swift"
+      ]
+    },
+    {
+      "id": "T5-03",
+      "name": "Expanded block/quote lookup with capability gate",
+      "layer": "candidate",
+      "baseline_status": "DEFAULT_BUILD_CAPABILITY_UNAVAILABLE",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5ExpandedRelatedTargets.swift",
+          "git_blob": "2ecb7d21082035e2639672110d95c9ce775ab269"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5ExpandedRelatedDocumentsQuery.swift",
+          "git_blob": "38ac736abe3cf347f45f8f2006c901cee0a26c86"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5BlockReachability.swift",
+          "git_blob": "449b1434dc91c2d6df8b0262d8cdce94fd4ff2f3"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift",
+          "git_blob": "940b1dc6c1ac9b6ff8ced049e8bfdf479086214e"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/Torah/UI/AnytypeT5NativeRelatedLookup.swift",
+          "git_blob": "a2f6041438044c3b08bb88b32c56137a6743355b"
+        }
+      ],
+      "adaptation": "Any version/schema capability gate and indexed target validation.",
+      "acceptance": [
+        "No false complete fallback",
+        "Block reachable",
+        "Exact scope/source",
+        "Deleted record excluded"
+      ],
+      "baseline_tests": [
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5ExpandedRelatedTargetsTests.swift",
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NativeRelatedLookupCapabilityTests.swift"
+      ]
+    },
+    {
+      "id": "AI-01",
+      "name": "Canonical Hanlin SDK and presentation",
+      "layer": "sdk_host",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Tools/Hanlin/source.json",
+          "git_blob": "0ac43dc444fa2234c2eb11fb9bebf129dbe4fb94"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinFactory.swift",
+          "git_blob": "5eb8d83984b9e32037fc0ad9faa3476c7d4a5a40"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
+          "git_blob": "810af73f1ecf45b3ea40827aa7549b12f7f3d1bc"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinLaunchButton.swift",
+          "git_blob": "00aaa689c32aef9e3d15769d8c5d385b22bb2dd4"
+        }
+      ],
+      "adaptation": "Keep canonical Hanlin packages; Any storage does not replace Hanlin.",
+      "acceptance": [
+        "SDK pin verified",
+        "Native presentation lifecycle",
+        "Accessible launch",
+        "No duplicate engine"
+      ],
+      "baseline_tests": [
+        "AnyTypeTests/Pinkha/HanlinSDKConsumerTests.swift",
+        "PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift"
+      ]
+    },
+    {
+      "id": "AI-02",
+      "name": "Consent for document/selected-text reads",
+      "layer": "host_contract",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinHostAdapter.swift",
+          "git_blob": "05a8ecc07cef6d8b011067eba86ffb7fd4f8ffa9"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinNativeAccess.swift",
+          "git_blob": "bbbd048e3d8fcc88d087b9078433617b076957db"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinConsentController.swift",
+          "git_blob": "77a0f004e65614150cdf47052c7b32405f35d929"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinSelectionEntry.swift",
+          "git_blob": "c4279e388181f0a93c8f01ee756444e07878112f"
+        }
+      ],
+      "adaptation": "Any-native snapshot reads retain consent, coverage and limits.",
+      "acceptance": [
+        "Denial returns no text",
+        "Selected/full coverage exact",
+        "Selection epoch/current object",
+        "Bounded bytes/deadline"
+      ],
+      "baseline_tests": [
+        "AnyTypeTests/Pinkha/HanlinHostAdapterTests.swift",
+        "PinkhaStage1Acceptance/Tests/HanlinSelectionAcceptanceUITests.swift"
+      ]
+    },
+    {
+      "id": "AI-03",
+      "name": "Revocation, account and navigation receipts",
+      "layer": "host_contract",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAccountOwner.swift",
+          "git_blob": "78879033beca81fdb03feb272409de8253e99e33"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+          "git_blob": "d3820631ef1b344babf116ca8766e7c0dcf853df"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinRevocationFence.swift",
+          "git_blob": "dc7187a0d10af6571c823c8e1e825cede0b70152"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinNavigationLedger.swift",
+          "git_blob": "c208f6d030c5a292411f277c675a0fc1fcbac469"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinReadRace.swift",
+          "git_blob": "355e27e6b0be3483bb432d5a52a0ed776872b7a1"
+        }
+      ],
+      "adaptation": "Retain all authority invalidation; localhost API alone is not caller authorization.",
+      "acceptance": [
+        "Logout dismiss/drain",
+        "Cancel before dispatch",
+        "No cross-account receipts",
+        "Native mount before return handoff"
+      ],
+      "baseline_tests": [
+        "AnyTypeTests/Pinkha/HanlinHostReadWriteTests.swift"
+      ]
+    },
+    {
+      "id": "AI-04",
+      "name": "Create-page preflight, durable journal and receipts",
+      "layer": "host_adapter",
+      "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
+          "git_blob": "70b73f0c411d28e1cf91d3bab214a6e9e3e9c7d0"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageRunner.swift",
+          "git_blob": "8ff879e4cf8ef04cb367be3b801829a047bebc80"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
+          "git_blob": "26c4b78b33caf7acf497bef95359fe2764404300"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinWriteJournal.swift",
+          "git_blob": "aca54480a6977009e1a1ac66806154964b51be29"
+        },
+        {
+          "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinWritePreflight.swift",
+          "git_blob": "47e4c65a2bfaaa6b25a6a33409434162cc22c0fb"
+        }
+      ],
+      "adaptation": "Port native create adapter only with exact reconciliation semantics; retain protected metadata and explicit uncertain state.",
+      "acceptance": [
+        "Replay blocked",
+        "Pre-dispatch refusal",
+        "No blind duplicate on lost reply",
+        "Account-scoped journal",
+        "File/symlink negative tests"
+      ],
+      "baseline_tests": [
+        "AnyTypeTests/Pinkha/HanlinHostWriteTests.swift"
+      ]
+    },
+    {
+      "id": "MIG-01",
+      "name": "Non-destructive identity map and migration",
+      "layer": "migration",
+      "baseline_status": "NOT_IMPLEMENTED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift",
+          "git_blob": "dda50e00278ed024f7c30416c8beae36d705d723"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+          "git_blob": "69220b20ad4a55b9b4d10c62793c66b9521ce1af"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyCodec.swift",
+          "git_blob": "10e07df6b2fa7ab539429f950c4a130b826f84cb"
+        }
+      ],
+      "adaptation": "Explicit dry-run, complete Space/object/block mapping and receipts. Any v0.4-to-v0.5 upgrade is not Heart migration.",
+      "acceptance": [
+        "All source IDs mapped",
+        "Unsupported data rejected before writes",
+        "Idempotent retry",
+        "Unknown data preserved",
+        "Audit lookup to source"
+      ],
+      "baseline_tests": []
+    },
+    {
+      "id": "APP-01",
+      "name": "Complete original application parity",
+      "layer": "whole_app",
+      "baseline_status": "WHOLE_APP_PORT_NOT_IMPLEMENTED",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Anytype.xcodeproj/project.pbxproj",
+          "git_blob": "f28f028454a190b1fe82b2d5b11c79c62bf70f8e"
+        },
+        {
+          "path": "Anytype/Sources/ServiceLayer/ServicesDI.swift",
+          "git_blob": "dfc2b87f5e688b6fb5b89e24d58799f65751ea67"
+        },
+        {
+          "path": "PinkhaStage1Acceptance/Tests/AnytypeComprehensiveAcceptanceUITests.swift",
+          "git_blob": "822c084ecc0733dda58279be48fd0a6a878bc5c5"
+        }
+      ],
+      "adaptation": "Port account/Spaces/objects/editor/templates/sets/search/files/history/sync composition together; repository adapter alone insufficient.",
+      "acceptance": [
+        "All original and custom flows",
+        "No Heart IDs sent to Any",
+        "No cross-engine fallback writes",
+        "Build/simulator/physical iPad"
+      ],
+      "baseline_tests": []
+    },
+    {
+      "id": "OPS-01",
+      "name": "Source-bound validation and evidence",
+      "layer": "acceptance",
+      "baseline_status": "PORT_VALIDATION_NOT_RUN",
+      "new_engine_status": "NOT_RUN",
+      "sources": [
+        {
+          "path": "Tools/Hanlin/run_host_tests.py",
+          "git_blob": "ae014cbb8c667b0762e458f9b2c63c35e060b80d"
+        },
+        {
+          "path": "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+          "git_blob": "61087bdfd66c1ed27fd7a6683319fca993916e59"
+        },
+        {
+          "path": "Tools/TorahNativeOperations/run_native_clients.py",
+          "git_blob": "0154175baad0c9f992eba073eb01893b96ca79f2"
+        }
+      ],
+      "adaptation": "Separate Any module/integration/runtime/whole-app lanes with exact tested SHA.",
+      "acceptance": [
+        "Binary/source match",
+        "No stale CI reused",
+        "PASS/FAIL/NOT_RUN/BLOCKED",
+        "Physical device distinguished"
+      ],
+      "baseline_tests": []
+    }
+  ],
+  "offshoot_review": {
+    "t2": {
+      "commit": "ad51263f31aaeaa8d9605394db4961fd64ba54b8",
+      "finding": "Latest target-context implementation and tests identical to baseline; equivalent cherry-pick 09e4287e78."
+    },
+    "sdk06": {
+      "commit": "fe62128002926ced13cb682aba015d8dd615064a",
+      "finding": "Simulator-protection fix present plus newer safe existing-directory reopen guard. Do not overwrite baseline."
+    }
+  },
+  "limitations": [
+    "Every new-engine status initially NOT_RUN; update only from actual execution.",
+    "Source presence does not imply runtime feature enabled or acceptance complete.",
+    "Full baseline Git tree preserved through branch ancestry; scoped source index is not an exhaustive semantic proof.",
+    "Whole-app differential and physical-device acceptance still required."
+  ]
+}
