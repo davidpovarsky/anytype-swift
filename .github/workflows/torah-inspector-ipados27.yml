@@ -32,6 +32,7 @@ on:
           - t5-apple-pairs
           - t5-apple-ui
           - t5-native-pagination
+          - t5-native-attachment
           - sdk06-tests
           - hanlin-journal-probe
           - editor-host-tests
@@ -204,6 +205,10 @@ jobs:
     uses: ./.github/workflows/pinkha-t5-native-pagination.yml
     with:
       heart_r15_run_id: ${{ inputs.t5_r15_run_id }}
+
+  t5-native-attachment:
+    if: ${{ inputs.route == 't5-native-attachment' }}
+    uses: ./.github/workflows/pinkha-t5-native-attachment.yml
 
   t2-account-lifecycle:
     if: ${{ inputs.route == 't2-account-lifecycle' }}

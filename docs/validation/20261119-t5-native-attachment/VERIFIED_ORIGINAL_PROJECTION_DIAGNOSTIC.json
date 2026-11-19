@@ -1,0 +1,130 @@
+{
+  "actual_apple_controller_controls": {
+    "failed": 0,
+    "passed": 72,
+    "skipped": 0
+  },
+  "actual_builds_passed": 2,
+  "actual_named_native_tests_failed": 1,
+  "actual_named_native_tests_passed": 2,
+  "actual_named_native_tests_skipped": 0,
+  "app_source_sha": "47ca2c01774c65ee05f852bf2a62025957861438",
+  "artifact_id": 14567144860,
+  "diagnostic": {
+    "actualPublicSHA256": "62c31a69bacd51c5544fb21abe9f02955f03b177e4f19260d96708d66e8ab1b4",
+    "appSourceSHA": "47ca2c01774c65ee05f852bf2a62025957861438",
+    "expectedPublicSHA256": "0e6ff125b2bb524fb9251972382b12559db25909b0f160943fbf500889da9820",
+    "fields": [
+      {
+        "actualControlledJSON": "[\"pinkhaTorahSources\"]",
+        "actualPresent": true,
+        "actualSHA256": "d4462edaa82d29e65536d66d786817be44325980320decd30a2851512287329f",
+        "expectedControlledJSON": "[]",
+        "expectedPresent": true,
+        "expectedSHA256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "key": "_pinkhaTorahAttachedProperties"
+      }
+    ],
+    "objectID": "bafyreibolwgxsxrw4dr4xmvmt7xeicr7ms4kmjchxvkgpfvikb7rfa7i6a",
+    "phase": "old-edit",
+    "processID": 89114,
+    "protocolVersion": "pinkha-t5-public-projection-diagnostic-v1"
+  },
+  "host_freshness": "NOT_RUN",
+  "inner_sha256": "20ef0c103dfac293488cdc2927e5e2e768ffd9a2026f4ab2e107844f0d102aca",
+  "install_continuity": {
+    "new-upgrade": {
+      "after": {
+        "bytes": 5393300,
+        "files": 33,
+        "sha256": "6952022e4092de8e33f17b46d5c1bfb9fc568567a20315f59ba0ec11fe7db95d"
+      },
+      "before": {
+        "bytes": 5393300,
+        "files": 33,
+        "sha256": "6952022e4092de8e33f17b46d5c1bfb9fc568567a20315f59ba0ec11fe7db95d"
+      },
+      "container_relocated": true,
+      "installed_container_path_sha256": "60744ec3653b0714bef9678f4a117b706f0bd17a58d38bd834a2a2a07ff2cc66",
+      "original_container_path_sha256": "2da77b1182efdb543a765fb01f51632b4fb3a6bfe50717fa357427d7674f7629",
+      "status": "PASS_ALL_NATIVE_FILES_AND_PRIVATE_IDENTITY_UNCHANGED"
+    },
+    "old-edit": {
+      "after": {
+        "bytes": 5433016,
+        "files": 46,
+        "sha256": "6e6e2e742dfe067d61a2be0ac2ea0a692b7b650ab3164197aa314377f4f55e57"
+      },
+      "before": {
+        "bytes": 5433016,
+        "files": 46,
+        "sha256": "6e6e2e742dfe067d61a2be0ac2ea0a692b7b650ab3164197aa314377f4f55e57"
+      },
+      "container_relocated": true,
+      "installed_container_path_sha256": "113d69479cca219d529b617087d2df37f8d087b5eb340016c55c5610f1bf6acd",
+      "original_container_path_sha256": "db1a70bceef609d104c21b87f21b97e114602f270343051902da4c2b1603dc0d",
+      "status": "PASS_ALL_NATIVE_FILES_AND_PRIVATE_IDENTITY_UNCHANGED"
+    }
+  },
+  "later_old_edit_document_readbacks": "NOT_REACHED",
+  "limits": [
+    "The actual diagnostic covers all compared public fields of the first Page only; the strict assertion then aborts.",
+    "Original private ledger and credential bytes remain private; their live checks and complete secret scan are recorded by the original controller, not reexecuted on Linux.",
+    "Controlled-install aggregate hashes are original stopped-store observations; Linux replay does not reobserve the simulator filesystem.",
+    "No corrected runtime, changed fixture, invariant relaxation, UI acceptance, whole-index, ACL, forced-outage, physical-device or VoiceOver proof is claimed."
+  ],
+  "new_recover": "NOT_RUN",
+  "old_edit_first_page_attachment_changed": true,
+  "original_job_log_sha256": "fe5464d3b16a85c94285290de696acb071b573f9bcd8501c39c8a6516f01d29a",
+  "original_members_verified": 82,
+  "outer_sha256": "120ef68e8fccbf613da80d7bf0753881acf29e7270febc80d5cc9539820b5a5d",
+  "phases": [
+    {
+      "actual_test_counts": {
+        "failedTests": 0,
+        "passedTests": 1,
+        "skippedTests": 0
+      },
+      "phase": "old-create",
+      "role": "old",
+      "status": "PASS"
+    },
+    {
+      "actual_test_counts": {
+        "failedTests": 0,
+        "passedTests": 1,
+        "skippedTests": 0
+      },
+      "phase": "new-upgrade",
+      "role": "new",
+      "status": "PASS"
+    },
+    {
+      "actual_test_counts": {
+        "failedTests": 1,
+        "passedTests": 0,
+        "skippedTests": 0
+      },
+      "phase": "old-edit",
+      "role": "old",
+      "status": "FAIL"
+    }
+  ],
+  "product_lookup_flag": "OFF",
+  "r08": "NOT_RUN",
+  "run_id": "44587184541",
+  "simulator_shutdown": {
+    "exit_code": 0,
+    "owned_udid": "6AAC3779-CB18-4FE5-B0E3-C653FCEBC66F"
+  },
+  "source_bound_r14_files": {
+    "core/block/editor/basic/details.go": "0ac058091f7ab161aec3d462d3cfa3e844af980cb0d5cecf2400b64360f7f033",
+    "core/block/editor/smartblock/pinkha_torah.go": "32ee6f74b5fe63c8e2c5bb612d32ce532f8caf1c3059338cf97373d20db43174",
+    "core/pinkha/torah/properties.go": "55b2be3324f2214381ca8a239f5cf27b740f0dfd94388aa156e747bb2f6b0c45"
+  },
+  "source_inference": "Ordinary name-only UpdateDetails clones CombinedDetails and auto-adds relation links for all keys; a local Source projection is thereby persisted as an attachment. The explicit ObjectRelationAdd attachment API is a separate path.",
+  "status": "ORIGINAL_FAILURE_QUALIFIED",
+  "task_complete": false,
+  "ui": "NOT_RUN",
+  "unchanged_public_projection_during_upgrade": true
+}
