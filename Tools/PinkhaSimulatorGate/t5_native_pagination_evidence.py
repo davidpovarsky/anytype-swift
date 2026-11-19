@@ -51,19 +51,28 @@ def graph_nodes(readback):
     return graph, reachable
 
 
-def validate_readback(value, obj):
+def validate_readback(value, obj, *, archived=False):
     require(isinstance(value, dict) and value.get("objectID") == obj["objectID"]
             and value.get("rootID") == obj["objectID"] and value.get("spaceID") == obj["spaceID"],
             "ObjectShow source/Space/root identity differs")
-    require(nonempty(value.get("title")) and nonempty(value.get("typeID")), "Actual title and native type required")
+    title = value.get("title")
+    require(isinstance(title, str) and len(title) <= 4096 and (bool(title) or obj["role"] == "note")
+            and nonempty(value.get("typeID")), "Actual title and native type required; only the Note may have an empty name")
     for field in ["isArchived", "isDeleted", "isReadonly", "detailsRestricted", "projectionReady"]:
         require(type(value.get(field)) is bool, "Native readback boolean missing")
-    require(value["isDeleted"] is False and value["isReadonly"] is False and value["detailsRestricted"] is False,
-            "Fixture authority or deletion state differs")
-    require(value["projectionReady"] is True and value.get("projectionState") == "READY"
-            and type(value.get("projectionVersion")) is int and value["projectionVersion"] == 1
-            and type(value.get("relatedVersion")) is int and value["relatedVersion"] == 1,
-            "Actual live projection is not ready")
+    require(value["isArchived"] is archived and value["isDeleted"] is False
+            and value["isReadonly"] is archived and value["detailsRestricted"] is archived,
+            "Native archive authority or deletion state differs")
+    if archived:
+        require(obj["role"] == "note" and value["projectionReady"] is False and value.get("projectionState") == ""
+                and type(value.get("projectionVersion")) is int and value["projectionVersion"] == -1
+                and type(value.get("relatedVersion")) is int and value["relatedVersion"] == -1,
+                "Archived Note must have no eligible native projection")
+    else:
+        require(value["projectionReady"] is True and value.get("projectionState") == "READY"
+                and type(value.get("projectionVersion")) is int and value["projectionVersion"] == 1
+                and type(value.get("relatedVersion")) is int and value["relatedVersion"] == 1,
+                "Actual live projection is not ready")
     date = value.get("updatedAt")
     require(type(date) in [int, float] and math.isfinite(date) and date > 0, "Actual native modification time missing")
     raw = value.get("canonicalRaw")
@@ -195,11 +204,11 @@ def validate_observations(receipt, fixtures):
         expected_rows = []
         for obj in selected:
             current = live[obj["objectID"]]
-            root, graph, reachable = validate_readback(current, obj)
+            archived = name == "note_archive" and obj["role"] == "note"
+            root, graph, reachable = validate_readback(current, obj, archived=archived)
             original = obj["original"]
             require(current["title"] == original["title"] and current["typeID"] == original["typeID"],
                     "Native mutation changed unrelated document metadata")
-            require(current["isArchived"] is (name == "note_archive" and obj["role"] == "note"), "Native archive mutation/readback differs")
             if name == "page_unlink" and obj["role"] == "page_a":
                 expected_canonical = json.loads(original["canonicalRaw"])
                 expected_canonical["records"] = []
