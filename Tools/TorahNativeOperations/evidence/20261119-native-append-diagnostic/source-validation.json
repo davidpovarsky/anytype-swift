@@ -1,0 +1,36 @@
+{
+  "schema": "pinkha-t2-diagnostic-source-validation-v1",
+  "date_utc": "2026-11-19",
+  "source_base": "586c98bcc17dee425664224e508fc0e8df277678",
+  "candidate_kind": "diagnostic_only",
+  "native_acceptance": "PENDING",
+  "t2_capability": "OFF",
+  "test_environment": "Linux",
+  "command": "python -B -m unittest -v test_native_clients test_account_rpc test_account_lifecycle test_native_client_crash test_native_client_observed_remove test_native_client_concurrent_replace",
+  "tests": 101,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "test_log_sha256": "e44f2bb7457b41e067ff6ba0169d556cd009c0c81a9eba04a4b16dccdf587bdf",
+  "source_sha256": {
+    "Tools/TorahNativeOperations/.gitattributes": "fc42b9913c08fc2273b33ea7d38fc4ea80da0a2b5a337e0521376c6738f1ab8c",
+    "Tools/TorahNativeOperations/native_client_diagnostics.py": "3869514a26f59811c44f8dbd9196cd0e028ce7b032978d322df732d3bb04a751",
+    "Tools/TorahNativeOperations/run_account_rpc.py": "0a992407ad8cabee47543f9167739fb00f319f5bb25aa8ca0ac780bb241a2d3e",
+    "Tools/TorahNativeOperations/run_native_clients.py": "62ade9949979ab48240f537f7814782c82f514f1c0a537f3ffa9e5024436d3c4",
+    "Tools/TorahNativeOperations/test_native_clients.py": "bffe1f20f73d96ef37bc79ab7e83ba5303ce9e1e297a82e0fd5565a84052213a",
+    "Tools/TorahNativeOperations/two_clients/fixture.json": "7e21fe675a09d79c7506d38148f284212aa8117e8df550d09b1fca0f4446e42f",
+    "Tools/TorahNativeOperations/two_clients/native-read-observation.patch": "5f20856f7481f5dc9224a8730880f242cbfe3ef5b53589f8af394c5b869f37b2"
+  },
+  "original_artifact": {
+    "run_id": 44425941084,
+    "artifact_id": 14485505677,
+    "sha256": "51e5bff71e48a552d1ef33ff203158c7056a8fe67999f8d4dff54edd50fa96e9",
+    "bytes": 87877
+  },
+  "source_transfer": {
+    "sha256": "37f34c8361abef9d491eca477762cf69c299f6ff6e7a10c6bac9ca44b80dbd5f",
+    "bytes": 535601,
+    "files": 151
+  },
+  "unchanged_scenario_files": 7
+}

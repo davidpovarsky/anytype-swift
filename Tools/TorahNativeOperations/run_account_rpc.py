@@ -143,8 +143,8 @@ def verify_rpc_binary(role: str, identity: dict, registration_sha: str, schema_s
 NATIVE_READ_OBSERVATION = {
     "source_path": "core/pinkha_torah_rpc.go",
     "before_sha256": "3e3325bb724c75ae9023b6386416278af4327de8243be90ce245c6de6b22a8e5",
-    "after_sha256": "8a33180223b57dc79c8c7aa8bd8cca628b43f00cededb6f4010b2a095784eb93",
-    "patch_sha256": "3b68ed7a7dc51f4fa90b096c1be4d454b522661ae9c615d9dbf06eb8d71034ec",
+    "after_sha256": "c99518f613bc59c9d7004eb3f6551dc3afef039e4b70595c9b0506d00bea91d7",
+    "patch_sha256": "5f20856f7481f5dc9224a8730880f242cbfe3ef5b53589f8af394c5b869f37b2",
 }
 
 
@@ -152,8 +152,8 @@ def prepare_native_read_observation(heart: Path, patch: Path, work: Path, run) -
     """Observe the original native error only in an explicitly bound test binary.
 
     The checked Heart source remains untouched. A copied, exact-context patch is
-    used solely through Go's compile overlay; it neither repeats the read nor
-    changes its result/error. No production/source inventory is relabelled.
+    used solely through Go's compile overlay; it neither repeats reads/appends nor
+    changes their results/errors. No production/source inventory is relabelled.
     """
     source = heart / NATIVE_READ_OBSERVATION["source_path"]
     require(source.is_file() and not source.is_symlink()
@@ -169,7 +169,7 @@ def prepare_native_read_observation(heart: Path, patch: Path, work: Path, run) -
     run(["git", "apply", str(patch)], "native-read-observation-apply", target, os.environ.copy())
     require(digest(replacement) == NATIVE_READ_OBSERVATION["after_sha256"]
             and digest(source) == NATIVE_READ_OBSERVATION["before_sha256"], "Native read observation changed unexpected bytes")
-    return replacement, {**NATIVE_READ_OBSERVATION, "scope": "TEST_COMPILE_OVERLAY_ONLY_ORIGINAL_READ_ERROR"}
+    return replacement, {**NATIVE_READ_OBSERVATION, "scope": "TEST_COMPILE_OVERLAY_ONLY_ORIGINAL_NATIVE_ERROR"}
 
 
 def execute(args, receipt, run, *, native_client_fixtures: dict[str, Path] | None = None,
