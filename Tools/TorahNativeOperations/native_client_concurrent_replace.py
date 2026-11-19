@@ -41,6 +41,8 @@ CLAIM_KEYS = {"operation_id", "claim_id", "digest", "author_id", "kind", "target
 MUTATION_KEYS = {"operation_id", "claim_id", "disposition", "change_id", "request_sha256", "request_bytes", "returned_claim_sha256"}
 RETRY_KEYS = MUTATION_KEYS | {"before_response_sha256", "after_response_sha256", "before_local_sequence", "after_local_sequence",
                             "history_before", "history_after"}
+IDENTITY_FIELDS = ("Id", "Image", "Path", "Args", "Config", "HostConfig", "Mounts")
+PROCESS_FIELDS = ("container_id", "host_pid", "namespace", "started_at")
 require, digest, write = base.require, base.digest, base.write_json
 
 
@@ -340,7 +342,34 @@ def command(directory: Path, role: str, owner: str, phase: str, history: dict) -
 
 
 def process_identity(info: dict) -> dict:
-    return copy.deepcopy({key: info[key] for key in ["Id", "Image", "Path", "Args", "Config", "HostConfig", "Mounts"]})
+    value = copy.deepcopy({key: info[key] for key in IDENTITY_FIELDS})
+    mounts = value["Mounts"]
+    require(isinstance(mounts, list) and all(isinstance(mount, dict)
+            and isinstance(mount.get("Destination"), str) and mount["Destination"].startswith("/")
+            and "\x00" not in mount["Destination"] for mount in mounts), "Malformed native mount identity")
+    destinations = [mount["Destination"] for mount in mounts]
+    require(len(set(destinations)) == len(destinations), "Duplicate native mount destination")
+    # Docker inspection may enumerate mountpoints in map order. Destination is
+    # the mount identity; preserve every field and every other list exactly.
+    value["Mounts"] = sorted(mounts, key=lambda mount: mount["Destination"])
+    return value
+
+
+def phase_diagnostic(receipt: dict, role: str, phase: str) -> dict:
+    require(role in ROLES and phase in {*PHASES[:-1], "reconnect"}, "Unknown replacement diagnostic phase")
+    value = {"schema": "pinkha-t2-concurrent-replace-check-v1", "scope": "DIAGNOSTIC_ONLY_NO_ACCEPTANCE",
+             "role": role, "phase": phase, "check": "WAIT_OBSERVATION", "status": "IN_PROGRESS",
+             "identity_fields_match": {}, "process_fields_match": {}}
+    receipt["concurrent_replace_diagnostic"] = value
+    return value
+
+
+def require_same_identity(info: dict, frozen: dict, diagnostic: dict) -> None:
+    diagnostic["check"] = "PROCESS_METADATA_SHAPE"
+    current = process_identity(info)
+    diagnostic["check"] = "PROCESS_METADATA"
+    diagnostic["identity_fields_match"] = {key: current[key] == frozen[key] for key in IDENTITY_FIELDS}
+    require(current == frozen, "Native executable/configuration/mount ownership changed")
 
 
 def sequence(api, docker, directories: dict, binary: Path, fixture_sha: str, identity: dict, image_id: str,
@@ -384,22 +413,31 @@ def sequence(api, docker, directories: dict, binary: Path, fixture_sha: str, ide
         item["container_id"] for item in reopen["results"].values()), "Two new native processes are required")
     frozen, live, phases, hashes = {}, {}, {}, {}
     def read_phase(role, phase):
+        diagnostic = phase_diagnostic(docker.receipt, role, phase)
         report = docker.wait_ready(resources[role], deadline, filename="replace-" + phase + ".json")
+        diagnostic["check"] = "OWNED_CONTAINER"
         info = docker.find(resources[role], deadline)
         if role not in frozen:
+            diagnostic["check"] = "INITIAL_CONTAINER"
             api.validate_container(info, docker.owner, role, network, directories[role], binary, image_id,
                                    os.getuid(), os.getgid(), scenario="offline", method=METHODS[role])
+            diagnostic["check"] = "PROCESS_METADATA_SHAPE"
             frozen[role] = process_identity(info)
         else:
-            require(process_identity(info) == frozen[role], "Native executable/configuration/mount ownership changed")
+            require_same_identity(info, frozen[role], diagnostic)
+        diagnostic["check"] = "OBSERVATION_AND_LIVE_STATE"
         validate_common(report, phase, role, baselines[role], baseline_hashes[role], identity, state, info, network)
         process = {"container_id": info["Id"], "host_pid": info["State"]["Pid"], "namespace": report["network_namespace"],
                    "started_at": info["State"]["StartedAt"]}
+        diagnostic["check"] = "PROCESS_CONTINUITY"
         if role in live:
+            diagnostic["process_fields_match"] = {key: live[role][key] == process[key] for key in PROCESS_FIELDS}
             require(live[role] == process, "A native process was replaced during partition/reconnect")
         else:
             live[role] = process
+        diagnostic["check"] = "OBSERVATION_DIGEST"
         hashes[(role, phase)] = digest(directories[role] / ("replace-" + phase + ".json"))
+        diagnostic.update(check="PHASE_COMPLETE", status="PASS")
         return report
     phases["ready"] = {role: read_phase(role, "ready") for role in ROLES}
     validate_pair(phases["ready"])
@@ -431,12 +469,20 @@ def sequence(api, docker, directories: dict, binary: Path, fixture_sha: str, ide
     docker.command(["network", "connect", network["Id"], resources["recovered"]["id"]], "rejoin-replace-recovered", docker.remaining(deadline))
     require(set(docker.find(network_resource, deadline).get("Containers", {})) == expected_ids, "Actual owned native reconnect failed")
     for role in ROLES:
+        diagnostic = phase_diagnostic(docker.receipt, role, "reconnect")
+        diagnostic["check"] = "OWNED_CONTAINER"
         info = docker.find(resources[role], deadline)
-        require(process_identity(info) == frozen[role] and info["State"].get("Running") is True
+        require_same_identity(info, frozen[role], diagnostic)
+        diagnostic["check"] = "RECONNECT_LIVE_STATE"
+        diagnostic["process_fields_match"] = {"host_pid": info["State"].get("Pid") == live[role]["host_pid"]}
+        require(info["State"].get("Running") is True
                 and info["State"]["Pid"] == live[role]["host_pid"], "Reconnect substituted the native process")
+        diagnostic["check"] = "RECONNECT_CONTAINER"
         api.validate_container(info, docker.owner, role, network, directories[role], binary, image_id,
                                os.getuid(), os.getgid(), scenario="offline", method=METHODS[role])
+        diagnostic["check"] = "RECONNECT_COMMAND"
         command(directories[role], role, docker.owner, "reconnect", expected)
+        diagnostic.update(check="PHASE_COMPLETE", status="PASS")
     phases["merged"] = {role: read_phase(role, "merged") for role in ROLES}
     validate_merged(phases["merged"], phases["diverged"], phases["partitioned"], expected, predecessor_input)
     for role in ROLES:
