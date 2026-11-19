@@ -1,0 +1,435 @@
+diff --git a/internal/api/blocks.go b/internal/api/blocks.go
+index 29d0de5..ffa7702 100644
+--- a/internal/api/blocks.go
++++ b/internal/api/blocks.go
+@@ -44,6 +44,10 @@ type BlockCreateRequest struct {
+ type BlockPatchRequest struct {
+ 	Set   map[string]json.RawMessage `json:"set,omitempty" swaggertype:"object"`
+ 	Unset []string                   `json:"unset,omitempty"`
++	// Pinkha opt-in: both guards are required together. Stock callers retain
++	// the original patch contract. No conditional-to-unconditional fallback.
++	IfVersion   string `json:"ifVersion,omitempty"`
++	IfStartedAt string `json:"ifStartedAt,omitempty"`
+ }
+ 
+ // Error code namespace for block endpoints.
+@@ -52,3 +56,12 @@ const (
+ 	ErrBlockTypeMissing = "blocks.type_required"
+ 	ErrBlockRejected    = "blocks.rejected"
+ )
++
++// BlockConditionalPatchResponse binds an optional next-version token only to
++// the exact state produced by this write. It is empty if another writer already
++// moved the document before readback; VersionId remains the native write receipt.
++type BlockConditionalPatchResponse struct {
++	ModifyResult
++	EditorVersion   string `json:"editorVersion,omitempty"`
++	EngineStartedAt string `json:"engineStartedAt"`
++}
+diff --git a/internal/editor/api.go b/internal/editor/api.go
+index ab6886f..e1f3861 100644
+--- a/internal/editor/api.go
++++ b/internal/editor/api.go
+@@ -53,8 +53,9 @@ type CreateInput struct {
+ // one dotted path → JSON value $set; each entry in Unset is one
+ // dotted path to $unset. Empty Set + empty Unset is a no-op.
+ type PatchInput struct {
+-	Set   map[string]json.RawMessage
+-	Unset []string
++	Set              map[string]json.RawMessage
++	Unset            []string
++	IfUnchangedSince *uint64
+ }
+ 
+ // List returns every block on the object's editor_blocks dataset in
+@@ -197,6 +198,11 @@ func Create(ctx context.Context, sp space.Space, objectId, collection string, in
+ // json.RawMessage) gets unmarshalled into a Go-native value the SDK
+ // accepts. Unset entries become $unset ops, payload-less.
+ func Patch(ctx context.Context, sp space.Space, objectId, collection, blockId string, in PatchInput) (space.ModifyResult, error) {
++	if in.IfUnchangedSince != nil {
++		if err := ValidateConditionalPatch(in); err != nil {
++			return space.ModifyResult{}, err
++		}
++	}
+ 	if _, err := Get(ctx, sp, objectId, collection, blockId); err != nil {
+ 		return space.ModifyResult{}, err
+ 	}
+@@ -224,8 +230,9 @@ func Patch(ctx context.Context, sp space.Space, objectId, collection, blockId st
+ 	}
+ 
+ 	res, err := sp.Modify(ctx, space.ModifyBatch{
+-		ObjectId: objectId,
+-		Dataset:  collection,
++		ObjectId:         objectId,
++		Dataset:          collection,
++		IfUnchangedSince: in.IfUnchangedSince,
+ 		Records: []space.RecordModify{{
+ 			Id:  blockId,
+ 			Ops: ops,
+diff --git a/internal/editor/pinkha_patch.go b/internal/editor/pinkha_patch.go
+new file mode 100644
+index 0000000..e130333
+--- /dev/null
++++ b/internal/editor/pinkha_patch.go
+@@ -0,0 +1,58 @@
++package editor
++
++import (
++	"errors"
++	"fmt"
++	"sort"
++	"strings"
++
++	"github.com/anyproto/any-store/v2/anyenc"
++	"github.com/anyproto/any-sync-sdk/handler"
++)
++
++var ErrInvalidConditionalPatch = errors.New("blocks: invalid conditional patch")
++
++// ValidateConditionalPatch uses the SAME native field validators as replay,
++// but runs the entire patch before a DAG write. An invalid sibling op must
++// not cause a valid text edit to land behind an error response.
++// Ancestor/descendant and repeated paths are refused to avoid map-order effects.
++func ValidateConditionalPatch(in PatchInput) error {
++	paths := make([]string, 0, len(in.Set)+len(in.Unset))
++	invalid := func(err error) error { return errors.Join(ErrInvalidConditionalPatch, err) }
++	for path, raw := range in.Set {
++		if path == "" {
++			return invalid(errors.New("empty set path"))
++		}
++		payload, err := anyenc.ParseJson(string(raw))
++		if err != nil {
++			return invalid(err)
++		}
++		op := handler.Op{Type: handler.OpSet, Path: strings.Split(path, "."), Payload: payload}
++		if err := validateSet(&op); err != nil {
++			return invalid(err)
++		}
++		paths = append(paths, path)
++	}
++	for _, path := range in.Unset {
++		if path == "" {
++			return invalid(errors.New("empty unset path"))
++		}
++		op := handler.Op{Type: handler.OpUnset, Path: strings.Split(path, ".")}
++		if err := validateUnset(&op); err != nil {
++			return invalid(err)
++		}
++		paths = append(paths, path)
++	}
++	sort.Strings(paths)
++	for i, path := range paths {
++		for _, segment := range strings.Split(path, ".") {
++			if segment == "" {
++				return invalid(errors.New("empty path segment"))
++			}
++		}
++		if i > 0 && (path == paths[i-1] || strings.HasPrefix(path, paths[i-1]+".")) {
++			return invalid(fmt.Errorf("overlapping paths: %q", path))
++		}
++	}
++	return nil
++}
+diff --git a/internal/markdown/pinkha_version.go b/internal/markdown/pinkha_version.go
+new file mode 100644
+index 0000000..33ca553
+--- /dev/null
++++ b/internal/markdown/pinkha_version.go
+@@ -0,0 +1,17 @@
++package markdown
++
++import (
++	"context"
++	"github.com/anyproto/any-sync-sdk/space"
++)
++
++// GetWithSequence returns the body version and exact write precondition from
++// ONE tombstone-inclusive native query. Callers must also bind the server run.
++func GetWithSequence(ctx context.Context, sp space.Space, objectID, collection string) (Document, uint64, error) {
++	gen, err := sp.Changes().Generation(ctx)
++	if err != nil {
++		return Document{}, 0, err
++	}
++	doc, _, seq, err := readDocument(ctx, sp, objectID, collection, gen)
++	return doc, seq, err
++}
+diff --git a/internal/server/handlers_blocks.go b/internal/server/handlers_blocks.go
+index 7fec5c2..4c99a8a 100644
+--- a/internal/server/handlers_blocks.go
++++ b/internal/server/handlers_blocks.go
+@@ -3,11 +3,15 @@ package server
+ import (
+ 	"errors"
+ 	"net/http"
++	"time"
++
++	"github.com/anyproto/any-sync-sdk/space"
+ 
+ 	"github.com/labstack/echo/v4"
+ 
+ 	"github.com/anyproto/any/internal/api"
+ 	"github.com/anyproto/any/internal/editor"
++	"github.com/anyproto/any/internal/markdown"
+ )
+ 
+ // Block endpoints — writes only. Reads go through the per-object
+@@ -113,13 +117,45 @@ func (d *deps) blocksPatch(c echo.Context) error {
+ 		return nil
+ 	}
+ 
++	conditional := req.IfVersion != "" || req.IfStartedAt != ""
++	var seq *uint64
++	if conditional {
++		if req.IfVersion == "" || req.IfStartedAt == "" || len(req.IfVersion) > 1024 || len(req.IfStartedAt) > 128 {
++			return writeError(c, http.StatusBadRequest, "blocks.precondition_required",
++				"ifVersion and ifStartedAt must be supplied together", nil)
++		}
++		if req.IfStartedAt != d.startedAt.Format(time.RFC3339Nano) {
++			return writeError(c, http.StatusConflict, "blocks.engine_restarted",
++				"re-read after the engine restarted", nil)
++		}
++		current, value, err := markdown.GetWithSequence(c.Request().Context(), sp, objectId, collection)
++		if err != nil {
++			return blockOpError(c, err, sp.Id(), objectId)
++		}
++		if current.Version != req.IfVersion {
++			return writeError(c, http.StatusConflict, "blocks.conflict", "document changed", nil)
++		}
++		seq = &value
++	}
+ 	res, err := editor.Patch(c.Request().Context(), sp, objectId, collection, blockId, editor.PatchInput{
+-		Set:   req.Set,
+-		Unset: req.Unset,
++		Set: req.Set, Unset: req.Unset, IfUnchangedSince: seq,
+ 	})
+ 	if err != nil {
+ 		return blockOpError(c, err, sp.Id(), objectId)
+ 	}
++	if conditional {
++		// Never hand an intervening writer's version to Undo as our own.
++		next := ""
++		current, applied, readErr := markdown.GetWithSequence(c.Request().Context(), sp, objectId, collection)
++		if readErr == nil && ((res.ApplySeq != 0 && applied == res.ApplySeq) ||
++			(res.VersionId == "" && current.Version == req.IfVersion)) {
++			next = current.Version
++		}
++		return c.JSON(http.StatusOK, api.BlockConditionalPatchResponse{
++			ModifyResult: modifyResultToAPI(res), EditorVersion: next,
++			EngineStartedAt: d.startedAt.Format(time.RFC3339Nano),
++		})
++	}
+ 	return c.JSON(http.StatusOK, modifyResultToAPI(res))
+ }
+ 
+@@ -160,6 +196,10 @@ func (d *deps) blocksDelete(c echo.Context) error {
+ // else falls through to the shared sdkOpError (5xx internal).
+ func blockOpError(c echo.Context, err error, spaceId, objectId string) error {
+ 	switch {
++	case errors.Is(err, space.ErrPreconditionFailed):
++		return writeError(c, http.StatusConflict, "blocks.conflict", "document changed", nil)
++	case errors.Is(err, editor.ErrInvalidConditionalPatch):
++		return writeError(c, http.StatusBadRequest, "blocks.invalid_conditional_patch", "invalid conditional patch", nil)
+ 	case errors.Is(err, editor.ErrNotFound):
+ 		return writeError(c, http.StatusNotFound, api.ErrBlockNotFound,
+ 			"block not found",
+diff --git a/internal/server/handlers_pinkha_block_cas_test.go b/internal/server/handlers_pinkha_block_cas_test.go
+new file mode 100644
+index 0000000..a30206b
+--- /dev/null
++++ b/internal/server/handlers_pinkha_block_cas_test.go
+@@ -0,0 +1,195 @@
++package server
++
++import (
++	"encoding/json"
++	"fmt"
++	"net/http"
++	"testing"
++	"time"
++
++	"github.com/anyproto/any/internal/api"
++)
++
++func TestPinkhaBlockCASRetainsIdentityAndRefusesStaleState(t *testing.T) {
++	d, teardown := newTestDeps(t)
++	defer teardown()
++	e := buildEcho(d)
++	sid, oid := setupBlocksFixture(t, e)
++	base := "/v1/spaces/" + sid + "/objects/" + oid
++	path := base + "/editor/editor_blocks"
++	parent := blocksCreate(t, e, base, `{"type":"paragraph","text":"שלום","style":{"future":{"keep":true},"pinkhaWritingDirection":"rightToLeft"}}`)
++	child := blocksCreate(t, e, base, fmt.Sprintf(`{"type":"paragraph","text":"child","nav":{"parentId":%q}}`, parent.Id))
++	before := getMarkdownDoc(t, e, path+"/markdown")
++	request := api.BlockPatchRequest{Set: map[string]json.RawMessage{"text": json.RawMessage(`"שלום חדש"`),
++		"style.pinkhaTextAlignment": json.RawMessage(`"right"`)},
++		IfVersion: before.Version, IfStartedAt: d.startedAt.Format(time.RFC3339Nano)}
++	raw, _ := json.Marshal(request)
++	res := doJSON(t, e, http.MethodPatch, path+"/blocks/"+parent.Id, string(raw))
++	if res.Code != http.StatusOK {
++		t.Fatalf("conditional patch: %d %s", res.Code, res.Body.String())
++	}
++	var receipt api.BlockConditionalPatchResponse
++	if err := json.Unmarshal(res.Body.Bytes(), &receipt); err != nil {
++		t.Fatal(err)
++	}
++	if receipt.VersionId == "" || receipt.EditorVersion == "" ||
++		receipt.EditorVersion == before.Version || len(receipt.RecordIds) != 1 || receipt.RecordIds[0] != parent.Id {
++		t.Fatalf("missing exact native receipt: %+v", receipt)
++	}
++	rows := blocksList(t, e, base).Records
++	if len(rows) != 2 {
++		t.Fatalf("block identity loss: %+v", rows)
++	}
++	for _, b := range rows {
++		if b.Id == parent.Id && (b.Text != "שלום חדש" || b.Style["future"] == nil ||
++			b.Style["pinkhaWritingDirection"] != "rightToLeft" || b.Style["pinkhaTextAlignment"] != "right") {
++			t.Fatalf("patch lost block data: %+v", b)
++		}
++		if b.Id == child.Id && b.Nav.ParentId != parent.Id {
++			t.Fatal("child detached")
++		}
++	}
++	current := getMarkdownDoc(t, e, path+"/markdown")
++	stale := doJSON(t, e, http.MethodPatch, path+"/blocks/"+parent.Id, string(raw))
++	if stale.Code != http.StatusConflict {
++		t.Fatalf("stale patch: %d %s", stale.Code, stale.Body.String())
++	}
++	if after := getMarkdownDoc(t, e, path+"/markdown"); after != current {
++		t.Fatal("stale patch wrote")
++	}
++}
++
++func TestPinkhaBlockCASEngineRunAndWholePatchPreflight(t *testing.T) {
++	d, teardown := newTestDeps(t)
++	defer teardown()
++	e := buildEcho(d)
++	sid, oid := setupBlocksFixture(t, e)
++	base := "/v1/spaces/" + sid + "/objects/" + oid
++	path := base + "/editor/editor_blocks"
++	b := blocksCreate(t, e, base, `{"type":"paragraph","text":"original","style":{"keep":true}}`)
++	doc := getMarkdownDoc(t, e, path+"/markdown")
++	cases := []struct {
++		name             string
++		set              map[string]json.RawMessage
++		unset            []string
++		version, started string
++		code             int
++	}{
++		{"different run", map[string]json.RawMessage{"text": json.RawMessage(`"bad"`)}, nil,
++			doc.Version, "2000-01-01T00:00:00Z", http.StatusConflict},
++		{"missing run", map[string]json.RawMessage{"text": json.RawMessage(`"bad"`)}, nil,
++			doc.Version, "", http.StatusBadRequest},
++		{"missing version", map[string]json.RawMessage{"text": json.RawMessage(`"bad"`)}, nil,
++			"", d.startedAt.Format(time.RFC3339Nano), http.StatusBadRequest},
++		{"mixed valid invalid", map[string]json.RawMessage{"text": json.RawMessage(`"bad"`), "id": json.RawMessage(`"forged"`)}, nil,
++			doc.Version, d.startedAt.Format(time.RFC3339Nano), http.StatusBadRequest},
++		{"overlapping paths", map[string]json.RawMessage{"style": json.RawMessage(`{}`), "style.keep": json.RawMessage(`false`)}, nil,
++			doc.Version, d.startedAt.Format(time.RFC3339Nano), http.StatusBadRequest},
++		{"set unset same path", map[string]json.RawMessage{"text": json.RawMessage(`"bad"`)}, []string{"text"},
++			doc.Version, d.startedAt.Format(time.RFC3339Nano), http.StatusBadRequest},
++	}
++	for _, tc := range cases {
++		t.Run(tc.name, func(t *testing.T) {
++			raw, _ := json.Marshal(api.BlockPatchRequest{Set: tc.set, Unset: tc.unset, IfVersion: tc.version, IfStartedAt: tc.started})
++			res := doJSON(t, e, http.MethodPatch, path+"/blocks/"+b.Id, string(raw))
++			if res.Code != tc.code {
++				t.Fatalf("status %d, want %d: %s", res.Code, tc.code, res.Body.String())
++			}
++			if after := getMarkdownDoc(t, e, path+"/markdown"); after != doc {
++				t.Fatal("refused patch changed native state")
++			}
++		})
++	}
++}
++
++func TestPinkhaBlockCASConcurrentEditsHaveOneWinner(t *testing.T) {
++	d, teardown := newTestDeps(t)
++	defer teardown()
++	e := buildEcho(d)
++	sid, oid := setupBlocksFixture(t, e)
++	base := "/v1/spaces/" + sid + "/objects/" + oid
++	path := base + "/editor/editor_blocks"
++	b := blocksCreate(t, e, base, `{"type":"paragraph","text":"original"}`)
++	doc := getMarkdownDoc(t, e, path+"/markdown")
++	const count = 4
++	codes := make(chan int, count)
++	for i := range count {
++		go func() {
++			raw, _ := json.Marshal(api.BlockPatchRequest{
++				Set:       map[string]json.RawMessage{"text": json.RawMessage(fmt.Sprintf("%q", fmt.Sprintf("writer %d", i)))},
++				IfVersion: doc.Version, IfStartedAt: d.startedAt.Format(time.RFC3339Nano)})
++			codes <- doJSON(t, e, http.MethodPatch, path+"/blocks/"+b.Id, string(raw)).Code
++		}()
++	}
++	successes, conflicts := 0, 0
++	for range count {
++		switch code := <-codes; code {
++		case http.StatusOK:
++			successes++
++		case http.StatusConflict:
++			conflicts++
++		default:
++			t.Errorf("unexpected status %d", code)
++		}
++	}
++	if successes != 1 || conflicts != count-1 {
++		t.Fatalf("writes=%d conflicts=%d", successes, conflicts)
++	}
++	rows := blocksList(t, e, base).Records
++	if len(rows) != 1 || rows[0].Id != b.Id {
++		t.Fatal("concurrent edits recreated the block")
++	}
++}
++
++func TestPinkhaBlockCASIncludesUnrenderedAndDeletedChildren(t *testing.T) {
++	d, teardown := newTestDeps(t)
++	defer teardown()
++	e := buildEcho(d)
++	sid, oid := setupBlocksFixture(t, e)
++	base := "/v1/spaces/" + sid + "/objects/" + oid
++	path := base + "/editor/editor_blocks"
++	parent := blocksCreate(t, e, base, `{"type":"paragraph","text":"parent"}`)
++	child := blocksCreate(t, e, base, fmt.Sprintf(`{"type":"paragraph","text":"child","nav":{"parentId":%q}}`, parent.Id))
++	before := getMarkdownDoc(t, e, path+"/markdown")
++	res := doJSON(t, e, http.MethodDelete, path+"/blocks/"+child.Id, "")
++	if res.Code != http.StatusOK {
++		t.Fatalf("delete child: %d", res.Code)
++	}
++	raw, _ := json.Marshal(api.BlockPatchRequest{Set: map[string]json.RawMessage{"text": json.RawMessage(`"overwrite"`)},
++		IfVersion: before.Version, IfStartedAt: d.startedAt.Format(time.RFC3339Nano)})
++	res = doJSON(t, e, http.MethodPatch, path+"/blocks/"+parent.Id, string(raw))
++	if res.Code != http.StatusConflict {
++		t.Fatalf("deleted nested block did not invalidate patch: %d %s", res.Code, res.Body.String())
++	}
++	after := getMarkdownDoc(t, e, path+"/markdown")
++	if after.Content != before.Content || after.Version == before.Version {
++		t.Fatal("nested delete version proof failed")
++	}
++}
++
++func TestPinkhaBlockCASNoopAndLegacyPatch(t *testing.T) {
++	d, teardown := newTestDeps(t)
++	defer teardown()
++	e := buildEcho(d)
++	sid, oid := setupBlocksFixture(t, e)
++	base := "/v1/spaces/" + sid + "/objects/" + oid
++	path := base + "/editor/editor_blocks"
++	b := blocksCreate(t, e, base, `{"type":"paragraph","text":"original"}`)
++	before := getMarkdownDoc(t, e, path+"/markdown")
++	raw, _ := json.Marshal(api.BlockPatchRequest{IfVersion: before.Version, IfStartedAt: d.startedAt.Format(time.RFC3339Nano)})
++	res := doJSON(t, e, http.MethodPatch, path+"/blocks/"+b.Id, string(raw))
++	if res.Code != http.StatusOK {
++		t.Fatalf("noop: %d %s", res.Code, res.Body.String())
++	}
++	var receipt api.BlockConditionalPatchResponse
++	if err := json.Unmarshal(res.Body.Bytes(), &receipt); err != nil {
++		t.Fatal(err)
++	}
++	if receipt.VersionId != "" || receipt.EditorVersion != before.Version {
++		t.Fatalf("noop receipt: %+v", receipt)
++	}
++	res = doJSON(t, e, http.MethodPatch, path+"/blocks/"+b.Id, `{"set":{"text":"legacy client"}}`)
++	if res.Code != http.StatusOK {
++		t.Fatalf("legacy patch changed: %d %s", res.Code, res.Body.String())
++	}
++}

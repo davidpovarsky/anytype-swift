@@ -1,3 +1,4 @@
+import PinkhaHanlinCore
 import UIKit
 
 /// Anytype owns this small native permission sheet and its view lifecycle.

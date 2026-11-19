@@ -23,7 +23,8 @@ import wave15_core_profile as core_profile
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
-APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH)
+ANY_ENGINE_BRANCH = "codex/any-engine-port-20261119"
+APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, ANY_ENGINE_BRANCH)
 CONFIGURATION = "Debug-Anytype"
 SUITES = {
     "HanlinHostAdapterTests": 35,

@@ -1,3 +1,4 @@
+import PinkhaHanlinCore
 import Foundation
 import Observation
 import UIKit
@@ -10,7 +11,7 @@ import HanlinPersistenceAdapters
 /// The SDK owns model execution; Anytype owns source authority, native prompts and write receipts.
 @MainActor
 @Observable
-final class PinkhaHanlinChatPresentation {
+final class PinkhaHanlinChatPresentation: PinkhaHanlinOwnedPresentation {
     let session: HanlinHostSession
     var draft = ""
     private(set) var messages: [HanlinChatMessage] = []

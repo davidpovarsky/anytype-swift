@@ -24,6 +24,7 @@ public actor AnyStreamSession {
     }
 
     public func register(generation: UUID, _ cancel: @escaping @Sendable () -> Void) throws -> UUID {
+        try Task.checkCancellation()
         try requireActive(generation: generation)
         let id = UUID()
         cancellations[id] = cancel
@@ -163,6 +164,31 @@ extension AnyHTTPClient {
         maximumRecords: Int, requireComplete: Bool = false,
         maximumFrameBytes: Int = 8 * 1024 * 1024
     ) async throws -> AsyncThrowingStream<AnyQueryUpdate, Error> {
+        try await subscribe(
+            path: ["v1", "spaces", spaceID, "query", "subscribe"],
+            spaceID: spaceID, query: query, streamSession: streamSession,
+            maximumRecords: maximumRecords, requireComplete: requireComplete,
+            maximumFrameBytes: maximumFrameBytes)
+    }
+
+    /// Live native object query, sharing the exact transport, atomic window and
+    /// generation fences of dataset subscriptions.
+    public func subscribeObjectQuery(
+        spaceID: String, query: AnyJSON, streamSession: AnyStreamSession,
+        maximumRecords: Int, requireComplete: Bool = false,
+        maximumFrameBytes: Int = 8 * 1024 * 1024
+    ) async throws -> AsyncThrowingStream<AnyQueryUpdate, Error> {
+        try await subscribe(
+            path: ["v1", "spaces", spaceID, "objects", "query", "subscribe"],
+            spaceID: spaceID, query: query, streamSession: streamSession,
+            maximumRecords: maximumRecords, requireComplete: requireComplete,
+            maximumFrameBytes: maximumFrameBytes)
+    }
+
+    private func subscribe(
+        path: [String], spaceID: String, query: AnyJSON, streamSession: AnyStreamSession,
+        maximumRecords: Int, requireComplete: Bool, maximumFrameBytes: Int
+    ) async throws -> AsyncThrowingStream<AnyQueryUpdate, Error> {
         guard !spaceID.isEmpty, (1...10001).contains(maximumRecords),
               (1024...64 * 1024 * 1024).contains(maximumFrameBytes) else {
             throw AnyLiveQueryError.incompleteWindow
@@ -173,7 +199,7 @@ extension AnyHTTPClient {
         try Task.checkCancellation()
         try await streamSession.requireActive(generation: generation)
         var request = try makeRequest(
-            method: "POST", path: ["v1", "spaces", spaceID, "query", "subscribe"], body: query)
+            method: "POST", path: path, body: query)
         request.timeoutInterval = 90
         request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
         guard (request.httpBody?.count ?? 0) <= 1024 * 1024 else { throw AnyLiveQueryError.frameTooLarge }
@@ -182,6 +208,14 @@ extension AnyHTTPClient {
         let registration: UUID
         do { registration = try await streamSession.register(generation: generation) { connection.cancel() } }
         catch { connection.cancel(); throw error }
+        // Cancellation can arrive while registration waits for the session actor.
+        // Do not create an unstructured reader for a caller that already left.
+        do { try Task.checkCancellation() }
+        catch {
+            connection.cancel()
+            await streamSession.unregister(registration)
+            throw error
+        }
         return AsyncThrowingStream(bufferingPolicy: .bufferingOldest(2)) { continuation in
             let worker = Task {
                 do {

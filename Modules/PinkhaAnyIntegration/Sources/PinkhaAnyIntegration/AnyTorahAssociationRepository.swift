@@ -47,6 +47,77 @@ public actor AnyTorahAssociationRepository: TorahAssociationRepository {
         return .init(records: state.live.map(\.record), conflicts: state.conflicts)
     }
 
+
+    /// Observes complete native projections. A terminal error requires a fresh
+    /// stream; this API does not invent event replay or compare version cursors.
+    /// The UI must requireActive(generation:) again before committing a queued
+    /// snapshot to presentation, since invalidation can follow publication.
+    public func watch(target: TorahAssociationTarget, spaceID: String,
+                      session: AnyStreamSession, limit: Int = 10_000) async throws
+        -> AsyncThrowingStream<AnyTorahAssociationLiveSnapshot, Error> {
+        try checkSpace(spaceID)
+        guard (1...10_000).contains(limit),
+              let observable = store as? any AnyTorahObservableOperationStore else {
+            throw AnyLiveQueryError.invalidSequence("native observation unavailable")
+        }
+        let generation = await session.generation
+        try await session.requireActive(generation: generation)
+        try await access.validate(target, intent: .read)
+        try await session.requireActive(generation: generation)
+        let upstream = try await observable.watch(session: session, limit: limit)
+        let pair = AsyncThrowingStream<AnyTorahAssociationLiveSnapshot, Error>.makeStream(
+            bufferingPolicy: .bufferingOldest(2))
+        let registration = try await session.register(generation: generation) {
+            pair.continuation.finish(throwing: AnyLiveQueryError.staleGeneration)
+        }
+        let worker = Task { [self] in
+            do {
+                var receivedInitial = false
+                for try await update in upstream {
+                    try Task.checkCancellation()
+                    try await session.requireActive(generation: update.generation)
+                    guard update.generation == generation else { throw AnyLiveQueryError.staleGeneration }
+                    guard receivedInitial ? !update.initial : update.initial else {
+                        throw AnyLiveQueryError.invalidSequence(
+                            receivedInitial ? "repeated initial snapshot" : "missing atomic initial snapshot")
+                    }
+                    try await access.validate(target, intent: .read)
+                    try await session.requireActive(generation: generation)
+                    let state = try decoded(projection: update.projection, target: target)
+                    let output = AnyTorahAssociationLiveSnapshot(
+                        workspace: workspace, target: target, generation: generation, initial: update.initial,
+                        snapshot: .init(records: state.live.map(\.record), conflicts: state.conflicts))
+                    try Task.checkCancellation()
+                    try await session.requireActive(generation: generation)
+                    switch pair.continuation.yield(output) {
+                    case .enqueued: break
+                    case .dropped: throw AnyLiveQueryError.bufferOverflow
+                    case .terminated: throw CancellationError()
+                    @unknown default: throw AnyLiveQueryError.bufferOverflow
+                    }
+                    receivedInitial = true
+                }
+                throw AnyLiveQueryError.disconnected
+            } catch {
+                pair.continuation.finish(throwing: error)
+            }
+            await session.unregister(registration)
+        }
+        pair.continuation.onTermination = { @Sendable _ in worker.cancel() }
+        return pair.stream
+    }
+
+    /// Decode one target from an already atomic complete canonical projection.
+    /// This avoids repeated whole-space reads during related-document paging;
+    /// target readability is still checked at the time of use.
+    public func snapshot(projection: AnyTorahProjection, target: TorahAssociationTarget,
+                         spaceID: String) async throws -> AnyTorahAssociationSnapshot {
+        try checkSpace(spaceID)
+        try await access.validate(target, intent: .read)
+        let state = try decoded(projection: projection, target: target)
+        return .init(records: state.live.map(\.record), conflicts: state.conflicts)
+    }
+
     public func addAssociation(_ item: TorahAssociationItem, target: TorahAssociationTarget,
                                spaceId: String) async throws -> TorahAssociationItem {
         try await upsertAssociation(item, target: target, spaceId: spaceId)
@@ -77,9 +148,16 @@ public actor AnyTorahAssociationRepository: TorahAssociationRepository {
 
     public func removeAssociation(associationId: String, target: TorahAssociationTarget,
                                   spaceId: String) async throws {
+        try await removeAssociation(associationId: associationId, target: target, spaceId: spaceId, authorize: {})
+    }
+
+    public func removeAssociation(associationId: String, target: TorahAssociationTarget,
+                                  spaceId: String,
+                                  authorize: @escaping @Sendable () async throws -> Void) async throws {
         try checkSpace(spaceId)
         try await serial { [self] in
             try Task.checkCancellation()
+            try await authorize()
             try await access.validate(target, intent: .write)
             let state = try await decoded(target: target)
             try requireNoConflicts(state)
@@ -92,6 +170,7 @@ public actor AnyTorahAssociationRepository: TorahAssociationRepository {
                 observed: matches.map { $0.claim.id })
             try await store.append(operation) { [access] in
                 try Task.checkCancellation()
+                try await authorize()
                 try await access.validate(target, intent: .write)
             }
         }
@@ -116,7 +195,13 @@ public actor AnyTorahAssociationRepository: TorahAssociationRepository {
     }
 
     private func decoded(target: TorahAssociationTarget) async throws -> State {
-        let projection = try await store.snapshot()
+        try decoded(projection: await store.snapshot(), target: target)
+    }
+
+    private func decoded(projection: AnyTorahProjection, target: TorahAssociationTarget) throws -> State {
+        guard projection.all.allSatisfy({ $0.operation.spaceID == workspace.spaceID }) else {
+            throw TorahAssociationRepositoryError.targetOutsideSpace
+        }
         let relevant: (AnyTorahClaim) -> Bool = {
             $0.operation.targetObjectID == target.objectId &&
             $0.operation.targetBlockID == (target.blockId ?? "")

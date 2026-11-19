@@ -1,3 +1,4 @@
+import PinkhaHanlinCore
 #if DEBUG && targetEnvironment(simulator)
 import Foundation
 @preconcurrency import Combine

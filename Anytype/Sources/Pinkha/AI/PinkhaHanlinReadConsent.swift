@@ -1,3 +1,4 @@
+import PinkhaHanlinCore
 import Foundation
 import UIKit
 import HanlinHostContracts

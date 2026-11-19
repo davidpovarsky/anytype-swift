@@ -1,4 +1,5 @@
 import Foundation
+import PinkhaTorahPresentation
 import PinkhaKit
 
 struct TorahAssociationDocumentKey: Sendable, Hashable {
@@ -51,14 +52,7 @@ actor TorahAssociationMutationCoordinator {
     }
 }
 
-enum TorahAssociationPersistenceState: Sendable, Equatable {
-    case waiting
-    case saving
-    case saved
-    case conflict(String)
-    case uncertain(String)
-    case error(String)
-}
+typealias TorahAssociationPersistenceState = PinkhaTorahPresentation.TorahAssociationPersistenceState
 
 struct TorahAssociationPersistenceEvent: Sendable, Equatable {
     let operationId: String

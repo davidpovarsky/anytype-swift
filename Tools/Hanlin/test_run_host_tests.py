@@ -101,6 +101,21 @@ class SDKResultGateTests(unittest.TestCase):
             with self.subTest(actual=actual, expected=expected), self.assertRaisesRegex(ValueError, "branch"):
                 require_identity("a" * 40, "a" * 40, actual, expected, "123", "1")
 
+    def test_reviewed_any_engine_branch_requires_exact_source_identity(self):
+        branch = "codex/any-engine-port-20261119"
+        require_identity("a" * 40, "a" * 40, branch, branch, "123", "1")
+        for actual, expected in [
+            (branch, BRANCH),
+            (BRANCH, branch),
+            (branch + "-unreviewed", branch + "-unreviewed"),
+            (branch + "/child", branch + "/child"),
+            (branch.replace("20261119", "20261120"), branch.replace("20261119", "20261120")),
+        ]:
+            with self.subTest(actual=actual, expected=expected), self.assertRaisesRegex(ValueError, "branch"):
+                require_identity("a" * 40, "a" * 40, actual, expected, "123", "1")
+        with self.assertRaisesRegex(ValueError, "source"):
+            require_identity("a" * 40, "b" * 40, branch, branch, "123", "1")
+
     def test_wrong_source_or_branch_or_missing_run_is_rejected(self):
         valid = ["a" * 40, "a" * 40, BRANCH, BRANCH, "123", "1"]
         require_identity(*valid)

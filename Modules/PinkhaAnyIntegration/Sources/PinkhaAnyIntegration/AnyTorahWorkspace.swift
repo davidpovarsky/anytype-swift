@@ -78,13 +78,15 @@ public struct AnyHTTPTorahTargetAccess: AnyTorahTargetAccess, Sendable {
     private let allowedTypeIDs: Set<String>
     private let excludedCollectionIDs: Set<String>
     private let blockLimit: Int
+    public let editorDataset: String
 
     public init(client: AnyHTTPClient, workspace: AnyTorahWorkspace,
                 allowedTypeIDs: Set<String>, excludedCollectionIDs: Set<String> = ["bin", "template"],
-                blockLimit: Int = 10_000) throws {
+                blockLimit: Int = 10_000, editorDataset: String = "editor_blocks") throws {
         guard client.expectedAccountID == workspace.accountID, !allowedTypeIDs.isEmpty,
               allowedTypeIDs.allSatisfy({ !$0.isEmpty }),
-              (1...10_000).contains(blockLimit) else {
+              (1...10_000).contains(blockLimit), !editorDataset.isEmpty,
+              editorDataset.utf8.count <= 1024, !editorDataset.utf8.contains(0) else {
             throw AnyEngineError.invalidIdentity("target validation configuration")
         }
         self.client = client
@@ -92,6 +94,7 @@ public struct AnyHTTPTorahTargetAccess: AnyTorahTargetAccess, Sendable {
         self.allowedTypeIDs = allowedTypeIDs
         self.excludedCollectionIDs = excludedCollectionIDs
         self.blockLimit = blockLimit
+        self.editorDataset = editorDataset
     }
 
     public func validate(_ target: TorahAssociationTarget, intent: AnyTorahTargetIntent) async throws {
@@ -110,7 +113,7 @@ public struct AnyHTTPTorahTargetAccess: AnyTorahTargetAccess, Sendable {
         guard let blockID = target.blockId else { return }
         let response = try await client.requestJSON(
             method: "POST", path: base + ["query"], body: .object([
-                "objectId": .string(target.objectId), "dataset": .string("editor_blocks"),
+                "objectId": .string(target.objectId), "dataset": .string(editorDataset),
                 "limit": .integer(Int64(blockLimit + 1)), "includeTotal": .bool(true)
             ]))
         try Self.requireReachableBlock(blockID, response: response, limit: blockLimit)

@@ -17,6 +17,28 @@ public enum AnyEmbeddedRuntimeError: Error, Equatable, Sendable {
     case sessionChanged
 }
 
+/// Selects the native code contract, independently of which network is used.
+/// A native application must explicitly request pinkhaNativeV1.
+public enum AnyEmbeddedBuild: String, Sendable, Codable {
+    case upstreamV050
+    case pinkhaNativeV1
+
+    public static var linked: Self {
+        #if PINKHA_NATIVE_RUNTIME
+        return .pinkhaNativeV1
+        #else
+        return .upstreamV050
+        #endif
+    }
+
+    public var versionPrefix: String {
+        switch self {
+        case .upstreamV050: return "any v0.5.0 "
+        case .pinkhaNativeV1: return "any v0.5.0-pinkha.1 "
+        }
+    }
+}
+
 /// Selecting the official network must be an explicit host decision.
 public enum AnyEmbeddedNetwork: Sendable {
     case official
@@ -92,7 +114,7 @@ public actor AnyEmbeddedRuntime {
 
     public func currentSession() -> AnyEmbeddedSession? { active }
 
-    public func start(dataDirectory: URL, network: AnyEmbeddedNetwork) throws -> AnyEmbeddedSession {
+    public func start(dataDirectory: URL, network: AnyEmbeddedNetwork, build: AnyEmbeddedBuild = .upstreamV050) throws -> AnyEmbeddedSession {
         guard active == nil else { throw AnyEmbeddedRuntimeError.alreadyRunning }
         guard dataDirectory.isFileURL, dataDirectory.path.hasPrefix("/"),
               dataDirectory.path != "/" else {
@@ -101,7 +123,7 @@ public actor AnyEmbeddedRuntime {
         let (nodeconf, pushPeer, pushAddresses) = try network.arguments
         guard let versionPointer = AnyLibVersion() else { throw AnyEmbeddedRuntimeError.unexpectedVersion }
         let version = String(cString: versionPointer)
-        guard version.hasPrefix("any v0.5.0 ") else { throw AnyEmbeddedRuntimeError.unexpectedVersion }
+        guard build == .linked, version.hasPrefix(build.versionPrefix) else { throw AnyEmbeddedRuntimeError.unexpectedVersion }
         var random = [UInt8](repeating: 0, count: 32)
         let status = SecRandomCopyBytes(kSecRandomDefault, random.count, &random)
         guard status == errSecSuccess else {

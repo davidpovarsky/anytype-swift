@@ -1,23 +1,12 @@
 import Foundation
 import PinkhaKit
+import PinkhaTorahPresentation
 
 /// Native Anytype association repository for the deliberately bounded
 /// single-active-writer track. Canonical data remains one native document
 /// property; full multi-client T2 remains independently blocked.
-typealias TorahAssociationWriteAuthorization = @MainActor @Sendable () throws -> Void
-
-protocol AnytypeTorahAssociationSnapshotRepository: TorahAssociationRepository {
-    func listAssociationRecords(objectId: String, spaceId: String) async throws -> [TorahStoredAssociationRecord]
-
-    /// Revalidate after queued native reads, immediately before dispatching a
-    /// quote's metadata write. This does not make block and property writes atomic.
-    func addAssociation(
-        _ item: TorahAssociationItem,
-        target: TorahAssociationTarget,
-        spaceId: String,
-        authorize: @escaping TorahAssociationWriteAuthorization
-    ) async throws -> TorahAssociationItem
-}
+typealias TorahAssociationWriteAuthorization = PinkhaTorahPresentation.TorahAssociationWriteAuthorization
+typealias AnytypeTorahAssociationSnapshotRepository = PinkhaTorahPresentation.TorahAssociationSnapshotRepository
 
 final class AnytypeTorahAssociationRepository: AnytypeTorahAssociationSnapshotRepository, @unchecked Sendable {
     private struct LoadedDocument: Sendable {

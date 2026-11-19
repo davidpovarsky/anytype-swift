@@ -10,9 +10,9 @@ final class AnyEmbeddedRuntimeTests: XCTestCase {
             .appendingPathComponent("pinkha-any-native-" + UUID().uuidString, isDirectory: true)
         let network = AnyEmbeddedNetwork.custom(nodeconfYAML: "networkId: pinkha-native-lifecycle-test\nnodes: []\n")
         do {
-            let first = try await runtime.start(dataDirectory: directory, network: network)
+            let first = try await runtime.start(dataDirectory: directory, network: network, build: .linked)
             XCTAssertEqual(first.baseURL.host, "127.0.0.1")
-            XCTAssertTrue(first.engineVersion.hasPrefix("any v0.5.0 "))
+            XCTAssertTrue(first.engineVersion.hasPrefix(AnyEmbeddedBuild.linked.versionPrefix))
             let (health, response) = try await URLSession.shared.data(
                 from: first.baseURL.appendingPathComponent("v1/health"))
             XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 200)
@@ -33,7 +33,7 @@ final class AnyEmbeddedRuntimeTests: XCTestCase {
             XCTAssertEqual((deniedResponse as? HTTPURLResponse)?.statusCode, 403)
 
             do {
-                _ = try await runtime.start(dataDirectory: directory, network: network)
+                _ = try await runtime.start(dataDirectory: directory, network: network, build: .linked)
                 XCTFail("A second start must not silently take ownership.")
             } catch let error as AnyEmbeddedRuntimeError {
                 XCTAssertEqual(error, .alreadyRunning)
@@ -42,7 +42,7 @@ final class AnyEmbeddedRuntimeTests: XCTestCase {
             await runtime.stop()
             let stopped = await runtime.currentSession()
             XCTAssertNil(stopped)
-            let second = try await runtime.start(dataDirectory: directory, network: network)
+            let second = try await runtime.start(dataDirectory: directory, network: network, build: .linked)
             XCTAssertNotEqual(first.generation, second.generation)
             XCTAssertNotEqual(
                 first.controlRequest(.signOut).value(forHTTPHeaderField: "X-Any-Control-Token"),
@@ -50,7 +50,7 @@ final class AnyEmbeddedRuntimeTests: XCTestCase {
             )
             await runtime.stopNow()
             // A restart waits for the native hard-stop drain before reusing disk.
-            _ = try await runtime.start(dataDirectory: directory, network: network)
+            _ = try await runtime.start(dataDirectory: directory, network: network, build: .linked)
             await runtime.stop()
             await runtime.stop()
             try FileManager.default.removeItem(at: directory)
@@ -59,6 +59,22 @@ final class AnyEmbeddedRuntimeTests: XCTestCase {
             try? FileManager.default.removeItem(at: directory)
             throw error
         }
+    }
+
+    func testWrongNativeBuildContractCannotStart() async throws {
+        let runtime = AnyEmbeddedRuntime.shared
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        let wrong: AnyEmbeddedBuild = .linked == .upstreamV050 ? .pinkhaNativeV1 : .upstreamV050
+        do {
+            _ = try await runtime.start(dataDirectory: directory,
+                network: .custom(nodeconfYAML: "networkId: pinkha-build-contract-test\\nnodes: []\\n"), build: wrong)
+            XCTFail("A different native contract must not start.")
+        } catch let error as AnyEmbeddedRuntimeError {
+            XCTAssertEqual(error, .unexpectedVersion)
+        }
+        let current = await runtime.currentSession()
+        XCTAssertNil(current)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: directory.path))
     }
 
     func testInvalidConfigurationCannotSelectProductionByAccident() async throws {

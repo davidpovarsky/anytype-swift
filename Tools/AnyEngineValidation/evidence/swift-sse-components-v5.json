@@ -1,0 +1,134 @@
+{
+    "schemaVersion":  1,
+    "capturedAtUTC":  "2026-11-19T15:58:55.1410403Z",
+    "sourceCommit":  "9b6d6cf059aa8375c433a73dff1ba3b87eacc755",
+    "executableSHA256":  "c2565fdd32abdab4b7029576c0a792aafa815fe966d005f9fee13aa5e18cbe86",
+    "sourceManifest":  [
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Package.resolved",
+                               "sha256":  "50ddc3fc5398afb197e62f3cd8aa251315dbdd8d9d1d67e0dc665862ef3258af"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Package.swift",
+                               "sha256":  "2bfbf014cbfb6ce37764a2900743783fe3af2535ad4809aa4fc9ea67d16d2e5f"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+                               "sha256":  "34b5db840be86568a5f6d42c908f474b85ac5be4d84af23225381f8c24b35e7a"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyJSON.swift",
+                               "sha256":  "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyLiveQuery.swift",
+                               "sha256":  "17d01e61a26b7b81d6a68298ee856a30e0772ee14d4bd64b9b735ee544695f51"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnySSEParser.swift",
+                               "sha256":  "e73afd0044bc60e0da43b826cc138e021ace4802bfcfc05d7a4a3070153103ff"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift",
+                               "sha256":  "cd11b4cc0e54b4593d5a9111ca37ef7556bf3bcaa71ddb1532e900dd94ac0145"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift",
+                               "sha256":  "d2cdada5bf2a639127e58dbbe7b422188df76cb145d32023d4b1011006fd69af"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahOperation.swift",
+                               "sha256":  "c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngineProbe/Probe.swift",
+                               "sha256":  "900d78b50237761f367ebeb40fa3f8e9049da5a6d516fc4a0f7ae8695343ac9e"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Tests/Fixtures/check_redirect.py",
+                               "sha256":  "ca8c491aadaecc088c12ecde6aa32c0621372ff0e7dc3109a9ac930a19c3f969"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Tests/Fixtures/check_sse_transport.py",
+                               "sha256":  "c89b5cb56b4c3623c23581b7fca8607785bca9f580f9ead597dc63b6394872fc"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPClientTests.swift",
+                               "sha256":  "60f46e80c1ac14713c7ea4f1bf4f9fe47cae24ec2a0727372d273d9dfe349aee"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyLiveQueryTests.swift",
+                               "sha256":  "20d832aa2342c9cee5830bcf716d0b61978c24e37b8e068cc0de8e1ed0558ea3"
+                           },
+                           {
+                               "path":  "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyTorahOperationTests.swift",
+                               "sha256":  "d909e34b297b31e4aadca20989fb1edef6112eb3fba840c80e9ae6f8a7786166"
+                           }
+                       ],
+    "swiftVersion":  "6.3.3",
+    "platform":  "x86_64-unknown-windows-msvc",
+    "tests":  {
+                  "status":  "PASS",
+                  "executed":  36,
+                  "failures":  0,
+                  "names":  [
+                                "AnyHTTPClientTests.testEmptyRejectionsAreAllowed",
+                                "AnyHTTPClientTests.testHTTP200PartialRejectionIsFailure",
+                                "AnyHTTPClientTests.testHTTPErrorKeepsMachineCodeWithoutEchoingPayload",
+                                "AnyHTTPClientTests.testMalformedRejectionsNeverCountAsSuccess",
+                                "AnyHTTPClientTests.testNestedPageRejectionsAreFailure",
+                                "AnyHTTPClientTests.testRedirectIsNotDecodedAsSuccess",
+                                "AnyLiveQueryTests.testDisplacedRecordInvalidatesACompleteWindow",
+                                "AnyLiveQueryTests.testEveryByteBoundaryPreservesHebrewUTF8AndCRLF",
+                                "AnyLiveQueryTests.testFullDocumentIsAuthoritativeAndEmptyVersionIsApplied",
+                                "AnyLiveQueryTests.testIncompleteSnapshotCannotFoldClaims",
+                                "AnyLiveQueryTests.testInvalidUTF8AndUnterminatedFrameFailClosed",
+                                "AnyLiveQueryTests.testMalformedBatchDoesNotPartiallyCommitItsFirstRecord",
+                                "AnyLiveQueryTests.testMultilineDataAndKeepaliveComments",
+                                "AnyLiveQueryTests.testOversizedFrameIsRejectedAcrossChunks",
+                                "AnyLiveQueryTests.testReadyAndInitialSnapshotOrderIsRequired",
+                                "AnyLiveQueryTests.testRetainedWindowBytesAreBoundedAcrossSmallDeltas",
+                                "AnyLiveQueryTests.testSessionInvalidationCancelsRegisteredWorkAndPreventsReuse",
+                                "AnyLiveQueryTests.testTerminalOverflowAndGenerationChangeRequireResnapshot",
+                                "AnyTorahOperationTests.testCodableCannotBypassOperationValidation",
+                                "AnyTorahOperationTests.testConcurrentReplacementsBothSurvive",
+                                "AnyTorahOperationTests.testNativeCreatorMustMatchCanonicalAuthor",
+                                "AnyTorahOperationTests.testObservedRemovePreservesConcurrentUnseenAdd",
+                                "AnyTorahOperationTests.testObservedSetCanonicalization",
+                                "AnyTorahOperationTests.testOfflineOperationIDVariantsAreBothQuarantinedAcrossTargets",
+                                "AnyTorahOperationTests.testOnlyLiteralLoopbackEndpointIsAccepted",
+                                "AnyTorahOperationTests.testOpaquePayloadIncludingUnknownFieldsIsUnchanged",
+                                "AnyTorahOperationTests.testPinnedHeartGoldenVectorIsByteCompatible",
+                                "AnyTorahOperationTests.testReadLimitDoesNotReturnPartialProjection",
+                                "AnyTorahOperationTests.testRecordCannotCrossSpaces",
+                                "AnyTorahOperationTests.testRemovingTombstoneDoesNotResurrect",
+                                "AnyTorahOperationTests.testRequiredIdentifiersAndBoundsFailClosed",
+                                "AnyTorahOperationTests.testSHA256KnownAnswer",
+                                "AnyTorahOperationTests.testSchemaAdoptionRejectsMutableClaims",
+                                "AnyTorahOperationTests.testSchemaPreservesImmutableUndeletableIndexedClaims",
+                                "AnyTorahOperationTests.testTamperedRecordHashFailsClosed",
+                                "AnyTorahOperationTests.testUnknownAndForeignTargetPredecessorsAreDistinct"
+                            ],
+                  "stdoutSHA256":  "9c5e00920256579861259686bc00622fac61db70316dcc5e0e61ff3ee9bc79ea",
+                  "stderrSHA256":  "82950624b06a34f852b6b12c8e7feb3c9de55318fea20cdedf01773a36daf4bd"
+              },
+    "realHTTPTransport":  {
+                              "status":  "PASS_REAL_HTTP_SSE_BOUNDARIES",
+                              "checks":  [
+                                             "normal",
+                                             "utf8",
+                                             "frame",
+                                             "window",
+                                             "eof",
+                                             "redirect",
+                                             "generation"
+                                         ],
+                              "scope":  "actual URLSession with local fixture; not Any engine parity"
+                          },
+    "transportStdoutSHA256":  "2acc1beac5663f6091f1c407f3eeca61ba14d382f1c146a6bf9a9203308609d1",
+    "exclusions":  [
+                       "Local fixture is not Any runtime parity",
+                       "No iOS UI proof",
+                       "Native peer SSE is in runtime-claims-sse-v5.json"
+                   ]
+}

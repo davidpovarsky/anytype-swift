@@ -1,0 +1,38 @@
+{
+  "baseline": "586c98bcc17dee425664224e508fc0e8df277678",
+  "paths": [
+    {
+      "oldPath": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+      "baselineBlob": "7f758686f68268e36e97f6455105f136204b8068",
+      "baselineSHA256": "74472b0ab92f4db449d98baf4bdc939da029d7a714ffacb4789feaa3ad4c54da",
+      "newPath": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift"
+    },
+    {
+      "oldPath": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchPresenter.swift",
+      "baselineBlob": "78ffb0306652b260c4aa130da45e48ee436264c8",
+      "baselineSHA256": "44324d7e59f14fab64c9536bbc5412058f726bb786fa8d0045ba990740563fa5",
+      "newPath": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahSourcesSearchPresenter.swift"
+    },
+    {
+      "oldPath": "Anytype/Sources/Pinkha/Torah/Storage/TorahAssociationMutationCoordinator.swift",
+      "baselineBlob": "426348a96cc36c0352bfa41cb22e4062f384bc91",
+      "baselineSHA256": "e69e6aef294794a68e873366d0cc81c30e76a78cde3bead52b9911f4919501c3",
+      "newPath": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahPresentationContracts.swift"
+    },
+    {
+      "oldPath": "Anytype/Sources/Pinkha/Torah/Storage/AnytypeTorahAssociationRepository.swift",
+      "baselineBlob": "2284761604e2b85b144576f8d7921bfb9e5c413f",
+      "baselineSHA256": "609fa4cbac170f5677b02e55978ed257f30943b75741271baae3836d29a97ad5",
+      "newPath": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahPresentationContracts.swift"
+    },
+    {
+      "oldPath": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "baselineBlob": "a468f25f991134984ae2963b23b649f0c8018f6f",
+      "baselineSHA256": "0847dfcd7c3af47025afb6956288ac1dc1e2ac53a9f6e221b92c7966f874548a",
+      "newPath": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahPresentationContracts.swift"
+    }
+  ],
+  "preserved": "All existing controller/search method bodies, private lifetime guards, localized Loc values, provider repositories, selection, quote provenance and note flows. Only constructors use injected host protocols; existing app preserves its Heart factories.",
+  "validation": "Apple semantic build and UI acceptance pending; Windows excludes SwiftUI controllers.",
+  "authorizationBoundary": "Notes authorize closures now use the already-existing @MainActor @Sendable authorization alias and escaping parameter to cross an awaited native Host session safely; bodies retain all original guards."
+}

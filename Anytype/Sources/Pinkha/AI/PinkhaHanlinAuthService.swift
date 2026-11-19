@@ -1,3 +1,4 @@
+import PinkhaHanlinCore
 import Foundation
 import Factory
 import Services

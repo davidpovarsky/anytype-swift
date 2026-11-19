@@ -95,6 +95,10 @@
 		FA6301022F111800006805CC /* HanlinPlatformContracts in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201022F111800006805CC /* HanlinPlatformContracts */; };
 		FA6301032F111800006805CC /* HanlinAgentCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201032F111800006805CC /* HanlinAgentCore */; };
 		FA6301042F111800006805CC /* HanlinChatCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201042F111800006805CC /* HanlinChatCore */; };
+		FA7300012F111900006805CC /* PinkhaHanlinCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA7200012F111900006805CC /* PinkhaHanlinCore */; };
+		FA7301012F111900006805CC /* PinkhaHanlinCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA7201012F111900006805CC /* PinkhaHanlinCore */; };
+		FA8300012F111900006805CC /* PinkhaTorahPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = FA8200012F111900006805CC /* PinkhaTorahPresentation */; };
+		FA8301012F111900006805CC /* PinkhaTorahPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = FA8201012F111900006805CC /* PinkhaTorahPresentation */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -279,6 +283,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA8300012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
+				FA7300012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
 				FA6300012F111800006805CC /* HanlinHostContracts in Frameworks */,
 				FA6300022F111800006805CC /* HanlinPlatformContracts in Frameworks */,
 				FA6300032F111800006805CC /* HanlinAgentCore in Frameworks */,
@@ -333,6 +339,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA8301012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
+				FA7301012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
 				FA6301012F111800006805CC /* HanlinHostContracts in Frameworks */,
 				FA6301022F111800006805CC /* HanlinPlatformContracts in Frameworks */,
 				FA6301032F111800006805CC /* HanlinAgentCore in Frameworks */,
@@ -504,6 +512,8 @@
 			);
 			name = Anytype;
 			packageProductDependencies = (
+				FA8200012F111900006805CC /* PinkhaTorahPresentation */,
+				FA7200012F111900006805CC /* PinkhaHanlinCore */,
 				FA6200012F111800006805CC /* HanlinHostContracts */,
 				FA6200022F111800006805CC /* HanlinPlatformContracts */,
 				FA6200032F111800006805CC /* HanlinAgentCore */,
@@ -572,6 +582,8 @@
 			);
 			name = AnytypeTests;
 			packageProductDependencies = (
+				FA8201012F111900006805CC /* PinkhaTorahPresentation */,
+				FA7201012F111900006805CC /* PinkhaHanlinCore */,
 				FA6201012F111800006805CC /* HanlinHostContracts */,
 				FA6201022F111800006805CC /* HanlinPlatformContracts */,
 				FA6201032F111800006805CC /* HanlinAgentCore */,
@@ -707,6 +719,8 @@
 			);
 			mainGroup = 0303ECF222D8EDAA005C552B;
 			packageReferences = (
+				FA8100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaTorahPresentation" */,
+				FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */,
 				FA6100012F111800006805CC /* XCLocalSwiftPackageReference "HanlinAgentSDK" */,
 				FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */,
 				FA6100032F111800006805CC /* XCLocalSwiftPackageReference "HanlinPresentationSDK" */,
@@ -2093,6 +2107,14 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Dependencies/Hanlin/Packages/HanlinPresentationSDK;
 		};
+		FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Modules/PinkhaAnyHanlin;
+		};
+		FA8100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaTorahPresentation" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Modules/PinkhaTorahPresentation;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -2545,6 +2567,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */;
 			productName = HanlinChatCore;
+		};
+		FA7200012F111900006805CC /* PinkhaHanlinCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */;
+			productName = PinkhaHanlinCore;
+		};
+		FA7201012F111900006805CC /* PinkhaHanlinCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */;
+			productName = PinkhaHanlinCore;
+		};
+		FA8200012F111900006805CC /* PinkhaTorahPresentation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA8100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaTorahPresentation" */;
+			productName = PinkhaTorahPresentation;
+		};
+		FA8201012F111900006805CC /* PinkhaTorahPresentation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA8100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaTorahPresentation" */;
+			productName = PinkhaTorahPresentation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

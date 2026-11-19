@@ -7,6 +7,14 @@ on:
       - 'Modules/PinkhaAnyEngine/**'
       - 'Modules/PinkhaAnyIntegration/**'
       - 'Modules/PinkhaAnyRuntime/**'
+      - 'Modules/PinkhaAnyHost/**'
+      - 'Modules/PinkhaAnyHanlin/**'
+      - 'Modules/PinkhaAnyNative/**'
+      - 'Modules/PinkhaAnyUI/**'
+      - 'Modules/PinkhaTorahPresentation/**'
+      - 'Anytype/Sources/Pinkha/**'
+      - 'AnyTypeTests/Pinkha/**'
+      - 'docs/any-engine-port/SOURCE_REFACTOR_MAP.json'
       - 'Modules/PinkhaKit/**'
       - 'Tools/AnyEnginePort/**'
       - 'Tools/AnyEngineValidation/**'
@@ -15,6 +23,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: any-engine-port-${{ github.ref }}
@@ -32,6 +41,17 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+      - name: Checkout immutable canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Materialize the verified shared Hanlin SDK
+        run: |
+          python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
+          python3 Tools/Hanlin/prepare_sdk.py --check
       - name: Record exact source and Apple toolchain
         shell: bash
         run: |
@@ -52,6 +72,21 @@ jobs:
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaAnyIntegration 2>&1 | tee build/any-engine-port/any-integration-tests.log
+      - name: Test native editor, creation receipts and protected metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          swift test --package-path Modules/PinkhaAnyHost 2>&1 | tee build/any-engine-port/any-host-tests.log
+      - name: Test the shared Hanlin policy and native host binding
+        shell: bash
+        run: |
+          set -euo pipefail
+          swift test --package-path Modules/PinkhaAnyHanlin 2>&1 | tee build/any-engine-port/any-hanlin-tests.log
+      - name: Test the preserved Torah presentation state machine
+        shell: bash
+        run: |
+          set -euo pipefail
+          swift test --package-path Modules/PinkhaTorahPresentation 2>&1 | tee build/any-engine-port/torah-presentation-tests.log
       - name: Re-run preserved Pinkha domain behavior
         shell: bash
         run: |
@@ -145,3 +180,143 @@ jobs:
           path: build/any-native-evidence/
           retention-days: 14
           if-no-files-found: error
+
+  ios-native-runtime:
+    name: Patched native Any library on iOS Simulator
+    runs-on: xcode-27
+    timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+      ANY_BUILD_VERSION: v0.5.0-pinkha.1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Checkout exact upstream Any
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/any
+          ref: 88fae2e5ae7d0f46d6707567a3123081faa8de9a
+          path: .ci/any-source
+          persist-credentials: false
+      - name: Checkout exact upstream SDK in the portable replace path
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/any-sync-sdk
+          ref: 854df54cdadd76006ae823cbd1b1d923138356d0
+          path: .ci/any-source/.runtime-artifacts/sdk-source
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: .ci/any-source/go.mod
+          cache-dependency-path: |
+            .ci/any-source/go.sum
+            .ci/any-source/.runtime-artifacts/sdk-source/go.sum
+      - name: Apply and verify exact native source overlays
+        run: |
+          python3 Tools/AnyEnginePort/prepare_native_runtime.py apply \
+            --any-root .ci/any-source \
+            --output build/any-patched-evidence/native-source.json
+      - name: Test the actual iOS C lifecycle shim
+        working-directory: .ci/any-source
+        run: go test -count=1 ./mobile/ios/
+      - name: Build device and simulator native slices
+        working-directory: .ci/any-source
+        shell: bash
+        run: |
+          set -euo pipefail
+          scripts/build-xcframework.sh dist 2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/native-build.log"
+      - name: Bind artifact hashes to the tested sources and install
+        run: |
+          python3 Tools/AnyEnginePort/prepare_native_runtime.py record \
+            --any-root .ci/any-source --output build/any-patched-artifact
+          python3 Tools/AnyEnginePort/prepare_native_runtime.py install \
+            --artifact build/any-patched-artifact
+      - name: Create one simulator owned by this run
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/any-patched-evidence
+          git rev-parse HEAD > build/any-patched-evidence/source-sha.txt
+          xcodebuild -version > build/any-patched-evidence/xcode-version.txt
+          python3 - <<'PY'
+          import json, os, subprocess
+          devices = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "--json"]))
+          candidates = [
+              (runtime, device)
+              for runtime, values in devices["devices"].items()
+              if ".iOS-" in runtime
+              for device in values
+              if device.get("isAvailable") and device.get("deviceTypeIdentifier")
+              and (device["name"].startswith("iPad") or device["name"].startswith("iPhone"))
+          ]
+          if not candidates:
+              raise SystemExit("No compatible iOS simulator template is available")
+          runtime, device = sorted(candidates, key=lambda item: item[0], reverse=True)[0]
+          udid = subprocess.check_output([
+              "xcrun", "simctl", "create", "AnyNativePort-" + os.environ["GITHUB_RUN_ID"],
+              device["deviceTypeIdentifier"], runtime
+          ], text=True).strip()
+          with open(os.environ["GITHUB_ENV"], "a") as output:
+              output.write("ANY_NATIVE_SIMULATOR_UDID=" + udid + "\n")
+          with open("build/any-patched-evidence/simulator.json", "w") as output:
+              json.dump({"ownedUDID": udid, "runtime": runtime, "deviceType": device["deviceTypeIdentifier"]}, output)
+          PY
+      - name: Build and run the linked AnyLib lifecycle tests
+        working-directory: Modules/PinkhaAnyRuntime
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -scheme PinkhaAnyRuntime \
+            -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
+            -derivedDataPath "$GITHUB_WORKSPACE/build/any-patched-derived" \
+            -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/runtime.xcresult" \
+            -parallel-testing-enabled NO \
+            -maximum-test-execution-time-allowance 180 \
+            2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/runtime.log"
+      - name: Extract native execution counts
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d build/any-patched-evidence/runtime.xcresult ]; then
+            xcrun xcresulttool get test-results summary \
+              --path build/any-patched-evidence/runtime.xcresult --format json \
+              > build/any-patched-evidence/test-counts.json
+          fi
+      - name: Remove only this run's simulator
+        if: always()
+        shell: bash
+        run: |
+          if [ -n "${ANY_NATIVE_SIMULATOR_UDID:-}" ]; then
+            xcrun simctl shutdown "$ANY_NATIVE_SIMULATOR_UDID" || true
+            xcrun simctl delete "$ANY_NATIVE_SIMULATOR_UDID"
+          fi
+      - name: Upload real-library evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: any-engine-port-ios-patched-runtime-${{ github.sha }}
+          path: build/any-patched-evidence/
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Upload exact source-bound native artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: any-pinkha-native-xcframework-${{ github.sha }}
+          path: build/any-patched-artifact/
+          retention-days: 14
+          if-no-files-found: error
+
+  retained-app-compatibility:
+    name: Retained UIKit consumers after shared extraction
+    needs: apple-packages
+    uses: ./.github/workflows/pinkha-sdk06-tests.yml
+    with:
+      heart_source_run_id: '44203168617'
+      expected_app_branch: codex/any-engine-port-20261119
+      profile: sdk06

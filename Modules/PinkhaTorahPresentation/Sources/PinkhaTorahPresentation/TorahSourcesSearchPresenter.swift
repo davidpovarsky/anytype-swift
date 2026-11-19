@@ -1,0 +1,239 @@
+// Shared extraction; asynchronous request and lifetime guards are preserved.
+#if canImport(SwiftUI)
+import Foundation
+import Observation
+import PinkhaKit
+import TorahInspectorCore
+
+@MainActor
+@Observable
+public final class TorahSourcesSearchPresenter {
+    public typealias SearchScope = TorahEditorSession.SearchScope
+    public typealias SearchResult = TorahEditorSession.SearchResult
+    public typealias SearchState = TorahEditorSession.SearchState
+
+    public let context: TorahAssociationContext
+    public var searchScope: SearchScope
+    public var searchQuery: String
+    public private(set) var searchState: SearchState
+    public private(set) var associations: [TorahAssociationItem]
+    public private(set) var persistenceState: TorahAssociationPersistenceState?
+    public var resultListScrollAnchor: String?
+
+    private let session: TorahEditorSession
+    private let onOpenSelection: (TorahInspectorSelection) -> Void
+    private let onSelectValue: ((TorahAssociationItem) -> Void)?
+    public let fixedScope: Bool
+    public var isSelectionOnly: Bool { onSelectValue != nil }
+    private var searchEpoch: UInt = 0
+    private var associationRequestID: UUID?
+    private var openRequestID: UUID?
+    private var mutationRequestID: UUID?
+
+    public init(
+        session: TorahEditorSession,
+        context: TorahAssociationContext,
+        searchScope: SearchScope = .references,
+        searchQuery: String = "",
+        searchState: SearchState = .idle,
+        associations: [TorahAssociationItem]? = nil,
+        persistenceState: TorahAssociationPersistenceState? = nil,
+        fixedScope: Bool = false,
+        onSelectValue: ((TorahAssociationItem) -> Void)? = nil,
+        onOpenSelection: @escaping (TorahInspectorSelection) -> Void
+    ) {
+        self.session = session
+        self.context = context
+        self.searchScope = searchScope
+        self.searchQuery = searchQuery
+        self.searchState = searchState
+        self.associations = associations ?? session.cachedAssociations(for: context)
+        self.persistenceState = persistenceState
+        self.onOpenSelection = onOpenSelection
+        self.fixedScope = fixedScope
+        self.onSelectValue = onSelectValue
+    }
+
+    public var associationTargetBlockID: String? { context.blockId }
+
+    public var canEditAssociations: Bool { isSelectionOnly || session.canEditAssociations }
+
+    public var canonicalSnapshot: [TorahStoredAssociationRecord] { isSelectionOnly ? [] : session.associationRecords }
+
+    public func synchronizeSnapshot() {
+        guard !isSelectionOnly else { return }
+        associations = session.cachedAssociations(for: context)
+    }
+
+    public var visibleAssociations: [TorahAssociationItem] {
+        guard session.presentationHost == .properties || fixedScope else { return associations }
+        let kind: TorahAssociationKind = switch searchScope {
+        case .references: .ref
+        case .topics: .topic
+        case .words: .word
+        }
+        return associations.filter { $0.kind == kind && $0.role == .context }
+    }
+
+    public func categoryDidChange() {
+        searchQuery = ""
+        searchState = .idle
+        searchEpoch &+= 1
+        openRequestID = nil
+    }
+
+    public func performSearch(debounce: Duration = .zero) async {
+        searchEpoch &+= 1
+        let requestEpoch = searchEpoch
+        let query = searchQuery.trimmingCharacters(in: .whitespacesAndNewlines)
+        let scope = searchScope
+        guard query.count >= 2 else {
+            searchState = .idle
+            return
+        }
+
+        searchState = .loading
+        do {
+            if debounce > .zero {
+                try await Task.sleep(for: debounce)
+            }
+            try Task.checkCancellation()
+            let results = try await session.search(query: query, scope: scope)
+            try Task.checkCancellation()
+            guard isCurrentSearch(requestEpoch, query: query, scope: scope) else { return }
+            searchState = results.isEmpty ? .empty : .results(results)
+        } catch is CancellationError {
+            guard isCurrentSearch(requestEpoch, query: query, scope: scope) else { return }
+            searchState = .idle
+        } catch TorahError.noResults {
+            guard isCurrentSearch(requestEpoch, query: query, scope: scope) else { return }
+            searchState = .empty
+        } catch {
+            guard isCurrentSearch(requestEpoch, query: query, scope: scope) else { return }
+            searchState = .error(session.searchMessage(for: error))
+        }
+    }
+
+    public func refreshAssociations() async {
+        guard !isSelectionOnly else { return }
+        let requestID = UUID()
+        associationRequestID = requestID
+        do {
+            let values = try await session.associationSnapshot(for: context)
+            guard associationRequestID == requestID else { return }
+            associations = values
+        } catch is CancellationError {
+        } catch {
+            guard associationRequestID == requestID else { return }
+            session.reportSearchError(error)
+        }
+    }
+
+    public func openReference(_ result: SearchResult) async {
+        guard result.scope == .references, searchScope == .references else { return }
+        let requestID = UUID()
+        openRequestID = requestID
+        let query = searchQuery
+        let scope = searchScope
+        do {
+            let selection = try await session.resolveReference(result)
+            try session.validateSearchContext(context)
+            guard openRequestID == requestID,
+                  searchQuery == query,
+                  searchScope == scope else { return }
+            onOpenSelection(selection)
+        } catch is CancellationError {
+        } catch {
+            guard openRequestID == requestID else { return }
+            session.reportSearchError(error)
+        }
+    }
+
+    public func openAssociation(_ item: TorahAssociationItem) {
+        guard let current = session.cachedAssociations(for: context).first(where: { $0.id == item.id }),
+              session.canOpenAssociation(current) else { return }
+        do {
+            try session.validateSearchContext(context)
+            onOpenSelection(TorahEditorSession.inspectorSelection(for: current))
+        } catch {
+            session.reportSearchError(error)
+        }
+    }
+
+    public func canOpenAssociation(_ item: TorahAssociationItem) -> Bool {
+        session.canOpenAssociation(item)
+    }
+
+    public func link(_ result: SearchResult) async {
+        guard result.scope == searchScope, mutationRequestID == nil else { return }
+        let requestID = UUID()
+        mutationRequestID = requestID
+        defer { if mutationRequestID == requestID { mutationRequestID = nil } }
+        let rawQuery = searchQuery
+        if let onSelectValue {
+            do {
+                let item = try await session.resolveAssociationSelection(result, rawQuery: rawQuery)
+                guard mutationRequestID == requestID else { return }
+                onSelectValue(item)
+            } catch is CancellationError {
+            } catch {
+                guard mutationRequestID == requestID else { return }
+                searchState = .error(session.searchMessage(for: error))
+            }
+            return
+        }
+        persistenceState = .waiting
+        do {
+            persistenceState = .saving
+            let values = try await session.link(result, to: context, rawQuery: rawQuery) { [weak self] in
+                self?.mutationRequestID == requestID
+            }
+            guard mutationRequestID == requestID else { return }
+            associations = values
+            persistenceState = .saved
+        } catch is CancellationError {
+        } catch {
+            guard mutationRequestID == requestID else { return }
+            persistenceState = session.persistenceState ?? .error(error.localizedDescription)
+        }
+    }
+
+    public func unlinkAssociation(_ item: TorahAssociationItem) async {
+        guard !isSelectionOnly else { return }
+        guard mutationRequestID == nil,
+              associations.contains(where: { $0.id == item.id }) else { return }
+        let requestID = UUID()
+        mutationRequestID = requestID
+        defer { if mutationRequestID == requestID { mutationRequestID = nil } }
+        persistenceState = .waiting
+        do {
+            persistenceState = .saving
+            let values = try await session.unlinkAssociation(item, from: context)
+            guard mutationRequestID == requestID else { return }
+            associations = values
+            persistenceState = .saved
+        } catch is CancellationError {
+        } catch {
+            guard mutationRequestID == requestID else { return }
+            persistenceState = session.persistenceState ?? .error(error.localizedDescription)
+        }
+    }
+
+    public func cancelPendingRequests() {
+        searchEpoch &+= 1
+        associationRequestID = nil
+        openRequestID = nil
+        mutationRequestID = nil
+    }
+
+    private func isCurrentSearch(
+        _ requestEpoch: UInt,
+        query: String,
+        scope: SearchScope
+    ) -> Bool {
+        searchEpoch == requestEpoch
+            && searchQuery.trimmingCharacters(in: .whitespacesAndNewlines) == query
+            && searchScope == scope
+    }
+}
+#endif

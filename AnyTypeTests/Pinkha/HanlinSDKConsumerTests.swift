@@ -1,3 +1,4 @@
+@testable import PinkhaHanlinCore
 import Foundation
 import Testing
 import HanlinAgentCore

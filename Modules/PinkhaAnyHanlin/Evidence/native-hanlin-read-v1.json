@@ -1,0 +1,32 @@
+{
+    "status":  "PASS",
+    "scope":  "Real native Any HTTP and canonical Hanlin read policy; synthetic UI owner, not native iOS permission-sheet proof",
+    "startedAt":  "2026-11-19T17:09:58.8382962Z",
+    "finishedAt":  "2026-11-19T17:10:00.4853217Z",
+    "exitCode":  0,
+    "probeSHA256":  "b74b3e12ade0b6d0d4bc6972dcdde30783b2b3205f2e536aa39e0053987a7862",
+    "probeUnchanged":  true,
+    "sourceStableSinceBuild":  true,
+    "buildReceipt":  "windows-hanlin-components-v3.json",
+    "buildReceiptSHA256":  "7efd6a24b0abe8115a4879cbf5f8a0e1037b4e715ac98eb319162a28551342c1",
+    "nativeFoundationBinarySHA256":  "bc8d3610c7c2b0bacd541a87f6190919f3c4d1e03f330481173ba51abded5ee1",
+    "probe":  {
+                  "checks":  [
+                                 "native_fixture_created_and_read",
+                                 "read_catalog_starts_without_consent",
+                                 "denial_does_not_grant_read",
+                                 "approved_current_scope_has_read_only_catalog",
+                                 "actual_native_document_returns_plain_hebrew_through_shared_SDK_router",
+                                 "receipt_excludes_business_payload",
+                                 "duplicate_dispatch_refused",
+                                 "navigation_queue_is_not_UI_acknowledgment",
+                                 "unmounted_target_cannot_acknowledge",
+                                 "built_in_hidden_page_and_native_owner_are_eligible",
+                                 "presentation_detachment_revokes_scope"
+                             ],
+                  "fixtureCleanup":  "synthetic page retained in disposable account for inspection",
+                  "scope":  "real native HTTP and canonical Hanlin policy; synthetic UI owner; no native iOS prompt proof",
+                  "status":  "PASS_REAL_ANY_HANLIN_READ_COMPONENT"
+              },
+    "stderrSHA256":  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

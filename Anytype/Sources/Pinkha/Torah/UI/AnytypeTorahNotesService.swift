@@ -2,11 +2,12 @@ import Foundation
 import AnytypeCore
 import Factory
 import PinkhaKit
+import PinkhaTorahPresentation
 import Services
 import TorahInspectorCore
 
 @MainActor
-final class AnytypeTorahNotesService {
+final class AnytypeTorahNotesService: TorahEditorNotesService {
     private enum MetadataKey {
         static let noteObjectId = "anytypeNoteObjectId"
         static let selectionId = "torahSelectionId"
@@ -52,7 +53,7 @@ final class AnytypeTorahNotesService {
     }
 
     func createNote(
-        for selection: TorahInspectorSelection, authorize: @MainActor () throws -> Void
+        for selection: TorahInspectorSelection, authorize: @escaping TorahAssociationWriteAuthorization
     ) async throws -> T5NoteCreationOutcome {
         try Task.checkCancellation()
         try authorize()
@@ -119,7 +120,7 @@ final class AnytypeTorahNotesService {
 
     func unlink(
         noteId: String, for selection: TorahInspectorSelection,
-        authorize: @MainActor () throws -> Void
+        authorize: @escaping TorahAssociationWriteAuthorization
     ) async throws {
         try Task.checkCancellation()
         try authorize()
@@ -147,7 +148,7 @@ final class AnytypeTorahNotesService {
 
     func unlink(
         document: TorahRelatedDocument, for selection: TorahInspectorSelection,
-        authorize: @MainActor () throws -> Void
+        authorize: @escaping TorahAssociationWriteAuthorization
     ) async throws {
         try await relatedDocumentsService.unlink(
             document: document, selection: selection, spaceID: spaceId, authorize: authorize

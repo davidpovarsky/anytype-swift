@@ -5,6 +5,22 @@ The preserved application base is 586c98bcc17dee425664224e508fc0e8df277678.
 Any API references below are from the inspected v0.5.0 source
 88fae2e5ae7d0f46d6707567a3123081faa8de9a.
 
+## Implementation checkpoint (2026-11-19)
+
+The additive Integration package now contains the native association observer,
+immutable T5 note plans/flow adapter, native wiki schema/lexid/tree mutation
+adapter and document-related lookup/unlink adapter. These are concrete source
+implementations, not activation claims. The previously executed 41-test suite
+and native integration probe v2 passed; the new 71-test suite and extended
+native hierarchy/related probe are being validated separately.
+
+The wiki decision below is now resolved: use system:wiki/v1, scalar parent and
+native lexid strings, retaining original tree and cycle-validation behavior.
+The parent Host module owns the single durable object/source-line journal.
+No new shadow canonical store or undeletable derived note/folder is introduced.
+Expanded T5 and computed native property activation remain independent gates.
+See Modules/PinkhaAnyIntegration/README.md for the exact scope and bounds.
+
 ## Persisted hierarchy (HIER-01, HIER-02, HIER-03)
 
 The old host binds three portable pieces to Heart:
@@ -24,8 +40,7 @@ the binding; docs/03-api.md describes PropertiesAPI.Set and the wiki tree.
 A create is an ordinary object filed under the wiki collection. The wiki root
 is the collection definition and is not itself a page in the tree.
 
-For this port, decide explicitly whether to reuse that native collection or
-declare Pinkha's own equivalent collection. Do not copy Heart's list-valued
+This port now reuses the native system:wiki/v1 collection. Do not copy Heart's list-valued
 parent property workaround into a native single parent reference. Native
 lexical position strings may replace sparse Double ranks, but ordering must
 remain deterministic, ties must be stable, and source sibling order must be

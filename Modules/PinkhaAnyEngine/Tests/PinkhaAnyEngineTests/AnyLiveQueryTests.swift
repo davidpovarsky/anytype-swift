@@ -148,6 +148,30 @@ final class AnyLiveQueryTests: XCTestCase {
     }
 
     @MainActor
+    func testCancelledCallerCannotRegisterNewStreamWork() async throws {
+        let session = AnyStreamSession()
+        let gate = AsyncStream<Bool>.makeStream()
+        let notifications = AsyncStream<Bool>.makeStream()
+        let caller = Task {
+            for await _ in gate.stream {}
+            return try await session.register(generation: session.generation) {
+                notifications.continuation.yield(true)
+            }
+        }
+        caller.cancel()
+        gate.continuation.finish()
+        do {
+            _ = try await caller.value
+            XCTFail("cancelled caller registered a stream")
+        } catch { XCTAssertTrue(error is CancellationError) }
+        await session.invalidate()
+        notifications.continuation.finish()
+        var registered = false
+        for await value in notifications.stream { registered = value }
+        XCTAssertFalse(registered)
+    }
+
+    @MainActor
     func testSessionInvalidationCancelsRegisteredWorkAndPreventsReuse() async throws {
         let session = AnyStreamSession()
         let pair = AsyncStream<Bool>.makeStream()
