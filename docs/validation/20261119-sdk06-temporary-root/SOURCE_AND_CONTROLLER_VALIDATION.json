@@ -1,0 +1,111 @@
+{
+  "schema": "sdk06-temporary-root-controller-fix-v1",
+  "status": "SOURCE_CANDIDATE_CONTROLS_PASS_APPLE_NOT_RUN",
+  "prepared_at_utc": "2026-11-19T19:37:43.352882+00:00",
+  "base": "40789dc97176bfa2a7166d2345e6b0dd3de9cada",
+  "changed_files": {
+    "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py": {
+      "before_sha256": "719d1b0f4f4c813676c312059bdd32061be47d9617a7bbad65d54680cfdce7f0",
+      "after_sha256": "4d4b5cb50efb35af95faaca801ff9bf0c052483a3600bb02b52315ff7e8cd2a6",
+      "bytes": 30071
+    }
+  },
+  "diff_sha256": "ca6ded68d07210eb4025d60ad34055d92ef8cb66506973d7d13749d5ad618b5e",
+  "original_failure": {
+    "run_id": "44593798720",
+    "source_sha": "40789dc97176bfa2a7166d2345e6b0dd3de9cada",
+    "job_id": 135806595300,
+    "artifact_id": 14567725700,
+    "artifact_bytes": 23331,
+    "outer_sha256": "a029baff2edeec031b3fc01c24066e60ee019fc69a014ae671c7fd092a8d7f5e",
+    "inner_sha256": "15ba81d06d683cb3b107839d7f5be7954252c131cada5dfe3ab74cb5ab57aa1f",
+    "control_log_sha256": "17bcf722e2902c417fd813a99b63cd77b45c48153bd92b2de473375f1cb8e9ff",
+    "runtime_controls": {
+      "executed": 29,
+      "passed": 28,
+      "errors": 1,
+      "skipped": 0
+    },
+    "remaining_20_receipt_controls": "NOT_RUN_FIRST_COMMAND_FAILED",
+    "actual_simulator_preflight": "SKIPPED",
+    "app_builds": 0,
+    "native_preparations": 0,
+    "ui_methods": 0,
+    "failing_method": "test_atomic_file_replacement_during_read_is_not_a_stable_snapshot",
+    "error": "RuntimeError: Native runtime evidence contains a symlink",
+    "failure_boundary": "Raw temporary fixture path reached the strict stable_bytes ancestor-symlink check before the atomic-replacement check. The original log does not record the exact temporary path, so a particular /var alias is not claimed as directly observed."
+  },
+  "reproduction": {
+    "status": "REPRODUCED_BEFORE_FIX_USING_REAL_DIRECTORY_ALIAS",
+    "path": "original-failure-reproduction.json",
+    "sha256": "32f796625682cb23265037ccb07174131646973f5baa6b396831e4037e769efe",
+    "same_original_control": "1 execution, 1 error with the exact same stable_bytes guard message"
+  },
+  "correction": [
+    "Resolve only ObserverControls temporary fixture root once with strict=True after creation.",
+    "Add a real symlinked-parent regression that executes the same atomic-replacement control through its actual setUp and confirms its successful expected ReceiptReplaced result.",
+    "The new regression separately passes an aliased receipt path to the unchanged production stable_bytes and requires symlink rejection."
+  ],
+  "controls": {
+    "passed": 134,
+    "failed": 0,
+    "skipped": 0,
+    "runtime_controls": 30,
+    "unchanged_native_receipt_controls": 20,
+    "unchanged_properties_acceptance_batch_controls": 84,
+    "log_sha256": "77e50eeaf922d8f783ebc07a83cf17edeef73e1e8f005fcc5157fcc4a2936edb",
+    "exact_ci_commands_passed": 50,
+    "exact_ci_log_sha256": "941b1a0b10809fe44bc428149df4e914787f603ec8426bd485b3387b16b1001a",
+    "platform": "Linux Python3.12",
+    "count_scope": "134 reported top-level controls; the one new portability control also invokes the existing atomic-replacement method internally. No native/UI test is represented by these counts."
+  },
+  "unchanged_inputs_sha256": {
+    "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": "5b2dc85295e14c33e750d9a9b33e2422ef0a56af8049cdc4638b8508c8ddfb07",
+    "Tools/Hanlin/host_command.py": "5f09813c5719f5ea3920c003e58ac6b2b5633f276686bf6c5ef8bc6f9f39a807",
+    "Tools/Hanlin/wave15_core_profile.py": "e8a797c2d379905b2e45f9844b9e4e3e65e7df20cc9a24b4fe7fd1e675e94afa",
+    "Tools/PinkhaNativeDerived/build_custom_heart.py": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+    "Tools/PinkhaNativeDerived/build_native_ipa.py": "c9e35a228779ae761d36cef204a32148ffdd3a338c9ede11dde6df4ebee21055",
+    "Tools/PinkhaNativeDerived/build_native_ipa_fast.py": "086d70747ce4af85715341569aaca188c6655dddf904b73cbadd0806956252a6",
+    "Tools/PinkhaNativeDerived/rerun_original_ui.py": "ec5688909921942e94f792cdde0a02baa7b5f9b2f9e0b3bde3df3a877f299279",
+    "Tools/PinkhaNativeDerived/validate_native_engine.py": "4eab4c61582d7daa03dda8f15f51633f2b4473085f2deb37fa4fec85159bc0f0",
+    "Tools/PinkhaNativeDerived/validate_wave1.py": "743ddea3e4e42640070035fe7d149d148dfff1cbdc852ef464c8c19da07253a0",
+    "Tools/PinkhaSimulatorGate/compiled_products.py": "fecbf688eef39388aef7fac6990cfa6b391b72be35f34bee9aaa9f7c96eae7cf",
+    "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py": "8552b94f2034d4a1ddfcd363ca02526ff7c843030d65790ceb048efcde2056e4",
+    "Tools/PinkhaSimulatorGate/hanlin_selection_evidence.py": "25afba17f7083d0e41481f9464217ab665c4d8f11f20c94c4b99ce3f2a3c3336",
+    "Tools/PinkhaSimulatorGate/preflight.py": "0e1c6491e8bb30d9e97cf65cf3b820a8860d0a32237676f2c3a7613668ddee66",
+    "Tools/PinkhaSimulatorGate/simulator_identity.py": "930330e48559e4c3e016e005ea03bdb89d030e239b9fc3e14e5a76aa31aa561e",
+    "Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py": "68ba603f2d41e3b249d66cbeb51432c25a9680309e5a682a1f634aae879bf9c8",
+    "Tools/PinkhaSimulatorGate/test_run_wave15_acceptance.py": "7277f7feae1d27b5b973f4cf7071ca75688f81c6efade34d77ddaaea25573c05",
+    "Tools/PinkhaSimulatorGate/test_type_preservation.py": "c8649ebf54a58bbdddeba80471a278b2b676fecf0fedcfdf6530a9f144daa600",
+    "Tools/PinkhaSimulatorGate/test_wave15_batch.py": "40817475ae9dfdacaeebfca535b1e29110281f29d04e2b3afdf6a89b1d55f57e",
+    "Tools/PinkhaSimulatorGate/test_wave15_diagnostics.py": "bad5994cba89b7899fe5b691e282d85e90140650bc229d42a33b91c6d6bae81a",
+    "Tools/PinkhaSimulatorGate/type_preservation.py": "7b51ce452f743cfbe45a9ccc562ca871c5e7a072dade292cdf501494c9cead9e",
+    "Tools/PinkhaSimulatorGate/validate_release.py": "2b4162be85c3164a4d75869f67b3bfe9e58fac033a581d6f6f57d38e639961e0",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": "20daa269697d859b92d089f4ccadc5165d13a5f77ad951c94b9cbb8480bde586",
+    "Tools/PinkhaSimulatorGate/wave15_diagnostics.py": "b1d5d51c43db21ea35b47c994fd49064ac4aad0e746a2e1af99d329c0fcf8703",
+    ".github/workflows/pinkha-simulator-ui27.yml": "750fd48e90d9942eae43c8aaf259df221e1fa90ef89ad0623304c353e0c45a7b",
+    "PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift": "8af3eea788ab5383d754bd8fdd8ca8443e9cbf44cde34eb5ae2323bd90849824",
+    "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py": "d053a2f8b0635460bb61121c36e5f8ac3a467c2803bc9b99cf9f985c4f606c8e",
+    "Tools/PinkhaSimulatorGate/run_ui27.py": "e5ab251c48179411ba994f4d30f6a6f80cea8815c3cae9a2c90d115a95602403",
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": "1ccdbec99576abd7b3873272eb14dc36c5c139805c241c411007167c0a635200"
+  },
+  "preserved": {
+    "production_runtime_guard_bytes": true,
+    "original_atomic_replacement_assertion": true,
+    "receipt_symlink_rejection": true,
+    "original_22_native_checks": true,
+    "workflow": true,
+    "native_driver": true,
+    "observer_runtime_and_identity_checks": true,
+    "no_extra_app_launch": true,
+    "controller_flags_deadlines_and_branch_admission": true
+  },
+  "limits": {
+    "apple_corrected_controls": "NOT_RUN",
+    "actual_native_ui_runtime_gate": "NOT_RUN",
+    "remote_publication": "NOT_DONE",
+    "ci_dispatch": "NOT_DONE",
+    "full_sdk_acceptance": false,
+    "release_accepted": false
+  }
+}

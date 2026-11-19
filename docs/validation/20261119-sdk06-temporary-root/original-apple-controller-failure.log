@@ -1,0 +1,46 @@
+test_actual_ui_boundaries_must_match_mapped_pid_not_original_probe (__main__.ExistingProcessMappingControls.test_actual_ui_boundaries_must_match_mapped_pid_not_original_probe) ... ok
+test_changed_main_or_missing_runtime_marker_is_rejected (__main__.ExistingProcessMappingControls.test_changed_main_or_missing_runtime_marker_is_rejected) ... ok
+test_existing_process_mapping_has_no_launch_and_each_command_is_bounded (__main__.ExistingProcessMappingControls.test_existing_process_mapping_has_no_launch_and_each_command_is_bounded) ... ok
+test_legacy_probe_wrapper_retains_its_single_launch_and_mapping (__main__.ExistingProcessMappingControls.test_legacy_probe_wrapper_retains_its_single_launch_and_mapping) ... ok
+test_missing_hierarchy_or_changed_post_ui_code_carrier_cannot_qualify (__main__.ExistingProcessMappingControls.test_missing_hierarchy_or_changed_post_ui_code_carrier_cannot_qualify) ... ok
+test_process_executable_or_start_identity_change_is_rejected (__main__.ExistingProcessMappingControls.test_process_executable_or_start_identity_change_is_rejected) ... ok
+test_wrong_mapped_pid_or_missing_entrypoint_is_rejected (__main__.ExistingProcessMappingControls.test_wrong_mapped_pid_or_missing_entrypoint_is_rejected) ... ok
+test_another_simulators_application_path_cannot_qualify_the_ui_receipt (__main__.ObserverControls.test_another_simulators_application_path_cannot_qualify_the_ui_receipt) ... ok
+test_atomic_file_replacement_during_read_is_not_a_stable_snapshot (__main__.ObserverControls.test_atomic_file_replacement_during_read_is_not_a_stable_snapshot) ... ERROR
+test_atomic_receipt_replacement_preserves_primary_cancellation (__main__.ObserverControls.test_atomic_receipt_replacement_preserves_primary_cancellation) ... ok
+test_cancellation_joins_observer_without_launching_or_killing_any_app (__main__.ObserverControls.test_cancellation_joins_observer_without_launching_or_killing_any_app) ... ok
+test_changed_native_fixture_bytes_reject_before_any_mapping (__main__.ObserverControls.test_changed_native_fixture_bytes_reject_before_any_mapping) ... ok
+test_changed_pre_ui_executable_carriers_cannot_be_rebased_at_mapping (__main__.ObserverControls.test_changed_pre_ui_executable_carriers_cannot_be_rebased_at_mapping) ... ok
+test_console_error_preserves_primary_and_still_exports_original_native_bytes (__main__.ObserverControls.test_console_error_preserves_primary_and_still_exports_original_native_bytes) ... ok
+test_duplicate_keys_and_symlinked_receipts_are_not_admitted (__main__.ObserverControls.test_duplicate_keys_and_symlinked_receipts_are_not_admitted) ... ok
+test_failure_before_thread_start_preserves_error_and_failure_export (__main__.ObserverControls.test_failure_before_thread_start_preserves_error_and_failure_export) ... ok
+test_final_receipt_cannot_switch_pid_session_start_source_or_raw_bytes (__main__.ObserverControls.test_final_receipt_cannot_switch_pid_session_start_source_or_raw_bytes) ... ok
+test_final_receipt_error_preserves_original_selection_failure (__main__.ObserverControls.test_final_receipt_error_preserves_original_selection_failure) ... ok
+test_final_receipt_error_without_primary_fails_closed (__main__.ObserverControls.test_final_receipt_error_without_primary_fails_closed) ... ok
+test_mapping_after_native_finish_is_not_retroactive_runtime_proof (__main__.ObserverControls.test_mapping_after_native_finish_is_not_retroactive_runtime_proof) ... ok
+test_mapping_uses_the_same_deadline_and_cannot_qualify_after_timeout (__main__.ObserverControls.test_mapping_uses_the_same_deadline_and_cannot_qualify_after_timeout) ... ok
+test_only_actual_receipt_pid_is_mapped_and_final_native_bytes_remain_bound (__main__.ObserverControls.test_only_actual_receipt_pid_is_mapped_and_final_native_bytes_remain_bound) ... ok
+test_ordinary_atomic_phase_progress_preserves_one_process (__main__.ObserverControls.test_ordinary_atomic_phase_progress_preserves_one_process) ... ok
+test_partial_start_cancellation_joins_real_worker_and_exports_original_failure (__main__.ObserverControls.test_partial_start_cancellation_joins_real_worker_and_exports_original_failure) ... ok
+test_phase_update_is_allowed_but_native_identity_change_during_mapping_is_rejected (__main__.ObserverControls.test_phase_update_is_allowed_but_native_identity_change_during_mapping_is_rejected) ... ok
+test_preexisting_receipt_is_rejected_before_observer_or_mapping (__main__.ObserverControls.test_preexisting_receipt_is_rejected_before_observer_or_mapping) ... ok
+test_stale_wrong_source_and_already_finished_receipts_cannot_start_mapping (__main__.ObserverControls.test_stale_wrong_source_and_already_finished_receipts_cannot_start_mapping) ... ok
+test_stop_write_error_preserves_primary_cancellation_and_exports_remaining_evidence (__main__.ObserverControls.test_stop_write_error_preserves_primary_cancellation_and_exports_remaining_evidence) ... ok
+test_stop_write_error_without_primary_fails_closed_after_remaining_exports (__main__.ObserverControls.test_stop_write_error_without_primary_fails_closed_after_remaining_exports) ... ok
+
+======================================================================
+ERROR: test_atomic_file_replacement_during_read_is_not_a_stable_snapshot (__main__.ObserverControls.test_atomic_file_replacement_during_read_is_not_a_stable_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/runner/work/anytype-swift/anytype-swift/Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py", line 385, in test_atomic_file_replacement_during_read_is_not_a_stable_snapshot
+    gate.stable_bytes(path)
+  File "/Users/runner/work/anytype-swift/anytype-swift/Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py", line 50, in stable_bytes
+    require(path.resolve(strict=True) == path.absolute(), "Native runtime evidence contains a symlink")
+  File "/Users/runner/work/anytype-swift/anytype-swift/Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py", line 38, in require
+    raise RuntimeError(reason)
+RuntimeError: Native runtime evidence contains a symlink
+
+----------------------------------------------------------------------
+Ran 29 tests in 1.226s
+
+FAILED (errors=1)

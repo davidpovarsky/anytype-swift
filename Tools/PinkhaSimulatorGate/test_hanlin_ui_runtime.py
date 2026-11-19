@@ -36,7 +36,7 @@ class ObserverControls(unittest.TestCase):
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
-        self.root = Path(temporary.name)
+        self.root = Path(temporary.name).resolve(strict=True)
         self.container = self.root / UDID / "data"
         self.support = self.container / gate.SUPPORT
         self.support.mkdir(parents=True)
@@ -391,6 +391,36 @@ class ObserverControls(unittest.TestCase):
         path = self.support / gate.RESULT; path.symlink_to(target)
         with self.assertRaisesRegex(RuntimeError, "symlink"):
             gate.stable_bytes(path)
+
+
+class TemporaryRootControls(unittest.TestCase):
+    def test_real_temporary_parent_alias_is_resolved_without_relaxing_receipt_symlink_guard(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            parent = Path(temporary).resolve(strict=True)
+            physical = parent / "physical"; physical.mkdir()
+            alias = parent / "temporary-alias"; alias.symlink_to(physical, target_is_directory=True)
+            original = tempfile.TemporaryDirectory
+            created = []
+            def aliased_temporary(*args, **kwargs):
+                kwargs["dir"] = str(alias)
+                value = original(*args, **kwargs)
+                created.append(Path(value.name))
+                return value
+            subject = ObserverControls("test_atomic_file_replacement_during_read_is_not_a_stable_snapshot")
+            result = unittest.TestResult()
+            with patch.object(tempfile, "TemporaryDirectory", side_effect=aliased_temporary):
+                subject.run(result)
+            self.assertEqual(result.testsRun, 1)
+            self.assertEqual(result.failures, [])
+            self.assertEqual(result.errors, [])
+            self.assertEqual(len(created), 1)
+            self.assertEqual(created[0].parent, alias)
+            self.assertEqual(subject.root.parent, physical)
+            self.assertEqual(subject.root, subject.root.resolve())
+            receipt = alias / "native-result.json"
+            receipt.write_text('{"processID":51457}')
+            with self.assertRaisesRegex(RuntimeError, "contains a symlink"):
+                gate.stable_bytes(receipt)
 
 
 class ExistingProcessMappingControls(unittest.TestCase):
