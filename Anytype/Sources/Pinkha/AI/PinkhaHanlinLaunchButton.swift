@@ -10,8 +10,10 @@ struct PinkhaHanlinLaunchButton: View {
         Button { launcher.open(routeOwner: routeOwner) } label: {
             Image(systemName: "sparkles")
                 .foregroundStyle(Color.Control.primary)
+                .frame(width: HomeBottomBarMetrics.controlHeight, height: HomeBottomBarMetrics.controlHeight)
+                .contentShape(Circle())
         }
-        .frame(width: HomeBottomBarMetrics.controlHeight, height: HomeBottomBarMetrics.controlHeight)
+        .accessibilityActivationPoint(UnitPoint.center)
         .glassEffectInteractiveIOS26(in: Circle())
         .accessibilityLabel(PinkhaHanlinStrings.title)
         .accessibilityIdentifier("pinkha.hanlin.open")

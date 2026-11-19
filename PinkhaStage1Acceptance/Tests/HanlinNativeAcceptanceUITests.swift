@@ -293,6 +293,13 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
                                    [phase, "NATIVE_ACCEPTANCE_FAIL", "FAIL_SETUP"])
         let expectation = XCTNSPredicateExpectation(predicate: expected, object: status)
         let result = XCTWaiter.wait(for: [expectation], timeout: timeout)
+        if result != .completed {
+            let attachment = XCTAttachment(string: app.debugDescription)
+            attachment.name = "hanlin-native-phase-" + phase + "-failure"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+            attachScreenshot("hanlin-native-phase-" + phase + "-failure")
+        }
         XCTAssertEqual(result, .completed, "Native phase \(phase) was not reached")
         XCTAssertEqual(status.label, phase, "Native diagnostic failed: \(status.value ?? "no receipt")")
     }
