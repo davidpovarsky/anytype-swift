@@ -19,9 +19,12 @@ struct TextBlockFocusLifecycleTests {
         fixture.attach(row)
         await finishMainQueueTurn()
         let textView = row.textView.textView
-        let refusal = TextBlockFocusRefusingDelegate()
+        let refusal = TextBlockFocusEligibilityThenRefusingDelegate()
         if outcome == "ineligible" { textView.isLockedForEditing = true }
-        if outcome == "refused" { textView.delegate = refusal }
+        if outcome == "refused" {
+            textView.delegate = refusal
+            try #require(refusal.beginAttempts == 0, "Setup must not consume the observed eligibility query")
+        }
         let observation = PinkhaStage1AcceptanceDiagnostics.beginFocusObservation()
         defer { PinkhaStage1AcceptanceDiagnostics.endFocusObservation(observation) }
         textView.setFocus(.end)
@@ -40,15 +43,25 @@ struct TextBlockFocusLifecycleTests {
             #expect(tokens.contains("setFocusEligible=1"))
             #expect(tokens.contains("becomeInvoked=1"))
             #expect(tokens.contains("becomeReturnedFalse=1"))
-            #expect(refusal.beginAttempts == 1)
+            #expect(tokens.contains("becomeReturnedTrue=0"))
+            #expect(tokens.contains("setFocusIneligible=0"))
+            #expect(refusal.beginAttempts == 2)
         case "accepted":
             try #require(textView.isFirstResponder)
             #expect(tokens.contains("setFocusEligible=1"))
             #expect(tokens.contains("becomeInvoked=1"))
             #expect(tokens.contains("becomeReturnedTrue=1"))
-            #expect(tokens.contains("shouldBeginEntered=1"))
-            #expect(tokens.contains("shouldBeginAllowed=1"))
+            // UIKit validates eligibility before our native acquisition call
+            // and may validate it again inside becomeFirstResponder. Require
+            // every observed callback to allow editing without fixing UIKit's
+            // internal query count to one.
+            let enteredToken = try #require(tokens.first { $0.hasPrefix("shouldBeginEntered=") })
+            let entered = try #require(Int(enteredToken.dropFirst("shouldBeginEntered=".count)))
+            #expect(entered > 0)
+            #expect(tokens.contains("shouldBeginAllowed=\(entered)"))
             #expect(tokens.contains("delegateDidBegin=1"))
+            #expect(tokens.contains("becomeReturnedFalse=0"))
+            #expect(tokens.contains("setFocusIneligible=0"))
         default:
             Issue.record("Unexpected focus observation fixture")
         }
@@ -558,5 +571,17 @@ private final class TextBlockFocusRefusingDelegate: NSObject, UITextViewDelegate
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
         beginAttempts += 1
         return false
+    }
+}
+
+@MainActor
+private final class TextBlockFocusEligibilityThenRefusingDelegate: NSObject, UITextViewDelegate {
+    private(set) var beginAttempts = 0
+
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        beginAttempts += 1
+        // Let the real eligibility query pass so the second real UIKit query
+        // denies native acquisition after the recorded become invocation.
+        return beginAttempts == 1
     }
 }

@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "status": "SOURCE_REVIEW_PASS",
+  "reviewed_at": "2026-11-19T19:27:09.919416+00:00",
+  "scope": "Independent review of the frozen two-file diagnostic test correction only. Native Apple execution remains NOT_RUN for this candidate.",
+  "base_commit": "40789dc97176bfa2a7166d2345e6b0dd3de9cada",
+  "candidate_files": {
+    "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift": {
+      "before_sha256": "40d96a9f6340b2d4680abc4ca8ef685e2931365504e82416610c61cbc8e8bc64",
+      "after_sha256": "5e99c107a59778f17593dc8929e704fe4a656b0d13c2f034e791a2ea51561e1e"
+    },
+    "Tools/Hanlin/wave15-core-tests.json": {
+      "before_sha256": "fb850ecfa3284363ebf2d5ae21fee0adb57284886f3ee57a8aabb539451e06d3",
+      "after_sha256": "268eae4b65d6b9b19715ac959b8a1694ebb6a593c5fb0fa44892350af8bb329a"
+    }
+  },
+  "source_report_sha256": "f58787e97d8a01174a80a375b7f0b744f4cf0e40cfaebd95f40c919eb4561505",
+  "candidate_diff_sha256": "dd7728a2e01f2d94a43a9645320316de825da42af026a02409d277e4db6bf4d6",
+  "original_failure": {
+    "run_id": "44586423305",
+    "source_sha": "0996cbf66dc877082146a2ba03e518e66400533d",
+    "report_sha256": "3f200fbbd5459209e0d59d0aed7830758f311768a9cb13258ea2a99284edf7fa",
+    "reviewed_original_observations": "Owner's qualified original native trace shows delegate refusing during eligibility, and successful focus with two shouldBegin entry/allow observations. All54 preexisting methods/80invocations passed; entire55/83profile remains failed."
+  },
+  "review_findings": [],
+  "checks": {
+    "frozen_before_after_and_diff_hashes": "PASS",
+    "existing_test_tail_and_original_always_refusing_delegate": "BYTE_IDENTICAL",
+    "parsed_manifest_diff": "ONLY_TextBlockFocusLifecycleTests_source_lf_sha256_CHANGED",
+    "test_method_declarations_and_literal_argument_matrix": "IDENTICAL",
+    "core_scope": {
+      "methods": 55,
+      "invocations": 83
+    },
+    "focus_scope": {
+      "methods": 13,
+      "invocations": 21
+    },
+    "refusal_fixture": "Separate test-only UITextViewDelegate instantiated after row attachment and queue turn; first query permits, all later queries refuse. Assert0 immediately after delegate assignment, then require2actual queries and one original setFocus call. Original refusal helper remains untouched.",
+    "refusal_result": "Still requires not firstResponder, eligible1, becomeInvoked1 and returnedFalse1; additionally rejects ineligible/returnedTrue. No override of native canBecome/become return values, no fake observation injection, retry or delayed focus.",
+    "accepted_result": "Still requires actual firstResponder, eligible1, becomeInvoked1, returnedTrue1 and delegateDidBegin1. Positive parsed shouldBeginEntered must equal shouldBeginAllowed; false return/ineligible are0. No unsupported exact-one callback assertion.",
+    "disabled_observation_controls": "Unchanged after ending observation; recordedfalse,becomeInvoked0,nativeTraceNone retained.",
+    "controller_failure_missing_duplicate_skip_count_gates": "UNCHANGED",
+    "product_observer_native_flags_runtime_kit_timeouts": "NO_CHANGES_IN_FROZEN_DIFF"
+  },
+  "independent_controls": {
+    "status": "PASS",
+    "passed": 57,
+    "failed": 0,
+    "skipped": 0,
+    "log_path": "/workspace/scratch/5e78163ba431/asana-audit/core-focus-correction-independent-controls.log",
+    "log_sha256": "e1fb293a5ff815249bbf070674472e227ffb19bfed98955c632a928196d3ad9d",
+    "command": "python -B -m unittest -v test_run_host_components test_run_host_core_profile test_run_host_tests.EditorResultGateTests test_run_host_tests.SDKCancellationReceiptTests test_run_host_tests.SDKCommandProcessTests test_run_host_tests.SDKResultGateTests test_run_host_tests.SDKReturnReceiptGateTests test_run_host_tests.XcodeProductIdentityTests"
+  },
+  "compiler_scope": {
+    "owner_windows_swift_grammar": "PASS",
+    "receipt_sha256": "ffdc2cf057da457501fa1e4b2d99a054e7c5f2f1b1bdbcbf24e66d1168a1f3f2",
+    "independent_apple_typecheck": "NOT_RUN",
+    "candidate_native_three_cases": "NOT_RUN"
+  },
+  "limitations": [
+    "Expected two-query refusal is now an explicit fixture contract grounded in the original OS27 trace. Its actual behavior still requires a new exact-source native run.",
+    "This corrects new diagnostic fixture assumptions and is not a product focus fix or full editor UI acceptance.",
+    "Original0996core result remains FAIL. Prior54/80pass remains scoped and is not relabeled as current55/83success.",
+    "No remote mutation, CI dispatch or disk cleanup performed by reviewer."
+  ]
+}

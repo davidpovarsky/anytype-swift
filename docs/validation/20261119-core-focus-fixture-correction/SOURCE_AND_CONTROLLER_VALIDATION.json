@@ -1,0 +1,53 @@
+{
+  "status": "SOURCE_AND_CONTROLLER_CONTROLS_PASS_APPLE_RERUN_PENDING",
+  "base_commit": "40789dc97176bfa2a7166d2345e6b0dd3de9cada",
+  "original_failure": {
+    "run": "44586423305",
+    "source": "0996cbf66dc877082146a2ba03e518e66400533d",
+    "qualified_report_sha256": "3f200fbbd5459209e0d59d0aed7830758f311768a9cb13258ea2a99284edf7fa",
+    "build": "PASS",
+    "existing_methods": 54,
+    "existing_invocations_pass": 80,
+    "new_cases_pass": 1,
+    "new_cases_failed": 2,
+    "skip": 0,
+    "cause": "Always-refusing delegate denied actual canBecomeFirstResponder eligibility; successful native focus observed two shouldBegin queries rather than one."
+  },
+  "changed_files": {
+    "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift": {
+      "before_sha256": "40d96a9f6340b2d4680abc4ca8ef685e2931365504e82416610c61cbc8e8bc64",
+      "after_sha256": "5e99c107a59778f17593dc8929e704fe4a656b0d13c2f034e791a2ea51561e1e"
+    },
+    "Tools/Hanlin/wave15-core-tests.json": {
+      "before_sha256": "fb850ecfa3284363ebf2d5ae21fee0adb57284886f3ee57a8aabb539451e06d3",
+      "after_sha256": "268eae4b65d6b9b19715ac959b8a1694ebb6a593c5fb0fa44892350af8bb329a"
+    }
+  },
+  "candidate_diff_sha256": "dd7728a2e01f2d94a43a9645320316de825da42af026a02409d277e4db6bf4d6",
+  "controls": {
+    "passed": 57,
+    "failed": 0,
+    "skipped": 0,
+    "log_sha256": "77ad1d1223b3507cb1c9a942b85a3a0a4863d0a47c3db5978010a6e54d68b2d9"
+  },
+  "swift_grammar": {
+    "status": "PASS_WINDOWS_SYNTAX_ONLY",
+    "receipt_sha256": "ffdc2cf057da457501fa1e4b2d99a054e7c5f2f1b1bdbcbf24e66d1168a1f3f2",
+    "apple_typecheck_and_execution": "PENDING"
+  },
+  "invariants": [
+    "All54 preexisting methods and the original always-refusing helper remain byte-identical",
+    "Same55 methods/83 invocations, same13 focus methods/21 focus invocations, same3 literal cases/selectors/suites",
+    "Profile differs only in the reviewed test-source hash; actual skip/failure/count rejection unchanged",
+    "One original setFocus call remains; native return values are not overridden",
+    "Separate test-only delegate permits first real query then refuses second, with setup count0 and final count2 required",
+    "Refusal still requires real eligible=1/becomeInvoked=1/returnedFalse=1/notfirstResponder, and now rejects ineligible or returnedTrue",
+    "Accepted still requires actual firstResponder, becomeInvoked=1/returnedTrue=1/didBegin=1; all observed positive shouldBegin entries must allow editing, without inventing exact UIKit internal call count",
+    "No product/observer/controller behavior, native flags, runtime/Kit pins, timing or retries changed"
+  ],
+  "limits": [
+    "This fixes a new test fixture assumption; it does not fix or close the pending editor preparation focus issue",
+    "Original core remains FAIL; only a new exact native rerun can qualify the revised three-case fixture",
+    "SDK06/quote/editor selections do not invoke this new core test; existing queued/running selections remain valid for their source and scope"
+  ]
+}
