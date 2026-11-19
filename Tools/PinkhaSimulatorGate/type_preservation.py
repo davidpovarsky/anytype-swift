@@ -13,6 +13,7 @@ import stat
 import subprocess
 import time
 from uuid import uuid4
+import destination_artifacts as destination_mode
 
 METHOD = "TorahStage2TypePreservationTests/verifyExistingTypeRoundtrip"
 SUITE = METHOD.split("/")[0]
@@ -421,12 +422,20 @@ def install_for_postflight(frozen, built, code_sha, evidence, code_carriers):
     try:
         require(not (evidence / INSTALLATION).exists(), "Refuse stale controlled-install evidence")
         verify_frozen(frozen, current_container("data"))
-        require(code_carriers(built)["sha256"] == code_sha, "Built executable bytes changed before controlled install")
+        built_carriers = code_carriers(built)
+        require(built_carriers["sha256"] == code_sha, "Built executable bytes changed before controlled install")
         metadata = plistlib.loads((built / "Info.plist").read_bytes())
         require(metadata.get("CFBundleIdentifier") == "io.anytype.app", "Controlled install bundle differs")
         installed = current_container("app")
-        before_code = code_carriers(installed)["sha256"]
+        installed_carriers = code_carriers(installed)
+        before_code = installed_carriers["sha256"]
         require(before_code == code_sha, "Installed executable bytes changed before controlled install")
+        test_bundle = destination_mode.test_bundle(built, built_carriers)
+        require(destination_mode.test_bundle(installed, installed_carriers) == test_bundle,
+                "Installed native test bundle differs before controlled install")
+        observation["phase"] = "DESTINATION_ARTIFACTS_SUPPORT"
+        destination_mode.capture(evidence, frozen.value["binding"], code_sha, test_bundle, deadline)
+        observation["phase"] = "BEFORE_INSTALL"
         checks = {STOP_STAGES[0]: stopped(installed)}
         prior = native_inventory(frozen.container, frozen, deadline=deadline)
         checks[STOP_STAGES[1]] = stopped(installed)
@@ -440,9 +449,12 @@ def install_for_postflight(frozen, built, code_sha, evidence, code_carriers):
         observation["phase"] = "AFTER_INSTALL"
         current = current_container("data")
         installed = current_container("app")
-        after_code = code_carriers(installed)["sha256"]
+        installed_carriers = code_carriers(installed)
+        after_code = installed_carriers["sha256"]
         require(after_code == code_sha == code_carriers(built)["sha256"],
                 "Controlled install changed executable bytes")
+        require(destination_mode.test_bundle(installed, installed_carriers) == test_bundle,
+                "Controlled install changed the native test bundle")
         checks[STOP_STAGES[2]] = stopped(installed)
         after = native_inventory(current, frozen, deadline=deadline)
         checks[STOP_STAGES[3]] = stopped(installed)
@@ -498,6 +510,8 @@ def environment(frozen, installation):
     verify_installed(frozen, installation)
     result = {key: "0" for key in DISABLED_FLAGS}
     result.update(binding_environment(frozen.value["binding"]))
+    result.update(destination_mode.environment(installation.path.parent, frozen.value["binding"],
+                                          installation.value["codeCarriersSHA256"]))
     result.update(PINKHA_TYPE_PRESERVATION_POSTFLIGHT="1", PINKHA_TYPE_PRESERVATION_BASELINE_SHA256=frozen.sha256,
                   PINKHA_TYPE_PRESERVATION_BASELINE_BASE64=base64.b64encode(read_bytes(frozen.path)).decode("ascii"),
                   PINKHA_TYPE_PRESERVATION_INSTALLATION_SHA256=installation.sha256,
@@ -508,6 +522,14 @@ def environment(frozen, installation):
 def configure_target(target, environment):
     require(environment.get("PINKHA_TYPE_PRESERVATION_POSTFLIGHT") == "1"
             and all(environment.get(key) == "0" for key in DISABLED_FLAGS), "Postflight preparation flags are not disabled")
+    raw_installation = base64.b64decode(environment.get("PINKHA_TYPE_PRESERVATION_INSTALLATION_BASE64", ""), validate=True)
+    require(sha256(raw_installation) == environment.get("PINKHA_TYPE_PRESERVATION_INSTALLATION_SHA256"),
+            "Postflight controlled-install environment changed")
+    installation = decode(raw_installation)
+    expected_binding = {field: environment.get("PINKHA_TYPE_PRESERVATION_" + key) for key, field in
+                        (("SOURCE_SHA", "sourceSHA"), ("RUN_ID", "runID"), ("RUN_ATTEMPT", "runAttempt"), ("NONCE", "nonce"))}
+    require(installation.get("binding") == expected_binding, "Postflight controlled-install binding differs")
+    destination_mode.configure(target, environment, expected_binding, installation.get("codeCarriersSHA256"))
     for key, value in target.items():
         if key.endswith("CommandLineArguments"):
             require(isinstance(value, list) and not any("PINKHA_" in str(x) for x in value),
@@ -638,6 +660,10 @@ def validate_saved(directory, execution, udid):
     carriers = json.loads((directory / "built-code-carriers.json").read_text(encoding="utf8"))
     installation = validate_installation(decode(raw_installation), baseline, sha256(raw_baseline),
         sha256(raw_fixture), udid, inputs["directories"], carriers["sha256"])
+    destination_environment = destination_mode.environment(directory, expected, carriers["sha256"])
+    selected = decode(read_bytes(directory / "postflight/selection-inputs.json"))
+    require(all(selected.get("environment", {}).get(key) == value for key, value in destination_environment.items()),
+            "Saved postflight destination-artifact capability binding differs")
     qualified = validate_native_receipt(baseline, sha256(raw_baseline), udid,
         decode(raw_receipt), execution.get("postflight", {}), installation, sha256(raw_installation))
     require(execution.get("type_preservation") == qualified, "Saved preservation qualification differs")

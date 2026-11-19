@@ -663,6 +663,9 @@ class BatchControls(unittest.TestCase):
                     native = preservation_controls.native_receipt(baseline, baseline_sha, installation)
                     raw_native = json.dumps(native).encode()
                     (directory / "postflight").mkdir()
+                    preservation_controls.synthetic_destination_proof(directory, bound)
+                    batch.write(directory / "postflight/selection-inputs.json", {"environment":
+                        gate.destination_mode.environment(directory, bound, preservation_controls.CODE_SHA)})
                     (directory / "postflight/native-result.json").write_bytes(raw_native)
                     post = preservation_controls.result()
                     post["actual_devices"][0]["deviceId"] = device["udid"]

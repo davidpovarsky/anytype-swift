@@ -1,0 +1,68 @@
+{
+  "base": "c787745ad99348aa198b91be0c672f5a9ba2fbda",
+  "changed_methods": [
+    "install_for_postflight",
+    "environment",
+    "configure_target",
+    "validate_saved"
+  ],
+  "documentation": [
+    "https://developer.apple.com/library/archive/technotes/tn2339/_index.html",
+    "https://keith.github.io/xcode-man-pages/xcodebuild.xctestrun.5.html"
+  ],
+  "exact_git_base_inputs": 27,
+  "findings": [
+    "Original failure is a second unproved XCTest installation boundary; no native semantic preservation acceptance was reached.",
+    "Only native Properties postflight targets change to documented UseDestinationArtifacts mode; original native/UI preparation and SDK routes stay unchanged.",
+    "Both standalone and batch paths retain BlueprintName after removing local bundle paths; postflight app_path is None, so shared injector cannot re-add UITargetAppPath.",
+    "Selected Xcode executable/version/raw manuals and built/installed native test bundle identity are required before use within the unchanged 660-second budget.",
+    "Original path/device/inode/creation and native semantic comparisons remain strict. No second relocation is accepted.",
+    "Three stale unchanged validation dependencies detected before publication were refreshed to exact c787; all 98 relevant controls then passed. The five candidate source/test bytes did not change."
+  ],
+  "freeze_sha256": "00dfbcfbf6b06671fc3adf6f4bae18fa98286f9669a7121686c5ead0af049b6c",
+  "limitations": [
+    "Actual selected runner xctestrun/Info.plist/manual support is still unexecuted and checked fail closed.",
+    "Synthetic portable fixtures and document review do not establish Apple runtime or full Properties acceptance."
+  ],
+  "native_swift_sha256": "2ddab02fb826776d382686c2276061d44be5fc26eca0707e2782b1745b10e222",
+  "original_failure_report_sha256": "a69585009828da5026dc62a0522d10b676f2ba4b4e3107a259bbc68633eff5bb",
+  "portable_controls": {
+    "failed": 0,
+    "log_sha256": "a29e452271b989cdc55b96c69ab3936e4c29fc5fac5cb51b95cbfeea59285b42",
+    "passed": 98,
+    "skipped": 0
+  },
+  "reviewer": "root independent review",
+  "schema": 1,
+  "status": "SOURCE_AND_CONTROLLER_PASS_APPLE_NOT_RUN",
+  "unchanged_strict_methods": [
+    "require",
+    "sha256",
+    "nonempty",
+    "read_bytes",
+    "decode",
+    "binding",
+    "binding_environment",
+    "directory_identity",
+    "validate_directory",
+    "validate_baseline",
+    "FrozenBaseline",
+    "freeze",
+    "verify_original_bytes",
+    "verify_frozen",
+    "owned_container",
+    "remaining",
+    "app_container",
+    "assert_app_stopped",
+    "native_inventory",
+    "inventory_summary",
+    "Installation",
+    "validate_installation",
+    "verify_installed",
+    "selected_configuration",
+    "require_ui_passed",
+    "validate_native_receipt",
+    "validate_result"
+  ],
+  "validation_sha256": "58f985126981a030957b3bec5f5da61b05f7a512c4e9e9872062852b9abfaea0"
+}

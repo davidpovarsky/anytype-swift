@@ -16,6 +16,39 @@ import type_preservation as gate
 UDID = "11111111-1111-1111-1111-111111111111"
 BINDING = gate.binding("a" * 40, "12345", "1", "b" * 32)
 CODE_SHA = "c" * 64
+TEST_IMAGE = b"synthetic native test executable"
+XCODE_MANUAL = b"test-without-building uses -xctestrun for an existing test configuration.\n"
+XCTESTRUN_MANUAL = b""".It Sy UseDestinationArtifacts <bool>
+When this flag is set, xcodebuild will not install test artifacts to the destination during testing.
+TestBundlePath, TestHostPath, and UITargetAppPath should be excluded.
+TestHostBundleIdentifier TestBundleDestinationRelativePath UITargetAppBundleIdentifier __TESTHOST__
+"""
+
+
+def native_target():
+    return {"BlueprintName": "AnytypeTests", "IsAppHostedTestBundle": True,
+            "TestBundlePath": gate.destination_mode.RELATIVE, "TestHostBundleIdentifier": gate.destination_mode.HOST,
+            "TestHostPath": "__TESTROOT__/Release-Anytype-iphonesimulator/Anytype.app",
+            "TestingEnvironmentVariables": {"XCInjectBundleInto": "__TESTHOST__/Anytype", "XCODE_REQUIRED": "kept"},
+            "CommandLineArguments": []}
+
+
+def synthetic_destination_proof(directory, bound, code_sha=CODE_SHA):
+    """Only for synthetic artifact controls; never actual runner evidence."""
+    records = {}
+    for key, raw in (("xcodebuild", XCODE_MANUAL), ("xctestrun", XCTESTRUN_MANUAL)):
+        filename = "type-preservation-" + gate.destination_mode.MANUALS[key][1]
+        (directory / filename).write_bytes(raw)
+        records[key] = {"sourcePath": "/synthetic/Xcode.app/Contents/Developer/usr/share/man/" + filename, "file": filename,
+                        "sha256": gate.sha256(raw), "bytes": len(raw), "compressed": False}
+    value = {"schemaVersion": 1, "status": "SUPPORTED_SELECTED_XCODE", "binding": bound,
+             "codeCarriersSHA256": code_sha, "xcodebuildPath": "/synthetic/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+             "xcodebuildVersion": "Xcode 27.0\nBuild version 18A1", "manuals": records,
+             "testBundle": {"hostBundleIdentifier": gate.destination_mode.HOST, "testBundleIdentifier": "io.anytype.tests",
+                 "relativeBundlePath": gate.destination_mode.RELATIVE, "executableRelativePath": gate.destination_mode.EXECUTABLE,
+                 "sha256": gate.sha256(TEST_IMAGE), "bytes": len(TEST_IMAGE)}}
+    (directory / gate.destination_mode.PROOF).write_text(json.dumps(value, sort_keys=True, separators=(",", ":")))
+    return value
 
 
 def linux_control_identity(path):
@@ -111,18 +144,52 @@ class PreservationControls(unittest.TestCase):
         self.built = self.root / "built/Anytype.app"; self.built.mkdir(parents=True)
         self.installed = self.root / UDID / "bundle/Anytype.app"; self.installed.mkdir(parents=True)
         (self.built / "Info.plist").write_bytes(plistlib.dumps({"CFBundleIdentifier": "io.anytype.app"}))
+        (self.installed / "Info.plist").write_bytes((self.built / "Info.plist").read_bytes())
+        for app in (self.built, self.installed):
+            bundle = app / gate.destination_mode.BUNDLE; bundle.mkdir(parents=True)
+            (bundle / "Info.plist").write_bytes(plistlib.dumps({"CFBundleIdentifier": "io.anytype.tests",
+                                                               "CFBundleExecutable": "AnytypeTests"}))
+            (app / gate.destination_mode.EXECUTABLE).write_bytes(TEST_IMAGE)
+        self.developer = self.root / "Xcode.app/Contents/Developer"
+        self.xcodebuild = self.developer / "usr/bin/xcodebuild"
+        self.xcodebuild.parent.mkdir(parents=True); self.xcodebuild.write_bytes(b"synthetic Xcode executable")
+        for key, raw in (("xcodebuild", XCODE_MANUAL), ("xctestrun", XCTESTRUN_MANUAL)):
+            section, name = gate.destination_mode.MANUALS[key]
+            path = self.developer / "usr/share/man" / section / name
+            path.parent.mkdir(parents=True); path.write_bytes(raw)
+        self.capability_calls = []
         self.install_calls = []
+
+    def carriers(self, app):
+        raw = (app / gate.destination_mode.EXECUTABLE).read_bytes()
+        return {"sha256": CODE_SHA, "manifest": {"carriers": {
+            gate.destination_mode.EXECUTABLE: {"sha256": gate.sha256(raw), "bytes": len(raw)}}}}
 
     def freeze(self):
         return gate.freeze(self.container, self.evidence, BINDING, fixture(), UDID)
 
-    def install(self, frozen, change=None, *, install_error=None, process=None, code=None):
+    def install(self, frozen, change=None, *, install_error=None, process=None, code=None, capability_error=None):
+        if not (self.evidence / gate.INSTALLATION).exists():
+            # Each repeated negative is a new synthetic attempt, not a production retry.
+            for path in self.evidence.iterdir():
+                if path.name == gate.destination_mode.PROOF or path.name.startswith("type-preservation-xcodebuild."):
+                    path.unlink()
         current = [self.container]
         def query(udid, kind, *, timeout):
             self.assertEqual(udid, UDID)
             self.assertGreater(timeout, 0); self.assertLessEqual(timeout, gate.QUERY_SECONDS)
             return current[0] if kind == "data" else self.installed
         def command(argv, **kwargs):
+            if argv == ["xcrun", "--find", "xcodebuild"]:
+                self.capability_calls.append(argv)
+                if capability_error and capability_error[0] == 1:
+                    raise capability_error[1]
+                return SimpleNamespace(returncode=0, stdout=(str(self.xcodebuild) + "\n").encode(), stderr=b"")
+            if argv == [str(self.xcodebuild), "-version"]:
+                self.capability_calls.append(argv)
+                if capability_error and capability_error[0] == 2:
+                    raise capability_error[1]
+                return SimpleNamespace(returncode=0, stdout=b"Xcode 27.0\nBuild version 18A1\n", stderr=b"")
             if argv[0] == "/bin/ps":
                 self.assertEqual(argv, ["/bin/ps", "-ww", "-axo", "pid=,ucomm=,comm="])
                 if isinstance(process, BaseException):
@@ -141,7 +208,7 @@ class PreservationControls(unittest.TestCase):
             return SimpleNamespace(returncode=0, stdout=b"", stderr=b"")
         with patch.object(gate, "app_container", side_effect=query), patch.object(gate.subprocess, "run", side_effect=command):
             return gate.install_for_postflight(frozen, self.built, CODE_SHA, self.evidence,
-                                               code or (lambda path: {"sha256": CODE_SHA}))
+                                               code or self.carriers)
 
     def test_real_original_bytes_are_frozen_outside_mutable_container(self):
         frozen = self.freeze()
@@ -248,8 +315,7 @@ class PreservationControls(unittest.TestCase):
         frozen = self.freeze(); installation = self.install(frozen); env = gate.environment(frozen, installation)
         products = self.root / "Products"; products.mkdir()
         original = products / "native.xctestrun"
-        target = {"BlueprintName": "AnytypeTests", "TestBundlePath": "__TESTROOT__/AnytypeTests.xctest",
-                  "TestHostPath": "__TESTROOT__/Anytype.app/Anytype", "CommandLineArguments": [],
+        target = {**native_target(),
                   "OnlyTestIdentifiers": ["TorahNativeDerivedProductIntegrationTests"],
                   "SkipTestIdentifiers": [gate.METHOD], "EnvironmentVariables": {
                       "PINKHA_NATIVE_DERIVED_ACCEPTANCE": "1", "PINKHA_UNEXPECTED_PREP": "1", "XCODE_REQUIRED": "kept"}}
@@ -259,7 +325,12 @@ class PreservationControls(unittest.TestCase):
         self.assertEqual(selected.parent, products); self.assertEqual(original.read_bytes(), raw)
         observed = plistlib.loads(selected.read_bytes())["TestConfigurations"][0]["TestTargets"][0]
         self.assertEqual(observed["OnlyTestIdentifiers"], [gate.METHOD]); self.assertEqual(observed["SkipTestIdentifiers"], [])
-        self.assertEqual(observed["TestHostPath"], target["TestHostPath"])
+        self.assertTrue(observed["UseDestinationArtifacts"])
+        self.assertEqual(observed["TestHostBundleIdentifier"], gate.destination_mode.HOST)
+        self.assertEqual(observed["UITargetAppBundleIdentifier"], gate.destination_mode.HOST)
+        self.assertEqual(observed["TestBundleDestinationRelativePath"], gate.destination_mode.RELATIVE)
+        self.assertFalse(any(k in observed for k in ("TestHostPath", "TestBundlePath", "UITargetAppPath")))
+        self.assertEqual(observed["TestingEnvironmentVariables"], target["TestingEnvironmentVariables"])
         self.assertEqual(observed["EnvironmentVariables"]["PINKHA_UNEXPECTED_PREP"], "0")
         self.assertEqual(observed["EnvironmentVariables"]["SIMCTL_CHILD_PINKHA_OTHER"], "0")
         self.assertEqual(observed["EnvironmentVariables"]["XCODE_REQUIRED"], "kept")
@@ -268,7 +339,7 @@ class PreservationControls(unittest.TestCase):
     def test_inherited_launch_injection_or_enabled_preparation_is_rejected(self):
         frozen = self.freeze(); installation = self.install(frozen); env = gate.environment(frozen, installation)
         with self.assertRaisesRegex(ValueError, "injection argument"):
-            gate.configure_target({"CommandLineArguments": ["PINKHA_NATIVE_DERIVED_ACCEPTANCE=1"]}, env)
+            gate.configure_target({**native_target(), "CommandLineArguments": ["PINKHA_NATIVE_DERIVED_ACCEPTANCE=1"]}, env)
         env["PINKHA_NATIVE_DERIVED_ACCEPTANCE"] = "1"
         with self.assertRaisesRegex(ValueError, "not disabled"):
             gate.configure_target({}, env)
@@ -291,6 +362,7 @@ class PreservationControls(unittest.TestCase):
         frozen = self.freeze(); installation = self.install(frozen)
         receipt = native_receipt(frozen.value, frozen.sha256, installation.value)
         (self.evidence / "postflight").mkdir()
+        (self.evidence / "postflight/selection-inputs.json").write_text(json.dumps({"environment": gate.environment(frozen, installation)}))
         raw = json.dumps(receipt).encode(); (self.evidence / "postflight/native-result.json").write_bytes(raw)
         (self.evidence / "fixture-ids.json").write_text(json.dumps(fixture()))
         (self.evidence / "built-code-carriers.json").write_text(json.dumps({"sha256": CODE_SHA}))
@@ -452,7 +524,7 @@ class PreservationControls(unittest.TestCase):
         calls = []
         def carriers(path):
             calls.append(path)
-            return {"sha256": "d" * 64 if len(calls) == 3 else CODE_SHA}
+            return {**self.carriers(path), "sha256": "d" * 64 if len(calls) == 3 else CODE_SHA}
         with self.assertRaisesRegex(ValueError, "changed executable bytes"):
             self.install(frozen, code=carriers)
         self.assertEqual(len(self.install_calls), 1)
