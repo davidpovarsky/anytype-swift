@@ -19,6 +19,7 @@ public struct AnyTorahPreparedMutation: Codable, Sendable {
             let location = TorahAssociationLocation(spaceId: workspace.spaceID, target: target)
             let decoded = try TorahAssociationPayloadCodec().decodeCanonicalDocument(
                 operation.payload, legacyLocation: location)
+            try AnyTorahSourceJSONGuard.validateCanonicalPayload(operation.payload, decoded: decoded)
             guard decoded.records.count == 1, let record = decoded.records.first,
                   record.location == location, !record.item.id.isEmpty,
                   record.item.providerID == operation.providerID,

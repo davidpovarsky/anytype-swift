@@ -6,13 +6,6 @@ import PinkhaAnyEngine
 import PinkhaAnyIntegration
 import PinkhaAnyHost
 
-private enum AnyNativeLibraryRoute: Hashable {
-    case folder(String)
-    case document(String, String?)
-    case allDocuments
-    case notes
-}
-
 private struct AnyNativeNameRequest: Identifiable {
     let id = UUID()
     let item: AnyHierarchyItem?
@@ -25,7 +18,7 @@ private struct AnyNativeNameRequest: Identifiable {
 /// native application owner; this entry point has no Heart object-ID fallback.
 public struct AnyNativeLibraryView: View {
     @State private var model: AnyLibraryPresentation
-    @State private var path: [AnyNativeLibraryRoute] = []
+    @State private var path: [AnyNativeLibraryDestination] = []
     @State private var nameRequest: AnyNativeNameRequest?
     @State private var moveItem: AnyHierarchyItem?
     @State private var removeItem: AnyHierarchyItem?
@@ -36,16 +29,17 @@ public struct AnyNativeLibraryView: View {
                 objects: AnyNativeObjectCreator, blocks: AnyNativeBlockCreator,
                 capabilities: AnyUIFoundationCapabilities,
                 onRequestClose: @escaping @MainActor () async -> Void,
-                lifetime: AnyUIPresentationLifetime) {
+                lifetime: AnyUIPresentationLifetime, recovery: AnyNativeLibraryRecovery) {
         _model = State(initialValue: AnyLibraryPresentation(client: client, session: session,
-            objects: objects, blocks: blocks, capabilities: capabilities, lifetime: lifetime))
+            objects: objects, blocks: blocks, capabilities: capabilities, lifetime: lifetime, recovery: recovery))
+        _path = State(initialValue: recovery.workspace == session.workspace ? recovery.navigation : [])
         self.onRequestClose = onRequestClose; self.lifetime = lifetime
     }
 
     public var body: some View {
         NavigationStack(path: $path) {
             library(parentID: nil)
-                .navigationDestination(for: AnyNativeLibraryRoute.self) { route in
+                .navigationDestination(for: AnyNativeLibraryDestination.self) { route in
                     switch route {
                     case .folder(let id): library(parentID: id)
                     case .document(let id, let blockID):
@@ -54,6 +48,11 @@ public struct AnyNativeLibraryView: View {
                     case .notes: documents(notesOnly: true)
                     }
                 }
+        }
+        .onChange(of: path) { _, current in
+            guard lifetime.isActive else { return }
+            do { try model.recovery.replaceNavigation(current, workspace: model.session.workspace) }
+            catch { model.message = AnyUIErrorText.describe(error) }
         }
         .task {
             model.onOpenDocument = { id, blockID in path.append(.document(id, blockID)) }
@@ -119,16 +118,16 @@ public struct AnyNativeLibraryView: View {
                     } else {
                         if parentID == nil {
                             Section {
-                                NavigationLink(value: AnyNativeLibraryRoute.allDocuments) {
+                                NavigationLink(value: AnyNativeLibraryDestination.allDocuments) {
                                     Label(AnyUIErrorText.text("כל המסמכים", "All documents"), systemImage: "doc.on.doc")
                                 }
-                                NavigationLink(value: AnyNativeLibraryRoute.notes) {
+                                NavigationLink(value: AnyNativeLibraryDestination.notes) {
                                     Label(AnyUIErrorText.text("הערות", "Notes"), systemImage: "note.text")
                                 }
                             }
                         }
                         Section {
-                            let items = model.hierarchy?.children(of: parentID) ?? []
+                            let items = model.hierarchyPresentation.children(of: parentID)
                             ForEach(items, id: \.objectID) { item in hierarchyRow(item) }
                                 .onMove { offsets, destination in
                                     guard offsets.count == 1, let offset = offsets.first,
@@ -169,7 +168,7 @@ public struct AnyNativeLibraryView: View {
                 .accessibilityIdentifier("any-native-library")
             }
         }
-        .navigationTitle(parentID.flatMap { model.hierarchy?.itemsByID[$0]?.title } ??
+        .navigationTitle(parentID.flatMap { model.hierarchyPresentation.itemsByID[$0]?.title } ??
                          AnyUIErrorText.text("ספרייה", "Library"))
         .toolbar {
             if parentID == nil {
@@ -185,13 +184,13 @@ public struct AnyNativeLibraryView: View {
                     Menu {
                         Button(AnyUIErrorText.text("מסמך חדש", "New document"), systemImage: "doc.badge.plus") {
                             nameRequest = .init(item: nil, kind: .writingDocument, parentID: parentID, isNote: false)
-                        }
+                        }.accessibilityIdentifier("any-native-new-document")
                         Button(AnyUIErrorText.text("הערה חדשה", "New Note"), systemImage: "note.text.badge.plus") {
                             nameRequest = .init(item: nil, kind: .writingDocument, parentID: parentID, isNote: true)
-                        }
+                        }.accessibilityIdentifier("any-native-new-note")
                         Button(AnyUIErrorText.text("תיקייה חדשה", "New folder"), systemImage: "folder.badge.plus") {
                             nameRequest = .init(item: nil, kind: .folder, parentID: parentID, isNote: false)
-                        }
+                        }.accessibilityIdentifier("any-native-new-folder")
                     } label: { Image(systemName: "plus") }
                         .disabled(!model.canWrite)
                         .accessibilityIdentifier("any-native-create-menu")
@@ -200,7 +199,7 @@ public struct AnyNativeLibraryView: View {
         }
     }
 
-    private func hierarchyRow(_ item: AnyHierarchyItem) -> some View {
+    private func hierarchyRow(_ item: AnyHierarchyPresentationItem) -> some View {
         Button {
             path.append(item.kind == .folder ? .folder(item.objectID) : .document(item.objectID, nil))
         } label: {
@@ -209,18 +208,18 @@ public struct AnyNativeLibraryView: View {
                       systemImage: item.kind == .folder ? "folder" : "doc.text")
                     .foregroundStyle(.primary)
                 Spacer()
-                if model.pendingMoves.contains(item.objectID) { ProgressView() }
+                if item.isPending || model.pendingMoves.contains(item.objectID) { ProgressView() }
                 if item.kind == .folder { Image(systemName: "chevron.forward").foregroundStyle(.secondary) }
             }
         }
         .contextMenu {
             Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
-                nameRequest = .init(item: item, kind: item.kind, parentID: item.parentID, isNote: false)
+                nameRequest = .init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false)
             }.disabled(!model.canWrite)
-            Button(AnyUIErrorText.text("העברה", "Move"), systemImage: "folder") { moveItem = item }
+            Button(AnyUIErrorText.text("העברה", "Move"), systemImage: "folder") { moveItem = item.native }
                 .disabled(!model.canWrite)
             Button(AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), systemImage: "trash", role: .destructive) {
-                removeItem = item
+                removeItem = item.native
             }.disabled(!model.canWrite)
         }
         .draggable("pinkha-any-node|\(model.session.workspace.spaceID)|\(item.objectID)")
@@ -296,7 +295,9 @@ private struct AnyNativeDocumentEntry: View {
                                        systemImage: "doc.badge.ellipsis", description: Text(error))
             } else { ProgressView() }
         }
-        .task(id: objectID) {
+        .task(id: library.isReady ? objectID : "") {
+            guard library.isReady else { return }
+            error = nil
             do { presentation = try library.document(objectID) }
             catch { self.error = AnyUIErrorText.describe(error) }
         }

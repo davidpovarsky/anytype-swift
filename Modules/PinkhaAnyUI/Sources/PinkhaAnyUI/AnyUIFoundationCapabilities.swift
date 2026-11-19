@@ -32,10 +32,15 @@ public struct AnyUIFoundationCapabilities: Sendable, Equatable {
                      "currentACLCommitFence", "targetTreeCommitFence",
                      "nativeDocumentProperties", "nativeIndexedSourceQuery",
                      "nativeRelatedVersion", "conditionalBlockPatch",
-                     "conditionalPropertiesSet", "conditionalBlockCurrentWriterFence", "currentWriterObjectCreate", "currentWriterBlockCreate", "nativeClaimsSnapshot", "nativeClaimsWatch", "nativeObjectClaimsSnapshot", "nativeObjectClaimsWatch"] {
+                     "conditionalPropertiesSet", "conditionalBlockCurrentWriterFence", "currentWriterObjectCreate", "currentWriterBlockCreate", "nativeClaimsSnapshot", "nativeClaimsWatch", "nativeObjectClaimsSnapshot", "nativeObjectClaimsWatch",
+                     "nativeDocumentTypePolicy", "nativeDocumentMembership",
+                     "conditionalMembershipSet", "nativePropertyPresentation"] {
             guard response[name]?.integer == 1 else { throw AnyUIActivationError.missingCapability(name) }
         }
-        guard response["associationBlockDataset"]?.string == "editor_blocks",
+        guard response["documentTypePolicy"]?.string == "canonical-editor-module-v1",
+              response["propertyPresentationCollection"]?.string == AnyNativePropertyStore.presentationCollectionID,
+              response["propertyPresentationHiddenProperty"]?.string == AnyNativePropertyStore.hiddenPropertiesID,
+              response["associationBlockDataset"]?.string == "editor_blocks",
               let types = response["allowedTargetTypes"]?.array,
               !types.isEmpty, types.count <= 128,
               types.allSatisfy({ $0.string?.isEmpty == false }),

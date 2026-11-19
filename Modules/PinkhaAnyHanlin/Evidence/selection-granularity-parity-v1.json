@@ -1,0 +1,22 @@
+{
+  "currentSHA256": {
+    "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinPlainText.swift": "55cc455ece72960289de5ecffc72ff8595f5424e89f262fbb4d400e1633613d6",
+    "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinNativeAccess.swift": "d703914aef28b0233a3036d676f5e16e8934cab4e1c1082cbf993e7147350cba",
+    "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinHostAdapter.swift": "26d221d302bbe2cad1e0db4d94c807e5df098d5b4dec019ca25beae58b223124"
+  },
+  "baselineCommit": "586c98bcc17dee425664224e508fc0e8df277678",
+  "baselineBlobs": {
+    "Anytype/Sources/Pinkha/AI/PinkhaHanlinHostAdapter.swift": "05a8ecc07cef6d8b011067eba86ffb7fd4f8ffa9",
+    "Anytype/Sources/Pinkha/AI/PinkhaHanlinNativeAccess.swift": "bbbd048e3d8fcc88d087b9078433617b076957db",
+    "Anytype/Sources/Pinkha/AI/PinkhaHanlinSelectionEntry.swift": "c4279e388181f0a93c8f01ee756444e07878112f"
+  },
+  "status": "VERIFIED_BASELINE_CONTRACT",
+  "scope": "Source-level Hanlin selection granularity parity; not mounted UIKit execution",
+  "findings": [
+    "Baseline selectedIDs accepts block selection and simple table selected block IDs; text cursor character ranges are not captured in this host context.",
+    "Baseline project traverses reachable blocks, filters selected block IDs and copies each selected content.text in full.",
+    "Baseline shared HostAdapter requires exact selection reference set and coverage selectedTextBlocksOnly.",
+    "Native host keeps the same document-or-whole-selected-text-block scope and converts native inline Markdown to visible plain text using the pinned canonical parser.",
+    "No prior character-subrange Hanlin capability is removed by this adaptation."
+  ]
+}

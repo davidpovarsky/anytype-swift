@@ -597,3 +597,65 @@ extension AssociationBridgeTests {
         #expect(await store.count() == 0)
     }
 }
+
+
+extension AssociationBridgeTests {
+    private func payloadWithNumericProbe(workspace: AnyTorahWorkspace,
+                                         replacement: String) throws -> Data {
+        var value = item()
+        value.unknownFields["precisionProbe"] = .number(7)
+        let bytes = try TorahAssociationPayloadCodec().encodeCanonicalDocument(.init(records: [
+            .init(location: .init(spaceId: workspace.spaceID, target: target), item: value)
+        ]))
+        let original = try #require(String(data: bytes, encoding: .utf8))
+        let marker = #""precisionProbe":7"#
+        #expect(original.contains(marker))
+        return Data(original.replacingOccurrences(of: marker,
+            with: #""precisionProbe":"# + replacement).utf8)
+    }
+
+    private func incomingOperation(workspace: AnyTorahWorkspace, payload: Data) throws -> AnyTorahOperation {
+        try .init(operationID: String(repeating: "a", count: 32),
+            spaceID: workspace.spaceID, authorID: workspace.accountID, kind: .add,
+            targetObjectID: target.objectId, providerID: "sefaria", canonicalRef: "Genesis 1:1",
+            payload: payload)
+    }
+
+    @Test func incomingPeerUnknownNumbersCannotSilentlyRoundDuringOrdinaryEdit() async throws {
+        for number in ["9007199254740993", "0.10000000000000000000000000000000000000001"] {
+            let (workspace, store, _, repository) = try fixture()
+            let bytes = try payloadWithNumericProbe(workspace: workspace, replacement: number)
+            try await store.seed(incomingOperation(workspace: workspace, payload: bytes))
+            await #expect(throws: AnyTorahMigrationError.self) {
+                try await repository.listDocumentAssociations(objectId: target.objectId, spaceId: workspace.spaceID)
+            }
+            var changed = item(); changed.labelEn = "Changed label"
+            await #expect(throws: AnyTorahMigrationError.self) {
+                try await repository.updateAssociation(changed, target: target, spaceId: workspace.spaceID)
+            }
+            #expect(await store.count() == 1)
+            #expect(try await store.snapshot().all.first?.operation.payload == bytes)
+        }
+    }
+
+    @Test func incomingPeerDuplicateUnknownKeysCannotBeSilentlyCollapsed() async throws {
+        let (workspace, store, _, repository) = try fixture()
+        let bytes = try payloadWithNumericProbe(workspace: workspace,
+                                               replacement: #"7,"precisionProbe":8"#)
+        try await store.seed(incomingOperation(workspace: workspace, payload: bytes))
+        await #expect(throws: AnyTorahMigrationError.self) {
+            try await repository.snapshot(target: target, spaceID: workspace.spaceID)
+        }
+        #expect(await store.count() == 1)
+        #expect(try await store.snapshot().all.first?.operation.payload == bytes)
+    }
+
+    @Test func restoredPreparedMutationCannotBypassIncomingNumberPreservation() throws {
+        let (workspace, _, _, _) = try fixture()
+        let bytes = try payloadWithNumericProbe(workspace: workspace, replacement: "9007199254740993")
+        let operation = try incomingOperation(workspace: workspace, payload: bytes)
+        #expect(throws: AnyTorahMigrationError.self) {
+            try AnyTorahPreparedMutation(workspace: workspace, operation: operation)
+        }
+    }
+}

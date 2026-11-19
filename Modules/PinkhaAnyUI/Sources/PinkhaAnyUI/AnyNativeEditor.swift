@@ -7,6 +7,7 @@ import NaturalLanguage
 import PinkhaKit
 import PinkhaAnyHost
 import PinkhaAnyEngine
+import PinkhaAnyIntegration
 import PinkhaAnyHanlin
 import PinkhaHanlinUI
 import PinkhaTorahPresentation
@@ -332,6 +333,8 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         func item(_ title: String, _ body: @escaping @MainActor () -> Void) -> UIBarButtonItem {
             UIBarButtonItem(title: title, primaryAction: UIAction { _ in body() })
         }
+        let done = item(AnyUIErrorText.text("סיום", "Done")) { [weak textView] in textView?.resignFirstResponder() }
+        done.accessibilityIdentifier = "any-native-editor-done"
         toolbar.items = [
             item("B") { [weak self, weak textView] in self?.format(.bold, textView: textView) },
             item("I") { [weak self, weak textView] in self?.format(.italic, textView: textView) },
@@ -340,7 +343,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
             .flexibleSpace(),
             item("↶") { [weak textView] in textView?.editHistory.undo() },
             item("↷") { [weak textView] in textView?.editHistory.redo() },
-            item(AnyUIErrorText.text("סיום", "Done")) { [weak textView] in textView?.resignFirstResponder() }
+            done
         ]
         toolbar.sizeToFit()
         return toolbar
@@ -410,12 +413,13 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
                 presentation.message = AnyUIErrorText.changedDocument; return
             }
             do {
-                // Ordinary upstream object creation lacks the required current
-                // writer commit fence. Enable creation only through the guarded
-                // native capability/creator once its runtime contract is verified.
+                let authority = try AnyHanlinCreationAuthority(client: presentation.client,
+                                                               workspace: presentation.workspace)
+                let creation = try AnyHanlinCreationServices(creator: presentation.objects,
+                                                             authority: authority)
                 let chat = try AnyHanlinPresentation.present(from: self, native: presentation.nativeSession,
                     documents: presentation.documents, sourceOwner: presentation,
-                    conversationID: conversationID, creation: nil)
+                    conversationID: conversationID, creation: creation)
                 presentation.installPresentationLifecycle(revoke: { [weak chat] in chat?.revoke() },
                                                            drain: { [weak chat] in await chat?.drain() })
             } catch { presentation.message = AnyUIErrorText.describe(error) }

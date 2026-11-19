@@ -3,6 +3,7 @@ import PinkhaKit
 import PinkhaAnyEngine
 
 /// A reviewable non-destructive import of ONE canonical association snapshot.
+/// A validated native archive can supply multiple canonical payloads.
 /// This is not a complete Heart database/editor/file migration.
 public struct AnyTorahMigrationPlan: Sendable {
     public let workspace: AnyTorahWorkspace
@@ -40,12 +41,7 @@ public struct AnyTorahMigrationPlan: Sendable {
         let sourceLocation = TorahAssociationLocation(
             spaceId: sourceSpaceID, target: .object(objectId: sourceObjectID))
         let payload = try codec.decodeCanonicalDocument(sourceBytes, legacyLocation: sourceLocation)
-        struct Version: Decodable { let version: Int }
-        let version = try JSONDecoder().decode(Version.self, from: sourceBytes).version
-        let sourceRoundTrip = version == 1
-            ? try codec.encodeDocument(codec.decodeDocument(sourceBytes))
-            : try codec.encodeCanonicalDocument(payload)
-        try AnyTorahSourceJSONGuard.validateRoundTrip(original: sourceBytes, encoded: sourceRoundTrip)
+        try AnyTorahSourceJSONGuard.validateCanonicalPayload(sourceBytes, decoded: payload)
         var identities = Set<String>()
         var semanticIdentities = Set<TorahAssociationIdentity>()
         var operations: [AnyTorahOperation] = []
@@ -115,7 +111,54 @@ public struct AnyTorahMigrationPlan: Sendable {
     }
 
 
-    private static func remapInternalNote(
+    /// Combines independently validated live canonical payloads from an archive.
+    /// The single executor still preflights every operation before any append.
+    init(archiveComponents components: [Self], sourceBytes: Data, migrationKey: String) throws {
+        guard let first = components.first, !sourceBytes.isEmpty,
+              components.allSatisfy({
+                  $0.workspace == first.workspace && $0.sourceSpaceID == first.sourceSpaceID &&
+                  $0.sourceObjectID == first.sourceObjectID && $0.targetObjectID == first.targetObjectID &&
+                  $0.objectIDMap == first.objectIDMap && $0.blockIDMap == first.blockIDMap
+              }) else { throw AnyEngineError.invalidIdentity("mixed canonical archive mapping") }
+        let operations = components.flatMap(\.operations)
+        guard operations.count <= 10_000,
+              Set(operations.map(\.claimID)).count == operations.count,
+              Set(operations.map(\.logicalKey)).count == operations.count else {
+            throw TorahAssociationRepositoryError.malformedCanonicalData
+        }
+        var stable = Set<String>()
+        var semantic = Set<TorahAssociationIdentity>()
+        for operation in operations {
+            let target: TorahAssociationTarget = operation.targetBlockID.isEmpty
+                ? .object(objectId: operation.targetObjectID)
+                : .block(objectId: operation.targetObjectID, blockId: operation.targetBlockID)
+            let location = TorahAssociationLocation(spaceId: operation.spaceID, target: target)
+            let payload = try TorahAssociationPayloadCodec().decodeCanonicalDocument(
+                operation.payload, legacyLocation: location)
+            guard payload.records.count == 1, let record = payload.records.first,
+                  record.location == location,
+                  stable.insert(Self.key([operation.targetObjectID, operation.targetBlockID, record.item.id])).inserted,
+                  semantic.insert(.init(item: record.item, location: location)).inserted else {
+                throw TorahAssociationRepositoryError.writeConflict("Archive repeats a canonical association identity")
+            }
+        }
+        workspace = first.workspace
+        sourceSpaceID = first.sourceSpaceID
+        sourceObjectID = first.sourceObjectID
+        targetObjectID = first.targetObjectID
+        self.sourceBytes = sourceBytes
+        sourceSHA256 = AnyContentDigest.sha256(sourceBytes)
+        self.operations = operations
+        objectIDMap = first.objectIDMap
+        blockIDMap = first.blockIDMap
+        referencedObjectIDs = Array(Set(components.flatMap(\.referencedObjectIDs))).sorted()
+        planID = AnyContentDigest.sha256(Data(Self.key([
+            "pinkha-any-canonical-archive-import-v1", migrationKey, sourceSHA256
+        ] + components.map(\.planID)).utf8))
+    }
+
+
+    static func remapInternalNote(
         _ source: TorahAssociationItem, objectIDMap: [String: String]
     ) throws -> (item: TorahAssociationItem, referencedObjectID: String?) {
         let prefix = "anytype-note:"

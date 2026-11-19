@@ -11,8 +11,8 @@ public struct AnyNativeRootView: View {
     @State private var model: AnyNativeRootModel
     @Environment(\.scenePhase) private var scenePhase
 
-    public init(application: AnyNativeApplication) {
-        _model = State(initialValue: AnyNativeRootModel(application: application))
+    public init(application: AnyNativeApplication, network: AnyEmbeddedNetwork = .official) {
+        _model = State(initialValue: AnyNativeRootModel(application: application, network: network))
     }
 
     public var body: some View {
@@ -27,10 +27,12 @@ public struct AnyNativeRootView: View {
             case .spaces:
                 spacesView
             case .workspace:
-                if let owner = model.workspace, let lifetime = model.presentationLifetime {
+                if let owner = model.workspace, let lifetime = model.presentationLifetime,
+                   let recovery = model.libraryRecovery {
                     AnyNativeLibraryView(client: owner.client, session: owner.session,
                         objects: owner.objects, blocks: owner.blocks, capabilities: owner.capabilities,
-                        onRequestClose: { await model.closeWorkspace() }, lifetime: lifetime)
+                        onRequestClose: { await model.closeWorkspace(expectedSession: owner.session) },
+                        lifetime: lifetime, recovery: recovery)
                 } else {
                     ProgressView()
                 }
@@ -66,16 +68,19 @@ public struct AnyNativeRootView: View {
                             } label: {
                                 Label(String(account.id.suffix(8)), systemImage: "person.crop.circle")
                             }
+                            .accessibilityIdentifier("any-native-saved-account")
                             .disabled(!model.runtimeReady)
                         }
                     }
                 }
                 Section {
                     Button("יצירת חשבון חדש", systemImage: "person.badge.plus") { model.createAccount() }
+                        .accessibilityIdentifier("any-native-account-create")
                         .disabled(!model.runtimeReady)
                 }
                 Section {
                     SecureField("ביטוי שחזור", text: $model.restorePhrase)
+                        .accessibilityIdentifier("any-native-account-restore-phrase")
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .privacySensitive()
@@ -84,6 +89,7 @@ public struct AnyNativeRootView: View {
                         Text("חשבון Anytype קודם").tag(UInt32(0))
                     }
                     Button("שחזור") { model.restoreAccount() }
+                        .accessibilityIdentifier("any-native-account-restore")
                         .disabled(!model.runtimeReady || model.restorePhrase.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 } header: {
                     Text("שחזור חשבון")
@@ -108,11 +114,14 @@ public struct AnyNativeRootView: View {
                             .privacySensitive()
                     } else {
                         Button("הצגת ביטוי השחזור") { model.showRecovery() }
+                            .accessibilityIdentifier("any-native-backup-show-phrase")
                     }
                 }
                 Section {
                     Toggle("שמרתי את ביטוי השחזור במקום בטוח", isOn: $model.backupAcknowledged)
+                        .accessibilityIdentifier("any-native-backup-acknowledged")
                     Button("המשך") { model.acknowledgeBackup() }
+                        .accessibilityIdentifier("any-native-backup-continue")
                         .disabled(!model.backupAcknowledged || model.recoveryText.isEmpty)
                 }
             }
@@ -138,12 +147,15 @@ public struct AnyNativeRootView: View {
                 }
                 Section("מרחב חדש") {
                     TextField("שם המרחב", text: $model.newSpaceName)
+                        .accessibilityIdentifier("any-native-space-name")
                     Button("יצירת מרחב") { model.createSpace() }
+                        .accessibilityIdentifier("any-native-space-create")
                         .disabled(model.newSpaceName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
                 Section {
                     Button("רענון מרחבים", systemImage: "arrow.clockwise") { model.refreshSpaces() }
                     Button("יציאה מהחשבון", role: .destructive) { model.signOut() }
+                        .accessibilityIdentifier("any-native-account-sign-out")
                 }
             }
             .navigationTitle("המרחבים שלי")
@@ -156,6 +168,7 @@ public struct AnyNativeRootView: View {
 private final class AnyNativeRootModel {
     enum Page: Equatable { case starting, accounts, backup, spaces, workspace }
     let application: AnyNativeApplication
+    let network: AnyEmbeddedNetwork
     var page = Page.starting
     var busy = false
     var errorMessage: String?
@@ -164,6 +177,12 @@ private final class AnyNativeRootModel {
     var spaces: [AnyNativeSpace] = []
     var workspace: AnyNativeWorkspaceOwner?
     var presentationLifetime: AnyUIPresentationLifetime?
+    var libraryRecovery: AnyNativeLibraryRecovery?
+    private struct RecoveryKey: Hashable {
+        let accountID: String
+        let spaceID: String
+    }
+    private var recoveries: [RecoveryKey: AnyNativeLibraryRecovery] = [:]
     var restorePhrase = ""
     var restoreIndex: UInt32 = 1
     var recoveryText = ""
@@ -180,14 +199,16 @@ private final class AnyNativeRootModel {
     private var backgroundTask = UIBackgroundTaskIdentifier.invalid
     private var epoch = UUID()
 
-    init(application: AnyNativeApplication) { self.application = application }
+    init(application: AnyNativeApplication, network: AnyEmbeddedNetwork) {
+        self.application = application; self.network = network
+    }
 
     func resume() {
         wantsForeground = true
         guard suspension == nil, !started, operation == nil else { return }
         execute {
             if !(await self.application.isRunning()) {
-                try await self.application.start(network: .official)
+                try await self.application.start(network: self.network)
             }
             try Task.checkCancellation()
             self.started = true
@@ -303,14 +324,20 @@ private final class AnyNativeRootModel {
     private func openSpaceOwned(id: String) async throws {
         let owner = try await application.connectSpace(id: id)
         try Task.checkCancellation()
+        let key = RecoveryKey(accountID: owner.workspace.accountID, spaceID: owner.workspace.spaceID)
+        let recovery = recoveries[key] ?? AnyNativeLibraryRecovery(workspace: owner.workspace)
+        recoveries[key] = recovery
+        libraryRecovery = recovery
         workspace = owner
         presentationLifetime = AnyUIPresentationLifetime()
         lastSpaceID = id
         page = .workspace
     }
 
-    func closeWorkspace() async {
+    func closeWorkspace(expectedSession: AnyApplicationSession) async {
+        guard workspace?.session === expectedSession else { return }
         let task = execute {
+            guard self.workspace?.session === expectedSession else { return }
             let lifetime = self.presentationLifetime
             lifetime?.revoke()
             await lifetime?.drain()

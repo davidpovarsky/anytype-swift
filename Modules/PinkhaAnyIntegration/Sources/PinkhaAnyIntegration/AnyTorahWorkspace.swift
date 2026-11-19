@@ -79,14 +79,17 @@ public struct AnyHTTPTorahTargetAccess: AnyTorahTargetAccess, Sendable {
     private let excludedCollectionIDs: Set<String>
     private let blockLimit: Int
     public let editorDataset: String
+    public let documentTypePolicy: AnyTorahDocumentPolicy
 
     public init(client: AnyHTTPClient, workspace: AnyTorahWorkspace,
                 allowedTypeIDs: Set<String>, excludedCollectionIDs: Set<String> = ["bin", "template"],
-                blockLimit: Int = 10_000, editorDataset: String = "editor_blocks") throws {
+                blockLimit: Int = 10_000, editorDataset: String = "editor_blocks",
+                documentTypePolicy: AnyTorahDocumentPolicy = .explicitTypeAllowlist) throws {
         guard client.expectedAccountID == workspace.accountID, !allowedTypeIDs.isEmpty,
               allowedTypeIDs.allSatisfy({ !$0.isEmpty }),
               (1...10_000).contains(blockLimit), !editorDataset.isEmpty,
-              editorDataset.utf8.count <= 1024, !editorDataset.utf8.contains(0) else {
+              editorDataset.utf8.count <= 1024, !editorDataset.utf8.contains(0),
+              documentTypePolicy != .nativeCanonicalEditorV1 || editorDataset == "editor_blocks" else {
             throw AnyEngineError.invalidIdentity("target validation configuration")
         }
         self.client = client
@@ -95,6 +98,7 @@ public struct AnyHTTPTorahTargetAccess: AnyTorahTargetAccess, Sendable {
         self.excludedCollectionIDs = excludedCollectionIDs
         self.blockLimit = blockLimit
         self.editorDataset = editorDataset
+        self.documentTypePolicy = documentTypePolicy
     }
 
     public func validate(_ target: TorahAssociationTarget, intent: AnyTorahTargetIntent) async throws {
@@ -106,10 +110,16 @@ public struct AnyHTTPTorahTargetAccess: AnyTorahTargetAccess, Sendable {
         // members/me reads actual ACL; ownRole in the Space list is a mirror.
         let member = try await client.requestJSON(method: "GET", path: base + ["members", "me"])
         try Self.validateMember(member, workspace: workspace, intent: intent)
-        let object = try await client.requestJSON(
-            method: "GET", path: base + ["objects", target.objectId])
-        try Self.validateObject(object, target: target, workspace: workspace,
-                                allowedTypeIDs: allowedTypeIDs, excludedCollectionIDs: excludedCollectionIDs)
+        let nativeProof: AnyNativeDocumentTargetProof?
+        if documentTypePolicy == .nativeCanonicalEditorV1 {
+            nativeProof = try await currentNativeProof(objectID: target.objectId, intent: intent)
+        } else {
+            nativeProof = nil
+            let object = try await client.requestJSON(
+                method: "GET", path: base + ["objects", target.objectId])
+            try Self.validateObject(object, target: target, workspace: workspace,
+                                    allowedTypeIDs: allowedTypeIDs, excludedCollectionIDs: excludedCollectionIDs)
+        }
         guard let blockID = target.blockId else { return }
         let response = try await client.requestJSON(
             method: "POST", path: base + ["query"], body: .object([
@@ -117,6 +127,23 @@ public struct AnyHTTPTorahTargetAccess: AnyTorahTargetAccess, Sendable {
                 "limit": .integer(Int64(blockLimit + 1)), "includeTotal": .bool(true)
             ]))
         try Self.requireReachableBlock(blockID, response: response, limit: blockLimit)
+        if let nativeProof {
+            let after = try await currentNativeProof(objectID: target.objectId, intent: intent)
+            guard nativeProof == after else { throw AnyNativeDocumentPolicyError.dependenciesChanged }
+        }
+    }
+
+    public func currentNativeProof(objectID: String, intent: AnyTorahTargetIntent = .read) async throws
+        -> AnyNativeDocumentTargetProof {
+        guard documentTypePolicy == .nativeCanonicalEditorV1 else {
+            throw AnyNativeDocumentPolicyError.unavailableContract
+        }
+        let proof = try await AnyNativeDocumentPolicyClient(client: client, workspace: workspace)
+            .target(objectID, intent: intent)
+        guard proof.collectionIDs.isDisjoint(with: excludedCollectionIDs) else {
+            throw TorahAssociationRepositoryError.targetNotFound
+        }
+        return proof
     }
 
     public static func validateMember(_ member: AnyJSON, workspace: AnyTorahWorkspace,

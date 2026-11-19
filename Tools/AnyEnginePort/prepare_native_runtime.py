@@ -5,7 +5,7 @@ import argparse, hashlib, json, os, plistlib, shutil, stat, subprocess, tempfile
 from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_MANIFEST = ROOT / "Tools/AnyEngineValidation/evidence/native-create-cold-v5-source.json"
+DEFAULT_MANIFEST = ROOT / "Tools/AnyEngineValidation/evidence/native-document-metadata-v7-source.json"
 VERSION = "v0.5.0-pinkha.1"
 # The SDK v0.8.0 annotated tag object and its checkout commit are pinned
 # separately; compare actual HEAD to the peeled commit.

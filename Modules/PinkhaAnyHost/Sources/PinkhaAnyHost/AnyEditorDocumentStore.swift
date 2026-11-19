@@ -51,7 +51,8 @@ public struct AnyEditorDocumentStore: Sendable {
 
     public init(client: AnyHTTPClient, workspace: AnyTorahWorkspace,
                 allowedTypeIDs: Set<String>, dataset: String = "editor_blocks",
-                blockLimit: Int = 10_000) throws {
+                blockLimit: Int = 10_000,
+                documentTypePolicy: AnyTorahDocumentPolicy = .explicitTypeAllowlist) throws {
         guard client.expectedAccountID == workspace.accountID,
               AnyEditorBlock.validID(dataset), (1...10_000).contains(blockLimit) else {
             throw AnyHostError.wrongWorkspace
@@ -59,7 +60,7 @@ public struct AnyEditorDocumentStore: Sendable {
         self.client = client; self.workspace = workspace; self.dataset = dataset
         self.blockLimit = blockLimit
         self.access = try .init(client: client, workspace: workspace, allowedTypeIDs: allowedTypeIDs,
-                                blockLimit: blockLimit, editorDataset: dataset)
+                                blockLimit: blockLimit, editorDataset: dataset, documentTypePolicy: documentTypePolicy)
     }
 
     public func read(objectID: String, lease: AnyHostLease) async throws -> AnyEditorRead {

@@ -9,10 +9,21 @@ public enum AnyTorahMigrationError: Error, Sendable, Equatable {
 }
 
 /// The existing domain deliberately models JSON numbers as Double. Refuse an
-/// import when that representation would change an original number. This is
+/// import or incoming canonical payload when that representation would change an original number. This is
 /// exact decimal comparison of JSON tokens, not a second floating-point parse.
-enum AnyTorahSourceJSONGuard {
-    static func validateRoundTrip(original: Data, encoded: Data) throws {
+public enum AnyTorahSourceJSONGuard {
+    static func validateCanonicalPayload(_ bytes: Data,
+                                         decoded: TorahCanonicalAssociationsPayload) throws {
+        let codec = TorahAssociationPayloadCodec()
+        struct Version: Decodable { let version: Int }
+        let version = try JSONDecoder().decode(Version.self, from: bytes).version
+        let encoded = version == 1
+            ? try codec.encodeDocument(codec.decodeDocument(bytes))
+            : try codec.encodeCanonicalDocument(decoded)
+        try validateRoundTrip(original: bytes, encoded: encoded)
+    }
+
+    public static func validateRoundTrip(original: Data, encoded: Data) throws {
         var source = Scanner(bytes: Array(original))
         var result = Scanner(bytes: Array(encoded))
         let originalNumbers = try source.numbers()

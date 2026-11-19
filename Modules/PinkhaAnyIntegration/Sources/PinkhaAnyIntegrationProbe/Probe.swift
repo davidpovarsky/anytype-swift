@@ -9,6 +9,11 @@ enum ProbeFailure: Error { case configuration, assertion(String) }
 struct IntegrationProbe {
     static func main() async throws {
         let args = CommandLine.arguments
+        if args.count == 6, args[1] == "--archive", args[2] == "--disposable",
+           let url = URL(string: args[3]) {
+            try await NativeArchiveProbe.run(url: url, accountID: args[4], spaceID: args[5])
+            return
+        }
         guard args.count == 5, args[1] == "--disposable",
               let url = URL(string: args[2]) else { throw ProbeFailure.configuration }
         func progress(_ name: String) {

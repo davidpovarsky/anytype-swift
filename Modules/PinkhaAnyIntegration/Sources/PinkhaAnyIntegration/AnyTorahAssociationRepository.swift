@@ -332,6 +332,7 @@ public actor AnyTorahAssociationRepository: TorahAssociationRepository {
                 throw TorahAssociationRepositoryError.targetOutsideSpace
             }
             let payload = try codec.decodeCanonicalDocument(op.payload, legacyLocation: location)
+            try AnyTorahSourceJSONGuard.validateCanonicalPayload(op.payload, decoded: payload)
             guard payload.records.count == 1, let record = payload.records.first,
                   record.location == location, !record.item.id.isEmpty,
                   record.item.providerID == op.providerID,

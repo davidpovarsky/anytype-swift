@@ -129,6 +129,43 @@ struct AnyNativeBlockCreatorTests {
         #expect(try await journal.lookup(value.identity) == .reserved)
     }
 
+    @Test func journalFailureAfterNativeReplyPreservesKnownIDWithoutRedispatch() async throws {
+        for phase in ["created", "verified"] {
+            let value = try intent()
+            let journal = BlockJournalFixture(workspace: workspace), effects = BlockEffectsFixture()
+            await journal.failNextRecord(phase)
+            let creator = make(journal: journal, effects: effects)
+            await #expect(throws: AnyNativeCreationError.createdObjectIncomplete("native-block")) {
+                try await creator.ensureBlock(value, authorize: {})
+            }
+            #expect(await effects.count == 1)
+            if phase == "verified" {
+                #expect(try await journal.lookup(value.identity) == .created("native-block"))
+                #expect(try await creator.ensureBlock(value, authorize: {}) == "native-block")
+            } else {
+                #expect(try await journal.lookup(value.identity) == .reserved)
+                await #expect(throws: AnyNativeCreationError.writeUncertain) {
+                    try await creator.ensureBlock(value, authorize: {})
+                }
+            }
+            #expect(await effects.count == 1)
+        }
+    }
+
+    @Test func nativeConfirmationCallbackFailurePreservesVerifiedBlockIdentity() async throws {
+        let value = try intent()
+        let journal = BlockJournalFixture(workspace: workspace), effects = BlockEffectsFixture()
+        let creator = make(journal: journal, effects: effects)
+        await #expect(throws: AnyNativeCreationError.createdObjectIncomplete("native-block")) {
+            try await creator.ensureBlock(value, authorize: {}, onNativeConfirmed: { _ in
+                throw AnyHostError.sessionClosed
+            })
+        }
+        #expect(try await journal.lookup(value.identity) == .verified("native-block"))
+        #expect(try await creator.ensureBlock(value, authorize: {}) == "native-block")
+        #expect(await effects.count == 1)
+    }
+
     private func make(journal: BlockJournalFixture, effects: BlockEffectsFixture,
                       loseReply: Bool = false, mismatch: Bool = false,
                       gate: BlockGateFixture? = nil,
@@ -151,6 +188,8 @@ struct AnyNativeBlockCreatorTests {
 private actor BlockJournalFixture: AnyNativeCreationJournaling {
     nonisolated let workspace: AnyTorahWorkspace
     var values: [String: (AnyNativeCreationIdentity, AnyNativeCreationState)] = [:]
+    private var failingPhase: String?
+    func failNextRecord(_ phase: String) { failingPhase = phase }
     init(workspace: AnyTorahWorkspace) { self.workspace = workspace }
     func reserve(_ identity: AnyNativeCreationIdentity) throws -> AnyNativeCreationReservation {
         if let old = values[identity.key] {
@@ -161,6 +200,13 @@ private actor BlockJournalFixture: AnyNativeCreationJournaling {
         return .init(state: .reserved, ownsDispatch: true)
     }
     func record(_ state: AnyNativeCreationState, identity: AnyNativeCreationIdentity) throws {
+        let phase: String
+        switch state {
+        case .created: phase = "created"
+        case .verified: phase = "verified"
+        default: phase = ""
+        }
+        if failingPhase == phase { failingPhase = nil; throw AnyEngineError.unverifiedWrite }
         guard values[identity.key]?.0 == identity else { throw AnyNativeCreationError.contentConflict }
         values[identity.key] = (identity, state)
     }

@@ -15,7 +15,10 @@ struct AnyNativeApp: App {
             let service: String
             #if DEBUG
             if ProcessInfo.processInfo.arguments.contains("--native-ui-tests") {
-                let scope = UUID().uuidString
+                let args = ProcessInfo.processInfo.arguments
+                let position = args.firstIndex(of: "--native-ui-test-scope")
+                let candidate = position.flatMap { $0 + 1 < args.count ? UUID(uuidString: args[$0 + 1]) : nil }
+                let scope = (candidate ?? UUID()).uuidString
                 directory = FileManager.default.temporaryDirectory.appendingPathComponent("native-ui-" + scope)
                 service = "io.pinkha.anynative.uitests." + scope
             } else {

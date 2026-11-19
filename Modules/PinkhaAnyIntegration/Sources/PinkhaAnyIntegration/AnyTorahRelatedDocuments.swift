@@ -51,17 +51,21 @@ public struct AnyHTTPTorahRelatedDocumentReader: AnyTorahRelatedDocumentReading,
 
     public init(client: AnyHTTPClient, workspace: AnyTorahWorkspace, allowedTypeIDs: Set<String>,
                 noteTypeIDs: Set<String> = [], noteCollectionIDs: Set<String> = [],
+                documentTypePolicy: AnyTorahDocumentPolicy = .explicitTypeAllowlist,
                 decodeIcon: @escaping IconDecoder = { _ in (nil, nil, nil) }) throws {
-        guard noteTypeIDs.isSubset(of: allowedTypeIDs) else { throw AnyEngineError.invalidIdentity("note type scope") }
+        guard documentTypePolicy == .nativeCanonicalEditorV1 || noteTypeIDs.isSubset(of: allowedTypeIDs) else { throw AnyEngineError.invalidIdentity("note type scope") }
         self.workspace = workspace; self.client = client; self.allowedTypeIDs = allowedTypeIDs
         self.noteTypeIDs = noteTypeIDs; self.noteCollectionIDs = noteCollectionIDs
         self.decodeIcon = decodeIcon
-        self.access = try .init(client: client, workspace: workspace, allowedTypeIDs: allowedTypeIDs)
+        self.access = try .init(client: client, workspace: workspace, allowedTypeIDs: allowedTypeIDs,
+                                documentTypePolicy: documentTypePolicy)
     }
 
     public func metadata(objectID: String) async throws -> AnyTorahRelatedDocumentMetadata {
         let target = TorahAssociationTarget.object(objectId: objectID)
         try await access.validate(target, intent: .read)
+        let proof = access.documentTypePolicy == .nativeCanonicalEditorV1
+            ? try await access.currentNativeProof(objectID: objectID) : nil
         let base = ["v1", "spaces", workspace.spaceID]
         let response = try await client.requestJSON(method: "POST", path: base + ["objects", "query"],
             body: .object(["filter": .object(["id": .string(objectID)]),
@@ -70,14 +74,20 @@ public struct AnyHTTPTorahRelatedDocumentReader: AnyTorahRelatedDocumentReading,
               response["total"]?.integer == 1, response["hasNext"]?.bool == false,
               let row = records.first else { throw TorahAssociationRepositoryError.targetNotFound }
         try AnyHTTPTorahTargetAccess.validateObject(.object(["objectId": .string(objectID), "record": row]),
-            target: target, workspace: workspace, allowedTypeIDs: allowedTypeIDs,
+            target: target, workspace: workspace, allowedTypeIDs: proof.map { Set([$0.typeID]) } ?? allowedTypeIDs,
             excludedCollectionIDs: ["bin", "template"])
         let member = try await client.requestJSON(method: "GET", path: base + ["members", "me"])
         try AnyHTTPTorahTargetAccess.validateMember(member, workspace: workspace, intent: .read)
         try await access.validate(target, intent: .read)
+        if let proof {
+            try proof.requireMatchingRecord(row)
+            let finalProof = try await access.currentNativeProof(objectID: objectID)
+            guard proof == finalProof else { throw AnyNativeDocumentPolicyError.dependenciesChanged }
+        }
         let typeID = try row["any"]!.requireString("type")
         let collections = Set(row["any"]?["collections"]?.array?.compactMap(\.string) ?? [])
-        let canWrite = ["owner", "admin", "writer"].contains(member["permission"]?.string ?? "")
+        let canWrite = ["owner", "admin", "writer"].contains(member["permission"]?.string ?? "") &&
+            (proof?.canWrite ?? true)
         var icon: (emoji: String?, name: String?, imageID: String?) = (nil, nil, nil)
         if let raw = row["any"]?["icon"]?.string { icon = try decodeIcon(raw) }
         let updatedAt: Date?

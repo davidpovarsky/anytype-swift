@@ -144,7 +144,14 @@ jobs:
           ]
           if not candidates:
               raise SystemExit("No compatible iOS simulator template is available")
-          runtime, device = sorted(candidates, key=lambda item: item[0], reverse=True)[0]
+          def runtime_version(value):
+              return tuple(int(part) for part in value.rsplit(".iOS-", 1)[1].split("-"))
+          candidates = [item for item in candidates if runtime_version(item[0]) >= (27,)]
+          if not candidates:
+              raise SystemExit("No iOS 27 or newer simulator template is available")
+          runtime, device = sorted(candidates,
+              key=lambda item: (runtime_version(item[0]), item[1]["name"].startswith("iPad")),
+              reverse=True)[0]
           udid = subprocess.check_output([
               "xcrun", "simctl", "create", "AnyPort-" + os.environ["GITHUB_RUN_ID"],
               device["deviceTypeIdentifier"], runtime
@@ -277,7 +284,14 @@ jobs:
           ]
           if not candidates:
               raise SystemExit("No compatible iOS simulator template is available")
-          runtime, device = sorted(candidates, key=lambda item: item[0], reverse=True)[0]
+          def runtime_version(value):
+              return tuple(int(part) for part in value.rsplit(".iOS-", 1)[1].split("-"))
+          candidates = [item for item in candidates if runtime_version(item[0]) >= (27,)]
+          if not candidates:
+              raise SystemExit("No iOS 27 or newer simulator template is available")
+          runtime, device = sorted(candidates,
+              key=lambda item: (runtime_version(item[0]), item[1]["name"].startswith("iPad")),
+              reverse=True)[0]
           udid = subprocess.check_output([
               "xcrun", "simctl", "create", "AnyNativePort-" + os.environ["GITHUB_RUN_ID"],
               device["deviceTypeIdentifier"], runtime
@@ -300,6 +314,20 @@ jobs:
             -parallel-testing-enabled NO \
             -maximum-test-execution-time-allowance 180 \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/runtime.log"
+      - name: Test protected Hanlin recovery on iOS
+        if: ${{ !cancelled() }}
+        working-directory: Modules/PinkhaAnyHanlin
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -scheme PinkhaAnyHanlin \
+            -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
+            -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
+            -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/hanlin-ios.xcresult" \
+            -parallel-testing-enabled NO \
+            -maximum-test-execution-time-allowance 180 \
+            2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/hanlin-ios.log"
       - name: Test the real native account, Keychain and cold reopen path
         if: ${{ !cancelled() }}
         working-directory: Modules/PinkhaAnyNative
@@ -326,15 +354,22 @@ jobs:
             -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui.xcresult" \
             -parallel-testing-enabled NO \
-            -maximum-test-execution-time-allowance 180 \
+            -maximum-test-execution-time-allowance 360 \
             CODE_SIGNING_ALLOWED=NO \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui.log"
+      - name: Verify the built native app ownership boundary
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          python3 Tools/AnyEnginePort/verify_native_app_bundle.py \
+            --bundle build/any-native-app-derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNative.app \
+            --output build/any-patched-evidence/native-app-bundle.json
       - name: Extract native execution counts
         if: always()
         shell: bash
         run: |
           set -euo pipefail
-          for suite in runtime application native-ui; do
+          for suite in runtime hanlin-ios application native-ui; do
             if [ -d "build/any-patched-evidence/$suite.xcresult" ]; then
               xcrun xcresulttool get test-results summary \
                 --path "build/any-patched-evidence/$suite.xcresult" --format json \

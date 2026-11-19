@@ -75,7 +75,8 @@ public actor AnyNativeBlockCreator {
     private let validateCreation: @Sendable (AnyNativeBlockCreationIntent) async throws -> Void
 
     public init(client: AnyHTTPClient, workspace: AnyTorahWorkspace,
-                journal: any AnyNativeCreationJournaling, allowedTypeIDs: Set<String>) throws {
+                journal: any AnyNativeCreationJournaling, allowedTypeIDs: Set<String>,
+                documentTypePolicy: AnyTorahDocumentPolicy = .explicitTypeAllowlist) throws {
         guard client.expectedAccountID == workspace.accountID, journal.workspace == workspace else {
             throw AnyHostError.wrongWorkspace
         }
@@ -87,7 +88,8 @@ public actor AnyNativeBlockCreator {
                 throw AnyEngineError.incompatibleSchema("current-writer native block creation unavailable")
             }
             let access = try AnyHTTPTorahTargetAccess(client: client, workspace: workspace,
-                allowedTypeIDs: allowedTypeIDs, editorDataset: intent.dataset)
+                allowedTypeIDs: allowedTypeIDs, editorDataset: intent.dataset,
+                documentTypePolicy: documentTypePolicy)
             try await access.validate(.object(objectId: intent.objectID), intent: .write)
             if !intent.parentID.isEmpty {
                 try await access.validate(.block(objectId: intent.objectID, blockId: intent.parentID), intent: .write)
@@ -106,7 +108,8 @@ public actor AnyNativeBlockCreator {
         }
         self.inspect = { intent, id in
             let access = try AnyHTTPTorahTargetAccess(client: client, workspace: workspace,
-                allowedTypeIDs: allowedTypeIDs, editorDataset: intent.dataset)
+                allowedTypeIDs: allowedTypeIDs, editorDataset: intent.dataset,
+                documentTypePolicy: documentTypePolicy)
             try await access.validate(.block(objectId: intent.objectID, blockId: id), intent: .read)
             let value = try await client.requestJSON(method: "POST", path: ["v1", "spaces", workspace.spaceID, "query"],
                 body: .object(["objectId": .string(intent.objectID), "dataset": .string(intent.dataset),
@@ -160,25 +163,33 @@ public actor AnyNativeBlockCreator {
                         }
                     } catch { throw AnyNativeCreationError.writeUncertain }
                     guard AnyEditorBlock.validID(id) else { throw AnyNativeCreationError.writeUncertain }
-                    try await journal.record(.created(id), identity: intent.identity)
+                    do { try await journal.record(.created(id), identity: intent.identity) }
+                    catch { throw AnyNativeCreationError.createdObjectIncomplete(id) }
                     state = .created(id)
                 } else {
                     guard let recorded = state.objectID else { throw AnyNativeCreationError.writeUncertain }
                     id = recorded
                 }
-                let row = try await inspect(intent, id)
-                guard row["id"]?.string == id, row["type"]?.string == intent.type else {
-                    throw AnyNativeCreationError.createdObjectIncomplete(id)
-                }
-                if case .created = state {
-                    var expected = intent.body.object!
-                    if intent.style.object?.isEmpty == true { expected.removeValue(forKey: "style") }
-                    guard AnyNativeObjectCreator.containsExpected(row, expected: .object(expected)) else {
+                do {
+                    let row = try await inspect(intent, id)
+                    guard row["id"]?.string == id, row["type"]?.string == intent.type else {
                         throw AnyNativeCreationError.createdObjectIncomplete(id)
                     }
-                    try await journal.record(.verified(id), identity: intent.identity)
+                    if case .created = state {
+                        var expected = intent.body.object!
+                        if intent.style.object?.isEmpty == true { expected.removeValue(forKey: "style") }
+                        guard AnyNativeObjectCreator.containsExpected(row, expected: .object(expected)) else {
+                            throw AnyNativeCreationError.createdObjectIncomplete(id)
+                        }
+                        try await journal.record(.verified(id), identity: intent.identity)
+                    }
+                    try await onNativeConfirmed(id)
+                } catch {
+                    // The native reply already identified this exact block.
+                    // Preserve that ID even if later journal/readback/callback
+                    // work fails; uncertainty never permits a fresh-ID retry.
+                    throw AnyNativeCreationError.createdObjectIncomplete(id)
                 }
-                try await onNativeConfirmed(id)
                 return id
             }
             return try await worker.value

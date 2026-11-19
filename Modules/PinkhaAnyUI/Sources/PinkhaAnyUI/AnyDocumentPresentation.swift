@@ -50,6 +50,9 @@ public final class AnyDocumentPresentation {
     public private(set) var textHistoryEpochs: [String: UInt64] = [:]
     public var message: String?
     public var showsProperties = false
+    public var showsArchiveTransfer = false
+    public var showsDraftReview = false
+    public private(set) var requiresDraftReview = false
     public var sourceDocuments: [TorahRelatedDocument] = []
     public var sourceDocumentsTitle: String?
     public private(set) var nativeProperties: AnyNativeDerivedDocumentProperties?
@@ -60,11 +63,15 @@ public final class AnyDocumentPresentation {
     @ObservationIgnored public let documents: AnyEditorDocumentStore
     @ObservationIgnored public let objects: AnyNativeObjectCreator
     @ObservationIgnored public let blocks: AnyNativeBlockCreator
+    @ObservationIgnored public let propertyStore: AnyNativePropertyStore?
+    @ObservationIgnored public let noteMarker: AnyNativeNoteMarker
     @ObservationIgnored public let capabilities: AnyUIFoundationCapabilities
     @ObservationIgnored let operations: AnyGuardedTorahOperationStore
     @ObservationIgnored let index: AnyGuardedTorahIndex
     @ObservationIgnored let metadata: AnyHTTPTorahRelatedDocumentReader
     @ObservationIgnored let lifetime: AnyUIPresentationLifetime
+    @ObservationIgnored private let recovery: AnyNativeLibraryRecovery
+    @ObservationIgnored private var recoveryWasRestored = false
     @ObservationIgnored private var registration: UUID?
     @ObservationIgnored private var epoch = UUID()
     @ObservationIgnored private var streamSession: AnyStreamSession?
@@ -84,6 +91,8 @@ public final class AnyDocumentPresentation {
                 capabilities: AnyUIFoundationCapabilities,
                 operations: AnyGuardedTorahOperationStore, noteMarker: AnyNativeNoteMarker,
                 objectID: String, lifetime: AnyUIPresentationLifetime,
+                recovery: AnyNativeLibraryRecovery,
+                hierarchySchema: AnyHierarchySchema? = nil,
                 sourceWorkspace: AnytypeTorahWorkspace? = nil) throws {
         guard operations.workspace == session.workspace, noteMarker.workspace == session.workspace,
               objects.workspace == session.workspace, blocks.workspace == session.workspace,
@@ -91,14 +100,23 @@ public final class AnyDocumentPresentation {
             throw AnyHostError.wrongWorkspace
         }
         try lifetime.requireActive()
+        try recovery.requireWorkspace(session.workspace)
+        self.recovery = recovery
         self.objectID = objectID; self.workspace = session.workspace
         self.client = client; self.nativeSession = session; self.objects = objects; self.blocks = blocks
         self.capabilities = capabilities; self.operations = operations; self.lifetime = lifetime
+        self.noteMarker = noteMarker
+        self.propertyStore = try hierarchySchema.map {
+            try AnyNativePropertyStore(client: client, workspace: session.workspace,
+                policy: AnyNativePropertyPolicies.workspace(schema: $0, noteMarker: noteMarker))
+        }
         let documents = try AnyEditorDocumentStore(client: client, workspace: session.workspace,
-                                                   allowedTypeIDs: capabilities.allowedTargetTypes)
+                                                   allowedTypeIDs: capabilities.allowedTargetTypes,
+                                                   documentTypePolicy: .nativeCanonicalEditorV1)
         self.documents = documents
         let access = try AnyHTTPTorahTargetAccess(client: client, workspace: session.workspace,
-                                                 allowedTypeIDs: capabilities.allowedTargetTypes)
+                                                 allowedTypeIDs: capabilities.allowedTargetTypes,
+                                                   documentTypePolicy: .nativeCanonicalEditorV1)
         let associations = try AnyTorahAssociationRepository(workspace: session.workspace,
                                                              store: operations, access: access)
         let workflow = try AnyNativeWorkflowBindings(client: client, session: session, objects: objects,
@@ -106,7 +124,8 @@ public final class AnyDocumentPresentation {
         let noteService = try AnyTorahNotesService(workspace: session.workspace, associations: associations,
                                                    documents: workflow, access: access)
         let metadata = try AnyHTTPTorahRelatedDocumentReader(client: client, workspace: session.workspace,
-            allowedTypeIDs: capabilities.allowedTargetTypes, noteCollectionIDs: [noteMarker.collectionID])
+            allowedTypeIDs: capabilities.allowedTargetTypes, noteCollectionIDs: [noteMarker.collectionID],
+            documentTypePolicy: .nativeCanonicalEditorV1)
         self.metadata = metadata
         let index = try AnyGuardedTorahIndex(client: client, workspace: session.workspace)
         self.index = index
@@ -131,8 +150,19 @@ public final class AnyDocumentPresentation {
     }
 
     var mountedOwnerID: UUID { epoch }
+    public var writeStatusAccessibilityValue: String {
+        switch writeState {
+        case .clean: "clean"
+        case .pending: "pending"
+        case .saving: "saving"
+        case .saved: "saved"
+        case .conflict: "conflict"
+        case .uncertain: "uncertain"
+        case .failed: "failed"
+        }
+    }
     public var title: String { read?.snapshot.title ?? "" }
-    public var canMutate: Bool { isMounted && lifetime.isActive && canWrite && surface?.isForegroundMounted == true }
+    public var canMutate: Bool { isMounted && lifetime.isActive && canWrite && !requiresDraftReview && surface?.isForegroundMounted == true }
     public var hasPendingEdits: Bool { !drafts.isEmpty || saving }
     public var orderedBlocks: [AnyEditorBlock] {
         guard let snapshot = read?.snapshot else { return [] }
@@ -192,6 +222,7 @@ public final class AnyDocumentPresentation {
             }
         }
         read = value
+        restoreRecoveryIfNeeded(value.snapshot)
         let byID = Dictionary(uniqueKeysWithValues: value.snapshot.blocks.map { ($0.id, $0) })
         for (id, draft) in drafts {
             guard let native = byID[id], native.native["_ver"] == draft.base.native["_ver"],
@@ -212,19 +243,24 @@ public final class AnyDocumentPresentation {
               Set(blockIDs).isSubset(of: Set(read?.snapshot.depthFirstIDs ?? [])) else { return }
         if selectedBlockIDs != blockIDs { invalidateSourceScope() }
         selectedBlockIDs = blockIDs; self.focusedBlockID = focusedBlockID; selectedTextRange = range
+        retainRecovery()
     }
 
     public func changeText(blockID: String, source: String, displaySelection: NSRange) throws {
         try requireMounted(epoch)
-        guard canWrite, source.utf8.count <= 65_536,
+        guard canWrite, !requiresDraftReview, source.utf8.count <= 65_536,
               let block = read?.snapshot.blocks.first(where: { $0.id == blockID }),
               read?.snapshot.depthFirstIDs.contains(blockID) == true,
               (block.type == "code" || AnyInlineMarkdown(source).isEditable) else { throw AnyHostError.invalidSelection }
         var draft = drafts[blockID] ?? .init(base: block, inlineMarkdown: block.text,
                                              selection: displaySelection, revision: 0)
         draft.inlineMarkdown = source; draft.selection = displaySelection; draft.revision &+= 1
-        if source == draft.base.text { drafts.removeValue(forKey: blockID) }
-        else { drafts[blockID] = draft }
+        var candidate = drafts
+        if source == draft.base.text { candidate.removeValue(forKey: blockID) }
+        else { candidate[blockID] = draft }
+        // Retain the exact source/base before accepting the visible edit.
+        try captureRecovery(candidate)
+        drafts = candidate
         select(blockIDs: selectedBlockIDs.contains(blockID) ? selectedBlockIDs : [blockID],
                focusedBlockID: blockID, range: displaySelection)
         writeState = drafts.isEmpty ? .clean : .pending
@@ -239,7 +275,7 @@ public final class AnyDocumentPresentation {
     public func flush() async {
         guard !saving, !drafts.isEmpty, canMutate else { return }
         saving = true; writeState = .saving
-        defer { saving = false }
+        defer { saving = false; retainRecovery() }
         let requestEpoch = epoch
         while let (id, draft) = drafts.sorted(by: { $0.key < $1.key }).first {
             do {
@@ -285,7 +321,94 @@ public final class AnyDocumentPresentation {
 
     public func discardLocalDrafts() {
         saveTask?.cancel(); drafts.removeAll(); lastUndo = nil
+        requiresDraftReview = false
+        retainRecovery()
         writeState = .clean; contentRevision &+= 1
+    }
+
+    public var localDraftTextForCopy: String {
+        let visible = orderedBlocks.map { source(for: $0) }
+        let visibleIDs = Set(orderedBlocks.map(\.id))
+        let detached = drafts.filter { !visibleIDs.contains($0.key) }
+            .sorted { $0.key < $1.key }.map { $0.value.inlineMarkdown }
+        return (visible + detached).joined(separator: "\n\n")
+    }
+
+    public var recoveredDrafts: [AnyNativeRecoveredBlockDraft] {
+        drafts.sorted { $0.key < $1.key }.compactMap { _, value in
+            try? .init(base: value.base, inlineMarkdown: value.inlineMarkdown,
+                       selection: value.selection, revision: value.revision)
+        }
+    }
+
+    public func resumeRecoveredDrafts() async {
+        guard requiresDraftReview else { return }
+        await load()
+        guard let current = read?.snapshot, isMounted, lifetime.isActive else { return }
+        let byID = Dictionary(uniqueKeysWithValues: current.blocks.map { ($0.id, $0) })
+        for item in recoveredDrafts {
+            switch AnyNativeDraftReconciliation.evaluate(item, current: byID[item.blockID],
+                                                        reachable: current.depthFirstIDs.contains(item.blockID)) {
+            case .alreadyStored: drafts.removeValue(forKey: item.blockID)
+            case .requiresReview: break
+            case .conflict:
+                writeState = .conflict(AnyUIErrorText.changedDocument)
+                retainRecovery()
+                return
+            }
+        }
+        requiresDraftReview = false
+        showsDraftReview = false
+        writeState = drafts.isEmpty ? .saved : .pending
+        retainRecovery()
+        await flush()
+    }
+
+    private func captureRecovery(_ values: [String: AnyBlockDraft]? = nil) throws {
+        guard recoveryWasRestored else { return }
+        let values = values ?? drafts
+        let records = try values.values.map {
+            try AnyNativeRecoveredBlockDraft(base: $0.base, inlineMarkdown: $0.inlineMarkdown,
+                                              selection: $0.selection, revision: $0.revision)
+        }
+        try recovery.save(.init(workspace: workspace, objectID: objectID, drafts: records,
+            selectedBlockIDs: selectedBlockIDs, focusedBlockID: focusedBlockID, selection: selectedTextRange))
+    }
+
+    private func retainRecovery() {
+        do { try captureRecovery() }
+        catch { message = AnyUIErrorText.describe(error) }
+    }
+
+    private func restoreRecoveryIfNeeded(_ snapshot: AnyEditorSnapshot) {
+        guard !recoveryWasRestored else { return }
+        recoveryWasRestored = true
+        do {
+            guard let saved = try recovery.document(objectID, workspace: workspace) else { return }
+            guard snapshot.spaceID == workspace.spaceID, snapshot.objectID == objectID,
+                  snapshot.dataset == saved.dataset else { throw AnyNativeRecoveryError.wrongWorkspace }
+            let byID = Dictionary(uniqueKeysWithValues: snapshot.blocks.map { ($0.id, $0) })
+            let reachable = Set(snapshot.depthFirstIDs)
+            for item in saved.drafts {
+                let state = AnyNativeDraftReconciliation.evaluate(item, current: byID[item.blockID],
+                                                                 reachable: reachable.contains(item.blockID))
+                guard state != .alreadyStored else { continue }
+                let base = try AnyEditorBlock(native: item.baseNative)
+                drafts[item.blockID] = .init(base: base, inlineMarkdown: item.inlineMarkdown,
+                                              selection: item.selection, revision: item.revision)
+                textHistoryEpochs[item.blockID, default: 0] &+= 1
+            }
+            selectedBlockIDs = saved.selectedBlockIDs.filter { reachable.contains($0) }
+            focusedBlockID = saved.focusedBlockID.flatMap { reachable.contains($0) ? $0 : nil }
+            selectedTextRange = saved.selection
+            if let id = focusedBlockID, let current = byID[id],
+               NSMaxRange(selectedTextRange) > projection(for: current).display.utf16.count {
+                selectedTextRange = .init(location: 0, length: 0)
+            }
+            requiresDraftReview = !drafts.isEmpty
+            writeState = requiresDraftReview ? .conflict(AnyUIErrorText.recoveredDrafts) : .clean
+            retainRecovery()
+        } catch { message = AnyUIErrorText.describe(error); canWrite = false; requiresDraftReview = true }
     }
 
     public func undoLastNativeEdit() async {
@@ -521,6 +644,7 @@ public final class AnyDocumentPresentation {
     }
 
     public func unmount() {
+        retainRecovery()
         guard isMounted else { return }
         isMounted = false; epoch = UUID()
         torah.deactivateDocument()
@@ -557,6 +681,10 @@ public final class AnyDocumentPresentation {
 }
 
 public enum AnyUIErrorText {
+    public static var recoveredDrafts: String {
+        text("נשמרו שינויים מקומיים מההפעלה הקודמת. יש לבדוק אותם מול הגרסה הנוכחית לפני המשך שמירה.",
+             "Local edits were recovered from the previous session. Review them against the current version before saving.")
+    }
     public static var changedDocument: String {
         text("המסמך השתנה. השינויים המקומיים נשמרו לעריכה; טען את הגרסה הנוכחית לפני ניסיון נוסף.",
              "The document changed. Your local edits are retained; review the current version before retrying.")

@@ -33,6 +33,17 @@ enum NativeHostProbe {
         let nativeCAS = arguments.contains("--native-cas")
         let client = try AnyHTTPClient(baseURL: url, expectedAccountID: workspace.accountID)
         let owner = try await AnyApplicationSession.connect(client: client, workspace: workspace)
+        if arguments.contains("--creation-retry") {
+            guard arguments.contains("--allow-disposable-writes") else { throw ProbeError.usage }
+            try await runNativeCreationProbe(client: client, workspace: workspace, owner: owner)
+            return
+        }
+        if arguments.contains("--properties") {
+            guard arguments.contains("--allow-disposable-writes") else { throw ProbeError.usage }
+            try await runNativePropertyProbe(client: client, workspace: workspace, owner: owner,
+                fixture: PropertyProbeFixture(arguments: arguments))
+            return
+        }
         let store = try AnyEditorDocumentStore(client: client, workspace: workspace, allowedTypeIDs: ["page"])
         let spacePath = ["v1", "spaces", workspace.spaceID]
         let object = try await client.requestJSON(method: "POST", path: spacePath + ["objects"],

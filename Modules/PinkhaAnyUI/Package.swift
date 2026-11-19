@@ -7,6 +7,9 @@ let package = Package(
     dependencies: [
         .package(path: "../PinkhaTorahPresentation"),
         .package(path: "../PinkhaAnyHost"),
+        .package(path: "../PinkhaAnyEngine"),
+        .package(path: "../PinkhaAnyIntegration"),
+        .package(path: "../PinkhaKit"),
         .package(path: "../PinkhaAnyHanlin"),
         .package(path: "../Loc"),
         .package(url: "https://github.com/davidpovarsky/TorahInspectorKit.git",
@@ -15,6 +18,7 @@ let package = Package(
     targets: [
         .target(name: "PinkhaAnyUI", dependencies: [
             "PinkhaTorahPresentation", "PinkhaAnyHost", "PinkhaAnyHanlin",
+            "PinkhaAnyEngine", "PinkhaAnyIntegration", "PinkhaKit",
             .product(name: "PinkhaHanlinUI", package: "PinkhaAnyHanlin", condition: .when(platforms: [.iOS])),
             .product(name: "Loc", package: "Loc", condition: .when(platforms: [.iOS, .macOS])),
             .product(name: "TorahInspectorCore", package: "TorahInspectorKit"),

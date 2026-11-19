@@ -10,7 +10,7 @@ Keep PinkhaKit portable models/codecs, hierarchy and Sefaria providers. Replace 
 
 Preserve NFC identity, context dedup, separate quote instances and unknown fields at envelope/record/item levels. Source provenance must not be invented.
 
-Current association storage is explicitly single-active-writer; T2 immutable candidate remains capability-OFF. Expanded T5 has a build flag and exact runtime gate. Native Source/Topic/Word properties already exist, with read-only canonical derivation and native filtering; generic backlinks do not replace them.
+At the pinned baseline, association storage was explicitly single-active-writer and the T2 immutable candidate was capability-OFF. The isolated native port uses a separately versioned guarded claim contract; its completed and pending gates are recorded in CAPABILITY_STATUS.md. Expanded T5 has a build flag and exact runtime gate. Native Source/Topic/Word properties already exist, with read-only canonical derivation and native filtering; generic backlinks do not replace them.
 
 ## Whole-session ownership
 

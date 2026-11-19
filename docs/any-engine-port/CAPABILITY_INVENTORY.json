@@ -17,7 +17,12 @@
     "branch": "codex/any-engine-port-20261119",
     "complete": false,
     "user_data_touched": false,
-    "whole_app_engine_switched": false
+    "whole_app_engine_switched": false,
+    "last_published_checkpoint": "f520e1c280a5d6562d95278b3032b398db545786",
+    "status_interpretation": "This inventory contains source-backed custom capabilities, disabled candidates, and explicitly unimplemented baseline acceptance goals. The baseline_status is preserved for every group. A component/native-runtime PASS is not whole-app or Apple UI acceptance.",
+    "current_worktree_validation": "Integration107/9 suites PASS; native canonical archive16 PASS; Host property13 + BlockCreator11 PASS; actual native property15 and production creation14 PASS; dynamic document Type v6 and claims-independent metadata v7 proven. Actual property/archive/Hanlin factory/recovery UI is written; portable module semantic compile passes with UIKit/SwiftUI excluded. Apple UI execution and full parity remain open. All new portable UI test sources also typecheck against current production dependencies; none have executed. Actual iOS SwiftUI/UIKit is still uncompiled in this Windows check.",
+    "native_entry_is_separate": true,
+    "no_production_migration_performed": true
   },
   "capabilities": [
     {
@@ -25,7 +30,7 @@
       "name": "Space-local schema and role manifest",
       "layer": "adapter",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "COMPONENT_AND_NATIVE_SCHEMA_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaSpaceBootstrapEngine.swift",
@@ -49,14 +54,28 @@
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/PinkhaSpaceBootstrapEngineTests.swift",
         "Modules/PinkhaKit/Tests/PinkhaKitTests/PinkhaSpaceManifestTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNoteBootstrap.swift",
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHTTPHierarchyRecordStore.swift",
+          "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift"
+        ],
+        "evidence": [
+          "docs/any-engine-port/evidence/20261119/native-integration-probe-v3.json",
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json",
+          "Modules/PinkhaAnyEngine/Evidence/native-property-client-runtime-v1.json",
+          "Tools/AnyEngineValidation/evidence/native-document-metadata-runtime-v7.json"
+        ],
+        "remaining_or_scope": "Explicit install and validated read-only opening exist. Native compiled presentation preferences and claims-independent document metadata are proven. Actual native account/Space setup remains an Apple interaction gate."
+      }
     },
     {
       "id": "BOOT-02",
       "name": "Bootstrap cancellation and account lifecycle",
       "layer": "host",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "COMPONENT_PROVEN_RECOVERY_IMPLEMENTED_APPLE_PENDING",
       "sources": [
         {
           "path": "Anytype/Sources/Pinkha/Bootstrap/PinkhaBootstrapHook.swift",
@@ -79,14 +98,27 @@
       ],
       "baseline_tests": [
         "AnyTypeTests/Pinkha/PinkhaBootstrapStateManagerTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyUIPresentationLifetime.swift",
+          "Modules/PinkhaAnyNative",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift"
+        ],
+        "evidence": [
+          "Modules/PinkhaAnyEngine/Evidence/partial-creation-components-v2.json",
+          "Modules/PinkhaAnyHost/Evidence/native-host-cas-v2.json"
+        ],
+        "remaining_or_scope": "Account/run leases and shared revoke/drain are composed. Root retains only account/Space-scoped navigation and draft/base-version/selection values across background runtime replacement. Restored writes require fresh native reads and manual review. Cold-process unsaved-draft persistence is not claimed; real lifecycle UI acceptance remains open."
+      }
     },
     {
       "id": "HIER-01",
       "name": "Folders, books, documents and explicit hierarchy",
       "layer": "portable_and_adapter",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "ADAPTER_COMPONENT_PROVEN_CUSTOM_TYPE_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyModels.swift",
@@ -114,14 +146,27 @@
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Hierarchy/PinkhaHierarchyCodecTests.swift",
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Hierarchy/PinkhaHierarchyTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyRepository.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift"
+        ],
+        "evidence": [
+          "docs/any-engine-port/evidence/20261119/pinkhaanyintegration-tests-175824.json",
+          "docs/any-engine-port/evidence/20261119/native-integration-probe-v3.json",
+          "docs/any-engine-port/evidence/20261119/canonical-archive-integration-20261119-184145.json",
+          "Tools/AnyEngineValidation/evidence/native-definition-runtime-v6.json"
+        ],
+        "remaining_or_scope": "Native wiki persistence reuses the original tree domain. The native library discovers document types from the versioned per-Space catalog proof, including custom canonical-editor types. Folder/navigation and complete library interaction still await Apple acceptance."
+      }
     },
     {
       "id": "HIER-02",
       "name": "Ordering, cycle prevention and safe folder deletion",
       "layer": "portable_and_adapter",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "ADAPTER_COMPONENT_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyOrdering.swift",
@@ -144,14 +189,26 @@
       ],
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Hierarchy/PinkhaHierarchyTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyLexicographicPosition.swift",
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyGuardedHTTPHierarchyRecordStore.swift"
+        ],
+        "evidence": [
+          "docs/any-engine-port/evidence/20261119/pinkhaanyintegration-tests-175824.json",
+          "docs/any-engine-port/evidence/20261119/native-integration-probe-v3.json",
+          "docs/any-engine-port/evidence/20261119/canonical-archive-integration-20261119-184145.json"
+        ],
+        "remaining_or_scope": "Exact native lexical positions replace numeric persistence. Moves use native version/run guards and cycle validation. Safe folder removal remains an explicit sequence of per-object operations, not a cross-object atomic transaction. Custom document type discovery is now wired into the library."
+      }
     },
     {
       "id": "HIER-03",
       "name": "Optimistic reconciliation and live hierarchy",
       "layer": "portable_and_adapter",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "PORTABLE_SEMANTIC_PASS_BEHAVIOR_AND_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyReconciler.swift",
@@ -170,14 +227,25 @@
       ],
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Hierarchy/PinkhaHierarchyReconciliationTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyHierarchyPresentationState.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift"
+        ],
+        "evidence": [
+          "docs/any-engine-port/evidence/20261119/native-ui-portable-semantic-v3.json",
+          "docs/any-engine-port/evidence/20261119/native-ui-portable-tests-semantic-v5.json"
+        ],
+        "remaining_or_scope": "Presentation overlays preserve actual native _ver values. Replacing the observation feed rejects queued pre-write snapshots before a fresh native read. Five focused behavior tests are written; portable module semantic compilation passed, but those cases have not yet executed and Apple UI acceptance is open."
+      }
     },
     {
       "id": "ASSOC-01",
       "name": "Document/block canonical item CRUD",
       "layer": "portable_domain",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "COMPONENT_AND_NATIVE_RUNTIME_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationModels.swift",
@@ -200,14 +268,27 @@
       ],
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/TorahCanonicalAssociationsTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahAssociationRepository.swift",
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyGuardedTorahOperationStore.swift"
+        ],
+        "evidence": [
+          "docs/any-engine-port/evidence/20261119/pinkhaanyintegration-tests-175824.json",
+          "Modules/PinkhaAnyEngine/Evidence/native-object-client-runtime-v1.json",
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json",
+          "docs/any-engine-port/evidence/20261119/canonical-archive-integration-20261119-184145.json"
+        ],
+        "remaining_or_scope": "Actual PinkhaKit CRUD models, stable IDs and document/block scopes are bridged. Full Integration107 includes incoming numeric/duplicate-key preservation checks. Apple inspector mutation and complete document presentation acceptance remain open."
+      }
     },
     {
       "id": "ASSOC-02",
       "name": "Semantic identity and separate quote instances",
       "layer": "portable_domain",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "COMPONENT_AND_NATIVE_RUNTIME_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift",
@@ -223,14 +304,24 @@
       ],
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/TorahAssociationIdentityTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahAssociationRepository.swift"
+        ],
+        "evidence": [
+          "docs/any-engine-port/evidence/20261119/pinkhaanyintegration-tests-175824.json",
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json"
+        ],
+        "remaining_or_scope": "Original NFC semantic identity and distinct quote instances retained. Original adding() aliases upserting(); the bridge uses that actual baseline policy rather than inventing a no-overwrite variant."
+      }
     },
     {
       "id": "ASSOC-03",
       "name": "Lossless codecs, unknown fields and provenance",
       "layer": "portable_domain",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "OPAQUE_ARCHIVE_PROVEN_UNSAFE_TYPED_INPUT_REFUSED",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift",
@@ -250,14 +341,28 @@
       ],
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/TorahAssociationPayloadCodecTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift",
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahMigration.swift",
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahArchive.swift"
+        ],
+        "evidence": [
+          "docs/any-engine-port/evidence/20261119/pinkhaanyintegration-tests-175824.json",
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json",
+          "docs/any-engine-port/evidence/20261119/canonical-archive-integration-20261119-184145.json",
+          "docs/any-engine-port/evidence/20261119/canonical-archive-native-20261119-185426.json"
+        ],
+        "remaining_or_scope": "Native immutable payloads and exported archives retain exact opaque bytes and provenance. Incoming edits, restored prepared mutations and imports reject duplicate keys or numeric tokens that the original Double-based typed domain cannot round-trip. Tests passed; this remains explicit refusal of unsupported typed edits, not a universal lossless typed editor."
+      }
     },
     {
       "id": "ASSOC-04",
       "name": "Authorization, readback and uncertain writes",
       "layer": "adapter",
       "baseline_status": "ACTIVE_SINGLE_WRITER_MULTI_CLIENT_UNPROVEN",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "NATIVE_AUTHORITY_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Anytype/Sources/Pinkha/Torah/Storage/AnytypeTorahAssociationRepository.swift",
@@ -281,14 +386,26 @@
       ],
       "baseline_tests": [
         "AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift",
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahPreparedMutation.swift"
+        ],
+        "evidence": [
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json",
+          "Modules/PinkhaAnyEngine/Evidence/native-object-client-runtime-v1.json",
+          "docs/any-engine-port/evidence/20261119/pinkhaanyintegration-tests-175824.json"
+        ],
+        "remaining_or_scope": "Native signer/target/ACL guards and immutable prepared retries exist. UI mounted-epoch checks and uncertain readback handling are implemented; actual device acceptance remains open."
+      }
     },
     {
       "id": "T2-01",
       "name": "Immutable operations and retry/collision retention",
       "layer": "candidate",
       "baseline_status": "CANDIDATE_APP_CAPABILITY_OFF",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "NATIVE_RUNTIME_PROVEN",
       "sources": [
         {
           "path": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/operation.go",
@@ -307,14 +424,25 @@
       ],
       "baseline_tests": [
         "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/operation_test.go"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahOperation.swift",
+          "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift"
+        ],
+        "evidence": [
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json",
+          "Modules/PinkhaAnyEngine/Evidence/native-object-client-runtime-v1.json"
+        ],
+        "remaining_or_scope": "Separate versioned guarded native lane; no activation through the generic records lane. Exact retry and space-wide ordered collision refusal proven on synthetic native data."
+      }
     },
     {
       "id": "T2-02",
       "name": "Observed remove and concurrent replacements",
       "layer": "candidate",
       "baseline_status": "CANDIDATE_APP_CAPABILITY_OFF",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "NATIVE_RUNTIME_PROVEN",
       "sources": [
         {
           "path": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/projection.go",
@@ -336,14 +464,24 @@
         "No tombstone resurrection",
         "New add after remove"
       ],
-      "baseline_tests": []
+      "baseline_tests": [],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahOperation.swift"
+        ],
+        "evidence": [
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json",
+          "Tools/AnyEngineValidation/evidence/native-object-runtime-v5.json"
+        ],
+        "remaining_or_scope": "Observed-remove, unseen concurrent add, concurrent replacement and logical conflict quarantine proven across real partitioned peers."
+      }
     },
     {
       "id": "T2-03",
       "name": "Native signer/ACL and commit fence",
       "layer": "candidate",
       "baseline_status": "CANDIDATE_APP_CAPABILITY_OFF",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "NATIVE_AUTHORITY_AND_DOCUMENT_DEFINITION_PROVEN",
       "sources": [
         {
           "path": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_host.go",
@@ -361,14 +499,27 @@
         "Spoofed author rejected",
         "Deleted/read-only target rejected"
       ],
-      "baseline_tests": []
+      "baseline_tests": [],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift",
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift"
+        ],
+        "evidence": [
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json",
+          "Tools/AnyEngineValidation/evidence/native-block-fence-v3.json",
+          "Tools/AnyEngineValidation/evidence/native-definition-runtime-v6.json",
+          "Tools/AnyEngineValidation/evidence/native-document-metadata-runtime-v7.json"
+        ],
+        "remaining_or_scope": "Native signer, current ACL, target and applicable dynamic document Type definition guards are proven. Conditional block/property/object creation have separate capability gates. Metadata proof is independent of claims installation and unrelated carrier history; actual target/body/Type/ACL generations remain bound."
+      }
     },
     {
       "id": "T2-04",
       "name": "Real two-client offline, reopen and crash proof",
       "layer": "acceptance",
       "baseline_status": "NOT_PORTED_NOT_RUN",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "NATIVE_PARTITION_AND_REOPEN_PROVEN",
       "sources": [
         {
           "path": "Tools/TorahNativeOperations/run_native_clients.py",
@@ -386,14 +537,24 @@
         "Cold reopen",
         "Mixed-version refusal"
       ],
-      "baseline_tests": []
+      "baseline_tests": [],
+      "native_port": {
+        "implementation": [
+          "Tools/AnyEngineValidation"
+        ],
+        "evidence": [
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json",
+          "Tools/AnyEngineValidation/evidence/native-object-runtime-v5.json"
+        ],
+        "remaining_or_scope": "Disposable peers were actually firewalled, restarted offline and reconnected. Does not imply all iOS interruption paths or user database migration have been tested."
+      }
     },
     {
       "id": "T2-05",
       "name": "Cancellation during target loading",
       "layer": "candidate",
       "baseline_status": "CANDIDATE_APP_CAPABILITY_OFF",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "COMPONENT_PROVEN_DEVICE_RACE_ACCEPTANCE_PENDING",
       "sources": [
         {
           "path": "Tools/TorahNativeOperations/overlay/core/block/editor/torahopsobject/object.go",
@@ -409,14 +570,25 @@
         "Cancelled lookup propagates",
         "No later orphan write"
       ],
-      "baseline_tests": []
+      "baseline_tests": [],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahAssociationRepository.swift",
+          "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift"
+        ],
+        "evidence": [
+          "docs/any-engine-port/evidence/20261119/pinkhaanyintegration-tests-175824.json",
+          "Modules/PinkhaAnyEngine/Evidence/native-object-components-v1.json"
+        ],
+        "remaining_or_scope": "Generation invalidation and cancellation are fenced in components and transport. Full mounted iOS target-loading race remains an explicit acceptance case."
+      }
     },
     {
       "id": "PROP-01",
       "name": "Native Source/Topic/Word indexed properties",
       "layer": "engine_adapter",
       "baseline_status": "NATIVE_DERIVED_PRESENT_DEVICE_QA_OPEN",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "NATIVE_INDEX_RUNTIME_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaHeart/torah/projection.go",
@@ -440,14 +612,25 @@
       ],
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahDerivedQueryProjectionTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyGuardedTorahIndex.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift"
+        ],
+        "evidence": [
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json",
+          "docs/any-engine-port/evidence/20261119/pinkhaanyintegration-tests-175824.json"
+        ],
+        "remaining_or_scope": "Native Source/Topic/Word indexes retain original document-context exclusions and read-only values. UI composition and indexed document navigation await Apple acceptance."
+      }
     },
     {
       "id": "PROP-02",
       "name": "Rebuildable projection and stale cache detection",
       "layer": "engine_adapter",
       "baseline_status": "NATIVE_DERIVED_PRESENT_DEVICE_QA_OPEN",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "NATIVE_INDEX_RUNTIME_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaHeart/engine/index.go",
@@ -469,14 +652,24 @@
         "Stale generation not ready",
         "Malformed fails closed"
       ],
-      "baseline_tests": []
+      "baseline_tests": [],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyGuardedTorahIndex.swift"
+        ],
+        "evidence": [
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json",
+          "Tools/AnyEngineValidation/evidence/native-object-runtime-v5.json"
+        ],
+        "remaining_or_scope": "Native readiness/generation, conflict/unsupported coverage and invalidation for bin/deletion/orphans are explicit. Incomplete results are never rendered as complete."
+      }
     },
     {
       "id": "PROP-03",
       "name": "Universal property picker, hide/attach and Type retention",
       "layer": "host",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "HOST_AND_NATIVE_PROPERTY_WORKFLOW_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Anytype/Sources/Pinkha/Torah/Properties/PinkhaTorahNativePropertyCatalog.swift",
@@ -497,14 +690,28 @@
       "baseline_tests": [
         "AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift",
         "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+          "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertyPresentation.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift"
+        ],
+        "evidence": [
+          "Modules/PinkhaAnyEngine/Evidence/property-components-v1.json",
+          "Modules/PinkhaAnyEngine/Evidence/native-property-client-runtime-v1.json",
+          "Tools/AnyEngineValidation/evidence/native-definition-runtime-v6.json"
+        ],
+        "remaining_or_scope": "Host13 tests and real native15 prove custom Type changes preserve existing body/IDs/styles, attach/detach preserves values, hide/show retains unknown preference keys, derived visibility is separate, and conditional Undo/stale rejection work. Actual picker/value/collection/visibility UI is written. Seven portable value-codec cases and Apple interaction acceptance remain pending."
+      }
     },
     {
       "id": "PROP-04",
       "name": "Import/export canonical versus local fields",
       "layer": "engine_adapter",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "CANONICAL_ARCHIVE_NATIVE_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaHeart/transport/import.go",
@@ -523,14 +730,26 @@
       ],
       "baseline_tests": [
         "Modules/PinkhaHeart/transport/import_test.go"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahArchive.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeArchiveTransfer.swift"
+        ],
+        "evidence": [
+          "Tools/AnyEnginePort/verify_source_retention.py",
+          "docs/any-engine-port/evidence/20261119/canonical-archive-integration-20261119-184145.json",
+          "docs/any-engine-port/evidence/20261119/canonical-archive-native-20261119-185426.json"
+        ],
+        "remaining_or_scope": "This is a source-backed baseline capability. Canonical archive export preserves raw payload/provenance and excludes derived/local caches; prepared import uses explicit object/block/Note maps and a new native signer. Native16 and archive cases within Integration107 passed. File export/import review UI is written; complete Heart formats, document text and attached-file transfer are not claimed."
+      }
     },
     {
       "id": "PROVIDER-01",
       "name": "Sefaria canonical references and hierarchy",
       "layer": "portable_provider",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "BASELINE_CODE_REUSED_NATIVE_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaReferenceProvider.swift",
@@ -554,14 +773,23 @@
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaReferenceProviderTests.swift",
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaHierarchyTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaKit/Sources/PinkhaKit/Torah"
+        ],
+        "evidence": [
+          "Tools/AnyEnginePort/verify_source_retention.py"
+        ],
+        "remaining_or_scope": "Pinned provider/reference hierarchy implementation is retained; new source search and inline inspector call the same workspace. End-to-end native presentation is pending."
+      }
     },
     {
       "id": "PROVIDER-02",
       "name": "Texts, commentaries and source metadata",
       "layer": "portable_provider",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "BASELINE_CODE_REUSED_NATIVE_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaTextProvider.swift",
@@ -589,14 +817,24 @@
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaTextProviderTests.swift",
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaRelationshipProviderTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaKit/Sources/PinkhaKit/Torah",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift"
+        ],
+        "evidence": [
+          "Tools/AnyEnginePort/verify_source_retention.py"
+        ],
+        "remaining_or_scope": "Existing texts/commentaries/source metadata and provider payload types are reused; no independently reimplemented provider. New native sheet/source navigation needs Apple execution."
+      }
     },
     {
       "id": "PROVIDER-03",
       "name": "Topics, words and registry",
       "layer": "portable_provider",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "BASELINE_CODE_REUSED_NATIVE_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaTopicProvider.swift",
@@ -623,14 +861,23 @@
       ],
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaTopicLexicalProviderTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaKit/Sources/PinkhaKit/Torah"
+        ],
+        "evidence": [
+          "Tools/AnyEnginePort/verify_source_retention.py"
+        ],
+        "remaining_or_scope": "Original registry/topic/word domain retained and native index contract tested. Provider picker UI remains an Apple acceptance gate."
+      }
     },
     {
       "id": "PROVIDER-04",
       "name": "HTTP retry/cancellation and metrics",
       "layer": "portable_provider",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "BASELINE_CODE_REUSED_NATIVE_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaClient.swift",
@@ -650,14 +897,23 @@
       ],
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahHTTPTransportTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaKit/Sources/PinkhaKit/Torah"
+        ],
+        "evidence": [
+          "Tools/AnyEnginePort/verify_source_retention.py"
+        ],
+        "remaining_or_scope": "Original HTTP retry/cancellation/metrics code retained. No new live-provider or device timing claim is inferred from source retention."
+      }
     },
     {
       "id": "INSPECT-01",
       "name": "Native Inspector, search and request fencing",
       "layer": "host_ui",
       "baseline_status": "SOURCE_PRESENT_BROAD_DEVICE_QA_OPEN",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "SHARED_CONTROLLER_EXTRACTED_NATIVE_UI_PENDING",
       "sources": [
         {
           "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorHostModifier.swift",
@@ -686,14 +942,24 @@
       "baseline_tests": [
         "AnyTypeTests/Pinkha/TorahSearchLayoutTests.swift",
         "AnyTypeTests/Pinkha/TorahRelatedDocumentActionTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaTorahPresentation",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift"
+        ],
+        "evidence": [
+          "Modules/PinkhaTorahPresentation/EXTRACTION.json"
+        ],
+        "remaining_or_scope": "Actual original TorahEditorSession and search presenter are shared; pinned TorahInspectorUI sheet is used. UIKit/SwiftUI presentation, detents, stale actions and close/reopen still await Apple acceptance."
+      }
     },
     {
       "id": "QUOTE-01",
       "name": "Quote/drop insertion, focus and provenance",
       "layer": "host_adapter",
       "baseline_status": "SOURCE_PRESENT_BROAD_DEVICE_QA_OPEN",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "GUARDED_BLOCK_PRIMITIVES_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
@@ -714,14 +980,27 @@
       "baseline_tests": [
         "AnyTypeTests/Pinkha/TorahQuoteInsertionTests.swift",
         "PinkhaStage1Acceptance/Tests/PinkhaTorahQuoteAcceptanceUITests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBlockCreator.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift"
+        ],
+        "evidence": [
+          "Modules/PinkhaAnyEngine/Evidence/partial-creation-components-v2.json",
+          "Modules/PinkhaTorahPresentation/EXTRACTION.json",
+          "Modules/PinkhaAnyEngine/Evidence/property-components-v1.json",
+          "Modules/PinkhaAnyEngine/Evidence/native-creation-client-runtime-v2.json"
+        ],
+        "remaining_or_scope": "Original single-use drop/session logic is shared. Guarded native block creation preserves text/style/parent/position and known native IDs through journal/readback/callback failures. Block11 and actual creation14 passed. Actual quote/drop/focus/citation UI acceptance and exact presentation-level retry retention remain open."
+      }
     },
     {
       "id": "EDITOR-01",
       "name": "Editor selection, focus and native ownership",
       "layer": "host_ui",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_OPEN",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "NATIVE_EDITOR_AND_RECOVERY_IMPLEMENTED_UI_GAPS_OPEN",
       "sources": [
         {
           "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
@@ -739,14 +1018,28 @@
         "Selection/copy/paste",
         "Undo/redo"
       ],
-      "baseline_tests": []
+      "baseline_tests": [],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift"
+        ],
+        "evidence": [
+          "Modules/PinkhaAnyHost/Evidence/native-host-cas-v2.json",
+          "Modules/PinkhaAnyEngine/Evidence/partial-creation-components-v2.json",
+          "Modules/PinkhaAnyEngine/Evidence/native-property-client-runtime-v1.json",
+          "docs/any-engine-port/evidence/20261119/native-ui-portable-semantic-v3.json"
+        ],
+        "remaining_or_scope": "Stable native block IDs, conditional narrow writes, UIKit selection, original-version draft conflicts, exact late-commit reconciliation and scoped memory recovery are implemented. IME marked-text composition is a confirmed remaining bug; formatting toggles and native checked/ordered markers require the next editor change. Unsupported native block types remain read-only. Apple focus/selection/Undo/drag acceptance is open; no cold-process unsaved-draft claim."
+      }
     },
     {
       "id": "EDITOR-02",
       "name": "Captured offsets versus durable semantic anchors",
       "layer": "domain_limit",
       "baseline_status": "DURABLE_TEXT_ANCHORS_NOT_IMPLEMENTED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "BASELINE_LIMITATION_RETAINED",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationModels.swift",
@@ -763,14 +1056,21 @@
         "Captured context",
         "Stale selection not silently relinked"
       ],
-      "baseline_tests": []
+      "baseline_tests": [],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift"
+        ],
+        "evidence": [],
+        "remaining_or_scope": "Baseline had captured offsets/excerpts, not durable semantic text anchors. Native UI preserves UTF-16 source/display mapping and version-fenced selections; durable anchors are not claimed as an existing or completed capability."
+      }
     },
     {
       "id": "RTL-01",
       "name": "Direction and explicit alignment persistence",
       "layer": "portable_host",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "PRESERVED_POLICY_BOUND_NATIVE_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/RTL/PinkhaWritingDirectionPolicy.swift",
@@ -800,14 +1100,24 @@
         "Modules/PinkhaKit/Tests/PinkhaKitTests/RTL/PinkhaWritingDirectionPolicyTests.swift",
         "Modules/PinkhaKit/Tests/PinkhaKitTests/RTL/PinkhaTextDirectionMarkerTests.swift",
         "AnyTypeTests/Pinkha/PinkhaTextDirectionPersistenceTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeWritingPolicy.swift",
+          "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift"
+        ],
+        "evidence": [
+          "Modules/PinkhaAnyEngine/Evidence/partial-creation-components-v2.json"
+        ],
+        "remaining_or_scope": "Original writing policy is reused: app direction owns automatic alignment; explicit direction/alignment survives. Five newly added UI portable cases (including literal code) still await their package run; Hebrew/English device acceptance remains open."
+      }
     },
     {
       "id": "RTL-02",
       "name": "Navigation direction and leading markers",
       "layer": "portable_host",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "NATIVE_NAVIGATION_ADAPTATION_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/RTL/PinkhaNavigationDirectionPolicy.swift",
@@ -831,14 +1141,22 @@
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/RTL/PinkhaNavigationDirectionPolicyTests.swift",
         "AnyTypeTests/Pinkha/PinkhaNavigationGestureBridgeTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift"
+        ],
+        "evidence": [],
+        "remaining_or_scope": "Native navigation/leading constraints and OS full-content pop recognizer replace the old custom pan workaround. Actual RTL/LTR back-swipe and leading-marker UI acceptance is required."
+      }
     },
     {
       "id": "T5-01",
       "name": "Native note creation and recovery",
       "layer": "portable_adapter",
       "baseline_status": "SOURCE_PRESENT_CRASH_IDEMPOTENCY_LIMITED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "GUARDED_CREATION_PRIMITIVES_PROVEN_NOTE_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift",
@@ -858,14 +1176,29 @@
       ],
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahNotesService.swift",
+          "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeWorkflowBindings.swift"
+        ],
+        "evidence": [
+          "docs/any-engine-port/evidence/20261119/pinkhaanyintegration-tests-175824.json",
+          "docs/any-engine-port/evidence/20261119/native-integration-probe-v3.json",
+          "Modules/PinkhaAnyEngine/Evidence/partial-creation-components-v2.json",
+          "Modules/PinkhaAnyEngine/Evidence/native-creation-client-runtime-v2.json",
+          "Modules/PinkhaAnyEngine/Evidence/property-components-v1.json",
+          "docs/any-engine-port/evidence/20261119/canonical-archive-integration-20261119-184145.json"
+        ],
+        "remaining_or_scope": "Original T5 note/context flow is reused with verified Note marker and the shared intent journal. Actual native object/block creation14 and Block11 are proven, including exact retries and known-ID failures. This is not a complete T5 inspector/UI proof. Unknown auto-ID outcomes cannot blindly dispatch a new native creation."
+      }
     },
     {
       "id": "T5-02",
       "name": "Space-wide related documents",
       "layer": "portable_adapter",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "NATIVE_RELATED_INDEX_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5SpaceRelatedDocumentsQuery.swift",
@@ -885,14 +1218,25 @@
       ],
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5SpaceRelatedDocumentsQueryTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyGuardedTorahIndex.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTorahRelatedPresentation.swift"
+        ],
+        "evidence": [
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json",
+          "docs/any-engine-port/evidence/20261119/pinkhaanyintegration-tests-175824.json"
+        ],
+        "remaining_or_scope": "Indexed same-Space related targets, current metadata, explicit coverage and safe unlink are implemented. Full related-note sheet/navigation acceptance remains open."
+      }
     },
     {
       "id": "T5-03",
       "name": "Expanded block/quote lookup with capability gate",
       "layer": "candidate",
       "baseline_status": "DEFAULT_BUILD_CAPABILITY_UNAVAILABLE",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "EXPLICIT_EXPANDED_NATIVE_CAPABILITY_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5ExpandedRelatedTargets.swift",
@@ -925,14 +1269,23 @@
       "baseline_tests": [
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5ExpandedRelatedTargetsTests.swift",
         "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NativeRelatedLookupCapabilityTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyGuardedTorahIndex.swift"
+        ],
+        "evidence": [
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json"
+        ],
+        "remaining_or_scope": "Unlike the baseline default-unavailable capability, the separate versioned native related API includes document/block/context/quote targets with safe-unlink semantics. Activation still requires exact capability and UI proof."
+      }
     },
     {
       "id": "AI-01",
       "name": "Canonical Hanlin SDK and presentation",
       "layer": "sdk_host",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "SHARED_SDK_AND_UI_COMPOSED_APPLE_PENDING",
       "sources": [
         {
           "path": "Tools/Hanlin/source.json",
@@ -961,14 +1314,25 @@
       "baseline_tests": [
         "AnyTypeTests/Pinkha/HanlinSDKConsumerTests.swift",
         "PinkhaStage1Acceptance/Tests/HanlinNativeAcceptanceUITests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore",
+          "Modules/PinkhaAnyHanlin"
+        ],
+        "evidence": [
+          "Modules/PinkhaAnyHanlin/Evidence/native-hanlin-read-v1.json",
+          "Modules/PinkhaAnyHanlin/Evidence/owner-recovery-components-v1.json"
+        ],
+        "remaining_or_scope": "Pinned canonical SDK and original chat/composer/send/configure/close/consent code are shared with the old app. New actual UIKit presentation has not yet passed native Apple UI tests."
+      }
     },
     {
       "id": "AI-02",
       "name": "Consent for document/selected-text reads",
       "layer": "host_contract",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "BASELINE_BLOCK_SELECTION_AND_NATIVE_READ_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinHostAdapter.swift",
@@ -997,14 +1361,24 @@
       "baseline_tests": [
         "AnyTypeTests/Pinkha/HanlinHostAdapterTests.swift",
         "PinkhaStage1Acceptance/Tests/HanlinSelectionAcceptanceUITests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin"
+        ],
+        "evidence": [
+          "Modules/PinkhaAnyHanlin/Evidence/native-hanlin-read-v1.json",
+          "Modules/PinkhaAnyHanlin/Evidence/selection-granularity-parity-v1.json"
+        ],
+        "remaining_or_scope": "Exact baseline source confirms selected-text coverage means complete selected text blocks, not character substrings. The native read host preserves that contract and original consent authority. Native read probe used a synthetic UI owner; real mounted Cancel/Allow/return/reset sheets await Apple interaction tests."
+      }
     },
     {
       "id": "AI-03",
       "name": "Revocation, account and navigation receipts",
       "layer": "host_contract",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "SHARED_AUTHORITY_COMPONENT_PROVEN_UI_PENDING",
       "sources": [
         {
           "path": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAccountOwner.swift",
@@ -1036,14 +1410,25 @@
       ],
       "baseline_tests": [
         "AnyTypeTests/Pinkha/HanlinHostReadWriteTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore",
+          "Modules/PinkhaAnyHanlin"
+        ],
+        "evidence": [
+          "Modules/PinkhaAnyHanlin/Evidence/owner-recovery-components-v1.json",
+          "Modules/PinkhaAnyHanlin/Evidence/native-hanlin-read-v1.json"
+        ],
+        "remaining_or_scope": "Single mounted owner, original revocation/navigation receipts and lifetime invalidation are reused. Full account/background/source-return presentation proof remains open."
+      }
     },
     {
       "id": "AI-04",
       "name": "Create-page preflight, durable journal and receipts",
       "layer": "host_adapter",
       "baseline_status": "SOURCE_PRESENT_ACCEPTANCE_NOT_REVALIDATED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "GUARDED_CREATION_AND_ACTUAL_FACTORY_WIRED_APPLE_PENDING",
       "sources": [
         {
           "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
@@ -1076,14 +1461,27 @@
       ],
       "baseline_tests": [
         "AnyTypeTests/Pinkha/HanlinHostWriteTests.swift"
-      ]
+      ],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinCreationAuthority.swift",
+          "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+          "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift"
+        ],
+        "evidence": [
+          "Modules/PinkhaAnyHanlin/Evidence/owner-recovery-components-v1.json",
+          "Modules/PinkhaAnyEngine/Evidence/partial-creation-components-v2.json",
+          "Modules/PinkhaAnyEngine/Evidence/native-creation-client-runtime-v2.json"
+        ],
+        "remaining_or_scope": "The actual native Hanlin factory now receives the existing guarded creator and creation authority, preserving the original exact-title confirmation, protected journal and receipt policy. The single account owner is opened/closed at NativeApplication scope, not per chat. Native primitive creation14 passed; real mounted approval and protected iOS journal workflow still await Apple."
+      }
     },
     {
       "id": "MIG-01",
       "name": "Non-destructive identity map and migration",
       "layer": "migration",
       "baseline_status": "NOT_IMPLEMENTED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "CANONICAL_TRANSFER_PROVEN_FULL_HEART_TRANSFER_PENDING",
       "sources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift",
@@ -1106,14 +1504,26 @@
         "Unknown data preserved",
         "Audit lookup to source"
       ],
-      "baseline_tests": []
+      "baseline_tests": [],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahMigration.swift",
+          "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahArchive.swift"
+        ],
+        "evidence": [
+          "docs/any-engine-port/evidence/20261119/pinkhaanyintegration-tests-175824.json",
+          "docs/any-engine-port/evidence/20261119/canonical-archive-integration-20261119-184145.json",
+          "docs/any-engine-port/evidence/20261119/canonical-archive-native-20261119-185426.json"
+        ],
+        "remaining_or_scope": "This inventory item was NOT_IMPLEMENTED in the baseline. New non-destructive canonical association transfer has stable explicit maps, immutable prepared operations, strict precision refusal and native final readback. Whole-Space migration diagnostics retain their declared bound. Full Heart object/body/file/Type/property conversion remains additional unfinished work."
+      }
     },
     {
       "id": "APP-01",
       "name": "Complete original application parity",
       "layer": "whole_app",
       "baseline_status": "WHOLE_APP_PORT_NOT_IMPLEMENTED",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "SEPARATE_NATIVE_APP_ENTRY_APPLE_AND_PARITY_PENDING",
       "sources": [
         {
           "path": "Anytype.xcodeproj/project.pbxproj",
@@ -1135,14 +1545,22 @@
         "No cross-engine fallback writes",
         "Build/simulator/physical iPad"
       ],
-      "baseline_tests": []
+      "baseline_tests": [],
+      "native_port": {
+        "implementation": [
+          "Modules/PinkhaAnyNative",
+          "Modules/PinkhaAnyUI"
+        ],
+        "evidence": [],
+        "remaining_or_scope": "This baseline inventory item was WHOLE_APP_PORT_NOT_IMPLEMENTED, not an existing custom feature. A separate coherent native account/Space/library/editor composition exists in source. The original Heart app remains available; complete original application feature parity is not claimed."
+      }
     },
     {
       "id": "OPS-01",
       "name": "Source-bound validation and evidence",
       "layer": "acceptance",
       "baseline_status": "PORT_VALIDATION_NOT_RUN",
-      "new_engine_status": "NOT_RUN",
+      "new_engine_status": "SOURCE_BOUND_COMPONENT_AND_NATIVE_PROOF_UI_PENDING",
       "sources": [
         {
           "path": "Tools/Hanlin/run_host_tests.py",
@@ -1164,7 +1582,29 @@
         "PASS/FAIL/NOT_RUN/BLOCKED",
         "Physical device distinguished"
       ],
-      "baseline_tests": []
+      "baseline_tests": [],
+      "native_port": {
+        "implementation": [
+          "Tools/AnyEnginePort/verify_source_retention.py",
+          "Tools/AnyEngineValidation"
+        ],
+        "evidence": [
+          "Tools/AnyEnginePort/verify_source_retention.py",
+          "docs/any-engine-port/evidence/20261119/pinkhaanyintegration-tests-175824.json",
+          "Modules/PinkhaAnyEngine/Evidence/native-object-components-v1.json",
+          "Tools/AnyEngineValidation/evidence/native-runtime-v2.json",
+          "Tools/AnyEngineValidation/evidence/native-object-runtime-v5.json",
+          "Modules/PinkhaAnyHanlin/Evidence/owner-recovery-components-v1.json",
+          "Modules/PinkhaAnyEngine/Evidence/partial-creation-components-v2.json",
+          "docs/any-engine-port/evidence/20261119/canonical-archive-integration-20261119-184145.json",
+          "docs/any-engine-port/evidence/20261119/canonical-archive-native-20261119-185426.json",
+          "Modules/PinkhaAnyEngine/Evidence/property-components-v1.json",
+          "Modules/PinkhaAnyEngine/Evidence/native-property-client-runtime-v1.json",
+          "docs/any-engine-port/evidence/20261119/native-ui-portable-semantic-v3.json",
+          "docs/any-engine-port/evidence/20261119/native-ui-portable-tests-semantic-v5.json"
+        ],
+        "remaining_or_scope": "Integration107/9 suites, Host13+Block11, native property15, native archive16, creation14 and v6/v7 native definition receipts are source-bound. Portable AnyUI semantic compilation passed with UIKit/SwiftUI excluded. The new UI tests have not executed; no source-only, failed-harness or wrong-executable run is counted as UI acceptance."
+      }
     }
   ],
   "offshoot_review": {
@@ -1194,15 +1634,38 @@
     },
     {
       "id": "MIGRATION-UNKNOWN-NUMBERS",
-      "status": "FAIL_CLOSED_IMPLEMENTED_AWAITING_TEST_RESULT",
-      "description": "Existing TorahJSONValue uses Double. Planner refuses numeric tokens whose exact value changes through the domain codec; duplicate keys also refused. Durable original-byte archive remains open.",
+      "status": "FAIL_CLOSED_GUARD_AND_OPAQUE_ARCHIVE_PROVEN",
+      "description": "Original Double-based typed JSON cannot represent every token. Ordinary incoming edits, prepared mutations and imports now reject changes in exact numeric value or duplicate keys. Native archive export retains original opaque payload bytes independently of typed edit support; Integration107 and native archive16 passed.",
       "source": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift"
     },
     {
       "id": "MIGRATION-INTERNAL-NOTE-LINKS",
-      "status": "EXPLICIT_MAPPING_IMPLEMENTED_AWAITING_TEST_RESULT",
-      "description": "T5 origin links embed old native note IDs in canonicalKey, externalID and metadata. Planner requires a coherent explicit objectIDMap and validates referenced destination readability.",
+      "status": "EXPLICIT_MAPPING_COMPONENT_AND_NATIVE_ARCHIVE_PROVEN",
+      "description": "T5 internal Note IDs in canonical reference/external ID/metadata require coherent explicit mapping and readable native destinations. Canonical archive review UI exposes actual current block/Note choices; Apple picker execution remains pending.",
       "source": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahMigration.swift"
+    },
+    {
+      "id": "EDITOR-MARKED-TEXT",
+      "status": "CONFIRMED_OPEN_UI_BUG",
+      "description": "Current UITextView shouldChange implementation replaces attributed text and returns false. Marked-text composition must be preserved with source/base-version and session fencing; implementation is assigned after this checkpoint."
+    },
+    {
+      "id": "EDITOR-NATIVE-MARKERS",
+      "status": "CONFIRMED_OPEN_RENDERING_GAP",
+      "description": "Native ordered/number/checked style fields are retained but current renderer uses fixed bullet/unchecked glyphs. Native policy adaptation and focused tests are assigned after this checkpoint."
+    },
+    {
+      "id": "UI-RECOVERY-SCOPE",
+      "status": "IMPLEMENTED_PORTABLE_SEMANTIC_ONLY",
+      "description": "Root retains a separate recovery value owner per account/Space. It holds navigation and raw drafts/base versions/selection only; restored text needs fresh native read and manual review, while exact already-stored text is accepted without resending. Cold-process unsaved recovery is not claimed."
     }
-  ]
+  ],
+  "status_evidence_legend": {
+    "SOURCE_RETAINED": "Exact original source/blobs retained or an approved explicit shared extraction; does not establish runtime behavior.",
+    "COMPONENT_PROVEN": "Real domain/component tests with source manifest; dependency fixtures are identified and do not imply device/backend proof.",
+    "NATIVE_RUNTIME_PROVEN": "Actual patched Any engine/API/storage/sync executed on synthetic accounts/Spaces with source-bound evidence; scope is stated in each receipt.",
+    "UI_PENDING": "New native UIKit/SwiftUI composition still needs a successful Apple semantic build and feature acceptance.",
+    "NOT_BASELINE_IMPLEMENTED": "The inventory explicitly records baseline gaps/candidates. MIG-01 and APP-01 are not claimed as previously implemented features."
+  },
+  "status_updated_at_utc": "2026-11-19T19:12:10.518435+00:00"
 }

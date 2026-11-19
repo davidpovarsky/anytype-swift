@@ -62,3 +62,46 @@ CI steps. Parser checks and Windows package tests do not certify those steps.
 This checkpoint does not claim complete original-application parity, a signed IPA,
 physical-device validation, or completed Heart-data migration. The detailed
 capability inventory and open Asana work items remain the acceptance authority.
+
+## Current acceptance evidence
+
+The complete default overlay is native v7, manifest
+`Tools/AnyEngineValidation/evidence/native-document-metadata-v7-source.json`.
+It includes the v5 creation/claim fences and v6 document/property policy.
+Its exact 85 changed files were reapplied to disposable clean Git indexes.
+Do not stack historical v1–v6 patches on top of this overlay.
+
+| Execution scope | Latest completed result | Boundary |
+| --- | --- | --- |
+| Swift Integration | 107 tests in 9 suites, source stable | Domain and adapter tests; no UIKit execution |
+| Production Swift canonical archive against native v5 | 16/16 checks | Association history/payload export, explicit ID mapping, native import/retry; not full Heart body/file migration |
+| Production Swift guarded creation against native v5 | 14/14 checks | Real native object/block creation; this probe uses an in-memory metadata journal |
+| Production Swift property service against native v6 | 15/15 checks | Type preservation, typed values, membership, hidden fields and conditional Undo |
+| Native v6 definition/property policy | 4 SDK tests, 19 top-level HTTP tests / 31 cases, and 11 two-peer checks | Actual storage, signed claims, sync, definition removal and cold reopen |
+| Native v7 independent document metadata | 4 focused native tests and 7 real HTTP/cold-reopen checks | Fresh editor policy before claims installation; exact Type/target dependencies |
+| New native application acceptance | 4 real AnyLib/Keychain/journal tests written | Apple execution pending |
+| Separate executable acceptance | 3 XCUITests written | Real onboarding, Hebrew edit, Hanlin consent, background and cold reopen pending Apple execution |
+
+Read the source-bound receipts rather than adding these counts together: scopes,
+versions and fixtures differ, and later features are not certified by an older run.
+The detailed current capability table is
+[CAPABILITY_STATUS.md](../docs/any-engine-port/CAPABILITY_STATUS.md).
+
+## Scene and test isolation
+
+Like the retained application, the executable explicitly disables simultaneous
+scenes in its Info.plist. One root presentation owns the single managed native
+runtime. CI checks the generated app bundle's actual scene declaration and
+prefers an available iPad simulator on iOS 27 or newer.
+
+Debug-only UI tests use a UUID-specific data directory and Keychain namespace.
+Reusing that exact test UUID permits a cold-process reopening test. Native Space
+creation uses the real configured network; an empty node configuration is not
+treated as a proven offline Space-bootstrap implementation.
+
+Saved text is verified after process termination. Unsaved draft recovery is
+currently bounded, account/Space-scoped memory retained across background
+runtime replacement. Every recovered draft obtains a fresh native snapshot;
+a late matching native confirmation is reconciled without another write, and
+remaining changes require review. This is not process-persistent unsaved-draft
+storage.

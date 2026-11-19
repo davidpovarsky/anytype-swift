@@ -26,11 +26,13 @@ public struct AnyNativeDocumentView: View {
                                 Button(AnyUIErrorText.text("הוספת פסקה", "Add paragraph")) {
                                     Task { await presentation.addParagraph() }
                                 }.disabled(!presentation.canMutate)
+                                    .accessibilityIdentifier("any-native-add-paragraph")
                             }
                         }
                     }
             }
-            writeStatus
+            writeStatus.accessibilityIdentifier("any-native-save-status")
+                .accessibilityValue(Text(presentation.writeStatusAccessibilityValue))
         }
         .navigationTitle(presentation.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : presentation.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -44,6 +46,9 @@ public struct AnyNativeDocumentView: View {
                     .accessibilityLabel(AnyUIErrorText.text("מאפיינים", "Properties"))
                     .accessibilityIdentifier("any-native-document-properties")
                 Menu {
+                    Button(AnyUIErrorText.text("העברת קישורי מקורות", "Transfer source associations"),
+                           systemImage: "arrow.up.arrow.down") { presentation.showsArchiveTransfer = true }
+                        .accessibilityIdentifier("any-native-canonical-transfer")
                     Button(AnyUIErrorText.text("הוספת פסקה", "Add paragraph"), systemImage: "plus") {
                         Task { await presentation.addParagraph() }
                     }.disabled(!presentation.canMutate)
@@ -70,6 +75,10 @@ public struct AnyNativeDocumentView: View {
             }
         }
         .modifier(AnyTorahInspectorLayer(session: presentation.torah, host: .editor))
+        .sheet(isPresented: $presentation.showsArchiveTransfer) {
+            AnyNativeArchiveTransferView(document: presentation)
+        }
+        .sheet(isPresented: $presentation.showsDraftReview) { draftReview }
         .sheet(isPresented: $presentation.showsProperties) {
             AnyNativePropertiesView(presentation: presentation)
         }
@@ -99,7 +108,45 @@ public struct AnyNativeDocumentView: View {
                 presentation.message = nil; presentation.torah.message = nil
             }
         } message: { Text(presentation.message ?? presentation.torah.message ?? "") }
-        .onDisappear { presentation.unmount() }
+        .task { await presentation.load() }
+        // The UIKit controller/dismantle hook owns actual removal. Owned
+        // property/inspector sheets may cover this view without retiring it.
+    }
+
+    private var draftReview: some View {
+        NavigationStack {
+            List {
+                Section {
+                    Text(AnyUIErrorText.recoveredDrafts)
+                        .font(.footnote).foregroundStyle(.secondary)
+                }
+                ForEach(presentation.recoveredDrafts, id: \.blockID) { draft in
+                    Section(AnyUIErrorText.text("שינוי מקומי", "Local edit")) {
+                        Text(draft.inlineMarkdown).textSelection(.enabled)
+                        if let current = presentation.read?.snapshot.blocks.first(where: { $0.id == draft.blockID }),
+                           presentation.read?.snapshot.depthFirstIDs.contains(draft.blockID) == true {
+                            Text(AnyUIErrorText.text("הטקסט השמור כעת", "Currently saved text"))
+                                .font(.caption).foregroundStyle(.secondary)
+                            Text(current.text).textSelection(.enabled).foregroundStyle(.secondary)
+                        } else {
+                            Text(AnyUIErrorText.text("הבלוק אינו נגיש כעת. הטקסט המקומי נשמר להעתקה.",
+                                                    "This block is currently unavailable. Its local text is retained for copying."))
+                                .font(.footnote).foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                Button(AnyUIErrorText.text("העתקת הטקסט המקומי", "Copy local text")) {
+                    UIPasteboard.general.string = presentation.localDraftTextForCopy
+                }
+                Button(AnyUIErrorText.text("בדיקה והמשך שמירה", "Review and resume saving")) {
+                    Task { await presentation.resumeRecoveredDrafts() }
+                }.accessibilityIdentifier("any-native-resume-recovered-drafts")
+            }
+            .navigationTitle(AnyUIErrorText.text("שינויים ששוחזרו", "Recovered edits"))
+            .toolbar { ToolbarItem(placement: .confirmationAction) {
+                Button(AnyUIErrorText.text("סיום", "Done")) { presentation.showsDraftReview = false }
+            }}
+        }
     }
 
     @ViewBuilder private var writeStatus: some View {
@@ -116,11 +163,15 @@ public struct AnyNativeDocumentView: View {
             VStack(spacing: 8) {
                 Text(message).font(.caption)
                 HStack {
-                    Button(AnyUIErrorText.text("ניסיון נוסף", "Retry")) { Task { await presentation.flush() } }
+                    if presentation.requiresDraftReview {
+                        Button(AnyUIErrorText.text("בדיקת השינויים ששוחזרו", "Review recovered edits")) {
+                            presentation.showsDraftReview = true
+                        }.accessibilityIdentifier("any-native-review-recovered-drafts")
+                    } else {
+                        Button(AnyUIErrorText.text("ניסיון נוסף", "Retry")) { Task { await presentation.flush() } }
+                    }
                     Button(AnyUIErrorText.text("שמירת טקסט מקומי להעתקה", "Copy local text")) {
-                        UIPasteboard.general.string = presentation.orderedBlocks.map {
-                            presentation.source(for: $0)
-                        }.joined(separator: "\n\n")
+                        UIPasteboard.general.string = presentation.localDraftTextForCopy
                     }
                     Button(AnyUIErrorText.text("ביטול השינויים המקומיים", "Discard local edits"), role: .destructive) {
                         presentation.discardLocalDrafts()
@@ -132,7 +183,7 @@ public struct AnyNativeDocumentView: View {
     }
 }
 
-private struct AnyTorahInspectorLayer: ViewModifier {
+struct AnyTorahInspectorLayer: ViewModifier {
     @Bindable var session: TorahEditorSession
     let host: TorahEditorSession.PresentationHost
     private var owns: Bool { session.presentationHost == host }
@@ -243,60 +294,4 @@ public struct AnyNativeSourceSearchView: View {
     }
 }
 
-public struct AnyNativePropertiesView: View {
-    @Bindable var presentation: AnyDocumentPresentation
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.locale) private var locale
-
-    public init(presentation: AnyDocumentPresentation) { self.presentation = presentation }
-
-    public var body: some View {
-        NavigationStack {
-            List {
-                propertySection(.references, items: presentation.torah.documentPropertyProjection.sources)
-                propertySection(.topics, items: presentation.torah.documentPropertyProjection.topics)
-                propertySection(.words, items: presentation.torah.documentPropertyProjection.words)
-                if let native = presentation.nativeProperties, !native.readiness.complete {
-                    Section { Text(AnyUIErrorText.incompleteIndex).font(.footnote).foregroundStyle(.secondary) }
-                }
-            }
-            .navigationTitle(AnyUIErrorText.text("מאפיינים", "Properties"))
-            .toolbar { ToolbarItem(placement: .confirmationAction) {
-                Button(AnyUIErrorText.text("סיום", "Done")) { dismiss() }
-            }}
-            .modifier(AnyTorahInspectorLayer(session: presentation.torah, host: .properties))
-            .onAppear { presentation.torah.activatePresentationHost(.properties) }
-            .onDisappear { presentation.torah.dismissPropertiesPresentation() }
-        }
-    }
-
-    @ViewBuilder private func propertySection(_ scope: TorahEditorSession.SearchScope,
-                                              items: [TorahAssociationItem]) -> some View {
-        Section(scope.title) {
-            ForEach(items) { item in
-                HStack {
-                    Text(TorahAssociationDisplayFormatter.label(for: item, locale: locale))
-                    Spacer()
-                    Menu {
-                        if presentation.torah.canOpenAssociation(item) {
-                            Button(AnyUIErrorText.text("פתיחת מקור", "Open source")) {
-                                presentation.torah.openDocumentAssociation(item)
-                            }
-                        }
-                        Button(AnyUIErrorText.text("מסמכים מקושרים", "Related documents")) {
-                            Task { await presentation.showDocuments(with: item) }
-                        }
-                        Button(AnyUIErrorText.text("הסרת קישור", "Unlink"), role: .destructive) {
-                            Task { await presentation.torah.unlinkAssociation(item, from: presentation.torah.documentAssociationContext) }
-                        }.disabled(!presentation.canMutate)
-                    } label: { Image(systemName: "ellipsis.circle") }
-                }
-            }
-            Button {
-                presentation.torah.presentSearch(scope: .document, initialCategory: scope, host: .properties)
-            } label: { Label(AnyUIErrorText.text("הוספה", "Add"), systemImage: "plus") }
-                .disabled(!presentation.canMutate)
-        }
-    }
-}
 #endif

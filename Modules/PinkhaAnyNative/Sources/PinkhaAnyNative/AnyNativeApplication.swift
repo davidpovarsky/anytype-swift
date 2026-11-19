@@ -4,6 +4,7 @@ import PinkhaAnyHost
 import PinkhaAnyIntegration
 import PinkhaAnyRuntime
 import PinkhaAnyUI
+import PinkhaHanlinCore
 
 public enum AnyNativeApplicationError: Error, Equatable, Sendable {
     case busy
@@ -48,6 +49,9 @@ public actor AnyNativeApplication {
     private let runtime = AnyEmbeddedRuntime.shared
     private let dataDirectory: URL
     private let vault: any AnyNativeCredentialStoring
+    #if DEBUG
+    private var beforeNativeAuthentication: (@Sendable () async throws -> Void)?
+    #endif
     private var embedded: AnyEmbeddedSession?
     private var account: AnyNativeAccount?
     private var pendingCredential: AnyNativeCredential?
@@ -70,13 +74,15 @@ public actor AnyNativeApplication {
 
     #if DEBUG
     /// Fault-injection boundary for real native/Keychain acceptance tests.
-    init(dataDirectory: URL, testCredentialStore: any AnyNativeCredentialStoring) throws {
+    init(dataDirectory: URL, testCredentialStore: any AnyNativeCredentialStoring,
+         beforeNativeAuthentication: (@Sendable () async throws -> Void)? = nil) throws {
         guard dataDirectory.isFileURL, dataDirectory.path.hasPrefix("/"),
               dataDirectory.path != "/", dataDirectory.lastPathComponent != ".." else {
             throw AnyNativeApplicationError.invalidConfiguration
         }
         self.dataDirectory = dataDirectory
         self.vault = testCredentialStore
+        self.beforeNativeAuthentication = beforeNativeAuthentication
     }
     #endif
 
@@ -140,6 +146,7 @@ public actor AnyNativeApplication {
         guard let embedded else { throw AnyNativeApplicationError.closed }
         guard account == nil else { throw AnyNativeApplicationError.busy }
         guard pendingCredential == nil else { throw AnyNativeApplicationError.recoveryBackupRequired }
+        var validatedAccountID: String?
         do {
             var body: [String: AnyJSON] = [:]
             if let mnemonic {
@@ -147,6 +154,13 @@ public actor AnyNativeApplication {
                 body["index"] = .integer(Int64(index))
             }
             let bytes = try JSONEncoder().encode(AnyJSON.object(body))
+            try Task.checkCancellation()
+            #if DEBUG
+            // A test may inject a transient control-transport failure here. The
+            // hook receives no credential, request body or response and cannot
+            // fabricate native authorization or replace the real Keychain.
+            try await beforeNativeAuthentication?()
+            #endif
             let response = try await runtime.executeControl(.authenticate, jsonBody: bytes,
                                                             expectedGeneration: embedded.generation)
             let value = try JSONDecoder().decode(AnyJSON.self, from: response)
@@ -154,6 +168,7 @@ public actor AnyNativeApplication {
                   let secret = generated ? value["mnemonic"]?.string : mnemonic, !secret.isEmpty else {
                 throw AnyNativeApplicationError.malformedResponse
             }
+            validatedAccountID = id
             if let expectedAccountID, id != expectedAccountID { throw AnyNativeApplicationError.wrongAccount }
             // Preserve a confirmed credential before any cancellation boundary.
             // A persistence failure may expose it only through explicit recovery
@@ -165,16 +180,24 @@ public actor AnyNativeApplication {
                 pendingCredential = credential
                 throw AnyNativeApplicationError.secureStorageUnavailable
             }
+            try Task.checkCancellation()
+            guard !closing else { throw AnyNativeApplicationError.closed }
+            try await PinkhaHanlinAccountOwner.shared.accountDidOpen(id)
+            try Task.checkCancellation()
+            guard !closing else { throw AnyNativeApplicationError.closed }
             account = credential.metadata
             return credential.metadata
         } catch {
-            await failClosedAuthentication(generation: embedded.generation)
+            await failClosedAuthentication(generation: embedded.generation,
+                accountID: validatedAccountID ?? expectedAccountID)
             throw error
         }
     }
 
-    private func failClosedAuthentication(generation: UUID) async {
+    private func failClosedAuthentication(generation: UUID, accountID: String? = nil) async {
+        let originalAccount = accountID ?? account?.id ?? pendingCredential?.accountID
         account = nil
+        await closeHanlinAccount(originalAccount)
         do {
             _ = try await runtime.executeControl(.signOut, expectedGeneration: generation)
         } catch {
@@ -195,25 +218,35 @@ public actor AnyNativeApplication {
     }
 
     private func acknowledgeOwnedBackup(accountID: String) async throws {
+        // A stale backup screen cannot acknowledge or reopen a different active
+        // or pending account. The saved credential must retain the exact ID.
+        guard pendingCredential == nil || pendingCredential?.accountID == accountID,
+              account == nil || account?.id == accountID else {
+            throw AnyNativeApplicationError.wrongAccount
+        }
         let recovering = pendingCredential?.accountID == accountID
         let old: AnyNativeCredential
-        if recovering { old = pendingCredential! }
+        if let pendingCredential, recovering { old = pendingCredential }
         else { old = try vault.read(accountID: accountID) }
+        guard old.accountID == accountID else { throw AnyNativeApplicationError.wrongAccount }
         let updated = AnyNativeCredential(version: old.version, accountID: old.accountID,
             derivationIndex: old.derivationIndex, mnemonic: old.mnemonic, needsRecoveryBackup: false)
         do { try vault.save(updated) }
         catch { throw AnyNativeApplicationError.secureStorageUnavailable }
-        if recovering {
-            pendingCredential = nil
-            if embedded == nil {
-                guard let lastNetwork else { throw AnyNativeApplicationError.closed }
-                try await startOwned(network: lastNetwork)
-            }
-            _ = try await authenticate(mnemonic: updated.mnemonic, index: updated.derivationIndex,
-                                       generated: false, expectedAccountID: updated.accountID)
-        } else if account?.id == accountID {
+        if recovering { pendingCredential = nil }
+        if account?.id == accountID {
             account = updated.metadata
+            return
         }
+        // A prior acknowledgement may have durably saved the same credential
+        // and then lost/cancelled native authentication. Retry that saved ID;
+        // clearing pendingCredential must not turn a retry into false success.
+        if embedded == nil {
+            guard let lastNetwork else { throw AnyNativeApplicationError.closed }
+            try await startOwned(network: lastNetwork)
+        }
+        _ = try await authenticate(mnemonic: updated.mnemonic, index: updated.derivationIndex,
+                                   generated: false, expectedAccountID: updated.accountID)
     }
 
     public func listSpaces() async throws -> [AnyNativeSpace] {
@@ -300,7 +333,8 @@ public actor AnyNativeApplication {
             openedJournal = journal
             let objects = try AnyNativeObjectCreator(client: client, workspace: workspace, journal: journal)
             let blocks = try AnyNativeBlockCreator(client: client, workspace: workspace, journal: journal,
-                                                    allowedTypeIDs: capabilities.allowedTargetTypes)
+                                                    allowedTypeIDs: capabilities.allowedTargetTypes,
+                                                    documentTypePolicy: .nativeCanonicalEditorV1)
             try Task.checkCancellation()
             guard !closing else { throw AnyNativeApplicationError.closed }
             let owner = AnyNativeWorkspaceOwner(client: client, session: session, journal: journal,
@@ -338,6 +372,7 @@ public actor AnyNativeApplication {
 
     private func signOutOwned() async throws {
         guard let embedded else { throw AnyNativeApplicationError.closed }
+        await closeHanlinAccount(account?.id ?? pendingCredential?.accountID)
         await closeOwnedSpace()
         _ = try await runtime.executeControl(.signOut, expectedGeneration: embedded.generation)
         account = nil
@@ -361,15 +396,28 @@ public actor AnyNativeApplication {
     }
 
     private func finishShutdown() async {
+        await closeHanlinAccount(account?.id ?? pendingCredential?.accountID)
         if !calls.isEmpty {
             await withCheckedContinuation { drainWaiters.append($0) }
         }
+        // An authentication already in flight may have finished while draining.
+        await closeHanlinAccount(account?.id ?? pendingCredential?.accountID)
         await closeOwnedSpace()
         if let embedded {
             await runtime.stop(expectedGeneration: embedded.generation)
         }
         embedded = nil
         account = nil
+    }
+
+    /// Ordinary logout/background stop revokes the shared account owner before
+    /// native operations drain. Its original protected receipts remain intact.
+    /// Credential forgetting does not mean erasing document or journal data.
+    private func closeHanlinAccount(_ accountID: String?) async {
+        guard let accountID, !accountID.isEmpty else { return }
+        // The retained removeData:false path first revokes synchronously on
+        // MainActor and performs no fallible filesystem removal.
+        try? await PinkhaHanlinAccountOwner.shared.closeAccount(accountID, removeData: false)
     }
 
     private func transition<Value: Sendable>(

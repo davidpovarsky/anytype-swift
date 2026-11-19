@@ -3,6 +3,8 @@ import XCTest
 import PinkhaAnyEngine
 import PinkhaAnyHost
 import PinkhaAnyIntegration
+import PinkhaHanlinCore
+import HanlinHostContracts
 @testable import PinkhaAnyRuntime
 @testable import PinkhaAnyNative
 
@@ -22,6 +24,7 @@ final class NativeApplicationTests: XCTestCase {
             let account = try await application.createAccount()
             accountID = account.id
             XCTAssertTrue(account.needsRecoveryBackup)
+            XCTAssertTrue(PinkhaHanlinAccountOwner.shared.isAvailable(account: account.id))
             let recovery = try await application.recoveryPhrase(accountID: account.id)
             XCTAssertFalse(recovery.isEmpty)
             do {
@@ -64,7 +67,12 @@ final class NativeApplicationTests: XCTestCase {
             let restored = try await owner.session.perform { try await editor.read(objectID: pageID, lease: $0) }
             XCTAssertEqual(restored.snapshot.blocks.first?.native["style"]?["unknownFutureStyle"], .string("preserve"))
             let firstGeneration = owner.session.generation
+            let hanlinLifetime = try NativeAccountLifetimeWitness(accountID: account.id, spaceID: spaceID)
+            try PinkhaHanlinAccountOwner.shared.register(hanlinLifetime)
+            defer { PinkhaHanlinAccountOwner.shared.unregister(hanlinLifetime.session.id) }
             await application.stop()
+            XCTAssertTrue(hanlinLifetime.invalidated)
+            XCTAssertFalse(PinkhaHanlinAccountOwner.shared.isAvailable(account: account.id))
             do {
                 _ = try await owner.session.perform { try await editor.read(objectID: pageID, lease: $0) }
                 XCTFail("A revoked workspace cannot deliver content after stop.")
@@ -73,6 +81,8 @@ final class NativeApplicationTests: XCTestCase {
             try await application.start(network: .official)
             let reopenedAccount = try await application.openSavedAccount(id: account.id)
             XCTAssertEqual(reopenedAccount.id, account.id)
+            XCTAssertTrue(PinkhaHanlinAccountOwner.shared.isAvailable(account: account.id))
+            XCTAssertTrue(hanlinLifetime.invalidated, "Reopening cannot rearm a revoked presentation.")
             XCTAssertFalse(reopenedAccount.needsRecoveryBackup)
             let reopened = try await application.connectSpace(id: spaceID)
             XCTAssertNotEqual(reopened.session.generation, firstGeneration)
@@ -92,6 +102,7 @@ final class NativeApplicationTests: XCTestCase {
             try await application.deleteSpace(id: spaceID)
             ownedSpaceID = nil
             try await application.signOut()
+            XCTAssertFalse(PinkhaHanlinAccountOwner.shared.isAvailable(account: account.id))
             try await application.removeSavedAccount(id: account.id)
             let remembered = try await application.savedAccounts()
             XCTAssertTrue(remembered.isEmpty)
@@ -114,7 +125,9 @@ final class NativeApplicationTests: XCTestCase {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent("native-keychain-fault-" + UUID().uuidString, isDirectory: true)
         let vault = try FailFirstSaveCredentialStore(service: "io.pinkha.vault.fault." + UUID().uuidString)
-        let application = try AnyNativeApplication(dataDirectory: directory, testCredentialStore: vault)
+        let controlFault = FailSecondNativeAuthentication()
+        let application = try AnyNativeApplication(dataDirectory: directory, testCredentialStore: vault,
+            beforeNativeAuthentication: { try await controlFault.beforeRequest() })
         var accountID: String?
         do {
             try await application.start(network: .official)
@@ -129,6 +142,7 @@ final class NativeApplicationTests: XCTestCase {
             let pendingValue = await application.pendingRecoveryAccount()
             let pending = try XCTUnwrap(pendingValue)
             accountID = pending.id
+            XCTAssertFalse(PinkhaHanlinAccountOwner.shared.isAvailable(account: pending.id))
             XCTAssertTrue(try vault.allMetadata().isEmpty)
             let secret = try await application.recoveryPhrase(accountID: pending.id)
             XCTAssertFalse(secret.isEmpty)
@@ -144,13 +158,46 @@ final class NativeApplicationTests: XCTestCase {
             } catch let error as AnyNativeApplicationError {
                 XCTAssertEqual(error, .signedOut)
             }
+            do {
+                try await application.acknowledgeRecoveryBackup(accountID: pending.id + "-foreign")
+                XCTFail("An unrelated backup screen cannot consume the pending credential.")
+            } catch let error as AnyNativeApplicationError {
+                XCTAssertEqual(error, .wrongAccount)
+            }
+            do {
+                try await application.acknowledgeRecoveryBackup(accountID: pending.id)
+                XCTFail("The injected native control failure must be reported after the secure save.")
+            } catch let error as URLError {
+                XCTAssertEqual(error.code, .networkConnectionLost)
+            }
+            let afterControlFailure = await application.currentAccount()
+            let remainingPending = await application.pendingRecoveryAccount()
+            XCTAssertNil(afterControlFailure)
+            XCTAssertNil(remainingPending)
+            let securelyAcknowledged = try vault.read(accountID: pending.id)
+            XCTAssertFalse(securelyAcknowledged.needsRecoveryBackup)
+            XCTAssertTrue(securelyAcknowledged.mnemonic.utf8.elementsEqual(secret.utf8))
+            XCTAssertFalse(PinkhaHanlinAccountOwner.shared.isAvailable(account: pending.id))
+            let afterFailureSession = await AnyEmbeddedRuntime.shared.currentSession()
+            XCTAssertEqual(afterFailureSession?.generation, embedded.generation)
+            let (failedAuthBytes, failedAuthResponse) = try await URLSession.shared.data(
+                for: embedded.authenticatedRead(path: "auth"))
+            XCTAssertEqual((failedAuthResponse as? HTTPURLResponse)?.statusCode, 200)
+            let failedAuth = try JSONDecoder().decode(AnyJSON.self, from: failedAuthBytes)
+            XCTAssertEqual(failedAuth["authorized"], .bool(false))
+            // Retry directly from the same backup action, with no stop/restart.
             try await application.acknowledgeRecoveryBackup(accountID: pending.id)
+            let attempts = await controlFault.attempts
+            XCTAssertEqual(attempts, 3)
             let recovered = await application.currentAccount()
             XCTAssertEqual(recovered?.id, pending.id)
             XCTAssertEqual(recovered?.needsRecoveryBackup, false)
+            XCTAssertTrue(PinkhaHanlinAccountOwner.shared.isAvailable(account: pending.id))
+            let recoveredEmbedded = await AnyEmbeddedRuntime.shared.currentSession()
+            XCTAssertEqual(recoveredEmbedded?.generation, embedded.generation)
             let remaining = await application.pendingRecoveryAccount()
             XCTAssertNil(remaining)
-            XCTAssertEqual(try vault.read(accountID: pending.id).mnemonic, secret)
+            XCTAssertTrue(try vault.read(accountID: pending.id).mnemonic.utf8.elementsEqual(secret.utf8))
             let client = try embedded.dataClient(expectedAccountID: pending.id)
             let authorized = try await client.requestJSON(method: "GET", path: ["v1", "auth"])
             XCTAssertEqual(authorized["authorized"], .bool(true))
@@ -200,4 +247,26 @@ private final class FailFirstSaveCredentialStore: AnyNativeCredentialStoring, @u
         if refuse { throw AnyNativeVaultError.unavailable(-25291) }
         try actual.save(credential)
     }
+}
+
+private actor FailSecondNativeAuthentication {
+    private(set) var attempts = 0
+    func beforeRequest() throws {
+        attempts += 1
+        if attempts == 2 { throw URLError(.networkConnectionLost) }
+    }
+}
+
+@MainActor
+private final class NativeAccountLifetimeWitness: PinkhaHanlinOwnedPresentation {
+    let session: HanlinHostSession
+    private(set) var invalidated = false
+    init(accountID: String, spaceID: String) throws {
+        let namespace = try HanlinConversationNamespace(app: "anytype", account: accountID,
+                                                        workspace: spaceID, space: spaceID)
+        self.session = .init(conversationID: UUID(), context: .init(namespace: namespace,
+            sceneID: UUID(), generation: UUID(), objectReference: nil,
+            selectionReferences: [], sourceRevision: nil, localeIdentifier: "en"))
+    }
+    func invalidate() { invalidated = true }
 }
