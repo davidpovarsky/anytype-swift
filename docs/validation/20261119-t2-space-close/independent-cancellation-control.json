@@ -1,0 +1,33 @@
+{
+  "actual_control_counts": {
+    "native_processes": 1,
+    "passing_test_invocations": 0
+  },
+  "controller_sha256": "8d025e56c743122c1df7987eef932dba07b8dba1458dd2056b01b4f00e894ff8",
+  "native_go_tests": "NOT_RUN",
+  "native_phase_output_withheld_without_secret_inventory": true,
+  "owned_account_removed": true,
+  "owned_pid_no_longer_exists": true,
+  "phase": {
+    "argv": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-c",
+      "import os,signal,time; print('owned-ready',flush=True); time.sleep(.05); os.kill(os.getppid(),signal.SIGTERM); time.sleep(60)"
+    ],
+    "error_type": "KeyboardInterrupt",
+    "exit_code": -15,
+    "launch_requested": true,
+    "nonce": "31ed3093-cb91-42b2-b03d-1c7225299e8f",
+    "phase": "race",
+    "pid": 6,
+    "process_exit_observed": true,
+    "report_qualification": "NOT_RUN",
+    "status": "CANCELLED"
+  },
+  "probe_sha256": "83ca3c3d6b98f2445ad00e987945f4b39495bf1f9ae5aec920ce650449212f7e",
+  "root_receipt_status": "CANCELLED",
+  "scope": "CONTROLLER_ONLY_NO_NATIVE_GO_COMPILE_OR_EXECUTION",
+  "signal_handlers_restored": true,
+  "status": "PASS_REAL_SIGTERM_OWNED_PYTHON_PROCESS_CONTROL",
+  "unrelated_file_preserved": true
+}

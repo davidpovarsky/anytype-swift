@@ -1,0 +1,138 @@
+{
+  "account_switch": "NOT_RUN",
+  "additional_cancellation_control": {
+    "report": "independent-cancellation-control.json",
+    "report_sha256": "6647f2cd444661b4194ec1b426c7ffe60b19a196eddd813dd982f4800c28eee3",
+    "scope": "Separate supplemental real POSIX signal control, not included in the 67-test source suite",
+    "script": "independent_cancel_probe.py",
+    "script_sha256": "83ca3c3d6b98f2445ad00e987945f4b39495bf1f9ae5aec920ce650449212f7e",
+    "status": "PASS_REAL_SIGTERM_OWNED_PYTHON_PROCESS_CONTROL",
+    "tests": 1
+  },
+  "app_capability": "OFF",
+  "base_app_sha": "be6cc5d8b5e65ee78f46e09b3105e3360eec894f",
+  "blocking_findings": [],
+  "candidate_diff_sha256": "7286b51d0e50d54ddda7e3bbd481fa093ffda58c257bd3a7344ba72185f6ae4d",
+  "candidate_json_sha256": "994107eacbc2e09335fac38f34d2f3e626cb048bbc87ce25cbe7a9af040f7f0a",
+  "checks": [
+    {
+      "detail": "All 20 publication-file SHA256 values and the exact diff match the frozen V1. Nine unchanged imports/registration/schema/fixture inputs and the dispatcher preimage were independently read from authenticated canonical Git at be6cc5d8. The only dispatcher changes are one new explicit route and one dedicated reusable-workflow job; existing routes are byte-preserved.",
+      "id": "immutable_source_and_dispatch",
+      "result": "PASS"
+    },
+    {
+      "detail": "The controller calls the unchanged account.execute first, requires its exact PASS with two original binaries, four distinct native processes, four passing invocations and eight actual exports. It retains the original receipt, generation and build records, original source snapshots and overlay/fixture hashes. Existing accepted three-race source is imported for validators/snapshots only and is not executed or replaced.",
+      "id": "original_baseline",
+      "result": "PASS_SOURCE"
+    },
+    {
+      "detail": "The materializer requires the exact seven observation paths plus three new Go files, exact original and replacement hashes, no original overlay collision, canonical separate module paths and selected AnySync version/checksums. It preserves the original compile overlay and writes only a separate overlay plus an explicitly disclosed empty helper-package directory. No Heart or module-cache file bytes are changed. The controller verifies the candidate SHA before compilation.",
+      "id": "test_only_native_composition",
+      "result": "PASS_SOURCE"
+    },
+    {
+      "detail": "AnySync v0.13.8 is selected by actual go list -m -json under the original generated go.work. Original pinned Heart go.mod/go.sum values, actual module go.mod bytes, canonical module location and any reported Origin hash are checked. Source-before hashes bind both reviewed AnySync files. The optional absence of Origin is not promoted into a directly observed runtime commit hash.",
+      "id": "selected_module_identity",
+      "result": "PASS_SOURCE"
+    },
+    {
+      "detail": "A separate binary is compiled with the exact overlay, original registration/account/RPC/Heart link identities plus the Space.Close candidate digest. Its binary hash must differ from both baseline binaries. Source, module, fixture, overlay, go.work, original build/baseline receipt and original binary bindings are checked before compilation, after compilation and after execution. Postflight integrity failure prevents acceptance while preserving a primary native failure.",
+      "id": "separate_build_binding",
+      "result": "PASS_SOURCE"
+    },
+    {
+      "detail": "Exactly race then reopen run as separate observed PIDs and nonces distinct from all four baseline PIDs. Each requires one exact named Go RUN/PASS and one overall PASS with no skip/fail/extra test, exact report schema/source/nonce/PID, phase-specific result, original state digest, original fifteen-event trace/order/identity claims and signed-history/head comparisons. The pair binds account, Space, target, block, root, retained request, state, claim, change, source and durable bytes. Aggregate success requires exactly two processes and two passing invocations.",
+      "id": "native_phase_acceptance",
+      "result": "PASS_SOURCE"
+    },
+    {
+      "detail": "Every subprocess runs in its own new session; launch request, actual PID, observed exit and qualification status are recorded separately. Nonzero, timeout and cancellation preserve primary errors and terminate only the owned group using the unchanged TERM/KILL/reap helper. Disposable account removal requires unchanged directory device/inode plus exact ownership bytes and observed exit for every started process. Foreign ownership refuses removal. A supplemental actual SIGTERM control through the frozen main/run_sequence/run_owned path independently passed and verified PID reaping, CANCELLED state, one started/zero accepted controls, restored signal handlers, unrelated-file preservation and owned account removal.",
+      "id": "ownership_and_cancellation",
+      "result": "PASS_SOURCE_AND_PORTABLE_CONTROL"
+    },
+    {
+      "detail": "Private account roots, account key, mnemonic, private state and sensitive-needles inventory are never artifact inputs. The allowlisted original reports, trace and logs must be regular nonsymlink files within the owned directory and bounded to 32 MiB each, then all pass the exact two-secret scan before any copy. Missing secret inventory withholds native output; a detected secret withholds the entire copy. Successful native acceptance requires all seven original allowlisted files plus a PASS secret scan. Failures retain source-only controlled result/ownership and cleanup receipts without exception contents.",
+      "id": "evidence_exclusion",
+      "result": "PASS_SOURCE_AND_PORTABLE_CONTROL"
+    },
+    {
+      "detail": "Dedicated Ubuntu workflow uses read-only control/approved-source mounts, exact Heart and approved-source checkouts, digest-pinned Go1.26.5 Alpine image, existing compiled dependency cache only, separate writable disposable native/work/evidence directories, two CPUs, 6 GiB memory and 512 PID bound. Existing 8 GiB disk reserve remains. New compilation is bounded at1800s, native phases at300s Go/330s supervisor each, whole job at60m. Bootstrap absence is recorded as NOT_RUN; always-upload includes evidence only. No simulator, account switch, settings deletion, product capability or prior-lane changes.",
+      "id": "workflow_and_limits",
+      "result": "PASS_SOURCE"
+    }
+  ],
+  "duplicate_close_completion": "NOT_CLAIMED",
+  "freeze_sha256": "01070b87cac49eec72f927bfa438b3643ff336e41eb04edd7ae112a39ba1b1e1",
+  "full_t2_acceptance": "NOT_RUN",
+  "grammar": {
+    "go": "ROOT_EXACT_TEN_FILE_GOFMT_IDEMPOTENCE_RECEIPT_REVIEWED_ONLY",
+    "python": "INDEPENDENT_AST_PASS",
+    "shell": "INDEPENDENT_SH_N_PASS",
+    "workflow_yaml": "INDEPENDENT_PARSE_PASS"
+  },
+  "independent_canonical_base": {
+    "base_input_count": 9,
+    "dispatcher_preimage_sha256": "823a0b65deb831ba310c5c507ab7b0f53137e69d3b5166cddf8e5785742b27bb",
+    "observed_at": "2026-11-19T21:01:11.819587+00:00",
+    "path": "INDEPENDENT_CANONICAL_BASE.json",
+    "sha256": "7eff76dd11d0ee6dd08488c0957c7ed4c52cd20ec320dd7e794c537da3ebbaac"
+  },
+  "ios_acceptance": "NOT_RUN",
+  "lane_manifest_sha256": "98d20fe7a7a7294ab389985fa864d0362131438ad76065ef919a64e3a6b72bac",
+  "native_compilation": "NOT_RUN",
+  "native_go_review": {
+    "path": "INDEPENDENT_NATIVE_GO_REVIEW.json",
+    "scope": "Ten Go files and exact upstream/product composition independently reviewed; source-only, no native compilation or execution",
+    "sha256": "d50be4acd36b7aa9e98cd4ff27d5d3489a93eded9d1d88416dd41fa9d601f3f4"
+  },
+  "native_go_tests": "NOT_RUN",
+  "native_processes": 0,
+  "new_engine_parity": "NOT_PROVEN",
+  "portable_controls": {
+    "command": "python -B -m unittest -v test_account_rpc_space_close test_account_rpc_lifecycle test_account_rpc test_account_lifecycle",
+    "failures": 0,
+    "log": "independent-portable-controls.log",
+    "log_sha256": "1d24a966d9ca28eab0709af6b03dd9c893d4fef1d8d8ff441fd7800dfd72e222",
+    "pass": 67,
+    "scope": "Controller/rejection/owned-Python-process controls, not native Go acceptance",
+    "skips": 0,
+    "tests": 67,
+    "working_directory": "validation/control/Tools/TorahNativeOperations"
+  },
+  "prior_three_race_fixture": "UNCHANGED_NOT_RERUN",
+  "product_base_sha": "16b7493fa05bdc3abbae190c6e6c364c81874eea",
+  "response_return_order_relative_to_close": "NOT_ASSERTED",
+  "reviewer": "/root/asana_audit",
+  "schema": "pinkha-independent-space-close-source-review-v1",
+  "scope_notes": [
+    "The original_controller_close_calls=1 native observation counts the single explicitly raced selector forward. Later ordinary AccountStop may call the original controller Close idempotently; no one-global-Close-call claim is made.",
+    "This source review does not demonstrate actual native compilation, successful six-process runtime, Apple acceptance, full T2 completion or new-engine parity.",
+    "The workflow does not retain full binary bytes; acceptance must be qualified from original build, source, process, log, trace and native phase receipts. The report does not claim a complete compiled-source inventory beyond those explicit bindings.",
+    "The only local changes by this reviewer are independent evidence/probe files outside candidate/base; no candidate source, remote worktree, dispatch or Asana task was mutated for this review."
+  ],
+  "settings_delete": "NOT_RUN",
+  "source_files_sha256": {
+    ".github/workflows/pinkha-t2-rpc-space-close.yml": "84a67b7b3178bace58c0cf0dce874b7a11f904f4175c74f8a1b62e8c5fce9e02",
+    ".github/workflows/torah-inspector-ipados27.yml": "cf5420e0e68b72af137db43a94b5b7c3d984992bba6d152e91895c2787e7d428",
+    "Tools/TorahNativeOperations/account_rpc_space_close/README.md": "6b8637eb4c0b4d9f5d31b1273219507785b84ce4f0f99667d41e56eaef20ef82",
+    "Tools/TorahNativeOperations/account_rpc_space_close/candidate.json": "994107eacbc2e09335fac38f34d2f3e626cb048bbc87ce25cbe7a9af040f7f0a",
+    "Tools/TorahNativeOperations/account_rpc_space_close/materialize_test_overlay.py": "a2e723869be1e269fdce4c15a25137d303987bcc87cd9624d059a0c0f0635bea",
+    "Tools/TorahNativeOperations/account_rpc_space_close/native_rpc_space_close_test.go": "130fbe9cc2bd830fd50edb127c74473a37b7efa84882f45435328c289bcc4937",
+    "Tools/TorahNativeOperations/account_rpc_space_close/overlay/any-sync/app/ocache/ocache.go": "41caff55778b8ca549c4faa961f48c4cdbdfd60e3761dfb77b88bd4e63f52625",
+    "Tools/TorahNativeOperations/account_rpc_space_close/overlay/any-sync/commonspace/settings/settingsobject.go": "b6ca16f92d20cdfc4e5104c126349a9159979b1359b7e09edac6750fb93a16fa",
+    "Tools/TorahNativeOperations/account_rpc_space_close/overlay/heart/core/block/editor/torahops/native_commit_guard.go": "2d8d317eb2562676317844c1bf7aac85e9e5ad9331e055d8d74f23ab4d60c321",
+    "Tools/TorahNativeOperations/account_rpc_space_close/overlay/heart/core/block/editor/torahops/native_host.go": "9ff4cae9eb5088a1777a169b51ebf03eb903292479b17e13a6e1bd6ef75da462",
+    "Tools/TorahNativeOperations/account_rpc_space_close/overlay/heart/core/block/editor/torahopsobject/target_lease.go": "4fd510c50ade01f3c919ab638c7eda00da3790394221c8dfc5ed9e4d94ba7e78",
+    "Tools/TorahNativeOperations/account_rpc_space_close/overlay/heart/space/clientspace/space.go": "51cbc75ea1b439eee7f4cd309d959886389e112b61852147c13d49cdd0281ba1",
+    "Tools/TorahNativeOperations/account_rpc_space_close/overlay/heart/space/spacecore/storage/anystorage/clientstorage.go": "1b3d705158c6ac1ad9a0e9ded138747e39dcb1af8c46c5c2dd3d3c47e9ab7fea",
+    "Tools/TorahNativeOperations/account_rpc_space_close/owned_controller.go": "7485198c9c10817b9f74945dcd55253f7b58b0e0ef246c077fd5fa6a8e5b5068",
+    "Tools/TorahNativeOperations/account_rpc_space_close/space_close_observer.go": "ad13b765e7a67fdc8eba8b485ffd0b72f8773c88c99028b8a4dd8f7fc9b11438",
+    "Tools/TorahNativeOperations/account_rpc_space_close/test-composition.patch": "49c3071f0d5b2e363ed09f9ac42da018d826749b3803b65215ded7c0e06eaae3",
+    "Tools/TorahNativeOperations/account_rpc_space_close_lane.json": "98d20fe7a7a7294ab389985fa864d0362131438ad76065ef919a64e3a6b72bac",
+    "Tools/TorahNativeOperations/run_account_rpc_space_close.py": "8d025e56c743122c1df7987eef932dba07b8dba1458dd2056b01b4f00e894ff8",
+    "Tools/TorahNativeOperations/run_account_rpc_space_close_container.sh": "14f260e1d8557b0e1e75a7171d2c3eea6cea4c273463a8097d705bc1ca55b829",
+    "Tools/TorahNativeOperations/test_account_rpc_space_close.py": "17781fdb1d86665d50ac555d6c8be296028fa9699247405c6dc236bdd55262d7"
+  },
+  "status": "SOURCE_REVIEW_PASS_NATIVE_COMPILE_AND_RUNTIME_NOT_RUN",
+  "two_app_clients": "NOT_RUN"
+}

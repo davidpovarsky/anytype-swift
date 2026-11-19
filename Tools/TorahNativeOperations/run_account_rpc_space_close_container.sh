@@ -1,0 +1,21 @@
+#!/bin/sh
+set -eu
+apk add --no-cache python3 git build-base > /workspace/evidence/toolchain/apk-install.log 2>&1
+for source in control approved-source heart-legacy heart-new; do
+  git config --global --add safe.directory "/workspace/$source"
+done
+go version > /workspace/evidence/toolchain/go-version.txt
+gcc --version > /workspace/evidence/toolchain/compiler.txt
+gcc -dumpmachine > /workspace/evidence/toolchain/compiler-target.txt
+apk info -v musl musl-dev gcc g++ python3 > /workspace/evidence/toolchain/packages.txt
+cat > /workspace/qsort-probe.c <<'EOF'
+#define _GNU_SOURCE
+#include <stdlib.h>
+static int cmp(const void *a, const void *b, void *arg) { return *(const int*)a - *(const int*)b; }
+int main(void) { int values[] = {2,1}; qsort_r(values, 2, sizeof(int), cmp, NULL); return values[0] != 1; }
+EOF
+gcc -static /workspace/qsort-probe.c -o /workspace/qsort-probe > /workspace/evidence/toolchain/qsort-link.log 2>&1
+/workspace/qsort-probe
+exec python3 -B /workspace/control/Tools/TorahNativeOperations/run_account_rpc_space_close.py \
+  --approved-source /workspace/approved-source --heart-legacy /workspace/heart-legacy --heart-new /workspace/heart-new \
+  --work /workspace/work/account-rpc --evidence /workspace/evidence --expected-app-sha "$EXPECTED_APP_SHA"

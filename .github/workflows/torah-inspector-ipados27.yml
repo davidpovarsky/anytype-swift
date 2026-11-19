@@ -26,6 +26,7 @@ on:
           - t2-native-clients-concurrent-replace
           - t2-account-lifecycle
           - t2-rpc-lifecycle-races
+          - t2-rpc-space-close
           - simulator-ui27
           - heart-runtime
           - t5-r15-runtime
@@ -322,5 +323,11 @@ jobs:
   t2-rpc-lifecycle-races:
     if: ${{ inputs.route == 't2-rpc-lifecycle-races' }}
     uses: ./.github/workflows/pinkha-t2-rpc-lifecycle-races.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-rpc-space-close:
+    if: ${{ inputs.route == 't2-rpc-space-close' }}
+    uses: ./.github/workflows/pinkha-t2-rpc-space-close.yml
     with:
       source_sha: ${{ github.sha }}
