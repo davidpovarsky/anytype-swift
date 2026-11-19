@@ -1,0 +1,1043 @@
+﻿2026-11-19T19:36:55.4895240Z Current runner version: '2.338.2'
+2026-11-19T19:36:55.4914250Z ##[group]Runner Image Provisioner
+2026-11-19T19:36:55.4914910Z Hosted Compute Agent
+2026-11-19T19:36:55.4915350Z Version: 20261103.629
+2026-11-19T19:36:55.4915800Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-19T19:36:55.4916360Z Build Date: 2026-11-03T17:26:59Z
+2026-11-19T19:36:55.4916830Z Worker ID: {a3a7a6e8-ff5e-40a6-b27c-ebb56e4861dc}
+2026-11-19T19:36:55.4917300Z Region: westus
+2026-11-19T19:36:55.4917710Z Cloud: MacCloud
+2026-11-19T19:36:55.4918110Z ##[endgroup]
+2026-11-19T19:36:55.4919170Z ##[group]Operating System
+2026-11-19T19:36:55.4919560Z macOS
+2026-11-19T19:36:55.4919900Z 27.0.1
+2026-11-19T19:36:55.4920230Z 26A434
+2026-11-19T19:36:55.4920570Z ##[endgroup]
+2026-11-19T19:36:55.4920920Z ##[group]Runner Image
+2026-11-19T19:36:55.4921310Z Image: xcode-27-arm64
+2026-11-19T19:36:55.4921710Z Version: 20261104.0337.1
+2026-11-19T19:36:55.4922630Z Included Software: https://github.com/actions/runner-images/blob/xcode-27-arm64/20261104.0337/images/macos/xcode-27-arm64-Readme.md
+2026-11-19T19:36:55.4923720Z Image Release: https://github.com/actions/runner-images/releases/tag/xcode-27-arm64%2F20261104.0337
+2026-11-19T19:36:55.4924460Z ##[endgroup]
+2026-11-19T19:36:55.4925400Z ##[group]GITHUB_TOKEN Permissions
+2026-11-19T19:36:55.4927290Z Actions: read
+2026-11-19T19:36:55.4928100Z Contents: read
+2026-11-19T19:36:55.4928460Z Metadata: read
+2026-11-19T19:36:55.4929320Z ##[endgroup]
+2026-11-19T19:36:55.4931440Z Secret source: Actions
+2026-11-19T19:36:55.4932240Z Cache mode: write
+2026-11-19T19:36:55.4932720Z Prepare workflow directory
+2026-11-19T19:36:55.5977600Z Prepare all required actions
+2026-11-19T19:36:55.6120470Z Getting action download info
+2026-11-19T19:36:56.1704350Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-19T19:36:56.6097610Z Download action repository 'actions/setup-go@v6' (SHA:924ae3a1cded613372ab5595356fb5720e22ba16)
+2026-11-19T19:36:57.3787760Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-11-19T19:36:57.8876730Z Complete job name: Patched native Any library on iOS Simulator
+2026-11-19T19:36:58.0210540Z ##[group]Run actions/checkout@v4
+2026-11-19T19:36:58.0214650Z with:
+2026-11-19T19:36:58.0215320Z   persist-credentials: false
+2026-11-19T19:36:58.0216010Z   repository: davidpovarsky/anytype-swift
+2026-11-19T19:36:58.0222840Z   token: ***
+2026-11-19T19:36:58.0225680Z   ssh-strict: true
+2026-11-19T19:36:58.0226330Z   ssh-user: git
+2026-11-19T19:36:58.0226930Z   clean: true
+2026-11-19T19:36:58.0227510Z   sparse-checkout-cone-mode: true
+2026-11-19T19:36:58.0228270Z   fetch-depth: 1
+2026-11-19T19:36:58.0228870Z   fetch-tags: false
+2026-11-19T19:36:58.0229660Z   show-progress: true
+2026-11-19T19:36:58.0230250Z   lfs: false
+2026-11-19T19:36:58.0230870Z   submodules: false
+2026-11-19T19:36:58.0231530Z   set-safe-directory: true
+2026-11-19T19:36:58.0232140Z   allow-unsafe-pr-checkout: false
+2026-11-19T19:36:58.0233560Z env:
+2026-11-19T19:36:58.0234230Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:36:58.0235170Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:36:58.0236000Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:36:58.0236630Z ##[endgroup]
+2026-11-19T19:36:58.5720780Z Syncing repository: davidpovarsky/anytype-swift
+2026-11-19T19:36:58.5722460Z ##[group]Getting Git version info
+2026-11-19T19:36:58.5723060Z Working directory is '/Users/runner/work/anytype-swift/anytype-swift'
+2026-11-19T19:36:58.5723990Z [command]/opt/homebrew/bin/git version
+2026-11-19T19:36:58.6317890Z git version 2.56.0
+2026-11-19T19:36:58.6336550Z ##[endgroup]
+2026-11-19T19:36:58.6345750Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/8c9cb95b-e0cb-4c5a-aeaf-ba9289ce990d/.gitconfig'
+2026-11-19T19:36:58.6355720Z Temporarily overriding HOME='/Users/runner/work/_temp/8c9cb95b-e0cb-4c5a-aeaf-ba9289ce990d' before making global git config changes
+2026-11-19T19:36:58.6357480Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-19T19:36:58.6359690Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift
+2026-11-19T19:36:58.6496230Z Deleting the contents of '/Users/runner/work/anytype-swift/anytype-swift'
+2026-11-19T19:36:58.6514550Z ##[group]Initializing the repository
+2026-11-19T19:36:58.6516740Z [command]/opt/homebrew/bin/git init /Users/runner/work/anytype-swift/anytype-swift
+2026-11-19T19:36:58.7100050Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-19T19:36:58.7144850Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-19T19:36:58.7338190Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-19T19:36:58.7340980Z hint: call:
+2026-11-19T19:36:58.7377400Z hint:
+2026-11-19T19:36:58.7387370Z hint: 	git config --global init.defaultBranch <name>
+2026-11-19T19:36:58.7389150Z hint:
+2026-11-19T19:36:58.7391490Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-19T19:36:58.7398250Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-19T19:36:58.7400060Z hint:
+2026-11-19T19:36:58.7402330Z hint: 	git branch -m <name>
+2026-11-19T19:36:58.7404960Z hint:
+2026-11-19T19:36:58.7412320Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-19T19:36:58.7415400Z Initialized empty Git repository in /Users/runner/work/anytype-swift/anytype-swift/.git/
+2026-11-19T19:36:58.7563900Z [command]/opt/homebrew/bin/git remote add origin https://github.com/davidpovarsky/anytype-swift
+2026-11-19T19:36:58.7666350Z ##[endgroup]
+2026-11-19T19:36:58.7867610Z ##[group]Disabling automatic garbage collection
+2026-11-19T19:36:58.7870880Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-11-19T19:36:58.8281580Z ##[endgroup]
+2026-11-19T19:36:58.8282970Z ##[group]Setting up auth
+2026-11-19T19:36:58.8285650Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T19:36:58.8321340Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T19:36:59.1364600Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T19:36:59.1441320Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T19:36:59.2851270Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T19:36:59.2940760Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T19:36:59.4201390Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-19T19:36:59.4291250Z ##[endgroup]
+2026-11-19T19:36:59.4293160Z ##[group]Fetching the repository
+2026-11-19T19:36:59.4298260Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +a5a4a6f2c489692aa568618a72757f04f16ece85:refs/remotes/origin/codex/any-engine-port-20261119
+2026-11-19T19:37:03.2235250Z From https://github.com/davidpovarsky/anytype-swift
+2026-11-19T19:37:03.2238540Z  * [new ref]         a5a4a6f2c489692aa568618a72757f04f16ece85 -> origin/codex/any-engine-port-20261119
+2026-11-19T19:37:03.2254250Z ##[endgroup]
+2026-11-19T19:37:03.2255320Z ##[group]Determining the checkout info
+2026-11-19T19:37:03.2259870Z ##[endgroup]
+2026-11-19T19:37:03.2275250Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-19T19:37:03.2446270Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-19T19:37:03.2657720Z ##[group]Checking out the ref
+2026-11-19T19:37:03.2686390Z [command]/opt/homebrew/bin/git checkout --progress --force -B codex/any-engine-port-20261119 refs/remotes/origin/codex/any-engine-port-20261119
+2026-11-19T19:37:04.4061540Z Updating files:  42% (3440/8081)
+2026-11-19T19:37:04.4243950Z Updating files:  43% (3475/8081)
+2026-11-19T19:37:04.4393540Z Updating files:  44% (3556/8081)
+2026-11-19T19:37:04.4582430Z Updating files:  45% (3637/8081)
+2026-11-19T19:37:04.4813630Z Updating files:  46% (3718/8081)
+2026-11-19T19:37:04.4996390Z Updating files:  47% (3799/8081)
+2026-11-19T19:37:04.5342110Z Updating files:  48% (3879/8081)
+2026-11-19T19:37:04.5481510Z Updating files:  49% (3960/8081)
+2026-11-19T19:37:04.5643320Z Updating files:  50% (4041/8081)
+2026-11-19T19:37:04.5802930Z Updating files:  51% (4122/8081)
+2026-11-19T19:37:04.5884140Z Updating files:  52% (4203/8081)
+2026-11-19T19:37:04.6149270Z Updating files:  53% (4283/8081)
+2026-11-19T19:37:04.6464490Z Updating files:  54% (4364/8081)
+2026-11-19T19:37:04.6687750Z Updating files:  55% (4445/8081)
+2026-11-19T19:37:04.6953880Z Updating files:  56% (4526/8081)
+2026-11-19T19:37:04.7098770Z Updating files:  57% (4607/8081)
+2026-11-19T19:37:04.7247890Z Updating files:  58% (4687/8081)
+2026-11-19T19:37:04.7387490Z Updating files:  59% (4768/8081)
+2026-11-19T19:37:04.7657700Z Updating files:  60% (4849/8081)
+2026-11-19T19:37:04.7792510Z Updating files:  61% (4930/8081)
+2026-11-19T19:37:04.7897900Z Updating files:  62% (5011/8081)
+2026-11-19T19:37:04.8011480Z Updating files:  63% (5092/8081)
+2026-11-19T19:37:04.8116520Z Updating files:  64% (5172/8081)
+2026-11-19T19:37:04.8229540Z Updating files:  65% (5253/8081)
+2026-11-19T19:37:04.8327110Z Updating files:  66% (5334/8081)
+2026-11-19T19:37:04.8433370Z Updating files:  67% (5415/8081)
+2026-11-19T19:37:04.8587940Z Updating files:  68% (5496/8081)
+2026-11-19T19:37:04.8720090Z Updating files:  69% (5576/8081)
+2026-11-19T19:37:04.8830920Z Updating files:  70% (5657/8081)
+2026-11-19T19:37:04.8959120Z Updating files:  71% (5738/8081)
+2026-11-19T19:37:04.9154620Z Updating files:  72% (5819/8081)
+2026-11-19T19:37:04.9385930Z Updating files:  73% (5900/8081)
+2026-11-19T19:37:04.9553460Z Updating files:  74% (5980/8081)
+2026-11-19T19:37:04.9698060Z Updating files:  75% (6061/8081)
+2026-11-19T19:37:04.9880770Z Updating files:  76% (6142/8081)
+2026-11-19T19:37:05.0033060Z Updating files:  77% (6223/8081)
+2026-11-19T19:37:05.0263650Z Updating files:  78% (6304/8081)
+2026-11-19T19:37:05.0389410Z Updating files:  79% (6384/8081)
+2026-11-19T19:37:05.0557650Z Updating files:  80% (6465/8081)
+2026-11-19T19:37:05.0888670Z Updating files:  81% (6546/8081)
+2026-11-19T19:37:05.1012940Z Updating files:  82% (6627/8081)
+2026-11-19T19:37:05.1239600Z Updating files:  83% (6708/8081)
+2026-11-19T19:37:05.1372240Z Updating files:  84% (6789/8081)
+2026-11-19T19:37:05.1498620Z Updating files:  85% (6869/8081)
+2026-11-19T19:37:05.1810400Z Updating files:  86% (6950/8081)
+2026-11-19T19:37:05.1974020Z Updating files:  87% (7031/8081)
+2026-11-19T19:37:05.2164100Z Updating files:  88% (7112/8081)
+2026-11-19T19:37:05.2593870Z Updating files:  89% (7193/8081)
+2026-11-19T19:37:05.2748740Z Updating files:  90% (7273/8081)
+2026-11-19T19:37:05.2856670Z Updating files:  91% (7354/8081)
+2026-11-19T19:37:05.2991990Z Updating files:  92% (7435/8081)
+2026-11-19T19:37:05.3139600Z Updating files:  93% (7516/8081)
+2026-11-19T19:37:05.3365990Z Updating files:  94% (7597/8081)
+2026-11-19T19:37:05.3386990Z Updating files:  95% (7677/8081)
+2026-11-19T19:37:05.3467350Z Updating files:  95% (7691/8081)
+2026-11-19T19:37:05.3648600Z Updating files:  96% (7758/8081)
+2026-11-19T19:37:05.3765920Z Updating files:  97% (7839/8081)
+2026-11-19T19:37:05.3938590Z Updating files:  98% (7920/8081)
+2026-11-19T19:37:05.4141120Z Updating files:  99% (8001/8081)
+2026-11-19T19:37:05.4141840Z Updating files: 100% (8081/8081)
+2026-11-19T19:37:05.4142930Z Updating files: 100% (8081/8081), done.
+2026-11-19T19:37:05.4345930Z Switched to a new branch 'codex/any-engine-port-20261119'
+2026-11-19T19:37:05.4378910Z branch 'codex/any-engine-port-20261119' set up to track 'origin/codex/any-engine-port-20261119'.
+2026-11-19T19:37:05.4422440Z ##[endgroup]
+2026-11-19T19:37:05.4614600Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-11-19T19:37:05.4711730Z a5a4a6f2c489692aa568618a72757f04f16ece85
+2026-11-19T19:37:05.4727660Z ##[group]Removing auth
+2026-11-19T19:37:05.4732750Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T19:37:05.4823260Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T19:37:05.6179660Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T19:37:05.6253200Z http.https://github.com/.extraheader
+2026-11-19T19:37:05.6259730Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-19T19:37:05.6348050Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T19:37:05.7496070Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T19:37:05.7572320Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T19:37:05.8639110Z ##[endgroup]
+2026-11-19T19:37:05.9101730Z ##[group]Run actions/checkout@v4
+2026-11-19T19:37:05.9102060Z with:
+2026-11-19T19:37:05.9102260Z   repository: davidpovarsky/hanlin-ai
+2026-11-19T19:37:05.9102500Z   ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-19T19:37:05.9102810Z   path: .ci/hanlin-source
+2026-11-19T19:37:05.9103050Z   persist-credentials: false
+2026-11-19T19:37:05.9105230Z   token: ***
+2026-11-19T19:37:05.9105390Z   ssh-strict: true
+2026-11-19T19:37:05.9105560Z   ssh-user: git
+2026-11-19T19:37:05.9105720Z   clean: true
+2026-11-19T19:37:05.9105890Z   sparse-checkout-cone-mode: true
+2026-11-19T19:37:05.9106120Z   fetch-depth: 1
+2026-11-19T19:37:05.9106280Z   fetch-tags: false
+2026-11-19T19:37:05.9128300Z   show-progress: true
+2026-11-19T19:37:05.9128590Z   lfs: false
+2026-11-19T19:37:05.9128820Z   submodules: false
+2026-11-19T19:37:05.9129030Z   set-safe-directory: true
+2026-11-19T19:37:05.9129260Z   allow-unsafe-pr-checkout: false
+2026-11-19T19:37:05.9129480Z env:
+2026-11-19T19:37:05.9129910Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:37:05.9130320Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:37:05.9130600Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:37:05.9130900Z ##[endgroup]
+2026-11-19T19:37:06.0837500Z Syncing repository: davidpovarsky/hanlin-ai
+2026-11-19T19:37:06.0843160Z ##[group]Getting Git version info
+2026-11-19T19:37:06.0843610Z Working directory is '/Users/runner/work/anytype-swift/anytype-swift/.ci/hanlin-source'
+2026-11-19T19:37:06.0878510Z [command]/opt/homebrew/bin/git version
+2026-11-19T19:37:06.0980910Z git version 2.56.0
+2026-11-19T19:37:06.0993610Z ##[endgroup]
+2026-11-19T19:37:06.1000180Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/501c5d52-14af-4707-b1fd-3be7506e08b0/.gitconfig'
+2026-11-19T19:37:06.1007570Z Temporarily overriding HOME='/Users/runner/work/_temp/501c5d52-14af-4707-b1fd-3be7506e08b0' before making global git config changes
+2026-11-19T19:37:06.1008750Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-19T19:37:06.1014170Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/.ci/hanlin-source
+2026-11-19T19:37:06.1095280Z ##[group]Initializing the repository
+2026-11-19T19:37:06.1099800Z [command]/opt/homebrew/bin/git init /Users/runner/work/anytype-swift/anytype-swift/.ci/hanlin-source
+2026-11-19T19:37:06.1208030Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-19T19:37:06.1209950Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-19T19:37:06.1210480Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-19T19:37:06.1211100Z hint: call:
+2026-11-19T19:37:06.1211250Z hint:
+2026-11-19T19:37:06.1211500Z hint: 	git config --global init.defaultBranch <name>
+2026-11-19T19:37:06.1212880Z hint:
+2026-11-19T19:37:06.1213280Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-19T19:37:06.1213710Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-19T19:37:06.1214010Z hint:
+2026-11-19T19:37:06.1214270Z hint: 	git branch -m <name>
+2026-11-19T19:37:06.1214490Z hint:
+2026-11-19T19:37:06.1214780Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-19T19:37:06.1215280Z Initialized empty Git repository in /Users/runner/work/anytype-swift/anytype-swift/.ci/hanlin-source/.git/
+2026-11-19T19:37:06.1218080Z [command]/opt/homebrew/bin/git remote add origin https://github.com/davidpovarsky/hanlin-ai
+2026-11-19T19:37:06.1288780Z ##[endgroup]
+2026-11-19T19:37:06.1289120Z ##[group]Disabling automatic garbage collection
+2026-11-19T19:37:06.1292160Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-11-19T19:37:06.1362330Z ##[endgroup]
+2026-11-19T19:37:06.1363140Z ##[group]Setting up auth
+2026-11-19T19:37:06.1366560Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T19:37:06.1443990Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T19:37:06.2609270Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T19:37:06.2694120Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T19:37:06.3734360Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T19:37:06.3816880Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T19:37:06.5330870Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-19T19:37:06.5550270Z ##[endgroup]
+2026-11-19T19:37:06.5552510Z ##[group]Fetching the repository
+2026-11-19T19:37:06.5582080Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-19T19:37:09.3774570Z From https://github.com/davidpovarsky/hanlin-ai
+2026-11-19T19:37:09.3776050Z  * branch            116cc6be0654a5d11bc56ba00e0310031107ee36 -> FETCH_HEAD
+2026-11-19T19:37:09.3792520Z ##[endgroup]
+2026-11-19T19:37:09.3794390Z ##[group]Determining the checkout info
+2026-11-19T19:37:09.3796050Z ##[endgroup]
+2026-11-19T19:37:09.3810160Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-19T19:37:09.3926140Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-19T19:37:09.4031540Z ##[group]Checking out the ref
+2026-11-19T19:37:09.4037010Z [command]/opt/homebrew/bin/git checkout --progress --force 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-19T19:37:10.5014650Z Updating files:  81% (4153/5101)
+2026-11-19T19:37:10.5134960Z Updating files:  82% (4183/5101)
+2026-11-19T19:37:10.5329200Z Updating files:  83% (4234/5101)
+2026-11-19T19:37:10.5522550Z Updating files:  84% (4285/5101)
+2026-11-19T19:37:10.5585780Z Updating files:  85% (4336/5101)
+2026-11-19T19:37:10.5650580Z Updating files:  86% (4387/5101)
+2026-11-19T19:37:10.5727450Z Updating files:  87% (4438/5101)
+2026-11-19T19:37:10.5845420Z Updating files:  88% (4489/5101)
+2026-11-19T19:37:10.5929970Z Updating files:  89% (4540/5101)
+2026-11-19T19:37:10.5995090Z Updating files:  90% (4591/5101)
+2026-11-19T19:37:10.6067700Z Updating files:  91% (4642/5101)
+2026-11-19T19:37:10.6171920Z Updating files:  92% (4693/5101)
+2026-11-19T19:37:10.6224580Z Updating files:  93% (4744/5101)
+2026-11-19T19:37:10.6294020Z Updating files:  94% (4795/5101)
+2026-11-19T19:37:10.6530110Z Updating files:  95% (4846/5101)
+2026-11-19T19:37:10.6776660Z Updating files:  96% (4897/5101)
+2026-11-19T19:37:10.6834060Z Updating files:  97% (4948/5101)
+2026-11-19T19:37:10.6953350Z Updating files:  98% (4999/5101)
+2026-11-19T19:37:10.7039160Z Updating files:  99% (5050/5101)
+2026-11-19T19:37:10.7040400Z Updating files: 100% (5101/5101)
+2026-11-19T19:37:10.7041220Z Updating files: 100% (5101/5101), done.
+2026-11-19T19:37:10.7141770Z HEAD is now at 116cc6b Expose bundled OpenUI resource location to public renderer configuration
+2026-11-19T19:37:10.7192110Z ##[endgroup]
+2026-11-19T19:37:10.7368510Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-11-19T19:37:10.7502270Z 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-19T19:37:10.7519530Z ##[group]Removing auth
+2026-11-19T19:37:10.7524410Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T19:37:10.7636720Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T19:37:10.8924280Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T19:37:10.9002760Z http.https://github.com/.extraheader
+2026-11-19T19:37:10.9014250Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-19T19:37:10.9105580Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T19:37:11.0174380Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T19:37:11.0246490Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T19:37:11.1336690Z ##[endgroup]
+2026-11-19T19:37:11.1741740Z ##[group]Run python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
+2026-11-19T19:37:11.1769310Z [36;1mpython3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source[0m
+2026-11-19T19:37:11.1769700Z [36;1mpython3 Tools/Hanlin/prepare_sdk.py --check[0m
+2026-11-19T19:37:11.1846310Z shell: /bin/bash -e {0}
+2026-11-19T19:37:11.1846500Z env:
+2026-11-19T19:37:11.1846720Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:37:11.1847020Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:37:11.1847250Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:37:11.1847440Z ##[endgroup]
+2026-11-19T19:37:11.7451770Z Verified Hanlin 116cc6be0654a5d11bc56ba00e0310031107ee36 at /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin
+2026-11-19T19:37:11.8542760Z Verified Hanlin 116cc6be0654a5d11bc56ba00e0310031107ee36 at /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin
+2026-11-19T19:37:11.8738350Z ##[group]Run actions/checkout@v4
+2026-11-19T19:37:11.8738600Z with:
+2026-11-19T19:37:11.8738770Z   repository: anyproto/any
+2026-11-19T19:37:11.8738990Z   ref: 88fae2e5ae7d0f46d6707567a3123081faa8de9a
+2026-11-19T19:37:11.8739250Z   path: .ci/any-source
+2026-11-19T19:37:11.8739440Z   persist-credentials: false
+2026-11-19T19:37:11.8741560Z   token: ***
+2026-11-19T19:37:11.8741740Z   ssh-strict: true
+2026-11-19T19:37:11.8741900Z   ssh-user: git
+2026-11-19T19:37:11.8742100Z   clean: true
+2026-11-19T19:37:11.8742270Z   sparse-checkout-cone-mode: true
+2026-11-19T19:37:11.8742490Z   fetch-depth: 1
+2026-11-19T19:37:11.8743130Z   fetch-tags: false
+2026-11-19T19:37:11.8743320Z   show-progress: true
+2026-11-19T19:37:11.8743510Z   lfs: false
+2026-11-19T19:37:11.8743700Z   submodules: false
+2026-11-19T19:37:11.8743920Z   set-safe-directory: true
+2026-11-19T19:37:11.8744130Z   allow-unsafe-pr-checkout: false
+2026-11-19T19:37:11.8744330Z env:
+2026-11-19T19:37:11.8744610Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:37:11.8744920Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:37:11.8745160Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:37:11.8745370Z ##[endgroup]
+2026-11-19T19:37:12.0330760Z Syncing repository: anyproto/any
+2026-11-19T19:37:12.0347370Z ##[group]Getting Git version info
+2026-11-19T19:37:12.0348470Z Working directory is '/Users/runner/work/anytype-swift/anytype-swift/.ci/any-source'
+2026-11-19T19:37:12.0424160Z [command]/opt/homebrew/bin/git version
+2026-11-19T19:37:12.0570110Z git version 2.56.0
+2026-11-19T19:37:12.0590240Z ##[endgroup]
+2026-11-19T19:37:12.0610280Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/0d7f12ca-bd15-4cfd-a3de-345cab4a84ca/.gitconfig'
+2026-11-19T19:37:12.0615360Z Temporarily overriding HOME='/Users/runner/work/_temp/0d7f12ca-bd15-4cfd-a3de-345cab4a84ca' before making global git config changes
+2026-11-19T19:37:12.0616240Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-19T19:37:12.0627460Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/.ci/any-source
+2026-11-19T19:37:12.0726130Z ##[group]Initializing the repository
+2026-11-19T19:37:12.0730230Z [command]/opt/homebrew/bin/git init /Users/runner/work/anytype-swift/anytype-swift/.ci/any-source
+2026-11-19T19:37:12.0917060Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-19T19:37:12.0921050Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-19T19:37:12.0923740Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-19T19:37:12.0925210Z hint: call:
+2026-11-19T19:37:12.0925720Z hint:
+2026-11-19T19:37:12.0926280Z hint: 	git config --global init.defaultBranch <name>
+2026-11-19T19:37:12.0926970Z hint:
+2026-11-19T19:37:12.0927600Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-19T19:37:12.0928730Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-19T19:37:12.0929550Z hint:
+2026-11-19T19:37:12.0930010Z hint: 	git branch -m <name>
+2026-11-19T19:37:12.0930490Z hint:
+2026-11-19T19:37:12.0931200Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-19T19:37:12.0932590Z Initialized empty Git repository in /Users/runner/work/anytype-swift/anytype-swift/.ci/any-source/.git/
+2026-11-19T19:37:12.0943970Z [command]/opt/homebrew/bin/git remote add origin https://github.com/anyproto/any
+2026-11-19T19:37:12.1077810Z ##[endgroup]
+2026-11-19T19:37:12.1078780Z ##[group]Disabling automatic garbage collection
+2026-11-19T19:37:12.1085840Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-11-19T19:37:12.1183660Z ##[endgroup]
+2026-11-19T19:37:12.1184580Z ##[group]Setting up auth
+2026-11-19T19:37:12.1195880Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T19:37:12.1297120Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T19:37:12.2658210Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T19:37:12.2740850Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T19:37:12.3851500Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T19:37:12.3934000Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T19:37:12.5222050Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-19T19:37:12.5332840Z ##[endgroup]
+2026-11-19T19:37:12.5334260Z ##[group]Fetching the repository
+2026-11-19T19:37:12.5337070Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 88fae2e5ae7d0f46d6707567a3123081faa8de9a
+2026-11-19T19:37:13.5791050Z From https://github.com/anyproto/any
+2026-11-19T19:37:13.5791480Z  * branch            88fae2e5ae7d0f46d6707567a3123081faa8de9a -> FETCH_HEAD
+2026-11-19T19:37:13.5798650Z ##[endgroup]
+2026-11-19T19:37:13.5799590Z ##[group]Determining the checkout info
+2026-11-19T19:37:13.5802320Z ##[endgroup]
+2026-11-19T19:37:13.5812700Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-19T19:37:13.5942550Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-19T19:37:13.6034260Z ##[group]Checking out the ref
+2026-11-19T19:37:13.6038840Z [command]/opt/homebrew/bin/git checkout --progress --force 88fae2e5ae7d0f46d6707567a3123081faa8de9a
+2026-11-19T19:37:13.7472480Z HEAD is now at 88fae2e Merge pull request #355 from anyproto/cheggaaa/embed-process-state
+2026-11-19T19:37:13.7482960Z ##[endgroup]
+2026-11-19T19:37:13.7583680Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-11-19T19:37:13.7674270Z 88fae2e5ae7d0f46d6707567a3123081faa8de9a
+2026-11-19T19:37:13.7687740Z ##[group]Removing auth
+2026-11-19T19:37:13.7691010Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T19:37:13.7803370Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T19:37:13.9565180Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T19:37:13.9577930Z http.https://github.com/.extraheader
+2026-11-19T19:37:13.9695540Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-19T19:37:13.9702570Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T19:37:14.1294020Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T19:37:14.1440410Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T19:37:14.2768530Z ##[endgroup]
+2026-11-19T19:37:14.2892450Z ##[group]Run actions/checkout@v4
+2026-11-19T19:37:14.2892650Z with:
+2026-11-19T19:37:14.2892800Z   repository: anyproto/any-sync-sdk
+2026-11-19T19:37:14.2893020Z   ref: 854df54cdadd76006ae823cbd1b1d923138356d0
+2026-11-19T19:37:14.2893290Z   path: .ci/any-source/.runtime-artifacts/sdk-source
+2026-11-19T19:37:14.2893530Z   persist-credentials: false
+2026-11-19T19:37:14.2895540Z   token: ***
+2026-11-19T19:37:14.2895670Z   ssh-strict: true
+2026-11-19T19:37:14.2895820Z   ssh-user: git
+2026-11-19T19:37:14.2895950Z   clean: true
+2026-11-19T19:37:14.2896100Z   sparse-checkout-cone-mode: true
+2026-11-19T19:37:14.2896280Z   fetch-depth: 1
+2026-11-19T19:37:14.2896420Z   fetch-tags: false
+2026-11-19T19:37:14.2896570Z   show-progress: true
+2026-11-19T19:37:14.2896720Z   lfs: false
+2026-11-19T19:37:14.2896850Z   submodules: false
+2026-11-19T19:37:14.2897000Z   set-safe-directory: true
+2026-11-19T19:37:14.2897180Z   allow-unsafe-pr-checkout: false
+2026-11-19T19:37:14.2897360Z env:
+2026-11-19T19:37:14.2897580Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:37:14.2898560Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:37:14.2898780Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:37:14.2898960Z ##[endgroup]
+2026-11-19T19:37:14.3971030Z Syncing repository: anyproto/any-sync-sdk
+2026-11-19T19:37:14.3981300Z ##[group]Getting Git version info
+2026-11-19T19:37:14.3981890Z Working directory is '/Users/runner/work/anytype-swift/anytype-swift/.ci/any-source/.runtime-artifacts/sdk-source'
+2026-11-19T19:37:14.4029540Z [command]/opt/homebrew/bin/git version
+2026-11-19T19:37:14.4126680Z git version 2.56.0
+2026-11-19T19:37:14.4141640Z ##[endgroup]
+2026-11-19T19:37:14.4148190Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/60238c55-5ec4-4d4e-a31f-1d0c11a6b27a/.gitconfig'
+2026-11-19T19:37:14.4154080Z Temporarily overriding HOME='/Users/runner/work/_temp/60238c55-5ec4-4d4e-a31f-1d0c11a6b27a' before making global git config changes
+2026-11-19T19:37:14.4156130Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-19T19:37:14.4158510Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/.ci/any-source/.runtime-artifacts/sdk-source
+2026-11-19T19:37:14.4302320Z ##[group]Initializing the repository
+2026-11-19T19:37:14.4307680Z [command]/opt/homebrew/bin/git init /Users/runner/work/anytype-swift/anytype-swift/.ci/any-source/.runtime-artifacts/sdk-source
+2026-11-19T19:37:14.4437760Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-19T19:37:14.4439190Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-19T19:37:14.4440460Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-19T19:37:14.4441300Z hint: call:
+2026-11-19T19:37:14.4441710Z hint:
+2026-11-19T19:37:14.4442250Z hint: 	git config --global init.defaultBranch <name>
+2026-11-19T19:37:14.4442890Z hint:
+2026-11-19T19:37:14.4443590Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-19T19:37:14.4444650Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-19T19:37:14.4445470Z hint:
+2026-11-19T19:37:14.4445910Z hint: 	git branch -m <name>
+2026-11-19T19:37:14.4446430Z hint:
+2026-11-19T19:37:14.4447410Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-19T19:37:14.4449150Z Initialized empty Git repository in /Users/runner/work/anytype-swift/anytype-swift/.ci/any-source/.runtime-artifacts/sdk-source/.git/
+2026-11-19T19:37:14.4451580Z [command]/opt/homebrew/bin/git remote add origin https://github.com/anyproto/any-sync-sdk
+2026-11-19T19:37:14.4538010Z ##[endgroup]
+2026-11-19T19:37:14.4538980Z ##[group]Disabling automatic garbage collection
+2026-11-19T19:37:14.4540270Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-11-19T19:37:14.4620590Z ##[endgroup]
+2026-11-19T19:37:14.4620900Z ##[group]Setting up auth
+2026-11-19T19:37:14.4627260Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T19:37:14.4710360Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T19:37:14.6090050Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T19:37:14.6092140Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T19:37:14.7852260Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T19:37:14.7991480Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T19:37:14.9236130Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-19T19:37:14.9326260Z ##[endgroup]
+2026-11-19T19:37:14.9326710Z ##[group]Fetching the repository
+2026-11-19T19:37:14.9331000Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 854df54cdadd76006ae823cbd1b1d923138356d0
+2026-11-19T19:37:15.7932920Z From https://github.com/anyproto/any-sync-sdk
+2026-11-19T19:37:15.7933400Z  * branch            854df54cdadd76006ae823cbd1b1d923138356d0 -> FETCH_HEAD
+2026-11-19T19:37:15.7938870Z ##[endgroup]
+2026-11-19T19:37:15.7939660Z ##[group]Determining the checkout info
+2026-11-19T19:37:15.7940490Z ##[endgroup]
+2026-11-19T19:37:15.7944030Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-19T19:37:15.8026900Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-19T19:37:15.8099650Z ##[group]Checking out the ref
+2026-11-19T19:37:15.8108020Z [command]/opt/homebrew/bin/git checkout --progress --force 854df54cdadd76006ae823cbd1b1d923138356d0
+2026-11-19T19:37:15.8923610Z HEAD is now at 854df54 Merge pull request #215 from anyproto/cheggaaa/any-store-v2.5.0
+2026-11-19T19:37:15.8934810Z ##[endgroup]
+2026-11-19T19:37:15.9043300Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-11-19T19:37:15.9120450Z 854df54cdadd76006ae823cbd1b1d923138356d0
+2026-11-19T19:37:15.9130240Z ##[group]Removing auth
+2026-11-19T19:37:15.9134040Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T19:37:15.9208520Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T19:37:16.0122020Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T19:37:16.0185390Z http.https://github.com/.extraheader
+2026-11-19T19:37:16.0190920Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-19T19:37:16.0263370Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T19:37:16.1125330Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T19:37:16.1187350Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T19:37:16.2215140Z ##[endgroup]
+2026-11-19T19:37:16.2357910Z ##[group]Run actions/setup-go@v6
+2026-11-19T19:37:16.2358190Z with:
+2026-11-19T19:37:16.2358410Z   go-version-file: .ci/any-source/go.mod
+2026-11-19T19:37:16.2358860Z   cache-dependency-path: .ci/any-source/go.sum
+.ci/any-source/.runtime-artifacts/sdk-source/go.sum
+
+2026-11-19T19:37:16.2359320Z   check-latest: false
+2026-11-19T19:37:16.2361320Z   token: ***
+2026-11-19T19:37:16.2361510Z   cache: true
+2026-11-19T19:37:16.2361670Z env:
+2026-11-19T19:37:16.2361950Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:37:16.2362270Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:37:16.2362550Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:37:16.2362780Z ##[endgroup]
+2026-11-19T19:37:16.4181860Z Setup go version spec 1.27.1
+2026-11-19T19:37:16.4208830Z Attempting to download 1.27.1...
+2026-11-19T19:37:17.0794240Z matching 1.27.1...
+2026-11-19T19:37:17.0980340Z Acquiring 1.27.1 from https://github.com/actions/go-versions/releases/download/1.27.1-33583469715/go-1.27.1-darwin-arm64.tar.gz
+2026-11-19T19:37:19.0509930Z Extracting Go...
+2026-11-19T19:37:19.0655660Z [command]/usr/bin/tar xz -C /Users/runner/work/_temp/46927b54-02ce-429f-b435-e9827655529c -f /Users/runner/work/_temp/9a025b02-029b-41c7-991e-c09f6ae24ffa
+2026-11-19T19:37:22.3525850Z Successfully extracted go to /Users/runner/work/_temp/46927b54-02ce-429f-b435-e9827655529c
+2026-11-19T19:37:22.3528950Z Adding to the cache ...
+2026-11-19T19:37:30.8396160Z Successfully cached go to /Users/runner/hostedtoolcache/go/1.27.1/arm64
+2026-11-19T19:37:30.8403150Z Added go to the path
+2026-11-19T19:37:30.8405230Z Successfully set up Go version 1.27.1
+2026-11-19T19:37:30.9304630Z [command]/Users/runner/hostedtoolcache/go/1.27.1/arm64/bin/go env GOMODCACHE
+2026-11-19T19:37:30.9410230Z [command]/Users/runner/hostedtoolcache/go/1.27.1/arm64/bin/go env GOCACHE
+2026-11-19T19:37:30.9442710Z /Users/runner/go/pkg/mod
+2026-11-19T19:37:30.9464460Z /Users/runner/Library/Caches/go-build
+2026-11-19T19:37:31.2212780Z Cache is not found
+2026-11-19T19:37:31.2266970Z go version go1.27.1 darwin/arm64
+2026-11-19T19:37:31.2267210Z 
+2026-11-19T19:37:31.2267540Z ##[group]go env
+2026-11-19T19:37:35.9995670Z AR='ar'
+2026-11-19T19:37:35.9997850Z CC='clang'
+2026-11-19T19:37:35.9998940Z CGO_CFLAGS='-O2 -g'
+2026-11-19T19:37:36.0000090Z CGO_CPPFLAGS=''
+2026-11-19T19:37:36.0000870Z CGO_CXXFLAGS='-O2 -g'
+2026-11-19T19:37:36.0002090Z CGO_ENABLED='1'
+2026-11-19T19:37:36.0003800Z CGO_FFLAGS='-O2 -g'
+2026-11-19T19:37:36.0004720Z CGO_LDFLAGS='-O2 -g'
+2026-11-19T19:37:36.0005140Z CXX='clang++'
+2026-11-19T19:37:36.0006180Z GCCGO='gccgo'
+2026-11-19T19:37:36.0006900Z GO111MODULE=''
+2026-11-19T19:37:36.0007220Z GOARCH='arm64'
+2026-11-19T19:37:36.0007850Z GOARM64='v8.0'
+2026-11-19T19:37:36.0008170Z GOAUTH='netrc'
+2026-11-19T19:37:36.0009060Z GOBIN='/Users/runner/go/bin'
+2026-11-19T19:37:36.0009530Z GOCACHE='/Users/runner/Library/Caches/go-build'
+2026-11-19T19:37:36.0012850Z GOCACHEPROG=''
+2026-11-19T19:37:36.0014190Z GODEBUG=''
+2026-11-19T19:37:36.0017000Z GOENV='/Users/runner/Library/Application Support/go/env'
+2026-11-19T19:37:36.0018940Z GOEXE=''
+2026-11-19T19:37:36.0020150Z GOEXPERIMENT=''
+2026-11-19T19:37:36.0021260Z GOFIPS140='off'
+2026-11-19T19:37:36.0021750Z GOFLAGS=''
+2026-11-19T19:37:36.0023650Z GOGCCFLAGS='-fPIC -arch arm64 -pthread -fno-caret-diagnostics -Qunused-arguments -fmessage-length=0 -ffile-prefix-map=/var/folders/5n/5t77mfb93jd7q8v9s6f0dn0m0000gn/T/go-build250201248=/tmp/go-build -gno-record-gcc-switches -fno-common'
+2026-11-19T19:37:36.0025510Z GOHOSTARCH='arm64'
+2026-11-19T19:37:36.0027520Z GOHOSTOS='darwin'
+2026-11-19T19:37:36.0027960Z GOINSECURE=''
+2026-11-19T19:37:36.0032760Z GOMOD='/dev/null'
+2026-11-19T19:37:36.0033240Z GOMODCACHE='/Users/runner/go/pkg/mod'
+2026-11-19T19:37:36.0034020Z GONOPROXY=''
+2026-11-19T19:37:36.0036000Z GONOSUMDB=''
+2026-11-19T19:37:36.0036610Z GOOS='darwin'
+2026-11-19T19:37:36.0040380Z GOPACKAGESDRIVER=''
+2026-11-19T19:37:36.0041330Z GOPATH='/Users/runner/go'
+2026-11-19T19:37:36.0043050Z GOPRIVATE=''
+2026-11-19T19:37:36.0046290Z GOPROXY='https://proxy.golang.org,direct'
+2026-11-19T19:37:36.0047040Z GOROOT='/Users/runner/hostedtoolcache/go/1.27.1/arm64'
+2026-11-19T19:37:36.0047930Z GOSUMDB='sum.golang.org'
+2026-11-19T19:37:36.0049250Z GOTELEMETRY='local'
+2026-11-19T19:37:36.0049920Z GOTELEMETRYDIR='/Users/runner/Library/Application Support/go/telemetry'
+2026-11-19T19:37:36.0050570Z GOTMPDIR=''
+2026-11-19T19:37:36.0051270Z GOTOOLCHAIN='local'
+2026-11-19T19:37:36.0051810Z GOTOOLDIR='/Users/runner/hostedtoolcache/go/1.27.1/arm64/pkg/tool/darwin_arm64'
+2026-11-19T19:37:36.0052560Z GOVCS=''
+2026-11-19T19:37:36.0052880Z GOVERSION='go1.27.1'
+2026-11-19T19:37:36.0053380Z GOWORK=''
+2026-11-19T19:37:36.0053720Z PKG_CONFIG='pkg-config'
+2026-11-19T19:37:36.0053970Z 
+2026-11-19T19:37:36.0055140Z ##[endgroup]
+2026-11-19T19:37:36.0315330Z ##[group]Run python3 Tools/AnyEnginePort/prepare_native_runtime.py apply \
+2026-11-19T19:37:36.0315970Z [36;1mpython3 Tools/AnyEnginePort/prepare_native_runtime.py apply \[0m
+2026-11-19T19:37:36.0316370Z [36;1m  --any-root .ci/any-source \[0m
+2026-11-19T19:37:36.0316790Z [36;1m  --output build/any-patched-evidence/native-source.json[0m
+2026-11-19T19:37:36.0377550Z shell: /bin/bash -e {0}
+2026-11-19T19:37:36.0377800Z env:
+2026-11-19T19:37:36.0378100Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:37:36.0378430Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:37:36.0379380Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:37:36.0379660Z   GOTOOLCHAIN: local
+2026-11-19T19:37:36.0379960Z ##[endgroup]
+2026-11-19T19:37:37.9203240Z Verified and applied both immutable native overlays.
+2026-11-19T19:37:37.9351260Z ##[group]Run go test -count=1 ./mobile/ios/
+2026-11-19T19:37:37.9351560Z [36;1mgo test -count=1 ./mobile/ios/[0m
+2026-11-19T19:37:37.9398870Z shell: /bin/bash -e {0}
+2026-11-19T19:37:37.9399070Z env:
+2026-11-19T19:37:37.9399440Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:37:37.9399740Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:37:37.9399960Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:37:37.9400160Z   GOTOOLCHAIN: local
+2026-11-19T19:37:37.9400320Z ##[endgroup]
+2026-11-19T19:37:38.0221670Z go: downloading github.com/anyproto/any-sync v0.13.8
+2026-11-19T19:37:38.0230440Z go: downloading gopkg.in/yaml.v3 v3.0.1
+2026-11-19T19:37:38.1453260Z go: downloading github.com/anyproto/any-store/v2 v2.5.0
+2026-11-19T19:37:39.2260070Z go: downloading github.com/anyproto/any-store v1.0.3
+2026-11-19T19:37:39.6378490Z go: downloading go.uber.org/zap v1.28.0
+2026-11-19T19:37:39.6380710Z go: downloading golang.org/x/text v0.43.0
+2026-11-19T19:37:39.9824560Z go: downloading github.com/anyproto/go-sqlite v1.4.2-any
+2026-11-19T19:37:40.3127780Z go: downloading github.com/cheggaaa/mb/v3 v3.0.3
+2026-11-19T19:37:40.3871970Z go: downloading github.com/gabriel-vasile/mimetype v1.4.15
+2026-11-19T19:37:40.3873610Z go: downloading github.com/gofrs/flock v0.13.1
+2026-11-19T19:37:40.5346800Z go: downloading github.com/labstack/echo/v4 v4.13.4
+2026-11-19T19:37:40.6186050Z go: downloading github.com/swaggo/swag/v2 v2.0.0-rc5
+2026-11-19T19:37:41.1124670Z go: downloading github.com/rupayon123/fastjson v1.6.11-0.20260923141322-367520c10fb6
+2026-11-19T19:37:41.1502430Z go: downloading github.com/gobwas/glob v0.2.3
+2026-11-19T19:37:41.1942610Z go: downloading github.com/klauspost/compress v1.20.3
+2026-11-19T19:37:41.3030530Z go: downloading golang.org/x/exp v0.0.0-20260908205506-85c1c2202aba
+2026-11-19T19:37:41.5953270Z go: downloading github.com/anyproto/lexid v0.0.6
+2026-11-19T19:37:41.6640800Z go: downloading github.com/mr-tron/base58 v1.3.0
+2026-11-19T19:37:41.8014830Z go: downloading go.uber.org/multierr v1.11.0
+2026-11-19T19:37:41.8575240Z go: downloading golang.org/x/time v0.16.0
+2026-11-19T19:37:41.9437370Z go: downloading storj.io/drpc v1.0.0
+2026-11-19T19:37:42.0025100Z go: downloading filippo.io/edwards25519 v1.2.0
+2026-11-19T19:37:42.1613610Z go: downloading github.com/anyproto/go-bip39 v1.0.0
+2026-11-19T19:37:42.3209790Z go: downloading github.com/anyproto/go-slip10 v1.0.1
+2026-11-19T19:37:42.4631980Z go: downloading github.com/anyproto/go-slip21 v1.0.0
+2026-11-19T19:37:42.5357840Z go: downloading github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.1
+2026-11-19T19:37:42.7002190Z go: downloading github.com/libp2p/go-libp2p v0.50.0
+2026-11-19T19:37:43.0549260Z go: downloading github.com/multiformats/go-multibase v0.3.0
+2026-11-19T19:37:43.3960000Z go: downloading golang.org/x/crypto v0.58.0
+2026-11-19T19:37:43.7733040Z go: downloading github.com/sergi/go-diff v1.4.0
+2026-11-19T19:37:43.7751390Z go: downloading github.com/zeebo/xxh3 v1.1.0
+2026-11-19T19:37:43.7753440Z go: downloading github.com/anyproto/anytype-push-server/pushclient v0.0.0-20261014142855-af71aa8b1662
+2026-11-19T19:37:43.9375380Z go: downloading modernc.org/libc v1.66.8
+2026-11-19T19:37:44.6490870Z go: downloading modernc.org/sqlite v1.37.1
+2026-11-19T19:37:46.9264710Z go: downloading golang.org/x/sys v0.49.0
+2026-11-19T19:37:46.9286150Z go: downloading github.com/labstack/gommon v0.4.2
+2026-11-19T19:37:47.0881850Z go: downloading golang.org/x/net v0.60.0
+2026-11-19T19:37:47.6384840Z go: downloading github.com/valyala/fasttemplate v1.2.2
+2026-11-19T19:37:47.6751620Z go: downloading github.com/KyleBanks/depth v1.2.1
+2026-11-19T19:37:47.7775760Z go: downloading github.com/go-openapi/spec v0.20.9
+2026-11-19T19:37:47.8243680Z go: downloading github.com/sv-tools/openapi v0.4.0
+2026-11-19T19:37:48.1141370Z go: downloading golang.org/x/tools v0.51.0
+2026-11-19T19:37:48.1700150Z go: downloading github.com/rivo/uniseg v0.4.7
+2026-11-19T19:37:48.4122700Z go: downloading github.com/cespare/xxhash/v2 v2.3.0
+2026-11-19T19:37:48.4929260Z go: downloading github.com/cespare/xxhash v1.1.0
+2026-11-19T19:37:48.6553210Z go: downloading github.com/ipfs/go-cid v0.6.2
+2026-11-19T19:37:48.8825160Z go: downloading google.golang.org/protobuf v1.36.12
+2026-11-19T19:37:48.9787450Z go: downloading github.com/ipfs/boxo v0.43.0
+2026-11-19T19:37:49.3955020Z go: downloading github.com/ipfs/go-ipld-format v0.6.4
+2026-11-19T19:37:49.5469050Z go: downloading github.com/ipfs/go-block-format v0.2.4
+2026-11-19T19:37:49.5771170Z go: downloading github.com/planetscale/vtprotobuf v0.6.1-0.20240319094008-0393e58bdf10
+2026-11-19T19:37:49.7774820Z go: downloading github.com/prometheus/client_golang v1.24.1
+2026-11-19T19:37:49.7897310Z go: downloading go.uber.org/atomic v1.12.0
+2026-11-19T19:37:50.0048960Z go: downloading github.com/goccy/go-graphviz v0.2.10
+2026-11-19T19:37:50.0053340Z go: downloading github.com/stretchr/testify v1.12.1
+2026-11-19T19:37:50.1745110Z go: downloading github.com/anyproto/go-chash v0.1.0
+2026-11-19T19:37:50.3831540Z go: downloading github.com/zeebo/errs v1.4.0
+2026-11-19T19:37:50.3897530Z go: downloading github.com/multiformats/go-multiaddr v0.16.1
+2026-11-19T19:37:50.4104020Z go: downloading github.com/multiformats/go-multicodec v0.10.0
+2026-11-19T19:37:50.5241040Z go: downloading github.com/multiformats/go-multihash v0.2.3
+2026-11-19T19:37:50.6547920Z go: downloading github.com/multiformats/go-base32 v0.1.0
+2026-11-19T19:37:50.6733970Z go: downloading github.com/multiformats/go-base36 v0.2.0
+2026-11-19T19:37:50.6849410Z go: downloading github.com/dustin/go-humanize v1.0.1
+2026-11-19T19:37:50.7930390Z go: downloading github.com/google/uuid v1.6.0
+2026-11-19T19:37:50.8136100Z go: downloading github.com/mattn/go-isatty v0.0.22
+2026-11-19T19:37:50.8244050Z go: downloading github.com/ncruces/go-strftime v0.1.9
+2026-11-19T19:37:50.9404630Z go: downloading modernc.org/mathutil v1.7.1
+2026-11-19T19:37:50.9556960Z go: downloading modernc.org/memory v1.11.0
+2026-11-19T19:37:50.9761610Z go: downloading github.com/mattn/go-colorable v0.1.14
+2026-11-19T19:37:51.1059620Z go: downloading github.com/valyala/bytebufferpool v1.0.0
+2026-11-19T19:37:51.1501090Z go: downloading github.com/go-openapi/jsonpointer v0.19.6
+2026-11-19T19:37:51.1589770Z go: downloading github.com/go-openapi/jsonreference v0.20.2
+2026-11-19T19:37:51.2428590Z go: downloading github.com/go-openapi/swag v0.22.3
+2026-11-19T19:37:51.3020640Z go: downloading github.com/brutella/dnssd v1.2.14
+2026-11-19T19:37:51.3215300Z go: downloading github.com/tmc/go-iroh v0.2.1
+2026-11-19T19:37:52.0399210Z go: downloading github.com/quic-go/quic-go v0.63.0
+2026-11-19T19:37:52.0403830Z go: downloading github.com/quic-go/webtransport-go v0.13.0
+2026-11-19T19:37:52.3188980Z go: downloading github.com/hashicorp/yamux v0.1.2
+2026-11-19T19:37:52.3651730Z go: downloading github.com/ipld/go-car/v2 v2.17.0
+2026-11-19T19:37:52.3653570Z go: downloading github.com/multiformats/go-varint v0.1.0
+2026-11-19T19:37:52.7311010Z go: downloading github.com/gammazero/deque v1.2.1
+2026-11-19T19:37:52.7312310Z go: downloading github.com/ipfs/go-ipld-legacy v0.3.0
+2026-11-19T19:37:52.7661500Z go: downloading github.com/ipfs/go-log/v2 v2.9.2
+2026-11-19T19:37:52.8697660Z go: downloading github.com/ipld/go-codec-dagpb v1.7.0
+2026-11-19T19:37:52.9779240Z go: downloading github.com/ipld/go-ipld-prime v0.24.0
+2026-11-19T19:37:53.5929190Z go: downloading github.com/beorn7/perks v1.0.1
+2026-11-19T19:37:53.5954840Z go: downloading github.com/prometheus/client_model v0.6.3
+2026-11-19T19:37:53.5984230Z go: downloading github.com/prometheus/common v0.70.1
+2026-11-19T19:37:53.7438090Z go: downloading github.com/golang/snappy v1.0.0
+2026-11-19T19:37:53.8079150Z go: downloading github.com/libp2p/go-buffer-pool v0.1.0
+2026-11-19T19:37:53.8855440Z go: downloading github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec
+2026-11-19T19:37:53.8920470Z go: downloading github.com/mailru/easyjson v0.7.7
+2026-11-19T19:37:54.0269220Z go: downloading github.com/miekg/dns v1.1.73
+2026-11-19T19:37:54.0540370Z go: downloading github.com/huandu/skiplist v1.2.1
+2026-11-19T19:37:54.0542040Z go: downloading github.com/zeebo/blake3 v0.2.4
+2026-11-19T19:37:54.2057380Z go: downloading github.com/dunglas/httpsfv v1.1.1
+2026-11-19T19:37:54.2179570Z go: downloading github.com/quic-go/qpack v0.6.0
+2026-11-19T19:37:54.2954370Z go: downloading github.com/petar/GoLLRB v0.0.0-20210522233825-ae3b015fd3e9
+2026-11-19T19:37:54.3482750Z go: downloading github.com/whyrusleeping/cbor v0.0.0-20171005072247-63513f603b11
+2026-11-19T19:37:54.3628730Z go: downloading go.opentelemetry.io/otel v1.46.0
+2026-11-19T19:37:54.6233340Z go: downloading go.opentelemetry.io/otel/trace v1.46.0
+2026-11-19T19:37:55.0862640Z go: downloading github.com/gammazero/chanqueue v1.1.2
+2026-11-19T19:37:55.2865450Z go: downloading github.com/ipfs/go-cidutil v0.1.2
+2026-11-19T19:37:55.3931760Z go: downloading github.com/ipfs/go-datastore v0.9.2
+2026-11-19T19:37:55.5573720Z go: downloading github.com/ipfs/go-dsqueue v0.2.0
+2026-11-19T19:37:55.6816930Z go: downloading github.com/ipfs/go-metrics-interface v0.3.0
+2026-11-19T19:37:55.6927070Z go: downloading github.com/crackcomm/go-gitignore v0.0.0-20241020182519-7843d2ba8fdf
+2026-11-19T19:37:55.7747230Z go: downloading github.com/hashicorp/golang-lru/v2 v2.0.7
+2026-11-19T19:37:55.9129280Z go: downloading github.com/ipfs/bbloom v0.1.0
+2026-11-19T19:37:55.9329900Z go: downloading github.com/whyrusleeping/chunker v0.0.0-20181014151217-fe64bd25879f
+2026-11-19T19:37:55.9739380Z go: downloading github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822
+2026-11-19T19:37:56.1098930Z go: downloading github.com/multiformats/go-multistream v0.6.1
+2026-11-19T19:37:56.1338160Z go: downloading github.com/disintegration/imaging v1.6.2
+2026-11-19T19:37:56.1903470Z go: downloading github.com/flopp/go-findfont v0.1.0
+2026-11-19T19:37:56.3391490Z go: downloading github.com/fogleman/gg v1.3.0
+2026-11-19T19:37:56.4115990Z go: downloading github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
+2026-11-19T19:37:56.4614130Z go: downloading golang.org/x/image v0.40.0
+2026-11-19T19:37:57.0787840Z go: downloading github.com/tetratelabs/wazero v1.10.1
+2026-11-19T19:38:00.1161180Z go: downloading github.com/josharian/intern v1.0.0
+2026-11-19T19:38:00.1163250Z go: downloading github.com/jbenet/go-temp-err-catcher v0.1.0
+2026-11-19T19:38:00.1207860Z go: downloading github.com/ipfs/go-ipld-cbor v0.2.1
+2026-11-19T19:38:00.2611130Z go: downloading github.com/polydawn/refmt v0.90.0
+2026-11-19T19:38:00.7275430Z go: downloading github.com/ipfs/go-bitfield v1.1.0
+2026-11-19T19:38:00.7379090Z go: downloading github.com/spaolacci/murmur3 v1.1.0
+2026-11-19T19:38:00.7481650Z go: downloading golang.org/x/sync v0.24.0
+2026-11-19T19:38:00.9006870Z go: downloading go.yaml.in/yaml/v3 v3.0.5
+2026-11-19T19:38:01.0623760Z go: downloading lukechampine.com/blake3 v1.4.1
+2026-11-19T19:38:01.1301460Z go: downloading github.com/klauspost/cpuid/v2 v2.4.0
+2026-11-19T19:38:01.1754080Z go: downloading github.com/davidlazar/go-crypto v0.0.0-20200604182044-b73af7476f6c
+2026-11-19T19:38:01.2379570Z go: downloading github.com/coder/websocket v1.8.14
+2026-11-19T19:38:01.2866310Z go: downloading github.com/go-logr/logr v1.4.4
+2026-11-19T19:38:01.3972710Z go: downloading go.opentelemetry.io/otel/metric v1.46.0
+2026-11-19T19:38:01.4759820Z go: downloading github.com/whyrusleeping/cbor-gen v0.3.1
+2026-11-19T19:38:01.4958540Z go: downloading github.com/go-logr/stdr v1.2.2
+2026-11-19T19:38:01.5607140Z go: downloading go.opentelemetry.io/auto/sdk v1.2.1
+2026-11-19T19:38:02.3624810Z go: downloading golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da
+2026-11-19T19:39:45.4131810Z ok  	github.com/anyproto/any/mobile/ios	0.668s
+2026-11-19T19:39:46.1956880Z ##[group]Run set -euo pipefail
+2026-11-19T19:39:46.1957370Z [36;1mset -euo pipefail[0m
+2026-11-19T19:39:46.1958450Z [36;1mscripts/build-xcframework.sh dist 2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/native-build.log"[0m
+2026-11-19T19:39:46.2877560Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-19T19:39:46.2877940Z env:
+2026-11-19T19:39:46.2878270Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:39:46.2878680Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:39:46.2878940Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:39:46.2879280Z   GOTOOLCHAIN: local
+2026-11-19T19:39:46.2879530Z ##[endgroup]
+2026-11-19T19:39:46.4663030Z build-xcframework: any v0.5.0-pinkha.1 (commit 88fae2e)
+2026-11-19T19:39:46.4701210Z == building device slice (CC=clangwrap-ios.sh, -miphoneos-version-min=18.4) ==
+2026-11-19T19:40:54.3483410Z == building sim slice (CC=clangwrap-iossim.sh, -mios-simulator-version-min=18.4) ==
+2026-11-19T19:41:16.3123530Z == device slice: every member has minos 18.4 ==
+2026-11-19T19:41:16.3437450Z == sim slice: every member has minos 18.4 ==
+2026-11-19T19:41:16.3439220Z == assembling any.xcframework ==
+2026-11-19T19:41:22.8865250Z xcframework successfully written out to: /Users/runner/work/anytype-swift/anytype-swift/.ci/any-source/any.xcframework
+2026-11-19T19:41:22.9226980Z <?xml version="1.0" encoding="UTF-8"?>
+2026-11-19T19:41:22.9228770Z <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+2026-11-19T19:41:22.9229510Z <plist version="1.0">
+2026-11-19T19:41:22.9230120Z <dict>
+2026-11-19T19:41:22.9231190Z 	<key>AvailableLibraries</key>
+2026-11-19T19:41:22.9231670Z 	<array>
+2026-11-19T19:41:22.9264100Z 		<dict>
+2026-11-19T19:41:22.9264560Z 			<key>BinaryPath</key>
+2026-11-19T19:41:22.9264940Z 			<string>anylib.a</string>
+2026-11-19T19:41:22.9265360Z 			<key>HeadersPath</key>
+2026-11-19T19:41:22.9265870Z 			<string>Headers</string>
+2026-11-19T19:41:22.9266380Z 			<key>LibraryIdentifier</key>
+2026-11-19T19:41:22.9266880Z 			<string>ios-arm64-simulator</string>
+2026-11-19T19:41:22.9267270Z 			<key>LibraryPath</key>
+2026-11-19T19:41:22.9267890Z 			<string>anylib.a</string>
+2026-11-19T19:41:22.9268280Z 			<key>SupportedArchitectures</key>
+2026-11-19T19:41:22.9268710Z 			<array>
+2026-11-19T19:41:22.9269090Z 				<string>arm64</string>
+2026-11-19T19:41:22.9269400Z 			</array>
+2026-11-19T19:41:22.9269790Z 			<key>SupportedPlatform</key>
+2026-11-19T19:41:22.9270230Z 			<string>ios</string>
+2026-11-19T19:41:22.9270690Z 			<key>SupportedPlatformVariant</key>
+2026-11-19T19:41:22.9271150Z 			<string>simulator</string>
+2026-11-19T19:41:22.9271550Z 		</dict>
+2026-11-19T19:41:22.9271820Z 		<dict>
+2026-11-19T19:41:22.9272190Z 			<key>BinaryPath</key>
+2026-11-19T19:41:22.9272740Z 			<string>anylib.a</string>
+2026-11-19T19:41:22.9273120Z 			<key>HeadersPath</key>
+2026-11-19T19:41:22.9273680Z 			<string>Headers</string>
+2026-11-19T19:41:22.9275020Z 			<key>LibraryIdentifier</key>
+2026-11-19T19:41:22.9275560Z 			<string>ios-arm64</string>
+2026-11-19T19:41:22.9275980Z 			<key>LibraryPath</key>
+2026-11-19T19:41:22.9287190Z 			<string>anylib.a</string>
+2026-11-19T19:41:22.9288340Z 			<key>SupportedArchitectures</key>
+2026-11-19T19:41:22.9289250Z 			<array>
+2026-11-19T19:41:22.9290150Z 				<string>arm64</string>
+2026-11-19T19:41:22.9290940Z 			</array>
+2026-11-19T19:41:22.9291860Z 			<key>SupportedPlatform</key>
+2026-11-19T19:41:22.9292740Z 			<string>ios</string>
+2026-11-19T19:41:22.9302890Z 		</dict>
+2026-11-19T19:41:22.9322920Z 	</array>
+2026-11-19T19:41:22.9324210Z 	<key>CFBundlePackageType</key>
+2026-11-19T19:41:22.9324670Z 	<string>XFWK</string>
+2026-11-19T19:41:22.9325030Z 	<key>XCFrameworkFormatVersion</key>
+2026-11-19T19:41:22.9325480Z 	<string>1.0</string>
+2026-11-19T19:41:22.9325790Z </dict>
+2026-11-19T19:41:22.9326120Z </plist>
+2026-11-19T19:41:22.9334940Z == zipping → dist/any.xcframework.zip ==
+2026-11-19T19:41:28.7305310Z build-xcframework: → dist/any.xcframework.zip
+2026-11-19T19:41:28.7728770Z ##[group]Run python3 Tools/AnyEnginePort/prepare_native_runtime.py record \
+2026-11-19T19:41:28.7786520Z [36;1mpython3 Tools/AnyEnginePort/prepare_native_runtime.py record \[0m
+2026-11-19T19:41:28.7796880Z [36;1m  --any-root .ci/any-source --output build/any-patched-artifact[0m
+2026-11-19T19:41:28.7798110Z [36;1mpython3 Tools/AnyEnginePort/prepare_native_runtime.py install \[0m
+2026-11-19T19:41:28.7798990Z [36;1m  --artifact build/any-patched-artifact[0m
+2026-11-19T19:41:28.8251620Z shell: /bin/bash -e {0}
+2026-11-19T19:41:28.8252240Z env:
+2026-11-19T19:41:28.8252570Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:41:28.8252980Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:41:28.8253260Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:41:28.8253530Z   GOTOOLCHAIN: local
+2026-11-19T19:41:28.8253690Z ##[endgroup]
+2026-11-19T19:41:33.9036810Z {"status": "BUILT_SOURCE_VERIFIED", "archiveSHA256": "56d111291be385e7d3732f1e1cd5b7e624c8a18f220f8f12b701cefedb4eac72", "version": "v0.5.0-pinkha.1"}
+2026-11-19T19:41:34.7615770Z Installed exact source-bound native artifact; select PINKHA_ANY_NATIVE_ARTIFACT=verified-v1.
+2026-11-19T19:41:34.8088490Z ##[group]Run set -euo pipefail
+2026-11-19T19:41:34.8089820Z [36;1mset -euo pipefail[0m
+2026-11-19T19:41:34.8090680Z [36;1mmkdir -p build/any-patched-evidence[0m
+2026-11-19T19:41:34.8091680Z [36;1mgit rev-parse HEAD > build/any-patched-evidence/source-sha.txt[0m
+2026-11-19T19:41:34.8093040Z [36;1mxcodebuild -version > build/any-patched-evidence/xcode-version.txt[0m
+2026-11-19T19:41:34.8094120Z [36;1mpython3 - <<'PY'[0m
+2026-11-19T19:41:34.8094890Z [36;1mimport json, os, subprocess[0m
+2026-11-19T19:41:34.8096660Z [36;1mdevices = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "--json"]))[0m
+2026-11-19T19:41:34.8097960Z [36;1mcandidates = [[0m
+2026-11-19T19:41:34.8098900Z [36;1m    (runtime, device)[0m
+2026-11-19T19:41:34.8099710Z [36;1m    for runtime, values in devices["devices"].items()[0m
+2026-11-19T19:41:34.8100710Z [36;1m    if ".iOS-" in runtime[0m
+2026-11-19T19:41:34.8101410Z [36;1m    for device in values[0m
+2026-11-19T19:41:34.8102710Z [36;1m    if device.get("isAvailable") and device.get("deviceTypeIdentifier")[0m
+2026-11-19T19:41:34.8104150Z [36;1m    and (device["name"].startswith("iPad") or device["name"].startswith("iPhone"))[0m
+2026-11-19T19:41:34.8105190Z [36;1m][0m
+2026-11-19T19:41:34.8105850Z [36;1mif not candidates:[0m
+2026-11-19T19:41:34.8106750Z [36;1m    raise SystemExit("No compatible iOS simulator template is available")[0m
+2026-11-19T19:41:34.8107950Z [36;1mdef runtime_version(value):[0m
+2026-11-19T19:41:34.8108920Z [36;1m    return tuple(int(part) for part in value.rsplit(".iOS-", 1)[1].split("-"))[0m
+2026-11-19T19:41:34.8110340Z [36;1mcandidates = [item for item in candidates if runtime_version(item[0]) >= (27,)][0m
+2026-11-19T19:41:34.8111460Z [36;1mif not candidates:[0m
+2026-11-19T19:41:34.8112330Z [36;1m    raise SystemExit("No iOS 27 or newer simulator template is available")[0m
+2026-11-19T19:41:34.8113470Z [36;1mruntime, device = sorted(candidates,[0m
+2026-11-19T19:41:34.8114570Z [36;1m    key=lambda item: (runtime_version(item[0]), item[1]["name"].startswith("iPad")),[0m
+2026-11-19T19:41:34.8115730Z [36;1m    reverse=True)[0][0m
+2026-11-19T19:41:34.8116400Z [36;1mudid = subprocess.check_output([[0m
+2026-11-19T19:41:34.8117490Z [36;1m    "xcrun", "simctl", "create", "AnyNativePort-" + os.environ["GITHUB_RUN_ID"],[0m
+2026-11-19T19:41:34.8118640Z [36;1m    device["deviceTypeIdentifier"], runtime[0m
+2026-11-19T19:41:34.8119450Z [36;1m], text=True).strip()[0m
+2026-11-19T19:41:34.8120330Z [36;1mwith open(os.environ["GITHUB_ENV"], "a") as output:[0m
+2026-11-19T19:41:34.8121360Z [36;1m    output.write("ANY_NATIVE_SIMULATOR_UDID=" + udid + "\n")[0m
+2026-11-19T19:41:34.8122650Z [36;1mwith open("build/any-patched-evidence/simulator.json", "w") as output:[0m
+2026-11-19T19:41:34.8124130Z [36;1m    json.dump({"ownedUDID": udid, "runtime": runtime, "deviceType": device["deviceTypeIdentifier"]}, output)[0m
+2026-11-19T19:41:34.8125440Z [36;1mPY[0m
+2026-11-19T19:41:34.8255200Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-19T19:41:34.8255630Z env:
+2026-11-19T19:41:34.8256050Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:41:34.8256410Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:41:34.8256790Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:41:34.8257110Z   GOTOOLCHAIN: local
+2026-11-19T19:41:34.8257410Z ##[endgroup]
+2026-11-19T19:41:37.1917470Z Traceback (most recent call last):
+2026-11-19T19:41:37.1918760Z   File "<stdin>", line 15, in <module>
+2026-11-19T19:41:37.1919910Z   File "<stdin>", line 14, in runtime_version
+2026-11-19T19:41:37.1920830Z   File "<stdin>", line 14, in <genexpr>
+2026-11-19T19:41:37.1921720Z ValueError: invalid literal for int() with base 10: 'iPhone19'
+2026-11-19T19:41:37.1995750Z ##[error]Process completed with exit code 1.
+2026-11-19T19:41:37.2094330Z ##[group]Run set -euo pipefail
+2026-11-19T19:41:37.2094970Z [36;1mset -euo pipefail[0m
+2026-11-19T19:41:37.2095390Z [36;1mxcodebuild test \[0m
+2026-11-19T19:41:37.2095720Z [36;1m  -scheme PinkhaAnyHanlin \[0m
+2026-11-19T19:41:37.2096070Z [36;1m  -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \[0m
+2026-11-19T19:41:37.2096650Z [36;1m  -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \[0m
+2026-11-19T19:41:37.2097150Z [36;1m  -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/hanlin-ios.xcresult" \[0m
+2026-11-19T19:41:37.2097680Z [36;1m  -parallel-testing-enabled NO \[0m
+2026-11-19T19:41:37.2098010Z [36;1m  -maximum-test-execution-time-allowance 180 \[0m
+2026-11-19T19:41:37.2098480Z [36;1m  2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/hanlin-ios.log"[0m
+2026-11-19T19:41:37.2149680Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-19T19:41:37.2150150Z env:
+2026-11-19T19:41:37.2150590Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:41:37.2150910Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:41:37.2151150Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:41:37.2151350Z   GOTOOLCHAIN: local
+2026-11-19T19:41:37.2151520Z ##[endgroup]
+2026-11-19T19:41:37.2438700Z /Users/runner/work/_temp/0852f257-7baf-464f-88f3-e269c4d34eb6.sh: line 2: ANY_NATIVE_SIMULATOR_UDID: unbound variable
+2026-11-19T19:41:37.2473390Z ##[error]Process completed with exit code 1.
+2026-11-19T19:41:37.2547340Z ##[group]Run set -euo pipefail
+2026-11-19T19:41:37.2548150Z [36;1mset -euo pipefail[0m
+2026-11-19T19:41:37.2548740Z [36;1mxcodebuild test \[0m
+2026-11-19T19:41:37.2549300Z [36;1m  -scheme PinkhaAnyNative \[0m
+2026-11-19T19:41:37.2550190Z [36;1m  -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \[0m
+2026-11-19T19:41:37.2551400Z [36;1m  -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \[0m
+2026-11-19T19:41:37.2552180Z [36;1m  -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/application.xcresult" \[0m
+2026-11-19T19:41:37.2552610Z [36;1m  -parallel-testing-enabled NO \[0m
+2026-11-19T19:41:37.2552940Z [36;1m  -maximum-test-execution-time-allowance 300 \[0m
+2026-11-19T19:41:37.2554280Z [36;1m  2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/application.log"[0m
+2026-11-19T19:41:37.2613380Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-19T19:41:37.2613680Z env:
+2026-11-19T19:41:37.2614000Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:41:37.2614320Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:41:37.2614590Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:41:37.2614800Z   GOTOOLCHAIN: local
+2026-11-19T19:41:37.2614980Z ##[endgroup]
+2026-11-19T19:41:37.2948720Z /Users/runner/work/_temp/3ffaa1b0-3962-41cb-926a-d641497c3366.sh: line 2: ANY_NATIVE_SIMULATOR_UDID: unbound variable
+2026-11-19T19:41:37.2976480Z ##[error]Process completed with exit code 1.
+2026-11-19T19:41:37.3037420Z ##[group]Run set -euo pipefail
+2026-11-19T19:41:37.3037800Z [36;1mset -euo pipefail[0m
+2026-11-19T19:41:37.3038060Z [36;1mxcodebuild test \[0m
+2026-11-19T19:41:37.3038670Z [36;1m  -project NativeApp/AnyNative.xcodeproj \[0m
+2026-11-19T19:41:37.3038950Z [36;1m  -scheme PinkhaAnyNativeApp \[0m
+2026-11-19T19:41:37.3039300Z [36;1m  -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \[0m
+2026-11-19T19:41:37.3039820Z [36;1m  -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \[0m
+2026-11-19T19:41:37.3040330Z [36;1m  -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui.xcresult" \[0m
+2026-11-19T19:41:37.3040750Z [36;1m  -parallel-testing-enabled NO \[0m
+2026-11-19T19:41:37.3041040Z [36;1m  -maximum-test-execution-time-allowance 360 \[0m
+2026-11-19T19:41:37.3041340Z [36;1m  CODE_SIGNING_ALLOWED=NO \[0m
+2026-11-19T19:41:37.3041750Z [36;1m  2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui.log"[0m
+2026-11-19T19:41:37.3099410Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-19T19:41:37.3100140Z env:
+2026-11-19T19:41:37.3100780Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:41:37.3101830Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:41:37.3102570Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:41:37.3103130Z   GOTOOLCHAIN: local
+2026-11-19T19:41:37.3103610Z ##[endgroup]
+2026-11-19T19:41:37.3400750Z /Users/runner/work/_temp/bd56ca26-4b62-408d-8b2e-8a948c85373e.sh: line 2: ANY_NATIVE_SIMULATOR_UDID: unbound variable
+2026-11-19T19:41:37.3431310Z ##[error]Process completed with exit code 1.
+2026-11-19T19:41:37.3485730Z ##[group]Run python3 Tools/AnyEnginePort/verify_native_app_bundle.py \
+2026-11-19T19:41:37.3486230Z [36;1mpython3 Tools/AnyEnginePort/verify_native_app_bundle.py \[0m
+2026-11-19T19:41:37.3486720Z [36;1m  --bundle build/any-native-app-derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNative.app \[0m
+2026-11-19T19:41:37.3487210Z [36;1m  --output build/any-patched-evidence/native-app-bundle.json[0m
+2026-11-19T19:41:37.3524740Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-19T19:41:37.3525120Z env:
+2026-11-19T19:41:37.3525340Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:41:37.3525650Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:41:37.3525910Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:41:37.3526110Z   GOTOOLCHAIN: local
+2026-11-19T19:41:37.3526300Z ##[endgroup]
+2026-11-19T19:41:37.5096280Z Traceback (most recent call last):
+2026-11-19T19:41:37.5099700Z   File "/Users/runner/work/anytype-swift/anytype-swift/Tools/AnyEnginePort/verify_native_app_bundle.py", line 46, in <module>
+2026-11-19T19:41:37.5101010Z     main()
+2026-11-19T19:41:37.5101440Z     ~~~~^^
+2026-11-19T19:41:37.5102740Z   File "/Users/runner/work/anytype-swift/anytype-swift/Tools/AnyEnginePort/verify_native_app_bundle.py", line 12, in main
+2026-11-19T19:41:37.5104030Z     raw = plist.read_bytes()
+2026-11-19T19:41:37.5105640Z   File "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/lib/python3.15/pathlib/__init__.py", line 976, in read_bytes
+2026-11-19T19:41:37.5107300Z     with self.open(mode='rb', buffering=0) as f:
+2026-11-19T19:41:37.5108190Z          ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-19T19:41:37.5109770Z   File "/opt/homebrew/Cellar/python@3.15/3.15.2/Frameworks/Python.framework/Versions/3.15/lib/python3.15/pathlib/__init__.py", line 970, in open
+2026-11-19T19:41:37.5111480Z     return io.open(self, mode, buffering, encoding, errors, newline)
+2026-11-19T19:41:37.5112970Z            ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-19T19:41:37.5114630Z FileNotFoundError: [Errno 2] No such file or directory: 'build/any-native-app-derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNative.app/Info.plist'
+2026-11-19T19:41:37.5154540Z ##[error]Process completed with exit code 1.
+2026-11-19T19:41:37.5190860Z ##[group]Run set -euo pipefail
+2026-11-19T19:41:37.5191120Z [36;1mset -euo pipefail[0m
+2026-11-19T19:41:37.5191460Z [36;1mfor suite in runtime hanlin-ios application native-ui; do[0m
+2026-11-19T19:41:37.5192190Z [36;1m  if [ -d "build/any-patched-evidence/$suite.xcresult" ]; then[0m
+2026-11-19T19:41:37.5192560Z [36;1m    xcrun xcresulttool get test-results summary \[0m
+2026-11-19T19:41:37.5193030Z [36;1m      --path "build/any-patched-evidence/$suite.xcresult" --format json \[0m
+2026-11-19T19:41:37.5193440Z [36;1m      > "build/any-patched-evidence/$suite-test-counts.json"[0m
+2026-11-19T19:41:37.5193830Z [36;1m  fi[0m
+2026-11-19T19:41:37.5193970Z [36;1mdone[0m
+2026-11-19T19:41:37.5230160Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-19T19:41:37.5230450Z env:
+2026-11-19T19:41:37.5230730Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:41:37.5231120Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:41:37.5231430Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:41:37.5231650Z   GOTOOLCHAIN: local
+2026-11-19T19:41:37.5232010Z ##[endgroup]
+2026-11-19T19:41:37.5618720Z ##[group]Run if [ -n "${ANY_NATIVE_SIMULATOR_UDID:-}" ]; then
+2026-11-19T19:41:37.5619370Z [36;1mif [ -n "${ANY_NATIVE_SIMULATOR_UDID:-}" ]; then[0m
+2026-11-19T19:41:37.5619710Z [36;1m  xcrun simctl shutdown "$ANY_NATIVE_SIMULATOR_UDID" || true[0m
+2026-11-19T19:41:37.5620060Z [36;1m  xcrun simctl delete "$ANY_NATIVE_SIMULATOR_UDID"[0m
+2026-11-19T19:41:37.5620320Z [36;1mfi[0m
+2026-11-19T19:41:37.5660330Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-19T19:41:37.5660610Z env:
+2026-11-19T19:41:37.5660910Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:41:37.5661270Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:41:37.5661570Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:41:37.5661790Z   GOTOOLCHAIN: local
+2026-11-19T19:41:37.5661980Z ##[endgroup]
+2026-11-19T19:41:37.6126530Z ##[group]Run actions/upload-artifact@v4
+2026-11-19T19:41:37.6126840Z with:
+2026-11-19T19:41:37.6127170Z   name: any-engine-port-ios-patched-runtime-a5a4a6f2c489692aa568618a72757f04f16ece85
+2026-11-19T19:41:37.6127570Z   path: build/any-patched-evidence/
+2026-11-19T19:41:37.6127880Z   retention-days: 14
+2026-11-19T19:41:37.6128070Z   if-no-files-found: error
+2026-11-19T19:41:37.6128290Z   compression-level: 6
+2026-11-19T19:41:37.6128490Z   overwrite: false
+2026-11-19T19:41:37.6128700Z   include-hidden-files: false
+2026-11-19T19:41:37.6128870Z env:
+2026-11-19T19:41:37.6129080Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-19T19:41:37.6129350Z   PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+2026-11-19T19:41:37.6129570Z   ANY_BUILD_VERSION: v0.5.0-pinkha.1
+2026-11-19T19:41:37.6129780Z   GOTOOLCHAIN: local
+2026-11-19T19:41:37.6129940Z ##[endgroup]
+2026-11-19T19:41:38.0801080Z (node:10698) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-19T19:41:38.0802700Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-19T19:41:38.0873940Z With the provided path, there will be 7 files uploaded
+2026-11-19T19:41:38.0875990Z Artifact name is valid!
+2026-11-19T19:41:38.0876860Z Root directory input is valid!
+2026-11-19T19:41:38.5337140Z Beginning upload of artifact content to blob storage
+2026-11-19T19:41:38.6104080Z (node:10698) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-19T19:41:38.8827950Z Uploaded bytes 8087
+2026-11-19T19:41:38.9553030Z Finished uploading artifact content to blob storage!
+2026-11-19T19:41:38.9555950Z SHA256 digest of uploaded artifact zip is f685aa20cbeac5aecbf0de6e1d68554c6b3929750d0b58fae0c174a0e3034c9e
+2026-11-19T19:41:38.9556820Z Finalizing artifact upload
+2026-11-19T19:41:39.4294270Z Artifact any-engine-port-ios-patched-runtime-a5a4a6f2c489692aa568618a72757f04f16ece85.zip successfully finalized. Artifact ID 14568755160
+2026-11-19T19:41:39.4394230Z Artifact any-engine-port-ios-patched-runtime-a5a4a6f2c489692aa568618a72757f04f16ece85 has been successfully uploaded! Final size is 8087 bytes. Artifact ID is 14568755160
+2026-11-19T19:41:39.4501810Z Artifact download URL: https://github.com/davidpovarsky/anytype-swift/actions/runs/44596706789/artifacts/14568755160
+2026-11-19T19:41:39.4930820Z Post job cleanup.
+2026-11-19T19:41:39.7031930Z [command]/opt/homebrew/bin/git version
+2026-11-19T19:41:39.7219580Z git version 2.56.0
+2026-11-19T19:41:39.7632710Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/bfad09de-32b4-4c6e-a8c8-0b04df2fbf97/.gitconfig'
+2026-11-19T19:41:39.7645600Z Temporarily overriding HOME='/Users/runner/work/_temp/bfad09de-32b4-4c6e-a8c8-0b04df2fbf97' before making global git config changes
+2026-11-19T19:41:39.7653830Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-19T19:41:39.7661500Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/.ci/any-source/.runtime-artifacts/sdk-source
+2026-11-19T19:41:39.7768880Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T19:41:39.7915060Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T19:41:39.9577010Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T19:41:39.9643200Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T19:41:40.1197210Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T19:41:40.1502130Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T19:41:40.3794000Z Post job cleanup.
+2026-11-19T19:41:40.4968610Z [command]/opt/homebrew/bin/git version
+2026-11-19T19:41:40.5070590Z git version 2.56.0
+2026-11-19T19:41:40.5282720Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/3b62fa1d-beca-47c3-9698-f4c1231a4ad2/.gitconfig'
+2026-11-19T19:41:40.5283700Z Temporarily overriding HOME='/Users/runner/work/_temp/3b62fa1d-beca-47c3-9698-f4c1231a4ad2' before making global git config changes
+2026-11-19T19:41:40.5284620Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-19T19:41:40.5285350Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/.ci/any-source
+2026-11-19T19:41:40.5286440Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T19:41:40.5333190Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T19:41:40.6312090Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T19:41:40.6417830Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T19:41:40.8417360Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T19:41:40.8522420Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T19:41:41.0271390Z Post job cleanup.
+2026-11-19T19:41:41.1240650Z [command]/opt/homebrew/bin/git version
+2026-11-19T19:41:41.1317730Z git version 2.56.0
+2026-11-19T19:41:41.1345210Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/dce1769f-7f0e-4c43-a850-1cab1cc16bf5/.gitconfig'
+2026-11-19T19:41:41.1355380Z Temporarily overriding HOME='/Users/runner/work/_temp/dce1769f-7f0e-4c43-a850-1cab1cc16bf5' before making global git config changes
+2026-11-19T19:41:41.1357530Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-19T19:41:41.1360570Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/.ci/hanlin-source
+2026-11-19T19:41:41.1455820Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T19:41:41.1528000Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T19:41:41.2650290Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T19:41:41.2751100Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T19:41:41.4012280Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T19:41:41.4317370Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T19:41:41.5957670Z Post job cleanup.
+2026-11-19T19:41:41.6981150Z [command]/opt/homebrew/bin/git version
+2026-11-19T19:41:41.7084040Z git version 2.56.0
+2026-11-19T19:41:41.7465710Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/8cb7d363-e103-418c-8f25-62268a1a6638/.gitconfig'
+2026-11-19T19:41:41.7568110Z Temporarily overriding HOME='/Users/runner/work/_temp/8cb7d363-e103-418c-8f25-62268a1a6638' before making global git config changes
+2026-11-19T19:41:41.7586180Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-19T19:41:41.7626300Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift
+2026-11-19T19:41:41.7665620Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-19T19:41:41.7689090Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-19T19:41:41.8610530Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-19T19:41:41.8688020Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-19T19:41:41.9992830Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-19T19:41:42.0297910Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-19T19:41:42.1466610Z Cleaning up orphan processes
+2026-11-19T19:41:44.6897820Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

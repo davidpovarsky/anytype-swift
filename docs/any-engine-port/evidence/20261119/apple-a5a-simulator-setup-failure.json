@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "status": "FAIL_HARNESS_SIMULATOR_SELECTION",
+  "commit": "a5a4a6f2c489692aa568618a72757f04f16ece85",
+  "runID": 44596706789,
+  "runURL": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44596706789",
+  "jobs": {
+    "patched": 135817135415,
+    "official": 135817135810
+  },
+  "nativeSourceManifest": "Tools/AnyEngineValidation/evidence/native-document-metadata-v7-source.json",
+  "nativeBuild": {
+    "sourceOverlays": "PASS",
+    "cLifecycleShim": "PASS",
+    "deviceAndSimulatorSlices": "PASS",
+    "sourceBoundArtifactInstall": "PASS",
+    "archiveSHA256": "56d111291be385e7d3732f1e1cd5b7e624c8a18f220f8f12b701cefedb4eac72"
+  },
+  "simulatorCreation": {
+    "status": "FAIL",
+    "reason": "The script parsed every dash-delimited part of the runtime identifier as an integer; the actual runner supplied a hardware suffix iPhone19.",
+    "diagnostic": "ValueError: invalid literal for int() with base 10: 'iPhone19'"
+  },
+  "execution": {
+    "runtimeTests": "NOT_RUN",
+    "hanlinIOSTests": "NOT_RUN",
+    "nativeApplicationTests": "NOT_RUN",
+    "nativeExecutableUITests": "NOT_RUN",
+    "appBundleVerification": "NO_BUILT_APP_FROM_THIS_JOB"
+  },
+  "logs": [
+    "apple-a5a-patched-simulator-setup-failure.log",
+    "apple-a5a-official-simulator-setup-failure.log"
+  ],
+  "fix": "Read availability and the numeric version from simctl list runtimes --json; treat the identifier as opaque. The simulator runtime remains at least iOS27 and retains the compatible-template and iPad preference.",
+  "selectorValidation": "simulator-selection-components-v2.json",
+  "limits": [
+    "The native build pass is not app runtime or UI acceptance.",
+    "Synthetic simctl validation exercises the actual workflow Python, not an Apple simulator."
+  ]
+}

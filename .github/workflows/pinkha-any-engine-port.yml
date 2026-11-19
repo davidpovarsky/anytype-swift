@@ -144,8 +144,15 @@ jobs:
           ]
           if not candidates:
               raise SystemExit("No compatible iOS simulator template is available")
-          def runtime_version(value):
-              return tuple(int(part) for part in value.rsplit(".iOS-", 1)[1].split("-"))
+          runtime_info = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "runtimes", "--json"]))
+          runtime_by_id = {value["identifier"]: value for value in runtime_info["runtimes"]}
+          def runtime_version(identifier):
+              info = runtime_by_id.get(identifier, {})
+              version = info.get("version", "")
+              parts = version.split(".") if isinstance(version, str) else []
+              if not info.get("isAvailable") or not parts or not all(part.isdigit() for part in parts):
+                  return ()
+              return tuple(int(part) for part in parts)
           candidates = [item for item in candidates if runtime_version(item[0]) >= (27,)]
           if not candidates:
               raise SystemExit("No iOS 27 or newer simulator template is available")
@@ -284,8 +291,15 @@ jobs:
           ]
           if not candidates:
               raise SystemExit("No compatible iOS simulator template is available")
-          def runtime_version(value):
-              return tuple(int(part) for part in value.rsplit(".iOS-", 1)[1].split("-"))
+          runtime_info = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "runtimes", "--json"]))
+          runtime_by_id = {value["identifier"]: value for value in runtime_info["runtimes"]}
+          def runtime_version(identifier):
+              info = runtime_by_id.get(identifier, {})
+              version = info.get("version", "")
+              parts = version.split(".") if isinstance(version, str) else []
+              if not info.get("isAvailable") or not parts or not all(part.isdigit() for part in parts):
+                  return ()
+              return tuple(int(part) for part in parts)
           candidates = [item for item in candidates if runtime_version(item[0]) >= (27,)]
           if not candidates:
               raise SystemExit("No iOS 27 or newer simulator template is available")
