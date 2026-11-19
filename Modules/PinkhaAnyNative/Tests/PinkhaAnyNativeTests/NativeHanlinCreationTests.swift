@@ -220,7 +220,7 @@ final class NativeHanlinCreationTests: XCTestCase {
                     "limit": .integer(1_000), "includeTotal": .bool(true)
                 ]), authorize: { try await lease.validate() })
             guard let records = result["records"]?.array,
-                  result["total"]?.integer == records.count,
+                  result["total"]?.integer == Int64(records.count),
                   result["hasNext"]?.bool == false, records.count <= 1_000 else {
                 throw HanlinHostError.resultMismatch
             }

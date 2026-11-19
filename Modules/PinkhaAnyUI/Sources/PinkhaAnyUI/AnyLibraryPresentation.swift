@@ -383,7 +383,7 @@ public final class AnyLibraryPresentation {
                     .object(["any.type": .object(["$in": .array(allowed.sorted().map(AnyJSON.string))])]),
                     .object(["any.collections": .object(["$nin": .array([.string("bin"), .string("template")])])])
                 ])]), "limit": .integer(10_001), "includeTotal": .bool(true)]))
-            guard let rows = response["records"]?.array, response["total"]?.integer == rows.count,
+            guard let rows = response["records"]?.array, response["total"]?.integer == Int64(rows.count),
                   rows.count <= 10_000, response["hasNext"]?.bool == false else { throw AnyEngineError.readLimit }
             var seen = Set<String>()
             let result = try rows.map { row -> AnyLibraryDocument in
