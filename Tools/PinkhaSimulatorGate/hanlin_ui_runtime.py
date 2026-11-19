@@ -23,6 +23,13 @@ MAX_BYTES = 65_536
 COMMAND_SECONDS = 10
 OBSERVATION_SECONDS = 420
 MAPPING_SECONDS = 45
+DIAGNOSTIC_STAGES = frozenset({
+    "prepare_data_container", "prepare_installed_source", "poll_data_container",
+    "read_native_phase_before", "validate_native_phase_before", "save_partial_phase_before",
+    "map_installed_source", "map_running_process", "after_mapping_data_container",
+    "read_native_phase_after", "export_final_data_container", "export_final_native_result",
+    "verify_ui_process_boundaries",
+})
 IDENTITY_KEYS = ("fixtureID", "sourceSHA", "runID", "runAttempt", "processID", "startedAt",
                  "sessionID", "navigationContext")
 INFLIGHT_PHASES = frozenset({
@@ -116,6 +123,72 @@ class NativeUIRuntimeObserver:
         self.thread = None
         self.error = None
         self.observation = None
+        self.diagnostic_lock = threading.Lock()
+        self.diagnostic_stages = {}
+        self.diagnostic_failure = None
+        self.partial_observations = {}
+        self.finalization_receipt = None
+
+    def diagnostic_operation(self, stage, operation, *, transient=()):
+        """Record bounded metadata without retrying or changing an operation's result.
+
+        The elapsed value covers this named stage, which may contain several
+        commands. TimeoutExpired supplies the exact failing argv and command
+        timeout; its stdout/stderr and arbitrary exception text are never copied.
+        Repeated polling updates one fixed-size stage record.
+        """
+        require(stage in DIAGNOSTIC_STAGES, "Unknown runtime diagnostic stage")
+        started = time.monotonic()
+        with self.diagnostic_lock:
+            record = self.diagnostic_stages.setdefault(stage, {"stage": stage, "attempts": 0})
+            record.update(attempts=record["attempts"] + 1, status="STARTED",
+                          started_at=datetime.now(timezone.utc).timestamp())
+        status, failure = "RETURNED", None
+        try:
+            return operation()
+        except BaseException as error:
+            status = "TRANSIENT_READ" if isinstance(error, transient) else "FAILED"
+            if status == "FAILED":
+                failure = {"stage": stage, "error_type": type(error).__name__}
+                if isinstance(error, (subprocess.TimeoutExpired, subprocess.CalledProcessError)):
+                    command = error.cmd
+                    if (isinstance(command, (list, tuple)) and 0 < len(command) <= 32
+                            and all(isinstance(arg, str) and len(arg) <= 2048 for arg in command)):
+                        failure["command"] = list(command)
+                    else:
+                        failure["command"] = "UNAVAILABLE_OR_OUTSIDE_DIAGNOSTIC_BOUND"
+                    if isinstance(error, subprocess.TimeoutExpired):
+                        failure["command_timeout_seconds"] = error.timeout
+                    else:
+                        failure["command_exit_code"] = error.returncode
+            raise
+        finally:
+            elapsed = max(0, time.monotonic() - started)
+            with self.diagnostic_lock:
+                record.update(status=status, stage_elapsed_seconds=elapsed,
+                              finished_at=datetime.now(timezone.utc).timestamp())
+                if failure is not None and self.diagnostic_failure is None:
+                    self.diagnostic_failure = {**failure, "stage_elapsed_seconds": elapsed}
+
+    def retain_partial(self, key, value):
+        with self.diagnostic_lock:
+            self.partial_observations[key] = value
+
+    def diagnostic_summary(self):
+        with self.diagnostic_lock:
+            return json.loads(json.dumps({"diagnostic_only": True,
+                "stage_duration_scope": "ENTIRE_NAMED_OPERATION_NOT_INDIVIDUAL_SUBPROCESS",
+                "stages": list(self.diagnostic_stages.values()),
+                "first_failure": self.diagnostic_failure,
+                "partial_observations": self.partial_observations}))
+
+    def persist_summary(self, *, write_file=True):
+        snapshot = self.summary()
+        if self.finalization_receipt is not None:
+            self.finalization_receipt["actual_ui_runtime_observation"] = snapshot
+        if write_file:
+            self.shared.write(self.directory / "observation.json", snapshot)
+        return snapshot
 
     def timeout(self):
         require(not self.stop_event.is_set(), "Actual UI runtime observation cancelled")
@@ -140,12 +213,13 @@ class NativeUIRuntimeObserver:
         require(self.thread is None, "Actual UI runtime observer was already started")
         self.started_at = datetime.now(timezone.utc).timestamp()
         self.deadline = time.monotonic() + OBSERVATION_SECONDS
-        container = self.container(self.timeout)
+        container = self.diagnostic_operation("prepare_data_container", lambda: self.container(self.timeout))
         require(not (container / SUPPORT / RESULT).exists(), "Refuse a pre-existing native UI result")
         before_directory = self.directory / "before-ui"
         before_directory.mkdir()
-        self.before_source = self.shared.installed_runtime_source(self.udid, before_directory, self.built,
-            self.source_identity, command_timeout=self.timeout)
+        self.before_source = self.diagnostic_operation("prepare_installed_source", lambda:
+            self.shared.installed_runtime_source(self.udid, before_directory, self.built,
+                self.source_identity, command_timeout=self.timeout))
         self.thread = threading.Thread(target=self.observe, name="sdk06-runtime-observer", daemon=True)
         self.thread.start()
 
@@ -153,18 +227,32 @@ class NativeUIRuntimeObserver:
         try:
             while True:
                 self.timeout()
-                container = self.container(self.timeout)
+                container = self.diagnostic_operation("poll_data_container", lambda: self.container(self.timeout))
                 try:
-                    before_raw = stable_bytes(container / SUPPORT / RESULT)
+                    before_raw = self.diagnostic_operation("read_native_phase_before",
+                        lambda: stable_bytes(container / SUPPORT / RESULT),
+                        transient=(FileNotFoundError, ReceiptReplaced))
                 except (FileNotFoundError, ReceiptReplaced):
                     self.stop_event.wait(0.25)
                     continue
                 before = decode(before_raw)
-                identity = receipt_identity(before, self.fixture, self.started_at,
-                    datetime.now(timezone.utc).timestamp(), inflight=True)
+                identity = self.diagnostic_operation("validate_native_phase_before", lambda:
+                    receipt_identity(before, self.fixture, self.started_at,
+                        datetime.now(timezone.utc).timestamp(), inflight=True))
                 self.deadline = min(self.deadline, time.monotonic() + MAPPING_SECONDS)
-                source = self.shared.installed_runtime_source(self.udid, self.directory, self.built,
-                    self.source_identity, command_timeout=self.timeout)
+                partial_before = self.directory / "partial-native-phase-before.json"
+                self.diagnostic_operation("save_partial_phase_before", lambda: partial_before.write_bytes(before_raw))
+                self.retain_partial("native_phase_before", {"file": partial_before.name,
+                    "sha256": digest(before_raw), "identity": identity,
+                    "status": "OBSERVED_IDENTITY_RUNTIME_NOT_YET_BOUND"})
+                source = self.diagnostic_operation("map_installed_source", lambda:
+                    self.shared.installed_runtime_source(self.udid, self.directory, self.built,
+                        self.source_identity, command_timeout=self.timeout))
+                self.retain_partial("installed_source_returned", {"file": "installed-app-source.json",
+                    "installed_app_executable_sha256": source["installed_app_executable_sha256"],
+                    "built_app_executable_sha256": source["built_app_executable_sha256"],
+                    "installed_code_carriers_sha256": source["installed_code_carriers"]["sha256"],
+                    "built_code_carriers_sha256": source["built_code_carriers"]["sha256"]})
                 installed = Path(source["installed_app"])
                 require(installed.is_absolute() and self.udid.lower() in {p.lower() for p in installed.parts},
                         "Mapped application is outside the owned simulator")
@@ -173,15 +261,23 @@ class NativeUIRuntimeObserver:
                     and all(source[key]["sha256"] == self.before_source[key]["sha256"]
                             for key in ("installed_code_carriers", "built_code_carriers")),
                     "Application executable bytes changed between pre-UI validation and actual process mapping")
-                mapped = self.shared.observe_running_runtime(identity["processID"], self.directory, self.built,
-                    source, command_timeout=self.timeout,
-                    metadata={"observation_source": "ACTUAL_NATIVE_UI_RECEIPT_NO_LAUNCH"})
-                after_container = self.container(self.timeout)
+                mapped = self.diagnostic_operation("map_running_process", lambda:
+                    self.shared.observe_running_runtime(identity["processID"], self.directory, self.built,
+                        source, command_timeout=self.timeout,
+                        metadata={"observation_source": "ACTUAL_NATIVE_UI_RECEIPT_NO_LAUNCH"}))
+                self.retain_partial("runtime_mapping_returned", {"file": "live-runtime.json",
+                    "pid": mapped["pid"], "runtime_sha256": mapped["runtime_sha256"],
+                    "process_start_identity": mapped["process_start_identity"],
+                    "status": "MAPPING_RETURNED_FINAL_NATIVE_BINDING_NOT_YET_VERIFIED"})
+                after_container = self.diagnostic_operation("after_mapping_data_container",
+                    lambda: self.container(self.timeout))
                 require(after_container == container, "Actual UI container changed during process mapping")
                 while True:
                     self.timeout()
                     try:
-                        after_raw = stable_bytes(container / SUPPORT / RESULT)
+                        after_raw = self.diagnostic_operation("read_native_phase_after",
+                            lambda: stable_bytes(container / SUPPORT / RESULT),
+                            transient=(FileNotFoundError, ReceiptReplaced))
                         break
                     except (FileNotFoundError, ReceiptReplaced):
                         # The driver atomically replaces this file for each
@@ -207,9 +303,11 @@ class NativeUIRuntimeObserver:
             self.shared.write(self.directory / "observation.json", self.summary())
 
     def summary(self):
-        return self.observation or {"status": "FAIL_ACTUAL_UI_RUNTIME_NOT_BOUND",
+        result = dict(self.observation or {"status": "FAIL_ACTUAL_UI_RUNTIME_NOT_BOUND",
             "error_type": type(self.error).__name__ if self.error else "ObservationIncomplete",
-            "extra_app_launches": 0, "every_launch_verified": False}
+            "extra_app_launches": 0, "every_launch_verified": False})
+        result["diagnostics"] = self.diagnostic_summary()
+        return result
 
     def stop(self):
         self.stop_event.set()
@@ -227,12 +325,13 @@ class NativeUIRuntimeObserver:
         # This read is separate from the stopped observer and cannot extend its
         # lifetime. The original fixture and current owned root are checked again.
         timeout = lambda: COMMAND_SECONDS
-        path = self.container(timeout) / SUPPORT / RESULT
-        return stable_bytes(path)
+        path = self.diagnostic_operation("export_final_data_container", lambda: self.container(timeout)) / SUPPORT / RESULT
+        return self.diagnostic_operation("export_final_native_result", lambda: stable_bytes(path))
 
     def finalize(self, receipt, result_path, export_console, active_error):
         # A secondary evidence error must neither hide the UI/start failure nor
         # prevent the remaining original evidence from being attempted.
+        self.finalization_receipt = receipt
         failures = []
         def attempt(stage, action):
             try:
@@ -252,6 +351,15 @@ class NativeUIRuntimeObserver:
                 return
             result_path.write_bytes(raw)
         attempt("native_receipt_export", export_result)
+        if failures:
+            self.error = self.error or failures[0][1]
+            self.observation = None
+        # Export can itself discover a bounded command failure. Capture those
+        # diagnostics after all exports, and update the execution receipt too.
+        # A failed stop write is not retried; its in-memory receipt can still be
+        # refreshed without hiding the original stop/selection exception.
+        write_final_file = not any(stage == "observer_stop" for stage, _ in failures)
+        attempt("final_observer_snapshot", lambda: self.persist_summary(write_file=write_final_file))
         if failures:
             receipt["actual_ui_runtime_finalizer"] = {"status": "FAIL", "errors": [
                 {"stage": stage, "error_type": type(error).__name__} for stage, error in failures]}
@@ -273,9 +381,24 @@ class NativeUIRuntimeObserver:
         require(native.apple_timestamp(value["startedAt"], "runtime receipt start")
                 <= self.observation["mapping_completed_at"] <= finished,
                 "Runtime mapping did not finish during the actual native UI journey")
-        continuity = self.shared.verify_ui_process_continuity(ui_evidence, prefix,
-            self.observation["live_runtime"], methods, scope="ACTUAL_COLD_LAUNCH_UI_METHOD_BOUNDARIES",
-            command_timeout=lambda: COMMAND_SECONDS)
+        primary_error = None
+        try:
+            continuity = self.diagnostic_operation("verify_ui_process_boundaries", lambda:
+                self.shared.verify_ui_process_continuity(ui_evidence, prefix,
+                    self.observation["live_runtime"], methods, scope="ACTUAL_COLD_LAUNCH_UI_METHOD_BOUNDARIES",
+                    command_timeout=lambda: COMMAND_SECONDS))
+        except BaseException as error:
+            primary_error = error
+            raise
+        finally:
+            try:
+                self.persist_summary()
+            except BaseException:
+                # Persisted metadata must not replace the actual boundary error.
+                # With no primary failure a failed diagnostic write still fails
+                # closed before a qualification receipt can be written.
+                if primary_error is None:
+                    raise
         result = {**self.observation, "status": "PASS_ACTUAL_UI_PROCESS_RUNTIME",
                   "ui_process_continuity": continuity,
                   "final_native_receipt_sha256": digest(raw_value),

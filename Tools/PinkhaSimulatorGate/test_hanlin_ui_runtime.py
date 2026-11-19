@@ -373,6 +373,209 @@ class ObserverControls(unittest.TestCase):
         self.assertIsNone(self.observer.observation)
         self.assertEqual(self.mapped_pids, [])
 
+    def test_poll_timeout_records_command_stage_and_bound_without_retry_or_mapping(self):
+        command = ["xcrun", "simctl", "get_app_container", UDID, "io.anytype.app", "data"]
+        error = gate.subprocess.TimeoutExpired(command, 10, output=b"private stdout", stderr=b"private stderr")
+        calls = []
+        def query(argv, **kwargs):
+            calls.append(argv)
+            if len(calls) > 1:
+                raise error
+            return str(self.container) + "\n"
+        with patch.object(gate.subprocess, "check_output", side_effect=query):
+            self.observe()
+        summary = self.observer.summary()
+        failure = summary["diagnostics"]["first_failure"]
+        self.assertIs(self.observer.error, error)
+        self.assertEqual((failure["stage"], failure["command"], failure["command_timeout_seconds"]),
+                         ("poll_data_container", command, 10))
+        self.assertGreaterEqual(failure["stage_elapsed_seconds"], 0)
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(self.mapped_pids, [])
+        self.assertEqual(summary["diagnostics"]["partial_observations"], {})
+        self.assertNotIn("private stdout", json.dumps(summary))
+        self.assertNotIn("private stderr", json.dumps(summary))
+        with self.assertRaisesRegex(RuntimeError, "did not complete"):
+            self.qualify(self.final())
+
+    def test_installed_source_timeout_retains_original_live_phase_without_qualifying_it(self):
+        command = ["xcrun", "simctl", "get_app_container", UDID, "io.anytype.app", "app"]
+        error = gate.subprocess.TimeoutExpired(command, 10)
+        def fail():
+            raise error
+        self.source_hook = fail
+        self.observe()
+        summary = self.observer.summary()
+        diagnostics = summary["diagnostics"]
+        partial = diagnostics["partial_observations"]["native_phase_before"]
+        raw = (self.observer.directory / partial["file"]).read_bytes()
+        self.assertEqual(gate.decode(raw), self.value)
+        self.assertEqual(partial["sha256"], gate.digest(raw))
+        self.assertEqual(partial["identity"]["processID"], self.value["processID"])
+        self.assertEqual(diagnostics["first_failure"]["stage"], "map_installed_source")
+        self.assertEqual(diagnostics["first_failure"]["command"], command)
+        self.assertEqual(self.source_calls, 2)
+        self.assertEqual(self.mapped_pids, [])
+        self.assertIsNone(self.observer.observation)
+        self.assertFalse((self.observer.directory / "native-phase-before.json").exists())
+        self.assertFalse((self.observer.directory / "qualification.json").exists())
+        with self.assertRaisesRegex(RuntimeError, "did not complete"):
+            self.qualify(self.final())
+
+    def test_vmmap_timeout_preserves_collected_source_and_does_not_rerun_mapping(self):
+        command = ["/usr/bin/vmmap", "-w", "51457"]
+        error = gate.subprocess.TimeoutExpired(command, 10)
+        def fail():
+            raise error
+        self.map_hook = fail
+        self.observe()
+        diagnostics = self.observer.summary()["diagnostics"]
+        self.assertEqual(diagnostics["first_failure"]["stage"], "map_running_process")
+        self.assertEqual(diagnostics["first_failure"]["command"], command)
+        self.assertEqual(set(diagnostics["partial_observations"]),
+                         {"native_phase_before", "installed_source_returned"})
+        self.assertEqual(self.mapped_pids, [51457])
+        self.assertIs(self.observer.error, error)
+        self.assertIsNone(self.observer.observation)
+
+    def test_after_mapping_timeout_retains_mapping_metadata_but_cannot_be_a_pass(self):
+        command = ["xcrun", "simctl", "get_app_container", UDID, "io.anytype.app", "data"]
+        error = gate.subprocess.TimeoutExpired(command, 10)
+        def query(argv, **kwargs):
+            if self.mapped_pids:
+                raise error
+            return str(self.container) + "\n"
+        with patch.object(gate.subprocess, "check_output", side_effect=query):
+            self.observe()
+        diagnostics = self.observer.summary()["diagnostics"]
+        self.assertEqual(diagnostics["first_failure"]["stage"], "after_mapping_data_container")
+        self.assertEqual(diagnostics["partial_observations"]["runtime_mapping_returned"]["pid"], 51457)
+        self.assertEqual(self.mapped_pids, [51457])
+        self.assertIsNone(self.observer.observation)
+        with self.assertRaisesRegex(RuntimeError, "did not complete"):
+            self.qualify(self.final())
+
+    def test_diagnostic_duration_is_stage_elapsed_and_first_failure_survives_later_reads(self):
+        error = gate.subprocess.TimeoutExpired(["xcrun", "simctl", "get_app_container"], 10)
+        def fail():
+            raise error
+        with patch.object(gate.time, "monotonic", side_effect=[100.0, 112.5]):
+            with self.assertRaises(gate.subprocess.TimeoutExpired) as caught:
+                self.observer.diagnostic_operation("poll_data_container", fail)
+        self.assertIs(caught.exception, error)
+        self.observer.diagnostic_operation("export_final_data_container", lambda: self.container)
+        summary = self.observer.diagnostic_summary()
+        self.assertEqual(summary["stage_duration_scope"], "ENTIRE_NAMED_OPERATION_NOT_INDIVIDUAL_SUBPROCESS")
+        self.assertEqual(summary["first_failure"]["stage_elapsed_seconds"], 12.5)
+        self.assertEqual(summary["first_failure"]["command_timeout_seconds"], 10)
+        self.assertEqual(summary["first_failure"]["stage"], "poll_data_container")
+
+    def test_repeated_polls_have_bounded_diagnostics_and_transient_reads_stay_distinct(self):
+        for _ in range(2000):
+            self.observer.diagnostic_operation("poll_data_container", lambda: self.container)
+        error = gate.ReceiptReplaced()
+        def replaced():
+            raise error
+        with self.assertRaises(gate.ReceiptReplaced) as caught:
+            self.observer.diagnostic_operation("read_native_phase_before", replaced,
+                                              transient=(FileNotFoundError, gate.ReceiptReplaced))
+        self.assertIs(caught.exception, error)
+        summary = self.observer.diagnostic_summary()
+        self.assertIsNone(summary["first_failure"])
+        self.assertEqual(len(summary["stages"]), 2)
+        self.assertEqual(summary["stages"][0]["attempts"], 2000)
+        self.assertEqual(summary["stages"][1]["status"], "TRANSIENT_READ")
+        self.assertLess(len(json.dumps(summary)), 2048)
+        with self.assertRaisesRegex(RuntimeError, "Unknown runtime diagnostic stage"):
+            self.observer.diagnostic_operation("unbounded-dynamic-stage", lambda: self.fail("must not execute"))
+
+    def test_diagnostic_command_overflow_and_private_error_text_are_not_published(self):
+        error = gate.subprocess.CalledProcessError(9, ["oversized"] * 33,
+            output=b"private command stdout", stderr=b"private command stderr")
+        def fail():
+            raise error
+        with self.assertRaises(gate.subprocess.CalledProcessError):
+            self.observer.diagnostic_operation("map_running_process", fail)
+        summary = self.observer.diagnostic_summary()
+        self.assertEqual(summary["first_failure"]["command"], "UNAVAILABLE_OR_OUTSIDE_DIAGNOSTIC_BOUND")
+        self.assertEqual(summary["first_failure"]["command_exit_code"], 9)
+        self.assertNotIn("private command", json.dumps(summary))
+
+    def test_diagnostics_do_not_change_original_deadlines_or_add_a_launch(self):
+        self.assertEqual((gate.COMMAND_SECONDS, gate.OBSERVATION_SECONDS, gate.MAPPING_SECONDS), (10, 420, 45))
+        self.observe()
+        self.assertIsNone(self.observer.error)
+        self.assertIsNone(self.observer.summary()["diagnostics"]["first_failure"])
+        self.assertEqual(self.mapped_pids, [51457])
+        self.assertTrue(all("launch" not in command and "terminate" not in command for command in self.commands))
+        self.assertEqual(self.qualify(self.final())["status"], "PASS_ACTUAL_UI_PROCESS_RUNTIME")
+
+    def test_finalizer_export_timeout_is_persisted_after_exports_in_disk_and_execution_receipt(self):
+        self.observe()
+        receipt = {}
+        command = ["xcrun", "simctl", "get_app_container", UDID, "io.anytype.app", "data"]
+        error = gate.subprocess.TimeoutExpired(command, 10)
+        with patch.object(self.observer, "container", side_effect=error), self.assertRaises(gate.subprocess.TimeoutExpired) as caught:
+            self.observer.finalize(receipt, self.evidence / "final.json", lambda: None, None)
+        self.assertIs(caught.exception, error)
+        on_disk = json.loads((self.observer.directory / "observation.json").read_text())
+        self.assertEqual(on_disk, receipt["actual_ui_runtime_observation"])
+        self.assertIsNotNone(on_disk["diagnostics"]["first_failure"])
+        self.assertEqual(on_disk["diagnostics"]["first_failure"]["stage"], "export_final_data_container")
+        self.assertEqual(on_disk["diagnostics"]["first_failure"]["command"], command)
+        self.assertEqual(on_disk["status"], "FAIL_ACTUAL_UI_RUNTIME_NOT_BOUND")
+        self.assertIn("runtime_mapping_returned", on_disk["diagnostics"]["partial_observations"])
+
+    def test_boundary_timeout_is_persisted_in_disk_and_previously_finalized_execution_receipt(self):
+        self.observe()
+        receipt = {}
+        self.observer.finalize(receipt, self.evidence / "final.json", lambda: None, None)
+        error = gate.subprocess.TimeoutExpired(["xcrun", "simctl", "get_app_container", UDID, "io.anytype.app", "app"], 10)
+        with patch.object(self.shared, "verify_ui_process_continuity", side_effect=error), self.assertRaises(gate.subprocess.TimeoutExpired) as caught:
+            self.qualify(self.final())
+        self.assertIs(caught.exception, error)
+        on_disk = json.loads((self.observer.directory / "observation.json").read_text())
+        self.assertEqual(on_disk, receipt["actual_ui_runtime_observation"])
+        self.assertIsNotNone(on_disk["diagnostics"]["first_failure"])
+        self.assertEqual(on_disk["diagnostics"]["first_failure"]["stage"], "verify_ui_process_boundaries")
+        self.assertEqual(on_disk["diagnostics"]["first_failure"]["command"], error.cmd)
+        self.assertFalse((self.observer.directory / "qualification.json").exists())
+
+    def test_final_snapshot_write_failure_does_not_replace_the_original_export_timeout(self):
+        self.observe()
+        receipt = {}
+        error = gate.subprocess.TimeoutExpired(["xcrun", "simctl", "get_app_container"], 10)
+        original_write = self.shared.write
+        writes = []
+        def write(path, value):
+            if path.name == "observation.json":
+                writes.append(path)
+                if len(writes) == 2:
+                    raise OSError("private diagnostic write failure")
+            return original_write(path, value)
+        with patch.object(self.observer, "container", side_effect=error), patch.object(self.shared, "write", side_effect=write):
+            with self.assertRaises(gate.subprocess.TimeoutExpired) as caught:
+                self.observer.finalize(receipt, self.evidence / "final.json", lambda: None, None)
+        self.assertIs(caught.exception, error)
+        self.assertEqual(len(writes), 2)
+        self.assertEqual(receipt["actual_ui_runtime_observation"]["diagnostics"]["first_failure"]["stage"], "export_final_data_container")
+        self.assertEqual(receipt["actual_ui_runtime_finalizer"]["errors"], [
+            {"stage": "native_receipt_export", "error_type": "TimeoutExpired"},
+            {"stage": "final_observer_snapshot", "error_type": "OSError"}])
+
+    def test_boundary_diagnostic_write_failure_preserves_primary_and_success_cannot_write_qualification(self):
+        self.observe()
+        error = gate.subprocess.TimeoutExpired(["/bin/ps", "-p", "51457"], 10)
+        with patch.object(self.shared, "verify_ui_process_continuity", side_effect=error), patch.object(self.shared, "write", side_effect=OSError("private diagnostic write failure")):
+            with self.assertRaises(gate.subprocess.TimeoutExpired) as caught:
+                self.qualify(self.final())
+        self.assertIs(caught.exception, error)
+        self.assertFalse((self.observer.directory / "qualification.json").exists())
+        with patch.object(self.shared, "write", side_effect=OSError("private diagnostic write failure")):
+            with self.assertRaises(OSError):
+                self.qualify(self.final())
+        self.assertFalse((self.observer.directory / "qualification.json").exists())
+
     def test_atomic_file_replacement_during_read_is_not_a_stable_snapshot(self):
         path = self.support / gate.RESULT; atomic_write(path, self.phase())
         original = os.fstat; calls = [0]

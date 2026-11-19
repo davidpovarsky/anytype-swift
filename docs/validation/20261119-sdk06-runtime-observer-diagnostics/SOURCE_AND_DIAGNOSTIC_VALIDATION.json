@@ -1,0 +1,46 @@
+{
+  "status": "PASS_LOCAL_DIAGNOSTIC_CONTROLS_NOT_APPLE_ACCEPTANCE",
+  "tests": [
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "sdk06-observer-diagnostics/Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "test_hanlin_ui_runtime.log",
+      "log_sha256": "25aeee273cdc3078822727d21b2611c5bb2ba97fe0732a5123c73f4cdc559515"
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "sdk06-observer-diagnostics/Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "test_hanlin_acceptance_evidence.log",
+      "log_sha256": "45bb64e335633122839e4d0481da8222db2eeb01eebfa1896da53527efcce66c"
+    }
+  ],
+  "observer_controls": 42,
+  "original_native_evidence_controls": 20,
+  "original_failure_report_sha256": "1511cb6bb15d422b080912a187b93b850f9b9a871fa9e843ca305c2bac010e5a",
+  "scope": "Diagnostics only: preserve failing stage, argv, command timeout, stage elapsed duration, bounded aggregate polling records, and validated partial phase/source/runtime observations. No new retry, timeout, substitute process, native driver, UI method, or qualification condition.",
+  "unchanged_timeouts_seconds": {
+    "command": 10,
+    "observation": 420,
+    "mapping": 45,
+    "stop_join": 15
+  },
+  "original_native_checks": 22,
+  "actual_apple_run": "NOT_RUN",
+  "version": 2,
+  "v1_persistence_regressions": {
+    "status": "PASS_EXPECTED_ORIGINAL_FAILURE",
+    "test_count": 2,
+    "failure_count": 2,
+    "error_count": 0,
+    "log_sha256": "09c30cb814c5c699e77494f9b898aa4e8ff034eca1b8139a5a534aef82e03363"
+  },
+  "root_review_followup": "Persist final observation after native receipt export and after UI-boundary verification on success/failure; refresh execution receipt; preserve primary exceptions when diagnostic persistence fails; failed stop write is not retried."
+}
