@@ -106,7 +106,7 @@ class AcceptanceSelectionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             with patch("run_wave15_acceptance.shared.command", side_effect=command), \
-                    patch("run_wave15_acceptance.subprocess.run", side_effect=observe):
+                    patch("run_wave15_acceptance.subprocess.run", side_effect=observe) as readback:
                 value = configure_editor_device_language(root, root, "fixture-udid", "he")
             output = (root / "device-language-observation.json").read_text()
         self.assertEqual([event[2] for event in events], ["spawn", "spawn", "shutdown", "boot", "bootstatus", "spawn"])
@@ -114,6 +114,9 @@ class AcceptanceSelectionTests(unittest.TestCase):
         self.assertEqual(value["status"], "DEVICE_LANGUAGE_PREFERENCES_VERIFIED")
         self.assertNotIn("do-not-publish", output)
         self.assertNotIn("UnrelatedPrivateFixture", output)
+        readback.assert_called_once_with(events[-1], capture_output=True, timeout=120)
+        self.assertEqual(value["readback_timeout_seconds"], 120)
+        self.assertGreaterEqual(value["readback_elapsed_seconds"], 0)
 
     def test_device_readback_failure_keeps_failure_receipt_and_cannot_claim_language(self):
         for code, raw in [(1, b""), (0, plistlib.dumps({"AppleLanguages": ["he"], "AppleLocale": "he_IL"}))]:
@@ -127,6 +130,28 @@ class AcceptanceSelectionTests(unittest.TestCase):
                 value = json.loads((root / "device-language-observation.json").read_text())
                 self.assertEqual(value["status"], "FAIL")
                 self.assertNotIn("device_language", value)
+
+    def test_device_readback_timeout_and_cancellation_fail_once_with_bounded_evidence(self):
+        timeout = subprocess.TimeoutExpired(["xcrun", "simctl", "spawn", "fixture-udid"], 120,
+                                             output=b"private-partial-preferences")
+        for error in [timeout, KeyboardInterrupt()]:
+            with self.subTest(error=type(error).__name__), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                with patch("run_wave15_acceptance.shared.command"), \
+                        patch("run_wave15_acceptance.time.monotonic", side_effect=[10.0, 130.5]), \
+                        patch("run_wave15_acceptance.subprocess.run", side_effect=error) as readback, \
+                        self.assertRaises(type(error)):
+                    configure_editor_device_language(root, root, "fixture-udid", "he")
+                output = (root / "device-language-observation.json").read_text()
+                value = json.loads(output)
+                self.assertEqual(readback.call_count, 1)
+                self.assertEqual(readback.call_args.kwargs["timeout"], 120)
+                self.assertEqual(value["status"], "FAIL")
+                self.assertEqual(value["readback_timeout_seconds"], 120)
+                self.assertEqual(value["readback_elapsed_seconds"], 120.5)
+                self.assertNotIn("device_language", value)
+                self.assertNotIn("verification_scope", value)
+                self.assertNotIn("private-partial-preferences", output)
 
     def test_quote_drop_requires_the_native_disposable_source_document(self):
         fixture = {"spaceId": "s", "universalDocuments": {"page": "blank"}, "manySourcesDocument": "source"}

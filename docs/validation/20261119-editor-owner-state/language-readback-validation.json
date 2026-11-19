@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-11-19T16:35:49.875244+00:00",
+  "base_source_sha": "53dbcbc214b0310f168f073c2efb2be96cb201fa",
+  "original_run": 44562636925,
+  "original_artifact_id": 14549557752,
+  "original_artifact_sha256": "fde1a75cb07da6266a79b0c2ce60c82fa981f0b9c2a73b54f543998e1991f20d",
+  "observed_failure": {
+    "phase": "DEVICE_LANGUAGE_CONFIGURATION",
+    "type": "TimeoutExpired",
+    "command": [
+      "xcrun",
+      "simctl",
+      "spawn",
+      "<owned simulator>",
+      "defaults",
+      "export",
+      "NSGlobalDomain",
+      "-"
+    ],
+    "timeout_seconds": 30,
+    "native_ui_cases_executed": 0,
+    "build_started": false
+  },
+  "measured_context": {
+    "first_defaults_write_to_next_command_seconds": 72.947,
+    "initial_bootstatus_to_next_command_seconds": 150.337,
+    "after_reboot_bootstatus_to_monitor_output_seconds": 87.609
+  },
+  "decision": "Give only the post-reboot globals read a finite120-second ceiling because actual cold defaults invocation in the same run exceeded30 seconds. Record elapsed time and bound before the one attempt. All content/locale/opposite-language checks stay unchanged.",
+  "source_sha256": {
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": "15570ceb47789316510de5bc5ae5c0ce111add236ff57d7d08dcca38e90eeca5",
+    "Tools/PinkhaSimulatorGate/test_run_wave15_acceptance.py": "7277f7feae1d27b5b973f4cf7071ca75688f81c6efade34d77ddaaea25573c05"
+  },
+  "validation": {
+    "python_controls_passed": 18,
+    "failed": 0,
+    "skipped": 0,
+    "native_uikit_and_ui": "NOT_RUN_FOR_THIS_CHANGE",
+    "product_swift_changed": false
+  },
+  "preserved": [
+    "Exactly one real simctl read; no retry or fallback",
+    "Actual after-reboot plist, opposite app/device language, exact locale,1MiB limit",
+    "No whole preference plist or partial timeout output published",
+    "Timeout/cancellation/nonzero/wrong or missing data remain failures",
+    "Native test and UI test deadlines unchanged"
+  ]
+}

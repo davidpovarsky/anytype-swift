@@ -14,6 +14,7 @@ import plistlib
 import re
 import subprocess
 import sys
+import time
 
 import run_ui27 as shared
 import hanlin_acceptance_evidence as hanlin
@@ -25,6 +26,7 @@ BRANCH = "codex/chatgpt-wave15-integration-20261118"
 CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
 UI_RESUME_BRANCH = "codex/chatgpt-wave15-ui-resume-20261119"
 APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH)
+EDITOR_DEVICE_PREFERENCES_TIMEOUT_SECONDS = 120
 LANES = {
     "hanlin-selection": {
         "suite": "HanlinSelectionAcceptanceUITests",
@@ -348,8 +350,14 @@ def configure_editor_device_language(app, evidence, udid, app_language):
         ]:
             shared.command(command, app, evidence)
         command = ["xcrun", "simctl", "spawn", udid, "defaults", "export", "NSGlobalDomain", "-"]
-        observed = subprocess.run(command, capture_output=True, timeout=30)
-        observation.update(command=command, command_exit_code=observed.returncode,
+        observation.update(command=command, readback_timeout_seconds=EDITOR_DEVICE_PREFERENCES_TIMEOUT_SECONDS)
+        shared.write(path, observation)
+        started = time.monotonic()
+        try:
+            observed = subprocess.run(command, capture_output=True, timeout=EDITOR_DEVICE_PREFERENCES_TIMEOUT_SECONDS)
+        finally:
+            observation["readback_elapsed_seconds"] = round(time.monotonic() - started, 3)
+        observation.update(command_exit_code=observed.returncode,
                            error=observed.stderr.decode("utf-8", errors="replace"),
                            preferences_sha256=hashlib.sha256(observed.stdout).hexdigest())
         require(observed.returncode == 0, "Could not read actual simulator language after reboot")
