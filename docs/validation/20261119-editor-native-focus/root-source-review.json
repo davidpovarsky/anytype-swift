@@ -1,0 +1,85 @@
+{
+  "schema": "editor-native-focus-observation-source-review-v1",
+  "source_base": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8",
+  "original_failure": {
+    "run": 44568391622,
+    "source_sha": "50f837df47aa4a63f92069c9690d6bfb332721f6",
+    "native_preparation": {
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0
+    },
+    "ui_methods": "3_NOT_RUN",
+    "qualification_sha256": "b3166194dee384b08f1be73aa4eb22458d3461a6a0824b722e769dba1669ffd0",
+    "observed": "Pending request retained and applied once, owner matched, no early cancellation, setFocus observation refused; original evidence did not identify canBecome guard versus actual UIKit refusal."
+  },
+  "candidate_scope": [
+    "Observe exactly the existing canBecomeFirstResponder guard and once-only becomeFirstResponder return without changing them.",
+    "Observe existing CustomTextView delegate entry/allow/begin/end without changing calls, order or returned acceptance.",
+    "Scope weak-key diagnostics to explicit native test owner; bounded32-step trace,64ancestors,512view budget,1024responders,8first-responder categories; explicit truncation.",
+    "Retain only fixed names, booleans, bounded counts, categories, and existing ephemeral focus UUIDs; no document text/IDs/attributes.",
+    "Three real UIKit tests independently exercise guard denial, delegate refusal, successful focus; diagnostics disabled afterwards remains unrecorded.",
+    "Strict source/argument inventory becomes55methods/83invocations; focus suite13methods/21invocations. No original methods removed or skipped."
+  ],
+  "preserved": [
+    "No focus retry or scheduling changes",
+    "Original selection and typing attribute restoration",
+    "Native preparation and UI assertions/timeouts",
+    "Original UIKit return values",
+    "Current Properties controlled install changes",
+    "All existing source-bound negative-result checks"
+  ],
+  "controller_validation": {
+    "passed": 57,
+    "failed": 0,
+    "skipped": 0,
+    "note": "Portable Python controls, not native acceptance. Earlier partial snapshot/control update failure retained separately; completed exact input snapshot and all required exact-count constants then passed."
+  },
+  "swift_grammar": {
+    "compiler": "Swift6.3.3 Windows",
+    "active_flags": [
+      "PINKHA_NATIVE_DERIVED",
+      "PINKHA_NATIVE_T5_LOOKUP_V1"
+    ],
+    "observations": [
+      {
+        "path": "Anytype/Sources/FrameworkExtensions/UIKit/UITextView+Convenience.swift",
+        "sha256": "e7bd8989ce142c147fd70e69e0e4081d59077ed3080eb387a9f94399188e4c61",
+        "returncode": 0,
+        "diagnostics": ""
+      },
+      {
+        "path": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift",
+        "sha256": "7311a1dfdc3317757a35c87724c85ff5150330a815d346c819906049de0f5192",
+        "returncode": 0,
+        "diagnostics": ""
+      },
+      {
+        "path": "Anytype/Sources/Pinkha/Diagnostics/PinkhaStage1AcceptanceState.swift",
+        "sha256": "4384d6cc41cba981a65c61b4ac492a17aa530d52a190eaa6fe125d73038f6955",
+        "returncode": 0,
+        "diagnostics": ""
+      },
+      {
+        "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+        "sha256": "40d96a9f6340b2d4680abc4ca8ef685e2931365504e82416610c61cbc8e8bc64",
+        "returncode": 0,
+        "diagnostics": ""
+      }
+    ],
+    "status": "PASS_GRAMMAR_ONLY",
+    "note": "Initial stdin parsing is unsupported by this frontend; checked bounded temporary .swift files successfully. No Apple SDK typecheck claimed."
+  },
+  "primary_documentation": [
+    {
+      "url": "https://developer.apple.com/documentation/uikit/uiresponder/becomefirstresponder()",
+      "use": "UIKit's result may be false; current responder resignation and canBecome eligibility are distinct steps, and a valid window is required."
+    },
+    {
+      "url": "https://developer.apple.com/documentation/uikit/uiresponder/canbecomefirstresponder",
+      "use": "Eligibility observation is taken only by the original attached-view code path, without an extra call."
+    }
+  ],
+  "native_acceptance": "NOT_RUN_CURRENT_CANDIDATE",
+  "underlying_failure_repaired": false
+}

@@ -26,7 +26,7 @@ class CoreScopeGateTests(unittest.TestCase):
                         for values in product(*method["argument_collections"])]
                 self.nodes.append(node)
         self.tree = dict(testNodes=self.nodes)
-        self.summary = dict(totalTestCount=54, passedTests=54, failedTests=0, skippedTests=0,
+        self.summary = dict(totalTestCount=55, passedTests=55, failedTests=0, skippedTests=0,
             devicesAndConfigurations=[dict(device=dict(deviceId="core-disposable", osVersion="27.0",
                 osBuildNumber="24A-control", architecture="arm64", modelName="iPad (A16)"))])
 
@@ -35,10 +35,10 @@ class CoreScopeGateTests(unittest.TestCase):
                                 "core-disposable", HostTestProfile.CORE)
 
     def test_actual_distinct_cases_required_independently_of_summary_unit(self):
-        for total in (54, 80):
+        for total in (55, 83):
             value = self.validate(summary=dict(self.summary, totalTestCount=total, passedTests=total))
-            self.assertEqual(value["actual_method_count"], 54)
-            self.assertEqual(value["declared_case_count"], 80)
+            self.assertEqual(value["actual_method_count"], 55)
+            self.assertEqual(value["declared_case_count"], 83)
         self.assertEqual(HostTestProfile.CORE.pass_status, "WAVE15_CORE_COMPONENT_PASS")
         self.assertEqual(HostTestProfile.CORE.result_prefix, "wave15-core")
 
@@ -93,6 +93,26 @@ class CoreScopeGateTests(unittest.TestCase):
                 node["children"][0]["result"] = "Failed" if mutation == "failed" else "Skipped"
             with self.subTest(mutation=mutation), self.assertRaises(ValueError):
                 self.validate(tree=tree)
+
+    def test_native_focus_observation_requires_all_three_actual_outcomes(self):
+        name = "nativeFocusObservationDistinguishesOutcomes"
+        specification = self.specs["TextBlockFocusLifecycleTests"]["methods"][name]
+        self.assertEqual(specification, dict(
+            parameters=[dict(name="outcome", type="String")],
+            argument_collections=[["ineligible", "refused", "accepted"]], case_count=3))
+        identity = "TextBlockFocusLifecycleTests/" + name + "(outcome:)"
+        for index in range(3):
+            for mutation in ("missing", "duplicate", "failed", "skipped"):
+                tree = deepcopy(self.tree)
+                node = next(item for item in tree["testNodes"] if item["nodeIdentifier"] == identity)
+                if mutation == "missing":
+                    node["children"].pop(index)
+                elif mutation == "duplicate":
+                    node["children"][index]["name"] = node["children"][(index + 1) % 3]["name"]
+                else:
+                    node["children"][index]["result"] = "Failed" if mutation == "failed" else "Skipped"
+                with self.subTest(case=index, mutation=mutation), self.assertRaises(ValueError):
+                    self.validate(tree=tree)
 
     def test_reused_cell_regression_requires_both_lock_cases(self):
         name = "reusedCellUsesCurrentLockBeforeFocus"

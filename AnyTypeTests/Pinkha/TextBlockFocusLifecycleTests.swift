@@ -7,6 +7,60 @@ import UIKit
 @Suite("Native text block focus lifetime", .serialized)
 @MainActor
 struct TextBlockFocusLifecycleTests {
+    @Test("Focus observations distinguish a denied guard, native refusal and accepted editing",
+          arguments: ["ineligible", "refused", "accepted"])
+    func nativeFocusObservationDistinguishesOutcomes(outcome: String) async throws {
+        let fixture = try TextBlockFocusWindow()
+        defer { fixture.close() }
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let row = TextBlockContentView(frame: .zero)
+        row.update(with: configuration("observation", cursor: cursor, subjects: subjects))
+        fixture.attach(row)
+        await finishMainQueueTurn()
+        let textView = row.textView.textView
+        let refusal = TextBlockFocusRefusingDelegate()
+        if outcome == "ineligible" { textView.isLockedForEditing = true }
+        if outcome == "refused" { textView.delegate = refusal }
+        let observation = PinkhaStage1AcceptanceDiagnostics.beginFocusObservation()
+        defer { PinkhaStage1AcceptanceDiagnostics.endFocusObservation(observation) }
+        textView.setFocus(.end)
+        let evidence = PinkhaStage1AcceptanceDiagnostics.focusObservation(in: textView)
+        let tokens = Set(evidence.split(separator: " ").map(String.init))
+        #expect(!evidence.contains(textView.text), "Observations must not copy document content")
+        #expect(tokens.contains("nativeTraceTruncated=false"))
+        switch outcome {
+        case "ineligible":
+            #expect(!textView.isFirstResponder)
+            #expect(tokens.contains("setFocusIneligible=1"))
+            #expect(tokens.contains("becomeInvoked=0"))
+            #expect(refusal.beginAttempts == 0)
+        case "refused":
+            #expect(!textView.isFirstResponder)
+            #expect(tokens.contains("setFocusEligible=1"))
+            #expect(tokens.contains("becomeInvoked=1"))
+            #expect(tokens.contains("becomeReturnedFalse=1"))
+            #expect(refusal.beginAttempts == 1)
+        case "accepted":
+            try #require(textView.isFirstResponder)
+            #expect(tokens.contains("setFocusEligible=1"))
+            #expect(tokens.contains("becomeInvoked=1"))
+            #expect(tokens.contains("becomeReturnedTrue=1"))
+            #expect(tokens.contains("shouldBeginEntered=1"))
+            #expect(tokens.contains("shouldBeginAllowed=1"))
+            #expect(tokens.contains("delegateDidBegin=1"))
+        default:
+            Issue.record("Unexpected focus observation fixture")
+        }
+        PinkhaStage1AcceptanceDiagnostics.endFocusObservation(observation)
+        textView.setFocus(.end)
+        let disabled = Set(PinkhaStage1AcceptanceDiagnostics.focusObservation(in: textView)
+            .split(separator: " ").map(String.init))
+        #expect(disabled.contains("recorded=false"))
+        #expect(disabled.contains("becomeInvoked=0"))
+        #expect(disabled.contains("nativeTrace=none"))
+    }
+
     @Test("A newly inserted row uses its collection's actual editing state for initial focus",
           arguments: [false, true])
     func insertedCellUsesCurrentEditingBeforeFocus(editing: Bool) async throws {

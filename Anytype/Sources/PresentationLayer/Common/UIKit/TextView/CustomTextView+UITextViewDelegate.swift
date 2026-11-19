@@ -24,11 +24,14 @@ extension CustomTextView: UITextViewDelegate {
     }
 
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        PinkhaStage1AcceptanceDiagnostics.recordNativeFocus(.shouldBeginEntered, in: textView)
         delegate?.willBeginEditing()
+        PinkhaStage1AcceptanceDiagnostics.recordNativeFocus(.shouldBeginAllowed, in: textView)
         return true
     }
 
     func textViewDidBeginEditing(_ textView: UITextView) {
+        PinkhaStage1AcceptanceDiagnostics.recordNativeFocus(.delegateDidBegin, in: textView)
         delegate?.didBeginEditing()
     }
 
@@ -49,6 +52,7 @@ extension CustomTextView: UITextViewDelegate {
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
+        PinkhaStage1AcceptanceDiagnostics.recordNativeFocus(.delegateDidEnd, in: textView)
         delegate?.didEndEditing()
     }
 

@@ -58,8 +58,20 @@ extension UITextView {
         }
 
         // The caller owns deferred focus and its lifetime; a view-local retry can steal a newer responder.
-        if !isFirstResponder && canBecomeFirstResponder {
-            becomeFirstResponder()
+        if !isFirstResponder {
+            let canBecome = canBecomeFirstResponder
+            PinkhaStage1AcceptanceDiagnostics.recordNativeFocus(
+                canBecome ? .setFocusEligible : .setFocusIneligible, in: self
+            )
+            if canBecome {
+                PinkhaStage1AcceptanceDiagnostics.recordNativeFocus(.becomeInvoked, in: self)
+                let accepted = becomeFirstResponder()
+                PinkhaStage1AcceptanceDiagnostics.recordNativeFocus(
+                    accepted ? .becomeReturnedTrue : .becomeReturnedFalse, in: self
+                )
+            }
+        } else {
+            PinkhaStage1AcceptanceDiagnostics.recordNativeFocus(.setFocusAlreadyFirst, in: self)
         }
         typingAttributes = oldTypingAttributes
     }

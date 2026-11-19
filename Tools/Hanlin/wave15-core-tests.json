@@ -344,7 +344,7 @@
     },
     "TextBlockFocusLifecycleTests": {
       "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
-      "source_lf_sha256": "4aa45454da88efa8f1e55e061dae4afa57be2fc2b483a19a950926fa0d83f22e",
+      "source_lf_sha256": "40d96a9f6340b2d4680abc4ca8ef685e2931365504e82416610c61cbc8e8bc64",
       "methods": {
         "initialFocusWaitsForAttachment": {
           "parameters": [],
@@ -456,9 +456,26 @@
             ]
           ],
           "case_count": 2
+        },
+        "nativeFocusObservationDistinguishesOutcomes": {
+          "parameters": [
+            {
+              "name": "outcome",
+              "type": "String"
+            }
+          ],
+          "argument_collections": [
+            [
+              "ineligible",
+              "refused",
+              "accepted"
+            ]
+          ],
+          "case_count": 3
         }
       }
     }
   },
-  "focus_regression_source_base": "7ecc723c3334c5361c25216ed97161b7d221c5e4"
+  "focus_regression_source_base": "7ecc723c3334c5361c25216ed97161b7d221c5e4",
+  "focus_native_observation_source_base": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8"
 }

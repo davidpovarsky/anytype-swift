@@ -85,6 +85,12 @@ enum PinkhaStage1AcceptanceDiagnostics {
         case consumed, nativeAttempted, nativeAcquired, nativeRefused, nativeBegan
     }
 
+    enum NativeFocusEvent: String, CaseIterable, Hashable {
+        case setFocusAlreadyFirst, setFocusEligible, setFocusIneligible
+        case becomeInvoked, becomeReturnedTrue, becomeReturnedFalse
+        case shouldBeginEntered, shouldBeginAllowed, delegateDidBegin, delegateDidEnd
+    }
+
     private final class FocusRecord: NSObject {
         var counts: [FocusEvent: Int] = [:]
         var requestID: UUID?
@@ -93,6 +99,9 @@ enum PinkhaStage1AcceptanceDiagnostics {
         var lastEvent: FocusEvent?
         var lockedAtLastEvent = false
         var interactionAtLastEvent = false
+        var nativeCounts: [NativeFocusEvent: Int] = [:]
+        var nativeTrace = [String]()
+        var nativeTraceTruncated = false
     }
 
     /// Explicitly scoped by the native preparation test. No application flow enables it,
@@ -125,12 +134,105 @@ enum PinkhaStage1AcceptanceDiagnostics {
         focusRecords.setObject(record, forKey: textView)
     }
 
+    /// Observes the original guard, single UIKit call and delegate callbacks. It never asks
+    /// for focus, calls canBecomeFirstResponder again, changes a return value or retries.
+    static func recordNativeFocus(_ event: NativeFocusEvent, in textView: UITextView) {
+        guard focusObservationOwner != nil else { return }
+        let record = focusRecords.object(forKey: textView) ?? FocusRecord()
+        record.nativeCounts[event] = min((record.nativeCounts[event] ?? 0) + 1, 999)
+        if record.nativeTrace.count < 32 {
+            record.nativeTrace.append("\(event.rawValue){\(nativeFocusState(in: textView))}")
+        } else {
+            record.nativeTraceTruncated = true
+        }
+        // Native callbacks must not overwrite the request/owner evidence from the row.
+        focusRecords.setObject(record, forKey: textView)
+    }
+
+    private static func nativeFocusState(in textView: UITextView) -> String {
+        var ancestor: UIView? = textView
+        var depth = 0
+        var hidden = 0
+        var transparent = 0
+        var noninteractive = 0
+        var emptyBounds = 0
+        var animating = 0
+        while let view = ancestor, depth < 64 {
+            depth += 1
+            hidden += view.isHidden ? 1 : 0
+            transparent += view.alpha <= 0.01 ? 1 : 0
+            noninteractive += view.isUserInteractionEnabled ? 0 : 1
+            emptyBounds += view.bounds.width > 0 && view.bounds.height > 0 ? 0 : 1
+            animating += view.layer.animationKeys()?.isEmpty == false ? 1 : 0
+            ancestor = view.superview
+        }
+        let window = textView.window
+        let intersectsWindow = window.map { textView.convert(textView.bounds, to: $0).intersects($0.bounds) } ?? false
+        return [
+            "attached:\(window != nil)", "key:\(window?.isKeyWindow == true)",
+            "sceneActive:\(window?.windowScene?.activationState == .foregroundActive)",
+            "appActive:\(UIApplication.shared.applicationState == .active)",
+            "editable:\(textView.isEditable)", "selectable:\(textView.isSelectable)",
+            "locked:\((textView as? TextViewWithPlaceholder)?.isLockedForEditing == true)",
+            "first:\(textView.isFirstResponder)", "intersectsWindow:\(intersectsWindow)",
+            "depth:\(depth)", "hidden:\(hidden)", "transparent:\(transparent)",
+            "noninteractive:\(noninteractive)", "emptyBounds:\(emptyBounds)", "animating:\(animating)",
+            "customDelegate:\(textView.delegate is CustomTextView)",
+            "accessory:\(textView.inputAccessoryView != nil)",
+            "sceneResponders:\(nativeSceneResponders(in: window?.windowScene))"
+        ].joined(separator: ",")
+    }
+
+    /// Only responder categories and a resignability flag are retained. The bounded walk
+    /// does not load controllers, request layout or perform any responder-chain action.
+    private static func nativeSceneResponders(in scene: UIWindowScene?) -> String {
+        let viewBudget = 512
+        let windows = scene?.windows ?? []
+        var pending: [UIView] = windows.prefix(viewBudget).map { $0 as UIView }
+        var traversalTruncated = windows.count > viewBudget
+        var seen = Set<ObjectIdentifier>()
+        var first = [String]()
+        var firstTruncated = false
+        var visited = 0
+        while visited < viewBudget, let view = pending.popLast() {
+            visited += 1
+            let children = view.subviews
+            let room = max(0, viewBudget - visited - pending.count)
+            traversalTruncated = traversalTruncated || children.count > room
+            pending.append(contentsOf: children.prefix(room))
+            var next: UIResponder? = view
+            while let responder = next, seen.count < 1024, seen.insert(ObjectIdentifier(responder)).inserted {
+                if responder.isFirstResponder {
+                    let category: String
+                    switch responder {
+                    case is UITextView: category = "textView"
+                    case is UITextField: category = "textField"
+                    case is UIViewController: category = "controller"
+                    case is UIWindow: category = "window"
+                    case is UIView: category = "view"
+                    case is UIApplication: category = "application"
+                    default: category = "other"
+                    }
+                    if first.count < 8 {
+                        first.append("\(category)-canResign-\(responder.canResignFirstResponder)")
+                    } else {
+                        firstTruncated = true
+                    }
+                }
+                next = responder.next
+            }
+        }
+        let truncated = traversalTruncated || firstTruncated || !pending.isEmpty || seen.count >= 1024
+        return "\(first.isEmpty ? "none" : first.joined(separator: "+"))-truncated-\(truncated)"
+    }
+
     /// Fixed names, bounded counts, an ephemeral request UUID and UIKit state only.
     /// No document ID, user text, attribute payload or arbitrary error message is copied.
     static func focusObservation(in textView: UITextView) -> String {
         let record = focusRecords.object(forKey: textView)
         let events = FocusEvent.allCases.map { "\($0.rawValue)=\(record?.counts[$0] ?? 0)" }
-        return (events + [
+        let nativeEvents = NativeFocusEvent.allCases.map { "\($0.rawValue)=\(record?.nativeCounts[$0] ?? 0)" }
+        return (events + nativeEvents + [
             "recorded=\(record != nil)",
             "request=\(record?.requestID?.uuidString ?? "none")",
             "owner=\(record?.ownerID?.uuidString ?? "none")",
@@ -144,7 +246,9 @@ enum PinkhaStage1AcceptanceDiagnostics {
             "editable=\(textView.isEditable)",
             "interaction=\(textView.isUserInteractionEnabled)",
             "locked=\((textView as? TextViewWithPlaceholder)?.isLockedForEditing == true)",
-            "firstResponder=\(textView.isFirstResponder)"
+            "firstResponder=\(textView.isFirstResponder)",
+            "nativeTraceTruncated=\(record?.nativeTraceTruncated == true)",
+            "nativeTrace=\(record?.nativeTrace.joined(separator: "|") ?? "none")"
         ]).joined(separator: " ")
     }
 

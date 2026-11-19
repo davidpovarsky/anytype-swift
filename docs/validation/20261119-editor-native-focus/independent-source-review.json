@@ -1,0 +1,94 @@
+{
+  "apple_typecheck": "NOT_RUN",
+  "base_commit": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8",
+  "candidate_diff_sha256": "1f2a3e78ca88836e86b6928b1418f0e51cf1686a30849b236ea8e806d274c98c",
+  "candidate_manifest_sha256": "8aee74776b6e084bcedbd0f29515a2053930f0e882be87edf7992af93e687a08",
+  "delta_findings": [],
+  "files": {
+    "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift": {
+      "base_sha256": "4aa45454da88efa8f1e55e061dae4afa57be2fc2b483a19a950926fa0d83f22e",
+      "candidate_sha256": "40d96a9f6340b2d4680abc4ca8ef685e2931365504e82416610c61cbc8e8bc64"
+    },
+    "Anytype/Sources/FrameworkExtensions/UIKit/UITextView+Convenience.swift": {
+      "base_sha256": "a968561333c462f9909c3fca9020b500c5cfd4caa410c80cf675382c4a858ad3",
+      "candidate_sha256": "e7bd8989ce142c147fd70e69e0e4081d59077ed3080eb387a9f94399188e4c61"
+    },
+    "Anytype/Sources/Pinkha/Diagnostics/PinkhaStage1AcceptanceState.swift": {
+      "base_sha256": "ed85570017a1ff5bbb4d704a7085bc403407678d57cb70ea0a4a614e85cb9bd0",
+      "candidate_sha256": "4384d6cc41cba981a65c61b4ac492a17aa530d52a190eaa6fe125d73038f6955"
+    },
+    "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift": {
+      "base_sha256": "f06648a057ba7c0153a57de7198360d9b28377a1c9a0299401e8c269f9df071d",
+      "candidate_sha256": "7311a1dfdc3317757a35c87724c85ff5150330a815d346c819906049de0f5192"
+    },
+    "Tools/Hanlin/run_host_tests.py": {
+      "base_sha256": "316d1a3b259f76cce58e5259c7e3dd4a377388953643eeb8d217a7c3f6c1b58f",
+      "candidate_sha256": "f858cc278c752913be1c758fa68c39e7e60c57accb1301b8fee41ea9baa98687"
+    },
+    "Tools/Hanlin/test_run_host_components.py": {
+      "base_sha256": "f2deeb0ac4f45a72940bd86e8233f833f7217c6c4136a0526adddb9b41a0290e",
+      "candidate_sha256": "5251680755563ba482cce3aaef31f5afc1a3ae6dab07073f56ddbb4a2a5e25d8"
+    },
+    "Tools/Hanlin/test_run_host_core_profile.py": {
+      "base_sha256": "5ce53172b29e2e853a6df279d384f92b80f5561cfeffbc659eca703e215066ad",
+      "candidate_sha256": "46ec078c59dfc5b047b8d71bde67266937a1856bd8fa286e6e6c105ad05304d4"
+    },
+    "Tools/Hanlin/wave15-core-tests.json": {
+      "base_sha256": "377fc72574d6e6f38bcb137be238ede48eeb55fec4fc0b44684980711f713d7a",
+      "candidate_sha256": "fb850ecfa3284363ebf2d5ae21fee0adb57284886f3ee57a8aabb539451e06d3"
+    },
+    "Tools/Hanlin/wave15_core_profile.py": {
+      "base_sha256": "e8a797c2d379905b2e45f9844b9e4e3e65e7df20cc9a24b4fe7fd1e675e94afa",
+      "candidate_sha256": "2c4e7787066e0ac2abd178dab47b13380014454f192e30bd8ba593ce553f0aa9"
+    }
+  },
+  "independent_linux_controls": {
+    "command": "python -B -m unittest -v test_run_host_tests test_run_host_core_profile test_run_host_components",
+    "cwd": "candidate/Tools/Hanlin",
+    "elapsed_seconds": 1.435,
+    "failed": 0,
+    "passed": 57,
+    "skipped": 0
+  },
+  "limits": [
+    "Diagnostic observation is not a demonstrated fix for the underlying focus failure.",
+    "Apple exact-source runtime evidence is still required."
+  ],
+  "native_uikit_execution": "NOT_RUN",
+  "prior_swift_review_sha256": "c57e9461ce922426945a692e8190c0d6488dae3b2fbd45facefdb36780ad3e4a",
+  "reviewer": "t2_finish",
+  "source_inventory_counts": {
+    "PinkhaNavigationGestureBridgeTests": {
+      "cases": 3,
+      "methods": 3
+    },
+    "PinkhaTextBlockLeadingMarkerAdapterTests": {
+      "cases": 12,
+      "methods": 5
+    },
+    "PinkhaTextDirectionPersistenceTests": {
+      "cases": 4,
+      "methods": 4
+    },
+    "PinkhaTextDirectionUIKitAdapterTests": {
+      "cases": 20,
+      "methods": 15
+    },
+    "TextBlockFocusLifecycleTests": {
+      "cases": 21,
+      "methods": 13
+    },
+    "TorahNativeUIParityTests": {
+      "cases": 23,
+      "methods": 15
+    }
+  },
+  "status": "SOURCE_REVIEW_PASS",
+  "verified_delta": [
+    "All four Swift candidate files remain byte-identical to the prior independently reviewed candidate.",
+    "Core source inventory adds exactly nativeFocusObservationDistinguishesOutcomes(outcome:) with three literal outcomes and matching exact Swift source digest.",
+    "All six source inventories independently validate to 55 methods and 83 actual invocations; focus scope is 13 methods and 21 invocations.",
+    "Core and combined controllers retain independent actual method/case validation and update exact permitted totals without accepting an aggregate alone.",
+    "Each of the three new outcomes has independent missing, duplicate, failed and skipped rejection controls."
+  ]
+}
