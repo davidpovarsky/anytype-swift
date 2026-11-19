@@ -1,0 +1,143 @@
+name: Any engine port validation
+
+on:
+  push:
+    branches: [codex/any-engine-port-20261119]
+    paths:
+      - 'Modules/PinkhaAnyEngine/**'
+      - 'Modules/PinkhaAnyIntegration/**'
+      - 'Modules/PinkhaAnyRuntime/**'
+      - 'Modules/PinkhaKit/**'
+      - 'Tools/AnyEnginePort/**'
+      - 'Tools/AnyEngineValidation/**'
+      - '.github/workflows/pinkha-any-engine-port.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: any-engine-port-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  apple-packages:
+    name: Apple package contracts and preserved domain behavior
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Record exact source and Apple toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/any-engine-port
+          git rev-parse HEAD > build/any-engine-port/source-sha.txt
+          swift --version | tee build/any-engine-port/swift-version.txt
+          xcodebuild -version | tee build/any-engine-port/xcode-version.txt
+      - name: Check the retained source and capability inventory
+        run: python3 Tools/AnyEnginePort/verify_source_retention.py --base 586c98bcc17dee425664224e508fc0e8df277678 --output build/any-engine-port/source-retention.json
+      - name: Test the Any transport and immutable operation contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          swift test --package-path Modules/PinkhaAnyEngine 2>&1 | tee build/any-engine-port/any-engine-tests.log
+      - name: Test the Pinkha integration against its canonical domain models
+        shell: bash
+        run: |
+          set -euo pipefail
+          swift test --package-path Modules/PinkhaAnyIntegration 2>&1 | tee build/any-engine-port/any-integration-tests.log
+      - name: Re-run preserved Pinkha domain behavior
+        shell: bash
+        run: |
+          set -euo pipefail
+          swift test --package-path Modules/PinkhaKit 2>&1 | tee build/any-engine-port/pinkhakit-tests.log
+      - name: Upload source-bound package evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: any-engine-port-apple-packages-${{ github.sha }}
+          path: build/any-engine-port/
+          retention-days: 14
+          if-no-files-found: error
+
+  ios-runtime:
+    name: Real embedded Any library on iOS Simulator
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Create one simulator owned by this run
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/any-native-evidence
+          git rev-parse HEAD > build/any-native-evidence/source-sha.txt
+          xcodebuild -version > build/any-native-evidence/xcode-version.txt
+          python3 - <<'PY'
+          import json, os, subprocess
+          devices = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "--json"]))
+          candidates = [
+              (runtime, device)
+              for runtime, values in devices["devices"].items()
+              if ".iOS-" in runtime
+              for device in values
+              if device.get("isAvailable") and device.get("deviceTypeIdentifier")
+              and (device["name"].startswith("iPad") or device["name"].startswith("iPhone"))
+          ]
+          if not candidates:
+              raise SystemExit("No compatible iOS simulator template is available")
+          runtime, device = sorted(candidates, key=lambda item: item[0], reverse=True)[0]
+          udid = subprocess.check_output([
+              "xcrun", "simctl", "create", "AnyPort-" + os.environ["GITHUB_RUN_ID"],
+              device["deviceTypeIdentifier"], runtime
+          ], text=True).strip()
+          with open(os.environ["GITHUB_ENV"], "a") as output:
+              output.write("ANY_NATIVE_SIMULATOR_UDID=" + udid + "\n")
+          with open("build/any-native-evidence/simulator.json", "w") as output:
+              json.dump({"ownedUDID": udid, "runtime": runtime, "deviceType": device["deviceTypeIdentifier"]}, output)
+          PY
+      - name: Build and run the linked AnyLib lifecycle tests
+        working-directory: Modules/PinkhaAnyRuntime
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -scheme PinkhaAnyRuntime \
+            -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
+            -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-derived" \
+            -resultBundlePath "$GITHUB_WORKSPACE/build/any-native-evidence/runtime.xcresult" \
+            -parallel-testing-enabled NO \
+            -maximum-test-execution-time-allowance 180 \
+            2>&1 | tee "$GITHUB_WORKSPACE/build/any-native-evidence/runtime.log"
+      - name: Extract native execution counts
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d build/any-native-evidence/runtime.xcresult ]; then
+            xcrun xcresulttool get test-results summary \
+              --path build/any-native-evidence/runtime.xcresult --format json \
+              > build/any-native-evidence/test-counts.json
+          fi
+      - name: Remove only this run's simulator
+        if: always()
+        shell: bash
+        run: |
+          if [ -n "${ANY_NATIVE_SIMULATOR_UDID:-}" ]; then
+            xcrun simctl shutdown "$ANY_NATIVE_SIMULATOR_UDID" || true
+            xcrun simctl delete "$ANY_NATIVE_SIMULATOR_UDID"
+          fi
+      - name: Upload real-library evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: any-engine-port-ios-runtime-${{ github.sha }}
+          path: build/any-native-evidence/
+          retention-days: 14
+          if-no-files-found: error
