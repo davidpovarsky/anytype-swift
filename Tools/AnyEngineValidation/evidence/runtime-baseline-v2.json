@@ -1,0 +1,163 @@
+﻿{
+    "schemaVersion":  1,
+    "status":  "SUPERSEDED_INSUFFICIENT_OFFLINE_ISOLATION",
+    "scope":  "real-engine-component-integration",
+    "startedAtUTC":  "2026-11-19T15:20:53.328269+00:00",
+    "anySourceSHA":  "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+    "binarySHA256":  "5993e211157985cb42fdec95c678f0c1b96da04796b4d0cd15cff9ef6bf52591",
+    "harnessSHA256":  "da5f69eedffa99a169b759d49f2581ccbf283bd09288b7b45dc82a93b49d0495",
+    "network":  "official-disposable-only",
+    "localEmbedding":  "disabled",
+    "productionUserData":  "never-opened",
+    "checks":  [
+                   {
+                       "name":  "pinned_binary_digest",
+                       "status":  "PASS",
+                       "durationMs":  0
+                   },
+                   {
+                       "name":  "managed_boot",
+                       "status":  "PASS",
+                       "durationMs":  234
+                   },
+                   {
+                       "name":  "fresh_disposable_account",
+                       "status":  "PASS",
+                       "durationMs":  188
+                   },
+                   {
+                       "name":  "create_owned_disposable_space",
+                       "status":  "PASS",
+                       "durationMs":  156
+                   },
+                   {
+                       "name":  "create_native_page",
+                       "status":  "PASS",
+                       "durationMs":  0
+                   },
+                   {
+                       "name":  "create_hebrew_editor_block",
+                       "status":  "PASS",
+                       "durationMs":  0
+                   },
+                   {
+                       "name":  "hebrew_exact_readback",
+                       "status":  "PASS",
+                       "durationMs":  16
+                   },
+                   {
+                       "name":  "sse_initial_snapshot",
+                       "status":  "PASS",
+                       "durationMs":  0
+                   },
+                   {
+                       "name":  "edit_native_block",
+                       "status":  "PASS",
+                       "durationMs":  0
+                   },
+                   {
+                       "name":  "sse_live_delta",
+                       "status":  "PASS",
+                       "durationMs":  0
+                   },
+                   {
+                       "name":  "swift_adapter_real_http",
+                       "status":  "NOT_RUN",
+                       "reason":  "No Swift probe binary supplied."
+                   },
+                   {
+                       "name":  "second_peer_boot",
+                       "status":  "PASS",
+                       "durationMs":  125
+                   },
+                   {
+                       "name":  "second_peer_restore_separate_device",
+                       "status":  "PASS",
+                       "durationMs":  312
+                   },
+                   {
+                       "name":  "second_peer_space_discovery",
+                       "status":  "PASS",
+                       "durationMs":  1828
+                   },
+                   {
+                       "name":  "two_peer_native_block_convergence",
+                       "status":  "PASS",
+                       "durationMs":  407
+                   },
+                   {
+                       "name":  "second_peer_native_write",
+                       "status":  "PASS",
+                       "durationMs":  0
+                   },
+                   {
+                       "name":  "reverse_peer_convergence",
+                       "status":  "PASS",
+                       "durationMs":  359
+                   },
+                   {
+                       "name":  "first_peer_graceful_shutdown",
+                       "status":  "PASS",
+                       "durationMs":  109
+                   },
+                   {
+                       "name":  "isolated_offline_restart",
+                       "status":  "PASS",
+                       "durationMs":  141
+                   },
+                   {
+                       "name":  "offline_account_reopen",
+                       "status":  "PASS",
+                       "durationMs":  281
+                   },
+                   {
+                       "name":  "offline_persisted_read",
+                       "status":  "PASS",
+                       "durationMs":  63
+                   },
+                   {
+                       "name":  "offline_native_write",
+                       "status":  "PASS",
+                       "durationMs":  0
+                   },
+                   {
+                       "name":  "offline_write_readback",
+                       "status":  "PASS",
+                       "durationMs":  0
+                   },
+                   {
+                       "name":  "offline_graceful_shutdown",
+                       "status":  "PASS",
+                       "durationMs":  47
+                   },
+                   {
+                       "name":  "online_restart_after_offline_write",
+                       "status":  "PASS",
+                       "durationMs":  125
+                   },
+                   {
+                       "name":  "online_account_reopen",
+                       "status":  "PASS",
+                       "durationMs":  235
+                   },
+                   {
+                       "name":  "offline_write_survives_reopen",
+                       "status":  "PASS",
+                       "durationMs":  62
+                   },
+                   {
+                       "name":  "offline_write_replicates_to_second_peer",
+                       "status":  "PASS",
+                       "durationMs":  1063
+                   }
+               ],
+    "limitations":  [
+                        "Not full iOS application acceptance.",
+                        "Does not test physical iPad, UI rendering, files, or semantic embedding quality."
+                    ],
+    "runtimeVersion":  "any v0.5.0 (commit 88fae2e5, built 2026-11-18T18:08:45Z)",
+    "cleanupSpace":  "local-deletion-accepted",
+    "finishedAtUTC":  "2026-11-19T15:20:59.579334+00:00",
+    "reportedStatus":  "PASS_REAL_ENGINE_COMPONENT",
+    "offlineAudit":  "NOT_PROVEN: any-sync nodeconf service restores cached coordinator addresses. Configuration-only isolation does not prove disconnected operation. Normal two-peer convergence and Hebrew/SSE observations remain valid."
+}

@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "status": "FAIL_REAL_ENGINE_COMPONENT",
+  "scope": "real-engine-component-integration",
+  "startedAtUTC": "2026-11-19T15:19:40.245457+00:00",
+  "anySourceSHA": "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+  "binarySHA256": "5993e211157985cb42fdec95c678f0c1b96da04796b4d0cd15cff9ef6bf52591",
+  "harnessSHA256": "8611998fb40be59c38c30a4298deaa4dde1666d48aa861e652d9bb4881e0a448",
+  "network": "official-disposable-only",
+  "localEmbedding": "disabled",
+  "productionUserData": "never-opened",
+  "checks": [
+    {
+      "name": "pinned_binary_digest",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "managed_boot",
+      "status": "PASS",
+      "durationMs": 375
+    },
+    {
+      "name": "fresh_disposable_account",
+      "status": "PASS",
+      "durationMs": 484
+    },
+    {
+      "name": "create_owned_disposable_space",
+      "status": "PASS",
+      "durationMs": 188
+    },
+    {
+      "name": "create_native_page",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "create_hebrew_editor_block",
+      "status": "PASS",
+      "durationMs": 15
+    },
+    {
+      "name": "hebrew_exact_readback",
+      "status": "PASS",
+      "durationMs": 16
+    },
+    {
+      "name": "sse_initial_snapshot",
+      "status": "PASS",
+      "durationMs": 16
+    },
+    {
+      "name": "edit_native_block",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "sse_live_delta",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "swift_adapter_real_http",
+      "status": "NOT_RUN",
+      "reason": "No Swift probe binary supplied."
+    },
+    {
+      "name": "second_peer_boot",
+      "status": "PASS",
+      "durationMs": 140
+    },
+    {
+      "name": "second_peer_restore_separate_device",
+      "status": "PASS",
+      "durationMs": 407
+    },
+    {
+      "name": "two_peer_native_block_convergence",
+      "status": "FAIL",
+      "error": "ConnectionResetError",
+      "durationMs": 0
+    }
+  ],
+  "limitations": [
+    "Not full iOS application acceptance.",
+    "Does not test physical iPad, UI rendering, files, or semantic embedding quality."
+  ],
+  "runtimeVersion": "any v0.5.0 (commit 88fae2e5, built 2026-11-18T18:08:45Z)",
+  "cleanupSpace": "deleted-disposable-space",
+  "finishedAtUTC": "2026-11-19T15:19:42.866644+00:00"
+}

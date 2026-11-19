@@ -1,0 +1,40 @@
+﻿{
+    "schemaVersion":  1,
+    "status":  "PASS_SOURCE_BUILD_AND_FOCUSED_UPSTREAM_TESTS",
+    "checkedAtUTC":  "2026-11-19T15:26:03.4193351Z",
+    "anyTag":  "v0.5.0",
+    "anySourceSHA":  "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+    "sdkVersion":  "v0.8.0",
+    "sdkSourceSHA":  "b161a0475479bbe7d9d693bc496c6fdd90c3969b",
+    "sdkVisibility":  "public; authenticated GitHub metadata private=false and public git clone succeeded",
+    "releaseArchiveSHA256":  "ad2d7c35d206e14c9492652c96e10516bbcb3c4d2d344f9f7836bdbe1b8c2c2d",
+    "releaseExecutableSHA256":  "5993e211157985cb42fdec95c678f0c1b96da04796b4d0cd15cff9ef6bf52591",
+    "sourceExecutableSHA256":  "8032a2012654549fe4357c46b078908507134b1c9b482e10089e49dca0d5ea52",
+    "dependencyDownload":  {
+                               "exitCode":  0,
+                               "command":  "go mod download",
+                               "seconds":  343.7,
+                               "job":  "job_e324e83c6246"
+                           },
+    "build":  {
+                  "exitCode":  0,
+                  "command":  "go build -o .runtime-artifacts/any-source.exe ./cmd/any",
+                  "localEmbedderCompiled":  false,
+                  "seconds":  258.98,
+                  "job":  "job_d6f5c149b47b"
+              },
+    "focusedTests":  {
+                         "exitCode":  0,
+                         "command":  "go test ./anyuri ./internal/config",
+                         "packages":  [
+                                          "github.com/anyproto/any/anyuri",
+                                          "github.com/anyproto/any/internal/config"
+                                      ],
+                         "job":  "job_fb7f1d888a57"
+                     },
+    "limitations":  [
+                        "Focused packages, not all upstream tests.",
+                        "Source CLI built without llamacpp tag; official release binary is used for component validation.",
+                        "Successful engine build is not complete application migration."
+                    ]
+}
