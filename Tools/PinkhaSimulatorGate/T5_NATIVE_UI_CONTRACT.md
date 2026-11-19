@@ -42,6 +42,16 @@ installation. The fresh container, native account, Space and root hash must be
 different from the pair. The controller shuts down only this owned UI simulator;
 it does not delete simulators, account stores, caches or user data.
 
+XCTest can reinstall the retained application and relocate its data container.
+The controller resolves the live container after preparation and each UI
+selection. Preparation's root hash must match that actual location. The original
+fixture and private credential bytes must remain identical across core UI and
+R08; the fixture's native account/Space/object IDs, canonical rows and runtime
+receipts remain mandatory. Root and container hashes describe their observed
+locations, not persistent identity. A changed or missing fixture, credentials
+or native store fails. The first validated credentials remain in private memory
+for the complete publication scan even when later execution loses its container.
+
 ## Reuse of actual App products
 
 The retained `new/Products` App and native XCTest products come from the exact

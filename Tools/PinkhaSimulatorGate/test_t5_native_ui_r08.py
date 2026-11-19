@@ -166,11 +166,14 @@ class R08EvidenceControls(unittest.TestCase):
                 self.assertEqual(target["OnlyTestIdentifiers"], [r08.METHOD]); self.assertEqual(target["SkipTestIdentifiers"], [])
 
     def test_two_selections_keep_core_receipt_and_propagate_failure_cancel_and_readback_mismatch(self):
-        for mode in ("pass", "readback", "cancel", "ui-fail", "reused-pid", "fixture-change", "carrier-change"):
+        for mode in ("pass", "relocate", "readback", "cancel", "ui-fail", "reused-pid", "fixture-change", "credentials-change", "missing-store", "carrier-change"):
             with self.subTest(mode=mode), tempfile.TemporaryDirectory() as temp:
                 private = Path(temp) / "private"; private.mkdir(); container = Path(temp) / "container"
                 fixture = baseline.fixture(); fixture_path = container / "Library/Application Support/pinkha-t5-native-ui-fixture.json"
                 fixture_path.parent.mkdir(parents=True); fixture_path.write_text(json.dumps(fixture)); calls = []
+                (container / runner.NATIVE_ROOT).mkdir(parents=True)
+                secret_path = container / runner.UI_SECRETS; secret_path.parent.mkdir()
+                secret_path.write_text(json.dumps(dict(token=baseline.TOKEN, mnemonic="synthetic-phrase", accountKey="synthetic-key")))
                 core_path = private / "core-result.json"; core_path.write_text('{"status":"CORE_PASS"}'); core_hash = core.digest(core_path)
                 observed = {"receipts": baseline.receipts(fixture), "actual_processes": {"related-targets": [101], "note-lifecycle": [102, 103]}}
                 built = baseline.build(); built["app"] = str(Path(temp) / "App.app")
@@ -181,6 +184,7 @@ class R08EvidenceControls(unittest.TestCase):
                     if mode == "readback" and name.endswith("appearance-after"): value = "dark"
                     path.write_text(value); calls.append(("command", argv)); return {}, path
                 def select(**kwargs):
+                    nonlocal container
                     self.assertEqual(kwargs["selections"], [r08.METHOD]); self.assertEqual(core.digest(core_path), core_hash)
                     env = kwargs["environment"]; self.assertEqual(env["PINKHA_UI27_APP_LANGUAGE"], "he")
                     self.assertEqual(json.loads(env["PINKHA_T5_R08_RETAINED_NOTE_JSON"]), retained_note(fixture))
@@ -190,6 +194,11 @@ class R08EvidenceControls(unittest.TestCase):
                     pid = 101 if mode == "reused-pid" else 104 if appearance == "light" else 105
                     attachments(kwargs["directory"] / "attachments", fixture, appearance, pid)
                     if mode == "fixture-change": fixture_path.write_text("{}")
+                    if mode == "credentials-change": secret_path.write_text('{"token":"other","mnemonic":"other","accountKey":"other"}')
+                    if mode == "missing-store": (container / runner.NATIVE_ROOT).rmdir()
+                    if mode == "relocate":
+                        relocated = container.with_name("container-" + appearance)
+                        container.rename(relocated); container = relocated
                     calls.append(("selection", appearance)); return {"passed": 1, "failed": 0, "skipped": 0}
                 pair = SimpleNamespace(write=write, app_container=lambda udid, kind: container)
                 ui = SimpleNamespace(code_carriers=lambda path: {"sha256": "wrong" if mode == "carrier-change" else built["code_sha256"]})
@@ -197,7 +206,7 @@ class R08EvidenceControls(unittest.TestCase):
                     args = dict(private=private, app=Path(temp), build=built, container=container, ui_udid=baseline.UDID,
                         configuration=Path(temp) / "original.xctestrun", environment={}, fixture=fixture,
                         observed=observed, pair=pair, ui=ui, method_results=None, command=command)
-                    if mode == "pass":
+                    if mode in ("pass", "relocate"):
                         result = runner.run_r08(**args); self.assertEqual(result["status"], r08.PASS)
                         self.assertEqual([x[1] for x in calls if x[0] == "selection"], ["light", "dark"])
                         self.assertEqual(result["actual_counts"]["ui_method_executions"], 2)
@@ -205,7 +214,7 @@ class R08EvidenceControls(unittest.TestCase):
                         with self.assertRaises(KeyboardInterrupt if mode == "cancel" else ValueError): runner.run_r08(**args)
                 self.assertEqual(core.digest(core_path), core_hash)
                 result = json.loads((private / "r08-result.json").read_text())
-                self.assertEqual(result["status"], r08.PASS if mode == "pass" else "CANCELLED" if mode == "cancel" else "FAIL")
+                self.assertEqual(result["status"], r08.PASS if mode in ("pass", "relocate") else "CANCELLED" if mode == "cancel" else "FAIL")
 
 
 if __name__ == "__main__":
