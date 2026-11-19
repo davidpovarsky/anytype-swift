@@ -1,124 +1,158 @@
 # Pinkha Any engine adapter
 
-This package targets the actual Any v0.5.0 HTTP API (source commit
-`88fae2e5ae7d0f46d6707567a3123081faa8de9a`). It is a new storage adapter,
-not a replacement for the app's Heart services or a claim of completed migration.
+This package implements the canonical Torah operation contracts over Any's native
+HTTP interfaces. Two storage lanes are explicit; there is no silent fallback
+between them and no automatic migration of existing user spaces.
 
-## Preserved behavior
+## Storage contracts
 
-- The canonical binary T2 operation identity matches the pinned native Go golden
-  vector at app source `90fcb6033ca4f8aecf8e04d4959cf06fb104adf9`.
-- Payload is opaque bytes. Provider metadata, unknown canonical JSON fields,
-  Hebrew, licenses, provenance and quote-instance identities are not normalized.
-- A hidden derived bundle holds immutable, undeletable records, with the native
-  creator stamp. Slash-containing legacy physical IDs have a reversible 128-hex
-  record-key encoding. Schema is verified after install/adoption.
-- Distinct payloads under one logical operation ID remain separate claims.
-  Every variant is quarantined from the live fold, even if it names another
-  target. Observed remove retains unobserved adds; concurrent replacements retain
-  both successors. Referencing a tombstone never resurrects previous content.
-- Same-repository writes are serialized, exact retry returns the existing claim,
-  and an ordered mismatching operation ID is refused.
-- HTTP 200 is inspected for top-level and per-page rejections. A write is read
-  back before acknowledged to the host. Lost replies reconcile by the same ID.
-- Literal-loopback HTTP only; redirects are refused. Account checks before and
-  after each request detect an account switch. Hanlin/host consent is still
-  supplied explicitly by the caller before dispatch.
+| API | Native contract | Intended use |
+| --- | --- | --- |
+| `AnyTorahClaimsRepository` | Generic shared-record bundle on unmodified Any v0.5.0, original source `88fae2e5ae7d0f46d6707567a3123081faa8de9a` | Release-engine interoperability and diagnostics. It cannot supply the guarded native module's final target/authority transaction. |
+| `AnyGuardedTorahClaimsRepository` | Versioned `pinkha-torah-native-v1`, bundle `pinkha/torah-native/v1`, canonical dataset `pinkha_torah_claims_v1`, module `pinkha_torah_native` | Native app integration after exact capability and installed-root verification. |
 
-## Deliberate limits and remaining engine work
+Installation is explicit. Read APIs discover and validate an existing root; they
+never install or heal it as a side effect. The guarded module uses dedicated
+native snapshot/watch routes and native `modify` writes. Its data must not be
+queried through stock query, history or subscription routes.
 
-These are acceptance boundaries, not implicit successful fallbacks:
+The generic lane remains useful evidence for the public engine baseline. Its
+per-repository serialization and client preflight checks are not a substitute
+for the guarded module's server-side invariant enforcement.
 
-1. This package uses a complete bounded native snapshot (maximum 10,000 claims
-   per space and 256 variants per operation). It fails on overflow instead of
-   returning an incomplete projection. Large-space indexed target queries need
-   a native atomic snapshot across the target and full logical-operation groups.
-2. Serialization is per repository instance. Generic HTTP does not provide a
-   cross-client transaction spanning collision lookup, target liveness, block
-   reachability and claim append. The HTTP layer does not validate canonical
-   content hashes or observed-reference causality for unrelated callers.
-3. Native creator stamps and change IDs are not the previous custom host's
-   independently verified signed ACL-head receipts. Actual SDK authorization
-   applies, but equivalent receipt/target-lock guarantees remain separate work.
-4. Account pre/post checks detect changes; they cannot atomically bind a server
-   request to an account while an independent process switches the engine.
-   Production use requires the app to own the embedded/managed engine lifetime
-   and hold its account/consent fence through writes.
-5. A derived bundle is permanent for the space lifetime. This package is
-   exercised only in disposable spaces. Schema changes require a versioned
-   migration and fresh parity proof.
-6. Native computed Torah properties, the existing block editor, durable text
-   anchors, file migration, two-device ACL/revocation behavior, all iPad UI and
-   the complete Hanlin host are not implemented or certified by this package.
-7. Readers discover an existing bundle with GET and revalidate its schema; they
-   never create or heal it. Call install() explicitly from an authorized setup
-   flow before appending into a fresh space.
+## Preserved operation semantics
 
-The original Swift and native packages remain intact on the isolated port branch.
-No automatic migration of existing user spaces occurs.
+The canonical binary T2 operation identity matches the pinned native Go golden
+vector at original app source `90fcb6033ca4f8aecf8e04d4959cf06fb104adf9`.
+Payload is opaque bytes: Hebrew, unknown canonical JSON fields, provider metadata,
+licenses, provenance and quote-instance identity are preserved without rewriting.
 
-## Live queries and generation fences
+Distinct payloads under one logical operation ID remain separate immutable
+claims. All conflicting variants are quarantined from the live fold, including
+variants naming other targets. Observed remove retains unseen adds; concurrent
+replacements retain both successors. Referencing a tombstone never resurrects
+old content. The fold rejects malformed records, mismatched hashes/creators and
+invalid operation shapes rather than guessing a winner.
 
-`AnyTorahClaimsRepository.watch(session:limit:)` opens a native atomic query
-subscription and yields `AnyTorahLiveSnapshot` values. The first value is the
-complete initial snapshot. Later values apply a whole native changes frame before
-folding claims; `doc` is authoritative, including rereads with an empty version ID.
-Shared record ownership, operation hashes and native creator stamps are validated
-for every projection. A deleted claim invalidates the append-only view.
+Native record keys are a reversible 128-hex encoding of logical identity and
+content digest. Guarded snapshots require canonical fields, creator equal to the
+operation author, and native change/ACL-head provenance. Native provenance fields
+are checked as part of the contract; this Swift package does not independently
+verify the entire engine's cryptographic DAG from HTTP metadata.
 
-`AnyStreamSession` belongs to one owned engine/account lifetime. Its generation
-is included in every update. Invalidate it before switching the lifetime; this
-cancels all registered streams. Bridge consumers register their own worker
-cancellation and call `requireActive(generation:)` after any awaited authority
-check. The UI must check the generation again at its final state commit because a
-previously buffered value can otherwise arrive after a switch.
+HTTP 200 responses are inspected for top-level and per-page rejections. Writes
+are read back before acknowledgement. Guarded exact retry still traverses native
+`modify`, so current target and writer checks execute even when the record is
+already present. Native `pinkha.ordered_operation_collision` maps to an explicit
+collision; concurrent incoming variants remain retained. An uncertain transport
+outcome can produce a readback acknowledgement only after exact canonical
+reconciliation. It is not proof of permission at a failed dispatch.
 
-The parser preserves split UTF-8 and CRLF, rejects malformed/truncated data and
-bounds each frame. The materialized window also has an aggregate byte bound,
-including growth through many small deltas: 8 MiB by default, configurable up to
-64 MiB on the generic client. Raw frames and derived snapshots use bounded queues;
-any dropped value terminates the view. A closed event, EOF, cancellation,
-account change, wrong generation, partial window or overflow requires reopening
-and accepting a new snapshot. There is no synthetic replay cursor or silent
-polling fallback.
+## Complete document snapshots
 
-The callback transport uses a serial URLSession delegate queue plus a lock
-protecting every mutable field. Finishing, yielding and cancellation happen
-outside that lock. Its `@unchecked Sendable` annotation is confined to that
-documented bridge; the ordinary redirect delegate is stateless. Follow-up in the
-Any engine port work: replace these annotations with checked Foundation delegate
-conformances or a portable structured byte sequence when Windows Foundation
-supports the same API.
+`readObjectSnapshot(objectID:limit:)` uses the native
+`/pinkha/objects/:objectId/claims` route and demands the explicit
+`object-logical-closure` envelope. The closure contains all claim history for
+that object plus every global variant of each seeded logical key. Foreign
+collision witnesses are folded before target selection. They cannot be removed
+early merely because they name another object.
 
-## Validation
+The response also carries native `reachableClaimBlockIds`, read under the
+target/root/type/authority contract. Orphan or removed block history remains
+immutable history, but consumers do not present it as current reachable block
+content. A foreign witness with an omitted foreign predecessor is harmless only
+because the conflicting logical group is quarantined before observed-reference
+processing; focused tests cover that ordering.
 
-`swift test --jobs 2` exercises identity, native-author mismatch, malformed records,
-conflicts, observed remove, concurrent replace, bounds, schema adoption and HTTP
-partial failures. The live-query cases exercise byte boundaries, malformed data,
-atomic delta rejection, snapshot completeness, byte limits and generation
-invalidation. These are portable component tests.
+The object snapshot is explicitly distinct from the complete workspace snapshot.
+The global decoder rejects object-scoped envelopes. Migration and diagnostics
+may still request the complete bounded workspace; ordinary document reads and
+appends use the indexed object closure. An unrelated large Space therefore does
+not force every document operation to scan its entire history.
 
-The `PinkhaAnyEngineProbe` executable calls the real release engine. It requires
-an already-created disposable account and space:
+Both native envelopes fail on a partial response, wrong workspace/root/target,
+malformed readiness or provenance, and aggregate overflow. Current bounds are
+10,000 closure records and 16 MiB of complete encoded response, with 256 variants
+per logical operation. These are hard acceptance limits, not pagination that may
+silently omit a conflicting variant.
 
-```text
-swift run --jobs 2 PinkhaAnyEngineProbe --endpoint http://127.0.0.1:42166 --account-id <disposable-account> --space-id <disposable-space> --allow-disposable-writes
-```
+## Live queries and lifetime fences
 
-Its JSON receipt labels the scope as a single-process HTTP component proof.
-`--mode verify --expected-claims <comma-separated-physical-claim-ids>` reads and
-compares an existing fixture for process-restart or second-peer evidence.
-A repository re-open in the exercise is not an engine restart; actual restart and
-network convergence are the external harness's responsibility.
+Generic `watch(session:limit:)` materializes an atomic initial query window and
+then applies whole native changes frames. `doc` is authoritative, including a
+reread whose version ID is empty. A deleted immutable claim invalidates the view.
 
-The live probe `--mode watch --updates 2 --timeout-seconds 30` reads one initial
-snapshot and one subsequent update. It writes a flushed readiness JSON line
-before waiting; the external harness makes a real peer mutation and compares the
-resulting all/live/conflict sets. Watching does not install a bundle or mutate
-canonical data.
+Guarded `watch` and `watchObject` consume native complete-state snapshots.
+The first event must be a full initial snapshot. Later events replace the
+complete state atomically; they are not a promise to deliver every operation.
+Existing immutable rows cannot disappear or change. A reused native readiness
+generation must describe the same records, provenance and reachability.
 
-Public source references:
-- Any `internal/api/typedatasets.go`, `bundle.go`, `upsert.go`, `query.go`, `subscribe.go`.
-- Any `docs/04-events.md` atomic query subscriptions and terminal recovery.
-- Any `docs/03-api.md` runtime datasets, shared datasets, bundles, idempotency.
-- Existing `Tools/TorahNativeOperations/overlay/core/block/editor/torahops/`.
+`AnyStreamSession` belongs to one managed engine/account lifetime and exposes a
+generation fence. Invalidate it before switching the lifetime; this cancels
+registered native streams and mapped consumer tasks. Call `requireActive` after
+awaited authority checks and at final UI publication, since a queued value may
+otherwise arrive after an account switch.
+
+The shared SSE parser handles split UTF-8 and CRLF, rejects malformed/truncated
+frames, and bounds both individual events and materialized state. Bounded output
+queues terminate on overflow. Native error events, EOF, cancellation, authority
+loss or incomplete state require a new connection and full snapshot. No
+Last-Event-ID replay, implicit recovery cursor or polling substitute is invented.
+
+The URLSession callback bridge serializes delegate callbacks and protects its
+mutable state with a lock. Yield, finish and cancellation execute outside that
+lock. Its narrowly scoped `@unchecked Sendable` annotation documents the
+Foundation callback boundary; the ordinary redirect delegate is stateless.
+
+## Transport and managed runtime
+
+Only literal loopback HTTP endpoints are accepted and redirects are rejected,
+including requests made through an injected URLSession. Query values are encoded
+with URLComponents rather than concatenated into paths. Optional opaque
+`AnyHTTPAuthorization` installs the managed runtime token on JSON and SSE
+requests; descriptions are redacted.
+
+Account pre/post checks detect a changed account but cannot atomically stop an
+unrelated process from switching a server during a request. Production callers
+must own the embedded runtime and hold the Host application lease, consent and
+account fences through native writes. The native managed gateway protects mobile
+data routes; an unauthenticated desktop test fixture is not evidence of that
+separate mobile boundary.
+
+The dedicated guarded object-create route can fail after a root ID is known.
+`AnyObjectCreationUncertain` accepts only the exact versioned native failure
+shape, original Space and guarded create route. It carries recovery metadata,
+never a success receipt. Host and Hanlin journals decide how to retain that ID
+before releasing the original lease.
+
+## Source-bound validation
+
+Receipts retain their original scope and source hashes; a newer source edit does
+not retroactively change an older successful test run.
+
+| Receipt | Actual evidence |
+| --- | --- |
+| `Tools/AnyEngineValidation/evidence/runtime-claims-v4.json` | Generic release-engine two-peer partition/restart matrix: 13 all, 6 live, 1 conflict on both peers after convergence. |
+| `Tools/AnyEngineValidation/evidence/runtime-claims-sse-v5.json` | Generic release-engine extension with a real peer SSE update: 14 all, 7 live, 1 conflict. |
+| `Evidence/native-object-components-v1.json` | 64 portable XCTest cases and seven real URLSession/SSE transport boundary fixtures, zero failures/skips, source graph stable. |
+| `Evidence/native-object-client-runtime-v1.json` | Eight real Swift-client checks against native v4: explicit object closure, unrelated-record exclusion, guarded append/retry, atomic object SSE, observed remove and distinct whole-workspace diagnostics. |
+
+The last row is a warm-runtime client proof, with final target sets of four all
+and two live claims. It does not establish cold-restart behavior by itself.
+Native Go cold/partition/large-Space proofs are maintained separately by the
+native runtime harness. Host, Integration, Hanlin, protected filesystem, actual
+iOS UI and whole-workspace migration each have their own acceptance gates.
+
+`PinkhaAnyEngineProbe` requires a disposable account/Space for mutations. Native
+object modes are `--lane native --mode object-snapshot` and `object-watch`;
+the latter emits a flushed readiness line before awaiting an external mutation.
+Generic `--mode watch` and `verify` remain available for the release-engine
+harness. Reading/watching never installs a bundle.
+
+Primary implementation references are the pinned Any API sources under
+`internal/api`, the versioned native Pinkha handlers/module, the guarded SDK
+tree/ACL/storage transaction implementation, and original T2 golden vectors under
+`Tools/TorahNativeOperations/overlay/core/block/editor/torahops`. This package
+does not itself certify the complete application, file migration or every Apple
+presentation flow.

@@ -1,0 +1,86 @@
+[0/1] Planning build
+Building for debugging...
+[0/20] Write sources
+[3/20] Write swift-version-2807070033DA82CF.txt
+[5/19] Emitting module PinkhaAnyEngine
+[6/19] Compiling PinkhaAnyEngine AnyGuardedTorahClaimsRepository.swift
+[7/19] Compiling PinkhaAnyEngine AnyGuardedTorahContract.swift
+[8/21] Compiling PinkhaAnyEngine AnyGuardedTorahLiveQuery.swift
+[9/21] Compiling PinkhaAnyEngine AnyHTTPClient.swift
+[10/24] Compiling PinkhaAnyEngine AnyTorahLiveQuery.swift
+[11/24] Compiling PinkhaAnyEngine AnyLiveQuery.swift
+[12/24] Compiling PinkhaAnyEngine AnyTorahClaimsRepository.swift
+[13/25] Wrapping AST for PinkhaAnyEngine for debugging
+[15/34] Emitting module PinkhaAnyIntegration
+[16/34] Compiling PinkhaAnyIntegration AnyGuardedHTTPHierarchyRecordStore.swift
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyIntegration\Sources\PinkhaAnyIntegration\AnyTorahAssociationRepository.swift:231:34: error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+229 |             throw AnyEngineError.unsupportedEngine("native object association observation")
+230 |         }
+231 |         let generation = session.generation
+    |                                  `- error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+232 |         try await session.requireActive(generation: generation)
+233 |         try await access.validate(.object(objectId: objectID), intent: .read)
+[17/34] Compiling PinkhaAnyIntegration AnyGuardedTorahIndex.swift
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyIntegration\Sources\PinkhaAnyIntegration\AnyTorahAssociationRepository.swift:231:34: error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+229 |             throw AnyEngineError.unsupportedEngine("native object association observation")
+230 |         }
+231 |         let generation = session.generation
+    |                                  `- error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+232 |         try await session.requireActive(generation: generation)
+233 |         try await access.validate(.object(objectId: objectID), intent: .read)
+[18/34] Compiling PinkhaAnyIntegration AnyGuardedTorahOperationStore.swift
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyIntegration\Sources\PinkhaAnyIntegration\AnyTorahAssociationRepository.swift:231:34: error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+229 |             throw AnyEngineError.unsupportedEngine("native object association observation")
+230 |         }
+231 |         let generation = session.generation
+    |                                  `- error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+232 |         try await session.requireActive(generation: generation)
+233 |         try await access.validate(.object(objectId: objectID), intent: .read)
+[19/34] Compiling PinkhaAnyIntegration AnyHTTPHierarchyRecordStore.swift
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyIntegration\Sources\PinkhaAnyIntegration\AnyTorahAssociationRepository.swift:231:34: error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+229 |             throw AnyEngineError.unsupportedEngine("native object association observation")
+230 |         }
+231 |         let generation = session.generation
+    |                                  `- error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+232 |         try await session.requireActive(generation: generation)
+233 |         try await access.validate(.object(objectId: objectID), intent: .read)
+[20/34] Compiling PinkhaAnyIntegration AnyHierarchyModels.swift
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyIntegration\Sources\PinkhaAnyIntegration\AnyTorahAssociationRepository.swift:231:34: error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+229 |             throw AnyEngineError.unsupportedEngine("native object association observation")
+230 |         }
+231 |         let generation = session.generation
+    |                                  `- error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+232 |         try await session.requireActive(generation: generation)
+233 |         try await access.validate(.object(objectId: objectID), intent: .read)
+[21/34] Compiling PinkhaAnyIntegration AnyHierarchyRepository.swift
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyIntegration\Sources\PinkhaAnyIntegration\AnyTorahAssociationRepository.swift:231:34: error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+229 |             throw AnyEngineError.unsupportedEngine("native object association observation")
+230 |         }
+231 |         let generation = session.generation
+    |                                  `- error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+232 |         try await session.requireActive(generation: generation)
+233 |         try await access.validate(.object(objectId: objectID), intent: .read)
+[22/34] Compiling PinkhaAnyIntegration AnyLexicographicPosition.swift
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyIntegration\Sources\PinkhaAnyIntegration\AnyTorahAssociationRepository.swift:231:34: error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+229 |             throw AnyEngineError.unsupportedEngine("native object association observation")
+230 |         }
+231 |         let generation = session.generation
+    |                                  `- error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+232 |         try await session.requireActive(generation: generation)
+233 |         try await access.validate(.object(objectId: objectID), intent: .read)
+[23/34] Compiling PinkhaAnyIntegration AnyTorahAssociationRepository.swift
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyIntegration\Sources\PinkhaAnyIntegration\AnyTorahAssociationRepository.swift:231:34: error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+229 |             throw AnyEngineError.unsupportedEngine("native object association observation")
+230 |         }
+231 |         let generation = session.generation
+    |                                  `- error: actor-isolated property 'generation' cannot be accessed from outside of the actor
+232 |         try await session.requireActive(generation: generation)
+233 |         try await access.validate(.object(objectId: objectID), intent: .read)
+[24/41] Compiling PinkhaAnyIntegration AnyTorahMigration.swift
+[25/41] Compiling PinkhaAnyIntegration AnyTorahNotesService.swift
+[26/41] Compiling PinkhaAnyIntegration AnyTorahObjectScope.swift
+[27/41] Compiling PinkhaAnyIntegration AnyTorahObservation.swift
+[28/41] Compiling PinkhaAnyIntegration AnyTorahPreparedMutation.swift
+[29/41] Compiling PinkhaAnyIntegration AnyTorahRelatedDocuments.swift
+[30/41] Compiling PinkhaAnyIntegration AnyTorahWorkspace.swift
+error: fatalError

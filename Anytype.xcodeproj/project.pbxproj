@@ -99,6 +99,8 @@
 		FA7301012F111900006805CC /* PinkhaHanlinCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA7201012F111900006805CC /* PinkhaHanlinCore */; };
 		FA8300012F111900006805CC /* PinkhaTorahPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = FA8200012F111900006805CC /* PinkhaTorahPresentation */; };
 		FA8301012F111900006805CC /* PinkhaTorahPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = FA8201012F111900006805CC /* PinkhaTorahPresentation */; };
+		FA7500012F111900006805CC /* PinkhaHanlinUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA7400012F111900006805CC /* PinkhaHanlinUI */; };
+		FA7501012F111900006805CC /* PinkhaHanlinUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA7401012F111900006805CC /* PinkhaHanlinUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -284,6 +286,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA8300012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
+				FA7500012F111900006805CC /* PinkhaHanlinUI in Frameworks */,
 				FA7300012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
 				FA6300012F111800006805CC /* HanlinHostContracts in Frameworks */,
 				FA6300022F111800006805CC /* HanlinPlatformContracts in Frameworks */,
@@ -340,6 +343,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA8301012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
+				FA7501012F111900006805CC /* PinkhaHanlinUI in Frameworks */,
 				FA7301012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
 				FA6301012F111800006805CC /* HanlinHostContracts in Frameworks */,
 				FA6301022F111800006805CC /* HanlinPlatformContracts in Frameworks */,
@@ -513,6 +517,7 @@
 			name = Anytype;
 			packageProductDependencies = (
 				FA8200012F111900006805CC /* PinkhaTorahPresentation */,
+				FA7400012F111900006805CC /* PinkhaHanlinUI */,
 				FA7200012F111900006805CC /* PinkhaHanlinCore */,
 				FA6200012F111800006805CC /* HanlinHostContracts */,
 				FA6200022F111800006805CC /* HanlinPlatformContracts */,
@@ -583,6 +588,7 @@
 			name = AnytypeTests;
 			packageProductDependencies = (
 				FA8201012F111900006805CC /* PinkhaTorahPresentation */,
+				FA7401012F111900006805CC /* PinkhaHanlinUI */,
 				FA7201012F111900006805CC /* PinkhaHanlinCore */,
 				FA6201012F111800006805CC /* HanlinHostContracts */,
 				FA6201022F111800006805CC /* HanlinPlatformContracts */,
@@ -2587,6 +2593,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = FA8100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaTorahPresentation" */;
 			productName = PinkhaTorahPresentation;
+		};
+		FA7400012F111900006805CC /* PinkhaHanlinUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */;
+			productName = PinkhaHanlinUI;
+		};
+		FA7401012F111900006805CC /* PinkhaHanlinUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA7100012F111900006805CC /* XCLocalSwiftPackageReference "PinkhaAnyHanlin" */;
+			productName = PinkhaHanlinUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -40,7 +40,7 @@ public struct AnyEditorBlock: Sendable, Equatable {
         native["style"]?["pinkhaTextAlignment"]?.string.flatMap(AnyTextAlignment.init(rawValue:))
     }
 
-    static func validID(_ value: String) -> Bool {
+    public static func validID(_ value: String) -> Bool {
         !value.isEmpty && value.utf8.count <= 1024 &&
         value.utf8.allSatisfy { $0 >= 0x21 && $0 <= 0x7e }
     }

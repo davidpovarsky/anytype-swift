@@ -368,6 +368,13 @@ public final class TorahEditorSession {
         pendingInspectorPresentation = nil
     }
 
+    /// The native property sheet owns its inspector while preserving the same
+    /// search/selection state machine. An active modal is never moved implicitly.
+    public func activatePresentationHost(_ host: PresentationHost) {
+        guard isActiveDocument, selection == nil, !isSearchPresented else { return }
+        presentationHost = host
+    }
+
     public func presentSearch(
         scope: TorahAssociationContext.Scope,
         initialCategory: SearchScope = .references,

@@ -1,0 +1,2381 @@
+diff --git a/handler/localguard.go b/handler/localguard.go
+new file mode 100644
+index 0000000..abd6aa8
+--- /dev/null
++++ b/handler/localguard.go
+@@ -0,0 +1,15 @@
++package handler
++
++import "github.com/anyproto/any-sync-sdk/internal/crdt"
++
++// GuardedHandler and LocalReadView are native extension contracts, not wire
++// options. Only compiled handlers can request a guarded commit.
++type GuardedHandler = crdt.GuardedHandler
++type LocalReadView = crdt.LocalReadView
++type NativeReadView = crdt.NativeReadView
++type NativeReadStamp = crdt.NativeReadStamp
++
++// Re-export the existing batch preflight signature so embedders can implement
++// it without importing an internal package.
++type RecordGetter = crdt.RecordGetter
++type LocalPreValidatorMulti = crdt.LocalPreValidatorMulti
+diff --git a/internal/commitguard/guard.go b/internal/commitguard/guard.go
+new file mode 100644
+index 0000000..7543991
+--- /dev/null
++++ b/internal/commitguard/guard.go
+@@ -0,0 +1,228 @@
++package commitguard
++
++import (
++	"bytes"
++	"context"
++	"errors"
++	"slices"
++
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
++	"github.com/anyproto/any-sync/util/crypto"
++)
++
++var (
++	ErrNativeCommitGuard = errors.New("guarded local append requires its native commit guard")
++	ErrNativeACLChanged  = errors.New("signed ACL head changed before native commit")
++)
++
++// nativeCommitTree enforces the private one-call token for SDK guarded writes.
++// Ordinary SDK datasets keep their upstream append route. Incoming AddRawChanges
++// keeps historical signature/ACL validation; it is not a new local request.
++type nativeCommitTree struct {
++	objecttree.ObjectTree
++	storage *nativeCommitStorage
++}
++
++type nativeCommitStorage struct {
++	objecttree.Storage
++	acl    list.AclList
++	header *treechangeproto.RawTreeChangeWithId
++}
++
++type nativeCommitContextKey struct{}
++
++// All fields belong to one synchronous append while its tree lock is held.
++// No token, author, ACL head or guard callback is accepted from an RPC request.
++type Guard struct {
++	storage   *nativeCommitStorage
++	author    crypto.PubKey
++	used      bool
++	active    bool
++	attempted bool
++	prepared  *objecttree.StorageChange
++	committed *objecttree.StorageChange
++}
++
++func boundNativeCommitStorage(tree objecttree.ObjectTree) (*nativeCommitStorage, error) {
++	if tree == nil {
++		return nil, ErrNativeCommitGuard
++	}
++	storage, ok := tree.Storage().(*nativeCommitStorage)
++	if !ok || storage == nil || storage.acl == nil || storage.header == nil ||
++		storage.Id() != tree.Id() || storage.acl != tree.AclList() ||
++		storage.header.Id != tree.Header().Id || !bytes.Equal(storage.header.RawChange, tree.Header().RawChange) {
++		return nil, ErrNativeCommitGuard
++	}
++	return storage, nil
++}
++
++func Context(ctx context.Context, tree objecttree.ObjectTree, author crypto.PubKey) (context.Context, *Guard, error) {
++	storage, err := boundNativeCommitStorage(tree)
++	if ctx == nil || err != nil || author == nil {
++		return nil, nil, ErrNativeCommitGuard
++	}
++	guard := &Guard{storage: storage, author: author}
++	return context.WithValue(ctx, nativeCommitContextKey{}, guard), guard, nil
++}
++
++// CheckCurrentWrite is the authority linearization point for an exact retry
++// which appends nothing. The caller still holds all target/carrier tree locks.
++func CheckCurrentWrite(ctx context.Context, tree objecttree.ObjectTree, author crypto.PubKey) error {
++	storage, err := boundNativeCommitStorage(tree)
++	if err != nil || ctx == nil || author == nil {
++		return ErrNativeCommitGuard
++	}
++	storage.acl.RLock()
++	defer storage.acl.RUnlock()
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	if !storage.acl.AclState().Permissions(author).CanWrite() {
++		return list.ErrInsufficientPermissions
++	}
++	return nil
++}
++
++func nativeGuard(ctx context.Context) *Guard {
++	if ctx == nil {
++		return nil
++	}
++	guard, _ := ctx.Value(nativeCommitContextKey{}).(*Guard)
++	return guard
++}
++
++func copyNativeStorageChange(change objecttree.StorageChange) *objecttree.StorageChange {
++	change.RawChange = bytes.Clone(change.RawChange)
++	change.PrevIds = slices.Clone(change.PrevIds)
++	return &change
++}
++
++func (t *nativeCommitTree) AddContent(ctx context.Context, content objecttree.SignableChangeContent) (objecttree.AddResult, error) {
++	return t.AddContentWithValidator(ctx, content, nil)
++}
++
++func (t *nativeCommitTree) AddContentWithValidator(ctx context.Context, content objecttree.SignableChangeContent, validate objecttree.ChangeValidator) (objecttree.AddResult, error) {
++	guard := nativeGuard(ctx)
++	if guard == nil {
++		return t.ObjectTree.AddContentWithValidator(ctx, content, validate)
++	}
++	if guard.storage != t.storage || guard.used || content.Key == nil ||
++		!content.Key.GetPublic().Equals(guard.author) {
++		return objecttree.AddResult{}, ErrNativeCommitGuard
++	}
++	if err := ctx.Err(); err != nil {
++		return objecttree.AddResult{}, err
++	}
++	guard.used, guard.active = true, true
++	defer func() { guard.active = false }()
++	return t.ObjectTree.AddContentWithValidator(ctx, content, func(change objecttree.StorageChange) error {
++		if guard.prepared != nil {
++			return ErrNativeCommitGuard
++		}
++		guard.prepared = copyNativeStorageChange(change)
++		if validate != nil {
++			return validate(change)
++		}
++		return nil
++	})
++}
++
++func (t *nativeCommitTree) AddRawChanges(ctx context.Context, changes objecttree.RawChangesPayload) (objecttree.AddResult, error) {
++	if nativeGuard(ctx) != nil {
++		return objecttree.AddResult{}, ErrNativeCommitGuard
++	}
++	return t.ObjectTree.AddRawChanges(ctx, changes)
++}
++
++func (t *nativeCommitTree) AddRawChangesWithUpdater(ctx context.Context, changes objecttree.RawChangesPayload, update objecttree.Updater) (objecttree.AddResult, error) {
++	if nativeGuard(ctx) != nil {
++		return objecttree.AddResult{}, ErrNativeCommitGuard
++	}
++	return t.ObjectTree.AddRawChangesWithUpdater(ctx, changes, update)
++}
++
++func (s *nativeCommitStorage) AddAll(ctx context.Context, changes []objecttree.StorageChange, heads []string, snapshot string) error {
++	guard := nativeGuard(ctx)
++	if guard == nil {
++		// Remote/deferred-storage replay has already passed the unchanged native
++		// historical verifier. A later revocation must not erase valid history.
++		return s.Storage.AddAll(ctx, changes, heads, snapshot)
++	}
++	if guard.storage != s || !guard.active || guard.attempted || guard.prepared == nil ||
++		len(changes) != 1 || len(heads) != 1 || heads[0] != guard.prepared.Id || snapshot != s.header.Id {
++		return ErrNativeCommitGuard
++	}
++	expected, actual := guard.prepared, changes[0]
++	if actual.Id != expected.Id || actual.OrderId != expected.OrderId ||
++		actual.SnapshotId != expected.SnapshotId || actual.SnapshotCounter != expected.SnapshotCounter ||
++		actual.ChangeSize != expected.ChangeSize || !bytes.Equal(actual.RawChange, expected.RawChange) ||
++		!slices.Equal(actual.PrevIds, expected.PrevIds) {
++		return ErrNativeCommitGuard
++	}
++	guard.attempted = true
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	change, err := objecttree.NewChangeBuilder(crypto.NewKeyStorage(), s.header).Unmarshall(actual.RawTreeChangeWithId(), true)
++	if err != nil {
++		return err
++	}
++	if change.Identity == nil || !change.Identity.Equals(guard.author) || change.IsSnapshot || change.ReadKeyId == "" {
++		return ErrNativeCommitGuard
++	}
++
++	// prepareBuilderContent and validateTree have released their own ACL locks.
++	// Hold this final read lock only across the real native storage transaction,
++	// never across SyncTree head-update construction, broadcast or projection.
++	s.acl.RLock()
++	defer s.acl.RUnlock()
++	if err = ctx.Err(); err != nil {
++		return err
++	}
++	if !s.acl.AclState().Permissions(guard.author).CanWrite() {
++		return list.ErrInsufficientPermissions
++	}
++	head := s.acl.Head()
++	if head == nil || change.AclHeadId != head.Id {
++		return errors.Join(ErrNativeACLChanged, list.ErrInsufficientPermissions)
++	}
++	if err = s.Storage.AddAll(ctx, changes, heads, snapshot); err != nil {
++		return err
++	}
++	// AddAll returns only after its deferred tx.Commit succeeds. The underlying
++	// store has also assigned AddSeq in this slice. This is the durable witness
++	// even if SyncTree later returns an error while creating its head update.
++	guard.committed = copyNativeStorageChange(changes[0])
++	return nil
++}
++
++func (s *nativeCommitStorage) AddAllNoError(ctx context.Context, changes []objecttree.StorageChange, heads []string, snapshot string) error {
++	if nativeGuard(ctx) != nil {
++		return ErrNativeCommitGuard
++	}
++	return s.Storage.AddAllNoError(ctx, changes, heads, snapshot)
++}
++
++// Builder preserves AnySync's normal signature and historical ACL validation.
++// Only a native guarded local call takes the final ACL/storage fence; incoming
++// historical changes are not judged against a later current ACL.
++func Builder(validate func(*objecttree.Change, list.AclList) error) objecttree.BuildObjectTreeFunc {
++	return func(storage objecttree.Storage, acl list.AclList) (objecttree.ObjectTree, error) {
++		root, err := storage.Root(context.Background())
++		if err != nil {
++			return nil, err
++		}
++		guarded := &nativeCommitStorage{Storage: storage, acl: acl, header: root.RawTreeChangeWithId()}
++		build := objecttree.BuildObjectTree
++		if validate != nil {
++			build = objecttree.BuildObjectTreeWithContentValidator(validate)
++		}
++		tree, err := build(guarded, acl)
++		if err != nil {
++			return nil, err
++		}
++		return &nativeCommitTree{ObjectTree: tree, storage: guarded}, nil
++	}
++}
+diff --git a/internal/commitguard/guard_test.go b/internal/commitguard/guard_test.go
+new file mode 100644
+index 0000000..b44d334
+--- /dev/null
++++ b/internal/commitguard/guard_test.go
+@@ -0,0 +1,237 @@
++package commitguard
++
++import (
++	"context"
++	"errors"
++	"path/filepath"
++	"testing"
++
++	anystore "github.com/anyproto/any-store"
++	"github.com/anyproto/any-sync/commonspace/object/accountdata"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/acl/recordverifier"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
++	"github.com/anyproto/any-sync/commonspace/spacepayloads"
++	"github.com/anyproto/any-sync/commonspace/spacestorage"
++	"github.com/anyproto/any-sync/consensus/consensusproto"
++	"github.com/anyproto/any-sync/util/cidutil"
++	"github.com/anyproto/any-sync/util/crypto"
++	"github.com/stretchr/testify/require"
++)
++
++// The fence tests use real signed ACL records, real encrypted native tree
++// changes and real AnyStore transactions. They do not replace permission maps
++// or simulate a durable append with an in-memory record collection.
++type fixture struct {
++	keys  *accountdata.AccountKeys
++	db    anystore.DB
++	space spacestorage.SpaceStorage
++	acl   list.AclList
++	tree  objecttree.ObjectTree
++}
++
++func newFixture(t *testing.T) *fixture {
++	t.Helper()
++	ctx := context.Background()
++	keys, err := accountdata.NewRandom()
++	require.NoError(t, err)
++	master, _, err := crypto.GenerateRandomEd25519KeyPair()
++	require.NoError(t, err)
++	metadata, _, err := crypto.GenerateRandomEd25519KeyPair()
++	require.NoError(t, err)
++	payload, err := spacepayloads.StoragePayloadForSpaceCreate(spacepayloads.SpaceCreatePayload{
++		SigningKey: keys.SignKey, SpaceType: "space", ReplicationKey: 10, MasterKey: master,
++		ReadKey: crypto.NewAES(), MetadataKey: metadata, Metadata: []byte("disposable native commit fence")})
++	require.NoError(t, err)
++	db, err := anystore.Open(ctx, filepath.Join(t.TempDir(), "native.db"), &anystore.Config{ReadConnections: 2})
++	require.NoError(t, err)
++	t.Cleanup(func() { require.NoError(t, db.Close()) })
++	sp, err := spacestorage.Create(ctx, db, payload)
++	require.NoError(t, err)
++	as, err := sp.AclStorage()
++	require.NoError(t, err)
++	acl, err := list.BuildAclListWithIdentity(keys, as, recordverifier.NewValidateFull())
++	require.NoError(t, err)
++	root, err := objecttree.DeriveObjectTreeRoot(objecttree.ObjectTreeDerivePayload{SpaceId: sp.Id(), ChangeType: "pinkha-fence-test", ChangePayload: []byte("canonical-test-carrier"), IsEncrypted: true}, nil)
++	require.NoError(t, err)
++	storage, err := sp.CreateTreeStorage(ctx, treestorage.TreeStorageCreatePayload{RootRawChange: root, Heads: []string{root.Id}})
++	require.NoError(t, err)
++	tree, err := Builder(nil)(storage, acl)
++	require.NoError(t, err)
++	tree.Lock()
++	t.Cleanup(func() { tree.Unlock(); require.NoError(t, tree.Close()) })
++	return &fixture{keys: keys, db: db, space: sp, acl: acl, tree: tree}
++}
++
++func aclRecord(t *testing.T, acl list.AclList, build func() (*consensusproto.RawRecord, error)) {
++	t.Helper()
++	acl.Lock()
++	defer acl.Unlock()
++	rec, err := build()
++	require.NoError(t, err)
++	raw, err := rec.MarshalVT()
++	require.NoError(t, err)
++	id, err := cidutil.NewCidFromBytes(raw)
++	require.NoError(t, err)
++	require.NoError(t, acl.AddRawRecord(&consensusproto.RawRecordWithId{Id: id, Payload: raw}))
++}
++
++func (f *fixture) addWriter(t *testing.T) crypto.PrivKey {
++	t.Helper()
++	member, err := accountdata.NewRandom()
++	require.NoError(t, err)
++	aclRecord(t, f.acl, func() (*consensusproto.RawRecord, error) {
++		return f.acl.RecordBuilder().BuildAccountsAdd(list.AccountsAddPayload{Additions: []list.AccountAdd{{Identity: member.SignKey.GetPublic(), Permissions: list.AclPermissionsWriter, Metadata: []byte("synthetic writer")}}})
++	})
++	return member.SignKey
++}
++
++func (f *fixture) remove(t *testing.T, key crypto.PrivKey) {
++	t.Helper()
++	metadata, _, err := crypto.GenerateRandomEd25519KeyPair()
++	require.NoError(t, err)
++	aclRecord(t, f.acl, func() (*consensusproto.RawRecord, error) {
++		return f.acl.RecordBuilder().BuildAccountRemove(list.AccountRemovePayload{Identities: []crypto.PubKey{key.GetPublic()}, Change: list.ReadKeyChangePayload{MetadataKey: metadata, ReadKey: crypto.NewAES()}})
++	})
++}
++
++func TestActualACLFinalCommitFence(t *testing.T) {
++	for _, mode := range []string{"revocation", "head advance", "cancellation"} {
++		t.Run(mode, func(t *testing.T) {
++			f := newFixture(t)
++			writer := f.addWriter(t)
++			ctx, cancel := context.WithCancel(context.Background())
++			defer cancel()
++			guarded, guard, err := Context(ctx, f.tree, writer.GetPublic())
++			require.NoError(t, err)
++			var prepared string
++			_, err = f.tree.AddContentWithValidator(guarded, objecttree.SignableChangeContent{Key: writer, Data: []byte("valid encrypted synthetic operation"), ShouldBeEncrypted: true}, func(change objecttree.StorageChange) error {
++				prepared = change.Id
++				switch mode {
++				case "revocation":
++					f.remove(t, writer)
++				case "head advance":
++					_ = f.addWriter(t)
++				case "cancellation":
++					cancel()
++				}
++				return nil
++			})
++			switch mode {
++			case "cancellation":
++				require.ErrorIs(t, err, context.Canceled)
++			case "head advance":
++				require.ErrorIs(t, err, ErrNativeACLChanged)
++			default:
++				require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++			}
++			require.NotEmpty(t, prepared)
++			require.Nil(t, guard.committed)
++			has, readErr := f.tree.Storage().Has(context.Background(), prepared)
++			require.NoError(t, readErr)
++			require.False(t, has)
++		})
++	}
++}
++
++type observingStorage struct {
++	objecttree.Storage
++	before, after func()
++}
++
++func (s *observingStorage) AddAll(ctx context.Context, ch []objecttree.StorageChange, heads []string, snapshot string) error {
++	s.before()
++	err := s.Storage.AddAll(ctx, ch, heads, snapshot)
++	s.after()
++	return err
++}
++
++func aclUnlocked(t *testing.T, acl list.AclList) bool {
++	t.Helper()
++	locker, ok := acl.(interface{ TryLock() bool })
++	require.True(t, ok)
++	if locker.TryLock() {
++		acl.Unlock()
++		return true
++	}
++	return false
++}
++
++func TestACLHeldThroughRealCommitAndReleasedAfter(t *testing.T) {
++	f := newFixture(t)
++	storage, err := boundNativeCommitStorage(f.tree)
++	require.NoError(t, err)
++	before, after := false, false
++	storage.Storage = &observingStorage{Storage: storage.Storage, before: func() { before = true; require.False(t, aclUnlocked(t, f.acl)) }, after: func() { after = true; require.False(t, aclUnlocked(t, f.acl)) }}
++	ctx, guard, err := Context(context.Background(), f.tree, f.keys.SignKey.GetPublic())
++	require.NoError(t, err)
++	result, err := f.tree.AddContent(ctx, objecttree.SignableChangeContent{Key: f.keys.SignKey, Data: []byte("signed and durable"), ShouldBeEncrypted: true})
++	require.NoError(t, err)
++	require.True(t, before && after)
++	require.True(t, aclUnlocked(t, f.acl))
++	require.NotNil(t, guard.committed)
++	require.Len(t, result.Added, 1)
++	stored, err := storage.Get(context.Background(), result.Added[0].Id)
++	require.NoError(t, err)
++	require.Equal(t, guard.committed.RawChange, stored.RawChange)
++	_, err = f.tree.AddContent(ctx, objecttree.SignableChangeContent{Key: f.keys.SignKey, Data: []byte("token reuse"), ShouldBeEncrypted: true})
++	require.ErrorIs(t, err, ErrNativeCommitGuard)
++}
++
++func TestExactRetryRequiresCurrentWriter(t *testing.T) {
++	f := newFixture(t)
++	writer := f.addWriter(t)
++	require.NoError(t, CheckCurrentWrite(context.Background(), f.tree, writer.GetPublic()))
++	f.remove(t, writer)
++	require.ErrorIs(t, CheckCurrentWrite(context.Background(), f.tree, writer.GetPublic()), list.ErrInsufficientPermissions)
++	f.acl.RLock()
++	hadRead := f.acl.AclState().HadReadPermissions(writer.GetPublic())
++	f.acl.RUnlock()
++	require.True(t, hadRead)
++}
++
++func TestHistoricalReplaySurvivesLaterRevocation(t *testing.T) {
++	f := newFixture(t)
++	writer := f.addWriter(t)
++	ctx, _, err := Context(context.Background(), f.tree, writer.GetPublic())
++	require.NoError(t, err)
++	result, err := f.tree.AddContent(ctx, objecttree.SignableChangeContent{Key: writer, Data: []byte("authorized historical operation"), ShouldBeEncrypted: true})
++	require.NoError(t, err)
++	require.Len(t, result.Added, 1)
++	raw := result.Added[0].RawTreeChangeWithId()
++	f.remove(t, writer)
++	// Rebuild from the actual signed history against the advanced ACL. The
++	// native verifier uses the signed historical head, not current permissions.
++	storage, err := boundNativeCommitStorage(f.tree)
++	require.NoError(t, err)
++	rebuilt, err := Builder(nil)(storage.Storage, f.acl)
++	require.NoError(t, err)
++	rebuilt.Lock()
++	defer rebuilt.Unlock()
++	ch, err := rebuilt.GetChange(raw.Id)
++	require.NoError(t, err)
++	require.True(t, ch.Identity.Equals(writer.GetPublic()))
++	require.NotEqual(t, f.acl.Head().Id, ch.AclHeadId)
++}
++
++func TestIntrinsicValidatorRejectsBeforeNativeStorage(t *testing.T) {
++	f := newFixture(t)
++	storage, err := boundNativeCommitStorage(f.tree)
++	require.NoError(t, err)
++	rejected := errors.New("synthetic native intrinsic refusal")
++	tree, err := Builder(func(ch *objecttree.Change, _ list.AclList) error {
++		if ch.Id == f.tree.Header().Id {
++			return nil
++		}
++		return rejected
++	})(storage.Storage, f.acl)
++	require.NoError(t, err)
++	tree.Lock()
++	defer tree.Unlock()
++	ctx, guard, err := Context(context.Background(), tree, f.keys.SignKey.GetPublic())
++	require.NoError(t, err)
++	_, err = tree.AddContent(ctx, objecttree.SignableChangeContent{Key: f.keys.SignKey, Data: []byte("rejected before history"), ShouldBeEncrypted: true})
++	require.ErrorIs(t, err, rejected)
++	require.Nil(t, guard.committed)
++}
+diff --git a/internal/crdt/localguard.go b/internal/crdt/localguard.go
+new file mode 100644
+index 0000000..cde1290
+--- /dev/null
++++ b/internal/crdt/localguard.go
+@@ -0,0 +1,124 @@
++package crdt
++
++import (
++	"context"
++	"errors"
++	"fmt"
++
++	"github.com/anyproto/any-store/v2/anyenc"
++	"github.com/anyproto/any-store/v2/query"
++	"github.com/anyproto/any-sync-sdk/internal/anyencx"
++)
++
++// LocalReadView exists only while the SDK holds the writer's tree and every
++// declared dependency tree. Reads are restricted to those objects, in this
++// Space. A read error is never treated as an absent record.
++type LocalReadView interface {
++	Lookup(objectId, dataset, id string) (*anyenc.Value, error)
++	Query(objectId, dataset string, filter any, limit int) ([]*anyenc.Value, error)
++}
++
++// NativeReadView adds read-only access to the Space's shared native object
++// projection. It is exposed only inside the current-ACL-fenced read transaction,
++// never as a cross-object write precondition.
++type NativeReadView interface {
++	LocalReadView
++	SpaceObjects(filter any, limit int) ([]*anyenc.Value, error)
++	CanWrite() bool
++	ReadStamp() NativeReadStamp
++}
++
++type NativeReadStamp struct {
++	ACLHeadID       string              `json:"aclHeadId"`
++	StoreGeneration string              `json:"storeGeneration"`
++	TreeHeads       map[string][]string `json:"treeHeads"`
++}
++
++var ErrNativeReadRequired = errors.New("native guarded data requires its current-authority snapshot API")
++
++// GuardedHandler is opt-in native domain behavior. Validation of signed remote
++// data MUST be intrinsic and arrival-order independent. Local validation may
++// inspect mutable target state because the SDK holds those targets' tree locks
++// until the durable append and local apply finish. The root seed restricts the
++// behavior to one canonical derived carrier per Space.
++type GuardedHandler interface {
++	GuardRootSeed() []byte
++	ValidateNative(ch *Change) error
++	LocalTargets(ch *Change) ([]string, error)
++	ValidateLocal(ch *Change, view LocalReadView) error
++}
++
++func (c *Controller) LocalGuard(dataset string) GuardedHandler {
++	if c == nil {
++		return nil
++	}
++	g, _ := c.handlers[dataset].(GuardedHandler)
++	return g
++}
++
++func (c *Controller) NativeGuards() map[string]GuardedHandler {
++	result := make(map[string]GuardedHandler)
++	for dataset, h := range c.handlers {
++		if g, ok := h.(GuardedHandler); ok {
++			result[dataset] = g
++		}
++	}
++	return result
++}
++
++// GuardQuery is bounded and object-scoped even for shared collections. It is
++// called under the object's tree lock; every local write, inbound apply, purge
++// and close takes that same lock.
++func (c *Controller) GuardQuery(ctx context.Context, dataset string, filter any, limit int) ([]*anyenc.Value, error) {
++	return c.guardQuery(ctx, dataset, filter, limit, false)
++}
++
++func (c *Controller) GuardSpaceObjects(ctx context.Context, filter any, limit int) ([]*anyenc.Value, error) {
++	if !c.IsShared("objects") {
++		return nil, ErrValidation
++	}
++	return c.guardQuery(ctx, "objects", filter, limit, true)
++}
++
++func (c *Controller) guardQuery(ctx context.Context, dataset string, filter any, limit int, spaceObjects bool) ([]*anyenc.Value, error) {
++	if limit < 1 || limit > 10001 {
++		return nil, fmt.Errorf("%w: guard query limit", ErrValidation)
++	}
++	f, err := query.ParseCondition(filter)
++	if err != nil {
++		return nil, err
++	}
++	if c.IsKeyed(dataset) {
++		f = query.And{f, KeyedRows(c.objectId)}
++	} else if c.IsShared(dataset) && !spaceObjects {
++		own, err := query.ParseCondition(map[string]any{"id": c.objectId})
++		if err != nil {
++			return nil, err
++		}
++		f = query.And{f, own}
++	}
++	coll, err := c.PeekCollection(ctx, dataset)
++	if err != nil {
++		return nil, err
++	}
++	if coll == nil {
++		return []*anyenc.Value{}, nil
++	}
++	it, err := coll.Find(f).Limit(uint(limit)).Iter(ctx)
++	if err != nil {
++		return nil, err
++	}
++	defer it.Close()
++	result := make([]*anyenc.Value, 0)
++	for it.Next() {
++		doc, err := it.Doc()
++		if err != nil {
++			return nil, err
++		}
++		result = append(result, anyencx.Clone(doc.Value()))
++	}
++	if err := it.Err(); err != nil {
++		return nil, errors.Join(ErrValidation, err)
++	}
++	return result, nil
++}
+diff --git a/internal/crdt/objectprecondition.go b/internal/crdt/objectprecondition.go
+new file mode 100644
+index 0000000..5ccce20
+--- /dev/null
++++ b/internal/crdt/objectprecondition.go
+@@ -0,0 +1,30 @@
++package crdt
++
++import (
++	"context"
++	"fmt"
++
++	"github.com/anyproto/any-store/v2/anyenc"
++)
++
++// ObjectApplySeqMatches is an exact, point-read precondition for this object's
++// own shared row. The caller holds the object's native tree lock through append
++// and apply. A different object's later writes never invalidate this row.
++// Missing, tombstoned, unstamped or mismatched rows fail closed.
++func (c *Controller) ObjectApplySeqMatches(ctx context.Context, expected uint64) (bool, error) {
++	if c.objectId == "" || !c.IsShared("objects") {
++		return false, fmt.Errorf("%w: object CAS requires shared native objects", ErrValidation)
++	}
++	row, err := c.Lookup(ctx, "objects", c.objectId)
++	if err != nil {
++		return false, err
++	}
++	if row == nil || row.GetString("id") != c.objectId || row.Get(DeletedAtField) != nil {
++		return false, nil
++	}
++	stamp := row.Get(ApplySeqField)
++	if stamp == nil || stamp.Type() != anyenc.TypeNumber || stamp.GetInt() <= 0 || expected == 0 {
++		return false, nil
++	}
++	return uint64(stamp.GetInt()) == expected, nil
++}
+diff --git a/internal/crdt/op.go b/internal/crdt/op.go
+index 4a3f07f..5417780 100644
+--- a/internal/crdt/op.go
++++ b/internal/crdt/op.go
+@@ -91,12 +91,21 @@ type RecordChange struct {
+ //     can efficiently ask any-sync "give me everything with seq > max" on
+ //     restore or reindex.
+ type Change struct {
+-	SpaceId   string
+-	ObjectId  string
+-	Dataset   string
+-	ChangeId  string
+-	VersionId VersionId
+-	AddSeq    uint64
++	// Immutable root and signer metadata, filled only from the native tree.
++	// Never decoded from the CRDT payload. Native extension handlers use the
++	// root seed to bind a canonical carrier and the ACL head for receipts.
++	ObjectDerived     bool
++	ObjectRootPayload []byte
++	ACLHeadId         string
++	// NativeAlreadyApplied is an in-process decision set only by the compiled
++	// local guard after exact persisted-claim checks. Never decoded from wire.
++	NativeAlreadyApplied bool
++	SpaceId              string
++	ObjectId             string
++	Dataset              string
++	ChangeId             string
++	VersionId            VersionId
++	AddSeq               uint64
+ 	// PrevIds are the DAG parents of this change (the any-sync change's
+ 	// PreviousIds), stamped by the apply pipeline next to Creator. Empty
+ 	// on Local/Injected changes (no DAG) and on hand-built test changes.
+diff --git a/internal/object/current_writer.go b/internal/object/current_writer.go
+new file mode 100644
+index 0000000..2007d8e
+--- /dev/null
++++ b/internal/object/current_writer.go
+@@ -0,0 +1,45 @@
++package object
++
++import (
++	"context"
++	"fmt"
++
++	"github.com/anyproto/any-sync-sdk/internal/commitguard"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++)
++
++// currentWriterNoop is called only after the caller has taken the native tree
++// lock, caught up its projection, checked the dataset sequence and run local
++// validation. An empty patch must not bypass authority or append a fake edit.
++func (o *Object) currentWriterNoop(ctx context.Context, ch crdt.Change) (WriteResult, bool, error) {
++	if len(ch.Records) == 0 {
++		return WriteResult{}, false, crdt.ErrValidation
++	}
++	for _, record := range ch.Records {
++		if len(record.Ops) != 0 {
++			return WriteResult{}, false, nil
++		}
++	}
++	ids := make([]string, 0, len(ch.Records))
++	for _, record := range ch.Records {
++		if record.Id == "" || record.Upsert {
++			return WriteResult{}, true, crdt.ErrValidation
++		}
++		row, err := o.ctrl.Lookup(ctx, ch.Dataset, record.Id)
++		if err != nil {
++			return WriteResult{}, true, err
++		}
++		if row == nil || row.Get(crdt.DeletedAtField) != nil {
++			return WriteResult{}, true, fmt.Errorf("%w: conditional empty patch requires an existing record", crdt.ErrValidation)
++		}
++		ids = append(ids, record.Id)
++	}
++	if o.signKey == nil {
++		return WriteResult{}, true, commitguard.ErrNativeCommitGuard
++	}
++	if err := commitguard.CheckCurrentWrite(ctx, o.tree, o.signKey.GetPublic()); err != nil {
++		return WriteResult{}, true, err
++	}
++	o.ctrl.StoreIds(ch.Dataset, ids)
++	return WriteResult{RecordIds: ids}, true, nil
++}
+diff --git a/internal/object/current_writer_test.go b/internal/object/current_writer_test.go
+new file mode 100644
+index 0000000..6ad01a2
+--- /dev/null
++++ b/internal/object/current_writer_test.go
+@@ -0,0 +1,152 @@
++package object
++
++import (
++	"context"
++	"testing"
++
++	"github.com/anyproto/any-sync-sdk/internal/commitguard"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++	"github.com/anyproto/any-sync/commonspace/object/accountdata"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++	"github.com/anyproto/any-sync/consensus/consensusproto"
++	"github.com/anyproto/any-sync/util/cidutil"
++	"github.com/anyproto/any-sync/util/crypto"
++	"github.com/stretchr/testify/require"
++)
++
++func conditionalBlockChange(t *testing.T, text string, upsert bool) crdt.Change {
++	t.Helper()
++	return crdt.Change{Dataset: "editor_blocks", DataVersion: "block-fence-v1", Records: []crdt.RecordChange{{Id: "stable-native-block", Upsert: upsert, Ops: []crdt.Op{recordOp(t, "text", text)}}}}
++}
++
++func blockACLRecord(t *testing.T, acl list.AclList, build func() (*consensusproto.RawRecord, error)) {
++	t.Helper()
++	acl.Lock()
++	defer acl.Unlock()
++	record, err := build()
++	require.NoError(t, err)
++	raw, err := record.MarshalVT()
++	require.NoError(t, err)
++	id, err := cidutil.NewCidFromBytes(raw)
++	require.NoError(t, err)
++	require.NoError(t, acl.AddRawRecord(&consensusproto.RawRecordWithId{Id: id, Payload: raw}))
++}
++
++func blockAddWriter(t *testing.T, o *Object) crypto.PrivKey {
++	t.Helper()
++	member, err := accountdata.NewRandom()
++	require.NoError(t, err)
++	acl := o.tree.AclList()
++	blockACLRecord(t, acl, func() (*consensusproto.RawRecord, error) {
++		return acl.RecordBuilder().BuildAccountsAdd(list.AccountsAddPayload{Additions: []list.AccountAdd{{Identity: member.SignKey.GetPublic(), Permissions: list.AclPermissionsWriter, Metadata: []byte("synthetic block writer")}}})
++	})
++	return member.SignKey
++}
++
++func blockRemoveWriter(t *testing.T, o *Object, key crypto.PrivKey) {
++	t.Helper()
++	metadata, _, err := crypto.GenerateRandomEd25519KeyPair()
++	require.NoError(t, err)
++	acl := o.tree.AclList()
++	blockACLRecord(t, acl, func() (*consensusproto.RawRecord, error) {
++		return acl.RecordBuilder().BuildAccountRemove(list.AccountRemovePayload{Identities: []crypto.PubKey{key.GetPublic()}, Change: list.ReadKeyChangePayload{MetadataKey: metadata, ReadKey: crypto.NewAES()}})
++	})
++}
++
++// This test-only interceptor runs after real any-sync signing/encryption and
++// before its real AnyStore append. The object and storage remain native; the
++// interceptor is not an in-memory substitute for permission or commit logic.
++type blockCommitInterceptor struct {
++	objecttree.ObjectTree
++	prepared func(objecttree.StorageChange) error
++}
++
++func (t *blockCommitInterceptor) AddContent(ctx context.Context, content objecttree.SignableChangeContent) (objecttree.AddResult, error) {
++	return t.ObjectTree.AddContentWithValidator(ctx, content, t.prepared)
++}
++
++func TestNativeConditionalBlockFinalWriterFence(t *testing.T) {
++	for _, mode := range []string{"revocation", "head advance", "cancellation"} {
++		t.Run(mode, func(t *testing.T) {
++			o := newObjectRowCASFixture(t)
++			writer := blockAddWriter(t, o)
++			o.signKey = writer
++			seed, err := o.LocalWrite(context.Background(), conditionalBlockChange(t, "before", true))
++			require.NoError(t, err)
++			before := append([]string(nil), o.tree.Heads()...)
++			ctx, cancel := context.WithCancel(context.Background())
++			defer cancel()
++			prepared := ""
++			o.tree = &blockCommitInterceptor{ObjectTree: o.tree, prepared: func(change objecttree.StorageChange) error {
++				prepared = change.Id
++				switch mode {
++				case "revocation":
++					blockRemoveWriter(t, o, writer)
++				case "head advance":
++					_ = blockAddWriter(t, o)
++				case "cancellation":
++					cancel()
++				}
++				return nil
++			}}
++			_, err = o.LocalWriteIfCurrentWriter(ctx, conditionalBlockChange(t, "must never commit", false), &seed.ApplySeq)
++			switch mode {
++			case "revocation":
++				require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++			case "head advance":
++				require.ErrorIs(t, err, commitguard.ErrNativeACLChanged)
++			case "cancellation":
++				require.ErrorIs(t, err, context.Canceled)
++			}
++			require.NotEmpty(t, prepared)
++			require.Equal(t, before, o.tree.Heads())
++			stored, readErr := o.tree.Storage().Has(context.Background(), prepared)
++			require.NoError(t, readErr)
++			require.False(t, stored)
++			require.Equal(t, "before", o.ctrl.Get(context.Background(), "editor_blocks", "stable-native-block").GetString("text"))
++		})
++	}
++}
++
++func TestNativeConditionalBlockEmptyPatchChecksSequenceAndWriter(t *testing.T) {
++	ctx := context.Background()
++	o := newObjectRowCASFixture(t)
++	writer := blockAddWriter(t, o)
++	o.signKey = writer
++	seed, err := o.LocalWrite(ctx, conditionalBlockChange(t, "before", true))
++	require.NoError(t, err)
++	empty := conditionalBlockChange(t, "", false)
++	empty.Records[0].Ops = nil
++	heads := append([]string(nil), o.tree.Heads()...)
++	noop, err := o.LocalWriteIfCurrentWriter(ctx, empty, &seed.ApplySeq)
++	require.NoError(t, err)
++	require.Equal(t, []string{"stable-native-block"}, noop.RecordIds)
++	require.Empty(t, noop.ChangeId)
++	require.Empty(t, noop.VersionId)
++	require.Zero(t, noop.ApplySeq)
++	require.Equal(t, heads, o.tree.Heads())
++	next, err := o.LocalWriteIfCurrentWriter(ctx, conditionalBlockChange(t, "after", false), &seed.ApplySeq)
++	require.NoError(t, err)
++	_, err = o.LocalWriteIfCurrentWriter(ctx, empty, &seed.ApplySeq)
++	require.ErrorIs(t, err, crdt.ErrPreconditionFailed)
++	heads = append([]string(nil), o.tree.Heads()...)
++	blockRemoveWriter(t, o, writer)
++	_, err = o.LocalWriteIfCurrentWriter(ctx, empty, &next.ApplySeq)
++	require.ErrorIs(t, err, list.ErrInsufficientPermissions)
++	require.Equal(t, heads, o.tree.Heads())
++}
++
++func TestNativeConditionalBlockRefusesDeletedTreeBeforeSDKCallback(t *testing.T) {
++	ctx := context.Background()
++	o := newObjectRowCASFixture(t)
++	seed, err := o.LocalWrite(ctx, conditionalBlockChange(t, "before", true))
++	require.NoError(t, err)
++	o.tree.Lock()
++	err = o.tree.Delete()
++	o.tree.Unlock()
++	require.NoError(t, err)
++	require.False(t, o.deleted, "exercise the window before the SDK MarkDeleted callback")
++	_, err = o.LocalWriteIfCurrentWriter(ctx, conditionalBlockChange(t, "must never commit", false), &seed.ApplySeq)
++	require.Error(t, err)
++}
+diff --git a/internal/object/localguard.go b/internal/object/localguard.go
+new file mode 100644
+index 0000000..6940786
+--- /dev/null
++++ b/internal/object/localguard.go
+@@ -0,0 +1,38 @@
++package object
++
++import (
++	"context"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++)
++
++// LocalWriteLocker acquires the carrier and all declared dependency trees in
++// stable ID order. It is called before this Object takes its normal tree lock.
++type LocalWriteLocker func(context.Context, *Object, *crdt.Change) (crdt.LocalReadView, func(), error)
++
++// GuardReadyLocked checks and catches up a dependency while its tree is held.
++// An applied-but-unprojected change must not become a false absence check.
++func (o *Object) GuardReadyLocked(ctx context.Context) error {
++	if o.tree == nil {
++		return ErrTreeNotSet
++	}
++	if o.closed {
++		return ErrClosed
++	}
++	if o.deleted {
++		return ErrDeleted
++	}
++	// SyncTree.Delete completes its underlying native deletion before Store's
++	// later MarkDeleted updates this wrapper. GetChange checks the tree's own
++	// deletion flag, closing that otherwise observable authority window.
++	root := o.tree.Root()
++	if root == nil {
++		return ErrTreeNotSet
++	}
++	if _, err := o.tree.GetChange(root.Id); err != nil {
++		return err
++	}
++	if o.applyGap {
++		return o.replayLocked(ctx, o.tree)
++	}
++	return nil
++}
+diff --git a/internal/object/localguard_test.go b/internal/object/localguard_test.go
+new file mode 100644
+index 0000000..2b51a1d
+--- /dev/null
++++ b/internal/object/localguard_test.go
+@@ -0,0 +1,54 @@
++package object
++
++import (
++	"context"
++	"path/filepath"
++	"testing"
++
++	anystore "github.com/anyproto/any-store"
++	"github.com/anyproto/any-sync/commonspace/object/accountdata"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/acl/recordverifier"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
++	"github.com/anyproto/any-sync/commonspace/spacepayloads"
++	"github.com/anyproto/any-sync/commonspace/spacestorage"
++	"github.com/anyproto/any-sync/util/crypto"
++	"github.com/stretchr/testify/require"
++)
++
++func TestGuardRejectsUnderlyingDeletionBeforeWrapperIsMarked(t *testing.T) {
++	ctx := context.Background()
++	keys, err := accountdata.NewRandom()
++	require.NoError(t, err)
++	master, _, err := crypto.GenerateRandomEd25519KeyPair()
++	require.NoError(t, err)
++	metadata, _, err := crypto.GenerateRandomEd25519KeyPair()
++	require.NoError(t, err)
++	payload, err := spacepayloads.StoragePayloadForSpaceCreate(spacepayloads.SpaceCreatePayload{SigningKey: keys.SignKey, SpaceType: "space", ReplicationKey: 10, MasterKey: master, ReadKey: crypto.NewAES(), MetadataKey: metadata, Metadata: []byte("native deletion interleaving fixture")})
++	require.NoError(t, err)
++	db, err := anystore.Open(ctx, filepath.Join(t.TempDir(), "native.db"), &anystore.Config{ReadConnections: 2})
++	require.NoError(t, err)
++	t.Cleanup(func() { require.NoError(t, db.Close()) })
++	sp, err := spacestorage.Create(ctx, db, payload)
++	require.NoError(t, err)
++	as, err := sp.AclStorage()
++	require.NoError(t, err)
++	acl, err := list.BuildAclListWithIdentity(keys, as, recordverifier.NewValidateFull())
++	require.NoError(t, err)
++	_, root, err := objecttree.NewChangeBuilder(crypto.NewKeyStorage(), nil).BuildRoot(objecttree.InitialContent{PrivKey: keys.SignKey, AclHeadId: payload.AclWithId.Id, SpaceId: sp.Id(), ChangeType: "native-delete-target", Seed: []byte("disposable-target")})
++	require.NoError(t, err)
++	storage, err := sp.CreateTreeStorage(ctx, treestorage.TreeStorageCreatePayload{RootRawChange: root, Heads: []string{root.Id}})
++	require.NoError(t, err)
++	tree, err := objecttree.BuildObjectTree(storage, acl)
++	require.NoError(t, err)
++	tree.Lock()
++	t.Cleanup(func() { tree.Unlock(); _ = tree.Close() })
++	wrapped := &Object{tree: tree}
++	require.NoError(t, wrapped.GuardReadyLocked(ctx))
++	// This is the real native tombstone, before the SDK's separate MarkDeleted
++	// call. The wrapper deliberately still reports deleted=false.
++	require.NoError(t, tree.Delete())
++	require.False(t, wrapped.deleted)
++	require.Error(t, wrapped.GuardReadyLocked(ctx), "native deletion must invalidate the target before any carrier append")
++}
+diff --git a/internal/object/object.go b/internal/object/object.go
+index 821610e..f1e8603 100644
+--- a/internal/object/object.go
++++ b/internal/object/object.go
+@@ -13,6 +13,7 @@ import (
+ 	"github.com/anyproto/any-sync/util/crypto"
+ 	"go.uber.org/zap"
+ 
++	"github.com/anyproto/any-sync-sdk/internal/commitguard"
+ 	"github.com/anyproto/any-sync-sdk/internal/crdt"
+ 	"github.com/anyproto/any-sync-sdk/space"
+ )
+@@ -134,7 +135,8 @@ type Object struct {
+ 	// sole entry for user-authored DAG changes. A non-nil error rejects
+ 	// the write (read-only guest spaces). Local-set and inbound apply
+ 	// paths are never gated.
+-	writeGate func() error
++	writeGate      func() error
++	lockLocalWrite LocalWriteLocker
+ 	// plaintextSpecs maps a tree-root ChangeType to its plaintext
+ 	// class declaration. The root's ChangeType is immutable, signed,
+ 	// and cleartext, so keyed and keyless readers resolve the same
+@@ -183,6 +185,8 @@ type Config struct {
+ 	// non-nil error (read-only guest spaces). Optional — nil means
+ 	// writable.
+ 	WriteGate func() error
++	// LockLocalWrite is the Space store's opt-in native multi-object fence.
++	LockLocalWrite LocalWriteLocker
+ 	// PlaintextSpecs declares which tree-root ChangeTypes are plaintext
+ 	// object classes and which datasets they may carry. Optional — nil
+ 	// means every object writes encrypted changes.
+@@ -233,6 +237,7 @@ func New(cfg Config, treeFunc TreeFunc) (*Object, error) {
+ 		applyGap:       cfg.ApplyGap,
+ 		onGap:          cfg.OnGap,
+ 		writeGate:      cfg.WriteGate,
++		lockLocalWrite: cfg.LockLocalWrite,
+ 		plaintextSpecs: cfg.PlaintextSpecs,
+ 		onClose:        cfg.OnClose,
+ 	}
+@@ -468,6 +473,12 @@ func (o *Object) stampObjectMetaFromTree(ch *crdt.Change, tree objecttree.Object
+ 	if tree == nil {
+ 		return
+ 	}
++	if o.ctrl.LocalGuard(ch.Dataset) != nil {
++		ch.ObjectDerived = tree.IsDerived()
++		if info := tree.ChangeInfo(); info != nil {
++			ch.ObjectRootPayload = append([]byte(nil), info.ChangePayload...)
++		}
++	}
+ 	root := tree.Root()
+ 	if root == nil {
+ 		return
+@@ -480,6 +491,7 @@ func (o *Object) stampObjectMetaFromTree(ch *crdt.Change, tree objecttree.Object
+ 	}
+ 	if (ch.Creator == "" || ch.PrevIds == nil) && ch.ChangeId != "" {
+ 		if tc, err := tree.GetChange(ch.ChangeId); err == nil && tc != nil {
++			ch.ACLHeadId = tc.AclHeadId
+ 			if ch.Creator == "" && tc.Identity != nil {
+ 				ch.Creator = tc.Identity.Account()
+ 			}
+@@ -592,6 +604,36 @@ func (o *Object) LocalWrite(ctx context.Context, ch crdt.Change) (WriteResult, e
+ // the write; a dataset that changed is crdt.ErrPreconditionFailed with
+ // nothing written.
+ func (o *Object) LocalWriteIf(ctx context.Context, ch crdt.Change, ifUnchangedSince *uint64) (WriteResult, error) {
++	return o.localWriteIf(ctx, ch, ifUnchangedSince, nil, false)
++}
++
++// LocalWriteIfObject is the dedicated strict objects-row CAS. It does not
++// broaden the original dataset precondition to shared collections.
++func (o *Object) LocalWriteIfObject(ctx context.Context, ch crdt.Change, seq uint64) (WriteResult, error) {
++	if o.tree == nil {
++		return WriteResult{}, ErrTreeNotSet
++	}
++	if ch.Dataset != "objects" || len(ch.Records) != 1 || ch.Records[0].Id != o.tree.Id() || ch.Records[0].Upsert {
++		return WriteResult{}, fmt.Errorf("%w: object CAS requires its one explicit existing objects row", crdt.ErrValidation)
++	}
++	for _, op := range ch.Records[0].Ops {
++		if op.Type == crdt.OpDelete {
++			return WriteResult{}, crdt.ErrValidation
++		}
++	}
++	return o.localWriteIf(ctx, ch, nil, &seq, false)
++}
++
++// LocalWriteIfCurrentWriter is an opt-in conditional dataset write with
++// current authority held through durable storage, including strict no-ops.
++func (o *Object) LocalWriteIfCurrentWriter(ctx context.Context, ch crdt.Change, seq *uint64) (WriteResult, error) {
++	if seq == nil {
++		return WriteResult{}, crdt.ErrValidation
++	}
++	return o.localWriteIf(ctx, ch, seq, nil, true)
++}
++
++func (o *Object) localWriteIf(ctx context.Context, ch crdt.Change, ifUnchangedSince, ifObjectUnchangedSince *uint64, requireCurrentWriter bool) (WriteResult, error) {
+ 	if o.tree == nil {
+ 		return WriteResult{}, ErrTreeNotSet
+ 	}
+@@ -612,14 +654,36 @@ func (o *Object) LocalWriteIf(ctx context.Context, ch crdt.Change, ifUnchangedSi
+ 		return WriteResult{}, fmt.Errorf("object: validate: %w", err)
+ 	}
+ 
+-	o.tree.Lock()
+-	defer o.tree.Unlock()
++	var view crdt.LocalReadView
++	guard := o.ctrl.LocalGuard(ch.Dataset)
++	if guard != nil {
++		if o.lockLocalWrite == nil {
++			return WriteResult{}, errors.New("object: native guard unavailable")
++		}
++		var unlock func()
++		var lockErr error
++		view, unlock, lockErr = o.lockLocalWrite(ctx, o, &ch)
++		if lockErr != nil {
++			return WriteResult{}, lockErr
++		}
++		defer unlock()
++	} else {
++		o.tree.Lock()
++		defer o.tree.Unlock()
++	}
+ 	if o.closed {
+ 		return WriteResult{}, ErrClosed
+ 	}
+ 	if o.deleted {
+ 		return WriteResult{}, ErrDeleted
+ 	}
++	if ifObjectUnchangedSince != nil || requireCurrentWriter {
++		// Includes an actual native tree tombstone already committed before
++		// the SDK's separate MarkDeleted callback has run.
++		if err := o.GuardReadyLocked(ctx); err != nil {
++			return WriteResult{}, err
++		}
++	}
+ 
+ 	// Plaintext-class objects ship their changes UNencrypted, so only
+ 	// the class's allowlisted datasets may enter the DAG — a write to
+@@ -656,6 +720,16 @@ func (o *Object) LocalWriteIf(ctx context.Context, ch crdt.Change, ifUnchangedSi
+ 		}
+ 	}
+ 
++	if ifObjectUnchangedSince != nil {
++		matches, err := o.ctrl.ObjectApplySeqMatches(ctx, *ifObjectUnchangedSince)
++		if err != nil {
++			return WriteResult{}, err
++		}
++		if !matches {
++			return WriteResult{}, crdt.ErrPreconditionFailed
++		}
++	}
++
+ 	// Writer-side schema pre-flight: strict validation against the
+ 	// current record state, BEFORE the change enters the DAG. A failure
+ 	// here returns an agent-readable error and keeps the malformed
+@@ -663,10 +737,39 @@ func (o *Object) LocalWriteIf(ctx context.Context, ch crdt.Change, ifUnchangedSi
+ 	// tree.Lock so the pre-state read and the apply below are
+ 	// consistent with concurrent local writers. No-op for datasets
+ 	// whose handler doesn't implement LocalPreValidator.
++	// Local preflight sees the actual native identity, never request fields.
++	if guard != nil {
++		ch.SpaceId, ch.ObjectId = o.spaceId, o.tree.Id()
++		if o.signKey != nil {
++			ch.Creator = o.signKey.GetPublic().Account()
++		}
++		o.stampObjectMeta(&ch)
++		ch.NativeAlreadyApplied = false
++		if err := guard.ValidateLocal(&ch, view); err != nil {
++			return WriteResult{}, err
++		}
++		if ch.NativeAlreadyApplied {
++			if err := commitguard.CheckCurrentWrite(ctx, o.tree, o.signKey.GetPublic()); err != nil {
++				return WriteResult{}, err
++			}
++			ids, err := crdt.ResolveRecordIds(ch)
++			if err != nil {
++				return WriteResult{}, err
++			}
++			o.ctrl.StoreIds(ch.Dataset, ids)
++			return WriteResult{RecordIds: ids}, nil
++		}
++	}
+ 	if err := o.ctrl.PreValidateLocal(ctx, &ch); err != nil {
+ 		return WriteResult{}, err
+ 	}
+ 
++	if requireCurrentWriter {
++		if result, noOp, err := o.currentWriterNoop(ctx, ch); noOp || err != nil {
++			return result, err
++		}
++	}
++
+ 	// Encode under tree.Lock — the codec's arena is shared with the
+ 	// replay/Decode path and is not safe for concurrent use. Concurrent
+ 	// LocalWrite callers (e.g. the background spaceIndex seeder racing
+@@ -690,7 +793,18 @@ func (o *Object) LocalWriteIf(ctx context.Context, ch crdt.Change, ifUnchangedSi
+ 	// after the store): the heads tell a stored change from one that
+ 	// never reached the storage, and only the former leaves a gap.
+ 	headsBefore := o.tree.Heads()
+-	res, err := o.tree.AddContent(ctx, objecttree.SignableChangeContent{
++	appendCtx := ctx
++	if guard != nil || ifObjectUnchangedSince != nil || requireCurrentWriter {
++		var err error
++		if o.signKey == nil {
++			return WriteResult{}, errors.New("object: conditional writer identity unavailable")
++		}
++		appendCtx, _, err = commitguard.Context(ctx, o.tree, o.signKey.GetPublic())
++		if err != nil {
++			return WriteResult{}, err
++		}
++	}
++	res, err := o.tree.AddContent(appendCtx, objecttree.SignableChangeContent{
+ 		Data:              payload,
+ 		Key:               o.signKey,
+ 		ShouldBeEncrypted: spec == nil,
+diff --git a/internal/object/object_row_cas_test.go b/internal/object/object_row_cas_test.go
+new file mode 100644
+index 0000000..efd2497
+--- /dev/null
++++ b/internal/object/object_row_cas_test.go
+@@ -0,0 +1,153 @@
++package object
++
++import (
++	"context"
++	"fmt"
++	"path/filepath"
++	"sync"
++	"testing"
++
++	nativeStore "github.com/anyproto/any-store"
++	projectionStore "github.com/anyproto/any-store/v2"
++	"github.com/anyproto/any-sync-sdk/internal/commitguard"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++	"github.com/anyproto/any-sync-sdk/internal/schema"
++	"github.com/anyproto/any-sync/commonspace/object/accountdata"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/acl/recordverifier"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
++	"github.com/anyproto/any-sync/commonspace/spacepayloads"
++	"github.com/anyproto/any-sync/commonspace/spacestorage"
++	"github.com/anyproto/any-sync/util/crypto"
++	"github.com/stretchr/testify/require"
++)
++
++// This fixture uses actual signed/encrypted native history and both real
++// stores. A fake AddContent cannot establish the conditional storage fence.
++func newObjectRowCASFixture(t *testing.T) *Object {
++	t.Helper()
++	ctx := context.Background()
++	keys, err := accountdata.NewRandom()
++	require.NoError(t, err)
++	master, _, err := crypto.GenerateRandomEd25519KeyPair()
++	require.NoError(t, err)
++	metadata, _, err := crypto.GenerateRandomEd25519KeyPair()
++	require.NoError(t, err)
++	payload, err := spacepayloads.StoragePayloadForSpaceCreate(spacepayloads.SpaceCreatePayload{SigningKey: keys.SignKey, SpaceType: "space", ReplicationKey: 10, MasterKey: master, ReadKey: crypto.NewAES(), MetadataKey: metadata, Metadata: []byte("disposable objects CAS fixture")})
++	require.NoError(t, err)
++	native, err := nativeStore.Open(ctx, filepath.Join(t.TempDir(), "native.db"), &nativeStore.Config{ReadConnections: 2})
++	require.NoError(t, err)
++	t.Cleanup(func() { require.NoError(t, native.Close()) })
++	sp, err := spacestorage.Create(ctx, native, payload)
++	require.NoError(t, err)
++	as, err := sp.AclStorage()
++	require.NoError(t, err)
++	acl, err := list.BuildAclListWithIdentity(keys, as, recordverifier.NewValidateFull())
++	require.NoError(t, err)
++	_, root, err := objecttree.NewChangeBuilder(crypto.NewKeyStorage(), nil).BuildRoot(objecttree.InitialContent{PrivKey: keys.SignKey, AclHeadId: payload.AclWithId.Id, SpaceId: sp.Id(), ChangeType: "object-row-cas", Seed: []byte("disposable ordinary page")})
++	require.NoError(t, err)
++	storage, err := sp.CreateTreeStorage(ctx, treestorage.TreeStorageCreatePayload{RootRawChange: root, Heads: []string{root.Id}})
++	require.NoError(t, err)
++	tree, err := commitguard.Builder(nil)(storage, acl)
++	require.NoError(t, err)
++	t.Cleanup(func() { require.NoError(t, tree.Close()) })
++	db, err := projectionStore.Open(ctx, filepath.Join(t.TempDir(), "projection.db"), nil)
++	require.NoError(t, err)
++	t.Cleanup(func() { require.NoError(t, db.Close()) })
++	coll, err := db.Collection(ctx, "objects")
++	require.NoError(t, err)
++	ctrl, err := crdt.NewControllerWithShared(ctx, tree.Id(), db, crdt.SharedCollections{"objects": coll}, crdt.HandlerReg{Name: "objects", Handler: crdt.DefaultHandler{}, Schema: schema.Dataset{Dynamic: true}}, crdt.HandlerReg{Name: "editor_blocks", Handler: crdt.DefaultHandler{}, Schema: schema.Dataset{Dynamic: true}})
++	require.NoError(t, err)
++	ctrl.SetApplySeqAllocator(crdt.NewApplySeqAllocator(nil))
++	return &Object{signKey: keys.SignKey, codec: NewCodec(), ctrl: ctrl, spaceId: sp.Id(), tree: tree}
++}
++
++func casChange(t *testing.T, o *Object, value string, upsert bool) crdt.Change {
++	t.Helper()
++	return crdt.Change{Dataset: "objects", DataVersion: "cas-fixture-v1", Records: []crdt.RecordChange{{Id: o.Id(), Upsert: upsert, Ops: []crdt.Op{recordOp(t, "name", value)}}}}
++}
++
++func TestNativeObjectRowCASRejectsABAAndFutureStamp(t *testing.T) {
++	ctx := context.Background()
++	o := newObjectRowCASFixture(t)
++	a, err := o.LocalWrite(ctx, casChange(t, o, "A", true))
++	require.NoError(t, err)
++	require.NotZero(t, a.ApplySeq)
++	b, err := o.LocalWriteIfObject(ctx, casChange(t, o, "B", false), a.ApplySeq)
++	require.NoError(t, err)
++	again, err := o.LocalWriteIfObject(ctx, casChange(t, o, "A", false), b.ApplySeq)
++	require.NoError(t, err)
++	require.Equal(t, "A", o.ctrl.Get(ctx, "objects", o.Id()).GetString("name"))
++	before := append([]string(nil), o.tree.Heads()...)
++	for _, seq := range []uint64{a.ApplySeq, again.ApplySeq + 1, 0} {
++		_, err = o.LocalWriteIfObject(ctx, casChange(t, o, "must not commit", false), seq)
++		require.ErrorIs(t, err, crdt.ErrPreconditionFailed)
++		require.Equal(t, before, o.tree.Heads())
++	}
++	require.Equal(t, "A", o.ctrl.Get(ctx, "objects", o.Id()).GetString("name"))
++}
++
++func TestNativeObjectRowCASFourCompetingWriters(t *testing.T) {
++	ctx := context.Background()
++	o := newObjectRowCASFixture(t)
++	first, err := o.LocalWrite(ctx, casChange(t, o, "initial", true))
++	require.NoError(t, err)
++	start := make(chan struct{})
++	results := make(chan error, 4)
++	var group sync.WaitGroup
++	for i := 0; i < 4; i++ {
++		change := casChange(t, o, fmt.Sprintf("writer-%d", i), false)
++		group.Add(1)
++		go func() {
++			defer group.Done()
++			<-start
++			_, err := o.LocalWriteIfObject(ctx, change, first.ApplySeq)
++			results <- err
++		}()
++	}
++	close(start)
++	group.Wait()
++	close(results)
++	success, stale := 0, 0
++	for err := range results {
++		if err == nil {
++			success++
++		} else {
++			require.ErrorIs(t, err, crdt.ErrPreconditionFailed)
++			stale++
++		}
++	}
++	require.Equal(t, 1, success)
++	require.Equal(t, 3, stale)
++	// Seed + one winner, with no signed changes from the three stale calls.
++	require.Equal(t, first.ApplySeq+1, uint64(o.ctrl.Get(ctx, "objects", o.Id()).GetInt(crdt.ApplySeqField)))
++}
++
++func TestNativeObjectRowCASMissingRowAndIdentityGuards(t *testing.T) {
++	ctx := context.Background()
++	o := newObjectRowCASFixture(t)
++	_, err := o.LocalWriteIfObject(ctx, casChange(t, o, "missing", false), 1)
++	require.ErrorIs(t, err, crdt.ErrPreconditionFailed)
++	seed, err := o.LocalWrite(ctx, casChange(t, o, "seed", true))
++	require.NoError(t, err)
++	before := append([]string(nil), o.tree.Heads()...)
++	for _, mode := range []string{"foreign row", "upsert", "two rows", "other dataset", "delete"} {
++		ch := casChange(t, o, "refused", false)
++		switch mode {
++		case "foreign row":
++			ch.Records[0].Id = "foreign"
++		case "upsert":
++			ch.Records[0].Upsert = true
++		case "two rows":
++			ch.Records = append(ch.Records, ch.Records[0])
++		case "other dataset":
++			ch.Dataset = "other"
++		case "delete":
++			ch.Records[0].Ops = []crdt.Op{{Type: crdt.OpDelete}}
++		}
++		_, err = o.LocalWriteIfObject(ctx, ch, seed.ApplySeq)
++		require.ErrorIs(t, err, crdt.ErrValidation, mode)
++		require.Equal(t, before, o.tree.Heads())
++	}
++}
+diff --git a/internal/spaceimpl/current_writer.go b/internal/spaceimpl/current_writer.go
+new file mode 100644
+index 0000000..995ff21
+--- /dev/null
++++ b/internal/spaceimpl/current_writer.go
+@@ -0,0 +1,35 @@
++package spaceimpl
++
++import (
++	"context"
++	"errors"
++	"fmt"
++
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++	"github.com/anyproto/any-sync-sdk/internal/object"
++	"github.com/anyproto/any-sync-sdk/space"
++)
++
++func checkCurrentWriterBatch(batch space.ModifyBatch) error {
++	if !batch.RequireCurrentWriterFence {
++		return nil
++	}
++	if batch.IfUnchangedSince == nil || batch.IfObjectUnchangedSince != nil ||
++		(batch.Scope != 0 && batch.Scope != space.ScopeSynced) || batch.Dataset == "objects" || len(batch.Records) == 0 {
++		return fmt.Errorf("%w: current writer fence requires a conditional synced dataset batch", crdt.ErrValidation)
++	}
++	return nil
++}
++
++func (s *spaceImpl) localWriteRetryCurrentWriter(ctx context.Context, obj *object.Object, objectID string, ch crdt.Change, seq *uint64) (object.WriteResult, error) {
++	result, err := obj.LocalWriteIfCurrentWriter(ctx, ch, seq)
++	if !errors.Is(err, object.ErrClosed) {
++		return result, wrapSlotErr(err)
++	}
++	fresh, err := s.store.Get(ctx, objectID)
++	if err != nil {
++		return object.WriteResult{}, err
++	}
++	result, err = fresh.LocalWriteIfCurrentWriter(ctx, ch, seq)
++	return result, wrapSlotErr(err)
++}
+diff --git a/internal/spaceimpl/current_writer_test.go b/internal/spaceimpl/current_writer_test.go
+new file mode 100644
+index 0000000..a90004f
+--- /dev/null
++++ b/internal/spaceimpl/current_writer_test.go
+@@ -0,0 +1,39 @@
++package spaceimpl
++
++import (
++	"context"
++	"testing"
++
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++	"github.com/anyproto/any-sync-sdk/space"
++	"github.com/stretchr/testify/require"
++)
++
++func TestCurrentWriterFenceRequiresConditionalSyncedRoute(t *testing.T) {
++	seq := uint64(7)
++	valid := func() space.ModifyBatch {
++		return space.ModifyBatch{ObjectId: "page", Dataset: "editor_blocks", Records: []space.RecordModify{{Id: "block", Ops: []space.Op{{Type: space.OpSet, Path: "text", Value: "x"}}}}, IfUnchangedSince: &seq, RequireCurrentWriterFence: true}
++	}
++	require.NoError(t, checkCurrentWriterBatch(valid()))
++	for _, mode := range []string{"no condition", "local", "objects", "two conditions", "empty batch"} {
++		t.Run(mode, func(t *testing.T) {
++			batch := valid()
++			switch mode {
++			case "no condition":
++				batch.IfUnchangedSince = nil
++			case "local":
++				batch.Scope = space.ScopeLocal
++			case "objects":
++				batch.Dataset = "objects"
++			case "two conditions":
++				batch.IfObjectUnchangedSince = &seq
++			case "empty batch":
++				batch.Records = nil
++			}
++			_, err := (&spaceImpl{}).Modify(context.Background(), batch)
++			require.ErrorIs(t, err, crdt.ErrValidation)
++		})
++	}
++	_, err := (&spaceImpl{}).ModifyMany(context.Background(), []space.ModifyBatch{valid()})
++	require.ErrorIs(t, err, crdt.ErrValidation)
++}
+diff --git a/internal/spaceimpl/history.go b/internal/spaceimpl/history.go
+index 5118fcf..833b117 100644
+--- a/internal/spaceimpl/history.go
++++ b/internal/spaceimpl/history.go
+@@ -121,6 +121,9 @@ func (h *historyAPI) ListChanges(ctx context.Context, objectId string, f space.H
+ 	if objectId == "" {
+ 		return space.ChangeList{}, errors.New("history: objectId required")
+ 	}
++	if err := h.parent.store.RefuseNativeCarrierHistory(ctx, objectId); err != nil {
++		return space.ChangeList{}, err
++	}
+ 	obj, err := h.parent.store.Get(ctx, objectId)
+ 	if err != nil {
+ 		return space.ChangeList{}, fmt.Errorf("history: load %s: %w", objectId, err)
+@@ -183,6 +186,9 @@ func (h *historyAPI) ViewAt(ctx context.Context, objectId string, version space.
+ 	if version == "" {
+ 		return nil, errors.New("history: version required")
+ 	}
++	if err := h.parent.store.RefuseNativeCarrierHistory(ctx, objectId); err != nil {
++		return nil, err
++	}
+ 	obj, params, err := h.viewParams(ctx, objectId)
+ 	if err != nil {
+ 		return nil, err
+@@ -204,9 +210,15 @@ func (h *historyAPI) ViewAt(ctx context.Context, objectId string, version space.
+ }
+ 
+ func (h *historyAPI) RecordAt(ctx context.Context, objectId, dataset, recordId string, version space.Version) (*anyenc.Value, error) {
++	if h.parent.store.RequiresNativeDatasetRead(dataset) {
++		return nil, crdt.ErrNativeReadRequired
++	}
+ 	if version == "" {
+ 		return nil, errors.New("history: version required")
+ 	}
++	if err := h.parent.store.RefuseNativeCarrierHistory(ctx, objectId); err != nil {
++		return nil, err
++	}
+ 	recordId = h.storedRecordId(objectId, dataset, recordId)
+ 	obj, params, err := h.viewParams(ctx, objectId)
+ 	if err != nil {
+@@ -252,6 +264,9 @@ func (h *historyAPI) Diff(ctx context.Context, objectId string, base, version sp
+ 	if version == "" {
+ 		return space.DiffResult{}, errors.New("history: version required")
+ 	}
++	if err := h.parent.store.RefuseNativeCarrierHistory(ctx, objectId); err != nil {
++		return space.DiffResult{}, err
++	}
+ 	obj, params, err := h.viewParams(ctx, objectId)
+ 	if err != nil {
+ 		return space.DiffResult{}, err
+diff --git a/internal/spaceimpl/object_conditional_test.go b/internal/spaceimpl/object_conditional_test.go
+new file mode 100644
+index 0000000..59321d2
+--- /dev/null
++++ b/internal/spaceimpl/object_conditional_test.go
+@@ -0,0 +1,42 @@
++package spaceimpl
++
++import (
++	"context"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++	"github.com/anyproto/any-sync-sdk/space"
++	"github.com/stretchr/testify/require"
++	"testing"
++)
++
++func TestObjectConditionalModifyShapeGuards(t *testing.T) {
++	seq := uint64(7)
++	valid := func() space.ModifyBatch {
++		return space.ModifyBatch{ObjectId: "target", Dataset: "objects", Records: []space.RecordModify{{Id: "target", Ops: []space.Op{{Type: space.OpSet, Path: "any.name", Value: "x"}}}}, IfObjectUnchangedSince: &seq}
++	}
++	require.NoError(t, checkObjectConditionalBatch(valid()))
++	for _, mode := range []string{"local", "other dataset", "foreign row", "empty id", "upsert", "two records", "two conditions"} {
++		t.Run(mode, func(t *testing.T) {
++			b := valid()
++			switch mode {
++			case "local":
++				b.Scope = space.ScopeLocal
++			case "other dataset":
++				b.Dataset = "blocks"
++			case "foreign row":
++				b.Records[0].Id = "other"
++			case "empty id":
++				b.Records[0].Id = ""
++			case "upsert":
++				b.Records[0].Upsert = true
++			case "two records":
++				b.Records = append(b.Records, b.Records[0])
++			case "two conditions":
++				b.IfUnchangedSince = &seq
++			}
++			_, err := (&spaceImpl{}).Modify(context.Background(), b)
++			require.ErrorIs(t, err, crdt.ErrValidation)
++		})
++	}
++	_, err := (&spaceImpl{}).ModifyMany(context.Background(), []space.ModifyBatch{valid()})
++	require.ErrorIs(t, err, crdt.ErrValidation)
++}
+diff --git a/internal/spaceimpl/properties_conditional.go b/internal/spaceimpl/properties_conditional.go
+new file mode 100644
+index 0000000..0c6ef6f
+--- /dev/null
++++ b/internal/spaceimpl/properties_conditional.go
+@@ -0,0 +1,69 @@
++package spaceimpl
++
++import (
++	"context"
++	"errors"
++	"fmt"
++
++	"github.com/anyproto/any-store/v2/anyenc"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++	"github.com/anyproto/any-sync-sdk/internal/object"
++	"github.com/anyproto/any-sync-sdk/internal/properties"
++	"github.com/anyproto/any-sync-sdk/internal/schema"
++	"github.com/anyproto/any-sync-sdk/space"
++)
++
++func (p *propertiesAPI) SetConditional(ctx context.Context, objectId, typeId string, patch map[string]any, expectedApplySeq uint64) (space.ModifyResult, error) {
++	if objectId == "" || typeId == "" || len(patch) == 0 {
++		return space.ModifyResult{}, fmt.Errorf("%w: objectId, ownerId and nonempty patch required", crdt.ErrValidation)
++	}
++	route, _, err := resolveRoute(p.parent.store.Registry(), typeId, patch)
++	if err != nil {
++		return space.ModifyResult{}, err
++	}
++	if route != schema.ScopeSynced {
++		return space.ModifyResult{}, fmt.Errorf("%w: SetConditional supports synced properties only", crdt.ErrValidation)
++	}
++	arena := &anyenc.Arena{}
++	ops, err := patchOps(arena, typeId, patch)
++	if err != nil {
++		return space.ModifyResult{}, err
++	}
++	dataVersion, err := dataVersionForType(ctx, p.parent.store.Registry(), typeId)
++	if err != nil {
++		return space.ModifyResult{}, err
++	}
++	obj, err := p.parent.store.Get(ctx, objectId)
++	if err != nil {
++		return space.ModifyResult{}, err
++	}
++	ch := crdt.Change{Dataset: properties.Dataset, DataVersion: dataVersion, Records: []crdt.RecordChange{{Id: objectId, Ops: ops}}}
++	result, err := p.parent.localWriteRetryObjectIf(ctx, obj, objectId, ch, expectedApplySeq)
++	if err != nil {
++		return space.ModifyResult{}, err
++	}
++	return modifyResultFromWrite(result), nil
++}
++
++func (s *spaceImpl) localWriteRetryObjectIf(ctx context.Context, obj *object.Object, objectId string, ch crdt.Change, seq uint64) (object.WriteResult, error) {
++	result, err := obj.LocalWriteIfObject(ctx, ch, seq)
++	if !errors.Is(err, object.ErrClosed) {
++		return result, wrapSlotErr(err)
++	}
++	fresh, err := s.store.Get(ctx, objectId)
++	if err != nil {
++		return object.WriteResult{}, err
++	}
++	result, err = fresh.LocalWriteIfObject(ctx, ch, seq)
++	return result, wrapSlotErr(err)
++}
++
++func checkObjectConditionalBatch(batch space.ModifyBatch) error {
++	if batch.IfObjectUnchangedSince == nil {
++		return nil
++	}
++	if batch.IfUnchangedSince != nil || (batch.Scope != 0 && batch.Scope != space.ScopeSynced) || batch.Dataset != properties.Dataset || len(batch.Records) != 1 || batch.Records[0].Id != batch.ObjectId || batch.Records[0].Upsert {
++		return fmt.Errorf("%w: IfObjectUnchangedSince requires one explicit non-upsert objects row in synced scope and no other precondition", crdt.ErrValidation)
++	}
++	return nil
++}
+diff --git a/internal/spaceimpl/query.go b/internal/spaceimpl/query.go
+index 8984025..fa28812 100644
+--- a/internal/spaceimpl/query.go
++++ b/internal/spaceimpl/query.go
+@@ -231,6 +231,9 @@ func newDatasetQuery(store *spaceobjects.Store, dataset string) *queryImpl {
+ // shared dataset. No object is loaded: the read sees the space's
+ // materialized state, as a QueryObjects read does.
+ func resolveDatasetCollection(ctx context.Context, store *spaceobjects.Store, dataset string) (anystore.Collection, error) {
++	if store.RequiresNativeDatasetRead(dataset) {
++		return nil, crdt.ErrNativeReadRequired
++	}
+ 	coll, ok, err := store.KeyedCollection(ctx, dataset)
+ 	if err != nil {
+ 		return nil, fmt.Errorf("query: %w", err)
+@@ -478,6 +481,9 @@ func (q *queryImpl) totalWithin(ctx context.Context, coll anystore.Collection, c
+ // reference to it. Subsequent live updates flow through
+ // QueryResult.Sub.
+ func (q *queryImpl) Subscribe(ctx context.Context, opts space.QueryOpts) (*space.QueryResult, error) {
++	if q.store.RequiresNativeDatasetRead(q.dataset) {
++		return nil, crdt.ErrNativeReadRequired
++	}
+ 	if q.parseErr != nil {
+ 		return nil, q.parseErr
+ 	}
+@@ -790,6 +796,9 @@ func (q *queryImpl) collection(ctx context.Context) (anystore.Collection, error)
+ // anything else goes through the object's controller. See
+ // queryImpl.collection for the (nil, nil) empty-dataset contract.
+ func resolveCollection(ctx context.Context, store *spaceobjects.Store, objectId, dataset string) (coll anystore.Collection, ctrl *crdt.Controller, err error) {
++	if store.RequiresNativeDatasetRead(dataset) {
++		return nil, nil, crdt.ErrNativeReadRequired
++	}
+ 	if dataset == sharedObjectsDataset {
+ 		coll, err = store.SharedObjects(ctx)
+ 		return coll, nil, err
+diff --git a/internal/spaceimpl/space.go b/internal/spaceimpl/space.go
+index 2958fcd..51f3964 100644
+--- a/internal/spaceimpl/space.go
++++ b/internal/spaceimpl/space.go
+@@ -377,6 +377,12 @@ func (s *spaceImpl) Modify(ctx context.Context, batch space.ModifyBatch) (space.
+ 	if err := checkPublicDataset(batch.Dataset); err != nil {
+ 		return space.ModifyResult{}, err
+ 	}
++	if err := checkObjectConditionalBatch(batch); err != nil {
++		return space.ModifyResult{}, err
++	}
++	if err := checkCurrentWriterBatch(batch); err != nil {
++		return space.ModifyResult{}, err
++	}
+ 	if err := checkObjectsRowBatch(batch); err != nil {
+ 		return space.ModifyResult{}, err
+ 	}
+@@ -413,7 +419,14 @@ func (s *spaceImpl) Modify(ctx context.Context, batch space.ModifyBatch) (space.
+ 		return space.ModifyResult{}, err
+ 	}
+ 
+-	res, err := s.localWriteRetryIf(ctx, obj, batch.ObjectId, change, batch.IfUnchangedSince)
++	var res object.WriteResult
++	if batch.IfObjectUnchangedSince != nil {
++		res, err = s.localWriteRetryObjectIf(ctx, obj, batch.ObjectId, change, *batch.IfObjectUnchangedSince)
++	} else if batch.RequireCurrentWriterFence {
++		res, err = s.localWriteRetryCurrentWriter(ctx, obj, batch.ObjectId, change, batch.IfUnchangedSince)
++	} else {
++		res, err = s.localWriteRetryIf(ctx, obj, batch.ObjectId, change, batch.IfUnchangedSince)
++	}
+ 	if err != nil {
+ 		return space.ModifyResult{}, err
+ 	}
+@@ -520,7 +533,7 @@ func (s *spaceImpl) ModifyMany(ctx context.Context, batches []space.ModifyBatch)
+ 		}
+ 		// Each batch is its own change, so a precondition could not hold
+ 		// across them.
+-		if batches[i].IfUnchangedSince != nil {
++		if batches[i].IfUnchangedSince != nil || batches[i].IfObjectUnchangedSince != nil || batches[i].RequireCurrentWriterFence {
+ 			return nil, errors.Join(crdt.ErrValidation, fmt.Errorf("spaceimpl: ModifyMany: batch %d: IfUnchangedSince is supported by Modify only", i))
+ 		}
+ 		if err := checkObjectsRowBatch(batches[i]); err != nil {
+@@ -977,3 +990,7 @@ func parseCondition(filter any) (query.Filter, error) {
+ 	}
+ 	return parsed, nil
+ }
++
++func (s *spaceImpl) NativeReadSnapshot(ctx context.Context, ids []string, read func(crdt.NativeReadView) error) error {
++	return s.store.NativeReadSnapshot(ctx, ids, read)
++}
+diff --git a/internal/spaceimpl/techspace_handle.go b/internal/spaceimpl/techspace_handle.go
+index 5236598..be2f6d1 100644
+--- a/internal/spaceimpl/techspace_handle.go
++++ b/internal/spaceimpl/techspace_handle.go
+@@ -7,6 +7,7 @@ import (
+ 	"github.com/anyproto/any-store/v2/anyenc"
+ 
+ 	"github.com/anyproto/any-sync-sdk/internal/anysyncx"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
+ 	"github.com/anyproto/any-sync-sdk/internal/techspace"
+ 	collectiontype "github.com/anyproto/any-sync-sdk/internal/types/collection"
+ 	"github.com/anyproto/any-sync-sdk/internal/types/spaceindex"
+@@ -533,3 +534,7 @@ var (
+ 	_ space.TypesAPI      = techTypes{}
+ 	_ space.BundlesAPI    = techBundles{}
+ )
++
++func (t *techSpace) NativeReadSnapshot(ctx context.Context, ids []string, read func(crdt.NativeReadView) error) error {
++	return t.inner.NativeReadSnapshot(ctx, ids, read)
++}
+diff --git a/internal/spaceimpl/unsupported.go b/internal/spaceimpl/unsupported.go
+index 4fb4c4b..176f5fd 100644
+--- a/internal/spaceimpl/unsupported.go
++++ b/internal/spaceimpl/unsupported.go
+@@ -28,6 +28,9 @@ func (unsupportedProperties) Get(context.Context, string) (*anyenc.Value, error)
+ func (unsupportedProperties) Set(context.Context, string, string, map[string]any) (space.ModifyResult, error) {
+ 	return space.ModifyResult{}, errUnsupported("Properties().Set")
+ }
++func (unsupportedProperties) SetConditional(context.Context, string, string, map[string]any, uint64) (space.ModifyResult, error) {
++	return space.ModifyResult{}, errUnsupported("Properties().SetConditional")
++}
+ func (unsupportedProperties) SetType(context.Context, string, string) (space.ModifyResult, error) {
+ 	return space.ModifyResult{}, errUnsupported("Properties().SetType")
+ }
+diff --git a/internal/spaceobjects/localguard.go b/internal/spaceobjects/localguard.go
+new file mode 100644
+index 0000000..5ca8af9
+--- /dev/null
++++ b/internal/spaceobjects/localguard.go
+@@ -0,0 +1,331 @@
++package spaceobjects
++
++import (
++	"bytes"
++	"context"
++	"errors"
++	"fmt"
++	"sort"
++
++	"github.com/anyproto/any-store/v2/anyenc"
++	"github.com/anyproto/any-sync-sdk/internal/commitguard"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++	"github.com/anyproto/any-sync-sdk/internal/object"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
++	"github.com/anyproto/any-sync/util/crypto"
++)
++
++type lockedReadView struct {
++	ctx     context.Context
++	objects map[string]*object.Object
++}
++
++func (v lockedReadView) Lookup(objectId, dataset, id string) (*anyenc.Value, error) {
++	o := v.objects[objectId]
++	if o == nil {
++		return nil, errors.New("native guard: undeclared object dependency")
++	}
++	if o.Controller().IsShared(dataset) && id != objectId {
++		return nil, errors.New("native guard: foreign shared row")
++	}
++	return o.Controller().Lookup(v.ctx, dataset, id)
++}
++
++func (v lockedReadView) Query(objectId, dataset string, filter any, limit int) ([]*anyenc.Value, error) {
++	o := v.objects[objectId]
++	if o == nil {
++		return nil, errors.New("native guard: undeclared object dependency")
++	}
++	return o.Controller().GuardQuery(v.ctx, dataset, filter, limit)
++}
++
++func (s *Store) lockLocalWrite(ctx context.Context, carrier *object.Object, ch *crdt.Change) (crdt.LocalReadView, func(), error) {
++	g := carrier.Controller().LocalGuard(ch.Dataset)
++	if g == nil {
++		return nil, nil, errors.New("native guard: no handler")
++	}
++	ids, err := g.LocalTargets(ch)
++	if err != nil {
++		return nil, nil, err
++	}
++	if len(ids) > 256 {
++		return nil, nil, errors.New("native guard: dependency limit")
++	}
++	objects := map[string]*object.Object{carrier.Id(): carrier}
++	for _, id := range ids {
++		if id == "" {
++			return nil, nil, errors.New("native guard: empty target")
++		}
++		if objects[id] != nil {
++			continue
++		}
++		o, err := s.Get(ctx, id)
++		if err != nil {
++			return nil, nil, err
++		}
++		objects[id] = o
++	}
++	order := make([]string, 0, len(objects))
++	for id := range objects {
++		order = append(order, id)
++	}
++	sort.Strings(order)
++	locked := make([]*object.Object, 0, len(order))
++	unlock := func() {
++		for i := len(locked) - 1; i >= 0; i-- {
++			locked[i].Tree().Unlock()
++		}
++	}
++	for _, id := range order {
++		o := objects[id]
++		if err := ctx.Err(); err != nil {
++			unlock()
++			return nil, nil, err
++		}
++		if o.Tree() == nil {
++			unlock()
++			return nil, nil, object.ErrTreeNotSet
++		}
++		o.Tree().Lock()
++		locked = append(locked, o)
++		if err := o.GuardReadyLocked(ctx); err != nil {
++			unlock()
++			return nil, nil, err
++		}
++	}
++	return lockedReadView{ctx: ctx, objects: objects}, unlock, nil
++}
++
++// guardedTreeBuilder keeps AnySync's cryptographic/historical ACL verifier and
++// adds the compiled module's intrinsic validator BEFORE native tree storage.
++// It never evaluates mutable targets or predecessor arrival order on replay.
++func (s *Store) guardedTreeBuilder(guards map[string]crdt.GuardedHandler) objecttree.BuildObjectTreeFunc {
++	return func(storage objecttree.Storage, acl list.AclList) (objecttree.ObjectTree, error) {
++		header, err := storage.Root(context.Background())
++		if err != nil {
++			return nil, err
++		}
++		rawRoot := header.RawTreeChangeWithId()
++		root, err := objecttree.NewChangeBuilder(crypto.NewKeyStorage(), rawRoot).Unmarshall(rawRoot, true)
++		if err != nil {
++			return nil, err
++		}
++		info, _ := root.Model.(*treechangeproto.TreeChangeInfo)
++		var seed []byte
++		if info != nil {
++			seed = info.ChangePayload
++		}
++		isCarrier := false
++		for _, g := range guards {
++			isCarrier = isCarrier || (root.IsDerived && bytes.Equal(seed, g.GuardRootSeed()))
++		}
++		validate := func(raw *objecttree.Change, acl list.AclList) error {
++			if raw.Id == rawRoot.Id {
++				return nil
++			}
++			_, namedGuard := guards[raw.DataType]
++			// A bounded read of other SDK changes also detects a forged outer
++			// DataType that attempts to hide a guarded inner dataset.
++			if len(raw.Data) > 2*1024*1024 {
++				if isCarrier || namedGuard {
++					return errors.New("native guard: change exceeds wire bound")
++				}
++				return nil
++			}
++			data := raw.Data
++			if raw.ReadKeyId != "" {
++				keys, ok := acl.AclState().Keys()[raw.ReadKeyId]
++				if !ok || keys.ReadKey == nil {
++					return list.ErrNoReadKey
++				}
++				rawKey, err := keys.ReadKey.Raw()
++				if err != nil {
++					return err
++				}
++				key, err := crypto.NewKeyDeriver(fmt.Sprintf(crypto.AnysyncTreePath, storage.Id())).DeriveKey(rawKey)
++				if err != nil {
++					return err
++				}
++				data, err = key.Decrypt(raw.Data)
++				if err != nil {
++					return err
++				}
++			}
++			decoded, err := object.NewCodec().Decode(data)
++			if err != nil {
++				if isCarrier || namedGuard {
++					return err
++				}
++				return nil
++			}
++			g := guards[decoded.Dataset]
++			if g == nil {
++				return nil
++			}
++			if raw.ReadKeyId == "" || raw.Identity == nil || raw.IsSnapshot {
++				return errors.New("native guard: signed encrypted operation required")
++			}
++			decoded.SpaceId, decoded.ObjectId = s.spaceId, storage.Id()
++			decoded.ChangeId, decoded.Creator, decoded.ACLHeadId = raw.Id, raw.Identity.Account(), raw.AclHeadId
++			decoded.ObjectDerived, decoded.ObjectRootPayload = root.IsDerived, append([]byte(nil), seed...)
++			return g.ValidateNative(&decoded)
++		}
++		return commitguard.Builder(validate)(storage, acl)
++	}
++}
++
++// NativeReadSnapshot holds all declared native objects, then current ACL, then
++// a single projection transaction. The callback receives only already-loaded
++// controller reads: it cannot reenter object loading or acquire locks in the
++// opposite order. The order matches native writes (trees -> ACL -> storage).
++func (s *Store) NativeReadSnapshot(ctx context.Context, ids []string, read func(crdt.NativeReadView) error) (err error) {
++	if read == nil || len(ids) == 0 || len(ids) > 1001 || s.signKey == nil {
++		return errors.New("native snapshot: invalid dependencies")
++	}
++	generation, err := s.Generation(ctx)
++	if err != nil {
++		return err
++	}
++	handle, err := s.app.GetSpace(ctx, s.spaceId)
++	if err != nil {
++		return err
++	}
++	acl := handle.Inner().Acl()
++	if acl == nil {
++		return list.ErrInsufficientPermissions
++	}
++	objects := make(map[string]*object.Object)
++	for _, id := range ids {
++		if id == "" {
++			return errors.New("native snapshot: empty dependency")
++		}
++		if objects[id] != nil {
++			continue
++		}
++		o, err := s.Get(ctx, id)
++		if err != nil {
++			return err
++		}
++		objects[id] = o
++	}
++	order := make([]string, 0, len(objects))
++	for id := range objects {
++		order = append(order, id)
++	}
++	sort.Strings(order)
++	locked := make([]*object.Object, 0, len(order))
++	defer func() {
++		for i := len(locked) - 1; i >= 0; i-- {
++			locked[i].Tree().Unlock()
++		}
++	}()
++	for _, id := range order {
++		if err := ctx.Err(); err != nil {
++			return err
++		}
++		o := objects[id]
++		if o.Tree() == nil {
++			return object.ErrTreeNotSet
++		}
++		o.Tree().Lock()
++		locked = append(locked, o)
++		if err := o.GuardReadyLocked(ctx); err != nil {
++			return err
++		}
++	}
++	acl.RLock()
++	defer acl.RUnlock()
++	permission := acl.AclState().Permissions(s.signKey.GetPublic())
++	switch permission {
++	case list.AclPermissionsReader, list.AclPermissionsWriter, list.AclPermissionsAdmin, list.AclPermissionsOwner:
++	default:
++		return list.ErrInsufficientPermissions
++	}
++	tx, err := s.db.ReadTx(ctx)
++	if err != nil {
++		return err
++	}
++	defer func() { err = errors.Join(err, tx.Commit()) }()
++	stamp := crdt.NativeReadStamp{StoreGeneration: generation, TreeHeads: map[string][]string{}}
++	if head := acl.Head(); head != nil {
++		stamp.ACLHeadID = head.Id
++	}
++	for id, o := range objects {
++		stamp.TreeHeads[id] = append([]string(nil), o.Tree().Heads()...)
++		sort.Strings(stamp.TreeHeads[id])
++	}
++	return read(snapshotReadView{lockedReadView: lockedReadView{ctx: tx.Context(), objects: objects}, controller: objects[order[0]].Controller(), canWrite: permission.CanWrite() && s.CheckWrite() == nil, stamp: stamp})
++}
++
++// Only the native read scope can see arbitrary object rows, all from the same
++// transaction and Space. It cannot materialize a tree or mutate its projection.
++type snapshotReadView struct {
++	lockedReadView
++	controller *crdt.Controller
++	canWrite   bool
++	stamp      crdt.NativeReadStamp
++}
++
++func (v snapshotReadView) SpaceObjects(filter any, limit int) ([]*anyenc.Value, error) {
++	return v.controller.GuardSpaceObjects(v.ctx, filter, limit)
++}
++func (v snapshotReadView) CanWrite() bool                  { return v.canWrite }
++func (v snapshotReadView) ReadStamp() crdt.NativeReadStamp { return v.stamp }
++
++// Guarded canonical datasets are served only through NativeReadSnapshot.
++// Generic queries, subscriptions and history cannot preserve current authority
++// after returning an unrestricted collection, iterator or historical view.
++func (s *Store) RequiresNativeDatasetRead(dataset string) bool {
++	if s == nil {
++		return false
++	}
++	for _, reg := range s.canonicalRegs {
++		if reg.Name == dataset {
++			_, guarded := reg.Handler.(crdt.GuardedHandler)
++			return guarded
++		}
++	}
++	return false
++}
++
++func (s *Store) RefuseNativeCarrierHistory(ctx context.Context, objectID string) error {
++	if s == nil {
++		return nil
++	}
++	var guards []crdt.GuardedHandler
++	for _, reg := range s.canonicalRegs {
++		if g, ok := reg.Handler.(crdt.GuardedHandler); ok {
++			guards = append(guards, g)
++		}
++	}
++	if len(guards) == 0 {
++		return nil
++	}
++	obj, err := s.Get(ctx, objectID)
++	if err != nil {
++		return err
++	}
++	if obj.Tree() == nil {
++		return object.ErrTreeNotSet
++	}
++	obj.Tree().Lock()
++	defer obj.Tree().Unlock()
++	if err := obj.GuardReadyLocked(ctx); err != nil {
++		return err
++	}
++	if !obj.Tree().IsDerived() {
++		return nil
++	}
++	info := obj.Tree().ChangeInfo()
++	if info == nil {
++		return nil
++	}
++	for _, g := range guards {
++		if bytes.Equal(info.ChangePayload, g.GuardRootSeed()) {
++			return crdt.ErrNativeReadRequired
++		}
++	}
++	return nil
++}
+diff --git a/internal/spaceobjects/native_guard_test.go b/internal/spaceobjects/native_guard_test.go
+new file mode 100644
+index 0000000..6e0246d
+--- /dev/null
++++ b/internal/spaceobjects/native_guard_test.go
+@@ -0,0 +1,133 @@
++package spaceobjects
++
++import (
++	"bytes"
++	"context"
++	"errors"
++	"path/filepath"
++	"testing"
++
++	anystore "github.com/anyproto/any-store"
++	"github.com/anyproto/any-store/v2/anyenc"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++	"github.com/anyproto/any-sync-sdk/internal/object"
++	"github.com/anyproto/any-sync/commonspace/object/accountdata"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/acl/recordverifier"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treestorage"
++	"github.com/anyproto/any-sync/commonspace/spacepayloads"
++	"github.com/anyproto/any-sync/commonspace/spacestorage"
++	"github.com/anyproto/any-sync/util/crypto"
++	"github.com/stretchr/testify/require"
++)
++
++type intrinsicGuard struct {
++	spaceID, author string
++	calls           int
++}
++
++func (g *intrinsicGuard) GuardRootSeed() []byte { return []byte("test-native-carrier") }
++func (g *intrinsicGuard) LocalTargets(*crdt.Change) ([]string, error) {
++	panic("inbound must not ask for mutable local targets")
++}
++func (g *intrinsicGuard) ValidateLocal(*crdt.Change, crdt.LocalReadView) error {
++	panic("inbound must not run arrival-dependent local checks")
++}
++func (g *intrinsicGuard) ValidateNative(ch *crdt.Change) error {
++	g.calls++
++	if !ch.ObjectDerived || !bytes.Equal(ch.ObjectRootPayload, g.GuardRootSeed()) || ch.SpaceId != g.spaceID || ch.Creator != g.author || ch.ChangeId == "" || ch.ACLHeadId == "" || len(ch.Records) != 1 || len(ch.Records[0].Ops) != 1 || ch.Records[0].Ops[0].Payload.GetString("author") != ch.Creator {
++		return errors.New("test native intrinsic identity mismatch")
++	}
++	return nil
++}
++
++func TestRealSignedRemoteChangesUseIntrinsicGuardBeforeStorage(t *testing.T) {
++	for _, mode := range []string{"valid", "forged inner author", "disguised outer dataset", "wrong root seed", "oversized canonical envelope", "malformed canonical envelope"} {
++		t.Run(mode, func(t *testing.T) {
++			ctx := context.Background()
++			keys, err := accountdata.NewRandom()
++			require.NoError(t, err)
++			master, _, err := crypto.GenerateRandomEd25519KeyPair()
++			require.NoError(t, err)
++			metadata, _, err := crypto.GenerateRandomEd25519KeyPair()
++			require.NoError(t, err)
++			payload, err := spacepayloads.StoragePayloadForSpaceCreate(spacepayloads.SpaceCreatePayload{SigningKey: keys.SignKey, SpaceType: "space", ReplicationKey: 10, MasterKey: master, ReadKey: crypto.NewAES(), MetadataKey: metadata, Metadata: []byte("disposable native ingest fixture")})
++			require.NoError(t, err)
++			open := func(name string) (anystore.DB, spacestorage.SpaceStorage) {
++				db, err := anystore.Open(ctx, filepath.Join(t.TempDir(), name), &anystore.Config{ReadConnections: 2})
++				require.NoError(t, err)
++				t.Cleanup(func() { require.NoError(t, db.Close()) })
++				sp, err := spacestorage.Create(ctx, db, payload)
++				require.NoError(t, err)
++				return db, sp
++			}
++			_, writerSpace := open("writer.db")
++			_, receiverSpace := open("receiver.db")
++			aclStorage, err := writerSpace.AclStorage()
++			require.NoError(t, err)
++			acl, err := list.BuildAclListWithIdentity(keys, aclStorage, recordverifier.NewValidateFull())
++			require.NoError(t, err)
++			g := &intrinsicGuard{spaceID: writerSpace.Id(), author: keys.SignKey.GetPublic().Account()}
++			seed := g.GuardRootSeed()
++			if mode == "wrong root seed" {
++				seed = []byte("another-carrier")
++			}
++			root, err := objecttree.DeriveObjectTreeRoot(objecttree.ObjectTreeDerivePayload{SpaceId: writerSpace.Id(), ChangeType: "native-ingest-test", ChangePayload: seed, IsEncrypted: true}, nil)
++			require.NoError(t, err)
++			create := func(sp spacestorage.SpaceStorage) objecttree.Storage {
++				st, err := sp.CreateTreeStorage(ctx, treestorage.TreeStorageCreatePayload{RootRawChange: root, Heads: []string{root.Id}})
++				require.NoError(t, err)
++				return st
++			}
++			writer, err := objecttree.BuildObjectTree(create(writerSpace), acl)
++			require.NoError(t, err)
++			store := &Store{spaceId: writerSpace.Id()}
++			receiver, err := store.guardedTreeBuilder(map[string]crdt.GuardedHandler{"test_guard": g})(create(receiverSpace), acl)
++			require.NoError(t, err)
++			writer.Lock()
++			receiver.Lock()
++			t.Cleanup(func() {
++				receiver.Unlock()
++				require.NoError(t, receiver.Close())
++				writer.Unlock()
++				require.NoError(t, writer.Close())
++			})
++			a := &anyenc.Arena{}
++			fields := a.NewObject()
++			author := g.author
++			if mode == "forged inner author" || mode == "disguised outer dataset" {
++				author = "forged-account"
++			}
++			fields.Set("author", a.NewString(author))
++			data, err := object.NewCodec().Encode(&crdt.Change{Dataset: "test_guard", DataVersion: "test-v1", Records: []crdt.RecordChange{{Id: "claim", Upsert: true, Ops: []crdt.Op{{Type: crdt.OpSet, Payload: fields}}}}})
++			require.NoError(t, err)
++			if mode == "oversized canonical envelope" {
++				data = bytes.Repeat([]byte("x"), 2*1024*1024+1)
++			}
++			if mode == "malformed canonical envelope" {
++				data = []byte("not SDK wire data")
++			}
++			outer := "test_guard"
++			if mode == "disguised outer dataset" {
++				outer = "objects"
++			}
++			created, err := writer.AddContent(ctx, objecttree.SignableChangeContent{Key: keys.SignKey, Data: data, DataType: outer, ShouldBeEncrypted: true})
++			require.NoError(t, err)
++			require.Len(t, created.Added, 1)
++			raw := created.Added[0].RawTreeChangeWithId()
++			_, err = receiver.AddRawChanges(ctx, objecttree.RawChangesPayload{NewHeads: []string{raw.Id}, RawChanges: []*treechangeproto.RawTreeChangeWithId{raw}})
++			has, readErr := receiver.Storage().Has(ctx, raw.Id)
++			require.NoError(t, readErr)
++			if mode == "valid" {
++				require.NoError(t, err)
++				require.True(t, has)
++				require.Greater(t, g.calls, 0)
++			} else {
++				require.Error(t, err)
++				require.False(t, has, "rejected signed operation must not become native history")
++			}
++		})
++	}
++}
+diff --git a/internal/spaceobjects/store.go b/internal/spaceobjects/store.go
+index 28ea04c..93ed130 100644
+--- a/internal/spaceobjects/store.go
++++ b/internal/spaceobjects/store.go
+@@ -2907,6 +2907,7 @@ func (s *Store) loadObject(ctx context.Context, objectId string, payload *treest
+ 		AfterApply:     s.afterApplyFor(),
+ 		AfterReplay:    s.afterReplayFor(),
+ 		WriteGate:      s.CheckWrite,
++		LockLocalWrite: s.lockLocalWrite,
+ 		PlaintextSpecs: plaintextSpecs,
+ 		OnClose: func() {
+ 			s.releaseHistoryHandle(objectId)
+@@ -2915,7 +2916,7 @@ func (s *Store) loadObject(ctx context.Context, objectId string, payload *treest
+ 		ApplyGap: s.gaps.Has(objectId),
+ 		OnGap:    func(gap bool) { s.gaps.Set(objectId, gap) },
+ 	}, func(listener updatelistener.UpdateListener) (objecttree.ObjectTree, error) {
+-		return s.openTree(ctx, handle, objectId, payload, listener)
++		return s.openTree(ctx, handle, objectId, payload, listener, ctrl.NativeGuards())
+ 	})
+ 	if err != nil {
+ 		return nil, err
+@@ -3033,22 +3034,33 @@ func (s *Store) releaseHistoryHandle(objectId string) {
+ // IterateAfterAddSeq. Local writes are unaffected: tree.AddContent
+ // in any-sync persists to storage before broadcasting, regardless
+ // of this flag.
+-func (s *Store) openTree(ctx context.Context, handle anysyncx.SpaceHandle, objectId string, payload *treestorage.TreeStorageCreatePayload, listener updatelistener.UpdateListener) (objecttree.ObjectTree, error) {
++func (s *Store) openTree(ctx context.Context, handle anysyncx.SpaceHandle, objectId string, payload *treestorage.TreeStorageCreatePayload, listener updatelistener.UpdateListener, guardSets ...map[string]crdt.GuardedHandler) (objecttree.ObjectTree, error) {
+ 	tb := handle.Inner().TreeBuilder()
++	var guardedBuilder objecttree.BuildObjectTreeFunc
++	if len(guardSets) > 0 && len(guardSets[0]) > 0 {
++		guardedBuilder = s.guardedTreeBuilder(guardSets[0])
++	}
+ 	if payload != nil {
+ 		tree, err := tb.PutTree(ctx, *payload, listener)
+ 		if err == nil {
+-			deferIfSyncTree(tree)
+-			return tree, nil
+-		}
+-		if !errors.Is(err, treestorage.ErrTreeExists) {
++			if guardedBuilder == nil {
++				deferIfSyncTree(tree)
++				return tree, nil
++			}
++			// PutTree has no custom-builder option. It has stored only the
++			// immutable root; reopen it through the guarded builder BEFORE
++			// any user or system content can be appended.
++			if err = tree.Close(); err != nil {
++				return nil, err
++			}
++		} else if !errors.Is(err, treestorage.ErrTreeExists) {
+ 			// PutTree checks the deleted status first, so a re-created
+ 			// id whose tree was deleted here reports it on this branch.
+ 			return nil, treeOpenError("PutTree", objectId, err)
+ 		}
+ 		// fall through to BuildTree on ErrTreeExists
+ 	}
+-	opts := objecttreebuilder.BuildTreeOpts{Listener: listener}
++	opts := objecttreebuilder.BuildTreeOpts{Listener: listener, TreeBuilder: guardedBuilder}
+ 	if s.SelectiveMode() {
+ 		// Probe-first: a remote fetch of an unknown tree asks for root +
+ 		// heads only; the validator classifies by root changeType before
+@@ -3069,6 +3081,7 @@ func (s *Store) openTree(ctx context.Context, handle anysyncx.SpaceHandle, objec
+ 		// delegates to any-sync's default validation.
+ 		tree, err = build(objecttreebuilder.BuildTreeOpts{
+ 			Listener:      listener,
++			TreeBuilder:   guardedBuilder,
+ 			TreeValidator: s.selectiveTreeValidator(false),
+ 		})
+ 	}
+diff --git a/space/modify.go b/space/modify.go
+index 931ab8f..bced110 100644
+--- a/space/modify.go
++++ b/space/modify.go
+@@ -82,6 +82,25 @@ type ModifyBatch struct {
+ 	// Synced scope only; not for ModifyMany or the objects dataset, whose
+ 	// row every change to the object stamps.
+ 	IfUnchangedSince *uint64
++
++	// RequireCurrentWriterFence opts this conditional synced dataset write into
++	// the native current-ACL/storage fence. It requires IfUnchangedSince and
++	// refuses runtimes without that fence. Authority is rechecked after signing
++	// and held through the durable append. An empty strict patch still checks
++	// the target, dataset sequence and current writer, but creates no history.
++	// Default false preserves the existing upstream write route.
++	RequireCurrentWriterFence bool
++
++	// IfObjectUnchangedSince is a separate, opt-in native objects-row CAS.
++	// It requires synced scope, Dataset == "objects", one strict (non-upsert)
++	// record whose explicit Id equals ObjectId, and no IfUnchangedSince.
++	// The existing native row's _applySeq must equal this value exactly under
++	// the object's tree lock. The signed append additionally holds current
++	// ACL authority through durable storage. A runtime without that fence
++	// refuses the write. Every mutation of this row, including A -> B -> A,
++	// invalidates the previous sequence. As with IfUnchangedSince, the caller
++	// must bind this process-local sequence to the current run/generation.
++	IfObjectUnchangedSince *uint64
+ }
+ 
+ // RecordModify groups ops applied to one record id.
+diff --git a/space/properties.go b/space/properties.go
+index 082d701..b01abde 100644
+--- a/space/properties.go
++++ b/space/properties.go
+@@ -50,6 +50,15 @@ type PropertiesAPI interface {
+ 	// written.
+ 	Set(ctx context.Context, objectId, ownerId string, patch map[string]any) (ModifyResult, error)
+ 
++	// SetConditional retains Set's typed property and owner validation but
++	// accepts synced properties only. It updates an existing objects row iff
++	// its native _applySeq still equals expectedApplySeq, under the same tree
++	// lock and current-ACL durable-storage fence. Callers must compare their
++	// complete native version and bind the sequence to the current process
++	// run before calling. Missing rows, stale/future sequences and unavailable
++	// fences fail closed; no upsert or cross-scope fallback is performed.
++	SetConditional(ctx context.Context, objectId, ownerId string, patch map[string]any, expectedApplySeq uint64) (ModifyResult, error)
++
+ 	// SetType replaces the object's type. The previous type's values
+ 	// and dataset records become orphan data, read-tolerant; its
+ 	// datasets refuse further writes. A known collection id is refused
+diff --git a/space/snapshot.go b/space/snapshot.go
+new file mode 100644
+index 0000000..a26e743
+--- /dev/null
++++ b/space/snapshot.go
+@@ -0,0 +1,22 @@
++package space
++
++import (
++	"context"
++	"github.com/anyproto/any-sync-sdk/handler"
++	"github.com/anyproto/any-sync-sdk/internal/crdt"
++)
++
++var ErrNativeReadRequired = crdt.ErrNativeReadRequired
++
++// NativeReadSnapshot returns a current-ACL-fenced native view over explicitly
++// declared objects. Every read uses one SQLite snapshot while target trees are
++// held; the callback cannot load objects or write. Unsupported backends refuse.
++func NativeReadSnapshot(ctx context.Context, sp Space, objectIDs []string, read func(handler.NativeReadView) error) error {
++	r, ok := sp.(interface {
++		NativeReadSnapshot(context.Context, []string, func(handler.NativeReadView) error) error
++	})
++	if !ok {
++		return ErrUnsupported
++	}
++	return r.NativeReadSnapshot(ctx, objectIDs, read)
++}

@@ -189,33 +189,13 @@ extension AnyHTTPClient {
         path: [String], spaceID: String, query: AnyJSON, streamSession: AnyStreamSession,
         maximumRecords: Int, requireComplete: Bool, maximumFrameBytes: Int
     ) async throws -> AsyncThrowingStream<AnyQueryUpdate, Error> {
-        guard !spaceID.isEmpty, (1...10001).contains(maximumRecords),
-              (1024...64 * 1024 * 1024).contains(maximumFrameBytes) else {
+        guard !spaceID.isEmpty, (1...10001).contains(maximumRecords) else {
             throw AnyLiveQueryError.incompleteWindow
         }
         let generation = streamSession.generation
-        try await streamSession.requireActive(generation: generation)
-        try await checkAccount()
-        try Task.checkCancellation()
-        try await streamSession.requireActive(generation: generation)
-        var request = try makeRequest(
-            method: "POST", path: path, body: query)
-        request.timeoutInterval = 90
-        request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
-        guard (request.httpBody?.count ?? 0) <= 1024 * 1024 else { throw AnyLiveQueryError.frameTooLarge }
-        let (connection, frames) = AnySSEConnection.open(
-            request: request, maximumFrameBytes: maximumFrameBytes)
-        let registration: UUID
-        do { registration = try await streamSession.register(generation: generation) { connection.cancel() } }
-        catch { connection.cancel(); throw error }
-        // Cancellation can arrive while registration waits for the session actor.
-        // Do not create an unstructured reader for a caller that already left.
-        do { try Task.checkCancellation() }
-        catch {
-            connection.cancel()
-            await streamSession.unregister(registration)
-            throw error
-        }
+        let frames = try await subscribeFrames(
+            method: "POST", path: path, body: query, streamSession: streamSession,
+            maximumFrameBytes: maximumFrameBytes)
         return AsyncThrowingStream(bufferingPolicy: .bufferingOldest(2)) { continuation in
             let worker = Task {
                 do {
@@ -224,8 +204,6 @@ extension AnyHTTPClient {
                         maximumWindowBytes: maximumFrameBytes)
                     for try await frame in frames {
                         try Task.checkCancellation()
-                        try await streamSession.requireActive(generation: generation)
-                        try await checkAccount()
                         try await streamSession.requireActive(generation: generation)
                         guard let update = try window.apply(frame, generation: generation) else { continue }
                         switch continuation.yield(update) {
@@ -236,9 +214,61 @@ extension AnyHTTPClient {
                         }
                     }
                     throw AnyLiveQueryError.disconnected
-                } catch {
-                    continuation.finish(throwing: error)
-                }
+                } catch { continuation.finish(throwing: error) }
+            }
+            continuation.onTermination = { @Sendable _ in worker.cancel() }
+        }
+    }
+
+    /// One bounded transport for stock query deltas and native full-state
+    /// snapshots. Routes supply their own atomic-state parser; none uses replay.
+    func subscribeFrames(
+        method: String, path: [String], body: AnyJSON? = nil,
+        query: [String: String] = [:], streamSession: AnyStreamSession,
+        maximumFrameBytes: Int
+    ) async throws -> AsyncThrowingStream<AnySSEFrame, Error> {
+        guard ["GET", "POST"].contains(method),
+              (1024...64 * 1024 * 1024).contains(maximumFrameBytes) else {
+            throw AnyLiveQueryError.incompleteWindow
+        }
+        let generation = streamSession.generation
+        try await streamSession.requireActive(generation: generation)
+        try await checkAccount()
+        try Task.checkCancellation()
+        try await streamSession.requireActive(generation: generation)
+        var request = try makeRequest(method: method, path: path, body: body, query: query)
+        request.timeoutInterval = 90
+        request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
+        guard (request.httpBody?.count ?? 0) <= 1024 * 1024 else { throw AnyLiveQueryError.frameTooLarge }
+        let (connection, frames) = AnySSEConnection.open(
+            request: request, maximumFrameBytes: maximumFrameBytes)
+        let registration: UUID
+        do { registration = try await streamSession.register(generation: generation) { connection.cancel() } }
+        catch { connection.cancel(); throw error }
+        // Registration can suspend while the caller is cancelled.
+        do { try Task.checkCancellation() }
+        catch {
+            connection.cancel()
+            await streamSession.unregister(registration)
+            throw error
+        }
+        return AsyncThrowingStream(bufferingPolicy: .bufferingOldest(2)) { continuation in
+            let worker = Task {
+                do {
+                    for try await frame in frames {
+                        try Task.checkCancellation()
+                        try await streamSession.requireActive(generation: generation)
+                        try await checkAccount()
+                        try await streamSession.requireActive(generation: generation)
+                        switch continuation.yield(frame) {
+                        case .enqueued: break
+                        case .dropped: throw AnyLiveQueryError.bufferOverflow
+                        case .terminated: throw CancellationError()
+                        @unknown default: throw AnyLiveQueryError.bufferOverflow
+                        }
+                    }
+                    throw AnyLiveQueryError.disconnected
+                } catch { continuation.finish(throwing: error) }
                 connection.cancel()
                 await streamSession.unregister(registration)
             }

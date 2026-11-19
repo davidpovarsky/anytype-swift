@@ -119,7 +119,7 @@ public struct AnyHTTPTorahTargetAccess: AnyTorahTargetAccess, Sendable {
         try Self.requireReachableBlock(blockID, response: response, limit: blockLimit)
     }
 
-    static func validateMember(_ member: AnyJSON, workspace: AnyTorahWorkspace,
+    public static func validateMember(_ member: AnyJSON, workspace: AnyTorahWorkspace,
                                intent: AnyTorahTargetIntent) throws {
         guard member["identity"]?.string == workspace.accountID,
               member["status"]?.string == "active",

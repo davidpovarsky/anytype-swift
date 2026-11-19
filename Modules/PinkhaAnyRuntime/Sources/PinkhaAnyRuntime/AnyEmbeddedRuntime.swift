@@ -2,6 +2,7 @@ import Foundation
 import Security
 import Darwin
 import AnyLib
+import PinkhaAnyEngine
 
 public enum AnyEmbeddedRuntimeError: Error, Equatable, Sendable {
     case invalidConfiguration
@@ -60,8 +61,37 @@ public enum AnyEmbeddedNetwork: Sendable {
     }
 }
 
+/// A synchronous, generation-bound last-resort hook for iOS background-task
+/// expiry. Normal shutdown must still drain the host and reconcile actor state.
+public struct AnyEmbeddedEmergencyStop: Sendable {
+    fileprivate let generation: UUID
+    public func requestStop() { AnyRuntimeEmergencyRegistry.shared.signal(generation) }
+}
+
+private final class AnyRuntimeEmergencyRegistry: @unchecked Sendable {
+    static let shared = AnyRuntimeEmergencyRegistry()
+    private let lock = NSLock()
+    private var generation: UUID?
+    func install(_ value: UUID) {
+        lock.lock(); defer { lock.unlock() }
+        generation = value
+    }
+    func clear(_ value: UUID) {
+        lock.lock(); defer { lock.unlock() }
+        if generation == value { generation = nil }
+    }
+    func signal(_ value: UUID) {
+        lock.lock(); defer { lock.unlock() }
+        guard generation == value else { return }
+        // Native StopNow is the upstream synchronous, non-draining signal.
+        // Holding this lock prevents an old signal crossing a later boot.
+        AnyLibStopNow()
+    }
+}
+
 /// Holds a loopback address and the control capability for this one engine boot.
-/// The control token does not authenticate data routes or replace Hanlin consent.
+/// The patched mobile runtime requires the token on every route. It remains
+/// independent of document membership and of Hanlin read/write consent.
 public struct AnyEmbeddedSession: Sendable, CustomStringConvertible, CustomDebugStringConvertible {
     public let baseURL: URL
     public let generation: UUID
@@ -80,6 +110,20 @@ public struct AnyEmbeddedSession: Sendable, CustomStringConvertible, CustomDebug
         self.controlToken = controlToken
         self.generation = UUID()
     }
+
+    public var emergencyStop: AnyEmbeddedEmergencyStop { .init(generation: generation) }
+    /// Creates the scoped transport without revealing the managed token.
+    public func dataClient(expectedAccountID: String) throws -> AnyHTTPClient {
+        try .init(baseURL: baseURL, expectedAccountID: expectedAccountID,
+                  authorization: AnyHTTPAuthorization(token: controlToken))
+    }
+
+    func authenticatedRead(path: String) -> URLRequest {
+        var request = URLRequest(url: baseURL.appendingPathComponent("v1").appendingPathComponent(path))
+        request.setValue(controlToken, forHTTPHeaderField: "X-Any-Control-Token")
+        return request
+    }
+
 
     public var description: String { "AnyEmbeddedSession(\(generation), control capability redacted)" }
     public var debugDescription: String { description }
@@ -155,6 +199,7 @@ public actor AnyEmbeddedRuntime {
         }
         let session = AnyEmbeddedSession(baseURL: url, engineVersion: version, controlToken: token)
         active = session
+        AnyRuntimeEmergencyRegistry.shared.install(session.generation)
         return session
     }
 
@@ -162,9 +207,11 @@ public actor AnyEmbeddedRuntime {
     /// Auth responses may contain a recovery phrase; hand them directly to the
     /// host's secure onboarding flow, never to diagnostics or analytics.
     public func executeControl(
-        _ operation: AnyEmbeddedSession.ControlOperation, jsonBody: Data? = nil
+        _ operation: AnyEmbeddedSession.ControlOperation, jsonBody: Data? = nil,
+        expectedGeneration: UUID? = nil
     ) async throws -> Data {
         guard let active else { throw AnyEmbeddedRuntimeError.notRunning }
+        if let expectedGeneration, expectedGeneration != active.generation { throw AnyEmbeddedRuntimeError.sessionChanged }
         guard controlGeneration == nil else { throw AnyEmbeddedRuntimeError.controlBusy }
         let requestGeneration = UUID()
         controlGeneration = requestGeneration
@@ -189,18 +236,22 @@ public actor AnyEmbeddedRuntime {
 
     /// The owner must first cancel/drain its HTTP subscriptions and operations.
     /// This does not erase data and never deletes a corrupt store automatically.
-    public func stop() {
-        guard active != nil else { return }
+    public func stop(expectedGeneration: UUID? = nil) {
+        guard let active else { return }
+        if let expectedGeneration, active.generation != expectedGeneration { return }
+        AnyRuntimeEmergencyRegistry.shared.clear(active.generation)
         AnyLibStop()
-        active = nil
+        self.active = nil
     }
 
     /// Await this while time remains in a background task. The main app's
     /// synchronous expiration callback still needs its own native lifecycle hook.
-    public func stopNow() {
-        guard active != nil else { return }
+    public func stopNow(expectedGeneration: UUID? = nil) {
+        guard let active else { return }
+        if let expectedGeneration, active.generation != expectedGeneration { return }
+        AnyRuntimeEmergencyRegistry.shared.clear(active.generation)
         AnyLibStopNow()
-        active = nil
+        self.active = nil
     }
 
     private static func read<T>(_ value: inout T) -> String {

@@ -3,10 +3,28 @@ import Foundation
 import FoundationNetworking
 #endif
 
-public struct AnyHTTPClient: Sendable {
+/// Opaque per-boot capability for a managed mobile runtime. It is never
+/// serialized into diagnostics or persisted alongside document metadata.
+public struct AnyHTTPAuthorization: Sendable, CustomStringConvertible, CustomDebugStringConvertible {
+    fileprivate let token: String
+    public init(token: String) throws {
+        guard token.utf8.count == 64, token.utf8.allSatisfy({
+            (48...57).contains($0) || (97...102).contains($0)
+        }) else { throw AnyEngineError.invalidIdentity("managed authorization") }
+        self.token = token
+    }
+    public var description: String { "AnyHTTPAuthorization(redacted)" }
+    public var debugDescription: String { description }
+}
+
+public struct AnyHTTPClient: Sendable, CustomStringConvertible, CustomDebugStringConvertible {
     public let baseURL: URL
     public let expectedAccountID: String
     private let session: URLSession
+    private let authorization: AnyHTTPAuthorization?
+    public var hasManagedAuthorization: Bool { authorization != nil }
+    public var description: String { "AnyHTTPClient(loopback, managed authorization redacted)" }
+    public var debugDescription: String { description }
 
     // Safety: stateless delegate, no mutable shared state. Follow-up: retire the
     // unchecked annotation when Foundation exposes Sendable delegate protocols.
@@ -19,9 +37,11 @@ public struct AnyHTTPClient: Sendable {
         }
     }
 
-    /// The engine exposes unauthenticated data routes. Only a literal loopback
-    /// endpoint is accepted; callers retain Hanlin consent and account fencing.
-    public init(baseURL: URL, expectedAccountID: String) throws {
+    /// A managed mobile runtime requires its per-boot authorization. Standalone
+    /// component fixtures may omit it. Only literal loopback is accepted;
+    /// Hanlin consent and account/Space fences remain independent requirements.
+    public init(baseURL: URL, expectedAccountID: String,
+                authorization: AnyHTTPAuthorization? = nil) throws {
         guard baseURL.scheme == "http",
               ["127.0.0.1", "::1", "[::1]"].contains(baseURL.host ?? ""),
               baseURL.user == nil, baseURL.password == nil,
@@ -32,6 +52,7 @@ public struct AnyHTTPClient: Sendable {
         guard !expectedAccountID.isEmpty else { throw AnyEngineError.invalidIdentity("account") }
         self.baseURL = baseURL
         self.expectedAccountID = expectedAccountID
+        self.authorization = authorization
         let configuration = URLSessionConfiguration.ephemeral
         configuration.httpShouldSetCookies = false
         configuration.urlCache = nil
@@ -41,17 +62,25 @@ public struct AnyHTTPClient: Sendable {
 
     public func requestJSON(
         method: String, path: [String], body: AnyJSON? = nil,
+        query: [String: String] = [:], maximumResponseBytes: Int? = nil,
         authorize: @escaping @Sendable () async throws -> Void = {}
     ) async throws -> AnyJSON {
         try await checkAccount()
         try Task.checkCancellation()
         try await authorize()
         try Task.checkCancellation()
-        let result = try await raw(method: method, path: path, body: body)
+        let result = try await raw(method: method, path: path, body: body,
+                                   query: query, maximumResponseBytes: maximumResponseBytes)
         // A switch can occur while the HTTP request is in flight. The caller
         // must reconcile mutations against this account before claiming success.
         do { try await checkAccount() }
-        catch { if method == "GET" { throw error }; throw AnyEngineError.writeUncertain }
+        catch {
+            if method == "GET" { throw error }
+            if let recovery = AnyObjectCreationUncertain.lostConfirmation(method: method, path: path, response: result) {
+                throw recovery
+            }
+            throw AnyEngineError.writeUncertain
+        }
         return result
     }
 
@@ -63,7 +92,8 @@ public struct AnyHTTPClient: Sendable {
         }
     }
 
-    func makeRequest(method: String, path: [String], body: AnyJSON?) throws -> URLRequest {
+    func makeRequest(method: String, path: [String], body: AnyJSON?,
+                     query: [String: String] = [:]) throws -> URLRequest {
         guard !path.isEmpty, path.allSatisfy({ !$0.isEmpty && $0 != "." && $0 != ".." }) else {
             throw AnyEngineError.invalidEndpoint
         }
@@ -76,11 +106,21 @@ public struct AnyHTTPClient: Sendable {
             return value
         }
         components?.percentEncodedPath = "/" + escaped.joined(separator: "/")
+        guard query.count <= 32, query.allSatisfy({ !$0.key.isEmpty && $0.key.utf8.count <= 128
+            && $0.value.utf8.count <= 8192 && !$0.key.utf8.contains(0) && !$0.value.utf8.contains(0) }) else {
+            throw AnyEngineError.invalidEndpoint
+        }
+        if !query.isEmpty {
+            components?.queryItems = query.keys.sorted().map { URLQueryItem(name: $0, value: query[$0]) }
+        }
         guard let url = components?.url else { throw AnyEngineError.invalidEndpoint }
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.timeoutInterval = 30
         request.setValue("application/json", forHTTPHeaderField: "Accept")
+        if let authorization {
+            request.setValue(authorization.token, forHTTPHeaderField: "X-Any-Control-Token")
+        }
         if let body {
             request.httpBody = try JSONEncoder().encode(body)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -88,8 +128,12 @@ public struct AnyHTTPClient: Sendable {
         return request
     }
 
-    private func raw(method: String, path: [String], body: AnyJSON?) async throws -> AnyJSON {
-        let request = try makeRequest(method: method, path: path, body: body)
+    private func raw(method: String, path: [String], body: AnyJSON?,
+                     query: [String: String] = [:], maximumResponseBytes: Int? = nil) async throws -> AnyJSON {
+        if let bound = maximumResponseBytes {
+            guard (1...64 * 1024 * 1024).contains(bound) else { throw AnyEngineError.readLimit }
+        }
+        let request = try makeRequest(method: method, path: path, body: body, query: query)
         let data: Data
         let response: URLResponse
         do { (data, response) = try await session.data(for: request) }
@@ -97,12 +141,16 @@ public struct AnyHTTPClient: Sendable {
         guard let http = response as? HTTPURLResponse else {
             throw AnyEngineError.malformedResponse("HTTP response")
         }
+        if let maximumResponseBytes, data.count > maximumResponseBytes { throw AnyEngineError.readLimit }
         return try Self.decodeResponse(status: http.statusCode, data: data)
     }
 
     static func decodeResponse(status: Int, data: Data) throws -> AnyJSON {
         guard (200..<300).contains(status) else {
             let decoded = try? JSONDecoder().decode(AnyJSON.self, from: data)
+            if let recovery = AnyObjectCreationUncertain.decode(status: status, response: decoded) {
+                throw recovery
+            }
             throw AnyEngineError.http(
                 status: status,
                 code: decoded?["error"]?["code"]?.string ?? decoded?["code"]?.string ?? "unknown"

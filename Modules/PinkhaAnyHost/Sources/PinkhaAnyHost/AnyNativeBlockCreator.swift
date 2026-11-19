@@ -72,6 +72,7 @@ public actor AnyNativeBlockCreator {
     private let journal: any AnyNativeCreationJournaling
     private let dispatch: @Sendable (AnyNativeBlockCreationIntent, @escaping @Sendable () async throws -> Void) async throws -> String
     private let inspect: @Sendable (AnyNativeBlockCreationIntent, String) async throws -> AnyJSON
+    private let validateCreation: @Sendable (AnyNativeBlockCreationIntent) async throws -> Void
 
     public init(client: AnyHTTPClient, workspace: AnyTorahWorkspace,
                 journal: any AnyNativeCreationJournaling, allowedTypeIDs: Set<String>) throws {
@@ -79,15 +80,22 @@ public actor AnyNativeBlockCreator {
             throw AnyHostError.wrongWorkspace
         }
         self.workspace = workspace; self.journal = journal
-        self.dispatch = { intent, authorize in
+        self.validateCreation = { intent in
+            let capabilities = try await client.requestJSON(method: "GET", path: ["v1", "pinkha", "capabilities"])
+            guard capabilities["contract"]?.string == "pinkha-torah-native-v1",
+                  capabilities["currentWriterBlockCreate"]?.integer == 1 else {
+                throw AnyEngineError.incompatibleSchema("current-writer native block creation unavailable")
+            }
             let access = try AnyHTTPTorahTargetAccess(client: client, workspace: workspace,
                 allowedTypeIDs: allowedTypeIDs, editorDataset: intent.dataset)
             try await access.validate(.object(objectId: intent.objectID), intent: .write)
             if !intent.parentID.isEmpty {
                 try await access.validate(.block(objectId: intent.objectID, blockId: intent.parentID), intent: .write)
             }
+        }
+        self.dispatch = { intent, authorize in
             let value = try await client.requestJSON(method: "POST",
-                path: ["v1", "spaces", workspace.spaceID, "objects", intent.objectID,
+                path: ["v1", "spaces", workspace.spaceID, "pinkha", "objects", intent.objectID,
                        "editor", intent.dataset, "blocks"],
                 body: intent.body, authorize: authorize)
             guard let ids = value["recordIds"]?.array, ids.count == 1,
@@ -112,8 +120,10 @@ public actor AnyNativeBlockCreator {
 
     init(workspace: AnyTorahWorkspace, journal: any AnyNativeCreationJournaling,
          dispatch: @escaping @Sendable (AnyNativeBlockCreationIntent, @escaping @Sendable () async throws -> Void) async throws -> String,
-         inspect: @escaping @Sendable (AnyNativeBlockCreationIntent, String) async throws -> AnyJSON) {
+         inspect: @escaping @Sendable (AnyNativeBlockCreationIntent, String) async throws -> AnyJSON,
+         validateCreation: @escaping @Sendable (AnyNativeBlockCreationIntent) async throws -> Void = { _ in }) {
         self.workspace = workspace; self.journal = journal; self.dispatch = dispatch; self.inspect = inspect
+        self.validateCreation = validateCreation
     }
 
     public func recordedBlockID(for intent: AnyNativeBlockCreationIntent) async throws -> String? {
@@ -127,11 +137,15 @@ public actor AnyNativeBlockCreator {
     ) async throws -> String {
         guard intent.workspace == workspace else { throw AnyHostError.wrongWorkspace }
         try Task.checkCancellation(); try await authorize()
+        // A known unsupported contract or denied target must not reserve an
+        // intent that was never eligible for dispatch.
+        try await validateCreation(intent)
+        try Task.checkCancellation(); try await authorize()
         let reservation = try await journal.reserve(intent.identity)
         if !reservation.ownsDispatch, reservation.state == .reserved {
             throw AnyNativeCreationError.writeUncertain
         }
-        let journal = journal, dispatch = dispatch, inspect = inspect
+        let journal = journal, dispatch = dispatch, inspect = inspect, validateCreation = validateCreation
         let fence = AnyCreationDispatchFence()
         let id = try await withTaskCancellationHandler {
             let worker = Task.detached { () async throws -> String in
@@ -140,7 +154,9 @@ public actor AnyNativeBlockCreator {
                 if reservation.ownsDispatch {
                     do {
                         id = try await dispatch(intent) {
-                            try fence.check(); try await authorize(); try fence.beginDispatch()
+                            try fence.check()
+                            try await validateCreation(intent)
+                            try await authorize(); try fence.beginDispatch()
                         }
                     } catch { throw AnyNativeCreationError.writeUncertain }
                     guard AnyEditorBlock.validID(id) else { throw AnyNativeCreationError.writeUncertain }

@@ -17,7 +17,10 @@ public enum AnyLiveQueryError: Error, Equatable, Sendable {
 public struct AnySSEFrame: Equatable, Sendable {
     public let event: String
     public let data: Data
-    public init(event: String, data: Data) { self.event = event; self.data = data }
+    public let id: String?
+    public init(event: String, data: Data, id: String? = nil) {
+        self.event = event; self.data = data; self.id = id
+    }
 }
 
 /// Incremental strict UTF-8 SSE parser. UTF-8 and CRLF may split at any byte.
@@ -25,6 +28,7 @@ public struct AnySSEFrame: Equatable, Sendable {
 public struct AnySSEParser: Sendable {
     private var line = Data()
     private var event = ""
+    private var eventID: String?
     private var dataLines: [String] = []
     private var frameBytes = 0
     private var previousCR = false
@@ -55,7 +59,7 @@ public struct AnySSEParser: Sendable {
     }
 
     public mutating func finish() throws {
-        guard line.isEmpty, dataLines.isEmpty, event.isEmpty else {
+        guard line.isEmpty, dataLines.isEmpty, event.isEmpty, eventID == nil else {
             throw AnyLiveQueryError.invalidSequence("truncated frame")
         }
     }
@@ -68,10 +72,10 @@ public struct AnySSEParser: Sendable {
             if text.hasPrefix("\u{feff}") { text.removeFirst() }
         }
         if text.isEmpty {
-            defer { event = ""; dataLines.removeAll(keepingCapacity: true); frameBytes = 0 }
+            defer { event = ""; eventID = nil; dataLines.removeAll(keepingCapacity: true); frameBytes = 0 }
             guard !dataLines.isEmpty else { return nil }
             return AnySSEFrame(event: event.isEmpty ? "message" : event,
-                               data: Data(dataLines.joined(separator: "\n").utf8))
+                               data: Data(dataLines.joined(separator: "\n").utf8), id: eventID)
         }
         if text.hasPrefix(":") { return nil }
         let split = text.firstIndex(of: ":")
@@ -81,6 +85,11 @@ public struct AnySSEParser: Sendable {
         switch field {
         case "event": event = value
         case "data": dataLines.append(value)
+        case "id":
+            guard !value.utf8.contains(0), value.utf8.count <= 1024 else {
+                throw AnyLiveQueryError.invalidEvent("event ID")
+            }
+            eventID = value
         default: break
         }
         return nil

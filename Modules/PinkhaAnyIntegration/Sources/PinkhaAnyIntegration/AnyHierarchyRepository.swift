@@ -102,8 +102,11 @@ public actor AnyHierarchyRepository {
             if existing.title == newTitle { return existing }
             guard existing.title == expectedTitle else { throw AnyHierarchyError.stalePlan(objectID) }
             do {
-                try await store.patch(objectID: objectID, ownerID: "any", values: ["name": .string(newTitle)],
-                                      authorize: authorize)
+                guard let expectedVersion = current.nativeRows[objectID]?["_ver"] else {
+                    throw AnyHierarchyError.incompatibleSchema
+                }
+                try await patch(objectID: objectID, ownerID: "any", values: ["name": .string(newTitle)],
+                                expectedVersion: expectedVersion, authorize: authorize)
             } catch {
                 try await authorize()
                 let readback = try item(from: await store.readObject(objectID: objectID))
@@ -242,10 +245,10 @@ public actor AnyHierarchyRepository {
             throw AnyHierarchyError.stalePlan(plan.objectID)
         }
         do {
-            try await store.patch(objectID: plan.objectID, ownerID: schema.collectionID, values: [
+            try await patch(objectID: plan.objectID, ownerID: schema.collectionID, values: [
                 schema.parentPropertyID: .string(plan.parentID ?? ""),
                 schema.positionPropertyID: .string(plan.position)
-            ], authorize: authorize)
+            ], expectedVersion: plan.expectedVersion, authorize: authorize)
         } catch {
             try await authorize()
             let readback = try item(from: await store.readObject(objectID: plan.objectID))
@@ -256,6 +259,17 @@ public actor AnyHierarchyRepository {
         let readback = try item(from: await store.readObject(objectID: plan.objectID))
         guard matches(readback, plan: plan) else { throw AnyHierarchyError.incompleteWrite(plan.objectID) }
         return readback
+    }
+
+    private func patch(objectID: String, ownerID: String, values: [String: AnyJSON],
+                       expectedVersion: AnyJSON,
+                       authorize: @escaping @Sendable () async throws -> Void) async throws {
+        if let conditional = store as? any AnyHierarchyConditionalRecordStore {
+            try await conditional.patch(objectID: objectID, ownerID: ownerID, values: values,
+                                        expectedVersion: expectedVersion, authorize: authorize)
+        } else {
+            try await store.patch(objectID: objectID, ownerID: ownerID, values: values, authorize: authorize)
+        }
     }
 
     private nonisolated func placement(objectID: String, parentID: String?, beforeSiblingID: String?,

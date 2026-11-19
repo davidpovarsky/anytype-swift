@@ -10,6 +10,7 @@ on:
       - 'Modules/PinkhaAnyHost/**'
       - 'Modules/PinkhaAnyHanlin/**'
       - 'Modules/PinkhaAnyNative/**'
+      - 'NativeApp/**'
       - 'Modules/PinkhaAnyUI/**'
       - 'Modules/PinkhaTorahPresentation/**'
       - 'Anytype/Sources/Pinkha/**'
@@ -63,31 +64,43 @@ jobs:
       - name: Check the retained source and capability inventory
         run: python3 Tools/AnyEnginePort/verify_source_retention.py --base 586c98bcc17dee425664224e508fc0e8df277678 --output build/any-engine-port/source-retention.json
       - name: Test the Any transport and immutable operation contracts
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaAnyEngine 2>&1 | tee build/any-engine-port/any-engine-tests.log
       - name: Test the Pinkha integration against its canonical domain models
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaAnyIntegration 2>&1 | tee build/any-engine-port/any-integration-tests.log
       - name: Test native editor, creation receipts and protected metadata
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaAnyHost 2>&1 | tee build/any-engine-port/any-host-tests.log
       - name: Test the shared Hanlin policy and native host binding
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaAnyHanlin 2>&1 | tee build/any-engine-port/any-hanlin-tests.log
       - name: Test the preserved Torah presentation state machine
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaTorahPresentation 2>&1 | tee build/any-engine-port/torah-presentation-tests.log
+      - name: Compile and test the native presentation model on Apple
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          swift test --package-path Modules/PinkhaAnyUI 2>&1 | tee build/any-engine-port/any-ui-tests.log
       - name: Re-run preserved Pinkha domain behavior
+        if: ${{ !cancelled() }}
         shell: bash
         run: |
           set -euo pipefail
@@ -184,7 +197,7 @@ jobs:
   ios-native-runtime:
     name: Patched native Any library on iOS Simulator
     runs-on: xcode-27
-    timeout-minutes: 45
+    timeout-minutes: 80
     env:
       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
       PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
@@ -193,6 +206,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Checkout immutable canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Materialize the verified shared Hanlin SDK
+        run: |
+          python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
+          python3 Tools/Hanlin/prepare_sdk.py --check
       - name: Checkout exact upstream Any
         uses: actions/checkout@v4
         with:
@@ -276,16 +300,47 @@ jobs:
             -parallel-testing-enabled NO \
             -maximum-test-execution-time-allowance 180 \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/runtime.log"
+      - name: Test the real native account, Keychain and cold reopen path
+        if: ${{ !cancelled() }}
+        working-directory: Modules/PinkhaAnyNative
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -scheme PinkhaAnyNative \
+            -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
+            -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
+            -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/application.xcresult" \
+            -parallel-testing-enabled NO \
+            -maximum-test-execution-time-allowance 300 \
+            2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/application.log"
+      - name: Build and launch the separate native executable
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -project NativeApp/AnyNative.xcodeproj \
+            -scheme PinkhaAnyNativeApp \
+            -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
+            -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
+            -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui.xcresult" \
+            -parallel-testing-enabled NO \
+            -maximum-test-execution-time-allowance 180 \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui.log"
       - name: Extract native execution counts
         if: always()
         shell: bash
         run: |
           set -euo pipefail
-          if [ -d build/any-patched-evidence/runtime.xcresult ]; then
-            xcrun xcresulttool get test-results summary \
-              --path build/any-patched-evidence/runtime.xcresult --format json \
-              > build/any-patched-evidence/test-counts.json
-          fi
+          for suite in runtime application native-ui; do
+            if [ -d "build/any-patched-evidence/$suite.xcresult" ]; then
+              xcrun xcresulttool get test-results summary \
+                --path "build/any-patched-evidence/$suite.xcresult" --format json \
+                > "build/any-patched-evidence/$suite-test-counts.json"
+            fi
+          done
       - name: Remove only this run's simulator
         if: always()
         shell: bash
@@ -315,6 +370,7 @@ jobs:
   retained-app-compatibility:
     name: Retained UIKit consumers after shared extraction
     needs: apple-packages
+    if: ${{ always() && !cancelled() }}
     uses: ./.github/workflows/pinkha-sdk06-tests.yml
     with:
       heart_source_run_id: '44203168617'

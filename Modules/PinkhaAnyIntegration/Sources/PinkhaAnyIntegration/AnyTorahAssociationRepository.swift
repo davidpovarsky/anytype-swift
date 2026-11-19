@@ -194,8 +194,116 @@ public actor AnyTorahAssociationRepository: TorahAssociationRepository {
         let conflicts: [AnyTorahAssociationConflict]
     }
 
+
+    /// Native object closure avoids the global workspace limit for an editor.
+    /// Block eligibility is supplied by the native read transaction; one current
+    /// document/member validation fences delivery without N block-tree scans.
+    public func objectSnapshot(objectID: String, spaceID: String, limit: Int = 10_000) async throws
+        -> AnyTorahObjectAssociationSnapshot {
+        try checkSpace(spaceID)
+        guard let scoped = store as? any AnyTorahObjectOperationReading else {
+            throw AnyEngineError.unsupportedEngine("native object association scope")
+        }
+        if let mutationTail { await mutationTail.value }
+        let native = try await scoped.objectSnapshot(objectID: objectID, limit: limit)
+        return try await objectSnapshot(native: native, spaceID: spaceID)
+    }
+
+    public func objectSnapshot(native: AnyGuardedTorahObjectSnapshot, spaceID: String) async throws
+        -> AnyTorahObjectAssociationSnapshot {
+        try checkSpace(spaceID)
+        guard native.spaceID == workspace.spaceID else {
+            throw TorahAssociationRepositoryError.targetOutsideSpace
+        }
+        let output = try decodeObject(native)
+        try await access.validate(.object(objectId: native.targetObjectID), intent: .read)
+        return output
+    }
+
+    public func watchObject(objectID: String, spaceID: String, session: AnyStreamSession,
+                            limit: Int = 10_000) async throws
+        -> AsyncThrowingStream<AnyTorahObjectAssociationLiveSnapshot, Error> {
+        try checkSpace(spaceID)
+        guard (1...10_000).contains(limit),
+              let scoped = store as? any AnyTorahObjectOperationObserving else {
+            throw AnyEngineError.unsupportedEngine("native object association observation")
+        }
+        let generation = await session.generation
+        try await session.requireActive(generation: generation)
+        try await access.validate(.object(objectId: objectID), intent: .read)
+        let upstream = try await scoped.watchObject(objectID: objectID, session: session, limit: limit)
+        let pair = AsyncThrowingStream<AnyTorahObjectAssociationLiveSnapshot, Error>.makeStream(
+            bufferingPolicy: .bufferingOldest(2))
+        let registration = try await session.register(generation: generation) {
+            pair.continuation.finish(throwing: AnyLiveQueryError.staleGeneration)
+        }
+        let worker = Task { [self] in
+            do {
+                var initial = false
+                for try await update in upstream {
+                    try Task.checkCancellation()
+                    try await session.requireActive(generation: update.generation)
+                    guard update.generation == generation else { throw AnyLiveQueryError.staleGeneration }
+                    guard initial ? !update.initial : update.initial,
+                          update.snapshot.targetObjectID == objectID else {
+                        throw AnyLiveQueryError.invalidSequence("native object initial/scope")
+                    }
+                    let snapshot = try await objectSnapshot(native: update.snapshot, spaceID: spaceID)
+                    try await session.requireActive(generation: generation)
+                    let value = AnyTorahObjectAssociationLiveSnapshot(generation: generation,
+                                                                      initial: update.initial, snapshot: snapshot)
+                    switch pair.continuation.yield(value) {
+                    case .enqueued: break
+                    case .dropped: throw AnyLiveQueryError.bufferOverflow
+                    case .terminated: throw CancellationError()
+                    @unknown default: throw AnyLiveQueryError.bufferOverflow
+                    }
+                    initial = true
+                }
+                throw AnyLiveQueryError.disconnected
+            } catch { pair.continuation.finish(throwing: error) }
+            await session.unregister(registration)
+        }
+        pair.continuation.onTermination = { @Sendable _ in worker.cancel() }
+        return pair.stream
+    }
+
+    private func decodeObject(_ native: AnyGuardedTorahObjectSnapshot) throws -> AnyTorahObjectAssociationSnapshot {
+        guard native.spaceID == workspace.spaceID,
+              native.projection.all.allSatisfy({ $0.operation.spaceID == workspace.spaceID }) else {
+            throw TorahAssociationRepositoryError.targetOutsideSpace
+        }
+        var records: [TorahStoredAssociationRecord] = []
+        var conflicts: [AnyTorahAssociationConflict] = []
+        let targets: [TorahAssociationTarget] = [.object(objectId: native.targetObjectID)] +
+            native.reachableClaimBlockIDs.sorted().map {
+                .block(objectId: native.targetObjectID, blockId: $0)
+            }
+        for target in targets {
+            let state = try decoded(projection: native.projection, target: target)
+            records.append(contentsOf: state.live.map(\.record))
+            conflicts.append(contentsOf: state.conflicts)
+        }
+        return .init(workspace: workspace, objectID: native.targetObjectID, records: records,
+                     conflicts: conflicts, reachableClaimBlockIDs: native.reachableClaimBlockIDs,
+                     nativeGeneration: native.readinessGeneration)
+    }
+
     private func decoded(target: TorahAssociationTarget) async throws -> State {
-        try decoded(projection: await store.snapshot(), target: target)
+        if let scoped = store as? any AnyTorahObjectOperationReading {
+            let native = try await scoped.objectSnapshot(objectID: target.objectId, limit: 10_000)
+            guard native.spaceID == workspace.spaceID, native.targetObjectID == target.objectId else {
+                throw TorahAssociationRepositoryError.targetOutsideSpace
+            }
+            if let blockID = target.blockId,
+               native.projection.all.contains(where: {
+                   $0.operation.targetObjectID == target.objectId && $0.operation.targetBlockID == blockID
+               }), !native.reachableClaimBlockIDs.contains(blockID) {
+                throw TorahAssociationRepositoryError.targetNotFound
+            }
+            return try decoded(projection: native.projection, target: target)
+        }
+        return try decoded(projection: await store.snapshot(), target: target)
     }
 
     private func decoded(projection: AnyTorahProjection, target: TorahAssociationTarget) throws -> State {
@@ -209,6 +317,13 @@ public actor AnyTorahAssociationRepository: TorahAssociationRepository {
         var conflicts = projection.conflicts.values.filter { $0.contains(where: relevant) }.map {
             AnyTorahAssociationConflict(claimIDs: $0.map(\.id).sorted(),
                                         reason: "same operation ID carries different payloads")
+        }
+        let unresolved = Set(projection.pendingObserved)
+        for claim in projection.all.filter(relevant)
+            where projection.conflicts[claim.operation.logicalKey] == nil &&
+                  !unresolved.isDisjoint(with: claim.operation.observed) {
+            conflicts.append(.init(claimIDs: ([claim.id] + claim.operation.observed.filter { unresolved.contains($0) }).sorted(),
+                                   reason: "observed predecessor is not yet resolved"))
         }
         let location = TorahAssociationLocation(spaceId: workspace.spaceID, target: target)
         let live = try projection.live.filter(relevant).map { claim -> Live in

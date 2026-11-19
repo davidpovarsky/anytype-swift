@@ -1,0 +1,85 @@
+warning: failed to retrieve search paths with pkg-config; maybe pkg-config is not installed
+warning: couldn't find pc file for zlib
+warning: couldn't find pc file for zlib
+[0/1] Planning build
+[1/1] Compiling plugin GenerateManual
+[2/2] Compiling plugin GenerateDoccReference
+Building for debugging...
+[2/31] Write sources
+[7/31] Write swift-version-2807070033DA82CF.txt
+[9/25] Compiling PinkhaAnyEngine AnyGuardedTorahClaimsRepository.swift
+[10/25] Compiling PinkhaAnyEngine AnyGuardedTorahContract.swift
+[11/25] Emitting module PinkhaAnyEngine
+[12/26] Compiling PinkhaAnyEngine AnyGuardedTorahLiveQuery.swift
+[13/27] Wrapping AST for PinkhaAnyEngine for debugging
+[15/35] Emitting module PinkhaAnyIntegration
+[16/35] Compiling PinkhaAnyIntegration AnyGuardedHTTPHierarchyRecordStore.swift
+[17/35] Compiling PinkhaAnyIntegration AnyGuardedTorahIndex.swift
+[18/35] Compiling PinkhaAnyIntegration AnyGuardedTorahOperationStore.swift
+[19/35] Compiling PinkhaAnyIntegration AnyHTTPHierarchyRecordStore.swift
+[20/35] Compiling PinkhaAnyIntegration AnyHierarchyModels.swift
+[21/35] Compiling PinkhaAnyIntegration AnyHierarchyRepository.swift
+[22/35] Compiling PinkhaAnyIntegration AnyLexicographicPosition.swift
+[23/42] Compiling PinkhaAnyIntegration AnyTorahAssociationRepository.swift
+[24/42] Compiling PinkhaAnyIntegration AnyTorahMigration.swift
+[25/42] Compiling PinkhaAnyIntegration AnyTorahNotesService.swift
+[26/42] Compiling PinkhaAnyIntegration AnyTorahObservation.swift
+[27/42] Compiling PinkhaAnyIntegration AnyTorahPreparedMutation.swift
+[28/42] Compiling PinkhaAnyIntegration AnyTorahRelatedDocuments.swift
+[29/42] Compiling PinkhaAnyIntegration AnyTorahWorkspace.swift
+[30/46] Wrapping AST for PinkhaAnyIntegration for debugging
+[32/48] Compiling PinkhaAnyHost AnyApplicationSession.swift
+[33/48] Compiling PinkhaAnyHost AnyEditorDocumentStore.swift
+[34/48] Compiling PinkhaAnyHost AnyEditorSnapshot.swift
+[35/48] Compiling PinkhaAnyHost AnyHostCanonical.swift
+[36/48] Emitting module PinkhaAnyHost
+[37/52] Compiling PinkhaAnyHost AnyNativeBlockCreator.swift
+[38/52] Compiling PinkhaAnyHost AnyNativeObjectCreator.swift
+[39/52] Compiling PinkhaAnyHost AnyNativeWorkflowBindings.swift
+[40/52] Compiling PinkhaAnyHost AnyProtectedCreationJournal.swift
+[41/53] Wrapping AST for PinkhaAnyHost for debugging
+[43/58] Emitting module PinkhaAnyHanlin
+[44/58] Compiling PinkhaAnyHanlin AnyHanlinCreateBinding.swift
+[45/58] Compiling PinkhaAnyHanlin AnyHanlinCreationAuthority.swift
+[46/58] Compiling PinkhaAnyHanlin AnyHanlinHost.swift
+[47/58] Compiling PinkhaAnyHanlin AnyHanlinNativeAccess.swift
+[48/61] Compiling PinkhaAnyHanlin AnyHanlinPlainText.swift
+[49/61] Compiling PinkhaAnyHanlin AnyHanlinPresentationOwner.swift
+[50/61] Compiling PinkhaAnyHanlin AnyHanlinScope.swift
+[51/65] Wrapping AST for PinkhaAnyHanlin for debugging
+[53/65] Emitting module PinkhaAnyUI
+[54/65] Compiling PinkhaAnyUI AnyInlineMarkdown.swift
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Sources\PinkhaAnyUI\AnyNoteBootstrap.swift:24:50: error: 'validateMember' is inaccessible due to 'internal' protection level
+22 |                     let member = try await client.requestJSON(method: "GET",
+23 |                         path: ["v1", "spaces", lease.workspace.spaceID, "members", "me"])
+24 |                     try AnyHTTPTorahTargetAccess.validateMember(member, workspace: lease.workspace, intent: .write)
+   |                                                  `- error: 'validateMember' is inaccessible due to 'internal' protection level
+25 |                 })
+26 |             let value = try await readMarker(client: client, workspace: lease.workspace)
+
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyIntegration\Sources\PinkhaAnyIntegration\AnyTorahWorkspace.swift:122:17: note: 'validateMember(_:workspace:intent:)' declared here
+120 |     }
+121 | 
+122 |     static func validateMember(_ member: AnyJSON, workspace: AnyTorahWorkspace,
+    |                 `- note: 'validateMember(_:workspace:intent:)' declared here
+123 |                                intent: AnyTorahTargetIntent) throws {
+124 |         guard member["identity"]?.string == workspace.accountID,
+[55/65] Compiling PinkhaAnyUI AnyNoteBootstrap.swift
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyUI\Sources\PinkhaAnyUI\AnyNoteBootstrap.swift:24:50: error: 'validateMember' is inaccessible due to 'internal' protection level
+22 |                     let member = try await client.requestJSON(method: "GET",
+23 |                         path: ["v1", "spaces", lease.workspace.spaceID, "members", "me"])
+24 |                     try AnyHTTPTorahTargetAccess.validateMember(member, workspace: lease.workspace, intent: .write)
+   |                                                  `- error: 'validateMember' is inaccessible due to 'internal' protection level
+25 |                 })
+26 |             let value = try await readMarker(client: client, workspace: lease.workspace)
+
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyIntegration\Sources\PinkhaAnyIntegration\AnyTorahWorkspace.swift:122:17: note: 'validateMember(_:workspace:intent:)' declared here
+120 |     }
+121 | 
+122 |     static func validateMember(_ member: AnyJSON, workspace: AnyTorahWorkspace,
+    |                 `- note: 'validateMember(_:workspace:intent:)' declared here
+123 |                                intent: AnyTorahTargetIntent) throws {
+124 |         guard member["identity"]?.string == workspace.accountID,
+[56/67] Compiling PinkhaAnyUI AnyTorahPresentationBridge.swift
+[57/67] Compiling PinkhaAnyUI AnyUIFoundationCapabilities.swift
+error: fatalError

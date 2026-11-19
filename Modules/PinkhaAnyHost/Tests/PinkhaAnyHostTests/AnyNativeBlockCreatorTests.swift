@@ -102,9 +102,37 @@ struct AnyNativeBlockCreatorTests {
         #expect(try await journal.lookup(value.identity) == nil)
     }
 
+    @Test func unsupportedNativeContractDoesNotReserveOrDispatch() async throws {
+        let value = try intent()
+        let journal = BlockJournalFixture(workspace: workspace), effects = BlockEffectsFixture()
+        let creator = make(journal: journal, effects: effects, validateCreation: { _ in
+            throw AnyEngineError.incompatibleSchema("block creation unavailable")
+        })
+        await #expect(throws: AnyEngineError.incompatibleSchema("block creation unavailable")) {
+            try await creator.ensureBlock(value, authorize: {})
+        }
+        #expect(await effects.count == 0)
+        #expect(try await journal.lookup(value.identity) == nil)
+    }
+
+    @Test func contractRevokedAtDispatchCannotCreateAndRetainsOriginalIntent() async throws {
+        let value = try intent()
+        let journal = BlockJournalFixture(workspace: workspace), effects = BlockEffectsFixture()
+        let contract = BlockContractFixture()
+        let creator = make(journal: journal, effects: effects,
+                           validateCreation: { _ in try await contract.validate() })
+        await #expect(throws: AnyNativeCreationError.writeUncertain) {
+            try await creator.ensureBlock(value, authorize: {})
+        }
+        #expect(await contract.count == 2)
+        #expect(await effects.count == 0)
+        #expect(try await journal.lookup(value.identity) == .reserved)
+    }
+
     private func make(journal: BlockJournalFixture, effects: BlockEffectsFixture,
                       loseReply: Bool = false, mismatch: Bool = false,
-                      gate: BlockGateFixture? = nil) -> AnyNativeBlockCreator {
+                      gate: BlockGateFixture? = nil,
+                      validateCreation: @escaping @Sendable (AnyNativeBlockCreationIntent) async throws -> Void = { _ in }) -> AnyNativeBlockCreator {
         AnyNativeBlockCreator(workspace: workspace, journal: journal,
             dispatch: { intent, authorize in
                 try await authorize()
@@ -115,7 +143,7 @@ struct AnyNativeBlockCreatorTests {
             }, inspect: { _, _ in
                 if mismatch { await effects.changeText("wrong response") }
                 return await effects.row
-            })
+            }, validateCreation: validateCreation)
     }
 
 }
@@ -172,4 +200,12 @@ private actor BlockGateFixture {
         await withCheckedContinuation { waiter = $0 }
     }
     func release() { pending?.resume(); pending = nil }
+}
+
+private actor BlockContractFixture {
+    var count = 0
+    func validate() throws {
+        count += 1
+        if count > 1 { throw AnyEngineError.incompatibleSchema("block creation revoked") }
+    }
 }

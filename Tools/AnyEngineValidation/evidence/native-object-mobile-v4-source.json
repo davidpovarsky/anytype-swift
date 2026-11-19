@@ -1,0 +1,396 @@
+{
+  "status": "PASS_NATIVE_OBJECT_MOBILE_SOURCE_BUILD",
+  "createdAt": "2026-11-19T17:43:12.627946+00:00",
+  "scope": "Native object logical closure and reachable-block snapshot/watch; mobile-build-only token gateway; proven conditional block current writer fence. Native custom document types and new object/block creation fences are later stages.",
+  "objectSnapshot": {
+    "job": "job_3d55206ac16a",
+    "tests": [
+      {
+        "name": "TestObjectSnapshotGlobalCollisionClosureMatchesWorkspaceProjection",
+        "status": "PASS"
+      },
+      {
+        "name": "TestObjectSnapshotBoundIncludesGlobalWitnessesAndNeverReturnsPartial",
+        "status": "PASS"
+      },
+      {
+        "name": "TestObjectSnapshotRetainsOrphanHistoryButFiltersNativeReachability",
+        "status": "PASS"
+      },
+      {
+        "name": "TestObjectSnapshotChecksEligibilityBeforeGenerationShortcut",
+        "status": "PASS"
+      }
+    ],
+    "rawLogSHA256": "117a27867461d9d4648ac45ec0b2bf0ca2f5df134ba7b96bda83e5ae5085885a",
+    "skipped": 0
+  },
+  "desktopGateway": {
+    "job": "job_3d55206ac16a",
+    "tests": [
+      {
+        "name": "TestPinkhaMobileManagedGateway",
+        "status": "PASS"
+      },
+      {
+        "name": "TestPinkhaMobileGatewayPreservesStandalone",
+        "status": "PASS"
+      }
+    ],
+    "rawLogSHA256": "34125bdba7acc35b3dee907d83c4b974e8067cc137a0d7295b08bf7cc45ebdef",
+    "skipped": 0
+  },
+  "mobileGateway": {
+    "job": "job_3d55206ac16a",
+    "tests": [
+      {
+        "name": "TestPinkhaMobileManagedGateway",
+        "status": "PASS"
+      },
+      {
+        "name": "TestPinkhaMobileGatewayPreservesStandalone",
+        "status": "PASS"
+      }
+    ],
+    "rawLogSHA256": "1fc042a7b16a67bb1fba2057fb65c75b4c7e0835de3fc9b6e6f0da78a05f1c65",
+    "skipped": 0
+  },
+  "any": {
+    "upstreamCommit": "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+    "testedLocalCommit": "ef2bedaeae4615797bd1d3fa84ca53c207b227f8",
+    "patch": "native-object-mobile-v4-any.patch",
+    "patchSHA256": "9f9a7a8ed168337cce9b3630c1563deaf2f959f651faadaf56a15cd50ce707b2",
+    "files": [
+      {
+        "path": "go.mod",
+        "worktreeSHA256": "5ce97a6907d80856350de81d641682745e9cac961d3f6a949f859075d7d8c549",
+        "gitBlob": "4d7ada1cfb568dd505f076c790677d562b292847"
+      },
+      {
+        "path": "internal/api/blocks.go",
+        "worktreeSHA256": "a77de53dbe8ffac602917ed94aa93cbe6ed033ac4f0c3a5a07767028f7d1de77",
+        "gitBlob": "ffa7702090b9d30bff3c3325f21f93f165fc7445"
+      },
+      {
+        "path": "internal/api/properties.go",
+        "worktreeSHA256": "d62c24d41c084779b7e8f6d21cb343abf0e9dbdd32cd94c964d63118e29159a7",
+        "gitBlob": "32f8ee8cc50cf6de7725dda6de7012cd21dcdfe2"
+      },
+      {
+        "path": "internal/editor/api.go",
+        "worktreeSHA256": "27e02e26b406f8c9705c9cab3d7e51fbdc0c6047a089b7c63474fec7c9a060bf",
+        "gitBlob": "e9b1cb096a8c63c22fccccd6c55bbbd1887b6029"
+      },
+      {
+        "path": "internal/editor/pinkha_patch.go",
+        "worktreeSHA256": "79ccd26058d3f03b655f799231d6795d9448c1aa24a03802f99137157a9e520f",
+        "gitBlob": "e1303336dc64eed30d7776afff5e79bbdfecf599"
+      },
+      {
+        "path": "internal/markdown/pinkha_version.go",
+        "worktreeSHA256": "e1674b706eac7a576fedb8168e583e4f3e78f678da8729108009b37867cf7ae9",
+        "gitBlob": "33ca5535370e3595182e43c2687704228ba2e0a6"
+      },
+      {
+        "path": "internal/pinkha/claims/contract_test.go",
+        "worktreeSHA256": "72740a99fcc0f430ac31614d57fc085f606d34f29423585a06705c4127d898c2",
+        "gitBlob": "390fd8dd8a6d0ed6bbdb010448c22d7136118dc4"
+      },
+      {
+        "path": "internal/pinkha/claims/module.go",
+        "worktreeSHA256": "f6bff53598fde263e88249d9fa38115aa2111cda176ea8f51b867b06df1619df",
+        "gitBlob": "c4f96a45a4f4d7024863516436f9377b1856a05c"
+      },
+      {
+        "path": "internal/pinkha/claims/object_snapshot.go",
+        "worktreeSHA256": "74ebf93d1ce809cef869ce47a8377cece12d6343a674dda26b3c345781c08b64",
+        "gitBlob": "f0fedbf99d43bdda56168c4187dfb3a27f69e0aa"
+      },
+      {
+        "path": "internal/pinkha/claims/object_snapshot_test.go",
+        "worktreeSHA256": "2cd60c0b0e56e4b6e28da8ea9eca5ecb7cf0a3405da1940c9c24582368024692",
+        "gitBlob": "6234f5d761ab1a4377184e4e5832855eb44b0d60"
+      },
+      {
+        "path": "internal/pinkha/claims/operation.go",
+        "worktreeSHA256": "7817665ec71568f363eb262f19e2c71d36537b641043bc0a08273c6e034ffce7",
+        "gitBlob": "db28bc7bb11558e445d78792eb5e6a07b620cbae"
+      },
+      {
+        "path": "internal/pinkha/claims/read.go",
+        "worktreeSHA256": "d72a9f731e0292b211a79bcd4f127764fde5b09c8addce83397dbd6c0d03a5f1",
+        "gitBlob": "bc5bdc603166a419948563351150eada90909539"
+      },
+      {
+        "path": "internal/pinkha/claims/record.go",
+        "worktreeSHA256": "d7fca028532f9d844c20adbb2ede8f5538f2392dd41f3ed6c5425c5df1f1d443",
+        "gitBlob": "0acc6802ffa52bc8b72519f17624e0b53ff5e2f8"
+      },
+      {
+        "path": "internal/pinkha/claims/related.go",
+        "worktreeSHA256": "cb2acdc67d569d3e667a38a18cedd6b3dfe0a7b1fbbbb1f9e851168dbd89a5ef",
+        "gitBlob": "242ed2c099342b724930ea434430f0f7de386856"
+      },
+      {
+        "path": "internal/pinkha/claims/semantic.go",
+        "worktreeSHA256": "30ec9d04f23c5bfd4ea379e77d07f6f2db3156458a814d0876ef77a010c58507",
+        "gitBlob": "4467bf9c6bb59ff97594122dc3d0d4b39c28c930"
+      },
+      {
+        "path": "internal/pinkha/claims/semantic_test.go",
+        "worktreeSHA256": "757a224dba602dead8ec55adf35a3d631a812489c58f5a3c9ad7c7b3796ac411",
+        "gitBlob": "b59577b6099508b31731c80ec05cd530897c920c"
+      },
+      {
+        "path": "internal/pinkha/claims/snapshot.go",
+        "worktreeSHA256": "581eb1b38efb0929f705de1edd9668c7681f76a7dfe5372d4700708448078243",
+        "gitBlob": "a6f452bc4cc6dcca447f899b6c3b9616cf05ff9f"
+      },
+      {
+        "path": "internal/pinkha/derived/bound_claim.go",
+        "worktreeSHA256": "396ceb51eedf057ec4abb23442ff08fc99a027540c0e9a96eecbc4e9412c71b4",
+        "gitBlob": "3028be6bd7c77165710addfa0a7784f5c80cb23b"
+      },
+      {
+        "path": "internal/pinkha/derived/projection.go",
+        "worktreeSHA256": "486e31b5b7f509311d8d60ba35bbb0f4095bcadc96211091190b99bd74b3aea3",
+        "gitBlob": "41465e6a9722b51226ab6508a332252b4ac8fa6f"
+      },
+      {
+        "path": "internal/pinkha/derived/properties.go",
+        "worktreeSHA256": "c4374a825c533c13155441a45b63b08b137a1bbb48e4a0107aa0693d68ccd965",
+        "gitBlob": "47f85831954df10cf45d16b59f74d8f81c84aff1"
+      },
+      {
+        "path": "internal/pinkha/derived/readiness.go",
+        "worktreeSHA256": "45bc67a85236741ea34738735822153879f22969ac4a3375ee1e29c22baa012c",
+        "gitBlob": "4b550a65d662a3213cc451cdd0d6d73eccfd3793"
+      },
+      {
+        "path": "internal/server/handlers_blocks.go",
+        "worktreeSHA256": "2a0a4b4906e134f50d1a1457d73953d55a8759fb143b1e22351a8f41ec9c3ac6",
+        "gitBlob": "4c99a8a3b07ed6933c9aaf9aec3c70c0643aca2c"
+      },
+      {
+        "path": "internal/server/handlers_common.go",
+        "worktreeSHA256": "e4cb721ea907f5b7e8be6525969bc4ef34d05325161f42ed6da209006caa2d06",
+        "gitBlob": "51542ebf7b4ef42c9f3b42405ed23b517fbc712e"
+      },
+      {
+        "path": "internal/server/handlers_pinkha.go",
+        "worktreeSHA256": "9e90477b3eb9da895a2cf979572f5da4444d7c9223779ba7ad7ec67553e219b4",
+        "gitBlob": "ee9afcbef51177868e159348c4edb50c70bedcf9"
+      },
+      {
+        "path": "internal/server/handlers_pinkha_block_cas_test.go",
+        "worktreeSHA256": "d5f027aa89299aac3bd562a5a69562828e49edf1204afbdaa46c2a0bbbfff2fa",
+        "gitBlob": "a30206bc2db2d38249c7de83e89061173b273774"
+      },
+      {
+        "path": "internal/server/handlers_pinkha_object_snapshot.go",
+        "worktreeSHA256": "9d76303270475830193ffe534f2da995b32601441a883abb9a076854a980afaa",
+        "gitBlob": "ed4d8d3d6c15eeefd887361d843a7f2336da5f66"
+      },
+      {
+        "path": "internal/server/handlers_pinkha_property_cas_test.go",
+        "worktreeSHA256": "4f3ffe843e7ec7bb2558944d5e1e44189ffd36f553f81b74ddabd4c8febda3c3",
+        "gitBlob": "65ef4d5e3a4beb68f3d0daf2b89018396b69cf14"
+      },
+      {
+        "path": "internal/server/handlers_pinkha_snapshot.go",
+        "worktreeSHA256": "0fe9f5c925b1b1ee77b77fca85d1607fecdf65784f7c08000681b4460e40dd45",
+        "gitBlob": "676d6b926708dde169eedfd951d95341911fef2c"
+      },
+      {
+        "path": "internal/server/handlers_properties.go",
+        "worktreeSHA256": "0a6aa6f2c537783bd2459838158a8eb6de71c6747ca3328a20426db553cbb888",
+        "gitBlob": "04dcdc5385bef11be317585fbface83efd9dd796"
+      },
+      {
+        "path": "internal/server/pinkha_gateway.go",
+        "worktreeSHA256": "c256ebf6b3c304edfb531ab5dda95dfb7a5ce26779322fc1714c5d1d4a27cee8",
+        "gitBlob": "741d18b92f212476654a9dd42d7bae2e397ced80"
+      },
+      {
+        "path": "internal/server/pinkha_gateway_desktop.go",
+        "worktreeSHA256": "5e438b552c2a48f7cad5780a57be7c6eb4d94cc8c22f282fc73098482d3c99d8",
+        "gitBlob": "05d477eb8d31185d8f2d4c67ec09a6fa8b2c4ce0"
+      },
+      {
+        "path": "internal/server/pinkha_gateway_mobile.go",
+        "worktreeSHA256": "10100dc0e960483bf190c6230932b1486bfd769137d5326c0627dad73a930272",
+        "gitBlob": "c929485894613aa68dfdd53850cfe42263fb2e02"
+      },
+      {
+        "path": "internal/server/pinkha_gateway_test.go",
+        "worktreeSHA256": "f512ce89021723dc3dc200ac630a25ccaa696fde326c73ab59869503d076175a",
+        "gitBlob": "915e15a65ed4275d680ec1348cb5884fda4bae33"
+      },
+      {
+        "path": "internal/server/pinkha_property_condition.go",
+        "worktreeSHA256": "e0fe6099f8082403850bf192b5b887bcc200857a03e99c9f8c0117d96f4c029e",
+        "gitBlob": "31595ce4a610d0f2611cd7663e6734bc904500af"
+      },
+      {
+        "path": "internal/server/routes.go",
+        "worktreeSHA256": "298cecd808ac2b28ca90dc5ab2e3632c221f33ff4647b726e99d7ff7875c4225",
+        "gitBlob": "18818f98a03d5b6e684e9424b78195e8e58efba9"
+      },
+      {
+        "path": "internal/server/sdk.go",
+        "worktreeSHA256": "1821e011864c583e67a1e2124418f96c39273c8977f40ef020eefd9567d9d99c",
+        "gitBlob": "c99defc23b58e4f4561b6dfc327c6e00d74f17e6"
+      }
+    ]
+  },
+  "sdk": {
+    "upstreamCommit": "854df54cdadd76006ae823cbd1b1d923138356d0",
+    "testedLocalCommit": "0be37b7f2c38752c506b819bc4531e9e735c7013",
+    "patch": "native-object-mobile-v4-sdk.patch",
+    "patchSHA256": "e97a7e8cd55cb08ebf4804d384919513cc578ede3682d30c4261e06a1f166fbe",
+    "files": [
+      {
+        "path": "handler/localguard.go",
+        "worktreeSHA256": "ec230ad99b878ebadec4f33786d46e2f8bd8472e62c3cfa90fe53f5e20d7fa61",
+        "gitBlob": "abd6aa843df4b67c178091c6e72b5a001bd3a7e5"
+      },
+      {
+        "path": "internal/commitguard/guard.go",
+        "worktreeSHA256": "68f71327b9e08ff6dd325b5b2954496874fe25ed05b9174a7df5234f81f90767",
+        "gitBlob": "7543991dff2b038369e8b902cf18b997abdf5f36"
+      },
+      {
+        "path": "internal/commitguard/guard_test.go",
+        "worktreeSHA256": "8e202c50fbc92f40a60512b2e204102f6fd11250ea2a376993681db73e63e01f",
+        "gitBlob": "b44d334d5367366ad544664b911f1c60ad7ec9b1"
+      },
+      {
+        "path": "internal/crdt/localguard.go",
+        "worktreeSHA256": "614e3cc5f49870f1a92baf0b28e3f3ff94d19c2ca30d1d9abd5325096ff63b58",
+        "gitBlob": "cde1290edfc3945d8f53985f5b20436092480d5f"
+      },
+      {
+        "path": "internal/crdt/objectprecondition.go",
+        "worktreeSHA256": "c428721ee14eb4fcc6beef49f5717d0b7c57caac833cd8ac90d1145c7544e730",
+        "gitBlob": "5ccce2014693ae060b31f512d1fa2d64f68a5774"
+      },
+      {
+        "path": "internal/crdt/op.go",
+        "worktreeSHA256": "65392054a6ed3804d14a4c0b5346def305c236137c5fff539c78d8d6cc0d6f14",
+        "gitBlob": "541778005c54acd6d8bc2e22cbad392fd264d8d2"
+      },
+      {
+        "path": "internal/object/current_writer.go",
+        "worktreeSHA256": "22fb16a6e1a0d8754fba1b60af8875c8f85f930594e64debedbd3771584865cf",
+        "gitBlob": "2007d8ee30285ba0c8760617b06bc59a9962a9b4"
+      },
+      {
+        "path": "internal/object/current_writer_test.go",
+        "worktreeSHA256": "211cc4f15bb7acc75c5c522d388cb5b2fe34b35e56f9321e089744bcca67ef2d",
+        "gitBlob": "6ad01a23b28bd2f9d88c2daa274c7851fd12153c"
+      },
+      {
+        "path": "internal/object/localguard.go",
+        "worktreeSHA256": "6bcdc5f5bd3ed92490691ad71090bad8d7a616bc451a3124323218f8072861d3",
+        "gitBlob": "694078688e63bcef15f99fc4e1bf26416db1531c"
+      },
+      {
+        "path": "internal/object/localguard_test.go",
+        "worktreeSHA256": "794b40362cd13c127d1ebc0cc23bd76385f40728b47311d595eb4801083f3bde",
+        "gitBlob": "2b51a1db6f2e58b1cb2e4a4e6891d118b1f476ff"
+      },
+      {
+        "path": "internal/object/object.go",
+        "worktreeSHA256": "af51b883137d0ffebc2eb0a0c12645d2b5ffa39def19ed4922063fd45960048a",
+        "gitBlob": "f1e86030afaf077fae0b0bb47d87bf42fdf24667"
+      },
+      {
+        "path": "internal/object/object_row_cas_test.go",
+        "worktreeSHA256": "243b7a5be045bc325859f535d132d4047cd22ea782f2b822a167f3af2061257d",
+        "gitBlob": "efd2497435224893832523b8d51eedea86e602de"
+      },
+      {
+        "path": "internal/spaceimpl/current_writer.go",
+        "worktreeSHA256": "f7b806ed565a88f942df06491deb9314a42fb53e2cec3be9b1fb8ddaeffb54d8",
+        "gitBlob": "995ff21af05b68359559ca59ecf4f9a1b19bdede"
+      },
+      {
+        "path": "internal/spaceimpl/current_writer_test.go",
+        "worktreeSHA256": "e59b459a1212a150eabbe27478ac15786bfe2b3d4b0027ee068a78589342c243",
+        "gitBlob": "a90004f29dadfc36b9610b07bc17f600e24071dd"
+      },
+      {
+        "path": "internal/spaceimpl/history.go",
+        "worktreeSHA256": "cad7a359a21005e56a273c2599a483351b37f6d287fc766389ee849459780374",
+        "gitBlob": "833b1171824a5f20b6070999a51d7500b424be01"
+      },
+      {
+        "path": "internal/spaceimpl/object_conditional_test.go",
+        "worktreeSHA256": "976fec4e98e3c36645c8df3350b280eb39c4b50ba1e476ed7d9a047cb88f340b",
+        "gitBlob": "59321d229b5b8f1222974ff5e201a36a9526cd9a"
+      },
+      {
+        "path": "internal/spaceimpl/properties_conditional.go",
+        "worktreeSHA256": "a94134be631c515fc74da0341a8491214aaa1a200a87aa14b6fa1c0948291c18",
+        "gitBlob": "0c6ef6f3b50d5796f7f9cdeea677bff1df99d158"
+      },
+      {
+        "path": "internal/spaceimpl/query.go",
+        "worktreeSHA256": "c00bc0341f41f99f4bb6ae548c135676ef994c1ba342af76b7022547a4fbecc0",
+        "gitBlob": "fa28812ab5d78d4eb0066ad93062ada3285bea38"
+      },
+      {
+        "path": "internal/spaceimpl/space.go",
+        "worktreeSHA256": "de461fb8b9d9e845f8736a3718f83f59eae10b4abf828f833a3b73a85a16f761",
+        "gitBlob": "51f3964c78d8767d4e9cca056733de7061d1d81e"
+      },
+      {
+        "path": "internal/spaceimpl/techspace_handle.go",
+        "worktreeSHA256": "2026c327f86bdfb955c72802fffd458e0769317d3d8472e2f170f71b03032885",
+        "gitBlob": "be2f6d1dc219d3cb3359bf76ff9484a58d2a2fd0"
+      },
+      {
+        "path": "internal/spaceimpl/unsupported.go",
+        "worktreeSHA256": "58c45b4760668a7dcf5a0742191b458ddc06d88cebf4300d6f2a0a1e9c847af6",
+        "gitBlob": "176f5fd5abcf818ea95fe8e6da9cecbd047d885f"
+      },
+      {
+        "path": "internal/spaceobjects/localguard.go",
+        "worktreeSHA256": "b9d136548dee9d71a0252a1b4acfc532a346db7d4e2643b6ddcb25fff0a0556f",
+        "gitBlob": "5ca8af9ffa25c61618852662470da6910f6caa79"
+      },
+      {
+        "path": "internal/spaceobjects/native_guard_test.go",
+        "worktreeSHA256": "e0568929c50098d90f0694840328837dacef70ac7b48ab22c3de9591b264b5c5",
+        "gitBlob": "6e0246dbdd12dddf03411626463b67a34db6e314"
+      },
+      {
+        "path": "internal/spaceobjects/store.go",
+        "worktreeSHA256": "269692c737ec267e622d2e938ebae0224f1b1ab45f9913ccc279075e16e5368d",
+        "gitBlob": "93ed1304cdaffe269c629dbc731fdad147750de5"
+      },
+      {
+        "path": "space/modify.go",
+        "worktreeSHA256": "60827e5056d7949633addacbb167e1889cce56fb70acee23a518a7db7d774a55",
+        "gitBlob": "bced110a66dd20403b9ecccd593c20c85ec9ea50"
+      },
+      {
+        "path": "space/properties.go",
+        "worktreeSHA256": "cfff8d3568f06c3a6b159d5a3ef434b11010af33b31218796b9cea46bf1dad4d",
+        "gitBlob": "b01abdef3849ff6ad519d746754e99e569fd5030"
+      },
+      {
+        "path": "space/snapshot.go",
+        "worktreeSHA256": "42ae5aa7239be684320eba670a4d52412be613b20e2b388695a4ddd29af465ea",
+        "gitBlob": "a26e743293280db731acaacc22b1965666458d3a"
+      }
+    ],
+    "upstreamTag": "v0.8.0",
+    "upstreamTagObject": "b161a0475479bbe7d9d693bc496c6fdd90c3969b"
+  },
+  "build": {
+    "status": "PASS",
+    "command": "go build -o .runtime-artifacts/any-native-object-v4.exe ./cmd/any",
+    "sha256": "cf9e99eebea05e1628c725b62407558bb3facfe49e44268dcc90e67e6ec29728"
+  }
+}

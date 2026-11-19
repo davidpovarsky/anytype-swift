@@ -289,3 +289,68 @@ struct AnyHierarchyTests {
 [{"after":null,"before":null,"result":"PPPP"},{"after":"PPPP","before":null,"result":"PPQY"},{"after":null,"before":"PPPP","result":"PPOH"},{"after":"!!!#","before":null,"result":"!!#,"},{"after":null,"before":"!!!#","result":"!!!!~~}w"},{"after":"~~~~","before":null,"result":"~~~~!!#,"},{"after":null,"before":"~~~~","result":"~~}v"},{"after":"a0","before":null,"result":"a0!#"},{"after":null,"before":"a0","result":"`("},{"after":"PPPP!!!#","before":null,"result":"PPPP!!#,"},{"after":null,"before":"PPPP!!!#","result":"PPPO~~}x"},{"after":"!!!!~~~~","before":null,"result":"!!!#!!#+"},{"after":null,"before":"!!!!~~~~","result":"!!!!~~}v"},{"after":"PPPPPPPPPPPP","before":null,"result":"PPPPPPPPPPQY"},{"after":null,"before":"PPPPPPPPPPPP","result":"PPPPPPPPPPOH"},{"after":"PPPP","before":"PPPQ","result":"PPPPP!!#"},{"after":"!!!#","before":"!!!$","result":"!!!#P!!#"},{"after":"~~~~","before":"~~~~!!!#","result":"~~~~!!!!!!#,"},{"after":"PPPP","before":"PPPP!!!#","result":"PPPP!!!!!!#,"},{"after":"a0","before":"b0","result":"a0#,"},{"after":"PPPP!!!!!!!#","before":"PPPP!!!!!!!$","result":"PPPP!!!!!!!#P!!#"},{"after":"PPPP","before":"PPPQ","result":"PPPPP!!#"},{"after":"PPPPP!!#","before":"PPPQ","result":"PPPPP!#,"},{"after":"PPPPP!#,","before":"PPPQ","result":"PPPPP!$5"},{"after":"PPPPP!$5","before":"PPPQ","result":"PPPPP!%>"},{"after":"PPPPP!%>","before":"PPPQ","result":"PPPPP!&G"},{"after":"PPPPP!&G","before":"PPPQ","result":"PPPPP!'P"},{"after":"PPPPP!'P","before":"PPPQ","result":"PPPPP!(Y"},{"after":"PPPPP!(Y","before":"PPPQ","result":"PPPPP!)c"},{"after":"PPPPP!)c","before":"PPPQ","result":"PPPPP!*l"},{"after":"PPPPP!*l","before":"PPPQ","result":"PPPPP!+u"},{"after":"PPPPP!+u","before":"PPPQ","result":"PPPPP!,~"},{"after":"PPPPP!,~","before":"PPPQ","result":"PPPPP!.+"},{"after":"PPPPP!.+","before":"PPPQ","result":"PPPPP!/4"},{"after":"PPPPP!/4","before":"PPPQ","result":"PPPPP!0="},{"after":"PPPPP!0=","before":"PPPQ","result":"PPPPP!1F"},{"after":"PPPPP!1F","before":"PPPQ","result":"PPPPP!2O"},{"after":"PPPPP!2O","before":"PPPQ","result":"PPPPP!3X"},{"after":"PPPPP!3X","before":"PPPQ","result":"PPPPP!4b"},{"after":"PPPPP!4b","before":"PPPQ","result":"PPPPP!5k"},{"after":"PPPPP!5k","before":"PPPQ","result":"PPPPP!6t"}]
 """#
 }
+
+
+private actor ConditionalHierarchyFixtureStore: AnyHierarchyConditionalRecordStore {
+    nonisolated let workspace = hierarchyWorkspace
+    nonisolated let schema = hierarchySchema
+    let base: HierarchyFixtureStore
+    var expected: [AnyJSON] = []
+    var unguardedCalls = 0
+    var injectABA = false
+    init(_ rows: [AnyJSON], injectABA: Bool = false) {
+        self.base = HierarchyFixtureStore(rows); self.injectABA = injectABA
+    }
+    func validateMembership(intent: AnyTorahTargetIntent) async throws { try await base.validateMembership(intent: intent) }
+    func readRows() async throws -> [AnyJSON] { await base.readRows() }
+    func readObject(objectID: String) async throws -> AnyJSON { try await base.readObject(objectID: objectID) }
+    func patch(objectID: String, ownerID: String, values: [String: AnyJSON],
+               authorize: @escaping @Sendable () async throws -> Void) async throws {
+        unguardedCalls += 1
+        throw AnyHierarchyError.incompatibleSchema
+    }
+    func patch(objectID: String, ownerID: String, values: [String: AnyJSON], expectedVersion: AnyJSON,
+               authorize: @escaping @Sendable () async throws -> Void) async throws {
+        expected.append(expectedVersion)
+        if injectABA {
+            injectABA = false
+            try await base.patch(objectID: objectID, ownerID: schema.collectionID,
+                                 values: [schema.positionPropertyID: .string("PPZZ")], authorize: {})
+            try await base.patch(objectID: objectID, ownerID: schema.collectionID,
+                                 values: [schema.positionPropertyID: .string("PPPP")], authorize: {})
+        }
+        let current = try await base.readObject(objectID: objectID)
+        guard current["_ver"] == expectedVersion else { throw AnyHierarchyError.stalePlan(objectID) }
+        try await base.patch(objectID: objectID, ownerID: ownerID, values: values, authorize: authorize)
+    }
+    func setArchived(objectID: String, archived: Bool,
+                     authorize: @escaping @Sendable () async throws -> Void) async throws {
+        try await base.setArchived(objectID: objectID, archived: archived, authorize: authorize)
+    }
+}
+
+extension AnyHierarchyTests {
+    @Test func nativeConditionalStoreReceivesThePreparedNestedVersionWithoutFallback() async throws {
+        let store = ConditionalHierarchyFixtureStore([
+            hierarchyRow("folder", folder: true), hierarchyRow("document")])
+        let repository = try AnyHierarchyRepository(workspace: hierarchyWorkspace, store: store, allowedTypeIDs: ["page"])
+        let plan = try await repository.prepareMove(objectID: "document", parentID: "folder")
+        _ = try await repository.commitPlacement(plan)
+        #expect(await store.expected == [plan.expectedVersion])
+        #expect(await store.unguardedCalls == 0)
+        #expect(try await repository.snapshot().itemsByID["document"]?.parentID == "folder")
+    }
+
+    @Test func nativeConditionalVersionStopsABAInsideTheReadToWriteGap() async throws {
+        let store = ConditionalHierarchyFixtureStore([
+            hierarchyRow("folder", folder: true), hierarchyRow("document")], injectABA: true)
+        let repository = try AnyHierarchyRepository(workspace: hierarchyWorkspace, store: store, allowedTypeIDs: ["page"])
+        let plan = try await repository.prepareMove(objectID: "document", parentID: "folder")
+        await #expect(throws: AnyHierarchyError.stalePlan("document")) {
+            try await repository.commitPlacement(plan)
+        }
+        #expect(await store.unguardedCalls == 0)
+        #expect(try await repository.snapshot().itemsByID["document"]?.parentID == nil)
+        #expect(await store.base.countPatches() == 2)
+    }
+}

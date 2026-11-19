@@ -99,11 +99,14 @@ public struct AnyEditorDocumentStore: Sendable {
                                     direction: AnyWritingDirection, alignment: AnyTextAlignment) throws -> AnyPreparedBlockEdit {
         try prepare(read, blockID: blockID, set: [
             "style.pinkhaWritingDirection": .string(direction.rawValue),
-            "style.pinkhaTextAlignment": .string(alignment.rawValue)
+            "style.pinkhaTextAlignment": .string(alignment.rawValue),
+            "style.pinkhaAlignmentWasExplicit": .bool(true)
         ])
     }
 
-    public func apply(_ edit: AnyPreparedBlockEdit, lease: AnyHostLease) async throws -> AnyBlockEditReceipt {
+    public func apply(_ edit: AnyPreparedBlockEdit, lease: AnyHostLease,
+                      authorize: @escaping @Sendable () async throws -> Void = {}) async throws -> AnyBlockEditReceipt {
+        try await authorize()
         try await validate(lease)
         guard edit.workspace == workspace, edit.dataset == dataset, edit.generation == lease.generation,
               edit.engineStartedAt == lease.engineStartedAt else { throw AnyHostError.wrongWorkspace }
@@ -117,7 +120,10 @@ public struct AnyEditorDocumentStore: Sendable {
                     "set": .object(edit.set), "unset": .array(edit.unset.map(AnyJSON.string)),
                     "ifVersion": .string(edit.expectedVersion),
                     "ifStartedAt": .string(edit.engineStartedAt)
-                ]), authorize: { try await lease.validate() })
+                ]), authorize: {
+                    try await lease.validate()
+                    try await authorize()
+                })
         } catch AnyEngineError.http(let status, let code) where status == 409 &&
             ["blocks.conflict", "blocks.engine_restarted"].contains(code) {
             throw AnyHostError.changedDocument
@@ -150,7 +156,6 @@ public struct AnyEditorDocumentStore: Sendable {
 
     private func prepare(_ read: AnyEditorRead, blockID: String, set: [String: AnyJSON]) throws -> AnyPreparedBlockEdit {
         guard read.snapshot.spaceID == workspace.spaceID, read.snapshot.dataset == dataset,
-              read.snapshot.unreachableIDs.isEmpty,
               let block = read.snapshot.blocks.first(where: { $0.id == blockID }),
               read.snapshot.depthFirstIDs.contains(blockID), !read.nativeVersion.isEmpty else {
             throw AnyHostError.invalidSelection

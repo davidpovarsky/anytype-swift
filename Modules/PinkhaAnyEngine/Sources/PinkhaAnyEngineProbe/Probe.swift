@@ -17,7 +17,14 @@ struct PinkhaAnyEngineProbe {
         let account = try argument("--account-id")
         let space = try argument("--space-id")
         let client = try AnyHTTPClient(baseURL: endpoint, expectedAccountID: account)
-        let repository = AnyTorahClaimsRepository(client: client, spaceID: space)
+        let lane = args.contains("--lane") ? try argument("--lane") : "generic"
+        guard ["generic", "native"].contains(lane) else {
+            throw AnyEngineError.invalidOperation("unknown explicit claim lane")
+        }
+        let nativeLane = lane == "native"
+        let repository: ProbeRepository = nativeLane
+            ? .native(try AnyGuardedTorahClaimsRepository(client: client, spaceID: space))
+            : .generic(AnyTorahClaimsRepository(client: client, spaceID: space))
         let mode = args.contains("--mode") ? try argument("--mode") : "exercise"
         if mode == "check-redirect" {
             do {
@@ -31,6 +38,11 @@ struct PinkhaAnyEngineProbe {
         }
         if mode == "check-sse" {
             try await checkSSETransport(client: client, space: space, scenario: argument("--scenario"))
+            return
+        }
+        if mode == "object-snapshot" || mode == "object-watch" {
+            guard nativeLane else { throw AnyEngineError.invalidOperation("object scope requires native lane") }
+            try await NativeObjectProbe.run(client: client, spaceID: space, mode: mode, args: args)
             return
         }
         if mode == "watch" {
@@ -52,7 +64,8 @@ struct PinkhaAnyEngineProbe {
                             if value.initial {
                                 initialCount += 1
                                 FileHandle.standardOutput.write(
-                                    Data("{\"status\":\"READY_REAL_ANY_SSE_SNAPSHOT\"}\n".utf8))
+                                    Data((nativeLane ? "{\"status\":\"READY_REAL_NATIVE_ANY_SSE_SNAPSHOT\"}\n"
+                                                    : "{\"status\":\"READY_REAL_ANY_SSE_SNAPSHOT\"}\n").utf8))
                             }
                             guard initialCount == 1 else { throw AnyEngineError.unverifiedWrite }
                             if count == expectedUpdates {
@@ -76,7 +89,7 @@ struct PinkhaAnyEngineProbe {
             }
             await streamSession.invalidate()
             let result: AnyJSON = .object([
-                "status": .string("PASS_REAL_ANY_SSE_CLIENT"),
+                "status": .string(nativeLane ? "PASS_REAL_NATIVE_ANY_SSE_CLIENT" : "PASS_REAL_ANY_SSE_CLIENT"),
                 "initialSnapshotCount": .integer(Int64(outcome.initialCount)),
                 "updateCount": .integer(Int64(outcome.updates)),
                 "allClaimIds": .array(outcome.projection.all.map { .string($0.id) }),
@@ -92,7 +105,7 @@ struct PinkhaAnyEngineProbe {
             let expected = Set(try argument("--expected-claims").split(separator: ",").map(String.init))
             guard expected.isSubset(of: Set(snapshot.all.map(\.id))) else { throw AnyEngineError.unverifiedWrite }
             let result: AnyJSON = .object([
-                "status": .string("PASS_REAL_ANY_HTTP_READ"),
+                "status": .string(nativeLane ? "PASS_REAL_NATIVE_ANY_HTTP_READ" : "PASS_REAL_ANY_HTTP_READ"),
                 "allClaimIds": .array(snapshot.all.map { .string($0.id) }),
                 "liveClaimIds": .array(snapshot.live.map { .string($0.id) }),
                 "conflictKeys": .array(snapshot.conflicts.keys.sorted().map(AnyJSON.string))
@@ -128,7 +141,7 @@ struct PinkhaAnyEngineProbe {
                 let result = try await repository.append(op)
                 if args.contains("--expect-collision") { throw AnyEngineError.unverifiedWrite }
                 let proof: AnyJSON = .object([
-                    "status": .string("PASS_REAL_ANY_APPEND"), "claimId": .string(result.claim.id),
+                    "status": .string(nativeLane ? "PASS_REAL_NATIVE_ANY_APPEND" : "PASS_REAL_ANY_APPEND"), "claimId": .string(result.claim.id),
                     "logicalKey": .string(op.logicalKey), "created": .bool(result.created),
                     "conflicted": .bool(result.conflicted),
                     "acknowledgment": .string(result.acknowledgment.rawValue),
@@ -142,7 +155,7 @@ struct PinkhaAnyEngineProbe {
             }
             return
         }
-        guard mode == "exercise", args.contains("--allow-disposable-writes") else {
+        guard !nativeLane, mode == "exercise", args.contains("--allow-disposable-writes") else {
             throw AnyEngineError.invalidOperation("disposable writes must be explicit")
         }
         try await repository.install()
@@ -268,5 +281,42 @@ struct PinkhaAnyEngineProbe {
     private static func requireValue<T>(_ value: T?) throws -> T {
         guard let value else { throw AnyEngineError.malformedResponse("expected object") }
         return value
+    }
+}
+
+
+private enum ProbeRepository: Sendable {
+    case generic(AnyTorahClaimsRepository)
+    case native(AnyGuardedTorahClaimsRepository)
+
+    func install() async throws {
+        switch self {
+        case .generic(let repository): try await repository.install()
+        case .native(let repository): try await repository.install()
+        }
+    }
+    func snapshot() async throws -> AnyTorahProjection {
+        switch self {
+        case .generic(let repository): return try await repository.snapshot()
+        case .native(let repository): return try await repository.snapshot()
+        }
+    }
+    func append(_ operation: AnyTorahOperation) async throws -> AnyTorahAppendResult {
+        switch self {
+        case .generic(let repository): return try await repository.append(operation)
+        case .native(let repository): return try await repository.append(operation)
+        }
+    }
+    func watch(session: AnyStreamSession) async throws -> AsyncThrowingStream<AnyTorahLiveSnapshot, Error> {
+        switch self {
+        case .generic(let repository): return try await repository.watch(session: session)
+        case .native(let repository): return try await repository.watch(session: session)
+        }
+    }
+    func storageLocation() async throws -> (root: String, collection: String) {
+        guard case .generic(let repository) = self else {
+            throw AnyEngineError.invalidOperation("generic fixture cannot access native lane")
+        }
+        return try await repository.storageLocation()
     }
 }

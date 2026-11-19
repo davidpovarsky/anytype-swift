@@ -135,13 +135,15 @@ public final class AnyHanlinNativeAccess: PinkhaHanlinHostAccess {
 
     public func makeReturnHandoff(_ destination: HanlinHostDestination) throws -> PinkhaHanlinNavigationHandoff {
         try validate(destination.context)
-        guard handoff == nil, !navigationFence.isRevoked else { throw HanlinHostError.staleContext }
-        let value = try navigation.makeHandoff(for: destination) { [self] in
+        guard handoff == nil, !navigationFence.isRevoked, let owner else { throw HanlinHostError.staleContext }
+        let value = try navigation.makeHandoff(for: destination) { [self, owner] in
+          try withExtendedLifetime(owner) {
             guard !navigationFence.isRevoked else { throw HanlinHostError.staleContext }
             // The SDK presentation may already be revoked. Only this original
             // UI receipt can finish; no read/write entry point uses this path.
             try validateOwner(destination.context)
             return try mountedResult(destination)
+          }
         }
         handoff = value
         return value

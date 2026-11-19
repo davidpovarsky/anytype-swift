@@ -1,0 +1,27 @@
+{
+  "startedAt": "2026-11-19T17:30:14.127725+00:00",
+  "scope": "actual guarded native Any HTTP and Swift client; synthetic fixture, not native iOS UI",
+  "probeSHA256": "9f50e8af58cc019dea9eca5d9dbac55f7125ff543d2f5c43cb53307cb6a3759f",
+  "buildReceiptSHA256": "f6a350b65952b8037849a1f808e2e3881a2c5399503dbbfbd66ecc0c56c25994",
+  "nativeBinarySHA256": "ba069c3e1db36fb66a53bdc66e5d1a2a07d8263ed4fc8b26e54b57609d79dafa",
+  "checks": [
+    "gated_complete_native_snapshot",
+    "native_modify_append_and_provenance",
+    "exact_retry_through_native_fence_no_new_claim",
+    "opaque_canonical_unknown_fields_preserved_with_native_receipt",
+    "actual_get_SSE_atomic_initial_and_live_full_state",
+    "native_observed_remove_preserves_unseen_add",
+    "client_collision_refusal_no_native_change"
+  ],
+  "final": {
+    "all": 3,
+    "live": 1,
+    "conflicts": 0,
+    "addedClaims": 3
+  },
+  "status": "PASS",
+  "sourceStableSinceBuild": true,
+  "probeUnchanged": true,
+  "finishedAt": "2026-11-19T17:30:16.077918+00:00",
+  "harnessSHA256": "d99d7da64b86156ea63c0682dd39640258b0541cdc9887e8579fd11be72ea039"
+}

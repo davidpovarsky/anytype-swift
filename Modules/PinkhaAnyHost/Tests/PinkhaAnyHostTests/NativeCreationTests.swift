@@ -8,6 +8,8 @@ private actor CreationMemoryJournal: AnyNativeCreationJournaling {
     nonisolated let workspace: AnyTorahWorkspace
     var identities: [String: AnyNativeCreationIdentity] = [:]
     var states: [String: AnyNativeCreationState] = [:]
+    var failRecord = false
+    func rejectRecords() { failRecord = true }
     init(_ workspace: AnyTorahWorkspace) { self.workspace = workspace }
     func reserve(_ id: AnyNativeCreationIdentity) throws -> AnyNativeCreationReservation {
         guard id.workspace == workspace else { throw AnyHostError.wrongWorkspace }
@@ -19,6 +21,7 @@ private actor CreationMemoryJournal: AnyNativeCreationJournaling {
         return .init(state: .reserved, ownsDispatch: true)
     }
     func record(_ state: AnyNativeCreationState, identity: AnyNativeCreationIdentity) throws {
+        if failRecord { throw AnyNativeCreationError.journalUnavailable }
         guard identities[identity.key] == identity else { throw AnyNativeCreationError.contentConflict }
         states[identity.key] = state
     }
@@ -123,7 +126,8 @@ final class NativeCreationTests: XCTestCase {
         let journal = CreationMemoryJournal(try workspace()), native = CreationNativeFixture()
         await native.setFailure(read: true)
         let creator = try creator(journal, native), plan = try intent()
-        do { _ = try await creator.ensureObject(plan, authorize: {}); XCTFail() } catch {}
+        do { _ = try await creator.ensureObject(plan, authorize: {}); XCTFail() }
+        catch { XCTAssertEqual(error as? AnyNativeCreationError, .createdObjectIncomplete("created-object")) }
         let saved = try await creator.recordedObjectID(for: plan)
         XCTAssertEqual(saved, "created-object")
         await native.setFailure()
@@ -198,6 +202,61 @@ final class NativeCreationTests: XCTestCase {
         catch { XCTAssertEqual(error as? AnyHostError, .wrongWorkspace) }
         let count = await native.calls
         XCTAssertEqual(count, 0)
+    }
+    func testNativePartialCreationPersistsKnownIDAndNeverRedispatchesOnRecovery() async throws {
+        let workspace = try workspace(), journal = CreationMemoryJournal(workspace)
+        let native = CreationNativeFixture(), plan = try intent()
+        let creator = AnyNativeObjectCreator(workspace: workspace, journal: journal,
+            dispatch: { intent, authorize in
+                let id = try await native.create(intent, authorize: authorize)
+                throw try AnyObjectCreationUncertain(spaceID: intent.workspace.spaceID, objectID: id, stage: .rootStored)
+            }, inspect: { try await native.read($0) })
+        do { _ = try await creator.ensureObject(plan, authorize: {}); XCTFail() }
+        catch { XCTAssertEqual(error as? AnyNativeCreationError, .createdObjectIncomplete("created-object")) }
+        let first = try await journal.lookup(plan.identity)
+        XCTAssertEqual(first, .created("created-object"))
+        let recovered = try await creator.ensureObject(plan, authorize: {})
+        XCTAssertEqual(recovered, "created-object")
+        let calls = await native.calls
+        XCTAssertEqual(calls, 1)
+    }
+    func testForeignSpacePartialIdentityCannotEnterOriginalJournal() async throws {
+        let workspace = try workspace(), journal = CreationMemoryJournal(workspace)
+        let native = CreationNativeFixture(), plan = try intent()
+        let creator = AnyNativeObjectCreator(workspace: workspace, journal: journal,
+            dispatch: { intent, authorize in
+                _ = try await native.create(intent, authorize: authorize)
+                throw try AnyObjectCreationUncertain(spaceID: "foreign", objectID: "foreign-object", stage: .rootStored)
+            }, inspect: { try await native.read($0) })
+        do { _ = try await creator.ensureObject(plan, authorize: {}); XCTFail() }
+        catch { XCTAssertEqual(error as? AnyNativeCreationError, .writeUncertain) }
+        let recorded = try await creator.recordedObjectID(for: plan)
+        XCTAssertNil(recorded)
+        do { _ = try await creator.ensureObject(plan, authorize: {}); XCTFail() } catch {}
+        let calls = await native.calls
+        XCTAssertEqual(calls, 1)
+    }
+    func testUnavailableCreationContractDoesNotReserveOrDispatch() async throws {
+        let workspace = try workspace(), journal = CreationMemoryJournal(workspace)
+        let native = CreationNativeFixture(), plan = try intent()
+        let creator = AnyNativeObjectCreator(workspace: workspace, journal: journal,
+            dispatch: { try await native.create($0, authorize: $1) },
+            inspect: { try await native.read($0) },
+            validateContract: { throw AnyEngineError.incompatibleSchema("missing native gate") })
+        do { _ = try await creator.ensureObject(plan, authorize: {}); XCTFail() } catch {}
+        let state = try await journal.lookup(plan.identity), calls = await native.calls
+        XCTAssertNil(state); XCTAssertEqual(calls, 0)
+    }
+    func testJournalFailureAfterNativeReceiptStillReturnsKnownRecoveryID() async throws {
+        let journal = CreationMemoryJournal(try workspace()), native = CreationNativeFixture()
+        await journal.rejectRecords()
+        let creator = try creator(journal, native), plan = try intent()
+        do { _ = try await creator.ensureObject(plan, authorize: {}); XCTFail() }
+        catch { XCTAssertEqual(error as? AnyNativeCreationError, .createdObjectIncomplete("created-object")) }
+        do { _ = try await creator.ensureObject(plan, authorize: {}); XCTFail() }
+        catch { XCTAssertEqual(error as? AnyNativeCreationError, .writeUncertain) }
+        let calls = await native.calls
+        XCTAssertEqual(calls, 1)
     }
     func testIntentFingerprintCannotBeTamperedDuringDecode() throws {
         let encoded = try JSONEncoder().encode(intent())

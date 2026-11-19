@@ -27,6 +27,9 @@ public struct AnyHanlinCreationAuthority: Sendable {
     public func inspect(lease: AnyHostLease) async throws -> AnyHanlinPageEligibility {
         guard lease.workspace == workspace else { throw AnyHostError.wrongWorkspace }
         try await lease.validate()
+        let capabilities = try await client.requestJSON(method: "GET",
+            path: ["v1", "pinkha", "capabilities"], authorize: { try await lease.validate() })
+        try Self.requireCurrentWriterCreation(capabilities)
         let member = try await client.requestJSON(method: "GET",
             path: ["v1", "spaces", workspace.spaceID, "members", "me"],
             authorize: { try await lease.validate() })
@@ -42,9 +45,20 @@ public struct AnyHanlinCreationAuthority: Sendable {
         try await lease.validate()
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
-        let state: AnyJSON = .object(["member": member, "type": type])
+        let state: AnyJSON = .object(["member": member, "type": type,
+            "currentWriterObjectCreate": .integer(1),
+            "contract": .string(AnyGuardedTorahCapabilities.contract)])
         return .init(fingerprint: PinkhaHanlinCreatePagePlan.digest(try encoder.encode(state)),
                      permission: role, typeID: "page")
+    }
+
+    /// Membership/type inspection alone cannot fence native root/bootstrap storage.
+    /// The versioned route must be implemented by the running managed engine.
+    static func requireCurrentWriterCreation(_ capabilities: AnyJSON) throws {
+        guard capabilities["contract"]?.string == AnyGuardedTorahCapabilities.contract,
+              capabilities["currentWriterObjectCreate"]?.integer == 1 else {
+            throw HanlinHostError.denied
+        }
     }
 }
 

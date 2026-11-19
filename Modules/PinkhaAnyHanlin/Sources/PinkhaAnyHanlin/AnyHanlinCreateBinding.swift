@@ -32,7 +32,7 @@ final class AnyHanlinCreateBinding: PinkhaHanlinWriteBinding {
     private let creator: AnyNativeObjectCreator
     private let authority: AnyHanlinCreationAuthority
     private weak var owner: (any AnyHanlinCreationPresentationOwner)?
-    private weak var host: AnyHanlinHost?
+    private weak var presentation: (any PinkhaHanlinOwnedPresentation)?
     private var journal: PinkhaHanlinWriteJournal?
     private var runner: PinkhaHanlinCreateRunner<AnyHanlinCreateApproval, AnyHanlinPreparedCreation>?
     private let preflight = PinkhaHanlinWritePreflight()
@@ -52,10 +52,11 @@ final class AnyHanlinCreateBinding: PinkhaHanlinWriteBinding {
         self.tool = try PinkhaHanlinCreatePageTool.make()
     }
 
-    func attach(_ host: AnyHanlinHost) { self.host = host }
+    func attach(_ presentation: any PinkhaHanlinOwnedPresentation) { self.presentation = presentation }
 
     var missingInstallation: [PinkhaHanlinWriteInstallationRequirement] {
-        guard let host, PinkhaHanlinAccountOwner.shared.owns(host),
+        guard let presentation, PinkhaHanlinAccountOwner.shared.owns(presentation),
+              presentation.session == access.session,
               let owner, (try? owner.validateSDKPresentation(for: access.session)) != nil else {
             return PinkhaHanlinWriteInstallationRequirement.missing
         }
@@ -142,14 +143,31 @@ final class AnyHanlinCreateBinding: PinkhaHanlinWriteBinding {
                     // foreground SDK waiter. Session drain awaits native receipt
                     // plus original Hanlin journal commit, even after cancellation.
                     _ = try await native.perform { lease in
-                        try await creator.ensureObject(prepared.intent, authorize: {
-                            try await lease.validate()
-                            let current = try await authority.inspect(lease: lease)
-                            guard current == prepared.eligibility else { throw HanlinHostError.staleContext }
-                            try await MainActor.run { try self.validate(plan) }
-                        }, onNativeConfirmed: { id in
-                            try await receive(id)
-                        })
+                        do {
+                            return try await creator.ensureObject(prepared.intent, authorize: {
+                                try await lease.validate()
+                                let current = try await authority.inspect(lease: lease)
+                                guard current == prepared.eligibility else { throw HanlinHostError.staleContext }
+                                try await MainActor.run { try self.validate(plan) }
+                            }, onNativeConfirmed: { id in
+                                try await receive(id)
+                            })
+                        } catch {
+                            // Preserve a known native root BEFORE this original
+                            // lease can drain. Partial/bootstrap/readback failure
+                            // must never call the confirmed receipt callback.
+                            let knownID: String?
+                            if let failure = error as? AnyNativeCreationError,
+                               case .createdObjectIncomplete(let id) = failure {
+                                knownID = id
+                            } else {
+                                knownID = try await creator.recordedObjectID(for: prepared.intent)
+                            }
+                            if let knownID {
+                                try await opened.recordKnownIncompleteObject(knownID, identity: plan.identity)
+                            }
+                            throw error
+                        }
                     }
                 })
             self.journal = opened; self.runner = worker

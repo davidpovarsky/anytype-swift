@@ -24,6 +24,8 @@ public final class AnyHanlinHost: HanlinHostIntegration, PinkhaHanlinOwnedPresen
     private let router: PinkhaHanlinHostRouter
     private let binding: AnyHanlinCreateBinding?
     private var invalidated = false
+    private var mountedOwnerWasBound = false
+    private weak var mountedOwner: (any PinkhaHanlinOwnedPresentation)?
     private var invalidation: (@MainActor () -> Void)?
 
     public init(native: AnyApplicationSession, documents: AnyEditorDocumentStore,
@@ -48,6 +50,21 @@ public final class AnyHanlinHost: HanlinHostIntegration, PinkhaHanlinOwnedPresen
         try PinkhaHanlinAccountOwner.shared.register(self)
         binding?.attach(self)
         access.observeInvalidation { [weak self] in self?.invalidate() }
+    }
+
+    /// The real chat presentation replaces this host's provisional account-owner
+    /// registration. Exactly one mounted owner can bind; dismissal cannot rearm
+    /// the same SDK session with another presentation.
+    public func bindMountedPresentation(_ presentation: any PinkhaHanlinOwnedPresentation) throws {
+        guard !invalidated, presentation.session == session,
+              PinkhaHanlinAccountOwner.shared.owns(presentation),
+              !mountedOwnerWasBound || mountedOwner === presentation else {
+            throw HanlinHostError.staleContext
+        }
+        try access.validate(session.context)
+        mountedOwnerWasBound = true
+        mountedOwner = presentation
+        binding?.attach(presentation)
     }
 
     public var missingWriteInstallation: [PinkhaHanlinWriteInstallationRequirement] {

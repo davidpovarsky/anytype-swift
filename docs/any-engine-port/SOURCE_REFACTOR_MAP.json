@@ -93,12 +93,20 @@
       "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
       "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
       "baselineBlob": "810af73f1ecf45b3ea40827aa7549b12f7f3d1bc",
-      "replacementBlob": "c7d810f9879a69bb250209cdf909299cffca9cc7",
-      "reason": "Existing presentation conforms to the minimal shared owner lifetime protocol; no presentation body changed.",
+      "replacementBlob": "35f5857ca3de7c98c3e33358a3af2f7138364ba3",
+      "reason": "Retain Heart factory, styling and diagnostic adapter; share the original canonical session/provider/send/configure/close presentation body through one mounted owner protocol.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinAccountOwner.swift",
           "gitBlob": "ab218008e6b1dd12f98dce1ec322423b17b71d38"
+        },
+        {
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift",
+          "gitBlob": "f0cdf6a0fc4c0d04fd2a4115aac68f1faa70a4c0"
+        },
+        {
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinPresentationHost.swift",
+          "gitBlob": "470a3f87c10a08c1d0989c962e0ac8ca39517d83"
         }
       ],
       "validation": [
@@ -108,13 +116,37 @@
       ]
     },
     {
-      "kind": "import_only",
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
+      "baselineBlob": "0ddff522e7645ea19c3d4c319396177e355c4172",
+      "replacementBlob": "8a1129ab3e5a7aa64fe07c71ea8fd6667bd72164",
+      "reason": "Keep original app aliases and share original UI/consent/localized-string implementation; only public API, injected styling and Bundle.module resource ownership change.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift",
+          "gitBlob": "6aea1bfe242d973bd93c8c61a46b7d1f4b07af5e"
+        }
+      ],
+      "validation": [
+        "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
+        "Existing app test bodies are retained; import-only edits are mechanically checked.",
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+      ]
+    },
+    {
+      "kind": "refactor",
       "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinConsentController.swift",
       "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinConsentController.swift",
       "baselineBlob": "77a0f004e65614150cdf47052c7b32405f35d929",
-      "replacementBlob": "e5f104786aecc4eef3c7bf3ac34da2276664853b",
-      "reason": "Import the extracted shared module; implementation and test bodies unchanged.",
-      "sharedSources": [],
+      "replacementBlob": "bc724411115857868216661f1bcce06a673f2372",
+      "reason": "Keep original app aliases and share original UI/consent/localized-string implementation; only public API, injected styling and Bundle.module resource ownership change.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinConsentController.swift",
+          "gitBlob": "b78489726907708ac567a4d622e97589309961e3"
+        }
+      ],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
         "Existing app test bodies are retained; import-only edits are mechanically checked.",
@@ -234,6 +266,39 @@
       ]
     },
     {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinStrings.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinStrings.swift",
+      "baselineBlob": "657037395091ea052a863058aca1d9c2d8566d57",
+      "replacementBlob": "e10a6b62d7b462176c627640104437a60f14c2b7",
+      "reason": "Keep original app aliases and share original UI/consent/localized-string implementation; only public API, injected styling and Bundle.module resource ownership change.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinStrings.swift",
+          "gitBlob": "025ceec34afc10f03a261099247894ea67020245"
+        }
+      ],
+      "validation": [
+        "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
+        "Existing app test bodies are retained; import-only edits are mechanically checked.",
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+      ]
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/Resources/PinkhaHanlin.xcstrings",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/Resources/PinkhaHanlin.xcstrings",
+      "baselineBlob": "52ba2e3fd9bc0709250538541d11154c0bd84707",
+      "replacementBlob": "52ba2e3fd9bc0709250538541d11154c0bd84707",
+      "reason": "Move exact byte-identical Hanlin localized resources into the single shared UI bundle; retain every existing translation.",
+      "sharedSources": [],
+      "validation": [
+        "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
+        "Existing app test bodies are retained; import-only edits are mechanically checked.",
+        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+      ]
+    },
+    {
       "kind": "import_only",
       "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
       "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
@@ -308,8 +373,8 @@
       "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinWriteJournal.swift",
       "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWriteJournal.swift",
       "baselineBlob": "aca54480a6977009e1a1ac66806154964b51be29",
-      "replacementBlob": "0185052ee7616c3b35701ca291a3124958264684",
-      "reason": "Single shared implementation for Heart and Any; public API initializers/access and portable Crypto import only. Account owner replaces concrete weak presentation type with identical lifetime protocol.",
+      "replacementBlob": "14bfb33ab6c03564a93a224d2b0ce4dfe0ba1efd",
+      "reason": "Retain original v1 reservation/effect bytes and receipt rules; add an account-bound metadata-only known-object recovery sidecar for uncertain native creations, strict reopen validation, and same-ID committed refinement. Native failures remain uncertain and never masquerade as committed.",
       "sharedSources": [],
       "validation": [
         "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
@@ -351,7 +416,7 @@
       "to": "Anytype/Sources/Pinkha/Torah/Storage/AnytypeTorahAssociationRepository.swift",
       "baselineBlob": "2284761604e2b85b144576f8d7921bfb9e5c413f",
       "replacementBlob": "8e9ce51c2954cd1987cb375d4f0e47df7633203a",
-      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols.",
+      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahPresentationContracts.swift",
@@ -370,7 +435,7 @@
       "to": "Anytype/Sources/Pinkha/Torah/Storage/TorahAssociationMutationCoordinator.swift",
       "baselineBlob": "426348a96cc36c0352bfa41cb22e4062f384bc91",
       "replacementBlob": "41d4e0bad794905ffccba81f9b9aaf44cac2f312",
-      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols.",
+      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahPresentationContracts.swift",
@@ -389,7 +454,7 @@
       "to": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
       "baselineBlob": "a468f25f991134984ae2963b23b649f0c8018f6f",
       "replacementBlob": "f720544ee832268919a3fa712ac258f7b5651d72",
-      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols.",
+      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahPresentationContracts.swift",
@@ -408,11 +473,11 @@
       "to": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
       "baselineBlob": "7f758686f68268e36e97f6455105f136204b8068",
       "replacementBlob": "c62d24fce1ef49b35ec3e910f2f080e4faa3f715",
-      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols.",
+      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift",
-          "gitBlob": "0be9a3d4dd4abe24b7fb29e289abe8065d0f2249"
+          "gitBlob": "83a9f0dc56c549d9267a2607f79d629c198dcd62"
         }
       ],
       "validation": [
@@ -427,7 +492,7 @@
       "to": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchPresenter.swift",
       "baselineBlob": "78ffb0306652b260c4aa130da45e48ee436264c8",
       "replacementBlob": "744fef52142f93425f1e1f3c78e8c2f73dd0af3f",
-      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols.",
+      "reason": "Retain app aliases/Heart factory or protocol conformance; reuse original Torah session/search controller bodies, localization and six-state persistence contract through shared host protocols. Add active-host switching only with no open inspector/search modal so the native property sheet uses the same session instead of duplicating state.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahSourcesSearchPresenter.swift",

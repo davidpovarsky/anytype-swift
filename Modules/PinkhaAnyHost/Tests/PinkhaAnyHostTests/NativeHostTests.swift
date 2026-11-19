@@ -47,6 +47,27 @@ final class NativeSnapshotTests: XCTestCase {
         XCTAssertEqual(result.unreachableIDs, ["orphan"])
         XCTAssertThrowsError(try result.boundedText()) { XCTAssertEqual($0 as? AnyHostError, .incompleteDocument) }
     }
+    func testReachableEditPreservesUnrelatedOrphanAndRefusesOrphanTarget() throws {
+        let client = try AnyHTTPClient(baseURL: URL(string: "http://127.0.0.1:1")!, expectedAccountID: "account")
+        let workspace = try AnyTorahWorkspace(accountID: "account", spaceID: "space")
+        let store = try AnyEditorDocumentStore(client: client, workspace: workspace, allowedTypeIDs: ["page"])
+        let orphan = block("orphan", parent: "deleted", text: "recoverable", version: "orphan-v1",
+                           style: .object(["future": .bool(true)]))
+        let source = try snapshot([block("live"), orphan])
+        let read = AnyEditorRead(snapshot: source, markdown: "", nativeVersion: "whole-native-revision",
+                                 engineStartedAt: "run1", generation: UUID())
+        let edit = try store.prepareTextEdit(read, blockID: "live", inlineMarkdown: "edited")
+        XCTAssertEqual(edit.blockID, "live")
+        XCTAssertEqual(edit.expectedVersion, "whole-native-revision")
+        XCTAssertEqual(edit.set, ["text": .string("edited")])
+        XCTAssertEqual(source.blocks.first(where: { $0.id == "orphan" })?.native, orphan)
+        XCTAssertThrowsError(try store.prepareTextEdit(read, blockID: "orphan", inlineMarkdown: "lost")) {
+            XCTAssertEqual($0 as? AnyHostError, .invalidSelection)
+        }
+        let changed = try snapshot([block("live"), block("orphan", parent: "deleted", version: "orphan-v2")])
+        XCTAssertNotEqual(source.revision, changed.revision)
+        XCTAssertThrowsError(try source.boundedText())
+    }
     func testCycleIsRetainedForRecoveryAndCannotReachTextExporter() throws {
         let result = try snapshot([block("a", parent: "b"), block("b", parent: "a")])
         XCTAssertEqual(result.unreachableIDs, ["a", "b"])
@@ -100,7 +121,8 @@ final class NativeSnapshotTests: XCTestCase {
         let read = AnyEditorRead(snapshot: source, markdown: "שלום", nativeVersion: "v1",
                                  engineStartedAt: "run1", generation: UUID())
         let edit = try store.prepareWritingStyle(read, blockID: "a", direction: .rightToLeft, alignment: .right)
-        XCTAssertEqual(Set(edit.set.keys), ["style.pinkhaWritingDirection", "style.pinkhaTextAlignment"])
+        XCTAssertEqual(Set(edit.set.keys), ["style.pinkhaWritingDirection", "style.pinkhaTextAlignment", "style.pinkhaAlignmentWasExplicit"])
+        XCTAssertEqual(edit.set["style.pinkhaAlignmentWasExplicit"], .bool(true))
         XCTAssertTrue(edit.inverseSet.isEmpty)
         XCTAssertEqual(Set(edit.inverseUnset), Set(edit.set.keys))
         XCTAssertNil(edit.set["style"])

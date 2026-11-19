@@ -123,6 +123,7 @@ public actor AnyNativeObjectCreator {
     private let journal: any AnyNativeCreationJournaling
     private let dispatch: @Sendable (AnyNativeObjectCreationIntent, @escaping @Sendable () async throws -> Void) async throws -> String
     private let inspect: @Sendable (String) async throws -> AnyJSON
+    private let validateContract: @Sendable () async throws -> Void
 
     public init(client: AnyHTTPClient, workspace: AnyTorahWorkspace,
                 journal: any AnyNativeCreationJournaling) throws {
@@ -130,9 +131,16 @@ public actor AnyNativeObjectCreator {
             throw AnyHostError.wrongWorkspace
         }
         self.workspace = workspace; self.journal = journal
+        self.validateContract = {
+            let value = try await client.requestJSON(method: "GET", path: ["v1", "pinkha", "capabilities"])
+            guard value["contract"]?.string == "pinkha-torah-native-v1",
+                  value["currentWriterObjectCreate"]?.integer == 1 else {
+                throw AnyEngineError.incompatibleSchema("current-writer native object creation unavailable")
+            }
+        }
         self.dispatch = { intent, authorize in
             let value = try await client.requestJSON(method: "POST",
-                path: ["v1", "spaces", workspace.spaceID, "objects"],
+                path: ["v1", "spaces", workspace.spaceID, "pinkha", "objects"],
                 body: intent.body, authorize: authorize)
             let id = try value.requireString("objectId")
             guard AnyEditorBlock.validID(id) else { throw AnyNativeCreationError.writeUncertain }
@@ -152,8 +160,10 @@ public actor AnyNativeObjectCreator {
     /// Injection for crash/cancellation contracts; production uses native HTTP.
     init(workspace: AnyTorahWorkspace, journal: any AnyNativeCreationJournaling,
          dispatch: @escaping @Sendable (AnyNativeObjectCreationIntent, @escaping @Sendable () async throws -> Void) async throws -> String,
-         inspect: @escaping @Sendable (String) async throws -> AnyJSON) {
+         inspect: @escaping @Sendable (String) async throws -> AnyJSON,
+         validateContract: @escaping @Sendable () async throws -> Void = {}) {
         self.workspace = workspace; self.journal = journal; self.dispatch = dispatch; self.inspect = inspect
+        self.validateContract = validateContract
     }
 
     public func recordedObjectID(for intent: AnyNativeObjectCreationIntent) async throws -> String? {
@@ -166,6 +176,9 @@ public actor AnyNativeObjectCreator {
         onNativeConfirmed: @escaping @Sendable (String) async throws -> Void = { _ in }
     ) async throws -> String {
         guard intent.workspace == workspace else { throw AnyHostError.wrongWorkspace }
+        try Task.checkCancellation()
+        try await authorize()
+        try await validateContract()
         try Task.checkCancellation()
         try await authorize()
         let reservation = try await journal.reserve(intent.identity)
@@ -188,15 +201,29 @@ public actor AnyNativeObjectCreator {
                         try fence.beginDispatch()
                     }
                 }
+                catch let recovery as AnyObjectCreationUncertain {
+                    guard recovery.spaceID == intent.workspace.spaceID,
+                          AnyEditorBlock.validID(recovery.objectID) else {
+                        throw AnyNativeCreationError.writeUncertain
+                    }
+                    // Preserve the known original-scope ID even when the
+                    // generic journal cannot finish; Hanlin may still settle
+                    // its independent metadata-only recovery sidecar.
+                    try? await journal.record(.created(recovery.objectID), identity: intent.identity)
+                    throw AnyNativeCreationError.createdObjectIncomplete(recovery.objectID)
+                }
                 catch { throw AnyNativeCreationError.writeUncertain }
                 guard AnyEditorBlock.validID(id) else { throw AnyNativeCreationError.writeUncertain }
-                try await journal.record(.created(id), identity: intent.identity)
+                do { try await journal.record(.created(id), identity: intent.identity) }
+                catch { throw AnyNativeCreationError.createdObjectIncomplete(id) }
                 state = .created(id)
             } else {
                 guard let recorded = state.objectID else { throw AnyNativeCreationError.writeUncertain }
                 id = recorded
             }
-            let record = try await inspect(id)
+            let record: AnyJSON
+            do { record = try await inspect(id) }
+            catch { throw AnyNativeCreationError.createdObjectIncomplete(id) }
             guard record["any"]?["type"]?.string == intent.typeID,
                   record["any"]?["collections"] == nil || record["any"]?["collections"]?.array != nil else {
                 throw AnyNativeCreationError.createdObjectIncomplete(id)
@@ -212,11 +239,13 @@ public actor AnyNativeObjectCreator {
                 guard Self.containsExpected(record, expected: intent.initialProperties) else {
                     throw AnyNativeCreationError.createdObjectIncomplete(id)
                 }
-                try await journal.record(.verified(id), identity: intent.identity)
+                do { try await journal.record(.verified(id), identity: intent.identity) }
+                catch { throw AnyNativeCreationError.createdObjectIncomplete(id) }
             }
             // The callback refines the ORIGINAL Hanlin receipt before revocation
             // can suppress caller delivery; no additional approval is consumed.
-            try await onNativeConfirmed(id)
+            do { try await onNativeConfirmed(id) }
+            catch { throw AnyNativeCreationError.createdObjectIncomplete(id) }
             return id
         }
           return try await worker.value

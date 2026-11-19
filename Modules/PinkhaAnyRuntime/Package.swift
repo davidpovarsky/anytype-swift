@@ -17,11 +17,12 @@ let package = Package(
     name: "PinkhaAnyRuntime",
     platforms: [.iOS("18.4")],
     products: [.library(name: "PinkhaAnyRuntime", targets: ["PinkhaAnyRuntime"])],
+    dependencies: [.package(path: "../PinkhaAnyEngine")],
     targets: [
         binary,
         .target(
             name: "PinkhaAnyRuntime",
-            dependencies: ["AnyLib"],
+            dependencies: ["AnyLib", "PinkhaAnyEngine"],
             swiftSettings: isNative ? [.define("PINKHA_NATIVE_RUNTIME")] : [],
             linkerSettings: [.linkedFramework("Security"), .linkedFramework("SystemConfiguration"), .linkedLibrary("resolv")]
         ),

@@ -19,13 +19,15 @@ public actor PinkhaHanlinWriteJournal {
     private let store: PinkhaHanlinProtectedMetadataFiles
     private let namespace: HanlinConversationNamespace
     private var entries: [String: Entry]
+    private var knownObjects: [String: PinkhaHanlinKnownObjectRecovery]
     private var poisoned = false
     private var removed = false
     private static let maximumEntries = 256
 
     private init(store: PinkhaHanlinProtectedMetadataFiles, namespace: HanlinConversationNamespace,
-                 entries: [String: Entry]) {
+                 entries: [String: Entry], knownObjects: [String: PinkhaHanlinKnownObjectRecovery]) {
         self.store = store; self.namespace = namespace; self.entries = entries
+        self.knownObjects = knownObjects
     }
 
     /// Uses the real host's Application Support/Anytype ownership pattern, never middleware-go,
@@ -58,10 +60,17 @@ public actor PinkhaHanlinWriteJournal {
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         let scope = PinkhaHanlinCreatePagePlan.digest(try encoder.encode(namespace))
         let store = try PinkhaHanlinProtectedMetadataFiles(parent: parent, scope: scope)
-        let files = try store.readAll(maximumFiles: maximumEntries * 3)
+        let files = try store.readAll(maximumFiles: maximumEntries * 4)
         var reservations: [String: Entry] = [:]
         var outcomes: [String: [Entry]] = [:]
+        var knownObjects: [String: PinkhaHanlinKnownObjectRecovery] = [:]
         for (name, bytes) in files {
+            if name.hasSuffix(PinkhaHanlinKnownObjectRecovery.suffix) {
+                let recovery = try PinkhaHanlinKnownObjectRecovery.decode(
+                    bytes, fileName: name, namespace: namespace)
+                knownObjects[recovery.identity.key] = recovery
+                continue
+            }
             let entry = try JSONDecoder().decode(Entry.self, from: bytes)
             try entry.identity.validate()
             // Canonical round-trip rejects unknown fields, duplicate fields and unsupported encodings.
@@ -72,7 +81,8 @@ public actor PinkhaHanlinWriteJournal {
             if entry.effect == .reserved { reservations[entry.identity.key] = entry }
             else { outcomes[entry.identity.key, default: []].append(entry) }
         }
-        guard reservations.count <= maximumEntries, Set(outcomes.keys).isSubset(of: Set(reservations.keys)) else {
+        guard reservations.count <= maximumEntries, Set(outcomes.keys).isSubset(of: Set(reservations.keys)),
+              Set(knownObjects.keys).isSubset(of: Set(reservations.keys)) else {
             throw PinkhaHanlinWriteError.corruptJournal
         }
         var providerCalls = Set<String>()
@@ -91,8 +101,13 @@ public actor PinkhaHanlinWriteJournal {
                 ?? changes.first { $0.effect == .notDispatched }
                 ?? changes.first { $0.effect == .uncertain }
         }
+        for (key, recovery) in knownObjects {
+            guard let entry = reservations[key] else { throw PinkhaHanlinWriteError.corruptJournal }
+            do { try recovery.validate(against: entry) }
+            catch { throw PinkhaHanlinWriteError.corruptJournal }
+        }
         try store.recordNamespace(namespace)
-        return .init(store: store, namespace: namespace, entries: reservations)
+        return .init(store: store, namespace: namespace, entries: reservations, knownObjects: knownObjects)
     }
 
     /// Current actor/owner state only; no permission grant, cleanup, reservation or native I/O.
@@ -139,6 +154,10 @@ public actor PinkhaHanlinWriteJournal {
             }
             return previous
         }
+        if let recovery = knownObjects[identity.key] {
+            try recovery.validate(against: Entry(version: 1, identity: identity, effect: effect,
+                                                 createdObjectReference: createdObjectReference))
+        }
         if previous.effect == effect {
             guard previous.createdObjectReference.map({ Data($0.utf8) }) == createdObjectReference.map({ Data($0.utf8) }) else {
                 throw PinkhaHanlinWriteError.conflict
@@ -155,6 +174,42 @@ public actor PinkhaHanlinWriteJournal {
         return entry
     }
 
+
+    /// A native root ID with unverified/partial bootstrap is recovery metadata,
+    /// never a committed receipt or permission to read that object. This sidecar
+    /// leaves every existing v1 reservation/outcome byte unchanged.
+    public func recordKnownIncompleteObject(_ objectID: String, identity: PinkhaHanlinWriteIdentity) throws {
+        guard !poisoned, let previous = entries[identity.key], previous.identity == identity else {
+            throw PinkhaHanlinWriteError.unavailable
+        }
+        let recovery = PinkhaHanlinKnownObjectRecovery(version: 1, identity: identity,
+                                                        createdObjectReference: objectID)
+        try recovery.validate(against: previous)
+        if let existing = knownObjects[identity.key] {
+            guard existing == recovery else { throw PinkhaHanlinWriteError.conflict }
+            return
+        }
+        // A confirmed matching receipt is already stronger original-scope evidence.
+        if previous.effect == .committed { return }
+        do {
+            let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+            try store.append(name: identity.key + PinkhaHanlinKnownObjectRecovery.suffix,
+                             bytes: encoder.encode(recovery))
+            knownObjects[identity.key] = recovery
+        } catch {
+            poisoned = true
+            throw PinkhaHanlinWriteError.unavailable
+        }
+    }
+
+    public func knownCreatedObjectReference(for identity: PinkhaHanlinWriteIdentity) throws -> String? {
+        guard !removed else { throw PinkhaHanlinWriteError.unavailable }
+        guard identity.session.context.namespace == namespace else { throw PinkhaHanlinWriteError.invalidPlan }
+        guard let entry = entries[identity.key] else { return nil }
+        guard entry.identity == identity else { throw PinkhaHanlinWriteError.conflict }
+        return knownObjects[identity.key]?.createdObjectReference ?? entry.createdObjectReference
+    }
+
     public func receipt(for identity: PinkhaHanlinWriteIdentity) throws -> Entry? {
         guard !removed else { throw PinkhaHanlinWriteError.unavailable }
         guard identity.session.context.namespace == namespace else { throw PinkhaHanlinWriteError.invalidPlan }
@@ -169,6 +224,7 @@ public actor PinkhaHanlinWriteJournal {
         poisoned = true
         removed = true
         entries.removeAll()
+        knownObjects.removeAll()
         store.releaseOwnershipForRemoval()
     }
 
