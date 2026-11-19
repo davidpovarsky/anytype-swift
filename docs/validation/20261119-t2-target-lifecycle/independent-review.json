@@ -1,0 +1,204 @@
+{
+  "schema": "t2-target-lifecycle-independent-source-review-v1",
+  "status": "SOURCE_REVIEW_PASS",
+  "reviewer": "/root/asana_audit",
+  "reviewed_at_utc": "2026-11-19T16:46:48.590864+00:00",
+  "scope": "Independent source and acceptance-gate review of the application/settings/target/private-tree/ACL lock ordering, durable local write fence, controlled target lifecycle, and first-root creation. This is not native execution acceptance.",
+  "base_app_sha": "cab855d95c74f4f45eeacd07a6b1b6334151c138",
+  "heart_base_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "source_identity": {
+    "heart-registration.json": "4ff8da741f967c257f1c7ca9a2ca6ef9741dad5cf3030bceaabf07950d959b66",
+    "rpc/heart-rpc.json": "eaa174a818152347c757af6bcef0a4f5ef3cf5ab47a88157b8bdeb0a6750a8cd",
+    "account_rpc/fixture.json": "c493e991b0bb7e36e74f90925a8a24b9ecee8dfc16e59d976d11c6f9ec28f739"
+  },
+  "registration_patch_sha256": "57930393f9378873bd2f94b16a16288c1b42cd34941ca5cdd3d13546b66528f4",
+  "reviewed_source_sha256": {
+    "overlay/core/application/pinkha_torah_lifecycle.go": "2964d64dde48ea025f9e761197f33210d4541665ad97398ca82a2729faa5fd83",
+    "overlay/core/application/pinkha_torah_lifecycle_test.go": "026993bfaaf584e852bb7c758e78d679ea8404222d234073b5f1ae8c839e67b2",
+    "overlay/core/pinkha_torah_operations.go": "d30fb5f7749e9abf41ee6c5f145ce0fabb7cd31581c8f7e95f3208692656ba39",
+    "overlay/core/block/editor/torahops/native_host.go": "ac934c890e8d32f45c8cee0e2bc9bfc3adae4c56074751a2e3e09d172de7ae44",
+    "overlay/core/block/editor/torahops/native_commit_guard.go": "26ef149415810e5305f7ce42287fc69c06755c462ee631b0306c59b0302001be",
+    "overlay/core/block/editor/torahops/native_commit_guard_test.go": "7fbba98d2d58c2dd87730203305f1b401d5efb4e18c4e7e53f1893a2dd007220",
+    "overlay/core/block/editor/torahops/native_remote_commit_guard_test.go": "c88b763a1fbbc1932e8c71674c0f2ae17c1dd25d5da21c26944547a31f745bc0",
+    "overlay/core/block/editor/torahops/native_read_authority_test.go": "2b0635ced9d9d4e210a1cbbac6ecbbef1e22e8cc75165a0a0a339eb201345853",
+    "overlay/core/block/editor/torahops/native_target_lease_test.go": "2f48188666387598401eff391e4b2a241336b6673aeedf6d02edf3178b4b9e68",
+    "overlay/core/block/editor/torahops/store.go": "943b16ee869409223d0881d627475a7123cde0a6065f1df7f45704e9b029be93",
+    "overlay/core/block/editor/torahops/native_validator.go": "65e97d14aa7706a6fb300cc88631b014fa2ecd46e25c9f986906ea02a9efebb1",
+    "overlay/core/block/editor/torahopsobject/object.go": "c325a56a0c90c79c586fb7ec09a838700fa0d54159a624ab6acf45bf9e8ad118",
+    "overlay/core/block/editor/torahopsobject/target_lease.go": "b81e96a0a62fc630b5cf4045d170c4cbdc090ea73e920eef1c2f123084cae137",
+    "overlay/core/block/editor/torahopsobject/target_lease_test.go": "6a9fdf523b8620101330d78bbf3c2ecb6f74a91e8e074e3b12ea2be706b93836",
+    "overlay/core/block/editor/torahopsobject/target_context_test.go": "c30aa64116e5c6b3f94a479b3e38d61b4d4f07a796758b4cd2ea7b2a355cc8da",
+    "overlay/core/block/object/treesyncer/pinkha_torah.go": "8230806a1aad11aaa012279293cb5e8fe11cec8942b12b2321acf6aa0497e8e5",
+    "overlay/core/block/object/treesyncer/pinkha_torah_test.go": "5eccfdea80c33f626ae87cdad24d9cdcb40b8dc87e2b18507fe6b445289f62d3",
+    "overlay/core/block/object/objectcache/pinkha_torah_lifecycle.go": "04db119e88b104dfb08d315618410b77ed396c913d7838f8638903af46d3d1e3",
+    "overlay/core/block/object/objectcache/pinkha_torah_lifecycle_test.go": "49ac77d0cdae36262543836f068a3ac48ae29fb6d495748b9c49bdfeb47ce4b2",
+    "overlay/space/clientspace/pinkha_torah.go": "a9a8238dd8f96d4c5a8386eb0b2a96144f44d8474542af4f61819156c8857ab4",
+    "overlay/pkg/lib/pinkha/torahopscontract/root_creation.go": "bea080f73318b83f7b73055c585c1210908e9f6c1e36da014532f895514c1d0c",
+    "overlay/pkg/lib/pinkha/torahopscontract/root_creation_test.go": "f2654ea1057442401eae25e456af75407c8ea7f106d1ac976eac50ab263f8a4c",
+    "heart-registration.patch": "57930393f9378873bd2f94b16a16288c1b42cd34941ca5cdd3d13546b66528f4",
+    "account_rpc/native_rpc_account_test.go": "283af8015f72bc6fc29c027bc5af511490548a805cc3095ebf5385165d242723",
+    "run_native_operations.py": "ac362394ed29ad281ad25d71590a0b2a84d3eca83eabd28e3c66b41ad4a87430",
+    "test_run_native_operations.py": "7c048cb66f4a4749c30ba560c7aea9c781513e7a8b656407622a6df44f5a33ec"
+  },
+  "source_identity_verification": {
+    "status": "PASS",
+    "native_overlay_exact_paths_and_sha256": 52,
+    "rpc_overlay_exact_hashes": 3,
+    "registration_patch_and_three_manifest_cascade": "PASS",
+    "account_fixture_patch_helper_and_baseline_controller": "PASS",
+    "owner_source_composition_report_sha256": "ce897a1c23f0470c71601c8b8a26f767100780cd40c0ec4dd8a98c6c6ba70d2d",
+    "source_composition_report_scope": "Owner execution of pinned Heart patch application, 65 composed source hashes, RPC/account/client source gates and actual account fixture transformation; reviewer checked report contents, final manifest identities and on-disk overlay/fixture hash cascade.",
+    "native_execution_inferred_from_source_validation": false
+  },
+  "source_conclusions": [
+    {
+      "id": "LOCK_ORDER",
+      "result": "PASS_SOURCE",
+      "detail": "Application Service read lease is acquired outermost. Target/settings are preloaded before cross-object locks; the exact reserved SettingsObject is locked, full genesis history checked, then the current target SmartBlock is locked and validated. The private operation tree and final ACL read fence are acquired afterward. scope.current checks context and the lease token without reentering GetApp."
+    },
+    {
+      "id": "LIVE_TARGET_IDENTITY",
+      "result": "PASS_SOURCE",
+      "detail": "The cache query is a nonloading, nonwaiting Peek and requires the same live SmartBlock pointer. It rejects absent, closing, replaced, foreign Space, private-root target, deleted/uninstalled target, invalid page/template type, and missing target block. Checks happen after preload and under target/settings locks."
+    },
+    {
+      "id": "ONE_BORROW_AND_RELEASE",
+      "result": "PASS_SOURCE",
+      "detail": "The account-owned context lease may be borrowed once by the matching private host. Wrong Space instance/root/target, reused and released tokens fail. Error/cancellation paths release once; host and account deferred releases are idempotent. The target and settings release only after the native transaction has returned success, and after the final ACL read lock is released."
+    },
+    {
+      "id": "DURABLE_BOUNDARY",
+      "result": "PASS_SOURCE",
+      "detail": "The private, one-use local commit token binds signer, guarded storage, prepared change, heads and snapshot. Current signed writer permission and exact signed ACL head are checked while holding ACL RLock over the real Storage.AddAll. The pinned upstream Storage.AddAll reports deferred transaction commit failure before returning; successful changes provide the durable receipt. Target/settings release before SyncTree head-update callbacks, broadcast and projection. Postcommit failure preserves the signed change receipt and surfaces an error."
+    },
+    {
+      "id": "ROOT_CREATION",
+      "result": "PASS_SOURCE",
+      "detail": "Only a structurally valid Add may create an absent local journal. Read/Remove/Replace without local history return HistoryUnavailable without creating the root. The single-use root-creation guard checks active target/app/context and current signed write permission at CreateTreeStorage. Registry opening follows after ACL unlock; the generic PutTree path that would reacquire ACL is not used."
+    },
+    {
+      "id": "READ_AUTHORITY_ORDER",
+      "result": "PASS_SOURCE",
+      "detail": "The final candidate restores NativeHost.ReadTarget current-ACL preflight before target acquisition and retains the held-ACL check during the actual read. The existing real signed-ACL test now asserts that a denied reader never invokes the target leaser."
+    },
+    {
+      "id": "REMOTE_REBUILD_BINDING",
+      "result": "PASS_SOURCE",
+      "detail": "A rebuilt tree reuses an already guarded storage only when its ACL instance and root ID/header bytes match; nested guards and foreign bindings are rejected. This avoids a wrapper identity mismatch without removing local commit-token checks."
+    },
+    {
+      "id": "HISTORICAL_REPLAY_AND_RETRY",
+      "result": "PASS_SOURCE",
+      "detail": "Incoming remote/deferred signed-history replay remains on the unchanged native historical verifier and is not treated as a new local target mutation. Existing production RPC local retry revalidates current target authority and remains denied after target deletion; restoration permits the identical receipt. This distinction was confirmed with the parent task owner."
+    },
+    {
+      "id": "ACCEPTANCE_GATES",
+      "result": "PASS_SOURCE",
+      "detail": "Required lifecycle test names and packages include controlled target locks through real durable storage, release before head update, cancellation, current cache replacement, genesis deletion scan, one borrow, app lease, reserved settings and real root guard. Python controls reject each required lifecycle event when missing, failed or skipped; the registration suite rejects any skip. Python controls do not execute Go or establish app acceptance."
+    }
+  ],
+  "resolved_review_findings": [
+    {
+      "id": "T2-R1",
+      "origin": "Independent review",
+      "finding": "A structurally valid first Remove/Replace could previously create an empty private root before observed-predecessor validation.",
+      "resolution": "Separated write/create authority; absent Remove/Replace history returns HistoryUnavailable. Typed/account-generated wire fixtures assert the native root remains absent after each rejection.",
+      "status": "FIXED_SOURCE_NATIVE_REGRESSION_NOT_RUN"
+    },
+    {
+      "id": "T2-R2",
+      "origin": "T2 owner reverse-lock review, independently checked",
+      "finding": "Calling GetApp RLock below target/settings could invert Stop or AccountSelect writer lock followed by app.Close.",
+      "resolution": "Outermost application lifetime read lease and nonlocking scope.current; all exit paths release it after target release.",
+      "status": "FIXED_SOURCE_NATIVE_REGRESSION_NOT_RUN"
+    },
+    {
+      "id": "T2-R3",
+      "origin": "Independent review",
+      "finding": "The first missing-guard regression used a fixture without CommonSpace and rejected before reaching the actual creation guard.",
+      "resolution": "The final test uses real native storage with CommonSpace and an absent private root, reaches CreateTreeObjectWithPayload, requires ErrPrivateOperation and proves root absence afterward.",
+      "status": "FIXED_TEST_SOURCE_NATIVE_REGRESSION_NOT_RUN"
+    },
+    {
+      "id": "T2-R4",
+      "origin": "T2 owner authority-order review, independently checked",
+      "finding": "Direct NativeHost ReadTarget acquired target authority before its existing signed ACL read check.",
+      "resolution": "Added ACL preflight before acquireTarget and a denied-reader zero-callback assertion, retaining the final ACL check.",
+      "status": "FIXED_SOURCE_NATIVE_REGRESSION_NOT_RUN"
+    }
+  ],
+  "upstream_review": {
+    "heart": {
+      "heart_head": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "read_source_hashes": {
+        "core/application/application.go": "5f1f99292a2087827317e9cb0f9ba4b99f116d7e784f63e54740895fa762fc33",
+        "core/application/account_stop.go": "ff2fef88652fbae5bdaba1826cd30c4cd6f1e211b555f2acf121d410ed1dbb52",
+        "core/block/delete.go": "94974824607c0e0f2d5e81780b30f0fd8c254857f2ef2e0e490af26afdb08658",
+        "core/block/editor/smartblock/smartblock.go": "17b5f3ce4d06d2f4f66b752906cf168ac81f3aa8e98f65c757b46e5d71411678",
+        "core/block/object/objectcache/cache.go": "4b10433fe4f3fb765fd61443ae03af081975ad1ff3aa63ffe13be1b8ae9ed46d",
+        "core/block/object/treesyncer/treesyncer.go": "da869ebee5037402f04ba5119cf60b143385ec9eb8d880be42e3aea2162e3b52",
+        "space/internal/components/aclobjectmanager/aclobjectmanager.go": "89f4e718692cb25796c0bf594eade73dc3feac11f69d8e6b0c36ca0603d072ca",
+        "space/clientspace/space.go": "15e763c99f8262d9bd08e206d1dcb4c0fde0a1d005ff919de5ece5032f10a29b",
+        "go.mod": "db48979526fa09ebc782090be92bdbd8ed8d5b0aca89d4cd3eb62bac8fce82b6",
+        "go.sum": "cf906b1edb813cfc382ba8efeeb6142839ab9fcde0a282deb2b830e815f90b39"
+      }
+    },
+    "any_sync": {
+      "dependency": "github.com/anyproto/any-sync@v0.13.8",
+      "read_source_hashes": {
+        "commonspace/objectmanager/objectmanager.go": "10535e34e12e7e1ab604e38267929e90d20b1f33511aab96e48175d4f25b4f56",
+        "commonspace/settings/settingsobject.go": "0f74c835ee5daab90a3ca3a5d5d61f781dc3fb60cc97e88dfbeda1013e0b6f19",
+        "commonspace/deletionmanager/deletionmanager.go": "4bc79c1224e0f9d7f174c5f61e12812f9d11e8d6dd36cd47f69f1be26b0e9d00",
+        "app/ocache/ocache.go": "fb5f296ebd9e6bb823850d3efb5db7c5a9de11ce698d0aeea3f8c05c737ca258",
+        "app/ocache/entry.go": "f85fbe6c54a0997abcb27da16c299246214794e57ba5f173e11939d2ee205348",
+        "commonspace/object/tree/objecttree/storage.go": "2f53235a74ab3f23dcc5166124205080c9c98f86bcc54382a6c870cd201300f9",
+        "commonspace/spacestorage/spacestorage.go": "497140b1291e08d06c7a60c0962a1d07c81a1bbc1dabf52908f49185391928e1",
+        "commonspace/object/acl/syncacl/syncacl.go": "30221434dcdb4748950869c5c4bdf55b4e78fa4b4cbf4076a6ce62245051cb64"
+      }
+    },
+    "confirmed_paths": [
+      "Native objectManager returns exact registered reserved SettingsObject.",
+      "Ordinary Heart DeleteObject leaves target Do before DeleteTree acquires settings.",
+      "Derived/template uninstall mutates native target under its own lock.",
+      "Settings update queues deletion asynchronously.",
+      "ocache Remove/Close/ForEach release global mutex before value callbacks; Peek does not wait for close.",
+      "Private InitTorahOperations does not load or relock target.",
+      "CreateTreeStorage -> CreateStorage commits its database transaction before returning and does not acquire ACL itself.",
+      "Native Storage.AddAll returns its deferred tx.Commit error; durable witness is available only after nil return.",
+      "Service.Stop/AccountSelect hold the application writer lock while closing; the new read lease prevents this from overtaking an active scope.",
+      "Inspected actual ocache DoLockedIfNotExists callers do not invoke target.Do within the held-cache-mutex callback; target calls occur after callback return.",
+      "Inspected ACL updater path uses atomic generation/asynchronous ACL processing and has no direct target/settings acquisition in the reviewed synchronous update path."
+    ]
+  },
+  "control_evidence": {
+    "provenance": "Executed by T2 owner; logs and exact evidence hashes independently checked. Reviewer did not label these Python controls as native Go tests.",
+    "controller_tests": 108,
+    "rpc_controller_tests": 6,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "files_sha256": {
+      "controller-validation.json": "00b7ac0392882063b08bb73e2d480982df3aac0563c3facead44ed5c63a4b2ad",
+      "source-validation.json": "ce897a1c23f0470c71601c8b8a26f767100780cd40c0ec4dd8a98c6c6ba70d2d",
+      "linux-controller-tests.log": "cff039f000dd769cc72f66cc12f9ae23764e331e797e28dd42256414a8ac9ca5",
+      "linux-rpc-controller-tests.log": "88a414e7614324995bb515959b4230e8d58d55d78f26774692abe8b0901d584c"
+    }
+  },
+  "blocking_findings": [],
+  "scope_limitations": [
+    "No native Go test, full registered account/RPC scenario, two-client runtime or Apple/iOS test has been executed for this final lifecycle source by this review. They remain mandatory owner-run gates.",
+    "Target-lifecycle component tests use a controlled SmartBlock State boundary together with real signed settings history and native storage; they do not substitute for native account or two-client scenarios.",
+    "This review does not claim a general standalone Space-close lifetime fence. If another closer already owns a cache entry, ocache.Close waits that other closer only until its bounded closing context ends, and Space may continue common.Close. Database transaction/close arbitration for that scenario has not been proved here. No concrete post-close durable-write hole was established in this source review; the application Stop fence is separately supported.",
+    "Previous native successes of the guard-only base are not acceptance of the new target/app lifecycle candidate. Exact final source execution is required.",
+    "The main application capability remains OFF, and this source review does not complete T2 or any broader release task."
+  ],
+  "acceptance": {
+    "native_go_execution": "NOT_RUN",
+    "registered_account_rpc": "NOT_RUN",
+    "two_client_lifecycle": "NOT_RUN",
+    "apple_ios": "NOT_RUN",
+    "app_capability": "OFF",
+    "task_complete": false
+  },
+  "recommendation": "Proceed with owner-controlled transfer/commit and exact-source native component, registration, account/RPC and two-client acceptance. Retain any failure/skip or absent-runtime evidence as incomplete rather than counting source review as runtime success."
+}

@@ -58,7 +58,7 @@ func TestPinkhaPrivateSourceOwnsNoGenericBlockOrStorePath(t *testing.T) {
 	projection, err := anystore.Open(ctx, filepath.Join(f.Dir, "projection.db"), &anystore.Config{ReadConnections: 1})
 	require.NoError(t, err)
 	t.Cleanup(func() { require.NoError(t, projection.Close()) })
-	host, err := torahops.OpenNativeHost(ctx, projection, f.Space.Id(), tree, f.Keys.SignKey, func(context.Context, torahops.Target) error { return nil })
+	host, err := torahops.OpenNativeHost(ctx, projection, f.Space.Id(), tree, f.Keys.SignKey, func(context.Context, torahops.Target) (func(), error) { return func() {}, nil })
 	require.NoError(t, err)
 	op := torahops.Operation{Version: torahops.Version, SpaceID: f.Space.Id(), OperationID: "00000000000000000000000000000001", AuthorID: f.Keys.SignKey.GetPublic().Account(), Kind: torahops.Add,
 		Target: torahops.Target{ObjectID: "fixture-target"}, Source: torahops.Source{ProviderID: "fixture", CanonicalRef: "fixture:1"}, Payload: []byte("PRIVATE_OPERATION_SENTINEL")}

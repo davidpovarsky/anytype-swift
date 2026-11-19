@@ -75,7 +75,7 @@ func TestNativeLocalAppendRequiresCommitGuard(t *testing.T) {
 				case "unbound host constructor fails before replay":
 					unbound := &nativeUnboundStorageTree{SyncTree: f.tree, unbound: storage.Storage}
 					var host *NativeHost
-					host, err = OpenNativeHostLocked(ctx, f.projectionDB, f.space.Id(), unbound, f.keys.SignKey, f.validateTarget)
+					host, err = OpenNativeHostLocked(ctx, f.projectionDB, f.space.Id(), unbound, f.keys.SignKey, f.acquireTarget)
 					require.Nil(t, host)
 				}
 			}()
@@ -119,7 +119,7 @@ func TestNativeACLCommitFence(t *testing.T) {
 				}
 				return nil
 			}}
-			writer, err := OpenNativeHost(ctx, f.projectionDB, f.space.Id(), wrapped, key, f.validateTarget)
+			writer, err := OpenNativeHost(ctx, f.projectionDB, f.space.Id(), wrapped, key, f.acquireTarget)
 			require.NoError(t, err)
 			op.OperationID, op.AuthorID = fmt.Sprintf("%032x", 2), key.GetPublic().Account()
 			result, err := writer.Append(ctx, op)
@@ -243,7 +243,7 @@ func TestNativeCommitGuardKeepsHistoricalReplay(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() { require.NoError(t, f.Close()) })
 	key := addNativeWriter(t, f)
-	writer, err := OpenNativeHost(ctx, f.projectionDB, f.space.Id(), f.tree, key, f.validateTarget)
+	writer, err := OpenNativeHost(ctx, f.projectionDB, f.space.Id(), f.tree, key, f.acquireTarget)
 	require.NoError(t, err)
 	op := Operation{Version: Version, SpaceID: f.space.Id(), OperationID: fmt.Sprintf("%032x", 1),
 		AuthorID: key.GetPublic().Account(), Kind: Add, Target: Target{ObjectID: config.TargetRoots[0].Id},

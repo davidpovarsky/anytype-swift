@@ -51,7 +51,7 @@ func TestNativeCurrentReadAuthority(t *testing.T) {
 		f, op := nativeFixtureWithPopulatedProjection(t)
 		outsider, err := accountdata.NewRandom()
 		require.NoError(t, err)
-		host, err := OpenNativeHost(context.Background(), f.projectionDB, f.space.Id(), f.tree, outsider.SignKey, f.validateTarget)
+		host, err := OpenNativeHost(context.Background(), f.projectionDB, f.space.Id(), f.tree, outsider.SignKey, f.acquireTarget)
 		require.ErrorIs(t, err, list.ErrInsufficientPermissions)
 		require.Nil(t, host)
 
@@ -59,9 +59,15 @@ func TestNativeCurrentReadAuthority(t *testing.T) {
 		// even though its tree and projection already contain decrypted data.
 		misbound := *f.host
 		misbound.key = outsider.SignKey
+		leaseCalls := 0
+		misbound.leaseTarget = func(context.Context, Target) (func(), error) {
+			leaseCalls++
+			return func() {}, nil
+		}
 		snapshot, err := misbound.ReadTarget(context.Background(), op.Target, 10)
 		require.ErrorIs(t, err, list.ErrInsufficientPermissions)
 		require.Equal(t, NativeSnapshot{}, snapshot)
+		require.Zero(t, leaseCalls, "a denied reader must not inspect or lock a native target")
 		ownerSnapshot, err := f.host.ReadTarget(context.Background(), op.Target, 10)
 		require.NoError(t, err)
 		require.Len(t, ownerSnapshot.Projection.Live, 1)
@@ -83,7 +89,7 @@ func TestNativeCurrentReadAuthority(t *testing.T) {
 					{Identity: member.SignKey.GetPublic(), Permissions: role.permissions, Metadata: []byte("disposable read member")},
 				}})
 			})
-			memberHost, err := OpenNativeHost(context.Background(), f.projectionDB, f.space.Id(), f.tree, member.SignKey, f.validateTarget)
+			memberHost, err := OpenNativeHost(context.Background(), f.projectionDB, f.space.Id(), f.tree, member.SignKey, f.acquireTarget)
 			require.NoError(t, err)
 			snapshot, err := memberHost.ReadTarget(context.Background(), op.Target, 10)
 			require.NoError(t, err)
@@ -114,7 +120,7 @@ func TestNativeCurrentReadAuthority(t *testing.T) {
 			snapshot, err = memberHost.ReadTarget(context.Background(), op.Target, 10)
 			require.ErrorIs(t, err, list.ErrInsufficientPermissions)
 			require.Equal(t, NativeSnapshot{}, snapshot)
-			reopened, err := OpenNativeHost(context.Background(), f.projectionDB, f.space.Id(), f.tree, member.SignKey, f.validateTarget)
+			reopened, err := OpenNativeHost(context.Background(), f.projectionDB, f.space.Id(), f.tree, member.SignKey, f.acquireTarget)
 			require.ErrorIs(t, err, list.ErrInsufficientPermissions)
 			require.Nil(t, reopened)
 			ownerSnapshot, err := f.host.ReadTarget(context.Background(), op.Target, 10)

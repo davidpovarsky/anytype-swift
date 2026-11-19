@@ -35,10 +35,21 @@ type Fixture struct {
 	Keys       *accountdata.AccountKeys
 	RootID     string
 	Builder    *Builder
+	Settings   synctree.SyncTree
 	trees      []objecttree.ObjectTree
 }
 
 func New(t *testing.T) *Fixture {
+	return newFixture(t, true)
+}
+
+// NewWithoutPrivateRoot retains the real native Space/ACL/settings fixture but
+// leaves the private namespace absent for first-installation boundary tests.
+func NewWithoutPrivateRoot(t *testing.T) *Fixture {
+	return newFixture(t, false)
+}
+
+func newFixture(t *testing.T, createPrivateRoot bool) *Fixture {
 	t.Helper()
 	ctx := context.Background()
 	keys, err := accountdata.NewRandom()
@@ -71,9 +82,14 @@ func New(t *testing.T) *Fixture {
 	root, err := torahopscontract.Root(f.Space.Id())
 	require.NoError(t, err)
 	f.RootID = root.Id
-	_, err = f.Space.CreateTreeStorage(ctx, treestorage.TreeStorageCreatePayload{RootRawChange: root, Heads: []string{root.Id}})
-	require.NoError(t, err)
+	if createPrivateRoot {
+		_, err = f.Space.CreateTreeStorage(ctx, treestorage.TreeStorageCreatePayload{RootRawChange: root, Heads: []string{root.Id}})
+		require.NoError(t, err)
+	}
 	f.Builder = &Builder{Fixture: f}
+	settings, err := f.Builder.BuildTree(ctx, f.Space.StateStorage().SettingsId(), objecttreebuilder.BuildTreeOpts{TreeBuilder: objecttree.BuildObjectTree})
+	require.NoError(t, err)
+	f.Settings = settings.(synctree.SyncTree)
 	return f
 }
 

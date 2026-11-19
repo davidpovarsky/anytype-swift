@@ -21,9 +21,9 @@ PACKAGES = {
     "component": ["./core/block/editor/torahops"],
     "registration": ["./pkg/lib/pinkha/torahopscontract", "./pkg/lib/core/smartblock",
                      "./core/domain", "./space/spacecore/typeprovider", "./core/block/restriction",
-                     "./core/block/object/objectcache", "./core/block/object/treemanager",
+                     "./core/block/object/objectcache", "./core/block/object/treemanager", "./core/block/object/treesyncer",
                      "./core/block/source/sourceimpl", "./core/block/editor", "./core", "./core/block/export",
-                     "./core/block/editor/torahopsobject"],
+                     "./core/block/editor/torahopsobject", "./core/application"],
 }
 REQUIRED = {
     "component": {"TestNativeTwoProcessTreeSync", "TestNativeHostRejectsUnboundAuthorityAndInvalidHistory",
@@ -42,6 +42,8 @@ REQUIRED = {
                   "TestNativeACLCommitFence/cancellation_after_preparation_denies_before_durable_write",
                   "TestNativeCommitReceiptAfterHeadUpdateFailure",
                   "TestNativeCommitGuardKeepsHistoricalReplay",
+                  "TestNativeTargetLeaseCoversDurableCommitAndReleasesBeforeHeadUpdate",
+                  "TestNativeTargetLeaseReleasesOnCancelledPreparedAppend",
                   "TestNativeRemoteFetchKeepsSingleCommitGuard",
                   "TestNativeRebuiltStorageRejectsForeignBinding",
                   "TestNativeRebuiltStorageRejectsForeignBinding/different_ACL_instance",
@@ -60,6 +62,30 @@ REQUIRED = {
                   "TestLiveOperationIDOrderRetainsConcurrentReplacements/[3_1_2_0]",
                   "TestLiveOperationIDOrderPreservesNonLiveProvenance"},
     "registration": {"TestPrivateRootIdentityAndSpaceBinding", "TestPrivateRootRejectsNoncanonicalEnvelope",
+                     "TestPinkhaRootCreationGuardRejectsMissingForeignUsedAndCancelled",
+                     "TestPinkhaRootCreationGuardRejectsMissingForeignUsedAndCancelled/missing",
+                     "TestPinkhaRootCreationGuardRejectsMissingForeignUsedAndCancelled/foreign_space",
+                     "TestPinkhaRootCreationGuardRejectsMissingForeignUsedAndCancelled/foreign_root",
+                     "TestPinkhaRootCreationGuardRejectsMissingForeignUsedAndCancelled/cancelled",
+                     "TestPinkhaRootCreationGuardRejectsMissingForeignUsedAndCancelled/reused",
+                     "TestPinkhaRootCreationGuardRejectsMissingForeignUsedAndCancelled/denied_at_storage_boundary",
+                     "TestPinkhaPrivateRootCannotBypassAccountCreationGuard",
+                     "TestPinkhaTargetCacheLeaseRejectsClosingAndReplacedInstances",
+                     "TestPinkhaSettingsLeaseUsesExistingReservedObject",
+                     "TestPinkhaNativeTargetLeaseHoldsBothLocksAndReleasesOnce",
+                     "TestPinkhaNativeTargetLeaseCanBeBorrowedOnce",
+                     "TestPinkhaNativeTargetLeaseReadsGenesisBeforeSnapshot",
+                     "TestPinkhaNativeTargetLeaseRechecksStateAfterPreload",
+                     "TestPinkhaNativeTargetLeaseRechecksStateAfterPreload/target_deleted_after_preload",
+                     "TestPinkhaNativeTargetLeaseRechecksStateAfterPreload/cache_replaced_after_preload",
+                     "TestPinkhaNativeTargetLeaseCancellationAndUnavailableRelease",
+                     "TestPinkhaNativeTargetLeaseCancellationAndUnavailableRelease/cancelled_while_waiting_for_settings",
+                     "TestPinkhaNativeTargetLeaseCancellationAndUnavailableRelease/stale_cache_instance",
+                     "TestPinkhaNativeTargetLeaseCancellationAndUnavailableRelease/deleted_target",
+                     "TestPinkhaNativeTargetLeaseCancellationAndUnavailableRelease/missing_block",
+                     "TestPinkhaNativeTargetLeaseCancellationAndUnavailableRelease/original_loader_error",
+                     "TestPinkhaAppLeaseExcludesStopAndReleasesOnce",
+                     "TestPinkhaAppLeaseRejectsCancelledContextWithoutLock",
                      "TestPinkhaPrivateTypeAllocationAndIndexPolicy", "TestPinkhaTorahOperationsUniqueKeyIsDedicated",
                      "TestPinkhaPrivateRegistryRequiresCanonicalSpaceRoot", "TestPinkhaPrivateRegistryRejectsGenericEnumForgery",
                      "TestPinkhaPrivateCachedTypeStillRequiresReceivingSpace", "TestPinkhaPrivateHostDeniesGenericObjectMutations",
@@ -201,7 +227,11 @@ def main() -> int:
         "suite": args.suite,
         "private_registry_adapter": "NOT_RUN",
         "unknown_client_preservation": "NOT_RUN",
-        "target_lifecycle_scope": "NON_ATOMIC_NATIVE_ADAPTER_ONLY",
+        "target_lifecycle_scope": "CONTROLLED_TARGET_STATE_NATIVE_SETTINGS_AND_STORAGE_COMPONENTS",
+        "target_commit_lease": "NOT_RUN",
+        "target_settings_cache_lifecycle": "NOT_RUN",
+        "application_lifetime_lease": "NOT_RUN",
+        "first_root_creation_guard": "NOT_RUN",
         "evidence_scope": ("native StoreState / any-store component and two-process signed AnySync loopback transport"
                            if args.suite == "component" else "private native registry/source/factory adapter; controlled target State boundary"),
         "middleware_acceptance": "NOT_RUN",
@@ -276,10 +306,14 @@ def main() -> int:
                 receipt["current_local_write_authority"] = "PASS_CURRENT_LOCALLY_VERIFIED_ACL_THROUGH_NATIVE_COMMIT"
                 receipt["native_acl_commit_fence"] = "PASS_PRIVATE_LOCAL_ENTRY_AND_STORAGE_GUARD"
                 receipt["durable_receipt_after_head_update_failure"] = "PASS_NATIVE_COMPONENT_RECEIPT_AND_EXACT_RETRY"
+                receipt["target_commit_lease"] = "PASS_CONTROLLED_TARGET_LOCKS_THROUGH_REAL_NATIVE_COMMIT"
                 receipt["live_operation_id_tie_break"] = "PASS_DISK_COMPONENT_REPLAY_REOPEN_AND_RETAINED_PROVENANCE"
             else:
                 receipt["status"] = "PASS_PRIVATE_NATIVE_REGISTRY_ADAPTER"
                 receipt["private_registry_adapter"] = "PASS_FACTORY_SOURCE_STORAGE_BOUNDARIES"
+                receipt["target_settings_cache_lifecycle"] = "PASS_RESERVED_SETTINGS_CACHE_IDENTITY_AND_CONTROLLED_TARGET_STATE"
+                receipt["application_lifetime_lease"] = "PASS_SERVICE_MUTEX_AND_CANCELLED_REQUEST"
+                receipt["first_root_creation_guard"] = "PASS_SCOPED_GUARD_AND_NATIVE_ABSENT_ROOT_REJECTION"
         else:
             receipt["status"] = "FAIL"
             code = code or 1

@@ -40,7 +40,7 @@ func TestNativeCurrentWriteAuthority(t *testing.T) {
 	t.Run("locally removed writer cannot append or replay an acknowledged operation", func(t *testing.T) {
 		f, op := nativeFixtureWithPopulatedProjection(t)
 		key := addNativeWriter(t, f)
-		member, err := OpenNativeHost(context.Background(), f.projectionDB, f.space.Id(), f.tree, key, f.validateTarget)
+		member, err := OpenNativeHost(context.Background(), f.projectionDB, f.space.Id(), f.tree, key, f.acquireTarget)
 		require.NoError(t, err)
 		op.OperationID = fmt.Sprintf("%032x", 2)
 		op.AuthorID = key.GetPublic().Account()
@@ -72,16 +72,16 @@ func TestNativeCurrentWriteAuthority(t *testing.T) {
 		f, op := nativeFixtureWithPopulatedProjection(t)
 		key := addNativeWriter(t, f)
 		called := 0
-		validate := func(ctx context.Context, target Target) error {
+		validate := func(ctx context.Context, target Target) (func(), error) {
 			if err := f.validateTarget(ctx, target); err != nil {
-				return err
+				return nil, err
 			}
 			called++
 			// This callback runs after NativeHost's preflight permission check,
 			// but before the real ObjectTree.prepareBuilderContent. Applying a
 			// signed native removal here deterministically exercises that gap.
 			removeNativeMember(t, f, key)
-			return nil
+			return func() {}, nil
 		}
 		member, err := OpenNativeHost(context.Background(), f.projectionDB, f.space.Id(), f.tree, key, validate)
 		require.NoError(t, err)

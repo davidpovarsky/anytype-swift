@@ -78,7 +78,7 @@ func TestNativeRemoteFetchKeepsSingleCommitGuard(t *testing.T) {
 	projection, err = anystore.Open(ctx, filepath.Join(t.TempDir(), "receiver-projection.db"), &anystore.Config{ReadConnections: 1})
 	require.NoError(t, err)
 	targets := &nativeFixture{config: f.config, space: receiver}
-	host, err := OpenNativeHost(ctx, projection, receiver.Id(), tree, f.keys.SignKey, targets.validateTarget)
+	host, err := OpenNativeHost(ctx, projection, receiver.Id(), tree, f.keys.SignKey, targets.acquireTarget)
 	require.NoError(t, err)
 	before, err := host.ReadTarget(ctx, op.Target, 10)
 	require.NoError(t, err)

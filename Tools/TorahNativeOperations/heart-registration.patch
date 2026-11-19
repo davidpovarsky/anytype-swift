@@ -86,7 +86,7 @@ diff --git a/core/block/object/objectcache/tree.go b/core/block/object/objectcac
  	changePayload, err := createChangePayload(params.SmartblockType, nil)
  	if err != nil {
  		return treestorage.TreeStorageCreatePayload{}, err
-@@ -54,6 +59,17 @@
+@@ -54,6 +59,20 @@
  
  // CreateTreeObjectWithPayload creates a tree object with a given payload and object init func
  func (c *objectCache) CreateTreeObjectWithPayload(ctx context.Context, payload treestorage.TreeStorageCreatePayload, initFunc InitFunc) (sb smartblock.SmartBlock, err error) {
@@ -101,10 +101,13 @@ diff --git a/core/block/object/objectcache/tree.go b/core/block/object/objectcac
 +		(len(payload.Changes) != 0 || len(payload.Heads) != 1 || payload.Heads[0] != payload.RootRawChange.Id) {
 +		return nil, torahopscontract.ErrPrivateRoot
 +	}
++	if tp == coresb.SmartBlockTypePinkhaTorahOperations {
++		return c.createPinkhaTorahRoot(ctx, payload, initFunc)
++	}
  	tr, err := c.space.TreeBuilder().PutTree(ctx, payload, nil)
  	if err != nil {
  		return nil, fmt.Errorf("put tree: %w", err)
-@@ -70,6 +86,16 @@
+@@ -70,6 +89,16 @@
  // it takes into account whether it is for personal space and if so uses old derivation logic
  // to maintain backward compatibility
  func (c *objectCache) DeriveTreePayload(ctx context.Context, params payloadcreator.PayloadDerivationParams) (storagePayload treestorage.TreeStorageCreatePayload, err error) {

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+	"sync"
 	"time"
 
 	anystore "github.com/anyproto/any-store"
@@ -30,11 +31,11 @@ const maxNativeBytes = MaxWireBytes + 4096
 
 var ErrProjectionBehind = errors.New("signed native change persisted; projection must recover")
 
-// TargetValidator is an internal native-service dependency, never an RPC field.
-// App binding must supply real object/block validation with an agreed concurrent
-// deletion contract. The transport fixture validates disposable object roots;
-// it does not prove cross-object atomicity or a block lifecycle.
-type TargetValidator func(context.Context, Target) error
+// TargetLeaser validates native target authority before this private tree is
+// locked. The returned release must keep concurrent target/settings mutations
+// excluded until called. NativeHost releases it exactly once, immediately after
+// the durable native write, or on every earlier exit. It is not an RPC field.
+type TargetLeaser func(context.Context, Target) (release func(), err error)
 
 // NativeRoot derives exactly one separate operation tree per Space. Its root is
 // deterministic; every operation after that root must be signed and encrypted.
@@ -150,10 +151,10 @@ func validateNativeStoreChange(spaceID string, ch *objecttree.Change, change *pb
 }
 
 type NativeHost struct {
-	store          *Store
-	tree           synctree.SyncTree
-	key            crypto.PrivKey
-	validateTarget TargetValidator
+	store       *Store
+	tree        synctree.SyncTree
+	key         crypto.PrivKey
+	leaseTarget TargetLeaser
 }
 
 type NativeAppendResult struct {
@@ -173,7 +174,7 @@ type NativeSnapshot struct {
 // OpenNativeHost must receive a SyncTree built by NativeTreeBuilder and a
 // separate projection DB. Using the tree's DB would nest independent write
 // transactions. Caller owns DB/tree lifecycle; this function takes the tree lock.
-func OpenNativeHost(ctx context.Context, db anystore.DB, spaceID string, tree synctree.SyncTree, key crypto.PrivKey, validate TargetValidator) (*NativeHost, error) {
+func OpenNativeHost(ctx context.Context, db anystore.DB, spaceID string, tree synctree.SyncTree, key crypto.PrivKey, validate TargetLeaser) (*NativeHost, error) {
 	if tree == nil || key == nil || validate == nil {
 		return nil, ErrInvalid
 	}
@@ -185,7 +186,7 @@ func OpenNativeHost(ctx context.Context, db anystore.DB, spaceID string, tree sy
 // OpenNativeHostLocked is for the native factory, which already holds this
 // exact tree's lock. It must never be called with an unlocked tree. The usual
 // public constructor above remains the safe entry for independent callers.
-func OpenNativeHostLocked(ctx context.Context, db anystore.DB, spaceID string, tree synctree.SyncTree, key crypto.PrivKey, validate TargetValidator) (*NativeHost, error) {
+func OpenNativeHostLocked(ctx context.Context, db anystore.DB, spaceID string, tree synctree.SyncTree, key crypto.PrivKey, validate TargetLeaser) (*NativeHost, error) {
 	if tree == nil || key == nil || validate == nil {
 		return nil, ErrInvalid
 	}
@@ -211,7 +212,7 @@ func OpenNativeHostLocked(ctx context.Context, db anystore.DB, spaceID string, t
 	if err != nil {
 		return nil, err
 	}
-	host := &NativeHost{store: store, tree: tree, key: key, validateTarget: validate}
+	host := &NativeHost{store: store, tree: tree, key: key, leaseTarget: validate}
 	if _, err = host.recoverLocked(ctx, tree); err != nil {
 		return nil, err
 	}
@@ -230,6 +231,14 @@ func (h *NativeHost) Append(ctx context.Context, op Operation) (NativeAppendResu
 	if err = ctx.Err(); err != nil {
 		return NativeAppendResult{}, err
 	}
+	if err = AuthorizeCurrentACL(h.tree.AclList(), h.key, true); err != nil {
+		return NativeAppendResult{}, err
+	}
+	release, err := h.acquireTarget(ctx, op.Target)
+	if err != nil {
+		return NativeAppendResult{}, err
+	}
+	defer release()
 	h.tree.Lock()
 	defer h.tree.Unlock()
 	acl := h.tree.AclList()
@@ -251,11 +260,6 @@ func (h *NativeHost) Append(ctx context.Context, op Operation) (NativeAppendResu
 	if err != nil || result.Disposition != Created {
 		return NativeAppendResult{AppendResult: result}, err
 	}
-	// This callback reads native target authority, not projection caller fields.
-	// Its eventual App implementation must define cross-object deletion races.
-	if err = h.validateTarget(ctx, op.Target); err != nil {
-		return NativeAppendResult{}, err
-	}
 	build := &storestate.Builder{}
 	if err = build.Create(CollectionName, claim.ID, string(wire)); err != nil {
 		return NativeAppendResult{}, err
@@ -268,7 +272,7 @@ func (h *NativeHost) Append(ctx context.Context, op Operation) (NativeAppendResu
 	if len(data) > 64 {
 		data, dataType = snappy.Encode(nil, data), nativeSnappy
 	}
-	appendCtx, commitGuard, err := nativeCommitContext(ctx, h.tree, h.key.GetPublic())
+	appendCtx, commitGuard, err := nativeCommitContext(ctx, h.tree, h.key.GetPublic(), release)
 	if err != nil {
 		return NativeAppendResult{}, err
 	}
@@ -378,6 +382,14 @@ func (h *NativeHost) ReadTarget(ctx context.Context, target Target, limit uint) 
 	if err := ctx.Err(); err != nil {
 		return NativeSnapshot{}, err
 	}
+	if err := AuthorizeCurrentACL(h.tree.AclList(), h.key, false); err != nil {
+		return NativeSnapshot{}, err
+	}
+	release, err := h.acquireTarget(ctx, target)
+	if err != nil {
+		return NativeSnapshot{}, err
+	}
+	defer release()
 	h.tree.Lock()
 	defer h.tree.Unlock()
 	acl := h.tree.AclList()
@@ -397,6 +409,21 @@ func (h *NativeHost) ReadTarget(ctx context.Context, target Target, limit uint) 
 	heads := slices.Clone(h.tree.Heads())
 	slices.Sort(heads)
 	return NativeSnapshot{Projection: projection, Heads: heads, AppliedSeq: seq}, nil
+}
+
+func (h *NativeHost) acquireTarget(ctx context.Context, target Target) (func(), error) {
+	release, err := h.leaseTarget(ctx, target)
+	if err != nil {
+		if release != nil {
+			release()
+		}
+		return nil, err
+	}
+	if release == nil {
+		return nil, ErrInvalid
+	}
+	var once sync.Once
+	return func() { once.Do(release) }, nil
 }
 
 // Caller holds the ACL read lock through the complete open/read operation.

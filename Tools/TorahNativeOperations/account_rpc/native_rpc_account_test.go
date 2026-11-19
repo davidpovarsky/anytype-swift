@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"strings"
 	"testing"
 
 	"github.com/anyproto/anytype-heart/core/block/editor/torahops"
@@ -93,6 +94,20 @@ func t2CreateNativeRPCOperation(t *testing.T, ctx context.Context, state *t2Acco
 	require.Equal(t, pb.RpcPinkhaTorahOperationsAppendResponseError_BAD_INPUT, result.Error.Code)
 	require.Nil(t, result.Receipt)
 	absent()
+
+	for _, kind := range []pb.RpcPinkhaTorahOperationsKind{pb.RpcPinkhaTorahOperations_REMOVE, pb.RpcPinkhaTorahOperations_REPLACE} {
+		request := proto.Clone(appendRequest).(*pb.RpcPinkhaTorahOperationsAppendRequest)
+		request.Kind = kind
+		request.ObservedClaimIds = []string{strings.Repeat("1", 64) + "/" + strings.Repeat("2", 64)}
+		if kind == pb.RpcPinkhaTorahOperations_REMOVE {
+			request.Source = nil
+			request.Payload = nil
+		}
+		denied := t2WireAppend(t, request)
+		require.Equal(t, pb.RpcPinkhaTorahOperationsAppendResponseError_HISTORY_UNAVAILABLE, denied.Error.Code)
+		require.Nil(t, denied.Receipt)
+		absent()
+	}
 
 	created := t2WireAppend(t, appendRequest)
 	require.Equal(t, pb.RpcPinkhaTorahOperationsAppendResponseError_NULL, created.Error.Code)

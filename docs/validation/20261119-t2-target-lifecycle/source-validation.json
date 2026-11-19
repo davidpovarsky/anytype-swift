@@ -1,0 +1,25 @@
+{
+  "status": "PASS_SOURCE_COMPOSITION_ONLY",
+  "heart_base_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "changed_tracked_hashes": [
+    "core/block/object/objectcache/tree.go"
+  ],
+  "composed_files": 65,
+  "overlay_files": 52,
+  "registration_inventory_sha256": "4ff8da741f967c257f1c7ca9a2ca6ef9741dad5cf3030bceaabf07950d959b66",
+  "registration_patch_sha256": "57930393f9378873bd2f94b16a16288c1b42cd34941ca5cdd3d13546b66528f4",
+  "rpc_manifest_sha256": "eaa174a818152347c757af6bcef0a4f5ef3cf5ab47a88157b8bdeb0a6750a8cd",
+  "account_fixture_sha256": "c493e991b0bb7e36e74f90925a8a24b9ecee8dfc16e59d976d11c6f9ec28f739",
+  "checks": [
+    "original pinned Heart before hashes",
+    "actual git apply check and application",
+    "all native.apply_sources exact after hashes",
+    "rpc.source_inputs",
+    "account.fixture_inputs",
+    "actual account fixture.patch application",
+    "account.verify_fixture_copy",
+    "clients.source_inputs"
+  ],
+  "go_native_execution": "NOT_RUN",
+  "read_authority_preflight": "Current signed ACL checked before target acquisition and again while reading under the native ACL lock"
+}

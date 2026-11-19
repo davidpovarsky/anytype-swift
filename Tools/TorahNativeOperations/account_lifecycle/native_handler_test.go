@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -62,6 +63,26 @@ func t2CreateNativeHandlerOperation(t *testing.T, ctx context.Context, state *t2
 	invalidPayload.Payload = nil
 	write, err = mw.NativeTorahOperationAppend(ctx, invalidPayload)
 	require.ErrorIs(t, err, torahops.ErrInvalid)
+	require.Equal(t, torahops.NativeAppendResult{}, write)
+	assertAbsent()
+
+	for _, kind := range []torahops.Kind{torahops.Remove, torahops.Replace} {
+		unobserved := appendRequest
+		unobserved.Kind = kind
+		unobserved.Observed = []string{strings.Repeat("1", 64) + "/" + strings.Repeat("2", 64)}
+		if kind == torahops.Remove {
+			unobserved.Source = torahops.Source{}
+			unobserved.Payload = nil
+		}
+		write, err = mw.NativeTorahOperationAppend(ctx, unobserved)
+		require.ErrorIs(t, err, core.ErrPinkhaTorahHistoryUnavailable, "an observed operation cannot initialize absent history")
+		require.Equal(t, torahops.NativeAppendResult{}, write)
+		assertAbsent()
+	}
+	cancelled, cancel := context.WithCancel(ctx)
+	cancel()
+	write, err = mw.NativeTorahOperationAppend(cancelled, appendRequest)
+	require.ErrorIs(t, err, context.Canceled)
 	require.Equal(t, torahops.NativeAppendResult{}, write)
 	assertAbsent()
 
