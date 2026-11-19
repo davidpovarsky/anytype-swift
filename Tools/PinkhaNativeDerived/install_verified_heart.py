@@ -20,7 +20,8 @@ parser.add_argument('--expected-app-branch',
                              'codex/anytype-wave1-integration-20261115',
                              'codex/chatgpt-wave15-startup-20261118',
                              'codex/chatgpt-wave15-integration-20261118',
-                             'codex/chatgpt-wave15-hanlin-consumer-20261119'],
+                             'codex/chatgpt-wave15-hanlin-consumer-20261119',
+                             'codex/chatgpt-wave15-ui-resume-20261119'],
                     default='codex/torah-native-derived-properties-20261103')
 args = parser.parse_args()
 inventory = json.loads(args.inventory.read_text())

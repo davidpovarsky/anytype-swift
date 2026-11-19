@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "reviewed_product_commit": "d9682f9a945cfb4b501f5912e34039353899e8c0",
+  "branch": "codex/chatgpt-wave15-ui-resume-20261119",
+  "initial_apple_runs": [
+    {
+      "id": 44561271368,
+      "lane": "wave15-core",
+      "result": "FAILED_BEFORE_BUILD",
+      "cause": "Workflow exact caller branch list omitted the newly reviewed branch"
+    },
+    {
+      "id": 44561279271,
+      "lane": "editor/ipad/he",
+      "result": "FAILED_BEFORE_BUILD",
+      "cause": "Verified Heart installer argument choices omitted the newly reviewed branch"
+    },
+    {
+      "id": 44561286545,
+      "lane": "properties-set/ipad/en",
+      "result": "FAILED_BEFORE_BUILD",
+      "cause": "Verified Heart installer argument choices omitted the newly reviewed branch"
+    }
+  ],
+  "change": "Register only the exact reviewed branch in the workflow, installer, and host runner; retain all branch/ref/SHA/runtime inventory/hash gates and negative controls.",
+  "source_sha256": {
+    ".github/workflows/pinkha-sdk06-tests.yml": "9c44b6fa477ebebf5972e48cf720590af52a3a560e65081566123a3ed63f6251",
+    "Tools/PinkhaNativeDerived/install_verified_heart.py": "5f441fbab95f9fdbda57f78be873b944f353f48e325f592c6f1dd9ea3f1dcb82",
+    "Tools/Hanlin/run_host_tests.py": "316d1a3b259f76cce58e5259c7e3dd4a377388953643eeb8d217a7c3f6c1b58f",
+    "Tools/Hanlin/test_run_host_tests.py": "c8d73d1b6fe374742580cf687b39224dbdab6efaa71e48bc2a215f807909ac59"
+  },
+  "controls": {
+    "host_total": 56,
+    "passed": 54,
+    "skipped": 2,
+    "failed": 0,
+    "skip_reason": "Existing POSIX process/signal cases do not execute on Windows; actual Apple workflow runs the same test pattern.",
+    "log_sha256": "6356dc239023026b6e6badd4e881a1c05df9e3b3ef4b393912d4b691a54feacd"
+  },
+  "native_ui_cases_executed": 0,
+  "apple_compile": "NOT_RUN",
+  "product_source_unchanged": true,
+  "next": "Exact-source redispatch after independent registration review"
+}
