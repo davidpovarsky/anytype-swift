@@ -20,6 +20,24 @@ class ReceiptAcceptanceTests(unittest.TestCase):
         self.assertFalse(runner.passes_suite([event for event in events
                                             if event.get("Test") != "TestNativeCurrentWriteAuthority"], "component", 0))
 
+    def test_remote_fetch_and_binding_controls_must_each_execute(self):
+        names = {
+            "TestNativeRemoteFetchKeepsSingleCommitGuard",
+            "TestNativeRebuiltStorageRejectsForeignBinding",
+            "TestNativeRebuiltStorageRejectsForeignBinding/different_ACL_instance",
+            "TestNativeRebuiltStorageRejectsForeignBinding/different_root_header",
+            "TestNativeRebuiltStorageRejectsForeignBinding/nested_guard",
+        }
+        self.assertTrue(names <= runner.REQUIRED["component"])
+        events = self.component_events()
+        for name in names:
+            for outcome in ("missing", "fail", "skip"):
+                with self.subTest(name=name, outcome=outcome):
+                    changed = [event for event in events if event.get("Test") != name]
+                    if outcome != "missing":
+                        changed.append({"Action": outcome, "Test": name, "Package": runner.MODULE + "/core/block/editor/torahops"})
+                    self.assertFalse(runner.passes_suite(changed, "component", 0))
+
     def test_failure_or_nonzero_exit_cannot_be_hidden_by_passes(self):
         events = self.component_events()
         self.assertFalse(runner.passes_suite(events, "component", 1))

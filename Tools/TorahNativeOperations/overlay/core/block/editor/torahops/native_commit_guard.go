@@ -45,6 +45,21 @@ type nativeCommitGuard struct {
 	committed *objecttree.StorageChange
 }
 
+func bindNativeCommitStorage(storage objecttree.Storage, acl list.AclList, header *treechangeproto.RawTreeChangeWithId) (*nativeCommitStorage, error) {
+	if existing, ok := storage.(*nativeCommitStorage); ok {
+		if existing == nil || existing.Storage == nil || existing.acl != acl || existing.header == nil ||
+			existing.Id() != header.Id || existing.header.Id != header.Id ||
+			!bytes.Equal(existing.header.RawChange, header.RawChange) {
+			return nil, ErrNativeCommitGuard
+		}
+		if _, nested := existing.Storage.(*nativeCommitStorage); nested {
+			return nil, ErrNativeCommitGuard
+		}
+		return existing, nil
+	}
+	return &nativeCommitStorage{Storage: storage, acl: acl, header: header}, nil
+}
+
 func boundNativeCommitStorage(tree objecttree.ObjectTree) (*nativeCommitStorage, error) {
 	if tree == nil {
 		return nil, ErrNativeCommitGuard

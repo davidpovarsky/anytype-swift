@@ -95,7 +95,10 @@ func NativeTreeBuilder(spaceID string) objecttree.BuildObjectTreeFunc {
 			}
 			return validateNativeStoreChange(spaceID, ch, change)
 		})
-		guardedStorage := &nativeCommitStorage{Storage: storage, acl: acl, header: root}
+		guardedStorage, err := bindNativeCommitStorage(storage, acl, root)
+		if err != nil {
+			return nil, err
+		}
 		tree, err := build(guardedStorage, acl)
 		if err == nil {
 			tree.SetFlusher(objecttree.MarkNewChangeFlusher())
