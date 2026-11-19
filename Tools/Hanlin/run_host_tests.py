@@ -22,6 +22,8 @@ import wave15_core_profile as core_profile
 
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
+CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
+APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH)
 CONFIGURATION = "Debug-Anytype"
 SUITES = {
     "HanlinHostAdapterTests": 35,
@@ -127,7 +129,7 @@ def sha256(path):
 
 
 def require_identity(head, expected_sha, branch, expected_branch, run_id, attempt):
-    require(expected_branch == BRANCH and branch == expected_branch, "Wrong SDK integration branch")
+    require(expected_branch in APPROVED_BRANCHES and branch == expected_branch, "Wrong SDK integration branch")
     require(re.fullmatch(r"[0-9a-f]{40}", expected_sha or "") and head == expected_sha,
             "Actual source SHA differs from the workflow run")
     require(re.fullmatch(r"[1-9][0-9]*", run_id or "") and re.fullmatch(r"[1-9][0-9]*", attempt or ""),
@@ -617,7 +619,7 @@ def main():
     parser.add_argument("--app", required=True, type=Path)
     parser.add_argument("--evidence", required=True, type=Path)
     parser.add_argument("--derived", required=True, type=Path)
-    parser.add_argument("--expected-app-branch", required=True, choices=[BRANCH])
+    parser.add_argument("--expected-app-branch", required=True, choices=APPROVED_BRANCHES)
     parser.add_argument("--heart-source-run-id", required=True)
     parser.add_argument("--profile", choices=[profile.value for profile in HostTestProfile], default=HostTestProfile.SDK06.value)
     args = parser.parse_args()

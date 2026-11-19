@@ -68,7 +68,7 @@ jobs:
             --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
             --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
             --app-source "$GITHUB_WORKSPACE" --source-run-id "$HEART_SOURCE_RUN_ID" \
-            --expected-app-branch codex/chatgpt-wave15-integration-20261118 --evidence build/ui27-evidence/heart
+            --expected-app-branch "$GITHUB_REF_NAME" --evidence build/ui27-evidence/heart
       - name: Restore compatible ARM64 Xcode27 compiled dependencies
         id: ui27-cache
         uses: actions/cache/restore@v4

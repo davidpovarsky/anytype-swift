@@ -48,7 +48,10 @@ jobs:
         run: |
           set -euo pipefail
           case "$HOST_PROFILE" in sdk06|editor|wave15-core|wave15-components) ;; *) echo 'Unsupported host test profile' >&2; exit 1 ;; esac
-          test "$EXPECTED_APP_BRANCH" = codex/chatgpt-wave15-integration-20261118
+          case "$EXPECTED_APP_BRANCH" in
+            codex/chatgpt-wave15-integration-20261118|codex/chatgpt-wave15-hanlin-consumer-20261119) ;;
+            *) echo 'Unreviewed host consumer branch' >&2; exit 1 ;;
+          esac
           test "$GITHUB_REF" = "refs/heads/$EXPECTED_APP_BRANCH"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           # This disposable CI checkout keeps its local branch at the dispatched commit.

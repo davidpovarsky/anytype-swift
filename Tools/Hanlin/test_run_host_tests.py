@@ -94,6 +94,13 @@ class SDKResultGateTests(unittest.TestCase):
         self.summary.update(totalTestCount=5, passedTests=5)
         self.assertEqual(set(self.validate()["methods"]), self.expected)
 
+    def test_reviewed_consumer_branch_stays_bound_to_its_declared_source(self):
+        branch = "codex/chatgpt-wave15-hanlin-consumer-20261119"
+        require_identity("a" * 40, "a" * 40, branch, branch, "123", "1")
+        for actual, expected in [(branch, BRANCH), (BRANCH, branch), ("unreviewed-consumer", "unreviewed-consumer")]:
+            with self.subTest(actual=actual, expected=expected), self.assertRaisesRegex(ValueError, "branch"):
+                require_identity("a" * 40, "a" * 40, actual, expected, "123", "1")
+
     def test_wrong_source_or_branch_or_missing_run_is_rejected(self):
         valid = ["a" * 40, "a" * 40, BRANCH, BRANCH, "123", "1"]
         require_identity(*valid)

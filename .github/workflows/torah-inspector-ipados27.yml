@@ -132,7 +132,7 @@ jobs:
     uses: ./.github/workflows/pinkha-sdk06-tests.yml
     with:
       heart_source_run_id: ${{ inputs.source_run_id }}
-      expected_app_branch: codex/chatgpt-wave15-integration-20261118
+      expected_app_branch: ${{ github.ref_name }}
       profile: editor
 
   wave15-core-tests:
@@ -140,7 +140,7 @@ jobs:
     uses: ./.github/workflows/pinkha-sdk06-tests.yml
     with:
       heart_source_run_id: ${{ inputs.source_run_id }}
-      expected_app_branch: codex/chatgpt-wave15-integration-20261118
+      expected_app_branch: ${{ github.ref_name }}
       profile: wave15-core
 
   wave15-component-tests:
@@ -148,7 +148,7 @@ jobs:
     uses: ./.github/workflows/pinkha-sdk06-tests.yml
     with:
       heart_source_run_id: ${{ inputs.source_run_id }}
-      expected_app_branch: codex/chatgpt-wave15-integration-20261118
+      expected_app_branch: ${{ github.ref_name }}
       profile: wave15-components
 
   hanlin-journal-probe:
@@ -178,7 +178,7 @@ jobs:
     uses: ./.github/workflows/pinkha-sdk06-tests.yml
     with:
       heart_source_run_id: ${{ inputs.source_run_id }}
-      expected_app_branch: codex/chatgpt-wave15-integration-20261118
+      expected_app_branch: ${{ github.ref_name }}
 
   heart-runtime:
     if: ${{ inputs.route == 'heart-runtime' }}

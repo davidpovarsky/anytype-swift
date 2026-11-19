@@ -22,6 +22,8 @@ import wave15_diagnostics as diagnostics
 import type_preservation as preservation
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
+CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
+APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH)
 LANES = {
     "hanlin-selection": {
         "suite": "HanlinSelectionAcceptanceUITests",
@@ -108,6 +110,13 @@ HANLIN_LANES = {
 def require(condition, reason):
     if not condition:
         raise ValueError(reason)
+
+
+def require_source_identity(head, expected_sha, branch, ref):
+    require(branch in APPROVED_BRANCHES and ref == "refs/heads/" + branch,
+            "Actual integration source branch differs")
+    require(re.fullmatch(r"[0-9a-f]{40}", expected_sha or "") and head == expected_sha,
+            "Actual integration source SHA differs")
 
 
 def plan(lane, device, language):
@@ -372,8 +381,8 @@ def execute(args, receipt, *, build_context=None):
     hanlin_lane = HANLIN_LANES.get(args.lane)
     source_methods(app, selection["methods"])
     head = shared.git(app, "rev-parse", "HEAD")
-    require(head == os.environ.get("GITHUB_SHA") and shared.git(app, "branch", "--show-current") == BRANCH,
-            "Actual integration source identity differs")
+    require_source_identity(head, os.environ.get("GITHUB_SHA"),
+                            shared.git(app, "branch", "--show-current"), os.environ.get("GITHUB_REF"))
     require(os.environ.get("GITHUB_RUN_ID", "").isdigit(), "Missing actual CI run identity")
     preflight = json.loads((evidence / "preflight/preflight.json").read_text())
     require(preflight.get("status") == "PREFLIGHT_PASS_UI_NOT_RUN"

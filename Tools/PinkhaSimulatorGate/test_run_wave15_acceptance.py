@@ -8,10 +8,27 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from run_wave15_acceptance import (plan, fixture_environment, property_environment,
-                                   validate_device_language, configure_editor_device_language)
+                                   validate_device_language, configure_editor_device_language,
+                                   require_source_identity)
 
 
 class AcceptanceSelectionTests(unittest.TestCase):
+    def test_only_reviewed_native_branches_with_exact_source_and_ref_are_admitted(self):
+        branches = ["codex/chatgpt-wave15-integration-20261118",
+                    "codex/chatgpt-wave15-hanlin-consumer-20261119"]
+        for branch in branches:
+            require_source_identity("a" * 40, "a" * 40, branch, "refs/heads/" + branch)
+        rejected = [
+            ("a" * 40, "a" * 40, "unreviewed-consumer", "refs/heads/unreviewed-consumer"),
+            ("a" * 40, "a" * 40, branches[0], "refs/heads/" + branches[1]),
+            ("a" * 40, "a" * 40, branches[0], "refs/tags/" + branches[0]),
+            ("a" * 40, "b" * 40, branches[0], "refs/heads/" + branches[0]),
+            ("", "", branches[0], "refs/heads/" + branches[0]),
+        ]
+        for arguments in rejected:
+            with self.subTest(arguments=arguments), self.assertRaises(ValueError):
+                require_source_identity(*arguments)
+
     def test_english_label_methods_cannot_claim_hebrew_coverage(self):
         for lane in ["inspector", "quote-drop", "properties", "properties-set", "canonical-properties", "hanlin-native"]:
             with self.subTest(lane=lane), self.assertRaisesRegex(ValueError, "English labels"):
