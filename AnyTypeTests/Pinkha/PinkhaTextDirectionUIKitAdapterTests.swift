@@ -689,6 +689,138 @@ struct PinkhaTextDirectionUIKitAdapterTests {
         textView.resignFirstResponder()
     }
 
+    @Test("Programmatic native focus restores empty defaults after host attributes reset", arguments: [false, true])
+    func nativeFocusRestoresEmptyDirection(isRTL: Bool) throws {
+        let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let previousKey = scene.windows.first(where: \.isKeyWindow)
+        let window = UIWindow(windowScene: scene)
+        let controller = UIViewController()
+        controller.view.semanticContentAttribute = isRTL ? .forceRightToLeft : .forceLeftToRight
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer {
+            controller.view.endEditing(true)
+            window.isHidden = true
+            window.rootViewController = nil
+            previousKey?.makeKey()
+        }
+        let textView = UndoTrackingTextView(frame: CGRect(x: 20, y: 80, width: 320, height: 120))
+        let observer = TextMutationObserver()
+        textView.delegate = observer
+        textView.textStorage.delegate = observer
+        controller.view.addSubview(textView)
+        PinkhaTextDirectionUIKitAdapter.apply(context: automaticContext, to: textView)
+        let hostStyle = NSMutableParagraphStyle()
+        hostStyle.baseWritingDirection = isRTL ? .leftToRight : .rightToLeft
+        hostStyle.lineSpacing = 5
+        let font = UIFont.boldSystemFont(ofSize: 19)
+        textView.typingAttributes = [.paragraphStyle: hostStyle, .font: font, .foregroundColor: UIColor.red]
+        observer.reset()
+        controller.view.layoutIfNeeded()
+
+        textView.setFocus(.beginning)
+
+        try #require(textView.isFirstResponder)
+        let style = try #require(textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)
+        #expect(style.baseWritingDirection == (isRTL ? .rightToLeft : .leftToRight))
+        #expect(style.alignment == (isRTL ? .right : .left))
+        #expect(style.lineSpacing == 5)
+        #expect(textView.typingAttributes[.font] as? UIFont == font)
+        #expect(textView.typingAttributes[.foregroundColor] as? UIColor == .red)
+        #expect(textView.textStorage.length == 0)
+        #expect(textView.selectedRange == NSRange(location: 0, length: 0))
+
+        // UIKit owns callbacks during initial acquisition. Measure the presentation-only
+        // repair separately on the same already-active input, without assuming their count.
+        textView.typingAttributes = [.paragraphStyle: hostStyle, .font: font, .foregroundColor: UIColor.red]
+        observer.reset()
+        textView.setFocus(.beginning)
+        #expect(textView.isFirstResponder)
+        #expect((textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection
+                == (isRTL ? .rightToLeft : .leftToRight))
+        #expect(textView.textStorage.length == 0 && textView.selectedRange == NSRange(location: 0, length: 0))
+        #expect(observer.characterEditCount == 0 && observer.textChangeCount == 0)
+    }
+
+    @Test("Native begin and first insertion restore empty direction without replacing input", arguments: [false, true])
+    func nativeBeginAndInsertionRestoreEmptyDirection(isRTL: Bool) throws {
+        let scene = try #require(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let previousKey = scene.windows.first(where: \.isKeyWindow)
+        let window = UIWindow(windowScene: scene)
+        let controller = UIViewController()
+        controller.view.semanticContentAttribute = isRTL ? .forceRightToLeft : .forceLeftToRight
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        defer {
+            controller.view.endEditing(true)
+            window.isHidden = true
+            window.rootViewController = nil
+            previousKey?.makeKey()
+        }
+        let row = TextBlockContentView(frame: CGRect(x: 20, y: 80, width: 320, height: 120))
+        controller.view.addSubview(row)
+        let textView = row.textView.textView
+        let defaults = TextBlockContentConfiguration.empty
+        let original = defaults.actions
+        var begins = 0
+        var acceptedInsertions = 0
+        var insertionDirection: NSWritingDirection?
+        let actions = TextBlockContentConfiguration.Actions(
+            shouldPaste: original.shouldPaste, copy: original.copy, cut: original.cut,
+            createEmptyBlock: original.createEmptyBlock, showObject: original.showObject,
+            openURL: original.openURL, handleKeyboardAction: original.handleKeyboardAction,
+            becomeFirstResponder: original.becomeFirstResponder, resignFirstResponder: original.resignFirstResponder,
+            textBlockSetNeedsLayout: original.textBlockSetNeedsLayout,
+            textViewDidChangeText: original.textViewDidChangeText,
+            textViewWillBeginEditing: original.textViewWillBeginEditing,
+            textViewDidBeginEditing: { _ in begins += 1 },
+            textViewDidEndEditing: original.textViewDidEndEditing,
+            textViewDidChangeCaretPosition: original.textViewDidChangeCaretPosition,
+            textViewShouldReplaceText: { view, _, _ in
+                acceptedInsertions += 1
+                insertionDirection = (view.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection
+                return true
+            },
+            toggleCheckBox: original.toggleCheckBox, toggleDropDown: original.toggleDropDown,
+            tapOnCalloutIcon: original.tapOnCalloutIcon, escalateToBlockSelection: original.escalateToBlockSelection
+        )
+        let configuration = TextBlockContentConfiguration(
+            blockId: "native-empty-direction", content: .empty(contentType: .text),
+            attributedString: NSAttributedString(), placeholderAttributes: [:],
+            typingAttributes: { _ in [.font: UIFont.systemFont(ofSize: 17)] },
+            textContainerInsets: .zero, alignment: .left, pinkhaWritingContext: automaticContext,
+            isCheckable: false, isToggled: false, isChecked: false, shouldDisplayPlaceholder: false,
+            initialBlockFocusPosition: nil, focusPublisher: defaults.focusPublisher,
+            resetPublisher: defaults.resetPublisher, actions: actions
+        )
+        row.update(with: configuration)
+        controller.view.layoutIfNeeded()
+        let hostStyle = NSMutableParagraphStyle()
+        hostStyle.baseWritingDirection = isRTL ? .leftToRight : .rightToLeft
+        textView.typingAttributes = [.paragraphStyle: hostStyle, .font: UIFont.systemFont(ofSize: 17)]
+
+        // The original native responder transition exercises the direct-tap delegate path.
+        try #require(textView.becomeFirstResponder())
+        #expect(begins == 1)
+        #expect((textView.typingAttributes[.paragraphStyle] as? NSParagraphStyle)?.baseWritingDirection
+                == (isRTL ? .rightToLeft : .leftToRight))
+        #expect(textView.textStorage.length == 0)
+
+        // A later keyboard reset must be repaired before the existing action accepts input.
+        textView.typingAttributes = [.paragraphStyle: hostStyle, .font: UIFont.systemFont(ofSize: 17)]
+        let character = isRTL ? "א" : "A"
+        let accepted = textView.delegate?.textView?(
+            textView, shouldChangeTextIn: NSRange(location: 0, length: 0), replacementText: character
+        ) ?? false
+        try #require(accepted)
+        #expect(insertionDirection == (isRTL ? .rightToLeft : .leftToRight))
+        #expect(textView.textStorage.length == 0)
+        #expect(textView.selectedRange == NSRange(location: 0, length: 0))
+        textView.insertText(character)
+        #expect(acceptedInsertions == 1 && begins == 1)
+        #expect(textView.text == character)
+    }
+
     private var automaticContext: PinkhaTextBlockWritingContext {
         PinkhaTextBlockWritingContext(
             origin: .ambiguousLegacyParagraph,

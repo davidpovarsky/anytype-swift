@@ -32,6 +32,10 @@ extension TextBlockContentView: CustomTextViewDelegate {
     func didBeginEditing() {
         didTakeNativeFocus()
         actions?.textViewDidBeginEditing(textView.textView)
+        // Direct native taps do not pass through the editor's programmatic setFocus.
+        if textView.textView.textStorage.length == 0 {
+            PinkhaTextDirectionUIKitAdapter.prepareForEditing(in: textView.textView)
+        }
     }
     
     func didEndEditing() {
@@ -68,6 +72,11 @@ extension TextBlockContentView: CustomTextViewDelegate {
     }
     
     func shouldChangeText(range: NSRange, replacementText: String) -> Bool {
+        // UIKit may restore keyboard typing attributes after focus. Re-establish only
+        // an empty row's presentation defaults at the actual insertion boundary.
+        if textView.textView.textStorage.length == 0 {
+            PinkhaTextDirectionUIKitAdapter.prepareForEditing(in: textView.textView)
+        }
         let accepted = actions?.textViewShouldReplaceText(textView.textView, replacementText, range) ?? false
         if accepted {
             PinkhaStage1AcceptanceDiagnostics.recordAcceptedInsertion(

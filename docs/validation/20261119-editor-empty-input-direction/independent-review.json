@@ -1,0 +1,170 @@
+{
+  "base_source": "c787745ad99348aa198b91be0c672f5a9ba2fbda",
+  "blocking_findings": [],
+  "candidate_diff_sha256": "8fd68931049bae0d81539e06bd05eaed4db3c42413ee93f26ebebf0d690bd90d",
+  "candidate_report_sha256": "a65ac0a2e634559a68e220187ad9601e731dc74d9225cb3393ca777ae6781915",
+  "candidate_revision": 2,
+  "canonical_base_receipt_sha256": "6bbb2e3e8f7c1ad4be8ac6fe0449b5bfc1793adb02715ba07d92fe461bdb118a",
+  "controller_replay": {
+    "command": "python -B -m unittest -v test_run_host_components test_run_host_core_profile test_run_host_tests",
+    "cwd": "candidate/Tools/Hanlin",
+    "failed": 0,
+    "log": "independent-controller-controls.log",
+    "passed": 58,
+    "scope": "Portable controller validation including original owned POSIX process controls; no UIKit execution.",
+    "sha256": "e82cb928c1ea1d0fc6bd3a03a39457ebe78a09e2ced63d0a8e22bfba8e3187a8",
+    "skipped": 0
+  },
+  "file_hashes": [
+    {
+      "after_sha256": "d3001696f4d2d817b29b7f1b18e154e12a6093c369f1fbb75c6bca8208f29321",
+      "before_sha256": "e7bd8989ce142c147fd70e69e0e4081d59077ed3080eb387a9f94399188e4c61",
+      "bytes": 5694,
+      "path": "Anytype/Sources/FrameworkExtensions/UIKit/UITextView+Convenience.swift"
+    },
+    {
+      "after_sha256": "3928904e9a4bb128ea4b9531d176cb972d29b1b2e7abb46299f593a3d85fca5c",
+      "before_sha256": "f7801cee64ac52396fbf9680426d142417c5395ea7e62c79a26dbe32fea5680c",
+      "bytes": 2693,
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView+TextViewDelegate.swift"
+    },
+    {
+      "after_sha256": "2ce86ed514569dfb5a838df0e78731b98233f71f1dfbeb2d1125f1a31a984efa",
+      "before_sha256": "52e0f75dd59e405e1ea0f556287c79c304f2a5afd386bdeacca3903c4bc3604c",
+      "bytes": 47567,
+      "path": "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift"
+    },
+    {
+      "after_sha256": "d8f47c1ffbf55430f95712e1d8294d3d9a8e0714b385df02568238fe942c95e7",
+      "before_sha256": "268eae4b65d6b9b19715ac959b8a1694ebb6a593c5fb0fa44892350af8bb329a",
+      "bytes": 14046,
+      "path": "Tools/Hanlin/wave15-core-tests.json"
+    },
+    {
+      "after_sha256": "f87c6981a3173072c12a0554e91b4e221abb90adb02631f82fe5449e58674943",
+      "before_sha256": "f858cc278c752913be1c758fa68c39e7e60c57accb1301b8fee41ea9baa98687",
+      "bytes": 37828,
+      "path": "Tools/Hanlin/run_host_tests.py"
+    },
+    {
+      "after_sha256": "d99576863811e42de845ac46604834c770da983bdaf09fca4d43b6949a07a204",
+      "before_sha256": "46ec078c59dfc5b047b8d71bde67266937a1856bd8fa286e6e6c105ad05304d4",
+      "bytes": 11827,
+      "path": "Tools/Hanlin/test_run_host_core_profile.py"
+    },
+    {
+      "after_sha256": "df374b3d57d28b8da4d675a0b9f640b83da3573c834c7daa9409de1f2e39482c",
+      "before_sha256": "2c4e7787066e0ac2abd178dab47b13380014454f192e30bd8ba593ce553f0aa9",
+      "bytes": 7715,
+      "path": "Tools/Hanlin/wave15_core_profile.py"
+    },
+    {
+      "after_sha256": "3f7b243a6c9b85c638c37aba737feb95eb305b395f4a54efc67ddf3c2819f9a3",
+      "before_sha256": "5251680755563ba482cce3aaef31f5afc1a3ae6dab07073f56ddbb4a2a5e25d8",
+      "bytes": 9984,
+      "path": "Tools/Hanlin/test_run_host_components.py"
+    }
+  ],
+  "grammar_receipt_review": {
+    "exact_three_candidate_swift_hashes_confirmed": true,
+    "exit_code": 0,
+    "path": "swift-grammar.json",
+    "scope": "Reviewed root Windows Swift grammar receipt; not independent Apple typecheck or runtime.",
+    "sha256": "8046b0b49fe83f6f7831f06e48436c6238f9927132969b4880755638cbcb8660"
+  },
+  "limits": {
+    "Apple_compilation": "NOT_RUN",
+    "full_editor_native_preparation": "NOT_RUN",
+    "global_focus_repair": false,
+    "new_native_direction_cases": "NOT_RUN",
+    "rapid_input_echo_correction": "SEPARATE_WORK_NOT_IMPLEMENTED_BY_THIS_CANDIDATE",
+    "release_acceptance": false,
+    "three_editor_ui_methods": "NOT_RUN"
+  },
+  "no_source_changes_by_reviewer": true,
+  "original_failure_report_sha256": "3e0ac19394a56512efc5f460bbc3b95f0246aed0986b3bb63982f071a99f4b8c",
+  "preserved_scope": {
+    "actual_literal_source_inventories": [
+      {
+        "invocations": 4,
+        "methods": 4,
+        "path": "AnyTypeTests/Pinkha/PinkhaTextDirectionPersistenceTests.swift",
+        "sha256": "d0249d5e6f229b417442d8cfcde3c9b0152a3bb0223edc3abb09d120aa4432c8",
+        "suite": "PinkhaTextDirectionPersistenceTests"
+      },
+      {
+        "invocations": 24,
+        "methods": 17,
+        "path": "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift",
+        "sha256": "2ce86ed514569dfb5a838df0e78731b98233f71f1dfbeb2d1125f1a31a984efa",
+        "suite": "PinkhaTextDirectionUIKitAdapterTests"
+      },
+      {
+        "invocations": 12,
+        "methods": 5,
+        "path": "AnyTypeTests/Pinkha/PinkhaTextBlockLeadingMarkerAdapterTests.swift",
+        "sha256": "8fabedacad6fa608829b74ee89505c8a3875f7f24c7e7c91208ee3868da888fb",
+        "suite": "PinkhaTextBlockLeadingMarkerAdapterTests"
+      },
+      {
+        "invocations": 3,
+        "methods": 3,
+        "path": "AnyTypeTests/Pinkha/PinkhaNavigationGestureBridgeTests.swift",
+        "sha256": "0e2c5ef181610fcdc6b6a9f4953d86f69060f9fc4d6d641b47571414572fc3fe",
+        "suite": "PinkhaNavigationGestureBridgeTests"
+      },
+      {
+        "invocations": 23,
+        "methods": 15,
+        "path": "AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift",
+        "sha256": "c3c031f8a2edc3cb99ae57471a29c15b4f8477e4ad8203396a58073b4941019d",
+        "suite": "TorahNativeUIParityTests"
+      },
+      {
+        "invocations": 21,
+        "methods": 13,
+        "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+        "sha256": "5e99c107a59778f17593dc8929e704fe4a656b0d13c2f034e791a2ea51561e1e",
+        "suite": "TextBlockFocusLifecycleTests"
+      }
+    ],
+    "all_prior_direction_test_source_bytes_equal": true,
+    "all_prior_method_specs_equal": true,
+    "new_invocations": 4,
+    "new_methods": 2,
+    "prior_invocations": 83,
+    "prior_methods": 55,
+    "required_invocations": 87,
+    "required_methods": 57
+  },
+  "remote_inspection": "Canonical Git blob reads only; source/ref/index untouched.",
+  "review_findings": [
+    {
+      "area": "Focus restoration",
+      "finding": "The only setFocus addition runs after original oldTypingAttributes restoration and only when the exact view is first responder with empty textStorage. The existing selection mapping, single canBecome/become flow, diagnostic events and returned outcomes remain byte-preserved."
+    },
+    {
+      "area": "Direct editing and first insertion",
+      "finding": "didBeginEditing preserves didTakeNativeFocus then the existing begin action, resolving only an empty row afterward. shouldChangeText resolves empty defaults immediately before the original acceptance action and preserves its one call, returned Bool and accepted-insertion diagnostic. Original CustomTextView keyboard-action routing is unchanged."
+    },
+    {
+      "area": "Content and IME guards",
+      "finding": "All three added call sites require empty textStorage. The unchanged cached-context adapter returns without presentation mutation when context is absent or markedTextRange is active. No textStorage replacement, text assignment, selection change, undo operation, document persistence or async retry is introduced by this candidate."
+    },
+    {
+      "area": "Explicit formatting",
+      "finding": "The unchanged adapter retains explicit-alignment and center/justify exclusions. For automatic empty rows it clones the current paragraph style and changes alignment/baseWritingDirection, retaining other paragraph attributes and font/color. Semantic inheritance still follows the existing ancestor-based application-direction policy."
+    },
+    {
+      "area": "Native fixture scope",
+      "finding": "Both new functions are synchronous MainActor tests in the existing serialized suite, use owned temporary windows and restore the previous key window. The programmatic fixture measures initial actual focus/direction, then isolates no-character/no-text-callback assertions on a second repair of the same active view. The row fixture uses real native begin editing and the existing manually-invoked should-change contract followed by one programmatic insertText, as already used in the retained measured nativeRowAttachmentProbe. This does not prove physical keyboard or full application acceptance."
+    },
+    {
+      "area": "Strict execution inventory",
+      "finding": "All six exact source-file hashes and literal declarations match the updated manifest. Both added LTR/RTL cases are individually mandatory; the controls reject each missing/duplicate/failed/skipped argument. Old method/case inventory is preserved, with aggregate totals advanced only to57/87."
+    }
+  ],
+  "reviewer": "asana_audit",
+  "schema": 1,
+  "status": "SOURCE_REVIEW_PASS"
+}

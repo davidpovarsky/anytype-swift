@@ -32,7 +32,7 @@
     },
     "PinkhaTextDirectionUIKitAdapterTests": {
       "path": "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift",
-      "source_lf_sha256": "52e0f75dd59e405e1ea0f556287c79c304f2a5afd386bdeacca3903c4bc3604c",
+      "source_lf_sha256": "2ce86ed514569dfb5a838df0e78731b98233f71f1dfbeb2d1125f1a31a984efa",
       "methods": {
         "caretObservationIsNotAFocusRequest": {
           "parameters": [],
@@ -136,6 +136,36 @@
           "parameters": [
             {
               "name": "configureAfterAttachment",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "nativeFocusRestoresEmptyDirection": {
+          "parameters": [
+            {
+              "name": "isRTL",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "nativeBeginAndInsertionRestoreEmptyDirection": {
+          "parameters": [
+            {
+              "name": "isRTL",
               "type": "Bool"
             }
           ],

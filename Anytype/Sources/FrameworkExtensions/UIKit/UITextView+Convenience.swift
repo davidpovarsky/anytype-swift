@@ -74,6 +74,12 @@ extension UITextView {
             PinkhaStage1AcceptanceDiagnostics.recordNativeFocus(.setFocusAlreadyFirst, in: self)
         }
         typingAttributes = oldTypingAttributes
+        if isFirstResponder, textStorage.length == 0 {
+            // Focus can restore a host paragraph style captured before the row inherited
+            // its current application direction. Resolve empty-row defaults after that
+            // restoration, without changing characters, selection or an IME composition.
+            PinkhaTextDirectionUIKitAdapter.prepareForEditing(in: self)
+        }
     }
 
     func textRectForRange(range: NSRange) -> CGRect? {

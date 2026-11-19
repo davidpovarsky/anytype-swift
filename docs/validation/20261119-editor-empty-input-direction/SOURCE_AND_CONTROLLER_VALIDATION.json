@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "status": "SOURCE_AND_CONTROLLER_VALIDATED_APPLE_EXECUTION_PENDING",
+  "base_source": "c787745ad99348aa198b91be0c672f5a9ba2fbda",
+  "original_failure": {
+    "run_id": 44586429599,
+    "source": "0996cbf66dc877082146a2ba03e518e66400533d",
+    "qualified_report_sha256": "3e0ac19394a56512efc5f460bbc3b95f0246aed0986b3bb63982f071a99f4b8c",
+    "scope": "Four empty-row typing direction failures after Return; initial row and initial/five subsequent actual focus gates completed."
+  },
+  "scope": {
+    "product_files": 2,
+    "swift_test_files": 1,
+    "controller_inventory_files": 5,
+    "description": "Use the existing cached application-direction adapter only for empty actual focused rows after setFocus restores host typing attributes, for direct native begin editing, and at the original should-change insertion boundary. No text/caret/retry/lock/delegate-flow replacement. Existing adapter still guards active IME and explicit formatting."
+  },
+  "files": [
+    {
+      "path": "Anytype/Sources/FrameworkExtensions/UIKit/UITextView+Convenience.swift",
+      "before_sha256": "e7bd8989ce142c147fd70e69e0e4081d59077ed3080eb387a9f94399188e4c61",
+      "after_sha256": "d3001696f4d2d817b29b7f1b18e154e12a6093c369f1fbb75c6bca8208f29321",
+      "bytes": 5694
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView+TextViewDelegate.swift",
+      "before_sha256": "f7801cee64ac52396fbf9680426d142417c5395ea7e62c79a26dbe32fea5680c",
+      "after_sha256": "3928904e9a4bb128ea4b9531d176cb972d29b1b2e7abb46299f593a3d85fca5c",
+      "bytes": 2693
+    },
+    {
+      "path": "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift",
+      "before_sha256": "52e0f75dd59e405e1ea0f556287c79c304f2a5afd386bdeacca3903c4bc3604c",
+      "after_sha256": "2ce86ed514569dfb5a838df0e78731b98233f71f1dfbeb2d1125f1a31a984efa",
+      "bytes": 47567
+    },
+    {
+      "path": "Tools/Hanlin/wave15-core-tests.json",
+      "before_sha256": "268eae4b65d6b9b19715ac959b8a1694ebb6a593c5fb0fa44892350af8bb329a",
+      "after_sha256": "d8f47c1ffbf55430f95712e1d8294d3d9a8e0714b385df02568238fe942c95e7",
+      "bytes": 14046
+    },
+    {
+      "path": "Tools/Hanlin/run_host_tests.py",
+      "before_sha256": "f858cc278c752913be1c758fa68c39e7e60c57accb1301b8fee41ea9baa98687",
+      "after_sha256": "f87c6981a3173072c12a0554e91b4e221abb90adb02631f82fe5449e58674943",
+      "bytes": 37828
+    },
+    {
+      "path": "Tools/Hanlin/test_run_host_core_profile.py",
+      "before_sha256": "46ec078c59dfc5b047b8d71bde67266937a1856bd8fa286e6e6c105ad05304d4",
+      "after_sha256": "d99576863811e42de845ac46604834c770da983bdaf09fca4d43b6949a07a204",
+      "bytes": 11827
+    },
+    {
+      "path": "Tools/Hanlin/wave15_core_profile.py",
+      "before_sha256": "2c4e7787066e0ac2abd178dab47b13380014454f192e30bd8ba593ce553f0aa9",
+      "after_sha256": "df374b3d57d28b8da4d675a0b9f640b83da3573c834c7daa9409de1f2e39482c",
+      "bytes": 7715
+    },
+    {
+      "path": "Tools/Hanlin/test_run_host_components.py",
+      "before_sha256": "5251680755563ba482cce3aaef31f5afc1a3ae6dab07073f56ddbb4a2a5e25d8",
+      "after_sha256": "3f7b243a6c9b85c638c37aba737feb95eb305b395f4a54efc67ddf3c2819f9a3",
+      "bytes": 9984
+    }
+  ],
+  "diff_sha256": "8fd68931049bae0d81539e06bd05eaed4db3c42413ee93f26ebebf0d690bd90d",
+  "unchanged_existing_tests": {
+    "all_55_method_specs": true,
+    "all_83_case_specs": true,
+    "all_existing_direction_suite_bytes": true,
+    "corrected_native_focus_fixture_preserved": true
+  },
+  "new_cases": {
+    "methods": 2,
+    "invocations": 4,
+    "languages": [
+      "LTR",
+      "RTL"
+    ],
+    "checks": [
+      "actual UIKit responder acquisition",
+      "post-host-reset empty typing direction",
+      "direct native begin callback once",
+      "later reset corrected before original insertion action",
+      "single accepted callback and one actual character",
+      "selection/font/color/paragraph spacing preserved",
+      "no character mutation or edit callback from empty style resolution"
+    ]
+  },
+  "new_core_inventory": {
+    "methods": 57,
+    "invocations": 87,
+    "scope": "component only, not UI acceptance"
+  },
+  "controller_controls": {
+    "passed": 58,
+    "failed": 0,
+    "skipped": 0,
+    "log_sha256": "e55b9f58a114b8142356589e41d7a211e075d806d114e38d4b1277333bfe59ff",
+    "negative_cases": "Both new methods reject each missing/duplicate/failed/skipped actual language argument; combined old totals remain rejected. Synthetic xcresult controls do not execute Swift."
+  },
+  "swift_grammar": {
+    "exit_code": 0,
+    "receipt_sha256": "8046b0b49fe83f6f7831f06e48436c6238f9927132969b4880755638cbcb8660",
+    "scope": "SWIFT_GRAMMAR_ONLY_NOT_UIKIT_TYPECHECK_OR_APPLE_EXECUTION"
+  },
+  "limits": {
+    "Apple_unit_execution": "NOT_RUN",
+    "actual_editor_preparation": "NOT_RUN",
+    "rapid_native_text_echo_correction": "SEPARATE_WORK_PENDING",
+    "prior_focus_refusal_globally_fixed": false,
+    "full_editor_acceptance": false
+  },
+  "candidate_revision": 2,
+  "revision2_reason": "Do not assume callback count during UIKit initial focus; isolate no-mutation assertions after acquisition on the same already-active input."
+}
