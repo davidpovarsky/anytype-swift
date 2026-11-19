@@ -23,8 +23,10 @@ concurrency:
 jobs:
   apple-packages:
     name: Apple package contracts and preserved domain behavior
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 40
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
         with:
@@ -66,8 +68,10 @@ jobs:
 
   ios-runtime:
     name: Real embedded Any library on iOS Simulator
-    runs-on: macos-26
+    runs-on: xcode-27
     timeout-minutes: 30
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
         with:
