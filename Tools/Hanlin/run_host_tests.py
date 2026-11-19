@@ -26,7 +26,7 @@ CONFIGURATION = "Debug-Anytype"
 SUITES = {
     "HanlinHostAdapterTests": 35,
     "HanlinHostWriteTests": 15,
-    "HanlinHostReadWriteTests": 17,
+    "HanlinHostReadWriteTests": 20,
     "HanlinSDKConsumerTests": 6,
 }
 SDK_RETURN_METHODS = {
@@ -53,6 +53,11 @@ SDK_JOURNAL_METHODS = {
     "protectionReadbackRejectsWrongPresentValues",
     "journalReopenRejectsChangedDirectoryAndRecordModes",
     "journalReopenRejectsExistingFilesAndSymlinksWithoutMutation",
+}
+SDK_WRITE_PREFLIGHT_METHODS = {
+    "writePreflightDenialPreventsRunnerAndRetainsOriginalMetadata",
+    "writePreflightErrorsPreserveSafeCodesWithoutRunnerEntry",
+    "writeRunnerResultsAndErrorsKeepTheirOriginalDisposition",
 }
 SDK_BUDGET_METHOD = "HanlinSDKConsumerTests/canonicalDispatcherBudgetsReachReadAndReplayOnlyReceipt"
 SDK_BUDGET_ARGUMENTS = ("1048576", "8388608")
@@ -163,6 +168,8 @@ def expected_methods(app, profile=HostTestProfile.SDK06):
             require(SDK_CONSENT_METHODS.issubset(names), "Reviewed native consent test declarations disappeared")
         if profile is HostTestProfile.SDK06 and suite == "HanlinHostWriteTests":
             require(SDK_JOURNAL_METHODS.issubset(names), "Reviewed journal protection test declarations disappeared")
+        if profile is HostTestProfile.SDK06 and suite == "HanlinHostReadWriteTests":
+            require(SDK_WRITE_PREFLIGHT_METHODS.issubset(names), "Reviewed write preflight test declarations disappeared")
         if profile is HostTestProfile.EDITOR:
             declarations = re.findall(r"@Test(?:\(([^\n]*)\))?\s+func\s+(\w+)\s*\(([^)]*)\)", text)
             require(set(names) == set(EDITOR_METHODS), "Reviewed editor method set changed")

@@ -251,6 +251,101 @@ struct HanlinHostReadWriteTests {
         catch HanlinHostError.staleContext {}
     }
 
+    @Test func writePreflightDenialPreventsRunnerAndRetainsOriginalMetadata() async throws {
+        let fixtures = HanlinHostWriteTests()
+        let invocation = try fixtures.invocation(session: fixtures.session())
+        let boundary = PinkhaHanlinWritePreflight()
+        var runnerEntries = 0
+        let result = try await boundary.execute(invocation, prepare: { () async throws -> Void in
+            await Task.yield()
+            throw HanlinHostError.denied
+        }, dispatch: { _ in
+            runnerEntries += 1
+            throw HanlinHostError.unresolvedWrite
+        })
+        #expect(runnerEntries == 0)
+        #expect(result.effectState == .notDispatched)
+        #expect(result.context == invocation.session.context)
+        #expect(result.result.invocationID == invocation.request.id)
+        #expect(result.result.logicalToolID == invocation.request.logicalToolID)
+        #expect(result.reconciliationReference == nil)
+        #expect(boundary.receipt(for: invocation.request.id) == result.metadataReceipt())
+        guard case .failed(let failure) = result.result.outcome else {
+            Issue.record("Denied native preparation reported success"); return
+        }
+        #expect(failure.code == .permissionDenied)
+    }
+
+    @Test func writePreflightErrorsPreserveSafeCodesWithoutRunnerEntry() async throws {
+        let fixtures = HanlinHostWriteTests()
+        let boundary = PinkhaHanlinWritePreflight()
+        let failures: [(Error, HanlinErrorCode)] = [
+            (CancellationError(), .cancelled),
+            (HanlinHostError.cancelled, .cancelled),
+            (HanlinHostError.deadlineExceeded, .timedOut),
+            (HanlinHostError.invalidArguments, .invalidArguments),
+            (PinkhaHanlinWriteError.invalidPlan, .invalidArguments),
+            (HanlinHostError.outputLimitExceeded, .resourceLimitExceeded),
+            (HanlinHostError.staleContext, .permissionDenied),
+            (NSError(domain: "private-fixture", code: 17,
+                     userInfo: [NSLocalizedDescriptionKey: "private-request-detail"]), .operationUnavailable)
+        ]
+        var runnerEntries = 0
+        for (error, code) in failures {
+            let invocation = try fixtures.invocation(session: fixtures.session())
+            let result = try await boundary.execute(invocation, prepare: { () async throws -> Void in
+                await Task.yield()
+                throw error
+            }, dispatch: { _ in
+                runnerEntries += 1
+                throw HanlinHostError.unresolvedWrite
+            })
+            #expect(result.effectState == .notDispatched)
+            #expect(result.context == invocation.session.context)
+            #expect(boundary.receipt(for: invocation.request.id) == result.metadataReceipt())
+            guard case .failed(let failure) = result.result.outcome else {
+                Issue.record("Preparation failure reported success"); return
+            }
+            #expect(failure.code == code)
+            #expect(failure.userMessage == "Host operation unavailable or no longer authorized")
+        }
+        #expect(runnerEntries == 0)
+    }
+
+    @Test func writeRunnerResultsAndErrorsKeepTheirOriginalDisposition() async throws {
+        let fixtures = HanlinHostWriteTests()
+        let boundary = PinkhaHanlinWritePreflight()
+        var runnerEntries = 0
+        for effect in [HanlinHostEffectState.notDispatched, .uncertain, .confirmedCommitted] {
+            let invocation = try fixtures.invocation(session: fixtures.session())
+            let expected = HanlinHostExecutionResult(
+                result: .init(invocationID: invocation.request.id, logicalToolID: invocation.request.logicalToolID,
+                    outcome: effect == .confirmedCommitted ? .completed([]) : .failed(.init(
+                        code: .operationUnavailable, userMessage: "Original runner disposition")), completedAt: .now),
+                effectState: effect, context: invocation.session.context, reconciliationReference: "original-receipt")
+            let result = try await boundary.execute(invocation, prepare: { 41 }, dispatch: { prepared in
+                #expect(prepared == 41)
+                runnerEntries += 1
+                await Task.yield()
+                return expected
+            })
+            #expect(result == expected)
+            #expect(boundary.receipt(for: invocation.request.id) == nil)
+        }
+        let invocation = try fixtures.invocation(session: fixtures.session())
+        do {
+            _ = try await boundary.execute(invocation, prepare: { 42 }, dispatch: { prepared in
+                #expect(prepared == 42)
+                runnerEntries += 1
+                await Task.yield()
+                throw HanlinHostError.unresolvedWrite
+            })
+            Issue.record("Runner error was reclassified as a pre-dispatch refusal")
+        } catch HanlinHostError.unresolvedWrite {}
+        #expect(runnerEntries == 4)
+        #expect(boundary.receipt(for: invocation.request.id) == nil)
+    }
+
     #if os(iOS)
     @Test func journalReadinessQueryCannotAdmitUnresolvedOrForeignScope() async throws {
         // New query behavior only. Synthetic journal transitions are NOT native effect/durability proof.

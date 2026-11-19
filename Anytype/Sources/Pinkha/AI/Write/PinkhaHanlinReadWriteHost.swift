@@ -317,6 +317,7 @@ private final class PinkhaHanlinCreateBinding {
     private var runner: PinkhaHanlinCreatePageRunner?
     private var opening = false
     private weak var owner: PinkhaHanlinChatPresentation?
+    private let preflight = PinkhaHanlinWritePreflight()
 
     var missingInstallation: [PinkhaHanlinWriteInstallationRequirement] {
         guard let owner, (try? owner.validateInstallation(for: context.session)) != nil else {
@@ -365,21 +366,23 @@ private final class PinkhaHanlinCreateBinding {
 
     func execute(_ invocation: HanlinHostInvocation, cancellation: PinkhaHanlinRevocationFence,
                  progress: @escaping HanlinHostProgressHandler) async throws -> HanlinHostExecutionResult {
-        guard missingInstallation.isEmpty else { throw HanlinHostError.denied }
-        let plan = try PinkhaHanlinCreatePagePlan(invocation: invocation)
-        try await prepareOwner()
-        guard let journal, let runner else { throw HanlinHostError.denied }
-        try check(plan, cancellation: cancellation)
-        await progress(try .init(invocationID: invocation.request.id, sequence: 1, timestamp: .now,
-                                fractionCompleted: 0, message: "Awaiting confirmation"))
-        try check(plan, cancellation: cancellation)
-        let approval = try await context.requestConfirmation(for: plan)
-        try check(plan, cancellation: cancellation)
-        try await journal.validateCreationAvailability(namespace: context.session.context.namespace)
-        try check(plan, cancellation: cancellation)
-        // Actual runner reserves before its last queued guard/one-use approval consumption/native dispatch.
-        // No catch here can turn a possibly-dispatched failure into a notDispatched result.
-        return try await runner.execute(invocation, approval: approval)
+        try await preflight.execute(invocation, prepare: {
+            guard missingInstallation.isEmpty else { throw HanlinHostError.denied }
+            let plan = try PinkhaHanlinCreatePagePlan(invocation: invocation)
+            try await prepareOwner()
+            guard let journal, let runner else { throw HanlinHostError.denied }
+            try check(plan, cancellation: cancellation)
+            await progress(try .init(invocationID: invocation.request.id, sequence: 1, timestamp: .now,
+                                    fractionCompleted: 0, message: "Awaiting confirmation"))
+            try check(plan, cancellation: cancellation)
+            let approval = try await context.requestConfirmation(for: plan)
+            try check(plan, cancellation: cancellation)
+            try await journal.validateCreationAvailability(namespace: context.session.context.namespace)
+            try check(plan, cancellation: cancellation)
+            return (runner, approval)
+        }, dispatch: { prepared in
+            try await prepared.0.execute(invocation, approval: prepared.1)
+        })
     }
 
     private func prepareOwner() async throws {
@@ -418,7 +421,9 @@ private final class PinkhaHanlinCreateBinding {
 
     func invalidate() { context.invalidate() }
     func requestContextReadConsent() async throws { try await context.requestContextReadConsent() }
-    func metadataReceipt(for id: HanlinToolInvocationID) -> HanlinHostExecutionResult? { runner?.receipt(for: id)?.metadataReceipt() }
+    func metadataReceipt(for id: HanlinToolInvocationID) -> HanlinHostExecutionResult? {
+        preflight.receipt(for: id) ?? runner?.receipt(for: id)?.metadataReceipt()
+    }
     func targetDidMount(_ destination: HanlinHostDestination,
                         controller: EditorPageController) throws -> HanlinHostNavigationResult {
         try context.targetDidMount(destination, controller: controller)
