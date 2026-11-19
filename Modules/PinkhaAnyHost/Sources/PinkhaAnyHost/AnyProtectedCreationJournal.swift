@@ -188,8 +188,16 @@ private final class AnyCreationMetadataFiles: Sendable {
             #if os(iOS)
             attributes[.protectionKey] = FileProtectionType.completeUntilFirstUserAuthentication
             #endif
-            try FileManager.default.createDirectory(at: url, withIntermediateDirectories: false,
-                                                     attributes: attributes)
+            do {
+                try FileManager.default.createDirectory(at: url, withIntermediateDirectories: false,
+                                                         attributes: attributes)
+            } catch let error as NSError {
+                // Reopening a receipt scope is expected. Only an existing path
+                // is admitted here; the checks below still reject symlinks,
+                // ordinary files, wrong ownership or permissive directories.
+                guard error.domain == NSCocoaErrorDomain,
+                      error.code == NSFileWriteFileExistsError else { throw error }
+            }
             try Self.requireDirectory(url, checkMode: true)
             var mutable = url; var values = URLResourceValues(); values.isExcludedFromBackup = true
             try mutable.setResourceValues(values)

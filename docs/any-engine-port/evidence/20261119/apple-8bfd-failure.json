@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "appCommit": "8bfd24b25a2f1b3a83c627659d8c6a25934d5603",
+  "runURL": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44577715735",
+  "status": "FAIL",
+  "engineXCTest": {
+    "passed": 37,
+    "failed": 0
+  },
+  "hostXCTest": {
+    "executed": 37,
+    "failed": 2,
+    "reason": "NSCocoaErrorDomain516 on existing receipt scope directory; reopen never reached strict verification"
+  },
+  "nativeAppleBuild": "Source overlay applied, C lifecycle test passed, device/simulator slices built and artifact installed",
+  "nativeRuntimeTests": "NOT_RUN: Swift test compile rejected unqualified .linked in comparison; explicit type fix is in f520e1c280",
+  "laterTests": "Hanlin/Torah/Pinkha and retained consumers skipped by old workflow after Host failure",
+  "journalFix": "Catch only fileWriteFileExists; retain strict directory type/owner/permissions/protection validation. Existing real reopen and exclusive-owner tests must pass on next Apple run.",
+  "limitations": "This records failures, not a successful Apple acceptance result."
+}
