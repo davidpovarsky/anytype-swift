@@ -32,7 +32,7 @@ def inputs():
             records.append(dict(spaceId=space, objectId=identifier, blockId=block, item=item, unknownRecord="retained"))
         raw = json.dumps(dict(version=2, records=records, unknownRoot="retained"), sort_keys=True)
         nodes = [dict(id=identifier, childIDs=children), *[dict(id=child, childIDs=[]) for child in children]]
-        original = dict(objectID=identifier, spaceID=space, rootID=identifier, title="Native " + role,
+        original = dict(objectID=identifier, spaceID=space, rootID=identifier, title="" if role == "note" else "Native " + role,
                         typeID="native-" + (role if role in ["note", "writing"] else "page"),
                         isArchived=False, isDeleted=False, isReadonly=False, detailsRestricted=False,
                         projectionReady=True, projectionState="READY", projectionVersion=1, relatedVersion=1,
@@ -67,7 +67,8 @@ def inputs():
         for obj in selected:
             current = copy.deepcopy(obj["original"])
             if name == "note_archive" and obj["role"] == "note":
-                current["isArchived"] = True
+                current.update(isArchived=True, isReadonly=True, detailsRestricted=True,
+                               projectionReady=False, projectionState="", projectionVersion=-1, relatedVersion=-1)
             if name == "page_unlink" and obj["role"] == "page_a":
                 canonical = json.loads(current["canonicalRaw"])
                 canonical["records"] = []
@@ -120,6 +121,69 @@ class NativePaginationEvidenceControls(unittest.TestCase):
         self.assertEqual(result["actual_search_calls"], 36)
         self.assertEqual(result["current_space_targets"], 9)
         self.assertEqual(result["whole_index_completeness"], "NOT_PROVEN")
+
+    def test_empty_native_note_name_is_preserved_exactly_in_every_live_row(self):
+        receipt = inputs()
+        self.assertEqual(receipt["objects"][2]["original"]["title"], "")
+        for observation in receipt["observations"]:
+            for row in observation["rows"]:
+                if row["objectID"] == "object-2":
+                    self.assertEqual(row["title"], "")
+        self.validate(receipt)
+        self.reject(lambda value: value["observations"][0]["readbacks"][2].update(title="fabricated title"))
+        self.reject(lambda value: next(row for row in value["observations"][0]["rows"]
+                                      if row["objectID"] == "object-2").update(title="fabricated title"))
+
+    def test_empty_note_name_does_not_allow_missing_or_empty_non_note_titles(self):
+        for title in [None, 1, False, "x" * 4097]:
+            with self.subTest(title_type=type(title).__name__):
+                self.reject(lambda value: value["objects"][2]["original"].update(title=title))
+        for index in [0, 1, 3, 4, 5, 6, 7, 8, 9]:
+            with self.subTest(object=index):
+                self.reject(lambda value: value["objects"][index]["original"].update(title=""))
+
+    def test_archived_note_requires_exact_absent_projection_readback(self):
+        for field, wrong in [("projectionReady", True), ("projectionState", "READY"),
+                             ("projectionVersion", 1), ("relatedVersion", 1),
+                             ("projectionVersion", -1.0), ("relatedVersion", -1.0),
+                             ("projectionState", "MALFORMED")]:
+            with self.subTest(field=field, wrong=wrong):
+                self.reject(lambda value: value["observations"][5]["readbacks"][2].update({field: wrong}))
+
+    def test_archived_note_requires_native_readonly_and_details_restrictions(self):
+        for field, wrong in [("isArchived", False), ("isReadonly", False),
+                             ("detailsRestricted", False), ("isDeleted", True), ("isArchived", 1)]:
+            with self.subTest(field=field):
+                self.reject(lambda value: value["observations"][5]["readbacks"][2].update({field: wrong}))
+
+    def test_archive_exception_is_bound_to_exact_note_and_exact_stage(self):
+        archived = dict(isArchived=True, isReadonly=True, detailsRestricted=True,
+                        projectionReady=False, projectionState="", projectionVersion=-1, relatedVersion=-1)
+        for stage in [0, 1, 2, 4, 6, 7, 8, 9]:
+            with self.subTest(stage=stage):
+                self.reject(lambda value: value["observations"][stage]["readbacks"][2].update(archived))
+        for index in [0, 1, 3, 4, 5, 6]:
+            with self.subTest(object=index):
+                self.reject(lambda value: value["observations"][5]["readbacks"][index].update(archived))
+
+    def test_unarchive_requires_restored_ready_projection_and_write_authority(self):
+        for field, wrong in [("projectionReady", False), ("projectionState", ""),
+                             ("projectionVersion", -1), ("relatedVersion", -1),
+                             ("isReadonly", True), ("detailsRestricted", True)]:
+            with self.subTest(field=field):
+                self.reject(lambda value: value["observations"][6]["readbacks"][2].update({field: wrong}))
+
+    def test_archived_note_stays_excluded_and_retains_exact_canonical_and_graph(self):
+        self.reject(lambda value: value["observations"][5]["rows"].append(copy.deepcopy(
+            next(row for row in value["observations"][0]["rows"] if row["objectID"] == "object-2"))))
+        def alter_canonical(value):
+            row = value["observations"][5]["readbacks"][2]
+            root = json.loads(row["canonicalRaw"])
+            root["records"] = []
+            row.update(canonicalRaw=json.dumps(root), canonicalSHA256=evidence.sha(json.dumps(root)))
+        self.reject(alter_canonical)
+        self.reject(lambda value: value["observations"][5]["readbacks"][2]["nodes"].append(
+            dict(id="unexpected-archived-block", childIDs=[])))
 
     def test_exact_source_runtime_account_stop_and_product_boundary_are_required(self):
         for field, value in [("appSourceSHA", "d" * 40), ("runtimeVersion", runtime_version("old")),

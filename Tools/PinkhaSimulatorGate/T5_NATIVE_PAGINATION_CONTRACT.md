@@ -108,3 +108,42 @@ Space and native mutation cases. It does not prove whole-Space index
 completeness, two-account ACL revocation, a forced network outage, navigation,
 physical-device acceptance, real VoiceOver or the full T5 matrix. These remain
 separate, and this route does not enable the product feature.
+# Native readback states
+
+The Note fixture's native `name` may be empty. The pinned Heart Note creation
+path moves a requested name into a text block; it does not promise a nonempty
+`name` detail. Actual original Apple run `44561407476` returned an empty Note
+title in both `old-create` and `new-upgrade`. The validator permits an empty
+string only for the independently created Note role. Every observed title and
+returned row still has to equal that object's original native title exactly;
+missing values and substituted display titles fail. The other named fixture
+objects still require a nonempty title.
+
+For precisely the `note_archive` observation and precisely the original Note,
+the independent readback requires `isArchived`, `isReadonly`, and
+`detailsRestricted` to be true and `isDeleted` to remain false. It requires
+`projectionReady=false`, an empty projection-state readback, and both projection
+versions to have the fixture's missing-value sentinel `-1`. This follows the
+actual pinned engine behavior: archived objects are ineligible for projection,
+their old local projection fields are removed, and archived objects carry all
+write restrictions except deletion. The Note must be absent from both raw
+membership reads and production rows; its canonical bytes and block graph must
+remain unchanged. After unarchive, and for every other object and stage, the
+original writable/READY/version-1 requirements remain mandatory.
+
+Primary source and original evidence:
+
+- [Pinned Heart Note creation and readonly detail injection](https://github.com/anyproto/anytype-heart/blob/d98420b1113536afd08cde6de9a5816f6d27ffff/core/block/editor/smartblock/detailsinject.go),
+  `convertNewObjectLayoutBlocks` and `setRestrictionsDetail`.
+- [Pinned Heart archived-object restrictions](https://github.com/anyproto/anytype-heart/blob/d98420b1113536afd08cde6de9a5816f6d27ffff/core/block/restriction/object.go),
+  `baseObjectRestrictions`.
+- [Exact r15 source patch](https://github.com/davidpovarsky/anytype-swift/blob/947fbde24d5657d0e1229f45bb3993648884a8a1/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-15/native-heart-integration.patch),
+  SHA256 `5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2`:
+  `torah.Project`, `Index.project`, `Index.LocalDetails`, and `injectTorahDetails`.
+- [Original Apple pair run](https://github.com/davidpovarsky/anytype-swift/actions/runs/44561407476),
+  artifact `14553768522`, ZIP SHA256
+  `cb805208478ef178f30098aa2a90be90632da4592fb86d22f6a11aaac634fa23`.
+
+These are source-bound validator corrections. They do not claim that this new
+pagination gate has compiled or executed natively, and they do not change the
+original Apple pair's strict public-projection preservation invariant.
