@@ -214,6 +214,11 @@ final class NativeCreationTests: XCTestCase {
                        try AnyHostCanonical.bytes(.object(["a": .integer(1), "b": .integer(2)])))
     }
     #if canImport(Darwin)
+    private func journalJSONFiles(in parent: URL) -> [URL] {
+        let enumerator = FileManager.default.enumerator(at: parent, includingPropertiesForKeys: [.isRegularFileKey])!
+        return enumerator.compactMap { $0 as? URL }.filter { $0.pathExtension == "json" }
+    }
+
     func testProtectedJournalReopensReceiptsWithoutBusinessPayload() async throws {
         let parent = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: parent, withIntermediateDirectories: false)
@@ -227,8 +232,7 @@ final class NativeCreationTests: XCTestCase {
         let next = try AnyProtectedCreationJournal.openForTesting(workspace: workspace(), parent: parent)
         let result = try await next.reserve(plan.identity)
         XCTAssertFalse(result.ownsDispatch); XCTAssertEqual(result.state, .verified("created-object"))
-        let enumerator = FileManager.default.enumerator(at: parent, includingPropertiesForKeys: [.isRegularFileKey])!
-        for case let file as URL in enumerator where file.pathExtension == "json" {
+        for file in journalJSONFiles(in: parent) {
             XCTAssertFalse(String(decoding: try Data(contentsOf: file), as: UTF8.self).contains(plan.initialProperties["any"]!["name"]!.string!))
         }
         await next.close()
