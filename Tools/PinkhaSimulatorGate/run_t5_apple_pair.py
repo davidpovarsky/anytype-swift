@@ -21,7 +21,9 @@ import tarfile
 import zipfile
 from uuid import uuid4
 
-PROTOCOL = "pinkha-t5-apple-runtime-pair-v1"
+PROTOCOL = "pinkha-t5-apple-runtime-pair-v2"
+ROOT_RELATIVE_PATH = "Library/Application Support/Anytype/middleware-go"
+PAIR_RELATIVE_PATH = "Library/Application Support/pinkha-t5-runtime-pair"
 METHOD = "TorahT5RuntimePairTests/realSameAccountRuntimePairPhase"
 PHASES = [("old-create", "old"), ("new-upgrade", "new"),
           ("old-edit", "old"), ("new-recover", "new")]
@@ -247,6 +249,7 @@ def validate_host_freshness(freshness, ledger):
 
 def validate_ledger(ledger, token, source, phase):
     require(ledger.get("token") == token and ledger.get("appSourceSHA") == source, "Foreign ledger owner/source")
+    require(ledger.get("rootRelativePath") == ROOT_RELATIVE_PATH, "Original relative account root changed")
     for key in ["rootPathSHA256", "manifestSHA256"]:
         require(is_digest(ledger.get(key)), "Invalid original ledger digest")
     for key in ["accountID", "spaceID", "manifestID", "canonicalKey"]:
@@ -281,6 +284,11 @@ def validate_phase(report, phase, role, token, nonce, source, ledger, ledger_sha
             "Stale or foreign actual Apple phase receipt")
     require(type(report.get("processID")) is int and report["processID"] > 0, "Actual host process identity missing")
     require(report.get("runtimeVersion") == runtime_version(role), "Actual AppGetVersion differs from installed revision")
+    require(report.get("rootRelativePath") == ROOT_RELATIVE_PATH
+            and is_digest(report.get("currentRootPathSHA256")), "Actual account root location missing")
+    if phase == "old-create":
+        require(report["currentRootPathSHA256"] == report.get("rootPathSHA256"),
+                "Original account root was not the initial actual location")
     expanded = role == "new"
     require(report.get("actualCapability") == ("verified" if expanded else "unavailable"),
             "Production runtime capability differs; fixture roles must not grant capability")
@@ -616,6 +624,81 @@ def app_container(udid, kind, required=True):
     return Path(result.stdout.strip()).resolve(strict=True)
 
 
+def account_storage_inventory(container):
+    """Hash stopped native data without treating the OS container UUID as identity.
+
+    Apple TN2285 documents that an update changes Application_Home. Compare all
+    native files and the private ledger/credentials across the install instead.
+    The inventory stays in memory; only its aggregate hash/count is published.
+    """
+    container = container.resolve(strict=True)
+    root = container / ROOT_RELATIVE_PATH
+    require(root.is_dir() and not root.is_symlink()
+            and root.resolve(strict=True).is_relative_to(container), "Original native account root missing or escaped")
+    files, directories = {}, []
+    for directory, children, names in os.walk(root, followlinks=False):
+        directory = Path(directory)
+        for name in children:
+            path = directory / name
+            require(not path.is_symlink() and path.is_dir(), "Unexpected native account directory entry")
+            directories.append(path.relative_to(root).as_posix())
+        for name in names:
+            path = directory / name
+            require(not path.is_symlink() and path.is_file(), "Unexpected native account file entry")
+            files[path.relative_to(root).as_posix()] = dict(bytes=path.stat().st_size, sha256=digest(path))
+    require(files, "Original native account store is empty")
+    private = {}
+    for name in ["ledger.json", "secrets.json"]:
+        path = container / PAIR_RELATIVE_PATH / name
+        require(not path.is_symlink() and path.is_file()
+                and path.resolve(strict=True).is_relative_to(container), "Original private account identity missing or escaped")
+        private[name] = digest(path)
+    return dict(root_relative_path=ROOT_RELATIVE_PATH, directories=sorted(directories),
+                files=files, private_identity_sha256=private)
+
+
+def inventory_summary(value):
+    return dict(sha256=sha_bytes(json.dumps(value, sort_keys=True, separators=(",", ":")).encode()),
+                files=len(value["files"]), bytes=sum(item["bytes"] for item in value["files"].values()))
+
+
+def verify_install_continuity(before, container, prior, record):
+    after = account_storage_inventory(container)
+    record.update(before=inventory_summary(before), after=inventory_summary(after))
+    require(before == after, "App install changed or removed original native account data")
+    require(after["private_identity_sha256"]["ledger.json"] == prior["nextLedgerSHA256"],
+            "App install changed or removed the preceding account ledger")
+    record["status"] = "PASS_ALL_NATIVE_FILES_AND_PRIVATE_IDENTITY_UNCHANGED"
+
+
+def verify_current_root(report, container):
+    actual = (container / ROOT_RELATIVE_PATH).resolve(strict=True)
+    require(actual.is_dir() and actual.is_relative_to(container.resolve(strict=True)),
+            "Actual native account root missing or escaped")
+    require(report.get("currentRootPathSHA256") == sha_bytes(str(actual).encode()),
+            "Native receipt differs from the actual current account root")
+
+
+def preserve_private_credential_inventory(container, work, token):
+    source = container / PAIR_RELATIVE_PATH / "secrets.json"
+    require(not source.is_symlink() and source.resolve(strict=True).is_relative_to(container.resolve(strict=True)),
+            "Disposable credential inventory escaped its owned container")
+    raw = source.read_bytes()
+    value = json.loads(raw)
+    require(value.get("token") == token and all(isinstance(value.get(key), str) and value[key]
+            for key in ["mnemonic", "accountKey"]), "Disposable secret guard is incomplete")
+    destination = work / "credential-inventory.json"
+    # Preserve the original values before any update can move or lose the data
+    # container. Never substitute later credentials for the original inventory.
+    if destination.exists():
+        require(destination.read_bytes() == raw, "Original disposable credential inventory changed")
+    else:
+        with destination.open("xb") as stream:
+            stream.write(raw)
+        destination.chmod(0o600)
+    return destination
+
+
 def contains_secret(path, needles):
     overlap = max(map(len, needles), default=1) - 1
     previous = b""
@@ -628,11 +711,11 @@ def contains_secret(path, needles):
     return False
 
 
-def preserve_native_evidence(work, proof, container, token, include_freshness=False):
+def preserve_native_evidence(work, proof, container, token, include_freshness=False, credential_inventory=None):
     destination = proof / "actual-phases"
     require(not destination.exists(), "Refuse stale public native evidence")
     candidates = []
-    secrets_path = container / "Library/Application Support/pinkha-t5-runtime-pair/secrets.json" if container else None
+    secrets_path = credential_inventory or (container / PAIR_RELATIVE_PATH / "secrets.json" if container else None)
     if not secrets_path or not secrets_path.is_file():
         write(proof / "native-evidence-policy.json", dict(status="WITHHELD_NO_SECRET_INVENTORY",
               raw_xcresult_uploaded=False, account_data_uploaded=False))
@@ -644,7 +727,8 @@ def preserve_native_evidence(work, proof, container, token, include_freshness=Fa
     needles = [value.encode(encoding) for value in values for encoding in ["utf8", "utf-16-le", "utf-16-be"]]
     allowed = ["test.log", "test.command.json", "summary.json", "tests.json", "receipt.json",
                "result.json", "selection.json", "install.log", "install.command.json",
-               "terminate.log", "terminate.command.json", "export-summary.command.json", "export-tests.command.json"]
+                "terminate.log", "terminate.command.json", "export-summary.command.json", "export-tests.command.json",
+                "install-continuity.json"]
     for phase, _ in phases(include_freshness):
         directory = work / "phases" / phase
         for filename in allowed:
@@ -669,13 +753,17 @@ def run_phase(phase, role, build, app, work, udid, source, token, nonce, contain
     write(directory / "result.json", record)
     try:
         run_logged(["xcrun", "simctl", "terminate", udid, BUNDLE], app, directory, "terminate", 30, check=False)
+        before = account_storage_inventory(container) if prior else None
         run_logged(["xcrun", "simctl", "install", udid, build["app"]], app, directory, "install", 120)
         actual_container = app_container(udid, "data")
-        require(container is None or actual_container == container, "Application update replaced the original data container")
         if prior:
-            previous_path = actual_container / "Library/Application Support/pinkha-t5-runtime-pair/ledger.json"
-            require(previous_path.is_file() and digest(previous_path) == prior["nextLedgerSHA256"],
-                    "App install changed or removed the preceding account ledger")
+            continuity = dict(status="FAIL", original_container_path_sha256=sha_bytes(str(container).encode()),
+                              installed_container_path_sha256=sha_bytes(str(actual_container).encode()),
+                              container_relocated=actual_container != container)
+            try:
+                verify_install_continuity(before, actual_container, prior, continuity)
+            finally:
+                write(directory / "install-continuity.json", continuity)
         with Path(build["configuration"]).open("rb") as stream:
             configuration = plistlib.load(stream)
         environment = {
@@ -701,7 +789,6 @@ def run_phase(phase, role, build, app, work, udid, source, token, nonce, contain
                 run_logged(["xcrun", "xcresulttool", "get", "test-results", mode, "--path", str(bundle), "--format", "json"],
                            app, directory, "export-" + mode, 120, check=False, output=directory / (mode + ".json"))
         actual_container = app_container(udid, "data")
-        require(container is None or actual_container == container, "XCTest replaced the original data container")
         installed = app_container(udid, "app")
         require(ui.code_carriers(installed)["sha256"] == build["code_sha256"],
                 "Actual installed executable bytes differ from the selected packaged runtime")
@@ -716,9 +803,12 @@ def run_phase(phase, role, build, app, work, udid, source, token, nonce, contain
         report = json.loads(receipt_path.read_text(encoding="utf8"))
         ledger = json.loads(ledger_path.read_text(encoding="utf8"))
         shutil.copyfile(receipt_path, directory / "receipt.json")
+        verify_current_root(report, actual_container)
         validate_phase(report, phase, role, token, nonce, source, ledger, digest(ledger_path), prior)
         record.update(status="PASS", actual_host_process_id=report["processID"],
-                      account_root_path_sha256=report["rootPathSHA256"], container_path_sha256=sha_bytes(str(actual_container).encode()),
+                      original_account_root_path_sha256=report["rootPathSHA256"],
+                      current_account_root_path_sha256=report["currentRootPathSHA256"],
+                      container_path_sha256=sha_bytes(str(actual_container).encode()),
                       installed_code_sha256=build["code_sha256"], actual_methods=methods)
         return report, actual_container
     finally:
@@ -769,7 +859,7 @@ def execute(args, result):
         shutil.move(str(installed), work / ("installed-framework-" + role))
         result["completed_builds"] = list(builds)
         write(proof / "result.json", result)
-    token, reports, container = uuid4().hex, [], None
+    token, reports, container, credential_inventory = uuid4().hex, [], None, None
     result["phase"] = "ACTUAL_NATIVE_EXECUTION"
     write(proof / "result.json", result)
     try:
@@ -778,6 +868,7 @@ def execute(args, result):
             write(proof / "result.json", result)
             report, container = run_phase(phase, role, builds[role], app, work, udid, source,
                                          token, uuid4().hex, container, reports[-1] if reports else None, ui, method_results)
+            credential_inventory = preserve_private_credential_inventory(container, work, token)
             reports.append(report)
             result["completed_phases"] = [item["phase"] for item in reports]
             write(proof / "result.json", result)
@@ -785,10 +876,10 @@ def execute(args, result):
         require(git(app, "rev-parse", "HEAD") == source and not git(app, "status", "--porcelain"),
                 "Application source changed during the actual native sequence")
     finally:
-        if container is None:
-            container = app_container(udid, "data", required=False)
+        container = app_container(udid, "data", required=False)
         try:
-            secret_scan_passed = preserve_native_evidence(work, proof, container, token, args.include_freshness)
+            secret_scan_passed = preserve_native_evidence(work, proof, container, token, args.include_freshness,
+                                                         credential_inventory=credential_inventory)
         finally:
             run_logged(["xcrun", "simctl", "shutdown", udid], app, proof / "simulator", "shutdown", 120, check=False)
     require(secret_scan_passed, "Complete private credential inventory required before public acceptance")

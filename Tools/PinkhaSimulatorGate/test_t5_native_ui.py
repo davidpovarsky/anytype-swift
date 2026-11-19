@@ -115,6 +115,47 @@ def write_attachments(directory, value):
 
 
 class NativeUIEvidenceControls(unittest.TestCase):
+    def test_live_ui_container_may_relocate_only_with_unchanged_native_identity(self):
+        with tempfile.TemporaryDirectory() as temp:
+            container = Path(temp) / "original"
+            (container / runner.NATIVE_ROOT).mkdir(parents=True)
+            fixture_path = container / runner.UI_FIXTURE; fixture_path.write_text(json.dumps(fixture()))
+            secrets = dict(token=TOKEN, mnemonic="synthetic-phrase", accountKey="synthetic-key")
+            secret_path = container / runner.UI_SECRETS; secret_path.parent.mkdir(); secret_path.write_text(json.dumps(secrets))
+            expected, original_secrets = runner.native_ui_identity(container)
+            relocated = container.with_name("relocated"); container.rename(relocated)
+            pair = SimpleNamespace(app_container=lambda udid, kind: relocated)
+            self.assertEqual(runner.current_ui_container(pair, UDID, expected), relocated)
+            self.assertEqual(original_secrets, secrets)
+            self.assertFalse(container.exists())
+            for name in [runner.UI_FIXTURE, runner.UI_SECRETS]:
+                path = relocated / name; original = path.read_bytes(); path.write_text("{}")
+                with self.subTest(changed=name), self.assertRaises(ValueError):
+                    runner.current_ui_container(pair, UDID, expected)
+                path.write_bytes(original)
+                path.unlink()
+                with self.subTest(missing=name), self.assertRaises(ValueError):
+                    runner.current_ui_container(pair, UDID, expected)
+                path.write_bytes(original)
+            (relocated / runner.NATIVE_ROOT).rmdir()
+            with self.assertRaises(ValueError):
+                runner.current_ui_container(pair, UDID, expected)
+
+    def test_native_ui_identity_rejects_symlinked_private_or_native_paths(self):
+        for relative in [runner.NATIVE_ROOT, runner.UI_FIXTURE, runner.UI_SECRETS]:
+            with self.subTest(relative=relative), tempfile.TemporaryDirectory() as temp:
+                container = Path(temp) / "owned"; (container / runner.NATIVE_ROOT).mkdir(parents=True)
+                (container / runner.UI_FIXTURE).write_text(json.dumps(fixture()))
+                secrets = container / runner.UI_SECRETS; secrets.parent.mkdir()
+                secrets.write_text(json.dumps(dict(token=TOKEN, mnemonic="synthetic-phrase", accountKey="synthetic-key")))
+                original = container / relative; target = Path(temp) / "foreign"
+                original.rename(target)
+                try:
+                    original.symlink_to(target, target_is_directory=target.is_dir())
+                except (OSError, NotImplementedError):
+                    self.skipTest("Host does not support creating a test symlink")
+                with self.assertRaises(ValueError): runner.native_ui_identity(container)
+
     def test_selected_configuration_keeps_testroot_and_replaces_old_suite_in_both_formats(self):
         for version in [1, 2]:
             with self.subTest(version=version), tempfile.TemporaryDirectory() as temp:
@@ -202,7 +243,7 @@ class NativeUIEvidenceControls(unittest.TestCase):
                     return {"return_code": 0, "timed_out": False}, log
                 pair = SimpleNamespace(FLAGS=FLAGS, runtime_version=lambda role: RUNTIME, write=write, run_logged=command,
                     git=lambda app, *args: SOURCE if args[0] == "rev-parse" else "", sha_bytes=lambda data: hashlib.sha256(data).hexdigest(),
-                    app_container=lambda udid, kind, required=True: ui_container if required else None,
+                    app_container=lambda udid, kind, required=True: ui_container if required or (ui_container / runner.UI_SECRETS).is_file() else None,
                     contains_secret=lambda path, needles: any(n in path.read_bytes() for n in needles))
                 def preparation(**kwargs):
                     if interrupt_at == "publication":

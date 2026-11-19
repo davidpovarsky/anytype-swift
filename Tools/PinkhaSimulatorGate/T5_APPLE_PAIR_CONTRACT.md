@@ -38,7 +38,17 @@ Each phase requires canonical byte hashes (including unknown sentinels), public 
 
 Every phase finishes AccountStop(RemoveData:false), then requires ACCOUNT_IS_NOT_RUNNING from the original AccountPreloadRemainingSpaces RPC, and only then calls AppShutdown. AppShutdown acknowledgement alone is insufficient because the pinned native implementation hides Stop errors.
 
-The controller requires four distinct actual host PIDs and nonces, one App source, root, account, Space and manifest, an unbroken persisted ledger hash chain, and four actual named XCTest passes with zero skips/failures on the selected OS27 ARM64 device. Replacing both a ledger and its reported canonical/public/block baseline is explicitly rejected.
+The controller requires four distinct actual host PIDs and nonces, one App source, relative native-store location, account, Space and manifest, an unbroken persisted ledger hash chain, and four actual named XCTest passes with zero skips/failures on the selected OS27 ARM64 device. Replacing both a ledger and its reported canonical/public/block baseline is explicitly rejected.
+
+### App-update container relocation (receipt protocol v2)
+
+Apple's [Testing iOS App Updates, TN2285](https://developer.apple.com/library/archive/technotes/tn2285/) documents that an app update changes the absolute container path. The controller resolves the current container after each install and XCTest execution. It does not treat the OS-assigned container UUID as persisted account identity.
+
+Immediately before and after every runtime replacement, with the prior native account stopped, the controller compares the complete relative file/directory inventory of `Library/Application Support/Anytype/middleware-go`: every regular file size and SHA256 must match, as must the private ledger and credentials. Missing, extra, changed or symlinked entries fail. Only aggregate hashes/counts go into public proof. No native files, credentials or private ledger are moved or restored by the controller.
+
+The ledger retains `rootPathSHA256` as the original creation location and binds the invariant `rootRelativePath`. Each phase records `currentRootPathSHA256` separately. Swift obtains the current root through the production service, checks its relative location, recovers the original account and verifies the original data. The controller independently checks the reported current root against the simulator's actual current data container. The absolute path may change; the original account, ledger chain, source and canonical/public/block identities must not.
+
+After the first accepted native phase, the original credential inventory is retained in the controller's private work directory with mode 0600. Evidence scanning uses those original credentials even if a later install loses or relocates the container. The inventory is never uploaded or cached; its contents cannot be replaced by later credentials. This preserves diagnosable failure evidence without permitting credential-bearing logs.
 
 ## Evidence and credentials
 
