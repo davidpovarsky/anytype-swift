@@ -41,7 +41,19 @@ REQUIRED = {
                   "TestNativeACLCommitFence/ACL_head_advance_while_still_writer_requires_fresh_preparation",
                   "TestNativeACLCommitFence/cancellation_after_preparation_denies_before_durable_write",
                   "TestNativeCommitReceiptAfterHeadUpdateFailure",
-                  "TestNativeCommitGuardKeepsHistoricalReplay"},
+                  "TestNativeCommitGuardKeepsHistoricalReplay",
+                  "TestLiveOperationIDOrderAcrossReplayAndDiskReopen",
+                  "TestLiveOperationIDOrderAcrossReplayAndDiskReopen/[0_1_2]",
+                  "TestLiveOperationIDOrderAcrossReplayAndDiskReopen/[0_2_1]",
+                  "TestLiveOperationIDOrderAcrossReplayAndDiskReopen/[1_0_2]",
+                  "TestLiveOperationIDOrderAcrossReplayAndDiskReopen/[1_2_0]",
+                  "TestLiveOperationIDOrderAcrossReplayAndDiskReopen/[2_0_1]",
+                  "TestLiveOperationIDOrderAcrossReplayAndDiskReopen/[2_1_0]",
+                  "TestLiveOperationIDOrderRetainsConcurrentReplacements",
+                  "TestLiveOperationIDOrderRetainsConcurrentReplacements/[0_1_2_3]",
+                  "TestLiveOperationIDOrderRetainsConcurrentReplacements/[2_3_0_1]",
+                  "TestLiveOperationIDOrderRetainsConcurrentReplacements/[3_1_2_0]",
+                  "TestLiveOperationIDOrderPreservesNonLiveProvenance"},
     "registration": {"TestPrivateRootIdentityAndSpaceBinding", "TestPrivateRootRejectsNoncanonicalEnvelope",
                      "TestPinkhaPrivateTypeAllocationAndIndexPolicy", "TestPinkhaTorahOperationsUniqueKeyIsDedicated",
                      "TestPinkhaPrivateRegistryRequiresCanonicalSpaceRoot", "TestPinkhaPrivateRegistryRejectsGenericEnumForgery",
@@ -197,6 +209,8 @@ def main() -> int:
         "current_local_write_authority": "NOT_RUN",
         "native_acl_commit_fence": "NOT_RUN",
         "durable_receipt_after_head_update_failure": "NOT_RUN",
+        "live_operation_id_tie_break": "NOT_RUN",
+        "causal_display_order": "NOT_PROVEN",
         "run_id": os.environ.get("GITHUB_RUN_ID"),
         "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
         "workflow_ref": os.environ.get("GITHUB_WORKFLOW_REF"),
@@ -257,6 +271,7 @@ def main() -> int:
                 receipt["current_local_write_authority"] = "PASS_CURRENT_LOCALLY_VERIFIED_ACL_THROUGH_NATIVE_COMMIT"
                 receipt["native_acl_commit_fence"] = "PASS_PRIVATE_LOCAL_ENTRY_AND_STORAGE_GUARD"
                 receipt["durable_receipt_after_head_update_failure"] = "PASS_NATIVE_COMPONENT_RECEIPT_AND_EXACT_RETRY"
+                receipt["live_operation_id_tie_break"] = "PASS_DISK_COMPONENT_REPLAY_REOPEN_AND_RETAINED_PROVENANCE"
             else:
                 receipt["status"] = "PASS_PRIVATE_NATIVE_REGISTRY_ADAPTER"
                 receipt["private_registry_adapter"] = "PASS_FACTORY_SOURCE_STORAGE_BOUNDARIES"

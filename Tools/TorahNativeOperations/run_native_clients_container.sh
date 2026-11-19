@@ -1,9 +1,10 @@
 #!/bin/sh
 set -eu
-case "${T2_NATIVE_SCENARIO:-bootstrap}:${T2_NATIVE_CRASH_AFTER_COMMIT:-false}:${T2_NATIVE_OBSERVED_REMOVE_AFTER_REOPEN:-false}" in
-  bootstrap:false:false|offline:false:false) set -- ;;
-  offline:true:false) set -- --crash-after-commit ;;
-  offline:false:true) set -- --observed-remove-after-reopen ;;
+case "${T2_NATIVE_SCENARIO:-bootstrap}:${T2_NATIVE_CRASH_AFTER_COMMIT:-false}:${T2_NATIVE_OBSERVED_REMOVE_AFTER_REOPEN:-false}:${T2_NATIVE_CONCURRENT_REPLACE_AFTER_REOPEN:-false}" in
+  bootstrap:false:false:false|offline:false:false:false) set -- ;;
+  offline:true:false:false) set -- --crash-after-commit ;;
+  offline:false:true:false) set -- --observed-remove-after-reopen ;;
+  offline:false:false:true) set -- --concurrent-replace-after-reopen ;;
   *) echo "Unsupported or mutually exclusive native tail selection"; exit 2 ;;
 esac
 apk add --no-cache python3 git build-base > /workspace/evidence/toolchain/apk-install.log 2>&1

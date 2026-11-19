@@ -74,7 +74,15 @@ func (s *Store) ReadTarget(ctx context.Context, target Target, limit uint) (proj
 	for id := range pending {
 		projection.PendingObserved = append(projection.PendingObserved, id)
 	}
-	sort.Slice(projection.Live, func(i, j int) bool { return projection.Live[i].ID < projection.Live[j].ID })
+	// This is the bytewise display tie-break, not a native causal clock. Claim
+	// identity starts with a hash and does not preserve OperationID order.
+	sort.Slice(projection.Live, func(i, j int) bool {
+		left, right := projection.Live[i], projection.Live[j]
+		if left.Operation.OperationID != right.Operation.OperationID {
+			return left.Operation.OperationID < right.Operation.OperationID
+		}
+		return left.ID < right.ID
+	})
 	sort.Slice(projection.Conflicts, func(i, j int) bool { return projection.Conflicts[i].OperationID < projection.Conflicts[j].OperationID })
 	sort.Strings(projection.PendingObserved)
 	return projection, nil

@@ -193,8 +193,8 @@ def execute(args, receipt, run, *, native_client_fixtures: dict[str, Path] | Non
     if native_client_fixtures is not None:
         require(set(native_client_fixtures) == {"native_client_phase_test.go", "native_client_boundary_test.go",
                                                 "native_client_offline_test.go", "native_client_reopen_test.go", "native_client_crash_test.go",
-                                                "native_client_observed_remove_test.go"},
-                "Only the six explicit native-client test overlays are supported")
+                                                "native_client_observed_remove_test.go", "native_client_concurrent_replace_test.go"},
+                "Only the seven explicit native-client test overlays are supported")
         for name, path in native_client_fixtures.items():
             require(path == tools / "two_clients" / name and path.is_file() and not path.is_symlink(),
                     "Native-client fixtures must be the exact source-bound test files")

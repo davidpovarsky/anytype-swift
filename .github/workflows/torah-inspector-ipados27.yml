@@ -23,6 +23,7 @@ on:
           - t2-native-clients-offline
           - t2-native-clients-crash
           - t2-native-clients-observed-remove
+          - t2-native-clients-concurrent-replace
           - t2-account-lifecycle
           - simulator-ui27
           - heart-runtime
@@ -157,13 +158,14 @@ jobs:
       source_sha: ${{ github.sha }}
 
   t2-native-clients:
-    if: ${{ inputs.route == 't2-native-clients' || inputs.route == 't2-native-clients-offline' || inputs.route == 't2-native-clients-crash' || inputs.route == 't2-native-clients-observed-remove' }}
+    if: ${{ inputs.route == 't2-native-clients' || inputs.route == 't2-native-clients-offline' || inputs.route == 't2-native-clients-crash' || inputs.route == 't2-native-clients-observed-remove' || inputs.route == 't2-native-clients-concurrent-replace' }}
     uses: ./.github/workflows/pinkha-t2-native-clients.yml
     with:
       source_sha: ${{ github.sha }}
-      scenario: ${{ (inputs.route == 't2-native-clients-offline' || inputs.route == 't2-native-clients-crash' || inputs.route == 't2-native-clients-observed-remove') && 'offline' || 'bootstrap' }}
+      scenario: ${{ (inputs.route == 't2-native-clients-offline' || inputs.route == 't2-native-clients-crash' || inputs.route == 't2-native-clients-observed-remove' || inputs.route == 't2-native-clients-concurrent-replace') && 'offline' || 'bootstrap' }}
       crash_after_commit: ${{ inputs.route == 't2-native-clients-crash' }}
       observed_remove_after_reopen: ${{ inputs.route == 't2-native-clients-observed-remove' }}
+      concurrent_replace_after_reopen: ${{ inputs.route == 't2-native-clients-concurrent-replace' }}
 
   t2-account-rpc:
     if: ${{ inputs.route == 't2-account-rpc' }}

@@ -15,6 +15,9 @@ on:
       observed_remove_after_reopen:
         type: boolean
         default: false
+      concurrent_replace_after_reopen:
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -30,6 +33,7 @@ jobs:
       T2_NATIVE_SCENARIO: ${{ inputs.scenario }}
       T2_NATIVE_CRASH_AFTER_COMMIT: ${{ inputs.crash_after_commit }}
       T2_NATIVE_OBSERVED_REMOVE_AFTER_REOPEN: ${{ inputs.observed_remove_after_reopen }}
+      T2_NATIVE_CONCURRENT_REPLACE_AFTER_REOPEN: ${{ inputs.concurrent_replace_after_reopen }}
     steps:
       - name: Checkout exact native-client source
         uses: actions/checkout@v4
@@ -64,8 +68,8 @@ jobs:
           cache: false
       - name: Verify rejection controls and generate exact native bindings
         run: |
-          case "$T2_NATIVE_SCENARIO:$T2_NATIVE_CRASH_AFTER_COMMIT:$T2_NATIVE_OBSERVED_REMOVE_AFTER_REOPEN" in
-            bootstrap:false:false|offline:false:false|offline:true:false|offline:false:true) ;;
+          case "$T2_NATIVE_SCENARIO:$T2_NATIVE_CRASH_AFTER_COMMIT:$T2_NATIVE_OBSERVED_REMOVE_AFTER_REOPEN:$T2_NATIVE_CONCURRENT_REPLACE_AFTER_REOPEN" in
+            bootstrap:false:false:false|offline:false:false:false|offline:true:false:false|offline:false:true:false|offline:false:false:true) ;;
             *) echo "Unsupported or mutually exclusive native tail selection"; exit 2 ;;
           esac
           mkdir -p evidence/toolchain
@@ -76,6 +80,9 @@ jobs:
           fi
           if [ "$T2_NATIVE_OBSERVED_REMOVE_AFTER_REOPEN" = true ]; then
             python3 -B -m unittest -v test_native_client_observed_remove > "$GITHUB_WORKSPACE/evidence/observed-remove-controller-controls.log" 2>&1
+          fi
+          if [ "$T2_NATIVE_CONCURRENT_REPLACE_AFTER_REOPEN" = true ]; then
+            python3 -B -m unittest -v test_native_client_concurrent_replace > "$GITHUB_WORKSPACE/evidence/concurrent-replace-controller-controls.log" 2>&1
           fi
           python3 -B run_native_rpc.py generate \
             --control "$GITHUB_WORKSPACE/control" --heart-source "$GITHUB_WORKSPACE/heart-new" \
@@ -105,7 +112,7 @@ jobs:
             --mount "type=bind,src=$GITHUB_WORKSPACE/native-work,dst=/workspace/work" \
             --mount "type=bind,src=$GITHUB_WORKSPACE/evidence,dst=/workspace/evidence" \
             --mount "type=bind,src=$GITHUB_WORKSPACE/.t2-cache,dst=/cache" \
-            -e EXPECTED_APP_SHA -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_WORKFLOW_REF -e T2_NATIVE_SCENARIO -e T2_NATIVE_CRASH_AFTER_COMMIT -e T2_NATIVE_OBSERVED_REMOVE_AFTER_REOPEN \
+            -e EXPECTED_APP_SHA -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_WORKFLOW_REF -e T2_NATIVE_SCENARIO -e T2_NATIVE_CRASH_AFTER_COMMIT -e T2_NATIVE_OBSERVED_REMOVE_AFTER_REOPEN -e T2_NATIVE_CONCURRENT_REPLACE_AFTER_REOPEN \
             -e CC=gcc -e CXX=g++ -e GOTOOLCHAIN=local \
             -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
             -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \
@@ -113,10 +120,11 @@ jobs:
       - name: Bootstrap two empty native clients over an owned internal LAN
         run: |
           tail_args=()
-          case "$T2_NATIVE_SCENARIO:$T2_NATIVE_CRASH_AFTER_COMMIT:$T2_NATIVE_OBSERVED_REMOVE_AFTER_REOPEN" in
-            bootstrap:false:false|offline:false:false) ;;
-            offline:true:false) tail_args+=(--crash-after-commit) ;;
-            offline:false:true) tail_args+=(--observed-remove-after-reopen) ;;
+          case "$T2_NATIVE_SCENARIO:$T2_NATIVE_CRASH_AFTER_COMMIT:$T2_NATIVE_OBSERVED_REMOVE_AFTER_REOPEN:$T2_NATIVE_CONCURRENT_REPLACE_AFTER_REOPEN" in
+            bootstrap:false:false:false|offline:false:false:false) ;;
+            offline:true:false:false) tail_args+=(--crash-after-commit) ;;
+            offline:false:true:false) tail_args+=(--observed-remove-after-reopen) ;;
+            offline:false:false:true) tail_args+=(--concurrent-replace-after-reopen) ;;
             *) echo "Unsupported or mutually exclusive native tail selection"; exit 2 ;;
           esac
           python3 -B control/Tools/TorahNativeOperations/run_native_clients.py clients "${tail_args[@]}" \
@@ -144,6 +152,7 @@ jobs:
                   'two_native_clients': 'NOT_RUN', 'app_capability': 'OFF',
                   'crash_after_commit_requested': os.environ.get('T2_NATIVE_CRASH_AFTER_COMMIT') == 'true',
                   'observed_remove_after_reopen_requested': os.environ.get('T2_NATIVE_OBSERVED_REMOVE_AFTER_REOPEN') == 'true',
+                  'concurrent_replace_after_reopen_requested': os.environ.get('T2_NATIVE_CONCURRENT_REPLACE_AFTER_REOPEN') == 'true',
                   'offline_conflict_merge': 'NOT_RUN', 'two_app_clients': 'NOT_RUN',
                   'ios_acceptance': 'NOT_RUN', 'full_t2_acceptance': 'NOT_RUN'
               }, indent=2) + '\n')

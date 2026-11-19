@@ -27,6 +27,7 @@ import run_account_lifecycle as base
 import run_account_rpc as account
 import native_client_diagnostics as diagnostics
 import native_client_observed_remove as observed_remove
+import native_client_concurrent_replace as concurrent_replace
 
 PROTOCOL = "pinkha-t2-two-native-clients-bootstrap-v1"
 OFFLINE_PROTOCOL = "pinkha-t2-native-offline-conflict-reopen-v1"
@@ -47,7 +48,7 @@ IMAGE = "golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611d
 OWNER_LABEL = "pinkha.t2.native-clients.owner"
 GO_FILES = {"native_client_phase_test.go", "native_client_boundary_test.go",
             "native_client_offline_test.go", "native_client_reopen_test.go", "native_client_crash_test.go",
-            "native_client_observed_remove_test.go"}
+            "native_client_observed_remove_test.go", "native_client_concurrent_replace_test.go"}
 STATE_KEYS = {"AccountID", "SpaceID", "DocumentID", "BlockID", "RootID", "OperationID",
               "OperationSHA256", "ClaimID", "ChangeID", "RawChanges", "Heads"}
 CONTROL_METHODS = {
@@ -99,6 +100,11 @@ def source_inputs(control: Path) -> tuple[dict, dict[str, Path]]:
     tail = tools / "native_client_observed_remove.py"
     require(tail.is_file() and not tail.is_symlink()
             and digest(tail) == manifest["observed_remove_controller_sha256"], "Observed-remove source-bound controller differs")
+    for name, key in [("native_client_concurrent_replace.py", "concurrent_replace_controller_sha256"),
+                      ("test_native_client_concurrent_replace.py", "concurrent_replace_controls_sha256")]:
+        path = tools / name
+        require(path.is_file() and not path.is_symlink() and digest(path) == manifest[key],
+                "Concurrent-replace source-bound controller or controls differ")
     return manifest, files
 
 
@@ -155,10 +161,11 @@ def build(args, receipt, run) -> dict:
 
 
 def native_arguments(scenario="bootstrap", method=METHOD) -> list[str]:
-    require(scenario in {"bootstrap", "offline"} and method in {METHOD, REOPEN_METHOD, *CRASH_METHODS, *observed_remove.METHODS.values()}, "Unknown fixed native scenario")
+    require(scenario in {"bootstrap", "offline"} and method in {METHOD, REOPEN_METHOD, *CRASH_METHODS,
+            *observed_remove.METHODS.values(), *concurrent_replace.METHODS.values()}, "Unknown fixed native scenario")
     require(method == METHOD or scenario == "offline", "Reopen is exclusive to the offline scenario")
     limit = "480s" if method != METHOD else ("2000s" if scenario == "offline" else "1000s")
-    if method in observed_remove.METHODS.values():
+    if method in {*observed_remove.METHODS.values(), *concurrent_replace.METHODS.values()}:
         limit = "720s"  # Only the new fixed causal process; existing phase caps stay unchanged.
     return ["-test.run", "^" + method + "$", "-test.count=1", "-test.v", "-test.timeout=" + limit]
 
@@ -203,6 +210,11 @@ def validate_container(info: dict, owner: str, role: str, network: dict | None, 
             "Native causal phase differs from the exact selected method")
     require(method not in observed_remove.METHODS.values() or method == observed_remove.METHODS[role],
             "Causal method must match its original device role")
+    require(env.get("PINKHA_T2_CONCURRENT_REPLACE_PHASE") ==
+            (concurrent_replace.PROTOCOL if method in concurrent_replace.METHODS.values() else None),
+            "Native concurrent-replace phase differs from the exact selected method")
+    require(method not in concurrent_replace.METHODS.values() or method == concurrent_replace.METHODS[role],
+            "Concurrent-replace method must match its original device role")
 
 
 def validate_ready(report: dict, role: str, nonce: str, state: dict, state_hash: str,
@@ -273,8 +285,8 @@ def validate_final(ready: dict, final: dict, log: str, role: str, *, scenario="b
 
 
 def publish_native_evidence(private: Path, evidence: Path, *, scenario="bootstrap", crash_after_commit=False,
-                            observed_remove_after_reopen=False) -> dict:
-    observed_remove.validate_selection(scenario, crash_after_commit, observed_remove_after_reopen)
+                            observed_remove_after_reopen=False, concurrent_replace_after_reopen=False) -> dict:
+    concurrent_replace.validate_selection(scenario, crash_after_commit, observed_remove_after_reopen, concurrent_replace_after_reopen)
     needle_path = private / "creator/sensitive-needles.private"
     if not needle_path.is_file() or needle_path.is_symlink():
         return {"status": "WITHHELD_NO_SECRET_INVENTORY", "files_sha256": {}}
@@ -291,6 +303,8 @@ def publish_native_evidence(private: Path, evidence: Path, *, scenario="bootstra
             names += ["crash-armed.json", "crash-recover-ready.json", "crash-recovered.json", "crash-native.log", "crash-recover-native.log"]
         if observed_remove_after_reopen:
             names += sorted(observed_remove.FILES) + [observed_remove.LOG]
+        if concurrent_replace_after_reopen:
+            names += sorted(concurrent_replace.FILES) + [concurrent_replace.LOG]
         for name in names:
             path = private / role / name
             if not path.exists():
@@ -315,7 +329,8 @@ def publish_native_evidence(private: Path, evidence: Path, *, scenario="bootstra
 
 class OwnedDocker:
     def __init__(self, private: Path, receipt: dict, checkpoint, *, scenario="bootstrap", crash_after_commit=False,
-                 observed_remove_after_reopen=False):
+                 observed_remove_after_reopen=False, concurrent_replace_after_reopen=False):
+        concurrent_replace.validate_selection(scenario, crash_after_commit, observed_remove_after_reopen, concurrent_replace_after_reopen)
         self.private, self.receipt, self.checkpoint = private, receipt, checkpoint
         self.owner = uuid4().hex
         self.prefix = "pinkha-t2-" + self.owner[:16]
@@ -323,9 +338,9 @@ class OwnedDocker:
         self.receipt["owned_resources"] = self.resources
         self.receipt["owner_nonce"] = self.owner
         self.command_index = 0
-        observed_remove.validate_selection(scenario, crash_after_commit, observed_remove_after_reopen)
         self.scenario, self.crash_after_commit = scenario, crash_after_commit
         self.observed_remove_after_reopen = observed_remove_after_reopen
+        self.concurrent_replace_after_reopen = concurrent_replace_after_reopen
 
     def command(self, args, name, timeout=30, destination=None):
         self.command_index += 1
@@ -395,11 +410,16 @@ class OwnedDocker:
         require(method not in observed_remove.METHODS.values() or
                 (self.observed_remove_after_reopen and method == observed_remove.METHODS[role] and network is not None),
                 "Causal process requires its explicit original-role LAN tail")
+        require(method not in concurrent_replace.METHODS.values() or
+                (self.concurrent_replace_after_reopen and method == concurrent_replace.METHODS[role] and network is not None),
+                "Concurrent-replace process requires its explicit original-role LAN tail")
         suffix, log_name = ("reopen", "reopen-native.log") if reopening else ("", "native.log")
         if method in CRASH_METHODS:
             suffix, log_name, _ = CRASH_METHODS[method]
         if method in observed_remove.METHODS.values():
             suffix, log_name = "observed-remove", observed_remove.LOG
+        if method in concurrent_replace.METHODS.values():
+            suffix, log_name = "concurrent-replace", concurrent_replace.LOG
         resource = {"kind": "container", "name": self.prefix + "-" + role + ("-" + suffix if suffix else ""),
                     "id": None, "role": role, "private": str(directory), "log": log_name}
         self.resources.append(resource)
@@ -418,6 +438,8 @@ class OwnedDocker:
             args += ["-e", "PINKHA_T2_CRASH_PHASE=" + CRASH_METHODS[method][2]]
         if method in observed_remove.METHODS.values():
             args += ["-e", "PINKHA_T2_OBSERVED_REMOVE_PHASE=" + observed_remove.PROTOCOL]
+        if method in concurrent_replace.METHODS.values():
+            args += ["-e", "PINKHA_T2_CONCURRENT_REPLACE_PHASE=" + concurrent_replace.PROTOCOL]
         args += [IMAGE, "/fixture/native.test", *native_arguments(self.scenario, method)]
         resource["id"] = self.command(args, "create-" + role, self.remaining(deadline))
         require(re.fullmatch(r"[0-9a-f]{64}", resource["id"]), "Missing actual native container identity")
@@ -425,7 +447,8 @@ class OwnedDocker:
         return resource
 
     def wait_ready(self, resource, deadline, *, filename="ready.json"):
-        require(filename in {"ready.json", "partitioned.json", "diverged.json", "reconnected.json", "converged.json", "reopen-ready.json", "crash-armed.json", "crash-recover-ready.json", *observed_remove.FILES - {"observed-final.json"}},
+        require(filename in {"ready.json", "partitioned.json", "diverged.json", "reconnected.json", "converged.json", "reopen-ready.json", "crash-armed.json", "crash-recover-ready.json", *observed_remove.FILES - {"observed-final.json"},
+                *concurrent_replace.FILES - {"replace-final.json"}},
                 "Unexpected native receipt selection")
         path = Path(resource["private"]) / filename
         next_check = 0
@@ -1019,6 +1042,7 @@ def clients(args, receipt, docker: OwnedDocker):
             and built.get("run_id") == receipt["run_id"] and built.get("run_attempt") == receipt["run_attempt"]
             and built.get("scenario") == args.scenario and built.get("crash_after_commit_requested", False) == args.crash_after_commit
             and built.get("observed_remove_after_reopen_requested", False) == args.observed_remove_after_reopen
+            and built.get("concurrent_replace_after_reopen_requested", False) == args.concurrent_replace_after_reopen
             and built.get("fixture_sha256") == manifest["fixture_sha256"], "Foreign or unsuccessful native build receipt")
     require(built["runtime"]["relative_path"] == "client-runtime/native.test", "Unexpected native runtime path")
     binary = args.native_work / built["runtime"]["relative_path"]
@@ -1130,7 +1154,7 @@ def clients(args, receipt, docker: OwnedDocker):
         reopen = offline_reopen(docker, resources, directories, binary, manifest["fixture_sha256"], reports, identity,
                                 image["Id"], state_hash, key_hash, offline["converged"])
         require(source_inputs(args.control)[0] == manifest, "Native client source changed during disconnected reopen")
-        if args.crash_after_commit or args.observed_remove_after_reopen:
+        if args.crash_after_commit or args.observed_remove_after_reopen or args.concurrent_replace_after_reopen:
             receipt["completed_offline_baseline"] = {"native_results": final_reports, "disconnected_reopen": reopen,
                 "actual_counts": {"independent_native_clients": 2, "native_processes": 4, "native_named_pass": 4, "native_fail": 0, "native_skip": 0}}
             receipt["actual_counts_scope"] = "UNCHANGED_TWO_NATIVE_CLIENTS_OFFLINE_BASELINE"
@@ -1150,6 +1174,15 @@ def clients(args, receipt, docker: OwnedDocker):
                 manifest["fixture_sha256"], identity, image["Id"], state, state_hash, key_hash, reopen, network_resource, network)
             require(receipt["observed_remove_after_reopen"].get("status") == observed_remove.PASS, "Optional causal tail did not complete")
             require(source_inputs(args.control)[0] == manifest, "Native causal source changed during execution")
+        if args.concurrent_replace_after_reopen:
+            receipt["diagnostic_stage"] = "CONCURRENT_REPLACE_AFTER_REOPEN"
+            receipt["concurrent_replace_after_reopen"] = {"status": "IN_PROGRESS", "phase": "START", "completed_native_named_pass": 0}
+            docker.checkpoint()
+            receipt["concurrent_replace_after_reopen"] = concurrent_replace.sequence(sys.modules[__name__], docker, directories, binary,
+                manifest["fixture_sha256"], identity, image["Id"], state, state_hash, key_hash, reopen, network_resource, network)
+            require(receipt["concurrent_replace_after_reopen"].get("status") == concurrent_replace.PASS,
+                    "Optional concurrent-replace tail did not complete")
+            require(source_inputs(args.control)[0] == manifest, "Native concurrent-replace source changed during execution")
         receipt["diagnostic_stage"] = "COMPLETE"
         return {"native_results": final_reports, "disconnected_reopen": reopen,
                 "actual_counts": {"independent_native_clients": 2, "native_processes": 4, "native_named_pass": 4, "native_fail": 0, "native_skip": 0},
@@ -1215,13 +1248,14 @@ def main(argv=None):
     tails = parser.add_mutually_exclusive_group()
     tails.add_argument("--crash-after-commit", action="store_true")
     tails.add_argument("--observed-remove-after-reopen", action="store_true")
+    tails.add_argument("--concurrent-replace-after-reopen", action="store_true")
     parser.add_argument("--control", type=Path, default=Path(__file__).resolve().parents[2])
     parser.add_argument("--evidence", type=Path, required=True)
     parser.add_argument("--expected-app-sha", required=True)
     for name in ["approved-source", "heart-legacy", "heart-new", "work", "native-work"]:
         parser.add_argument("--" + name, type=Path)
     args = parser.parse_args(argv)
-    observed_remove.validate_selection(args.scenario, args.crash_after_commit, args.observed_remove_after_reopen)
+    concurrent_replace.validate_selection(args.scenario, args.crash_after_commit, args.observed_remove_after_reopen, args.concurrent_replace_after_reopen)
     for name in ["control", "evidence", "approved_source", "heart_legacy", "heart_new", "work", "native_work"]:
         if getattr(args, name) is not None:
             setattr(args, name, getattr(args, name).resolve())
@@ -1240,6 +1274,7 @@ def main(argv=None):
     receipt = {"protocol": PROTOCOL, "status": "NOT_RUN_PREFLIGHT", "stage": args.stage, "diagnostic_stage": "PREFLIGHT", "scenario": args.scenario,
                "crash_after_commit_requested": args.crash_after_commit, "app_sha": args.expected_app_sha,
                "observed_remove_after_reopen_requested": args.observed_remove_after_reopen,
+               "concurrent_replace_after_reopen_requested": args.concurrent_replace_after_reopen,
                "run_id": run_id, "run_attempt": attempt, "started_at": datetime.now(timezone.utc).isoformat(), "commands": [],
                "two_native_clients": "NOT_RUN", "app_capability": "OFF", "two_app_clients": "NOT_RUN",
                "offline_conflict_merge": "NOT_RUN", "ios_acceptance": "NOT_RUN", "full_t2_acceptance": "NOT_RUN"}
@@ -1282,7 +1317,8 @@ def main(argv=None):
             require(shutil.disk_usage(args.native_work).free >= base.RESERVE, "Native disk reserve below 8 GiB")
             private.mkdir(mode=0o700)
             docker = OwnedDocker(private, receipt, checkpoint, scenario=args.scenario, crash_after_commit=args.crash_after_commit,
-                                 observed_remove_after_reopen=args.observed_remove_after_reopen)
+                                 observed_remove_after_reopen=args.observed_remove_after_reopen,
+                                 concurrent_replace_after_reopen=args.concurrent_replace_after_reopen)
             receipt.update(clients(args, receipt, docker))
         candidate = True
     except BaseException as error:
@@ -1297,7 +1333,8 @@ def main(argv=None):
                     receipt.update(status="CANCELLED", error_type="KeyboardInterrupt")
                     docker.cleanup()
                 receipt["native_publication"] = publish_native_evidence(docker.private, args.evidence, scenario=args.scenario,
-                    crash_after_commit=args.crash_after_commit, observed_remove_after_reopen=args.observed_remove_after_reopen)
+                    crash_after_commit=args.crash_after_commit, observed_remove_after_reopen=args.observed_remove_after_reopen,
+                    concurrent_replace_after_reopen=args.concurrent_replace_after_reopen)
                 if candidate:
                     require(receipt["native_publication"]["status"] == "PASS_SECRET_SCANNED_EXACT_ALLOWLIST", "Native evidence withheld")
             except BaseException as error:
