@@ -29,6 +29,64 @@ struct PinkhaAnyEngineProbe {
             FileHandle.standardOutput.write(Data("{\"status\":\"PASS_REDIRECT_REFUSED\"}\n".utf8))
             return
         }
+        if mode == "check-sse" {
+            try await checkSSETransport(client: client, space: space, scenario: argument("--scenario"))
+            return
+        }
+        if mode == "watch" {
+            guard let expectedUpdates = Int(try argument("--updates")), (1...100).contains(expectedUpdates),
+                  let timeout = Double(try argument("--timeout-seconds")), timeout >= 1, timeout <= 300 else {
+                throw AnyEngineError.invalidOperation("watch bounds")
+            }
+            let streamSession = AnyStreamSession()
+            let outcome: WatchOutcome
+            do {
+                outcome = try await withThrowingTaskGroup(of: WatchOutcome.self) { group in
+                    group.addTask {
+                        let stream = try await repository.watch(session: streamSession)
+                        var count = 0
+                        var initialCount = 0
+                        for try await value in stream {
+                            try await streamSession.requireActive(generation: value.generation)
+                            count += 1
+                            if value.initial {
+                                initialCount += 1
+                                FileHandle.standardOutput.write(
+                                    Data("{\"status\":\"READY_REAL_ANY_SSE_SNAPSHOT\"}\n".utf8))
+                            }
+                            guard initialCount == 1 else { throw AnyEngineError.unverifiedWrite }
+                            if count == expectedUpdates {
+                                return WatchOutcome(projection: value.projection,
+                                                    initialCount: initialCount, updates: count)
+                            }
+                        }
+                        throw AnyEngineError.unverifiedWrite
+                    }
+                    group.addTask {
+                        try await Task.sleep(for: .seconds(timeout))
+                        throw AnyEngineError.malformedResponse("live query timeout")
+                    }
+                    guard let value = try await group.next() else { throw AnyEngineError.unverifiedWrite }
+                    group.cancelAll()
+                    return value
+                }
+            } catch {
+                await streamSession.invalidate()
+                throw error
+            }
+            await streamSession.invalidate()
+            let result: AnyJSON = .object([
+                "status": .string("PASS_REAL_ANY_SSE_CLIENT"),
+                "initialSnapshotCount": .integer(Int64(outcome.initialCount)),
+                "updateCount": .integer(Int64(outcome.updates)),
+                "allClaimIds": .array(outcome.projection.all.map { .string($0.id) }),
+                "liveClaimIds": .array(outcome.projection.live.map { .string($0.id) }),
+                "conflictKeys": .array(outcome.projection.conflicts.keys.sorted().map(AnyJSON.string))
+            ])
+            FileHandle.standardOutput.write(try JSONEncoder().encode(result))
+            FileHandle.standardOutput.write(Data([10]))
+            return
+        }
         if mode == "verify" {
             let snapshot = try await repository.snapshot()
             let expected = Set(try argument("--expected-claims").split(separator: ",").map(String.init))
@@ -145,6 +203,66 @@ struct PinkhaAnyEngineProbe {
         let data = try JSONEncoder().encode(proof)
         FileHandle.standardOutput.write(data)
         FileHandle.standardOutput.write(Data([10]))
+    }
+
+    private static func checkSSETransport(client: AnyHTTPClient, space: String, scenario: String) async throws {
+        let expectedError: AnyLiveQueryError?
+        switch scenario {
+        case "normal", "generation": expectedError = nil
+        case "utf8": expectedError = .invalidUTF8
+        case "frame": expectedError = .frameTooLarge
+        case "window": expectedError = .windowTooLarge
+        case "eof": expectedError = .disconnected
+        case "redirect": expectedError = .http(307)
+        default: throw AnyEngineError.invalidOperation("SSE fixture scenario")
+        }
+        let session = AnyStreamSession()
+        var invalidated = false
+        do {
+            let updates = try await client.subscribeQuery(
+                spaceID: space, query: .object(["includeTotal": .bool(true), "limit": .integer(4)]),
+                streamSession: session, maximumRecords: 4, requireComplete: true, maximumFrameBytes: 1024)
+            var count = 0
+            for try await update in updates {
+                try await session.requireActive(generation: update.generation)
+                count += 1
+                if scenario == "generation" && update.initial {
+                    invalidated = true
+                    await session.invalidate()
+                    do {
+                        try await session.requireActive(generation: update.generation)
+                        throw AnyEngineError.unverifiedWrite
+                    } catch AnyLiveQueryError.staleGeneration {
+                        // Await the stream failure too, proving cancellation before process exit.
+                        continue
+                    }
+                }
+                if scenario == "normal" && count == 2 {
+                    guard update.records.count == 1, update.records[0]["value"]?.string == "תורה" else {
+                        throw AnyEngineError.unverifiedWrite
+                    }
+                    await session.invalidate()
+                    FileHandle.standardOutput.write(Data("{\"status\":\"PASS_SSE_FULL_DOCUMENT\"}\n".utf8))
+                    return
+                }
+            }
+            throw AnyEngineError.unverifiedWrite
+        } catch {
+            await session.invalidate()
+            if scenario == "generation" && invalidated &&
+                (error is CancellationError || (error as? AnyLiveQueryError) == .staleGeneration) {
+                FileHandle.standardOutput.write(Data("{\"status\":\"PASS_SSE_GENERATION_CANCEL\"}\n".utf8))
+                return
+            }
+            guard let expectedError, (error as? AnyLiveQueryError) == expectedError else { throw error }
+            FileHandle.standardOutput.write(Data("{\"status\":\"PASS_SSE_NEGATIVE_BOUNDARY\"}\n".utf8))
+        }
+    }
+
+    private struct WatchOutcome: Sendable {
+        let projection: AnyTorahProjection
+        let initialCount: Int
+        let updates: Int
     }
 
     private static func requireValue<T>(_ value: T?) throws -> T {

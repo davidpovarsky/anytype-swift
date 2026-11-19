@@ -4,6 +4,8 @@ import PinkhaKit
 public enum AnyTorahMigrationError: Error, Sendable, Equatable {
     case numericPrecisionWouldChange(path: String)
     case duplicateJSONKey(path: String)
+    case unmappedReferencedObject(String)
+    case malformedInternalNoteLink(itemID: String)
 }
 
 /// The existing domain deliberately models JSON numbers as Double. Refuse an

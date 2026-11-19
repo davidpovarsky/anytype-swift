@@ -8,6 +8,8 @@ public struct AnyHTTPClient: Sendable {
     public let expectedAccountID: String
     private let session: URLSession
 
+    // Safety: stateless delegate, no mutable shared state. Follow-up: retire the
+    // unchecked annotation when Foundation exposes Sendable delegate protocols.
     private final class RejectRedirects: NSObject, URLSessionTaskDelegate, @unchecked Sendable {
         func urlSession(_ session: URLSession, task: URLSessionTask,
                         willPerformHTTPRedirection response: HTTPURLResponse,
@@ -61,7 +63,7 @@ public struct AnyHTTPClient: Sendable {
         }
     }
 
-    private func raw(method: String, path: [String], body: AnyJSON?) async throws -> AnyJSON {
+    func makeRequest(method: String, path: [String], body: AnyJSON?) throws -> URLRequest {
         guard !path.isEmpty, path.allSatisfy({ !$0.isEmpty && $0 != "." && $0 != ".." }) else {
             throw AnyEngineError.invalidEndpoint
         }
@@ -83,6 +85,11 @@ public struct AnyHTTPClient: Sendable {
             request.httpBody = try JSONEncoder().encode(body)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         }
+        return request
+    }
+
+    private func raw(method: String, path: [String], body: AnyJSON?) async throws -> AnyJSON {
+        let request = try makeRequest(method: method, path: path, body: body)
         let data: Data
         let response: URLResponse
         do { (data, response) = try await session.data(for: request) }

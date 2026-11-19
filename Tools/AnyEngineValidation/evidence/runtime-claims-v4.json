@@ -1,0 +1,442 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_REAL_ENGINE_COMPONENT",
+  "scope": "real-engine-and-swift-claims-component-integration",
+  "startedAtUTC": "2026-11-19T15:46:21.045721+00:00",
+  "anySourceSHA": "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+  "binarySHA256": "5993e211157985cb42fdec95c678f0c1b96da04796b4d0cd15cff9ef6bf52591",
+  "harnessSHA256": "fc89452ae7a40eeb92c6f0e9143bb81d43454f0eab99ac69dc106262cb4d859e",
+  "network": "official-disposable-only",
+  "localEmbedding": "disabled",
+  "productionUserData": "never-opened",
+  "checks": [
+    {
+      "name": "source_provenance",
+      "status": "PASS",
+      "durationMs": 266
+    },
+    {
+      "name": "swift_probe_binary_digest",
+      "status": "PASS",
+      "durationMs": 78
+    },
+    {
+      "name": "pinned_binary_digest",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "managed_boot",
+      "status": "PASS",
+      "durationMs": 1594
+    },
+    {
+      "name": "fresh_disposable_account",
+      "status": "PASS",
+      "durationMs": 547
+    },
+    {
+      "name": "create_owned_disposable_space",
+      "status": "PASS",
+      "durationMs": 203
+    },
+    {
+      "name": "create_native_page",
+      "status": "PASS",
+      "durationMs": 31
+    },
+    {
+      "name": "create_hebrew_editor_block",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "hebrew_exact_readback",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "sse_initial_snapshot",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "edit_native_block",
+      "status": "PASS",
+      "durationMs": 16
+    },
+    {
+      "name": "sse_live_delta",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "swift_adapter_real_http",
+      "status": "PASS",
+      "durationMs": 484
+    },
+    {
+      "name": "swift_create_remove_anchor",
+      "status": "PASS",
+      "durationMs": 125
+    },
+    {
+      "name": "swift_create_replace_anchor",
+      "status": "PASS",
+      "durationMs": 141
+    },
+    {
+      "name": "swift_anchor_snapshot",
+      "status": "PASS",
+      "durationMs": 94
+    },
+    {
+      "name": "second_peer_boot",
+      "status": "PASS",
+      "durationMs": 312
+    },
+    {
+      "name": "second_peer_restore_separate_device",
+      "status": "PASS",
+      "durationMs": 250
+    },
+    {
+      "name": "second_peer_space_discovery",
+      "status": "PASS",
+      "durationMs": 703
+    },
+    {
+      "name": "two_peer_native_block_convergence",
+      "status": "PASS",
+      "durationMs": 750
+    },
+    {
+      "name": "swift_claims_two_peer_convergence",
+      "status": "PASS",
+      "durationMs": 78
+    },
+    {
+      "name": "second_peer_native_write",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "reverse_peer_convergence",
+      "status": "PASS",
+      "durationMs": 360
+    },
+    {
+      "name": "first_peer_graceful_shutdown",
+      "status": "PASS",
+      "durationMs": 62
+    },
+    {
+      "name": "activate_scoped_network_block",
+      "status": "PASS",
+      "durationMs": 10907
+    },
+    {
+      "name": "second_peer_shutdown_before_partition",
+      "status": "PASS",
+      "durationMs": 343
+    },
+    {
+      "name": "activate_second_scoped_block",
+      "status": "PASS",
+      "durationMs": 9032
+    },
+    {
+      "name": "second_peer_offline_restart",
+      "status": "PASS",
+      "durationMs": 125
+    },
+    {
+      "name": "second_peer_offline_account_reopen",
+      "status": "PASS",
+      "durationMs": 359
+    },
+    {
+      "name": "second_peer_offline_claim_baseline",
+      "status": "PASS",
+      "durationMs": 172
+    },
+    {
+      "name": "isolated_offline_restart",
+      "status": "PASS",
+      "durationMs": 156
+    },
+    {
+      "name": "offline_account_reopen",
+      "status": "PASS",
+      "durationMs": 250
+    },
+    {
+      "name": "offline_persisted_read",
+      "status": "PASS",
+      "durationMs": 16
+    },
+    {
+      "name": "swift_claims_offline_reopen",
+      "status": "PASS",
+      "durationMs": 109
+    },
+    {
+      "name": "partitioned_collision_variant_a",
+      "status": "PASS",
+      "durationMs": 188
+    },
+    {
+      "name": "partitioned_collision_variant_b",
+      "status": "PASS",
+      "durationMs": 171
+    },
+    {
+      "name": "partitioned_independent_add_a",
+      "status": "PASS",
+      "durationMs": 204
+    },
+    {
+      "name": "partitioned_independent_add_b",
+      "status": "PASS",
+      "durationMs": 187
+    },
+    {
+      "name": "partitioned_observed_remove",
+      "status": "PASS",
+      "durationMs": 188
+    },
+    {
+      "name": "partitioned_unobserved_add",
+      "status": "PASS",
+      "durationMs": 265
+    },
+    {
+      "name": "partitioned_replace_a",
+      "status": "PASS",
+      "durationMs": 203
+    },
+    {
+      "name": "partitioned_replace_b",
+      "status": "PASS",
+      "durationMs": 172
+    },
+    {
+      "name": "partitioned_snapshot_a",
+      "status": "PASS",
+      "durationMs": 94
+    },
+    {
+      "name": "partitioned_snapshot_b",
+      "status": "PASS",
+      "durationMs": 93
+    },
+    {
+      "name": "partition_did_not_cross_peer_boundary",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "offline_exact_retry",
+      "status": "PASS",
+      "durationMs": 110
+    },
+    {
+      "name": "offline_exact_retry_is_noop",
+      "status": "PASS",
+      "durationMs": 172
+    },
+    {
+      "name": "ordered_conflicting_payload_refused",
+      "status": "PASS",
+      "durationMs": 109
+    },
+    {
+      "name": "ordered_refusal_does_not_mutate",
+      "status": "PASS",
+      "durationMs": 171
+    },
+    {
+      "name": "offline_native_write",
+      "status": "PASS",
+      "durationMs": 32
+    },
+    {
+      "name": "offline_write_readback",
+      "status": "PASS",
+      "durationMs": 15
+    },
+    {
+      "name": "offline_write_not_visible_to_other_peer",
+      "status": "PASS",
+      "durationMs": 4203
+    },
+    {
+      "name": "offline_graceful_shutdown",
+      "status": "PASS",
+      "durationMs": 94
+    },
+    {
+      "name": "claims_restart_while_still_partitioned",
+      "status": "PASS",
+      "durationMs": 110
+    },
+    {
+      "name": "claims_auth_while_still_partitioned",
+      "status": "PASS",
+      "durationMs": 204
+    },
+    {
+      "name": "partitioned_claims_survive_cold_reopen",
+      "status": "PASS",
+      "durationMs": 140
+    },
+    {
+      "name": "partitioned_reopen_shutdown",
+      "status": "PASS",
+      "durationMs": 47
+    },
+    {
+      "name": "remove_scoped_network_block",
+      "status": "PASS",
+      "durationMs": 4094
+    },
+    {
+      "name": "online_restart_after_offline_write",
+      "status": "PASS",
+      "durationMs": 234
+    },
+    {
+      "name": "online_account_reopen",
+      "status": "PASS",
+      "durationMs": 219
+    },
+    {
+      "name": "offline_write_survives_reopen",
+      "status": "PASS",
+      "durationMs": 31
+    },
+    {
+      "name": "second_peer_partition_shutdown",
+      "status": "PASS",
+      "durationMs": 94
+    },
+    {
+      "name": "remove_second_scoped_block",
+      "status": "PASS",
+      "durationMs": 4406
+    },
+    {
+      "name": "second_peer_online_restart",
+      "status": "PASS",
+      "durationMs": 110
+    },
+    {
+      "name": "second_peer_online_reopen",
+      "status": "PASS",
+      "durationMs": 171
+    },
+    {
+      "name": "concurrent_claims_converge_on_both_peers",
+      "status": "PASS",
+      "durationMs": 6141
+    },
+    {
+      "name": "collision_variants_retained_and_quarantined",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "concurrent_independent_adds_retained",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "observed_remove_preserves_unobserved_add",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "concurrent_replace_retains_both_successors",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "post_merge_exact_retry",
+      "status": "PASS",
+      "durationMs": 141
+    },
+    {
+      "name": "post_merge_retry_has_no_new_claim",
+      "status": "PASS",
+      "durationMs": 125
+    },
+    {
+      "name": "offline_write_replicates_to_second_peer",
+      "status": "PASS",
+      "durationMs": 0
+    },
+    {
+      "name": "executed_source_unchanged",
+      "status": "PASS",
+      "durationMs": 0
+    }
+  ],
+  "limitations": [
+    "Not full iOS application acceptance.",
+    "Does not test physical iPad, UI rendering, files, or semantic embedding quality."
+  ],
+  "sourceAtStart": {
+    "gitHEAD": "a6d05ceb3ded9c6d597e32e9f35c3e5bca83fab2",
+    "trackedSourceDirty": false,
+    "swiftSourceManifestSHA256": "5db79fc7a6aeccd2413f7324015226eef9f907909aa0c1411de1fc9517520f2c",
+    "swiftSourceFiles": 7
+  },
+  "swiftProbeBinarySHA256": "d4dec6fa23baa2fe9f772460c04b6844758ffc7f9819743fce5232f7aa1ef868",
+  "runtimeVersion": "any v0.5.0 (commit 88fae2e5, built 2026-11-18T18:08:45Z)",
+  "swiftProbe": {
+    "status": "PASS_REAL_ANY_HTTP_COMPONENT",
+    "scope": "single process, disposable space, new repository reopen; not two-device or iOS UI parity",
+    "checks": [
+      "bundle schema",
+      "native creator",
+      "immutable write/readback",
+      "exact retry",
+      "observed remove",
+      "unseen add survives",
+      "repository reopen",
+      "engine immutable rejection"
+    ]
+  },
+  "offlineIsolation": {
+    "method": "Windows outbound firewall rule on unique temporary executable",
+    "ruleName": "PinkhaAnyValidation-bf06ab82-b07c-4290-b6b8-8f9aba2cf76c",
+    "activeVerified": true,
+    "privateExecutableSHA256": "5993e211157985cb42fdec95c678f0c1b96da04796b4d0cd15cff9ef6bf52591",
+    "existingRulesModified": false,
+    "globalProfileChanges": false,
+    "removalVerified": true
+  },
+  "secondPeerOfflineIsolation": {
+    "method": "Windows outbound firewall rule on unique temporary executable",
+    "ruleName": "PinkhaAnyValidation-5fed6ece-7392-4ac0-bccd-cebeb813fe5e",
+    "activeVerified": true,
+    "privateExecutableSHA256": "5993e211157985cb42fdec95c678f0c1b96da04796b4d0cd15cff9ef6bf52591",
+    "existingRulesModified": false,
+    "globalProfileChanges": false,
+    "removalVerified": true
+  },
+  "claimConvergence": {
+    "allClaims": 13,
+    "liveClaims": 6,
+    "conflictKeys": 1,
+    "bothPeersPhysicallyPartitioned": true
+  },
+  "sourceAtFinish": {
+    "gitHEAD": "a6d05ceb3ded9c6d597e32e9f35c3e5bca83fab2",
+    "trackedSourceDirty": false,
+    "swiftSourceManifestSHA256": "5db79fc7a6aeccd2413f7324015226eef9f907909aa0c1411de1fc9517520f2c",
+    "swiftSourceFiles": 7
+  },
+  "cleanupSpace": "local-deletion-accepted",
+  "finishedAtUTC": "2026-11-19T15:47:12.722105+00:00"
+}

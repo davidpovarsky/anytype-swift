@@ -40,7 +40,10 @@ intervening state changes. Whole-snapshot replacement remains refused.
 
 AnyTorahMigrationPlan covers one original canonical association snapshot,
 including document and block records. The destination account/Space/object and
-every source block mapping are explicit. The planner keeps the source bytes
+every source block mapping are explicit. Internal T5 note links require an
+explicit objectIDMap: their canonical key, external ID and note metadata ID
+are remapped together. Unmapped/incoherent links and unreadable destination
+notes are rejected before writes. The planner keeps the source bytes
 and hash, stable item IDs, existing item provenance, and unknown metadata at
 envelope, record and item levels. New operation signatures belong to the new
 Any account; importing old provenance never pretends that account signed

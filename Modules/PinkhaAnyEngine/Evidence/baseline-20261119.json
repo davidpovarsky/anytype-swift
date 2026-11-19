@@ -1,0 +1,114 @@
+{
+    "schemaVersion":  1,
+    "capturedAtUTC":  "2026-11-19T15:49:28.6445300Z",
+    "sourceCommit":  "a6d05ceb3ded9c6d597e32e9f35c3e5bca83fab2",
+    "sourceManifest":  [
+                           {
+                               "path":  "Package.resolved",
+                               "sha256":  "50ddc3fc5398afb197e62f3cd8aa251315dbdd8d9d1d67e0dc665862ef3258af"
+                           },
+                           {
+                               "path":  "Package.swift",
+                               "sha256":  "2bfbf014cbfb6ce37764a2900743783fe3af2535ad4809aa4fc9ea67d16d2e5f"
+                           },
+                           {
+                               "path":  "Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+                               "sha256":  "895f4c16cca4e70d62b2c0625ac14d4cf34c31bd01f6e9980e1d467f7443b0e5"
+                           },
+                           {
+                               "path":  "Sources/PinkhaAnyEngine/AnyJSON.swift",
+                               "sha256":  "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d"
+                           },
+                           {
+                               "path":  "Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift",
+                               "sha256":  "dd83259b8e9aa7922ae4de336a2d13cdd2e81d7c46d0dc4625e0e19d224a3f60"
+                           },
+                           {
+                               "path":  "Sources/PinkhaAnyEngine/AnyTorahOperation.swift",
+                               "sha256":  "c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980"
+                           },
+                           {
+                               "path":  "Sources/PinkhaAnyEngineProbe/Probe.swift",
+                               "sha256":  "2452c8b40f86c0437d55d99cdfd0ecc15dd3e8f5e1878d9634f883b21241562b"
+                           },
+                           {
+                               "path":  "Tests/Fixtures/check_redirect.py",
+                               "sha256":  "ca8c491aadaecc088c12ecde6aa32c0621372ff0e7dc3109a9ac930a19c3f969"
+                           },
+                           {
+                               "path":  "Tests/PinkhaAnyEngineTests/AnyHTTPClientTests.swift",
+                               "sha256":  "60f46e80c1ac14713c7ea4f1bf4f9fe47cae24ec2a0727372d273d9dfe349aee"
+                           },
+                           {
+                               "path":  "Tests/PinkhaAnyEngineTests/AnyTorahOperationTests.swift",
+                               "sha256":  "d909e34b297b31e4aadca20989fb1edef6112eb3fba840c80e9ae6f8a7786166"
+                           }
+                       ],
+    "swiftVersion":  "Swift version 6.3.3 (swift-6.3.3-RELEASE)\r\nTarget: x86_64-unknown-windows-msvc\r\nBuild config: +assertions",
+    "executableSHA256":  "d4dec6fa23baa2fe9f772460c04b6844758ffc7f9819743fce5232f7aa1ef868",
+    "tests":  {
+                  "status":  "PASS",
+                  "executed":  24,
+                  "failures":  0,
+                  "names":  [
+                                "AnyHTTPClientTests.testEmptyRejectionsAreAllowed",
+                                "AnyHTTPClientTests.testHTTP200PartialRejectionIsFailure",
+                                "AnyHTTPClientTests.testHTTPErrorKeepsMachineCodeWithoutEchoingPayload",
+                                "AnyHTTPClientTests.testMalformedRejectionsNeverCountAsSuccess",
+                                "AnyHTTPClientTests.testNestedPageRejectionsAreFailure",
+                                "AnyHTTPClientTests.testRedirectIsNotDecodedAsSuccess",
+                                "AnyTorahOperationTests.testCodableCannotBypassOperationValidation",
+                                "AnyTorahOperationTests.testConcurrentReplacementsBothSurvive",
+                                "AnyTorahOperationTests.testNativeCreatorMustMatchCanonicalAuthor",
+                                "AnyTorahOperationTests.testObservedRemovePreservesConcurrentUnseenAdd",
+                                "AnyTorahOperationTests.testObservedSetCanonicalization",
+                                "AnyTorahOperationTests.testOfflineOperationIDVariantsAreBothQuarantinedAcrossTargets",
+                                "AnyTorahOperationTests.testOnlyLiteralLoopbackEndpointIsAccepted",
+                                "AnyTorahOperationTests.testOpaquePayloadIncludingUnknownFieldsIsUnchanged",
+                                "AnyTorahOperationTests.testPinnedHeartGoldenVectorIsByteCompatible",
+                                "AnyTorahOperationTests.testReadLimitDoesNotReturnPartialProjection",
+                                "AnyTorahOperationTests.testRecordCannotCrossSpaces",
+                                "AnyTorahOperationTests.testRemovingTombstoneDoesNotResurrect",
+                                "AnyTorahOperationTests.testRequiredIdentifiersAndBoundsFailClosed",
+                                "AnyTorahOperationTests.testSHA256KnownAnswer",
+                                "AnyTorahOperationTests.testSchemaAdoptionRejectsMutableClaims",
+                                "AnyTorahOperationTests.testSchemaPreservesImmutableUndeletableIndexedClaims",
+                                "AnyTorahOperationTests.testTamperedRecordHashFailsClosed",
+                                "AnyTorahOperationTests.testUnknownAndForeignTargetPredecessorsAreDistinct"
+                            ],
+                  "stdoutSHA256":  "6c34b51fb2945561d10cee309b7e07c6186ef506c38d8b1d78cfd43f9f190758",
+                  "stderrSHA256":  "edbd70d43519f3c50dae0e45abc4f0476aeb1bf68035144af9a6440f1ec4d635"
+              },
+    "actualEngine":  {
+                         "version":  "v0.5.0",
+                         "commit":  "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+                         "status":  "PASS_REAL_ANY_HTTP_COMPONENT",
+                         "checks":  [
+                                        "bundle schema",
+                                        "native creator",
+                                        "immutable write/readback",
+                                        "exact retry",
+                                        "observed remove",
+                                        "unseen add survives",
+                                        "repository reopen",
+                                        "engine immutable rejection"
+                                    ],
+                         "allClaimCount":  3,
+                         "liveClaimCount":  1,
+                         "scope":  "single process, disposable space, new repository reopen; not two-device or iOS UI parity",
+                         "stdoutSHA256":  "7c57ff1993989f49b7bab1461523fb4fd332f3f53bfc708113f553ff0be2f4a4"
+                     },
+    "redirectFixture":  {
+                            "status":  "PASS_REAL_HTTP_REDIRECT_BOUNDARY",
+                            "redirect_hits":  1,
+                            "sink_hits":  0,
+                            "scope":  "local transport boundary; not Any engine parity"
+                        },
+    "twoPeerEvidence":  "../../../Tools/AnyEngineValidation/evidence/runtime-claims-v4.json",
+    "exclusions":  [
+                       "No user-space migration",
+                       "No iOS app UI proof",
+                       "No native ACL-head receipt equivalence",
+                       "No SSE client proof in this baseline"
+                   ]
+}

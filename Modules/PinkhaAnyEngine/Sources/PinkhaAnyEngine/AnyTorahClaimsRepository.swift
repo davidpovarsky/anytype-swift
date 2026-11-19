@@ -154,17 +154,7 @@ public actor AnyTorahClaimsRepository {
         }
         guard total >= 0, total <= Int64(limit), total == records.count,
               !hasNext, records.count <= limit else { throw AnyEngineError.readLimit }
-        let claims = try records.map { record -> AnyTorahClaim in
-            guard record["_objectId"]?.string == location.root else {
-                throw AnyEngineError.invalidClaim("record belongs to another root")
-            }
-            let operation = try AnyTorahOperation.fromRecord(record, expectedSpaceID: spaceID)
-            guard record["id"]?.string == location.root + "/" + operation.recordID else {
-                throw AnyEngineError.invalidClaim("shared record ID disagrees with its owner")
-            }
-            return try AnyTorahClaim(operation: operation, creator: record.requireString("creator"))
-        }
-        return try AnyTorahProjection(claims: claims, limit: limit)
+        return try Self.project(records: records, spaceID: spaceID, rootID: location.root, limit: limit)
     }
 
     public func append(

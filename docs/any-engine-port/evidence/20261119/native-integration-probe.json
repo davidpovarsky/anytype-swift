@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "scope": "compiled Swift PinkhaKit bridge on real disposable native Any",
+  "startedAtUTC": "2026-11-19T15:50:43.227739+00:00",
+  "finishedAtUTC": "2026-11-19T15:51:20.981704+00:00",
+  "returncode": 3221225501,
+  "executableSHA256": "29c67652fe366f118c8050cafd411424d05be02f058324657b560af5feaa10cb",
+  "buildReceipt": "docs/any-engine-port/evidence/20261119/swift-integration-tests-154550.json",
+  "runtimeCommit": "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+  "stdout": "",
+  "stderr": "Swift/ErrorType.swift:254: Fatal error: Error raised at top level: Error Domain=NSURLErrorDomain Code=-1001 \"(null)\"\nCurrent stack trace:\n0    swiftCore.dll                      0x00007ffd18bfe730 swift_reportError + 94\n1    swiftCore.dll                      0x00007ffd18c9dc00 swift_stdlib_reportFatalErrorInFile + 132\n2    swiftCore.dll                      0x00007ffd188d73e0 StaticString.withUTF8Buffer<A>(_:) + 872\n3    swiftCore.dll                      0x00007ffd188d67b0 _assertionFailure(_:_:file:line:flags:) + 262\n4    swiftCore.dll                      0x00007ffd1894dd00 swift_errorInMain + 784\n5    pinkha-any-integration-probe.exe   0x00007ff7b917ab5a <unavailable> + 2796378\n6    swift_Concurrency.dll              0x00007ffd6eba2cb0 UnimplementedTaskExecutor.__deallocating_deinit + 25902\n7    swift_Concurrency.dll              0x00007ffd6eba9d60 swift_job_run + 114\n8    dispatch.dll                       0x00007ffd74b6d6d0 dispatch_queue_set_width + 1952\n9    dispatch.dll                       0x00007ffd74b6d6d0 dispatch_queue_set_width + 4994\n10   dispatch.dll                       0x00007ffd74b72b70 dispatch_prohibit_transition_to_multithreaded + 8630\n11   ucrtbase.dll                       0x00007ffe035ecbe0 wcsrchr + 336\n12   KERNEL32.DLL                       0x00007ffe05bfdd90 BaseThreadInitThunk + 23\n13   ntdll.dll                          0x00007ffe05e99c30 RtlUserThreadStart + 44\n"
+}

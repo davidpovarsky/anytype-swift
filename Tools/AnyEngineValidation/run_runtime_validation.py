@@ -303,6 +303,91 @@ class Subscription:
         require(not self.thread.is_alive(), "SSE reader did not terminate after closing the socket")
 
 
+class SwiftClaimWatcher:
+    """Bounded JSON-line reader for the real Swift URLSession SSE client."""
+    maximum_line_bytes = 256 * 1024
+
+    def __init__(self, probe, peer, account_id, space_id):
+        self.events = queue.Queue(maxsize=4)
+        self.finished = threading.Event()
+        self.error = None
+        self.closed = False
+        self.stderr = (peer.folder / "swift-sse.private.log").open("wb")
+        command = [str(Path(probe).resolve()), "--endpoint", peer.endpoint,
+                   "--account-id", account_id, "--space-id", space_id,
+                   "--mode", "watch", "--updates", "2", "--timeout-seconds", "30"]
+        try:
+            self.process = subprocess.Popen(
+                command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=self.stderr)
+        except Exception:
+            self.stderr.close()
+            raise
+        self.reader = threading.Thread(target=self.read, daemon=True)
+        self.reader.start()
+
+    def read(self):
+        try:
+            while True:
+                line = self.process.stdout.readline(self.maximum_line_bytes + 1)
+                if not line:
+                    break
+                require(len(line) <= self.maximum_line_bytes and line.endswith(b"\n"),
+                        "Swift SSE output exceeded its bounded JSON line")
+                value = json.loads(line.decode("utf-8", errors="strict"))
+                require(isinstance(value, dict), "Swift SSE output was not an object")
+                self.events.put_nowait(value)
+        except Exception as error:
+            self.error = str(error) if isinstance(error, ContractFailure) else type(error).__name__
+        finally:
+            self.finished.set()
+
+    def wait_value(self, expected_status, timeout):
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            if self.error:
+                raise ContractFailure("Swift SSE reader failed: " + self.error)
+            try:
+                value = self.events.get(timeout=min(0.25, max(0.001, deadline - time.monotonic())))
+                require(value.get("status") == expected_status, "Swift SSE emitted an unexpected status")
+                return value
+            except queue.Empty:
+                require(not self.finished.is_set(), "Swift SSE exited before the expected result")
+        raise ContractFailure("Swift SSE expected result timed out")
+
+    def wait_ready(self):
+        return self.wait_value("READY_REAL_ANY_SSE_SNAPSHOT", 20)
+
+    def wait_result(self):
+        result = self.wait_value("PASS_REAL_ANY_SSE_CLIENT", 40)
+        try:
+            self.process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            raise ContractFailure("Swift SSE did not exit after its final result") from None
+        self.reader.join(timeout=2)
+        require(self.process.returncode == 0 and not self.reader.is_alive() and
+                self.error is None and self.events.empty(),
+                "Swift SSE completion was not clean")
+        return result
+
+    def close(self):
+        if self.closed:
+            return
+        self.closed = True
+        try:
+            if self.process.poll() is None:
+                self.process.terminate()
+                try:
+                    self.process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    self.process.kill()
+                    self.process.wait(timeout=5)
+            self.reader.join(timeout=2)
+            require(not self.reader.is_alive(), "Swift SSE subprocess reader remained active")
+        finally:
+            self.process.stdout.close()
+            self.stderr.close()
+
+
 def run(args):
     binary = Path(args.binary).resolve(strict=True)
     summary = {"schemaVersion": 1, "status": "RUNNING", "scope": "real-engine-component-integration",
@@ -336,10 +421,14 @@ def run(args):
 
     space_id, mnemonic = None, None
     peers, subscription, block, second_block = [], None, None, None
+    swift_watcher = None
     with tempfile.TemporaryDirectory(prefix="pinkha-any-validation-") as temporary:
         root = Path(temporary)
         try:
             summary["sourceAtStart"] = check("source_provenance", source_provenance)
+            check("scoped_source_committed", lambda: require(
+                summary["sourceAtStart"]["trackedSourceDirty"] is False,
+                "runtime harness or engine module has uncommitted changes"))
             if args.probe_binary:
                 summary["swiftProbeBinarySHA256"] = check("swift_probe_binary_digest", lambda: digest(args.probe_binary))
             expected = args.expected_binary_sha256 or RELEASE_EXE_SHA256
@@ -597,6 +686,40 @@ def run(args):
                 summary["claimConvergence"] = {"allClaims": len(merged["allClaimIds"]),
                     "liveClaims": len(merged["liveClaimIds"]), "conflictKeys": len(merged["conflictKeys"]),
                     "bothPeersPhysicallyPartitioned": True}
+                swift_watcher = SwiftClaimWatcher(args.probe_binary, first, account_id, space_id)
+                check("swift_sse_atomic_snapshot_ready", swift_watcher.wait_ready)
+                live_append = check("swift_sse_append_through_other_peer", lambda: append_claim(
+                    second, uuid.uuid4().hex, "add", "remote Swift SSE marker", "Genesis.1.6"))
+                expected_live = {
+                    "allClaimIds": sorted(set(expected_claims["allClaimIds"]) | {live_append["claimId"]}),
+                    "liveClaimIds": sorted(set(expected_claims["liveClaimIds"]) | {live_append["claimId"]}),
+                    "conflictKeys": expected_claims["conflictKeys"],
+                }
+                streamed = check("swift_sse_native_remote_apply", swift_watcher.wait_result)
+                check("swift_sse_one_initial_and_one_delta", lambda: require(
+                    streamed.get("initialSnapshotCount") == 1 and streamed.get("updateCount") == 2,
+                    "Swift SSE did not consume one atomic snapshot and one subsequent update"))
+                check("swift_sse_exact_canonical_projection", lambda: require(
+                    same_snapshot(streamed, expected_live),
+                    "Swift SSE result differs from the canonical merged projection"))
+                def live_claims_match(peer):
+                    try:
+                        return same_snapshot(claim_snapshot(peer, expected_live["allClaimIds"]), expected_live)
+                    except ContractFailure:
+                        return False
+                check("swift_sse_peer_readbacks_match_stream", lambda: eventually(
+                    lambda: live_claims_match(first) and live_claims_match(second),
+                    "Swift SSE and peer readback projections", args.sync_timeout))
+                check("swift_sse_expected_fixture_cardinality", lambda: require(
+                    len(streamed["allClaimIds"]) == 14 and len(streamed["liveClaimIds"]) == 7 and
+                    len(streamed["conflictKeys"]) == 1, "Swift SSE fixture cardinality changed"))
+                summary["swiftSSE"] = {
+                    "status": streamed["status"], "initialSnapshots": streamed["initialSnapshotCount"],
+                    "updates": streamed["updateCount"], "allClaims": len(streamed["allClaimIds"]),
+                    "liveClaims": len(streamed["liveClaimIds"]), "conflictKeys": len(streamed["conflictKeys"]),
+                    "mutationOrigin": "other independently running peer",
+                    "scope": "real Swift URLSession client, native remote apply, exact canonical fold"}
+                check("swift_sse_reader_cleanup", swift_watcher.close)
             check("offline_write_replicates_to_second_peer", lambda: eventually(
                 lambda: texts(second).get(offline_id) == offline_text, "offline native write", args.sync_timeout))
             final_sources = source_provenance()
@@ -611,6 +734,12 @@ def run(args):
             summary["status"] = "FAIL_REAL_ENGINE_COMPONENT"
             summary["fatalFailure"] = str(error) if isinstance(error, ContractFailure) else type(error).__name__
         finally:
+            if swift_watcher:
+                try:
+                    swift_watcher.close()
+                except Exception:
+                    summary["cleanupSwiftSSE"] = "reader-close-not-confirmed"
+                    summary["status"] = "FAIL_REAL_ENGINE_COMPONENT"
             if subscription:
                 try:
                     subscription.close()

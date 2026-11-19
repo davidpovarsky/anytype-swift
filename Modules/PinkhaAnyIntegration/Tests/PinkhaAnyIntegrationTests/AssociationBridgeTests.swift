@@ -527,3 +527,73 @@ extension AssociationBridgeTests {
         #expect(try await store.snapshot().conflicts.count == 1)
     }
 }
+
+extension AssociationBridgeTests {
+    private func internalNoteSource(metadataID: String = "old-note") throws -> Data {
+        let note = TorahAssociationItem(
+            id: "stable-note-link", kind: .ref, role: .context, providerID: "sefaria",
+            externalID: "old-note", canonicalKey: "anytype-note:old-note", labelHe: "הערה",
+            customMetadata: ["anytypeNoteObjectId": metadataID, "torahSelectionId": "selection-unchanged",
+                             "futureMetadata": "preserved"],
+            unknownFields: ["future": .array([.number(7), .null])])
+        return try TorahAssociationPayloadCodec().encodeCanonicalDocument(.init(records: [
+            .init(location: .init(spaceId: "old", target: .object(objectId: "origin")), item: note)
+        ]))
+    }
+
+    @Test func internalNoteLinksRequireExplicitDestinationMapping() throws {
+        let (workspace, _, _, _) = try fixture()
+        #expect(throws: AnyTorahMigrationError.unmappedReferencedObject("old-note")) {
+            try AnyTorahMigrationPlan(sourceBytes: internalNoteSource(),
+                sourceSpaceID: "old", sourceObjectID: "origin", workspace: workspace,
+                targetObjectID: target.objectId, blockIDMap: [:], migrationKey: "note")
+        }
+    }
+
+    @Test func internalNoteMappingRewritesOnlyKnownNativeReferenceFields() throws {
+        let (workspace, _, _, _) = try fixture()
+        let bytes = try internalNoteSource()
+        let plan = try AnyTorahMigrationPlan(sourceBytes: bytes,
+            sourceSpaceID: "old", sourceObjectID: "origin", workspace: workspace,
+            targetObjectID: target.objectId, blockIDMap: [:],
+            objectIDMap: ["old-note": "new-note"], migrationKey: "note")
+        let operation = try #require(plan.operations.first)
+        let decoded = try TorahAssociationPayloadCodec().decodeCanonicalDocument(operation.payload,
+            legacyLocation: .init(spaceId: workspace.spaceID, target: target))
+        let item = try #require(decoded.records.first).item
+        #expect(item.id == "stable-note-link")
+        #expect(item.externalID == "new-note")
+        #expect(item.canonicalKey == "anytype-note:new-note")
+        #expect(item.customMetadata?["anytypeNoteObjectId"] == "new-note")
+        #expect(item.customMetadata?["torahSelectionId"] == "selection-unchanged")
+        #expect(item.customMetadata?["futureMetadata"] == "preserved")
+        #expect(item.unknownFields["future"] == .array([.number(7), .null]))
+        #expect(plan.sourceBytes == bytes)
+        #expect(plan.referencedObjectIDs == ["new-note"])
+        #expect(plan.objectIDMap == ["origin": target.objectId, "old-note": "new-note"])
+    }
+
+    @Test func malformedInternalNoteLinkCannotBeGuessed() throws {
+        let (workspace, _, _, _) = try fixture()
+        #expect(throws: AnyTorahMigrationError.malformedInternalNoteLink(itemID: "stable-note-link")) {
+            try AnyTorahMigrationPlan(sourceBytes: internalNoteSource(metadataID: "different"),
+                sourceSpaceID: "old", sourceObjectID: "origin", workspace: workspace,
+                targetObjectID: target.objectId, blockIDMap: [:],
+                objectIDMap: ["old-note": "new-note"], migrationKey: "note")
+        }
+    }
+
+    @Test func mappedNoteMustExistInDestinationWorkspaceBeforeImport() async throws {
+        let (workspace, store, access, _) = try fixture()
+        await access.setTargets([target])
+        let plan = try AnyTorahMigrationPlan(sourceBytes: internalNoteSource(),
+            sourceSpaceID: "old", sourceObjectID: "origin", workspace: workspace,
+            targetObjectID: target.objectId, blockIDMap: [:],
+            objectIDMap: ["old-note": "new-note"], migrationKey: "note")
+        let executor = try AnyTorahMigrationExecutor(workspace: workspace, store: store, access: access)
+        await #expect(throws: TorahAssociationRepositoryError.targetNotFound) {
+            _ = try await executor.execute(plan)
+        }
+        #expect(await store.count() == 0)
+    }
+}

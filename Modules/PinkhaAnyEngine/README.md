@@ -57,11 +57,46 @@ These are acceptance boundaries, not implicit successful fallbacks:
 The original Swift and native packages remain intact on the isolated port branch.
 No automatic migration of existing user spaces occurs.
 
+## Live queries and generation fences
+
+`AnyTorahClaimsRepository.watch(session:limit:)` opens a native atomic query
+subscription and yields `AnyTorahLiveSnapshot` values. The first value is the
+complete initial snapshot. Later values apply a whole native changes frame before
+folding claims; `doc` is authoritative, including rereads with an empty version ID.
+Shared record ownership, operation hashes and native creator stamps are validated
+for every projection. A deleted claim invalidates the append-only view.
+
+`AnyStreamSession` belongs to one owned engine/account lifetime. Its generation
+is included in every update. Invalidate it before switching the lifetime; this
+cancels all registered streams. Bridge consumers register their own worker
+cancellation and call `requireActive(generation:)` after any awaited authority
+check. The UI must check the generation again at its final state commit because a
+previously buffered value can otherwise arrive after a switch.
+
+The parser preserves split UTF-8 and CRLF, rejects malformed/truncated data and
+bounds each frame. The materialized window also has an aggregate byte bound,
+including growth through many small deltas: 8 MiB by default, configurable up to
+64 MiB on the generic client. Raw frames and derived snapshots use bounded queues;
+any dropped value terminates the view. A closed event, EOF, cancellation,
+account change, wrong generation, partial window or overflow requires reopening
+and accepting a new snapshot. There is no synthetic replay cursor or silent
+polling fallback.
+
+The callback transport uses a serial URLSession delegate queue plus a lock
+protecting every mutable field. Finishing, yielding and cancellation happen
+outside that lock. Its `@unchecked Sendable` annotation is confined to that
+documented bridge; the ordinary redirect delegate is stateless. Follow-up in the
+Any engine port work: replace these annotations with checked Foundation delegate
+conformances or a portable structured byte sequence when Windows Foundation
+supports the same API.
+
 ## Validation
 
 `swift test --jobs 2` exercises identity, native-author mismatch, malformed records,
 conflicts, observed remove, concurrent replace, bounds, schema adoption and HTTP
-partial failures. These are portable component tests.
+partial failures. The live-query cases exercise byte boundaries, malformed data,
+atomic delta rejection, snapshot completeness, byte limits and generation
+invalidation. These are portable component tests.
 
 The `PinkhaAnyEngineProbe` executable calls the real release engine. It requires
 an already-created disposable account and space:
@@ -76,7 +111,14 @@ compares an existing fixture for process-restart or second-peer evidence.
 A repository re-open in the exercise is not an engine restart; actual restart and
 network convergence are the external harness's responsibility.
 
+The live probe `--mode watch --updates 2 --timeout-seconds 30` reads one initial
+snapshot and one subsequent update. It writes a flushed readiness JSON line
+before waiting; the external harness makes a real peer mutation and compares the
+resulting all/live/conflict sets. Watching does not install a bundle or mutate
+canonical data.
+
 Public source references:
-- Any `internal/api/typedatasets.go`, `bundle.go`, `upsert.go`, `query.go`.
+- Any `internal/api/typedatasets.go`, `bundle.go`, `upsert.go`, `query.go`, `subscribe.go`.
+- Any `docs/04-events.md` atomic query subscriptions and terminal recovery.
 - Any `docs/03-api.md` runtime datasets, shared datasets, bundles, idempotency.
 - Existing `Tools/TorahNativeOperations/overlay/core/block/editor/torahops/`.

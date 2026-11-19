@@ -13,15 +13,28 @@ public struct AnyTorahMigrationPlan: Sendable {
     public let sourceSHA256: String
     public let planID: String
     public let operations: [AnyTorahOperation]
+    public let objectIDMap: [String: String]
+    public let blockIDMap: [String: String]
+    public let referencedObjectIDs: [String]
 
     public init(sourceBytes: Data, sourceSpaceID: String, sourceObjectID: String,
                 workspace: AnyTorahWorkspace, targetObjectID: String,
-                blockIDMap: [String: String], migrationKey: String) throws {
+                blockIDMap: [String: String], objectIDMap: [String: String] = [:],
+                migrationKey: String) throws {
         guard !sourceSpaceID.isEmpty, !sourceObjectID.isEmpty, !targetObjectID.isEmpty,
               !migrationKey.isEmpty, migrationKey.utf8.count <= 256,
               blockIDMap.allSatisfy({ !$0.key.isEmpty && !$0.value.isEmpty }),
               Set(blockIDMap.values).count == blockIDMap.count else {
             throw AnyEngineError.invalidIdentity("migration mapping")
+        }
+        var completeObjectMap = objectIDMap
+        guard completeObjectMap[sourceObjectID] == nil || completeObjectMap[sourceObjectID] == targetObjectID else {
+            throw AnyEngineError.invalidIdentity("source object mapping disagrees with destination")
+        }
+        completeObjectMap[sourceObjectID] = targetObjectID
+        guard completeObjectMap.allSatisfy({ !$0.key.isEmpty && !$0.value.isEmpty }),
+              Set(completeObjectMap.values).count == completeObjectMap.count else {
+            throw AnyEngineError.invalidIdentity("referenced object mapping")
         }
         let codec = TorahAssociationPayloadCodec()
         let sourceLocation = TorahAssociationLocation(
@@ -36,6 +49,7 @@ public struct AnyTorahMigrationPlan: Sendable {
         var identities = Set<String>()
         var semanticIdentities = Set<TorahAssociationIdentity>()
         var operations: [AnyTorahOperation] = []
+        var referencedObjects = Set<String>()
         for source in payload.records {
             guard source.spaceId == sourceSpaceID, source.objectId == sourceObjectID,
                   !source.item.id.isEmpty, !source.item.providerID.isEmpty,
@@ -56,11 +70,13 @@ public struct AnyTorahMigrationPlan: Sendable {
                 target = .object(objectId: targetObjectID)
             }
             let location = TorahAssociationLocation(spaceId: workspace.spaceID, target: target)
-            guard semanticIdentities.insert(TorahAssociationIdentity(item: source.item, location: location)).inserted else {
+            let remapped = try Self.remapInternalNote(source.item, objectIDMap: completeObjectMap)
+            if let referenced = remapped.referencedObjectID { referencedObjects.insert(referenced) }
+            guard semanticIdentities.insert(TorahAssociationIdentity(item: remapped.item, location: location)).inserted else {
                 throw TorahAssociationRepositoryError.writeConflict("Source contains duplicate association identities")
             }
             let mapped = TorahStoredAssociationRecord(
-                location: location, item: source.item, unknownFields: source.unknownFields)
+                location: location, item: remapped.item, unknownFields: source.unknownFields)
             let encoded = try codec.encodeCanonicalDocument(.init(
                 records: [mapped], unknownFields: payload.unknownFields))
             // Operation identity excludes payload bytes: reusing this migration
@@ -74,12 +90,13 @@ public struct AnyTorahMigrationPlan: Sendable {
             operations.append(try AnyTorahOperation(
                 operationID: operationID, spaceID: workspace.spaceID, authorID: workspace.accountID,
                 kind: .add, targetObjectID: targetObjectID, targetBlockID: target.blockId ?? "",
-                providerID: source.item.providerID,
-                canonicalRef: source.item.canonicalKey.isEmpty ? source.item.externalID : source.item.canonicalKey,
+                providerID: remapped.item.providerID,
+                canonicalRef: remapped.item.canonicalKey.isEmpty ? remapped.item.externalID : remapped.item.canonicalKey,
                 payload: encoded))
         }
         let sourceHash = AnyContentDigest.sha256(sourceBytes)
-        let mapping = blockIDMap.keys.sorted().map { Self.key([$0, blockIDMap[$0] ?? ""]) }
+        let mapping = blockIDMap.keys.sorted().map { Self.key(["block", $0, blockIDMap[$0] ?? ""]) }
+            + completeObjectMap.keys.sorted().map { Self.key(["object", $0, completeObjectMap[$0] ?? ""]) }
         let planMaterial = Self.key([
             "pinkha-any-migration-plan-v1", migrationKey, workspace.accountID, workspace.spaceID,
             sourceSpaceID, sourceObjectID, targetObjectID, sourceHash
@@ -92,6 +109,34 @@ public struct AnyTorahMigrationPlan: Sendable {
         self.sourceSHA256 = sourceHash
         self.planID = AnyContentDigest.sha256(Data(planMaterial.utf8))
         self.operations = operations
+        self.objectIDMap = completeObjectMap
+        self.blockIDMap = blockIDMap
+        self.referencedObjectIDs = referencedObjects.sorted()
+    }
+
+
+    private static func remapInternalNote(
+        _ source: TorahAssociationItem, objectIDMap: [String: String]
+    ) throws -> (item: TorahAssociationItem, referencedObjectID: String?) {
+        let prefix = "anytype-note:"
+        let metadataID = source.customMetadata?["anytypeNoteObjectId"]
+        guard source.canonicalKey.hasPrefix(prefix) || metadataID != nil else {
+            return (source, nil)
+        }
+        let originalID = String(source.canonicalKey.dropFirst(prefix.count))
+        guard source.canonicalKey.hasPrefix(prefix), !originalID.isEmpty,
+              source.kind == .ref, source.role == .context,
+              source.externalID == originalID, metadataID == originalID else {
+            throw AnyTorahMigrationError.malformedInternalNoteLink(itemID: source.id)
+        }
+        guard let destination = objectIDMap[originalID] else {
+            throw AnyTorahMigrationError.unmappedReferencedObject(originalID)
+        }
+        var item = source
+        item.externalID = destination
+        item.canonicalKey = prefix + destination
+        item.customMetadata?["anytypeNoteObjectId"] = destination
+        return (item, destination)
     }
 
     private static func key(_ parts: [String]) -> String {
@@ -141,6 +186,9 @@ public struct AnyTorahMigrationExecutor: Sendable {
         }
         if targets.isEmpty { targets.insert(.object(objectId: plan.targetObjectID)) }
         for target in targets { try await access.validate(target, intent: .write) }
+        for referencedID in plan.referencedObjectIDs {
+            try await access.validate(.object(objectId: referencedID), intent: .read)
+        }
         let before = try await store.snapshot()
         try rejectExistingIdentityConflicts(plan: plan, projection: before)
         let byLogical = Dictionary(grouping: before.all, by: { $0.operation.logicalKey })
@@ -166,6 +214,9 @@ public struct AnyTorahMigrationExecutor: Sendable {
                     try Task.checkCancellation()
                     try await authorize()
                     try await access.validate(target, intent: .write)
+                    for referencedID in plan.referencedObjectIDs {
+                        try await access.validate(.object(objectId: referencedID), intent: .read)
+                    }
                 }
                 acknowledged.append(operation.claimID)
             } catch {

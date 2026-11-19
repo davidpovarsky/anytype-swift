@@ -1182,5 +1182,27 @@
     "Source presence does not imply runtime feature enabled or acceptance complete.",
     "Full baseline Git tree preserved through branch ancestry; scoped source index is not an exhaustive semantic proof.",
     "Whole-app differential and physical-device acceptance still required."
+  ],
+  "observed_findings": [
+    {
+      "id": "NATIVE-SEARCH-HEBREW-MARKS",
+      "status": "OPEN_NATIVE_GAP",
+      "description": "Unpointed שלום did not retrieve pointed שָׁלוֹם in the native Any v0.5.0 synthetic FTS fixture.",
+      "old_heart_equivalent_behavior": "NOT_VERIFIED; not established as regression",
+      "evidence": "Tools/AnyEngineValidation/evidence/search-native-v1.json",
+      "any_source_commit": "88fae2e5ae7d0f46d6707567a3123081faa8de9a"
+    },
+    {
+      "id": "MIGRATION-UNKNOWN-NUMBERS",
+      "status": "FAIL_CLOSED_IMPLEMENTED_AWAITING_TEST_RESULT",
+      "description": "Existing TorahJSONValue uses Double. Planner refuses numeric tokens whose exact value changes through the domain codec; duplicate keys also refused. Durable original-byte archive remains open.",
+      "source": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift"
+    },
+    {
+      "id": "MIGRATION-INTERNAL-NOTE-LINKS",
+      "status": "EXPLICIT_MAPPING_IMPLEMENTED_AWAITING_TEST_RESULT",
+      "description": "T5 origin links embed old native note IDs in canonicalKey, externalID and metadata. Planner requires a coherent explicit objectIDMap and validates referenced destination readability.",
+      "source": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahMigration.swift"
+    }
   ]
 }
