@@ -1,0 +1,115 @@
+name: T5 production native pagination and current Space
+
+on:
+  workflow_call:
+    inputs:
+      heart_r15_run_id:
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  actual-native-pagination:
+    runs-on: xcode-27
+    timeout-minutes: 180
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact published application and controller source
+        uses: actions/checkout@v4
+      - name: Checkout immutable native approval inventories
+        uses: actions/checkout@v4
+        with:
+          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1
+          path: build/t5-pagination-native-source
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Checkout the canonical Hanlin SDK source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: build/t5-pagination-hanlin-source
+          persist-credentials: false
+      - name: Prepare and verify the exact SDK dependency
+        run: |
+          python3 Tools/Hanlin/prepare_sdk.py --source build/t5-pagination-hanlin-source
+          python3 Tools/Hanlin/prepare_sdk.py --check
+          mkdir -p build/t5-native-pagination-proof
+          cp Dependencies/Hanlin/.pinkha-source.json build/t5-native-pagination-proof/hanlin-snapshot.json
+      - name: Run adversarial receipt and publication controls
+        run: |
+          python3 -B -m unittest discover -s Tools/PinkhaSimulatorGate -p 'test_t5_native_pagination*.py' -v > build/t5-native-pagination-proof/controller-controls.log 2>&1
+          cat build/t5-native-pagination-proof/controller-controls.log
+      - name: Verify actual Xcode27 and create fresh owned OS27 simulators
+        run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/t5-native-pagination-proof/preflight
+      - name: Restore compatible compilation inputs
+        id: native-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: build/ui27-derived
+          key: pinkha-t5-native-pagination-arm64-xcode27-Release-Anytype-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-${{ github.sha }}
+          restore-keys: |
+            pinkha-t5-native-pagination-arm64-xcode27-Release-Anytype-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
+            pinkha-t5-apple-pair-arm64-xcode27-Release-Anytype-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
+      - name: Run real native pagination and mutation acceptance
+        id: actual-native
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEART_R15_RUN_ID: ${{ inputs.heart_r15_run_id }}
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/run_t5_native_pagination.py \
+            --app "$GITHUB_WORKSPACE" --native-source build/t5-pagination-native-source \
+            --work build/t5-native-pagination-private --evidence build/t5-native-pagination-proof \
+            --derived build/ui27-derived --heart-r15-run-id "$HEART_R15_RUN_ID"
+      - name: Keep XCTest activity logs outside the compilation cache
+        if: always()
+        id: cache-log-boundary
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          import shutil
+          logs = Path("build/ui27-derived/Logs")
+          private = Path("build/t5-native-pagination-private/unpublished-derived-logs")
+          proof = Path("build/t5-native-pagination-proof")
+          proof.mkdir(parents=True, exist_ok=True)
+          moved = False
+          if logs.exists():
+              if private.exists():
+                  raise RuntimeError("Refuse to overwrite private native cache logs")
+              private.parent.mkdir(parents=True, exist_ok=True)
+              shutil.move(str(logs), private)
+              moved = True
+          (proof / "cache-log-boundary.json").write_text(json.dumps({
+              "status": "PASS", "derived_activity_logs_moved_to_private_work": moved,
+              "private_work_cached": False, "account_data_cached": False
+          }, indent=2) + "\n")
+          PY
+      - name: Package approved proof and secret-scanned native logs
+        if: always()
+        run: |
+          mkdir -p build/t5-native-pagination-proof
+          python3 Tools/PinkhaNativeDerived/package_evidence.py build/t5-native-pagination-proof
+      - name: Retain source and actual native XCTest evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-T5-Native-Pagination-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/t5-native-pagination-proof/Pinkha-Native-Derived-Evidence.zip
+          if-no-files-found: error
+          retention-days: 14
+      - name: Preserve compilation cache under the separate test flag key
+        if: ${{ always() && steps.cache-log-boundary.outcome == 'success' && steps.actual-native.outcome != 'skipped' && steps.native-cache.outputs.cache-hit != 'true' && hashFiles('build/ui27-derived/Build/PinkhaSourceInputs.json') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: build/ui27-derived
+          key: ${{ steps.native-cache.outputs.cache-primary-key }}
