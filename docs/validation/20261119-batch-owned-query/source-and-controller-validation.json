@@ -1,0 +1,96 @@
+{
+  "basis": {
+    "observed_failure": "Both builds succeeded; exact owned-UDID inventory query timed out after 30 seconds during confirm_empty_container, then exact preflight-UDID cleanup inventory timed out after 20 seconds. Native/UI/postflight execution counts were zero.",
+    "original_run": 44432009798,
+    "original_source_sha": "f8e877cad9f26a190debf27120ca16041359c2e8",
+    "previous_qualification_sha256": "0077a874c0bb798b478440e897ceca580cb2e546e25b39b97ed36c3756fbf876"
+  },
+  "candidate_diff_path": "/workspace/scratch/5e78163ba431/asana-audit/batch-query-review-20261119/candidate.diff",
+  "candidate_diff_sha256": "a1546731d5d47070fa0294a328bfd1cf23569ad7e652d701761b57abe0f2621e",
+  "changes": {
+    "cleanup_query_ceiling": "min(120, remaining cleanup deadline)",
+    "observation_fields": [
+      "status",
+      "selector",
+      "selector_kind",
+      "timeout_seconds",
+      "elapsed_seconds",
+      "error_type (on failure)"
+    ],
+    "query_attempts": 1,
+    "query_observation_outputs": [
+      "fresh-device-query.json",
+      "batch-worker.json/device_queries",
+      "batch-cleanup.json/inventory_queries"
+    ],
+    "scoped_inventory_ceiling_seconds": 120
+  },
+  "files": {
+    "Tools/PinkhaSimulatorGate/test_wave15_batch.py": {
+      "base_sha256": "25c2ff5b9560faa29a2ddf9221b9cb8c6493e6f85683eb07c852b89553ac3a48",
+      "candidate_bytes": 67057,
+      "candidate_sha256": "4c95a77626c32d4606f28ce524131c35b2347a34333c3b5a5245598286153f3f"
+    },
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": {
+      "base_sha256": "52228a35c8cd22cbce3aed8de8d9008c20d533cab47c40f5cc29236b1b64b00b",
+      "candidate_bytes": 60732,
+      "candidate_sha256": "5752d5873632e68127a6ecac0747ca1011c93efcb9df4ee807bd7a946d4c3bc7"
+    }
+  },
+  "limits": {
+    "actual_apple_batch_execution": "NOT_RUN",
+    "actual_simulator_latency_after_change": "NOT_RUN",
+    "release_acceptance": false,
+    "remote_source_modified": false,
+    "synthetic_slow_success": "Monotonic clock simulated; proves controller timing/receipt semantics, not actual Apple latency.",
+    "workflow_dispatched": false
+  },
+  "preserved": {
+    "cleanup_mutation_seconds": "min(20, remaining)",
+    "cleanup_seconds": 180,
+    "create_seconds": 30,
+    "exact_owned_udid_or_planned_nonce_name": true,
+    "get_app_container_seconds": 30,
+    "global_startup_inventory_seconds": 30,
+    "native_ui_postflight_counts_and_deadlines_unchanged": true,
+    "no_global_inventory_fallback": true,
+    "no_query_retry": true,
+    "runtime_type_name_state_and_baseline_identity_guards": true,
+    "source_build_runtime_product_freshness_guards": true,
+    "step_seconds": 7200,
+    "worker_seconds": 6300,
+    "worker_shutdown_seconds": 30
+  },
+  "schema": 1,
+  "scope": "Only the two named local batch controller files. No Swift, language-readback, workflow, runtime, remote source, or dispatch modifications.",
+  "status": "CONTROLLER_TESTS_PASS_PENDING_INDEPENDENT_REVIEW_AND_APPLE_EXECUTION",
+  "validation": {
+    "command": "python -B -m unittest -v test_wave15_batch",
+    "controller_log_path": "/workspace/scratch/5e78163ba431/asana-audit/batch-query-review-20261119/controller-tests.log",
+    "controller_log_sha256": "4303f416590bc25844aa3f517c0842fc5c956eb7cb287c24b696140871831d5e",
+    "elapsed_seconds": 2.075,
+    "errors": 0,
+    "failures": 0,
+    "new_methods": [
+      "test_slow_scoped_inventory_succeeds_once_without_extending_container_lookup",
+      "test_cleanup_query_observes_elapsed_and_remaining_budget_without_extending_actions"
+    ],
+    "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+    "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+    "result": "PASS",
+    "skips": 0,
+    "source_whitespace_check": "PASS",
+    "strengthened_controls": [
+      "single query on timeout/cancel; original exception identity; no container or cleanup mutations; no freshness on failed query",
+      "record elapsed and timeout without private partial stdout/stderr",
+      "query timeout max120 and finite; cleanup uses remaining deadline and preserves action ceilings",
+      "worker exact selectors and create timeout unchanged",
+      "both real POSIX worker descendant termination/cancellation tests executed"
+    ],
+    "test_source_base_sha": "c6a219d3377e6f820a9aa5f995bb7d74c05ff53e",
+    "test_source_manifest_path": "/workspace/scratch/5e78163ba431/asana-audit/batch-query-test-source/test-source-manifest.json",
+    "test_source_manifest_sha256": "be771acba1a2dfba3c789b86990b029b8412b6fff4ee6de35e90c7aa660c8894",
+    "tests": 37
+  },
+  "verified_at": "2026-11-19T17:12:27.554683+00:00"
+}

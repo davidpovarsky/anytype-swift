@@ -311,7 +311,7 @@ class BatchControls(unittest.TestCase):
                         else:
                             with self.assertRaises(RuntimeError):
                                 context.confirm_empty_container(UDID, directory)
-                    query.assert_called_once_with(["xcrun", "simctl", "list", "devices", UDID, "--json"], timeout=30)
+                    query.assert_called_once_with(["xcrun", "simctl", "list", "devices", UDID, "--json"], timeout=120)
                     lookup.assert_called_once_with(["xcrun", "simctl", "get_app_container", UDID, batch.BUNDLE, "data"],
                                                    capture_output=True, timeout=30)
                     receipt = json.loads((directory / "fresh-container.json").read_text())
@@ -400,7 +400,8 @@ class BatchControls(unittest.TestCase):
                 self.assertEqual(batch.scoped_device_inventory(identity, timeout=20), good)
                 query.assert_called_once_with(["xcrun", "simctl", "list", "devices", selector, "--json"], timeout=20)
         for identity, timeout in (({**DEVICE, "udid": "booted"}, 20), ({**DEVICE, "udid": "all"}, 20),
-                                  ({**DEVICE, "udid": None}, 20), ({**owner, "name": ""}, 20), (DEVICE, 31), (DEVICE, 0)):
+                                  ({**DEVICE, "udid": None}, 20), ({**owner, "name": ""}, 20),
+                                  (DEVICE, 121), (DEVICE, float("inf")), (DEVICE, 0)):
             with self.subTest(identity=identity, timeout=timeout), patch.object(batch.subprocess, "check_output") as query:
                 with self.assertRaises(RuntimeError):
                     batch.scoped_device_inventory(identity, timeout=timeout)
@@ -453,7 +454,7 @@ class BatchControls(unittest.TestCase):
             batch.write(root / "lanes/inspector/owned-simulator.json", DEVICE)
             queries, actions = [], []
             def query(command, **kwargs):
-                self.assertLessEqual(kwargs["timeout"], 20)
+                self.assertLessEqual(kwargs["timeout"], 120)
                 self.assertEqual(command[:4], ["xcrun", "simctl", "list", "devices"])
                 self.assertEqual(command[-1], "--json")
                 queries.append(command[4])
@@ -472,6 +473,47 @@ class BatchControls(unittest.TestCase):
             self.assertEqual(actions, [[operation, identity] for identity in queries for operation in ("shutdown", "delete")])
             self.assertEqual(result["status"], "PASS")
             self.assertEqual(result["devices"][-1], {"name": unstarted["name"], "status": "NOT_STARTED"})
+
+    def test_slow_scoped_inventory_succeeds_once_without_extending_container_lookup(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            observed = inventory([DEVICE])
+            observed["devices"][DEVICE["runtime"]["identifier"]][0]["state"] = "Booted"
+            with patch.object(batch.time, "monotonic", side_effect=[1000.0, 1073.25]), \
+                 patch.object(batch.subprocess, "check_output", return_value=json.dumps(observed).encode()) as query, \
+                 patch.object(batch.subprocess, "run", return_value=types.SimpleNamespace(
+                     returncode=77, stdout=b"", stderr=b"unclassified lookup")) as lookup:
+                frozen(root, DEVICE).confirm_empty_container(UDID, root)
+            query.assert_called_once_with(["xcrun", "simctl", "list", "devices", UDID, "--json"], timeout=120)
+            lookup.assert_called_once_with(["xcrun", "simctl", "get_app_container", UDID, batch.BUNDLE, "data"],
+                                           capture_output=True, timeout=30)
+            observation = json.loads((root / "fresh-device-query.json").read_text())
+            self.assertEqual(observation, {"status": "RETURNED_VALID_SCOPED_INVENTORY", "selector": UDID,
+                "selector_kind": "OWNED_UDID", "timeout_seconds": 120, "elapsed_seconds": 73.25})
+            batch.validate_fresh_device_receipt(json.loads((root / "fresh-container.json").read_text()), root, UDID)
+
+    def test_cleanup_query_observes_elapsed_and_remaining_budget_without_extending_actions(self):
+        # Simulated monotonic time verifies slow success without sleeping.
+        for times, query_timeout, elapsed, action_timeouts in [
+                ([1000, 1000, 1000, 1073.25, 1073.25, 1073.25], 120, 73.25, [20, 20]),
+                ([1000, 1135, 1135, 1148, 1148, 1163], 45, 13, [20, 17])]:
+            with self.subTest(query_timeout=query_timeout), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                observed = inventory([DEVICE])
+                observed["devices"][DEVICE["runtime"]["identifier"]][0]["state"] = "Booted"
+                with patch.object(batch.time, "monotonic", side_effect=times), \
+                     patch.object(batch.subprocess, "check_output", return_value=json.dumps(observed).encode()) as query, \
+                     patch.object(batch.subprocess, "run", return_value=types.SimpleNamespace(returncode=0)) as action:
+                    result = batch.cleanup_owned({"preflight_devices": [DEVICE], "lane_devices": [],
+                                                  "baseline_udids": [UDID]}, root)
+                query.assert_called_once_with(["xcrun", "simctl", "list", "devices", UDID, "--json"], timeout=query_timeout)
+                self.assertEqual([call.args[0] for call in action.call_args_list],
+                    [["xcrun", "simctl", name, UDID] for name in ["shutdown", "delete"]])
+                self.assertEqual([call.kwargs["timeout"] for call in action.call_args_list], action_timeouts)
+                self.assertEqual(result["status"], "PASS")
+                self.assertEqual(result["inventory_queries"], [{"status": "RETURNED_VALID_SCOPED_INVENTORY",
+                    "selector": UDID, "selector_kind": "OWNED_UDID", "timeout_seconds": query_timeout,
+                    "elapsed_seconds": elapsed}])
 
     def test_cleanup_recovers_by_exact_nonce_name_and_rejects_unbound_receipts(self):
         owner = {key: value for key, value in DEVICE.items() if key != "udid"}
@@ -520,26 +562,38 @@ class BatchControls(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             context = frozen(root, DEVICE)
-            for error in (subprocess.TimeoutExpired(["xcrun", "simctl", "list", "devices", UDID, "--json"], 30), KeyboardInterrupt()):
+            for error in (subprocess.TimeoutExpired(["xcrun", "simctl", "list", "devices", UDID, "--json"], 120,
+                                                    output=b"private-partial-stdout", stderr=b"private-partial-stderr"),
+                          KeyboardInterrupt()):
                 with self.subTest(error=type(error).__name__), patch.object(batch.subprocess, "check_output", side_effect=error) as query, \
-                     patch.object(batch.subprocess, "run") as action:
+                     patch.object(batch.subprocess, "run") as action, patch.object(batch.time, "monotonic", return_value=1000):
                     with self.assertRaises(type(error)) as caught:
                         context.confirm_empty_container(UDID, root)
                     self.assertIs(caught.exception, error)
-                    self.assertEqual(query.call_count, 1)
+                    query.assert_called_once_with(["xcrun", "simctl", "list", "devices", UDID, "--json"], timeout=120)
                     action.assert_not_called()
                     self.assertFalse((root / "fresh-container.json").exists())
+                    observation = json.loads((root / "fresh-device-query.json").read_text())
+                    self.assertEqual(observation, {"status": "CANCELLED" if isinstance(error, KeyboardInterrupt) else "TIMED_OUT",
+                        "selector": UDID, "selector_kind": "OWNED_UDID", "timeout_seconds": 120,
+                        "elapsed_seconds": 0, "error_type": type(error).__name__})
+                    self.assertNotIn("private-partial", (root / "fresh-device-query.json").read_text())
                     query.reset_mock()
                     with self.assertRaises(type(error)) as caught:
                         batch.cleanup_owned({"preflight_devices": [DEVICE], "lane_devices": [], "baseline_udids": [UDID]}, root)
                     self.assertIs(caught.exception, error)
-                    self.assertEqual(query.call_count, 1)
+                    query.assert_called_once_with(["xcrun", "simctl", "list", "devices", UDID, "--json"], timeout=120)
                     action.assert_not_called()
                     result = json.loads((root / "batch-cleanup.json").read_text())
                     self.assertEqual(result["status"], "CANCELLED" if isinstance(error, KeyboardInterrupt) else "FAIL")
                     self.assertEqual(result["devices"], [])
+                    self.assertEqual(result["inventory_queries"], [observation])
+                    self.assertNotIn("private-partial", (root / "batch-cleanup.json").read_text())
 
     def test_existing_fixed_caps_and_per_lane_test_limits_are_explicit(self):
+        self.assertEqual(batch.WORKER_SECONDS, 105 * 60)
+        self.assertEqual(batch.CLEANUP_SECONDS, 180)
+        self.assertEqual(batch.SCOPED_DEVICE_QUERY_SECONDS, 120)
         self.assertLess(batch.WORKER_SECONDS + batch.CLEANUP_SECONDS, 120 * 60)
         self.assertEqual(batch.STEP_SECONDS, 120 * 60)
         self.assertEqual(batch.minimum_lane_budget(selection("inspector")), 6 * 300 + 180)
@@ -820,10 +874,13 @@ class BatchControls(unittest.TestCase):
 
         def check_output(command, **kwargs):
             if command[2:4] == ["list", "devices"]:
+                self.assertEqual(kwargs["timeout"], 120)
+                self.assertNotEqual(command[4], "--json", "A lane must never fall back to a global inventory")
                 selected = active if command[4] == "--json" else [device for device in active
                     if command[4] in (device["udid"], device["name"])]
                 return json.dumps(inventory(selected)).encode()
             if command[2] == "create":
+                self.assertEqual(kwargs["timeout"], 30)
                 device = next(device for device in devices if device["name"] == command[3])
                 active.append(device)
                 return device["udid"] + "\n"

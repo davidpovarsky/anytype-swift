@@ -46,6 +46,7 @@ FLAGS = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED", "ENABLE_TEST
 WORKER_SECONDS = 105 * 60
 CLEANUP_SECONDS = 3 * 60
 STEP_SECONDS = 120 * 60
+SCOPED_DEVICE_QUERY_SECONDS = 120
 BUNDLE = "io.anytype.app"
 
 
@@ -288,7 +289,12 @@ class FrozenBuild:
 
     def confirm_empty_container(self, udid, evidence):
         require(self.device is not None and self.device["udid"] == udid, "Unowned fixture destination")
-        inventory = scoped_device_inventory(self.device, timeout=30)
+        observation = {}
+        try:
+            inventory = scoped_device_inventory(self.device, timeout=SCOPED_DEVICE_QUERY_SECONDS,
+                                                observation=observation)
+        finally:
+            write(evidence / "fresh-device-query.json", observation)
         observed = validate_owned_device(inventory, self.device, expected_state="Booted")
         query = subprocess.run(["xcrun", "simctl", "get_app_container", udid, BUNDLE, "data"],
                                capture_output=True, timeout=30)
@@ -343,7 +349,7 @@ def valid_udid(value):
         r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", value) is not None
 
 
-def scoped_device_inventory(ownership, *, timeout):
+def scoped_device_inventory(ownership, *, timeout, observation=None):
     """Query only an owned UDID, or the exact planned nonce name before its receipt.
 
     simctl's search string is only a transport filter. Every returned identity
@@ -359,19 +365,33 @@ def scoped_device_inventory(ownership, *, timeout):
         selector = ownership.get("name")
         require(isinstance(selector, str) and selector and "\0" not in selector,
                 "Missing exact planned simulator name")
-    require(0 < timeout <= 30, "Invalid bounded simulator query timeout")
-    value = json.loads(subprocess.check_output(
-        ["xcrun", "simctl", "list", "devices", selector, "--json"], timeout=timeout))
-    require(isinstance(value, dict) and isinstance(value.get("devices"), dict),
-            "Invalid scoped simulator inventory")
-    for items in value["devices"].values():
-        require(isinstance(items, list), "Invalid scoped simulator device list")
-        for item in items:
-            require(isinstance(item, dict) and valid_udid(item.get("udid")),
-                    "Invalid scoped simulator UDID")
-            require(item["udid"].lower() == udid.lower() if has_udid else item.get("name") == selector,
-                    "Scoped simulator query returned another identity")
-    return value
+    require(0 < timeout <= SCOPED_DEVICE_QUERY_SECONDS, "Invalid bounded simulator query timeout")
+    observation = {} if observation is None else observation
+    observation.update(status="QUERY_STARTED", selector=selector,
+                       selector_kind="OWNED_UDID" if has_udid else "EXACT_PLANNED_NAME",
+                       timeout_seconds=timeout)
+    started = time.monotonic()
+    try:
+        value = json.loads(subprocess.check_output(
+            ["xcrun", "simctl", "list", "devices", selector, "--json"], timeout=timeout))
+        require(isinstance(value, dict) and isinstance(value.get("devices"), dict),
+                "Invalid scoped simulator inventory")
+        for items in value["devices"].values():
+            require(isinstance(items, list), "Invalid scoped simulator device list")
+            for item in items:
+                require(isinstance(item, dict) and valid_udid(item.get("udid")),
+                        "Invalid scoped simulator UDID")
+                require(item["udid"].lower() == udid.lower() if has_udid else item.get("name") == selector,
+                        "Scoped simulator query returned another identity")
+        observation["status"] = "RETURNED_VALID_SCOPED_INVENTORY"
+        return value
+    except BaseException as error:
+        observation.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else
+                           "TIMED_OUT" if isinstance(error, subprocess.TimeoutExpired) else "FAIL",
+                           error_type=type(error).__name__)
+        raise
+    finally:
+        observation["elapsed_seconds"] = round(max(0, time.monotonic() - started), 6)
 
 
 def validate_owned_device(inventory, device, *, expected_state=None):
@@ -532,7 +552,7 @@ def worker(args, lane, intent):
                "profile": PROFILE, "planned_ui_methods": UI_COUNT, "planned_native_preparations": PREPARATION_COUNT,
                "planned_native_postflights": POSTFLIGHT_COUNT,
                "lane_statuses": {name: "NOT_RUN_SETUP" for name in LANES},
-               "lane_receipts": {}, "full_matrix_accepted": False, "release_accepted": False}
+               "lane_receipts": {}, "device_queries": [], "full_matrix_accepted": False, "release_accepted": False}
     evidence = args.evidence.resolve()
     write(evidence / "batch-worker.json", receipt)
     try:
@@ -552,7 +572,10 @@ def worker(args, lane, intent):
             receipt.update(phase="LANE", current_lane=name)
             receipt["lane_statuses"][name] = "IN_PROGRESS"
             write(evidence / "batch-worker.json", receipt)
-            inventory = scoped_device_inventory(ownership, timeout=30)
+            observation = {"lane": name, "phase": "BEFORE_CREATE"}
+            receipt["device_queries"].append(observation)
+            inventory = scoped_device_inventory(ownership, timeout=SCOPED_DEVICE_QUERY_SECONDS,
+                                                observation=observation)
             require(not any(item.get("name") == ownership["name"] for items in inventory["devices"].values() for item in items),
                     "Refuse an existing batch simulator name")
             udid = subprocess.check_output(["xcrun", "simctl", "create", ownership["name"],
@@ -561,7 +584,10 @@ def worker(args, lane, intent):
             require(udid.lower() not in {item.lower() for item in intent["baseline_udids"]},
                     "Created batch simulator reused a baseline identity")
             write(directory / "owned-simulator.json", device)
-            inventory = scoped_device_inventory(device, timeout=30)
+            observation = {"lane": name, "phase": "AFTER_CREATE"}
+            receipt["device_queries"].append(observation)
+            inventory = scoped_device_inventory(device, timeout=SCOPED_DEVICE_QUERY_SECONDS,
+                                                observation=observation)
             validate_owned_device(inventory, device, expected_state="Shutdown")
             local_preflight = {**preflight, "selected": {"ipad": device}}
             write(directory / "preflight/preflight.json", local_preflight)
@@ -690,7 +716,7 @@ def resolve_cleanup_device(inventory, ownership, baseline_udids, created_receipt
 
 def cleanup_owned(intent, evidence):
     deadline = time.monotonic() + CLEANUP_SECONDS
-    report = {"status": "PASS", "devices": [], "started_at": now()}
+    report = {"status": "PASS", "devices": [], "inventory_queries": [], "started_at": now()}
     try:
         for ownership in [*intent["preflight_devices"], *intent["lane_devices"]]:
             remaining = deadline - time.monotonic()
@@ -711,7 +737,10 @@ def cleanup_owned(intent, evidence):
                     require(created["udid"].lower() not in {item.lower() for item in intent["baseline_udids"]},
                             "Refuse cleanup of a baseline simulator in a created receipt")
                     query_identity = created
-            inventory = scoped_device_inventory(query_identity, timeout=min(20, remaining))
+            observation = {}
+            report["inventory_queries"].append(observation)
+            inventory = scoped_device_inventory(query_identity, timeout=min(SCOPED_DEVICE_QUERY_SECONDS, remaining),
+                                                observation=observation)
             device = resolve_cleanup_device(inventory, ownership, intent["baseline_udids"],
                                             created)
             if device is None:
