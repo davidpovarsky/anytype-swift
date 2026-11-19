@@ -1,0 +1,150 @@
+{
+  "author": "/root/asana_audit",
+  "changed_files": {
+    "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift": {
+      "after_sha256": "2ddab02fb826776d382686c2276061d44be5fc26eca0707e2782b1745b10e222",
+      "before_sha256": "8007682e484604e999be7200ef39bb87837a84974c6a6151a3760e4088d9c8b1",
+      "bytes": 81361
+    },
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
+      "after_sha256": "90a3e3eeb11a8a634e773f99c62d811494bd1c3616eb25698884e6f9a1a2a7ca",
+      "before_sha256": "15570ceb47789316510de5bc5ae5c0ce111add236ff57d7d08dcca38e90eeca5",
+      "bytes": 40553
+    },
+    "Tools/PinkhaSimulatorGate/test_type_preservation.py": {
+      "after_sha256": "c8649ebf54a58bbdddeba80471a278b2b676fecf0fedcfdf6530a9f144daa600",
+      "before_sha256": "c37f77fdfc48c445d39d552e60eab5664deaa9bb5e64566d835a3e9ac305ea91",
+      "bytes": 36071
+    },
+    "Tools/PinkhaSimulatorGate/test_wave15_batch.py": {
+      "after_sha256": "40817475ae9dfdacaeebfca535b1e29110281f29d04e2b3afdf6a89b1d55f57e",
+      "before_sha256": "4c95a77626c32d4606f28ce524131c35b2347a34333c3b5a5245598286153f3f",
+      "bytes": 69300
+    },
+    "Tools/PinkhaSimulatorGate/type_preservation.py": {
+      "after_sha256": "7b51ce452f743cfbe45a9ccc562ca871c5e7a072dade292cdf501494c9cead9e",
+      "before_sha256": "7e17adb1ddacff1afb160da839aeed19300914910e7c1dab4dce0895339694f2",
+      "bytes": 39223
+    },
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": {
+      "after_sha256": "20daa269697d859b92d089f4ccadc5165d13a5f77ad951c94b9cbb8480bde586",
+      "before_sha256": "5752d5873632e68127a6ecac0747ca1011c93efcb9df4ee807bd7a946d4c3bc7",
+      "bytes": 60770
+    }
+  },
+  "controller_validation": {
+    "acceptance_controller": 18,
+    "batch_controller": 38,
+    "command": "python -B -m unittest test_type_preservation test_run_wave15_acceptance test_wave15_batch -v",
+    "elapsed_seconds": 2.195,
+    "environment": "Linux Python3.12. Exact14f03b Git blobs for24 dependencies plus five changed Python files in the existing bounded source-test folder. Initial partial-snapshot import failures are historical setup errors; the complete pinned source test set passes without gate weakening.",
+    "failed": 0,
+    "log_sha256": "1e2ea9371125a88f10694e406f2c5da0e8bf7eaee50f76a07a07c7e5901f21ad",
+    "passed": 84,
+    "skipped": 0,
+    "source_inputs_sha256": "e941eb2a55996f793be81a2157711f61f57a12611732e7e01b2db190ae298cb0",
+    "total": 84,
+    "type_preservation": 28
+  },
+  "creation_identity_representation": {
+    "cross_library": "Path/device/inode and finite positive creation identity are matched across Python/Foundation; creation-time floats are not compared across libraries, as in the original validator. There is no numeric tolerance and no relaxed within-observer creation check.",
+    "foundation": "Actual Foundation DirectoryIdentity captured at native entry; exact equality including createdAt after account restoration, in the complete readState equality, and after readback. Native receipt includes that actual entry identity.",
+    "python": "Exact Python st_birthtime/path/device/inode comparison from pre-UI to pre-install and separately post-install to before/after XCTest."
+  },
+  "diff_sha256": "45aeb3db1e202fc551fb048a5baaace12bc93185363d11bd61923edf79870410",
+  "install_contract": [
+    "Both exact UI methods and their owned-app teardown must pass; original pre-UI container/store identity and immutable baseline/fixture bytes remain required before install.",
+    "One explicit simctl install of the already built app at exact owned UDID; code-carrier hashes verified for built/preinstalled/postinstalled products and bundle identity checked. No rebuild, no restore/create-account API, no retry/fallback.",
+    "Four bounded read-only host process observations bracket inventory and install. Kernel ucomm plus full comm reject owned or unresolved Anytype process identity; complete list includes controller PID. Raw process output is withheld.",
+    "Compare every relative native middleware directory and file byte length/hash, plus original native baseline and fixture bytes. Full inventory remains private in memory; only aggregate digest/count/bytes and identity hashes persist.",
+    "Mandatory immutable installation receipt binds source/run/nonce/account/Space/subject/preparation PID, original/current directories, exact original baseline/fixture hashes and code-carrier identity. Legacy receipt cannot qualify.",
+    "Native postflight verifies the installation receipt and original files, then uses its actual current directory pair with the unchanged complete semantic baseline. It only reads original account/native objects and writes the existing final receipt.",
+    "Any additional unproved relocation or directory recreation before/during XCTest fails. Canonical bytes and original association IDs/timestamps, final Type, complete Tag/link/backlink and seeded block identities remain exact.",
+    "The whole controlled-install phase has a shared660-second deadline, reserved by batch admission; timeout/error/cancellation has no fallback. Whole-worker process cancellation remains the outer hard bound."
+  ],
+  "integration_base": "14f03b1955d2ecaf1a687e94abff07ce0e608790",
+  "limits": {
+    "actual_controlled_install": "NOT_RUN",
+    "apple_typecheck": "NOT_RUN",
+    "ci_dispatched": false,
+    "full_bundle_equivalence": "NOT_CLAIMED",
+    "independent_review": "PENDING_T5_REVIEW_OF_V2",
+    "new_native_ui_acceptance": "NOT_RUN",
+    "physical_ipad": "NOT_RUN",
+    "swift_grammar_parse": "NOT_RUN_NO_LINUX_SWIFT_TOOLCHAIN",
+    "windows_remote_files_modified": false
+  },
+  "negative_controls": [
+    "modified/deleted/extra native files and directories",
+    "file/directory symlink",
+    "original baseline/fixture byte mutation",
+    "active/unresolved/empty/incomplete process identity",
+    "process timeout before install",
+    "single-call install timeout/cancellation with private output withheld",
+    "changed installed executable",
+    "wrong source/nonce/account/Space/subject/baseline/fixture/code/inventory/owned UDID",
+    "stale/missing installation receipt and legacy native schema",
+    "additional unproved relocation or store recreation",
+    "full original canonical/Tag/link/block/native result guards",
+    "exact within-observer creation identity",
+    "real unreadable child cannot be omitted before/after hidden-file mutation",
+    "shared install deadline cannot reset after install",
+    "remaining1500seconds cannot admit2040-second Properties-set lane or create its simulator"
+  ],
+  "original_qualification_sha256": "6e7f1801b13a64a6c899bce85494d0cfc6e7afac4e6527f96e7ffec10ef39394",
+  "original_result": {
+    "actual_ui_pass": 2,
+    "diagnosis": "Original absolute data-container equality fails at test-without-building install/launch before account/canonical/Tag/link readback; no data-loss failure is established.",
+    "full_lane_accepted": false,
+    "native_postflight_fail": 1,
+    "native_preparation_pass": 1,
+    "skipped": 0
+  },
+  "original_run": "44562643472",
+  "original_runtime_source": "53dbcbc214b0310f168f073c2efb2be96cb201fa",
+  "prepared_at_utc": "2026-11-19T18:04:02.985726+00:00",
+  "preserved_scope": {
+    "application_product_code_changed": false,
+    "batch_query_fix_and_worker_cleanup_deadlines_unchanged": true,
+    "canonical_tag_link_type_assertions_removed": false,
+    "cold_language_fix_unchanged": true,
+    "kit_pins_changed": false,
+    "new_native_method_count": 0,
+    "postflight_mandatory": true,
+    "ui_assertions_or_deadlines_changed": false
+  },
+  "previous_reviewed_report_sha256": "f50e6c28b582d17da553e7821edf8ef2b276889392678561daca9639d7c69892",
+  "primary_source_basis": [
+    {
+      "url": "https://developer.apple.com/library/archive/technotes/tn2285/_index.html",
+      "use": "Apple documents that Application_Home changes during app update; this supports live path resolution, not retrospective proof of data preservation."
+    },
+    {
+      "git_blob_sha1": "a6f02a86eb29dec5dc39e54ff3692f191c203879",
+      "sha256": "9f3b9e89bd6e58b9db68919189e34136cb903ed60dd6f06650d77e50a47aa40f",
+      "url": "https://github.com/apple-oss-distributions/adv_cmds/blob/main/ps/print.c",
+      "use": "comm reads argv[0] and falls back to (ucomm); kernel ucomm is checked and unresolved Anytype is rejected."
+    },
+    {
+      "git_blob_sha1": "aad756d34520c213286959a12615592376f919d7",
+      "sha256": "0af8cc559f9e7e830e5568eb61769df806be8b80a22f3745beeab6431ffa6444",
+      "url": "https://github.com/apple-oss-distributions/adv_cmds/blob/main/ps/keyword.c",
+      "use": "comm and kernel ucomm are distinct fields."
+    }
+  ],
+  "review_findings_resolved": [
+    {
+      "finding": "os.walk could silently omit unreadable child directories and compare incomplete inventories",
+      "fix": "Mandatory onerror raises a fixed nonprivate error. Real directory/scandir-denial regression changes a file under that child and requires both attempts to fail before install; no receipt is written.",
+      "reviewer": "/root/t5_finish"
+    },
+    {
+      "finding": "Original1380-second Properties-set batch reservation did not include new controlled-install phase",
+      "fix": "One660-second controlled-install deadline includes six30-second container queries, four30-second process checks, two120-second inventories and one120-second install. Each timed command clamps to remaining phase time; hashing/metadata consumes the same deadline, checked between operations and before success. Properties-set now reserves2040seconds before creating its simulator. A1500-second remaining-budget regression preserves earlier three successful lanes and marks this and later lanes NOT_RUN_BUDGET. Worker105minutes/cleanup180seconds are unchanged.",
+      "reviewer": "/root/t5_finish"
+    }
+  ],
+  "schema": "properties-controlled-install-source-candidate-v2",
+  "status": "SOURCE_CANDIDATE_CONTROLS_PASS_NATIVE_NOT_RUN",
+  "whitespace_check": "PASS_ALL_SIX_CHANGED_FILES"
+}

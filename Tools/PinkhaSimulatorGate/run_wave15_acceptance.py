@@ -503,8 +503,10 @@ def execute(args, receipt, *, build_context=None):
     if args.lane == "properties-set":
         frozen_preservation = preservation.freeze(container, evidence, preservation_binding, fixture, udid)
         receipt["preservation_baseline_sha256"] = frozen_preservation.sha256
+        receipt["preservation_fixture_sha256"] = frozen_preservation.fixture_sha256
         shared.write(evidence / "type-preservation-inputs.json", {
             "binding": preservation_binding, "baseline_sha256": frozen_preservation.sha256,
+            "fixture_sha256": frozen_preservation.fixture_sha256,
             "directories": frozen_preservation.directories, "container": str(frozen_preservation.container),
             "simulator_udid": udid, "source": "FROZEN_BEFORE_UI"})
 
@@ -568,7 +570,14 @@ def execute(args, receipt, *, build_context=None):
                 "Installed executable bytes changed before native postflight")
         if build_context is not None:
             build_context.verify_current()
-        post_environment = preservation.environment(frozen_preservation)
+        # Application_Home may move during installation (Apple TN2285). Prove
+        # stopped native bytes and original fixture continuity across one
+        # explicit same-build install before binding XCTest to its current root.
+        post_installation = preservation.install_for_postflight(
+            frozen_preservation, built, before["sha256"], evidence, shared.code_carriers)
+        receipt["preservation_installation_sha256"] = post_installation.sha256
+        shared.write(evidence / "execution.json", receipt)
+        post_environment = preservation.environment(frozen_preservation, post_installation)
         post_configuration = native_configuration if build_context is not None else preservation.selected_configuration(
             native_configuration, post_environment)
         postflight = run_selection(app, post_configuration, "AnytypeTests", udid,
@@ -577,7 +586,7 @@ def execute(args, receipt, *, build_context=None):
         shared.write(evidence / "execution.json", receipt)
         current_container = Path(subprocess.check_output(
             ["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "data"], text=True).strip())
-        preservation.verify_frozen(frozen_preservation, current_container)
+        preservation.verify_installed(frozen_preservation, post_installation, current_container)
         if postflight["status"] != "PASS":
             raise SelectionFailure("Actual existing-account preservation postflight did not pass")
         raw_receipt = preservation.read_bytes(current_container / "Library/Application Support" /
@@ -586,7 +595,7 @@ def execute(args, receipt, *, build_context=None):
             stream.write(raw_receipt)
         receipt["preservation_native_receipt_sha256"] = preservation.sha256(raw_receipt)
         receipt["type_preservation"] = preservation.validate_result(
-            frozen_preservation, preservation.decode(raw_receipt), postflight)
+            frozen_preservation, post_installation, preservation.decode(raw_receipt), postflight)
         if build_context is not None:
             build_context.verify_current()
     installed = Path(subprocess.check_output(["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "app"], text=True).strip())

@@ -101,7 +101,7 @@ def minimum_lane_budget(selection):
     expected = 1 if selection["lane"] == "properties-set" else 0
     require(selection.get("expected_postflight_executions") == expected
             and postflight == (preservation.METHOD if expected else None), "Lane postflight budget contract differs")
-    return 300 + budget["total_method_seconds"] + preservation.SECONDS * expected + 180
+    return 300 + budget["total_method_seconds"] + (preservation.SECONDS + preservation.INSTALLATION_SECONDS) * expected + 180
 
 
 def canonical_hash(value):

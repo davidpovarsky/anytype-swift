@@ -985,6 +985,47 @@ private enum NativeTypePreservation {
         let createdAt: Double
     }
 
+    struct Directories: Codable, Equatable {
+        let container: DirectoryIdentity
+        let middleware: DirectoryIdentity
+    }
+
+    struct Inventory: Decodable, Equatable {
+        let sha256: String
+        let files: Int
+        let bytes: Int
+        let directories: Int
+    }
+
+    struct StoppedProcessCheck: Decodable {
+        let status: String
+        let commandExitCode: Int
+        let ownedAppMatches: Int
+        let unresolvedAppMatches: Int
+    }
+
+    struct Installation: Decodable {
+        let schemaVersion: Int
+        let status: String
+        let binding: Binding
+        let baselineSHA256: String
+        let fixtureSHA256: String
+        let simulatorUDID: String
+        let accountID: String
+        let spaceID: String
+        let subjectID: String
+        let preparationPID: Int32
+        let codeCarriersSHA256: String
+        let installedBeforeCodeSHA256: String
+        let installedAfterCodeSHA256: String
+        let originalDirectories: Directories
+        let currentDirectories: Directories
+        let beforeInventory: Inventory
+        let afterInventory: Inventory
+        let stoppedProcessChecks: [String: StoppedProcessCheck]
+        let containerRelocated: Bool
+    }
+
     struct Link: Codable, Equatable {
         let blockID: String
         let targetID: String
@@ -1035,6 +1076,8 @@ private enum NativeTypePreservation {
         let scope: String
         let binding: Binding
         let baselineSHA256: String
+        let installationSHA256: String
+        let directoriesBefore: Directories
         let preparationPID: Int32
         let postflightPID: Int32
         let verifierCallsMutationAPI: Bool
@@ -1081,6 +1124,21 @@ private enum NativeTypePreservation {
         // Pure URLs: LocalRepoService's getter would create/update storage.
         return (try directory(support.deletingLastPathComponent().deletingLastPathComponent()),
                 try directory(support.appendingPathComponent("Anytype/middleware-go")))
+    }
+
+    static func matchesController(_ actual: DirectoryIdentity, _ controller: DirectoryIdentity) throws {
+        // Python/macOS and Foundation each retain their own creation-time
+        // representation. No cross-language rounding tolerance replaces identity.
+        try #require(actual.path == controller.path && actual.device == controller.device &&
+                     actual.inode == controller.inode && controller.createdAt.isFinite && controller.createdAt > 0)
+    }
+
+    static func stateAtInstalledDirectories(_ original: State, _ current: Directories) -> State {
+        .init(accountID: original.accountID, spaceID: original.spaceID, subjectID: original.subjectID,
+              chiddushTypeID: original.chiddushTypeID, canonicalPropertyKey: original.canonicalPropertyKey,
+              canonicalRaw: original.canonicalRaw, canonicalSHA256: original.canonicalSHA256,
+              container: current.container, middleware: current.middleware, objects: original.objects,
+              tagOption: original.tagOption)
     }
 
     static func validateCanonical(_ raw: String, subjectID: String, spaceID: String) throws {
@@ -1220,8 +1278,51 @@ private enum NativeTypePreservation {
         let baseline = try JSONDecoder().decode(Baseline.self, from: data)
         try #require(baseline.schemaVersion == 1 && baseline.binding == binding)
         let expected = baseline.state
+        let installationInput = try #require(env["PINKHA_TYPE_PRESERVATION_INSTALLATION_BASE64"])
+        try #require(installationInput.utf8.count <= 87_384)
+        let installationData = try #require(Data(base64Encoded: installationInput))
+        try #require(installationData.count <= 65_536 &&
+                     sha256(installationData) == env["PINKHA_TYPE_PRESERVATION_INSTALLATION_SHA256"])
+        let installation = try JSONDecoder().decode(Installation.self, from: installationData)
+        try #require(installation.schemaVersion == 1 &&
+                     installation.status == "PASS_STOPPED_NATIVE_STORE_UNCHANGED" &&
+                     installation.binding == binding && installation.baselineSHA256 == sha256(data) &&
+                     installation.preparationPID == baseline.preparationPID &&
+                     installation.accountID == expected.accountID && installation.spaceID == expected.spaceID &&
+                     installation.subjectID == expected.subjectID)
+        try #require(installation.codeCarriersSHA256.count == 64 &&
+                     installation.codeCarriersSHA256.allSatisfy(\.isHexDigit) &&
+                     installation.installedBeforeCodeSHA256 == installation.codeCarriersSHA256 &&
+                     installation.installedAfterCodeSHA256 == installation.codeCarriersSHA256)
+        try #require(installation.beforeInventory == installation.afterInventory &&
+                     installation.beforeInventory.files > 0 && installation.beforeInventory.bytes > 0 &&
+                     installation.beforeInventory.directories >= 0 &&
+                     installation.beforeInventory.sha256.count == 64 &&
+                     installation.beforeInventory.sha256.allSatisfy(\.isHexDigit))
+        try #require(Set(installation.stoppedProcessChecks.keys) ==
+                     Set(["BEFORE_INVENTORY", "BEFORE_INSTALL", "AFTER_INSTALL", "AFTER_INVENTORY"]))
+        try #require(installation.stoppedProcessChecks.values.allSatisfy {
+            $0.status == "PASS_APP_NOT_RUNNING" && $0.commandExitCode == 0 &&
+            $0.ownedAppMatches == 0 && $0.unresolvedAppMatches == 0
+        })
+        try matchesController(expected.container, installation.originalDirectories.container)
+        try matchesController(expected.middleware, installation.originalDirectories.middleware)
+        try #require(installation.containerRelocated ==
+                     (installation.originalDirectories.container.path != installation.currentDirectories.container.path))
         let before = try directories()
-        try #require(before.0 == expected.container && before.1 == expected.middleware)
+        try matchesController(before.0, installation.currentDirectories.container)
+        try matchesController(before.1, installation.currentDirectories.middleware)
+        try #require(UUID(uuidString: installation.simulatorUDID) != nil &&
+                     URL(fileURLWithPath: before.0.path).pathComponents.map { $0.lowercased() }
+                        .contains(installation.simulatorUDID.lowercased()))
+        let initialDirectories = Directories(container: before.0, middleware: before.1)
+        let expectedAtCurrentRoot = stateAtInstalledDirectories(expected, initialDirectories)
+        // The original identity files must survive the controlled install too.
+        let support = try supportURL()
+        let preservedBaseline = try Data(contentsOf: support.appendingPathComponent(baselineName))
+        let preservedFixture = try Data(contentsOf: support.appendingPathComponent("pinkha-native-derived-ui-fixture.json"))
+        try #require(preservedBaseline.count <= 65_536 && sha256(preservedBaseline) == sha256(data) &&
+                     preservedFixture.count <= 65_536 && sha256(preservedFixture) == installation.fixtureSHA256)
         let clock = ContinuousClock()
         let deadline = clock.now.advanced(by: .seconds(45))
         while Container.shared.accountManager().account.id.isEmpty && clock.now < deadline {
@@ -1229,7 +1330,7 @@ private enum NativeTypePreservation {
         }
         try #require(Container.shared.accountManager().account.id == expected.accountID && !expected.accountID.isEmpty)
         let restored = try directories()
-        try #require(restored.0 == expected.container && restored.1 == expected.middleware)
+        try #require(restored.0 == before.0 && restored.1 == before.1)
         try validateCanonical(expected.canonicalRaw, subjectID: expected.subjectID, spaceID: expected.spaceID)
         let actual = try await readState(spaceID: expected.spaceID, subjectID: expected.subjectID,
             chiddushTypeID: expected.chiddushTypeID, canonicalKey: expected.canonicalPropertyKey,
@@ -1237,13 +1338,15 @@ private enum NativeTypePreservation {
             seedLinks: Dictionary(uniqueKeysWithValues: expected.objects.map { ($0.objectID, $0.seededLinks) }),
             tagID: expected.tagOption.objectID)
         try validateCanonical(actual.canonicalRaw, subjectID: expected.subjectID, spaceID: expected.spaceID)
-        try #require(actual == expected)
+        try #require(actual == expectedAtCurrentRoot)
         let after = try directories()
-        try #require(after.0 == expected.container && after.1 == expected.middleware)
+        try #require(after.0 == before.0 && after.1 == before.1)
         let pid = ProcessInfo.processInfo.processIdentifier
         try #require(pid != baseline.preparationPID)
-        let receipt = Receipt(schemaVersion: 1, status: "PASS", scope: "FINAL_UI_TYPE_ROUNDTRIP",
-                              binding: binding, baselineSHA256: sha256(data), preparationPID: baseline.preparationPID,
+        let receipt = Receipt(schemaVersion: 2, status: "PASS", scope: "FINAL_UI_TYPE_ROUNDTRIP",
+                              binding: binding, baselineSHA256: sha256(data),
+                              installationSHA256: sha256(installationData), directoriesBefore: initialDirectories,
+                              preparationPID: baseline.preparationPID,
                               postflightPID: pid, verifierCallsMutationAPI: false, state: actual)
         let path = try supportURL().appendingPathComponent("pinkha-type-preservation-result-" + binding.nonce + ".json")
         try #require(!FileManager.default.fileExists(atPath: path.path))

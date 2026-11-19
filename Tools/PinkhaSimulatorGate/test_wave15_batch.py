@@ -597,7 +597,8 @@ class BatchControls(unittest.TestCase):
         self.assertLess(batch.WORKER_SECONDS + batch.CLEANUP_SECONDS, 120 * 60)
         self.assertEqual(batch.STEP_SECONDS, 120 * 60)
         self.assertEqual(batch.minimum_lane_budget(selection("inspector")), 6 * 300 + 180)
-        self.assertEqual(batch.minimum_lane_budget(selection("properties-set")), 4 * 300 + 180)
+        self.assertEqual(batch.preservation.INSTALLATION_SECONDS, 660)
+        self.assertEqual(batch.minimum_lane_budget(selection("properties-set")), 4 * 300 + 180 + 660)
         self.assertEqual(batch.minimum_lane_budget(selection("properties")), 2100 + 300 + 180)
         self.assertEqual(batch.minimum_lane_budget(selection("editor")), 4 * 300 + 180)
         changed = selection("properties")
@@ -641,25 +642,38 @@ class BatchControls(unittest.TestCase):
                 if name == "properties-set":
                     gate = batch.preservation
                     bound = gate.binding(source["source_sha"], "123", "1", "b" * 32)
-                    identity = {"path": "/controller-only", "device": "1", "inode": "2", "createdAt": 1700000000.0}
-                    directories = {"container": identity, "middleware": identity}
+                    container_path = "/controller-only/" + device["udid"] + "/data"
+                    identity = {"path": container_path, "device": "1", "inode": "2", "createdAt": 1700000000.0}
+                    directories = {"container": identity, "middleware": {
+                        **identity, "path": str(Path(container_path) / gate.STORE), "inode": "3"}}
                     baseline = preservation_controls.baseline(directories)
                     baseline["binding"] = bound
                     raw = json.dumps(baseline).encode()
                     (directory / "type-preservation-baseline.json").write_bytes(raw)
                     baseline_sha = gate.sha256(raw)
-                    native = preservation_controls.native_receipt(baseline, baseline_sha)
+                    raw_fixture = json.dumps(preservation_controls.fixture()).encode()
+                    (directory / "type-preservation-fixture.json").write_bytes(raw_fixture)
+                    fixture_sha = gate.sha256(raw_fixture)
+                    installation = preservation_controls.installation_proof(
+                        baseline, baseline_sha, fixture_sha, device["udid"], directories)
+                    raw_installation = preservation_controls.installation_bytes(installation)
+                    (directory / gate.INSTALLATION).write_bytes(raw_installation)
+                    installation_sha = gate.sha256(raw_installation)
+                    batch.write(directory / "built-code-carriers.json", {"sha256": preservation_controls.CODE_SHA})
+                    native = preservation_controls.native_receipt(baseline, baseline_sha, installation)
                     raw_native = json.dumps(native).encode()
                     (directory / "postflight").mkdir()
                     (directory / "postflight/native-result.json").write_bytes(raw_native)
                     post = preservation_controls.result()
                     post["actual_devices"][0]["deviceId"] = device["udid"]
                     original.update(postflight_binding=bound, preservation_baseline_sha256=baseline_sha,
+                                    preservation_fixture_sha256=fixture_sha, preservation_installation_sha256=installation_sha,
                                     preservation_native_receipt_sha256=gate.sha256(raw_native), postflight=post)
-                    original["type_preservation"] = gate.validate_native_receipt(baseline, baseline_sha, device["udid"], native, post)
+                    original["type_preservation"] = gate.validate_native_receipt(
+                        baseline, baseline_sha, device["udid"], native, post, installation, installation_sha)
                     batch.write(directory / "fixture-ids.json", preservation_controls.fixture())
                     batch.write(directory / "type-preservation-inputs.json", {"binding": bound,
-                        "baseline_sha256": baseline_sha, "directories": directories,
+                        "baseline_sha256": baseline_sha, "fixture_sha256": fixture_sha, "directories": directories,
                         "simulator_udid": device["udid"], "source": "FROZEN_BEFORE_UI"})
                     methods = {gate.METHOD + "()": "Passed"}
                     batch.write(directory / "postflight" / (gate.PREFIX + "-summary.json"), summary(methods, device["udid"]))
@@ -868,6 +882,10 @@ class BatchControls(unittest.TestCase):
             if mode == "functional" and local.lane == "inspector":
                 receipt["phase"] = "UI"
                 raise SelectionFailure("injected actual failed-case path")
+            if mode == "preservation_budget" and local.lane == "properties":
+                # Enough for the old 1380s lane, insufficient for its additional
+                # mandatory stopped-store/install phase.
+                args.deadline = time.monotonic() + 1500
             receipt.update(status="LANE_PASS_ACCEPTANCE_REVIEW_PENDING", phase="COMPLETE")
 
         lane = types.SimpleNamespace(plan=selection, shared=Mock(), execute=execute, SelectionFailure=SelectionFailure)
@@ -946,6 +964,17 @@ class BatchControls(unittest.TestCase):
                             for name in calls))
         self.assertTrue(all(receipt["lane_statuses"][name] == "NOT_RUN_BUDGET"
                             for name in batch.LANES[2:]))
+
+    def test_properties_install_budget_is_reserved_before_any_lane_mutation(self):
+        root, calls, code, receipt = self.worker_case("preservation_budget")
+        self.assertEqual(calls, ["inspector", "inspector-search", "properties"])
+        self.assertEqual(code, 1)
+        self.assertEqual(receipt["status"], "BATCH_BUDGET_EXHAUSTED")
+        self.assertTrue(all(receipt["lane_statuses"][name] == "LANE_PASS_ACCEPTANCE_REVIEW_PENDING"
+                            for name in calls))
+        self.assertTrue(all(receipt["lane_statuses"][name] == "NOT_RUN_BUDGET"
+                            for name in batch.LANES[3:]))
+        self.assertFalse((root / "evidence/lanes/properties-set/owned-simulator.json").exists())
 
 
 def process_running(pid):

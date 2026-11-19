@@ -1,0 +1,92 @@
+{
+  "schema": "properties-controlled-install-independent-review-v1",
+  "reviewer": "/root/t5_finish",
+  "reviewed_at_utc": "2026-11-19T17:56:38.698718+00:00",
+  "status": "CHANGES_REQUESTED",
+  "integration_base": "14f03b1955d2ecaf1a687e94abff07ce0e608790",
+  "reviewed_source_sha256": {
+    "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift": {
+      "after_sha256": "2ddab02fb826776d382686c2276061d44be5fc26eca0707e2782b1745b10e222",
+      "before_sha256": "8007682e484604e999be7200ef39bb87837a84974c6a6151a3760e4088d9c8b1",
+      "bytes": 81361
+    },
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
+      "after_sha256": "90a3e3eeb11a8a634e773f99c62d811494bd1c3616eb25698884e6f9a1a2a7ca",
+      "before_sha256": "15570ceb47789316510de5bc5ae5c0ce111add236ff57d7d08dcca38e90eeca5",
+      "bytes": 40553
+    },
+    "Tools/PinkhaSimulatorGate/test_type_preservation.py": {
+      "after_sha256": "a4069caecd214e7b7e8e3004ffc4b77cb37b63b43fec627d56a248f7b4db4880",
+      "before_sha256": "c37f77fdfc48c445d39d552e60eab5664deaa9bb5e64566d835a3e9ac305ea91",
+      "bytes": 33757
+    },
+    "Tools/PinkhaSimulatorGate/test_wave15_batch.py": {
+      "after_sha256": "0b72a247a45998a6a8d018d41b10ee61154a49ad97b788203bfc3a435da4e26f",
+      "before_sha256": "4c95a77626c32d4606f28ce524131c35b2347a34333c3b5a5245598286153f3f",
+      "bytes": 68224
+    },
+    "Tools/PinkhaSimulatorGate/type_preservation.py": {
+      "after_sha256": "fe8237ca13f412357f33ebabbd8653caf327555d9f5ee5fea9c0eec94e78a9f5",
+      "before_sha256": "7e17adb1ddacff1afb160da839aeed19300914910e7c1dab4dce0895339694f2",
+      "bytes": 37834
+    }
+  },
+  "candidate_diff_sha256": "c00de84adfe71c3f6cce6e471dc0f9372b300ee23a43020adec9c4dc528c286a",
+  "verification": {
+    "five_base_hashes_independently_read_from_git": true,
+    "five_frozen_candidate_hashes_verified": true,
+    "24_test_input_hashes_verified": true,
+    "controls": {
+      "total": 81,
+      "passed": 81,
+      "failed": 0,
+      "skipped": 0,
+      "type_preservation": 26,
+      "acceptance_controller": 18,
+      "batch_controller": 37,
+      "platform": "Linux Python 3.12",
+      "command": "python -B -m unittest test_type_preservation test_run_wave15_acceptance test_wave15_batch -v",
+      "log_sha256": "7a6da756717dc5150f9d5efdac71a46d8ea604d48259e7e32d1e7d1f1e67464d"
+    },
+    "adversarial_probe_sha256": "d78b3b3275bcde22a703069c8e603d17b76349a1052c94f6914a1b396a92b4ec"
+  },
+  "findings": [
+    {
+      "id": "PRESERVE-01",
+      "priority": "P2",
+      "blocking": true,
+      "path": "Tools/PinkhaSimulatorGate/type_preservation.py",
+      "line": 287,
+      "title": "Reject native directory traversal errors before qualifying a complete inventory",
+      "evidence": "os.walk(root, followlinks=False) omits its onerror callback. A deterministic os.scandir PermissionError for a real child containing a real file was silently swallowed. The hidden file was modified between inventories; both returned successfully and before == after, with the hidden file absent from both inventories.",
+      "impact": "The all-native-file preservation claim can qualify a partial inventory, so a loss or change inside an unreadable subtree is not detected.",
+      "requested_correction": "Make directory enumeration errors fail closed and add a focused negative control proving an unreadable child cannot produce a qualifying inventory."
+    },
+    {
+      "id": "PRESERVE-02",
+      "priority": "P2",
+      "blocking": true,
+      "path": "Tools/PinkhaSimulatorGate/wave15_batch.py",
+      "line": 104,
+      "title": "Reserve the new controlled-install phase in the Properties batch time budget",
+      "evidence": "minimum_lane_budget remains 1380s for properties-set, unchanged from the old path. The new phase has six query calls bounded at 30s, four ps observations at 30s, two inventory scans guarded at 120s, and one 120s install: 660s of additional declared operation bounds before code hashing and local validation.",
+      "impact": "The batch can start Properties with enough time for the old profile but insufficient time for its now-required controlled install and native postflight, causing a worker deadline failure instead of NOT_RUN_BUDGET. Existing 180s general overhead does not account for this new phase.",
+      "requested_correction": "Give the whole controlled-install phase an explicit bounded budget, include it only in the Properties minimum lane budget, and add a near-deadline negative control. Preserve worker/cleanup deadlines and mandatory postflight."
+    }
+  ],
+  "positive_findings": [
+    "Original account, Space, subject, preparation PID, source/run/attempt/nonce, baseline and fixture hashes remain bound through installation and native postflight.",
+    "Exactly one controlled same-build install is used; failures/cancellation have no fallback or account reconstruction.",
+    "Python compares its exact directory identities before and after its own phases. Foundation captures actual native entry identities and compares its own complete identities exactly during restoration and readback; no cross-library numeric tolerance was introduced.",
+    "The native state comparison changes only the directory pair after the proved install. Original canonical bytes and association IDs/timestamps, Type, complete Tag/link/backlink sets and seeded block identities remain exact.",
+    "Saved batch qualification requires the new installation hash and schema-2 native receipt; legacy receipt cannot qualify.",
+    "Application product source, native semantic read methods, Kit pins, UI assertions and method selection were not changed."
+  ],
+  "limits": {
+    "apple_typecheck": "NOT_RUN",
+    "actual_install_process_format": "NOT_OBSERVED_ON_APPLE_BY_THIS_REVIEW",
+    "native_or_ui_acceptance": "NOT_RUN",
+    "source_edits_by_reviewer": false,
+    "publication": "NOT_AUTHORIZED_BY_THIS_REVIEW"
+  }
+}

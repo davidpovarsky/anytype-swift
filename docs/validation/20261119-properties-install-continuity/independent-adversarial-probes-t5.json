@@ -1,0 +1,33 @@
+{
+  "frozen_hash_checks": {
+    "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift": true,
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": true,
+    "Tools/PinkhaSimulatorGate/test_type_preservation.py": true,
+    "Tools/PinkhaSimulatorGate/test_wave15_batch.py": true,
+    "Tools/PinkhaSimulatorGate/type_preservation.py": true,
+    "24_exact_test_inputs": true,
+    "diff_hash": true
+  },
+  "inventory_probe": {
+    "scenario": "os.scandir raises PermissionError for one real child containing a real modified file",
+    "before_equals_after": true,
+    "hidden_file_in_inventory": false,
+    "enumerated_files": 1,
+    "enumerated_directory_names": 1,
+    "result": "BUG_REPRODUCED_PARTIAL_INVENTORY_ACCEPTED"
+  },
+  "batch_budget_probe": {
+    "unchanged_properties_set_budget_seconds": 1380,
+    "declared_controlled_install_operations": {
+      "app_container_queries": 6,
+      "query_timeout_seconds": 30,
+      "ps_observations": 4,
+      "ps_timeout_seconds": 30,
+      "inventories": 2,
+      "inventory_bound_seconds": 120,
+      "install_calls": 1,
+      "install_timeout_seconds": 120
+    },
+    "new_declared_ceiling_sum_seconds_excluding_code_hashing": 660
+  }
+}
