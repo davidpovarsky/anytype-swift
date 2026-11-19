@@ -82,7 +82,7 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         textBlockLeadingView.calloutIconView?.isUserInteractionEnabled = !state.isLocked
         textView.textView.isUserInteractionEnabled = state.isEditing
         if state.isLocked || !state.isEditing {
-            cancelPendingFocus()
+            cancelPendingFocus(observation: .cancelledState)
         }
     }
 
@@ -166,7 +166,8 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     }
 
     func didTakeNativeFocus() {
-        cancelPendingFocus()
+        recordFocus(.nativeBegan, requestId: focusContext?.focusRequestId)
+        cancelPendingFocus(observation: nil)
         focusContext?.registerFocusRequest()
     }
 
@@ -187,6 +188,7 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         let pendingId = UUID()
         focusLifetimeId = pendingId
         pendingFocus = (pendingId, position, requestId)
+        recordFocus(.retained, requestId: requestId)
         observeFocusReadiness()
         return pendingId
     }
@@ -197,13 +199,17 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
 
     private func schedulePendingFocus() {
         guard window != nil, let pendingId = pendingFocus?.id else { return }
+        recordFocus(.scheduled, requestId: pendingFocus?.requestId)
         // Attachment can occur during dequeue too; delegate side effects must wait for its return.
         DispatchQueue.main.async { [weak self] in
             self?.applyPendingFocus(id: pendingId)
         }
     }
 
-    private func cancelPendingFocus() {
+    private func cancelPendingFocus(observation: PinkhaStage1AcceptanceDiagnostics.FocusEvent? = .cancelledLifetime) {
+        if let pendingFocus, let observation {
+            recordFocus(observation, requestId: pendingFocus.requestId)
+        }
         focusLifetimeId = UUID()
         pendingFocus = nil
         focusReadinessSubscriptions.removeAll()
@@ -225,19 +231,23 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     private func applyPendingFocus(id: UUID) {
         guard let pendingFocus, pendingFocus.id == id, focusLifetimeId == id else { return }
         if let focusContext, focusContext.focusRequestId != pendingFocus.requestId {
-            cancelPendingFocus()
+            cancelPendingFocus(observation: .cancelledSuperseded)
             return
         }
         guard canReceiveFocus else {
-            cancelPendingFocus()
+            cancelPendingFocus(observation: .cancelledState)
             return
         }
         guard let window, textView.textView.window === window, window.isKeyWindow,
               window.windowScene?.activationState == .foregroundActive else { return }
+        recordFocus(.nativeAttempted, requestId: pendingFocus.requestId)
         // Consume before UIKit delegates run, so its successful begin-editing cannot replay a caret.
         self.pendingFocus = nil
         focusReadinessSubscriptions.removeAll()
+        recordFocus(.consumed, requestId: pendingFocus.requestId)
         textView.textView.setFocus(pendingFocus.position)
+        recordFocus(textView.textView.isFirstResponder ? .nativeAcquired : .nativeRefused,
+                    requestId: pendingFocus.requestId)
         if !textView.textView.isFirstResponder, focusLifetimeId == id,
            focusContext?.focusRequestId == pendingFocus.requestId {
             // A native refusal is not success. Retain only this still-current request, and
@@ -245,6 +255,14 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
             self.pendingFocus = pendingFocus
             observeFocusReadiness()
         }
+    }
+
+    private func recordFocus(_ event: PinkhaStage1AcceptanceDiagnostics.FocusEvent, requestId: UUID?) {
+        PinkhaStage1AcceptanceDiagnostics.recordFocus(
+            event, in: textView.textView, requestID: requestId,
+            ownerID: focusContext?.focusRequestId,
+            ownerMatches: focusContext == nil || focusContext?.focusRequestId == requestId
+        )
     }
 
     private func applyNewConfiguration(configuration: TextBlockContentConfiguration) {
@@ -285,6 +303,7 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
             .sink { [weak self] focus in
                 guard let self else { return }
                 // Editor focus senders are MainActor-bound. Capture ownership now, before the UI deferral.
+                recordFocus(.publisherRequested, requestId: focusContext?.focusRequestId)
                 requestFocus(focus, requestId: focusContext?.focusRequestId, deferred: true)
             }
         
@@ -295,6 +314,7 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         }
         
         if let position = configuration.initialBlockFocusPosition {
+            recordFocus(.initialRequested, requestId: configuration.initialFocusRequestId)
             // EditorContentView applies the cell state after its content configuration. Keep the
             // new request through that ordering; the state callback and execution both enforce it.
             if retainFocus(position, requestId: configuration.initialFocusRequestId) != nil {

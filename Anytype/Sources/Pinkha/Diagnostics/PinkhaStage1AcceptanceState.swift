@@ -76,6 +76,77 @@ enum PinkhaStage1AcceptanceDiagnostics {
     private static var swiftUILayoutDirection: LayoutDirection?
     private static var navigationLayoutDirection: UIUserInterfaceLayoutDirection?
     private static let acceptedInsertions = NSMapTable<UITextView, NSString>.weakToStrongObjects()
+    private static var focusObservationOwner: UUID?
+    private static let focusRecords = NSMapTable<UITextView, FocusRecord>.weakToStrongObjects()
+
+    enum FocusEvent: String, CaseIterable, Hashable {
+        case initialRequested, publisherRequested, retained, scheduled
+        case cancelledState, cancelledLifetime, cancelledSuperseded
+        case consumed, nativeAttempted, nativeAcquired, nativeRefused, nativeBegan
+    }
+
+    private final class FocusRecord: NSObject {
+        var counts: [FocusEvent: Int] = [:]
+        var requestID: UUID?
+        var ownerID: UUID?
+        var ownerMatchedAtLastEvent = false
+        var lastEvent: FocusEvent?
+        var lockedAtLastEvent = false
+        var interactionAtLastEvent = false
+    }
+
+    /// Explicitly scoped by the native preparation test. No application flow enables it,
+    /// and these observations never participate in the editor's focus decisions.
+    static func beginFocusObservation() -> UUID {
+        let owner = UUID()
+        focusObservationOwner = owner
+        focusRecords.removeAllObjects()
+        return owner
+    }
+
+    static func endFocusObservation(_ owner: UUID) {
+        guard focusObservationOwner == owner else { return }
+        focusObservationOwner = nil
+        focusRecords.removeAllObjects()
+    }
+
+    static func recordFocus(
+        _ event: FocusEvent, in textView: UITextView, requestID: UUID?, ownerID: UUID?, ownerMatches: Bool
+    ) {
+        guard focusObservationOwner != nil else { return }
+        let record = focusRecords.object(forKey: textView) ?? FocusRecord()
+        record.counts[event] = min((record.counts[event] ?? 0) + 1, 999)
+        record.requestID = requestID
+        record.ownerID = ownerID
+        record.ownerMatchedAtLastEvent = ownerMatches
+        record.lastEvent = event
+        record.lockedAtLastEvent = (textView as? TextViewWithPlaceholder)?.isLockedForEditing == true
+        record.interactionAtLastEvent = textView.isUserInteractionEnabled
+        focusRecords.setObject(record, forKey: textView)
+    }
+
+    /// Fixed names, bounded counts, an ephemeral request UUID and UIKit state only.
+    /// No document ID, user text, attribute payload or arbitrary error message is copied.
+    static func focusObservation(in textView: UITextView) -> String {
+        let record = focusRecords.object(forKey: textView)
+        let events = FocusEvent.allCases.map { "\($0.rawValue)=\(record?.counts[$0] ?? 0)" }
+        return (events + [
+            "recorded=\(record != nil)",
+            "request=\(record?.requestID?.uuidString ?? "none")",
+            "owner=\(record?.ownerID?.uuidString ?? "none")",
+            "ownerMatchedAtLastEvent=\(record?.ownerMatchedAtLastEvent == true)",
+            "lastEvent=\(record?.lastEvent?.rawValue ?? "unrecorded")",
+            "lockedAtLastEvent=\(record?.lockedAtLastEvent == true)",
+            "interactionAtLastEvent=\(record?.interactionAtLastEvent == true)",
+            "attached=\(textView.window != nil)",
+            "keyWindow=\(textView.window?.isKeyWindow == true)",
+            "sceneActive=\(textView.window?.windowScene?.activationState == .foregroundActive)",
+            "editable=\(textView.isEditable)",
+            "interaction=\(textView.isUserInteractionEnabled)",
+            "locked=\((textView as? TextViewWithPlaceholder)?.isLockedForEditing == true)",
+            "firstResponder=\(textView.isFirstResponder)"
+        ]).joined(separator: " ")
+    }
 
     static func resetInsertionEvidence(in textView: UITextView) {
         acceptedInsertions.removeObject(forKey: textView)

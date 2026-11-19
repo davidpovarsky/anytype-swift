@@ -232,7 +232,7 @@ def validate_results(summary, tree, expected, udid, profile=HostTestProfile.SDK0
                 "Editor summary does not describe the exact methods or argument cases")
     if profile is HostTestProfile.CORE:
         result.update(core_profile.validate_arguments(tree, expected))
-        require(counts["totalTestCount"] in {51, 71},
+        require(counts["totalTestCount"] in {52, 73},
                 "Core summary differs from its exact method or literal-case scope")
     if profile is HostTestProfile.COMPONENTS:
         result["components"] = validate_component_arguments(tree, expected)

@@ -326,7 +326,7 @@
     },
     "TextBlockFocusLifecycleTests": {
       "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
-      "source_lf_sha256": "42dd0704f918937c4efa7b8b716a036ee48b7008da1d73de60332fc4324b4978",
+      "source_lf_sha256": "b143e5cae6423c28d73dffbceafc3444a30d90b3b15a2d6f5bcc338dc2704cb6",
       "methods": {
         "initialFocusWaitsForAttachment": {
           "parameters": [],
@@ -408,6 +408,21 @@
           "parameters": [],
           "argument_collections": [],
           "case_count": 1
+        },
+        "reusedCellUsesCurrentLockBeforeFocus": {
+          "parameters": [
+            {
+              "name": "newLocked",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
         }
       }
     }

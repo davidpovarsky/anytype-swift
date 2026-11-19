@@ -1,6 +1,18 @@
 import UIKit
 
 final class EditorViewListCell: UICollectionViewListCell, CustomTypesAccessable {
+    /// Apply this row's owner state before UIKit creates or reconfigures its content view.
+    /// A reused cell's old lock must never cancel the new row's one-shot focus request.
+    func setContentConfiguration(
+        _ configuration: some UIContentConfiguration,
+        isMoving: Bool,
+        isLocked: Bool
+    ) {
+        self.isMoving = isMoving
+        self.isLocked = isLocked
+        contentConfiguration = configuration.updated(for: configurationState)
+    }
+
     override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
         let superSize = super.systemLayoutSizeFitting(
             targetSize,

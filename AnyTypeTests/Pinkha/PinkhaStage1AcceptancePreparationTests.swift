@@ -299,7 +299,9 @@ struct PinkhaStage1AcceptancePreparationTests {
         let window = UIWindow(windowScene: scene)
         window.rootViewController = navigation
         window.makeKeyAndVisible()
+        let focusObservation = PinkhaStage1AcceptanceDiagnostics.beginFocusObservation()
         defer {
+            PinkhaStage1AcceptanceDiagnostics.endFocusObservation(focusObservation)
             controller.view.endEditing(true)
             window.isHidden = true
             window.rootViewController = nil
@@ -329,11 +331,15 @@ struct PinkhaStage1AcceptancePreparationTests {
                 && controller.collectionView.window === window
                 && controller.collectionView.bounds.width.isFinite
                 && controller.collectionView.bounds.width > 1 && controller.collectionView.bounds.height > 1
+            // Match the original empty-area gesture gate; do not dispatch an input while
+            // the controller is still applying a native loading/readonly transition.
+            let gestureReady = controller.collectionView.isEditing && !controller.collectionView.isLocked
             inputReady = document.isOpened && document.permissions.canEditBlocks
-                && nativeTitleReady && renderedTitleReady && hostReady
+                && nativeTitleReady && renderedTitleReady && hostReady && gestureReady
             readinessObservation = "opened=\(document.isOpened) canEditBlocks=\(document.permissions.canEditBlocks) "
                 + "nativeTitle=\(nativeTitleReady) renderedTitle=\(renderedTitleReady) hostReady=\(hostReady) "
-                + "keyWindow=\(window.isKeyWindow) sceneActive=\(scene.activationState == .foregroundActive)"
+                + "keyWindow=\(window.isKeyWindow) sceneActive=\(scene.activationState == .foregroundActive) "
+                + "collectionEditing=\(controller.collectionView.isEditing) collectionLocked=\(controller.collectionView.isLocked)"
             if inputReady { break }
             try await Task.sleep(for: .milliseconds(50))
         }
@@ -414,6 +420,10 @@ struct PinkhaStage1AcceptancePreparationTests {
             try await Task.sleep(for: .milliseconds(50))
         }
         let views = inputTextViews(in: root)
+        for (index, textView) in views.enumerated() {
+            print("PINKHA_NATIVE_EDITOR_FOCUS_ROW index=\(index) "
+                  + PinkhaStage1AcceptanceDiagnostics.focusObservation(in: textView))
+        }
         let observation = "phase=\(phase) textViews=\(views.count) "
             + "firstResponders=\(views.filter(\.isFirstResponder).count) "
             + "emptyTextViews=\(views.filter { $0.textStorage.length == 0 }.count) "

@@ -26,7 +26,7 @@ class CoreScopeGateTests(unittest.TestCase):
                         for values in product(*method["argument_collections"])]
                 self.nodes.append(node)
         self.tree = dict(testNodes=self.nodes)
-        self.summary = dict(totalTestCount=51, passedTests=51, failedTests=0, skippedTests=0,
+        self.summary = dict(totalTestCount=52, passedTests=52, failedTests=0, skippedTests=0,
             devicesAndConfigurations=[dict(device=dict(deviceId="core-disposable", osVersion="27.0",
                 osBuildNumber="24A-control", architecture="arm64", modelName="iPad (A16)"))])
 
@@ -35,10 +35,10 @@ class CoreScopeGateTests(unittest.TestCase):
                                 "core-disposable", HostTestProfile.CORE)
 
     def test_actual_distinct_cases_required_independently_of_summary_unit(self):
-        for total in (51, 71):
+        for total in (52, 73):
             value = self.validate(summary=dict(self.summary, totalTestCount=total, passedTests=total))
-            self.assertEqual(value["actual_method_count"], 51)
-            self.assertEqual(value["declared_case_count"], 71)
+            self.assertEqual(value["actual_method_count"], 52)
+            self.assertEqual(value["declared_case_count"], 73)
         self.assertEqual(HostTestProfile.CORE.pass_status, "WAVE15_CORE_COMPONENT_PASS")
         self.assertEqual(HostTestProfile.CORE.result_prefix, "wave15-core")
 
@@ -75,6 +75,24 @@ class CoreScopeGateTests(unittest.TestCase):
         del node["children"][0]["name"]
         with self.assertRaises(core.CoreEvidenceReviewPending):
             self.validate(tree=tree)
+
+    def test_reused_cell_regression_requires_both_lock_cases(self):
+        name = "reusedCellUsesCurrentLockBeforeFocus"
+        spec = self.specs["TextBlockFocusLifecycleTests"]["methods"][name]
+        self.assertEqual(spec, dict(parameters=[dict(name="newLocked", type="Bool")],
+                                    argument_collections=[[False, True]], case_count=2))
+        identity = "TextBlockFocusLifecycleTests/" + name + "(newLocked:)"
+        for mutation in ("missing", "duplicate", "failed", "skipped"):
+            tree = deepcopy(self.tree)
+            node = next(item for item in tree["testNodes"] if item["nodeIdentifier"] == identity)
+            if mutation == "missing":
+                node["children"].pop()
+            elif mutation == "duplicate":
+                node["children"][1]["name"] = node["children"][0]["name"]
+            else:
+                node["children"][0]["result"] = "Failed" if mutation == "failed" else "Skipped"
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                self.validate(tree=tree)
 
     def test_changed_source_or_literal_matrix_requires_explicit_inventory_review(self):
         source = '@Test("literal combinations", arguments: [false, true], ["first", "second"])\n' \

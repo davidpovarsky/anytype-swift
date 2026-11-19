@@ -7,6 +7,55 @@ import UIKit
 @Suite("Native text block focus lifetime", .serialized)
 @MainActor
 struct TextBlockFocusLifecycleTests {
+    @Test("A reused collection cell applies the new owner's lock before its one-shot focus",
+          arguments: [false, true])
+    func reusedCellUsesCurrentLockBeforeFocus(newLocked: Bool) async throws {
+        let fixture = try TextBlockFocusWindow()
+        defer { fixture.close() }
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let collection = TextBlockFocusCellCollection(
+            configuration: cellConfiguration(configuration("previous", cursor: cursor, subjects: subjects)),
+            locked: !newLocked
+        )
+        fixture.attach(collection.view)
+        await collection.display()
+        let previousCell = try #require(collection.cell)
+        let previousRow = try #require(collection.row)
+        try #require(previousCell.configurationState.isEditing,
+                     "The real collection must provide editing state before row reconfiguration")
+        try #require(previousRow.textView.textView.isLockedForEditing == !newLocked)
+        #expect(!previousRow.textView.textView.isFirstResponder)
+
+        await collection.reconfigure(
+            cellConfiguration(configuration("next", cursor: cursor, subjects: subjects, initial: .end)),
+            locked: newLocked
+        )
+        let currentCell = try #require(collection.cell)
+        let currentRow = try #require(collection.row)
+        try #require(currentCell === previousCell && currentRow === previousRow,
+                     "Exercise the reused UIKit cell and content view, not a replacement fixture")
+        #expect(currentCell.isLocked == newLocked)
+        #expect(currentRow.textView.textView.isLockedForEditing == newLocked)
+        await finishMainQueueTurn()
+
+        if newLocked {
+            #expect(!currentRow.textView.textView.isFirstResponder)
+            await collection.reconfigure(
+                cellConfiguration(configuration("next", cursor: cursor, subjects: subjects)), locked: false
+            )
+            await finishMainQueueTurn()
+            #expect(!currentRow.textView.textView.isFirstResponder,
+                    "A genuine new-owner denial must not revive after an unlock without fresh intent")
+        } else {
+            try #require(currentRow.textView.textView.isFirstResponder,
+                         "The new editable row must acquire native focus without a second focus request")
+            #expect(currentRow.textView.textView.selectedRange == NSRange(
+                location: currentRow.textView.textView.text.utf16.count, length: 0
+            ))
+        }
+    }
+
     @Test("An initial request survives detached configuration and a same-row echo")
     func initialFocusWaitsForAttachment() async throws {
         let fixture = try TextBlockFocusWindow()
@@ -312,6 +361,68 @@ struct TextBlockFocusLifecycleTests {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             DispatchQueue.main.async { continuation.resume() }
         }
+    }
+}
+
+@MainActor
+private final class TextBlockFocusCellCollection {
+    let view: EditorCollectionView
+    private var configuration: CellBlockConfiguration<TextBlockContentConfiguration>
+    private var locked: Bool
+    private var dataSource: UICollectionViewDiffableDataSource<Int, Int>?
+
+    init(configuration: CellBlockConfiguration<TextBlockContentConfiguration>, locked: Bool) {
+        self.configuration = configuration
+        self.locked = locked
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 320, height: 80)
+        view = EditorCollectionView(frame: .zero, collectionViewLayout: layout)
+        view.isEditing = true
+        let registration = UICollectionView.CellRegistration<EditorViewListCell, Int> { [weak self] cell, _, _ in
+            guard let self else { return }
+            cell.setContentConfiguration(self.configuration, isMoving: false, isLocked: self.locked)
+        }
+        dataSource = UICollectionViewDiffableDataSource<Int, Int>(collectionView: view) { collectionView, indexPath, item in
+            collectionView.dequeueConfiguredReusableCell(using: registration, for: indexPath, item: item)
+        }
+    }
+
+    var cell: EditorViewListCell? {
+        view.cellForItem(at: IndexPath(item: 0, section: 0)) as? EditorViewListCell
+    }
+
+    var row: TextBlockContentView? {
+        func find(in view: UIView) -> TextBlockContentView? {
+            if let row = view as? TextBlockContentView { return row }
+            for child in view.subviews {
+                if let row = find(in: child) { return row }
+            }
+            return nil
+        }
+        return cell.flatMap { find(in: $0) }
+    }
+
+    func display() async {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, Int>()
+        snapshot.appendSections([0])
+        snapshot.appendItems([0])
+        await apply(snapshot)
+    }
+
+    func reconfigure(_ configuration: CellBlockConfiguration<TextBlockContentConfiguration>, locked: Bool) async {
+        self.configuration = configuration
+        self.locked = locked
+        guard var snapshot = dataSource?.snapshot() else { return }
+        snapshot.reconfigureItems([0])
+        await apply(snapshot)
+    }
+
+    private func apply(_ snapshot: NSDiffableDataSourceSnapshot<Int, Int>) async {
+        guard let dataSource else { return }
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            dataSource.apply(snapshot, animatingDifferences: false) { continuation.resume() }
+        }
+        view.layoutIfNeeded()
     }
 }
 

@@ -77,10 +77,10 @@ def load_manifest():
     require(value.get("schema") == 1 and set(value.get("suites", {})) == set(SUITE_NAMES),
             "Core suite manifest differs from the reviewed scope")
     suites = value["suites"]
-    require(sum(len(item["methods"]) for item in suites.values()) == 51
+    require(sum(len(item["methods"]) for item in suites.values()) == 52
             and sum(method["case_count"] for item in suites.values()
-                    for method in item["methods"].values()) == 71,
-            "Core scope must contain51 functions and71 literal cases")
+                    for method in item["methods"].values()) == 73,
+            "Core scope must contain52 functions and73 literal cases")
     return suites
 
 
@@ -150,7 +150,7 @@ def validate_arguments(tree, expected):
                     "Missing or duplicate actual core argument cases")
             actual[method] = [dict(node_identifier=identifier, argument_display=child["name"], result="Passed")
                               for child in arguments]
-    require(observed == expected and sum(len(items) for items in actual.values()) == 71,
+    require(observed == expected and sum(len(items) for items in actual.values()) == 73,
             "Incomplete source-bound core execution")
-    return dict(actual_method_count=len(observed), declared_case_count=71, core_cases=actual,
+    return dict(actual_method_count=len(observed), declared_case_count=73, core_cases=actual,
                 argument_evidence="DISTINCT_ACTUAL_CASES_BOUND_TO_EXACT_LITERAL_SOURCE_COLLECTIONS")

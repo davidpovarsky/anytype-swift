@@ -778,7 +778,11 @@ private extension EditorPageController {
     }
     
     func setupCell(cell: EditorViewListCell, indexPath: IndexPath, item: some BlockViewModelProtocol) {
-        cell.contentConfiguration = item.makeContentConfiguration(maxWidth: cell.bounds.width)
+        cell.setContentConfiguration(
+            item.makeContentConfiguration(maxWidth: cell.bounds.width),
+            isMoving: collectionView.indexPathsForMovingItems.contains(indexPath),
+            isLocked: collectionView.isLocked
+        )
         cell.contentView.isUserInteractionEnabled = true
         configureTorahAccessory(in: cell, blockId: item.blockId)
         
