@@ -304,13 +304,16 @@ class BatchControls(unittest.TestCase):
                 with self.subTest(code=code, stdout=stdout):
                     directory = root / str(index)
                     directory.mkdir()
-                    with patch.object(batch.subprocess, "check_output", return_value=json.dumps(observed).encode()), \
-                         patch.object(batch.subprocess, "run", return_value=types.SimpleNamespace(returncode=code, stdout=stdout, stderr=stderr)):
+                    with patch.object(batch.subprocess, "check_output", return_value=json.dumps(observed).encode()) as query, \
+                         patch.object(batch.subprocess, "run", return_value=types.SimpleNamespace(returncode=code, stdout=stdout, stderr=stderr)) as lookup:
                         if accepted_construction:
                             context.confirm_empty_container(UDID, directory)
                         else:
                             with self.assertRaises(RuntimeError):
                                 context.confirm_empty_container(UDID, directory)
+                    query.assert_called_once_with(["xcrun", "simctl", "list", "devices", UDID, "--json"], timeout=30)
+                    lookup.assert_called_once_with(["xcrun", "simctl", "get_app_container", UDID, batch.BUNDLE, "data"],
+                                                   capture_output=True, timeout=30)
                     receipt = json.loads((directory / "fresh-container.json").read_text())
                     self.assertEqual((directory / "container-lookup.stderr").read_bytes(), stderr)
                     self.assertEqual(receipt["container_lookup_stderr_sha256"], batch.hashlib.sha256(stderr).hexdigest())
@@ -387,6 +390,154 @@ class BatchControls(unittest.TestCase):
         self.assertEqual(batch.resolve_cleanup_device(observed, DEVICE, [UDID]), DEVICE)
         with self.assertRaises(RuntimeError):
             batch.resolve_cleanup_device(observed, {**DEVICE, "name": "another-name"}, [UDID])
+
+    def test_scoped_inventory_rejects_aliases_substrings_foreign_rows_and_invalid_shapes(self):
+        owner = {key: value for key, value in DEVICE.items() if key != "udid"}
+        good = inventory([DEVICE])
+        for identity, selector in ((DEVICE, UDID), (owner, DEVICE["name"])):
+            with self.subTest(selector=selector), \
+                 patch.object(batch.subprocess, "check_output", return_value=json.dumps(good).encode()) as query:
+                self.assertEqual(batch.scoped_device_inventory(identity, timeout=20), good)
+                query.assert_called_once_with(["xcrun", "simctl", "list", "devices", selector, "--json"], timeout=20)
+        for identity, timeout in (({**DEVICE, "udid": "booted"}, 20), ({**DEVICE, "udid": "all"}, 20),
+                                  ({**DEVICE, "udid": None}, 20), ({**owner, "name": ""}, 20), (DEVICE, 31), (DEVICE, 0)):
+            with self.subTest(identity=identity, timeout=timeout), patch.object(batch.subprocess, "check_output") as query:
+                with self.assertRaises(RuntimeError):
+                    batch.scoped_device_inventory(identity, timeout=timeout)
+                query.assert_not_called()
+        wrong = inventory([{**DEVICE, "udid": "22222222-2222-2222-2222-222222222222"}])
+        malformed = [[], {}, {"devices": []}, {"devices": {"runtime": {}}},
+                     {"devices": {"runtime": [None]}}, inventory([{**DEVICE, "udid": "booted"}]), wrong]
+        for value in malformed:
+            with self.subTest(value=value), \
+                 patch.object(batch.subprocess, "check_output", return_value=json.dumps(value).encode()):
+                with self.assertRaises(RuntimeError):
+                    batch.scoped_device_inventory(DEVICE, timeout=20)
+        with patch.object(batch.subprocess, "check_output", return_value=json.dumps(
+                inventory([{**DEVICE, "name": DEVICE["name"] + "-other"}])).encode()), self.assertRaises(RuntimeError):
+            batch.scoped_device_inventory(owner, timeout=20)
+
+    def test_scoped_admission_keeps_every_identity_guard_before_container_query(self):
+        variants = []
+        for field, value in (("name", "another"), ("state", "Shutdown"), ("isAvailable", False),
+                             ("deviceTypeIdentifier", "another-type")):
+            observed = inventory([DEVICE])
+            item = observed["devices"][DEVICE["runtime"]["identifier"]][0]
+            item["state"] = "Booted"
+            item[field] = value
+            variants.append(observed)
+        wrong_runtime = inventory([DEVICE])
+        wrong_runtime["devices"]["another-runtime"] = wrong_runtime["devices"].pop(DEVICE["runtime"]["identifier"])
+        variants += [wrong_runtime, inventory([]), inventory([DEVICE, DEVICE])]
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            context = frozen(root, DEVICE)
+            for index, observed in enumerate(variants):
+                directory = root / str(index)
+                directory.mkdir()
+                with self.subTest(index=index), \
+                     patch.object(batch.subprocess, "check_output", return_value=json.dumps(observed).encode()), \
+                     patch.object(batch.subprocess, "run") as lookup, self.assertRaises(RuntimeError):
+                    context.confirm_empty_container(UDID, directory)
+                lookup.assert_not_called()
+                self.assertFalse((directory / "fresh-container.json").exists())
+
+    def test_cleanup_uses_recorded_udids_and_skips_a_lane_that_never_started(self):
+        preflight = {**DEVICE, "udid": "22222222-2222-2222-2222-222222222222", "name": "preflight"}
+        owner = {key: value for key, value in DEVICE.items() if key != "udid"}
+        unstarted = {**owner, "lane": "editor", "name": "never-created"}
+        intent = {"preflight_devices": [preflight], "lane_devices": [owner, unstarted],
+                  "baseline_udids": [preflight["udid"]]}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            batch.write(root / "lanes/inspector/owned-simulator.json", DEVICE)
+            queries, actions = [], []
+            def query(command, **kwargs):
+                self.assertLessEqual(kwargs["timeout"], 20)
+                self.assertEqual(command[:4], ["xcrun", "simctl", "list", "devices"])
+                self.assertEqual(command[-1], "--json")
+                queries.append(command[4])
+                device = next(row for row in (preflight, DEVICE) if row["udid"] == command[4])
+                value = inventory([device])
+                value["devices"][device["runtime"]["identifier"]][0]["state"] = "Booted"
+                return json.dumps(value).encode()
+            def action(command, **kwargs):
+                self.assertLessEqual(kwargs["timeout"], 20)
+                actions.append(command[2:])
+                return types.SimpleNamespace(returncode=0)
+            with patch.object(batch.subprocess, "check_output", side_effect=query), \
+                 patch.object(batch.subprocess, "run", side_effect=action):
+                result = batch.cleanup_owned(intent, root)
+            self.assertEqual(queries, [preflight["udid"], UDID])
+            self.assertEqual(actions, [[operation, identity] for identity in queries for operation in ("shutdown", "delete")])
+            self.assertEqual(result["status"], "PASS")
+            self.assertEqual(result["devices"][-1], {"name": unstarted["name"], "status": "NOT_STARTED"})
+
+    def test_cleanup_recovers_by_exact_nonce_name_and_rejects_unbound_receipts(self):
+        owner = {key: value for key, value in DEVICE.items() if key != "udid"}
+        intent = {"preflight_devices": [], "lane_devices": [owner], "baseline_udids": []}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            directory = root / "lanes/inspector"
+            directory.mkdir(parents=True)
+            with patch.object(batch.subprocess, "check_output", return_value=json.dumps(inventory([DEVICE])).encode()) as query, \
+                 patch.object(batch.subprocess, "run", return_value=types.SimpleNamespace(returncode=0)) as action:
+                result = batch.cleanup_owned(intent, root)
+            self.assertEqual(result["status"], "PASS")
+            query.assert_called_once()
+            self.assertEqual(query.call_args.args[0], ["xcrun", "simctl", "list", "devices", owner["name"], "--json"])
+            self.assertEqual(action.call_args.args[0], ["xcrun", "simctl", "delete", UDID])
+            bad_inventory = [inventory([{**DEVICE, "name": owner["name"] + "-foreign"}]),
+                             inventory([DEVICE, {**DEVICE, "udid": "22222222-2222-2222-2222-222222222222"}]),
+                             inventory([{**DEVICE, "runtime": {"identifier": "foreign-runtime"}}])]
+            for value in bad_inventory:
+                with self.subTest(inventory=value), \
+                     patch.object(batch.subprocess, "check_output", return_value=json.dumps(value).encode()), \
+                     patch.object(batch.subprocess, "run") as action, self.assertRaises(RuntimeError):
+                    batch.cleanup_owned(intent, root)
+                action.assert_not_called()
+                self.assertEqual(json.loads((root / "batch-cleanup.json").read_text())["status"], "FAIL")
+            with patch.object(batch.subprocess, "check_output", return_value=json.dumps(inventory([DEVICE])).encode()), \
+                 patch.object(batch.subprocess, "run") as action, self.assertRaises(RuntimeError):
+                batch.cleanup_owned({**intent, "baseline_udids": [UDID]}, root)
+            action.assert_not_called()
+            for changed in ({**DEVICE, "udid": "booted"}, {**DEVICE, "name": "foreign"},
+                            {**DEVICE, "runtime": {"identifier": "foreign-runtime"}}):
+                batch.write(directory / "owned-simulator.json", changed)
+                with self.subTest(receipt=changed), patch.object(batch.subprocess, "check_output") as query, \
+                     patch.object(batch.subprocess, "run") as action, self.assertRaises(RuntimeError):
+                    batch.cleanup_owned(intent, root)
+                query.assert_not_called()
+                action.assert_not_called()
+            batch.write(directory / "owned-simulator.json", DEVICE)
+            with patch.object(batch.subprocess, "check_output") as query, \
+                 patch.object(batch.subprocess, "run") as action, self.assertRaises(RuntimeError):
+                batch.cleanup_owned({**intent, "baseline_udids": [UDID]}, root)
+            query.assert_not_called()
+            action.assert_not_called()
+
+    def test_scoped_timeout_or_cancellation_never_retries_global_inventory_or_claims_freshness(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            context = frozen(root, DEVICE)
+            for error in (subprocess.TimeoutExpired(["xcrun", "simctl", "list", "devices", UDID, "--json"], 30), KeyboardInterrupt()):
+                with self.subTest(error=type(error).__name__), patch.object(batch.subprocess, "check_output", side_effect=error) as query, \
+                     patch.object(batch.subprocess, "run") as action:
+                    with self.assertRaises(type(error)) as caught:
+                        context.confirm_empty_container(UDID, root)
+                    self.assertIs(caught.exception, error)
+                    self.assertEqual(query.call_count, 1)
+                    action.assert_not_called()
+                    self.assertFalse((root / "fresh-container.json").exists())
+                    query.reset_mock()
+                    with self.assertRaises(type(error)) as caught:
+                        batch.cleanup_owned({"preflight_devices": [DEVICE], "lane_devices": [], "baseline_udids": [UDID]}, root)
+                    self.assertIs(caught.exception, error)
+                    self.assertEqual(query.call_count, 1)
+                    action.assert_not_called()
+                    result = json.loads((root / "batch-cleanup.json").read_text())
+                    self.assertEqual(result["status"], "CANCELLED" if isinstance(error, KeyboardInterrupt) else "FAIL")
+                    self.assertEqual(result["devices"], [])
 
     def test_existing_fixed_caps_and_per_lane_test_limits_are_explicit(self):
         self.assertLess(batch.WORKER_SECONDS + batch.CLEANUP_SECONDS, 120 * 60)
@@ -669,7 +820,9 @@ class BatchControls(unittest.TestCase):
 
         def check_output(command, **kwargs):
             if command[2:4] == ["list", "devices"]:
-                return json.dumps(inventory(active)).encode()
+                selected = active if command[4] == "--json" else [device for device in active
+                    if command[4] in (device["udid"], device["name"])]
+                return json.dumps(inventory(selected)).encode()
             if command[2] == "create":
                 device = next(device for device in devices if device["name"] == command[3])
                 active.append(device)
