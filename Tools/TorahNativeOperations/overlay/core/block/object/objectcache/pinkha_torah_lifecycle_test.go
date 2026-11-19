@@ -96,12 +96,12 @@ func TestPinkhaPrivateRootCannotBypassAccountCreationGuard(t *testing.T) {
 	c := &objectCache{space: pinkhaRootSpace{common: pinkhaRootCommonSpace{storage: f.Space}}}
 	root, err := torahopscontract.Root(f.Space.Id())
 	require.NoError(t, err)
-	exists, err := f.Space.HasTree(ctx, root.Id)
-	require.NoError(t, err)
-	require.False(t, exists)
+	stored, err := f.Space.TreeStorage(ctx, root.Id)
+	require.ErrorIs(t, err, treestorage.ErrUnknownTreeId)
+	require.Nil(t, stored)
 	_, err = c.CreateTreeObjectWithPayload(ctx, treestorage.TreeStorageCreatePayload{RootRawChange: root, Heads: []string{root.Id}}, nil)
 	require.ErrorIs(t, err, torahopscontract.ErrPrivateOperation)
-	exists, err = f.Space.HasTree(ctx, root.Id)
-	require.NoError(t, err)
-	require.False(t, exists, "the actual native root must remain absent after missing-guard rejection")
+	stored, err = f.Space.TreeStorage(ctx, root.Id)
+	require.ErrorIs(t, err, treestorage.ErrUnknownTreeId, "the actual native root must remain absent after missing-guard rejection")
+	require.Nil(t, stored)
 }
