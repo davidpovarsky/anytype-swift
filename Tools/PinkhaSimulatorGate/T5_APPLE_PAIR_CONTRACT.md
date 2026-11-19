@@ -135,3 +135,24 @@ without replacing the already completed pair evidence. See
 [T5_NATIVE_UI_CONTRACT.md](T5_NATIVE_UI_CONTRACT.md) for the exact methods,
 container/source boundaries, original screenshot receipts and secret policy.
 Automated UI PASS still requires separate visual review; product lookup stays OFF.
+
+
+## Public projection mismatch diagnostics
+
+The private ledger retains a per-field JSON snapshot of exactly the same eight
+public projection fields already included in the mandatory full projection hash.
+On a mismatch, the native test emits one `T5_APPLE_PAIR_PUBLIC_PROJECTION_MISMATCH`
+JSON line before throwing the original `public-derived-projection-changed`
+invariant. It records the actual source, phase, process and object identities,
+whole-projection hashes, and only differing field names, presence and per-field
+hashes. Controlled values are limited to known property keys in an attachment
+array (at most 16 entries), boolean readiness, small integer projection versions,
+and a fixed status vocabulary. Source identities, labels and arbitrary values
+are represented only by digests. The existing complete-credential scan still
+controls publication of the native log.
+
+This is diagnostic evidence, not an acceptance result. The fixture does not attach
+additional properties, the hash still includes attached-property membership and
+order, and the failed phase does not advance its ledger or issue a PASS receipt.
+The first diagnostic run must identify the actual differing fields before any
+fixture or runtime correction is proposed.

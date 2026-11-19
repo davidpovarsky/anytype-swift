@@ -47,6 +47,28 @@ private struct T5ApplePairDocument: Codable {
     let blockText: String?
     let canonicalSHA256: String
     let publicSHA256: String
+    let publicFieldJSON: [String: String]
+}
+
+private struct T5ApplePairPublicFieldDifference: Encodable {
+    let key: String
+    let expectedPresent: Bool
+    let actualPresent: Bool
+    let expectedSHA256: String?
+    let actualSHA256: String?
+    let expectedControlledJSON: String?
+    let actualControlledJSON: String?
+}
+
+private struct T5ApplePairPublicProjectionDiagnostic: Encodable {
+    let protocolVersion: String
+    let phase: String
+    let appSourceSHA: String
+    let processID: Int32
+    let objectID: String
+    let expectedPublicSHA256: String
+    let actualPublicSHA256: String
+    let fields: [T5ApplePairPublicFieldDifference]
 }
 
 private struct T5ApplePairLedger: Codable {
@@ -323,6 +345,14 @@ struct TorahT5RuntimePairTests {
                 let canonicalSHA = hash(Data(canonical.utf8))
                 let publicSHA = try publicHash(value)
                 try require(canonicalSHA == document.canonicalSHA256, "canonical-or-unknown-fields-changed")
+                if publicSHA != document.publicSHA256 {
+                    // Diagnostic-only evidence; the original full projection invariant
+                    // remains mandatory and the failed phase never writes a PASS receipt.
+                    emitPublicProjectionDiagnostic(
+                        document: document, actual: value, actualSHA: publicSHA,
+                        phase: phase, sourceSHA: sourceSHA
+                    )
+                }
                 try require(publicSHA == document.publicSHA256, "public-derived-projection-changed")
                 let privateVersion = value.values["_pinkhaTorahRelatedVersion"]?.numberValue
                 if expanded { try require(privateVersion == 1, "new-runtime-private-projection-missing") }
@@ -651,7 +681,8 @@ struct TorahT5RuntimePairTests {
             let canonical = try #require(ready.values[manifest.documentAssociationsPropertyKey]?.stringValue)
             documents.append(.init(
                 objectID: document.id, typeKey: type.value, initialName: ready.name, blockID: blockID, blockText: blockText,
-                canonicalSHA256: hash(Data(canonical.utf8)), publicSHA256: try publicHash(ready)
+                canonicalSHA256: hash(Data(canonical.utf8)), publicSHA256: try publicHash(ready),
+                publicFieldJSON: try publicFieldJSON(ready)
             ))
         }
         try require(Set(documents.map(\.objectID)).count == 3, "native-created-document-ids-not-distinct")
@@ -747,7 +778,7 @@ struct TorahT5RuntimePairTests {
         return value
     }
 
-    private func publicHash(_ details: ObjectDetails) throws -> String {
+    private func publicProjection(_ details: ObjectDetails) throws -> [String: Any] {
         let keys = TorahNativePropertyDefinition.all.map(\.key) + [
             TorahNativePropertyDefinition.engineVersionKey, TorahNativePropertyDefinition.readinessKey,
             TorahNativePropertyDefinition.labelsKey, TorahNativePropertyDefinition.statusKey,
@@ -759,7 +790,84 @@ struct TorahT5RuntimePairTests {
                 object[key] = try JSONSerialization.jsonObject(with: value.jsonUTF8Data(), options: [.fragmentsAllowed])
             }
         }
-        return hash(try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys, .withoutEscapingSlashes]))
+        return object
+    }
+
+    private func publicHash(_ details: ObjectDetails) throws -> String {
+        hash(try JSONSerialization.data(
+            withJSONObject: publicProjection(details), options: [.sortedKeys, .withoutEscapingSlashes]
+        ))
+    }
+
+    private func publicFieldJSON(_ details: ObjectDetails) throws -> [String: String] {
+        try publicProjection(details).mapValues { value in
+            let data = try JSONSerialization.data(
+                withJSONObject: value, options: [.fragmentsAllowed, .sortedKeys, .withoutEscapingSlashes]
+            )
+            return String(decoding: data, as: UTF8.self)
+        }
+    }
+
+    private func controlledPublicDiagnosticJSON(key: String, json: String?) -> String? {
+        guard let json else { return nil }
+        switch key {
+        case TorahNativePropertyDefinition.attachedPropertiesKey:
+            guard let keys = try? JSONSerialization.jsonObject(with: Data(json.utf8)) as? [String],
+                  keys.count <= 16,
+                  keys.allSatisfy({ value in TorahNativePropertyDefinition.all.contains { $0.key == value } })
+            else { return nil }
+            return json
+        case TorahNativePropertyDefinition.readinessKey:
+            return ["true", "false"].contains(json) ? json : nil
+        case TorahNativePropertyDefinition.engineVersionKey:
+            guard let version = Int(json), (0...100).contains(version) else { return nil }
+            return json
+        case TorahNativePropertyDefinition.statusKey:
+            guard let value = try? JSONSerialization.jsonObject(
+                with: Data(json.utf8), options: [.fragmentsAllowed]
+            ) as? String,
+                  ["READY", "MALFORMED", "UNSUPPORTED", "NOT_INITIALIZED", "DISCOVERING",
+                   "REBUILDING", "OUTDATED", "ERROR"].contains(value)
+            else { return nil }
+            return json
+        default:
+            // Canonical identities and labels are represented only by a digest.
+            return nil
+        }
+    }
+
+    private func emitPublicProjectionDiagnostic(
+        document: T5ApplePairDocument, actual: ObjectDetails, actualSHA: String,
+        phase: T5ApplePairPhase, sourceSHA: String
+    ) {
+        do {
+            let actualFields = try publicFieldJSON(actual)
+            let fields = Set(document.publicFieldJSON.keys).union(actualFields.keys).sorted().compactMap { key in
+                let expected = document.publicFieldJSON[key]
+                let observed = actualFields[key]
+                guard expected != observed else { return nil as T5ApplePairPublicFieldDifference? }
+                return T5ApplePairPublicFieldDifference(
+                    key: key, expectedPresent: expected != nil, actualPresent: observed != nil,
+                    expectedSHA256: expected.map { hash(Data($0.utf8)) },
+                    actualSHA256: observed.map { hash(Data($0.utf8)) },
+                    expectedControlledJSON: controlledPublicDiagnosticJSON(key: key, json: expected),
+                    actualControlledJSON: controlledPublicDiagnosticJSON(key: key, json: observed)
+                )
+            }
+            let diagnostic = T5ApplePairPublicProjectionDiagnostic(
+                protocolVersion: "pinkha-t5-public-projection-diagnostic-v1",
+                phase: phase.rawValue, appSourceSHA: sourceSHA,
+                processID: ProcessInfo.processInfo.processIdentifier, objectID: document.objectID,
+                expectedPublicSHA256: document.publicSHA256, actualPublicSHA256: actualSHA, fields: fields
+            )
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+            let data = try encoder.encode(diagnostic)
+            print("T5_APPLE_PAIR_PUBLIC_PROJECTION_MISMATCH " + String(decoding: data, as: UTF8.self))
+        } catch {
+            // Do not replace the original mismatch with a diagnostic encoding error.
+            print("T5_APPLE_PAIR_PUBLIC_PROJECTION_DIAGNOSTIC_ENCODING_FAILED")
+        }
     }
 
     private func writePrivate<T: Encodable>(_ value: T, to url: URL) throws {
