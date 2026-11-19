@@ -151,6 +151,10 @@ final class HanlinNativeAcceptanceUITests: XCTestCase {
                          diagnosticName: "hanlin-native-logged-out-root")
         XCTAssertEqual(login.count, 1)
         XCTAssertEqual(join.count, 1)
+        XCTAssertEqual(app.staticTexts.matching(NSPredicate(format: "label == %@", "Add a Channel Home?")).count, 0,
+                       "No retired Space picker may remain over the auth root")
+        XCTAssertEqual(app.staticTexts.matching(NSPredicate(format: "label == %@", "Error: not logged in (unknownError)")).count, 0,
+                       "Retired bootstrap work must not reach middleware after logout")
         let home = app.descendants(matching: .any).matching(NSPredicate(
             format: "identifier == %@ OR identifier == %@", "SpaceHub", "NewSpaceButton"))
         XCTAssertEqual(home.count, 0, "The old authenticated Space root must be unmounted")

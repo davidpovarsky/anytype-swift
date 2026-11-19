@@ -23,7 +23,7 @@ from run_host_tests import EditorEvidenceReviewPending, HostTestProfile, expecte
 class SDKResultGateTests(unittest.TestCase):
     def setUp(self):
         self.expected = {suite + "/actualMethod" for suite in SUITES}
-        self.summary = dict(totalTestCount=4, passedTests=4, failedTests=0, skippedTests=0,
+        self.summary = dict(totalTestCount=len(self.expected), passedTests=len(self.expected), failedTests=0, skippedTests=0,
                             devicesAndConfigurations=[dict(device=dict(deviceId="disposable-id", osVersion="27.0",
                             osBuildNumber="24A-test", architecture="arm64", modelName="iPad (A16)"))])
         self.tree = dict(children=[dict(nodeType="Test Case", nodeIdentifier=name + "()", result="Passed")
@@ -32,7 +32,7 @@ class SDKResultGateTests(unittest.TestCase):
     def validate(self):
         return validate_results(self.summary, self.tree, self.expected, "disposable-id")
 
-    def test_all_four_suites_pass_with_actual_method_identity(self):
+    def test_all_five_suites_pass_with_actual_method_identity(self):
         self.assertEqual(set(self.validate()["methods"]), self.expected)
 
     def test_zero_counts_cannot_pass_even_with_named_tree(self):
@@ -47,7 +47,7 @@ class SDKResultGateTests(unittest.TestCase):
 
     def test_unrelated_success_does_not_substitute_for_sdk_test(self):
         self.tree["children"][0]["nodeIdentifier"] = "Unrelated/testPassed()"
-        with self.assertRaisesRegex(ValueError, "outside the four"):
+        with self.assertRaisesRegex(ValueError, "outside the reviewed"):
             self.validate()
 
     def test_false_or_missing_or_skipped_results_are_rejected(self):
@@ -91,7 +91,7 @@ class SDKResultGateTests(unittest.TestCase):
         second = copy.deepcopy(node)
         second["nodeIdentifier"] = "AnytypeTests/" + node["nodeIdentifier"] + "/argument-2"
         self.tree["children"].append(second)
-        self.summary.update(totalTestCount=5, passedTests=5)
+        self.summary.update(totalTestCount=len(self.expected) + 1, passedTests=len(self.expected) + 1)
         self.assertEqual(set(self.validate()["methods"]), self.expected)
 
     def test_reviewed_consumer_branch_stays_bound_to_its_declared_source(self):
@@ -153,7 +153,8 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
     def source_fixture(self, root):
         files, expected = [], set()
         for suite, count in (("HanlinHostAdapterTests", 35), ("HanlinHostWriteTests", 15),
-                             ("HanlinHostReadWriteTests", 20), ("HanlinSDKConsumerTests", 6)):
+                             ("HanlinHostReadWriteTests", 20), ("HanlinSDKConsumerTests", 6),
+                             ("PinkhaBootstrapStateManagerTests", 2)):
             names = []
             if suite == "HanlinHostAdapterTests":
                 names = sorted(self.return_methods | self.selection_methods | self.consent_methods)
@@ -161,6 +162,8 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
                 names = sorted(self.journal_methods)
             elif suite == "HanlinHostReadWriteTests":
                 names = sorted(self.write_preflight_methods)
+            elif suite == "PinkhaBootstrapStateManagerTests":
+                names = ["onlyOneProvisioningOwner", "oldAccountCompletionCannotPublishIntoReplacementClaim"]
             names += ["existingMethod" + str(i) for i in range(count - len(names))]
             relative = "AnytypeTests/Pinkha/" + suite + ".swift"
             target = root / relative
@@ -176,7 +179,7 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
             files, expected = self.source_fixture(root)
             with patch.object(subprocess, "check_output", return_value=("\0".join(files) + "\0").encode()):
                 actual, hashes = expected_methods(root)
-                self.assertEqual(len(actual), 76)
+                self.assertEqual(len(actual), 78)
                 self.assertEqual(actual, expected)
                 self.assertEqual(set(hashes), set(files))
                 adapter = root / files[0]
@@ -190,12 +193,12 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
     def test_each_new_return_method_requires_an_actual_pass_not_a_successful_aggregate(self):
         with tempfile.TemporaryDirectory() as temp:
             _, expected = self.source_fixture(Path(temp))
-        summary = dict(totalTestCount=76, passedTests=76, failedTests=0, skippedTests=0,
+        summary = dict(totalTestCount=78, passedTests=78, failedTests=0, skippedTests=0,
                        devicesAndConfigurations=[dict(device=dict(deviceId="disposable-id", osVersion="27.0",
                        osBuildNumber="24A-test", architecture="arm64", modelName="iPad (A16)"))])
         tree = dict(children=[dict(nodeType="Test Case", nodeIdentifier=name + "()", result="Passed")
                               for name in sorted(expected)])
-        self.assertEqual(len(validate_results(summary, tree, expected, "disposable-id")["methods"]), 76)
+        self.assertEqual(len(validate_results(summary, tree, expected, "disposable-id")["methods"]), 78)
         for name in self.return_methods:
             with self.subTest(missing=name):
                 incomplete = copy.deepcopy(tree)
@@ -221,7 +224,7 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
     def test_selection_transition_cases_require_actual_passes_despite_successful_total(self):
         with tempfile.TemporaryDirectory() as temp:
             _, expected = self.source_fixture(Path(temp))
-        summary = dict(totalTestCount=76, passedTests=76, failedTests=0, skippedTests=0,
+        summary = dict(totalTestCount=78, passedTests=78, failedTests=0, skippedTests=0,
                        devicesAndConfigurations=[dict(device=dict(deviceId="disposable-id", osVersion="27.0",
                        osBuildNumber="24A-test", architecture="arm64", modelName="iPad (A16)"))])
         tree = dict(children=[dict(nodeType="Test Case", nodeIdentifier=name + "()", result="Passed")
@@ -241,7 +244,7 @@ class SDKReturnReceiptGateTests(unittest.TestCase):
             files, expected = self.source_fixture(root)
             target = next(root / path for path in files if path.endswith("HanlinHostReadWriteTests.swift"))
             original = target.read_text()
-            summary = dict(totalTestCount=76, passedTests=76, failedTests=0, skippedTests=0,
+            summary = dict(totalTestCount=78, passedTests=78, failedTests=0, skippedTests=0,
                            devicesAndConfigurations=[dict(device=dict(deviceId="disposable-id", osVersion="27.0",
                            osBuildNumber="24A-test", architecture="arm64", modelName="iPad (A16)"))])
             tree = dict(children=[dict(nodeType="Test Case", nodeIdentifier=name + "()", result="Passed")

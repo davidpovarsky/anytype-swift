@@ -11,9 +11,14 @@ public protocol PinkhaSpaceBootstrapServiceProtocol: Sendable {
     func manifest(forSpaceId spaceId: String) -> PinkhaSpaceManifest?
     func isBootstrapped(spaceId: String) -> Bool
     func isNativeSchemaProvisioned(spaceId: String) -> Bool
+    func quiesceAccountOperations() async
+    func resumeAccountOperations() async throws
 }
 
 public extension PinkhaSpaceBootstrapServiceProtocol {
+    func quiesceAccountOperations() async {}
+    func resumeAccountOperations() async throws {}
+
     /// Preserve compatibility with injected test implementations of the bootstrap protocol.
     func bootstrapCanonicalSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
         try await bootstrapSpace(spaceId: spaceId)
@@ -79,6 +84,8 @@ public final class PinkhaSpaceBootstrapService: PinkhaSpaceBootstrapServiceProto
     private let engine: PinkhaSpaceBootstrapEngine
     private let nativeProperties: TorahNativeSchemaProvisioner?
     private let stateBox = ProvisioningStateBox()
+    private let accountOperations = PinkhaBootstrapOperations<PinkhaSpaceManifest>()
+    private let stateManager = Container.shared.pinkhaBootstrapStateManager()
 
     public init(
         store: any PinkhaSpaceManifestStoreProtocol = Container.shared.pinkhaSpaceManifestStore(),
@@ -110,11 +117,29 @@ public final class PinkhaSpaceBootstrapService: PinkhaSpaceBootstrapServiceProto
         engine.isBootstrapped(spaceId: spaceId) && stateBox.isProvisioned(spaceId)
     }
 
+    public func quiesceAccountOperations() async {
+        await accountOperations.closeAndDrain()
+        stateManager.resetForAccountChange()
+    }
+
+    public func resumeAccountOperations() async throws {
+        stateManager.resetForAccountChange()
+        try await accountOperations.reopen()
+    }
+
     public func bootstrapCanonicalSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
-        try await engine.bootstrapSpace(spaceId: spaceId)
+        try await accountOperations.run { [engine] in
+            try await engine.bootstrapSpace(spaceId: spaceId)
+        }
     }
 
     public func bootstrapSpace(spaceId: String) async throws -> PinkhaSpaceManifest {
+        try await accountOperations.run { [self] in
+            try await performBootstrap(spaceId: spaceId)
+        }
+    }
+
+    private func performBootstrap(spaceId: String) async throws -> PinkhaSpaceManifest {
         try await stateBox.runOrJoin(spaceId: spaceId) { [engine, nativeProperties, stateBox] in
             let manifest = try await engine.bootstrapSpace(spaceId: spaceId)
             var provisionedNative = (nativeProperties == nil)

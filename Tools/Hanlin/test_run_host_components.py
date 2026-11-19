@@ -50,13 +50,13 @@ class CombinedComponentGateTests(unittest.TestCase):
         self.assertEqual(self.summary, original_summary)
         self.assertEqual(actual["counts"]["totalTestCount"], len(self.expected))
         self.assertEqual(set(actual["components"]), {"sdk06", "editor", "wave15-core"})
-        self.assertEqual(actual["components"]["sdk06"]["actual_method_count"], 5)
+        self.assertEqual(actual["components"]["sdk06"]["actual_method_count"], 6)
         self.assertEqual(actual["components"]["editor"]["actual_method_count"], 10)
         self.assertEqual(actual["components"]["editor"]["declared_case_count"], 12)
         self.assertEqual(actual["components"]["wave15-core"]["actual_method_count"], 53)
         self.assertEqual(actual["components"]["wave15-core"]["declared_case_count"], 78)
         self.assertEqual(host.HostTestProfile.COMPONENTS.pass_status, "WAVE15_ALL_COMPONENTS_PASS")
-        self.assertEqual(len(host.HostTestProfile.COMPONENTS.suites), 11)
+        self.assertEqual(len(host.HostTestProfile.COMPONENTS.suites), 12)
 
     def test_other_components_cannot_replace_a_missing_entire_component(self):
         original = deepcopy(self.tree)

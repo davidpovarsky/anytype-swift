@@ -31,6 +31,8 @@ final class HomeWidgetsCoordinatorViewModel: HomeWidgetsModuleOutput, SetObjectC
     private var participantSpacesStorage: any ParticipantSpacesStorageProtocol
     @Injected(\.pendingShareStorage) @ObservationIgnored
     private var pendingShareStorage: any PendingShareStorageProtocol
+    @Injected(\.applicationStateService) @ObservationIgnored
+    private var applicationStateService: any ApplicationStateServiceProtocol
 
     init(info: AccountInfo) {
         self.spaceInfo = info
@@ -38,7 +40,17 @@ final class HomeWidgetsCoordinatorViewModel: HomeWidgetsModuleOutput, SetObjectC
 
     func startSpaceViewTask() async {
         let spaceId = spaceInfo.accountSpaceId
-        for await participantSpaceView in participantSpacesStorage.participantSpaceViewPublisher(spaceId: spaceId).values {
+        // The sheet belongs to this authenticated view task, including when a
+        // retained Space publication arrives during the original logout route.
+        defer { showHomepagePicker = false }
+        let updates = participantSpacesStorage.participantSpaceViewPublisher(spaceId: spaceId)
+            .combineLatest(applicationStateService.statePublisher)
+        for await (participantSpaceView, applicationState) in updates.values {
+            guard !Task.isCancelled else { return }
+            guard applicationState == .home else {
+                showHomepagePicker = false
+                continue
+            }
             let spaceView = participantSpaceView.spaceView
             let homepageNotSet = spaceView.homepage == .empty
             let canSetHomepage = participantSpaceView.canSetHomepage

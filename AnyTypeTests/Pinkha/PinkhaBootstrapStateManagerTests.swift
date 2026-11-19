@@ -27,4 +27,20 @@ struct PinkhaBootstrapStateManagerTests {
             return
         }
     }
+    @Test("An old account completion cannot overwrite a new claim for the same Space")
+    func oldAccountCompletionCannotPublishIntoReplacementClaim() throws {
+        let manager = PinkhaBootstrapStateManager()
+        let original = try #require(manager.beginProvisioningClaim(spaceId: "same-space"))
+        manager.resetForAccountChange()
+        let replacement = try #require(manager.beginProvisioningClaim(spaceId: "same-space"))
+        #expect(original != replacement)
+        manager.setState(.failed("retired account"), for: "same-space", claim: original)
+        guard case .provisioning = manager.state(for: "same-space") else {
+            Issue.record("A retired completion changed the replacement account's state")
+            return
+        }
+        manager.setState(.failed("current account"), for: "same-space", claim: replacement)
+        #expect(manager.state(for: "same-space") == .failed("current account"))
+    }
+
 }

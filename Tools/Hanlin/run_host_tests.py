@@ -30,6 +30,7 @@ SUITES = {
     "HanlinHostWriteTests": 15,
     "HanlinHostReadWriteTests": 20,
     "HanlinSDKConsumerTests": 6,
+    "PinkhaBootstrapStateManagerTests": 2,
 }
 SDK_RETURN_METHODS = {
     "nativeReturnReceiptCompletesOnceWithoutRearmingExecution",
@@ -60,6 +61,10 @@ SDK_WRITE_PREFLIGHT_METHODS = {
     "writePreflightDenialPreventsRunnerAndRetainsOriginalMetadata",
     "writePreflightErrorsPreserveSafeCodesWithoutRunnerEntry",
     "writeRunnerResultsAndErrorsKeepTheirOriginalDisposition",
+}
+SDK_BOOTSTRAP_METHODS = {
+    "onlyOneProvisioningOwner",
+    "oldAccountCompletionCannotPublishIntoReplacementClaim",
 }
 SDK_BUDGET_METHOD = "HanlinSDKConsumerTests/canonicalDispatcherBudgetsReachReadAndReplayOnlyReceipt"
 SDK_BUDGET_ARGUMENTS = ("1048576", "8388608")
@@ -172,6 +177,8 @@ def expected_methods(app, profile=HostTestProfile.SDK06):
             require(SDK_JOURNAL_METHODS.issubset(names), "Reviewed journal protection test declarations disappeared")
         if profile is HostTestProfile.SDK06 and suite == "HanlinHostReadWriteTests":
             require(SDK_WRITE_PREFLIGHT_METHODS.issubset(names), "Reviewed write preflight test declarations disappeared")
+        if profile is HostTestProfile.SDK06 and suite == "PinkhaBootstrapStateManagerTests":
+            require(set(names) == SDK_BOOTSTRAP_METHODS, "Unexpected bootstrap account lifetime test declarations")
         if profile is HostTestProfile.EDITOR:
             declarations = re.findall(r"@Test(?:\(([^\n]*)\))?\s+func\s+(\w+)\s*\(([^)]*)\)", text)
             require(set(names) == set(EDITOR_METHODS), "Reviewed editor method set changed")
@@ -227,7 +234,7 @@ def validate_results(summary, tree, expected, udid, profile=HostTestProfile.SDK0
     observed = set()
     for identifier in cases:
         matches = [method for method in expected if re.search(r"(?:^|/)" + re.escape(method) + r"(?:\(|/|$)", identifier)]
-        require(len(matches) == 1, ("Unexpected xcresult test outside the four SDK suites: "
+        require(len(matches) == 1, ("Unexpected xcresult test outside the reviewed SDK suites: "
                                   if profile is HostTestProfile.SDK06 else "Unexpected xcresult editor test: ") + identifier)
         observed.add(matches[0])
     require(observed == expected, "Missing SDK test methods: " + ", ".join(sorted(expected - observed)))

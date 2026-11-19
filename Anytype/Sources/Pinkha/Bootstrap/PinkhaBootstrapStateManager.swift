@@ -6,18 +6,39 @@ import os.log
 private let pinkhaLog = OSLog(subsystem: "com.anytype.pinkha", category: "Bootstrap")
 
 public final class PinkhaBootstrapStateManager: Sendable {
-    private let states = LockIsolated<[String: PinkhaSpaceBootstrapState]>([:])
+    private struct Entry: Sendable {
+        let state: PinkhaSpaceBootstrapState
+        let claim: UUID
+    }
+    private let states = LockIsolated<[String: Entry]>([:])
 
     public init() {}
 
     public func state(for spaceId: String) -> PinkhaSpaceBootstrapState {
-        states.value[spaceId] ?? .uninitialized
+        states.value[spaceId]?.state ?? .uninitialized
     }
 
     public func setState(_ state: PinkhaSpaceBootstrapState, for spaceId: String) {
         states.withValue { dict in
-            dict[spaceId] = state
+            dict[spaceId] = Entry(state: state, claim: UUID())
         }
+        logState(state, for: spaceId)
+    }
+
+    public func setState(_ state: PinkhaSpaceBootstrapState, for spaceId: String, claim: UUID) {
+        let accepted = states.withValue { dict in
+            guard dict[spaceId]?.claim == claim else { return false }
+            dict[spaceId] = Entry(state: state, claim: claim)
+            return true
+        }
+        if accepted { logState(state, for: spaceId) }
+    }
+
+    public func resetForAccountChange() {
+        states.withValue { $0.removeAll(keepingCapacity: true) }
+    }
+
+    private func logState(_ state: PinkhaSpaceBootstrapState, for spaceId: String) {
         switch state {
         case .uninitialized:
             os_log("[Pinkha] Space %{public}@ bootstrap uninitialized", log: pinkhaLog, type: .info, spaceId)
@@ -34,17 +55,20 @@ public final class PinkhaBootstrapStateManager: Sendable {
     /// observe the in-flight state instead of starting a second schema mutation sequence.
     @discardableResult
     public func beginProvisioningIfNeeded(spaceId: String) -> Bool {
-        let didBegin = states.withValue { dict in
-            guard case .uninitialized = dict[spaceId] ?? .uninitialized else {
-                return false
+        beginProvisioningClaim(spaceId: spaceId) != nil
+    }
+
+    public func beginProvisioningClaim(spaceId: String) -> UUID? {
+        let claim = states.withValue { dict -> UUID? in
+            guard case .uninitialized = dict[spaceId]?.state ?? .uninitialized else {
+                return nil
             }
-            dict[spaceId] = .provisioning
-            return true
+            let claim = UUID()
+            dict[spaceId] = Entry(state: .provisioning, claim: claim)
+            return claim
         }
-        if didBegin {
-            os_log("[Pinkha] Space %{public}@ bootstrap started (provisioning)", log: pinkhaLog, type: .info, spaceId)
-        }
-        return didBegin
+        if claim != nil { logState(.provisioning, for: spaceId) }
+        return claim
     }
 
     /// Allows Phase 2 or any caller to asynchronously await readiness without polling blindly.

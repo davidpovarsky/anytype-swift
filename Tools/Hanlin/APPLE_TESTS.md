@@ -1,19 +1,20 @@
 # SDK06 focused Apple component lane
 
 The reusable workflow `pinkha-sdk06-tests.yml` builds `Debug-Anytype` on the
-existing `xcode-27` ARM64 runner and runs only these four `AnytypeTests` suites:
+existing `xcode-27` ARM64 runner and runs only these five `AnytypeTests` suites:
 
-- `HanlinHostAdapterTests` (22 reviewed declarations)
-- `HanlinHostWriteTests` (12)
-- `HanlinHostReadWriteTests` (17)
+- `HanlinHostAdapterTests` (35 reviewed declarations)
+- `HanlinHostWriteTests` (15)
+- `HanlinHostReadWriteTests` (20)
 - `HanlinSDKConsumerTests` (6, including a two-budget parameterized test)
+- `PinkhaBootstrapStateManagerTests` (2, including retirement of a claim before a new account claim)
 
 The Debug configuration is required: some journal and consumer tests are
-compiled only with `DEBUG` and iOS. There are 57 declarations and 58 expected
-parameter executions. The gate reads every declaration in the actual four
+compiled only with `DEBUG` and iOS. There are 78 declarations and 79 expected
+parameter executions. The gate reads every declaration in the actual five
 source files, requires the reviewed per-suite minimum, and checks every method
 in actual xcresult test-case nodes. It accepts either Xcode's declaration or
-parameter-execution summary counting, but never fewer than 57 passing tests,
+parameter-execution summary counting, but never fewer than 78 passing tests,
 an omitted method, an unrelated suite, a failure, or a skip.
 
 ## Integration caller

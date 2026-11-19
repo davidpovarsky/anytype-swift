@@ -8,6 +8,7 @@ import HanlinHostContracts
 actor PinkhaHanlinAuthService: AuthServiceProtocol {
     private let base: any AuthServiceProtocol
     private let accounts = Container.shared.accountManager()
+    private var bootstrap: any PinkhaSpaceBootstrapServiceProtocol { Container.shared.pinkhaBootstrapService() }
     private var changingAccount = false
 
     init(base: any AuthServiceProtocol) { self.base = base }
@@ -29,7 +30,9 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
     func createAccount(name: String, iconOption: Int, imagePath: String) async throws -> AccountData {
         try beginAccountChange(); defer { changingAccount = false }
         try await PinkhaHanlinAccountOwner.shared.closeAccount(accounts.account.id, removeData: false)
+        await bootstrap.quiesceAccountOperations()
         let account = try await base.createAccount(name: name, iconOption: iconOption, imagePath: imagePath)
+        try await bootstrap.resumeAccountOperations()
         try await PinkhaHanlinAccountOwner.shared.accountDidOpen(account.id)
         return account
     }
@@ -37,7 +40,9 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
     func selectAccount(id: String, preferredSpaceId: String) async throws -> AccountData {
         try beginAccountChange(); defer { changingAccount = false }
         try await PinkhaHanlinAccountOwner.shared.closeAccount(accounts.account.id, removeData: false)
+        await bootstrap.quiesceAccountOperations()
         let account = try await base.selectAccount(id: id, preferredSpaceId: preferredSpaceId)
+        try await bootstrap.resumeAccountOperations()
         try await PinkhaHanlinAccountOwner.shared.accountDidOpen(account.id)
         return account
     }
@@ -45,6 +50,7 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
     func logout(removeData: Bool) async throws {
         try beginAccountChange(); defer { changingAccount = false }
         try await PinkhaHanlinAccountOwner.shared.closeAccount(accounts.account.id, removeData: removeData)
+        await bootstrap.quiesceAccountOperations()
         try await base.logout(removeData: removeData)
     }
 
