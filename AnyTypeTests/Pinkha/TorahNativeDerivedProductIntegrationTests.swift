@@ -198,18 +198,77 @@ struct TorahNativeDerivedProductIntegrationTests {
             return nil
         }.first)
 
-        // Hide מקור/ות on the Type
-        chiddushTypeVM.onRelationHide(sourcesRowInType)
-
-        // Verify both TypePropertiesViewModel and the open document's ObjectPropertiesViewModel move מקור/ות to Hidden
-        try await eventually {
+        let hideObservation = NativeTypeHideObservation()
+        @MainActor
+        func observeHideViews() {
             let hiddenSection = objectPropertiesVM.sections.first {
                 $0.id == PropertiesSection.Constants.hiddenPropertiesSectionId
             }
-            let isHiddenOnDoc = hiddenSection?.relations.contains { $0.key == TorahNativePropertyDefinition.all[0].key } == true
-            let isHiddenOnType = chiddushTypeVM.isRelationHidden(sourcesRowInType)
-            return isHiddenOnDoc && isHiddenOnType
+            hideObservation.hiddenOnDocument = hiddenSection?.relations.contains {
+                $0.key == TorahNativePropertyDefinition.all[0].key
+            } == true
+            hideObservation.hiddenOnType = chiddushTypeVM.isRelationHidden(sourcesRowInType)
         }
+        let hideBefore = try await typeHideCanonicalSnapshot(
+            typeId: typeId, documentId: document.id, spaceId: spaceId,
+            propertyId: sourcesRowInType.relation.id, propertyKey: sourcesRowInType.relation.key
+        )
+        observeHideViews()
+        hideObservation.record(phase: .before, canonical: hideBefore)
+        #expect(hideBefore.typeIdentityMatches && hideBefore.documentIdentityMatches)
+        #expect(!hideBefore.hiddenOnType)
+        #expect(hideBefore.recommendedOnType || hideBefore.featuredOnType)
+        #expect(!hideBefore.attachedToDocument)
+
+        // Use the same action as the context menu, exactly once. Its completion
+        // and each rendered state are separate observations inside the same 30s wait.
+        let hideTask = try #require(chiddushTypeVM.onRelationHide(sourcesRowInType))
+        hideObservation.action = .pending
+        let hideCompletion = Task { @MainActor in
+            do {
+                try await hideTask.value
+                hideObservation.action = .succeeded
+            } catch is CancellationError {
+                hideObservation.action = .cancelled
+            } catch {
+                hideObservation.action = .failed
+            }
+        }
+        defer {
+            hideCompletion.cancel()
+            hideTask.cancel()
+        }
+
+        // Preserve both original view assertions; successful RPC completion is
+        // additionally required so a partially applied failed action cannot pass.
+        do {
+            try await eventually {
+                observeHideViews()
+                return hideObservation.hiddenOnDocument && hideObservation.hiddenOnType &&
+                    hideObservation.action == .succeeded
+            }
+        } catch {
+            let originalError = error
+            observeHideViews()
+            do {
+                let after = try await typeHideCanonicalSnapshot(
+                    typeId: typeId, documentId: document.id, spaceId: spaceId,
+                    propertyId: sourcesRowInType.relation.id, propertyKey: sourcesRowInType.relation.key
+                )
+                hideObservation.record(phase: .failed, canonical: after)
+            } catch {
+                hideObservation.record(phase: .failed, canonical: nil)
+            }
+            throw originalError
+        }
+        let hideAfter = try await typeHideCanonicalSnapshot(
+            typeId: typeId, documentId: document.id, spaceId: spaceId,
+            propertyId: sourcesRowInType.relation.id, propertyKey: sourcesRowInType.relation.key
+        )
+        hideObservation.record(phase: .completed, canonical: hideAfter)
+        #expect(hideAfter.typeIdentityMatches && hideAfter.documentIdentityMatches)
+        #expect(hideAfter.hiddenOnType && !hideAfter.recommendedOnType && !hideAfter.featuredOnType)
+        #expect(!hideAfter.attachedToDocument)
 
         // Verify Add Property picker (PropertyCreationViewModel) when מקור/ות is hidden and the other 2 are visible:
         // excludedRelationsIds contains only visible IDs; hiddenRelationsIds contains the hidden מקור/ות ID.
@@ -796,6 +855,25 @@ struct TorahNativeDerivedProductIntegrationTests {
         return (documents, linkedDocuments, types, mixedDoc.id)
     }
 
+    private func typeHideCanonicalSnapshot(
+        typeId: String, documentId: String, spaceId: String, propertyId: String, propertyKey: String
+    ) async throws -> NativeTypeHideCanonicalSnapshot {
+        let type = try await show(typeId, spaceId: spaceId)
+        let object = try await show(documentId, spaceId: spaceId)
+        let encoder = JSONEncoder()
+        let typeLists = [type.recommendedRelations, type.recommendedFeaturedRelations, type.recommendedHiddenRelations]
+        return NativeTypeHideCanonicalSnapshot(
+            typeIdentityMatches: type.id == typeId && type.spaceId == spaceId,
+            documentIdentityMatches: object.id == documentId && object.spaceId == spaceId && object.type == typeId,
+            recommendedOnType: type.recommendedRelations.contains(propertyId),
+            featuredOnType: type.recommendedFeaturedRelations.contains(propertyId),
+            hiddenOnType: type.recommendedHiddenRelations.contains(propertyId),
+            attachedToDocument: object.stringArrayValue(for: TorahNativePropertyDefinition.attachedPropertiesKey).contains(propertyKey),
+            typeListCounts: typeLists.map(\.count),
+            typeListsSHA256: SHA256.hash(data: try encoder.encode(typeLists)).map { String(format: "%02x", $0) }.joined()
+        )
+    }
+
     private func show(_ id: String, spaceId: String) async throws -> ObjectDetails {
         let response = try await ClientCommands.objectShow(.with {
             $0.contextID = id; $0.objectID = id; $0.spaceID = spaceId
@@ -829,6 +907,46 @@ private actor NativeMembershipStates {
 private enum NativeAcceptanceError: Error {
     case timeout
     case conditionTimeout(String)
+}
+
+private struct NativeTypeHideCanonicalSnapshot: Codable {
+    let typeIdentityMatches: Bool
+    let documentIdentityMatches: Bool
+    let recommendedOnType: Bool
+    let featuredOnType: Bool
+    let hiddenOnType: Bool
+    let attachedToDocument: Bool
+    let typeListCounts: [Int]
+    let typeListsSHA256: String
+}
+
+@MainActor
+private final class NativeTypeHideObservation {
+    enum Action: String, Codable { case notStarted, pending, succeeded, failed, cancelled }
+    enum Phase: String, Codable { case before, completed, failed }
+    var action: Action = .notStarted
+    var hiddenOnType = false
+    var hiddenOnDocument = false
+
+    func record(phase: Phase, canonical: NativeTypeHideCanonicalSnapshot?) {
+        struct Observation: Encodable {
+            let phase: Phase
+            let action: Action
+            let hiddenOnType: Bool
+            let hiddenOnDocument: Bool
+            let canonicalReadSucceeded: Bool
+            let canonical: NativeTypeHideCanonicalSnapshot?
+        }
+        let value = Observation(
+            phase: phase, action: action, hiddenOnType: hiddenOnType,
+            hiddenOnDocument: hiddenOnDocument, canonicalReadSucceeded: canonical != nil, canonical: canonical
+        )
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        if let data = try? encoder.encode(value), let text = String(data: data, encoding: .utf8) {
+            print("Native Type hide observation: \(text)")
+        }
+    }
 }
 
 

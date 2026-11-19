@@ -237,7 +237,7 @@
     },
     "TorahNativeUIParityTests": {
       "path": "AnyTypeTests/Pinkha/TorahNativeUIParityTests.swift",
-      "source_lf_sha256": "aa673cffd55c5d2ab3e7e82e03cde8fef8e853f12c54d88620e7570910bc9cd4",
+      "source_lf_sha256": "c3c031f8a2edc3cb99ae57471a29c15b4f8477e4ad8203396a58073b4941019d",
       "methods": {
         "compactBlockOrnamentGeometry": {
           "parameters": [],
@@ -321,6 +321,24 @@
           "parameters": [],
           "argument_collections": [],
           "case_count": 1
+        },
+        "canonicalTypeRefreshFences": {
+          "parameters": [
+            {
+              "name": "scenario",
+              "type": "String"
+            }
+          ],
+          "argument_collections": [
+            [
+              "canonical",
+              "same-type-aba",
+              "other-type",
+              "space-invalidation",
+              "cache-clear"
+            ]
+          ],
+          "case_count": 5
         }
       }
     },

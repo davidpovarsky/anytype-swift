@@ -53,8 +53,8 @@ class CombinedComponentGateTests(unittest.TestCase):
         self.assertEqual(actual["components"]["sdk06"]["actual_method_count"], 5)
         self.assertEqual(actual["components"]["editor"]["actual_method_count"], 10)
         self.assertEqual(actual["components"]["editor"]["declared_case_count"], 12)
-        self.assertEqual(actual["components"]["wave15-core"]["actual_method_count"], 52)
-        self.assertEqual(actual["components"]["wave15-core"]["declared_case_count"], 73)
+        self.assertEqual(actual["components"]["wave15-core"]["actual_method_count"], 53)
+        self.assertEqual(actual["components"]["wave15-core"]["declared_case_count"], 78)
         self.assertEqual(host.HostTestProfile.COMPONENTS.pass_status, "WAVE15_ALL_COMPONENTS_PASS")
         self.assertEqual(len(host.HostTestProfile.COMPONENTS.suites), 11)
 
@@ -135,11 +135,11 @@ class CombinedComponentGateTests(unittest.TestCase):
 
 
     def test_aggregate_can_only_describe_actual_methods_or_all_source_bound_cases(self):
-        for total in (len(self.expected), len(self.expected) + 24):
+        for total in (len(self.expected), len(self.expected) + 28):
             self.summary.update(totalTestCount=total, passedTests=total)
             actual = self.validate()
-            self.assertEqual(actual["declared_case_count"], len(self.expected) + 24)
-        for total in (len(self.expected) + 1, len(self.expected) + 23, 999):
+            self.assertEqual(actual["declared_case_count"], len(self.expected) + 28)
+        for total in (len(self.expected) + 1, len(self.expected) + 27, 999):
             with self.subTest(total=total):
                 self.summary.update(totalTestCount=total, passedTests=total)
                 with self.assertRaisesRegex(ValueError, "Combined summary differs"):

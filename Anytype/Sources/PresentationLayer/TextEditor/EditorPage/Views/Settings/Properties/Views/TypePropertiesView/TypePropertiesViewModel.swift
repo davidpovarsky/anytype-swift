@@ -16,6 +16,7 @@ final class TypePropertiesViewModel {
     var relationsSearchData: PropertiesSearchData?
     var propertyData: PropertyInfoData?
     var conflictRelations = [PropertyDetails]()
+    var toastBarData: ToastBarData?
 
     // MARK: - Private variables
 
@@ -152,6 +153,10 @@ final class TypePropertiesViewModel {
     
     func setupDetailsSubscription() async {
         for await details in document.detailsPublisher.values {
+            await PinkhaTorahNativePropertyCatalog.shared.refreshTypeRelationsIfNeeded(
+                observedDetails: details, spaceId: document.spaceId
+            )
+            guard !Task.isCancelled else { return }
             try? await updateConflictRelations(details: details)
         }
     }
@@ -224,22 +229,30 @@ final class TypePropertiesViewModel {
         }
     }
 
-    func onRelationHide(_ row: TypePropertiesRelationRow) {
-        guard let details = document.details else { return }
+    @discardableResult
+    func onRelationHide(_ row: TypePropertiesRelationRow) -> Task<Void, any Error>? {
+        guard let details = document.details else { return nil }
         guard !PinkhaTorahPropertyPolicy.shared.isInternalProperty(
             propertyId: row.relation.id, key: row.relation.key, spaceId: document.spaceId
-        ) else { return }
+        ) else { return nil }
         let type = ObjectType(details: details)
-        Task {
-            guard let relationDetails = await PinkhaTorahNativePropertyCatalog.shared.resolvePropertyDetails(
-                id: row.relation.id,
-                key: row.relation.key,
-                from: propertyDetailsStorage,
-                spaceId: document.spaceId
-            ) else {
-                return
+        return Task {
+            do {
+                guard let relationDetails = await PinkhaTorahNativePropertyCatalog.shared.resolvePropertyDetails(
+                    id: row.relation.id,
+                    key: row.relation.key,
+                    from: propertyDetailsStorage,
+                    spaceId: document.spaceId
+                ) else {
+                    throw TypePropertyActionError.missingProperty
+                }
+                try await propertiesService.hideTypeProperty(type: type, property: relationDetails)
+            } catch {
+                if !(error is CancellationError) {
+                    toastBarData = ToastBarData(Loc.error, type: .failure)
+                }
+                throw error
             }
-            try? await propertiesService.hideTypeProperty(type: type, property: relationDetails)
         }
     }
 
@@ -290,4 +303,8 @@ final class TypePropertiesViewModel {
         
         rebuildTypeProperties(animate: relationRows.isNotEmpty)
     }
+}
+
+private enum TypePropertyActionError: Error {
+    case missingProperty
 }

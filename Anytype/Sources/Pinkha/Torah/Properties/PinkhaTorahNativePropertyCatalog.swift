@@ -35,16 +35,32 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
     public static let shared = PinkhaTorahNativePropertyCatalog()
 
     private final class CacheBox: @unchecked Sendable {
+        struct TypeRevision: Equatable, Sendable {
+            let cacheGeneration: Int
+            let spaceGeneration: Int
+            let typeGeneration: Int
+        }
+
         private let lock = NSLock()
         private var cache: [String: [PropertyDetails]] = [:]
         private var diagnostics: [String: [String: NativePropertyLookupFailureReason]] = [:]
         private var typeRelations: [String: [String: TorahTypeRelationIds]] = [:]
-        private var typeRevision = 0
+        private var cacheGeneration = 0
+        private var spaceGenerations: [String: Int] = [:]
+        private var typeGenerations: [String: [String: Int]] = [:]
 
-        func typeRelationsRevision() -> Int {
+        func typeRelationsRevision(spaceId: String, typeId: String) -> TypeRevision {
             lock.lock()
             defer { lock.unlock() }
-            return typeRevision
+            return typeRevisionLocked(spaceId: spaceId, typeId: typeId)
+        }
+
+        private func typeRevisionLocked(spaceId: String, typeId: String) -> TypeRevision {
+            TypeRevision(
+                cacheGeneration: cacheGeneration,
+                spaceGeneration: spaceGenerations[spaceId, default: 0],
+                typeGeneration: typeGenerations[spaceId]?[typeId] ?? 0
+            )
         }
 
         func get(spaceId: String) -> [PropertyDetails]? {
@@ -78,13 +94,17 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         }
 
         @discardableResult
-        func setTypeRelations(spaceId: String, typeId: String, relations: TorahTypeRelationIds, expectedRevision: Int? = nil) -> Bool {
+        func setTypeRelations(spaceId: String, typeId: String, relations: TorahTypeRelationIds, expectedRevision: TypeRevision? = nil) -> Bool {
             lock.lock()
             defer { lock.unlock() }
-            if let expectedRevision, expectedRevision != typeRevision { return false }
+            if let expectedRevision, expectedRevision != typeRevisionLocked(spaceId: spaceId, typeId: typeId) { return false }
             var spaceMap = typeRelations[spaceId] ?? [:]
             let changed = spaceMap[typeId] != relations
-            if changed { typeRevision += 1 }
+            // An accepted write is an observation boundary even when its value is
+            // unchanged. A later hide/show ABA must invalidate an older read.
+            var generations = typeGenerations[spaceId] ?? [:]
+            generations[typeId, default: 0] += 1
+            typeGenerations[spaceId] = generations
             spaceMap[typeId] = relations
             typeRelations[spaceId] = spaceMap
             return changed
@@ -96,7 +116,8 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
             cache.removeValue(forKey: spaceId)
             diagnostics.removeValue(forKey: spaceId)
             typeRelations.removeValue(forKey: spaceId)
-            typeRevision += 1
+            typeGenerations.removeValue(forKey: spaceId)
+            spaceGenerations[spaceId, default: 0] += 1
         }
 
         func clear() {
@@ -105,7 +126,9 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
             cache.removeAll()
             diagnostics.removeAll()
             typeRelations.removeAll()
-            typeRevision += 1
+            typeGenerations.removeAll()
+            spaceGenerations.removeAll()
+            cacheGeneration += 1
         }
     }
 
@@ -113,6 +136,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
     private let policy: PinkhaTorahPropertyPolicy
     private let searchOverride: (any SearchMiddleServiceProtocol)?
     private let storageOverride: (any PropertyDetailsStorageProtocol)?
+    private let objectDetailsOverride: (@Sendable (String, String) async -> ObjectDetails?)?
 
     @Injected(\.searchMiddleService)
     private var defaultSearch: any SearchMiddleServiceProtocol
@@ -131,11 +155,13 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
     init(
         policy: PinkhaTorahPropertyPolicy = .shared,
         searchService: (any SearchMiddleServiceProtocol)? = nil,
-        propertyDetailsStorage: (any PropertyDetailsStorageProtocol)? = nil
+        propertyDetailsStorage: (any PropertyDetailsStorageProtocol)? = nil,
+        objectDetails: (@Sendable (String, String) async -> ObjectDetails?)? = nil
     ) {
         self.policy = policy
         self.searchOverride = searchService
         self.storageOverride = propertyDetailsStorage
+        self.objectDetailsOverride = objectDetails
     }
 
     public func invalidate(spaceId: String? = nil) {
@@ -189,7 +215,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
             cache.setDiagnostics(spaceId: manifest.spaceId, reasons: resolved.failures)
         }
         for typeId in manifest.registeredDocumentTypes.values where !typeId.isEmpty {
-            let revision = cache.typeRelationsRevision()
+            let revision = cache.typeRelationsRevision(spaceId: manifest.spaceId, typeId: typeId)
             if let liveDetails = await fetchLiveObjectDetails(id: typeId, spaceId: manifest.spaceId) {
                 cache.setTypeRelations(
                     spaceId: manifest.spaceId,
@@ -229,7 +255,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         }
 
         if let typeId, !typeId.isEmpty, cache.getTypeRelations(spaceId: spaceId, typeId: typeId) == nil {
-            let revision = cache.typeRelationsRevision()
+            let revision = cache.typeRelationsRevision(spaceId: spaceId, typeId: typeId)
             if let liveDetails = await fetchLiveObjectDetails(id: typeId, spaceId: spaceId),
                liveDetails.isObjectType {
                 let changed = cache.setTypeRelations(
@@ -354,6 +380,11 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
     /// Fetches live `ObjectDetails` for `id` in `spaceId` via `ClientCommands.objectShow`, returning nil when unavailable/mocked.
     public func fetchLiveObjectDetails(id: String, spaceId: String) async -> ObjectDetails? {
         guard !id.isEmpty, !spaceId.isEmpty else { return nil }
+        if let objectDetailsOverride {
+            guard let details = await objectDetailsOverride(id, spaceId),
+                  details.id == id, details.spaceId == spaceId else { return nil }
+            return details
+        }
         guard let response = try? await ClientCommands.objectShow(.with {
             $0.contextID = id
             $0.objectID = id
@@ -384,7 +415,7 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         var featIds = fallbackFeaturedIds
         var hidIds = fallbackHiddenIds
 
-        let revision = cache.typeRelationsRevision()
+        let revision = cache.typeRelationsRevision(spaceId: spaceId, typeId: typeId)
         if let liveDetails = await fetchLiveObjectDetails(id: typeId, spaceId: spaceId) {
             resolvedSpaceId = liveDetails.spaceId
             recIds = liveDetails.recommendedRelations
@@ -434,16 +465,49 @@ public final class PinkhaTorahNativePropertyCatalog: Sendable {
         )
     }
 
-    /// Builds `ParsedProperties` for a Type document using live/cached Type relation IDs and verified native fallbacks.
+    /// A document event signals possible change; its buffered snapshot is not a
+    /// replacement for a newer successful native mutation. Confirm differing
+    /// relation lists with ObjectShow, fenced against changes to this Type only.
+    func refreshTypeRelationsIfNeeded(observedDetails: ObjectDetails, spaceId: String) async {
+        guard PinkhaRuntime.enabled, !spaceId.isEmpty,
+              observedDetails.spaceId == spaceId, observedDetails.isObjectType else { return }
+        let typeId = observedDetails.id
+        let observed = TorahTypeRelationIds(
+            recommended: observedDetails.recommendedRelations,
+            featured: observedDetails.recommendedFeaturedRelations,
+            hidden: observedDetails.recommendedHiddenRelations
+        )
+        guard cache.getTypeRelations(spaceId: spaceId, typeId: typeId) != observed else { return }
+        let revision = cache.typeRelationsRevision(spaceId: spaceId, typeId: typeId)
+        guard let live = await fetchLiveObjectDetails(id: typeId, spaceId: spaceId),
+              live.isObjectType else { return }
+        let changed = cache.setTypeRelations(
+            spaceId: spaceId, typeId: typeId,
+            relations: TorahTypeRelationIds(
+                recommended: live.recommendedRelations,
+                featured: live.recommendedFeaturedRelations,
+                hidden: live.recommendedHiddenRelations
+            ), expectedRevision: revision
+        )
+        guard changed else { return }
+        NotificationCenter.default.post(
+            name: PinkhaTorahPropertyPolicy.canonicalIdentityDidChangeNotification,
+            object: nil, userInfo: ["spaceId": spaceId, "typeId": typeId]
+        )
+    }
+
+    /// Rendering is read-only. In particular, a canonical-change notification
+    /// must not put an older document snapshot back into the shared Type cache.
     func buildParsedPropertiesForType(document: any BaseDocumentProtocol) -> ParsedProperties {
         guard let details = document.details else { return .empty }
         let storage = propertyDetailsStorage
-        let relIds = TorahTypeRelationIds(
-            recommended: details.recommendedRelations,
-            featured: details.recommendedFeaturedRelations,
-            hidden: details.recommendedHiddenRelations
+        let relIds = resolvedTypeRelationIds(
+            typeId: details.id,
+            fallbackRecommended: details.recommendedRelations,
+            fallbackFeatured: details.recommendedFeaturedRelations,
+            fallbackHidden: details.recommendedHiddenRelations,
+            spaceId: document.spaceId
         )
-        cache.setTypeRelations(spaceId: document.spaceId, typeId: details.id, relations: relIds)
         let recommendedRelations = resolveRelationDetails(ids: relIds.recommended, from: storage, spaceId: document.spaceId)
             .filter { $0.key != BundledPropertyKey.description.rawValue }
         let recommendedFeaturedRelations = resolveRelationDetails(ids: relIds.featured, from: storage, spaceId: document.spaceId)

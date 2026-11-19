@@ -29,6 +29,7 @@ struct TypePropertiesView: View {
             .anytypeSheet(isPresented: $model.showConflictingInfo) {
                 ObjectPropertiesBottomAlert()
             }
+            .snackbar(toastBarData: $model.toastBarData)
     }
     
     var content: some View {

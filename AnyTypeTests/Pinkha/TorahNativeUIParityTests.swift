@@ -609,6 +609,20 @@ struct TorahNativeUIParityTests {
         #expect(resolvedAfterHide.recommended == remainingIds)
         #expect(resolvedAfterHide.hidden == [hiddenId])
 
+        // A canonical-change notification can rebuild while the open Type
+        // document still has its pre-hide lists. Rendering must not roll back
+        // the acknowledged cache or make other open documents visible again.
+        let staleType = MockBaseDocument(
+            objectId: chiddushTypeId, recommendedRelations: nativeDetails.map(\.id)
+        )
+        staleType.mockSpaceId = spaceId
+        _ = catalog.buildParsedPropertiesForType(document: staleType)
+        let afterStaleRebuild = catalog.resolvedTypeRelationIds(
+            typeId: chiddushTypeId, fallbackRecommended: nativeDetails.map(\.id),
+            fallbackFeatured: [], fallbackHidden: [], spaceId: spaceId
+        )
+        #expect(afterStaleRebuild == resolvedAfterHide)
+
         // Build ParsedProperties for a zero-association document via PropertiesBuilder
         let docId = "fresh-chiddush-doc-live"
         let docDetails = ObjectDetails(
@@ -642,6 +656,98 @@ struct TorahNativeUIParityTests {
         #expect(torahModel.isEligible == true)
         #expect(torahModel.usesNativeProperties == true)
         #expect(torahModel.showsLegacyProjectionRows == false)
+    }
+
+    @Test("Canonical Type refresh preserves scoped generations and never turns rendering into a read loop",
+          arguments: ["canonical", "same-type-aba", "other-type", "space-invalidation", "cache-clear"])
+    func canonicalTypeRefreshFences(scenario: String) async {
+        let spaceId = "catalog-refresh-\(scenario)"
+        let typeId = "type-a"
+        let sourceId = "source-property"
+        let expectedHidden = scenario == "canonical" || scenario == "other-type"
+        func typeDetails(hidden: Bool) -> ObjectDetails {
+            ObjectDetails(id: typeId, values: [
+                BundledPropertyKey.id.rawValue: typeId.protobufValue,
+                BundledPropertyKey.spaceId.rawValue: spaceId.protobufValue,
+                BundledPropertyKey.resolvedLayout.rawValue: DetailsLayout.objectType.rawValue.protobufValue,
+                BundledPropertyKey.recommendedRelations.rawValue: (hidden ? [] : [sourceId]).protobufValue,
+                BundledPropertyKey.recommendedFeaturedRelations.rawValue: [String]().protobufValue,
+                BundledPropertyKey.recommendedHiddenRelations.rawValue: (hidden ? [sourceId] : []).protobufValue
+            ])
+        }
+        let nativeHidden = typeDetails(hidden: true)
+        let reader = NativeCatalogTypeReadProbe(response: nativeHidden)
+        let catalog = PinkhaTorahNativePropertyCatalog(objectDetails: { id, space in
+            await reader.read(id: id, spaceId: space)
+        })
+        catalog.recordUpdatedTypeRelations(
+            typeId: typeId, spaceId: spaceId,
+            recommendedIds: [sourceId], featuredIds: [], hiddenIds: []
+        )
+        await reader.beforeReturn {
+            switch scenario {
+            case "same-type-aba":
+                catalog.recordUpdatedTypeRelations(
+                    typeId: typeId, spaceId: spaceId,
+                    recommendedIds: [], featuredIds: [], hiddenIds: [sourceId]
+                )
+                catalog.recordUpdatedTypeRelations(
+                    typeId: typeId, spaceId: spaceId,
+                    recommendedIds: [sourceId], featuredIds: [], hiddenIds: []
+                )
+            case "other-type":
+                catalog.recordUpdatedTypeRelations(
+                    typeId: "type-b", spaceId: spaceId,
+                    recommendedIds: [], featuredIds: [], hiddenIds: [sourceId]
+                )
+            case "space-invalidation", "cache-clear":
+                catalog.invalidate(spaceId: scenario == "cache-clear" ? nil : spaceId)
+                catalog.recordUpdatedTypeRelations(
+                    typeId: typeId, spaceId: spaceId,
+                    recommendedIds: [sourceId], featuredIds: [], hiddenIds: []
+                )
+            default:
+                break
+            }
+        }
+        // The hook is invoked by the read itself, after its generation was
+        // captured and before the result is installed. No sleeps or replay API.
+        await catalog.refreshTypeRelationsIfNeeded(observedDetails: nativeHidden, spaceId: spaceId)
+        let actual = catalog.resolvedTypeRelationIds(
+            typeId: typeId, fallbackRecommended: [], fallbackFeatured: [], fallbackHidden: [], spaceId: spaceId
+        )
+        #expect(actual.recommended == (expectedHidden ? [] : [sourceId]))
+        #expect(actual.featured.isEmpty)
+        #expect(actual.hidden == (expectedHidden ? [sourceId] : []))
+        #expect(await reader.readCount == 1)
+        #expect(await reader.requestIdentityMatched)
+
+        // An unchanged native event needs no further read. Pure rebuilds have
+        // no RPC path, and an unrelated Type mutation did not reject this one.
+        await catalog.refreshTypeRelationsIfNeeded(
+            observedDetails: typeDetails(hidden: expectedHidden), spaceId: spaceId
+        )
+        #expect(await reader.readCount == 1)
+    }
+}
+
+private actor NativeCatalogTypeReadProbe {
+    let response: ObjectDetails
+    private var action: (@Sendable () -> Void)?
+    private(set) var readCount = 0
+    private(set) var requestIdentityMatched = true
+
+    init(response: ObjectDetails) { self.response = response }
+
+    func beforeReturn(_ action: @escaping @Sendable () -> Void) {
+        self.action = action
+    }
+
+    func read(id: String, spaceId: String) -> ObjectDetails {
+        readCount += 1
+        requestIdentityMatched = requestIdentityMatched && response.id == id && response.spaceId == spaceId
+        action?()
+        return response
     }
 }
 
