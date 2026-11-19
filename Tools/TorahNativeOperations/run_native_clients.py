@@ -131,7 +131,7 @@ def build(args, receipt, run) -> dict:
             "Exact account baseline or native-client fixture linkage failed")
     receipt["baseline"] = result
     require(result["native_read_observation"] == {**account.NATIVE_READ_OBSERVATION,
-            "scope": "TEST_COMPILE_OVERLAY_ONLY_ORIGINAL_READ_ERROR"}, "Original read observation source linkage failed")
+            "scope": "TEST_COMPILE_OVERLAY_ONLY_ORIGINAL_NATIVE_ERROR"}, "Original read observation source linkage failed")
     binary = Path(result["identities"]["new"]["binary"])
     methods = "^(" + "|".join(CONTROL_METHODS) + ")$"
     run([binary, "-test.run", methods, "-test.count=1", "-test.v", "-test.timeout=60s"],

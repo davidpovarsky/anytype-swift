@@ -1,0 +1,44 @@
+{
+  "schema": "pinkha-t2-source-review-v1",
+  "reviewer": "t2_finish independent source review",
+  "scope": "Frozen remote fetched-storage commit guard correction, based on db52731177bc41268e85a17970b5efdcdddf7c62",
+  "result": "source_review_pass_native_execution_pending",
+  "blocking_findings": [],
+  "production_invariants": [
+    "NativeTreeBuilder validates the canonical root storage ID and actual root header before the binding helper.",
+    "An existing nativeCommitStorage is reused only when its ACL interface instance, root ID, canonical raw root header and non-nested backing storage match.",
+    "Foreign ACL, foreign root header and nested guard storage fail closed with ErrNativeCommitGuard.",
+    "No commit token/context is stripped, no direct local append bypass is introduced, and historical remote replay remains unchanged."
+  ],
+  "regression_review": [
+    "The receiver starts without the private root and reaches the pinned AnySync v0.13.8 BuildSyncTreeOrGetRemote remote path.",
+    "The real fixture loopback DRPC client initializes every field consumed by SendTreeRequest and Broadcast.",
+    "The real NativeTreeValidator returns guarded storage, which the actual remote getter passes into the final NativeTreeBuilder call.",
+    "The fetched live tree rejects an unguarded direct AddContent before any host write.",
+    "The host must actually durably append before the shared-storage pointer assertion; subsequent read and idempotent retry assert unchanged history count and snapshot.",
+    "Foreign ACL instance, root header and nested guard each have mandatory individual negative subtests."
+  ],
+  "acceptance_review": [
+    "All five new test event names are mandatory in the component suite.",
+    "Controller negative test requires rejection of each missing, failed and skipped required event.",
+    "Source inventory/RPC/account fixture pin cascade reflects the reviewed source hashes.",
+    "The seven native-client scenario fixtures are outside this source change."
+  ],
+  "execution_limitations": [
+    "This review is source inspection; it is not a Go compilation or native test pass.",
+    "The pinned Go 1.26.5-musl component and actual concurrent-client CI results remain required.",
+    "The independent target/settings/application lifecycle candidate is outside this review."
+  ],
+  "reviewed_at_utc": "2026-11-19T16:28:50.134376+00:00",
+  "git_head": "db52731177bc41268e85a17970b5efdcdddf7c62",
+  "reviewed_sha256": {
+    "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_commit_guard.go": "794335046c8582bcafcab8aa6254c8e122d09cff9d6b0dfbcf37cef4f5338a13",
+    "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_host.go": "f00df2153f2c15863af31a19a5db540fd0b208d4535e891a657c3d6ae04f14c8",
+    "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_remote_commit_guard_test.go": "02f3c30cf065773fdd5c70de2434118e0613698fea742600d71502625df02bb8",
+    "Tools/TorahNativeOperations/heart-registration.json": "d060cc0d5220bf471f75d8d133afaecff4a9de8cafe4ec4f125b806d79f8b3d4",
+    "Tools/TorahNativeOperations/rpc/heart-rpc.json": "9541f5106d6c77c22de2342dc3cd45e5686df36f692254a8bf1405713673265a",
+    "Tools/TorahNativeOperations/account_rpc/fixture.json": "217266a8401150e9e9a4359d4470c3da769d0bf885544959d18c983ba54fcc4d",
+    "Tools/TorahNativeOperations/run_native_operations.py": "aee74d92512cab9019ffb35f2a537904e35e6d3339a8064ab2ba2eaa3ee15dc0",
+    "Tools/TorahNativeOperations/test_run_native_operations.py": "278a1c03dfb11daabedb1998fb97927779c9e6581e5014db9734c05117782f5e"
+  }
+}

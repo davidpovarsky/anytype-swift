@@ -241,6 +241,34 @@ class NativeClientControls(unittest.TestCase):
         for private in ["private", "payload", "account-id", "syntheticType", "secretType"]:
             self.assertNotIn(private, json.dumps(result))
 
+    def test_actual_compiled_native_filename_is_accepted_without_arbitrary_prefixes(self):
+        record = b"T2_READ_OBSERVATION code=NULL snapshot_present=true readiness=READY"
+        for prefix in [b"", b"    native_client_phase_test.go:377: ", b"    pinkha_t2_native_client_phase_test.go:377: "]:
+            with self.subTest(prefix=prefix):
+                result = lane.diagnostics.parse_fixed_records(prefix + record)
+                self.assertEqual(result["last_read"], {"wire_code": "NULL", "snapshot_present": True, "readiness": "READY"})
+        for prefix in [b"/private/path/pinkha_t2_native_client_phase_test.go:377: ", b"unknown_test.go:377: ",
+                       b"pinkha_t2_native_client_phase_test.go:secret: "]:
+            result = lane.diagnostics.parse_fixed_records(prefix + record)
+            self.assertEqual(result["records"], "MALFORMED_FIXED_RECORD")
+            self.assertNotIn("private", json.dumps(result))
+
+    def test_append_observation_only_exports_original_fixed_error_flags(self):
+        raw = (b"T2_NATIVE_APPEND_BOUNDARY error_type=*private.syntheticType unwrap_type=*private.secretType "
+               b"commit_guard=true acl_changed=false permission_denied=false target_unavailable=false "
+               b"history_unavailable=false cancelled=false deadline=false committed=false")
+        result = lane.diagnostics.parse_fixed_records(raw)
+        self.assertTrue(result["last_native_append_error"]["commit_guard"])
+        self.assertFalse(result["last_native_append_error"]["committed"])
+        self.assertEqual(result["last_read"], "NOT_OBSERVED")
+        for private in ["private", "syntheticType", "secretType"]:
+            self.assertNotIn(private, json.dumps(result))
+        for invalid in [raw + b" private=secret", raw.replace(b"commit_guard=true", b"commit_guard=secret"),
+                        raw.replace(b"committed=false", b"committed=true extra=true")]:
+            result = lane.diagnostics.parse_fixed_records(invalid)
+            self.assertEqual(result["records"], "MALFORMED_FIXED_RECORD")
+            self.assertEqual(result["last_native_append_error"], "WITHHELD")
+
     def test_malformed_or_unknown_diagnostic_records_never_echo_raw_values(self):
         good = b"T2_READ_OBSERVATION code=NULL snapshot_present=true readiness=READY\n"
         for invalid in [b"T2_READ_OBSERVATION code=synthetic-private-code snapshot_present=false readiness=WAIT",
@@ -248,7 +276,8 @@ class NativeClientControls(unittest.TestCase):
                         b"T2_NATIVE_READ_BOUNDARY error_type=synthetic-private-error\n::error::synthetic-private-content",
                         b"T2_READ_OBSERVATION code=FUTURE_CODE snapshot_present=false readiness=WAIT"]:
             result = lane.diagnostics.parse_fixed_records(good + invalid)
-            self.assertEqual(result, {"records": "MALFORMED_FIXED_RECORD", "last_read": "WITHHELD", "last_native_error": "WITHHELD"})
+            self.assertEqual(result, {"records": "MALFORMED_FIXED_RECORD", "last_read": "WITHHELD", "last_native_error": "WITHHELD",
+                                      "last_native_append_error": "WITHHELD"})
 
     def test_live_diagnostic_does_not_read_before_owned_cleanup_and_secret_scan(self):
         for cleanup, publication in [("FAIL", "PASS_SECRET_SCANNED_EXACT_ALLOWLIST"),
@@ -375,9 +404,11 @@ class NativeClientControls(unittest.TestCase):
             self.assertEqual(lane.digest(source), lane.account.NATIVE_READ_OBSERVATION["before_sha256"])
             self.assertEqual(lane.digest(replacement), lane.account.NATIVE_READ_OBSERVATION["after_sha256"])
             self.assertEqual(calls, ["native-read-observation-check", "native-read-observation-apply"])
-            self.assertEqual(receipt["scope"], "TEST_COMPILE_OVERLAY_ONLY_ORIGINAL_READ_ERROR")
+            self.assertEqual(receipt["scope"], "TEST_COMPILE_OVERLAY_ONLY_ORIGINAL_NATIVE_ERROR")
             self.assertEqual(replacement.read_text().count("mw.NativeTorahTargetRead(ctx, native)"), 1)
             self.assertEqual(replacement.read_text().count("return pinkhaTorahReadToWire(result, err)"), 1)
+            self.assertEqual(replacement.read_text().count("mw.NativeTorahOperationAppend(ctx, native)"), 1)
+            self.assertEqual(replacement.read_text().count("return pinkhaTorahAppendToWire(result, err)"), 1)
             with self.assertRaises(ValueError):
                 lane.account.prepare_native_read_observation(heart, observation_patch, work, run)
 

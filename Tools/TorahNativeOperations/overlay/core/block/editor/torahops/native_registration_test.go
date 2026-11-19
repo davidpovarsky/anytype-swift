@@ -27,7 +27,7 @@ func TestNativeLockedConstructorRecoversWhileCallerOwnsTree(t *testing.T) {
 	require.NoError(t, err)
 	t.Cleanup(func() { require.NoError(t, fresh.Close()) })
 	f.tree.Lock()
-	reopened, err := OpenNativeHostLocked(context.Background(), fresh, f.space.Id(), f.tree, f.keys.SignKey, f.validateTarget)
+	reopened, err := OpenNativeHostLocked(context.Background(), fresh, f.space.Id(), f.tree, f.keys.SignKey, f.acquireTarget)
 	f.tree.Unlock()
 	require.NoError(t, err)
 	result, err := reopened.ReadTarget(context.Background(), op.Target, 100)

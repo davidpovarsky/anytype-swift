@@ -25,22 +25,27 @@ READ_CODES = frozenset({"NULL", "UNKNOWN_ERROR", "BAD_INPUT", "UNSUPPORTED_VERSI
                         "NOT_LOGGED_IN", "ACCOUNT_CHANGED", "TARGET_UNAVAILABLE", "HISTORY_UNAVAILABLE",
                         "PROJECTION_BEHIND", "READ_LIMIT", "CANCELLED", "DEADLINE_EXCEEDED", "COLLISION",
                         "INVALID_ENVELOPE", "UNRECOGNIZED_CODE"})
-PREFIX = r"(?:native_client_phase_test\.go:[0-9]+: )?"
+PREFIX = r"(?:(?:pinkha_t2_)?native_client_phase_test\.go:[0-9]+: )?"
 READ = re.compile(PREFIX + r"T2_READ_OBSERVATION code=([A-Z_]+) snapshot_present=(true|false) readiness=(WAIT|READY|REJECTED)")
 NATIVE_FIELDS = ("unknown_tree", "no_responsible_peers", "tree_closed", "tree_deleted", "space_closed",
                  "cancelled", "deadline", "context_nil", "context_peer_missing")
 NATIVE = re.compile(r"T2_NATIVE_READ_BOUNDARY error_type=\S{1,160} unwrap_type=\S{1,160} "
                     + " ".join(name + r"=(true|false)" for name in NATIVE_FIELDS))
+APPEND_FIELDS = ("commit_guard", "acl_changed", "permission_denied", "target_unavailable",
+                 "history_unavailable", "cancelled", "deadline", "committed")
+APPEND = re.compile(r"T2_NATIVE_APPEND_BOUNDARY error_type=\S{1,160} unwrap_type=\S{1,160} "
+                    + " ".join(name + r"=(true|false)" for name in APPEND_FIELDS))
 MAX_LOG_BYTES = 64 * 1024**2
 
 
 def parse_fixed_records(data: bytes) -> dict:
-    result = {"records": "NO_FIXED_RECORD", "last_read": "NOT_OBSERVED", "last_native_error": "NOT_OBSERVED"}
+    result = {"records": "NO_FIXED_RECORD", "last_read": "NOT_OBSERVED", "last_native_error": "NOT_OBSERVED",
+              "last_native_append_error": "NOT_OBSERVED"}
     for raw in data.splitlines():
-        if b"T2_READ_OBSERVATION" not in raw and b"T2_NATIVE_READ_BOUNDARY" not in raw:
+        if not any(marker in raw for marker in (b"T2_READ_OBSERVATION", b"T2_NATIVE_READ_BOUNDARY", b"T2_NATIVE_APPEND_BOUNDARY")):
             continue
         line = raw.decode("ascii", errors="replace").strip()
-        read, native = READ.fullmatch(line), NATIVE.fullmatch(line)
+        read, native, append = READ.fullmatch(line), NATIVE.fullmatch(line), APPEND.fullmatch(line)
         if read and read[1] in READ_CODES:
             result["last_read"] = {"wire_code": read[1], "snapshot_present": read[2] == "true", "readiness": read[3]}
         elif native:
@@ -49,8 +54,11 @@ def parse_fixed_records(data: bytes) -> dict:
             fields["outer_context_nil"] = fields.pop("context_nil")
             fields["outer_context_peer_missing"] = fields.pop("context_peer_missing")
             result["last_native_error"] = fields
+        elif append:
+            result["last_native_append_error"] = dict(zip(APPEND_FIELDS, (value == "true" for value in append.groups())))
         else:
-            return {"records": "MALFORMED_FIXED_RECORD", "last_read": "WITHHELD", "last_native_error": "WITHHELD"}
+            return {"records": "MALFORMED_FIXED_RECORD", "last_read": "WITHHELD", "last_native_error": "WITHHELD",
+                    "last_native_append_error": "WITHHELD"}
         result["records"] = "FIXED_RECORDS_OBSERVED"
     return result
 
