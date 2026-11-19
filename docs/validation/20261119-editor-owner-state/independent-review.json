@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "reviewer": "/root/asana_audit",
+  "reviewed_at": "2026-11-19T15:55:46.535317+00:00",
+  "base_source_sha": "586c98bcc17dee425664224e508fc0e8df277678",
+  "candidate_branch": "codex/chatgpt-wave15-ui-resume-20261119",
+  "verdict": "PASS_SOURCE_REVIEW_NO_BLOCKING_FINDINGS",
+  "scope": "Independent source review of exact product/test/manifests/controller diff; not Apple compilation or native acceptance.",
+  "source_sha256": {
+    "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Base/EditorViewListCell.swift": "6a9558b73c7d903d07087e80f13b5f01f7514f90f6b1b53474e5cb2cee440cde",
+    "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift": "413b26dcfdd2a74a52da7a0c64e283f002e06c329b87e18ff09c1df6dfb75b0b",
+    "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift": "4aa45454da88efa8f1e55e061dae4afa57be2fc2b483a19a950926fa0d83f22e"
+  },
+  "manifest": {
+    "path": "Tools/Hanlin/wave15-core-tests.json",
+    "sha256": "377fc72574d6e6f38bcb137be238ede48eeb55fec4fc0b44684980711f713d7a",
+    "focus_methods": 12,
+    "focus_literal_cases": 18,
+    "core_methods": 54,
+    "core_literal_cases": 80
+  },
+  "findings": [
+    "Collection owner is weak, assigned before state setters and content configuration, and cleared before super.prepareForReuse.",
+    "Configuration state takes the actual current editing authority from the owner; absent owner retains UIKit super state. Existing lock/moving flags remain intact.",
+    "Only the original EditorPageController production setter call site changes; initial focus/lifetime implementation remains unchanged.",
+    "First-insertion regression supplies initial focus before any first item is displayed, with both true and false collection editing states.",
+    "Initially denied focus remains cancelled after changing collection editing alone; fresh explicit focus is separately required to work.",
+    "Existing lock/reuse/rebind/detach/supersession cases are preserved.",
+    "Exact manifest adds one parameterized method with two literal cases; negative controls reject missing/duplicate/failed/skipped cases.",
+    "Acceptance branch gate adds only the exact named UI-resume branch, retaining source/ref checks and a mismatch rejection."
+  ],
+  "validation": {
+    "source_review": "PASS",
+    "manifest_scope_verified": "PASS",
+    "python_controller_tests": "Root reports19+17 PASS after synthetic combined-case delta updated28to29; not independently rerun by reviewer.",
+    "apple_compilation": "NOT_RUN",
+    "native_uikit_regression": "NOT_RUN",
+    "native_editor_preparation": "NOT_RUN",
+    "hebrew_editor_ui": "NOT_RUN"
+  },
+  "limitations": [
+    "No claim that source review resolves the actual native focus failure until exact-source Apple execution.",
+    "No full release or physical-device acceptance."
+  ]
+}

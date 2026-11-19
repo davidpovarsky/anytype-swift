@@ -15,13 +15,15 @@ from run_wave15_acceptance import (plan, fixture_environment, property_environme
 class AcceptanceSelectionTests(unittest.TestCase):
     def test_only_reviewed_native_branches_with_exact_source_and_ref_are_admitted(self):
         branches = ["codex/chatgpt-wave15-integration-20261118",
-                    "codex/chatgpt-wave15-hanlin-consumer-20261119"]
+                    "codex/chatgpt-wave15-hanlin-consumer-20261119",
+                    "codex/chatgpt-wave15-ui-resume-20261119"]
         for branch in branches:
             require_source_identity("a" * 40, "a" * 40, branch, "refs/heads/" + branch)
         rejected = [
             ("a" * 40, "a" * 40, "unreviewed-consumer", "refs/heads/unreviewed-consumer"),
             ("a" * 40, "a" * 40, branches[0], "refs/heads/" + branches[1]),
             ("a" * 40, "a" * 40, branches[0], "refs/tags/" + branches[0]),
+            ("a" * 40, "a" * 40, branches[2], "refs/heads/" + branches[0]),
             ("a" * 40, "b" * 40, branches[0], "refs/heads/" + branches[0]),
             ("", "", branches[0], "refs/heads/" + branches[0]),
         ]

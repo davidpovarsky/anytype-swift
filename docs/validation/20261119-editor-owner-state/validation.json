@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-11-19T15:59:50.333531+00:00",
+  "base_source_sha": "586c98bcc17dee425664224e508fc0e8df277678",
+  "upstream_develop_observed_sha": "d857b23ea540be33d6faab4f7a7a1a260ab578c1",
+  "branch": "codex/chatgpt-wave15-ui-resume-20261119",
+  "authorization": "Standing resumed-work authorization documented in repository AGENTS.md and current user request.",
+  "diagnosis": {
+    "run_id": 44426302049,
+    "run_source_sha": "ee20318a70180838370a850c5d92db522aadb382",
+    "native_result": "missingFocusedBlock before UI execution",
+    "facts": {
+      "collectionEditing": true,
+      "collectionLocked": false,
+      "initialRequested": 1,
+      "retained": 1,
+      "cancelledState": 1,
+      "nativeAttempted": 0,
+      "nativeAcquired": 0,
+      "lockedAtLastEvent": false,
+      "interactionAtLastEvent": false,
+      "ownerMatched": true
+    }
+  },
+  "source_sha256": {
+    "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Base/EditorViewListCell.swift": "6a9558b73c7d903d07087e80f13b5f01f7514f90f6b1b53474e5cb2cee440cde",
+    "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift": "413b26dcfdd2a74a52da7a0c64e283f002e06c329b87e18ff09c1df6dfb75b0b",
+    "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift": "4aa45454da88efa8f1e55e061dae4afa57be2fc2b483a19a950926fa0d83f22e",
+    "Tools/Hanlin/run_host_tests.py": "a67bd659bbb4966b9dc4e92d8ad36f86c1ac8081ffc64aa700c8abd7fb98f1e8",
+    "Tools/Hanlin/test_run_host_components.py": "f2deeb0ac4f45a72940bd86e8233f833f7217c6c4136a0526adddb9b41a0290e",
+    "Tools/Hanlin/test_run_host_core_profile.py": "5ce53172b29e2e853a6df279d384f92b80f5561cfeffbc659eca703e215066ad",
+    "Tools/Hanlin/wave15-core-tests.json": "377fc72574d6e6f38bcb137be238ede48eeb55fec4fc0b44684980711f713d7a",
+    "Tools/Hanlin/wave15_core_profile.py": "e8a797c2d379905b2e45f9844b9e4e3e65e7df20cc9a24b4fe7fd1e675e94afa",
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": "1c8f6cd073d6ca6425e805c6237703dc304b3cbe583c277b2d589608b0fe0ac4",
+    "Tools/PinkhaSimulatorGate/test_run_wave15_acceptance.py": "ef584314aaa00926c7881a943afacda5b57ac14cd3df7e157453180a01eba95b"
+  },
+  "scope": "New text-editor cells take editing permission from their weak owning collection before content configuration. Existing focus cancellation/lifetime semantics remain intact.",
+  "upstream_ownership": "Two existing upstream UIKit extension points changed narrowly: EditorViewListCell and its EditorPageController call site. No unrelated upstream merge.",
+  "validation": {
+    "diff_check": "PASS",
+    "python_host_controls": {
+      "tests": 19,
+      "result": "PASS"
+    },
+    "python_acceptance_controls": {
+      "tests": 17,
+      "result": "PASS"
+    },
+    "source_review": "PASS",
+    "core_manifest_methods": 54,
+    "core_manifest_literal_cases": 80,
+    "focus_methods": 12,
+    "focus_literal_cases": 18,
+    "apple_compile": "NOT_RUN",
+    "native_uikit": "NOT_RUN",
+    "native_editor": "NOT_RUN",
+    "hebrew_editor_ui": "NOT_RUN"
+  },
+  "initial_control_iteration": "Synthetic aggregate expectation initially retained the prior case-minus-method delta 28; corrected to29 for the newly parameterized method and final19 controls pass. Initial failure log retained locally.",
+  "planned_apple_validation": [
+    "wave15-core-tests",
+    "wave15-acceptance/editor/ipad/he",
+    "wave15-acceptance/properties-set/ipad/en"
+  ]
+}

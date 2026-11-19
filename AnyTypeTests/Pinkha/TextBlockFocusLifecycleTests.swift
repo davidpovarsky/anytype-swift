@@ -7,6 +7,46 @@ import UIKit
 @Suite("Native text block focus lifetime", .serialized)
 @MainActor
 struct TextBlockFocusLifecycleTests {
+    @Test("A newly inserted row uses its collection's actual editing state for initial focus",
+          arguments: [false, true])
+    func insertedCellUsesCurrentEditingBeforeFocus(editing: Bool) async throws {
+        let fixture = try TextBlockFocusWindow()
+        defer { fixture.close() }
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let collection = TextBlockFocusCellCollection(
+            configuration: cellConfiguration(configuration("inserted", cursor: cursor, subjects: subjects, initial: .end)),
+            locked: false, editing: editing
+        )
+        fixture.attach(collection.view)
+        await collection.display()
+        let cell = try #require(collection.cell)
+        let row = try #require(collection.row)
+        #expect(cell.configurationState.isEditing == editing)
+        #expect(row.textView.textView.isUserInteractionEnabled == editing)
+        await finishMainQueueTurn()
+
+        if editing {
+            try #require(row.textView.textView.isFirstResponder,
+                         "First insertion must deliver initial native focus without a second request")
+            #expect(row.textView.textView.selectedRange == NSRange(
+                location: row.textView.textView.text.utf16.count, length: 0
+            ))
+        } else {
+            try #require(!row.textView.textView.isFirstResponder)
+            collection.view.isEditing = true
+            collection.view.layoutIfNeeded()
+            await finishMainQueueTurn()
+            #expect(cell.configurationState.isEditing)
+            #expect(row.textView.textView.isUserInteractionEnabled)
+            #expect(!row.textView.textView.isFirstResponder,
+                    "Enabling the collection must not revive an initially denied focus request")
+            row.takeFocus(at: .end)
+            try #require(row.textView.textView.isFirstResponder,
+                         "A fresh explicit request must follow the collection's new editable state")
+        }
+    }
+
     @Test("A reused collection cell applies the new owner's lock before its one-shot focus",
           arguments: [false, true])
     func reusedCellUsesCurrentLockBeforeFocus(newLocked: Bool) async throws {
@@ -371,16 +411,16 @@ private final class TextBlockFocusCellCollection {
     private var locked: Bool
     private var dataSource: UICollectionViewDiffableDataSource<Int, Int>?
 
-    init(configuration: CellBlockConfiguration<TextBlockContentConfiguration>, locked: Bool) {
+    init(configuration: CellBlockConfiguration<TextBlockContentConfiguration>, locked: Bool, editing: Bool = true) {
         self.configuration = configuration
         self.locked = locked
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: 320, height: 80)
         view = EditorCollectionView(frame: .zero, collectionViewLayout: layout)
-        view.isEditing = true
+        view.isEditing = editing
         let registration = UICollectionView.CellRegistration<EditorViewListCell, Int> { [weak self] cell, _, _ in
             guard let self else { return }
-            cell.setContentConfiguration(self.configuration, isMoving: false, isLocked: self.locked)
+            cell.setContentConfiguration(self.configuration, in: self.view, isMoving: false, isLocked: self.locked)
         }
         dataSource = UICollectionViewDiffableDataSource<Int, Int>(collectionView: view) { collectionView, indexPath, item in
             collectionView.dequeueConfiguredReusableCell(using: registration, for: indexPath, item: item)
