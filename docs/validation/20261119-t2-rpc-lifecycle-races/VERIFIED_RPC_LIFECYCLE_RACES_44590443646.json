@@ -1,0 +1,323 @@
+{
+  "app_capability": "OFF",
+  "artifact": {
+    "archive_download_url": "https://api.github.com/repos/davidpovarsky/anytype-swift/actions/artifacts/14564286488/zip",
+    "created_at": "2026-11-19T18:54:49Z",
+    "digest": "sha256:e4089c45899d2a8b1b4af815e046d7abfe30f9a49a0818327bbe9c17dba766de",
+    "expired": false,
+    "expires_at": "2026-12-03T18:54:49Z",
+    "id": 14564286488,
+    "name": "Pinkha-T2-RPC-Lifecycle-Races-44590443646-1",
+    "node_id": "MDg6QXJ0aWZhY3QxNDU2NDI4NjQ4OA==",
+    "size_in_bytes": 82123,
+    "updated_at": "2026-11-19T18:54:49Z",
+    "url": "https://api.github.com/repos/davidpovarsky/anytype-swift/actions/artifacts/14564286488",
+    "workflow_run": {
+      "head_branch": "codex/chatgpt-wave15-ui-resume-20261119",
+      "head_repository_id": 1289863025,
+      "head_sha": "cbebcd5464fc43b4cda46d4f915bf16ccefd64f9",
+      "id": 44590443646,
+      "repository_id": 1289863025
+    }
+  },
+  "baseline_result": "PASS_EXACT_FOUR_PROCESS_GENERATED_RPC_ORIGINAL_HISTORY_LEGACY_EDIT_REOPEN_VISIBILITY_EIGHT_EXPORTS_AND_NATIVE_CLEANUP",
+  "counts": {
+    "additional_compile_commands": 1,
+    "additional_race_process": {
+      "cases": 3,
+      "native_processes": 1,
+      "passing_test_invocations": 1
+    },
+    "baseline_build_commands": 10,
+    "generation_commands": 8,
+    "native_fail": 0,
+    "native_skip": 0,
+    "original_account_baseline": {
+      "actual_export_files": 8,
+      "binaries": 2,
+      "native_processes": 4,
+      "passing_test_invocations": 4
+    },
+    "python_controls": 39,
+    "python_fail": 0,
+    "python_skip": 0,
+    "total_distinct_native_binaries": 3,
+    "total_named_native_pass": 5,
+    "total_native_processes": 5
+  },
+  "evidence_copy_secret_scan": "PASS",
+  "full_t2_acceptance": "NOT_RUN",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "history_qualification": {
+    "commit_wins_account_stop": "SAME_APPLICATION_WRITER_ATTEMPT_BEFORE_ONCE_ONLY_STORAGE; RETAINED_2_TO_3_HASH_MAP_PRESERVES_BOTH_ORIGINAL_CHANGES; NATIVE_APPEND_RETURN_UNDER_LEASE_BEFORE_STOP_ACQUISITION; ORIGINAL_STOP_AND_NOT_LOGGED_IN_READ_RETRY",
+    "commit_wins_block_delete": "ACTUAL_SAME_SMARTBLOCK_DELETE_ATTEMPT_BEFORE_ONCE_ONLY_STORAGE; ACQUIRE_AFTER_DURABILITY; RETAINED_FINAL_THREE_CHANGES_AND_DENIED_LATER_READ_RETRY; ORIGINAL_NATIVE_TEST_ASSERTED_BOTH_PRIOR_HASHES_AND_POST_DENIAL_HISTORY_UNCHANGED",
+    "delete_wins_first_add": "ACTUAL_TARGET_DELETE_COMPLETED_BEFORE_FIRST_APPEND_LEASE; TARGET_UNAVAILABLE_NIL_RECEIPT_AND_NATIVE_ROOT_ABSENT"
+  },
+  "ios_acceptance": "NOT_RUN",
+  "limits": [
+    "The three cases execute in a separate pinned test compile overlay. The uninstrumented original four-process baseline is retained and required independently.",
+    "Original executable bytes are not retained in the ZIP. This qualification checks the original build/phase receipt chain and source bindings; it does not independently rebuild or inspect those ELF bytes.",
+    "The native fixture observes once-only forwarding and actual object/application locks. Callback barriers are signal/wait only. This is bounded concurrency proof, not general race freedom.",
+    "Block deletion acquisition follows the durable storage boundary; successful native/byte response ordering relative to deletion is not asserted.",
+    "Account Stop acquisition follows the native append result under the application lease. Generated response-byte encoding can finish after Stop acquires.",
+    "The block-delete case retains final raw hashes; its original source-bound native test checks both before hashes and equality after denied retries. The Stop case retains both before/after maps for retrospective comparison.",
+    "Original source-bound controller observed live binary/source stability, process exit and owned account removal. This audit verifies retained receipts and hashes without recreating historical OS state.",
+    "Generated-byte caller cancellation, settings deletion, independent Space.Close, account switch, member ACL transport, physical device, iOS, new engine and full T2 acceptance remain unclaimed."
+  ],
+  "member_count": 59,
+  "members_sha256": {
+    "account-sequence/exports/legacy-edit/document.json": "7859f8ff48b5e8b13deb455f80d3b0ae257078b17c3021b52d766aa46d6c0ebf",
+    "account-sequence/exports/legacy-edit/document.pbc": "e02c88b38ab6fdc8fa799d30f4d42e7bdfb3862ab5be3940f57ed229a5573549",
+    "account-sequence/exports/new-create/document.json": "1bd55a9dc8c7d8e99fac5dc69af6e47529e9f39a3807a29c8c0b24fc3b7dc240",
+    "account-sequence/exports/new-create/document.pbc": "c30eac0bf03bb242930e740b2535f87bd314e29be53cd08aa071eab800faea4b",
+    "account-sequence/exports/new-recover/document.json": "7859f8ff48b5e8b13deb455f80d3b0ae257078b17c3021b52d766aa46d6c0ebf",
+    "account-sequence/exports/new-recover/document.pbc": "10f1180229d96d23738e7e9de8d656d295cf528d400db1da803b537f385d66d9",
+    "account-sequence/exports/new-reopen/document.json": "1bd55a9dc8c7d8e99fac5dc69af6e47529e9f39a3807a29c8c0b24fc3b7dc240",
+    "account-sequence/exports/new-reopen/document.pbc": "6ad45f6e08c51eecbb854ed6694ae97cf5e8e102051966c8832fadaa8bab88aa",
+    "account-sequence/legacy-edit.json": "e1659a764a6e7f2e43bc5dbfdb851eb92f88ba9ea68fe2ac56cb9efed57b4dc8",
+    "account-sequence/legacy-edit.log": "91ef4ecf91dae93670008f01b984f6ea1f0dffb7b0850cd5fb233f28095b6cd1",
+    "account-sequence/new-create.json": "6e2b0a26be6ff95998dc75b144c34902e61139209da9c0f2ffbf3d713cf21555",
+    "account-sequence/new-create.log": "029f9c21faf1c2ccd7bd45110c46494c58e946d4356264a76ac237596e88bbbf",
+    "account-sequence/new-recover.json": "aabb2c0240ec9c28dcf08bb9ca900a04c46eeefc954fa991e90da51a1060dbb2",
+    "account-sequence/new-recover.log": "fcdf8e1c8c5aaef72d1f9372815eeecfe0163ec967995ffa89428e9739e72414",
+    "account-sequence/new-reopen.json": "531d3b770ba944f280b0110e20cff84c1e8da6303ae2a1a4baabd8f180fe9784",
+    "account-sequence/new-reopen.log": "d58a5a64b46a6f8419aef47b6981a91581a16685e85867346a64614d0c3c5eea",
+    "account-sequence/ownership.json": "72ec5fa5dbbd83da5255fdfcc7713c6b375c57136235a8a7a945fe8a3da26552",
+    "account-sequence/result.json": "96dfafc0873796dc6b22aab9e8fd124d8898dfad00a3f9a298880eeb63113db1",
+    "account-sequence/state.json": "0a3fa35f145edb3533fdb24eda86d9e58e128ef49bda0a33c2fd62f3876c69cc",
+    "controller-controls.log": "9910aa5d288c293023757fcd4ea2c6cd65fbff61ba0f812f601f0a29f3b727ba",
+    "evidence-copy.json": "d58567c167bd298ff6c4ed5bcdb3bf57c6ab10efe2eecfa3a7c504d0c3772f2c",
+    "fixture-apply.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fixture-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/build-gogo.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/generate-gomobile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/generate-grpc.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/generate-messages.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/generation-receipt.json": "24a4d89634952e6c1ead20a6803dba5cd8d175289b3a4ef8234a34c31c4b1d5c",
+    "generation/gogo-download.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/gogo-selection.log": "1bbdc6bed584feeab085d11180a73e7e9c7d4f66dfa44b0c4e3145f997bdfd5c",
+    "generation/schema-apply.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "generation/schema-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "legacy-build.json": "2e1d2c89954713e4d77b6a7a974b784b2237dd9cced07601974851df99122f49",
+    "legacy-compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "legacy-genproto.log": "dff547e42be4822ad8336c2c9dd9292a7288dc8f82195502442b0243db4f0545",
+    "legacy-module-download.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lifecycle-build.json": "dcd5466d2ec46308c07406b1865f1c36863746c5e99d81b15dc92571dfd76542",
+    "lifecycle-cleanup.json": "99e3b96cbe35259e17800a1b4ff008cff7454d06c8c17997255a8683b6b80624",
+    "lifecycle-compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lifecycle-evidence-copy.json": "d28f04dd15a8af6406ad3d83f8ca2683e09de9ba8cacc54a4cd20f4a2681aa13",
+    "lifecycle-receipt.json": "5edce7cc3b2eaf55865f38b2497a5ca3877a36ecbab2d5615510d5cd217f0a3f",
+    "lifecycle-sequence/lifecycle.json": "a4cca7a5540c3981ccba2bf1aa261f9797302dc1e49e9ceba60d1bec85dd6526",
+    "lifecycle-sequence/native.log": "b1ccd061b1a735cbd1db8d1e9191987263d92f46c287011a0b464cff7164030a",
+    "lifecycle-sequence/ownership.json": "505e86c93ce2318529330f910ece19b232987f1db887f5d6d36ea48bd7ecda8c",
+    "lifecycle-sequence/result.json": "bc12c42ef8f66dacbbb88e40fdadc6775c7332c78c6ca4ac9fdeb5dcc7350439",
+    "new-build.json": "f13c90f6cef3f1a5e34adbae5f488563577564cdd64496ae3d33b61208c82ff0",
+    "new-compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "new-genproto.log": "dff547e42be4822ad8336c2c9dd9292a7288dc8f82195502442b0243db4f0545",
+    "new-module-download.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "new-r14-apply.log": "2a71a540dfa427553963e0c23f778250e67b09211ec95e9b5d0f921fb11172aa",
+    "new-r14-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "receipt.json": "8001e6c893481b4eb14e60806ad04e174f106b50fd1da4b325ae636fdc57ddee",
+    "toolchain/apk-install.log": "6f1a33c853227961ca863220231a901ed4faf00719738729eca6e729d3882bb9",
+    "toolchain/compiler-target.txt": "66c45e7df6309dd685144a621b781d80bce1064015211b26f85313cfa834b671",
+    "toolchain/compiler.txt": "000687ebc7bb3b4db25651916236f58162385c0e9694330c1fac3ecde79519f7",
+    "toolchain/go-version.txt": "ca25a53670d7230b3c37a21135d0b41d44ea1528bf3bb0a4793158538f03e3b7",
+    "toolchain/image.json": "d5549591d3ed6c27fc6d61805236a604859f5821af07b89f333bb1c8d80d07e1",
+    "toolchain/packages.txt": "b1e7493cf8a20533b905c6f883fe02ebc009caf2a500d49c9142b823cb37b4d6",
+    "toolchain/qsort-link.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "native_process_ids": {
+    "additional_lifecycle": 19922,
+    "baseline": [
+      18454,
+      18479,
+      18496,
+      18509
+    ]
+  },
+  "new_engine_parity": "NOT_PROVEN",
+  "owned_race_cleanup": {
+    "owner_nonce": "0135b803-10ca-4eff-b6cf-2abd534cdeb3",
+    "path_absent": true,
+    "process_exit_observed": true,
+    "protocol": "pinkha-t2-generated-byte-lifecycle-races-v1",
+    "status": "PASS_REMOVED_OWNED_DISPOSABLE_ACCOUNT"
+  },
+  "product_base_sha": "16b7493fa05bdc3abbae190c6e6c364c81874eea",
+  "published_manifest_sha256": "4e7eaaced03ae70bd12b9dfadc7f1c18b014df8e276f119d214db743f4e9756e",
+  "qualified_at_utc": "2026-11-19T19:06:07.944910+00:00",
+  "qualifier_sha256": "cc9b434c326c852e6e23a9de4bc9b061150c1d274f6104dd39122136101490c6",
+  "run_attempt": "1",
+  "run_id": "44590443646",
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44590443646",
+  "runtime_binary_receipt_sha256": {
+    "legacy": "089e2f6fbe6e842361583776008a5d8a472734218d30179b38d22c27023fad83",
+    "new_instrumented": "d5ad16b4f575788d7d0bff7ebfea37d0416bff3b7c9396f911103435b1700327",
+    "new_uninstrumented": "9e53f86a98702780cc69651c61e0320812ebf4974e253063db45f28b835f81dd"
+  },
+  "source_bindings": {
+    "account_fixture_sha256": "3c970648c0421df7c78370291409a8e5ea1ff3d8aedeea0b7fa5c3e828c8057a",
+    "added_test_overlay_entries": 7,
+    "candidate_sha256": "b021c51a0541a4603036a579bb339318d15e6fbb0f100cd913db480aa3259799",
+    "composed_new_paths": 108,
+    "composed_overlay_sha256": "40f2e1b00d1cb93d8e27c3809a1607f5684490450480e9c3e5a5825c1341c3b0",
+    "generated_rpc_paths": 73,
+    "lane_manifest_sha256": "e2d66b4d480fd6f19ded13513406382ac279d85eeda6272d89af549ff6bf5546",
+    "lane_source_inputs": 20,
+    "legacy_paths": 35,
+    "original_overlay_sha256": "1f783f745ef6d8a0b72c3a0d298ea3aefb91f5aaefeaed98bf09e020ce75df15",
+    "product_source_mutations": 0,
+    "registration_inventory_sha256": "f57fb369c687d06aaa3fad8411ed3a080c358103bfd0da01c2431fab6bdbc494",
+    "registry_paths": 65,
+    "reviewed_controller_files": {
+      "account_rpc_lifecycle_lane.json": "e2d66b4d480fd6f19ded13513406382ac279d85eeda6272d89af549ff6bf5546",
+      "run_account_rpc_lifecycle.py": "fc25aff4b9b023da81d8aae5011c5f4bea00fc2fa1a95b437978fff9dd85d40f",
+      "test_account_rpc_lifecycle.py": "9d304db48512a2b7a668044a0c5d01388a74b4a604a6a0095eff0cc89da71750"
+    },
+    "rpc_manifest_sha256": "5c9400464b832e1249894de3485088e22296b9dc9cfd7df1e8665d579b00e7d1"
+  },
+  "source_sha": "cbebcd5464fc43b4cda46d4f915bf16ccefd64f9",
+  "status": "VERIFIED_PASS_SCOPED_NATIVE_GENERATED_BYTE_LIFECYCLE_RACES",
+  "three_cases": {
+    "commit_wins_account_stop": {
+      "account_stop": "PASS_ORIGINAL_STOP",
+      "after_stop_read_and_retry": "NOT_LOGGED_IN_NO_RESULT",
+      "application_service_identity": "EXACT_SAME_LIVE_INSTANCE",
+      "heads_at_durable_boundary": [
+        "bafyreiftctjfmzdoc23abw3gtdbk6eggfvpikbsdme4r7jje7xkn25aea4"
+      ],
+      "heads_before_append": [
+        "bafyreieqlwh4bs2hoxkkcywif3ixk5i6fsgvbtu5y6j7mum7vnvn3kwozi"
+      ],
+      "raw_changes_sha256_at_durable_boundary": {
+        "bafyreibolvhobkyshpm3q5ot5s7osrufm5w77vryvwadh5upnt76dboy7m": "2e5d4ee0ab123bd9b875d3ecbee94685676dffd638ad8033f68f6cffe185d8fb",
+        "bafyreieqlwh4bs2hoxkkcywif3ixk5i6fsgvbtu5y6j7mum7vnvn3kwozi": "905d8fc0cb4775d4a162c82ed175751e2c8d50ce9dc793f6519fab6addaaceca",
+        "bafyreiftctjfmzdoc23abw3gtdbk6eggfvpikbsdme4r7jje7xkn25aea4": "b314d256646e16b600db6698c2af10c62d5e85064361391fa524fdd4dd740407"
+      },
+      "raw_changes_sha256_before_append": {
+        "bafyreibolvhobkyshpm3q5ot5s7osrufm5w77vryvwadh5upnt76dboy7m": "2e5d4ee0ab123bd9b875d3ecbee94685676dffd638ad8033f68f6cffe185d8fb",
+        "bafyreieqlwh4bs2hoxkkcywif3ixk5i6fsgvbtu5y6j7mum7vnvn3kwozi": "905d8fc0cb4775d4a162c82ed175751e2c8d50ce9dc793f6519fab6addaaceca"
+      },
+      "request_sha256": "a62badabd395e8e979438bcc564828e2e2d82d1299ffb3e1b3663ade681edeec",
+      "trace": {
+        "counts": {
+          "app-lease-held": 1,
+          "append-native-return": 1,
+          "commit-after-storage": 1,
+          "commit-before-storage": 1,
+          "stop-lock-acquired": 1,
+          "stop-lock-attempt": 1
+        },
+        "events": [
+          {
+            "id": "",
+            "qualifier": "",
+            "sequence": 1,
+            "stage": "app-lease-held"
+          },
+          {
+            "id": "bafyreibolvhobkyshpm3q5ot5s7osrufm5w77vryvwadh5upnt76dboy7m",
+            "qualifier": "",
+            "sequence": 2,
+            "stage": "commit-before-storage"
+          },
+          {
+            "id": "",
+            "qualifier": "",
+            "sequence": 3,
+            "stage": "stop-lock-attempt"
+          },
+          {
+            "id": "bafyreibolvhobkyshpm3q5ot5s7osrufm5w77vryvwadh5upnt76dboy7m",
+            "qualifier": "",
+            "sequence": 4,
+            "stage": "commit-after-storage"
+          },
+          {
+            "id": "bafyreigyaiknf2xzzqulpjd23biiyuvtx53ycbyjvdy2mhmyuihrs7qhwq",
+            "qualifier": "write",
+            "sequence": 5,
+            "stage": "append-native-return"
+          },
+          {
+            "id": "",
+            "qualifier": "",
+            "sequence": 6,
+            "stage": "stop-lock-acquired"
+          }
+        ],
+        "gate_timeouts": []
+      }
+    },
+    "commit_wins_block_delete": {
+      "heads": [
+        "bafyreidovmkvga2rnj4ubpmm45poqu5tonveelrmwz2d6v6tmezqrlp67u"
+      ],
+      "post_delete_read_and_retry": "TARGET_UNAVAILABLE_NO_RESULT",
+      "private_history_count": 3,
+      "raw_changes_sha256": {
+        "bafyreibajaxwqmvzxg22m7s33jf2g34s7nzm5nih2v4hjyj5baasd35qx4": "20482f6832b9b9b5a67e5bda4ba36f92fb72ceb507d57874e13d080121efb0bf",
+        "bafyreidovmkvga2rnj4ubpmm45poqu5tonveelrmwz2d6v6tmezqrlp67u": "6eab155303516a7940bd8ce75ee853b3736a422e2cb6743f57d3613308adfefd",
+        "bafyreigkf3qe7phkgog76s5346rzn6ne7lqslpfjoknxg64cbkdc5oer2a": "ca2ee04fbcea338dff4bbbe7a396f9a4fae125bca9729b737b820a862eb891d0"
+      },
+      "request_sha256": "8d90e2c5ddda8efe912d0e9a4ff90892ddee07abf88cb93dc022ddd9d63d5165",
+      "target_pointer_identity": "EXACT_SAME_LIVE_SMARTBLOCK",
+      "trace": {
+        "counts": {
+          "commit-after-storage": 1,
+          "commit-before-storage": 1,
+          "delete-lock-acquired": 1,
+          "delete-lock-attempt": 1
+        },
+        "events": [
+          {
+            "id": "bafyreibajaxwqmvzxg22m7s33jf2g34s7nzm5nih2v4hjyj5baasd35qx4",
+            "qualifier": "",
+            "sequence": 1,
+            "stage": "commit-before-storage"
+          },
+          {
+            "id": "bafyreiblhah2rtnfe6iqde6xyjd7verschptwwqgmmr6kporoofwape7hu",
+            "qualifier": "basic.Unlinkable",
+            "sequence": 2,
+            "stage": "delete-lock-attempt"
+          },
+          {
+            "id": "bafyreibajaxwqmvzxg22m7s33jf2g34s7nzm5nih2v4hjyj5baasd35qx4",
+            "qualifier": "",
+            "sequence": 3,
+            "stage": "commit-after-storage"
+          },
+          {
+            "id": "bafyreiblhah2rtnfe6iqde6xyjd7verschptwwqgmmr6kporoofwape7hu",
+            "qualifier": "basic.Unlinkable",
+            "sequence": 4,
+            "stage": "delete-lock-acquired"
+          }
+        ],
+        "gate_timeouts": []
+      }
+    },
+    "delete_wins_first_add": {
+      "private_root": "ABSENT",
+      "request_sha256": "8e69629cf22923814211b93590d9bffc581025629311cf1ec19c492839397fcf",
+      "response": "TARGET_UNAVAILABLE_NO_RECEIPT",
+      "trace": {
+        "counts": {
+          "prelease": 1
+        },
+        "events": [
+          {
+            "id": "bafyreigbunoljs76q7mvafpzpwpqpk366ldei5sfnhn3dl3htiyay5rviy",
+            "qualifier": "write",
+            "sequence": 1,
+            "stage": "prelease"
+          }
+        ],
+        "gate_timeouts": []
+      }
+    }
+  },
+  "zip_bytes": 82123,
+  "zip_sha256": "e4089c45899d2a8b1b4af815e046d7abfe30f9a49a0818327bbe9c17dba766de"
+}
