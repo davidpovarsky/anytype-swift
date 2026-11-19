@@ -467,3 +467,329 @@ struct TorahT5NativePaginationTests {
         guard condition else { throw T5PaginationFailure.invariant(label) }
     }
 }
+
+private struct T5AccountRetryDirectory: Codable, Equatable {
+    let pathSHA256: String
+    let device: UInt64
+    let inode: UInt64
+    let createdAt: Double
+}
+
+private struct T5AccountRetryDirectoryObservation: Codable {
+    let stage: String
+    let root: T5AccountRetryDirectory
+    let account: T5AccountRetryDirectory
+}
+
+private struct T5AccountRetrySearchAttempt: Codable {
+    let request: T5PaginationSearchCall
+    let status: String
+    let errorCode: Int?
+    let errorDescription: String?
+}
+
+@MainActor private final class T5AccountRetrySearchRecorder: SearchMiddleServiceProtocol {
+    private let upstream: any SearchMiddleServiceProtocol
+    private(set) var attempts: [T5AccountRetrySearchAttempt] = []
+
+    init(upstream: any SearchMiddleServiceProtocol) { self.upstream = upstream }
+
+    func search(data: SearchRequest) async throws -> [ObjectDetails] {
+        let filters = try data.filters.map {
+            T5PaginationFilter(key: $0.relationKey, condition: String(describing: $0.condition), valueJSON: try $0.value.jsonString())
+        }
+        let sorts = data.sorts.map { T5PaginationSort(key: $0.relationKey, direction: String(describing: $0.type), noCollate: $0.noCollate) }
+        func request(_ result: [ObjectDetails]) -> T5PaginationSearchCall {
+            .init(spaceID: data.spaceId, limit: data.limit, offset: data.offset, fullText: data.fullText,
+                  keys: data.keys, filters: filters, sorts: sorts, objectIDs: result.map(\.id), resultSpaceIDs: result.map(\.spaceId))
+        }
+        do {
+            let result = try await upstream.search(data: data)
+            attempts.append(.init(request: request(result), status: "SUCCESS", errorCode: nil, errorDescription: nil))
+            return result
+        } catch let error as Anytype_Rpc.Object.Search.Response.Error {
+            attempts.append(.init(request: request([]), status: "NATIVE_ERROR", errorCode: error.code.rawValue, errorDescription: error.description_p))
+            throw error
+        } catch {
+            attempts.append(.init(request: request([]), status: "OTHER_ERROR", errorCode: nil, errorDescription: nil))
+            throw error
+        }
+    }
+
+    func reset() { attempts.removeAll() }
+}
+
+private struct T5AccountRetryQuery: Codable {
+    let name: String
+    let status: String
+    let startedAt: Double
+    let finishedAt: Double
+    let serviceID: String
+    let searchRecorderID: String
+    let upstreamSearchID: String
+    let activeSpaceID: String
+    let requestedSpaceID: String
+    let attempts: [T5AccountRetrySearchAttempt]
+    let rows: [T5PaginationRow]
+    let coverage: String?
+    let limitations: [String]
+    let readbacks: [T5PaginationReadback]
+    let nativeCandidatesBefore: [String]
+    let nativeCandidatesAfter: [String]
+    let errorCode: Int?
+    let errorDescription: String?
+}
+
+private struct T5AccountRetryRestore: Codable {
+    let name: String
+    let startedAt: Double
+    let finishedAt: Double
+    let selectedAccountID: String
+    let selectedSpaceID: String
+    let walletRecovered: Bool
+    let accountSelected: Bool
+}
+
+private struct T5AccountRetryStop: Codable {
+    let name: String
+    let startedAt: Double
+    let finishedAt: Double
+    let removeData: Bool
+    let accountStopCompleted: Bool
+    let accountNotRunningConfirmed: Bool
+}
+
+private struct T5AccountRetryReceipt: Codable {
+    let protocolVersion: String
+    let status: String
+    let token: String
+    let appSourceSHA: String
+    let runID: String
+    let runAttempt: String
+    let processID: Int32
+    let runtimeVersion: String
+    let accountID: String
+    let spaceID: String
+    let rootPathSHA256: String
+    let wrapperStartedAt: Double
+    let baselineFinishedAt: Double
+    let finishedAt: Double
+    let baselineReceiptSHA256Before: String
+    let baselineReceiptSHA256After: String
+    let credentialFileSHA256Before: String
+    let credentialFileSHA256After: String
+    let directories: [T5AccountRetryDirectoryObservation]
+    let restores: [T5AccountRetryRestore]
+    let stops: [T5AccountRetryStop]
+    let queries: [T5AccountRetryQuery]
+    let appShutdownCompleted: Bool
+    let appShutdownFinishedAt: Double
+    let accountCreatedByTail: Bool
+    let walletCreatedByTail: Bool
+    let accountMigratedByTail: Bool
+    let productLookupFlag: String
+    let wholeIndexCompleteness: String
+    let networkOutage: String
+    let uiErrorPresentation: String
+}
+
+@Suite("T5 actual stopped-account query and same-service retry", .serialized,
+       .enabled(if: ProcessInfo.processInfo.environment["PINKHA_T5_ACCOUNT_RETRY"] == "1"))
+@MainActor
+struct TorahT5NativeAccountRetryTests {
+    @Test("Accepted pagination body followed by native stop, propagated error and existing-account retry")
+    func nativeStoppedAccountErrorAndSameServiceRetry() async throws {
+        let startedAt = Date().timeIntervalSince1970
+        let original = TorahT5NativePaginationTests()
+        // The original method remains the same accepted body. This is one
+        // separately selected XCTest method, not two independently run tests.
+        try await original.nativePaginationCurrentSpaceAndMutationAcceptance()
+        try await original.verifyStoppedAccountRetry(wrapperStartedAt: startedAt)
+    }
+}
+
+extension TorahT5NativePaginationTests {
+    fileprivate func verifyStoppedAccountRetry(wrapperStartedAt: Double) async throws {
+        #if PINKHA_NATIVE_DERIVED && PINKHA_NATIVE_T5_LOOKUP_V1
+        let baselineFinishedAt = Date().timeIntervalSince1970
+        let environment = ProcessInfo.processInfo.environment
+        try require(environment["PINKHA_T5_ACCOUNT_RETRY"] == "1" && environment["PINKHA_SIMULATOR_UI_DISPOSABLE"] == "1",
+                    "stopped-account-tail-not-authorized-by-selection")
+        let runAttempt = try #require(environment["PINKHA_T5_ACCOUNT_RETRY_RUN_ATTEMPT"])
+        try require(Int(runAttempt).map { $0 > 0 } == true, "native-account-retry-run-attempt-required")
+        let support = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask,
+            appropriateFor: nil, create: false)
+        let directory = support.appendingPathComponent("pinkha-t5-native-pagination", isDirectory: true)
+        let baselineURL = directory.appendingPathComponent("receipt.json")
+        let credentialURL = directory.appendingPathComponent("secrets.json")
+        let outputURL = directory.appendingPathComponent("account-retry-receipt.json")
+        try require(!FileManager.default.fileExists(atPath: outputURL.path), "account-retry-receipt-already-exists")
+        let baselineBytes = try Data(contentsOf: baselineURL)
+        let credentialBytes = try Data(contentsOf: credentialURL)
+        let baseline = try JSONDecoder().decode(T5PaginationReceipt.self, from: baselineBytes)
+        let credentials = try JSONDecoder().decode(T5PaginationSecrets.self, from: credentialBytes)
+        try require(baseline.status == "PASS_NATIVE_OBSERVATIONS" && baseline.protocolVersion == "pinkha-t5-native-pagination-v1"
+            && baseline.accountStopCompleted && baseline.accountNotRunningConfirmed && baseline.appShutdownCompleted
+            && baseline.token == environment["PINKHA_T5_PAGINATION_TOKEN"]
+            && baseline.appSourceSHA == environment["PINKHA_T5_PAGINATION_APP_SHA"]
+            && baseline.runID == environment["PINKHA_T5_PAGINATION_RUN_ID"]
+            && baseline.processID == ProcessInfo.processInfo.processIdentifier
+            && credentials.token == baseline.token && !credentials.mnemonic.isEmpty && !credentials.accountKey.isEmpty,
+            "accepted-current-process-baseline-and-private-credentials-required")
+        let root = Container.shared.localRepoService().middlewareRepoURL.resolvingSymlinksInPath()
+        try require(hash(Data(root.path.utf8)) == baseline.rootPathSHA256, "existing-native-root-differs")
+        try require(!baseline.accountID.isEmpty && !baseline.accountID.contains("/")
+            && baseline.accountID != "." && baseline.accountID != "..", "invalid-native-account-directory")
+        let accountDirectory = root.appendingPathComponent(baseline.accountID, isDirectory: true)
+        let expectedRoot = try retryDirectoryIdentity(root)
+        let expectedAccount = try retryDirectoryIdentity(accountDirectory)
+        var directoryObservations: [T5AccountRetryDirectoryObservation] = []
+        func observeDirectories(_ stage: String) throws {
+            let observedRoot = try retryDirectoryIdentity(root)
+            let observedAccount = try retryDirectoryIdentity(accountDirectory)
+            try require(observedRoot == expectedRoot && observedAccount == expectedAccount,
+                        "existing-account-directory-replaced-or-missing")
+            directoryObservations.append(.init(stage: stage, root: observedRoot, account: observedAccount))
+        }
+        try observeDirectories("after_baseline")
+        var restores: [T5AccountRetryRestore] = []
+        var stops: [T5AccountRetryStop] = []
+        var queries: [T5AccountRetryQuery] = []
+        let originalSearch = Container.shared.searchMiddleService()
+        let recorder = T5AccountRetrySearchRecorder(upstream: originalSearch)
+        let associations = AnytypeTorahAssociationRepository()
+        let query = T5ExpandedRelatedDocumentsQuery(pageSize: 2, candidateLimit: 50, targetLimit: 50)
+        let originals = baseline.objects.filter { !["different_verse", "different_provider", "foreign"].contains($0.role) }
+        let candidates = originals.map(\.objectID).sorted()
+        let selection = TorahInspectorSelection(providerID: source.providerID, canonicalRef: source.canonicalReference)
+        @MainActor func restoreExisting(_ name: String) async throws {
+            let startedAt = Date().timeIntervalSince1970
+            try observeDirectories(name + "_before_wallet")
+            _ = try await ClientCommands.walletRecover(.with {
+                $0.rootPath = root.path; $0.accountKey = credentials.accountKey
+            }).invoke(requestMask: { $0.mnemonic = "***"; $0.accountKey = "***" })
+            try observeDirectories(name + "_before_select")
+            // A missing or migration-required account fails this test. There is
+            // no account creation, migration or recreation fallback.
+            let account = try await Container.shared.authService().selectAccount(id: baseline.accountID, preferredSpaceId: baseline.spaceID)
+            try require(account.id == baseline.accountID, "restored-account-identity-differs")
+            try observeDirectories(name + "_after_select")
+            try await activate(baseline.spaceID)
+            restores.append(.init(name: name, startedAt: startedAt, finishedAt: Date().timeIntervalSince1970,
+                selectedAccountID: account.id, selectedSpaceID: baseline.spaceID, walletRecovered: true, accountSelected: true))
+        }
+        @MainActor func stopExisting(_ name: String) async throws {
+            let startedAt = Date().timeIntervalSince1970
+            _ = try await ClientCommands.accountStop(.with { $0.removeData = false }).invoke()
+            do {
+                _ = try await ClientCommands.accountPreloadRemainingSpaces().invoke(ignoreLogErrors: .accountIsNotRunning)
+                throw T5PaginationFailure.invariant("stopped-native-account-still-running")
+            } catch let error as Anytype_Rpc.Account.PreloadRemainingSpaces.Response.Error where error.code == .accountIsNotRunning { }
+            stops.append(.init(name: name, startedAt: startedAt, finishedAt: Date().timeIntervalSince1970,
+                removeData: false, accountStopCompleted: true, accountNotRunningConfirmed: true))
+        }
+        do {
+            try await restoreExisting("first_restore")
+            Container.shared.searchMiddleService.register { recorder }
+            defer { Container.shared.searchMiddleService.register { originalSearch } }
+            let service = AnytypeTorahSpaceRelatedDocumentsService(associations: associations, expandedQuery: query)
+            let serviceID = String(describing: ObjectIdentifier(service))
+            let recorderID = String(describing: ObjectIdentifier(recorder))
+            let searchID = String(describing: ObjectIdentifier(originalSearch))
+            @MainActor func observeQuery(_ name: String, mustFail: Bool) async throws {
+                let before: [String]
+                if mustFail { before = [] }
+                else { before = try await waitForCandidates(baseline.spaceID, expected: candidates, search: originalSearch) }
+                let startedAt = Date().timeIntervalSince1970
+                try require(Container.shared.activeSpaceManager().workspaceInfo?.accountSpaceId == baseline.spaceID,
+                            "retry-query-active-space-differs")
+                recorder.reset()
+                if mustFail {
+                    do {
+                        _ = try await service.relatedDocuments(spaceID: baseline.spaceID, selection: selection)
+                        throw T5PaginationFailure.invariant("stopped-account-returned-a-snapshot-instead-of-native-error")
+                    } catch let error as Anytype_Rpc.Object.Search.Response.Error {
+                        try require(error.code == .badInput && error.description_p == "account must be started",
+                                    "stopped-account-returned-another-error")
+                        try require(recorder.attempts.count == 1 && recorder.attempts[0].status == "NATIVE_ERROR"
+                            && recorder.attempts[0].errorCode == error.code.rawValue
+                            && recorder.attempts[0].errorDescription == error.description_p,
+                            "real-original-search-error-not-observed")
+                        queries.append(.init(name: name, status: "NATIVE_ERROR", startedAt: startedAt,
+                            finishedAt: Date().timeIntervalSince1970, serviceID: serviceID, searchRecorderID: recorderID,
+                            upstreamSearchID: searchID, activeSpaceID: baseline.spaceID, requestedSpaceID: baseline.spaceID,
+                            attempts: recorder.attempts, rows: [], coverage: nil, limitations: [], readbacks: [],
+                            nativeCandidatesBefore: [], nativeCandidatesAfter: [], errorCode: error.code.rawValue,
+                            errorDescription: error.description_p))
+                    }
+                } else {
+                    let snapshot = try await service.relatedDocuments(spaceID: baseline.spaceID, selection: selection)
+                    let attempts = recorder.attempts
+                    let after = try await waitForCandidates(baseline.spaceID, expected: candidates, search: originalSearch)
+                    var readbacks: [T5PaginationReadback] = []
+                    for object in originals {
+                        readbacks.append(try await readback(object.objectID, spaceID: object.spaceID, canonicalKey: object.canonicalKey))
+                    }
+                    try require(!attempts.isEmpty && attempts.allSatisfy { $0.status == "SUCCESS" && $0.request.limit == 2 },
+                                "retry-must-reach-real-small-native-pages")
+                    queries.append(.init(name: name, status: "SUCCESS", startedAt: startedAt,
+                        finishedAt: Date().timeIntervalSince1970, serviceID: serviceID, searchRecorderID: recorderID,
+                        upstreamSearchID: searchID, activeSpaceID: baseline.spaceID, requestedSpaceID: baseline.spaceID,
+                        attempts: attempts,
+                        rows: snapshot.documents.map { .init(id: $0.id, spaceID: $0.spaceID, objectID: $0.objectID,
+                            blockID: $0.blockID, title: $0.title, typeID: $0.typeID, sourceReference: $0.sourceReference,
+                            canUnlink: $0.canUnlink, kind: String(describing: $0.kind), updatedAt: $0.updatedAt?.timeIntervalSince1970) },
+                        coverage: snapshot.coverage.rawValue, limitations: snapshot.limitations.map { String(describing: $0) }.sorted(),
+                        readbacks: readbacks, nativeCandidatesBefore: before, nativeCandidatesAfter: after,
+                        errorCode: nil, errorDescription: nil))
+                }
+            }
+            try await observeQuery("before_stop", mustFail: false)
+            try await stopExisting("account_stop")
+            try await observeQuery("while_stopped", mustFail: true)
+            try observeDirectories("after_stop_error")
+            try await restoreExisting("retry_restore")
+            try await observeQuery("after_restore", mustFail: false)
+            try await stopExisting("final_stop")
+            _ = try await ClientCommands.appShutdown().invoke()
+            let shutdownFinishedAt = Date().timeIntervalSince1970
+            try observeDirectories("after_final_stop")
+            let finalBaseline = try Data(contentsOf: baselineURL)
+            let finalCredentials = try Data(contentsOf: credentialURL)
+            try require(finalBaseline == baselineBytes && finalCredentials == credentialBytes, "private-baseline-or-credential-file-changed")
+            let version = try await ClientCommands.appGetVersion().invoke().version
+            try require(version == baseline.runtimeVersion, "retry-runtime-version-differs")
+            try write(T5AccountRetryReceipt(protocolVersion: "pinkha-t5-native-account-retry-v1", status: "PASS_NATIVE_ACCOUNT_RETRY",
+                token: baseline.token, appSourceSHA: baseline.appSourceSHA, runID: baseline.runID, runAttempt: runAttempt,
+                processID: ProcessInfo.processInfo.processIdentifier, runtimeVersion: version, accountID: baseline.accountID,
+                spaceID: baseline.spaceID, rootPathSHA256: baseline.rootPathSHA256, wrapperStartedAt: wrapperStartedAt,
+                baselineFinishedAt: baselineFinishedAt, finishedAt: Date().timeIntervalSince1970,
+                baselineReceiptSHA256Before: hash(baselineBytes), baselineReceiptSHA256After: hash(finalBaseline),
+                credentialFileSHA256Before: hash(credentialBytes), credentialFileSHA256After: hash(finalCredentials),
+                directories: directoryObservations, restores: restores, stops: stops, queries: queries,
+                appShutdownCompleted: true, appShutdownFinishedAt: shutdownFinishedAt,
+                accountCreatedByTail: false, walletCreatedByTail: false, accountMigratedByTail: false,
+                productLookupFlag: "OFF", wholeIndexCompleteness: "NOT_PROVEN", networkOutage: "NOT_RUN", uiErrorPresentation: "NOT_RUN"),
+                to: outputURL)
+            print("T5_NATIVE_ACCOUNT_RETRY same_service=true native_error=BAD_INPUT restored_account=true product_lookup=OFF")
+        } catch {
+            _ = try? await ClientCommands.appShutdown().invoke()
+            throw error
+        }
+        #else
+        throw T5PaginationFailure.invariant("test-only-native-lookup-flags-required")
+        #endif
+    }
+
+    private func retryDirectoryIdentity(_ url: URL) throws -> T5AccountRetryDirectory {
+        try require(url.path == url.standardizedFileURL.path && url.path == url.resolvingSymlinksInPath().path,
+                    "noncanonical-existing-account-directory")
+        let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+        try require(attributes[.type] as? FileAttributeType == .typeDirectory, "existing-native-account-directory-required")
+        let device = (try #require(attributes[.systemNumber] as? NSNumber)).uint64Value
+        let inode = (try #require(attributes[.systemFileNumber] as? NSNumber)).uint64Value
+        let created = (try #require(attributes[.creationDate] as? Date)).timeIntervalSince1970
+        try require(inode > 0 && created > 0, "native-directory-identity-incomplete")
+        return .init(pathSHA256: hash(Data(url.path.utf8)), device: device, inode: inode, createdAt: created)
+    }
+}

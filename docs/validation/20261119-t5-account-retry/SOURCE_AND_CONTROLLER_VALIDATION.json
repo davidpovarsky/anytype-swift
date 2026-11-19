@@ -1,0 +1,123 @@
+{
+  "status": "PASS_LOCAL_CANDIDATE_SOURCE_AND_CONTROLS_APPLE_EXECUTION_NOT_RUN",
+  "source_base": "5167f32515b7b033172a9e5fcd65e4983407e076",
+  "source_files": [
+    {
+      "path": "AnyTypeTests/Pinkha/TorahT5NativePaginationTests.swift",
+      "before_sha256": "dff9dd58471659cc19d082ea0961f2ccff9666ad86c4aa052c85a3aa4e5d4990",
+      "after_sha256": "69af705e5d8dfa4cf58a56376b68eb9d2a7beba7b45b9719211308854cdb699d",
+      "bytes": 48719
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/run_t5_native_pagination.py",
+      "before_sha256": "0cca017a4650d3c7cecf7dfc03dcc037666203337acd23ba49f51a1f5b0e64fa",
+      "after_sha256": "edcef4a495b6fb9d3f961180fd6c337a2afcadd8d9ff5813e955c2198638f997",
+      "bytes": 16411
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/t5_native_account_retry_evidence.py",
+      "before_sha256": null,
+      "after_sha256": "066f124559464a27c3b0166287772895314e6a5260748429ebe014f91db56e9a",
+      "bytes": 15142
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/test_t5_native_account_retry.py",
+      "before_sha256": null,
+      "after_sha256": "8ce1333513c79b3dc100bae72bfffe44772c9760820a454358846f756950108e",
+      "bytes": 23609
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/T5_NATIVE_ACCOUNT_RETRY_CONTRACT.md",
+      "before_sha256": null,
+      "after_sha256": "0196fc4e30e6863138cb84956dfc8052c5779b9566b8adf490eff48cd6871764",
+      "bytes": 6740
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-native-pagination.yml",
+      "before_sha256": "6f61daed9297bfb75a06c1bf3bf0cbdb6179ad327446a1d879aa5a6ac4bf980c",
+      "after_sha256": "e1a22fdbc2cbaf051746c462517bc774cb38e768c3906a9aa150eb4e37be7fb8",
+      "bytes": 6361
+    },
+    {
+      "path": ".github/workflows/torah-inspector-ipados27.yml",
+      "before_sha256": "823a0b65deb831ba310c5c507ab7b0f53137e69d3b5166cddf8e5785742b27bb",
+      "after_sha256": "5890020936a3cd90ee0c1b99bcfac45d20fbd674fd54acfe56a6aad98078fc74",
+      "bytes": 11847
+    }
+  ],
+  "canonical_base_and_support_inputs": {
+    ".github/workflows/torah-inspector-ipados27.yml": "823a0b65deb831ba310c5c507ab7b0f53137e69d3b5166cddf8e5785742b27bb",
+    ".github/workflows/pinkha-t5-native-pagination.yml": "6f61daed9297bfb75a06c1bf3bf0cbdb6179ad327446a1d879aa5a6ac4bf980c",
+    "Tools/PinkhaSimulatorGate/run_t5_native_pagination.py": "0cca017a4650d3c7cecf7dfc03dcc037666203337acd23ba49f51a1f5b0e64fa",
+    "Tools/PinkhaSimulatorGate/t5_native_pagination_evidence.py": "fdec5d3d2b430da13973dfb2beb8309bb8b3e747c1baff968c2ea1502a535e5e",
+    "AnyTypeTests/Pinkha/TorahT5NativePaginationTests.swift": "dff9dd58471659cc19d082ea0961f2ccff9666ad86c4aa052c85a3aa4e5d4990",
+    "Tools/PinkhaSimulatorGate/run_t5_native_ui.py": "b53109ef4d8d8aa62a95c47055d6e1b5a8637eddc1641b184928cd10561fb163",
+    "Tools/PinkhaSimulatorGate/t5_native_ui_evidence.py": "689b52650592a9263991646308c4dc4b28603af46740b1aaec78f2ba35618bfb",
+    "Tools/PinkhaSimulatorGate/t5_native_ui_r08.py": "f726c600bd04f77b2ca8e8b42610b6c66dfbdaf96d86cc6535eaed0218fae4ea",
+    "Tools/PinkhaSimulatorGate/test_t5_native_pagination.py": "0f5d4d18a7ae3447e834e51ee6a2b6f137349188458f8df28acfbcd610f11241",
+    "Tools/PinkhaSimulatorGate/test_t5_native_pagination_controller.py": "e79246816f13cdfa0c323fb0f427f468d42f3f8760c075b660d54f012f37ae4c",
+    "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py": "b399f1b173ca2607277caa92fca1c75ba090ac95c1fec3a11233a5f289a653f2"
+  },
+  "original_entire_swift_file_unchanged_prefix": {
+    "bytes": 28741,
+    "sha256": "dff9dd58471659cc19d082ea0961f2ccff9666ad86c4aa052c85a3aa4e5d4990"
+  },
+  "swift_grammar": {
+    "status": "PASS",
+    "scope": "GRAMMAR_ONLY_NOT_UIKIT_TYPECHECK_OR_APPLE_EXECUTION",
+    "exit_code": 0,
+    "sha256": "69af705e5d8dfa4cf58a56376b68eb9d2a7beba7b45b9719211308854cdb699d",
+    "stdout": "",
+    "stderr": ""
+  },
+  "python_ast": "PASS",
+  "workflow_yaml_structure": "PASS",
+  "workflow_native_command_shell_syntax": "PASS",
+  "controls": [
+    {
+      "path": "account-retry-controls.log",
+      "tests": 21,
+      "status": "PASS_SYNTHETIC_CONTROLS_NOT_NATIVE_ACCEPTANCE",
+      "sha256": "f3ff570a6949ac005061715562ee6a3c260b1b37b8c891c263e0b1e09175ca31"
+    },
+    {
+      "path": "original-pagination-controls.log",
+      "tests": 26,
+      "status": "PASS_SYNTHETIC_CONTROLS_NOT_NATIVE_ACCEPTANCE",
+      "sha256": "6dcfbbc4f9330b7ec02a1760295eef285d1bcd969c82c5880b19b7d4ba07df49"
+    }
+  ],
+  "primary_native_api_evidence": {
+    "path": "docs/validation/20261119-t5-account-retry/native-api-primary-source.json",
+    "sha256": "d71f313d9feea60cc3153ab8330211ecb4d0248e862a46afe52b7b4b28816f79",
+    "bytes": 73780
+  },
+  "expected_actual_wrapper_counts_not_yet_executed": {
+    "selected_test_methods": 1,
+    "original_baseline_body_invocations": 1,
+    "original_baseline_observations": 10,
+    "original_baseline_search_calls": 36,
+    "tail_query_observations": 3,
+    "tail_successful_search_calls": 8,
+    "tail_failed_search_attempts": 1,
+    "total_search_calls": 45,
+    "tail_existing_account_restores": 2,
+    "tail_account_stops": 2
+  },
+  "scope": {
+    "product_lookup": "OFF",
+    "same_retained_production_service": "REQUIRED",
+    "same_existing_account_directory": "REQUIRED",
+    "same_private_credentials": "REQUIRED",
+    "actual_apple_native_execution": "NOT_RUN",
+    "uikit_typecheck": "NOT_RUN",
+    "network_outage": "NOT_RUN",
+    "ui_error_presentation": "NOT_RUN",
+    "whole_index_completeness": "NOT_PROVEN",
+    "original_r14_r15_replaced": false,
+    "attachment_runtime_or_old_new_compatibility_qualification": false,
+    "full_t5_acceptance": false
+  },
+  "cross_language_directory_creation_time_tolerance_seconds": 1e-06,
+  "native_swift_directory_identity_tolerance": 0
+}

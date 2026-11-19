@@ -6,6 +6,9 @@ on:
       heart_r15_run_id:
         type: string
         required: true
+      include_account_retry:
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -48,6 +51,7 @@ jobs:
       - name: Run adversarial receipt and publication controls
         run: |
           python3 -B -m unittest discover -s Tools/PinkhaSimulatorGate -p 'test_t5_native_pagination*.py' -v > build/t5-native-pagination-proof/controller-controls.log 2>&1
+          python3 -B -m unittest discover -s Tools/PinkhaSimulatorGate -p 'test_t5_native_account_retry*.py' -v >> build/t5-native-pagination-proof/controller-controls.log 2>&1
           cat build/t5-native-pagination-proof/controller-controls.log
       - name: Verify actual Xcode27 and create fresh owned OS27 simulators
         run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/t5-native-pagination-proof/preflight
@@ -65,11 +69,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           HEART_R15_RUN_ID: ${{ inputs.heart_r15_run_id }}
+          INCLUDE_ACCOUNT_RETRY: ${{ inputs.include_account_retry }}
         run: |
+          extra=()
+          if [ "$INCLUDE_ACCOUNT_RETRY" = "true" ]; then extra+=(--include-account-retry); fi
           python3 -B Tools/PinkhaSimulatorGate/run_t5_native_pagination.py \
             --app "$GITHUB_WORKSPACE" --native-source build/t5-pagination-native-source \
             --work build/t5-native-pagination-private --evidence build/t5-native-pagination-proof \
-            --derived build/ui27-derived --heart-r15-run-id "$HEART_R15_RUN_ID"
+            --derived build/ui27-derived --heart-r15-run-id "$HEART_R15_RUN_ID" "${extra[@]}"
       - name: Keep XCTest activity logs outside the compilation cache
         if: always()
         id: cache-log-boundary
@@ -103,7 +110,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Pinkha-T5-Native-Pagination-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          name: Pinkha-T5-Native-${{ inputs.include_account_retry && 'Account-Retry' || 'Pagination' }}-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: build/t5-native-pagination-proof/Pinkha-Native-Derived-Evidence.zip
           if-no-files-found: error
           retention-days: 14

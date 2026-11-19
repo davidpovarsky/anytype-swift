@@ -11,11 +11,28 @@ from uuid import uuid4
 
 import run_t5_apple_pair as pair
 import t5_native_pagination_evidence as evidence
+import t5_native_account_retry_evidence as retry_evidence
 
 PRIVATE_RELATIVE_PATH = "Library/Application Support/pinkha-t5-native-pagination"
 ALLOWED_PHASE_FILES = ["test.log", "test.command.json", "summary.json", "tests.json", "receipt.json", "result.json",
                        "selection.json", "install.log", "install.command.json", "export-summary.command.json",
-                       "export-tests.command.json"]
+                       "export-tests.command.json", "account-retry-receipt.json", "account-retry-controller.json"]
+
+
+def selected_method(account_retry):
+    pair.require(type(account_retry) is bool, "Explicit native account-retry mode required")
+    return retry_evidence.METHOD if account_retry else evidence.METHOD
+
+
+def existing_directory_identity(path):
+    pair.require(path.is_absolute() and path.is_dir() and not path.is_symlink()
+                 and path.resolve(strict=True) == path, "Canonical existing native directory required")
+    value = path.stat()
+    pair.require(hasattr(value, "st_birthtime"), "Actual Apple directory creation date required")
+    result = dict(pathSHA256=pair.sha_bytes(str(path).encode()), device=value.st_dev,
+                  inode=value.st_ino, createdAt=value.st_birthtime)
+    retry_evidence.validate_directory(result)
+    return result
 
 
 def private_file(container, filename):
@@ -64,14 +81,16 @@ def publish_native_evidence(work, proof, container, token):
     return True
 
 
-def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_results):
+def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_results, account_retry=False):
     from run_t5_native_ui import selected_configuration
     from t5_native_ui_evidence import validate_selection
 
     directory = work / "phase"
     pair.require(not directory.exists(), "Fresh native pagination phase directory required")
     directory.mkdir()
-    record = dict(status="RUNNING", method=evidence.METHOD, actual_test_counts=None)
+    method = selected_method(account_retry)
+    selected_class = method.split("/", 1)[0]
+    record = dict(status="RUNNING", method=method, actual_test_counts=None)
     pair.write(directory / "result.json", record)
     bundle = directory / "original.xcresult"
     try:
@@ -79,15 +98,20 @@ def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_r
         environment = {"PINKHA_T5_NATIVE_PAGINATION": "1", "PINKHA_SIMULATOR_UI_DISPOSABLE": "1",
                        "PINKHA_T5_PAGINATION_TOKEN": token, "PINKHA_T5_PAGINATION_APP_SHA": source,
                        "PINKHA_T5_PAGINATION_RUN_ID": run_id}
-        configuration, filters = selected_configuration(Path(build["configuration"]), "AnytypeTests", [evidence.METHOD], environment, ui)
-        pair.require(filters == ["TorahT5NativePaginationTests"], "Exact native pagination XCTest class required")
-        pair.write(directory / "selection.json", dict(method=evidence.METHOD, environment=environment, device_udid=udid,
+        if account_retry:
+            environment["PINKHA_T5_ACCOUNT_RETRY"] = "1"
+            run_attempt = os.environ.get("GITHUB_RUN_ATTEMPT", "")
+            pair.require(run_attempt.isdigit() and int(run_attempt) > 0, "Actual account-retry run attempt required")
+            environment["PINKHA_T5_ACCOUNT_RETRY_RUN_ATTEMPT"] = run_attempt
+        configuration, filters = selected_configuration(Path(build["configuration"]), "AnytypeTests", [method], environment, ui)
+        pair.require(filters == [selected_class], "Exact native pagination/retry XCTest class required")
+        pair.write(directory / "selection.json", dict(method=method, environment=environment, device_udid=udid,
                    xctestrun_sha256=pair.digest(configuration), packaged_code_sha256=build["code_sha256"]))
         command = ["xcodebuild", "test-without-building", "-xctestrun", str(configuration),
                    "-destination", "platform=iOS Simulator,id=" + udid, "-parallel-testing-enabled", "NO",
                    "-test-timeouts-enabled", "YES", "-default-test-execution-time-allowance", "900",
                    "-maximum-test-execution-time-allowance", "900",
-                   "-only-testing:AnytypeTests/TorahT5NativePaginationTests", "-resultBundlePath", str(bundle)]
+                   "-only-testing:AnytypeTests/" + selected_class, "-resultBundlePath", str(bundle)]
         outcome, _ = pair.run_logged(command, app, directory, "test", 1200, check=False)
         record.update(command_exit_code=outcome["return_code"], timed_out=outcome.get("timed_out", False))
         if bundle.exists():
@@ -98,16 +122,35 @@ def execute_phase(*, app, work, build, udid, source, run_id, token, ui, method_r
         receipt_path = container / PRIVATE_RELATIVE_PATH / "receipt.json"
         if receipt_path.is_file():
             shutil.copyfile(private_file(container, "receipt.json"), directory / "receipt.json")
+        if account_retry and (container / PRIVATE_RELATIVE_PATH / "account-retry-receipt.json").is_file():
+            shutil.copyfile(private_file(container, "account-retry-receipt.json"), directory / "account-retry-receipt.json")
         installed = pair.app_container(udid, "app")
         pair.require(ui.code_carriers(installed)["sha256"] == build["code_sha256"], "Installed pagination executable bytes differ")
         pair.require(outcome["return_code"] == 0 and not outcome.get("timed_out"), "Actual native pagination XCTest failed")
         summary = json.loads((directory / "summary.json").read_text(encoding="utf8"))
         methods = method_results(json.loads((directory / "tests.json").read_text(encoding="utf8")))
-        record["actual_test_counts"] = validate_selection(summary, methods, [evidence.METHOD], udid)
+        record["actual_test_counts"] = validate_selection(summary, methods, [method], udid)
         report = json.loads((directory / "receipt.json").read_text(encoding="utf8"))
         root = container / pair.ROOT_RELATIVE_PATH
         pair.require(root.is_dir() and not root.is_symlink() and root.resolve().is_relative_to(container.resolve()), "Actual owned native account root missing")
         counts = evidence.validate_receipt(report, source=source, run_id=run_id, token=token, root_sha=pair.sha_bytes(str(root.resolve()).encode()))
+        if account_retry:
+            account_id = report["accountID"]
+            pair.require(account_id not in {".", ".."} and "/" not in account_id and "\\" not in account_id,
+                         "Original account directory name is invalid")
+            canonical_root = root.resolve(strict=True)
+            observed = dict(root=existing_directory_identity(canonical_root),
+                            account=existing_directory_identity(canonical_root / account_id))
+            credential_sha = pair.digest(private_file(container, "secrets.json"))
+            window = [summary.get("startTime"), summary.get("finishTime")]
+            controller = dict(current_directories=observed, credential_sha256=credential_sha, run_attempt=run_attempt,
+                              actual_xctest_execution_window=window, baseline_receipt_sha256=pair.digest(directory / "receipt.json"))
+            pair.write(directory / "account-retry-controller.json", controller)
+            retry_report = json.loads((directory / "account-retry-receipt.json").read_text(encoding="utf8"))
+            counts = retry_evidence.validate_receipt(retry_report, report, (directory / "receipt.json").read_bytes(),
+                source=source, run_id=run_id, run_attempt=run_attempt, token=token, root_sha=observed["root"]["pathSHA256"],
+                credential_sha=credential_sha, current_directories=observed, execution_window=window)
+            record["account_retry_receipt_sha256"] = pair.digest(directory / "account-retry-receipt.json")
         record.update(status="PASS", native_process_id=report["processID"], receipt_sha256=pair.digest(directory / "receipt.json"),
                       installed_code_sha256=build["code_sha256"], actual_counts=counts, actual_methods=methods)
         return counts
@@ -157,10 +200,13 @@ def execute(args, result):
         installed = pair.install_runtime("new", archive, source_run, app, native_source, work, runtime_proof, heart_helper)
         build = pair.build_app("new", app, derived, work, proof / "build-new", udid, source, (ui, native_helper))
         shutil.move(str(installed), work / "installed-framework-new")
-        result.update(phase="ACTUAL_NATIVE_PAGINATION", kit_sha=build["kit_sha"], packaged_code_sha256=build["code_sha256"])
+        account_retry = getattr(args, "include_account_retry", False)
+        result.update(phase="ACTUAL_NATIVE_ACCOUNT_RETRY" if account_retry else "ACTUAL_NATIVE_PAGINATION",
+                      kit_sha=build["kit_sha"], packaged_code_sha256=build["code_sha256"])
         pair.write(proof / "result.json", result)
         result["actual_counts"] = execute_phase(app=app, work=work, build=build, udid=udid, source=source,
-                                                run_id=run_id, token=token, ui=ui, method_results=method_results)
+                                                run_id=run_id, token=token, ui=ui, method_results=method_results,
+                                                account_retry=account_retry)
         pair.require(pair.git(app, "rev-parse", "HEAD") == source and not pair.git(app, "status", "--porcelain"),
                      "Published application source changed during native execution")
     finally:
@@ -169,7 +215,8 @@ def execute(args, result):
         finally:
             pair.run_logged(["xcrun", "simctl", "shutdown", udid], app, proof / "simulator", "shutdown", 120, check=False)
     pair.require(published, "Complete secret-scanned native pagination evidence required")
-    result.update(status="APPLE_NATIVE_PAGINATION_PASS", phase="COMPLETE", product_lookup_flag="OFF",
+    result.update(status="APPLE_NATIVE_ACCOUNT_RETRY_PASS" if account_retry else "APPLE_NATIVE_PAGINATION_PASS",
+                  phase="COMPLETE", product_lookup_flag="OFF",
                   full_matrix_accepted=False, whole_index_completeness="NOT_PROVEN", acl_revocation="NOT_PROVEN",
                   physical_device_accepted=False, ui_navigation="NOT_RUN")
 
@@ -179,8 +226,10 @@ def main(argv=None):
     for name in ["app", "native-source", "work", "evidence", "derived"]:
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--heart-r15-run-id", required=True)
+    parser.add_argument("--include-account-retry", action="store_true")
     args = parser.parse_args(argv)
-    result = dict(protocol=evidence.PROTOCOL, status="RUNNING", phase="PREFLIGHT", started_at=datetime.now(timezone.utc).isoformat(),
+    result = dict(protocol=retry_evidence.PROTOCOL if args.include_account_retry else evidence.PROTOCOL,
+                  status="RUNNING", phase="PREFLIGHT", started_at=datetime.now(timezone.utc).isoformat(),
                   product_lookup_flag="OFF", full_matrix_accepted=False, whole_index_completeness="NOT_PROVEN",
                   acl_revocation="NOT_PROVEN", physical_device_accepted=False, ui_navigation="NOT_RUN")
     code = 1

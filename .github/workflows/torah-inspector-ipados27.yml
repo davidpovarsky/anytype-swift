@@ -33,6 +33,7 @@ on:
           - t5-apple-pairs
           - t5-apple-ui
           - t5-native-pagination
+          - t5-native-account-retry
           - t5-native-attachment
           - sdk06-tests
           - hanlin-journal-probe
@@ -202,10 +203,11 @@ jobs:
     uses: ./.github/workflows/pinkha-t5-r15-runtime.yml
 
   t5-native-pagination:
-    if: ${{ inputs.route == 't5-native-pagination' }}
+    if: ${{ inputs.route == 't5-native-pagination' || inputs.route == 't5-native-account-retry' }}
     uses: ./.github/workflows/pinkha-t5-native-pagination.yml
     with:
       heart_r15_run_id: ${{ inputs.t5_r15_run_id }}
+      include_account_retry: ${{ inputs.route == 't5-native-account-retry' }}
 
   t5-native-attachment:
     if: ${{ inputs.route == 't5-native-attachment' }}
