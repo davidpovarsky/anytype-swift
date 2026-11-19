@@ -147,7 +147,7 @@ struct PinkhaAnyEngineProbe {
         FileHandle.standardOutput.write(Data([10]))
     }
 
-    private static func XCTLikeRequire<T>(_ value: T?) throws -> T {
+    private static func requireValue<T>(_ value: T?) throws -> T {
         guard let value else { throw AnyEngineError.malformedResponse("expected object") }
         return value
     }

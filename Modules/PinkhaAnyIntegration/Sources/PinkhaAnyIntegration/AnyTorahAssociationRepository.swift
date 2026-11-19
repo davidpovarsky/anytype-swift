@@ -260,7 +260,7 @@ public actor AnyTorahAssociationRepository: TorahAssociationRepository {
         return (merged, operation)
     }
 
-    private func requireNoConflicts(_ state: State) throws {
+    private nonisolated func requireNoConflicts(_ state: State) throws {
         guard state.conflicts.isEmpty else {
             throw TorahAssociationRepositoryError.writeConflict("Concurrent association variants require explicit resolution")
         }

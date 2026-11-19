@@ -33,3 +33,10 @@ HTTP redirects are refused. Mutations fail if a successful HTTP response contain
 - `evidence/runtime-firewall-v3.json` records the actual firewall-isolated engine component run.
 
 The source CLI build omits the `llamacpp` tag. Runtime validation uses the verified official release binary with embedding disabled. These checks do not establish complete application migration, iOS UI acceptance, physical iPad behavior, semantic search quality, or parity of every custom capability. A missing Swift probe is reported as `NOT_RUN`, never as a passed adapter test.
+## Source identity and Swift claim partitions
+
+The current harness records Git HEAD at the start and finish, whether the scoped source paths have uncommitted changes, the harness digest, the Swift executable digest, and a digest of the Swift package source manifest. It fails if the tested harness or Swift source manifest changes during the run.
+
+When the Swift probe is supplied, the harness also prepares immutable claim anchors and disconnects both independent peers using separate verified firewall rules. It exercises independent adds, same-operation conflicting payloads, observed removal alongside an unobserved add, concurrent replacements, exact retry, local collision refusal, and cold reopen while disconnected. After reconnecting, it compares the full claim/live/conflict sets on both peers. Those checks are acceptance criteria in the script; only a successful recorded run is evidence that they passed.
+
+The exact script executed for the earlier engine-only v3 run is preserved at `evidence/scripts/run_runtime_validation.v3.py`. Its SHA-256 is `a669e0dd1f4a94f28e4c2b364939835e3818f819862d9bbe18348462c89870ec`, matching the v3 result. This historical copy is evidence, not the current entry point.

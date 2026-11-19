@@ -50,6 +50,28 @@ def digest(path):
     return result.hexdigest()
 
 
+def source_provenance():
+    script = Path(__file__).resolve()
+    repository = next((parent for parent in script.parents if (parent / ".git").exists()), None)
+    if repository is None:
+        return {"gitHEAD": None, "trackedSourceDirty": None}
+    revision = subprocess.run(["git", "-C", str(repository), "rev-parse", "HEAD"],
+                              capture_output=True, text=True, timeout=10)
+    status = subprocess.run(["git", "-C", str(repository), "status", "--porcelain=v1", "--",
+                             "Tools/AnyEngineValidation/run_runtime_validation.py", "Modules/PinkhaAnyEngine"],
+                            capture_output=True, text=True, timeout=10)
+    require(revision.returncode == 0 and status.returncode == 0, "source provenance could not be read")
+    result = {"gitHEAD": revision.stdout.strip(), "trackedSourceDirty": bool(status.stdout.strip())}
+    package = repository / "Modules" / "PinkhaAnyEngine"
+    sources = list((package / "Sources").rglob("*.swift")) if package.exists() else []
+    sources += [path for path in (package / "Package.swift", package / "Package.resolved") if path.exists()]
+    manifest = {path.relative_to(repository).as_posix(): digest(path) for path in sorted(sources)}
+    result["swiftSourceManifestSHA256"] = hashlib.sha256(
+        json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    result["swiftSourceFiles"] = len(manifest)
+    return result
+
+
 class Peer:
     def __init__(self, binary, folder, network=None):
         self.folder = Path(folder)
@@ -317,6 +339,9 @@ def run(args):
     with tempfile.TemporaryDirectory(prefix="pinkha-any-validation-") as temporary:
         root = Path(temporary)
         try:
+            summary["sourceAtStart"] = check("source_provenance", source_provenance)
+            if args.probe_binary:
+                summary["swiftProbeBinarySHA256"] = check("swift_probe_binary_digest", lambda: digest(args.probe_binary))
             expected = args.expected_binary_sha256 or RELEASE_EXE_SHA256
             check("pinned_binary_digest", lambda: require(summary["binarySHA256"] == expected,
                                                          "binary digest differs from expected"))
@@ -574,6 +599,13 @@ def run(args):
                     "bothPeersPhysicallyPartitioned": True}
             check("offline_write_replicates_to_second_peer", lambda: eventually(
                 lambda: texts(second).get(offline_id) == offline_text, "offline native write", args.sync_timeout))
+            final_sources = source_provenance()
+            check("executed_source_unchanged", lambda: require(
+                digest(__file__) == summary["harnessSHA256"] and
+                (not args.probe_binary or final_sources["swiftSourceManifestSHA256"] ==
+                 summary["sourceAtStart"]["swiftSourceManifestSHA256"]),
+                "harness or Swift sources changed during validation"))
+            summary["sourceAtFinish"] = final_sources
             summary["status"] = "PASS_REAL_ENGINE_COMPONENT"
         except Exception as error:
             summary["status"] = "FAIL_REAL_ENGINE_COMPONENT"

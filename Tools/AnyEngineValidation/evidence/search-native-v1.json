@@ -1,0 +1,78 @@
+{
+    "schemaVersion":  1,
+    "status":  "FAIL_NATIVE_SEARCH_COMPONENT",
+    "scope":  "synthetic-native-search-component",
+    "startedAtUTC":  "2026-11-19T15:36:02.570077+00:00",
+    "runtimeVersion":  "any v0.5.0 (commit 88fae2e5, built 2026-11-18T18:08:45Z)",
+    "scriptSHA256":  "ed09c9bb99c283d0292f7f5ac8f7801ab6a279d6e9a7813b947f28de7464e77b",
+    "checks":  [
+                   {
+                       "name":  "hebrew_plain_term",
+                       "status":  "PASS",
+                       "query":  "בראשית",
+                       "returnedMode":  "fts",
+                       "vectorStatus":  "disabled",
+                       "hits":  1
+                   },
+                   {
+                       "name":  "hebrew_phrase",
+                       "status":  "PASS",
+                       "query":  "\"בראשית ברא\"",
+                       "returnedMode":  "fts",
+                       "vectorStatus":  "disabled",
+                       "hits":  1
+                   },
+                   {
+                       "name":  "hebrew_prefix",
+                       "status":  "PASS",
+                       "query":  "ברא*",
+                       "returnedMode":  "fts",
+                       "vectorStatus":  "disabled",
+                       "hits":  1
+                   },
+                   {
+                       "name":  "mixed_language_ascii_term",
+                       "status":  "PASS",
+                       "query":  "markerword",
+                       "returnedMode":  "fts",
+                       "vectorStatus":  "disabled",
+                       "hits":  1
+                   },
+                   {
+                       "name":  "pointed_hebrew_literal",
+                       "status":  "PASS",
+                       "query":  "שָׁלוֹם",
+                       "returnedMode":  "fts",
+                       "vectorStatus":  "disabled",
+                       "hits":  1
+                   },
+                   {
+                       "name":  "unpointed_query_matches_pointed_text",
+                       "status":  "FAIL",
+                       "query":  "שלום",
+                       "returnedMode":  "fts",
+                       "vectorStatus":  "disabled"
+                   },
+                   {
+                       "name":  "hybrid_without_embedder_falls_back",
+                       "status":  "PASS",
+                       "query":  "בראשית",
+                       "returnedMode":  "fts",
+                       "vectorStatus":  "disabled",
+                       "hits":  1
+                   },
+                   {
+                       "name":  "object_filter_excludes_other_objects",
+                       "status":  "PASS"
+                   }
+               ],
+    "cleanup":  "synthetic-page-delete-accepted",
+    "finishedAtUTC":  "2026-11-19T15:36:14.977948+00:00",
+    "limitations":  [
+                        "Synthetic lexical examples, not relevance benchmarking.",
+                        "No local or network embedding model used; semantic retrieval is not validated."
+                    ],
+    "anySourceSHA":  "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+    "officialBinarySHA256":  "5993e211157985cb42fdec95c678f0c1b96da04796b4d0cd15cff9ef6bf52591",
+    "oldHeartEquivalentBehavior":  "NOT_VERIFIED; not classified as an established regression"
+}

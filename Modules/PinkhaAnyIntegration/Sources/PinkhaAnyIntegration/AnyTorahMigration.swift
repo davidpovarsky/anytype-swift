@@ -27,7 +27,14 @@ public struct AnyTorahMigrationPlan: Sendable {
         let sourceLocation = TorahAssociationLocation(
             spaceId: sourceSpaceID, target: .object(objectId: sourceObjectID))
         let payload = try codec.decodeCanonicalDocument(sourceBytes, legacyLocation: sourceLocation)
+        struct Version: Decodable { let version: Int }
+        let version = try JSONDecoder().decode(Version.self, from: sourceBytes).version
+        let sourceRoundTrip = version == 1
+            ? try codec.encodeDocument(codec.decodeDocument(sourceBytes))
+            : try codec.encodeCanonicalDocument(payload)
+        try AnyTorahSourceJSONGuard.validateRoundTrip(original: sourceBytes, encoded: sourceRoundTrip)
         var identities = Set<String>()
+        var semanticIdentities = Set<TorahAssociationIdentity>()
         var operations: [AnyTorahOperation] = []
         for source in payload.records {
             guard source.spaceId == sourceSpaceID, source.objectId == sourceObjectID,
@@ -49,6 +56,9 @@ public struct AnyTorahMigrationPlan: Sendable {
                 target = .object(objectId: targetObjectID)
             }
             let location = TorahAssociationLocation(spaceId: workspace.spaceID, target: target)
+            guard semanticIdentities.insert(TorahAssociationIdentity(item: source.item, location: location)).inserted else {
+                throw TorahAssociationRepositoryError.writeConflict("Source contains duplicate association identities")
+            }
             let mapped = TorahStoredAssociationRecord(
                 location: location, item: source.item, unknownFields: source.unknownFields)
             let encoded = try codec.encodeCanonicalDocument(.init(
@@ -132,6 +142,7 @@ public struct AnyTorahMigrationExecutor: Sendable {
         if targets.isEmpty { targets.insert(.object(objectId: plan.targetObjectID)) }
         for target in targets { try await access.validate(target, intent: .write) }
         let before = try await store.snapshot()
+        try rejectExistingIdentityConflicts(plan: plan, projection: before)
         let byLogical = Dictionary(grouping: before.all, by: { $0.operation.logicalKey })
         var previous: [String] = []
         for operation in plan.operations {
@@ -169,11 +180,7 @@ public struct AnyTorahMigrationExecutor: Sendable {
         // planned logical identities before issuing a complete snapshot receipt.
         do {
             let after = try await store.snapshot()
-            let groups = Dictionary(grouping: after.all, by: { $0.operation.logicalKey })
-            let unresolved = plan.operations.filter { operation in
-                guard let group = groups[operation.logicalKey], group.count == 1 else { return true }
-                return group[0].operation != operation
-            }.map(\.claimID)
+            let unresolved = try finalUnresolved(plan: plan, projection: after)
             guard unresolved.isEmpty else {
                 return .init(planID: plan.planID, status: .incomplete,
                     alreadyPresentClaimIDs: previous, acknowledgedClaimIDs: acknowledged,
@@ -189,4 +196,85 @@ public struct AnyTorahMigrationExecutor: Sendable {
                      alreadyPresentClaimIDs: previous, acknowledgedClaimIDs: acknowledged,
                      pendingClaimIDs: [], failure: nil)
     }
+    private struct StableRecordIdentity: Hashable {
+        let location: TorahAssociationLocation
+        let itemID: String
+    }
+
+    /// A migration may not silently merge into an existing association identity.
+    /// Reusing the exact imported claim is the only automatic idempotent case.
+    private func rejectExistingIdentityConflicts(
+        plan: AnyTorahMigrationPlan, projection: AnyTorahProjection
+    ) throws {
+        var semantic: [TorahAssociationIdentity: String] = [:]
+        var stable: [StableRecordIdentity: String] = [:]
+        var targets = Set<TorahAssociationLocation>()
+        for operation in plan.operations {
+            let incoming = try record(operation)
+            targets.insert(incoming.location)
+            semantic[TorahAssociationIdentity(item: incoming.item, location: incoming.location)] = operation.claimID
+            stable[.init(location: incoming.location, itemID: incoming.item.id)] = operation.claimID
+        }
+        func location(_ operation: AnyTorahOperation) -> TorahAssociationLocation {
+            .init(spaceId: operation.spaceID, target: operation.targetBlockID.isEmpty
+                ? .object(objectId: operation.targetObjectID)
+                : .block(objectId: operation.targetObjectID, blockId: operation.targetBlockID))
+        }
+        for claim in projection.live where targets.contains(location(claim.operation)) {
+            let existing = try record(claim.operation)
+            let semanticID = semantic[TorahAssociationIdentity(item: existing.item, location: existing.location)]
+            let stableID = stable[.init(location: existing.location, itemID: existing.item.id)]
+            guard [semanticID, stableID].compactMap({ $0 }).allSatisfy({ $0 == claim.id }) else {
+                throw TorahAssociationRepositoryError.writeConflict(
+                    "Migration target already contains this association identity")
+            }
+        }
+        for group in projection.conflicts.values
+            where group.contains(where: { targets.contains(location($0.operation)) }) {
+            throw TorahAssociationRepositoryError.writeConflict(
+                "Migration target contains quarantined operation variants")
+        }
+    }
+
+    private func finalUnresolved(
+        plan: AnyTorahMigrationPlan, projection: AnyTorahProjection
+    ) throws -> [String] {
+        let groups = Dictionary(grouping: projection.all, by: { $0.operation.logicalKey })
+        let live = Set(projection.live.map(\.id))
+        var unresolved = Set(plan.operations.compactMap { operation -> String? in
+            guard let group = groups[operation.logicalKey], group.count == 1,
+                  group[0].operation == operation, live.contains(operation.claimID) else {
+                return operation.claimID
+            }
+            return nil
+        })
+        do {
+            try rejectExistingIdentityConflicts(plan: plan, projection: projection)
+        } catch {
+            // The receipt is intentionally conservative. It never certifies a
+            // partially ambiguous target as a complete visible import.
+            unresolved.formUnion(plan.operations.map(\.claimID))
+        }
+        return unresolved.sorted()
+    }
+
+    private func record(_ operation: AnyTorahOperation) throws -> TorahStoredAssociationRecord {
+        let target: TorahAssociationTarget = operation.targetBlockID.isEmpty
+            ? .object(objectId: operation.targetObjectID)
+            : .block(objectId: operation.targetObjectID, blockId: operation.targetBlockID)
+        let location = TorahAssociationLocation(spaceId: workspace.spaceID, target: target)
+        let payload = try TorahAssociationPayloadCodec().decodeCanonicalDocument(
+            operation.payload, legacyLocation: location)
+        guard operation.spaceID == workspace.spaceID,
+              payload.records.count == 1, let record = payload.records.first,
+              record.location == location, !record.item.id.isEmpty,
+              record.item.providerID == operation.providerID,
+              (record.item.canonicalKey.isEmpty ? record.item.externalID : record.item.canonicalKey)
+                == operation.canonicalRef else {
+            throw TorahAssociationRepositoryError.malformedCanonicalData
+        }
+        return record
+    }
+
+
 }

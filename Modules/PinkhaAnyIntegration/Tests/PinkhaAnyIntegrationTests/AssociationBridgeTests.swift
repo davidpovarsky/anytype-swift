@@ -8,6 +8,7 @@ private actor MemoryStore: AnyTorahOperationStore {
     nonisolated let workspace: AnyTorahWorkspace
     private var claims: [AnyTorahClaim] = []
     private var remainingWrites: Int?
+    private var afterNextAppend: AnyTorahOperation?
     init(_ workspace: AnyTorahWorkspace) { self.workspace = workspace }
     func snapshot() throws -> AnyTorahProjection { try .init(claims: claims) }
     func append(_ op: AnyTorahOperation, authorize: @escaping @Sendable () async throws -> Void) async throws {
@@ -19,11 +20,16 @@ private actor MemoryStore: AnyTorahOperationStore {
             throw AnyEngineError.collision(op.logicalKey)
         }
         claims.append(try .init(operation: op, creator: workspace.accountID))
+        if let injected = afterNextAppend {
+            afterNextAppend = nil
+            claims.append(try .init(operation: injected, creator: injected.authorID))
+        }
     }
     func seed(_ op: AnyTorahOperation) throws {
         claims.append(try .init(operation: op, creator: op.authorID))
     }
     func limitWrites(_ limit: Int?) { remainingWrites = limit }
+    func injectAfterNextAppend(_ operation: AnyTorahOperation) { afterNextAppend = operation }
     func count() -> Int { claims.count }
 }
 
@@ -414,5 +420,110 @@ extension AssociationBridgeTests {
             try AnyHTTPTorahTargetAccess.requireReachableBlock("child",
                 response: response([("parent", ""), ("child", "parent")]), limit: 1)
         }
+    }
+}
+
+extension AssociationBridgeTests {
+    @Test func migrationRefusesNumbersTheOriginalDomainCannotPreserve() throws {
+        let (workspace, _, _, _) = try fixture()
+        for token in ["9007199254740993", "0.12345678901234567890123456789",
+                      "100000000000000000000000000000000000001"] {
+            let bytes = Data("{\"version\":2,\"records\":[],\"futureNumber\":\(token)}".utf8)
+            #expect(throws: AnyTorahMigrationError.numericPrecisionWouldChange(path: "/futureNumber")) {
+                try AnyTorahMigrationPlan(sourceBytes: bytes, sourceSpaceID: "old",
+                    sourceObjectID: "doc", workspace: workspace, targetObjectID: target.objectId,
+                    blockIDMap: [:], migrationKey: "precision")
+            }
+        }
+    }
+
+    @Test func exactDecimalGuardAcceptsEquivalentNotationAndIgnoresNumericStrings() throws {
+        try AnyTorahSourceJSONGuard.validateRoundTrip(
+            original: Data(#"{"a":1.00e3,"b":-0,"c":0.0001000,"quoted":"9007199254740993","nested":[7,true,null]}"#.utf8),
+            encoded: Data(#"{"a":1000,"b":0,"c":1e-4,"quoted":"9007199254740993","nested":[7.0,true,null]}"#.utf8))
+        #expect(throws: AnyTorahMigrationError.numericPrecisionWouldChange(path: "/a~1b~0c/0")) {
+            try AnyTorahSourceJSONGuard.validateRoundTrip(
+                original: Data(#"{"a/b~c":[9007199254740993]}"#.utf8),
+                encoded: Data(#"{"a/b~c":[9007199254740992]}"#.utf8))
+        }
+    }
+
+    @Test func ambiguousDuplicateJSONKeysCannotBeImported() throws {
+        #expect(throws: AnyTorahMigrationError.duplicateJSONKey(path: "/future")) {
+            try AnyTorahSourceJSONGuard.validateRoundTrip(
+                original: Data(#"{"future":1,"\u0066uture":2}"#.utf8),
+                encoded: Data(#"{"future":1}"#.utf8))
+        }
+    }
+
+    private func oneItemPlan(_ workspace: AnyTorahWorkspace,
+                             stableID: String = "imported") throws -> AnyTorahMigrationPlan {
+        try .init(sourceBytes: TorahAssociationPayloadCodec().encodeCanonicalDocument(.init(records: [
+            .init(location: .init(spaceId: "old", target: .object(objectId: "doc")), item: item(stableID))
+        ])), sourceSpaceID: "old", sourceObjectID: "doc", workspace: workspace,
+        targetObjectID: target.objectId, blockIDMap: [:], migrationKey: "verification")
+    }
+
+    @Test func migrationKnownSemanticCollisionFailsBeforeAnyWrite() async throws {
+        let (workspace, store, access, repository) = try fixture()
+        _ = try await repository.addAssociation(item("already-here"), target: target, spaceId: workspace.spaceID)
+        let executor = try AnyTorahMigrationExecutor(workspace: workspace, store: store, access: access)
+        await #expect(throws: (any Error).self) {
+            _ = try await executor.execute(oneItemPlan(workspace))
+        }
+        #expect(await store.count() == 1)
+    }
+
+    @Test func migrationCannotReportCompleteAfterConcurrentSemanticCollision() async throws {
+        let (workspace, store, access, _) = try fixture()
+        let plan = try oneItemPlan(workspace)
+        let original = try #require(plan.operations.first)
+        let concurrent = try AnyTorahOperation(
+            operationID: String(repeating: "f", count: 32), spaceID: workspace.spaceID,
+            authorID: workspace.accountID, kind: .add, targetObjectID: target.objectId,
+            providerID: original.providerID, canonicalRef: original.canonicalRef, payload: original.payload)
+        await store.injectAfterNextAppend(concurrent)
+        let executor = try AnyTorahMigrationExecutor(workspace: workspace, store: store, access: access)
+        let receipt = try await executor.execute(plan)
+        #expect(receipt.status == .incomplete)
+        #expect(receipt.acknowledgedClaimIDs == [original.claimID])
+        #expect(receipt.pendingClaimIDs == [original.claimID])
+    }
+
+    @Test func migrationCannotReportCompleteAfterConcurrentObservedRemove() async throws {
+        let (workspace, store, access, _) = try fixture()
+        let plan = try oneItemPlan(workspace)
+        let original = try #require(plan.operations.first)
+        let remove = try AnyTorahOperation(
+            operationID: String(repeating: "e", count: 32), spaceID: workspace.spaceID,
+            authorID: workspace.accountID, kind: .remove, targetObjectID: target.objectId,
+            observed: [original.claimID])
+        await store.injectAfterNextAppend(remove)
+        let executor = try AnyTorahMigrationExecutor(workspace: workspace, store: store, access: access)
+        let receipt = try await executor.execute(plan)
+        #expect(receipt.status == .incomplete)
+        #expect(receipt.pendingClaimIDs == [original.claimID])
+        #expect(try await store.snapshot().live.isEmpty)
+    }
+
+    @Test func migrationCannotReportCompleteAfterConcurrentLogicalCollision() async throws {
+        let (workspace, store, access, _) = try fixture()
+        let plan = try oneItemPlan(workspace)
+        let original = try #require(plan.operations.first)
+        let codec = TorahAssociationPayloadCodec()
+        var payload = try codec.decodeCanonicalDocument(original.payload,
+            legacyLocation: .init(spaceId: workspace.spaceID, target: target))
+        payload.records[0].item.labelEn = "Concurrent changed payload"
+        let collision = try AnyTorahOperation(
+            operationID: original.operationID, spaceID: workspace.spaceID,
+            authorID: workspace.accountID, kind: .add, targetObjectID: target.objectId,
+            providerID: original.providerID, canonicalRef: original.canonicalRef,
+            payload: codec.encodeCanonicalDocument(payload))
+        await store.injectAfterNextAppend(collision)
+        let executor = try AnyTorahMigrationExecutor(workspace: workspace, store: store, access: access)
+        let receipt = try await executor.execute(plan)
+        #expect(receipt.status == .incomplete)
+        #expect(receipt.pendingClaimIDs == [original.claimID])
+        #expect(try await store.snapshot().conflicts.count == 1)
     }
 }
