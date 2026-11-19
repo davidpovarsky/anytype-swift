@@ -87,6 +87,26 @@ def git(root, *args):
     return subprocess.check_output(["git", "-C", str(root), *args], text=True).strip()
 
 
+def verify_published_source(app, proof):
+    source = git(app, "rev-parse", "HEAD")
+    expected = os.environ.get("GITHUB_SHA")
+    run_id = os.environ.get("GITHUB_RUN_ID", "")
+    status = git(app, "status", "--porcelain")
+    valid = source == expected and not status and run_id.isdigit()
+    # Retain the failed predicate before aborting, without weakening the
+    # existing tracked-and-untracked cleanliness boundary.
+    write(proof / "source-preflight.json", {
+        "status": "PASS" if valid else "FAIL",
+        "actual_source_sha": source,
+        "expected_source_sha": expected,
+        "run_id": run_id,
+        "tracked_and_untracked_clean": not status,
+        "git_porcelain": status,
+    })
+    require(valid, "Exact clean published App source/run required")
+    return source
+
+
 def runtime_version(role):
     value = "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-" + PATCHES[role]
     return value + "-pinkha-native-t5-lookup-v1-" + PATCHES[role] if role == "new" else value
@@ -715,9 +735,7 @@ def execute(args, result):
     require(len({app, native_source, work, proof, derived}) == 5, "Separate source/work/proof/derived paths required")
     require(not work.exists(), "Fresh controller-owned private work directory required")
     work.mkdir(parents=True, mode=0o700)
-    source = git(app, "rev-parse", "HEAD")
-    require(source == os.environ.get("GITHUB_SHA") and not git(app, "status", "--porcelain")
-            and os.environ.get("GITHUB_RUN_ID", "").isdigit(), "Exact clean published App source/run required")
+    source = verify_published_source(app, proof)
     require(git(native_source, "rev-parse", "HEAD") == NATIVE_SOURCE
             and not git(native_source, "status", "--porcelain"), "Exact immutable native inventory checkout required")
     preflight = json.loads((proof / "preflight/preflight.json").read_text(encoding="utf8"))

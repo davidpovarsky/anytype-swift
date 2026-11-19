@@ -28,6 +28,7 @@ jobs:
     timeout-minutes: 240
     env:
       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - name: Checkout exact published application and controller source
         uses: actions/checkout@v4
@@ -47,11 +48,11 @@ jobs:
         with:
           repository: davidpovarsky/hanlin-ai
           ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
-          path: .ci/hanlin-source
+          path: build/t5-apple-hanlin-source
           persist-credentials: false
       - name: Prepare and verify the exact SDK dependency
         run: |
-          python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
+          python3 Tools/Hanlin/prepare_sdk.py --source build/t5-apple-hanlin-source
           python3 Tools/Hanlin/prepare_sdk.py --check
           mkdir -p build/t5-apple-pair-proof
           cp Dependencies/Hanlin/.pinkha-source.json build/t5-apple-pair-proof/hanlin-snapshot.json
