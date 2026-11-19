@@ -89,17 +89,52 @@ public struct AnyGuardedHTTPHierarchyRecordStore: AnyHierarchyObservableRecordSt
         try await requireRun()
     }
 
-    /// Binning/recovery remains a separate idempotent native collection action.
-    /// Folder removal is explicitly a recoverable sequence across objects, not
-    /// an atomic hierarchy transaction. The repository verifies children again.
+    /// Archive and recovery preserve every other collection membership and use
+    /// the complete captured row version. The native route holds current writer
+    /// and definition authority through the durable write, including exact noops.
+    /// Folder removal is still a recoverable sequence across separate objects.
     public func setArchived(objectID: String, archived: Bool,
                             authorize: @escaping @Sendable () async throws -> Void) async throws {
-        try await requireRun()
-        try await reader.setArchived(objectID: objectID, archived: archived, authorize: {
-            try await requireRun(); try await authorize()
-        })
+        guard AnyHierarchySchema.validID(objectID) else {
+            throw AnyEngineError.invalidIdentity("hierarchy object")
+        }
+        try await authorize()
+        try await verifyCapabilities()
+        let capabilities = try await client.requestJSON(method: "GET", path: ["v1", "pinkha", "capabilities"])
+        guard capabilities["conditionalMembershipSet"]?.integer == 1 else {
+            throw AnyEngineError.incompatibleSchema("conditional hierarchy membership unavailable")
+        }
+        let actualSchema = try await AnyHTTPHierarchyRecordStore.readSchema(client: client, workspace: workspace)
+        guard actualSchema == schema else { throw AnyHierarchyError.incompatibleSchema }
+        try await validateMembership(intent: .write)
+        let row = try await readObject(objectID: objectID)
+        guard let values = row["any"]?["collections"]?.array,
+              values.allSatisfy({ $0.string.map(AnyHierarchySchema.validID) == true }),
+              Set(values.compactMap(\.string)).count == values.count,
+              values.contains(.string(schema.collectionID)),
+              !values.contains(.string("template")),
+              let expectedVersion = row["_ver"] else {
+            throw AnyHierarchyError.malformedRow(objectID)
+        }
+        try AnyHierarchyNativeVersion.validate(expectedVersion)
+        var memberships = values
+        if archived {
+            if !memberships.contains(.string("bin")) { memberships.append(.string("bin")) }
+        } else {
+            memberships.removeAll { $0 == .string("bin") }
+        }
+        _ = try await client.requestJSON(method: "POST",
+            path: ["v1", "spaces", workspace.spaceID, "pinkha", "properties", objectID, "set", "any"],
+            body: .object(["patch": .object(["collections": .array(memberships)]),
+                           "ifVersion": expectedVersion, "ifStartedAt": .string(engineStartedAt)]),
+            authorize: {
+                try await requireRun()
+                try await authorize()
+                try await validateMembership(intent: .write)
+            })
         try await requireRun()
     }
+
 
     public func watch(session: AnyStreamSession) async throws -> AsyncThrowingStream<AnyQueryUpdate, Error> {
         try await requireRun()

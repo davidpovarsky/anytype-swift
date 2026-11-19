@@ -42,11 +42,35 @@ public struct AnyNativeRecoveredBlockDraft: Sendable, Equatable, Encodable {
     }
 }
 
+/// Visible input that could not be mapped back through known inline markup.
+/// It is local copy/review data, never an automatically writable native source.
+public struct AnyNativeUnmappedTextDraft: Sendable, Equatable, Encodable {
+    public let blockID: String
+    public let baseNative: AnyJSON
+    public let baselineSource: String
+    public let display: String
+    public let selectionLocation: Int
+    public let selectionLength: Int
+    public let reason: String
+    public var selection: NSRange { .init(location: selectionLocation, length: selectionLength) }
+
+    public init(base: AnyEditorBlock, baselineSource: String, display: String,
+                selection: NSRange, reason: String) throws {
+        guard baselineSource.utf8.count <= 65_536, display.utf8.count <= 65_536,
+              reason.utf8.count <= 1024 else { throw AnyNativeRecoveryError.invalidSnapshot }
+        _ = try AnyInlineMarkdown(literal: display).sourceRange(for: selection)
+        self.blockID = base.id; self.baseNative = base.native
+        self.baselineSource = baselineSource; self.display = display; self.reason = reason
+        self.selectionLocation = selection.location; self.selectionLength = selection.length
+    }
+}
+
 public struct AnyNativeDocumentRecoverySnapshot: Sendable, Encodable {
     public let workspace: AnyTorahWorkspace
     public let objectID: String
     public let dataset: String
     public let drafts: [AnyNativeRecoveredBlockDraft]
+    public let unmappedDrafts: [AnyNativeUnmappedTextDraft]
     public let selectedBlockIDs: [String]
     public let focusedBlockID: String?
     public let selectionLocation: Int
@@ -55,9 +79,12 @@ public struct AnyNativeDocumentRecoverySnapshot: Sendable, Encodable {
 
     public init(workspace: AnyTorahWorkspace, objectID: String, dataset: String = "editor_blocks",
                 drafts: [AnyNativeRecoveredBlockDraft], selectedBlockIDs: [String],
-                focusedBlockID: String?, selection: NSRange) throws {
+                focusedBlockID: String?, selection: NSRange,
+                unmappedDrafts: [AnyNativeUnmappedTextDraft] = []) throws {
         guard AnyEditorBlock.validID(objectID), dataset == "editor_blocks",
-              drafts.count <= 1_000, Set(drafts.map(\.blockID)).count == drafts.count,
+              drafts.count + unmappedDrafts.count <= 1_000,
+              Set(drafts.map(\.blockID)).count == drafts.count,
+              Set(unmappedDrafts.map(\.blockID)).count == unmappedDrafts.count,
               selectedBlockIDs.count <= 10_000,
               selectedBlockIDs.allSatisfy(AnyEditorBlock.validID),
               Set(selectedBlockIDs).count == selectedBlockIDs.count,
@@ -68,6 +95,7 @@ public struct AnyNativeDocumentRecoverySnapshot: Sendable, Encodable {
         }
         self.workspace = workspace; self.objectID = objectID; self.dataset = dataset
         self.drafts = drafts.sorted { $0.blockID < $1.blockID }
+        self.unmappedDrafts = unmappedDrafts.sorted { $0.blockID < $1.blockID }
         self.selectedBlockIDs = selectedBlockIDs; self.focusedBlockID = focusedBlockID
         self.selectionLocation = selection.location; self.selectionLength = selection.length
     }

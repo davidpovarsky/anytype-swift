@@ -42,7 +42,7 @@ Public visibility, public value constructors, portable Crypto import, typed nati
 
 The original read tool still returns bounded plain text for the current document or selected text blocks. It accepts no arbitrary object target.
 
-Any editor text is inline Markdown. AnyHanlinPlainText uses the pinned official swift-markdown parser (25cb61d3482054b09ae76ca4f281b1bfe7fe5a43) and explicitly renders visible text, links' labels, image alternative text, code contents and line breaks. Its generic plainText implementation is intentionally not used: that implementation retains code delimiters and raw HTML. Raw HTML/custom unsupported nodes fail visibly; code blocks preserve literal native text.
+Any editor text is inline Markdown. AnyHanlinPlainText uses the same lossless AnyInlineMarkdown projection as the editor, shared by PinkhaAnyHost. It preserves literal heading/list prefixes, indentation, spaces, line endings, Hebrew marks and Unicode bytes while exposing supported formatting and link labels as visible text. A whole-document Markdown parser must not reinterpret this native inline field. Unsupported inline HTML, entities, media or ambiguous syntax fail the read explicitly; escaped provider text remains literal, and native code blocks bypass interpretation. The AnyUI public type names are aliases of the shared implementation.
 
 The native read is bound to one engine run/account/Space lease, the exact mounted object and revision, the complete reachable block tree, and the original selection. Unknown/orphaned blocks and byte/count overflows fail the read. A queued navigation request remains queued until the actual UI owner proves the exact visible target; the command-line probe intentionally cannot supply that proof.
 

@@ -1,0 +1,83 @@
+Building for debugging...
+[0/13] Write sources
+[2/13] Write swift-version-2807070033DA82CF.txt
+[4/15] Compiling PinkhaAnyUI AnyInlineMarkdown.swift
+[5/15] Emitting module PinkhaAnyUI
+[6/18] Wrapping AST for PinkhaAnyUI for debugging
+[8/18] Emitting module AnyInlineComponentsTests
+[9/19] Compiling AnyInlineComponentsTests AnyInlineMarkdownTests.swift
+[10/19] Compiling AnyInlineComponentsTests AnyInlineMarkdownToggleTests.swift
+[11/20] C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\build\any-engine-port\inline-toggle-components-v1\.build\x86_64-unknown-windows-msvc\debug\PinkhaInlineComponentValidationPackageDiscoveredTests.derived\all-discovered-tests.swift
+[12/20] Wrapping AST for AnyInlineComponentsTests for debugging
+[13/20] Write sources
+[15/22] Emitting module PinkhaInlineComponentValidationPackageDiscoveredTests
+[16/22] Compiling PinkhaInlineComponentValidationPackageDiscoveredTests AnyInlineComponentsTests.swift
+[17/23] Compiling PinkhaInlineComponentValidationPackageDiscoveredTests all-discovered-tests.swift
+[18/24] C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\build\any-engine-port\inline-toggle-components-v1\.build\x86_64-unknown-windows-msvc\debug\PinkhaInlineComponentValidationPackageTests.derived\runner.swift
+[19/24] Write sources
+[20/26] Wrapping AST for PinkhaInlineComponentValidationPackageDiscoveredTests for debugging
+[22/26] Compiling PinkhaInlineComponentValidationPackageTests runner.swift
+[23/26] Emitting module PinkhaInlineComponentValidationPackageTests
+[24/27] Wrapping AST for PinkhaInlineComponentValidationPackageTests for debugging
+[25/27] Write Objects.LinkFileList
+[26/27] Linking PinkhaInlineComponentValidationPackageTests.xctest
+Build complete! (88.28s)
+Test Suite 'All tests' started at 2026-11-19 19:30:26.960
+Test Suite 'debug.xctest' started at 2026-11-19 19:30:26.991
+Test Suite 'debug.xctest' passed at 2026-11-19 19:30:26.991
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'All tests' passed at 2026-11-19 19:30:26.992
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◊ Test run started.
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+→ Target Platform: x86_64-unknown-windows-msvc
+◊ Suite "Lossless inline Markdown and UTF-16 selection" started.
+◊ Suite "Reversible inline styles preserve native text and untouched markup" started.
+◊ Test deletingWholeFormattedContentRemovesItsEmptyWrapper() started.
+◊ Test editingInsideBoldKeepsOriginalDelimitersAndUnrelatedMarkup() started.
+◊ Test UTF16SurrogateBoundaryAndInvalidTraitsAreRefused() started.
+◊ Test removingOuterMarkPreservesNestedKnownFormattingBytes() started.
+◊ Test aSelectedWholeStyleCanBeRemovedAndAddedAgain() started.
+◊ Test boldFormattingDoesNotChangeVisibleProviderText() started.
+◊ Test unsupportedMarkupRemainsExactAndCannotBeFlattenedByEditing() started.
+◊ Test hebrewCombiningMarksAndEmojiKeepExactUTF16Mapping() started.
+◊ Test codeInsertionDoesNotIntroduceEscapesAndLinkEditsRetainDestination() started.
+◊ Test mixedSelectionAppliesStyleAndKeepsNestedStylesAndExactLinkDestination() started.
+◊ Test aCrossMarkupEditIsRefusedInsteadOfRemovingUnselectedFormatting() started.
+◊ Test nestedAdditionChoosesARepresentableMarkerWithoutFlatteningExistingBold() started.
+◊ Test linkLabelStyleRemovalDoesNotTouchDestinationOrOtherSource() started.
+◊ Test aWhitespaceSplitCannotSilentlyRemoveUnselectedStyle() started.
+◊ Test literalInsertionEscapesSourceWhileKeepingDisplayedCharactersExact() started.
+◊ Test codeRemovalEscapesLiteralMarkdownAndCanRoundTrip() started.
+◊ Test unsupportedSyntaxAndLiteralBlocksRemainUnchanged() started.
+◊ Test partialCrossingOfKnownContainerIsExplicitlyRefused() started.
+◊ Test partialStrongRemovalKeepsBothUnselectedSidesStyled() started.
+◊ Test addOnlyAPIStillRejectsAlreadyStyledText() started.
+◊ Test canonicallyEquivalentUnicodeIsNotRewritten() started.
+◊ Test underscoreSplitUsesRepresentableStrongDelimiters() started.
+× Test partialCrossingOfKnownContainerIsExplicitlyRefused() recorded an issue at AnyInlineMarkdownToggleTests.swift:102:9: Expectation failed: an error was expected but none was thrown and "a**b cd** ef" was returned
+√ Test linkLabelStyleRemovalDoesNotTouchDestinationOrOtherSource() passed after 0.006 seconds.
+√ Test literalInsertionEscapesSourceWhileKeepingDisplayedCharactersExact() passed after 0.006 seconds.
+√ Test deletingWholeFormattedContentRemovesItsEmptyWrapper() passed after 0.006 seconds.
+√ Test codeRemovalEscapesLiteralMarkdownAndCanRoundTrip() passed after 0.005 seconds.
+√ Test editingInsideBoldKeepsOriginalDelimitersAndUnrelatedMarkup() passed after 0.006 seconds.
+√ Test removingOuterMarkPreservesNestedKnownFormattingBytes() passed after 0.006 seconds.
+√ Test hebrewCombiningMarksAndEmojiKeepExactUTF16Mapping() passed after 0.006 seconds.
+√ Test nestedAdditionChoosesARepresentableMarkerWithoutFlatteningExistingBold() passed after 0.006 seconds.
+√ Test aCrossMarkupEditIsRefusedInsteadOfRemovingUnselectedFormatting() passed after 0.006 seconds.
+√ Test addOnlyAPIStillRejectsAlreadyStyledText() passed after 0.006 seconds.
+√ Test aWhitespaceSplitCannotSilentlyRemoveUnselectedStyle() passed after 0.006 seconds.
+√ Test unsupportedSyntaxAndLiteralBlocksRemainUnchanged() passed after 0.006 seconds.
+√ Test UTF16SurrogateBoundaryAndInvalidTraitsAreRefused() passed after 0.006 seconds.
+× Test partialCrossingOfKnownContainerIsExplicitlyRefused() failed after 0.006 seconds with 1 issue.
+√ Test boldFormattingDoesNotChangeVisibleProviderText() passed after 0.006 seconds.
+√ Test mixedSelectionAppliesStyleAndKeepsNestedStylesAndExactLinkDestination() passed after 0.006 seconds.
+√ Test underscoreSplitUsesRepresentableStrongDelimiters() passed after 0.005 seconds.
+√ Test unsupportedMarkupRemainsExactAndCannotBeFlattenedByEditing() passed after 0.006 seconds.
+√ Test partialStrongRemovalKeepsBothUnselectedSidesStyled() passed after 0.006 seconds.
+√ Test codeInsertionDoesNotIntroduceEscapesAndLinkEditsRetainDestination() passed after 0.006 seconds.
+√ Test aSelectedWholeStyleCanBeRemovedAndAddedAgain() passed after 0.007 seconds.
+√ Test canonicallyEquivalentUnicodeIsNotRewritten() passed after 0.006 seconds.
+√ Suite "Lossless inline Markdown and UTF-16 selection" passed after 0.008 seconds.
+× Suite "Reversible inline styles preserve native text and untouched markup" failed after 0.008 seconds with 1 issue.
+× Test run with 22 tests in 2 suites failed after 0.008 seconds with 1 issue.

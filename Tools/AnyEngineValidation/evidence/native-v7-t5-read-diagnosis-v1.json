@@ -1,0 +1,89 @@
+{
+  "scope": "read_only_owned_v7_t5_timeout_diagnosis",
+  "atUTC": "2026-11-19T20:30:11.699999+00:00",
+  "requests": [
+    {
+      "route": "/v1/auth",
+      "httpStatus": 200,
+      "ok": true,
+      "bytes": 187,
+      "keys": [
+        "authorized",
+        "accountId",
+        "mode",
+        "capabilities",
+        "accounts"
+      ],
+      "accountId": "A9kbbiZqJzsE3JK33WrcciFBQ5ADBCcFo3yU2Z9ecpUJBR3g",
+      "seconds": 0.265
+    },
+    {
+      "route": "/v1/pinkha/capabilities",
+      "httpStatus": 200,
+      "ok": true,
+      "bytes": 1262,
+      "keys": [
+        "allowedTargetTypes",
+        "associationBlockDataset",
+        "bundleId",
+        "conditionalBlockCurrentWriterFence",
+        "conditionalBlockPatch",
+        "conditionalMembershipSet",
+        "conditionalPropertiesSet",
+        "contract",
+        "currentACLCommitFence",
+        "currentWriterBlockCreate",
+        "currentWriterObjectCreate",
+        "dataVersion",
+        "dataset",
+        "documentTypePolicy",
+        "mobileManagedTokenGateway",
+        "module",
+        "nativeClaimsMaxBytes",
+        "nativeClaimsMaxRecords",
+        "nativeClaimsSnapshot",
+        "nativeClaimsWatch",
+        "nativeDocumentMembership",
+        "nativeDocumentProperties",
+        "nativeDocumentTypePolicy",
+        "nativeIndexedSourceQuery",
+        "nativeObjectClaimsSnapshot",
+        "nativeObjectClaimsWatch",
+        "nativeOrderedOperationCollision",
+        "nativePropertyPresentation",
+        "nativeRelatedVersion",
+        "nativeSemanticPayload",
+        "nativeSignedClaims",
+        "propertyPresentationCollection",
+        "propertyPresentationHiddenProperty",
+        "propertyPresentationMaxKeyBytes",
+        "propertyPresentationMaxKeys",
+        "spaceWideOperationConflictDomain",
+        "targetTreeCommitFence"
+      ],
+      "contract": "pinkha-torah-native-v1",
+      "seconds": 0.032
+    },
+    {
+      "route": "/v1/spaces/bafyreidmx4hwv6phyld7v3z6nhkyhzu7p3ii2iossnf3vf7hhx62zcbfya.1pdr7dtmz8964/pinkha/claims?limit=10000",
+      "httpStatus": 200,
+      "ok": true,
+      "bytes": 7687,
+      "keys": [
+        "contract",
+        "spaceId",
+        "rootObjectId",
+        "dataset",
+        "complete",
+        "limit",
+        "records",
+        "readiness"
+      ],
+      "contract": "pinkha-torah-native-v1",
+      "complete": true,
+      "rootObjectId": "bafyreiagxcuurpgvhsqgh72hyasf5ab7gvsdoawpof6m4jzfkcfyujqvka",
+      "recordsCount": 3,
+      "seconds": 0.234
+    }
+  ]
+}

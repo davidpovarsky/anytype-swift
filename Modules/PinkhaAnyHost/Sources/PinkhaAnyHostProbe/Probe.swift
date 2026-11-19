@@ -33,6 +33,11 @@ enum NativeHostProbe {
         let nativeCAS = arguments.contains("--native-cas")
         let client = try AnyHTTPClient(baseURL: url, expectedAccountID: workspace.accountID)
         let owner = try await AnyApplicationSession.connect(client: client, workspace: workspace)
+        if arguments.contains("--torah-workflow") {
+            guard arguments.contains("--allow-disposable-writes") else { throw ProbeError.usage }
+            try await runNativeTorahWorkflowProbe(client: client, workspace: workspace, owner: owner)
+            return
+        }
         if arguments.contains("--creation-retry") {
             guard arguments.contains("--allow-disposable-writes") else { throw ProbeError.usage }
             try await runNativeCreationProbe(client: client, workspace: workspace, owner: owner)

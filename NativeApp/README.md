@@ -79,8 +79,13 @@ Do not stack historical v1–v6 patches on top of this overlay.
 | Production Swift property service against native v6 | 15/15 checks | Type preservation, typed values, membership, hidden fields and conditional Undo |
 | Native v6 definition/property policy | 4 SDK tests, 19 top-level HTTP tests / 31 cases, and 11 two-peer checks | Actual storage, signed claims, sync, definition removal and cold reopen |
 | Native v7 independent document metadata | 4 focused native tests and 7 real HTTP/cold-reopen checks | Fresh editor policy before claims installation; exact Type/target dependencies |
-| New native application acceptance | 4 real AnyLib/Keychain/journal tests written | Apple execution pending |
-| Separate executable acceptance | 3 XCUITests written | Real onboarding, Hebrew edit, Hanlin consent, background and cold reopen pending Apple execution |
+| Final v7 native regression | 64 top-level tests / 134 including subtests, no skips | Exact current SDK guards, claim contracts and HTTP routes; source and binary stable |
+| Final v7 two-peer object workflow | 16/16 actual runtime checks | Verified network partition/reconnect, global collision closure, scoped SSE, orphan/bin refusal; optional 10,001-claim scale check was not repeated |
+| Live Sefaria through the original production facade | 7/7 real network checks, source stable | Hebrew reference/text/version, commentary, hierarchy, topic search/resolve and word context; no mocked provider |
+| Apple package execution at a5a4a6 | Engine 67; Integration 107; Host 55 XCTest + 11 SwiftTesting; Hanlin 28; PinkhaKit 217 | All passed on macOS/Xcode 27; the same run's Presentation and AnyUI dependency compilation failed on the shared Sendable contract |
+| New native application acceptance | 5 real AnyLib/Keychain/journal tests written | Includes the full T5/quote/reopen path; Apple execution pending |
+| Native AnyUI composition and focus | Dedicated UIKit acceptance suite written | Pure composition checks passed separately; actual UIKit execution remains pending |
+| Separate executable acceptance | 4 XCUITests written | Real onboarding, Hebrew edit, Hanlin consent, hierarchy move, property visibility, background and cold reopen pending Apple execution |
 
 Read the source-bound receipts rather than adding these counts together: scopes,
 versions and fixtures differ, and later features are not certified by an older run.

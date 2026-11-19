@@ -1,0 +1,54 @@
+{
+  "status": "PASS_SOURCE_VALIDATION_ONLY",
+  "createdAt": "2026-11-19T19:21:50.142481+00:00",
+  "taskGitHEAD": "a5a4a6f2c489692aa568618a72757f04f16ece85",
+  "liveNetworkValidation": "NOT_RUN",
+  "windowsLink": "NOT_RUN_DISK_BUDGET",
+  "freeBytes": 139522048,
+  "entry": "pinkha-any-integration-probe --live-public-provider",
+  "scope": "Real production AnytypeTorahWorkspace.sefaria() with default URLSession transport, retry policy, base URL, and fresh default caches. Source preparation only; no live response claimed.",
+  "source": {
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegrationProbe/LiveProviderProbe.swift": "9f5a347d725df95c54b6d6c0da0f11a1ab1f400ca0efe49ec8d76c2511c88a5b",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegrationProbe/Probe.swift": "fb5d8ba4329cbb70987aa5a2f647e12db970212bf724f06bbb57abeaea87cc3e",
+    "Modules/PinkhaAnyIntegration/Package.swift": "65bdf74f47e4c9ba596dd9d15dca7aa66bb9ca9552a6643b5d91614b075a7cfa",
+    "Modules/PinkhaKit/Package.swift": "d5e4ccbeaadf2db81bedd15a9f7406fe2ef2130701d53709b8c2181061abae5e",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/AnytypeTorahWorkspace.swift": "e7c7779564bf9f804917918d3cf3f769f97732440a542edac6017083155cbad6",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahProviderModels.swift": "4fd9507480acd9868fc8e3963cf224b456b3e2cd18e6abd186effe7f9f5d7f85",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/TorahHTTPTransport.swift": "ed6318f0a19a4c19689f32b6896f3c64b956b01a9fd1f79641bc6fbb6d696c17",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaClient.swift": "6c740354b18be86df7ef8e514b4b1f215eb11c57b006569902c19ed0eb03efbc",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaReferenceProvider.swift": "59b533d56994dd0e86146cb18de0a6ed9e74a1869d2a2cf86b080eb44b200786",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaTextProvider.swift": "2256450ca5bc6d72487502ba7256d6a9d3acd22b8aa36807b622f32d3af4e36c",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaRelationshipProvider.swift": "ab9dc9c8a0181cbdb241d98aea40ac92f2024f29660d14f2bc10199e23b5c5d6",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaTopicProvider.swift": "4dc79a72f955d17ff2b6b211d215c9ac3e0a98a020785a896294df2dc77a2857",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaLexicalProvider.swift": "d7c408e391a7f5c8cdb4ce3ca37e3bd5ad4e26eb0fb3a046d7ed9c694cf3be16",
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Hierarchy/SefariaHierarchyProvider.swift": "2bba6cd850ee1ad98f3780018a091ce6fe404e3aaf5e9dfcfe26c0c234f36c6e",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahOperation.swift": "c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980"
+  },
+  "validation": [
+    {
+      "kind": "Swift frontend parse",
+      "result": "PASS",
+      "sentinelScriptID": "script_job_c936e13ba5ed45d8b8d2bf78dfcd0899"
+    },
+    {
+      "kind": "Swift 6 type-check against existing compiled dependencies; no rebuilt or linked executable",
+      "result": "PASS",
+      "revalidatedAfterReferenceSchemaCorrection": true
+    },
+    {
+      "kind": "git diff --check for probe paths",
+      "result": "PASS"
+    }
+  ],
+  "cases": [
+    "hebrew_reference_genesis_1_1",
+    "hebrew_text_version_preserved_payload",
+    "commentary_and_links",
+    "source_hierarchy",
+    "topic_search_shabbat",
+    "resolve_returned_topic",
+    "hebrew_word_with_reference_context"
+  ],
+  "perCheckDeadlineSeconds": 90,
+  "redaction": "Only public IDs, bounded counts, SHA256 digests, constant assertion codes and concrete error type names. No returned text, definitions, raw payload or error descriptions. Preserved provider JSON hashes refer to the facade-normalized JSON, not original HTTP byte framing."
+}

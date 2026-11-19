@@ -22,7 +22,7 @@ public enum TorahAssociationPersistenceState: Sendable, Equatable {
 
 /// UI domain operations. The owning engine session supplies all persistence.
 @MainActor
-public protocol TorahEditorNotesService: AnyObject {
+public protocol TorahEditorNotesService: AnyObject, Sendable {
     func notes(for selection: TorahInspectorSelection) async throws -> [TorahInspectorNote]
     func relatedDocuments(for selection: TorahInspectorSelection) async throws -> TorahRelatedDocumentsSnapshot
     func createNote(for selection: TorahInspectorSelection,

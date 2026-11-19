@@ -17,6 +17,11 @@ public protocol AnyEditorMountedSurface: AnyObject {
     func isBlockVisible(_ id: String) -> Bool
     func reveal(blockID: String, selection: NSRange?)
     func dismissKeyboard()
+    func captureActiveCompositionForRecovery()
+}
+
+public extension AnyEditorMountedSurface {
+    func captureActiveCompositionForRecovery() {}
 }
 
 public enum AnyEditorWriteState: Equatable {
@@ -29,6 +34,12 @@ private struct AnyBlockDraft: Sendable {
     var inlineMarkdown: String
     var selection: NSRange
     var revision: UInt64
+}
+
+private struct AnyDocumentComposition {
+    let blockID: String
+    let owner: UUID
+    let text: AnyNativeTextComposition
 }
 
 /// One mounted native document. All native work has an account/run lease; each
@@ -53,6 +64,7 @@ public final class AnyDocumentPresentation {
     public var showsArchiveTransfer = false
     public var showsDraftReview = false
     public private(set) var requiresDraftReview = false
+    public private(set) var isComposing = false
     public var sourceDocuments: [TorahRelatedDocument] = []
     public var sourceDocumentsTitle: String?
     public private(set) var nativeProperties: AnyNativeDerivedDocumentProperties?
@@ -79,6 +91,8 @@ public final class AnyDocumentPresentation {
     @ObservationIgnored private var saveTask: Task<Void, Never>?
     @ObservationIgnored private var saving = false
     @ObservationIgnored private var drafts: [String: AnyBlockDraft] = [:]
+    @ObservationIgnored private var composition: AnyDocumentComposition?
+    @ObservationIgnored private var unmappedDrafts: [String: AnyNativeUnmappedTextDraft] = [:]
     @ObservationIgnored private var lastUndo: AnyPreparedBlockEdit?
     @ObservationIgnored private var acknowledgedBlockVersions: [String: AnyJSON] = [:]
     @ObservationIgnored private var closingObservers: [Task<Void, Never>] = []
@@ -162,8 +176,8 @@ public final class AnyDocumentPresentation {
         }
     }
     public var title: String { read?.snapshot.title ?? "" }
-    public var canMutate: Bool { isMounted && lifetime.isActive && canWrite && !requiresDraftReview && surface?.isForegroundMounted == true }
-    public var hasPendingEdits: Bool { !drafts.isEmpty || saving }
+    public var canMutate: Bool { isMounted && lifetime.isActive && canWrite && !requiresDraftReview && !isComposing && surface?.isForegroundMounted == true }
+    public var hasPendingEdits: Bool { !drafts.isEmpty || !unmappedDrafts.isEmpty || isComposing || saving }
     public var orderedBlocks: [AnyEditorBlock] {
         guard let snapshot = read?.snapshot else { return [] }
         let byID = Dictionary(uniqueKeysWithValues: snapshot.blocks.map { ($0.id, $0) })
@@ -172,8 +186,11 @@ public final class AnyDocumentPresentation {
 
     public func source(for block: AnyEditorBlock) -> String { drafts[block.id]?.inlineMarkdown ?? block.text }
     public func projection(for block: AnyEditorBlock) -> AnyInlineMarkdown {
-        block.type == "code" ? .init(literal: source(for: block)) : .init(source(for: block))
+        if let buffer = unmappedDrafts[block.id] { return .init(literal: buffer.display) }
+        return block.type == "code" ? .init(literal: source(for: block)) : .init(source(for: block))
     }
+
+    func unmappedDisplay(for blockID: String) -> String? { unmappedDrafts[blockID]?.display }
 
     public func mount(surface: any AnyEditorMountedSurface) {
         guard lifetime.isActive else { return }
@@ -246,12 +263,19 @@ public final class AnyDocumentPresentation {
         retainRecovery()
     }
 
-    public func changeText(blockID: String, source: String, displaySelection: NSRange) throws {
+    public func changeText(blockID: String, source: String, displaySelection: NSRange,
+                           renderedBlock: AnyEditorBlock) throws {
         try requireMounted(epoch)
-        guard canWrite, !requiresDraftReview, source.utf8.count <= 65_536,
+        guard canWrite, !requiresDraftReview, !isComposing, source.utf8.count <= 65_536,
               let block = read?.snapshot.blocks.first(where: { $0.id == blockID }),
               read?.snapshot.depthFirstIDs.contains(blockID) == true,
+              renderedBlock.id == blockID,
               (block.type == "code" || AnyInlineMarkdown(source).isEditable) else { throw AnyHostError.invalidSelection }
+        if drafts[blockID] == nil {
+            guard renderedBlock.native["_ver"] == block.native["_ver"], renderedBlock.text == block.text else {
+                throw AnyHostError.changedDocument
+            }
+        }
         var draft = drafts[blockID] ?? .init(base: block, inlineMarkdown: block.text,
                                              selection: displaySelection, revision: 0)
         draft.inlineMarkdown = source; draft.selection = displaySelection; draft.revision &+= 1
@@ -266,18 +290,109 @@ public final class AnyDocumentPresentation {
         writeState = drafts.isEmpty ? .clean : .pending
         contentRevision &+= 1
         saveTask?.cancel()
+        scheduleSave()
+    }
+
+    private func scheduleSave() {
+        saveTask?.cancel()
         saveTask = Task { [weak self] in
             do { try await Task.sleep(for: .milliseconds(450)) } catch { return }
             await self?.flush()
         }
     }
 
+    /// Called before UIKit creates its first marked range. Reserve a new local
+    /// revision now, so an earlier in-flight save cannot erase this input.
+    func beginTextComposition(renderedBlock: AnyEditorBlock, source: String,
+                              selection: NSRange) throws {
+        try requireMounted(epoch)
+        guard canMutate, composition == nil, unmappedDrafts.isEmpty,
+              let current = read?.snapshot.blocks.first(where: { $0.id == renderedBlock.id }),
+              read?.snapshot.depthFirstIDs.contains(renderedBlock.id) == true,
+              source.utf8.elementsEqual(self.source(for: renderedBlock).utf8) else {
+            throw AnyHostError.invalidSelection
+        }
+        if drafts[current.id] == nil {
+            guard current.native["_ver"] == renderedBlock.native["_ver"], current.text == renderedBlock.text else {
+                throw AnyHostError.changedDocument
+            }
+        }
+        let text = try AnyNativeTextComposition(source: source, literal: current.type == "code", selection: selection)
+        var draft = drafts[current.id] ?? .init(base: current, inlineMarkdown: source, selection: selection, revision: 0)
+        draft.revision &+= 1; draft.selection = selection
+        var candidate = drafts; candidate[current.id] = draft
+        try captureRecovery(candidate)
+        drafts = candidate
+        composition = .init(blockID: current.id, owner: epoch, text: text)
+        isComposing = true; saveTask?.cancel(); invalidateSourceScope()
+        writeState = .pending; contentRevision &+= 1
+    }
+
+    /// Preflights each proposed buffer before UIKit accepts it, then records
+    /// the actual buffer after UIKit's input operation. No native write occurs.
+    func stageTextComposition(blockID: String, display: String, selection: NSRange) throws {
+        guard let composition, composition.blockID == blockID,
+              var draft = drafts[blockID], display.utf8.count <= 65_536 else {
+            throw AnyNativeRecoveryError.invalidSnapshot
+        }
+        _ = try AnyInlineMarkdown(literal: display).sourceRange(for: selection)
+        var candidate = drafts, unmapped = unmappedDrafts
+        do {
+            draft.inlineMarkdown = try composition.text.source(display: display, selection: selection)
+            draft.selection = selection; draft.revision &+= 1
+            candidate[blockID] = draft; unmapped.removeValue(forKey: blockID)
+        } catch is AnyInlineTextError {
+            // Keep the visible composition without flattening links/unknown
+            // markup into a newly writable native source.
+            unmapped[blockID] = try .init(base: draft.base, baselineSource: composition.text.baseline.source,
+                display: display, selection: selection, reason: "inlineCompositionCannotMapLosslessly")
+        }
+        try captureRecovery(candidate, unmapped: unmapped)
+        drafts = candidate; unmappedDrafts = unmapped
+        selectedBlockIDs = [blockID]; focusedBlockID = blockID; selectedTextRange = selection
+        contentRevision &+= 1
+    }
+
+    @discardableResult
+    func finishTextComposition(blockID: String, display: String, selection: NSRange,
+                               allowSaving: Bool) -> String? {
+        guard let active = composition, active.blockID == blockID else { return nil }
+        do { try stageTextComposition(blockID: blockID, display: display, selection: selection) }
+        catch {
+            // Accepted UIKit text must remain visible/copyable if an unexpected
+            // post-input failure occurs. Do not substitute the previous source.
+            if let draft = drafts[blockID], let buffer = try? AnyNativeUnmappedTextDraft(
+                base: draft.base, baselineSource: active.text.baseline.source,
+                display: display, selection: .init(location: display.utf16.count, length: 0),
+                reason: "compositionRecoveryFailed") {
+                unmappedDrafts[blockID] = buffer
+            }
+            message = AnyUIErrorText.describe(error)
+        }
+        composition = nil; isComposing = false
+        if unmappedDrafts[blockID] == nil, let draft = drafts[blockID], draft.inlineMarkdown == draft.base.text {
+            drafts.removeValue(forKey: blockID)
+        }
+        let output = unmappedDrafts[blockID] == nil ? drafts[blockID]?.inlineMarkdown ?? active.text.baseline.source : nil
+        if !unmappedDrafts.isEmpty {
+            requiresDraftReview = true; writeState = .conflict(AnyUIErrorText.unmappedComposition)
+        } else { writeState = drafts.isEmpty ? .clean : .pending }
+        retainRecovery(); contentRevision &+= 1
+        if allowSaving, active.owner == epoch, canMutate { scheduleSave() }
+        return output
+    }
+
     public func flush() async {
         guard !saving, !drafts.isEmpty, canMutate else { return }
         saving = true; writeState = .saving
-        defer { saving = false; retainRecovery() }
+        defer {
+            saving = false
+            if isComposing { writeState = .pending }
+            retainRecovery()
+        }
         let requestEpoch = epoch
         while let (id, draft) = drafts.sorted(by: { $0.key < $1.key }).first {
+            guard !isComposing, unmappedDrafts.isEmpty else { return }
             do {
                 try requireMounted(requestEpoch)
                 let documents = documents, objectID = objectID
@@ -320,18 +435,22 @@ public final class AnyDocumentPresentation {
     }
 
     public func discardLocalDrafts() {
+        guard !isComposing else { return }
         saveTask?.cancel(); drafts.removeAll(); lastUndo = nil
+        unmappedDrafts.removeAll()
         requiresDraftReview = false
         retainRecovery()
         writeState = .clean; contentRevision &+= 1
     }
 
     public var localDraftTextForCopy: String {
-        let visible = orderedBlocks.map { source(for: $0) }
+        let visible = orderedBlocks.map { unmappedDrafts[$0.id]?.display ?? source(for: $0) }
         let visibleIDs = Set(orderedBlocks.map(\.id))
         let detached = drafts.filter { !visibleIDs.contains($0.key) }
-            .sorted { $0.key < $1.key }.map { $0.value.inlineMarkdown }
-        return (visible + detached).joined(separator: "\n\n")
+            .sorted { $0.key < $1.key }.map { unmappedDrafts[$0.key]?.display ?? $0.value.inlineMarkdown }
+        let additional = unmappedDrafts.filter { !visibleIDs.contains($0.key) && drafts[$0.key] == nil }
+            .sorted { $0.key < $1.key }.map { $0.value.display }
+        return (visible + detached + additional).joined(separator: "\n\n")
     }
 
     public var recoveredDrafts: [AnyNativeRecoveredBlockDraft] {
@@ -342,7 +461,7 @@ public final class AnyDocumentPresentation {
     }
 
     public func resumeRecoveredDrafts() async {
-        guard requiresDraftReview else { return }
+        guard requiresDraftReview, unmappedDrafts.isEmpty, !isComposing else { return }
         await load()
         guard let current = read?.snapshot, isMounted, lifetime.isActive else { return }
         let byID = Dictionary(uniqueKeysWithValues: current.blocks.map { ($0.id, $0) })
@@ -364,7 +483,12 @@ public final class AnyDocumentPresentation {
         await flush()
     }
 
-    private func captureRecovery(_ values: [String: AnyBlockDraft]? = nil) throws {
+    public var recoveredUnmappedDrafts: [AnyNativeUnmappedTextDraft] {
+        unmappedDrafts.values.sorted { $0.blockID < $1.blockID }
+    }
+
+    private func captureRecovery(_ values: [String: AnyBlockDraft]? = nil,
+                                 unmapped: [String: AnyNativeUnmappedTextDraft]? = nil) throws {
         guard recoveryWasRestored else { return }
         let values = values ?? drafts
         let records = try values.values.map {
@@ -372,7 +496,8 @@ public final class AnyDocumentPresentation {
                                               selection: $0.selection, revision: $0.revision)
         }
         try recovery.save(.init(workspace: workspace, objectID: objectID, drafts: records,
-            selectedBlockIDs: selectedBlockIDs, focusedBlockID: focusedBlockID, selection: selectedTextRange))
+            selectedBlockIDs: selectedBlockIDs, focusedBlockID: focusedBlockID, selection: selectedTextRange,
+            unmappedDrafts: Array((unmapped ?? unmappedDrafts).values)))
     }
 
     private func retainRecovery() {
@@ -398,6 +523,7 @@ public final class AnyDocumentPresentation {
                                               selection: item.selection, revision: item.revision)
                 textHistoryEpochs[item.blockID, default: 0] &+= 1
             }
+            unmappedDrafts = Dictionary(uniqueKeysWithValues: saved.unmappedDrafts.map { ($0.blockID, $0) })
             selectedBlockIDs = saved.selectedBlockIDs.filter { reachable.contains($0) }
             focusedBlockID = saved.focusedBlockID.flatMap { reachable.contains($0) ? $0 : nil }
             selectedTextRange = saved.selection
@@ -405,7 +531,7 @@ public final class AnyDocumentPresentation {
                NSMaxRange(selectedTextRange) > projection(for: current).display.utf16.count {
                 selectedTextRange = .init(location: 0, length: 0)
             }
-            requiresDraftReview = !drafts.isEmpty
+            requiresDraftReview = !drafts.isEmpty || !unmappedDrafts.isEmpty
             writeState = requiresDraftReview ? .conflict(AnyUIErrorText.recoveredDrafts) : .clean
             retainRecovery()
         } catch { message = AnyUIErrorText.describe(error); canWrite = false; requiresDraftReview = true }
@@ -426,7 +552,7 @@ public final class AnyDocumentPresentation {
         } catch { message = AnyUIErrorText.describe(error) }
     }
 
-    public func setWritingStyle(direction: AnyWritingDirection, alignment: AnyTextAlignment) async {
+    public func setWritingStyle(direction: AnyWritingDirection? = nil, alignment: AnyTextAlignment? = nil) async {
         await flush()
         guard !hasPendingEdits, !selectedBlockIDs.isEmpty else { return }
         let requestEpoch = epoch
@@ -435,8 +561,12 @@ public final class AnyDocumentPresentation {
                 let documents = documents, objectID = objectID, authorize = mutationAuthorization(requestEpoch)
                 _ = try await nativeSession.perform { lease in
                     let current = try await documents.read(objectID: objectID, lease: lease)
+                    guard let block = current.snapshot.blocks.first(where: { $0.id == id }) else {
+                        throw AnyHostError.invalidSelection
+                    }
                     let edit = try documents.prepareWritingStyle(current, blockID: id,
-                                                                   direction: direction, alignment: alignment)
+                        direction: direction ?? block.direction ?? .natural,
+                        alignment: alignment ?? block.alignment ?? .natural)
                     let receipt = try await documents.apply(edit, lease: lease, authorize: authorize)
                     guard receipt.readback == .verifiedCurrent else { throw AnyHostError.writeUncertain }
                     return receipt
@@ -462,11 +592,13 @@ public final class AnyDocumentPresentation {
         // Markdown escaping changes storage syntax only. The visible editable
         // quote remains precisely the provider's text; citation is metadata.
         let text = AnyInlineMarkdown.escapeLiteral(transfer.text)
-        return try await createBlock(type: "quote", text: text, before: targetID, direction: direction)
+        return try await createBlock(type: "quote", text: text, before: targetID, direction: direction,
+                                     untargetedPlacement: .afterLastVisibleBlock)
     }
 
     private func createBlock(type: String, text: String, before targetID: String?,
-                             direction: AnyWritingDirection) async throws -> String {
+                             direction: AnyWritingDirection,
+                             untargetedPlacement: AnyNativeBlockInsertionPolicy = .endOfRoot) async throws -> String {
         await flush()
         guard !hasPendingEdits else { throw AnyHostError.changedDocument }
         let requestEpoch = epoch
@@ -476,34 +608,14 @@ public final class AnyDocumentPresentation {
         let authorize = mutationAuthorization(requestEpoch)
         let id = try await nativeSession.perform { lease in
             let current = try await documents.read(objectID: objectID, lease: lease)
-            let byID = Dictionary(uniqueKeysWithValues: current.snapshot.blocks.map { ($0.id, $0) })
-            let parentID: String
-            let previous: String?
-            let next: String?
-            if let targetID {
-                guard current.snapshot.depthFirstIDs.contains(targetID), let target = byID[targetID] else {
-                    throw AnyHostError.invalidSelection
-                }
-                parentID = target.parentID
-                let siblings = current.snapshot.blocks.filter { $0.parentID == parentID }
-                    .sorted { $0.position == $1.position ? $0.id < $1.id : $0.position < $1.position }
-                guard let offset = siblings.firstIndex(where: { $0.id == targetID }) else {
-                    throw AnyHostError.invalidSelection
-                }
-                previous = offset > 0 ? siblings[offset - 1].position : nil
-                next = target.position
-            } else {
-                parentID = ""
-                previous = current.snapshot.blocks.filter { $0.parentID.isEmpty }.map(\.position).max()
-                next = nil
-            }
-            let position = try AnyLexicographicPosition.between(after: previous, before: next)
+            let placement = try AnyNativeBlockInsertionPosition.resolve(snapshot: current.snapshot,
+                policy: targetID.map(AnyNativeBlockInsertionPolicy.beforeBlock) ?? untargetedPlacement)
             let intent = try AnyNativeBlockCreationIntent(workspace: lease.workspace,
                 mutationID: UUID().uuidString.replacingOccurrences(of: "-", with: "").lowercased(),
                 objectID: objectID, type: type, text: text,
                 style: .object(["pinkhaWritingDirection": .string(direction.rawValue),
                                 "pinkhaTextAlignment": .string("natural")]),
-                parentID: parentID, position: position)
+                parentID: placement.parentID, position: placement.position)
             return try await blocks.ensureBlock(intent) {
                 try await lease.validate(); try await authorize()
             }
@@ -644,6 +756,7 @@ public final class AnyDocumentPresentation {
     }
 
     public func unmount() {
+        surface?.captureActiveCompositionForRecovery()
         retainRecovery()
         guard isMounted else { return }
         isMounted = false; epoch = UUID()
@@ -681,6 +794,10 @@ public final class AnyDocumentPresentation {
 }
 
 public enum AnyUIErrorText {
+    public static var unmappedComposition: String {
+        text("הטקסט שהוקלד נשמר להעתקה ולבדיקה. אי אפשר לשלב אותו בעיצוב הקיים ללא שינוי העיצוב.",
+             "Your typed text is retained for copying and review. It cannot be merged into the existing formatting losslessly.")
+    }
     public static var recoveredDrafts: String {
         text("נשמרו שינויים מקומיים מההפעלה הקודמת. יש לבדוק אותם מול הגרסה הנוכחית לפני המשך שמירה.",
              "Local edits were recovered from the previous session. Review them against the current version before saving.")

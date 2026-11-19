@@ -1,0 +1,105 @@
+[0/1] Planning build
+Building for debugging...
+[0/13] Write sources
+[3/13] Write swift-version-2807070033DA82CF.txt
+[5/15] Emitting module PinkhaAnyHost
+[6/15] Compiling PinkhaAnyHost AnyInlineMarkdown.swift
+[7/16] Wrapping AST for PinkhaAnyHost for debugging
+[9/18] Compiling PinkhaAnyUI AnyInlineMarkdown.swift
+[10/18] Emitting module PinkhaAnyUI
+[12/21] Emitting module AnyInlineComponentsTests
+[13/22] Compiling AnyInlineComponentsTests AnyInlineMarkdownReplacementTests.swift
+[14/22] Compiling AnyInlineComponentsTests AnyInlineMarkdownTests.swift
+[15/22] Compiling AnyInlineComponentsTests AnyInlineMarkdownToggleTests.swift
+[16/23] C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\build\any-engine-port\inline-toggle-components-v1\.build\x86_64-unknown-windows-msvc\debug\PinkhaInlineComponentValidationPackageDiscoveredTests.derived\all-discovered-tests.swift
+[17/24] Write sources
+[18/24] Wrapping AST for AnyInlineComponentsTests for debugging
+[20/26] Emitting module PinkhaInlineComponentValidationPackageDiscoveredTests
+[21/26] Compiling PinkhaInlineComponentValidationPackageDiscoveredTests AnyInlineComponentsTests.swift
+[22/27] Compiling PinkhaInlineComponentValidationPackageDiscoveredTests all-discovered-tests.swift
+[23/25] Write Objects.LinkFileList
+[24/25] Linking PinkhaInlineComponentValidationPackageTests.xctest
+Build complete! (44.80s)
+Test Suite 'All tests' started at 2026-11-19 20:15:10.885
+Test Suite 'debug.xctest' started at 2026-11-19 20:15:11.741
+Test Suite 'debug.xctest' passed at 2026-11-19 20:15:11.741
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'All tests' passed at 2026-11-19 20:15:11.755
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◊ Test run started.
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+→ Target Platform: x86_64-unknown-windows-msvc
+◊ Suite "Lossless inline Markdown and UTF-16 selection" started.
+◊ Suite "Bounded replacement across native inline formatting" started.
+◊ Test boldFormattingDoesNotChangeVisibleProviderText() started.
+◊ Test aWholeSelectionAcrossKnownMarkupCanBeReplaced() started.
+◊ Test unsupportedMarkupRemainsExactAndCannotBeFlattenedByEditing() started.
+◊ Test editingInsideBoldKeepsOriginalDelimitersAndUnrelatedMarkup() started.
+◊ Test literalInsertionEscapesSourceWhileKeepingDisplayedCharactersExact() started.
+◊ Test codeInsertionDoesNotIntroduceEscapesAndLinkEditsRetainDestination() started.
+◊ Test deletingWholeFormattedContentRemovesItsEmptyWrapper() started.
+◊ Test unknownSyntaxAndSplitSurrogateRemainRefusedWithoutChangingSource() started.
+◊ Test caretAtStartOfCodeSpanInsertsLiteralWithoutInventingBackslashes() started.
+◊ Test crossingStrongAndItalicPreservesHebrewAndUnicodeBytes() started.
+◊ Test wholeKnownSelectionInheritsFirstStyleAndEscapesReplacementLiterally() started.
+◊ Test rawSourceOutsideAffectedContainersRemainsByteExact() started.
+◊ Test partialBoldToPlainReplacementKeepsUnselectedStyles() started.
+◊ Test nestedLinkLabelReplacementKeepsItsExactDestinationAndUnselectedLabel() started.
+◊ Test unrepresentableStyledWhitespaceIsExplicitlyRefused() started.
+◊ Test deletionChoosesEquivalentDelimitersWithoutDroppingSurvivingStyles() started.
+◊ Suite "Reversible inline styles preserve native text and untouched markup" started.
+◊ Test hebrewCombiningMarksAndEmojiKeepExactUTF16Mapping() started.
+◊ Test plainIntoLinkReplacementRetainsTheUnselectedLinkedSuffix() started.
+√ Test boldFormattingDoesNotChangeVisibleProviderText() passed after 0.008 seconds.
+√ Test codeInsertionDoesNotIntroduceEscapesAndLinkEditsRetainDestination() passed after 0.076 seconds.
+√ Test deletingWholeFormattedContentRemovesItsEmptyWrapper() passed after 0.076 seconds.
+√ Test caretAtStartOfCodeSpanInsertsLiteralWithoutInventingBackslashes() passed after 0.073 seconds.
+√ Test literalInsertionEscapesSourceWhileKeepingDisplayedCharactersExact() passed after 0.076 seconds.
+◊ Test mixedSelectionAppliesStyleAndKeepsNestedStylesAndExactLinkDestination() started.
+◊ Test UTF16SurrogateBoundaryAndInvalidTraitsAreRefused() started.
+◊ Test aSelectedWholeStyleCanBeRemovedAndAddedAgain() started.
+◊ Test canonicallyEquivalentUnicodeIsNotRewritten() started.
+◊ Test removingOuterMarkPreservesNestedKnownFormattingBytes() started.
+◊ Test unsupportedSyntaxAndLiteralBlocksRemainUnchanged() started.
+◊ Test underscoreSplitUsesRepresentableStrongDelimiters() started.
+◊ Test partialStrongRemovalKeepsBothUnselectedSidesStyled() started.
+◊ Test addOnlyAPIStillRejectsAlreadyStyledText() started.
+◊ Test nestedAdditionChoosesARepresentableMarkerWithoutFlatteningExistingBold() started.
+◊ Test combiningMarksCannotHideLiteralMarkdownDelimitersFromEscaping() started.
+◊ Test codeRemovalEscapesLiteralMarkdownAndCanRoundTrip() started.
+√ Test editingInsideBoldKeepsOriginalDelimitersAndUnrelatedMarkup() passed after 0.079 seconds.
+◊ Test partialCrossingOfKnownContainerIsExplicitlyRefused() started.
+◊ Test aWhitespaceSplitCannotSilentlyRemoveUnselectedStyle() started.
+√ Test aWholeSelectionAcrossKnownMarkupCanBeReplaced() passed after 0.079 seconds.
+◊ Test linkLabelStyleRemovalDoesNotTouchDestinationOrOtherSource() started.
+√ Test hebrewCombiningMarksAndEmojiKeepExactUTF16Mapping() passed after 0.071 seconds.
+√ Test unsupportedMarkupRemainsExactAndCannotBeFlattenedByEditing() passed after 0.078 seconds.
+√ Test plainIntoLinkReplacementRetainsTheUnselectedLinkedSuffix() passed after 0.071 seconds.
+× Test deletionChoosesEquivalentDelimitersWithoutDroppingSurvivingStyles() recorded an issue at AnyInlineMarkdownReplacementTests.swift:28:9: Expectation failed: (output → "a **b***e* f") == "a **b**_e_ f"
+√ Test removingOuterMarkPreservesNestedKnownFormattingBytes() passed after 0.004 seconds.
+√ Test UTF16SurrogateBoundaryAndInvalidTraitsAreRefused() passed after 0.004 seconds.
+√ Test canonicallyEquivalentUnicodeIsNotRewritten() passed after 0.004 seconds.
+√ Test underscoreSplitUsesRepresentableStrongDelimiters() passed after 0.004 seconds.
+√ Test unsupportedSyntaxAndLiteralBlocksRemainUnchanged() passed after 0.004 seconds.
+√ Test partialBoldToPlainReplacementKeepsUnselectedStyles() passed after 0.076 seconds.
+√ Test addOnlyAPIStillRejectsAlreadyStyledText() passed after 0.004 seconds.
+√ Test mixedSelectionAppliesStyleAndKeepsNestedStylesAndExactLinkDestination() passed after 0.005 seconds.
+√ Test partialStrongRemovalKeepsBothUnselectedSidesStyled() passed after 0.004 seconds.
+√ Test nestedAdditionChoosesARepresentableMarkerWithoutFlatteningExistingBold() passed after 0.004 seconds.
+√ Test aSelectedWholeStyleCanBeRemovedAndAddedAgain() passed after 0.004 seconds.
+√ Test partialCrossingOfKnownContainerIsExplicitlyRefused() passed after 0.004 seconds.
+√ Test aWhitespaceSplitCannotSilentlyRemoveUnselectedStyle() passed after 0.004 seconds.
+× Test deletionChoosesEquivalentDelimitersWithoutDroppingSurvivingStyles() failed after 0.075 seconds with 1 issue.
+√ Test codeRemovalEscapesLiteralMarkdownAndCanRoundTrip() passed after 0.004 seconds.
+√ Test nestedLinkLabelReplacementKeepsItsExactDestinationAndUnselectedLabel() passed after 0.076 seconds.
+√ Test crossingStrongAndItalicPreservesHebrewAndUnicodeBytes() passed after 0.078 seconds.
+√ Suite "Lossless inline Markdown and UTF-16 selection" passed after 0.085 seconds.
+√ Test combiningMarksCannotHideLiteralMarkdownDelimitersFromEscaping() passed after 0.005 seconds.
+√ Test unknownSyntaxAndSplitSurrogateRemainRefusedWithoutChangingSource() passed after 0.080 seconds.
+√ Test rawSourceOutsideAffectedContainersRemainsByteExact() passed after 0.078 seconds.
+√ Test wholeKnownSelectionInheritsFirstStyleAndEscapesReplacementLiterally() passed after 0.079 seconds.
+√ Test linkLabelStyleRemovalDoesNotTouchDestinationOrOtherSource() passed after 0.005 seconds.
+√ Test unrepresentableStyledWhitespaceIsExplicitlyRefused() passed after 0.077 seconds.
+√ Suite "Reversible inline styles preserve native text and untouched markup" passed after 0.087 seconds.
+× Suite "Bounded replacement across native inline formatting" failed after 0.086 seconds with 1 issue.
+× Test run with 33 tests in 3 suites failed after 0.089 seconds with 1 issue.

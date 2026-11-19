@@ -4,6 +4,26 @@ import PinkhaAnyIntegration
 import PinkhaAnyHost
 import PinkhaKit
 
+/// FileHandle may return a short read before EOF. Read every bounded chunk so
+/// an otherwise valid JSON prefix cannot hide unread trailing data.
+enum AnyCanonicalArchiveBoundedReader {
+    static func read(maximumBytes: Int, next: (Int) throws -> Data?) throws -> Data {
+        guard maximumBytes > 0, maximumBytes < Int.max else { throw AnyEngineError.readLimit }
+        var output = Data()
+        while true {
+            let remaining = maximumBytes + 1 - output.count
+            guard remaining > 0 else { throw AnyEngineError.readLimit }
+            let count = min(65_536, remaining)
+            guard let bytes = try next(count), !bytes.isEmpty else { break }
+            guard bytes.count <= count else { throw AnyEngineError.readLimit }
+            output.append(bytes)
+            guard output.count <= maximumBytes else { throw AnyEngineError.readLimit }
+        }
+        guard !output.isEmpty else { throw AnyTorahArchiveError.invalidArchive }
+        return output
+    }
+}
+
 /// Reopening the same reviewed archive/mapping resumes the same operations.
 /// A distinct mapping gets a distinct plan; source/destination conflicts are
 /// still rejected by the authoritative migration executor before any append.
@@ -136,11 +156,9 @@ final class AnyNativeArchivePresentation {
                 defer { if scoped { url.stopAccessingSecurityScopedResource() } }
                 let handle = try FileHandle(forReadingFrom: url)
                 defer { try? handle.close() }
-                guard let bytes = try handle.read(upToCount: AnyTorahArchive.maximumBytes + 1),
-                      !bytes.isEmpty, bytes.count <= AnyTorahArchive.maximumBytes else {
-                    throw AnyEngineError.readLimit
+                return try AnyCanonicalArchiveBoundedReader.read(maximumBytes: AnyTorahArchive.maximumBytes) {
+                    try handle.read(upToCount: $0)
                 }
-                return bytes
             }.value
             try requireActive(expected, mounted: mounted)
             let value = try AnyTorahArchive.decode(bytes)

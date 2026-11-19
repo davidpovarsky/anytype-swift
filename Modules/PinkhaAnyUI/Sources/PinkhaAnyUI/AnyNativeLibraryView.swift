@@ -166,6 +166,7 @@ public struct AnyNativeLibraryView: View {
                 .onChange(of: model.searchQuery) { _, _ in model.searchChanged() }
                 .refreshable { await model.refresh() }
                 .accessibilityIdentifier("any-native-library")
+                .accessibilityValue(Text(model.pendingMoves.isEmpty ? "ready" : "saving"))
             }
         }
         .navigationTitle(parentID.flatMap { model.hierarchyPresentation.itemsByID[$0]?.title } ??
@@ -218,6 +219,7 @@ public struct AnyNativeLibraryView: View {
             }.disabled(!model.canWrite)
             Button(AnyUIErrorText.text("העברה", "Move"), systemImage: "folder") { moveItem = item.native }
                 .disabled(!model.canWrite)
+                .accessibilityIdentifier("any-native-hierarchy-move")
             Button(AnyUIErrorText.text("העברה לסל המחזור", "Move to Bin"), systemImage: "trash", role: .destructive) {
                 removeItem = item.native
             }.disabled(!model.canWrite)

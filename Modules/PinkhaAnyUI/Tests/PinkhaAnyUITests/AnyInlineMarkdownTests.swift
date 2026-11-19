@@ -25,11 +25,9 @@ struct AnyInlineMarkdownTests {
         #expect(value.runs.filter { NSIntersectionRange($0.displayRange, range).length > 0 }.allSatisfy { $0.traits == .bold })
     }
 
-    @Test func aCrossMarkupEditIsRefusedInsteadOfRemovingUnselectedFormatting() {
+    @Test func aWholeSelectionAcrossKnownMarkupCanBeReplaced() throws {
         let value = AnyInlineMarkdown("a **bold** z")
-        #expect(throws: AnyInlineTextError.selectionCrossesMarkup) {
-            try value.replacing(displayRange: NSRange(location: 0, length: value.display.utf16.count), withLiteral: "x")
-        }
+        #expect(try value.replacing(displayRange: NSRange(location: 0, length: value.display.utf16.count), withLiteral: "x") == "x")
         #expect(value.source == "a **bold** z")
     }
 

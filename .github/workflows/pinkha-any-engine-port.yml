@@ -75,6 +75,18 @@ jobs:
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaAnyIntegration 2>&1 | tee build/any-engine-port/any-integration-tests.log
+      - name: Exercise the original provider against public Sefaria
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          PROBE_BIN_DIRECTORY="$(swift build --package-path Modules/PinkhaAnyIntegration --show-bin-path)"
+          python3 Tools/AnyEnginePort/run_live_provider_probe.py \
+            --repo-root "$GITHUB_WORKSPACE" \
+            --executable "$PROBE_BIN_DIRECTORY/pinkha-any-integration-probe" \
+            --output-dir build/any-engine-port/live-public-provider \
+            --build-log build/any-engine-port/any-integration-tests.log \
+            --timeout-seconds 720
       - name: Test native editor, creation receipts and protected metadata
         if: ${{ !cancelled() }}
         shell: bash
@@ -179,6 +191,8 @@ jobs:
             -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-native-evidence/runtime.xcresult" \
             -parallel-testing-enabled NO \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 180 \
             -maximum-test-execution-time-allowance 180 \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-native-evidence/runtime.log"
       - name: Extract native execution counts
@@ -189,8 +203,16 @@ jobs:
           if [ -d build/any-native-evidence/runtime.xcresult ]; then
             xcrun xcresulttool get test-results summary \
               --path build/any-native-evidence/runtime.xcresult --format json \
-              > build/any-native-evidence/test-counts.json
+              > build/any-native-evidence/test-counts.json || true
+            xcrun xcresulttool get test-results tests \
+              --path build/any-native-evidence/runtime.xcresult --format json \
+              > build/any-native-evidence/test-methods.json || true
           fi
+          python3 Tools/AnyEnginePort/verify_native_test_execution.py \
+            --profile runtime --udid "${ANY_NATIVE_SIMULATOR_UDID:-}" \
+            --summary build/any-native-evidence/test-counts.json \
+            --tests build/any-native-evidence/test-methods.json \
+            --output build/any-native-evidence/named-execution.json
       - name: Remove only this run's simulator
         if: always()
         shell: bash
@@ -266,6 +288,7 @@ jobs:
           set -euo pipefail
           scripts/build-xcframework.sh dist 2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/native-build.log"
       - name: Bind artifact hashes to the tested sources and install
+        id: native-artifact
         run: |
           python3 Tools/AnyEnginePort/prepare_native_runtime.py record \
             --any-root .ci/any-source --output build/any-patched-artifact
@@ -326,6 +349,8 @@ jobs:
             -derivedDataPath "$GITHUB_WORKSPACE/build/any-patched-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/runtime.xcresult" \
             -parallel-testing-enabled NO \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 180 \
             -maximum-test-execution-time-allowance 180 \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/runtime.log"
       - name: Test protected Hanlin recovery on iOS
@@ -340,8 +365,26 @@ jobs:
             -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/hanlin-ios.xcresult" \
             -parallel-testing-enabled NO \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 180 \
             -maximum-test-execution-time-allowance 180 \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/hanlin-ios.log"
+      - name: Test the UIKit editor and composition lifecycle
+        if: ${{ !cancelled() }}
+        working-directory: Modules/PinkhaAnyUI
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -scheme PinkhaAnyUI \
+            -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
+            -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
+            -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/ui-ios.xcresult" \
+            -parallel-testing-enabled NO \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 180 \
+            -maximum-test-execution-time-allowance 180 \
+            2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/ui-ios.log"
       - name: Test the real native account, Keychain and cold reopen path
         if: ${{ !cancelled() }}
         working-directory: Modules/PinkhaAnyNative
@@ -354,6 +397,8 @@ jobs:
             -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/application.xcresult" \
             -parallel-testing-enabled NO \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 300 \
             -maximum-test-execution-time-allowance 300 \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/application.log"
       - name: Build and launch the separate native executable
@@ -368,6 +413,8 @@ jobs:
             -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui.xcresult" \
             -parallel-testing-enabled NO \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 360 \
             -maximum-test-execution-time-allowance 360 \
             CODE_SIGNING_ALLOWED=NO \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui.log"
@@ -383,13 +430,23 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for suite in runtime hanlin-ios application native-ui; do
+          gate_exit=0
+          for suite in runtime hanlin-ios ui-ios application native-ui; do
             if [ -d "build/any-patched-evidence/$suite.xcresult" ]; then
               xcrun xcresulttool get test-results summary \
                 --path "build/any-patched-evidence/$suite.xcresult" --format json \
-                > "build/any-patched-evidence/$suite-test-counts.json"
+                > "build/any-patched-evidence/$suite-test-counts.json" || true
+              xcrun xcresulttool get test-results tests \
+                --path "build/any-patched-evidence/$suite.xcresult" --format json \
+                > "build/any-patched-evidence/$suite-test-methods.json" || true
             fi
+            python3 Tools/AnyEnginePort/verify_native_test_execution.py \
+              --profile "$suite" --udid "${ANY_NATIVE_SIMULATOR_UDID:-}" \
+              --summary "build/any-patched-evidence/$suite-test-counts.json" \
+              --tests "build/any-patched-evidence/$suite-test-methods.json" \
+              --output "build/any-patched-evidence/$suite-named-execution.json" || gate_exit=1
           done
+          exit "$gate_exit"
       - name: Remove only this run's simulator
         if: always()
         shell: bash
@@ -408,7 +465,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload exact source-bound native artifact
-        if: success()
+        if: ${{ !cancelled() && steps.native-artifact.outcome == 'success' }}
         uses: actions/upload-artifact@v4
         with:
           name: any-pinkha-native-xcframework-${{ github.sha }}

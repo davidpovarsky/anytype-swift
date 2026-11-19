@@ -1,0 +1,27 @@
+{
+  "scope": "Actual percent-encoded storageRoot bundle path bracketed by account reads",
+  "requests": [
+    {
+      "route": "/v1/auth",
+      "httpStatus": 200,
+      "seconds": 0.031,
+      "authorized": true,
+      "accountId": "A9kbbiZqJzsE3JK33WrcciFBQ5ADBCcFo3yU2Z9ecpUJBR3g"
+    },
+    {
+      "route": "/v1/spaces/bafyreidmx4hwv6phyld7v3z6nhkyhzu7p3ii2iossnf3vf7hhx62zcbfya.1pdr7dtmz8964/bundles/pinkha%2Ftorah-native%2Fv1",
+      "httpStatus": 200,
+      "seconds": 0.032,
+      "rootId": "bafyreiagxcuurpgvhsqgh72hyasf5ab7gvsdoawpof6m4jzfkcfyujqvka",
+      "derived": true
+    },
+    {
+      "route": "/v1/auth",
+      "httpStatus": 200,
+      "seconds": 0.0,
+      "authorized": true,
+      "accountId": "A9kbbiZqJzsE3JK33WrcciFBQ5ADBCcFo3yU2Z9ecpUJBR3g"
+    }
+  ],
+  "supersedesMistargetedRawSlashDiagnostic": "native-v7-t5-storage-root-diagnosis-v1.json"
+}

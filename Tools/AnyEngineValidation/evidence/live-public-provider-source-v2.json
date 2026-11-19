@@ -1,0 +1,29 @@
+{
+  "actualRun": {
+    "path": "Tools/AnyEngineValidation/evidence/live-public-provider-windows-v2/result.json",
+    "sha256": "a2e7a51ed48deb3ac7be44e4220e711f76544ef39024ee74f317c797564fe139"
+  },
+  "buildReceipt": {
+    "path": "Tools/AnyEngineValidation/evidence/live-public-provider-build-v1.json",
+    "sha256": "18dcdf3f2520677ab5fb65ba9a34caaf689b590ac34483e29484547cc0acfb3b"
+  },
+  "earlierSourceOnlyReceipt": "Tools/AnyEngineValidation/evidence/live-public-provider-source-v1.json",
+  "earlierSourceOnlyReceiptRetained": true,
+  "probeBinaryAtBuildSHA256": "6ff037b037c9986e216507dc17e6e3cf7cece98c4e46b775ab1bf290b0bfc7f8",
+  "runnerPolicy": "720 second external process deadline, owned process tree cleanup, exact seven check IDs, source and executable hashes before/after; git HEAD recorded but unrelated commits do not invalidate scoped source equality.",
+  "scope": "Production AnytypeTorahWorkspace.sefaria facade; actual public provider requests, Swift build and external process deadline. No native account/UI claim.",
+  "secretOrFullTextOutput": false,
+  "sourceArchives": [
+    {
+      "bytes": 18216,
+      "path": "Tools/AnyEngineValidation/evidence/live-public-provider-windows-v2/executed-runner.py",
+      "sha256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67"
+    },
+    {
+      "bytes": 15620,
+      "path": "Tools/AnyEngineValidation/evidence/live-public-provider-windows-v2/executed-swift-probe.swift",
+      "sha256": "68e777bcb9341a8f65a32f99ef43ffa10367b64d5e189aaef2d04ee3e9f93d5c"
+    }
+  ],
+  "status": "PASS_REAL_PUBLIC_PROVIDER_SOURCE_AND_PROCESS"
+}

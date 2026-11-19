@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "status": "PARTIAL_FAILURE",
+  "commit": "a5a4a6f2c489692aa568618a72757f04f16ece85",
+  "runID": 44596706789,
+  "jobID": 135817135830,
+  "jobURL": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44596706789/job/135817135830",
+  "platform": "macOS arm64 / Xcode 27",
+  "scope": "actual_apple_package_tests_not_ios_application_execution",
+  "log": "apple-a5a-package-execution.log",
+  "packages": [
+    {
+      "name": "PinkhaAnyEngine",
+      "status": "PASS",
+      "xctest": 67,
+      "swiftTesting": 0
+    },
+    {
+      "name": "PinkhaAnyIntegration",
+      "status": "PASS",
+      "xctest": 0,
+      "swiftTesting": 107,
+      "suites": 9
+    },
+    {
+      "name": "PinkhaAnyHost",
+      "status": "PASS",
+      "xctest": 55,
+      "swiftTesting": 11,
+      "swiftTestingSuites": 1
+    },
+    {
+      "name": "PinkhaAnyHanlin",
+      "status": "PASS",
+      "xctest": 28,
+      "swiftTesting": 0
+    },
+    {
+      "name": "PinkhaTorahPresentation",
+      "status": "COMPILE_FAIL",
+      "executed": false
+    },
+    {
+      "name": "PinkhaAnyUI",
+      "status": "DEPENDENCY_COMPILE_FAIL",
+      "executed": false
+    },
+    {
+      "name": "PinkhaKit",
+      "status": "PASS",
+      "xctest": 0,
+      "swiftTesting": 217,
+      "suites": 29
+    }
+  ],
+  "failure": {
+    "file": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift",
+    "lines": [
+      252,
+      255
+    ],
+    "diagnostic": "capture of 'notesService' with non-Sendable type 'any TorahEditorNotesService' in a '@Sendable' closure",
+    "resolutionPending": "The @MainActor protocol explicitly inherits Sendable; next Apple run must validate."
+  },
+  "iosUIExecution": false,
+  "newUncommittedSourcesCertified": false,
+  "logSHA256": "30b89a63288755466a6f1855352cef47507fe98db1d129df8756af2846acdf09"
+}

@@ -49,6 +49,25 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
     private var interfaceDirection: PinkhaLayoutDirection = .leftToRight
     private let conversationID = UUID()
     private weak var activeTextView: UITextView?
+    private var compositionUndo: [ObjectIdentifier: (source: String, selection: NSRange)] = [:]
+    private var applyingSnapshot = false
+    private var snapshotGeneration = UUID()
+    private lazy var focus = AnyNativeFocusCoordinator(validate: { [weak self] intent in
+        guard let self, self.presentation.isMounted, self.presentation.mountedOwnerID == intent.ownerID,
+              self.presentation.canMutate, !self.presentation.isComposing,
+              self.presentation.read?.snapshot.depthFirstIDs.contains(intent.blockID) == true,
+              let block = self.presentation.read?.snapshot.blocks.first(where: { $0.id == intent.blockID }) else { return false }
+        return block.native["_ver"] == intent.nativeVersion &&
+            self.presentation.source(for: block).utf8.elementsEqual(intent.source.utf8)
+    }, resolve: { [weak self] intent in
+        guard let self, !self.applyingSnapshot, self.focusPresentationIsVisible,
+              let path = self.dataSource?.indexPath(for: intent.blockID) else { return nil }
+        self.table.scrollToRow(at: path, at: .middle, animated: false)
+        self.table.layoutIfNeeded()
+        guard let cell = self.table.cellForRow(at: path) as? AnyNativeBlockCell,
+              cell.textView.blockID == intent.blockID, !cell.textView.isComposingMarkedText else { return nil }
+        return cell.textView
+    })
 
     public init(presentation: AnyDocumentPresentation) {
         self.presentation = presentation
@@ -119,6 +138,21 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         }
     }
 
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        focus.readinessChanged(.layout)
+    }
+
+    private var focusPresentationIsVisible: Bool {
+        guard isForegroundMounted else { return false }
+        var current: UIViewController? = self
+        while let controller = current {
+            if controller.presentedViewController != nil { return false }
+            current = controller.parent
+        }
+        return true
+    }
+
     public var isForegroundMounted: Bool {
         isViewLoaded && view.window?.windowScene?.activationState == .foregroundActive &&
         !isMovingFromParent && !isBeingDismissed
@@ -132,42 +166,53 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
     }
 
     public func reveal(blockID: String, selection: NSRange?) {
-        guard let path = dataSource.indexPath(for: blockID) else { return }
-        table.scrollToRow(at: path, at: .middle, animated: false)
-        table.layoutIfNeeded()
-        if let selection, let cell = table.cellForRow(at: path) as? AnyNativeBlockCell,
-           selection.location >= 0, NSMaxRange(selection) <= cell.textView.text.utf16.count {
-            cell.textView.selectedRange = selection
-            if cell.textView.isEditable { cell.textView.becomeFirstResponder() }
+        if let selection, let block = presentation.read?.snapshot.blocks.first(where: { $0.id == blockID }) {
+            focus.request(.init(blockID: blockID, ownerID: presentation.mountedOwnerID,
+                nativeVersion: block.native["_ver"], source: presentation.source(for: block), selection: selection))
+        } else if let path = dataSource.indexPath(for: blockID) {
+            table.scrollToRow(at: path, at: .middle, animated: false)
+            table.layoutIfNeeded()
         }
     }
 
-    public func dismissKeyboard() { view.endEditing(true) }
+    public func dismissKeyboard() { focus.cancel(); view.endEditing(true) }
+
+    public func captureActiveCompositionForRecovery() {
+        focus.cancel()
+        (activeTextView as? AnyNativeTextView)?.captureCompositionForRecovery()
+    }
 
     public func render() {
         guard isViewLoaded, dataSource != nil else { return }
+        // A diffable reload can retire the first responder, including when its
+        // native block has moved or disappeared. Keep UIKit's marked buffer
+        // mounted until it has been captured; its raw/base versions stay local.
+        guard (activeTextView as? AnyNativeTextView)?.isComposingMarkedText != true else { return }
         let blocks = presentation.orderedBlocks
-        blockByID = Dictionary(uniqueKeysWithValues: blocks.map { ($0.id, $0) })
         let ids = blocks.map(\.id)
         if ids != previousIDs {
-            let firstResponderID = (activeTextView as? AnyNativeTextView)?.blockID
-            let selection = activeTextView?.selectedRange
-            let wasFirstResponder = activeTextView?.isFirstResponder == true
+            if !focus.hasPending, let input = activeTextView as? AnyNativeTextView,
+               input.isFirstResponder, let id = input.blockID, let old = blockByID[id] {
+                focus.request(.init(blockID: id, ownerID: presentation.mountedOwnerID,
+                    nativeVersion: old.native["_ver"], source: presentation.source(for: old),
+                    selection: input.selectedRange), attemptImmediately: false)
+            }
+            blockByID = Dictionary(uniqueKeysWithValues: blocks.map { ($0.id, $0) })
             var snapshot = NSDiffableDataSourceSnapshot<Int, String>()
             snapshot.appendSections([0]); snapshot.appendItems(ids, toSection: 0)
             previousIDs = ids
+            let generation = UUID(); snapshotGeneration = generation; applyingSnapshot = true
             dataSource.apply(snapshot, animatingDifferences: false) { [weak self] in
-                guard let self else { return }
+                guard let self, self.snapshotGeneration == generation else { return }
+                self.applyingSnapshot = false
                 self.configureVisibleCells()
-                if wasFirstResponder, let id = firstResponderID, let path = self.dataSource.indexPath(for: id),
-                   let cell = self.table.cellForRow(at: path) as? AnyNativeBlockCell {
-                    if let selection, NSMaxRange(selection) <= cell.textView.text.utf16.count {
-                        cell.textView.selectedRange = selection
-                    }
-                    cell.textView.becomeFirstResponder()
-                }
+                self.focus.readinessChanged(.layout)
             }
-        } else { configureVisibleCells() }
+        } else {
+            blockByID = Dictionary(uniqueKeysWithValues: blocks.map { ($0.id, $0) })
+            configureVisibleCells()
+            focus.readinessChanged(.layout)
+        }
     }
 
     private func configureVisibleCells() {
@@ -180,7 +225,9 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
     }
 
     private func configure(_ cell: AnyNativeBlockCell, block: AnyEditorBlock) {
+        guard !cell.textView.isComposingMarkedText else { return }
         let source = presentation.source(for: block)
+        let renderedSource = presentation.unmappedDisplay(for: block.id) ?? source
         let projection = presentation.projection(for: block)
         let supported = ["paragraph", "heading", "list_item", "check_list_item", "code", "quote"].contains(block.type)
         cell.textView.blockID = block.id
@@ -188,6 +235,8 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         if cell.renderedHistoryEpoch != historyEpoch { cell.textView.editHistory.removeAllActions() }
         cell.renderedHistoryEpoch = historyEpoch
         cell.textView.delegate = self
+        configureComposition(cell.textView)
+        cell.textView.onAttachmentReadiness = { [weak self] in self?.focus.readinessChanged(.attachment) }
         cell.textView.accessibilityIdentifier = "any-native-block-" + block.id
         cell.textView.isEditable = supported && projection.isEditable && presentation.canMutate
         cell.textView.isSelectable = true
@@ -200,11 +249,10 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         cell.stateLabel.text = supported ? AnyUIErrorText.text("תוכן זה מוצג לקריאה; העיצוב המקורי נשמר.",
             "This content is read-only; its original formatting is preserved.") :
             AnyUIErrorText.text("סוג בלוק זה טרם ניתן לעריכה כאן.", "This block type cannot be edited here yet.")
-        cell.marker.text = block.type == "quote" ? "❝" :
-            (block.type == "list_item" ? "•" : (block.type == "check_list_item" ? "☐" : ""))
+        cell.marker.text = AnyNativeBlockMarkerPolicy.marker(for: block)
         let selected = presentation.selectedBlockIDs.contains(block.id)
         cell.contentView.backgroundColor = selected ? UIColor.systemBlue.withAlphaComponent(0.045) : .clear
-        if cell.renderedSource != source || cell.renderedNativeStyle != block.native["style"] {
+        if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native["style"] {
             let selection = cell.textView.selectedRange
             rendering = true
             cell.textView.attributedText = attributed(projection, block: block)
@@ -213,13 +261,64 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
                     length: min(selection.length, cell.textView.text.utf16.count - selection.location))
             }
             rendering = false
-            cell.renderedSource = source; cell.renderedNativeStyle = block.native["style"]
+            cell.renderedSource = renderedSource; cell.renderedNativeStyle = block.native["style"]
         }
         var depth = 0, parent = block.parentID, seen = Set<String>()
         while !parent.isEmpty, let ancestor = blockByID[parent], seen.insert(parent).inserted {
             depth += 1; parent = ancestor.parentID
         }
         cell.indent.constant = CGFloat(min(depth, 12) * 16 + 12)
+    }
+
+    private func configureComposition(_ textView: AnyNativeTextView) {
+        textView.onMarkedBegin = { [weak self] input in
+            guard let self, let id = input.blockID, let block = self.blockByID[id] else { return false }
+            do {
+                let source = self.presentation.source(for: block)
+                let projection = self.presentation.projection(for: block)
+                guard projection.display.utf8.elementsEqual(input.text.utf8) else { throw AnyHostError.changedDocument }
+                try self.presentation.beginTextComposition(renderedBlock: block, source: source,
+                                                            selection: input.selectedRange)
+                self.focus.cancel()
+                self.activeTextView = input
+                self.compositionUndo[ObjectIdentifier(input)] = (source, input.selectedRange)
+                if let toolbar = input.inputAccessoryView as? UIToolbar {
+                    for item in toolbar.items ?? [] {
+                        item.isEnabled = item.accessibilityIdentifier == "any-native-editor-done"
+                    }
+                }
+                return true
+            } catch { self.presentation.message = AnyUIErrorText.describe(error); return false }
+        }
+        textView.onMarkedProposal = { [weak self] input, display, selection in
+            guard let self, let id = input.blockID else { return false }
+            do {
+                try self.presentation.stageTextComposition(blockID: id, display: display, selection: selection)
+                return true
+            } catch { self.presentation.message = AnyUIErrorText.describe(error); return false }
+        }
+        textView.onMarkedChanged = { [weak self] input in
+            guard let self, let id = input.blockID else { return }
+            do {
+                try self.presentation.stageTextComposition(blockID: id, display: input.text,
+                                                           selection: input.selectedRange)
+            } catch { self.presentation.message = AnyUIErrorText.describe(error) }
+        }
+        textView.onMarkedEnd = { [weak self] input, allowSaving in
+            guard let self, let id = input.blockID else { return }
+            let before = self.compositionUndo.removeValue(forKey: ObjectIdentifier(input))
+            let after = self.presentation.finishTextComposition(blockID: id, display: input.text,
+                selection: input.selectedRange, allowSaving: allowSaving)
+            if let before, let after, !before.source.utf8.elementsEqual(after.utf8), allowSaving {
+                let finalSelection = input.selectedRange
+                input.editHistory.registerUndo(withTarget: self) { owner in
+                    owner.restoreText(before.source, blockID: id, selection: before.selection,
+                                      inverse: after, inverseSelection: finalSelection)
+                }
+                input.editHistory.setActionName(AnyUIErrorText.text("עריכת טקסט", "Edit text"))
+            }
+            if allowSaving, self.presentation.isMounted { self.render() }
+        }
     }
 
     private func attributed(_ projection: AnyInlineMarkdown, block: AnyEditorBlock) -> NSAttributedString {
@@ -268,13 +367,29 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
     public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool { presentation.canMutate }
 
     public func textViewDidBeginEditing(_ textView: UITextView) {
+        focus.userInteraction()
         activeTextView = textView
         updateSelection(textView)
     }
 
     public func textViewDidChangeSelection(_ textView: UITextView) {
         guard !rendering else { return }
+        focus.userInteraction()
         updateSelection(textView)
+    }
+
+    public func textViewDidChange(_ textView: UITextView) {
+        guard !rendering, let textView = textView as? AnyNativeTextView else { return }
+        if textView.isComposingMarkedText {
+            textView.captureMarkedBuffer()
+            textView.finishCompositionIfNeeded()
+            table.beginUpdates(); table.endUpdates()
+        }
+    }
+
+    public func textViewDidEndEditing(_ textView: UITextView) {
+        (textView as? AnyNativeTextView)?.finishCompositionIfNeeded()
+        Task { [weak presentation] in await presentation?.flush() }
     }
 
     private func updateSelection(_ textView: UITextView) {
@@ -286,6 +401,10 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
                          replacementText text: String) -> Bool {
         guard !rendering, let textView = textView as? AnyNativeTextView,
               let id = textView.blockID, let block = blockByID[id] else { return false }
+        focus.userInteraction()
+        if textView.isComposingMarkedText {
+            return textView.preflightReplacing(range, with: text)
+        }
         do {
             let before = presentation.source(for: block)
             let projection = presentation.projection(for: block)
@@ -304,7 +423,8 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
 
     private func applyText(_ source: String, block: AnyEditorBlock, selection: NSRange,
                            textView: AnyNativeTextView) throws {
-        try presentation.changeText(blockID: block.id, source: source, displaySelection: selection)
+        try presentation.changeText(blockID: block.id, source: source, displaySelection: selection,
+                                    renderedBlock: block)
         rendering = true
         textView.attributedText = attributed(block.type == "code" ? AnyInlineMarkdown(literal: source) :
                                                AnyInlineMarkdown(source), block: block)
@@ -330,10 +450,16 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
 
     private func toolbar(for textView: AnyNativeTextView) -> UIToolbar {
         let toolbar = UIToolbar()
-        func item(_ title: String, _ body: @escaping @MainActor () -> Void) -> UIBarButtonItem {
-            UIBarButtonItem(title: title, primaryAction: UIAction { _ in body() })
+        func item(_ title: String, allowsCompositionCompletion: Bool = false,
+                  _ body: @escaping @MainActor () -> Void) -> UIBarButtonItem {
+            UIBarButtonItem(title: title, primaryAction: UIAction { [weak textView] _ in
+                guard allowsCompositionCompletion || textView?.isComposingMarkedText != true else { return }
+                body()
+            })
         }
-        let done = item(AnyUIErrorText.text("סיום", "Done")) { [weak textView] in textView?.resignFirstResponder() }
+        let done = item(AnyUIErrorText.text("סיום", "Done"), allowsCompositionCompletion: true) { [weak self, weak textView] in
+            self?.focus.cancel(); textView?.resignFirstResponder()
+        }
         done.accessibilityIdentifier = "any-native-editor-done"
         toolbar.items = [
             item("B") { [weak self, weak textView] in self?.format(.bold, textView: textView) },
@@ -350,10 +476,12 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
     }
 
     private func format(_ trait: AnyInlineTraits, textView: AnyNativeTextView?) {
-        guard let textView, let id = textView.blockID, let block = blockByID[id] else { return }
+        guard let textView, !textView.isComposingMarkedText,
+              let id = textView.blockID, let block = blockByID[id] else { return }
+        focus.cancel()
         do {
             let before = presentation.source(for: block), selection = textView.selectedRange
-            let after = try presentation.projection(for: block).adding(trait, to: selection)
+            let after = try presentation.projection(for: block).toggling(trait, to: selection)
             try applyText(after, block: block, selection: selection, textView: textView)
             textView.editHistory.registerUndo(withTarget: self) { owner in
                 owner.restoreText(before, blockID: id, selection: selection, inverse: after, inverseSelection: selection)
@@ -385,6 +513,8 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         }
     }
 
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { focus.cancel() }
+
     public func tableView(_ tableView: UITableView, canHandle session: any UIDropSession) -> Bool {
         session.hasItemsConforming(toTypeIdentifiers: [UTType.torahSource.identifier])
     }
@@ -406,6 +536,7 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
     }
 
     public func presentHanlin() {
+        focus.cancel()
         Task { [weak self] in
             guard let self else { return }
             await presentation.flush()
@@ -460,11 +591,119 @@ extension AnyDocumentPresentation: AnyHanlinSourcePresentationOwner {
     }
 }
 
+/// UIKit owns the marked range. The callbacks reserve/retain the original
+/// source and preflight bounded visible buffers; they never replace attributed
+/// text inside a composition. Internal visibility permits actual UIKit tests.
 @MainActor
-private final class AnyNativeTextView: UITextView {
+final class AnyNativeTextView: UITextView {
     var blockID: String?
     let editHistory = UndoManager()
-    override var undoManager: UndoManager? { editHistory }
+    private(set) var isComposingMarkedText = false
+    private var markedMutationDepth = 0
+    private var recovering = false
+    var onAttachmentReadiness: (() -> Void)?
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window != nil { onAttachmentReadiness?() }
+    }
+    var onMarkedBegin: ((AnyNativeTextView) -> Bool)?
+    var onMarkedProposal: ((AnyNativeTextView, String, NSRange) -> Bool)?
+    var onMarkedChanged: ((AnyNativeTextView) -> Void)?
+    var onMarkedEnd: ((AnyNativeTextView, Bool) -> Void)?
+    override var undoManager: UndoManager? { isComposingMarkedText ? nil : editHistory }
+
+    override func setMarkedText(_ markedText: String?, selectedRange: NSRange) {
+        if !isComposingMarkedText {
+            guard markedText != nil else { super.setMarkedText(markedText, selectedRange: selectedRange); return }
+            isComposingMarkedText = true
+            guard onMarkedBegin?(self) ?? true else { isComposingMarkedText = false; return }
+        }
+        let range = markedTextRange.map {
+            NSRange(location: offset(from: beginningOfDocument, to: $0.start),
+                    length: offset(from: $0.start, to: $0.end))
+        } ?? self.selectedRange
+        let replacement = markedText ?? ""
+        let relative = selectedRange.location == NSNotFound
+            ? NSRange(location: replacement.utf16.count, length: 0) : selectedRange
+        guard relative.location >= 0, relative.length >= 0,
+              relative.location <= replacement.utf16.count,
+              relative.length <= replacement.utf16.count - relative.location,
+              preflightReplacing(range, with: replacement,
+                  selection: NSRange(location: range.location + relative.location, length: relative.length)) else {
+            if markedTextRange == nil { endComposition(allowSaving: false) }
+            return
+        }
+        markedMutationDepth += 1
+        super.setMarkedText(markedText, selectedRange: selectedRange)
+        markedMutationDepth -= 1
+        captureMarkedBuffer(); finishCompositionIfNeeded()
+    }
+
+    override func unmarkText() {
+        markedMutationDepth += 1
+        super.unmarkText()
+        markedMutationDepth -= 1
+        captureMarkedBuffer(); finishCompositionIfNeeded()
+    }
+
+    override func insertText(_ text: String) {
+        guard isComposingMarkedText else { super.insertText(text); return }
+        markedMutationDepth += 1
+        super.insertText(text)
+        markedMutationDepth -= 1
+        captureMarkedBuffer(); finishCompositionIfNeeded()
+    }
+
+    override func deleteBackward() {
+        guard isComposingMarkedText else { super.deleteBackward(); return }
+        markedMutationDepth += 1
+        super.deleteBackward()
+        markedMutationDepth -= 1
+        captureMarkedBuffer(); finishCompositionIfNeeded()
+    }
+
+    override func resignFirstResponder() -> Bool {
+        if isComposingMarkedText { unmarkText() }
+        return super.resignFirstResponder()
+    }
+
+    func preflightReplacing(_ range: NSRange, with replacement: String,
+                            selection: NSRange? = nil) -> Bool {
+        let current = self.text ?? ""
+        guard range.location >= 0, range.length >= 0, range.location <= current.utf16.count,
+              range.length <= current.utf16.count - range.location else { return false }
+        let next = (current as NSString).replacingCharacters(in: range, with: replacement)
+        let selection = selection ?? NSRange(location: range.location + replacement.utf16.count, length: 0)
+        return onMarkedProposal?(self, next, selection) ?? true
+    }
+
+    func captureMarkedBuffer() {
+        guard isComposingMarkedText else { return }
+        onMarkedChanged?(self)
+    }
+
+    func finishCompositionIfNeeded() {
+        guard isComposingMarkedText, markedMutationDepth == 0, markedTextRange == nil else { return }
+        endComposition(allowSaving: !recovering)
+    }
+
+    func captureCompositionForRecovery() {
+        guard isComposingMarkedText else { return }
+        recovering = true
+        captureMarkedBuffer()
+        markedMutationDepth += 1
+        super.unmarkText()
+        markedMutationDepth -= 1
+        endComposition(allowSaving: false)
+        recovering = false
+    }
+
+    private func endComposition(allowSaving: Bool) {
+        guard isComposingMarkedText else { return }
+        captureMarkedBuffer()
+        isComposingMarkedText = false
+        onMarkedEnd?(self, allowSaving)
+    }
 }
 
 @MainActor
@@ -510,6 +749,7 @@ private final class AnyNativeBlockCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         textView.editHistory.removeAllActions()
+        textView.onAttachmentReadiness = nil
         textView.blockID = nil; renderedSource = nil; renderedHistoryEpoch = nil; renderedNativeStyle = nil; sourceAction = nil
     }
 }

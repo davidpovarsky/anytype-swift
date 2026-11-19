@@ -1,0 +1,51 @@
+{
+  "status": "MISMATCH_REPRODUCED",
+  "scope": "fresh_exact_production_inline_and_Hanlin_render_sources_linked_against_existing_dependencies",
+  "source": {
+    "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinPlainText.swift": "55cc455ece72960289de5ecffc72ff8595f5424e89f262fbb4d400e1633613d6",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyInlineMarkdown.swift": "d473584223188d2bac8c18b746e77153203ebad40f19fd55b455b60a9972905a"
+  },
+  "sourceStable": true,
+  "binarySHA256": "3dac378e3a6a966acd964658ed5ff1b5b7eee94bdef59bbbe36cbf3d3400562e",
+  "runnerSHA256": "2b1eb93388e44ce77a412220f99ceafb95e659dd30b3c2bd5e32c072edb57693",
+  "buildLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "exitCode": 0,
+  "cases": [
+    {
+      "exactMatch": false,
+      "exported": "שלום",
+      "id": "literal_heading_prefix",
+      "inlineDisplay": "# שלום"
+    },
+    {
+      "exactMatch": false,
+      "exported": "שלום",
+      "id": "literal_list_prefix",
+      "inlineDisplay": "- שלום"
+    },
+    {
+      "exactMatch": false,
+      "exported": "שָׁלוֹם 😀\n",
+      "id": "literal_indentation_and_marks",
+      "inlineDisplay": "    שָׁלוֹם 😀"
+    },
+    {
+      "exactMatch": false,
+      "exported": "ראשון\nשני\n",
+      "id": "literal_multiple_lines",
+      "inlineDisplay": "  ראשון\n\n    שני"
+    },
+    {
+      "exactMatch": false,
+      "exported": "first\nsecond",
+      "id": "literal_trailing_spaces",
+      "inlineDisplay": "first  \nsecond"
+    },
+    {
+      "exactMatch": true,
+      "exported": "שָׁלוֹם קישור",
+      "id": "formatted_text_and_link",
+      "inlineDisplay": "שָׁלוֹם קישור"
+    }
+  ]
+}

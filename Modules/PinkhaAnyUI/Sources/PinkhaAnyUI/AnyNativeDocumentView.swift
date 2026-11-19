@@ -58,8 +58,22 @@ public struct AnyNativeDocumentView: View {
                     Button(AnyUIErrorText.text("כתיבה משמאל לימין", "Left to right")) {
                         Task { await presentation.setWritingStyle(direction: .leftToRight, alignment: .natural) }
                     }.disabled(presentation.selectedBlockIDs.isEmpty || !presentation.canMutate)
-                    Button(AnyUIErrorText.text("יישור טבעי", "Natural alignment")) {
-                        Task { await presentation.setWritingStyle(direction: .natural, alignment: .natural) }
+                    Menu(AnyUIErrorText.text("יישור טקסט", "Text alignment")) {
+                        Button(AnyUIErrorText.text("טבעי", "Natural")) {
+                            Task { await presentation.setWritingStyle(alignment: .natural) }
+                        }
+                        Button(AnyUIErrorText.text("לשמאל", "Left")) {
+                            Task { await presentation.setWritingStyle(alignment: .left) }
+                        }
+                        Button(AnyUIErrorText.text("למרכז", "Center")) {
+                            Task { await presentation.setWritingStyle(alignment: .center) }
+                        }
+                        Button(AnyUIErrorText.text("לימין", "Right")) {
+                            Task { await presentation.setWritingStyle(alignment: .right) }
+                        }
+                        Button(AnyUIErrorText.text("לשני הצדדים", "Justified")) {
+                            Task { await presentation.setWritingStyle(alignment: .justified) }
+                        }
                     }.disabled(presentation.selectedBlockIDs.isEmpty || !presentation.canMutate)
                     Button(AnyUIErrorText.text("ביטול הפעולה האחרונה", "Undo last saved edit"), systemImage: "arrow.uturn.backward") {
                         Task { await presentation.undoLastNativeEdit() }
@@ -71,7 +85,7 @@ public struct AnyNativeDocumentView: View {
                 Button { presentation.presentHanlin() } label: { Image(systemName: "bubble.left.and.bubble.right") }
                     .accessibilityLabel("Hanlin")
                     .accessibilityIdentifier("any-native-hanlin")
-                    .disabled(!presentation.isMounted || presentation.read == nil)
+                    .disabled(!presentation.isMounted || presentation.read == nil || presentation.hasPendingEdits)
             }
         }
         .modifier(AnyTorahInspectorLayer(session: presentation.torah, host: .editor))
@@ -135,12 +149,19 @@ public struct AnyNativeDocumentView: View {
                         }
                     }
                 }
+                ForEach(presentation.recoveredUnmappedDrafts, id: \.blockID) { draft in
+                    Section(AnyUIErrorText.text("טקסט שהוקלד ושמור לבדיקה", "Typed text retained for review")) {
+                        Text(draft.display).textSelection(.enabled)
+                        Text(AnyUIErrorText.unmappedComposition).font(.footnote).foregroundStyle(.secondary)
+                    }
+                }
                 Button(AnyUIErrorText.text("העתקת הטקסט המקומי", "Copy local text")) {
                     UIPasteboard.general.string = presentation.localDraftTextForCopy
                 }
                 Button(AnyUIErrorText.text("בדיקה והמשך שמירה", "Review and resume saving")) {
                     Task { await presentation.resumeRecoveredDrafts() }
                 }.accessibilityIdentifier("any-native-resume-recovered-drafts")
+                    .disabled(!presentation.recoveredUnmappedDrafts.isEmpty || presentation.isComposing)
             }
             .navigationTitle(AnyUIErrorText.text("שינויים ששוחזרו", "Recovered edits"))
             .toolbar { ToolbarItem(placement: .confirmationAction) {

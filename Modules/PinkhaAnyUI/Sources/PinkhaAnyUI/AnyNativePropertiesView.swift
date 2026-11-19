@@ -50,6 +50,7 @@ public struct AnyNativePropertiesView: View {
                         }
                         .disabled(!model.canWrite)
                         .accessibilityIdentifier("any-native-property-type")
+                        .accessibilityValue(Text(snapshot.catalog.types.first(where: { $0.id == snapshot.currentTypeID })?.name ?? snapshot.currentTypeID))
                     }
                     if !model.visibleRows.isEmpty {
                         Section(AnyUIErrorText.text("מאפייני המסמך", "Document properties")) {
@@ -86,13 +87,16 @@ public struct AnyNativePropertiesView: View {
                     Menu {
                         Button(AnyUIErrorText.text("בחירת המאפיינים המוצגים", "Choose visible properties"),
                                systemImage: "slider.horizontal.3") { showsCustomization = true }
+                            .accessibilityIdentifier("any-native-property-customize")
                         Button(AnyUIErrorText.text("ביטול שינוי במאפיינים", "Undo property change"),
                                systemImage: "arrow.uturn.backward") { Task { await model.undoLastChange() } }
                             .disabled(!model.canUndo)
                     } label: { Image(systemName: "ellipsis.circle") }
+                        .accessibilityIdentifier("any-native-property-menu")
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(AnyUIErrorText.text("סיום", "Done")) { dismiss() }
+                        .accessibilityIdentifier("any-native-property-close")
                 }
             }
             .modifier(AnyTorahInspectorLayer(session: presentation.torah, host: .properties))
@@ -137,7 +141,9 @@ public struct AnyNativePropertiesView: View {
                 }
             }
             .disabled(!model.canWrite)
-            .accessibilityIdentifier("any-native-property-" + row.id.visibilityKey)
+            .accessibilityIdentifier(row.id.ownerID == "any" && row.id.propertyID == "name"
+                ? "any-native-property-name" : "any-native-property-" + row.id.visibilityKey)
+            .accessibilityValue(Text(display(row)))
         }
     }
 
@@ -164,6 +170,8 @@ public struct AnyNativePropertiesView: View {
                             Toggle(row.definition.name, isOn: Binding(get: { row.isVisible }, set: { visible in
                                 Task { await model.setVisibility(.init(property: row.id), visible: visible) }
                             })).disabled(!model.canWrite)
+                                .accessibilityIdentifier(row.id.ownerID == "any" && row.id.propertyID == "name"
+                                    ? "any-native-property-visibility-name" : "any-native-property-visibility-" + row.id.visibilityKey)
                         }
                     }
                 }
@@ -197,6 +205,7 @@ public struct AnyNativePropertiesView: View {
             .navigationTitle(AnyUIErrorText.text("בחירת מאפיינים", "Choose properties"))
             .toolbar { ToolbarItem(placement: .confirmationAction) {
                 Button(AnyUIErrorText.text("סיום", "Done")) { showsCustomization = false }
+                    .accessibilityIdentifier("any-native-property-customization-close")
             }}
         }
     }
@@ -260,6 +269,7 @@ private struct AnyNativePropertyValueEditor: View {
                     case .array, .object:
                         TextEditor(text: $text).font(.system(.body, design: .monospaced))
                             .frame(minHeight: 220).focused($focused)
+                            .accessibilityIdentifier("any-native-property-value-input")
                         Text(AnyUIErrorText.text("נתונים מובנים בפורמט JSON", "Structured data in JSON format"))
                             .font(.caption).foregroundStyle(.secondary)
                     default:
@@ -267,6 +277,7 @@ private struct AnyNativePropertyValueEditor: View {
                             .focused($focused)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled(selection.row.definition.kind != .string)
+                            .accessibilityIdentifier("any-native-property-value-input")
                     }
                 }
                 if selection.row.definition.kind == .datetime {

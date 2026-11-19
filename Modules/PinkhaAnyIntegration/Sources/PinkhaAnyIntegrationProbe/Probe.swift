@@ -9,6 +9,15 @@ enum ProbeFailure: Error { case configuration, assertion(String) }
 struct IntegrationProbe {
     static func main() async throws {
         let args = CommandLine.arguments
+        if args.count == 2, args[1] == "--live-public-provider" {
+            try await LiveProviderProbe.run()
+            return
+        }
+        if args.count == 6, args[1] == "--guarded-hierarchy", args[2] == "--disposable",
+           let url = URL(string: args[3]) {
+            try await GuardedHierarchyProbe.run(url: url, accountID: args[4], spaceID: args[5])
+            return
+        }
         if args.count == 6, args[1] == "--archive", args[2] == "--disposable",
            let url = URL(string: args[3]) {
             try await NativeArchiveProbe.run(url: url, accountID: args[4], spaceID: args[5])
