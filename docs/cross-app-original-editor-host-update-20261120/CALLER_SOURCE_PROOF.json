@@ -1,0 +1,22 @@
+{
+  "source": "45f25d1de7277ca78bf689ef782cd8e66cafe992",
+  "constructor_matches": [
+    "45f25d1de7277ca78bf689ef782cd8e66cafe992:Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageView.swift:32:        EditorSwiftUIViewContainer(viewController: stateModel.viewController, preparedSession: stateModel.preparedSession)"
+  ],
+  "binding_matches": [
+    "45f25d1de7277ca78bf689ef782cd8e66cafe992:Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorPageModuleAssembly.swift:122:            try state.bindPreparedSession(preparedSession)",
+    "45f25d1de7277ca78bf689ef782cd8e66cafe992:Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewState.swift:15:    func bindPreparedSession(_ session: PreparedEditorPageSession) throws {"
+  ],
+  "source_files": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageView.swift",
+      "git_lf_sha256": "2d97b99e214219b480ccfb620a794f61dade762e7053a76e86c80e815d83a23d"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewState.swift",
+      "git_lf_sha256": "5aedab8383be8c5ccb57c338f2e323609ddef4b2833d3928afc17630ae648abc"
+    }
+  ],
+  "fact": "Only current caller uses retained StateObject and immutable controller; preparedSession binds once in assembly",
+  "not_proven": "Actual SwiftUI reuse, future consumer identity, or UIKit callback ordering"
+}

@@ -1,0 +1,35 @@
+{
+  "source_commit": "45f25d1de7277ca78bf689ef782cd8e66cafe992",
+  "parent": "ed250e6e926262a67f6c86f483802674c98f41f3",
+  "branch": "codex/otzaria-original-editor-host-update-20261120",
+  "paths": [
+    "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorSwiftUIViewContainer.swift",
+    "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageSession.swift",
+    "Scripts/CI/run-original-editor-lifetime.py",
+    "Scripts/CI/fixtures/original-editor-host-update.swift"
+  ],
+  "compiled_projection_changes_red_to_green": [
+    {
+      "index": 23,
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageSession.swift",
+      "projection": "whole_file"
+    },
+    {
+      "index": 25,
+      "path": null,
+      "projection": "exact original assembly/binding/coordinator/update bodies with explicit UIKit/context/environment/existing-assembly boundary doubles"
+    }
+  ],
+  "prior75_actual_controls_preserved": true,
+  "all8_host_assertions_identical_red2_to_green": true,
+  "actual_controls": 83,
+  "syntax_parses": 11,
+  "apple_declared": 37,
+  "apple_typecheck": "NOT_RUN",
+  "native": "NOT_RUN",
+  "commit_output": "[codex/otzaria-original-editor-host-update-20261120 45f25d1de7] Retire prepared editor ownership on mismatched host updates\n 4 files changed, 271 insertions(+), 23 deletions(-)\n create mode 100644 Scripts/CI/fixtures/original-editor-host-update.swift\n",
+  "status": "",
+  "source_patch_sha256": "a0efc54e37ca266376162b3d88dec53447e42159e6a202218d87803bd4c63560",
+  "source_patch_bytes": 29423,
+  "source_tree": "dc47cde1d8bac228e34cc4917d4d855b51d13d1b"
+}
