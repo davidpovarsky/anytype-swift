@@ -1,0 +1,704 @@
+--- a/.github/workflows/pinkha-original-editor-framework.yml
++++ b/.github/workflows/pinkha-original-editor-framework.yml
+@@ -3,7 +3,7 @@
+ on:
+   push:
+     branches:
+-      - codex/otzaria-original-editor-framework-v3-reviewed-20261120
++      - codex/otzaria-original-editor-framework-v4-reviewed-20261120
+ 
+ permissions:
+   contents: read
+@@ -15,13 +15,13 @@
+ 
+ jobs:
+   original-editor-framework:
+-    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v3-reviewed-20261120'
++    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v4-reviewed-20261120'
+     runs-on: xcode-27
+     timeout-minutes: 140
+     env:
+       PYTHONDONTWRITEBYTECODE: '1'
+       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+-      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v3-reviewed-20261120
++      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v4-reviewed-20261120
+       HEART_SOURCE_RUN_ID: '44203168617'
+       EDITOR_EVIDENCE: build/original-editor-framework-evidence
+       EDITOR_WORK: build/original-editor-framework-${{ github.run_id }}-${{ github.run_attempt }}
+--- a/Tools/OriginalEditor/framework_products.py
++++ b/Tools/OriginalEditor/framework_products.py
+@@ -2,11 +2,13 @@
+ import hashlib
+ import json
+ import math
++import os
+ from pathlib import Path
+ import plistlib
+ import re
+ import shutil
+ import stat
++import sys
+ import xml.etree.ElementTree as ET
+ from urllib.parse import unquote, urlparse
+ 
+@@ -44,6 +46,121 @@
+         shutil.copy2(source, target)
+ 
+ 
++def framework_extended_attributes(path, follow):
++    """Read every accessible attribute; never treat an unsupported API as empty.
++
++    CPython's os xattr functions are Linux-only. Darwin uses the original
++    documented listxattr/getxattr ABI, with no writes or added dependency.
++    """
++    if sys.platform != 'darwin':
++        require(hasattr(os, 'listxattr') and hasattr(os, 'getxattr'),
++                'No complete extended-attribute reader on this host')
++        raw = {name: os.getxattr(path, name, follow_symlinks=follow)
++               for name in os.listxattr(path, follow_symlinks=follow)}
++    else:
++        import ctypes
++        library = ctypes.CDLL(None, use_errno=True)
++        listing, reading = library.listxattr, library.getxattr
++        listing.argtypes = [ctypes.c_char_p, ctypes.c_void_p, ctypes.c_size_t, ctypes.c_int]
++        listing.restype = ctypes.c_ssize_t
++        reading.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_void_p,
++                           ctypes.c_size_t, ctypes.c_uint32, ctypes.c_int]
++        reading.restype = ctypes.c_ssize_t
++        encoded = os.fsencode(path)
++        # Original sys/xattr.h: expose compression attributes, and inspect the
++        # link itself when requested. No XATTR_NOSECURITY or mutation options.
++        options = 0x20 | (0 if follow else 0x1)
++
++        def read_buffer(call):
++            size = call(None, 0)
++            require(0 <= size <= 16 * 1024 * 1024, 'Unreadable or oversized framework attribute')
++            buffer = ctypes.create_string_buffer(max(size, 1))
++            actual = call(buffer, size)
++            require(actual == size, 'Framework attributes changed or could not be read')
++            return buffer.raw[:size]
++
++        names = read_buffer(lambda buffer, size: listing(encoded, buffer, size, options))
++        require(not names or names.endswith(b'\0'), 'Malformed Darwin attribute list')
++        keys = names[:-1].split(b'\0') if names else []
++        require(all(keys) and len(set(keys)) == len(keys),
++                'Empty or duplicate Darwin attribute name')
++        raw = {os.fsdecode(name): read_buffer(
++            lambda buffer, size: reading(encoded, name, buffer, size, 0, options)) for name in keys}
++    return {name: {'bytes': len(value), 'sha256': hashlib.sha256(value).hexdigest()}
++            for name, value in sorted(raw.items())}
++
++
++def framework_closure(source):
++    """Observe every member, including internal aliases, without changing it.
++
++    Only timestamps and filesystem allocation/inode numbers are irrelevant to
++    this equivalence check. File bytes, names, kinds, modes, owners, flags,
++    extended attributes and literal alias targets must all agree. An alias may
++    not borrow a file from another product, even inside this owned producer.
++    """
++    source = Path(source)
++    require(source.is_dir() and not source.is_symlink(), 'Framework root must be a real directory')
++    root = source.resolve(strict=True)
++    result = {}
++
++    def metadata(path, status, follow):
++        return {'mode': stat.S_IMODE(status.st_mode), 'uid': status.st_uid, 'gid': status.st_gid,
++                'flags': getattr(status, 'st_flags', 0),
++                'extended_attributes': framework_extended_attributes(path, follow)}
++
++    def visit(path, relative, ancestors):
++        try:
++            resolved = path.resolve(strict=True)
++            require(resolved.is_relative_to(root), 'Framework alias escapes its own product: ' + relative)
++            status, final = path.lstat(), resolved.stat()
++            kind = ('symlink' if stat.S_ISLNK(status.st_mode) else
++                    'directory' if stat.S_ISDIR(status.st_mode) else
++                    'file' if stat.S_ISREG(status.st_mode) else 'special')
++            final_kind = 'directory' if stat.S_ISDIR(final.st_mode) else 'file' if stat.S_ISREG(final.st_mode) else 'special'
++            require(kind != 'special' and final_kind != 'special', 'Special framework member: ' + relative)
++            row = {'kind': kind, **metadata(path, status, False), 'resolved_kind': final_kind,
++                   'resolved_metadata': metadata(resolved, final, True)}
++            if kind == 'symlink':
++                row['link_target'] = os.readlink(path)
++            if final_kind == 'file':
++                row.update(bytes=final.st_size, sha256=sha256(resolved))
++            result[relative] = row
++            if final_kind == 'directory':
++                require(resolved not in ancestors, 'Cyclic framework alias: ' + relative)
++                for child in sorted(path.iterdir()):
++                    visit(child, child.name if relative == '.' else relative + '/' + child.name,
++                          ancestors | {resolved})
++        except (OSError, RuntimeError) as error:
++            raise ValueError('Unreadable or cyclic framework closure: ' + relative) from error
++
++    visit(source, '.', set())
++    return result
++
++
++def select_framework_products(products, frameworks):
++    """Admit only the actual Xcode root/PackageFrameworks Lib duplicate pair."""
++    groups = {}
++    for path in frameworks:
++        groups.setdefault(path.name, []).append(path)
++    require(TARGET + '.framework' in groups, 'Missing or ambiguous genuine framework products')
++    selected, proofs = [], []
++    for name, paths in sorted(groups.items()):
++        if len(paths) == 1:
++            selected.append(paths[0])
++            continue
++        relative = {path.relative_to(products).as_posix(): path for path in paths}
++        expected = {'Lib.framework', 'PackageFrameworks/Lib.framework'}
++        require(name == 'Lib.framework' and len(paths) == 2 and set(relative) == expected,
++                'Missing or ambiguous genuine framework products')
++        closures = {key: framework_closure(relative[key]) for key in sorted(relative)}
++        require(closures['Lib.framework'] == closures['PackageFrameworks/Lib.framework'],
++                'The two known Lib framework products differ')
++        selected.append(relative['Lib.framework'])
++        proofs.append({'name': name, 'selected': 'Lib.framework', 'source_closures': closures,
++                       'equivalence': 'COMPLETE_CLOSURE_EQUAL'})
++    return selected, proofs
++
++
+ def export_products(products, exported, producer_root):
+     products, exported = Path(products).resolve(), Path(exported).resolve()
+     require(products.is_relative_to(Path(producer_root).resolve()), 'Unowned product directory')
+@@ -54,9 +171,8 @@
+     frameworks = [p for p in products.rglob('*.framework')
+                   if not any(parent.suffix in {'.framework', '.bundle', '.app', '.xctest'}
+                              for parent in p.relative_to(products).parents)]
++    frameworks, duplicate_proofs = select_framework_products(products, frameworks)
+     names = [p.name for p in frameworks]
+-    require(len(names) == len(set(names)) and TARGET + '.framework' in names,
+-            'Missing or ambiguous genuine framework products')
+     for source in sorted(frameworks):
+         copy_product(source, exported / 'Frameworks' / source.name, producer_root)
+     bundles = [p for p in products.rglob('*.bundle')
+@@ -86,7 +202,25 @@
+             'Original Hebrew localization bundle was not exported')
+     result = inventory(exported)
+     require(result, 'Empty binary/resource export')
+-    return {'frameworks': sorted(names), 'resource_bundles': sorted(p.name for p in bundles),
++    # Keep the measured input pair and the materialized output bound together.
++    # This is not a general duplicate-name or same-hash selection fallback.
++    for proof in duplicate_proofs:
++        for relative, expected in proof['source_closures'].items():
++            require(framework_closure(products / relative) == expected,
++                    'A known Lib input changed during export')
++        materialized = framework_closure(exported / 'Frameworks/Lib.framework')
++        expected = proof['source_closures']['Lib.framework']
++        require(set(materialized) == set(expected), 'Exported Lib membership differs')
++        for relative, row in materialized.items():
++            original = expected[relative]
++            require(row['kind'] == original['resolved_kind']
++                    and row['resolved_metadata'] == original['resolved_metadata']
++                    and row.get('bytes') == original.get('bytes')
++                    and row.get('sha256') == original.get('sha256'),
++                    'Exported Lib member differs: ' + relative)
++        proof['materialized_export_closure'] = materialized
++    return {'frameworks': sorted(names), 'verified_known_duplicates': duplicate_proofs,
++            'resource_bundles': sorted(p.name for p in bundles),
+             'files': result, 'bytes': sum(item['bytes'] for item in result.values())}
+ 
+ 
+--- a/Tools/OriginalEditor/framework_profile.json
++++ b/Tools/OriginalEditor/framework_profile.json
+@@ -18,11 +18,11 @@
+     "Tools/PinkhaNativeDerived/package_evidence.py": "e55d2a959296630686a60aa5d927a3b4c34401f9",
+     "Tools/PinkhaSimulatorGate/preflight.py": "2628b345d5743bbe1ddc0d1afaeef9fb410f3daf"
+   },
+-  "branch": "codex/otzaria-original-editor-framework-v3-reviewed-20261120",
++  "branch": "codex/otzaria-original-editor-framework-v4-reviewed-20261120",
+   "candidate_project_sha256": "6d8ea7d95077a20f6e8343db77d30cfdd7a59a3e85a4a2a69c8e075c8adcf05c",
+   "framework_target_id": "83B785D0C457FE3CCBAB196E",
+   "new_project_objects": 108,
+-  "original_heart_installer_blob": "89efc7695c5bbbc87b3e0fd10f65300dd1bfdd58",
++  "original_heart_installer_blob": "f4bb9ec63894452756d765e4af4773d2f4e7f6c3",
+   "original_swift_sources": 2237,
+   "original_trees": {
+     "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
+--- a/Tools/OriginalEditor/framework_profile.py
++++ b/Tools/OriginalEditor/framework_profile.py
+@@ -8,7 +8,7 @@
+ 
+ from pbx_source import loads, object_text, require
+ 
+-BRANCH = 'codex/otzaria-original-editor-framework-v3-reviewed-20261120'
++BRANCH = 'codex/otzaria-original-editor-framework-v4-reviewed-20261120'
+ REPOSITORY = 'davidpovarsky/anytype-swift'
+ TARGET = 'AnytypeOriginalEditor'
+ APP_TARGET = '0303ECFA22D8EDAA005C552B'
+@@ -112,8 +112,8 @@
+     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
+     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
+     installer = (root / installer_path).read_text()
+-    reviewed = "                             'codex/otzaria-original-editor-framework-reviewed-20261120',\n                             '" + BRANCH + "'],"
+-    original = "                             'codex/otzaria-original-editor-framework-reviewed-20261120'],"
++    reviewed = "                             'codex/otzaria-original-editor-framework-v3-reviewed-20261120',\n                             '" + BRANCH + "'],"
++    original = "                             'codex/otzaria-original-editor-framework-v3-reviewed-20261120'],"
+     require(installer.count(reviewed) == 1 and
+             blob(installer.replace(reviewed, original, 1).encode()) == profile['original_heart_installer_blob'],
+             'Original verified Heart installer has a change beyond the exact new consumer branch')
+--- a/Tools/OriginalEditor/run_framework_acceptance.py
++++ b/Tools/OriginalEditor/run_framework_acceptance.py
+@@ -80,13 +80,14 @@
+     retained = []
+     for number, path in enumerate(sorted(paths)):
+         raw = path.read_bytes()
+-        destination = evidence / ('framework-inputs-' + str(number) + '.SwiftFileList')
++        destination = evidence / ('framework-inputs-' + str(number) + '.SwiftFileList.txt')
+         destination.write_bytes(raw)
+         for line in raw.decode().splitlines():
+             values = shlex.split(line)
+             require(len(values) == 1, 'Malformed actual Swift source input')
+             observed.add(Path(values[0]).resolve())
+-        retained.append({'path': str(path), 'sha256': sha256(path), 'bytes': len(raw)})
++        retained.append({'path': str(path), 'evidence_path': destination.name,
++                         'sha256': sha256(path), 'bytes': len(raw)})
+     actual_original = {path for path in observed if path.is_relative_to(root)
+                        and not path.is_relative_to(derived)}
+     require(actual_original == expected, 'Actual framework source list is not the complete original source closure')
+@@ -100,8 +101,10 @@
+             raw = path.read_bytes()
+             name = next(name for name in ['Assets', 'Loc', 'DesignKit'] if name + '.build' in path.parts)
+             require(name not in [row['module'] for row in generated], 'Ambiguous generated resource accessor')
+-            (evidence / ('original-generated-' + name + '-resource-accessor.swift')).write_bytes(raw)
+-            generated.append({'module': name, 'path': str(path), 'sha256': sha256(path), 'bytes': len(raw)})
++            destination = evidence / ('original-generated-' + name + '-resource-accessor.swift.txt')
++            destination.write_bytes(raw)
++            generated.append({'module': name, 'path': str(path), 'evidence_path': destination.name,
++                              'sha256': sha256(path), 'bytes': len(raw)})
+     require({row['module'] for row in generated} == {'Assets', 'Loc', 'DesignKit'},
+             'Original generated package bundle accessors are missing')
+     value = {'complete_original_swift_input_count': len(expected), 'generated_swift_input_count': len(observed - expected),
+--- a/Tools/OriginalEditor/test_framework.py
++++ b/Tools/OriginalEditor/test_framework.py
+@@ -93,7 +93,7 @@
+ 
+     def test_original_heart_installer_changes_only_one_new_branch_choice(self):
+         raw = (ROOT / 'Tools/PinkhaNativeDerived/install_verified_heart.py').read_bytes()
+-        suffix = b",\n                             'codex/otzaria-original-editor-framework-v3-reviewed-20261120'"
++        suffix = b",\n                             'codex/otzaria-original-editor-framework-v4-reviewed-20261120'"
+         self.assertEqual(raw.count(suffix), 1)
+         old = raw.replace(suffix, b'', 1)
+         actual = hashlib.sha1(b'blob ' + str(len(old)).encode() + b'\0' + old).hexdigest()
+--- a/Tools/OriginalEditor/test_framework_duplicates.py
++++ b/Tools/OriginalEditor/test_framework_duplicates.py
+@@ -0,0 +1,299 @@
++"""Whole-exporter controls for the two observed Lib locations; no Apple credit."""
++import hashlib
++import ctypes
++import os
++from pathlib import Path
++import shutil
++import stat
++import subprocess
++import sys
++import unittest
++from unittest.mock import patch
++
++import framework_products as products_module
++import test_framework as original_controls
++
++
++class DarwinXattrBoundaryDouble:
++    """Explicit ABI double; it is not a Darwin filesystem execution."""
++    class Function:
++        def __init__(self, call): self.call = call
++        def __call__(self, *arguments): return self.call(*arguments)
++
++    def __init__(self):
++        self.names = b'user.payload\0user.empty\0'
++        self.values = {b'user.payload': b'a\x00b', b'user.empty': b''}
++        self.calls = []
++        self.list_probe = self.list_result = self.get_probe = self.get_result = None
++        self.listxattr = self.Function(self.listing)
++        self.getxattr = self.Function(self.reading)
++
++    def transfer(self, value, buffer, size, probe, result):
++        if buffer is None:
++            return len(value) if probe is None else probe
++        if result is not None:
++            return result
++        if size < len(value):
++            return -1
++        ctypes.memmove(buffer, value, len(value))
++        return len(value)
++
++    def listing(self, path, buffer, size, options):
++        self.calls.append(('list', path, buffer is None, size, options))
++        return self.transfer(self.names, buffer, size, self.list_probe, self.list_result)
++
++    def reading(self, path, name, buffer, size, position, options):
++        self.calls.append(('get', path, name, buffer is None, size, position, options))
++        return self.transfer(self.values[name], buffer, size, self.get_probe, self.get_result)
++
++
++class DarwinAttributeBoundaryControls(unittest.TestCase):
++    def setUp(self):
++        self.library = DarwinXattrBoundaryDouble()
++
++    def read(self, follow=True):
++        with patch.object(products_module.sys, 'platform', 'darwin'), \
++                patch('ctypes.CDLL', return_value=self.library) as load:
++            result = products_module.framework_extended_attributes('/explicit/synthetic/path', follow)
++        load.assert_called_once_with(None, use_errno=True)
++        return result
++
++    def test_darwin_typed_abi_reads_binary_and_empty_attributes(self):
++        value = self.read()
++        self.assertEqual(value, {name.decode(): {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()}
++                                 for name, raw in self.library.values.items()})
++        self.assertEqual(self.library.listxattr.argtypes,
++                         [ctypes.c_char_p, ctypes.c_void_p, ctypes.c_size_t, ctypes.c_int])
++        self.assertEqual(self.library.getxattr.argtypes,
++                         [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_void_p,
++                          ctypes.c_size_t, ctypes.c_uint32, ctypes.c_int])
++        self.assertIs(self.library.listxattr.restype, ctypes.c_ssize_t)
++        self.assertIs(self.library.getxattr.restype, ctypes.c_ssize_t)
++        self.assertTrue(all(call[-1] == 0x20 for call in self.library.calls))
++        self.assertTrue(all(call[-2] == 0 for call in self.library.calls if call[0] == 'get'))
++
++    def test_darwin_nofollow_inspects_link_attributes(self):
++        self.read(follow=False)
++        self.assertTrue(all(call[-1] == 0x21 for call in self.library.calls))
++
++    def test_darwin_genuine_empty_list_is_empty_without_skipping_the_api(self):
++        self.library.names = b''
++        self.assertEqual(self.read(), {})
++        self.assertEqual([call[0] for call in self.library.calls], ['list', 'list'])
++
++    def test_darwin_unreadable_list_fails_closed(self):
++        self.library.list_probe = -1
++        with self.assertRaises(ValueError): self.read()
++
++    def test_darwin_oversized_list_fails_before_allocation(self):
++        self.library.list_probe = 16 * 1024 * 1024 + 1
++        with self.assertRaises(ValueError): self.read()
++        self.assertEqual(len(self.library.calls), 1)
++
++    def test_darwin_list_changed_between_probe_and_read_fails(self):
++        self.library.list_result = -1
++        with self.assertRaises(ValueError): self.read()
++
++    def test_darwin_missing_nul_terminator_fails(self):
++        self.library.names = b'user.payload'
++        with self.assertRaises(ValueError): self.read()
++
++    def test_darwin_duplicate_name_fails(self):
++        self.library.names = b'user.payload\0user.payload\0'
++        with self.assertRaises(ValueError): self.read()
++
++    def test_darwin_unreadable_attribute_fails(self):
++        self.library.get_probe = -1
++        with self.assertRaises(ValueError): self.read()
++
++    def test_darwin_attribute_changed_between_probe_and_read_fails(self):
++        self.library.get_result = -1
++        with self.assertRaises(ValueError): self.read()
++
++
++class KnownLibDuplicateControls(unittest.TestCase):
++    def setUp(self):
++        original_controls.RealFilesystemExportControls.setUp(self)
++        self.first = self.products / 'Lib.framework'
++        self.second = self.products / 'PackageFrameworks/Lib.framework'
++        self.first.mkdir()
++        (self.first / 'Lib').write_bytes(b'EXPLICIT_SYNTHETIC_LIB_NOT_AN_APPLE_BINARY')
++        (self.first / 'Lib').chmod(0o755)
++        for name, data in [('Info.plist', b'synthetic info'),
++                           ('Headers/Lib.h', b'synthetic header'),
++                           ('Modules/module.modulemap', b'synthetic module'),
++                           ('Resources/item.bin', b'synthetic resource'),
++                           ('_CodeSignature/CodeResources', b'synthetic signature')]:
++            path = self.first / name
++            path.parent.mkdir(parents=True, exist_ok=True)
++            path.write_bytes(data)
++        self.second.parent.mkdir()
++        shutil.copytree(self.first, self.second, symlinks=True)
++
++    def export(self):
++        return products_module.export_products(self.products, self.exported, self.producer)
++
++    def denied(self):
++        with self.assertRaises(ValueError):
++            self.export()
++
++    def test_exact_known_pair_preserves_complete_equal_inputs_and_exports_one_lib(self):
++        value = self.export()
++        self.assertEqual(value['frameworks'], ['AnytypeOriginalEditor.framework', 'Lib.framework'])
++        proof, = value['verified_known_duplicates']
++        self.assertEqual(proof['selected'], 'Lib.framework')
++        self.assertEqual(set(proof['source_closures']), {'Lib.framework', 'PackageFrameworks/Lib.framework'})
++        first, second = (proof['source_closures'][p] for p in ['Lib.framework', 'PackageFrameworks/Lib.framework'])
++        self.assertEqual(first, second)
++        self.assertIn('.', first)
++        self.assertIn('_CodeSignature/CodeResources', first)
++        self.assertEqual(first['Lib']['mode'], 0o755)
++        self.assertEqual(first['Lib']['sha256'], hashlib.sha256((self.first / 'Lib').read_bytes()).hexdigest())
++        self.assertEqual(proof['materialized_export_closure']['Lib']['sha256'], first['Lib']['sha256'])
++        self.assertEqual((self.first / 'Lib').read_bytes(), (self.second / 'Lib').read_bytes())
++
++    def test_different_binary_byte_fails_without_choosing_the_first(self):
++        (self.second / 'Lib').write_bytes(b'DIFFERENT_SYNTHETIC_LIB')
++        self.denied()
++
++    def test_different_signature_byte_fails(self):
++        (self.second / '_CodeSignature/CodeResources').write_bytes(b'different signature')
++        self.denied()
++
++    def test_missing_resource_fails(self):
++        (self.second / 'Resources/item.bin').unlink()
++        self.denied()
++
++    def test_different_relative_filename_with_same_bytes_fails(self):
++        (self.second / 'Resources/item.bin').rename(self.second / 'Resources/other.bin')
++        self.denied()
++
++    def test_additional_empty_directory_fails(self):
++        (self.second / 'additional').mkdir()
++        self.denied()
++
++    def test_different_file_mode_fails(self):
++        (self.second / 'Lib').chmod(0o644)
++        self.denied()
++
++    def test_different_directory_mode_fails(self):
++        (self.second / 'Resources').chmod(0o700)
++        self.denied()
++
++    def test_different_extended_attribute_fails(self):
++        if sys.platform == 'darwin':
++            subprocess.run(['/usr/bin/xattr', '-w', 'user.otzaria_export_fixture', 'changed',
++                            str(self.second / 'Lib')], check=True, capture_output=True, timeout=10)
++        else:
++            os.setxattr(self.second / 'Lib', 'user.otzaria_export_fixture', b'changed')
++        self.denied()
++
++    def test_equal_internal_file_alias_is_materialized(self):
++        for root in [self.first, self.second]:
++            (root / 'LibraryAlias').symlink_to('Lib')
++        value = self.export()
++        proof, = value['verified_known_duplicates']
++        self.assertEqual(proof['source_closures']['Lib.framework']['LibraryAlias']['link_target'], 'Lib')
++        target = self.exported / 'Frameworks/Lib.framework/LibraryAlias'
++        self.assertFalse(target.is_symlink())
++        self.assertEqual(target.read_bytes(), (self.first / 'Lib').read_bytes())
++
++    def test_equal_versioned_directory_aliases_preserve_all_resolved_members(self):
++        for root in [self.first, self.second]:
++            (root / 'Versions/A').mkdir(parents=True)
++            (root / 'Versions/A/data').write_bytes(b'explicit versioned fixture')
++            (root / 'Versions/Current').symlink_to('A', target_is_directory=True)
++            (root / 'Current').symlink_to('Versions/Current', target_is_directory=True)
++        value = self.export()
++        proof, = value['verified_known_duplicates']
++        self.assertIn('Current/data', proof['source_closures']['Lib.framework'])
++        self.assertEqual((self.exported / 'Frameworks/Lib.framework/Current/data').read_bytes(),
++                         b'explicit versioned fixture')
++
++    def test_different_literal_symlink_target_fails_even_with_same_resolved_bytes(self):
++        (self.first / 'Alias').symlink_to('Lib')
++        (self.second / 'Alias').symlink_to('./Lib')
++        self.denied()
++
++    def test_product_alias_to_owned_but_other_framework_fails(self):
++        for root in [self.first, self.second]:
++            (root / 'Alias').symlink_to(self.products / 'AnytypeOriginalEditor.framework/AnytypeOriginalEditor')
++        self.denied()
++
++    def test_cyclic_internal_directory_alias_fails(self):
++        for root in [self.first, self.second]:
++            (root / 'Cycle').symlink_to('.', target_is_directory=True)
++        self.denied()
++
++    def test_broken_alias_fails(self):
++        for root in [self.first, self.second]:
++            (root / 'Broken').symlink_to('missing')
++        self.denied()
++
++    def test_special_fifo_fails_without_reading_it(self):
++        for root in [self.first, self.second]:
++            os.mkfifo(root / 'fifo')
++        self.denied()
++
++    def test_unexpected_third_lib_location_fails(self):
++        shutil.copytree(self.first, self.products / 'Other/Lib.framework')
++        self.denied()
++
++    def test_same_pair_under_unreviewed_parent_fails(self):
++        self.second.parent.rename(self.products / 'OtherPackageFrameworks')
++        self.denied()
++
++    def test_duplicate_original_editor_framework_still_fails(self):
++        shutil.copytree(self.products / 'AnytypeOriginalEditor.framework',
++                        self.products / 'PackageFrameworks/AnytypeOriginalEditor.framework')
++        self.denied()
++
++    def test_missing_original_editor_framework_still_fails(self):
++        shutil.rmtree(self.products / 'AnytypeOriginalEditor.framework')
++        self.denied()
++
++    def test_root_framework_alias_is_not_an_independent_known_product(self):
++        shutil.rmtree(self.second)
++        self.second.symlink_to(self.first, target_is_directory=True)
++        self.denied()
++
++    def test_only_timestamps_may_differ(self):
++        os.utime(self.second / 'Lib', (1, 1))
++        self.assertEqual(self.export()['frameworks'], ['AnytypeOriginalEditor.framework', 'Lib.framework'])
++
++    def test_whole_exporter_darwin_path_does_not_require_linux_os_xattr(self):
++        class WithoutLinuxXattr:
++            def __getattr__(self, name):
++                if name in {'listxattr', 'getxattr'}:
++                    raise AttributeError('Darwin CPython has no Linux os xattr API')
++                return getattr(os, name)
++        library = DarwinXattrBoundaryDouble()
++        library.names = b''
++        with patch.object(products_module, 'os', WithoutLinuxXattr()), \
++                patch.object(sys, 'platform', 'darwin'), \
++                patch('ctypes.CDLL', return_value=library):
++            value = self.export()
++        self.assertEqual(value['frameworks'], ['AnytypeOriginalEditor.framework', 'Lib.framework'])
++        self.assertTrue(library.calls)
++
++    def test_known_input_changed_during_copy_cannot_publish_success(self):
++        real = products_module.copy_product
++        def changed(source, target, producer):
++            real(source, target, producer)
++            if Path(source) == self.first:
++                (self.second / 'Lib').write_bytes(b'changed after admitted comparison')
++        with patch.object(products_module, 'copy_product', changed):
++            self.denied()
++
++    def test_changed_materialized_output_cannot_publish_success(self):
++        real = products_module.copy_product
++        def changed(source, target, producer):
++            real(source, target, producer)
++            if Path(source) == self.first:
++                (Path(target) / 'Lib').write_bytes(b'changed exported file')
++        with patch.object(products_module, 'copy_product', changed):
++            self.denied()
++
++
++if __name__ == '__main__':
++    unittest.main()
+--- a/Tools/OriginalEditor/test_framework_source_retention.py
++++ b/Tools/OriginalEditor/test_framework_source_retention.py
+@@ -0,0 +1,103 @@
++"""Original input-list validator plus original evidence packager, synthetic inputs."""
++import hashlib
++import json
++from pathlib import Path
++import shlex
++import subprocess
++import sys
++import tempfile
++import unittest
++import zipfile
++
++from framework_profile import HERE, TARGET
++from run_framework_acceptance import source_file_proof
++
++
++class OriginalRawCompilerEvidenceControls(unittest.TestCase):
++    def setUp(self):
++        self.temporary = tempfile.TemporaryDirectory()
++        self.addCleanup(self.temporary.cleanup)
++        self.root = Path(self.temporary.name) / 'source'
++        self.derived = self.root / 'build/producer-derived'
++        self.evidence = Path(self.temporary.name) / 'evidence'
++        self.evidence.mkdir()
++        self.sources = ['Anytype/Sources/Original.swift', 'Anytype/Sources/ApplicationLayer/AppScene.swift']
++        self.expected = [self.root / self.sources[0], self.root / 'Anytype/Resources/AssetConstants.swift',
++                         self.root / 'OriginalEditorFramework/AnytypeOriginalEditorModule.swift']
++        self.generated = self.derived / 'Build/Generated/Input.swift'
++        for path in [*self.expected, self.root / self.sources[1], self.generated]:
++            path.parent.mkdir(parents=True, exist_ok=True)
++            path.write_bytes(b'// EXPLICIT_SYNTHETIC_SOURCE_BOUNDARY_NOT_COMPILED\n')
++        self.file_list = self.derived / 'Build/Intermediates' / (TARGET + '.build') / 'Inputs.SwiftFileList'
++        self.file_list.parent.mkdir(parents=True)
++        self.write_list([*self.expected, self.generated])
++        self.accessors = []
++        for name in ['Assets', 'Loc', 'DesignKit']:
++            path = self.derived / 'Build/Intermediates' / (name + '.build') / 'resource_bundle_accessor.swift'
++            path.parent.mkdir(parents=True)
++            path.write_bytes(('// SYNTHETIC_GENERATED_ACCESSOR_' + name + '\n').encode())
++            self.accessors.append(path)
++
++    def write_list(self, values):
++        self.file_list.write_bytes(('\n'.join(shlex.quote(str(p)) for p in values) + '\n').encode())
++
++    def proof(self):
++        return source_file_proof(self.root, self.derived, {'source_files': self.sources}, self.evidence)
++
++    def test_original_packager_retains_all_four_exact_raw_proofs_as_text(self):
++        value = self.proof()
++        self.assertEqual(value['complete_original_swift_input_count'], 3)
++        self.assertEqual(value['generated_swift_input_count'], 1)
++        originals = {str(p): p.read_bytes() for p in [self.file_list, *self.accessors]}
++        retained = value['lists'] + value['generated_bundle_accessors']
++        self.assertEqual(len(retained), 4)
++        for row in retained:
++            self.assertIn('evidence_path', row)
++            self.assertTrue(row['evidence_path'].endswith('.txt'))
++            actual = (self.evidence / row['evidence_path']).read_bytes()
++            self.assertEqual(actual, originals[row['path']])
++            self.assertEqual(hashlib.sha256(actual).hexdigest(), row['sha256'])
++            self.assertEqual(len(actual), row['bytes'])
++        packager = HERE.parents[1] / 'Tools/PinkhaNativeDerived/package_evidence.py'
++        result = subprocess.run([sys.executable, str(packager), str(self.evidence)],
++                                capture_output=True, timeout=20)
++        self.assertEqual(result.returncode, 0, result.stderr.decode())
++        with zipfile.ZipFile(self.evidence / 'Pinkha-Native-Derived-Evidence.zip') as archive:
++            self.assertIsNone(archive.testzip())
++            self.assertEqual(set(archive.namelist()), {'actual-framework-source-inputs.json',
++                                                     *[row['evidence_path'] for row in retained]})
++            for row in retained:
++                self.assertEqual(archive.read(row['evidence_path']), originals[row['path']])
++        self.assertEqual({str(p): p.read_bytes() for p in [self.file_list, *self.accessors]}, originals)
++
++    def test_missing_original_input_still_fails(self):
++        self.write_list([*self.expected[1:], self.generated])
++        with self.assertRaises(ValueError): self.proof()
++
++    def test_foreign_unowned_source_still_fails(self):
++        foreign = Path(self.temporary.name) / 'Foreign.swift'
++        foreign.write_bytes(b'// not an admitted source')
++        self.write_list([*self.expected, self.generated, foreign])
++        with self.assertRaises(ValueError): self.proof()
++
++    def test_original_app_entrypoint_still_fails(self):
++        self.write_list([*self.expected, self.generated, self.root / self.sources[1]])
++        with self.assertRaises(ValueError): self.proof()
++
++    def test_missing_generated_bundle_accessor_still_fails(self):
++        self.accessors[0].unlink()
++        with self.assertRaises(ValueError): self.proof()
++
++    def test_duplicate_generated_bundle_accessor_still_fails(self):
++        extra = self.derived / 'Other/Assets.build/resource_bundle_accessor.swift'
++        extra.parent.mkdir(parents=True)
++        extra.write_bytes(self.accessors[0].read_bytes())
++        with self.assertRaises(ValueError): self.proof()
++
++    def test_malformed_original_source_line_still_fails(self):
++        self.file_list.write_bytes(b'one.swift two.swift\n')
++        with self.assertRaises(ValueError): self.proof()
++
++
++if __name__ == '__main__':
++    unittest.main()
+--- a/Tools/PinkhaNativeDerived/install_verified_heart.py
++++ b/Tools/PinkhaNativeDerived/install_verified_heart.py
+@@ -26,7 +26,8 @@
+                              'codex/otzaria-original-editor-owned-apple-v2-reviewed-20261120',
+                              'codex/otzaria-original-editor-owned43-apple-reviewed-20261120',
+                              'codex/otzaria-original-editor-framework-reviewed-20261120',
+-                             'codex/otzaria-original-editor-framework-v3-reviewed-20261120'],
++                             'codex/otzaria-original-editor-framework-v3-reviewed-20261120',
++                             'codex/otzaria-original-editor-framework-v4-reviewed-20261120'],
+                     default='codex/torah-native-derived-properties-20261103')
+ args = parser.parse_args()
+ inventory = json.loads(args.inventory.read_text())
