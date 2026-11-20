@@ -1,0 +1,89 @@
+[
+  {
+    "attempt": "red-attempt1",
+    "job_id": "job_30522b847bcf",
+    "job_status": "failed",
+    "started_at": "2026-11-20T12:24:09.077483+00:00",
+    "finished_at": "2026-11-20T12:25:27.854397+00:00",
+    "gate_status": "FAIL",
+    "passed": 74,
+    "failed": 1,
+    "compile": {
+      "exit_code": 0,
+      "seconds": 64.734,
+      "log_sha256": "dcf7311314c3890a8745516127c469d67f5492d02bdeea1a08d2b2e8f7c7299a"
+    },
+    "execution": {
+      "exit_code": 3221225501,
+      "seconds": 4.937,
+      "log_sha256": "e2f67db3c08b314c251a17711fd22a26ce97c2ce6bd8d5182266a52e5a52ba72"
+    },
+    "error": "Lifetime controls failed",
+    "prepared_session_under_test": {
+      "revision": "bc8be790e86876a014aa048e82c57157e13a62d2",
+      "git_lf_sha256": "c36e928ddfac2994b4f7618d31020a2f2c98d60ee56242baf43e0af3913df69b",
+      "mode": "parent_unowned_table_slots"
+    },
+    "result_raw_sha256": "de7500588e386c7ea837ef97434ee967decdf6dfa97cd2253a60769d164ab25b",
+    "checks_raw_sha256": "d8e75dadfc8643c58e7f2cabfc7750a105c78a491524158f5630cc41c8b963c6",
+    "claim": "actual Foundation boundaries; Apple and Native NOT_RUN"
+  },
+  {
+    "attempt": "green-attempt1",
+    "job_id": "job_c212d1fa0cc5",
+    "job_status": "failed",
+    "started_at": "2026-11-20T12:29:37.753105+00:00",
+    "finished_at": "2026-11-20T12:30:16.879666+00:00",
+    "gate_status": "FAIL",
+    "passed": 75,
+    "failed": 0,
+    "compile": {
+      "exit_code": 0,
+      "seconds": 33.828,
+      "log_sha256": "6e886b384c50c9c11b52c74529aab213ee434a5f4e6b956a27864e398ba11bd1"
+    },
+    "execution": {
+      "exit_code": 0,
+      "seconds": 0.14,
+      "log_sha256": "c4004ef51042032cb4ccb4d9b138425bda858bf8425124156385389152858207"
+    },
+    "error": "Source syntax failed: AnytypeTests/Markdown/PreparedEditorLifetimeTests.swift",
+    "prepared_session_under_test": {
+      "revision": "WORKTREE",
+      "git_lf_sha256": "6562921c909051831c6ab18ed7d8c7f9b4e52f897158ffc76f13d87bb4738f28",
+      "mode": "candidate_owned_table_slots"
+    },
+    "result_raw_sha256": "1e9f4d675db543e5d6282e6fbb29b59429ecdd16fe763c359cf75007d4f091fd",
+    "checks_raw_sha256": "5e254647bae5d8d71b5af7bd79800e00a22355be8b33a8870c6633d4bc7436cc",
+    "claim": "actual Foundation boundaries; Apple and Native NOT_RUN"
+  },
+  {
+    "attempt": "green-attempt2",
+    "job_id": "job_daf0364f0f72",
+    "job_status": "succeeded",
+    "started_at": "2026-11-20T12:31:49.502257+00:00",
+    "finished_at": "2026-11-20T12:32:34.604252+00:00",
+    "gate_status": "PASS",
+    "passed": 75,
+    "failed": 0,
+    "compile": {
+      "exit_code": 0,
+      "seconds": 39.703,
+      "log_sha256": "8ea6d1ed49a6c6987bd9908cf141d55dbaedbca2444c1eb063a07f0e0909a3a3"
+    },
+    "execution": {
+      "exit_code": 0,
+      "seconds": 0.078,
+      "log_sha256": "e8688ea36708c8b447d41e718c01cce55b3899ce382708841a09d1c11ca932ca"
+    },
+    "error": null,
+    "prepared_session_under_test": {
+      "revision": "WORKTREE",
+      "git_lf_sha256": "6562921c909051831c6ab18ed7d8c7f9b4e52f897158ffc76f13d87bb4738f28",
+      "mode": "candidate_owned_table_slots"
+    },
+    "result_raw_sha256": "5a4c9a7963b588ea2bbecc24af6e507f47ebefd841b969e3d87e6e5b3d1d92cd",
+    "checks_raw_sha256": "2ed443babd7daad9f4fe6eaafd938a5499ec0a583a03c671aaabd656a790a27d",
+    "claim": "actual Foundation boundaries; Apple and Native NOT_RUN"
+  }
+]
