@@ -1,0 +1,38 @@
+--- v1/Tools/OriginalEditor/test_framework.py
++++ v2/Tools/OriginalEditor/test_framework.py
+@@ -309,5 +309,35 @@
+         with self.assertRaises(ValueError): verify_public_surface([graph], ROOT)
+ 
+ 
++class ObservedOriginalBuildBudget(unittest.TestCase):
++    def test_new_route_budget_contains_actual_original_build_and_consumer(self):
++        import ast
++        import gzip
++        import re
++        from datetime import datetime
++        receipt = ROOT / 'docs/pinkha/torah-integration/evidence/original-editor-framework-20261120/raw/budget-original-command-44750790626.json.gz'
++        raw = gzip.decompress(receipt.read_bytes())
++        self.assertEqual(hashlib.sha256(raw).hexdigest(),
++                         '014603e7857815a762a7d7f93168e88ed25768bf47a932c7efbbcc322029ce3f')
++        observed = json.loads(raw)
++        self.assertEqual(observed['exit_code'], 0)
++        self.assertEqual(observed['command'][:2], ['xcodebuild', 'build-for-testing'])
++        elapsed = (datetime.fromisoformat(observed['finished_at'])
++                   - datetime.fromisoformat(observed['started_at'])).total_seconds()
++        self.assertGreater(elapsed, 3600)  # The sealed v1 budget is discriminated.
++        driver = ast.parse((HERE / 'run_framework_acceptance.py').read_text())
++        commands = {node.args[3].value: node.args[4].value for node in ast.walk(driver)
++                    if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
++                    and node.func.id == 'command' and len(node.args) == 5
++                    and isinstance(node.args[3], ast.Constant) and isinstance(node.args[4], ast.Constant)}
++        self.assertGreaterEqual(commands['framework-build'], elapsed)
++        self.assertEqual(commands['framework-build'], 6000)
++        self.assertEqual(commands['external-consumer-build'], 600)
++        workflow = (ROOT / '.github/workflows/pinkha-original-editor-framework.yml').read_text()
++        self.assertEqual(re.findall(r'^\s*timeout-minutes: (\d+)\s*$', workflow, re.M), ['140', '120'])
++        self.assertGreaterEqual(120 * 60, commands['framework-build'] + commands['external-consumer-build'] + 600)
++        self.assertGreaterEqual(140 * 60, 120 * 60 + 20 * 60)
++
++
+ if __name__ == '__main__':
+     unittest.main(verbosity=2)

@@ -1,0 +1,84 @@
+{
+  "Apple_framework_import_resources": "NOT_RUN",
+  "actual_Heart_original_modulemaps": [
+    {
+      "path": "ios-arm64/Lib.framework/Modules/module.modulemap",
+      "sha256": "9a9e1ac007abdade36908daaef1ec9973766ee98fb372259f2702326a1d92a22"
+    },
+    {
+      "path": "ios-arm64_x86_64-simulator/Lib.framework/Modules/module.modulemap",
+      "sha256": "9a9e1ac007abdade36908daaef1ec9973766ee98fb372259f2702326a1d92a22"
+    }
+  ],
+  "actual_Heart_processed_paths": [
+    "Build/Products/Debug-Anytype-iphonesimulator/Lib.framework",
+    "Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Lib.framework"
+  ],
+  "changed_runtime_or_test_paths": [
+    ".github/workflows/pinkha-original-editor-framework.yml",
+    "Tools/OriginalEditor/run_framework_acceptance.py",
+    "Tools/OriginalEditor/test_framework.py"
+  ],
+  "final_local_controls": {
+    "executed": 44,
+    "exit_code": 0,
+    "failed": 0,
+    "passed": 44
+  },
+  "native_editor_ui": "NOT_RUN",
+  "new_budget_control_red": {
+    "executed": 1,
+    "exit_code": 1,
+    "failed": 1,
+    "passed": 0
+  },
+  "new_symbolgraph_search_paths_cover_those_parent_paths": true,
+  "only_execution_budget_delta": {
+    "consumer_command_seconds": [
+      600,
+      600
+    ],
+    "framework_command_seconds": [
+      3600,
+      6000
+    ],
+    "new_execution_step_minutes": [
+      100,
+      120
+    ],
+    "new_job_minutes": [
+      120,
+      140
+    ],
+    "runtime_report_deadline_seconds": [
+      20,
+      20
+    ]
+  },
+  "original_actual_build_seconds": 4348.065407,
+  "original_build_command_sha256": "014603e7857815a762a7d7f93168e88ed25768bf47a932c7efbbcc322029ce3f",
+  "original_run": 44750790626,
+  "original_source": "7c0fb7fca950197adee66e1b577727a4359d4068",
+  "original_workflow_limits_minutes": {
+    "execution_step": 100,
+    "job": 120
+  },
+  "residual_nonHeart_Clang_import_closure": "NOT_RUN; original command also has package generated module maps. Real symbolgraph and binary consumer must fail honestly if export/import closure is insufficient.",
+  "schema": 2,
+  "sealed_v1_archive_sha256": "84db79d1ee356f91ed700a42f3ab7ded03cbdef1bdd6f504d81799aa7516dad8",
+  "sealed_v1_index_sha256": "b6b8c27f225a393ef8bc17dcf0756ad7fca979923bb2beb5f257106fbc900860",
+  "symbolgraph_flags_changed": false,
+  "unchanged_runtime_paths": [
+    "Anytype.xcodeproj/project.pbxproj",
+    "Anytype.xcodeproj/xcshareddata/xcschemes/AnytypeOriginalEditor.xcscheme",
+    "OriginalEditorFramework/AnytypeOriginalEditorModule.swift",
+    "Tools/OriginalEditor/Consumer/ConsumerApp.swift",
+    "Tools/OriginalEditor/framework_products.py",
+    "Tools/OriginalEditor/framework_profile.json",
+    "Tools/OriginalEditor/framework_profile.py",
+    "Tools/OriginalEditor/original_project.pbxproj",
+    "Tools/OriginalEditor/pbx_source.py",
+    "Tools/PinkhaNativeDerived/install_verified_heart.py"
+  ],
+  "v1_retained_payloads": 35
+}

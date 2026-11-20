@@ -1,0 +1,11 @@
+--- v1/Tools/OriginalEditor/run_framework_acceptance.py
++++ v2/Tools/OriginalEditor/run_framework_acceptance.py
+@@ -194,7 +194,7 @@
+              '-onlyUsePackageVersionsFromResolvedFile', *flags]
+     receipt['phase'] = 'ORIGINAL_FRAMEWORK_BUILD'
+     write(evidence / 'execution.json', receipt)
+-    command(build, root, evidence, 'framework-build', 3600)
++    command(build, root, evidence, 'framework-build', 6000)
+     receipt['original_framework_build'] = 'PASS'
+     receipt['actual_source_closure'] = source_file_proof(root, derived, before, evidence)
+     receipt['dependencies'] = dependency_proof(root, derived, profile, evidence)

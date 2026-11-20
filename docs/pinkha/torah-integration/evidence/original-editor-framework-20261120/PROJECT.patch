@@ -1,0 +1,891 @@
+--- a/Anytype.xcodeproj/project.pbxproj
++++ b/Anytype.xcodeproj/project.pbxproj
+@@ -95,6 +95,210 @@
+ 		FA6301022F111800006805CC /* HanlinPlatformContracts in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201022F111800006805CC /* HanlinPlatformContracts */; };
+ 		FA6301032F111800006805CC /* HanlinAgentCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201032F111800006805CC /* HanlinAgentCore */; };
+ 		FA6301042F111800006805CC /* HanlinChatCore in Frameworks */ = {isa = PBXBuildFile; productRef = FA6201042F111800006805CC /* HanlinChatCore */; };
++		486641F5B5F20EF6E0261D43 /* EditorLink_FA6300012F111800006805CC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "AD4E441920F27228BF71F4A3";
++		};
++		699124C3E97FA6D6ED6F0ECF /* EditorLink_FA6300022F111800006805CC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "7B928E8D7235055A80EB886C";
++		};
++		BBADDE36E1E66EEACABB7806 /* EditorLink_FA6300032F111800006805CC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "59360DABFB9F4826448E645D";
++		};
++		C98DDA6B7C72843E386D6031 /* EditorLink_FA6300042F111800006805CC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "0EE6D1EFEDC2D828609C9586";
++		};
++		525D6C7AF77E36634F41FC40 /* EditorLink_FA6300052F111800006805CC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "7EE1CA97AC2DF2CE1ACCF175";
++		};
++		96E922A906FDC4CE298FB478 /* EditorLink_FA6300062F111800006805CC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "29F6393DA4CFFCA8ACEFADD1";
++		};
++		9B1B271440D39BE8F3256467 /* EditorLink_FA6300072F111800006805CC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "3833EC9CE214B3B7559BC5B2";
++		};
++		B7BA4A644E33642D7147F42F /* EditorLink_FA6300082F111800006805CC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "707EF5D88D07F0C999A8EDF5";
++		};
++		DEF9632E2E9F242F3A4EA02C /* EditorLink_7434DAC32D3916FF00E18A0C */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "1776765E46A8210033CEEB6C";
++		};
++		7616272D732BDCCE68D917CF /* EditorLink_3DC133F22CAFE5DD000FF065 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "1C9723D3B848B29927D4E5B6";
++		};
++		3F19E011B69F282BA7EC42AB /* EditorLink_3DC133F12CAFE5DD000FF065 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "B075D0A12AB3552C362232B0";
++		};
++		B4D59C7A1494D0C96E344DB6 /* EditorLink_3D24B09C2C1A2DAF00795BAA */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "C558112830F40F0B00192978";
++		};
++		25678656A4B22764BAF7E0EA /* EditorLink_2A30B2082BB44A0C00206806 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "D8E1E0AE6020FB6529B2E05B";
++		};
++		41C017267CD01CA5A7993902 /* EditorLink_2A4FFBC1289D1C7E004938DF */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "2061766B3BF1EDCC59A9FB22";
++		};
++		8782B9E68C84004B11F7A759 /* EditorLink_746F06012DB8E712005795F7 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "611D2885313696225D83E3B8";
++		};
++		69DBE3CD16AD66BB2831D65C /* EditorLink_C99A53AC28A1380300B3E5F4 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "7FEE1338682AC82CB417E329";
++		};
++		C5020F50D0971148FBBAE7B8 /* EditorLink_74819CB42E169F5D0042D5EC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "EA7D4A3CC4EEB309BDFD699F";
++		};
++		A984B70CB03BF412B12946AE /* EditorLink_74B35D262D5B39C500AC9879 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "C5C59AB204FFD5149F3F0E7C";
++		};
++		C379293194F37EA006A320EE /* EditorLink_538ABD4E284F9F88000D3CCC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "35F23505225A99623630C430";
++		};
++		5C5DAA0A0B95E10BEEF79DEE /* EditorLink_7411879B2D9ADD200006EA41 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "6458F2A1B815DA6032E8146C";
++		};
++		1484027DF8908D3F49D148ED /* EditorLink_2A94B5D329B88E95009AE2A7 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "BC7BA11C9D0EB47C1869EA2B";
++		};
++		AF2B85ED62F650ECAA6D27A3 /* EditorLink_2E074C4C2DE620E800260ABD */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "747B0D8680860C02D02D5364";
++		};
++		11D5D57A4F7581F84B9AC8A1 /* EditorLink_1259300E26F3A6AE00B115CD */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "ED229BE08E4D8ED2B476317C";
++		};
++		009EE2E57B73E4D0BBD003C0 /* EditorLink_2ADB57862CB6B6FE00BFC386 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "B688E8198FAF01562A3B4220";
++		};
++		5DA9D957A8EDFB1F5E78A68B /* EditorLink_538ABD50284F9F88000D3CCC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "88CFB1E6A33D97631A7FF744";
++		};
++		ED125FADFBEE18FFFCA983B0 /* EditorLink_2A6ED169285B44DB00AAA21C */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "4E0AC82CC5ACABC0400FF2B6";
++		};
++		DBEAE8571826E6A1C63ED3AC /* EditorLink_2A41A6782B84E57B00EAE6E6 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "6D0DA469818107C85C716CD5";
++		};
++		4A84468505EBB635564C7C2C /* EditorLink_74D79ED52D784FBF00658D0A */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "2C92CB228E765127CAE3A76B";
++		};
++		B3895E4A031CDC8905B11AB4 /* EditorLink_FA0000022E797AAD006805CC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "54D988CF14F7B2D451CDD765";
++		};
++		0C5324AB675BB24A2431651D /* EditorLink_FA1000022F000001006805CC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "E490B14759DB32B80930FA0C";
++		};
++		EB0F3CA6D859D8C6D341F87E /* EditorLink_5333421C262E249100238121 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "1A44C69C2FAB647405559913";
++		};
++		02FD9B65494879577D681B16 /* EditorLink_2A6ED16C285B44DB00AAA21C */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "37C1787004D60D52F843D060";
++		};
++		6E1A40DDE7CCB50DF67F64D8 /* EditorLink_2E63D9B72D56520C008A733A */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "E2F113E2753F5684374CB4CE";
++		};
++		C24DEBD79B77AFADE18443E5 /* EditorLink_2A6ED166285B44DB00AAA21C */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "879C4472D0DA8E0EA6EAE1B3";
++		};
++		7EE1E1E1FE3470D800001FB1 /* EditorLink_538ABD52284F9F88000D3CCC */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "2DDDA3670EE1ED24B0282D39";
++		};
++		59642D7A5486B4E99B6A1E41 /* EditorLink_748B36A02E0300C400DA28C2 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "1E0BDDE5704C97149159B5FC";
++		};
++		981F9FC3F4C645F28432CB4F /* EditorLink_C9433E54293EA5EF001662EA */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "A86A32A4D6EFF9E8CC703DD4";
++		};
++		C5062A6548A785CE254A7998 /* EditorLink_1259300526F3A5C500B115CD */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "4B83C1F7D3E8B8D9EA7E3BBF";
++		};
++		42B4B2618ACF1CD6C5922E13 /* EditorLink_3D3B350E2BCE872E008456F8 */ = {
++			"isa" = "PBXBuildFile";
++			"fileRef" = "3D3B350D2BCE872E008456F8";
++		};
++		86250781CCFB99105E841A3B /* EditorLink_2A6ED170285B452600AAA21C */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "33E57158DCE87737F0E5A886";
++		};
++		61F2D35087E19A577772E9F3 /* EditorLink_86E69DD62A938CE8009F2221 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "884041F0207BE73DBF83AACE";
++		};
++		F9167B2BB9C7EA2B7E79F440 /* EditorLink_2A01A4F92A1FB507002042FB */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "712D430C69A299E0CDF4C002";
++		};
++		C8845BA097554999F12F5CEE /* EditorLink_03C5C53B22DF785000DD91DE */ = {
++			"isa" = "PBXBuildFile";
++			"fileRef" = "03C5C53A22DF785000DD91DE";
++		};
++		817DA24BE4AB00AF2DF22EF7 /* EditorLink_0318D576230186CA000527B1 */ = {
++			"isa" = "PBXBuildFile";
++			"fileRef" = "0318D575230186CA000527B1";
++		};
++		6A1EA4147495659B9D10ED68 /* EditorLink_2A10D8502C53A6C90088BB46 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "B342AAFB2E382BFFE2A2C663";
++		};
++		EF667ADC8D3E6906D873C9F9 /* EditorLink_74EB806C2D79D3EA003F8D84 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "30B0C474F98048F676263792";
++		};
++		8021AB574D9A9C0133D90B8C /* EditorLink_2A685D5A2B7B855300456E08 */ = {
++			"isa" = "PBXBuildFile";
++			"productRef" = "095CC12FEE5AAD843EBEF6E7";
++		};
++		DEF4FF66029A67D74B599A59 /* EditorAssetConstants */ = {
++			"isa" = "PBXBuildFile";
++			"fileRef" = "74D9D0F32E5F31ED00CA09E7";
++		};
++		F9DE87C1951C110752B2879A /* EditorFacade */ = {
++			"isa" = "PBXBuildFile";
++			"fileRef" = "A6AA0EAEDFA19F633935B3BB";
++		};
++		1BF833C195041047682F7164 /* EditorResource_03A46A40231417D6009AC10C */ = {
++			"isa" = "PBXBuildFile";
++			"fileRef" = "03A46A42231417D6009AC10C";
++		};
++		182854B87883B5EF8319EFDA /* EditorResource_0303ED0522D8EDAD005C552B */ = {
++			"isa" = "PBXBuildFile";
++			"fileRef" = "0303ED0422D8EDAD005C552B";
++		};
+ /* End PBXBuildFile section */
+ 
+ /* Begin PBXContainerItemProxy section */
+@@ -221,6 +425,19 @@
+ 		C960DFAF28D88615002898AE /* AnytypeWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnytypeWidget.swift; sourceTree = "<group>"; };
+ 		C960DFB228D88618002898AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+ 		C960DFB428D88618002898AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
++		7E6AE79280903DE4CEB69CDB /* AnytypeOriginalEditor.framework */ = {
++			"isa" = "PBXFileReference";
++			"explicitFileType" = "wrapper.framework";
++			"includeInIndex" = "0";
++			"path" = "AnytypeOriginalEditor.framework";
++			"sourceTree" = "BUILT_PRODUCTS_DIR";
++		};
++		A6AA0EAEDFA19F633935B3BB /* AnytypeOriginalEditorModule.swift */ = {
++			"isa" = "PBXFileReference";
++			"lastKnownFileType" = "sourcecode.swift";
++			"path" = "AnytypeOriginalEditorModule.swift";
++			"sourceTree" = "<group>";
++		};
+ /* End PBXFileReference section */
+ 
+ /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+@@ -261,6 +478,13 @@
+ 			);
+ 			target = 862D558F2A8F78330018103F /* AnytypeShareExtension */;
+ 		};
++		37C2F8EA8741AF9B074415BB /* OriginalEditorEntrypointException */ = {
++			"isa" = "PBXFileSystemSynchronizedBuildFileExceptionSet";
++			"membershipExceptions" = (
++				"ApplicationLayer/AppScene.swift",
++			);
++			"target" = "83B785D0C457FE3CCBAB196E";
++		};
+ /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+ 
+ /* Begin PBXFileSystemSynchronizedRootGroup section */
+@@ -270,7 +494,7 @@
+ 		3D6977812CAE9ED0003F5A91 /* Video */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Video; sourceTree = "<group>"; };
+ 		3D6977912CAE9EEC003F5A91 /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
+ 		3D6989E22CAEA5E1003F5A91 /* AnytypeShareExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3D6989E52CAEA5E1003F5A91 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = AnytypeShareExtension; sourceTree = "<group>"; };
+-		3D69B4E82CAEA9CB003F5A91 /* Sources */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Sources; sourceTree = "<group>"; };
++		3D69B4E82CAEA9CB003F5A91 /* Sources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (37C2F8EA8741AF9B074415BB /* OriginalEditorEntrypointException */, ); explicitFileTypes = {}; explicitFolders = (); path = Sources; sourceTree = "<group>"; };
+ 		7424EFB92D79C71B00E51377 /* Modules */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Modules; sourceTree = "<group>"; };
+ /* End PBXFileSystemSynchronizedRootGroup section */
+ 
+@@ -380,6 +604,60 @@
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
++		F4E9B92EDBC5AFFFB8F097CC /* EditorFrameworks */ = {
++			"isa" = "PBXFrameworksBuildPhase";
++			"buildActionMask" = "2147483647";
++			"files" = (
++				"486641F5B5F20EF6E0261D43",
++				"699124C3E97FA6D6ED6F0ECF",
++				"BBADDE36E1E66EEACABB7806",
++				"C98DDA6B7C72843E386D6031",
++				"525D6C7AF77E36634F41FC40",
++				"96E922A906FDC4CE298FB478",
++				"9B1B271440D39BE8F3256467",
++				"B7BA4A644E33642D7147F42F",
++				"DEF9632E2E9F242F3A4EA02C",
++				"7616272D732BDCCE68D917CF",
++				"3F19E011B69F282BA7EC42AB",
++				"B4D59C7A1494D0C96E344DB6",
++				"25678656A4B22764BAF7E0EA",
++				"41C017267CD01CA5A7993902",
++				"8782B9E68C84004B11F7A759",
++				"69DBE3CD16AD66BB2831D65C",
++				"C5020F50D0971148FBBAE7B8",
++				"A984B70CB03BF412B12946AE",
++				"C379293194F37EA006A320EE",
++				"5C5DAA0A0B95E10BEEF79DEE",
++				"1484027DF8908D3F49D148ED",
++				"AF2B85ED62F650ECAA6D27A3",
++				"11D5D57A4F7581F84B9AC8A1",
++				"009EE2E57B73E4D0BBD003C0",
++				"5DA9D957A8EDFB1F5E78A68B",
++				"ED125FADFBEE18FFFCA983B0",
++				"DBEAE8571826E6A1C63ED3AC",
++				"4A84468505EBB635564C7C2C",
++				"B3895E4A031CDC8905B11AB4",
++				"0C5324AB675BB24A2431651D",
++				"EB0F3CA6D859D8C6D341F87E",
++				"02FD9B65494879577D681B16",
++				"6E1A40DDE7CCB50DF67F64D8",
++				"C24DEBD79B77AFADE18443E5",
++				"7EE1E1E1FE3470D800001FB1",
++				"59642D7A5486B4E99B6A1E41",
++				"981F9FC3F4C645F28432CB4F",
++				"C5062A6548A785CE254A7998",
++				"42B4B2618ACF1CD6C5922E13",
++				"86250781CCFB99105E841A3B",
++				"61F2D35087E19A577772E9F3",
++				"F9167B2BB9C7EA2B7E79F440",
++				"C8845BA097554999F12F5CEE",
++				"817DA24BE4AB00AF2DF22EF7",
++				"6A1EA4147495659B9D10ED68",
++				"EF667ADC8D3E6906D873C9F9",
++				"8021AB574D9A9C0133D90B8C",
++			);
++			"runOnlyForDeploymentPostprocessing" = "0";
++		};
+ /* End PBXFrameworksBuildPhase section */
+ 
+ /* Begin PBXGroup section */
+@@ -395,6 +673,7 @@
+ 				0303ECFC22D8EDAA005C552B /* Products */,
+ 				ED79E6F7693FFE933050D8BC /* Frameworks */,
+ 				2A4E3F892BC7CF6800724DBF /* Recovered References */,
++				30B870A3C4BC0E52B0E62C95 /* OriginalEditorFramework */,
+ 			);
+ 			sourceTree = "<group>";
+ 			usesTabs = 0;
+@@ -407,6 +686,7 @@
+ 				C960DFA928D88615002898AE /* AnytypeWidgetExtension.appex */,
+ 				862D55902A8F78330018103F /* AnytypeShareExtension.appex */,
+ 				2E30580D2D81DF7E00BF4F25 /* AnytypeNotificationServiceExtension.appex */,
++				7E6AE79280903DE4CEB69CDB /* AnytypeOriginalEditor.framework */,
+ 			);
+ 			name = Products;
+ 			sourceTree = "<group>";
+@@ -474,6 +754,14 @@
+ 			);
+ 			name = Frameworks;
+ 			sourceTree = "<group>";
++		};
++		30B870A3C4BC0E52B0E62C95 /* OriginalEditorFramework */ = {
++			"isa" = "PBXGroup";
++			"children" = (
++				"A6AA0EAEDFA19F633935B3BB",
++			);
++			"path" = "OriginalEditorFramework";
++			"sourceTree" = "<group>";
+ 		};
+ /* End PBXGroup section */
+ 
+@@ -653,6 +941,74 @@
+ 			productReference = C960DFA928D88615002898AE /* AnytypeWidgetExtension.appex */;
+ 			productType = "com.apple.product-type.app-extension";
+ 		};
++		83B785D0C457FE3CCBAB196E /* AnytypeOriginalEditor */ = {
++			"isa" = "PBXNativeTarget";
++			"buildConfigurationList" = "382B91351A9D676A01351FEC";
++			"buildPhases" = (
++				"75EFEC8A26D9BA5B1394EE7B",
++				"F4E9B92EDBC5AFFFB8F097CC",
++				"798482DB75C3DB60CEA9C0CC",
++			);
++			"buildRules" = (
++			);
++			"dependencies" = (
++			);
++			"fileSystemSynchronizedGroups" = (
++				"3D6977812CAE9ED0003F5A91",
++				"3D6977912CAE9EEC003F5A91",
++				"3D69B4E82CAEA9CB003F5A91",
++			);
++			"name" = "AnytypeOriginalEditor";
++			"packageProductDependencies" = (
++				"AD4E441920F27228BF71F4A3",
++				"7B928E8D7235055A80EB886C",
++				"59360DABFB9F4826448E645D",
++				"0EE6D1EFEDC2D828609C9586",
++				"7EE1CA97AC2DF2CE1ACCF175",
++				"29F6393DA4CFFCA8ACEFADD1",
++				"3833EC9CE214B3B7559BC5B2",
++				"707EF5D88D07F0C999A8EDF5",
++				"1A44C69C2FAB647405559913",
++				"4B83C1F7D3E8B8D9EA7E3BBF",
++				"ED229BE08E4D8ED2B476317C",
++				"35F23505225A99623630C430",
++				"88CFB1E6A33D97631A7FF744",
++				"2DDDA3670EE1ED24B0282D39",
++				"879C4472D0DA8E0EA6EAE1B3",
++				"4E0AC82CC5ACABC0400FF2B6",
++				"37C1787004D60D52F843D060",
++				"33E57158DCE87737F0E5A886",
++				"2061766B3BF1EDCC59A9FB22",
++				"7FEE1338682AC82CB417E329",
++				"A86A32A4D6EFF9E8CC703DD4",
++				"BC7BA11C9D0EB47C1869EA2B",
++				"712D430C69A299E0CDF4C002",
++				"884041F0207BE73DBF83AACE",
++				"B075D0A12AB3552C362232B0",
++				"095CC12FEE5AAD843EBEF6E7",
++				"6D0DA469818107C85C716CD5",
++				"1C9723D3B848B29927D4E5B6",
++				"D8E1E0AE6020FB6529B2E05B",
++				"C558112830F40F0B00192978",
++				"B342AAFB2E382BFFE2A2C663",
++				"B688E8198FAF01562A3B4220",
++				"1776765E46A8210033CEEB6C",
++				"E2F113E2753F5684374CB4CE",
++				"C5C59AB204FFD5149F3F0E7C",
++				"2C92CB228E765127CAE3A76B",
++				"54D988CF14F7B2D451CDD765",
++				"E490B14759DB32B80930FA0C",
++				"30B0C474F98048F676263792",
++				"6458F2A1B815DA6032E8146C",
++				"611D2885313696225D83E3B8",
++				"747B0D8680860C02D02D5364",
++				"1E0BDDE5704C97149159B5FC",
++				"EA7D4A3CC4EEB309BDFD699F",
++			);
++			"productName" = "AnytypeOriginalEditor";
++			"productReference" = "7E6AE79280903DE4CEB69CDB";
++			"productType" = "com.apple.product-type.framework";
++		};
+ /* End PBXNativeTarget section */
+ 
+ /* Begin PBXProject section */
+@@ -740,6 +1096,7 @@
+ 				C960DFA828D88615002898AE /* AnytypeWidgetExtension */,
+ 				862D558F2A8F78330018103F /* AnytypeShareExtension */,
+ 				2E30580C2D81DF7E00BF4F25 /* AnytypeNotificationServiceExtension */,
++				83B785D0C457FE3CCBAB196E /* AnytypeOriginalEditor */,
+ 			);
+ 		};
+ /* End PBXProject section */
+@@ -784,6 +1141,15 @@
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
++		798482DB75C3DB60CEA9C0CC /* EditorResources */ = {
++			"isa" = "PBXResourcesBuildPhase";
++			"buildActionMask" = "2147483647";
++			"files" = (
++				"1BF833C195041047682F7164",
++				"182854B87883B5EF8319EFDA",
++			);
++			"runOnlyForDeploymentPostprocessing" = "0";
++		};
+ /* End PBXResourcesBuildPhase section */
+ 
+ /* Begin PBXShellScriptBuildPhase section */
+@@ -864,6 +1230,15 @@
+ 				C960DFB028D88615002898AE /* AnytypeWidget.swift in Sources */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
++		};
++		75EFEC8A26D9BA5B1394EE7B /* EditorSources */ = {
++			"isa" = "PBXSourcesBuildPhase";
++			"buildActionMask" = "2147483647";
++			"files" = (
++				"DEF4FF66029A67D74B599A59",
++				"F9DE87C1951C110752B2879A",
++			);
++			"runOnlyForDeploymentPostprocessing" = "0";
+ 		};
+ /* End PBXSourcesBuildPhase section */
+ 
+@@ -2009,6 +2384,198 @@
+ 			};
+ 			name = "Release-Nightly";
+ 		};
++		6D481F737200B98383C5B313 /* EditorConfig_Debug */ = {
++			"isa" = "XCBuildConfiguration";
++			"buildSettings" = {
++				"CODE_SIGN_IDENTITY" = "-";
++				"CODE_SIGN_STYLE" = "Automatic";
++				"CURRENT_PROJECT_VERSION" = "0";
++				"DEVELOPMENT_TEAM" = "";
++				"ENABLE_BITCODE" = "NO";
++				"ENABLE_PREVIEWS" = "NO";
++				"ENABLE_TESTING_SEARCH_PATHS" = "NO";
++				"FRAMEWORK_SEARCH_PATHS" = (
++					"$(inherited)",
++					"$(PROJECT_DIR)",
++					"$(PROJECT_DIR)/Dependencies/Middleware",
++				);
++				"HEADER_SEARCH_PATHS" = "$(inherited)";
++				"IPHONEOS_DEPLOYMENT_TARGET" = "27.0";
++				"LD_RUNPATH_SEARCH_PATHS" = (
++					"$(inherited)",
++					"@loader_path/Frameworks",
++					"@executable_path/Frameworks",
++				);
++				"MARKETING_VERSION" = "0.49.0";
++				"OTHER_LDFLAGS" = "-ObjC";
++				"PRODUCT_BUNDLE_IDENTIFIER" = "org.otzaria.anytype.original-editor";
++				"PRODUCT_NAME" = "$(TARGET_NAME)";
++				"SUPPORTS_MACCATALYST" = "NO";
++				"SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD" = "NO";
++				"SWIFT_APPROACHABLE_CONCURRENCY" = "NO";
++				"SWIFT_USE_INTEGRATED_DRIVER" = "YES";
++				"TARGETED_DEVICE_FAMILY" = "1,2";
++				"VERSIONING_SYSTEM" = "apple-generic";
++				"PRODUCT_MODULE_NAME" = "AnytypeOriginalEditor";
++				"MACH_O_TYPE" = "mh_dylib";
++				"DEFINES_MODULE" = "YES";
++				"GENERATE_INFOPLIST_FILE" = "YES";
++				"BUILD_LIBRARY_FOR_DISTRIBUTION" = "NO";
++				"DEAD_CODE_STRIPPING" = "NO";
++				"SKIP_INSTALL" = "NO";
++				"INSTALL_PATH" = "$(LOCAL_LIBRARY_DIR)/Frameworks";
++				"DYLIB_COMPATIBILITY_VERSION" = "1";
++				"DYLIB_CURRENT_VERSION" = "1";
++				"PROVISIONING_PROFILE_SPECIFIER" = "";
++				"SWIFT_INSTALL_OBJC_HEADER" = "YES";
++				"SWIFT_OBJC_INTERFACE_HEADER_NAME" = "AnytypeOriginalEditor-Swift.h";
++			};
++			"name" = "Debug";
++		};
++		7C3BCE4EF856B0B6A02240AB /* EditorConfig_Release-Anytype */ = {
++			"isa" = "XCBuildConfiguration";
++			"buildSettings" = {
++				"CODE_SIGN_IDENTITY" = "-";
++				"CODE_SIGN_STYLE" = "Automatic";
++				"CURRENT_PROJECT_VERSION" = "0";
++				"DEVELOPMENT_TEAM" = "";
++				"ENABLE_BITCODE" = "NO";
++				"ENABLE_PREVIEWS" = "NO";
++				"ENABLE_TESTING_SEARCH_PATHS" = "NO";
++				"FRAMEWORK_SEARCH_PATHS" = (
++					"$(inherited)",
++					"$(PROJECT_DIR)",
++					"$(PROJECT_DIR)/Dependencies/Middleware",
++				);
++				"HEADER_SEARCH_PATHS" = "$(inherited)";
++				"IPHONEOS_DEPLOYMENT_TARGET" = "27.0";
++				"LD_RUNPATH_SEARCH_PATHS" = (
++					"$(inherited)",
++					"@loader_path/Frameworks",
++					"@executable_path/Frameworks",
++				);
++				"MARKETING_VERSION" = "0.49.0";
++				"OTHER_LDFLAGS" = "-ObjC";
++				"PRODUCT_BUNDLE_IDENTIFIER" = "org.otzaria.anytype.original-editor";
++				"PRODUCT_NAME" = "$(TARGET_NAME)";
++				"SUPPORTS_MACCATALYST" = "NO";
++				"SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD" = "NO";
++				"SWIFT_APPROACHABLE_CONCURRENCY" = "NO";
++				"SWIFT_USE_INTEGRATED_DRIVER" = "YES";
++				"TARGETED_DEVICE_FAMILY" = "1,2";
++				"VERSIONING_SYSTEM" = "apple-generic";
++				"PRODUCT_MODULE_NAME" = "AnytypeOriginalEditor";
++				"MACH_O_TYPE" = "mh_dylib";
++				"DEFINES_MODULE" = "YES";
++				"GENERATE_INFOPLIST_FILE" = "YES";
++				"BUILD_LIBRARY_FOR_DISTRIBUTION" = "NO";
++				"DEAD_CODE_STRIPPING" = "NO";
++				"SKIP_INSTALL" = "NO";
++				"INSTALL_PATH" = "$(LOCAL_LIBRARY_DIR)/Frameworks";
++				"DYLIB_COMPATIBILITY_VERSION" = "1";
++				"DYLIB_CURRENT_VERSION" = "1";
++				"PROVISIONING_PROFILE_SPECIFIER" = "";
++				"SWIFT_INSTALL_OBJC_HEADER" = "YES";
++				"SWIFT_OBJC_INTERFACE_HEADER_NAME" = "AnytypeOriginalEditor-Swift.h";
++			};
++			"name" = "Release-Anytype";
++		};
++		7B34B94A980226257449D4B8 /* EditorConfig_Debug-Anytype */ = {
++			"isa" = "XCBuildConfiguration";
++			"buildSettings" = {
++				"CODE_SIGN_IDENTITY" = "-";
++				"CODE_SIGN_STYLE" = "Automatic";
++				"CURRENT_PROJECT_VERSION" = "0";
++				"DEVELOPMENT_TEAM" = "";
++				"ENABLE_BITCODE" = "NO";
++				"ENABLE_PREVIEWS" = "NO";
++				"ENABLE_TESTING_SEARCH_PATHS" = "NO";
++				"FRAMEWORK_SEARCH_PATHS" = (
++					"$(inherited)",
++					"$(PROJECT_DIR)",
++					"$(PROJECT_DIR)/Dependencies/Middleware",
++				);
++				"HEADER_SEARCH_PATHS" = "$(inherited)";
++				"IPHONEOS_DEPLOYMENT_TARGET" = "27.0";
++				"LD_RUNPATH_SEARCH_PATHS" = (
++					"$(inherited)",
++					"@loader_path/Frameworks",
++					"@executable_path/Frameworks",
++				);
++				"MARKETING_VERSION" = "0.49.0";
++				"OTHER_LDFLAGS" = "-ObjC";
++				"PRODUCT_BUNDLE_IDENTIFIER" = "org.otzaria.anytype.original-editor";
++				"PRODUCT_NAME" = "$(TARGET_NAME)";
++				"SUPPORTS_MACCATALYST" = "NO";
++				"SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD" = "NO";
++				"SWIFT_APPROACHABLE_CONCURRENCY" = "NO";
++				"SWIFT_USE_INTEGRATED_DRIVER" = "YES";
++				"TARGETED_DEVICE_FAMILY" = "1,2";
++				"VERSIONING_SYSTEM" = "apple-generic";
++				"PRODUCT_MODULE_NAME" = "AnytypeOriginalEditor";
++				"MACH_O_TYPE" = "mh_dylib";
++				"DEFINES_MODULE" = "YES";
++				"GENERATE_INFOPLIST_FILE" = "YES";
++				"BUILD_LIBRARY_FOR_DISTRIBUTION" = "NO";
++				"DEAD_CODE_STRIPPING" = "NO";
++				"SKIP_INSTALL" = "NO";
++				"INSTALL_PATH" = "$(LOCAL_LIBRARY_DIR)/Frameworks";
++				"DYLIB_COMPATIBILITY_VERSION" = "1";
++				"DYLIB_CURRENT_VERSION" = "1";
++				"PROVISIONING_PROFILE_SPECIFIER" = "";
++				"SWIFT_INSTALL_OBJC_HEADER" = "YES";
++				"SWIFT_OBJC_INTERFACE_HEADER_NAME" = "AnytypeOriginalEditor-Swift.h";
++			};
++			"name" = "Debug-Anytype";
++		};
++		8700862BD1C8E01DCD589227 /* EditorConfig_Release-Nightly */ = {
++			"isa" = "XCBuildConfiguration";
++			"buildSettings" = {
++				"CODE_SIGN_IDENTITY" = "-";
++				"CODE_SIGN_STYLE" = "Automatic";
++				"CURRENT_PROJECT_VERSION" = "0";
++				"DEVELOPMENT_TEAM" = "";
++				"ENABLE_BITCODE" = "NO";
++				"ENABLE_PREVIEWS" = "NO";
++				"ENABLE_TESTING_SEARCH_PATHS" = "NO";
++				"FRAMEWORK_SEARCH_PATHS" = (
++					"$(inherited)",
++					"$(PROJECT_DIR)",
++					"$(PROJECT_DIR)/Dependencies/Middleware",
++				);
++				"HEADER_SEARCH_PATHS" = "$(inherited)";
++				"IPHONEOS_DEPLOYMENT_TARGET" = "27.0";
++				"LD_RUNPATH_SEARCH_PATHS" = (
++					"$(inherited)",
++					"@loader_path/Frameworks",
++					"@executable_path/Frameworks",
++				);
++				"MARKETING_VERSION" = "0.49.0";
++				"OTHER_LDFLAGS" = "-ObjC";
++				"PRODUCT_BUNDLE_IDENTIFIER" = "org.otzaria.anytype.original-editor";
++				"PRODUCT_NAME" = "$(TARGET_NAME)";
++				"SUPPORTS_MACCATALYST" = "NO";
++				"SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD" = "NO";
++				"SWIFT_APPROACHABLE_CONCURRENCY" = "NO";
++				"SWIFT_USE_INTEGRATED_DRIVER" = "YES";
++				"TARGETED_DEVICE_FAMILY" = "1,2";
++				"VERSIONING_SYSTEM" = "apple-generic";
++				"PRODUCT_MODULE_NAME" = "AnytypeOriginalEditor";
++				"MACH_O_TYPE" = "mh_dylib";
++				"DEFINES_MODULE" = "YES";
++				"GENERATE_INFOPLIST_FILE" = "YES";
++				"BUILD_LIBRARY_FOR_DISTRIBUTION" = "NO";
++				"DEAD_CODE_STRIPPING" = "NO";
++				"SKIP_INSTALL" = "NO";
++				"INSTALL_PATH" = "$(LOCAL_LIBRARY_DIR)/Frameworks";
++				"DYLIB_COMPATIBILITY_VERSION" = "1";
++				"DYLIB_CURRENT_VERSION" = "1";
++				"PROVISIONING_PROFILE_SPECIFIER" = "";
++				"SWIFT_INSTALL_OBJC_HEADER" = "YES";
++				"SWIFT_OBJC_INTERFACE_HEADER_NAME" = "AnytypeOriginalEditor-Swift.h";
++			};
++			"name" = "Release-Nightly";
++		};
+ /* End XCBuildConfiguration section */
+ 
+ /* Begin XCConfigurationList section */
+@@ -2078,6 +2645,17 @@
+ 			defaultConfigurationIsVisible = 0;
+ 			defaultConfigurationName = "Release-Anytype";
+ 		};
++		382B91351A9D676A01351FEC /* EditorConfigurations */ = {
++			"isa" = "XCConfigurationList";
++			"buildConfigurations" = (
++				"6D481F737200B98383C5B313",
++				"7C3BCE4EF856B0B6A02240AB",
++				"7B34B94A980226257449D4B8",
++				"8700862BD1C8E01DCD589227",
++			);
++			"defaultConfigurationIsVisible" = "0";
++			"defaultConfigurationName" = "Debug-Anytype";
++		};
+ /* End XCConfigurationList section */
+ 
+ /* Begin XCLocalSwiftPackageReference section */
+@@ -2546,6 +3124,210 @@
+ 			package = FA6100022F111800006805CC /* XCLocalSwiftPackageReference "HanlinPlatform" */;
+ 			productName = HanlinChatCore;
+ 		};
++		AD4E441920F27228BF71F4A3 /* EditorPackage_HanlinHostContracts */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "FA6100012F111800006805CC";
++			"productName" = "HanlinHostContracts";
++		};
++		7B928E8D7235055A80EB886C /* EditorPackage_HanlinPlatformContracts */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "FA6100022F111800006805CC";
++			"productName" = "HanlinPlatformContracts";
++		};
++		59360DABFB9F4826448E645D /* EditorPackage_HanlinAgentCore */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "FA6100012F111800006805CC";
++			"productName" = "HanlinAgentCore";
++		};
++		0EE6D1EFEDC2D828609C9586 /* EditorPackage_HanlinPersistenceAdapters */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "FA6100012F111800006805CC";
++			"productName" = "HanlinPersistenceAdapters";
++		};
++		7EE1CA97AC2DF2CE1ACCF175 /* EditorPackage_HanlinChatCore */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "FA6100022F111800006805CC";
++			"productName" = "HanlinChatCore";
++		};
++		29F6393DA4CFFCA8ACEFADD1 /* EditorPackage_HanlinScriptUI */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "FA6100022F111800006805CC";
++			"productName" = "HanlinScriptUI";
++		};
++		3833EC9CE214B3B7559BC5B2 /* EditorPackage_HanlinChatUI */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "FA6100032F111800006805CC";
++			"productName" = "HanlinChatUI";
++		};
++		707EF5D88D07F0C999A8EDF5 /* EditorPackage_HanlinPresentationKit */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "FA6100032F111800006805CC";
++			"productName" = "HanlinPresentationKit";
++		};
++		1A44C69C2FAB647405559913 /* EditorPackage_FloatingPanel */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "5333421A262E249100238121";
++			"productName" = "FloatingPanel";
++		};
++		4B83C1F7D3E8B8D9EA7E3BBF /* EditorPackage_Highlightr */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "1259300326F3A5C500B115CD";
++			"productName" = "Highlightr";
++		};
++		ED229BE08E4D8ED2B476317C /* EditorPackage_Kingfisher */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "1259300C26F3A6AE00B115CD";
++			"productName" = "Kingfisher";
++		};
++		35F23505225A99623630C430 /* EditorPackage_Collections */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "538ABD4C284F9F88000D3CCC";
++			"productName" = "Collections";
++		};
++		88CFB1E6A33D97631A7FF744 /* EditorPackage_DequeModule */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "538ABD4C284F9F88000D3CCC";
++			"productName" = "DequeModule";
++		};
++		2DDDA3670EE1ED24B0282D39 /* EditorPackage_OrderedCollections */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "538ABD4C284F9F88000D3CCC";
++			"productName" = "OrderedCollections";
++		};
++		879C4472D0DA8E0EA6EAE1B3 /* EditorPackage_AnytypeCore */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "AnytypeCore";
++		};
++		4E0AC82CC5ACABC0400FF2B6 /* EditorPackage_Services */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "Services";
++		};
++		37C1787004D60D52F843D060 /* EditorPackage_ProtobufMessages */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "ProtobufMessages";
++		};
++		33E57158DCE87737F0E5A886 /* EditorPackage_SwiftProtobuf */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "2A6ED16E285B452600AAA21C";
++			"productName" = "SwiftProtobuf";
++		};
++		2061766B3BF1EDCC59A9FB22 /* EditorPackage_Logger */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "Logger";
++		};
++		7FEE1338682AC82CB417E329 /* EditorPackage_ShimmerSwift */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "C9BFBA8C28A133320003D9E6";
++			"productName" = "ShimmerSwift";
++		};
++		A86A32A4D6EFF9E8CC703DD4 /* EditorPackage_SwiftEntryKit */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "C9433E52293EA5EF001662EA";
++			"productName" = "SwiftEntryKit";
++		};
++		BC7BA11C9D0EB47C1869EA2B /* EditorPackage_Sentry */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "2A94B5D129B88E95009AE2A7";
++			"productName" = "Sentry";
++		};
++		712D430C69A299E0CDF4C002 /* EditorPackage_DeviceKit */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "2A01A4F72A1FB4B7002042FB";
++			"productName" = "DeviceKit";
++		};
++		884041F0207BE73DBF83AACE /* EditorPackage_SecureService */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "SecureService";
++		};
++		B075D0A12AB3552C362232B0 /* EditorPackage_SharedContentManager */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "SharedContentManager";
++		};
++		095CC12FEE5AAD843EBEF6E7 /* EditorPackage_ZIPFoundation */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "2A685D582B7B854200456E08";
++			"productName" = "ZIPFoundation";
++		};
++		6D0DA469818107C85C716CD5 /* EditorPackage_DeepLinks */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "DeepLinks";
++		};
++		1C9723D3B848B29927D4E5B6 /* EditorPackage_Factory */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "2AC1262B2B90F65F003A4A8D";
++			"productName" = "Factory";
++		};
++		D8E1E0AE6020FB6529B2E05B /* EditorPackage_QRCode */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "2A30B2062BB44A0C00206806";
++			"productName" = "QRCode";
++		};
++		C558112830F40F0B00192978 /* EditorPackage_ConfettiSwiftUI */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "ConfettiSwiftUI";
++		};
++		B342AAFB2E382BFFE2A2C663 /* EditorPackage_WrappingHStack */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "2A10D84E2C53A5F00088BB46";
++			"productName" = "WrappingHStack";
++		};
++		B688E8198FAF01562A3B4220 /* EditorPackage_Cache */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "2ADB57842CB6B6FE00BFC386";
++			"productName" = "Cache";
++		};
++		1776765E46A8210033CEEB6C /* EditorPackage_AppTarget */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "AppTarget";
++		};
++		E2F113E2753F5684374CB4CE /* EditorPackage_FirebaseMessaging */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "2E63D9B52D56520C008A733A";
++			"productName" = "FirebaseMessaging";
++		};
++		C5C59AB204FFD5149F3F0E7C /* EditorPackage_AsyncAlgorithms */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "74B35D242D5B39C500AC9879";
++			"productName" = "AsyncAlgorithms";
++		};
++		2C92CB228E765127CAE3A76B /* EditorPackage_AsyncTools */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "AsyncTools";
++		};
++		54D988CF14F7B2D451CDD765 /* EditorPackage_PinkhaKit */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "PinkhaKit";
++		};
++		E490B14759DB32B80930FA0C /* EditorPackage_TorahInspectorUI */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "FA1000002F000001006805CC";
++			"productName" = "TorahInspectorUI";
++		};
++		30B0C474F98048F676263792 /* EditorPackage_Assets */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "Assets";
++		};
++		6458F2A1B815DA6032E8146C /* EditorPackage_Loc */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "Loc";
++		};
++		611D2885313696225D83E3B8 /* EditorPackage_DesignKit */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "DesignKit";
++		};
++		747B0D8680860C02D02D5364 /* EditorPackage_NotificationsCore */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "NotificationsCore";
++		};
++		1E0BDDE5704C97149159B5FC /* EditorPackage_StoredHashMacro */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"productName" = "StoredHashMacro";
++		};
++		EA7D4A3CC4EEB309BDFD699F /* EditorPackage_AmplitudeSwift */ = {
++			"isa" = "XCSwiftPackageProductDependency";
++			"package" = "74819CB22E169F5D0042D5EC";
++			"productName" = "AmplitudeSwift";
++		};
+ /* End XCSwiftPackageProductDependency section */
+ 	};
+ 	rootObject = 0303ECF322D8EDAA005C552B /* Project object */;

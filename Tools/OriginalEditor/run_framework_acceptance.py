@@ -1,0 +1,392 @@
+#!/usr/bin/env python3
+"""Build the genuine original framework and execute a separate binary consumer.
+
+Only a real Xcode27/OS27 execution can produce the final PASS. This driver does
+not mount an editable document, create an account, or claim original app/UI tests.
+"""
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import json
+import os
+from pathlib import Path
+import platform
+import plistlib
+import re
+import shutil
+import shlex
+import signal
+import subprocess
+import sys
+import time
+import uuid
+
+from framework_profile import BRANCH, TARGET, blob, git, read_manifest, sha256, source_observation
+from framework_products import consumer_project, export_products, inventory, original_oracles, verify_observation, verify_public_surface
+from pbx_source import require
+
+
+def write(path, value):
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    Path(path).write_text(json.dumps(value, indent=2, sort_keys=True) + '\n')
+
+
+def timestamp():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def command(arguments, cwd, evidence, name, timeout):
+    evidence = Path(evidence)
+    result = {'command': [str(value) for value in arguments], 'cwd': str(cwd),
+              'started_at': timestamp(), 'timeout_seconds': timeout, 'returncode': None, 'timed_out': False}
+    stdout, stderr = evidence / (name + '.stdout.log'), evidence / (name + '.stderr.log')
+    process = None
+    try:
+        with stdout.open('xb') as output, stderr.open('xb') as error:
+            process = subprocess.Popen(arguments, cwd=cwd, stdout=output, stderr=error, start_new_session=True)
+            try:
+                result['returncode'] = process.wait(timeout=timeout)
+            except subprocess.TimeoutExpired:
+                result['timed_out'] = True
+                raise
+    except BaseException:
+        if process is not None and process.poll() is None:
+            os.killpg(process.pid, signal.SIGTERM)
+            try:
+                process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                os.killpg(process.pid, signal.SIGKILL)
+                process.wait(timeout=10)
+        if process is not None:
+            result['returncode'] = process.returncode
+        raise
+    finally:
+        result['finished_at'] = timestamp()
+        result['stdout_sha256'] = sha256(stdout) if stdout.exists() else None
+        result['stderr_sha256'] = sha256(stderr) if stderr.exists() else None
+        write(evidence / (name + '.command.json'), result)
+    require(result['returncode'] == 0, 'Actual command failed: ' + name)
+    return stdout.read_text(errors='replace')
+
+
+def source_file_proof(root, derived, before, evidence):
+    paths = [p for p in Path(derived).rglob('*.SwiftFileList') if TARGET + '.build' in p.parts]
+    require(paths, 'Actual original framework compiler input lists are absent')
+    expected = {(root / path).resolve() for path in before['source_files']
+                if path != 'Anytype/Sources/ApplicationLayer/AppScene.swift'}
+    expected.update({root / 'Anytype/Resources/AssetConstants.swift',
+                     root / 'OriginalEditorFramework/AnytypeOriginalEditorModule.swift'})
+    observed = set()
+    retained = []
+    for number, path in enumerate(sorted(paths)):
+        raw = path.read_bytes()
+        destination = evidence / ('framework-inputs-' + str(number) + '.SwiftFileList')
+        destination.write_bytes(raw)
+        for line in raw.decode().splitlines():
+            values = shlex.split(line)
+            require(len(values) == 1, 'Malformed actual Swift source input')
+            observed.add(Path(values[0]).resolve())
+        retained.append({'path': str(path), 'sha256': sha256(path), 'bytes': len(raw)})
+    actual_original = {path for path in observed if path.is_relative_to(root)
+                       and not path.is_relative_to(derived)}
+    require(actual_original == expected, 'Actual framework source list is not the complete original source closure')
+    require(all(path.is_relative_to(derived) for path in observed - expected),
+            'Unexpected external Swift source compiled into the framework')
+    require(not any(path.name == 'AppScene.swift' or 'AnytypeTests' in path.parts for path in observed),
+            'An app entrypoint/test source was compiled into the framework')
+    generated = []
+    for path in sorted(Path(derived).rglob('resource_bundle_accessor.swift')):
+        if any(name + '.build' in path.parts for name in ['Assets', 'Loc', 'DesignKit']):
+            raw = path.read_bytes()
+            name = next(name for name in ['Assets', 'Loc', 'DesignKit'] if name + '.build' in path.parts)
+            require(name not in [row['module'] for row in generated], 'Ambiguous generated resource accessor')
+            (evidence / ('original-generated-' + name + '-resource-accessor.swift')).write_bytes(raw)
+            generated.append({'module': name, 'path': str(path), 'sha256': sha256(path), 'bytes': len(raw)})
+    require({row['module'] for row in generated} == {'Assets', 'Loc', 'DesignKit'},
+            'Original generated package bundle accessors are missing')
+    value = {'complete_original_swift_input_count': len(expected), 'generated_swift_input_count': len(observed - expected),
+             'lists': retained, 'generated_bundle_accessors': generated,
+             'source_is_original': True, 'app_or_test_binary_repackaged': False}
+    write(evidence / 'actual-framework-source-inputs.json', value)
+    return value
+
+
+def dependency_proof(root, derived, profile, evidence):
+    pins = json.loads((root / profile['package_resolved_path']).read_text())['pins']
+    expected = {row['identity'].lower(): row['state']['revision'] for row in pins}
+    workspace = json.loads((derived / 'SourcePackages/workspace-state.json').read_text())
+    actual = {}
+    for dependency in workspace['object']['dependencies']:
+        reference = dependency['packageRef']
+        identity = reference['identity'].lower()
+        state = dependency['state']
+        if state.get('name') in {'local', 'fileSystem'}:
+            location = Path(reference.get('location', '')).resolve()
+            require(location.is_relative_to(root / 'Modules') or location.is_relative_to(root / 'Dependencies/Hanlin'),
+                    'Unreviewed local package source')
+            continue
+        require(identity in expected and identity not in actual, 'Unpinned or repeated dependency checkout')
+        revision = state.get('checkoutState', {}).get('revision')
+        require(revision == expected[identity], 'Resolved dependency changed: ' + identity)
+        checkout = derived / 'SourcePackages/checkouts' / dependency['subpath']
+        require(checkout.resolve().is_relative_to((derived / 'SourcePackages/checkouts').resolve()), 'Dependency checkout escapes cache')
+        require(git(checkout, 'rev-parse', 'HEAD') == revision, 'Actual dependency Git HEAD differs: ' + identity)
+        require(not git(checkout, 'diff', '--name-only', 'HEAD'), 'Actual dependency source was modified: ' + identity)
+        actual[identity] = revision
+    require({'torahinspectorkit', 'swift-ai-sdk'} <= set(actual), 'Canonical inspector/Hanlin dependency checkout missing')
+    receipt = {'original_pin_count': len(expected), 'actual_checkout_revisions': actual,
+               'locked_but_not_materialized': sorted(set(expected) - set(actual))}
+    write(evidence / 'dependency-checkouts.json', receipt)
+    return receipt
+
+
+def execute(args, receipt):
+    root, evidence, work = args.root.resolve(), args.evidence.resolve(), args.work.resolve()
+    require(evidence.is_relative_to(root / 'build') and work.is_relative_to(root / 'build')
+            and not work.is_relative_to(evidence) and not evidence.is_relative_to(work), 'Unowned or overlapping CI output')
+    profile = read_manifest()
+    before = source_observation(root)
+    initial_path = evidence / 'source-before.json'
+    if initial_path.exists():
+        require(json.loads(initial_path.read_text()) == before, 'Source changed since initial CI admission')
+    else:
+        write(initial_path, before)
+    receipt.update(source_sha=before['head_sha'], run_id=before['run_id'], run_attempt=before['run_attempt'])
+    if args.source_only:
+        receipt.update(status='SOURCE_BOUND_FRAMEWORK_RUNTIME_NOT_RUN')
+        return
+    require(platform.system() == 'Darwin' and platform.machine() == 'arm64', 'Actual Apple silicon execution is required')
+    require(not work.exists(), 'Refusing stale producer/consumer work directory')
+    work.mkdir(parents=True)
+    preflight = json.loads((evidence / 'preflight/preflight.json').read_text())
+    require(preflight.get('status') == 'PREFLIGHT_PASS_UI_NOT_RUN'
+            and preflight.get('source_sha') == before['head_sha'] and preflight.get('run_id') == before['run_id']
+            and preflight.get('run_attempt') == before['run_attempt'], 'Original actual Xcode/OS27 preflight differs')
+    installation = json.loads((evidence / 'heart/heart-installation.json').read_text())
+    require(installation.get('status') == 'PASS' and installation.get('app_source_sha') == before['head_sha']
+            and installation.get('source_run_id') == '44203168617', 'Original Heart producer/install identity differs')
+    heart = json.loads((root / 'Dependencies/Middleware/PinkhaNativeHeartBuild.json').read_text())
+    require(heart.get('status') == 'PASS' and heart.get('marker') == installation['marker'], 'Installed Heart marker differs')
+    for item in heart['artifacts']:
+        member = root / 'Dependencies/Middleware/Lib.xcframework' / item['path']
+        require(member.resolve().is_relative_to((root / 'Dependencies/Middleware/Lib.xcframework').resolve())
+                and sha256(member) == item['sha256'], 'Verified Heart source changed')
+    sys.path.insert(0, str(root / 'Tools/Hanlin'))
+    from prepare_sdk import verify as verify_hanlin
+    hanlin_before = verify_hanlin(root / 'Dependencies/Hanlin')
+    write(evidence / 'original-hanlin-snapshot.json', hanlin_before)
+    sdk = command(['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-version'], root, evidence, 'actual-simulator-sdk', 30).strip()
+    require(sdk.split('.')[0] == '27', 'Framework SDK is not the reviewed OS27 SDK')
+    swift = command(['xcrun', 'swiftc', '--version'], root, evidence, 'actual-swift', 30).strip()
+    receipt.update(preflight=preflight, sdk=sdk, swift=swift, heart=installation,
+                   original_app_runtime='NOT_RUN', editable_mount='NOT_EXPOSED', native_editor_ui_tests=0)
+    udid = preflight['selected']['ipad']['udid']
+    command(['xcrun', 'simctl', 'boot', udid], root, evidence, 'boot-owned-simulator', 60)
+    command(['xcrun', 'simctl', 'bootstatus', udid, '-b'], root, evidence, 'boot-status', 180)
+    derived = work / 'producer-derived'
+    destination = 'platform=iOS Simulator,id=' + udid
+    flags = ['OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED', 'ONLY_ACTIVE_ARCH=YES',
+             'ARCHS=arm64', 'SWIFT_OPTIMIZATION_LEVEL=-Onone', 'CODE_SIGN_IDENTITY=-',
+             'CODE_SIGNING_ALLOWED=YES', 'CODE_SIGNING_REQUIRED=YES', 'PROVISIONING_PROFILE_SPECIFIER=']
+    build = ['xcodebuild', 'build', '-project', str(root / 'Anytype.xcodeproj'), '-scheme', TARGET,
+             '-configuration', 'Debug-Anytype', '-destination', destination, '-derivedDataPath', str(derived),
+             '-resultBundlePath', str(evidence / 'framework-build.xcresult'),
+             '-onlyUsePackageVersionsFromResolvedFile', *flags]
+    receipt['phase'] = 'ORIGINAL_FRAMEWORK_BUILD'
+    write(evidence / 'execution.json', receipt)
+    command(build, root, evidence, 'framework-build', 6000)
+    receipt['original_framework_build'] = 'PASS'
+    receipt['actual_source_closure'] = source_file_proof(root, derived, before, evidence)
+    receipt['dependencies'] = dependency_proof(root, derived, profile, evidence)
+    products = derived / 'Build/Products/Debug-Anytype-iphonesimulator'
+    require(products.is_dir(), 'Actual expected Debug-Anytype simulator products are absent')
+    exported = work / 'distribution'
+    exported_proof = export_products(products, exported, derived)
+    notices = exported / 'SourceProvenance'
+    notices.mkdir()
+    shutil.copyfile(root / 'LICENSE.md', notices / 'OriginalAnytype-LICENSE.md')
+    shutil.copyfile(root / profile['package_resolved_path'], notices / 'Original-Package.resolved')
+    notice_files = []
+    for checkout in sorted((derived / 'SourcePackages/checkouts').iterdir()):
+        if not checkout.is_dir():
+            continue
+        for source in sorted(checkout.iterdir()):
+            if source.is_file() and not source.is_symlink() and source.name.upper().split('.')[0] in {'LICENSE', 'LICENCE', 'NOTICE', 'COPYING'}:
+                require(source.stat().st_size <= 2_097_152, 'Unexpected dependency notice size')
+                destination = notices / checkout.name / source.name
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, destination)
+                notice_files.append({'path': destination.relative_to(exported).as_posix(), 'sha256': sha256(destination)})
+    write(notices / 'OriginalSource.json', {'application_source': before['head_sha'],
+          'original_trees': before['original_trees'], 'dependencies': receipt['dependencies'],
+          'retained_original_dependency_notices': notice_files, 'scope': 'Framework/resource prerequisite; editable mount is not exposed'})
+    exported_proof['files'] = inventory(exported)
+    exported_proof['bytes'] = sum(item['bytes'] for item in exported_proof['files'].values())
+    write(evidence / 'framework-distribution.json', exported_proof)
+    dynamic = []
+    for number, name in enumerate(exported_proof['frameworks']):
+        framework = exported / 'Frameworks' / name
+        info = plistlib.loads((framework / 'Info.plist').read_bytes())
+        executable = info.get('CFBundleExecutable')
+        require(isinstance(executable, str) and Path(executable).name == executable, 'Malformed exported framework executable')
+        binary = framework / executable
+        header = command(['otool', '-hv', str(binary)], root, evidence, 'framework-header-' + str(number), 30)
+        if re.search(r'\bDYLIB\b', header):
+            dynamic.append(name)
+            command(['codesign', '--verify', '--strict', str(framework)], root, evidence,
+                    'framework-signature-' + str(number), 30)
+            command(['otool', '-L', str(binary)], root, evidence, 'framework-load-commands-' + str(number), 30)
+    require(TARGET + '.framework' in dynamic, 'The original editor product is not a real dynamic framework')
+    original_binary = exported / 'Frameworks' / (TARGET + '.framework') / TARGET
+    architecture = command(['lipo', '-archs', str(original_binary)], root, evidence, 'framework-architecture', 30).strip()
+    require(architecture == 'arm64', 'Wrong actual simulator framework architecture')
+    platform_output = command(['xcrun', 'vtool', '-show-build', str(original_binary)], root, evidence, 'framework-platform', 30)
+    require(re.search(r'platform\s+IOSSIMULATOR\b', platform_output), 'Framework is not an iOS Simulator binary')
+    symbols = command(['nm', '-gU', str(original_binary)], root, evidence, 'original-framework-symbols', 60)
+    require('AnytypeOriginalEditor' in symbols and not re.search(r'(?m)\s_main$', symbols),
+            'Framework contains an app entrypoint or lacks its real module')
+    sdk_path = command(['xcrun', '--sdk', 'iphonesimulator', '--show-sdk-path'], root, evidence,
+                       'actual-simulator-sdk-path', 30).strip()
+    graph_directory = evidence / 'actual-public-symbol-graphs'
+    graph_directory.mkdir()
+    command(['xcrun', 'swift-symbolgraph-extract', '-module-name', TARGET,
+             '-target', 'arm64-apple-ios27.0-simulator', '-sdk', sdk_path,
+             '-F', str(products), '-F', str(products / 'PackageFrameworks'),
+             '-I', str(products), '-I', str(products / 'Modules'),
+             '-minimum-access-level', 'public', '-output-dir', str(graph_directory)],
+            root, evidence, 'actual-target-public-symbol-graph', 120)
+    graphs = sorted(graph_directory.glob('*.symbols.json'))
+    require(graphs and (graph_directory / (TARGET + '.symbols.json')).is_file(),
+            'Actual public module graph is absent')
+    receipt['actual_public_surface'] = verify_public_surface([json.loads(path.read_text()) for path in graphs], root)
+    write(evidence / 'actual-public-surface.json', receipt['actual_public_surface'])
+    oracle = original_oracles(root, profile)
+    write(evidence / 'independent-original-resource-oracles.json', oracle)
+    consumer = work / 'external-consumer'
+    project = consumer_project(consumer, exported, root / 'Tools/OriginalEditor/Consumer/ConsumerApp.swift', dynamic)
+    write(evidence / 'consumer-source-inputs.json', inventory(consumer))
+    # Preserve all real products/evidence but remove the original absolute path
+    # used by generated Bundle.module build-path fallback before consumer build.
+    hidden = work / 'producer-derived-preserved'
+    require(not hidden.exists(), 'Producer quarantine already exists')
+    derived.rename(hidden)
+    require(not derived.exists(), 'Producer build-path fallback remains available')
+    write(evidence / 'producer-build-path-absent.json', {'original': str(derived), 'preserved_at': str(hidden),
+                                                        'original_path_exists': False, 'deleted': False})
+    receipt['phase'] = 'EXTERNAL_BINARY_CONSUMER_BUILD'
+    write(evidence / 'execution.json', receipt)
+    consumer_derived = work / 'consumer-derived'
+    command(['xcodebuild', 'build', '-project', str(project), '-scheme', 'OriginalEditorConsumer',
+             '-configuration', 'Debug', '-destination', destination, '-derivedDataPath', str(consumer_derived),
+             '-resultBundlePath', str(evidence / 'consumer-build.xcresult'), 'ONLY_ACTIVE_ARCH=YES', 'ARCHS=arm64'],
+            consumer, evidence, 'external-consumer-build', 600)
+    require(not derived.exists() and inventory(exported) == exported_proof['files'], 'External build modified/recreated its producer inputs')
+    app = consumer_derived / 'Build/Products/Debug-iphonesimulator/OriginalEditorConsumer.app'
+    require(app.is_dir(), 'Actual external consumer app is missing')
+    command(['codesign', '--verify', '--strict', str(app)], root, evidence, 'external-consumer-signature', 30)
+    for name in dynamic:
+        require(inventory(app / 'Frameworks' / name) == inventory(exported / 'Frameworks' / name),
+                'The actual consumer did not embed the exact exported framework: ' + name)
+    receipt['external_consumer_build'] = 'PASS'
+    receipt['phase'] = 'ACTUAL_EXTERNAL_RESOURCE_RUNTIME'
+    receipt['verified_runtime_observations'] = []
+    write(evidence / 'execution.json', receipt)
+    bundle_id = 'org.otzaria.acceptance.original-editor'
+    command(['xcrun', 'simctl', 'install', udid, str(app)], root, evidence, 'install-external-consumer', 60)
+    installed = command(['xcrun', 'simctl', 'get_app_container', udid, bundle_id, 'app'], root, evidence, 'actual-consumer-app-container', 30).strip()
+    data = Path(command(['xcrun', 'simctl', 'get_app_container', udid, bundle_id, 'data'], root, evidence, 'actual-consumer-data-container', 30).strip())
+    require(Path(installed).is_dir() and data.is_dir() and udid in Path(installed).parts and udid in data.parts,
+            'Actual consumer containers are not in the owned simulator')
+    for language in ['en', 'he']:
+        nonce = str(uuid.uuid4()).upper()
+        name = 'consumer-' + language
+        output = data / 'Documents' / ('original-editor-' + nonce + '.json')
+        require(not output.exists(), 'Stale consumer result')
+        command(['xcrun', 'simctl', 'launch', '--terminate-running-process', udid, bundle_id,
+                 '--original-editor-nonce', nonce, '-AppleLanguages', '(' + language + ')',
+                 '-AppleLocale', 'he_IL' if language == 'he' else 'en_US'], root, evidence, name + '-launch', 30)
+        deadline = time.monotonic() + 20
+        while not output.exists() and time.monotonic() < deadline:
+            time.sleep(0.1)
+        require(output.is_file() and not output.is_symlink() and 0 < output.stat().st_size <= 65_536,
+                'No bounded actual external consumer result: ' + language)
+        raw = output.read_bytes()
+        (evidence / (name + '-observation.json')).write_bytes(raw)
+        value = verify_observation(json.loads(raw), nonce, language, installed, oracle)
+        require(not derived.exists(), 'Producer fallback was recreated before runtime')
+        receipt['verified_runtime_observations'].append(value)
+        write(evidence / 'execution.json', receipt)
+        command(['xcrun', 'simctl', 'terminate', udid, bundle_id], root, evidence, name + '-terminate', 30)
+    require(len(receipt['verified_runtime_observations']) == 2, 'Incomplete actual resource-language execution')
+    require(source_observation(root) == before, 'Tracked source closure changed during actual framework execution')
+    require(verify_hanlin(root / 'Dependencies/Hanlin') == hanlin_before, 'Canonical Hanlin source changed')
+    require(inventory(exported) == exported_proof['files'], 'Framework distribution changed during consumer qualification')
+    write(evidence / 'source-after.json', source_observation(root))
+    receipt.update(status='ACTUAL_ORIGINAL_FRAMEWORK_EXTERNAL_IMPORT_LINK_RESOURCES_PASS', phase='COMPLETE',
+                   distribution=str(exported), same_toolchain_only=True, device_framework_build='NOT_RUN',
+                   original_43_component_tests='NOT_RERUN', native_editor_ui_tests=0, editable_mount='NOT_EXPOSED')
+    write(exported / 'QUALIFICATION.json', receipt)
+
+
+def main():
+    parser = argparse.ArgumentParser(__doc__)
+    parser.add_argument('--root', required=True, type=Path)
+    parser.add_argument('--evidence', required=True, type=Path)
+    parser.add_argument('--work', required=True, type=Path)
+    parser.add_argument('--source-only', action='store_true')
+    args = parser.parse_args()
+    args.evidence.mkdir(parents=True, exist_ok=True)
+    receipt = {'schema': 1, 'status': 'FAIL', 'phase': 'SOURCE_ADMISSION', 'started_at': timestamp(),
+               'original_framework_build': 'NOT_RUN', 'external_consumer_build': 'NOT_RUN',
+               'native_editor_ui_tests': 0, 'verified_runtime_observations': []}
+    def interrupt(signum, frame):
+        raise InterruptedError('CI signal ' + str(signum))
+    signal.signal(signal.SIGTERM, interrupt)
+    signal.signal(signal.SIGINT, interrupt)
+    try:
+        execute(args, receipt)
+    except BaseException as error:
+        receipt.update(status='FAIL', error_type=type(error).__name__, error=str(error))
+    finally:
+        if not args.source_only:
+            try:
+                after = source_observation(args.root.resolve())
+                write(args.evidence / 'source-after.json', after)
+                before_path = args.evidence / 'source-before.json'
+                require(before_path.is_file() and json.loads(before_path.read_text()) == after,
+                        'Source closure differs at final observation')
+            except BaseException as error:
+                write(args.evidence / 'source-after-failure.json', {'error_type': type(error).__name__, 'error': str(error)})
+                receipt.update(status='FAIL', source_after_error=str(error))
+        receipt['finished_at'] = timestamp()
+        write(args.evidence / ('source-admission.json' if args.source_only else 'execution.json'), receipt)
+        if receipt.get('distribution'):
+            write(Path(receipt['distribution']) / 'QUALIFICATION.json', receipt)
+        if not args.source_only:
+            preflight_path = args.evidence / 'preflight/preflight.json'
+            if preflight_path.is_file():
+                preflight = json.loads(preflight_path.read_text())
+                if (preflight.get('source_sha') == os.environ.get('GITHUB_SHA')
+                        and preflight.get('run_id') == os.environ.get('GITHUB_RUN_ID')
+                        and preflight.get('run_attempt') == os.environ.get('GITHUB_RUN_ATTEMPT')):
+                    cleanup = []
+                    for kind, selected in preflight.get('selected', {}).items():
+                        udid = selected.get('udid', '')
+                        if (kind in {'ipad', 'iphone'} and re.fullmatch(r'[0-9A-Fa-f-]{36}', udid)
+                                and selected.get('name') == 'Pinkha-UI27-' + os.environ.get('GITHUB_RUN_ID', '') + '-' + kind):
+                            for operation in ['shutdown', 'delete']:
+                                try:
+                                    result = subprocess.run(['xcrun', 'simctl', operation, udid], capture_output=True, timeout=60)
+                                    cleanup.append({'operation': operation, 'udid': udid, 'returncode': result.returncode,
+                                                    'stdout': result.stdout.decode(errors='replace'), 'stderr': result.stderr.decode(errors='replace')})
+                                except BaseException as error:
+                                    cleanup.append({'operation': operation, 'udid': udid,
+                                                    'error_type': type(error).__name__, 'error': str(error)})
+                    write(args.evidence / 'owned-simulator-cleanup.json', cleanup)
+    print(json.dumps(receipt, indent=2, sort_keys=True))
+    return 0 if receipt['status'] in {'SOURCE_BOUND_FRAMEWORK_RUNTIME_NOT_RUN',
+              'ACTUAL_ORIGINAL_FRAMEWORK_EXTERNAL_IMPORT_LINK_RESOURCES_PASS'} else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

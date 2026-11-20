@@ -1,0 +1,101 @@
+name: Original editor framework external import and resources
+
+on:
+  push:
+    branches:
+      - codex/otzaria-original-editor-framework-reviewed-20261120
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: original-editor-framework-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original-editor-framework:
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-reviewed-20261120'
+    runs-on: xcode-27
+    timeout-minutes: 140
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-reviewed-20261120
+      HEART_SOURCE_RUN_ID: '44203168617'
+      EDITOR_EVIDENCE: build/original-editor-framework-evidence
+      EDITOR_WORK: build/original-editor-framework-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout exact reviewed source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Use the original native ARM64 Python contract
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Bind original app sources resources packages and the additive target
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/$EXPECTED_APP_BRANCH"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          git switch --force-create "$EXPECTED_APP_BRANCH" "$GITHUB_SHA"
+          python3 Tools/OriginalEditor/run_framework_acceptance.py --root "$GITHUB_WORKSPACE" \
+            --evidence "$EDITOR_EVIDENCE" --work "$EDITOR_WORK" --source-only
+          python3 -m unittest discover -s Tools/OriginalEditor -p 'test_*.py' -v \
+            > "$EDITOR_EVIDENCE/source-controls.stdout.log" 2> "$EDITOR_EVIDENCE/source-controls.stderr.log"
+      - name: Checkout the immutable original canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Prepare and verify the original SDK snapshot
+        run: |
+          python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
+          python3 Tools/Hanlin/prepare_sdk.py --check
+      - name: Verify actual Xcode27 and create original owned OS27 simulators
+        run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence "$EDITOR_EVIDENCE/preflight"
+      - name: Verify the recorded original Heart producer and exact binary slices
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 Tools/Hanlin/prepare_original_editor_heart.py \
+            --source-run-id "$HEART_SOURCE_RUN_ID" \
+            --output build/original-editor-framework-verified-heart --evidence "$EDITOR_EVIDENCE/heart-source"
+          python3 Tools/PinkhaNativeDerived/install_verified_heart.py \
+            --archive build/original-editor-framework-verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
+            --app-source "$GITHUB_WORKSPACE" --source-run-id "$HEART_SOURCE_RUN_ID" \
+            --expected-app-branch "$EXPECTED_APP_BRANCH" --evidence "$EDITOR_EVIDENCE/heart"
+      - name: Build the genuine framework and execute the separate binary consumer
+        timeout-minutes: 120
+        run: |
+          python3 Tools/OriginalEditor/run_framework_acceptance.py --root "$GITHUB_WORKSPACE" \
+            --evidence "$EDITOR_EVIDENCE" --work "$EDITOR_WORK"
+      - name: Preserve actual source input command build and runtime evidence
+        if: always()
+        run: |
+          mkdir -p "$EDITOR_EVIDENCE"
+          python3 Tools/PinkhaNativeDerived/package_evidence.py "$EDITOR_EVIDENCE"
+      - name: Upload source-bound framework acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Editor-Framework-Evidence-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.EDITOR_EVIDENCE }}/Pinkha-Native-Derived-Evidence.zip
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload only the actually qualified simulator framework closure
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Editor-Simulator-Framework-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.EDITOR_WORK }}/distribution
+          if-no-files-found: error
+          retention-days: 14

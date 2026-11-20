@@ -1,0 +1,20 @@
+--- v1/.github/workflows/pinkha-original-editor-framework.yml
++++ v2/.github/workflows/pinkha-original-editor-framework.yml
+@@ -17,7 +17,7 @@
+   original-editor-framework:
+     if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-reviewed-20261120'
+     runs-on: xcode-27
+-    timeout-minutes: 120
++    timeout-minutes: 140
+     env:
+       PYTHONDONTWRITEBYTECODE: '1'
+       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+@@ -74,7 +74,7 @@
+             --app-source "$GITHUB_WORKSPACE" --source-run-id "$HEART_SOURCE_RUN_ID" \
+             --expected-app-branch "$EXPECTED_APP_BRANCH" --evidence "$EDITOR_EVIDENCE/heart"
+       - name: Build the genuine framework and execute the separate binary consumer
+-        timeout-minutes: 100
++        timeout-minutes: 120
+         run: |
+           python3 Tools/OriginalEditor/run_framework_acceptance.py --root "$GITHUB_WORKSPACE" \
+             --evidence "$EDITOR_EVIDENCE" --work "$EDITOR_WORK"
