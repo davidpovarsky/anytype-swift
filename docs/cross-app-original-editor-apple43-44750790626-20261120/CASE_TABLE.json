@@ -1,0 +1,217 @@
+[
+  {
+    "duration_seconds": 0.0026149749755859375,
+    "identifier": "EditorDocumentOwnedBlockTests/admittedWriteAndReadCannotRegainOwnershipAfterCloseReopen()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.02530074119567871,
+    "identifier": "EditorDocumentOwnedBlockTests/forwardsOriginalBlockArgumentsAndReturnIdentities()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0014431476593017578,
+    "identifier": "EditorDocumentOwnedBlockTests/originalErrorsAndPredispatchCancellationArePreserved()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0024080276489257812,
+    "identifier": "EditorDocumentOwnedBlockTests/originalOwnedReadWorksWithoutEditAuthority()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.00734710693359375,
+    "identifier": "EditorDocumentOwnedBlockTests/refusesUnownedContextSpaceDestinationsAndObjectCreation()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0005118846893310547,
+    "identifier": "EditorDocumentOwnedBlockTests/retiringOneOwnerDoesNotRetireAnotherOwnerOfSameDocument()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.001600027084350586,
+    "identifier": "EditorDocumentOwnedTableTests/admittedCreationAfterCloseRevocationIsNotReportedAsRollback()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.020573854446411133,
+    "identifier": "EditorDocumentOwnedTableTests/forwardsAllThirteenOriginalTableMethodsAndTheirResult()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.00029778480529785156,
+    "identifier": "EditorDocumentOwnedTableTests/originalServiceErrorAndPredispatchCancellationAreNotRetried()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0007960796356201172,
+    "identifier": "EditorDocumentOwnedTableTests/refusesForeignContextAndReadonlyModeBeforeTheOriginalService()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.00038695335388183594,
+    "identifier": "EditorDocumentOwnedTableTests/twoOwnersDoNotShareRetirementAuthority()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.01846909523010254,
+    "identifier": "EditorDocumentWriteOwnerTests/forwardsAllOriginalTextOperationsWithTheOwnedContext()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.000308990478515625,
+    "identifier": "EditorDocumentWriteOwnerTests/preservesServiceErrorsAndReleasesTheirLease()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0013480186462402344,
+    "identifier": "EditorDocumentWriteOwnerTests/readonlyToggleRemainsPresentationalButRetiredEventsAreDropped()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0007100105285644531,
+    "identifier": "EditorDocumentWriteOwnerTests/rechecksOriginalDocumentIdentityModeAndOpenState()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0008668899536132812,
+    "identifier": "EditorDocumentWriteOwnerTests/refusesForeignContextReadonlyModeAndLivePermissionLossBeforeDispatch()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0005271434783935547,
+    "identifier": "EditorDocumentWriteOwnerTests/retirementDistinguishesAnAlreadyCompletedWriteFromADispatchRefusal()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0006542205810546875,
+    "identifier": "EditorDocumentWriteOwnerTests/retirementWaitsForAnAlreadyAdmittedPublicationToDrain()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0006160736083984375,
+    "identifier": "EditorDocumentWriteOwnerTests/retiringOneOwnerDoesNotAuthorizeOrRetireAnother()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.00011301040649414062,
+    "identifier": "EditorLocalEventPublisherTests/aFailedStyleWriteDoesNotPublish()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.00025773048400878906,
+    "identifier": "EditorLocalEventPublisherTests/cancellationDoesNotPublishOrRetry()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.00013208389282226562,
+    "identifier": "EditorLocalEventPublisherTests/publishesToTheSuppliedOwnerAfterTheStyleWriteCompletes()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 2.3126602172851562e-05,
+    "identifier": "EditorLocalEventPublisherTests/separateEditorsDoNotShareTheInjectedEventOwner()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 4.601478576660156e-05,
+    "identifier": "EditorLocalEventPublisherTests/splitStillLeavesPublicationToTheOriginalFocusOwner()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0008058547973632812,
+    "identifier": "PreparedEditorLifetimeTests/admittedWriteCompletionAfterRevocationIsReportedWithoutRollback()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0007441043853759766,
+    "identifier": "PreparedEditorLifetimeTests/alreadyAdmittedPublicationDrainsAndSubsequentPublicationIsRefused()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0005781650543212891,
+    "identifier": "PreparedEditorLifetimeTests/closedThenReopenedDocumentCannotRenewTheCapturedLifetime()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.00020885467529296875,
+    "identifier": "PreparedEditorLifetimeTests/explicitRetirementDoesNotInvalidateAnotherOwnerOfTheSameDocument()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.000782012939453125,
+    "identifier": "PreparedEditorLifetimeTests/independentHostLifetimeRetiresOnlyItsOwnOwner()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0034639835357666016,
+    "identifier": "PreparedEditorLifetimeTests/observedPermissionLossCannotRenewTheCapturedLifetime()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.00022220611572265625,
+    "identifier": "PreparedEditorLifetimeTests/registrationCannotMissAnEarlierInvalidation()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0003299713134765625,
+    "identifier": "PreparedEditorLifetimeTests/replacingTheLifetimeSourceIsRejected()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0003139972686767578,
+    "identifier": "PreparedEditorPageDocumentTests/acceptsTheSameOpenedDocumentInEachOriginalMode()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.00045228004455566406,
+    "identifier": "PreparedEditorPageDocumentTests/rechecksTheActualDocumentAfterItHasClosed()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0004467964172363281,
+    "identifier": "PreparedEditorPageDocumentTests/rejectsAnotherModeAndAnotherVersion()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.00021791458129882812,
+    "identifier": "PreparedEditorPageDocumentTests/rejectsAnotherObjectWithTheSameSpace()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.00021791458129882812,
+    "identifier": "PreparedEditorPageDocumentTests/rejectsAnotherSpaceWithTheSameObject()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0006372928619384766,
+    "identifier": "PreparedEditorPageDocumentTests/rejectsEmptyIdentitiesWithoutNormalizingDifferentIdentifiers()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0002651214599609375,
+    "identifier": "TextServiceHandlerInjectionTests/forwardsCheckedMergeAndIconToTheSameInjectedService()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 3.0040740966796875e-05,
+    "identifier": "TextServiceHandlerInjectionTests/keepsTwoEditorServiceInstancesSeparate()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.00011682510375976562,
+    "identifier": "TextServiceHandlerInjectionTests/preservesSplitResultAndUTF16Range()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 0.0012960433959960938,
+    "identifier": "TextServiceHandlerInjectionTests/preservesTextAndMarksOnBothOriginalTextOperations()",
+    "result": "Success"
+  },
+  {
+    "duration_seconds": 6.413459777832031e-05,
+    "identifier": "TextServiceHandlerInjectionTests/propagatesAStyleFailureWithoutTryingAnotherService()",
+    "result": "Success"
+  }
+]
