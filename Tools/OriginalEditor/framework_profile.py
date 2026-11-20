@@ -8,7 +8,7 @@ import subprocess
 
 from pbx_source import loads, object_text, require
 
-BRANCH = 'codex/otzaria-original-editor-framework-reviewed-20261120'
+BRANCH = 'codex/otzaria-original-editor-framework-v3-reviewed-20261120'
 REPOSITORY = 'davidpovarsky/anytype-swift'
 TARGET = 'AnytypeOriginalEditor'
 APP_TARGET = '0303ECFA22D8EDAA005C552B'
@@ -112,8 +112,8 @@ def source_observation(root, environment=None):
     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
     installer = (root / installer_path).read_text()
-    reviewed = "                             'codex/otzaria-original-editor-owned43-apple-reviewed-20261120',\n                             '" + BRANCH + "'],"
-    original = "                             'codex/otzaria-original-editor-owned43-apple-reviewed-20261120'],"
+    reviewed = "                             'codex/otzaria-original-editor-framework-reviewed-20261120',\n                             '" + BRANCH + "'],"
+    original = "                             'codex/otzaria-original-editor-framework-reviewed-20261120'],"
     require(installer.count(reviewed) == 1 and
             blob(installer.replace(reviewed, original, 1).encode()) == profile['original_heart_installer_blob'],
             'Original verified Heart installer has a change beyond the exact new consumer branch')

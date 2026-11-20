@@ -181,8 +181,6 @@ def execute(args, receipt):
     receipt.update(preflight=preflight, sdk=sdk, swift=swift, heart=installation,
                    original_app_runtime='NOT_RUN', editable_mount='NOT_EXPOSED', native_editor_ui_tests=0)
     udid = preflight['selected']['ipad']['udid']
-    command(['xcrun', 'simctl', 'boot', udid], root, evidence, 'boot-owned-simulator', 60)
-    command(['xcrun', 'simctl', 'bootstatus', udid, '-b'], root, evidence, 'boot-status', 180)
     derived = work / 'producer-derived'
     destination = 'platform=iOS Simulator,id=' + udid
     flags = ['OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED', 'ONLY_ACTIVE_ARCH=YES',
@@ -213,10 +211,10 @@ def execute(args, receipt):
         for source in sorted(checkout.iterdir()):
             if source.is_file() and not source.is_symlink() and source.name.upper().split('.')[0] in {'LICENSE', 'LICENCE', 'NOTICE', 'COPYING'}:
                 require(source.stat().st_size <= 2_097_152, 'Unexpected dependency notice size')
-                destination = notices / checkout.name / source.name
-                destination.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copyfile(source, destination)
-                notice_files.append({'path': destination.relative_to(exported).as_posix(), 'sha256': sha256(destination)})
+                notice_destination = notices / checkout.name / source.name
+                notice_destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, notice_destination)
+                notice_files.append({'path': notice_destination.relative_to(exported).as_posix(), 'sha256': sha256(notice_destination)})
     write(notices / 'OriginalSource.json', {'application_source': before['head_sha'],
           'original_trees': before['original_trees'], 'dependencies': receipt['dependencies'],
           'retained_original_dependency_notices': notice_files, 'scope': 'Framework/resource prerequisite; editable mount is not exposed'})
@@ -292,6 +290,8 @@ def execute(args, receipt):
     receipt['verified_runtime_observations'] = []
     write(evidence / 'execution.json', receipt)
     bundle_id = 'org.otzaria.acceptance.original-editor'
+    command(['xcrun', 'simctl', 'boot', udid], root, evidence, 'boot-owned-simulator', 60)
+    command(['xcrun', 'simctl', 'bootstatus', udid, '-b'], root, evidence, 'boot-status', 180)
     command(['xcrun', 'simctl', 'install', udid, str(app)], root, evidence, 'install-external-consumer', 60)
     installed = command(['xcrun', 'simctl', 'get_app_container', udid, bundle_id, 'app'], root, evidence, 'actual-consumer-app-container', 30).strip()
     data = Path(command(['xcrun', 'simctl', 'get_app_container', udid, bundle_id, 'data'], root, evidence, 'actual-consumer-data-container', 30).strip())
