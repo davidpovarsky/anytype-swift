@@ -17,7 +17,7 @@ class OriginalRawCompilerEvidenceControls(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
-        self.root = Path(self.temporary.name) / 'source'
+        self.root = Path(self.temporary.name).resolve() / 'source'
         self.derived = self.root / 'build/producer-derived'
         self.evidence = Path(self.temporary.name) / 'evidence'
         self.evidence.mkdir()

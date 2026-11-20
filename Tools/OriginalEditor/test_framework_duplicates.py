@@ -114,8 +114,8 @@ class DarwinAttributeBoundaryControls(unittest.TestCase):
 class KnownLibDuplicateControls(unittest.TestCase):
     def setUp(self):
         original_controls.RealFilesystemExportControls.setUp(self)
-        self.first = self.products / 'Lib.framework'
-        self.second = self.products / 'PackageFrameworks/Lib.framework'
+        self.first = (self.products / 'Lib.framework').resolve()
+        self.second = (self.products / 'PackageFrameworks/Lib.framework').resolve()
         self.first.mkdir()
         (self.first / 'Lib').write_bytes(b'EXPLICIT_SYNTHETIC_LIB_NOT_AN_APPLE_BINARY')
         (self.first / 'Lib').chmod(0o755)
@@ -278,21 +278,29 @@ class KnownLibDuplicateControls(unittest.TestCase):
 
     def test_known_input_changed_during_copy_cannot_publish_success(self):
         real = products_module.copy_product
+        mutations = []
         def changed(source, target, producer):
             real(source, target, producer)
             if Path(source) == self.first:
                 (self.second / 'Lib').write_bytes(b'changed after admitted comparison')
+                mutations.append(self.second / 'Lib')
         with patch.object(products_module, 'copy_product', changed):
             self.denied()
+        self.assertEqual(mutations, [self.second / 'Lib'])
+        self.assertEqual((self.second / 'Lib').read_bytes(), b'changed after admitted comparison')
 
     def test_changed_materialized_output_cannot_publish_success(self):
         real = products_module.copy_product
+        mutations = []
         def changed(source, target, producer):
             real(source, target, producer)
             if Path(source) == self.first:
                 (Path(target) / 'Lib').write_bytes(b'changed exported file')
+                mutations.append(Path(target) / 'Lib')
         with patch.object(products_module, 'copy_product', changed):
             self.denied()
+        self.assertEqual(mutations, [(self.exported / 'Frameworks/Lib.framework/Lib').resolve()])
+        self.assertEqual(mutations[0].read_bytes(), b'changed exported file')
 
 
 if __name__ == '__main__':

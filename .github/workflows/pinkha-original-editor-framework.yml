@@ -3,7 +3,7 @@ name: Original editor framework external import and resources
 on:
   push:
     branches:
-      - codex/otzaria-original-editor-framework-v4-reviewed-20261120
+      - codex/otzaria-original-editor-framework-v5-reviewed-20261120
 
 permissions:
   contents: read
@@ -15,13 +15,13 @@ concurrency:
 
 jobs:
   original-editor-framework:
-    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v4-reviewed-20261120'
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v5-reviewed-20261120'
     runs-on: xcode-27
     timeout-minutes: 140
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
-      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v4-reviewed-20261120
+      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v5-reviewed-20261120
       HEART_SOURCE_RUN_ID: '44203168617'
       EDITOR_EVIDENCE: build/original-editor-framework-evidence
       EDITOR_WORK: build/original-editor-framework-${{ github.run_id }}-${{ github.run_attempt }}
