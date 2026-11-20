@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "status": "READ_ONLY_SOURCE_REVIEW_COMPLETE_APPLE_EXECUTION_PENDING",
+  "createdAt": "2026-11-20T04:55:04.288921+00:00",
+  "reviewer": "Codex capability-inventory role, independent of implementation role",
+  "sourceBaseCommit": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+  "sources": {
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift": "87e551c1076b7fff82cbe256c921559c12232c704169807372071ed91c29e0dc",
+    "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeDocumentPublicationTests.swift": "8affee55ada19e2ca31411164005be0d2863e421b2f4ce5111e639e00c9af32a"
+  },
+  "scope": [
+    "Acknowledged editor text and conditional Undo publication",
+    "Newer typed/IME draft rebasing while a real save is in flight",
+    "Original owner/request checks on success, errors and deferred cleanup",
+    "Actual default native reader and unchanged native write/lease authority",
+    "Cancellation and bounded test fixture cleanup"
+  ],
+  "findings": [
+    {
+      "id": "DRAFT-BASE-REVERSION",
+      "status": "SOURCE_CORRECTED",
+      "finding": "A newer return to the original base while B was being saved could remove the pending draft.",
+      "resolution": "Retain equal-to-base text/IME revisions only while that exact block awaits its native acknowledgement, then use the existing revision rebase."
+    },
+    {
+      "id": "AUTOSAVE-CANCELLATION",
+      "status": "SOURCE_CORRECTED",
+      "finding": "Later typing cancelled the same debounce task after it had entered the native flush.",
+      "resolution": "Queue a later save while saving, preserve the active receipt, cancel only a pre-dispatch debounce; unmount and lifetime cancellation remain."
+    },
+    {
+      "id": "PREMOUNT-LOAD",
+      "status": "SOURCE_CORRECTED",
+      "finding": "A premount load could keep isLoading true after mount changed epoch, blocking the post-mount load while the old result was discarded.",
+      "resolution": "Mount retires prior read/loading ownership when it rotates epoch; old defer cannot clear the new owner's spinner."
+    },
+    {
+      "id": "INITIAL-OBSERVATION",
+      "status": "SOURCE_CORRECTED",
+      "finding": "A write during the initializing load's association await could retire that load before startObservation, without queuing another load.",
+      "resolution": "A mutation records a pending load before retiring loadingReadID and completes it through the existing deferred-read path."
+    },
+    {
+      "id": "DERIVED-READ-ORDER",
+      "status": "SOURCE_CORRECTED",
+      "finding": "Load and claims-observer derived-property reads could finish out of order.",
+      "resolution": "An independent nativePropertiesReadID gates both success and error while preserving editor-request and lifetime checks."
+    },
+    {
+      "id": "TEST-DEFERRED-READ-BARRIER",
+      "status": "SOURCE_CORRECTED",
+      "finding": "A later explicit held-load phase could race a valid deferred load scheduled by the prior mutation.",
+      "resolution": "The test observes and awaits the actual internal read-only deferred task with a cancellable deadline before arming the next hold."
+    }
+  ],
+  "reviewedProperties": {
+    "nativeReadDefault": "editorReadOperation delegates to documents.read with the original native lease; no document capture",
+    "nativeWrites": "Original concrete document/block creators, native conditional writes and lease/authorization paths remain in use",
+    "undo": "Retained only when the exact post-write native editor version still matches the inverse's captured expectedVersion",
+    "weakOwnership": "Deferred UI tasks capture the document weakly; the default read closure captures no document",
+    "testBoundary": "Real AnyLib storage and lease paths; only result delivery is delayed or failed. The mounted surface is synthetic and explicitly does not certify UIKit gestures.",
+    "testCleanup": "Purpose-specific gates are cancellable and bounded; fixture releases holds, cancels/awaits its tasks and drains the actual presentation lifetime."
+  },
+  "requiredAppleMethods": [
+    "NativeDocumentPublicationTests/testAcknowledgedNativeEditsRetireOlderReadsAndKeepUndo",
+    "NativeDocumentPublicationTests/testStaleReadFailureAndDeferCannotReplaceNewOwnerState",
+    "NativeDocumentPublicationTests/testTypingAndCompositionBackToBaseDuringNativeSaveRetainNewRevision"
+  ],
+  "actualTestsExecutedByThisReview": 0,
+  "compilerInvokedByThisReview": false,
+  "remaining": [
+    "Semantic compilation and actual execution of all three hosted Apple tests",
+    "Mounted NativeLaunch acceptance remains separately gated"
+  ],
+  "sourceOrTestFilesModifiedByReviewer": []
+}

@@ -24,6 +24,15 @@ PROFILES = {
         ],
     },
     "ui-ios": {
+        "AnyNativePropertyPresentationTests": [
+            "delayedReviewCannotRestoreOldTypeOrEraseAcknowledgedUndo",
+            "delayedReadFailureCannotReplaceAcknowledgedWriteFeedbackOrUndo",
+            "delayedRefreshCannotRevealAnAcknowledgedHiddenProperty",
+            "refreshDuringWriteDoesNotDispatchOrReportMissingWorkspace",
+            "supersededReadFailureCannotClearNewerReadSpinnerOrFeedback",
+            "oldReadCannotPublishOrClearLoadingAfterOwnerReactivation",
+            "oldWriteCompletionCannotClearNewOwnerSavingStateOrPublishFailure",
+        ],
         "AnyNativeMarkedTextTests": [
             "testFirstMarkedInputBeginsBeforeMutationAndRepeatedUpdatesKeepTheMarkedRange",
             "testActualMarkedBufferUsesImmutableRawProjectionUntilCommit",
@@ -41,6 +50,14 @@ PROFILES = {
         ],
     },
     "application": {
+        "NativeDocumentPublicationTests": [
+            "testAcknowledgedNativeEditsRetireOlderReadsAndKeepUndo",
+            "testStaleReadFailureAndDeferCannotReplaceNewOwnerState",
+            "testTypingAndCompositionBackToBaseDuringNativeSaveRetainNewRevision",
+        ],
+        "NativePropertyWorkflowTests": [
+            "testOriginalFifteenPropertyAssertionsOnRealNativeLibrary",
+        ],
         "NativeApplicationTests": [
             "testRealAccountWorkspaceJournalEditorAndColdReopen",
             "testPostAuthKeychainFailureRevokesNativeAuthorityAndRecoversSameAccount",
@@ -71,11 +88,14 @@ SOURCE_PATHS = {
     "ui-ios": [
         "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeMarkedTextTests.swift",
         "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeFocusLifecycleTests.swift",
+        "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift",
     ],
     "application": [
         "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift",
         "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeHanlinCreationTests.swift",
         "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeTorahWorkflowTests.swift",
+        "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeDocumentPublicationTests.swift",
+        "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativePropertyWorkflowTests.swift",
     ],
     "native-ui": ["NativeApp/UITests/NativeLaunchTests.swift"],
 }

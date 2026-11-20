@@ -1,0 +1,2759 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_ACTUAL_APPLE_PACKAGE_TESTS",
+  "commit": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+  "profiles": {
+    "any-engine-tests": {
+      "xctest": {
+        "total": 67,
+        "passed": 67,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 0,
+        "status": "passed"
+      },
+      "logSHA256": "305d407dfc4cf6c5f171b619822f95de0bdc0b021065e6b13a702b45b44ca366"
+    },
+    "any-integration-tests": {
+      "xctest": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 126,
+        "passed": 126,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 10,
+        "status": "passed"
+      },
+      "logSHA256": "8877ddfe93e3eece9106b41cb87f2d722637472553214176d2097790ea149c41"
+    },
+    "any-host-tests": {
+      "xctest": {
+        "total": 65,
+        "passed": 65,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 11,
+        "passed": 11,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 1,
+        "status": "passed"
+      },
+      "logSHA256": "b8a6e3a434ad2ba0bde4ae56d37beb851bf00a7fa2873fbcbfd164972c373845"
+    },
+    "any-hanlin-tests": {
+      "xctest": {
+        "total": 33,
+        "passed": 33,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 0,
+        "status": "passed"
+      },
+      "logSHA256": "98741e7c9b90848f5fe7f34ca939623a91834ca3e34fb967c52c979765960415"
+    },
+    "torah-presentation-tests": {
+      "xctest": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 10,
+        "passed": 10,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 1,
+        "status": "passed"
+      },
+      "logSHA256": "dc2b7582c456967cc08d0f3f8d0ce920944849dea0185f71d5c2716011c26943"
+    },
+    "any-ui-tests": {
+      "xctest": {
+        "total": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 93,
+        "passed": 93,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 16,
+        "status": "passed"
+      },
+      "logSHA256": "d789290629cb33563fb85d95676109b87533fa61643c688e3600be004326ff8b"
+    },
+    "pinkhakit-tests": {
+      "xctest": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 217,
+        "passed": 217,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 29,
+        "status": "passed"
+      },
+      "logSHA256": "c1378b8f81460e02771abcd27b21bcae4bac6ceeb6a9e431a349361481a2e692"
+    }
+  },
+  "method": "Verify final framework summaries and every individual passed-case line in each archived package log; no failure/skip result lines; exact GitHub artifact digest and committed source identities checked.",
+  "execution": [
+    {
+      "profile": "any-engine-tests",
+      "log": "any-engine-tests.log",
+      "sha256": "305d407dfc4cf6c5f171b619822f95de0bdc0b021065e6b13a702b45b44ca366",
+      "xctestSummary": {
+        "line": 238,
+        "text": "\t Executed 67 tests, with 0 failures (0 unexpected) in 0.379 (0.391) seconds"
+      },
+      "swiftTestingSummary": {
+        "line": 242,
+        "text": "✔ Test run with 0 tests in 0 suites passed after 0.001 seconds."
+      },
+      "passedXCTestCases": [
+        {
+          "line": 82,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedObjectSnapshotTests testBoundAppliesToForeignWitnessesAndProvenanceIsStillRequired]' passed (0.004 seconds)."
+        },
+        {
+          "line": 84,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedObjectSnapshotTests testEmptyEligibleObjectHasCompleteEmptyClosure]' passed (0.000 seconds)."
+        },
+        {
+          "line": 86,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedObjectSnapshotTests testForeignCollisionWitnessObservingOmittedForeignPredecessorMatchesWorkspaceFold]' passed (0.006 seconds)."
+        },
+        {
+          "line": 88,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedObjectSnapshotTests testObjectClosureCannotSatisfyWholeWorkspaceSnapshotContract]' passed (0.000 seconds)."
+        },
+        {
+          "line": 90,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedObjectSnapshotTests testReachabilityIsSortedUniqueSubsetOfThisObjectsClaimBlockHistory]' passed (0.010 seconds)."
+        },
+        {
+          "line": 92,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedObjectSnapshotTests testUnseededForeignRowCannotMasqueradeAsACompleteObjectClosure]' passed (0.002 seconds)."
+        },
+        {
+          "line": 94,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedObjectSnapshotTests testWatchRefusesLostHistoryWrongEventIDsAndTerminalAuthorityFailure]' passed (0.004 seconds)."
+        },
+        {
+          "line": 96,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedObjectSnapshotTests testWatchRequiresNewGenerationForReachabilityChangesAndKeepsHistory]' passed (0.007 seconds)."
+        },
+        {
+          "line": 98,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedObjectSnapshotTests testWrongTargetScopeVersionAndMissingReadinessFailClosed]' passed (0.001 seconds)."
+        },
+        {
+          "line": 103,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testGenericBundleAndUnknownNativeVersionsNeverActivateNativeLane]' passed (0.000 seconds)."
+        },
+        {
+          "line": 105,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeByteBoundRejectsOversizedEnvelopeBeforeProjection]' passed (0.290 seconds)."
+        },
+        {
+          "line": 107,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeCapabilitiesRequireCompiledContractAndAllAuthorityFlags]' passed (0.001 seconds)."
+        },
+        {
+          "line": 109,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeErrorAndDeltaEventsInvalidateFullStateWatch]' passed (0.000 seconds)."
+        },
+        {
+          "line": 111,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeFullStateWatchRequiresMatchingEventGeneration]' passed (0.001 seconds)."
+        },
+        {
+          "line": 113,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeSnapshotPreservesObservedRemoveAndUnseenAdd]' passed (0.004 seconds)."
+        },
+        {
+          "line": 115,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeSnapshotQuarantinesCrossTargetLogicalCollision]' passed (0.002 seconds)."
+        },
+        {
+          "line": 117,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeSnapshotRejectsDuplicateRowsAndExcessCount]' passed (0.001 seconds)."
+        },
+        {
+          "line": 119,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeSnapshotRejectsForgedCreatorAndAbsentNativeReceipt]' passed (0.002 seconds)."
+        },
+        {
+          "line": 121,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeSnapshotRejectsIncompleteWrongScopeAndLegacyRowIDs]' passed (0.001 seconds)."
+        },
+        {
+          "line": 123,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeSnapshotRejectsMalformedReadinessAndUnboundedLimits]' passed (0.000 seconds)."
+        },
+        {
+          "line": 125,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeSnapshotRetainsCanonicalPayloadAndDerivedProvenance]' passed (0.002 seconds)."
+        },
+        {
+          "line": 127,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeWatchRejectsMissingImmutableClaimsAndReusedGeneration]' passed (0.004 seconds)."
+        },
+        {
+          "line": 129,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testNativeWatchStartsAtomicAndCoalescesIdenticalGeneration]' passed (0.002 seconds)."
+        },
+        {
+          "line": 131,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testQueryItemsEncodeHebrewAndCannotChangeEndpointOrPath]' passed (0.007 seconds)."
+        },
+        {
+          "line": 133,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyGuardedTorahTests testSSEParserRetainsEventIDWithoutInventingResumeState]' passed (0.001 seconds)."
+        },
+        {
+          "line": 138,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyHTTPClientTests testEmptyRejectionsAreAllowed]' passed (0.000 seconds)."
+        },
+        {
+          "line": 140,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyHTTPClientTests testHTTP200PartialRejectionIsFailure]' passed (0.000 seconds)."
+        },
+        {
+          "line": 142,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyHTTPClientTests testHTTPErrorKeepsMachineCodeWithoutEchoingPayload]' passed (0.000 seconds)."
+        },
+        {
+          "line": 144,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyHTTPClientTests testMalformedRejectionsNeverCountAsSuccess]' passed (0.000 seconds)."
+        },
+        {
+          "line": 146,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyHTTPClientTests testNestedPageRejectionsAreFailure]' passed (0.000 seconds)."
+        },
+        {
+          "line": 148,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyHTTPClientTests testRedirectIsNotDecodedAsSuccess]' passed (0.000 seconds)."
+        },
+        {
+          "line": 153,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testCancelledCallerCannotRegisterNewStreamWork]' passed (0.001 seconds)."
+        },
+        {
+          "line": 155,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testDisplacedRecordInvalidatesACompleteWindow]' passed (0.001 seconds)."
+        },
+        {
+          "line": 157,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testEveryByteBoundaryPreservesHebrewUTF8AndCRLF]' passed (0.001 seconds)."
+        },
+        {
+          "line": 159,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testFullDocumentIsAuthoritativeAndEmptyVersionIsApplied]' passed (0.000 seconds)."
+        },
+        {
+          "line": 161,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testIncompleteSnapshotCannotFoldClaims]' passed (0.000 seconds)."
+        },
+        {
+          "line": 163,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testInvalidUTF8AndUnterminatedFrameFailClosed]' passed (0.000 seconds)."
+        },
+        {
+          "line": 165,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testMalformedBatchDoesNotPartiallyCommitItsFirstRecord]' passed (0.001 seconds)."
+        },
+        {
+          "line": 167,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testMultilineDataAndKeepaliveComments]' passed (0.000 seconds)."
+        },
+        {
+          "line": 169,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testOversizedFrameIsRejectedAcrossChunks]' passed (0.000 seconds)."
+        },
+        {
+          "line": 171,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testReadyAndInitialSnapshotOrderIsRequired]' passed (0.000 seconds)."
+        },
+        {
+          "line": 173,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testRetainedWindowBytesAreBoundedAcrossSmallDeltas]' passed (0.000 seconds)."
+        },
+        {
+          "line": 175,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testSessionInvalidationCancelsRegisteredWorkAndPreventsReuse]' passed (0.001 seconds)."
+        },
+        {
+          "line": 177,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyLiveQueryTests testTerminalOverflowAndGenerationChangeRequireResnapshot]' passed (0.000 seconds)."
+        },
+        {
+          "line": 182,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testCodableCannotBypassOperationValidation]' passed (0.001 seconds)."
+        },
+        {
+          "line": 184,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testConcurrentReplacementsBothSurvive]' passed (0.003 seconds)."
+        },
+        {
+          "line": 186,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testNativeCreatorMustMatchCanonicalAuthor]' passed (0.000 seconds)."
+        },
+        {
+          "line": 188,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testObservedRemovePreservesConcurrentUnseenAdd]' passed (0.002 seconds)."
+        },
+        {
+          "line": 190,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testObservedSetCanonicalization]' passed (0.001 seconds)."
+        },
+        {
+          "line": 192,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testOfflineOperationIDVariantsAreBothQuarantinedAcrossTargets]' passed (0.002 seconds)."
+        },
+        {
+          "line": 194,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testOnlyLiteralLoopbackEndpointIsAccepted]' passed (0.000 seconds)."
+        },
+        {
+          "line": 196,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testOpaquePayloadIncludingUnknownFieldsIsUnchanged]' passed (0.001 seconds)."
+        },
+        {
+          "line": 198,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testPinnedHeartGoldenVectorIsByteCompatible]' passed (0.001 seconds)."
+        },
+        {
+          "line": 200,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testReadLimitDoesNotReturnPartialProjection]' passed (0.000 seconds)."
+        },
+        {
+          "line": 202,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testRecordCannotCrossSpaces]' passed (0.000 seconds)."
+        },
+        {
+          "line": 204,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testRemovingTombstoneDoesNotResurrect]' passed (0.002 seconds)."
+        },
+        {
+          "line": 206,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testRequiredIdentifiersAndBoundsFailClosed]' passed (0.000 seconds)."
+        },
+        {
+          "line": 208,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testSchemaAdoptionRejectsMutableClaims]' passed (0.000 seconds)."
+        },
+        {
+          "line": 210,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testSchemaPreservesImmutableUndeletableIndexedClaims]' passed (0.000 seconds)."
+        },
+        {
+          "line": 212,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testSHA256KnownAnswer]' passed (0.000 seconds)."
+        },
+        {
+          "line": 214,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testTamperedRecordHashFailsClosed]' passed (0.000 seconds)."
+        },
+        {
+          "line": 216,
+          "text": "Test Case '-[PinkhaAnyEngineTests.AnyTorahOperationTests testUnknownAndForeignTargetPredecessorsAreDistinct]' passed (0.002 seconds)."
+        },
+        {
+          "line": 221,
+          "text": "Test Case '-[PinkhaAnyEngineTests.ManagedAuthorizationTests testMalformedCapabilityCannotInjectHeadersAndStandaloneStaysExplicit]' passed (0.001 seconds)."
+        },
+        {
+          "line": 223,
+          "text": "Test Case '-[PinkhaAnyEngineTests.ManagedAuthorizationTests testManagedCapabilityCoversJSONAndSSEWithoutDebugDisclosure]' passed (0.000 seconds)."
+        },
+        {
+          "line": 228,
+          "text": "Test Case '-[PinkhaAnyEngineTests.ObjectCreationRecoveryTests testExactNativePartialFailureCarriesOnlyValidatedRecoveryMetadata]' passed (0.000 seconds)."
+        },
+        {
+          "line": 230,
+          "text": "Test Case '-[PinkhaAnyEngineTests.ObjectCreationRecoveryTests testLateAccountSwitchRetainsIDOnlyForDedicatedOriginalSpaceCreateRoute]' passed (0.000 seconds)."
+        },
+        {
+          "line": 232,
+          "text": "Test Case '-[PinkhaAnyEngineTests.ObjectCreationRecoveryTests testMalformedOrDifferentFailureCannotInventRecoverableObjectIdentity]' passed (0.001 seconds)."
+        }
+      ],
+      "passedSwiftTestingTests": [],
+      "rejectedResultLines": []
+    },
+    {
+      "profile": "any-integration-tests",
+      "log": "any-integration-tests.log",
+      "sha256": "8877ddfe93e3eece9106b41cb87f2d722637472553214176d2097790ea149c41",
+      "xctestSummary": {
+        "line": 117,
+        "text": "\t Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.008) seconds"
+      },
+      "swiftTestingSummary": {
+        "line": 393,
+        "text": "✔ Test run with 126 tests in 10 suites passed after 0.754 seconds."
+      },
+      "passedXCTestCases": [],
+      "passedSwiftTestingTests": [
+        {
+          "line": 257,
+          "text": "✔ Test ineligibleCatalogTypeNeverBecomesAnEligibleDocument() passed after 0.101 seconds."
+        },
+        {
+          "line": 258,
+          "text": "✔ Test foreignScopeAndIncompleteOrBooleanVersionsFailClosed() passed after 0.101 seconds."
+        },
+        {
+          "line": 259,
+          "text": "✔ Test nativeReadPermissionCannotAuthorizeAWrite() passed after 0.101 seconds."
+        },
+        {
+          "line": 260,
+          "text": "✔ Test metadataMustStillMatchTheProvedNativeTypeAndCollections() passed after 0.101 seconds."
+        },
+        {
+          "line": 261,
+          "text": "✔ Test missingObservedHistoryCannotProduceACompleteImportPlan() passed after 0.101 seconds."
+        },
+        {
+          "line": 262,
+          "text": "✔ Test scopedReadDoesNotExportLateDataAfterOwnerRevocation() passed after 0.101 seconds."
+        },
+        {
+          "line": 263,
+          "text": "✔ Test opaquePayloadBytesAndUnknownNumbersRoundTripWithoutLocalFields() passed after 0.101 seconds."
+        },
+        {
+          "line": 264,
+          "text": "✔ Test guardedPolicyCannotBeAppliedToAnUnprovedEditorDataset() passed after 0.101 seconds."
+        },
+        {
+          "line": 265,
+          "text": "✔ Test customDocumentUsesNativeProofWithoutBroadeningLegacyAllowlist() passed after 0.101 seconds."
+        },
+        {
+          "line": 266,
+          "text": "✔ Test duplicateLiveAssociationIdentityAcrossPayloadsFailsBeforeAnyWrites() passed after 0.101 seconds."
+        },
+        {
+          "line": 267,
+          "text": "✔ Test payloadLocationCannotDisagreeWithItsArchivedOperation() passed after 0.101 seconds."
+        },
+        {
+          "line": 268,
+          "text": "✔ Test contradictoryInternalNoteMetadataIsNeverSuggestedAsAValidMapping() passed after 0.101 seconds."
+        },
+        {
+          "line": 269,
+          "text": "✔ Test removedHistoryIsArchivedWithoutResurrectingItsAssociation() passed after 0.101 seconds."
+        },
+        {
+          "line": 270,
+          "text": "✔ Test unreachableBlockHistoryIsPreservedAndRequiresExplicitResolution() passed after 0.101 seconds."
+        },
+        {
+          "line": 271,
+          "text": "✔ Test explicitMappingPreservesEachEnvelopeAndOriginalArchiveForAudit() passed after 0.101 seconds."
+        },
+        {
+          "line": 272,
+          "text": "✔ Test unknownEnvelopeFieldsAndDuplicateKeysAreRejectedWithoutDroppingBytes() passed after 0.101 seconds."
+        },
+        {
+          "line": 273,
+          "text": "✔ Test logicalConflictAcrossObjectsIsQuarantinedBeforeRelatedResults() passed after 0.101 seconds."
+        },
+        {
+          "line": 274,
+          "text": "✔ Test internalNoteReferenceIsNotAnExternalRelatedSource() passed after 0.101 seconds."
+        },
+        {
+          "line": 275,
+          "text": "✔ Test foreignCollisionRemainsAuditableButCannotBeImportedAsSuccess() passed after 0.101 seconds."
+        },
+        {
+          "line": 276,
+          "text": "✔ Test malformedVersionAndRunCannotBecomeAConditionalFence() passed after 0.101 seconds."
+        },
+        {
+          "line": 277,
+          "text": "✔ Test absentOrMalformedNoopCapabilityCannotChooseAWriteFallback() passed after 0.101 seconds."
+        },
+        {
+          "line": 278,
+          "text": "✔ Test everyMembershipRequestRequiresTheExplicitSequenceContract() passed after 0.101 seconds."
+        },
+        {
+          "line": 279,
+          "text": "✔ Test restoreRemovesOnlyBinWithoutSortingOtherMemberships() passed after 0.101 seconds."
+        },
+        {
+          "line": 280,
+          "text": "✔ Test archivePreservesExactUnknownMembershipOrderAndOriginalFence() passed after 0.101 seconds."
+        },
+        {
+          "line": 281,
+          "text": "✔ Test legacyOrDifferentRunNativePatchRefusesBeforeNetworking() passed after 0.101 seconds."
+        },
+        {
+          "line": 282,
+          "text": "✔ Test identicalArchiveAndRestoreStillProduceFencedNativeRequests() passed after 0.101 seconds."
+        },
+        {
+          "line": 283,
+          "text": "✔ Test lateSameVersionContentHasDifferentCapturedFence() passed after 0.101 seconds."
+        },
+        {
+          "line": 284,
+          "text": "✔ Test reviewExposesExactBlockAndInternalNoteMappings() passed after 0.101 seconds."
+        },
+        {
+          "line": 285,
+          "text": "✔ Test sequenceMustRemainAnExactPositiveRepresentableInteger() passed after 0.101 seconds."
+        },
+        {
+          "line": 286,
+          "text": "✔ Test fenceRoundTripRetainsExactRequiredNativeMetadata() passed after 0.101 seconds."
+        },
+        {
+          "line": 287,
+          "text": "✔ Test decodingCannotBypassRequiredFenceFieldsOrValidation() passed after 0.102 seconds."
+        },
+        {
+          "line": 288,
+          "text": "✔ Test malformedMembershipOrScopeCannotDispatchAnArchivePlan() passed after 0.101 seconds."
+        },
+        {
+          "line": 289,
+          "text": "✔ Test malformedInternalNoteLinkCannotBeGuessed() passed after 0.102 seconds."
+        },
+        {
+          "line": 290,
+          "text": "✔ Test exactDecimalGuardAcceptsEquivalentNotationAndIgnoresNumericStrings() passed after 0.102 seconds."
+        },
+        {
+          "line": 291,
+          "text": "✔ Test emptyMigrationPlanIdentityIncludesDestinationAndMigrationKey() passed after 0.102 seconds."
+        },
+        {
+          "line": 292,
+          "text": "✔ Test authoritativeMemberRoleAndIdentityFailClosed() passed after 0.102 seconds."
+        },
+        {
+          "line": 293,
+          "text": "✔ Test migrationRefusesNumbersTheOriginalDomainCannotPreserve() passed after 0.102 seconds."
+        },
+        {
+          "line": 294,
+          "text": "✔ Test staleWholeSnapshotReplacementStillRefused() passed after 0.102 seconds."
+        },
+        {
+          "line": 295,
+          "text": "✔ Test wholeImportPreflightAndRetryDoNotDuplicateAcceptedClaims() passed after 0.102 seconds."
+        },
+        {
+          "line": 296,
+          "text": "✔ Test incomingPeerDuplicateUnknownKeysCannotBeSilentlyCollapsed() passed after 0.101 seconds."
+        },
+        {
+          "line": 297,
+          "text": "✔ Test reusedMigrationIdentityWithChangedPayloadFailsBeforeWrite() passed after 0.102 seconds."
+        },
+        {
+          "line": 298,
+          "text": "✔ Test ambiguousDuplicateJSONKeysCannotBeImported() passed after 0.101 seconds."
+        },
+        {
+          "line": 299,
+          "text": "✔ Test internalNoteLinksRequireExplicitDestinationMapping() passed after 0.102 seconds."
+        },
+        {
+          "line": 300,
+          "text": "✔ Test restoredPreparedMutationCannotBypassIncomingNumberPreservation() passed after 0.102 seconds."
+        },
+        {
+          "line": 301,
+          "text": "✔ Test wrongSpaceRejectedBeforeStoreMutation() passed after 0.101 seconds."
+        },
+        {
+          "line": 302,
+          "text": "✔ Test mismatchedWorkspaceCannotConstructRepository() passed after 0.102 seconds."
+        },
+        {
+          "line": 303,
+          "text": "✔ Test migrationPartialFailureHasResumableReceipt() passed after 0.102 seconds."
+        },
+        {
+          "line": 304,
+          "text": "✔ Test migrationRejectsMissingBlockMappingAndUnsupportedVersionBeforeWrites() passed after 0.102 seconds."
+        },
+        {
+          "line": 305,
+          "text": "✔ Test migrationCannotReportCompleteAfterConcurrentLogicalCollision() passed after 0.102 seconds."
+        },
+        {
+          "line": 306,
+          "text": "✔ Test migrationCannotReportCompleteAfterConcurrentSemanticCollision() passed after 0.103 seconds."
+        },
+        {
+          "line": 307,
+          "text": "✔ Test internalNoteMappingRewritesOnlyKnownNativeReferenceFields() passed after 0.104 seconds."
+        },
+        {
+          "line": 308,
+          "text": "✔ Test wholeDocumentUsesOneObjectReadAndNativeReachabilityWithoutPerBlockGraphReads() passed after 0.104 seconds."
+        },
+        {
+          "line": 309,
+          "text": "✔ Test ordinaryTargetReadsPreferObjectClosureAndOrphanHistoryIsIneligible() passed after 0.104 seconds."
+        },
+        {
+          "line": 310,
+          "text": "✔ Test targetObjectCannotResolveAliasForeignSpaceOrBin() passed after 0.104 seconds."
+        },
+        {
+          "line": 311,
+          "text": "✔ Test nativePositionsDriveOriginalTreeWithoutRewritingUnknownProperties() passed after 0.104 seconds."
+        },
+        {
+          "line": 312,
+          "text": "✔ Test blockTargetMustBeReachableNotMerelyPresent() passed after 0.104 seconds."
+        },
+        {
+          "line": 313,
+          "text": "✔ Test pendingObservedPredecessorIsExplicitConflictForCanonicalMutation() passed after 0.104 seconds."
+        },
+        {
+          "line": 314,
+          "text": "✔ Test oldV1FixtureMigratesWithoutInventedMetadata() passed after 0.104 seconds."
+        },
+        {
+          "line": 315,
+          "text": "✔ Test workspaceDecoderCannotBypassValidation() passed after 0.104 seconds."
+        },
+        {
+          "line": 316,
+          "text": "✔ Test nativeGoAllocatorGoldenVectorsMatchByteForByte() passed after 0.104 seconds."
+        },
+        {
+          "line": 317,
+          "text": "✔ Test invalidOrEqualNativePositionsFailClosed() passed after 0.104 seconds."
+        },
+        {
+          "line": 318,
+          "text": "✔ Test mappedNoteMustExistInDestinationWorkspaceBeforeImport() passed after 0.104 seconds."
+        },
+        {
+          "line": 319,
+          "text": "✔ Test wrongSpaceMalformedAndUnsupportedMalformedRowsAreNotSilentlyDropped() passed after 0.104 seconds."
+        },
+        {
+          "line": 320,
+          "text": "✔ Test nativeIdentityAndDocumentBlockQuoteTargetsStayDistinct() passed after 0.104 seconds."
+        },
+        {
+          "line": 321,
+          "text": "✔ Test exactWindowLimitAndDuplicateTargetAreEnforced() passed after 0.104 seconds."
+        },
+        {
+          "line": 322,
+          "text": "✔ Test unsafeUnlinkAndForeignTargetAreRefused() passed after 0.104 seconds."
+        },
+        {
+          "line": 323,
+          "text": "✔ Test sourceQueryRejectsWrongIdentityDuplicateIDsAndConflictAsComplete() passed after 0.104 seconds."
+        },
+        {
+          "line": 324,
+          "text": "✔ Test incompleteNativeCoverageNeverBecomesCompleteEmptyResults() passed after 0.104 seconds."
+        },
+        {
+          "line": 325,
+          "text": "✔ Test foreignCollisionIsQuarantinedBeforePayloadDecodeWithoutLeakingForeignItems() passed after 0.105 seconds."
+        },
+        {
+          "line": 326,
+          "text": "✔ Test cycleRecoveryIsVisibleAndMoveValidatorStillRejectsDescendants() passed after 0.104 seconds."
+        },
+        {
+          "line": 327,
+          "text": "✔ Test migrationCannotReportCompleteAfterConcurrentObservedRemove() passed after 0.105 seconds."
+        },
+        {
+          "line": 331,
+          "text": "✔ Test anotherWorkspaceCannotAppearAsAnEmptySnapshot() passed after 0.116 seconds."
+        },
+        {
+          "line": 332,
+          "text": "✔ Test foreignGenerationIsRejectedBeforePublication() passed after 0.117 seconds."
+        },
+        {
+          "line": 333,
+          "text": "✔ Test authorityIsRecheckedAtAppendAfterInitialRead() passed after 0.117 seconds."
+        },
+        {
+          "line": 334,
+          "text": "✔ Test deltaCannotStandInForAtomicInitialSnapshot() passed after 0.117 seconds."
+        },
+        {
+          "line": 335,
+          "text": "✔ Test atomicInitialSnapshotUsesActualDomainRecordsAndOwnership() passed after 0.117 seconds."
+        },
+        {
+          "line": 336,
+          "text": "✔ Test updateRequiresExistingStableID() passed after 0.117 seconds."
+        },
+        {
+          "line": 337,
+          "text": "✔ Test missingTargetPreventsWrites() passed after 0.123 seconds."
+        },
+        {
+          "line": 338,
+          "text": "✔ Test readonlyMetadataNeverAuthorizesUnlink() passed after 0.124 seconds."
+        },
+        {
+          "line": 339,
+          "text": "✔ Test objectStreamRejectsMissingAtomicInitialSnapshot() passed after 0.123 seconds."
+        },
+        {
+          "line": 340,
+          "text": "✔ Test v2MigrationAndLaterEditRetainEnvelopeRecordAndItemUnknownFields() passed after 0.124 seconds."
+        },
+        {
+          "line": 341,
+          "text": "✔ Test firstAssociationOnFreshReachableBlockDoesNotRequireHistoryMembership() passed after 0.124 seconds."
+        },
+        {
+          "line": 342,
+          "text": "✔ Test revokedWritesPreventNativeMutation() passed after 0.125 seconds."
+        },
+        {
+          "line": 343,
+          "text": "✔ Test moveAndReorderUseOneNativeParentPositionPatch() passed after 0.125 seconds."
+        },
+        {
+          "line": 344,
+          "text": "✔ Test persistedNativePlacementCannotRebindToAnotherEngineRun() passed after 0.125 seconds."
+        },
+        {
+          "line": 345,
+          "text": "✔ Test persistedNativePlacementRetainsOriginalSequenceAndRun() passed after 0.125 seconds."
+        },
+        {
+          "line": 346,
+          "text": "✔ Test nativeConditionalVersionStopsABAInsideTheReadToWriteGap() passed after 0.125 seconds."
+        },
+        {
+          "line": 347,
+          "text": "✔ Test capturedSequenceIsNotRefreshedInsideTheDispatchGap() passed after 0.125 seconds."
+        },
+        {
+          "line": 348,
+          "text": "✔ Test revokedPermissionPreventsWrites() passed after 0.125 seconds."
+        },
+        {
+          "line": 349,
+          "text": "✔ Test unsupportedChildPreventsFolderRemoval() passed after 0.125 seconds."
+        },
+        {
+          "line": 350,
+          "text": "✔ Test nativeRenamePassesOriginalSequenceAndRun() passed after 0.125 seconds."
+        },
+        {
+          "line": 351,
+          "text": "✔ Test equalVersionWithAdvancedSequenceRefusesBeforeDispatch() passed after 0.125 seconds."
+        },
+        {
+          "line": 352,
+          "text": "✔ Test nativeConditionalStoreReceivesThePreparedNestedVersionWithoutFallback() passed after 0.125 seconds."
+        },
+        {
+          "line": 353,
+          "text": "✔ Test concurrentChildRestoresFolderVisibilityAndReturnsIncompleteReceipt() passed after 0.125 seconds."
+        },
+        {
+          "line": 354,
+          "text": "✔ Test nativePlanCannotDowngradeToGenericPropertyWrites() passed after 0.125 seconds."
+        },
+        {
+          "line": 356,
+          "text": "✔ Test safeRemovalReparentsChildrenBeforeBinningOnlyTheFolder() passed after 0.125 seconds."
+        },
+        {
+          "line": 357,
+          "text": "✔ Test migrationKnownSemanticCollisionFailsBeforeAnyWrite() passed after 0.126 seconds."
+        },
+        {
+          "line": 358,
+          "text": "✔ Test concurrentSuccessorsAreVisibleConflictsNotSilentLWW() passed after 0.134 seconds."
+        },
+        {
+          "line": 359,
+          "text": "✔ Test planRoundTripKeepsEntireIntentAndPhaseIdentities() passed after 0.134 seconds."
+        },
+        {
+          "line": 360,
+          "text": "✔ Test removedContextDoesNotBecomeAStaleLiveMatch() passed after 0.140 seconds."
+        },
+        {
+          "line": 361,
+          "text": "✔ Test invalidationDuringTargetReadCancelsItWithoutPublishing() passed after 0.139 seconds."
+        },
+        {
+          "line": 362,
+          "text": "✔ Test readabilityIsRecheckedForEverySnapshot() passed after 0.139 seconds."
+        },
+        {
+          "line": 363,
+          "text": "✔ Test originalCandidateBoundRemainsExplicit() passed after 0.146 seconds."
+        },
+        {
+          "line": 364,
+          "text": "✔ Test secondInitialRequiresNewSubscriptionInsteadOfSilentReset() passed after 0.147 seconds."
+        },
+        {
+          "line": 365,
+          "text": "✔ Test currentReadRevocationOmitsCandidateAndReportsCoverage() passed after 0.148 seconds."
+        },
+        {
+          "line": 366,
+          "text": "✔ Test liveObjectPublicationRechecksCurrentReadability() passed after 0.146 seconds."
+        },
+        {
+          "line": 367,
+          "text": "✔ Test incomingPeerUnknownNumbersCannotSilentlyRoundDuringOrdinaryEdit() passed after 0.147 seconds."
+        },
+        {
+          "line": 368,
+          "text": "✔ Test renameProtectsPriorTitleAndPreservesOtherNativeFields() passed after 0.146 seconds."
+        },
+        {
+          "line": 369,
+          "text": "✔ Test legacyNativePlacementCannotAcquireFreshFenceEvenWhenAlreadyApplied() passed after 0.147 seconds."
+        },
+        {
+          "line": 370,
+          "text": "✔ Test creationPlanIsImmutableAndDelegatesRetryToOneHostJournal() passed after 0.147 seconds."
+        },
+        {
+          "line": 371,
+          "text": "✔ Test partialRemovalFailureLeavesFolderAndRemainingChildrenRecoverable() passed after 0.147 seconds."
+        },
+        {
+          "line": 372,
+          "text": "✔ Test originalContextPolicyDeduplicatesNFCAndPreservesStableID() passed after 0.148 seconds."
+        },
+        {
+          "line": 375,
+          "text": "✔ Test quoteInstancesStayDistinctAndExactRetryDoesNotAppend() passed after 0.154 seconds."
+        },
+        {
+          "line": 376,
+          "text": "✔ Test revokedOriginPreventsAnyNoteCreation() passed after 0.163 seconds."
+        },
+        {
+          "line": 377,
+          "text": "✔ Test exactPlacementRetryUsesReadbackAndDoesNotOverwriteLaterMove() passed after 0.166 seconds."
+        },
+        {
+          "line": 378,
+          "text": "✔ Test documentAndBlockLocationsRemainIndependent() passed after 0.169 seconds."
+        },
+        {
+          "line": 379,
+          "text": "✔ Test documentContextsExcludeBlockQuotesAndOtherKinds() passed after 0.172 seconds."
+        },
+        {
+          "line": 380,
+          "text": "✔ Test removeRechecksCallerAuthorityAtAppend() passed after 0.175 seconds."
+        },
+        {
+          "line": 382,
+          "text": "✔ Test preparedMutationReplaysExactObservedSetAfterInterveningEdit() passed after 0.195 seconds."
+        },
+        {
+          "line": 383,
+          "text": "✔ Test unlinkRemovesOnlyCurrentDocumentContextAndKeepsQuoteBlockAndOtherSource() passed after 0.204 seconds."
+        },
+        {
+          "line": 385,
+          "text": "✔ Test existingSourceAssociationAndUserMetadataAreNotOverwritten() passed after 0.227 seconds."
+        },
+        {
+          "line": 386,
+          "text": "✔ Test failedSourceLineRetriesEveryPhaseWithoutDuplicatePageOrLinks() passed after 0.256 seconds."
+        },
+        {
+          "line": 387,
+          "text": "✔ Test retryCannotResurrectSourceLinkRemovedAfterCompletion() passed after 0.256 seconds."
+        },
+        {
+          "line": 388,
+          "text": "✔ Test repeatingCompletedPlanIsIdempotent() passed after 0.276 seconds."
+        },
+        {
+          "line": 389,
+          "text": "✔ Test unlinkKeepsTheNativeNoteAndUnrelatedSourceOrQuote() passed after 0.314 seconds."
+        },
+        {
+          "line": 391,
+          "text": "✔ Test concurrentLocalMutationsDoNotReplaceUnrelatedItems() passed after 0.747 seconds."
+        }
+      ],
+      "rejectedResultLines": []
+    },
+    {
+      "profile": "any-host-tests",
+      "log": "any-host-tests.log",
+      "sha256": "b8a6e3a434ad2ba0bde4ae56d37beb851bf00a7fa2873fbcbfd164972c373845",
+      "xctestSummary": {
+        "line": 259,
+        "text": "\t Executed 65 tests, with 0 failures (0 unexpected) in 0.160 (0.177) seconds"
+      },
+      "swiftTestingSummary": {
+        "line": 287,
+        "text": "✔ Test run with 11 tests in 1 suite passed after 0.009 seconds."
+      },
+      "passedXCTestCases": [
+        {
+          "line": 113,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testAcceptedIDPersistsBeforeFailedReadbackAndCanBeVerifiedLater]' passed (0.006 seconds)."
+        },
+        {
+          "line": 115,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testAnotherWorkspaceCannotUseThisCreator]' passed (0.003 seconds)."
+        },
+        {
+          "line": 117,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testCanonicalValuesSeparateTypesAndIgnoreDictionaryInsertionOrder]' passed (0.000 seconds)."
+        },
+        {
+          "line": 119,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testConcurrentSameIntentCannotDispatchTwice]' passed (0.001 seconds)."
+        },
+        {
+          "line": 121,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testDeniedAuthorizationDoesNotReserveOrDispatch]' passed (0.001 seconds)."
+        },
+        {
+          "line": 123,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testForegroundCancellationSettlesOriginalReceiptBeforeLeaseDrain]' passed (0.002 seconds)."
+        },
+        {
+          "line": 125,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testForeignSpacePartialIdentityCannotEnterOriginalJournal]' passed (0.003 seconds)."
+        },
+        {
+          "line": 127,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testIncompleteCreationRetainsIDAndDoesNotClaimVerification]' passed (0.002 seconds)."
+        },
+        {
+          "line": 129,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testIntentFingerprintCannotBeTamperedDuringDecode]' passed (0.002 seconds)."
+        },
+        {
+          "line": 131,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testJournalFailureAfterNativeReceiptStillReturnsKnownRecoveryID]' passed (0.001 seconds)."
+        },
+        {
+          "line": 133,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testLostReplyNeverCreatesFreshObjectOnRetryOrNewOwner]' passed (0.001 seconds)."
+        },
+        {
+          "line": 135,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testNativePartialCreationPersistsKnownIDAndNeverRedispatchesOnRecovery]' passed (0.001 seconds)."
+        },
+        {
+          "line": 137,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testOptionalEmptyCollectionsAreNativeValid]' passed (0.001 seconds)."
+        },
+        {
+          "line": 139,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testProtectedJournalExclusiveOwnerAndUnresolvedReopen]' passed (0.048 seconds)."
+        },
+        {
+          "line": 141,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testProtectedJournalRejectsSymlinkDirectory]' passed (0.001 seconds)."
+        },
+        {
+          "line": 143,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testProtectedJournalReopensReceiptsWithoutBusinessPayload]' passed (0.023 seconds)."
+        },
+        {
+          "line": 145,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testSameMutationWithDifferentBodyIsConflictBeforeNativeDispatch]' passed (0.002 seconds)."
+        },
+        {
+          "line": 147,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testUnavailableCreationContractDoesNotReserveOrDispatch]' passed (0.001 seconds)."
+        },
+        {
+          "line": 149,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeCreationTests testVerifiedRetryReadsSameIDWithoutOverwritingUserRename]' passed (0.001 seconds)."
+        },
+        {
+          "line": 154,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyFenceTests testAcceptedWriteRequiresExactPositiveSequenceAndOriginalRun]' passed (0.016 seconds)."
+        },
+        {
+          "line": 156,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyFenceTests testApplySequenceAboveDoublePrecisionIsPreservedExactlyOnWire]' passed (0.001 seconds)."
+        },
+        {
+          "line": 158,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyFenceTests testEveryPreparedMutationRetainsTheSameObservedFence]' passed (0.002 seconds)."
+        },
+        {
+          "line": 160,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyFenceTests testExactAcknowledgementBindsUndoToItsSequenceWithoutChangingOriginalIntent]' passed (0.001 seconds)."
+        },
+        {
+          "line": 162,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyFenceTests testLaterReadbackWithSameVersionAndRequestedValueCannotMintUndo]' passed (0.001 seconds)."
+        },
+        {
+          "line": 164,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyFenceTests testPendingEditAndUndoHonorRevokedLeaseWithoutReplacingCapturedFence]' passed (0.001 seconds)."
+        },
+        {
+          "line": 166,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyFenceTests testPendingEditAndUndoRefuseReplacedAccountSpaceRunAndGenerationBeforeTransport]' passed (0.001 seconds)."
+        },
+        {
+          "line": 168,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyFenceTests testPreparedEditRejectsLateCommutativeSequenceChangeWithIdenticalVersionAndValues]' passed (0.000 seconds)."
+        },
+        {
+          "line": 170,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyFenceTests testReadbackFromDifferentOwnerEpochOrTargetCannotCertifyTheWrite]' passed (0.001 seconds)."
+        },
+        {
+          "line": 172,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyFenceTests testSnapshotRejectsMissingOrInexactApplySequence]' passed (0.001 seconds)."
+        },
+        {
+          "line": 177,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testCatalogRejectsDuplicatesButAllowsLegitimateCrossCatalogID]' passed (0.001 seconds)."
+        },
+        {
+          "line": 179,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testCollectionMembershipDoesNotDeleteValuesOrBypassManagedCollections]' passed (0.001 seconds)."
+        },
+        {
+          "line": 181,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testExactQualifiedKeysCannotCollideAtSeparatorsAndDerivedKeysAreDistinct]' passed (0.000 seconds)."
+        },
+        {
+          "line": 183,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testGenericSetCannotBypassTypeMembershipHierarchyOrUnsupportedScope]' passed (0.001 seconds)."
+        },
+        {
+          "line": 185,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testMalformedOrOverflowingVisibilityNeverSilentlyDropsValues]' passed (0.003 seconds)."
+        },
+        {
+          "line": 187,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testNativeProofRequiresExactPolicyWorkspaceReadinessAndCapabilityVersion]' passed (0.001 seconds)."
+        },
+        {
+          "line": 189,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testPropertyKindMismatchCannotBecomeAnUnconditionalOrWholeRecordWrite]' passed (0.011 seconds)."
+        },
+        {
+          "line": 191,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testRawUnknownNamespacesAndNativeDerivedMetadataSurviveProjection]' passed (0.001 seconds)."
+        },
+        {
+          "line": 193,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testReaderSnapshotCannotPrepareAnyMutation]' passed (0.001 seconds)."
+        },
+        {
+          "line": 195,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testSingleValuePatchCapturesExactVersionAndInverseWithoutEchoingOtherNamespaces]' passed (0.001 seconds)."
+        },
+        {
+          "line": 197,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testTypePickerUsesEligibilityAndPreservesOriginalNamespaces]' passed (0.003 seconds)."
+        },
+        {
+          "line": 199,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testVisibilityAttachmentAndDerivedPanelRemainExplicit]' passed (0.003 seconds)."
+        },
+        {
+          "line": 201,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativePropertyStoreTests testVisibilityPreservesFutureKeysAndChangesOnlyPreferenceNamespace]' passed (0.001 seconds)."
+        },
+        {
+          "line": 206,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSessionTests testFailedOperationDoesNotBlockDrain]' passed (0.001 seconds)."
+        },
+        {
+          "line": 208,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSessionTests testLeaseCarriesOneWorkspaceAndGeneration]' passed (0.001 seconds)."
+        },
+        {
+          "line": 210,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSessionTests testRestartInvalidatesOpaqueEditorVersionsAndClosesSession]' passed (0.001 seconds)."
+        },
+        {
+          "line": 212,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSessionTests testRevocationCancelsDrainsAndSuppressesLatePayload]' passed (0.001 seconds)."
+        },
+        {
+          "line": 217,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testCycleIsRetainedForRecoveryAndCannotReachTextExporter]' passed (0.001 seconds)."
+        },
+        {
+          "line": 219,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testDuplicateBlockIdentityIsRejected]' passed (0.000 seconds)."
+        },
+        {
+          "line": 221,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testEmptyNativeParagraphMayOmitText]' passed (0.000 seconds)."
+        },
+        {
+          "line": 223,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testMalformedNestedNativeVersionCannotBecomeRevision]' passed (0.000 seconds)."
+        },
+        {
+          "line": 225,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testMissingDuplicateAndNonTextSelectionsAreRefused]' passed (0.000 seconds)."
+        },
+        {
+          "line": 227,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testNativeNestedStyleVersionTreeSurvivesAndInvalidatesRevision]' passed (0.000 seconds)."
+        },
+        {
+          "line": 229,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testNativeStyleVersionChangesRevisionEvenWithSameText]' passed (0.000 seconds)."
+        },
+        {
+          "line": 231,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testNestedVersionMapOrderDoesNotChangeRevision]' passed (0.000 seconds)."
+        },
+        {
+          "line": 233,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testOpaqueStyleAndExplicitRTLRemainInNativeBlock]' passed (0.000 seconds)."
+        },
+        {
+          "line": 235,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testOtherDatasetReadCannotPrepareMutationInThisStore]' passed (0.000 seconds)."
+        },
+        {
+          "line": 237,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testPrepareEditPreservesUneditedStyleAndCapturesExactInverse]' passed (0.000 seconds)."
+        },
+        {
+          "line": 239,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testReachableEditPreservesUnrelatedOrphanAndRefusesOrphanTarget]' passed (0.001 seconds)."
+        },
+        {
+          "line": 241,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testSourceRevisionIncludesDataset]' passed (0.000 seconds)."
+        },
+        {
+          "line": 243,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testSourceRevisionIndependentOfQueryRowOrder]' passed (0.001 seconds)."
+        },
+        {
+          "line": 245,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testTextProjectionLabelsMarkdownAndPreservesSelectedIDs]' passed (0.000 seconds)."
+        },
+        {
+          "line": 247,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testTreeOrderUsesParentsThenStablePositionsAndIDs]' passed (0.000 seconds)."
+        },
+        {
+          "line": 249,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testTruncatedQueryCannotBecomeCompleteSnapshot]' passed (0.000 seconds)."
+        },
+        {
+          "line": 251,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testUnreachableOrphanIsPreservedButNotExportedAsCompleteText]' passed (0.000 seconds)."
+        },
+        {
+          "line": 253,
+          "text": "Test Case '-[PinkhaAnyHostTests.NativeSnapshotTests testUTF8ByteBudgetDoesNotTreatHebrewAsSingleByte]' passed (0.000 seconds)."
+        }
+      ],
+      "passedSwiftTestingTests": [
+        {
+          "line": 275,
+          "text": "✔ Test unsupportedNativeContractDoesNotReserveOrDispatch() passed after 0.004 seconds."
+        },
+        {
+          "line": 276,
+          "text": "✔ Test revocationBeforeDispatchCannotCreateNativeContent() passed after 0.004 seconds."
+        },
+        {
+          "line": 277,
+          "text": "✔ Test validatedIntentPreservesTextUnknownStyleAndNativeLocationAcrossEncoding() passed after 0.004 seconds."
+        },
+        {
+          "line": 278,
+          "text": "✔ Test changedIntentCannotReuseTheSameJournalIdentity() passed after 0.005 seconds."
+        },
+        {
+          "line": 279,
+          "text": "✔ Test mismatchedReadbackRetainsCreatedIDWithoutReportingVerified() passed after 0.006 seconds."
+        },
+        {
+          "line": 280,
+          "text": "✔ Test contractRevokedAtDispatchCannotCreateAndRetainsOriginalIntent() passed after 0.006 seconds."
+        },
+        {
+          "line": 281,
+          "text": "✔ Test nativeConfirmationCallbackFailurePreservesVerifiedBlockIdentity() passed after 0.006 seconds."
+        },
+        {
+          "line": 282,
+          "text": "✔ Test exactRetryUsesKnownNativeIDAndPreservesLaterUserEdits() passed after 0.007 seconds."
+        },
+        {
+          "line": 283,
+          "text": "✔ Test cancellationAfterDispatchSettlesNativeReceiptBeforeReturning() passed after 0.007 seconds."
+        },
+        {
+          "line": 284,
+          "text": "✔ Test lostAutoIDReplyStaysUncertainAndNeverCreatesAnotherBlock() passed after 0.008 seconds."
+        },
+        {
+          "line": 285,
+          "text": "✔ Test journalFailureAfterNativeReplyPreservesKnownIDWithoutRedispatch() passed after 0.008 seconds."
+        }
+      ],
+      "rejectedResultLines": []
+    },
+    {
+      "profile": "any-hanlin-tests",
+      "log": "any-hanlin-tests.log",
+      "sha256": "98741e7c9b90848f5fe7f34ca939623a91834ca3e34fb967c52c979765960415",
+      "xctestSummary": {
+        "line": 313,
+        "text": "\t Executed 33 tests, with 0 failures (0 unexpected) in 0.034 (0.041) seconds"
+      },
+      "swiftTestingSummary": {
+        "line": 317,
+        "text": "✔ Test run with 0 tests in 0 suites passed after 0.001 seconds."
+      },
+      "passedXCTestCases": [
+        {
+          "line": 228,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testByteLimitIsUTF8NotCharacterCount]' passed (0.001 seconds)."
+        },
+        {
+          "line": 230,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testCodeSpanContentDoesNotRetainFormattingBackticks]' passed (0.001 seconds)."
+        },
+        {
+          "line": 232,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testEscapedCombiningDelimiterGraphemesRemainExactProviderText]' passed (0.000 seconds)."
+        },
+        {
+          "line": 234,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testEscapedProviderQuotePreservesEveryVisibleCharacter]' passed (0.001 seconds)."
+        },
+        {
+          "line": 236,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testEscapesAndLinksUseExactEditorVisibleTextOnly]' passed (0.000 seconds)."
+        },
+        {
+          "line": 238,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testFormatsHebrewAndNestedInlineContentAsPlainText]' passed (0.000 seconds)."
+        },
+        {
+          "line": 240,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testHeadingAndListLookingInlineTextKeepsItsLiteralPrefix]' passed (0.000 seconds)."
+        },
+        {
+          "line": 242,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testIndentationBlankLinesAndLineEndingsAreNotDocumentNormalized]' passed (0.000 seconds)."
+        },
+        {
+          "line": 244,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testInlineBreaksPreserveVisibleSpacesAndLineBoundaries]' passed (0.000 seconds)."
+        },
+        {
+          "line": 246,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testNativeCodeBlockIsLiteralWithoutMarkdownInterpretation]' passed (0.000 seconds)."
+        },
+        {
+          "line": 248,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testSmartPunctuationDoesNotRewriteOriginalText]' passed (0.000 seconds)."
+        },
+        {
+          "line": 250,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testToggledFormattingAndLinksUseTheSameProjectionAsTheEditor]' passed (0.002 seconds)."
+        },
+        {
+          "line": 252,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.AnyHanlinPlainTextTests testUnsupportedInlineSyntaxFailsInsteadOfInventingVisibleText]' passed (0.001 seconds)."
+        },
+        {
+          "line": 257,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.KnownCreationRecoveryTests testKnownRootRemainsUncertainUntilVerifiedMatchingCommit]' passed (0.001 seconds)."
+        },
+        {
+          "line": 259,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.KnownCreationRecoveryTests testRecoveryCannotRetargetAnotherOriginalIdentity]' passed (0.000 seconds)."
+        },
+        {
+          "line": 261,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.KnownCreationRecoveryTests testRecoveryDecoderRejectsForeignNamespaceUnknownBusinessPayloadAndWrongFilename]' passed (0.002 seconds)."
+        },
+        {
+          "line": 263,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.KnownCreationRecoveryTests testRecoveryMetadataDoesNotContainOriginalTitleOrChangeLegacyEntryShape]' passed (0.001 seconds)."
+        },
+        {
+          "line": 268,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.NativeCreationCapabilityTests testPageEligibilityRequiresExactNativeCurrentWriterCreationVersion]' passed (0.000 seconds)."
+        },
+        {
+          "line": 273,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.NativeMountedOwnerTests testAnotherPresentationCannotRearmAnAlreadyBoundSDKSession]' passed (0.015 seconds)."
+        },
+        {
+          "line": 275,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.NativeMountedOwnerTests testForeignSessionCannotBindNativeHost]' passed (0.001 seconds)."
+        },
+        {
+          "line": 277,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.NativeMountedOwnerTests testMountedOwnerReplacesProvisionalHostAndRemountsOnlySameIdentity]' passed (0.001 seconds)."
+        },
+        {
+          "line": 279,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.NativeMountedOwnerTests testStaleSourceCannotBindEvenARegisteredMatchingPresentation]' passed (0.001 seconds)."
+        },
+        {
+          "line": 284,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.SharedHanlinAccountAndProjectionTests testProjectionRefusesOrphansRatherThanLeakingDetachedText]' passed (0.001 seconds)."
+        },
+        {
+          "line": 286,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.SharedHanlinAccountAndProjectionTests testProjectionRejectsUnknownSelectionAndNonTextSelection]' passed (0.000 seconds)."
+        },
+        {
+          "line": 288,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.SharedHanlinAccountAndProjectionTests testRegistryUnregisterDoesNotEraseAnotherPresentation]' passed (0.000 seconds)."
+        },
+        {
+          "line": 290,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.SharedHanlinAccountAndProjectionTests testSelectedProjectionPreservesCanonicalBlockIdentityAndPlainText]' passed (0.000 seconds)."
+        },
+        {
+          "line": 292,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.SharedHanlinAccountAndProjectionTests testSharedAccountOwnerOnlyRevokesOriginalAccount]' passed (0.001 seconds)."
+        },
+        {
+          "line": 297,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.SharedHanlinCoreTests testCanonicalPlanDigestPreservesExactUTF8]' passed (0.000 seconds)."
+        },
+        {
+          "line": 299,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.SharedHanlinCoreTests testHomeScopeDoesNotInventDocumentOrSelection]' passed (0.000 seconds)."
+        },
+        {
+          "line": 301,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.SharedHanlinCoreTests testNativeAllowRequiresLiveValidation]' passed (0.001 seconds)."
+        },
+        {
+          "line": 303,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.SharedHanlinCoreTests testReadCatalogUsesSharedConsentAndWriteInstallationRules]' passed (0.001 seconds)."
+        },
+        {
+          "line": 305,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.SharedHanlinCoreTests testRevocationCannotBeOverriddenByALateAllow]' passed (0.000 seconds)."
+        },
+        {
+          "line": 307,
+          "text": "Test Case '-[PinkhaAnyHanlinTests.SharedHanlinCoreTests testSelectionWithoutNativeDocumentIsRejected]' passed (0.000 seconds)."
+        }
+      ],
+      "passedSwiftTestingTests": [],
+      "rejectedResultLines": []
+    },
+    {
+      "profile": "torah-presentation-tests",
+      "log": "torah-presentation-tests.log",
+      "sha256": "dc2b7582c456967cc08d0f3f8d0ce920944849dea0185f71d5c2716011c26943",
+      "xctestSummary": {
+        "line": 104,
+        "text": "\t Executed 1 test, with 0 failures (0 unexpected) in 0.001 (0.004) seconds"
+      },
+      "swiftTestingSummary": {
+        "line": 134,
+        "text": "✔ Test run with 10 tests in 1 suite passed after 0.036 seconds."
+      },
+      "passedXCTestCases": [
+        {
+          "line": 98,
+          "text": "Test Case '-[PinkhaTorahPresentationTests.PresentationContractTests testUncertainPersistenceDoesNotEqualSaved]' passed (0.001 seconds)."
+        }
+      ],
+      "passedSwiftTestingTests": [
+        {
+          "line": 123,
+          "text": "✔ Test \"A delayed item provider cannot write after leaving and reopening the document\" passed after 0.027 seconds."
+        },
+        {
+          "line": 124,
+          "text": "✔ Test \"Revoked edit authority stops insertion before a block is dispatched\" passed after 0.027 seconds."
+        },
+        {
+          "line": 125,
+          "text": "✔ Test \"A captured Inspector action cannot insert for a replaced or dismissed selection\" with 2 test cases passed after 0.027 seconds."
+        },
+        {
+          "line": 126,
+          "text": "✔ Test \"Closing Inspector does not invalidate a drop already addressed to the active document\" passed after 0.034 seconds."
+        },
+        {
+          "line": 127,
+          "text": "✔ Test \"A completed quote keeps its canonical source and exact editable text\" passed after 0.034 seconds."
+        },
+        {
+          "line": 128,
+          "text": "✔ Test \"Revocation after block creation preserves text and reports a partial insertion\" passed after 0.034 seconds."
+        },
+        {
+          "line": 129,
+          "text": "✔ Test \"A block response from a previous document lifetime cannot write metadata or replace new UI state\" passed after 0.034 seconds."
+        },
+        {
+          "line": 130,
+          "text": "✔ Test \"A replaced Inspector cannot receive a late partial-insertion alert\" passed after 0.034 seconds."
+        },
+        {
+          "line": 131,
+          "text": "✔ Test \"Revocation or caller cancellation during the repository's native read stops its queued write\" with 2 test cases passed after 0.035 seconds."
+        },
+        {
+          "line": 132,
+          "text": "✔ Test \"One gesture is claimed once while a later intentional drop of the same payload succeeds\" passed after 0.035 seconds."
+        }
+      ],
+      "rejectedResultLines": []
+    },
+    {
+      "profile": "any-ui-tests",
+      "log": "any-ui-tests.log",
+      "sha256": "d789290629cb33563fb85d95676109b87533fa61643c688e3600be004326ff8b",
+      "xctestSummary": {
+        "line": 284,
+        "text": "\t Executed 4 tests, with 0 failures (0 unexpected) in 0.008 (0.013) seconds"
+      },
+      "swiftTestingSummary": {
+        "line": 506,
+        "text": "✔ Test run with 93 tests in 16 suites passed after 0.055 seconds."
+      },
+      "passedXCTestCases": [
+        {
+          "line": 272,
+          "text": "Test Case '-[PinkhaAnyUITests.AnyUIActivationTests testAcceptsVersionedContractWithFutureUnrelatedFields]' passed (0.007 seconds)."
+        },
+        {
+          "line": 274,
+          "text": "Test Case '-[PinkhaAnyUITests.AnyUIActivationTests testRejectsAmbiguousTypesMultipartBodyAndUnknownWindow]' passed (0.000 seconds)."
+        },
+        {
+          "line": 276,
+          "text": "Test Case '-[PinkhaAnyUITests.AnyUIActivationTests testRejectsStockAndGenericBundle]' passed (0.000 seconds)."
+        },
+        {
+          "line": 278,
+          "text": "Test Case '-[PinkhaAnyUITests.AnyUIActivationTests testRequiresEveryNativeAuthorityAndCASCapability]' passed (0.001 seconds)."
+        }
+      ],
+      "passedSwiftTestingTests": [
+        {
+          "line": 397,
+          "text": "✔ Test caretAtStartOfCodeSpanInsertsLiteralWithoutInventingBackslashes() passed after 0.022 seconds."
+        },
+        {
+          "line": 398,
+          "text": "✔ Test deletionPreservesAdjacentSurvivingStylesAndOriginalMarkers() passed after 0.022 seconds."
+        },
+        {
+          "line": 399,
+          "text": "✔ Test partialBoldToPlainReplacementKeepsUnselectedStyles() passed after 0.022 seconds."
+        },
+        {
+          "line": 400,
+          "text": "✔ Test crossingStrongAndItalicPreservesHebrewAndUnicodeBytes() passed after 0.022 seconds."
+        },
+        {
+          "line": 401,
+          "text": "✔ Test nestedLinkLabelReplacementKeepsItsExactDestinationAndUnselectedLabel() passed after 0.022 seconds."
+        },
+        {
+          "line": 402,
+          "text": "✔ Test wrongNativeKindsCannotBeCoercedByTheEditor() passed after 0.022 seconds."
+        },
+        {
+          "line": 403,
+          "text": "✔ Test stringValuesRemainLiteralIncludingHebrewAndJSONLookingText() passed after 0.022 seconds."
+        },
+        {
+          "line": 404,
+          "text": "✔ Test wholeKnownSelectionInheritsFirstStyleAndEscapesReplacementLiterally() passed after 0.022 seconds."
+        },
+        {
+          "line": 405,
+          "text": "✔ Test plainIntoLinkReplacementRetainsTheUnselectedLinkedSuffix() passed after 0.022 seconds."
+        },
+        {
+          "line": 406,
+          "text": "✔ Test unknownNestedPreciseNumberAndDuplicateKeysAreRefused() passed after 0.022 seconds."
+        },
+        {
+          "line": 407,
+          "text": "✔ Test unrepresentableStyledWhitespaceIsExplicitlyRefused() passed after 0.022 seconds."
+        },
+        {
+          "line": 408,
+          "text": "✔ Test unknownSyntaxAndSplitSurrogateRemainRefusedWithoutChangingSource() passed after 0.022 seconds."
+        },
+        {
+          "line": 409,
+          "text": "✔ Test structuredFutureFieldsKeepTheirTypeAndNestedValues() passed after 0.022 seconds."
+        },
+        {
+          "line": 410,
+          "text": "✔ Test exactSignedIntegerIsNotFirstRoundedThroughDouble() passed after 0.022 seconds."
+        },
+        {
+          "line": 411,
+          "text": "✔ Test codeRemainsLiteralAndOrdinaryInputIsEscaped() passed after 0.022 seconds."
+        },
+        {
+          "line": 412,
+          "text": "✔ Test unknownMarkupAndInvalidUTF16StayExplicit() passed after 0.022 seconds."
+        },
+        {
+          "line": 413,
+          "text": "✔ Test knownStyleSelectionPreservesUnselectedTraitsAndOriginalSource() passed after 0.022 seconds."
+        },
+        {
+          "line": 414,
+          "text": "✔ Test repeatedHebrewCombiningUpdatesPreserveBoldAndOriginalSource() passed after 0.022 seconds."
+        },
+        {
+          "line": 415,
+          "text": "✔ Test unknownKindAndOversizedInputRemainExplicitlyUnsupported() passed after 0.022 seconds."
+        },
+        {
+          "line": 416,
+          "text": "✔ Test cancellationKeepsExactLinkAndEscapeSpelling() passed after 0.021 seconds."
+        },
+        {
+          "line": 417,
+          "text": "✔ Test orderedListsAcceptZeroCustomStartAndMaximum() passed after 0.021 seconds."
+        },
+        {
+          "line": 418,
+          "text": "✔ Test sharedSurrogatesDoNotSplitTheReplacementBoundary() passed after 0.021 seconds."
+        },
+        {
+          "line": 419,
+          "text": "✔ Test rawSourceOutsideAffectedContainersRemainsByteExact() passed after 0.022 seconds."
+        },
+        {
+          "line": 420,
+          "text": "✔ Test unknownMetadataAndOtherMarkersAreRetained() passed after 0.021 seconds."
+        },
+        {
+          "line": 421,
+          "text": "✔ Test invalidNumbersDefaultAndUnorderedIgnoresNumber() passed after 0.021 seconds."
+        },
+        {
+          "line": 422,
+          "text": "✔ Test malformedDigestAndUnreviewableIDsAreRefused() passed after 0.021 seconds."
+        },
+        {
+          "line": 423,
+          "text": "✔ Test checkedAndUncheckedTasksUseNativeBooleans() passed after 0.021 seconds."
+        },
+        {
+          "line": 424,
+          "text": "✔ Test fractionalJSONNumbersFollowNativeTruncationBeforeBounds() passed after 0.021 seconds."
+        },
+        {
+          "line": 425,
+          "text": "✔ Test everyScopeAndReviewedMappingPartSeparatesTheIdentity() passed after 0.021 seconds."
+        },
+        {
+          "line": 426,
+          "text": "✔ Test reopeningTheSameReviewedMappingUsesTheSameStableIdentity() passed after 0.021 seconds."
+        },
+        {
+          "line": 427,
+          "text": "✔ Test nativeCodeNeverTreatsMarkdownOrHTMLAsFormatting() passed after 0.021 seconds."
+        },
+        {
+          "line": 428,
+          "text": "✔ Test moveToRootUsesNativeLexicalPositionWithoutCounterfeitingVersion() passed after 0.021 seconds."
+        },
+        {
+          "line": 429,
+          "text": "✔ Test unrelatedRefreshDoesNotSettleStillRunningMutation() passed after 0.021 seconds."
+        },
+        {
+          "line": 430,
+          "text": "✔ Test temporarilyMissingPendingRowIsRetainedUntilPostDispatchFreshRead() passed after 0.021 seconds."
+        },
+        {
+          "line": 431,
+          "text": "✔ Test nativeCodeRejectsSurrogateSplitsAndInlineFormatCommands() passed after 0.021 seconds."
+        },
+        {
+          "line": 432,
+          "text": "✔ Test explicitAlignmentAndUnambiguousCenterSurviveLocaleChanges() passed after 0.021 seconds."
+        },
+        {
+          "line": 433,
+          "text": "✔ Test oldQueuedFramesCannotEraseConfirmedRenameOrOverrideNewNativeTruth() passed after 0.021 seconds."
+        },
+        {
+          "line": 434,
+          "text": "✔ Test automaticAlignmentFollowsApplicationWhileContentKeepsOwnDirection() passed after 0.021 seconds."
+        },
+        {
+          "line": 435,
+          "text": "✔ Test explicitNativeDirectionSurvivesEmptyParagraphWithoutChangingAlignmentDefault() passed after 0.021 seconds."
+        },
+        {
+          "line": 436,
+          "text": "✔ Test nativeDateWrapperAndExplicitTimezoneAreRequired() passed after 0.022 seconds."
+        },
+        {
+          "line": 437,
+          "text": "✔ Test editingInsideBoldKeepsOriginalDelimitersAndUnrelatedMarkup() passed after 0.021 seconds."
+        },
+        {
+          "line": 438,
+          "text": "✔ Test aWholeSelectionAcrossKnownMarkupCanBeReplaced() passed after 0.021 seconds."
+        },
+        {
+          "line": 439,
+          "text": "✔ Test deletingWholeFormattedContentRemovesItsEmptyWrapper() passed after 0.021 seconds."
+        },
+        {
+          "line": 440,
+          "text": "✔ Test boldFormattingDoesNotChangeVisibleProviderText() passed after 0.021 seconds."
+        },
+        {
+          "line": 441,
+          "text": "✔ Test codeInsertionDoesNotIntroduceEscapesAndLinkEditsRetainDestination() passed after 0.021 seconds."
+        },
+        {
+          "line": 442,
+          "text": "✔ Test workspaceAndVerifiedSchemaAreRequiredForCurrentFeed() passed after 0.021 seconds."
+        },
+        {
+          "line": 443,
+          "text": "✔ Test unsupportedMarkupRemainsExactAndCannotBeFlattenedByEditing() passed after 0.021 seconds."
+        },
+        {
+          "line": 444,
+          "text": "✔ Test hebrewCombiningMarksAndEmojiKeepExactUTF16Mapping() passed after 0.021 seconds."
+        },
+        {
+          "line": 445,
+          "text": "✔ Test literalInsertionEscapesSourceWhileKeepingDisplayedCharactersExact() passed after 0.021 seconds."
+        },
+        {
+          "line": 446,
+          "text": "✔ Test shortValidPrefixDoesNotHideUnreadTrailingBytes() passed after 0.021 seconds."
+        },
+        {
+          "line": 447,
+          "text": "✔ Test unsupportedSyntaxAndLiteralBlocksRemainUnchanged() passed after 0.021 seconds."
+        },
+        {
+          "line": 448,
+          "text": "✔ Test aWhitespaceSplitCannotSilentlyRemoveUnselectedStyle() passed after 0.021 seconds."
+        },
+        {
+          "line": 449,
+          "text": "✔ Test codeRemovalEscapesLiteralMarkdownAndCanRoundTrip() passed after 0.021 seconds."
+        },
+        {
+          "line": 450,
+          "text": "✔ Test emptyAndOversizedProviderChunksAreRejected() passed after 0.020 seconds."
+        },
+        {
+          "line": 451,
+          "text": "✔ Test exactBoundStillChecksEOFAndAnExtraByteFails() passed after 0.021 seconds."
+        },
+        {
+          "line": 452,
+          "text": "✔ Test underscoreSplitUsesRepresentableStrongDelimiters() passed after 0.020 seconds."
+        },
+        {
+          "line": 453,
+          "text": "✔ Test anOldMountedOwnerCannotReleaseTheRoute() passed after 0.020 seconds."
+        },
+        {
+          "line": 454,
+          "text": "✔ Test anUncoveredDocumentRoutesOnceWithoutASyntheticDismissal() passed after 0.020 seconds."
+        },
+        {
+          "line": 455,
+          "text": "✔ Test duplicateDismissalCannotDispatchTwice() passed after 0.020 seconds."
+        },
+        {
+          "line": 456,
+          "text": "✔ Test combiningMarksCannotHideLiteralMarkdownDelimitersFromEscaping() passed after 0.020 seconds."
+        },
+        {
+          "line": 457,
+          "text": "✔ Test productionPlannerPreservesTheOwningInspectorAndSearchHost() passed after 0.020 seconds."
+        },
+        {
+          "line": 458,
+          "text": "✔ Test linkLabelStyleRemovalDoesNotTouchDestinationOrOtherSource() passed after 0.020 seconds."
+        },
+        {
+          "line": 459,
+          "text": "✔ Test nestedInspectorAndPropertiesDismissInOrder() passed after 0.020 seconds."
+        },
+        {
+          "line": 460,
+          "text": "✔ Test productionPlannerDismissesRelatedResultsBeforeTheirPropertiesParent() passed after 0.020 seconds."
+        },
+        {
+          "line": 461,
+          "text": "✔ Test lifetimeRevocationDropsTheRouteWithoutReplay() passed after 0.020 seconds."
+        },
+        {
+          "line": 462,
+          "text": "✔ Test aSecondRequestDoesNotReplaceThePendingDestination() passed after 0.020 seconds."
+        },
+        {
+          "line": 463,
+          "text": "✔ Test nestedAdditionChoosesARepresentableMarkerWithoutFlatteningExistingBold() passed after 0.020 seconds."
+        },
+        {
+          "line": 464,
+          "text": "✔ Test removingOuterMarkPreservesNestedKnownFormattingBytes() passed after 0.020 seconds."
+        },
+        {
+          "line": 465,
+          "text": "✔ Test UTF16SurrogateBoundaryAndInvalidTraitsAreRefused() passed after 0.020 seconds."
+        },
+        {
+          "line": 466,
+          "text": "✔ Test addOnlyAPIStillRejectsAlreadyStyledText() passed after 0.020 seconds."
+        },
+        {
+          "line": 467,
+          "text": "✔ Test aSelectedWholeStyleCanBeRemovedAndAddedAgain() passed after 0.021 seconds."
+        },
+        {
+          "line": 468,
+          "text": "✔ Test partialCrossingOfKnownContainerIsExplicitlyRefused() passed after 0.020 seconds."
+        },
+        {
+          "line": 469,
+          "text": "✔ Test partialStrongRemovalKeepsBothUnselectedSidesStyled() passed after 0.020 seconds."
+        },
+        {
+          "line": 470,
+          "text": "✔ Test canonicallyEquivalentUnicodeIsNotRewritten() passed after 0.020 seconds."
+        },
+        {
+          "line": 471,
+          "text": "✔ Test mixedSelectionAppliesStyleAndKeepsNestedStylesAndExactLinkDestination() passed after 0.020 seconds."
+        },
+        {
+          "line": 472,
+          "text": "✔ Test emptyQuoteInsertionHasAValidRootPosition() passed after 0.020 seconds."
+        },
+        {
+          "line": 473,
+          "text": "✔ Test targetedQuoteStaysBeforeTargetInSameParent() passed after 0.020 seconds."
+        },
+        {
+          "line": 474,
+          "text": "✔ Test quoteAppendsAfterNestedDepthFirstTailWhileParagraphStaysRoot() passed after 0.020 seconds."
+        },
+        {
+          "line": 475,
+          "text": "✔ Test unreachableBlocksCannotBecomeInsertionTargetsOrVisibleTail() passed after 0.020 seconds."
+        },
+        {
+          "line": 489,
+          "text": "✔ Test unregisteredPresentationIsNotRevokedAgainByWorkspace() passed after 0.049 seconds."
+        },
+        {
+          "line": 490,
+          "text": "✔ Test reentrantAndRepeatedRevokeCannotRepeatCallbacks() passed after 0.049 seconds."
+        },
+        {
+          "line": 491,
+          "text": "✔ Test crossAccountAndDuplicateUnmappedIdentitiesAreRefused() passed after 0.051 seconds."
+        },
+        {
+          "line": 492,
+          "text": "✔ Test missingOrUnreachableBlocksRetainDraftAsConflict() passed after 0.051 seconds."
+        },
+        {
+          "line": 493,
+          "text": "✔ Test scalarBoundariesAreValidatedOnDisplayedAndCodeText() passed after 0.051 seconds."
+        },
+        {
+          "line": 494,
+          "text": "✔ Test exactUnmappedBufferAndBaseSurviveNewOwnerWithoutTypedDraft() passed after 0.051 seconds."
+        },
+        {
+          "line": 495,
+          "text": "✔ Test lateNativeCommitIsRecognizedWithoutAnotherWrite() passed after 0.051 seconds."
+        },
+        {
+          "line": 496,
+          "text": "✔ Test newRuntimeOwnerCanReadExactDraftAndNavigationWithoutAnyServices() passed after 0.051 seconds."
+        },
+        {
+          "line": 497,
+          "text": "✔ Test crossAccountAndCrossSpaceReadSaveNavigationAndDiscardAreDenied() passed after 0.051 seconds."
+        },
+        {
+          "line": 498,
+          "text": "✔ Test invalidSelectionAndMultipartRecoveryAreRefused() passed after 0.051 seconds."
+        },
+        {
+          "line": 499,
+          "text": "✔ Test capacityFailureNeverEvictsOlderUnsavedContent() passed after 0.051 seconds."
+        },
+        {
+          "line": 500,
+          "text": "✔ Test revocationIsSynchronousAndOneWayBeforeAnyDrainSuspension() passed after 0.050 seconds."
+        },
+        {
+          "line": 501,
+          "text": "✔ Test unchangedBaseStillRequiresManualReviewAndABARemainsConflict() passed after 0.051 seconds."
+        },
+        {
+          "line": 504,
+          "text": "✔ Test concurrentDrainersWaitForTheSameOriginalCloseTask() passed after 0.051 seconds."
+        }
+      ],
+      "rejectedResultLines": []
+    },
+    {
+      "profile": "pinkhakit-tests",
+      "log": "pinkhakit-tests.log",
+      "sha256": "c1378b8f81460e02771abcd27b21bcae4bac6ceeb6a9e431a349361481a2e692",
+      "xctestSummary": {
+        "line": 85,
+        "text": "\t Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds"
+      },
+      "swiftTestingSummary": {
+        "line": 615,
+        "text": "✔ Test run with 217 tests in 29 suites passed after 0.926 seconds."
+      },
+      "passedXCTestCases": [],
+      "passedSwiftTestingTests": [
+        {
+          "line": 369,
+          "text": "✔ Test exactRuntimeCannotEnableAnUnapprovedHostBuild() passed after 0.061 seconds."
+        },
+        {
+          "line": 370,
+          "text": "✔ Test separatelyEnabledHostAcceptsTheExactReviewedRuntime() passed after 0.061 seconds."
+        },
+        {
+          "line": 371,
+          "text": "✔ Test \"Deprecated snapshot entry points fail visibly\" passed after 0.061 seconds."
+        },
+        {
+          "line": 372,
+          "text": "✔ Test \"Two stale JSON read-modify-write additions lose one association\" passed after 0.061 seconds."
+        },
+        {
+          "line": 373,
+          "text": "✔ Test \"Role resolution and type validation helpers\" passed after 0.061 seconds."
+        },
+        {
+          "line": 374,
+          "text": "✔ Test \"Torah association payload serialization\" passed after 0.061 seconds."
+        },
+        {
+          "line": 375,
+          "text": "✔ Test olderPartialForeignAndExtendedRuntimeIdentitiesCannotGrantCapability(version:) with 9 test cases passed after 0.061 seconds."
+        },
+        {
+          "line": 376,
+          "text": "✔ Test \"Torah source quote payload serialization\" passed after 0.061 seconds."
+        },
+        {
+          "line": 377,
+          "text": "✔ Test \"Manifest JSON round-trip serialization preserves all mappings\" passed after 0.061 seconds."
+        },
+        {
+          "line": 378,
+          "text": "✔ Test \"Empty topic query returns without network access\" passed after 0.061 seconds."
+        },
+        {
+          "line": 379,
+          "text": "✔ Test \"Topic index is lazy, cached with TTL, searchable in Hebrew, and deduplicated\" passed after 0.061 seconds."
+        },
+        {
+          "line": 380,
+          "text": "✔ Test \"Lexical resolve keeps noResults while suggestions map valid emptiness to zero matches\" passed after 0.061 seconds."
+        },
+        {
+          "line": 381,
+          "text": "✔ Test \"Back progress normalizes the correct physical direction\" passed after 0.060 seconds."
+        },
+        {
+          "line": 382,
+          "text": "✔ Test \"Context duplicate preserves stable ID and original creation time\" passed after 0.061 seconds."
+        },
+        {
+          "line": 383,
+          "text": "✔ Test \"Update requires an existing stable ID and remove touches only that ID\" passed after 0.061 seconds."
+        },
+        {
+          "line": 384,
+          "text": "✔ Test \"Identity is isolated by Space, document, and block\" passed after 0.061 seconds."
+        },
+        {
+          "line": 385,
+          "text": "✔ Test \"Zero-width containers never report progress\" passed after 0.061 seconds."
+        },
+        {
+          "line": 386,
+          "text": "✔ Test \"Same quote operation is idempotent while distinct excerpts remain distinct\" passed after 0.060 seconds."
+        },
+        {
+          "line": 387,
+          "text": "✔ Test \"Gesture begins only for an available horizontal back transition\" passed after 0.060 seconds."
+        },
+        {
+          "line": 388,
+          "text": "✔ Test \"Back starts at the semantic leading edge\" passed after 0.060 seconds."
+        },
+        {
+          "line": 389,
+          "text": "✔ Test \"Complex daf sections never fabricate Hebrew segment labels\" passed after 0.060 seconds."
+        },
+        {
+          "line": 390,
+          "text": "✔ Test \"Topic Name API key/title preserves response language and v2 localized primary titles\" passed after 0.061 seconds."
+        },
+        {
+          "line": 391,
+          "text": "✔ Test \"Section-derived Hebrew segment labels use correct 15 and 16 numerals\" passed after 0.061 seconds."
+        },
+        {
+          "line": 392,
+          "text": "✔ Test \"Already-clean text and invalid entities are left intact\" passed after 0.061 seconds."
+        },
+        {
+          "line": 393,
+          "text": "✔ Test \"Entity decoding is bounded, case tolerant and preserves unknown names\" passed after 0.061 seconds."
+        },
+        {
+          "line": 394,
+          "text": "✔ Test \"Lexical lookup preserves context, diacritics, ambiguity and stable dictionary IDs\" passed after 0.061 seconds."
+        },
+        {
+          "line": 395,
+          "text": "✔ Test \"Malformed relationship payload does not become an empty relationship list\" passed after 0.061 seconds."
+        },
+        {
+          "line": 396,
+          "text": "✔ Test \"Genesis 1:5 spacing and standard typography entities decode at the provider boundary\" passed after 0.061 seconds."
+        },
+        {
+          "line": 397,
+          "text": "✔ Test \"Rich linked-source data maps to updated Core relationship fields\" passed after 0.061 seconds."
+        },
+        {
+          "line": 398,
+          "text": "✔ Test \"Reference topics retain localized titles and deduplicate slugs\" passed after 0.061 seconds."
+        },
+        {
+          "line": 399,
+          "text": "✔ Test \"Relationship groups are deterministic and remove exact duplicates\" passed after 0.061 seconds."
+        },
+        {
+          "line": 400,
+          "text": "✔ Test \"Full segment display normalization is faithful, unbounded and keeps raw payload\" passed after 0.061 seconds."
+        },
+        {
+          "line": 401,
+          "text": "✔ Test \"Sibling rebalance re-spaces dense ranks and preserves order\" passed after 0.061 seconds."
+        },
+        {
+          "line": 402,
+          "text": "✔ Test \"Root nodes built from items with no parent\" passed after 0.061 seconds."
+        },
+        {
+          "line": 403,
+          "text": "✔ Test \"Valid reparent moves node and updates ancestry\" passed after 0.061 seconds."
+        },
+        {
+          "line": 404,
+          "text": "✔ Test sharedGoldenFixtures() passed after 0.061 seconds."
+        },
+        {
+          "line": 405,
+          "text": "✔ Test \"Deterministic ordering sorts by sparse numeric rank\" passed after 0.060 seconds."
+        },
+        {
+          "line": 406,
+          "text": "✔ Test \"Safe folder deletion reparent plan when destination already has siblings (no rank collisions)\" passed after 0.060 seconds."
+        },
+        {
+          "line": 407,
+          "text": "✔ Test \"Corrupt input cycles are broken safely by builder\" passed after 0.060 seconds."
+        },
+        {
+          "line": 408,
+          "text": "✔ Test \"Safe folder deletion moving nested folder children to grandparent\" passed after 0.060 seconds."
+        },
+        {
+          "line": 409,
+          "text": "✔ Test \"Parent-child tree building creates nested nodes\" passed after 0.060 seconds."
+        },
+        {
+          "line": 410,
+          "text": "✔ Test \"Self-parent rejection\" passed after 0.060 seconds."
+        },
+        {
+          "line": 411,
+          "text": "✔ Test \"Empty hierarchy produces empty snapshot\" passed after 0.060 seconds."
+        },
+        {
+          "line": 412,
+          "text": "✔ Test \"Safe folder deletion reparent plan when destination is empty\" passed after 0.060 seconds."
+        },
+        {
+          "line": 413,
+          "text": "✔ Test errorsDoNotBecomeEmpty() passed after 0.061 seconds."
+        },
+        {
+          "line": 414,
+          "text": "✔ Test \"Safe folder deletion identifies direct children for reparenting\" passed after 0.060 seconds."
+        },
+        {
+          "line": 415,
+          "text": "✔ Test \"Mixed siblings reordering (Folder A, Document B, Folder C, Document D)\" passed after 0.060 seconds."
+        },
+        {
+          "line": 416,
+          "text": "✔ Test \"Arbitrary nesting depth supported beyond 3 levels\" passed after 0.060 seconds."
+        },
+        {
+          "line": 417,
+          "text": "✔ Test \"Safe folder deletion preserves relative order of multiple moved children\" passed after 0.060 seconds."
+        },
+        {
+          "line": 418,
+          "text": "✔ Test \"Move to root clears parent safely\" passed after 0.060 seconds."
+        },
+        {
+          "line": 419,
+          "text": "✔ Test \"Moving node preserves unrelated subtrees\" passed after 0.060 seconds."
+        },
+        {
+          "line": 420,
+          "text": "✔ Test \"Insert-between rank calculates midpoints correctly\" passed after 0.060 seconds."
+        },
+        {
+          "line": 421,
+          "text": "✔ Test \"Hierarchy snapshot pathString disambiguation for folders with duplicate names\" passed after 0.060 seconds."
+        },
+        {
+          "line": 422,
+          "text": "✔ Test \"Missing order fallback sorts ranked first, then by title, then objectId\" passed after 0.060 seconds."
+        },
+        {
+          "line": 423,
+          "text": "✔ Test \"Append rank generates max sibling rank + 1000\" passed after 0.060 seconds."
+        },
+        {
+          "line": 424,
+          "text": "✔ Test \"Deep cycle rejection A -> B -> C -> D -> A\" passed after 0.060 seconds."
+        },
+        {
+          "line": 425,
+          "text": "✔ Test \"Root writing document sparse rank assignment (A -> 1000, B -> 2000, C -> 3000)\" passed after 0.060 seconds."
+        },
+        {
+          "line": 426,
+          "text": "✔ Test \"Direct cycle rejection A -> B -> A\" passed after 0.060 seconds."
+        },
+        {
+          "line": 427,
+          "text": "✔ Test \"Path compression keeps canonical tree while projecting single-child chains\" passed after 0.060 seconds."
+        },
+        {
+          "line": 428,
+          "text": "✔ Test \"Hierarchy filtering keeps numbered books exact without cross-matching\" passed after 0.060 seconds."
+        },
+        {
+          "line": 429,
+          "text": "✔ Test \"TOC category tree preserves canonical books and uses bounded cache\" passed after 0.060 seconds."
+        },
+        {
+          "line": 430,
+          "text": "✔ Test \"Filtering supports Genesis chapters and Rosh Hashanah daf references\" passed after 0.060 seconds."
+        },
+        {
+          "line": 431,
+          "text": "✔ Test \"Book fallback recognizes numeric and Roman title prefixes\" passed after 0.060 seconds."
+        },
+        {
+          "line": 432,
+          "text": "✔ Test \"Malformed TOC is reported\" passed after 0.060 seconds."
+        },
+        {
+          "line": 433,
+          "text": "✔ Test \"Filtering creates passage nodes and avoids leading-title false matches\" passed after 0.060 seconds."
+        },
+        {
+          "line": 434,
+          "text": "✔ Test \"Registry rejects invalid defaults and duplicate providers\" passed after 0.060 seconds."
+        },
+        {
+          "line": 435,
+          "text": "✔ Test \"Schema migration validates current schema version\" passed after 0.060 seconds."
+        },
+        {
+          "line": 436,
+          "text": "✔ Test \"Workspace routes exact provider IDs and refuses silent fallback\" passed after 0.061 seconds."
+        },
+        {
+          "line": 437,
+          "text": "✔ Test scopeAndNodeBoundFailExplicitly() passed after 0.060 seconds."
+        },
+        {
+          "line": 438,
+          "text": "✔ Test \"Content direction is respected without changing the application default alignment\" passed after 0.060 seconds."
+        },
+        {
+          "line": 439,
+          "text": "✔ Test \"Empty editing defaults follow the effective application direction\" with 2 test cases passed after 0.060 seconds."
+        },
+        {
+          "line": 440,
+          "text": "✔ Test \"Explicit user alignment survives every application direction\" with 4 test cases passed after 0.060 seconds."
+        },
+        {
+          "line": 441,
+          "text": "✔ Test \"Ambiguous old left and right values follow the current app language\" with 2 test cases passed after 0.060 seconds."
+        },
+        {
+          "line": 442,
+          "text": "✔ Test countsAndOrdering(count:) with 4 test cases passed after 0.060 seconds."
+        },
+        {
+          "line": 443,
+          "text": "✔ Test \"Sequential multi-block resolution preserves explicit alignment while adapting automatic\" passed after 0.060 seconds."
+        },
+        {
+          "line": 444,
+          "text": "✔ Test \"Unmarked center and justified formatting remain visually unchanged\" passed after 0.060 seconds."
+        },
+        {
+          "line": 445,
+          "text": "✔ Test excludesOtherTargetsRolesAndNotes() passed after 0.060 seconds."
+        },
+        {
+          "line": 446,
+          "text": "✔ Test ordinaryNoteAndGenericTypesAreEligibleForNativeDerivedProperties() passed after 0.060 seconds."
+        },
+        {
+          "line": 447,
+          "text": "✔ Test \"Transient GET status retries are bounded and reuse the exact request\" passed after 0.060 seconds."
+        },
+        {
+          "line": 448,
+          "text": "✔ Test normalDocumentClassificationRejectsInfrastructureAndLifecycleStates() passed after 0.060 seconds."
+        },
+        {
+          "line": 449,
+          "text": "✔ Test \"Path and query values are encoded without manual concatenation\" passed after 0.060 seconds."
+        },
+        {
+          "line": 450,
+          "text": "✔ Test nativeDerivedKeysAreExclusivelyVerified() passed after 0.060 seconds."
+        },
+        {
+          "line": 451,
+          "text": "✔ Test onlyCanonicalPropertyIdentityIsFiltered() passed after 0.060 seconds."
+        },
+        {
+          "line": 452,
+          "text": "✔ Test \"Hebrew reference path is encoded as one exact path component\" passed after 0.060 seconds."
+        },
+        {
+          "line": 453,
+          "text": "✔ Test deduplicatesWithoutChangingStableIdentityOrInput() passed after 0.060 seconds."
+        },
+        {
+          "line": 454,
+          "text": "✔ Test userPropertyWithSameHebrewDisplayNameIsNotCanonicalOrInternal() passed after 0.060 seconds."
+        },
+        {
+          "line": 455,
+          "text": "✔ Test internalPropertyIdentityCoversBothCanonicalAndOrderWhilePreservingParent() passed after 0.060 seconds."
+        },
+        {
+          "line": 456,
+          "text": "✔ Test \"Transient timeout retries and recovers\" passed after 0.060 seconds."
+        },
+        {
+          "line": 457,
+          "text": "✔ Test eligibilityUsesUniversalDocumentTypesAndExactSpace() passed after 0.060 seconds."
+        },
+        {
+          "line": 458,
+          "text": "✔ Test \"Non-transient status is returned without retry\" passed after 0.060 seconds."
+        },
+        {
+          "line": 459,
+          "text": "✔ Test \"Large hierarchy scalability (>1000 items, 2,550 objects)\" passed after 0.061 seconds."
+        },
+        {
+          "line": 460,
+          "text": "✔ Test resultLimitAndSortAreExplicit() passed after 0.060 seconds."
+        },
+        {
+          "line": 461,
+          "text": "✔ Test wrongSpaceObjectBlockQuoteProviderVerseAndIneligibleRowsAreExcluded() passed after 0.060 seconds."
+        },
+        {
+          "line": 462,
+          "text": "✔ Test \"Malformed JSON is not normalized to an empty result\" passed after 0.060 seconds."
+        },
+        {
+          "line": 463,
+          "text": "✔ Test threeTypesAcrossPagesAndDuplicateAssociationsBecomeOnePerDocument() passed after 0.060 seconds."
+        },
+        {
+          "line": 464,
+          "text": "✔ Test noteSelfAssociationIsCanonicalSourceRatherThanSelectionOrNoteID() passed after 0.060 seconds."
+        },
+        {
+          "line": 465,
+          "text": "✔ Test staleUnlinkReadbackDoesNotShowIndexedPositive() passed after 0.060 seconds."
+        },
+        {
+          "line": 466,
+          "text": "✔ Test repeatedPageFailsInsteadOfLoopingOrClaimingCompletion() passed after 0.060 seconds."
+        },
+        {
+          "line": 467,
+          "text": "✔ Test canonicalIdentityUsesProviderKindAndUTF8Normalization() passed after 0.060 seconds."
+        },
+        {
+          "line": 468,
+          "text": "✔ Test backendFailureIsNotEmpty() passed after 0.060 seconds."
+        },
+        {
+          "line": 469,
+          "text": "✔ Test \"Fresh reconstruction from canonical subscription only (Folder A -> Folder B -> Folder C) with zero pending state\" passed after 0.060 seconds."
+        },
+        {
+          "line": 470,
+          "text": "✔ Test \"Nested hierarchy with mixed folders and writing documents reconstructed from fresh canonical details only\" passed after 0.060 seconds."
+        },
+        {
+          "line": 471,
+          "text": "✔ Test \"Simulated screen navigation away and back: tree reconstructs completely when repository state is destroyed\" passed after 0.060 seconds."
+        },
+        {
+          "line": 472,
+          "text": "✔ Test \"Duplicate IDs are strictly deduplicated and never rendered twice\" passed after 0.060 seconds."
+        },
+        {
+          "line": 473,
+          "text": "✔ Test \"Exact real-device scenario: Folder created -> stale subscription [] arrives -> Folder remains visible -> subscription [Folder] arrives -> genuine removal [] removes Folder\" passed after 0.060 seconds."
+        },
+        {
+          "line": 474,
+          "text": "✔ Test \"Optimistic rename, order, and move mutations\" passed after 0.060 seconds."
+        },
+        {
+          "line": 475,
+          "text": "✔ Test \"C. Move stale frame: old parent in subscription kept under destination until confirmed by value\" passed after 0.060 seconds."
+        },
+        {
+          "line": 476,
+          "text": "✔ Test \"Writing document optimistic creation and subfolder placement\" passed after 0.060 seconds."
+        },
+        {
+          "line": 477,
+          "text": "✔ Test \"E. Pending created writing document: intermediate frame without parent/order preserves pending item\" passed after 0.060 seconds."
+        },
+        {
+          "line": 478,
+          "text": "✔ Test \"D. Delete: optimistic delete remains hidden across stale subscription containing item\" passed after 0.060 seconds."
+        },
+        {
+          "line": 479,
+          "text": "✔ Test \"Multiple pending folder creations are preserved across stale subscription updates\" passed after 0.060 seconds."
+        },
+        {
+          "line": 480,
+          "text": "✔ Test \"A. Rename stale frame: old title in subscription kept as new until confirmed by value\" passed after 0.060 seconds."
+        },
+        {
+          "line": 481,
+          "text": "✔ Test \"B. Order stale frame: old order rank in subscription kept as new until confirmed by value\" passed after 0.060 seconds."
+        },
+        {
+          "line": 482,
+          "text": "✔ Test \"Unknown or malformed markers remain legacy-ambiguous\" passed after 0.060 seconds."
+        },
+        {
+          "line": 483,
+          "text": "✔ Test \"Automatic direction markers round-trip\" with 2 test cases passed after 0.060 seconds."
+        },
+        {
+          "line": 484,
+          "text": "✔ Test \"Unexpected mock requests fail deterministically\" passed after 0.061 seconds."
+        },
+        {
+          "line": 485,
+          "text": "✔ Test \"Explicit alignment markers round-trip\" with 5 test cases passed after 0.060 seconds."
+        },
+        {
+          "line": 486,
+          "text": "✔ Test \"Legacy and current source-quote roles decode and encode canonically\" passed after 0.060 seconds."
+        },
+        {
+          "line": 487,
+          "text": "✔ Test \"Future and malformed payloads fail without yielding writable data\" passed after 0.060 seconds."
+        },
+        {
+          "line": 488,
+          "text": "✔ Test \"Document v1 retains stable IDs, optional provenance, and unknown metadata\" passed after 0.060 seconds."
+        },
+        {
+          "line": 489,
+          "text": "✔ Test \"Legacy source quote v1 decodes unchanged\" passed after 0.060 seconds."
+        },
+        {
+          "line": 490,
+          "text": "✔ Test \"Empty reference query is a legitimate empty result without transport\" passed after 0.060 seconds."
+        },
+        {
+          "line": 491,
+          "text": "✔ Test \"Same source stays distinct across block targets and deduplicates within one target\" passed after 0.060 seconds."
+        },
+        {
+          "line": 492,
+          "text": "✔ Test \"Future and corrupt canonical payloads fail closed\" passed after 0.060 seconds."
+        },
+        {
+          "line": 493,
+          "text": "✔ Test \"Rich v2 provenance retains raw source, provider response, version, license, timestamp, and excerpt\" passed after 0.060 seconds."
+        },
+        {
+          "line": 494,
+          "text": "✔ Test \"Legacy v1 lifts to an exact document target and preserves unknown fields\" passed after 0.060 seconds."
+        },
+        {
+          "line": 495,
+          "text": "✔ Test \"V2 round-trip preserves record and envelope extensions\" passed after 0.060 seconds."
+        },
+        {
+          "line": 496,
+          "text": "✔ Test \"Invalid references remain distinct from malformed responses\" passed after 0.060 seconds."
+        },
+        {
+          "line": 497,
+          "text": "✔ Test \"Broad book and tractate sources are not classified as embeddable\" passed after 0.060 seconds."
+        },
+        {
+          "line": 498,
+          "text": "✔ Test \"Hebrew partial search preserves provider identity and display label\" passed after 0.060 seconds."
+        },
+        {
+          "line": 499,
+          "text": "✔ Test \"English exact resolution preserves canonical and provider metadata\" passed after 0.060 seconds."
+        },
+        {
+          "line": 500,
+          "text": "✔ Test \"Backward-compatible scalar parent decoding: valid scalar decodes parentId\" passed after 0.060 seconds."
+        },
+        {
+          "line": 501,
+          "text": "✔ Test \"Parent decoding precedence: listValue takes precedence over legacy scalar string\" passed after 0.060 seconds."
+        },
+        {
+          "line": 502,
+          "text": "✔ Test reservedInternalIdentityCannotTriggerANativeSearch() passed after 0.060 seconds."
+        },
+        {
+          "line": 503,
+          "text": "✔ Test \"Backward-compatible scalar parent decoding: empty or nil scalar returns nil\" passed after 0.060 seconds."
+        },
+        {
+          "line": 504,
+          "text": "✔ Test \"Parent list decoding: multi-element list decodes first parentId\" passed after 0.060 seconds."
+        },
+        {
+          "line": 505,
+          "text": "✔ Test \"Parent list decoding: single-element list decodes canonical parentId\" passed after 0.060 seconds."
+        },
+        {
+          "line": 506,
+          "text": "✔ Test \"Required hierarchy subscription keys include standard id, type, and name\" passed after 0.060 seconds."
+        },
+        {
+          "line": 507,
+          "text": "✔ Test \"Rosh Hashanah daf fixture resolves with canonical daf identity\" passed after 0.060 seconds."
+        },
+        {
+          "line": 508,
+          "text": "✔ Test \"Parent list decoding: empty list returns nil\" passed after 0.060 seconds."
+        },
+        {
+          "line": 509,
+          "text": "✔ Test \"Object relation parent list encoding: nil or empty parent produces empty array\" passed after 0.060 seconds."
+        },
+        {
+          "line": 510,
+          "text": "✔ Test \"Hierarchy key builder combines standard keys with custom parent and order keys, deduplicating safely\" passed after 0.060 seconds."
+        },
+        {
+          "line": 511,
+          "text": "✔ Test \"Object relation parent list encoding: non-empty parent produces single-item array\" passed after 0.059 seconds."
+        },
+        {
+          "line": 512,
+          "text": "✔ Test uncertainTextWriteIsNotBlindlyRepeatedOnRetry() passed after 0.062 seconds."
+        },
+        {
+          "line": 513,
+          "text": "✔ Test failedSelfLinkPreservesObjectIDAndRetryReusesNote() passed after 0.062 seconds."
+        },
+        {
+          "line": 514,
+          "text": "✔ Test sourceIsLinkedOnNewNoteBeforeTextAndOriginReference() passed after 0.062 seconds."
+        },
+        {
+          "line": 520,
+          "text": "✔ Test \"V3 section text preserves segment order, gaps, navigation, version and license\" passed after 0.063 seconds."
+        },
+        {
+          "line": 521,
+          "text": "✔ Test \"Same-section ranges start at the documented ordinal and retain gaps\" passed after 0.063 seconds."
+        },
+        {
+          "line": 522,
+          "text": "✔ Test \"Documented one-based Genesis 1:1 indexes remain ordinal one\" passed after 0.063 seconds."
+        },
+        {
+          "line": 523,
+          "text": "✔ Test \"Exact segment identity is preserved\" passed after 0.063 seconds."
+        },
+        {
+          "line": 524,
+          "text": "✔ Test unsupportedMiddlewareDoesNotWriteOrMintOrdinaryTags() passed after 0.063 seconds."
+        },
+        {
+          "line": 525,
+          "text": "✔ Test refusesForeignSpaceDefinitionAndNeverRewritesIt() passed after 0.063 seconds."
+        },
+        {
+          "line": 526,
+          "text": "✔ Test \"No available version is noText rather than a fake empty document\" passed after 0.063 seconds."
+        },
+        {
+          "line": 527,
+          "text": "✔ Test \"Cross-section ranges fail instead of fabricating segment identities\" passed after 0.063 seconds."
+        },
+        {
+          "line": 530,
+          "text": "✔ Test \"Unavailable requested version falls back to source without relabeling language\" passed after 0.063 seconds."
+        },
+        {
+          "line": 531,
+          "text": "✔ Test \"Revoked authority before creation cannot allocate or mutate a Note\" passed after 0.063 seconds."
+        },
+        {
+          "line": 532,
+          "text": "✔ Test failedObjectCreationThrowsWithoutFabricatingRecoveryObject() passed after 0.063 seconds."
+        },
+        {
+          "line": 535,
+          "text": "✔ Test \"Existing unrelated user type named חידוש is not adopted\" passed after 0.063 seconds."
+        },
+        {
+          "line": 536,
+          "text": "✔ Test \"Partial bootstrap resumes cleanly from missing steps\" passed after 0.062 seconds."
+        },
+        {
+          "line": 537,
+          "text": "✔ Test reachableDescendantsExcludeRootAndOrphans() passed after 0.062 seconds."
+        },
+        {
+          "line": 538,
+          "text": "✔ Test cancelledEvaluationDoesNotPublishGraph() passed after 0.062 seconds."
+        },
+        {
+          "line": 539,
+          "text": "✔ Test \"Fresh space bootstrap provisions schema and persists manifest\" passed after 0.062 seconds."
+        },
+        {
+          "line": 540,
+          "text": "✔ Test \"Template creation failure throws error and preserves inProgress state\" passed after 0.063 seconds."
+        },
+        {
+          "line": 543,
+          "text": "✔ Test \"Unsupported newer schema version throws error and is not overwritten\" passed after 0.063 seconds."
+        },
+        {
+          "line": 550,
+          "text": "✔ Test unavailableRuntimeDoesNotQueryEvenWhenRowsWouldAdvertiseVersionOne() passed after 0.061 seconds."
+        },
+        {
+          "line": 551,
+          "text": "✔ Test \"Updated Core API supports explicit scope and notes-enabled repository\" passed after 0.063 seconds."
+        },
+        {
+          "line": 552,
+          "text": "✔ Test \"Sequential two instances reuse existing manifest\" passed after 0.064 seconds."
+        },
+        {
+          "line": 553,
+          "text": "✔ Test \"Simulated restart returns identical Property IDs and Type IDs\" passed after 0.064 seconds."
+        },
+        {
+          "line": 554,
+          "text": "✔ Test \"New service instance reads same persisted manifest and creates zero new schema\" passed after 0.064 seconds."
+        },
+        {
+          "line": 555,
+          "text": "✔ Test \"Zero duplicate property creations after manifest exists\" passed after 0.064 seconds."
+        },
+        {
+          "line": 556,
+          "text": "✔ Test \"Zero duplicate type creations after manifest exists\" passed after 0.064 seconds."
+        },
+        {
+          "line": 557,
+          "text": "✔ Test \"Repair missing default template recreates only template\" passed after 0.064 seconds."
+        },
+        {
+          "line": 558,
+          "text": "✔ Test \"Repair missing Torah associations property recreates only Torah property\" passed after 0.064 seconds."
+        },
+        {
+          "line": 559,
+          "text": "✔ Test \"Repair missing folder type recreates only folder type\" passed after 0.064 seconds."
+        },
+        {
+          "line": 560,
+          "text": "✔ Test \"Second bootstrap in same service reuses cache and creates nothing new\" passed after 0.064 seconds."
+        },
+        {
+          "line": 561,
+          "text": "✔ Test \"Repair missing parent property recreates only parent property\" passed after 0.064 seconds."
+        },
+        {
+          "line": 562,
+          "text": "✔ Test interruptedInstallationRetriesByStableNativeKey() passed after 0.065 seconds."
+        },
+        {
+          "line": 563,
+          "text": "✔ Test existingSpaceUpgradePreservesIdsAndOtherPropertiesAndIsIdempotent() passed after 0.065 seconds."
+        },
+        {
+          "line": 564,
+          "text": "✔ Test \"Repair missing order property recreates only order property\" passed after 0.064 seconds."
+        },
+        {
+          "line": 565,
+          "text": "✔ Test \"Repair missing writing type recreates writing type and template\" passed after 0.064 seconds."
+        },
+        {
+          "line": 566,
+          "text": "✔ Test legacyQuoteCodecIsConsumedWithoutChangingContextOnlyIdentityPolicy() passed after 0.064 seconds."
+        },
+        {
+          "line": 567,
+          "text": "✔ Test cancellationDiscardsNoncooperativePage() passed after 0.064 seconds."
+        },
+        {
+          "line": 568,
+          "text": "✔ Test documentAndBlocksRemainSeparateWithRoleBucketsAndReadOnlyQuotes() passed after 0.063 seconds."
+        },
+        {
+          "line": 569,
+          "text": "✔ Test internalSelectedIdentityIsRejectedForCanonicalAndExternalFallbackRecords() passed after 0.064 seconds."
+        },
+        {
+          "line": 570,
+          "text": "✔ Test mixedDocumentQuoteGroupCannotUseContextOnlyUnlink() passed after 0.063 seconds."
+        },
+        {
+          "line": 571,
+          "text": "✔ Test resolvedReferenceUsesCanonicalBeforeExternalFallback() passed after 0.063 seconds."
+        },
+        {
+          "line": 572,
+          "text": "✔ Test laterPageFailureDoesNotReturnTheEarlierTargetsAsACompleteSnapshot() passed after 0.063 seconds."
+        },
+        {
+          "line": 573,
+          "text": "✔ Test cancellationAfterFetchCannotPublishTargets() passed after 0.063 seconds."
+        },
+        {
+          "line": 575,
+          "text": "✔ Test \"Cancellation remains cancellation\" passed after 0.064 seconds."
+        },
+        {
+          "line": 576,
+          "text": "✔ Test requestSpaceRecordSpaceObjectAndExactIdentityAreEnforced() passed after 0.064 seconds."
+        },
+        {
+          "line": 578,
+          "text": "✔ Test \"Cancellation during retry backoff remains cancellation\" passed after 0.064 seconds."
+        },
+        {
+          "line": 579,
+          "text": "✔ Test duplicateAndOversizedPagesFailWithoutPublishingPartialResults(oversized:) with 2 test cases passed after 0.064 seconds."
+        },
+        {
+          "line": 580,
+          "text": "✔ Test \"Revocation after each suspended write preserves the Note and stops later writes\" with 3 test cases passed after 0.065 seconds."
+        },
+        {
+          "line": 581,
+          "text": "✔ Test explicitCapabilityAndRowVersionAreRequiredDespiteDefaultReadyDTO() passed after 0.064 seconds."
+        },
+        {
+          "line": 582,
+          "text": "✔ Test cancellationDoesNotPublishPartialAppendState() passed after 0.064 seconds."
+        },
+        {
+          "line": 583,
+          "text": "✔ Test refreshReadsCanonicalMembershipAgainAndDoesNotResurrectRemovedBlocks() passed after 0.064 seconds."
+        },
+        {
+          "line": 585,
+          "text": "✔ Test pagesRetainExactBlocksAndQuotesWhileRejectingUnreadyCanonicalDocuments() passed after 0.064 seconds."
+        },
+        {
+          "line": 586,
+          "text": "✔ Test candidateAndTargetCapsAreIndependentAndDisclosed() passed after 0.064 seconds."
+        },
+        {
+          "line": 587,
+          "text": "✔ Test invalidForeignAndOrphanBlockTargetsNeverBecomeDocumentRows() passed after 0.064 seconds."
+        },
+        {
+          "line": 588,
+          "text": "✔ Test cancelledCallerDoesNotReleaseItsRetainedWriter() passed after 0.065 seconds."
+        },
+        {
+          "line": 590,
+          "text": "✔ Test malformedReachableGraphsNeverYieldUsableTargets() passed after 0.065 seconds."
+        },
+        {
+          "line": 591,
+          "text": "✔ Test failedWriterStillDrainsAndPreservesItsFailure() passed after 0.065 seconds."
+        },
+        {
+          "line": 592,
+          "text": "✔ Test logoutDrainsAcceptedWriterAndRejectsNewWork() passed after 0.065 seconds."
+        },
+        {
+          "line": 594,
+          "text": "✔ Test missingAndEarliestDatesStillUseStableTargetIDTieBreak() passed after 0.064 seconds."
+        },
+        {
+          "line": 595,
+          "text": "✔ Test globalDateAndStableIDRankIsIndependentOfAppendOrder() passed after 0.065 seconds."
+        },
+        {
+          "line": 596,
+          "text": "✔ Test \"Concurrent bootstraps select a canonical manifest in store\" passed after 0.066 seconds."
+        },
+        {
+          "line": 597,
+          "text": "✔ Test \"Decisive convergence: cached-loser engines re-bootstrap to same canonical manifest without new schema\" passed after 0.066 seconds."
+        },
+        {
+          "line": 598,
+          "text": "✔ Test deepDocumentUsesIterativeTraversal() passed after 0.070 seconds."
+        },
+        {
+          "line": 599,
+          "text": "✔ Test wideTreeAndLargeMalformedChildListStayWithinTreeValidation() passed after 0.070 seconds."
+        },
+        {
+          "line": 601,
+          "text": "✔ Test independentTargetCapIsDeterministicAndKeepsRetainedQuoteIDs() passed after 0.095 seconds."
+        },
+        {
+          "line": 603,
+          "text": "✔ Test \"Activation and direct callers share one bootstrap per Space\" passed after 0.139 seconds."
+        },
+        {
+          "line": 605,
+          "text": "✔ Test \"Factory connects document, links, topics and explicit no-notes behavior\" passed after 0.139 seconds."
+        },
+        {
+          "line": 606,
+          "text": "✔ Test \"Section loading follows provider metadata instead of trimming a reference\" passed after 0.280 seconds."
+        },
+        {
+          "line": 608,
+          "text": "✔ Test \"Expired topic cache retries after failure and only successful refresh is stored\" passed after 0.798 seconds."
+        },
+        {
+          "line": 609,
+          "text": "✔ Test \"Malformed text and failed HTTP are distinct\" passed after 0.924 seconds."
+        },
+        {
+          "line": 610,
+          "text": "✔ Test \"HTTP status is preserved in provider diagnostics\" passed after 0.923 seconds."
+        },
+        {
+          "line": 613,
+          "text": "✔ Test \"Lexical suggestion maps HTTP 404 to empty but preserves server and schema errors\" passed after 0.925 seconds."
+        }
+      ],
+      "rejectedResultLines": []
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_SYNTHETIC_GATE_CONTROLS_ONLY",
+  "actualAppleExecution": false,
+  "createdAt": "2026-11-20T04:39:27.070815+00:00",
+  "controlsReceipt": "docs/any-engine-port/evidence/20261119/native-apple-execution-gate-controls-v5.json",
+  "controlsSHA256": "8b47e07ee7f4a5df67575ece9c0ba83ac8cf289add9266887e9344d71524efcd",
+  "syntheticTopLevelTests": 11,
+  "missingNewMethodNegativeSubcases": 7,
+  "requiredUIIOSMethods": 18,
+  "originalRequiredUIIOSMethodsPreserved": 11,
+  "allOtherProfilesUnchanged": true,
+  "validatorAndExtractorBodiesUnchanged": true,
+  "originalNineControlBodiesUnchanged": true,
+  "sourceStable": true,
+  "sources": {
+    "Tools\\AnyEnginePort\\verify_native_test_execution.py": "c5eee2723aee2ea2d7f221d62836f90506ce59dcaef469c563d9baeee3442f34",
+    "Tools\\AnyEnginePort\\test_native_execution_gate.py": "97015b98a1511eecbedf15f5b9d8f43d74f104e2b5ef5eff731189ff8e2ff373"
+  },
+  "newTestSource": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift",
+  "newTestSourceSHA256": "93b40658f3471b4b71c8ab23e49b780217cedcbf9189e0e92a710cd53f4cb21c",
+  "newRequiredNames": [
+    "delayedReviewCannotRestoreOldTypeOrEraseAcknowledgedUndo",
+    "delayedReadFailureCannotReplaceAcknowledgedWriteFeedbackOrUndo",
+    "delayedRefreshCannotRevealAnAcknowledgedHiddenProperty",
+    "refreshDuringWriteDoesNotDispatchOrReportMissingWorkspace",
+    "supersededReadFailureCannotClearNewerReadSpinnerOrFeedback",
+    "oldReadCannotPublishOrClearLoadingAfterOwnerReactivation",
+    "oldWriteCompletionCannotClearNewOwnerSavingStateOrPublishFailure"
+  ],
+  "actualArchivedSwiftTestingFormat": {
+    "source": "docs/any-engine-port/evidence/20261119/apple-d58-patched-runtime-v1/ui-ios-test-methods.json",
+    "sha256": "b90d7ab4dca9e50008af8168e7b32fe9363aefe135e266207a469d50ca4ece4d",
+    "examples": [
+      {
+        "suiteDisplayName": "Canonical archive reads reach bounded EOF",
+        "nodeIdentifier": "AnyCanonicalArchiveBoundedReaderTests/shortValidPrefixDoesNotHideUnreadTrailingBytes()",
+        "result": "Passed"
+      },
+      {
+        "suiteDisplayName": "Canonical archive reads reach bounded EOF",
+        "nodeIdentifier": "AnyCanonicalArchiveBoundedReaderTests/exactBoundStillChecksEOFAndAnExtraByteFails()",
+        "result": "Passed"
+      },
+      {
+        "suiteDisplayName": "Canonical archive reads reach bounded EOF",
+        "nodeIdentifier": "AnyCanonicalArchiveBoundedReaderTests/emptyAndOversizedProviderChunksAreRejected()",
+        "result": "Passed"
+      },
+      {
+        "suiteDisplayName": "Native hierarchy display reconciles only across a fresh feed",
+        "nodeIdentifier": "AnyHierarchyPresentationStateTests/oldQueuedFramesCannotEraseConfirmedRenameOrOverrideNewNativeTruth()",
+        "result": "Passed"
+      },
+      {
+        "suiteDisplayName": "Native hierarchy display reconciles only across a fresh feed",
+        "nodeIdentifier": "AnyHierarchyPresentationStateTests/moveToRootUsesNativeLexicalPositionWithoutCounterfeitingVersion()",
+        "result": "Passed"
+      },
+      {
+        "suiteDisplayName": "Native hierarchy display reconciles only across a fresh feed",
+        "nodeIdentifier": "AnyHierarchyPresentationStateTests/temporarilyMissingPendingRowIsRetainedUntilPostDispatchFreshRead()",
+        "result": "Passed"
+      },
+      {
+        "suiteDisplayName": "Native hierarchy display reconciles only across a fresh feed",
+        "nodeIdentifier": "AnyHierarchyPresentationStateTests/unrelatedRefreshDoesNotSettleStillRunningMutation()",
+        "result": "Passed"
+      },
+      {
+        "suiteDisplayName": "Native hierarchy display reconciles only across a fresh feed",
+        "nodeIdentifier": "AnyHierarchyPresentationStateTests/workspaceAndVerifiedSchemaAreRequiredForCurrentFeed()",
+        "result": "Passed"
+      }
+    ]
+  },
+  "previousV4SHA256Unchanged": "5c27f19c8a18603bd3510f4fbb2b6db4ca3f8263466c4031ff80bc548384d5d7"
+}

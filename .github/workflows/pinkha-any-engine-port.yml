@@ -353,6 +353,19 @@ jobs:
             -default-test-execution-time-allowance 180 \
             -maximum-test-execution-time-allowance 180 \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/runtime.log"
+      - name: Publish lifecycle diagnostic log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: any-engine-port-lifecycle-diagnostic-${{ github.sha }}
+          path: |
+            build/any-patched-evidence/runtime.log
+            build/any-patched-evidence/source-sha.txt
+            build/any-patched-evidence/native-source.json
+            build/any-patched-evidence/xcode-version.txt
+            build/any-patched-evidence/simulator.json
+          retention-days: 14
+          if-no-files-found: warn
       - name: Test protected Hanlin recovery on iOS
         if: ${{ !cancelled() }}
         working-directory: Modules/PinkhaAnyHanlin
@@ -421,6 +434,19 @@ jobs:
             ARCHS=arm64 ONLY_ACTIVE_ARCH=YES \
             CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=YES CODE_SIGN_IDENTITY=- \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/application.log"
+      - name: Publish hosted application diagnostic log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: any-engine-port-application-diagnostic-${{ github.sha }}
+          path: |
+            build/any-patched-evidence/application.log
+            build/any-patched-evidence/source-sha.txt
+            build/any-patched-evidence/native-source.json
+            build/any-patched-evidence/xcode-version.txt
+            build/any-patched-evidence/simulator.json
+          retention-days: 14
+          if-no-files-found: warn
       - name: Build and launch the separate native executable
         if: ${{ !cancelled() }}
         shell: bash

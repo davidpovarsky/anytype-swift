@@ -95,6 +95,57 @@ class NativeExecutionGateTests(unittest.TestCase):
              "nodeIdentifier": "FixtureModule/Other/testAnother()", "result": "Passed"})
         self.assertEqual(len(validate(summary, tree, "runtime", UDID)["actualCases"]), 4)
 
+    def testEachMissingPropertyMethodFailsEvenWhenAnUnrelatedCaseKeepsCountsComplete(self):
+        for name in PROFILES["ui-ios"]["AnyNativePropertyPresentationTests"]:
+            summary, tree = fixture("ui-ios")
+            missing = "AnyNativePropertyPresentationTests/" + name
+            for node in tree["testNodes"]:
+                if node["nodeIdentifier"] == "FixtureModule/" + missing + "()":
+                    node["nodeIdentifier"] = "FixtureModule/UnrelatedPropertyTests/notTheRequiredMethod()"
+                    break
+            else:
+                self.fail("Required property method was not in the synthetic fixture")
+            with self.subTest(missing=missing), self.assertRaisesRegex(RuntimeError, missing):
+                validate(summary, tree, "ui-ios", UDID)
+
+    def testSwiftTestingUsesTypeIdentifierIndependentlyOfHumanSuiteDisplayName(self):
+        summary, tree = fixture("ui-ios")
+        ordinary, properties = [], []
+        for node in tree["testNodes"]:
+            if "/AnyNativePropertyPresentationTests/" in node["nodeIdentifier"]:
+                # Actual archived d58 Swift Testing nodes have Type/method(),
+                # even when their enclosing suite uses a human display name.
+                node["nodeIdentifier"] = node["nodeIdentifier"].removeprefix("FixtureModule/")
+                properties.append(node)
+            else:
+                ordinary.append(node)
+        tree["testNodes"] = ordinary + [{
+            "nodeType": "Test Suite", "name": "Native property presentation ordering",
+            "result": "Passed", "children": properties}]
+        self.assertEqual(set(validate(summary, tree, "ui-ios", UDID)["observedRequiredMethods"]),
+                         expected_methods("ui-ios"))
+        for node in properties:
+            node["nodeIdentifier"] = node["nodeIdentifier"].replace(
+                "AnyNativePropertyPresentationTests/", "Native property presentation ordering/")
+        with self.assertRaisesRegex(RuntimeError, "Missing required named execution"):
+            validate(summary, tree, "ui-ios", UDID)
+
+
+    def testEachNewHostedMethodMustExecuteEvenIfOtherPassingCasesFillItsCount(self):
+        for suite in ("NativeDocumentPublicationTests", "NativePropertyWorkflowTests"):
+            for name in PROFILES["application"][suite]:
+                summary, tree = fixture("application")
+                missing = suite + "/" + name
+                for node in tree["testNodes"]:
+                    if node["nodeIdentifier"] == "FixtureModule/" + missing + "()":
+                        node["nodeIdentifier"] = "FixtureModule/OtherHostedTests/notTheRequiredMethod()"
+                        break
+                else:
+                    self.fail("Required hosted method was not in the synthetic fixture")
+                with self.subTest(missing=missing), self.assertRaisesRegex(RuntimeError, missing):
+                    validate(summary, tree, "application", UDID)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)

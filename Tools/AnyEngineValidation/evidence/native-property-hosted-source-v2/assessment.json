@@ -1,0 +1,70 @@
+{
+  "status": "PASS_SYNTAX_ONLY_WITH_HOST_PLATFORM_WARNINGS",
+  "testPath": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativePropertyWorkflowTests.swift",
+  "testSHA256": "43caeb7e6b4992ff92feaa55ca499741ed4759f9e2d7f4d436320de28fbaf6c4",
+  "orderedCheckCount": 15,
+  "mechanicalExtractionVerified": true,
+  "rawParserHarnessStatus": "PASS_SYNTAX_ONLY_WITH_HOST_PLATFORM_WARNINGS",
+  "compilerExitCode": 0,
+  "sourceStable": true,
+  "activeConditionalTarget": "arm64-apple-ios27.0-simulator",
+  "warningLines": [
+    "<unknown>:0: warning: SDK settings were ignored as 'SDKSettings.json' could not be parsed",
+    "<unknown>:0: warning: using sysroot for 'Windows' but targeting 'iPhone'"
+  ],
+  "interpretation": "The actual frontend parsed the active iOS source and exited0. Only the two exact cross-host SDK warnings are accepted; no source diagnostics were emitted. This assessment does not claim SDK resolution, Swift semantic checking, linking, or Apple runtime execution.",
+  "appleSemanticAndRuntimeStatus": "PENDING",
+  "parseReason": "One public cleanup API correction after access-control review; original15 business spans remain unchanged.",
+  "priorEvidencePreserved": "native-property-hosted-source-v1",
+  "sourceOnlyScaffoldCorrection": {
+    "previousTestSHA256": "eaf53b854958e190acd8f62ec563e2698eafd5e01cb5a50794ad127ed6f04034",
+    "change": "Failure cleanup uses public application.removeSavedAccount after stop, preserving normal recovery acknowledgment rules; internal CredentialVault reference removed. Original15 business spans unchanged."
+  },
+  "files": [
+    {
+      "path": "source/executed-generator.py",
+      "sha256": "26e0c31ae99a1d20d4af14f1d40709605a2a59842ec7e2e8259f1654f643b261",
+      "bytes": 13422
+    },
+    {
+      "path": "source/original-property-output.txt",
+      "sha256": "1966d41d577e0930fe8b08b8be2b0b1045844dcb54a8024e184ecc43b6b02373",
+      "bytes": 424
+    },
+    {
+      "path": "source/previous-test-v1.swift",
+      "sha256": "eaf53b854958e190acd8f62ec563e2698eafd5e01cb5a50794ad127ed6f04034",
+      "bytes": 25012
+    },
+    {
+      "path": "source/source-proof.json",
+      "sha256": "0cde0a844a6f8ea7d4a86281411d859d07f5a836d9ce732f2ff581c335ef6be8",
+      "bytes": 3963
+    },
+    {
+      "path": "parse/executed-parser.py",
+      "sha256": "a2305998eeca9198dbbe5ea7c6c5cfaefcfc1ec1e2496dfab72ca0b1000d7957",
+      "bytes": 3552
+    },
+    {
+      "path": "parse/executed-process-helper.py",
+      "sha256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67",
+      "bytes": 18216
+    },
+    {
+      "path": "parse/result.json",
+      "sha256": "5cc2be705b2d140e878e7555c2286524bfce146911373137b973d14d3b63e5ca",
+      "bytes": 2864
+    },
+    {
+      "path": "parse/run/stderr.log",
+      "sha256": "46c07c943450de41f9fb4d131daa40ad4fe2d1bede2fbfec2d2441c2aa59c539",
+      "bytes": 165
+    },
+    {
+      "path": "parse/run/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ]
+}

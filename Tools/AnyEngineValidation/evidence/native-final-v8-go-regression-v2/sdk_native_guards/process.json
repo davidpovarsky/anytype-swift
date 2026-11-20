@@ -1,0 +1,26 @@
+{
+  "command": [
+    "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+    "test",
+    "-json",
+    "-count=1",
+    "-p",
+    "2",
+    "-timeout",
+    "240s",
+    "-run",
+    "^(TestACLHeldThroughRealCommitAndReleasedAfter|TestActualACLFinalCommitFence|TestCurrentWriterFenceRequiresConditionalSyncedRoute|TestExactRetryRequiresCurrentWriter|TestGuardRejectsUnderlyingDeletionBeforeWrapperIsMarked|TestHistoricalReplaySurvivesLaterRevocation|TestIntrinsicValidatorRejectsBeforeNativeStorage|TestNativeConditionalBlockEmptyPatchChecksSequenceAndWriter|TestNativeConditionalBlockFinalWriterFence|TestNativeConditionalBlockRefusesDeletedTreeBeforeSDKCallback|TestNativeCurrentWriterBlockCreationRejectsNativeTombstoneWindow|TestNativeCurrentWriterBootstrapAndBlockCreationFinalFence|TestNativeCurrentWriterBootstrapAndBlockCreationSuccess|TestNativeCurrentWriterRootHoldsACLThroughActualStorage|TestNativeCurrentWriterRootPreservesUncertainStoredID|TestNativeCurrentWriterRootRefusesAfterSigning|TestNativeCurrentWriterRootRejectsForgedScopeAndEnvelope|TestNativeDefinitionCallbackAndActualAppendKeepOwnerLocked|TestNativeDefinitionDeletionBeforeSDKCallbackRefusesAppend|TestNativeDefinitionPolicyUsesCompiledCanonicalModule|TestNativeDefinitionRequiredDocumentDatasetCannotRaceTypePicker|TestNativeGuardLookupColdCollectionInsideReadTx|TestNativeObjectRowCASFourCompetingWriters|TestNativeObjectRowCASMissingRowAndIdentityGuards|TestNativeObjectRowCASRejectsABAAndFutureStamp|TestObjectConditionalModifyShapeGuards|TestRealSignedRemoteChangesUseIntrinsicGuardBeforeStorage)$",
+    "./internal/commitguard",
+    "./internal/crdt",
+    "./internal/object",
+    "./internal/spaceimpl",
+    "./internal/spaceobjects"
+  ],
+  "timedOut": false,
+  "cleanupErrors": [],
+  "pid": 38788,
+  "processBoundary": "owned_windows_kill_on_close_job",
+  "exitCode": 0,
+  "parentExited": true,
+  "elapsedSeconds": 30.015
+}

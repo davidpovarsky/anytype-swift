@@ -1,0 +1,338 @@
+{
+  "status": "PASS_FINAL_NATIVE_V8_GO_REGRESSION",
+  "scope": "The exact prior64 native SDK authority/creation/claims/block/property/HTTP top-level test names, executed once against frozen v8 source. Not a device UI or network-reliability claim.",
+  "startedAtUTC": "2026-11-20T04:19:45.544517+00:00",
+  "suites": [
+    {
+      "name": "sdk_native_guards",
+      "status": "PASS",
+      "command": [
+        "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+        "test",
+        "-json",
+        "-count=1",
+        "-p",
+        "2",
+        "-timeout",
+        "240s",
+        "-run",
+        "^(TestACLHeldThroughRealCommitAndReleasedAfter|TestActualACLFinalCommitFence|TestCurrentWriterFenceRequiresConditionalSyncedRoute|TestExactRetryRequiresCurrentWriter|TestGuardRejectsUnderlyingDeletionBeforeWrapperIsMarked|TestHistoricalReplaySurvivesLaterRevocation|TestIntrinsicValidatorRejectsBeforeNativeStorage|TestNativeConditionalBlockEmptyPatchChecksSequenceAndWriter|TestNativeConditionalBlockFinalWriterFence|TestNativeConditionalBlockRefusesDeletedTreeBeforeSDKCallback|TestNativeCurrentWriterBlockCreationRejectsNativeTombstoneWindow|TestNativeCurrentWriterBootstrapAndBlockCreationFinalFence|TestNativeCurrentWriterBootstrapAndBlockCreationSuccess|TestNativeCurrentWriterRootHoldsACLThroughActualStorage|TestNativeCurrentWriterRootPreservesUncertainStoredID|TestNativeCurrentWriterRootRefusesAfterSigning|TestNativeCurrentWriterRootRejectsForgedScopeAndEnvelope|TestNativeDefinitionCallbackAndActualAppendKeepOwnerLocked|TestNativeDefinitionDeletionBeforeSDKCallbackRefusesAppend|TestNativeDefinitionPolicyUsesCompiledCanonicalModule|TestNativeDefinitionRequiredDocumentDatasetCannotRaceTypePicker|TestNativeGuardLookupColdCollectionInsideReadTx|TestNativeObjectRowCASFourCompetingWriters|TestNativeObjectRowCASMissingRowAndIdentityGuards|TestNativeObjectRowCASRejectsABAAndFutureStamp|TestObjectConditionalModifyShapeGuards|TestRealSignedRemoteChangesUseIntrinsicGuardBeforeStorage)$",
+        "./internal/commitguard",
+        "./internal/crdt",
+        "./internal/object",
+        "./internal/spaceimpl",
+        "./internal/spaceobjects"
+      ],
+      "process": {
+        "command": [
+          "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+          "test",
+          "-json",
+          "-count=1",
+          "-p",
+          "2",
+          "-timeout",
+          "240s",
+          "-run",
+          "^(TestACLHeldThroughRealCommitAndReleasedAfter|TestActualACLFinalCommitFence|TestCurrentWriterFenceRequiresConditionalSyncedRoute|TestExactRetryRequiresCurrentWriter|TestGuardRejectsUnderlyingDeletionBeforeWrapperIsMarked|TestHistoricalReplaySurvivesLaterRevocation|TestIntrinsicValidatorRejectsBeforeNativeStorage|TestNativeConditionalBlockEmptyPatchChecksSequenceAndWriter|TestNativeConditionalBlockFinalWriterFence|TestNativeConditionalBlockRefusesDeletedTreeBeforeSDKCallback|TestNativeCurrentWriterBlockCreationRejectsNativeTombstoneWindow|TestNativeCurrentWriterBootstrapAndBlockCreationFinalFence|TestNativeCurrentWriterBootstrapAndBlockCreationSuccess|TestNativeCurrentWriterRootHoldsACLThroughActualStorage|TestNativeCurrentWriterRootPreservesUncertainStoredID|TestNativeCurrentWriterRootRefusesAfterSigning|TestNativeCurrentWriterRootRejectsForgedScopeAndEnvelope|TestNativeDefinitionCallbackAndActualAppendKeepOwnerLocked|TestNativeDefinitionDeletionBeforeSDKCallbackRefusesAppend|TestNativeDefinitionPolicyUsesCompiledCanonicalModule|TestNativeDefinitionRequiredDocumentDatasetCannotRaceTypePicker|TestNativeGuardLookupColdCollectionInsideReadTx|TestNativeObjectRowCASFourCompetingWriters|TestNativeObjectRowCASMissingRowAndIdentityGuards|TestNativeObjectRowCASRejectsABAAndFutureStamp|TestObjectConditionalModifyShapeGuards|TestRealSignedRemoteChangesUseIntrinsicGuardBeforeStorage)$",
+          "./internal/commitguard",
+          "./internal/crdt",
+          "./internal/object",
+          "./internal/spaceimpl",
+          "./internal/spaceobjects"
+        ],
+        "timedOut": false,
+        "cleanupErrors": [],
+        "pid": 38788,
+        "processBoundary": "owned_windows_kill_on_close_job",
+        "exitCode": 0,
+        "parentExited": true,
+        "elapsedSeconds": 30.015
+      },
+      "selectedTests": [
+        {
+          "package": "./internal/commitguard",
+          "tests": [
+            "TestACLHeldThroughRealCommitAndReleasedAfter",
+            "TestActualACLFinalCommitFence",
+            "TestExactRetryRequiresCurrentWriter",
+            "TestHistoricalReplaySurvivesLaterRevocation",
+            "TestIntrinsicValidatorRejectsBeforeNativeStorage",
+            "TestNativeCurrentWriterRootHoldsACLThroughActualStorage",
+            "TestNativeCurrentWriterRootPreservesUncertainStoredID",
+            "TestNativeCurrentWriterRootRefusesAfterSigning",
+            "TestNativeCurrentWriterRootRejectsForgedScopeAndEnvelope"
+          ]
+        },
+        {
+          "package": "./internal/crdt",
+          "tests": [
+            "TestNativeGuardLookupColdCollectionInsideReadTx"
+          ]
+        },
+        {
+          "package": "./internal/object",
+          "tests": [
+            "TestGuardRejectsUnderlyingDeletionBeforeWrapperIsMarked",
+            "TestNativeConditionalBlockEmptyPatchChecksSequenceAndWriter",
+            "TestNativeConditionalBlockFinalWriterFence",
+            "TestNativeConditionalBlockRefusesDeletedTreeBeforeSDKCallback",
+            "TestNativeCurrentWriterBlockCreationRejectsNativeTombstoneWindow",
+            "TestNativeCurrentWriterBootstrapAndBlockCreationFinalFence",
+            "TestNativeCurrentWriterBootstrapAndBlockCreationSuccess",
+            "TestNativeObjectRowCASFourCompetingWriters",
+            "TestNativeObjectRowCASMissingRowAndIdentityGuards",
+            "TestNativeObjectRowCASRejectsABAAndFutureStamp"
+          ]
+        },
+        {
+          "package": "./internal/spaceimpl",
+          "tests": [
+            "TestCurrentWriterFenceRequiresConditionalSyncedRoute",
+            "TestObjectConditionalModifyShapeGuards"
+          ]
+        },
+        {
+          "package": "./internal/spaceobjects",
+          "tests": [
+            "TestNativeDefinitionCallbackAndActualAppendKeepOwnerLocked",
+            "TestNativeDefinitionDeletionBeforeSDKCallbackRefusesAppend",
+            "TestNativeDefinitionPolicyUsesCompiledCanonicalModule",
+            "TestNativeDefinitionRequiredDocumentDatasetCannotRaceTypePicker",
+            "TestRealSignedRemoteChangesUseIntrinsicGuardBeforeStorage"
+          ]
+        }
+      ],
+      "expectedTopLevelTests": 27,
+      "passedTopLevelTests": 27,
+      "passedIncludingSubtests": 68,
+      "skippedIncludingSubtests": 0,
+      "failedIncludingSubtests": 0,
+      "missingPasses": [],
+      "unexpectedTopLevelTests": [],
+      "failedEvents": [],
+      "rawLogSHA256": "c589858a0ddfc72801ea28a6c8d623189f129cdfd529b37f8ab6e2ab0f66363a",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "nonJSONDiagnosticLines": 0
+    },
+    {
+      "name": "native_claim_contracts",
+      "status": "PASS",
+      "command": [
+        "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+        "test",
+        "-json",
+        "-count=1",
+        "-p",
+        "2",
+        "-timeout",
+        "240s",
+        "-run",
+        "^(TestCanonicalBytesRemainHeartAndSwiftCompatible|TestExternalOnlyInternalNoteNeverBecomesDocumentSource|TestNativeSemanticBindingPreservesUnknownFieldsAndOriginalBytes|TestNativeSemanticConflictsNeverDeduplicateDistinctClaims|TestObjectSnapshotBoundIncludesGlobalWitnessesAndNeverReturnsPartial|TestObjectSnapshotChecksEligibilityBeforeGenerationShortcut|TestObjectSnapshotGlobalCollisionClosureMatchesWorkspaceProjection|TestObjectSnapshotRetainsOrphanHistoryButFiltersNativeReachability|TestObservedRemovePreservesConcurrentAddsAndBothReplacements|TestOnlyDocumentContextProducesNativePropertyIndexes|TestProjectionQuarantinesCrossTargetCollisionBeforeRemove|TestSignedNativeEnvelopeRejectsForgedIdentityAndPayload)$",
+        "./internal/pinkha/claims"
+      ],
+      "process": {
+        "command": [
+          "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+          "test",
+          "-json",
+          "-count=1",
+          "-p",
+          "2",
+          "-timeout",
+          "240s",
+          "-run",
+          "^(TestCanonicalBytesRemainHeartAndSwiftCompatible|TestExternalOnlyInternalNoteNeverBecomesDocumentSource|TestNativeSemanticBindingPreservesUnknownFieldsAndOriginalBytes|TestNativeSemanticConflictsNeverDeduplicateDistinctClaims|TestObjectSnapshotBoundIncludesGlobalWitnessesAndNeverReturnsPartial|TestObjectSnapshotChecksEligibilityBeforeGenerationShortcut|TestObjectSnapshotGlobalCollisionClosureMatchesWorkspaceProjection|TestObjectSnapshotRetainsOrphanHistoryButFiltersNativeReachability|TestObservedRemovePreservesConcurrentAddsAndBothReplacements|TestOnlyDocumentContextProducesNativePropertyIndexes|TestProjectionQuarantinesCrossTargetCollisionBeforeRemove|TestSignedNativeEnvelopeRejectsForgedIdentityAndPayload)$",
+          "./internal/pinkha/claims"
+        ],
+        "timedOut": false,
+        "cleanupErrors": [],
+        "pid": 13520,
+        "processBoundary": "owned_windows_kill_on_close_job",
+        "exitCode": 0,
+        "parentExited": true,
+        "elapsedSeconds": 13.016
+      },
+      "selectedTests": [
+        {
+          "package": "./internal/pinkha/claims",
+          "tests": [
+            "TestCanonicalBytesRemainHeartAndSwiftCompatible",
+            "TestExternalOnlyInternalNoteNeverBecomesDocumentSource",
+            "TestNativeSemanticBindingPreservesUnknownFieldsAndOriginalBytes",
+            "TestNativeSemanticConflictsNeverDeduplicateDistinctClaims",
+            "TestObjectSnapshotBoundIncludesGlobalWitnessesAndNeverReturnsPartial",
+            "TestObjectSnapshotChecksEligibilityBeforeGenerationShortcut",
+            "TestObjectSnapshotGlobalCollisionClosureMatchesWorkspaceProjection",
+            "TestObjectSnapshotRetainsOrphanHistoryButFiltersNativeReachability",
+            "TestObservedRemovePreservesConcurrentAddsAndBothReplacements",
+            "TestOnlyDocumentContextProducesNativePropertyIndexes",
+            "TestProjectionQuarantinesCrossTargetCollisionBeforeRemove",
+            "TestSignedNativeEnvelopeRejectsForgedIdentityAndPayload"
+          ]
+        }
+      ],
+      "expectedTopLevelTests": 12,
+      "passedTopLevelTests": 12,
+      "passedIncludingSubtests": 29,
+      "skippedIncludingSubtests": 0,
+      "failedIncludingSubtests": 0,
+      "missingPasses": [],
+      "unexpectedTopLevelTests": [],
+      "failedEvents": [],
+      "rawLogSHA256": "728f81e4d837fdf3bb3d0ad442015c63f7b528a9ca5a7469175529a03af93b52",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "nonJSONDiagnosticLines": 0
+    },
+    {
+      "name": "native_http_routes",
+      "status": "PASS",
+      "command": [
+        "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+        "test",
+        "-json",
+        "-count=1",
+        "-p",
+        "2",
+        "-timeout",
+        "240s",
+        "-run",
+        "^(TestPinkhaBlockCASConcurrentEditsHaveOneWinner|TestPinkhaBlockCASEngineRunAndWholePatchPreflight|TestPinkhaBlockCASIncludesUnrenderedAndDeletedChildren|TestPinkhaBlockCASNoopAndLegacyPatch|TestPinkhaBlockCASRetainsIdentityAndRefusesStaleState|TestPinkhaCurrentWriterCreateRejectsCopyAndMalformedRequests|TestPinkhaCurrentWriterCreationUncertaintyPreservesOnlyMetadata|TestPinkhaCurrentWriterObjectAndBlockCreateNativeRoundTrip|TestPinkhaDefinitionDescriptorChangeRefusesPreparedValue|TestPinkhaDefinitionDocumentPickerRefusesRemovedDestinationEditor|TestPinkhaDefinitionMembershipRefusesWrongSlotsAndDeletedOwners|TestPinkhaDescriptorCallbackUsesLatestLockedDefinition|TestPinkhaDocumentMetadataEmptyNativeSnapshotCannotReadRows|TestPinkhaDocumentMetadataGenerationExcludesUnrelatedClaims|TestPinkhaDocumentMetadataWorksBeforeClaimsInstallation|TestPinkhaDocumentPolicyCustomCanonicalTypesAndBodyRetention|TestPinkhaMobileGatewayPreservesStandalone|TestPinkhaMobileManagedGateway|TestPinkhaOrderedCollisionHasDistinctNativeErrorCode|TestPinkhaPresentationBoundsPreserveFutureOpaqueKeys|TestPinkhaPresentationRegisteredSchemaAndVisibilityPreservesValues|TestPinkhaPropertyCASConcurrentHasOneWinner|TestPinkhaPropertyCASDeletedTargetCannotReappear|TestPinkhaPropertyCASMalformedGuardsNeverWrite|TestPinkhaPropertyCASVersionAndABA)$",
+        "./internal/server"
+      ],
+      "process": {
+        "command": [
+          "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+          "test",
+          "-json",
+          "-count=1",
+          "-p",
+          "2",
+          "-timeout",
+          "240s",
+          "-run",
+          "^(TestPinkhaBlockCASConcurrentEditsHaveOneWinner|TestPinkhaBlockCASEngineRunAndWholePatchPreflight|TestPinkhaBlockCASIncludesUnrenderedAndDeletedChildren|TestPinkhaBlockCASNoopAndLegacyPatch|TestPinkhaBlockCASRetainsIdentityAndRefusesStaleState|TestPinkhaCurrentWriterCreateRejectsCopyAndMalformedRequests|TestPinkhaCurrentWriterCreationUncertaintyPreservesOnlyMetadata|TestPinkhaCurrentWriterObjectAndBlockCreateNativeRoundTrip|TestPinkhaDefinitionDescriptorChangeRefusesPreparedValue|TestPinkhaDefinitionDocumentPickerRefusesRemovedDestinationEditor|TestPinkhaDefinitionMembershipRefusesWrongSlotsAndDeletedOwners|TestPinkhaDescriptorCallbackUsesLatestLockedDefinition|TestPinkhaDocumentMetadataEmptyNativeSnapshotCannotReadRows|TestPinkhaDocumentMetadataGenerationExcludesUnrelatedClaims|TestPinkhaDocumentMetadataWorksBeforeClaimsInstallation|TestPinkhaDocumentPolicyCustomCanonicalTypesAndBodyRetention|TestPinkhaMobileGatewayPreservesStandalone|TestPinkhaMobileManagedGateway|TestPinkhaOrderedCollisionHasDistinctNativeErrorCode|TestPinkhaPresentationBoundsPreserveFutureOpaqueKeys|TestPinkhaPresentationRegisteredSchemaAndVisibilityPreservesValues|TestPinkhaPropertyCASConcurrentHasOneWinner|TestPinkhaPropertyCASDeletedTargetCannotReappear|TestPinkhaPropertyCASMalformedGuardsNeverWrite|TestPinkhaPropertyCASVersionAndABA)$",
+          "./internal/server"
+        ],
+        "timedOut": false,
+        "cleanupErrors": [],
+        "pid": 39596,
+        "processBoundary": "owned_windows_kill_on_close_job",
+        "exitCode": 0,
+        "parentExited": true,
+        "elapsedSeconds": 43.453
+      },
+      "selectedTests": [
+        {
+          "package": "./internal/server",
+          "tests": [
+            "TestPinkhaBlockCASConcurrentEditsHaveOneWinner",
+            "TestPinkhaBlockCASEngineRunAndWholePatchPreflight",
+            "TestPinkhaBlockCASIncludesUnrenderedAndDeletedChildren",
+            "TestPinkhaBlockCASNoopAndLegacyPatch",
+            "TestPinkhaBlockCASRetainsIdentityAndRefusesStaleState",
+            "TestPinkhaCurrentWriterCreateRejectsCopyAndMalformedRequests",
+            "TestPinkhaCurrentWriterCreationUncertaintyPreservesOnlyMetadata",
+            "TestPinkhaCurrentWriterObjectAndBlockCreateNativeRoundTrip",
+            "TestPinkhaDefinitionDescriptorChangeRefusesPreparedValue",
+            "TestPinkhaDefinitionDocumentPickerRefusesRemovedDestinationEditor",
+            "TestPinkhaDefinitionMembershipRefusesWrongSlotsAndDeletedOwners",
+            "TestPinkhaDescriptorCallbackUsesLatestLockedDefinition",
+            "TestPinkhaDocumentMetadataEmptyNativeSnapshotCannotReadRows",
+            "TestPinkhaDocumentMetadataGenerationExcludesUnrelatedClaims",
+            "TestPinkhaDocumentMetadataWorksBeforeClaimsInstallation",
+            "TestPinkhaDocumentPolicyCustomCanonicalTypesAndBodyRetention",
+            "TestPinkhaMobileGatewayPreservesStandalone",
+            "TestPinkhaMobileManagedGateway",
+            "TestPinkhaOrderedCollisionHasDistinctNativeErrorCode",
+            "TestPinkhaPresentationBoundsPreserveFutureOpaqueKeys",
+            "TestPinkhaPresentationRegisteredSchemaAndVisibilityPreservesValues",
+            "TestPinkhaPropertyCASConcurrentHasOneWinner",
+            "TestPinkhaPropertyCASDeletedTargetCannotReappear",
+            "TestPinkhaPropertyCASMalformedGuardsNeverWrite",
+            "TestPinkhaPropertyCASVersionAndABA"
+          ]
+        }
+      ],
+      "expectedTopLevelTests": 25,
+      "passedTopLevelTests": 25,
+      "passedIncludingSubtests": 43,
+      "skippedIncludingSubtests": 0,
+      "failedIncludingSubtests": 0,
+      "missingPasses": [],
+      "unexpectedTopLevelTests": [],
+      "failedEvents": [],
+      "rawLogSHA256": "1be5eccaa39522d7fe1513b81005b7e9fe653791612879e8bcaba2c5f64e2f7c",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "nonJSONDiagnosticLines": 0
+    }
+  ],
+  "baselineReceiptSHA256": "0c80620bd4259aa3b323a4e87500685a307f7f5d5ab2dd707e7d124a1fa6a5ec",
+  "binarySHA256": "4856c7214f56dded249095624ea63e3f99b4b340483e8e6f2785163d16a98089",
+  "nativeManifestSHA256": "484d377a89b3e53ccab28bbf8defe223441e85db398c40ee5626d71ddc521289",
+  "harnessSHA256": "a8a130b81c47986ff492589a180858a5ff5188e96382920d9ce02a354ef45cc6",
+  "processHelperSHA256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67",
+  "coverageComparison": {
+    "priorTopLevelNames": 64,
+    "coveredByNarrowV8Suites": 24,
+    "remainingPriorNames": [
+      "TestACLHeldThroughRealCommitAndReleasedAfter",
+      "TestActualACLFinalCommitFence",
+      "TestCanonicalBytesRemainHeartAndSwiftCompatible",
+      "TestCurrentWriterFenceRequiresConditionalSyncedRoute",
+      "TestExactRetryRequiresCurrentWriter",
+      "TestExternalOnlyInternalNoteNeverBecomesDocumentSource",
+      "TestGuardRejectsUnderlyingDeletionBeforeWrapperIsMarked",
+      "TestHistoricalReplaySurvivesLaterRevocation",
+      "TestIntrinsicValidatorRejectsBeforeNativeStorage",
+      "TestNativeCurrentWriterBlockCreationRejectsNativeTombstoneWindow",
+      "TestNativeCurrentWriterBootstrapAndBlockCreationFinalFence",
+      "TestNativeCurrentWriterBootstrapAndBlockCreationSuccess",
+      "TestNativeCurrentWriterRootHoldsACLThroughActualStorage",
+      "TestNativeCurrentWriterRootPreservesUncertainStoredID",
+      "TestNativeCurrentWriterRootRefusesAfterSigning",
+      "TestNativeCurrentWriterRootRejectsForgedScopeAndEnvelope",
+      "TestNativeGuardLookupColdCollectionInsideReadTx",
+      "TestNativeSemanticBindingPreservesUnknownFieldsAndOriginalBytes",
+      "TestNativeSemanticConflictsNeverDeduplicateDistinctClaims",
+      "TestObjectConditionalModifyShapeGuards",
+      "TestObjectSnapshotBoundIncludesGlobalWitnessesAndNeverReturnsPartial",
+      "TestObjectSnapshotChecksEligibilityBeforeGenerationShortcut",
+      "TestObjectSnapshotGlobalCollisionClosureMatchesWorkspaceProjection",
+      "TestObjectSnapshotRetainsOrphanHistoryButFiltersNativeReachability",
+      "TestObservedRemovePreservesConcurrentAddsAndBothReplacements",
+      "TestOnlyDocumentContextProducesNativePropertyIndexes",
+      "TestPinkhaBlockCASConcurrentEditsHaveOneWinner",
+      "TestPinkhaBlockCASEngineRunAndWholePatchPreflight",
+      "TestPinkhaBlockCASIncludesUnrenderedAndDeletedChildren",
+      "TestPinkhaBlockCASNoopAndLegacyPatch",
+      "TestPinkhaBlockCASRetainsIdentityAndRefusesStaleState",
+      "TestPinkhaCurrentWriterCreateRejectsCopyAndMalformedRequests",
+      "TestPinkhaCurrentWriterCreationUncertaintyPreservesOnlyMetadata",
+      "TestPinkhaCurrentWriterObjectAndBlockCreateNativeRoundTrip",
+      "TestPinkhaMobileGatewayPreservesStandalone",
+      "TestPinkhaMobileManagedGateway",
+      "TestPinkhaOrderedCollisionHasDistinctNativeErrorCode",
+      "TestProjectionQuarantinesCrossTargetCollisionBeforeRemove",
+      "TestRealSignedRemoteChangesUseIntrinsicGuardBeforeStorage",
+      "TestSignedNativeEnvelopeRejectsForgedIdentityAndPayload"
+    ],
+    "baselineCaseCount": 134,
+    "preservedAssertions": "Same64 top-level names; existing HTTP malformed-guard test now adds six required applySeq cases, which remain enabled."
+  },
+  "processOnlyEnvironment": {
+    "GOMAXPROCS": "2",
+    "GOMEMLIMIT": "768MiB",
+    "GOTOOLCHAIN": "go1.27.1",
+    "GOCACHE": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\go-build-v8",
+    "GOTMPDIR": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\go-tmp-v8"
+  },
+  "passedTopLevelTests": 64,
+  "passedIncludingSubtests": 140,
+  "skippedIncludingSubtests": 0,
+  "sourceStable": true,
+  "binaryStable": true,
+  "manifestStable": true,
+  "harnessStable": true,
+  "finishedAtUTC": "2026-11-20T04:21:19.306571+00:00"
+}

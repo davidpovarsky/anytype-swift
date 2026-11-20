@@ -1,0 +1,1624 @@
+{
+  "schemaVersion": 1,
+  "commit": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+  "sourceMethod": "Immutable Git tree/blobs, plus executed public-provider before/after manifest checked against the committed sources",
+  "packages": [
+    "PinkhaAnyEngine",
+    "PinkhaAnyIntegration",
+    "PinkhaAnyHost",
+    "PinkhaAnyHanlin",
+    "PinkhaTorahPresentation",
+    "PinkhaAnyUI",
+    "PinkhaKit"
+  ],
+  "sourceFiles": [
+    {
+      "path": ".github/workflows/pinkha-any-engine-port.yml",
+      "gitBlob": "a06762edf646d00ff7bf1c45e94c0de856b5656c",
+      "bytes": 23898,
+      "sha256": "8cceff71e50515f9ca5d16adb2a9ae834ae704b94290238408831d322ed96dbc"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Package.resolved",
+      "gitBlob": "1d916453b7ed167a10b7f520d5467f1f40adfecc",
+      "bytes": 656,
+      "sha256": "50ddc3fc5398afb197e62f3cd8aa251315dbdd8d9d1d67e0dc665862ef3258af"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Package.swift",
+      "gitBlob": "4b5f21e56f8110acfcada98a740cc08eed2cbcdc",
+      "bytes": 773,
+      "sha256": "2bfbf014cbfb6ce37764a2900743783fe3af2535ad4809aa4fc9ea67d16d2e5f"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahClaimsRepository.swift",
+      "gitBlob": "b480eee09ab02a4ad600b3dbe28d1c6b5ece3c3e",
+      "bytes": 9870,
+      "sha256": "cc9ee5e3eb159ef5ea68e7a87928fd94f047a8668c2f2483890faffdac8d73a1"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift",
+      "gitBlob": "9e0155304b9db4f2144170db69ff1f1ace66c739",
+      "bytes": 11467,
+      "sha256": "4067d1104d59e00149867f425ce37e5440146e100a2e1a1bcd01338f227e9f42"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahLiveQuery.swift",
+      "gitBlob": "27a10a0c45142307a0895e23c34a6f60345c1a7a",
+      "bytes": 7553,
+      "sha256": "057a177fd338967f98484936e9e192a76da6a3f853dcc5666eca283715b349f4"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "gitBlob": "3853afef1970a6b941e7acd547405e66102a5e0a",
+      "bytes": 9036,
+      "sha256": "5da381da640730ffcb82c60cd6effc0ced56710deefe743cd2fe20d4ed0a8c57"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyJSON.swift",
+      "gitBlob": "398d20dbad32e139ff392370a12b2bcf84cee27c",
+      "bytes": 2600,
+      "sha256": "fb8937994d7db5728a7872386670eaeb2e74dcb84abba92814316bb3d458008d"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyLiveQuery.swift",
+      "gitBlob": "c0494798a93eec50a735dcff36234b1782cebfb0",
+      "bytes": 12640,
+      "sha256": "445930138f7aefe46f6d41995059acafad9363178da4bc17574d2a0e399c8cf4"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyObjectCreationUncertain.swift",
+      "gitBlob": "2a9c61e96ec753dceca4982fc2b2758c2d665bb7",
+      "bytes": 2695,
+      "sha256": "c4635b23304e60b1d27b546c53e8901a841160bd79bd43a066b50bc02b2b0704"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnySSEParser.swift",
+      "gitBlob": "3add9b8db3617f585ed8b2f10c1bdf896b84c7af",
+      "bytes": 10163,
+      "sha256": "1b5b55f99d357418d0df7ec43bc61e8bac1e1f246c613019f8c8b025c03cbdad"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahClaimsRepository.swift",
+      "gitBlob": "b1a1ad4368f919aad900f81542c75ce9facf355e",
+      "bytes": 13237,
+      "sha256": "cd11b4cc0e54b4593d5a9111ca37ef7556bf3bcaa71ddb1532e900dd94ac0145"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahLiveQuery.swift",
+      "gitBlob": "f556cbae88f9866f0103ec07398723099be407ba",
+      "bytes": 3828,
+      "sha256": "d2cdada5bf2a639127e58dbbe7b422188df76cb145d32023d4b1011006fd69af"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyTorahOperation.swift",
+      "gitBlob": "3c343d2214d25b6fbe5c4f3c96cb379113951997",
+      "bytes": 12417,
+      "sha256": "c5cdbf04c36554a1c4a74dc164014a3cc9bd33b201479702d7c1224d3d661980"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngineProbe/NativeObjectProbe.swift",
+      "gitBlob": "03227ce095a2232dfd4f63e3e6a2af30b7be8b7e",
+      "bytes": 4169,
+      "sha256": "803d059aa506da02ed9106ed990a26e3b7fe6c7cdcf13284931579cb750ab505"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngineProbe/Probe.swift",
+      "gitBlob": "ec309448c9268c7db4f2126211841ff96903b2e9",
+      "bytes": 17633,
+      "sha256": "6432eac796b559fea0efcf23e27a87b0d4e3ed842b6db450de77f211d4ea19d5"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Tests/Fixtures/check_redirect.py",
+      "gitBlob": "ffadcc985f6b3c0bb4f25207581acd92b12ee22f",
+      "bytes": 2474,
+      "sha256": "ca8c491aadaecc088c12ecde6aa32c0621372ff0e7dc3109a9ac930a19c3f969"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Tests/Fixtures/check_sse_transport.py",
+      "gitBlob": "a1eed3500c9963d58233cc33003614115904ee0f",
+      "bytes": 5003,
+      "sha256": "c89b5cb56b4c3623c23581b7fca8607785bca9f580f9ead597dc63b6394872fc"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyGuardedObjectSnapshotTests.swift",
+      "gitBlob": "84b2d8f21e01b507ff63f86dfa9f3473990c7670",
+      "bytes": 8528,
+      "sha256": "3589621b43a00e686ad8b8ee19ea63c599ea081cfbd0dfe861f98c24454932a2"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyGuardedTorahTests.swift",
+      "gitBlob": "30754a5efd45665b02a31e2a97552f8403ac5871",
+      "bytes": 12572,
+      "sha256": "8d3958148f7084c448faab21853453ddce8f1eee9b8713eea04dd57f880d4462"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyHTTPClientTests.swift",
+      "gitBlob": "fd95dc733a2db45bc3b669ad624b7e9ec2ad5680",
+      "bytes": 1756,
+      "sha256": "60f46e80c1ac14713c7ea4f1bf4f9fe47cae24ec2a0727372d273d9dfe349aee"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyLiveQueryTests.swift",
+      "gitBlob": "c9d1d240694001972e54d78d0acdab53d8c4d48a",
+      "bytes": 9624,
+      "sha256": "46c203d6438799e63f6bc96d2be4b50e9eefa74a95835269e9e2f8fffa858356"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/AnyTorahOperationTests.swift",
+      "gitBlob": "39a6882b269f24c6db3e59f6d93ca1824868e2b2",
+      "bytes": 9171,
+      "sha256": "d909e34b297b31e4aadca20989fb1edef6112eb3fba840c80e9ae6f8a7786166"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/ManagedAuthorizationTests.swift",
+      "gitBlob": "0d35ac22648151a9129eaa13e7d7e6d173c25951",
+      "bytes": 1828,
+      "sha256": "9d68ad4bfef45e0e93cfbd67402bfaf4f38841d42bc15a57f3098bbbe1b47ca9"
+    },
+    {
+      "path": "Modules/PinkhaAnyEngine/Tests/PinkhaAnyEngineTests/ObjectCreationRecoveryTests.swift",
+      "gitBlob": "69b92f942bb8f6d6c6ab30a5e20dc55206d7d339",
+      "bytes": 2831,
+      "sha256": "9cfc5d9b2acde94700bd8a60542e3481fc95fc9bd45d946116643bf92024d97a"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Package.resolved",
+      "gitBlob": "3f858a4e35507335f173d98f3201201fdc8303cf",
+      "bytes": 2509,
+      "sha256": "05c3bca885d305573a0cbafcca33488301acecb5633cf74484deecf13e958209"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Package.swift",
+      "gitBlob": "6a87670364f43a93ff224b0af24947157ee0fc39",
+      "bytes": 3562,
+      "sha256": "3575928b021b2083a2905185fabf7ba5c676a920e85b4829e596a5ace8fd7330"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinCreateBinding.swift",
+      "gitBlob": "123789f3cb19ec5999d7e3b42f24699be25b1c8c",
+      "bytes": 14266,
+      "sha256": "eaaef07a4318c0a18f963ca72af25a48618cece80df774eebd04e32b9642b072"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinCreationAuthority.swift",
+      "gitBlob": "b21431965bbe94d88b8f4b3f522906085799e1de",
+      "bytes": 3919,
+      "sha256": "f6273cf0abcfb14ad0a53ff178ef44fb53171727f6e85ecd5ac5abd24c10f0df"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinHost.swift",
+      "gitBlob": "c7fde7a178025fa342c47d7a8737eeebccd753bf",
+      "bytes": 6009,
+      "sha256": "4017aba0b65618c4ec2a0e11584e43e743ed036750a00c605a1b7df63e67c7d7"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinNativeAccess.swift",
+      "gitBlob": "ff245106713bdcca4c87b172a8af19a7b4b16706",
+      "bytes": 9055,
+      "sha256": "d703914aef28b0233a3036d676f5e16e8934cab4e1c1082cbf993e7147350cba"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinPlainText.swift",
+      "gitBlob": "0b19c655a7f10ac574386fc0d394077c39fd8b72",
+      "bytes": 1996,
+      "sha256": "d500b3d2d30c048a997742dc1f52366a426839eb0deeb00aa3d5d8067f749dfa"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinPresentationOwner.swift",
+      "gitBlob": "a5ab1c4c50a2fdf05b9400f4afed7b2b77b28d31",
+      "bytes": 1782,
+      "sha256": "590d35bc82b4f2cce07b5551d180628ee0846f74676de2d6b9783bcc16a43f97"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlin/AnyHanlinScope.swift",
+      "gitBlob": "ea57388ed5107527eeb272e34b5cd99c9b30260b",
+      "bytes": 1667,
+      "sha256": "3414d135cfa8761e2aed5b0739828ebf101c19c6d8de09cd7b6eb16f624615af"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaAnyHanlinProbe/Probe.swift",
+      "gitBlob": "5b5b3ebf8b55f29662facf2fad3dfc0f981a0013",
+      "bytes": 8380,
+      "sha256": "600b4efd5c19cf357d1ade131eaffb774238e5c5a4610a621fff3aa1b130a79a"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinAccountOwner.swift",
+      "gitBlob": "ab218008e6b1dd12f98dce1ec322423b17b71d38",
+      "bytes": 4185,
+      "sha256": "b612e4bc61a8bc5110b3ec694a7f6a3602ac3627a3133272653491a29f4b7f81"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreatePagePlan.swift",
+      "gitBlob": "79e4b39465e0cc6f81e84710f943cb52b6b28b96",
+      "bytes": 4649,
+      "sha256": "02241a49cb5ce8feae317054a2c12bbf2d3ed7a708ad84a4fd18b4aacbb64b3b"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreatePageTool.swift",
+      "gitBlob": "12d78df32355284d582203ad204325717c272d7f",
+      "bytes": 1542,
+      "sha256": "5dcf933abc0f402851944545ba8d615a9cf18edaeb019dd54ed669a87359209a"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreateRunner.swift",
+      "gitBlob": "484ca0d7aed34d22538f09ac6520c9018e6f4883",
+      "bytes": 9943,
+      "sha256": "ca55c384085d00655054bbaaccad662bfb61abbf078ab1a0c393221982043ba4"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinHostAdapter.swift",
+      "gitBlob": "862fcdd097fbb11cc9e88a4c9a3c054fc5891ad8",
+      "bytes": 17263,
+      "sha256": "26d221d302bbe2cad1e0db4d94c807e5df098d5b4dec019ca25beae58b223124"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinHostRouter.swift",
+      "gitBlob": "d4841a33c1fc5a7bb09122053e6c37764b22f263",
+      "bytes": 15716,
+      "sha256": "effd212ab15f30350bf6c4d5d674bd5dcc20117ae8541a1c7ae3bfd3702d5a6c"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinInvocationEnvelope.swift",
+      "gitBlob": "bc91bef3fecee60984de375707ce9476eec038c0",
+      "bytes": 468,
+      "sha256": "a67132ae8ca9863335ca95ef1805e375f9df977fc9249a77fb74b9bc31dcaf12"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinKnownObjectRecovery.swift",
+      "gitBlob": "4fb3668590460eed354af117dd06506da2f20156",
+      "bytes": 2053,
+      "sha256": "2cdf2f85ffb48b7e204086a2b633a5fb03faafbdaf803812fa9250916755c40b"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinNavigationLedger.swift",
+      "gitBlob": "ec735d630453f268d1bb54cf732e4b316679633d",
+      "bytes": 6714,
+      "sha256": "7af966e86b4ff8dbdf3d1981a6851a4f2f8466182fd9d8abdf8f05369506b660"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinReadConsentDecision.swift",
+      "gitBlob": "e3b0b2029c6d029b4a765b4ffb2bad7d5e4b9c63",
+      "bytes": 1322,
+      "sha256": "6f743353e61a0cf6ecd751117c49012c39b6d069b6fd2001d6ee4e72beabbdbe"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinReadRace.swift",
+      "gitBlob": "355e27e6b0be3483bb432d5a52a0ed776872b7a1",
+      "bytes": 2392,
+      "sha256": "49d80af00cb0b85ce1620d9119a25dee7d0c464a9f1e4c594dff5a454ff8165f"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinRevocationFence.swift",
+      "gitBlob": "e8dab382970755a0b4fd09ae8277aa282a0ed2f5",
+      "bytes": 980,
+      "sha256": "bf81a8a7bea21f8dfaf04d7190786e767f36683f8a257cc24c9be905e5040652"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWriteJournal.swift",
+      "gitBlob": "14bfb33ab6c03564a93a224d2b0ce4dfe0ba1efd",
+      "bytes": 25560,
+      "sha256": "088df901983e03e3921477658cb04b35fe2a1875b07a57876747d3f960c8cf8f"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWritePreflight.swift",
+      "gitBlob": "09c35a3314ba70aee812d9cfe9aa7dbd985bc2c6",
+      "bytes": 1862,
+      "sha256": "fbc644010c100cdfcdda4035f7a86dad8171370ada2411b4fd5b4462daefe6d7"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/AnyHanlinPresentation.swift",
+      "gitBlob": "da468024356d91880cd09d8b3914f70840c4ea97",
+      "bytes": 11101,
+      "sha256": "9cafd0093a0776c96e55ecb7efd236ac297d7ac265e1da3186a2d3c2ebf711eb"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatPresentation.swift",
+      "gitBlob": "f0cdf6a0fc4c0d04fd2a4115aac68f1faa70a4c0",
+      "bytes": 12250,
+      "sha256": "c7976d572c1d7fa6d8c07e0380fa5484a8e1c77f63d61f81cd52502f7817bbcb"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinChatView.swift",
+      "gitBlob": "6aea1bfe242d973bd93c8c61a46b7d1f4b07af5e",
+      "bytes": 7154,
+      "sha256": "40b38c897057a1823c61918fbc01243ab6b0db1f9cb48d676df4c1ee7625e6d9"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinConsentController.swift",
+      "gitBlob": "b78489726907708ac567a4d622e97589309961e3",
+      "bytes": 5914,
+      "sha256": "3fb2df88e466e7ce8cba650eeaeecf19ab95f3de549d06b5009ea996cd49488d"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinPresentationHost.swift",
+      "gitBlob": "470a3f87c10a08c1d0989c962e0ac8ca39517d83",
+      "bytes": 2215,
+      "sha256": "42f7667dfd30818f0730e1b4df1fe4976d8f1a4ea7fa32aa52c2c4fbb782c491"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/PinkhaHanlinStrings.swift",
+      "gitBlob": "025ceec34afc10f03a261099247894ea67020245",
+      "bytes": 2966,
+      "sha256": "6dc0c003ed1adb6e2bf55e75627922d39c87c35fe9f454a23af21d36ae40b1df"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/Resources/PinkhaHanlin.xcstrings",
+      "gitBlob": "52ba2e3fd9bc0709250538541d11154c0bd84707",
+      "bytes": 8836,
+      "sha256": "69d252ab71de1c4053b1b6f6e8eab737d513bde60268a8a1bc855bf256a2d476"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Tests/PinkhaAnyHanlinTests/AnyHanlinPlainTextTests.swift",
+      "gitBlob": "8add8cc225f0ed228dd892eabc32bffd578388e9",
+      "bytes": 4421,
+      "sha256": "62d0d50ce90f3047543724658665484e09a1199cfc6dfeffe053278380dda8c5"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Tests/PinkhaAnyHanlinTests/KnownCreationRecoveryTests.swift",
+      "gitBlob": "39a22f32b4810ded0e118ad99830f8795ecb6bb1",
+      "bytes": 10006,
+      "sha256": "477db0e2b05a5a21bb930beda965fa682d4ef330d48fdf86bbcf61ce7f5e7cd7"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Tests/PinkhaAnyHanlinTests/NativeCreationCapabilityTests.swift",
+      "gitBlob": "d3bbf92f09d6f2caea73e957fea9865cf11e4db0",
+      "bytes": 943,
+      "sha256": "beca38ff71b79d3cdf2200a5b8a5ad38b96d7b9faa87e9fb4265587533d6931d"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Tests/PinkhaAnyHanlinTests/NativeMountedOwnerTests.swift",
+      "gitBlob": "13095659119097e9a9b3bdbe1b062ce9aaa0e30b",
+      "bytes": 5136,
+      "sha256": "2f5c216da1ed2b332771a03aaa1168b7797614e4eabade51c6f7c7a6212ae39f"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Tests/PinkhaAnyHanlinTests/SharedHanlinAccountAndProjectionTests.swift",
+      "gitBlob": "ba0f38022d4d6f007244bf75da1fd67d958b6905",
+      "bytes": 4798,
+      "sha256": "549a67594b31c3a619d5d254088a0b5f38c7cac630c8d72160b344ecbd3901ed"
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Tests/PinkhaAnyHanlinTests/SharedHanlinCoreTests.swift",
+      "gitBlob": "426480b012b606b3335f892fcddcb63db59871f8",
+      "bytes": 4794,
+      "sha256": "a6a0c0075ef03062c38c019b358ec51aeb0c8be28f6b9cbfa149e43072ce1ac6"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Package.resolved",
+      "gitBlob": "3a767be301a62e649a3f52f546d5bf9570e0c61a",
+      "bytes": 914,
+      "sha256": "52d759dbbde095efd154c4757aa43c1691bc1a39f0f10df4285527500dff446b"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Package.swift",
+      "gitBlob": "eb84d17902d027f3c3791dd9e341facc5b919ef8",
+      "bytes": 954,
+      "sha256": "facde1a3bc37f9423d6df572e9a52ed8176ddd779a7472604d2b12cc78380991"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "gitBlob": "1dae52636c3a6eb6dfe2aa88d548d6982a9d8dd0",
+      "bytes": 5633,
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorDocumentStore.swift",
+      "gitBlob": "a482992af95970d2516eabdea6133a35192c7c05",
+      "bytes": 11425,
+      "sha256": "de35930cd2689caaaa1195576073a117fa917b5ff078fccb24baba98eac68c43"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyEditorSnapshot.swift",
+      "gitBlob": "566b6ece7bb01570b1f2f0278becbeebb43dbd53",
+      "bytes": 8318,
+      "sha256": "d2956d5e698631a7ab90c039b2647ac518da2dea224f4e01c59dd4ca0cf9ea9f"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHostCanonical.swift",
+      "gitBlob": "899620bc83fda103efaa973e9bc8e58a9b0fb6d6",
+      "bytes": 2773,
+      "sha256": "d234b3d87ab9ec8317f159d413eb140eb94c1ae0aa0b1e20f30391b4e51c4840"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyInlineMarkdown.swift",
+      "gitBlob": "6610f5e43527cc40ae0da8c4565da16ac83e6c28",
+      "bytes": 33497,
+      "sha256": "68f2268537d36156b793fd41975dd51df44837e53306de3da997bd6bff045a0d"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBlockCreator.swift",
+      "gitBlob": "46879b749f804f33496d43c84ef6c93ae14dd3cc",
+      "bytes": 11582,
+      "sha256": "15ab917e8e4f583fbea0bb5577e83f9870a6c9e97b0a385e59ca16edfdc5e0cb"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeNoteBootstrap.swift",
+      "gitBlob": "0548e7fd53ff9517501abee716ac0a3f743488d0",
+      "bytes": 2883,
+      "sha256": "736f5eb482ba4e42305ca88af9afcd43aedc8a86f459369f721e0bed8302c738"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeObjectCreator.swift",
+      "gitBlob": "aa28d864b8fd55805e4717917779750b20514df0",
+      "bytes": 14656,
+      "sha256": "0273ca566d58456569eeff7d90e6e582791fcf33aa2c6b2e48c280fe53dcb723"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "gitBlob": "3a6ce4b631b6ad850063c18db2dfb77c96bd45f3",
+      "bytes": 41818,
+      "sha256": "ffcc45d89f1f37f2fdf5fe3907848047b210b2e61da3c2865766ebc3f75061a0"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeWorkflowBindings.swift",
+      "gitBlob": "dfa602a0febdf8a4949967f0dc0878a7ba89eeeb",
+      "bytes": 5271,
+      "sha256": "db86df8a9355cd693d96af642b7f9dfbdca16e8f784f3727d61e926aa117c348"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyProtectedCreationJournal.swift",
+      "gitBlob": "7612298ae4a38518136d3430e477665a8367dc29",
+      "bytes": 17368,
+      "sha256": "5f0c526fa4f88e530242198bb152c3e1840cc5396df771420bff64f4183de8d5"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/CreationProbe.swift",
+      "gitBlob": "b98552dfa8f32280cd84791e723643e6a9271ec9",
+      "bytes": 15596,
+      "sha256": "b8bf4f1c90dbe42a5168f6940a43b1b9b0448d8fd220a1e34d4ffcc407f27435"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/Probe.swift",
+      "gitBlob": "daf22b9cc2750e377e32dfae92fb38f6c1b99432",
+      "bytes": 8311,
+      "sha256": "62cd4f5f7c44794a49cf29e0a65f831805c06b4dd6ff4629ed2289dcf551fd0e"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/PropertyProbe.swift",
+      "gitBlob": "34b526ed98f6415890b72a7c97ea0f7c92136bbc",
+      "bytes": 14516,
+      "sha256": "c3977600062e058187ab4c6537e28372415e1941d02e380d6db39c970d2057e0"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/TorahWorkflowProbe.swift",
+      "gitBlob": "aa96507d7a89dc35f55615ddc251b5dce1f7e907",
+      "bytes": 16122,
+      "sha256": "a3dcc9696e2f873a1409c52ccc0094e02b2bebed43cfdbbac050c133e71a2421"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyNativeBlockCreatorTests.swift",
+      "gitBlob": "fb06ffddcd22638e2df66385e8f3f5e1dbe4dbd5",
+      "bytes": 12470,
+      "sha256": "f4a614f3fb2085bf4e00a61c6e7feee44df6e804f035967459f1e1c2d07b13c8"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeCreationTests.swift",
+      "gitBlob": "63614ada430d9d8d2f3703c3b9d7ceb1beefdb59",
+      "bytes": 19231,
+      "sha256": "829e0d2294a3ee9cc0dbfcae8626fe8e31419384856a8c52e6083afdd1ca6d65"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativeHostTests.swift",
+      "gitBlob": "77f71200007910a29dd38bb1f6f5829ed3efc980",
+      "bytes": 13015,
+      "sha256": "9d0a20192f68afb43878a591c332399b373902839d6dc18cc08b0ef65b9c3000"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePropertyFenceTests.swift",
+      "gitBlob": "26d87819a2ac95e7ea0871b7af6bd144f748f643",
+      "bytes": 14201,
+      "sha256": "a7eaf5d9214329ed601cf5fea174ea5cd88a8a238bf4f0b7986e8176a5a596a1"
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePropertyStoreTests.swift",
+      "gitBlob": "8172b30344f63fbd44c69f16a842db7e2adf69d2",
+      "bytes": 15598,
+      "sha256": "37f9a8976451a1cc05f7fbad957064b7da0367e1d04659993f0c5a79df6fcbcb"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Package.resolved",
+      "gitBlob": "c090f33e2dcade793327e50848392e842f76f572",
+      "bytes": 914,
+      "sha256": "b8540dae4b82c93169772bdd1944d1fdc1d3447757b0ff4319ccc6fef1267228"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Package.swift",
+      "gitBlob": "7f59f980b1ad76e9ac957d4aecbe48f5a92adc8d",
+      "bytes": 779,
+      "sha256": "be8e1cc5638cbd9becc1cc4792bb39d35325439a524f595317089722d19bdab4"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyConditionalPropertyFence.swift",
+      "gitBlob": "1ac07afb587ebaec4d62cbdaa4bc0894370e2555",
+      "bytes": 2695,
+      "sha256": "baec5f9838f1bdbf6d6aedb557998cd334b3a77bbc73ce42f0c1408e14d40129"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyGuardedHTTPHierarchyRecordStore.swift",
+      "gitBlob": "4f55f11ae5777d1ff58cb14be4bde466a84258e0",
+      "bytes": 7436,
+      "sha256": "59ceb509e7a375d777387186aa1def85659d222010c0ad18f45e8334713afee4"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyGuardedTorahIndex.swift",
+      "gitBlob": "69f10e7ca78f0a74e0644b93e87ae3fa684f2ace",
+      "bytes": 13336,
+      "sha256": "ab8b65e3851be52b0207cc8db66c8723c398a3707038f7c9adfbdd69712bbf60"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyGuardedTorahOperationStore.swift",
+      "gitBlob": "6bfba7f9ce7f38f3e6dd6f96acc01709c00a242f",
+      "bytes": 2055,
+      "sha256": "6560662e18373ee92685922efca7a61713eebac89db74347a671995fb48ad41d"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHTTPHierarchyRecordStore.swift",
+      "gitBlob": "01c6ffdb8717b430b44456fab21367fd9f875651",
+      "bytes": 9305,
+      "sha256": "5767f94fb803433760a8f450968711ea846f928701d9bf647e2a3f1dc7cf39ca"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyArchiveRequest.swift",
+      "gitBlob": "26d19d10fee5f394476ff5c097f0b0d4a001ff27",
+      "bytes": 2424,
+      "sha256": "df4bf42404eaeed6be85dfe32779683e991a392dfa39c1726d58cfbefd255f5b"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyModels.swift",
+      "gitBlob": "c951d43c3d67988b807f05a21ce21b9f77183488",
+      "bytes": 16048,
+      "sha256": "0a594737c72b9f065cd4e70aff425f521a6d7ff86ce7b1ebd21dd1221d150700"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyHierarchyRepository.swift",
+      "gitBlob": "41bb8ecb03a5930b24d465448939dfdb4be444a9",
+      "bytes": 22477,
+      "sha256": "42986d1384446edea4b1c685eed305612aa0e8629bc7d6284f086ca87e27939a"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyLexicographicPosition.swift",
+      "gitBlob": "5644688cc4b9a8b10e26953c92a2c486ff83fc2c",
+      "bytes": 8273,
+      "sha256": "079984b4d7aabdb375ca7bb466337db3f6282e5cd3f535ad8f8ae90b4ad86c73"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyNativeDocumentPolicy.swift",
+      "gitBlob": "ac4bada7852ecc4c3f8a2208cb05a2e188ba0229",
+      "bytes": 6882,
+      "sha256": "a4fa5fc4fc1185b1778ae960b60e39a03e3d4ce487c34bd4d69401946ff7e366"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahArchive.swift",
+      "gitBlob": "c2f02c0f255d82667297de369d98d5bf92d958f3",
+      "bytes": 12568,
+      "sha256": "eb233845822a1617ed6f6bca6c166015fa2fbaf6f21f247ba2b585a00e10a9c3"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahAssociationRepository.swift",
+      "gitBlob": "623f36a18c6cd0f7a20226ef21cde968c22949bc",
+      "bytes": 26788,
+      "sha256": "7b0ec6910f86061ad3d36a1242ca0cf6132169439b4357d11296642bbbf1f717"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahMigration.swift",
+      "gitBlob": "b1ff070c8e5aec42b72f37558fb19c71acef32ea",
+      "bytes": 20475,
+      "sha256": "6765c189b5a94707de85d9edb029c828d2d9ff41c7c1aee3045dc1199d195bc4"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahNotesService.swift",
+      "gitBlob": "d294e257db567db24767ef5d8b592d46d9e7f7c4",
+      "bytes": 14412,
+      "sha256": "c260a8421b13450b4ce31d38fa2fb28b976cd1537da0c25b119fc1aa17f861c7"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahObjectScope.swift",
+      "gitBlob": "8ee1f116ca5b01b98db26d9e36a06a6e39842f7c",
+      "bytes": 1245,
+      "sha256": "df785534253e12a397a089b00214c16434c09fc092c718ad3aae08143fe6fad8"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahObservation.swift",
+      "gitBlob": "0372a555b795a70cb48e376efcb8043473a7bc7f",
+      "bytes": 901,
+      "sha256": "d7b8aa52af2aebbd51e3231637b7ac2de80ab5f8525019e3bc23525f25316bae"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahPreparedMutation.swift",
+      "gitBlob": "d13a6263ba6ffee7b7abd6133c8322b3b47a31e2",
+      "bytes": 2185,
+      "sha256": "b8ba756b82fcab606a429c939acc7e97c632a1717866b9dba714b70b6b66511d"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahRelatedDocuments.swift",
+      "gitBlob": "a2dfa90bd8a097145d458c6a178a16a7af148116",
+      "bytes": 14045,
+      "sha256": "9a3db411b6f6fdccf145f56cebc5fd0afc8a7e913445c371b7aefc670cb66f82"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahSourceJSONGuard.swift",
+      "gitBlob": "72c92fc50cde90e90b1f03de9124817069e9cf98",
+      "bytes": 7597,
+      "sha256": "2a42205987e88c65c8026c3f0600ea6bc6e550be82602fc94062e74b926cc711"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyTorahWorkspace.swift",
+      "gitBlob": "ea8148c0e3dc857db51415e01ccfe396e02ccc95",
+      "bytes": 10327,
+      "sha256": "7a51c02baafba146fac43ab0b5737ab3db6465ebdc142bce3d1a6ea33bf36c56"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegrationProbe/GuardedHierarchyProbe.swift",
+      "gitBlob": "1d1e8702b345672793947b73239692f8b2fc5223",
+      "bytes": 20671,
+      "sha256": "7684cb10e9f400dff7adc6874ca3c55d97987d285be4dede6ba30f9ef885b9db"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegrationProbe/LiveProviderProbe.swift",
+      "gitBlob": "c15720fffef2f3af963c332f87ce9637813735be",
+      "bytes": 15313,
+      "sha256": "324a66632f6c9cf501991f51ee0d612d53708ab359ab4ab93e1997584a916654"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegrationProbe/NativeArchiveProbe.swift",
+      "gitBlob": "051285ff5fca8b24d1a849d11e09ebdd8600605f",
+      "bytes": 10158,
+      "sha256": "bb8d9ea8e4e51302b9bab78afa00f35f5b49d99cf8593cfb05783dc40d019dc1"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegrationProbe/Probe.swift",
+      "gitBlob": "430bdd3580839399e8e5a4c3121c3a7dfc1f4796",
+      "bytes": 19282,
+      "sha256": "8b70b5fb1785959c12fbad4006a64d9aaffa245d2b8cfbca04dc2d19bc6ff25d"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyConditionalPropertyFenceTests.swift",
+      "gitBlob": "e7d87a5198eb2c6888b0d3e75eea6f4210c603da",
+      "bytes": 11444,
+      "sha256": "11badd199025adab907a6dca09baf3f3b7de0fb2b5d4613db4cecbb69db4452d"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyGuardedTorahIndexTests.swift",
+      "gitBlob": "2cbb8bd207407198b6f04045f39155b6739c04df",
+      "bytes": 5955,
+      "sha256": "82710d9e21bb303d123ef1c377922a13230209824f422b1ce16c82be4f69e5d7"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyHierarchyTests.swift",
+      "gitBlob": "b11d9e0cb64b91bded003c1a4059df3adef2e789",
+      "bytes": 30174,
+      "sha256": "306aaa783a635eba2123c3403f572ccc104f951f4ce11574f6700cea28b5eaec"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyNativeDocumentPolicyTests.swift",
+      "gitBlob": "2516d834a8e1bf219d67c95c59b18663346f984f",
+      "bytes": 5071,
+      "sha256": "7a5476d56fc1f0a14aa5d149f1675e400bd8858819e458d545bb0b5889fac51e"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyTorahArchiveTests.swift",
+      "gitBlob": "a17ff99046436de1a55ae73b368159080f03ebc9",
+      "bytes": 14806,
+      "sha256": "8151e95fad8546e16e3b2d66542eaa6eb6086a04a7fd609210480284cf52498b"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyTorahNotesTests.swift",
+      "gitBlob": "2e59e250aa3715da908854bdf5955ab0c1ca4436",
+      "bytes": 10391,
+      "sha256": "59a48e9cbd0647e6974066f42457cdf8b160e82ebaaad0a32e22b6a5e013b568"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyTorahObjectScopeTests.swift",
+      "gitBlob": "61450a3fa83f6d708818500383e4add281e0b721",
+      "bytes": 11144,
+      "sha256": "b0311de7555a495bb5f08379b872fe734c0291ff3e6838041e68aae0250f08e2"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AnyTorahRelatedDocumentsTests.swift",
+      "gitBlob": "87d05800035c99c51d621f81baaac1d5889337cc",
+      "bytes": 9238,
+      "sha256": "7f07a731ae842dc4b5fd7bb7170c4d3697294df77fd499018e8d91525266a3e0"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AssociationBridgeTests.swift",
+      "gitBlob": "57962a4a298ca0fd642cbfc7b59b9c9ebd56c030",
+      "bytes": 37284,
+      "sha256": "7347f966f366eb0779a4c8310f9722bfd8df92a9cb822a3627689de0cab7c708"
+    },
+    {
+      "path": "Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AssociationObservationTests.swift",
+      "gitBlob": "f9c843a951400d8bf45e9f48aa5e99442faece5d",
+      "bytes": 8669,
+      "sha256": "5e66843e0b26c3214b5b4b9b346b017118c205dda377292821c50dcafa306b11"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Package.resolved",
+      "gitBlob": "c7b9d711177e1e673e3bfbf4840c3a739ac2963b",
+      "bytes": 2509,
+      "sha256": "c5cfb98b68d42109840ad87470df4870b91d8e2d9f86cc35006e6dba38e79da5"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Package.swift",
+      "gitBlob": "45d8a98e7df887b2ff41bc3652c019400b471515",
+      "bytes": 1451,
+      "sha256": "b8889dc3af1b9403c55bf8505e04099fee51375bc0592ed49e07aa772cf81f2c"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+      "gitBlob": "e58a3cbade531b82ba75990f2248fa86cc8c52b6",
+      "bytes": 47690,
+      "sha256": "02f4fb36d9f7b366dc8a2fc373b2de48f15735fe86fbec381e840b0ed5956f56"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyHierarchyPresentationState.swift",
+      "gitBlob": "9dcbe70b6a8e9dc7cbc9e34204b5957b24411d12",
+      "bytes": 4654,
+      "sha256": "1b2bced966f411efc532e535d03f1daf456f1e8c222e13baa64d8822b82a6b72"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyInlineMarkdown.swift",
+      "gitBlob": "ebf6e503a7c266efce44285ce609fc8fb11403c5",
+      "bytes": 436,
+      "sha256": "8f72a09509d5ec3376f074ebff8510e593bbe0e6fd0d5da0035ea3183e3e91b7"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyLibraryPresentation.swift",
+      "gitBlob": "869d2143e48d69fd85f83c68dbe0ee25024dafbe",
+      "bytes": 28738,
+      "sha256": "8e887c5b838e207f6625c13694f96858bf2c178aaca7d7b7a4f19fcae1d15113"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeArchiveTransfer.swift",
+      "gitBlob": "c2de705ac7a65b77132970f3caab1052bcd2b417",
+      "bytes": 24505,
+      "sha256": "202fd438be170e15a7d6a4a10bc05adf5679ac7662f7574e84edbcaf16ccc438"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeBlockInsertionPosition.swift",
+      "gitBlob": "f6a4d1a903bce209a655daa2cd58b299d400c540",
+      "bytes": 2501,
+      "sha256": "6cf3ef7ac2fe658751640d93744118f2d575a4bd4785add07612df2ff2851d62"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeBlockMarkerPolicy.swift",
+      "gitBlob": "e6d5a165175d55aca9195800d50613d7943d1048",
+      "bytes": 1032,
+      "sha256": "b207cd9b81e68bf9fe689d7126798c70069ed773dce63f56af8141e40e6042ba"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentNavigation.swift",
+      "gitBlob": "27928d752afaeb05d788c357c131b4961a1f0834",
+      "bytes": 3291,
+      "sha256": "6a8671a5e230243e92fc0f2b80871fdaa031d1050ab3807b095593bd879566b9"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "gitBlob": "95928059009e642db7b489d45f775695ceb954ad",
+      "bytes": 29259,
+      "sha256": "53740a80153bfd14b8c10e8a86b57ac3b69559d2866b3a197cca6abc4d6bc8d8"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditor.swift",
+      "gitBlob": "1d30b96fe8dfec626aaec516216d3a448dd93f98",
+      "bytes": 39942,
+      "sha256": "fa52c9cd1386acd2bd7d8fa26c6214e2d125c95c302f8e82be76cd8c4bb5bef0"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeFocusCoordinator.swift",
+      "gitBlob": "0ea0e0bcb2aa6518d3210517bdac599b90fc9a6d",
+      "bytes": 3186,
+      "sha256": "b0566c1207b871d3d5416c8815801d35280f386c351316621c6f7482aaeb60d6"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryRecovery.swift",
+      "gitBlob": "f616c2d922411466a27584d920837727d1f2d19d",
+      "bytes": 9069,
+      "sha256": "a4edf576c5ed58e70394828a0b174e819f2b655cefc169e269f7cff033a1d381"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "gitBlob": "7f0f4c6645f440247cefabc6ab639eb8beff48f4",
+      "bytes": 19405,
+      "sha256": "d8989cb92e4541e4a756606b61a12cc98e5a519c8d8c3fd5d4c01c0c0778dc8d"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+      "gitBlob": "121a7f52f590c5b0354eea98a85784d20ca8f0b8",
+      "bytes": 22344,
+      "sha256": "9f74301fbf8bcf25aabb773250a248ae15f22dc08da06402d3db8655091bf02a"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertyPresentation.swift",
+      "gitBlob": "213618e31d3aaf36f52a25d3854c4dc7b4e91d30",
+      "bytes": 12079,
+      "sha256": "6ce5b04eec8e0bd211fb3090d0c6b9f0ed0759b3f1879519c5b78e9be801513e"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTextComposition.swift",
+      "gitBlob": "0a0abeeefce2382425bcad0c501851c0abf80e18",
+      "bytes": 2695,
+      "sha256": "e03a579e1ab5294fd06e6c2fc63bbb11b3e61877ebbd4dbf94d9013ad398aa9b"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeTorahRelatedPresentation.swift",
+      "gitBlob": "9d5c522c9988c3ef72b91e1ee5a20460fa808d52",
+      "bytes": 5100,
+      "sha256": "cf8c4e4f04513accb24adafd865c9e7cf2df77b1b27455da22a77e637a169fc5"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeWritingPolicy.swift",
+      "gitBlob": "096cfb6ffef2bf3b3d2996056d71f97c9f2ced68",
+      "bytes": 1529,
+      "sha256": "dbe723700b6d30960249f053ae8dbb5a2ea63d4cd8c7b2c29dea76877eb2e545"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNoteBootstrap.swift",
+      "gitBlob": "07bdc216acdab46c1733aece84bf6d5d06ad92c3",
+      "bytes": 253,
+      "sha256": "cb2f2ae24c7e4953cd651fc981d1250f5f4ccae0e62f1f855fafa5d9bab6d71f"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyTorahPresentationBridge.swift",
+      "gitBlob": "9d70a51ebf9b49966d7129bab8ea4c4a129e6357",
+      "bytes": 13698,
+      "sha256": "986b8076bfd7ae81888135bb0f2d61f84bb8549fc14e3379955711ef99a5fd59"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyUIFoundationCapabilities.swift",
+      "gitBlob": "dc51cc4ae3251a77c007b9a994ce8ede289da509",
+      "bytes": 4129,
+      "sha256": "074c9a58305af8362d17beb0bf61eadc13467c74c98d34224537c5134c88f373"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyUIPresentationLifetime.swift",
+      "gitBlob": "45cc719e6aebc1559620589710fa6acf78f7656c",
+      "bytes": 1809,
+      "sha256": "43f92a43f956d475a0f87c02c62210a8811da80333b2ec9ccdf554a7fd0b1deb"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyCanonicalArchiveBoundedReaderTests.swift",
+      "gitBlob": "e84954b5985c721c981020753dc87bf01b7f7051",
+      "bytes": 1497,
+      "sha256": "affad47ed09de3620d32a0cb9c5059b6271a455c19c47a336505352aa0726758"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyHierarchyPresentationStateTests.swift",
+      "gitBlob": "96753cadc13c08172ab187755ca52c1ad60dc702",
+      "bytes": 5768,
+      "sha256": "60b62d4773fd9afdf2de51ba1028b86918ce25b0e8e79d6e2d2870230de51618"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyInlineMarkdownReplacementTests.swift",
+      "gitBlob": "bb7395e165c50a82782f35ca7d7ffd30fb5549f6",
+      "bytes": 5637,
+      "sha256": "304e46100d9dfddb62507564f1c3473c94e2c56d636419acd34660d21489a1d8"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyInlineMarkdownTests.swift",
+      "gitBlob": "add5f78976ade2b651e77e206c21f66b1647dc54",
+      "bytes": 3931,
+      "sha256": "3f3ec0fa7ee204ee53fa418ec02ea528c2f47d284cbf9d7b0873c06156795553"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyInlineMarkdownToggleTests.swift",
+      "gitBlob": "f51ddff20ff99b0b88187e1eb7f08ec168fdf218",
+      "bytes": 8992,
+      "sha256": "aaf415e158bad37262d7995f4e9beaec3d6d4dc6fa0705117ffd44a3601f8dcf"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeArchiveImportIdentityTests.swift",
+      "gitBlob": "67925be38c5eeac5c4772937e526e6f871d2eac4",
+      "bytes": 3156,
+      "sha256": "302be98e3865d3a9a740bdbeb1b376823b4fa217a47f6288595354038949c414"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeBlockInsertionPositionTests.swift",
+      "gitBlob": "7f6b16b9b2efd86fb67473ce87d38e61a7b228d6",
+      "bytes": 2784,
+      "sha256": "9ca757366f627230956cf211b983d82bc22b4501b69666ebf63a08c9ce54eec2"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeBlockMarkerTests.swift",
+      "gitBlob": "b84af0abb83fac2984b1a7999256508ba3d91d5a",
+      "bytes": 2686,
+      "sha256": "c17e8198d628e27072b6b8da329ebee1677091d1df099c29c63a027cbe2859f2"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeDocumentNavigationTests.swift",
+      "gitBlob": "d2750ea7ed40eac8798d0ae8ea1755adb32ec155",
+      "bytes": 7827,
+      "sha256": "e5bda23ac5153a7d39216d8911cda99eee4a528736626daadff930227ab2aba3"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeFocusLifecycleTests.swift",
+      "gitBlob": "7f1a0ce95f042f9346dfc66056fb631ecd3507b5",
+      "bytes": 6770,
+      "sha256": "b229703a1869a0ad303fc7cf2e1609bd7564c6139e74d4b1c8a0b2cd6640e1f4"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeLibraryRecoveryTests.swift",
+      "gitBlob": "fa62deebf8bdb55bb8999f05c58cc4c082deee6a",
+      "bytes": 6668,
+      "sha256": "50b2005369a98652bc50a24422e8b60a23c5ccf9bb38da78bd4806c49549399b"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeMarkedTextTests.swift",
+      "gitBlob": "15877d0d64c3ce52b1a724e19e0dd5ca75d72bf2",
+      "bytes": 5873,
+      "sha256": "2fff24da4cba52263752bbc97f653308a953f7448a6247806174a19f32db85bc"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyValueCodecTests.swift",
+      "gitBlob": "aecba9b0e81c7e3a36e8811310e6a0075efa5f33",
+      "bytes": 3300,
+      "sha256": "27841ce235f758c5fad2b7f214a69cd3fe9c3ff7485ec8b5d1abe05814996481"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextCompositionTests.swift",
+      "gitBlob": "60d6030d4d51a20bb4971e12e81b50e3952e9067",
+      "bytes": 3418,
+      "sha256": "32f406785982c1496b38e488a44ba03e7d9a89935be5ab8dbe1f01316aa4f055"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeUnmappedRecoveryTests.swift",
+      "gitBlob": "0c7d08c6d35476a67bcd459ca31ba14a28d0f85d",
+      "bytes": 2524,
+      "sha256": "6262f9b7c957bc108a625e9585905390236eb86d48d570fb41ca13c754b82959"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeWritingPolicyTests.swift",
+      "gitBlob": "4090c7e93c7b94a2de12c49d8f9ff75ab1f0a9ca",
+      "bytes": 3528,
+      "sha256": "55ac2115107643e45c49788a5630239081b76820265cba2f205e20ba9c7aa870"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyUIActivationTests.swift",
+      "gitBlob": "48daf978533ec0f3a6f04e5c80fa4be32e4be9c5",
+      "bytes": 4905,
+      "sha256": "94205def22c91576ccff9f5c1a3f937ab60b67e68823b3081c26787061dd6832"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyUIPresentationLifetimeTests.swift",
+      "gitBlob": "ac666bbd0ef8ca842d4a3c060fb76d3881826512",
+      "bytes": 2620,
+      "sha256": "153a7bea54f053a412d963860f399a788d8845b307d4a72bdec1f283d70957a7"
+    },
+    {
+      "path": "Modules/PinkhaKit/Package.swift",
+      "gitBlob": "eb19331cb8b675b0271f2252a5453463e3f50b88",
+      "bytes": 1240,
+      "sha256": "b55b68f53f33db07281e54fb30f29cd235877e855d333ad675057f52be2d8d7a"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapOperations.swift",
+      "gitBlob": "1ca4faffc857b38b4550dbc87f45109f93067795",
+      "bytes": 1427,
+      "sha256": "b34d91ba92951e02273acf7dd0cba8f16a4f612d84f10100bd1499d7a09f5c5e"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaBootstrapProtocols.swift",
+      "gitBlob": "52a209301aebac5f365543de7d3966b021dd611f",
+      "bytes": 2216,
+      "sha256": "d8e84dabcf1f97cb55a9951266df3cb6b8b42837d76f5afde1f13a0934c955f7"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaSchemaMigrator.swift",
+      "gitBlob": "4d4fa64acffc9eda20f21272f63a6ab48bd82a5a",
+      "bytes": 794,
+      "sha256": "fc7927655df55b019f9ccbbb2381427dc2624fb3b990acbab992739368c4ffaf"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Bootstrap/PinkhaSpaceBootstrapEngine.swift",
+      "gitBlob": "9e275ff2a06c9ae8ad38728322021c9d20178ec2",
+      "bytes": 14820,
+      "sha256": "ed3ece8bd4c5e80c8d2fd78c014b0598cbc50e0c2f5be151a9a6178dea11e1c6"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Domain/PinkhaRuntime.swift",
+      "gitBlob": "41733085a76c45b3ff916c047e1839cdf96184eb",
+      "bytes": 308,
+      "sha256": "c46aa3280a746f7e0fee5bae59ba94e3767b4c95a9d611cb007803d098f68970"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyBuilder.swift",
+      "gitBlob": "16e01dc11697203ff99949e59370d8af3539ac8d",
+      "bytes": 3339,
+      "sha256": "7ac6eea3d287c43afd9849e82093466987764c518d81880208dd5452c4112b97"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyCodec.swift",
+      "gitBlob": "10e07df6b2fa7ab539429f950c4a130b826f84cb",
+      "bytes": 1653,
+      "sha256": "2a59babd76ef595796db6c322bcaf237f48856f2d88e24bf70f196934105846c"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyKeyBuilder.swift",
+      "gitBlob": "7d91c17ae2bb5fb2439cf8747690681c4345b909",
+      "bytes": 1431,
+      "sha256": "430212dcafba45d2d985a4e858320d969e025d70342d107987c61aa8783749cf"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyModels.swift",
+      "gitBlob": "cb66f68729acd953f5428a4cb336ae93a1a787d7",
+      "bytes": 5447,
+      "sha256": "7f201585eb76b34271e49fe686770302ece2d67d3e2ba4304167637ea0ddcb0b"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyMutationValidator.swift",
+      "gitBlob": "99a98540c359719078c01b8af080f701c68f2b9f",
+      "bytes": 1804,
+      "sha256": "3f5f9e21035851c171ee5c64e4789048ce2fcf78163d839ef69155499fbf0d21"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyOrdering.swift",
+      "gitBlob": "66d7d2048abfd644dbbf11055bb78e76824332ce",
+      "bytes": 6164,
+      "sha256": "7e33fc757c7c2888a8715fa7f110503bf9dc577ea06cf5bbbcd71e0793a9adf8"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Hierarchy/PinkhaHierarchyReconciler.swift",
+      "gitBlob": "e8ca2185eba2d2d9b669fb7d079955695302bb21",
+      "bytes": 11842,
+      "sha256": "7cdbac75c73d6593ea39e044d380f5f11aaf03806b8623f22d541338f208ea75"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/RTL/PinkhaNavigationDirectionPolicy.swift",
+      "gitBlob": "56dc75c1ea23375f100d70209d7c0d97dce50913",
+      "bytes": 1712,
+      "sha256": "2a771f372588423f98f772eae9e2b7a1cf5462fff50deccde11152e079ae05a6"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/RTL/PinkhaTextDirectionMarker.swift",
+      "gitBlob": "740cc5ce014f66c798fc76c63e2b80dad9bb8912",
+      "bytes": 1122,
+      "sha256": "64c499a7b751d1442ec22ba2011e910876c8390703ff9e4440108f732fc7debe"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/RTL/PinkhaWritingDirectionPolicy.swift",
+      "gitBlob": "a2cbf6045e2276f96ddb18de3743d32ca4482b8e",
+      "bytes": 3312,
+      "sha256": "e9df376edef7276bf45706d140617901602fb2b8b94670daf87762680ccab67a"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSchemaRoles.swift",
+      "gitBlob": "83e42de4bf880d13ce20a841410681c6e6fa0f8d",
+      "bytes": 1555,
+      "sha256": "891033c5597706f043026fbfa21cfe7eb010117bdbb0a6cdd194ba62e26103a3"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/PinkhaSpaceManifest.swift",
+      "gitBlob": "69220b20ad4a55b9b4d10c62793c66b9521ce1af",
+      "bytes": 10826,
+      "sha256": "aa0e424dcd17c948531b3d8389bf66894f5a7afd1bb2e93f54f43d7a69588e17"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Schema/TorahNativePropertySchema.swift",
+      "gitBlob": "41f91fdc0f6ede07385def1c61b29b9c77ca64c3",
+      "bytes": 8708,
+      "sha256": "7b0ee780a11bc8416bff9006a87915e1201756c7494dd90d1f8f7f033481e4a1"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/AnytypeTorahWorkspace.swift",
+      "gitBlob": "f1bc87f0a77f0a84c3447e3e62dc93d3564cb1f7",
+      "bytes": 5089,
+      "sha256": "54969a55310eb8a6fd9667920f81411de3fb6b3cdc4c18d44121b840d27928d7"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Hierarchy/SefariaHierarchyProvider.swift",
+      "gitBlob": "94627f95b4891d90a0ff9a99adccb96b963bddc9",
+      "bytes": 3917,
+      "sha256": "8a8db91c6f7c34bf58f9261ecd352bb3cb3293218b51b1bbaa8b293f46addf50"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Hierarchy/TorahSourceHierarchy.swift",
+      "gitBlob": "eee8efd9f21c8cf11ba3cb5399cba61389cb6f92",
+      "bytes": 6198,
+      "sha256": "29ea891c8b9b82aa1533bec5d7c52234ba651efc75f42587ef941b90111ad4c6"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaClient.swift",
+      "gitBlob": "bd6e6fca06c878a81b1d5dd5a772ba15288c971f",
+      "bytes": 8470,
+      "sha256": "917c5a2168956e221ee57ae08064a51d46cc609a721381e3bfbcfab54526ed48"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaDisplayText.swift",
+      "gitBlob": "524b2892f717cfbcd9a679caef1b17f4afec22b8",
+      "bytes": 6259,
+      "sha256": "52b60e1e3a341193947c44f193ff65ff39d5651c3ba31c03dc4734c076b9a36f"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaJSONText.swift",
+      "gitBlob": "7b5e0c61fbe7ea964db316cc147b08ac4cf0f99f",
+      "bytes": 5253,
+      "sha256": "0bc0a2fa299d6520f5a167ceca23e1919c56e4cbc45e9786a2ac52121eeac1fd"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaLexicalProvider.swift",
+      "gitBlob": "ab7d808ee6a1d8410148e8334583bbcb68214dc3",
+      "bytes": 3767,
+      "sha256": "f87a7766bff7fe4bc50ea6ad349523db7ba1bf382fa28ae919a47916923e9c74"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaReferenceProvider.swift",
+      "gitBlob": "b96e245bdcb1231ffb1cd8ca55fe24cb83996bc6",
+      "bytes": 4673,
+      "sha256": "97ffdc6427957d7a8ca4e3da06625c35112f0cf48f3b182ab4ce49ac58b6972f"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaRelationshipProvider.swift",
+      "gitBlob": "a98e7c5244c35d2e1bf51739eb48f3a7845312ee",
+      "bytes": 4763,
+      "sha256": "46cc8297d642b762ab62838718baa256a2a9acf306af08d7293dd2873d255a2c"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaTextProvider.swift",
+      "gitBlob": "32f76a891ed6a98d8643685adbb9c697d67c0ef0",
+      "bytes": 10547,
+      "sha256": "b8b2b60b7de16f2a9373f470afdf6ea89ecbaba780f190fb11746d5ae23bdd01"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaTopicProvider.swift",
+      "gitBlob": "6d5c610804747b4ad61acdde0b03794a2f9fc0ae",
+      "bytes": 7678,
+      "sha256": "ce1bdb5caabf0c1425747d4a6efba7a758746d52943f212018bd1b46833aa0ee"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/TorahHTTPTransport.swift",
+      "gitBlob": "6014694433fe21c76543ca2e41798a310c235e35",
+      "bytes": 1599,
+      "sha256": "92392f721d9cdf6d51a83b80a6229b5b7e1587bca7debbd0e17cc70fdfb1854b"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/TorahTopicCache.swift",
+      "gitBlob": "c4e4695ee333020556347033f78fc1386bc75ec4",
+      "bytes": 924,
+      "sha256": "9d93edc3def71d1f7169c408bc63bd62e33a36fd48749dfecdbf17e3ca1b40ff"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5BlockReachability.swift",
+      "gitBlob": "449b1434dc91c2d6df8b0262d8cdce94fd4ff2f3",
+      "bytes": 4513,
+      "sha256": "b6fd4713c3471cd3aa567deb6dd83c216a41c55097a08cd57b8039a9c7e84c86"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5ExpandedRelatedDocumentsQuery.swift",
+      "gitBlob": "38ac736abe3cf347f45f8f2006c901cee0a26c86",
+      "bytes": 3358,
+      "sha256": "5d54f6a5dbf85999089e6ee6f563559d9500fca7418aa36579587976027131c2"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5ExpandedRelatedTargets.swift",
+      "gitBlob": "2ecb7d21082035e2639672110d95c9ce775ab269",
+      "bytes": 6757,
+      "sha256": "d472814aa6ba62c660e1cc8f5c2a5a1668bac8317184e2ed8acb69e10f665db4"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift",
+      "gitBlob": "940b1dc6c1ac9b6ff8ced049e8bfdf479086214e",
+      "bytes": 761,
+      "sha256": "3256c3be767c7b54640f9f3156bc91767ee8d0a5e821c54f1ef106fcd98ebad5"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NoteCreationFlow.swift",
+      "gitBlob": "33974736a19869537b6ac7d8528133a86a1bb6d8",
+      "bytes": 1996,
+      "sha256": "bc01fc06a1826404db44e936ee70a45d2cb86b7f1214139700999d7261160381"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5SpaceRelatedDocumentsQuery.swift",
+      "gitBlob": "ca524d6e31c3aaf4f67215bf880cdb21c4974ecd",
+      "bytes": 5743,
+      "sha256": "91e16141103df1ad2fd8702fc312089c80acff1ccdcfc14d7c7ff3bce64c781c"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationIdentity.swift",
+      "gitBlob": "94c331df5db784c05e8e06e2b983d11ec909ae2c",
+      "bytes": 4900,
+      "sha256": "5f59d015f211169116c745718fc2ce6b752f5eefd359ec5382f707228994fb70"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationModels.swift",
+      "gitBlob": "e9bcec8e147ccd196d6d585bc5d1198b7d023078",
+      "bytes": 15128,
+      "sha256": "0007274a78d39fd4c8e0105eb50cec106c807cf53735caa0de1f4a85cd7fbde1"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift",
+      "gitBlob": "dda50e00278ed024f7c30416c8beae36d705d723",
+      "bytes": 6237,
+      "sha256": "9956aa25174812c5878927b5c62cff5f5d1d16e8becb536e23dadb25a01422d1"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift",
+      "gitBlob": "47e0b1b6b1274d70f8106f8f2d4589ce05ae65c4",
+      "bytes": 2445,
+      "sha256": "63c789b1e14b85fb8032f2cf8fecb4fcb7e768453c03b9304e78ac77775fb66e"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahCanonicalAssociations.swift",
+      "gitBlob": "fbbd77cb935c64fff73e096575a0d0393ef6d49d",
+      "bytes": 8403,
+      "sha256": "e5c988ebb64572e5228592f8a833ca8e5c2638fd991d0f7fc7e9bb114e4e3f3d"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahDerivedQueryProjection.swift",
+      "gitBlob": "647244e7997fa0078d2ab5f71173eb385a96b9ff",
+      "bytes": 1180,
+      "sha256": "697ad9a90fdd19eee0f0c594f1a5014587623c84c4498074c148154128cdfa92"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahDocumentPropertyProjection.swift",
+      "gitBlob": "69999176cedd86968830acf09f2ea7fb16108c7e",
+      "bytes": 3949,
+      "sha256": "a2326bff80b3c9f068f7ee8cf03c7d4d2f94423e36e24299ef471a6fb87a7d2d"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahInspectorRepositoryFactory.swift",
+      "gitBlob": "1caa1ed876de3c86368ab779ebc9b94292f2b29d",
+      "bytes": 1251,
+      "sha256": "4f45989ad62295b72de28d2b1183e30cdcc46ee77d63418d76954fe8e83e982d"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahProviderModels.swift",
+      "gitBlob": "e5b9f9bfea5a3a8d4d7c98d000d64e8b2e7e81ef",
+      "bytes": 4278,
+      "sha256": "bb52dab358d89dc248f2ba1ac868f53eb63d05baf4bb271ff3c4f47e5837e986"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahProviderProtocols.swift",
+      "gitBlob": "6311b85653353be1f14cf27a185eaf356348467e",
+      "bytes": 838,
+      "sha256": "9d4d791f833ab1007e6dbe331e2c9d4646d8be0f168a5626d959f70d55d19f6b"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahProviderRegistry.swift",
+      "gitBlob": "3f054dd548ca2f5a9c42fcf0ce9143f47375fd9a",
+      "bytes": 4064,
+      "sha256": "2189014f5ae5a76ead2cdff386ef78c7e1223636f1a08ea9e7f37136c3a3629b"
+    },
+    {
+      "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahReferenceUtil.swift",
+      "gitBlob": "225b606f1656cffc1f60c1f039674ae01b584c2b",
+      "bytes": 1592,
+      "sha256": "5271b1dad0b719fbe88daabde9a9fa83bbd305669c4951a533d41fda45c47de6"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Hierarchy/PinkhaHierarchyCodecTests.swift",
+      "gitBlob": "72fab8a5a05f6dde916c0db07c9affc90c337f4f",
+      "bytes": 4563,
+      "sha256": "6b49c88edd38296f77da03d8e6adb4385f6631ceaf0c38265d151ba00518b6a9"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Hierarchy/PinkhaHierarchyReconciliationTests.swift",
+      "gitBlob": "54dc982dc84f1c4aa3d9617e52bbedcbcb4ae945",
+      "bytes": 21818,
+      "sha256": "d25383e29c2cf7ed53ca04af2da0bc95b562c3ac84fe0518a15b92252dcfe290"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Hierarchy/PinkhaHierarchyTests.swift",
+      "gitBlob": "beb34e851b2423ba4c8d57f133459b210df0911b",
+      "bytes": 24535,
+      "sha256": "90e96a7b35468e2780047977706f4b8d892f98f59fdbfd8c2ae9a2b558acf3ad"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/PinkhaBootstrapOperationsTests.swift",
+      "gitBlob": "c24e4753e3ccc20d86929ad69f4b522001458a0e",
+      "bytes": 4648,
+      "sha256": "0c781a49e42724775f1388b9b462fa5a12443a98133048fd2fd0aec61395c110"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/PinkhaSpaceBootstrapEngineTests.swift",
+      "gitBlob": "9cefaf69365eae4ceee656c1d54871be1080c4d4",
+      "bytes": 38520,
+      "sha256": "eb6c69be20634784c4d0562e9175a0b6987aa849fcd750b2701b4bc74e21bf59"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/PinkhaSpaceManifestTests.swift",
+      "gitBlob": "86e390f74d319588cdb45d9fcc33432ff228e656",
+      "bytes": 5147,
+      "sha256": "54dbea6d435e169bf1346f3c573ee01a181a284dc1709cb0bbdabef16c328969"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/RTL/PinkhaNavigationDirectionPolicyTests.swift",
+      "gitBlob": "1a374950b119a48c23a010515933a83d8bd5403f",
+      "bytes": 3141,
+      "sha256": "094850e99aaec2151b81a52e4f4556f715bc2e4dd00538b4ab7f789f0e4b9275"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/RTL/PinkhaTextDirectionMarkerTests.swift",
+      "gitBlob": "7400c395c2a810fc6c0c60a9f584c1ed65b27a45",
+      "bytes": 1344,
+      "sha256": "d58e3c6c8ed9c7ff4bc1e10e8b5a5c3ff18b1770dd05b670a45d74907118388f"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/RTL/PinkhaWritingDirectionPolicyTests.swift",
+      "gitBlob": "a121f49c730378ec9347e379dc30de6f67c1de24",
+      "bytes": 5677,
+      "sha256": "6f5f6f7bc20a898359bef3d4bb491f079f72d5dca4305af62f1624dc40d49852"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/derived-query-golden.json",
+      "gitBlob": "f6a72e9a5d16c67365c47cf04df642c3ca1bd2b7",
+      "bytes": 28661,
+      "sha256": "57270a2eeee6c48eddcf3a1ce497c7d2e634b005ad4be473a091b9d9405cbfb3"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/lexicon.json",
+      "gitBlob": "86c0300e7fae96e4da41e8a15bf6878ecbdb0cd1",
+      "bytes": 608,
+      "sha256": "41d587009a1d400db9aa335c8a67f3d4a0ae008e4af991e2a670f1ab087c9304"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/links.json",
+      "gitBlob": "1fb9570e3c39133a5f9f4817296b60d0ce427337",
+      "bytes": 1661,
+      "sha256": "ea87b9543ccb13c2cb0c66e4b181da63263eab72cfcbe40bdbf24725bdab5f45"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/reference-name.json",
+      "gitBlob": "20261cc926c9508d6d226e362792176eaf17a679",
+      "bytes": 280,
+      "sha256": "9cbd4d8a141fe236042e534dac20f5d692bebd8e26a97b1b02e36add42a9c70c"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/reference-resolved.json",
+      "gitBlob": "d2cca022eb886cda56c5cf2533fbf3db65556bd2",
+      "bytes": 483,
+      "sha256": "ab816e57830af5a3d39b578dc868766a6bbce0c7636cba8669d83b6a3ab0c2b6"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/reference-rosh-hashanah.json",
+      "gitBlob": "6f329f9fd2a138c3a2dd5df3d2a0b34cd26cf8e2",
+      "bytes": 343,
+      "sha256": "d6fef95aeab44fb625bd52484a434d6af418988e38096b8d08f281c3d82b2085"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/text-section.json",
+      "gitBlob": "2651a768af136f8a333f0ba60b64bdbf73fad355",
+      "bytes": 492,
+      "sha256": "4df0275933c6d625379937c86450bd0e270fc75d24a15ce93ddb0992497a9762"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/toc.json",
+      "gitBlob": "d9d7d475ec109ce1cabdcadf74df8d8291d1d2a5",
+      "bytes": 1188,
+      "sha256": "ce6e75642c82465b79882f7dd641c6c9525d5918d0a332f40f31f76cdeee191a"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/topic-name-en.json",
+      "gitBlob": "7c6b7bb95824569bbc69e96955f7ac35adc8bcc1",
+      "bytes": 110,
+      "sha256": "e82faf8da4d8db1429dcdd0efc81f085f4276bb9439fb2e1be04bda2cc642329"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/topic-name-he.json",
+      "gitBlob": "96148e94a02370a135e6816d65f738560fa6278a",
+      "bytes": 114,
+      "sha256": "d2f6a33475cd2456e0389aeed3b3c7aff2efbcd311a7f4f8b98c1d89fc2ddfc2"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/topic-resolved.json",
+      "gitBlob": "c1b7eccb05231a38c1062609b18c2e748e42180c",
+      "bytes": 316,
+      "sha256": "74db5b2ab38108a54d3d5edc0490053fe01d6f42b127466b7077ddfad1c1e286"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/topics.json",
+      "gitBlob": "b42979d5213b56ca4354741674cdeab5c2977d26",
+      "bytes": 294,
+      "sha256": "f3fb9ee2010eafa4f033a4568aae4633157ffe9336c6b9846e299da56fe59cb9"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaHierarchyTests.swift",
+      "gitBlob": "b1c97db21ad1edf2dd46f70a84e78e51bded36a9",
+      "bytes": 6085,
+      "sha256": "a8b43f4ee0ea20477cfdb57cd1b56befbc49fcae120d3c67c3a980ec6b1f8180"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaReferenceProviderTests.swift",
+      "gitBlob": "4a5fde87dab8e93589edb02bdecf20258b7d5490",
+      "bytes": 5507,
+      "sha256": "15e8d631e5eb68eec816e071e665bd091939d46675634c3544d05ebda3957256"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaRelationshipProviderTests.swift",
+      "gitBlob": "f43bad3bb760d601abf30481a4e3356019c3910e",
+      "bytes": 4374,
+      "sha256": "a6efc5d6bd48947480d78f02b52a3e669fdaf0f2224598e773bb93de4e05a61c"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaTextProviderTests.swift",
+      "gitBlob": "f995a05ed67552c1dd860003d4e4abaea43f3204",
+      "bytes": 15542,
+      "sha256": "60142572f8f57dc68942821c41ee1befd1c32240a89356f749d9bd0fec587bcf"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaTopicLexicalProviderTests.swift",
+      "gitBlob": "097d5a320402b2e9b09f9d660e58433ed22edbfc",
+      "bytes": 9332,
+      "sha256": "98c589018704533cdd7d705e2968bc4e2d35e0fda53b2a7ed4ff7b3e00b3439a"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/TorahAssociationConcurrencyProbeTests.swift",
+      "gitBlob": "19729913221fdccfd3ecd7e6df455c1c1a92e32b",
+      "bytes": 3329,
+      "sha256": "bc5c5910294c86952362eb3db593d141cc054946536bd4d2d471baddf3056e59"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/TorahAssociationIdentityTests.swift",
+      "gitBlob": "78e186b2aa2bde5a8bad74bb286f94737bb9b267",
+      "bytes": 4906,
+      "sha256": "c40dc51c059f6b01105f8497df37bb8983c82cfeae4d2020132c5616bb6bbbb9"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/TorahAssociationPayloadCodecTests.swift",
+      "gitBlob": "b3567a3e9fe1f6877d7ecdbfd81cd1440871ec1e",
+      "bytes": 6711,
+      "sha256": "0cbbdd3b0001e50b53f7688d3138f11f9cb538ed5d357e0399e4daf4d5bfb679"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/TorahCanonicalAssociationsTests.swift",
+      "gitBlob": "1a67efe1d27eca081535c5cd5fba3ade616dc12c",
+      "bytes": 4396,
+      "sha256": "0aeb6d10617596e9d29b7a4c979ad7120f76a7e400378275744e240e482821b6"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5BlockReachabilityTests.swift",
+      "gitBlob": "82c38c86974e54587f79687d3733df91db7450b2",
+      "bytes": 4108,
+      "sha256": "fc32c2873bd4313ca35306b3d62c018887ad7ad2b8acc902d8b65ebc76e14748"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5ExpandedRelatedDocumentsQueryTests.swift",
+      "gitBlob": "5b6dc3f54f1037a41c44457b2d1e6b7177cf07ec",
+      "bytes": 8585,
+      "sha256": "180eaf91f6139b3e267a8c21b790cf4769fb0121e75ad8639686a004700ed390"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5ExpandedRelatedTargetsTests.swift",
+      "gitBlob": "d589005623fb8d2070c6578f16d70a90dfdb452e",
+      "bytes": 13817,
+      "sha256": "70902d9c451e0ec2e39b01c60a7735fadf5b60fe736dcbe02ac04e0ab4331bb7"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NativeRelatedLookupCapabilityTests.swift",
+      "gitBlob": "7864653c1fe8898b1bfeb3cd29801f4a7f7ae7f2",
+      "bytes": 2095,
+      "sha256": "b472a4f3fe0ea24aa8621a770e6c2f4e8e35b138bafdb3db25ab0fb793892079"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5NoteCreationFlowTests.swift",
+      "gitBlob": "58740dd9efe06e2391e431a1fdca90779e8d2a8c",
+      "bytes": 7441,
+      "sha256": "cf410a34d0ce0258d7f32c73e831ce3df01ba3c2c5ea272c19f06651c8f93642"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/T5SpaceRelatedDocumentsQueryTests.swift",
+      "gitBlob": "91193c25b870c95b5ad6b2f8088f9263c6883084",
+      "bytes": 6998,
+      "sha256": "afb26050d70f42f9bf1390e2b131ac663758b70e05efb62ccf46bc3479d73b5c"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahDerivedQueryProjectionTests.swift",
+      "gitBlob": "bd1cfda626cd51029db96c55de1f7f3eb7ed6961",
+      "bytes": 2724,
+      "sha256": "e62387a1ad10c8ff3df2fe155a9a7c8904c8c78af26f3c4d1f57ceb2f3f9e048"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahDocumentPropertyProjectionTests.swift",
+      "gitBlob": "e4c847a84c7573e804fc436f049fa6f08007641f",
+      "bytes": 10954,
+      "sha256": "fa811a1b099533b2597a818ec14aa3b24ce23bae7fe4ddc87eba83d788935136"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahHTTPTransportTests.swift",
+      "gitBlob": "6601b44eeb5ed0e3a776c59ef648265f298ad32a",
+      "bytes": 7064,
+      "sha256": "930068c6ef3c91142fc76a50afa45a3805ba67a5e9f31bb06e45a0095258339c"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahInspectorRepositoryBridgeTests.swift",
+      "gitBlob": "0a916113fb2aabbcf87408358aa382b2f5c6843d",
+      "bytes": 8754,
+      "sha256": "08925e2747b1469ce737c306bf0ee49a145c07a648c5ca742407695956e80b24"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahNativeSchemaProvisionerTests.swift",
+      "gitBlob": "d8992bef56e2101e341ed1764260cf32eee133e4",
+      "bytes": 5477,
+      "sha256": "13d389d25fd935fa8afcaa7ddb9860d8b8fd140621d0e34c60e765a949888d7e"
+    },
+    {
+      "path": "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/TorahTestSupport.swift",
+      "gitBlob": "fdbc15cfc0b461999c80ac2a94d2b293e74f4ed1",
+      "bytes": 4926,
+      "sha256": "7bce68cfc1fd6d92be4a1580749616e469e02b8bd23ff8edb8368347a0b66a64"
+    },
+    {
+      "path": "Modules/PinkhaTorahPresentation/Package.resolved",
+      "gitBlob": "afa7c7f16fbe1c3aabd2ebddde6411f068398194",
+      "bytes": 379,
+      "sha256": "556c8780b827c0dac2723d6db073a62c45c397e85fa35b56c5f1e51ec94be235"
+    },
+    {
+      "path": "Modules/PinkhaTorahPresentation/Package.swift",
+      "gitBlob": "7d7fb46ad919a2f905d79ac8c18b845682357805",
+      "bytes": 1051,
+      "sha256": "95e2a5905f635cebf1a234ef9a2e387f6a3f92c5d4696884390bd4633e082c1a"
+    },
+    {
+      "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahEditorSession.swift",
+      "gitBlob": "83a9f0dc56c549d9267a2607f79d629c198dcd62",
+      "bytes": 47703,
+      "sha256": "edadc57d9552fb4d42fbb38c39cf03a8bc8634c67d25e16234503fa6b9a7e04d"
+    },
+    {
+      "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahPresentationContracts.swift",
+      "gitBlob": "45ee72ba026f1a0166ac4e9dd381d69b4e692edd",
+      "bytes": 1818,
+      "sha256": "40a27873a9397c0c1c17953fd66badc4d009444cea1e83273e3145615d558a18"
+    },
+    {
+      "path": "Modules/PinkhaTorahPresentation/Sources/PinkhaTorahPresentation/TorahSourcesSearchPresenter.swift",
+      "gitBlob": "d43d9c558d46e53a08fc1fa882f74be9f6530550",
+      "bytes": 9307,
+      "sha256": "3808986d0c856b08589262dccaa2c0ed81ecacf13b9c7bf502d33154564bc53a"
+    },
+    {
+      "path": "Modules/PinkhaTorahPresentation/Tests/PinkhaTorahPresentationTests/PresentationContractTests.swift",
+      "gitBlob": "8642fc238c84610bd0ff55fae21b75fc5ad020b1",
+      "bytes": 370,
+      "sha256": "5ca5ef5eddb5bdf3d23f12f65a9bdaa813305c215740e5134083ae0f6a1128b9"
+    },
+    {
+      "path": "Modules/PinkhaTorahPresentation/Tests/PinkhaTorahPresentationTests/SharedTorahQuoteInsertionTests.swift",
+      "gitBlob": "d68ed33b2007c9433c7433ae45b72c7d69a9d4e8",
+      "bytes": 14713,
+      "sha256": "43cdd4fd45ef93f1fa044d23eccba485e0189c4920860b2f6dee1e288462d9ca"
+    },
+    {
+      "path": "Tools/AnyEnginePort/run_live_provider_probe.py",
+      "gitBlob": "18f7c4de47b673ab51a252041e4610f7fb093e24",
+      "bytes": 17849,
+      "sha256": "ec2ebcbbf3a685d1c2868be2fc5e337c5a98b4b9e131c5a6e1c72e111e506cc4"
+    },
+    {
+      "path": "Tools/AnyEnginePort/verify_source_retention.py",
+      "gitBlob": "5b579e9bbb5a82981b5aef7d649f2caf88e998b6",
+      "bytes": 7239,
+      "sha256": "f69d6a465db0517c5b41143c9b54aa275ecc6cbc63de6e9d20bc074d98feabf0"
+    },
+    {
+      "path": "Tools/Hanlin/source.json",
+      "gitBlob": "0ac43dc444fa2234c2eb11fb9bebf129dbe4fb94",
+      "bytes": 339,
+      "sha256": "b0d78daee9e78ed6bf57ea5aabf19cfad4cf6b8335949ddd898345414da489a2"
+    }
+  ],
+  "provider": {
+    "gitHEAD": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+    "sourceBeforeMatchesAfter": true,
+    "committedFilesMatched": 92,
+    "generatedOrUntrackedManifestFiles": [],
+    "mismatches": [],
+    "dependencies": {
+      "TorahInspectorKit": {
+        "changedFiles": {},
+        "gitHEAD": "4e59e909dd22685bb46f9396bc57e5f8c627d773",
+        "sourceRelevantChanges": ""
+      },
+      "swift-asn1": {
+        "changedFiles": {},
+        "gitHEAD": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+        "sourceRelevantChanges": ""
+      },
+      "swift-crypto": {
+        "changedFiles": {},
+        "gitHEAD": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+        "sourceRelevantChanges": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,80 @@
+--- v8/internal/api/properties.go
++++ v9/internal/api/properties.go
+@@ -21,6 +21,7 @@
+ 
+ type PinkhaPropertiesSetResponse struct {
+ 	ModifyResult
++	ApplySeq          uint64          `json:"applySeq,omitempty"`
+ 	PropertiesVersion json.RawMessage `json:"propertiesVersion,omitempty"`
+ 	EngineStartedAt   string          `json:"engineStartedAt"`
+ }
+--- v8/internal/server/pinkha_property_condition.go
++++ v9/internal/server/pinkha_property_condition.go
+@@ -171,7 +171,7 @@
+ 		putFastjsonArena(arena)
+ 	}
+ 	return c.JSON(http.StatusOK, api.PinkhaPropertiesSetResponse{
+-		ModifyResult: modifyResultToAPI(result), PropertiesVersion: next,
++		ModifyResult: modifyResultToAPI(result), ApplySeq: result.ApplySeq, PropertiesVersion: next,
+ 		EngineStartedAt: d.startedAt.Format(time.RFC3339Nano),
+ 	})
+ }
+--- v8/internal/server/handlers_pinkha_property_cas_test.go
++++ v9/internal/server/handlers_pinkha_property_cas_test.go
+@@ -55,6 +55,7 @@
+ 	}
+ 	var receipt struct {
+ 		VersionID         string          `json:"versionId"`
++		ApplySeq          uint64          `json:"applySeq"`
+ 		EngineStartedAt   string          `json:"engineStartedAt"`
+ 		PropertiesVersion json.RawMessage `json:"propertiesVersion"`
+ 	}
+@@ -63,11 +64,35 @@
+ 	}
+ 	if receipt.VersionID == "" || receipt.EngineStartedAt != d.startedAt.Format(time.RFC3339Nano) || len(receipt.PropertiesVersion) == 0 {
+ 		t.Fatalf("missing bound receipt: %s", first.Body.String())
++	}
++	if receipt.ApplySeq <= pinkhaCapturedSequence(t, captured) {
++		t.Fatalf("missing or unadvanced accepted sequence: %s", first.Body.String())
++	}
++	appliedVersion, appliedRecord := pinkhaPropertiesSnapshot(t, e, sp.Id, oid)
++	if receipt.ApplySeq != pinkhaCapturedSequence(t, appliedRecord) {
++		t.Fatal("response sequence is not the applied properties row sequence")
++	}
++	var acceptedVersion, currentVersion any
++	if err := json.Unmarshal(receipt.PropertiesVersion, &acceptedVersion); err != nil {
++		t.Fatal(err)
++	}
++	if err := json.Unmarshal(appliedVersion, &currentVersion); err != nil {
++		t.Fatal(err)
++	}
++	if !reflect.DeepEqual(acceptedVersion, currentVersion) {
++		t.Fatal("response version is not bound to its accepted sequence")
+ 	}
+ 	back := doJSON(t, e, http.MethodPost, "/v1/spaces/"+sp.Id+"/properties/"+oid+"/set/any",
+ 		`{"patch":{"name":"A"}}`)
+ 	if back.Code != http.StatusOK {
+ 		t.Fatalf("native restore: %d %s", back.Code, back.Body.String())
++	}
++	var stockReceipt map[string]json.RawMessage
++	if err := json.Unmarshal(back.Body.Bytes(), &stockReceipt); err != nil {
++		t.Fatal(err)
++	}
++	if _, exists := stockReceipt["applySeq"]; exists {
++		t.Fatal("dedicated receipt field leaked into the unchanged stock API")
+ 	}
+ 	_, before := pinkhaPropertiesSnapshot(t, e, sp.Id, oid)
+ 	stale := doJSON(t, e, http.MethodPost, path, body)
+--- v8/internal/server/handlers_pinkha_property_noop_test.go
++++ v9/internal/server/handlers_pinkha_property_noop_test.go
+@@ -49,6 +49,10 @@
+ 			EngineStartedAt string   `json:"engineStartedAt"`
+ 		}
+ 		require.NoError(t, json.Unmarshal(result.Body.Bytes(), &receipt))
++		var wire map[string]json.RawMessage
++		require.NoError(t, json.Unmarshal(result.Body.Bytes(), &wire))
++		require.NotContains(t, wire, "applySeq", "a no-op has no new accepted sequence")
++		require.NotContains(t, wire, "propertiesVersion", "a no-op must not manufacture a write receipt")
+ 		require.Empty(t, receipt.ChangeID)
+ 		require.Empty(t, receipt.VersionID)
+ 		require.Zero(t, receipt.ApplySeq)

@@ -1,0 +1,31 @@
+--- prior/run_native_validation.py
++++ v8/run_native_validation.py
+@@ -43,15 +43,20 @@
+     return 'torah1|'+'|'.join(f'{len(p.encode("utf8"))}:{p}' for p in parts)
+ 
+ def source_manifest(repo):
+-    repo=Path(repo)
+-    def git(*args):return subprocess.check_output(['git','-C',str(repo),*args]).decode().strip()
+-    require(not git('diff','--name-only','HEAD','--','*.go','go.mod','go.sum'),'native source has uncommitted tracked changes')
+-    untracked=git('ls-files','--others','--exclude-standard','--','internal/**/*.go','handler/*.go','space/*.go')
+-    require(not untracked,'native source has uncommitted Go files')
++    # Frozen v9 deliberately has an existing parent commit plus a tested
++    # effective tree. Enforce all exact sealed build input bytes, including
++    # new Go files; never mislabel the parent as a clean v9 source commit.
++    pins_file=Path(__file__).with_name('source-pins.json')
++    require(digest(pins_file)=='3e7212537a718e298703a0654abcd07cb7eb68e2dcdec1b09da960468062ffad','frozen source pin file changed')
++    pins=json.loads(pins_file.read_text(encoding='utf8'))
++    repo=Path(repo).resolve();entry=pins['roots'].get(str(repo))
++    require(entry is not None,'unrecognized frozen native source root')
++    def git(*args):return subprocess.check_output(['git','--no-optional-locks','-C',str(repo),*args],encoding='utf8',timeout=30).strip()
+     head=git('rev-parse','HEAD')
+-    paths=git('ls-files','--','*.go','go.mod','go.sum').splitlines()
+-    files={name:digest(repo/name) for name in paths}
+-    return {'commit':head,'files':files,'manifestSHA256':hashlib.sha256(json.dumps(files,sort_keys=True,separators=(',',':')).encode()).hexdigest()}
++    paths=sorted({p for p in git('ls-files','--cached','--others','--exclude-standard').splitlines() if p.endswith('.go') or p in ('go.mod','go.sum')})
++    files={p:digest(repo/p) for p in paths}
++    require(head==entry['expected']['gitHEAD'] and files==entry['expected']['files'],'frozen effective native source differs from exact tested build')
++    return {'commit':head,'testedEffectiveTree':entry['testedEffectiveTree'],'workingTreeIncludesUncommittedChanges':True,'workingTreeRevision':'v9','nativeManifestSHA256':pins['nativeManifestSHA256'],'files':files,'manifestSHA256':hashlib.sha256(json.dumps(files,sort_keys=True,separators=(',',':')).encode()).hexdigest()}
+ 
+ class NativeRepo:
+     def __init__(self,peer,space,account,root):self.peer,self.space,self.account,self.root=peer,space,account,root;self.base='/v1/spaces/'+space

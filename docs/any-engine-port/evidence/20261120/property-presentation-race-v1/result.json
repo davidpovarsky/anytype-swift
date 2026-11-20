@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "status": "SOURCE_FIX_AND_SYNTAX_PASS_APPLE_EXECUTION_PENDING",
+  "sourceBaseCommit": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+  "createdAt": "2026-11-20T04:37:14.651608+00:00",
+  "sourceStable": true,
+  "sources": {
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertyPresentation.swift": "c5935470e1c515461ad11b764e0169297eeb645a3ba4a522d0a7111070437dfb",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift": "93b40658f3471b4b71c8ab23e49b780217cedcbf9189e0e92a710cd53f4cb21c",
+    "Modules/PinkhaAnyUI/Package.swift": "215ed248ed5e8e07da57eb477fd34af841f94caf7d27ca319e74e82475073302"
+  },
+  "actualValidation": {
+    "swiftSyntaxFiles": 3,
+    "swiftSyntaxExitCode": 0,
+    "swiftSyntaxSeconds": 0.766,
+    "diffCheckExitCode": 0,
+    "newTestsExecuted": 0
+  },
+  "newActualModelTestMethods": [
+    "delayedReviewCannotRestoreOldTypeOrEraseAcknowledgedUndo",
+    "delayedReadFailureCannotReplaceAcknowledgedWriteFeedbackOrUndo",
+    "delayedRefreshCannotRevealAnAcknowledgedHiddenProperty",
+    "refreshDuringWriteDoesNotDispatchOrReportMissingWorkspace",
+    "supersededReadFailureCannotClearNewerReadSpinnerOrFeedback",
+    "oldReadCannotPublishOrClearLoadingAfterOwnerReactivation",
+    "oldWriteCompletionCannotClearNewOwnerSavingStateOrPublishFailure"
+  ],
+  "defect": "A read started before a Type/visibility write could publish after acknowledged write receipt, restoring stale state or erasing the new conditional Undo. An old write defer could clear saving state after owner reactivation.",
+  "fix": "Write start and accepted receipt invalidate read publication; read and write success/error/defer use original owner/request tokens. Refresh refuses during save. Deactivation keeps in-flight intent review-required. Internal operation bundle preserves exact native session/store paths and weak document ownership; every operation closure type is MainActor.",
+  "testBoundary": "Tests inject suspended typed Host results into the actual AnyNativePropertyPresentation; real materialization and pure prepare/Undo contracts are reused. This is a presentation-ordering test seam, not native HTTP, authority, UI-mounted or end-to-end proof.",
+  "testDeadline": "Each start rendezvous has a cancellation-aware 10-second failure deadline. Suite tests have one-minute limits; fixture cleanup removes and resumes all pending continuations.",
+  "pending": [
+    "Apple SwiftUI semantic compilation",
+    "Execution of the seven presentation interleaving tests on Apple",
+    "Mounted native app acceptance"
+  ],
+  "originalSourceSHA256": "6ce5b04eec8e0bd211fb3090d0c6b9f0ed0759b3f1879519c5b78e9be801513e",
+  "originalDefectRuntimeReproduction": "Not executed; exact original source is archived and the race was independently reviewed.",
+  "packagingCorrection": "The initial archive regex counted the helper invoke() as a test. The preserved preflight log records that packaging failure. The final inventory requires the @Test annotation and lists exactly seven tests; no compiler/test result was changed."
+}

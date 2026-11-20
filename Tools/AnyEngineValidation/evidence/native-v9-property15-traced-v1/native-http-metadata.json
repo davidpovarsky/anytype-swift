@@ -1,0 +1,5178 @@
+{
+  "status": "READ_ONLY_METADATA_CORRELATION",
+  "scope": "Existing completed native HTTP metadata and exact trace pair only; no retry, request, fixture write, transport change, or native instrumentation",
+  "clientTraceSHA256": "f7050aa7de1fa05144cff4cd4b76acbe8501fa411b4ebb27f21c79659784f27c",
+  "clientTracePath": "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\native-v9-property15-traced-v1\\run\\stderr.log",
+  "clientFailurePair": [
+    {
+      "elapsedMs": 0,
+      "id": "737A8849-8A6B-454E-B66F-E2FE6F56A64E",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "begin",
+      "timestampUnixMs": 1795150230560
+    },
+    {
+      "elapsedMs": 30016,
+      "errorCode": -1001,
+      "errorDomain": "NSURLErrorDomain",
+      "id": "737A8849-8A6B-454E-B66F-E2FE6F56A64E",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "error",
+      "timestampUnixMs": 1795150260573
+    }
+  ],
+  "clientActiveAtFailedBegin": [
+    {
+      "id": "4FFF29D0-EB9A-4E7C-9F50-47196FA260CA",
+      "method": "GET",
+      "path": "/v1/auth",
+      "timestampUnixMs": 1795150230558
+    },
+    {
+      "id": "B75DEBF1-C6B6-4D83-BEAD-983A8767C1F2",
+      "method": "GET",
+      "path": "/v1/auth",
+      "timestampUnixMs": 1795150230558
+    },
+    {
+      "id": "6238E13B-688F-4783-86F4-788A17ED8D63",
+      "method": "GET",
+      "path": "/v1/auth",
+      "timestampUnixMs": 1795150230559
+    },
+    {
+      "id": "A2B4260E-A610-42AD-BF09-CB292D827ECA",
+      "method": "GET",
+      "path": "/v1/auth",
+      "timestampUnixMs": 1795150230560
+    },
+    {
+      "id": "5D158BCD-37B7-4AC3-B525-058AEAFEFD6E",
+      "method": "GET",
+      "path": "/v1/auth",
+      "timestampUnixMs": 1795150230560
+    },
+    {
+      "id": "431B0CC7-5C42-4B06-9D19-9152950F1E75",
+      "method": "GET",
+      "path": "/v1/auth",
+      "timestampUnixMs": 1795150230560
+    },
+    {
+      "id": "737A8849-8A6B-454E-B66F-E2FE6F56A64E",
+      "method": "GET",
+      "path": "/v1/auth",
+      "timestampUnixMs": 1795150230560
+    }
+  ],
+  "sourceLogs": [
+    {
+      "path": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\peer-native-v9-property-receipts-v1\\stdout.private.log",
+      "bytesRead": 105,
+      "readSnapshotSHA256": "0a36bdaf6671b640735b81abd3c020e5d9c8adceb31da5d24bfc18fe8e972dbd",
+      "rawContentArchived": false
+    },
+    {
+      "path": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\peer-native-v9-property-receipts-v1\\stderr.private.log",
+      "bytesRead": 735973,
+      "readSnapshotSHA256": "06035a934f3f77f3f086291af30faa91165d67bf495030955b80ab987a39442c",
+      "rawContentArchived": false
+    }
+  ],
+  "nativeAuthCompletionCandidates": [
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.557+0200",
+      "timestampUnixMs": 1795150230557
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.557+0200",
+      "timestampUnixMs": 1795150230557
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.557+0200",
+      "timestampUnixMs": 1795150230557
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.560+0200",
+      "timestampUnixMs": 1795150230560
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.561+0200",
+      "timestampUnixMs": 1795150230561
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.562+0200",
+      "timestampUnixMs": 1795150230562
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.562+0200",
+      "timestampUnixMs": 1795150230562
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.566+0200",
+      "timestampUnixMs": 1795150230566
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.568+0200",
+      "timestampUnixMs": 1795150230568
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.569+0200",
+      "timestampUnixMs": 1795150230569
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.571+0200",
+      "timestampUnixMs": 1795150230571
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.572+0200",
+      "timestampUnixMs": 1795150230572
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.572+0200",
+      "timestampUnixMs": 1795150230572
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.572+0200",
+      "timestampUnixMs": 1795150230572
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.578+0200",
+      "timestampUnixMs": 1795150230578
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.579+0200",
+      "timestampUnixMs": 1795150230579
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.583+0200",
+      "timestampUnixMs": 1795150230583
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.583+0200",
+      "timestampUnixMs": 1795150230583
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.583+0200",
+      "timestampUnixMs": 1795150230583
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.585+0200",
+      "timestampUnixMs": 1795150230585
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.585+0200",
+      "timestampUnixMs": 1795150230585
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "523.7\u00b5s",
+      "ts": "2026-11-20T06:50:30.588+0200",
+      "timestampUnixMs": 1795150230588
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.588+0200",
+      "timestampUnixMs": 1795150230588
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.589+0200",
+      "timestampUnixMs": 1795150230589
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.590+0200",
+      "timestampUnixMs": 1795150230590
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.590+0200",
+      "timestampUnixMs": 1795150230590
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.593+0200",
+      "timestampUnixMs": 1795150230593
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.598+0200",
+      "timestampUnixMs": 1795150230598
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.599+0200",
+      "timestampUnixMs": 1795150230599
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.599+0200",
+      "timestampUnixMs": 1795150230599
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.599+0200",
+      "timestampUnixMs": 1795150230599
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.601+0200",
+      "timestampUnixMs": 1795150230601
+    }
+  ],
+  "nativeRows": [
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.575+0200",
+      "timestampUnixMs": 1795150229575
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/members/me",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.581+0200",
+      "timestampUnixMs": 1795150229581
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.584+0200",
+      "timestampUnixMs": 1795150229584
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.590+0200",
+      "timestampUnixMs": 1795150229590
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.592+0200",
+      "timestampUnixMs": 1795150229592
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.594+0200",
+      "timestampUnixMs": 1795150229594
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.596+0200",
+      "timestampUnixMs": 1795150229596
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-targets/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "527.5\u00b5s",
+      "ts": "2026-11-20T06:50:29.599+0200",
+      "timestampUnixMs": 1795150229599
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.601+0200",
+      "timestampUnixMs": 1795150229601
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.603+0200",
+      "timestampUnixMs": 1795150229603
+    },
+    {
+      "method": "POST",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/query",
+      "status": 200,
+      "duration": "1.5474ms",
+      "ts": "2026-11-20T06:50:29.606+0200",
+      "timestampUnixMs": 1795150229606
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "551.3\u00b5s",
+      "ts": "2026-11-20T06:50:29.608+0200",
+      "timestampUnixMs": 1795150229608
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.611+0200",
+      "timestampUnixMs": 1795150229611
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.612+0200",
+      "timestampUnixMs": 1795150229612
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.615+0200",
+      "timestampUnixMs": 1795150229615
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "525.1\u00b5s",
+      "ts": "2026-11-20T06:50:29.617+0200",
+      "timestampUnixMs": 1795150229617
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-targets/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "1.0581ms",
+      "ts": "2026-11-20T06:50:29.620+0200",
+      "timestampUnixMs": 1795150229620
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.622+0200",
+      "timestampUnixMs": 1795150229622
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.624+0200",
+      "timestampUnixMs": 1795150229624
+    },
+    {
+      "method": "POST",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/query",
+      "status": 200,
+      "duration": "697\u00b5s",
+      "ts": "2026-11-20T06:50:29.628+0200",
+      "timestampUnixMs": 1795150229628
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.631+0200",
+      "timestampUnixMs": 1795150229631
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.634+0200",
+      "timestampUnixMs": 1795150229634
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.637+0200",
+      "timestampUnixMs": 1795150229637
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.640+0200",
+      "timestampUnixMs": 1795150229640
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.642+0200",
+      "timestampUnixMs": 1795150229642
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.645+0200",
+      "timestampUnixMs": 1795150229645
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.646+0200",
+      "timestampUnixMs": 1795150229646
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.650+0200",
+      "timestampUnixMs": 1795150229650
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.652+0200",
+      "timestampUnixMs": 1795150229652
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.654+0200",
+      "timestampUnixMs": 1795150229654
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.655+0200",
+      "timestampUnixMs": 1795150229655
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.658+0200",
+      "timestampUnixMs": 1795150229658
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.660+0200",
+      "timestampUnixMs": 1795150229660
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.661+0200",
+      "timestampUnixMs": 1795150229661
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "554.1\u00b5s",
+      "ts": "2026-11-20T06:50:29.664+0200",
+      "timestampUnixMs": 1795150229664
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.666+0200",
+      "timestampUnixMs": 1795150229666
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.668+0200",
+      "timestampUnixMs": 1795150229668
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.670+0200",
+      "timestampUnixMs": 1795150229670
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.672+0200",
+      "timestampUnixMs": 1795150229672
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.675+0200",
+      "timestampUnixMs": 1795150229675
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.676+0200",
+      "timestampUnixMs": 1795150229676
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.679+0200",
+      "timestampUnixMs": 1795150229679
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.680+0200",
+      "timestampUnixMs": 1795150229680
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-targets/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "708.6\u00b5s",
+      "ts": "2026-11-20T06:50:29.683+0200",
+      "timestampUnixMs": 1795150229683
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.685+0200",
+      "timestampUnixMs": 1795150229685
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.687+0200",
+      "timestampUnixMs": 1795150229687
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.688+0200",
+      "timestampUnixMs": 1795150229688
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.690+0200",
+      "timestampUnixMs": 1795150229690
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.692+0200",
+      "timestampUnixMs": 1795150229692
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.694+0200",
+      "timestampUnixMs": 1795150229694
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.696+0200",
+      "timestampUnixMs": 1795150229696
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.698+0200",
+      "timestampUnixMs": 1795150229698
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/properties/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "653.3\u00b5s",
+      "ts": "2026-11-20T06:50:29.701+0200",
+      "timestampUnixMs": 1795150229701
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.704+0200",
+      "timestampUnixMs": 1795150229704
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.707+0200",
+      "timestampUnixMs": 1795150229707
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.709+0200",
+      "timestampUnixMs": 1795150229709
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.711+0200",
+      "timestampUnixMs": 1795150229711
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.713+0200",
+      "timestampUnixMs": 1795150229713
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/types/any/properties",
+      "status": 200,
+      "duration": "507.1\u00b5s",
+      "ts": "2026-11-20T06:50:29.716+0200",
+      "timestampUnixMs": 1795150229716
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.719+0200",
+      "timestampUnixMs": 1795150229719
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.723+0200",
+      "timestampUnixMs": 1795150229723
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.724+0200",
+      "timestampUnixMs": 1795150229724
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.727+0200",
+      "timestampUnixMs": 1795150229727
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.729+0200",
+      "timestampUnixMs": 1795150229729
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/types/page/properties",
+      "status": 200,
+      "duration": "1.0113ms",
+      "ts": "2026-11-20T06:50:29.731+0200",
+      "timestampUnixMs": 1795150229731
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.733+0200",
+      "timestampUnixMs": 1795150229733
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.735+0200",
+      "timestampUnixMs": 1795150229735
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.737+0200",
+      "timestampUnixMs": 1795150229737
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.739+0200",
+      "timestampUnixMs": 1795150229739
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.740+0200",
+      "timestampUnixMs": 1795150229740
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/properties/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.743+0200",
+      "timestampUnixMs": 1795150229743
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.746+0200",
+      "timestampUnixMs": 1795150229746
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.748+0200",
+      "timestampUnixMs": 1795150229748
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.751+0200",
+      "timestampUnixMs": 1795150229751
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.753+0200",
+      "timestampUnixMs": 1795150229753
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.755+0200",
+      "timestampUnixMs": 1795150229755
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.757+0200",
+      "timestampUnixMs": 1795150229757
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.759+0200",
+      "timestampUnixMs": 1795150229759
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.761+0200",
+      "timestampUnixMs": 1795150229761
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-targets/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "507.2\u00b5s",
+      "ts": "2026-11-20T06:50:29.764+0200",
+      "timestampUnixMs": 1795150229764
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.767+0200",
+      "timestampUnixMs": 1795150229767
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.769+0200",
+      "timestampUnixMs": 1795150229769
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "538.1\u00b5s",
+      "ts": "2026-11-20T06:50:29.771+0200",
+      "timestampUnixMs": 1795150229771
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.773+0200",
+      "timestampUnixMs": 1795150229773
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.775+0200",
+      "timestampUnixMs": 1795150229775
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.777+0200",
+      "timestampUnixMs": 1795150229777
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.778+0200",
+      "timestampUnixMs": 1795150229778
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.784+0200",
+      "timestampUnixMs": 1795150229784
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.786+0200",
+      "timestampUnixMs": 1795150229786
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.787+0200",
+      "timestampUnixMs": 1795150229787
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.789+0200",
+      "timestampUnixMs": 1795150229789
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/members/me",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.791+0200",
+      "timestampUnixMs": 1795150229791
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.793+0200",
+      "timestampUnixMs": 1795150229793
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.795+0200",
+      "timestampUnixMs": 1795150229795
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.796+0200",
+      "timestampUnixMs": 1795150229796
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.798+0200",
+      "timestampUnixMs": 1795150229798
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.800+0200",
+      "timestampUnixMs": 1795150229800
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-targets/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "644.5\u00b5s",
+      "ts": "2026-11-20T06:50:29.802+0200",
+      "timestampUnixMs": 1795150229802
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.803+0200",
+      "timestampUnixMs": 1795150229803
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.806+0200",
+      "timestampUnixMs": 1795150229806
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.807+0200",
+      "timestampUnixMs": 1795150229807
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.810+0200",
+      "timestampUnixMs": 1795150229810
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.811+0200",
+      "timestampUnixMs": 1795150229811
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/objects/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "574.3\u00b5s",
+      "ts": "2026-11-20T06:50:29.815+0200",
+      "timestampUnixMs": 1795150229815
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.818+0200",
+      "timestampUnixMs": 1795150229818
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.820+0200",
+      "timestampUnixMs": 1795150229820
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.822+0200",
+      "timestampUnixMs": 1795150229822
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.824+0200",
+      "timestampUnixMs": 1795150229824
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.825+0200",
+      "timestampUnixMs": 1795150229825
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/objects/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m/editor/editor_blocks/markdown",
+      "status": 200,
+      "duration": "1.1017ms",
+      "ts": "2026-11-20T06:50:29.829+0200",
+      "timestampUnixMs": 1795150229829
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.832+0200",
+      "timestampUnixMs": 1795150229832
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.834+0200",
+      "timestampUnixMs": 1795150229834
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.835+0200",
+      "timestampUnixMs": 1795150229835
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.837+0200",
+      "timestampUnixMs": 1795150229837
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.839+0200",
+      "timestampUnixMs": 1795150229839
+    },
+    {
+      "method": "POST",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/query",
+      "status": 200,
+      "duration": "19.9314ms",
+      "ts": "2026-11-20T06:50:29.860+0200",
+      "timestampUnixMs": 1795150229860
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.862+0200",
+      "timestampUnixMs": 1795150229862
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.864+0200",
+      "timestampUnixMs": 1795150229864
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.866+0200",
+      "timestampUnixMs": 1795150229866
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.868+0200",
+      "timestampUnixMs": 1795150229868
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.869+0200",
+      "timestampUnixMs": 1795150229869
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/objects/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m/editor/editor_blocks/markdown",
+      "status": 200,
+      "duration": "521\u00b5s",
+      "ts": "2026-11-20T06:50:29.871+0200",
+      "timestampUnixMs": 1795150229871
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.872+0200",
+      "timestampUnixMs": 1795150229872
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.874+0200",
+      "timestampUnixMs": 1795150229874
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.876+0200",
+      "timestampUnixMs": 1795150229876
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.877+0200",
+      "timestampUnixMs": 1795150229877
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.879+0200",
+      "timestampUnixMs": 1795150229879
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/objects/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.879+0200",
+      "timestampUnixMs": 1795150229879
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.883+0200",
+      "timestampUnixMs": 1795150229883
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.887+0200",
+      "timestampUnixMs": 1795150229887
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/members/me",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.888+0200",
+      "timestampUnixMs": 1795150229888
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.890+0200",
+      "timestampUnixMs": 1795150229890
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.892+0200",
+      "timestampUnixMs": 1795150229892
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.894+0200",
+      "timestampUnixMs": 1795150229894
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.896+0200",
+      "timestampUnixMs": 1795150229896
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.898+0200",
+      "timestampUnixMs": 1795150229898
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-targets/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "730.1\u00b5s",
+      "ts": "2026-11-20T06:50:29.900+0200",
+      "timestampUnixMs": 1795150229900
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.902+0200",
+      "timestampUnixMs": 1795150229902
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.904+0200",
+      "timestampUnixMs": 1795150229904
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.905+0200",
+      "timestampUnixMs": 1795150229905
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.908+0200",
+      "timestampUnixMs": 1795150229908
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.910+0200",
+      "timestampUnixMs": 1795150229910
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.911+0200",
+      "timestampUnixMs": 1795150229911
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.913+0200",
+      "timestampUnixMs": 1795150229913
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.915+0200",
+      "timestampUnixMs": 1795150229915
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.916+0200",
+      "timestampUnixMs": 1795150229916
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.918+0200",
+      "timestampUnixMs": 1795150229918
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.920+0200",
+      "timestampUnixMs": 1795150229920
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.921+0200",
+      "timestampUnixMs": 1795150229921
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.923+0200",
+      "timestampUnixMs": 1795150229923
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.925+0200",
+      "timestampUnixMs": 1795150229925
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.926+0200",
+      "timestampUnixMs": 1795150229926
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.927+0200",
+      "timestampUnixMs": 1795150229927
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.929+0200",
+      "timestampUnixMs": 1795150229929
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.931+0200",
+      "timestampUnixMs": 1795150229931
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.932+0200",
+      "timestampUnixMs": 1795150229932
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.934+0200",
+      "timestampUnixMs": 1795150229934
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.936+0200",
+      "timestampUnixMs": 1795150229936
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.938+0200",
+      "timestampUnixMs": 1795150229938
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.939+0200",
+      "timestampUnixMs": 1795150229939
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.941+0200",
+      "timestampUnixMs": 1795150229941
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.943+0200",
+      "timestampUnixMs": 1795150229943
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.945+0200",
+      "timestampUnixMs": 1795150229945
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-targets/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "514.6\u00b5s",
+      "ts": "2026-11-20T06:50:29.947+0200",
+      "timestampUnixMs": 1795150229947
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.949+0200",
+      "timestampUnixMs": 1795150229949
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.950+0200",
+      "timestampUnixMs": 1795150229950
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.952+0200",
+      "timestampUnixMs": 1795150229952
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.954+0200",
+      "timestampUnixMs": 1795150229954
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.955+0200",
+      "timestampUnixMs": 1795150229955
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.956+0200",
+      "timestampUnixMs": 1795150229956
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.958+0200",
+      "timestampUnixMs": 1795150229958
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.959+0200",
+      "timestampUnixMs": 1795150229959
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.961+0200",
+      "timestampUnixMs": 1795150229961
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.963+0200",
+      "timestampUnixMs": 1795150229963
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.965+0200",
+      "timestampUnixMs": 1795150229965
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/bafyreicgyxj7ztqoud3v3rob6avltlym6tpq7qmsqivy57s5dledxddyae",
+      "status": 200,
+      "duration": "1.5186ms",
+      "ts": "2026-11-20T06:50:29.967+0200",
+      "timestampUnixMs": 1795150229967
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.968+0200",
+      "timestampUnixMs": 1795150229968
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.969+0200",
+      "timestampUnixMs": 1795150229969
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.970+0200",
+      "timestampUnixMs": 1795150229970
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "409.6\u00b5s",
+      "ts": "2026-11-20T06:50:29.973+0200",
+      "timestampUnixMs": 1795150229973
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.974+0200",
+      "timestampUnixMs": 1795150229974
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.976+0200",
+      "timestampUnixMs": 1795150229976
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.977+0200",
+      "timestampUnixMs": 1795150229977
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.979+0200",
+      "timestampUnixMs": 1795150229979
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/properties/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "508.6\u00b5s",
+      "ts": "2026-11-20T06:50:29.981+0200",
+      "timestampUnixMs": 1795150229981
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.983+0200",
+      "timestampUnixMs": 1795150229983
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.985+0200",
+      "timestampUnixMs": 1795150229985
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.986+0200",
+      "timestampUnixMs": 1795150229986
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.987+0200",
+      "timestampUnixMs": 1795150229987
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.989+0200",
+      "timestampUnixMs": 1795150229989
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/types/any/properties",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.991+0200",
+      "timestampUnixMs": 1795150229991
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.993+0200",
+      "timestampUnixMs": 1795150229993
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.996+0200",
+      "timestampUnixMs": 1795150229996
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:29.997+0200",
+      "timestampUnixMs": 1795150229997
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.000+0200",
+      "timestampUnixMs": 1795150230000
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.001+0200",
+      "timestampUnixMs": 1795150230001
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.003+0200",
+      "timestampUnixMs": 1795150230003
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.004+0200",
+      "timestampUnixMs": 1795150230004
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.005+0200",
+      "timestampUnixMs": 1795150230005
+    },
+    {
+      "method": "POST",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/properties/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m/set/any",
+      "status": 200,
+      "duration": "5.2845ms",
+      "ts": "2026-11-20T06:50:30.011+0200",
+      "timestampUnixMs": 1795150230011
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.014+0200",
+      "timestampUnixMs": 1795150230014
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.015+0200",
+      "timestampUnixMs": 1795150230015
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.017+0200",
+      "timestampUnixMs": 1795150230017
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.017+0200",
+      "timestampUnixMs": 1795150230017
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.019+0200",
+      "timestampUnixMs": 1795150230019
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "801.3\u00b5s",
+      "ts": "2026-11-20T06:50:30.021+0200",
+      "timestampUnixMs": 1795150230021
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.022+0200",
+      "timestampUnixMs": 1795150230022
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.023+0200",
+      "timestampUnixMs": 1795150230023
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.025+0200",
+      "timestampUnixMs": 1795150230025
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.026+0200",
+      "timestampUnixMs": 1795150230026
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.028+0200",
+      "timestampUnixMs": 1795150230028
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.029+0200",
+      "timestampUnixMs": 1795150230029
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.031+0200",
+      "timestampUnixMs": 1795150230031
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.032+0200",
+      "timestampUnixMs": 1795150230032
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.034+0200",
+      "timestampUnixMs": 1795150230034
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.036+0200",
+      "timestampUnixMs": 1795150230036
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.038+0200",
+      "timestampUnixMs": 1795150230038
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.038+0200",
+      "timestampUnixMs": 1795150230038
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.038+0200",
+      "timestampUnixMs": 1795150230038
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.040+0200",
+      "timestampUnixMs": 1795150230040
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.041+0200",
+      "timestampUnixMs": 1795150230041
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.042+0200",
+      "timestampUnixMs": 1795150230042
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.042+0200",
+      "timestampUnixMs": 1795150230042
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.043+0200",
+      "timestampUnixMs": 1795150230043
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/collections",
+      "status": 200,
+      "duration": "649\u00b5s",
+      "ts": "2026-11-20T06:50:30.044+0200",
+      "timestampUnixMs": 1795150230044
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/types",
+      "status": 200,
+      "duration": "554.9\u00b5s",
+      "ts": "2026-11-20T06:50:30.046+0200",
+      "timestampUnixMs": 1795150230046
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.047+0200",
+      "timestampUnixMs": 1795150230047
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.048+0200",
+      "timestampUnixMs": 1795150230048
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.051+0200",
+      "timestampUnixMs": 1795150230051
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.052+0200",
+      "timestampUnixMs": 1795150230052
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.052+0200",
+      "timestampUnixMs": 1795150230052
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.052+0200",
+      "timestampUnixMs": 1795150230052
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.054+0200",
+      "timestampUnixMs": 1795150230054
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.054+0200",
+      "timestampUnixMs": 1795150230054
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.054+0200",
+      "timestampUnixMs": 1795150230054
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.057+0200",
+      "timestampUnixMs": 1795150230057
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.057+0200",
+      "timestampUnixMs": 1795150230057
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.057+0200",
+      "timestampUnixMs": 1795150230057
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.057+0200",
+      "timestampUnixMs": 1795150230057
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "787.6\u00b5s",
+      "ts": "2026-11-20T06:50:30.060+0200",
+      "timestampUnixMs": 1795150230060
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.060+0200",
+      "timestampUnixMs": 1795150230060
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.062+0200",
+      "timestampUnixMs": 1795150230062
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.062+0200",
+      "timestampUnixMs": 1795150230062
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.062+0200",
+      "timestampUnixMs": 1795150230062
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.063+0200",
+      "timestampUnixMs": 1795150230063
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.064+0200",
+      "timestampUnixMs": 1795150230064
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.065+0200",
+      "timestampUnixMs": 1795150230065
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.065+0200",
+      "timestampUnixMs": 1795150230065
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.066+0200",
+      "timestampUnixMs": 1795150230066
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.066+0200",
+      "timestampUnixMs": 1795150230066
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.067+0200",
+      "timestampUnixMs": 1795150230067
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.068+0200",
+      "timestampUnixMs": 1795150230068
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.068+0200",
+      "timestampUnixMs": 1795150230068
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.069+0200",
+      "timestampUnixMs": 1795150230069
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.069+0200",
+      "timestampUnixMs": 1795150230069
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.070+0200",
+      "timestampUnixMs": 1795150230070
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.070+0200",
+      "timestampUnixMs": 1795150230070
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.070+0200",
+      "timestampUnixMs": 1795150230070
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.072+0200",
+      "timestampUnixMs": 1795150230072
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.072+0200",
+      "timestampUnixMs": 1795150230072
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.073+0200",
+      "timestampUnixMs": 1795150230073
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "554.3\u00b5s",
+      "ts": "2026-11-20T06:50:30.074+0200",
+      "timestampUnixMs": 1795150230074
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.077+0200",
+      "timestampUnixMs": 1795150230077
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.077+0200",
+      "timestampUnixMs": 1795150230077
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.077+0200",
+      "timestampUnixMs": 1795150230077
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.078+0200",
+      "timestampUnixMs": 1795150230078
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.079+0200",
+      "timestampUnixMs": 1795150230079
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.079+0200",
+      "timestampUnixMs": 1795150230079
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "1.1575ms",
+      "ts": "2026-11-20T06:50:30.080+0200",
+      "timestampUnixMs": 1795150230080
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.080+0200",
+      "timestampUnixMs": 1795150230080
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.081+0200",
+      "timestampUnixMs": 1795150230081
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.081+0200",
+      "timestampUnixMs": 1795150230081
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.083+0200",
+      "timestampUnixMs": 1795150230083
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.083+0200",
+      "timestampUnixMs": 1795150230083
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.084+0200",
+      "timestampUnixMs": 1795150230084
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.084+0200",
+      "timestampUnixMs": 1795150230084
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.086+0200",
+      "timestampUnixMs": 1795150230086
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/any",
+      "status": 200,
+      "duration": "737.2\u00b5s",
+      "ts": "2026-11-20T06:50:30.087+0200",
+      "timestampUnixMs": 1795150230087
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/dataview",
+      "status": 200,
+      "duration": "526.8\u00b5s",
+      "ts": "2026-11-20T06:50:30.088+0200",
+      "timestampUnixMs": 1795150230088
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/bafyreicgyxj7ztqoud3v3rob6avltlym6tpq7qmsqivy57s5dledxddyae",
+      "status": 200,
+      "duration": "1.1639ms",
+      "ts": "2026-11-20T06:50:30.088+0200",
+      "timestampUnixMs": 1795150230088
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/type",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.088+0200",
+      "timestampUnixMs": 1795150230088
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/spaceIndex",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.088+0200",
+      "timestampUnixMs": 1795150230088
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/collection",
+      "status": 200,
+      "duration": "1.1435ms",
+      "ts": "2026-11-20T06:50:30.091+0200",
+      "timestampUnixMs": 1795150230091
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/page",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.091+0200",
+      "timestampUnixMs": 1795150230091
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.091+0200",
+      "timestampUnixMs": 1795150230091
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.092+0200",
+      "timestampUnixMs": 1795150230092
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.093+0200",
+      "timestampUnixMs": 1795150230093
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.094+0200",
+      "timestampUnixMs": 1795150230094
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.095+0200",
+      "timestampUnixMs": 1795150230095
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.096+0200",
+      "timestampUnixMs": 1795150230096
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.096+0200",
+      "timestampUnixMs": 1795150230096
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.097+0200",
+      "timestampUnixMs": 1795150230097
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.097+0200",
+      "timestampUnixMs": 1795150230097
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.098+0200",
+      "timestampUnixMs": 1795150230098
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.098+0200",
+      "timestampUnixMs": 1795150230098
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.099+0200",
+      "timestampUnixMs": 1795150230099
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.099+0200",
+      "timestampUnixMs": 1795150230099
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.099+0200",
+      "timestampUnixMs": 1795150230099
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.101+0200",
+      "timestampUnixMs": 1795150230101
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.101+0200",
+      "timestampUnixMs": 1795150230101
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.102+0200",
+      "timestampUnixMs": 1795150230102
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "512.7\u00b5s",
+      "ts": "2026-11-20T06:50:30.102+0200",
+      "timestampUnixMs": 1795150230102
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.103+0200",
+      "timestampUnixMs": 1795150230103
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.103+0200",
+      "timestampUnixMs": 1795150230103
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.103+0200",
+      "timestampUnixMs": 1795150230103
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.104+0200",
+      "timestampUnixMs": 1795150230104
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "779.3\u00b5s",
+      "ts": "2026-11-20T06:50:30.105+0200",
+      "timestampUnixMs": 1795150230105
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.105+0200",
+      "timestampUnixMs": 1795150230105
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.105+0200",
+      "timestampUnixMs": 1795150230105
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.106+0200",
+      "timestampUnixMs": 1795150230106
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.107+0200",
+      "timestampUnixMs": 1795150230107
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.107+0200",
+      "timestampUnixMs": 1795150230107
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.110+0200",
+      "timestampUnixMs": 1795150230110
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.111+0200",
+      "timestampUnixMs": 1795150230111
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.113+0200",
+      "timestampUnixMs": 1795150230113
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.115+0200",
+      "timestampUnixMs": 1795150230115
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.116+0200",
+      "timestampUnixMs": 1795150230116
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.117+0200",
+      "timestampUnixMs": 1795150230117
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.119+0200",
+      "timestampUnixMs": 1795150230119
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.121+0200",
+      "timestampUnixMs": 1795150230121
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.122+0200",
+      "timestampUnixMs": 1795150230122
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.124+0200",
+      "timestampUnixMs": 1795150230124
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.125+0200",
+      "timestampUnixMs": 1795150230125
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.127+0200",
+      "timestampUnixMs": 1795150230127
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.128+0200",
+      "timestampUnixMs": 1795150230128
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.130+0200",
+      "timestampUnixMs": 1795150230130
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.132+0200",
+      "timestampUnixMs": 1795150230132
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.134+0200",
+      "timestampUnixMs": 1795150230134
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.135+0200",
+      "timestampUnixMs": 1795150230135
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.138+0200",
+      "timestampUnixMs": 1795150230138
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.140+0200",
+      "timestampUnixMs": 1795150230140
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-targets/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "1.013ms",
+      "ts": "2026-11-20T06:50:30.142+0200",
+      "timestampUnixMs": 1795150230142
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.144+0200",
+      "timestampUnixMs": 1795150230144
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.145+0200",
+      "timestampUnixMs": 1795150230145
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.147+0200",
+      "timestampUnixMs": 1795150230147
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.148+0200",
+      "timestampUnixMs": 1795150230148
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.150+0200",
+      "timestampUnixMs": 1795150230150
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.151+0200",
+      "timestampUnixMs": 1795150230151
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.153+0200",
+      "timestampUnixMs": 1795150230153
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.155+0200",
+      "timestampUnixMs": 1795150230155
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/properties/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "524.8\u00b5s",
+      "ts": "2026-11-20T06:50:30.157+0200",
+      "timestampUnixMs": 1795150230157
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.159+0200",
+      "timestampUnixMs": 1795150230159
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.160+0200",
+      "timestampUnixMs": 1795150230160
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.161+0200",
+      "timestampUnixMs": 1795150230161
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.164+0200",
+      "timestampUnixMs": 1795150230164
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.165+0200",
+      "timestampUnixMs": 1795150230165
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/types/any/properties",
+      "status": 200,
+      "duration": "561.7\u00b5s",
+      "ts": "2026-11-20T06:50:30.167+0200",
+      "timestampUnixMs": 1795150230167
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.170+0200",
+      "timestampUnixMs": 1795150230170
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.173+0200",
+      "timestampUnixMs": 1795150230173
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.175+0200",
+      "timestampUnixMs": 1795150230175
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.176+0200",
+      "timestampUnixMs": 1795150230176
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.178+0200",
+      "timestampUnixMs": 1795150230178
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/types/bafyreicgyxj7ztqoud3v3rob6avltlym6tpq7qmsqivy57s5dledxddyae/properties",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.180+0200",
+      "timestampUnixMs": 1795150230180
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.182+0200",
+      "timestampUnixMs": 1795150230182
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.183+0200",
+      "timestampUnixMs": 1795150230183
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.185+0200",
+      "timestampUnixMs": 1795150230185
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "546.6\u00b5s",
+      "ts": "2026-11-20T06:50:30.187+0200",
+      "timestampUnixMs": 1795150230187
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.189+0200",
+      "timestampUnixMs": 1795150230189
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/properties/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.190+0200",
+      "timestampUnixMs": 1795150230190
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.192+0200",
+      "timestampUnixMs": 1795150230192
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.194+0200",
+      "timestampUnixMs": 1795150230194
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.196+0200",
+      "timestampUnixMs": 1795150230196
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.197+0200",
+      "timestampUnixMs": 1795150230197
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.199+0200",
+      "timestampUnixMs": 1795150230199
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.201+0200",
+      "timestampUnixMs": 1795150230201
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.202+0200",
+      "timestampUnixMs": 1795150230202
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.204+0200",
+      "timestampUnixMs": 1795150230204
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-targets/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "1.0526ms",
+      "ts": "2026-11-20T06:50:30.206+0200",
+      "timestampUnixMs": 1795150230206
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.208+0200",
+      "timestampUnixMs": 1795150230208
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.210+0200",
+      "timestampUnixMs": 1795150230210
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.212+0200",
+      "timestampUnixMs": 1795150230212
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.214+0200",
+      "timestampUnixMs": 1795150230214
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.217+0200",
+      "timestampUnixMs": 1795150230217
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.219+0200",
+      "timestampUnixMs": 1795150230219
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.221+0200",
+      "timestampUnixMs": 1795150230221
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.222+0200",
+      "timestampUnixMs": 1795150230222
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.224+0200",
+      "timestampUnixMs": 1795150230224
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.226+0200",
+      "timestampUnixMs": 1795150230226
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.228+0200",
+      "timestampUnixMs": 1795150230228
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.230+0200",
+      "timestampUnixMs": 1795150230230
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.231+0200",
+      "timestampUnixMs": 1795150230231
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.233+0200",
+      "timestampUnixMs": 1795150230233
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/members/me",
+      "status": 200,
+      "duration": "578.8\u00b5s",
+      "ts": "2026-11-20T06:50:30.235+0200",
+      "timestampUnixMs": 1795150230235
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.236+0200",
+      "timestampUnixMs": 1795150230236
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.238+0200",
+      "timestampUnixMs": 1795150230238
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.239+0200",
+      "timestampUnixMs": 1795150230239
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.241+0200",
+      "timestampUnixMs": 1795150230241
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.243+0200",
+      "timestampUnixMs": 1795150230243
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-targets/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "542.7\u00b5s",
+      "ts": "2026-11-20T06:50:30.245+0200",
+      "timestampUnixMs": 1795150230245
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.247+0200",
+      "timestampUnixMs": 1795150230247
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.249+0200",
+      "timestampUnixMs": 1795150230249
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.250+0200",
+      "timestampUnixMs": 1795150230250
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.251+0200",
+      "timestampUnixMs": 1795150230251
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.253+0200",
+      "timestampUnixMs": 1795150230253
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/objects/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.255+0200",
+      "timestampUnixMs": 1795150230255
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.256+0200",
+      "timestampUnixMs": 1795150230256
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.258+0200",
+      "timestampUnixMs": 1795150230258
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.260+0200",
+      "timestampUnixMs": 1795150230260
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.262+0200",
+      "timestampUnixMs": 1795150230262
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.263+0200",
+      "timestampUnixMs": 1795150230263
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/objects/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m/editor/editor_blocks/markdown",
+      "status": 200,
+      "duration": "1.0956ms",
+      "ts": "2026-11-20T06:50:30.266+0200",
+      "timestampUnixMs": 1795150230266
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.267+0200",
+      "timestampUnixMs": 1795150230267
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.269+0200",
+      "timestampUnixMs": 1795150230269
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.270+0200",
+      "timestampUnixMs": 1795150230270
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.271+0200",
+      "timestampUnixMs": 1795150230271
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.273+0200",
+      "timestampUnixMs": 1795150230273
+    },
+    {
+      "method": "POST",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/query",
+      "status": 200,
+      "duration": "538.5\u00b5s",
+      "ts": "2026-11-20T06:50:30.275+0200",
+      "timestampUnixMs": 1795150230275
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.277+0200",
+      "timestampUnixMs": 1795150230277
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.278+0200",
+      "timestampUnixMs": 1795150230278
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.280+0200",
+      "timestampUnixMs": 1795150230280
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.281+0200",
+      "timestampUnixMs": 1795150230281
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.283+0200",
+      "timestampUnixMs": 1795150230283
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/objects/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m/editor/editor_blocks/markdown",
+      "status": 200,
+      "duration": "521.3\u00b5s",
+      "ts": "2026-11-20T06:50:30.284+0200",
+      "timestampUnixMs": 1795150230284
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.286+0200",
+      "timestampUnixMs": 1795150230286
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.287+0200",
+      "timestampUnixMs": 1795150230287
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.288+0200",
+      "timestampUnixMs": 1795150230288
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.290+0200",
+      "timestampUnixMs": 1795150230290
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "522.7\u00b5s",
+      "ts": "2026-11-20T06:50:30.291+0200",
+      "timestampUnixMs": 1795150230291
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/objects/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "1.008ms",
+      "ts": "2026-11-20T06:50:30.293+0200",
+      "timestampUnixMs": 1795150230293
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.295+0200",
+      "timestampUnixMs": 1795150230295
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.296+0200",
+      "timestampUnixMs": 1795150230296
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/members/me",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.298+0200",
+      "timestampUnixMs": 1795150230298
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.299+0200",
+      "timestampUnixMs": 1795150230299
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.300+0200",
+      "timestampUnixMs": 1795150230300
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.302+0200",
+      "timestampUnixMs": 1795150230302
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.303+0200",
+      "timestampUnixMs": 1795150230303
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.304+0200",
+      "timestampUnixMs": 1795150230304
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-targets/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "510.6\u00b5s",
+      "ts": "2026-11-20T06:50:30.307+0200",
+      "timestampUnixMs": 1795150230307
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.310+0200",
+      "timestampUnixMs": 1795150230310
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.310+0200",
+      "timestampUnixMs": 1795150230310
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "454.8\u00b5s",
+      "ts": "2026-11-20T06:50:30.314+0200",
+      "timestampUnixMs": 1795150230314
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.316+0200",
+      "timestampUnixMs": 1795150230316
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.319+0200",
+      "timestampUnixMs": 1795150230319
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.321+0200",
+      "timestampUnixMs": 1795150230321
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.325+0200",
+      "timestampUnixMs": 1795150230325
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.328+0200",
+      "timestampUnixMs": 1795150230328
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.331+0200",
+      "timestampUnixMs": 1795150230331
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.334+0200",
+      "timestampUnixMs": 1795150230334
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.336+0200",
+      "timestampUnixMs": 1795150230336
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.339+0200",
+      "timestampUnixMs": 1795150230339
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "437\u00b5s",
+      "ts": "2026-11-20T06:50:30.341+0200",
+      "timestampUnixMs": 1795150230341
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.344+0200",
+      "timestampUnixMs": 1795150230344
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.346+0200",
+      "timestampUnixMs": 1795150230346
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.349+0200",
+      "timestampUnixMs": 1795150230349
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.353+0200",
+      "timestampUnixMs": 1795150230353
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "509.3\u00b5s",
+      "ts": "2026-11-20T06:50:30.356+0200",
+      "timestampUnixMs": 1795150230356
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.359+0200",
+      "timestampUnixMs": 1795150230359
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.361+0200",
+      "timestampUnixMs": 1795150230361
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.363+0200",
+      "timestampUnixMs": 1795150230363
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.365+0200",
+      "timestampUnixMs": 1795150230365
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.368+0200",
+      "timestampUnixMs": 1795150230368
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.371+0200",
+      "timestampUnixMs": 1795150230371
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.373+0200",
+      "timestampUnixMs": 1795150230373
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.375+0200",
+      "timestampUnixMs": 1795150230375
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-targets/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "524.4\u00b5s",
+      "ts": "2026-11-20T06:50:30.377+0200",
+      "timestampUnixMs": 1795150230377
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.379+0200",
+      "timestampUnixMs": 1795150230379
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.381+0200",
+      "timestampUnixMs": 1795150230381
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.383+0200",
+      "timestampUnixMs": 1795150230383
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.384+0200",
+      "timestampUnixMs": 1795150230384
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.385+0200",
+      "timestampUnixMs": 1795150230385
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.387+0200",
+      "timestampUnixMs": 1795150230387
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.389+0200",
+      "timestampUnixMs": 1795150230389
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.391+0200",
+      "timestampUnixMs": 1795150230391
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.391+0200",
+      "timestampUnixMs": 1795150230391
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.394+0200",
+      "timestampUnixMs": 1795150230394
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.396+0200",
+      "timestampUnixMs": 1795150230396
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/page",
+      "status": 200,
+      "duration": "543.1\u00b5s",
+      "ts": "2026-11-20T06:50:30.399+0200",
+      "timestampUnixMs": 1795150230399
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.401+0200",
+      "timestampUnixMs": 1795150230401
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.402+0200",
+      "timestampUnixMs": 1795150230402
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.404+0200",
+      "timestampUnixMs": 1795150230404
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.405+0200",
+      "timestampUnixMs": 1795150230405
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.408+0200",
+      "timestampUnixMs": 1795150230408
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.408+0200",
+      "timestampUnixMs": 1795150230408
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.410+0200",
+      "timestampUnixMs": 1795150230410
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.412+0200",
+      "timestampUnixMs": 1795150230412
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/properties/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.414+0200",
+      "timestampUnixMs": 1795150230414
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.417+0200",
+      "timestampUnixMs": 1795150230417
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.420+0200",
+      "timestampUnixMs": 1795150230420
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.421+0200",
+      "timestampUnixMs": 1795150230421
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.425+0200",
+      "timestampUnixMs": 1795150230425
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.427+0200",
+      "timestampUnixMs": 1795150230427
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/types/any/properties",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.432+0200",
+      "timestampUnixMs": 1795150230432
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.437+0200",
+      "timestampUnixMs": 1795150230437
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.441+0200",
+      "timestampUnixMs": 1795150230441
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.444+0200",
+      "timestampUnixMs": 1795150230444
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.447+0200",
+      "timestampUnixMs": 1795150230447
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.450+0200",
+      "timestampUnixMs": 1795150230450
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.454+0200",
+      "timestampUnixMs": 1795150230454
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.456+0200",
+      "timestampUnixMs": 1795150230456
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.460+0200",
+      "timestampUnixMs": 1795150230460
+    },
+    {
+      "method": "POST",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/properties/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m/set/any",
+      "status": 200,
+      "duration": "4.0891ms",
+      "ts": "2026-11-20T06:50:30.467+0200",
+      "timestampUnixMs": 1795150230467
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.469+0200",
+      "timestampUnixMs": 1795150230469
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.473+0200",
+      "timestampUnixMs": 1795150230473
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.476+0200",
+      "timestampUnixMs": 1795150230476
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.480+0200",
+      "timestampUnixMs": 1795150230480
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.483+0200",
+      "timestampUnixMs": 1795150230483
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.486+0200",
+      "timestampUnixMs": 1795150230486
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.488+0200",
+      "timestampUnixMs": 1795150230488
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.492+0200",
+      "timestampUnixMs": 1795150230492
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.494+0200",
+      "timestampUnixMs": 1795150230494
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.497+0200",
+      "timestampUnixMs": 1795150230497
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.500+0200",
+      "timestampUnixMs": 1795150230500
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.502+0200",
+      "timestampUnixMs": 1795150230502
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.504+0200",
+      "timestampUnixMs": 1795150230504
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.506+0200",
+      "timestampUnixMs": 1795150230506
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.509+0200",
+      "timestampUnixMs": 1795150230509
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "543\u00b5s",
+      "ts": "2026-11-20T06:50:30.512+0200",
+      "timestampUnixMs": 1795150230512
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.513+0200",
+      "timestampUnixMs": 1795150230513
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.514+0200",
+      "timestampUnixMs": 1795150230514
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.516+0200",
+      "timestampUnixMs": 1795150230516
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.516+0200",
+      "timestampUnixMs": 1795150230516
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "548.3\u00b5s",
+      "ts": "2026-11-20T06:50:30.518+0200",
+      "timestampUnixMs": 1795150230518
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.518+0200",
+      "timestampUnixMs": 1795150230518
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.521+0200",
+      "timestampUnixMs": 1795150230521
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.521+0200",
+      "timestampUnixMs": 1795150230521
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/collections",
+      "status": 200,
+      "duration": "550.9\u00b5s",
+      "ts": "2026-11-20T06:50:30.523+0200",
+      "timestampUnixMs": 1795150230523
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/types",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.523+0200",
+      "timestampUnixMs": 1795150230523
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.526+0200",
+      "timestampUnixMs": 1795150230526
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "532.5\u00b5s",
+      "ts": "2026-11-20T06:50:30.528+0200",
+      "timestampUnixMs": 1795150230528
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.529+0200",
+      "timestampUnixMs": 1795150230529
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.530+0200",
+      "timestampUnixMs": 1795150230530
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.532+0200",
+      "timestampUnixMs": 1795150230532
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.532+0200",
+      "timestampUnixMs": 1795150230532
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.532+0200",
+      "timestampUnixMs": 1795150230532
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.534+0200",
+      "timestampUnixMs": 1795150230534
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.534+0200",
+      "timestampUnixMs": 1795150230534
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.536+0200",
+      "timestampUnixMs": 1795150230536
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.536+0200",
+      "timestampUnixMs": 1795150230536
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.538+0200",
+      "timestampUnixMs": 1795150230538
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.538+0200",
+      "timestampUnixMs": 1795150230538
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.538+0200",
+      "timestampUnixMs": 1795150230538
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.539+0200",
+      "timestampUnixMs": 1795150230539
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.540+0200",
+      "timestampUnixMs": 1795150230540
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.541+0200",
+      "timestampUnixMs": 1795150230541
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.542+0200",
+      "timestampUnixMs": 1795150230542
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.542+0200",
+      "timestampUnixMs": 1795150230542
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.544+0200",
+      "timestampUnixMs": 1795150230544
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.544+0200",
+      "timestampUnixMs": 1795150230544
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.546+0200",
+      "timestampUnixMs": 1795150230546
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.546+0200",
+      "timestampUnixMs": 1795150230546
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.547+0200",
+      "timestampUnixMs": 1795150230547
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.548+0200",
+      "timestampUnixMs": 1795150230548
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.549+0200",
+      "timestampUnixMs": 1795150230549
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.549+0200",
+      "timestampUnixMs": 1795150230549
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.549+0200",
+      "timestampUnixMs": 1795150230549
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.552+0200",
+      "timestampUnixMs": 1795150230552
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.552+0200",
+      "timestampUnixMs": 1795150230552
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.553+0200",
+      "timestampUnixMs": 1795150230553
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.553+0200",
+      "timestampUnixMs": 1795150230553
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.553+0200",
+      "timestampUnixMs": 1795150230553
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.555+0200",
+      "timestampUnixMs": 1795150230555
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.555+0200",
+      "timestampUnixMs": 1795150230555
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.555+0200",
+      "timestampUnixMs": 1795150230555
+    },
+    {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.556+0200",
+      "timestampUnixMs": 1795150230556
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.557+0200",
+      "timestampUnixMs": 1795150230557
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.557+0200",
+      "timestampUnixMs": 1795150230557
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.557+0200",
+      "timestampUnixMs": 1795150230557
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.560+0200",
+      "timestampUnixMs": 1795150230560
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.561+0200",
+      "timestampUnixMs": 1795150230561
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.562+0200",
+      "timestampUnixMs": 1795150230562
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.562+0200",
+      "timestampUnixMs": 1795150230562
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.566+0200",
+      "timestampUnixMs": 1795150230566
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.568+0200",
+      "timestampUnixMs": 1795150230568
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.569+0200",
+      "timestampUnixMs": 1795150230569
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.571+0200",
+      "timestampUnixMs": 1795150230571
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.572+0200",
+      "timestampUnixMs": 1795150230572
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.572+0200",
+      "timestampUnixMs": 1795150230572
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.572+0200",
+      "timestampUnixMs": 1795150230572
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/spaceIndex",
+      "status": 200,
+      "duration": "1.556ms",
+      "ts": "2026-11-20T06:50:30.572+0200",
+      "timestampUnixMs": 1795150230572
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/bafyreicgyxj7ztqoud3v3rob6avltlym6tpq7qmsqivy57s5dledxddyae",
+      "status": 200,
+      "duration": "1.004ms",
+      "ts": "2026-11-20T06:50:30.574+0200",
+      "timestampUnixMs": 1795150230574
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.578+0200",
+      "timestampUnixMs": 1795150230578
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/page",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.578+0200",
+      "timestampUnixMs": 1795150230578
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/collection",
+      "status": 200,
+      "duration": "512.9\u00b5s",
+      "ts": "2026-11-20T06:50:30.579+0200",
+      "timestampUnixMs": 1795150230579
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/dataview",
+      "status": 200,
+      "duration": "512.9\u00b5s",
+      "ts": "2026-11-20T06:50:30.579+0200",
+      "timestampUnixMs": 1795150230579
+    },
+    {
+      "method": "GET",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/pinkha/document-types/any",
+      "status": 200,
+      "duration": "512.9\u00b5s",
+      "ts": "2026-11-20T06:50:30.579+0200",
+      "timestampUnixMs": 1795150230579
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.579+0200",
+      "timestampUnixMs": 1795150230579
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.583+0200",
+      "timestampUnixMs": 1795150230583
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.583+0200",
+      "timestampUnixMs": 1795150230583
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.583+0200",
+      "timestampUnixMs": 1795150230583
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.585+0200",
+      "timestampUnixMs": 1795150230585
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.585+0200",
+      "timestampUnixMs": 1795150230585
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "523.7\u00b5s",
+      "ts": "2026-11-20T06:50:30.588+0200",
+      "timestampUnixMs": 1795150230588
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.588+0200",
+      "timestampUnixMs": 1795150230588
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.588+0200",
+      "timestampUnixMs": 1795150230588
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.589+0200",
+      "timestampUnixMs": 1795150230589
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.590+0200",
+      "timestampUnixMs": 1795150230590
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.590+0200",
+      "timestampUnixMs": 1795150230590
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "697.6\u00b5s",
+      "ts": "2026-11-20T06:50:30.593+0200",
+      "timestampUnixMs": 1795150230593
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.593+0200",
+      "timestampUnixMs": 1795150230593
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.593+0200",
+      "timestampUnixMs": 1795150230593
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.595+0200",
+      "timestampUnixMs": 1795150230595
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.595+0200",
+      "timestampUnixMs": 1795150230595
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.596+0200",
+      "timestampUnixMs": 1795150230596
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.598+0200",
+      "timestampUnixMs": 1795150230598
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.599+0200",
+      "timestampUnixMs": 1795150230599
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.599+0200",
+      "timestampUnixMs": 1795150230599
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.599+0200",
+      "timestampUnixMs": 1795150230599
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:50:30.601+0200",
+      "timestampUnixMs": 1795150230601
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:51:00.576+0200",
+      "timestampUnixMs": 1795150260576
+    },
+    {
+      "method": "GET",
+      "path": "/v1/health",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:51:00.578+0200",
+      "timestampUnixMs": 1795150260578
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:51:00.580+0200",
+      "timestampUnixMs": 1795150260580
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:51:00.588+0200",
+      "timestampUnixMs": 1795150260588
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/objects/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "status": 204,
+      "duration": "65.8492ms",
+      "ts": "2026-11-20T06:51:00.657+0200",
+      "timestampUnixMs": 1795150260657
+    },
+    {
+      "method": "GET",
+      "path": "/v1/auth",
+      "status": 200,
+      "duration": "0s",
+      "ts": "2026-11-20T06:51:00.659+0200",
+      "timestampUnixMs": 1795150260659
+    }
+  ],
+  "limit": "No shared request identifier exists in the native access log. Candidate method/path/time matches show handler completion only; they do not prove socket flush, byte delivery, client response framing, or Foundation completion processing.",
+  "capturedAtUTC": "2026-11-20T04:55:54.949968+00:00"
+}

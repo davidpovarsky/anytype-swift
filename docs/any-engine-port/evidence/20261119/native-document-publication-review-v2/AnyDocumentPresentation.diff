@@ -1,0 +1,486 @@
+--- HEAD/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift
++++ Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift
+@@ -35,6 +35,14 @@
+     var selection: NSRange
+     var revision: UInt64
+ }
++
++enum AnyDocumentReadPurpose: Sendable, Equatable {
++    case load, observation, mutationReadback
++}
++
++typealias AnyDocumentReadOperation = @Sendable (
++    AnyDocumentReadPurpose, AnyEditorDocumentStore, String, AnyHostLease
++) async throws -> AnyEditorRead
+ 
+ private struct AnyDocumentComposition {
+     let blockID: String
+@@ -87,6 +95,20 @@
+     @ObservationIgnored private var recoveryWasRestored = false
+     @ObservationIgnored private var registration: UUID?
+     @ObservationIgnored private var epoch = UUID()
++    // The default still performs the real native read. Tests can delay delivery
++    // of that result without replacing native storage, authorization or writes.
++    @ObservationIgnored var editorReadOperation: AnyDocumentReadOperation = { _, documents, objectID, lease in
++        try await documents.read(objectID: objectID, lease: lease)
++    }
++    @ObservationIgnored private var editorReadID = UUID()
++    @ObservationIgnored private var loadingReadID: UUID?
++    @ObservationIgnored private var nativePropertiesReadID = UUID()
++    @ObservationIgnored private var nativeMutationID: UUID?
++    @ObservationIgnored private var inFlightTextBlockID: String?
++    @ObservationIgnored private var refreshAfterMutation = false
++    @ObservationIgnored private var loadAfterMutation = false
++    @ObservationIgnored private var saveAfterMutation = false
++    @ObservationIgnored private var deferredReadTask: Task<Void, Never>?
+     @ObservationIgnored private var streamSession: AnyStreamSession?
+     @ObservationIgnored private var streamTasks: [Task<Void, Never>] = []
+     @ObservationIgnored private var saveTask: Task<Void, Never>?
+@@ -198,7 +220,10 @@
+ 
+     public func mount(surface: any AnyEditorMountedSurface) {
+         guard lifetime.isActive, !isNavigating else { return }
+-        if !isMounted { epoch = UUID() }
++        if !isMounted {
++            epoch = UUID()
++            retireEditorReads()
++        }
+         self.surface = surface; isMounted = true
+         torah.activateDocument()
+     }
+@@ -262,14 +287,21 @@
+     }
+ 
+     public func load() async {
+-        guard lifetime.isActive, !isLoading else { return }
+-        isLoading = true
+-        defer { isLoading = false }
+-        let requestEpoch = epoch
++        guard lifetime.isActive else { return }
++        guard !saving else { loadAfterMutation = true; return }
++        guard !isLoading else { return }
++        let requestEpoch = epoch, requestID = UUID()
++        editorReadID = requestID; loadingReadID = requestID; isLoading = true
++        defer {
++            if loadingReadID == requestID {
++                loadingReadID = nil; isLoading = false
++            }
++        }
+         do {
+             let documents = documents, objectID = objectID, client = client
++            let readOperation = editorReadOperation
+             let result = try await nativeSession.perform { lease in
+-                let value = try await documents.read(objectID: objectID, lease: lease)
++                let value = try await readOperation(.load, documents, objectID, lease)
+                 let member = try await client.requestJSON(method: "GET",
+                     path: ["v1", "spaces", lease.workspace.spaceID, "members", "me"])
+                 try AnyHTTPTorahTargetAccess.validateMember(member, workspace: lease.workspace, intent: .read)
+@@ -277,15 +309,76 @@
+                 try await lease.validate()
+                 return (value, writable)
+             }
+-            guard lifetime.isActive, requestEpoch == epoch else { return }
++            guard mayPublishRead(requestID, owner: requestEpoch) else { return }
+             accept(result.0); canWrite = result.1
+             await torah.refreshAssociationSnapshot()
+-            try await refreshNativeProperties(expectedEpoch: requestEpoch)
++            guard mayPublishRead(requestID, owner: requestEpoch) else { return }
++            try await refreshNativeProperties(expectedEpoch: requestEpoch, editorRequestID: requestID)
++            guard mayPublishRead(requestID, owner: requestEpoch) else { return }
+             if streamSession == nil { startObservation() }
+         } catch {
+-            guard requestEpoch == epoch, lifetime.isActive else { return }
++            guard mayPublishRead(requestID, owner: requestEpoch) else { return }
+             message = AnyUIErrorText.describe(error)
+         }
++    }
++
++    private func mayPublishRead(_ requestID: UUID, owner: UUID) -> Bool {
++        owner == epoch && lifetime.isActive && editorReadID == requestID &&
++            !saving && !Task.isCancelled
++    }
++
++    private func retireEditorReads() {
++        editorReadID = UUID()
++        loadingReadID = nil; isLoading = false
++    }
++
++    /// Only one native edit can own presentation receipts at a time. Text input
++    /// remains enabled; its newer draft revisions are rebased after the receipt.
++    private func beginNativeMutation(owner: UUID) throws -> UUID {
++        try requireMounted(owner)
++        guard !saving else { throw AnyHostError.changedDocument }
++        let id = UUID()
++        nativeMutationID = id; saving = true
++        if loadingReadID != nil { loadAfterMutation = true }
++        retireEditorReads()
++        return id
++    }
++
++    private func ownsNativeMutation(_ id: UUID, owner: UUID) -> Bool {
++        nativeMutationID == id && epoch == owner && lifetime.isActive
++    }
++
++    private func finishNativeMutation(_ id: UUID, owner: UUID, completed: Bool) {
++        guard ownsNativeMutation(id, owner: owner) else { return }
++        nativeMutationID = nil; inFlightTextBlockID = nil; saving = false
++        // Also retire reads that were started while native work was pending.
++        retireEditorReads()
++        if isComposing { writeState = .pending }
++        retainRecovery()
++        let reload = loadAfterMutation, refresh = refreshAfterMutation
++        let resumeSave = saveAfterMutation && completed
++        loadAfterMutation = false; refreshAfterMutation = false; saveAfterMutation = false
++        if reload || refresh {
++            deferredReadTask?.cancel()
++            deferredReadTask = Task { [weak self] in
++                guard let self, epoch == owner, lifetime.isActive, !Task.isCancelled else { return }
++                if reload { await load() }
++                else { await refreshEditor(expectedEpoch: owner) }
++            }
++        }
++        if resumeSave, !drafts.isEmpty, !isComposing { scheduleSave() }
++    }
++
++    private func acceptAcknowledged(_ value: AnyEditorRead, blockID: String?,
++                                    undo: AnyPreparedBlockEdit?) {
++        retireEditorReads()
++        if let blockID, let block = value.snapshot.blocks.first(where: { $0.id == blockID }) {
++            acknowledgedBlockVersions[blockID] = block.native["_ver"]
++        }
++        accept(value)
++        // A later native change may have occurred after the verified receipt.
++        // Retain Undo only when this exact read still has the receipt's version.
++        lastUndo = undo?.expectedVersion == value.nativeVersion ? undo : nil
+     }
+ 
+     private func accept(_ value: AnyEditorRead) {
+@@ -342,7 +435,9 @@
+                                              selection: displaySelection, revision: 0)
+         draft.inlineMarkdown = source; draft.selection = displaySelection; draft.revision &+= 1
+         var candidate = drafts
+-        if source == draft.base.text { candidate.removeValue(forKey: blockID) }
++        if source == draft.base.text, inFlightTextBlockID != blockID {
++            candidate.removeValue(forKey: blockID)
++        }
+         else { candidate[blockID] = draft }
+         // Retain the exact source/base before accepting the visible edit.
+         try captureRecovery(candidate)
+@@ -351,11 +446,13 @@
+                focusedBlockID: blockID, range: displaySelection)
+         writeState = drafts.isEmpty ? .clean : .pending
+         contentRevision &+= 1
+-        saveTask?.cancel()
+         scheduleSave()
+     }
+ 
+     private func scheduleSave() {
++        // Once the debounce has entered flush, it owns a real native receipt.
++        // Later typing must queue another revision, not cancel that write.
++        guard !saving else { saveAfterMutation = true; return }
+         saveTask?.cancel()
+         saveTask = Task { [weak self] in
+             do { try await Task.sleep(for: .milliseconds(450)) } catch { return }
+@@ -386,7 +483,9 @@
+         try captureRecovery(candidate)
+         drafts = candidate
+         composition = .init(blockID: current.id, owner: epoch, text: text)
+-        isComposing = true; saveTask?.cancel(); invalidateSourceScope()
++        isComposing = true
++        if !saving { saveTask?.cancel() }
++        invalidateSourceScope()
+         writeState = .pending; contentRevision &+= 1
+     }
+ 
+@@ -432,7 +531,8 @@
+             message = AnyUIErrorText.describe(error)
+         }
+         composition = nil; isComposing = false
+-        if unmappedDrafts[blockID] == nil, let draft = drafts[blockID], draft.inlineMarkdown == draft.base.text {
++        if unmappedDrafts[blockID] == nil, let draft = drafts[blockID],
++           draft.inlineMarkdown == draft.base.text, inFlightTextBlockID != blockID {
+             drafts.removeValue(forKey: blockID)
+         }
+         let output = unmappedDrafts[blockID] == nil ? drafts[blockID]?.inlineMarkdown ?? active.text.baseline.source : nil
+@@ -445,19 +545,23 @@
+     }
+ 
+     public func flush() async {
+-        guard !saving, !drafts.isEmpty, canMutate else { return }
+-        saving = true; writeState = .saving
+-        defer {
+-            saving = false
+-            if isComposing { writeState = .pending }
+-            retainRecovery()
+-        }
++        guard !drafts.isEmpty, canMutate else { return }
++        guard !saving else { saveAfterMutation = true; return }
+         let requestEpoch = epoch
++        let mutationID: UUID
++        do { mutationID = try beginNativeMutation(owner: requestEpoch) }
++        catch { return }
++        var completed = false
++        writeState = .saving
++        defer { finishNativeMutation(mutationID, owner: requestEpoch, completed: completed) }
+         while let (id, draft) = drafts.sorted(by: { $0.key < $1.key }).first {
+             guard !isComposing, unmappedDrafts.isEmpty else { return }
+             do {
+                 try requireMounted(requestEpoch)
++                guard ownsNativeMutation(mutationID, owner: requestEpoch) else { return }
++                inFlightTextBlockID = id
+                 let documents = documents, objectID = objectID
++                let readOperation = editorReadOperation
+                 let authorize = mutationAuthorization(requestEpoch)
+                 let result = try await nativeSession.perform { lease in
+                     let current = try await documents.read(objectID: objectID, lease: lease)
+@@ -469,22 +573,23 @@
+                                                               inlineMarkdown: draft.inlineMarkdown)
+                     let receipt = try await documents.apply(edit, lease: lease, authorize: authorize)
+                     guard receipt.readback == .verifiedCurrent else { throw AnyHostError.writeUncertain }
+-                    let readback = try await documents.read(objectID: objectID, lease: lease)
++                    let readback = try await readOperation(.mutationReadback, documents, objectID, lease)
+                     guard let saved = readback.snapshot.blocks.first(where: { $0.id == id }),
+                           saved.text == draft.inlineMarkdown else { throw AnyHostError.writeUncertain }
+                     return (receipt, readback, saved)
+                 }
+                 try requireMounted(requestEpoch)
++                guard ownsNativeMutation(mutationID, owner: requestEpoch) else { return }
++                inFlightTextBlockID = nil
+                 if var latest = drafts[id] {
+                     if latest.revision == draft.revision { drafts.removeValue(forKey: id) }
+                     else { latest.base = result.2; drafts[id] = latest }
+                 }
+-                lastUndo = result.0.undo
+-                acknowledgedBlockVersions[id] = result.2.native["_ver"]
+-                accept(result.1)
++                acceptAcknowledged(result.1, blockID: id, undo: result.0.undo)
+                 writeState = drafts.isEmpty ? .saved : .saving
+             } catch {
+-                guard requestEpoch == epoch, lifetime.isActive else { return }
++                guard ownsNativeMutation(mutationID, owner: requestEpoch) else { return }
++                inFlightTextBlockID = nil
+                 switch error {
+                 case AnyHostError.changedDocument: writeState = .conflict(AnyUIErrorText.changedDocument)
+                 case AnyHostError.writeUncertain, AnyEngineError.writeUncertain:
+@@ -494,6 +599,7 @@
+                 return
+             }
+         }
++        completed = true
+     }
+ 
+     public func discardLocalDrafts() {
+@@ -600,28 +706,47 @@
+     }
+ 
+     public func undoLastNativeEdit() async {
+-        guard !hasPendingEdits, let undo = lastUndo else { return }
++        guard !hasPendingEdits, canMutate, let undo = lastUndo else { return }
+         let requestEpoch = epoch
+-        do {
+-            let documents = documents, authorize = mutationAuthorization(requestEpoch)
+-            let receipt = try await nativeSession.perform { lease in
+-                try await documents.apply(undo, lease: lease, authorize: authorize)
++        let mutationID: UUID
++        do { mutationID = try beginNativeMutation(owner: requestEpoch) }
++        catch { return }
++        var completed = false
++        defer { finishNativeMutation(mutationID, owner: requestEpoch, completed: completed) }
++        do {
++            let documents = documents, objectID = objectID
++            let authorize = mutationAuthorization(requestEpoch), readOperation = editorReadOperation
++            let result = try await nativeSession.perform { lease in
++                let receipt = try await documents.apply(undo, lease: lease, authorize: authorize)
++                guard receipt.readback == .verifiedCurrent else { throw AnyHostError.writeUncertain }
++                let current = try await readOperation(.mutationReadback, documents, objectID, lease)
++                return (receipt, current)
+             }
+             try requireMounted(requestEpoch)
+-            guard receipt.readback == .verifiedCurrent else { throw AnyHostError.writeUncertain }
+-            lastUndo = receipt.undo
+-            await refreshEditor(expectedEpoch: requestEpoch)
+-        } catch { message = AnyUIErrorText.describe(error) }
++            guard ownsNativeMutation(mutationID, owner: requestEpoch) else { return }
++            acceptAcknowledged(result.1, blockID: undo.blockID, undo: result.0.undo)
++            completed = true
++        } catch {
++            guard ownsNativeMutation(mutationID, owner: requestEpoch) else { return }
++            message = AnyUIErrorText.describe(error)
++        }
+     }
+ 
+     public func setWritingStyle(direction: AnyWritingDirection? = nil, alignment: AnyTextAlignment? = nil) async {
++        let requestEpoch = epoch
+         await flush()
+-        guard !hasPendingEdits, !selectedBlockIDs.isEmpty else { return }
+-        let requestEpoch = epoch
+-        do {
+-            for id in selectedBlockIDs {
++        guard requestEpoch == epoch, !hasPendingEdits, canMutate, !selectedBlockIDs.isEmpty else { return }
++        let mutationID: UUID
++        do { mutationID = try beginNativeMutation(owner: requestEpoch) }
++        catch { return }
++        var completed = false
++        defer { finishNativeMutation(mutationID, owner: requestEpoch, completed: completed) }
++        do {
++            let selected = selectedBlockIDs
++            for id in selected {
+                 let documents = documents, objectID = objectID, authorize = mutationAuthorization(requestEpoch)
+-                _ = try await nativeSession.perform { lease in
++                let readOperation = editorReadOperation
++                let result = try await nativeSession.perform { lease in
+                     let current = try await documents.read(objectID: objectID, lease: lease)
+                     guard let block = current.snapshot.blocks.first(where: { $0.id == id }) else {
+                         throw AnyHostError.invalidSelection
+@@ -631,21 +756,32 @@
+                         alignment: alignment ?? block.alignment ?? .natural)
+                     let receipt = try await documents.apply(edit, lease: lease, authorize: authorize)
+                     guard receipt.readback == .verifiedCurrent else { throw AnyHostError.writeUncertain }
+-                    return receipt
++                    let readback = try await readOperation(.mutationReadback, documents, objectID, lease)
++                    return (receipt, readback)
+                 }
+                 try requireMounted(requestEpoch)
+-            }
+-            await refreshEditor(expectedEpoch: requestEpoch)
+-        } catch { message = AnyUIErrorText.describe(error) }
++                guard ownsNativeMutation(mutationID, owner: requestEpoch) else { return }
++                acceptAcknowledged(result.1, blockID: id, undo: result.0.undo)
++            }
++            completed = true
++        } catch {
++            guard ownsNativeMutation(mutationID, owner: requestEpoch) else { return }
++            message = AnyUIErrorText.describe(error)
++        }
+     }
+ 
+     public func addParagraph(before targetID: String? = nil) async {
++        let requestEpoch = epoch
+         do {
+             let id = try await createBlock(type: "paragraph", text: "", before: targetID,
+                                            direction: .natural)
++            try requireMounted(requestEpoch)
+             focusedBlockID = id; selectedBlockIDs = [id]; selectedTextRange = .init(location: 0, length: 0)
+             surface?.reveal(blockID: id, selection: selectedTextRange)
+-        } catch { message = AnyUIErrorText.describe(error) }
++        } catch {
++            guard requestEpoch == epoch, lifetime.isActive else { return }
++            message = AnyUIErrorText.describe(error)
++        }
+     }
+ 
+     private func insertQuote(_ transfer: TorahSourceTransfer, before targetID: String?) async throws -> String {
+@@ -661,14 +797,17 @@
+     private func createBlock(type: String, text: String, before targetID: String?,
+                              direction: AnyWritingDirection,
+                              untargetedPlacement: AnyNativeBlockInsertionPolicy = .endOfRoot) async throws -> String {
++        let requestEpoch = epoch
+         await flush()
++        try requireMounted(requestEpoch)
+         guard !hasPendingEdits else { throw AnyHostError.changedDocument }
+-        let requestEpoch = epoch
+-        try requireMounted(requestEpoch)
+         guard canWrite else { throw TorahAssociationRepositoryError.permissionDenied }
++        let mutationID = try beginNativeMutation(owner: requestEpoch)
++        var completed = false
++        defer { finishNativeMutation(mutationID, owner: requestEpoch, completed: completed) }
+         let documents = documents, objectID = objectID, blocks = blocks
+-        let authorize = mutationAuthorization(requestEpoch)
+-        let id = try await nativeSession.perform { lease in
++        let authorize = mutationAuthorization(requestEpoch), readOperation = editorReadOperation
++        let result = try await nativeSession.perform { lease in
+             let current = try await documents.read(objectID: objectID, lease: lease)
+             let placement = try AnyNativeBlockInsertionPosition.resolve(snapshot: current.snapshot,
+                 policy: targetID.map(AnyNativeBlockInsertionPolicy.beforeBlock) ?? untargetedPlacement)
+@@ -678,13 +817,18 @@
+                 style: .object(["pinkhaWritingDirection": .string(direction.rawValue),
+                                 "pinkhaTextAlignment": .string("natural")]),
+                 parentID: placement.parentID, position: placement.position)
+-            return try await blocks.ensureBlock(intent) {
++            let id = try await blocks.ensureBlock(intent) {
+                 try await lease.validate(); try await authorize()
+             }
++            let readback = try await readOperation(.mutationReadback, documents, objectID, lease)
++            guard readback.snapshot.depthFirstIDs.contains(id) else { throw AnyHostError.writeUncertain }
++            return (id, readback)
+         }
+         try requireMounted(requestEpoch)
+-        await refreshEditor(expectedEpoch: requestEpoch)
+-        return id
++        guard ownsNativeMutation(mutationID, owner: requestEpoch) else { throw AnyHostError.sessionClosed }
++        acceptAcknowledged(result.1, blockID: nil, undo: nil)
++        completed = true
++        return result.0
+     }
+ 
+     public func showDocuments(with item: TorahAssociationItem) async {
+@@ -719,26 +863,43 @@
+         } catch { message = AnyUIErrorText.describe(error) }
+     }
+ 
+-    private func refreshEditor(expectedEpoch: UUID) async {
+-        do {
+-            let documents = documents, objectID = objectID
+-            let value = try await nativeSession.perform { try await documents.read(objectID: objectID, lease: $0) }
+-            guard expectedEpoch == epoch, lifetime.isActive else { return }
++    func refreshEditor(expectedEpoch: UUID) async {
++        guard expectedEpoch == epoch, lifetime.isActive else { return }
++        guard !saving else { refreshAfterMutation = true; return }
++        let requestID = UUID()
++        editorReadID = requestID
++        do {
++            let documents = documents, objectID = objectID, readOperation = editorReadOperation
++            let value = try await nativeSession.perform {
++                try await readOperation(.observation, documents, objectID, $0)
++            }
++            guard mayPublishRead(requestID, owner: expectedEpoch) else { return }
+             accept(value)
+         } catch {
+-            guard expectedEpoch == epoch, lifetime.isActive else { return }
++            guard mayPublishRead(requestID, owner: expectedEpoch) else { return }
+             message = AnyUIErrorText.describe(error)
+         }
+     }
+ 
+-    private func refreshNativeProperties(expectedEpoch: UUID) async throws {
+-        let index = index, objectID = objectID
+-        let value = try await nativeSession.perform { lease in
+-            let result = try await index.documentProperties(objectID: objectID)
+-            try await lease.validate(); return result
+-        }
++    private func refreshNativeProperties(expectedEpoch: UUID, editorRequestID: UUID? = nil) async throws {
+         guard expectedEpoch == epoch, lifetime.isActive else { return }
+-        nativeProperties = value
++        if let editorRequestID, !mayPublishRead(editorRequestID, owner: expectedEpoch) { return }
++        let requestID = UUID()
++        nativePropertiesReadID = requestID
++        do {
++            let index = index, objectID = objectID
++            let value = try await nativeSession.perform { lease in
++                let result = try await index.documentProperties(objectID: objectID)
++                try await lease.validate(); return result
++            }
++            guard expectedEpoch == epoch, lifetime.isActive, nativePropertiesReadID == requestID else { return }
++            if let editorRequestID, !mayPublishRead(editorRequestID, owner: expectedEpoch) { return }
++            nativeProperties = value
++        } catch {
++            guard expectedEpoch == epoch, lifetime.isActive, nativePropertiesReadID == requestID else { return }
++            if let editorRequestID, !mayPublishRead(editorRequestID, owner: expectedEpoch) { return }
++            throw error
++        }
+     }
+ 
+     private func startObservation() {
+@@ -828,6 +989,12 @@
+         retainRecovery()
+         guard isMounted else { return }
+         isMounted = false; epoch = UUID()
++        retireEditorReads()
++        nativeMutationID = nil; inFlightTextBlockID = nil; saving = false
++        loadAfterMutation = false; refreshAfterMutation = false; saveAfterMutation = false
++        deferredReadTask?.cancel()
++        if let task = deferredReadTask { closingObservers.append(task) }
++        deferredReadTask = nil
+         torah.deactivateDocument()
+         invalidateSourceScope()
+         for callback in revokeHandlers { callback() }

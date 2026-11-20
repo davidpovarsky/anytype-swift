@@ -1,0 +1,69 @@
+{
+  "status": "FAIL",
+  "scope": "Exact prior16 native two-peer partition/rejoin/object-history/watch assertions on frozenv8; no10001 scale repeat, no production account/fixture use.",
+  "startedAtUTC": "2026-11-20T04:28:14.914005+00:00",
+  "nativeManifestSHA256": "484d377a89b3e53ccab28bbf8defe223441e85db398c40ee5626d71ddc521289",
+  "nativeBinarySHA256": "4856c7214f56dded249095624ea63e3f99b4b340483e8e6f2785163d16a98089",
+  "provenance": {
+    "main16ByteIdenticalToPrior": true,
+    "httpAndFirewallHelperByteIdenticalToPrior": true,
+    "onlyHelperAdaptation": "source_manifest provenance function",
+    "priorScriptsSHA256": {
+      "run_native_object_validation.py": "b23086005f33d9911701e6280ba93c8a8a43eb6586f72a853cabc77c4da5d97b",
+      "run_native_validation.py": "10e0c4908621efa5033875e5c5eeff6ca6497ca6a3ce6a37c328b95fb9149f76",
+      "run_runtime_validation.py": "be81030a5b98ecbb574832429b62e87afcaa498d4d7b10625958a7b97fc32984"
+    },
+    "executedScriptsSHA256": {
+      "run_native_object_validation.py": "b23086005f33d9911701e6280ba93c8a8a43eb6586f72a853cabc77c4da5d97b",
+      "run_native_validation.py": "39774c10bdfcc9a8da98a3f9b94dcc06acb7391f004a0bf1f3256f8cfce2d061",
+      "run_runtime_validation.py": "be81030a5b98ecbb574832429b62e87afcaa498d4d7b10625958a7b97fc32984"
+    },
+    "sourcePinsSHA256": "83ca4953132f2f1d3875098918fbc7cfc0238e3fe6a8a71b21fc6cdf217d09d1",
+    "provenanceDiffSHA256": "23b1dee5b6942d376955b9fea484d2693a824650c6c0b388536c50ca0f0cbf9d",
+    "nativeManifestSHA256": "484d377a89b3e53ccab28bbf8defe223441e85db398c40ee5626d71ddc521289",
+    "nativeBinarySHA256": "4856c7214f56dded249095624ea63e3f99b4b340483e8e6f2785163d16a98089",
+    "largeSpaceProofEnabled": false
+  },
+  "wrapperSHA256": "3a0bf51bc8fb43c9baed28a3d44402df46ac0672cc2ab956a9821b5553823a33",
+  "processHelperSHA256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67",
+  "process": {
+    "command": [
+      "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\native-final-v8-object-runtime-v1\\harness\\run_native_object_validation.py",
+      "--binary",
+      "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\any-native-properties-v8.exe",
+      "--expected-binary-sha256",
+      "4856c7214f56dded249095624ea63e3f99b4b340483e8e6f2785163d16a98089",
+      "--runtime-source",
+      "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119",
+      "--sdk-source",
+      "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\sdk-source",
+      "--result",
+      "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\native-final-v8-object-runtime-v1\\native-runtime-result.json"
+    ],
+    "timedOut": false,
+    "cleanupErrors": [],
+    "pid": 21044,
+    "processBoundary": "owned_windows_kill_on_close_job",
+    "exitCode": 1,
+    "parentExited": true,
+    "elapsedSeconds": 32.062
+  },
+  "errorType": "RuntimeError",
+  "errorCode": "original16 selection changed or did not finish",
+  "independentOwnedCleanup": {
+    "privateExecutableCount": 2,
+    "privateExecutableSHA256": "4856c7214f56dded249095624ea63e3f99b4b340483e8e6f2785163d16a98089",
+    "leftoverRulesBeforeFallback": [],
+    "fallbackRemovedRuleNames": [],
+    "remainingOwnedRules": 0,
+    "remainingOwnedProcesses": 0,
+    "sharedRulesOrGlobalProfilesModified": false
+  },
+  "binaryStable": true,
+  "manifestStable": true,
+  "harnessStable": true,
+  "wrapperStable": true,
+  "processHelperStable": true,
+  "finishedAtUTC": "2026-11-20T04:28:52.949357+00:00"
+}

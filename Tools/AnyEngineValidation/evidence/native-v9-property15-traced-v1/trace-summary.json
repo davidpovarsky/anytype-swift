@@ -1,0 +1,160 @@
+{
+  "begins": 778,
+  "count": 1556,
+  "elapsedSeconds": 32.281,
+  "errors": [
+    {
+      "elapsedMs": 30016,
+      "errorCode": -1001,
+      "errorDomain": "NSURLErrorDomain",
+      "id": "737A8849-8A6B-454E-B66F-E2FE6F56A64E",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "error",
+      "timestampUnixMs": 1795150260573
+    }
+  ],
+  "failedRequests": [
+    {
+      "begin": {
+        "elapsedMs": 0,
+        "id": "737A8849-8A6B-454E-B66F-E2FE6F56A64E",
+        "method": "GET",
+        "path": "/v1/auth",
+        "phase": "begin",
+        "timestampUnixMs": 1795150230560
+      },
+      "error": {
+        "elapsedMs": 30016,
+        "errorCode": -1001,
+        "errorDomain": "NSURLErrorDomain",
+        "id": "737A8849-8A6B-454E-B66F-E2FE6F56A64E",
+        "method": "GET",
+        "path": "/v1/auth",
+        "phase": "error",
+        "timestampUnixMs": 1795150260573
+      }
+    }
+  ],
+  "lastEvents": [
+    {
+      "elapsedMs": 0,
+      "id": "87A06CB6-3D4C-43E7-9A89-76B5CA44FAE1",
+      "method": "GET",
+      "path": "/v1/health",
+      "phase": "begin",
+      "timestampUnixMs": 1795150260578
+    },
+    {
+      "elapsedMs": 0,
+      "framing": {
+        "Content-Length": "350"
+      },
+      "id": "87A06CB6-3D4C-43E7-9A89-76B5CA44FAE1",
+      "method": "GET",
+      "path": "/v1/health",
+      "phase": "response",
+      "status": 200,
+      "timestampUnixMs": 1795150260579
+    },
+    {
+      "elapsedMs": 0,
+      "id": "4125890D-C696-45B3-8DB0-ABA3F8516052",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "begin",
+      "timestampUnixMs": 1795150260580
+    },
+    {
+      "elapsedMs": 0,
+      "framing": {
+        "Content-Length": "187"
+      },
+      "id": "4125890D-C696-45B3-8DB0-ABA3F8516052",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "response",
+      "status": 200,
+      "timestampUnixMs": 1795150260581
+    },
+    {
+      "elapsedMs": 0,
+      "id": "FB87FC0C-D3C8-4DDC-920E-B1D7A88BB0A9",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "begin",
+      "timestampUnixMs": 1795150260585
+    },
+    {
+      "elapsedMs": 0,
+      "framing": {
+        "Content-Length": "187"
+      },
+      "id": "FB87FC0C-D3C8-4DDC-920E-B1D7A88BB0A9",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "response",
+      "status": 200,
+      "timestampUnixMs": 1795150260589
+    },
+    {
+      "elapsedMs": 0,
+      "id": "F3024482-45FF-4C47-B53B-65857C9A89C7",
+      "method": "DELETE",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/objects/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "phase": "begin",
+      "timestampUnixMs": 1795150260590
+    },
+    {
+      "elapsedMs": 62,
+      "framing": {},
+      "id": "F3024482-45FF-4C47-B53B-65857C9A89C7",
+      "method": "DELETE",
+      "path": "/v1/spaces/bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b/objects/bafyreiezgffyb6myvfqpoimokylovio5kug6u5fy2mcvmy3xn7cgaten6m",
+      "phase": "response",
+      "status": 204,
+      "timestampUnixMs": 1795150260658
+    },
+    {
+      "elapsedMs": 0,
+      "id": "86E533E3-9694-4715-87D2-62AA27C9325C",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "begin",
+      "timestampUnixMs": 1795150260658
+    },
+    {
+      "elapsedMs": 0,
+      "framing": {
+        "Content-Length": "187"
+      },
+      "id": "86E533E3-9694-4715-87D2-62AA27C9325C",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "response",
+      "status": 200,
+      "timestampUnixMs": 1795150260660
+    }
+  ],
+  "longestCompletedResponseMs": 108,
+  "nativeBinaryStable": true,
+  "otherLines": [
+    "HOST_PROBE_FAILED: failed(\"property native acceptance lacked exact version readback\")"
+  ],
+  "productionProbeHasNoSSESubscription": true,
+  "responseFramingCounts": {
+    "chunked": 0,
+    "connectionHeader": 0,
+    "contentLength": 776
+  },
+  "responseStatusCounts": {
+    "200": 774,
+    "201": 2,
+    "204": 1
+  },
+  "responses": 777,
+  "sourceStable": true,
+  "spaceID": "bafyreicge27h2vu4pjvheotcm43lqek66ql645ctdbyyhqmvfcllnpatry.3b6nhrin0h65b",
+  "traceSHA256": "f7050aa7de1fa05144cff4cd4b76acbe8501fa411b4ebb27f21c79659784f27c",
+  "unfinished": []
+}

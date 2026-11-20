@@ -1,0 +1,28 @@
+{
+  "status": "FAIL_PRESERVED",
+  "checksPassed": 13,
+  "checksFailed": 1,
+  "checksNotExecuted": 2,
+  "failure": {
+    "name": "scoped_watch_reports_cross_peer_native_append",
+    "status": "FAIL",
+    "error": "ContractFailure: HTTP 400: dataset.validation"
+  },
+  "sourceStableAfterFailure": true,
+  "nativeBinarySHA256": "4856c7214f56dded249095624ea63e3f99b4b340483e8e6f2785163d16a98089",
+  "nativeManifestSHA256": "484d377a89b3e53ccab28bbf8defe223441e85db398c40ee5626d71ddc521289",
+  "independentOwnedCleanup": {
+    "privateExecutableCount": 2,
+    "privateExecutableSHA256": "4856c7214f56dded249095624ea63e3f99b4b340483e8e6f2785163d16a98089",
+    "leftoverRulesBeforeFallback": [],
+    "fallbackRemovedRuleNames": [],
+    "remainingOwnedRules": 0,
+    "remainingOwnedProcesses": 0,
+    "sharedRulesOrGlobalProfilesModified": false
+  },
+  "diagnosis": "Inference from executed ordering: peer A restores bin eligibility and immediately invokes peer B append without waiting for peer B eligibility convergence. Saved HTTP error does not contain detailed native rejection; causality is not proven.",
+  "followup": "One bounded native eligibility convergence barrier before a single business append in a fresh v9 run; no retry of this failed Space.",
+  "rawReceiptsUnmodified": true,
+  "privateLogsOrCredentialsArchived": false,
+  "capturedAtUTC": "2026-11-20T04:33:47.636741+00:00"
+}

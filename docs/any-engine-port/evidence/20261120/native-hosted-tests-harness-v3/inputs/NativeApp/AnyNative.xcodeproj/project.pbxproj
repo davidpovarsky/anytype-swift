@@ -1,0 +1,204 @@
+// !$*UTF8*$!
+{
+ archiveVersion = 1;
+ classes = {};
+ objectVersion = 77;
+ objects = {
+  A10000000000000000000001 = {isa = PBXBuildFile; fileRef = A20000000000000000000001; };
+  A10000000000000000000002 = {isa = PBXBuildFile; productRef = A80000000000000000000001; };
+  A10000000000000000000003 = {isa = PBXBuildFile; fileRef = A20000000000000000000003; };
+  A20000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sources/AnyNativeApp.swift; sourceTree = "<group>"; };
+  A20000000000000000000002 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PinkhaAnyNative.app; sourceTree = BUILT_PRODUCTS_DIR; };
+  A20000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITests/NativeLaunchTests.swift; sourceTree = "<group>"; };
+  A20000000000000000000004 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PinkhaAnyNativeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+  A30000000000000000000001 = {isa = PBXGroup; children = (A20000000000000000000001, A20000000000000000000003, B30000000000000000000001, B30000000000000000000002, A30000000000000000000002); sourceTree = "<group>"; };
+  A30000000000000000000002 = {isa = PBXGroup; children = (A20000000000000000000002, A20000000000000000000004, B20000000000000000000003, B20000000000000000000004); name = Products; sourceTree = "<group>"; };
+  A40000000000000000000001 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000001); runOnlyForDeploymentPostprocessing = 0; };
+  A40000000000000000000002 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000002); runOnlyForDeploymentPostprocessing = 0; };
+  A40000000000000000000003 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+  A40000000000000000000004 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000003); runOnlyForDeploymentPostprocessing = 0; };
+  A40000000000000000000005 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+  A40000000000000000000006 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+  A50000000000000000000001 = {
+   isa = PBXNativeTarget; buildConfigurationList = A90000000000000000000002;
+   buildPhases = (A40000000000000000000001, A40000000000000000000002, A40000000000000000000003);
+   buildRules = (); dependencies = (); name = PinkhaAnyNativeApp;
+   packageProductDependencies = (A80000000000000000000001);
+   productName = PinkhaAnyNative; productReference = A20000000000000000000002; productType = "com.apple.product-type.application";
+  };
+  A50000000000000000000002 = {
+   isa = PBXNativeTarget; buildConfigurationList = A90000000000000000000003;
+   buildPhases = (A40000000000000000000004, A40000000000000000000005, A40000000000000000000006);
+   buildRules = (); dependencies = (AB0000000000000000000002); name = PinkhaAnyNativeUITests;
+   productName = PinkhaAnyNativeUITests; productReference = A20000000000000000000004; productType = "com.apple.product-type.bundle.ui-testing";
+  };
+  A60000000000000000000001 = {
+   isa = PBXProject; attributes = {BuildIndependentTargetsInParallel = YES; LastUpgradeCheck = 2700; TargetAttributes = {
+    A50000000000000000000001 = {CreatedOnToolsVersion = 27.0; };
+    A50000000000000000000002 = {CreatedOnToolsVersion = 27.0; TestTargetID = A50000000000000000000001; };
+    B50000000000000000000001 = {CreatedOnToolsVersion = 27.0; SystemCapabilities = {com.apple.Keychain = {enabled = 1; }; }; };
+    B50000000000000000000002 = {CreatedOnToolsVersion = 27.0; TestTargetID = B50000000000000000000001; };
+   };};
+   buildConfigurationList = A90000000000000000000001; compatibilityVersion = "Xcode 16.0"; developmentRegion = he;
+   hasScannedForEncodings = 0; knownRegions = (en, he, Base); mainGroup = A30000000000000000000001;
+   minimizedProjectReferenceProxies = 1; packageReferences = (A70000000000000000000001, B70000000000000000000001, B70000000000000000000002, B70000000000000000000003, B70000000000000000000004, B70000000000000000000005, B70000000000000000000006, B70000000000000000000007, B70000000000000000000008, B70000000000000000000009, B7000000000000000000000A, B7000000000000000000000B);
+   preferredProjectObjectVersion = 77; productRefGroup = A30000000000000000000002;
+   projectDirPath = ""; projectRoot = ""; targets = (A50000000000000000000001, A50000000000000000000002, B50000000000000000000001, B50000000000000000000002);
+  };
+  A70000000000000000000001 = {isa = XCLocalSwiftPackageReference; relativePath = ../Modules/PinkhaAnyNative; };
+  A80000000000000000000001 = {isa = XCSwiftPackageProductDependency; package = A70000000000000000000001; productName = PinkhaAnyNative; };
+  A90000000000000000000001 = {isa = XCConfigurationList; buildConfigurations = (AA0000000000000000000001, AA0000000000000000000002); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+  A90000000000000000000002 = {isa = XCConfigurationList; buildConfigurations = (AA0000000000000000000003, AA0000000000000000000004); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+  A90000000000000000000003 = {isa = XCConfigurationList; buildConfigurations = (AA0000000000000000000005, AA0000000000000000000006); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+  AA0000000000000000000001 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {
+   CLANG_ENABLE_MODULES = YES; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 27.0; SWIFT_VERSION = 6.0;
+   SWIFT_STRICT_CONCURRENCY = complete; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; DEBUG_INFORMATION_FORMAT = dwarf; ENABLE_TESTABILITY = YES;
+   SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)"; ONLY_ACTIVE_ARCH = YES;
+  };};
+  AA0000000000000000000002 = {isa = XCBuildConfiguration; name = Release; buildSettings = {
+   CLANG_ENABLE_MODULES = YES; SDKROOT = iphoneos; IPHONEOS_DEPLOYMENT_TARGET = 27.0; SWIFT_VERSION = 6.0;
+   SWIFT_STRICT_CONCURRENCY = complete; SWIFT_OPTIMIZATION_LEVEL = "-O"; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+  };};
+  AA0000000000000000000003 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {
+   PRODUCT_BUNDLE_IDENTIFIER = io.pinkha.anynative.dev; PRODUCT_NAME = PinkhaAnyNative; PRODUCT_MODULE_NAME = PinkhaAnyNativeApp; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = Info.plist;
+   INFOPLIST_KEY_CFBundleDisplayName = Pinkha; INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+   INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+   INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Sync documents with your own devices.";
+   TARGETED_DEVICE_FAMILY = "1,2"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO;
+   CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 0.1.0;
+  };};
+  AA0000000000000000000004 = {isa = XCBuildConfiguration; name = Release; buildSettings = {
+   PRODUCT_BUNDLE_IDENTIFIER = io.pinkha.anynative.dev; PRODUCT_NAME = PinkhaAnyNative; PRODUCT_MODULE_NAME = PinkhaAnyNativeApp; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = Info.plist;
+   INFOPLIST_KEY_CFBundleDisplayName = Pinkha; INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+   INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+   INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Sync documents with your own devices.";
+   TARGETED_DEVICE_FAMILY = "1,2"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO;
+   CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 0.1.0;
+  };};
+  AA0000000000000000000005 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {
+   PRODUCT_BUNDLE_IDENTIFIER = io.pinkha.anynative.uitests; PRODUCT_NAME = "$(TARGET_NAME)"; GENERATE_INFOPLIST_FILE = YES;
+   TEST_TARGET_NAME = PinkhaAnyNativeApp; TARGETED_DEVICE_FAMILY = "1,2"; CODE_SIGN_STYLE = Automatic;
+  };};
+  AA0000000000000000000006 = {isa = XCBuildConfiguration; name = Release; buildSettings = {
+   PRODUCT_BUNDLE_IDENTIFIER = io.pinkha.anynative.uitests; PRODUCT_NAME = "$(TARGET_NAME)"; GENERATE_INFOPLIST_FILE = YES;
+   TEST_TARGET_NAME = PinkhaAnyNativeApp; TARGETED_DEVICE_FAMILY = "1,2"; CODE_SIGN_STYLE = Automatic;
+  };};
+  AB0000000000000000000001 = {isa = PBXContainerItemProxy; containerPortal = A60000000000000000000001; proxyType = 1; remoteGlobalIDString = A50000000000000000000001; remoteInfo = PinkhaAnyNativeApp; };
+  AB0000000000000000000002 = {isa = PBXTargetDependency; target = A50000000000000000000001; targetProxy = AB0000000000000000000001; };
+  B10000000000000000000001 = {isa = PBXBuildFile; fileRef = B20000000000000000000001; };
+  B10000000000000000000002 = {isa = PBXBuildFile; fileRef = B20000000000000000000005; };
+  B10000000000000000000003 = {isa = PBXBuildFile; fileRef = B20000000000000000000006; };
+  B10000000000000000000004 = {isa = PBXBuildFile; fileRef = B20000000000000000000007; };
+  B10000000000000000000005 = {isa = PBXBuildFile; fileRef = B20000000000000000000008; };
+  B10000000000000000000006 = {isa = PBXBuildFile; fileRef = B20000000000000000000009; };
+  B1000000000000000000000A = {isa = PBXBuildFile; productRef = B80000000000000000000001; };
+  B1000000000000000000000B = {isa = PBXBuildFile; productRef = B80000000000000000000002; };
+  B1000000000000000000000C = {isa = PBXBuildFile; productRef = B80000000000000000000003; };
+  B1000000000000000000000D = {isa = PBXBuildFile; productRef = B80000000000000000000004; };
+  B1000000000000000000000E = {isa = PBXBuildFile; productRef = B80000000000000000000005; };
+  B1000000000000000000000F = {isa = PBXBuildFile; productRef = B80000000000000000000006; };
+  B10000000000000000000010 = {isa = PBXBuildFile; productRef = B80000000000000000000007; };
+  B10000000000000000000011 = {isa = PBXBuildFile; productRef = B80000000000000000000008; };
+  B10000000000000000000012 = {isa = PBXBuildFile; productRef = B80000000000000000000009; };
+  B10000000000000000000013 = {isa = PBXBuildFile; productRef = B8000000000000000000000A; };
+  B10000000000000000000014 = {isa = PBXBuildFile; productRef = B8000000000000000000000B; };
+  B10000000000000000000015 = {isa = PBXBuildFile; productRef = B8000000000000000000000C; };
+  B10000000000000000000016 = {isa = PBXBuildFile; productRef = B8000000000000000000000D; };
+  B20000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyNativeTestHostApp.swift; sourceTree = "<group>"; };
+  B20000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NativeTestHost.entitlements; sourceTree = "<group>"; };
+  B20000000000000000000003 = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PinkhaAnyNativeTestHost.app; sourceTree = BUILT_PRODUCTS_DIR; };
+  B20000000000000000000004 = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PinkhaAnyNativeHostedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+  B20000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ../Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift; sourceTree = "<group>"; };
+  B20000000000000000000006 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ../Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeHanlinCreationTests.swift; sourceTree = "<group>"; };
+  B20000000000000000000007 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ../Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeTorahWorkflowTests.swift; sourceTree = "<group>"; };
+  B20000000000000000000008 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ../Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeDocumentPublicationTests.swift; sourceTree = "<group>"; };
+  B20000000000000000000009 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ../Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativePropertyWorkflowTests.swift; sourceTree = "<group>"; };
+  B30000000000000000000001 = {isa = PBXGroup; children = (B20000000000000000000001, B20000000000000000000002); path = TestHost; sourceTree = "<group>"; };
+  B30000000000000000000002 = {isa = PBXGroup; children = (B20000000000000000000005, B20000000000000000000006, B20000000000000000000007, B20000000000000000000008, B20000000000000000000009); name = HostedNativeTests; sourceTree = "<group>"; };
+  B40000000000000000000001 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (B10000000000000000000001); runOnlyForDeploymentPostprocessing = 0; };
+  B40000000000000000000002 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+  B40000000000000000000003 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+  B40000000000000000000004 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (B10000000000000000000002, B10000000000000000000003, B10000000000000000000004, B10000000000000000000005, B10000000000000000000006); runOnlyForDeploymentPostprocessing = 0; };
+  B40000000000000000000005 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (B1000000000000000000000A, B1000000000000000000000B, B1000000000000000000000C, B1000000000000000000000D, B1000000000000000000000E, B1000000000000000000000F, B10000000000000000000010, B10000000000000000000011, B10000000000000000000012, B10000000000000000000013, B10000000000000000000014, B10000000000000000000015, B10000000000000000000016); runOnlyForDeploymentPostprocessing = 0; };
+  B40000000000000000000006 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+  B50000000000000000000001 = {
+   isa = PBXNativeTarget; buildConfigurationList = B90000000000000000000001;
+   buildPhases = (B40000000000000000000001, B40000000000000000000002, B40000000000000000000003);
+   buildRules = (); dependencies = (); name = PinkhaAnyNativeTestHost;
+   packageProductDependencies = ();
+   productName = PinkhaAnyNativeTestHost; productReference = B20000000000000000000003; productType = "com.apple.product-type.application";
+  };
+  B50000000000000000000002 = {
+   isa = PBXNativeTarget; buildConfigurationList = B90000000000000000000002;
+   buildPhases = (B40000000000000000000004, B40000000000000000000005, B40000000000000000000006);
+   buildRules = (); dependencies = (BB0000000000000000000002); name = PinkhaAnyNativeHostedTests;
+   packageProductDependencies = (B80000000000000000000001, B80000000000000000000002, B80000000000000000000003, B80000000000000000000004, B80000000000000000000005, B80000000000000000000006, B80000000000000000000007, B80000000000000000000008, B80000000000000000000009, B8000000000000000000000A, B8000000000000000000000B, B8000000000000000000000C, B8000000000000000000000D);
+   productName = PinkhaAnyNativeHostedTests; productReference = B20000000000000000000004; productType = "com.apple.product-type.bundle.unit-test";
+  };
+  B70000000000000000000001 = {isa = XCLocalSwiftPackageReference; relativePath = ../Modules/PinkhaAnyRuntime; };
+  B70000000000000000000002 = {isa = XCLocalSwiftPackageReference; relativePath = ../Modules/PinkhaAnyEngine; };
+  B70000000000000000000003 = {isa = XCLocalSwiftPackageReference; relativePath = ../Modules/PinkhaAnyHost; };
+  B70000000000000000000004 = {isa = XCLocalSwiftPackageReference; relativePath = ../Modules/PinkhaAnyIntegration; };
+  B70000000000000000000005 = {isa = XCLocalSwiftPackageReference; relativePath = ../Modules/PinkhaAnyUI; };
+  B70000000000000000000006 = {isa = XCLocalSwiftPackageReference; relativePath = ../Modules/PinkhaKit; };
+  B70000000000000000000007 = {isa = XCLocalSwiftPackageReference; relativePath = ../Modules/PinkhaTorahPresentation; };
+  B70000000000000000000008 = {isa = XCRemoteSwiftPackageReference; repositoryURL = "https://github.com/davidpovarsky/TorahInspectorKit.git"; requirement = {kind = revision; revision = 4e59e909dd22685bb46f9396bc57e5f8c627d773; }; };
+  B70000000000000000000009 = {isa = XCLocalSwiftPackageReference; relativePath = ../Modules/PinkhaAnyHanlin; };
+  B7000000000000000000000A = {isa = XCLocalSwiftPackageReference; relativePath = ../Dependencies/Hanlin/Packages/HanlinAgentSDK; };
+  B7000000000000000000000B = {isa = XCLocalSwiftPackageReference; relativePath = ../Dependencies/Hanlin/Packages/HanlinPlatform; };
+  B80000000000000000000001 = {isa = XCSwiftPackageProductDependency; package = A70000000000000000000001; productName = PinkhaAnyNative; };
+  B80000000000000000000002 = {isa = XCSwiftPackageProductDependency; package = B70000000000000000000001; productName = PinkhaAnyRuntime; };
+  B80000000000000000000003 = {isa = XCSwiftPackageProductDependency; package = B70000000000000000000002; productName = PinkhaAnyEngine; };
+  B80000000000000000000004 = {isa = XCSwiftPackageProductDependency; package = B70000000000000000000003; productName = PinkhaAnyHost; };
+  B80000000000000000000005 = {isa = XCSwiftPackageProductDependency; package = B70000000000000000000004; productName = PinkhaAnyIntegration; };
+  B80000000000000000000006 = {isa = XCSwiftPackageProductDependency; package = B70000000000000000000005; productName = PinkhaAnyUI; };
+  B80000000000000000000007 = {isa = XCSwiftPackageProductDependency; package = B70000000000000000000006; productName = PinkhaKit; };
+  B80000000000000000000008 = {isa = XCSwiftPackageProductDependency; package = B70000000000000000000007; productName = PinkhaTorahPresentation; };
+  B80000000000000000000009 = {isa = XCSwiftPackageProductDependency; package = B70000000000000000000008; productName = TorahInspectorCore; };
+  B8000000000000000000000A = {isa = XCSwiftPackageProductDependency; package = B70000000000000000000009; productName = PinkhaAnyHanlin; };
+  B8000000000000000000000B = {isa = XCSwiftPackageProductDependency; package = B70000000000000000000009; productName = PinkhaHanlinCore; };
+  B8000000000000000000000C = {isa = XCSwiftPackageProductDependency; package = B7000000000000000000000A; productName = HanlinHostContracts; };
+  B8000000000000000000000D = {isa = XCSwiftPackageProductDependency; package = B7000000000000000000000B; productName = HanlinPlatformContracts; };
+  B90000000000000000000001 = {isa = XCConfigurationList; buildConfigurations = (BA0000000000000000000001, BA0000000000000000000002); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+  B90000000000000000000002 = {isa = XCConfigurationList; buildConfigurations = (BA0000000000000000000003, BA0000000000000000000004); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+  BA0000000000000000000001 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {
+   PRODUCT_BUNDLE_IDENTIFIER = io.pinkha.anynative.testhost; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_MODULE_NAME = PinkhaAnyNativeTestHost;
+   GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = Info.plist;
+   INFOPLIST_KEY_CFBundleDisplayName = "Pinkha Native Test Host"; INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+   INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+   INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Run native synchronization integration tests.";
+   TARGETED_DEVICE_FAMILY = "1,2"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO;
+   CODE_SIGN_STYLE = Automatic; CODE_SIGN_ENTITLEMENTS = TestHost/NativeTestHost.entitlements; CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+   CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 0.1.0;
+   LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
+  };};
+  BA0000000000000000000002 = {isa = XCBuildConfiguration; name = Release; buildSettings = {
+   PRODUCT_BUNDLE_IDENTIFIER = io.pinkha.anynative.testhost; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_MODULE_NAME = PinkhaAnyNativeTestHost;
+   GENERATE_INFOPLIST_FILE = YES; INFOPLIST_FILE = Info.plist;
+   INFOPLIST_KEY_CFBundleDisplayName = "Pinkha Native Test Host"; INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+   INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+   INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Run native synchronization integration tests.";
+   TARGETED_DEVICE_FAMILY = "1,2"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO;
+   CODE_SIGN_STYLE = Automatic; CODE_SIGN_ENTITLEMENTS = TestHost/NativeTestHost.entitlements; CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+   CURRENT_PROJECT_VERSION = 1; MARKETING_VERSION = 0.1.0;
+   LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
+  };};
+  BA0000000000000000000003 = {isa = XCBuildConfiguration; name = Debug; buildSettings = {
+   PRODUCT_BUNDLE_IDENTIFIER = io.pinkha.anynative.hostedtests; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_MODULE_NAME = PinkhaAnyNativeTests;
+   GENERATE_INFOPLIST_FILE = YES; CODE_SIGN_STYLE = Automatic;
+   TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PinkhaAnyNativeTestHost.app/PinkhaAnyNativeTestHost"; BUNDLE_LOADER = "$(TEST_HOST)";
+   TARGETED_DEVICE_FAMILY = "1,2"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO;
+   LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks");
+  };};
+  BA0000000000000000000004 = {isa = XCBuildConfiguration; name = Release; buildSettings = {
+   PRODUCT_BUNDLE_IDENTIFIER = io.pinkha.anynative.hostedtests; PRODUCT_NAME = "$(TARGET_NAME)"; PRODUCT_MODULE_NAME = PinkhaAnyNativeTests;
+   GENERATE_INFOPLIST_FILE = YES; CODE_SIGN_STYLE = Automatic;
+   TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PinkhaAnyNativeTestHost.app/PinkhaAnyNativeTestHost"; BUNDLE_LOADER = "$(TEST_HOST)";
+   TARGETED_DEVICE_FAMILY = "1,2"; SUPPORTED_PLATFORMS = "iphoneos iphonesimulator"; SUPPORTS_MACCATALYST = NO;
+   LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks");
+  };};
+  BB0000000000000000000001 = {isa = PBXContainerItemProxy; containerPortal = A60000000000000000000001; proxyType = 1; remoteGlobalIDString = B50000000000000000000001; remoteInfo = PinkhaAnyNativeTestHost; };
+  BB0000000000000000000002 = {isa = PBXTargetDependency; target = B50000000000000000000001; targetProxy = BB0000000000000000000001; };
+ };
+ rootObject = A60000000000000000000001;
+}

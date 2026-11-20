@@ -1,0 +1,50 @@
+{
+  "status": "PASS_SYNTAX_ONLY_WITH_HOST_PLATFORM_WARNINGS",
+  "scope": "Swift syntax parsing only for the iOS-conditional source; no semantic compile, link, module/cache emission or native runtime execution",
+  "before": {
+    "testSHA256": "43caeb7e6b4992ff92feaa55ca499741ed4759f9e2d7f4d436320de28fbaf6c4",
+    "sourceInputs": {
+      "Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/PropertyProbe.swift": "c3977600062e058187ab4c6537e28372415e1941d02e380d6db39c970d2057e0",
+      "Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/CreationProbe.swift": "b8bf4f1c90dbe42a5168f6940a43b1b9b0448d8fd220a1e34d4ffcc407f27435",
+      "Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/Probe.swift": "6203379252cc44f96846ab1f4da2b0a85f1149029892590f5080249523613165"
+    },
+    "swiftcSHA256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+    "runnerSHA256": "a2305998eeca9198dbbe5ea7c6c5cfaefcfc1ec1e2496dfab72ca0b1000d7957",
+    "processHelperSHA256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67"
+  },
+  "startedAtUTC": "2026-11-20T04:59:17.831303+00:00",
+  "process": {
+    "command": [
+      "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+      "-frontend",
+      "-parse",
+      "-target",
+      "arm64-apple-ios27.0-simulator",
+      "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\Modules\\PinkhaAnyNative\\Tests\\PinkhaAnyNativeTests\\NativePropertyWorkflowTests.swift"
+    ],
+    "timedOut": false,
+    "cleanupErrors": [],
+    "pid": 2668,
+    "processBoundary": "owned_windows_kill_on_close_job",
+    "exitCode": 0,
+    "parentExited": true,
+    "elapsedSeconds": 0.281
+  },
+  "hostPlatformWarnings": [
+    "<unknown>:0: warning: SDK settings were ignored as 'SDKSettings.json' could not be parsed",
+    "<unknown>:0: warning: using sysroot for 'Windows' but targeting 'iPhone'"
+  ],
+  "sourceStable": true,
+  "after": {
+    "testSHA256": "43caeb7e6b4992ff92feaa55ca499741ed4759f9e2d7f4d436320de28fbaf6c4",
+    "sourceInputs": {
+      "Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/PropertyProbe.swift": "c3977600062e058187ab4c6537e28372415e1941d02e380d6db39c970d2057e0",
+      "Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/CreationProbe.swift": "b8bf4f1c90dbe42a5168f6940a43b1b9b0448d8fd220a1e34d4ffcc407f27435",
+      "Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/Probe.swift": "6203379252cc44f96846ab1f4da2b0a85f1149029892590f5080249523613165"
+    },
+    "swiftcSHA256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+    "runnerSHA256": "a2305998eeca9198dbbe5ea7c6c5cfaefcfc1ec1e2496dfab72ca0b1000d7957",
+    "processHelperSHA256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67"
+  },
+  "finishedAtUTC": "2026-11-20T04:59:18.106018+00:00"
+}

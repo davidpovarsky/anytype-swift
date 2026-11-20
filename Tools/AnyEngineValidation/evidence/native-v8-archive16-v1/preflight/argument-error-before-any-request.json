@@ -1,0 +1,35 @@
+{
+  "classification": "HARNESS_ARGUMENT_PREFLIGHT_FAILURE",
+  "nativeRequestsExecuted": 0,
+  "businessChecksExecuted": 0,
+  "productionMutation": false,
+  "runnerSHA256": "4e434cc352fb1598ed1b0ad4ff01442b6068877084cb42e92218201edc3fa5bc",
+  "reason": "An incomplete CLI invocation was rejected by required argparse fields before any fixture access or output directory creation.",
+  "job": {
+    "ok": true,
+    "job": {
+      "id": "job_94e938367594",
+      "type": "job_result",
+      "source": "script_run@host_7ec8382e82747448",
+      "severity": "warning",
+      "tool": "script_run",
+      "host": "host_7ec8382e82747448",
+      "status": "failed",
+      "exit_code": 2,
+      "created_at": 1795149041.053161,
+      "started_at": "2026-11-20T04:30:41.113590+00:00",
+      "finished_at": "2026-11-20T04:30:41.680379+00:00",
+      "duration_s": 0.57,
+      "error": null,
+      "output_truncated": false,
+      "timeout_s": 60,
+      "read": false,
+      "notified": {
+        "telegram": null,
+        "resend": null
+      },
+      "notify_spec": {},
+      "output": "usage: run_native_workflow_v8_probe.py [-h] --mode {property,creation,archive}\r\n                                       --repo-root REPO_ROOT --fixture FIXTURE\r\n                                       --native-binary NATIVE_BINARY\r\n                                       --native-manifest NATIVE_MANIFEST\r\n                                       --executable EXECUTABLE --build-receipt\r\n                                       BUILD_RECEIPT --output-dir OUTPUT_DIR\r\n                                       --expected-native-sha256\r\n                                       EXPECTED_NATIVE_SHA256\r\n                                       --expected-native-manifest-sha256\r\n                                       EXPECTED_NATIVE_MANIFEST_SHA256\r\n                                       [--allow-disposable-writes]\r\nrun_native_workflow_v8_probe.py: error: the following arguments are required: --native-binary, --native-manifest, --executable, --build-receipt, --output-dir, --expected-native-sha256, --expected-native-manifest-sha256"
+    }
+  }
+}

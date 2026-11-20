@@ -1,0 +1,112 @@
+{
+  "name": "sdk_native_guards",
+  "status": "PASS",
+  "command": [
+    "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+    "test",
+    "-json",
+    "-count=1",
+    "-p",
+    "2",
+    "-timeout",
+    "240s",
+    "-run",
+    "^(TestACLHeldThroughRealCommitAndReleasedAfter|TestActualACLFinalCommitFence|TestCurrentWriterFenceRequiresConditionalSyncedRoute|TestExactRetryRequiresCurrentWriter|TestGuardRejectsUnderlyingDeletionBeforeWrapperIsMarked|TestHistoricalReplaySurvivesLaterRevocation|TestIntrinsicValidatorRejectsBeforeNativeStorage|TestNativeConditionalBlockEmptyPatchChecksSequenceAndWriter|TestNativeConditionalBlockFinalWriterFence|TestNativeConditionalBlockRefusesDeletedTreeBeforeSDKCallback|TestNativeCurrentWriterBlockCreationRejectsNativeTombstoneWindow|TestNativeCurrentWriterBootstrapAndBlockCreationFinalFence|TestNativeCurrentWriterBootstrapAndBlockCreationSuccess|TestNativeCurrentWriterRootHoldsACLThroughActualStorage|TestNativeCurrentWriterRootPreservesUncertainStoredID|TestNativeCurrentWriterRootRefusesAfterSigning|TestNativeCurrentWriterRootRejectsForgedScopeAndEnvelope|TestNativeDefinitionCallbackAndActualAppendKeepOwnerLocked|TestNativeDefinitionDeletionBeforeSDKCallbackRefusesAppend|TestNativeDefinitionPolicyUsesCompiledCanonicalModule|TestNativeDefinitionRequiredDocumentDatasetCannotRaceTypePicker|TestNativeGuardLookupColdCollectionInsideReadTx|TestNativeObjectRowCASFourCompetingWriters|TestNativeObjectRowCASMissingRowAndIdentityGuards|TestNativeObjectRowCASRejectsABAAndFutureStamp|TestObjectConditionalModifyShapeGuards|TestRealSignedRemoteChangesUseIntrinsicGuardBeforeStorage)$",
+    "./internal/commitguard",
+    "./internal/crdt",
+    "./internal/object",
+    "./internal/spaceimpl",
+    "./internal/spaceobjects"
+  ],
+  "process": {
+    "command": [
+      "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "test",
+      "-json",
+      "-count=1",
+      "-p",
+      "2",
+      "-timeout",
+      "240s",
+      "-run",
+      "^(TestACLHeldThroughRealCommitAndReleasedAfter|TestActualACLFinalCommitFence|TestCurrentWriterFenceRequiresConditionalSyncedRoute|TestExactRetryRequiresCurrentWriter|TestGuardRejectsUnderlyingDeletionBeforeWrapperIsMarked|TestHistoricalReplaySurvivesLaterRevocation|TestIntrinsicValidatorRejectsBeforeNativeStorage|TestNativeConditionalBlockEmptyPatchChecksSequenceAndWriter|TestNativeConditionalBlockFinalWriterFence|TestNativeConditionalBlockRefusesDeletedTreeBeforeSDKCallback|TestNativeCurrentWriterBlockCreationRejectsNativeTombstoneWindow|TestNativeCurrentWriterBootstrapAndBlockCreationFinalFence|TestNativeCurrentWriterBootstrapAndBlockCreationSuccess|TestNativeCurrentWriterRootHoldsACLThroughActualStorage|TestNativeCurrentWriterRootPreservesUncertainStoredID|TestNativeCurrentWriterRootRefusesAfterSigning|TestNativeCurrentWriterRootRejectsForgedScopeAndEnvelope|TestNativeDefinitionCallbackAndActualAppendKeepOwnerLocked|TestNativeDefinitionDeletionBeforeSDKCallbackRefusesAppend|TestNativeDefinitionPolicyUsesCompiledCanonicalModule|TestNativeDefinitionRequiredDocumentDatasetCannotRaceTypePicker|TestNativeGuardLookupColdCollectionInsideReadTx|TestNativeObjectRowCASFourCompetingWriters|TestNativeObjectRowCASMissingRowAndIdentityGuards|TestNativeObjectRowCASRejectsABAAndFutureStamp|TestObjectConditionalModifyShapeGuards|TestRealSignedRemoteChangesUseIntrinsicGuardBeforeStorage)$",
+      "./internal/commitguard",
+      "./internal/crdt",
+      "./internal/object",
+      "./internal/spaceimpl",
+      "./internal/spaceobjects"
+    ],
+    "timedOut": false,
+    "cleanupErrors": [],
+    "pid": 38788,
+    "processBoundary": "owned_windows_kill_on_close_job",
+    "exitCode": 0,
+    "parentExited": true,
+    "elapsedSeconds": 30.015
+  },
+  "selectedTests": [
+    {
+      "package": "./internal/commitguard",
+      "tests": [
+        "TestACLHeldThroughRealCommitAndReleasedAfter",
+        "TestActualACLFinalCommitFence",
+        "TestExactRetryRequiresCurrentWriter",
+        "TestHistoricalReplaySurvivesLaterRevocation",
+        "TestIntrinsicValidatorRejectsBeforeNativeStorage",
+        "TestNativeCurrentWriterRootHoldsACLThroughActualStorage",
+        "TestNativeCurrentWriterRootPreservesUncertainStoredID",
+        "TestNativeCurrentWriterRootRefusesAfterSigning",
+        "TestNativeCurrentWriterRootRejectsForgedScopeAndEnvelope"
+      ]
+    },
+    {
+      "package": "./internal/crdt",
+      "tests": [
+        "TestNativeGuardLookupColdCollectionInsideReadTx"
+      ]
+    },
+    {
+      "package": "./internal/object",
+      "tests": [
+        "TestGuardRejectsUnderlyingDeletionBeforeWrapperIsMarked",
+        "TestNativeConditionalBlockEmptyPatchChecksSequenceAndWriter",
+        "TestNativeConditionalBlockFinalWriterFence",
+        "TestNativeConditionalBlockRefusesDeletedTreeBeforeSDKCallback",
+        "TestNativeCurrentWriterBlockCreationRejectsNativeTombstoneWindow",
+        "TestNativeCurrentWriterBootstrapAndBlockCreationFinalFence",
+        "TestNativeCurrentWriterBootstrapAndBlockCreationSuccess",
+        "TestNativeObjectRowCASFourCompetingWriters",
+        "TestNativeObjectRowCASMissingRowAndIdentityGuards",
+        "TestNativeObjectRowCASRejectsABAAndFutureStamp"
+      ]
+    },
+    {
+      "package": "./internal/spaceimpl",
+      "tests": [
+        "TestCurrentWriterFenceRequiresConditionalSyncedRoute",
+        "TestObjectConditionalModifyShapeGuards"
+      ]
+    },
+    {
+      "package": "./internal/spaceobjects",
+      "tests": [
+        "TestNativeDefinitionCallbackAndActualAppendKeepOwnerLocked",
+        "TestNativeDefinitionDeletionBeforeSDKCallbackRefusesAppend",
+        "TestNativeDefinitionPolicyUsesCompiledCanonicalModule",
+        "TestNativeDefinitionRequiredDocumentDatasetCannotRaceTypePicker",
+        "TestRealSignedRemoteChangesUseIntrinsicGuardBeforeStorage"
+      ]
+    }
+  ],
+  "expectedTopLevelTests": 27,
+  "passedTopLevelTests": 27,
+  "passedIncludingSubtests": 68,
+  "skippedIncludingSubtests": 0,
+  "failedIncludingSubtests": 0,
+  "missingPasses": [],
+  "unexpectedTopLevelTests": [],
+  "failedEvents": [],
+  "rawLogSHA256": "c589858a0ddfc72801ea28a6c8d623189f129cdfd529b37f8ab6e2ab0f66363a",
+  "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "nonJSONDiagnosticLines": 0
+}

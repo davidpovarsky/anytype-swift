@@ -75,6 +75,60 @@ public enum AnyNativePropertyValueCodec {
 import Observation
 import SwiftUI
 
+/// Internal suspension boundary for the actual presentation model. The public
+/// constructor always uses the native session, store and mounted document owner.
+@MainActor
+struct AnyNativePropertyPresentationOperations {
+    typealias Authorization = @Sendable () async throws -> Void
+
+    let canMutate: @MainActor () -> Bool
+    let mountedOwnerID: @MainActor () throws -> UUID
+    let requireMounted: @MainActor (UUID) throws -> Void
+    let read: @MainActor () async throws -> AnyNativePropertySnapshot
+    let apply: @MainActor (AnyPreparedPropertyEdit, @escaping Authorization) async throws -> AnyPropertyEditReceipt
+    let setVisibility: @MainActor (AnyNativePropertySnapshot, AnyNativePropertyVisibilityKey, Bool,
+                        @escaping Authorization) async throws -> AnyPropertyEditReceipt
+    let reloadDocument: @MainActor () async throws -> Void
+
+    static func native(document: AnyDocumentPresentation,
+                       store: AnyNativePropertyStore) -> Self {
+        .init(
+            canMutate: { [weak document] in document?.canMutate == true },
+            mountedOwnerID: { [weak document] in
+                guard let document else { throw AnyHostError.sessionClosed }
+                return document.mountedOwnerID
+            },
+            requireMounted: { [weak document] mounted in
+                guard let document else { throw AnyHostError.sessionClosed }
+                try document.requireMounted(mounted)
+            },
+            read: { [weak document] in
+                guard let document else { throw AnyHostError.sessionClosed }
+                let objectID = document.objectID
+                return try await document.nativeSession.perform { lease in
+                    try await store.read(objectID: objectID, lease: lease)
+                }
+            },
+            apply: { [weak document] edit, authorize in
+                guard let document else { throw AnyHostError.sessionClosed }
+                return try await document.nativeSession.perform { lease in
+                    try await store.apply(edit, lease: lease, authorize: authorize)
+                }
+            },
+            setVisibility: { [weak document] snapshot, key, visible, authorize in
+                guard let document else { throw AnyHostError.sessionClosed }
+                return try await document.nativeSession.perform { lease in
+                    try await store.setVisibility(snapshot, key: key, visible: visible,
+                                                  lease: lease, authorize: authorize)
+                }
+            },
+            reloadDocument: { [weak document] in
+                guard let document else { throw AnyHostError.sessionClosed }
+                await document.load()
+            })
+    }
+}
+
 @MainActor @Observable
 public final class AnyNativePropertyPresentation {
     public private(set) var snapshot: AnyNativePropertySnapshot?
@@ -82,7 +136,7 @@ public final class AnyNativePropertyPresentation {
     public private(set) var isSaving = false
     public private(set) var needsReview = false
     public var message: String?
-    @ObservationIgnored private weak var document: AnyDocumentPresentation?
+    @ObservationIgnored private let operations: AnyNativePropertyPresentationOperations?
     @ObservationIgnored private let store: AnyNativePropertyStore?
     @ObservationIgnored private var epoch = UUID()
     @ObservationIgnored private var isActive = false
@@ -91,11 +145,16 @@ public final class AnyNativePropertyPresentation {
     @ObservationIgnored private var undo: AnyPreparedPropertyEdit?
 
     public init(document: AnyDocumentPresentation, store: AnyNativePropertyStore?) {
-        self.document = document; self.store = store
+        self.store = store
+        self.operations = store.map { .native(document: document, store: $0) }
+    }
+
+    init(store: AnyNativePropertyStore, operations: AnyNativePropertyPresentationOperations) {
+        self.store = store; self.operations = operations
     }
 
     public var canWrite: Bool {
-        isActive && document?.canMutate == true && snapshot?.canWrite == true && !isSaving && !needsReview
+        isActive && operations?.canMutate() == true && snapshot?.canWrite == true && !isSaving && !needsReview
     }
     public var canUndo: Bool { canWrite && undo != nil }
     public var visibleRows: [AnyNativePropertyRow] { snapshot?.rows.filter(\.isVisible) ?? [] }
@@ -122,22 +181,32 @@ public final class AnyNativePropertyPresentation {
         guard !isActive else { return }
         isActive = true; epoch = UUID()
     }
-    public func deactivate() { isActive = false; epoch = UUID(); readRequest &+= 1 }
+    public func deactivate() {
+        // An already dispatched native write may still finish. Its old owner
+        // cannot publish into a reopened panel or authorize another dispatch.
+        if isSaving { needsReview = true }
+        isActive = false; epoch = UUID()
+        invalidateReads()
+        isSaving = false
+    }
 
     public func load(reviewCurrent: Bool = false) async {
-        guard isActive, let document, let store else {
+        // A refresh cannot adopt a pre-write snapshot or clear a new Undo.
+        // Refusing it during a write is not a missing-workspace error.
+        guard !isSaving else { return }
+        guard isActive, let operations else {
             message = AnyUIErrorText.text("יש לפתוח את המאפיינים מתוך מרחב שהוגדר.", "Open properties from a configured workspace.")
             return
         }
-        let expected = epoch, mounted = document.mountedOwnerID
+        let expected = epoch
         readRequest &+= 1; let request = readRequest
         isLoading = true
-        defer { if request == readRequest { isLoading = false } }
+        defer {
+            if isActive, expected == epoch, request == readRequest { isLoading = false }
+        }
         do {
-            let objectID = document.objectID
-            let result = try await document.nativeSession.perform { lease in
-                try await store.read(objectID: objectID, lease: lease)
-            }
+            let mounted = try operations.mountedOwnerID()
+            let result = try await operations.read()
             try requireActive(expected, mounted: mounted)
             guard request == readRequest else { return }
             snapshot = result
@@ -180,16 +249,15 @@ public final class AnyNativePropertyPresentation {
     }
 
     public func setVisibility(_ key: AnyNativePropertyVisibilityKey, visible: Bool) async {
-        guard canWrite, let store, let snapshot, let document else { return }
-        let expected = epoch, mounted = document.mountedOwnerID
-        let authorize = authorization(expected, mounted: mounted)
+        guard canWrite, let snapshot, let operations else { return }
+        let expected = epoch
+        invalidateReads()
         isSaving = true
-        defer { isSaving = false }
+        defer { finishWrite(expected) }
         do {
-            let receipt = try await document.nativeSession.perform { lease in
-                try await store.setVisibility(snapshot, key: key, visible: visible,
-                                               lease: lease, authorize: authorize)
-            }
+            let mounted = try operations.mountedOwnerID()
+            let authorize = authorization(expected, mounted: mounted)
+            let receipt = try await operations.setVisibility(snapshot, key, visible, authorize)
             try requireActive(expected, mounted: mounted)
             accept(receipt)
         } catch {
@@ -205,19 +273,19 @@ public final class AnyNativePropertyPresentation {
     }
 
     private func commit(_ edit: AnyPreparedPropertyEdit) async -> Bool {
-        guard canWrite, let document, let store else { return false }
-        let expected = epoch, mounted = document.mountedOwnerID
-        let authorize = authorization(expected, mounted: mounted)
+        guard canWrite, let operations else { return false }
+        let expected = epoch
+        invalidateReads()
         pendingEdit = edit; isSaving = true
-        defer { isSaving = false }
+        defer { finishWrite(expected) }
         do {
-            let receipt = try await document.nativeSession.perform { lease in
-                try await store.apply(edit, lease: lease, authorize: authorize)
-            }
+            let mounted = try operations.mountedOwnerID()
+            let authorize = authorization(expected, mounted: mounted)
+            let receipt = try await operations.apply(edit, authorize)
             try requireActive(expected, mounted: mounted)
             accept(receipt)
             if receipt.readback == .verifiedCurrent {
-                await document.load()
+                try await operations.reloadDocument()
                 try requireActive(expected, mounted: mounted)
                 return true
             }
@@ -231,6 +299,7 @@ public final class AnyNativePropertyPresentation {
     }
 
     private func accept(_ receipt: AnyPropertyEditReceipt) {
+        invalidateReads()
         guard receipt.readback == .verifiedCurrent, let value = receipt.snapshot else {
             needsReview = true
             message = AnyUIErrorText.uncertainWrite
@@ -239,9 +308,19 @@ public final class AnyNativePropertyPresentation {
         snapshot = value; undo = receipt.undo; pendingEdit = nil; needsReview = false
     }
 
+    private func invalidateReads() {
+        readRequest &+= 1
+        isLoading = false
+    }
+
+    private func finishWrite(_ expected: UUID) {
+        guard isActive, expected == epoch else { return }
+        isSaving = false
+    }
+
     private func requireActive(_ expected: UUID, mounted: UUID) throws {
-        guard isActive, epoch == expected, let document else { throw AnyHostError.sessionClosed }
-        try document.requireMounted(mounted)
+        guard isActive, epoch == expected, let operations else { throw AnyHostError.sessionClosed }
+        try operations.requireMounted(mounted)
     }
 
     private func authorization(_ expected: UUID, mounted: UUID) -> @Sendable () async throws -> Void {

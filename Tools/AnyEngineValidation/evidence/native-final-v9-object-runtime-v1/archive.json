@@ -1,0 +1,120 @@
+{
+  "status": "ARCHIVED_EXACT_PEER_RUNTIME",
+  "runtimeStatus": "PASS_FINAL_NATIVE_V9_PEER16",
+  "checksPassed": 16,
+  "checksFailed": 0,
+  "checksNotExecuted": 0,
+  "resultSHA256": "1f3b5412686efb8a9d8bdeca9567eff729613a2a136a07147187ceaebe31b236",
+  "nativeResultSHA256": "e41dd1b1fb7c838c287fb40838bebd53be4b021f42454be82d7d403038c51363",
+  "nativeBinarySHA256": "4b110906ccecca3cc15a22a66caeeabea82b3cc44e25fe94a911a23a878da361",
+  "nativeManifestSHA256": "15906eb27afea68cc7ec99242bffd6a8ea69517edb608a4421cce90c9a99a070",
+  "sourceStable": true,
+  "independentOwnedCleanup": {
+    "privateExecutableCount": 2,
+    "privateExecutableSHA256": "4b110906ccecca3cc15a22a66caeeabea82b3cc44e25fe94a911a23a878da361",
+    "leftoverRulesBeforeFallback": [],
+    "fallbackRemovedRuleNames": [],
+    "remainingOwnedRules": 0,
+    "remainingOwnedProcesses": 0,
+    "sharedRulesOrGlobalProfilesModified": false
+  },
+  "scope": "Original16 peer partition/rejoin/object/watch assertions on exactv9, with a bounded native peer-B eligibility read before the single original append. No10001-scale repeat, no business mutation retry, no private fixture logs/account secrets archived.",
+  "preservedHistoricalFailure": "native-final-v8-object-runtime-v1/analysis.json",
+  "files": [
+    {
+      "original": "eligibility-barrier-only.diff",
+      "saved": "eligibility-barrier-only.diff",
+      "sha256": "46afef6e2ffa571fd77927e5426d10b09c432cb350340c8e1125418c6f2b5854",
+      "bytes": 2181
+    },
+    {
+      "original": "executed-process-helper.py",
+      "saved": "executed-process-helper.py",
+      "sha256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67",
+      "bytes": 18216
+    },
+    {
+      "original": "executed-wrapper.py",
+      "saved": "executed-wrapper.py",
+      "sha256": "f9d17dee5e2d03b15e05a6a5d5c6ffd8cffcadf8dd99cc9850696926447b5ecb",
+      "bytes": 16827
+    },
+    {
+      "original": "harness/run_native_object_validation.py",
+      "saved": "harness/run_native_object_validation.py",
+      "sha256": "685294921cb573a70d26e685b5e13e7f020123a7e286f8f32f79f64d91333475",
+      "bytes": 18469
+    },
+    {
+      "original": "harness/run_native_validation.py",
+      "saved": "harness/run_native_validation.py",
+      "sha256": "12e8f0e935b4095e35349a34166347452e7067a55d99e7fd6153792bae8f1c3c",
+      "bytes": 27099
+    },
+    {
+      "original": "harness/run_runtime_validation.py",
+      "saved": "harness/run_runtime_validation.py",
+      "sha256": "be81030a5b98ecbb574832429b62e87afcaa498d4d7b10625958a7b97fc32984",
+      "bytes": 45175
+    },
+    {
+      "original": "harness/source-pins.json",
+      "saved": "harness/source-pins.json",
+      "sha256": "3e7212537a718e298703a0654abcd07cb7eb68e2dcdec1b09da960468062ffad",
+      "bytes": 144796
+    },
+    {
+      "original": "native-runtime-result.json",
+      "saved": "native-runtime-result.json",
+      "sha256": "e41dd1b1fb7c838c287fb40838bebd53be4b021f42454be82d7d403038c51363",
+      "bytes": 146154
+    },
+    {
+      "original": "prepared.json",
+      "saved": "prepared.json",
+      "sha256": "a0db5e371e3cc21ebaede7a84dcde0c1bf0a822c8597a8f415be7d5746c31765",
+      "bytes": 1512
+    },
+    {
+      "original": "process.json",
+      "saved": "process.json",
+      "sha256": "c90fca486021ff80ae24ad98a2598ac63b2cde4149312151866831a779ae438a",
+      "bytes": 1068
+    },
+    {
+      "original": "provenance-only.diff",
+      "saved": "provenance-only.diff",
+      "sha256": "77b0ff90f6a77b7224ddeedb0a6abf7a83762b43ec84178581c92f71f0d6a6f4",
+      "bytes": 2564
+    },
+    {
+      "original": "result.json",
+      "saved": "result.json",
+      "sha256": "1f3b5412686efb8a9d8bdeca9567eff729613a2a136a07147187ceaebe31b236",
+      "bytes": 4238
+    },
+    {
+      "original": "run/stderr.log",
+      "saved": "run/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "original": "run/stdout.json",
+      "saved": "run/stdout.log",
+      "sha256": "362485866023fa30e5db4f5333ad62b462ae8789b63b7b7cae42523a0b3b01c9",
+      "bytes": 1573
+    },
+    {
+      "original": "source-after.json",
+      "saved": "source-after.json",
+      "sha256": "ba8e1e6edcd5fe4de9dfb36a56768ac6cced835b580914f1b0d34d0868f4a1b6",
+      "bytes": 139786
+    },
+    {
+      "saved": "executed-archiver.py",
+      "sha256": "638838d8c80076edf87ce16e2de207b2143f875260e1157cdbdb9144961691e4"
+    }
+  ],
+  "sealedAtUTC": "2026-11-20T04:45:01.726297+00:00"
+}

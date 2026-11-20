@@ -1,0 +1,119 @@
+[
+  {
+    "name": "sdk_native_guards",
+    "expectedTopLevelTests": 27,
+    "selectedTests": [
+      {
+        "package": "./internal/commitguard",
+        "tests": [
+          "TestACLHeldThroughRealCommitAndReleasedAfter",
+          "TestActualACLFinalCommitFence",
+          "TestExactRetryRequiresCurrentWriter",
+          "TestHistoricalReplaySurvivesLaterRevocation",
+          "TestIntrinsicValidatorRejectsBeforeNativeStorage",
+          "TestNativeCurrentWriterRootHoldsACLThroughActualStorage",
+          "TestNativeCurrentWriterRootPreservesUncertainStoredID",
+          "TestNativeCurrentWriterRootRefusesAfterSigning",
+          "TestNativeCurrentWriterRootRejectsForgedScopeAndEnvelope"
+        ]
+      },
+      {
+        "package": "./internal/crdt",
+        "tests": [
+          "TestNativeGuardLookupColdCollectionInsideReadTx"
+        ]
+      },
+      {
+        "package": "./internal/object",
+        "tests": [
+          "TestGuardRejectsUnderlyingDeletionBeforeWrapperIsMarked",
+          "TestNativeConditionalBlockEmptyPatchChecksSequenceAndWriter",
+          "TestNativeConditionalBlockFinalWriterFence",
+          "TestNativeConditionalBlockRefusesDeletedTreeBeforeSDKCallback",
+          "TestNativeCurrentWriterBlockCreationRejectsNativeTombstoneWindow",
+          "TestNativeCurrentWriterBootstrapAndBlockCreationFinalFence",
+          "TestNativeCurrentWriterBootstrapAndBlockCreationSuccess",
+          "TestNativeObjectRowCASFourCompetingWriters",
+          "TestNativeObjectRowCASMissingRowAndIdentityGuards",
+          "TestNativeObjectRowCASRejectsABAAndFutureStamp"
+        ]
+      },
+      {
+        "package": "./internal/spaceimpl",
+        "tests": [
+          "TestCurrentWriterFenceRequiresConditionalSyncedRoute",
+          "TestObjectConditionalModifyShapeGuards"
+        ]
+      },
+      {
+        "package": "./internal/spaceobjects",
+        "tests": [
+          "TestNativeDefinitionCallbackAndActualAppendKeepOwnerLocked",
+          "TestNativeDefinitionDeletionBeforeSDKCallbackRefusesAppend",
+          "TestNativeDefinitionPolicyUsesCompiledCanonicalModule",
+          "TestNativeDefinitionRequiredDocumentDatasetCannotRaceTypePicker",
+          "TestRealSignedRemoteChangesUseIntrinsicGuardBeforeStorage"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "native_claim_contracts",
+    "expectedTopLevelTests": 12,
+    "selectedTests": [
+      {
+        "package": "./internal/pinkha/claims",
+        "tests": [
+          "TestCanonicalBytesRemainHeartAndSwiftCompatible",
+          "TestExternalOnlyInternalNoteNeverBecomesDocumentSource",
+          "TestNativeSemanticBindingPreservesUnknownFieldsAndOriginalBytes",
+          "TestNativeSemanticConflictsNeverDeduplicateDistinctClaims",
+          "TestObjectSnapshotBoundIncludesGlobalWitnessesAndNeverReturnsPartial",
+          "TestObjectSnapshotChecksEligibilityBeforeGenerationShortcut",
+          "TestObjectSnapshotGlobalCollisionClosureMatchesWorkspaceProjection",
+          "TestObjectSnapshotRetainsOrphanHistoryButFiltersNativeReachability",
+          "TestObservedRemovePreservesConcurrentAddsAndBothReplacements",
+          "TestOnlyDocumentContextProducesNativePropertyIndexes",
+          "TestProjectionQuarantinesCrossTargetCollisionBeforeRemove",
+          "TestSignedNativeEnvelopeRejectsForgedIdentityAndPayload"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "native_http_routes",
+    "expectedTopLevelTests": 25,
+    "selectedTests": [
+      {
+        "package": "./internal/server",
+        "tests": [
+          "TestPinkhaBlockCASConcurrentEditsHaveOneWinner",
+          "TestPinkhaBlockCASEngineRunAndWholePatchPreflight",
+          "TestPinkhaBlockCASIncludesUnrenderedAndDeletedChildren",
+          "TestPinkhaBlockCASNoopAndLegacyPatch",
+          "TestPinkhaBlockCASRetainsIdentityAndRefusesStaleState",
+          "TestPinkhaCurrentWriterCreateRejectsCopyAndMalformedRequests",
+          "TestPinkhaCurrentWriterCreationUncertaintyPreservesOnlyMetadata",
+          "TestPinkhaCurrentWriterObjectAndBlockCreateNativeRoundTrip",
+          "TestPinkhaDefinitionDescriptorChangeRefusesPreparedValue",
+          "TestPinkhaDefinitionDocumentPickerRefusesRemovedDestinationEditor",
+          "TestPinkhaDefinitionMembershipRefusesWrongSlotsAndDeletedOwners",
+          "TestPinkhaDescriptorCallbackUsesLatestLockedDefinition",
+          "TestPinkhaDocumentMetadataEmptyNativeSnapshotCannotReadRows",
+          "TestPinkhaDocumentMetadataGenerationExcludesUnrelatedClaims",
+          "TestPinkhaDocumentMetadataWorksBeforeClaimsInstallation",
+          "TestPinkhaDocumentPolicyCustomCanonicalTypesAndBodyRetention",
+          "TestPinkhaMobileGatewayPreservesStandalone",
+          "TestPinkhaMobileManagedGateway",
+          "TestPinkhaOrderedCollisionHasDistinctNativeErrorCode",
+          "TestPinkhaPresentationBoundsPreserveFutureOpaqueKeys",
+          "TestPinkhaPresentationRegisteredSchemaAndVisibilityPreservesValues",
+          "TestPinkhaPropertyCASConcurrentHasOneWinner",
+          "TestPinkhaPropertyCASDeletedTargetCannotReappear",
+          "TestPinkhaPropertyCASMalformedGuardsNeverWrite",
+          "TestPinkhaPropertyCASVersionAndABA"
+        ]
+      }
+    ]
+  }
+]

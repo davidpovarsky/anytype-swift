@@ -1,0 +1,22 @@
+--- prior/run_native_object_validation.py
++++ v9/run_native_object_validation.py
+@@ -151,6 +151,19 @@
+             a.request('DELETE',base+'/properties/'+doc+'/collections/bin');require(repo.object_snapshot(doc)['reachableClaimBlockIds']==[child],'eligible target did not return')
+         with step('scoped_watch_reports_cross_peer_native_append'):
+             watch=ObjectWatch(repo,doc);watch.wait(lambda s:{r['id'] for r in s['records']}==closure)
++            convergence_started=time.monotonic();convergence_attempts=0
++            def restored_peer_eligible():
++                nonlocal convergence_attempts
++                convergence_attempts+=1
++                value=b.request('GET',base+'/pinkha/objects/'+doc+'/claims?limit=10000',timeout=5)
++                scoped=second.validate_object(value,doc)
++                record=b.request('GET',base+'/objects/'+doc,timeout=5)['record']
++                memberships=record.get('any',{}).get('collections',[])
++                require(isinstance(memberships,list) and all(isinstance(v,str) for v in memberships),'invalid peer B native collections')
++                if 'bin' in memberships or scoped['reachableClaimBlockIds']!=[child]:return False
++                receipt['peerBRestoreBeforeAppend']={'phase':'after_A_bin_restore_before_single_B_append','readOnlyAttempts':convergence_attempts,'elapsedSeconds':round(time.monotonic()-convergence_started,3),'nativeObjectSnapshotComplete':scoped.get('complete') is True,'nativeScope':scoped.get('scope'),'nativeGeneration':scoped.get('readiness',{}).get('generation'),'collections':memberships,'binAbsent':True,'reachableClaimBlockIds':scoped['reachableClaimBlockIds'],'businessAppendRetried':False}
++                return True
++            eventually(restored_peer_eligible,'peer B native target eligibility after peer A restore',timeout=60)
+             marker=make_claim(space,account,doc,200,ref='cross-peer scoped marker',item_id='scoped-marker');second.append(marker);closure.add(marker['id']);expected.add(marker['id'])
+             watch.wait(lambda s:{r['id'] for r in s['records']}==closure);watch.close();watch=None
+             b.stop()

@@ -1,0 +1,27 @@
+{
+  "status": "VERIFIED_NATIVE_WIRE_CHANGE",
+  "nativeManifestSHA256": "15906eb27afea68cc7ec99242bffd6a8ea69517edb608a4421cce90c9a99a070",
+  "anyEffectiveTree": "c8d0dee2397a2d879f3848f5a71f8024e121a2ed",
+  "sdkEffectiveTree": "bf2eeba7930da8008aa626eba50073497881ee58",
+  "sdkUnchangedFromV8": true,
+  "productionChange": "Only PinkhaPropertiesSetResponse adds uint64 applySeq,omitempty and pinkhaPropertyResult forwards original SDK result.ApplySeq. Generic ModifyResult/stock responses and the exact-row propertiesVersion condition remain unchanged.",
+  "actualSerializedHTTPTests": {
+    "result": "native-property-receipts-v9-server-tests/result.json",
+    "sha256": "849c4936ae67a2885715ff9ea454322ab44c84dac5b2b4d77fc501c7a9051304",
+    "topLevelTests": 19,
+    "cases": 47,
+    "skips": 0
+  },
+  "actualPeerTests": {
+    "result": "native-final-v9-object-runtime-v1/result.json",
+    "sha256": "1f3b5412686efb8a9d8bdeca9567eff729613a2a136a07147187ceaebe31b236",
+    "checks": 16,
+    "scope": "Native peer/partition/rejoin/object/watch with read-only eligibility barrier; no10001-scale rerun"
+  },
+  "testAssertions": "Actual nonempty HTTP response has positive accepted sequence greater than capture, matching native row sequence/full version/engine run; stock response has no sequence; repeated fenced no-op omits sequence and propertiesVersion and leaves row unchanged.",
+  "coverageLimit": "This verifies native source/wire/peer behavior. Swift Host property15 remains a separate acceptance; its later30s writeUncertain is not converted to PASS here. Prior v8 full64/140 remains historical exact-source proof.",
+  "files": {
+    "review.json": "2122d6e261db496094393b793ba842feaa2620e8f5541b730f6ba4c669fdcef7",
+    "v8-to-v9-wire.diff": "42400ffbfc0542ec678576b865fa984dc1b5d38d22586fb5fa00b8ed52a4eee4"
+  }
+}

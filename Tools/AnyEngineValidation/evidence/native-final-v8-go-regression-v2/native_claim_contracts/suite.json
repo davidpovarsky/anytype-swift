@@ -1,0 +1,69 @@
+{
+  "name": "native_claim_contracts",
+  "status": "PASS",
+  "command": [
+    "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+    "test",
+    "-json",
+    "-count=1",
+    "-p",
+    "2",
+    "-timeout",
+    "240s",
+    "-run",
+    "^(TestCanonicalBytesRemainHeartAndSwiftCompatible|TestExternalOnlyInternalNoteNeverBecomesDocumentSource|TestNativeSemanticBindingPreservesUnknownFieldsAndOriginalBytes|TestNativeSemanticConflictsNeverDeduplicateDistinctClaims|TestObjectSnapshotBoundIncludesGlobalWitnessesAndNeverReturnsPartial|TestObjectSnapshotChecksEligibilityBeforeGenerationShortcut|TestObjectSnapshotGlobalCollisionClosureMatchesWorkspaceProjection|TestObjectSnapshotRetainsOrphanHistoryButFiltersNativeReachability|TestObservedRemovePreservesConcurrentAddsAndBothReplacements|TestOnlyDocumentContextProducesNativePropertyIndexes|TestProjectionQuarantinesCrossTargetCollisionBeforeRemove|TestSignedNativeEnvelopeRejectsForgedIdentityAndPayload)$",
+    "./internal/pinkha/claims"
+  ],
+  "process": {
+    "command": [
+      "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "test",
+      "-json",
+      "-count=1",
+      "-p",
+      "2",
+      "-timeout",
+      "240s",
+      "-run",
+      "^(TestCanonicalBytesRemainHeartAndSwiftCompatible|TestExternalOnlyInternalNoteNeverBecomesDocumentSource|TestNativeSemanticBindingPreservesUnknownFieldsAndOriginalBytes|TestNativeSemanticConflictsNeverDeduplicateDistinctClaims|TestObjectSnapshotBoundIncludesGlobalWitnessesAndNeverReturnsPartial|TestObjectSnapshotChecksEligibilityBeforeGenerationShortcut|TestObjectSnapshotGlobalCollisionClosureMatchesWorkspaceProjection|TestObjectSnapshotRetainsOrphanHistoryButFiltersNativeReachability|TestObservedRemovePreservesConcurrentAddsAndBothReplacements|TestOnlyDocumentContextProducesNativePropertyIndexes|TestProjectionQuarantinesCrossTargetCollisionBeforeRemove|TestSignedNativeEnvelopeRejectsForgedIdentityAndPayload)$",
+      "./internal/pinkha/claims"
+    ],
+    "timedOut": false,
+    "cleanupErrors": [],
+    "pid": 13520,
+    "processBoundary": "owned_windows_kill_on_close_job",
+    "exitCode": 0,
+    "parentExited": true,
+    "elapsedSeconds": 13.016
+  },
+  "selectedTests": [
+    {
+      "package": "./internal/pinkha/claims",
+      "tests": [
+        "TestCanonicalBytesRemainHeartAndSwiftCompatible",
+        "TestExternalOnlyInternalNoteNeverBecomesDocumentSource",
+        "TestNativeSemanticBindingPreservesUnknownFieldsAndOriginalBytes",
+        "TestNativeSemanticConflictsNeverDeduplicateDistinctClaims",
+        "TestObjectSnapshotBoundIncludesGlobalWitnessesAndNeverReturnsPartial",
+        "TestObjectSnapshotChecksEligibilityBeforeGenerationShortcut",
+        "TestObjectSnapshotGlobalCollisionClosureMatchesWorkspaceProjection",
+        "TestObjectSnapshotRetainsOrphanHistoryButFiltersNativeReachability",
+        "TestObservedRemovePreservesConcurrentAddsAndBothReplacements",
+        "TestOnlyDocumentContextProducesNativePropertyIndexes",
+        "TestProjectionQuarantinesCrossTargetCollisionBeforeRemove",
+        "TestSignedNativeEnvelopeRejectsForgedIdentityAndPayload"
+      ]
+    }
+  ],
+  "expectedTopLevelTests": 12,
+  "passedTopLevelTests": 12,
+  "passedIncludingSubtests": 29,
+  "skippedIncludingSubtests": 0,
+  "failedIncludingSubtests": 0,
+  "missingPasses": [],
+  "unexpectedTopLevelTests": [],
+  "failedEvents": [],
+  "rawLogSHA256": "728f81e4d837fdf3bb3d0ad442015c63f7b528a9ca5a7469175529a03af93b52",
+  "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "nonJSONDiagnosticLines": 0
+}

@@ -1,0 +1,4 @@
+        let result: AnyJSON = .object(["status": .string("PASS"), "count": .integer(Int64(checks.count)),
+            "checks": .array(checks.map(AnyJSON.string)),
+            "scope": .string("real v6 native property/type/collection/visibility/undo with production Host; in-memory creation metadata fixture; protected persistence separate")])
+        print(String(decoding: try JSONEncoder().encode(result), as: UTF8.self))

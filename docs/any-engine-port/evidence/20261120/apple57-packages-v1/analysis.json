@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_ACTUAL_APPLE_PACKAGES",
+  "run": 44673740725,
+  "job": 136080516288,
+  "artifact": 14603011528,
+  "commit": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+  "profiles": {
+    "any-engine-tests": {
+      "xctest": {
+        "total": 67,
+        "passed": 67,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 0,
+        "status": "passed"
+      },
+      "logSHA256": "305d407dfc4cf6c5f171b619822f95de0bdc0b021065e6b13a702b45b44ca366"
+    },
+    "any-integration-tests": {
+      "xctest": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 126,
+        "passed": 126,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 10,
+        "status": "passed"
+      },
+      "logSHA256": "8877ddfe93e3eece9106b41cb87f2d722637472553214176d2097790ea149c41"
+    },
+    "any-host-tests": {
+      "xctest": {
+        "total": 65,
+        "passed": 65,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 11,
+        "passed": 11,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 1,
+        "status": "passed"
+      },
+      "logSHA256": "b8a6e3a434ad2ba0bde4ae56d37beb851bf00a7fa2873fbcbfd164972c373845"
+    },
+    "any-hanlin-tests": {
+      "xctest": {
+        "total": 33,
+        "passed": 33,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 0,
+        "status": "passed"
+      },
+      "logSHA256": "98741e7c9b90848f5fe7f34ca939623a91834ca3e34fb967c52c979765960415"
+    },
+    "torah-presentation-tests": {
+      "xctest": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 10,
+        "passed": 10,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 1,
+        "status": "passed"
+      },
+      "logSHA256": "dc2b7582c456967cc08d0f3f8d0ce920944849dea0185f71d5c2716011c26943"
+    },
+    "any-ui-tests": {
+      "xctest": {
+        "total": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 93,
+        "passed": 93,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 16,
+        "status": "passed"
+      },
+      "logSHA256": "d789290629cb33563fb85d95676109b87533fa61643c688e3600be004326ff8b"
+    },
+    "pinkhakit-tests": {
+      "xctest": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0
+      },
+      "swiftTesting": {
+        "total": 217,
+        "passed": 217,
+        "failed": 0,
+        "skipped": 0,
+        "suites": 29,
+        "status": "passed"
+      },
+      "logSHA256": "c1378b8f81460e02771abcd27b21bcae4bac6ceeb6a9e431a349361481a2e692"
+    }
+  },
+  "publicProvider": {
+    "status": "PASS",
+    "passed": 7,
+    "failed": 0,
+    "sourceStable": true,
+    "sourceBeforeAndAfterMatchCommittedFiles": 92,
+    "binaryStable": true,
+    "probeScope": "real_public_sefaria_production_facade",
+    "receipt": "live-public-provider/result.json"
+  },
+  "sourceRetention": {
+    "status": "PASS",
+    "inventoryCapabilityCount": 38,
+    "inventorySourceCount": 320,
+    "reviewedRefactors": 32,
+    "semanticEquivalence": "REQUIRES_INDEPENDENT_TEST_AND_REVIEW_EVIDENCE",
+    "productParity": "NOT_PROVEN_BY_SOURCE_RETENTION"
+  },
+  "toolchain": {
+    "xcode": "Xcode 27.0\nBuild version 27A266a",
+    "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.2.0"
+  },
+  "sourceBinding": {
+    "commit": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+    "tree": "bdfb536a64c61f3216a908aa0fc5c2c0b72a18e1",
+    "committedSourceFiles": 264,
+    "providerManifestAllCommittedFilesMatched": true
+  },
+  "scope": "Actual Apple Swift package execution and source-bound live public Sefaria provider checks. macOS package tests do not execute UIKit-only bodies, the hosted app, or mounted NativeLaunch flows. New uncommitted presentation race and document publication tests are outside this 57c result.",
+  "actionsPerformed": "Archived and verified an already completed job. No compilation, test rerun, product source change, index change or ledger update."
+}
