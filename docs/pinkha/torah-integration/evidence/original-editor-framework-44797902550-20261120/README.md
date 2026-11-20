@@ -23,7 +23,7 @@ The driver also reported a complete 2238-file original compiler closure (2237 or
 
 ## Evidence and replay
 
-`artifact-14661426349.zip` is the unmodified 1,620,390-byte GitHub artifact, SHA256 `508d94841af15124cb87580ac87829973e7d8aceae75e3ffb1948db74e761cdf`. It contains the complete nested 34-member evidence ZIP, including all six xcresult data/plist members. Every ZIP CRC was checked. Both owned simulators remained shut down; shutdown returned 149 and both exact owned delete operations returned zero.
+`artifact-14661426349.zip` is the unmodified 1,620,390-byte GitHub artifact, SHA256 `508d94841af15124cb87580ac87829973e7d8aceae75e3ffb1948db74e761cdf`. It contains the complete nested 34-member evidence ZIP, including all seven xcresult members (six Data entries plus Info.plist). Every ZIP CRC was checked. Both owned simulators remained shut down; shutdown returned 149 and both exact owned delete operations returned zero.
 
 `canonical-api-and-log.zip` preserves complete canonical run/jobs/artifact/commit metadata and the full workflow log, the canonical Git tree subset, exact source binding and original ZIP inventories. The failed direct-job metadata request is retained separately inside that ZIP as a collection error, not a test failure. `canonical-source-inputs.zip` contains all 23 original input bytes plus the original 44-pin Package.resolved. Signed storage download URLs and credentials are excluded.
 
