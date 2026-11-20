@@ -46,8 +46,8 @@ def put_framework(path, files):
         target.write_bytes(data)
         target.chmod(PROFILE['files'][name]['mode'])
 
-def fixture_ad_hoc_replacement(files, delta=0, edit_prefix=None, edit_directory=None):
-    """Pure fixture, never a substitute for the workflow's native codesign."""
+def fixture_ad_hoc_replacement(files, delta=0, edit_prefix=None, edit_directory=None, page_exponents=(12, 14)):
+    """Explicit modern native-tool boundary; never invokes or replaces codesign."""
     result = dict(files)
     resources = plistlib.loads(files['_CodeSignature/CodeResources'])
     for table in ('files', 'files2'):
@@ -60,38 +60,54 @@ def fixture_ad_hoc_replacement(files, delta=0, edit_prefix=None, edit_directory=
     for index, old in enumerate(before):
         signature = old['signature']
         prefix = bytearray(old['thin'][:signature['dataoff']])
-        new_signature_size = signature['datasize'] + delta
         old_signature = old['thin'][signature['dataoff']:]
         magic, meaningful, count = struct.unpack_from('>III', old_signature)
+        indices = [struct.unpack_from('>II', old_signature, 12 + 8 * item) for item in range(count)]
+        blobs = {}
+        for slot, start in indices:
+            length = struct.unpack_from('>I', old_signature, start + 4)[0]
+            blobs[slot] = old_signature[start:start + length]
+        old_directory = blobs[0]
+        hashes = struct.unpack_from('>I', old_directory, 16)[0]
+        page_exponent = page_exponents[index]
+        page_bytes = 1 << page_exponent
+        pages = (len(prefix) + page_bytes - 1) // page_bytes
+        directory = bytearray(old_directory[:hashes]) + bytearray(pages * 32)
+        struct.pack_into('>I', directory, 4, len(directory))
+        struct.pack_into('>I', directory, 28, pages)
+        directory[39] = page_exponent
+        directory[hashes - 96:hashes - 64] = hashlib.sha256(result['_CodeSignature/CodeResources']).digest()
+        meaningful = 12 + count * 8 + len(directory) + sum(len(value) for slot, value in blobs.items() if slot != 0)
+        new_signature_size = meaningful + 18 + delta
         if new_signature_size < meaningful:
             raise AssertionError('Synthetic signing fixture allocation is too small')
         new_thin_size = len(prefix) + new_signature_size
         linkedit = old['linkedit']
         filesize = new_thin_size - linkedit['fileoff']
-        vmsize = linkedit['vmsize']
-        if filesize > vmsize:
-            unit = 1 << old['vm_alignment']
-            vmsize = (filesize + unit - 1) // unit * unit
+        vmsize = (filesize + 16383) // 16384 * 16384
         struct.pack_into('<Q', prefix, linkedit['command_offset'] + 32, vmsize)
         struct.pack_into('<Q', prefix, linkedit['command_offset'] + 48, filesize)
         struct.pack_into('<I', prefix, signature['command_offset'] + 12, new_signature_size)
         if edit_prefix:
             edit_prefix(prefix, old, index)
-        payload = bytearray(old_signature[:meaningful])
-        indices = dict(struct.unpack_from('>II', payload, 12 + 8 * item) for item in range(count))
-        location = indices[0]
-        length = struct.unpack_from('>I', payload, location + 4)[0]
-        directory = bytearray(payload[location:location + length])
-        hashes = struct.unpack_from('>I', directory, 16)[0]
-        pages = struct.unpack_from('>I', directory, 28)[0]
-        directory[hashes - 96:hashes - 64] = hashlib.sha256(result['_CodeSignature/CodeResources']).digest()
         for page in range(pages):
             directory[hashes + page * 32:hashes + (page + 1) * 32] = hashlib.sha256(
-                prefix[page * 4096:min((page + 1) * 4096, len(prefix))]).digest()
+                prefix[page * page_bytes:min((page + 1) * page_bytes, len(prefix))]).digest()
         if edit_directory:
             edit_directory(directory, old, index)
-        payload[location:location + length] = directory
-        thin = prefix + payload + bytes(new_signature_size - len(payload))
+        blobs[0] = bytes(directory)
+        payload = bytearray(12 + 8 * count)
+        struct.pack_into('>III', payload, 0, magic, meaningful, count)
+        for item, (slot, _) in enumerate(indices):
+            struct.pack_into('>II', payload, 12 + 8 * item, slot, len(payload))
+            payload.extend(blobs[slot])
+        if len(payload) != meaningful:
+            raise AssertionError('Synthetic SuperBlob length differs')
+        start = signature['dataoff'] + meaningful
+        stop = signature['dataoff'] + new_signature_size
+        residue = old['thin'][start:stop]
+        residue += bytes(new_signature_size - meaningful - len(residue))
+        thin = prefix + payload + residue
         unit = 1 << old['fat_alignment']
         offset = (len(output) + unit - 1) // unit * unit
         output.extend(bytes(offset - len(output)))
@@ -174,23 +190,26 @@ class KnownSimulatorSigningControls(unittest.TestCase):
         self.assertEqual({p for p in candidate if candidate[p] != self.original[p]},
                          {signing.EXECUTABLE, '_CodeSignature/CodeResources'})
 
-    def test_larger_signature_uses_exact_original_architecture_vm_rounding(self):
-        candidate = fixture_ad_hoc_replacement(self.original, delta=65536)
+    def test_native_signature_uses_documented_fixed_16k_vm_rounding(self):
+        candidate = fixture_ad_hoc_replacement(self.original)
         proof = signing.executable_preservation(self.original, candidate)
-        for row, unit in zip(proof, [4096, 16384]):
+        for row in proof:
             after = row['after']['linkedit']
-            self.assertEqual(after['vmsize'], (after['filesize'] + unit - 1) // unit * unit)
+            self.assertEqual(after['vmsize'], (after['filesize'] + 16383) // 16384 * 16384)
 
-    def test_smaller_signature_does_not_shrink_original_virtual_allocation(self):
-        candidate = fixture_ad_hoc_replacement(self.original, delta=-10000)
+    def test_smaller_signature_shrinks_only_to_exact_rounded_allocation(self):
+        candidate = fixture_ad_hoc_replacement(self.original)
         proof = signing.executable_preservation(self.original, candidate)
-        self.assertEqual([row['after']['linkedit']['vmsize'] for row in proof], [212992, 212992])
+        self.assertEqual([row['before']['linkedit']['vmsize'] for row in proof], [212992, 212992])
+        self.assertEqual([row['after']['linkedit']['vmsize'] for row in proof], [196608, 180224])
+        self.assertEqual([row['after']['signature']['datasize'] for row in proof], [2576, 880])
 
     def test_rehashed_executable_code_change_is_refused(self):
         def edit(prefix, old, index):
             prefix[8192] ^= 1
         candidate = fixture_ad_hoc_replacement(self.original, edit_prefix=edit)
-        signing.read_macho(candidate[signing.EXECUTABLE], candidate)
+        signing.read_macho(candidate[signing.EXECUTABLE], candidate,
+                           previous_slices=signing.read_macho(self.original[signing.EXECUTABLE], self.original))
         with self.assertRaisesRegex(ValueError, 'nonsignature LINKEDIT'):
             signing.executable_preservation(self.original, candidate)
 
@@ -198,7 +217,8 @@ class KnownSimulatorSigningControls(unittest.TestCase):
         def edit(prefix, old, index):
             prefix[old['signature']['dataoff'] - 64] ^= 1
         candidate = fixture_ad_hoc_replacement(self.original, edit_prefix=edit)
-        signing.read_macho(candidate[signing.EXECUTABLE], candidate)
+        signing.read_macho(candidate[signing.EXECUTABLE], candidate,
+                           previous_slices=signing.read_macho(self.original[signing.EXECUTABLE], self.original))
         with self.assertRaisesRegex(ValueError, 'nonsignature LINKEDIT'):
             signing.executable_preservation(self.original, candidate)
 
@@ -222,7 +242,8 @@ class KnownSimulatorSigningControls(unittest.TestCase):
     def test_signature_dataoff_movement_is_not_a_general_padding_exemption(self):
         candidate = fixture_ad_hoc_replacement(self.original)
         binary = bytearray(candidate[signing.EXECUTABLE])
-        value = signing.read_macho(candidate[signing.EXECUTABLE], candidate)[0]
+        value = signing.read_macho(candidate[signing.EXECUTABLE], candidate,
+                           previous_slices=signing.read_macho(self.original[signing.EXECUTABLE], self.original))[0]
         at = value['offset'] + value['signature']['command_offset'] + 8
         struct.pack_into('<I', binary, at, value['signature']['dataoff'] + 16)
         candidate[signing.EXECUTABLE] = bytes(binary)
@@ -256,7 +277,8 @@ class KnownSimulatorSigningControls(unittest.TestCase):
 
     def test_entitlement_slot_cannot_replace_the_empty_cms_slot(self):
         candidate = fixture_ad_hoc_replacement(self.original)
-        values = signing.read_macho(candidate[signing.EXECUTABLE], candidate)
+        values = signing.read_macho(candidate[signing.EXECUTABLE], candidate,
+                           previous_slices=signing.read_macho(self.original[signing.EXECUTABLE], self.original))
         binary = bytearray(candidate[signing.EXECUTABLE])
         for old in values:
             at = old['offset'] + old['signature']['dataoff'] + 12 + 16
@@ -403,6 +425,120 @@ class KnownSimulatorSigningControls(unittest.TestCase):
                     name = proof[key] + '/' + relative
                     self.assertEqual(archive.read(name), (self.evidence / name).read_bytes())
 
+    def test_native_shape_preserves_exact_residue_and_architecture_pages(self):
+        candidate = fixture_ad_hoc_replacement(self.original)
+        proof = signing.executable_preservation(self.original, candidate)
+        self.assertEqual([row['after']['signature_proof']['page_exponent'] for row in proof], [12, 14])
+        self.assertEqual([row['after']['signature_proof']['code_pages'] for row in proof], [72, 19])
+        parsed = signing.read_macho(candidate[signing.EXECUTABLE], candidate,
+                                   previous_slices=signing.read_macho(self.original[signing.EXECUTABLE], self.original))
+        originals = signing.read_macho(self.original[signing.EXECUTABLE], self.original)
+        for index, (old, new) in enumerate(zip(originals, parsed)):
+            start = new['signature']['dataoff'] + new['signature_proof']['superblob_bytes']
+            stop = new['signature']['dataoff'] + new['signature']['datasize']
+            self.assertEqual(stop - start, 18)
+            self.assertEqual(new['thin'][start:stop], old['thin'][start:stop])
+            self.assertEqual(any(new['thin'][start:stop]), index == 1)
+
+    def test_one_changed_residue_byte_is_refused_on_either_architecture(self):
+        for index in (0, 1):
+            with self.subTest(index=index):
+                candidate = fixture_ad_hoc_replacement(self.original)
+                binary = bytearray(candidate[signing.EXECUTABLE])
+                _, _, offset, size, _ = struct.unpack_from('>IIIII', binary, 8 + index * 20)
+                binary[offset + size - 1] ^= 1
+                candidate[signing.EXECUTABLE] = bytes(binary)
+                with self.assertRaisesRegex(ValueError, 'exact preimage'):
+                    signing.executable_preservation(self.original, candidate)
+
+    def test_zeroing_the_nonzero_prior_arm_residue_is_not_an_exemption(self):
+        candidate = fixture_ad_hoc_replacement(self.original)
+        binary = bytearray(candidate[signing.EXECUTABLE])
+        _, _, offset, size, _ = struct.unpack_from('>IIIII', binary, 28)
+        self.assertTrue(any(binary[offset + size - 18:offset + size]))
+        binary[offset + size - 18:offset + size] = bytes(18)
+        candidate[signing.EXECUTABLE] = bytes(binary)
+        with self.assertRaisesRegex(ValueError, 'exact preimage'):
+            signing.executable_preservation(self.original, candidate)
+
+    def test_slack_must_fit_inside_the_parsed_original_allocation(self):
+        candidate = fixture_ad_hoc_replacement(self.original)
+        original = signing.read_macho(self.original[signing.EXECUTABLE], self.original)
+        _, _, _, size, _ = struct.unpack_from('>IIIII', candidate[signing.EXECUTABLE], 28)
+        original[1] = dict(original[1], thin=original[1]['thin'][:size - 1])
+        with self.assertRaisesRegex(ValueError, 'exact preimage'):
+            signing.read_macho(candidate[signing.EXECUTABLE], candidate, previous_slices=original)
+
+    def test_other_page_policy_is_refused_even_when_its_page_hashes_match(self):
+        originals = signing.read_macho(self.original[signing.EXECUTABLE], self.original)
+        for exponents, index in (((12, 12), 1), ((14, 14), 0)):
+            with self.subTest(exponents=exponents):
+                candidate = fixture_ad_hoc_replacement(self.original, page_exponents=exponents)
+                binary = candidate[signing.EXECUTABLE]
+                _, _, offset, size, _ = struct.unpack_from('>IIIII', binary, 8 + index * 20)
+                thin = binary[offset:offset + size]
+                old = originals[index]
+                start, extent = struct.unpack_from('<II', thin, old['signature']['command_offset'] + 8)
+                valid_hashes = signing.read_signature(
+                    thin, start, extent, candidate, previous_thin=old['thin'], expected_page=exponents[index])
+                self.assertEqual(valid_hashes['page_exponent'], exponents[index])
+                with self.assertRaisesRegex(ValueError, 'signing semantics'):
+                    signing.executable_preservation(self.original, candidate)
+
+    def test_changed_native_code_page_hash_is_refused(self):
+        def alter(directory, old, index):
+            hashes = struct.unpack_from('>I', directory, 16)[0]
+            directory[hashes] ^= 1
+        candidate = fixture_ad_hoc_replacement(self.original, edit_directory=alter)
+        with self.assertRaisesRegex(ValueError, 'Executable signing page hash'):
+            signing.executable_preservation(self.original, candidate)
+
+    def test_changed_native_special_hash_is_refused(self):
+        def alter(directory, old, index):
+            hashes = struct.unpack_from('>I', directory, 16)[0]
+            directory[hashes - 32] ^= 1
+        candidate = fixture_ad_hoc_replacement(self.original, edit_directory=alter)
+        with self.assertRaisesRegex(ValueError, 'Special signing slot'):
+            signing.executable_preservation(self.original, candidate)
+
+    def test_old_x86_four_kib_rounding_is_refused_after_rehashing(self):
+        def alter(prefix, old, index):
+            if index == 0:
+                filesize = struct.unpack_from('<Q', prefix, old['linkedit']['command_offset'] + 48)[0]
+                struct.pack_into('<Q', prefix, old['linkedit']['command_offset'] + 32,
+                                 (filesize + 4095) // 4096 * 4096)
+        candidate = fixture_ad_hoc_replacement(self.original, edit_prefix=alter)
+        with self.assertRaisesRegex(ValueError, 'virtual allocation'):
+            signing.executable_preservation(self.original, candidate)
+
+    def test_rehashed_linkedit_overlap_with_an_original_segment_is_refused(self):
+        def alter(prefix, old, index):
+            prior_ends = []
+            for command, length, at in old['commands']:
+                if command == 0x19 and at != old['linkedit']['command_offset']:
+                    address, extent = struct.unpack_from('<QQ', prefix, at + 24)
+                    if extent:
+                        prior_ends.append(address + extent)
+            self.assertTrue(prior_ends)
+            overlapping_address = max(prior_ends) - 1
+            self.assertLess(overlapping_address, old['linkedit']['vmaddr'])
+            struct.pack_into('<Q', prefix, old['linkedit']['command_offset'] + 24, overlapping_address)
+        candidate = fixture_ad_hoc_replacement(self.original, edit_prefix=alter)
+        with self.assertRaisesRegex(ValueError, 'LINKEDIT address changed'):
+            signing.executable_preservation(self.original, candidate)
+
+    def test_payload_after_the_terminal_fat_allocation_is_refused(self):
+        candidate = fixture_ad_hoc_replacement(self.original)
+        candidate[signing.EXECUTABLE] += bytes(16)
+        with self.assertRaisesRegex(ValueError, 'trailing FAT'):
+            signing.executable_preservation(self.original, candidate)
+
+    def test_unaligned_native_signing_allocation_is_refused(self):
+        candidate = fixture_ad_hoc_replacement(self.original, delta=1)
+        with self.assertRaisesRegex(ValueError, 'allocation alignment'):
+            signing.executable_preservation(self.original, candidate)
+
+
 class OriginalSigningDriverFlowControls(unittest.TestCase):
     def run_flow(self, fail_other=False, corrupt_signer=False):
         case = original_flow.OriginalDriverFlowControls('test_one_notice_preserves_selected_simulator_for_both_original_build_commands')
@@ -475,6 +611,20 @@ class OriginalSigningDriverFlowControls(unittest.TestCase):
         self.assertNotIn('framework-signature-0', case.names())
         self.assertNotIn('external-consumer-build', case.names())
         self.assertEqual(case.receipt['external_consumer_build'], 'NOT_RUN')
+
+    def test_failed_signing_retains_full_after_inventory_without_qualification(self):
+        case = self.run_flow(corrupt_signer=True)
+        before = json.loads((case.evidence / 'framework-distribution-before-simulator-signing.json').read_bytes())
+        observed = json.loads((case.evidence / 'framework-distribution-after-failed-signing.json').read_bytes())
+        self.assertEqual(observed['status'], 'OBSERVED_ONLY_NOT_QUALIFIED')
+        self.assertEqual(set(observed['files']), set(before['files']))
+        path = 'Frameworks/AmplitudeCore.framework/Headers/AmplitudeCore-Swift.h'
+        self.assertNotEqual(observed['files'][path], before['files'][path])
+        self.assertEqual(case.receipt['status'], 'FAIL')
+        self.assertNotIn('framework-signature-0', case.names())
+        self.assertNotIn('external-consumer-build', case.names())
+        self.assertNotIn('boot-owned-simulator', case.names())
+
 
 if __name__ == '__main__':
     unittest.main()

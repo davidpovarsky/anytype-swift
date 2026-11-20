@@ -241,8 +241,21 @@ def execute(args, receipt):
                 # seal, then sign only the owned export; the original strict
                 # gate below and exact consumer embedding remain mandatory.
                 write(evidence / 'framework-distribution-before-simulator-signing.json', exported_proof)
-                transformation = prepare_amplitude_simulator_export(root, products, exported, evidence, command)
+                try:
+                    transformation = prepare_amplitude_simulator_export(root, products, exported, evidence, command)
+                except BaseException:
+                    # Preserve a full after-state even when the narrow parser
+                    # refuses the transformation. It never grants qualification.
+                    try:
+                        write(evidence / 'framework-distribution-after-failed-signing.json',
+                              {'status': 'OBSERVED_ONLY_NOT_QUALIFIED', 'files': inventory(exported)})
+                    except BaseException as observation_error:
+                        receipt['after_failed_signing_inventory_error'] = {
+                            'type': type(observation_error).__name__, 'message': str(observation_error)}
+                    raise
                 after_signing = inventory(exported)
+                write(evidence / 'framework-distribution-after-simulator-signing.json',
+                      {'status': 'OBSERVED_ONLY_NOT_QUALIFIED', 'files': after_signing})
                 permitted = {'Frameworks/AmplitudeCore.framework/AmplitudeCore',
                              'Frameworks/AmplitudeCore.framework/_CodeSignature/CodeResources'}
                 require(set(after_signing) == set(exported_proof['files'])

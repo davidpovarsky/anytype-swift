@@ -98,13 +98,25 @@ def pinned_closure(path, profile):
     read_macho(files[EXECUTABLE], files)
     return observed, files
 
-def read_signature(thin, signature_offset, signature_size, files):
+def read_signature(thin, signature_offset, signature_size, files, *, previous_thin=None, expected_page=12):
     raw = thin[signature_offset:signature_offset + signature_size]
     require(len(raw) >= 12, 'Truncated signing envelope')
     magic, length, count = struct.unpack_from('>III', raw)
     require(magic == 0xfade0cc0 and 12 <= length <= len(raw)
-            and count == 3 and 12 + 8 * count <= length
-            and not any(raw[length:]), 'Unexpected or nonzero signature allocation padding')
+            and count == 3 and 12 + 8 * count <= length,
+            'Unexpected signing envelope shape')
+    if previous_thin is None:
+        require(not any(raw[length:]), 'Unexpected or nonzero signature allocation padding')
+    else:
+        # The actual modern allocator copies the original slice, resizes its
+        # terminal signing allocation, and writes only the new SuperBlob.
+        # Admit only the observed 18-byte slack, at its exact retained offset.
+        end = signature_offset + signature_size
+        require(signature_size % 16 == 0 and signature_size - length == 18,
+                'Unexpected native signature allocation alignment or slack')
+        require(end <= len(previous_thin)
+                and raw[length:] == previous_thin[signature_offset + length:end],
+                'Native signature allocation slack differs from the exact preimage')
     blobs, ranges = {}, []
     for index in range(count):
         slot, offset = struct.unpack_from('>II', raw, 12 + index * 8)
@@ -126,7 +138,7 @@ def read_signature(thin, signature_offset, signature_size, files):
     version, flags, hashes, identifier, special_count, code_count, code_limit = struct.unpack_from('>IIIIIII', directory, 8)
     hash_size, hash_type, platform, page = struct.unpack_from('>BBBB', directory, 36)
     require(version in {0x20400, 0x20500, 0x20600} and flags == 2
-            and (hash_size, hash_type, platform, page) == (32, 2, 0, 12)
+            and (hash_size, hash_type, platform, page) == (32, 2, 0, expected_page)
             and special_count == 3 and code_limit == signature_offset,
             'Ad-hoc signing semantics or executable code limit changed')
     require(struct.unpack_from('>I', directory, 44)[0] == 0
@@ -136,12 +148,13 @@ def read_signature(thin, signature_offset, signature_size, files):
     require(88 <= identifier < len(directory)
             and directory[identifier:].split(bytes([0]), 1)[0] == EXECUTABLE.encode(),
             'Code signing identifier differs')
-    require(code_count == (code_limit + 4095) // 4096
+    page_bytes = 1 << expected_page
+    require(code_count == (code_limit + page_bytes - 1) // page_bytes
             and hashes >= special_count * hash_size
             and hashes + code_count * hash_size <= len(directory),
             'Unexpected code-signing page coverage')
     for index in range(code_count):
-        actual = hashlib.sha256(thin[index * 4096:min((index + 1) * 4096, code_limit)]).digest()
+        actual = hashlib.sha256(thin[index * page_bytes:min((index + 1) * page_bytes, code_limit)]).digest()
         require(directory[hashes + index * 32:hashes + (index + 1) * 32] == actual,
                 'Executable signing page hash differs')
     for index, payload in [(1, files['Info.plist']), (2, blobs[2]), (3, files['_CodeSignature/CodeResources'])]:
@@ -149,12 +162,13 @@ def read_signature(thin, signature_offset, signature_size, files):
                 'Special signing slot differs')
     return {'version': version, 'flags': flags, 'identifier': EXECUTABLE,
             'hash_type': hash_type, 'hash_size': hash_size, 'code_limit': code_limit,
-            'code_pages': code_count, 'special_slots': special_count, 'entitlements': [],
+            'code_pages': code_count, 'page_exponent': page, 'special_slots': special_count, 'entitlements': [],
             'superblob_bytes': length, 'allocated_signature_bytes': signature_size}
 
-def read_macho(binary, files):
+def read_macho(binary, files, *, previous_slices=None):
     require(len(binary) >= 48 and struct.unpack_from('>II', binary) == (0xcafebabe, 2),
             'Expected the exact two-architecture FAT32 executable')
+    require(previous_slices is None or len(previous_slices) == 2, 'Missing original signing slices')
     slices, previous_end = [], 48
     for index, (cpu, subtype, alignment, vm_alignment, original_signature_offset) in enumerate(ARCHITECTURES):
         actual_cpu, actual_subtype, offset, size, actual_alignment = struct.unpack_from('>IIIII', binary, 8 + index * 20)
@@ -207,7 +221,14 @@ def read_macho(binary, files):
                      or (cpu == 0x0100000c and struct.unpack_from('<II', platform_commands[0], 0)[0] == 0x32
                          and struct.unpack_from('<I', platform_commands[0], 8)[0] == 7)),
                 'Original iOS Simulator platform command differs')
-        signature_proof = read_signature(thin, signature['dataoff'], signature['datasize'], files)
+        prior = previous_slices[index] if previous_slices is not None else None
+        if prior is not None:
+            require((prior['cpu'], prior['subtype'], prior['signature']['dataoff'])
+                    == (cpu, subtype, signature['dataoff']), 'Original signing slice identity differs')
+        signature_proof = read_signature(
+            thin, signature['dataoff'], signature['datasize'], files,
+            previous_thin=prior['thin'] if prior is not None else None,
+            expected_page=(14 if cpu == 0x0100000c else 12) if prior is not None else 12)
         slices.append({'cpu': cpu, 'subtype': subtype, 'offset': offset, 'size': size,
                        'fat_alignment': alignment, 'vm_alignment': vm_alignment,
                        'thin': thin, 'commands': commands, 'linkedit': linkedit,
@@ -218,7 +239,7 @@ def read_macho(binary, files):
 
 def executable_preservation(before_files, after_files):
     before = read_macho(before_files[EXECUTABLE], before_files)
-    after = read_macho(after_files[EXECUTABLE], after_files)
+    after = read_macho(after_files[EXECUTABLE], after_files, previous_slices=before)
     proofs = []
     for old, new in zip(before, after):
         require(old['commands'] == new['commands'], 'Mach-O command shape changed')
@@ -229,11 +250,13 @@ def executable_preservation(before_files, after_files):
                 'LINKEDIT address changed')
         require(new_link['filesize'] == len(new['thin']) - old_link['fileoff'],
                 'LINKEDIT size is not exactly the new signature end')
-        expected_vm = old_link['vmsize']
-        if new_link['filesize'] > expected_vm:
-            unit = 1 << old['vm_alignment']
-            expected_vm = (new_link['filesize'] + unit - 1) // unit * unit
-        require(new_link['vmsize'] == expected_vm, 'Unexpected LINKEDIT virtual allocation')
+        # Security's current codesign_alloc.cpp rounds both architectures to
+        # 16 KiB, including shrinkage. This fixed export may not expand beyond
+        # the original pinned LINKEDIT virtual range.
+        expected_vm = (new_link['filesize'] + 16383) // 16384 * 16384
+        require(new_link['vmsize'] == expected_vm
+                and new_link['vmsize'] <= old_link['vmsize'],
+                'Unexpected LINKEDIT virtual allocation')
         end = old['signature']['dataoff']
         left, right = bytearray(old['thin'][:end]), bytearray(new['thin'][:end])
         masks = [(old_link['command_offset'] + 32, 8),
