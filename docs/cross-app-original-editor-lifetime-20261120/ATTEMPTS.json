@@ -1,0 +1,58 @@
+{
+  "red_attempt1": {
+    "job": "job_140198bd04e3",
+    "finished_utc": "2026-11-20T11:37:23.761Z",
+    "compile_exit": 0,
+    "result": "FAIL",
+    "verified_control_count": 0,
+    "reason": "Intentional failed assertion reached Swift fatal before stdout JSON was flushed; no count claim",
+    "result_raw_sha256": "479283498b4d7008c97a0107687611eb598583787546f0893a26f11521b36495"
+  },
+  "red_attempt2": {
+    "job": "job_dd7261753a12",
+    "finished_utc": "2026-11-20T11:39:55.745Z",
+    "compile_exit": 0,
+    "result": "FAIL",
+    "passed": 34,
+    "failed": 1,
+    "failed_controls": [
+      "fresh_prepared_session_cannot_dispatch_while_original_close_is_awaiting"
+    ],
+    "change_from_attempt1": "Only durable CHECKS.json output before intentional failure; product and 35 assertions unchanged",
+    "result_raw_sha256": "7987288c9389edfc9e0644cf6fc293387e938a4f73b12018aa07329d75576491"
+  },
+  "green_attempt1": {
+    "job": "job_ae346e077c31",
+    "finished_utc": "2026-11-20T11:46:54.369Z",
+    "compile_exit": 0,
+    "runtime_exit": 0,
+    "passed": 43,
+    "failed": 0,
+    "prior_35_controls_preserved": true,
+    "additional_controls": [
+      "a_later_original_setup_view_admits_only_a_fresh_prepared_session",
+      "close_completion_requires_a_later_explicit_open_confirmation",
+      "failed_close_does_not_infer_new_authority_or_retry_the_original_rpc",
+      "one_close_lease_or_duplicate_release_cannot_end_another_close",
+      "original_close_completion_does_not_replay_an_earlier_open_confirmation",
+      "original_setup_view_cannot_admit_while_a_close_is_pending",
+      "overlapping_closes_refuse_open_confirmation",
+      "unopened_lifetime_requires_explicit_open_confirmation"
+    ],
+    "result_raw_sha256": "c034538ae811ce1e786d283c0d41d9529dff9df952c608166f014551ce7cc072",
+    "warning": "One fixture #WeakMutability diagnostic printed twice; no production warning"
+  },
+  "original_owner_regression": {
+    "job": "job_0b2679e862c1",
+    "finished_utc": "2026-11-20T11:47:48.331Z",
+    "compile_exit": 0,
+    "runtime_exit": 0,
+    "passed": 30,
+    "failed": 0,
+    "fixture_git_lf_sha256": "b2d9e5a3e96e47e1eb5882fa813858f68d35565dc1bd759d2f06127be467ea43",
+    "fixture_byte_identical_to_parent": true,
+    "result_raw_sha256": "347c229cbb44580c8a38db6f84ad75a4ccbaf0eab8117b085674d2f0b66d5422"
+  },
+  "apple_typecheck": "NOT_RUN",
+  "native": "NOT_RUN"
+}

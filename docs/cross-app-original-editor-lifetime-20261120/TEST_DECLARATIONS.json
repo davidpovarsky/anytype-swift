@@ -1,0 +1,84 @@
+[
+  {
+    "path": "AnytypeTests/Markdown/PreparedEditorPageDocumentTests.swift",
+    "suite": "PreparedEditorPageDocumentTests",
+    "declared_count": 6,
+    "methods": [
+      "acceptsTheSameOpenedDocumentInEachOriginalMode",
+      "rejectsAnotherObjectWithTheSameSpace",
+      "rejectsAnotherSpaceWithTheSameObject",
+      "rejectsAnotherModeAndAnotherVersion",
+      "rejectsEmptyIdentitiesWithoutNormalizingDifferentIdentifiers",
+      "rechecksTheActualDocumentAfterItHasClosed"
+    ],
+    "git_lf_sha256": "75e264b93ef8a1bab9fe7ca2a0a456a8999ab5ef5a18351eeed9a3045fec48a2",
+    "apple_execution": "NOT_RUN_FOR_THIS_SOURCE",
+    "unchanged_from_parent": true
+  },
+  {
+    "path": "AnytypeTests/Markdown/TextServiceHandlerInjectionTests.swift",
+    "suite": "TextServiceHandlerInjectionTests",
+    "declared_count": 5,
+    "methods": [
+      "preservesTextAndMarksOnBothOriginalTextOperations",
+      "preservesSplitResultAndUTF16Range",
+      "forwardsCheckedMergeAndIconToTheSameInjectedService",
+      "propagatesAStyleFailureWithoutTryingAnotherService",
+      "keepsTwoEditorServiceInstancesSeparate"
+    ],
+    "git_lf_sha256": "b115a4c948c7064e2e02d6129e29733a763088b6f8fc1d0b96f432e8e123ebe6",
+    "apple_execution": "NOT_RUN_FOR_THIS_SOURCE",
+    "unchanged_from_parent": true
+  },
+  {
+    "path": "AnytypeTests/Markdown/EditorLocalEventPublisherTests.swift",
+    "suite": "EditorLocalEventPublisherTests",
+    "declared_count": 5,
+    "methods": [
+      "publishesToTheSuppliedOwnerAfterTheStyleWriteCompletes",
+      "aFailedStyleWriteDoesNotPublish",
+      "cancellationDoesNotPublishOrRetry",
+      "splitStillLeavesPublicationToTheOriginalFocusOwner",
+      "separateEditorsDoNotShareTheInjectedEventOwner"
+    ],
+    "git_lf_sha256": "1da8e8d16d873e548e5a2562906b40aad0d731394a1036edd85e439a13a4717a",
+    "apple_execution": "NOT_RUN_FOR_THIS_SOURCE",
+    "unchanged_from_parent": true
+  },
+  {
+    "path": "AnytypeTests/Markdown/EditorDocumentWriteOwnerTests.swift",
+    "suite": "EditorDocumentWriteOwnerTests",
+    "declared_count": 8,
+    "methods": [
+      "forwardsAllOriginalTextOperationsWithTheOwnedContext",
+      "refusesForeignContextReadonlyModeAndLivePermissionLossBeforeDispatch",
+      "rechecksOriginalDocumentIdentityModeAndOpenState",
+      "retirementDistinguishesAnAlreadyCompletedWriteFromADispatchRefusal",
+      "preservesServiceErrorsAndReleasesTheirLease",
+      "retiringOneOwnerDoesNotAuthorizeOrRetireAnother",
+      "readonlyToggleRemainsPresentationalButRetiredEventsAreDropped",
+      "retirementWaitsForAnAlreadyAdmittedPublicationToDrain"
+    ],
+    "git_lf_sha256": "a4fb333e31ad1ad15eb120906af2e95de46182798994c313c065b8d94ea0869f",
+    "apple_execution": "NOT_RUN_FOR_THIS_SOURCE",
+    "unchanged_from_parent": true
+  },
+  {
+    "path": "AnytypeTests/Markdown/PreparedEditorLifetimeTests.swift",
+    "suite": "PreparedEditorLifetimeTests",
+    "declared_count": 8,
+    "methods": [
+      "observedPermissionLossCannotRenewTheCapturedLifetime",
+      "closedThenReopenedDocumentCannotRenewTheCapturedLifetime",
+      "replacingTheLifetimeSourceIsRejected",
+      "registrationCannotMissAnEarlierInvalidation",
+      "explicitRetirementDoesNotInvalidateAnotherOwnerOfTheSameDocument",
+      "admittedWriteCompletionAfterRevocationIsReportedWithoutRollback",
+      "alreadyAdmittedPublicationDrainsAndSubsequentPublicationIsRefused",
+      "independentHostLifetimeRetiresOnlyItsOwnOwner"
+    ],
+    "git_lf_sha256": "1ffe13ae4525ad7e741555b9fc5cc58627ef6269bb9a2fb1202ee7a285c46633",
+    "apple_execution": "NOT_RUN",
+    "target_registration": "Original PBXFileSystemSynchronizedRootGroup AnytypeTests; no project mutation or discovery claim"
+  }
+]
