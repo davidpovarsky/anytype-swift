@@ -24,6 +24,12 @@ ASSEMBLY = PAGE + "EditorPageModuleAssembly.swift"
 VIEW = EDITOR + "EditorPageView.swift"
 STATE = EDITOR + "EditorPageViewState.swift"
 CONTAINER = EDITOR + "EditorSwiftUIViewContainer.swift"
+TABLE_PROTOCOL = "Modules/Services/Sources/Services/BlockTableService/BlockTableService.swift"
+TABLE_WRAPPER = "Anytype/Sources/ServiceLayer/Block/DocumentOwnedBlockTableService.swift"
+TABLE_FIXTURE = "Scripts/CI/fixtures/original-editor-owned-tables.swift"
+TABLE_MODELS = ["Modules/Services/Sources/Models/Block/Common/BlockPosition.swift",
+                "Modules/Services/Sources/Models/Common/BlocksSortType.swift"]
+TABLE_BASELINE = "bc8be790e86876a014aa048e82c57157e13a62d2"
 BUNDLES = {
     "blockActionService": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionService/BlockActionServiceDependencies.swift",
     "blockActionHandler": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandlerDependencies.swift",
@@ -130,20 +136,46 @@ def source_preservation(report):
     }
 
 
+def table_source_preservation(report):
+    inverse = content(SESSION)
+    inverse = replace_once(inverse, "            blockActionHandler: .init(\n                blockService: services.blockActionHandler.blockService,\n                blockTableService: DocumentOwnedBlockTableService(\n                    owner: owner, service: services.blockActionHandler.blockTableService\n                ),\n                fileService: services.blockActionHandler.fileService,\n                objectService: services.blockActionHandler.objectService,\n                pasteboardBlockService: services.blockActionHandler.pasteboardBlockService,\n                bookmarkService: services.blockActionHandler.bookmarkService,\n                objectTypeProvider: services.blockActionHandler.objectTypeProvider\n            ),\n", "            blockActionHandler: services.blockActionHandler,\n")
+    inverse = replace_once(inverse, "            blockBuilder: .init(\n                tableService: DocumentOwnedBlockTableService(\n                    owner: owner, service: services.blockBuilder.tableService\n                ),\n                detailsService: services.blockBuilder.detailsService,\n                audioSessionService: services.blockBuilder.audioSessionService,\n                objectTypeProvider: services.blockBuilder.objectTypeProvider,\n                pasteboardService: services.blockBuilder.pasteboardService,\n                blockService: services.blockBuilder.blockService\n            ),\n            simpleTable: .init(\n                tableService: DocumentOwnedBlockTableService(\n                    owner: owner, service: services.simpleTable.tableService\n                ),\n                pasteboardService: services.simpleTable.pasteboardService,\n                defaultObjectService: services.simpleTable.defaultObjectService,\n                typesService: services.simpleTable.typesService\n            ),\n", "            blockBuilder: services.blockBuilder,\n            simpleTable: services.simpleTable,\n")
+    inverse = replace_once(inverse, "Text/table/local-event\n", "Text/local-event\n")
+    BASE.require(inverse == content(SESSION, TABLE_BASELINE),
+                 "Prepared session changed beyond exact table-owner injection")
+    stable = [DOC, LIFETIME, OWNER, ASSEMBLY, VIEW, STATE, CONTAINER,
+              TABLE_PROTOCOL] + TABLE_MODELS
+    rows = []
+    for path in stable:
+        before = content(path, TABLE_BASELINE)
+        after = content(path)
+        BASE.require(before == after, "An unrelated original input changed: " + path)
+        rows.append({"path": path, "git_lf_sha256": digest(after)})
+    report["table_preserved_inputs"] = rows
+    report["table_prepared_session_exact_inverse"] = True
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--swiftc", required=True)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--prepared-session-revision", choices=[TABLE_BASELINE],
+                        help="Compile the immutable parent session for the explicit table-wiring RED control")
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     report = {
         "status": "FAIL", "baseline": BASELINE, "native": "NOT_RUN", "apple_typecheck": "NOT_RUN",
-        "scope": "Actual new document/session lifetime code and exact original source close/permission hooks; Foundation-held boundaries",
+        "scope": "Actual document/session lifetime and owned table wrapper with all three prepared table slots; exact original source lifecycle hooks and table protocol/models; Foundation-held boundaries",
         "boundary_doubles": ["UIKit controller/state and existing assembly output", "Combine/document storage and setupView subscriptions/model/setter boundaries",
             "protobuf marks/enums and ObjectDetails/restriction payload values",
             "empty service protocols for retained dependency field identity; original factories omitted",
             "held service/event/close boundary actors", "locked unchecked-Sendable document probe"],
+        "prepared_session_under_test": {
+            "revision": args.prepared_session_revision or "WORKTREE",
+            "git_lf_sha256": digest(content(SESSION, args.prepared_session_revision)),
+            "mode": "parent_unowned_table_slots" if args.prepared_session_revision else "candidate_owned_table_slots",
+        },
         "not_proven": ["Native original document event stream timing", "Apple view lifecycle execution",
             "all remaining routed writers", "actual account/Space services", "annotation persistence",
             "Maktabah consumer integration", "rollback or cancellation of already-admitted effects"],
@@ -151,9 +183,11 @@ def main():
     try:
         snapshot_rows = []
         for path in [DOC, LIFETIME, OWNER, SESSION, ASSEMBLY, VIEW, STATE, CONTAINER,
+                     TABLE_PROTOCOL, TABLE_WRAPPER, TABLE_FIXTURE, *TABLE_MODELS,
                      "Scripts/CI/run-original-editor-lifetime.py",
                      "Scripts/CI/fixtures/original-editor-lifetime.swift",
-                     "AnytypeTests/Markdown/PreparedEditorLifetimeTests.swift"]:
+                     "AnytypeTests/Markdown/PreparedEditorLifetimeTests.swift",
+                     "AnytypeTests/Markdown/EditorDocumentOwnedTableTests.swift"]:
             value = content(path)
             destination = output / "input-snapshot" / path
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -163,9 +197,10 @@ def main():
         BASE.preserve(report)
         BASE.validate_writer_preservation(report)
         hooks = source_preservation(report)
+        table_source_preservation(report)
         sources = BASE.projected_sources(output, report)
 
-        def add(name, source, path, projection="whole_file"):
+        def add(name, source, path, projection="whole_file", source_revision=None):
             removed = re.findall(r"^import (?!Foundation$)([^\n]+)$", source, re.M)
             source = re.sub(r"^import (?!Foundation$)[^\n]+\n", "", source, flags=re.M)
             destination = output / (name + ".swift")
@@ -173,9 +208,17 @@ def main():
             sources.append(destination)
             report["compiled_sources"].append({
                 "path": path, "projection": projection, "removed_imports": removed,
-                "source_lf_sha256": digest(content(path)) if path else None,
+                "source_lf_sha256": digest(content(path, source_revision)) if path else None,
+                "source_revision": source_revision,
                 "compiled_sha256": digest(source),
             })
+
+        table_protocol = BASE.declaration(content(TABLE_PROTOCOL), "public protocol BlockTableServiceProtocol:")
+        add("BlockTableServiceProtocol", table_protocol + "\n", TABLE_PROTOCOL,
+            "complete original public protocol; actual Heart implementation preserved but not executed")
+        for path in TABLE_MODELS:
+            add(Path(path).stem, content(path), path)
+        table_helpers, table_controls = content(TABLE_FIXTURE).split("// BEGIN_OWNED_TABLE_CONTROLS\n", 1)
 
         permissions = content("Anytype/Sources/Models/ObjectPermissions/ObjectPermissions.swift")
         permission_body = BASE.declaration(permissions, "struct ObjectPermissions:") + "\n" + BASE.declaration(permissions, "extension ObjectPermissions {") + "\n"
@@ -185,12 +228,13 @@ def main():
             "Anytype/Sources/Models/Documents/Document/EditBlocksPermission.swift",
             "Anytype/Sources/Models/Documents/Document/BaseDocumentUpdate.swift",
             "Anytype/Sources/Models/Documents/Events/Model/DocumentUpdate.swift",
-            LIFETIME, OWNER,
+            LIFETIME, OWNER, TABLE_WRAPPER,
             "Anytype/Sources/ServiceLayer/Block/TextServiceHandler/DocumentOwnedTextService.swift",
             "Anytype/Sources/ServiceLayer/Block/DocumentOwnedLocalEventPublisher.swift",
             PAGE + "EditorPageServiceDependencies.swift", SESSION,
         ]:
-            add(Path(path).stem, content(path), path)
+            revision = args.prepared_session_revision if path == SESSION else None
+            add(Path(path).stem, content(path, revision), path, source_revision=revision)
 
         prefix = content("Scripts/CI/fixtures/original-editor-boundary.swift").split("@main struct OriginalEditorBoundaryFixture", 1)[0]
         for old in ["struct ObjectPermissions: Sendable {}\n", "struct ObjectDetails: Sendable {}\n",
@@ -214,6 +258,7 @@ def main():
             })
         defined = set(re.findall(r"\bprotocol (\w+)", prefix))
         extras.discard("TextServiceProtocol")
+        extras.discard("BlockTableServiceProtocol")
         missing = sorted(extras - defined)
         service_probes = "\n".join("@MainActor protocol " + name + ": AnyObject {}" for name in missing)
         service_probes += "\n@MainActor final class LifetimeServiceMarker: " + ", ".join(sorted(extras)) + " {}\n"
@@ -222,11 +267,16 @@ def main():
         for name, field_values in fields.items():
             args_list = []
             for field, protocol in field_values:
-                value = "TextProbe()" if protocol == "TextServiceProtocol" else "fixtureMarker"
+                if protocol == "BlockTableServiceProtocol":
+                    slot = {"blockActionHandler": "action", "blockBuilder": "builder", "simpleTable": "simple"}[name]
+                    value = "ownedTables." + slot
+                else:
+                    value = "TextProbe()" if protocol == "TextServiceProtocol" else "fixtureMarker"
                 args_list.append(field + ": " + value)
             init_rows.append("        " + name + ": .init(" + ", ".join(args_list) + ")")
-        service_probes += "@MainActor func fixtureServices(events: any EditorLocalEventPublishing) -> EditorPageServiceDependencies {\n"
-        service_probes += "    .init(\n" + ",\n".join(init_rows) + ",\n        localEvents: events\n    )\n}\n"
+        service_probes += "@MainActor func fixtureServices(events: any EditorLocalEventPublishing, tableServices: FixtureTableServices? = nil) -> EditorPageServiceDependencies {\n"
+        service_probes += "    let ownedTables = tableServices ?? FixtureTableServices()\n"
+        service_probes += "    return .init(\n" + ",\n".join(init_rows) + ",\n        localEvents: events\n    )\n}\n"
 
         model_probes = r"""
 extension String { var isNotEmpty: Bool { !isEmpty } }
@@ -250,7 +300,7 @@ final class CallbackRecorder: @unchecked Sendable {
     var value: Int { lock.lock(); defer { lock.unlock() }; return count }
 }
 """
-        add("BoundaryDoubles", prefix + ownership_helpers + model_probes + "\n".join(projected_bundles) + service_probes, None,
+        add("BoundaryDoubles", prefix + ownership_helpers + model_probes + table_helpers + "\n".join(projected_bundles) + service_probes, None,
             "explicit Foundation boundary and dependency-field identity doubles")
 
         ui_probes = """
@@ -285,7 +335,12 @@ final class CallbackRecorder: @unchecked Sendable {
         fixture = content("Scripts/CI/fixtures/original-editor-lifetime.swift")
         close_event = "    @MainActor func emitCloseEventForFixture() {\n        let updates: [DocumentUpdate] = [.close]\n" + hooks["close_event"] + "\n    }\n"
         fixture = replace_once(fixture, "    // SOURCE_HOOKS", hooks["close"] + "\n" + hooks["setup_view"] + "\n" + hooks["permissions"] + "\n" + close_event)
-        add("ExecutedLifetimeFixture", fixture, "Scripts/CI/fixtures/original-editor-lifetime.swift", "fixture plus exact original source hooks")
+        fixture = replace_once(fixture, "        let data = try JSONEncoder().encode(checks.checks)",
+            "        try await exerciseOwnedTableServices(checks)\n\n        let data = try JSONEncoder().encode(checks.checks)")
+        fixture += "\n" + table_controls
+        add("ExecutedLifetimeFixture", fixture, "Scripts/CI/fixtures/original-editor-lifetime.swift",
+            "preserved lifetime fixture plus exact original lifecycle hooks and complete new table controls")
+        report["table_fixture_lf_sha256"] = digest(content(TABLE_FIXTURE))
         report["exact_method_projections"] = {name: {"sha256": digest(value), "bytes": len(value.encode())} for name, value in hooks.items()}
 
         executable = output / "original-editor-lifetime.exe"
@@ -305,12 +360,13 @@ final class CallbackRecorder: @unchecked Sendable {
         report.update(passed=sum(row["passed"] is True for row in rows),
                       failed=sum(row["passed"] is not True for row in rows), checks=rows)
         BASE.require(report["execution"]["exit_code"] == 0, "Lifetime controls failed")
-        BASE.require(len(rows) == 43 and len({row["name"] for row in rows}) == 43
+        BASE.require(len(rows) == 75 and len({row["name"] for row in rows}) == 75
             and all(row["passed"] is True for row in rows), "Incomplete lifetime controls")
         report.update(status="PASS")
         syntax = []
-        for path in [DOC, LIFETIME, OWNER, SESSION, ASSEMBLY, VIEW, STATE, CONTAINER,
-                     "AnytypeTests/Markdown/PreparedEditorLifetimeTests.swift"]:
+        for path in [DOC, LIFETIME, OWNER, SESSION, ASSEMBLY, VIEW, STATE, CONTAINER, TABLE_WRAPPER,
+                     "AnytypeTests/Markdown/PreparedEditorLifetimeTests.swift",
+                     "AnytypeTests/Markdown/EditorDocumentOwnedTableTests.swift"]:
             entry = BASE.run([args.swiftc, "-frontend", "-parse", "-swift-version", "5", str(ROOT / path)],
                 output, "parse-" + str(len(syntax) + 1), 30)
             entry["path"] = path

@@ -1,7 +1,7 @@
 import Foundation
 import Services
 
-/// One prepared document, one assembly and one mounted host. Text/local-event
+/// One prepared document, one assembly and one mounted host. Text/table/local-event
 /// operations share its owner; other injected services retain their existing
 /// contracts and still require independent writer qualification.
 @MainActor
@@ -49,11 +49,37 @@ final class PreparedEditorPageSession {
                 objectTypeProvider: existing.objectTypeProvider,
                 keyboardInsertedBlocksStorage: existing.keyboardInsertedBlocksStorage
             ),
-            blockActionHandler: services.blockActionHandler,
+            blockActionHandler: .init(
+                blockService: services.blockActionHandler.blockService,
+                blockTableService: DocumentOwnedBlockTableService(
+                    owner: owner, service: services.blockActionHandler.blockTableService
+                ),
+                fileService: services.blockActionHandler.fileService,
+                objectService: services.blockActionHandler.objectService,
+                pasteboardBlockService: services.blockActionHandler.pasteboardBlockService,
+                bookmarkService: services.blockActionHandler.bookmarkService,
+                objectTypeProvider: services.blockActionHandler.objectTypeProvider
+            ),
             keyboardHandler: services.keyboardHandler,
             blocksStateManager: services.blocksStateManager,
-            blockBuilder: services.blockBuilder,
-            simpleTable: services.simpleTable,
+            blockBuilder: .init(
+                tableService: DocumentOwnedBlockTableService(
+                    owner: owner, service: services.blockBuilder.tableService
+                ),
+                detailsService: services.blockBuilder.detailsService,
+                audioSessionService: services.blockBuilder.audioSessionService,
+                objectTypeProvider: services.blockBuilder.objectTypeProvider,
+                pasteboardService: services.blockBuilder.pasteboardService,
+                blockService: services.blockBuilder.blockService
+            ),
+            simpleTable: .init(
+                tableService: DocumentOwnedBlockTableService(
+                    owner: owner, service: services.simpleTable.tableService
+                ),
+                pasteboardService: services.simpleTable.pasteboardService,
+                defaultObjectService: services.simpleTable.defaultObjectService,
+                typesService: services.simpleTable.typesService
+            ),
             slashMenu: services.slashMenu,
             header: services.header,
             router: services.router,
