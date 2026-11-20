@@ -1,0 +1,12 @@
+--- AnyHTTPClient.trace-v2.swift
++++ AnyHTTPClient.swift
+@@ -200,7 +200,8 @@
+ ) {
+     var event: [String: Any] = [
+         "id": id, "phase": phase, "method": method, "path": path,
+-        "elapsedMs": Int(max(0, ProcessInfo.processInfo.systemUptime - start) * 1000)
++        "elapsedMs": Int(max(0, ProcessInfo.processInfo.systemUptime - start) * 1000),
++        "timestampUnixMs": Int64((Date().timeIntervalSince1970 * 1000).rounded(.down))
+     ]
+     if let response {
+         event["status"] = response.statusCode

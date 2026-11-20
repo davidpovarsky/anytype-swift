@@ -1,0 +1,78 @@
+◊ Test run started.
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+→ Target Platform: x86_64-unknown-windows-msvc
+◊ Suite "Native wiki hierarchy preserves the original tree domain" started.
+◊ Suite "Native conditional property fences and archive request contracts" started.
+◊ Test persistedNativePlacementRetainsOriginalSequenceAndRun() started.
+◊ Test exactPlacementRetryUsesReadbackAndDoesNotOverwriteLaterMove() started.
+◊ Test nativeConditionalVersionStopsABAInsideTheReadToWriteGap() started.
+◊ Test invalidOrEqualNativePositionsFailClosed() started.
+◊ Test unsupportedChildPreventsFolderRemoval() started.
+◊ Test nativeConditionalStoreReceivesThePreparedNestedVersionWithoutFallback() started.
+◊ Test capturedSequenceIsNotRefreshedInsideTheDispatchGap() started.
+◊ Test creationPlanIsImmutableAndDelegatesRetryToOneHostJournal() started.
+◊ Test moveAndReorderUseOneNativeParentPositionPatch() started.
+◊ Test nativePlanCannotDowngradeToGenericPropertyWrites() started.
+◊ Test partialRemovalFailureLeavesFolderAndRemainingChildrenRecoverable() started.
+◊ Test concurrentChildRestoresFolderVisibilityAndReturnsIncompleteReceipt() started.
+◊ Test safeRemovalReparentsChildrenBeforeBinningOnlyTheFolder() started.
+◊ Test nativeRenamePassesOriginalSequenceAndRun() started.
+◊ Test renameProtectsPriorTitleAndPreservesOtherNativeFields() started.
+◊ Test revokedWritesPreventNativeMutation() started.
+◊ Test nativePositionsDriveOriginalTreeWithoutRewritingUnknownProperties() started.
+◊ Test nativeGoAllocatorGoldenVectorsMatchByteForByte() started.
+◊ Test decodingCannotBypassRequiredFenceFieldsOrValidation() started.
+◊ Test legacyNativePlacementCannotAcquireFreshFenceEvenWhenAlreadyApplied() started.
+◊ Test cycleRecoveryIsVisibleAndMoveValidatorStillRejectsDescendants() started.
+◊ Test persistedNativePlacementCannotRebindToAnotherEngineRun() started.
+◊ Test equalVersionWithAdvancedSequenceRefusesBeforeDispatch() started.
+◊ Test identicalArchiveAndRestoreStillProduceFencedNativeRequests() started.
+◊ Test wrongSpaceMalformedAndUnsupportedMalformedRowsAreNotSilentlyDropped() started.
+◊ Test malformedVersionAndRunCannotBecomeAConditionalFence() started.
+◊ Test legacyOrDifferentRunNativePatchRefusesBeforeNetworking() started.
+◊ Test lateSameVersionContentHasDifferentCapturedFence() started.
+◊ Test restoreRemovesOnlyBinWithoutSortingOtherMemberships() started.
+◊ Test archivePreservesExactUnknownMembershipOrderAndOriginalFence() started.
+◊ Test absentOrMalformedNoopCapabilityCannotChooseAWriteFallback() started.
+◊ Test malformedMembershipOrScopeCannotDispatchAnArchivePlan() started.
+◊ Test fenceRoundTripRetainsExactRequiredNativeMetadata() started.
+◊ Test everyMembershipRequestRequiresTheExplicitSequenceContract() started.
+◊ Test sequenceMustRemainAnExactPositiveRepresentableInteger() started.
+√ Test nativePositionsDriveOriginalTreeWithoutRewritingUnknownProperties() passed after 0.009 seconds.
+√ Test identicalArchiveAndRestoreStillProduceFencedNativeRequests() passed after 0.010 seconds.
+√ Test restoreRemovesOnlyBinWithoutSortingOtherMemberships() passed after 0.008 seconds.
+√ Test archivePreservesExactUnknownMembershipOrderAndOriginalFence() passed after 0.008 seconds.
+√ Test nativeGoAllocatorGoldenVectorsMatchByteForByte() passed after 0.010 seconds.
+√ Test lateSameVersionContentHasDifferentCapturedFence() passed after 0.009 seconds.
+√ Test invalidOrEqualNativePositionsFailClosed() passed after 0.011 seconds.
+√ Test cycleRecoveryIsVisibleAndMoveValidatorStillRejectsDescendants() passed after 0.011 seconds.
+√ Test wrongSpaceMalformedAndUnsupportedMalformedRowsAreNotSilentlyDropped() passed after 0.010 seconds.
+√ Test concurrentChildRestoresFolderVisibilityAndReturnsIncompleteReceipt() passed after 0.012 seconds.
+√ Test unsupportedChildPreventsFolderRemoval() passed after 0.012 seconds.
+√ Test safeRemovalReparentsChildrenBeforeBinningOnlyTheFolder() passed after 0.011 seconds.
+√ Test malformedMembershipOrScopeCannotDispatchAnArchivePlan() passed after 0.009 seconds.
+√ Test nativeConditionalStoreReceivesThePreparedNestedVersionWithoutFallback() passed after 0.012 seconds.
+√ Test sequenceMustRemainAnExactPositiveRepresentableInteger() passed after 0.009 seconds.
+√ Test malformedVersionAndRunCannotBecomeAConditionalFence() passed after 0.010 seconds.
+√ Test capturedSequenceIsNotRefreshedInsideTheDispatchGap() passed after 0.012 seconds.
+√ Test nativeConditionalVersionStopsABAInsideTheReadToWriteGap() passed after 0.012 seconds.
+√ Test persistedNativePlacementCannotRebindToAnotherEngineRun() passed after 0.011 seconds.
+√ Test nativePlanCannotDowngradeToGenericPropertyWrites() passed after 0.012 seconds.
+√ Test nativeRenamePassesOriginalSequenceAndRun() passed after 0.011 seconds.
+√ Test moveAndReorderUseOneNativeParentPositionPatch() passed after 0.012 seconds.
+√ Test revokedWritesPreventNativeMutation() passed after 0.012 seconds.
+√ Test absentOrMalformedNoopCapabilityCannotChooseAWriteFallback() passed after 0.010 seconds.
+√ Test renameProtectsPriorTitleAndPreservesOtherNativeFields() passed after 0.012 seconds.
+√ Test persistedNativePlacementRetainsOriginalSequenceAndRun() passed after 0.013 seconds.
+√ Test fenceRoundTripRetainsExactRequiredNativeMetadata() passed after 0.010 seconds.
+√ Test partialRemovalFailureLeavesFolderAndRemainingChildrenRecoverable() passed after 0.013 seconds.
+√ Test equalVersionWithAdvancedSequenceRefusesBeforeDispatch() passed after 0.013 seconds.
+√ Test everyMembershipRequestRequiresTheExplicitSequenceContract() passed after 0.010 seconds.
+√ Test creationPlanIsImmutableAndDelegatesRetryToOneHostJournal() passed after 0.013 seconds.
+√ Test exactPlacementRetryUsesReadbackAndDoesNotOverwriteLaterMove() passed after 0.014 seconds.
+√ Test legacyNativePlacementCannotAcquireFreshFenceEvenWhenAlreadyApplied() passed after 0.014 seconds.
+√ Suite "Native wiki hierarchy preserves the original tree domain" passed after 0.016 seconds.
+√ Test decodingCannotBypassRequiredFenceFieldsOrValidation() passed after 0.042 seconds.
+√ Test legacyOrDifferentRunNativePatchRefusesBeforeNetworking() passed after 0.042 seconds.
+√ Suite "Native conditional property fences and archive request contracts" passed after 0.046 seconds.
+√ Test run with 35 tests in 2 suites passed after 0.047 seconds.

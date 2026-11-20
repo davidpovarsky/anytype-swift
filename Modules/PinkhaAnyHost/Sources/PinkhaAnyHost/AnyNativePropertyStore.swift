@@ -173,11 +173,13 @@ public struct AnyNativePropertySnapshot: Sendable {
     public let workspace: AnyTorahWorkspace
     public let objectID: String
     public let generation: UUID
-    public let engineStartedAt: String
+    public let fence: AnyConditionalPropertyFence
+    public var engineStartedAt: String { fence.engineStartedAt }
+    public var applySequence: Int64 { fence.applySequence }
     public let currentTypeID: String
     public let collectionIDs: [String]
     public let raw: AnyJSON
-    public let nativeVersion: AnyJSON
+    public var nativeVersion: AnyJSON { fence.nativeVersion }
     public let catalog: AnyNativePropertyCatalog
     public let rows: [AnyNativePropertyRow]
     /// All persisted keys, including unknown future keys. A hide/show mutation
@@ -192,9 +194,12 @@ public struct AnyPreparedPropertyEdit: Sendable {
     public let objectID: String
     public let ownerID: String
     public let patch: [String: AnyJSON]
-    public let nativeVersion: AnyJSON
+    /// Copied unchanged from the caller's snapshot, including its original run.
+    public let fence: AnyConditionalPropertyFence
+    public var nativeVersion: AnyJSON { fence.nativeVersion }
+    public var applySequence: Int64 { fence.applySequence }
+    public var engineStartedAt: String { fence.engineStartedAt }
     public let generation: UUID
-    public let engineStartedAt: String
     let workspace: AnyTorahWorkspace
     let policy: AnyNativePropertyPolicy
     let expectedDefinitions: [AnyNativePropertyKey: AnyJSON]
@@ -203,6 +208,15 @@ public struct AnyPreparedPropertyEdit: Sendable {
     let visibilityOnly: Bool
     let membershipOnly: Bool
     let inversePatch: [String: AnyJSON]
+
+    /// A fresh read validates this prepared intent; it never supplies new tokens.
+    func requireMatchingRecord(_ record: AnyJSON) throws {
+        guard record["id"]?.string == objectID,
+              record["spaceId"]?.string == workspace.spaceID,
+              let current = try? AnyConditionalPropertyFence(
+                record: record, engineStartedAt: engineStartedAt),
+              current == fence else { throw AnyHostError.changedDocument }
+    }
 }
 
 public struct AnyPropertyEditReceipt: Sendable {
@@ -414,6 +428,7 @@ public struct AnyNativePropertyStore: Sendable {
               edit.engineStartedAt == lease.engineStartedAt else { throw AnyHostError.wrongWorkspace }
         let caps = try await capabilities(lease: lease)
         try Self.requireCapability(caps, "conditionalPropertiesSet")
+        try Self.requireCapability(caps, "conditionalPropertiesApplySeq")
         try Self.requireCapability(caps, "conditionalMembershipSet")
         try Self.requireCapability(caps, "nativeDocumentTypePolicy")
         _ = try await targetProof(edit.objectID, write: true, lease: lease)
@@ -427,7 +442,7 @@ public struct AnyNativePropertyStore: Sendable {
         // For ordinary custom owners, inspect current membership to choose the
         // exact definition surface; a catalog row alone cannot authorize it.
         let current = try await record(edit.objectID, lease: lease)
-        guard current["_ver"] == edit.nativeVersion else { throw AnyHostError.changedDocument }
+        try edit.requireMatchingRecord(current)
         let membership = try Self.membership(current)
         let isCollection = edit.ownerID != "any" && edit.ownerID != membership.typeID &&
             membership.collections.contains(edit.ownerID)
@@ -444,23 +459,44 @@ public struct AnyNativePropertyStore: Sendable {
         do {
             result = try await client.requestJSON(method: "POST",
                 path: spacePath + ["pinkha", "properties", edit.objectID, "set", edit.ownerID],
-                body: .object(["patch": .object(edit.patch), "ifVersion": edit.nativeVersion,
-                               "ifStartedAt": .string(edit.engineStartedAt)]),
+                body: edit.fence.requestBody(patch: edit.patch),
                 authorize: { try await lease.validate(); try await authorize() })
         } catch AnyEngineError.http(let status, let code) where status == 409 &&
-            ["properties.conflict", "properties.engine_restarted"].contains(code) {
+            ["pinkha.properties.conflict", "pinkha.properties.engine_restarted",
+             "properties.conflict", "properties.engine_restarted"].contains(code) {
             throw AnyHostError.changedDocument
         } catch AnyEngineError.writeUncertain {
             throw AnyHostError.writeUncertain
         }
-        guard result["engineStartedAt"]?.string == edit.engineStartedAt,
-              let acceptedVersion = result["propertiesVersion"], acceptedVersion.object != nil else {
+        let accepted = try Self.acceptedFence(result, original: edit.fence)
+        let readback = try? await read(objectID: edit.objectID, lease: lease)
+        try await validate(lease)
+        return receipt(for: edit, accepted: accepted, readback: readback)
+    }
+
+    /// A success response without an exact native record fence cannot certify
+    /// an already-dispatched write. Empty fenced no-ops are a separate workflow.
+    static func acceptedFence(_ result: AnyJSON, original: AnyConditionalPropertyFence) throws -> AnyConditionalPropertyFence {
+        guard result["engineStartedAt"]?.string == original.engineStartedAt,
+              let version = result["propertiesVersion"], let sequence = result["applySeq"]?.integer,
+              sequence > original.applySequence,
+              let accepted = try? AnyConditionalPropertyFence(
+                nativeVersion: version, applySequence: sequence, engineStartedAt: original.engineStartedAt) else {
             throw AnyHostError.writeUncertain
         }
-        try AnyHostCanonical.nativeVersions(acceptedVersion)
+        return accepted
+    }
+
+    /// Only the exact acknowledged snapshot can create an Undo. A later
+    /// commutative update may leave _ver unchanged while changing _applySeq.
+    func receipt(for edit: AnyPreparedPropertyEdit, accepted: AnyConditionalPropertyFence,
+                 readback: AnyNativePropertySnapshot?) -> AnyPropertyEditReceipt {
         var verified: AnyNativePropertySnapshot?
-        if let readback = try? await read(objectID: edit.objectID, lease: lease),
-           readback.nativeVersion == acceptedVersion,
+        if let readback,
+           readback.workspace == edit.workspace, readback.objectID == edit.objectID,
+           readback.generation == edit.generation,
+           accepted.engineStartedAt == edit.engineStartedAt,
+           readback.fence == accepted,
            edit.patch.allSatisfy({ property, value in
                let current = readback.raw[edit.ownerID]?[property]
                return Self.nativeValueMatches(current, requested: value)
@@ -474,7 +510,6 @@ public struct AnyNativePropertyStore: Sendable {
                 typeDestination: edit.typeDestination == nil ? nil : edit.inversePatch["type"]?.string,
                 visibilityOnly: edit.visibilityOnly, membershipOnly: edit.membershipOnly)
         }
-        try await validate(lease)
         return .init(objectID: edit.objectID,
             readback: verified == nil ? .nativeAcceptedButCurrentStateUnverified : .verifiedCurrent,
             snapshot: verified, undo: undo)
@@ -507,8 +542,8 @@ public struct AnyNativePropertyStore: Sendable {
                           expected: [AnyNativePropertyKey: AnyJSON], typeDestination: String? = nil,
                           collectionDestination: String? = nil, visibilityOnly: Bool = false,
                           membershipOnly: Bool = false) -> AnyPreparedPropertyEdit {
-        .init(objectID: snapshot.objectID, ownerID: ownerID, patch: patch, nativeVersion: snapshot.nativeVersion,
-              generation: snapshot.generation, engineStartedAt: snapshot.engineStartedAt, workspace: workspace, policy: policy,
+        .init(objectID: snapshot.objectID, ownerID: ownerID, patch: patch, fence: snapshot.fence,
+              generation: snapshot.generation, workspace: workspace, policy: policy,
               expectedDefinitions: expected, typeDestination: typeDestination,
               collectionDestination: collectionDestination, visibilityOnly: visibilityOnly, membershipOnly: membershipOnly,
               inversePatch: Dictionary(uniqueKeysWithValues: patch.keys.map { ($0, snapshot.raw[ownerID]?[$0] ?? .null) }))
@@ -517,7 +552,10 @@ public struct AnyNativePropertyStore: Sendable {
     private func validate(_ snapshot: AnyNativePropertySnapshot) throws {
         guard snapshot.workspace == workspace, snapshot.catalog.workspace == workspace else { throw AnyHostError.wrongWorkspace }
         guard snapshot.canWrite else { throw AnyNativePropertyError.readOnly }
-        try AnyHostCanonical.nativeVersions(snapshot.nativeVersion)
+        guard snapshot.fence == (try AnyConditionalPropertyFence(
+            record: snapshot.raw, engineStartedAt: snapshot.catalog.engineStartedAt)) else {
+            throw AnyHostError.changedDocument
+        }
     }
     private func validate(_ lease: AnyHostLease) async throws {
         guard lease.workspace == workspace else { throw AnyHostError.wrongWorkspace }
@@ -557,7 +595,7 @@ public struct AnyNativePropertyStore: Sendable {
               row["spaceId"]?.string == workspace.spaceID, let version = row["_ver"],
               version.object != nil else { throw AnyNativePropertyError.invalidProperty }
         _ = try AnyHostCanonical.bytes(row, maximumBytes: 4_194_304)
-        try AnyHostCanonical.nativeVersions(version)
+        _ = try AnyConditionalPropertyFence(record: row, engineStartedAt: lease.engineStartedAt)
         return row
     }
     private func propertyDefinitions(ownerID: String, collection: Bool, lease: AnyHostLease) async throws -> [AnyNativePropertyDefinition] {
@@ -667,7 +705,7 @@ public struct AnyNativePropertyStore: Sendable {
             throw AnyNativePropertyError.invalidProperty
         }
         _ = try AnyHostCanonical.bytes(raw, maximumBytes: 4_194_304)
-        try AnyHostCanonical.nativeVersions(version)
+        let fence = try AnyConditionalPropertyFence(record: raw, engineStartedAt: catalog.engineStartedAt)
         let membership = try membership(raw)
         var hidden: [String] = []
         if let value = raw[Self.presentationCollectionID]?[Self.hiddenPropertiesID] {
@@ -692,8 +730,8 @@ public struct AnyNativePropertyStore: Sendable {
                     !policy.hiddenCollectionIDs.contains(key.ownerID) && key.ownerID != Self.presentationCollectionID)
         }
         return .init(workspace: catalog.workspace, objectID: objectID, generation: catalog.generation,
-            engineStartedAt: catalog.engineStartedAt, currentTypeID: membership.typeID,
-            collectionIDs: membership.collections, raw: raw, nativeVersion: version, catalog: catalog, rows: rows,
+            fence: fence, currentTypeID: membership.typeID,
+            collectionIDs: membership.collections, raw: raw, catalog: catalog, rows: rows,
             hiddenPropertyKeys: hiddenSet, presentationAttached: membership.collections.contains(Self.presentationCollectionID), canWrite: canWrite,
             definitions: Dictionary(uniqueKeysWithValues: definitions.map { ($0.key, $0) }))
     }

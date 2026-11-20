@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 2,
+  "base": "586c98bcc17dee425664224e508fc0e8df277678",
+  "head": "d58b6a004c93320a4c57c8eba8e4518048d70fc1",
+  "checkedTree": "26d19e2dd10e82c60dedf8c225c4f89326ccccf4",
+  "baseIsAncestor": true,
+  "protectedPaths": [
+    "Anytype/Sources",
+    "AnyTypeTests",
+    "Modules",
+    "Tools/TorahNativeOperations",
+    "Tools/PinkhaNativeDerived",
+    "Tools/Hanlin/source.json"
+  ],
+  "baselineFileCount": 5790,
+  "currentFileCount": 6034,
+  "unchangedBaselineFileCount": 5758,
+  "reviewedRefactors": [
+    {
+      "kind": "import_only",
+      "from": "AnyTypeTests/Pinkha/HanlinHostAdapterTests.swift",
+      "to": "AnyTypeTests/Pinkha/HanlinHostAdapterTests.swift",
+      "baselineBlob": "6d5d7fc0bd08ef53625a98ee8ea8b307b6a7494e",
+      "replacementBlob": "45a334e3445ef249650b01531b0a772b892e236c"
+    },
+    {
+      "kind": "import_only",
+      "from": "AnyTypeTests/Pinkha/HanlinHostReadWriteTests.swift",
+      "to": "AnyTypeTests/Pinkha/HanlinHostReadWriteTests.swift",
+      "baselineBlob": "6362f4442cc1d4e8ddc7bf23f725394b91b165c1",
+      "replacementBlob": "485dba8bd3d7cfa6d108b86bb39d5eeb36fe47e9"
+    },
+    {
+      "kind": "import_only",
+      "from": "AnyTypeTests/Pinkha/HanlinHostWriteTests.swift",
+      "to": "AnyTypeTests/Pinkha/HanlinHostWriteTests.swift",
+      "baselineBlob": "1239c61b24961fc1d141fbff89ac78737d178205",
+      "replacementBlob": "c2520bf3ae046ab788279f34126a32084c71fbf0"
+    },
+    {
+      "kind": "import_only",
+      "from": "AnyTypeTests/Pinkha/HanlinSDKConsumerTests.swift",
+      "to": "AnyTypeTests/Pinkha/HanlinSDKConsumerTests.swift",
+      "baselineBlob": "05e1049b7e37e063856ebae5e1f85829520f189d",
+      "replacementBlob": "a10ec0ea4c421266bbdf139952f4bcbefc7bdf88"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAccountOwner.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinAccountOwner.swift",
+      "baselineBlob": "78879033beca81fdb03feb272409de8253e99e33",
+      "replacementBlob": "ab218008e6b1dd12f98dce1ec322423b17b71d38"
+    },
+    {
+      "kind": "import_only",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
+      "baselineBlob": "d3820631ef1b344babf116ca8766e7c0dcf853df",
+      "replacementBlob": "92155a0fc87dcf6442f1fc7cbd5b4e7c8bff8802"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatPresentation.swift",
+      "baselineBlob": "810af73f1ecf45b3ea40827aa7549b12f7f3d1bc",
+      "replacementBlob": "35f5857ca3de7c98c3e33358a3af2f7138364ba3"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinChatView.swift",
+      "baselineBlob": "0ddff522e7645ea19c3d4c319396177e355c4172",
+      "replacementBlob": "8a1129ab3e5a7aa64fe07c71ea8fd6667bd72164"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinConsentController.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinConsentController.swift",
+      "baselineBlob": "77a0f004e65614150cdf47052c7b32405f35d929",
+      "replacementBlob": "bc724411115857868216661f1bcce06a673f2372"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinHostAdapter.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinHostAdapter.swift",
+      "baselineBlob": "05a8ecc07cef6d8b011067eba86ffb7fd4f8ffa9",
+      "replacementBlob": "862fcdd097fbb11cc9e88a4c9a3c054fc5891ad8"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinInvocationEnvelope.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinInvocationEnvelope.swift",
+      "baselineBlob": "affd0d0c40fd674400e90f8f8bf02790efc6eef8",
+      "replacementBlob": "bc91bef3fecee60984de375707ce9476eec038c0"
+    },
+    {
+      "kind": "import_only",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinNativeAccess.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinNativeAccess.swift",
+      "baselineBlob": "bbbd048e3d8fcc88d087b9078433617b076957db",
+      "replacementBlob": "185bdd1cec0418464cdee1ec4959774fc72b3eb1"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinNavigationLedger.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinNavigationLedger.swift",
+      "baselineBlob": "c208f6d030c5a292411f277c675a0fc1fcbac469",
+      "replacementBlob": "ec735d630453f268d1bb54cf732e4b316679633d"
+    },
+    {
+      "kind": "import_only",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinReadConsent.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinReadConsent.swift",
+      "baselineBlob": "cb005cde3ce590069742ffd16fb805957bb920d3",
+      "replacementBlob": "c1e3e00b71cca7f1d72ad723bb1a49f68d118fa9"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinReadConsentDecision.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinReadConsentDecision.swift",
+      "baselineBlob": "34161a0dd405f2ba30c81720ef7e8908be855fe8",
+      "replacementBlob": "e3b0b2029c6d029b4a765b4ffb2bad7d5e4b9c63"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinReadRace.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinReadRace.swift",
+      "baselineBlob": "355e27e6b0be3483bb432d5a52a0ed776872b7a1",
+      "replacementBlob": "355e27e6b0be3483bb432d5a52a0ed776872b7a1"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinRevocationFence.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinRevocationFence.swift",
+      "baselineBlob": "dc7187a0d10af6571c823c8e1e825cede0b70152",
+      "replacementBlob": "e8dab382970755a0b4fd09ae8277aa282a0ed2f5"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinStrings.swift",
+      "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinStrings.swift",
+      "baselineBlob": "657037395091ea052a863058aca1d9c2d8566d57",
+      "replacementBlob": "e10a6b62d7b462176c627640104437a60f14c2b7"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/Resources/PinkhaHanlin.xcstrings",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinUI/Resources/PinkhaHanlin.xcstrings",
+      "baselineBlob": "52ba2e3fd9bc0709250538541d11154c0bd84707",
+      "replacementBlob": "52ba2e3fd9bc0709250538541d11154c0bd84707"
+    },
+    {
+      "kind": "import_only",
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
+      "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
+      "baselineBlob": "70b73f0c411d28e1cf91d3bab214a6e9e3e9c7d0",
+      "replacementBlob": "d9f00e352f1a774f1f5244286d4db8449547dd91"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePagePlan.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinCreatePagePlan.swift",
+      "baselineBlob": "c9ca732c3e0760dc9f37b0bb75bf886bc035d3b7",
+      "replacementBlob": "79e4b39465e0cc6f81e84710f943cb52b6b28b96"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageRunner.swift",
+      "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageRunner.swift",
+      "baselineBlob": "8ff879e4cf8ef04cb367be3b801829a047bebc80",
+      "replacementBlob": "804904d619a630d2a7610f1a55698fecc60a9125"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
+      "to": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinReadWriteHost.swift",
+      "baselineBlob": "26c4b78b33caf7acf497bef95359fe2764404300",
+      "replacementBlob": "a550b00c063733f292d9ca28207516bcb69fe8ff"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinWriteJournal.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWriteJournal.swift",
+      "baselineBlob": "aca54480a6977009e1a1ac66806154964b51be29",
+      "replacementBlob": "14bfb33ab6c03564a93a224d2b0ce4dfe0ba1efd"
+    },
+    {
+      "kind": "move",
+      "from": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinWritePreflight.swift",
+      "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWritePreflight.swift",
+      "baselineBlob": "47e4c65a2bfaaa6b25a6a33409434162cc22c0fb",
+      "replacementBlob": "09c35a3314ba70aee812d9cfe9aa7dbd985bc2c6"
+    },
+    {
+      "kind": "import_only",
+      "from": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift",
+      "to": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift",
+      "baselineBlob": "9c76e9647d81be61e30d8f5e6b4fd7eacf56354e",
+      "replacementBlob": "912033d73760d03edc52b1adbed73c936bc648eb"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/Storage/AnytypeTorahAssociationRepository.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/Storage/AnytypeTorahAssociationRepository.swift",
+      "baselineBlob": "2284761604e2b85b144576f8d7921bfb9e5c413f",
+      "replacementBlob": "8e9ce51c2954cd1987cb375d4f0e47df7633203a"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/Storage/TorahAssociationMutationCoordinator.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/Storage/TorahAssociationMutationCoordinator.swift",
+      "baselineBlob": "426348a96cc36c0352bfa41cb22e4062f384bc91",
+      "replacementBlob": "41d4e0bad794905ffccba81f9b9aaf44cac2f312"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/UI/AnytypeTorahNotesService.swift",
+      "baselineBlob": "a468f25f991134984ae2963b23b649f0c8018f6f",
+      "replacementBlob": "f720544ee832268919a3fa712ac258f7b5651d72"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/UI/TorahEditorSession.swift",
+      "baselineBlob": "7f758686f68268e36e97f6455105f136204b8068",
+      "replacementBlob": "c62d24fce1ef49b35ec3e910f2f080e4faa3f715"
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchPresenter.swift",
+      "to": "Anytype/Sources/Pinkha/Torah/UI/TorahSourcesSearchPresenter.swift",
+      "baselineBlob": "78ffb0306652b260c4aa130da45e48ee436264c8",
+      "replacementBlob": "744fef52142f93425f1e1f3c78e8c2f73dd0af3f"
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/PinkhaNativeDerived/install_verified_heart.py",
+      "to": "Tools/PinkhaNativeDerived/install_verified_heart.py",
+      "baselineBlob": "1ed1f7fa90083cc110f4cb73ec69ac5973d34a1c",
+      "replacementBlob": "33c27261a65aab447a2ea7e68ab10270bdf9633b"
+    }
+  ],
+  "unreviewedChangedExistingFiles": [],
+  "inventoryCapabilityCount": 38,
+  "inventorySourceCount": 320,
+  "inventoryErrors": [],
+  "sourceRetentionPassed": true,
+  "semanticEquivalence": "REQUIRES_INDEPENDENT_TEST_AND_REVIEW_EVIDENCE",
+  "productParity": "NOT_PROVEN_BY_SOURCE_RETENTION"
+}

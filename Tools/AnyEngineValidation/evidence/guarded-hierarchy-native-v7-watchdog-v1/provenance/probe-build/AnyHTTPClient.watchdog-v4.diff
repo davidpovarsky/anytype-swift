@@ -1,0 +1,182 @@
+--- v3/AnyHTTPClient.swift
++++ v4/AnyHTTPClient.swift
+@@ -140,8 +140,18 @@
+         let diagnosticStart = ProcessInfo.processInfo.systemUptime
+         pinkhaDiagnosticHTTPTrace(id: diagnosticID, phase: "begin", method: method,
+             path: request.url?.path ?? "", start: diagnosticStart, response: nil, error: nil)
+-        do { (data, response) = try await session.data(for: request) }
++        let diagnosticWatchdog = PinkhaPendingHTTPObservation.start(
++            request: request, originalID: diagnosticID) {
++                URLSession(configuration: self.session.configuration,
++                           delegate: RejectRedirects(), delegateQueue: nil)
++            }
++        defer { diagnosticWatchdog?.originalCompleted() }
++        do {
++            (data, response) = try await session.data(for: request)
++            diagnosticWatchdog?.originalCompleted()
++        }
+         catch {
++            diagnosticWatchdog?.originalCompleted()
+             pinkhaDiagnosticHTTPTrace(id: diagnosticID, phase: "error", method: method,
+                 path: request.url?.path ?? "", start: diagnosticStart, response: nil, error: error)
+             if method == "GET" { throw error }; throw AnyEngineError.writeUncertain
+@@ -232,3 +242,159 @@
+         FileHandle.standardError.write(line)
+     }
+ }
++
++// DIAGNOSTIC COPY ONLY. This API is intentionally absent from production.
++// The ignored CLI copy arms it immediately after the unchanged hierarchy gate11.
++public enum AnyHTTPDiagnosticWatchdog {
++    public static func armAfterHierarchyGate11() {
++        pinkhaWatchdogActivation.arm()
++        pinkhaWatchdogEvent(phase: "armed", originalID: nil, path: nil)
++    }
++}
++
++// Safety: all shared flags use lock. No original request is retried or cancelled.
++private final class PinkhaWatchdogActivation: @unchecked Sendable {
++    private let lock = NSLock()
++    private var armed = false
++    private var activated = false
++    func arm() {
++        lock.lock()
++        armed = true
++        lock.unlock()
++    }
++    func mayObserve() -> Bool {
++        lock.lock()
++        defer { lock.unlock() }
++        return armed && !activated
++    }
++    func activateOnce() -> Bool {
++        lock.lock()
++        defer { lock.unlock() }
++        guard armed && !activated else { return false }
++        activated = true
++        return true
++    }
++}
++private let pinkhaWatchdogActivation = PinkhaWatchdogActivation()
++
++// Safety: mutable originalCompleted/fired/monitor state is exclusively locked.
++// The detached control does not inherit cancellation from a business request.
++// It only reads auth/health, never returns its result into the business call.
++private final class PinkhaPendingHTTPObservation: @unchecked Sendable {
++    private let lock = NSLock()
++    private let request: URLRequest
++    private let originalID: String
++    private let freshSession: @Sendable () -> URLSession
++    private var originalFinished = false
++    private var fired = false
++    private var monitor: Task<Void, Never>?
++
++    private init(request: URLRequest, originalID: String,
++                 freshSession: @escaping @Sendable () -> URLSession) {
++        self.request = request
++        self.originalID = originalID
++        self.freshSession = freshSession
++    }
++    static func start(request: URLRequest, originalID: String,
++                      freshSession: @escaping @Sendable () -> URLSession) -> PinkhaPendingHTTPObservation? {
++        guard pinkhaWatchdogActivation.mayObserve(), request.httpMethod == "GET",
++              request.httpBody == nil, request.url?.query == nil,
++              ["/v1/auth", "/v1/health"].contains(request.url?.path ?? "") else { return nil }
++        let observation = PinkhaPendingHTTPObservation(
++            request: request, originalID: originalID, freshSession: freshSession)
++        observation.startTimer()
++        return observation
++    }
++    private func startTimer() {
++        let task = Task.detached(priority: .utility) { [weak self] in
++            do { try await Task.sleep(nanoseconds: 1_000_000_000) }
++            catch { return }
++            guard let self, self.activateIfPending() else { return }
++            await self.runControl()
++        }
++        lock.lock()
++        monitor = task
++        lock.unlock()
++    }
++    private func activateIfPending() -> Bool {
++        lock.lock()
++        defer { lock.unlock() }
++        guard !originalFinished, pinkhaWatchdogActivation.activateOnce() else { return false }
++        fired = true
++        return true
++    }
++    func originalCompleted() {
++        lock.lock()
++        originalFinished = true
++        let toCancel = fired ? nil : monitor
++        if !fired { monitor = nil }
++        lock.unlock()
++        toCancel?.cancel()
++    }
++    private func controlCompleted() {
++        lock.lock()
++        monitor = nil
++        lock.unlock()
++    }
++    private func runControl() async {
++        let path = request.url?.path ?? ""
++        pinkhaWatchdogEvent(phase: "activate", originalID: originalID, path: path)
++        let controlSession = freshSession()
++        defer {
++            // This is only the new control session. The original remains untouched.
++            controlSession.invalidateAndCancel()
++            controlCompleted()
++            pinkhaWatchdogEvent(phase: "closed", originalID: originalID, path: path)
++        }
++        var controlRequest = request
++        // The sole configuration difference is the explicitly bounded control.
++        // Headers (including any opaque managed token) are copied, never logged.
++        controlRequest.timeoutInterval = 10
++        pinkhaWatchdogEvent(phase: "begin", originalID: originalID, path: path)
++        do {
++            let (data, response) = try await controlSession.data(for: controlRequest)
++            pinkhaWatchdogEvent(phase: "response", originalID: originalID, path: path,
++                                response: response as? HTTPURLResponse, byteCount: data.count)
++        } catch {
++            // No localized description, arbitrary NSError data or payload is exported.
++            pinkhaWatchdogEvent(phase: "transport-error", originalID: originalID, path: path)
++        }
++    }
++}
++
++private func pinkhaWatchdogEvent(phase: String, originalID: String?, path: String?,
++                                response: HTTPURLResponse? = nil, byteCount: Int? = nil) {
++    var event: [String: Any] = [
++        "phase": phase,
++        "timestampUnixMs": Int64((Date().timeIntervalSince1970 * 1000).rounded(.down))
++    ]
++    if let originalID { event["originalRequestID"] = originalID }
++    if let path {
++        event["method"] = "GET"
++        event["path"] = path
++    }
++    if let byteCount { event["byteCount"] = byteCount }
++    if let response {
++        event["status"] = response.statusCode
++        var framing: [String: String] = [:]
++        if let value = response.value(forHTTPHeaderField: "Content-Length") {
++            framing["Content-Length"] = value.utf8.count <= 20 && !value.isEmpty &&
++                value.utf8.allSatisfy({ (48...57).contains($0) }) ? value : "invalid"
++        }
++        if let value = response.value(forHTTPHeaderField: "Transfer-Encoding") {
++            let value = value.lowercased().trimmingCharacters(in: .whitespaces)
++            framing["Transfer-Encoding"] = ["chunked", "identity", "gzip", "deflate"].contains(value) ? value : "other"
++        }
++        if let value = response.value(forHTTPHeaderField: "Connection") {
++            let value = value.lowercased().trimmingCharacters(in: .whitespaces)
++            framing["Connection"] = ["close", "keep-alive"].contains(value) ? value : "other"
++        }
++        event["framing"] = framing
++    }
++    if let data = try? JSONSerialization.data(withJSONObject: event, options: [.sortedKeys]) {
++        var line = Data("ANY_HTTP_WATCHDOG ".utf8)
++        line.append(data)
++        line.append(Data([10]))
++        FileHandle.standardError.write(line)
++    }
++}

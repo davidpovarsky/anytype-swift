@@ -1,0 +1,58 @@
+Test Suite 'All tests' started at 2026-11-19 22:38:09.952
+Test Suite 'host-property-fence-components-v1.xctest' started at 2026-11-19 22:38:09.978
+Test Suite 'NativePropertyStoreTests' started at 2026-11-19 22:38:09.978
+Test Case 'NativePropertyStoreTests.testExactQualifiedKeysCannotCollideAtSeparatorsAndDerivedKeysAreDistinct' started at 2026-11-19 22:38:09.978
+Test Case 'NativePropertyStoreTests.testExactQualifiedKeysCannotCollideAtSeparatorsAndDerivedKeysAreDistinct' passed (0.003 seconds)
+Test Case 'NativePropertyStoreTests.testRawUnknownNamespacesAndNativeDerivedMetadataSurviveProjection' started at 2026-11-19 22:38:09.982
+Test Case 'NativePropertyStoreTests.testRawUnknownNamespacesAndNativeDerivedMetadataSurviveProjection' passed (0.002 seconds)
+Test Case 'NativePropertyStoreTests.testSingleValuePatchCapturesExactVersionAndInverseWithoutEchoingOtherNamespaces' started at 2026-11-19 22:38:09.984
+Test Case 'NativePropertyStoreTests.testSingleValuePatchCapturesExactVersionAndInverseWithoutEchoingOtherNamespaces' passed (0.015 seconds)
+Test Case 'NativePropertyStoreTests.testGenericSetCannotBypassTypeMembershipHierarchyOrUnsupportedScope' started at 2026-11-19 22:38:09.999
+Test Case 'NativePropertyStoreTests.testGenericSetCannotBypassTypeMembershipHierarchyOrUnsupportedScope' passed (0.002 seconds)
+Test Case 'NativePropertyStoreTests.testReaderSnapshotCannotPrepareAnyMutation' started at 2026-11-19 22:38:10.000
+Test Case 'NativePropertyStoreTests.testReaderSnapshotCannotPrepareAnyMutation' passed (0.002 seconds)
+Test Case 'NativePropertyStoreTests.testTypePickerUsesEligibilityAndPreservesOriginalNamespaces' started at 2026-11-19 22:38:10.002
+Test Case 'NativePropertyStoreTests.testTypePickerUsesEligibilityAndPreservesOriginalNamespaces' passed (0.002 seconds)
+Test Case 'NativePropertyStoreTests.testCollectionMembershipDoesNotDeleteValuesOrBypassManagedCollections' started at 2026-11-19 22:38:10.004
+Test Case 'NativePropertyStoreTests.testCollectionMembershipDoesNotDeleteValuesOrBypassManagedCollections' passed (0.111 seconds)
+Test Case 'NativePropertyStoreTests.testVisibilityPreservesFutureKeysAndChangesOnlyPreferenceNamespace' started at 2026-11-19 22:38:10.114
+Test Case 'NativePropertyStoreTests.testVisibilityPreservesFutureKeysAndChangesOnlyPreferenceNamespace' passed (0.003 seconds)
+Test Case 'NativePropertyStoreTests.testVisibilityAttachmentAndDerivedPanelRemainExplicit' started at 2026-11-19 22:38:10.117
+Test Case 'NativePropertyStoreTests.testVisibilityAttachmentAndDerivedPanelRemainExplicit' passed (0.003 seconds)
+Test Case 'NativePropertyStoreTests.testMalformedOrOverflowingVisibilityNeverSilentlyDropsValues' started at 2026-11-19 22:38:10.120
+Test Case 'NativePropertyStoreTests.testMalformedOrOverflowingVisibilityNeverSilentlyDropsValues' passed (0.005 seconds)
+Test Case 'NativePropertyStoreTests.testCatalogRejectsDuplicatesButAllowsLegitimateCrossCatalogID' started at 2026-11-19 22:38:10.125
+Test Case 'NativePropertyStoreTests.testCatalogRejectsDuplicatesButAllowsLegitimateCrossCatalogID' passed (0.002 seconds)
+Test Case 'NativePropertyStoreTests.testNativeProofRequiresExactPolicyWorkspaceReadinessAndCapabilityVersion' started at 2026-11-19 22:38:10.127
+Test Case 'NativePropertyStoreTests.testNativeProofRequiresExactPolicyWorkspaceReadinessAndCapabilityVersion' passed (0.0 seconds)
+Test Case 'NativePropertyStoreTests.testPropertyKindMismatchCannotBecomeAnUnconditionalOrWholeRecordWrite' started at 2026-11-19 22:38:10.128
+Test Case 'NativePropertyStoreTests.testPropertyKindMismatchCannotBecomeAnUnconditionalOrWholeRecordWrite' passed (0.011 seconds)
+Test Suite 'NativePropertyStoreTests' passed at 2026-11-19 22:38:10.139
+	 Executed 13 tests, with 0 failures (0 unexpected) in 0.159 (0.159) seconds
+Test Suite 'NativePropertyFenceTests' started at 2026-11-19 22:38:10.139
+Test Case 'NativePropertyFenceTests.testSnapshotRejectsMissingOrInexactApplySequence' started at 2026-11-19 22:38:10.139
+Test Case 'NativePropertyFenceTests.testSnapshotRejectsMissingOrInexactApplySequence' passed (0.003 seconds)
+Test Case 'NativePropertyFenceTests.testEveryPreparedMutationRetainsTheSameObservedFence' started at 2026-11-19 22:38:10.141
+Test Case 'NativePropertyFenceTests.testEveryPreparedMutationRetainsTheSameObservedFence' passed (0.002 seconds)
+Test Case 'NativePropertyFenceTests.testPreparedEditRejectsLateCommutativeSequenceChangeWithIdenticalVersionAndValues' started at 2026-11-19 22:38:10.144
+Test Case 'NativePropertyFenceTests.testPreparedEditRejectsLateCommutativeSequenceChangeWithIdenticalVersionAndValues' passed (0.002 seconds)
+Test Case 'NativePropertyFenceTests.testApplySequenceAboveDoublePrecisionIsPreservedExactlyOnWire' started at 2026-11-19 22:38:10.145
+Test Case 'NativePropertyFenceTests.testApplySequenceAboveDoublePrecisionIsPreservedExactlyOnWire' passed (0.003 seconds)
+Test Case 'NativePropertyFenceTests.testAcceptedWriteRequiresExactPositiveSequenceAndOriginalRun' started at 2026-11-19 22:38:10.148
+Test Case 'NativePropertyFenceTests.testAcceptedWriteRequiresExactPositiveSequenceAndOriginalRun' passed (0.001 seconds)
+Test Case 'NativePropertyFenceTests.testLaterReadbackWithSameVersionAndRequestedValueCannotMintUndo' started at 2026-11-19 22:38:10.150
+Test Case 'NativePropertyFenceTests.testLaterReadbackWithSameVersionAndRequestedValueCannotMintUndo' passed (0.003 seconds)
+Test Case 'NativePropertyFenceTests.testExactAcknowledgementBindsUndoToItsSequenceWithoutChangingOriginalIntent' started at 2026-11-19 22:38:10.153
+Test Case 'NativePropertyFenceTests.testExactAcknowledgementBindsUndoToItsSequenceWithoutChangingOriginalIntent' passed (0.003 seconds)
+Test Case 'NativePropertyFenceTests.testReadbackFromDifferentOwnerEpochOrTargetCannotCertifyTheWrite' started at 2026-11-19 22:38:10.155
+Test Case 'NativePropertyFenceTests.testReadbackFromDifferentOwnerEpochOrTargetCannotCertifyTheWrite' passed (0.004 seconds)
+Test Case 'NativePropertyFenceTests.testPendingEditAndUndoRefuseReplacedAccountSpaceRunAndGenerationBeforeTransport' started at 2026-11-19 22:38:10.160
+Test Case 'NativePropertyFenceTests.testPendingEditAndUndoRefuseReplacedAccountSpaceRunAndGenerationBeforeTransport' passed (0.004 seconds)
+Test Case 'NativePropertyFenceTests.testPendingEditAndUndoHonorRevokedLeaseWithoutReplacingCapturedFence' started at 2026-11-19 22:38:10.164
+Test Case 'NativePropertyFenceTests.testPendingEditAndUndoHonorRevokedLeaseWithoutReplacingCapturedFence' passed (0.004 seconds)
+Test Suite 'NativePropertyFenceTests' passed at 2026-11-19 22:38:10.168
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.029 (0.029) seconds
+Test Suite 'host-property-fence-components-v1.xctest' passed at 2026-11-19 22:38:10.168
+	 Executed 23 tests, with 0 failures (0 unexpected) in 0.188 (0.188) seconds
+Test Suite 'All tests' passed at 2026-11-19 22:38:10.168
+	 Executed 23 tests, with 0 failures (0 unexpected) in 0.188 (0.188) seconds

@@ -28,10 +28,14 @@ After installing that verified artifact in a clean checkout:
       -scheme PinkhaAnyNativeApp \
       -destination 'platform=iOS Simulator,id=<owned-simulator-udid>' \
       -parallel-testing-enabled NO \
-      CODE_SIGNING_ALLOWED=NO
+      ARCHS=arm64 ONLY_ACTIVE_ARCH=YES \
+      CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=YES CODE_SIGN_IDENTITY=-
 
-The project requires Xcode 27 and iOS 27. The separate native package acceptance
-suite uses Modules/PinkhaAnyNative, scheme PinkhaAnyNative.
+The project requires Xcode 27 and iOS 27. The account acceptance suite uses the same three test sources from
+Modules/PinkhaAnyNative in the `PinkhaAnyNativeHostedTests` scheme of this
+project. A minimal simulator app hosts those tests with its own Keychain
+entitlement. It does not start the product runtime; each test owns the actual
+AnyLib lifecycle. Standalone Swift package XCTest cannot certify Keychain access.
 
 ## Ownership and recovery
 
@@ -72,11 +76,19 @@ capability inventory and open Asana work items remain the acceptance authority.
 
 ## Current acceptance evidence
 
-The complete default overlay is native v7, manifest
-`Tools/AnyEngineValidation/evidence/native-document-metadata-v7-source.json`.
-It includes the v5 creation/claim fences and v6 document/property policy.
-Its exact 85 changed files were reapplied to disposable clean Git indexes.
-Do not stack historical v1–v6 patches on top of this overlay.
+The complete default overlay is native v8, manifest
+`Tools/AnyEngineValidation/evidence/native-conditional-properties-v8-source.json`.
+It includes the complete v7 implementation and adds caller-captured property
+sequence checks plus explicitly validated conditional no-ops. Those no-ops
+still validate current target, definitions and writer authority without adding
+history. The client requires both native capabilities before opening the UI.
+
+Its exact 90 changed files (49 Any and 41 SDK) were reapplied to disposable clean
+Git indexes. Each resulting full tree equals `testedEffectiveTree`; the older
+`testedLocalCommit` is explicitly the local parent, not a claim that uncommitted
+v8 changes were present in that commit. Artifact installation verifies the exact
+patches, file blobs, effective trees and application commit. Apply this complete
+overlay once; do not stack historical v1–v7 patches.
 
 | Execution scope | Latest completed result | Boundary |
 | --- | --- | --- |
@@ -86,13 +98,16 @@ Do not stack historical v1–v6 patches on top of this overlay.
 | Production Swift property service against native v6 | 15/15 checks | Type preservation, typed values, membership, hidden fields and conditional Undo |
 | Native v6 definition/property policy | 4 SDK tests, 19 top-level HTTP tests / 31 cases, and 11 two-peer checks | Actual storage, signed claims, sync, definition removal and cold reopen |
 | Native v7 independent document metadata | 4 focused native tests and 7 real HTTP/cold-reopen checks | Fresh editor policy before claims installation; exact Type/target dependencies |
+| Current property-fence components | Integration 35/35 and Host 23/23 passed against their exact source and dependency receipts | Includes original property operations/Undo, captured sequence/run propagation and archive no-op request contracts; native runtime acceptance is separate |
+| Native v8 conditional property implementation | SDK 17 top-level / 29 cases and HTTP 19 top-level / 47 cases passed, zero skips; pinned binary build passed | Explicit no-op authority/definition/target validation, late commutative updates, captured sequence and unchanged stock-route behavior; subsequent full regression and hierarchy runtime acceptance are tracked separately |
 | Final v7 native regression | 64 top-level tests / 134 including subtests, no skips | Exact current SDK guards, claim contracts and HTTP routes; source and binary stable |
 | Final v7 two-peer object workflow | 16/16 actual runtime checks | Verified network partition/reconnect, global collision closure, scoped SSE, orphan/bin refusal; optional 10,001-claim scale check was not repeated |
 | Live Sefaria through the original production facade | 7/7 real network checks, source stable | Hebrew reference/text/version, commentary, hierarchy, topic search/resolve and word context; no mocked provider |
-| Apple package execution at a5a4a6 | Engine 67; Integration 107; Host 55 XCTest + 11 SwiftTesting; Hanlin 28; PinkhaKit 217 | All passed on macOS/Xcode 27; the same run's Presentation and AnyUI dependency compilation failed on the shared Sendable contract |
-| New native application acceptance | 5 real AnyLib/Keychain/journal tests written | Includes the full T5/quote/reopen path; Apple execution pending |
-| Native AnyUI composition and focus | Dedicated UIKit acceptance suite written | Pure composition checks passed separately; actual UIKit execution remains pending |
-| Separate executable acceptance | 5 XCUITests written | Real onboarding, Hebrew edit, Hanlin consent, hierarchy/property workflow, live source inspector quote/Note flow, background and cold reopen pending Apple execution |
+| Apple package execution at d58b6a0 | Engine 67; Integration 107; Host 55 XCTest + 11 Swift Testing; Hanlin 33; TorahPresentation 1 XCTest + 10 Swift Testing; AnyUI 4 XCTest + 93 Swift Testing; PinkhaKit 217 | All passed on macOS/Xcode 27. The earlier split-surrogate recovery failure and its fix are preserved separately. Exact source-bound evidence: `apple-d58-packages-v1/MANIFEST.json`; this does not execute UIKit or the native app. |
+| Official and patched v7 AnyLib | Each passed 3/3 lifecycle/control tests at 27b4b2c and again at d58b6a0 | Actual arm64 iOS Simulator 27.2. Both source-bound named-execution archives are complete; the patched job's later application gates failed separately. These lifecycle tests do not certify the app or protected journals. |
+| New native application acceptance at d58b6a0 | All 5 methods executed and failed at real Keychain access | Standalone package XCTest received `unavailable(-34018)` / `secureStorageUnavailable`. Hosted signed simulator execution is being configured without changing the five tests or substituting storage; next Apple acceptance remains open. |
+| Native AnyUI execution at d58b6a0 | 108/108 passed on arm64 iOS Simulator 27.2, zero skips | Source-bound xcresult includes the required focus 6 and marked-text 5, activation 4 and portable 93 cases. Evidence: `apple-d58-patched-runtime-v1/MANIFEST.json`. Executable interaction remains separate. |
+| Separate executable acceptance | 7 XCUITests written; d58 executed zero because its app build selected x86_64 against an arm64 dependency | Real onboarding, Hebrew edit, Hanlin read consent, hierarchy/property workflow and live source Inspector quote/Note flow. The two later source-ready scenarios cover explicit direction/alignment and real hierarchy drag/drop across cold reopen. No executable acceptance is claimed yet; seven scenarios do not cover every implemented UI operation. |
 
 Read the source-bound receipts rather than adding these counts together: scopes,
 versions and fixtures differ, and later features are not certified by an older run.

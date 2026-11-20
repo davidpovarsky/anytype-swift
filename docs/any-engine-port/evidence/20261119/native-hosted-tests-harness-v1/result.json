@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "completedAt": "2026-11-19T22:55:30.930170+00:00",
+  "result": "PASS_SOURCE_STRUCTURE_ONLY",
+  "checks": [
+    "OpenStep project parsed with all unique dictionary keys",
+    "Existing app and UI-test target/source/framework/configuration objects unchanged",
+    "Only project Debug build-setting change is ONLY_ACTIVE_ARCH=YES",
+    "Every project object reference resolves",
+    "Exactly the original two and the new two native targets",
+    "Hosted tests are a unit-test bundle and depend only on dedicated host",
+    "Host has no package-product or target dependencies",
+    "Tests reference the original three files directly, without a copy",
+    "All original test bytes and main NativeLaunch scheme remain unchanged",
+    "All five unchanged original XCTest methods included",
+    "All 13 imported library products are explicit framework dependencies",
+    "Local package PinkhaAnyNative exists",
+    "Local package PinkhaAnyRuntime exists",
+    "Local package PinkhaAnyEngine exists",
+    "Local package PinkhaAnyHost exists",
+    "Local package PinkhaAnyIntegration exists",
+    "Local package PinkhaAnyUI exists",
+    "Local package PinkhaKit exists",
+    "Local package PinkhaTorahPresentation exists",
+    "Remote TorahInspectorCore keeps exact pinned revision",
+    "Local package PinkhaAnyHanlin exists",
+    "Local package PinkhaHanlinCore exists",
+    "Local package HanlinHostContracts exists",
+    "Local package HanlinPlatformContracts exists",
+    "Hosted Debug loader/runpath/module configuration",
+    "Hosted Release loader/runpath/module configuration",
+    "Host Debug has private entitlements and real loopback Info.plist",
+    "Host Release has private entitlements and real loopback Info.plist",
+    "Host declares only its own application identifier/private Keychain group",
+    "Host imports only SwiftUI and cannot bootstrap Any runtime",
+    "Host reuses literal-loopback ATS exception without global opt-out",
+    "Hosted scheme runs the entire original bundle with parallel test execution disabled",
+    "Scheme launch and macro expansion reference dedicated host",
+    "Scheme reference PinkhaAnyNativeTestHost resolves to exact product",
+    "Scheme reference PinkhaAnyNativeHostedTests resolves to exact product",
+    "Scheme reference PinkhaAnyNativeHostedTests resolves to exact product",
+    "Scheme reference PinkhaAnyNativeTestHost resolves to exact product",
+    "Scheme reference PinkhaAnyNativeTestHost resolves to exact product",
+    "Existing repository already uses application-hosted XCTest settings",
+    "Git diff whitespace check passes"
+  ],
+  "originalTestMethods": [
+    "testNativeQuotesNotesRelatedIndexUnlinkAndRuntimeReopen",
+    "testPostAuthKeychainFailureRevokesNativeAuthorityAndRecoversSameAccount",
+    "testRealAccountWorkspaceJournalEditorAndColdReopen",
+    "testRealKeychainNamespaceAndRecoveryMetadataIsolation",
+    "testRealProtectedHanlinCreationDenialCommitDuplicateAndRevocation"
+  ],
+  "originalInputs": [
+    {
+      "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeApplicationTests.swift",
+      "sha256": "db9e5d9e37253b223e77206aef885f6c4d8e66fe57ece77783948556c3d28a86"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeHanlinCreationTests.swift",
+      "sha256": "040a39953263a95a2eb2bbcdf93669a980bb4aed50f8d6cdeeb1eae7604c356b"
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativeTorahWorkflowTests.swift",
+      "sha256": "b290a3d8e1e9fe8876e2d8f83dac6daba051c684c8c5b9c72e83f0989208a3ba"
+    },
+    {
+      "path": "NativeApp/AnyNative.xcodeproj/xcshareddata/xcschemes/PinkhaAnyNativeApp.xcscheme",
+      "sha256": "960a40600210dd7ec6e9846e8a0e7fa7d84e074138d21e1e313f1a0f4f039350"
+    }
+  ],
+  "files": [
+    {
+      "path": "NativeApp/AnyNative.xcodeproj/project.pbxproj",
+      "sha256": "82c28b2fbd01f004559a2d19037d2933b25fecfeb308574f63238189167d47df",
+      "bytes": 21843
+    },
+    {
+      "path": "NativeApp/AnyNative.xcodeproj/xcshareddata/xcschemes/PinkhaAnyNativeHostedTests.xcscheme",
+      "sha256": "2ca9a63687b0deaa3dac39326448b5c336256636ed2587479a4031db4ed6830e",
+      "bytes": 2839
+    },
+    {
+      "path": "NativeApp/TestHost/AnyNativeTestHostApp.swift",
+      "sha256": "945b33fdf9bc9bd24fad383c4818dc20413494e6357db6ad0fd7f65444fd530a",
+      "bytes": 307
+    },
+    {
+      "path": "NativeApp/TestHost/NativeTestHost.entitlements",
+      "sha256": "7148596996a53442a38f2b73d5db5e47b072334ad0a27b874657d319f6a84406",
+      "bytes": 437
+    }
+  ],
+  "existingHostedConvention": {
+    "path": "Anytype.xcodeproj/project.pbxproj",
+    "sha256": "049879ab76076fcf9f63c2fcb533776fbbd22bed57c3508b43e62e0890bd2fbb",
+    "lines": [
+      {
+        "line": 1183,
+        "text": "BUNDLE_LOADER = \"$(TEST_HOST)\";"
+      },
+      {
+        "line": 1201,
+        "text": "TEST_HOST = \"$(BUILT_PRODUCTS_DIR)/Anytype.app/Anytype\";"
+      },
+      {
+        "line": 1208,
+        "text": "BUNDLE_LOADER = \"$(TEST_HOST)\";"
+      },
+      {
+        "line": 1226,
+        "text": "TEST_HOST = \"$(BUILT_PRODUCTS_DIR)/Anytype.app/Anytype\";"
+      },
+      {
+        "line": 1352,
+        "text": "BUNDLE_LOADER = \"$(TEST_HOST)\";"
+      },
+      {
+        "line": 1370,
+        "text": "TEST_HOST = \"$(BUILT_PRODUCTS_DIR)/Anytype.app/Anytype\";"
+      },
+      {
+        "line": 1689,
+        "text": "BUNDLE_LOADER = \"$(TEST_HOST)\";"
+      },
+      {
+        "line": 1707,
+        "text": "TEST_HOST = \"$(BUILT_PRODUCTS_DIR)/Anytype.app/Anytype\";"
+      }
+    ]
+  },
+  "primaryAppleSources": [
+    {
+      "url": "https://developer.apple.com/documentation/xcode/build-settings-reference.md",
+      "usedFor": [
+        "TEST_HOST",
+        "BUNDLE_LOADER",
+        "CODE_SIGN_ENTITLEMENTS",
+        "CODE_SIGN_INJECT_BASE_ENTITLEMENTS"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/security/errsecmissingentitlement.md",
+      "usedFor": [
+        "Required entitlement missing",
+        "Keychain default access group",
+        "Signed entitlement inspection"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/documentation/bundleresources/entitlements/keychain-access-groups.md",
+      "usedFor": [
+        "Keychain access-group entitlement"
+      ]
+    }
+  ],
+  "pending": [
+    "Xcode semantic build",
+    "Simulator ad-hoc signing and built entitlement inspection",
+    "Original five actual Keychain/runtime tests"
+  ],
+  "notClaimed": [
+    "Apple execution",
+    "Keychain success",
+    "NativeLaunch pass",
+    "Device signing"
+  ],
+  "preservedFailure": {
+    "source": "d58b6a004c93320a4c57c8eba8e4518048d70fc1",
+    "executed": 5,
+    "failed": 5,
+    "cause": "Actual Keychain -34018 in standalone package test host"
+  }
+}

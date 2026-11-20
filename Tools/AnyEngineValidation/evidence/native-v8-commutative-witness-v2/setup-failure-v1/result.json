@@ -1,0 +1,43 @@
+{
+  "errorCode": "actual_native_tests_incomplete_or_failed",
+  "errorType": "RuntimeError",
+  "failedEvents": 1,
+  "jsonEventLogSHA256": "1e9a159b6d8374099184e3954cd287b78f9c80d8c595645b938a44aefabeb7c4",
+  "packages": [
+    "./internal/properties"
+  ],
+  "passedCases": 0,
+  "process": {
+    "cleanupErrors": [],
+    "command": [
+      "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\bin\\go.exe",
+      "test",
+      "-json",
+      "-count=1",
+      "-p=2",
+      "-timeout=220s",
+      "-run",
+      "^TestNativeConditionalMembershipLateOperationLeavesFullVersionUnchanged$",
+      "./internal/properties"
+    ],
+    "elapsedSeconds": 68.219,
+    "exitCode": 1,
+    "parentExited": true,
+    "pid": 35776,
+    "processBoundary": "owned_windows_kill_on_close_job",
+    "timedOut": false
+  },
+  "processHelperSHA256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67",
+  "runnerSHA256": "bf33a00e584cab3360170c4f075c0c0fd93bf9ad8d4b1bb746a1f20b0b2ae1e3",
+  "runnerStable": true,
+  "scope": "actual_native_go_tests_no_skip",
+  "selector": "^TestNativeConditionalMembershipLateOperationLeavesFullVersionUnchanged$",
+  "skippedEvents": 0,
+  "sourceRoot": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\sdk-source",
+  "sourceStable": true,
+  "status": "FAIL",
+  "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "testCases": 0,
+  "testNames": [],
+  "topLevelTests": 0
+}

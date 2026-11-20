@@ -16,6 +16,8 @@ let package = Package(
         .package(path: "../../Dependencies/Hanlin/Packages/HanlinPlatform"),
         .package(path: "../../Dependencies/Hanlin/Packages/HanlinPresentationSDK"),
         .package(path: "../PinkhaAnyHost"),
+        .package(path: "../PinkhaAnyEngine"),
+        .package(path: "../PinkhaAnyIntegration"),
         .package(url: "https://github.com/apple/swift-crypto.git", exact: "3.12.3"),
         .package(url: "https://github.com/swiftlang/swift-markdown.git",
                  revision: "25cb61d3482054b09ae76ca4f281b1bfe7fe5a43")
@@ -27,13 +29,13 @@ let package = Package(
             .product(name: "Crypto", package: "swift-crypto")
         ]),
         .target(name: "PinkhaAnyHanlin", dependencies: [
-            "PinkhaHanlinCore", "PinkhaAnyHost",
+            "PinkhaHanlinCore", "PinkhaAnyHost", "PinkhaAnyEngine", "PinkhaAnyIntegration",
             .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
             .product(name: "HanlinPlatformContracts", package: "HanlinPlatform"),
             .product(name: "Markdown", package: "swift-markdown")
         ]),
         .target(name: "PinkhaHanlinUI", dependencies: [
-            "PinkhaHanlinCore", "PinkhaAnyHanlin", "PinkhaAnyHost",
+            "PinkhaHanlinCore", "PinkhaAnyHanlin", "PinkhaAnyHost", "PinkhaAnyEngine", "PinkhaAnyIntegration",
             .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
             .product(name: "HanlinAgentCore", package: "HanlinAgentSDK", condition: .when(platforms: [.iOS])),
             .product(name: "HanlinPersistenceAdapters", package: "HanlinAgentSDK", condition: .when(platforms: [.iOS])),
@@ -43,12 +45,12 @@ let package = Package(
             .product(name: "HanlinPresentationKit", package: "HanlinPresentationSDK", condition: .when(platforms: [.iOS]))
         ], resources: [.process("Resources")]),
         .executableTarget(name: "PinkhaAnyHanlinProbe", dependencies: [
-            "PinkhaAnyHanlin", "PinkhaHanlinCore", "PinkhaAnyHost",
+            "PinkhaAnyHanlin", "PinkhaHanlinCore", "PinkhaAnyHost", "PinkhaAnyEngine", "PinkhaAnyIntegration",
             .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
             .product(name: "HanlinPlatformContracts", package: "HanlinPlatform")
         ]),
         .testTarget(name: "PinkhaAnyHanlinTests", dependencies: [
-            "PinkhaAnyHanlin", "PinkhaHanlinCore",
+            "PinkhaAnyHanlin", "PinkhaHanlinCore", "PinkhaAnyHost", "PinkhaAnyEngine", "PinkhaAnyIntegration",
             .product(name: "HanlinHostContracts", package: "HanlinAgentSDK"),
             .product(name: "HanlinPlatformContracts", package: "HanlinPlatform")
         ])

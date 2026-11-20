@@ -1,0 +1,10 @@
+--- original/GuardedHierarchyProbe.swift
++++ diagnostic/GuardedHierarchyProbe.swift
+@@ -208,6 +208,7 @@
+                 throw Failure.assertion("cycle_accepted")
+             } catch PinkhaHierarchyError.cycleDetected { try check("guarded_hierarchy_cycle_refused", true) }
+ 
++            AnyHTTPDiagnosticWatchdog.armAfterHierarchyGate11()
+             let beforeArchive = try await store.readObject(objectID: folderID)
+             let archiveRace = HierarchyArchiveABARace(store: store, objectID: folderID)
+             do {

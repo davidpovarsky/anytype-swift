@@ -1,12 +1,11 @@
-
 import Foundation
 import PinkhaAnyEngine
 
-/// The expected version belongs to the prepared domain mutation, not a later
-/// refresh performed by a transport adapter immediately before an unsafe write.
+/// Native writes must retain the reviewed record fence and original engine run.
 public protocol AnyHierarchyConditionalRecordStore: AnyHierarchyRecordStore {
+    var engineStartedAt: String { get }
     func patch(objectID: String, ownerID: String, values: [String: AnyJSON],
-               expectedVersion: AnyJSON,
+               fence: AnyConditionalPropertyFence,
                authorize: @escaping @Sendable () async throws -> Void) async throws
 }
 
@@ -34,8 +33,9 @@ public struct AnyGuardedHTTPHierarchyRecordStore: AnyHierarchyObservableRecordSt
         try await requireRun()
         let value = try await client.requestJSON(method: "GET", path: ["v1", "pinkha", "capabilities"])
         guard value["contract"]?.string == "pinkha-torah-native-v1",
-              value["conditionalPropertiesSet"]?.integer == 1 else {
-            throw AnyEngineError.incompatibleSchema("conditional hierarchy properties unavailable")
+              value["conditionalPropertiesSet"]?.integer == 1,
+              value["conditionalPropertiesApplySeq"]?.integer == 1 else {
+            throw AnyEngineError.incompatibleSchema("conditional hierarchy property fence unavailable")
         }
         try await requireRun()
     }
@@ -58,16 +58,24 @@ public struct AnyGuardedHTTPHierarchyRecordStore: AnyHierarchyObservableRecordSt
         try await requireRun(); return value
     }
 
-    /// Calling the unguarded protocol method is an integration error, never a fallback.
+    /// Calling either legacy method is an integration error, never a fallback.
     public func patch(objectID: String, ownerID: String, values: [String: AnyJSON],
                       authorize: @escaping @Sendable () async throws -> Void) async throws {
-        throw AnyEngineError.incompatibleSchema("native hierarchy patch requires captured _ver")
+        throw AnyEngineError.incompatibleSchema("native hierarchy patch requires captured property fence")
     }
 
     public func patch(objectID: String, ownerID: String, values: [String: AnyJSON],
                       expectedVersion: AnyJSON,
                       authorize: @escaping @Sendable () async throws -> Void) async throws {
-        try AnyHierarchyNativeVersion.validate(expectedVersion)
+        throw AnyEngineError.incompatibleSchema("native hierarchy patch requires captured property fence")
+    }
+
+    public func patch(objectID: String, ownerID: String, values: [String: AnyJSON],
+                      fence: AnyConditionalPropertyFence,
+                      authorize: @escaping @Sendable () async throws -> Void) async throws {
+        guard fence.engineStartedAt == engineStartedAt else {
+            throw AnyHierarchyError.stalePlan(objectID)
+        }
         guard !values.isEmpty, AnyHierarchySchema.validID(objectID) else { throw AnyHierarchyError.incompatibleSchema }
         let supported: Set<String>
         if ownerID == schema.collectionID {
@@ -80,8 +88,7 @@ public struct AnyGuardedHTTPHierarchyRecordStore: AnyHierarchyObservableRecordSt
         guard actualSchema == schema else { throw AnyHierarchyError.incompatibleSchema }
         _ = try await client.requestJSON(method: "POST",
             path: ["v1", "spaces", workspace.spaceID, "pinkha", "properties", objectID, "set", ownerID],
-            body: .object(["patch": .object(values), "ifVersion": expectedVersion,
-                           "ifStartedAt": .string(engineStartedAt)]),
+            body: fence.requestBody(patch: values),
             authorize: {
                 try await authorize()
                 try await validateMembership(intent: .write)
@@ -89,10 +96,10 @@ public struct AnyGuardedHTTPHierarchyRecordStore: AnyHierarchyObservableRecordSt
         try await requireRun()
     }
 
-    /// Archive and recovery preserve every other collection membership and use
-    /// the complete captured row version. The native route holds current writer
-    /// and definition authority through the durable write, including exact noops.
-    /// Folder removal is still a recoverable sequence across separate objects.
+    /// Archive and recovery preserve ordered memberships and the exact captured
+    /// row fence. An identical retry still reaches native current-writer and
+    /// definition checks, using its explicit no-history contract.
+    /// Folder removal remains a recoverable sequence across separate objects.
     public func setArchived(objectID: String, archived: Bool,
                             authorize: @escaping @Sendable () async throws -> Void) async throws {
         guard AnyHierarchySchema.validID(objectID) else {
@@ -108,25 +115,10 @@ public struct AnyGuardedHTTPHierarchyRecordStore: AnyHierarchyObservableRecordSt
         guard actualSchema == schema else { throw AnyHierarchyError.incompatibleSchema }
         try await validateMembership(intent: .write)
         let row = try await readObject(objectID: objectID)
-        guard let values = row["any"]?["collections"]?.array,
-              values.allSatisfy({ $0.string.map(AnyHierarchySchema.validID) == true }),
-              Set(values.compactMap(\.string)).count == values.count,
-              values.contains(.string(schema.collectionID)),
-              !values.contains(.string("template")),
-              let expectedVersion = row["_ver"] else {
-            throw AnyHierarchyError.malformedRow(objectID)
-        }
-        try AnyHierarchyNativeVersion.validate(expectedVersion)
-        var memberships = values
-        if archived {
-            if !memberships.contains(.string("bin")) { memberships.append(.string("bin")) }
-        } else {
-            memberships.removeAll { $0 == .string("bin") }
-        }
-        _ = try await client.requestJSON(method: "POST",
-            path: ["v1", "spaces", workspace.spaceID, "pinkha", "properties", objectID, "set", "any"],
-            body: .object(["patch": .object(["collections": .array(memberships)]),
-                           "ifVersion": expectedVersion, "ifStartedAt": .string(engineStartedAt)]),
+        let request = try AnyHierarchyArchiveRequest(record: row, objectID: objectID,
+            workspace: workspace, schema: schema, archived: archived,
+            engineStartedAt: engineStartedAt, capabilities: capabilities)
+        _ = try await client.requestJSON(method: "POST", path: request.path, body: request.body,
             authorize: {
                 try await requireRun()
                 try await authorize()
@@ -134,7 +126,6 @@ public struct AnyGuardedHTTPHierarchyRecordStore: AnyHierarchyObservableRecordSt
             })
         try await requireRun()
     }
-
 
     public func watch(session: AnyStreamSession) async throws -> AsyncThrowingStream<AnyQueryUpdate, Error> {
         try await requireRun()

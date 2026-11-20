@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "status": "OBSERVED_LINK_FAILURE_SOURCE_FIX_PRESENT_REBUILD_PENDING",
+  "run": 44623531195,
+  "job": 135926486251,
+  "commit": "d58b6a004c93320a4c57c8eba8e4518048d70fc1",
+  "artifact": 14583577392,
+  "phase": "BUILD",
+  "xcodebuildExitCode": 65,
+  "testCommandInvoked": false,
+  "testExecutionCount": 0,
+  "undefinedSymbolCount": 15,
+  "undefinedModules": [
+    "PinkhaAnyEngine",
+    "PinkhaAnyIntegration"
+  ],
+  "undefinedSymbols": [
+    "PinkhaAnyEngine.AnyHTTPClient.requestJSON(method: Swift.String, path: [Swift.String], body: PinkhaAnyEngine.AnyJSON?, query: [Swift.String : Swift.String], maximumResponseBytes: Swift.Int?, authorize: @Sendable () async throws -> ()) async throws -> PinkhaAnyEngine.AnyJSON",
+    "async function pointer to PinkhaAnyEngine.AnyHTTPClient.requestJSON(method: Swift.String, path: [Swift.String], body: PinkhaAnyEngine.AnyJSON?, query: [Swift.String : Swift.String], maximumResponseBytes: Swift.Int?, authorize: @Sendable () async throws -> ()) async throws -> PinkhaAnyEngine.AnyJSON",
+    "type metadata accessor for PinkhaAnyEngine.AnyHTTPClient",
+    "nominal type descriptor for PinkhaAnyEngine.AnyHTTPClient",
+    "PinkhaAnyEngine.AnyGuardedTorahCapabilities.contract.unsafeMutableAddressor : Swift.String",
+    "PinkhaAnyEngine.AnyJSON.bool.getter : Swift.Bool?",
+    "PinkhaAnyEngine.AnyJSON.string.getter : Swift.String?",
+    "PinkhaAnyEngine.AnyJSON.integer.getter : Swift.Int64?",
+    "nominal type descriptor for PinkhaAnyEngine.AnyJSON",
+    "type metadata for PinkhaAnyEngine.AnyJSON",
+    "protocol conformance descriptor for PinkhaAnyEngine.AnyJSON : Swift.Encodable in PinkhaAnyEngine",
+    "PinkhaAnyEngine.AnyJSON.subscript.getter : (Swift.String) -> PinkhaAnyEngine.AnyJSON?",
+    "static PinkhaAnyIntegration.AnyTorahWorkspace.__derived_struct_equals(PinkhaAnyIntegration.AnyTorahWorkspace, PinkhaAnyIntegration.AnyTorahWorkspace) -> Swift.Bool",
+    "nominal type descriptor for PinkhaAnyIntegration.AnyTorahWorkspace",
+    "type metadata accessor for PinkhaAnyIntegration.AnyHTTPTorahTargetAccess"
+  ],
+  "rawLog": {
+    "entry": "command-02.log",
+    "sha256": "634d8fb2770604f0b323335a77071ee7e2430e6246df2828ba283e1d978b2528",
+    "bytes": 9992158,
+    "errorStartLine": 39794,
+    "errorEndLine": 39861
+  },
+  "rawLinkCommand": [
+    {
+      "line": 39790,
+      "command": "    /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -Xlinker -reproducible -target arm64-apple-ios27.0-simulator -emit-library -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -Xlinker -no_warn_duplicate_libraries -L/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-Anytype-iphonesimulator -L/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator -L/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-Anytype-iphonesimulator -F/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks -F/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator -Fsystem /Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -Fsystem /Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks @/Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Intermediates.noindex/PinkhaAnyHanlin.build/Debug-Anytype-iphonesimulator/PinkhaHanlinUI-product-t.build/Objects-normal/arm64/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct.LinkFileList -Xclang-linker -install_name -Xclang-linker @rpath/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct.framework/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Intermediates.noindex/PinkhaAnyHanlin.build/Debug-Anytype-iphonesimulator/PinkhaHanlinUI-product-t.build/Objects-normal/arm64/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct_lto.o -Xclang-linker -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Intermediates.noindex/PinkhaAnyHanlin.build/Debug-Anytype-iphonesimulator/PinkhaHanlinUI-product-t.build/Objects-normal/arm64/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct_dependency_info.dat -link-objc-runtime -L/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -application_extension /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinHostContracts.framework/HanlinHostContracts /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinPlatformContracts.framework/HanlinPlatformContracts /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Crypto_17A3B1FFC41E47_PackageProduct.framework/Crypto_17A3B1FFC41E47_PackageProduct -framework PinkhaHanlinCore /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaAnyHost_-37AFDC5F0CC79FD2_PackageProduct.framework/PinkhaAnyHost_-37AFDC5F0CC79FD2_PackageProduct /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/Markdown_-41C1F4010F78A9B5_PackageProduct.framework/Markdown_-41C1F4010F78A9B5_PackageProduct /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinAgentCore_-7D838ACD7D66B21F_PackageProduct.framework/HanlinAgentCore_-7D838ACD7D66B21F_PackageProduct /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinPersistenceAdapters_-2F7E82B1E9C686D4_PackageProduct.framework/HanlinPersistenceAdapters_-2F7E82B1E9C686D4_PackageProduct /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinChatCore.framework/HanlinChatCore /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/SwiftAISDK_6FA7094CA5C06683_PackageProduct.framework/SwiftAISDK_6FA7094CA5C06683_PackageProduct /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/AISDKProvider.framework/AISDKProvider /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/AISDKProviderUtils.framework/AISDKProviderUtils /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/AISDKZodAdapter.framework/AISDKZodAdapter /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/EventSourceParser.framework/EventSourceParser /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/OpenAIProvider_-2301E57905F4388B_PackageProduct.framework/OpenAIProvider_-2301E57905F4388B_PackageProduct /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/AnthropicProvider_1131E7754C45D704_PackageProduct.framework/AnthropicProvider_1131E7754C45D704_PackageProduct /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/GoogleProvider_-6DD8AE9F9ECCE14A_PackageProduct.framework/GoogleProvider_-6DD8AE9F9ECCE14A_PackageProduct /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/OpenAICompatibleProvider_-12EEEC9CC3715281_PackageProduct.framework/OpenAICompatibleProvider_-12EEEC9CC3715281_PackageProduct /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinScriptUI_1A54938DEE62D27B_PackageProduct.framework/HanlinScriptUI_1A54938DEE62D27B_PackageProduct /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinChatUI_-145D373D09E5497C_PackageProduct.framework/HanlinChatUI_-145D373D09E5497C_PackageProduct /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/HanlinPresentationKit.framework/HanlinPresentationKit -o /Users/runner/work/anytype-swift/anytype-swift/build/sdk06-derived-44623531195-1/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct.framework/PinkhaHanlinUI_32DA143A82A91D61_PackageProduct"
+    }
+  ],
+  "fatalDiagnostics": [
+    {
+      "line": 39794,
+      "text": "Undefined symbols for architecture arm64:"
+    },
+    {
+      "line": 39860,
+      "text": "ld: symbol(s) not found for architecture arm64"
+    },
+    {
+      "line": 39861,
+      "text": "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyHanlin/Package.swift: PinkhaHanlinUIdynamic-product: clang: error: linker command failed with exit code 1 (use -v to see invocation)"
+    }
+  ],
+  "dependencyComparison": [
+    {
+      "target": "PinkhaAnyHanlin",
+      "d58DirectEngine": false,
+      "d58DirectIntegration": false,
+      "currentDirectEngine": true,
+      "currentDirectIntegration": true
+    },
+    {
+      "target": "PinkhaHanlinUI",
+      "d58DirectEngine": false,
+      "d58DirectIntegration": false,
+      "currentDirectEngine": true,
+      "currentDirectIntegration": true
+    }
+  ],
+  "manifestSource": {
+    "path": "Modules/PinkhaAnyHanlin/Package.swift",
+    "d58SHA256": "bfb52dca580d59db45ac5d23b28e01762144cb71afcdae3ac2fb768e05efd957",
+    "currentSHA256": "f01820dd14f310c9fba5cd23156053df6a865317b48bc42007dd5083188caaf3"
+  },
+  "diagnosis": "PinkhaHanlinUI generated dynamic package product lacks directly required Engine/Integration symbol closure. Every listed missing symbol is from these two modules; current explicit package and target dependencies address this observed cause.",
+  "remaining": "Only a fresh retained Xcode build and the unchanged requested tests can establish compatibility. Warnings alone do not establish another fatal issue; subsequent build stages were not reached.",
+  "excludedFromFailure": "The job log's actual exit seven is the existing harness self-test, not the retained build failure.",
+  "productionFilesChangedByThisAudit": false,
+  "sourceStable": true
+}

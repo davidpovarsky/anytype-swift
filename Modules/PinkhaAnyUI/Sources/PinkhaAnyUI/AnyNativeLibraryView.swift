@@ -213,6 +213,7 @@ public struct AnyNativeLibraryView: View {
                 if item.kind == .folder { Image(systemName: "chevron.forward").foregroundStyle(.secondary) }
             }
         }
+        .accessibilityIdentifier("any-native-hierarchy-row-\(item.objectID)")
         .contextMenu {
             Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
                 nameRequest = .init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false)

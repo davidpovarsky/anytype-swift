@@ -1,0 +1,383 @@
+{
+  "status": "FAIL_HIERARCHY_ACCEPTANCE_CORRELATED_TRACE_AVAILABLE",
+  "scope": "One authorized fresh native fixture and fresh Space; unchanged20 hierarchy assertions; native HTTP Info access logging plus client absolute timestamps only.",
+  "originalUntracedTransportFailureResolved": false,
+  "transportSettingsChanged": false,
+  "nativeBinarySHA256": "12c7fb62164c830410331aabf616194edb0711a083250f8e8dd34c3cba52078b",
+  "nativeManifestSHA256": "62a13310a474d93d728258d0631618b09056a20c4454bd7be303f3ec071fb77c",
+  "probeSHA256": "f0b096d82bb402b04ded2a909bd04daa3b30a266877fa81a52854567b1741608",
+  "runtimeSourceStable": true,
+  "runtimeNativeBinaryStable": true,
+  "passedCount": 11,
+  "requiredCount": 20,
+  "checks": {
+    "current_guarded_capabilities_and_account": true,
+    "custom_document_and_preserved_property_definitions": true,
+    "four_native_conditional_writers_have_one_winner": true,
+    "guarded_hierarchy_atomic_initial": true,
+    "guarded_hierarchy_cycle_refused": true,
+    "guarded_rename_and_live_native_query": true,
+    "guarded_reorder_and_exact_retry_preserve_native_version": true,
+    "guarded_wiki_tree_with_page_and_custom_document": true,
+    "native_full_version_refuses_stale_direct_write": true,
+    "prepared_placement_rejects_actual_native_aba": true,
+    "retired_hierarchy_generation_rejected": true
+  },
+  "accountID": "AB8Kn1onbpyMdw1HedE1EQ71KRS4Wu8nCehRUWLE2DN3JjAa",
+  "spaceID": "bafyreiefoylu2na6xjuv5ranctfz7sisryohsoayvrusumo532t5oa4fey.xws5nfqm9m9m",
+  "endpoint": "http://127.0.0.1:56095",
+  "eventCounts": {
+    "begin": 947,
+    "response": 946,
+    "error": 1
+  },
+  "nativeAccessRecordCount": 954,
+  "failedAwaits": [
+    {
+      "requestID": "35EA8DA0-05BE-4E04-B4B1-8152D03A6DDB",
+      "clientBegin": {
+        "elapsedMs": 0,
+        "id": "35EA8DA0-05BE-4E04-B4B1-8152D03A6DDB",
+        "method": "GET",
+        "path": "/v1/auth",
+        "phase": "begin",
+        "timestampUnixMs": 1795124534403,
+        "line": 1904
+      },
+      "clientError": {
+        "elapsedMs": 30016,
+        "errorCode": -1001,
+        "errorDomain": "NSURLErrorDomain",
+        "id": "35EA8DA0-05BE-4E04-B4B1-8152D03A6DDB",
+        "method": "GET",
+        "path": "/v1/auth",
+        "phase": "error",
+        "timestampUnixMs": 1795124564417,
+        "line": 1905
+      },
+      "matchingCompletedNativeRequests": [
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.403+0200"
+        }
+      ],
+      "surroundingNativeRecords": [
+        {
+          "method": "GET",
+          "path": "/v1/health",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.337+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.338+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.339+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/spaces/bafyreiefoylu2na6xjuv5ranctfz7sisryohsoayvrusumo532t5oa4fey.xws5nfqm9m9m/members/me",
+          "status": 200,
+          "duration": "1.0307ms",
+          "time": "2026-11-19T23:42:14.341+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.342+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.343+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/health",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.346+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.347+0200"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/spaces/bafyreiefoylu2na6xjuv5ranctfz7sisryohsoayvrusumo532t5oa4fey.xws5nfqm9m9m/pinkha/properties/bafyreibe3wfnhn5b4g324oympxcjjvbztfv2gx5zr26tpbwgxom3uujxsy/set/any",
+          "status": 200,
+          "duration": "3.2388ms",
+          "time": "2026-11-19T23:42:14.352+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.354+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.355+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/health",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.357+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "703.6\u00b5s",
+          "time": "2026-11-19T23:42:14.358+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.359+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/health",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.360+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.361+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.364+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/spaces/bafyreiefoylu2na6xjuv5ranctfz7sisryohsoayvrusumo532t5oa4fey.xws5nfqm9m9m/members/me",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.366+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.369+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.370+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/spaces/bafyreiefoylu2na6xjuv5ranctfz7sisryohsoayvrusumo532t5oa4fey.xws5nfqm9m9m/objects/bafyreibe3wfnhn5b4g324oympxcjjvbztfv2gx5zr26tpbwgxom3uujxsy",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.371+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.373+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.374+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/health",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.377+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.378+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.379+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/health",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.382+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.382+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.385+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/pinkha/capabilities",
+          "status": 200,
+          "duration": "452.7\u00b5s",
+          "time": "2026-11-19T23:42:14.387+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.388+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.390+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/health",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.390+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.392+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.393+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/spaces/bafyreiefoylu2na6xjuv5ranctfz7sisryohsoayvrusumo532t5oa4fey.xws5nfqm9m9m/bundles/system:wiki/v1",
+          "status": 200,
+          "duration": "533.1\u00b5s",
+          "time": "2026-11-19T23:42:14.396+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.397+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.400+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/spaces/bafyreiefoylu2na6xjuv5ranctfz7sisryohsoayvrusumo532t5oa4fey.xws5nfqm9m9m/collections/bafyreibmpcum6bi6ittjizgbnsgngekwiumm6qy74khifvlbufxyj2nfzm",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.401+0200"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/auth",
+          "status": 200,
+          "duration": "0s",
+          "time": "2026-11-19T23:42:14.403+0200"
+        }
+      ],
+      "classification": "Time-correlated completion records only; no per-request wire identifier. A missing completion cannot distinguish never-arrived from still-running.",
+      "nativeHandlerCompletionLogging": true
+    }
+  ],
+  "nativePrivateLogSnapshotMetadata": [
+    {
+      "path": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\peer-native-v7-correlated-hierarchy\\stdout.private.log",
+      "capturedBytes": 105,
+      "capturedPrefixSHA256": "5e65898b0b11db03770a0f9b3667b741ea3121c52ab8d0ebb16a41b04e5762df",
+      "privateContentsExported": false,
+      "lastLineComplete": true
+    },
+    {
+      "path": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\peer-native-v7-correlated-hierarchy\\stderr.private.log",
+      "capturedBytes": 205540,
+      "capturedPrefixSHA256": "b61d2c4f2eb2d011cb45abfc3e3afcb957f3b9695cb6d70015f8cef2cef5783e",
+      "privateContentsExported": false,
+      "lastLineComplete": true
+    }
+  ],
+  "evidence": {
+    "runtimeReceiptSHA256": "817c7d58eb4a582328db0512e070b94cc39327e261c1ebe2b30f6287b2eb96be",
+    "swiftReportSHA256": "979d7722c7d681242175ff77a17dda486000905fa9c6f60971e8c4c3da3603f8",
+    "clientTraceSHA256": "e61eb2c995959e55bee4cbf867c84501833f90b87aa615ee30b5bb047b55729f",
+    "nativeAccessMetadataSHA256": "8b4aa082220e6d5264d21110e16340be39796d60d40703bae485bea77bcd75e8",
+    "fixtureSHA256": "b98edf1eba4025ab9d690594997a0043ec0cfafa102f40c8348f8e11c67c9a72"
+  },
+  "limits": [
+    "Native access records are written after the handler returns, before transport delivery is established.",
+    "The client begin is before URLSession.data(for:); it does not prove dispatch to the native socket.",
+    "Time overlap may include an adjacent same-path request; candidate records do not invent a unique request identity.",
+    "All earlier failures remain retained; a passing diagnostic run does not establish untraced transport reliability.",
+    "No request bodies, response bodies, cookies, authorization, recovery material or private handshake contents are exported."
+  ]
+}

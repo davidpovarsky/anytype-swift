@@ -1,0 +1,362 @@
+Fetching https://github.com/davidpovarsky/TorahInspectorKit.git
+[1/815] Fetching torahinspectorkit
+Fetched https://github.com/davidpovarsky/TorahInspectorKit.git (0.82s)
+Fetching https://github.com/apple/swift-crypto.git from cache
+Fetching https://github.com/apple/swift-asn1.git from cache
+Fetched https://github.com/apple/swift-crypto.git from cache (0.43s)
+Computing version for https://github.com/apple/swift-crypto.git
+Fetched https://github.com/apple/swift-asn1.git from cache (0.46s)
+Computed https://github.com/apple/swift-crypto.git at 3.12.3 (1.93s)
+Computing version for https://github.com/apple/swift-asn1.git
+Computed https://github.com/apple/swift-asn1.git at 1.7.4 (0.98s)
+Creating working copy for https://github.com/davidpovarsky/TorahInspectorKit.git
+Working copy of https://github.com/davidpovarsky/TorahInspectorKit.git resolved at 4e59e909dd22685bb46f9396bc57e5f8c627d773
+Creating working copy for https://github.com/apple/swift-asn1.git
+Working copy of https://github.com/apple/swift-asn1.git resolved at 1.7.4
+Creating working copy for https://github.com/apple/swift-crypto.git
+Working copy of https://github.com/apple/swift-crypto.git resolved at 3.12.3
+Building for debugging...
+[Computing dependencies]
+[Constructing description]
+[Pre-planning 1 / 273]
+[Planning deferred tasks]
+[68 / 135] swift-crypto_Crypto
+[71 / 135]
+[73 / 137] TorahInspectorCore
+[76 / 177]
+[80 / 219]
+[84 / 219]
+[87 / 219]
+[91 / 219]
+[92 / 219]
+[93 / 219]
+[97 / 219]
+[101 / 219]
+[104 / 219]
+[107 / 219]
+[109 / 219]
+[111 / 219]
+[112 / 219]
+[115 / 219]
+[118 / 219]
+[120 / 219]
+[122 / 219]
+[125 / 219]
+[128 / 219]
+[130 / 219]
+[134 / 219]
+[136 / 219]
+[138 / 219]
+[139 / 219]
+[141 / 219]
+[142 / 219]
+[143 / 219]
+[145 / 219]
+[148 / 219] TorahInspectorCore
+[149 / 219]
+[150 / 219] TorahInspectorCore
+[152 / 219] TorahInspectorCore
+[163 / 219] TorahInspectorCore-product
+[165 / 219] PinkhaKit
+[167 / 219] TorahInspectorCore
+[170 / 220]
+[171 / 221] TorahInspectorCore-product
+[174 / 232] PinkhaKit
+[176 / 232] PinkhaKit
+[177 / 232] PinkhaKit
+[179 / 232] PinkhaAnyEngine
+[191 / 232] PinkhaKit-product
+[192 / 232] PinkhaKit-product
+[193 / 232] PinkhaKit-product
+[194 / 232] PinkhaAnyEngine
+[198 / 232] PinkhaKit
+[199 / 233]
+[199 / 233] PinkhaAnyIntegration
+[201 / 237] PinkhaAnyEngine
+[203 / 237] PinkhaAnyIntegration
+[204 / 237] PinkhaAnyIntegration
+[211 / 237] PinkhaAnyEngine
+[216 / 238]
+[219 / 242] pinkha-any-integration-probe-product
+[220 / 242] pinkha-any-integration-probe-product
+[221 / 242] pinkha-any-integration-probe-product
+[223 / 242] PinkhaAnyIntegration
+[225 / 242]
+[227 / 243] PinkhaAnyIntegrationTests-product
+[229 / 249] PinkhaAnyIntegrationTests-product
+[230 / 249]
+[232 / 249] PinkhaAnyIntegrationTests-product
+[234 / 249] PinkhaAnyIntegrationTests-product
+macro expansion #expect:2:34: [1;33mwarning: [1;39m'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+`- /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AssociationBridgeTests.swift:120:10: [1;39mnote: [1;39mexpanded code originates here[0;0m
+[0;36m116 |[0;0m     @Test func staleWholeSnapshotReplacementStillRefused() async throws {
+[0;36m117 |[0;0m         let (_, _, _, repository) = try fixture()
+[0;36m118 |[0;0m         await [4;39m#expect(throws: TorahAssociationRepositoryError.unsafeSnapshotReplacement) {[0;0m
+    [0;36m|[0;0m               `- [1;39mnote: [1;39min expansion of macro 'expect' here[0;0m
+[0;36m119 |[0;0m             try await repository.setDocumentAssociations(objectId: "new-document", items: [item()], spaceId: "new-space")
+[0;36m120 |[0;0m         }
+[0;36m    +--- [0;0mmacro expansion #expect [0;36m---------------------------------------[0;0m
+[0;36m    |[0;0m[0;36m1 |[0;0m Testing.__checkClosureCall(throws: TorahAssociationRepositoryError.unsafeSnapshotReplacement,performing: {
+[0;36m    |[0;0m[0;36m2 |[0;0m             try await repository.setDocumentAssociations(objectId: "new-document", items: [item()], spaceId: "new-space")
+[0;36m    |[0;0m  [0;36m|[0;0m                                  `- [1;33mwarning: [1;39m'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m    |[0;0m[0;36m3 |[0;0m         },expression: .__fromSyntaxNode("TorahAssociationRepositoryError.unsafeSnapshotReplacement"),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+[0;36m    +----------------------------[0;0m[0;36m---------------------------------------[0;0m
+[0;36m121 |[0;0m     }
+[0;36m122 |[0;0m 
+
+/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyIntegration/Tests/PinkhaAnyIntegrationTests/AssociationBridgeTests.swift:119:34: [1;33mwarning: [1;39m'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m117 |[0;0m         let (_, _, _, repository) = try fixture()
+[0;36m118 |[0;0m         await #expect(throws: TorahAssociationRepositoryError.unsafeSnapshotReplacement) {
+[0;36m119 |[0;0m             try await repository.setDocumentAssociations(objectId: "new-document", items: [item()], spaceId: "new-space")
+    [0;36m|[0;0m                                  `- [1;33mwarning: [1;39m'setDocumentAssociations(objectId:items:spaceId:)' is deprecated: Use addAssociation/upsertAssociation/updateAssociation per item[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m120 |[0;0m         }
+[0;36m121 |[0;0m     }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[239 / 249] PinkhaAnyIntegrationTests-product
+[239 / 249] pinkha-any-integration-probe-product
+[241 / 249] pinkha-any-integration-probe-product
+[243 / 249] pinkha-any-integration-probe-product
+[243 / 249] PinkhaAnyIntegrationTests-product
+[245 / 249] PinkhaAnyIntegrationTests-product
+[246 / 249] PinkhaAnyIntegrationTests-product
+Build complete! (70.33 sec)
+Test Suite 'All tests' started at 2026-11-19 22:14:46.971.
+Test Suite 'All tests' passed at 2026-11-19 22:14:46.973.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+◇ Test run started.
+↳ Testing Library Version: 2084
+↳ Target Platform: arm64e-apple-macos14.0
+◇ Suite "Native object closure bridges the original canonical domain" started.
+◇ Suite "Native indexed source and expanded related contracts" started.
+◇ Suite "Original T5 flow on explicit native note boundaries" started.
+◇ Suite "Actual PinkhaKit domain on the Any operation bridge" started.
+◇ Suite "Original T5 related-document query over native canonical snapshots" started.
+◇ Suite "Generation-fenced canonical association observation" started.
+◇ Suite "Canonical native archive transport" started.
+◇ Test firstAssociationOnFreshReachableBlockDoesNotRequireHistoryMembership() started.
+◇ Test pendingObservedPredecessorIsExplicitConflictForCanonicalMutation() started.
+◇ Test liveObjectPublicationRechecksCurrentReadability() started.
+◇ Test wholeDocumentUsesOneObjectReadAndNativeReachabilityWithoutPerBlockGraphReads() started.
+◇ Test objectStreamRejectsMissingAtomicInitialSnapshot() started.
+◇ Test ordinaryTargetReadsPreferObjectClosureAndOrphanHistoryIsIneligible() started.
+◇ Test foreignCollisionIsQuarantinedBeforePayloadDecodeWithoutLeakingForeignItems() started.
+◇ Test incompleteNativeCoverageNeverBecomesCompleteEmptyResults() started.
+◇ Test exactWindowLimitAndDuplicateTargetAreEnforced() started.
+◇ Test sourceQueryRejectsWrongIdentityDuplicateIDsAndConflictAsComplete() started.
+◇ Test nativeIdentityAndDocumentBlockQuoteTargetsStayDistinct() started.
+◇ Test unsafeUnlinkAndForeignTargetAreRefused() started.
+◇ Test existingSourceAssociationAndUserMetadataAreNotOverwritten() started.
+◇ Test removeRechecksCallerAuthorityAtAppend() started.
+◇ Test failedSourceLineRetriesEveryPhaseWithoutDuplicatePageOrLinks() started.
+◇ Test planRoundTripKeepsEntireIntentAndPhaseIdentities() started.
+◇ Suite "Explicit current native document definition policy" started.
+◇ Test revokedOriginPreventsAnyNoteCreation() started.
+◇ Test repeatingCompletedPlanIsIdempotent() started.
+◇ Test unlinkKeepsTheNativeNoteAndUnrelatedSourceOrQuote() started.
+◇ Test retryCannotResurrectSourceLinkRemovedAfterCompletion() started.
+◇ Test malformedInternalNoteLinkCannotBeGuessed() started.
+◇ Test exactDecimalGuardAcceptsEquivalentNotationAndIgnoresNumericStrings() started.
+◇ Test authoritativeMemberRoleAndIdentityFailClosed() started.
+◇ Test blockTargetMustBeReachableNotMerelyPresent() started.
+◇ Test targetObjectCannotResolveAliasForeignSpaceOrBin() started.
+◇ Test ambiguousDuplicateJSONKeysCannotBeImported() started.
+◇ Test updateRequiresExistingStableID() started.
+◇ Test migrationCannotReportCompleteAfterConcurrentSemanticCollision() started.
+◇ Test authorityIsRecheckedAtAppendAfterInitialRead() started.
+◇ Test migrationCannotReportCompleteAfterConcurrentLogicalCollision() started.
+◇ Test concurrentSuccessorsAreVisibleConflictsNotSilentLWW() started.
+◇ Test incomingPeerUnknownNumbersCannotSilentlyRoundDuringOrdinaryEdit() started.
+◇ Test migrationRejectsMissingBlockMappingAndUnsupportedVersionBeforeWrites() started.
+◇ Test oldV1FixtureMigratesWithoutInventedMetadata() started.
+◇ Test internalNoteMappingRewritesOnlyKnownNativeReferenceFields() started.
+◇ Test staleWholeSnapshotReplacementStillRefused() started.
+◇ Test migrationPartialFailureHasResumableReceipt() started.
+◇ Test reusedMigrationIdentityWithChangedPayloadFailsBeforeWrite() started.
+◇ Test documentAndBlockLocationsRemainIndependent() started.
+◇ Test concurrentLocalMutationsDoNotReplaceUnrelatedItems() started.
+◇ Test migrationRefusesNumbersTheOriginalDomainCannotPreserve() started.
+◇ Test emptyMigrationPlanIdentityIncludesDestinationAndMigrationKey() started.
+◇ Test migrationCannotReportCompleteAfterConcurrentObservedRemove() started.
+◇ Test restoredPreparedMutationCannotBypassIncomingNumberPreservation() started.
+◇ Test incomingPeerDuplicateUnknownKeysCannotBeSilentlyCollapsed() started.
+◇ Test mappedNoteMustExistInDestinationWorkspaceBeforeImport() started.
+◇ Test migrationKnownSemanticCollisionFailsBeforeAnyWrite() started.
+◇ Test workspaceDecoderCannotBypassValidation() started.
+◇ Test internalNoteLinksRequireExplicitDestinationMapping() started.
+◇ Test quoteInstancesStayDistinctAndExactRetryDoesNotAppend() started.
+◇ Test originalContextPolicyDeduplicatesNFCAndPreservesStableID() started.
+◇ Test v2MigrationAndLaterEditRetainEnvelopeRecordAndItemUnknownFields() started.
+◇ Test wrongSpaceRejectedBeforeStoreMutation() started.
+◇ Test missingTargetPreventsWrites() started.
+◇ Test mismatchedWorkspaceCannotConstructRepository() started.
+◇ Test preparedMutationReplaysExactObservedSetAfterInterveningEdit() started.
+◇ Test revokedPermissionPreventsWrites() started.
+◇ Test readonlyMetadataNeverAuthorizesUnlink() started.
+◇ Test removedContextDoesNotBecomeAStaleLiveMatch() started.
+◇ Test logicalConflictAcrossObjectsIsQuarantinedBeforeRelatedResults() started.
+◇ Test originalCandidateBoundRemainsExplicit() started.
+◇ Test unlinkRemovesOnlyCurrentDocumentContextAndKeepsQuoteBlockAndOtherSource() started.
+◇ Test internalNoteReferenceIsNotAnExternalRelatedSource() started.
+◇ Test currentReadRevocationOmitsCandidateAndReportsCoverage() started.
+◇ Test documentContextsExcludeBlockQuotesAndOtherKinds() started.
+◇ Test invalidationDuringTargetReadCancelsItWithoutPublishing() started.
+◇ Test deltaCannotStandInForAtomicInitialSnapshot() started.
+◇ Test atomicInitialSnapshotUsesActualDomainRecordsAndOwnership() started.
+◇ Test readabilityIsRecheckedForEverySnapshot() started.
+◇ Test anotherWorkspaceCannotAppearAsAnEmptySnapshot() started.
+◇ Test foreignGenerationIsRejectedBeforePublication() started.
+◇ Test secondInitialRequiresNewSubscriptionInsteadOfSilentReset() started.
+◇ Test scopedReadDoesNotExportLateDataAfterOwnerRevocation() started.
+◇ Test unreachableBlockHistoryIsPreservedAndRequiresExplicitResolution() started.
+◇ Test explicitMappingPreservesEachEnvelopeAndOriginalArchiveForAudit() started.
+◇ Test unknownEnvelopeFieldsAndDuplicateKeysAreRejectedWithoutDroppingBytes() started.
+◇ Test duplicateLiveAssociationIdentityAcrossPayloadsFailsBeforeAnyWrites() started.
+◇ Test wholeImportPreflightAndRetryDoNotDuplicateAcceptedClaims() started.
+◇ Test removedHistoryIsArchivedWithoutResurrectingItsAssociation() started.
+◇ Test opaquePayloadBytesAndUnknownNumbersRoundTripWithoutLocalFields() started.
+◇ Test contradictoryInternalNoteMetadataIsNeverSuggestedAsAValidMapping() started.
+◇ Test foreignCollisionRemainsAuditableButCannotBeImportedAsSuccess() started.
+◇ Test missingObservedHistoryCannotProduceACompleteImportPlan() started.
+◇ Test payloadLocationCannotDisagreeWithItsArchivedOperation() started.
+◇ Test reviewExposesExactBlockAndInternalNoteMappings() started.
+◇ Suite "Native wiki hierarchy preserves the original tree domain" started.
+✔ Test ordinaryTargetReadsPreferObjectClosureAndOrphanHistoryIsIneligible() passed after 0.131 seconds.
+✔ Test pendingObservedPredecessorIsExplicitConflictForCanonicalMutation() passed after 0.131 seconds.
+✔ Test wholeDocumentUsesOneObjectReadAndNativeReachabilityWithoutPerBlockGraphReads() passed after 0.131 seconds.
+✔ Test exactWindowLimitAndDuplicateTargetAreEnforced() passed after 0.131 seconds.
+✔ Test sourceQueryRejectsWrongIdentityDuplicateIDsAndConflictAsComplete() passed after 0.131 seconds.
+✔ Test nativeIdentityAndDocumentBlockQuoteTargetsStayDistinct() passed after 0.131 seconds.
+✔ Test unsafeUnlinkAndForeignTargetAreRefused() passed after 0.131 seconds.
+◇ Test guardedPolicyCannotBeAppliedToAnUnprovedEditorDataset() started.
+✔ Test incompleteNativeCoverageNeverBecomesCompleteEmptyResults() passed after 0.131 seconds.
+◇ Test foreignScopeAndIncompleteOrBooleanVersionsFailClosed() started.
+◇ Test ineligibleCatalogTypeNeverBecomesAnEligibleDocument() started.
+◇ Test nativeReadPermissionCannotAuthorizeAWrite() started.
+◇ Test customDocumentUsesNativeProofWithoutBroadeningLegacyAllowlist() started.
+◇ Test metadataMustStillMatchTheProvedNativeTypeAndCollections() started.
+✔ Test foreignCollisionIsQuarantinedBeforePayloadDecodeWithoutLeakingForeignItems() passed after 0.131 seconds.
+✔ Test authoritativeMemberRoleAndIdentityFailClosed() passed after 0.128 seconds.
+✔ Test exactDecimalGuardAcceptsEquivalentNotationAndIgnoresNumericStrings() passed after 0.128 seconds.
+✔ Test targetObjectCannotResolveAliasForeignSpaceOrBin() passed after 0.128 seconds.
+✔ Test blockTargetMustBeReachableNotMerelyPresent() passed after 0.128 seconds.
+✔ Test malformedInternalNoteLinkCannotBeGuessed() passed after 0.128 seconds.
+✔ Test migrationCannotReportCompleteAfterConcurrentSemanticCollision() passed after 0.128 seconds.
+✔ Test migrationCannotReportCompleteAfterConcurrentLogicalCollision() passed after 0.128 seconds.
+✔ Test oldV1FixtureMigratesWithoutInventedMetadata() passed after 0.129 seconds.
+✔ Test internalNoteMappingRewritesOnlyKnownNativeReferenceFields() passed after 0.129 seconds.
+✔ Test staleWholeSnapshotReplacementStillRefused() passed after 0.129 seconds.
+✔ Test ambiguousDuplicateJSONKeysCannotBeImported() passed after 0.129 seconds.
+✔ Test reusedMigrationIdentityWithChangedPayloadFailsBeforeWrite() passed after 0.129 seconds.
+✔ Test migrationRefusesNumbersTheOriginalDomainCannotPreserve() passed after 0.129 seconds.
+✔ Test emptyMigrationPlanIdentityIncludesDestinationAndMigrationKey() passed after 0.129 seconds.
+✔ Test migrationRejectsMissingBlockMappingAndUnsupportedVersionBeforeWrites() passed after 0.129 seconds.
+✔ Test restoredPreparedMutationCannotBypassIncomingNumberPreservation() passed after 0.128 seconds.
+✔ Test migrationCannotReportCompleteAfterConcurrentObservedRemove() passed after 0.129 seconds.
+✔ Test incomingPeerDuplicateUnknownKeysCannotBeSilentlyCollapsed() passed after 0.128 seconds.
+✔ Test workspaceDecoderCannotBypassValidation() passed after 0.128 seconds.
+✔ Test internalNoteLinksRequireExplicitDestinationMapping() passed after 0.128 seconds.
+✔ Test mappedNoteMustExistInDestinationWorkspaceBeforeImport() passed after 0.133 seconds.
+✔ Test wrongSpaceRejectedBeforeStoreMutation() passed after 0.132 seconds.
+✔ Test mismatchedWorkspaceCannotConstructRepository() passed after 0.133 seconds.
+✔ Test logicalConflictAcrossObjectsIsQuarantinedBeforeRelatedResults() passed after 0.133 seconds.
+✔ Test internalNoteReferenceIsNotAnExternalRelatedSource() passed after 0.133 seconds.
+✔ Test migrationPartialFailureHasResumableReceipt() passed after 0.138 seconds.
+✔ Test unreachableBlockHistoryIsPreservedAndRequiresExplicitResolution() passed after 0.136 seconds.
+✔ Test scopedReadDoesNotExportLateDataAfterOwnerRevocation() passed after 0.136 seconds.
+✔ Test explicitMappingPreservesEachEnvelopeAndOriginalArchiveForAudit() passed after 0.136 seconds.
+✔ Test unknownEnvelopeFieldsAndDuplicateKeysAreRejectedWithoutDroppingBytes() passed after 0.136 seconds.
+✔ Test duplicateLiveAssociationIdentityAcrossPayloadsFailsBeforeAnyWrites() passed after 0.136 seconds.
+✔ Test removedHistoryIsArchivedWithoutResurrectingItsAssociation() passed after 0.136 seconds.
+✔ Test opaquePayloadBytesAndUnknownNumbersRoundTripWithoutLocalFields() passed after 0.136 seconds.
+✔ Test contradictoryInternalNoteMetadataIsNeverSuggestedAsAValidMapping() passed after 0.136 seconds.
+✔ Test foreignCollisionRemainsAuditableButCannotBeImportedAsSuccess() passed after 0.136 seconds.
+✔ Test missingObservedHistoryCannotProduceACompleteImportPlan() passed after 0.136 seconds.
+✔ Test payloadLocationCannotDisagreeWithItsArchivedOperation() passed after 0.136 seconds.
+◇ Test cycleRecoveryIsVisibleAndMoveValidatorStillRejectsDescendants() started.
+◇ Test creationPlanIsImmutableAndDelegatesRetryToOneHostJournal() started.
+◇ Test nativeConditionalStoreReceivesThePreparedNestedVersionWithoutFallback() started.
+◇ Test moveAndReorderUseOneNativeParentPositionPatch() started.
+◇ Test invalidOrEqualNativePositionsFailClosed() started.
+◇ Test wrongSpaceMalformedAndUnsupportedMalformedRowsAreNotSilentlyDropped() started.
+◇ Test nativePositionsDriveOriginalTreeWithoutRewritingUnknownProperties() started.
+◇ Test revokedWritesPreventNativeMutation() started.
+◇ Test concurrentChildRestoresFolderVisibilityAndReturnsIncompleteReceipt() started.
+◇ Test unsupportedChildPreventsFolderRemoval() started.
+◇ Test renameProtectsPriorTitleAndPreservesOtherNativeFields() started.
+◇ Test exactPlacementRetryUsesReadbackAndDoesNotOverwriteLaterMove() started.
+◇ Test partialRemovalFailureLeavesFolderAndRemainingChildrenRecoverable() started.
+◇ Test nativeGoAllocatorGoldenVectorsMatchByteForByte() started.
+◇ Test safeRemovalReparentsChildrenBeforeBinningOnlyTheFolder() started.
+◇ Test nativeConditionalVersionStopsABAInsideTheReadToWriteGap() started.
+✔ Test wholeImportPreflightAndRetryDoNotDuplicateAcceptedClaims() passed after 0.172 seconds.
+✔ Test reviewExposesExactBlockAndInternalNoteMappings() passed after 0.181 seconds.
+✔ Test firstAssociationOnFreshReachableBlockDoesNotRequireHistoryMembership() passed after 0.195 seconds.
+✔ Suite "Native indexed source and expanded related contracts" passed after 0.199 seconds.
+✔ Test objectStreamRejectsMissingAtomicInitialSnapshot() passed after 0.198 seconds.
+✔ Test foreignScopeAndIncompleteOrBooleanVersionsFailClosed() passed after 0.066 seconds.
+✔ Test ineligibleCatalogTypeNeverBecomesAnEligibleDocument() passed after 0.066 seconds.
+✔ Test nativeReadPermissionCannotAuthorizeAWrite() passed after 0.066 seconds.
+✔ Test customDocumentUsesNativeProofWithoutBroadeningLegacyAllowlist() passed after 0.066 seconds.
+✔ Test metadataMustStillMatchTheProvedNativeTypeAndCollections() passed after 0.066 seconds.
+✔ Test updateRequiresExistingStableID() passed after 0.195 seconds.
+✔ Test authorityIsRecheckedAtAppendAfterInitialRead() passed after 0.195 seconds.
+✔ Test concurrentSuccessorsAreVisibleConflictsNotSilentLWW() passed after 0.196 seconds.
+✔ Test migrationKnownSemanticCollisionFailsBeforeAnyWrite() passed after 0.196 seconds.
+✔ Test missingTargetPreventsWrites() passed after 0.195 seconds.
+✔ Test revokedPermissionPreventsWrites() passed after 0.195 seconds.
+✔ Test readonlyMetadataNeverAuthorizesUnlink() passed after 0.195 seconds.
+✔ Test deltaCannotStandInForAtomicInitialSnapshot() passed after 0.200 seconds.
+✔ Test atomicInitialSnapshotUsesActualDomainRecordsAndOwnership() passed after 0.200 seconds.
+✔ Test anotherWorkspaceCannotAppearAsAnEmptySnapshot() passed after 0.200 seconds.
+✔ Test foreignGenerationIsRejectedBeforePublication() passed after 0.200 seconds.
+✔ Suite "Canonical native archive transport" passed after 0.208 seconds.
+✔ Test v2MigrationAndLaterEditRetainEnvelopeRecordAndItemUnknownFields() passed after 0.202 seconds.
+✔ Test cycleRecoveryIsVisibleAndMoveValidatorStillRejectsDescendants() passed after 0.062 seconds.
+✔ Test invalidOrEqualNativePositionsFailClosed() passed after 0.061 seconds.
+✔ Test wrongSpaceMalformedAndUnsupportedMalformedRowsAreNotSilentlyDropped() passed after 0.061 seconds.
+✔ Test nativePositionsDriveOriginalTreeWithoutRewritingUnknownProperties() passed after 0.061 seconds.
+✔ Test nativeGoAllocatorGoldenVectorsMatchByteForByte() passed after 0.063 seconds.
+✔ Test planRoundTripKeepsEntireIntentAndPhaseIdentities() passed after 0.215 seconds.
+✔ Test liveObjectPublicationRechecksCurrentReadability() passed after 0.217 seconds.
+✔ Test incomingPeerUnknownNumbersCannotSilentlyRoundDuringOrdinaryEdit() passed after 0.214 seconds.
+✔ Test removedContextDoesNotBecomeAStaleLiveMatch() passed after 0.215 seconds.
+✔ Test originalCandidateBoundRemainsExplicit() passed after 0.215 seconds.
+✔ Test invalidationDuringTargetReadCancelsItWithoutPublishing() passed after 0.222 seconds.
+✔ Test readabilityIsRecheckedForEverySnapshot() passed after 0.223 seconds.
+✔ Test secondInitialRequiresNewSubscriptionInsteadOfSilentReset() passed after 0.223 seconds.
+✔ Test nativeConditionalStoreReceivesThePreparedNestedVersionWithoutFallback() passed after 0.083 seconds.
+✔ Test revokedWritesPreventNativeMutation() passed after 0.083 seconds.
+✔ Test moveAndReorderUseOneNativeParentPositionPatch() passed after 0.083 seconds.
+✔ Test currentReadRevocationOmitsCandidateAndReportsCoverage() passed after 0.224 seconds.
+✔ Test unsupportedChildPreventsFolderRemoval() passed after 0.083 seconds.
+✔ Test safeRemovalReparentsChildrenBeforeBinningOnlyTheFolder() passed after 0.083 seconds.
+✔ Test nativeConditionalVersionStopsABAInsideTheReadToWriteGap() passed after 0.083 seconds.
+✔ Test concurrentChildRestoresFolderVisibilityAndReturnsIncompleteReceipt() passed after 0.084 seconds.
+✔ Test originalContextPolicyDeduplicatesNFCAndPreservesStableID() passed after 0.226 seconds.
+✔ Suite "Native object closure bridges the original canonical domain" passed after 0.235 seconds.
+✔ Suite "Generation-fenced canonical association observation" passed after 0.243 seconds.
+✔ Test guardedPolicyCannotBeAppliedToAnUnprovedEditorDataset() passed after 0.111 seconds.
+✔ Test creationPlanIsImmutableAndDelegatesRetryToOneHostJournal() passed after 0.099 seconds.
+✔ Test renameProtectsPriorTitleAndPreservesOtherNativeFields() passed after 0.099 seconds.
+✔ Test partialRemovalFailureLeavesFolderAndRemainingChildrenRecoverable() passed after 0.099 seconds.
+✔ Test documentAndBlockLocationsRemainIndependent() passed after 0.241 seconds.
+✔ Test quoteInstancesStayDistinctAndExactRetryDoesNotAppend() passed after 0.240 seconds.
+✔ Test revokedOriginPreventsAnyNoteCreation() passed after 0.242 seconds.
+✔ Suite "Explicit current native document definition policy" passed after 0.253 seconds.
+✔ Test documentContextsExcludeBlockQuotesAndOtherKinds() passed after 0.268 seconds.
+✔ Test removeRechecksCallerAuthorityAtAppend() passed after 0.273 seconds.
+✔ Test preparedMutationReplaysExactObservedSetAfterInterveningEdit() passed after 0.268 seconds.
+✔ Test exactPlacementRetryUsesReadbackAndDoesNotOverwriteLaterMove() passed after 0.136 seconds.
+✔ Suite "Native wiki hierarchy preserves the original tree domain" passed after 0.276 seconds.
+✔ Test unlinkRemovesOnlyCurrentDocumentContextAndKeepsQuoteBlockAndOtherSource() passed after 0.285 seconds.
+✔ Suite "Original T5 related-document query over native canonical snapshots" passed after 0.292 seconds.
+✔ Test existingSourceAssociationAndUserMetadataAreNotOverwritten() passed after 0.337 seconds.
+✔ Test retryCannotResurrectSourceLinkRemovedAfterCompletion() passed after 0.400 seconds.
+✔ Test failedSourceLineRetriesEveryPhaseWithoutDuplicatePageOrLinks() passed after 0.402 seconds.
+✔ Test repeatingCompletedPlanIsIdempotent() passed after 0.411 seconds.
+✔ Test unlinkKeepsTheNativeNoteAndUnrelatedSourceOrQuote() passed after 0.497 seconds.
+✔ Suite "Original T5 flow on explicit native note boundaries" passed after 0.501 seconds.
+✔ Test concurrentLocalMutationsDoNotReplaceUnrelatedItems() passed after 0.861 seconds.
+✔ Suite "Actual PinkhaKit domain on the Any operation bridge" passed after 0.867 seconds.
+✔ Test run with 107 tests in 9 suites passed after 0.868 seconds.

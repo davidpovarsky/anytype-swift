@@ -130,8 +130,8 @@ func runNativePropertyProbe(client: AnyHTTPClient, workspace: AnyTorahWorkspace,
             let keys = snapshot.hiddenPropertyKeys.union([futureKey]).sorted()
             _ = try await client.requestJSON(method: "POST",
                 path: spacePath + ["pinkha", "properties", id, "set", AnyNativePropertyStore.presentationCollectionID],
-                body: .object(["patch": .object([AnyNativePropertyStore.hiddenPropertiesID: .array(keys.map(AnyJSON.string))]),
-                    "ifVersion": snapshot.nativeVersion, "ifStartedAt": .string(lease.engineStartedAt)]),
+                body: snapshot.fence.requestBody(patch: [
+                    AnyNativePropertyStore.hiddenPropertiesID: .array(keys.map(AnyJSON.string))]),
                 authorize: { try await lease.validate() })
             snapshot = try await properties.read(objectID: id, lease: lease)
             snapshot = try propertyProbeVerified(await properties.setVisibility(snapshot, key: .init(property: textKey),

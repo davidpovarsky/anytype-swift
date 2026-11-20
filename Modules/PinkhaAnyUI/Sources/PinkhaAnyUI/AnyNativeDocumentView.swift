@@ -69,26 +69,41 @@ public struct AnyNativeDocumentView: View {
                     Button(AnyUIErrorText.text("כתיבה מימין לשמאל", "Right to left")) {
                         Task { await presentation.setWritingStyle(direction: .rightToLeft, alignment: .natural) }
                     }.disabled(presentation.selectedBlockIDs.isEmpty || !presentation.canMutate)
+                        .accessibilityIdentifier("any-native-writing-direction-rtl")
+                        .accessibilityAddTraits(isSavedDirection(.rightToLeft) ? .isSelected : [])
                     Button(AnyUIErrorText.text("כתיבה משמאל לימין", "Left to right")) {
                         Task { await presentation.setWritingStyle(direction: .leftToRight, alignment: .natural) }
                     }.disabled(presentation.selectedBlockIDs.isEmpty || !presentation.canMutate)
+                        .accessibilityIdentifier("any-native-writing-direction-ltr")
+                        .accessibilityAddTraits(isSavedDirection(.leftToRight) ? .isSelected : [])
                     Menu(AnyUIErrorText.text("יישור טקסט", "Text alignment")) {
                         Button(AnyUIErrorText.text("טבעי", "Natural")) {
                             Task { await presentation.setWritingStyle(alignment: .natural) }
                         }
+                            .accessibilityIdentifier("any-native-text-alignment-natural")
+                            .accessibilityAddTraits(isSavedAlignment(.natural) ? .isSelected : [])
                         Button(AnyUIErrorText.text("לשמאל", "Left")) {
                             Task { await presentation.setWritingStyle(alignment: .left) }
                         }
+                            .accessibilityIdentifier("any-native-text-alignment-left")
+                            .accessibilityAddTraits(isSavedAlignment(.left) ? .isSelected : [])
                         Button(AnyUIErrorText.text("למרכז", "Center")) {
                             Task { await presentation.setWritingStyle(alignment: .center) }
                         }
+                            .accessibilityIdentifier("any-native-text-alignment-center")
+                            .accessibilityAddTraits(isSavedAlignment(.center) ? .isSelected : [])
                         Button(AnyUIErrorText.text("לימין", "Right")) {
                             Task { await presentation.setWritingStyle(alignment: .right) }
                         }
+                            .accessibilityIdentifier("any-native-text-alignment-right")
+                            .accessibilityAddTraits(isSavedAlignment(.right) ? .isSelected : [])
                         Button(AnyUIErrorText.text("לשני הצדדים", "Justified")) {
                             Task { await presentation.setWritingStyle(alignment: .justified) }
                         }
+                            .accessibilityIdentifier("any-native-text-alignment-justified")
+                            .accessibilityAddTraits(isSavedAlignment(.justified) ? .isSelected : [])
                     }.disabled(presentation.selectedBlockIDs.isEmpty || !presentation.canMutate)
+                        .accessibilityIdentifier("any-native-text-alignment")
                     Button(AnyUIErrorText.text("ביטול הפעולה האחרונה", "Undo last saved edit"), systemImage: "arrow.uturn.backward") {
                         Task { await presentation.undoLastNativeEdit() }
                     }.disabled(presentation.hasPendingEdits || !presentation.canMutate)
@@ -96,6 +111,9 @@ public struct AnyNativeDocumentView: View {
                         Task { await presentation.retryObservation() }
                     }
                 } label: { Image(systemName: "ellipsis.circle") }
+                    .accessibilityLabel(AnyUIErrorText.text("פעולות מסמך", "Document actions"))
+                    .accessibilityIdentifier("any-native-document-options")
+                    .accessibilityValue(Text(savedWritingStyleDescription))
                 Button {
                     guard canPresentDocumentChild else { return }
                     presentation.presentHanlin()
@@ -145,6 +163,55 @@ public struct AnyNativeDocumentView: View {
         .disabled(presentation.isNavigating)
         // The UIKit controller/dismantle hook owns actual removal. Owned
         // property/inspector sheets may cover this view without retiring it.
+    }
+
+    /// Accessibility reports the last native snapshot, never a submitted menu
+    /// value. Pending writes retain the previous value; failures use the normal
+    /// visible error path. Mixed or unavailable selections have no selected trait.
+    private var selectedNativeBlocks: [AnyEditorBlock] {
+        let ids = Set(presentation.selectedBlockIDs)
+        guard !ids.isEmpty, let snapshot = presentation.read?.snapshot,
+              ids.isSubset(of: Set(snapshot.depthFirstIDs)) else { return [] }
+        let blocks = snapshot.blocks.filter { ids.contains($0.id) }
+        return blocks.count == ids.count ? blocks : []
+    }
+
+    private func isSavedDirection(_ value: AnyWritingDirection) -> Bool {
+        let blocks = selectedNativeBlocks
+        return !blocks.isEmpty && blocks.allSatisfy { ($0.direction ?? .natural) == value }
+    }
+
+    private func isSavedAlignment(_ value: AnyTextAlignment) -> Bool {
+        let blocks = selectedNativeBlocks
+        return !blocks.isEmpty && blocks.allSatisfy { ($0.alignment ?? .natural) == value }
+    }
+
+    private var savedWritingStyleDescription: String {
+        let blocks = selectedNativeBlocks
+        guard let first = blocks.first else {
+            return AnyUIErrorText.text("אין בלוק נבחר", "No block selected")
+        }
+        let direction = first.direction ?? .natural, alignment = first.alignment ?? .natural
+        guard blocks.allSatisfy({ ($0.direction ?? .natural) == direction &&
+                                 ($0.alignment ?? .natural) == alignment }) else {
+            return AnyUIErrorText.text("עיצוב שמור שונה בבלוקים שנבחרו", "Selected blocks have mixed saved styles")
+        }
+        let directionTitle: String
+        switch direction {
+        case .natural: directionTitle = AnyUIErrorText.text("כיוון אוטומטי", "Automatic direction")
+        case .leftToRight: directionTitle = AnyUIErrorText.text("כתיבה משמאל לימין", "Left to right")
+        case .rightToLeft: directionTitle = AnyUIErrorText.text("כתיבה מימין לשמאל", "Right to left")
+        }
+        let alignmentTitle: String
+        switch alignment {
+        case .natural: alignmentTitle = AnyUIErrorText.text("טבעי", "Natural")
+        case .left: alignmentTitle = AnyUIErrorText.text("לשמאל", "Left")
+        case .center: alignmentTitle = AnyUIErrorText.text("למרכז", "Center")
+        case .right: alignmentTitle = AnyUIErrorText.text("לימין", "Right")
+        case .justified: alignmentTitle = AnyUIErrorText.text("לשני הצדדים", "Justified")
+        }
+        return AnyUIErrorText.text("העיצוב השמור: ", "Saved style: ") + directionTitle +
+            AnyUIErrorText.text(", יישור ", ", alignment ") + alignmentTitle
     }
 
     private var canPresentDocumentChild: Bool {

@@ -404,12 +404,13 @@ jobs:
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/ui-ios.log"
       - name: Test the real native account, Keychain and cold reopen path
         if: ${{ !cancelled() }}
-        working-directory: Modules/PinkhaAnyNative
         shell: bash
         run: |
           set -euo pipefail
           xcodebuild test \
-            -scheme PinkhaAnyNative \
+            -project NativeApp/AnyNative.xcodeproj \
+            -scheme PinkhaAnyNativeHostedTests \
+            -configuration Debug \
             -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
             -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/application.xcresult" \
@@ -417,6 +418,8 @@ jobs:
             -test-timeouts-enabled YES \
             -default-test-execution-time-allowance 300 \
             -maximum-test-execution-time-allowance 300 \
+            ARCHS=arm64 ONLY_ACTIVE_ARCH=YES \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=YES CODE_SIGN_IDENTITY=- \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/application.log"
       - name: Build and launch the separate native executable
         if: ${{ !cancelled() }}
@@ -426,6 +429,7 @@ jobs:
           xcodebuild test \
             -project NativeApp/AnyNative.xcodeproj \
             -scheme PinkhaAnyNativeApp \
+            -configuration Debug \
             -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
             -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
             -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui.xcresult" \
@@ -433,7 +437,8 @@ jobs:
             -test-timeouts-enabled YES \
             -default-test-execution-time-allowance 360 \
             -maximum-test-execution-time-allowance 360 \
-            CODE_SIGNING_ALLOWED=NO \
+            ARCHS=arm64 ONLY_ACTIVE_ARCH=YES \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=YES CODE_SIGN_IDENTITY=- \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui.log"
       - name: Verify the built native app ownership boundary
         if: ${{ !cancelled() }}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "status": "PARSE_PASS_UI_EXECUTION_PENDING",
+  "scope": "Syntax-only parse plus byte-preservation/source-contract checks; no iOS semantic compile, Simulator, or UI execution",
+  "baseCommit": "d58b6a004c93320a4c57c8eba8e4518048d70fc1",
+  "startedAtUTC": "2026-11-19T22:10:30.700231+00:00",
+  "finishedAtUTC": "2026-11-19T22:10:34.396754+00:00",
+  "command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+    "-frontend",
+    "-parse",
+    "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\Modules\\PinkhaAnyUI\\Sources\\PinkhaAnyUI\\AnyNativeDocumentView.swift",
+    "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\Modules\\PinkhaAnyUI\\Sources\\PinkhaAnyUI\\AnyNativeLibraryView.swift",
+    "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\NativeApp\\UITests\\NativeLaunchTests.swift"
+  ],
+  "compilerSHA256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+  "exitCode": 0,
+  "timedOut": false,
+  "durationSeconds": 3.422,
+  "sourceStable": true,
+  "diffCheckExitCode": 0,
+  "checks": {
+    "entireExistingTestFileRecoveredByRemovingOnlyTwoInsertedMethods": true,
+    "existingFiveMethods": [
+      "testFreshNativeExecutableShowsAccountAndRecoveryEntryPoints",
+      "testBackgroundAndForegroundReopenTheOwnedRuntime",
+      "testCreateEditHanlinConsentBackgroundAndColdReopen",
+      "testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
+      "testSourceInspectorQuoteAndNoteSurviveColdReopen"
+    ],
+    "newMethods": [
+      "testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+      "testHierarchyDragIntoFolderPersistsAfterColdReopen"
+    ],
+    "allExistingHelpersByteIdentical": true,
+    "productionDragDropAndMoveLogicByteIdentical": true,
+    "writingStyleActionBodiesUnchanged": true,
+    "savedStyleAccessibilityUsesNativeReadbackSnapshotOnly": true,
+    "normalUUIDOnboardingAndNativeStorage": true,
+    "noFixtureOrSyntheticOwnerOrDirectHTTPInNewTests": true
+  },
+  "files": [
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+      "beforeSHA256": "c7de201ebd001b51bf2f857ddd4b69b88a460c6fc01b1d1628778d2f1beecb8f",
+      "afterSHA256": "53740a80153bfd14b8c10e8a86b57ac3b69559d2866b3a197cca6abc4d6bc8d8"
+    },
+    {
+      "path": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift",
+      "beforeSHA256": "f8c19fd3ae115bc6569283447849b8ad56bb497b046ad206029f3620d2fed6f2",
+      "afterSHA256": "d8989cb92e4541e4a756606b61a12cc98e5a519c8d8c3fd5d4c01c0c0778dc8d"
+    },
+    {
+      "path": "NativeApp/UITests/NativeLaunchTests.swift",
+      "beforeSHA256": "8ce926fbddf9a19ed163d4e59b0e211db9a47e18d703018e31dd4ce957c58ff8",
+      "afterSHA256": "0a50acd8721e76b05342fbc0ee16d40d01d3e1e000633649c265df8a00055765"
+    }
+  ],
+  "appleExecution": "NOT_RUN",
+  "artifactDirectory": "docs/any-engine-port/evidence/20261119/native-rtl-drag-ui-source-v1-artifacts",
+  "artifactManifestSHA256": "9883eaad00736215cdd128ddb9c4e0c3c5944ec5d4dc23407e25a194f0027957"
+}

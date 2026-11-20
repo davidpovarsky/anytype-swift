@@ -60,6 +60,8 @@ PROFILES = {
             "testCreateEditHanlinConsentBackgroundAndColdReopen",
             "testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType",
             "testSourceInspectorQuoteAndNoteSurviveColdReopen",
+            "testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
+            "testHierarchyDragIntoFolderPersistsAfterColdReopen",
         ],
     },
 }

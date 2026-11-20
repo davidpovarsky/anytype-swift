@@ -1,0 +1,89 @@
+{
+  "status": "FAIL_HIERARCHY_ACCEPTANCE_CORRELATED_TRACE_AVAILABLE",
+  "scope": "One authorized fresh native Info fixture and Space; unchanged20 assertions, timestamped client trace and one explicitly armed diagnostic watchdog. Original30s request unchanged; at most one fresh Swift and one bounded Python same-path read, no control result used by the hierarchy.",
+  "watchdogObservation": {
+    "maximumActivations": 1,
+    "actualActivations": 0,
+    "sameProcessEvents": [
+      {
+        "phase": "armed",
+        "timestampUnixMs": 1795125737523,
+        "line": 1646
+      }
+    ],
+    "independentPythonControl": {
+      "activationCount": 0,
+      "controlFeedsBusinessResult": false,
+      "helperSHA256": "78128d86a5a9f7908392a5a965727f66e27c2202040427c29b2f539e646fe416",
+      "helperStable": true,
+      "maximumControls": 1,
+      "observerJoined": true
+    },
+    "businessResultSuppliedByEitherControl": false,
+    "closedEventMeaning": "Control-session invalidateAndCancel returned after its request completed/errored; no socket FIN or delegate acknowledgment claim.",
+    "classification": "No one-second armed pending auth/health await was observed; watchdog controls were not activated."
+  },
+  "originalUntracedTransportFailureResolved": false,
+  "transportSettingsChanged": false,
+  "nativeBinarySHA256": "12c7fb62164c830410331aabf616194edb0711a083250f8e8dd34c3cba52078b",
+  "nativeManifestSHA256": "62a13310a474d93d728258d0631618b09056a20c4454bd7be303f3ec071fb77c",
+  "probeSHA256": "e038bc0351f503b648c32f97a36becbc2213bd1c8fe87aa5007dcae1ecb0f7d7",
+  "runtimeSourceStable": true,
+  "runtimeNativeBinaryStable": true,
+  "passedCount": 13,
+  "requiredCount": 20,
+  "checks": {
+    "archive_dispatch_aba_refused_without_membership_loss": true,
+    "current_guarded_capabilities_and_account": true,
+    "custom_document_and_preserved_property_definitions": true,
+    "four_native_conditional_writers_have_one_winner": true,
+    "guarded_bin_preserves_other_memberships_and_property_value": true,
+    "guarded_hierarchy_atomic_initial": true,
+    "guarded_hierarchy_cycle_refused": true,
+    "guarded_rename_and_live_native_query": true,
+    "guarded_reorder_and_exact_retry_preserve_native_version": true,
+    "guarded_wiki_tree_with_page_and_custom_document": true,
+    "native_full_version_refuses_stale_direct_write": true,
+    "prepared_placement_rejects_actual_native_aba": true,
+    "retired_hierarchy_generation_rejected": true
+  },
+  "accountID": "A6yiUu2uUDGCPi67D1XZEnx12KjvwLZqvPc7x4WTkkJxUsGo",
+  "spaceID": "bafyreidyjmzadbminniuczbzcfjn6rlvnoxsbbfecuagw5whd46gn7z6ji.1upv6isu4qq8k",
+  "endpoint": "http://127.0.0.1:61220",
+  "eventCounts": {
+    "begin": 1131,
+    "response": 1131
+  },
+  "nativeAccessRecordCount": 1138,
+  "failedAwaits": [],
+  "nativePrivateLogSnapshotMetadata": [
+    {
+      "path": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\peer-native-v7-watchdog-hierarchy-v1\\stdout.private.log",
+      "capturedBytes": 105,
+      "capturedPrefixSHA256": "5a942ea193f598ad2b514eb39215f4ad46317ef1e6a4d460c903e4eecd99bfec",
+      "privateContentsExported": false,
+      "lastLineComplete": true
+    },
+    {
+      "path": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\peer-native-v7-watchdog-hierarchy-v1\\stderr.private.log",
+      "capturedBytes": 244551,
+      "capturedPrefixSHA256": "980de90151ba0fafcfb7cae2d66f38086694d2d1eef7fcf5b130a7b14eea5288",
+      "privateContentsExported": false,
+      "lastLineComplete": true
+    }
+  ],
+  "evidence": {
+    "runtimeReceiptSHA256": "0abaf3eaacb0d0e0fd183f95614661c01ef727cff1d030209b9f34ca701f486c",
+    "swiftReportSHA256": "1538816fd4c04e6c68d95f62415c10573e3bd123c403fd470f8d8d39889c0472",
+    "clientTraceSHA256": "d7ee581ff29678e62d577f1eed7750ee699d03a641a08eca27fc8e295d01a4e8",
+    "nativeAccessMetadataSHA256": "b93430b5178fdf0cf15c07a2553e8b3acd558883e8453ceaca9125e005a19f3a",
+    "fixtureSHA256": "ba3f7eda249c4e51f3d1483de4b01caf9d39190dc0e03103af7428d908508573"
+  },
+  "limits": [
+    "Native access records are written after the handler returns, before transport delivery is established.",
+    "The client begin is before URLSession.data(for:); it does not prove dispatch to the native socket.",
+    "Time overlap may include an adjacent same-path request; candidate records do not invent a unique request identity.",
+    "All earlier failures remain retained; a passing diagnostic run does not establish untraced transport reliability.",
+    "No request bodies, response bodies, cookies, authorization, recovery material or private handshake contents are exported."
+  ]
+}

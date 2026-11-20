@@ -146,6 +146,7 @@ final class KnownCreationRecoveryFilesystemTests: XCTestCase {
         return result
     }
 
+    @MainActor
     private func seedUncertainKnownObject(parent: URL, identity: PinkhaHanlinWriteIdentity) async throws {
         let journal = try await PinkhaHanlinWriteJournal.openInTestDirectory(parent, namespace: identity.session.context.namespace)
         try await journal.reserve(identity)

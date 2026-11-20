@@ -32,7 +32,7 @@ public struct AnyUIFoundationCapabilities: Sendable, Equatable {
                      "currentACLCommitFence", "targetTreeCommitFence",
                      "nativeDocumentProperties", "nativeIndexedSourceQuery",
                      "nativeRelatedVersion", "conditionalBlockPatch",
-                     "conditionalPropertiesSet", "conditionalBlockCurrentWriterFence", "currentWriterObjectCreate", "currentWriterBlockCreate", "nativeClaimsSnapshot", "nativeClaimsWatch", "nativeObjectClaimsSnapshot", "nativeObjectClaimsWatch",
+                     "conditionalPropertiesSet", "conditionalPropertiesApplySeq", "conditionalPropertiesNoop", "conditionalBlockCurrentWriterFence", "currentWriterObjectCreate", "currentWriterBlockCreate", "nativeClaimsSnapshot", "nativeClaimsWatch", "nativeObjectClaimsSnapshot", "nativeObjectClaimsWatch",
                      "nativeDocumentTypePolicy", "nativeDocumentMembership",
                      "conditionalMembershipSet", "nativePropertyPresentation"] {
             guard response[name]?.integer == 1 else { throw AnyUIActivationError.missingCapability(name) }

@@ -23,7 +23,7 @@ final class AnyUIActivationTests: XCTestCase {
         for key in ["nativeSignedClaims", "spaceWideOperationConflictDomain",
                     "currentACLCommitFence", "targetTreeCommitFence", "nativeDocumentProperties",
                     "nativeIndexedSourceQuery", "nativeRelatedVersion", "conditionalBlockPatch",
-                    "conditionalPropertiesSet", "conditionalBlockCurrentWriterFence", "currentWriterObjectCreate", "currentWriterBlockCreate", "nativeClaimsSnapshot", "nativeClaimsWatch", "nativeObjectClaimsSnapshot", "nativeObjectClaimsWatch",
+                    "conditionalPropertiesSet", "conditionalPropertiesApplySeq", "conditionalPropertiesNoop", "conditionalBlockCurrentWriterFence", "currentWriterObjectCreate", "currentWriterBlockCreate", "nativeClaimsSnapshot", "nativeClaimsWatch", "nativeObjectClaimsSnapshot", "nativeObjectClaimsWatch",
                     "nativeDocumentTypePolicy", "nativeDocumentMembership",
                     "conditionalMembershipSet", "nativePropertyPresentation"] {
             value[key] = .integer(1)
@@ -35,7 +35,7 @@ final class AnyUIActivationTests: XCTestCase {
         for key in ["nativeSignedClaims", "spaceWideOperationConflictDomain",
                     "currentACLCommitFence", "targetTreeCommitFence", "nativeDocumentProperties",
                     "nativeIndexedSourceQuery", "nativeRelatedVersion", "conditionalBlockPatch",
-                    "conditionalPropertiesSet", "conditionalBlockCurrentWriterFence", "currentWriterObjectCreate", "currentWriterBlockCreate", "nativeClaimsSnapshot", "nativeClaimsWatch", "nativeObjectClaimsSnapshot", "nativeObjectClaimsWatch",
+                    "conditionalPropertiesSet", "conditionalPropertiesApplySeq", "conditionalPropertiesNoop", "conditionalBlockCurrentWriterFence", "currentWriterObjectCreate", "currentWriterBlockCreate", "nativeClaimsSnapshot", "nativeClaimsWatch", "nativeObjectClaimsSnapshot", "nativeObjectClaimsWatch",
                     "nativeDocumentTypePolicy", "nativeDocumentMembership",
                     "conditionalMembershipSet", "nativePropertyPresentation"] {
             var response = complete

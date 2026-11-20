@@ -1,0 +1,88 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "6FE22507-F392-47D5-9822-F102C184097E",
+        "deviceName" : "AnyNativePort-44623531195",
+        "modelName" : "iPad mini (A20 Pro)",
+        "osBuildNumber" : "24B8117",
+        "osVersion" : "27.2",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 5,
+      "passedTests" : 0,
+      "skippedTests" : 0,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "PinkhaAnyNative · Built with macOS 27.0.1",
+  "expectedFailures" : 0,
+  "failedTests" : 5,
+  "finishTime" : 1795127656.908,
+  "passedTests" : 0,
+  "result" : "Failed",
+  "runtimeWarnings" : [
+
+  ],
+  "skippedTests" : 0,
+  "startTime" : 1795127317.534,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+    {
+      "failureText" : "failed: caught error: \"secureStorageUnavailable\"",
+      "targetName" : "PinkhaAnyNativeTests",
+      "testIdentifier" : 5,
+      "testIdentifierString" : "NativeTorahWorkflowTests/testNativeQuotesNotesRelatedIndexUnlinkAndRuntimeReopen()",
+      "testIdentifierURL" : "test://com.apple.xcode/PinkhaAnyNative/PinkhaAnyNativeTests/NativeTorahWorkflowTests/testNativeQuotesNotesRelatedIndexUnlinkAndRuntimeReopen",
+      "testName" : "testNativeQuotesNotesRelatedIndexUnlinkAndRuntimeReopen()"
+    },
+    {
+      "failureText" : "XCTAssertTrue failed: threw error \"unavailable(-34018)\"",
+      "targetName" : "PinkhaAnyNativeTests",
+      "testIdentifier" : 1,
+      "testIdentifierString" : "NativeApplicationTests/testPostAuthKeychainFailureRevokesNativeAuthorityAndRecoversSameAccount()",
+      "testIdentifierURL" : "test://com.apple.xcode/PinkhaAnyNative/PinkhaAnyNativeTests/NativeApplicationTests/testPostAuthKeychainFailureRevokesNativeAuthorityAndRecoversSameAccount",
+      "testName" : "testPostAuthKeychainFailureRevokesNativeAuthorityAndRecoversSameAccount()"
+    },
+    {
+      "failureText" : "failed: caught error: \"secureStorageUnavailable\"",
+      "targetName" : "PinkhaAnyNativeTests",
+      "testIdentifier" : 2,
+      "testIdentifierString" : "NativeApplicationTests/testRealAccountWorkspaceJournalEditorAndColdReopen()",
+      "testIdentifierURL" : "test://com.apple.xcode/PinkhaAnyNative/PinkhaAnyNativeTests/NativeApplicationTests/testRealAccountWorkspaceJournalEditorAndColdReopen",
+      "testName" : "testRealAccountWorkspaceJournalEditorAndColdReopen()"
+    },
+    {
+      "failureText" : "failed: caught error: \"unavailable(-34018)\"",
+      "targetName" : "PinkhaAnyNativeTests",
+      "testIdentifier" : 3,
+      "testIdentifierString" : "NativeApplicationTests/testRealKeychainNamespaceAndRecoveryMetadataIsolation()",
+      "testIdentifierURL" : "test://com.apple.xcode/PinkhaAnyNative/PinkhaAnyNativeTests/NativeApplicationTests/testRealKeychainNamespaceAndRecoveryMetadataIsolation",
+      "testName" : "testRealKeychainNamespaceAndRecoveryMetadataIsolation()"
+    },
+    {
+      "failureText" : "failed: caught error: \"secureStorageUnavailable\"",
+      "targetName" : "PinkhaAnyNativeTests",
+      "testIdentifier" : 4,
+      "testIdentifierString" : "NativeHanlinCreationTests/testRealProtectedHanlinCreationDenialCommitDuplicateAndRevocation()",
+      "testIdentifierURL" : "test://com.apple.xcode/PinkhaAnyNative/PinkhaAnyNativeTests/NativeHanlinCreationTests/testRealProtectedHanlinCreationDenialCommitDuplicateAndRevocation",
+      "testName" : "testRealProtectedHanlinCreationDenialCommitDuplicateAndRevocation()"
+    }
+  ],
+  "title" : "Test - PinkhaAnyNative",
+  "topInsights" : [
+    {
+      "category" : "Common Failures",
+      "impact" : "80% of failures",
+      "text" : "4 runs of 4 tests failed with failed: caught error: \"secureStorageUnavailable\""
+    }
+  ],
+  "totalTestCount" : 5
+}

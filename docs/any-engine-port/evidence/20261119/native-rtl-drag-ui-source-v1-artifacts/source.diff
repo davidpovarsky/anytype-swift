@@ -1,0 +1,279 @@
+diff --git a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift
+index a93e96e210..9592805900 100644
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift
+@@ -69,26 +69,41 @@ public struct AnyNativeDocumentView: View {
+                     Button(AnyUIErrorText.text("כתיבה מימין לשמאל", "Right to left")) {
+                         Task { await presentation.setWritingStyle(direction: .rightToLeft, alignment: .natural) }
+                     }.disabled(presentation.selectedBlockIDs.isEmpty || !presentation.canMutate)
++                        .accessibilityIdentifier("any-native-writing-direction-rtl")
++                        .accessibilityAddTraits(isSavedDirection(.rightToLeft) ? .isSelected : [])
+                     Button(AnyUIErrorText.text("כתיבה משמאל לימין", "Left to right")) {
+                         Task { await presentation.setWritingStyle(direction: .leftToRight, alignment: .natural) }
+                     }.disabled(presentation.selectedBlockIDs.isEmpty || !presentation.canMutate)
++                        .accessibilityIdentifier("any-native-writing-direction-ltr")
++                        .accessibilityAddTraits(isSavedDirection(.leftToRight) ? .isSelected : [])
+                     Menu(AnyUIErrorText.text("יישור טקסט", "Text alignment")) {
+                         Button(AnyUIErrorText.text("טבעי", "Natural")) {
+                             Task { await presentation.setWritingStyle(alignment: .natural) }
+                         }
++                            .accessibilityIdentifier("any-native-text-alignment-natural")
++                            .accessibilityAddTraits(isSavedAlignment(.natural) ? .isSelected : [])
+                         Button(AnyUIErrorText.text("לשמאל", "Left")) {
+                             Task { await presentation.setWritingStyle(alignment: .left) }
+                         }
++                            .accessibilityIdentifier("any-native-text-alignment-left")
++                            .accessibilityAddTraits(isSavedAlignment(.left) ? .isSelected : [])
+                         Button(AnyUIErrorText.text("למרכז", "Center")) {
+                             Task { await presentation.setWritingStyle(alignment: .center) }
+                         }
++                            .accessibilityIdentifier("any-native-text-alignment-center")
++                            .accessibilityAddTraits(isSavedAlignment(.center) ? .isSelected : [])
+                         Button(AnyUIErrorText.text("לימין", "Right")) {
+                             Task { await presentation.setWritingStyle(alignment: .right) }
+                         }
++                            .accessibilityIdentifier("any-native-text-alignment-right")
++                            .accessibilityAddTraits(isSavedAlignment(.right) ? .isSelected : [])
+                         Button(AnyUIErrorText.text("לשני הצדדים", "Justified")) {
+                             Task { await presentation.setWritingStyle(alignment: .justified) }
+                         }
++                            .accessibilityIdentifier("any-native-text-alignment-justified")
++                            .accessibilityAddTraits(isSavedAlignment(.justified) ? .isSelected : [])
+                     }.disabled(presentation.selectedBlockIDs.isEmpty || !presentation.canMutate)
++                        .accessibilityIdentifier("any-native-text-alignment")
+                     Button(AnyUIErrorText.text("ביטול הפעולה האחרונה", "Undo last saved edit"), systemImage: "arrow.uturn.backward") {
+                         Task { await presentation.undoLastNativeEdit() }
+                     }.disabled(presentation.hasPendingEdits || !presentation.canMutate)
+@@ -96,6 +111,9 @@ public struct AnyNativeDocumentView: View {
+                         Task { await presentation.retryObservation() }
+                     }
+                 } label: { Image(systemName: "ellipsis.circle") }
++                    .accessibilityLabel(AnyUIErrorText.text("פעולות מסמך", "Document actions"))
++                    .accessibilityIdentifier("any-native-document-options")
++                    .accessibilityValue(Text(savedWritingStyleDescription))
+                 Button {
+                     guard canPresentDocumentChild else { return }
+                     presentation.presentHanlin()
+@@ -147,6 +165,55 @@ public struct AnyNativeDocumentView: View {
+         // property/inspector sheets may cover this view without retiring it.
+     }
+ 
++    /// Accessibility reports the last native snapshot, never a submitted menu
++    /// value. Pending writes retain the previous value; failures use the normal
++    /// visible error path. Mixed or unavailable selections have no selected trait.
++    private var selectedNativeBlocks: [AnyEditorBlock] {
++        let ids = Set(presentation.selectedBlockIDs)
++        guard !ids.isEmpty, let snapshot = presentation.read?.snapshot,
++              ids.isSubset(of: Set(snapshot.depthFirstIDs)) else { return [] }
++        let blocks = snapshot.blocks.filter { ids.contains($0.id) }
++        return blocks.count == ids.count ? blocks : []
++    }
++
++    private func isSavedDirection(_ value: AnyWritingDirection) -> Bool {
++        let blocks = selectedNativeBlocks
++        return !blocks.isEmpty && blocks.allSatisfy { ($0.direction ?? .natural) == value }
++    }
++
++    private func isSavedAlignment(_ value: AnyTextAlignment) -> Bool {
++        let blocks = selectedNativeBlocks
++        return !blocks.isEmpty && blocks.allSatisfy { ($0.alignment ?? .natural) == value }
++    }
++
++    private var savedWritingStyleDescription: String {
++        let blocks = selectedNativeBlocks
++        guard let first = blocks.first else {
++            return AnyUIErrorText.text("אין בלוק נבחר", "No block selected")
++        }
++        let direction = first.direction ?? .natural, alignment = first.alignment ?? .natural
++        guard blocks.allSatisfy({ ($0.direction ?? .natural) == direction &&
++                                 ($0.alignment ?? .natural) == alignment }) else {
++            return AnyUIErrorText.text("עיצוב שמור שונה בבלוקים שנבחרו", "Selected blocks have mixed saved styles")
++        }
++        let directionTitle: String
++        switch direction {
++        case .natural: directionTitle = AnyUIErrorText.text("כיוון אוטומטי", "Automatic direction")
++        case .leftToRight: directionTitle = AnyUIErrorText.text("כתיבה משמאל לימין", "Left to right")
++        case .rightToLeft: directionTitle = AnyUIErrorText.text("כתיבה מימין לשמאל", "Right to left")
++        }
++        let alignmentTitle: String
++        switch alignment {
++        case .natural: alignmentTitle = AnyUIErrorText.text("טבעי", "Natural")
++        case .left: alignmentTitle = AnyUIErrorText.text("לשמאל", "Left")
++        case .center: alignmentTitle = AnyUIErrorText.text("למרכז", "Center")
++        case .right: alignmentTitle = AnyUIErrorText.text("לימין", "Right")
++        case .justified: alignmentTitle = AnyUIErrorText.text("לשני הצדדים", "Justified")
++        }
++        return AnyUIErrorText.text("העיצוב השמור: ", "Saved style: ") + directionTitle +
++            AnyUIErrorText.text(", יישור ", ", alignment ") + alignmentTitle
++    }
++
+     private var canPresentDocumentChild: Bool {
+         AnyNativeDocumentNavigation.canBeginOwnedPresentation(
+             isReserved: documentChildReserved,
+diff --git a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift
+index 5f13acff8b..7f0f4c6645 100644
+--- a/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift
++++ b/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeLibraryView.swift
+@@ -213,6 +213,7 @@ public struct AnyNativeLibraryView: View {
+                 if item.kind == .folder { Image(systemName: "chevron.forward").foregroundStyle(.secondary) }
+             }
+         }
++        .accessibilityIdentifier("any-native-hierarchy-row-\(item.objectID)")
+         .contextMenu {
+             Button(AnyUIErrorText.text("שינוי שם", "Rename"), systemImage: "pencil") {
+                 nameRequest = .init(item: item.native, kind: item.kind, parentID: item.parentID, isNote: false)
+diff --git a/NativeApp/UITests/NativeLaunchTests.swift b/NativeApp/UITests/NativeLaunchTests.swift
+index 6a7a2e524b..b0770df65d 100644
+--- a/NativeApp/UITests/NativeLaunchTests.swift
++++ b/NativeApp/UITests/NativeLaunchTests.swift
+@@ -320,6 +320,150 @@ final class NativeLaunchTests: XCTestCase {
+         waitFor(NSPredicate(format: "exists == true"), object: noteRelated, timeout: 60)
+     }
+ 
++
++    func testExplicitHebrewDirectionAndAlignmentSurviveColdReopen() {
++        let scope = UUID()
++        let suffix = String(scope.uuidString.prefix(8))
++        let app = makeApplication(scope: scope)
++        let spaceName = "Writing UI Space " + suffix
++        let documentName = "Writing UI Document " + suffix
++        let body = "שלום עולם, כיוון ויישור מפורשים 789"
++        app.launch()
++        defer { app.terminate() }
++        createOwnedWorkspace(app, spaceName: spaceName)
++        createNamedItem(app, action: "any-native-new-document", title: documentName)
++        tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
++
++        let blocks = app.textViews.matching(NSPredicate(
++            format: "identifier BEGINSWITH %@", "any-native-block-"))
++        waitUntilEnabled(blocks.firstMatch)
++        blocks.firstMatch.tap()
++        blocks.firstMatch.typeText(body)
++        tapWhenEnabled(app.buttons["any-native-editor-done"])
++        let status = app.descendants(matching: .any)
++            .matching(identifier: "any-native-save-status").firstMatch
++        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"),
++                object: status, timeout: 45)
++        let blockIdentifier = blocks.firstMatch.identifier
++        XCTAssertEqual(blocks.firstMatch.value as? String, body)
++        XCTAssertEqual(blocks.count, 1)
++
++        let options = app.buttons["any-native-document-options"]
++        // A Hebrew paragraph can render RTL by detection alone. First force
++        // the opposite persisted direction, then explicitly choose RTL.
++        tapWhenEnabled(options)
++        tapWhenEnabled(app.buttons["any-native-writing-direction-ltr"])
++        waitFor(NSPredicate(format: "exists == true AND value == %@",
++                            "העיצוב השמור: כתיבה משמאל לימין, יישור טבעי"),
++                object: options, timeout: 45)
++        tapWhenEnabled(options)
++        tapWhenEnabled(app.buttons["any-native-writing-direction-rtl"])
++        waitFor(NSPredicate(format: "exists == true AND value == %@",
++                            "העיצוב השמור: כתיבה מימין לשמאל, יישור טבעי"),
++                object: options, timeout: 45)
++        tapWhenEnabled(options)
++        tapWhenEnabled(app.buttons["any-native-text-alignment"])
++        tapWhenEnabled(app.buttons["any-native-text-alignment-center"])
++        let savedStyle = "העיצוב השמור: כתיבה מימין לשמאל, יישור למרכז"
++        // This value comes only from the current native readback snapshot;
++        // choosing the menu action does not update it optimistically.
++        waitFor(NSPredicate(format: "exists == true AND value == %@", savedStyle),
++                object: options, timeout: 45)
++        XCTAssertEqual(app.textViews[blockIdentifier].value as? String, body)
++
++        reopenOwnedWorkspace(app, spaceName: spaceName)
++        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
++        let reopened = app.textViews[blockIdentifier]
++        waitFor(NSPredicate(format: "exists == true AND value == %@", body),
++                object: reopened, timeout: 60)
++        XCTAssertEqual(blocks.count, 1)
++        // Select the actual reopened block without editing or applying a style.
++        reopened.tap()
++        tapWhenEnabled(app.buttons["any-native-editor-done"])
++        waitFor(NSPredicate(format: "exists == true AND value == %@", savedStyle),
++                object: options, timeout: 45)
++        tapWhenEnabled(options)
++        let rtl = app.buttons["any-native-writing-direction-rtl"]
++        waitUntilEnabled(rtl)
++        XCTAssertTrue(rtl.isSelected, "The reopened native direction must be selected.")
++        XCTAssertFalse(app.buttons["any-native-writing-direction-ltr"].isSelected)
++        tapWhenEnabled(app.buttons["any-native-text-alignment"])
++        let center = app.buttons["any-native-text-alignment-center"]
++        waitUntilEnabled(center)
++        XCTAssertTrue(center.isSelected, "The reopened explicit alignment must be selected.")
++        XCTAssertFalse(app.buttons["any-native-text-alignment-natural"].isSelected)
++    }
++
++    func testHierarchyDragIntoFolderPersistsAfterColdReopen() {
++        let scope = UUID()
++        let suffix = String(scope.uuidString.prefix(8))
++        let app = makeApplication(scope: scope)
++        let spaceName = "Drag UI Space " + suffix
++        let folderName = "Drag destination " + suffix
++        let documentName = "Drag document " + suffix
++        let body = "מסמך שנגרר לתיקייה ושומר על תוכנו 246"
++        app.launch()
++        defer { app.terminate() }
++        createOwnedWorkspace(app, spaceName: spaceName)
++        createNamedItem(app, action: "any-native-new-folder", title: folderName)
++        waitUntilEnabled(app.buttons[folderName].firstMatch, timeout: 60)
++        createNamedItem(app, action: "any-native-new-document", title: documentName)
++        tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
++        let blocks = app.textViews.matching(NSPredicate(
++            format: "identifier BEGINSWITH %@", "any-native-block-"))
++        waitUntilEnabled(blocks.firstMatch)
++        blocks.firstMatch.tap()
++        blocks.firstMatch.typeText(body)
++        tapWhenEnabled(app.buttons["any-native-editor-done"])
++        let status = app.descendants(matching: .any)
++            .matching(identifier: "any-native-save-status").firstMatch
++        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"),
++                object: status, timeout: 45)
++        let blockIdentifier = blocks.firstMatch.identifier
++
++        reopenOwnedWorkspace(app, spaceName: spaceName)
++        let source = app.buttons[documentName].firstMatch
++        let destination = app.buttons[folderName].firstMatch
++        waitUntilEnabled(source, timeout: 60)
++        waitUntilEnabled(destination)
++        waitFor(NSPredicate(format: "hittable == true"), object: source, timeout: 20)
++        waitFor(NSPredicate(format: "hittable == true"), object: destination, timeout: 20)
++        let rowIdentifier = source.identifier
++        let folderIdentifier = destination.identifier
++        XCTAssertTrue(rowIdentifier.hasPrefix("any-native-hierarchy-row-"))
++        XCTAssertTrue(folderIdentifier.hasPrefix("any-native-hierarchy-row-"))
++        XCTAssertNotEqual(rowIdentifier, folderIdentifier)
++        // Exercise the production String drag payload and folder drop handler.
++        // Do not invoke the Move context-menu action or a fixture/native API.
++        source.press(forDuration: 1.1, thenDragTo: destination)
++        let movedRow = app.buttons[rowIdentifier]
++        waitFor(NSPredicate(format: "exists == false"), object: movedRow, timeout: 45)
++        let library = app.descendants(matching: .any)
++            .matching(identifier: "any-native-library").firstMatch
++        waitFor(NSPredicate(format: "exists == true AND value == %@", "ready"),
++                object: library, timeout: 45)
++        XCTAssertFalse(movedRow.exists, "The acknowledged drop must remove the root row.")
++
++        tapWhenEnabled(app.buttons[folderIdentifier])
++        waitUntilEnabled(movedRow, timeout: 60)
++        XCTAssertEqual(app.buttons.matching(identifier: rowIdentifier).count, 1)
++        tapWhenEnabled(movedRow)
++        waitFor(NSPredicate(format: "exists == true AND value == %@", body),
++                object: app.textViews[blockIdentifier], timeout: 60)
++        XCTAssertEqual(blocks.count, 1)
++
++        reopenOwnedWorkspace(app, spaceName: spaceName)
++        waitUntilEnabled(app.buttons[folderIdentifier], timeout: 60)
++        XCTAssertFalse(movedRow.exists, "Cold reopen must keep the document out of the root.")
++        tapWhenEnabled(app.buttons[folderIdentifier])
++        waitUntilEnabled(movedRow, timeout: 60)
++        XCTAssertEqual(app.buttons.matching(identifier: rowIdentifier).count, 1)
++        tapWhenEnabled(movedRow)
++        waitFor(NSPredicate(format: "exists == true AND value == %@", body),
++                object: app.textViews[blockIdentifier], timeout: 60)
++        XCTAssertEqual(blocks.count, 1)
++    }
++
+     private func selectInspectorTool(_ app: XCUIApplication, hebrew: String, english: String) {
+         let tools = app.descendants(matching: .any)
+             .matching(identifier: "torah-inspector-tools").firstMatch

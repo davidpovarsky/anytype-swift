@@ -5,7 +5,7 @@ import argparse, hashlib, json, os, plistlib, shutil, stat, subprocess, tempfile
 from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_MANIFEST = ROOT / "Tools/AnyEngineValidation/evidence/native-document-metadata-v7-source.json"
+DEFAULT_MANIFEST = ROOT / "Tools/AnyEngineValidation/evidence/native-conditional-properties-v8-source.json"
 VERSION = "v0.5.0-pinkha.1"
 # The SDK v0.8.0 annotated tag object and its checkout commit are pinned
 # separately; compare actual HEAD to the peeled commit.
@@ -47,8 +47,13 @@ def verify_source(manifest, manifest_path, any_root):
             require(git(root, "hash-object", "--path=" + path, path) == entry["gitBlob"], name + " file differs: " + path)
         patch = manifest_path.parent / safe_relative(spec["patch"])
         require(digest(patch) == spec["patchSHA256"], name + " patch digest mismatch")
+        if "testedEffectiveTree" in spec:
+            require(git(root, "write-tree") == spec["testedEffectiveTree"], name + " effective source tree differs")
         result[name] = {"upstreamCommit": spec["upstreamCommit"], "resolvedUpstreamCommit": PINNED_COMMITS[name], "patchSHA256": spec["patchSHA256"],
                         "upstreamTagObject": spec.get("upstreamTagObject"), "testedLocalCommit": spec["testedLocalCommit"], "files": spec["files"]}
+        for key in ("testedEffectiveTree", "testedWorkingTreeIncludesUncommittedV8Changes"):
+            if key in spec:
+                result[name][key] = spec[key]
     return result
 
 def apply(args):

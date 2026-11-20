@@ -320,6 +320,150 @@ final class NativeLaunchTests: XCTestCase {
         waitFor(NSPredicate(format: "exists == true"), object: noteRelated, timeout: 60)
     }
 
+
+    func testExplicitHebrewDirectionAndAlignmentSurviveColdReopen() {
+        let scope = UUID()
+        let suffix = String(scope.uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        let spaceName = "Writing UI Space " + suffix
+        let documentName = "Writing UI Document " + suffix
+        let body = "שלום עולם, כיוון ויישור מפורשים 789"
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+        tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+
+        let blocks = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        waitUntilEnabled(blocks.firstMatch)
+        blocks.firstMatch.tap()
+        blocks.firstMatch.typeText(body)
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        let status = app.descendants(matching: .any)
+            .matching(identifier: "any-native-save-status").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"),
+                object: status, timeout: 45)
+        let blockIdentifier = blocks.firstMatch.identifier
+        XCTAssertEqual(blocks.firstMatch.value as? String, body)
+        XCTAssertEqual(blocks.count, 1)
+
+        let options = app.buttons["any-native-document-options"]
+        // A Hebrew paragraph can render RTL by detection alone. First force
+        // the opposite persisted direction, then explicitly choose RTL.
+        tapWhenEnabled(options)
+        tapWhenEnabled(app.buttons["any-native-writing-direction-ltr"])
+        waitFor(NSPredicate(format: "exists == true AND value == %@",
+                            "העיצוב השמור: כתיבה משמאל לימין, יישור טבעי"),
+                object: options, timeout: 45)
+        tapWhenEnabled(options)
+        tapWhenEnabled(app.buttons["any-native-writing-direction-rtl"])
+        waitFor(NSPredicate(format: "exists == true AND value == %@",
+                            "העיצוב השמור: כתיבה מימין לשמאל, יישור טבעי"),
+                object: options, timeout: 45)
+        tapWhenEnabled(options)
+        tapWhenEnabled(app.buttons["any-native-text-alignment"])
+        tapWhenEnabled(app.buttons["any-native-text-alignment-center"])
+        let savedStyle = "העיצוב השמור: כתיבה מימין לשמאל, יישור למרכז"
+        // This value comes only from the current native readback snapshot;
+        // choosing the menu action does not update it optimistically.
+        waitFor(NSPredicate(format: "exists == true AND value == %@", savedStyle),
+                object: options, timeout: 45)
+        XCTAssertEqual(app.textViews[blockIdentifier].value as? String, body)
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
+        let reopened = app.textViews[blockIdentifier]
+        waitFor(NSPredicate(format: "exists == true AND value == %@", body),
+                object: reopened, timeout: 60)
+        XCTAssertEqual(blocks.count, 1)
+        // Select the actual reopened block without editing or applying a style.
+        reopened.tap()
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        waitFor(NSPredicate(format: "exists == true AND value == %@", savedStyle),
+                object: options, timeout: 45)
+        tapWhenEnabled(options)
+        let rtl = app.buttons["any-native-writing-direction-rtl"]
+        waitUntilEnabled(rtl)
+        XCTAssertTrue(rtl.isSelected, "The reopened native direction must be selected.")
+        XCTAssertFalse(app.buttons["any-native-writing-direction-ltr"].isSelected)
+        tapWhenEnabled(app.buttons["any-native-text-alignment"])
+        let center = app.buttons["any-native-text-alignment-center"]
+        waitUntilEnabled(center)
+        XCTAssertTrue(center.isSelected, "The reopened explicit alignment must be selected.")
+        XCTAssertFalse(app.buttons["any-native-text-alignment-natural"].isSelected)
+    }
+
+    func testHierarchyDragIntoFolderPersistsAfterColdReopen() {
+        let scope = UUID()
+        let suffix = String(scope.uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        let spaceName = "Drag UI Space " + suffix
+        let folderName = "Drag destination " + suffix
+        let documentName = "Drag document " + suffix
+        let body = "מסמך שנגרר לתיקייה ושומר על תוכנו 246"
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-folder", title: folderName)
+        waitUntilEnabled(app.buttons[folderName].firstMatch, timeout: 60)
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+        tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+        let blocks = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        waitUntilEnabled(blocks.firstMatch)
+        blocks.firstMatch.tap()
+        blocks.firstMatch.typeText(body)
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        let status = app.descendants(matching: .any)
+            .matching(identifier: "any-native-save-status").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"),
+                object: status, timeout: 45)
+        let blockIdentifier = blocks.firstMatch.identifier
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        let source = app.buttons[documentName].firstMatch
+        let destination = app.buttons[folderName].firstMatch
+        waitUntilEnabled(source, timeout: 60)
+        waitUntilEnabled(destination)
+        waitFor(NSPredicate(format: "hittable == true"), object: source, timeout: 20)
+        waitFor(NSPredicate(format: "hittable == true"), object: destination, timeout: 20)
+        let rowIdentifier = source.identifier
+        let folderIdentifier = destination.identifier
+        XCTAssertTrue(rowIdentifier.hasPrefix("any-native-hierarchy-row-"))
+        XCTAssertTrue(folderIdentifier.hasPrefix("any-native-hierarchy-row-"))
+        XCTAssertNotEqual(rowIdentifier, folderIdentifier)
+        // Exercise the production String drag payload and folder drop handler.
+        // Do not invoke the Move context-menu action or a fixture/native API.
+        source.press(forDuration: 1.1, thenDragTo: destination)
+        let movedRow = app.buttons[rowIdentifier]
+        waitFor(NSPredicate(format: "exists == false"), object: movedRow, timeout: 45)
+        let library = app.descendants(matching: .any)
+            .matching(identifier: "any-native-library").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", "ready"),
+                object: library, timeout: 45)
+        XCTAssertFalse(movedRow.exists, "The acknowledged drop must remove the root row.")
+
+        tapWhenEnabled(app.buttons[folderIdentifier])
+        waitUntilEnabled(movedRow, timeout: 60)
+        XCTAssertEqual(app.buttons.matching(identifier: rowIdentifier).count, 1)
+        tapWhenEnabled(movedRow)
+        waitFor(NSPredicate(format: "exists == true AND value == %@", body),
+                object: app.textViews[blockIdentifier], timeout: 60)
+        XCTAssertEqual(blocks.count, 1)
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        waitUntilEnabled(app.buttons[folderIdentifier], timeout: 60)
+        XCTAssertFalse(movedRow.exists, "Cold reopen must keep the document out of the root.")
+        tapWhenEnabled(app.buttons[folderIdentifier])
+        waitUntilEnabled(movedRow, timeout: 60)
+        XCTAssertEqual(app.buttons.matching(identifier: rowIdentifier).count, 1)
+        tapWhenEnabled(movedRow)
+        waitFor(NSPredicate(format: "exists == true AND value == %@", body),
+                object: app.textViews[blockIdentifier], timeout: 60)
+        XCTAssertEqual(blocks.count, 1)
+    }
+
     private func selectInspectorTool(_ app: XCUIApplication, hebrew: String, english: String) {
         let tools = app.descendants(matching: .any)
             .matching(identifier: "torah-inspector-tools").firstMatch

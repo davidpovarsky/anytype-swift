@@ -42,6 +42,7 @@ final class NativePropertyStoreTests: XCTestCase, @unchecked Sendable {
         if attached { collectionIDs.append(AnyNativePropertyStore.presentationCollectionID) }
         let raw: AnyJSON = .object([
             "id": .string("document"), "spaceId": .string(space), "author": .string("native-author"),
+            "_applySeq": .integer(17),
             "_ver": .object(["id": .string("v1"), "any": .object(["type": .string("v2"), "name": .string("v3")]),
                 "collection-a": .object(["nested": .object(["leaf": .string("v4")])])]),
             "any": .object(["type": .string("page"), "name": .string("שלום"),

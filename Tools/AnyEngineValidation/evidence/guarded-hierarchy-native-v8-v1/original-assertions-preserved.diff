@@ -1,0 +1,72 @@
+--- original/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegrationProbe/GuardedHierarchyProbe.swift
++++ v8/Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegrationProbe/GuardedHierarchyProbe.swift
+@@ -41,7 +41,7 @@
+                 let crossObjectAtomicity: Bool
+                 let retainedDisposableFixture: Bool
+             }
+-            let result = Report(status: status, scope: "real_native_v7_guarded_wiki_hierarchy",
++            let result = Report(status: status, scope: "real_native_v8_guarded_wiki_hierarchy",
+                                 accountID: accountID, spaceID: spaceID, objectIDs: objectIDs,
+                                 blockID: blockID, checks: checks, errorCode: errorCode,
+                                 crossObjectAtomicity: false, retainedDisposableFixture: true)
+@@ -150,11 +150,11 @@
+             guard let oldName = beforeABA["any"]?["name"]?.string,
+                   let beforeVersion = beforeABA["_ver"] else { throw Failure.assertion("missing_native_version") }
+             try await store.patch(objectID: secondID, ownerID: "any", values: ["name": .string("Temporary ABA " + suffix)],
+-                                  expectedVersion: beforeVersion, authorize: {})
++                                  fence: try .init(record: beforeABA, engineStartedAt: store.engineStartedAt), authorize: {})
+             let midABA = try await store.readObject(objectID: secondID)
+-            guard let midVersion = midABA["_ver"] else { throw Failure.assertion("missing_native_mid_version") }
++            guard midABA["_ver"] != nil else { throw Failure.assertion("missing_native_mid_version") }
+             try await store.patch(objectID: secondID, ownerID: "any", values: ["name": .string(oldName)],
+-                                  expectedVersion: midVersion, authorize: {})
++                                  fence: try .init(record: midABA, engineStartedAt: store.engineStartedAt), authorize: {})
+             let afterABA = try await store.readObject(objectID: secondID)
+             guard afterABA["_ver"] != beforeVersion, afterABA["any"]?["name"]?.string == oldName else {
+                 throw Failure.assertion("actual_aba_not_established")
+@@ -167,7 +167,7 @@
+             }
+             do {
+                 try await store.patch(objectID: secondID, ownerID: "any", values: ["name": .string("Rejected stale title")],
+-                                      expectedVersion: beforeVersion, authorize: {})
++                                      fence: try .init(record: beforeABA, engineStartedAt: store.engineStartedAt), authorize: {})
+                 throw Failure.assertion("native_stale_version_accepted")
+             } catch AnyEngineError.http(status: 409, code: "pinkha.properties.conflict") {
+                 try check("native_full_version_refuses_stale_direct_write",
+@@ -175,14 +175,14 @@
+             }
+ 
+             let racing = try await store.readObject(objectID: firstID)
+-            guard let racingVersion = racing["_ver"] else { throw Failure.assertion("missing_racing_version") }
++            guard racing["_ver"] != nil else { throw Failure.assertion("missing_racing_version") }
+             let winnerIndexes = try await withThrowingTaskGroup(of: Int.self) { group in
+                 for index in 0..<4 {
+                     group.addTask {
+                         do {
+                             try await store.patch(objectID: firstID, ownerID: "any",
+                                 values: ["name": .string("Concurrent title " + String(index) + " " + suffix)],
+-                                expectedVersion: racingVersion, authorize: {})
++                                fence: try .init(record: racing, engineStartedAt: store.engineStartedAt), authorize: {})
+                             return index
+                         } catch AnyEngineError.http(status: 409, code: "pinkha.properties.conflict") { return -1 }
+                     }
+@@ -300,15 +300,15 @@
+         calls += 1
+         guard calls == 2 else { return }
+         let original = try await store.readObject(objectID: objectID)
+-        guard let name = original["any"]?["name"]?.string, let version = original["_ver"] else {
++        guard let name = original["any"]?["name"]?.string, original["_ver"] != nil else {
+             throw ProbeFailure.assertion("archive_race_missing_version")
+         }
+         try await store.patch(objectID: objectID, ownerID: "any", values: ["name": .string(name + " temporary")],
+-                              expectedVersion: version, authorize: {})
++                              fence: try .init(record: original, engineStartedAt: store.engineStartedAt), authorize: {})
+         let intermediate = try await store.readObject(objectID: objectID)
+-        guard let intermediateVersion = intermediate["_ver"] else { throw ProbeFailure.assertion("archive_race_missing_mid_version") }
++        guard intermediate["_ver"] != nil else { throw ProbeFailure.assertion("archive_race_missing_mid_version") }
+         try await store.patch(objectID: objectID, ownerID: "any", values: ["name": .string(name)],
+-                              expectedVersion: intermediateVersion, authorize: {})
++                              fence: try .init(record: intermediate, engineStartedAt: store.engineStartedAt), authorize: {})
+         didApplyABA = true
+     }
+ }

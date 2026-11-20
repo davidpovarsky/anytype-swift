@@ -1,0 +1,26 @@
+{
+  "scope": "Read-only native final-flush boundary; matching embedded go1.27.1 toolchain source.",
+  "goVersion": "go1.27.1",
+  "sourcePath": "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\src\\net\\http\\server.go",
+  "sourceSHA256": "8a46dd48f65aba824366170f8f335417af263fc60b7b4e04ef2a4bba4a21253d",
+  "nativeBinarySHA256": "12c7fb62164c830410331aabf616194edb0711a083250f8e8dd34c3cba52078b",
+  "observedBoundary": "Echo access logging runs inside ServeHTTP after its handler returns. Go finishRequest is invoked after ServeHTTP returns; response and connection-buffer flushing therefore follow the access-log record.",
+  "conclusion": "Prompt native200 access completion does not prove socket delivery or Foundation completion. No native framing defect established.",
+  "ranges": [
+    {
+      "firstLine": 377,
+      "lastLine": 424,
+      "source": "func (cw *chunkWriter) Write(p []byte) (n int, err error) {\n\tif !cw.wroteHeader {\n\t\tcw.writeHeader(p)\n\t}\n\tif cw.res.req.Method == \"HEAD\" {\n\t\t// Eat writes.\n\t\treturn len(p), nil\n\t}\n\tif cw.chunking {\n\t\t_, err = fmt.Fprintf(cw.res.conn.bufw, \"%x\\r\\n\", len(p))\n\t\tif err != nil {\n\t\t\tcw.res.conn.rwc.Close()\n\t\t\treturn\n\t\t}\n\t}\n\tn, err = cw.res.conn.bufw.Write(p)\n\tif cw.chunking && err == nil {\n\t\t_, err = cw.res.conn.bufw.Write(crlf)\n\t}\n\tif err != nil {\n\t\tcw.res.conn.rwc.Close()\n\t}\n\treturn\n}\n\nfunc (cw *chunkWriter) flush() error {\n\tif !cw.wroteHeader {\n\t\tcw.writeHeader(nil)\n\t}\n\treturn cw.res.conn.bufw.Flush()\n}\n\nfunc (cw *chunkWriter) close() {\n\tif !cw.wroteHeader {\n\t\tcw.writeHeader(nil)\n\t}\n\tif cw.chunking {\n\t\tbw := cw.res.conn.bufw // conn's bufio writer\n\t\t// zero chunk to mark EOF\n\t\tbw.WriteString(\"0\\r\\n\")\n\t\tif trailers := cw.res.finalTrailers(); trailers != nil {\n\t\t\ttrailers.Write(bw) // the writer handles noting errors\n\t\t}\n\t\t// final blank line after the trailers (whether\n\t\t// present or not)\n\t\tbw.WriteString(\"\\r\\n\")\n\t}\n}"
+    },
+    {
+      "firstLine": 1650,
+      "lastLine": 1711,
+      "source": "func (w *response) Write(data []byte) (n int, err error) {\n\treturn w.write(len(data), data, \"\")\n}\n\nfunc (w *response) WriteString(data string) (n int, err error) {\n\treturn w.write(len(data), nil, data)\n}\n\n// either dataB or dataS is non-zero.\nfunc (w *response) write(lenData int, dataB []byte, dataS string) (n int, err error) {\n\tif w.conn.hijacked() {\n\t\tif lenData > 0 {\n\t\t\tcaller := relevantCaller()\n\t\t\tw.conn.server.logf(\"http: response.Write on hijacked connection from %s (%s:%d)\", caller.Function, path.Base(caller.File), caller.Line)\n\t\t}\n\t\treturn 0, ErrHijacked\n\t}\n\n\tif w.canWriteContinue.Load() {\n\t\t// Body reader wants to write 100 Continue but hasn't yet. Tell it not to.\n\t\tw.disableWriteContinue(true)\n\t}\n\n\tif !w.wroteHeader {\n\t\tw.WriteHeader(StatusOK)\n\t}\n\tif lenData == 0 {\n\t\treturn 0, nil\n\t}\n\tif !w.bodyAllowed() {\n\t\treturn 0, ErrBodyNotAllowed\n\t}\n\n\tw.written += int64(lenData) // ignoring errors, for errorKludge\n\tif w.contentLength != -1 && w.written > w.contentLength {\n\t\treturn 0, ErrContentLength\n\t}\n\tif dataB != nil {\n\t\treturn w.w.Write(dataB)\n\t} else {\n\t\treturn w.w.WriteString(dataS)\n\t}\n}\n\nfunc (w *response) finishRequest() {\n\tw.handlerDone.Store(true)\n\n\tif !w.wroteHeader {\n\t\tw.WriteHeader(StatusOK)\n\t}\n\n\tw.w.Flush()\n\tputBufioWriter(w.w)\n\tw.cw.close()\n\tw.conn.bufw.Flush()\n\n\tw.conn.r.abortPendingRead()\n\tw.reqBody.registerOnHitEOF(nil) // prevent new background read from starting\n\n\tif w.canWriteContinue.Load() {\n\t\tw.disableWriteContinue(true)\n\t}"
+    },
+    {
+      "firstLine": 2135,
+      "lastLine": 2150,
+      "source": "\t\t// was never deployed in the wild and the answer is HTTP/2.\n\t\tinFlightResponse = w\n\t\tserverHandler{c.server}.ServeHTTP(w, w.req)\n\t\tinFlightResponse = nil\n\t\tw.cancelCtx()\n\t\tif c.hijacked() {\n\t\t\tc.r.releaseConn()\n\t\t\treturn\n\t\t}\n\t\tw.finishRequest()\n\t\tc.rwc.SetWriteDeadline(time.Time{})\n\t\tif !w.shouldReuseConnection() {\n\t\t\tif w.requestBodyLimitHit || w.closedRequestBodyEarly() {\n\t\t\t\tc.closeWriteAndWait()\n\t\t\t}\n\t\t\treturn"
+    }
+  ]
+}
