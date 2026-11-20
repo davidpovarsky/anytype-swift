@@ -1,0 +1,58 @@
+{
+  "canonical_export_attempt2": {
+    "job": {
+      "created_at": 1795183870.5216286,
+      "duration_s": 9.18,
+      "error": null,
+      "exit_code": 0,
+      "finished_at": "2026-11-20T14:11:19.766676+00:00",
+      "host": "host_7ec8382e82747448",
+      "id": "job_e025d3f27d96",
+      "notified": {
+        "resend": null,
+        "telegram": null
+      },
+      "notify_spec": {},
+      "output": "{\"path\": \"C:\\\\Users\\\\DAVID\\\\Code\\\\anytype-original-editor-owned43-ci-20261120\\\\build\\\\owned43-apple-ci-20261120\\\\linux-closure\\\\owned43-linux-closure.zip\", \"bytes\": 893317, \"sha256\": \"2906c17e029e4a2d7dedee5215e8b6e7649853d681007375d06ed8077d6c3e8c\", \"source_head\": \"fe580295ed3c323195cb1d4a6927e21ec5fad9e0\", \"selected_files\": 25, \"trees\": 2946, \"git_objects\": 2972, \"pack_bytes\": 520405, \"canonical_tar_bytes\": 296960, \"index_bytes\": 1286810, \"attempt1_crlf_mismatches\": 25, \"finished_utc\": \"2026-11-20T14:11:19.737058+00:00\"}",
+      "output_truncated": false,
+      "read": false,
+      "severity": "info",
+      "source": "script_run@host_7ec8382e82747448",
+      "started_at": "2026-11-20T14:11:10.589982+00:00",
+      "status": "succeeded",
+      "timeout_s": 120,
+      "tool": "script_run",
+      "type": "job_result"
+    },
+    "ok": true
+  },
+  "export_attempt1": {
+    "job": {
+      "created_at": 1795183773.0346954,
+      "duration_s": 11.29,
+      "error": null,
+      "exit_code": 1,
+      "finished_at": "2026-11-20T14:09:44.394373+00:00",
+      "host": "host_7ec8382e82747448",
+      "id": "job_95e6d861e168",
+      "notified": {
+        "resend": null,
+        "telegram": null
+      },
+      "notify_spec": {},
+      "output": "Traceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_0d87ac2b889b4d0c90ba96327404a4a5\\script.py\", line 40, in <module>\r\n    assert sha(tar.extractfile(member).read())==files[member.name][\"sha256\"]\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError",
+      "output_truncated": false,
+      "read": false,
+      "severity": "warning",
+      "source": "script_run@host_7ec8382e82747448",
+      "started_at": "2026-11-20T14:09:33.105762+00:00",
+      "status": "failed",
+      "timeout_s": 120,
+      "tool": "script_run",
+      "type": "job_result"
+    },
+    "ok": true
+  },
+  "schema_version": 1,
+  "scope": "Original tool responses retained; first Windows CRLF archive remains on the currently offline host. No archive reconstruction is presented as raw capture."
+}
