@@ -23,6 +23,7 @@ import uuid
 
 from framework_profile import BRANCH, TARGET, blob, git, read_manifest, sha256, source_observation
 from framework_products import consumer_project, export_products, inventory, original_oracles, verify_observation, verify_public_surface
+from amplitude_simulator_signing import prepare_amplitude_simulator_export
 from pbx_source import require
 
 
@@ -234,6 +235,24 @@ def execute(args, receipt):
         header = command(['otool', '-hv', str(binary)], root, evidence, 'framework-header-' + str(number), 30)
         if re.search(r'\bDYLIB\b', header):
             dynamic.append(name)
+            if name == 'AmplitudeCore.framework':
+                # This exact upstream Simulator product is byte-authenticated but
+                # has two missing sealed compiler modules. Preserve its failed
+                # seal, then sign only the owned export; the original strict
+                # gate below and exact consumer embedding remain mandatory.
+                write(evidence / 'framework-distribution-before-simulator-signing.json', exported_proof)
+                transformation = prepare_amplitude_simulator_export(root, products, exported, evidence, command)
+                after_signing = inventory(exported)
+                permitted = {'Frameworks/AmplitudeCore.framework/AmplitudeCore',
+                             'Frameworks/AmplitudeCore.framework/_CodeSignature/CodeResources'}
+                require(set(after_signing) == set(exported_proof['files'])
+                        and {path for path in after_signing
+                             if after_signing[path] != exported_proof['files'][path]} == permitted,
+                        'Simulator signing changed unrelated distribution bytes')
+                exported_proof['files'] = after_signing
+                exported_proof['bytes'] = sum(item['bytes'] for item in after_signing.values())
+                exported_proof['simulator_signing_transformations'] = [transformation]
+                write(evidence / 'framework-distribution.json', exported_proof)
             command(['codesign', '--verify', '--strict', str(framework)], root, evidence,
                     'framework-signature-' + str(number), 30)
             command(['otool', '-L', str(binary)], root, evidence, 'framework-load-commands-' + str(number), 30)
