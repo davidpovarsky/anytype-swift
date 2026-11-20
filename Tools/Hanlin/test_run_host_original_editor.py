@@ -24,7 +24,7 @@ class OriginalEditorProfileTests(unittest.TestCase):
             {"nodeType": "Test Case", "nodeIdentifier": name + "()", "result": "Passed",
              "children": [{"nodeType": "Test Case Run", "result": "Passed"}]}
             for name in sorted(self.methods)]}
-        self.summary = {"totalTestCount": 16, "passedTests": 16, "failedTests": 0, "skippedTests": 0,
+        self.summary = {"totalTestCount": 37, "passedTests": 37, "failedTests": 0, "skippedTests": 0,
                         "devicesAndConfigurations": [{"device": {"deviceId": "owned-ipad",
                             "osVersion": "27.2", "osBuildNumber": "24C-test-control",
                             "architecture": "arm64", "modelName": "iPad Pro"}}]}
@@ -33,11 +33,11 @@ class OriginalEditorProfileTests(unittest.TestCase):
         return host.validate_results(summary or self.summary, tree or self.tree, self.methods,
                                      "owned-ipad", host.HostTestProfile.ORIGINAL_EDITOR)
 
-    def test_real_original_git_trees_and_sixteen_registered_declarations(self):
+    def test_real_original_git_trees_and_thirty_seven_registered_declarations(self):
         methods, files = profile.expected_methods(APP)
         self.assertEqual(methods, self.methods)
-        self.assertEqual(len(files), 3)
-        self.assertEqual(sum(profile.suite_counts().values()), 16)
+        self.assertEqual(len(files), 6)
+        self.assertEqual(sum(profile.suite_counts().values()), 37)
         self.assertEqual(host.expected_methods(APP, host.HostTestProfile.ORIGINAL_EDITOR),
                          (methods, files))
 
@@ -73,9 +73,9 @@ class OriginalEditorProfileTests(unittest.TestCase):
 
     def test_exact_source_named_result_fixture_is_accepted(self):
         result = self.validate()
-        self.assertEqual(result["actual_method_count"], 16)
-        self.assertEqual(result["declared_case_count"], 16)
-        self.assertEqual(result["counts"]["passedTests"], 16)
+        self.assertEqual(result["actual_method_count"], 37)
+        self.assertEqual(result["declared_case_count"], 37)
+        self.assertEqual(result["counts"]["passedTests"], 37)
 
     def test_summary_count_failure_skip_and_boolean_cannot_claim_acceptance(self):
         variants = [("totalTestCount", 0), ("totalTestCount", 12), ("passedTests", 10),

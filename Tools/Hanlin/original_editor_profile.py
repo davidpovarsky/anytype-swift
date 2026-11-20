@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 
-BRANCH = "codex/otzaria-original-editor-apple-reviewed-20261120"
+BRANCH = "codex/otzaria-original-editor-owned-apple-reviewed-20261120"
 MANIFEST_PATH = Path(__file__).with_name("original_editor_profile.json")
 
 
@@ -18,11 +18,11 @@ def require(value, message):
 
 def manifest():
     data = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-    require(data["profile"] == "original-editor" and data["required_methods"] == 16,
+    require(data["profile"] == "original-editor" and data["required_methods"] == 37,
             "Unreviewed original editor profile")
     names = [suite + "/" + method for suite, item in data["suites"].items()
              for method in item["methods"]]
-    require(len(names) == len(set(names)) == 16, "Original editor method inventory differs")
+    require(len(names) == len(set(names)) == 37, "Original editor method inventory differs")
     return data
 
 
@@ -83,7 +83,7 @@ def expected_methods(app):
             "Original editor Git test blob differs: " + path)
         methods.update(validate_declarations(canonical.decode("utf-8"), suite, item["methods"]))
         files[path] = hashlib.sha256(raw).hexdigest()
-    require(len(methods) == 16, "Expected exactly sixteen reviewed original editor methods")
+    require(len(methods) == 37, "Expected exactly thirty-seven reviewed original editor methods")
     return methods, files
 
 
@@ -99,7 +99,7 @@ def validate_execution(tree, expected):
             for child in value:
                 visit(child)
     visit(tree)
-    require(len(nodes) == len(expected) == 16, "Missing or extra original editor execution")
+    require(len(nodes) == len(expected) == 37, "Missing or extra original editor execution")
     seen = set()
     for node in nodes:
         identifier = node.get("nodeIdentifier")
@@ -120,8 +120,8 @@ def validate_execution(tree, expected):
         for child in children:
             descend(child)
     require(seen == expected, "Missing original editor method")
-    return {"actual_method_count": 16, "declared_case_count": 16,
-            "scope": "Original document boundary and injected text-service components; original UI editing not exercised"}
+    return {"actual_method_count": 37, "declared_case_count": 37,
+            "scope": "Original document, text/event ownership, lifetime and table-service components; original UI editing not exercised"}
 
 
 def main():

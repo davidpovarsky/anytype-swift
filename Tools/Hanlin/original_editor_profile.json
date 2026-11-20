@@ -1,10 +1,10 @@
 {
-  "application_base": "67a23f718548ee80dbb084e57933115a07601ea3",
+  "application_base": "dfb9d6240def89ace58d12293cac9e5ad5968078",
   "application_trees": {
     "AnyTypeTests": "74c5bfcd96916769a8ae5aa57f684797644cd329",
-    "Anytype": "94f881584cf438a0b111c756114f570d6299a08d",
+    "Anytype": "17af1b9119c899c207670112a62881c3ec93f477",
     "Anytype.xcodeproj": "7106431749bd7e5066cb9c1704514997b5db6c64",
-    "AnytypeTests": "fd9a7bddf7103b678988bb624476663ed64c9f02",
+    "AnytypeTests": "5583a6e4dec4d61b3d37615932611900532ea790",
     "Modules": "c8163bff54e6ba631e82ce5475f226989846d341"
   },
   "heart": {
@@ -18,9 +18,41 @@
   },
   "original_editor_code": "9dd379b5b88af9f8baa955c0828967f1d9021c49",
   "original_editor_writer_code": "e73fc242ecb50010ea973c25ae242fb528b7a678",
+  "ownership_source_provenance": {
+    "document_lifetime": "f395d053b1554109325af8fda422259e28477aef",
+    "document_owner": "5e936f2afa5f8fd371d1bef8b0521d9b8a3f20b6",
+    "host_update": "45f25d1de7277ca78bf689ef782cd8e66cafe992",
+    "owned_tables": "48731b7ec14adf1c8ce3e1fc80dd8192c0b80a7f",
+    "source_evidence": "076fc7c7b005de203ea0b4f1f3dd4807d62e0cec"
+  },
   "profile": "original-editor",
-  "required_methods": 16,
+  "required_methods": 37,
   "suites": {
+    "EditorDocumentOwnedTableTests": {
+      "methods": [
+        "forwardsAllThirteenOriginalTableMethodsAndTheirResult",
+        "refusesForeignContextAndReadonlyModeBeforeTheOriginalService",
+        "admittedCreationAfterCloseRevocationIsNotReportedAsRollback",
+        "twoOwnersDoNotShareRetirementAuthority",
+        "originalServiceErrorAndPredispatchCancellationAreNotRetried"
+      ],
+      "path": "AnytypeTests/Markdown/EditorDocumentOwnedTableTests.swift",
+      "sha256": "1fcfb117fd82e0cf4d021955e38427de23ab3b5d15449ba8cacee710717ce8ec"
+    },
+    "EditorDocumentWriteOwnerTests": {
+      "methods": [
+        "forwardsAllOriginalTextOperationsWithTheOwnedContext",
+        "refusesForeignContextReadonlyModeAndLivePermissionLossBeforeDispatch",
+        "rechecksOriginalDocumentIdentityModeAndOpenState",
+        "retirementDistinguishesAnAlreadyCompletedWriteFromADispatchRefusal",
+        "preservesServiceErrorsAndReleasesTheirLease",
+        "retiringOneOwnerDoesNotAuthorizeOrRetireAnother",
+        "readonlyToggleRemainsPresentationalButRetiredEventsAreDropped",
+        "retirementWaitsForAnAlreadyAdmittedPublicationToDrain"
+      ],
+      "path": "AnytypeTests/Markdown/EditorDocumentWriteOwnerTests.swift",
+      "sha256": "a4fb333e31ad1ad15eb120906af2e95de46182798994c313c065b8d94ea0869f"
+    },
     "EditorLocalEventPublisherTests": {
       "methods": [
         "publishesToTheSuppliedOwnerAfterTheStyleWriteCompletes",
@@ -31,6 +63,20 @@
       ],
       "path": "AnytypeTests/Markdown/EditorLocalEventPublisherTests.swift",
       "sha256": "1da8e8d16d873e548e5a2562906b40aad0d731394a1036edd85e439a13a4717a"
+    },
+    "PreparedEditorLifetimeTests": {
+      "methods": [
+        "observedPermissionLossCannotRenewTheCapturedLifetime",
+        "closedThenReopenedDocumentCannotRenewTheCapturedLifetime",
+        "replacingTheLifetimeSourceIsRejected",
+        "registrationCannotMissAnEarlierInvalidation",
+        "explicitRetirementDoesNotInvalidateAnotherOwnerOfTheSameDocument",
+        "admittedWriteCompletionAfterRevocationIsReportedWithoutRollback",
+        "alreadyAdmittedPublicationDrainsAndSubsequentPublicationIsRefused",
+        "independentHostLifetimeRetiresOnlyItsOwnOwner"
+      ],
+      "path": "AnytypeTests/Markdown/PreparedEditorLifetimeTests.swift",
+      "sha256": "1ffe13ae4525ad7e741555b9fc5cc58627ef6269bb9a2fb1202ee7a285c46633"
     },
     "PreparedEditorPageDocumentTests": {
       "methods": [
