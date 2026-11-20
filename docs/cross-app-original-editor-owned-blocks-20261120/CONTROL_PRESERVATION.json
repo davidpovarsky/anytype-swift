@@ -1,0 +1,302 @@
+{
+  "total": 144,
+  "prior_named_controls_unchanged": 83,
+  "new": 61,
+  "same_assertions_red_to_green": true,
+  "input_snapshots_identical": true,
+  "red_failed_cases": [
+    {
+      "name": "prepared_block_slot_is_retired_with_its_one_host_action",
+      "passed": false
+    },
+    {
+      "passed": false,
+      "name": "prepared_block_slot_is_retired_with_its_one_host_handler"
+    },
+    {
+      "passed": false,
+      "name": "prepared_block_slot_is_retired_with_its_one_host_keyboard"
+    },
+    {
+      "passed": false,
+      "name": "prepared_block_slot_is_retired_with_its_one_host_state"
+    },
+    {
+      "name": "prepared_block_slot_is_retired_with_its_one_host_builder",
+      "passed": false
+    },
+    {
+      "passed": false,
+      "name": "prepared_block_slot_is_retired_with_its_one_host_viewModel"
+    }
+  ],
+  "compiled_projection_changes": [
+    {
+      "index": 37,
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageSession.swift",
+      "projection": "whole_file",
+      "red_sha256": "7c33d79cc031696b7d88a2deb31ee0637f4e3a2c893222d24eaee41ff6ff0556",
+      "green_sha256": "8781307b50e9e4cf372f773eb580248c12e8f575e29596df0dae2ec04dbeeddf"
+    }
+  ],
+  "prior_reference_evolution": {
+    "one_control": "prepared_session_preserves_other_explicit_service_instances",
+    "two_comparisons": [
+      "blockActionService.objectActionService",
+      "blockBuilder.detailsService"
+    ],
+    "third_comparison_and_other_assertions_unchanged": true,
+    "parent_sha256": "1d9f2e100d03e67c12fe3c485a0206d45126d898996778734288aece4e59103b",
+    "current_sha256": "dde6f0d6a3caa0c66d37e76d2ada4e40525230b122c1a624b266247ff08a7f9e"
+  },
+  "new_controls": [
+    {
+      "passed": true,
+      "name": "block_all_sixteen_admitted_methods_finish_their_leases"
+    },
+    {
+      "passed": true,
+      "name": "block_original_mutation_and_read_return_identities_are_preserved"
+    },
+    {
+      "name": "block_exact_original_arguments_add",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "block_exact_original_arguments_add-first"
+    },
+    {
+      "passed": true,
+      "name": "block_exact_original_arguments_delete"
+    },
+    {
+      "name": "block_exact_original_arguments_duplicate",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "block_exact_original_arguments_move-context"
+    },
+    {
+      "name": "block_exact_original_arguments_align",
+      "passed": true
+    },
+    {
+      "name": "block_exact_original_arguments_background",
+      "passed": true
+    },
+    {
+      "name": "block_exact_original_arguments_fields",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "block_exact_original_arguments_text-color"
+    },
+    {
+      "name": "block_exact_original_arguments_replace",
+      "passed": true
+    },
+    {
+      "name": "block_exact_original_arguments_replace-block",
+      "passed": true
+    },
+    {
+      "name": "block_exact_original_arguments_move-block",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "block_exact_original_arguments_move-page"
+    },
+    {
+      "passed": true,
+      "name": "block_exact_original_arguments_appearance"
+    },
+    {
+      "name": "block_exact_original_arguments_markup",
+      "passed": true
+    },
+    {
+      "name": "block_exact_original_arguments_last-block",
+      "passed": true
+    },
+    {
+      "name": "block_foreign_source_context_is_refused_before_service",
+      "passed": true
+    },
+    {
+      "name": "block_source_identity_uses_exact_utf8",
+      "passed": true
+    },
+    {
+      "name": "block_move_to_foreign_document_requires_separate_authority",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "block_move_to_foreign_page_requires_separate_authority"
+    },
+    {
+      "name": "block_move_destination_does_not_normalize_unicode",
+      "passed": true
+    },
+    {
+      "name": "block_page_destination_does_not_normalize_unicode",
+      "passed": true
+    },
+    {
+      "name": "block_promote_has_no_invented_object_authority_or_raw_fallback",
+      "passed": true
+    },
+    {
+      "name": "block_create_link_has_no_invented_object_authority_or_raw_fallback",
+      "passed": true
+    },
+    {
+      "name": "block_read_requires_exact_owned_space_before_original_object_show",
+      "passed": true
+    },
+    {
+      "name": "block_read_retains_original_nonmutating_semantics_in_preview",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "block_read_retains_original_nonmutating_semantics_in_version"
+    },
+    {
+      "name": "block_read_does_not_require_edit_permission_locked",
+      "passed": true
+    },
+    {
+      "name": "block_read_does_not_require_edit_permission_no-permission",
+      "passed": true
+    },
+    {
+      "name": "block_write_denied_before_service_preview",
+      "passed": true
+    },
+    {
+      "name": "block_write_denied_before_service_locked",
+      "passed": true
+    },
+    {
+      "name": "block_write_denied_before_service_no-permission",
+      "passed": true
+    },
+    {
+      "name": "block_original_mutation_error_is_not_rewritten_or_retried",
+      "passed": true
+    },
+    {
+      "name": "block_original_last_block_not_found_error_is_preserved",
+      "passed": true
+    },
+    {
+      "name": "block_cancellation_before_mutation_does_not_dispatch",
+      "passed": true
+    },
+    {
+      "name": "block_cancellation_after_mutation_preserves_admitted_effect",
+      "passed": true
+    },
+    {
+      "name": "block_cancellation_before_read_does_not_dispatch",
+      "passed": true
+    },
+    {
+      "name": "block_cancellation_after_read_preserves_admitted_effect",
+      "passed": true
+    },
+    {
+      "name": "block_admitted_mutation_finishes_once_without_renewing_retired_ownership",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "block_admitted_read_finishes_once_without_renewing_retired_ownership"
+    },
+    {
+      "passed": true,
+      "name": "block_close_aba_preserves_actual_mutation_and_refuses_delivery"
+    },
+    {
+      "passed": true,
+      "name": "block_close_aba_preserves_actual_read_and_refuses_delivery"
+    },
+    {
+      "passed": true,
+      "name": "block_permission_aba_preserves_actual_mutation_and_refuses_delivery"
+    },
+    {
+      "name": "block_permission_aba_preserves_actual_read_and_refuses_delivery",
+      "passed": true
+    },
+    {
+      "name": "prepared_block_slot_retains_its_original_service_action",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "prepared_block_slot_retains_its_original_service_handler"
+    },
+    {
+      "name": "prepared_block_slot_retains_its_original_service_keyboard",
+      "passed": true
+    },
+    {
+      "name": "prepared_block_slot_retains_its_original_service_state",
+      "passed": true
+    },
+    {
+      "name": "prepared_block_slot_retains_its_original_service_builder",
+      "passed": true
+    },
+    {
+      "name": "prepared_block_slot_retains_its_original_service_viewModel",
+      "passed": true
+    },
+    {
+      "name": "prepared_block_slot_is_retired_with_its_one_host_action",
+      "passed": true
+    },
+    {
+      "name": "prepared_block_slot_is_retired_with_its_one_host_handler",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "prepared_block_slot_is_retired_with_its_one_host_keyboard"
+    },
+    {
+      "name": "prepared_block_slot_is_retired_with_its_one_host_state",
+      "passed": true
+    },
+    {
+      "name": "prepared_block_slot_is_retired_with_its_one_host_builder",
+      "passed": true
+    },
+    {
+      "name": "prepared_block_slot_is_retired_with_its_one_host_viewModel",
+      "passed": true
+    },
+    {
+      "name": "block_two_owners_do_not_share_retirement_or_admission",
+      "passed": true
+    },
+    {
+      "name": "block_original_default_factory_remains_the_unwrapped_original_service",
+      "passed": true
+    },
+    {
+      "name": "block_unwrapped_service_boundary_retains_foreign_move_and_original_creation_results",
+      "passed": true
+    }
+  ],
+  "retained_warning_lines": [
+    "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-owned-blocks-20261120\\green-attempt1\\ExecutedLifetimeFixture.swift:418:18: warning: weak variable 'weakSession' was never mutated; consider changing to 'let' constant [#WeakMutability]",
+    "     |                  `- warning: weak variable 'weakSession' was never mutated; consider changing to 'let' constant [#WeakMutability]"
+  ]
+}

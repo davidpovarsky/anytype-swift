@@ -1,7 +1,7 @@
 import Foundation
 import Services
 
-/// One prepared document, one assembly and one mounted host. Text/table/local-event
+/// One prepared document, one assembly and one mounted host. Text/block/table/local-event
 /// operations share its owner; other injected services retain their existing
 /// contracts and still require independent writer qualification.
 @MainActor
@@ -43,14 +43,14 @@ final class PreparedEditorPageSession {
             blockActionService: .init(
                 objectActionService: existing.objectActionService,
                 textServiceHandler: textHandler,
-                blockService: existing.blockService,
+                blockService: DocumentOwnedBlockService(owner: owner, service: existing.blockService),
                 bookmarkService: existing.bookmarkService,
                 fileService: existing.fileService,
                 objectTypeProvider: existing.objectTypeProvider,
                 keyboardInsertedBlocksStorage: existing.keyboardInsertedBlocksStorage
             ),
             blockActionHandler: .init(
-                blockService: services.blockActionHandler.blockService,
+                blockService: DocumentOwnedBlockService(owner: owner, service: services.blockActionHandler.blockService),
                 blockTableService: DocumentOwnedBlockTableService(
                     owner: owner, service: services.blockActionHandler.blockTableService
                 ),
@@ -60,8 +60,17 @@ final class PreparedEditorPageSession {
                 bookmarkService: services.blockActionHandler.bookmarkService,
                 objectTypeProvider: services.blockActionHandler.objectTypeProvider
             ),
-            keyboardHandler: services.keyboardHandler,
-            blocksStateManager: services.blocksStateManager,
+            keyboardHandler: .init(
+                blockService: DocumentOwnedBlockService(owner: owner, service: services.keyboardHandler.blockService),
+                keyboardInsertedBlocksStorage: services.keyboardHandler.keyboardInsertedBlocksStorage
+            ),
+            blocksStateManager: .init(
+                blockService: DocumentOwnedBlockService(owner: owner, service: services.blocksStateManager.blockService),
+                pasteboardService: services.blocksStateManager.pasteboardService,
+                documentsProvider: services.blocksStateManager.documentsProvider,
+                objectActionsService: services.blocksStateManager.objectActionsService,
+                toastPresenter: services.blocksStateManager.toastPresenter
+            ),
             blockBuilder: .init(
                 tableService: DocumentOwnedBlockTableService(
                     owner: owner, service: services.blockBuilder.tableService
@@ -70,7 +79,7 @@ final class PreparedEditorPageSession {
                 audioSessionService: services.blockBuilder.audioSessionService,
                 objectTypeProvider: services.blockBuilder.objectTypeProvider,
                 pasteboardService: services.blockBuilder.pasteboardService,
-                blockService: services.blockBuilder.blockService
+                blockService: DocumentOwnedBlockService(owner: owner, service: services.blockBuilder.blockService)
             ),
             simpleTable: .init(
                 tableService: DocumentOwnedBlockTableService(
@@ -83,7 +92,18 @@ final class PreparedEditorPageSession {
             slashMenu: services.slashMenu,
             header: services.header,
             router: services.router,
-            viewModel: services.viewModel,
+            viewModel: .init(
+                objectActionsService: services.viewModel.objectActionsService,
+                objectTypeProvider: services.viewModel.objectTypeProvider,
+                searchService: services.viewModel.searchService,
+                templatesSubscriptionService: services.viewModel.templatesSubscriptionService,
+                accountManager: services.viewModel.accountManager,
+                publishingService: services.viewModel.publishingService,
+                participantStorage: services.viewModel.participantStorage,
+                publishedUrlBuilder: services.viewModel.publishedUrlBuilder,
+                keyboardInsertedBlocksStorage: services.viewModel.keyboardInsertedBlocksStorage,
+                blockService: DocumentOwnedBlockService(owner: owner, service: services.viewModel.blockService)
+            ),
             localEvents: localEvents
         )
         try owner.validateOwnership()
