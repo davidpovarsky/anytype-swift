@@ -103,6 +103,28 @@ final class EditorDocumentWriteOwner {
         return value
     }
 
+    /// Read only the original owned object/Space without requiring edit mode.
+    /// The same lifetime and pending lease still govern result delivery.
+    func performRead<Value: Sendable>(
+        contextId: String,
+        spaceId: String,
+        operation: @Sendable () async throws -> Value
+    ) async throws -> Value {
+        guard spaceId.utf8.elementsEqual(data.spaceId.utf8) else {
+            throw EditorDocumentWriteError.rejected(.wrongContext)
+        }
+        let lease = try admit(contextId: contextId, requiresEditing: false)
+        defer { finish(lease) }
+        let value = try await operation()
+        if let reason = rejection(contextId: contextId, requiresEditing: false) {
+            throw EditorDocumentWriteError.completedWithoutOwnership(reason)
+        }
+        guard pending.contains(lease) else {
+            throw EditorDocumentWriteError.completedWithoutOwnership(.invalidLease)
+        }
+        return value
+    }
+
     func performPublication(
         contextId: String,
         requiresEditing: Bool = true,

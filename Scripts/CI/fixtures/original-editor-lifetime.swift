@@ -300,8 +300,8 @@ struct OriginalEditorLifetimeFixture {
         checks.expect(builder.document === preparedDoc && state.preparedSession === prepared
                       && builder.data == lifetimeData(preparedDoc),
             "prepared_assembly_passes_same_original_document_and_state")
-        checks.expect(prepared.services.blockActionService.blockService === fixtureMarker
-                      && prepared.services.blockBuilder.blockService === fixtureMarker
+        checks.expect(prepared.services.blockActionService.objectActionService === fixtureMarker
+                      && prepared.services.blockBuilder.detailsService === fixtureMarker
                       && prepared.services.router.templateService === fixtureMarker,
             "prepared_session_preserves_other_explicit_service_instances")
         try await prepared.services.blockActionService.textServiceHandler.setStyle(contextId: "owned", blockId: "a", style: .text)
