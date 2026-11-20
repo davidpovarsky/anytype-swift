@@ -1,0 +1,37 @@
+{
+  "boot_order": {
+    "candidate_position": "Immediately before simctl install, after framework build, source/dependency/distribution verification, actual public symbolgraph, external consumer build, codesign and exact embedded framework validation.",
+    "current_boot_lines": [
+      184,
+      185
+    ],
+    "first_install_line": 295,
+    "preserve": [
+      "Same selected owned iPad UDID and original preflight",
+      "Same boot command limit60 and bootstatus180",
+      "Same original framework6000 and consumer600 budgets and every build argument",
+      "Same final runtime receipts, resource-language oracles, source-after gates and owned cleanup",
+      "No successful runtime qualification unless both actual consumer observations pass"
+    ],
+    "source_inference": "No preceding command in this driver accesses a booted simulator app/container. Build destination keeps the exact existing simulator UUID. Moving the explicit boot pair permits compilation evidence to be attempted independently; it does not prove later boot/runtime success."
+  },
+  "collision": {
+    "consumer_destination_use_line": 280,
+    "evidence_class": "Deterministic source dataflow; both actual attempts failed before reaching this code, so no actual consumer failure is claimed.",
+    "finding": "execute() reuses the function-local destination name for a license output path before passing it to the consumer xcodebuild -destination option. Any nonempty retained dependency notice loop overwrites the simulator destination.",
+    "framework_destination_use_line": 192,
+    "license_path_reassignment_lines": [
+      216,
+      217,
+      218,
+      219
+    ],
+    "narrow_correction": "Use a separate license output variable; preserve both actual xcodebuild argument lists and simulator destination.",
+    "simulator_assignment_line": 187
+  },
+  "driver": "Tools/OriginalEditor/run_framework_acceptance.py",
+  "implementation": "NOT_WRITTEN_IN_THIS_PACKET",
+  "review_scope": "Read-only original source and actual failure records; no candidate execution or budget change",
+  "schema": 1,
+  "source": "dc3ac07cec63692c8b84877a56e3e3fd60a4c667"
+}

@@ -1,0 +1,252 @@
+{
+  "artifact": {
+    "archive_download_url": "https://api.github.com/repos/davidpovarsky/anytype-swift/actions/artifacts/14656015255/zip",
+    "created_at": "2026-11-20T18:00:03Z",
+    "digest": "sha256:ddcfe0f39d63195cbdbe16379c6c858f7259189d86d9659d6ae48dc36d84d23b",
+    "expired": false,
+    "expires_at": "2026-12-04T17:59:59Z",
+    "id": 14656015255,
+    "name": "Otzaria-Original-Editor-Framework-Evidence-dc3ac07cec63692c8b84877a56e3e3fd60a4c667-44781744925-2",
+    "size_in_bytes": 70666,
+    "updated_at": "2026-11-20T18:00:03Z",
+    "url": "https://api.github.com/repos/davidpovarsky/anytype-swift/actions/artifacts/14656015255",
+    "workflow_run": {
+      "head_branch": "codex/otzaria-original-editor-framework-reviewed-20261120",
+      "head_repository_id": 1289863025,
+      "head_sha": "dc3ac07cec63692c8b84877a56e3e3fd60a4c667",
+      "id": 44781744925,
+      "repository_id": 1289863025
+    }
+  },
+  "boot_failure": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "bootstatus",
+      "224C38A0-370C-4A80-92A1-A5A0B1D026D1",
+      "-b"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "finished_at": "2026-11-20T17:55:56.965112+00:00",
+    "returncode": -15,
+    "started_at": "2026-11-20T17:52:52.066693+00:00",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": true,
+    "timeout_seconds": 180
+  },
+  "branch": "codex/otzaria-original-editor-framework-reviewed-20261120",
+  "canonical_source_input_files": 22,
+  "cause_limit": "Both attempts timed out at the unchanged 180-second bootstatus gate with empty stdout/stderr. No host-load/CoreSimulator diagnosis is present; this is not a source compilation failure.",
+  "cleanup": [
+    {
+      "operation": "shutdown",
+      "returncode": 149,
+      "stderr": "An error was encountered processing the command (domain=com.apple.CoreSimulator.SimError, code=405):\nUnable to shutdown device in current state: Shutdown\n",
+      "stdout": "",
+      "udid": "D00FB3CC-0F25-4A65-8851-F2D3D0BE57E1"
+    },
+    {
+      "operation": "delete",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "",
+      "udid": "D00FB3CC-0F25-4A65-8851-F2D3D0BE57E1"
+    },
+    {
+      "operation": "shutdown",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "",
+      "udid": "224C38A0-370C-4A80-92A1-A5A0B1D026D1"
+    },
+    {
+      "operation": "delete",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "",
+      "udid": "224C38A0-370C-4A80-92A1-A5A0B1D026D1"
+    }
+  ],
+  "comparisons": [
+    {
+      "attempt": 1,
+      "boot": {
+        "command": [
+          "xcrun",
+          "simctl",
+          "boot",
+          "A41F8D3D-5138-4CE0-9CFB-3CE73880836E"
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+        "finished_at": "2026-11-20T17:18:01.695599+00:00",
+        "returncode": 0,
+        "started_at": "2026-11-20T17:17:57.109743+00:00",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timed_out": false,
+        "timeout_seconds": 60
+      },
+      "bootstatus": {
+        "command": [
+          "xcrun",
+          "simctl",
+          "bootstatus",
+          "A41F8D3D-5138-4CE0-9CFB-3CE73880836E",
+          "-b"
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+        "finished_at": "2026-11-20T17:21:05.188510+00:00",
+        "returncode": -15,
+        "started_at": "2026-11-20T17:18:01.863650+00:00",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timed_out": true,
+        "timeout_seconds": 180
+      },
+      "bootstatus_elapsed_including_termination_seconds": 183.32486,
+      "cleanup": [
+        {
+          "operation": "shutdown",
+          "returncode": 149,
+          "stderr": "An error was encountered processing the command (domain=com.apple.CoreSimulator.SimError, code=405):\nUnable to shutdown device in current state: Shutdown\n",
+          "stdout": "",
+          "udid": "4DA551C5-28A2-435A-AFAE-28B7E762BCEB"
+        },
+        {
+          "operation": "delete",
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "udid": "4DA551C5-28A2-435A-AFAE-28B7E762BCEB"
+        },
+        {
+          "operation": "shutdown",
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "udid": "A41F8D3D-5138-4CE0-9CFB-3CE73880836E"
+        },
+        {
+          "operation": "delete",
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "udid": "A41F8D3D-5138-4CE0-9CFB-3CE73880836E"
+        }
+      ],
+      "driver_finished_at": "2026-11-20T17:24:21.427912+00:00",
+      "driver_started_at": "2026-11-20T17:17:52.302265+00:00",
+      "external_consumer_build": "NOT_RUN",
+      "original_framework_build": "NOT_RUN",
+      "runtime_observations": 0,
+      "status": "FAIL"
+    },
+    {
+      "attempt": 2,
+      "boot": {
+        "command": [
+          "xcrun",
+          "simctl",
+          "boot",
+          "224C38A0-370C-4A80-92A1-A5A0B1D026D1"
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+        "finished_at": "2026-11-20T17:52:51.876752+00:00",
+        "returncode": 0,
+        "started_at": "2026-11-20T17:52:45.715191+00:00",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timed_out": false,
+        "timeout_seconds": 60
+      },
+      "bootstatus": {
+        "command": [
+          "xcrun",
+          "simctl",
+          "bootstatus",
+          "224C38A0-370C-4A80-92A1-A5A0B1D026D1",
+          "-b"
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+        "finished_at": "2026-11-20T17:55:56.965112+00:00",
+        "returncode": -15,
+        "started_at": "2026-11-20T17:52:52.066693+00:00",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timed_out": true,
+        "timeout_seconds": 180
+      },
+      "bootstatus_elapsed_including_termination_seconds": 184.898419,
+      "cleanup": [
+        {
+          "operation": "shutdown",
+          "returncode": 149,
+          "stderr": "An error was encountered processing the command (domain=com.apple.CoreSimulator.SimError, code=405):\nUnable to shutdown device in current state: Shutdown\n",
+          "stdout": "",
+          "udid": "D00FB3CC-0F25-4A65-8851-F2D3D0BE57E1"
+        },
+        {
+          "operation": "delete",
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "udid": "D00FB3CC-0F25-4A65-8851-F2D3D0BE57E1"
+        },
+        {
+          "operation": "shutdown",
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "udid": "224C38A0-370C-4A80-92A1-A5A0B1D026D1"
+        },
+        {
+          "operation": "delete",
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "udid": "224C38A0-370C-4A80-92A1-A5A0B1D026D1"
+        }
+      ],
+      "driver_finished_at": "2026-11-20T17:58:56.068134+00:00",
+      "driver_started_at": "2026-11-20T17:52:32.530693+00:00",
+      "external_consumer_build": "NOT_RUN",
+      "original_framework_build": "NOT_RUN",
+      "runtime_observations": 0,
+      "status": "FAIL"
+    }
+  ],
+  "editable_mount": "NOT_EXPOSED",
+  "external_consumer_build": "NOT_RUN",
+  "frozen_refs_modified": false,
+  "hanlin_sdk_files": 407,
+  "head_sha": "dc3ac07cec63692c8b84877a56e3e3fd60a4c667",
+  "job_completed_at": "2026-11-20T18:00:17Z",
+  "job_id": 136464900723,
+  "job_started_at": "2026-11-20T17:50:44Z",
+  "native_editor_ui_tests": 0,
+  "original_app_runtime": "NOT_RUN",
+  "original_framework_build": "NOT_RUN",
+  "original_swift_source_names": 2237,
+  "repository": "davidpovarsky/anytype-swift",
+  "rerun_performed": false,
+  "run_attempt": 2,
+  "run_id": 44781744925,
+  "schema": 1,
+  "source_attempt_comparison": {
+    "all_other_before_fields_equal": true,
+    "differing_fields": [
+      "run_attempt"
+    ],
+    "source_before_after_bytes_equal_each": true
+  },
+  "source_before_after_equal": true,
+  "source_controls": {
+    "executed": 44,
+    "failed": 0,
+    "passed": 44,
+    "scope": "Actual Mac Python source, filesystem and synthetic receipt controls; no framework compilation or editor UI",
+    "skipped": 0
+  },
+  "status": "FAILURE_BEFORE_FRAMEWORK_COMPILATION"
+}
