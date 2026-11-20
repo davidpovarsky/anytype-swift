@@ -1,0 +1,772 @@
+diff --git a/.github/workflows/pinkha-original-editor-framework.yml b/.github/workflows/pinkha-original-editor-framework.yml
+--- a/.github/workflows/pinkha-original-editor-framework.yml
++++ b/.github/workflows/pinkha-original-editor-framework.yml
+@@ -3,7 +3,7 @@
+ on:
+   push:
+     branches:
++      - codex/otzaria-original-editor-framework-v7-reviewed-20261120
+-      - codex/otzaria-original-editor-framework-v6-reviewed-20261120
+ 
+ permissions:
+   contents: read
+@@ -15,13 +15,13 @@
+ 
+ jobs:
+   original-editor-framework:
++    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v7-reviewed-20261120'
+-    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v6-reviewed-20261120'
+     runs-on: xcode-27
+     timeout-minutes: 140
+     env:
+       PYTHONDONTWRITEBYTECODE: '1'
+       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
++      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v7-reviewed-20261120
+-      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v6-reviewed-20261120
+       HEART_SOURCE_RUN_ID: '44203168617'
+       EDITOR_EVIDENCE: build/original-editor-framework-evidence
+       EDITOR_WORK: build/original-editor-framework-${{ github.run_id }}-${{ github.run_attempt }}
+@@ -45,7 +45,7 @@
+           git switch --force-create "$EXPECTED_APP_BRANCH" "$GITHUB_SHA"
+           python3 Tools/OriginalEditor/run_framework_acceptance.py --root "$GITHUB_WORKSPACE" \
+             --evidence "$EDITOR_EVIDENCE" --work "$EDITOR_WORK" --source-only
++          python3 Tools/OriginalEditor/run_source_controls.py --evidence "$EDITOR_EVIDENCE" \
+-          python3 -m unittest discover -s Tools/OriginalEditor -p 'test_*.py' -v \
+             > "$EDITOR_EVIDENCE/source-controls.stdout.log" 2> "$EDITOR_EVIDENCE/source-controls.stderr.log"
+       - name: Checkout the immutable original canonical Hanlin source
+         uses: actions/checkout@v4
+diff --git a/Tools/OriginalEditor/amplitude_simulator_signing.py b/Tools/OriginalEditor/amplitude_simulator_signing.py
+--- a/Tools/OriginalEditor/amplitude_simulator_signing.py
++++ b/Tools/OriginalEditor/amplitude_simulator_signing.py
+@@ -98,13 +98,25 @@
+     read_macho(files[EXECUTABLE], files)
+     return observed, files
+ 
++def read_signature(thin, signature_offset, signature_size, files, *, previous_thin=None, expected_page=12):
+-def read_signature(thin, signature_offset, signature_size, files):
+     raw = thin[signature_offset:signature_offset + signature_size]
+     require(len(raw) >= 12, 'Truncated signing envelope')
+     magic, length, count = struct.unpack_from('>III', raw)
+     require(magic == 0xfade0cc0 and 12 <= length <= len(raw)
++            and count == 3 and 12 + 8 * count <= length,
++            'Unexpected signing envelope shape')
++    if previous_thin is None:
++        require(not any(raw[length:]), 'Unexpected or nonzero signature allocation padding')
++    else:
++        # The actual modern allocator copies the original slice, resizes its
++        # terminal signing allocation, and writes only the new SuperBlob.
++        # Admit only the observed 18-byte slack, at its exact retained offset.
++        end = signature_offset + signature_size
++        require(signature_size % 16 == 0 and signature_size - length == 18,
++                'Unexpected native signature allocation alignment or slack')
++        require(end <= len(previous_thin)
++                and raw[length:] == previous_thin[signature_offset + length:end],
++                'Native signature allocation slack differs from the exact preimage')
+-            and count == 3 and 12 + 8 * count <= length
+-            and not any(raw[length:]), 'Unexpected or nonzero signature allocation padding')
+     blobs, ranges = {}, []
+     for index in range(count):
+         slot, offset = struct.unpack_from('>II', raw, 12 + index * 8)
+@@ -126,7 +138,7 @@
+     version, flags, hashes, identifier, special_count, code_count, code_limit = struct.unpack_from('>IIIIIII', directory, 8)
+     hash_size, hash_type, platform, page = struct.unpack_from('>BBBB', directory, 36)
+     require(version in {0x20400, 0x20500, 0x20600} and flags == 2
++            and (hash_size, hash_type, platform, page) == (32, 2, 0, expected_page)
+-            and (hash_size, hash_type, platform, page) == (32, 2, 0, 12)
+             and special_count == 3 and code_limit == signature_offset,
+             'Ad-hoc signing semantics or executable code limit changed')
+     require(struct.unpack_from('>I', directory, 44)[0] == 0
+@@ -136,12 +148,13 @@
+     require(88 <= identifier < len(directory)
+             and directory[identifier:].split(bytes([0]), 1)[0] == EXECUTABLE.encode(),
+             'Code signing identifier differs')
++    page_bytes = 1 << expected_page
++    require(code_count == (code_limit + page_bytes - 1) // page_bytes
+-    require(code_count == (code_limit + 4095) // 4096
+             and hashes >= special_count * hash_size
+             and hashes + code_count * hash_size <= len(directory),
+             'Unexpected code-signing page coverage')
+     for index in range(code_count):
++        actual = hashlib.sha256(thin[index * page_bytes:min((index + 1) * page_bytes, code_limit)]).digest()
+-        actual = hashlib.sha256(thin[index * 4096:min((index + 1) * 4096, code_limit)]).digest()
+         require(directory[hashes + index * 32:hashes + (index + 1) * 32] == actual,
+                 'Executable signing page hash differs')
+     for index, payload in [(1, files['Info.plist']), (2, blobs[2]), (3, files['_CodeSignature/CodeResources'])]:
+@@ -149,12 +162,13 @@
+                 'Special signing slot differs')
+     return {'version': version, 'flags': flags, 'identifier': EXECUTABLE,
+             'hash_type': hash_type, 'hash_size': hash_size, 'code_limit': code_limit,
++            'code_pages': code_count, 'page_exponent': page, 'special_slots': special_count, 'entitlements': [],
+-            'code_pages': code_count, 'special_slots': special_count, 'entitlements': [],
+             'superblob_bytes': length, 'allocated_signature_bytes': signature_size}
+ 
++def read_macho(binary, files, *, previous_slices=None):
+-def read_macho(binary, files):
+     require(len(binary) >= 48 and struct.unpack_from('>II', binary) == (0xcafebabe, 2),
+             'Expected the exact two-architecture FAT32 executable')
++    require(previous_slices is None or len(previous_slices) == 2, 'Missing original signing slices')
+     slices, previous_end = [], 48
+     for index, (cpu, subtype, alignment, vm_alignment, original_signature_offset) in enumerate(ARCHITECTURES):
+         actual_cpu, actual_subtype, offset, size, actual_alignment = struct.unpack_from('>IIIII', binary, 8 + index * 20)
+@@ -207,7 +221,14 @@
+                      or (cpu == 0x0100000c and struct.unpack_from('<II', platform_commands[0], 0)[0] == 0x32
+                          and struct.unpack_from('<I', platform_commands[0], 8)[0] == 7)),
+                 'Original iOS Simulator platform command differs')
++        prior = previous_slices[index] if previous_slices is not None else None
++        if prior is not None:
++            require((prior['cpu'], prior['subtype'], prior['signature']['dataoff'])
++                    == (cpu, subtype, signature['dataoff']), 'Original signing slice identity differs')
++        signature_proof = read_signature(
++            thin, signature['dataoff'], signature['datasize'], files,
++            previous_thin=prior['thin'] if prior is not None else None,
++            expected_page=(14 if cpu == 0x0100000c else 12) if prior is not None else 12)
+-        signature_proof = read_signature(thin, signature['dataoff'], signature['datasize'], files)
+         slices.append({'cpu': cpu, 'subtype': subtype, 'offset': offset, 'size': size,
+                        'fat_alignment': alignment, 'vm_alignment': vm_alignment,
+                        'thin': thin, 'commands': commands, 'linkedit': linkedit,
+@@ -218,7 +239,7 @@
+ 
+ def executable_preservation(before_files, after_files):
+     before = read_macho(before_files[EXECUTABLE], before_files)
++    after = read_macho(after_files[EXECUTABLE], after_files, previous_slices=before)
+-    after = read_macho(after_files[EXECUTABLE], after_files)
+     proofs = []
+     for old, new in zip(before, after):
+         require(old['commands'] == new['commands'], 'Mach-O command shape changed')
+@@ -229,11 +250,13 @@
+                 'LINKEDIT address changed')
+         require(new_link['filesize'] == len(new['thin']) - old_link['fileoff'],
+                 'LINKEDIT size is not exactly the new signature end')
++        # Security's current codesign_alloc.cpp rounds both architectures to
++        # 16 KiB, including shrinkage. This fixed export may not expand beyond
++        # the original pinned LINKEDIT virtual range.
++        expected_vm = (new_link['filesize'] + 16383) // 16384 * 16384
++        require(new_link['vmsize'] == expected_vm
++                and new_link['vmsize'] <= old_link['vmsize'],
++                'Unexpected LINKEDIT virtual allocation')
+-        expected_vm = old_link['vmsize']
+-        if new_link['filesize'] > expected_vm:
+-            unit = 1 << old['vm_alignment']
+-            expected_vm = (new_link['filesize'] + unit - 1) // unit * unit
+-        require(new_link['vmsize'] == expected_vm, 'Unexpected LINKEDIT virtual allocation')
+         end = old['signature']['dataoff']
+         left, right = bytearray(old['thin'][:end]), bytearray(new['thin'][:end])
+         masks = [(old_link['command_offset'] + 32, 8),
+diff --git a/Tools/OriginalEditor/framework_profile.json b/Tools/OriginalEditor/framework_profile.json
+--- a/Tools/OriginalEditor/framework_profile.json
++++ b/Tools/OriginalEditor/framework_profile.json
+@@ -18,11 +18,11 @@
+     "Tools/PinkhaNativeDerived/package_evidence.py": "e55d2a959296630686a60aa5d927a3b4c34401f9",
+     "Tools/PinkhaSimulatorGate/preflight.py": "2628b345d5743bbe1ddc0d1afaeef9fb410f3daf"
+   },
++  "branch": "codex/otzaria-original-editor-framework-v7-reviewed-20261120",
+-  "branch": "codex/otzaria-original-editor-framework-v6-reviewed-20261120",
+   "candidate_project_sha256": "6d8ea7d95077a20f6e8343db77d30cfdd7a59a3e85a4a2a69c8e075c8adcf05c",
+   "framework_target_id": "83B785D0C457FE3CCBAB196E",
+   "new_project_objects": 108,
++  "original_heart_installer_blob": "e6cbd437edad7e1552f873d64ea7fce80185069a",
+-  "original_heart_installer_blob": "9365e5b58db125c80e7094cbba816d0002aef0c5",
+   "original_swift_sources": 2237,
+   "original_trees": {
+     "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
+diff --git a/Tools/OriginalEditor/framework_profile.py b/Tools/OriginalEditor/framework_profile.py
+--- a/Tools/OriginalEditor/framework_profile.py
++++ b/Tools/OriginalEditor/framework_profile.py
+@@ -8,7 +8,7 @@
+ 
+ from pbx_source import loads, object_text, require
+ 
++BRANCH = 'codex/otzaria-original-editor-framework-v7-reviewed-20261120'
+-BRANCH = 'codex/otzaria-original-editor-framework-v6-reviewed-20261120'
+ REPOSITORY = 'davidpovarsky/anytype-swift'
+ TARGET = 'AnytypeOriginalEditor'
+ APP_TARGET = '0303ECFA22D8EDAA005C552B'
+@@ -112,8 +112,8 @@
+     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
+     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
+     installer = (root / installer_path).read_text()
++    reviewed = "                             'codex/otzaria-original-editor-framework-v6-reviewed-20261120',\n                             '" + BRANCH + "'],"
++    original = "                             'codex/otzaria-original-editor-framework-v6-reviewed-20261120'],"
+-    reviewed = "                             'codex/otzaria-original-editor-framework-v5-reviewed-20261120',\n                             '" + BRANCH + "'],"
+-    original = "                             'codex/otzaria-original-editor-framework-v5-reviewed-20261120'],"
+     require(installer.count(reviewed) == 1 and
+             blob(installer.replace(reviewed, original, 1).encode()) == profile['original_heart_installer_blob'],
+             'Original verified Heart installer has a change beyond the exact new consumer branch')
+diff --git a/Tools/OriginalEditor/run_framework_acceptance.py b/Tools/OriginalEditor/run_framework_acceptance.py
+--- a/Tools/OriginalEditor/run_framework_acceptance.py
++++ b/Tools/OriginalEditor/run_framework_acceptance.py
+@@ -241,8 +241,21 @@
+                 # seal, then sign only the owned export; the original strict
+                 # gate below and exact consumer embedding remain mandatory.
+                 write(evidence / 'framework-distribution-before-simulator-signing.json', exported_proof)
++                try:
++                    transformation = prepare_amplitude_simulator_export(root, products, exported, evidence, command)
++                except BaseException:
++                    # Preserve a full after-state even when the narrow parser
++                    # refuses the transformation. It never grants qualification.
++                    try:
++                        write(evidence / 'framework-distribution-after-failed-signing.json',
++                              {'status': 'OBSERVED_ONLY_NOT_QUALIFIED', 'files': inventory(exported)})
++                    except BaseException as observation_error:
++                        receipt['after_failed_signing_inventory_error'] = {
++                            'type': type(observation_error).__name__, 'message': str(observation_error)}
++                    raise
+-                transformation = prepare_amplitude_simulator_export(root, products, exported, evidence, command)
+                 after_signing = inventory(exported)
++                write(evidence / 'framework-distribution-after-simulator-signing.json',
++                      {'status': 'OBSERVED_ONLY_NOT_QUALIFIED', 'files': after_signing})
+                 permitted = {'Frameworks/AmplitudeCore.framework/AmplitudeCore',
+                              'Frameworks/AmplitudeCore.framework/_CodeSignature/CodeResources'}
+                 require(set(after_signing) == set(exported_proof['files'])
+diff --git a/Tools/OriginalEditor/run_source_controls.py b/Tools/OriginalEditor/run_source_controls.py
+new file mode 100644
+--- /dev/null
++++ b/Tools/OriginalEditor/run_source_controls.py
+@@ -0,0 +1,231 @@
++"""Run the unchanged unittest discovery with an exact reviewed identity/result gate."""
++import argparse
++import json
++from pathlib import Path
++import traceback
++import unittest
++
++EXPECTED_IDS = (
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_actual_original_two_slices_and_all_signing_page_hashes_parse",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_actual_pinned_upstream_has_only_the_two_required_missing_members",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_actual_post_sign_strict_failure_remains_failure",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_another_package_revision_cannot_get_the_exception",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_changed_architecture_or_unexpected_third_slice_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_changed_native_code_page_hash_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_changed_native_special_hash_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_device_platform_cannot_get_the_simulator_exception",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_different_native_preverification_failure_never_signs",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_entitlement_slot_cannot_replace_the_empty_cms_slot",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_existing_packager_retains_complete_signing_attachments",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_extra_alignment_size_zero_fat_gap_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_missing_original_product_is_refused_before_any_signer",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_native_shape_preserves_exact_residue_and_architecture_pages",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_native_signature_uses_documented_fixed_16k_vm_rounding",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_native_signer_timeout_cannot_produce_qualification",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_nonzero_fat_padding_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_old_x86_four_kib_rounding_is_refused_after_rehashing",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_one_changed_residue_byte_is_refused_on_either_architecture",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_ordinary_resource_or_unknown_payload_is_refused_before_any_signer",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_original_source_change_during_verification_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_other_page_policy_is_refused_even_when_its_page_hashes_match",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_payload_after_the_terminal_fat_allocation_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_pipeline_retains_actual_payloads_and_signs_only_owned_export",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_post_sign_executable_mutation_with_valid_page_hashes_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_post_sign_resource_mutation_is_refused_without_native_credit",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_rehashed_dylib_timestamp_change_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_rehashed_executable_code_change_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_rehashed_linkedit_overlap_with_an_original_segment_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_rehashed_linkedit_symbols_change_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_same_allocation_replacement_preserves_every_nonsignature_byte",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_signature_dataoff_movement_is_not_a_general_padding_exemption",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_signing_identifier_cannot_change",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_slack_must_fit_inside_the_parsed_original_allocation",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_smaller_signature_shrinks_only_to_exact_rounded_allocation",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_symbolic_export_root_is_refused_before_any_signer",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_unaligned_native_signing_allocation_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_unexpected_upstream_signature_success_never_signs",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_unnecessary_virtual_range_growth_is_refused",
++    "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_zeroing_the_nonzero_prior_arm_residue_is_not_an_exemption",
++    "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_corrupt_signer_stops_original_driver_before_strict_gate_or_consumer",
++    "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_failed_signing_retains_full_after_inventory_without_qualification",
++    "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_other_framework_signature_failure_still_blocks_consumer_and_boot",
++    "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_whole_driver_keeps_strict_gate_and_exact_transformed_consumer_inputs",
++    "test_framework.ActualTargetPublicSurfaceControls.test_graph_for_another_module_cannot_qualify_the_inspection_facade",
++    "test_framework.ActualTargetPublicSurfaceControls.test_imported_dependency_symbols_do_not_become_our_public_editor_api",
++    "test_framework.ActualTargetPublicSurfaceControls.test_original_public_editor_constructor_is_rejected",
++    "test_framework.BoundedCommandEvidence.test_actual_nonzero_exit_is_preserved_and_cannot_be_pass",
++    "test_framework.BoundedCommandEvidence.test_real_timeout_preserves_partial_stdout_and_nonpassing_receipt",
++    "test_framework.ObservedOriginalBuildBudget.test_new_route_budget_contains_actual_original_build_and_consumer",
++    "test_framework.OriginalProjectPreservation.test_any_additional_original_source_exclusion_is_rejected",
++    "test_framework.OriginalProjectPreservation.test_changed_original_app_target_is_rejected_beyond_candidate_hash",
++    "test_framework.OriginalProjectPreservation.test_changed_original_compilation_setting_is_rejected",
++    "test_framework.OriginalProjectPreservation.test_entrypoint_exception_cannot_target_the_original_app",
++    "test_framework.OriginalProjectPreservation.test_framework_cannot_be_an_application_product",
++    "test_framework.OriginalProjectPreservation.test_framework_cannot_depend_on_the_original_app_or_test_binary",
++    "test_framework.OriginalProjectPreservation.test_framework_has_no_original_app_boot_scripts_or_extensions",
++    "test_framework.OriginalProjectPreservation.test_genuine_additive_target_preserves_all_original_app_objects",
++    "test_framework.OriginalProjectPreservation.test_new_target_cannot_replace_real_source_groups",
++    "test_framework.OriginalProjectPreservation.test_new_target_cannot_substitute_the_original_package_product",
++    "test_framework.OriginalProjectPreservation.test_original_baseline_snapshot_is_bound_to_its_git_blob",
++    "test_framework.OriginalProjectPreservation.test_original_heart_installer_changes_only_one_new_branch_choice",
++    "test_framework.OriginalProjectPreservation.test_original_project_does_not_already_claim_the_new_framework",
++    "test_framework.RealFilesystemExportControls.test_app_binary_is_never_accepted_as_framework_input",
++    "test_framework.RealFilesystemExportControls.test_duplicate_framework_product_name_fails_closed",
++    "test_framework.RealFilesystemExportControls.test_export_preserves_every_real_fixture_byte_without_runtime_credit",
++    "test_framework.RealFilesystemExportControls.test_export_refuses_to_overwrite_prior_product",
++    "test_framework.RealFilesystemExportControls.test_external_consumer_compiles_only_its_own_importer",
++    "test_framework.RealFilesystemExportControls.test_external_resource_symlink_is_rejected",
++    "test_framework.RealFilesystemExportControls.test_internal_resource_alias_is_materialized_and_does_not_escape",
++    "test_framework.RealFilesystemExportControls.test_missing_original_asset_catalog_is_rejected",
++    "test_framework.RealFilesystemExportControls.test_missing_original_font_bundle_is_rejected",
++    "test_framework.RealFilesystemExportControls.test_missing_original_hebrew_bundle_is_rejected",
++    "test_framework.RealFilesystemExportControls.test_resources_inside_genuine_framework_are_preserved",
++    "test_framework.RealFilesystemExportControls.test_test_binary_is_never_accepted_as_framework_input",
++    "test_framework.RuntimeReceiptBoundary.test_changed_font_bytes_cannot_pass",
++    "test_framework.RuntimeReceiptBoundary.test_expected_language_must_be_actual_process_language",
++    "test_framework.RuntimeReceiptBoundary.test_framework_loaded_from_producer_is_not_external_qualification",
++    "test_framework.RuntimeReceiptBoundary.test_hebrew_generated_accessor_cannot_pass_with_english_fallback",
++    "test_framework.RuntimeReceiptBoundary.test_main_bundle_prefix_is_not_path_ownership",
++    "test_framework.RuntimeReceiptBoundary.test_missing_actual_image_cannot_pass",
++    "test_framework.RuntimeReceiptBoundary.test_nonfinite_image_geometry_is_rejected",
++    "test_framework.RuntimeReceiptBoundary.test_producer_font_fallback_is_rejected_even_with_matching_bytes",
++    "test_framework.RuntimeReceiptBoundary.test_stale_nonce_cannot_borrow_a_previous_language_result",
++    "test_framework.RuntimeReceiptBoundary.test_swapped_adaptive_color_appearances_cannot_pass",
++    "test_framework.RuntimeReceiptBoundary.test_unknown_error_or_partial_runtime_json_cannot_pass",
++    "test_framework.RuntimeReceiptBoundary.test_well_formed_synthetic_boundary_is_explicitly_zero_editor_ui",
++    "test_framework.RuntimeReceiptBoundary.test_wrong_original_type_or_module_cannot_pass",
++    "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_attribute_changed_between_probe_and_read_fails",
++    "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_duplicate_name_fails",
++    "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_genuine_empty_list_is_empty_without_skipping_the_api",
++    "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_list_changed_between_probe_and_read_fails",
++    "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_missing_nul_terminator_fails",
++    "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_nofollow_inspects_link_attributes",
++    "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_oversized_list_fails_before_allocation",
++    "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_typed_abi_reads_binary_and_empty_attributes",
++    "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_unreadable_attribute_fails",
++    "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_unreadable_list_fails_closed",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_additional_empty_directory_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_broken_alias_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_changed_materialized_output_cannot_publish_success",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_cyclic_internal_directory_alias_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_different_binary_byte_fails_without_choosing_the_first",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_different_directory_mode_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_different_extended_attribute_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_different_file_mode_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_different_literal_symlink_target_fails_even_with_same_resolved_bytes",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_different_relative_filename_with_same_bytes_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_different_signature_byte_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_duplicate_original_editor_framework_still_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_equal_internal_file_alias_is_materialized",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_equal_versioned_directory_aliases_preserve_all_resolved_members",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_exact_known_pair_preserves_complete_equal_inputs_and_exports_one_lib",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_known_input_changed_during_copy_cannot_publish_success",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_missing_original_editor_framework_still_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_missing_resource_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_only_timestamps_may_differ",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_product_alias_to_owned_but_other_framework_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_root_framework_alias_is_not_an_independent_known_product",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_same_pair_under_unreviewed_parent_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_special_fifo_fails_without_reading_it",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_unexpected_third_lib_location_fails",
++    "test_framework_duplicates.KnownLibDuplicateControls.test_whole_exporter_darwin_path_does_not_require_linux_os_xattr",
++    "test_framework_flow.OriginalDriverFlowControls.test_boot_command_failure_keeps_build_evidence_but_never_runs_bootstatus_or_install",
++    "test_framework_flow.OriginalDriverFlowControls.test_build_graph_consumer_and_signature_complete_before_original_boot_pair",
++    "test_framework_flow.OriginalDriverFlowControls.test_consumer_compile_failure_cannot_boot_or_install",
++    "test_framework_flow.OriginalDriverFlowControls.test_different_embedded_product_cannot_reach_boot_or_install",
++    "test_framework_flow.OriginalDriverFlowControls.test_multiple_notices_preserve_exact_contents_and_consumer_destination",
++    "test_framework_flow.OriginalDriverFlowControls.test_one_notice_preserves_selected_simulator_for_both_original_build_commands",
++    "test_framework_flow.OriginalDriverFlowControls.test_original_framework_compile_failure_cannot_boot_or_install",
++    "test_framework_flow.OriginalDriverFlowControls.test_original_public_surface_tool_failure_cannot_boot_or_install",
++    "test_framework_flow.OriginalDriverFlowControls.test_original_source_only_admission_never_invokes_any_tool_or_work_directory",
++    "test_framework_flow.OriginalDriverFlowControls.test_same_180_second_boot_timeout_retains_partial_builds_without_runtime_credit",
++    "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_duplicate_generated_bundle_accessor_still_fails",
++    "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_foreign_unowned_source_still_fails",
++    "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_malformed_original_source_line_still_fails",
++    "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_missing_generated_bundle_accessor_still_fails",
++    "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_missing_original_input_still_fails",
++    "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_original_app_entrypoint_still_fails",
++    "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_original_packager_retains_all_four_exact_raw_proofs_as_text",
++    "test_framework_temporary_paths.TemporaryRootAliasControls.test_known_input_mutation_is_really_injected_and_refused_under_directory_alias",
++    "test_framework_temporary_paths.TemporaryRootAliasControls.test_materialized_mutation_is_really_injected_and_refused_under_directory_alias",
++    "test_framework_temporary_paths.TemporaryRootAliasControls.test_original_raw_compiler_proofs_are_retained_under_directory_alias",
++)
++EXPECTED_COUNT = 143
++
++
++def cases(suite):
++    if isinstance(suite, unittest.TestSuite):
++        for child in suite:
++            yield from cases(child)
++    elif isinstance(suite, unittest.TestCase):
++        yield suite
++    else:
++        raise RuntimeError('Unexpected unittest discovery object')
++
++
++class ObservedResult(unittest.TextTestResult):
++    def __init__(self, *args, **kwargs):
++        super().__init__(*args, **kwargs)
++        self.started_ids = []
++        self.passed_ids = []
++
++    def startTest(self, test):
++        self.started_ids.append(test.id())
++        super().startTest(test)
++
++    def addSuccess(self, test):
++        self.passed_ids.append(test.id())
++        super().addSuccess(test)
++
++
++def main():
++    parser = argparse.ArgumentParser()
++    parser.add_argument('--evidence', type=Path, required=True)
++    args = parser.parse_args()
++    args.evidence.mkdir(parents=True, exist_ok=True)
++    receipt = {'schema': 1, 'status': 'FAIL', 'phase': 'DISCOVERY',
++               'expected_count': EXPECTED_COUNT, 'expected_ids': list(EXPECTED_IDS),
++               'scope': 'Python source controls only; no Apple build or consumer qualification'}
++    code = 1
++    try:
++        suite = unittest.defaultTestLoader.discover(
++            start_dir=str(Path(__file__).resolve().parent), pattern='test_*.py')
++        actual_ids = sorted(test.id() for test in cases(suite))
++        receipt['discovered_ids'] = actual_ids
++        if (len(EXPECTED_IDS) != EXPECTED_COUNT or len(set(EXPECTED_IDS)) != EXPECTED_COUNT
++                or actual_ids != list(EXPECTED_IDS)):
++            raise RuntimeError('Actual unittest discovery differs from the exact reviewed 143 cases')
++        receipt['phase'] = 'EXECUTION'
++        result = unittest.TextTestRunner(verbosity=2, resultclass=ObservedResult).run(suite)
++        receipt.update({
++            'tests_run': result.testsRun,
++            'started_ids': result.started_ids,
++            'passed_ids': result.passed_ids,
++            'failures': [{'id': test.id(), 'traceback': trace} for test, trace in result.failures],
++            'errors': [{'id': test.id(), 'traceback': trace} for test, trace in result.errors],
++            'skipped': [{'id': test.id(), 'reason': reason} for test, reason in result.skipped],
++            'expected_failures': [{'id': test.id(), 'traceback': trace}
++                                  for test, trace in result.expectedFailures],
++            'unexpected_successes': [test.id() for test in result.unexpectedSuccesses],
++        })
++        if (result.testsRun != EXPECTED_COUNT
++                or sorted(result.started_ids) != list(EXPECTED_IDS)
++                or sorted(result.passed_ids) != list(EXPECTED_IDS)
++                or result.failures or result.errors or result.skipped
++                or result.expectedFailures or result.unexpectedSuccesses
++                or not result.wasSuccessful()):
++            raise RuntimeError('The exact 143 source controls did not all pass without skips')
++        receipt['status'] = 'PASS_SOURCE_CONTROLS_143'
++        receipt['phase'] = 'COMPLETE'
++        code = 0
++    except BaseException as error:
++        receipt['error'] = {'type': type(error).__name__, 'message': str(error)}
++        traceback.print_exc()
++    finally:
++        (args.evidence / 'source-controls-result.json').write_text(
++            json.dumps(receipt, indent=2, sort_keys=True) + '\n')
++    return code
++
++
++if __name__ == '__main__':
++    raise SystemExit(main())
+diff --git a/Tools/OriginalEditor/test_amplitude_simulator_signing.py b/Tools/OriginalEditor/test_amplitude_simulator_signing.py
+--- a/Tools/OriginalEditor/test_amplitude_simulator_signing.py
++++ b/Tools/OriginalEditor/test_amplitude_simulator_signing.py
+@@ -46,8 +46,8 @@
+         target.write_bytes(data)
+         target.chmod(PROFILE['files'][name]['mode'])
+ 
++def fixture_ad_hoc_replacement(files, delta=0, edit_prefix=None, edit_directory=None, page_exponents=(12, 14)):
++    """Explicit modern native-tool boundary; never invokes or replaces codesign."""
+-def fixture_ad_hoc_replacement(files, delta=0, edit_prefix=None, edit_directory=None):
+-    """Pure fixture, never a substitute for the workflow's native codesign."""
+     result = dict(files)
+     resources = plistlib.loads(files['_CodeSignature/CodeResources'])
+     for table in ('files', 'files2'):
+@@ -60,38 +60,54 @@
+     for index, old in enumerate(before):
+         signature = old['signature']
+         prefix = bytearray(old['thin'][:signature['dataoff']])
+-        new_signature_size = signature['datasize'] + delta
+         old_signature = old['thin'][signature['dataoff']:]
+         magic, meaningful, count = struct.unpack_from('>III', old_signature)
++        indices = [struct.unpack_from('>II', old_signature, 12 + 8 * item) for item in range(count)]
++        blobs = {}
++        for slot, start in indices:
++            length = struct.unpack_from('>I', old_signature, start + 4)[0]
++            blobs[slot] = old_signature[start:start + length]
++        old_directory = blobs[0]
++        hashes = struct.unpack_from('>I', old_directory, 16)[0]
++        page_exponent = page_exponents[index]
++        page_bytes = 1 << page_exponent
++        pages = (len(prefix) + page_bytes - 1) // page_bytes
++        directory = bytearray(old_directory[:hashes]) + bytearray(pages * 32)
++        struct.pack_into('>I', directory, 4, len(directory))
++        struct.pack_into('>I', directory, 28, pages)
++        directory[39] = page_exponent
++        directory[hashes - 96:hashes - 64] = hashlib.sha256(result['_CodeSignature/CodeResources']).digest()
++        meaningful = 12 + count * 8 + len(directory) + sum(len(value) for slot, value in blobs.items() if slot != 0)
++        new_signature_size = meaningful + 18 + delta
+         if new_signature_size < meaningful:
+             raise AssertionError('Synthetic signing fixture allocation is too small')
+         new_thin_size = len(prefix) + new_signature_size
+         linkedit = old['linkedit']
+         filesize = new_thin_size - linkedit['fileoff']
++        vmsize = (filesize + 16383) // 16384 * 16384
+-        vmsize = linkedit['vmsize']
+-        if filesize > vmsize:
+-            unit = 1 << old['vm_alignment']
+-            vmsize = (filesize + unit - 1) // unit * unit
+         struct.pack_into('<Q', prefix, linkedit['command_offset'] + 32, vmsize)
+         struct.pack_into('<Q', prefix, linkedit['command_offset'] + 48, filesize)
+         struct.pack_into('<I', prefix, signature['command_offset'] + 12, new_signature_size)
+         if edit_prefix:
+             edit_prefix(prefix, old, index)
+-        payload = bytearray(old_signature[:meaningful])
+-        indices = dict(struct.unpack_from('>II', payload, 12 + 8 * item) for item in range(count))
+-        location = indices[0]
+-        length = struct.unpack_from('>I', payload, location + 4)[0]
+-        directory = bytearray(payload[location:location + length])
+-        hashes = struct.unpack_from('>I', directory, 16)[0]
+-        pages = struct.unpack_from('>I', directory, 28)[0]
+-        directory[hashes - 96:hashes - 64] = hashlib.sha256(result['_CodeSignature/CodeResources']).digest()
+         for page in range(pages):
+             directory[hashes + page * 32:hashes + (page + 1) * 32] = hashlib.sha256(
++                prefix[page * page_bytes:min((page + 1) * page_bytes, len(prefix))]).digest()
+-                prefix[page * 4096:min((page + 1) * 4096, len(prefix))]).digest()
+         if edit_directory:
+             edit_directory(directory, old, index)
++        blobs[0] = bytes(directory)
++        payload = bytearray(12 + 8 * count)
++        struct.pack_into('>III', payload, 0, magic, meaningful, count)
++        for item, (slot, _) in enumerate(indices):
++            struct.pack_into('>II', payload, 12 + 8 * item, slot, len(payload))
++            payload.extend(blobs[slot])
++        if len(payload) != meaningful:
++            raise AssertionError('Synthetic SuperBlob length differs')
++        start = signature['dataoff'] + meaningful
++        stop = signature['dataoff'] + new_signature_size
++        residue = old['thin'][start:stop]
++        residue += bytes(new_signature_size - meaningful - len(residue))
++        thin = prefix + payload + residue
+-        payload[location:location + length] = directory
+-        thin = prefix + payload + bytes(new_signature_size - len(payload))
+         unit = 1 << old['fat_alignment']
+         offset = (len(output) + unit - 1) // unit * unit
+         output.extend(bytes(offset - len(output)))
+@@ -174,23 +190,26 @@
+         self.assertEqual({p for p in candidate if candidate[p] != self.original[p]},
+                          {signing.EXECUTABLE, '_CodeSignature/CodeResources'})
+ 
++    def test_native_signature_uses_documented_fixed_16k_vm_rounding(self):
++        candidate = fixture_ad_hoc_replacement(self.original)
+-    def test_larger_signature_uses_exact_original_architecture_vm_rounding(self):
+-        candidate = fixture_ad_hoc_replacement(self.original, delta=65536)
+         proof = signing.executable_preservation(self.original, candidate)
++        for row in proof:
+-        for row, unit in zip(proof, [4096, 16384]):
+             after = row['after']['linkedit']
++            self.assertEqual(after['vmsize'], (after['filesize'] + 16383) // 16384 * 16384)
+-            self.assertEqual(after['vmsize'], (after['filesize'] + unit - 1) // unit * unit)
+ 
++    def test_smaller_signature_shrinks_only_to_exact_rounded_allocation(self):
++        candidate = fixture_ad_hoc_replacement(self.original)
+-    def test_smaller_signature_does_not_shrink_original_virtual_allocation(self):
+-        candidate = fixture_ad_hoc_replacement(self.original, delta=-10000)
+         proof = signing.executable_preservation(self.original, candidate)
++        self.assertEqual([row['before']['linkedit']['vmsize'] for row in proof], [212992, 212992])
++        self.assertEqual([row['after']['linkedit']['vmsize'] for row in proof], [196608, 180224])
++        self.assertEqual([row['after']['signature']['datasize'] for row in proof], [2576, 880])
+-        self.assertEqual([row['after']['linkedit']['vmsize'] for row in proof], [212992, 212992])
+ 
+     def test_rehashed_executable_code_change_is_refused(self):
+         def edit(prefix, old, index):
+             prefix[8192] ^= 1
+         candidate = fixture_ad_hoc_replacement(self.original, edit_prefix=edit)
++        signing.read_macho(candidate[signing.EXECUTABLE], candidate,
++                           previous_slices=signing.read_macho(self.original[signing.EXECUTABLE], self.original))
+-        signing.read_macho(candidate[signing.EXECUTABLE], candidate)
+         with self.assertRaisesRegex(ValueError, 'nonsignature LINKEDIT'):
+             signing.executable_preservation(self.original, candidate)
+ 
+@@ -198,7 +217,8 @@
+         def edit(prefix, old, index):
+             prefix[old['signature']['dataoff'] - 64] ^= 1
+         candidate = fixture_ad_hoc_replacement(self.original, edit_prefix=edit)
++        signing.read_macho(candidate[signing.EXECUTABLE], candidate,
++                           previous_slices=signing.read_macho(self.original[signing.EXECUTABLE], self.original))
+-        signing.read_macho(candidate[signing.EXECUTABLE], candidate)
+         with self.assertRaisesRegex(ValueError, 'nonsignature LINKEDIT'):
+             signing.executable_preservation(self.original, candidate)
+ 
+@@ -222,7 +242,8 @@
+     def test_signature_dataoff_movement_is_not_a_general_padding_exemption(self):
+         candidate = fixture_ad_hoc_replacement(self.original)
+         binary = bytearray(candidate[signing.EXECUTABLE])
++        value = signing.read_macho(candidate[signing.EXECUTABLE], candidate,
++                           previous_slices=signing.read_macho(self.original[signing.EXECUTABLE], self.original))[0]
+-        value = signing.read_macho(candidate[signing.EXECUTABLE], candidate)[0]
+         at = value['offset'] + value['signature']['command_offset'] + 8
+         struct.pack_into('<I', binary, at, value['signature']['dataoff'] + 16)
+         candidate[signing.EXECUTABLE] = bytes(binary)
+@@ -256,7 +277,8 @@
+ 
+     def test_entitlement_slot_cannot_replace_the_empty_cms_slot(self):
+         candidate = fixture_ad_hoc_replacement(self.original)
++        values = signing.read_macho(candidate[signing.EXECUTABLE], candidate,
++                           previous_slices=signing.read_macho(self.original[signing.EXECUTABLE], self.original))
+-        values = signing.read_macho(candidate[signing.EXECUTABLE], candidate)
+         binary = bytearray(candidate[signing.EXECUTABLE])
+         for old in values:
+             at = old['offset'] + old['signature']['dataoff'] + 12 + 16
+@@ -403,6 +425,120 @@
+                     name = proof[key] + '/' + relative
+                     self.assertEqual(archive.read(name), (self.evidence / name).read_bytes())
+ 
++    def test_native_shape_preserves_exact_residue_and_architecture_pages(self):
++        candidate = fixture_ad_hoc_replacement(self.original)
++        proof = signing.executable_preservation(self.original, candidate)
++        self.assertEqual([row['after']['signature_proof']['page_exponent'] for row in proof], [12, 14])
++        self.assertEqual([row['after']['signature_proof']['code_pages'] for row in proof], [72, 19])
++        parsed = signing.read_macho(candidate[signing.EXECUTABLE], candidate,
++                                   previous_slices=signing.read_macho(self.original[signing.EXECUTABLE], self.original))
++        originals = signing.read_macho(self.original[signing.EXECUTABLE], self.original)
++        for index, (old, new) in enumerate(zip(originals, parsed)):
++            start = new['signature']['dataoff'] + new['signature_proof']['superblob_bytes']
++            stop = new['signature']['dataoff'] + new['signature']['datasize']
++            self.assertEqual(stop - start, 18)
++            self.assertEqual(new['thin'][start:stop], old['thin'][start:stop])
++            self.assertEqual(any(new['thin'][start:stop]), index == 1)
++
++    def test_one_changed_residue_byte_is_refused_on_either_architecture(self):
++        for index in (0, 1):
++            with self.subTest(index=index):
++                candidate = fixture_ad_hoc_replacement(self.original)
++                binary = bytearray(candidate[signing.EXECUTABLE])
++                _, _, offset, size, _ = struct.unpack_from('>IIIII', binary, 8 + index * 20)
++                binary[offset + size - 1] ^= 1
++                candidate[signing.EXECUTABLE] = bytes(binary)
++                with self.assertRaisesRegex(ValueError, 'exact preimage'):
++                    signing.executable_preservation(self.original, candidate)
++
++    def test_zeroing_the_nonzero_prior_arm_residue_is_not_an_exemption(self):
++        candidate = fixture_ad_hoc_replacement(self.original)
++        binary = bytearray(candidate[signing.EXECUTABLE])
++        _, _, offset, size, _ = struct.unpack_from('>IIIII', binary, 28)
++        self.assertTrue(any(binary[offset + size - 18:offset + size]))
++        binary[offset + size - 18:offset + size] = bytes(18)
++        candidate[signing.EXECUTABLE] = bytes(binary)
++        with self.assertRaisesRegex(ValueError, 'exact preimage'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_slack_must_fit_inside_the_parsed_original_allocation(self):
++        candidate = fixture_ad_hoc_replacement(self.original)
++        original = signing.read_macho(self.original[signing.EXECUTABLE], self.original)
++        _, _, _, size, _ = struct.unpack_from('>IIIII', candidate[signing.EXECUTABLE], 28)
++        original[1] = dict(original[1], thin=original[1]['thin'][:size - 1])
++        with self.assertRaisesRegex(ValueError, 'exact preimage'):
++            signing.read_macho(candidate[signing.EXECUTABLE], candidate, previous_slices=original)
++
++    def test_other_page_policy_is_refused_even_when_its_page_hashes_match(self):
++        originals = signing.read_macho(self.original[signing.EXECUTABLE], self.original)
++        for exponents, index in (((12, 12), 1), ((14, 14), 0)):
++            with self.subTest(exponents=exponents):
++                candidate = fixture_ad_hoc_replacement(self.original, page_exponents=exponents)
++                binary = candidate[signing.EXECUTABLE]
++                _, _, offset, size, _ = struct.unpack_from('>IIIII', binary, 8 + index * 20)
++                thin = binary[offset:offset + size]
++                old = originals[index]
++                start, extent = struct.unpack_from('<II', thin, old['signature']['command_offset'] + 8)
++                valid_hashes = signing.read_signature(
++                    thin, start, extent, candidate, previous_thin=old['thin'], expected_page=exponents[index])
++                self.assertEqual(valid_hashes['page_exponent'], exponents[index])
++                with self.assertRaisesRegex(ValueError, 'signing semantics'):
++                    signing.executable_preservation(self.original, candidate)
++
++    def test_changed_native_code_page_hash_is_refused(self):
++        def alter(directory, old, index):
++            hashes = struct.unpack_from('>I', directory, 16)[0]
++            directory[hashes] ^= 1
++        candidate = fixture_ad_hoc_replacement(self.original, edit_directory=alter)
++        with self.assertRaisesRegex(ValueError, 'Executable signing page hash'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_changed_native_special_hash_is_refused(self):
++        def alter(directory, old, index):
++            hashes = struct.unpack_from('>I', directory, 16)[0]
++            directory[hashes - 32] ^= 1
++        candidate = fixture_ad_hoc_replacement(self.original, edit_directory=alter)
++        with self.assertRaisesRegex(ValueError, 'Special signing slot'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_old_x86_four_kib_rounding_is_refused_after_rehashing(self):
++        def alter(prefix, old, index):
++            if index == 0:
++                filesize = struct.unpack_from('<Q', prefix, old['linkedit']['command_offset'] + 48)[0]
++                struct.pack_into('<Q', prefix, old['linkedit']['command_offset'] + 32,
++                                 (filesize + 4095) // 4096 * 4096)
++        candidate = fixture_ad_hoc_replacement(self.original, edit_prefix=alter)
++        with self.assertRaisesRegex(ValueError, 'virtual allocation'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_rehashed_linkedit_overlap_with_an_original_segment_is_refused(self):
++        def alter(prefix, old, index):
++            prior_ends = []
++            for command, length, at in old['commands']:
++                if command == 0x19 and at != old['linkedit']['command_offset']:
++                    address, extent = struct.unpack_from('<QQ', prefix, at + 24)
++                    if extent:
++                        prior_ends.append(address + extent)
++            self.assertTrue(prior_ends)
++            overlapping_address = max(prior_ends) - 1
++            self.assertLess(overlapping_address, old['linkedit']['vmaddr'])
++            struct.pack_into('<Q', prefix, old['linkedit']['command_offset'] + 24, overlapping_address)
++        candidate = fixture_ad_hoc_replacement(self.original, edit_prefix=alter)
++        with self.assertRaisesRegex(ValueError, 'LINKEDIT address changed'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_payload_after_the_terminal_fat_allocation_is_refused(self):
++        candidate = fixture_ad_hoc_replacement(self.original)
++        candidate[signing.EXECUTABLE] += bytes(16)
++        with self.assertRaisesRegex(ValueError, 'trailing FAT'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_unaligned_native_signing_allocation_is_refused(self):
++        candidate = fixture_ad_hoc_replacement(self.original, delta=1)
++        with self.assertRaisesRegex(ValueError, 'allocation alignment'):
++            signing.executable_preservation(self.original, candidate)
++
++
+ class OriginalSigningDriverFlowControls(unittest.TestCase):
+     def run_flow(self, fail_other=False, corrupt_signer=False):
+         case = original_flow.OriginalDriverFlowControls('test_one_notice_preserves_selected_simulator_for_both_original_build_commands')
+@@ -476,5 +612,19 @@
+         self.assertNotIn('external-consumer-build', case.names())
+         self.assertEqual(case.receipt['external_consumer_build'], 'NOT_RUN')
+ 
++    def test_failed_signing_retains_full_after_inventory_without_qualification(self):
++        case = self.run_flow(corrupt_signer=True)
++        before = json.loads((case.evidence / 'framework-distribution-before-simulator-signing.json').read_bytes())
++        observed = json.loads((case.evidence / 'framework-distribution-after-failed-signing.json').read_bytes())
++        self.assertEqual(observed['status'], 'OBSERVED_ONLY_NOT_QUALIFIED')
++        self.assertEqual(set(observed['files']), set(before['files']))
++        path = 'Frameworks/AmplitudeCore.framework/Headers/AmplitudeCore-Swift.h'
++        self.assertNotEqual(observed['files'][path], before['files'][path])
++        self.assertEqual(case.receipt['status'], 'FAIL')
++        self.assertNotIn('framework-signature-0', case.names())
++        self.assertNotIn('external-consumer-build', case.names())
++        self.assertNotIn('boot-owned-simulator', case.names())
++
++
+ if __name__ == '__main__':
+     unittest.main()
+diff --git a/Tools/OriginalEditor/test_framework.py b/Tools/OriginalEditor/test_framework.py
+--- a/Tools/OriginalEditor/test_framework.py
++++ b/Tools/OriginalEditor/test_framework.py
+@@ -93,7 +93,7 @@
+ 
+     def test_original_heart_installer_changes_only_one_new_branch_choice(self):
+         raw = (ROOT / 'Tools/PinkhaNativeDerived/install_verified_heart.py').read_bytes()
++        suffix = b",\n                             'codex/otzaria-original-editor-framework-v7-reviewed-20261120'"
+-        suffix = b",\n                             'codex/otzaria-original-editor-framework-v6-reviewed-20261120'"
+         self.assertEqual(raw.count(suffix), 1)
+         old = raw.replace(suffix, b'', 1)
+         actual = hashlib.sha1(b'blob ' + str(len(old)).encode() + b'\0' + old).hexdigest()
+diff --git a/Tools/PinkhaNativeDerived/install_verified_heart.py b/Tools/PinkhaNativeDerived/install_verified_heart.py
+--- a/Tools/PinkhaNativeDerived/install_verified_heart.py
++++ b/Tools/PinkhaNativeDerived/install_verified_heart.py
+@@ -29,7 +29,8 @@
+                              'codex/otzaria-original-editor-framework-v3-reviewed-20261120',
+                              'codex/otzaria-original-editor-framework-v4-reviewed-20261120',
+                              'codex/otzaria-original-editor-framework-v5-reviewed-20261120',
++                             'codex/otzaria-original-editor-framework-v6-reviewed-20261120',
++                             'codex/otzaria-original-editor-framework-v7-reviewed-20261120'],
+-                             'codex/otzaria-original-editor-framework-v6-reviewed-20261120'],
+                     default='codex/torah-native-derived-properties-20261103')
+ args = parser.parse_args()
+ inventory = json.loads(args.inventory.read_text())

@@ -1,0 +1,1443 @@
+﻿2026-11-20T21:39:56.5240190Z Current runner version: '2.338.2'
+2026-11-20T21:39:56.5263630Z ##[group]Runner Image Provisioner
+2026-11-20T21:39:56.5264240Z Hosted Compute Agent
+2026-11-20T21:39:56.5264680Z Version: 20261103.629
+2026-11-20T21:39:56.5265090Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+2026-11-20T21:39:56.5265560Z Build Date: 2026-11-03T17:26:59Z
+2026-11-20T21:39:56.5266000Z Worker ID: {6aaf9f47-ad4b-4311-9ba5-44abe12cdf78}
+2026-11-20T21:39:56.5266530Z Region: westus
+2026-11-20T21:39:56.5266880Z Cloud: MacCloud
+2026-11-20T21:39:56.5267220Z ##[endgroup]
+2026-11-20T21:39:56.5268240Z ##[group]Operating System
+2026-11-20T21:39:56.5268820Z macOS
+2026-11-20T21:39:56.5269930Z 27.0.1
+2026-11-20T21:39:56.5270260Z 26A434
+2026-11-20T21:39:56.5270660Z ##[endgroup]
+2026-11-20T21:39:56.5271030Z ##[group]Runner Image
+2026-11-20T21:39:56.5271430Z Image: xcode-27-arm64
+2026-11-20T21:39:56.5271800Z Version: 20261104.0337.1
+2026-11-20T21:39:56.5272750Z Included Software: https://github.com/actions/runner-images/blob/xcode-27-arm64/20261104.0337/images/macos/xcode-27-arm64-Readme.md
+2026-11-20T21:39:56.5273970Z Image Release: https://github.com/actions/runner-images/releases/tag/xcode-27-arm64%2F20261104.0337
+2026-11-20T21:39:56.5274730Z ##[endgroup]
+2026-11-20T21:39:56.5275720Z ##[group]GITHUB_TOKEN Permissions
+2026-11-20T21:39:56.5277500Z Actions: read
+2026-11-20T21:39:56.5277950Z Contents: read
+2026-11-20T21:39:56.5278360Z Metadata: read
+2026-11-20T21:39:56.5278780Z ##[endgroup]
+2026-11-20T21:39:56.5280640Z Secret source: Actions
+2026-11-20T21:39:56.5282570Z Cache mode: write
+2026-11-20T21:39:56.5283720Z Prepare workflow directory
+2026-11-20T21:39:56.5730300Z Prepare all required actions
+2026-11-20T21:39:56.5768500Z Getting action download info
+2026-11-20T21:39:57.0093610Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-20T21:39:57.2781570Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-11-20T21:39:57.3871920Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-11-20T21:39:57.5747030Z Complete job name: original-editor-framework
+2026-11-20T21:39:57.6329510Z ##[group]Run actions/checkout@v4
+2026-11-20T21:39:57.6330330Z with:
+2026-11-20T21:39:57.6330680Z   ref: f179a616e5e22fc785bb97dc5ffa5ec1621441b3
+2026-11-20T21:39:57.6331110Z   persist-credentials: false
+2026-11-20T21:39:57.6331550Z   repository: davidpovarsky/anytype-swift
+2026-11-20T21:39:57.6334760Z   token: ***
+2026-11-20T21:39:57.6335070Z   ssh-strict: true
+2026-11-20T21:39:57.6335380Z   ssh-user: git
+2026-11-20T21:39:57.6335730Z   clean: true
+2026-11-20T21:39:57.6336110Z   sparse-checkout-cone-mode: true
+2026-11-20T21:39:57.6336490Z   fetch-depth: 1
+2026-11-20T21:39:57.6336800Z   fetch-tags: false
+2026-11-20T21:39:57.6337120Z   show-progress: true
+2026-11-20T21:39:57.6337440Z   lfs: false
+2026-11-20T21:39:57.6337750Z   submodules: false
+2026-11-20T21:39:57.6338080Z   set-safe-directory: true
+2026-11-20T21:39:57.6338480Z   allow-unsafe-pr-checkout: false
+2026-11-20T21:39:57.6339070Z env:
+2026-11-20T21:39:57.6339390Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-20T21:39:57.6339920Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-20T21:39:57.6340590Z   EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v6-reviewed-20261120
+2026-11-20T21:39:57.6341180Z   HEART_SOURCE_RUN_ID: 44203168617
+2026-11-20T21:39:57.6341630Z   EDITOR_EVIDENCE: build/original-editor-framework-evidence
+2026-11-20T21:39:57.6342170Z   EDITOR_WORK: build/original-editor-framework-44822310098-1
+2026-11-20T21:39:57.6342680Z ##[endgroup]
+2026-11-20T21:39:58.1872740Z Syncing repository: davidpovarsky/anytype-swift
+2026-11-20T21:39:58.1874210Z ##[group]Getting Git version info
+2026-11-20T21:39:58.1874850Z Working directory is '/Users/runner/work/anytype-swift/anytype-swift'
+2026-11-20T21:39:58.1876160Z [command]/opt/homebrew/bin/git version
+2026-11-20T21:39:58.2455680Z git version 2.56.0
+2026-11-20T21:39:58.2472290Z ##[endgroup]
+2026-11-20T21:39:58.2480670Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/5fc0b92a-c963-4d5a-81b6-71dae6337df9/.gitconfig'
+2026-11-20T21:39:58.2502650Z Temporarily overriding HOME='/Users/runner/work/_temp/5fc0b92a-c963-4d5a-81b6-71dae6337df9' before making global git config changes
+2026-11-20T21:39:58.2503670Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-20T21:39:58.2504570Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift
+2026-11-20T21:39:58.2601190Z Deleting the contents of '/Users/runner/work/anytype-swift/anytype-swift'
+2026-11-20T21:39:58.2603350Z ##[group]Initializing the repository
+2026-11-20T21:39:58.2607220Z [command]/opt/homebrew/bin/git init /Users/runner/work/anytype-swift/anytype-swift
+2026-11-20T21:39:58.2844100Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-20T21:39:58.2845140Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-20T21:39:58.2845940Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-20T21:39:58.2846560Z hint: call:
+2026-11-20T21:39:58.2846880Z hint:
+2026-11-20T21:39:58.2847280Z hint: 	git config --global init.defaultBranch <name>
+2026-11-20T21:39:58.2847800Z hint:
+2026-11-20T21:39:58.2848320Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-20T21:39:58.2849050Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-20T21:39:58.2849700Z hint:
+2026-11-20T21:39:58.2850060Z hint: 	git branch -m <name>
+2026-11-20T21:39:58.2850500Z hint:
+2026-11-20T21:39:58.2851000Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-20T21:39:58.2851850Z Initialized empty Git repository in /Users/runner/work/anytype-swift/anytype-swift/.git/
+2026-11-20T21:39:58.2861250Z [command]/opt/homebrew/bin/git remote add origin https://github.com/davidpovarsky/anytype-swift
+2026-11-20T21:39:58.2945100Z ##[endgroup]
+2026-11-20T21:39:58.2945860Z ##[group]Disabling automatic garbage collection
+2026-11-20T21:39:58.2947090Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-11-20T21:39:58.3016870Z ##[endgroup]
+2026-11-20T21:39:58.3017450Z ##[group]Setting up auth
+2026-11-20T21:39:58.3022210Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-20T21:39:58.3094490Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-20T21:39:58.4226010Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-20T21:39:58.4299040Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-20T21:39:58.5193490Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-20T21:39:58.5280760Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-20T21:39:58.6423970Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-20T21:39:58.6669200Z ##[endgroup]
+2026-11-20T21:39:58.6673940Z ##[group]Fetching the repository
+2026-11-20T21:39:58.6681240Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin f179a616e5e22fc785bb97dc5ffa5ec1621441b3
+2026-11-20T21:40:02.1044280Z From https://github.com/davidpovarsky/anytype-swift
+2026-11-20T21:40:02.1045910Z  * branch            f179a616e5e22fc785bb97dc5ffa5ec1621441b3 -> FETCH_HEAD
+2026-11-20T21:40:02.1049270Z ##[endgroup]
+2026-11-20T21:40:02.1050320Z ##[group]Determining the checkout info
+2026-11-20T21:40:02.1052370Z ##[endgroup]
+2026-11-20T21:40:02.1053920Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-20T21:40:02.1151820Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-20T21:40:02.1238440Z ##[group]Checking out the ref
+2026-11-20T21:40:02.1243360Z [command]/opt/homebrew/bin/git checkout --progress --force f179a616e5e22fc785bb97dc5ffa5ec1621441b3
+2026-11-20T21:40:03.2774860Z Updating files:  70% (6514/9292)
+2026-11-20T21:40:03.3003680Z Updating files:  71% (6598/9292)
+2026-11-20T21:40:03.3176250Z Updating files:  72% (6691/9292)
+2026-11-20T21:40:03.3298460Z Updating files:  73% (6784/9292)
+2026-11-20T21:40:03.3456870Z Updating files:  74% (6877/9292)
+2026-11-20T21:40:03.3531680Z Updating files:  75% (6969/9292)
+2026-11-20T21:40:03.3650090Z Updating files:  76% (7062/9292)
+2026-11-20T21:40:03.3755510Z Updating files:  77% (7155/9292)
+2026-11-20T21:40:03.3875700Z Updating files:  78% (7248/9292)
+2026-11-20T21:40:03.4003900Z Updating files:  79% (7341/9292)
+2026-11-20T21:40:03.4143660Z Updating files:  80% (7434/9292)
+2026-11-20T21:40:03.4304020Z Updating files:  81% (7527/9292)
+2026-11-20T21:40:03.4449660Z Updating files:  82% (7620/9292)
+2026-11-20T21:40:03.4576840Z Updating files:  83% (7713/9292)
+2026-11-20T21:40:03.4861940Z Updating files:  84% (7806/9292)
+2026-11-20T21:40:03.5100270Z Updating files:  85% (7899/9292)
+2026-11-20T21:40:03.5323590Z Updating files:  86% (7992/9292)
+2026-11-20T21:40:03.5516570Z Updating files:  87% (8085/9292)
+2026-11-20T21:40:03.5849720Z Updating files:  88% (8177/9292)
+2026-11-20T21:40:03.6034570Z Updating files:  89% (8270/9292)
+2026-11-20T21:40:03.6157680Z Updating files:  90% (8363/9292)
+2026-11-20T21:40:03.6796040Z Updating files:  91% (8456/9292)
+2026-11-20T21:40:03.6897850Z Updating files:  92% (8549/9292)
+2026-11-20T21:40:03.7000470Z Updating files:  93% (8642/9292)
+2026-11-20T21:40:03.7202650Z Updating files:  94% (8735/9292)
+2026-11-20T21:40:03.7304380Z Updating files:  95% (8828/9292)
+2026-11-20T21:40:03.7436660Z Updating files:  96% (8921/9292)
+2026-11-20T21:40:03.7752050Z Updating files:  97% (9014/9292)
+2026-11-20T21:40:03.7853880Z Updating files:  98% (9107/9292)
+2026-11-20T21:40:03.7937300Z Updating files:  99% (9200/9292)
+2026-11-20T21:40:03.7937860Z Updating files: 100% (9292/9292)
+2026-11-20T21:40:03.7938710Z Updating files: 100% (9292/9292), done.
+2026-11-20T21:40:03.8180020Z HEAD is now at f179a61 docs(otzaria): seal constrained simulator signing evidence
+2026-11-20T21:40:03.8236260Z ##[endgroup]
+2026-11-20T21:40:03.8376480Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-11-20T21:40:03.8471110Z f179a616e5e22fc785bb97dc5ffa5ec1621441b3
+2026-11-20T21:40:03.8503370Z ##[group]Removing auth
+2026-11-20T21:40:03.8508920Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-20T21:40:03.8575230Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-20T21:40:04.0136950Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-20T21:40:04.0236120Z http.https://github.com/.extraheader
+2026-11-20T21:40:04.0253010Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-20T21:40:04.0439550Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-20T21:40:04.1584900Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-20T21:40:04.1652080Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-20T21:40:04.2515200Z ##[endgroup]
+2026-11-20T21:40:04.2778990Z ##[group]Run actions/setup-python@v5
+2026-11-20T21:40:04.2779730Z with:
+2026-11-20T21:40:04.2801160Z   python-version: 3.12
+2026-11-20T21:40:04.2801570Z   architecture: arm64
+2026-11-20T21:40:04.2801870Z   check-latest: false
+2026-11-20T21:40:04.2804400Z   token: ***
+2026-11-20T21:40:04.2804750Z   update-environment: true
+2026-11-20T21:40:04.2805000Z   allow-prereleases: false
+2026-11-20T21:40:04.2805230Z   freethreaded: false
+2026-11-20T21:40:04.2805460Z env:
+2026-11-20T21:40:04.2805650Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-20T21:40:04.2805900Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-20T21:40:04.2806440Z   EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v6-reviewed-20261120
+2026-11-20T21:40:04.2806880Z   HEART_SOURCE_RUN_ID: 44203168617
+2026-11-20T21:40:04.2807230Z   EDITOR_EVIDENCE: build/original-editor-framework-evidence
+2026-11-20T21:40:04.2807650Z   EDITOR_WORK: build/original-editor-framework-44822310098-1
+2026-11-20T21:40:04.2808090Z ##[endgroup]
+2026-11-20T21:40:04.4605200Z ##[group]Installed versions
+2026-11-20T21:40:04.4654130Z (node:2559) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-20T21:40:04.4654860Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-20T21:40:04.4655320Z Successfully set up CPython (3.12.10)
+2026-11-20T21:40:04.4655750Z ##[endgroup]
+2026-11-20T21:40:04.4740590Z ##[group]Run set -euo pipefail
+2026-11-20T21:40:04.4740940Z [36;1mset -euo pipefail[0m
+2026-11-20T21:40:04.4741230Z [36;1mtest "$GITHUB_REF" = "refs/heads/$EXPECTED_APP_BRANCH"[0m
+2026-11-20T21:40:04.4741630Z [36;1mtest "$(git rev-parse HEAD)" = "$GITHUB_SHA"[0m
+2026-11-20T21:40:04.4741950Z [36;1mgit switch --force-create "$EXPECTED_APP_BRANCH" "$GITHUB_SHA"[0m
+2026-11-20T21:40:04.4742430Z [36;1mpython3 Tools/OriginalEditor/run_framework_acceptance.py --root "$GITHUB_WORKSPACE" \[0m
+2026-11-20T21:40:04.4742900Z [36;1m  --evidence "$EDITOR_EVIDENCE" --work "$EDITOR_WORK" --source-only[0m
+2026-11-20T21:40:04.4743350Z [36;1mpython3 -m unittest discover -s Tools/OriginalEditor -p 'test_*.py' -v \[0m
+2026-11-20T21:40:04.4743870Z [36;1m  > "$EDITOR_EVIDENCE/source-controls.stdout.log" 2> "$EDITOR_EVIDENCE/source-controls.stderr.log"[0m
+2026-11-20T21:40:04.4813650Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-20T21:40:04.4813960Z env:
+2026-11-20T21:40:04.4814360Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-20T21:40:04.4814660Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-20T21:40:04.4815090Z   EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v6-reviewed-20261120
+2026-11-20T21:40:04.4815460Z   HEART_SOURCE_RUN_ID: 44203168617
+2026-11-20T21:40:04.4815730Z   EDITOR_EVIDENCE: build/original-editor-framework-evidence
+2026-11-20T21:40:04.4816100Z   EDITOR_WORK: build/original-editor-framework-44822310098-1
+2026-11-20T21:40:04.4816500Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:04.4816950Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-20T21:40:04.4817380Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:04.4817760Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:04.4818130Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:04.4818420Z ##[endgroup]
+2026-11-20T21:40:04.9000980Z Switched to a new branch 'codex/otzaria-original-editor-framework-v6-reviewed-20261120'
+2026-11-20T21:40:06.0982180Z {
+2026-11-20T21:40:06.1084550Z   "external_consumer_build": "NOT_RUN",
+2026-11-20T21:40:06.1195410Z   "finished_at": "2026-11-20T21:40:06.097039+00:00",
+2026-11-20T21:40:06.1297500Z   "native_editor_ui_tests": 0,
+2026-11-20T21:40:06.1431790Z   "original_framework_build": "NOT_RUN",
+2026-11-20T21:40:06.1672990Z   "phase": "SOURCE_ADMISSION",
+2026-11-20T21:40:06.1777320Z   "run_attempt": "1",
+2026-11-20T21:40:06.1897700Z   "run_id": "44822310098",
+2026-11-20T21:40:06.2035500Z   "schema": 1,
+2026-11-20T21:40:06.2147320Z   "source_sha": "f179a616e5e22fc785bb97dc5ffa5ec1621441b3",
+2026-11-20T21:40:06.2315970Z   "started_at": "2026-11-20T21:40:05.295944+00:00",
+2026-11-20T21:40:06.2427110Z   "status": "SOURCE_BOUND_FRAMEWORK_RUNTIME_NOT_RUN",
+2026-11-20T21:40:06.2530090Z   "verified_runtime_observations": []
+2026-11-20T21:40:06.2660910Z }
+2026-11-20T21:40:14.7474700Z ##[group]Run actions/checkout@v4
+2026-11-20T21:40:14.7474990Z with:
+2026-11-20T21:40:14.7475210Z   repository: davidpovarsky/hanlin-ai
+2026-11-20T21:40:14.7475440Z   ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-20T21:40:14.7475710Z   path: .ci/hanlin-source
+2026-11-20T21:40:14.7475890Z   persist-credentials: false
+2026-11-20T21:40:14.7477930Z   token: ***
+2026-11-20T21:40:14.7478120Z   ssh-strict: true
+2026-11-20T21:40:14.7478340Z   ssh-user: git
+2026-11-20T21:40:14.7478580Z   clean: true
+2026-11-20T21:40:14.7478790Z   sparse-checkout-cone-mode: true
+2026-11-20T21:40:14.7478970Z   fetch-depth: 1
+2026-11-20T21:40:14.7479300Z   fetch-tags: false
+2026-11-20T21:40:14.7479490Z   show-progress: true
+2026-11-20T21:40:14.7479760Z   lfs: false
+2026-11-20T21:40:14.7479980Z   submodules: false
+2026-11-20T21:40:14.7480200Z   set-safe-directory: true
+2026-11-20T21:40:14.7480460Z   allow-unsafe-pr-checkout: false
+2026-11-20T21:40:14.7480820Z env:
+2026-11-20T21:40:14.7481160Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-20T21:40:14.7481500Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-20T21:40:14.7481940Z   EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v6-reviewed-20261120
+2026-11-20T21:40:14.7482460Z   HEART_SOURCE_RUN_ID: 44203168617
+2026-11-20T21:40:14.7482780Z   EDITOR_EVIDENCE: build/original-editor-framework-evidence
+2026-11-20T21:40:14.7483210Z   EDITOR_WORK: build/original-editor-framework-44822310098-1
+2026-11-20T21:40:14.7483600Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:14.7483980Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-20T21:40:14.7484360Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:14.7484700Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:14.7485050Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:14.7485300Z ##[endgroup]
+2026-11-20T21:40:14.9023150Z Syncing repository: davidpovarsky/hanlin-ai
+2026-11-20T21:40:14.9028800Z ##[group]Getting Git version info
+2026-11-20T21:40:14.9032780Z Working directory is '/Users/runner/work/anytype-swift/anytype-swift/.ci/hanlin-source'
+2026-11-20T21:40:14.9078010Z [command]/opt/homebrew/bin/git version
+2026-11-20T21:40:14.9173990Z git version 2.56.0
+2026-11-20T21:40:14.9187370Z ##[endgroup]
+2026-11-20T21:40:14.9194310Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/5ca1fc8c-9c86-4248-9cbf-60309842430e/.gitconfig'
+2026-11-20T21:40:14.9202030Z Temporarily overriding HOME='/Users/runner/work/_temp/5ca1fc8c-9c86-4248-9cbf-60309842430e' before making global git config changes
+2026-11-20T21:40:14.9205740Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-20T21:40:14.9207040Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/.ci/hanlin-source
+2026-11-20T21:40:14.9275920Z ##[group]Initializing the repository
+2026-11-20T21:40:14.9279780Z [command]/opt/homebrew/bin/git init /Users/runner/work/anytype-swift/anytype-swift/.ci/hanlin-source
+2026-11-20T21:40:14.9417250Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-20T21:40:14.9418700Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-20T21:40:14.9419490Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-20T21:40:14.9419990Z hint: call:
+2026-11-20T21:40:14.9420200Z hint:
+2026-11-20T21:40:14.9420550Z hint: 	git config --global init.defaultBranch <name>
+2026-11-20T21:40:14.9420970Z hint:
+2026-11-20T21:40:14.9421900Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-20T21:40:14.9422410Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-20T21:40:14.9422870Z hint:
+2026-11-20T21:40:14.9423040Z hint: 	git branch -m <name>
+2026-11-20T21:40:14.9423290Z hint:
+2026-11-20T21:40:14.9424040Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-20T21:40:14.9424580Z Initialized empty Git repository in /Users/runner/work/anytype-swift/anytype-swift/.ci/hanlin-source/.git/
+2026-11-20T21:40:14.9427540Z [command]/opt/homebrew/bin/git remote add origin https://github.com/davidpovarsky/hanlin-ai
+2026-11-20T21:40:14.9500290Z ##[endgroup]
+2026-11-20T21:40:14.9500710Z ##[group]Disabling automatic garbage collection
+2026-11-20T21:40:14.9503400Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-11-20T21:40:14.9566780Z ##[endgroup]
+2026-11-20T21:40:14.9567170Z ##[group]Setting up auth
+2026-11-20T21:40:14.9571760Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-20T21:40:14.9633480Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-20T21:40:15.0442730Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-20T21:40:15.0505950Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-20T21:40:15.1654290Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-20T21:40:15.1957250Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-20T21:40:15.3576190Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-20T21:40:15.3586080Z ##[endgroup]
+2026-11-20T21:40:15.3586590Z ##[group]Fetching the repository
+2026-11-20T21:40:15.3587490Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-20T21:40:18.8634780Z From https://github.com/davidpovarsky/hanlin-ai
+2026-11-20T21:40:18.8736430Z  * branch            116cc6be0654a5d11bc56ba00e0310031107ee36 -> FETCH_HEAD
+2026-11-20T21:40:18.8746570Z ##[endgroup]
+2026-11-20T21:40:18.8747010Z ##[group]Determining the checkout info
+2026-11-20T21:40:18.8747410Z ##[endgroup]
+2026-11-20T21:40:18.8750270Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-20T21:40:18.8751190Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-20T21:40:18.8811680Z ##[group]Checking out the ref
+2026-11-20T21:40:18.8815850Z [command]/opt/homebrew/bin/git checkout --progress --force 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-20T21:40:19.8267420Z HEAD is now at 116cc6b Expose bundled OpenUI resource location to public renderer configuration
+2026-11-20T21:40:19.8287390Z ##[endgroup]
+2026-11-20T21:40:19.8403810Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-11-20T21:40:19.8484110Z 116cc6be0654a5d11bc56ba00e0310031107ee36
+2026-11-20T21:40:19.8492480Z ##[group]Removing auth
+2026-11-20T21:40:19.8496220Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-20T21:40:19.8569960Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-20T21:40:19.9560490Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-20T21:40:19.9617200Z http.https://github.com/.extraheader
+2026-11-20T21:40:19.9623600Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-20T21:40:19.9687350Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-20T21:40:20.0431880Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-20T21:40:20.0489090Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-20T21:40:20.1537680Z ##[endgroup]
+2026-11-20T21:40:20.1580650Z ##[group]Run python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
+2026-11-20T21:40:20.1581140Z [36;1mpython3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source[0m
+2026-11-20T21:40:20.1581550Z [36;1mpython3 Tools/Hanlin/prepare_sdk.py --check[0m
+2026-11-20T21:40:20.1623970Z shell: /bin/bash -e {0}
+2026-11-20T21:40:20.1624150Z env:
+2026-11-20T21:40:20.1624320Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-20T21:40:20.1624580Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-20T21:40:20.1625010Z   EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v6-reviewed-20261120
+2026-11-20T21:40:20.1625360Z   HEART_SOURCE_RUN_ID: 44203168617
+2026-11-20T21:40:20.1625610Z   EDITOR_EVIDENCE: build/original-editor-framework-evidence
+2026-11-20T21:40:20.1625940Z   EDITOR_WORK: build/original-editor-framework-44822310098-1
+2026-11-20T21:40:20.1626280Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:20.1626720Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-20T21:40:20.1627110Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:20.1627470Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:20.1627810Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:20.1628110Z ##[endgroup]
+2026-11-20T21:40:20.4474640Z Verified Hanlin 116cc6be0654a5d11bc56ba00e0310031107ee36 at /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin
+2026-11-20T21:40:20.5505080Z Verified Hanlin 116cc6be0654a5d11bc56ba00e0310031107ee36 at /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin
+2026-11-20T21:40:20.5577040Z ##[group]Run python3 Tools/PinkhaSimulatorGate/preflight.py --evidence "$EDITOR_EVIDENCE/preflight"
+2026-11-20T21:40:20.5577750Z [36;1mpython3 Tools/PinkhaSimulatorGate/preflight.py --evidence "$EDITOR_EVIDENCE/preflight"[0m
+2026-11-20T21:40:20.5614180Z shell: /bin/bash -e {0}
+2026-11-20T21:40:20.5614370Z env:
+2026-11-20T21:40:20.5614550Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-20T21:40:20.5614820Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-20T21:40:20.5615230Z   EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v6-reviewed-20261120
+2026-11-20T21:40:20.5615650Z   HEART_SOURCE_RUN_ID: 44203168617
+2026-11-20T21:40:20.5615910Z   EDITOR_EVIDENCE: build/original-editor-framework-evidence
+2026-11-20T21:40:20.5616260Z   EDITOR_WORK: build/original-editor-framework-44822310098-1
+2026-11-20T21:40:20.5616620Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:20.5617180Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-20T21:40:20.5617680Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:20.5618080Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:20.5618510Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:20.5618780Z ##[endgroup]
+2026-11-20T21:40:30.7057600Z {"status": "PREFLIGHT_PASS_UI_NOT_RUN", "phase": "PREFLIGHT", "ui_tests_executed": 0, "started_at": "2026-11-20T21:40:20.624518+00:00", "run_id": "44822310098", "run_attempt": "1", "source_sha": "f179a616e5e22fc785bb97dc5ffa5ec1621441b3", "xcode": "Xcode 27.0\nBuild version 27A266a", "host_architecture": "arm64", "selected": {"iphone": {"udid": "920D1B9B-07BB-4142-BF2F-8EF961A80378", "device": {"productFamily": "iPhone", "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro.simdevicetype", "maxRuntimeVersion": 4294967295, "maxRuntimeVersionString": "65535.255.255", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro", "modelIdentifier": "iPhone19,2", "minRuntimeVersionString": "27.0.0", "minRuntimeVersion": 1769472, "name": "iPhone 18 Pro"}, "runtime": {"isAvailable": true, "version": "27.0", "isInternal": false, "buildversion": "24A434", "supportedArchitectures": ["arm64"], "supportedDeviceTypes": [{"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro.simdevicetype", "name": "iPhone 18 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro Max.simdevicetype", "name": "iPhone 18 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro.simdevicetype", "name": "iPhone 17 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro Max.simdevicetype", "name": "iPhone 17 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17e.simdevicetype", "name": "iPhone 17e", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17e"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone Air.simdevicetype", "name": "iPhone Air", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Air"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17.simdevicetype", "name": "iPhone 17", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro.simdevicetype", "name": "iPhone 16 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro Max.simdevicetype", "name": "iPhone 16 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16e.simdevicetype", "name": "iPhone 16e", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16e"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16.simdevicetype", "name": "iPhone 16", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Plus.simdevicetype", "name": "iPhone 16 Plus", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Plus"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro.simdevicetype", "name": "iPhone 15 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro Max.simdevicetype", "name": "iPhone 15 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15.simdevicetype", "name": "iPhone 15", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Plus.simdevicetype", "name": "iPhone 15 Plus", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Plus"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro.simdevicetype", "name": "iPhone 14 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro Max.simdevicetype", "name": "iPhone 14 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14.simdevicetype", "name": "iPhone 14", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Plus.simdevicetype", "name": "iPhone 14 Plus", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Plus"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (3rd generation).simdevicetype", "name": "iPhone SE (3rd generation)", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro.simdevicetype", "name": "iPhone 13 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro Max.simdevicetype", "name": "iPhone 13 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13.simdevicetype", "name": "iPhone 13", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 mini.simdevicetype", "name": "iPhone 13 mini", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-mini"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro.simdevicetype", "name": "iPhone 12 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro Max.simdevicetype", "name": "iPhone 12 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12.simdevicetype", "name": "iPhone 12", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 mini.simdevicetype", "name": "iPhone 12 mini", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-mini"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (2nd generation).simdevicetype", "name": "iPhone SE (2nd generation)", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE--2nd-generation-"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro.simdevicetype", "name": "iPhone 11 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro Max.simdevicetype", "name": "iPhone 11 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11.simdevicetype", "name": "iPhone 11", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype", "name": "iPad Pro 13-inch (M5) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5).simdevicetype", "name": "iPad Pro 13-inch (M5)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5) (16GB).simdevicetype", "name": "iPad Pro 11-inch (M5) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5).simdevicetype", "name": "iPad Pro 11-inch (M5)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-12GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4) (16GB).simdevicetype", "name": "iPad Pro 11-inch (M4) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4).simdevicetype", "name": "iPad Pro 11-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4) (16GB).simdevicetype", "name": "iPad Pro 13-inch (M4) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4).simdevicetype", "name": "iPad Pro 13-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M4).simdevicetype", "name": "iPad Air 13-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M4"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M4).simdevicetype", "name": "iPad Air 11-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M4"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (A16).simdevicetype", "name": "iPad (A16)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-A16"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M3).simdevicetype", "name": "iPad Air 13-inch (M3)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M3"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M3).simdevicetype", "name": "iPad Air 11-inch (M3)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M3"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M2).simdevicetype", "name": "iPad Air 11-inch (M2)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M2"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M2).simdevicetype", "name": "iPad Air 13-inch (M2)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M2"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (A17 Pro).simdevicetype", "name": "iPad mini (A17 Pro)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation) (16GB).simdevicetype", "name": "iPad Pro (11-inch) (4th generation) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation).simdevicetype", "name": "iPad Pro (11-inch) (4th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation) (16GB).simdevicetype", "name": "iPad Pro (12.9-inch) (6th generation) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation).simdevicetype", "name": "iPad Pro (12.9-inch) (6th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (10th generation).simdevicetype", "name": "iPad (10th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-10th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (5th generation).simdevicetype", "name": "iPad Air (5th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-5th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (6th generation).simdevicetype", "name": "iPad mini (6th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-6th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (3rd generation).simdevicetype", "name": "iPad Pro (11-inch) (3rd generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-3rd-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (5th generation).simdevicetype", "name": "iPad Pro (12.9-inch) (5th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-5th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (9th generation).simdevicetype", "name": "iPad (9th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-9th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (4th generation).simdevicetype", "name": "iPad Air (4th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air--4th-generation-"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (2nd generation).simdevicetype", "name": "iPad Pro (11-inch) (2nd generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--11-inch---2nd-generation-"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (4th generation).simdevicetype", "name": "iPad Pro (12.9-inch) (4th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---4th-generation-"}], "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0", "platform": "iOS", "bundlePath": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.xfpjmG/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime", "runtimeRoot": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.xfpjmG/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot", "lastUsage": {"arm64": "0001-01-01T00:00:00Z"}, "name": "iOS 27.0"}, "name": "Pinkha-UI27-44822310098-iphone"}, "ipad": {"udid": "FC539563-CAE0-4FE0-8FC2-EFFB4CD9313E", "device": {"productFamily": "iPad", "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype", "maxRuntimeVersion": 4294967295, "maxRuntimeVersionString": "65535.255.255", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB", "modelIdentifier": "iPad17,4", "minRuntimeVersionString": "26.0.0", "minRuntimeVersion": 1703936, "name": "iPad Pro 13-inch (M5) (16GB)"}, "runtime": {"isAvailable": true, "version": "27.0", "isInternal": false, "buildversion": "24A434", "supportedArchitectures": ["arm64"], "supportedDeviceTypes": [{"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro.simdevicetype", "name": "iPhone 18 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro Max.simdevicetype", "name": "iPhone 18 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro.simdevicetype", "name": "iPhone 17 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro Max.simdevicetype", "name": "iPhone 17 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17e.simdevicetype", "name": "iPhone 17e", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17e"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone Air.simdevicetype", "name": "iPhone Air", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Air"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17.simdevicetype", "name": "iPhone 17", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro.simdevicetype", "name": "iPhone 16 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro Max.simdevicetype", "name": "iPhone 16 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16e.simdevicetype", "name": "iPhone 16e", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16e"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16.simdevicetype", "name": "iPhone 16", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Plus.simdevicetype", "name": "iPhone 16 Plus", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Plus"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro.simdevicetype", "name": "iPhone 15 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro Max.simdevicetype", "name": "iPhone 15 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15.simdevicetype", "name": "iPhone 15", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Plus.simdevicetype", "name": "iPhone 15 Plus", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Plus"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro.simdevicetype", "name": "iPhone 14 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro Max.simdevicetype", "name": "iPhone 14 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14.simdevicetype", "name": "iPhone 14", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Plus.simdevicetype", "name": "iPhone 14 Plus", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Plus"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (3rd generation).simdevicetype", "name": "iPhone SE (3rd generation)", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro.simdevicetype", "name": "iPhone 13 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro Max.simdevicetype", "name": "iPhone 13 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13.simdevicetype", "name": "iPhone 13", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 mini.simdevicetype", "name": "iPhone 13 mini", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-mini"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro.simdevicetype", "name": "iPhone 12 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro Max.simdevicetype", "name": "iPhone 12 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12.simdevicetype", "name": "iPhone 12", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 mini.simdevicetype", "name": "iPhone 12 mini", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-mini"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (2nd generation).simdevicetype", "name": "iPhone SE (2nd generation)", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE--2nd-generation-"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro.simdevicetype", "name": "iPhone 11 Pro", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro Max.simdevicetype", "name": "iPhone 11 Pro Max", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro-Max"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11.simdevicetype", "name": "iPhone 11", "productFamily": "iPhone", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype", "name": "iPad Pro 13-inch (M5) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5).simdevicetype", "name": "iPad Pro 13-inch (M5)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5) (16GB).simdevicetype", "name": "iPad Pro 11-inch (M5) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5).simdevicetype", "name": "iPad Pro 11-inch (M5)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-12GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4) (16GB).simdevicetype", "name": "iPad Pro 11-inch (M4) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4).simdevicetype", "name": "iPad Pro 11-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4) (16GB).simdevicetype", "name": "iPad Pro 13-inch (M4) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4).simdevicetype", "name": "iPad Pro 13-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M4).simdevicetype", "name": "iPad Air 13-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M4"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M4).simdevicetype", "name": "iPad Air 11-inch (M4)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M4"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (A16).simdevicetype", "name": "iPad (A16)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-A16"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M3).simdevicetype", "name": "iPad Air 13-inch (M3)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M3"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M3).simdevicetype", "name": "iPad Air 11-inch (M3)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M3"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M2).simdevicetype", "name": "iPad Air 11-inch (M2)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M2"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M2).simdevicetype", "name": "iPad Air 13-inch (M2)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M2"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (A17 Pro).simdevicetype", "name": "iPad mini (A17 Pro)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation) (16GB).simdevicetype", "name": "iPad Pro (11-inch) (4th generation) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation).simdevicetype", "name": "iPad Pro (11-inch) (4th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation) (16GB).simdevicetype", "name": "iPad Pro (12.9-inch) (6th generation) (16GB)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-16GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation).simdevicetype", "name": "iPad Pro (12.9-inch) (6th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-8GB"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (10th generation).simdevicetype", "name": "iPad (10th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-10th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (5th generation).simdevicetype", "name": "iPad Air (5th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-5th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (6th generation).simdevicetype", "name": "iPad mini (6th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-6th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (3rd generation).simdevicetype", "name": "iPad Pro (11-inch) (3rd generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-3rd-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (5th generation).simdevicetype", "name": "iPad Pro (12.9-inch) (5th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-5th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (9th generation).simdevicetype", "name": "iPad (9th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-9th-generation"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (4th generation).simdevicetype", "name": "iPad Air (4th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air--4th-generation-"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (2nd generation).simdevicetype", "name": "iPad Pro (11-inch) (2nd generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--11-inch---2nd-generation-"}, {"bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (4th generation).simdevicetype", "name": "iPad Pro (12.9-inch) (4th generation)", "productFamily": "iPad", "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---4th-generation-"}], "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0", "platform": "iOS", "bundlePath": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.xfpjmG/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime", "runtimeRoot": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.xfpjmG/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot", "lastUsage": {"arm64": "0001-01-01T00:00:00Z"}, "name": "iOS 27.0"}, "name": "Pinkha-UI27-44822310098-ipad"}}, "python": "3.12.10 (v3.12.10:0cc81280367, Apr  8 2025, 08:46:59) [Clang 13.0.0 (clang-1300.0.29.30)]", "developer_dir": "/Applications/Xcode_27.app/Contents/Developer", "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0", "sdks": "DriverKit SDKs:\n\tDriverKit 27.0                \t-sdk driverkit27.0\n\niOS SDKs:\n\tiOS 27.0                      \t-sdk iphoneos27.0\n\niOS Simulator SDKs:\n\tSimulator - iOS 27.0          \t-sdk iphonesimulator27.0\n\nmacOS SDKs:\n\tmacOS 27.0                    \t-sdk macosx27.0\n\tmacOS 27.0                    \t-sdk macosx27.0\n\ntvOS SDKs:\n\ttvOS 27.0                     \t-sdk appletvos27.0\n\ntvOS Simulator SDKs:\n\tSimulator - tvOS 27.0         \t-sdk appletvsimulator27.0\n\nvisionOS SDKs:\n\tvisionOS 27.0                 \t-sdk xros27.0\n\nvisionOS Simulator SDKs:\n\tSimulator - visionOS 27.0     \t-sdk xrsimulator27.0\n\nwatchOS SDKs:\n\twatchOS 27.0                  \t-sdk watchos27.0\n\nwatchOS Simulator SDKs:\n\tSimulator - watchOS 27.0      \t-sdk watchsimulator27.0", "finished_at": "2026-11-20T21:40:30.694086+00:00"}
+2026-11-20T21:40:30.7152960Z swift-driver version: 1.168.6 
+2026-11-20T21:40:30.7239170Z ##[group]Run python3 Tools/Hanlin/prepare_original_editor_heart.py \
+2026-11-20T21:40:30.7239710Z [36;1mpython3 Tools/Hanlin/prepare_original_editor_heart.py \[0m
+2026-11-20T21:40:30.7240240Z [36;1m  --source-run-id "$HEART_SOURCE_RUN_ID" \[0m
+2026-11-20T21:40:30.7240890Z [36;1m  --output build/original-editor-framework-verified-heart --evidence "$EDITOR_EVIDENCE/heart-source"[0m
+2026-11-20T21:40:30.7241540Z [36;1mpython3 Tools/PinkhaNativeDerived/install_verified_heart.py \[0m
+2026-11-20T21:40:30.7242120Z [36;1m  --archive build/original-editor-framework-verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz \[0m
+2026-11-20T21:40:30.7242890Z [36;1m  --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \[0m
+2026-11-20T21:40:30.7243770Z [36;1m  --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \[0m
+2026-11-20T21:40:30.7244550Z [36;1m  --app-source "$GITHUB_WORKSPACE" --source-run-id "$HEART_SOURCE_RUN_ID" \[0m
+2026-11-20T21:40:30.7245170Z [36;1m  --expected-app-branch "$EXPECTED_APP_BRANCH" --evidence "$EDITOR_EVIDENCE/heart"[0m
+2026-11-20T21:40:30.7286930Z shell: /bin/bash -e {0}
+2026-11-20T21:40:30.7287230Z env:
+2026-11-20T21:40:30.7287550Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-20T21:40:30.7287890Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-20T21:40:30.7288420Z   EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v6-reviewed-20261120
+2026-11-20T21:40:30.7288850Z   HEART_SOURCE_RUN_ID: 44203168617
+2026-11-20T21:40:30.7289250Z   EDITOR_EVIDENCE: build/original-editor-framework-evidence
+2026-11-20T21:40:30.7289570Z   EDITOR_WORK: build/original-editor-framework-44822310098-1
+2026-11-20T21:40:30.7290050Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:30.7290510Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-20T21:40:30.7290980Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:30.7291600Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:30.7292060Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:30.7292580Z   PINKHA_UI27_IPHONE_UDID: 920D1B9B-07BB-4142-BF2F-8EF961A80378
+2026-11-20T21:40:30.7292970Z   PINKHA_UI27_IPAD_UDID: FC539563-CAE0-4FE0-8FC2-EFFB4CD9313E
+2026-11-20T21:40:30.7295540Z   GH_TOKEN: ***
+2026-11-20T21:40:30.7295790Z ##[endgroup]
+2026-11-20T21:40:51.0387450Z {
+2026-11-20T21:40:51.0388520Z   "status": "EXACT_GITHUB_ARTIFACT_VERIFIED_FRAMEWORK_INSTALL_NOT_RUN",
+2026-11-20T21:40:51.0388960Z   "run_id": 44203168617,
+2026-11-20T21:40:51.0389350Z   "artifact_id": 14383247626,
+2026-11-20T21:40:51.0389680Z   "consumer_sha": "f179a616e5e22fc785bb97dc5ffa5ec1621441b3",
+2026-11-20T21:40:51.0390060Z   "ui_executed": 0,
+2026-11-20T21:40:51.0390690Z   "outer_zip_sha256": "7ac88836edc2ee9ff0c7d8cb8943b8e968f0c73b2b94752ba27cebc241c69996",
+2026-11-20T21:40:51.0391280Z   "inner_archive_sha256": "7aa836e081740b99e7e26485fd7f1845fc3ea99fa2331b2ab99330675a4c590f",
+2026-11-20T21:40:51.0395990Z   "inner_archive_bytes": 264982421,
+2026-11-20T21:40:51.0396260Z   "zip_crc_verified": true,
+2026-11-20T21:40:51.0397070Z   "archive": "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz"
+2026-11-20T21:40:51.0398210Z }
+2026-11-20T21:40:58.6982560Z {"status": "PASS", "source_run_id": "44203168617", "archive_sha256": "7aa836e081740b99e7e26485fd7f1845fc3ea99fa2331b2ab99330675a4c590f", "patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077", "app_source_sha": "f179a616e5e22fc785bb97dc5ffa5ec1621441b3", "original_build_app_sha": null, "marker": "pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077"}
+2026-11-20T21:40:58.7236050Z ##[group]Run python3 Tools/OriginalEditor/run_framework_acceptance.py --root "$GITHUB_WORKSPACE" \
+2026-11-20T21:40:58.7237330Z [36;1mpython3 Tools/OriginalEditor/run_framework_acceptance.py --root "$GITHUB_WORKSPACE" \[0m
+2026-11-20T21:40:58.7238020Z [36;1m  --evidence "$EDITOR_EVIDENCE" --work "$EDITOR_WORK"[0m
+2026-11-20T21:40:58.7300980Z shell: /bin/bash -e {0}
+2026-11-20T21:40:58.7301270Z env:
+2026-11-20T21:40:58.7301610Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-20T21:40:58.7302060Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-20T21:40:58.7302630Z   EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v6-reviewed-20261120
+2026-11-20T21:40:58.7303200Z   HEART_SOURCE_RUN_ID: 44203168617
+2026-11-20T21:40:58.7304110Z   EDITOR_EVIDENCE: build/original-editor-framework-evidence
+2026-11-20T21:40:58.7304750Z   EDITOR_WORK: build/original-editor-framework-44822310098-1
+2026-11-20T21:40:58.7305300Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:58.7305880Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-20T21:40:58.7306580Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:58.7307220Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:58.7307740Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:40:58.7308220Z   PINKHA_UI27_IPHONE_UDID: 920D1B9B-07BB-4142-BF2F-8EF961A80378
+2026-11-20T21:40:58.7308760Z   PINKHA_UI27_IPAD_UDID: FC539563-CAE0-4FE0-8FC2-EFFB4CD9313E
+2026-11-20T21:40:58.7309090Z ##[endgroup]
+2026-11-20T21:57:07.5520880Z {
+2026-11-20T21:57:07.5542870Z   "actual_source_closure": {
+2026-11-20T21:57:07.5544280Z     "app_or_test_binary_repackaged": false,
+2026-11-20T21:57:07.5549080Z     "complete_original_swift_input_count": 2238,
+2026-11-20T21:57:07.5553210Z     "generated_bundle_accessors": [
+2026-11-20T21:57:07.5554890Z       {
+2026-11-20T21:57:07.5556170Z         "bytes": 1702,
+2026-11-20T21:57:07.5556820Z         "evidence_path": "original-generated-Assets-resource-accessor.swift.txt",
+2026-11-20T21:57:07.5557420Z         "module": "Assets",
+2026-11-20T21:57:07.5565970Z         "path": "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44822310098-1/producer-derived/Build/Intermediates.noindex/Assets.build/Debug-Anytype-iphonesimulator/Assets-t.build/DerivedSources/resource_bundle_accessor.swift",
+2026-11-20T21:57:07.5569230Z         "sha256": "24dadc9f4ddc1c6ed3b598a67dd71dca08645dd4121e5f26c66cbb2a14410614"
+2026-11-20T21:57:07.5569800Z       },
+2026-11-20T21:57:07.5573120Z       {
+2026-11-20T21:57:07.5573500Z         "bytes": 1714,
+2026-11-20T21:57:07.5573910Z         "evidence_path": "original-generated-DesignKit-resource-accessor.swift.txt",
+2026-11-20T21:57:07.5580200Z         "module": "DesignKit",
+2026-11-20T21:57:07.5582010Z         "path": "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44822310098-1/producer-derived/Build/Intermediates.noindex/DesignKit.build/Debug-Anytype-iphonesimulator/DesignKit-t.build/DerivedSources/resource_bundle_accessor.swift",
+2026-11-20T21:57:07.5614280Z         "sha256": "3aa8f31845e8adf40ad2bd7a40e8cde97526d2199a94663c45e3984951382cb8"
+2026-11-20T21:57:07.5617050Z       },
+2026-11-20T21:57:07.5620030Z       {
+2026-11-20T21:57:07.5620650Z         "bytes": 1690,
+2026-11-20T21:57:07.5621450Z         "evidence_path": "original-generated-Loc-resource-accessor.swift.txt",
+2026-11-20T21:57:07.5624640Z         "module": "Loc",
+2026-11-20T21:57:07.5640710Z         "path": "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44822310098-1/producer-derived/Build/Intermediates.noindex/Loc.build/Debug-Anytype-iphonesimulator/Loc-t.build/DerivedSources/resource_bundle_accessor.swift",
+2026-11-20T21:57:07.5641850Z         "sha256": "7853e94e1b09d2a2eca9f3df3b4dcbd9e7f558962b96e479fc9e80bd353e4e86"
+2026-11-20T21:57:07.5642670Z       }
+2026-11-20T21:57:07.5653260Z     ],
+2026-11-20T21:57:07.5654070Z     "generated_swift_input_count": 1,
+2026-11-20T21:57:07.5658180Z     "lists": [
+2026-11-20T21:57:07.5669580Z       {
+2026-11-20T21:57:07.5673780Z         "bytes": 313586,
+2026-11-20T21:57:07.5674240Z         "evidence_path": "framework-inputs-0.SwiftFileList.txt",
+2026-11-20T21:57:07.5689740Z         "path": "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44822310098-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/Objects-normal/arm64/AnytypeOriginalEditor.SwiftFileList",
+2026-11-20T21:57:07.5698600Z         "sha256": "31ae0d6e84f6d7a131d8bb87c76fb55e56878d451ca335d5176c20b6c53525ce"
+2026-11-20T21:57:07.5699130Z       }
+2026-11-20T21:57:07.5703140Z     ],
+2026-11-20T21:57:07.5706560Z     "source_is_original": true
+2026-11-20T21:57:07.5711190Z   },
+2026-11-20T21:57:07.5711590Z   "dependencies": {
+2026-11-20T21:57:07.5711970Z     "actual_checkout_revisions": {
+2026-11-20T21:57:07.5715170Z       "abseil-cpp-binary": "194a6706acbd25e4ef639bcaddea16e8758a3e27",
+2026-11-20T21:57:07.5723100Z       "amplitude-swift": "227c2bbc578e9e03bc7b2033da02937c06e476c6",
+2026-11-20T21:57:07.5723750Z       "amplitudecore-swift": "13fd0eb0aa080816ffa409669758b2e8787322b2",
+2026-11-20T21:57:07.5733660Z       "analytics-connector-ios": "4adbfe85486e6dcdcdca5fa9362097ffe5ec712b",
+2026-11-20T21:57:07.7356590Z       "any-crypto-swift": "0d7429888f8ec60d1730341ff1122d5ddf0ff1ab",
+2026-11-20T21:57:07.7357360Z       "app-check": "61b85103a1aeed8218f17c794687781505fbbef5",
+2026-11-20T21:57:07.7357920Z       "bigint": "d013a2b66ee468aade6da1f26c6d55cb6cd2e9ad",
+2026-11-20T21:57:07.7358220Z       "cache": "24e47109e31b2031cb26e25cc1b81b607496066c",
+2026-11-20T21:57:07.7361140Z       "confettiswiftui": "f45961f97bbae6fff6e2e64546fea0189425ad92",
+2026-11-20T21:57:07.7370000Z       "devicekit": "fe41d18eccd92a115cffaa35dfff03018c67e635",
+2026-11-20T21:57:07.7370520Z       "factory": "8ca11a7bd1ede031e8e6d7a912bb116e2e43961b",
+2026-11-20T21:57:07.7373300Z       "firebase-ios-sdk": "6318278e8e64d21f0fdcc69004395e4d34048aaf",
+2026-11-20T21:57:07.7375610Z       "floatingpanel": "22d46c526084724a718b8c39ab77f12452712cc7",
+2026-11-20T21:57:07.7376900Z       "googleappmeasurement": "be0881ff728eca210ccb628092af400c086abda3",
+2026-11-20T21:57:07.7386790Z       "googledatatransport": "617af071af9aa1d6a091d59a202910ac482128f9",
+2026-11-20T21:57:07.7388540Z       "googleutilities": "53156c7ec267db846e6b64c9f4c4e31ba4cf75eb",
+2026-11-20T21:57:07.7391900Z       "grpc-binary": "f56d8fc3162de9a498377c7b6cea43431f4f5083",
+2026-11-20T21:57:07.7392420Z       "gtm-session-fetcher": "3cdb78efb79b4a5383c3911488d8025bfc545b5e",
+2026-11-20T21:57:07.7392960Z       "highlightr": "fa483d37c692961ecc2391eac568ba3d3935e663",
+2026-11-20T21:57:07.7393440Z       "interop-ios-for-google-sdks": "2d12673670417654f08f5f90fdd62926dc3a2648",
+2026-11-20T21:57:07.7399490Z       "kingfisher": "3db26ab625d194c38e68c1a40e43d1bc12743fe0",
+2026-11-20T21:57:07.7400630Z       "leveldb": "a0bc79961d7be727d258d33d5a6b2f1023270ba1",
+2026-11-20T21:57:07.7402010Z       "nanopb": "b7e1104502eca3a213b46303391ca4d3bc8ddec1",
+2026-11-20T21:57:07.7404550Z       "promises": "540318ecedd63d883069ae7f1ed811a2df00b6ac",
+2026-11-20T21:57:07.7405840Z       "pulse": "c102aaa266ac69a26d08ee6861da710283988e3b",
+2026-11-20T21:57:07.7407750Z       "qrcode": "ea4047a7777bae470adc140cd94bfa5396a96202",
+2026-11-20T21:57:07.7434610Z       "sentry-cocoa": "cf44aa8cb4147f39e698c1f28be0b6b2c89f79d2",
+2026-11-20T21:57:07.7435650Z       "shimmerswift": "f1a4366f74329c313e9528bcbe5286eacc750c05",
+2026-11-20T21:57:07.7437250Z       "swift-ai-sdk": "e7bf34111e603ca977becd007dd4e5bb109af857",
+2026-11-20T21:57:07.7438620Z       "swift-argument-parser": "6a52f3251125d74daf04fcbd5e6f08a75d074382",
+2026-11-20T21:57:07.7440010Z       "swift-asn1": "a54383ada6cecde007d374f58f864e29370ba5c3",
+2026-11-20T21:57:07.7442630Z       "swift-async-algorithms": "4c3ea81f81f0a25d0470188459c6d4bf20cf2f97",
+2026-11-20T21:57:07.7447640Z       "swift-collections": "671108c96644956dddcd89dd59c203dcdb36cec7",
+2026-11-20T21:57:07.7448760Z       "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+2026-11-20T21:57:07.7451570Z       "swift-log": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
+2026-11-20T21:57:07.7453080Z       "swift-protobuf": "c6fe6442e6a64250495669325044052e113e990c",
+2026-11-20T21:57:07.7454220Z       "swift-qrcode-generator": "2b1980b825f08a81ccc762b0c4d17fcde9d5e953",
+2026-11-20T21:57:07.7455630Z       "swift-syntax": "0687f71944021d616d34d922343dcef086855920",
+2026-11-20T21:57:07.7456590Z       "swiftentrykit": "5ad36cccf0c4b9fea32f4e9b17a8e38f07563ef0",
+2026-11-20T21:57:07.7457960Z       "swiftimagereadwrite": "42ace2412279f18bc264bc306e96b51c36e12a33",
+2026-11-20T21:57:07.7460060Z       "swiftyjson": "b3dcd7dbd0d488e1a7077cb33b00f2083e382f07",
+2026-11-20T21:57:07.7461020Z       "torahinspectorkit": "158acb295f832e96907cdadc813a1c2a4bb6a03c",
+2026-11-20T21:57:07.7462790Z       "wrappinghstack": "3300f68b6bf5f8a75ee7ca8a40f136a558053d10",
+2026-11-20T21:57:07.7463840Z       "zipfoundation": "02b6abe5f6eef7e3cbd5f247c5cc24e246efcfe0"
+2026-11-20T21:57:07.7464990Z     },
+2026-11-20T21:57:07.7465810Z     "locked_but_not_materialized": [],
+2026-11-20T21:57:07.7466770Z     "original_pin_count": 44
+2026-11-20T21:57:07.7472950Z   },
+2026-11-20T21:57:07.7474770Z   "editable_mount": "NOT_EXPOSED",
+2026-11-20T21:57:07.7476290Z   "error": "Unexpected or nonzero signature allocation padding",
+2026-11-20T21:57:07.7477450Z   "error_type": "ValueError",
+2026-11-20T21:57:07.7483440Z   "external_consumer_build": "NOT_RUN",
+2026-11-20T21:57:07.7484400Z   "finished_at": "2026-11-20T21:57:02.885859+00:00",
+2026-11-20T21:57:07.7484690Z   "heart": {
+2026-11-20T21:57:07.7485860Z     "app_source_sha": "f179a616e5e22fc785bb97dc5ffa5ec1621441b3",
+2026-11-20T21:57:07.7486530Z     "archive_sha256": "7aa836e081740b99e7e26485fd7f1845fc3ea99fa2331b2ab99330675a4c590f",
+2026-11-20T21:57:07.7487450Z     "marker": "pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+2026-11-20T21:57:07.7488010Z     "original_build_app_sha": null,
+2026-11-20T21:57:07.7488630Z     "patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+2026-11-20T21:57:07.7489820Z     "source_run_id": "44203168617",
+2026-11-20T21:57:07.7490300Z     "status": "PASS"
+2026-11-20T21:57:07.7490770Z   },
+2026-11-20T21:57:07.7495480Z   "native_editor_ui_tests": 0,
+2026-11-20T21:57:07.7495830Z   "original_app_runtime": "NOT_RUN",
+2026-11-20T21:57:07.7496460Z   "original_framework_build": "PASS",
+2026-11-20T21:57:07.7496760Z   "phase": "ORIGINAL_FRAMEWORK_BUILD",
+2026-11-20T21:57:07.7497120Z   "preflight": {
+2026-11-20T21:57:07.7497580Z     "developer_dir": "/Applications/Xcode_27.app/Contents/Developer",
+2026-11-20T21:57:07.7498330Z     "finished_at": "2026-11-20T21:40:30.694086+00:00",
+2026-11-20T21:57:07.7506880Z     "host_architecture": "arm64",
+2026-11-20T21:57:07.7507190Z     "phase": "PREFLIGHT",
+2026-11-20T21:57:07.7507970Z     "python": "3.12.10 (v3.12.10:0cc81280367, Apr  8 2025, 08:46:59) [Clang 13.0.0 (clang-1300.0.29.30)]",
+2026-11-20T21:57:07.7508580Z     "run_attempt": "1",
+2026-11-20T21:57:07.7509940Z     "run_id": "44822310098",
+2026-11-20T21:57:07.7512530Z     "sdks": "DriverKit SDKs:\n\tDriverKit 27.0                \t-sdk driverkit27.0\n\niOS SDKs:\n\tiOS 27.0                      \t-sdk iphoneos27.0\n\niOS Simulator SDKs:\n\tSimulator - iOS 27.0          \t-sdk iphonesimulator27.0\n\nmacOS SDKs:\n\tmacOS 27.0                    \t-sdk macosx27.0\n\tmacOS 27.0                    \t-sdk macosx27.0\n\ntvOS SDKs:\n\ttvOS 27.0                     \t-sdk appletvos27.0\n\ntvOS Simulator SDKs:\n\tSimulator - tvOS 27.0         \t-sdk appletvsimulator27.0\n\nvisionOS SDKs:\n\tvisionOS 27.0                 \t-sdk xros27.0\n\nvisionOS Simulator SDKs:\n\tSimulator - visionOS 27.0     \t-sdk xrsimulator27.0\n\nwatchOS SDKs:\n\twatchOS 27.0                  \t-sdk watchos27.0\n\nwatchOS Simulator SDKs:\n\tSimulator - watchOS 27.0      \t-sdk watchsimulator27.0",
+2026-11-20T21:57:07.7515270Z     "selected": {
+2026-11-20T21:57:07.7515760Z       "ipad": {
+2026-11-20T21:57:07.7516210Z         "device": {
+2026-11-20T21:57:07.7516770Z           "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype",
+2026-11-20T21:57:07.7517340Z           "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+2026-11-20T21:57:07.7517720Z           "maxRuntimeVersion": 4294967295,
+2026-11-20T21:57:07.7520900Z           "maxRuntimeVersionString": "65535.255.255",
+2026-11-20T21:57:07.7521380Z           "minRuntimeVersion": 1703936,
+2026-11-20T21:57:07.7522030Z           "minRuntimeVersionString": "26.0.0",
+2026-11-20T21:57:07.7522350Z           "modelIdentifier": "iPad17,4",
+2026-11-20T21:57:07.7522720Z           "name": "iPad Pro 13-inch (M5) (16GB)",
+2026-11-20T21:57:07.7523340Z           "productFamily": "iPad"
+2026-11-20T21:57:07.7523780Z         },
+2026-11-20T21:57:07.7524020Z         "name": "Pinkha-UI27-44822310098-ipad",
+2026-11-20T21:57:07.7524500Z         "runtime": {
+2026-11-20T21:57:07.7525090Z           "buildversion": "24A434",
+2026-11-20T21:57:07.7526130Z           "bundlePath": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.xfpjmG/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime",
+2026-11-20T21:57:07.7527020Z           "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+2026-11-20T21:57:07.7527500Z           "isAvailable": true,
+2026-11-20T21:57:07.7527800Z           "isInternal": false,
+2026-11-20T21:57:07.7528090Z           "lastUsage": {
+2026-11-20T21:57:07.7528640Z             "arm64": "0001-01-01T00:00:00Z"
+2026-11-20T21:57:07.7529090Z           },
+2026-11-20T21:57:07.7530000Z           "name": "iOS 27.0",
+2026-11-20T21:57:07.7530240Z           "platform": "iOS",
+2026-11-20T21:57:07.7531200Z           "runtimeRoot": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.xfpjmG/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot",
+2026-11-20T21:57:07.7532440Z           "supportedArchitectures": [
+2026-11-20T21:57:07.7532760Z             "arm64"
+2026-11-20T21:57:07.7533020Z           ],
+2026-11-20T21:57:07.7533330Z           "supportedDeviceTypes": [
+2026-11-20T21:57:07.7533680Z             {
+2026-11-20T21:57:07.7534010Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro.simdevicetype",
+2026-11-20T21:57:07.7534870Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+2026-11-20T21:57:07.7535320Z               "name": "iPhone 18 Pro",
+2026-11-20T21:57:07.7535640Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7538950Z             },
+2026-11-20T21:57:07.7539210Z             {
+2026-11-20T21:57:07.7539960Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7543190Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro-Max",
+2026-11-20T21:57:07.7551040Z               "name": "iPhone 18 Pro Max",
+2026-11-20T21:57:07.7552340Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7552950Z             },
+2026-11-20T21:57:07.7553280Z             {
+2026-11-20T21:57:07.7557150Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro.simdevicetype",
+2026-11-20T21:57:07.7562040Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro",
+2026-11-20T21:57:07.7562540Z               "name": "iPhone 17 Pro",
+2026-11-20T21:57:07.7563190Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7563480Z             },
+2026-11-20T21:57:07.7563730Z             {
+2026-11-20T21:57:07.7564140Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7565500Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max",
+2026-11-20T21:57:07.7565980Z               "name": "iPhone 17 Pro Max",
+2026-11-20T21:57:07.7566300Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7566640Z             },
+2026-11-20T21:57:07.7566830Z             {
+2026-11-20T21:57:07.7567960Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17e.simdevicetype",
+2026-11-20T21:57:07.7568500Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17e",
+2026-11-20T21:57:07.7572320Z               "name": "iPhone 17e",
+2026-11-20T21:57:07.7572610Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7572900Z             },
+2026-11-20T21:57:07.7573140Z             {
+2026-11-20T21:57:07.7573530Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone Air.simdevicetype",
+2026-11-20T21:57:07.7574130Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Air",
+2026-11-20T21:57:07.7574490Z               "name": "iPhone Air",
+2026-11-20T21:57:07.7574780Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7575020Z             },
+2026-11-20T21:57:07.7575300Z             {
+2026-11-20T21:57:07.7575690Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17.simdevicetype",
+2026-11-20T21:57:07.7576270Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17",
+2026-11-20T21:57:07.7576670Z               "name": "iPhone 17",
+2026-11-20T21:57:07.7576910Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7577190Z             },
+2026-11-20T21:57:07.7577360Z             {
+2026-11-20T21:57:07.7577800Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro.simdevicetype",
+2026-11-20T21:57:07.7578340Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro",
+2026-11-20T21:57:07.7578750Z               "name": "iPhone 16 Pro",
+2026-11-20T21:57:07.7579000Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7579280Z             },
+2026-11-20T21:57:07.7579570Z             {
+2026-11-20T21:57:07.7579990Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7583570Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max",
+2026-11-20T21:57:07.7584010Z               "name": "iPhone 16 Pro Max",
+2026-11-20T21:57:07.7584290Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7584520Z             },
+2026-11-20T21:57:07.7584740Z             {
+2026-11-20T21:57:07.7587640Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16e.simdevicetype",
+2026-11-20T21:57:07.7598250Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16e",
+2026-11-20T21:57:07.7598680Z               "name": "iPhone 16e",
+2026-11-20T21:57:07.7598990Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7599250Z             },
+2026-11-20T21:57:07.7599490Z             {
+2026-11-20T21:57:07.7599880Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16.simdevicetype",
+2026-11-20T21:57:07.7601190Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16",
+2026-11-20T21:57:07.7601540Z               "name": "iPhone 16",
+2026-11-20T21:57:07.7601780Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7604540Z             },
+2026-11-20T21:57:07.7607310Z             {
+2026-11-20T21:57:07.7607790Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Plus.simdevicetype",
+2026-11-20T21:57:07.7608430Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Plus",
+2026-11-20T21:57:07.7608810Z               "name": "iPhone 16 Plus",
+2026-11-20T21:57:07.7609110Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7609360Z             },
+2026-11-20T21:57:07.7610350Z             {
+2026-11-20T21:57:07.7610790Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro.simdevicetype",
+2026-11-20T21:57:07.7611410Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro",
+2026-11-20T21:57:07.7611840Z               "name": "iPhone 15 Pro",
+2026-11-20T21:57:07.7612110Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7612410Z             },
+2026-11-20T21:57:07.7612600Z             {
+2026-11-20T21:57:07.7613150Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7613730Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro-Max",
+2026-11-20T21:57:07.7614100Z               "name": "iPhone 15 Pro Max",
+2026-11-20T21:57:07.7614360Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7614640Z             },
+2026-11-20T21:57:07.7614780Z             {
+2026-11-20T21:57:07.7615100Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15.simdevicetype",
+2026-11-20T21:57:07.7615560Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15",
+2026-11-20T21:57:07.7615870Z               "name": "iPhone 15",
+2026-11-20T21:57:07.7616060Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7616240Z             },
+2026-11-20T21:57:07.7616370Z             {
+2026-11-20T21:57:07.7616690Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Plus.simdevicetype",
+2026-11-20T21:57:07.7617180Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Plus",
+2026-11-20T21:57:07.7617500Z               "name": "iPhone 15 Plus",
+2026-11-20T21:57:07.7617690Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7617870Z             },
+2026-11-20T21:57:07.7618000Z             {
+2026-11-20T21:57:07.7618320Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro.simdevicetype",
+2026-11-20T21:57:07.7618800Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro",
+2026-11-20T21:57:07.7619110Z               "name": "iPhone 14 Pro",
+2026-11-20T21:57:07.7619310Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7619490Z             },
+2026-11-20T21:57:07.7619610Z             {
+2026-11-20T21:57:07.7619940Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7620450Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro-Max",
+2026-11-20T21:57:07.7620780Z               "name": "iPhone 14 Pro Max",
+2026-11-20T21:57:07.7620980Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7621160Z             },
+2026-11-20T21:57:07.7621280Z             {
+2026-11-20T21:57:07.7621580Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14.simdevicetype",
+2026-11-20T21:57:07.7622060Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14",
+2026-11-20T21:57:07.7622350Z               "name": "iPhone 14",
+2026-11-20T21:57:07.7622540Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7622970Z             },
+2026-11-20T21:57:07.7623100Z             {
+2026-11-20T21:57:07.7623430Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Plus.simdevicetype",
+2026-11-20T21:57:07.7623910Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Plus",
+2026-11-20T21:57:07.7624230Z               "name": "iPhone 14 Plus",
+2026-11-20T21:57:07.7624430Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7624610Z             },
+2026-11-20T21:57:07.7624730Z             {
+2026-11-20T21:57:07.7625090Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (3rd generation).simdevicetype",
+2026-11-20T21:57:07.7625820Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation",
+2026-11-20T21:57:07.7626190Z               "name": "iPhone SE (3rd generation)",
+2026-11-20T21:57:07.7626420Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7626600Z             },
+2026-11-20T21:57:07.7626720Z             {
+2026-11-20T21:57:07.7627040Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro.simdevicetype",
+2026-11-20T21:57:07.7627520Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro",
+2026-11-20T21:57:07.7627830Z               "name": "iPhone 13 Pro",
+2026-11-20T21:57:07.7628020Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7628200Z             },
+2026-11-20T21:57:07.7628620Z             {
+2026-11-20T21:57:07.7629120Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7629650Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro-Max",
+2026-11-20T21:57:07.7642160Z               "name": "iPhone 13 Pro Max",
+2026-11-20T21:57:07.7642420Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7642600Z             },
+2026-11-20T21:57:07.7642750Z             {
+2026-11-20T21:57:07.7643080Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13.simdevicetype",
+2026-11-20T21:57:07.7643550Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13",
+2026-11-20T21:57:07.7643850Z               "name": "iPhone 13",
+2026-11-20T21:57:07.7644040Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7644220Z             },
+2026-11-20T21:57:07.7644350Z             {
+2026-11-20T21:57:07.7644670Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 mini.simdevicetype",
+2026-11-20T21:57:07.7645160Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-mini",
+2026-11-20T21:57:07.7645480Z               "name": "iPhone 13 mini",
+2026-11-20T21:57:07.7645680Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7645850Z             },
+2026-11-20T21:57:07.7645980Z             {
+2026-11-20T21:57:07.7646290Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro.simdevicetype",
+2026-11-20T21:57:07.7646780Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro",
+2026-11-20T21:57:07.7647100Z               "name": "iPhone 12 Pro",
+2026-11-20T21:57:07.7647290Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7647470Z             },
+2026-11-20T21:57:07.7647590Z             {
+2026-11-20T21:57:07.7647920Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7648420Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max",
+2026-11-20T21:57:07.7648750Z               "name": "iPhone 12 Pro Max",
+2026-11-20T21:57:07.7648950Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7649140Z             },
+2026-11-20T21:57:07.7649260Z             {
+2026-11-20T21:57:07.7649570Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12.simdevicetype",
+2026-11-20T21:57:07.7650470Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12",
+2026-11-20T21:57:07.7650760Z               "name": "iPhone 12",
+2026-11-20T21:57:07.7650950Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7651130Z             },
+2026-11-20T21:57:07.7651260Z             {
+2026-11-20T21:57:07.7651570Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 mini.simdevicetype",
+2026-11-20T21:57:07.7652060Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-mini",
+2026-11-20T21:57:07.7652380Z               "name": "iPhone 12 mini",
+2026-11-20T21:57:07.7652580Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7652760Z             },
+2026-11-20T21:57:07.7652880Z             {
+2026-11-20T21:57:07.7654000Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (2nd generation).simdevicetype",
+2026-11-20T21:57:07.7654670Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE--2nd-generation-",
+2026-11-20T21:57:07.7655080Z               "name": "iPhone SE (2nd generation)",
+2026-11-20T21:57:07.7655330Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7655510Z             },
+2026-11-20T21:57:07.7655640Z             {
+2026-11-20T21:57:07.7655990Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro.simdevicetype",
+2026-11-20T21:57:07.7656570Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro",
+2026-11-20T21:57:07.7656910Z               "name": "iPhone 11 Pro",
+2026-11-20T21:57:07.7657110Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7657290Z             },
+2026-11-20T21:57:07.7657420Z             {
+2026-11-20T21:57:07.7657750Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7658310Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro-Max",
+2026-11-20T21:57:07.7658700Z               "name": "iPhone 11 Pro Max",
+2026-11-20T21:57:07.7658900Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7659080Z             },
+2026-11-20T21:57:07.7659200Z             {
+2026-11-20T21:57:07.7659510Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11.simdevicetype",
+2026-11-20T21:57:07.7660230Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11",
+2026-11-20T21:57:07.7660630Z               "name": "iPhone 11",
+2026-11-20T21:57:07.7660890Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7661160Z             },
+2026-11-20T21:57:07.7661320Z             {
+2026-11-20T21:57:07.7661740Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype",
+2026-11-20T21:57:07.7662330Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+2026-11-20T21:57:07.7662730Z               "name": "iPad Pro 13-inch (M5) (16GB)",
+2026-11-20T21:57:07.7662960Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7663150Z             },
+2026-11-20T21:57:07.7663280Z             {
+2026-11-20T21:57:07.7663670Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5).simdevicetype",
+2026-11-20T21:57:07.7664300Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB",
+2026-11-20T21:57:07.7664660Z               "name": "iPad Pro 13-inch (M5)",
+2026-11-20T21:57:07.7664940Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7665150Z             },
+2026-11-20T21:57:07.7665270Z             {
+2026-11-20T21:57:07.7666120Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5) (16GB).simdevicetype",
+2026-11-20T21:57:07.7667940Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-16GB",
+2026-11-20T21:57:07.7671230Z               "name": "iPad Pro 11-inch (M5) (16GB)",
+2026-11-20T21:57:07.7672050Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7672310Z             },
+2026-11-20T21:57:07.7672440Z             {
+2026-11-20T21:57:07.7672780Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5).simdevicetype",
+2026-11-20T21:57:07.7673430Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-12GB",
+2026-11-20T21:57:07.7673810Z               "name": "iPad Pro 11-inch (M5)",
+2026-11-20T21:57:07.7674370Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7674930Z             },
+2026-11-20T21:57:07.7675090Z             {
+2026-11-20T21:57:07.7676020Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4) (16GB).simdevicetype",
+2026-11-20T21:57:07.7676640Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-16GB",
+2026-11-20T21:57:07.7677040Z               "name": "iPad Pro 11-inch (M4) (16GB)",
+2026-11-20T21:57:07.7677270Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7677460Z             },
+2026-11-20T21:57:07.7677580Z             {
+2026-11-20T21:57:07.7677920Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4).simdevicetype",
+2026-11-20T21:57:07.7678710Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-8GB",
+2026-11-20T21:57:07.7679180Z               "name": "iPad Pro 11-inch (M4)",
+2026-11-20T21:57:07.7679450Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7679670Z             },
+2026-11-20T21:57:07.7679980Z             {
+2026-11-20T21:57:07.7680970Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4) (16GB).simdevicetype",
+2026-11-20T21:57:07.7681660Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-16GB",
+2026-11-20T21:57:07.7682080Z               "name": "iPad Pro 13-inch (M4) (16GB)",
+2026-11-20T21:57:07.7682370Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7682550Z             },
+2026-11-20T21:57:07.7682680Z             {
+2026-11-20T21:57:07.7683020Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4).simdevicetype",
+2026-11-20T21:57:07.7683590Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-8GB",
+2026-11-20T21:57:07.7684010Z               "name": "iPad Pro 13-inch (M4)",
+2026-11-20T21:57:07.7684260Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7684550Z             },
+2026-11-20T21:57:07.7684750Z             {
+2026-11-20T21:57:07.7685160Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M4).simdevicetype",
+2026-11-20T21:57:07.7685780Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M4",
+2026-11-20T21:57:07.7686120Z               "name": "iPad Air 13-inch (M4)",
+2026-11-20T21:57:07.7686390Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7686820Z             },
+2026-11-20T21:57:07.7687000Z             {
+2026-11-20T21:57:07.7687850Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M4).simdevicetype",
+2026-11-20T21:57:07.7688410Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M4",
+2026-11-20T21:57:07.7688750Z               "name": "iPad Air 11-inch (M4)",
+2026-11-20T21:57:07.7689610Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7690180Z             },
+2026-11-20T21:57:07.7690560Z             {
+2026-11-20T21:57:07.7691430Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (A16).simdevicetype",
+2026-11-20T21:57:07.7692850Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-A16",
+2026-11-20T21:57:07.7693640Z               "name": "iPad (A16)",
+2026-11-20T21:57:07.7694630Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7695410Z             },
+2026-11-20T21:57:07.7695540Z             {
+2026-11-20T21:57:07.7696140Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M3).simdevicetype",
+2026-11-20T21:57:07.7696720Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M3",
+2026-11-20T21:57:07.7697060Z               "name": "iPad Air 13-inch (M3)",
+2026-11-20T21:57:07.7697280Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7697460Z             },
+2026-11-20T21:57:07.7697580Z             {
+2026-11-20T21:57:07.7697920Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M3).simdevicetype",
+2026-11-20T21:57:07.7699410Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M3",
+2026-11-20T21:57:07.7700760Z               "name": "iPad Air 11-inch (M3)",
+2026-11-20T21:57:07.7701490Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7702180Z             },
+2026-11-20T21:57:07.7702780Z             {
+2026-11-20T21:57:07.7704550Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M2).simdevicetype",
+2026-11-20T21:57:07.7706720Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M2",
+2026-11-20T21:57:07.7707460Z               "name": "iPad Air 11-inch (M2)",
+2026-11-20T21:57:07.7707690Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7707880Z             },
+2026-11-20T21:57:07.7708020Z             {
+2026-11-20T21:57:07.7708490Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M2).simdevicetype",
+2026-11-20T21:57:07.7714340Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M2",
+2026-11-20T21:57:07.7714840Z               "name": "iPad Air 13-inch (M2)",
+2026-11-20T21:57:07.7715120Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7715370Z             },
+2026-11-20T21:57:07.7715590Z             {
+2026-11-20T21:57:07.7716140Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (A17 Pro).simdevicetype",
+2026-11-20T21:57:07.7716780Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro",
+2026-11-20T21:57:07.7717190Z               "name": "iPad mini (A17 Pro)",
+2026-11-20T21:57:07.7717480Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7717730Z             },
+2026-11-20T21:57:07.7717890Z             {
+2026-11-20T21:57:07.7718380Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation) (16GB).simdevicetype",
+2026-11-20T21:57:07.7719250Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-16GB",
+2026-11-20T21:57:07.7719730Z               "name": "iPad Pro (11-inch) (4th generation) (16GB)",
+2026-11-20T21:57:07.7725640Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7726810Z             },
+2026-11-20T21:57:07.7727420Z             {
+2026-11-20T21:57:07.7728840Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation).simdevicetype",
+2026-11-20T21:57:07.7731320Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-8GB",
+2026-11-20T21:57:07.7732960Z               "name": "iPad Pro (11-inch) (4th generation)",
+2026-11-20T21:57:07.7734190Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7734790Z             },
+2026-11-20T21:57:07.7735320Z             {
+2026-11-20T21:57:07.7736640Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation) (16GB).simdevicetype",
+2026-11-20T21:57:07.7738620Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-16GB",
+2026-11-20T21:57:07.7740090Z               "name": "iPad Pro (12.9-inch) (6th generation) (16GB)",
+2026-11-20T21:57:07.7742180Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7742840Z             },
+2026-11-20T21:57:07.7743330Z             {
+2026-11-20T21:57:07.7749760Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation).simdevicetype",
+2026-11-20T21:57:07.7751850Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-8GB",
+2026-11-20T21:57:07.7753060Z               "name": "iPad Pro (12.9-inch) (6th generation)",
+2026-11-20T21:57:07.7753730Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7759640Z             },
+2026-11-20T21:57:07.7760040Z             {
+2026-11-20T21:57:07.7762010Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (10th generation).simdevicetype",
+2026-11-20T21:57:07.7763520Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-10th-generation",
+2026-11-20T21:57:07.7764490Z               "name": "iPad (10th generation)",
+2026-11-20T21:57:07.7765170Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7765730Z             },
+2026-11-20T21:57:07.7766150Z             {
+2026-11-20T21:57:07.7767260Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (5th generation).simdevicetype",
+2026-11-20T21:57:07.7768940Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-5th-generation",
+2026-11-20T21:57:07.7770010Z               "name": "iPad Air (5th generation)",
+2026-11-20T21:57:07.7770860Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7771590Z             },
+2026-11-20T21:57:07.7772180Z             {
+2026-11-20T21:57:07.7773400Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (6th generation).simdevicetype",
+2026-11-20T21:57:07.7774970Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-6th-generation",
+2026-11-20T21:57:07.7776430Z               "name": "iPad mini (6th generation)",
+2026-11-20T21:57:07.7777050Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7777560Z             },
+2026-11-20T21:57:07.7777930Z             {
+2026-11-20T21:57:07.7778990Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (3rd generation).simdevicetype",
+2026-11-20T21:57:07.7780660Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-3rd-generation",
+2026-11-20T21:57:07.7781730Z               "name": "iPad Pro (11-inch) (3rd generation)",
+2026-11-20T21:57:07.7782420Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7782930Z             },
+2026-11-20T21:57:07.7783300Z             {
+2026-11-20T21:57:07.7784390Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (5th generation).simdevicetype",
+2026-11-20T21:57:07.7786080Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-5th-generation",
+2026-11-20T21:57:07.7787240Z               "name": "iPad Pro (12.9-inch) (5th generation)",
+2026-11-20T21:57:07.7788020Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7788710Z             },
+2026-11-20T21:57:07.7789870Z             {
+2026-11-20T21:57:07.7790950Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (9th generation).simdevicetype",
+2026-11-20T21:57:07.7792910Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-9th-generation",
+2026-11-20T21:57:07.7793400Z               "name": "iPad (9th generation)",
+2026-11-20T21:57:07.7793630Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7793920Z             },
+2026-11-20T21:57:07.7794130Z             {
+2026-11-20T21:57:07.7794540Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (4th generation).simdevicetype",
+2026-11-20T21:57:07.7795370Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air--4th-generation-",
+2026-11-20T21:57:07.7796390Z               "name": "iPad Air (4th generation)",
+2026-11-20T21:57:07.7796670Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7796890Z             },
+2026-11-20T21:57:07.7797030Z             {
+2026-11-20T21:57:07.7797440Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (2nd generation).simdevicetype",
+2026-11-20T21:57:07.7798620Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--11-inch---2nd-generation-",
+2026-11-20T21:57:07.7799090Z               "name": "iPad Pro (11-inch) (2nd generation)",
+2026-11-20T21:57:07.7799340Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7799540Z             },
+2026-11-20T21:57:07.7799670Z             {
+2026-11-20T21:57:07.7801090Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (4th generation).simdevicetype",
+2026-11-20T21:57:07.7801800Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---4th-generation-",
+2026-11-20T21:57:07.7802250Z               "name": "iPad Pro (12.9-inch) (4th generation)",
+2026-11-20T21:57:07.7802520Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7802750Z             }
+2026-11-20T21:57:07.7802920Z           ],
+2026-11-20T21:57:07.7803050Z           "version": "27.0"
+2026-11-20T21:57:07.7803220Z         },
+2026-11-20T21:57:07.7803490Z         "udid": "FC539563-CAE0-4FE0-8FC2-EFFB4CD9313E"
+2026-11-20T21:57:07.7803800Z       },
+2026-11-20T21:57:07.7803940Z       "iphone": {
+2026-11-20T21:57:07.7804220Z         "device": {
+2026-11-20T21:57:07.7804700Z           "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro.simdevicetype",
+2026-11-20T21:57:07.7812200Z           "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+2026-11-20T21:57:07.7812630Z           "maxRuntimeVersion": 4294967295,
+2026-11-20T21:57:07.7812870Z           "maxRuntimeVersionString": "65535.255.255",
+2026-11-20T21:57:07.7813110Z           "minRuntimeVersion": 1769472,
+2026-11-20T21:57:07.7813340Z           "minRuntimeVersionString": "27.0.0",
+2026-11-20T21:57:07.7813570Z           "modelIdentifier": "iPhone19,2",
+2026-11-20T21:57:07.7813780Z           "name": "iPhone 18 Pro",
+2026-11-20T21:57:07.7813980Z           "productFamily": "iPhone"
+2026-11-20T21:57:07.7814200Z         },
+2026-11-20T21:57:07.7814420Z         "name": "Pinkha-UI27-44822310098-iphone",
+2026-11-20T21:57:07.7814640Z         "runtime": {
+2026-11-20T21:57:07.7814810Z           "buildversion": "24A434",
+2026-11-20T21:57:07.7815470Z           "bundlePath": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.xfpjmG/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime",
+2026-11-20T21:57:07.7816310Z           "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+2026-11-20T21:57:07.7816640Z           "isAvailable": true,
+2026-11-20T21:57:07.7816870Z           "isInternal": false,
+2026-11-20T21:57:07.7817080Z           "lastUsage": {
+2026-11-20T21:57:07.7817260Z             "arm64": "0001-01-01T00:00:00Z"
+2026-11-20T21:57:07.7817450Z           },
+2026-11-20T21:57:07.7817590Z           "name": "iOS 27.0",
+2026-11-20T21:57:07.7817770Z           "platform": "iOS",
+2026-11-20T21:57:07.7818540Z           "runtimeRoot": "/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.xfpjmG/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot",
+2026-11-20T21:57:07.7819370Z           "supportedArchitectures": [
+2026-11-20T21:57:07.7819600Z             "arm64"
+2026-11-20T21:57:07.7819770Z           ],
+2026-11-20T21:57:07.7819930Z           "supportedDeviceTypes": [
+2026-11-20T21:57:07.7820120Z             {
+2026-11-20T21:57:07.7820530Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro.simdevicetype",
+2026-11-20T21:57:07.7821100Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+2026-11-20T21:57:07.7821890Z               "name": "iPhone 18 Pro",
+2026-11-20T21:57:07.7822100Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7822290Z             },
+2026-11-20T21:57:07.7822420Z             {
+2026-11-20T21:57:07.7822910Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 18 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7823510Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro-Max",
+2026-11-20T21:57:07.7823870Z               "name": "iPhone 18 Pro Max",
+2026-11-20T21:57:07.7824080Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7824300Z             },
+2026-11-20T21:57:07.7824450Z             {
+2026-11-20T21:57:07.7825180Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro.simdevicetype",
+2026-11-20T21:57:07.7825700Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro",
+2026-11-20T21:57:07.7826060Z               "name": "iPhone 17 Pro",
+2026-11-20T21:57:07.7826270Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7826460Z             },
+2026-11-20T21:57:07.7826580Z             {
+2026-11-20T21:57:07.7826940Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7827460Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max",
+2026-11-20T21:57:07.7827800Z               "name": "iPhone 17 Pro Max",
+2026-11-20T21:57:07.7828010Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7828210Z             },
+2026-11-20T21:57:07.7828340Z             {
+2026-11-20T21:57:07.7828670Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17e.simdevicetype",
+2026-11-20T21:57:07.7829150Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17e",
+2026-11-20T21:57:07.7829470Z               "name": "iPhone 17e",
+2026-11-20T21:57:07.7829670Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7829850Z             },
+2026-11-20T21:57:07.7829990Z             {
+2026-11-20T21:57:07.7830320Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone Air.simdevicetype",
+2026-11-20T21:57:07.7830800Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-Air",
+2026-11-20T21:57:07.7833150Z               "name": "iPhone Air",
+2026-11-20T21:57:07.7833770Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7834300Z             },
+2026-11-20T21:57:07.7834680Z             {
+2026-11-20T21:57:07.7835560Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 17.simdevicetype",
+2026-11-20T21:57:07.7836980Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-17",
+2026-11-20T21:57:07.7837850Z               "name": "iPhone 17",
+2026-11-20T21:57:07.7838390Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7838930Z             },
+2026-11-20T21:57:07.7839320Z             {
+2026-11-20T21:57:07.7840200Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro.simdevicetype",
+2026-11-20T21:57:07.7841520Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro",
+2026-11-20T21:57:07.7842530Z               "name": "iPhone 16 Pro",
+2026-11-20T21:57:07.7843090Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7843610Z             },
+2026-11-20T21:57:07.7844220Z             {
+2026-11-20T21:57:07.7844770Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7845420Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max",
+2026-11-20T21:57:07.7845810Z               "name": "iPhone 16 Pro Max",
+2026-11-20T21:57:07.7846020Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7846210Z             },
+2026-11-20T21:57:07.7846340Z             {
+2026-11-20T21:57:07.7847280Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16e.simdevicetype",
+2026-11-20T21:57:07.7847760Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16e",
+2026-11-20T21:57:07.7848070Z               "name": "iPhone 16e",
+2026-11-20T21:57:07.7848260Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7848450Z             },
+2026-11-20T21:57:07.7848580Z             {
+2026-11-20T21:57:07.7848890Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16.simdevicetype",
+2026-11-20T21:57:07.7849370Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16",
+2026-11-20T21:57:07.7849670Z               "name": "iPhone 16",
+2026-11-20T21:57:07.7850190Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7850390Z             },
+2026-11-20T21:57:07.7850520Z             {
+2026-11-20T21:57:07.7850850Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 16 Plus.simdevicetype",
+2026-11-20T21:57:07.7851350Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Plus",
+2026-11-20T21:57:07.7851670Z               "name": "iPhone 16 Plus",
+2026-11-20T21:57:07.7851920Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7852150Z             },
+2026-11-20T21:57:07.7852280Z             {
+2026-11-20T21:57:07.7852610Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro.simdevicetype",
+2026-11-20T21:57:07.7853180Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro",
+2026-11-20T21:57:07.7853490Z               "name": "iPhone 15 Pro",
+2026-11-20T21:57:07.7853690Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7853880Z             },
+2026-11-20T21:57:07.7854000Z             {
+2026-11-20T21:57:07.7854340Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7854850Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro-Max",
+2026-11-20T21:57:07.7855180Z               "name": "iPhone 15 Pro Max",
+2026-11-20T21:57:07.7855380Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7855570Z             },
+2026-11-20T21:57:07.7855690Z             {
+2026-11-20T21:57:07.7856000Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15.simdevicetype",
+2026-11-20T21:57:07.7856470Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15",
+2026-11-20T21:57:07.7856770Z               "name": "iPhone 15",
+2026-11-20T21:57:07.7856950Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7857130Z             },
+2026-11-20T21:57:07.7857250Z             {
+2026-11-20T21:57:07.7857570Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 15 Plus.simdevicetype",
+2026-11-20T21:57:07.7858070Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-15-Plus",
+2026-11-20T21:57:07.7858390Z               "name": "iPhone 15 Plus",
+2026-11-20T21:57:07.7858590Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7858770Z             },
+2026-11-20T21:57:07.7858890Z             {
+2026-11-20T21:57:07.7859340Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro.simdevicetype",
+2026-11-20T21:57:07.7859910Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro",
+2026-11-20T21:57:07.7860250Z               "name": "iPhone 14 Pro",
+2026-11-20T21:57:07.7860440Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7860620Z             },
+2026-11-20T21:57:07.7860750Z             {
+2026-11-20T21:57:07.7861080Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7861590Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Pro-Max",
+2026-11-20T21:57:07.7862150Z               "name": "iPhone 14 Pro Max",
+2026-11-20T21:57:07.7862350Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7862530Z             },
+2026-11-20T21:57:07.7862650Z             {
+2026-11-20T21:57:07.7862950Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14.simdevicetype",
+2026-11-20T21:57:07.7863430Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14",
+2026-11-20T21:57:07.7863720Z               "name": "iPhone 14",
+2026-11-20T21:57:07.7863910Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7864090Z             },
+2026-11-20T21:57:07.7864220Z             {
+2026-11-20T21:57:07.7864540Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 14 Plus.simdevicetype",
+2026-11-20T21:57:07.7865260Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-14-Plus",
+2026-11-20T21:57:07.7865600Z               "name": "iPhone 14 Plus",
+2026-11-20T21:57:07.7865800Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7865980Z             },
+2026-11-20T21:57:07.7866110Z             {
+2026-11-20T21:57:07.7866480Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (3rd generation).simdevicetype",
+2026-11-20T21:57:07.7867070Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation",
+2026-11-20T21:57:07.7867440Z               "name": "iPhone SE (3rd generation)",
+2026-11-20T21:57:07.7867670Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7867840Z             },
+2026-11-20T21:57:07.7867970Z             {
+2026-11-20T21:57:07.7868290Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro.simdevicetype",
+2026-11-20T21:57:07.7868790Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro",
+2026-11-20T21:57:07.7869110Z               "name": "iPhone 13 Pro",
+2026-11-20T21:57:07.7869310Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7869500Z             },
+2026-11-20T21:57:07.7869620Z             {
+2026-11-20T21:57:07.7869960Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7870470Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-Pro-Max",
+2026-11-20T21:57:07.7870800Z               "name": "iPhone 13 Pro Max",
+2026-11-20T21:57:07.7871010Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7871190Z             },
+2026-11-20T21:57:07.7871320Z             {
+2026-11-20T21:57:07.7871630Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13.simdevicetype",
+2026-11-20T21:57:07.7872200Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13",
+2026-11-20T21:57:07.7872490Z               "name": "iPhone 13",
+2026-11-20T21:57:07.7872680Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7872860Z             },
+2026-11-20T21:57:07.7872990Z             {
+2026-11-20T21:57:07.7873310Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 13 mini.simdevicetype",
+2026-11-20T21:57:07.7873880Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-13-mini",
+2026-11-20T21:57:07.7874260Z               "name": "iPhone 13 mini",
+2026-11-20T21:57:07.7874510Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7874710Z             },
+2026-11-20T21:57:07.7874830Z             {
+2026-11-20T21:57:07.7875150Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro.simdevicetype",
+2026-11-20T21:57:07.7875660Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro",
+2026-11-20T21:57:07.7876060Z               "name": "iPhone 12 Pro",
+2026-11-20T21:57:07.7876310Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7876530Z             },
+2026-11-20T21:57:07.7876670Z             {
+2026-11-20T21:57:07.7877000Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7877770Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-Pro-Max",
+2026-11-20T21:57:07.7878110Z               "name": "iPhone 12 Pro Max",
+2026-11-20T21:57:07.7878310Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7878490Z             },
+2026-11-20T21:57:07.7878610Z             {
+2026-11-20T21:57:07.7878920Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12.simdevicetype",
+2026-11-20T21:57:07.7879370Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12",
+2026-11-20T21:57:07.7879670Z               "name": "iPhone 12",
+2026-11-20T21:57:07.7880080Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7880280Z             },
+2026-11-20T21:57:07.7880410Z             {
+2026-11-20T21:57:07.7880770Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 12 mini.simdevicetype",
+2026-11-20T21:57:07.7881340Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-12-mini",
+2026-11-20T21:57:07.7881660Z               "name": "iPhone 12 mini",
+2026-11-20T21:57:07.7882040Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7882270Z             },
+2026-11-20T21:57:07.7882410Z             {
+2026-11-20T21:57:07.7882770Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone SE (2nd generation).simdevicetype",
+2026-11-20T21:57:07.7883350Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-SE--2nd-generation-",
+2026-11-20T21:57:07.7883730Z               "name": "iPhone SE (2nd generation)",
+2026-11-20T21:57:07.7883950Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7884130Z             },
+2026-11-20T21:57:07.7884260Z             {
+2026-11-20T21:57:07.7884570Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro.simdevicetype",
+2026-11-20T21:57:07.7885080Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro",
+2026-11-20T21:57:07.7885390Z               "name": "iPhone 11 Pro",
+2026-11-20T21:57:07.7885590Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7885770Z             },
+2026-11-20T21:57:07.7885900Z             {
+2026-11-20T21:57:07.7886230Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11 Pro Max.simdevicetype",
+2026-11-20T21:57:07.7886740Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11-Pro-Max",
+2026-11-20T21:57:07.7887070Z               "name": "iPhone 11 Pro Max",
+2026-11-20T21:57:07.7887280Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7887460Z             },
+2026-11-20T21:57:07.7887590Z             {
+2026-11-20T21:57:07.7887900Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPhone 11.simdevicetype",
+2026-11-20T21:57:07.7888450Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-11",
+2026-11-20T21:57:07.7888770Z               "name": "iPhone 11",
+2026-11-20T21:57:07.7888960Z               "productFamily": "iPhone"
+2026-11-20T21:57:07.7889130Z             },
+2026-11-20T21:57:07.7889260Z             {
+2026-11-20T21:57:07.7889620Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5) (16GB).simdevicetype",
+2026-11-20T21:57:07.7890190Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+2026-11-20T21:57:07.7890570Z               "name": "iPad Pro 13-inch (M5) (16GB)",
+2026-11-20T21:57:07.7890790Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7890970Z             },
+2026-11-20T21:57:07.7891100Z             {
+2026-11-20T21:57:07.7891440Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M5).simdevicetype",
+2026-11-20T21:57:07.7891980Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB",
+2026-11-20T21:57:07.7892610Z               "name": "iPad Pro 13-inch (M5)",
+2026-11-20T21:57:07.7892830Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7893000Z             },
+2026-11-20T21:57:07.7893130Z             {
+2026-11-20T21:57:07.7893490Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5) (16GB).simdevicetype",
+2026-11-20T21:57:07.7894050Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-16GB",
+2026-11-20T21:57:07.7894420Z               "name": "iPad Pro 11-inch (M5) (16GB)",
+2026-11-20T21:57:07.7894650Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7894830Z             },
+2026-11-20T21:57:07.7894970Z             {
+2026-11-20T21:57:07.7895600Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M5).simdevicetype",
+2026-11-20T21:57:07.7896280Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-12GB",
+2026-11-20T21:57:07.7896820Z               "name": "iPad Pro 11-inch (M5)",
+2026-11-20T21:57:07.7903230Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7903480Z             },
+2026-11-20T21:57:07.7903610Z             {
+2026-11-20T21:57:07.7903980Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4) (16GB).simdevicetype",
+2026-11-20T21:57:07.7904650Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-16GB",
+2026-11-20T21:57:07.7905030Z               "name": "iPad Pro 11-inch (M4) (16GB)",
+2026-11-20T21:57:07.7905260Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7905440Z             },
+2026-11-20T21:57:07.7905560Z             {
+2026-11-20T21:57:07.7905910Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 11-inch (M4).simdevicetype",
+2026-11-20T21:57:07.7906450Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-8GB",
+2026-11-20T21:57:07.7906820Z               "name": "iPad Pro 11-inch (M4)",
+2026-11-20T21:57:07.7907030Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7907210Z             },
+2026-11-20T21:57:07.7907340Z             {
+2026-11-20T21:57:07.7907690Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4) (16GB).simdevicetype",
+2026-11-20T21:57:07.7908250Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-16GB",
+2026-11-20T21:57:07.7908620Z               "name": "iPad Pro 13-inch (M4) (16GB)",
+2026-11-20T21:57:07.7908840Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7909020Z             },
+2026-11-20T21:57:07.7909150Z             {
+2026-11-20T21:57:07.7909490Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro 13-inch (M4).simdevicetype",
+2026-11-20T21:57:07.7910020Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M4-8GB",
+2026-11-20T21:57:07.7910380Z               "name": "iPad Pro 13-inch (M4)",
+2026-11-20T21:57:07.7910590Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7910770Z             },
+2026-11-20T21:57:07.7910890Z             {
+2026-11-20T21:57:07.7911230Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M4).simdevicetype",
+2026-11-20T21:57:07.7911740Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M4",
+2026-11-20T21:57:07.7912080Z               "name": "iPad Air 13-inch (M4)",
+2026-11-20T21:57:07.7912290Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7912470Z             },
+2026-11-20T21:57:07.7912590Z             {
+2026-11-20T21:57:07.7912930Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M4).simdevicetype",
+2026-11-20T21:57:07.7913450Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M4",
+2026-11-20T21:57:07.7914320Z               "name": "iPad Air 11-inch (M4)",
+2026-11-20T21:57:07.7914530Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7914710Z             },
+2026-11-20T21:57:07.7914830Z             {
+2026-11-20T21:57:07.7915150Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (A16).simdevicetype",
+2026-11-20T21:57:07.7915610Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-A16",
+2026-11-20T21:57:07.7915910Z               "name": "iPad (A16)",
+2026-11-20T21:57:07.7916100Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7916270Z             },
+2026-11-20T21:57:07.7916390Z             {
+2026-11-20T21:57:07.7916950Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M3).simdevicetype",
+2026-11-20T21:57:07.7917550Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M3",
+2026-11-20T21:57:07.7917880Z               "name": "iPad Air 13-inch (M3)",
+2026-11-20T21:57:07.7918100Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7918270Z             },
+2026-11-20T21:57:07.7918400Z             {
+2026-11-20T21:57:07.7918800Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M3).simdevicetype",
+2026-11-20T21:57:07.7919370Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M3",
+2026-11-20T21:57:07.7919800Z               "name": "iPad Air 11-inch (M3)",
+2026-11-20T21:57:07.7920030Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7920210Z             },
+2026-11-20T21:57:07.7920340Z             {
+2026-11-20T21:57:07.7920700Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 11-inch (M2).simdevicetype",
+2026-11-20T21:57:07.7921300Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M2",
+2026-11-20T21:57:07.7921630Z               "name": "iPad Air 11-inch (M2)",
+2026-11-20T21:57:07.7921850Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7922220Z             },
+2026-11-20T21:57:07.7922380Z             {
+2026-11-20T21:57:07.7922720Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air 13-inch (M2).simdevicetype",
+2026-11-20T21:57:07.7923240Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M2",
+2026-11-20T21:57:07.7923740Z               "name": "iPad Air 13-inch (M2)",
+2026-11-20T21:57:07.7924110Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7924380Z             },
+2026-11-20T21:57:07.7924510Z             {
+2026-11-20T21:57:07.7924890Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (A17 Pro).simdevicetype",
+2026-11-20T21:57:07.7925470Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro",
+2026-11-20T21:57:07.7925810Z               "name": "iPad mini (A17 Pro)",
+2026-11-20T21:57:07.7926260Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7926520Z             },
+2026-11-20T21:57:07.7926670Z             {
+2026-11-20T21:57:07.7927080Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation) (16GB).simdevicetype",
+2026-11-20T21:57:07.7927730Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-16GB",
+2026-11-20T21:57:07.7928170Z               "name": "iPad Pro (11-inch) (4th generation) (16GB)",
+2026-11-20T21:57:07.7928430Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7928610Z             },
+2026-11-20T21:57:07.7928730Z             {
+2026-11-20T21:57:07.7929110Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (4th generation).simdevicetype",
+2026-11-20T21:57:07.7929740Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-4th-generation-8GB",
+2026-11-20T21:57:07.7930160Z               "name": "iPad Pro (11-inch) (4th generation)",
+2026-11-20T21:57:07.7930860Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7931930Z             },
+2026-11-20T21:57:07.7932360Z             {
+2026-11-20T21:57:07.7933540Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation) (16GB).simdevicetype",
+2026-11-20T21:57:07.7935320Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-16GB",
+2026-11-20T21:57:07.7936530Z               "name": "iPad Pro (12.9-inch) (6th generation) (16GB)",
+2026-11-20T21:57:07.7937240Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7937780Z             },
+2026-11-20T21:57:07.7938140Z             {
+2026-11-20T21:57:07.7940080Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (6th generation).simdevicetype",
+2026-11-20T21:57:07.7941920Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation-8GB",
+2026-11-20T21:57:07.7943090Z               "name": "iPad Pro (12.9-inch) (6th generation)",
+2026-11-20T21:57:07.7943750Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7944250Z             },
+2026-11-20T21:57:07.7944620Z             {
+2026-11-20T21:57:07.7945560Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (10th generation).simdevicetype",
+2026-11-20T21:57:07.7947020Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-10th-generation",
+2026-11-20T21:57:07.7947950Z               "name": "iPad (10th generation)",
+2026-11-20T21:57:07.7948540Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7949050Z             },
+2026-11-20T21:57:07.7949410Z             {
+2026-11-20T21:57:07.7950400Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (5th generation).simdevicetype",
+2026-11-20T21:57:07.7951910Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air-5th-generation",
+2026-11-20T21:57:07.7952910Z               "name": "iPad Air (5th generation)",
+2026-11-20T21:57:07.7953510Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7954010Z             },
+2026-11-20T21:57:07.7954380Z             {
+2026-11-20T21:57:07.7955350Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad mini (6th generation).simdevicetype",
+2026-11-20T21:57:07.7956860Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-mini-6th-generation",
+2026-11-20T21:57:07.7957840Z               "name": "iPad mini (6th generation)",
+2026-11-20T21:57:07.7958440Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7958940Z             },
+2026-11-20T21:57:07.7959310Z             {
+2026-11-20T21:57:07.7960370Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (3rd generation).simdevicetype",
+2026-11-20T21:57:07.7962060Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-3rd-generation",
+2026-11-20T21:57:07.7963180Z               "name": "iPad Pro (11-inch) (3rd generation)",
+2026-11-20T21:57:07.7963830Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7964330Z             },
+2026-11-20T21:57:07.7964700Z             {
+2026-11-20T21:57:07.7965760Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (5th generation).simdevicetype",
+2026-11-20T21:57:07.7967740Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-5th-generation",
+2026-11-20T21:57:07.7969020Z               "name": "iPad Pro (12.9-inch) (5th generation)",
+2026-11-20T21:57:07.7969680Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7970230Z             },
+2026-11-20T21:57:07.7970630Z             {
+2026-11-20T21:57:07.7971590Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad (9th generation).simdevicetype",
+2026-11-20T21:57:07.7973020Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-9th-generation",
+2026-11-20T21:57:07.7976270Z               "name": "iPad (9th generation)",
+2026-11-20T21:57:07.7976880Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7977450Z             },
+2026-11-20T21:57:07.7977820Z             {
+2026-11-20T21:57:07.7978960Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Air (4th generation).simdevicetype",
+2026-11-20T21:57:07.7980510Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Air--4th-generation-",
+2026-11-20T21:57:07.7981600Z               "name": "iPad Air (4th generation)",
+2026-11-20T21:57:07.7982210Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7982730Z             },
+2026-11-20T21:57:07.7983120Z             {
+2026-11-20T21:57:07.7985220Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (11-inch) (2nd generation).simdevicetype",
+2026-11-20T21:57:07.7987070Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--11-inch---2nd-generation-",
+2026-11-20T21:57:07.7988210Z               "name": "iPad Pro (11-inch) (2nd generation)",
+2026-11-20T21:57:07.7988860Z               "productFamily": "iPad"
+2026-11-20T21:57:07.7989360Z             },
+2026-11-20T21:57:07.7989730Z             {
+2026-11-20T21:57:07.7990850Z               "bundlePath": "/Library/Developer/CoreSimulator/Profiles/DeviceTypes/iPad Pro (12.9-inch) (4th generation).simdevicetype",
+2026-11-20T21:57:07.7999860Z               "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---4th-generation-",
+2026-11-20T21:57:07.8000340Z               "name": "iPad Pro (12.9-inch) (4th generation)",
+2026-11-20T21:57:07.8001240Z               "productFamily": "iPad"
+2026-11-20T21:57:07.8002150Z             }
+2026-11-20T21:57:07.8002290Z           ],
+2026-11-20T21:57:07.8002430Z           "version": "27.0"
+2026-11-20T21:57:07.8002590Z         },
+2026-11-20T21:57:07.8002760Z         "udid": "920D1B9B-07BB-4142-BF2F-8EF961A80378"
+2026-11-20T21:57:07.8002980Z       }
+2026-11-20T21:57:07.8003100Z     },
+2026-11-20T21:57:07.8003290Z     "source_sha": "f179a616e5e22fc785bb97dc5ffa5ec1621441b3",
+2026-11-20T21:57:07.8003570Z     "started_at": "2026-11-20T21:40:20.624518+00:00",
+2026-11-20T21:57:07.8003810Z     "status": "PREFLIGHT_PASS_UI_NOT_RUN",
+2026-11-20T21:57:07.8004240Z     "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+2026-11-20T21:57:07.8004690Z     "ui_tests_executed": 0,
+2026-11-20T21:57:07.8004890Z     "xcode": "Xcode 27.0\nBuild version 27A266a"
+2026-11-20T21:57:07.8005090Z   },
+2026-11-20T21:57:07.8005220Z   "run_attempt": "1",
+2026-11-20T21:57:07.8005370Z   "run_id": "44822310098",
+2026-11-20T21:57:07.8005520Z   "schema": 1,
+2026-11-20T21:57:07.8005660Z   "sdk": "27.0",
+2026-11-20T21:57:07.8005860Z   "source_sha": "f179a616e5e22fc785bb97dc5ffa5ec1621441b3",
+2026-11-20T21:57:07.8006130Z   "started_at": "2026-11-20T21:40:58.879425+00:00",
+2026-11-20T21:57:07.8006340Z   "status": "FAIL",
+2026-11-20T21:57:07.8006670Z   "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+2026-11-20T21:57:07.8007060Z   "verified_runtime_observations": []
+2026-11-20T21:57:07.8007250Z }
+2026-11-20T21:57:07.8185470Z ##[error]Process completed with exit code 1.
+2026-11-20T21:57:07.9253790Z ##[group]Run mkdir -p "$EDITOR_EVIDENCE"
+2026-11-20T21:57:07.9254560Z [36;1mmkdir -p "$EDITOR_EVIDENCE"[0m
+2026-11-20T21:57:07.9255430Z [36;1mpython3 Tools/PinkhaNativeDerived/package_evidence.py "$EDITOR_EVIDENCE"[0m
+2026-11-20T21:57:08.4367040Z shell: /bin/bash -e {0}
+2026-11-20T21:57:08.4367600Z env:
+2026-11-20T21:57:08.4368100Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-20T21:57:08.4368810Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-20T21:57:08.4369860Z   EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v6-reviewed-20261120
+2026-11-20T21:57:08.4370780Z   HEART_SOURCE_RUN_ID: 44203168617
+2026-11-20T21:57:08.4372170Z   EDITOR_EVIDENCE: build/original-editor-framework-evidence
+2026-11-20T21:57:08.4373010Z   EDITOR_WORK: build/original-editor-framework-44822310098-1
+2026-11-20T21:57:08.4433690Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:57:08.4434190Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-20T21:57:08.4435520Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:57:08.4436640Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:57:08.4437620Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:57:08.4438510Z   PINKHA_UI27_IPHONE_UDID: 920D1B9B-07BB-4142-BF2F-8EF961A80378
+2026-11-20T21:57:08.4439370Z   PINKHA_UI27_IPAD_UDID: FC539563-CAE0-4FE0-8FC2-EFFB4CD9313E
+2026-11-20T21:57:08.4440130Z ##[endgroup]
+2026-11-20T21:57:09.2452350Z /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-evidence/Pinkha-Native-Derived-Evidence.zip
+2026-11-20T21:57:09.2629730Z ##[group]Run actions/upload-artifact@v4
+2026-11-20T21:57:09.2630540Z with:
+2026-11-20T21:57:09.2631590Z   name: Otzaria-Original-Editor-Framework-Evidence-f179a616e5e22fc785bb97dc5ffa5ec1621441b3-44822310098-1
+2026-11-20T21:57:09.2633190Z   path: build/original-editor-framework-evidence/Pinkha-Native-Derived-Evidence.zip
+2026-11-20T21:57:09.2634170Z   if-no-files-found: error
+2026-11-20T21:57:09.2634680Z   retention-days: 14
+2026-11-20T21:57:09.2635190Z   compression-level: 6
+2026-11-20T21:57:09.2635660Z   overwrite: false
+2026-11-20T21:57:09.2636230Z   include-hidden-files: false
+2026-11-20T21:57:09.2636800Z env:
+2026-11-20T21:57:09.2637210Z   PYTHONDONTWRITEBYTECODE: 1
+2026-11-20T21:57:09.2637900Z   DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+2026-11-20T21:57:09.2639000Z   EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v6-reviewed-20261120
+2026-11-20T21:57:09.2641170Z   HEART_SOURCE_RUN_ID: 44203168617
+2026-11-20T21:57:09.2648780Z   EDITOR_EVIDENCE: build/original-editor-framework-evidence
+2026-11-20T21:57:09.2650840Z   EDITOR_WORK: build/original-editor-framework-44822310098-1
+2026-11-20T21:57:09.2654780Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:57:09.2655990Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+2026-11-20T21:57:09.2657210Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:57:09.2658190Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:57:09.2659170Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+2026-11-20T21:57:09.2660080Z   PINKHA_UI27_IPHONE_UDID: 920D1B9B-07BB-4142-BF2F-8EF961A80378
+2026-11-20T21:57:09.2660950Z   PINKHA_UI27_IPAD_UDID: FC539563-CAE0-4FE0-8FC2-EFFB4CD9313E
+2026-11-20T21:57:09.2661620Z ##[endgroup]
+2026-11-20T21:57:10.0382510Z (node:38941) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-20T21:57:10.0385650Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-20T21:57:10.0452600Z With the provided path, there will be 1 file uploaded
+2026-11-20T21:57:10.0457920Z Artifact name is valid!
+2026-11-20T21:57:10.0458880Z Root directory input is valid!
+2026-11-20T21:57:10.5980880Z Beginning upload of artifact content to blob storage
+2026-11-20T21:57:10.7016720Z (node:38941) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-20T21:57:11.4989440Z Uploaded bytes 2291733
+2026-11-20T21:57:11.5816200Z Finished uploading artifact content to blob storage!
+2026-11-20T21:57:11.5824180Z SHA256 digest of uploaded artifact zip is d8904f64340f027fa3e34d361884a88539d8f46343664061aee1a94862a2d17c
+2026-11-20T21:57:11.5825610Z Finalizing artifact upload
+2026-11-20T21:57:11.9829370Z Artifact Otzaria-Original-Editor-Framework-Evidence-f179a616e5e22fc785bb97dc5ffa5ec1621441b3-44822310098-1.zip successfully finalized. Artifact ID 14673741380
+2026-11-20T21:57:11.9938690Z Artifact Otzaria-Original-Editor-Framework-Evidence-f179a616e5e22fc785bb97dc5ffa5ec1621441b3-44822310098-1 has been successfully uploaded! Final size is 2291733 bytes. Artifact ID is 14673741380
+2026-11-20T21:57:12.0045900Z Artifact download URL: https://github.com/davidpovarsky/anytype-swift/actions/runs/44822310098/artifacts/14673741380
+2026-11-20T21:57:12.0306370Z Post job cleanup.
+2026-11-20T21:57:12.2078680Z [command]/opt/homebrew/bin/git version
+2026-11-20T21:57:12.2244150Z git version 2.56.0
+2026-11-20T21:57:12.2280740Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/ef557fc9-1537-4b13-8d28-2023002528e1/.gitconfig'
+2026-11-20T21:57:12.2290150Z Temporarily overriding HOME='/Users/runner/work/_temp/ef557fc9-1537-4b13-8d28-2023002528e1' before making global git config changes
+2026-11-20T21:57:12.2292170Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-20T21:57:12.2296650Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift/.ci/hanlin-source
+2026-11-20T21:57:12.2447920Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-20T21:57:12.2560350Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-20T21:57:12.4775440Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-20T21:57:12.4851300Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-20T21:57:12.6898710Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-20T21:57:12.7207310Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-20T21:57:12.9490520Z Post job cleanup.
+2026-11-20T21:57:13.0907470Z [command]/opt/homebrew/bin/git version
+2026-11-20T21:57:13.1011580Z git version 2.56.0
+2026-11-20T21:57:13.1057560Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/b19f9fdb-f701-42d8-bff7-8fdf176b6197/.gitconfig'
+2026-11-20T21:57:13.1102950Z Temporarily overriding HOME='/Users/runner/work/_temp/b19f9fdb-f701-42d8-bff7-8fdf176b6197' before making global git config changes
+2026-11-20T21:57:13.1113030Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-20T21:57:13.1124320Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/anytype-swift/anytype-swift
+2026-11-20T21:57:13.1265210Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-20T21:57:13.1395880Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-20T21:57:13.2630110Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-20T21:57:13.2765030Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-20T21:57:13.5775020Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-20T21:57:13.6086020Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-20T21:57:13.7568180Z Cleaning up orphan processes
+2026-11-20T21:57:18.8287050Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

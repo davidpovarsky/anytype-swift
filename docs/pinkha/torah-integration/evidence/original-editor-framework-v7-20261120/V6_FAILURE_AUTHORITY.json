@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "new_source_commit": "5f7383722ad4eefd4e249c7c00665d9e422ff6d8",
+  "qualification": "Actual historical v6 failure; new v7 controls and Apple execution NOT_RUN",
+  "run": {
+    "id": 44822310098,
+    "attempt": 1,
+    "event": "push",
+    "head_sha": "f179a616e5e22fc785bb97dc5ffa5ec1621441b3",
+    "head_branch": "codex/otzaria-original-editor-framework-v6-reviewed-20261120",
+    "conclusion": "failure",
+    "job_id": 136586017214,
+    "job_started_at": "2026-11-20T21:39:55Z",
+    "job_completed_at": "2026-11-20T21:57:21Z"
+  },
+  "artifact": {
+    "id": 14673741380,
+    "bytes": 2291733,
+    "sha256": "d8904f64340f027fa3e34d361884a88539d8f46343664061aee1a94862a2d17c",
+    "api_url": "https://api.github.com/repos/davidpovarsky/anytype-swift/actions/artifacts/14673741380",
+    "archive_api_url": "https://api.github.com/repos/davidpovarsky/anytype-swift/actions/artifacts/14673741380/zip",
+    "full_outer_zip_locally_downloaded_and_hash_verified_before_runtime_outage": true,
+    "full_zip_republished_in_this_packet": false,
+    "nested": {
+      "name": "Pinkha-Native-Derived-Evidence.zip",
+      "bytes": 2403205,
+      "sha256": "b914fe8c5303b20a8bc5ccb4b14d50c84547d3fef9be91ebbdf229b0bc8e48ef",
+      "members": 92,
+      "all_crc_verified_before_outage": true
+    }
+  },
+  "historical_results": {
+    "python_source_controls": {
+      "passed": 131,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 6.232,
+      "source": "f179a616e5e22fc785bb97dc5ffa5ec1621441b3"
+    },
+    "genuine_framework_build": {
+      "exit_code": 0,
+      "original_swift_inputs": 2238,
+      "generated_swift_inputs": 1,
+      "package_pins": 44,
+      "warning_line_occurrences": 1268,
+      "unique_warning_count": "NOT_CLAIMED"
+    },
+    "initial_sdk_inputs": 407,
+    "final_sdk_comparison": "NOT_REACHED",
+    "distribution_before": {
+      "files": 1024,
+      "frameworks": 17,
+      "bundles": 34,
+      "exact_known_lib_duplicate_closure": "PASS"
+    },
+    "original_and_exported_presign_strict": {
+      "exit_codes": [
+        1,
+        1
+      ],
+      "cause": "Two required swiftmodule seal members absent from the exact checksum-pinned upstream package"
+    },
+    "owned_native_ad_hoc_signing": {
+      "exit_code": 0,
+      "command": [
+        "codesign",
+        "--force",
+        "--sign",
+        "-",
+        "--timestamp=none",
+        "<owned AmplitudeCore.framework export>"
+      ]
+    },
+    "first_failure": {
+      "file": "Tools/OriginalEditor/amplitude_simulator_signing.py",
+      "lines": [
+        104,
+        107
+      ],
+      "error": "ValueError: Unexpected or nonzero signature allocation padding"
+    },
+    "native_post_signature": "NOT_RUN",
+    "other_framework_signature_checks": "NOT_RUN",
+    "symbol_graph": "NOT_RUN",
+    "external_consumer": "NOT_RUN",
+    "simulator_runtime": "NOT_RUN",
+    "distribution_qualification": "NOT_GRANTED"
+  },
+  "actual_static_observations": {
+    "provenance": "Read from complete authenticated retained artifact before runtime outage; independent C/A inspection. No native codesign replay.",
+    "after_executable": {
+      "bytes": 636352,
+      "sha256": "1e8a735b9b2c8622325642da830fb8637fc04073e096fa48fc42a00badde4307"
+    },
+    "slices": [
+      {
+        "architecture": "x86_64",
+        "fat_offset": 16384,
+        "thin_bytes": 295360,
+        "signature_dataoff": 292784,
+        "superblob_bytes": 2558,
+        "allocation_bytes": 2576,
+        "tail_offset": [
+          295342,
+          295360
+        ],
+        "tail_hex": "000000000000000000000000000000000000",
+        "exact_same_offset_prior_preimage": true,
+        "page_exponent": 12,
+        "verified_code_pages": 72,
+        "linkedit_filesize": 184768,
+        "linkedit_vmsize": 196608,
+        "original_linkedit_vmsize": 212992
+      },
+      {
+        "architecture": "arm64",
+        "fat_offset": 327680,
+        "thin_bytes": 308672,
+        "signature_dataoff": 307792,
+        "superblob_bytes": 862,
+        "allocation_bytes": 880,
+        "tail_offset": [
+          308654,
+          308672
+        ],
+        "tail_hex": "985bdf0e89c28a8981dd3f5d4fe0d7338b45",
+        "exact_same_offset_prior_preimage": true,
+        "page_exponent": 14,
+        "verified_code_pages": 19,
+        "linkedit_filesize": 177600,
+        "linkedit_vmsize": 180224,
+        "original_linkedit_vmsize": 212992
+      }
+    ],
+    "special_slots": 3,
+    "special_hashes_verified": true,
+    "code_directory_flags": 2,
+    "identifier": "AmplitudeCore",
+    "entitlements": "ABSENT",
+    "ordinary_amplitude_resources_unchanged": 11,
+    "nonsignature_prefix_masks_bytes_per_slice": 20,
+    "full_distribution_post_sign_observation": "NOT_RETAINED; 1011 files outside the 13-file Amplitude closure have no full post-sign inventory in v6",
+    "inference_limit": "Do not claim all 1022 nonsignature distribution files were re-observed after signing."
+  },
+  "preparation_limitations": {
+    "local_runtime": "UNAVAILABLE",
+    "local_v6_readme_write": "FAILED after tool interruption; do not replay ambiguous write",
+    "local_v6_packet_replay": "NOT_STARTED",
+    "local_v6_publication_index": "NOT_SEALED",
+    "draft_local_readonly_verifiers": "NOT_RUN; their preliminary architecture-rounding assumption requires the documented fixed 16 KiB correction",
+    "new143_controls": "NOT_RUN",
+    "full_original_zip_available_by_immutable_artifact_reference": true,
+    "excluded_secret_file": "DOWNLOAD_INPUT.json (signed URL)"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "source_commit": "5f7383722ad4eefd4e249c7c00665d9e422ff6d8",
+  "source_only": true,
+  "python_execution": "NOT_RUN",
+  "apple_execution": "NOT_RUN",
+  "reviews": [
+    {
+      "reviewer": "Root",
+      "scope": "All 11 signing-helper edits, corrected synthetic fixture and two allocator policy cases, 12 new controls and failed-signing inventory",
+      "finding": "No concrete source blocker; actual next Apple result required"
+    },
+    {
+      "reviewer": "A",
+      "scope": "Original discovery/result inventory qualifier blob 0adc6b727b3df683530911b9a0c69445c9cbe0ba",
+      "finding": "No concrete normal discovery/result inventory blocker; did not close escaping SystemExit(0)"
+    },
+    {
+      "reviewer": "B",
+      "scope": "Original qualifier and complete workflow",
+      "finding": "Escaping SystemExit(0) could bypass except Exception and exit zero with a FAIL receipt; corrected before freezing"
+    },
+    {
+      "reviewer": "B",
+      "scope": "Successor qualifier a1e08ecc2ad9b64caf05b19a8f214f4b25da47ed",
+      "finding": "Source re-read found no remaining concrete blocker; BaseException retains traceback/FAIL/code 1"
+    },
+    {
+      "reviewer": "Root",
+      "scope": "Final a1e08ecc exact-count qualifier and d118b12 workflow",
+      "finding": "Source review cleared exact discovery/start/success lists, zero nonordinary outcomes, BaseException nonzero failure, standard subtest rejection and workflow set-e; no execution"
+    }
+  ],
+  "authoring_findings": [
+    {
+      "finding": "Installer inverse predecessor remained v5 after appending v7 to v6",
+      "correction": "Only two predecessor string literals now identify v6; removal of exactly the new v7 choice recovers the canonical e6cbd437edad7e1552f873d64ea7fce80185069a installer"
+    },
+    {
+      "finding": "Existing unittest command did not independently require the expected actual count",
+      "correction": "Same discovery is now executed by an exact 143-ID/result qualifier; raw verbosity-2 logs remain and actual tests must all pass"
+    }
+  ],
+  "historical_intermediates": {
+    "initial_qualifier_blob": "0adc6b727b3df683530911b9a0c69445c9cbe0ba",
+    "final_qualifier_blob": "a1e08ecc2ad9b64caf05b19a8f214f4b25da47ed",
+    "initial_profile_binding_blob": "f30543fd7542a89b837a62920af6db657e72520f",
+    "final_profile_blob": "4096ad7e83aaf48a48884da990ce2da713680524",
+    "intermediate_unreferenced_tree": "b5604facf6cd4f3ceb2aa18fa1c1c6fddb8826ea"
+  },
+  "no_executable_ref_created": true
+}

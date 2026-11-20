@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "git_blob_bytes_independently_verified_in_authoring_memory": true,
+  "sources": [
+    {
+      "repository": "apple-oss-distributions/Security",
+      "commit": "db15acbe6a7f257a859ad9a3bb86097bfe0679d9",
+      "path": "OSX/libsecurity_codesigning/lib/machorep.cpp",
+      "git_blob": "091ade5748166a88133d38f49e11855e06b409a9",
+      "sha256": "a4bad9b5376334efef9f87e00e740a6c336b0ca70dee4263a123995ef51ba9d6",
+      "bytes": 19690,
+      "url": "https://github.com/apple-oss-distributions/Security/blob/db15acbe6a7f257a859ad9a3bb86097bfe0679d9/OSX/libsecurity_codesigning/lib/machorep.cpp",
+      "excerpts": [
+        {
+          "first": 574,
+          "last": 590,
+          "text": "size_t MachORep::pageSize(const SigningContext &, const Architecture* arch)\n{\n\tif (arch->cpuType() == CPU_TYPE_ARM64 || arch->cpuType() == CPU_TYPE_ARM64_32) {\n\t\tunique_ptr<MachO> slice(mExecutable->architecture(*arch));\n\t\tif (slice->platform() == PLATFORM_TVOS) {\n\t\t\t// We can't use 16K page hashes on tvOS yet because B238 (HomePod 2018) uses H7, which\n\t\t\t// uses 4K physical pages.\n\t\t\t// rdar://107689929 (B238 unable to Copy to Device for development)\n\t\t\treturn segmentedPageSize;\n\t\t} else {\n\t\t\t// For all other platforms, use 16K page hashes. This saves significant memory compared\n\t\t\t// to 4K page hashes.\n\t\t\treturn newSegmentedPageSize;\n\t\t}\n\t} else {\n\t\treturn segmentedPageSize;\n\t}"
+        }
+      ]
+    },
+    {
+      "repository": "apple-oss-distributions/Security",
+      "commit": "db15acbe6a7f257a859ad9a3bb86097bfe0679d9",
+      "path": "OSX/libsecurity_codesigning/lib/signer.cpp",
+      "git_blob": "c3777d8f2db2182a18f27c8ae2f5125c541d1d14",
+      "sha256": "83c1cd525934c0b7d0c5f08322b02e347a5cbf9f521a67edd36023387a8559a2",
+      "bytes": 47386,
+      "url": "https://github.com/apple-oss-distributions/Security/blob/db15acbe6a7f257a859ad9a3bb86097bfe0679d9/OSX/libsecurity_codesigning/lib/signer.cpp",
+      "excerpts": [
+        {
+          "first": 351,
+          "last": 362,
+          "text": "\tarchAgnosticPageSize = state.mPageSize ? cfNumber<size_t>(state.mPageSize) : rep->pageSize(*this);\n\t\n\tArchitecture MainArch = (code->diskRep()->mainExecutableIsMachO() ?\n\t\t\t\t\t\t\t code->diskRep()->mainExecutableImage()->bestNativeArch() :\n\t\t\t\t\t\t\t Architecture::local());\n\n\tpageSizeMap[MainArch] = state.mPageSize ? cfNumber<size_t>(state.mPageSize) : rep->pageSize(*this, &MainArch);\n\tcode->visitOtherArchitectures(^(Security::CodeSigning::SecStaticCode *subcode) {\n\t\tUniversal *fat = subcode->diskRep()->mainExecutableImage();\n\t\tassert(fat && fat->narrowed());\t// handleOtherArchitectures gave us a focused architecture slice.\n\t\tArchitecture arch = fat->bestNativeArch();\t// actually, only architecture for this slice.\n\t\tpageSizeMap[arch] = state.mPageSize ? cfNumber<size_t>(state.mPageSize) : rep->pageSize(*this, &arch);"
+        }
+      ]
+    },
+    {
+      "repository": "apple-oss-distributions/Security",
+      "commit": "db15acbe6a7f257a859ad9a3bb86097bfe0679d9",
+      "path": "OSX/libsecurity_codesigning/lib/signerutils.cpp",
+      "git_blob": "82742de12a6fcc1453b750ac5c9442a61e746699",
+      "sha256": "2f352abf90941bca654b31bee3a44a75499abc22da4362601920c0ff6301c699",
+      "bytes": 14378,
+      "url": "https://github.com/apple-oss-distributions/Security/blob/db15acbe6a7f257a859ad9a3bb86097bfe0679d9/OSX/libsecurity_codesigning/lib/signerutils.cpp",
+      "excerpts": [
+        {
+          "first": 165,
+          "last": 200,
+          "text": "void MachOEditor::allocate()\n{\n\tchar* errorMessage = NULL;\n\t// note that we may have a temporary file from now on (for cleanup in the error case)\n\tmTempMayExist = true;\n\n\tbool removeSignature = false;\n\tfor (auto arch : architecture) {\n\t\tif(arch.second->blobSize == 0) {\n\t\t\tremoveSignature = true;\n\t\t} else if (removeSignature) {\n\t\t\tsecerror(\"codesign allocate error: one architecture signaled removal while another signaled signing\");\n\t\t\tMacOSError::throwMe(errSecCSInternalError);\n\t\t}\n\t}\n\n\tif (removeSignature) {\n\t\tif (!code_sign_deallocate(sourcePath.c_str(), tempPath.c_str(), errorMessage)) {\n\t\t\tsecerror(\"codesign deallocation failed: %s\", errorMessage);\n\t\t\t::free(errorMessage);\n\t\t\tMacOSError::throwMe(errSecCSInternalError);\n\t\t}\n\t} else {\n\t\tif (!code_sign_allocate(sourcePath.c_str(),\n\t\t\t\t\t\t\t\ttempPath.c_str(),\n\t\t\t\t\t\t\t\t^unsigned int(cpu_type_t cputype, cpu_subtype_t cpusubtype) {\n\t\t\t\t\t\t\t\t\tArchitecture currentArch(cputype,cpusubtype);\n\t\t\t\t\t\t\t\t\tsize_t blobSize = UINT32_MAX;\n\t\t\t\t\t\t\t\t\tfor (auto arch : architecture) {\n\t\t\t\t\t\t\t\t\t\tif (arch.first.matches(currentArch)) {\n\t\t\t\t\t\t\t\t\t\t\tblobSize = arch.second->blobSize;\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\tblobSize = LowLevelMemoryUtilities::alignUp(blobSize, csAlign);\n\t\t\t\t\t\t\t\t\treturn (blobSize < UINT32_MAX) ? (unsigned int) blobSize : UINT32_MAX;\n\t\t\t\t\t\t\t\t}, errorMessage)) {"
+        }
+      ]
+    },
+    {
+      "repository": "apple-oss-distributions/Security",
+      "commit": "db15acbe6a7f257a859ad9a3bb86097bfe0679d9",
+      "path": "OSX/libsecurity_codesigning/lib/codesign_alloc.cpp",
+      "git_blob": "c1c505c5bd8136794fd5b7bf683786b21cfb1728",
+      "sha256": "d76101e6f989374b3a065ca9c9d5fdfc2b8237f05894eda93b43e48f5e04a604",
+      "bytes": 33047,
+      "url": "https://github.com/apple-oss-distributions/Security/blob/db15acbe6a7f257a859ad9a3bb86097bfe0679d9/OSX/libsecurity_codesigning/lib/codesign_alloc.cpp",
+      "excerpts": [
+        {
+          "first": 247,
+          "last": 256,
+          "text": "        // update load command with new sigSize\n        sigCmd->datasize = get32(swap, sigSpace);\n        uint32_t oldFileSize = newFileSize;\n        if (os_add_overflow(get32(swap, sigCmd->dataoff), sigSpace, &newFileSize)) {\n            log_error(errorMessage, \"mew sigSpace causes overflow\\n\");\n            return false;\n        }\n        if (newFileSize < oldFileSize) {\n            uint8_t* cursor = (uint8_t*) machoFile;\n            memset((cursor + newFileSize), 0, oldFileSize - newFileSize);"
+        },
+        {
+          "first": 308,
+          "last": 318,
+          "text": "    // update LINKEDIT size\n    if (leSegCmd != NULL) {\n        uint32_t size = newFileSize - get32(swap, leSegCmd->fileoff);\n        uint32_t vmsize = (size + 0x3FFF) & (-0x4000);\n        leSegCmd->filesize = get32(swap, size);\n        leSegCmd->vmsize   = get32(swap, vmsize);\n    } else {\n        uint64_t size = newFileSize - get64(swap, leSegCmd64->fileoff);\n        uint64_t vmsize = (size + 0x3FFF) & (-0x4000);\n        leSegCmd64->filesize = get64(swap, size);\n        leSegCmd64->vmsize   = get64(swap, vmsize);"
+        },
+        {
+          "first": 411,
+          "last": 419,
+          "text": "            // copy each slice\n            void* outputSlice = ((char*)output + 0x4000); // 16KB align first slice\n            for (unsigned int i=0; i < fatCount; ++i) {\n                outArches[i] = inArches[i];\n                const void* inputSlice = (void*)((char*)mh + OSSwapBigToHostInt32(inArches[i].offset));\n                unsigned int inputSliceSize = OSSwapBigToHostInt32(inArches[i].size);\n                memcpy(outputSlice, inputSlice, inputSliceSize);\n                unsigned int newSliceSize = inputSliceSize+sigSpace[i];\n                success = assure_signature_space(outputSlice, sigSpace[i], inputSliceSize, newSliceSize, errorMessage);"
+        }
+      ]
+    }
+  ],
+  "policy": "Modern Security allocator uses fixed 16 KiB LINKEDIT rounding for both slices and preserves prior bytes inside the resized allocation; per-architecture signer code pages are 4 KiB x86 and 16 KiB ARM64. This explains the actual v6 observations and does not execute codesign."
+}
