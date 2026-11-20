@@ -25,6 +25,24 @@ struct EditorSwiftUIViewContainer: UIViewControllerRepresentable {
         let session: PreparedEditorPageSession?
         let hostLease: EditorDocumentWriteLifetime.Observation?
 
+        /// Prepared hosts must retain the controller/session pair that attached.
+        /// The legacy nil-session path keeps its original update semantics.
+        func permitsUpdate(
+            of uiViewController: EditorPageController,
+            incomingController: EditorPageController,
+            incomingSession: PreparedEditorPageSession?
+        ) -> Bool {
+            guard session != nil || incomingSession != nil else { return true }
+            guard controller === uiViewController else { return false }
+            guard controller === incomingController, session === incomingSession else {
+                hostLease?.cancel()
+                session?.retire(controller: controller)
+                incomingSession?.rejectUnattachedHost(controller: incomingController)
+                return false
+            }
+            return true
+        }
+
         init(controller: EditorPageController, session: PreparedEditorPageSession?) {
             self.controller = controller
             self.session = session
@@ -52,6 +70,10 @@ struct EditorSwiftUIViewContainer: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: EditorPageController, context: Context) {
+        guard context.coordinator.permitsUpdate(
+            of: uiViewController, incomingController: viewController,
+            incomingSession: preparedSession
+        ) else { return }
         viewController.additionalSafeAreaInsets = pageEditorAdditionalSafeAreaInsets
         viewController.setPageNavigationHiddenBackButton(pageNavigationHiddenBackButton)
         viewController.setPinkhaHanlinRouteOwner(pinkhaHanlinRouteOwner)
