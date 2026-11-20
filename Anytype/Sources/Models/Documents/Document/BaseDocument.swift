@@ -35,18 +35,15 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
     
     private let objectLifecycleService: any ObjectLifecycleServiceProtocol
     private let eventsListener: any EventsListenerProtocol
-    @Injected(\.propertiesBuilder)
-    private var relationBuilder: any PropertiesBuilderProtocol
-    @Injected(\.syncStatusStorage)
-    private var syncStatusStorage: any SyncStatusStorageProtocol
-    @Injected(\.historyVersionsService)
-    private var historyVersionsService: any HistoryVersionsServiceProtocol
+    private let relationBuilder: any PropertiesBuilderProtocol
+    private let syncStatusStorage: any SyncStatusStorageProtocol
+    private let historyVersionsService: any HistoryVersionsServiceProtocol
     private let propertyDetailsStorage: any PropertyDetailsStorageProtocol
     private let objectTypeProvider: any ObjectTypeProviderProtocol
     private let accountParticipantsStorage: any ParticipantsStorageProtocol
     private let viewModelSetter: any DocumentViewModelSetterProtocol
 
-    private let basicUserInfoStorage: any BasicUserInfoStorageProtocol = Container.shared.basicUserInfoStorage()
+    private let basicUserInfoStorage: any BasicUserInfoStorageProtocol
     
     
     // MARK: - Local private state
@@ -78,8 +75,14 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
         viewModelSetter: some DocumentViewModelSetterProtocol,
         infoContainer: some InfoContainerProtocol,
         restrictionsContainer: ObjectRestrictionsContainer,
-        detailsStorage: ObjectDetailsStorage
+        detailsStorage: ObjectDetailsStorage,
+        dependencies: BaseDocumentDependencies? = nil
     ) {
+        let resolvedDependencies = dependencies ?? .original()
+        self.relationBuilder = resolvedDependencies.relationBuilder
+        self.syncStatusStorage = resolvedDependencies.syncStatusStorage
+        self.historyVersionsService = resolvedDependencies.historyVersionsService
+        self.basicUserInfoStorage = resolvedDependencies.basicUserInfoStorage
         self.objectId = objectId
         self.spaceId = spaceId
         self.mode = mode
@@ -508,5 +511,24 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
         }
         
         return []
+    }
+}
+
+/// Constructor dependencies for an already owned document context. The normal
+/// app path still resolves the same four original factories once on creation.
+/// Supplying this value does not grant a document identity or write permission.
+struct BaseDocumentDependencies {
+    let relationBuilder: any PropertiesBuilderProtocol
+    let syncStatusStorage: any SyncStatusStorageProtocol
+    let historyVersionsService: any HistoryVersionsServiceProtocol
+    let basicUserInfoStorage: any BasicUserInfoStorageProtocol
+
+    static func original() -> Self {
+        Self(
+            relationBuilder: Container.shared.propertiesBuilder(),
+            syncStatusStorage: Container.shared.syncStatusStorage(),
+            historyVersionsService: Container.shared.historyVersionsService(),
+            basicUserInfoStorage: Container.shared.basicUserInfoStorage()
+        )
     }
 }
