@@ -1,0 +1,197 @@
+--- a/.github/workflows/pinkha-original-editor-framework.yml
++++ b/.github/workflows/pinkha-original-editor-framework.yml
+@@ -3,7 +3,7 @@
+ on:
+   push:
+     branches:
+-      - codex/otzaria-original-editor-framework-v4-reviewed-20261120
++      - codex/otzaria-original-editor-framework-v5-reviewed-20261120
+ 
+ permissions:
+   contents: read
+@@ -15,13 +15,13 @@
+ 
+ jobs:
+   original-editor-framework:
+-    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v4-reviewed-20261120'
++    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v5-reviewed-20261120'
+     runs-on: xcode-27
+     timeout-minutes: 140
+     env:
+       PYTHONDONTWRITEBYTECODE: '1'
+       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+-      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v4-reviewed-20261120
++      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v5-reviewed-20261120
+       HEART_SOURCE_RUN_ID: '44203168617'
+       EDITOR_EVIDENCE: build/original-editor-framework-evidence
+       EDITOR_WORK: build/original-editor-framework-${{ github.run_id }}-${{ github.run_attempt }}
+--- a/Tools/OriginalEditor/framework_profile.json
++++ b/Tools/OriginalEditor/framework_profile.json
+@@ -18,11 +18,11 @@
+     "Tools/PinkhaNativeDerived/package_evidence.py": "e55d2a959296630686a60aa5d927a3b4c34401f9",
+     "Tools/PinkhaSimulatorGate/preflight.py": "2628b345d5743bbe1ddc0d1afaeef9fb410f3daf"
+   },
+-  "branch": "codex/otzaria-original-editor-framework-v4-reviewed-20261120",
++  "branch": "codex/otzaria-original-editor-framework-v5-reviewed-20261120",
+   "candidate_project_sha256": "6d8ea7d95077a20f6e8343db77d30cfdd7a59a3e85a4a2a69c8e075c8adcf05c",
+   "framework_target_id": "83B785D0C457FE3CCBAB196E",
+   "new_project_objects": 108,
+-  "original_heart_installer_blob": "f4bb9ec63894452756d765e4af4773d2f4e7f6c3",
++  "original_heart_installer_blob": "9d7bea648cfd4bca2643265f594550b58d749256",
+   "original_swift_sources": 2237,
+   "original_trees": {
+     "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
+--- a/Tools/OriginalEditor/framework_profile.py
++++ b/Tools/OriginalEditor/framework_profile.py
+@@ -8,7 +8,7 @@
+ 
+ from pbx_source import loads, object_text, require
+ 
+-BRANCH = 'codex/otzaria-original-editor-framework-v4-reviewed-20261120'
++BRANCH = 'codex/otzaria-original-editor-framework-v5-reviewed-20261120'
+ REPOSITORY = 'davidpovarsky/anytype-swift'
+ TARGET = 'AnytypeOriginalEditor'
+ APP_TARGET = '0303ECFA22D8EDAA005C552B'
+@@ -112,8 +112,8 @@
+     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
+     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
+     installer = (root / installer_path).read_text()
+-    reviewed = "                             'codex/otzaria-original-editor-framework-v3-reviewed-20261120',\n                             '" + BRANCH + "'],"
+-    original = "                             'codex/otzaria-original-editor-framework-v3-reviewed-20261120'],"
++    reviewed = "                             'codex/otzaria-original-editor-framework-v4-reviewed-20261120',\n                             '" + BRANCH + "'],"
++    original = "                             'codex/otzaria-original-editor-framework-v4-reviewed-20261120'],"
+     require(installer.count(reviewed) == 1 and
+             blob(installer.replace(reviewed, original, 1).encode()) == profile['original_heart_installer_blob'],
+             'Original verified Heart installer has a change beyond the exact new consumer branch')
+--- a/Tools/OriginalEditor/test_framework.py
++++ b/Tools/OriginalEditor/test_framework.py
+@@ -93,7 +93,7 @@
+ 
+     def test_original_heart_installer_changes_only_one_new_branch_choice(self):
+         raw = (ROOT / 'Tools/PinkhaNativeDerived/install_verified_heart.py').read_bytes()
+-        suffix = b",\n                             'codex/otzaria-original-editor-framework-v4-reviewed-20261120'"
++        suffix = b",\n                             'codex/otzaria-original-editor-framework-v5-reviewed-20261120'"
+         self.assertEqual(raw.count(suffix), 1)
+         old = raw.replace(suffix, b'', 1)
+         actual = hashlib.sha1(b'blob ' + str(len(old)).encode() + b'\0' + old).hexdigest()
+--- a/Tools/OriginalEditor/test_framework_duplicates.py
++++ b/Tools/OriginalEditor/test_framework_duplicates.py
+@@ -114,8 +114,8 @@
+ class KnownLibDuplicateControls(unittest.TestCase):
+     def setUp(self):
+         original_controls.RealFilesystemExportControls.setUp(self)
+-        self.first = self.products / 'Lib.framework'
+-        self.second = self.products / 'PackageFrameworks/Lib.framework'
++        self.first = (self.products / 'Lib.framework').resolve()
++        self.second = (self.products / 'PackageFrameworks/Lib.framework').resolve()
+         self.first.mkdir()
+         (self.first / 'Lib').write_bytes(b'EXPLICIT_SYNTHETIC_LIB_NOT_AN_APPLE_BINARY')
+         (self.first / 'Lib').chmod(0o755)
+@@ -278,21 +278,29 @@
+ 
+     def test_known_input_changed_during_copy_cannot_publish_success(self):
+         real = products_module.copy_product
++        mutations = []
+         def changed(source, target, producer):
+             real(source, target, producer)
+             if Path(source) == self.first:
+                 (self.second / 'Lib').write_bytes(b'changed after admitted comparison')
++                mutations.append(self.second / 'Lib')
+         with patch.object(products_module, 'copy_product', changed):
+             self.denied()
++        self.assertEqual(mutations, [self.second / 'Lib'])
++        self.assertEqual((self.second / 'Lib').read_bytes(), b'changed after admitted comparison')
+ 
+     def test_changed_materialized_output_cannot_publish_success(self):
+         real = products_module.copy_product
++        mutations = []
+         def changed(source, target, producer):
+             real(source, target, producer)
+             if Path(source) == self.first:
+                 (Path(target) / 'Lib').write_bytes(b'changed exported file')
++                mutations.append(Path(target) / 'Lib')
+         with patch.object(products_module, 'copy_product', changed):
+             self.denied()
++        self.assertEqual(mutations, [(self.exported / 'Frameworks/Lib.framework/Lib').resolve()])
++        self.assertEqual(mutations[0].read_bytes(), b'changed exported file')
+ 
+ 
+ if __name__ == '__main__':
+--- a/Tools/OriginalEditor/test_framework_source_retention.py
++++ b/Tools/OriginalEditor/test_framework_source_retention.py
+@@ -17,7 +17,7 @@
+     def setUp(self):
+         self.temporary = tempfile.TemporaryDirectory()
+         self.addCleanup(self.temporary.cleanup)
+-        self.root = Path(self.temporary.name) / 'source'
++        self.root = Path(self.temporary.name).resolve() / 'source'
+         self.derived = self.root / 'build/producer-derived'
+         self.evidence = Path(self.temporary.name) / 'evidence'
+         self.evidence.mkdir()
+--- a/Tools/OriginalEditor/test_framework_temporary_paths.py
++++ b/Tools/OriginalEditor/test_framework_temporary_paths.py
+@@ -0,0 +1,52 @@
++"""Exercise the unchanged real validators through a real temporary-root alias."""
++import os
++from pathlib import Path
++import subprocess
++import sys
++import tempfile
++import unittest
++
++
++class TemporaryRootAliasControls(unittest.TestCase):
++    def run_original_control(self, case):
++        with tempfile.TemporaryDirectory() as temporary:
++            root = Path(temporary).resolve()
++            actual = root / 'actual'
++            actual.mkdir()
++            alias = root / 'alias'
++            alias.symlink_to(actual, target_is_directory=True)
++            self.assertNotEqual(alias, alias.resolve())
++            self.assertTrue(alias.samefile(actual))
++            # A separate process lets Python select this exact TMPDIR before
++            # tempfile caches it. The original control runs its full body.
++            result = subprocess.run(
++                [sys.executable, '-m', 'unittest', case, '-v'],
++                cwd=Path(__file__).resolve().parent,
++                env={**os.environ, 'TMPDIR': str(alias), 'PYTHONDONTWRITEBYTECODE': '1'},
++                capture_output=True, timeout=30,
++            )
++            output = result.stderr.decode('utf-8', errors='strict')
++            self.assertEqual(result.returncode, 0, output)
++            self.assertIn('Ran 1 test in ', output)
++            self.assertTrue(output.rstrip().endswith('OK'), output)
++            self.assertNotIn('skipped', output)
++            self.assertEqual(list(actual.iterdir()), [])
++
++    def test_known_input_mutation_is_really_injected_and_refused_under_directory_alias(self):
++        self.run_original_control(
++            'test_framework_duplicates.KnownLibDuplicateControls.'
++            'test_known_input_changed_during_copy_cannot_publish_success')
++
++    def test_materialized_mutation_is_really_injected_and_refused_under_directory_alias(self):
++        self.run_original_control(
++            'test_framework_duplicates.KnownLibDuplicateControls.'
++            'test_changed_materialized_output_cannot_publish_success')
++
++    def test_original_raw_compiler_proofs_are_retained_under_directory_alias(self):
++        self.run_original_control(
++            'test_framework_source_retention.OriginalRawCompilerEvidenceControls.'
++            'test_original_packager_retains_all_four_exact_raw_proofs_as_text')
++
++
++if __name__ == '__main__':
++    unittest.main()
+--- a/Tools/PinkhaNativeDerived/install_verified_heart.py
++++ b/Tools/PinkhaNativeDerived/install_verified_heart.py
+@@ -27,7 +27,8 @@
+                              'codex/otzaria-original-editor-owned43-apple-reviewed-20261120',
+                              'codex/otzaria-original-editor-framework-reviewed-20261120',
+                              'codex/otzaria-original-editor-framework-v3-reviewed-20261120',
+-                             'codex/otzaria-original-editor-framework-v4-reviewed-20261120'],
++                             'codex/otzaria-original-editor-framework-v4-reviewed-20261120',
++                             'codex/otzaria-original-editor-framework-v5-reviewed-20261120'],
+                     default='codex/torah-native-derived-properties-20261103')
+ args = parser.parse_args()
+ inventory = json.loads(args.inventory.read_text())

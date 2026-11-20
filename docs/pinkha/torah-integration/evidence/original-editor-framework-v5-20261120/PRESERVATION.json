@@ -1,0 +1,227 @@
+{
+  "actual_apple_v5": "NOT_RUN",
+  "changed_paths": [
+    {
+      "after": {
+        "bytes": 5039,
+        "git_blob": "d23d9a367cea64a699173f3eda381770fa8ce72e",
+        "sha256": "51b6e8870bd5f7c37db249742abba7f90956f6df8e7d677554706c0aeb778fdb"
+      },
+      "before": {
+        "bytes": 5039,
+        "git_blob": "0dfa6e210f39891bc3ca57de38aafcd50ae160fd",
+        "sha256": "486d546e9add0dcc61f6b5cbe719490bb0d125e3fac386d139f8be7076885705"
+      },
+      "path": ".github/workflows/pinkha-original-editor-framework.yml"
+    },
+    {
+      "after": {
+        "bytes": 2653,
+        "git_blob": "3c168431bd9c9fbb4f8eba3de997241865182c48",
+        "sha256": "9aa96ef1344b32f769126e9ab59473869cf87a6722cacea74d3c65f7a72990bc"
+      },
+      "before": {
+        "bytes": 2653,
+        "git_blob": "4d5c9a93797c0ea13c8321dc28a04ec927842f41",
+        "sha256": "631ffc998cd628a368fa072bbb9c54c6d840520440b6042abb4f8c5deca73576"
+      },
+      "path": "Tools/OriginalEditor/framework_profile.json"
+    },
+    {
+      "after": {
+        "bytes": 9491,
+        "git_blob": "3fc2a91b63731c2d8fc393a347006e3947311bcf",
+        "sha256": "da8bae28f79a1009c4ff8560cae533a9fa6454b48538e50ac8e1c2a4d900ad66"
+      },
+      "before": {
+        "bytes": 9491,
+        "git_blob": "f47dfa8886ce959cbcc36d20f8cdfb229c11bf16",
+        "sha256": "5784cfd595a08c23e5208c8d676761fef18ef3299add2d9bd5d5fa23132a3e99"
+      },
+      "path": "Tools/OriginalEditor/framework_profile.py"
+    },
+    {
+      "after": {
+        "bytes": 19229,
+        "git_blob": "a76180337fce8473e35fd7e42dcbd8118846cc16",
+        "sha256": "459f535a2512e1d5502ef9ca83506474383336f0bd75b8e491ce8b1c7334f255"
+      },
+      "before": {
+        "bytes": 19229,
+        "git_blob": "3291d34a1d58d156ad0b6b28467b123b7370b98d",
+        "sha256": "6c34fd8e06d76da073781e17c74e7d4142080e090f38d6460244679d828db1b6"
+      },
+      "path": "Tools/OriginalEditor/test_framework.py"
+    },
+    {
+      "after": {
+        "bytes": 14123,
+        "git_blob": "4759315a22f964a17d6b32eb149e158bc8bf12d5",
+        "sha256": "45b5962ff34c44fba96514cab46f7374bc78eaca674a4cf741ac41814be6fef5"
+      },
+      "before": {
+        "bytes": 13610,
+        "git_blob": "9ddcbea274cdf400e7296cf5103dd8d48cb39795",
+        "sha256": "e29a82cb5ef61ce1549ed8132baf1de462ba19f102e4cf981ba1f699b1bee20a"
+      },
+      "path": "Tools/OriginalEditor/test_framework_duplicates.py"
+    },
+    {
+      "after": {
+        "bytes": 5308,
+        "git_blob": "5d0ad91e447c8e5763d2c4f7d965ad297d9e9839",
+        "sha256": "d6f6f07642e62223aad725d3d47c15097b5d5ed90c02d7c310e75ca87f1a33ab"
+      },
+      "before": {
+        "bytes": 5298,
+        "git_blob": "e9df8d98a01cd34ee64f149503f4df23750c1fd7",
+        "sha256": "ea6782c7455b9b0ca1d6b5471f1204733a2b6c8b857b8c9aec6edab0544abe2a"
+      },
+      "path": "Tools/OriginalEditor/test_framework_source_retention.py"
+    },
+    {
+      "after": {
+        "bytes": 2331,
+        "git_blob": "68dc9c30dc66c6ae49db836a7b78497a318e225f",
+        "sha256": "619dbd3f1111681950c83ee79d6b5b308b6eec6ecfd9bbacc9717309ccf99e46"
+      },
+      "before": null,
+      "path": "Tools/OriginalEditor/test_framework_temporary_paths.py"
+    },
+    {
+      "after": {
+        "bytes": 4930,
+        "git_blob": "9365e5b58db125c80e7094cbba816d0002aef0c5",
+        "sha256": "fb0e0fbb878c42e877ca4ec5e51bbb57bcd2a4ff07c9676d48d052dc1f5dbf59"
+      },
+      "before": {
+        "bytes": 4837,
+        "git_blob": "9d7bea648cfd4bca2643265f594550b58d749256",
+        "sha256": "f96e266adf5650ba6a46cbea83b52ce2ead6a8af67b9b3ab058d516e5fae5ba6"
+      },
+      "path": "Tools/PinkhaNativeDerived/install_verified_heart.py"
+    }
+  ],
+  "final_normal_path": "99_PASS",
+  "final_real_alias_path": "99_PASS",
+  "original54_body_preserved_except_branch_literal": true,
+  "original96_declarations_preserved": true,
+  "original_alias_reproduction": "93_PASS_2_FAIL_1_ERROR",
+  "runs": {
+    "candidate-final-alias-green": {
+      "TMPDIR": "/workspace/scratch/8c31d602ec0a/anytype-framework-v5-20261120/runs/candidate-final-alias-green/temporary-root-alias",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/workspace/scratch/8c31d602ec0a/anytype-framework-v5-20261120/candidate/Tools/OriginalEditor",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "cwd": "/workspace/scratch/8c31d602ec0a/anytype-framework-v5-20261120/candidate",
+      "errors": 0,
+      "executed": 99,
+      "exit_code": 0,
+      "failed": 0,
+      "finished_at": "2026-11-20T20:29:49.999202+00:00",
+      "passed": 99,
+      "platform": "Actual Linux Python; no Swift, Apple compiler, or native UI",
+      "real_directory_alias": true,
+      "source_inputs_unchanged": true,
+      "started_at": "2026-11-20T20:29:48.031965+00:00",
+      "stderr_sha256": "16e5e20a808a266c59eaaa995dda295144f96d868f15e364029972dc3ccee0e7",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timeout_seconds": 300
+    },
+    "candidate-final-native-path-green": {
+      "TMPDIR": "/tmp",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/workspace/scratch/8c31d602ec0a/anytype-framework-v5-20261120/candidate/Tools/OriginalEditor",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "cwd": "/workspace/scratch/8c31d602ec0a/anytype-framework-v5-20261120/candidate",
+      "errors": 0,
+      "executed": 99,
+      "exit_code": 0,
+      "failed": 0,
+      "finished_at": "2026-11-20T20:29:49.875791+00:00",
+      "passed": 99,
+      "platform": "Actual Linux Python; no Swift, Apple compiler, or native UI",
+      "real_directory_alias": false,
+      "source_inputs_unchanged": true,
+      "started_at": "2026-11-20T20:29:48.024291+00:00",
+      "stderr_sha256": "41b54ecc679be50feb51f16b94afb48e553b931d7bf2839a9eaab5c838901cd1",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timeout_seconds": 300
+    },
+    "candidate-path-green": {
+      "TMPDIR": "/workspace/scratch/8c31d602ec0a/anytype-framework-v5-20261120/runs/candidate-path-green/temporary-root-alias",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/workspace/scratch/8c31d602ec0a/anytype-framework-v5-20261120/candidate/Tools/OriginalEditor",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "cwd": "/workspace/scratch/8c31d602ec0a/anytype-framework-v5-20261120/candidate",
+      "errors": 0,
+      "executed": 99,
+      "exit_code": 0,
+      "failed": 0,
+      "finished_at": "2026-11-20T20:27:17.938840+00:00",
+      "passed": 99,
+      "platform": "Actual Linux Python; no Swift, Apple compiler, or native UI",
+      "real_directory_alias": true,
+      "source_inputs_unchanged": true,
+      "started_at": "2026-11-20T20:27:16.121335+00:00",
+      "stderr_sha256": "a9c7d27fcb2caaa26d881d942b6af6114c7e5ca799f192eb75f577e23e991eee",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timeout_seconds": 300
+    },
+    "frozen-v4-symlink-red": {
+      "TMPDIR": "/workspace/scratch/8c31d602ec0a/anytype-framework-v5-20261120/runs/frozen-v4-symlink-red/temporary-root-alias",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/workspace/scratch/8c31d602ec0a/anytype-framework-v5-20261120/baseline/Tools/OriginalEditor",
+        "-p",
+        "test_*.py",
+        "-v"
+      ],
+      "cwd": "/workspace/scratch/8c31d602ec0a/anytype-framework-v5-20261120/baseline",
+      "errors": 1,
+      "executed": 96,
+      "exit_code": 1,
+      "failed": 2,
+      "finished_at": "2026-11-20T20:26:13.422099+00:00",
+      "passed": 93,
+      "platform": "Actual Linux Python; no Swift, Apple compiler, or native UI",
+      "real_directory_alias": true,
+      "source_inputs_unchanged": true,
+      "started_at": "2026-11-20T20:26:12.101803+00:00",
+      "stderr_sha256": "e4a54831148211ee4c78f3cc02393122b5ac0df864a76593c34c850f91335b8a",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timeout_seconds": 300
+    }
+  },
+  "runtime_exporter_source_validator_driver_product_ABI_budgets_unchanged": true,
+  "source": "962d050eb36b2511616c771b08d92a78b64d2349",
+  "status": "PASS_SOURCE_PRESERVATION_ONLY"
+}
