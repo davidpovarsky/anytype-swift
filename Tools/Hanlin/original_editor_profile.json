@@ -1,10 +1,10 @@
 {
-  "application_base": "dfb9d6240def89ace58d12293cac9e5ad5968078",
+  "application_base": "0a3e80ce2b286ffe2caa7537bf12e3d1d423b25e",
   "application_trees": {
     "AnyTypeTests": "74c5bfcd96916769a8ae5aa57f684797644cd329",
-    "Anytype": "17af1b9119c899c207670112a62881c3ec93f477",
+    "Anytype": "bd7385d4e7f9741a1b2bb900ec30bc84cc975d22",
     "Anytype.xcodeproj": "7106431749bd7e5066cb9c1704514997b5db6c64",
-    "AnytypeTests": "5583a6e4dec4d61b3d37615932611900532ea790",
+    "AnytypeTests": "bd056b09241c864d0b0cdf1a4c941a26e7d34e25",
     "Modules": "c8163bff54e6ba631e82ce5475f226989846d341"
   },
   "heart": {
@@ -22,12 +22,26 @@
     "document_lifetime": "f395d053b1554109325af8fda422259e28477aef",
     "document_owner": "5e936f2afa5f8fd371d1bef8b0521d9b8a3f20b6",
     "host_update": "45f25d1de7277ca78bf689ef782cd8e66cafe992",
+    "owned_blocks": "86ebb89e6577e4547744be75d3b01ecbd2828c61",
+    "owned_blocks_evidence": "81442f09774a04a4ef59361d63f94e0f67843439",
     "owned_tables": "48731b7ec14adf1c8ce3e1fc80dd8192c0b80a7f",
     "source_evidence": "076fc7c7b005de203ea0b4f1f3dd4807d62e0cec"
   },
   "profile": "original-editor",
-  "required_methods": 37,
+  "required_methods": 43,
   "suites": {
+    "EditorDocumentOwnedBlockTests": {
+      "methods": [
+        "forwardsOriginalBlockArgumentsAndReturnIdentities",
+        "refusesUnownedContextSpaceDestinationsAndObjectCreation",
+        "originalOwnedReadWorksWithoutEditAuthority",
+        "admittedWriteAndReadCannotRegainOwnershipAfterCloseReopen",
+        "originalErrorsAndPredispatchCancellationArePreserved",
+        "retiringOneOwnerDoesNotRetireAnotherOwnerOfSameDocument"
+      ],
+      "path": "AnytypeTests/Markdown/EditorDocumentOwnedBlockTests.swift",
+      "sha256": "469061631d58dd27da6cb6f2f2284959cc1432684eedcc7ac000fbd818df6991"
+    },
     "EditorDocumentOwnedTableTests": {
       "methods": [
         "forwardsAllThirteenOriginalTableMethodsAndTheirResult",
