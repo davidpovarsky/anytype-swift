@@ -1,0 +1,98 @@
+{
+  "status": "ROOT_READ_ONLY_FULL_PACKET_REVIEW_PASS_ACTUAL_WORKFLOWS_FAILED",
+  "integration_parent": "2803c3b08b942844d9f08363b6190283f2bd9833",
+  "integration_base_tree": "c4286cd157a9377aa9d87a67ea8b5fb40970079b",
+  "packets": [
+    {
+      "version": "v4",
+      "run": 44810510321,
+      "packet_index_sha256": "ea959abd4d46debaffcdc8236080bca44ddb7bde9c3214f83f43295715891aef",
+      "author_commit": "99ce9f9df4961b06ede70b3081d62837f5907e67",
+      "files": 8,
+      "read_only_replay": {
+        "verification": "PASS_READ_ONLY_ACTUAL_FAILURE_PACKET",
+        "workflow_conclusion": "FAILURE",
+        "source": "962d050eb36b2511616c771b08d92a78b64d2349",
+        "run_id": 44810510321,
+        "artifact_id": 14663449532,
+        "canonical_inputs": 25,
+        "outer_members_crc_pass": 1,
+        "inner_members_crc_pass": 4,
+        "actual_mac_python": {
+          "executed": 96,
+          "passed": 93,
+          "failed": 2,
+          "errors": 1
+        },
+        "source_after": "NOT_PRODUCED_BY_SOURCE_ONLY_PREBUILD_STEP",
+        "swift_compile": "NOT_RUN",
+        "sdk_preparation": "NOT_RUN",
+        "heart_install": "NOT_RUN",
+        "framework_build": "NOT_RUN",
+        "consumer_build": "NOT_RUN",
+        "simulator_runtime": "NOT_RUN",
+        "editable_mount": "NOT_EXPOSED",
+        "apple_or_test_reruns_by_verifier": 0
+      }
+    },
+    {
+      "version": "v5",
+      "run": 44812859123,
+      "packet_index_sha256": "745637fc53ba7e850cd8ffb8fae1f814ec5702121d3617064367e664ba76e2c2",
+      "author_commit": "e147e0030edf7d9cf487522738f9d6d34f59d591",
+      "files": 10,
+      "read_only_replay": {
+        "verification": "PASS_READ_ONLY_ACTUAL_V5_FAILURE_PACKET",
+        "workflow_conclusion": "FAILURE",
+        "source": "196459fc9fa943f90e5c7f256545f94083e373e3",
+        "run_id": 44812859123,
+        "artifact_id": 14668938238,
+        "canonical_inputs": 26,
+        "additional_original_package_lock": 1,
+        "source_before_after": "EQUAL",
+        "original_source_files": 2237,
+        "outer_members_crc_pass": 1,
+        "inner_members_crc_pass": 45,
+        "actual_mac_python": {
+          "executed": 99,
+          "passed": 99,
+          "failed": 0,
+          "errors": 0
+        },
+        "framework_build": "PASS_ACTUAL_ORIGINAL_DEBUG_FRAMEWORK_BUILD",
+        "compiler_original_inputs": 2238,
+        "compiler_generated_inputs": 1,
+        "package_checkouts": 44,
+        "frameworks_exported": 17,
+        "resource_bundles_exported": 34,
+        "initial_sdk_snapshot_files": 407,
+        "final_sdk_preservation_comparison": "NOT_REACHED",
+        "signature": "FAILED_AMPLITUDECORE_STRICT_VERIFICATION_EXIT1",
+        "upstream_matching_regular_files": 13,
+        "upstream_missing_required_seal_members": [
+          "Modules/AmplitudeCore.swiftmodule/arm64-apple-ios-simulator.swiftmodule",
+          "Modules/AmplitudeCore.swiftmodule/x86_64-apple-ios-simulator.swiftmodule"
+        ],
+        "original_producer_codesign": "NOT_OBSERVED",
+        "local_codesign_reruns": 0,
+        "consumer_build": "NOT_RUN",
+        "public_symbol_graph": "NOT_RUN",
+        "simulator_runtime": "NOT_RUN",
+        "editable_mount": "NOT_EXPOSED",
+        "native_editor_ui_tests": 0,
+        "warning_lines_in_complete_build_stdout": 1300,
+        "apple_or_test_reruns_by_verifier": 0
+      }
+    }
+  ],
+  "original_and_candidate_sources_not_changed": true,
+  "native_tests_rerun": 0,
+  "exact_upstream_diagnosis": "Root separately verified canonicalPackage blob and fixedchecksum ZIP;13exported regularfiles exact,21presentseal digests match, bothoriginal requiredsimulator swiftmodule members absent. Complete proof retained in v5packet upstream-provenance.zip.",
+  "next_required": "Constrained simulator packaging correction then actual same-source strict signatures, public graph, isolated consumer and original language runtime. Preparedhost and current integrated49constructor source need separate futurecombined qualification.",
+  "claims_not_made": [
+    "No finalSDKcomparison for v5",
+    "No newNative UI or editor mounted",
+    "No originalproducer signature observed in v5",
+    "No productiondistribution/TestFlightGO"
+  ]
+}
