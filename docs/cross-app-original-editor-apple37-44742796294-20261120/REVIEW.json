@@ -1,0 +1,203 @@
+{
+  "application_source": "dfb9d6240def89ace58d12293cac9e5ad5968078",
+  "artifact": {
+    "bytes": 783402,
+    "id": 14637726161,
+    "inner_bytes": 819126,
+    "inner_sha256": "c446bced8049249e2f649dbfbf1e2fc7dad39446004442946291634e5379715f",
+    "raw_members_verified": 128,
+    "sha256": "1d76bd6c090b66c315ed96c356e406a61e2fe0522e4da24992419111cfdbcb48"
+  },
+  "branch": "codex/otzaria-original-editor-owned-apple-v2-reviewed-20261120",
+  "build": {
+    "app_executable_sha256": "d17f5f85c8b50e91b6138e6b60e8f7b037c1a8131e952cae46ed873fc250c6b6",
+    "build_exit": 0,
+    "configuration": "Debug-Anytype",
+    "source_swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+    "source_xcode": "Xcode 27.0\nBuild version 27A266a",
+    "strict_codesign_exit": 0,
+    "test_executable_sha256": "3a70e9823c156f15dd15c25b4e35ba5d6de68a1d838875a60d1b530a6fb987ff",
+    "test_without_building_exit": 0,
+    "xctestrun_sha256": "373447929a84a3fbda7b3d20ef834656123b3377cbaf5440a155a85799f7d38b"
+  },
+  "finished_at": "2026-11-20T14:53:33.431785+00:00",
+  "head": "a298c556a36913bfec3eaa81165487fe742559a6",
+  "heart": {
+    "artifact": 14383247626,
+    "framework_files_ci_verified": 17,
+    "inner_sha256": "7aa836e081740b99e7e26485fd7f1845fc3ea99fa2331b2ab99330675a4c590f",
+    "original_metadata_gate": "PASS",
+    "original_source_inventory_equal": true,
+    "outer_sha256": "7ac88836edc2ee9ff0c7d8cb8943b8e968f0c73b2b94752ba27cebc241c69996",
+    "patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+    "producer_run": 44203168617,
+    "runtime_copies": {
+      "copies": {
+        "Frameworks/ProtobufMessages.framework/ProtobufMessages": {
+          "marker_present": true,
+          "sha256": "a648e0de605f280e7e58cd7ac5e56a0870d7e086bfb982b417a9d869da7e55ef"
+        },
+        "PlugIns/AnytypeTests.xctest/Frameworks/ProtobufMessages.framework/ProtobufMessages": {
+          "marker_present": true,
+          "sha256": "a648e0de605f280e7e58cd7ac5e56a0870d7e086bfb982b417a9d869da7e55ef"
+        }
+      },
+      "root_present": true,
+      "test_host_present": true
+    },
+    "slice_rows_ci_verified": 3
+  },
+  "host_controls": {
+    "executed": 74,
+    "failed": 0,
+    "passed": 74,
+    "posix_controls_executed": 2,
+    "skipped": 0
+  },
+  "job_id": 136310407305,
+  "not_established": [
+    "Original block-editing UI or native Maktabah embedding",
+    "Durable annotation integration or live-account writer isolation",
+    "Physical-device or performance acceptance",
+    "Six later BlockService cases in Apple43",
+    "Independent local rehash of remote app/framework binaries: their exact digests and original verification are retained CI observations"
+  ],
+  "original_gate_replay": {
+    "actual_cases": {
+      "EditorDocumentOwnedTableTests/admittedCreationAfterCloseRevocationIsNotReportedAsRollback()": "Passed",
+      "EditorDocumentOwnedTableTests/forwardsAllThirteenOriginalTableMethodsAndTheirResult()": "Passed",
+      "EditorDocumentOwnedTableTests/originalServiceErrorAndPredispatchCancellationAreNotRetried()": "Passed",
+      "EditorDocumentOwnedTableTests/refusesForeignContextAndReadonlyModeBeforeTheOriginalService()": "Passed",
+      "EditorDocumentOwnedTableTests/twoOwnersDoNotShareRetirementAuthority()": "Passed",
+      "EditorDocumentWriteOwnerTests/forwardsAllOriginalTextOperationsWithTheOwnedContext()": "Passed",
+      "EditorDocumentWriteOwnerTests/preservesServiceErrorsAndReleasesTheirLease()": "Passed",
+      "EditorDocumentWriteOwnerTests/readonlyToggleRemainsPresentationalButRetiredEventsAreDropped()": "Passed",
+      "EditorDocumentWriteOwnerTests/rechecksOriginalDocumentIdentityModeAndOpenState()": "Passed",
+      "EditorDocumentWriteOwnerTests/refusesForeignContextReadonlyModeAndLivePermissionLossBeforeDispatch()": "Passed",
+      "EditorDocumentWriteOwnerTests/retirementDistinguishesAnAlreadyCompletedWriteFromADispatchRefusal()": "Passed",
+      "EditorDocumentWriteOwnerTests/retirementWaitsForAnAlreadyAdmittedPublicationToDrain()": "Passed",
+      "EditorDocumentWriteOwnerTests/retiringOneOwnerDoesNotAuthorizeOrRetireAnother()": "Passed",
+      "EditorLocalEventPublisherTests/aFailedStyleWriteDoesNotPublish()": "Passed",
+      "EditorLocalEventPublisherTests/cancellationDoesNotPublishOrRetry()": "Passed",
+      "EditorLocalEventPublisherTests/publishesToTheSuppliedOwnerAfterTheStyleWriteCompletes()": "Passed",
+      "EditorLocalEventPublisherTests/separateEditorsDoNotShareTheInjectedEventOwner()": "Passed",
+      "EditorLocalEventPublisherTests/splitStillLeavesPublicationToTheOriginalFocusOwner()": "Passed",
+      "PreparedEditorLifetimeTests/admittedWriteCompletionAfterRevocationIsReportedWithoutRollback()": "Passed",
+      "PreparedEditorLifetimeTests/alreadyAdmittedPublicationDrainsAndSubsequentPublicationIsRefused()": "Passed",
+      "PreparedEditorLifetimeTests/closedThenReopenedDocumentCannotRenewTheCapturedLifetime()": "Passed",
+      "PreparedEditorLifetimeTests/explicitRetirementDoesNotInvalidateAnotherOwnerOfTheSameDocument()": "Passed",
+      "PreparedEditorLifetimeTests/independentHostLifetimeRetiresOnlyItsOwnOwner()": "Passed",
+      "PreparedEditorLifetimeTests/observedPermissionLossCannotRenewTheCapturedLifetime()": "Passed",
+      "PreparedEditorLifetimeTests/registrationCannotMissAnEarlierInvalidation()": "Passed",
+      "PreparedEditorLifetimeTests/replacingTheLifetimeSourceIsRejected()": "Passed",
+      "PreparedEditorPageDocumentTests/acceptsTheSameOpenedDocumentInEachOriginalMode()": "Passed",
+      "PreparedEditorPageDocumentTests/rechecksTheActualDocumentAfterItHasClosed()": "Passed",
+      "PreparedEditorPageDocumentTests/rejectsAnotherModeAndAnotherVersion()": "Passed",
+      "PreparedEditorPageDocumentTests/rejectsAnotherObjectWithTheSameSpace()": "Passed",
+      "PreparedEditorPageDocumentTests/rejectsAnotherSpaceWithTheSameObject()": "Passed",
+      "PreparedEditorPageDocumentTests/rejectsEmptyIdentitiesWithoutNormalizingDifferentIdentifiers()": "Passed",
+      "TextServiceHandlerInjectionTests/forwardsCheckedMergeAndIconToTheSameInjectedService()": "Passed",
+      "TextServiceHandlerInjectionTests/keepsTwoEditorServiceInstancesSeparate()": "Passed",
+      "TextServiceHandlerInjectionTests/preservesSplitResultAndUTF16Range()": "Passed",
+      "TextServiceHandlerInjectionTests/preservesTextAndMarksOnBothOriginalTextOperations()": "Passed",
+      "TextServiceHandlerInjectionTests/propagatesAStyleFailureWithoutTryingAnotherService()": "Passed"
+    },
+    "actual_method_count": 37,
+    "counts": {
+      "failedTests": 0,
+      "passedTests": 37,
+      "skippedTests": 0,
+      "totalTestCount": 37
+    },
+    "declared_case_count": 37,
+    "device": {
+      "architecture": "arm64",
+      "deviceId": "754D2C94-9711-4878-AD05-D9F2267F9D1C",
+      "deviceName": "Pinkha-UI27-44742796294-ipad",
+      "modelName": "iPad Pro 13-inch (M5)",
+      "osBuildNumber": "24A434",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    },
+    "methods": [
+      "EditorDocumentOwnedTableTests/admittedCreationAfterCloseRevocationIsNotReportedAsRollback",
+      "EditorDocumentOwnedTableTests/forwardsAllThirteenOriginalTableMethodsAndTheirResult",
+      "EditorDocumentOwnedTableTests/originalServiceErrorAndPredispatchCancellationAreNotRetried",
+      "EditorDocumentOwnedTableTests/refusesForeignContextAndReadonlyModeBeforeTheOriginalService",
+      "EditorDocumentOwnedTableTests/twoOwnersDoNotShareRetirementAuthority",
+      "EditorDocumentWriteOwnerTests/forwardsAllOriginalTextOperationsWithTheOwnedContext",
+      "EditorDocumentWriteOwnerTests/preservesServiceErrorsAndReleasesTheirLease",
+      "EditorDocumentWriteOwnerTests/readonlyToggleRemainsPresentationalButRetiredEventsAreDropped",
+      "EditorDocumentWriteOwnerTests/rechecksOriginalDocumentIdentityModeAndOpenState",
+      "EditorDocumentWriteOwnerTests/refusesForeignContextReadonlyModeAndLivePermissionLossBeforeDispatch",
+      "EditorDocumentWriteOwnerTests/retirementDistinguishesAnAlreadyCompletedWriteFromADispatchRefusal",
+      "EditorDocumentWriteOwnerTests/retirementWaitsForAnAlreadyAdmittedPublicationToDrain",
+      "EditorDocumentWriteOwnerTests/retiringOneOwnerDoesNotAuthorizeOrRetireAnother",
+      "EditorLocalEventPublisherTests/aFailedStyleWriteDoesNotPublish",
+      "EditorLocalEventPublisherTests/cancellationDoesNotPublishOrRetry",
+      "EditorLocalEventPublisherTests/publishesToTheSuppliedOwnerAfterTheStyleWriteCompletes",
+      "EditorLocalEventPublisherTests/separateEditorsDoNotShareTheInjectedEventOwner",
+      "EditorLocalEventPublisherTests/splitStillLeavesPublicationToTheOriginalFocusOwner",
+      "PreparedEditorLifetimeTests/admittedWriteCompletionAfterRevocationIsReportedWithoutRollback",
+      "PreparedEditorLifetimeTests/alreadyAdmittedPublicationDrainsAndSubsequentPublicationIsRefused",
+      "PreparedEditorLifetimeTests/closedThenReopenedDocumentCannotRenewTheCapturedLifetime",
+      "PreparedEditorLifetimeTests/explicitRetirementDoesNotInvalidateAnotherOwnerOfTheSameDocument",
+      "PreparedEditorLifetimeTests/independentHostLifetimeRetiresOnlyItsOwnOwner",
+      "PreparedEditorLifetimeTests/observedPermissionLossCannotRenewTheCapturedLifetime",
+      "PreparedEditorLifetimeTests/registrationCannotMissAnEarlierInvalidation",
+      "PreparedEditorLifetimeTests/replacingTheLifetimeSourceIsRejected",
+      "PreparedEditorPageDocumentTests/acceptsTheSameOpenedDocumentInEachOriginalMode",
+      "PreparedEditorPageDocumentTests/rechecksTheActualDocumentAfterItHasClosed",
+      "PreparedEditorPageDocumentTests/rejectsAnotherModeAndAnotherVersion",
+      "PreparedEditorPageDocumentTests/rejectsAnotherObjectWithTheSameSpace",
+      "PreparedEditorPageDocumentTests/rejectsAnotherSpaceWithTheSameObject",
+      "PreparedEditorPageDocumentTests/rejectsEmptyIdentitiesWithoutNormalizingDifferentIdentifiers",
+      "TextServiceHandlerInjectionTests/forwardsCheckedMergeAndIconToTheSameInjectedService",
+      "TextServiceHandlerInjectionTests/keepsTwoEditorServiceInstancesSeparate",
+      "TextServiceHandlerInjectionTests/preservesSplitResultAndUTF16Range",
+      "TextServiceHandlerInjectionTests/preservesTextAndMarksOnBothOriginalTextOperations",
+      "TextServiceHandlerInjectionTests/propagatesAStyleFailureWithoutTryingAnotherService"
+    ],
+    "scope": "Original document, text/event ownership, lifetime and table-service components; original UI editing not exercised"
+  },
+  "release_accepted": false,
+  "repository": "davidpovarsky/anytype-swift",
+  "run_attempt": 1,
+  "run_id": 44742796294,
+  "schema": "authenticated-apple37-review.v1",
+  "scope": "Actual original Anytype app build and 37 original target component methods on one arm64 iOS27 simulator; controlled service/document fixtures.",
+  "source": {
+    "application_trees": {
+      "AnyTypeTests": "74c5bfcd96916769a8ae5aa57f684797644cd329",
+      "Anytype": "17af1b9119c899c207670112a62881c3ec93f477",
+      "Anytype.xcodeproj": "7106431749bd7e5066cb9c1704514997b5db6c64",
+      "AnytypeTests": "5583a6e4dec4d61b3d37615932611900532ea790",
+      "Modules": "c8163bff54e6ba631e82ce5475f226989846d341"
+    },
+    "canonical_input_files_verified": 20,
+    "package_pins_exact": 44,
+    "post_execution_source_verified": true,
+    "sdk_files_ci_verified_before_after": 407,
+    "sdk_revision": "116cc6be0654a5d11bc56ba00e0310031107ee36",
+    "sdk_snapshot_sha256": "bcbcdeff5d88123fed26201feee00f7af06019d2dfe39e9537fe59eff48a6534",
+    "test_files": 6
+  },
+  "started_at": "2026-11-20T14:53:32.798136+00:00",
+  "status": "PASS",
+  "ui_test_count": 0,
+  "warnings": {
+    "build_lines": 2656,
+    "message_strings": 564,
+    "owned_file_lines": 18,
+    "runtime_warnings": 0
+  },
+  "xcresult_sqlite": {
+    "actual_case_runs": 37,
+    "aggregate_rows_not_tests": 111,
+    "issues": 0,
+    "named_cases": 37,
+    "skip_notices": 0,
+    "successful_runs": 37,
+    "suites": 6
+  }
+}
