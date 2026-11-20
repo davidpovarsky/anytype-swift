@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "sealedAt": "2026-11-20T06:31:58.669545+00:00",
+  "scope": "source retention, CI orchestration and exact schema controls; actual Apple execution required",
+  "actualAppleExecution": false,
+  "privateMaterialIncluded": false,
+  "checks": {
+    "strictSchema": 18,
+    "workflowAndOriginalGateRetention": 29,
+    "syntheticNamedExecutionControls": 14
+  },
+  "sourceSHA256": {
+    ".github/workflows/pinkha-any-engine-port.yml": "76557b7b9da351849c893a63755fcc0ae3411f97b8a5cc15fa1893ac5c5269c1",
+    "Tools/AnyEnginePort/verify_native_test_execution.py": "50f3e6ebde190804c58214d6345ca64d396dc2c76f53ac92d54d213727a9e189",
+    "Tools/AnyEnginePort/test_native_execution_gate.py": "bccedaf356ac885a7c61a7b5d139daaae1e7562f6d234bf26d209abef3b28be2",
+    "Tools/AnyEnginePort/hanlin_fixture_ci.py": "a2c2123d6be0c475072ca52ee7bc0ddd8ea342f72628a2adaad244c09f007b86",
+    "NativeApp/UITests/NativeLaunchTests.swift": "93dcf53fd3f13cd9ea71cd24026c0e35f6cf836a64512864269a6551d435dd2a"
+  },
+  "linkedEvidence": [
+    {
+      "path": "Tools/AnyEngineValidation/HanlinProviderFixture/evidence/20261120-v1/MANIFEST.json",
+      "sha256": "2d87296241ca722f501a211b2654393752d95c9e885ba170185e822e3f2676e1"
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261120/native-hanlin-and-picker-ui-v1/MANIFEST.json",
+      "sha256": "4f9025bc8a19077f57749c0c4b3bb699087c77c22b6966f1e67990acaa659f3d"
+    },
+    {
+      "path": "docs/any-engine-port/evidence/20261120/native-apple-execution-gate-controls-v9.json",
+      "sha256": "04299604539baf9cc69e0270d29ebfc29242933016627d7a7b2bea75ce88597b"
+    }
+  ],
+  "files": [
+    {
+      "path": "inputs/.github/workflows/pinkha-any-engine-port.yml",
+      "bytes": 26532,
+      "sha256": "76557b7b9da351849c893a63755fcc0ae3411f97b8a5cc15fa1893ac5c5269c1"
+    },
+    {
+      "path": "inputs/NativeApp/UITests/NativeLaunchTests.swift",
+      "bytes": 79923,
+      "sha256": "93dcf53fd3f13cd9ea71cd24026c0e35f6cf836a64512864269a6551d435dd2a"
+    },
+    {
+      "path": "inputs/Tools/AnyEnginePort/hanlin_fixture_ci.py",
+      "bytes": 13798,
+      "sha256": "a2c2123d6be0c475072ca52ee7bc0ddd8ea342f72628a2adaad244c09f007b86"
+    },
+    {
+      "path": "inputs/Tools/AnyEnginePort/test_native_execution_gate.py",
+      "bytes": 10359,
+      "sha256": "bccedaf356ac885a7c61a7b5d139daaae1e7562f6d234bf26d209abef3b28be2"
+    },
+    {
+      "path": "inputs/Tools/AnyEnginePort/verify_native_test_execution.py",
+      "bytes": 10230,
+      "sha256": "50f3e6ebde190804c58214d6345ca64d396dc2c76f53ac92d54d213727a9e189"
+    },
+    {
+      "path": "schema-controls.json",
+      "bytes": 2310,
+      "sha256": "d5b6325b176fb22cdf9b66ad5e205c8c7ab29da03451b6f599d027ae79b9eb34"
+    },
+    {
+      "path": "validate_private_config_contract.py",
+      "bytes": 5685,
+      "sha256": "c246704b2e81b96c293d35589355fd9aaac2c11950eecd2a2372771110053ec7"
+    },
+    {
+      "path": "workflow-and-gate-review.json",
+      "bytes": 3797,
+      "sha256": "bf518225f5956696d3138b7dbef0caabec244215825bd4eca02044739dc96876"
+    }
+  ],
+  "count": 8,
+  "bytes": 152634
+}

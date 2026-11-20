@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "reviewedAtUTC": "2026-11-20 06:27:25 UTC",
+  "status": "REVIEW_COMPLETE",
+  "scope": "independent_read_only_review_of_frozen_Hanlin_provider_fixture_v3_and_its_saved_proof",
+  "noProductionChanges": true,
+  "noAdditionalRuntimeExecution": true,
+  "fixtureEvidenceDirectory": "build/any-engine-port/hanlin-provider-fixture-validation-v3",
+  "sourceSHA256": {
+    "Tools/AnyEngineValidation/HanlinProviderFixture/protocol.py": "1945dc16f92391dc6cbeaba7098849a10c7d22d878b8c3abcc216de92c10ac6c",
+    "Tools/AnyEngineValidation/HanlinProviderFixture/fixture.py": "afe281d0dca77d47d672d182c156d9ce5ec5a7c9a7644819515c546473d3c714",
+    "Tools/AnyEngineValidation/HanlinProviderFixture/test_fixture.py": "225727ce77fbb34e32e512c662265ba82c665dd894843bf13b6e33f42f427760",
+    "Tools/AnyEngineValidation/HanlinProviderFixture/validate_lifecycle.py": "1346812b078f16d405848a26198819c824ceeafda1b5046ec757c381b079ed07",
+    "Tools/AnyEngineValidation/HanlinProviderFixture/verify_canonical.py": "757968b74077e2fefb722b9bdedec978c97c37316edea59d68bca41eaa31721c",
+    "Tools/AnyEnginePort/hanlin_fixture_ci.py": "a815c137ea19ab5c07f9cbeea4fa1e00a2de3edfeedec6b976eb99d54d1843ad"
+  },
+  "evidenceSHA256": {
+    "result.json": "6714cdbf2f4ddcd41ef1717218d47c4cfd10ea53df2982a06a92ec5c663b6800",
+    "controls.json": "369f082843d4348d1f2913b1486d7e6c982bf474910fcbaf6077046b31b2c842",
+    "lifecycle/result.json": "f6354d4d0fc9022fb8f04f13bacc94fad2c4d03579794ad0268d6abcd31e4b70",
+    "canonical/result.json": "76c0ce287af50bc825314588db726172a2afbfd8c9b8eb940b41e9c69eb859bc",
+    "source-before.json": "617b296b4ee427fbd4247e1a56efd772272e96919d43898bbe82a6196088ca0e"
+  },
+  "verifiedSavedResults": {
+    "outer": {
+      "status": "PASS",
+      "sourceStable": true
+    },
+    "controls": {
+      "platform": "Windows",
+      "tests": 35,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0
+    },
+    "lifecycle": {
+      "status": "PASS",
+      "sourceStable": true,
+      "sixActualHTTPSRounds": true,
+      "rootWrapperConfigurationValidatorCalled": true,
+      "shutdownWithOwnedKeepAliveOpen": true,
+      "repeatedStopChecked": true,
+      "actualOwnedChildExited": true,
+      "actualOwnedListenerClosed": true,
+      "privateDirectoryRemoved": true
+    },
+    "canonical": {
+      "status": "PASS",
+      "sourceStable": true,
+      "originalSwiftVectors": 7,
+      "SSEEvents": 21,
+      "compileExitCode": 0,
+      "executeExitCode": 0
+    }
+  },
+  "reviewedBoundaries": [
+    {
+      "id": "protocol",
+      "finding": "Six finite provider requests; exact advertised schemas, issued call IDs, current awaited result, selected block/text and scope; duplicate or unissued calls/results rejected. Registered unselected-text canary and pre-consent selected-text canary are checked in keys, values and bounded nested JSON."
+    },
+    {
+      "id": "cancel_success",
+      "finding": "Cancellation uses the actual sanctioned host refusal string; successful create returns the actual empty content contract. Fixture status alone cannot prove cancellation UI or native creation; the mounted UI test separately checks prompts, refusal/allow actions, cancelled-title absence, empty created page and original source preservation."
+    },
+    {
+      "id": "delivery_race",
+      "finding": "Provider serialization covers state acceptance, response writes/flushes and response-delivered bookkeeping; an actual next-request-after-DONE regression passes. This server bookkeeping is not proof that the client application consumed the response."
+    },
+    {
+      "id": "socket_cleanup",
+      "finding": "Accepted sockets receive explicit shutdown and close, and owned handler threads are joined with the unchanged five-second bound. A three-second fixture-only partial-request read bound addresses the retained Windows shutdown failure. Stop separately verifies exact process birth identity and actual exit."
+    },
+    {
+      "id": "windows_listener",
+      "finding": "GetExtendedTcpTable uses AF_INET and OWNER_PID_LISTENER; native ctypes table offset and row size, bounded size retries/count/buffer, LISTEN state and network-order low-16-bit port conversion are checked. Actual owned positive/negative listener regression prevents an always-empty observation from passing. API errors remain failures; no unrelated rows are emitted."
+    },
+    {
+      "id": "tls_ownership",
+      "finding": "One owned HTTPS loopback listener, explicit private CA, default client trust behavior in the mounted helper, and simulator-specific root installation by the wrapper. No host/global trust modification, public listener, packet capture or driver installation."
+    },
+    {
+      "id": "proof_integrity",
+      "finding": "Lifecycle includes imported test scenario source in its before/after source map and fails on source drift or incomplete cleanup. Canonical verifier compares type-preserving canonical JSON and fails its source stability gate. Outer v3 receipt binds all six fixture directory inputs."
+    },
+    {
+      "id": "artifact_privacy",
+      "finding": "Safe reports use fixed codes, counts, booleans, UUIDs and hashes; private TLS/admin config and provider bodies are not safe evidence. Raw xcresults and workflow logs require separate screening before repository archival."
+    }
+  ],
+  "remainingTrackedCorrections": [
+    {
+      "owner": "root",
+      "file": "Tools/AnyEnginePort/hanlin_fixture_ci.py",
+      "sourcePin": "a815c137ea19ab5c07f9cbeea4fa1e00a2de3edfeedec6b976eb99d54d1843ad",
+      "finding": "Private config schemaVersion == 1 and exact owner-dict comparison admit Python True/1.0. Add type(value) is int to both schema checks. Existing v3 proof used legitimate integer fields and remains pinned to the original wrapper; record the revised validator and focused malformed-input controls separately.",
+      "state": "root_implementing_separate_correction"
+    },
+    {
+      "owner": "capability_inventory",
+      "file": "NativeApp/UITests/NativeLaunchTests.swift",
+      "finding": "Original 150ms polling could exceed the fixture's finite request budget; later status also needed registration runID continuity.",
+      "state": "owner_reports_fixed_and_saved_snapshot_decoder_pass_waiting_final_receipt",
+      "reportedResolution": "One-second polling retains all five 45-second deadlines; every status binds the original registration runID. Nine actual saved v3 HTTPS snapshots decode; wrong-run and phase-five-as-complete controls reject. No mounted Apple execution inferred."
+    }
+  ],
+  "historicalFailuresPreserved": [
+    {
+      "scope": "actual_windows_fixture_v1",
+      "tests": 33,
+      "passed": 32,
+      "failed": 1,
+      "reason": "Incomplete TLS request handler did not drain within unchanged five-second shutdown bound.",
+      "evidenceDirectory": "build/any-engine-port/hanlin-provider-fixture-validation-v1"
+    },
+    {
+      "scope": "windows_fixture_v2_listener_observation",
+      "reason": "Child exit was observed but an active connect to the closed port timed out; final v3 uses the bounded query-only native listener table with a positive/negative control. This observation does not establish a cause for the unrelated Any HTTP timeout."
+    }
+  ],
+  "limitations": [
+    "Fixture controls, saved-snapshot decoding and canonical response equivalence are not a mounted Apple Hanlin acceptance result.",
+    "The wrapper's simulator trust command and TEST_RUNNER propagation still require actual Apple execution.",
+    "Canary inspection is bounded and is not a general claim about all encodings.",
+    "A native HTTP access-log completion or fixture response-delivered flag is not proof of socket delivery to the client.",
+    "No root cause or production transport fix for the unresolved Any timeout is established by this review."
+  ],
+  "primaryWindowsAPIReferences": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/iphlpapi/nf-iphlpapi-getextendedtcptable",
+    "https://learn.microsoft.com/en-us/windows/win32/api/tcpmib/ns-tcpmib-mib_tcptable_owner_pid",
+    "https://learn.microsoft.com/en-us/windows/win32/api/tcpmib/ns-tcpmib-mib_tcprow_owner_pid",
+    "https://learn.microsoft.com/en-us/windows/desktop/api/iprtrmib/ne-iprtrmib-tcp_table_class"
+  ]
+}

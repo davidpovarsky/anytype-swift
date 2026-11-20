@@ -1,0 +1,113 @@
+
+private struct CrossInputs: Decodable {
+    let snapshots: [Snapshot]
+    struct Snapshot: Decodable {
+        let name: String
+        let kind: String
+        let phase: Int
+    }
+}
+private enum CrossFailure: Error { case invalidInputs, invalidObservedResponse, missingFinal, refusalWasNotEnforced }
+private struct CrossCase: Encodable {
+    let name: String
+    let kind: String
+    let passed: Bool
+}
+private struct CrossResult: Encodable {
+    let schema: Int
+    let scope: String
+    let status: String
+    let actualSnapshotsDecoded: Int
+    let negativeControlsPassed: Int
+    let networkRequestsByThisCheck: Int
+    let AppleUIExecuted: Bool
+    let cases: [CrossCase]
+    let failure: String?
+}
+
+@main
+private struct CrossContractMain {
+    static func main() {
+        var cases: [CrossCase] = []
+        do {
+            guard CommandLine.arguments.count == 2 else { throw CrossFailure.invalidInputs }
+            let inputURL = URL(fileURLWithPath: CommandLine.arguments[1])
+            let root = inputURL.deletingLastPathComponent().appendingPathComponent("received")
+            let decoder = JSONDecoder()
+            let inputs = try decoder.decode(CrossInputs.self, from: Data(contentsOf: inputURL))
+            guard inputs.snapshots.count == 9 else { throw CrossFailure.invalidInputs }
+            var registeredRun: String?
+            var incomplete: HanlinMountedFixtureStatus?
+            var final: HanlinMountedFixtureStatus?
+            for item in inputs.snapshots {
+                let bytes = try Data(contentsOf: root.appendingPathComponent(item.name))
+                if item.kind == "ready" {
+                    let ready = try decoder.decode(HanlinMountedFixtureReady.self, from: bytes)
+                    guard ready.schema == 1, ready.contract == "pinkha-mounted-hanlin-provider-fixture-v1",
+                          ready.ready else { throw CrossFailure.invalidObservedResponse }
+                } else {
+                    let status = try decoder.decode(HanlinMountedFixtureStatus.self, from: bytes)
+                    if item.phase == 0 {
+                        guard registeredRun == nil, status.checks["scenario_registered_once"] == true else {
+                            throw CrossFailure.invalidObservedResponse
+                        }
+                        registeredRun = status.runID
+                    }
+                    guard let registeredRun else { throw CrossFailure.invalidInputs }
+                    try status.validate(expectedRunID: registeredRun)
+                    guard status.phase == item.phase, status.providerRequests == item.phase,
+                          status.responsesDelivered == item.phase else {
+                        throw CrossFailure.invalidObservedResponse
+                    }
+                    if item.phase == 6 {
+                        try status.requireComplete()
+                        final = status
+                    } else {
+                        guard !status.complete else { throw CrossFailure.invalidObservedResponse }
+                        if item.phase == 5 { incomplete = status }
+                    }
+                }
+                cases.append(.init(name: item.name, kind: "actual_v3_HTTPS_response", passed: true))
+            }
+            guard let final, let incomplete else { throw CrossFailure.missingFinal }
+            // These are negative calls on unchanged real decoded responses.
+            // No replacement or invented JSON is supplied to the decoder.
+            var refusedWrongRun = false
+            let otherRun = final.runID == "00000000-0000-4000-8000-000000000000"
+                ? "00000000-0000-4000-8000-000000000001" : "00000000-0000-4000-8000-000000000000"
+            do { try final.validate(expectedRunID: otherRun) }
+            catch HanlinMountedFixtureError.wrongFixtureContract { refusedWrongRun = true }
+            guard refusedWrongRun else { throw CrossFailure.refusalWasNotEnforced }
+            cases.append(.init(name: "actual_final_response_rejects_another_registered_run",
+                               kind: "negative_bound_identity", passed: true))
+            var refusedIncomplete = false
+            do { try incomplete.requireComplete() }
+            catch HanlinMountedFixtureError.incompleteProof { refusedIncomplete = true }
+            guard refusedIncomplete else { throw CrossFailure.refusalWasNotEnforced }
+            cases.append(.init(name: "actual_phase5_response_cannot_claim_complete",
+                               kind: "negative_complete_state", passed: true))
+            output(.init(schema: 1,
+                         scope: "Python actual wire DTO to exact Swift helper; no network, trust, UIKit or native acceptance run",
+                         status: "PASS", actualSnapshotsDecoded: 9, negativeControlsPassed: 2,
+                         networkRequestsByThisCheck: 0, AppleUIExecuted: false,
+                         cases: cases, failure: nil))
+        } catch {
+            output(.init(schema: 1,
+                         scope: "Python actual wire DTO to exact Swift helper; no network, trust, UIKit or native acceptance run",
+                         status: "FAIL",
+                         actualSnapshotsDecoded: cases.filter { $0.kind == "actual_v3_HTTPS_response" }.count,
+                         negativeControlsPassed: cases.filter { $0.kind != "actual_v3_HTTPS_response" }.count,
+                         networkRequestsByThisCheck: 0, AppleUIExecuted: false,
+                         cases: cases, failure: String(describing: error)))
+            exit(1)
+        }
+    }
+
+    static func output(_ result: CrossResult) {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        if let data = try? encoder.encode(result), let value = String(data: data, encoding: .utf8) {
+            print(value)
+        }
+    }
+}

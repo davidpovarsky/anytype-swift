@@ -146,6 +146,36 @@ class NativeExecutionGateTests(unittest.TestCase):
                     validate(summary, tree, "application", UDID)
 
 
+    def testRequiredHanlinCannotBeReplacedByPassingPickerObservation(self):
+        summary, tree = fixture("native-ui")
+        missing = "NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen"
+        replacement = "NativeLaunchTests/testObserveCanonicalArchiveSystemPickers"
+        for node in tree["testNodes"]:
+            if node["nodeIdentifier"] == "FixtureModule/" + missing + "()":
+                node["nodeIdentifier"] = "FixtureModule/" + replacement + "()"
+                break
+        else:
+            self.fail("Required Hanlin method is missing from the synthetic fixture")
+        with self.assertRaisesRegex(RuntimeError, missing):
+            validate(summary, tree, "native-ui", UDID)
+
+    def testPickerObservationCannotBeSatisfiedByBusinessMethods(self):
+        observation = expected_methods("archive-picker-observation")
+        self.assertEqual(observation, {"NativeLaunchTests/testObserveCanonicalArchiveSystemPickers"})
+        self.assertTrue(observation.isdisjoint(expected_methods("native-ui")))
+        summary, tree = fixture("native-ui")
+        with self.assertRaisesRegex(RuntimeError, "Missing required named execution"):
+            validate(summary, tree, "archive-picker-observation", UDID)
+        summary["totalTestCount"] += 1
+        summary["passedTests"] += 1
+        tree["testNodes"].append({"nodeType": "Test Case",
+            "nodeIdentifier": "FixtureModule/" + next(iter(observation)) + "()", "result": "Passed"})
+        self.assertEqual(set(validate(summary, tree, "native-ui", UDID)["observedRequiredMethods"]),
+                         expected_methods("native-ui"))
+        self.assertEqual(set(validate(summary, tree, "archive-picker-observation", UDID)["observedRequiredMethods"]),
+                         observation)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)

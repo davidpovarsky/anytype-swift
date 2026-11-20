@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Tools\AnyEngineValidation\HanlinProviderFixture\validate_lifecycle.py", line 139, in <module>
+    main()
+  File "C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Tools\AnyEngineValidation\HanlinProviderFixture\validate_lifecycle.py", line 109, in main
+    ended = command("stop")
+            ^^^^^^^^^^^^^^^
+  File "C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Tools\AnyEngineValidation\HanlinProviderFixture\validate_lifecycle.py", line 64, in command
+    require(completed.returncode == expected and not completed.stderr, "lifecycle_command_failed")
+  File "C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Tools\AnyEngineValidation\HanlinProviderFixture\protocol.py", line 62, in require
+    raise FixtureError(code, status)
+protocol.FixtureError: lifecycle_command_failed

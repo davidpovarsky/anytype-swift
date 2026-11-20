@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "status": "PASS_FIXTURE_ONLY",
+  "AppleMountedAcceptance": "NOT_RUN_BY_THIS_PROOF",
+  "scope": "new_test_fixture_protocol_TLS_cleanup_canonical_builder_and_CI_config_contract",
+  "sourceStable": true,
+  "windowsControls": {
+    "tests": 35,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "actualCLI": {
+    "checks": 10,
+    "providerRequests": 6,
+    "rootWrapperSHA256": "a815c137ea19ab5c07f9cbeea4fa1e00a2de3edfeedec6b976eb99d54d1843ad",
+    "ownedChildExited": true,
+    "listenerClosed": true,
+    "privateDirectoryRemoved": true
+  },
+  "canonical": {
+    "hanlinCommit": "116cc6be0654a5d11bc56ba00e0310031107ee36",
+    "vectors": 7,
+    "SSEFrames": 21,
+    "actualOriginalSwiftCompiledAndExecuted": true
+  },
+  "preservedFailures": [
+    {
+      "version": "v1",
+      "status": "FAIL",
+      "reason": "Windows incomplete-body owned TLS handler outlived5s shutdown join because accepted socket timeout was15s",
+      "controlsPassed": 32,
+      "controlsRun": 33
+    },
+    {
+      "version": "v2",
+      "status": "FAIL",
+      "reason": "provider contract and process-exit checks passed; closed-port connect observation timed out on Windows, so cleanup was correctly uncertain",
+      "readOnlyRecovery": "v2/lifecycle/cleanup-observation-recovered.json",
+      "finalReleasedPrivateCleanup": "v2/lifecycle/cleanup-after-validator.json"
+    }
+  ],
+  "privateMaterialUploaded": false,
+  "rawProviderTranscriptUploaded": false,
+  "hostTrustModified": false,
+  "pendingExactV2WrapperArchive": false,
+  "sourceFiles": {
+    "fixture.py": "afe281d0dca77d47d672d182c156d9ce5ec5a7c9a7644819515c546473d3c714",
+    "protocol.py": "1945dc16f92391dc6cbeaba7098849a10c7d22d878b8c3abcc216de92c10ac6c",
+    "README.md": "726f95bbd9868e4e71c2bbc1590b41306d182eefe3121f99de6774152b3e1c4a",
+    "test_fixture.py": "225727ce77fbb34e32e512c662265ba82c665dd894843bf13b6e33f42f427760",
+    "validate_lifecycle.py": "1346812b078f16d405848a26198819c824ceeafda1b5046ec757c381b079ed07",
+    "verify_canonical.py": "757968b74077e2fefb722b9bdedec978c97c37316edea59d68bca41eaa31721c"
+  },
+  "separatePostLifecycleRootWrapperDelta": {
+    "sourceSHA256": "a2c2123d6be0c475072ca52ee7bc0ddd8ea342f72628a2adaad244c09f007b86",
+    "evidencePath": "docs/any-engine-port/evidence/20261120/native-hanlin-ci-orchestration-v1/schema-controls.json",
+    "evidenceSHA256": "d5b6325b176fb22cdf9b66ad5e205c8c7ab29da03451b6f599d027ae79b9eb34",
+    "scope": "separate_exact_integer_private_config_and_owner_schema_controls_not_a_provider_rerun"
+  }
+}

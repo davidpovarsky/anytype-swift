@@ -81,6 +81,12 @@ PROFILES = {
             "testHierarchyDragIntoFolderPersistsAfterColdReopen",
             "testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
             "testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen",
+            "testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen",
+        ],
+    },
+    "archive-picker-observation": {
+        "NativeLaunchTests": [
+            "testObserveCanonicalArchiveSystemPickers",
         ],
     },
 }
@@ -100,6 +106,7 @@ SOURCE_PATHS = {
         "Modules/PinkhaAnyNative/Tests/PinkhaAnyNativeTests/NativePropertyWorkflowTests.swift",
     ],
     "native-ui": ["NativeApp/UITests/NativeLaunchTests.swift"],
+    "archive-picker-observation": ["NativeApp/UITests/NativeLaunchTests.swift"],
 }
 
 def require(condition, message):
@@ -170,7 +177,12 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     record = {"schemaVersion": 1, "status": "FAIL", "profile": args.profile,
-              "scope": "actual_named_apple_test_execution", "runnerSHA256": sha(Path(__file__))}
+              "scope": ("actual_named_apple_ui_observation" if args.profile == "archive-picker-observation"
+                        else "actual_named_apple_test_execution"),
+              "observationOnly": args.profile == "archive-picker-observation",
+              "runnerSHA256": sha(Path(__file__))}
+    if record["observationOnly"]:
+        record["claimBoundary"] = "System picker observation only; no export/import roundtrip, mapping or writable-directory acceptance."
     try:
         require(bool(args.udid), "Owned simulator was not created")
         record["commit"] = subprocess.check_output(

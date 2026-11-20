@@ -1,4 +1,6 @@
 import XCTest
+import Foundation
+import CryptoKit
 
 /// Real executable + linked AnyLib. Every test uses a fresh debug-only data and
 /// Keychain namespace; the long flow reopens that same owned namespace.
@@ -743,6 +745,387 @@ final class NativeLaunchTests: XCTestCase {
         XCTAssertFalse(app.buttons[documentB].exists)
     }
 
+    func testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen() async throws {
+        let fixture = try HanlinMountedFixtureClient(environment: ProcessInfo.processInfo.environment)
+        defer { fixture.close() }
+        // This is an ordinary trusted HTTPS request. A missing fixture or untrusted
+        // certificate fails before onboarding; there is no trust override or skip.
+        try await fixture.requireReady()
+
+        let scope = UUID(), suffix = String(scope.uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        let spaceName = "Hanlin UI Space " + suffix
+        let documentName = "Hanlin source " + suffix
+        let cancelledTitle = "Hanlin cancelled " + suffix
+        let approvedTitle = "Hanlin approved " + suffix
+        let selectedText = "ש\u{05B8}\u{05C1}לו\u{05B9}ם 👩🏽‍💻 A " + suffix
+        let unselectedText = "UNSELECTED_CANARY_" + scope.uuidString
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+
+        tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+        let blocks = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        let first = blocks.firstMatch
+        waitUntilEnabled(first)
+        let selectedIdentifier = first.identifier
+        XCTAssertTrue(selectedIdentifier.hasPrefix("any-native-block-"))
+        first.tap(); first.typeText(selectedText)
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        waitForHanlinSourceSave(app)
+        requireExactHanlinText(first, expected: selectedText)
+
+        tapWhenEnabled(app.buttons["any-native-document-options"])
+        tapWhenEnabled(app.buttons.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "הוספת פסקה", "Add paragraph")).firstMatch)
+        let second = blocks.matching(NSPredicate(
+            format: "identifier != %@", selectedIdentifier)).firstMatch
+        waitUntilEnabled(second, timeout: 60)
+        let unselectedIdentifier = second.identifier
+        XCTAssertNotEqual(unselectedIdentifier, selectedIdentifier)
+        second.tap(); second.typeText(unselectedText)
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        waitForHanlinSourceSave(app)
+        requireExactHanlinText(second, expected: unselectedText)
+        XCTAssertEqual(blocks.count, 2)
+
+        // Cold opening removes prior in-memory typing/selection ownership. The
+        // real Select block menu below, not a launch flag, establishes selection.
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        let sourceRow = app.buttons[documentName].firstMatch
+        waitUntilEnabled(sourceRow, timeout: 60)
+        let objectPrefix = "any-native-hierarchy-row-"
+        XCTAssertTrue(sourceRow.identifier.hasPrefix(objectPrefix))
+        let objectID = String(sourceRow.identifier.dropFirst(objectPrefix.count))
+        XCTAssertFalse(objectID.isEmpty)
+        sourceRow.tap()
+        let selected = app.textViews[selectedIdentifier]
+        let unselected = app.textViews[unselectedIdentifier]
+        waitUntilEnabled(selected, timeout: 60)
+        requireExactHanlinText(selected, expected: selectedText)
+        requireExactHanlinText(unselected, expected: unselectedText)
+        XCTAssertEqual(blocks.count, 2)
+        let options = app.buttons["any-native-document-options"]
+        waitFor(NSPredicate(format: "value == %@ OR value == %@",
+                            "אין בלוק נבחר", "No block selected"), object: options, timeout: 15)
+        try selectHanlinBlockFromNativeMenu(app, textView: selected)
+        waitFor(NSPredicate(format: "value == %@ OR value == %@",
+                            "העיצוב השמור: כיוון אוטומטי, יישור טבעי",
+                            "Saved style: Automatic direction, alignment Natural"),
+                object: options, timeout: 15)
+
+        let scenario = HanlinMountedFixtureScenario(
+            selectedBlockID: String(selectedIdentifier.dropFirst("any-native-block-".count)),
+            selectedText: selectedText, unselectedText: unselectedText,
+            documentTitle: documentName, cancelledTitle: cancelledTitle,
+            approvedTitle: approvedTitle, objectReference: objectID)
+        try await fixture.register(scenario)
+
+        tapWhenEnabled(app.buttons["any-native-hanlin"])
+        try configureHanlinThroughNormalFields(app, fixture: fixture)
+        let share = app.buttons["pinkha.hanlin.share-context"]
+        tapWhenEnabled(share)
+        tapWhenEnabled(app.buttons["pinkha.hanlin.consent.read-context.cancel"])
+        waitUntilEnabled(share)
+        sendHanlinPrompt(app, text: "Check the available actions without reading source text.")
+        let denied = try await fixture.waitForPhase(1)
+        XCTAssertEqual(denied.checks["denied_read_catalog_omits_read_tool"], true)
+        XCTAssertEqual(denied.checks["denied_read_has_no_source_text"], true)
+        waitForHanlinMarker(app, text: "PINKHA_HANLIN_DENIED_READ_CHECKED")
+
+        tapWhenEnabled(share)
+        tapWhenEnabled(app.buttons["pinkha.hanlin.consent.read-context.allow"])
+        waitFor(NSPredicate(format: "exists == true AND enabled == false"),
+                object: share, timeout: 20)
+        sendHanlinPrompt(app, text: "Read only the selected block, then offer the cancelled draft page.")
+        let read = try await fixture.waitForPhase(3)
+        XCTAssertEqual(read.checks["selected_payload_exact_block_and_text"], true)
+        XCTAssertEqual(read.checks["unselected_text_never_disclosed"], true)
+        XCTAssertTrue(read.registeredObjectCompared)
+        XCTAssertEqual(read.observedObjectSHA256, hanlinSHA256(objectID))
+        let observedSpaceHash = try XCTUnwrap(read.observedSpaceSHA256)
+        let cancelSpace = try requireHanlinCreationPrompt(app, title: cancelledTitle)
+        XCTAssertEqual(hanlinSHA256(cancelSpace), observedSpaceHash)
+        tapWhenEnabled(app.buttons["pinkha.hanlin.consent.create-page.cancel"])
+        let cancelled = try await fixture.waitForPhase(4)
+        XCTAssertEqual(cancelled.checks["cancel_creation_refused"], true)
+        waitForHanlinMarker(app, text: "PINKHA_HANLIN_CANCELLED_CREATE_CHECKED")
+
+        sendHanlinPrompt(app, text: "Offer the separately approved draft page.")
+        let offered = try await fixture.waitForPhase(5)
+        XCTAssertEqual(offered.checks["allowed_creation_new_exact_call"], true)
+        let approvedSpace = try requireHanlinCreationPrompt(app, title: approvedTitle)
+        XCTAssertEqual(approvedSpace, cancelSpace)
+        XCTAssertEqual(hanlinSHA256(approvedSpace), observedSpaceHash)
+        tapWhenEnabled(app.buttons["pinkha.hanlin.consent.create-page.allow"])
+        let completed = try await fixture.waitForPhase(6)
+        try completed.requireComplete()
+        waitForHanlinMarker(app, text: "PINKHA_HANLIN_APPROVED_CREATE_CHECKED")
+        try requireHanlinCreatedReceipt(app)
+        let metadata = XCTAttachment(data: try JSONEncoder().encode(completed),
+                                     uniformTypeIdentifier: "public.json")
+        metadata.name = "hanlin-mounted-provider-sanitized-status"
+        metadata.lifetime = .keepAlways
+        add(metadata)
+        tapWhenEnabled(app.buttons["pinkha.hanlin.close"])
+        waitUntilEnabled(selected, timeout: 30)
+        requireExactHanlinText(selected, expected: selectedText)
+        requireExactHanlinText(unselected, expected: unselectedText)
+        XCTAssertEqual(blocks.count, 2)
+
+        // Native Hanlin pages are ordinary Pages, without Wiki membership. Use
+        // the real All documents list and never invent an ID from the empty
+        // successful model-facing tool result.
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "כל המסמכים", "All documents")).firstMatch,
+            timeout: 60)
+        let approvedRows = app.buttons.matching(NSPredicate(format: "label == %@", approvedTitle))
+        waitUntilEnabled(approvedRows.firstMatch, timeout: 60)
+        waitUntilEnabled(app.buttons[documentName].firstMatch, timeout: 60)
+        XCTAssertEqual(approvedRows.count, 1)
+        XCTAssertFalse(app.buttons.matching(NSPredicate(format: "label == %@", cancelledTitle)).firstMatch.exists)
+        approvedRows.firstMatch.tap()
+        waitUntilEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+        XCTAssertTrue(app.navigationBars[approvedTitle].exists)
+        XCTAssertEqual(blocks.count, 0, "Title-only creation must not copy the selected source into the new page.")
+
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        let reopenedSource = app.buttons[documentName].firstMatch
+        waitUntilEnabled(reopenedSource, timeout: 60)
+        XCTAssertEqual(reopenedSource.identifier, objectPrefix + objectID)
+        reopenedSource.tap()
+        waitUntilEnabled(selected, timeout: 60)
+        requireExactHanlinText(selected, expected: selectedText)
+        requireExactHanlinText(unselected, expected: unselectedText)
+        XCTAssertEqual(blocks.count, 2)
+    }
+
+    private func waitForHanlinSourceSave(_ app: XCUIApplication) {
+        let status = app.descendants(matching: .any)
+            .matching(identifier: "any-native-save-status").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"),
+                object: status, timeout: 45)
+    }
+
+    private func requireExactHanlinText(_ element: XCUIElement, expected: String,
+                                       file: StaticString = #filePath, line: UInt = #line) {
+        waitUntilEnabled(element, timeout: 30, file: file, line: line)
+        guard let actual = element.value as? String else {
+            XCTFail("The actual source text has no readable AX value.", file: file, line: line)
+            return
+        }
+        // Swift String equality permits canonically equivalent Unicode; exact
+        // UTF-8 equality also detects altered combining-mark order and emoji.
+        XCTAssertEqual(Array(actual.utf8), Array(expected.utf8), file: file, line: line)
+    }
+
+    private func selectHanlinBlockFromNativeMenu(_ app: XCUIApplication, textView: XCUIElement) throws {
+        let cells = app.cells.containing(.textView, identifier: textView.identifier)
+        let cell = cells.firstMatch
+        waitUntilEnabled(cell)
+        XCTAssertEqual(cells.count, 1)
+        XCTAssertTrue(cell.isHittable)
+        let row = cell.frame, text = textView.frame
+        guard row.width.isFinite, row.height.isFinite, row.height >= 8,
+              row.contains(text), !text.isEmpty else {
+            throw HanlinMountedFixtureError.unavailableBlockGutter
+        }
+        let left = text.minX - row.minX, right = row.maxX - text.maxX
+        guard max(left, right) >= 4 else { throw HanlinMountedFixtureError.unavailableBlockGutter }
+        let x = left >= right ? row.minX + left / 2 : text.maxX + right / 2
+        let point = CGPoint(x: x, y: text.midY)
+        guard row.contains(point), !text.contains(point), app.frame.contains(point) else {
+            throw HanlinMountedFixtureError.unavailableBlockGutter
+        }
+        // The existing cell's physical gutter is outside UITextView, so this
+        // exercises UITableView's real context menu instead of the edit menu.
+        cell.coordinate(withNormalizedOffset: .zero).withOffset(
+            CGVector(dx: point.x - row.minX, dy: point.y - row.minY)).press(forDuration: 1.2)
+        tapWhenEnabled(app.buttons.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "בחירת בלוק", "Select block")).firstMatch)
+    }
+
+    private func configureHanlinThroughNormalFields(_ app: XCUIApplication,
+                                                    fixture: HanlinMountedFixtureClient) throws {
+        let endpoint = app.textFields.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "כתובת API מסוג HTTPS", "HTTPS API endpoint")).firstMatch
+        let model = app.textFields.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "מזהה המודל", "Model identifier")).firstMatch
+        let key = app.secureTextFields.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "מפתח API", "API key")).firstMatch
+        waitUntilEnabled(endpoint)
+        endpoint.tap()
+        endpoint.typeKey("a", modifierFlags: .command)
+        endpoint.typeText(fixture.providerURL.absoluteString)
+        XCTAssertEqual(endpoint.value as? String, fixture.providerURL.absoluteString)
+        waitUntilEnabled(model); model.tap(); model.typeText(fixture.model)
+        XCTAssertEqual(model.value as? String, fixture.model)
+        waitUntilEnabled(key); key.tap(); key.typeText(fixture.providerKey)
+        tapWhenEnabled(app.buttons["pinkha.hanlin.connect"])
+        waitUntilEnabled(hanlinComposerInput(app))
+    }
+
+    private func hanlinComposerInput(_ app: XCUIApplication) -> XCUIElement {
+        // SwiftUI's axis:.vertical field may expose either native text-input
+        // role. Restrict to the actual retained placeholder, not a hidden model.
+        app.descendants(matching: .any).matching(NSPredicate(
+            format: "(elementType == %d OR elementType == %d) AND (label == %@ OR label == %@)",
+            XCUIElement.ElementType.textField.rawValue, XCUIElement.ElementType.textView.rawValue,
+            "שאל את Hanlin…", "Ask Hanlin…")).firstMatch
+    }
+
+    private func sendHanlinPrompt(_ app: XCUIApplication, text: String) {
+        let input = hanlinComposerInput(app)
+        waitUntilEnabled(input)
+        input.tap(); input.typeText(text)
+        let send = app.buttons.matching(NSPredicate(format: "label == %@", "Send"))
+        XCTAssertEqual(send.count, 1)
+        tapWhenEnabled(send.firstMatch, timeout: 30)
+    }
+
+    private func waitForHanlinMarker(_ app: XCUIApplication, text: String) {
+        waitFor(NSPredicate(format: "exists == true"), object: app.staticTexts[text].firstMatch, timeout: 45)
+    }
+
+    private func requireHanlinCreationPrompt(_ app: XCUIApplication, title: String) throws -> String {
+        let explanation = app.staticTexts["pinkha.hanlin.consent.create-page.explanation"]
+        waitFor(NSPredicate(format: "exists == true AND label BEGINSWITH %@", title + "\n\n"),
+                object: explanation, timeout: 45)
+        let label = explanation.label
+        guard label.hasPrefix(title + "\n\n"),
+              let last = label.split(separator: "\n").last, !last.isEmpty,
+              String(last) != title else { throw HanlinMountedFixtureError.invalidCreatePrompt }
+        XCTAssertTrue(app.buttons["pinkha.hanlin.consent.create-page.cancel"].isHittable)
+        XCTAssertTrue(app.buttons["pinkha.hanlin.consent.create-page.allow"].isHittable)
+        return String(last)
+    }
+
+    private func requireHanlinCreatedReceipt(_ app: XCUIApplication) throws {
+        let receipts = app.staticTexts.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "יצירת הדף אושרה.", "Page creation confirmed."))
+        for _ in 0..<4 {
+            if receipts.firstMatch.exists && receipts.firstMatch.isHittable {
+                XCTAssertEqual(receipts.count, 1)
+                return
+            }
+            let scroll = app.scrollViews.firstMatch
+            guard scroll.exists && scroll.isHittable else {
+                throw HanlinMountedFixtureError.unavailableReceipt
+            }
+            scroll.swipeUp()
+        }
+        throw HanlinMountedFixtureError.unavailableReceipt
+    }
+
+    private func hanlinSHA256(_ value: String) -> String {
+        SHA256.hash(data: Data(value.utf8)).map { String(format: "%02x", $0) }.joined()
+    }
+
+    /// DIAGNOSTIC OBSERVATION ONLY. Reaching these capture points does not
+    /// assert an exported file, a writable provider, an import, or a mapping.
+    func testObserveCanonicalArchiveSystemPickers() throws {
+        let scope = UUID(), suffix = String(scope.uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        let spaceName = "Archive picker observation " + suffix
+        let documentName = "Empty archive observation " + suffix
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+        waitUntilEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+        XCTAssertTrue(app.navigationBars[documentName].exists)
+        XCTAssertEqual(app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-")).count, 0)
+        try requireArchiveObservationPastOnboarding(app)
+        openCanonicalArchiveObservationEntry(app)
+        let export = app.buttons["any-native-archive-export"]
+        tapWhenEnabled(export, timeout: 45)
+        try captureCanonicalPickerObservation(app, coveredEntry: export, phase: "exporter")
+
+        // End the uncommitted dialog without guessing an OS Save/Cancel label.
+        // Reauthentication and the document entry are the normal existing UI.
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
+        waitUntilEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+        XCTAssertTrue(app.navigationBars[documentName].exists)
+        try requireArchiveObservationPastOnboarding(app)
+        openCanonicalArchiveObservationEntry(app)
+        let importer = app.buttons["any-native-archive-import"]
+        tapWhenEnabled(importer, timeout: 45)
+        try captureCanonicalPickerObservation(app, coveredEntry: importer, phase: "importer")
+        // defer terminates this second uncommitted picker. No URL is selected,
+        // no sandbox file is supplied, and no prepare/import action is invoked.
+    }
+
+    private func openCanonicalArchiveObservationEntry(_ app: XCUIApplication) {
+        tapWhenEnabled(app.buttons["any-native-document-options"])
+        tapWhenEnabled(app.buttons["any-native-canonical-transfer"])
+        waitUntilEnabled(app.buttons["any-native-archive-export"], timeout: 45)
+        // This existing button becomes enabled only after the actual transfer
+        // model has mounted with the native writable document authority.
+        waitUntilEnabled(app.buttons["any-native-archive-import"], timeout: 45)
+    }
+
+    private func requireArchiveObservationPastOnboarding(_ app: XCUIApplication) throws {
+        guard app.state == .runningForeground,
+              !app.buttons["any-native-account-create"].exists,
+              !app.switches["any-native-backup-acknowledged"].exists,
+              !app.buttons["any-native-backup-continue"].exists,
+              !app.secureTextFields["any-native-account-restore-phrase"].exists else {
+            // Do not capture a tree or screenshot of onboarding/recovery.
+            throw CanonicalPickerObservationError.onboardingOrRecoveryVisible
+        }
+    }
+
+    private func captureCanonicalPickerObservation(_ app: XCUIApplication,
+                                                     coveredEntry: XCUIElement,
+                                                     phase: String) throws {
+        try requireArchiveObservationPastOnboarding(app)
+        // Poll only the real app-owned initiating control. No OS-provider name,
+        // Save/Cancel control, directory, or filename is assumed. Disabled-but-
+        // still-visible export preparation is not accepted as modal coverage.
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "exists == false OR (enabled == true AND hittable == false)"),
+            object: coveredEntry)
+        let coverage = XCTWaiter.wait(for: [expectation], timeout: 45)
+        try requireArchiveObservationPastOnboarding(app)
+        // AX queries and screenshot collection use XCTest's normal automation
+        // quiescence. There are no timed taps or fabricated system-picker state.
+        let tree = app.debugDescription
+        try requireArchiveObservationPastOnboarding(app)
+        let maximumBytes = 131_072
+        let utf8 = Data(tree.utf8)
+        let bounded = String(decoding: utf8.prefix(maximumBytes), as: UTF8.self)
+        let ax = XCTAttachment(string: bounded)
+        ax.name = "OBSERVATION_ONLY_" + phase + "_private_app_AX"
+        ax.lifetime = .keepAlways
+        add(ax)
+        let image = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        image.name = "OBSERVATION_ONLY_" + phase + "_private_screen"
+        image.lifetime = .keepAlways
+        add(image)
+        let metadata = XCTAttachment(string:
+            "scope=observation_only_not_export_import_or_mapping_acceptance\n" +
+            "phase=" + phase + "\n" +
+            "appOwnedEntryCovered=" + String(coverage == .completed) + "\n" +
+            "axOriginalBytes=" + String(utf8.count) + "\n" +
+            "axCapturedBytes=" + String(min(utf8.count, maximumBytes)) + "\n" +
+            "privateArtifactRequiresScreening=true\n" +
+            "systemPickerIdentityAndWritableDestinationNotAsserted=true\n" +
+            "noUserSaveSelectionOrImportWasInvoked=true\n")
+        metadata.name = "OBSERVATION_ONLY_" + phase + "_scope"
+        metadata.lifetime = .keepAlways
+        add(metadata)
+        guard coverage == .completed else {
+            // Preserve the actual post-action observation but fail the diagnostic
+            // if the normal entry never becomes covered. This is not a skip.
+            throw CanonicalPickerObservationError.entryDidNotPresentAnotherSurface
+        }
+    }
+
     private func selectInspectorTool(_ app: XCUIApplication, hebrew: String, english: String) {
         let tools = app.descendants(matching: .any)
             .matching(identifier: "torah-inspector-tools").firstMatch
@@ -835,4 +1218,206 @@ final class NativeLaunchTests: XCTestCase {
         XCTAssertEqual(XCTWaiter.wait(for: [expectation], timeout: timeout), .completed,
                        "Expected UI state was not reached", file: file, line: line)
     }
+}
+
+// Test-runner-only fixture protocol. These types never enter the app target.
+private enum HanlinMountedFixtureError: Error {
+    case missingConfiguration, invalidConfiguration, invalidResponse
+    case wrongFixtureContract, fixtureFailed(String), phaseDeadline(Int), unexpectedPhase(Int)
+    case unavailableBlockGutter, invalidCreatePrompt, unavailableReceipt, incompleteProof
+}
+
+private struct HanlinMountedFixtureScenario: Encodable, Sendable {
+    let selectedBlockID: String
+    let selectedText: String
+    let unselectedText: String
+    let documentTitle: String
+    let cancelledTitle: String
+    let approvedTitle: String
+    let objectReference: String
+}
+
+private struct HanlinMountedFixtureReady: Decodable, Sendable {
+    let schema: Int
+    let contract: String
+    let ready: Bool
+}
+
+private struct HanlinMountedFixtureStatus: Codable, Sendable {
+    let schema: Int
+    let contract: String
+    let runID: String
+    let scope: String
+    let state: String
+    let complete: Bool
+    let phase: Int
+    let providerRequests: Int
+    let responsesDelivered: Int
+    let stopped: Bool
+    let scenarioSHA256: String?
+    let observedScopeSHA256: String?
+    let observedObjectSHA256: String?
+    let observedSpaceSHA256: String?
+    let observedRevisionSHA256: String?
+    let registeredObjectCompared: Bool
+    let registeredSpaceCompared: Bool
+    let checks: [String: Bool]
+    let failureCode: String?
+    let rejections: [String: Int]
+    let requestMetadata: [RequestMetadata]
+
+    struct RequestMetadata: Codable, Sendable {
+        let round: Int
+        let bytes: Int
+        let sha256: String
+        let messageCount: Int
+        let toolCallCount: Int
+        let toolResultCount: Int
+    }
+
+    static let checkNames: Set<String> = [
+        "scenario_registered_once", "denied_read_catalog_omits_read_tool",
+        "denied_read_has_no_source_text", "allowed_read_exact_schema",
+        "read_original_call_identity", "selected_payload_exact_block_and_text",
+        "selected_payload_scope_shape_valid", "unselected_text_never_disclosed",
+        "cancel_creation_exact_title_call", "cancel_creation_refused",
+        "allowed_creation_new_exact_call", "allowed_creation_empty_success",
+        "six_provider_requests_completed"
+    ]
+
+    func validate(expectedRunID: String? = nil) throws {
+        guard expectedRunID.map({ $0 == runID }) ?? true,
+              schema == 1, contract == "pinkha-mounted-hanlin-provider-fixture-v1",
+              scope == "test_provider_protocol_only_not_Apple_or_native_acceptance",
+              UUID(uuidString: runID) != nil, (0...6).contains(phase),
+              (0...6).contains(providerRequests), (0...6).contains(responsesDelivered),
+              responsesDelivered <= phase, phase - responsesDelivered <= 1,
+              Set(checks.keys) == Self.checkNames, !stopped else {
+            throw HanlinMountedFixtureError.wrongFixtureContract
+        }
+        if let failureCode { throw HanlinMountedFixtureError.fixtureFailed(failureCode) }
+        guard state != "failed" else { throw HanlinMountedFixtureError.incompleteProof }
+    }
+
+    func requireComplete() throws {
+        try validate()
+        guard complete, state == "complete", phase == 6,
+              providerRequests == 6, responsesDelivered == 6, requestMetadata.count == 6,
+              checks.values.allSatisfy({ $0 }), registeredObjectCompared,
+              rejections.values.allSatisfy({ $0 == 0 }),
+              [scenarioSHA256, observedScopeSHA256, observedObjectSHA256,
+               observedSpaceSHA256, observedRevisionSHA256].allSatisfy({
+                  guard let value = $0 else { return false }
+                  return value.count == 64 && value.utf8.allSatisfy {
+                      (48...57).contains($0) || (97...102).contains($0)
+                  }
+              }) else { throw HanlinMountedFixtureError.incompleteProof }
+    }
+}
+
+@MainActor
+private final class HanlinMountedFixtureClient {
+    let providerURL: URL
+    let model: String
+    let providerKey: String
+    private let controlURL: URL
+    private let controlToken: String
+    private let session: URLSession
+    private var registeredRunID: String?
+
+    init(environment: [String: String]) throws {
+        let prefix = "PINKHA_HANLIN_FIXTURE"
+        guard let rawProvider = environment[prefix + "_URL"],
+              let model = environment[prefix + "_MODEL"], !model.isEmpty,
+              let key = environment[prefix + "_KEY"], !key.isEmpty,
+              let rawControl = environment[prefix + "_CONTROL_URL"],
+              let token = environment[prefix + "_CONTROL_TOKEN"], !token.isEmpty else {
+            throw HanlinMountedFixtureError.missingConfiguration
+        }
+        guard let provider = URLComponents(string: rawProvider),
+              let control = URLComponents(string: rawControl),
+              provider.scheme == "https", control.scheme == "https",
+              provider.host == "127.0.0.1", control.host == provider.host,
+              provider.port != nil, control.port == provider.port,
+              provider.path == "/v1", control.path == "/__fixture",
+              provider.user == nil, provider.password == nil, provider.query == nil, provider.fragment == nil,
+              control.user == nil, control.password == nil, control.query == nil, control.fragment == nil,
+              let providerURL = provider.url, let controlURL = control.url else {
+            throw HanlinMountedFixtureError.invalidConfiguration
+        }
+        self.providerURL = providerURL; self.controlURL = controlURL
+        self.model = model; self.providerKey = key; self.controlToken = token
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 10
+        configuration.timeoutIntervalForResource = 15
+        configuration.httpShouldSetCookies = false
+        // Default system certificate validation: no delegate, trust override,
+        // URLProtocol replacement, proxy, or app-environment configuration.
+        self.session = URLSession(configuration: configuration)
+    }
+
+    func close() { session.invalidateAndCancel() }
+
+    func requireReady() async throws {
+        let value: HanlinMountedFixtureReady = try await request(
+            "ready", method: "GET", body: nil, authenticated: false, status: 200)
+        guard value.schema == 1, value.contract == "pinkha-mounted-hanlin-provider-fixture-v1",
+              value.ready else { throw HanlinMountedFixtureError.wrongFixtureContract }
+    }
+
+    func register(_ scenario: HanlinMountedFixtureScenario) async throws {
+        guard registeredRunID == nil else { throw HanlinMountedFixtureError.wrongFixtureContract }
+        let value: HanlinMountedFixtureStatus = try await request("scenario", method: "POST",
+            body: try JSONEncoder().encode(scenario), authenticated: true, status: 201)
+        try value.validate()
+        guard value.phase == 0, value.providerRequests == 0, value.responsesDelivered == 0,
+              !value.complete, value.state == "running",
+              value.checks["scenario_registered_once"] == true else {
+            throw HanlinMountedFixtureError.incompleteProof
+        }
+        registeredRunID = value.runID
+    }
+
+    func waitForPhase(_ phase: Int, timeout: TimeInterval = 45) async throws -> HanlinMountedFixtureStatus {
+        guard let expectedRunID = registeredRunID else {
+            throw HanlinMountedFixtureError.wrongFixtureContract
+        }
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            try Task.checkCancellation()
+            let value: HanlinMountedFixtureStatus = try await request(
+                "status", method: "GET", body: nil, authenticated: true, status: 200)
+            try value.validate(expectedRunID: expectedRunID)
+            if value.phase > phase { throw HanlinMountedFixtureError.unexpectedPhase(value.phase) }
+            if value.phase == phase && value.responsesDelivered == phase { return value }
+            // Five bounded 45-second waits allow at most 225 read-only polls, keeping
+            // ready/register/provider/finalization requests below the fixture's
+            // fixed 256-request cap without extending any deadline.
+            try await Task.sleep(for: .seconds(1))
+        }
+        throw HanlinMountedFixtureError.phaseDeadline(phase)
+    }
+
+    private func request<T: Decodable>(_ route: String, method: String, body: Data?,
+                                        authenticated: Bool, status: Int) async throws -> T {
+        let url = controlURL.appendingPathComponent(route)
+        var request = URLRequest(url: url)
+        request.httpMethod = method
+        request.httpBody = body
+        if body != nil { request.setValue("application/json", forHTTPHeaderField: "Content-Type") }
+        if authenticated {
+            request.setValue("Bearer " + controlToken, forHTTPHeaderField: "Authorization")
+        }
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse, http.statusCode == status,
+              http.url == url, data.count <= 131_072 else {
+            throw HanlinMountedFixtureError.invalidResponse
+        }
+        return try JSONDecoder().decode(T.self, from: data)
+    }
+}
+
+private enum CanonicalPickerObservationError: Error {
+    case onboardingOrRecoveryVisible
+    case entryDidNotPresentAnotherSurface
 }

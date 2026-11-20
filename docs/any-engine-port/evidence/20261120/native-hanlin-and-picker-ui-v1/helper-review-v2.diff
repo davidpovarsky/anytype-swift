@@ -1,0 +1,58 @@
+--- NativeLaunchTests.inserted.swift
++++ NativeLaunchTests.reviewed.swift
+@@ -1285,8 +1285,9 @@
+         "six_provider_requests_completed"
+     ]
+ 
+-    func validate() throws {
+-        guard schema == 1, contract == "pinkha-mounted-hanlin-provider-fixture-v1",
++    func validate(expectedRunID: String? = nil) throws {
++        guard expectedRunID.map({ $0 == runID }) ?? true,
++              schema == 1, contract == "pinkha-mounted-hanlin-provider-fixture-v1",
+               scope == "test_provider_protocol_only_not_Apple_or_native_acceptance",
+               UUID(uuidString: runID) != nil, (0...6).contains(phase),
+               (0...6).contains(providerRequests), (0...6).contains(responsesDelivered),
+@@ -1322,6 +1323,7 @@
+     private let controlURL: URL
+     private let controlToken: String
+     private let session: URLSession
++    private var registeredRunID: String?
+ 
+     init(environment: [String: String]) throws {
+         let prefix = "PINKHA_HANLIN_FIXTURE"
+@@ -1364,6 +1366,7 @@
+     }
+ 
+     func register(_ scenario: HanlinMountedFixtureScenario) async throws {
++        guard registeredRunID == nil else { throw HanlinMountedFixtureError.wrongFixtureContract }
+         let value: HanlinMountedFixtureStatus = try await request("scenario", method: "POST",
+             body: try JSONEncoder().encode(scenario), authenticated: true, status: 201)
+         try value.validate()
+@@ -1372,18 +1375,25 @@
+               value.checks["scenario_registered_once"] == true else {
+             throw HanlinMountedFixtureError.incompleteProof
+         }
++        registeredRunID = value.runID
+     }
+ 
+     func waitForPhase(_ phase: Int, timeout: TimeInterval = 45) async throws -> HanlinMountedFixtureStatus {
++        guard let expectedRunID = registeredRunID else {
++            throw HanlinMountedFixtureError.wrongFixtureContract
++        }
+         let deadline = Date().addingTimeInterval(timeout)
+         while Date() < deadline {
+             try Task.checkCancellation()
+             let value: HanlinMountedFixtureStatus = try await request(
+                 "status", method: "GET", body: nil, authenticated: true, status: 200)
+-            try value.validate()
++            try value.validate(expectedRunID: expectedRunID)
+             if value.phase > phase { throw HanlinMountedFixtureError.unexpectedPhase(value.phase) }
+             if value.phase == phase && value.responsesDelivered == phase { return value }
+-            try await Task.sleep(for: .milliseconds(150))
++            // Five bounded45s waits allow at most225 read-only polls, keeping
++            // ready/register/provider/finalization requests below the fixture's
++            // fixed256-request cap without extending any deadline.
++            try await Task.sleep(for: .seconds(1))
+         }
+         throw HanlinMountedFixtureError.phaseDeadline(phase)
+     }

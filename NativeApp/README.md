@@ -20,7 +20,8 @@ Do not stack the historical patches.
 The canonical Hanlin source must also be materialized with
 Tools/Hanlin/prepare_sdk.py at the revision recorded by the workflow.
 
-After installing that verified artifact in a clean checkout:
+After installing that verified artifact in a clean checkout, and preparing the
+owned Hanlin fixture/test-runner environment as the workflow does:
 
     export PINKHA_ANY_NATIVE_ARTIFACT=verified-v1
     xcodebuild test \
@@ -111,7 +112,7 @@ overlay once.
 | Hosted native application at57c116e | All original5/5 passed, zero failures or skips | Real AnyLib/account/Keychain/editor/creation/association tests. The later three publication methods and fifteen-check property workflow remain pending on their own source revision. |
 | Native AnyUI execution at d58b6a0 | 108/108 passed on arm64 iOS Simulator 27.2, zero skips | Source-bound xcresult includes the required focus 6 and marked-text 5, activation 4 and portable 93 cases. Evidence: `apple-d58-patched-runtime-v1/MANIFEST.json`. Executable interaction remains separate. |
 | Separate executable at57c116e | Actual2/7 passed and5 failed, zero skips | Every failed scenario stopped at backup acknowledgement before Space/editor assertions. The recorded outer Switch row contained a distinct physical child Switch; all five remained off after the outer-row tap. The corrected helper taps that observed child once and requires0→1 while retaining the Continue enabled guard. Its Apple execution remains pending. |
-| Current executable scenarios | Nine named XCUITests required | Original7 bodies remain unchanged; added source drag with cold reopen and Topic/Word association/indexed navigation with cold reopen. Registration and syntax/source checks do not certify mounted behavior. |
+| Current executable scenarios | Ten business XCUITests plus one separately classified picker observation required | Original9 bodies/helpers remain unchanged. Added selected-context Hanlin with separate create consent and cold reopen; the picker observation is diagnostic only. Registration, syntax and saved-response decoding do not certify mounted behavior. |
 
 At published commit `57c116e02ee6dbce21f3bbffcc297841d2bd1235`,
 [Apple run44673740725](https://github.com/davidpovarsky/anytype-swift/actions/runs/44673740725)
@@ -127,7 +128,7 @@ It keeps the original session, URLs, request order, default timeout and assertio
 The five executable failures share the observed backup-toggle boundary described
 above. Full recovery-screen AX/video/ZIP data stays outside the published evidence;
 the archive contains screened control metadata and exact source/result hashes.
-Retained-consumer compatibility remains separately queued. This run predates the
+Retained-consumer compatibility was running its build/profile step at 06:18 UTC. This run predates the
 published v9 base checkpoint `2dca5f6c1c64ab96d5fd32abb7d8628d919543ec`
 and does not certify its property/editor changes or the follow-up test corrections.
 
@@ -141,6 +142,47 @@ Read the source-bound receipts rather than adding these counts together: scopes,
 versions and fixtures differ, and later features are not certified by an older run.
 The detailed current capability table is
 [CAPABILITY_STATUS.md](../docs/any-engine-port/CAPABILITY_STATUS.md).
+
+## Mounted Hanlin and archive observation
+
+The ten business XCUITests now include the ordinary Hanlin Configure, Send and
+consent interfaces. The new journey denies source sharing first, then grants
+only the selected block, cancels one create request, approves a separate request,
+and checks exactly one empty page in the original Space after a cold reopen.
+It also verifies that the original source blocks, identities and text remain intact.
+
+CI prepares a finite HTTPS/SSE provider from the pinned canonical Hanlin fixture
+builders. It creates a private temporary CA, installs its public root only in
+the simulator whose UUID, runtime, type and run-specific name were verified,
+and supplies configuration to the test runner. The app receives the endpoint,
+model and synthetic key through the existing configuration UI. No provider
+credential or control token is committed. The native application keeps its
+existing ATS policy and URLSession transport. Cleanup proves the owned child
+and listener stopped before removing private files; deleting the owned simulator
+removes the temporary trust. Actual default-URLSession trust and mounted behavior
+are checked by the Apple run, not inferred from the Windows fixture checks.
+
+The separate `archive-picker-observation` profile requires
+`testObserveCanonicalArchiveSystemPickers`. It captures the real Export/Import
+system-picker accessibility surface and screenshot for the next implementation
+step. It does not save, import, map IDs or certify a writable Files provider.
+Its private xcresult attachments must be screened before publication. Full
+canonical archive transfer through the mounted interface remains open.
+
+Pre-publication evidence is source-bound: [fixture controls and lifecycle](../Tools/AnyEngineValidation/HanlinProviderFixture/evidence/20261120-v1/MANIFEST.json),
+[exact Swift consumer and source retention](../docs/any-engine-port/evidence/20261120/native-hanlin-and-picker-ui-v1/MANIFEST.json),
+[CI ownership/schema review](../docs/any-engine-port/evidence/20261120/native-hanlin-ci-orchestration-v1/MANIFEST.json)
+and [named-result gate controls](../docs/any-engine-port/evidence/20261120/native-apple-execution-gate-controls-v9.json).
+The 35 fixture controls, ten lifecycle checks, seven original Swift response
+vectors, nine saved-response decodes, 18 schema controls and 14 gate controls
+cover different boundaries and are not a combined count of Apple app tests.
+
+At 2026-11-20 06:29 UTC, the published `c8e648209e9b1eb021c807bd0faf0adf2f816e19`
+[Apple run44682744488](https://github.com/davidpovarsky/anytype-swift/actions/runs/44682744488)
+had passed native build/source installation and simulator creation; its patched
+AnyLib lifecycle step was running. The official-runtime and package jobs were
+queued. That source predates this Hanlin/picker addition, and remains useful
+independent validation. Its current-source acceptance is not yet established.
 
 ## Scene and test isolation
 
