@@ -1,0 +1,22 @@
+from pathlib import Path
+import hashlib,json,subprocess
+root=Path(r'C:\Users\DAVID\Code\anytype-swift-any-engine-20261119')
+out=Path(__file__).parent
+metadata=json.loads("{\"schemaVersion\":1,\"status\":\"ACTUAL_APPLE_TEST_TARGET_COMPILE_FAILURE\",\"sourceCommit\":\"c8e648209e9b1eb021c807bd0faf0adf2f816e19\",\"runId\":44682744488,\"jobId\":136109778553,\"sourcePath\":\"Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift\",\"stepNumber\":16,\"stepName\":\"Test the UIKit editor and composition lifecycle\",\"diagnosticTimeUTC\":\"2026-11-20T06:43:42Z\",\"codeLocations\":[273,278],\"diagnostic\":\"cannot use mutating member on immutable value: '$0' is immutable\",\"failingExpression\":\"try #require(pending.removeValue(forKey: id))\",\"classification\":\"Swift Testing macro expansion rewrites a mutating dictionary call through an immutable closure parameter.\",\"exitCode\":65,\"testingCancelledBecauseBuildFailed\":true,\"uiTestsExecuted\":false,\"eightFailureSummaryMeans\":\"Failed compiler commands, not eight failed tests.\",\"proposedOwnerCorrection\":\"Evaluate pending.removeValue(forKey:id) into a local value, then pass that value to #require; retain every test assertion and continuation behavior.\",\"owner\":\"capability_inventory\",\"noSourceEditsByReviewer\":true,\"noRuntimeRerun\":true,\"noBrowserNeeded\":true,\"retrieval\":{\"method\":\"GitHub connector fetch_workflow_job_logs\",\"endpoint\":\"/repos/davidpovarsky/anytype-swift/actions/jobs/136109778553/logs\",\"jobWasInProgress\":true,\"closedStepLogAvailable\":true,\"annotationsNotNeededAfterExactDiagnosticFound\":true},\"rawLog\":{\"retainedInToolResult\":true,\"notIncludedInSafeArchive\":true,\"characters\":6315706,\"snapshotLines\":23957,\"remoteWholeLogUploadAttempt\":\"RejectedHTTP413PayloadTooLarge; no target file created; safe excerpt saved separately.\"},\"scope\":\"Source-bound completed-step compiler diagnostic, not test-runtime or named-xcresult acceptance.\",\"lastSingleStatusCheck\":[{\"name\":\"Build and run the linked AnyLib lifecycle tests\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":13},{\"name\":\"Publish lifecycle diagnostic log\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":14},{\"name\":\"Test protected Hanlin recovery on iOS\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":15},{\"name\":\"Test the UIKit editor and composition lifecycle\",\"status\":\"completed\",\"conclusion\":\"failure\",\"number\":16},{\"name\":\"Test the real native account, Keychain and cold reopen path\",\"status\":\"in_progress\",\"conclusion\":null,\"number\":17},{\"name\":\"Publish hosted application diagnostic log\",\"status\":\"pending\",\"conclusion\":null,\"number\":18}]}")
+r=subprocess.run(['git','show',metadata['sourceCommit']+':'+metadata['sourcePath']],cwd=root,capture_output=True,timeout=15)
+assert r.returncode==0
+source=r.stdout
+lines=source.decode('utf-8').splitlines()
+for number in metadata['codeLocations']:
+    assert metadata['failingExpression'] in lines[number-1]
+(out/'c8-AnyNativePropertyPresentationTests.swift').write_bytes(source)
+h=lambda b:hashlib.sha256(b).hexdigest()
+metadata['immutableGitSourceSHA256']=h(source)
+metadata['safeExcerptSHA256']=h((out/'ui-compile-error.sanitized.log').read_bytes())
+(out/'failure.json').write_text(json.dumps(metadata,indent=2)+'\n',encoding='utf-8')
+names=['ui-compile-error.sanitized.log','c8-AnyNativePropertyPresentationTests.swift','failure.json','seal_failure.py']
+files={name:{'sha256':h((out/name).read_bytes()),'bytes':(out/name).stat().st_size} for name in names}
+manifest={'schemaVersion':1,'status':'SEALED_SAFE_COMPILE_FAILURE','sourceCommit':metadata['sourceCommit'],'runId':metadata['runId'],'jobId':metadata['jobId'],'files':files,'rawJobLogIncluded':False,'uiTestsExecuted':False,'noSourceEdits':True}
+data=(json.dumps(manifest,indent=2)+'\n').encode()
+(out/'MANIFEST.json').write_bytes(data)
+print(json.dumps({'directory':str(out),'manifestSHA256':h(data),'files':len(files),'sourceSHA256':h(source),'safeExcerptSHA256':metadata['safeExcerptSHA256'],'uiTestsExecuted':False}))

@@ -270,12 +270,14 @@ private final class SuspendedPropertyCalls<Value: Sendable> {
     }
 
     func succeed(_ id: Int, _ value: Value) throws {
-        let continuation = try #require(pending.removeValue(forKey: id))
+        let removed = pending.removeValue(forKey: id)
+        let continuation = try #require(removed)
         continuation.resume(returning: value)
     }
 
     func fail(_ id: Int, _ error: any Error) throws {
-        let continuation = try #require(pending.removeValue(forKey: id))
+        let removed = pending.removeValue(forKey: id)
+        let continuation = try #require(removed)
         continuation.resume(throwing: error)
     }
 

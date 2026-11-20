@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "status": "PASS",
+  "startedAt": "2026-11-20T06:52:16.714004+00:00",
+  "scope": "Exact complete generic continuation helper extracted from actual source before/after the two-site macro fix. Swift 6 Windows typecheck with actual Testing macro plugin; full test-file syntax parse only. No execution of seven presentation-model tests, UIKit semantic compile, Apple runtime, or native authority claim.",
+  "source": "Modules\\PinkhaAnyUI\\Tests\\PinkhaAnyUITests\\AnyNativePropertyPresentationTests.swift",
+  "sourceSHA256": "9b9ed54de6f915f8e5347d04b32960af525c120703ba01edaf4dbceecda4371a",
+  "beforeHelperSHA256": "346dbf2fb65f0ce485933496a73e70b6c539ff65ba1fbc383f1f660ab0aaf812",
+  "afterHelperSHA256": "e7bdff3c3f9ae9b65e08a34fc80429efff1a086a1afabefe1f2b52acc0b46b84",
+  "steps": [
+    {
+      "name": "compiler-version",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-version"
+      ],
+      "timedOut": false,
+      "cleanupErrors": [],
+      "pid": 27760,
+      "processBoundary": "owned_windows_kill_on_close_job",
+      "exitCode": 0,
+      "parentExited": true,
+      "elapsedSeconds": 0.187
+    },
+    {
+      "name": "before-typecheck",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-typecheck",
+        "-swift-version",
+        "6",
+        "-parse-as-library",
+        "-target",
+        "x86_64-unknown-windows-msvc",
+        "-j1",
+        "-sdk",
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\SDKs\\Windows.sdk",
+        "-libc",
+        "MD",
+        "-I",
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\Library\\Testing-6.3.3\\usr\\lib\\swift\\windows",
+        "-I",
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\Library\\Testing-6.3.3\\usr\\lib\\swift\\windows\\x86_64",
+        "-module-cache-path",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\native-property-require-macro-fix-v1\\ModuleCache",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\native-property-require-macro-fix-v1\\BeforeHelper.swift"
+      ],
+      "timedOut": false,
+      "cleanupErrors": [],
+      "pid": 13944,
+      "processBoundary": "owned_windows_kill_on_close_job",
+      "exitCode": 1,
+      "parentExited": true,
+      "elapsedSeconds": 0.578
+    },
+    {
+      "name": "after-typecheck",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-typecheck",
+        "-swift-version",
+        "6",
+        "-parse-as-library",
+        "-target",
+        "x86_64-unknown-windows-msvc",
+        "-j1",
+        "-sdk",
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\SDKs\\Windows.sdk",
+        "-libc",
+        "MD",
+        "-I",
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\Library\\Testing-6.3.3\\usr\\lib\\swift\\windows",
+        "-I",
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\Library\\Testing-6.3.3\\usr\\lib\\swift\\windows\\x86_64",
+        "-module-cache-path",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\native-property-require-macro-fix-v1\\ModuleCache",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\native-property-require-macro-fix-v1\\AfterHelper.swift"
+      ],
+      "timedOut": false,
+      "cleanupErrors": [],
+      "pid": 35572,
+      "processBoundary": "owned_windows_kill_on_close_job",
+      "exitCode": 0,
+      "parentExited": true,
+      "elapsedSeconds": 0.657
+    },
+    {
+      "name": "full-source-parse",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\Modules\\PinkhaAnyUI\\Tests\\PinkhaAnyUITests\\AnyNativePropertyPresentationTests.swift"
+      ],
+      "timedOut": false,
+      "cleanupErrors": [],
+      "pid": 39056,
+      "processBoundary": "owned_windows_kill_on_close_job",
+      "exitCode": 0,
+      "parentExited": true,
+      "elapsedSeconds": 0.171
+    }
+  ],
+  "compilerSHA256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+  "testingMacrosSHA256": "a04a60a90e9e077f145704b3e387a8cebecaff0214b6172b70d466d65441831f",
+  "testingDLLSHA256": "658110c6345fc20d9bd0d8a6dd87a2701dfa5d9e7033685b1a729cfddaacd1c1",
+  "originalFailureReproduced": true,
+  "primaryDiagnosticCounting": "Anchored primary compiler error lines; duplicated rendered expansion messages excluded.",
+  "originalFailureLocations": [
+    49,
+    54
+  ],
+  "originalMacroFailureCount": 2,
+  "correctedHelperTypecheckPassed": true,
+  "fullSourceSyntaxParsePassed": true,
+  "sourceStable": true,
+  "helperInputsStable": true,
+  "finishedAt": "2026-11-20T06:52:18.347056+00:00"
+}

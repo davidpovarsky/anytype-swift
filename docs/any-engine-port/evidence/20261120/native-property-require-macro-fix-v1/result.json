@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "status": "FAIL",
+  "startedAt": "2026-11-20T06:51:26.371454+00:00",
+  "scope": "Exact complete generic continuation helper extracted from actual source before/after the two-site macro fix. Swift 6 Windows typecheck with actual Testing macro plugin; full test-file syntax parse only. No execution of seven presentation-model tests, UIKit semantic compile, Apple runtime, or native authority claim.",
+  "source": "Modules\\PinkhaAnyUI\\Tests\\PinkhaAnyUITests\\AnyNativePropertyPresentationTests.swift",
+  "sourceSHA256": "9b9ed54de6f915f8e5347d04b32960af525c120703ba01edaf4dbceecda4371a",
+  "beforeHelperSHA256": "346dbf2fb65f0ce485933496a73e70b6c539ff65ba1fbc383f1f660ab0aaf812",
+  "afterHelperSHA256": "e7bdff3c3f9ae9b65e08a34fc80429efff1a086a1afabefe1f2b52acc0b46b84",
+  "steps": [
+    {
+      "name": "compiler-version",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-version"
+      ],
+      "timedOut": false,
+      "cleanupErrors": [],
+      "pid": 33068,
+      "processBoundary": "owned_windows_kill_on_close_job",
+      "exitCode": 0,
+      "parentExited": true,
+      "elapsedSeconds": 0.171
+    },
+    {
+      "name": "before-typecheck",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-typecheck",
+        "-swift-version",
+        "6",
+        "-parse-as-library",
+        "-target",
+        "x86_64-unknown-windows-msvc",
+        "-j1",
+        "-sdk",
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\SDKs\\Windows.sdk",
+        "-libc",
+        "MD",
+        "-I",
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\Library\\Testing-6.3.3\\usr\\lib\\swift\\windows",
+        "-I",
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Platforms\\6.3.3\\Windows.platform\\Developer\\Library\\Testing-6.3.3\\usr\\lib\\swift\\windows\\x86_64",
+        "-module-cache-path",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\native-property-require-macro-fix-v1\\ModuleCache",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\native-property-require-macro-fix-v1\\BeforeHelper.swift"
+      ],
+      "timedOut": false,
+      "cleanupErrors": [],
+      "pid": 19492,
+      "processBoundary": "owned_windows_kill_on_close_job",
+      "exitCode": 1,
+      "parentExited": true,
+      "elapsedSeconds": 19.672
+    }
+  ],
+  "compilerSHA256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+  "testingMacrosSHA256": "a04a60a90e9e077f145704b3e387a8cebecaff0214b6172b70d466d65441831f",
+  "testingDLLSHA256": "658110c6345fc20d9bd0d8a6dd87a2701dfa5d9e7033685b1a729cfddaacd1c1",
+  "failureType": "AssertionError",
+  "failure": "(1, 4, 'macro expansion #require:2:6: error: cannot use mutating member on immutable value: \\'$0\\' is immutable\\n`- C:\\\\Users\\\\DAVID\\\\Code\\\\anytype-swift-any-engine-20261119\\\\build\\\\any-engine-port\\\\native-property-require-macro-fix-v1\\\\BeforeHelper.swift:49:73: note: expanded code originates here\\n47 | \\n48 |     func succeed(_ id: Int, _ value: Value) throws {\\n49 |         let continuation = try #require(pending.removeValue(forKey: id))\\n   |                                `- note: in expansion of macro \\'require\\' here\\n   +--- macro expansion #require ---------------------------------------\\n   |1 | Testing.__checkFunctionCall(pending.self,calling: {\\n   |2 |   $0.removeValue(forKey: $1)\\n   |  |      `- error: cannot use mutating member on immutable value: \\'$0\\' is immutable\\n   |3 | },id,expression: .__fromFunctionCall(.__fromSyntaxNode(\"pending\"),\"removeValue\",(\"forKey\",.__fromSyntaxNode(\"id\"))),comments: [],isRequired: true,sourceLocation: Testing.SourceLocation.__here()).__required()\\n   +--------------------------------------------------------------------\\n50 |         continuation.resume(returning: value)\\n51 |     }\\n\\nC:\\\\Users\\\\DAVID\\\\Code\\\\anytype-swift-any-engine-20261119\\\\build\\\\any-engine-port\\\\native-property-require-macro-fix-v1\\\\BeforeHelper.swift:49:28: warning: no calls to throwing functions occur within \\'try\\' expression\\n47 | \\n48 |     func succeed(_ id: Int, _ value: Value) throws {\\n49 |         let continuation = try #require(pending.removeValue(forKey: id))\\n   |                            `- warning: no calls to throwing functions occur within \\'try\\' expression\\n50 |         continuation.resume(returning: value)\\n51 |     }\\n\\nmacro expansion #require:2:6: error: cannot use mutating member on immutable value: \\'$0\\' is immutable\\n`- C:\\\\Users\\\\DAVID\\\\Code\\\\anytype-swift-any-engine-20261119\\\\build\\\\any-engine-port\\\\native-property-require-macro-fix-v1\\\\BeforeHelper.swift:54:73: note: expanded code originates here\\n52 | \\n53 |     func fail(_ id: Int, _ error: any Error) throws {\\n54 |         let conti')",
+  "finishedAt": "2026-11-20T06:51:46.403361+00:00"
+}

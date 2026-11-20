@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "status": "ACTUAL_CLOSED_LOG_REVIEW_COMPLETE",
+  "scope": "source_bound_c8_Apple_Runtime_negative_read_metrics_and_named_log_outcomes_only",
+  "sourceCommit": "c8e648209e9b1eb021c807bd0faf0adf2f816e19",
+  "runId": 44682744488,
+  "jobId": 136109778553,
+  "artifactId": 14607756181,
+  "counts": {
+    "acceptedEvents": 8,
+    "awaitReturned": 4,
+    "awaitThrew": 0,
+    "discardedUnknownFieldCount": 0,
+    "missingTerminalMetrics": 0,
+    "observations": 4,
+    "prefixMarkers": 8,
+    "rejectedEvents": 0
+  },
+  "requests": [
+    {
+      "route": "health",
+      "status": 403,
+      "returnedBodyBytes": 131,
+      "terminalExpectedContentLength": 131,
+      "observerIntervalMs": 130.067,
+      "foundationTaskDurationMs": 112.53094673156738,
+      "observerStartToTaskStartWallMs": 11.076,
+      "callbackToTerminalMonotonicMs": 6.418,
+      "transactionCount": 2,
+      "omittedTransactionCount": 0,
+      "finalTransactionProtocol": "http/1.1",
+      "finalTransactionReusedConnection": true,
+      "finalTransactionProxyConnection": false,
+      "finalTransactionResponseFirstByteObserved": true,
+      "finalTransactionResponseLastByteObserved": true,
+      "finalTransactionReceivedBodyBytes": 131,
+      "finalTransactionDecodedBodyBytes": 131,
+      "redirectCount": 0,
+      "metricsCallbackCount": 1
+    },
+    {
+      "route": "auth",
+      "status": 403,
+      "returnedBodyBytes": 131,
+      "terminalExpectedContentLength": 131,
+      "observerIntervalMs": 3330.616,
+      "foundationTaskDurationMs": 129.83405590057373,
+      "observerStartToTaskStartWallMs": 3191.993,
+      "callbackToTerminalMonotonicMs": 8.727,
+      "transactionCount": 2,
+      "omittedTransactionCount": 0,
+      "finalTransactionProtocol": "http/1.1",
+      "finalTransactionReusedConnection": false,
+      "finalTransactionProxyConnection": false,
+      "finalTransactionResponseFirstByteObserved": true,
+      "finalTransactionResponseLastByteObserved": true,
+      "finalTransactionReceivedBodyBytes": 131,
+      "finalTransactionDecodedBodyBytes": 131,
+      "redirectCount": 0,
+      "metricsCallbackCount": 1
+    },
+    {
+      "route": "spaces",
+      "status": 403,
+      "returnedBodyBytes": 131,
+      "terminalExpectedContentLength": 131,
+      "observerIntervalMs": 7.606,
+      "foundationTaskDurationMs": 7.336974143981934,
+      "observerStartToTaskStartWallMs": 0.095,
+      "callbackToTerminalMonotonicMs": 0.136,
+      "transactionCount": 1,
+      "omittedTransactionCount": 0,
+      "finalTransactionProtocol": "http/1.1",
+      "finalTransactionReusedConnection": true,
+      "finalTransactionProxyConnection": false,
+      "finalTransactionResponseFirstByteObserved": true,
+      "finalTransactionResponseLastByteObserved": true,
+      "finalTransactionReceivedBodyBytes": 131,
+      "finalTransactionDecodedBodyBytes": 131,
+      "redirectCount": 0,
+      "metricsCallbackCount": 1
+    },
+    {
+      "route": "pinkha/capabilities",
+      "status": 403,
+      "returnedBodyBytes": 131,
+      "terminalExpectedContentLength": 131,
+      "observerIntervalMs": 5.708,
+      "foundationTaskDurationMs": 4.835009574890137,
+      "observerStartToTaskStartWallMs": 0.556,
+      "callbackToTerminalMonotonicMs": 0.203,
+      "transactionCount": 1,
+      "omittedTransactionCount": 0,
+      "finalTransactionProtocol": "http/1.1",
+      "finalTransactionReusedConnection": true,
+      "finalTransactionProxyConnection": false,
+      "finalTransactionResponseFirstByteObserved": true,
+      "finalTransactionResponseLastByteObserved": true,
+      "finalTransactionReceivedBodyBytes": 131,
+      "finalTransactionDecodedBodyBytes": 131,
+      "redirectCount": 0,
+      "metricsCallbackCount": 1
+    }
+  ],
+  "namedLogOutcomes": {
+    "expected": 3,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "eachExactlyOnce": true,
+    "xcresultNamedGateEvaluated": false,
+    "destinationReceiptEvaluated": false
+  },
+  "findings": [
+    "All four observed original unauthenticated reads returned from data(from:delegate:) with final HTTP403 and131 body bytes. No observed request threw or lacked a metric callback.",
+    "The negative-read timeout did not recur in this diagnostic run. This does not resolve previous Apple or Windows failures.",
+    "All final transactions reported http/1.1, no proxy and no redirect; three final transactions reused a connection and auth did not. All four final transactions supplied response start/end times.",
+    "Health and auth each reported two transaction observations. The first had status200, raw resourceFetchType3 and zero wire/decoded body counters; final403/body receipt is the caller outcome. This report makes no claim that an intermediate cached-looking response was returned to the unauthenticated caller.",
+    "Callback-to-terminal monotonic intervals range0.136–8.727ms in these successful observations; this is not evidence about the earlier failing task.",
+    "Observer intervals are wider than a pure data-await interval: started() emits synchronously before invoking data(), and terminal timestamps precede synchronous output after data() returns. No I/O runs inside didFinishCollecting."
+  ],
+  "timingQualification": {
+    "healthTerminalTimestampToNextAuthStartTimestampMs": 95360.604,
+    "thatGapBeginsAfterHealthDataAwaitReturned": true,
+    "authObserverIntervalMs": 3330.616,
+    "authFoundationTaskDurationMs": 129.83405590057373,
+    "authObserverStartToFoundationTaskStartWallMs": 3191.993,
+    "interpretation": "These gaps can include diagnostic output and caller scheduling. The current metrics do not time FileHandle.write separately or establish a specific blocked sink, queue or socket.",
+    "exactProducerPath": "Modules/PinkhaAnyRuntime/Tests/PinkhaAnyRuntimeTests/AnyEmbeddedRuntimeTests.swift",
+    "betweenHealthEndAndAuthStartStatements": [
+      {
+        "lines": "276-291",
+        "statement": "Health end is timestamped in emit(); afterward it adds scalar fields, converts the copied metric snapshot to JSON, builds the line and synchronously calls FileHandle.standardError.write(contentsOf: line)."
+      },
+      {
+        "lines": "164-170,133-134,129",
+        "statement": "finished() returns; observedRuntimeDeniedRead returns the already completed Data/URLResponse and executes its withExtendedLifetime defer."
+      },
+      {
+        "lines": "29-33",
+        "statement": "The caller checks the completed health response status with the original XCTAssertEqual and advances the original for-loop from health to auth."
+      },
+      {
+        "lines": "123-130,146-158,160-161",
+        "statement": "The next helper constructs a fresh observer and calls started(), with no intervening data request in this source path."
+      },
+      {
+        "lines": "269-276",
+        "statement": "The auth start emit snapshots its fresh bounded state and captures the next timestamp."
+      }
+    ],
+    "authStartToTaskTimingStatements": [
+      {
+        "lines": "276-291,130-132",
+        "statement": "The auth start timestamp precedes JSON encoding and synchronous diagnostic output; only after started() returns does the helper invoke URLSession.shared.data(from:delegate:)."
+      }
+    ],
+    "explicitNetworkAwaitBetweenHealthEndAndAuthStart": false,
+    "qualification": "The source has no data await between those two observation timestamps. It does have synchronous diagnostic I/O plus assertion/loop/observer work, and execution can be descheduled. There is no separate duration measurement of those operations, so a blocked logging sink or scheduling delay remains an inference, not an established cause."
+  },
+  "producerBinding": {
+    "immutableGitBlobSHA256": "ef0a7a2b10dbbb7301483937ad8c17110980ed2814d787c29952234db4faca81",
+    "frozenWindowsRawSHA256": "39cfc7ba724c407421fc0174b438f93d7807a2c02e986e079d522be982dc8585",
+    "exactOnlyTransformation": "320 CRLF pairs to320 LF; inverse reproduces original raw bytes",
+    "initialStrictRawHashFailurePreserved": true
+  },
+  "metadataPreflightHistory": [
+    {
+      "result": "FAILED",
+      "stage": "raw_hash_binding",
+      "extractorExecuted": false,
+      "reason": "Windows CRLF raw fingerprint does not equal immutable Git LF blob; subsequent byte-exact normalization proved equivalence."
+    },
+    {
+      "result": "FAILED",
+      "stage": "one_off_remote_binding_command",
+      "extractorExecuted": false,
+      "reason": "Python SyntaxError before diagnostic inspection; replaced by an explicit saved inspection script."
+    },
+    {
+      "result": "PASS",
+      "stage": "saved_binding_inspection",
+      "extractorExecuted": false
+    },
+    {
+      "result": "PASS",
+      "stage": "single_unchanged_frozen_extractor_execution",
+      "extractorExecuted": true,
+      "exitCode": 0
+    }
+  ],
+  "unproven": [
+    "Root cause of earlier timeout",
+    "Production transport fix",
+    "xcresult named acceptance gate",
+    "Destination verification",
+    "Any later unfinished job or UI step"
+  ],
+  "noRuntimeRerun": true,
+  "noNativeRequests": true,
+  "noProductionOrTransportChanges": true,
+  "rawArtifactAndLogRemainPrivateIgnored": true
+}

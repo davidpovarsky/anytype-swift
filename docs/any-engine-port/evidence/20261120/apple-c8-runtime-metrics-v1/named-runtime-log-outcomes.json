@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "scope": "closed_runtime_log_named_method_outcomes_not_xcresult_gate",
+  "expectedMethods": [
+    "testRealManagedRuntimeLifecycleAndControlBoundary",
+    "testWrongNativeBuildContractCannotStart",
+    "testInvalidConfigurationCannotSelectProductionByAccident"
+  ],
+  "outcomes": [
+    {
+      "line": 1148,
+      "method": "testInvalidConfigurationCannotSelectProductionByAccident",
+      "outcome": "passed",
+      "durationSeconds": 0.46
+    },
+    {
+      "line": 1179,
+      "method": "testRealManagedRuntimeLifecycleAndControlBoundary",
+      "outcome": "passed",
+      "durationSeconds": 103.207
+    },
+    {
+      "line": 1181,
+      "method": "testWrongNativeBuildContractCannotStart",
+      "outcome": "passed",
+      "durationSeconds": 0.004
+    }
+  ],
+  "exactlyOneResultPerMethod": true,
+  "allThreePassed": true,
+  "logSHA256": "c581cd437cd7d3dee5e4b0dbaba6f6c0ad2e12576946a351d524fda672a077fd",
+  "xcresultGateEvaluated": false,
+  "destinationReceiptEvaluated": false
+}

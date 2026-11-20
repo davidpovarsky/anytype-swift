@@ -1,0 +1,19 @@
+--- Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift (before)
++++ Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift (after)
+@@ -270,12 +270,14 @@
+     }
+ 
+     func succeed(_ id: Int, _ value: Value) throws {
+-        let continuation = try #require(pending.removeValue(forKey: id))
++        let removed = pending.removeValue(forKey: id)
++        let continuation = try #require(removed)
+         continuation.resume(returning: value)
+     }
+ 
+     func fail(_ id: Int, _ error: any Error) throws {
+-        let continuation = try #require(pending.removeValue(forKey: id))
++        let removed = pending.removeValue(forKey: id)
++        let continuation = try #require(removed)
+         continuation.resume(throwing: error)
+     }
+ 

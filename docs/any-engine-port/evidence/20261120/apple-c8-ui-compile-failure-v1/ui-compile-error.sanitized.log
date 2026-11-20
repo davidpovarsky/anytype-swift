@@ -1,0 +1,43 @@
+# Original job-log snapshot lines 20179-20193
+2026-11-20T06:43:42.6642440Z macro expansion #require:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+2026-11-20T06:43:42.6643270Z `- /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift:273:73: note: expanded code originates here
+2026-11-20T06:43:42.6644250Z 271 | 
+2026-11-20T06:43:42.6644530Z 272 |     func succeed(_ id: Int, _ value: Value) throws {
+2026-11-20T06:43:42.6645060Z 273 |         let continuation = try #require(pending.removeValue(forKey: id))
+2026-11-20T06:43:42.6645630Z     |                                `- note: in expansion of macro 'require' here
+2026-11-20T06:43:42.6646140Z     +--- macro expansion #require --------------------------------------
+2026-11-20T06:43:42.6646570Z     |1 | Testing.__checkFunctionCall(pending.self,calling: {
+2026-11-20T06:43:42.6646930Z     |2 |   $0.removeValue(forKey: $1)
+2026-11-20T06:43:42.6647360Z     |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+2026-11-20T06:43:42.6648470Z     |3 | },id,expression: .__fromFunctionCall(.__fromSyntaxNode("pending"),"removeValue",("forKey",.__fromSyntaxNode("id"))),comments: [],isRequired: true,sourceLocation: Testing.SourceLocation.__here()).__required()
+2026-11-20T06:43:42.6649280Z     +-------------------------------------------------------------------
+2026-11-20T06:43:42.6649580Z 274 |         continuation.resume(returning: value)
+2026-11-20T06:43:42.6649800Z 275 |     }
+2026-11-20T06:43:42.6649880Z 
+
+# Original job-log snapshot lines 20202-20215
+2026-11-20T06:43:42.6653800Z macro expansion #require:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+2026-11-20T06:43:42.6654770Z `- /Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift:278:73: note: expanded code originates here
+2026-11-20T06:43:42.6655470Z 276 | 
+2026-11-20T06:43:42.6655660Z 277 |     func fail(_ id: Int, _ error: any Error) throws {
+2026-11-20T06:43:42.6656020Z 278 |         let continuation = try #require(pending.removeValue(forKey: id))
+2026-11-20T06:43:42.6656500Z     |                                `- note: in expansion of macro 'require' here
+2026-11-20T06:43:42.6656940Z     +--- macro expansion #require --------------------------------------
+2026-11-20T06:43:42.6657360Z     |1 | Testing.__checkFunctionCall(pending.self,calling: {
+2026-11-20T06:43:42.6657680Z     |2 |   $0.removeValue(forKey: $1)
+2026-11-20T06:43:42.6658110Z     |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+2026-11-20T06:43:42.6659180Z     |3 | },id,expression: .__fromFunctionCall(.__fromSyntaxNode("pending"),"removeValue",("forKey",.__fromSyntaxNode("id"))),comments: [],isRequired: true,sourceLocation: Testing.SourceLocation.__here()).__required()
+2026-11-20T06:43:42.6659990Z     +-------------------------------------------------------------------
+2026-11-20T06:43:42.6660290Z 279 |         continuation.resume(throwing: error)
+2026-11-20T06:43:42.6660500Z 280 |     }
+
+# Original job-log snapshot lines 20275-20280
+2026-11-20T06:43:42.9794090Z Testing failed:
+2026-11-20T06:43:42.9795510Z 	Cannot use mutating member on immutable value: '$0' is immutable
+2026-11-20T06:43:42.9797350Z 	Cannot use mutating member on immutable value: '$0' is immutable
+2026-11-20T06:43:42.9799740Z 	Testing cancelled because the build failed.
+2026-11-20T06:43:42.9800510Z 
+2026-11-20T06:43:42.9801410Z ** TEST FAILED **
+
+# Original job-log snapshot lines 20293-20293
+2026-11-20T06:43:43.3662620Z ##[error]Process completed with exit code 65.

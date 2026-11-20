@@ -1,0 +1,45 @@
+macro expansion #require:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\build\any-engine-port\native-property-require-macro-fix-v1\BeforeHelper.swift:49:73: note: expanded code originates here
+47 | 
+48 |     func succeed(_ id: Int, _ value: Value) throws {
+49 |         let continuation = try #require(pending.removeValue(forKey: id))
+   |                                `- note: in expansion of macro 'require' here
+   +--- macro expansion #require ---------------------------------------
+   |1 | Testing.__checkFunctionCall(pending.self,calling: {
+   |2 |   $0.removeValue(forKey: $1)
+   |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+   |3 | },id,expression: .__fromFunctionCall(.__fromSyntaxNode("pending"),"removeValue",("forKey",.__fromSyntaxNode("id"))),comments: [],isRequired: true,sourceLocation: Testing.SourceLocation.__here()).__required()
+   +--------------------------------------------------------------------
+50 |         continuation.resume(returning: value)
+51 |     }
+
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\build\any-engine-port\native-property-require-macro-fix-v1\BeforeHelper.swift:49:28: warning: no calls to throwing functions occur within 'try' expression
+47 | 
+48 |     func succeed(_ id: Int, _ value: Value) throws {
+49 |         let continuation = try #require(pending.removeValue(forKey: id))
+   |                            `- warning: no calls to throwing functions occur within 'try' expression
+50 |         continuation.resume(returning: value)
+51 |     }
+
+macro expansion #require:2:6: error: cannot use mutating member on immutable value: '$0' is immutable
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\build\any-engine-port\native-property-require-macro-fix-v1\BeforeHelper.swift:54:73: note: expanded code originates here
+52 | 
+53 |     func fail(_ id: Int, _ error: any Error) throws {
+54 |         let continuation = try #require(pending.removeValue(forKey: id))
+   |                                `- note: in expansion of macro 'require' here
+   +--- macro expansion #require ---------------------------------------
+   |1 | Testing.__checkFunctionCall(pending.self,calling: {
+   |2 |   $0.removeValue(forKey: $1)
+   |  |      `- error: cannot use mutating member on immutable value: '$0' is immutable
+   |3 | },id,expression: .__fromFunctionCall(.__fromSyntaxNode("pending"),"removeValue",("forKey",.__fromSyntaxNode("id"))),comments: [],isRequired: true,sourceLocation: Testing.SourceLocation.__here()).__required()
+   +--------------------------------------------------------------------
+55 |         continuation.resume(throwing: error)
+56 |     }
+
+C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\build\any-engine-port\native-property-require-macro-fix-v1\BeforeHelper.swift:54:28: warning: no calls to throwing functions occur within 'try' expression
+52 | 
+53 |     func fail(_ id: Int, _ error: any Error) throws {
+54 |         let continuation = try #require(pending.removeValue(forKey: id))
+   |                            `- warning: no calls to throwing functions occur within 'try' expression
+55 |         continuation.resume(throwing: error)
+56 |     }

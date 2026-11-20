@@ -112,6 +112,8 @@ overlay once.
 | Hosted native application at57c116e | All original5/5 passed, zero failures or skips | Real AnyLib/account/Keychain/editor/creation/association tests. The later three publication methods and fifteen-check property workflow remain pending on their own source revision. |
 | Native AnyUI execution at d58b6a0 | 108/108 passed on arm64 iOS Simulator 27.2, zero skips | Source-bound xcresult includes the required focus 6 and marked-text 5, activation 4 and portable 93 cases. Evidence: `apple-d58-patched-runtime-v1/MANIFEST.json`. Executable interaction remains separate. |
 | Separate executable at57c116e | Actual2/7 passed and5 failed, zero skips | Every failed scenario stopped at backup acknowledgement before Space/editor assertions. The recorded outer Switch row contained a distinct physical child Switch; all five remained off after the outer-row tap. The corrected helper taps that observed child once and requires0→1 while retaining the Continue enabled guard. Its Apple execution remains pending. |
+| C8 runtime diagnostic | All original3 methods explicitly passed in the closed log | [Safe source-bound archive](../docs/any-engine-port/evidence/20261120/apple-c8-runtime-metrics-v1/MANIFEST.json). Four denied reads returned403; no timeout recurred. The final xcresult/destination gate is still separate. |
+| C8 UIKit test target | Build cancelled with exit65; zero tests executed | [Exact compiler failure](../docs/any-engine-port/evidence/20261120/apple-c8-ui-compile-failure-v1/MANIFEST.json). Two helper calls passed a mutating dictionary expression directly to a Testing macro. The follow-up evaluates the removal first and retains the same non-nil requirement and resume behavior. |
 | Current executable scenarios | Ten business XCUITests plus one separately classified picker observation required | Original9 bodies/helpers remain unchanged. Added selected-context Hanlin with separate create consent and cold reopen; the picker observation is diagnostic only. Registration, syntax and saved-response decoding do not certify mounted behavior. |
 
 At published commit `57c116e02ee6dbce21f3bbffcc297841d2bd1235`,
@@ -131,6 +133,16 @@ the archive contains screened control metadata and exact source/result hashes.
 Retained-consumer compatibility was running its build/profile step at 06:18 UTC. This run predates the
 published v9 base checkpoint `2dca5f6c1c64ab96d5fd32abb7d8628d919543ec`
 and does not certify its property/editor changes or the follow-up test corrections.
+
+The [two-helper macro correction](../docs/any-engine-port/evidence/20261120/native-property-require-macro-fix-v1/MANIFEST.json)
+keeps all seven property scenario bodies and their assertions unchanged. It fixes
+test-target compilation; actual Apple UIKit behavior remains to be executed.
+The [source identity receipt](../docs/any-engine-port/evidence/20261120/apple-c8-runtime-current-source-binding-v1.json)
+confirms that the production modules and runtime test source were identical
+between c8 and the published Hanlin checkpoint ddff3d3. The new mounted UI and
+provider fixture still require their own run. Runtime diagnostic intervals
+include synchronous output and scheduling; they do not establish a cause of the
+previous timeout or pure network latency.
 
 Current UI source fixes prevent delayed reads from replacing acknowledged
 properties/text or erasing Undo, and retain newer typing/composition while a

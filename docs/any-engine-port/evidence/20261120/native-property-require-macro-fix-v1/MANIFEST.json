@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "sealedUTC": "2026-11-20T06:53:10.187367+00:00",
+  "scope": "Two-site test-helper compile fix only. All seven presentation-model methods/assertions and production source unchanged. Original actual Apple c8 failure retained; exact generic helper before/after Swift Testing macro typechecks and full-file syntax parse. No new Apple or mounted UI execution.",
+  "source": {
+    "schema": 1,
+    "kind": "two-site-test-helper-compile-fix",
+    "source": "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativePropertyPresentationTests.swift",
+    "appleHead": "c8e648209e9b1eb021c807bd0faf0adf2f816e19",
+    "runID": 44682744488,
+    "jobID": 136109778553,
+    "beforeSHA256": "93b40658f3471b4b71c8ab23e49b780217cedcbf9189e0e92a710cd53f4cb21c",
+    "afterSHA256": "9b9ed54de6f915f8e5347d04b32960af525c120703ba01edaf4dbceecda4371a",
+    "replacementCount": 2,
+    "inverseByteExact": true,
+    "entireSevenTestSuiteByteExact": true,
+    "testMethods": [
+      "delayedReviewCannotRestoreOldTypeOrEraseAcknowledgedUndo",
+      "delayedReadFailureCannotReplaceAcknowledgedWriteFeedbackOrUndo",
+      "delayedRefreshCannotRevealAnAcknowledgedHiddenProperty",
+      "refreshDuringWriteDoesNotDispatchOrReportMissingWorkspace",
+      "supersededReadFailureCannotClearNewerReadSpinnerOrFeedback",
+      "oldReadCannotPublishOrClearLoadingAfterOwnerReactivation",
+      "oldWriteCompletionCannotClearNewOwnerSavingStateOrPublishFailure"
+    ],
+    "resumeCallsUnchanged": true,
+    "productionFilesChanged": false,
+    "scope": "Move each mutating dictionary removal out of Swift Testing #require macro, then require its same returned optional continuation before the unchanged resume call.",
+    "createdAt": "2026-11-20T06:50:36.510173+00:00"
+  },
+  "actualValidation": {
+    "schema": 1,
+    "sourceSHA256": "9b9ed54de6f915f8e5347d04b32960af525c120703ba01edaf4dbceecda4371a",
+    "beforeSHA256": "93b40658f3471b4b71c8ab23e49b780217cedcbf9189e0e92a710cd53f4cb21c",
+    "inverseByteExact": true,
+    "allSevenMethodsAndAssertionsByteExact": true,
+    "sourceDiffCheckExit": 0,
+    "rawEvidenceTextAttribute": "unset (-text)",
+    "actualMacroValidation": {
+      "originalPrimaryErrors": 2,
+      "originalExit": 1,
+      "correctedExit": 0,
+      "correctedDiagnosticsBytes": 0,
+      "compiler": "Swift 6.3.3 on Windows",
+      "exactCompleteGenericHelper": true
+    },
+    "actualFullFileValidation": "syntax-only PASS; SwiftUI/UIKit semantic compile not available on this host",
+    "v1HarnessFailurePreserved": "Text substring count duplicated primary errors inside rendered macro expansion (4 occurrences, 2 primary errors). V2 counts anchored primary errors and verifies both source locations.",
+    "modelTestsExecuted": 0,
+    "AppleUIExecuted": false,
+    "resultV1SHA256": "5314bdf974bdf69317c451daf99d18cc4403444896874610b2ad95a780e0d8c6",
+    "resultV2SHA256": "04d4b0f7727dfa13094642b6be3db73e64d9a376a8399b79f14432bb2814fc8f"
+  },
+  "files": [
+    {
+      "path": "after.swift",
+      "bytes": 18697,
+      "sha256": "9b9ed54de6f915f8e5347d04b32960af525c120703ba01edaf4dbceecda4371a"
+    },
+    {
+      "path": "AfterHelper.swift",
+      "bytes": 2898,
+      "sha256": "e7bdff3c3f9ae9b65e08a34fc80429efff1a086a1afabefe1f2b52acc0b46b84"
+    },
+    {
+      "path": "apple-c8-MANIFEST.json",
+      "bytes": 864,
+      "sha256": "e298ecd5b23411e7037f2210aceb96cb1da24e9cb55a861947c51141031d3531"
+    },
+    {
+      "path": "apple-c8-ui-compile-error.sanitized.log",
+      "bytes": 3779,
+      "sha256": "e6e65bbc5305a74cf9395270099bf01a3564c5f1c1f1af7bff72e656c427b94f"
+    },
+    {
+      "path": "before-typecheck/stderr.log",
+      "bytes": 3310,
+      "sha256": "0eb504ccd31fffd521d20602537110b96d8b621c72dd0ce7cea8aece303f79e1"
+    },
+    {
+      "path": "before-typecheck/stdout.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "before.swift",
+      "bytes": 18637,
+      "sha256": "93b40658f3471b4b71c8ab23e49b780217cedcbf9189e0e92a710cd53f4cb21c"
+    },
+    {
+      "path": "BeforeHelper.swift",
+      "bytes": 2838,
+      "sha256": "346dbf2fb65f0ce485933496a73e70b6c539ff65ba1fbc383f1f660ab0aaf812"
+    },
+    {
+      "path": "compiler-version/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "compiler-version/stdout.json",
+      "bytes": 104,
+      "sha256": "a2aa2d7dcd61b2f3db2c0e6ff30a1f0ab2d45f58a9542e79f6b7fa7111b09dd5"
+    },
+    {
+      "path": "executed-process-helper.py",
+      "bytes": 18216,
+      "sha256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67"
+    },
+    {
+      "path": "executed-runner.py",
+      "bytes": 4191,
+      "sha256": "6882420d69f3327ab0eddbaa394cb1a8ddecf3bab22d08c9fb17f016e02af8ee"
+    },
+    {
+      "path": "minimal.diff",
+      "bytes": 802,
+      "sha256": "91468c99cd4e84e0f07e5f120364c833dd96e2714f54da5b1c5cd15175176079"
+    },
+    {
+      "path": "result.json",
+      "bytes": 5177,
+      "sha256": "5314bdf974bdf69317c451daf99d18cc4403444896874610b2ad95a780e0d8c6"
+    },
+    {
+      "path": "source-proof.json",
+      "bytes": 1316,
+      "sha256": "292969bf71729e6049b8a7396e3986b49e6dba38953810f1a0fe9750356ac8cd"
+    },
+    {
+      "path": "validation-summary.json",
+      "bytes": 1130,
+      "sha256": "d637eafaf06793fad6cec01ca136cfa341cb693416472d7464a2ae869211fdc5"
+    },
+    {
+      "path": "validation-v2/after-typecheck/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation-v2/after-typecheck/stdout.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation-v2/before-typecheck/stderr.log",
+      "bytes": 3310,
+      "sha256": "0eb504ccd31fffd521d20602537110b96d8b621c72dd0ce7cea8aece303f79e1"
+    },
+    {
+      "path": "validation-v2/before-typecheck/stdout.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation-v2/compiler-version/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation-v2/compiler-version/stdout.json",
+      "bytes": 104,
+      "sha256": "a2aa2d7dcd61b2f3db2c0e6ff30a1f0ab2d45f58a9542e79f6b7fa7111b09dd5"
+    },
+    {
+      "path": "validation-v2/executed-process-helper.py",
+      "bytes": 18216,
+      "sha256": "fb0e62678e979a071dd6c6eedba97ee3ff340385ab1d09a8896ad1a53d346f67"
+    },
+    {
+      "path": "validation-v2/executed-runner.py",
+      "bytes": 4550,
+      "sha256": "05b248617e0fd5b654183d9fdf9eafb72a2f7428748fd11bb914645a767d77ce"
+    },
+    {
+      "path": "validation-v2/full-source-parse/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation-v2/full-source-parse/stdout.json",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "validation-v2/result.json",
+      "bytes": 5336,
+      "sha256": "04d4b0f7727dfa13094642b6be3db73e64d9a376a8399b79f14432bb2814fc8f"
+    }
+  ]
+}
