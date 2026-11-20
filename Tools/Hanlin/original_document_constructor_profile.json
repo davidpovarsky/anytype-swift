@@ -1,0 +1,128 @@
+{
+  "application_trees": {
+    "AnyTypeTests": "74c5bfcd96916769a8ae5aa57f684797644cd329",
+    "Anytype": "506a113525119834bc30bb89b28c09d1c61941ed",
+    "Anytype.xcodeproj": "7106431749bd7e5066cb9c1704514997b5db6c64",
+    "AnytypeTests": "44011c9ecb9a8922f1fb3dabbc2d56e6b94640af",
+    "Modules": "c8163bff54e6ba631e82ce5475f226989846d341"
+  },
+  "constructor_packet_sha256": "09dc98cd7784b87aca1c520b9cd11c22249b346ba962a4c120ce3ac9c3f5814d",
+  "constructor_sources": {
+    "Anytype/Sources/Models/Documents/Document/BaseDocument.swift": "b9f4ab200aec303bd1e549987043e7b5e78b5b2a5afbf2a180161d99ec514353",
+    "Anytype/Sources/Models/Documents/Events/DocumentViewModelSetter.swift": "d9048f1b627cd9801a51e83bfc1d4e23b355b9d48fe1a02342057ae5ddf11f4a"
+  },
+  "constructor_suite": {
+    "methods": [
+      "testPreparedDocumentDoesNotResolveAnyImplicitFactory",
+      "testDefaultDocumentResolvesTheSameFourFactoriesOnceInOrder",
+      "testExplicitNilKeepsTheOriginalDefaultConstructorPath",
+      "testPreparedPreviewKeepsOriginalListenerAndClosedState",
+      "testPreparedSetterUsesItsActualUpdaterWithoutResolvingTheDefault",
+      "testDefaultSetterResolvesOneOriginalUpdaterAndKeepsOriginalProjection"
+    ],
+    "name": "PreparedDocumentConstructorTests",
+    "path": "AnytypeTests/Markdown/PreparedDocumentConstructorTests.swift",
+    "sha256": "428ebce997cb412a893dacc7b522e0c17a0bcf0cce0bf6698ce40c4ccb7b440e"
+  },
+  "heart": {
+    "artifact_id": 14383247626,
+    "head_branch": "codex/chatgpt-wave15-startup-20261118",
+    "head_sha": "b5dc53b799a70269b8082734106d8cd30a99fc44",
+    "name": "Pinkha-Universal-Verified-Heart-r14",
+    "run_id": 44203168617,
+    "zip_bytes": 264982619,
+    "zip_sha256": "7ac88836edc2ee9ff0c7d8cb8943b8e968f0c73b2b94752ba27cebc241c69996"
+  },
+  "original_profile_manifest_sha256": "c414bec74cece5baf2241a34871b323ce9e92d243bc5662de48a405b0a07192a",
+  "original_profile_module_sha256": "be8de7b7c1db2429ad18a0ba811f0524279765ffbcb2e053344c834db29c506f",
+  "original_suites": {
+    "EditorDocumentOwnedBlockTests": {
+      "methods": [
+        "forwardsOriginalBlockArgumentsAndReturnIdentities",
+        "refusesUnownedContextSpaceDestinationsAndObjectCreation",
+        "originalOwnedReadWorksWithoutEditAuthority",
+        "admittedWriteAndReadCannotRegainOwnershipAfterCloseReopen",
+        "originalErrorsAndPredispatchCancellationArePreserved",
+        "retiringOneOwnerDoesNotRetireAnotherOwnerOfSameDocument"
+      ],
+      "path": "AnytypeTests/Markdown/EditorDocumentOwnedBlockTests.swift",
+      "sha256": "469061631d58dd27da6cb6f2f2284959cc1432684eedcc7ac000fbd818df6991"
+    },
+    "EditorDocumentOwnedTableTests": {
+      "methods": [
+        "forwardsAllThirteenOriginalTableMethodsAndTheirResult",
+        "refusesForeignContextAndReadonlyModeBeforeTheOriginalService",
+        "admittedCreationAfterCloseRevocationIsNotReportedAsRollback",
+        "twoOwnersDoNotShareRetirementAuthority",
+        "originalServiceErrorAndPredispatchCancellationAreNotRetried"
+      ],
+      "path": "AnytypeTests/Markdown/EditorDocumentOwnedTableTests.swift",
+      "sha256": "1fcfb117fd82e0cf4d021955e38427de23ab3b5d15449ba8cacee710717ce8ec"
+    },
+    "EditorDocumentWriteOwnerTests": {
+      "methods": [
+        "forwardsAllOriginalTextOperationsWithTheOwnedContext",
+        "refusesForeignContextReadonlyModeAndLivePermissionLossBeforeDispatch",
+        "rechecksOriginalDocumentIdentityModeAndOpenState",
+        "retirementDistinguishesAnAlreadyCompletedWriteFromADispatchRefusal",
+        "preservesServiceErrorsAndReleasesTheirLease",
+        "retiringOneOwnerDoesNotAuthorizeOrRetireAnother",
+        "readonlyToggleRemainsPresentationalButRetiredEventsAreDropped",
+        "retirementWaitsForAnAlreadyAdmittedPublicationToDrain"
+      ],
+      "path": "AnytypeTests/Markdown/EditorDocumentWriteOwnerTests.swift",
+      "sha256": "a4fb333e31ad1ad15eb120906af2e95de46182798994c313c065b8d94ea0869f"
+    },
+    "EditorLocalEventPublisherTests": {
+      "methods": [
+        "publishesToTheSuppliedOwnerAfterTheStyleWriteCompletes",
+        "aFailedStyleWriteDoesNotPublish",
+        "cancellationDoesNotPublishOrRetry",
+        "splitStillLeavesPublicationToTheOriginalFocusOwner",
+        "separateEditorsDoNotShareTheInjectedEventOwner"
+      ],
+      "path": "AnytypeTests/Markdown/EditorLocalEventPublisherTests.swift",
+      "sha256": "1da8e8d16d873e548e5a2562906b40aad0d731394a1036edd85e439a13a4717a"
+    },
+    "PreparedEditorLifetimeTests": {
+      "methods": [
+        "observedPermissionLossCannotRenewTheCapturedLifetime",
+        "closedThenReopenedDocumentCannotRenewTheCapturedLifetime",
+        "replacingTheLifetimeSourceIsRejected",
+        "registrationCannotMissAnEarlierInvalidation",
+        "explicitRetirementDoesNotInvalidateAnotherOwnerOfTheSameDocument",
+        "admittedWriteCompletionAfterRevocationIsReportedWithoutRollback",
+        "alreadyAdmittedPublicationDrainsAndSubsequentPublicationIsRefused",
+        "independentHostLifetimeRetiresOnlyItsOwnOwner"
+      ],
+      "path": "AnytypeTests/Markdown/PreparedEditorLifetimeTests.swift",
+      "sha256": "1ffe13ae4525ad7e741555b9fc5cc58627ef6269bb9a2fb1202ee7a285c46633"
+    },
+    "PreparedEditorPageDocumentTests": {
+      "methods": [
+        "acceptsTheSameOpenedDocumentInEachOriginalMode",
+        "rejectsAnotherObjectWithTheSameSpace",
+        "rejectsAnotherSpaceWithTheSameObject",
+        "rejectsAnotherModeAndAnotherVersion",
+        "rejectsEmptyIdentitiesWithoutNormalizingDifferentIdentifiers",
+        "rechecksTheActualDocumentAfterItHasClosed"
+      ],
+      "path": "AnytypeTests/Markdown/PreparedEditorPageDocumentTests.swift",
+      "sha256": "75e264b93ef8a1bab9fe7ca2a0a456a8999ab5ef5a18351eeed9a3045fec48a2"
+    },
+    "TextServiceHandlerInjectionTests": {
+      "methods": [
+        "preservesTextAndMarksOnBothOriginalTextOperations",
+        "preservesSplitResultAndUTF16Range",
+        "forwardsCheckedMergeAndIconToTheSameInjectedService",
+        "propagatesAStyleFailureWithoutTryingAnotherService",
+        "keepsTwoEditorServiceInstancesSeparate"
+      ],
+      "path": "AnytypeTests/Markdown/TextServiceHandlerInjectionTests.swift",
+      "sha256": "b115a4c948c7064e2e02d6129e29733a763088b6f8fc1d0b96f432e8e123ebe6"
+    }
+  },
+  "profile": "original-constructors",
+  "required_methods": 49,
+  "source_base": "b4ece8c2129124f6ec8ed00143e156b9d0e11383"
+}

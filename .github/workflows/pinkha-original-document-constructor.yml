@@ -1,0 +1,99 @@
+name: Original document constructor Apple49 acceptance
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: original-constructors-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  original-constructors:
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      EXPECTED_APP_BRANCH: codex/otzaria-original-document-constructor49-reviewed-20261120
+      HEART_SOURCE_RUN_ID: '44203168617'
+      EDITOR_EVIDENCE: build/original-constructors-evidence
+      EDITOR_DERIVED: build/original-constructors-derived-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+    - name: Checkout exact reviewed source
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+    - name: Use the existing native ARM64 Python contract
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        architecture: arm64
+    - name: Bind original application trees and all forty-nine target declarations
+      shell: bash
+      run: "set -euo pipefail\ntest \"$EXPECTED_APP_BRANCH\" = 'codex/otzaria-original-document-constructor49-reviewed-20261120'\ntest \"$GITHUB_REF\"\
+        \ = \"refs/heads/$EXPECTED_APP_BRANCH\"\ntest \"$(git rev-parse HEAD)\" = \"$GITHUB_SHA\"\ntest \"$HEART_SOURCE_RUN_ID\" = '44203168617'\n\
+        git switch --force-create \"$EXPECTED_APP_BRANCH\" \"$GITHUB_SHA\"\npython3 Tools/Hanlin/original_document_constructor_profile.py --app\
+        \ \"$GITHUB_WORKSPACE\" \\\n  --expected-app-branch \"$EXPECTED_APP_BRANCH\" --evidence \"$EDITOR_EVIDENCE\"\n"
+    - name: Checkout exact original43 source for unchanged baseline-profile controls
+      uses: actions/checkout@v4
+      with:
+        ref: b4ece8c2129124f6ec8ed00143e156b9d0e11383
+        path: .ci/original-editor43-controls
+        persist-credentials: false
+        sparse-checkout: '/Tools/Hanlin/
+
+          /AnytypeTests/Markdown/
+
+          /Tools/PinkhaNativeDerived/build_native_ipa.py
+
+          /Tools/PinkhaNativeDerived/build_custom_heart.py
+
+          /Tools/PinkhaNativeDerived/install_verified_heart.py
+
+          '
+        sparse-checkout-cone-mode: false
+    - name: Checkout the immutable original canonical Hanlin source
+      uses: actions/checkout@v4
+      with:
+        repository: davidpovarsky/hanlin-ai
+        ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+        path: .ci/hanlin-source
+        persist-credentials: false
+    - name: Prepare the existing SDK and execute all original host-gate controls
+      run: "python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source\npython3 Tools/Hanlin/prepare_sdk.py --check\npython3 Tools/Hanlin/run_original_document_constructor_controls.py\
+        \ --app \"$GITHUB_WORKSPACE\" \\\n  --baseline \"$GITHUB_WORKSPACE/.ci/original-editor43-controls\" --evidence \"$EDITOR_EVIDENCE/controls\"\
+        \n"
+    - name: Verify actual Xcode27 and create owned OS27 simulators
+      run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence "$EDITOR_EVIDENCE/preflight"
+    - name: Verify the recorded GitHub artifact and original Heart slices
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: "python3 Tools/Hanlin/prepare_original_editor_heart.py \\\n  --source-run-id \"$HEART_SOURCE_RUN_ID\" \\\n  --output build/original-editor-verified-heart\
+        \ --evidence \"$EDITOR_EVIDENCE/heart-source\"\npython3 Tools/PinkhaNativeDerived/install_verified_heart.py \\\n  --archive build/original-editor-verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz\
+        \ \\\n  --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json\
+        \ \\\n  --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \\\
+        \n  --app-source \"$GITHUB_WORKSPACE\" --source-run-id \"$HEART_SOURCE_RUN_ID\" \\\n  --expected-app-branch \"$EXPECTED_APP_BRANCH\" --evidence\
+        \ \"$EDITOR_EVIDENCE/heart\"\n"
+    - name: Build original Debug-Anytype and execute original43 plus constructor6
+      timeout-minutes: 100
+      run: "python3 Tools/Hanlin/run_host_tests.py --app \"$GITHUB_WORKSPACE\" \\\n  --evidence \"$EDITOR_EVIDENCE\" --derived \"$EDITOR_DERIVED\"\
+        \ \\\n  --expected-app-branch \"$EXPECTED_APP_BRANCH\" --heart-source-run-id \"$HEART_SOURCE_RUN_ID\" \\\n  --profile original-constructors\n"
+    - name: Preserve actual source-bound receipts, logs and xcresult on failure
+      if: always()
+      run: 'mkdir -p "$EDITOR_EVIDENCE"
+
+        python3 Tools/PinkhaNativeDerived/package_evidence.py "$EDITOR_EVIDENCE"
+
+        '
+    - name: Upload original document constructor Apple evidence
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: Otzaria-Original-Constructors-Apple-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+        path: ${{ env.EDITOR_EVIDENCE }}/Pinkha-Native-Derived-Evidence.zip
+        if-no-files-found: error
+        retention-days: 14
+    if: ${{ github.event_name == 'push' && github.repository == 'davidpovarsky/anytype-swift' && github.ref == 'refs/heads/codex/otzaria-original-document-constructor49-reviewed-20261120'
+      }}
+'on':
+  push:
+    branches:
+    - codex/otzaria-original-document-constructor49-reviewed-20261120

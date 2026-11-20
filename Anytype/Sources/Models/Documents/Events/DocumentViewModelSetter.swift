@@ -8,8 +8,7 @@ protocol DocumentViewModelSetterProtocol: AnyObject {
 
 final class DocumentViewModelSetter: DocumentViewModelSetterProtocol {
     
-    @Injected(\.mentionTextUpdateHandler)
-    private var mentionTextUpdateHandler: any MentionTextUpdateHandlerProtocol
+    private let mentionTextUpdateHandler: any MentionTextUpdateHandlerProtocol
     
     private let detailsStorage: ObjectDetailsStorage
     private let restrictionsContainer: ObjectRestrictionsContainer
@@ -18,8 +17,10 @@ final class DocumentViewModelSetter: DocumentViewModelSetterProtocol {
     init(
         detailsStorage: ObjectDetailsStorage,
         restrictionsContainer: ObjectRestrictionsContainer,
-        infoContainer: some InfoContainerProtocol
+        infoContainer: some InfoContainerProtocol,
+        dependencies: DocumentViewModelSetterDependencies? = nil
     ) {
+        self.mentionTextUpdateHandler = (dependencies ?? .original()).mentionTextUpdateHandler
         self.detailsStorage = detailsStorage
         self.restrictionsContainer = restrictionsContainer
         self.infoContainer = infoContainer
@@ -64,5 +65,15 @@ final class DocumentViewModelSetter: DocumentViewModelSetterProtocol {
     private func buildBlocksTree(information: [BlockInformation], rootId: String, container: any InfoContainerProtocol, layout: DetailsLayout?) {
         information.forEach { container.add($0) }
         _ = IndentationBuilder.build(container: container, id: rootId)
+    }
+}
+
+/// Preserve the original mention updater while allowing an owned document
+/// context to supply its actual updater without resolving a global factory.
+struct DocumentViewModelSetterDependencies {
+    let mentionTextUpdateHandler: any MentionTextUpdateHandlerProtocol
+
+    static func original() -> Self {
+        Self(mentionTextUpdateHandler: Container.shared.mentionTextUpdateHandler())
     }
 }

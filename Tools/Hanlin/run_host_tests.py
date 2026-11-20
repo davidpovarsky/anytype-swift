@@ -20,6 +20,7 @@ import sys
 from host_command import CommandCancelled, cancellation_signals, command
 import wave15_core_profile as core_profile
 import original_editor_profile as original_profile
+import original_document_constructor_profile as constructor_profile
 
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
@@ -91,9 +92,12 @@ class HostTestProfile(str, Enum):
     CORE = "wave15-core"
     COMPONENTS = "wave15-components"
     ORIGINAL_EDITOR = "original-editor"
+    ORIGINAL_CONSTRUCTORS = "original-constructors"
 
     @property
     def suites(self):
+        if self is self.ORIGINAL_CONSTRUCTORS:
+            return constructor_profile.suite_counts()
         if self is self.ORIGINAL_EDITOR:
             return original_profile.suite_counts()
         if self is self.COMPONENTS:
@@ -108,14 +112,16 @@ class HostTestProfile(str, Enum):
     @property
     def result_prefix(self):
         return {self.SDK06: "sdk06", self.EDITOR: "editor-host", self.CORE: "wave15-core",
-                self.COMPONENTS: "wave15-components", self.ORIGINAL_EDITOR: "original-editor"}[self]
+                self.COMPONENTS: "wave15-components", self.ORIGINAL_EDITOR: "original-editor",
+                self.ORIGINAL_CONSTRUCTORS: "original-constructors"}[self]
 
     @property
     def pass_status(self):
         return {self.SDK06: "SDK06_COMPONENT_PASS", self.EDITOR: "EDITOR_COMPONENT_PASS",
                 self.CORE: "WAVE15_CORE_COMPONENT_PASS",
                 self.COMPONENTS: "WAVE15_ALL_COMPONENTS_PASS",
-                self.ORIGINAL_EDITOR: "ORIGINAL_EDITOR_COMPONENT_PASS"}[self]
+                self.ORIGINAL_EDITOR: "ORIGINAL_EDITOR_COMPONENT_PASS",
+                self.ORIGINAL_CONSTRUCTORS: "ORIGINAL_CONSTRUCTORS_COMPONENT_PASS"}[self]
 
 
 class EditorEvidenceReviewPending(ValueError):
@@ -151,6 +157,8 @@ def expected_methods(app, profile=HostTestProfile.SDK06):
     """Read tracked sources; editor additionally requires exact reviewed arguments."""
     if profile is HostTestProfile.ORIGINAL_EDITOR:
         return original_profile.expected_methods(app)
+    if profile is HostTestProfile.ORIGINAL_CONSTRUCTORS:
+        return constructor_profile.expected_methods(app)
     methods, files = set(), {}
     if profile is HostTestProfile.COMPONENTS:
         for part in (HostTestProfile.SDK06, HostTestProfile.EDITOR, HostTestProfile.CORE):
@@ -250,6 +258,9 @@ def validate_results(summary, tree, expected, udid, profile=HostTestProfile.SDK0
     if profile is HostTestProfile.ORIGINAL_EDITOR:
         require(counts["totalTestCount"] == 43, "Original editor must execute exactly forty-three methods")
         result.update(original_profile.validate_execution(tree, expected))
+    if profile is HostTestProfile.ORIGINAL_CONSTRUCTORS:
+        require(counts["totalTestCount"] == 49, "Constructor profile must execute exactly original43 plus new6")
+        result.update(constructor_profile.validate_execution(tree, expected))
     if profile is HostTestProfile.EDITOR:
         result.update(validate_editor_arguments(tree, expected))
         # Some xcresult versions summarize parameterized methods, while the
@@ -513,6 +524,9 @@ def execute(args, receipt):
         head = git(app, "rev-parse", "HEAD")
         identity_check = (original_profile.require_identity if profile is HostTestProfile.ORIGINAL_EDITOR
                           else require_identity)
+        if profile is HostTestProfile.ORIGINAL_CONSTRUCTORS:
+            constructor_profile.require_workflow_environment(os.environ)
+            identity_check = constructor_profile.require_identity
         identity_check(head, os.environ.get("GITHUB_SHA"), git(app, "branch", "--show-current"),
                        args.expected_app_branch, os.environ.get("GITHUB_RUN_ID"), os.environ.get("GITHUB_RUN_ATTEMPT"))
         return head
@@ -578,7 +592,8 @@ def execute(args, receipt):
                          HostTestProfile.EDITOR: "EditorHost.xcresult",
                          HostTestProfile.CORE: "Wave15Core.xcresult",
                          HostTestProfile.COMPONENTS: "Wave15Components.xcresult",
-                         HostTestProfile.ORIGINAL_EDITOR: "OriginalEditor.xcresult"}[profile]
+                         HostTestProfile.ORIGINAL_EDITOR: "OriginalEditor.xcresult",
+                         HostTestProfile.ORIGINAL_CONSTRUCTORS: "OriginalConstructors.xcresult"}[profile]
     require(not result.exists(), "Refuse an existing SDK xcresult")
     receipt["phase"] = "EXECUTION"
     test = ["xcodebuild", "test-without-building", "-xctestrun", str(configuration),
@@ -616,6 +631,11 @@ def execute(args, receipt):
         limitation = ("Forty-three original document, text/event ownership, lifetime and block/table-service component methods; "
                       "controlled document/service fixtures, no original block-editing UI, "
                       "Maktabah embedding, durable annotation integration, live account writes or physical acceptance")
+    if profile is HostTestProfile.ORIGINAL_CONSTRUCTORS:
+        receipt["constructor_manifest_sha256"] = sha256(constructor_profile.MANIFEST_PATH)
+        limitation = ("Original43 ownership/lifetime components plus six actual document-constructor/projection methods; "
+                      "explicit service doubles, no object-open, account, Heart RPC, mounted editor, "
+                      "annotation persistence or physical acceptance")
     receipt.update(status=profile.pass_status, phase="COMPLETE", release_accepted=False, limitations=[limitation])
 
 
@@ -645,7 +665,7 @@ def main():
     parser.add_argument("--app", required=True, type=Path)
     parser.add_argument("--evidence", required=True, type=Path)
     parser.add_argument("--derived", required=True, type=Path)
-    parser.add_argument("--expected-app-branch", required=True, choices=APPROVED_BRANCHES + (original_profile.BRANCH,))
+    parser.add_argument("--expected-app-branch", required=True, choices=APPROVED_BRANCHES + (original_profile.BRANCH, constructor_profile.BRANCH))
     parser.add_argument("--heart-source-run-id", required=True)
     parser.add_argument("--profile", choices=[profile.value for profile in HostTestProfile], default=HostTestProfile.SDK06.value)
     args = parser.parse_args()

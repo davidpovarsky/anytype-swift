@@ -1,0 +1,466 @@
+{
+  "apple_execution": "NOT_RUN",
+  "base": "b4ece8c2129124f6ec8ed00143e156b9d0e11383",
+  "branch": "codex/otzaria-original-document-constructor49-reviewed-20261120",
+  "linux_controls": "74 baseline +23 candidate PASS",
+  "payloads": [
+    {
+      "bytes": 5391,
+      "git_blob": "d3ecd3b83096f9ab832dc203008cdcbf2ad6d561",
+      "path": ".github/workflows/pinkha-original-document-constructor.yml",
+      "sha256": "e5967553561d6f380691771bcee764e4cc2c5ee4c6264d077fba4496b8f6d59b"
+    },
+    {
+      "bytes": 22089,
+      "git_blob": "bb663e1a0a8a4ef8e705601b875224c71e0b2a54",
+      "path": "Anytype/Sources/Models/Documents/Document/BaseDocument.swift",
+      "sha256": "b9f4ab200aec303bd1e549987043e7b5e78b5b2a5afbf2a180161d99ec514353"
+    },
+    {
+      "bytes": 2947,
+      "git_blob": "24fffb58b035983c011fb6a9b9bb91863e25a896",
+      "path": "Anytype/Sources/Models/Documents/Events/DocumentViewModelSetter.swift",
+      "sha256": "d9048f1b627cd9801a51e83bfc1d4e23b355b9d48fe1a02342057ae5ddf11f4a"
+    },
+    {
+      "bytes": 15365,
+      "git_blob": "05a5cc8a85249f0ffb29c89bb14247fc650353f1",
+      "path": "AnytypeTests/Markdown/PreparedDocumentConstructorTests.swift",
+      "sha256": "428ebce997cb412a893dacc7b522e0c17a0bcf0cce0bf6698ce40c4ccb7b440e"
+    },
+    {
+      "bytes": 19761,
+      "git_blob": "679f96dc69fedb3014a179a6c0759d2dc3b133fa",
+      "path": "Tools/Hanlin/original_document_constructor_controls.json",
+      "sha256": "ee9682852b1611fbdcb98f59597e9d75408d88f2611117a9b8b1eb258ea13bc8"
+    },
+    {
+      "bytes": 6420,
+      "git_blob": "ac4062f99d7772e8edb02fa1e43413377ab20b14",
+      "path": "Tools/Hanlin/original_document_constructor_profile.json",
+      "sha256": "8936ac8540558d13e8233209e457a4152ce5cab53a5f997c54023b7ce9279c16"
+    },
+    {
+      "bytes": 10854,
+      "git_blob": "e4bac81c4771c5cf9809cf7b30e6149f974a6441",
+      "path": "Tools/Hanlin/original_document_constructor_profile.py",
+      "sha256": "3a7e0f57b433d2ddf8a938f91a0b9006ef0174287fb0409fea6dca90b1a0ac51"
+    },
+    {
+      "bytes": 40719,
+      "git_blob": "090535668bc56f906d8d9bbfa5d03762c00f1168",
+      "path": "Tools/Hanlin/run_host_tests.py",
+      "sha256": "2dd86784aca5b0717c3f19110795ab7bae5e4350eeea117ee996c5c296228499"
+    },
+    {
+      "bytes": 8785,
+      "git_blob": "c863b3059fc78cfceb6a721834d2b4bd6c7a6fea",
+      "path": "Tools/Hanlin/run_original_document_constructor_controls.py",
+      "sha256": "ca84e7aebc9fef911ea0026cb45aecc82dc6050760c0f728e568d045394f90e1"
+    },
+    {
+      "bytes": 14622,
+      "git_blob": "a6513157cfb039f98a7a74eae3391937cf289448",
+      "path": "Tools/Hanlin/test_document_constructor_profile.py",
+      "sha256": "29600e834e1b7a6b4bae86ad308b2370303f9fd1686af85424a86c7e910ffd99"
+    },
+    {
+      "bytes": 4657,
+      "git_blob": "6629a19ee469a27d74fa8edc868343f67ce1b88c",
+      "path": "Tools/PinkhaNativeDerived/install_verified_heart.py",
+      "sha256": "e8260ddb9375aa615700e5cd68d1d61fceebf42e2191556bb6be155eb9c1bb2d"
+    },
+    {
+      "bytes": 36545,
+      "git_blob": "42a0fdacad68c4588c0dec154438a4f7b2fdbd02",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/RAW_INDEX.json",
+      "sha256": "bfed9e0b3f25613a5bd95d0b533bfbc42afc63e4500c0ba17615722e5b98b262"
+    },
+    {
+      "bytes": 5222,
+      "git_blob": "0089d81d44a9d100e32a99bdf24bbf69948b0d35",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/README.md",
+      "sha256": "5d535e2f7815523e4965e98bee187baa642ea598509fe8f0186d22f6382a7d73"
+    },
+    {
+      "bytes": 1681,
+      "git_blob": "c51cd51c5cae7bbe29b9d909553ee4c8bd50ef76",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/SCOPE.json",
+      "sha256": "a7191a3857613f4f19f10e30a874ce2d70c8c50cdeabb405a29833495d16867f"
+    },
+    {
+      "bytes": 2643,
+      "git_blob": "3a7c136a98ee7b6a130c6e83600e95f72c0cb1a8",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/SOURCE_INDEX.json",
+      "sha256": "07fdfb19155eff17737dadba00a07f73f191a22e97080cc55f14c7c2c533aeb0"
+    },
+    {
+      "bytes": 7754,
+      "git_blob": "31efd2124d530aeab0a035aaeb90664a93908407",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/VERIFY_PACKET.py",
+      "sha256": "586fed90b1f4aca514d9b81761f6970bf69b56feede946d5d9969a278a14624c"
+    },
+    {
+      "bytes": 65533,
+      "git_blob": "b944e31930356e3251b9c4fe8bb67ddcb1e2364b",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/constructor-source-packet.tar.gz",
+      "sha256": "f24906fc555209b1069c473b1c98490f8f66e72a4671c5e114af3a964b77ee1e"
+    },
+    {
+      "bytes": 587,
+      "git_blob": "611651a6c014843b08494ff2a94e98938043589d",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/APPLICATION_TREE_PROJECTION.json.gz",
+      "sha256": "c40ac2432cbb068a501fe97265ba9341d22db536a65337306c314a3d98d409fc"
+    },
+    {
+      "bytes": 954,
+      "git_blob": "a66ea68f4944e6e5883831df6a998509bad263c0",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/B4_COMMIT_API.json.gz",
+      "sha256": "9e97eed45425bfb15ef8f5403fa2fda7badc5b8196e4298aaa7fe5336ea14029"
+    },
+    {
+      "bytes": 603,
+      "git_blob": "c986557c47b5ab80d66cc269118504f35dee93c6",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/B4_COMMIT_CANONICAL.raw.gz",
+      "sha256": "3996b2d5cf4fc48cc771f5c9b0bef5aba3e362d58abea4d2ee7aeb5dc6b1ca9f"
+    },
+    {
+      "bytes": 250,
+      "git_blob": "0bbf7519d86cd7c2e7113031ce2c1fcae2d38d1a",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/CANONICAL_COMMIT_ATTEMPT1.json.gz",
+      "sha256": "541dfea1b4804cd4d8ca083e56a7e0c598ab28fa7dc143116d9cc3cc6c14058f"
+    },
+    {
+      "bytes": 369,
+      "git_blob": "684b0795865d6ca1a12c225101eb3cb531b17e37",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/CANONICAL_FIXTURE_GIT.json.gz",
+      "sha256": "42228e8267ce4490f013afc0515453bbb8c1ed7c96b8a3c6195f006f3e23e313"
+    },
+    {
+      "bytes": 704,
+      "git_blob": "a1cdd305f057a1021a480c477f15e6c84403c9ca",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/FETCHED_INPUTS.json.gz",
+      "sha256": "e087bc6e37669d36d6ca418802e45d3eb1bed560ddacad9e12515f5ca690d826"
+    },
+    {
+      "bytes": 341,
+      "git_blob": "2382a07cd5d06f38d720cedd2cdddf4ebb019979",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/FINAL_PRESERVATION.json.gz",
+      "sha256": "9a7e32c0a246c2bb56a76f16bd3bb640570bb659f6ffeea32e73d9be7669dcba"
+    },
+    {
+      "bytes": 1141,
+      "git_blob": "94862d67df317d6ed58df448c01620af63b93b70",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/LOCAL_CANDIDATE_FIXTURE.json.gz",
+      "sha256": "78684acae5fd92e7c5dbc70ceb860e2bccc1e9f27580e5d7d1ff96cfc0d9da0e"
+    },
+    {
+      "bytes": 1122,
+      "git_blob": "f6b28b5e528d51967cb49879cdb94e4090654243",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/RUNTIME_PRESERVATION.json.gz",
+      "sha256": "cd901c142b8d54a9b66baa53e1ca5fea8bb16e29c98a53a3ad55023fac380012"
+    },
+    {
+      "bytes": 2075,
+      "git_blob": "35dfa8af2da38ea035bcbe685e2a4ccf05fa4a72",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/RUNTIME_PROPOSED.patch.gz",
+      "sha256": "e25746343ea6f39ed5a0f04377a78af8b36bc8e54e1b782db8345a01101717b5"
+    },
+    {
+      "bytes": 343,
+      "git_blob": "fe6270335a21e8a517b2a1760ecaea361fb59da7",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/TREE_PROJECTION_ATTEMPT1.json.gz",
+      "sha256": "8b206d3cf2fbb4460b23f9ac1d98b3023b70b767caebf3019bc53cdd6fcd8836"
+    },
+    {
+      "bytes": 1614,
+      "git_blob": "1d4841bbfcbb4a6a1293c0fdc46019824e115fc5",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/.github/workflows/pinkha-original-editor.yml.gz",
+      "sha256": "2e40cccf4f565d53a848fe6e854ea07f5f1cc7b42f911559676ad03086048572"
+    },
+    {
+      "bytes": 4126,
+      "git_blob": "bdaf9540848acd0c9f0f3e05ee04fea024c9a5dc",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/AnytypeTests/Markdown/EditorDocumentOwnedBlockTests.swift.gz",
+      "sha256": "2eb6867bcb575578fbd3adbc07cfb56312045f99f75e986f20d7bd100fc11060"
+    },
+    {
+      "bytes": 2527,
+      "git_blob": "d36c1adac7b755a628698ac9295b477479b42966",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/AnytypeTests/Markdown/EditorDocumentOwnedTableTests.swift.gz",
+      "sha256": "56914994e79c58824ee38d080331b288267f4bfe5fdf63721d5a34a94638f8da"
+    },
+    {
+      "bytes": 2728,
+      "git_blob": "56b95a2f226a065117c085b57b7a70b5b9ac0ba5",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/AnytypeTests/Markdown/EditorDocumentWriteOwnerTests.swift.gz",
+      "sha256": "3c9603dede594e82c98aef33b8149691952f9a0862ea99623a441fda3836192a"
+    },
+    {
+      "bytes": 1187,
+      "git_blob": "080bc1b23cd48d17d2ac7a6d9572fd7eb796e450",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/AnytypeTests/Markdown/EditorLocalEventPublisherTests.swift.gz",
+      "sha256": "7c624281efc3194c06b6fc4f88fbac7e82b8d533314a1bd7d336c161edf27756"
+    },
+    {
+      "bytes": 2231,
+      "git_blob": "fb0d915c98a34cebbc8139a77c025473a29b3c8a",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/AnytypeTests/Markdown/PreparedEditorLifetimeTests.swift.gz",
+      "sha256": "d00060500d665ffc7d8db0028368c54de8dd2fc4b3cbf0391e7185fbc472f7ed"
+    },
+    {
+      "bytes": 775,
+      "git_blob": "27f7ebba0e60761787fffaab4a804860cf973892",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/AnytypeTests/Markdown/PreparedEditorPageDocumentTests.swift.gz",
+      "sha256": "31783af6c5cbf1b1a75bf24fe7ae190643b3ffb13615254e8a706feba5379173"
+    },
+    {
+      "bytes": 1613,
+      "git_blob": "faa96a41027087e9f9517de097fce9a1fcbb3ff9",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/AnytypeTests/Markdown/TextServiceHandlerInjectionTests.swift.gz",
+      "sha256": "05e9a3691c45e50ffe225d0ce3c241cbd886909fa50e2e0878f8e191e41c6d4e"
+    },
+    {
+      "bytes": 1564,
+      "git_blob": "a0cfe89e051add38e40f9058a5bda7f1e8aef2dd",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/host_command.py.gz",
+      "sha256": "e4d6a4c8d8521f76a90d5c1ec1fd7eec9f6d5850172d8fa73d064fc7a7a908ff"
+    },
+    {
+      "bytes": 2349,
+      "git_blob": "643dedbfbfddecc887f28a595b48cdc9a47681d1",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/original_editor_profile.json.gz",
+      "sha256": "db366f1493ae0448cee57306879ef3b139aacbc902d16fc7501e11cad35691a3"
+    },
+    {
+      "bytes": 2524,
+      "git_blob": "996f356bfda0ec1f793d876957b9afb52f2f5cea",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/original_editor_profile.py.gz",
+      "sha256": "3749bab62983aeca9338951a5cf537689a34ec20d3fb4aecaea6ada61338558e"
+    },
+    {
+      "bytes": 2031,
+      "git_blob": "53c7c3e8924ad64fca6621132b80db2b1613beb9",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/prepare_original_editor_heart.py.gz",
+      "sha256": "645483219ab25ac1533a13f1a75a9ec4477c7fd37f5cb2b992947a7abde3b5c0"
+    },
+    {
+      "bytes": 1716,
+      "git_blob": "8e52eb19aa1b9369d572b0aa79bdb3d142196b0b",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/prepare_sdk.py.gz",
+      "sha256": "a5f99f97a4de7c9ae4400e66a09ab0ca4c2d63e7a2930e2df9c6369717b798a0"
+    },
+    {
+      "bytes": 10994,
+      "git_blob": "e9d7e7ccc743891c50454d94156a4cdd878d9826",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/run_host_tests.py.gz",
+      "sha256": "9fb829a8ef52cc7f581b789644f823f1067d33868a0b62c09fe27795b6387545"
+    },
+    {
+      "bytes": 5044,
+      "git_blob": "2cd44de289143f6d50fbb61474be00eda7bb82a5",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/run_journal_probe.py.gz",
+      "sha256": "039aca75d89f287fa80d0e1abf0e1cca866436355691d85321b21afb83bea786"
+    },
+    {
+      "bytes": 249,
+      "git_blob": "3d80df7c80e0d4a04d78de1c80d8f3aec682ae85",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/source.json.gz",
+      "sha256": "9820c08ec67e436fad9eedce740f05ab7d81d64bb6885eec0b2003993b749cd3"
+    },
+    {
+      "bytes": 761,
+      "git_blob": "94bc4108f22c92467ad5c853375f3e807bd4228b",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/test_journal_probe.py.gz",
+      "sha256": "035889125cea8756d0213af00efb3b971cad205e27b132b200e08687da190f3d"
+    },
+    {
+      "bytes": 2492,
+      "git_blob": "f74f5f1823eaba700da072c800c55c3d44ee2a17",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/test_run_host_components.py.gz",
+      "sha256": "87360ad61f21f85cc4d8a67a7ca2a2bbc3021ca5ff4144d49c523181432a0d7b"
+    },
+    {
+      "bytes": 2593,
+      "git_blob": "ac8e4ad83f198350ff985cfd05740edd52badb4b",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/test_run_host_core_profile.py.gz",
+      "sha256": "42b40c47900d18994ad1de943e760c010e5c1c5febb03cf6699ac5cf0fb15a1b"
+    },
+    {
+      "bytes": 3298,
+      "git_blob": "209c6b9c84bedaaff2c067dd0a70c933b45e289e",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/test_run_host_original_editor.py.gz",
+      "sha256": "b8c146dee2797bcc848d5a6dc36d3817c670d5f344ea87cd3687504d4e4e0bab"
+    },
+    {
+      "bytes": 8551,
+      "git_blob": "c1ef22fb07478da305668d6eaaff2e4f25039dbf",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/test_run_host_tests.py.gz",
+      "sha256": "ac8b8e1189ea52f92e92c0e2cec1ca1e3f71ae107516641f78bfabe2c6914fac"
+    },
+    {
+      "bytes": 2422,
+      "git_blob": "1e32598658ab451ae242ecdd23c02b611c1dc723",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/wave15-core-tests.json.gz",
+      "sha256": "b98d56027b119aa4ff3cb1a981776f13d65df20d81cce61782ebb5bcba01cc19"
+    },
+    {
+      "bytes": 2594,
+      "git_blob": "271075c2971709a9543d9061310cf2dd86a211f1",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/Hanlin/wave15_core_profile.py.gz",
+      "sha256": "847ab6842394ea1920c5bb012a2ded69e606fa93c70113cc912cbdfddba4bb6e"
+    },
+    {
+      "bytes": 4383,
+      "git_blob": "ba4e9d69a814ab29eb9cd789b5d5d014359fea12",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/PinkhaNativeDerived/build_custom_heart.py.gz",
+      "sha256": "26efae145d72440931f47986974e2496a3da32a3d2825a25366ce11d1207fe43"
+    },
+    {
+      "bytes": 6038,
+      "git_blob": "f253a9a8ad4262555c482ab354803437f7de9e20",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/PinkhaNativeDerived/build_native_ipa.py.gz",
+      "sha256": "6ac702ec73bc9d9583aaf36057e2e8f7803765e4223d4cc140ec7271728f2b3a"
+    },
+    {
+      "bytes": 1500,
+      "git_blob": "179116e6aa5b5643312bb80c482ee56a538b0b0a",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/baseline-inputs/Tools/PinkhaNativeDerived/install_verified_heart.py.gz",
+      "sha256": "43d38f5ad1e27d401847e464f298e39c5700fa40bd16f5a4aac00c31945792c7"
+    },
+    {
+      "bytes": 472913,
+      "git_blob": "c51cf1907c7834373f988fb48cd6733e7033ece3",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/canonical/B4_TREE.json.gz",
+      "sha256": "cd0e3f17d2f5817d003f1bf3c051b2b8fdf6db52e4333df034c45836840d59dc"
+    },
+    {
+      "bytes": 9974,
+      "git_blob": "88665fdb063d020f48d01d5bf8c696deaa3b5a45",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/constructor-root-review/ROOT_CANONICAL_INPUT.json.gz",
+      "sha256": "122aefccb4cb5253873b6fff955cabe311b4a84367c92c6b76007b044b4d79ea"
+    },
+    {
+      "bytes": 1650,
+      "git_blob": "623719c77e888a3a19044706298fd31f4ba23252",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/constructor-root-review/ROOT_REVIEW.json.gz",
+      "sha256": "d5165e34bf19c618fc7c30cb0b1031a5064fdd73a8538960c43486fe0e7210ef"
+    },
+    {
+      "bytes": 1134,
+      "git_blob": "57edc28d9a731da1b24226adb4dbf1e7e468524c",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt1/LOCAL_CANDIDATE_FIXTURE.json.gz",
+      "sha256": "659fb020c0fc93bab5184a61a13e26163e6c374fa68c0db27eca0d9001650a4e"
+    },
+    {
+      "bytes": 438,
+      "git_blob": "cc44a3b8dbb8464ccf81899c6868043a7b12f65d",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt1/REVIEW.json.gz",
+      "sha256": "a087439863f8a2825af349778b9efd8da68ac2964bc3363dc4422f739ee4e439"
+    },
+    {
+      "bytes": 2522,
+      "git_blob": "5789b36a4ca3b0df874f86e4bd943c6f6a5c3e57",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt1/controls.json.gz",
+      "sha256": "d4fdd57894f98e500cbe8ccf084c50ab8d41192163b770bbb653a225182a022c"
+    },
+    {
+      "bytes": 2559,
+      "git_blob": "31098cbccb6c946c71c693fe35bf74c6a3551633",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt1/original74-baseline-profile.json.gz",
+      "sha256": "d11117aabc4966a7a48e3a89c38316eeefac9222089a632ce3c99e367b07fa37"
+    },
+    {
+      "bytes": 3217,
+      "git_blob": "949f6b440a3a01b5208aa43c9a7fc5f032e1705b",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt1/original74-baseline-profile.log.gz",
+      "sha256": "fd8236c30e4da3909722bb3b9ee5d0088766c2b29f00b9e16599ad151c09deed"
+    },
+    {
+      "bytes": 5119,
+      "git_blob": "49628141d7c4dbe04ab371e3aacbf7eeb96016ba",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt1/source/original_document_constructor_controls.json.gz",
+      "sha256": "027cb6cc39a864c6d85a40c34e6cc1799717b68ed25d0cc53f96c1a859853398"
+    },
+    {
+      "bytes": 2809,
+      "git_blob": "8c399b4c8fb987cb66532e08d70a171ba88e9aa0",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt1/source/run_original_document_constructor_controls.py.gz",
+      "sha256": "7b48d34bf57aaaaf7f72d839ab54aed46b66a075758d8ed6ce2f81adc44f8cda"
+    },
+    {
+      "bytes": 3597,
+      "git_blob": "532e44bba007ba46fdd5c82f71dba7236db46f1a",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt1/source/test_document_constructor_profile.py.gz",
+      "sha256": "76f97139d077e0066ecd832daf90964b9acf6f48bf5ced7f9c2e0cd44e094907"
+    },
+    {
+      "bytes": 1101,
+      "git_blob": "e8dcf39d55726218dcbc79d38fbe96b0398871f0",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt2/candidate49-gate-controls.json.gz",
+      "sha256": "17a490b5258e39c2576cc5eed667450709292c42e86102d97b7af46dfa2f10af"
+    },
+    {
+      "bytes": 878,
+      "git_blob": "d3dc3fac964ba369d09ab23ebb1f15d96ced5cfe",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt2/candidate49-gate-controls.log.gz",
+      "sha256": "9379010797f718673f2551a26b8ad07f04476877ec60d149f55374c27decf005"
+    },
+    {
+      "bytes": 5563,
+      "git_blob": "a6fdafcb1faa2336bea041ee3d6f070c2f88073d",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt2/controls.json.gz",
+      "sha256": "a566b2e8cecead674afc7383aabd532642867c12ac5b327ef496d2a038e4c9e1"
+    },
+    {
+      "bytes": 2458,
+      "git_blob": "b9a0c9425030770db20a5b3c89df30eb4129c197",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt2/original74-baseline-profile.json.gz",
+      "sha256": "cdc6b79bed66c3906feed957df4d87761289677515f0049c4ff79ab10d3a460f"
+    },
+    {
+      "bytes": 3215,
+      "git_blob": "e46c6de8001230ff4c4e5d3f93936d6a86e34bdc",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/execution-attempt2/original74-baseline-profile.log.gz",
+      "sha256": "de7f4762f405e8892721e7ff84df35df8372c99716f433eede78518335e787bd"
+    },
+    {
+      "bytes": 3753,
+      "git_blob": "b280da4dda8baa6124d5fe4262b0e92efb9a27b9",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/make_route.py.gz",
+      "sha256": "480402165387f980af57936d28a65072bf7e76d982221e28247419b4de46ae9b"
+    },
+    {
+      "bytes": 1715,
+      "git_blob": "f7854cbb9d2273485c5aeb7f3b152c7e088ff473",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/materialize_canonical_fixture.py.gz",
+      "sha256": "d87fc6a4eadeb77e59d4f42521bc90b01e6701b2809375ab4187ad9fa9bce918"
+    },
+    {
+      "bytes": 284,
+      "git_blob": "dcfdaeb6ac50e40c793cb167fcd21e638d981d03",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/preservation-attempt1/RESULT.json.gz",
+      "sha256": "b1bb2437e0ec3764ffd8810ec30c059262a81c0243a1905fd5f0011e63a04c7e"
+    },
+    {
+      "bytes": 2307,
+      "git_blob": "ea68ee8b5c4432411a688c147f8c157324e9a263",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/preservation-attempt1/verify_runtime_preservation.py.gz",
+      "sha256": "e45c5e0b0660a258f810ed56afe0059ed68e945f1655f4ba2f0f889e9b1f1844"
+    },
+    {
+      "bytes": 1030,
+      "git_blob": "3689bf1e2a8439f4f4565923d11c957060a0ed73",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/sync_candidate_fixture.py.gz",
+      "sha256": "ca8faf6b7958aa283a7461eab9659c243c2623517d1653f261686b75cf158363"
+    },
+    {
+      "bytes": 2306,
+      "git_blob": "f7102f2952071fbfee68fec5cf41a92c5bf2adde",
+      "path": "docs/pinkha/torah-integration/evidence/original-document-constructor-apple49-20261120/raw/verify_runtime_preservation.py.gz",
+      "sha256": "e7795c5594daa6061852bb1a42448fd89bc895f97ceaf2289d4373f16d01f946"
+    }
+  ],
+  "repository": "davidpovarsky/anytype-swift",
+  "schema": 1
+}
