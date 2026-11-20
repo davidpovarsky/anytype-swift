@@ -1,0 +1,101 @@
+{
+  "attempt2": {
+    "activation": "Root only; not performed by this packet",
+    "admission": "Positive run_attempt permitted; exact repo/event/ref/head/preflight checks remain",
+    "first_attempt_operations": "API job terminal; bootstatus process returned -15 and both created simulators deleted. No host-wide process inventory claim.",
+    "separate_work_and_artifacts": true,
+    "source_change": false
+  },
+  "boot_failure": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "bootstatus",
+      "A41F8D3D-5138-4CE0-9CFB-3CE73880836E",
+      "-b"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "finished_at": "2026-11-20T17:21:05.188510+00:00",
+    "returncode": -15,
+    "started_at": "2026-11-20T17:18:01.863650+00:00",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": true,
+    "timeout_seconds": 180
+  },
+  "branch": "codex/otzaria-original-editor-framework-reviewed-20261120",
+  "cause_limit": "Owned simulator bootstatus exceeded the unchanged 180-second bound. Empty bootstatus stdout/stderr and no host-load telemetry do not establish why.",
+  "driver_finished_at": "2026-11-20T17:24:21.427912+00:00",
+  "driver_started_at": "2026-11-20T17:17:52.302265+00:00",
+  "editable_mount": "NOT_EXPOSED",
+  "execution_step": {
+    "completed_at": "2026-11-20T17:24:59Z",
+    "conclusion": "failure",
+    "name": "Build the genuine framework and execute the separate binary consumer",
+    "number": 9,
+    "started_at": "2026-11-20T17:17:52Z",
+    "status": "completed"
+  },
+  "external_consumer_build": "NOT_RUN",
+  "head_sha": "dc3ac07cec63692c8b84877a56e3e3fd60a4c667",
+  "job_completed_at": "2026-11-20T17:25:33Z",
+  "job_id": 136445938068,
+  "native_editor_ui_tests": 0,
+  "original_app_runtime": "NOT_RUN",
+  "original_framework_build": "NOT_RUN",
+  "original_swift_sources": 2237,
+  "owned_simulator_cleanup": [
+    {
+      "operation": "shutdown",
+      "returncode": 149,
+      "stderr": "An error was encountered processing the command (domain=com.apple.CoreSimulator.SimError, code=405):\nUnable to shutdown device in current state: Shutdown\n",
+      "stdout": "",
+      "udid": "4DA551C5-28A2-435A-AFAE-28B7E762BCEB"
+    },
+    {
+      "operation": "delete",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "",
+      "udid": "4DA551C5-28A2-435A-AFAE-28B7E762BCEB"
+    },
+    {
+      "operation": "shutdown",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "",
+      "udid": "A41F8D3D-5138-4CE0-9CFB-3CE73880836E"
+    },
+    {
+      "operation": "delete",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "",
+      "udid": "A41F8D3D-5138-4CE0-9CFB-3CE73880836E"
+    }
+  ],
+  "precreate_simulators": {
+    "active": 0,
+    "shutdown": 40,
+    "total": 40
+  },
+  "prior_original43": {
+    "bootstatus_seconds": 80.415913,
+    "exit_code": 0,
+    "inference_limit": "Successful original boot is comparison evidence, not proof of the later timeout cause.",
+    "run_id": 44750790626
+  },
+  "repository": "davidpovarsky/anytype-swift",
+  "run_attempt": 1,
+  "run_id": 44781744925,
+  "schema": 1,
+  "source_before_after_equal": true,
+  "source_controls": {
+    "executed": 44,
+    "passed": 44,
+    "scope": "Python source/authority controls on actual macOS; no Swift compilation"
+  },
+  "source_inputs": 22,
+  "status": "FAILURE_BEFORE_FRAMEWORK_COMPILATION",
+  "symbol_graph_and_resource_execution": "NOT_RUN"
+}
