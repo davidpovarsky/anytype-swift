@@ -38,6 +38,7 @@ on:
           - sdk06-tests
           - hanlin-journal-probe
           - editor-host-tests
+          - otzaria-original-editor
           - wave15-core-tests
           - wave15-component-tests
           - wave15-acceptance
@@ -131,6 +132,13 @@ jobs:
       acceptance_lane: ${{ inputs.acceptance_lane }}
       acceptance_device: ${{ inputs.acceptance_device }}
       acceptance_language: ${{ inputs.acceptance_language }}
+
+  otzaria-original-editor:
+    if: ${{ inputs.route == 'otzaria-original-editor' }}
+    uses: ./.github/workflows/pinkha-original-editor.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
+      expected_app_branch: ${{ github.ref_name }}
 
   editor-host-tests:
     if: ${{ inputs.route == 'editor-host-tests' }}

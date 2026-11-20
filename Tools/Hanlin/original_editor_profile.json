@@ -1,0 +1,59 @@
+{
+  "application_base": "67a23f718548ee80dbb084e57933115a07601ea3",
+  "application_trees": {
+    "AnyTypeTests": "74c5bfcd96916769a8ae5aa57f684797644cd329",
+    "Anytype": "94f881584cf438a0b111c756114f570d6299a08d",
+    "Anytype.xcodeproj": "7106431749bd7e5066cb9c1704514997b5db6c64",
+    "AnytypeTests": "fd9a7bddf7103b678988bb624476663ed64c9f02",
+    "Modules": "c8163bff54e6ba631e82ce5475f226989846d341"
+  },
+  "heart": {
+    "artifact_id": 14383247626,
+    "head_branch": "codex/chatgpt-wave15-startup-20261118",
+    "head_sha": "b5dc53b799a70269b8082734106d8cd30a99fc44",
+    "name": "Pinkha-Universal-Verified-Heart-r14",
+    "run_id": 44203168617,
+    "zip_bytes": 264982619,
+    "zip_sha256": "7ac88836edc2ee9ff0c7d8cb8943b8e968f0c73b2b94752ba27cebc241c69996"
+  },
+  "original_editor_code": "9dd379b5b88af9f8baa955c0828967f1d9021c49",
+  "original_editor_writer_code": "e73fc242ecb50010ea973c25ae242fb528b7a678",
+  "profile": "original-editor",
+  "required_methods": 16,
+  "suites": {
+    "EditorLocalEventPublisherTests": {
+      "methods": [
+        "publishesToTheSuppliedOwnerAfterTheStyleWriteCompletes",
+        "aFailedStyleWriteDoesNotPublish",
+        "cancellationDoesNotPublishOrRetry",
+        "splitStillLeavesPublicationToTheOriginalFocusOwner",
+        "separateEditorsDoNotShareTheInjectedEventOwner"
+      ],
+      "path": "AnytypeTests/Markdown/EditorLocalEventPublisherTests.swift",
+      "sha256": "1da8e8d16d873e548e5a2562906b40aad0d731394a1036edd85e439a13a4717a"
+    },
+    "PreparedEditorPageDocumentTests": {
+      "methods": [
+        "acceptsTheSameOpenedDocumentInEachOriginalMode",
+        "rejectsAnotherObjectWithTheSameSpace",
+        "rejectsAnotherSpaceWithTheSameObject",
+        "rejectsAnotherModeAndAnotherVersion",
+        "rejectsEmptyIdentitiesWithoutNormalizingDifferentIdentifiers",
+        "rechecksTheActualDocumentAfterItHasClosed"
+      ],
+      "path": "AnytypeTests/Markdown/PreparedEditorPageDocumentTests.swift",
+      "sha256": "75e264b93ef8a1bab9fe7ca2a0a456a8999ab5ef5a18351eeed9a3045fec48a2"
+    },
+    "TextServiceHandlerInjectionTests": {
+      "methods": [
+        "preservesTextAndMarksOnBothOriginalTextOperations",
+        "preservesSplitResultAndUTF16Range",
+        "forwardsCheckedMergeAndIconToTheSameInjectedService",
+        "propagatesAStyleFailureWithoutTryingAnotherService",
+        "keepsTwoEditorServiceInstancesSeparate"
+      ],
+      "path": "AnytypeTests/Markdown/TextServiceHandlerInjectionTests.swift",
+      "sha256": "b115a4c948c7064e2e02d6129e29733a763088b6f8fc1d0b96f432e8e123ebe6"
+    }
+  }
+}

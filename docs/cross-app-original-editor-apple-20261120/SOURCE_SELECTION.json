@@ -1,0 +1,107 @@
+{
+  "application_base": "67a23f718548ee80dbb084e57933115a07601ea3",
+  "original_editor_code": "9dd379b5b88af9f8baa955c0828967f1d9021c49",
+  "writer_code": "e73fc242ecb50010ea973c25ae242fb528b7a678",
+  "immutable_branch": "codex/otzaria-original-editor-apple-reviewed-20261120",
+  "methods": [
+    "EditorLocalEventPublisherTests/aFailedStyleWriteDoesNotPublish",
+    "EditorLocalEventPublisherTests/cancellationDoesNotPublishOrRetry",
+    "EditorLocalEventPublisherTests/publishesToTheSuppliedOwnerAfterTheStyleWriteCompletes",
+    "EditorLocalEventPublisherTests/separateEditorsDoNotShareTheInjectedEventOwner",
+    "EditorLocalEventPublisherTests/splitStillLeavesPublicationToTheOriginalFocusOwner",
+    "PreparedEditorPageDocumentTests/acceptsTheSameOpenedDocumentInEachOriginalMode",
+    "PreparedEditorPageDocumentTests/rechecksTheActualDocumentAfterItHasClosed",
+    "PreparedEditorPageDocumentTests/rejectsAnotherModeAndAnotherVersion",
+    "PreparedEditorPageDocumentTests/rejectsAnotherObjectWithTheSameSpace",
+    "PreparedEditorPageDocumentTests/rejectsAnotherSpaceWithTheSameObject",
+    "PreparedEditorPageDocumentTests/rejectsEmptyIdentitiesWithoutNormalizingDifferentIdentifiers",
+    "TextServiceHandlerInjectionTests/forwardsCheckedMergeAndIconToTheSameInjectedService",
+    "TextServiceHandlerInjectionTests/keepsTwoEditorServiceInstancesSeparate",
+    "TextServiceHandlerInjectionTests/preservesSplitResultAndUTF16Range",
+    "TextServiceHandlerInjectionTests/preservesTextAndMarksOnBothOriginalTextOperations",
+    "TextServiceHandlerInjectionTests/propagatesAStyleFailureWithoutTryingAnotherService"
+  ],
+  "raw_test_sha256": {
+    "AnytypeTests/Markdown/EditorLocalEventPublisherTests.swift": "027f98240a28c6e0589df35f83c972c30fffbdec7284555012398f689df7fb38",
+    "AnytypeTests/Markdown/PreparedEditorPageDocumentTests.swift": "daba17c39155e700786c7723f87c809d7bd394c22f6c72d7e425c747b9957604",
+    "AnytypeTests/Markdown/TextServiceHandlerInjectionTests.swift": "34ad67f44c46f5c3d6bb7165da14aa629fd1c6c3be448f28326c5b7c92e71757"
+  },
+  "canonical_test_sha256": {
+    "AnytypeTests/Markdown/EditorLocalEventPublisherTests.swift": "1da8e8d16d873e548e5a2562906b40aad0d731394a1036edd85e439a13a4717a",
+    "AnytypeTests/Markdown/PreparedEditorPageDocumentTests.swift": "75e264b93ef8a1bab9fe7ca2a0a456a8999ab5ef5a18351eeed9a3045fec48a2",
+    "AnytypeTests/Markdown/TextServiceHandlerInjectionTests.swift": "b115a4c948c7064e2e02d6129e29733a763088b6f8fc1d0b96f432e8e123ebe6"
+  },
+  "application_trees": {
+    "AnyTypeTests": "74c5bfcd96916769a8ae5aa57f684797644cd329",
+    "Anytype": "94f881584cf438a0b111c756114f570d6299a08d",
+    "Anytype.xcodeproj": "7106431749bd7e5066cb9c1704514997b5db6c64",
+    "AnytypeTests": "fd9a7bddf7103b678988bb624476663ed64c9f02",
+    "Modules": "c8163bff54e6ba631e82ce5475f226989846d341"
+  },
+  "required_apple_passes": 16,
+  "actual_apple_executions": 0,
+  "apple_status": "NOT_RUN",
+  "ui_acceptance": "NOT_RUN",
+  "portable_controls": {
+    "start_utc": "2026-11-20T10:45:45.810156+00:00",
+    "finished_utc": "2026-11-20T10:45:52.135806+00:00",
+    "command": [
+      "C:\\ProgramData\\SentinelX\\.venv\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "Tools/Hanlin",
+      "-p",
+      "test_run_host*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "declared": 74,
+    "skipped": 2,
+    "log_sha256": "851bb14815d37ed8d8f9fbc514e528383ef18cdc15408e1cd51fef6ea3d01d41",
+    "head": "67a23f718548ee80dbb084e57933115a07601ea3",
+    "apple": "NOT_RUN",
+    "passed": 72
+  },
+  "source_review": {
+    "at_utc": "2026-11-20T10:45:50.563851+00:00",
+    "existing_dispatcher_semantic_inverse": true,
+    "original_installer_exact_inverse": true,
+    "unchanged_host_definitions": [
+      "EditorEvidenceReviewPending",
+      "require",
+      "write",
+      "sha256",
+      "require_identity",
+      "test_cases",
+      "validate_component_arguments",
+      "validate_sdk_declarations",
+      "validate_sdk_arguments",
+      "validate_editor_arguments",
+      "verify_packages",
+      "xctest_products",
+      "cleanup"
+    ],
+    "application_and_original_preparation_unchanged": true,
+    "yaml_unique_keys_valid": true,
+    "ownership": {
+      "queried_commit": "d857b23ea540be33d6faab4f7a7a1a260ab578c1",
+      "tree_sha": "d857b23ea540be33d6faab4f7a7a1a260ab578c1",
+      "api_tree_entries": 8183,
+      "truncated": false,
+      "target_absence": {
+        "Tools/Hanlin": true,
+        "Tools/PinkhaNativeDerived": true,
+        "Tools/Hanlin/run_host_tests.py": true,
+        "Tools/PinkhaNativeDerived/install_verified_heart.py": true,
+        ".github/workflows/torah-inspector-ipados27.yml": true,
+        ".github/workflows/pinkha-original-editor.yml": true
+      },
+      "result": "existing and new CI paths are downstream; no upstream source edit"
+    },
+    "scope": "Source/control validation; not an Apple result"
+  },
+  "heart_artifact_byte_verification": "NOT_RUN locally; exact GitHub metadata verified; CI must verify downloaded ZIP and original installer contract before use"
+}

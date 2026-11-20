@@ -1,0 +1,99 @@
+name: Original editor Apple component acceptance
+
+on:
+  workflow_call:
+    inputs:
+      heart_source_run_id:
+        required: true
+        type: string
+      expected_app_branch:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: original-editor-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original-editor:
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      EXPECTED_APP_BRANCH: ${{ inputs.expected_app_branch }}
+      HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}
+      EDITOR_EVIDENCE: build/original-editor-evidence
+      EDITOR_DERIVED: build/original-editor-derived-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Checkout exact reviewed source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Use the existing native ARM64 Python contract
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Bind source trees and exactly sixteen original target declarations
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$EXPECTED_APP_BRANCH" = 'codex/otzaria-original-editor-apple-reviewed-20261120'
+          test "$GITHUB_REF" = "refs/heads/$EXPECTED_APP_BRANCH"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$HEART_SOURCE_RUN_ID" = '44203168617'
+          git switch --force-create "$EXPECTED_APP_BRANCH" "$GITHUB_SHA"
+          python3 Tools/Hanlin/original_editor_profile.py --app "$GITHUB_WORKSPACE" \
+            --expected-app-branch "$EXPECTED_APP_BRANCH" --evidence "$EDITOR_EVIDENCE"
+      - name: Checkout the immutable original canonical Hanlin source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: .ci/hanlin-source
+          persist-credentials: false
+      - name: Prepare the existing SDK and execute all original host-gate controls
+        run: |
+          python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
+          python3 Tools/Hanlin/prepare_sdk.py --check
+          python3 -m unittest discover -s Tools/Hanlin -p 'test_run_host*.py' -v
+      - name: Verify actual Xcode27 and create owned OS27 simulators
+        run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence "$EDITOR_EVIDENCE/preflight"
+      - name: Verify the recorded GitHub artifact and original Heart slices
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 Tools/Hanlin/prepare_original_editor_heart.py \
+            --source-run-id "$HEART_SOURCE_RUN_ID" \
+            --output build/original-editor-verified-heart --evidence "$EDITOR_EVIDENCE/heart-source"
+          python3 Tools/PinkhaNativeDerived/install_verified_heart.py \
+            --archive build/original-editor-verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
+            --app-source "$GITHUB_WORKSPACE" --source-run-id "$HEART_SOURCE_RUN_ID" \
+            --expected-app-branch "$EXPECTED_APP_BRANCH" --evidence "$EDITOR_EVIDENCE/heart"
+      - name: Build original Debug-Anytype and execute exact editor component tests
+        timeout-minutes: 100
+        run: |
+          python3 Tools/Hanlin/run_host_tests.py --app "$GITHUB_WORKSPACE" \
+            --evidence "$EDITOR_EVIDENCE" --derived "$EDITOR_DERIVED" \
+            --expected-app-branch "$EXPECTED_APP_BRANCH" --heart-source-run-id "$HEART_SOURCE_RUN_ID" \
+            --profile original-editor
+      - name: Preserve actual source-bound receipts, logs and xcresult on failure
+        if: always()
+        run: |
+          mkdir -p "$EDITOR_EVIDENCE"
+          python3 Tools/PinkhaNativeDerived/package_evidence.py "$EDITOR_EVIDENCE"
+      - name: Upload original editor Apple evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Editor-Apple-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.EDITOR_EVIDENCE }}/Pinkha-Native-Derived-Evidence.zip
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,43 @@
+{
+  "failed_raw": {
+    "apply": {
+      "job_id": "job_2f5d2e40f649",
+      "status": "failed",
+      "exit_code": 1,
+      "output": "Traceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_05c5d9ea9b3d43f8be374f3640989985\\script.py\", line 12, in <module>\r\n    assert not git(\"status\",\"--porcelain\").strip()\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nAssertionError"
+    },
+    "review": {
+      "job_id": "job_daca90b8df18",
+      "status": "failed",
+      "exit_code": 1,
+      "output": "Traceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_4f69ca28d9104b1bb8304a49c91bd2c4\\script.py\", line 50, in <module>\r\n    assert len(unchanged)>=14\r\n           ^^^^^^^^^^^^^^^^^^\r\nAssertionError"
+    }
+  },
+  "pre_host_js_attempt": "JavaScript interpolation syntax rejected before any host call; no edit",
+  "apply_refusal": "Baseline test import generated an owned __pycache__; first apply stopped before code edits. Cache was moved under the owned ignored build folder; not deleted. Later controls disable bytecode writes.",
+  "source_review_correction": "The original host has exactly13 named unchanged definitions. An invented >=14 assertion stopped the first review; replaced by the exact13-name set, with no source/acceptance relaxation.",
+  "controls11": "72 PASS /2 actual POSIX-only skips on Windows",
+  "controls16": {
+    "start_utc": "2026-11-20T10:45:45.810156+00:00",
+    "finished_utc": "2026-11-20T10:45:52.135806+00:00",
+    "command": [
+      "C:\\ProgramData\\SentinelX\\.venv\\Scripts\\python.exe",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "Tools/Hanlin",
+      "-p",
+      "test_run_host*.py",
+      "-v"
+    ],
+    "exit_code": 0,
+    "declared": 74,
+    "skipped": 2,
+    "log_sha256": "851bb14815d37ed8d8f9fbc514e528383ef18cdc15408e1cd51fef6ea3d01d41",
+    "head": "67a23f718548ee80dbb084e57933115a07601ea3",
+    "apple": "NOT_RUN",
+    "passed": 72
+  }
+}
