@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 import subprocess
 
-BRANCH = "codex/otzaria-original-editor-owned-apple-reviewed-20261120"
+BRANCH = "codex/otzaria-original-editor-owned-apple-v2-reviewed-20261120"
 MANIFEST_PATH = Path(__file__).with_name("original_editor_profile.json")
 
 

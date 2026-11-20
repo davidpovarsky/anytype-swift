@@ -43,7 +43,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$EXPECTED_APP_BRANCH" = 'codex/otzaria-original-editor-owned-apple-reviewed-20261120'
+          test "$EXPECTED_APP_BRANCH" = 'codex/otzaria-original-editor-owned-apple-v2-reviewed-20261120'
           test "$GITHUB_REF" = "refs/heads/$EXPECTED_APP_BRANCH"
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
           test "$HEART_SOURCE_RUN_ID" = '44203168617'
