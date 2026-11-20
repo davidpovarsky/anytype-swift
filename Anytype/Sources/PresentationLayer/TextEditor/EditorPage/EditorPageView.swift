@@ -29,7 +29,7 @@ struct EditorPageView: View {
     }
 
     var body: some View {
-        EditorSwiftUIViewContainer(viewController: stateModel.viewController)
+        EditorSwiftUIViewContainer(viewController: stateModel.viewController, preparedSession: stateModel.preparedSession)
             .anytypeStatusBar(style: .default)
             .homeBottomPanelHidden(model.bottomPanelHidden, animated: model.bottomPanelHiddenAnimated)
             .onChange(of: model.dismiss) {

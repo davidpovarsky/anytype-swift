@@ -5,6 +5,13 @@ import Services
 @MainActor
 protocol EditorPageModuleAssemblyProtocol: AnyObject {
     func buildStateModel(
+        preparedSession: PreparedEditorPageSession,
+        output: (any EditorPageModuleOutput)?,
+        showHeader: Bool,
+        torahSession: TorahEditorSession?
+    ) throws -> EditorPageViewState
+
+    func buildStateModel(
         data: EditorPageObject,
         output: (any EditorPageModuleOutput)?,
         showHeader: Bool,
@@ -94,6 +101,30 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             services: services,
             resolveDocument: { preparedDocument }
         )
+    }
+
+    func buildStateModel(
+        preparedSession: PreparedEditorPageSession,
+        output: (any EditorPageModuleOutput)?,
+        showHeader: Bool,
+        torahSession: TorahEditorSession?
+    ) throws -> EditorPageViewState {
+        do {
+            try preparedSession.claimAssembly()
+            let state = try buildStateModel(
+                data: preparedSession.data,
+                preparedDocument: preparedSession.document,
+                services: preparedSession.services,
+                output: output,
+                showHeader: showHeader,
+                torahSession: torahSession
+            )
+            try state.bindPreparedSession(preparedSession)
+            return state
+        } catch {
+            preparedSession.retire()
+            throw error
+        }
     }
 
     private func assembleStateModel(

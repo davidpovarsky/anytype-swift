@@ -14,6 +14,7 @@ SPEC = importlib.util.spec_from_file_location("editor_boundary", Path(__file__).
 BOUNDARY = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(BOUNDARY)
 NEW_SOURCES = [
+    "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
     "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
     "Anytype/Sources/ServiceLayer/Block/TextServiceHandler/DocumentOwnedTextService.swift",
     "Anytype/Sources/ServiceLayer/Block/DocumentOwnedLocalEventPublisher.swift",

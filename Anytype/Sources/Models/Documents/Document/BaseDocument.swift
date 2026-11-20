@@ -4,7 +4,7 @@ import AnytypeCore
 import Foundation
 import PinkhaKit
 
-final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
+final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProviding, @unchecked Sendable {
     
     // MARK: - State from Containers
     
@@ -16,6 +16,7 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
     let objectId: String
     let spaceId: String
     let mode: DocumentMode
+    let editorWriteLifetime = EditorDocumentWriteLifetime(isAvailable: false)
     
     @Atomic
     private(set) var children = [BlockInformation]()
@@ -148,6 +149,8 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
     @MainActor
     func close() async throws {
         guard mode.isHandling, isOpened, basicUserInfoStorage.usersId.isNotEmpty else { return }
+        let closeLease = editorWriteLifetime.beginClosing()
+        defer { closeLease.cancel() }
         try await objectLifecycleService.close(contextId: objectId, spaceId: spaceId)
         isOpened = false
     }
@@ -261,6 +264,7 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
         }
         
         if updates.contains(.close) {
+            editorWriteLifetime.markUnavailable()
             isOpened = false
         }
         
@@ -276,6 +280,7 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
         setupSubscriptions()
         isOpened = true
         triggerSync(updates: [.general])
+        editorWriteLifetime.confirmOpened()
     }
 
     @MainActor
@@ -495,6 +500,9 @@ final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {
         )
         
         if permissions != newPermissios {
+            if permissions.canEditBlocks && !newPermissios.canEditBlocks {
+                editorWriteLifetime.invalidate()
+            }
             permissions = newPermissios
             return [.permissions]
         }

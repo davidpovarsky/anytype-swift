@@ -50,6 +50,10 @@ def preserve(report):
     action = inverse_events((ROOT / ACTION).read_text(encoding="utf-8"))
     text = inverse_events((ROOT / TEXT).read_text(encoding="utf-8"))
     view = (ROOT / VIEW).read_text(encoding="utf-8")
+    owned_host = "EditorSwiftUIViewContainer(viewController: stateModel.viewController, preparedSession: stateModel.preparedSession)"
+    if owned_host in view:
+        require(view.count(owned_host) == 1, "Prepared host argument is not unique")
+        view = view.replace(owned_host, "EditorSwiftUIViewContainer(viewController: stateModel.viewController)")
     assembly = inverse_assembly((ROOT / ASSEMBLY).read_text(encoding="utf-8"))
     require(action.split("    // MARK: Actions", 1)[1] == original(ACTION).split("    // MARK: Actions", 1)[1], "An original block action changed")
     require(text.split("    func setText(", 1)[1] == original(TEXT).split("    func setText(", 1)[1], "An original text operation changed")
@@ -70,7 +74,7 @@ def preserve(report):
     report["source_preservation"] = {
         "all_original_block_action_methods": "IDENTICAL_AFTER_EXACT_EVENT_ROUTE_INVERSE",
         "all_original_text_service_methods": "IDENTICAL_AFTER_EXACT_EVENT_ROUTE_INVERSE",
-        "original_view_body_and_default_initializer": "IDENTICAL",
+        "original_view_body_and_default_initializer": "IDENTICAL_AFTER_EXACT_OPTIONAL_PREPARED_HOST_ARGUMENT_INVERSE",
         "original_controller_and_view_model_assembly_except_resolution": "IDENTICAL_AFTER_EXACT_SERVICE_ARGUMENT_INVERSE",
         "original_downstream_assembly": "IDENTICAL_AFTER_EXACT_SERVICE_ARGUMENT_INVERSE",
     }
