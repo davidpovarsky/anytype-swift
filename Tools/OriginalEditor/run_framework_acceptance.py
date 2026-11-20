@@ -80,13 +80,14 @@ def source_file_proof(root, derived, before, evidence):
     retained = []
     for number, path in enumerate(sorted(paths)):
         raw = path.read_bytes()
-        destination = evidence / ('framework-inputs-' + str(number) + '.SwiftFileList')
+        destination = evidence / ('framework-inputs-' + str(number) + '.SwiftFileList.txt')
         destination.write_bytes(raw)
         for line in raw.decode().splitlines():
             values = shlex.split(line)
             require(len(values) == 1, 'Malformed actual Swift source input')
             observed.add(Path(values[0]).resolve())
-        retained.append({'path': str(path), 'sha256': sha256(path), 'bytes': len(raw)})
+        retained.append({'path': str(path), 'evidence_path': destination.name,
+                         'sha256': sha256(path), 'bytes': len(raw)})
     actual_original = {path for path in observed if path.is_relative_to(root)
                        and not path.is_relative_to(derived)}
     require(actual_original == expected, 'Actual framework source list is not the complete original source closure')
@@ -100,8 +101,10 @@ def source_file_proof(root, derived, before, evidence):
             raw = path.read_bytes()
             name = next(name for name in ['Assets', 'Loc', 'DesignKit'] if name + '.build' in path.parts)
             require(name not in [row['module'] for row in generated], 'Ambiguous generated resource accessor')
-            (evidence / ('original-generated-' + name + '-resource-accessor.swift')).write_bytes(raw)
-            generated.append({'module': name, 'path': str(path), 'sha256': sha256(path), 'bytes': len(raw)})
+            destination = evidence / ('original-generated-' + name + '-resource-accessor.swift.txt')
+            destination.write_bytes(raw)
+            generated.append({'module': name, 'path': str(path), 'evidence_path': destination.name,
+                              'sha256': sha256(path), 'bytes': len(raw)})
     require({row['module'] for row in generated} == {'Assets', 'Loc', 'DesignKit'},
             'Original generated package bundle accessors are missing')
     value = {'complete_original_swift_input_count': len(expected), 'generated_swift_input_count': len(observed - expected),

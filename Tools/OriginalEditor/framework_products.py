@@ -2,11 +2,13 @@
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import plistlib
 import re
 import shutil
 import stat
+import sys
 import xml.etree.ElementTree as ET
 from urllib.parse import unquote, urlparse
 
@@ -44,6 +46,121 @@ def copy_product(source, target, producer_root):
         shutil.copy2(source, target)
 
 
+def framework_extended_attributes(path, follow):
+    """Read every accessible attribute; never treat an unsupported API as empty.
+
+    CPython's os xattr functions are Linux-only. Darwin uses the original
+    documented listxattr/getxattr ABI, with no writes or added dependency.
+    """
+    if sys.platform != 'darwin':
+        require(hasattr(os, 'listxattr') and hasattr(os, 'getxattr'),
+                'No complete extended-attribute reader on this host')
+        raw = {name: os.getxattr(path, name, follow_symlinks=follow)
+               for name in os.listxattr(path, follow_symlinks=follow)}
+    else:
+        import ctypes
+        library = ctypes.CDLL(None, use_errno=True)
+        listing, reading = library.listxattr, library.getxattr
+        listing.argtypes = [ctypes.c_char_p, ctypes.c_void_p, ctypes.c_size_t, ctypes.c_int]
+        listing.restype = ctypes.c_ssize_t
+        reading.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_void_p,
+                           ctypes.c_size_t, ctypes.c_uint32, ctypes.c_int]
+        reading.restype = ctypes.c_ssize_t
+        encoded = os.fsencode(path)
+        # Original sys/xattr.h: expose compression attributes, and inspect the
+        # link itself when requested. No XATTR_NOSECURITY or mutation options.
+        options = 0x20 | (0 if follow else 0x1)
+
+        def read_buffer(call):
+            size = call(None, 0)
+            require(0 <= size <= 16 * 1024 * 1024, 'Unreadable or oversized framework attribute')
+            buffer = ctypes.create_string_buffer(max(size, 1))
+            actual = call(buffer, size)
+            require(actual == size, 'Framework attributes changed or could not be read')
+            return buffer.raw[:size]
+
+        names = read_buffer(lambda buffer, size: listing(encoded, buffer, size, options))
+        require(not names or names.endswith(b'\0'), 'Malformed Darwin attribute list')
+        keys = names[:-1].split(b'\0') if names else []
+        require(all(keys) and len(set(keys)) == len(keys),
+                'Empty or duplicate Darwin attribute name')
+        raw = {os.fsdecode(name): read_buffer(
+            lambda buffer, size: reading(encoded, name, buffer, size, 0, options)) for name in keys}
+    return {name: {'bytes': len(value), 'sha256': hashlib.sha256(value).hexdigest()}
+            for name, value in sorted(raw.items())}
+
+
+def framework_closure(source):
+    """Observe every member, including internal aliases, without changing it.
+
+    Only timestamps and filesystem allocation/inode numbers are irrelevant to
+    this equivalence check. File bytes, names, kinds, modes, owners, flags,
+    extended attributes and literal alias targets must all agree. An alias may
+    not borrow a file from another product, even inside this owned producer.
+    """
+    source = Path(source)
+    require(source.is_dir() and not source.is_symlink(), 'Framework root must be a real directory')
+    root = source.resolve(strict=True)
+    result = {}
+
+    def metadata(path, status, follow):
+        return {'mode': stat.S_IMODE(status.st_mode), 'uid': status.st_uid, 'gid': status.st_gid,
+                'flags': getattr(status, 'st_flags', 0),
+                'extended_attributes': framework_extended_attributes(path, follow)}
+
+    def visit(path, relative, ancestors):
+        try:
+            resolved = path.resolve(strict=True)
+            require(resolved.is_relative_to(root), 'Framework alias escapes its own product: ' + relative)
+            status, final = path.lstat(), resolved.stat()
+            kind = ('symlink' if stat.S_ISLNK(status.st_mode) else
+                    'directory' if stat.S_ISDIR(status.st_mode) else
+                    'file' if stat.S_ISREG(status.st_mode) else 'special')
+            final_kind = 'directory' if stat.S_ISDIR(final.st_mode) else 'file' if stat.S_ISREG(final.st_mode) else 'special'
+            require(kind != 'special' and final_kind != 'special', 'Special framework member: ' + relative)
+            row = {'kind': kind, **metadata(path, status, False), 'resolved_kind': final_kind,
+                   'resolved_metadata': metadata(resolved, final, True)}
+            if kind == 'symlink':
+                row['link_target'] = os.readlink(path)
+            if final_kind == 'file':
+                row.update(bytes=final.st_size, sha256=sha256(resolved))
+            result[relative] = row
+            if final_kind == 'directory':
+                require(resolved not in ancestors, 'Cyclic framework alias: ' + relative)
+                for child in sorted(path.iterdir()):
+                    visit(child, child.name if relative == '.' else relative + '/' + child.name,
+                          ancestors | {resolved})
+        except (OSError, RuntimeError) as error:
+            raise ValueError('Unreadable or cyclic framework closure: ' + relative) from error
+
+    visit(source, '.', set())
+    return result
+
+
+def select_framework_products(products, frameworks):
+    """Admit only the actual Xcode root/PackageFrameworks Lib duplicate pair."""
+    groups = {}
+    for path in frameworks:
+        groups.setdefault(path.name, []).append(path)
+    require(TARGET + '.framework' in groups, 'Missing or ambiguous genuine framework products')
+    selected, proofs = [], []
+    for name, paths in sorted(groups.items()):
+        if len(paths) == 1:
+            selected.append(paths[0])
+            continue
+        relative = {path.relative_to(products).as_posix(): path for path in paths}
+        expected = {'Lib.framework', 'PackageFrameworks/Lib.framework'}
+        require(name == 'Lib.framework' and len(paths) == 2 and set(relative) == expected,
+                'Missing or ambiguous genuine framework products')
+        closures = {key: framework_closure(relative[key]) for key in sorted(relative)}
+        require(closures['Lib.framework'] == closures['PackageFrameworks/Lib.framework'],
+                'The two known Lib framework products differ')
+        selected.append(relative['Lib.framework'])
+        proofs.append({'name': name, 'selected': 'Lib.framework', 'source_closures': closures,
+                       'equivalence': 'COMPLETE_CLOSURE_EQUAL'})
+    return selected, proofs
+
+
 def export_products(products, exported, producer_root):
     products, exported = Path(products).resolve(), Path(exported).resolve()
     require(products.is_relative_to(Path(producer_root).resolve()), 'Unowned product directory')
@@ -54,9 +171,8 @@ def export_products(products, exported, producer_root):
     frameworks = [p for p in products.rglob('*.framework')
                   if not any(parent.suffix in {'.framework', '.bundle', '.app', '.xctest'}
                              for parent in p.relative_to(products).parents)]
+    frameworks, duplicate_proofs = select_framework_products(products, frameworks)
     names = [p.name for p in frameworks]
-    require(len(names) == len(set(names)) and TARGET + '.framework' in names,
-            'Missing or ambiguous genuine framework products')
     for source in sorted(frameworks):
         copy_product(source, exported / 'Frameworks' / source.name, producer_root)
     bundles = [p for p in products.rglob('*.bundle')
@@ -86,7 +202,25 @@ def export_products(products, exported, producer_root):
             'Original Hebrew localization bundle was not exported')
     result = inventory(exported)
     require(result, 'Empty binary/resource export')
-    return {'frameworks': sorted(names), 'resource_bundles': sorted(p.name for p in bundles),
+    # Keep the measured input pair and the materialized output bound together.
+    # This is not a general duplicate-name or same-hash selection fallback.
+    for proof in duplicate_proofs:
+        for relative, expected in proof['source_closures'].items():
+            require(framework_closure(products / relative) == expected,
+                    'A known Lib input changed during export')
+        materialized = framework_closure(exported / 'Frameworks/Lib.framework')
+        expected = proof['source_closures']['Lib.framework']
+        require(set(materialized) == set(expected), 'Exported Lib membership differs')
+        for relative, row in materialized.items():
+            original = expected[relative]
+            require(row['kind'] == original['resolved_kind']
+                    and row['resolved_metadata'] == original['resolved_metadata']
+                    and row.get('bytes') == original.get('bytes')
+                    and row.get('sha256') == original.get('sha256'),
+                    'Exported Lib member differs: ' + relative)
+        proof['materialized_export_closure'] = materialized
+    return {'frameworks': sorted(names), 'verified_known_duplicates': duplicate_proofs,
+            'resource_bundles': sorted(p.name for p in bundles),
             'files': result, 'bytes': sum(item['bytes'] for item in result.values())}
 
 
