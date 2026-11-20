@@ -4,9 +4,14 @@ import Services
 final class TextServiceHandler: TextServiceProtocol {
     
     private let textService: any TextServiceProtocol
+    private let localEvents: any EditorLocalEventPublishing
 
-    init(textService: any TextServiceProtocol = Container.shared.textService()) {
+    init(
+        textService: any TextServiceProtocol = Container.shared.textService(),
+        localEvents: any EditorLocalEventPublishing = OriginalEditorLocalEventPublisher()
+    ) {
         self.textService = textService
+        self.localEvents = localEvents
     }
     
     func setText(contextId: String, blockId: String, middlewareString: MiddlewareString) async throws {
@@ -20,10 +25,7 @@ final class TextServiceHandler: TextServiceProtocol {
     func setStyle(contextId: String, blockId: String, style: Style) async throws {
         try await textService.setStyle(contextId: contextId, blockId: blockId, style: style)
         
-        await EventsBunch(
-            contextId: contextId,
-            localEvents: [.setStyle(blockId: blockId)]
-        ).send()
+        await localEvents.setStyle(contextId: contextId, blockId: blockId)
     }
     
     func split(contextId: String, blockId: String, range: NSRange, style: Style, mode: SplitMode) async throws -> String {

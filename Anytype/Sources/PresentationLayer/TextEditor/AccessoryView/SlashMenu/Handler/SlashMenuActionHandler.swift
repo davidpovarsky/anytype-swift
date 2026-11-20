@@ -13,23 +13,24 @@ final class SlashMenuActionHandler {
     
     private weak var textView: UITextView?
     
-    @Injected(\.pasteboardBlockDocumentService)
-    private var pasteboardService: any PasteboardBlockDocumentServiceProtocol
-    @Injected(\.objectDateByTimestampService)
-    private var objectDateByTimestampService: any ObjectDateByTimestampServiceProtocol
+    private let pasteboardService: any PasteboardBlockDocumentServiceProtocol
+    private let objectDateByTimestampService: any ObjectDateByTimestampServiceProtocol
     
     init(
         document: some BaseDocumentProtocol,
         actionHandler: some BlockActionHandlerProtocol,
         router: some EditorRouterProtocol,
         cursorManager: EditorCursorManager,
-        mediaBlockActionsProvider: some MediaBlockActionsProviderProtocol
+        mediaBlockActionsProvider: some MediaBlockActionsProviderProtocol,
+        dependencies: SlashMenuActionHandlerDependencies = .original()
     ) {
         self.document = document
         self.actionHandler = actionHandler
         self.router = router
         self.cursorManager = cursorManager
         self.mediaBlockActionsProvider = mediaBlockActionsProvider
+        self.pasteboardService = dependencies.pasteboardService
+        self.objectDateByTimestampService = dependencies.objectDateByTimestampService
     }
     
     func handle(

@@ -16,8 +16,7 @@ protocol ObjectHeaderModuleOutput: AnyObject {
 @MainActor
 final class ObjectHeaderViewModel: ObservableObject {
     
-    @Injected(\.objectHeaderUploadingService)
-    private var objectHeaderUploadingService: any ObjectHeaderUploadingServiceProtocol
+    private let objectHeaderUploadingService: any ObjectHeaderUploadingServiceProtocol
     
     @Published private(set) var header: ObjectHeader?
 
@@ -54,12 +53,14 @@ final class ObjectHeaderViewModel: ObservableObject {
         document: some BaseDocumentProtocol,
         targetObjectId: String,
         configuration: EditorPageViewModelConfiguration,
-        output: (any ObjectHeaderModuleOutput)?
+        output: (any ObjectHeaderModuleOutput)?,
+        dependencies: ObjectHeaderViewModelDependencies = .original()
     ) {
         self.document = document
         self.targetObjectId = targetObjectId
         self.configuration = configuration
         self.output = output
+        self.objectHeaderUploadingService = dependencies.objectHeaderUploadingService
         
         setupSubscription()
 

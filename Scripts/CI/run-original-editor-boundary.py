@@ -7,6 +7,8 @@ import re
 import subprocess
 import time
 
+from original_editor_writer_source import inverse_events, inverse_assembly, validate_writer_preservation, EVENTS
+
 ROOT = Path(__file__).resolve().parents[2]
 BASE = "a05088b98844bba30f90b794effb8cf579e2ef08"
 ASSEMBLY = "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorPageModuleAssembly.swift"
@@ -45,10 +47,10 @@ def declaration(source, marker):
 
 
 def preserve(report):
-    action = (ROOT / ACTION).read_text(encoding="utf-8")
-    text = (ROOT / TEXT).read_text(encoding="utf-8")
+    action = inverse_events((ROOT / ACTION).read_text(encoding="utf-8"))
+    text = inverse_events((ROOT / TEXT).read_text(encoding="utf-8"))
     view = (ROOT / VIEW).read_text(encoding="utf-8")
-    assembly = (ROOT / ASSEMBLY).read_text(encoding="utf-8")
+    assembly = inverse_assembly((ROOT / ASSEMBLY).read_text(encoding="utf-8"))
     require(action.split("    // MARK: Actions", 1)[1] == original(ACTION).split("    // MARK: Actions", 1)[1], "An original block action changed")
     require(text.split("    func setText(", 1)[1] == original(TEXT).split("    func setText(", 1)[1], "An original text operation changed")
     require(view.split("    var body:", 1)[1] == original(VIEW).split("    var body:", 1)[1], "Original SwiftUI body changed")
@@ -66,11 +68,11 @@ def preserve(report):
     require(assembly.split("    private func buildViewModel(", 1)[1] == original(ASSEMBLY).split("    private func buildViewModel(", 1)[1],
             "Original downstream editor assembly changed")
     report["source_preservation"] = {
-        "all_original_block_action_methods": "IDENTICAL",
-        "all_original_text_service_methods": "IDENTICAL",
+        "all_original_block_action_methods": "IDENTICAL_AFTER_EXACT_EVENT_ROUTE_INVERSE",
+        "all_original_text_service_methods": "IDENTICAL_AFTER_EXACT_EVENT_ROUTE_INVERSE",
         "original_view_body_and_default_initializer": "IDENTICAL",
-        "original_controller_and_view_model_assembly_except_resolution": "IDENTICAL",
-        "original_downstream_assembly": "IDENTICAL",
+        "original_controller_and_view_model_assembly_except_resolution": "IDENTICAL_AFTER_EXACT_SERVICE_ARGUMENT_INVERSE",
+        "original_downstream_assembly": "IDENTICAL_AFTER_EXACT_SERVICE_ARGUMENT_INVERSE",
     }
 
 
@@ -82,6 +84,7 @@ def projected_sources(output, report):
         ("MiddlewareString", "Modules/Services/Sources/Models/MiddlewareString.swift", None),
         ("TextServiceProtocol", "Modules/Services/Sources/Services/TextService/TextServiceProtocol.swift", None),
         ("TextServiceHandler", TEXT, None),
+        ("EditorLocalEventPublisher", EVENTS, None),
         ("PreparedEditorPageDocument", VALIDATOR, None),
         ("BlockActionServiceDependencies", DEPENDENCIES, None),
         ("BlockActionServiceConstruction", ACTION, "construction"),
@@ -123,13 +126,14 @@ def main():
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     report = {"status": "FAIL", "baseline": BASE, "native": "NOT_RUN", "apple_typecheck": "NOT_RUN",
-              "scope": "Foundation identity checks, original TextServiceHandler forwarding, actual BlockActionService constructor only",
+              "scope": "Original 29 Foundation controls plus 12 typed local-event publication controls; original component method and assembly inverses; actual BlockActionService constructor only",
               "boundary_doubles": ["UIKit/rendering not compiled", "InfoContainer/document value dependencies; immutable DocumentProbe uses the same @unchecked Sendable boundary as original BaseDocument",
                                    "protobuf style/mode/mark boundary",
                                    "event publisher recorder", "six non-text service interfaces", "Factory original-services provider"],
               "not_proven": ["Full original editor isolation", "Anytype UI mounting", "Annotation durable writes", "Otzaria in-process integration"]}
     try:
         preserve(report)
+        writer_sources = validate_writer_preservation(report)
         sources = projected_sources(output, report)
         fixture = ROOT / "Scripts/CI/fixtures/original-editor-boundary.swift"
         report["fixture_sha256"] = digest(fixture.read_bytes())
@@ -141,12 +145,13 @@ def main():
         report["execution"] = run([str(executable)], output, "execution", 30)
         require(report["execution"]["exit_code"] == 0, "Foundation boundary fixture failed")
         rows = json.loads((output / "execution.log").read_text(encoding="utf-8").strip())
-        require(len(rows) == 29 and len({row["name"] for row in rows}) == 29 and all(row["passed"] is True for row in rows),
+        require(len(rows) == 41 and len({row["name"] for row in rows}) == 41 and all(row["passed"] is True for row in rows),
                 "Incomplete original-editor boundary controls")
         report.update(status="PASS", checks=rows, passed=len(rows), failed=0)
         parsed = []
         for relative in [ASSEMBLY, VIEW, ACTION, TEXT, DEPENDENCIES, VALIDATOR,
-                         "AnytypeTests/Markdown/PreparedEditorPageDocumentTests.swift", "AnytypeTests/Markdown/TextServiceHandlerInjectionTests.swift"]:
+                         "AnytypeTests/Markdown/PreparedEditorPageDocumentTests.swift", "AnytypeTests/Markdown/TextServiceHandlerInjectionTests.swift",
+                         "AnytypeTests/Markdown/EditorLocalEventPublisherTests.swift", *writer_sources]:
             item = run([args.swiftc, "-frontend", "-parse", "-swift-version", "5", str(ROOT / relative)],
                        output, "parse-" + str(len(parsed) + 1), 30)
             item["path"] = relative

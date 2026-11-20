@@ -18,6 +18,15 @@ protocol EditorPageModuleAssemblyProtocol: AnyObject {
         showHeader: Bool,
         torahSession: TorahEditorSession?
     ) throws -> EditorPageViewState
+
+    func buildStateModel(
+        data: EditorPageObject,
+        preparedDocument: any BaseDocumentProtocol,
+        services: EditorPageServiceDependencies,
+        output: (any EditorPageModuleOutput)?,
+        showHeader: Bool,
+        torahSession: TorahEditorSession?
+    ) throws -> EditorPageViewState
 }
 
 @MainActor
@@ -39,6 +48,7 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             output: output,
             showHeader: showHeader,
             torahSession: torahSession,
+            services: nil,
             resolveDocument: {
                 documentService.document(
                     objectId: data.objectId,
@@ -62,6 +72,26 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             output: output,
             showHeader: showHeader,
             torahSession: torahSession,
+            services: nil,
+            resolveDocument: { preparedDocument }
+        )
+    }
+
+    func buildStateModel(
+        data: EditorPageObject,
+        preparedDocument: any BaseDocumentProtocol,
+        services: EditorPageServiceDependencies,
+        output: (any EditorPageModuleOutput)?,
+        showHeader: Bool,
+        torahSession: TorahEditorSession?
+    ) throws -> EditorPageViewState {
+        try PreparedEditorPageDocument.validate(data: data, document: preparedDocument)
+        return assembleStateModel(
+            data: data,
+            output: output,
+            showHeader: showHeader,
+            torahSession: torahSession,
+            services: services,
             resolveDocument: { preparedDocument }
         )
     }
@@ -71,6 +101,7 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
         output: (any EditorPageModuleOutput)?,
         showHeader: Bool,
         torahSession: TorahEditorSession?,
+        services: EditorPageServiceDependencies?,
         resolveDocument: @MainActor () -> any BaseDocumentProtocol
     ) -> EditorPageViewState {
         let simpleTableMenuViewModel = SimpleTableMenuViewModel()
@@ -93,7 +124,8 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
         let router = EditorRouter(
             viewController: controller,
             document: document,
-            output: output
+            output: output,
+            dependencies: services?.router ?? .original()
         )
 
         let viewModel = buildViewModel(
@@ -112,7 +144,8 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
                 headerHint: data.headerHint
             ),
             torahSession: torahSession,
-            output: output
+            output: output,
+            services: services
         )
 
         bottomNavigationManager.output = viewModel
@@ -133,7 +166,8 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
         bottomNavigationManager: some EditorBottomNavigationManagerProtocol,
         configuration: EditorPageViewModelConfiguration,
         torahSession: TorahEditorSession?,
-        output: (any EditorPageModuleOutput)?
+        output: (any EditorPageModuleOutput)?,
+        services: EditorPageServiceDependencies?
     ) -> EditorPageViewModel {
         let modelsHolder = EditorMainItemModelsHolder()
         let markupChanger = BlockMarkupChanger()
@@ -156,7 +190,9 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
         let blockActionService = BlockActionService(
             documentId: document.objectId,
             modelsHolder: modelsHolder,
-            cursorManager: cursorManager
+            cursorManager: cursorManager,
+            dependencies: services?.blockActionService ?? .original(),
+            localEvents: services?.localEvents ?? OriginalEditorLocalEventPublisher()
         )
         let keyboardHandler = KeyboardActionHandler(
             documentId: document.objectId,
@@ -165,13 +201,16 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             toggleStorage: ToggleStorage.shared,
             container: document.infoContainer,
             modelsHolder: modelsHolder,
-            editorCollectionController: .init(viewInput: viewInput)
+            editorCollectionController: .init(viewInput: viewInput),
+            dependencies: services?.keyboardHandler ?? .original()
         )
         
         let actionHandler = BlockActionHandler(
             document: document,
             markupChanger: markupChanger,
-            service: blockActionService
+            service: blockActionService,
+            dependencies: services?.blockActionHandler ?? .original(),
+            localEvents: services?.localEvents ?? OriginalEditorLocalEventPublisher()
         )
         
         let blocksStateManager = EditorPageBlocksStateManager(
@@ -183,7 +222,8 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             initialEditingState: document.mode.isHandling ? .editing : .readonly,
             viewInput: viewInput,
             bottomNavigationManager: bottomNavigationManager,
-            torahSession: torahSession
+            torahSession: torahSession,
+            dependencies: services?.blocksStateManager ?? .original()
         )
  
         let accessoryState = AccessoryViewBuilder.accessoryState(
@@ -204,7 +244,8 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             document: document,
             targetObjectId: document.objectId,
             configuration: configuration,
-            output: output
+            output: output,
+            dependencies: services?.header ?? .original()
         )
         setupHeaderModelActions(headerModel: headerModel, using: router)
         
@@ -219,7 +260,8 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             mainEditorSelectionManager: blocksStateManager,
             responderScrollViewHelper: responderScrollViewHelper,
             accessoryStateManager: accessoryState.0,
-            moduleOutput: output
+            moduleOutput: output,
+            dependencies: services?.simpleTable ?? .original()
         )
         
         let mediaBlockActionsProvider = MediaBlockActionsProvider(
@@ -232,7 +274,8 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             actionHandler: actionHandler,
             router: router,
             cursorManager: cursorManager,
-            mediaBlockActionsProvider: mediaBlockActionsProvider
+            mediaBlockActionsProvider: mediaBlockActionsProvider,
+            dependencies: services?.slashMenu ?? .original()
         )
         
         let blocksConverter = BlockViewModelBuilder(
@@ -255,7 +298,8 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             mediaBlockActionsProvider: mediaBlockActionsProvider,
             editorPageBlocksStateManager: blocksStateManager,
             torahSession: torahSession,
-            output: output
+            output: output,
+            dependencies: services?.blockBuilder ?? .original()
         )
         
         blocksStateManager.blocksSelectionOverlayViewModel = blocksSelectionOverlayViewModel
@@ -278,7 +322,8 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             configuration: configuration,
             blockActionService: blockActionService,
             torahSession: torahSession,
-            output: output
+            output: output,
+            dependencies: services?.viewModel ?? .original()
         )
 
         accessoryState.1.onTypeSelected = { [weak viewModel] typeSelection in

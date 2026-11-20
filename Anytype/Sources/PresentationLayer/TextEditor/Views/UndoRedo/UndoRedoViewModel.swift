@@ -6,18 +6,18 @@ import Services
 @Observable
 final class UndoRedoViewModel {
 
-    @ObservationIgnored
-    @Injected(\.objectActionsService)
-    private var objectActionsService: any ObjectActionsServiceProtocol
+    private let objectActionsService: any ObjectActionsServiceProtocol
 
     private let objectId: String
 
     var toastData: ToastBarData?
     
     init(
-        objectId: String
+        objectId: String,
+        objectActionsService: any ObjectActionsServiceProtocol = Container.shared.objectActionsService()
     ) {
         self.objectId = objectId
+        self.objectActionsService = objectActionsService
     }
 
     func undo() async throws {

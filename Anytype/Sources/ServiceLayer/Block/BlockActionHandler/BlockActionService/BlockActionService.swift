@@ -17,6 +17,7 @@ final class BlockActionService: BlockActionServiceProtocol {
     private let fileService: any FileActionsServiceProtocol
     private let objectTypeProvider: any ObjectTypeProviderProtocol
     private let keyboardInsertedBlocksStorage: any KeyboardInsertedBlocksStorageProtocol
+    private let localEvents: any EditorLocalEventPublishing
 
     private weak var modelsHolder: EditorMainItemModelsHolder?
 
@@ -24,7 +25,8 @@ final class BlockActionService: BlockActionServiceProtocol {
         documentId: String,
         modelsHolder: EditorMainItemModelsHolder,
         cursorManager: EditorCursorManager,
-        dependencies: BlockActionServiceDependencies = .original()
+        dependencies: BlockActionServiceDependencies = .original(),
+        localEvents: any EditorLocalEventPublishing = OriginalEditorLocalEventPublisher()
     ) {
         self.documentId = documentId
         self.modelsHolder = modelsHolder
@@ -36,6 +38,7 @@ final class BlockActionService: BlockActionServiceProtocol {
         self.fileService = dependencies.fileService
         self.objectTypeProvider = dependencies.objectTypeProvider
         self.keyboardInsertedBlocksStorage = dependencies.keyboardInsertedBlocksStorage
+        self.localEvents = localEvents
     }
 
     // MARK: Actions
@@ -91,10 +94,7 @@ final class BlockActionService: BlockActionServiceProtocol {
         cursorManager.focus(at: blockId, position: .beginning)
         cursorManager.blockFocus = BlockFocus(id: blockId, position: .beginning)
 
-        await EventsBunch(
-            contextId: documentId,
-            localEvents: [.general]
-        ).send()
+        await localEvents.refresh(contextId: documentId)
     }
 
     func duplicate(blockId: String) {

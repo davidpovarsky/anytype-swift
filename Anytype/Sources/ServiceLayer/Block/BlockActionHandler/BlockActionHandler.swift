@@ -12,29 +12,33 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     private let markupChanger: any BlockMarkupChangerProtocol
     
     
-    @Injected(\.blockService)
-    private var blockService: any BlockServiceProtocol
-    @Injected(\.blockTableService)
-    private var blockTableService: any BlockTableServiceProtocol
-    @Injected(\.fileActionsService)
-    private var fileService: any FileActionsServiceProtocol
-    @Injected(\.objectActionsService)
-    private var objectService: any ObjectActionsServiceProtocol
-    @Injected(\.pasteboardBlockService)
-    private var pasteboardBlockService: any PasteboardBlockServiceProtocol
-    @Injected(\.bookmarkService)
-    private var bookmarkService: any BookmarkServiceProtocol
-    @Injected(\.objectTypeProvider)
-    private var objectTypeProvider: any ObjectTypeProviderProtocol
+    private let blockService: any BlockServiceProtocol
+    private let blockTableService: any BlockTableServiceProtocol
+    private let fileService: any FileActionsServiceProtocol
+    private let objectService: any ObjectActionsServiceProtocol
+    private let pasteboardBlockService: any PasteboardBlockServiceProtocol
+    private let bookmarkService: any BookmarkServiceProtocol
+    private let objectTypeProvider: any ObjectTypeProviderProtocol
+    private let localEvents: any EditorLocalEventPublishing
     
     init(
         document: some BaseDocumentProtocol,
         markupChanger: some BlockMarkupChangerProtocol,
-        service: some BlockActionServiceProtocol
+        service: some BlockActionServiceProtocol,
+        dependencies: BlockActionHandlerDependencies = .original(),
+        localEvents: any EditorLocalEventPublishing = OriginalEditorLocalEventPublisher()
     ) {
         self.document = document
         self.markupChanger = markupChanger
         self.service = service
+        self.blockService = dependencies.blockService
+        self.blockTableService = dependencies.blockTableService
+        self.fileService = dependencies.fileService
+        self.objectService = dependencies.objectService
+        self.pasteboardBlockService = dependencies.pasteboardBlockService
+        self.bookmarkService = dependencies.bookmarkService
+        self.objectTypeProvider = dependencies.objectTypeProvider
+        self.localEvents = localEvents
     }
 
     // MARK: - Service proxy
@@ -114,8 +118,7 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     
     func toggle(blockId: String) {
         Task {
-            await EventsBunch(contextId: document.objectId, localEvents: [.setToggled(blockId: blockId)])
-                .send()
+            await localEvents.setToggled(contextId: document.objectId, blockId: blockId)
         }
     }
     
@@ -263,10 +266,7 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
             return
         }
 
-        await EventsBunch(
-            contextId: document.objectId,
-            localEvents: [.setText(blockId: blockId, text: middlewareString)]
-        ).send()
+        await localEvents.setText(contextId: document.objectId, blockId: blockId, text: middlewareString)
 
 
         try await service.setText(contextId: document.objectId, blockId: blockId, middlewareString: middlewareString)
@@ -276,10 +276,7 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     func uploadMediaFile(uploadingSource: FileUploadingSource, type: MediaPickerContentType, blockId: String, route: UploadMediaRoute) {
         
         Task {
-            await EventsBunch(
-                contextId: document.objectId,
-                localEvents: [.setLoadingState(blockId: blockId)]
-            ).send()
+            await localEvents.setLoadingState(contextId: document.objectId, blockId: blockId)
             
             try await fileService.uploadDataAt(source: uploadingSource, contextID: document.objectId, blockID: blockId)
         }
@@ -293,10 +290,7 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
                 return
             }
             
-            await EventsBunch(
-                contextId: document.objectId,
-                localEvents: [.setLoadingState(blockId: blockId)]
-            ).send()
+            await localEvents.setLoadingState(contextId: document.objectId, blockId: blockId)
             
             try await fileService.uploadDataAt(data: fileData, contextID: document.objectId, blockID: blockId)
         }
@@ -308,10 +302,7 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
         AnytypeAnalytics.instance().logUploadMedia(type: .file, route: route)
         
         Task {
-            await EventsBunch(
-                contextId: document.objectId,
-                localEvents: [.setLoadingState(blockId: blockId)]
-            ).send()
+            await localEvents.setLoadingState(contextId: document.objectId, blockId: blockId)
             
             try await upload(blockId: blockId, filePath: localPath)
         }

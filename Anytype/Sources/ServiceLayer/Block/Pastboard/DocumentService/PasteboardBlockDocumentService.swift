@@ -6,7 +6,11 @@ import Combine
 // Convenience wrapper of PasteboardBlockService
 final class PasteboardBlockDocumentService: PasteboardBlockDocumentServiceProtocol, Sendable {
     
-    private let service: any PasteboardBlockServiceProtocol = Container.shared.pasteboardBlockService()
+    private let service: any PasteboardBlockServiceProtocol
+
+    init(service: any PasteboardBlockServiceProtocol = Container.shared.pasteboardBlockService()) {
+        self.service = service
+    }
     
     var hasValidURL: Bool {
         service.hasValidURL

@@ -1,11 +1,15 @@
 import SwiftUI
 import AnytypeCore
+import Services
 
 struct UndoRedoView: View {
     @State private var model: UndoRedoViewModel
 
-    init(objectId: String) {
-        self._model = State(initialValue: UndoRedoViewModel(objectId: objectId))
+    init(
+        objectId: String,
+        objectActionsService: any ObjectActionsServiceProtocol = Container.shared.objectActionsService()
+    ) {
+        self._model = State(initialValue: UndoRedoViewModel(objectId: objectId, objectActionsService: objectActionsService))
     }
     
     var body: some View {

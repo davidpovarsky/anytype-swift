@@ -28,26 +28,16 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
     let blockActionService: any BlockActionServiceProtocol
     weak var torahSession: TorahEditorSession?
     
-    @Injected(\.objectActionsService)
-    var objectActionsService: any ObjectActionsServiceProtocol
-    @Injected(\.objectTypeProvider)
-    var objectTypeProvider: any ObjectTypeProviderProtocol
-    @Injected(\.searchService)
-    private var searchService: any SearchServiceProtocol
-    @Injected(\.templatesSubscription)
-    private var templatesSubscriptionService: any TemplatesSubscriptionServiceProtocol
-    @Injected(\.accountManager)
-    private var accountManager: any AccountManagerProtocol
-    @Injected(\.publishingService)
-    private var publishingService: any PublishingServiceProtocol
-    @Injected(\.participantsStorage)
-    private var participantStorage: any ParticipantsStorageProtocol
-    @Injected(\.publishedUrlBuilder)
-    private var publishedUrlBuilder: any PublishedUrlBuilderProtocol
-    @Injected(\.keyboardInsertedBlocksStorage)
-    private var keyboardInsertedBlocksStorage: any KeyboardInsertedBlocksStorageProtocol
-    @Injected(\.blockService)
-    private var blockService: any BlockServiceProtocol
+    let objectActionsService: any ObjectActionsServiceProtocol
+    let objectTypeProvider: any ObjectTypeProviderProtocol
+    private let searchService: any SearchServiceProtocol
+    private let templatesSubscriptionService: any TemplatesSubscriptionServiceProtocol
+    private let accountManager: any AccountManagerProtocol
+    private let publishingService: any PublishingServiceProtocol
+    private let participantStorage: any ParticipantsStorageProtocol
+    private let publishedUrlBuilder: any PublishedUrlBuilderProtocol
+    private let keyboardInsertedBlocksStorage: any KeyboardInsertedBlocksStorageProtocol
+    private let blockService: any BlockServiceProtocol
 
 
     private let cursorManager: EditorCursorManager
@@ -87,7 +77,8 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
         configuration: EditorPageViewModelConfiguration,
         blockActionService: some BlockActionServiceProtocol,
         torahSession: TorahEditorSession?,
-        output: (any EditorPageModuleOutput)?
+        output: (any EditorPageModuleOutput)?,
+        dependencies: EditorPageViewModelDependencies = .original()
     ) {
         self.viewInput = viewInput
         self.document = document
@@ -104,6 +95,16 @@ final class EditorPageViewModel: EditorPageViewModelProtocol, EditorBottomNaviga
         self.torahSession = torahSession
         self.output = output
         self.actionHandler = actionHandler
+        self.objectActionsService = dependencies.objectActionsService
+        self.objectTypeProvider = dependencies.objectTypeProvider
+        self.searchService = dependencies.searchService
+        self.templatesSubscriptionService = dependencies.templatesSubscriptionService
+        self.accountManager = dependencies.accountManager
+        self.publishingService = dependencies.publishingService
+        self.participantStorage = dependencies.participantStorage
+        self.publishedUrlBuilder = dependencies.publishedUrlBuilder
+        self.keyboardInsertedBlocksStorage = dependencies.keyboardInsertedBlocksStorage
+        self.blockService = dependencies.blockService
 
         torahSession?.installInsertionEditingPolicy { [weak document] in
             guard let document else { return false }

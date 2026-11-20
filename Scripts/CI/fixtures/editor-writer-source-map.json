@@ -1,0 +1,266 @@
+{
+  "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandler.swift": {
+    "tail_sha256": "0f5622ddd04cbffab2b834540901772bb8825a60a151270fb8bae9026f91e83f",
+    "bundle": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandlerDependencies.swift",
+    "fields": [
+      [
+        "blockService",
+        "blockService",
+        "BlockServiceProtocol"
+      ],
+      [
+        "blockTableService",
+        "blockTableService",
+        "BlockTableServiceProtocol"
+      ],
+      [
+        "fileService",
+        "fileActionsService",
+        "FileActionsServiceProtocol"
+      ],
+      [
+        "objectService",
+        "objectActionsService",
+        "ObjectActionsServiceProtocol"
+      ],
+      [
+        "pasteboardBlockService",
+        "pasteboardBlockService",
+        "PasteboardBlockServiceProtocol"
+      ],
+      [
+        "bookmarkService",
+        "bookmarkService",
+        "BookmarkServiceProtocol"
+      ],
+      [
+        "objectTypeProvider",
+        "objectTypeProvider",
+        "ObjectTypeProviderProtocol"
+      ]
+    ]
+  },
+  "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/KeyboardActionHandler/KeyboardActionHandler.swift": {
+    "tail_sha256": "2647d3911708a0cb4269d250a040395d46ddc2299c84410f47c1a44a76c9d7a3",
+    "bundle": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/KeyboardActionHandler/KeyboardActionHandlerDependencies.swift",
+    "fields": [
+      [
+        "blockService",
+        "blockService",
+        "BlockServiceProtocol"
+      ],
+      [
+        "keyboardInsertedBlocksStorage",
+        "keyboardInsertedBlocksStorage",
+        "KeyboardInsertedBlocksStorageProtocol"
+      ]
+    ]
+  },
+  "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift": {
+    "tail_sha256": "a6f2eda82da31dd5e0b8a01de7a95b24ebe8f742ba6596252caac667a2f80349",
+    "bundle": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModelDependencies.swift",
+    "fields": [
+      [
+        "objectActionsService",
+        "objectActionsService",
+        "ObjectActionsServiceProtocol"
+      ],
+      [
+        "objectTypeProvider",
+        "objectTypeProvider",
+        "ObjectTypeProviderProtocol"
+      ],
+      [
+        "searchService",
+        "searchService",
+        "SearchServiceProtocol"
+      ],
+      [
+        "templatesSubscriptionService",
+        "templatesSubscription",
+        "TemplatesSubscriptionServiceProtocol"
+      ],
+      [
+        "accountManager",
+        "accountManager",
+        "AccountManagerProtocol"
+      ],
+      [
+        "publishingService",
+        "publishingService",
+        "PublishingServiceProtocol"
+      ],
+      [
+        "participantStorage",
+        "participantsStorage",
+        "ParticipantsStorageProtocol"
+      ],
+      [
+        "publishedUrlBuilder",
+        "publishedUrlBuilder",
+        "PublishedUrlBuilderProtocol"
+      ],
+      [
+        "keyboardInsertedBlocksStorage",
+        "keyboardInsertedBlocksStorage",
+        "KeyboardInsertedBlocksStorageProtocol"
+      ],
+      [
+        "blockService",
+        "blockService",
+        "BlockServiceProtocol"
+      ]
+    ]
+  },
+  "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageBlocksStateManager.swift": {
+    "tail_sha256": "b2b4902e97ba3815f3957b9b92c2b9650a8c7e2176c4d9c6199ad86f0ba7f296",
+    "bundle": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageBlocksStateManagerDependencies.swift",
+    "fields": [
+      [
+        "blockService",
+        "blockService",
+        "BlockServiceProtocol"
+      ],
+      [
+        "pasteboardService",
+        "pasteboardBlockDocumentService",
+        "PasteboardBlockDocumentServiceProtocol"
+      ],
+      [
+        "documentsProvider",
+        "documentsProvider",
+        "DocumentsProviderProtocol"
+      ],
+      [
+        "objectActionsService",
+        "objectActionsService",
+        "ObjectActionsServiceProtocol"
+      ],
+      [
+        "toastPresenter",
+        "legacyToastPresenter",
+        "ToastPresenterProtocol"
+      ]
+    ]
+  },
+  "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilder.swift": {
+    "tail_sha256": "ab0317cb0882933774417c892db3b093ab8d2801b0338fc93618eed936411eb1",
+    "bundle": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilderDependencies.swift",
+    "fields": [
+      [
+        "tableService",
+        "blockTableService",
+        "BlockTableServiceProtocol"
+      ],
+      [
+        "detailsService",
+        "detailsService",
+        "DetailsServiceProtocol"
+      ],
+      [
+        "audioSessionService",
+        "audioSessionService",
+        "AudioSessionServiceProtocol"
+      ],
+      [
+        "objectTypeProvider",
+        "objectTypeProvider",
+        "ObjectTypeProviderProtocol"
+      ],
+      [
+        "pasteboardService",
+        "pasteboardBlockDocumentService",
+        "PasteboardBlockDocumentServiceProtocol"
+      ],
+      [
+        "blockService",
+        "blockService",
+        "BlockServiceProtocol"
+      ]
+    ]
+  },
+  "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/SimpleTableDependenciesBuilder.swift": {
+    "tail_sha256": "df5ca061b75dd8523f6ebb9676c769c9868aec44b6036ecb2a1e66d55a109d4c",
+    "bundle": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/SimpleTableServiceDependencies.swift",
+    "fields": [
+      [
+        "tableService",
+        "blockTableService",
+        "BlockTableServiceProtocol"
+      ],
+      [
+        "pasteboardService",
+        "pasteboardBlockDocumentService",
+        "PasteboardBlockDocumentServiceProtocol"
+      ],
+      [
+        "defaultObjectService",
+        "defaultObjectCreationService",
+        "DefaultObjectCreationServiceProtocol"
+      ],
+      [
+        "typesService",
+        "typesService",
+        "TypesServiceProtocol"
+      ]
+    ]
+  },
+  "Anytype/Sources/PresentationLayer/TextEditor/AccessoryView/SlashMenu/Handler/SlashMenuActionHandler.swift": {
+    "tail_sha256": "29740846da6afcbe10d4b10af08f40f8e4512787400a7ec5d5860afb7513d30f",
+    "bundle": "Anytype/Sources/PresentationLayer/TextEditor/AccessoryView/SlashMenu/Handler/SlashMenuActionHandlerDependencies.swift",
+    "fields": [
+      [
+        "pasteboardService",
+        "pasteboardBlockDocumentService",
+        "PasteboardBlockDocumentServiceProtocol"
+      ],
+      [
+        "objectDateByTimestampService",
+        "objectDateByTimestampService",
+        "ObjectDateByTimestampServiceProtocol"
+      ]
+    ]
+  },
+  "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Header/Entities/ObjectHeaderViewModel.swift": {
+    "tail_sha256": "1725c68728913b6696e7c54a25858118e6dace797dd99ec3804466a98c6ceaa1",
+    "bundle": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Header/Entities/ObjectHeaderViewModelDependencies.swift",
+    "fields": [
+      [
+        "objectHeaderUploadingService",
+        "objectHeaderUploadingService",
+        "ObjectHeaderUploadingServiceProtocol"
+      ]
+    ]
+  },
+  "Anytype/Sources/PresentationLayer/TextEditor/Routing/Editor/EditorRouter.swift": {
+    "tail_sha256": "656c0c1565936079b7b560eade7838d57c190ab9355621fa54bf239c60e16b65",
+    "bundle": "Anytype/Sources/PresentationLayer/TextEditor/Routing/Editor/EditorRouterDependencies.swift",
+    "fields": [
+      [
+        "navigationContext",
+        "legacyNavigationContext",
+        "NavigationContextProtocol"
+      ],
+      [
+        "templatesCoordinator",
+        "legacyTemplatesCoordinator",
+        "TemplatesCoordinatorProtocol"
+      ],
+      [
+        "setObjectCreationSettingsCoordinator",
+        "legacySetObjectCreationSettingsCoordinator",
+        "SetObjectCreationSettingsCoordinatorProtocol"
+      ],
+      [
+        "toastPresenter",
+        "legacyToastPresenter",
+        "ToastPresenterProtocol"
+      ],
+      [
+        "templateService",
+        "templatesService",
+        "TemplatesServiceProtocol"
+      ]
+    ]
+  }
+}

@@ -70,19 +70,14 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
     // We need to store interspace between root and all childs to disable cursor moving between those indexPaths
     private var movingBlocksWithChildsIndexPaths = [[IndexPath]]()
     
-    @Injected(\.blockService)
-    private var blockService: any BlockServiceProtocol
-    @Injected(\.pasteboardBlockDocumentService)
-    private var pasteboardService: any PasteboardBlockDocumentServiceProtocol
-    @Injected(\.documentsProvider)
-    private var documentsProvider: any DocumentsProviderProtocol
-    @Injected(\.objectActionsService)
-    private var objectActionsService: any ObjectActionsServiceProtocol
+    private let blockService: any BlockServiceProtocol
+    private let pasteboardService: any PasteboardBlockDocumentServiceProtocol
+    private let documentsProvider: any DocumentsProviderProtocol
+    private let objectActionsService: any ObjectActionsServiceProtocol
 
     private let document: any BaseDocumentProtocol
     private let modelsHolder: EditorMainItemModelsHolder
-    @Injected(\.legacyToastPresenter)
-    private var toastPresenter: any ToastPresenterProtocol
+    private let toastPresenter: any ToastPresenterProtocol
     private let actionHandler: any BlockActionHandlerProtocol
     private let router: any EditorRouterProtocol
     private let bottomNavigationManager: any EditorBottomNavigationManagerProtocol
@@ -103,7 +98,8 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
         initialEditingState: EditorEditingState,
         viewInput: some EditorPageViewInput,
         bottomNavigationManager: some EditorBottomNavigationManagerProtocol,
-        torahSession: TorahEditorSession?
+        torahSession: TorahEditorSession?,
+        dependencies: EditorPageBlocksStateManagerDependencies = .original()
     ) {
         self.document = document
         self.modelsHolder = modelsHolder
@@ -114,6 +110,11 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
         self.viewInput = viewInput
         self.bottomNavigationManager = bottomNavigationManager
         self.torahSession = torahSession
+        self.blockService = dependencies.blockService
+        self.pasteboardService = dependencies.pasteboardService
+        self.documentsProvider = dependencies.documentsProvider
+        self.objectActionsService = dependencies.objectActionsService
+        self.toastPresenter = dependencies.toastPresenter
         
         setupEditingHandlers()
     }

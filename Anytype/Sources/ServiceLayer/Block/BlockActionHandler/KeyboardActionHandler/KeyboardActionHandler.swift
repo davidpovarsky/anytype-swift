@@ -23,10 +23,8 @@ final class KeyboardActionHandler: KeyboardActionHandlerProtocol {
     private weak var modelsHolder: EditorMainItemModelsHolder?
     private let editorCollectionController: EditorBlockCollectionController
     
-    @Injected(\.blockService)
-    private var blockService: any BlockServiceProtocol
-    @Injected(\.keyboardInsertedBlocksStorage)
-    private var keyboardInsertedBlocksStorage: any KeyboardInsertedBlocksStorageProtocol
+    private let blockService: any BlockServiceProtocol
+    private let keyboardInsertedBlocksStorage: any KeyboardInsertedBlocksStorageProtocol
 
 
     init(
@@ -36,7 +34,8 @@ final class KeyboardActionHandler: KeyboardActionHandlerProtocol {
         toggleStorage: ToggleStorage,
         container: some InfoContainerProtocol,
         modelsHolder: EditorMainItemModelsHolder,
-        editorCollectionController: EditorBlockCollectionController
+        editorCollectionController: EditorBlockCollectionController,
+        dependencies: KeyboardActionHandlerDependencies = .original()
     ) {
         self.documentId = documentId
         self.spaceId = spaceId
@@ -45,6 +44,8 @@ final class KeyboardActionHandler: KeyboardActionHandlerProtocol {
         self.container = container
         self.modelsHolder = modelsHolder
         self.editorCollectionController = editorCollectionController
+        self.blockService = dependencies.blockService
+        self.keyboardInsertedBlocksStorage = dependencies.keyboardInsertedBlocksStorage
     }
 
     func handle(

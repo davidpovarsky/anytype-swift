@@ -108,22 +108,57 @@ actor TextProbe: TextServiceProtocol {
         try record(.init(operation: "icon", context: contextId, block: blockId, payload: [imageObjectId, emojiUnicode]))
     }
 }
-enum LocalEvent: Sendable { case setStyle(blockId: String) }
+enum LocalEvent: Sendable {
+    case general
+    case setStyle(blockId: String)
+    case setToggled(blockId: String)
+    case setText(blockId: String, text: MiddlewareString)
+    case setLoadingState(blockId: String)
+}
 actor EventProbe {
     static let shared = EventProbe()
     private var events: [[String]] = []
+    private var detailed: [TextCall] = []
     func record(_ context: String, _ block: String) { events.append([context, block]) }
+    func recordDetailed(_ call: TextCall) { detailed.append(call) }
     func snapshot() -> [[String]] { events }
+    func detailedSnapshot() -> [TextCall] { detailed }
 }
 struct EventsBunch: Sendable {
     let contextId: String
     let localEvents: [LocalEvent]
     func send() async {
         for event in localEvents {
+            let call: TextCall
             switch event {
-            case .setStyle(let block): await EventProbe.shared.record(contextId, block)
+            case .general: call = .init(operation: "general", context: contextId, block: "")
+            case .setStyle(let block):
+                await EventProbe.shared.record(contextId, block)
+                call = .init(operation: "style", context: contextId, block: block)
+            case .setToggled(let block): call = .init(operation: "toggle", context: contextId, block: block)
+            case .setText(let block, let text): call = .init(operation: "text", context: contextId, block: block, body: text)
+            case .setLoadingState(let block): call = .init(operation: "loading", context: contextId, block: block)
             }
+            await EventProbe.shared.recordDetailed(call)
         }
+    }
+}
+actor LocalPublisherProbe: EditorLocalEventPublishing {
+    private var calls: [TextCall] = []
+    let service: TextProbe?
+    init(service: TextProbe? = nil) { self.service = service }
+    func snapshot() -> [TextCall] { calls }
+    func refresh(contextId: String) { calls.append(.init(operation: "general", context: contextId, block: "")) }
+    func setStyle(contextId: String, blockId: String) async {
+        let completed = await service?.snapshot().map(\.operation) ?? []
+        calls.append(.init(operation: "style", context: contextId, block: blockId, payload: completed))
+    }
+    func setToggled(contextId: String, blockId: String) { calls.append(.init(operation: "toggle", context: contextId, block: blockId)) }
+    func setText(contextId: String, blockId: String, text: MiddlewareString) {
+        calls.append(.init(operation: "text", context: contextId, block: blockId, body: text))
+    }
+    func setLoadingState(contextId: String, blockId: String) {
+        calls.append(.init(operation: "loading", context: contextId, block: blockId))
     }
 }
 protocol ObjectActionsServiceProtocol: AnyObject, Sendable {}
@@ -287,6 +322,59 @@ enum BoundaryFixtureError: Error { case failed }
                       && nativeDependencies.objectTypeProvider === Container.shared.types
                       && nativeDependencies.keyboardInsertedBlocksStorage === Container.shared.keyboard,
                       "default_deps_original")
+        let isolatedService = TextProbe()
+        let isolatedEvents = LocalPublisherProbe(service: isolatedService)
+        let isolatedHandler = TextServiceHandler(textService: isolatedService, localEvents: isolatedEvents)
+        let globalBeforeInjected = await EventProbe.shared.snapshot()
+        try await isolatedHandler.setStyle(contextId: "owned-one", blockId: "same-block", style: .quote)
+        let isolatedCalls = await isolatedEvents.snapshot()
+        result.expect(isolatedCalls.count == 1 && isolatedCalls[0].context == "owned-one"
+                      && isolatedCalls[0].block == "same-block", "injected_style_event_context_identity")
+        result.expect(isolatedCalls.first?.payload == ["style"], "injected_style_after_completed_service")
+        result.expect(await EventProbe.shared.snapshot() == globalBeforeInjected, "injected_events_no_global_fallback")
+        let failureEvents = LocalPublisherProbe()
+        var injectedFailure = false
+        do {
+            try await TextServiceHandler(textService: TextProbe(failure: .deliberate), localEvents: failureEvents)
+                .setStyle(contextId: "owned-failed", blockId: "same-block", style: .text)
+        } catch { injectedFailure = (error as? TextProbeFailure) == .deliberate }
+        let failedEventCalls = await failureEvents.snapshot()
+        result.expect(injectedFailure && failedEventCalls.isEmpty, "injected_style_failure_no_event")
+        var injectedCancellation = false
+        do {
+            try await TextServiceHandler(textService: TextProbe(failure: .cancel), localEvents: failureEvents)
+                .setStyle(contextId: "owned-cancelled", blockId: "same-block", style: .text)
+        } catch { injectedCancellation = error is CancellationError }
+        let cancelledEventCalls = await failureEvents.snapshot()
+        result.expect(injectedCancellation && cancelledEventCalls.isEmpty, "injected_style_cancellation_no_event")
+        _ = try await isolatedHandler.split(contextId: "owned-one", blockId: "same-block",
+            range: range, style: .quote, mode: .fixture)
+        result.expect(await isolatedEvents.snapshot().count == 1, "injected_split_no_early_event")
+        let otherEvents = LocalPublisherProbe()
+        try await TextServiceHandler(textService: TextProbe(), localEvents: otherEvents)
+            .setStyle(contextId: "owned-two", blockId: "same-block", style: .text)
+        let firstPublished = await isolatedEvents.snapshot(), secondPublished = await otherEvents.snapshot()
+        result.expect(firstPublished.count == 1 && firstPublished[0].context == "owned-one"
+                      && secondPublished.count == 1 && secondPublished[0].context == "owned-two",
+                      "two_event_publishers_separate")
+        let originalPublisher = OriginalEditorLocalEventPublisher()
+        await originalPublisher.refresh(contextId: "native-events")
+        await originalPublisher.setStyle(contextId: "native-events", blockId: "style-block")
+        await originalPublisher.setToggled(contextId: "native-events", blockId: "toggle-block")
+        await originalPublisher.setText(contextId: "native-events", blockId: "text-block", text: body)
+        await originalPublisher.setLoadingState(contextId: "native-events", blockId: "loading-block")
+        let published = await EventProbe.shared.detailedSnapshot().filter { $0.context == "native-events" }
+        result.expect(published.count == 5 && published[0].operation == "general" && published[0].block == "",
+                      "original_refresh_event_mapping")
+        result.expect(published.count == 5 && published[1].operation == "style" && published[1].block == "style-block",
+                      "original_style_event_mapping")
+        result.expect(published.count == 5 && published[2].operation == "toggle" && published[2].block == "toggle-block",
+                      "original_toggle_event_mapping")
+        result.expect(published.count == 5 && published[3].operation == "text" && published[3].block == "text-block"
+                      && published[3].body?.text == body.text && published[3].body?.marks == body.marks,
+                      "original_text_event_body_marks")
+        result.expect(published.count == 5 && published[4].operation == "loading" && published[4].block == "loading-block",
+                      "original_loading_event_mapping")
         let data = try JSONEncoder().encode(result.checks)
         print(String(decoding: data, as: UTF8.self))
         if result.checks.contains(where: { !$0.passed }) { throw BoundaryFixtureError.failed }

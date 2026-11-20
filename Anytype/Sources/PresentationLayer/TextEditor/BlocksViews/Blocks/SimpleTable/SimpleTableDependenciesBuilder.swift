@@ -20,14 +20,10 @@ final class SimpleTableDependenciesBuilder {
     private let accessoryStateManager: any AccessoryViewStateManager
     private weak var moduleOutput: (any EditorPageModuleOutput)?
     
-    @Injected(\.blockTableService)
-    private var tableService: any BlockTableServiceProtocol
-    @Injected(\.pasteboardBlockDocumentService)
-    private var pasteboardService: any PasteboardBlockDocumentServiceProtocol
-    @Injected(\.defaultObjectCreationService)
-    private var defaultObjectService: any DefaultObjectCreationServiceProtocol
-    @Injected(\.typesService)
-    private var typesService: any TypesServiceProtocol
+    private let tableService: any BlockTableServiceProtocol
+    private let pasteboardService: any PasteboardBlockDocumentServiceProtocol
+    private let defaultObjectService: any DefaultObjectCreationServiceProtocol
+    private let typesService: any TypesServiceProtocol
     
     weak var mainEditorSelectionManager: (any SimpleTableSelectionHandler)?
     
@@ -40,7 +36,8 @@ final class SimpleTableDependenciesBuilder {
         mainEditorSelectionManager: (any SimpleTableSelectionHandler)?,
         responderScrollViewHelper: ResponderScrollViewHelper,
         accessoryStateManager: some AccessoryViewStateManager,
-        moduleOutput: (any EditorPageModuleOutput)?
+        moduleOutput: (any EditorPageModuleOutput)?,
+        dependencies: SimpleTableServiceDependencies = .original()
     ) {
         self.document = document
         self.router = router
@@ -51,6 +48,10 @@ final class SimpleTableDependenciesBuilder {
         self.responderScrollViewHelper = responderScrollViewHelper
         self.accessoryStateManager = accessoryStateManager
         self.moduleOutput = moduleOutput
+        self.tableService = dependencies.tableService
+        self.pasteboardService = dependencies.pasteboardService
+        self.defaultObjectService = dependencies.defaultObjectService
+        self.typesService = dependencies.typesService
         
         self.cursorManager = EditorCursorManager(focusSubjectHolder: focusSubjectHolder)
     }

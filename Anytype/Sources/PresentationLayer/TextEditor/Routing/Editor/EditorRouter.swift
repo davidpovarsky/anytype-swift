@@ -7,32 +7,33 @@ import AnytypeCore
 
 final class EditorRouter: NSObject, EditorRouterProtocol, ObjectSettingsCoordinatorOutput {
     private weak var viewController: UIViewController?
-    @Injected(\.legacyNavigationContext)
-    private var navigationContext: any NavigationContextProtocol
+    private let navigationContext: any NavigationContextProtocol
     private let fileCoordinator: FileDownloadingCoordinator
     private let document: any BaseDocumentProtocol
-    @Injected(\.legacyTemplatesCoordinator)
-    private var templatesCoordinator: any TemplatesCoordinatorProtocol
-    @Injected(\.legacySetObjectCreationSettingsCoordinator)
-    private var setObjectCreationSettingsCoordinator: any SetObjectCreationSettingsCoordinatorProtocol
-    @Injected(\.legacyToastPresenter)
-    private var toastPresenter: any ToastPresenterProtocol
+    private let templatesCoordinator: any TemplatesCoordinatorProtocol
+    private let setObjectCreationSettingsCoordinator: any SetObjectCreationSettingsCoordinatorProtocol
+    private let toastPresenter: any ToastPresenterProtocol
     private weak var output: (any EditorPageModuleOutput)?
     
-    @Injected(\.templatesService)
-    private var templateService: any TemplatesServiceProtocol
+    private let templateService: any TemplatesServiceProtocol
 
     private var waitingViewDismiss: AnytypeDismiss?
 
     init(
         viewController: UIViewController,
         document: some BaseDocumentProtocol,
-        output: (any EditorPageModuleOutput)?
+        output: (any EditorPageModuleOutput)?,
+        dependencies: EditorRouterDependencies = .original()
     ) {
         self.viewController = viewController
         self.document = document
         self.fileCoordinator = FileDownloadingCoordinator(viewController: viewController)
         self.output = output
+        self.navigationContext = dependencies.navigationContext
+        self.templatesCoordinator = dependencies.templatesCoordinator
+        self.setObjectCreationSettingsCoordinator = dependencies.setObjectCreationSettingsCoordinator
+        self.toastPresenter = dependencies.toastPresenter
+        self.templateService = dependencies.templateService
         
         super.init()
     }

@@ -31,18 +31,12 @@ final class BlockViewModelBuilder {
     private weak var torahSession: TorahEditorSession?
     private var documentMetadataRow: PinkhaDocumentMetadataRowModel?
     
-    @Injected(\.blockTableService)
-    private var tableService: any BlockTableServiceProtocol
-    @Injected(\.detailsService)
-    private var detailsService: any DetailsServiceProtocol
-    @Injected(\.audioSessionService)
-    private var audioSessionService: any AudioSessionServiceProtocol
-    @Injected(\.objectTypeProvider)
-    private var objectTypeProvider: any ObjectTypeProviderProtocol
-    @Injected(\.pasteboardBlockDocumentService)
-    private var pasteboardService: any PasteboardBlockDocumentServiceProtocol
-    @Injected(\.blockService)
-    private var blockService: any BlockServiceProtocol
+    private let tableService: any BlockTableServiceProtocol
+    private let detailsService: any DetailsServiceProtocol
+    private let audioSessionService: any AudioSessionServiceProtocol
+    private let objectTypeProvider: any ObjectTypeProviderProtocol
+    private let pasteboardService: any PasteboardBlockDocumentServiceProtocol
+    private let blockService: any BlockServiceProtocol
     
     init(
         document: some BaseDocumentProtocol,
@@ -64,7 +58,8 @@ final class BlockViewModelBuilder {
         mediaBlockActionsProvider: some MediaBlockActionsProviderProtocol,
         editorPageBlocksStateManager: EditorPageBlocksStateManager,
         torahSession: TorahEditorSession? = nil,
-        output: (any EditorPageModuleOutput)?
+        output: (any EditorPageModuleOutput)?,
+        dependencies: BlockViewModelBuilderDependencies = .original()
     ) {
         self.document = document
         self.handler = handler
@@ -86,6 +81,12 @@ final class BlockViewModelBuilder {
         self.editorPageBlocksStateManager = editorPageBlocksStateManager
         self.torahSession = torahSession
         self.output = output
+        self.tableService = dependencies.tableService
+        self.detailsService = dependencies.detailsService
+        self.audioSessionService = dependencies.audioSessionService
+        self.objectTypeProvider = dependencies.objectTypeProvider
+        self.pasteboardService = dependencies.pasteboardService
+        self.blockService = dependencies.blockService
     }
     
     func buildEditorItems(infos: [String], ignoreCache: Bool) -> [EditorItem] {
