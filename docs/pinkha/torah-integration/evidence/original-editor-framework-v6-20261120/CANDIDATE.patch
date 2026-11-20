@@ -1,0 +1,1070 @@
+--- a/.github/workflows/pinkha-original-editor-framework.yml
++++ b/.github/workflows/pinkha-original-editor-framework.yml
+@@ -3,7 +3,7 @@
+ on:
+   push:
+     branches:
+-      - codex/otzaria-original-editor-framework-v5-reviewed-20261120
++      - codex/otzaria-original-editor-framework-v6-reviewed-20261120
+ 
+ permissions:
+   contents: read
+@@ -15,13 +15,13 @@
+ 
+ jobs:
+   original-editor-framework:
+-    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v5-reviewed-20261120'
++    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v6-reviewed-20261120'
+     runs-on: xcode-27
+     timeout-minutes: 140
+     env:
+       PYTHONDONTWRITEBYTECODE: '1'
+       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+-      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v5-reviewed-20261120
++      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v6-reviewed-20261120
+       HEART_SOURCE_RUN_ID: '44203168617'
+       EDITOR_EVIDENCE: build/original-editor-framework-evidence
+       EDITOR_WORK: build/original-editor-framework-${{ github.run_id }}-${{ github.run_attempt }}
+--- /dev/null
++++ b/Tools/OriginalEditor/amplitude_simulator_signing.json
+@@ -0,0 +1,99 @@
++{
++  "architectures": [
++    {
++      "cpu": 16777223,
++      "fat_alignment": 14,
++      "signature_offset": 292784,
++      "subtype": 3,
++      "vm_alignment": 12
++    },
++    {
++      "cpu": 16777228,
++      "fat_alignment": 14,
++      "signature_offset": 307792,
++      "subtype": 0,
++      "vm_alignment": 14
++    }
++  ],
++  "archive_bytes": 1964793,
++  "archive_path": "docs/pinkha/torah-integration/evidence/original-editor-framework-44812859123-20261120/pinned-upstream-AmplitudeCore.zip",
++  "archive_sha256": "2c0fbe60170efdf0b634ae73298803880098e1d352c9afef2baface15b45070c",
++  "executable": "AmplitudeCore",
++  "files": {
++    "AmplitudeCore": {
++      "bytes": 672544,
++      "mode": 493,
++      "sha256": "4df572acf12da91538853304fc6696d08a8a6e49e788eeb0c29fa8a48ec95d40"
++    },
++    "Headers/AmplitudeCore-Swift.h": {
++      "bytes": 24405,
++      "mode": 420,
++      "sha256": "71995ba2f4b1e77530759542148e8da34019da07e8ed358c558c2b4764a143f9"
++    },
++    "Info.plist": {
++      "bytes": 736,
++      "mode": 420,
++      "sha256": "0f912de7df813d0b1f74bab0735f2fdc0964b779976d7273339fb929a99f74e6"
++    },
++    "Modules/AmplitudeCore.swiftmodule/arm64-apple-ios-simulator.abi.json": {
++      "bytes": 213087,
++      "mode": 420,
++      "sha256": "e6b2eddc8b1b2514ecb78f18038e76d5add4ac3b70e34d123dd3f5ef6bbf5ad1"
++    },
++    "Modules/AmplitudeCore.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface": {
++      "bytes": 9022,
++      "mode": 420,
++      "sha256": "8702f0e81e44eb23ab0ce8039007296ce9a361426c35887af4c029e34a1a1f72"
++    },
++    "Modules/AmplitudeCore.swiftmodule/arm64-apple-ios-simulator.swiftdoc": {
++      "bytes": 1952,
++      "mode": 420,
++      "sha256": "16bad7830b6e063366cf7ff216e1daea8f47e3152ca5e7e4e178bf12ebcd9e4b"
++    },
++    "Modules/AmplitudeCore.swiftmodule/arm64-apple-ios-simulator.swiftinterface": {
++      "bytes": 9022,
++      "mode": 420,
++      "sha256": "8702f0e81e44eb23ab0ce8039007296ce9a361426c35887af4c029e34a1a1f72"
++    },
++    "Modules/AmplitudeCore.swiftmodule/x86_64-apple-ios-simulator.abi.json": {
++      "bytes": 213087,
++      "mode": 420,
++      "sha256": "e6b2eddc8b1b2514ecb78f18038e76d5add4ac3b70e34d123dd3f5ef6bbf5ad1"
++    },
++    "Modules/AmplitudeCore.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface": {
++      "bytes": 9023,
++      "mode": 420,
++      "sha256": "c08914f6de3e0820181c04e564c9dbf11dcfbcd5de2daac4a45a925c648420b1"
++    },
++    "Modules/AmplitudeCore.swiftmodule/x86_64-apple-ios-simulator.swiftdoc": {
++      "bytes": 1952,
++      "mode": 420,
++      "sha256": "6ec1ff014fe601471b2aaed9936681e1c3f84e5798c276e4660658b15b459b1c"
++    },
++    "Modules/AmplitudeCore.swiftmodule/x86_64-apple-ios-simulator.swiftinterface": {
++      "bytes": 9023,
++      "mode": 420,
++      "sha256": "c08914f6de3e0820181c04e564c9dbf11dcfbcd5de2daac4a45a925c648420b1"
++    },
++    "Modules/module.modulemap": {
++      "bytes": 84,
++      "mode": 420,
++      "sha256": "f464c19b7ab1b60ff58144647bccf387e77e8c21e4b5533788dc1cc6a31a2a69"
++    },
++    "_CodeSignature/CodeResources": {
++      "bytes": 5606,
++      "mode": 420,
++      "sha256": "5d1ce8a54fa2f41578ad5c5f89dcd16933e697fd690459dc989a10a18ad735e5"
++    }
++  },
++  "framework": "AmplitudeCore.framework",
++  "missing_sealed_members": [
++    "Modules/AmplitudeCore.swiftmodule/arm64-apple-ios-simulator.swiftmodule",
++    "Modules/AmplitudeCore.swiftmodule/x86_64-apple-ios-simulator.swiftmodule"
++  ],
++  "package_identity": "amplitudecore-swift",
++  "package_manifest_git_blob": "b8720d5b79c8cad6b13564bc5fa959be2fbf3c26",
++  "package_revision": "13fd0eb0aa080816ffa409669758b2e8787322b2",
++  "schema": 1,
++  "scope": "Only an owned iOS Simulator export; explicit ad-hoc signature replacement, no upstream signature success."
++}
+--- /dev/null
++++ b/Tools/OriginalEditor/amplitude_simulator_signing.py
+@@ -0,0 +1,359 @@
++"""Constrained ad-hoc signing of one checksum-pinned Simulator export.
++
++This never repairs the upstream archive or grants it a valid upstream signature.
++All ordinary resources and every executable byte outside the documented signing
++allocation fields/envelope remain exact. The normal strict consumer gates follow.
++"""
++import hashlib
++import json
++import plistlib
++import platform
++from pathlib import Path
++import shutil
++import stat
++import struct
++import sys
++
++from framework_products import framework_closure
++from framework_profile import sha256
++from pbx_source import require
++
++HERE = Path(__file__).resolve().parent
++PROFILE = HERE / 'amplitude_simulator_signing.json'
++NAME = 'AmplitudeCore.framework'
++EXECUTABLE = 'AmplitudeCore'
++MISSING = {
++    'Modules/AmplitudeCore.swiftmodule/arm64-apple-ios-simulator.swiftmodule',
++    'Modules/AmplitudeCore.swiftmodule/x86_64-apple-ios-simulator.swiftmodule',
++}
++ARCHITECTURES = [(0x01000007, 3, 14, 12, 292784),
++                 (0x0100000c, 0, 14, 14, 307792)]
++
++def digest(data):
++    return hashlib.sha256(data).hexdigest()
++
++def read_profile():
++    value = json.loads(PROFILE.read_bytes())
++    require(value.get('schema') == 1 and value.get('framework') == NAME
++            and value.get('executable') == EXECUTABLE
++            and value.get('package_identity') == 'amplitudecore-swift'
++            and value.get('package_revision') == '13fd0eb0aa080816ffa409669758b2e8787322b2'
++            and value.get('archive_sha256') == '2c0fbe60170efdf0b634ae73298803880098e1d352c9afef2baface15b45070c'
++            and set(value.get('missing_sealed_members', [])) == MISSING
++            and len(value.get('files', {})) == 13, 'Unreviewed Simulator signing profile')
++    return value
++
++def seal_members(files, expected_missing):
++    seal = plistlib.loads(files['_CodeSignature/CodeResources'])
++    missing, present, covered = set(), 0, set()
++    require(isinstance(seal.get('files2'), dict), 'Missing modern resource seal')
++    for table in ('files', 'files2'):
++        for name, record in seal.get(table, {}).items():
++            require(isinstance(name, str) and not Path(name).is_absolute()
++                    and '..' not in Path(name).parts, 'Unsafe resource seal name')
++            item = record if isinstance(record, dict) else {'hash': record}
++            if name not in files:
++                require(item.get('optional') is not True, 'Unexpected optional missing sealed member')
++                missing.add(name)
++                continue
++            require('symlink' not in item, 'Unexpected symbolic resource seal')
++            for field, algorithm in [('hash', 'sha1'), ('hash2', 'sha256')]:
++                if field in item:
++                    require(hashlib.new(algorithm, files[name]).digest() == item[field],
++                            'Resource seal digest differs: ' + name)
++                    present += 1
++                    covered.add(name)
++    require(missing == set(expected_missing), 'Wrong missing sealed resource set')
++    required = set(files) - {EXECUTABLE, '_CodeSignature/CodeResources', 'Info.plist'}
++    require(required <= covered, 'An ordinary framework resource is not sealed')
++    return {'missing': sorted(missing), 'present_digests': present}
++
++def pinned_closure(path, profile):
++    path = Path(path)
++    observed = framework_closure(path)
++    expected_files = set(profile['files'])
++    expected_dirs = {'.'}
++    for name in expected_files:
++        expected_dirs.update(parent.as_posix() for parent in Path(name).parents
++                             if parent.as_posix() != '.')
++    require(set(observed) == expected_files | expected_dirs,
++            'Pinned framework closure has missing or extra members')
++    require(all(row['kind'] == ('file' if name in expected_files else 'directory')
++                for name, row in observed.items()), 'Pinned framework aliases or special files are forbidden')
++    files = {}
++    for name, expected in profile['files'].items():
++        data = (path / name).read_bytes()
++        row = observed[name]
++        require(len(data) == expected['bytes'] and digest(data) == expected['sha256']
++                and row['mode'] == expected['mode'], 'Pinned original framework bytes or mode differ: ' + name)
++        files[name] = data
++    info = plistlib.loads(files['Info.plist'])
++    require(info.get('CFBundleExecutable') == EXECUTABLE
++            and info.get('CFBundleIdentifier') == EXECUTABLE
++            and info.get('CFBundlePackageType') == 'FMWK'
++            and info.get('CFBundleSupportedPlatforms') == ['iPhoneSimulator']
++            and info.get('DTPlatformName') == 'iphonesimulator',
++            'This signing boundary is limited to the exact iOS Simulator product')
++    seal_members(files, MISSING)
++    read_macho(files[EXECUTABLE], files)
++    return observed, files
++
++def read_signature(thin, signature_offset, signature_size, files):
++    raw = thin[signature_offset:signature_offset + signature_size]
++    require(len(raw) >= 12, 'Truncated signing envelope')
++    magic, length, count = struct.unpack_from('>III', raw)
++    require(magic == 0xfade0cc0 and 12 <= length <= len(raw)
++            and count == 3 and 12 + 8 * count <= length
++            and not any(raw[length:]), 'Unexpected or nonzero signature allocation padding')
++    blobs, ranges = {}, []
++    for index in range(count):
++        slot, offset = struct.unpack_from('>II', raw, 12 + index * 8)
++        require(slot not in blobs and 12 + 8 * count <= offset <= length - 8,
++                'Malformed signing blob index')
++        kind, size = struct.unpack_from('>II', raw, offset)
++        require(size >= 8 and offset + size <= length, 'Malformed signing blob length')
++        require(not any(offset < end and start < offset + size for start, end in ranges),
++                'Overlapping signing blobs')
++        ranges.append((offset, offset + size))
++        blobs[slot] = raw[offset:offset + size]
++    require(set(blobs) == {0, 2, 0x10000}, 'New entitlements or unexpected signature authority')
++    require(blobs[2] == struct.pack('>III', 0xfade0c01, 12, 0)
++            and blobs[0x10000] == struct.pack('>II', 0xfade0b01, 8),
++            'Expected empty requirements and an empty ad-hoc CMS wrapper')
++    directory = blobs[0]
++    require(len(directory) >= 88 and struct.unpack_from('>I', directory)[0] == 0xfade0c02,
++            'Missing original CodeDirectory shape')
++    version, flags, hashes, identifier, special_count, code_count, code_limit = struct.unpack_from('>IIIIIII', directory, 8)
++    hash_size, hash_type, platform, page = struct.unpack_from('>BBBB', directory, 36)
++    require(version in {0x20400, 0x20500, 0x20600} and flags == 2
++            and (hash_size, hash_type, platform, page) == (32, 2, 0, 12)
++            and special_count == 3 and code_limit == signature_offset,
++            'Ad-hoc signing semantics or executable code limit changed')
++    require(struct.unpack_from('>I', directory, 44)[0] == 0
++            and struct.unpack_from('>I', directory, 48)[0] == 0
++            and struct.unpack_from('>Q', directory, 56)[0] in {0, code_limit},
++            'Unexpected scatter, team or 64-bit code limit')
++    require(88 <= identifier < len(directory)
++            and directory[identifier:].split(bytes([0]), 1)[0] == EXECUTABLE.encode(),
++            'Code signing identifier differs')
++    require(code_count == (code_limit + 4095) // 4096
++            and hashes >= special_count * hash_size
++            and hashes + code_count * hash_size <= len(directory),
++            'Unexpected code-signing page coverage')
++    for index in range(code_count):
++        actual = hashlib.sha256(thin[index * 4096:min((index + 1) * 4096, code_limit)]).digest()
++        require(directory[hashes + index * 32:hashes + (index + 1) * 32] == actual,
++                'Executable signing page hash differs')
++    for index, payload in [(1, files['Info.plist']), (2, blobs[2]), (3, files['_CodeSignature/CodeResources'])]:
++        require(directory[hashes - index * 32:hashes - (index - 1) * 32] == hashlib.sha256(payload).digest(),
++                'Special signing slot differs')
++    return {'version': version, 'flags': flags, 'identifier': EXECUTABLE,
++            'hash_type': hash_type, 'hash_size': hash_size, 'code_limit': code_limit,
++            'code_pages': code_count, 'special_slots': special_count, 'entitlements': [],
++            'superblob_bytes': length, 'allocated_signature_bytes': signature_size}
++
++def read_macho(binary, files):
++    require(len(binary) >= 48 and struct.unpack_from('>II', binary) == (0xcafebabe, 2),
++            'Expected the exact two-architecture FAT32 executable')
++    slices, previous_end = [], 48
++    for index, (cpu, subtype, alignment, vm_alignment, original_signature_offset) in enumerate(ARCHITECTURES):
++        actual_cpu, actual_subtype, offset, size, actual_alignment = struct.unpack_from('>IIIII', binary, 8 + index * 20)
++        require((actual_cpu, actual_subtype, actual_alignment) == (cpu, subtype, alignment)
++                and offset == (previous_end + (1 << alignment) - 1) // (1 << alignment) * (1 << alignment)
++                and 32 <= size <= len(binary) - offset
++                and not any(binary[previous_end:offset]), 'FAT architecture, alignment or padding differs')
++        thin = binary[offset:offset + size]
++        magic, thin_cpu, thin_subtype, filetype, count, command_bytes, flags, reserved = struct.unpack_from('<IIIIIIII', thin)
++        require((magic, thin_cpu, thin_subtype, filetype) == (0xfeedfacf, cpu, subtype, 6)
++                and 0 < count <= 128 and 32 <= 32 + command_bytes <= len(thin),
++                'Expected original little-endian MH_DYLIB header')
++        cursor, commands, linkedit, signature, platform_commands = 32, [], None, None, []
++        for _ in range(count):
++            require(cursor + 8 <= 32 + command_bytes, 'Truncated load command')
++            command, length = struct.unpack_from('<II', thin, cursor)
++            require(length >= 8 and length % 8 == 0 and cursor + length <= 32 + command_bytes,
++                    'Malformed load command')
++            commands.append((command, length, cursor))
++            if command == 0x19:
++                require(length >= 72, 'Truncated segment command')
++                name = thin[cursor + 8:cursor + 24].split(bytes([0]), 1)[0]
++                vmaddr, vmsize, fileoff, filesize = struct.unpack_from('<QQQQ', thin, cursor + 24)
++                if name == b'__LINKEDIT':
++                    require(linkedit is None and struct.unpack_from('<I', thin, cursor + 64)[0] == 0,
++                            'Ambiguous or sectional LINKEDIT')
++                    linkedit = {'command_offset': cursor, 'vmaddr': vmaddr, 'vmsize': vmsize,
++                                'fileoff': fileoff, 'filesize': filesize}
++            elif command == 0x1d:
++                require(signature is None and length == 16, 'Ambiguous signature load command')
++                dataoff, datasize = struct.unpack_from('<II', thin, cursor + 8)
++                signature = {'command_offset': cursor, 'dataoff': dataoff, 'datasize': datasize}
++            elif command in {0x25, 0x32}:
++                platform_commands.append(thin[cursor:cursor + length])
++            cursor += length
++        require(cursor == 32 + command_bytes and linkedit is not None and signature is not None,
++                'Incomplete original command closure')
++        require(signature['dataoff'] == original_signature_offset
++                and signature['datasize'] > 0
++                and signature['dataoff'] + signature['datasize'] == len(thin)
++                and linkedit['fileoff'] < signature['dataoff']
++                and linkedit['fileoff'] + linkedit['filesize'] == len(thin)
++                and linkedit['vmsize'] >= linkedit['filesize'],
++                'Signature is not the exact terminal signing allocation')
++        # x86 uses the original iOS minimum-version command; arm64 identifies
++        # platform 7 (iOS Simulator) explicitly. Other load-command bytes are
++        # compared in full below, including both original deployment values.
++        require(len(platform_commands) == 1
++                and ((cpu == 0x01000007 and struct.unpack_from('<I', platform_commands[0])[0] == 0x25)
++                     or (cpu == 0x0100000c and struct.unpack_from('<II', platform_commands[0], 0)[0] == 0x32
++                         and struct.unpack_from('<I', platform_commands[0], 8)[0] == 7)),
++                'Original iOS Simulator platform command differs')
++        signature_proof = read_signature(thin, signature['dataoff'], signature['datasize'], files)
++        slices.append({'cpu': cpu, 'subtype': subtype, 'offset': offset, 'size': size,
++                       'fat_alignment': alignment, 'vm_alignment': vm_alignment,
++                       'thin': thin, 'commands': commands, 'linkedit': linkedit,
++                       'signature': signature, 'signature_proof': signature_proof})
++        previous_end = offset + size
++    require(previous_end == len(binary), 'Unexpected trailing FAT payload')
++    return slices
++
++def executable_preservation(before_files, after_files):
++    before = read_macho(before_files[EXECUTABLE], before_files)
++    after = read_macho(after_files[EXECUTABLE], after_files)
++    proofs = []
++    for old, new in zip(before, after):
++        require(old['commands'] == new['commands'], 'Mach-O command shape changed')
++        require(old['signature']['dataoff'] == new['signature']['dataoff'],
++                'Signature movement or page-aligned string-table mutation is not admitted')
++        old_link, new_link = old['linkedit'], new['linkedit']
++        require(old_link['fileoff'] == new_link['fileoff'] and old_link['vmaddr'] == new_link['vmaddr'],
++                'LINKEDIT address changed')
++        require(new_link['filesize'] == len(new['thin']) - old_link['fileoff'],
++                'LINKEDIT size is not exactly the new signature end')
++        expected_vm = old_link['vmsize']
++        if new_link['filesize'] > expected_vm:
++            unit = 1 << old['vm_alignment']
++            expected_vm = (new_link['filesize'] + unit - 1) // unit * unit
++        require(new_link['vmsize'] == expected_vm, 'Unexpected LINKEDIT virtual allocation')
++        end = old['signature']['dataoff']
++        left, right = bytearray(old['thin'][:end]), bytearray(new['thin'][:end])
++        masks = [(old_link['command_offset'] + 32, 8),
++                 (old_link['command_offset'] + 48, 8),
++                 (old['signature']['command_offset'] + 12, 4)]
++        for start, length in masks:
++            left[start:start + length] = bytes(length)
++            right[start:start + length] = bytes(length)
++        require(left == right, 'Executable or nonsignature LINKEDIT bytes changed')
++        proofs.append({'cpu': old['cpu'], 'subtype': old['subtype'],
++                       'unchanged_signature_offset': end, 'masked_allocation_fields': masks,
++                       'normalized_payload_sha256': digest(left),
++                       'before': {k: v for k, v in old.items() if k not in {'thin', 'commands'}},
++                       'after': {k: v for k, v in new.items() if k not in {'thin', 'commands'}}})
++    return proofs
++
++def retain_files(evidence, name, files):
++    target = Path(evidence) / (name + '-attachments')
++    require(not target.exists(), 'Refusing stale retained signing evidence')
++    target.mkdir()
++    for relative, data in files.items():
++        path = target / relative
++        path.parent.mkdir(parents=True, exist_ok=True)
++        path.write_bytes(data)
++    return target.name
++
++def expected_original_failure(framework, root, evidence, name, command):
++    arguments = ['codesign', '--verify', '--strict', '--verbose=4', str(framework)]
++    try:
++        command(arguments, root, evidence, name, 30)
++    except ValueError as error:
++        require(str(error) == 'Actual command failed: ' + name,
++                'Unexpected verification failure boundary')
++        receipt = json.loads((Path(evidence) / (name + '.command.json')).read_bytes())
++        stderr = (Path(evidence) / (name + '.stderr.log')).read_bytes()
++        stdout = (Path(evidence) / (name + '.stdout.log')).read_bytes()
++        require(receipt.get('command') == arguments and receipt.get('returncode') == 1
++                and receipt.get('timed_out') is False and receipt.get('timeout_seconds') == 30
++                and receipt.get('stderr_sha256') == digest(stderr)
++                and receipt.get('stdout_sha256') == digest(stdout)
++                and b'a sealed resource is missing or invalid' in stderr,
++                'The exact pinned upstream resource-seal failure was not observed')
++        return receipt
++    raise ValueError('The pinned upstream strict signature unexpectedly passed; no repair was authorized')
++
++def prepare_amplitude_simulator_export(root, products, exported, evidence, command):
++    require(platform.system() == 'Darwin', 'Native signing is limited to the actual Apple host')
++    root, products, exported, evidence = map(Path, (root, products, exported, evidence))
++    require(products.resolve().is_relative_to((root / 'build').resolve())
++            and exported.resolve().is_relative_to((root / 'build').resolve())
++            and evidence.resolve().is_relative_to((root / 'build').resolve()),
++            'Simulator signing requires owned producer/export/evidence paths')
++    require(products.resolve() != exported.resolve()
++            and not products.resolve().is_relative_to(exported.resolve())
++            and not exported.resolve().is_relative_to(products.resolve()),
++            'The original producer must remain separate from the export')
++    original, target = products / NAME, exported / 'Frameworks' / NAME
++    require(original.resolve() != target.resolve(), 'Refusing to sign the original framework')
++    profile = read_profile()
++    package = json.loads((root / 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved').read_bytes())
++    matching = [item for item in package['pins'] if item['identity'] == profile['package_identity']]
++    require(len(matching) == 1 and matching[0]['state']['revision'] == profile['package_revision'],
++            'The original locked package revision differs')
++    source_metadata, source_files = pinned_closure(original, profile)
++    before_metadata, before_files = pinned_closure(target, profile)
++    require(source_files == before_files, 'Export differs from the exact pinned producer input')
++    receipt = {'schema': 1, 'status': 'FAIL', 'scope': 'OWNED_SIMULATOR_EXPORT_ADHOC_TRANSFORMATION',
++               'upstream_signature': 'INVALID_MISSING_SEALED_MEMBERS',
++               'upstream_package_revision': profile['package_revision'],
++               'upstream_archive_sha256': profile['archive_sha256'],
++               'source': str(original), 'export': str(target),
++               'missing_original_seal_members': sorted(MISSING),
++               'before_source_metadata': source_metadata, 'before_export_metadata': before_metadata,
++               'ordinary_resources_unchanged': False, 'nonsignature_executable_unchanged': False,
++               'native_post_signature': 'NOT_RUN', 'consumer_qualification': 'NOT_GRANTED'}
++    receipt['retained_original'] = retain_files(evidence, 'amplitude-original', source_files)
++    receipt['retained_export_before'] = retain_files(evidence, 'amplitude-export-before', before_files)
++    try:
++        receipt['original_strict_failure'] = expected_original_failure(
++            original, root, evidence, 'amplitude-original-strict-signature', command)
++        receipt['export_strict_failure'] = expected_original_failure(
++            target, root, evidence, 'amplitude-export-before-strict-signature', command)
++        require(framework_closure(original) == source_metadata
++                and framework_closure(target) == before_metadata,
++                'Pinned inputs changed before signing')
++        command(['codesign', '--force', '--sign', '-', '--timestamp=none', str(target)],
++                root, evidence, 'amplitude-export-adhoc-sign', 30)
++        after_metadata = framework_closure(target)
++        require(set(after_metadata) == set(before_metadata), 'Signing changed framework membership')
++        after_files = {}
++        for relative, row in after_metadata.items():
++            prior = before_metadata[relative]
++            require(row['kind'] == prior['kind'] and row['resolved_kind'] == prior['resolved_kind']
++                    and row['resolved_metadata'] == prior['resolved_metadata']
++                    and all(row[key] == prior[key] for key in ['mode', 'uid', 'gid', 'flags', 'extended_attributes']),
++                    'Signing changed non-content product metadata: ' + relative)
++            if row['kind'] == 'file':
++                after_files[relative] = (target / relative).read_bytes()
++        receipt['retained_export_after'] = retain_files(evidence, 'amplitude-export-after', after_files)
++        mutable = {EXECUTABLE, '_CodeSignature/CodeResources'}
++        require(set(after_files) == set(before_files)
++                and {name for name in after_files if after_files[name] != before_files[name]} == mutable,
++                'Signing changed ordinary resources or did not replace exactly the signing content')
++        receipt['resource_seal_after'] = seal_members(after_files, set())
++        receipt['mach_o_preservation'] = executable_preservation(before_files, after_files)
++        require(framework_closure(original) == source_metadata,
++                'The original framework changed during export signing')
++        command(['codesign', '--verify', '--strict', '--verbose=4', str(target)],
++                root, evidence, 'amplitude-export-after-strict-signature', 30)
++        require(framework_closure(target) == after_metadata
++                and framework_closure(original) == source_metadata,
++                'Signature verification changed the verified input closure')
++        receipt.update(status='PASS_CONSTRAINED_SIMULATOR_EXPORT_SIGNATURE',
++                       ordinary_resources_unchanged=True, nonsignature_executable_unchanged=True,
++                       after_export_metadata=after_metadata, native_post_signature='PASS',
++                       upstream_signature='INVALID_MISSING_SEALED_MEMBERS')
++        return receipt
++    except BaseException as error:
++        receipt.update(error_type=type(error).__name__, error=str(error))
++        raise
++    finally:
++        (Path(evidence) / 'amplitude-simulator-signing.json').write_text(
++            json.dumps(receipt, indent=2, sort_keys=True) + '\n')
+--- a/Tools/OriginalEditor/framework_profile.json
++++ b/Tools/OriginalEditor/framework_profile.json
+@@ -18,11 +18,11 @@
+     "Tools/PinkhaNativeDerived/package_evidence.py": "e55d2a959296630686a60aa5d927a3b4c34401f9",
+     "Tools/PinkhaSimulatorGate/preflight.py": "2628b345d5743bbe1ddc0d1afaeef9fb410f3daf"
+   },
+-  "branch": "codex/otzaria-original-editor-framework-v5-reviewed-20261120",
++  "branch": "codex/otzaria-original-editor-framework-v6-reviewed-20261120",
+   "candidate_project_sha256": "6d8ea7d95077a20f6e8343db77d30cfdd7a59a3e85a4a2a69c8e075c8adcf05c",
+   "framework_target_id": "83B785D0C457FE3CCBAB196E",
+   "new_project_objects": 108,
+-  "original_heart_installer_blob": "9d7bea648cfd4bca2643265f594550b58d749256",
++  "original_heart_installer_blob": "9365e5b58db125c80e7094cbba816d0002aef0c5",
+   "original_swift_sources": 2237,
+   "original_trees": {
+     "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
+--- a/Tools/OriginalEditor/framework_profile.py
++++ b/Tools/OriginalEditor/framework_profile.py
+@@ -8,7 +8,7 @@
+ 
+ from pbx_source import loads, object_text, require
+ 
+-BRANCH = 'codex/otzaria-original-editor-framework-v5-reviewed-20261120'
++BRANCH = 'codex/otzaria-original-editor-framework-v6-reviewed-20261120'
+ REPOSITORY = 'davidpovarsky/anytype-swift'
+ TARGET = 'AnytypeOriginalEditor'
+ APP_TARGET = '0303ECFA22D8EDAA005C552B'
+@@ -112,8 +112,8 @@
+     project = verify_project((root / 'Anytype.xcodeproj/project.pbxproj').read_bytes(), before, profile)
+     installer_path = 'Tools/PinkhaNativeDerived/install_verified_heart.py'
+     installer = (root / installer_path).read_text()
+-    reviewed = "                             'codex/otzaria-original-editor-framework-v4-reviewed-20261120',\n                             '" + BRANCH + "'],"
+-    original = "                             'codex/otzaria-original-editor-framework-v4-reviewed-20261120'],"
++    reviewed = "                             'codex/otzaria-original-editor-framework-v5-reviewed-20261120',\n                             '" + BRANCH + "'],"
++    original = "                             'codex/otzaria-original-editor-framework-v5-reviewed-20261120'],"
+     require(installer.count(reviewed) == 1 and
+             blob(installer.replace(reviewed, original, 1).encode()) == profile['original_heart_installer_blob'],
+             'Original verified Heart installer has a change beyond the exact new consumer branch')
+--- a/Tools/OriginalEditor/run_framework_acceptance.py
++++ b/Tools/OriginalEditor/run_framework_acceptance.py
+@@ -23,6 +23,7 @@
+ 
+ from framework_profile import BRANCH, TARGET, blob, git, read_manifest, sha256, source_observation
+ from framework_products import consumer_project, export_products, inventory, original_oracles, verify_observation, verify_public_surface
++from amplitude_simulator_signing import prepare_amplitude_simulator_export
+ from pbx_source import require
+ 
+ 
+@@ -234,6 +235,24 @@
+         header = command(['otool', '-hv', str(binary)], root, evidence, 'framework-header-' + str(number), 30)
+         if re.search(r'\bDYLIB\b', header):
+             dynamic.append(name)
++            if name == 'AmplitudeCore.framework':
++                # This exact upstream Simulator product is byte-authenticated but
++                # has two missing sealed compiler modules. Preserve its failed
++                # seal, then sign only the owned export; the original strict
++                # gate below and exact consumer embedding remain mandatory.
++                write(evidence / 'framework-distribution-before-simulator-signing.json', exported_proof)
++                transformation = prepare_amplitude_simulator_export(root, products, exported, evidence, command)
++                after_signing = inventory(exported)
++                permitted = {'Frameworks/AmplitudeCore.framework/AmplitudeCore',
++                             'Frameworks/AmplitudeCore.framework/_CodeSignature/CodeResources'}
++                require(set(after_signing) == set(exported_proof['files'])
++                        and {path for path in after_signing
++                             if after_signing[path] != exported_proof['files'][path]} == permitted,
++                        'Simulator signing changed unrelated distribution bytes')
++                exported_proof['files'] = after_signing
++                exported_proof['bytes'] = sum(item['bytes'] for item in after_signing.values())
++                exported_proof['simulator_signing_transformations'] = [transformation]
++                write(evidence / 'framework-distribution.json', exported_proof)
+             command(['codesign', '--verify', '--strict', str(framework)], root, evidence,
+                     'framework-signature-' + str(number), 30)
+             command(['otool', '-L', str(binary)], root, evidence, 'framework-load-commands-' + str(number), 30)
+--- /dev/null
++++ b/Tools/OriginalEditor/test_amplitude_simulator_signing.py
+@@ -0,0 +1,480 @@
++"""Actual pinned binary / complete Python signing-boundary controls.
++
++The only signing operation here is an explicit Python fixture. It recomputes
++ad-hoc page hashes to discriminate payload checks from page-hash failures, but
++never invokes codesign, Apple tools or any native consumer. The workflow must
++still execute the mandatory native signer and strict verification on Darwin.
++"""
++from contextlib import ExitStack
++import hashlib
++import json
++from pathlib import Path
++import plistlib
++import shutil
++import struct
++import subprocess
++import tempfile
++import unittest
++from unittest.mock import patch
++import zipfile
++
++import amplitude_simulator_signing as signing
++import framework_products as products
++import run_framework_acceptance as driver
++import test_framework_flow as original_flow
++
++ROOT = Path(__file__).resolve().parents[2]
++PROFILE = signing.read_profile()
++ARCHIVE = ROOT / PROFILE['archive_path']
++PREFIX = 'AmplitudeCore.xcframework/ios-arm64_x86_64-simulator/AmplitudeCore.framework/'
++
++def original_files():
++    raw = ARCHIVE.read_bytes()
++    if len(raw) != PROFILE['archive_bytes'] or hashlib.sha256(raw).hexdigest() != PROFILE['archive_sha256']:
++        raise AssertionError('Actual pinned upstream fixture differs')
++    with zipfile.ZipFile(ARCHIVE) as archive:
++        if archive.testzip() is not None:
++            raise AssertionError('Actual upstream fixture CRC differs')
++        return {name[len(PREFIX):]: archive.read(name) for name in archive.namelist()
++                if name.startswith(PREFIX) and not name.endswith('/')}
++
++def put_framework(path, files):
++    path.mkdir(parents=True)
++    for name, data in files.items():
++        target = path / name
++        target.parent.mkdir(parents=True, exist_ok=True)
++        target.write_bytes(data)
++        target.chmod(PROFILE['files'][name]['mode'])
++
++def fixture_ad_hoc_replacement(files, delta=0, edit_prefix=None, edit_directory=None):
++    """Pure fixture, never a substitute for the workflow's native codesign."""
++    result = dict(files)
++    resources = plistlib.loads(files['_CodeSignature/CodeResources'])
++    for table in ('files', 'files2'):
++        for name in signing.MISSING:
++            del resources[table][name]
++    result['_CodeSignature/CodeResources'] = plistlib.dumps(resources)
++    before = signing.read_macho(files[signing.EXECUTABLE], files)
++    output = bytearray(48)
++    struct.pack_into('>II', output, 0, 0xcafebabe, 2)
++    for index, old in enumerate(before):
++        signature = old['signature']
++        prefix = bytearray(old['thin'][:signature['dataoff']])
++        new_signature_size = signature['datasize'] + delta
++        old_signature = old['thin'][signature['dataoff']:]
++        magic, meaningful, count = struct.unpack_from('>III', old_signature)
++        if new_signature_size < meaningful:
++            raise AssertionError('Synthetic signing fixture allocation is too small')
++        new_thin_size = len(prefix) + new_signature_size
++        linkedit = old['linkedit']
++        filesize = new_thin_size - linkedit['fileoff']
++        vmsize = linkedit['vmsize']
++        if filesize > vmsize:
++            unit = 1 << old['vm_alignment']
++            vmsize = (filesize + unit - 1) // unit * unit
++        struct.pack_into('<Q', prefix, linkedit['command_offset'] + 32, vmsize)
++        struct.pack_into('<Q', prefix, linkedit['command_offset'] + 48, filesize)
++        struct.pack_into('<I', prefix, signature['command_offset'] + 12, new_signature_size)
++        if edit_prefix:
++            edit_prefix(prefix, old, index)
++        payload = bytearray(old_signature[:meaningful])
++        indices = dict(struct.unpack_from('>II', payload, 12 + 8 * item) for item in range(count))
++        location = indices[0]
++        length = struct.unpack_from('>I', payload, location + 4)[0]
++        directory = bytearray(payload[location:location + length])
++        hashes = struct.unpack_from('>I', directory, 16)[0]
++        pages = struct.unpack_from('>I', directory, 28)[0]
++        directory[hashes - 96:hashes - 64] = hashlib.sha256(result['_CodeSignature/CodeResources']).digest()
++        for page in range(pages):
++            directory[hashes + page * 32:hashes + (page + 1) * 32] = hashlib.sha256(
++                prefix[page * 4096:min((page + 1) * 4096, len(prefix))]).digest()
++        if edit_directory:
++            edit_directory(directory, old, index)
++        payload[location:location + length] = directory
++        thin = prefix + payload + bytes(new_signature_size - len(payload))
++        unit = 1 << old['fat_alignment']
++        offset = (len(output) + unit - 1) // unit * unit
++        output.extend(bytes(offset - len(output)))
++        output.extend(thin)
++        struct.pack_into('>IIIII', output, 8 + 20 * index, old['cpu'], old['subtype'],
++                         offset, len(thin), old['fat_alignment'])
++    result[signing.EXECUTABLE] = bytes(output)
++    return result
++
++class KnownSimulatorSigningControls(unittest.TestCase):
++    def setUp(self):
++        self.original = original_files()
++        self.temporary = tempfile.TemporaryDirectory()
++        self.addCleanup(self.temporary.cleanup)
++        self.root = Path(self.temporary.name).resolve()
++        self.products = self.root / 'build/producer/Build/Products/Debug-Anytype-iphonesimulator'
++        self.exported = self.root / 'build/distribution'
++        self.evidence = self.root / 'build/evidence'
++        self.evidence.mkdir(parents=True)
++        self.source = self.products / signing.NAME
++        self.target = self.exported / 'Frameworks' / signing.NAME
++        put_framework(self.source, self.original)
++        put_framework(self.target, self.original)
++        package_path = 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved'
++        destination = self.root / package_path
++        destination.parent.mkdir(parents=True)
++        destination.write_bytes((ROOT / package_path).read_bytes())
++        self.commands = []
++        self.signer = lambda: fixture_ad_hoc_replacement(self.original)
++        self.failure = None
++        self.pre_verification_succeeds = False
++        self.wrong_error = False
++        self.mutate_source_after = False
++
++    def command(self, args, root, evidence, name, timeout):
++        self.commands.append((name, list(args), timeout))
++        if name == self.failure:
++            raise subprocess.TimeoutExpired(args, timeout)
++        if name in {'amplitude-original-strict-signature', 'amplitude-export-before-strict-signature'}:
++            if self.pre_verification_succeeds:
++                return ''
++            stdout = b''
++            stderr = (b'EXPLICIT_DIFFERENT_TOOL_FAILURE' if self.wrong_error else
++                      b'EXPLICIT_TOOL_BOUNDARY: a sealed resource is missing or invalid\n')
++            (self.evidence / (name + '.stdout.log')).write_bytes(stdout)
++            (self.evidence / (name + '.stderr.log')).write_bytes(stderr)
++            driver.write(self.evidence / (name + '.command.json'), {
++                'command': list(args), 'returncode': 1, 'timed_out': False,
++                'timeout_seconds': timeout, 'stdout_sha256': signing.digest(stdout),
++                'stderr_sha256': signing.digest(stderr), 'scope': 'EXPLICIT_NATIVE_TOOL_DOUBLE'})
++            raise ValueError('Actual command failed: ' + name)
++        if name == 'amplitude-export-adhoc-sign':
++            for relative, data in self.signer().items():
++                (self.target / relative).write_bytes(data)
++        if name == 'amplitude-export-after-strict-signature' and self.mutate_source_after:
++            (self.source / 'Headers/AmplitudeCore-Swift.h').write_bytes(b'changed original')
++        return ''
++
++    def prepare(self):
++        with patch.object(signing.platform, 'system', return_value='Darwin'):
++            return signing.prepare_amplitude_simulator_export(
++                self.root, self.products, self.exported, self.evidence, self.command)
++
++    def test_actual_pinned_upstream_has_only_the_two_required_missing_members(self):
++        self.assertEqual(signing.seal_members(self.original, signing.MISSING),
++                         {'missing': sorted(signing.MISSING), 'present_digests': 21})
++        self.assertEqual(len(self.original), 13)
++
++    def test_actual_original_two_slices_and_all_signing_page_hashes_parse(self):
++        values = signing.read_macho(self.original[signing.EXECUTABLE], self.original)
++        self.assertEqual([value['signature']['dataoff'] for value in values], [292784, 307792])
++        self.assertEqual([value['signature_proof']['code_pages'] for value in values], [72, 76])
++        self.assertEqual([value['signature_proof']['entitlements'] for value in values], [[], []])
++
++    def test_same_allocation_replacement_preserves_every_nonsignature_byte(self):
++        candidate = fixture_ad_hoc_replacement(self.original)
++        proof = signing.executable_preservation(self.original, candidate)
++        self.assertEqual(len(proof), 2)
++        self.assertEqual(signing.seal_members(candidate, set())['missing'], [])
++        self.assertEqual({p for p in candidate if candidate[p] != self.original[p]},
++                         {signing.EXECUTABLE, '_CodeSignature/CodeResources'})
++
++    def test_larger_signature_uses_exact_original_architecture_vm_rounding(self):
++        candidate = fixture_ad_hoc_replacement(self.original, delta=65536)
++        proof = signing.executable_preservation(self.original, candidate)
++        for row, unit in zip(proof, [4096, 16384]):
++            after = row['after']['linkedit']
++            self.assertEqual(after['vmsize'], (after['filesize'] + unit - 1) // unit * unit)
++
++    def test_smaller_signature_does_not_shrink_original_virtual_allocation(self):
++        candidate = fixture_ad_hoc_replacement(self.original, delta=-10000)
++        proof = signing.executable_preservation(self.original, candidate)
++        self.assertEqual([row['after']['linkedit']['vmsize'] for row in proof], [212992, 212992])
++
++    def test_rehashed_executable_code_change_is_refused(self):
++        def edit(prefix, old, index):
++            prefix[8192] ^= 1
++        candidate = fixture_ad_hoc_replacement(self.original, edit_prefix=edit)
++        signing.read_macho(candidate[signing.EXECUTABLE], candidate)
++        with self.assertRaisesRegex(ValueError, 'nonsignature LINKEDIT'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_rehashed_linkedit_symbols_change_is_refused(self):
++        def edit(prefix, old, index):
++            prefix[old['signature']['dataoff'] - 64] ^= 1
++        candidate = fixture_ad_hoc_replacement(self.original, edit_prefix=edit)
++        signing.read_macho(candidate[signing.EXECUTABLE], candidate)
++        with self.assertRaisesRegex(ValueError, 'nonsignature LINKEDIT'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_rehashed_dylib_timestamp_change_is_refused(self):
++        def edit(prefix, old, index):
++            location = next(offset for command, size, offset in old['commands'] if command == 0xd)
++            value = struct.unpack_from('<I', prefix, location + 12)[0]
++            struct.pack_into('<I', prefix, location + 12, value ^ 1)
++        candidate = fixture_ad_hoc_replacement(self.original, edit_prefix=edit)
++        with self.assertRaisesRegex(ValueError, 'nonsignature LINKEDIT'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_unnecessary_virtual_range_growth_is_refused(self):
++        def edit(prefix, old, index):
++            struct.pack_into('<Q', prefix, old['linkedit']['command_offset'] + 32,
++                             old['linkedit']['vmsize'] + 16384)
++        candidate = fixture_ad_hoc_replacement(self.original, edit_prefix=edit)
++        with self.assertRaisesRegex(ValueError, 'virtual allocation'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_signature_dataoff_movement_is_not_a_general_padding_exemption(self):
++        candidate = fixture_ad_hoc_replacement(self.original)
++        binary = bytearray(candidate[signing.EXECUTABLE])
++        value = signing.read_macho(candidate[signing.EXECUTABLE], candidate)[0]
++        at = value['offset'] + value['signature']['command_offset'] + 8
++        struct.pack_into('<I', binary, at, value['signature']['dataoff'] + 16)
++        candidate[signing.EXECUTABLE] = bytes(binary)
++        with self.assertRaisesRegex(ValueError, 'terminal signing allocation'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_nonzero_fat_padding_is_refused(self):
++        candidate = fixture_ad_hoc_replacement(self.original)
++        value = bytearray(candidate[signing.EXECUTABLE]);value[100] = 1
++        candidate[signing.EXECUTABLE] = bytes(value)
++        with self.assertRaisesRegex(ValueError, 'padding'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_extra_alignment_size_zero_fat_gap_is_refused(self):
++        candidate = fixture_ad_hoc_replacement(self.original)
++        value = candidate[signing.EXECUTABLE]
++        second = struct.unpack_from('>IIIII', value, 28)
++        offset = second[2]
++        binary = bytearray(value[:offset] + bytes(16384) + value[offset:])
++        struct.pack_into('>I', binary, 36, offset + 16384)
++        candidate[signing.EXECUTABLE] = bytes(binary)
++        with self.assertRaisesRegex(ValueError, 'alignment'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_changed_architecture_or_unexpected_third_slice_is_refused(self):
++        for replacement in [3, 1]:
++            value = bytearray(self.original[signing.EXECUTABLE])
++            struct.pack_into('>I', value, 4, replacement)
++            with self.assertRaisesRegex(ValueError, 'two-architecture'):
++                signing.read_macho(bytes(value), self.original)
++
++    def test_entitlement_slot_cannot_replace_the_empty_cms_slot(self):
++        candidate = fixture_ad_hoc_replacement(self.original)
++        values = signing.read_macho(candidate[signing.EXECUTABLE], candidate)
++        binary = bytearray(candidate[signing.EXECUTABLE])
++        for old in values:
++            at = old['offset'] + old['signature']['dataoff'] + 12 + 16
++            struct.pack_into('>I', binary, at, 5)
++        candidate[signing.EXECUTABLE] = bytes(binary)
++        with self.assertRaisesRegex(ValueError, 'entitlements'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_signing_identifier_cannot_change(self):
++        def edit(directory, old, index):
++            location = struct.unpack_from('>I', directory, 20)[0]
++            directory[location] = ord('X')
++        candidate = fixture_ad_hoc_replacement(self.original, edit_directory=edit)
++        with self.assertRaisesRegex(ValueError, 'identifier'):
++            signing.executable_preservation(self.original, candidate)
++
++    def test_ordinary_resource_or_unknown_payload_is_refused_before_any_signer(self):
++        for relative in ['Headers/AmplitudeCore-Swift.h', 'Unexpected.dat']:
++            target = self.target / relative
++            prior = target.read_bytes() if target.exists() else None
++            target.write_bytes(b'changed')
++            with self.assertRaises(ValueError):
++                self.prepare()
++            self.assertEqual(self.commands, [])
++            if prior is None:
++                target.unlink()
++            else:
++                target.write_bytes(prior)
++
++    def test_missing_original_product_is_refused_before_any_signer(self):
++        shutil.rmtree(self.source)
++        with self.assertRaises(ValueError):
++            self.prepare()
++        self.assertEqual(self.commands, [])
++
++    def test_symbolic_export_root_is_refused_before_any_signer(self):
++        actual = self.target.with_name('retained')
++        self.target.rename(actual)
++        self.target.symlink_to(actual, target_is_directory=True)
++        with self.assertRaisesRegex(ValueError, 'real directory'):
++            self.prepare()
++        self.assertEqual(self.commands, [])
++
++    def test_another_package_revision_cannot_get_the_exception(self):
++        path = self.root / 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved'
++        package = json.loads(path.read_bytes())
++        item = next(item for item in package['pins'] if item['identity'] == 'amplitudecore-swift')
++        item['state']['revision'] = '0' * 40
++        path.write_text(json.dumps(package))
++        with self.assertRaisesRegex(ValueError, 'package revision'):
++            self.prepare()
++        self.assertEqual(self.commands, [])
++
++    def test_device_platform_cannot_get_the_simulator_exception(self):
++        data = plistlib.loads(self.original['Info.plist'])
++        data['CFBundleSupportedPlatforms'] = ['iPhoneOS']
++        (self.target / 'Info.plist').write_bytes(plistlib.dumps(data))
++        with self.assertRaises(ValueError):
++            self.prepare()
++        self.assertEqual(self.commands, [])
++
++    def test_pipeline_retains_actual_payloads_and_signs_only_owned_export(self):
++        proof = self.prepare()
++        self.assertEqual(proof['status'], 'PASS_CONSTRAINED_SIMULATOR_EXPORT_SIGNATURE')
++        self.assertEqual(proof['upstream_signature'], 'INVALID_MISSING_SEALED_MEMBERS')
++        self.assertEqual(proof['consumer_qualification'], 'NOT_GRANTED')
++        self.assertEqual([row[0] for row in self.commands], [
++            'amplitude-original-strict-signature', 'amplitude-export-before-strict-signature',
++            'amplitude-export-adhoc-sign', 'amplitude-export-after-strict-signature'])
++        signed = self.commands[2]
++        self.assertEqual(signed[1], ['codesign', '--force', '--sign', '-', '--timestamp=none', str(self.target)])
++        self.assertEqual([row[2] for row in self.commands], [30, 30, 30, 30])
++        for name in self.original:
++            self.assertEqual((self.source / name).read_bytes(), self.original[name])
++            self.assertEqual((self.evidence / proof['retained_original'] / name).read_bytes(), self.original[name])
++            self.assertEqual((self.evidence / proof['retained_export_before'] / name).read_bytes(), self.original[name])
++            self.assertEqual((self.evidence / proof['retained_export_after'] / name).read_bytes(),
++                             (self.target / name).read_bytes())
++
++    def test_unexpected_upstream_signature_success_never_signs(self):
++        self.pre_verification_succeeds = True
++        with self.assertRaisesRegex(ValueError, 'unexpectedly passed'):
++            self.prepare()
++        self.assertEqual(len(self.commands), 1)
++
++    def test_different_native_preverification_failure_never_signs(self):
++        self.wrong_error = True
++        with self.assertRaisesRegex(ValueError, 'was not observed'):
++            self.prepare()
++        self.assertEqual(len(self.commands), 1)
++
++    def test_native_signer_timeout_cannot_produce_qualification(self):
++        self.failure = 'amplitude-export-adhoc-sign'
++        with self.assertRaises(subprocess.TimeoutExpired):
++            self.prepare()
++        receipt = json.loads((self.evidence / 'amplitude-simulator-signing.json').read_bytes())
++        self.assertEqual(receipt['status'], 'FAIL')
++        self.assertEqual(receipt['native_post_signature'], 'NOT_RUN')
++        self.assertEqual(len(self.commands), 3)
++
++    def test_post_sign_resource_mutation_is_refused_without_native_credit(self):
++        def altered():
++            value = fixture_ad_hoc_replacement(self.original)
++            value['Headers/AmplitudeCore-Swift.h'] += b'corruption'
++            return value
++        self.signer = altered
++        with self.assertRaisesRegex(ValueError, 'ordinary resources'):
++            self.prepare()
++        self.assertEqual(len(self.commands), 3)
++
++    def test_post_sign_executable_mutation_with_valid_page_hashes_is_refused(self):
++        def edit(prefix, old, index):
++            prefix[8192] ^= 1
++        self.signer = lambda: fixture_ad_hoc_replacement(self.original, edit_prefix=edit)
++        with self.assertRaisesRegex(ValueError, 'nonsignature LINKEDIT'):
++            self.prepare()
++        self.assertEqual(len(self.commands), 3)
++
++    def test_actual_post_sign_strict_failure_remains_failure(self):
++        self.failure = 'amplitude-export-after-strict-signature'
++        with self.assertRaises(subprocess.TimeoutExpired):
++            self.prepare()
++        receipt = json.loads((self.evidence / 'amplitude-simulator-signing.json').read_bytes())
++        self.assertEqual(receipt['status'], 'FAIL')
++        self.assertEqual(receipt['native_post_signature'], 'NOT_RUN')
++
++    def test_original_source_change_during_verification_is_refused(self):
++        self.mutate_source_after = True
++        with self.assertRaisesRegex(ValueError, 'changed the verified input'):
++            self.prepare()
++        receipt = json.loads((self.evidence / 'amplitude-simulator-signing.json').read_bytes())
++        self.assertEqual(receipt['status'], 'FAIL')
++
++    def test_existing_packager_retains_complete_signing_attachments(self):
++        proof = self.prepare()
++        packager = ROOT / 'Tools/PinkhaNativeDerived/package_evidence.py'
++        result = subprocess.run([__import__('sys').executable, str(packager), str(self.evidence)],
++                                capture_output=True, timeout=20)
++        self.assertEqual(result.returncode, 0, result.stderr.decode())
++        with zipfile.ZipFile(self.evidence / 'Pinkha-Native-Derived-Evidence.zip') as archive:
++            self.assertIsNone(archive.testzip())
++            for key in ['retained_original', 'retained_export_before', 'retained_export_after']:
++                for relative in self.original:
++                    name = proof[key] + '/' + relative
++                    self.assertEqual(archive.read(name), (self.evidence / name).read_bytes())
++
++class OriginalSigningDriverFlowControls(unittest.TestCase):
++    def run_flow(self, fail_other=False, corrupt_signer=False):
++        case = original_flow.OriginalDriverFlowControls('test_one_notice_preserves_selected_simulator_for_both_original_build_commands')
++        # The shared original driver is invoked manually by this new test;
++        # keep its retained trace under this actual test's unique identity.
++        case._testMethodName = self._testMethodName
++        case.setUp()
++        self.addCleanup(case.doCleanups)
++        files = original_files()
++        produce = case.produce_framework_fixture
++        original_command = case.command
++        package_path = 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved'
++        (case.root / package_path).write_bytes((ROOT / package_path).read_bytes())
++        def produce_with_real_amplitude():
++            produce()
++            destination = case.work / 'producer-derived/Build/Products/Debug-Anytype-iphonesimulator' / signing.NAME
++            put_framework(destination, files)
++        def command(args, root, evidence, name, timeout):
++            if name.startswith('amplitude-'):
++                case.events.append({'name': name, 'command': list(args), 'timeout_seconds': timeout})
++                if name.endswith('before-strict-signature') or name == 'amplitude-original-strict-signature':
++                    stderr = b'EXPLICIT_NATIVE_TOOL_DOUBLE: a sealed resource is missing or invalid\n'
++                    (evidence / (name + '.stdout.log')).write_bytes(b'')
++                    (evidence / (name + '.stderr.log')).write_bytes(stderr)
++                    driver.write(evidence / (name + '.command.json'), {
++                        'command': list(args), 'returncode': 1, 'timed_out': False,
++                        'timeout_seconds': timeout, 'stdout_sha256': signing.digest(b''),
++                        'stderr_sha256': signing.digest(stderr)})
++                    raise ValueError('Actual command failed: ' + name)
++                if name == 'amplitude-export-adhoc-sign':
++                    updated = fixture_ad_hoc_replacement(files)
++                    if corrupt_signer:
++                        updated['Headers/AmplitudeCore-Swift.h'] = b'bad'
++                    for relative, value in updated.items():
++                        (Path(args[-1]) / relative).write_bytes(value)
++                return ''
++            return original_command(args, root, evidence, name, timeout)
++        case.produce_framework_fixture = produce_with_real_amplitude
++        case.command = command
++        if fail_other:
++            case.failure = 'framework-signature-1'
++        with patch.object(signing.platform, 'system', return_value='Darwin'):
++            case.run_driver()
++        return case
++
++    def test_whole_driver_keeps_strict_gate_and_exact_transformed_consumer_inputs(self):
++        case = self.run_flow()
++        names = case.names()
++        self.assertLess(names.index('amplitude-export-after-strict-signature'), names.index('framework-signature-0'))
++        self.assertLess(names.index('framework-signature-0'), names.index('external-consumer-build'))
++        self.assertEqual(case.receipt['external_consumer_build'], 'PASS')
++        self.assertEqual(case.receipt['status'], 'FAIL')
++        self.assertIn('Synthetic control stops before real installation', case.receipt['error'])
++        proof = json.loads((case.evidence / 'framework-distribution.json').read_bytes())
++        before = json.loads((case.evidence / 'framework-distribution-before-simulator-signing.json').read_bytes())
++        self.assertEqual({p for p in proof['files'] if proof['files'][p] != before['files'][p]},
++                         {'Frameworks/AmplitudeCore.framework/AmplitudeCore',
++                          'Frameworks/AmplitudeCore.framework/_CodeSignature/CodeResources'})
++        self.assertEqual(proof['simulator_signing_transformations'][0]['consumer_qualification'], 'NOT_GRANTED')
++
++    def test_other_framework_signature_failure_still_blocks_consumer_and_boot(self):
++        case = self.run_flow(fail_other=True)
++        self.assertIn('amplitude-export-after-strict-signature', case.names())
++        self.assertNotIn('external-consumer-build', case.names())
++        self.assertNotIn('boot-owned-simulator', case.names())
++        self.assertEqual(case.receipt['external_consumer_build'], 'NOT_RUN')
++
++    def test_corrupt_signer_stops_original_driver_before_strict_gate_or_consumer(self):
++        case = self.run_flow(corrupt_signer=True)
++        self.assertNotIn('framework-signature-0', case.names())
++        self.assertNotIn('external-consumer-build', case.names())
++        self.assertEqual(case.receipt['external_consumer_build'], 'NOT_RUN')
++
++if __name__ == '__main__':
++    unittest.main()
+--- a/Tools/OriginalEditor/test_framework.py
++++ b/Tools/OriginalEditor/test_framework.py
+@@ -93,7 +93,7 @@
+ 
+     def test_original_heart_installer_changes_only_one_new_branch_choice(self):
+         raw = (ROOT / 'Tools/PinkhaNativeDerived/install_verified_heart.py').read_bytes()
+-        suffix = b",\n                             'codex/otzaria-original-editor-framework-v5-reviewed-20261120'"
++        suffix = b",\n                             'codex/otzaria-original-editor-framework-v6-reviewed-20261120'"
+         self.assertEqual(raw.count(suffix), 1)
+         old = raw.replace(suffix, b'', 1)
+         actual = hashlib.sha1(b'blob ' + str(len(old)).encode() + b'\0' + old).hexdigest()
+--- a/Tools/PinkhaNativeDerived/install_verified_heart.py
++++ b/Tools/PinkhaNativeDerived/install_verified_heart.py
+@@ -28,7 +28,8 @@
+                              'codex/otzaria-original-editor-framework-reviewed-20261120',
+                              'codex/otzaria-original-editor-framework-v3-reviewed-20261120',
+                              'codex/otzaria-original-editor-framework-v4-reviewed-20261120',
+-                             'codex/otzaria-original-editor-framework-v5-reviewed-20261120'],
++                             'codex/otzaria-original-editor-framework-v5-reviewed-20261120',
++                             'codex/otzaria-original-editor-framework-v6-reviewed-20261120'],
+                     default='codex/torah-native-derived-properties-20261103')
+ args = parser.parse_args()
+ inventory = json.loads(args.inventory.read_text())

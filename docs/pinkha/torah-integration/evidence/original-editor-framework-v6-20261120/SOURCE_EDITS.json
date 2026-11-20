@@ -1,0 +1,56 @@
+[
+  {
+    "path": "Tools/OriginalEditor/run_framework_acceptance.py",
+    "old": "from framework_products import consumer_project, export_products, inventory, original_oracles, verify_observation, verify_public_surface",
+    "new": "from framework_products import consumer_project, export_products, inventory, original_oracles, verify_observation, verify_public_surface\nfrom amplitude_simulator_signing import prepare_amplitude_simulator_export",
+    "count": 1
+  },
+  {
+    "path": "Tools/OriginalEditor/run_framework_acceptance.py",
+    "old": "        if re.search(r'\\bDYLIB\\b', header):\n            dynamic.append(name)\n            command(['codesign', '--verify', '--strict', str(framework)], root, evidence,\n",
+    "new": "        if re.search(r'\\bDYLIB\\b', header):\n            dynamic.append(name)\n            if name == 'AmplitudeCore.framework':\n                # This exact upstream Simulator product is byte-authenticated but\n                # has two missing sealed compiler modules. Preserve its failed\n                # seal, then sign only the owned export; the original strict\n                # gate below and exact consumer embedding remain mandatory.\n                write(evidence / 'framework-distribution-before-simulator-signing.json', exported_proof)\n                transformation = prepare_amplitude_simulator_export(root, products, exported, evidence, command)\n                after_signing = inventory(exported)\n                permitted = {'Frameworks/AmplitudeCore.framework/AmplitudeCore',\n                             'Frameworks/AmplitudeCore.framework/_CodeSignature/CodeResources'}\n                require(set(after_signing) == set(exported_proof['files'])\n                        and {path for path in after_signing\n                             if after_signing[path] != exported_proof['files'][path]} == permitted,\n                        'Simulator signing changed unrelated distribution bytes')\n                exported_proof['files'] = after_signing\n                exported_proof['bytes'] = sum(item['bytes'] for item in after_signing.values())\n                exported_proof['simulator_signing_transformations'] = [transformation]\n                write(evidence / 'framework-distribution.json', exported_proof)\n            command(['codesign', '--verify', '--strict', str(framework)], root, evidence,\n",
+    "count": 1
+  },
+  {
+    "path": ".github/workflows/pinkha-original-editor-framework.yml",
+    "old": "codex/otzaria-original-editor-framework-v5-reviewed-20261120",
+    "new": "codex/otzaria-original-editor-framework-v6-reviewed-20261120",
+    "count": 3
+  },
+  {
+    "path": "Tools/OriginalEditor/framework_profile.json",
+    "old": "codex/otzaria-original-editor-framework-v5-reviewed-20261120",
+    "new": "codex/otzaria-original-editor-framework-v6-reviewed-20261120",
+    "count": 1
+  },
+  {
+    "path": "Tools/OriginalEditor/framework_profile.py",
+    "old": "codex/otzaria-original-editor-framework-v5-reviewed-20261120",
+    "new": "codex/otzaria-original-editor-framework-v6-reviewed-20261120",
+    "count": 1
+  },
+  {
+    "path": "Tools/OriginalEditor/test_framework.py",
+    "old": "codex/otzaria-original-editor-framework-v5-reviewed-20261120",
+    "new": "codex/otzaria-original-editor-framework-v6-reviewed-20261120",
+    "count": 1
+  },
+  {
+    "path": "Tools/OriginalEditor/framework_profile.json",
+    "old": "9d7bea648cfd4bca2643265f594550b58d749256",
+    "new": "9365e5b58db125c80e7094cbba816d0002aef0c5",
+    "count": 1
+  },
+  {
+    "path": "Tools/OriginalEditor/framework_profile.py",
+    "old": "codex/otzaria-original-editor-framework-v4-reviewed-20261120",
+    "new": "codex/otzaria-original-editor-framework-v5-reviewed-20261120",
+    "count": 2
+  },
+  {
+    "path": "Tools/PinkhaNativeDerived/install_verified_heart.py",
+    "old": "                             'codex/otzaria-original-editor-framework-v5-reviewed-20261120'],",
+    "new": "                             'codex/otzaria-original-editor-framework-v5-reviewed-20261120',\n                             'codex/otzaria-original-editor-framework-v6-reviewed-20261120'],",
+    "count": 1
+  }
+]
