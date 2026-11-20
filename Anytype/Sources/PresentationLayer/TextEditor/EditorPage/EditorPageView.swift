@@ -24,6 +24,10 @@ struct EditorPageView: View {
         )
     }
     
+    init(preparedState: @autoclosure @escaping () -> EditorPageViewState) {
+        self._stateModel = StateObject(wrappedValue: preparedState())
+    }
+
     var body: some View {
         EditorSwiftUIViewContainer(viewController: stateModel.viewController)
             .anytypeStatusBar(style: .default)

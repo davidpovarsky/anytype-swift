@@ -10,6 +10,14 @@ protocol EditorPageModuleAssemblyProtocol: AnyObject {
         showHeader: Bool,
         torahSession: TorahEditorSession?
     ) -> EditorPageViewState
+
+    func buildStateModel(
+        data: EditorPageObject,
+        preparedDocument: any BaseDocumentProtocol,
+        output: (any EditorPageModuleOutput)?,
+        showHeader: Bool,
+        torahSession: TorahEditorSession?
+    ) throws -> EditorPageViewState
 }
 
 @MainActor
@@ -25,6 +33,45 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
         output: (any EditorPageModuleOutput)?,
         showHeader: Bool,
         torahSession: TorahEditorSession?
+    ) -> EditorPageViewState {
+        assembleStateModel(
+            data: data,
+            output: output,
+            showHeader: showHeader,
+            torahSession: torahSession,
+            resolveDocument: {
+                documentService.document(
+                    objectId: data.objectId,
+                    spaceId: data.spaceId,
+                    mode: data.mode
+                )
+            }
+        )
+    }
+
+    func buildStateModel(
+        data: EditorPageObject,
+        preparedDocument: any BaseDocumentProtocol,
+        output: (any EditorPageModuleOutput)?,
+        showHeader: Bool,
+        torahSession: TorahEditorSession?
+    ) throws -> EditorPageViewState {
+        try PreparedEditorPageDocument.validate(data: data, document: preparedDocument)
+        return assembleStateModel(
+            data: data,
+            output: output,
+            showHeader: showHeader,
+            torahSession: torahSession,
+            resolveDocument: { preparedDocument }
+        )
+    }
+
+    private func assembleStateModel(
+        data: EditorPageObject,
+        output: (any EditorPageModuleOutput)?,
+        showHeader: Bool,
+        torahSession: TorahEditorSession?,
+        resolveDocument: @MainActor () -> any BaseDocumentProtocol
     ) -> EditorPageViewState {
         let simpleTableMenuViewModel = SimpleTableMenuViewModel()
         let blocksOptionViewModel = SelectionOptionsViewModel(itemProvider: nil)
@@ -42,11 +89,7 @@ final class EditorPageModuleAssembly: EditorPageModuleAssemblyProtocol {
             showHeader: showHeader
         )
 
-        let document = documentService.document(
-            objectId: data.objectId,
-            spaceId: data.spaceId,
-            mode: data.mode
-        )
+        let document = resolveDocument()
         let router = EditorRouter(
             viewController: controller,
             document: document,

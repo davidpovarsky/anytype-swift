@@ -10,31 +10,32 @@ final class BlockActionService: BlockActionServiceProtocol {
     private let documentId: String
     private let cursorManager: EditorCursorManager
 
-    @Injected(\.objectActionsService)
-    private var objectActionService: any ObjectActionsServiceProtocol
-    @Injected(\.textServiceHandler)
-    private var textServiceHandler: any TextServiceProtocol
-    @Injected(\.blockService)
-    private var blockService: any BlockServiceProtocol
-    @Injected(\.bookmarkService)
-    private var bookmarkService: any BookmarkServiceProtocol
-    @Injected(\.fileActionsService)
-    private var fileService: any FileActionsServiceProtocol
-    @Injected(\.objectTypeProvider)
-    private var objectTypeProvider: any ObjectTypeProviderProtocol
-    @Injected(\.keyboardInsertedBlocksStorage)
-    private var keyboardInsertedBlocksStorage: any KeyboardInsertedBlocksStorageProtocol
+    private let objectActionService: any ObjectActionsServiceProtocol
+    private let textServiceHandler: any TextServiceProtocol
+    private let blockService: any BlockServiceProtocol
+    private let bookmarkService: any BookmarkServiceProtocol
+    private let fileService: any FileActionsServiceProtocol
+    private let objectTypeProvider: any ObjectTypeProviderProtocol
+    private let keyboardInsertedBlocksStorage: any KeyboardInsertedBlocksStorageProtocol
 
     private weak var modelsHolder: EditorMainItemModelsHolder?
 
     init(
         documentId: String,
         modelsHolder: EditorMainItemModelsHolder,
-        cursorManager: EditorCursorManager
+        cursorManager: EditorCursorManager,
+        dependencies: BlockActionServiceDependencies = .original()
     ) {
         self.documentId = documentId
         self.modelsHolder = modelsHolder
         self.cursorManager = cursorManager
+        self.objectActionService = dependencies.objectActionService
+        self.textServiceHandler = dependencies.textServiceHandler
+        self.blockService = dependencies.blockService
+        self.bookmarkService = dependencies.bookmarkService
+        self.fileService = dependencies.fileService
+        self.objectTypeProvider = dependencies.objectTypeProvider
+        self.keyboardInsertedBlocksStorage = dependencies.keyboardInsertedBlocksStorage
     }
 
     // MARK: Actions
