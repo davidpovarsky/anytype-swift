@@ -8,9 +8,9 @@ import PinkhaAnyIntegration
 @Suite("Native block intent and shared creation journal")
 struct AnyNativeBlockCreatorTests {
     private let workspace = try! AnyTorahWorkspace(accountID: "account", spaceID: "space")
-    private func intent(_ suffix: String = "1", text: String = "שלום **מקור**") throws -> AnyNativeBlockCreationIntent {
+    private func intent(_ suffix: String = "1", text: String = "שלום **מקור**", type: String = "quote") throws -> AnyNativeBlockCreationIntent {
         try .init(workspace: workspace, mutationID: String(repeating: suffix, count: 32),
-                  objectID: "document", type: "quote", text: text,
+                  objectID: "document", type: type, text: text,
                   style: .object(["pinkhaWritingDirection": .string("rightToLeft"),
                                   "futureStyle": .object(["nested": .bool(true)])]),
                   parentID: "parent", position: "PPPP")
@@ -166,9 +166,100 @@ struct AnyNativeBlockCreatorTests {
         #expect(await effects.count == 1)
     }
 
+    @Test func sparseEmptyParagraphIsVerifiedAndExactRetryDoesNotRedispatch() async throws {
+        let value = try intent(text: "", type: "paragraph")
+        let journal = BlockJournalFixture(workspace: workspace), effects = BlockEffectsFixture()
+        let creator = make(journal: journal, effects: effects, readback: { row in
+            var fields = row.object!
+            fields.removeValue(forKey: "text")
+            return .object(fields)
+        })
+        let id = try await creator.ensureBlock(value, authorize: {}, onNativeConfirmed: { confirmed in
+            let recorded = try await journal.lookup(value.identity)
+            #expect(recorded == .verified(confirmed))
+        })
+        #expect(id == "native-block")
+        #expect(try await journal.lookup(value.identity) == .verified(id))
+        #expect(try await creator.ensureBlock(value, authorize: {}) == id)
+        #expect(await effects.count == 1)
+        #expect(await effects.row["style"] == value.style)
+        #expect(await effects.row["nav"] == value.body["nav"])
+    }
+
+    @Test func explicitEmptyTextStillVerifies() async throws {
+        let value = try intent(text: "", type: "paragraph")
+        let journal = BlockJournalFixture(workspace: workspace), effects = BlockEffectsFixture()
+        let creator = make(journal: journal, effects: effects)
+        #expect(try await creator.ensureBlock(value, authorize: {}) == "native-block")
+        #expect(try await journal.lookup(value.identity) == .verified("native-block"))
+        #expect(await effects.count == 1)
+    }
+
+    @Test func emptyIntentRejectsExplicitNullWrongTypeAndNonemptyText() async throws {
+        let invalid: [AnyJSON] = [.null, .integer(0), .bool(false), .array([]), .object([:]), .string("changed")]
+        for text in invalid {
+            let value = try intent(text: "", type: "paragraph")
+            let journal = BlockJournalFixture(workspace: workspace), effects = BlockEffectsFixture()
+            let creator = make(journal: journal, effects: effects, readback: { row in
+                var fields = row.object!
+                fields["text"] = text
+                return .object(fields)
+            })
+            for _ in 0..<2 {
+                await #expect(throws: AnyNativeCreationError.createdObjectIncomplete("native-block")) {
+                    try await creator.ensureBlock(value, authorize: {})
+                }
+                #expect(try await journal.lookup(value.identity) == .created("native-block"))
+                #expect(try await creator.recordedBlockID(for: value) == "native-block")
+            }
+            #expect(await effects.count == 1)
+        }
+    }
+
+    @Test func nonemptyIntentRejectsMissingNativeTextWithoutRedispatch() async throws {
+        let value = try intent()
+        let journal = BlockJournalFixture(workspace: workspace), effects = BlockEffectsFixture()
+        let creator = make(journal: journal, effects: effects, readback: { row in
+            var fields = row.object!
+            fields.removeValue(forKey: "text")
+            return .object(fields)
+        })
+        for _ in 0..<2 {
+            await #expect(throws: AnyNativeCreationError.createdObjectIncomplete("native-block")) {
+                try await creator.ensureBlock(value, authorize: {})
+            }
+        }
+        #expect(try await journal.lookup(value.identity) == .created("native-block"))
+        #expect(await effects.count == 1)
+    }
+
+    @Test func sparseEmptyTextDoesNotRelaxIdentityTypeStyleOrPlacement() async throws {
+        let invalid: [(String, AnyJSON)] = [
+            ("id", .string("other-block")), ("type", .string("heading")),
+            ("style", .object(["pinkhaWritingDirection": .string("rightToLeft")])),
+            ("nav", .object(["parentId": .string("other-parent"), "pos": .string("PPPP")])),
+            ("nav", .object(["parentId": .string("parent"), "pos": .string("QQQQ")]))]
+        for (key, replacement) in invalid {
+            let value = try intent(text: "", type: "paragraph")
+            let journal = BlockJournalFixture(workspace: workspace), effects = BlockEffectsFixture()
+            let creator = make(journal: journal, effects: effects, readback: { row in
+                var fields = row.object!
+                fields.removeValue(forKey: "text")
+                fields[key] = replacement
+                return .object(fields)
+            })
+            await #expect(throws: AnyNativeCreationError.createdObjectIncomplete("native-block")) {
+                try await creator.ensureBlock(value, authorize: {})
+            }
+            #expect(try await journal.lookup(value.identity) == .created("native-block"))
+            #expect(await effects.count == 1)
+        }
+    }
+
     private func make(journal: BlockJournalFixture, effects: BlockEffectsFixture,
                       loseReply: Bool = false, mismatch: Bool = false,
                       gate: BlockGateFixture? = nil,
+                      readback: @escaping @Sendable (AnyJSON) -> AnyJSON = { $0 },
                       validateCreation: @escaping @Sendable (AnyNativeBlockCreationIntent) async throws -> Void = { _ in }) -> AnyNativeBlockCreator {
         AnyNativeBlockCreator(workspace: workspace, journal: journal,
             dispatch: { intent, authorize in
@@ -179,7 +270,7 @@ struct AnyNativeBlockCreatorTests {
                 return "native-block"
             }, inspect: { _, _ in
                 if mismatch { await effects.changeText("wrong response") }
-                return await effects.row
+                return readback(await effects.row)
             }, validateCreation: validateCreation)
     }
 

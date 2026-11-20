@@ -1,0 +1,115 @@
+{
+  "accountID": "AAdG2dJN7x9Wc5S2cCYLLs7DdVEDaq6yeBhTfqF1JVsC1AWV",
+  "buildReceiptSHA256": "c19fb3038c07f732e905cd2fd14ef2ae5d8dd97beb698ac0b26bf8ae8c9ed0af",
+  "buildScope": "Complete four-file Host Probe target with original creation14 plus two sparse-empty checks, tested Host16 and Integration35 modules, unchanged source-bound plain Engine/Kit/Crypto objects. No watchdog or transport override.",
+  "endpoint": "http://127.0.0.1:52601",
+  "engineStartedAt": "2026-11-20T04:42:02.7143579Z",
+  "executedChecks": 16,
+  "expectedChecks": [
+    "block_retry_new_creator_same_metadata_has_no_native_change",
+    "changed_block_intent_refused_before_native_create",
+    "changed_object_intent_refused_before_native_create",
+    "closed_original_session_refuses_new_creation_work",
+    "confirmation_failure_retains_known_object_id_without_redispatch",
+    "empty_paragraph_exact_retry_preserves_id_and_native_history",
+    "empty_paragraph_native_sparse_text_is_verified",
+    "exact_current_writer_creation_capabilities",
+    "fixture_journal_contains_identity_and_receipt_metadata_only",
+    "guarded_child_creation_preserves_native_parent_identity",
+    "object_retry_new_creator_same_metadata_has_one_native_id",
+    "only_allocated_synthetic_objects_removed",
+    "production_guarded_block_create_preserves_text_and_unknown_style",
+    "production_guarded_object_create_verified_original_scope",
+    "revocation_before_dispatch_neither_reserves_nor_creates",
+    "verified_retry_preserves_later_editor_change_and_children"
+  ],
+  "explicitSwiftRuntimePATHPrefixes": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin",
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Runtimes\\6.3.3\\usr\\bin"
+  ],
+  "finishedAt": "2026-11-20T07:22:15.941687+00:00",
+  "fixtureSHA256": "b443c0414c8ec16b3b9008975273aca194b8cc0f3084d8c8863408d217a684d2",
+  "narrowSparseEmptyReadbackFix": true,
+  "nativeBinarySHA256": "4b110906ccecca3cc15a22a66caeeabea82b3cc44e25fe94a911a23a878da361",
+  "nativeBinaryStable": true,
+  "nativeProcessAfter": {
+    "owners": [
+      3096
+    ],
+    "path": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\any-native-properties-v9.exe",
+    "pid": 3096
+  },
+  "nativeProcessBefore": {
+    "owners": [
+      3096
+    ],
+    "path": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\any-native-properties-v9.exe",
+    "pid": 3096
+  },
+  "nativeSourceManifestSHA256": "15906eb27afea68cc7ec99242bffd6a8ea69517edb608a4421cce90c9a99a070",
+  "originalFixtureSpaceUnused": "bafyreiby5qf6xkfxlwqw3px77q2zroayz7m3mxmpgbppnwai2yqze2wjrm.3b6nhrin0h65b",
+  "originalFourteenCreationAssertionsUnchanged": true,
+  "probeSHA256": "2f9ae5ee3b64058fec6f2cd30c82b302854ffb1f544f7cee745dd0ac952b1f67",
+  "probeScopeLabelRetainedExactly": "real production native HTTP object/block creators; same-process metadata fixture; protected persistence and injected native partial failures are separate",
+  "process": {
+    "cleanupErrors": [],
+    "command": [
+      "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\native-empty-paragraph-host-probe-v1\\native-empty-host-probe.exe",
+      "http://127.0.0.1:52601",
+      "bafyreid4oztgj55jsylpg5jmwtrjmfdvtc7dqpcobpk64v5nljkitdnuje.3b6nhrin0h65b",
+      "AAdG2dJN7x9Wc5S2cCYLLs7DdVEDaq6yeBhTfqF1JVsC1AWV",
+      "--creation-retry",
+      "--allow-disposable-writes"
+    ],
+    "elapsedSeconds": 1.031,
+    "exitCode": 0,
+    "parentExited": true,
+    "pid": 32084,
+    "processBoundary": "owned_windows_kill_on_close_job",
+    "timedOut": false
+  },
+  "productionProbeSourceSHA256": "1c94b3a92ffa107301d9b24ecf102b4c713b407fac1645e22ad81f92b743e013",
+  "productionTransportChanged": false,
+  "protectedApplePersistenceCertified": false,
+  "report": {
+    "checks": [
+      "exact_current_writer_creation_capabilities",
+      "production_guarded_object_create_verified_original_scope",
+      "object_retry_new_creator_same_metadata_has_one_native_id",
+      "changed_object_intent_refused_before_native_create",
+      "production_guarded_block_create_preserves_text_and_unknown_style",
+      "block_retry_new_creator_same_metadata_has_no_native_change",
+      "changed_block_intent_refused_before_native_create",
+      "guarded_child_creation_preserves_native_parent_identity",
+      "verified_retry_preserves_later_editor_change_and_children",
+      "revocation_before_dispatch_neither_reserves_nor_creates",
+      "confirmation_failure_retains_known_object_id_without_redispatch",
+      "empty_paragraph_native_sparse_text_is_verified",
+      "empty_paragraph_exact_retry_preserves_id_and_native_history",
+      "fixture_journal_contains_identity_and_receipt_metadata_only",
+      "closed_original_session_refuses_new_creation_work",
+      "only_allocated_synthetic_objects_removed"
+    ],
+    "count": 16,
+    "fixtureJournal": "in-memory-metadata-only",
+    "nativeBlockCreate": 1,
+    "nativeObjectCreate": 1,
+    "scope": "real production native HTTP object/block creators; same-process metadata fixture; protected persistence and injected native partial failures are separate",
+    "status": "PASS"
+  },
+  "requiredNativeCapabilities": {
+    "conditionalMembershipSet": 1,
+    "conditionalPropertiesApplySeq": 1,
+    "conditionalPropertiesNoop": 1,
+    "conditionalPropertiesSet": 1,
+    "currentWriterBlockCreate": 1,
+    "currentWriterObjectCreate": 1,
+    "nativeDocumentMembership": 1
+  },
+  "scope": "actual_native_v9_sparse_empty_creation16",
+  "sourceStable": true,
+  "spaceID": "bafyreid4oztgj55jsylpg5jmwtrjmfdvtc7dqpcobpk64v5nljkitdnuje.3b6nhrin0h65b",
+  "stage": "native_and_source_readback",
+  "startedAt": "2026-11-20T07:22:09.401343+00:00",
+  "status": "PASS"
+}

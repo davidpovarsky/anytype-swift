@@ -178,6 +178,12 @@ public actor AnyNativeBlockCreator {
                     if case .created = state {
                         var expected = intent.body.object!
                         if intent.style.object?.isEmpty == true { expected.removeValue(forKey: "style") }
+                        // Native creation omits an exactly empty text field.
+                        // Only absence has that meaning; null and other values
+                        // must still match the original intent exactly.
+                        if intent.text.isEmpty, row["text"] == nil {
+                            expected.removeValue(forKey: "text")
+                        }
                         guard AnyNativeObjectCreator.containsExpected(row, expected: .object(expected)) else {
                             throw AnyNativeCreationError.createdObjectIncomplete(id)
                         }

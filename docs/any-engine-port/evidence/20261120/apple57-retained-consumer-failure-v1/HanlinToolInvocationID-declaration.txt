@@ -1,0 +1,15 @@
+331:     public init(validating rawValue: String) throws {
+332:         try HanlinIdentifierValidator.validate(rawValue, kind: Self.identifierKind)
+333:         self.rawValue = rawValue
+334:     }
+335: }
+336: 
+337: public struct HanlinToolInvocationID: HanlinStringIdentifier {
+338:     public static let identifierKind = "tool-invocation"
+339:     public let rawValue: String
+340:     public init(validating rawValue: String) throws {
+341:         try HanlinIdentifierValidator.validate(rawValue, kind: Self.identifierKind)
+342:         self.rawValue = rawValue
+343:     }
+344: }
+345: 

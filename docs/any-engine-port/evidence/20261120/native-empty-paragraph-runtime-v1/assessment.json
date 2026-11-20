@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_NATIVE_CREATION16",
+  "sealedAt": "2026-11-20T07:23:31.150585+00:00",
+  "checks": {
+    "originalCreation14": 14,
+    "newSparseEmptyAndExactRetry": 2,
+    "passed": 16,
+    "failed": 0
+  },
+  "runtimeReceipt": "runtime/result.json",
+  "runtimeReceiptSHA256": "4db6c2f7fd4caba6fc9d6a4c3432e8218511fa316a782ecaf431ef6d9e63a743",
+  "buildReceipt": "build/result.json",
+  "buildReceiptSHA256": "c19fb3038c07f732e905cd2fd14ef2ae5d8dd97beb698ac0b26bf8ae8c9ed0af",
+  "nativeBinarySHA256": "4b110906ccecca3cc15a22a66caeeabea82b3cc44e25fe94a911a23a878da361",
+  "probeBinarySHA256": "2f9ae5ee3b64058fec6f2cd30c82b302854ffb1f544f7cee745dd0ac952b1f67",
+  "sourceStable": true,
+  "retainedInputsStable": true,
+  "newSyntheticSpaceOnly": true,
+  "originalFixtureSpaceUnused": true,
+  "createdSyntheticObjectsRemovedByOriginalCleanupCheck": true,
+  "requestTimeoutAndTransportUnchanged": true,
+  "noTraceNoWatchdogNoFallbackRetry": true,
+  "process": {
+    "exitCode": 0,
+    "elapsedSeconds": 1.031,
+    "timedOut": false,
+    "parentExited": true,
+    "cleanupErrors": [],
+    "processBoundary": "owned_windows_kill_on_close_job"
+  },
+  "componentProof": {
+    "path": "docs/any-engine-port/evidence/20261120/native-empty-paragraph-fix-v1",
+    "manifestSHA256": "c98efcf2ad3a6b1422c400612f4de3ff963d991847c4f96bd338ce2316468514",
+    "actualTests": 16
+  },
+  "limitations": [
+    "This Windows real native probe uses the existing metadata-only in-memory journal fixture; it does not replace Apple protected persistence acceptance.",
+    "Corrected mounted Apple publication test has not been re-executed by this proof. Its original assertions remain unchanged.",
+    "Earlier independent Windows transport timeouts remain preserved and are not declared fixed by this passing creation workflow."
+  ],
+  "ownedNativeFixture": "Existing runtime-owned v9 server intentionally left running; this probe child and compiler children exited.",
+  "freeBytesAfterOwnCacheCleanup": 2298728448
+}

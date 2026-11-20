@@ -1,0 +1,12 @@
+--- before/AnyNativeBlockCreatorTests.swift
++++ after/AnyNativeBlockCreatorTests.swift
+@@ -175,7 +175,8 @@
+             return .object(fields)
+         })
+         let id = try await creator.ensureBlock(value, authorize: {}, onNativeConfirmed: { confirmed in
+-            #expect(try await journal.lookup(value.identity) == .verified(confirmed))
++            let recorded = try await journal.lookup(value.identity)
++            #expect(recorded == .verified(confirmed))
+         })
+         #expect(id == "native-block")
+         #expect(try await journal.lookup(value.identity) == .verified(id))

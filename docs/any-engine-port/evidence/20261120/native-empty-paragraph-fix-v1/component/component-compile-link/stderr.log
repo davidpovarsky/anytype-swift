@@ -1,0 +1,12 @@
+macro expansion #expect:1:22: error: errors thrown from here are not handled
+`- C:\Users\DAVID\Code\anytype-swift-any-engine-20261119\Modules\PinkhaAnyHost\Tests\PinkhaAnyHostTests\AnyNativeBlockCreatorTests.swift:178:86: note: expanded code originates here
+176 |         })
+177 |         let id = try await creator.ensureBlock(value, authorize: {}, onNativeConfirmed: { confirmed in
+178 |             #expect(try await journal.lookup(value.identity) == .verified(confirmed))
+    |             `- note: in expansion of macro 'expect' here
+    +--- macro expansion #expect ---------------------------------------
+    |1 | Testing.__checkValue(try await journal.lookup(value.identity) == .verified(confirmed),expression: .__fromSyntaxNode("try await journal.lookup(value.identity) == .verified(confirmed)"),comments: [],isRequired: false,sourceLocation: Testing.SourceLocation.__here()).__expected()
+    |  |                      `- error: errors thrown from here are not handled
+    +-------------------------------------------------------------------
+179 |         })
+180 |         #expect(id == "native-block")

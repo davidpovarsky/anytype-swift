@@ -1,0 +1,38 @@
+--- before/Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/CreationProbe.swift
++++ after/Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/CreationProbe.swift
+@@ -163,6 +163,35 @@
+                         "known-ID retry created a replacement root")
+             checks.append("confirmation_failure_retains_known_object_id_without_redispatch")
+ 
++            // The native block endpoint intentionally leaves text absent for
++            // an empty paragraph; verify that exact production representation.
++            let emptyIntent = try AnyNativeBlockCreationIntent(workspace: workspace,
++                mutationID: creationProbeMutationID(), objectID: id, type: "paragraph", text: "",
++                style: .object(["pinkhaWritingDirection": .string("natural"),
++                    "pinkhaTextAlignment": .string("natural")]), position: "zzzz")
++            let emptyID = try await blocks.ensureBlock(emptyIntent, authorize: { try await lease.validate() },
++                onNativeConfirmed: { confirmed in
++                    try require(try await journal.lookup(emptyIntent.identity) == .verified(confirmed),
++                                "sparse empty paragraph was not verified before confirmation")
++                })
++            let withEmpty = try await documents.read(objectID: id, lease: lease)
++            guard let empty = withEmpty.snapshot.blocks.first(where: { $0.id == emptyID }) else {
++                throw ProbeError.failed("empty paragraph missing from native readback")
++            }
++            try require(withEmpty.snapshot.depthFirstIDs == [parentID, childID, emptyID] &&
++                        empty.type == "paragraph" && empty.text.isEmpty && empty.native["text"] == nil &&
++                        empty.native["style"] == emptyIntent.style &&
++                        empty.parentID == emptyIntent.parentID && empty.position == emptyIntent.position,
++                        "native sparse empty paragraph identity/content/style/placement")
++            checks.append("empty_paragraph_native_sparse_text_is_verified")
++            let emptyRetry = try await reopenedBlocks.ensureBlock(emptyIntent, authorize: { try await lease.validate() })
++            let afterEmptyRetry = try await documents.read(objectID: id, lease: lease)
++            try require(emptyRetry == emptyID && afterEmptyRetry.snapshot.depthFirstIDs == withEmpty.snapshot.depthFirstIDs &&
++                        afterEmptyRetry.nativeVersion == withEmpty.nativeVersion &&
++                        afterEmptyRetry.snapshot.revision == withEmpty.snapshot.revision,
++                        "empty paragraph exact retry changed ID or native history")
++            checks.append("empty_paragraph_exact_retry_preserves_id_and_native_history")
++
+             let metadata = try await journal.metadata()
+             try require(!String(decoding: metadata, as: UTF8.self).contains(title) &&
+                         !String(decoding: metadata, as: UTF8.self).contains(parentIntent.text),

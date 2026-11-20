@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_FOCUSED_HOST16_NATIVE_PENDING",
+  "sealedAt": "2026-11-20T07:19:07.989323+00:00",
+  "sourceFiles": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativeBlockCreator.swift": "58a3ce0653a8973a07dce7e7dde80e1cb66a8bcce692652a47a8c8c60db684bc",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/AnyNativeBlockCreatorTests.swift": "255bb76c92c8094bef0dd4a2800295f82563c4f3e2515b1ee8bd89eca7554b9f",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/CreationProbe.swift": "1c94b3a92ffa107301d9b24ecf102b4c713b407fac1645e22ad81f92b743e013"
+  },
+  "hostedPublicationTest": {
+    "workingTreeSHA256": "8affee55ada19e2ca31411164005be0d2863e421b2f4ce5111e639e00c9af32a",
+    "immutableC8SHA256": "d59d06d64f004e437e593dc8fb4f181ed67844ff5d1411cddbea96efdd985850",
+    "equalAfterOnlyCRLFNormalization": true,
+    "sourceEditedByThisFix": false
+  },
+  "productionChange": "Only missing native text for an exactly-empty intent is normalized for created-state verification; explicit null, other types and all other fields remain strict. Global containsExpected and authority/journal/retry paths unchanged.",
+  "actualTests": {
+    "passed": 16,
+    "failed": 0,
+    "suite": "Native block intent and shared creation journal",
+    "receipt": "component-v2/result.json",
+    "receiptSHA256": "1eb8ba8a053266bca676321902e039ec93a4eb79a8a81c9ffa665db05905836c",
+    "sourceStable": true,
+    "dependenciesStable": true
+  },
+  "preservedFailure": {
+    "receipt": "component/result.json",
+    "status": "FAIL",
+    "executedTests": 0,
+    "reason": "Swift Testing macro in newly added throwing callback failed compile. Lookup moved to explicit throwing local before identical assertion. Host11 and production Probe4 compiled successfully."
+  },
+  "nativeExecution": {
+    "status": "NOT_RUN_AT_THIS_SEAL",
+    "planned": "Original native creation14 plus2 sparse-empty/retry checks in a new synthetic Space on pinned v9; later result will be a separate immutable archive.",
+    "productionTransportChanged": false
+  },
+  "appleExecution": {
+    "status": "PENDING_CORRECTED_HOSTED_GATE",
+    "prior": "Actual c8 hosted9:8 passed, this publication method failed4 assertions; failure remains in apple-c8-hosted-application-v1."
+  },
+  "scopeLimits": [
+    "Actor seam tests use the original memory journal fixture.",
+    "No Apple protected journal, mounted UI, or real native HTTP acceptance is claimed by this component archive."
+  ]
+}

@@ -3,6 +3,7 @@ import Factory
 import Services
 import ProtobufMessages
 import HanlinHostContracts
+import HanlinPlatformContracts
 import PinkhaHanlinCore
 
 /// Heart-specific native I/O only. Reservation, timeout, cancellation and late

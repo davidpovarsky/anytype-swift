@@ -97,7 +97,7 @@ overlay once.
 | Swift Integration at published57 | 126 tests in 10 suites, source-bound Apple PASS | Domain and adapter tests; no UIKit execution |
 | Production Swift canonical archive against native v8 | 16/16 checks | Current unchanged workflow: association history/payload export, explicit ID mapping, native import/retry; not full Heart body/file migration. `native-v8-archive16-v1/` |
 | Production Swift guarded creation against native v8 | 14/14 checks | Real native object/block creation with an explicitly in-memory metadata journal. `native-v8-creation14-v1/` |
-| Production Swift property service | Earlier v6 15/15 remains historical; current v9 plain Windows attempt failed with an uncertain response | V8 exposed the missing serialized apply sequence, now fixed in v9. The v9 timestamp-only diagnostic isolates a 30-second GET/auth timeout; root cause remains open. The unchanged fifteen-check workflow is now also a hosted Apple test, execution pending. |
+| Production Swift property service | The unchanged fifteen-check workflow passed in actual hosted Apple execution at c8, in28.568 seconds | [Exact hosted archive](../docs/any-engine-port/evidence/20261120/apple-c8-hosted-application-v1/MANIFEST.json). The previous Windows GET/auth timeout remains a preserved failure with unresolved cause; this Apple pass does not erase it. |
 | Native v6 definition/property policy | 4 SDK tests, 19 top-level HTTP tests / 31 cases, and 11 two-peer checks | Actual storage, signed claims, sync, definition removal and cold reopen |
 | Native v7 independent document metadata | 4 focused native tests and 7 real HTTP/cold-reopen checks | Fresh editor policy before claims installation; exact Type/target dependencies |
 | Current property-fence components | Integration 35/35 and Host 23/23 passed against their exact source and dependency receipts | Includes original property operations/Undo, captured sequence/run propagation and archive no-op request contracts; native runtime acceptance is separate |
@@ -109,11 +109,15 @@ overlay once.
 | Apple package execution at57c116e | Engine67; Integration126/10; Host65 XCTest+11 Swift Testing; Hanlin33; TorahPresentation1+10; AnyUI4+93/16; PinkhaKit217/29; live Sefaria7 | All passed with zero failures/skips. [Exact archive](../docs/any-engine-port/evidence/20261120/apple57-packages-v1/MANIFEST.json); these counts exclude the later v9/property/editor changes. |
 | Official and patched v7 AnyLib | Each passed 3/3 lifecycle/control tests at 27b4b2c and again at d58b6a0 | Actual arm64 iOS Simulator 27.2. Both source-bound named-execution archives are complete; the patched job's later application gates failed separately. These lifecycle tests do not certify the app or protected journals. |
 | Historical native application acceptance at d58b6a0 | All 5 methods executed and failed at real Keychain access | Standalone package XCTest received `unavailable(-34018)` / `secureStorageUnavailable`. The original methods subsequently passed in the real signed simulator host at57, as recorded below. |
-| Hosted native application at57c116e | All original5/5 passed, zero failures or skips | Real AnyLib/account/Keychain/editor/creation/association tests. The later three publication methods and fifteen-check property workflow remain pending on their own source revision. |
+| Hosted native application at57c116e | All original5/5 passed, zero failures or skips | Real AnyLib/account/Keychain/editor/creation/association tests. Later publication and property execution is recorded separately at c8 below. |
 | Native AnyUI execution at d58b6a0 | 108/108 passed on arm64 iOS Simulator 27.2, zero skips | Source-bound xcresult includes the required focus 6 and marked-text 5, activation 4 and portable 93 cases. Evidence: `apple-d58-patched-runtime-v1/MANIFEST.json`. Executable interaction remains separate. |
 | Separate executable at57c116e | Actual2/7 passed and5 failed, zero skips | Every failed scenario stopped at backup acknowledgement before Space/editor assertions. The recorded outer Switch row contained a distinct physical child Switch; all five remained off after the outer-row tap. The corrected helper taps that observed child once and requires0→1 while retaining the Continue enabled guard. Its Apple execution remains pending. |
 | C8 runtime diagnostic | All original3 methods explicitly passed in the closed log | [Safe source-bound archive](../docs/any-engine-port/evidence/20261120/apple-c8-runtime-metrics-v1/MANIFEST.json). Four denied reads returned403; no timeout recurred. The final xcresult/destination gate is still separate. |
 | C8 UIKit test target | Build cancelled with exit65; zero tests executed | [Exact compiler failure](../docs/any-engine-port/evidence/20261120/apple-c8-ui-compile-failure-v1/MANIFEST.json). Two helper calls passed a mutating dictionary expression directly to a Testing macro. The follow-up evaluates the removal first and retains the same non-nil requirement and resume behavior. |
+| C8 hosted native application | Actual9 executed:8 passed,1 failed, zero skips or unexpected failures | [Exact closed-log archive](../docs/any-engine-port/evidence/20261120/apple-c8-hosted-application-v1/MANIFEST.json). Account/recovery3, creation1, property1 and Torah1 passed; publication2 passed and1 failed four immediate readback/focus assertions. |
+| Empty native paragraph correction | All16 Host creator component tests passed against the corrected production source | [Exact source and component proof](../docs/any-engine-port/evidence/20261120/native-empty-paragraph-fix-v1/MANIFEST.json). The native engine omits the text field for empty paragraphs; successful creation now accepts only that absent-field representation for an empty intent. Explicit null/wrong types, nonempty intent, identity/type/style/parent/position and journal checks remain strict. This component archive predates the separate actual-native result below; corrected Apple execution remains pending. |
+| Corrected production creator on native v9 | Original14 plus2 sparse-empty/exact-retry checks passed, zero failures | [Exact native16 proof](../docs/any-engine-port/evidence/20261120/native-empty-paragraph-runtime-v1/MANIFEST.json). A new synthetic Space, unchanged plain transport and original30-second request timeout; stable source/native binary, preserved ID/version/history on retry and synthetic-object cleanup. The in-memory metadata journal does not certify protected Apple persistence. |
+| Retained application compatibility | The57 build failed before test execution because its create-page wrapper omitted the existing shared module import | [Failure](../docs/any-engine-port/evidence/20261120/apple57-retained-consumer-failure-v1/MANIFEST.json) and [one-line import correction](../docs/any-engine-port/evidence/20261120/retained-hanlin-platform-import-fix-v1/MANIFEST.json). No SDK/API duplication, dependency change or test change; the retained Apple build and its five suites still require execution. |
 | Current executable scenarios | Ten business XCUITests plus one separately classified picker observation required | Original9 bodies/helpers remain unchanged. Added selected-context Hanlin with separate create consent and cold reopen; the picker observation is diagnostic only. Registration, syntax and saved-response decoding do not certify mounted behavior. |
 
 At published commit `57c116e02ee6dbce21f3bbffcc297841d2bd1235`,
@@ -130,7 +134,11 @@ It keeps the original session, URLs, request order, default timeout and assertio
 The five executable failures share the observed backup-toggle boundary described
 above. Full recovery-screen AX/video/ZIP data stays outside the published evidence;
 the archive contains screened control metadata and exact source/result hashes.
-Retained-consumer compatibility was running its build/profile step at 06:18 UTC. This run predates the
+Retained-consumer compatibility subsequently failed during build-for-testing,
+before any test began, because the create-page wrapper used
+`HanlinToolInvocationID` without importing its existing `HanlinPlatformContracts`
+module. The explicit import is corrected in this checkpoint; its original body,
+dependencies and tests are unchanged. This historical run predates the
 published v9 base checkpoint `2dca5f6c1c64ab96d5fd32abb7d8628d919543ec`
 and does not certify its property/editor changes or the follow-up test corrections.
 
@@ -146,9 +154,12 @@ previous timeout or pure network latency.
 
 Current UI source fixes prevent delayed reads from replacing acknowledged
 properties/text or erasing Undo, and retain newer typing/composition while a
-native autosave is in flight. Seven property-model tests and three actual-native
-editor tests are source-ready. Their Apple semantic/runtime execution remains
-required; parser and structural receipts are not behavioral acceptance.
+native autosave is in flight. The three actual-native editor publication tests
+executed at c8: two passed and the third exposed a valid empty paragraph being
+rejected by creation readback. Its immediate assertions remain unchanged. The
+narrow production correction passed sixteen component tests and the original
+fourteen real-native creation checks plus two sparse-empty/retry checks. Corrected
+hosted execution and the seven property-model UIKit tests remain required.
 
 Read the source-bound receipts rather than adding these counts together: scopes,
 versions and fixtures differ, and later features are not certified by an older run.
@@ -189,12 +200,15 @@ The 35 fixture controls, ten lifecycle checks, seven original Swift response
 vectors, nine saved-response decodes, 18 schema controls and 14 gate controls
 cover different boundaries and are not a combined count of Apple app tests.
 
-At 2026-11-20 06:29 UTC, the published `c8e648209e9b1eb021c807bd0faf0adf2f816e19`
+At 2026-11-20 07:21 UTC, the published c8
 [Apple run44682744488](https://github.com/davidpovarsky/anytype-swift/actions/runs/44682744488)
-had passed native build/source installation and simulator creation; its patched
-AnyLib lifecycle step was running. The official-runtime and package jobs were
-queued. That source predates this Hanlin/picker addition, and remains useful
-independent validation. Its current-source acceptance is not yet established.
+had completed its patched job with failure: Runtime and protected Hanlin steps
+passed, UIKit failed compilation, hosted application passed8/9, and executable
+UI failed with detailed results under review. The official-runtime job passed.
+The package job was still running and had failed its live Sefaria step; no
+package-wide success is claimed. That revision predates the mounted Hanlin and
+picker additions and cannot certify them. The published macro correction at
+3d9932 and the new empty-paragraph/import corrections need their own Apple run.
 
 ## Scene and test isolation
 

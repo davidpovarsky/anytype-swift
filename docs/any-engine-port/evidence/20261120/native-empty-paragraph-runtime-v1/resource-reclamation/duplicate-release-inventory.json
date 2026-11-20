@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "status": "FOUR_EXACT_INACTIVE_DUPLICATES_RELEASED_FOR_SCOPED_CLEANUP",
+  "timeUTC": "2026-11-20T07:19:27.240441+00:00",
+  "owner": "/root/any_runtime",
+  "scope": "only_completed_task_peer_executable_copies",
+  "releases": [
+    {
+      "releasedInactiveDuplicate": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\native-final-v8-object-runtime-v1-private\\pinkha-object-validation-aur8bonh\\a\\any.exe",
+      "retainCanonical": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\any-native-properties-v8.exe",
+      "sha256": "4856c7214f56dded249095624ea63e3f99b4b340483e8e6f2785163d16a98089",
+      "bytes": 74381312,
+      "runningAtInventory": false
+    },
+    {
+      "releasedInactiveDuplicate": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\native-final-v8-object-runtime-v1-private\\pinkha-object-validation-aur8bonh\\b\\any.exe",
+      "retainCanonical": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\any-native-properties-v8.exe",
+      "sha256": "4856c7214f56dded249095624ea63e3f99b4b340483e8e6f2785163d16a98089",
+      "bytes": 74381312,
+      "runningAtInventory": false
+    },
+    {
+      "releasedInactiveDuplicate": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\native-final-v9-object-runtime-v1-private\\pinkha-object-validation-9o3y1fs3\\a\\any.exe",
+      "retainCanonical": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\any-native-properties-v9.exe",
+      "sha256": "4b110906ccecca3cc15a22a66caeeabea82b3cc44e25fe94a911a23a878da361",
+      "bytes": 74381824,
+      "runningAtInventory": false
+    },
+    {
+      "releasedInactiveDuplicate": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\native-final-v9-object-runtime-v1-private\\pinkha-object-validation-9o3y1fs3\\b\\any.exe",
+      "retainCanonical": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\.runtime-artifacts\\any-native-properties-v9.exe",
+      "sha256": "4b110906ccecca3cc15a22a66caeeabea82b3cc44e25fe94a911a23a878da361",
+      "bytes": 74381824,
+      "runningAtInventory": false
+    }
+  ],
+  "totalReleasedBytes": 297526272,
+  "noDeletionPerformedByThisInventory": true,
+  "conditions": [
+    "Immediately recheck no process uses each candidate",
+    "Recheck retained canonical hash before unlink",
+    "Delete only exact released .exe files; preserve every data/config/log/source/evidence file",
+    "Do not stop or modify canonical/live v8 or v9 processes"
+  ]
+}

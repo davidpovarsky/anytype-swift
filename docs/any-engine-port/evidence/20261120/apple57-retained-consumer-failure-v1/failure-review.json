@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "status": "ACTUAL_RETAINED_CONSUMER_BUILD_FAILURE",
+  "runId": 44673740725,
+  "jobId": 136094169244,
+  "sourceCommit": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+  "comparisonCommit": "3d9932b1b68fada61a3d1ef54694f75c9ef2398d",
+  "sourcePath": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageRunner.swift",
+  "sourceLines": [
+    45,
+    46
+  ],
+  "diagnostic": "cannot find type 'HanlinToolInvocationID' in scope",
+  "definingModule": "HanlinPlatformContracts",
+  "declarationPath": "Dependencies/Hanlin/Packages/HanlinPlatform/Sources/HanlinPlatformContracts/HanlinIdentifiers.swift",
+  "declarationLine": 337,
+  "oldAndCurrentCommittedFileIdentical": true,
+  "oldAndCurrentGitBlob": "804904d619a630d2a7610f1a55698fecc60a9125",
+  "oldAndCurrentGitBytesSHA256": "d23257eac45c9e957a4315ef248326f598f4a69b4c6ad66353e14755b9d47673",
+  "existingSameTargetImportAt57": {
+    "path": "Anytype/Sources/Pinkha/AI/Write/PinkhaHanlinCreatePageContext.swift",
+    "gitBytesSHA256": "d1559e8694e2a5d4b7103af1d36ec773dc3de3efef5ba8e6c6cca45791e3f32e"
+  },
+  "materializedDeclarationFileSHA256": "3b3651705d4ee066324e623f284718d985ce7e44d1b01d4a9c3a437ed3d7410a",
+  "workingTreeAtSealSHA256": "8627c9609c7c63cf66fdd13c94a1caf57752c66c67b8eac710fbbe360039b63a",
+  "workingTreeAtSealContainsOwnerImportOnlyCorrection": true,
+  "phase": "xcodebuild build-for-testing Debug-Anytype",
+  "xcodebuildExitCode": 65,
+  "wrapperExitCode": 1,
+  "observedTestCaseStarts": 0,
+  "observedTestCaseOutcomes": 0,
+  "retainedProfileRuntimeNotReached": true,
+  "plannedSuites": [
+    "HanlinHostAdapterTests",
+    "HanlinHostWriteTests",
+    "HanlinHostReadWriteTests",
+    "HanlinSDKConsumerTests",
+    "PinkhaBootstrapStateManagerTests"
+  ],
+  "intentionalSelfTestErrorExcluded": "Earlier actual exit seven is an expected harness self-test, not the failing retained build.",
+  "correctionOwner": "capability_inventory",
+  "minimalCorrection": "Explicit import HanlinPlatformContracts only.",
+  "refactorMapUpdateOwner": "root",
+  "noSourceEditsByReviewer": true,
+  "noRuntimeRerun": true,
+  "rawJobLogSHA256": "fc5f212d8ba8570595a610ae46a5ee78bd791b9889491b980cc14557cde9c027",
+  "rawJobLogBytes": 227185,
+  "rawJobLogIncluded": false,
+  "currentCommittedSourceNotTestedByThisOld57Job": true,
+  "correctionNotYetProvenByRetainedAppleGate": true
+}

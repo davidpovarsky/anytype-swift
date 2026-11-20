@@ -1,0 +1,52 @@
+{
+  "scope": "mechanical additive probe/test proof; no new execution",
+  "originalProbeSHA256": "b8bf4f1c90dbe42a5168f6940a43b1b9b0448d8fd220a1e34d4ffcc407f27435",
+  "currentProbeSHA256": "1c94b3a92ffa107301d9b24ecf102b4c713b407fac1645e22ad81f92b743e013",
+  "singleInsertionInverseMatchesOriginalBytes": true,
+  "original14CheckNames": [
+    "exact_current_writer_creation_capabilities",
+    "production_guarded_object_create_verified_original_scope",
+    "object_retry_new_creator_same_metadata_has_one_native_id",
+    "changed_object_intent_refused_before_native_create",
+    "production_guarded_block_create_preserves_text_and_unknown_style",
+    "block_retry_new_creator_same_metadata_has_no_native_change",
+    "changed_block_intent_refused_before_native_create",
+    "guarded_child_creation_preserves_native_parent_identity",
+    "verified_retry_preserves_later_editor_change_and_children",
+    "revocation_before_dispatch_neither_reserves_nor_creates",
+    "confirmation_failure_retains_known_object_id_without_redispatch",
+    "fixture_journal_contains_identity_and_receipt_metadata_only",
+    "closed_original_session_refuses_new_creation_work",
+    "only_allocated_synthetic_objects_removed"
+  ],
+  "newCheckNames": [
+    "empty_paragraph_native_sparse_text_is_verified",
+    "empty_paragraph_exact_retry_preserves_id_and_native_history"
+  ],
+  "original11TestNames": [
+    "validatedIntentPreservesTextUnknownStyleAndNativeLocationAcrossEncoding",
+    "changedIntentCannotReuseTheSameJournalIdentity",
+    "exactRetryUsesKnownNativeIDAndPreservesLaterUserEdits",
+    "lostAutoIDReplyStaysUncertainAndNeverCreatesAnotherBlock",
+    "mismatchedReadbackRetainsCreatedIDWithoutReportingVerified",
+    "cancellationAfterDispatchSettlesNativeReceiptBeforeReturning",
+    "revocationBeforeDispatchCannotCreateNativeContent",
+    "unsupportedNativeContractDoesNotReserveOrDispatch",
+    "contractRevokedAtDispatchCannotCreateAndRetainsOriginalIntent",
+    "journalFailureAfterNativeReplyPreservesKnownIDWithoutRedispatch",
+    "nativeConfirmationCallbackFailurePreservesVerifiedBlockIdentity"
+  ],
+  "new5TestNames": [
+    "sparseEmptyParagraphIsVerifiedAndExactRetryDoesNotRedispatch",
+    "explicitEmptyTextStillVerifies",
+    "emptyIntentRejectsExplicitNullWrongTypeAndNonemptyText",
+    "nonemptyIntentRejectsMissingNativeTextWithoutRedispatch",
+    "sparseEmptyTextDoesNotRelaxIdentityTypeStyleOrPlacement"
+  ],
+  "currentTestSHA256": "255bb76c92c8094bef0dd4a2800295f82563c4f3e2515b1ee8bd89eca7554b9f",
+  "testMacroCorrection": {
+    "before": "d836c8c4366843b6bca72eff14deb5af0b960011aa26b701456f5c03e12a35d2",
+    "after": "255bb76c92c8094bef0dd4a2800295f82563c4f3e2515b1ee8bd89eca7554b9f",
+    "assertionUnchanged": "recorded == .verified(confirmed); lookup remains throwing/awaited"
+  }
+}
