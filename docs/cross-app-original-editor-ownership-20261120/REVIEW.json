@@ -1,0 +1,44 @@
+{
+  "scope": "Foundation proof of the complete new owner and original text/event protocol wrappers, not full original editor isolation",
+  "status": "LOCAL_COMPONENT_PASS_APPLE_AND_NATIVE_NOT_RUN",
+  "source_commit": "5e936f2afa5f8fd371d1bef8b0521d9b8a3f20b6",
+  "result_sha256": "786a89a5cc82c5a90499ce368a674fc72d75ff6430c997fa8ffc909c8e4880e5",
+  "execution_job": "job_2e1e4562ced2",
+  "finished_utc": "2026-11-20T11:01:22.315375+00:00",
+  "passed_controls": 30,
+  "failed_controls": 0,
+  "compile_seconds": 34.406,
+  "runtime_seconds": 0.141,
+  "syntax_parses": 4,
+  "new_apple_declarations": 8,
+  "first16_apple_source_unchanged": {
+    "application": "67a23f718548ee80dbb084e57933115a07601ea3",
+    "workflow": "11bfb0db63d7d446be01d0b2b70ac9cadc471a7f",
+    "run_id": 44722898086,
+    "owner": "Root",
+    "credit_for_ownership_tranche": "NONE"
+  },
+  "not_proven": [
+    "Native RPC atomicity or rollback",
+    "annotation durability",
+    "full original editor write isolation",
+    "routed sheet ownership",
+    "Apple rendering",
+    "Otzaria integration",
+    "ObjectPermissions derived initializer and native permission updates",
+    "Apple SwiftTesting execution of the 8 new declarations",
+    "Every remaining original routed writer",
+    "Assembly owner propagation or consumer lifecycle",
+    "Historical revoke-then-restore during an await: wrappers have no independent permission epoch."
+  ],
+  "admission_semantics": "Retirement rejects new admissions; an operation already admitted before an await may still execute/complete. Its side effect is not rolled back, retried, or called absent. A successful service return with lost ownership is a distinct completedWithoutOwnership error. An admitted publication may still deliver, and is retained until its actual return.",
+  "source_identity": "Exact UTF-8 context/object/Space/version; original DocumentMode unchanged; owner and prepared data stay MainActor.",
+  "lifetime": "Explicit retire; only once onDrained callback after all pending admitted operations return. No implicit document open/update/close. No app consumer is introduced.",
+  "probes": "Explicit Foundation service/event boundaries and locked unchecked-Sendable document double follow the original document boundary; UIKit/Combine/protobuf boundary doubles remain explicit.",
+  "independent_source_review": {
+    "reviewer": "Root",
+    "reviewed_source": "5e936f2afa5f8fd371d1bef8b0521d9b8a3f20b6",
+    "result": "No blocker in stated component scope; prepared-session wiring must retire on actual permission/source/lifecycle revocation, including revoke-then-restore.",
+    "execution": "NONE"
+  }
+}
