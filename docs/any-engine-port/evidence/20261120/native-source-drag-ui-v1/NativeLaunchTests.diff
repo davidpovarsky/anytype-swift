@@ -1,0 +1,103 @@
+diff --git a/NativeApp/UITests/NativeLaunchTests.swift b/NativeApp/UITests/NativeLaunchTests.swift
+index b0770df65d..9da4f82f1e 100644
+--- a/NativeApp/UITests/NativeLaunchTests.swift
++++ b/NativeApp/UITests/NativeLaunchTests.swift
+@@ -464,6 +464,98 @@ final class NativeLaunchTests: XCTestCase {
+         XCTAssertEqual(blocks.count, 1)
+     }
+ 
++    func testSourceDragIntoNativeEditorPreservesTargetAndColdReopens() {
++        let scope = UUID()
++        let suffix = String(scope.uuidString.prefix(8))
++        let app = makeApplication(scope: scope)
++        let spaceName = "Source drag UI Space " + suffix
++        let documentName = "Source drag UI Document " + suffix
++        let targetText = "בלוק היעד נשאר במקומו ובזהותו " + suffix
++        let reference = "Genesis 1:1"
++        app.launch()
++        defer { app.terminate() }
++        createOwnedWorkspace(app, spaceName: spaceName)
++        createNamedItem(app, action: "any-native-new-document", title: documentName)
++        tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
++
++        let blocks = app.textViews.matching(NSPredicate(
++            format: "identifier BEGINSWITH %@", "any-native-block-"))
++        waitUntilEnabled(blocks.firstMatch)
++        blocks.firstMatch.tap()
++        blocks.firstMatch.typeText(targetText)
++        tapWhenEnabled(app.buttons["any-native-editor-done"])
++        let status = app.descendants(matching: .any)
++            .matching(identifier: "any-native-save-status").firstMatch
++        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"),
++                object: status, timeout: 45)
++        let targetIdentifier = blocks.firstMatch.identifier
++        XCTAssertEqual(blocks.count, 1)
++        XCTAssertEqual(app.textViews[targetIdentifier].value as? String, targetText)
++
++        tapWhenEnabled(app.buttons["any-native-document-sources"])
++        let search = app.searchFields.firstMatch
++        waitUntilEnabled(search)
++        search.tap(); search.typeText(reference)
++        let result = app.buttons.matching(NSPredicate(
++            format: "identifier BEGINSWITH %@ AND value == %@",
++            "any-native-source-result-", reference)).firstMatch
++        tapWhenEnabled(result, timeout: 60)
++        let segment = app.buttons["torah-reader-segment-sefaria:" + reference]
++        waitUntilEnabled(segment, timeout: 60)
++        let providerText = segment.label
++        XCTAssertFalse(providerText.isEmpty)
++        XCTAssertNotEqual(providerText, reference)
++        let target = app.textViews[targetIdentifier]
++        let targetRow = app.cells.containing(.textView, identifier: targetIdentifier).firstMatch
++        waitFor(NSPredicate(format: "exists == true AND hittable == true"),
++                object: targetRow, timeout: 30)
++        waitFor(NSPredicate(format: "hittable == true"), object: segment, timeout: 30)
++        XCTAssertEqual(app.keyboards.count, 0)
++
++        // Drop at the visible row's insertion boundary, outside its inner text
++        // editor. This must use the real custom Torah transfer/table drop path,
++        // not the Insert context menu or plain-string paste into UITextView.
++        let dragStart = segment.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
++        let insertionBoundary = targetRow.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.03))
++        dragStart.press(forDuration: 1.1, thenDragTo: insertionBoundary)
++
++        let quote = blocks.matching(NSPredicate(format: "value == %@", providerText)).firstMatch
++        waitFor(NSPredicate(format: "exists == true AND value == %@", providerText),
++                object: quote, timeout: 60)
++        let quoteIdentifier = quote.identifier
++        XCTAssertTrue(quoteIdentifier.hasPrefix("any-native-block-"))
++        XCTAssertNotEqual(quoteIdentifier, targetIdentifier)
++        let quoteBlockID = String(quoteIdentifier.dropFirst("any-native-block-".count))
++        let badgeIdentifier = "any-native-block-sources-" + quoteBlockID
++        let badge = app.buttons[badgeIdentifier]
++        waitUntilEnabled(badge, timeout: 60)
++        let sourceLabel = badge.label
++        XCTAssertFalse(sourceLabel.isEmpty)
++        XCTAssertEqual(blocks.count, 2, "The source drop must create one distinct native block.")
++        XCTAssertEqual(target.value as? String, targetText, "A source transfer must not replace the target text.")
++        XCTAssertLessThan(quote.frame.minY, target.frame.minY, "A targeted drop inserts before its native target.")
++        XCTAssertEqual(app.keyboards.count, 0, "Dragging a source must not acquire editor focus.")
++        tapWhenEnabled(app.buttons["torah-inspector-close"])
++
++        // Reopen only after the separate canonical association badge appears.
++        // The new quote, its source metadata and the original target must all
++        // retain their acknowledged native identities without another gesture.
++        reopenOwnedWorkspace(app, spaceName: spaceName)
++        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
++        let reopenedQuote = app.textViews[quoteIdentifier]
++        let reopenedTarget = app.textViews[targetIdentifier]
++        waitFor(NSPredicate(format: "exists == true AND value == %@", providerText),
++                object: reopenedQuote, timeout: 60)
++        waitFor(NSPredicate(format: "exists == true AND value == %@", targetText),
++                object: reopenedTarget, timeout: 45)
++        waitUntilEnabled(app.buttons[badgeIdentifier], timeout: 45)
++        XCTAssertEqual(app.buttons[badgeIdentifier].label, sourceLabel)
++        XCTAssertEqual(blocks.count, 2)
++        XCTAssertEqual(blocks.matching(NSPredicate(format: "value == %@", providerText)).count, 1)
++        XCTAssertLessThan(reopenedQuote.frame.minY, reopenedTarget.frame.minY)
++        XCTAssertEqual(app.keyboards.count, 0)
++    }
++
+     private func selectInspectorTool(_ app: XCUIApplication, hebrew: String, english: String) {
+         let tools = app.descendants(matching: .any)
+             .matching(identifier: "torah-inspector-tools").firstMatch

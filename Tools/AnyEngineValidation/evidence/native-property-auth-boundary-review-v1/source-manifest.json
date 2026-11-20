@@ -1,0 +1,333 @@
+{
+  "status": "READ_ONLY_SOURCE_MANIFEST",
+  "capturedAtUTC": "2026-11-20T05:10:08.444754+00:00",
+  "appHEADAtReview": "2dca5f6c1c64ab96d5fd32abb7d8628d919543ec",
+  "sourceStable": true,
+  "nativeSourceManifest": {
+    "path": "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\Tools\\AnyEngineValidation\\evidence\\native-property-receipts-v9-source.json",
+    "sha256": "15906eb27afea68cc7ec99242bffd6a8ea69517edb608a4421cce90c9a99a070"
+  },
+  "nativeBinarySHA256FromFrozenManifest": "4b110906ccecca3cc15a22a66caeeabea82b3cc44e25fe94a911a23a878da361",
+  "foundationNetworkingSourcePinAvailable": false,
+  "moduleSourceScope": "Local pinned Echo 4.13.4 and Go 1.27.1 source; not a FoundationNetworking binary-source equivalence claim.",
+  "files": [
+    {
+      "scope": "app",
+      "path": "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyHTTPClient.swift",
+      "absolutePath": "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\Modules\\PinkhaAnyEngine\\Sources\\PinkhaAnyEngine\\AnyHTTPClient.swift",
+      "sha256": "5da381da640730ffcb82c60cd6effc0ced56710deefe743cd2fe20d4ed0a8c57",
+      "bytes": 9036,
+      "anchors": {
+        "public struct AnyHTTPClient": [
+          20
+        ],
+        "URLSessionConfiguration.ephemeral": [
+          56
+        ],
+        "requestJSON(": [
+          63
+        ],
+        "func checkAccount": [
+          87
+        ],
+        "func raw": [
+          131
+        ],
+        "request.timeoutInterval = 30": [
+          119
+        ]
+      }
+    },
+    {
+      "scope": "app",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift",
+      "absolutePath": "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\Modules\\PinkhaAnyHost\\Sources\\PinkhaAnyHost\\AnyApplicationSession.swift",
+      "sha256": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+      "bytes": 5633,
+      "anchors": {
+        "struct AnyHostLease": [
+          18
+        ],
+        "actor AnyApplicationSession": [
+          42
+        ],
+        "verifyRun": [
+          46,
+          64,
+          69,
+          73,
+          120
+        ],
+        "func perform": [
+          76
+        ],
+        "func validateCurrentRun": [
+          116
+        ],
+        "func revokeAndDrain": [
+          101
+        ]
+      }
+    },
+    {
+      "scope": "app",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePropertyStore.swift",
+      "absolutePath": "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\Modules\\PinkhaAnyHost\\Sources\\PinkhaAnyHost\\AnyNativePropertyStore.swift",
+      "sha256": "ffcc45d89f1f37f2fdf5fe3907848047b210b2e61da3c2865766ebc3f75061a0",
+      "bytes": 41818,
+      "anchors": {
+        "func catalog": [
+          252
+        ],
+        "stride(from: 0": [
+          268
+        ],
+        "withThrowingTaskGroup": [
+          270
+        ],
+        "func read(": [
+          292
+        ],
+        "func apply(": [
+          424
+        ],
+        "let readback = try?": [
+          472
+        ],
+        "static func acceptedFence": [
+          479
+        ],
+        "func typeProof": [
+          579
+        ]
+      }
+    },
+    {
+      "scope": "app",
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHostProbe/PropertyProbe.swift",
+      "absolutePath": "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\Modules\\PinkhaAnyHost\\Sources\\PinkhaAnyHostProbe\\PropertyProbe.swift",
+      "sha256": "c3977600062e058187ab4c6537e28372415e1941d02e380d6db39c970d2057e0",
+      "bytes": 14516,
+      "anchors": {
+        "static func": [],
+        "catalog(": [
+          44
+        ],
+        "property native acceptance lacked exact version readback": [
+          195
+        ]
+      }
+    },
+    {
+      "scope": "any",
+      "path": "internal/server/handlers_auth.go",
+      "absolutePath": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\internal\\server\\handlers_auth.go",
+      "sha256": "9d8d3a14334e033f248aaf81d6205aeba6ae5718ca1ae6c5619dab833526f744",
+      "bytes": 15810,
+      "anchors": {
+        "func (d *deps) authStatus": [
+          35
+        ],
+        "if d.cfg.Managed()": [
+          46,
+          150,
+          295
+        ]
+      }
+    },
+    {
+      "scope": "any",
+      "path": "internal/server/handlers_meta.go",
+      "absolutePath": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\internal\\server\\handlers_meta.go",
+      "sha256": "cc46dc417918f1e963f9e184e6f9fb304d6b7d86fc711f74cc0e2072f01f1bfc",
+      "bytes": 9549,
+      "anchors": {
+        "func (d *deps) accountID": [
+          164
+        ]
+      }
+    },
+    {
+      "scope": "any",
+      "path": "internal/server/gate.go",
+      "absolutePath": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\internal\\server\\gate.go",
+      "sha256": "56daf9b982281f7b6ee8d5aac3a1ef8c22bb587ca44b494afd1bf2d6e3a3ccee",
+      "bytes": 2821,
+      "anchors": {
+        "func (g *engineGate) enter": [
+          36
+        ],
+        "func (g *engineGate) leave": [
+          50
+        ],
+        "func (g *engineGate) close": [
+          62
+        ]
+      }
+    },
+    {
+      "scope": "any",
+      "path": "internal/server/routes.go",
+      "absolutePath": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\internal\\server\\routes.go",
+      "sha256": "298cecd808ac2b28ca90dc5ab2e3632c221f33ff4647b726e99d7ff7875c4225",
+      "bytes": 12031,
+      "anchors": {
+        "func buildEcho": [
+          77
+        ],
+        "case \"/v1/health\"": [
+          143
+        ],
+        "v1.Use": [
+          126,
+          127,
+          140,
+          202
+        ],
+        "SetWriteDeadline": [
+          170
+        ]
+      }
+    },
+    {
+      "scope": "any",
+      "path": "internal/server/server.go",
+      "absolutePath": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\internal\\server\\server.go",
+      "sha256": "cf47feb061a5541d38f36b53a82288e1eb19669f93b179669393137e78f7e651",
+      "bytes": 7201,
+      "anchors": {
+        "func RunWith": [
+          55
+        ],
+        "net.Listen": [
+          148
+        ],
+        "e.Start": [
+          167
+        ]
+      }
+    },
+    {
+      "scope": "any",
+      "path": "internal/server/logger_echo.go",
+      "absolutePath": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\internal\\server\\logger_echo.go",
+      "sha256": "13f9121e9f194b93022238846e12730b9657a8c9f1ba7c209ff2b6b5815da60b",
+      "bytes": 1755,
+      "anchors": {
+        "func httpLogMiddleware": [
+          18
+        ],
+        "err := next(c)": [
+          23
+        ],
+        "lg.Info": [
+          39
+        ]
+      }
+    },
+    {
+      "scope": "any",
+      "path": "internal/server/control.go",
+      "absolutePath": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\internal\\server\\control.go",
+      "sha256": "02c930ea7a19cac4ff75ace7338c5688b39641e7ad007d67624053ae05bf120e",
+      "bytes": 1810,
+      "anchors": {
+        "func (d *deps) requireControl": [
+          32
+        ],
+        "func (d *deps) capabilities": [
+          48
+        ]
+      }
+    },
+    {
+      "scope": "any",
+      "path": "internal/server/pinkha_gateway.go",
+      "absolutePath": "C:\\Users\\DAVID\\Code\\any-pinkha-runtime-20261119\\internal\\server\\pinkha_gateway.go",
+      "sha256": "c256ebf6b3c304edfb531ab5dda95dfb7a5ce26779322fc1714c5d1d4a27cee8",
+      "bytes": 720,
+      "anchors": {
+        "func (d *deps) pinkhaMobileManagedGateway": [
+          9,
+          18
+        ]
+      }
+    },
+    {
+      "scope": "module",
+      "path": "github.com/labstack/echo/v4@v4.13.4/json.go",
+      "absolutePath": "C:\\Users\\DAVID\\go\\pkg\\mod\\github.com\\labstack\\echo\\v4@v4.13.4\\json.go",
+      "sha256": "03dcdd8e2c46746fb6bba8cdfa97c82686ebbf26229e7786c38230d8c4de4760",
+      "bytes": 1278,
+      "anchors": {
+        "func (d DefaultJSONSerializer) Serialize": [
+          17
+        ]
+      }
+    },
+    {
+      "scope": "module",
+      "path": "github.com/labstack/echo/v4@v4.13.4/context.go",
+      "absolutePath": "C:\\Users\\DAVID\\go\\pkg\\mod\\github.com\\labstack\\echo\\v4@v4.13.4\\context.go",
+      "sha256": "69df062de1cb7da7c733633a8523b47e43f2677bd7a497f617dd3351b9757de7",
+      "bytes": 17587,
+      "anchors": {
+        "func (c *context) json(": [
+          502
+        ],
+        "func (c *context) JSON(": [
+          508
+        ]
+      }
+    },
+    {
+      "scope": "module",
+      "path": "github.com/labstack/echo/v4@v4.13.4/response.go",
+      "absolutePath": "C:\\Users\\DAVID\\go\\pkg\\mod\\github.com\\labstack\\echo\\v4@v4.13.4\\response.go",
+      "sha256": "b1de3c59c9a6e50f317a500f19600904f8e4760b2ccb6a70530035962f103114",
+      "bytes": 3530,
+      "anchors": {
+        "func (r *Response) WriteHeader": [
+          56
+        ],
+        "func (r *Response) Write(": [
+          70
+        ]
+      }
+    },
+    {
+      "scope": "module",
+      "path": "github.com/labstack/echo/v4@v4.13.4/echo.go",
+      "absolutePath": "C:\\Users\\DAVID\\go\\pkg\\mod\\github.com\\labstack\\echo\\v4@v4.13.4\\echo.go",
+      "sha256": "3d727100f16abbf95142821a46dee35f4f4b6be2a90df7fb937fdd4ae59e7893",
+      "bytes": 35295,
+      "anchors": {
+        "func (e *Echo) ServeHTTP": [
+          647
+        ]
+      }
+    },
+    {
+      "scope": "module",
+      "path": "golang.org/toolchain@v0.0.1-go1.27.1.windows-amd64/src/net/http/server.go",
+      "absolutePath": "C:\\Users\\DAVID\\go\\pkg\\mod\\golang.org\\toolchain@v0.0.1-go1.27.1.windows-amd64\\src\\net\\http\\server.go",
+      "sha256": "8a46dd48f65aba824366170f8f335417af263fc60b7b4e04ef2a4bba4a21253d",
+      "bytes": 139414,
+      "anchors": {
+        "if w.handlerDone.Load() && !trailers": [
+          1382
+        ],
+        "func (w *response) finishRequest": [
+          1694
+        ],
+        "serverHandler{c.server}.ServeHTTP(w, w.req)": [
+          2137
+        ],
+        "w.finishRequest()": [
+          2144,
+          2275
+        ]
+      }
+    }
+  ]
+}

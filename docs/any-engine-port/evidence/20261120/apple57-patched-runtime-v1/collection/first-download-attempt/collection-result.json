@@ -1,0 +1,239 @@
+{
+  "errorCode": "Command '['C:\\\\Program Files\\\\GitHub CLI\\\\gh.exe', 'api', 'repos/davidpovarsky/anytype-swift/actions/artifacts/14603642711/zip']' timed out after 180 seconds",
+  "errorType": "TimeoutExpired",
+  "expectedHeadSHA": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+  "finishedAt": "2026-11-20T05:17:20.787646+00:00",
+  "jobConclusion": "failure",
+  "jobID": 136080515969,
+  "newCIExecution": false,
+  "runID": 44673740725,
+  "scope": "completed_apple57_patched_runtime_artifact_read_only",
+  "startedAt": "2026-11-20T05:13:54.647490+00:00",
+  "status": "FAIL",
+  "steps": [
+    {
+      "completed_at": "2026-11-20T04:28:40Z",
+      "conclusion": "success",
+      "name": "Set up job",
+      "number": 1,
+      "started_at": "2026-11-20T04:28:38Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:28:50Z",
+      "conclusion": "success",
+      "name": "Run actions/checkout@v4",
+      "number": 2,
+      "started_at": "2026-11-20T04:28:40Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:28:56Z",
+      "conclusion": "success",
+      "name": "Checkout immutable canonical Hanlin source",
+      "number": 3,
+      "started_at": "2026-11-20T04:28:50Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:28:57Z",
+      "conclusion": "success",
+      "name": "Materialize the verified shared Hanlin SDK",
+      "number": 4,
+      "started_at": "2026-11-20T04:28:56Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:29:00Z",
+      "conclusion": "success",
+      "name": "Checkout exact upstream Any",
+      "number": 5,
+      "started_at": "2026-11-20T04:28:57Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:29:02Z",
+      "conclusion": "success",
+      "name": "Checkout exact upstream SDK in the portable replace path",
+      "number": 6,
+      "started_at": "2026-11-20T04:29:00Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:29:30Z",
+      "conclusion": "success",
+      "name": "Run actions/setup-go@v6",
+      "number": 7,
+      "started_at": "2026-11-20T04:29:02Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:29:33Z",
+      "conclusion": "success",
+      "name": "Apply and verify exact native source overlays",
+      "number": 8,
+      "started_at": "2026-11-20T04:29:30Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:31:16Z",
+      "conclusion": "success",
+      "name": "Test the actual iOS C lifecycle shim",
+      "number": 9,
+      "started_at": "2026-11-20T04:29:33Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:33:00Z",
+      "conclusion": "success",
+      "name": "Build device and simulator native slices",
+      "number": 10,
+      "started_at": "2026-11-20T04:31:16Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:33:07Z",
+      "conclusion": "success",
+      "name": "Bind artifact hashes to the tested sources and install",
+      "number": 11,
+      "started_at": "2026-11-20T04:33:01Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:33:10Z",
+      "conclusion": "success",
+      "name": "Create one simulator owned by this run",
+      "number": 12,
+      "started_at": "2026-11-20T04:33:07Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:43:46Z",
+      "conclusion": "failure",
+      "name": "Build and run the linked AnyLib lifecycle tests",
+      "number": 13,
+      "started_at": "2026-11-20T04:33:10Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:50:28Z",
+      "conclusion": "success",
+      "name": "Test protected Hanlin recovery on iOS",
+      "number": 14,
+      "started_at": "2026-11-20T04:43:46Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T04:56:05Z",
+      "conclusion": "success",
+      "name": "Test the UIKit editor and composition lifecycle",
+      "number": 15,
+      "started_at": "2026-11-20T04:50:28Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:03:18Z",
+      "conclusion": "success",
+      "name": "Test the real native account, Keychain and cold reopen path",
+      "number": 16,
+      "started_at": "2026-11-20T04:56:05Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:12:05Z",
+      "conclusion": "failure",
+      "name": "Build and launch the separate native executable",
+      "number": 17,
+      "started_at": "2026-11-20T05:03:18Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:12:06Z",
+      "conclusion": "success",
+      "name": "Verify the built native app ownership boundary",
+      "number": 18,
+      "started_at": "2026-11-20T05:12:05Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:12:14Z",
+      "conclusion": "failure",
+      "name": "Extract native execution counts",
+      "number": 19,
+      "started_at": "2026-11-20T05:12:06Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:12:15Z",
+      "conclusion": "success",
+      "name": "Remove only this run's simulator",
+      "number": 20,
+      "started_at": "2026-11-20T05:12:14Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:12:25Z",
+      "conclusion": "success",
+      "name": "Upload real-library evidence",
+      "number": 21,
+      "started_at": "2026-11-20T05:12:15Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:12:34Z",
+      "conclusion": "success",
+      "name": "Upload exact source-bound native artifact",
+      "number": 22,
+      "started_at": "2026-11-20T05:12:25Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:12:34Z",
+      "conclusion": "skipped",
+      "name": "Post Run actions/setup-go@v6",
+      "number": 40,
+      "started_at": "2026-11-20T05:12:34Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:12:35Z",
+      "conclusion": "success",
+      "name": "Post Checkout exact upstream SDK in the portable replace path",
+      "number": 41,
+      "started_at": "2026-11-20T05:12:34Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:12:36Z",
+      "conclusion": "success",
+      "name": "Post Checkout exact upstream Any",
+      "number": 42,
+      "started_at": "2026-11-20T05:12:35Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:12:37Z",
+      "conclusion": "success",
+      "name": "Post Checkout immutable canonical Hanlin source",
+      "number": 43,
+      "started_at": "2026-11-20T05:12:36Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:12:38Z",
+      "conclusion": "success",
+      "name": "Post Run actions/checkout@v4",
+      "number": 44,
+      "started_at": "2026-11-20T05:12:37Z",
+      "status": "completed"
+    },
+    {
+      "completed_at": "2026-11-20T05:12:40Z",
+      "conclusion": "success",
+      "name": "Complete job",
+      "number": 45,
+      "started_at": "2026-11-20T05:12:38Z",
+      "status": "completed"
+    }
+  ]
+}

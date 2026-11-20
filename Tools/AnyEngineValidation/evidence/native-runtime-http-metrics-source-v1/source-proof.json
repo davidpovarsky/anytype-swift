@@ -1,0 +1,26 @@
+{
+  "status": "SOURCE_MECHANICAL_PROOF_ONLY",
+  "path": "Modules/PinkhaAnyRuntime/Tests/PinkhaAnyRuntimeTests/AnyEmbeddedRuntimeTests.swift",
+  "baseCommit": "2dca5f6c1c64ab96d5fd32abb7d8628d919543ec",
+  "beforeSHA256": "0799221e2eebeb94d0e88bab955f0db2ba45e618df0f5219c5aaec8cd2f44fa2",
+  "afterSHA256": "2891b33e731e9aca13da4ce9063cb812f445f7f8342c18ce31ba9296535f01ee",
+  "originalPrefixExactlyRestorable": true,
+  "originalTestNames": [
+    "testRealManagedRuntimeLifecycleAndControlBoundary",
+    "testWrongNativeBuildContractCannotStart",
+    "testInvalidConfigurationCannotSelectProductionByAccident"
+  ],
+  "testMethodCount": 3,
+  "originalAssertionCount": 27,
+  "allOriginalAssertionsAndControlFlowRetained": true,
+  "changes": "One negative-loop data(from:) call wraps same shared-session overload with per-task metrics delegate; passive helper appended.",
+  "newHTTPRequests": 0,
+  "newNativeRuntimeExecutions": 0,
+  "productionEdits": false,
+  "parserStatus": "PENDING",
+  "AppleSemanticAndRuntimeStatus": "PENDING",
+  "noHeaderBodyTokenAccountOutput": true,
+  "noTaskOrSessionRetainedByObserver": true,
+  "onlyMutableObserverState": "NSLock-protected metrics callback counter",
+  "missingMetricsMeans": "unknown"
+}

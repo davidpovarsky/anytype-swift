@@ -1,10 +1,10 @@
 # Native Any port capability status
 
-Updated 2026-11-20. Published checkpoint: `57c116e02ee6dbce21f3bbffcc297841d2bd1235`; current v9 wire receipts and presentation race corrections are prepared for the next Apple checkpoint.
+Updated 2026-11-20. Published v9 base checkpoint: `2dca5f6c1c64ab96d5fd32abb7d8628d919543ec`. The follow-up source fixes the observed backup-control interaction and adds passive runtime metrics plus mounted source-drag and Topic/Word coverage. Actual Apple acceptance of this source remains required.
 
 **This is a scoped status ledger, not a complete parity claim.** All 38 original baseline states and all original source/test references remain unchanged. The inventory includes implemented source, disabled candidates and baseline plans; `MIG-01`, `APP-01` and durable semantic anchors were not implemented custom capabilities.
 
-## Current v9 preparation and actual v8/v9 results
+## Current v9 source and actual v8/v9 results
 
 The current full overlay is [native v9](../../Tools/AnyEngineValidation/evidence/native-property-receipts-v9-source.json). Its exact effective trees are Any `c8d0dee2397a2d879f3848f5a71f8024e121a2ed` and SDK `bf2eeba7930da8008aa626eba50073497881ee58`. The dedicated response now serializes the real SDK apply sequence. No version/run/Undo check was relaxed.
 
@@ -18,9 +18,13 @@ The current full overlay is [native v9](../../Tools/AnyEngineValidation/evidence
 | Current original property15 | [Plain Windows attempt failed](../../Tools/AnyEngineValidation/evidence/native-v9-property15-v1/result.json) after33.984 seconds | The timestamp-only diagnostic identified one GET/auth timeout. No transport root cause or partial check count is inferred. The unchanged fifteen-check workflow is added to actual AnyLib hosted Apple acceptance. |
 | Property and editor publication | Seven property tests and three actual-native editor tests written; syntax/source review only | Delayed-read/Undo and active-autosave fixes need Apple behavior execution. |
 | Published57 Apple packages | [Exact source-bound archive](evidence/20261120/apple57-packages-v1/MANIFEST.json): Engine67; Integration126/10; Host65+11; Hanlin33; TorahPresentation1+10; AnyUI4+93/16; PinkhaKit217/29; live Sefaria7 | All passed with zero failures/skips. Later v9/presentation tests are outside this source revision. |
-| Published57 Apple run | [Run44673740725](https://github.com/davidpovarsky/anytype-swift/actions/runs/44673740725): [official Runtime3/3 sealed PASS](evidence/20261120/apple57-official-runtime-v1/MANIFEST.json); patched lifecycle step failed; protected Hanlin recovery passed | Package and UIKit steps passed; hosted application is running and retained compatibility is queued. NativeLaunch and exact patched failure evidence remain pending. No result is attributed to the later local v9 source. |
+| Published57 official runtime | [Run44673740725](https://github.com/davidpovarsky/anytype-swift/actions/runs/44673740725): [official Runtime3/3 sealed PASS](evidence/20261120/apple57-official-runtime-v1/MANIFEST.json) | Retained compatibility remains a separate queued job. This source predates v9/presentation corrections. |
+| Published57 patched Apple | [Exact archive](evidence/20261120/apple57-patched-runtime-v1/MANIFEST.json): Runtime2/3, Hanlin36/36, UIKit108/108, hosted application5/5, NativeLaunch2/7; zero skips | Runtime failed an initial unauthenticated capabilities GET before lifecycle replacement. All five UI failures stopped at the same backup-toggle acknowledgement, before their Space/editor assertions. No current source PASS is inferred. |
+| Backup interaction correction | Observed unique child Switch is tapped once and required to change0→1; outer row and Continue enabled checks retained | Source/syntax proof only. Product acknowledgement policy, Keychain, stored state and the original7 scenario bodies are unchanged. |
+| Runtime diagnostics | Bounded scalar URLSession metrics captured without callback I/O; emitted after the original await | Test-only observation with unchanged transport/default timeout/authentication/assertions. A server403 log alone does not prove response delivery; root cause remains unresolved. |
+| Current source/association journeys | Native source drag and Topic/Word derived related-document navigation written, including exact identities and cold reopen | Uses actual provider results, ordinary onboarding and mounted controls. No Topic/Word reader feature is presumed. Nine UI scenarios still do not establish universal UI parity. |
 
-The actual hosted application gate now requires nine named methods: the original five plus three real native publication tests and one unchanged fifteen-check property workflow. The UIKit gate requires the original eleven focus/IME methods plus seven property-presentation methods. Synthetic gate controls ensure an unrelated passing method cannot replace any required one. This is registration evidence, not Apple execution.
+The actual hosted application gate requires nine named methods: the original five plus three real native publication tests and one unchanged fifteen-check property workflow. The UIKit gate requires the original eleven focus/IME methods plus seven property-presentation methods. NativeLaunch requires the original seven plus source-drag and Topic/Word journeys. Synthetic gate controls ensure an unrelated passing method cannot replace any required one. This is registration evidence, not Apple execution.
 
 ## Historical d58 Apple execution and strict v8 preparation
 

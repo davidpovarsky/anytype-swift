@@ -1,0 +1,202 @@
+
+// Test-only, passive observation of the original denied reads. This retains
+// URLSession.shared and its default request policies; it never substitutes,
+// retries, cancels, or decides whether a business assertion passes.
+private func observedRuntimeDeniedRead(
+    from url: URL, route: String
+) async throws -> (Data, URLResponse) {
+    let observer = RuntimeDeniedReadMetrics(route: route)
+    // Retain the task delegate through both the await and either terminal path.
+    // The observer retains no task/session, so there is no ownership cycle.
+    defer { withExtendedLifetime(observer) {} }
+    observer.started()
+    do {
+        let result = try await URLSession.shared.data(from: url, delegate: observer)
+        observer.finished(response: result.1, returnedByteCount: result.0.count)
+        return result
+    } catch {
+        observer.failed(error)
+        throw error
+    }
+}
+
+/// URLSession invokes this nonisolated delegate on its callback queue.
+/// Both mutable fields are guarded by stateLock. Callback state contains only
+/// Sendable scalar values and at most one snapshot of sixteen transactions.
+/// No task/session/response object escapes the callback, and no diagnostic I/O
+/// or JSON encoding occurs there. @unchecked Sendable covers this discipline.
+private final class RuntimeDeniedReadMetrics: NSObject, URLSessionTaskDelegate, @unchecked Sendable {
+    private let observationID = UUID().uuidString
+    private let route: String
+    private let startedUptime = ProcessInfo.processInfo.systemUptime
+    private let stateLock = NSLock()
+    private var metricsCallbackCount = 0
+    private var collectedMetrics: RuntimeCollectedMetrics?
+
+    init(route: String) {
+        let allowed = ["health", "auth", "spaces", "pinkha/capabilities"]
+        self.route = allowed.contains(route) ? route : "other"
+        super.init()
+    }
+
+    func started() {
+        emit(phase: "start")
+    }
+
+    func finished(response: URLResponse, returnedByteCount: Int) {
+        var fields: [String: Any] = [
+            "expectedContentLength": response.expectedContentLength,
+            "returnedBodyByteCount": returnedByteCount
+        ]
+        if let http = response as? HTTPURLResponse { fields["status"] = http.statusCode }
+        emit(phase: "end", fields: fields)
+    }
+
+    func failed(_ error: any Error) {
+        let native = error as NSError
+        // Never emit NSError descriptions/userInfo, URLs, or response content.
+        let domain: String
+        switch native.domain {
+        case NSURLErrorDomain: domain = "NSURLErrorDomain"
+        case NSCocoaErrorDomain: domain = "NSCocoaErrorDomain"
+        case NSPOSIXErrorDomain: domain = "NSPOSIXErrorDomain"
+        default: domain = "other"
+        }
+        emit(phase: "error", fields: ["errorDomain": domain, "errorCode": native.code])
+    }
+
+    // Passive collection only. This callback does not encode, print, schedule
+    // another task, or alter any transport/authentication decision.
+    func urlSession(
+        _ session: URLSession, task: URLSessionTask,
+        didFinishCollecting metrics: URLSessionTaskMetrics
+    ) {
+        let callbackUnixMs = Date().timeIntervalSince1970 * 1_000
+        let callbackElapsedMs = (ProcessInfo.processInfo.systemUptime - startedUptime) * 1_000
+        let transactions: [[String: RuntimeMetricValue]] = metrics.transactionMetrics.prefix(16).map { metric in
+            var row: [String: RuntimeMetricValue] = [
+                "fetchStartUnixMs": Self.timestamp(metric.fetchStartDate),
+                "domainLookupStartUnixMs": Self.timestamp(metric.domainLookupStartDate),
+                "domainLookupEndUnixMs": Self.timestamp(metric.domainLookupEndDate),
+                "connectStartUnixMs": Self.timestamp(metric.connectStartDate),
+                "connectEndUnixMs": Self.timestamp(metric.connectEndDate),
+                "secureConnectionStartUnixMs": Self.timestamp(metric.secureConnectionStartDate),
+                "secureConnectionEndUnixMs": Self.timestamp(metric.secureConnectionEndDate),
+                "requestStartUnixMs": Self.timestamp(metric.requestStartDate),
+                "requestEndUnixMs": Self.timestamp(metric.requestEndDate),
+                "responseStartUnixMs": Self.timestamp(metric.responseStartDate),
+                "responseEndUnixMs": Self.timestamp(metric.responseEndDate),
+                "protocol": .text(Self.protocolLabel(metric.networkProtocolName)),
+                "reusedConnection": .boolean(metric.isReusedConnection),
+                "proxyConnection": .boolean(metric.isProxyConnection),
+                "resourceFetchType": .integer(Int64(metric.resourceFetchType.rawValue)),
+                "requestHeaderBytesSent": .integer(metric.countOfRequestHeaderBytesSent),
+                "requestBodyBytesSent": .integer(metric.countOfRequestBodyBytesSent),
+                "requestBodyBytesBeforeEncoding": .integer(metric.countOfRequestBodyBytesBeforeEncoding),
+                "responseHeaderBytesReceived": .integer(metric.countOfResponseHeaderBytesReceived),
+                "responseBodyBytesReceived": .integer(metric.countOfResponseBodyBytesReceived),
+                "responseBodyBytesAfterDecoding": .integer(metric.countOfResponseBodyBytesAfterDecoding),
+                "responsePresent": .boolean(metric.response != nil)
+            ]
+            if let response = metric.response {
+                row["expectedContentLength"] = .integer(response.expectedContentLength)
+                if let http = response as? HTTPURLResponse { row["status"] = .integer(Int64(http.statusCode)) }
+            }
+            return row
+        }
+        var fields: [String: RuntimeMetricValue] = [
+            "callbackTimestampUnixMs": .real(callbackUnixMs),
+            "callbackElapsedMonotonicMs": .real(callbackElapsedMs),
+            "taskIdentifier": .integer(Int64(task.taskIdentifier)),
+            "taskIntervalStartUnixMs": Self.timestamp(metrics.taskInterval.start),
+            "taskIntervalEndUnixMs": Self.timestamp(metrics.taskInterval.end),
+            "taskDurationMs": .real(metrics.taskInterval.duration * 1_000),
+            "redirectCount": .integer(Int64(metrics.redirectCount)),
+            "transactionCount": .integer(Int64(metrics.transactionMetrics.count)),
+            "omittedTransactionCount": .integer(Int64(max(0, metrics.transactionMetrics.count - 16))),
+            "taskBytesSent": .integer(task.countOfBytesSent),
+            "taskBytesReceived": .integer(task.countOfBytesReceived),
+            "taskExpectedBytesToReceive": .integer(task.countOfBytesExpectedToReceive)
+        ]
+        if let response = task.response {
+            fields["expectedContentLength"] = .integer(response.expectedContentLength)
+            if let http = response as? HTTPURLResponse { fields["status"] = .integer(Int64(http.statusCode)) }
+        }
+        let snapshot = RuntimeCollectedMetrics(fields: fields, transactions: transactions)
+        stateLock.lock()
+        metricsCallbackCount += 1
+        collectedMetrics = snapshot
+        stateLock.unlock()
+    }
+
+    private func snapshot() -> (count: Int, metrics: RuntimeCollectedMetrics?) {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return (metricsCallbackCount, collectedMetrics)
+    }
+
+    private static func timestamp(_ date: Date?) -> RuntimeMetricValue {
+        guard let date else { return .missing }
+        return .real(date.timeIntervalSince1970 * 1_000)
+    }
+
+    private static func protocolLabel(_ value: String?) -> String {
+        guard let value else { return "unknown" }
+        return ["http/1.0", "http/1.1", "h2", "h3"].contains(value) ? value : "other"
+    }
+
+    // Called only before starting the request or after its await returns/throws.
+    // Taking one value snapshot keeps the count and metrics coherent. Missing,
+    // in-progress or later callbacks remain unknown at this observation point.
+    private func emit(phase: String, fields: [String: Any] = [:]) {
+        let state = snapshot()
+        var event = fields
+        event["schemaVersion"] = 2
+        event["observationID"] = observationID
+        event["route"] = route
+        event["phase"] = phase
+        event["timestampUnixMs"] = Date().timeIntervalSince1970 * 1_000
+        event["elapsedMonotonicMs"] = (ProcessInfo.processInfo.systemUptime - startedUptime) * 1_000
+        event["metricsCallbackCount"] = state.count
+        event["metricsAvailableAtEmit"] = state.metrics != nil
+        if let metrics = state.metrics { event["metrics"] = metrics.jsonObject }
+        else { event["metrics"] = NSNull() }
+        guard let encoded = try? JSONSerialization.data(withJSONObject: event, options: [.sortedKeys]) else {
+            try? FileHandle.standardError.write(contentsOf: Data(
+                "PINKHA_RUNTIME_HTTP_METRICS {\"schemaVersion\":2,\"phase\":\"diagnostic_encode_failed\"}\n".utf8))
+            return
+        }
+        var line = Data("PINKHA_RUNTIME_HTTP_METRICS ".utf8)
+        line.append(encoded)
+        line.append(0x0A)
+        // Output failure is diagnostic-only and cannot change the original test.
+        try? FileHandle.standardError.write(contentsOf: line)
+    }
+}
+
+/// Typed primitive storage prevents Foundation task/metrics/header objects from
+/// entering the locked state. Conversion to JSON values occurs only after await.
+private enum RuntimeMetricValue: Sendable {
+    case integer(Int64), real(Double), boolean(Bool), text(String), missing
+
+    var jsonValue: Any {
+        switch self {
+        case .integer(let value): return value
+        case .real(let value): return value
+        case .boolean(let value): return value
+        case .text(let value): return value
+        case .missing: return NSNull()
+        }
+    }
+}
+
+private struct RuntimeCollectedMetrics: Sendable {
+    let fields: [String: RuntimeMetricValue]
+    let transactions: [[String: RuntimeMetricValue]]
+
+    var jsonObject: [String: Any] {
+        var result = fields.mapValues(\.jsonValue)
+        result["transactions"] = transactions.map { $0.mapValues(\.jsonValue) }
+        return result
+    }
+}

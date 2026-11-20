@@ -1,0 +1,78 @@
+{
+  "status": "FAIL_ACTUAL_APPLE_ACCEPTANCE_WITH_SOURCE_BOUND_DIAGNOSIS",
+  "commit": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+  "runID": 44673740725,
+  "jobID": 136080515969,
+  "artifactID": 14603642711,
+  "artifactSHA256": "3d85d2d7afca90108112a297068f17779d4dbbcfacc30e4719a57bbc885143ac",
+  "counts": {
+    "runtime": {
+      "totalTestCount": 3,
+      "passedTests": 2,
+      "failedTests": 1,
+      "skippedTests": 0
+    },
+    "hanlin-ios": {
+      "totalTestCount": 36,
+      "passedTests": 36,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    "ui-ios": {
+      "totalTestCount": 108,
+      "passedTests": 108,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    "application": {
+      "totalTestCount": 5,
+      "passedTests": 5,
+      "failedTests": 0,
+      "skippedTests": 0
+    },
+    "native-ui": {
+      "totalTestCount": 7,
+      "passedTests": 2,
+      "failedTests": 5,
+      "skippedTests": 0
+    }
+  },
+  "runtimeFailure": {
+    "test": "AnyEmbeddedRuntimeTests/testRealManagedRuntimeLifecycleAndControlBoundary",
+    "stage": "initial unauthenticated managed-route negative read; before shutdown/control/restart",
+    "method": "GET",
+    "path": "/v1/pinkha/capabilities",
+    "errorDomain": "NSURLErrorDomain",
+    "errorCode": -1001,
+    "timeoutApproxSeconds": 60,
+    "native403LogDoesNotProveResponseFlush": true,
+    "sourceReviewOwnedBy": "any_runtime"
+  },
+  "uiFailures": {
+    "count": 5,
+    "sharedBoundary": "createOwnedWorkspace waits for Continue enabled after tapping the outer backup Switch row",
+    "continueObserved": "present and Disabled",
+    "observedBackupValues": [
+      0
+    ],
+    "allFiveProcessesHaveNestedPhysicalSwitch": true,
+    "spaceAndDocumentScenariosNotReached": true,
+    "showPhraseAbsenceScope": "Only successfully decoded control-bearing attachments; one zstd body failed decoding"
+  },
+  "helperFix": {
+    "sourceSHA256": "a6281a92153e6d93bc3e5a100b662571d9a19fffb722a0eb0d398180b640ee4f",
+    "syntax": "PASS",
+    "appleExecution": "pending",
+    "sevenExecutedMethodBodiesPreserved": true,
+    "eighthSourceDragMethodPreserved": true,
+    "oneObservedChildControlTap": true,
+    "requiresActualChildAndRowValue1": true,
+    "continueEnabledGuardUnchanged": true
+  },
+  "privacy": {
+    "privateMnemonicShapedCandidateCount": 5,
+    "fullZIPAndRawAXNotPublished": true,
+    "screenedControlCropOnly": true
+  },
+  "newCIExecution": false
+}

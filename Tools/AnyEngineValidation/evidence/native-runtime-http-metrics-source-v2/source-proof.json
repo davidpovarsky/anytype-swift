@@ -1,0 +1,27 @@
+{
+  "status": "SOURCE_MECHANICAL_PROOF_ONLY",
+  "revision": 2,
+  "path": "Modules/PinkhaAnyRuntime/Tests/PinkhaAnyRuntimeTests/AnyEmbeddedRuntimeTests.swift",
+  "v1SourceSHA256": "2891b33e731e9aca13da4ce9063cb812f445f7f8342c18ce31ba9296535f01ee",
+  "originalSourceSHA256": "0799221e2eebeb94d0e88bab955f0db2ba45e618df0f5219c5aaec8cd2f44fa2",
+  "afterSHA256": "39cfc7ba724c407421fc0174b438f93d7807a2c02e986e079d522be982dc8585",
+  "originalPrefixExactlyRestorable": true,
+  "originalTestNames": [
+    "testRealManagedRuntimeLifecycleAndControlBoundary",
+    "testWrongNativeBuildContractCannotStart",
+    "testInvalidConfigurationCannotSelectProductionByAccident"
+  ],
+  "testMethodCount": 3,
+  "originalAssertionCount": 27,
+  "allOriginalAssertionsAndControlFlowRetained": true,
+  "originalCallsiteUnchangedFromV1": true,
+  "callbackContainsNoOutputEncodingOrTaskScheduling": true,
+  "boundedState": "One Sendable primitive snapshot, at most16 transaction records; locked count and snapshot.",
+  "reason": "Remove synchronous diagnostic I/O from URLSession callback because log-sink delay remains an unresolved boundary. Snapshot is emitted only after await returns/throws; absent or late metrics remains unknown.",
+  "v1EvidencePreserved": true,
+  "newHTTPRequests": 0,
+  "newNativeRuntimeExecutions": 0,
+  "productionEdits": false,
+  "parserStatus": "PENDING",
+  "AppleSemanticAndRuntimeStatus": "PENDING"
+}

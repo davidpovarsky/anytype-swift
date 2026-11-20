@@ -464,6 +464,12 @@ public struct AnyNativeSourceSearchView: View {
                                 } label: { Image(systemName: presenter.isSelectionOnly ? "checkmark.circle" : "plus.circle") }
                                     .disabled(!presenter.canEditAssociations)
                                     .buttonStyle(.plain)
+                                    .accessibilityIdentifier(presenter.isSelectionOnly
+                                        ? "any-native-source-select-\(result.id)"
+                                        : "any-native-source-link-\(result.id)")
+                                    .accessibilityLabel(Text(verbatim: (presenter.isSelectionOnly
+                                        ? AnyUIErrorText.text("בחירת ", "Select ")
+                                        : AnyUIErrorText.text("קישור ", "Link ")) + result.title(locale: locale)))
                             }
                         }
                     }

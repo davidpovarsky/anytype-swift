@@ -1,0 +1,21 @@
+{
+  "checkedAtUTC": "2026-11-20T05:32:55.158412+00:00",
+  "sources": [
+    {
+      "url": "https://developer.apple.com/documentation/foundation/urlsession/data(from:delegate:).md",
+      "summary": "The existing async URL-based data API accepts a task delegate. Available on iOS15 and later; the Runtime package minimum is18.4."
+    },
+    {
+      "url": "https://developer.apple.com/documentation/foundation/urlsessiontaskdelegate/urlsession(_:task:didfinishcollecting:).md",
+      "summary": "The optional task-delegate callback provides collected metrics. Available on iOS10 and later. No guarantee of observed callback delivery is inferred when its count is zero."
+    },
+    {
+      "url": "https://developer.apple.com/documentation/foundation/urlsessiontasktransactionmetrics.md",
+      "summary": "Transactions provide request/response phase dates, reuse/proxy/protocol information, and counts. Incomplete phases may have absent end dates."
+    },
+    {
+      "url": "https://developer.apple.com/documentation/foundation/urlsessiontasktransactionmetrics/countofresponsebodybytesreceived.md",
+      "summary": "Detailed response-body counts are available from iOS13 and include framing/encoding overhead; they must not be blindly equated to decoded Data or Content-Length."
+    }
+  ]
+}

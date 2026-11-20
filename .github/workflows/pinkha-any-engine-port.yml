@@ -27,7 +27,9 @@ permissions:
   actions: read
 
 concurrency:
-  group: any-engine-port-${{ github.ref }}
+  # Every job checks out an immutable SHA and owns its simulator/data directory.
+  # Let a newer source revision validate while older retained-consumer work finishes.
+  group: any-engine-port-${{ github.ref }}-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:

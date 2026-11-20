@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS",
+  "profile": "hanlin-ios",
+  "scope": "actual_named_apple_test_execution",
+  "runnerSHA256": "e5def3a695a85a83f7edd2da294f869bae5e3e97c4676cb0eaef35bfa99497ee",
+  "commit": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+  "testSources": {
+    "Modules/PinkhaAnyHanlin/Tests/PinkhaAnyHanlinTests/KnownCreationRecoveryTests.swift": "477db0e2b05a5a21bb930beda965fa682d4ef330d48fdf86bbcf61ce7f5e7cd7"
+  },
+  "summarySHA256": "57b60e1287019ff187a043c32aaaa66e521d6f12e79d6bfff204c7ab16831a4c",
+  "testTreeSHA256": "b248f05176aea5bf344cc39c3aa6202c9505a24d01024b99d2478461bf374ae6",
+  "counts": {
+    "totalTestCount": 36,
+    "passedTests": 36,
+    "failedTests": 0,
+    "skippedTests": 0
+  },
+  "requiredMethods": [
+    "KnownCreationRecoveryFilesystemTests/testDifferentRootAndNoEffectCannotReplaceDurableKnownRoot",
+    "KnownCreationRecoveryFilesystemTests/testKnownPartialRootSurvivesReopenWithoutChangingV1OutcomeBytes",
+    "KnownCreationRecoveryFilesystemTests/testRecordedNoDispatchCannotAcquireAKnownNativeRoot"
+  ],
+  "observedRequiredMethods": [
+    "KnownCreationRecoveryFilesystemTests/testDifferentRootAndNoEffectCannotReplaceDurableKnownRoot",
+    "KnownCreationRecoveryFilesystemTests/testKnownPartialRootSurvivesReopenWithoutChangingV1OutcomeBytes",
+    "KnownCreationRecoveryFilesystemTests/testRecordedNoDispatchCannotAcquireAKnownNativeRoot"
+  ],
+  "actualCases": {
+    "AnyHanlinPlainTextTests/testByteLimitIsUTF8NotCharacterCount()": "Passed",
+    "AnyHanlinPlainTextTests/testCodeSpanContentDoesNotRetainFormattingBackticks()": "Passed",
+    "AnyHanlinPlainTextTests/testEscapedCombiningDelimiterGraphemesRemainExactProviderText()": "Passed",
+    "AnyHanlinPlainTextTests/testEscapedProviderQuotePreservesEveryVisibleCharacter()": "Passed",
+    "AnyHanlinPlainTextTests/testEscapesAndLinksUseExactEditorVisibleTextOnly()": "Passed",
+    "AnyHanlinPlainTextTests/testFormatsHebrewAndNestedInlineContentAsPlainText()": "Passed",
+    "AnyHanlinPlainTextTests/testHeadingAndListLookingInlineTextKeepsItsLiteralPrefix()": "Passed",
+    "AnyHanlinPlainTextTests/testIndentationBlankLinesAndLineEndingsAreNotDocumentNormalized()": "Passed",
+    "AnyHanlinPlainTextTests/testInlineBreaksPreserveVisibleSpacesAndLineBoundaries()": "Passed",
+    "AnyHanlinPlainTextTests/testNativeCodeBlockIsLiteralWithoutMarkdownInterpretation()": "Passed",
+    "AnyHanlinPlainTextTests/testSmartPunctuationDoesNotRewriteOriginalText()": "Passed",
+    "AnyHanlinPlainTextTests/testToggledFormattingAndLinksUseTheSameProjectionAsTheEditor()": "Passed",
+    "AnyHanlinPlainTextTests/testUnsupportedInlineSyntaxFailsInsteadOfInventingVisibleText()": "Passed",
+    "KnownCreationRecoveryFilesystemTests/testDifferentRootAndNoEffectCannotReplaceDurableKnownRoot()": "Passed",
+    "KnownCreationRecoveryFilesystemTests/testKnownPartialRootSurvivesReopenWithoutChangingV1OutcomeBytes()": "Passed",
+    "KnownCreationRecoveryFilesystemTests/testRecordedNoDispatchCannotAcquireAKnownNativeRoot()": "Passed",
+    "KnownCreationRecoveryTests/testKnownRootRemainsUncertainUntilVerifiedMatchingCommit()": "Passed",
+    "KnownCreationRecoveryTests/testRecoveryCannotRetargetAnotherOriginalIdentity()": "Passed",
+    "KnownCreationRecoveryTests/testRecoveryDecoderRejectsForeignNamespaceUnknownBusinessPayloadAndWrongFilename()": "Passed",
+    "KnownCreationRecoveryTests/testRecoveryMetadataDoesNotContainOriginalTitleOrChangeLegacyEntryShape()": "Passed",
+    "NativeCreationCapabilityTests/testPageEligibilityRequiresExactNativeCurrentWriterCreationVersion()": "Passed",
+    "NativeMountedOwnerTests/testAnotherPresentationCannotRearmAnAlreadyBoundSDKSession()": "Passed",
+    "NativeMountedOwnerTests/testForeignSessionCannotBindNativeHost()": "Passed",
+    "NativeMountedOwnerTests/testMountedOwnerReplacesProvisionalHostAndRemountsOnlySameIdentity()": "Passed",
+    "NativeMountedOwnerTests/testStaleSourceCannotBindEvenARegisteredMatchingPresentation()": "Passed",
+    "SharedHanlinAccountAndProjectionTests/testProjectionRefusesOrphansRatherThanLeakingDetachedText()": "Passed",
+    "SharedHanlinAccountAndProjectionTests/testProjectionRejectsUnknownSelectionAndNonTextSelection()": "Passed",
+    "SharedHanlinAccountAndProjectionTests/testRegistryUnregisterDoesNotEraseAnotherPresentation()": "Passed",
+    "SharedHanlinAccountAndProjectionTests/testSelectedProjectionPreservesCanonicalBlockIdentityAndPlainText()": "Passed",
+    "SharedHanlinAccountAndProjectionTests/testSharedAccountOwnerOnlyRevokesOriginalAccount()": "Passed",
+    "SharedHanlinCoreTests/testCanonicalPlanDigestPreservesExactUTF8()": "Passed",
+    "SharedHanlinCoreTests/testHomeScopeDoesNotInventDocumentOrSelection()": "Passed",
+    "SharedHanlinCoreTests/testNativeAllowRequiresLiveValidation()": "Passed",
+    "SharedHanlinCoreTests/testReadCatalogUsesSharedConsentAndWriteInstallationRules()": "Passed",
+    "SharedHanlinCoreTests/testRevocationCannotBeOverriddenByALateAllow()": "Passed",
+    "SharedHanlinCoreTests/testSelectionWithoutNativeDocumentIsRejected()": "Passed"
+  },
+  "device": {
+    "architecture": "arm64",
+    "deviceId": "8D7A9BB6-56CB-4F43-BE74-3777D3045F3D",
+    "deviceName": "AnyNativePort-44673740725",
+    "modelName": "iPad mini (A20 Pro)",
+    "osBuildNumber": "24B8117",
+    "osVersion": "27.2",
+    "platform": "iOS Simulator"
+  }
+}

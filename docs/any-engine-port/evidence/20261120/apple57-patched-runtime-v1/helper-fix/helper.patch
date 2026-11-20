@@ -1,0 +1,40 @@
+--- a/NativeApp/UITests/NativeLaunchTests.swift
++++ b/NativeApp/UITests/NativeLaunchTests.swift
+@@ -622,8 +622,7 @@
+     private func createOwnedWorkspace(_ app: XCUIApplication, spaceName: String) {
+         tapWhenEnabled(app.buttons["any-native-account-create"])
+         let backup = app.switches["any-native-backup-acknowledged"]
+-        waitUntilEnabled(backup, timeout: 60)
+-        backup.tap()
++        acknowledgeOwnedBackup(backup)
+         // Acknowledge through the same UI as a person; never read or print the
+         // recovery phrase from the accessibility tree.
+         tapWhenEnabled(app.buttons["any-native-backup-continue"])
+@@ -635,6 +634,27 @@
+         tapWhenEnabled(app.buttons["any-native-workspace-setup"], timeout: 90)
+     }
+ 
++    private func acknowledgeOwnedBackup(_ row: XCUIElement) {
++        waitUntilEnabled(row, timeout: 60)
++        // The executed iOS 27 AX trees expose a SwiftUI Toggle row containing
++        // a separate physical Switch. A row tap left all five owned accounts
++        // unacknowledged; target that observed child control exactly once.
++        let switches = row.descendants(matching: .switch)
++        let control = switches.firstMatch
++        waitUntilEnabled(control, timeout: 10)
++        XCTAssertEqual(switches.count, 1, "Expected one physical backup switch")
++        waitFor(NSPredicate(format: "hittable == true AND value == %@", "0"),
++                object: control, timeout: 10)
++        // Geometry only: never capture the recovery phrase or a complete tree.
++        let frames = XCTAttachment(string: "row=\(row.frame)\ncontrol=\(control.frame)")
++        frames.name = "native-backup-acknowledgement-control-frames"
++        frames.lifetime = .keepAlways
++        add(frames)
++        control.tap()
++        waitFor(NSPredicate(format: "value == %@", "1"), object: control, timeout: 10)
++        waitFor(NSPredicate(format: "value == %@", "1"), object: row, timeout: 10)
++    }
++
+     private func createNamedItem(_ app: XCUIApplication, action: String, title: String) {
+         tapWhenEnabled(app.buttons["any-native-create-menu"], timeout: 60)
+         tapWhenEnabled(app.buttons[action])

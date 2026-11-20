@@ -79,6 +79,8 @@ PROFILES = {
             "testSourceInspectorQuoteAndNoteSurviveColdReopen",
             "testExplicitHebrewDirectionAndAlignmentSurviveColdReopen",
             "testHierarchyDragIntoFolderPersistsAfterColdReopen",
+            "testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+            "testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen",
         ],
     },
 }

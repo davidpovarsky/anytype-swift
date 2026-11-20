@@ -107,16 +107,29 @@ overlay once.
 | Apple package execution at d58b6a0 | Engine 67; Integration 107; Host 55 XCTest + 11 Swift Testing; Hanlin 33; TorahPresentation 1 XCTest + 10 Swift Testing; AnyUI 4 XCTest + 93 Swift Testing; PinkhaKit 217 | All passed on macOS/Xcode 27. The earlier split-surrogate recovery failure and its fix are preserved separately. Exact source-bound evidence: `apple-d58-packages-v1/MANIFEST.json`; this does not execute UIKit or the native app. |
 | Apple package execution at57c116e | Engine67; Integration126/10; Host65 XCTest+11 Swift Testing; Hanlin33; TorahPresentation1+10; AnyUI4+93/16; PinkhaKit217/29; live Sefaria7 | All passed with zero failures/skips. [Exact archive](../docs/any-engine-port/evidence/20261120/apple57-packages-v1/MANIFEST.json); these counts exclude the later v9/property/editor changes. |
 | Official and patched v7 AnyLib | Each passed 3/3 lifecycle/control tests at 27b4b2c and again at d58b6a0 | Actual arm64 iOS Simulator 27.2. Both source-bound named-execution archives are complete; the patched job's later application gates failed separately. These lifecycle tests do not certify the app or protected journals. |
-| New native application acceptance at d58b6a0 | All 5 methods executed and failed at real Keychain access | Standalone package XCTest received `unavailable(-34018)` / `secureStorageUnavailable`. Hosted signed simulator execution is being configured without changing the five tests or substituting storage; next Apple acceptance remains open. |
+| Historical native application acceptance at d58b6a0 | All 5 methods executed and failed at real Keychain access | Standalone package XCTest received `unavailable(-34018)` / `secureStorageUnavailable`. The original methods subsequently passed in the real signed simulator host at57, as recorded below. |
+| Hosted native application at57c116e | All original5/5 passed, zero failures or skips | Real AnyLib/account/Keychain/editor/creation/association tests. The later three publication methods and fifteen-check property workflow remain pending on their own source revision. |
 | Native AnyUI execution at d58b6a0 | 108/108 passed on arm64 iOS Simulator 27.2, zero skips | Source-bound xcresult includes the required focus 6 and marked-text 5, activation 4 and portable 93 cases. Evidence: `apple-d58-patched-runtime-v1/MANIFEST.json`. Executable interaction remains separate. |
-| Separate executable acceptance | 7 XCUITests written; d58 executed zero because its app build selected x86_64 against an arm64 dependency | Real onboarding, Hebrew edit, Hanlin read consent, hierarchy/property workflow and live source Inspector quote/Note flow. The two later source-ready scenarios cover explicit direction/alignment and real hierarchy drag/drop across cold reopen. No executable acceptance is claimed yet; seven scenarios do not cover every implemented UI operation. |
+| Separate executable at57c116e | Actual2/7 passed and5 failed, zero skips | Every failed scenario stopped at backup acknowledgement before Space/editor assertions. The recorded outer Switch row contained a distinct physical child Switch; all five remained off after the outer-row tap. The corrected helper taps that observed child once and requires0→1 while retaining the Continue enabled guard. Its Apple execution remains pending. |
+| Current executable scenarios | Nine named XCUITests required | Original7 bodies remain unchanged; added source drag with cold reopen and Topic/Word association/indexed navigation with cold reopen. Registration and syntax/source checks do not certify mounted behavior. |
 
 At published commit `57c116e02ee6dbce21f3bbffcc297841d2bd1235`,
 [Apple run44673740725](https://github.com/davidpovarsky/anytype-swift/actions/runs/44673740725)
-has [sealed official embedded-library3/3 acceptance](../docs/any-engine-port/evidence/20261120/apple57-official-runtime-v1/MANIFEST.json), with no failures or skips. The patched v8
-lifecycle step failed; protected Hanlin recovery and UIKit steps passed. The
-hosted application gate is still running, and retained-consumer compatibility is queued. The precise lifecycle failure awaits the completed log.
-This run does not include the local v9 receipt fix or the new presentation tests.
+has [sealed official embedded-library3/3 acceptance](../docs/any-engine-port/evidence/20261120/apple57-official-runtime-v1/MANIFEST.json), with no failures or skips. The
+[completed patched archive](../docs/any-engine-port/evidence/20261120/apple57-patched-runtime-v1/MANIFEST.json)
+records Runtime2/3, Hanlin36/36, UIKit108/108, hosted application5/5 and executable UI2/7, all with zero skips.
+The runtime failure was an initial unauthenticated GET `/v1/pinkha/capabilities`
+timeout before shutdown/restart. A native403 log does not prove socket delivery;
+no transport root cause is claimed. The current test collects bounded passive
+URLSession metrics and emits them after the awaited read completes or fails.
+It keeps the original session, URLs, request order, default timeout and assertions.
+
+The five executable failures share the observed backup-toggle boundary described
+above. Full recovery-screen AX/video/ZIP data stays outside the published evidence;
+the archive contains screened control metadata and exact source/result hashes.
+Retained-consumer compatibility remains separately queued. This run predates the
+published v9 base checkpoint `2dca5f6c1c64ab96d5fd32abb7d8628d919543ec`
+and does not certify its property/editor changes or the follow-up test corrections.
 
 Current UI source fixes prevent delayed reads from replacing acknowledged
 properties/text or erasing Undo, and retain newer typing/composition while a
@@ -135,6 +148,10 @@ Like the retained application, the executable explicitly disables simultaneous
 scenes in its Info.plist. One root presentation owns the single managed native
 runtime. CI checks the generated app bundle's actual scene declaration and
 prefers an available iPad simulator on iOS 27 or newer.
+
+Each workflow revision has its own concurrency group, immutable checkout and
+owned simulator/data directory. A newer revision can validate while an older
+retained-consumer job finishes; no test or signing gate is removed.
 
 Debug-only UI tests use a UUID-specific data directory and Keychain namespace.
 Reusing that exact test UUID permits a cold-process reopening test. Native Space

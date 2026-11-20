@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "status": "SOURCE_READY_SYNTAX_PASS_APPLE_EXECUTION_PENDING",
+  "source": "NativeApp/UITests/NativeLaunchTests.swift",
+  "sourceSHA256": "1a2b6d33348a0f5b5d103dc3c9e1e40b781a82733f76b792bc0bf0ea6e192722",
+  "method": "NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+  "testCount": 8,
+  "originalSevenMethodsAndHelpersBytePreserved": true,
+  "allV1PostDropOutcomeAssertionsBytePreserved": true,
+  "v1ManifestSHA256": "88918606a52e54653d72619a4656e4addccb1c462a01e33d6c5288f1a2c49cc9",
+  "geometry": {
+    "target": "Current target row frame intersected with app frame, physical-left/top insertion band",
+    "namedSheet": "Use the existing torah-inspector-sheet container as a boundary only if its current frame contains the live reader and begins on the physical right of the app; crop the row band when it overlaps the insertion Y",
+    "fallback": "If the full-sheet AX frame is absent or ambiguous, rely explicitly on the pinned physical-right layout; retain live target existence/hittability and require the chosen point outside the live reader segment",
+    "failurePolicy": "No usable live row or no uncovered band fails the test before dragging. No fallback replaces any native-result assertion.",
+    "appleAttachments": "Actual app/row/reader/inspector frames, point and chosen geometry mode plus a pre-gesture screenshot are retained."
+  },
+  "preservedAssertions": [
+    "Distinct native quote and original target IDs",
+    "Exact source and original target text",
+    "Acknowledged quote-owned source badge",
+    "Quote before original target",
+    "No forced editor focus",
+    "Cold reopen retains IDs/text/badge/order"
+  ],
+  "productionFilesChanged": [],
+  "newAccessibilityIdentifiers": [],
+  "verification": {
+    "syntax": "PASS_SYNTAX_ONLY",
+    "elapsedSeconds": 0.203,
+    "sourceStable": true,
+    "diffCheck": "PASS",
+    "behavioralExecution": "NOT_RUN"
+  },
+  "scope": "One source-only XCUITest addition plus its geometry correction. No claim of actual AX visibility, drag recognition, insertion, source association or cold reopen success until Apple execution."
+}

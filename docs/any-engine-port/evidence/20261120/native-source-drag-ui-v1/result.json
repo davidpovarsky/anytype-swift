@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "status": "SOURCE_READY_SYNTAX_PASS_APPLE_EXECUTION_PENDING",
+  "baselineCommit": "2dca5f6c1c64ab96d5fd32abb7d8628d919543ec",
+  "source": "NativeApp/UITests/NativeLaunchTests.swift",
+  "sourceSHA256": "586c162ca0fa44b139e688364ecd25fc9aacda6f5979c0c9c6038b13d04bbe94",
+  "newMethod": "NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens",
+  "testCount": 8,
+  "originalSevenMethodsAndHelpersBytePreserved": true,
+  "productionFilesChanged": [],
+  "newAccessibilityIdentifiers": [],
+  "normalFlow": [
+    "Fresh UUID-scoped account and Space through normal onboarding",
+    "Create and save a real Hebrew target paragraph",
+    "Use production Sefaria search and the pinned inspector's draggable Genesis 1:1 segment",
+    "Drag to the visible native table row's insertion boundary",
+    "Require one new quote block with exact provider text, a different native ID and its own source badge",
+    "Verify original target ID/text, quote-before-target position and no forced editor focus",
+    "Cold reopen the same account/Space and verify both exact block IDs/text, source badge and ordering"
+  ],
+  "verification": {
+    "syntax": "PASS_SYNTAX_ONLY",
+    "elapsedSeconds": 0.125,
+    "sourceStable": true,
+    "gitDiffCheck": "PASS",
+    "behavioralExecution": "NOT_RUN"
+  },
+  "limitations": [
+    "Windows syntax parsing does not type-check XCTest/XCUITest APIs or execute drag recognition.",
+    "Actual transfer, insertion position, canonical badge and cold reopening are mandatory future Apple assertions, not inferred passing behavior.",
+    "No existing native-ui methods or helper bodies were changed."
+  ]
+}

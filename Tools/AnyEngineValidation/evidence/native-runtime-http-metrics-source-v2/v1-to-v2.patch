@@ -1,0 +1,204 @@
+--- a/Modules/PinkhaAnyRuntime/Tests/PinkhaAnyRuntimeTests/AnyEmbeddedRuntimeTests.swift
++++ b/Modules/PinkhaAnyRuntime/Tests/PinkhaAnyRuntimeTests/AnyEmbeddedRuntimeTests.swift
+@@ -138,16 +138,18 @@
+     }
+ }
+ 
+-/// URLSession invokes this nonisolated delegate on its own callback queue.
+-/// The only mutable state is a counter guarded by stateLock. No lock is held
+-/// during output or across an await; Foundation task/metrics objects never
+-/// escape their callback. @unchecked Sendable covers that explicit discipline.
++/// URLSession invokes this nonisolated delegate on its callback queue.
++/// Both mutable fields are guarded by stateLock. Callback state contains only
++/// Sendable scalar values and at most one snapshot of sixteen transactions.
++/// No task/session/response object escapes the callback, and no diagnostic I/O
++/// or JSON encoding occurs there. @unchecked Sendable covers this discipline.
+ private final class RuntimeDeniedReadMetrics: NSObject, URLSessionTaskDelegate, @unchecked Sendable {
+     private let observationID = UUID().uuidString
+     private let route: String
+     private let startedUptime = ProcessInfo.processInfo.systemUptime
+     private let stateLock = NSLock()
+     private var metricsCallbackCount = 0
++    private var collectedMetrics: RuntimeCollectedMetrics?
+ 
+     init(route: String) {
+         let allowed = ["health", "auth", "spaces", "pinkha/capabilities"]
+@@ -181,15 +183,16 @@
+         emit(phase: "error", fields: ["errorDomain": domain, "errorCode": native.code])
+     }
+ 
+-    // Observe metrics only. Auth challenges, redirects, response disposition,
+-    // byte delivery and completion retain URLSession's original behavior.
++    // Passive collection only. This callback does not encode, print, schedule
++    // another task, or alter any transport/authentication decision.
+     func urlSession(
+         _ session: URLSession, task: URLSessionTask,
+         didFinishCollecting metrics: URLSessionTaskMetrics
+     ) {
+-        incrementMetricsCount()
+-        let transactions: [[String: Any]] = metrics.transactionMetrics.prefix(16).map { metric in
+-            var row: [String: Any] = [
++        let callbackUnixMs = Date().timeIntervalSince1970 * 1_000
++        let callbackElapsedMs = (ProcessInfo.processInfo.systemUptime - startedUptime) * 1_000
++        let transactions: [[String: RuntimeMetricValue]] = metrics.transactionMetrics.prefix(16).map { metric in
++            var row: [String: RuntimeMetricValue] = [
+                 "fetchStartUnixMs": Self.timestamp(metric.fetchStartDate),
+                 "domainLookupStartUnixMs": Self.timestamp(metric.domainLookupStartDate),
+                 "domainLookupEndUnixMs": Self.timestamp(metric.domainLookupEndDate),
+@@ -201,59 +204,58 @@
+                 "requestEndUnixMs": Self.timestamp(metric.requestEndDate),
+                 "responseStartUnixMs": Self.timestamp(metric.responseStartDate),
+                 "responseEndUnixMs": Self.timestamp(metric.responseEndDate),
+-                "protocol": Self.protocolLabel(metric.networkProtocolName),
+-                "reusedConnection": metric.isReusedConnection,
+-                "proxyConnection": metric.isProxyConnection,
+-                "resourceFetchType": metric.resourceFetchType.rawValue,
+-                "requestHeaderBytesSent": metric.countOfRequestHeaderBytesSent,
+-                "requestBodyBytesSent": metric.countOfRequestBodyBytesSent,
+-                "requestBodyBytesBeforeEncoding": metric.countOfRequestBodyBytesBeforeEncoding,
+-                "responseHeaderBytesReceived": metric.countOfResponseHeaderBytesReceived,
+-                "responseBodyBytesReceived": metric.countOfResponseBodyBytesReceived,
+-                "responseBodyBytesAfterDecoding": metric.countOfResponseBodyBytesAfterDecoding,
+-                "responsePresent": metric.response != nil
++                "protocol": .text(Self.protocolLabel(metric.networkProtocolName)),
++                "reusedConnection": .boolean(metric.isReusedConnection),
++                "proxyConnection": .boolean(metric.isProxyConnection),
++                "resourceFetchType": .integer(Int64(metric.resourceFetchType.rawValue)),
++                "requestHeaderBytesSent": .integer(metric.countOfRequestHeaderBytesSent),
++                "requestBodyBytesSent": .integer(metric.countOfRequestBodyBytesSent),
++                "requestBodyBytesBeforeEncoding": .integer(metric.countOfRequestBodyBytesBeforeEncoding),
++                "responseHeaderBytesReceived": .integer(metric.countOfResponseHeaderBytesReceived),
++                "responseBodyBytesReceived": .integer(metric.countOfResponseBodyBytesReceived),
++                "responseBodyBytesAfterDecoding": .integer(metric.countOfResponseBodyBytesAfterDecoding),
++                "responsePresent": .boolean(metric.response != nil)
+             ]
+             if let response = metric.response {
+-                row["expectedContentLength"] = response.expectedContentLength
+-                if let http = response as? HTTPURLResponse { row["status"] = http.statusCode }
++                row["expectedContentLength"] = .integer(response.expectedContentLength)
++                if let http = response as? HTTPURLResponse { row["status"] = .integer(Int64(http.statusCode)) }
+             }
+             return row
+         }
+-        var fields: [String: Any] = [
+-            "taskIdentifier": task.taskIdentifier,
++        var fields: [String: RuntimeMetricValue] = [
++            "callbackTimestampUnixMs": .real(callbackUnixMs),
++            "callbackElapsedMonotonicMs": .real(callbackElapsedMs),
++            "taskIdentifier": .integer(Int64(task.taskIdentifier)),
+             "taskIntervalStartUnixMs": Self.timestamp(metrics.taskInterval.start),
+             "taskIntervalEndUnixMs": Self.timestamp(metrics.taskInterval.end),
+-            "taskDurationMs": metrics.taskInterval.duration * 1_000,
+-            "redirectCount": metrics.redirectCount,
+-            "transactionCount": metrics.transactionMetrics.count,
+-            "omittedTransactionCount": max(0, metrics.transactionMetrics.count - 16),
+-            "taskBytesSent": task.countOfBytesSent,
+-            "taskBytesReceived": task.countOfBytesReceived,
+-            "taskExpectedBytesToReceive": task.countOfBytesExpectedToReceive,
+-            "transactions": transactions
++            "taskDurationMs": .real(metrics.taskInterval.duration * 1_000),
++            "redirectCount": .integer(Int64(metrics.redirectCount)),
++            "transactionCount": .integer(Int64(metrics.transactionMetrics.count)),
++            "omittedTransactionCount": .integer(Int64(max(0, metrics.transactionMetrics.count - 16))),
++            "taskBytesSent": .integer(task.countOfBytesSent),
++            "taskBytesReceived": .integer(task.countOfBytesReceived),
++            "taskExpectedBytesToReceive": .integer(task.countOfBytesExpectedToReceive)
+         ]
+         if let response = task.response {
+-            fields["expectedContentLength"] = response.expectedContentLength
+-            if let http = response as? HTTPURLResponse { fields["status"] = http.statusCode }
+-        }
+-        emit(phase: "metrics", fields: fields)
+-    }
+-
+-    private func incrementMetricsCount() {
++            fields["expectedContentLength"] = .integer(response.expectedContentLength)
++            if let http = response as? HTTPURLResponse { fields["status"] = .integer(Int64(http.statusCode)) }
++        }
++        let snapshot = RuntimeCollectedMetrics(fields: fields, transactions: transactions)
+         stateLock.lock()
+         metricsCallbackCount += 1
++        collectedMetrics = snapshot
+         stateLock.unlock()
+     }
+ 
+-    private func currentMetricsCount() -> Int {
++    private func snapshot() -> (count: Int, metrics: RuntimeCollectedMetrics?) {
+         stateLock.lock()
+         defer { stateLock.unlock() }
+-        return metricsCallbackCount
+-    }
+-
+-    private static func timestamp(_ date: Date?) -> Any {
+-        guard let date else { return NSNull() }
+-        return date.timeIntervalSince1970 * 1_000
++        return (metricsCallbackCount, collectedMetrics)
++    }
++
++    private static func timestamp(_ date: Date?) -> RuntimeMetricValue {
++        guard let date else { return .missing }
++        return .real(date.timeIntervalSince1970 * 1_000)
+     }
+ 
+     private static func protocolLabel(_ value: String?) -> String {
+@@ -261,19 +263,25 @@
+         return ["http/1.0", "http/1.1", "h2", "h3"].contains(value) ? value : "other"
+     }
+ 
++    // Called only before starting the request or after its await returns/throws.
++    // Taking one value snapshot keeps the count and metrics coherent. Missing,
++    // in-progress or later callbacks remain unknown at this observation point.
+     private func emit(phase: String, fields: [String: Any] = [:]) {
++        let state = snapshot()
+         var event = fields
+-        event["schemaVersion"] = 1
++        event["schemaVersion"] = 2
+         event["observationID"] = observationID
+         event["route"] = route
+         event["phase"] = phase
+         event["timestampUnixMs"] = Date().timeIntervalSince1970 * 1_000
+         event["elapsedMonotonicMs"] = (ProcessInfo.processInfo.systemUptime - startedUptime) * 1_000
+-        // A missing metrics callback means unknown, never "no headers received".
+-        event["metricsCallbackCount"] = currentMetricsCount()
++        event["metricsCallbackCount"] = state.count
++        event["metricsAvailableAtEmit"] = state.metrics != nil
++        if let metrics = state.metrics { event["metrics"] = metrics.jsonObject }
++        else { event["metrics"] = NSNull() }
+         guard let encoded = try? JSONSerialization.data(withJSONObject: event, options: [.sortedKeys]) else {
+             try? FileHandle.standardError.write(contentsOf: Data(
+-                "PINKHA_RUNTIME_HTTP_METRICS {\"schemaVersion\":1,\"phase\":\"diagnostic_encode_failed\"}\n".utf8))
++                "PINKHA_RUNTIME_HTTP_METRICS {\"schemaVersion\":2,\"phase\":\"diagnostic_encode_failed\"}\n".utf8))
+             return
+         }
+         var line = Data("PINKHA_RUNTIME_HTTP_METRICS ".utf8)
+@@ -283,3 +291,30 @@
+         try? FileHandle.standardError.write(contentsOf: line)
+     }
+ }
++
++/// Typed primitive storage prevents Foundation task/metrics/header objects from
++/// entering the locked state. Conversion to JSON values occurs only after await.
++private enum RuntimeMetricValue: Sendable {
++    case integer(Int64), real(Double), boolean(Bool), text(String), missing
++
++    var jsonValue: Any {
++        switch self {
++        case .integer(let value): return value
++        case .real(let value): return value
++        case .boolean(let value): return value
++        case .text(let value): return value
++        case .missing: return NSNull()
++        }
++    }
++}
++
++private struct RuntimeCollectedMetrics: Sendable {
++    let fields: [String: RuntimeMetricValue]
++    let transactions: [[String: RuntimeMetricValue]]
++
++    var jsonObject: [String: Any] {
++        var result = fields.mapValues(\.jsonValue)
++        result["transactions"] = transactions.map { $0.mapValues(\.jsonValue) }
++        return result
++    }
++}

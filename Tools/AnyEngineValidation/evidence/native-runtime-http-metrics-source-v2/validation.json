@@ -1,0 +1,53 @@
+{
+  "status": "PASS_SYNTAX_AND_PORTABLE_HELPER_TYPECHECK",
+  "capturedAtUTC": "2026-11-20T05:37:09.426198+00:00",
+  "sourceSHA256": "39cfc7ba724c407421fc0174b438f93d7807a2c02e986e079d522be982dc8585",
+  "sourceStable": true,
+  "helperSHA256": "ba9e5e179e96acc14b853a54ebf1e569763bee37f869c25a21727b3776495021",
+  "typecheckInputSHA256": "33fe80ab9417680a51216a9d59fbb037716adb2f07da33075ce9a93e35c9be03",
+  "compilerSHA256": "e1d0a0b20d95a92b22f4906e7ca331a7c8b89be86b2d9a2d215ac24f753e945a",
+  "stages": [
+    {
+      "name": "ios-syntax",
+      "args": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-target",
+        "arm64-apple-ios18.4-simulator",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\Modules\\PinkhaAnyRuntime\\Tests\\PinkhaAnyRuntimeTests\\AnyEmbeddedRuntimeTests.swift"
+      ],
+      "deadlineSeconds": 45,
+      "durationSeconds": 0.25,
+      "exitCode": 0,
+      "timedOut": false,
+      "stdoutBytes": 0,
+      "stderrBytes": 165,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "46c07c943450de41f9fb4d131daa40ad4fe2d1bede2fbfec2d2441c2aa59c539"
+    },
+    {
+      "name": "portable-helper-typecheck",
+      "args": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-typecheck",
+        "-swift-version",
+        "6",
+        "-module-cache-path",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\runtime-http-metrics-v2\\ModuleCache",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\runtime-http-metrics-v2\\ObserverTypecheck.swift"
+      ],
+      "deadlineSeconds": 60,
+      "durationSeconds": 16.0,
+      "exitCode": 0,
+      "timedOut": false,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "actualAppleSemanticOrRuntimeTests": 0,
+  "HTTPRequests": 0,
+  "scope": "Full test syntax for iOS target using Windows compiler; exact helper Swift6 typecheck against installed FoundationNetworking declarations. Neither is actual Apple compilation/execution."
+}

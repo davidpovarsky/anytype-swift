@@ -1,0 +1,27 @@
+--- before/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift
++++ after/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift
+@@ -464,6 +464,12 @@
+                                 } label: { Image(systemName: presenter.isSelectionOnly ? "checkmark.circle" : "plus.circle") }
+                                     .disabled(!presenter.canEditAssociations)
+                                     .buttonStyle(.plain)
++                                    .accessibilityIdentifier(presenter.isSelectionOnly
++                                        ? "any-native-source-select-\(result.id)"
++                                        : "any-native-source-link-\(result.id)")
++                                    .accessibilityLabel(Text(verbatim: (presenter.isSelectionOnly
++                                        ? AnyUIErrorText.text("בחירת ", "Select ")
++                                        : AnyUIErrorText.text("קישור ", "Link ")) + result.title(locale: locale)))
+                             }
+                         }
+                     }
+--- before/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift
++++ after/Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift
+@@ -310,6 +310,9 @@
+                             }
+                         }.disabled(!presentation.canMutate)
+                     } label: { Image(systemName: "ellipsis.circle") }
++                        .accessibilityIdentifier("any-native-derived-actions-\(item.id)")
++                        .accessibilityLabel(Text(verbatim: AnyUIErrorText.text("פעולות עבור ", "Actions for ")
++                            + TorahAssociationDisplayFormatter.label(for: item, locale: locale)))
+                 }
+             }
+             Button {

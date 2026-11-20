@@ -464,6 +464,285 @@ final class NativeLaunchTests: XCTestCase {
         XCTAssertEqual(blocks.count, 1)
     }
 
+    func testSourceDragIntoNativeEditorPreservesTargetAndColdReopens() {
+        let scope = UUID()
+        let suffix = String(scope.uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        let spaceName = "Source drag UI Space " + suffix
+        let documentName = "Source drag UI Document " + suffix
+        let targetText = "בלוק היעד נשאר במקומו ובזהותו " + suffix
+        let reference = "Genesis 1:1"
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentName)
+        tapWhenEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+
+        let blocks = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        waitUntilEnabled(blocks.firstMatch)
+        blocks.firstMatch.tap()
+        blocks.firstMatch.typeText(targetText)
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        let status = app.descendants(matching: .any)
+            .matching(identifier: "any-native-save-status").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"),
+                object: status, timeout: 45)
+        let targetIdentifier = blocks.firstMatch.identifier
+        XCTAssertEqual(blocks.count, 1)
+        XCTAssertEqual(app.textViews[targetIdentifier].value as? String, targetText)
+
+        tapWhenEnabled(app.buttons["any-native-document-sources"])
+        let search = app.searchFields.firstMatch
+        waitUntilEnabled(search)
+        search.tap(); search.typeText(reference)
+        let result = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND value == %@",
+            "any-native-source-result-", reference)).firstMatch
+        tapWhenEnabled(result, timeout: 60)
+        let segment = app.buttons["torah-reader-segment-sefaria:" + reference]
+        waitUntilEnabled(segment, timeout: 60)
+        let providerText = segment.label
+        XCTAssertFalse(providerText.isEmpty)
+        XCTAssertNotEqual(providerText, reference)
+        let target = app.textViews[targetIdentifier]
+        let targetRow = app.cells.containing(.textView, identifier: targetIdentifier).firstMatch
+        waitFor(NSPredicate(format: "exists == true AND hittable == true"),
+                object: targetRow, timeout: 30)
+        waitFor(NSPredicate(format: "hittable == true"), object: segment, timeout: 30)
+        XCTAssertEqual(app.keyboards.count, 0)
+
+        // Drop at the visible row's insertion boundary, outside its inner text
+        // editor. This must use the real custom Torah transfer/table drop path,
+        // not the Insert context menu or plain-string paste into UITextView.
+        let appFrame = app.frame
+        let rowFrame = targetRow.frame.intersection(appFrame)
+        let readerFrame = segment.frame
+        guard !rowFrame.isNull, rowFrame.width > 24, rowFrame.height > 8 else {
+            XCTFail("The current native target row has no usable visible insertion band.")
+            return
+        }
+        let inspector = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "torah-inspector-sheet-")).firstMatch
+        let inspectorFrame = inspector.exists ? inspector.frame.intersection(appFrame) : CGRect.null
+        // The pinned iPadOS 27 presenter places this sheet physically RIGHT,
+        // including in Hebrew. Semantic 'leading' would choose the wrong side.
+        // A named container is useful as a boundary only when its current frame
+        // contains the reader and actually describes a right-side sheet.
+        let hasTrailingSheetFrame = !inspectorFrame.isNull
+            && inspectorFrame.minX > appFrame.minX
+            && inspectorFrame.contains(readerFrame)
+        let insertionY = rowFrame.minY + min(2, rowFrame.height * 0.03)
+        var insertionRight = rowFrame.maxX
+        if hasTrailingSheetFrame && insertionY >= inspectorFrame.minY
+            && insertionY <= inspectorFrame.maxY {
+            insertionRight = min(insertionRight, inspectorFrame.minX)
+        }
+        let uncoveredWidth = insertionRight - rowFrame.minX
+        guard uncoveredWidth > 24 else {
+            XCTFail("The live inspector frame covers the target row's insertion band.")
+            return
+        }
+        let insertionPoint = CGPoint(
+            x: rowFrame.minX + min(12, uncoveredWidth * 0.25), y: insertionY)
+        XCTAssertTrue(rowFrame.contains(insertionPoint))
+        XCTAssertFalse(readerFrame.contains(insertionPoint))
+        if hasTrailingSheetFrame {
+            XCTAssertFalse(inspectorFrame.contains(insertionPoint))
+        }
+        // If SwiftUI exposes no trustworthy full-sheet AX frame, this remains
+        // the physical-left/top layout fallback, with live target hittability
+        // and reader exclusion above. It is not proof of an invisible sheet's
+        // full bounds. Preserve the actual frames/mode for Apple diagnosis.
+        let geometry = XCTAttachment(string:
+            "mode=\(hasTrailingSheetFrame ? "named-trailing-sheet-frame" : "physical-right-layout-fallback")\n"
+            + "app=\(appFrame)\nrow=\(rowFrame)\nreader=\(readerFrame)\n"
+            + "inspector=\(inspectorFrame)\ndropPoint=\(insertionPoint)")
+        geometry.name = "native-source-drag-live-geometry"; geometry.lifetime = .keepAlways
+        add(geometry)
+        let screenshot = XCTAttachment(screenshot: app.screenshot())
+        screenshot.name = "native-source-drag-before-gesture"; screenshot.lifetime = .keepAlways
+        add(screenshot)
+        let dragStart = segment.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        let insertionBoundary = app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(
+            dx: insertionPoint.x - appFrame.minX, dy: insertionPoint.y - appFrame.minY))
+        dragStart.press(forDuration: 1.1, thenDragTo: insertionBoundary)
+
+        let quote = blocks.matching(NSPredicate(format: "value == %@", providerText)).firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", providerText),
+                object: quote, timeout: 60)
+        let quoteIdentifier = quote.identifier
+        XCTAssertTrue(quoteIdentifier.hasPrefix("any-native-block-"))
+        XCTAssertNotEqual(quoteIdentifier, targetIdentifier)
+        let quoteBlockID = String(quoteIdentifier.dropFirst("any-native-block-".count))
+        let badgeIdentifier = "any-native-block-sources-" + quoteBlockID
+        let badge = app.buttons[badgeIdentifier]
+        waitUntilEnabled(badge, timeout: 60)
+        let sourceLabel = badge.label
+        XCTAssertFalse(sourceLabel.isEmpty)
+        XCTAssertEqual(blocks.count, 2, "The source drop must create one distinct native block.")
+        XCTAssertEqual(target.value as? String, targetText, "A source transfer must not replace the target text.")
+        XCTAssertLessThan(quote.frame.minY, target.frame.minY, "A targeted drop inserts before its native target.")
+        XCTAssertEqual(app.keyboards.count, 0, "Dragging a source must not acquire editor focus.")
+        tapWhenEnabled(app.buttons["torah-inspector-close"])
+
+        // Reopen only after the separate canonical association badge appears.
+        // The new quote, its source metadata and the original target must all
+        // retain their acknowledged native identities without another gesture.
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[documentName].firstMatch, timeout: 60)
+        let reopenedQuote = app.textViews[quoteIdentifier]
+        let reopenedTarget = app.textViews[targetIdentifier]
+        waitFor(NSPredicate(format: "exists == true AND value == %@", providerText),
+                object: reopenedQuote, timeout: 60)
+        waitFor(NSPredicate(format: "exists == true AND value == %@", targetText),
+                object: reopenedTarget, timeout: 45)
+        waitUntilEnabled(app.buttons[badgeIdentifier], timeout: 45)
+        XCTAssertEqual(app.buttons[badgeIdentifier].label, sourceLabel)
+        XCTAssertEqual(blocks.count, 2)
+        XCTAssertEqual(blocks.matching(NSPredicate(format: "value == %@", providerText)).count, 1)
+        XCTAssertLessThan(reopenedQuote.frame.minY, reopenedTarget.frame.minY)
+        XCTAssertEqual(app.keyboards.count, 0)
+    }
+
+    func testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen() {
+        let scope = UUID()
+        let suffix = String(scope.uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        let spaceName = "Topic Word UI Space " + suffix
+        let documentA = "Topic Word Document A " + suffix
+        let documentB = "Topic Word Document B " + suffix
+        let linkedPrefix = "any-native-linked-source-"
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentA)
+        waitUntilEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+
+        // Resolve real public provider candidates through the retained search.
+        // Topic and Word reader pages are intentionally not assumed here.
+        tapWhenEnabled(app.buttons["any-native-document-sources"])
+        let scopes = app.segmentedControls.firstMatch
+        tapWhenEnabled(scopes.buttons.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "נושאים", "Topics")).firstMatch)
+        let search = app.searchFields.firstMatch
+        waitUntilEnabled(search)
+        search.tap(); search.typeText("Shabbat")
+        let topicResult = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND value == %@",
+            "any-native-source-result-topic:", "shabbat")).firstMatch
+        waitFor(NSPredicate(format: "exists == true"), object: topicResult, timeout: 60)
+        let topicResultID = String(topicResult.identifier.dropFirst("any-native-source-result-".count))
+        XCTAssertTrue(topicResultID.hasPrefix("topic:"))
+        let topicIdentity = topicResult.value as? String ?? ""
+        XCTAssertEqual(topicIdentity, "shabbat")
+        let topicLinkID = "any-native-source-link-" + topicResultID
+        tapWhenEnabled(app.buttons[topicLinkID], timeout: 60)
+        let linkedTopicA = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND value == %@", linkedPrefix, topicIdentity)).firstMatch
+        waitFor(NSPredicate(format: "exists == true"), object: linkedTopicA, timeout: 60)
+        let topicAssociationA = String(linkedTopicA.identifier.dropFirst(linkedPrefix.count))
+        let topicTitle = linkedTopicA.label
+        XCTAssertFalse(topicAssociationA.isEmpty)
+        XCTAssertFalse(topicTitle.isEmpty)
+
+        // Changing the actual segmented category clears the previous query.
+        // Capture the acknowledged canonical word, not a guessed lexical label.
+        tapWhenEnabled(scopes.buttons.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "מילים", "Words")).firstMatch)
+        waitUntilEnabled(search)
+        search.tap(); search.typeText("בראשית")
+        let wordLink = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-source-link-word:")).firstMatch
+        tapWhenEnabled(wordLink, timeout: 60)
+        let linkedWordA = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND identifier != %@",
+            linkedPrefix, linkedPrefix + topicAssociationA)).firstMatch
+        waitFor(NSPredicate(format: "exists == true"), object: linkedWordA, timeout: 60)
+        let wordAssociationA = String(linkedWordA.identifier.dropFirst(linkedPrefix.count))
+        let wordTitle = linkedWordA.label
+        let wordIdentity = linkedWordA.value as? String ?? ""
+        XCTAssertFalse(wordAssociationA.isEmpty)
+        XCTAssertNotEqual(wordAssociationA, topicAssociationA)
+        XCTAssertFalse(wordTitle.isEmpty)
+        XCTAssertFalse(wordIdentity.isEmpty)
+        XCTAssertEqual(app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", linkedPrefix)).count, 2)
+        tapWhenEnabled(app.buttons["any-native-source-search-done"])
+
+        let topicMenuA = "any-native-derived-actions-" + topicAssociationA
+        let wordMenuA = "any-native-derived-actions-" + wordAssociationA
+        tapWhenEnabled(app.buttons["any-native-document-properties"])
+        waitUntilEnabled(app.buttons[topicMenuA], timeout: 60)
+        waitUntilEnabled(app.buttons[wordMenuA], timeout: 60)
+        XCTAssertTrue(app.buttons[topicMenuA].label.contains(topicTitle))
+        XCTAssertTrue(app.buttons[wordMenuA].label.contains(wordTitle))
+        tapWhenEnabled(app.buttons["any-native-property-close"])
+
+        // Create a second ordinary document and link the identical returned
+        // Topic through the same public provider/UI, without linking the Word.
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: documentB)
+        waitUntilEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+        tapWhenEnabled(app.buttons["any-native-document-sources"])
+        tapWhenEnabled(scopes.buttons.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "נושאים", "Topics")).firstMatch)
+        waitUntilEnabled(search)
+        search.tap(); search.typeText("Shabbat")
+        tapWhenEnabled(app.buttons[topicLinkID], timeout: 60)
+        let linkedTopicB = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND value == %@", linkedPrefix, topicIdentity)).firstMatch
+        waitFor(NSPredicate(format: "exists == true"), object: linkedTopicB, timeout: 60)
+        let topicAssociationB = String(linkedTopicB.identifier.dropFirst(linkedPrefix.count))
+        let topicTitleB = linkedTopicB.label
+        XCTAssertFalse(topicAssociationB.isEmpty)
+        XCTAssertEqual(app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", linkedPrefix)).count, 1)
+        tapWhenEnabled(app.buttons["any-native-source-search-done"])
+
+        // The real derived-property menu queries the native Topic index. Both
+        // committed documents must appear, then the normal owned-sheet route
+        // must dismiss the child and parent before opening A's mounted editor.
+        tapWhenEnabled(app.buttons["any-native-document-properties"])
+        tapWhenEnabled(app.buttons["any-native-derived-actions-" + topicAssociationB], timeout: 60)
+        tapWhenEnabled(app.buttons.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "מסמכים מקושרים", "Related documents")).firstMatch)
+        waitFor(NSPredicate(format: "exists == true"), object: app.navigationBars[topicTitleB], timeout: 60)
+        waitUntilEnabled(app.buttons[documentA].firstMatch, timeout: 60)
+        waitUntilEnabled(app.buttons[documentB].firstMatch, timeout: 60)
+        tapWhenEnabled(app.buttons[documentA].firstMatch)
+        waitFor(NSPredicate(format: "exists == true"), object: app.navigationBars[documentA], timeout: 60)
+        waitFor(NSPredicate(format: "exists == false"), object: app.buttons["any-native-property-close"], timeout: 30)
+        waitUntilEnabled(app.buttons["any-native-document-properties"])
+
+        tapWhenEnabled(app.buttons["any-native-document-properties"])
+        waitUntilEnabled(app.buttons[topicMenuA], timeout: 60)
+        tapWhenEnabled(app.buttons[wordMenuA], timeout: 60)
+        tapWhenEnabled(app.buttons.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "מסמכים מקושרים", "Related documents")).firstMatch)
+        waitFor(NSPredicate(format: "exists == true"), object: app.navigationBars[wordTitle], timeout: 60)
+        waitUntilEnabled(app.buttons[documentA].firstMatch, timeout: 60)
+        XCTAssertFalse(app.buttons[documentB].exists, "A Topic-only document must not enter the Word index.")
+
+        // Reopen from disk without relinking. The exact canonical item IDs and
+        // labels must remain present, and Word-related results remain distinct.
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[documentA].firstMatch, timeout: 60)
+        tapWhenEnabled(app.buttons["any-native-document-properties"], timeout: 60)
+        waitUntilEnabled(app.buttons[topicMenuA], timeout: 60)
+        waitUntilEnabled(app.buttons[wordMenuA], timeout: 60)
+        XCTAssertTrue(app.buttons[topicMenuA].label.contains(topicTitle))
+        XCTAssertTrue(app.buttons[wordMenuA].label.contains(wordTitle))
+        XCTAssertEqual(app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-derived-actions-")).count, 2)
+        tapWhenEnabled(app.buttons[wordMenuA])
+        tapWhenEnabled(app.buttons.matching(NSPredicate(
+            format: "label == %@ OR label == %@", "מסמכים מקושרים", "Related documents")).firstMatch)
+        waitFor(NSPredicate(format: "exists == true"), object: app.navigationBars[wordTitle], timeout: 60)
+        waitUntilEnabled(app.buttons[documentA].firstMatch, timeout: 60)
+        XCTAssertFalse(app.buttons[documentB].exists)
+    }
+
     private func selectInspectorTool(_ app: XCUIApplication, hebrew: String, english: String) {
         let tools = app.descendants(matching: .any)
             .matching(identifier: "torah-inspector-tools").firstMatch
@@ -481,8 +760,7 @@ final class NativeLaunchTests: XCTestCase {
     private func createOwnedWorkspace(_ app: XCUIApplication, spaceName: String) {
         tapWhenEnabled(app.buttons["any-native-account-create"])
         let backup = app.switches["any-native-backup-acknowledged"]
-        waitUntilEnabled(backup, timeout: 60)
-        backup.tap()
+        acknowledgeOwnedBackup(backup)
         // Acknowledge through the same UI as a person; never read or print the
         // recovery phrase from the accessibility tree.
         tapWhenEnabled(app.buttons["any-native-backup-continue"])
@@ -492,6 +770,27 @@ final class NativeLaunchTests: XCTestCase {
         spaceNameField.typeText(String(spaceName))
         tapWhenEnabled(app.buttons["any-native-space-create"])
         tapWhenEnabled(app.buttons["any-native-workspace-setup"], timeout: 90)
+    }
+
+    private func acknowledgeOwnedBackup(_ row: XCUIElement) {
+        waitUntilEnabled(row, timeout: 60)
+        // The executed iOS 27 AX trees expose a SwiftUI Toggle row containing
+        // a separate physical Switch. A row tap left all five owned accounts
+        // unacknowledged; target that observed child control exactly once.
+        let switches = row.descendants(matching: .switch)
+        let control = switches.firstMatch
+        waitUntilEnabled(control, timeout: 10)
+        XCTAssertEqual(switches.count, 1, "Expected one physical backup switch")
+        waitFor(NSPredicate(format: "hittable == true AND value == %@", "0"),
+                object: control, timeout: 10)
+        // Geometry only: never capture the recovery phrase or a complete tree.
+        let frames = XCTAttachment(string: "row=\(row.frame)\ncontrol=\(control.frame)")
+        frames.name = "native-backup-acknowledgement-control-frames"
+        frames.lifetime = .keepAlways
+        add(frames)
+        control.tap()
+        waitFor(NSPredicate(format: "value == %@", "1"), object: control, timeout: 10)
+        waitFor(NSPredicate(format: "value == %@", "1"), object: row, timeout: 10)
     }
 
     private func createNamedItem(_ app: XCUIApplication, action: String, title: String) {

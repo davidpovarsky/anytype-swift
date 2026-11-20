@@ -1,0 +1,109 @@
+{
+  "status": "READ_ONLY_RETAINED_TRACE_REDUCTION",
+  "noNewRuntimeExecution": true,
+  "noHTTPRequests": true,
+  "trace": {
+    "path": "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\native-v9-property15-traced-v1\\run\\stderr.log",
+    "sha256": "f7050aa7de1fa05144cff4cd4b76acbe8501fa411b4ebb27f21c79659784f27c"
+  },
+  "correlation": {
+    "path": "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\native-v9-property15-traced-v1\\native-http-metadata.json",
+    "sha256": "f01d12a0c8e3d3477552dd1be0eb714ce3fd831f8541b6895443f67474edacb6"
+  },
+  "failure": {
+    "begin": {
+      "elapsedMs": 0,
+      "id": "737A8849-8A6B-454E-B66F-E2FE6F56A64E",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "begin",
+      "timestampUnixMs": 1795150230560
+    },
+    "terminal": {
+      "elapsedMs": 30016,
+      "errorCode": -1001,
+      "errorDomain": "NSURLErrorDomain",
+      "id": "737A8849-8A6B-454E-B66F-E2FE6F56A64E",
+      "method": "GET",
+      "path": "/v1/auth",
+      "phase": "error",
+      "timestampUnixMs": 1795150260573
+    }
+  },
+  "allBegins": 778,
+  "allResponses": 777,
+  "allErrors": 1,
+  "concurrentAwaitTerminals": [
+    {
+      "id": "4FFF29D0-EB9A-4E7C-9F50-47196FA260CA",
+      "method": "GET",
+      "path": "/v1/auth",
+      "terminalPhase": "response",
+      "status": 200,
+      "reportedMonotonicElapsedMs": 16,
+      "terminalWallOffsetFromFailedBeginMs": 6
+    },
+    {
+      "id": "B75DEBF1-C6B6-4D83-BEAD-983A8767C1F2",
+      "method": "GET",
+      "path": "/v1/auth",
+      "terminalPhase": "response",
+      "status": 200,
+      "reportedMonotonicElapsedMs": 16,
+      "terminalWallOffsetFromFailedBeginMs": 6
+    },
+    {
+      "id": "6238E13B-688F-4783-86F4-788A17ED8D63",
+      "method": "GET",
+      "path": "/v1/auth",
+      "terminalPhase": "response",
+      "status": 200,
+      "reportedMonotonicElapsedMs": 16,
+      "terminalWallOffsetFromFailedBeginMs": 7
+    },
+    {
+      "id": "A2B4260E-A610-42AD-BF09-CB292D827ECA",
+      "method": "GET",
+      "path": "/v1/auth",
+      "terminalPhase": "response",
+      "status": 200,
+      "reportedMonotonicElapsedMs": 16,
+      "terminalWallOffsetFromFailedBeginMs": 7
+    },
+    {
+      "id": "5D158BCD-37B7-4AC3-B525-058AEAFEFD6E",
+      "method": "GET",
+      "path": "/v1/auth",
+      "terminalPhase": "response",
+      "status": 200,
+      "reportedMonotonicElapsedMs": 16,
+      "terminalWallOffsetFromFailedBeginMs": 10
+    },
+    {
+      "id": "431B0CC7-5C42-4B06-9D19-9152950F1E75",
+      "method": "GET",
+      "path": "/v1/auth",
+      "terminalPhase": "response",
+      "status": 200,
+      "reportedMonotonicElapsedMs": 16,
+      "terminalWallOffsetFromFailedBeginMs": 10
+    },
+    {
+      "id": "737A8849-8A6B-454E-B66F-E2FE6F56A64E",
+      "method": "GET",
+      "path": "/v1/auth",
+      "terminalPhase": "error",
+      "status": null,
+      "reportedMonotonicElapsedMs": 30016,
+      "terminalWallOffsetFromFailedBeginMs": 30013
+    }
+  ],
+  "otherResponsesBeforeFailure": 41,
+  "lastOtherResponseWallOffsetMs": 42,
+  "newBeginsDuringStall": 34,
+  "nativeCompletionCandidateCount": 32,
+  "uniqueClientServerRequestJoin": false,
+  "failedAwaitFramingObserved": false,
+  "serverFinalFlushObserved": false,
+  "scope": "One exact Windows Property15 failure, not a new behavior acceptance run."
+}

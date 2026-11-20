@@ -310,6 +310,9 @@ public struct AnyNativePropertiesView: View {
                             }
                         }.disabled(!presentation.canMutate)
                     } label: { Image(systemName: "ellipsis.circle") }
+                        .accessibilityIdentifier("any-native-derived-actions-\(item.id)")
+                        .accessibilityLabel(Text(verbatim: AnyUIErrorText.text("פעולות עבור ", "Actions for ")
+                            + TorahAssociationDisplayFormatter.label(for: item, locale: locale)))
                 }
             }
             Button {

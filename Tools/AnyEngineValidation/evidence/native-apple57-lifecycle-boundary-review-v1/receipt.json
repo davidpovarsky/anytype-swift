@@ -1,0 +1,170 @@
+{
+  "status": "READ_ONLY_APPLE57_LIFECYCLE_BOUNDARY_REVIEW_NO_ROOT_CAUSE",
+  "createdAtUTC": "2026-11-20T05:23:05.088356+00:00",
+  "appCommit": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+  "workflowJobID": "136080515969",
+  "nativeManifest": {
+    "path": "Tools/AnyEngineValidation/evidence/native-conditional-properties-v8-source.json",
+    "sha256": "484d377a89b3e53ccab28bbf8defe223441e85db398c40ee5626d71ddc521289"
+  },
+  "closedJobLog": {
+    "path": "C:\\Users\\DAVID\\Code\\anytype-swift-any-engine-20261119\\build\\any-engine-port\\apple57-patched-runtime-v1\\workflow-job.log",
+    "bytes": 9273570,
+    "sha256": "c78e12656170e96722e6a68823380fe2cd318e1e2edef1a387c4b04e8c61c95d",
+    "rawLogCopiedIntoThisArchive": false
+  },
+  "sourceStable": true,
+  "sources": [
+    {
+      "scope": "app",
+      "path": "Modules/PinkhaAnyRuntime/Tests/PinkhaAnyRuntimeTests/AnyEmbeddedRuntimeTests.swift",
+      "gitCommit": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+      "sha256": "45751cc8c2c1c46245e5a2c663fdaf7acd449df57a8f95e4c2761555dfd22989",
+      "bytes": 6557
+    },
+    {
+      "scope": "app",
+      "path": "Modules/PinkhaAnyRuntime/Sources/PinkhaAnyRuntime/AnyEmbeddedRuntime.swift",
+      "gitCommit": "57c116e02ee6dbce21f3bbffcc297841d2bd1235",
+      "sha256": "e77f1d948d22480c4e15fb647a61911db38ae3ec2029a85404dded75f8953ee2",
+      "bytes": 11774
+    },
+    {
+      "scope": "native",
+      "path": "internal/server/pinkha_gateway.go",
+      "sha256": "c256ebf6b3c304edfb531ab5dda95dfb7a5ce26779322fc1714c5d1d4a27cee8",
+      "bytes": 720,
+      "v8SourceMatch": true,
+      "basis": "sealed v8 changed-file map"
+    },
+    {
+      "scope": "native",
+      "path": "internal/server/pinkha_gateway_mobile.go",
+      "sha256": "10100dc0e960483bf190c6230932b1486bfd769137d5326c0627dad73a930272",
+      "bytes": 66,
+      "v8SourceMatch": true,
+      "basis": "sealed v8 changed-file map"
+    },
+    {
+      "scope": "native",
+      "path": "internal/server/control.go",
+      "sha256": "02c930ea7a19cac4ff75ace7338c5688b39641e7ad007d67624053ae05bf120e",
+      "bytes": 1810,
+      "v8SourceMatch": true,
+      "basis": "unchanged pinned upstream source"
+    },
+    {
+      "scope": "native",
+      "path": "internal/server/errors.go",
+      "sha256": "7ebbc379d4b6e61ac29e242d53da6c96881d357bf6ceda7f2d3607512f0a03a6",
+      "bytes": 1543,
+      "v8SourceMatch": true,
+      "basis": "unchanged pinned upstream source"
+    },
+    {
+      "scope": "native",
+      "path": "internal/server/routes.go",
+      "sha256": "298cecd808ac2b28ca90dc5ab2e3632c221f33ff4647b726e99d7ff7875c4225",
+      "bytes": 12031,
+      "v8SourceMatch": true,
+      "basis": "sealed v8 changed-file map"
+    },
+    {
+      "scope": "native",
+      "path": "internal/server/logger_echo.go",
+      "sha256": "13f9121e9f194b93022238846e12730b9657a8c9f1ba7c209ff2b6b5815da60b",
+      "bytes": 1755,
+      "v8SourceMatch": true,
+      "basis": "unchanged pinned upstream source"
+    },
+    {
+      "scope": "native",
+      "path": "internal/server/server.go",
+      "sha256": "cf47feb061a5541d38f36b53a82288e1eb19669f93b179669393137e78f7e651",
+      "bytes": 7201,
+      "v8SourceMatch": true,
+      "basis": "unchanged pinned upstream source"
+    },
+    {
+      "scope": "native",
+      "path": "internal/embedded/embedded.go",
+      "sha256": "a1b52dda8a4232d544242f27bf13bc8a6f4b4832be5d90be2baf0ffa222c2088",
+      "bytes": 15460,
+      "v8SourceMatch": true,
+      "basis": "unchanged pinned upstream source"
+    },
+    {
+      "scope": "native",
+      "path": "mobile/ios/anylib.go",
+      "sha256": "3860a3ba9779a1e4410fa47cc18baae8a838e34d705b30ddc5499852b28e4bc6",
+      "bytes": 9547,
+      "v8SourceMatch": true,
+      "basis": "unchanged pinned upstream source"
+    }
+  ],
+  "observations": {
+    "test": "AnyEmbeddedRuntimeTests.testRealManagedRuntimeLifecycleAndControlBoundary",
+    "actualRuntimeTests": 3,
+    "actualUnexpectedFailures": 1,
+    "failingRequest": {
+      "method": "GET",
+      "path": "/v1/pinkha/capabilities",
+      "url": "http://127.0.0.1:49256/v1/pinkha/capabilities",
+      "client": "Darwin URLSession.shared / CFNetwork",
+      "task": "2213C46C-B6CE-43D9-9189-7F937C76AD91.6",
+      "errorDomain": "NSURLErrorDomain",
+      "errorCode": -1001
+    },
+    "nativeLogStatus": 403,
+    "nativeLogTimestamp": "2026-11-20T04:37:32.359Z",
+    "clientErrorTimestamp": "2026-11-20T04:38:32.397310Z",
+    "exactClientRequestStartTimestampAvailable": false,
+    "nativeLogTextInterleavedWithCFNetworkStderr": true,
+    "actionsCaptureTimestampsAreNotNativeEventTimestamps": true,
+    "reportedTestLine86": "catch rethrow after cleanup; request await is lines29-34",
+    "priorSequentialRequests": [
+      {
+        "path": "/v1/health",
+        "authorized": true,
+        "status": 200
+      },
+      {
+        "path": "/v1/auth",
+        "authorized": true,
+        "status": 200
+      },
+      {
+        "path": "/v1/health",
+        "authorized": false,
+        "status": 403
+      },
+      {
+        "path": "/v1/auth",
+        "authorized": false,
+        "status": 403
+      },
+      {
+        "path": "/v1/spaces",
+        "authorized": false,
+        "status": 403
+      }
+    ],
+    "accountAuthorizedAtFailure": false,
+    "restartControlOrEmergencyStopReachedBeforeFailure": false,
+    "AnyHTTPClientOrHostLeaseUsedByFailingTestRequest": false,
+    "SSEUsedByFailingWorkflow": false
+  },
+  "responseBoundary": {
+    "denialOccursBeforeCapabilitiesHandlerAndSDKGate": true,
+    "requireControlDiscardsWriteError": true,
+    "httpInfoLogPrecedesGoFinishRequestFlush": true,
+    "nativeFinalFlushObserved": false,
+    "failedResponseHeadersOrBodyObserved": false,
+    "logSinkBackpressure": "Source-supported possibility, not established by the interleaved log."
+  },
+  "classification": "Target-platform acceptance failure. Same timeout symptom as Windows does not prove a shared root cause.",
+  "newRuntimeExecutions": 0,
+  "newHTTPRequests": 0,
+  "productionChanges": false,
+  "supportedProductionFix": null
+}
