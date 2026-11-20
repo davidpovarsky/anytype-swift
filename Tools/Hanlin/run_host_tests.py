@@ -248,7 +248,7 @@ def validate_results(summary, tree, expected, udid, profile=HostTestProfile.SDK0
     require(observed == expected, "Missing SDK test methods: " + ", ".join(sorted(expected - observed)))
     result = dict(counts=counts, methods=sorted(observed), actual_cases=cases, device=device)
     if profile is HostTestProfile.ORIGINAL_EDITOR:
-        require(counts["totalTestCount"] == 37, "Original editor must execute exactly thirty-seven methods")
+        require(counts["totalTestCount"] == 43, "Original editor must execute exactly forty-three methods")
         result.update(original_profile.validate_execution(tree, expected))
     if profile is HostTestProfile.EDITOR:
         result.update(validate_editor_arguments(tree, expected))
@@ -613,7 +613,7 @@ def execute(args, receipt):
                       "device guarantees remain NOT_RUN by this profile")
     if profile is HostTestProfile.ORIGINAL_EDITOR:
         receipt["original_editor_manifest_sha256"] = sha256(original_profile.MANIFEST_PATH)
-        limitation = ("Thirty-seven original document, text/event ownership, lifetime and table-service component methods; "
+        limitation = ("Forty-three original document, text/event ownership, lifetime and block/table-service component methods; "
                       "controlled document/service fixtures, no original block-editing UI, "
                       "Maktabah embedding, durable annotation integration, live account writes or physical acceptance")
     receipt.update(status=profile.pass_status, phase="COMPLETE", release_accepted=False, limitations=[limitation])
