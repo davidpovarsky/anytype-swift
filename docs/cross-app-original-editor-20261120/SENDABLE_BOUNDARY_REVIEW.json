@@ -1,0 +1,55 @@
+{
+  "original_declarations": [
+    {
+      "path": "Anytype/Sources/Models/Documents/Document/BaseDocument.swift",
+      "git_sha256": "17b2dfcd928f3f93e60455215b5e4b3ee3bbb878eaa4cc9179dc782316fc1de9",
+      "declarations": [
+        {
+          "line": 7,
+          "source": "final class BaseDocument: BaseDocumentProtocol, @unchecked Sendable {"
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/Models/Documents/Document/DocumentMode.swift",
+      "git_sha256": "4421806df8b06416f858460549f1ae6afeee11cccd378f6552ccdf65d95ef7d3",
+      "declarations": [
+        {
+          "line": 1,
+          "source": "enum DocumentMode: Hashable, Codable {"
+        }
+      ]
+    },
+    {
+      "path": "Anytype/Sources/Models/Documents/Document/BaseDocumentProtocol.swift",
+      "git_sha256": "c41dd53747e0f8245aac0c173e0738cbcb8419f717a8f73ae05a6f11479f3b10",
+      "declarations": [
+        {
+          "line": 5,
+          "source": "protocol BaseDocumentProtocol: AnyObject, Sendable {"
+        }
+      ]
+    },
+    {
+      "path": "AnytypeTests/Markdown/Mocks/MockBaseDocument.swift",
+      "git_sha256": "75fd381db7b276bbfaec20f00a359ddd21f2525f2cf3c69faa08647fbb6a743a",
+      "declarations": [
+        {
+          "line": 7,
+          "source": "class MockBaseDocument: BaseDocumentProtocol, @unchecked Sendable {"
+        }
+      ]
+    }
+  ],
+  "production_document_mode_modified": false,
+  "production_new_mode_storage": false,
+  "production_new_mode_async_transfer": false,
+  "production_new_validation_and_assembly_isolation": "@MainActor synchronous",
+  "fixture_correction": "DocumentProbe adopts original document class @unchecked Sendable boundary; no conformance is added to copied or original DocumentMode.",
+  "fixture_safety": "All DocumentProbe stored properties are immutable; lifecycle writes go to an actor; empty InfoContainer and details-storage doubles have no mutable state. This is an explicit boundary double, not proof of BaseDocument synchronization or UIKit isolation.",
+  "attempt1": "compile failed on retroactive test-only conformance in another file",
+  "attempt2": "29 checks passed with added conformance in generated DocumentMode copy; retained but superseded and not used as acceptance",
+  "qualified_attempt": "attempt3:29/29; original DocumentMode compiled byte-identically",
+  "review_original_sha256": "4968e9c0ff4803e1fdfd76dc8ce7940ac0a9a307fdead76f1a9879a29636be6f",
+  "compiled_document_mode_sha256": "4421806df8b06416f858460549f1ae6afeee11cccd378f6552ccdf65d95ef7d3"
+}
