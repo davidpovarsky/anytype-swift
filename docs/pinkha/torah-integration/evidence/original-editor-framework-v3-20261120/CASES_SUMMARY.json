@@ -1,0 +1,29 @@
+{
+  "apple_execution": "NOT_RUN",
+  "baseline-red": {
+    "errors": 0,
+    "failed": 9,
+    "passed": 45,
+    "scope": "Actual Python unittest leaves, not Swift or Native"
+  },
+  "candidate-green": {
+    "errors": 0,
+    "failed": 0,
+    "passed": 54,
+    "scope": "Actual Python unittest leaves, not Swift or Native"
+  },
+  "metadata_note": "First case-ID parser duplicated the final method suffix. Both parses and unchanged raw unittest logs are retained; normalized IDs are derived from the raw qualified name.",
+  "new_case_ids": [
+    "test_framework_flow.OriginalDriverFlowControls.test_boot_command_failure_keeps_build_evidence_but_never_runs_bootstatus_or_install",
+    "test_framework_flow.OriginalDriverFlowControls.test_build_graph_consumer_and_signature_complete_before_original_boot_pair",
+    "test_framework_flow.OriginalDriverFlowControls.test_consumer_compile_failure_cannot_boot_or_install",
+    "test_framework_flow.OriginalDriverFlowControls.test_different_embedded_product_cannot_reach_boot_or_install",
+    "test_framework_flow.OriginalDriverFlowControls.test_multiple_notices_preserve_exact_contents_and_consumer_destination",
+    "test_framework_flow.OriginalDriverFlowControls.test_one_notice_preserves_selected_simulator_for_both_original_build_commands",
+    "test_framework_flow.OriginalDriverFlowControls.test_original_framework_compile_failure_cannot_boot_or_install",
+    "test_framework_flow.OriginalDriverFlowControls.test_original_public_surface_tool_failure_cannot_boot_or_install",
+    "test_framework_flow.OriginalDriverFlowControls.test_original_source_only_admission_never_invokes_any_tool_or_work_directory",
+    "test_framework_flow.OriginalDriverFlowControls.test_same_180_second_boot_timeout_retains_partial_builds_without_runtime_credit"
+  ],
+  "original_case_count": 44
+}
