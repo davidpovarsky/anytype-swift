@@ -499,3 +499,12 @@ This boundary cannot be imposed by a downstream observer after the original sync
 Actual clean RED83 produced78PASS/5FAIL with the complete original update/coordinator bodies and explicit Foundation UIKit/Context/value doubles. Candidate83/83 and11 syntax parses passed. The prior75 controls and all37 Apple declarations remain unchanged. The first77/6 attempt is retained, including its newly written legacy-fixture assumption and exact source-based correction. Apple typechecking, actual SwiftUI reuse, Native/editor mounting, remaining routed writers and Maktabah persistence remain unqualified for this source.
 
 Rollback removes only this source tranche and its prepared helper after checking references, while retaining the evidence and original stored data. The exact full-file inverses, original update-body hash, raw failed attempts, current caller proof and independent source reviews are retained under docs/cross-app-original-editor-host-update-20261120.
+
+## 2026-11-20 — original prepared block-service ownership
+
+- Source: 86ebb89e6577e4547744be75d3b01ecbd2828c61; parent 076fc7c7b005de203ea0b4f1f3dd4807d62e0cec; isolated branch codex/otzaria-original-editor-block-services-20261120.
+- Authorized project continuation adds DocumentOwnedBlockService, one lifetime-owned object/Space read method, and six prepared-session block-service wrappers. Original default/nil paths, all 18 protocol signatures, original service implementations and dependency factories remain unchanged.
+- Thirteen ordinary same-context mutations plus two same-document moves and the original owned read preserve arguments, result identity and errors. Cross-document destinations and create/promote require authority that this prepared seam does not grant. No fallback, invented grant, retry or rollback.
+- Exact inverses restore the two modified original owner/session files. Same fixture RED138/144 to GREEN144/144 isolates six unowned prepared-service slots; all earlier83 named controls remain passing. One prior retained-service assertion changes only two references to still-unwrapped fields; the exact evolution and actual six-slot forwarding/retirement controls are retained.
+- Seven Apple test files now declare43 methods: all prior37 byte-identical plus6 new. Apple43 and Native/Heart/embedded consumer acceptance remain NOT_RUN. Later original writers remain unqualified.
+- Evidence: docs/cross-app-original-editor-owned-blocks-20261120/README.md, MANIFEST.json, RAW_FILES.json and exact source-bound input snapshots. The existing exception register prefix is preserved.
