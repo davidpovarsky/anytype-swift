@@ -1,0 +1,867 @@
+{
+  "status": "PASS",
+  "baseline": "a05088b98844bba30f90b794effb8cf579e2ef08",
+  "native": "NOT_RUN",
+  "apple_typecheck": "NOT_RUN",
+  "scope": "Original 29 Foundation controls plus 12 typed local-event publication controls; original component method and assembly inverses; actual BlockActionService constructor only",
+  "boundary_doubles": [
+    "UIKit/rendering not compiled",
+    "InfoContainer/document value dependencies; immutable DocumentProbe uses the same @unchecked Sendable boundary as original BaseDocument",
+    "protobuf style/mode/mark boundary",
+    "event publisher recorder",
+    "six non-text service interfaces",
+    "Factory original-services provider"
+  ],
+  "not_proven": [
+    "Full original editor isolation",
+    "Anytype UI mounting",
+    "Annotation durable writes",
+    "Otzaria in-process integration"
+  ],
+  "source_preservation": {
+    "all_original_block_action_methods": "IDENTICAL_AFTER_EXACT_EVENT_ROUTE_INVERSE",
+    "all_original_text_service_methods": "IDENTICAL_AFTER_EXACT_EVENT_ROUTE_INVERSE",
+    "original_view_body_and_default_initializer": "IDENTICAL",
+    "original_controller_and_view_model_assembly_except_resolution": "IDENTICAL_AFTER_EXACT_SERVICE_ARGUMENT_INVERSE",
+    "original_downstream_assembly": "IDENTICAL_AFTER_EXACT_SERVICE_ARGUMENT_INVERSE"
+  },
+  "writer_source_preservation": [
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandler.swift",
+      "original_method_body_sha256": "0f5622ddd04cbffab2b834540901772bb8825a60a151270fb8bae9026f91e83f",
+      "method_body": "IDENTICAL_AFTER_EXACT_EVENT_ROUTE_INVERSE"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/KeyboardActionHandler/KeyboardActionHandler.swift",
+      "original_method_body_sha256": "2647d3911708a0cb4269d250a040395d46ddc2299c84410f47c1a44a76c9d7a3",
+      "method_body": "IDENTICAL"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift",
+      "original_method_body_sha256": "a6f2eda82da31dd5e0b8a01de7a95b24ebe8f742ba6596252caac667a2f80349",
+      "method_body": "IDENTICAL"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageBlocksStateManager.swift",
+      "original_method_body_sha256": "b2b4902e97ba3815f3957b9b92c2b9650a8c7e2176c4d9c6199ad86f0ba7f296",
+      "method_body": "IDENTICAL"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilder.swift",
+      "original_method_body_sha256": "ab0317cb0882933774417c892db3b093ab8d2801b0338fc93618eed936411eb1",
+      "method_body": "IDENTICAL"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/SimpleTableDependenciesBuilder.swift",
+      "original_method_body_sha256": "df5ca061b75dd8523f6ebb9676c769c9868aec44b6036ecb2a1e66d55a109d4c",
+      "method_body": "IDENTICAL"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/AccessoryView/SlashMenu/Handler/SlashMenuActionHandler.swift",
+      "original_method_body_sha256": "29740846da6afcbe10d4b10af08f40f8e4512787400a7ec5d5860afb7513d30f",
+      "method_body": "IDENTICAL"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Header/Entities/ObjectHeaderViewModel.swift",
+      "original_method_body_sha256": "1725c68728913b6696e7c54a25858118e6dace797dd99ec3804466a98c6ceaa1",
+      "method_body": "IDENTICAL"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Routing/Editor/EditorRouter.swift",
+      "original_method_body_sha256": "656c0c1565936079b7b560eade7838d57c190ab9355621fa54bf239c60e16b65",
+      "method_body": "IDENTICAL"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Views/UndoRedo/UndoRedoViewModel.swift",
+      "method_body": "IDENTICAL"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Views/UndoRedo/UndoRedoView.swift",
+      "method_body": "IDENTICAL"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/Pastboard/DocumentService/PasteboardBlockDocumentService.swift",
+      "method_body": "IDENTICAL"
+    }
+  ],
+  "compiled_sources": [
+    {
+      "path": "Anytype/Sources/Models/Documents/Document/DocumentMode.swift",
+      "raw_sha256": "2ecfad1ce508b51cb90693164c51017bb1fced24864b37a936cc82120a69b1b0",
+      "projection": "whole_file",
+      "removed_imports": [],
+      "compiled_sha256": "4421806df8b06416f858460549f1ae6afeee11cccd378f6552ccdf65d95ef7d3"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/EditorScreenData.swift",
+      "raw_sha256": "b504cc2ff429a01fca2cedd1602d7f439f336d94126117834f49b09543a09e92",
+      "projection": "struct EditorPageObject:",
+      "removed_imports": [],
+      "compiled_sha256": "5ef6a786f33d88693f4ea4b0581e7c10d631f42dafe6757c10eac32069a4acce"
+    },
+    {
+      "path": "Anytype/Sources/Models/Documents/Document/BaseDocumentProtocol.swift",
+      "raw_sha256": "7c600cfd00ae0448ac2848520b4f82a9aa1e6cff7b8319b087b85a51429e1de7",
+      "projection": "whole_file",
+      "removed_imports": [
+        "Services",
+        "Combine",
+        "AnytypeCore"
+      ],
+      "compiled_sha256": "0f1e9c09c5ec01561eb0ac3d2dc8cd7579e7e6f6e06c4535600f19f7623d2c15"
+    },
+    {
+      "path": "Modules/Services/Sources/Models/MiddlewareString.swift",
+      "raw_sha256": "de5fd680386b140a7a15922be4f8d0cf1f03c5d25863f29943acbf0fc3754494",
+      "projection": "whole_file",
+      "removed_imports": [
+        "ProtobufMessages"
+      ],
+      "compiled_sha256": "972fcb50767630dd3d20dbccb0750d54d9a29bc4927cfbcaec0da2eb93b53739"
+    },
+    {
+      "path": "Modules/Services/Sources/Services/TextService/TextServiceProtocol.swift",
+      "raw_sha256": "8a3dbb2c9278d9ff2d0a5895fb81690ca6adfc112f6b699e7d382e80fa0fb330",
+      "projection": "whole_file",
+      "removed_imports": [
+        "Combine",
+        "ProtobufMessages"
+      ],
+      "compiled_sha256": "994f528fb3eecd7b572f0c25599f2f4d5cd01cf8367d8052e38051ce2376172a"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/TextServiceHandler/TextServiceHandler.swift",
+      "raw_sha256": "e4e272dda64b6933548a2e01796c5d5f9a139dd1f1c3c5f6db3a49cabce18abf",
+      "projection": "whole_file",
+      "removed_imports": [
+        "Services"
+      ],
+      "compiled_sha256": "e168e2e6fa655a86452715a5423ec870079864f5c628152436b23e59edfd936f"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/EditorLocalEventPublisher.swift",
+      "raw_sha256": "9628d828d9588f3321088d421f27bd70bd3d783cd31f9c183e4bdd55efa583d7",
+      "projection": "whole_file",
+      "removed_imports": [
+        "Services"
+      ],
+      "compiled_sha256": "16b122d99459b53ebd389b6e50a79c081152762665c124815d02b18f4ca6d470"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageDocument.swift",
+      "raw_sha256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e",
+      "projection": "whole_file",
+      "removed_imports": [],
+      "compiled_sha256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionService/BlockActionServiceDependencies.swift",
+      "raw_sha256": "97856b6d2a0a52706e190344db18df11e624dda6c9874f152f5ae656a83e7831",
+      "projection": "whole_file",
+      "removed_imports": [
+        "Services"
+      ],
+      "compiled_sha256": "ce1c46982f1b5c9f8d88ac2243e03b6b81f9e497622261fc68cd3098178fff64"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionService/BlockActionService.swift",
+      "raw_sha256": "3482b9f9a6f34dbb7ef67df3adc48027e7a749c20e0af702e30b8dd48d5b0e65",
+      "projection": "construction",
+      "removed_imports": [
+        "Combine",
+        "Services",
+        "UIKit",
+        "Logger",
+        "ProtobufMessages",
+        "AnytypeCore"
+      ],
+      "compiled_sha256": "a8115096d0038302c785900ecacd5c939a9713979a99d18cc3b287b37ee4f6aa"
+    }
+  ],
+  "fixture_sha256": "d3d67f4bc0e5ce2b04dfa735adc79122373443fb2e6f6948fed7fe7f2424aa6b",
+  "compile": {
+    "exit_code": 0,
+    "seconds": 13.359,
+    "log_sha256": "ec2f633e31e1dd80b9f6558326fd934ade9c37ce3bc32c57703f5d7c7ecb89e8",
+    "log": "compile.log",
+    "command": [
+      "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+      "-swift-version",
+      "6",
+      "-strict-concurrency=complete",
+      "-parse-as-library",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-writers-20261120\\attempt1\\DocumentMode.swift",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-writers-20261120\\attempt1\\EditorPageObject.swift",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-writers-20261120\\attempt1\\BaseDocumentProtocol.swift",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-writers-20261120\\attempt1\\MiddlewareString.swift",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-writers-20261120\\attempt1\\TextServiceProtocol.swift",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-writers-20261120\\attempt1\\TextServiceHandler.swift",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-writers-20261120\\attempt1\\EditorLocalEventPublisher.swift",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-writers-20261120\\attempt1\\PreparedEditorPageDocument.swift",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-writers-20261120\\attempt1\\BlockActionServiceDependencies.swift",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-writers-20261120\\attempt1\\BlockActionServiceConstruction.swift",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Scripts\\CI\\fixtures\\original-editor-boundary.swift",
+      "-o",
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-writers-20261120\\attempt1\\original-editor-boundary.exe"
+    ]
+  },
+  "execution": {
+    "exit_code": 0,
+    "seconds": 0.063,
+    "log_sha256": "7edc097f98d9c49ab357d970a6c3181e50577bdadc9c1a020b4f53c0c99ac4c4",
+    "log": "execution.log",
+    "command": [
+      "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\build\\original-editor-writers-20261120\\attempt1\\original-editor-boundary.exe"
+    ]
+  },
+  "checks": [
+    {
+      "passed": true,
+      "name": "opened_handling"
+    },
+    {
+      "passed": true,
+      "name": "opened_preview"
+    },
+    {
+      "passed": true,
+      "name": "same_history_version"
+    },
+    {
+      "passed": true,
+      "name": "empty_object"
+    },
+    {
+      "passed": true,
+      "name": "whitespace_object"
+    },
+    {
+      "passed": true,
+      "name": "empty_space"
+    },
+    {
+      "passed": true,
+      "name": "whitespace_space"
+    },
+    {
+      "passed": true,
+      "name": "other_object"
+    },
+    {
+      "passed": true,
+      "name": "other_space"
+    },
+    {
+      "name": "other_mode",
+      "passed": true
+    },
+    {
+      "name": "other_history_version",
+      "passed": true
+    },
+    {
+      "name": "closed_document",
+      "passed": true
+    },
+    {
+      "name": "identifier_not_normalized",
+      "passed": true
+    },
+    {
+      "name": "validation_did_not_open_or_close",
+      "passed": true
+    },
+    {
+      "name": "custom_text_preserves_body_and_marks",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "forced_text_forwarded"
+    },
+    {
+      "passed": true,
+      "name": "split_result_and_utf16"
+    },
+    {
+      "name": "split_does_not_publish",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "checked_payload"
+    },
+    {
+      "name": "merge_order",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "icon_payload"
+    },
+    {
+      "passed": true,
+      "name": "style_follows_service_then_event"
+    },
+    {
+      "name": "style_failure_propagates_without_publish",
+      "passed": true
+    },
+    {
+      "name": "text_cancellation_propagates",
+      "passed": true
+    },
+    {
+      "name": "two_handler_instances_isolated",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "injected_service_no_native_fallback"
+    },
+    {
+      "passed": true,
+      "name": "default_service_unchanged"
+    },
+    {
+      "name": "all_seven_dependencies_forwarded",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "default_deps_original"
+    },
+    {
+      "name": "injected_style_event_context_identity",
+      "passed": true
+    },
+    {
+      "name": "injected_style_after_completed_service",
+      "passed": true
+    },
+    {
+      "name": "injected_events_no_global_fallback",
+      "passed": true
+    },
+    {
+      "name": "injected_style_failure_no_event",
+      "passed": true
+    },
+    {
+      "name": "injected_style_cancellation_no_event",
+      "passed": true
+    },
+    {
+      "passed": true,
+      "name": "injected_split_no_early_event"
+    },
+    {
+      "passed": true,
+      "name": "two_event_publishers_separate"
+    },
+    {
+      "passed": true,
+      "name": "original_refresh_event_mapping"
+    },
+    {
+      "name": "original_style_event_mapping",
+      "passed": true
+    },
+    {
+      "name": "original_toggle_event_mapping",
+      "passed": true
+    },
+    {
+      "name": "original_text_event_body_marks",
+      "passed": true
+    },
+    {
+      "name": "original_loading_event_mapping",
+      "passed": true
+    }
+  ],
+  "passed": 41,
+  "failed": 0,
+  "syntax_only": [
+    {
+      "exit_code": 0,
+      "seconds": 0.125,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-1.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\Assembly\\Page\\EditorPageModuleAssembly.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorPageModuleAssembly.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.141,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-2.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\EditorPageView.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageView.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.234,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-3.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\ServiceLayer\\Block\\BlockActionHandler\\BlockActionService\\BlockActionService.swift"
+      ],
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionService/BlockActionService.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.235,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-4.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\ServiceLayer\\Block\\TextServiceHandler\\TextServiceHandler.swift"
+      ],
+      "path": "Anytype/Sources/ServiceLayer/Block/TextServiceHandler/TextServiceHandler.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.125,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-5.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\ServiceLayer\\Block\\BlockActionHandler\\BlockActionService\\BlockActionServiceDependencies.swift"
+      ],
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionService/BlockActionServiceDependencies.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.156,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-6.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\Assembly\\Page\\PreparedEditorPageDocument.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageDocument.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.156,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-7.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\AnytypeTests\\Markdown\\PreparedEditorPageDocumentTests.swift"
+      ],
+      "path": "AnytypeTests/Markdown/PreparedEditorPageDocumentTests.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.141,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-8.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\AnytypeTests\\Markdown\\TextServiceHandlerInjectionTests.swift"
+      ],
+      "path": "AnytypeTests/Markdown/TextServiceHandlerInjectionTests.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.156,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-9.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\AnytypeTests\\Markdown\\EditorLocalEventPublisherTests.swift"
+      ],
+      "path": "AnytypeTests/Markdown/EditorLocalEventPublisherTests.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.188,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-10.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\AccessoryView\\SlashMenu\\Handler\\SlashMenuActionHandler.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/AccessoryView/SlashMenu/Handler/SlashMenuActionHandler.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.14,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-11.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\AccessoryView\\SlashMenu\\Handler\\SlashMenuActionHandlerDependencies.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/AccessoryView/SlashMenu/Handler/SlashMenuActionHandlerDependencies.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.157,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-12.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\Assembly\\Page\\EditorPageServiceDependencies.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorPageServiceDependencies.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.203,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-13.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\BlocksViews\\Blocks\\SimpleTable\\SimpleTableDependenciesBuilder.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/SimpleTableDependenciesBuilder.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.172,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-14.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\BlocksViews\\Blocks\\SimpleTable\\SimpleTableServiceDependencies.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/SimpleTableServiceDependencies.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.14,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-15.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\EditorPageBlocksStateManager.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageBlocksStateManager.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.125,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-16.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\EditorPageBlocksStateManagerDependencies.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageBlocksStateManagerDependencies.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.156,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-17.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\EditorPageViewModel.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.11,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-18.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\EditorPageViewModelDependencies.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModelDependencies.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.125,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-19.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\Models\\BlockViewModelBuilder.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilder.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.156,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-20.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\Models\\BlockViewModelBuilderDependencies.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Models/BlockViewModelBuilderDependencies.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.125,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-21.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\Views\\Header\\Entities\\ObjectHeaderViewModel.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Header/Entities/ObjectHeaderViewModel.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.125,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-22.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\EditorPage\\Views\\Header\\Entities\\ObjectHeaderViewModelDependencies.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Header/Entities/ObjectHeaderViewModelDependencies.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.125,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-23.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\Routing\\Editor\\EditorRouter.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Routing/Editor/EditorRouter.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.141,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-24.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\Routing\\Editor\\EditorRouterDependencies.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Routing/Editor/EditorRouterDependencies.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.125,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-25.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\Views\\UndoRedo\\UndoRedoView.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Views/UndoRedo/UndoRedoView.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.125,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-26.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\PresentationLayer\\TextEditor\\Views\\UndoRedo\\UndoRedoViewModel.swift"
+      ],
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Views/UndoRedo/UndoRedoViewModel.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.109,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-27.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\ServiceLayer\\Block\\BlockActionHandler\\BlockActionHandler.swift"
+      ],
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandler.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.156,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-28.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\ServiceLayer\\Block\\BlockActionHandler\\BlockActionHandlerDependencies.swift"
+      ],
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandlerDependencies.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.125,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-29.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\ServiceLayer\\Block\\BlockActionHandler\\KeyboardActionHandler\\KeyboardActionHandler.swift"
+      ],
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/KeyboardActionHandler/KeyboardActionHandler.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.11,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-30.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\ServiceLayer\\Block\\BlockActionHandler\\KeyboardActionHandler\\KeyboardActionHandlerDependencies.swift"
+      ],
+      "path": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/KeyboardActionHandler/KeyboardActionHandlerDependencies.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.125,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-31.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\ServiceLayer\\Block\\EditorLocalEventPublisher.swift"
+      ],
+      "path": "Anytype/Sources/ServiceLayer/Block/EditorLocalEventPublisher.swift"
+    },
+    {
+      "exit_code": 0,
+      "seconds": 0.156,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "log": "parse-32.log",
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+        "-frontend",
+        "-parse",
+        "-swift-version",
+        "5",
+        "C:\\Users\\DAVID\\Code\\anytype-original-editor-boundary-20261120\\Anytype\\Sources\\ServiceLayer\\Block\\Pastboard\\DocumentService\\PasteboardBlockDocumentService.swift"
+      ],
+      "path": "Anytype/Sources/ServiceLayer/Block/Pastboard/DocumentService/PasteboardBlockDocumentService.swift"
+    }
+  ]
+}
