@@ -27,6 +27,8 @@ CONTAINER = EDITOR + "EditorSwiftUIViewContainer.swift"
 TABLE_PROTOCOL = "Modules/Services/Sources/Services/BlockTableService/BlockTableService.swift"
 TABLE_WRAPPER = "Anytype/Sources/ServiceLayer/Block/DocumentOwnedBlockTableService.swift"
 TABLE_FIXTURE = "Scripts/CI/fixtures/original-editor-owned-tables.swift"
+HOST_FIXTURE = "Scripts/CI/fixtures/original-editor-host-update.swift"
+HOST_BASELINE = "ed250e6e926262a67f6c86f483802674c98f41f3"
 TABLE_MODELS = ["Modules/Services/Sources/Models/Block/Common/BlockPosition.swift",
                 "Modules/Services/Sources/Models/Common/BlocksSortType.swift"]
 TABLE_BASELINE = "bc8be790e86876a014aa048e82c57157e13a62d2"
@@ -62,7 +64,40 @@ def replace_once(source, old, new):
     return source.replace(old, new)
 
 
-def source_preservation(report):
+HOST_UPDATE_GUARD = "        guard context.coordinator.permitsUpdate(\n            of: uiViewController, incomingController: viewController,\n            incomingSession: preparedSession\n        ) else { return }\n"
+HOST_UPDATE_METHOD = "        /// Prepared hosts must retain the controller/session pair that attached.\n        /// The legacy nil-session path keeps its original update semantics.\n        func permitsUpdate(\n            of uiViewController: EditorPageController,\n            incomingController: EditorPageController,\n            incomingSession: PreparedEditorPageSession?\n        ) -> Bool {\n            guard session != nil || incomingSession != nil else { return true }\n            guard controller === uiViewController else { return false }\n            guard controller === incomingController, session === incomingSession else {\n                hostLease?.cancel()\n                session?.retire(controller: controller)\n                incomingSession?.rejectUnattachedHost(controller: incomingController)\n                return false\n            }\n            return true\n        }\n\n"
+HOST_REJECT_METHOD = "    /// Reject only this bound owner's failed first host attempt. An owner\n    /// already attached elsewhere is not revoked by another host's update.\n    func rejectUnattachedHost(controller: AnyObject) {\n        guard !hostClaimed, boundController === controller else { return }\n        retire()\n    }\n\n"
+
+
+def host_inverse(path, value):
+    if path == CONTAINER and HOST_UPDATE_GUARD in value:
+        value = replace_once(value, HOST_UPDATE_GUARD, "")
+        value = replace_once(value, HOST_UPDATE_METHOD, "")
+    elif path == SESSION and HOST_REJECT_METHOD in value:
+        value = replace_once(value, HOST_REJECT_METHOD, "")
+    return value
+
+
+def host_source_preservation(report):
+    rows = []
+    for path in [CONTAINER, SESSION]:
+        value = content(path)
+        before = content(path, HOST_BASELINE)
+        BASE.require(host_inverse(path, value) == before,
+                     "Host source changed beyond the exact prepared identity guard: " + path)
+        rows.append({"path": path, "parent": HOST_BASELINE,
+            "parent_sha256": digest(before), "candidate_sha256": digest(value),
+            "exact_inverse_verified": True})
+    report["host_source_preservation"] = rows
+    original_update = BASE.declaration(content(CONTAINER, HOST_BASELINE), "    func updateUIViewController(")
+    actual_update = BASE.declaration(content(CONTAINER), "    func updateUIViewController(")
+    if HOST_UPDATE_GUARD in actual_update:
+        actual_update = replace_once(actual_update, HOST_UPDATE_GUARD, "")
+    BASE.require(actual_update == original_update, "The three original update setters changed")
+    report["original_update_body_sha256"] = digest(original_update)
+
+
+def source_preservation(report, host_revision=None):
     source = content(DOC)
     inverse = replace_once(source,
         "BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProviding, @unchecked Sendable",
@@ -108,6 +143,8 @@ def source_preservation(report):
     owned_end = container.index("    func makeUIViewController(", owned_start)
     owned = container[owned_start:owned_end]
     inverse = container[:owned_start] + "\n" + container[owned_end:]
+    if HOST_UPDATE_GUARD in inverse:
+        inverse = replace_once(inverse, HOST_UPDATE_GUARD, "")
     BASE.require(inverse == content(CONTAINER, BASELINE), "Original UIKit container make/update changed")
     report["preserved_original_files"] = [{
         "path": p, "baseline": BASELINE, "baseline_lf_sha256": digest(content(p, BASELINE)),
@@ -123,6 +160,9 @@ def source_preservation(report):
         new = BASE.declaration(owner, token)
         BASE.require(new == old, "An original owner method changed: " + token)
         report["owner_preserved_methods"].append({"declaration": token, "sha256": digest(old)})
+    executed_container = content(CONTAINER, host_revision)
+    report["host_container_under_test"] = {"revision": host_revision or "WORKTREE",
+        "git_lf_sha256": digest(executed_container), "projection": "complete original coordinator and update methods; explicit context/UI value doubles"}
     return {
         "close": BASE.declaration(source, "    @MainActor\n    func close("),
         "setup_view": BASE.declaration(source, "    @MainActor\n    private func setupView("),
@@ -130,14 +170,15 @@ def source_preservation(report):
         "close_event": BASE.declaration(source, "        if updates.contains(.close)"),
         "assembly": method,
         "state_bind": bind,
-        "coordinator": BASE.declaration(container, "    @MainActor\n    final class Coordinator"),
-        "make_coordinator": BASE.declaration(container, "    func makeCoordinator("),
-        "dismantle": BASE.declaration(container, "    static func dismantleUIViewController("),
+        "coordinator": BASE.declaration(executed_container, "    @MainActor\n    final class Coordinator"),
+        "make_coordinator": BASE.declaration(executed_container, "    func makeCoordinator("),
+        "dismantle": BASE.declaration(executed_container, "    static func dismantleUIViewController("),
+        "update": BASE.declaration(executed_container, "    func updateUIViewController("),
     }
 
 
 def table_source_preservation(report):
-    inverse = content(SESSION)
+    inverse = host_inverse(SESSION, content(SESSION))
     inverse = replace_once(inverse, "            blockActionHandler: .init(\n                blockService: services.blockActionHandler.blockService,\n                blockTableService: DocumentOwnedBlockTableService(\n                    owner: owner, service: services.blockActionHandler.blockTableService\n                ),\n                fileService: services.blockActionHandler.fileService,\n                objectService: services.blockActionHandler.objectService,\n                pasteboardBlockService: services.blockActionHandler.pasteboardBlockService,\n                bookmarkService: services.blockActionHandler.bookmarkService,\n                objectTypeProvider: services.blockActionHandler.objectTypeProvider\n            ),\n", "            blockActionHandler: services.blockActionHandler,\n")
     inverse = replace_once(inverse, "            blockBuilder: .init(\n                tableService: DocumentOwnedBlockTableService(\n                    owner: owner, service: services.blockBuilder.tableService\n                ),\n                detailsService: services.blockBuilder.detailsService,\n                audioSessionService: services.blockBuilder.audioSessionService,\n                objectTypeProvider: services.blockBuilder.objectTypeProvider,\n                pasteboardService: services.blockBuilder.pasteboardService,\n                blockService: services.blockBuilder.blockService\n            ),\n            simpleTable: .init(\n                tableService: DocumentOwnedBlockTableService(\n                    owner: owner, service: services.simpleTable.tableService\n                ),\n                pasteboardService: services.simpleTable.pasteboardService,\n                defaultObjectService: services.simpleTable.defaultObjectService,\n                typesService: services.simpleTable.typesService\n            ),\n", "            blockBuilder: services.blockBuilder,\n            simpleTable: services.simpleTable,\n")
     inverse = replace_once(inverse, "Text/table/local-event\n", "Text/local-event\n")
@@ -149,8 +190,9 @@ def table_source_preservation(report):
     for path in stable:
         before = content(path, TABLE_BASELINE)
         after = content(path)
-        BASE.require(before == after, "An unrelated original input changed: " + path)
-        rows.append({"path": path, "git_lf_sha256": digest(after)})
+        BASE.require(before == host_inverse(path, after), "An unrelated original input changed: " + path)
+        rows.append({"path": path, "git_lf_sha256": digest(after),
+                     "preservation": "byte_identical" if before == after else "exact_prepared_host_inverse"})
     report["table_preserved_inputs"] = rows
     report["table_prepared_session_exact_inverse"] = True
 
@@ -161,29 +203,35 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--prepared-session-revision", choices=[TABLE_BASELINE],
                         help="Compile the immutable parent session for the explicit table-wiring RED control")
+    parser.add_argument("--host-update-revision", choices=[HOST_BASELINE],
+                        help="Compile the exact parent host/session for the explicit update-identity RED controls")
     args = parser.parse_args()
+    BASE.require(not (args.prepared_session_revision and args.host_update_revision),
+                 "Choose one historical source projection at a time")
+    session_revision = args.prepared_session_revision or args.host_update_revision
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     report = {
         "status": "FAIL", "baseline": BASELINE, "native": "NOT_RUN", "apple_typecheck": "NOT_RUN",
-        "scope": "Actual document/session lifetime and owned table wrapper with all three prepared table slots; exact original source lifecycle hooks and table protocol/models; Foundation-held boundaries",
-        "boundary_doubles": ["UIKit controller/state and existing assembly output", "Combine/document storage and setupView subscriptions/model/setter boundaries",
+        "scope": "Actual original update body and retained coordinator/session identity; preserved75 lifetime/table controls; Foundation-held boundaries",
+        "boundary_doubles": ["UIKit controller/state and existing assembly output; exact update body uses explicit context and Int/Bool/String environment setter recorders", "Combine/document storage and setupView subscriptions/model/setter boundaries",
             "protobuf marks/enums and ObjectDetails/restriction payload values",
             "empty service protocols for retained dependency field identity; original factories omitted",
             "held service/event/close boundary actors", "locked unchecked-Sendable document probe"],
         "prepared_session_under_test": {
-            "revision": args.prepared_session_revision or "WORKTREE",
-            "git_lf_sha256": digest(content(SESSION, args.prepared_session_revision)),
-            "mode": "parent_unowned_table_slots" if args.prepared_session_revision else "candidate_owned_table_slots",
+            "revision": session_revision or "WORKTREE",
+            "git_lf_sha256": digest(content(SESSION, session_revision)),
+            "mode": ("parent_unowned_table_slots" if args.prepared_session_revision else
+                     "parent_host_update" if args.host_update_revision else "candidate_owned_table_slots_and_host"),
         },
-        "not_proven": ["Native original document event stream timing", "Apple view lifecycle execution",
+        "not_proven": ["Actual SwiftUI reuse; current only caller has stable StateObject and immutable controller", "Native original document event stream timing", "Apple view lifecycle execution",
             "all remaining routed writers", "actual account/Space services", "annotation persistence",
             "Maktabah consumer integration", "rollback or cancellation of already-admitted effects"],
     }
     try:
         snapshot_rows = []
         for path in [DOC, LIFETIME, OWNER, SESSION, ASSEMBLY, VIEW, STATE, CONTAINER,
-                     TABLE_PROTOCOL, TABLE_WRAPPER, TABLE_FIXTURE, *TABLE_MODELS,
+                     TABLE_PROTOCOL, TABLE_WRAPPER, TABLE_FIXTURE, HOST_FIXTURE, *TABLE_MODELS,
                      "Scripts/CI/run-original-editor-lifetime.py",
                      "Scripts/CI/fixtures/original-editor-lifetime.swift",
                      "AnytypeTests/Markdown/PreparedEditorLifetimeTests.swift",
@@ -196,8 +244,9 @@ def main():
         report["input_snapshot"] = snapshot_rows
         BASE.preserve(report)
         BASE.validate_writer_preservation(report)
-        hooks = source_preservation(report)
+        hooks = source_preservation(report, args.host_update_revision)
         table_source_preservation(report)
+        host_source_preservation(report)
         sources = BASE.projected_sources(output, report)
 
         def add(name, source, path, projection="whole_file", source_revision=None):
@@ -233,7 +282,7 @@ def main():
             "Anytype/Sources/ServiceLayer/Block/DocumentOwnedLocalEventPublisher.swift",
             PAGE + "EditorPageServiceDependencies.swift", SESSION,
         ]:
-            revision = args.prepared_session_revision if path == SESSION else None
+            revision = session_revision if path == SESSION else None
             add(Path(path).stem, content(path, revision), path, source_revision=revision)
 
         prefix = content("Scripts/CI/fixtures/original-editor-boundary.swift").split("@main struct OriginalEditorBoundaryFixture", 1)[0]
@@ -304,7 +353,18 @@ final class CallbackRecorder: @unchecked Sendable {
             "explicit Foundation boundary and dependency-field identity doubles")
 
         ui_probes = """
-@MainActor final class EditorPageController {}
+@MainActor final class EditorPageController {
+    private(set) var updateEffects: [String] = []
+    var additionalSafeAreaInsets = 0 {
+        didSet { updateEffects.append("insets:" + String(additionalSafeAreaInsets)) }
+    }
+    func setPageNavigationHiddenBackButton(_ value: Bool) {
+        updateEffects.append("hidden:" + String(value))
+    }
+    func setPinkhaHanlinRouteOwner(_ value: String?) {
+        updateEffects.append("owner:" + (value ?? "nil"))
+    }
+}
 @MainActor protocol EditorPageModuleOutput: AnyObject {}
 @MainActor final class TorahEditorSession {}
 @MainActor final class EditorPageViewState {
@@ -329,18 +389,23 @@ final class CallbackRecorder: @unchecked Sendable {
 @MainActor struct FixturePreparedContainer {
     let viewController: EditorPageController
     var preparedSession: PreparedEditorPageSession? = nil
-""" + hooks["coordinator"] + "\n" + hooks["make_coordinator"] + "\n" + hooks["dismantle"] + "\n}\n"
+    let pageEditorAdditionalSafeAreaInsets = 91
+    let pageNavigationHiddenBackButton = true
+    let pinkhaHanlinRouteOwner: String? = "fixture-owner"
+    struct Context { let coordinator: Coordinator }
+""" + hooks["coordinator"] + "\n" + hooks["make_coordinator"] + "\n" + hooks["dismantle"] + "\n" + hooks["update"] + "\n}\n"
         add("OriginalPreparedAssemblyMethods", ui_probes, None,
-            "exact new original assembly/binding/coordinator bodies with explicit UIKit/existing-assembly boundary doubles")
+            "exact original assembly/binding/coordinator/update bodies with explicit UIKit/context/environment/existing-assembly boundary doubles")
         fixture = content("Scripts/CI/fixtures/original-editor-lifetime.swift")
         close_event = "    @MainActor func emitCloseEventForFixture() {\n        let updates: [DocumentUpdate] = [.close]\n" + hooks["close_event"] + "\n    }\n"
         fixture = replace_once(fixture, "    // SOURCE_HOOKS", hooks["close"] + "\n" + hooks["setup_view"] + "\n" + hooks["permissions"] + "\n" + close_event)
         fixture = replace_once(fixture, "        let data = try JSONEncoder().encode(checks.checks)",
-            "        try await exerciseOwnedTableServices(checks)\n\n        let data = try JSONEncoder().encode(checks.checks)")
-        fixture += "\n" + table_controls
+            "        try await exerciseOwnedTableServices(checks)\n        try await exerciseOriginalHostUpdates(checks)\n\n        let data = try JSONEncoder().encode(checks.checks)")
+        fixture += "\n" + table_controls + "\n" + content(HOST_FIXTURE)
         add("ExecutedLifetimeFixture", fixture, "Scripts/CI/fixtures/original-editor-lifetime.swift",
-            "preserved lifetime fixture plus exact original lifecycle hooks and complete new table controls")
+            "preserved lifetime/table fixtures plus exact original lifecycle and update bodies with explicit host identity controls")
         report["table_fixture_lf_sha256"] = digest(content(TABLE_FIXTURE))
+        report["host_fixture_lf_sha256"] = digest(content(HOST_FIXTURE))
         report["exact_method_projections"] = {name: {"sha256": digest(value), "bytes": len(value.encode())} for name, value in hooks.items()}
 
         executable = output / "original-editor-lifetime.exe"
@@ -360,7 +425,7 @@ final class CallbackRecorder: @unchecked Sendable {
         report.update(passed=sum(row["passed"] is True for row in rows),
                       failed=sum(row["passed"] is not True for row in rows), checks=rows)
         BASE.require(report["execution"]["exit_code"] == 0, "Lifetime controls failed")
-        BASE.require(len(rows) == 75 and len({row["name"] for row in rows}) == 75
+        BASE.require(len(rows) == 83 and len({row["name"] for row in rows}) == 83
             and all(row["passed"] is True for row in rows), "Incomplete lifetime controls")
         report.update(status="PASS")
         syntax = []

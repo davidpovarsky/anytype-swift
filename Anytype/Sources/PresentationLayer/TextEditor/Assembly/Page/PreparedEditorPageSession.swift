@@ -113,6 +113,13 @@ final class PreparedEditorPageSession {
         return .init { [sessionLifetime] in sessionLifetime.invalidate() }
     }
 
+    /// Reject only this bound owner's failed first host attempt. An owner
+    /// already attached elsewhere is not revoked by another host's update.
+    func rejectUnattachedHost(controller: AnyObject) {
+        guard !hostClaimed, boundController === controller else { return }
+        retire()
+    }
+
     func retire(controller: AnyObject) {
         guard boundController === controller else { return }
         retire()
