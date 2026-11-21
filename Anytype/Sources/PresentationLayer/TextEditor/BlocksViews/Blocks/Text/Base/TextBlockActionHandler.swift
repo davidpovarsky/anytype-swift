@@ -252,7 +252,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
         }
         info = replacement
         let generation = forkGeneration
-        let task = Task { try await actionHandler.replaceEmptyBlock(replacement: replacement, replacingBlockId: oldInfo.id) }
+        let task = actionHandler.scheduleMutationTask { [self] in try await actionHandler.replaceEmptyBlock(replacement: replacement, replacingBlockId: oldInfo.id) }
         emptyBlockFork = task
         do {
             try await task.value
@@ -376,7 +376,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
             .textChangeType(changeTextRange: range, replacementText: replacementText)
         
         if mentionDetecter.removeMentionIfNeeded(textView: textView, replacementText: replacementText) {
-            Task { @MainActor in
+            actionHandler.scheduleMutationTask { @MainActor [self] in
                 if try await carryOrSync(textView.attributedText, focusAt: nil) { return }
                 try await actionHandler.changeText(textView.attributedText.sendable(), blockId: info.id)
             }
@@ -401,7 +401,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
                 guard let content = info.textContent, content.contentType != style else { return true }
                 guard BlockRestrictionsBuilder.build(content:  info.content).canApplyTextStyle(style) else { return true }
 
-                Task { @MainActor in
+                actionHandler.scheduleMutationTask { @MainActor [self] in
                     try await forkEmptyBlockIfNeeded(carrying: newText, focusAt: .beginning)
                     try await actionHandler.turnInto(style, blockId: info.id)
                     try await setNewText(attributedString: newText.sendable())
@@ -409,7 +409,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
                     cursorManager.focus(in: textView, position: .beginning)
                 }
             case let .addBlock(type, newText):
-                Task { @MainActor in
+                actionHandler.scheduleMutationTask { @MainActor [self] in
                     try await forkEmptyBlockIfNeeded(carrying: newText, focusAt: .beginning)
                     try await setNewText(attributedString: newText.sendable())
                     try await actionHandler.addBlock(type, blockId: info.id, blockText: newText.sendable(), position: .top)
@@ -417,7 +417,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
                     cursorManager.focus(in: textView, position: .beginning)
                 }
             case let .addStyle(style, currentText, styleRange, focusRange):
-                Task { @MainActor in
+                actionHandler.scheduleMutationTask { @MainActor [self] in
                     try await forkEmptyBlockIfNeeded(carrying: currentText, focusAt: .at(focusRange))
                     let newText = try await actionHandler.setTextStyle(
                         style,
@@ -453,13 +453,13 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
             guard BlockRestrictionsBuilder.build(content: info.content).canApplyTextStyle(style) else { return }
             resetSubject.send(newText)
             cursorManager.focus(at: info.id, position: .beginning)
-            Task { @MainActor in
+            actionHandler.scheduleMutationTask { @MainActor [self] in
                 try await materializeVirtualBlock(carrying: newText, style: style)
             }
         case let .addBlock(type, newText):
             resetSubject.send(newText)
             cursorManager.focus(at: info.id, position: .beginning)
-            Task { @MainActor in
+            actionHandler.scheduleMutationTask { @MainActor [self] in
                 try await materializeVirtualBlock(carrying: newText)
                 try await actionHandler.addBlock(type, blockId: info.id, blockText: newText.sendable(), position: .top)
             }
@@ -472,7 +472,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
             )
             resetSubject.send(styledText)
             cursorManager.focus(at: info.id, position: .at(focusRange))
-            Task { @MainActor in
+            actionHandler.scheduleMutationTask { @MainActor [self] in
                 try await materializeVirtualBlock(carrying: styledText)
             }
         }
@@ -535,7 +535,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
             range: range
         )
         
-        Task { @MainActor in
+        actionHandler.scheduleMutationTask { @MainActor [self] in
             try await setNewText(attributedString: newTextWithLink.sendable())
             
             let replacementRange = NSRange(location: range.location, length: trimmedText.count)
@@ -552,7 +552,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
                             .replace : .bottom
                         
                         let safeSendableAttributedString = SafeSendable(value: originalAttributedString)
-                        Task { @MainActor [weak self] in
+                        self?.actionHandler.scheduleMutationTask { @MainActor [weak self] in
                             try await self?.actionHandler.createAndFetchBookmark(
                                 targetID: info.id,
                                 position: position,
@@ -586,7 +586,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
                             .replace : .bottom
 
                         let safeSendableAttributedString = SafeSendable(value: originalAttributedString)
-                        Task { @MainActor [weak self] in
+                        self?.actionHandler.scheduleMutationTask { @MainActor [weak self] in
                             guard let self else { return }
                             do {
                                 let details = try await self.objectDetails(forObjectId: pastedObjectId)
@@ -620,7 +620,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
         }
 
         if isVirtualUnmaterialized {
-            Task { @MainActor in
+            actionHandler.scheduleMutationTask { @MainActor [self] in
                 try await materializeVirtualBlock(carrying: textView.attributedText)
                 performPaste(range: range, textView: textView)
             }
@@ -665,7 +665,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
 
     private func cut(range: NSRange) {
         guard !isVirtualUnmaterialized else { return }
-        Task {
+        actionHandler.scheduleMutationTask { [self] in
             try await pasteboardService?.cut(document: document, blocksIds: [info.id], selectedTextRange: range)
         }
     }
@@ -676,7 +676,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
     }
 
     private func handleKeyboardAction(action: CustomTextView.KeyboardAction, textView: UITextView) {
-        Task { @MainActor in
+        actionHandler.scheduleMutationTask { @MainActor [self] in
             if isVirtualUnmaterialized {
                 if case .delete = action {
                     virtualBlockSession?.dismissAndFocusPreviousBlock()
@@ -714,7 +714,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
         let text = textView.attributedText.sendable()
         let caret = textView.selectedRange
         if isVirtualUnmaterialized {
-            Task { [weak textView] in
+            actionHandler.scheduleMutationTask { [self, weak textView] in
                 // Checked after the current call stack unwinds: the toolbar slash/mention
                 // buttons insert their trigger symbol first and open the search session
                 // right after this callback, and that session must stay on this text view.
@@ -725,7 +725,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
             }
             return
         }
-        Task { [weak textView] in
+        actionHandler.scheduleMutationTask { [self, weak textView] in
             // Re-read at execution: a second change delivered before this task ran
             // (dictation, a predictive-bar insert) must not fork with — and have the
             // fork-time cell refresh rewrite the live view back to — stale text. Read
@@ -764,7 +764,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
             if text.value.length > 0 {
                 // Keep text typed during a still-open slash/mention session or an abandoned
                 // IME composition — losing it on defocus would be worse than creating the block.
-                Task { try await materializeVirtualBlock(carrying: text.value) }
+                actionHandler.scheduleMutationTask { [self] in try await materializeVirtualBlock(carrying: text.value) }
             } else {
                 virtualBlockSession?.dismiss()
             }
@@ -772,7 +772,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
             // Text held back during a slash/mention session or an IME composition must not
             // be lost on defocus.
             let text = textView.attributedText.sendable()
-            Task { try await forkEmptyBlockIfNeeded(carrying: text.value, focusAt: nil) }
+            actionHandler.scheduleMutationTask { [self] in try await forkEmptyBlockIfNeeded(carrying: text.value, focusAt: nil) }
         }
         let configuration = accessoryConfiguration(using: textView)
 
@@ -882,7 +882,7 @@ extension TextBlockActionHandler: AccessoryViewOutput {
     }
 
     func changeText(attributedString: SafeNSAttributedString) {
-        Task { @MainActor in
+        actionHandler.scheduleMutationTask { @MainActor [self] in
             if try await carryOrSync(attributedString.value, focusAt: nil) { return }
             try await actionHandler.changeText(attributedString, blockId: info.id)
         }
@@ -933,7 +933,7 @@ extension TextBlockActionHandler: AccessoryViewOutput {
     
     func didSelectEditButton() {
         if isVirtualUnmaterialized {
-            Task { @MainActor in
+            actionHandler.scheduleMutationTask { @MainActor [self] in
                 try await materializeVirtualBlock(carrying: NSAttributedString())
                 onEnterSelectionMode(info)
             }
@@ -944,7 +944,7 @@ extension TextBlockActionHandler: AccessoryViewOutput {
 
     func didSelectShowStyleMenu() {
         if isVirtualUnmaterialized {
-            Task { @MainActor in
+            actionHandler.scheduleMutationTask { @MainActor [self] in
                 try await materializeVirtualBlock(carrying: NSAttributedString())
                 onShowStyleMenu(info)
             }
@@ -976,7 +976,7 @@ extension TextBlockActionHandler: AccessoryViewOutput {
     }
 
     private func setNewTextSync(attributedString: NSAttributedString) {
-        Task { try await setNewText(attributedString: attributedString.sendable()) }
+        actionHandler.scheduleMutationTask { [self] in try await setNewText(attributedString: attributedString.sendable()) }
     }
 
     /// Like `setNewTextSync`, but after the write refreshes the live cell for the current block id.
@@ -986,7 +986,7 @@ extension TextBlockActionHandler: AccessoryViewOutput {
     /// re-syncs its text view, so the next keystroke cannot read the stale link back and overwrite
     /// the plain text.
     private func setNewTextRefreshingLiveBlock(attributedString: NSAttributedString) {
-        Task { @MainActor in
+        actionHandler.scheduleMutationTask { @MainActor [self] in
             try await setNewText(attributedString: attributedString.sendable())
             reconfigureLiveBlock(info.id)
         }

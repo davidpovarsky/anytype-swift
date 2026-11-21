@@ -25,9 +25,11 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
         line: UInt = #line,
         ignoreLogErrors: Response.Error.ErrorCode...
     ) async throws -> Response {
+        let dispatchBinding = InvocationDispatchContext.binding
         do {
             return try await withUncancellableHandler {
-                try await internalInvoke(requestMask: requestMask, responseMask: responseMask, qos: qos)
+                try await internalInvoke(requestMask: requestMask, responseMask: responseMask, qos: qos,
+                                         dispatchBinding: dispatchBinding)
             }
         } catch let error as CancellationError {
             // Ignore try Task.checkCancellation()
@@ -46,7 +48,8 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
     private func internalInvoke(
         requestMask: ((inout Request) -> Void)?,
         responseMask: ((inout Response) -> Void)?,
-        qos: DispatchQoS.QoSClass
+        qos: DispatchQoS.QoSClass,
+        dispatchBinding: InvocationDispatchBinding?
     ) async throws -> Response {
         
         let result: Response
@@ -61,12 +64,20 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
         }
         
         try Task.checkCancellation()
+        let dispatchPermit = try await dispatchBinding?.prepare(messageName: messageName)
         
         do {
             result = try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Response, Error>) in
                 DispatchQueue.global(qos: qos).async {
                     do {
+                        let completion = try dispatchPermit?.begin()
+                        var succeeded = false
+                        defer {
+                            if !succeeded { completion?.markFailed() }
+                            completion?.finish()
+                        }
                         let response = try invokeTask(request)
+                        succeeded = response.error.isNull
                         cont.resume(returning: response)
                     } catch {
                         cont.resume(throwing: error)
@@ -90,7 +101,13 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
         }
         
         if result.hasEvent {
-            await InvocationSettings.handler?.eventHandler(event: result.event)
+            if let dispatchBinding {
+                await InvocationDispatchContext.$binding.withValue(dispatchBinding.bindingForCommittedEvents()) {
+                    await InvocationSettings.handler?.eventHandler(event: result.event)
+                }
+            } else {
+                await InvocationSettings.handler?.eventHandler(event: result.event)
+            }
         }
         
         try Task.checkCancellation()

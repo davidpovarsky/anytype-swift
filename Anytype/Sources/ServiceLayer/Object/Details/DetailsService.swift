@@ -4,8 +4,32 @@ import AnytypeCore
 
 final class DetailsService: DetailsServiceProtocol, Sendable {
     
-    private let service: any ObjectActionsServiceProtocol = Container.shared.objectActionsService()
-    private let fileService: any FileActionsServiceProtocol = Container.shared.fileActionsService()
+    private let service: any ObjectActionsServiceProtocol
+    private let fileService: any FileActionsServiceProtocol
+
+    init() {
+        service = Container.shared.objectActionsService()
+        fileService = Container.shared.fileActionsService()
+    }
+
+    private init(service: any ObjectActionsServiceProtocol, fileService: any FileActionsServiceProtocol) {
+        self.service = service
+        self.fileService = fileService
+    }
+
+    @MainActor
+    func documentOwned(owner: EditorDocumentWriteOwner, preloads: DocumentOwnedFilePreloads,
+                       staging: DocumentOwnedFileStaging) throws -> any DetailsServiceProtocol {
+        try owner.validateOwnership()
+        try staging.requireOwner(owner)
+        let original = DetailsService(
+            service: DocumentOwnedObjectActionsService(owner: owner, service: service),
+            fileService: try DocumentOwnedFileActionsService.bindOriginal(
+                fileService, owner: owner, preloads: preloads, staging: staging
+            )
+        )
+        return DocumentOwnedDetailsService(owner: owner, service: original)
+    }
     
     // MARK: - DetailsServiceProtocol
 

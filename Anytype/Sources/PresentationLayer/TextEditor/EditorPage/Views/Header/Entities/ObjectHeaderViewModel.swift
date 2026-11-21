@@ -17,6 +17,7 @@ protocol ObjectHeaderModuleOutput: AnyObject {
 final class ObjectHeaderViewModel: ObservableObject {
     
     private let objectHeaderUploadingService: any ObjectHeaderUploadingServiceProtocol
+    private let documentWriteOwner: EditorDocumentWriteOwner?
     
     @Published private(set) var header: ObjectHeader?
 
@@ -24,16 +25,20 @@ final class ObjectHeaderViewModel: ObservableObject {
     
     private lazy var onIconTap = { [weak self] in
         guard let self, document.mode.isHandling, document.permissions.canChangeIcon else { return }
-        UISelectionFeedbackGenerator().selectionChanged()
-        self.onIconPickerTap?(document)
+        performOwnedPublication(requiresEditing: true) {
+            UISelectionFeedbackGenerator().selectionChanged()
+            self.onIconPickerTap?(document)
+        }
     }
     
     private lazy var onCoverTap = { [weak self] in
         guard let self, document.mode.isHandling else { return }
         guard document.details?.resolvedLayoutValue != .note else { return }
         guard document.permissions.canChangeCover else { return }
-        UISelectionFeedbackGenerator().selectionChanged()
-        output?.showCoverPicker(document: document)
+        performOwnedPublication(requiresEditing: true) {
+            UISelectionFeedbackGenerator().selectionChanged()
+            output?.showCoverPicker(document: document)
+        }
     }
     
     private let document: any BaseDocumentProtocol
@@ -61,20 +66,25 @@ final class ObjectHeaderViewModel: ObservableObject {
         self.configuration = configuration
         self.output = output
         self.objectHeaderUploadingService = dependencies.objectHeaderUploadingService
+        self.documentWriteOwner = dependencies.documentWriteOwner
         
-        setupSubscription()
+        performOwnedPublication {
+            setupSubscription()
 
-        // Details already loaded (reopened document) - skip the placeholder
-        if let details = document.details {
-            header = buildHeader(details: details, showPublishingBanner: showPublishingBanner)
-        } else {
-            header = buildShimmeringHeader()
+            // Details already loaded (reopened document) - skip the placeholder
+            if let details = document.details {
+                header = buildHeader(details: details, showPublishingBanner: showPublishingBanner)
+            } else {
+                header = buildShimmeringHeader()
+            }
         }
     }
     
     func updatePublishingBannerVisibility(_ isVisible: Bool) {
-        showPublishingBanner = isVisible
-        onUpdate(details: document.details, showPublishingBanner: isVisible)
+        performOwnedPublication {
+            showPublishingBanner = isVisible
+            onUpdate(details: document.details, showPublishingBanner: isVisible)
+        }
     }
     
     // MARK: - Private
@@ -139,23 +149,43 @@ final class ObjectHeaderViewModel: ObservableObject {
     
     private func onUpdate(details: ObjectDetails?, showPublishingBanner: Bool) {
         guard let details else { return }
-        
-        let header = buildHeader(details: details, showPublishingBanner: showPublishingBanner)
-
-        if self.header != header {
-            self.header = header
-        }
-        
-        uploadingStatusSubscription = objectHeaderUploadingService
-            .coverUploadPublisher(objectId: details.id, spaceId: details.spaceId)
-            .receiveOnMain()
-            .sink { [weak self] update in
-                if let loadingHeader = self?.buildLoadingHeader(
-                    update, showPublishingBanner: showPublishingBanner
-                ) {
-                    self?.header = loadingHeader
-                }
+        performOwnedPublication {
+            if documentWriteOwner != nil {
+                guard details.id.utf8.elementsEqual(document.objectId.utf8),
+                      details.spaceId.utf8.elementsEqual(document.spaceId.utf8) else { return }
             }
+            let header = buildHeader(details: details, showPublishingBanner: showPublishingBanner)
+            if self.header != header { self.header = header }
+
+            uploadingStatusSubscription = objectHeaderUploadingService
+                .coverUploadPublisher(objectId: details.id, spaceId: details.spaceId)
+                .receiveOnMain()
+                .sink { [weak self] update in
+                    guard let self else { return }
+                    performOwnedPublication {
+                        self.header = buildLoadingHeader(update, showPublishingBanner: showPublishingBanner)
+                    }
+                }
+        }
+    }
+
+    /// This executes after receiveOnMain, at the actual published-state write.
+    /// It shares the prepared document owner; it creates no second authority.
+    private func performOwnedPublication(requiresEditing: Bool = false, _ operation: () -> Void) {
+        guard let owner = documentWriteOwner else {
+            operation()
+            return
+        }
+        do {
+            try owner.performSynchronousOperation(
+                contextId: document.objectId, spaceId: document.spaceId, requiresEditing: requiresEditing
+            ) {
+                try owner.validateDocument(document)
+                operation()
+            }
+        } catch {
+            // A retired source cannot publish into an earlier mounted header.
+        }
     }
     
     private func buildHeader(details: ObjectDetails, showPublishingBanner: Bool) -> ObjectHeader {

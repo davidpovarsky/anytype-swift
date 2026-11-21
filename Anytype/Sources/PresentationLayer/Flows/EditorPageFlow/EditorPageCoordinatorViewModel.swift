@@ -10,6 +10,13 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
     let data: EditorPageObject
     let showHeader: Bool
     let torahSession: TorahEditorSession?
+    var preparedState: EditorPageViewState?
+    var preparationFailed = false
+    @ObservationIgnored private let childPreparation: PreparedEditorChildPreparation?
+    @ObservationIgnored private var preparationStarted = false
+    @ObservationIgnored private var preparedSession: PreparedEditorPageSession?
+
+    var hasQualifiedPreparation: Bool { childPreparation != nil }
     @ObservationIgnored
     @Injected(\.propertyValueProcessingService)
     private var propertyValueProcessingService: any PropertyValueProcessingServiceProtocol
@@ -32,11 +39,17 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
     
     init(
         data: EditorPageObject,
-        showHeader: Bool
+        showHeader: Bool,
+        childPreparation: PreparedEditorChildPreparation? = nil
     ) {
         self.data = data
         self.showHeader = showHeader
-        self.torahSession = try? TorahEditorSession(spaceId: data.spaceId, objectId: data.objectId)
+        self.childPreparation = childPreparation
+        // The external source already has a host-owned annotation lifetime.
+        // Preserve the original Torah coordinator only for the original route.
+        self.torahSession = childPreparation == nil
+            ? try? TorahEditorSession(spaceId: data.spaceId, objectId: data.objectId)
+            : nil
         self.torahSession?.installOpenObjectHandler { [weak self] objectId, blockId in
             guard let self else { return }
             pageNavigation?.open(
@@ -45,6 +58,27 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
         }
     }
     
+    /// Retain the prepared child across later user-created tasks. A failed or
+    /// cancelled acquisition never falls back to an unbound legacy editor.
+    func prepareQualifiedEditor() async {
+        guard let childPreparation, !preparationStarted else { return }
+        preparationStarted = true
+        do {
+            let session = try await childPreparation.prepare(data: data)
+            preparedSession = session
+            try Task.checkCancellation()
+            let state = try EditorPageModuleAssembly().buildStateModel(
+                preparedSession: session, output: self, showHeader: showHeader, torahSession: nil
+            )
+            try session.owner.validateOwnership()
+            preparedState = state
+        } catch {
+            preparedSession?.retire()
+            preparedSession = nil
+            preparationFailed = true
+        }
+    }
+
     // MARK: - EditorPageModuleOutput
     
     func showEditorScreen(data: ScreenData) {
@@ -153,3 +187,4 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
         )
     }
 }
+

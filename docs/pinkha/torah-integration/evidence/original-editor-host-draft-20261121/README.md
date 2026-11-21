@@ -1,0 +1,36 @@
+# Original editable editor SDK — unqualified source checkpoint
+
+This checkpoint joins 51 source, test and project files on the neutral branch `codex/otzaria-original-editor-host-draft-20261121`, based on `c89d6726c3b2ad6e418296c5ed0f7d705fb88433`. It is a reviewable implementation draft, not a qualified SDK release or a completed Cross-App task. The historical v10 packaging run remains on its own unchanged branch and does not contain this new public editor API.
+
+## Implemented original service path
+
+The public Host requires explicit actual account, Space, object, host profile, annotation UUID, revision and source witness. It opens the original cached BaseDocument through the shared prepared-session factory, waits for actual original edit permission readiness, builds the original EditorPageView state, and mounts that original view. A captured source/account lifetime is reused across the awaited open and session construction. Failure releases only the acquired reference; it does not close an already-shared cached document.
+
+The original Invocation carries the existing writer authority across its awaits and checks a permit immediately before its native GCD body. The same operation retains actual RPC drain after caller cancellation. Existing account transitions close admission before their first await and drain previously admitted work before changing the original account. Original unbound routes retain their defaults. Original document event subscribers and eventual close retain the frozen account context.
+
+The shared session uses one writer Owner, one owned file staging directory and one preload ledger. The File, FileActions, Bookmark, ObjectActions, Pasteboard, Details, Header and DefaultObject adapters delegate to the actual original services. Owned file staging survives cancellation and uncertain completion; arbitrary same-Space file IDs do not acquire a preload deletion receipt. The original UI text handlers and five state-manager mutation Task sites reserve work synchronously before Task construction. Child preparation retains an actual original child document/session; its operations register passive tracking in the same parent capture boundary.
+
+Terminal snapshot capture ends original editing synchronously, freezes the mounted view, drains registered UI/native work through the Owner's exclusive gate, and calls the original protobuf ZIP exporter. The report, ZIP and exact provenance frame are retained. Successful capture retires the Owner while the exclusive gate is still held; Host cleanup follows before returning. Failure does not restore interaction while a canceled native export still holds `isCapturing`. This is not an optimistic local-text echo or a timed sleep.
+
+The Debug/simulator qualification SPI permits only the exact approved consumer bundle and owned-local-only launch marker. It rejects existing repository/account state intact and constructs a fresh original local account and original Spaces. Blank editing acceptance creates no seeded text blocks. Separate rich-data qualification uses actual original Object/Block/File RPCs, retains the original export and completion events, resolves an imported root in a newly owned Space, and compares native block/resource data after actual reopen. These are implemented source routes; they have not executed on Apple in this checkpoint.
+
+## Evidence and limits
+
+`SOURCE_MANIFEST.json` pins all 51 candidate files. `BASE_PREIMAGES.json` binds every existing preimage to the exact Git blob at the checkpoint base and confirms all existing product preimages also match `bba49c59edc974a4ca448676823c3cc8bcf65522`. Additions were absent from the clean owned checkout. The project membership receipt records six added framework sources, 12 new PBX objects, two existing membership arrays extended and 404 other original objects byte-identical.
+
+Five original Windows JSON receipts used CRLF. Their exact bytes and original SHA-256 values are retained in `writer-core/original-windows-receipts.zip`; the adjacent readable JSON views use LF for normal Git text storage. This transfer changes no JSON value, compiler input, command, result, assertion or case identity.
+
+The retained receipts are scoped rather than added into a new overall pass count:
+
+- The frozen writer core passed 17 targeted portable scheduling, child-tracking, drain and exclusive-capture controls. Earlier 14 and 6 control receipts retain their historical input hashes; they were not rerun or relabeled as current whole-SDK acceptance.
+- The exact preload ledger passed six portable controls. The snapshot framing passed six tests using the real generated export-report type; the Darwin file control and native import/fidelity route remain unrun. The terminal capture delta preserves that framing code but adds new lifecycle behavior that still needs Apple validation.
+- Syntax receipts cover the component sources at recorded hashes. The latest changed-source parse checked nine files, including two Templates draft files outside this checkpoint; only seven of those nine are part of these 51 files. The first staging attempt failed before the compiler because the source ZIP omitted its separate manifest; the manifest-only staging correction and successful unchanged-source parse are both retained.
+- Windows Swift syntax parsing with an explicit iOS simulator target does not typecheck Apple frameworks, link Lib, create an account, mount UIKit, or prove edit/save/reopen. Known SDK-target warnings are preserved in the raw logs.
+
+The source remains **unqualified for activation**. Apple typechecking, existing owner regression tests, framework test-target wiring, complete Types/Templates/coordinator/modal writer and operation-specific permission qualification, and the explicitly deferred page mutation Task sites remain open. New Details permission propagation is a separate reviewed increment after this checkpoint. Account-only event authority does not establish every downstream UI/store publication boundary.
+
+The original inspection-only public API/source admission profile and all historical signing, strict verification, external consumer and runtime gates are unchanged. A new explicit source-bound SDK admission and a real original consumer build must qualify the added API. Actual acceptance must type two blocks through the original UI, capture only after the real registered write drain, commit through Maktabah's existing same-UUID revision/source CAS, reread durable storage, reopen through the original engine, and verify text/resources. The separate seeded fidelity fixture does not substitute for UI editing evidence.
+
+The snapshot body is opaque and lossless only when admitted intact. Its body cap does not prove the final canonical annotation envelope fits: Maktabah's unchanged 65,536-byte envelope limit and base64 expansion still apply. Oversized bodies are rejected without substituting plain text. Historical capture revision/source provenance never becomes current reopen authority; a fresh actual annotation snapshot and callback provide that authority after CAS.
+
+No existing user account, repository, annotation, Space or external shared worktree was modified to produce this source checkpoint. No Native success or task completion is claimed.

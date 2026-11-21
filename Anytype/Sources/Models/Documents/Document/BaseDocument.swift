@@ -3,6 +3,7 @@ import Combine
 import AnytypeCore
 import Foundation
 import PinkhaKit
+import ProtobufMessages
 
 final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProviding, @unchecked Sendable {
     
@@ -56,6 +57,8 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
     @Atomic
     private var parsedRelationDependedDetailsEvents = [DocumentUpdate]()
     private var openTask: Task<Void, any Error>?
+    @Atomic
+    private var originalAccountDispatch: InvocationDispatchBinding?
     
     // MARK: - Sync Handle
     var syncPublisher: AnyPublisher<[BaseDocumentUpdate], Never> {
@@ -98,8 +101,14 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
     
     deinit {
         guard mode.isHandling, isOpened, basicUserInfoStorage.usersId.isNotEmpty else { return }
-        Task.detached(priority: .userInitiated) { [objectLifecycleService, objectId, spaceId] in
-            try await objectLifecycleService.close(contextId: objectId, spaceId: spaceId)
+        Task.detached(priority: .userInitiated) { [objectLifecycleService, objectId, spaceId, originalAccountDispatch] in
+            if let originalAccountDispatch {
+                try await InvocationDispatchContext.$binding.withValue(originalAccountDispatch) {
+                    try await objectLifecycleService.close(contextId: objectId, spaceId: spaceId)
+                }
+            } else {
+                try await objectLifecycleService.close(contextId: objectId, spaceId: spaceId)
+            }
         }
     }
     
@@ -107,6 +116,12 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
     
     @MainActor
     func open() async throws {
+        if originalAccountDispatch == nil {
+            originalAccountDispatch = InvocationDispatchContext.binding?.bindingForCommittedEvents()
+        }
+        // This check also precedes cached isOpened/openTask returns. A matching
+        // object ID under a later account cannot revive this original instance.
+        try await originalAccountDispatch?.validateForOperation(named: "ObjectOpen")
         switch mode {
         case .handling:
             guard !isOpened else { return }
@@ -151,7 +166,13 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
         guard mode.isHandling, isOpened, basicUserInfoStorage.usersId.isNotEmpty else { return }
         let closeLease = editorWriteLifetime.beginClosing()
         defer { closeLease.cancel() }
-        try await objectLifecycleService.close(contextId: objectId, spaceId: spaceId)
+        if let originalAccountDispatch {
+            try await InvocationDispatchContext.$binding.withValue(originalAccountDispatch) {
+                try await objectLifecycleService.close(contextId: objectId, spaceId: spaceId)
+            }
+        } else {
+            try await objectLifecycleService.close(contextId: objectId, spaceId: spaceId)
+        }
         isOpened = false
     }
     
@@ -277,7 +298,11 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
     private func setupView(_ model: ObjectViewModel) {
         viewModelSetter.objectViewUpdate(model)
         // Start subscription before document is marked as opened
-        setupSubscriptions()
+        if let originalAccountDispatch {
+            InvocationDispatchContext.$binding.withValue(originalAccountDispatch) { setupSubscriptions() }
+        } else {
+            setupSubscriptions()
+        }
         isOpened = true
         triggerSync(updates: [.general])
         editorWriteLifetime.confirmOpened()
@@ -510,3 +535,4 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
         return []
     }
 }
+

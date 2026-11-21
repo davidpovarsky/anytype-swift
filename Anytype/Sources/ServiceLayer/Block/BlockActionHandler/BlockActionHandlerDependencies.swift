@@ -10,6 +10,10 @@ struct BlockActionHandlerDependencies {
     let bookmarkService: any BookmarkServiceProtocol
     let objectTypeProvider: any ObjectTypeProviderProtocol
 
+    // Only a prepared external Host supplies the original document owner.
+    // Ordinary app callers keep the original unbound Task behavior.
+    var documentWriteOwner: EditorDocumentWriteOwner? = nil
+
     static func original() -> Self {
         Self(
             blockService: Container.shared.blockService(),

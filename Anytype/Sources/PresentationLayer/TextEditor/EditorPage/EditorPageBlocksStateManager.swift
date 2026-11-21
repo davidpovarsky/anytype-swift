@@ -300,7 +300,7 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
                 let targetDocument = documentsProvider.document(objectId: content.targetBlockID, spaceId: document.spaceId)
                 let filteredBlocksIds = filteredMovingBlocksWith(excludedObjectId: targetDocument.objectId)
             
-                Task { @MainActor [weak self] in
+                actionHandler.scheduleMutationTask { @MainActor [weak self] in
                     try? await targetDocument.open()
                     guard let self, let id = targetDocument.children.last?.id,
                           let details = targetDocument.details else { return }
@@ -359,7 +359,7 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
     }
     
     private func moveSync(position: BlockPosition, targetId: String, dropTargetId: String, blocksIds: [String]) {
-        Task {
+        actionHandler.scheduleMutationTask { [self] in
             try await move(position: position, targetId: targetId, dropTargetId: dropTargetId, blocksIds: blocksIds)
         }
     }
@@ -444,21 +444,21 @@ final class EditorPageBlocksStateManager: EditorPageBlocksStateManagerProtocol {
             actionHandler.delete(blockIds: elements.map { $0.blockId } )
         case .addBlockBelow:
             elements.forEach { element in
-                Task {
+                actionHandler.scheduleMutationTask { [self] in
                     try await actionHandler.addBlock(.text(.text), blockId: element.blockId)
                 }
             }
         case .duplicate:
             elements.forEach { actionHandler.duplicate(blockId: $0.blockId) }
         case .turnInto:
-            Task {
+            actionHandler.scheduleMutationTask { [self] in
                 for block in elements {
                     try await actionHandler.turnIntoObject(blockId: block.blockId)
                 }
             }
         case .moveTo:
             router.showMoveTo { [weak self] details in
-                Task {
+                self?.actionHandler.scheduleMutationTask { [weak self] in
                     let blockIds = elements.map(\.blockId)
                     try await self?.actionHandler.moveToPage(blockIds: blockIds, pageId: details.id)
 

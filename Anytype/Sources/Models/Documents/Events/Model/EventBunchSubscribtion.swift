@@ -1,4 +1,5 @@
 import Combine
+import ProtobufMessages
 
 actor EventBunchSubscribtion {
     
@@ -56,7 +57,15 @@ private class EventBunchSubscriber: Cancellable, @unchecked Sendable {
     private(set) var handler:  ((_ events: EventsBunch) async -> Void)?
     
     init(handler: @escaping (_ events: EventsBunch) async -> Void) {
-        self.handler = handler
+        if let binding = InvocationDispatchContext.binding?.bindingForCommittedEvents() {
+            // Registration under the original document open freezes its account
+            // generation. Later native push delivery must not adopt a new one.
+            self.handler = { events in
+                await InvocationDispatchContext.$binding.withValue(binding) { await handler(events) }
+            }
+        } else {
+            self.handler = handler
+        }
     }
     
     func cancel() {

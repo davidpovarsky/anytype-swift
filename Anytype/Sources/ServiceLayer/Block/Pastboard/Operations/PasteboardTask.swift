@@ -18,6 +18,7 @@ final class PasteboardTask: Sendable {
     private let context: PasteboardActionContext
     private let pasteboardHelper: any PasteboardHelperProtocol
     private let pasteboardMiddlewareService: any PasteboardMiddlewareServiceProtocol
+    private let ownedStaging: DocumentOwnedFileStaging?
 
     // MARK: - Initializers
 
@@ -26,13 +27,15 @@ final class PasteboardTask: Sendable {
         spaceId: String,
         pasteboardHelper: some PasteboardHelperProtocol,
         pasteboardMiddlewareService: any PasteboardMiddlewareServiceProtocol,
-        context: PasteboardActionContext
+        context: PasteboardActionContext,
+        ownedStaging: DocumentOwnedFileStaging? = nil
     ) {
         self.objectId = objectId
         self.spaceId = spaceId
         self.pasteboardHelper = pasteboardHelper
         self.pasteboardMiddlewareService = pasteboardMiddlewareService
         self.context = context
+        self.ownedStaging = ownedStaging
     }
 
     func start() async throws -> PasteboardPasteResult? {
@@ -67,12 +70,15 @@ final class PasteboardTask: Sendable {
             return try await pasteboardMiddlewareService.pasteText(textSlot, objectId: objectId, context: context)
         }
 
-        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(Constants.filesDirectory, isDirectory: true)
+        let directory = ownedStaging?.directory
+            ?? FileManager.default.temporaryDirectory.appendingPathComponent(Constants.filesDirectory, isDirectory: true)
         
         var files = [PasteboardFile]()
         
         defer {
-            files.forEach { try? FileManager.default.removeItem(atPath: $0.path) }
+            // The original RPC may still use a file after caller cancellation.
+            // Bound inputs remain for the Host's actual save/recovery decision.
+            if ownedStaging == nil { files.forEach { try? FileManager.default.removeItem(atPath: $0.path) } }
         }
         
         let fileSlots = pasteboardHelper.obtainFileSlots()
@@ -80,7 +86,14 @@ final class PasteboardTask: Sendable {
         
         for itemProvider in fileSlots {
             try Task.checkCancellation()
-            let path = try? await itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.data.identifier, directory: directory)
+            let path: URL?
+            if let ownedStaging {
+                path = try await itemProvider.loadFileRepresentation(
+                    forTypeIdentifier: UTType.data.identifier, directory: directory, ownedStaging: ownedStaging
+                )
+            } else {
+                path = try? await itemProvider.loadFileRepresentation(forTypeIdentifier: UTType.data.identifier, directory: directory)
+            }
             if let path {
                 files.append(PasteboardFile(path: path.relativePath, name: itemProvider.suggestedName ?? ""))
             }

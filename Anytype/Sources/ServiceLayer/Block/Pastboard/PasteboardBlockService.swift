@@ -5,17 +5,53 @@ import AnytypeCore
 
 final class PasteboardBlockService: PasteboardBlockServiceProtocol, Sendable {
     
-    private let pasteboardHelper: any PasteboardHelperProtocol = Container.shared.pasteboardHelper()
-    private let pasteboardMiddlewareService: any PasteboardMiddlewareServiceProtocol = Container.shared.pasteboardMiddleService()
+    private let pasteboardHelper: any PasteboardHelperProtocol
+    private let pasteboardMiddlewareService: any PasteboardMiddlewareServiceProtocol
+    private let documentOwner: EditorDocumentWriteOwner?
+    private let ownedStaging: DocumentOwnedFileStaging?
     
     private let tasks = SynchronizedArray<AnyCancellable>()
+
+    init() {
+        pasteboardHelper = Container.shared.pasteboardHelper()
+        pasteboardMiddlewareService = Container.shared.pasteboardMiddleService()
+        documentOwner = nil
+        ownedStaging = nil
+    }
+
+    private init(original: PasteboardBlockService, owner: EditorDocumentWriteOwner, staging: DocumentOwnedFileStaging) {
+        pasteboardHelper = original.pasteboardHelper
+        pasteboardMiddlewareService = original.pasteboardMiddlewareService
+        documentOwner = owner
+        ownedStaging = staging
+    }
+
+    @MainActor
+    static func bindOriginal(_ service: any PasteboardBlockServiceProtocol,
+                             owner: EditorDocumentWriteOwner,
+                             staging: DocumentOwnedFileStaging) throws -> any PasteboardBlockServiceProtocol {
+        guard let original = service as? PasteboardBlockService, original.documentOwner == nil else {
+            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+        }
+        try owner.validateOwnership()
+        try staging.requireOwner(owner)
+        return PasteboardBlockService(original: original, owner: owner, staging: staging)
+    }
     
     var hasValidURL: Bool {
-        pasteboardHelper.hasValidURL
+        guard let documentOwner else { return pasteboardHelper.hasValidURL }
+        guard Thread.isMainThread else { return false }
+        return MainActor.assumeIsolated {
+            (try? documentOwner.performSynchronousOperation(requiresEditing: false) { pasteboardHelper.hasValidURL }) ?? false
+        }
     }
     
     var pasteboardContent: PasteboardContent? {
-        pasteboardHelper.pasteboardContent
+        guard let documentOwner else { return pasteboardHelper.pasteboardContent }
+        guard Thread.isMainThread else { return nil }
+        return MainActor.assumeIsolated {
+            try? documentOwner.performSynchronousOperation(requiresEditing: false) { pasteboardHelper.pasteboardContent }
+        }
     }
     
     func pasteInsideBlock(
@@ -48,9 +84,28 @@ final class PasteboardBlockService: PasteboardBlockServiceProtocol, Sendable {
         handleLongOperation:  @escaping () -> Void,
         completion: @escaping @MainActor (_ pasteResult: PasteboardPasteResult?) -> Void
     ) {
+        let scheduled: EditorDocumentScheduledWrite?
+        if let documentOwner {
+            guard Thread.isMainThread else { return }
+            scheduled = MainActor.assumeIsolated {
+                try? documentOwner.performSynchronousOperation(contextId: objectId, spaceId: spaceId) {
+                    try documentOwner.scheduleMutation(contextId: objectId)
+                }
+            }
+            guard scheduled != nil else { return }
+        } else {
+            scheduled = nil
+        }
         
         let workItem = DispatchWorkItem {
-            handleLongOperation()
+            if let documentOwner = self.documentOwner {
+                guard Thread.isMainThread else { return }
+                MainActor.assumeIsolated {
+                    try? documentOwner.performSynchronousOperation(contextId: objectId, requiresEditing: false) { handleLongOperation() }
+                }
+            } else {
+                handleLongOperation()
+            }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + Constants.longOperationTime, execute: workItem)
         
@@ -59,15 +114,29 @@ final class PasteboardBlockService: PasteboardBlockServiceProtocol, Sendable {
             spaceId: spaceId,
             pasteboardHelper: pasteboardHelper,
             pasteboardMiddlewareService: pasteboardMiddlewareService,
-            context: context
+            context: context,
+            ownedStaging: ownedStaging
         )
         
         let task = Task { @Sendable in
-            let pasteResult = try? await pasteboardTask.start()
-            
-            DispatchQueue.main.async {
+            if let documentOwner = self.documentOwner, let scheduled {
+                // Reservation precedes this Task. Both the original native paste
+                // and its actual MainActor completion remain within that lease.
+                try? await scheduled.run {
+                    let pasteResult = try? await documentOwner.performMutation(spaceId: spaceId, createdInContext: objectId) {
+                        try await pasteboardTask.start()
+                    }
+                    try await MainActor.run {
+                        try documentOwner.performSynchronousOperation(contextId: objectId) { completion(pasteResult) }
+                    }
+                }
                 workItem.cancel()
-                completion(pasteResult)
+            } else {
+                let pasteResult = try? await pasteboardTask.start()
+                DispatchQueue.main.async {
+                    workItem.cancel()
+                    completion(pasteResult)
+                }
             }
         }
         .cancellable()
@@ -81,6 +150,21 @@ final class PasteboardBlockService: PasteboardBlockServiceProtocol, Sendable {
         blocksIds: [String],
         selectedTextRange: NSRange
     ) async throws {
+        if let documentOwner {
+            let result = try await documentOwner.performRead(contextId: objectId, rpcNames: ["BlockCopy"]) { [pasteboardMiddlewareService] in
+                try await pasteboardMiddlewareService.copy(
+                    blockInformations: blockInfos, objectId: objectId, selectedTextRange: selectedTextRange
+                )
+            }
+            if let result {
+                try await MainActor.run {
+                    try documentOwner.performSynchronousOperation(contextId: objectId, requiresEditing: false) {
+                        pasteboardHelper.setItems(textSlot: result.textSlot, htmlSlot: result.htmlSlot, blocksSlots: result.blockSlot)
+                    }
+                }
+            }
+            return
+        }
         if let result = try await pasteboardMiddlewareService.copy(
             blockInformations: blockInfos,
             objectId: objectId,
@@ -96,6 +180,21 @@ final class PasteboardBlockService: PasteboardBlockServiceProtocol, Sendable {
         blocksIds: [String],
         selectedTextRange: NSRange
     ) async throws {
+        if let documentOwner {
+            let result = try await documentOwner.performMutation(contextId: objectId) { [pasteboardMiddlewareService] in
+                try await pasteboardMiddlewareService.cut(
+                    blockInformations: blockInfos, objectId: objectId, selectedTextRange: selectedTextRange
+                )
+            }
+            if let result {
+                try await MainActor.run {
+                    try documentOwner.performSynchronousOperation(contextId: objectId) {
+                        pasteboardHelper.setItems(textSlot: result.textSlot, htmlSlot: result.htmlSlot, blocksSlots: result.blockSlot)
+                    }
+                }
+            }
+            return
+        }
         if let result = try await pasteboardMiddlewareService.cut(blockInformations: blockInfos, objectId: objectId, selectedTextRange: selectedTextRange) {
             pasteboardHelper.setItems(textSlot: result.textSlot, htmlSlot: result.htmlSlot, blocksSlots: result.blockSlot)
         }

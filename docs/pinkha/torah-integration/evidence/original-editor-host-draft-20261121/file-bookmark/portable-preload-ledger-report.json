@@ -1,0 +1,101 @@
+{
+  "root": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-file-bookmark-root-20261121T221602",
+  "compiler": "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swiftc.exe",
+  "inputs": {
+    "source/Anytype/Sources/ServiceLayer/Block/DocumentOwnedBookmarkService.swift": {
+      "sha256": "1185dd8cd106974636176d462510a9f2a0b038258e9fc65139b3c6650bf18093",
+      "bytes": 2343
+    },
+    "source/Anytype/Sources/ServiceLayer/Block/DocumentOwnedFilePreloads.swift": {
+      "sha256": "78dce824a69753ba1a2fca5bec647bf7ae57d05220073893afb1e4671d2e01f8",
+      "bytes": 2977
+    },
+    "source/Anytype/Sources/ServiceLayer/Block/DocumentOwnedFileService.swift": {
+      "sha256": "80e778c68e69060a6852c5c57bde26e9f9408bdbdc6f082a73e4695425941e89",
+      "bytes": 4428
+    },
+    "source/Anytype/Sources/ServiceLayer/Block/File/DocumentOwnedFileActionsService.swift": {
+      "sha256": "811c05df11142a77c7853bbe01674c6b1d09ee195023a72659974045ce9cf9f0",
+      "bytes": 5737
+    },
+    "source/Anytype/Sources/ServiceLayer/Block/File/DocumentOwnedFileStaging.swift": {
+      "sha256": "53f34ec78771b3e5fe57be948c67304b3dcd6ddcbe4e71193a9b620240deb579",
+      "bytes": 2989
+    },
+    "source/Anytype/Sources/ServiceLayer/Block/File/FileActionsService.swift": {
+      "sha256": "08148f080d667f5dfc316087384f22d8f5270963da6cc8445c4731f60397cf70",
+      "bytes": 12064
+    },
+    "controls/PortablePreloadLedgerControls.swift": {
+      "sha256": "5022089be433b7cafd4b993bbdd6413ed7c2cbde75cbc7e14aee133ca3b9476d",
+      "bytes": 6603
+    },
+    "controls/PortableDocumentProbe.swift": {
+      "sha256": "ae71f51d45948aa8f5ac413b43144e98ef526a97e2574f035cc3d5ce22843c3e",
+      "bytes": 1083
+    },
+    "controls/EditorDocumentWriteLifetime.swift": {
+      "sha256": "8444594733dd0deedae95921269bd6a606b09fb9056b593e165afae574b96cf6",
+      "bytes": 4051
+    },
+    "controls/PreparedEditorPageDocument.swift": {
+      "sha256": "42e595c324e46947d4b964070994a193478d57072931b92be1451f155e2cb32e",
+      "bytes": 1093
+    },
+    "controls/EditorDocumentWriteOwner.swift": {
+      "sha256": "48fb9c3c58440a7726128f9236bd766fe519a1c18d192b9d2563c1246ff7c8d7",
+      "bytes": 9398
+    }
+  },
+  "results": [
+    {
+      "label": "DocumentOwnedBookmarkService-syntax",
+      "code": 0,
+      "timed_out": false,
+      "output": ""
+    },
+    {
+      "label": "DocumentOwnedFilePreloads-syntax",
+      "code": 0,
+      "timed_out": false,
+      "output": ""
+    },
+    {
+      "label": "DocumentOwnedFileService-syntax",
+      "code": 0,
+      "timed_out": false,
+      "output": ""
+    },
+    {
+      "label": "DocumentOwnedFileActionsService-syntax",
+      "code": 0,
+      "timed_out": false,
+      "output": ""
+    },
+    {
+      "label": "DocumentOwnedFileStaging-syntax",
+      "code": 0,
+      "timed_out": false,
+      "output": ""
+    },
+    {
+      "label": "FileActionsService-syntax",
+      "code": 0,
+      "timed_out": false,
+      "output": ""
+    },
+    {
+      "label": "ledger-compile",
+      "code": 0,
+      "timed_out": false,
+      "output": "   Creating library C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-file-bookmark-root-20261121T221602\\preload-ledger-controls.lib and object C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-file-bookmark-root-20261121T221602\\preload-ledger-controls.exp\n\n"
+    },
+    {
+      "label": "ledger-run",
+      "code": 0,
+      "timed_out": false,
+      "output": "{\"status\":\"PASS_PORTABLE_PRELOAD_LEDGER_6\",\"executed\":6,\"passed\":6,\"file_service_RPC\":\"NOT_RUN\",\"wrapper_Apple_typecheck\":\"NOT_RUN\",\"native_editor\":\"NOT_RUN\"}\n"
+    }
+  ],
+  "scope": "Actual new ledger with pinned prior production Owner/Lifetime and explicit disposable document probe. Service wrappers syntax only; current expanded Owner, real file RPC, Apple typechecking and Native editor are NOT_RUN."
+}

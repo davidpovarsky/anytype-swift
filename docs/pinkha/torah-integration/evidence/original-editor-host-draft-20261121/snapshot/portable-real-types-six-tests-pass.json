@@ -1,0 +1,38 @@
+{
+  "scope": "Same six original tests; shorten only generated SwiftPM runner name from263 to233 characters; reuse compiled dependencies",
+  "started_unix": 1795300067.5733654,
+  "inputs": [
+    {
+      "path": "codec/Package.swift",
+      "sha256": "200dfd73c6e16ced2a3cf3ef58eef95088387d7087a71edf940e16bf7b8070ed"
+    },
+    {
+      "path": "codec/Sources/OriginalExportReport/export_report.pb.swift",
+      "sha256": "3f77442c6efe1ba8a2c868c9c13d807d5d81bc57dff341b4c8dd76c67562d86b"
+    },
+    {
+      "path": "codec/Sources/AnytypeOriginalEditor/Frame.swift",
+      "sha256": "1e9fa9dfd5d8ea7532c0eec3cf1c4b54974f2b76cdb3700e4683074861eaf3f3"
+    },
+    {
+      "path": "codec/Sources/AnytypeOriginalEditor/Binding.swift",
+      "sha256": "3579e44ee69c53bb5cac72ccd671dab2819971ea0151dfbafd0b79ed1e1fa373"
+    },
+    {
+      "path": "codec/Tests/CodecTests/SnapshotTests.swift",
+      "sha256": "4584e87921b0f75412eab71e190ee5141eeeb7b699d7bf6576204293fa2ae3df"
+    }
+  ],
+  "command": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Swift\\Toolchains\\6.3.3+Asserts\\usr\\bin\\swift.exe",
+    "test",
+    "--package-path",
+    "C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec",
+    "--jobs",
+    "2"
+  ],
+  "exit_code": 0,
+  "dependency_compile_lines": [],
+  "log": "[0/1] Planning build\n[1/1] Compiling plugin SwiftProtobufPlugin\nBuilding for debugging...\n[1/16] Write swift-version-2807070033DA82CF.txt\n[2/10] C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\ATCodecPackageDiscoveredTests.derived\\all-discovered-tests.swift\n[3/10] Write sources\n[5/12] Compiling ATCodecPackageDiscoveredTests CodecTests.swift\n[6/12] Emitting module ATCodecPackageDiscoveredTests\n[7/13] Compiling ATCodecPackageDiscoveredTests all-discovered-tests.swift\n[8/14] C:\\Users\\DAVID\\Code\\Maktabah-peek-overflow-20261121\\build\\anytype-snapshot-codec-draft\\portable-real-types\\codec\\.build\\x86_64-unknown-windows-msvc\\debug\\ATCodecPackageTests.derived\\runner.swift\n[9/14] Write sources\n[10/16] Wrapping AST for ATCodecPackageDiscoveredTests for debugging\n[12/16] Emitting module ATCodecPackageTests\n[13/16] Compiling ATCodecPackageTests runner.swift\n[14/17] Wrapping AST for ATCodecPackageTests for debugging\n[15/17] Write Objects.LinkFileList\n[16/17] Linking ATCodecPackageTests.xctest\nBuild complete! (148.43s)\nTest Suite 'All tests' started at 2026-11-21 22:30:21.982\n\nTest Suite 'debug.xctest' started at 2026-11-21 22:30:22.014\n\nTest Suite 'debug.xctest' passed at 2026-11-21 22:30:22.014\n\n\t Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds\n\nTest Suite 'All tests' passed at 2026-11-21 22:30:22.014\n\n\t Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds\n\n◊ Test run started.\n\n→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)\n\n→ Target Platform: x86_64-unknown-windows-msvc\n\n◊ Suite AnytypeOriginalEditorSnapshotTests started.\n\n◊ Test refusesPartialFailedCanceledUnknownAndIssueBearingNativeReports() started.\n\n◊ Test enforcesFrameBudgetIncludingMetadataWithoutTruncatingArchive() started.\n\n◊ Test preservesUntouchedArchiveReportAndUnknownProtobufBytes() started.\n\n◊ Test captureProvenanceDoesNotNormalizeIDsOrBecomeNextRevisionAuthority() started.\n\n◊ Test rejectsChangedArchiveTruncationAndUnknownVersionWithoutRepairingInput() started.\n\n◊ Test rejectsUnknownVersionOneHeaderFieldsInsteadOfDroppingThem() started.\n\n√ Test refusesPartialFailedCanceledUnknownAndIssueBearingNativeReports() passed after 0.005 seconds.\n\n√ Test enforcesFrameBudgetIncludingMetadataWithoutTruncatingArchive() passed after 0.008 seconds.\n\n√ Test captureProvenanceDoesNotNormalizeIDsOrBecomeNextRevisionAuthority() passed after 0.008 seconds.\n\n√ Test preservesUntouchedArchiveReportAndUnknownProtobufBytes() passed after 0.009 seconds.\n\n√ Test rejectsChangedArchiveTruncationAndUnknownVersionWithoutRepairingInput() passed after 0.009 seconds.\n\n√ Test rejectsUnknownVersionOneHeaderFieldsInsteadOfDroppingThem() passed after 0.015 seconds.\n\n√ Suite AnytypeOriginalEditorSnapshotTests passed after 0.017 seconds.\n\n√ Test run with 6 tests in 1 suite passed after 0.017 seconds.\n\n",
+  "finished_unix": 1795300222.2229748
+}

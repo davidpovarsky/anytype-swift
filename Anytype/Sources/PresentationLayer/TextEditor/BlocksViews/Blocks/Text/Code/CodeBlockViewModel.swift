@@ -30,7 +30,7 @@ struct CodeBlockViewModel: BlockViewModelProtocol {
             actions: CodeBlockContentConfiguration.Actions(
                 becomeFirstResponder: { becomeFirstResponder(info) },
                 textDidChange: { textView in
-                    Task {
+                    handler.scheduleMutationTask { [self] in
                         try await handler.changeText(textView.attributedText.sendable(), blockId: info.id)
                     }
                 },

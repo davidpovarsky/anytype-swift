@@ -8,19 +8,17 @@ struct EditorPageCoordinatorView: View {
     @Environment(\.pageNavigation) private var pageNavigation
     @Environment(\.dismiss) private var dismiss
 
-    init(data: EditorPageObject, showHeader: Bool) {
-        self._model = State(initialValue: EditorPageCoordinatorViewModel(data: data, showHeader: showHeader))
+    init(data: EditorPageObject, showHeader: Bool, childPreparation: PreparedEditorChildPreparation? = nil) {
+        self._model = State(initialValue: EditorPageCoordinatorViewModel(
+            data: data, showHeader: showHeader, childPreparation: childPreparation
+        ))
     }
     
     var body: some View {
-        EditorPageView(
-            data: model.data,
-            output: model,
-            showHeader: model.showHeader,
-            torahSession: model.torahSession
-        )
+        editor
             .ignoresSafeArea()
             .torahEditorHost(session: model.torahSession)
+            .task { await model.prepareQualifiedEditor() }
             .onAppear {
                 model.pageNavigation = pageNavigation
             }
@@ -65,4 +63,26 @@ struct EditorPageCoordinatorView: View {
                 SimpleCameraView(data: $0)
             }
     }
+
+    @ViewBuilder
+    private var editor: some View {
+        if model.hasQualifiedPreparation {
+            if let preparedState = model.preparedState {
+                EditorPageView(preparedState: preparedState)
+            } else if model.preparationFailed {
+                DocumentCommonOpenErrorView { dismiss() }
+            } else {
+                ProgressView()
+            }
+        } else {
+            EditorPageView(
+                data: model.data,
+                output: model,
+                showHeader: model.showHeader,
+                torahSession: model.torahSession
+            )
+        }
+    }
+
 }
+

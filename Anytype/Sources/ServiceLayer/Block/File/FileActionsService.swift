@@ -47,21 +47,41 @@ final class FileActionsService: FileActionsServiceProtocol, Sendable {
     
     // Clear file cache once for app launch. Should be as singletone in DI.
     private let cacheCleared = AtomicStorage(false)
-    private let fileService: any FileServiceProtocol = Container.shared.fileService()
+    private let fileService: any FileServiceProtocol
+    private let ownedStaging: DocumentOwnedFileStaging?
     
     private let dateTimeFormatter = DateFormatter.photoDateTimeFormatter
     
     init() {
+        fileService = Container.shared.fileService()
+        ownedStaging = nil
         if !cacheCleared.value {
             clearFileCache()
             cacheCleared.value = true
         }
     }
+
+    /// An explicitly bound original service never clears the application-wide
+    /// temporary cache and never removes an input during an uncertain RPC.
+    private init(fileService: any FileServiceProtocol, ownedStaging: DocumentOwnedFileStaging) {
+        self.fileService = fileService
+        self.ownedStaging = ownedStaging
+    }
+
+    @MainActor
+    func documentOwned(owner: EditorDocumentWriteOwner, preloads: DocumentOwnedFilePreloads,
+                       staging: DocumentOwnedFileStaging) throws -> any FileActionsServiceProtocol {
+        try owner.validateOwnership()
+        try staging.requireOwner(owner)
+        let lower = try DocumentOwnedFileService(owner: owner, service: fileService, preloads: preloads)
+        let original = FileActionsService(fileService: lower, ownedStaging: staging)
+        return try DocumentOwnedFileActionsService(owner: owner, service: original, staging: staging)
+    }
     
     func createFileData(source: FileUploadingSource) async throws -> FileData {
         switch source {
         case .path(let path):
-            return FileData(path: path, type: .data, sizeInBytes: nil, isTemporary: false)
+            return try retainedInput(FileData(path: path, type: .data, sizeInBytes: nil, isTemporary: false))
         case .itemProvider(let itemProvider):
             let typeIdentifier = itemProvider.registeredTypeIdentifiers.compactMap { typeId in
                 Constants.supportedUploadedTypes.first { $0.identifier == typeId }
@@ -87,8 +107,8 @@ final class FileActionsService: FileActionsServiceProtocol, Sendable {
             guard let data = try await photoItem.loadTransferable(type: MediaFileUrl.self) else {
                 throw FileServiceError.undefiled
             }
-            let newPath = tempDirectoryPath().appendingPathComponent(UUID().uuidString, isDirectory: true)
-            try FileManager.default.createDirectory(at: newPath, withIntermediateDirectories: true)
+            if ownedStaging != nil { try DocumentOwnedFileStaging.requireRegularInput(data.url) }
+            let newPath = try makeDataDirectory()
             
             let newFilePath = newPath.appendingPathComponent(data.url.lastPathComponent, isDirectory: false)
             try FileManager.default.moveItem(at: data.url, to: newFilePath)
@@ -110,8 +130,7 @@ final class FileActionsService: FileActionsServiceProtocol, Sendable {
                 throw FileServiceError.undefiled
             }
             
-            let path = tempDirectoryPath().appendingPathComponent(UUID().uuidString, isDirectory: true)
-            try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
+            let path = try makeDataDirectory()
             
             let nowDateString = dateTimeFormatter.string(from: Date())
             let imageName = "IMG_\(nowDateString).jpg"
@@ -130,8 +149,8 @@ final class FileActionsService: FileActionsServiceProtocol, Sendable {
     
     func createFileData(fileUrl: URL) throws -> FileData {
         do {
-            let newPath = tempDirectoryPath().appendingPathComponent(UUID().uuidString, isDirectory: true)
-            try FileManager.default.createDirectory(at: newPath, withIntermediateDirectories: true)
+            if ownedStaging != nil { try DocumentOwnedFileStaging.requireRegularInput(fileUrl) }
+            let newPath = try makeDataDirectory()
             
             let newFilePath = newPath.appendingPathComponent(fileUrl.lastPathComponent, isDirectory: false)
             try FileManager.default.copyItem(at: fileUrl, to: newFilePath)
@@ -146,31 +165,34 @@ final class FileActionsService: FileActionsServiceProtocol, Sendable {
     }
     
     func uploadDataAt(data: FileData, contextID: String, blockID: String) async throws {
+        let input = try retainedInput(data)
         defer {
-            if data.isTemporary {
+            if ownedStaging == nil && data.isTemporary {
                 try? FileManager.default.removeItem(atPath: data.path)
             }
         }
-        try await fileService.uploadFileBlock(path: data.path, contextID: contextID, blockID: blockID)
+        try await fileService.uploadFileBlock(path: input.path, contextID: contextID, blockID: blockID)
     }
     
     func uploadFileObject(spaceId: String, data: FileData, origin: ObjectOrigin, createdInContext: String, createdInContextRef: String) async throws -> FileDetails {
+        let input = try retainedInput(data)
         defer {
-            if data.isTemporary {
+            if ownedStaging == nil && data.isTemporary {
                 try? FileManager.default.removeItem(atPath: data.path)
             }
         }
 
-        return try await fileService.uploadFileObject(path: data.path, spaceId: spaceId, origin: origin, createdInContext: createdInContext, createdInContextRef: createdInContextRef)
+        return try await fileService.uploadFileObject(path: input.path, spaceId: spaceId, origin: origin, createdInContext: createdInContext, createdInContextRef: createdInContextRef)
     }
 
     func preloadFileObject(spaceId: String, data: FileData, origin: ObjectOrigin, createdInContext: String, createdInContextRef: String) async throws -> String {
-        return try await fileService.preloadFileObject(path: data.path, spaceId: spaceId, origin: origin, createdInContext: createdInContext, createdInContextRef: createdInContextRef)
+        let input = try retainedInput(data)
+        return try await fileService.preloadFileObject(path: input.path, spaceId: spaceId, origin: origin, createdInContext: createdInContext, createdInContextRef: createdInContextRef)
     }
 
     func uploadPreloadedFileObject(fileId: String, spaceId: String, data: FileData, origin: ObjectOrigin, createdInContext: String, createdInContextRef: String) async throws -> FileDetails {
         defer {
-            if data.isTemporary {
+            if ownedStaging == nil && data.isTemporary {
                 try? FileManager.default.removeItem(atPath: data.path)
             }
         }
@@ -203,7 +225,30 @@ final class FileActionsService: FileActionsServiceProtocol, Sendable {
     // MARK: - Private
     
     private func tempDirectoryPath() -> URL {
+        if let ownedStaging { return ownedStaging.directory }
         return FileManager.default.temporaryDirectory.appendingPathComponent(Constants.filesDirectory, isDirectory: true)
+    }
+
+    private func makeDataDirectory() throws -> URL {
+        if let ownedStaging { return try ownedStaging.makeExclusiveDirectory() }
+        let path = tempDirectoryPath().appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
+        return path
+    }
+
+    /// Pin borrowed inputs through the same original file-copy method before a
+    /// native upload can outlive its caller. Existing unbound callers keep their
+    /// exact input path and cleanup behavior. Bound inputs are retained intact.
+    private func retainedInput(_ data: FileData) throws -> FileData {
+        guard let ownedStaging else { return data }
+        if try ownedStaging.containsRegularFile(path: data.path) { return data }
+        let source = URL(fileURLWithPath: data.path)
+        try DocumentOwnedFileStaging.requireRegularInput(source)
+        let copied = try createFileData(fileUrl: source)
+        guard try ownedStaging.containsRegularFile(path: copied.path) else {
+            throw DocumentOwnedFileActionsError.invalidInputFile
+        }
+        return copied
     }
     
     private func clearFileCache() {
@@ -229,7 +274,8 @@ final class FileActionsService: FileActionsServiceProtocol, Sendable {
     }
     
     private func loadData(itemProvider: NSItemProvider, type: UTType) async throws -> FileData {
-        let url = try await itemProvider.loadFileRepresentation(forTypeIdentifier: type.identifier, directory: tempDirectoryPath())
+        let url = try await itemProvider.loadFileRepresentation(forTypeIdentifier: type.identifier,
+            directory: tempDirectoryPath(), ownedStaging: ownedStaging)
         let resources = try url.resourceValues(forKeys: [.fileSizeKey])
         return FileData(path: url.relativePath, type: type, sizeInBytes: resources.fileSize, isTemporary: true)
     }

@@ -7,6 +7,8 @@ import ProtobufMessages
 @MainActor
 final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     private let document: any BaseDocumentProtocol
+    let documentWriteOwner: EditorDocumentWriteOwner?
+    var documentWriteContextID: String { document.objectId }
     
     private let service: any BlockActionServiceProtocol
     private let markupChanger: any BlockMarkupChangerProtocol
@@ -29,6 +31,7 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
         localEvents: any EditorLocalEventPublishing = OriginalEditorLocalEventPublisher()
     ) {
         self.document = document
+        self.documentWriteOwner = dependencies.documentWriteOwner
         self.markupChanger = markupChanger
         self.service = service
         self.blockService = dependencies.blockService
@@ -93,7 +96,7 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     
     func setTextColor(_ color: BlockColor, blockIds: [String], route: AnalyticsEventsRouteKind? = nil) {
         AnytypeAnalytics.instance().logChangeBlockColor(route: route)
-        Task {
+        scheduleMutationTask { [self] in
             try await blockService.setBlockColor(objectId: document.objectId, blockIds: blockIds, color: color.middleware)
         }
     }
@@ -117,14 +120,14 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     }
     
     func toggle(blockId: String) {
-        Task {
+        scheduleMutationTask { [self] in
             await localEvents.setToggled(contextId: document.objectId, blockId: blockId)
         }
     }
     
     func setAlignment(_ alignment: LayoutAlignment, blockIds: [String], route: AnalyticsEventsRouteKind?) {
         AnytypeAnalytics.instance().logSetAlignment(alignment, isBlock: blockIds.isNotEmpty, route: route)
-        Task {
+        scheduleMutationTask { [self] in
             try await blockService.setAlign(objectId: document.objectId, blockIds: blockIds, alignment: alignment)
             try await PinkhaTextDirectionPersistence.markExplicitAlignmentIfNeeded(
                 document: document,
@@ -146,7 +149,7 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
 
 
     func createEmptyBlock(parentId: String) {
-        Task {
+        scheduleMutationTask { [self] in
             let emptyBlock = BlockInformation.emptyText
             AnytypeAnalytics.instance().logCreateBlock(type: emptyBlock.content.type, spaceId: document.spaceId)
             try await service.addChild(info: emptyBlock, parentId: parentId)
@@ -167,7 +170,7 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     }
     
     func changeMarkup(blockIds: [String], markType: MarkupType, route: AnalyticsEventsRouteKind?) {
-        Task {
+        scheduleMutationTask { [self] in
             AnytypeAnalytics.instance().logChangeBlockStyle(markType, route: route)
             try await blockService.changeMarkup(objectId: document.objectId, blockIds: blockIds, markType: markType)
         }
@@ -275,7 +278,7 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     // MARK: - Public methods
     func uploadMediaFile(uploadingSource: FileUploadingSource, type: MediaPickerContentType, blockId: String, route: UploadMediaRoute) {
         
-        Task {
+        scheduleMutationTask { [self] in
             await localEvents.setLoadingState(contextId: document.objectId, blockId: blockId)
             
             try await fileService.uploadDataAt(source: uploadingSource, contextID: document.objectId, blockID: blockId)
@@ -285,7 +288,7 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     }
     
     func uploadImage(image: UIImage, type: String, blockId: String, route: UploadMediaRoute) {
-        Task {
+        scheduleMutationTask { [self] in
             guard let fileData = try? fileService.createFileData(image: image, type: type) else {
                 return
             }
@@ -301,7 +304,7 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     func uploadFileAt(localPath: String, blockId: String, route: UploadMediaRoute) {
         AnytypeAnalytics.instance().logUploadMedia(type: .file, route: route)
         
-        Task {
+        scheduleMutationTask { [self] in
             await localEvents.setLoadingState(contextId: document.objectId, blockId: blockId)
             
             try await upload(blockId: blockId, filePath: localPath)
@@ -373,13 +376,13 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     }
 
     func setAppearance(blockId: String, appearance: BlockLink.Appearance) {
-        Task {
+        scheduleMutationTask { [self] in
             try await blockService.setLinkAppearance(objectId: document.objectId, blockIds: [blockId], appearance: appearance)
         }
     }
     
     func pasteContent() {
-        Task {
+        scheduleMutationTask { [self] in
             let blockId = try await blockService.addFirstBlock(contextId: document.objectId, info: .emptyText)
             pasteboardBlockService.pasteInsideBlock(
                 objectId: document.objectId,

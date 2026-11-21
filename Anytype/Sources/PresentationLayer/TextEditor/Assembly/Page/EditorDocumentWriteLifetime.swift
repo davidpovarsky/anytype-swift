@@ -33,6 +33,8 @@ final class EditorDocumentWriteLifetime: @unchecked Sendable {
     private var exhausted = false
     private var available: Bool
     private var closingLeases: Set<UUID> = []
+    private var admittedOperations: Set<UUID> = []
+    private var drainWaiters: [CheckedContinuation<Void, Never>] = []
     private var observers: [UUID: @Sendable () -> Void] = [:]
 
     init(isAvailable: Bool = true) { available = isAvailable }
@@ -47,6 +49,44 @@ final class EditorDocumentWriteLifetime: @unchecked Sendable {
         lock.lock()
         defer { lock.unlock() }
         return available && !exhausted && token.source == source && token.generation == generation
+    }
+
+    /// Admission and retirement use the same lock. A native call admitted before
+    /// retirement keeps its lease until the actual synchronous RPC body returns.
+    func admitOperation(_ token: Token) -> Observation? {
+        let id = UUID()
+        lock.lock()
+        guard available, !exhausted, token.source == source, token.generation == generation else {
+            lock.unlock()
+            return nil
+        }
+        admittedOperations.insert(id)
+        lock.unlock()
+        return Observation { [self] in finishOperation(id) }
+    }
+
+    /// Used after beginClosing has synchronously stopped new admissions. Caller
+    /// cancellation cannot make a still-running original native body disappear.
+    func waitForOperationsToDrain() async {
+        await withCheckedContinuation { continuation in
+            lock.lock()
+            if admittedOperations.isEmpty {
+                lock.unlock()
+                continuation.resume()
+            } else {
+                drainWaiters.append(continuation)
+                lock.unlock()
+            }
+        }
+    }
+
+    private func finishOperation(_ id: UUID) {
+        lock.lock()
+        admittedOperations.remove(id)
+        let waiters = admittedOperations.isEmpty ? drainWaiters : []
+        if admittedOperations.isEmpty { drainWaiters.removeAll() }
+        lock.unlock()
+        for waiter in waiters { waiter.resume() }
     }
 
     func invalidate() {
@@ -121,3 +161,4 @@ final class EditorDocumentWriteLifetime: @unchecked Sendable {
         lock.unlock()
     }
 }
+

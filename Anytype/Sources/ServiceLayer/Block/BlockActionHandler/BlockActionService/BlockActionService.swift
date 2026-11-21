@@ -8,6 +8,7 @@ import AnytypeCore
 @MainActor
 final class BlockActionService: BlockActionServiceProtocol {
     private let documentId: String
+    private let documentWriteOwner: EditorDocumentWriteOwner?
     private let cursorManager: EditorCursorManager
 
     private let objectActionService: any ObjectActionsServiceProtocol
@@ -29,6 +30,7 @@ final class BlockActionService: BlockActionServiceProtocol {
         localEvents: any EditorLocalEventPublishing = OriginalEditorLocalEventPublisher()
     ) {
         self.documentId = documentId
+        self.documentWriteOwner = dependencies.documentWriteOwner
         self.modelsHolder = modelsHolder
         self.cursorManager = cursorManager
         self.objectActionService = dependencies.objectActionService
@@ -98,7 +100,7 @@ final class BlockActionService: BlockActionServiceProtocol {
     }
 
     func duplicate(blockId: String) {
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: documentId) { [self] in
             try await blockService.duplicate(
                 contextId: documentId,
                 targetId: blockId,
@@ -137,7 +139,7 @@ final class BlockActionService: BlockActionServiceProtocol {
     }
     
     func checked(blockId: String, newValue: Bool) {
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: documentId) { [self] in
             try await textServiceHandler.checked(contextId: documentId, blockId: blockId, newValue: newValue)
         }
     }
@@ -166,7 +168,7 @@ final class BlockActionService: BlockActionServiceProtocol {
     
     func delete(blockIds: [String]) {
         AnytypeAnalytics.instance().logDeleteBlock()
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: documentId) { [self] in
             try await blockService.delete(contextId: documentId, blockIds: blockIds)
         }
     }
@@ -200,7 +202,7 @@ final class BlockActionService: BlockActionServiceProtocol {
 
 extension BlockActionService {
     func bookmarkFetch(blockId: String, url: AnytypeURL) {
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: documentId) { [self] in
             try await bookmarkService.fetchBookmark(objectId: documentId, blockID: blockId, url: url)
         }
     }
@@ -211,7 +213,7 @@ extension BlockActionService {
         position: BlockPosition,
         url: AnytypeURL
     ) {
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: documentId) { [self] in
             try await bookmarkService.createAndFetchBookmark(
                 objectId: contextID,
                 targetID: targetID,
@@ -230,7 +232,7 @@ extension BlockActionService {
     }
     
     func setBackgroundColor(blockIds: [String], color: MiddlewareColor) {
-        Task {
+        scheduleOriginalEditorMutation(owner: documentWriteOwner, contextId: documentId) { [self] in
             try await blockService.setBackgroundColor(objectId: documentId, blockIds: blockIds, color: color)
         }
     }

@@ -22,12 +22,13 @@ final class PreparedEditorPageSession {
         document: any BaseDocumentProtocol & EditorDocumentWriteLifetimeProviding,
         textService: any TextServiceProtocol,
         services: EditorPageServiceDependencies,
+        sourceBinding: EditorDocumentWriteSourceBinding? = nil,
         onDrained: (@MainActor () -> Void)? = nil
     ) throws {
         let sessionLifetime = EditorDocumentWriteLifetime()
         let owner = try EditorDocumentWriteOwner(
             data: data, lifetimeDocument: document,
-            sessionLifetime: sessionLifetime, onDrained: onDrained
+            sessionLifetime: sessionLifetime, sourceBinding: sourceBinding, onDrained: onDrained
         )
         let localEvents = DocumentOwnedLocalEventPublisher(owner: owner, publisher: services.localEvents)
         let textHandler = TextServiceHandler(
@@ -35,30 +36,80 @@ final class PreparedEditorPageSession {
             localEvents: localEvents
         )
         let existing = services.blockActionService
+        // External sources require one owner and one retained staging/receipt
+        // set across both original file delegates and every pasteboard delegate.
+        // Existing internal callers without an external source retain their
+        // original injected service graph and its established test contract.
+        let externalSource = sourceBinding != nil
+        let preloads = externalSource ? DocumentOwnedFilePreloads(owner: owner) : nil
+        let staging = externalSource ? try DocumentOwnedFileStaging(owner: owner) : nil
+        func objects(_ service: any ObjectActionsServiceProtocol) -> any ObjectActionsServiceProtocol {
+            guard externalSource else { return service }
+            return DocumentOwnedObjectActionsService(owner: owner, service: service)
+        }
+        func bookmarks(_ service: any BookmarkServiceProtocol) -> any BookmarkServiceProtocol {
+            guard externalSource else { return service }
+            return DocumentOwnedBookmarkService(owner: owner, service: service)
+        }
+        func files(_ service: any FileActionsServiceProtocol) throws -> any FileActionsServiceProtocol {
+            guard let preloads, let staging else { return service }
+            return try DocumentOwnedFileActionsService.bindOriginal(
+                service, owner: owner, preloads: preloads, staging: staging
+            )
+        }
+        func blockPasteboard(_ service: any PasteboardBlockServiceProtocol) throws -> any PasteboardBlockServiceProtocol {
+            guard let staging else { return service }
+            return try PasteboardBlockService.bindOriginal(service, owner: owner, staging: staging)
+        }
+        func documentPasteboard(_ service: any PasteboardBlockDocumentServiceProtocol) throws -> any PasteboardBlockDocumentServiceProtocol {
+            guard let staging else { return service }
+            return try PasteboardBlockDocumentService.bindOriginal(service, owner: owner, staging: staging)
+        }
+        func details(_ service: any DetailsServiceProtocol) throws -> any DetailsServiceProtocol {
+            guard let preloads, let staging else { return service }
+            return try DocumentOwnedDetailsService.bindOriginal(
+                service, owner: owner, preloads: preloads, staging: staging
+            )
+        }
+        func defaultObjects(_ service: any DefaultObjectCreationServiceProtocol) throws -> any DefaultObjectCreationServiceProtocol {
+            guard externalSource else { return service }
+            return try DocumentOwnedDefaultObjectCreationService.bindOriginal(service, owner: owner)
+        }
+        func header(_ dependencies: ObjectHeaderViewModelDependencies) throws -> ObjectHeaderViewModelDependencies {
+            guard let preloads, let staging else { return dependencies }
+            return .init(
+                objectHeaderUploadingService: try DocumentOwnedObjectHeaderUploadingService.bindOriginal(
+                    dependencies.objectHeaderUploadingService, owner: owner, preloads: preloads, staging: staging
+                ),
+                documentWriteOwner: owner
+            )
+        }
         self.data = data
         self.document = document
         self.owner = owner
         self.sessionLifetime = sessionLifetime
         self.services = EditorPageServiceDependencies(
             blockActionService: .init(
-                objectActionService: existing.objectActionService,
+                objectActionService: objects(existing.objectActionService),
                 textServiceHandler: textHandler,
                 blockService: DocumentOwnedBlockService(owner: owner, service: existing.blockService),
-                bookmarkService: existing.bookmarkService,
-                fileService: existing.fileService,
+                bookmarkService: bookmarks(existing.bookmarkService),
+                fileService: try files(existing.fileService),
                 objectTypeProvider: existing.objectTypeProvider,
-                keyboardInsertedBlocksStorage: existing.keyboardInsertedBlocksStorage
+                keyboardInsertedBlocksStorage: existing.keyboardInsertedBlocksStorage,
+                documentWriteOwner: externalSource ? owner : nil
             ),
             blockActionHandler: .init(
                 blockService: DocumentOwnedBlockService(owner: owner, service: services.blockActionHandler.blockService),
                 blockTableService: DocumentOwnedBlockTableService(
                     owner: owner, service: services.blockActionHandler.blockTableService
                 ),
-                fileService: services.blockActionHandler.fileService,
-                objectService: services.blockActionHandler.objectService,
-                pasteboardBlockService: services.blockActionHandler.pasteboardBlockService,
-                bookmarkService: services.blockActionHandler.bookmarkService,
-                objectTypeProvider: services.blockActionHandler.objectTypeProvider
+                fileService: try files(services.blockActionHandler.fileService),
+                objectService: objects(services.blockActionHandler.objectService),
+                pasteboardBlockService: try blockPasteboard(services.blockActionHandler.pasteboardBlockService),
+                bookmarkService: bookmarks(services.blockActionHandler.bookmarkService),
+                objectTypeProvider: services.blockActionHandler.objectTypeProvider,
+                documentWriteOwner: externalSource ? owner : nil
             ),
             keyboardHandler: .init(
                 blockService: DocumentOwnedBlockService(owner: owner, service: services.keyboardHandler.blockService),
@@ -66,34 +117,37 @@ final class PreparedEditorPageSession {
             ),
             blocksStateManager: .init(
                 blockService: DocumentOwnedBlockService(owner: owner, service: services.blocksStateManager.blockService),
-                pasteboardService: services.blocksStateManager.pasteboardService,
+                pasteboardService: try documentPasteboard(services.blocksStateManager.pasteboardService),
                 documentsProvider: services.blocksStateManager.documentsProvider,
-                objectActionsService: services.blocksStateManager.objectActionsService,
+                objectActionsService: objects(services.blocksStateManager.objectActionsService),
                 toastPresenter: services.blocksStateManager.toastPresenter
             ),
             blockBuilder: .init(
                 tableService: DocumentOwnedBlockTableService(
                     owner: owner, service: services.blockBuilder.tableService
                 ),
-                detailsService: services.blockBuilder.detailsService,
+                detailsService: try details(services.blockBuilder.detailsService),
                 audioSessionService: services.blockBuilder.audioSessionService,
                 objectTypeProvider: services.blockBuilder.objectTypeProvider,
-                pasteboardService: services.blockBuilder.pasteboardService,
+                pasteboardService: try documentPasteboard(services.blockBuilder.pasteboardService),
                 blockService: DocumentOwnedBlockService(owner: owner, service: services.blockBuilder.blockService)
             ),
             simpleTable: .init(
                 tableService: DocumentOwnedBlockTableService(
                     owner: owner, service: services.simpleTable.tableService
                 ),
-                pasteboardService: services.simpleTable.pasteboardService,
-                defaultObjectService: services.simpleTable.defaultObjectService,
+                pasteboardService: try documentPasteboard(services.simpleTable.pasteboardService),
+                defaultObjectService: try defaultObjects(services.simpleTable.defaultObjectService),
                 typesService: services.simpleTable.typesService
             ),
-            slashMenu: services.slashMenu,
-            header: services.header,
+            slashMenu: .init(
+                pasteboardService: try documentPasteboard(services.slashMenu.pasteboardService),
+                objectDateByTimestampService: services.slashMenu.objectDateByTimestampService
+            ),
+            header: try header(services.header),
             router: services.router,
             viewModel: .init(
-                objectActionsService: services.viewModel.objectActionsService,
+                objectActionsService: objects(services.viewModel.objectActionsService),
                 objectTypeProvider: services.viewModel.objectTypeProvider,
                 searchService: services.viewModel.searchService,
                 templatesSubscriptionService: services.viewModel.templatesSubscriptionService,

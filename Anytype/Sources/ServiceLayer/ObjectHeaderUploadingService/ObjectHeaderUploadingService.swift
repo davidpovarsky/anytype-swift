@@ -18,14 +18,53 @@ protocol ObjectHeaderUploadingServiceProtocol: AnyObject, Sendable {
 
 final class ObjectHeaderUploadingService: ObjectHeaderUploadingServiceProtocol, Sendable {
     
-    private let detailsService: any DetailsServiceProtocol = Container.shared.detailsService()
-    private let fileService: any FileActionsServiceProtocol = Container.shared.fileActionsService()
-    private let unsplashService: any UnsplashServiceProtocol = Container.shared.unsplashService()
+    private let detailsService: any DetailsServiceProtocol
+    private let fileService: any FileActionsServiceProtocol
+    private let unsplashService: any UnsplashServiceProtocol
+    private let documentWriteOwner: EditorDocumentWriteOwner?
+
+    init() {
+        detailsService = Container.shared.detailsService()
+        fileService = Container.shared.fileActionsService()
+        unsplashService = Container.shared.unsplashService()
+        documentWriteOwner = nil
+    }
+
+    private init(detailsService: any DetailsServiceProtocol, fileService: any FileActionsServiceProtocol,
+                 unsplashService: any UnsplashServiceProtocol, owner: EditorDocumentWriteOwner) {
+        self.detailsService = detailsService
+        self.fileService = fileService
+        self.unsplashService = unsplashService
+        documentWriteOwner = owner
+    }
+
+    @MainActor
+    func documentOwned(owner: EditorDocumentWriteOwner, preloads: DocumentOwnedFilePreloads,
+                       staging: DocumentOwnedFileStaging) throws -> any ObjectHeaderUploadingServiceProtocol {
+        try owner.validateOwnership()
+        try staging.requireOwner(owner)
+        let original = ObjectHeaderUploadingService(
+            detailsService: try DocumentOwnedDetailsService.bindOriginal(
+                detailsService, owner: owner, preloads: preloads, staging: staging
+            ),
+            fileService: try DocumentOwnedFileActionsService.bindOriginal(
+                fileService, owner: owner, preloads: preloads, staging: staging
+            ),
+            unsplashService: DocumentOwnedUnsplashService(owner: owner, service: unsplashService),
+            owner: owner
+        )
+        return DocumentOwnedObjectHeaderUploadingService(owner: owner, service: original)
+    }
     
     private let coverUploadSubject = PassthroughSubject<(objectId: String, spaceId: String, update: ObjectHeaderUpdate), Never>()
     
     func coverUploadPublisher(objectId: String, spaceId: String) -> AnyPublisher<ObjectHeaderUpdate, Never> {
-        coverUploadSubject.filter { $0.objectId == objectId && $0.spaceId == spaceId }.map { $0.update }.eraseToAnyPublisher()
+        if documentWriteOwner != nil {
+            return coverUploadSubject.filter {
+                $0.objectId.utf8.elementsEqual(objectId.utf8) && $0.spaceId.utf8.elementsEqual(spaceId.utf8)
+            }.map { $0.update }.eraseToAnyPublisher()
+        }
+        return coverUploadSubject.filter { $0.objectId == objectId && $0.spaceId == spaceId }.map { $0.update }.eraseToAnyPublisher()
     }
     
     func handleCoverAction(
@@ -55,7 +94,7 @@ final class ObjectHeaderUploadingService: ObjectHeaderUploadingServiceProtocol, 
                     return
                 }
                 
-                coverUploadSubject.send((objectId, spaceId, .coverUploading(.bundleImagePath(data.path))))
+                try await publishCoverUpdate(objectId: objectId, spaceId: spaceId, update: .coverUploading(.bundleImagePath(data.path)))
                 
                 AnytypeAnalytics.instance().logSetCover()
                 
@@ -69,7 +108,7 @@ final class ObjectHeaderUploadingService: ObjectHeaderUploadingServiceProtocol, 
             case let .unsplash(unsplashItem):
                 AnytypeAnalytics.instance().logSetCover()
                 
-                coverUploadSubject.send((objectId, spaceId, .coverUploading(.remotePreviewURL(unsplashItem.url))))
+                try await publishCoverUpdate(objectId: objectId, spaceId: spaceId, update: .coverUploading(.remotePreviewURL(unsplashItem.url)))
                 
                 let imageObjectId = try await unsplashService.downloadImage(
                     spaceId: spaceId,
@@ -128,4 +167,20 @@ final class ObjectHeaderUploadingService: ObjectHeaderUploadingServiceProtocol, 
             )
         }
     }
+
+    /// The check and actual subject emission share one MainActor turn. A later
+    /// scheduler hop is checked separately by the original header view model.
+    private func publishCoverUpdate(objectId: String, spaceId: String,
+                                    update: ObjectHeaderUpdate) async throws {
+        guard let owner = documentWriteOwner else {
+            coverUploadSubject.send((objectId, spaceId, update))
+            return
+        }
+        try await MainActor.run {
+            try owner.performSynchronousOperation(contextId: objectId, spaceId: spaceId) {
+                coverUploadSubject.send((objectId, spaceId, update))
+            }
+        }
+    }
+
 }

@@ -173,7 +173,7 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
             .textChangeType(changeTextRange: range, replacementText: replacementText)
         
         if mentionDetecter.removeMentionIfNeeded(textView: textView, replacementText: replacementText) {
-            Task { @MainActor in
+            actionHandler.scheduleMutationTask { @MainActor [self] in
                 try await actionHandler.changeText(textView.attributedText.sendable(), blockId: info.id)
             }
             return false
@@ -189,19 +189,19 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
             case let .turnInto(style, newText):
                 guard let content = info.textContent, content.contentType != style else { return true }
                 guard BlockRestrictionsBuilder.build(content:  info.content).canApplyTextStyle(style) else { return true }
-                Task { @MainActor in
+                actionHandler.scheduleMutationTask { @MainActor [self] in
                     try await actionHandler.turnInto(style, blockId: info.id)
                     try await setNewText(attributedString: newText.sendable())
                     cursorManager.focus(in: textView, position: .beginning)
                 }
             case let .addBlock(type, newText):
-                Task { @MainActor in
+                actionHandler.scheduleMutationTask { @MainActor [self] in
                     try await setNewText(attributedString: newText.sendable())
                     try await actionHandler.addBlock(type, blockId: info.id, blockText: newText.sendable(), position: .top)
                     resetSubject.send(nil)
                 }
             case let .addStyle(style, currentText, styleRange, focusRange):
-                Task { @MainActor in
+                actionHandler.scheduleMutationTask { @MainActor [self] in
                     let newText = try await actionHandler.setTextStyle(
                         style,
                         range: styleRange,
@@ -279,7 +279,7 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
     }
     
     private func cut(range: NSRange) {
-        Task {
+        actionHandler.scheduleMutationTask { [self] in
             try await pasteboardService?.cut(document: document, blocksIds: [info.id], selectedTextRange: range)
         }
     }
@@ -300,7 +300,7 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
         
         switch accessoryState {
         case .none:
-            Task {
+            actionHandler.scheduleMutationTask { [self] in
                 try await actionHandler.changeText(textView.attributedText.sendable(), blockId: info.id)
             }
         case .search:
@@ -359,21 +359,21 @@ extension SimpleTablesTextBlockActionHandler: AccessoryViewOutput {
     // MARK: - LinkToSearchDelegate
     
     func updateTextForLinkToObject(newText: NSAttributedString, range: NSRange, originalText: NSAttributedString) {
-        Task { @MainActor in
+        actionHandler.scheduleMutationTask { @MainActor [self] in
             self.resetSubject.send(newText)
             try await self.actionHandler.changeText(newText.sendable(), blockId: self.info.id)
         }
     }
     
     func updateTextForLinkToUrl(newText: NSAttributedString, range: NSRange, originalText: NSAttributedString) {
-        Task { @MainActor in
+        actionHandler.scheduleMutationTask { @MainActor [self] in
             self.resetSubject.send(newText)
             try await self.actionHandler.changeText(newText.sendable(), blockId: self.info.id)
         }
     }
     
     func removeLink(markup: MarkupType, newText: NSAttributedString, range: NSRange, originalText: NSAttributedString) {
-        Task { @MainActor in
+        actionHandler.scheduleMutationTask { @MainActor [self] in
             self.resetSubject.send(newText)
             try await self.actionHandler.changeText(newText.sendable(), blockId: self.info.id)
         }
