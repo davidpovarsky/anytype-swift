@@ -105,6 +105,12 @@ final class AnyAuthorizedOperationReadRuntimeTests: XCTestCase {
                              changeID: changeID, state: .unreachableBlock)
             XCTAssertEqual(reopened.variants, unreachable.variants)
             await requireReadError(.accountChanged, reader: reader, operationID: operationID)
+            do {
+                _ = try await AnyHostAuthorizedTorahOperationReader(client: client, session: session)
+                XCTFail("A closed owner constructed a new private-operation reader.")
+            } catch {
+                XCTAssertEqual(error as? TorahOperationReadError, .accountChanged)
+            }
 
             _ = try await reopenedClient.requestJSON(method: "DELETE",
                 path: ["v1", "spaces", spaceID, "objects", objectID])
