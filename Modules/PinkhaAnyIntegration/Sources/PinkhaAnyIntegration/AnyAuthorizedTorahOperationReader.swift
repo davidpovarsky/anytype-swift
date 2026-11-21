@@ -101,8 +101,9 @@ public struct AnyAuthorizedTorahOperationReader: TorahAuthorizedOperationReading
             }
             return try .init(claimID: variant.claim.id, operationID: operation.operationID,
                 spaceID: operation.spaceID, authorID: operation.authorID,
-                target: .init(objectId: operation.targetObjectID,
-                              blockId: operation.targetBlockID.isEmpty ? nil : operation.targetBlockID),
+                target: operation.targetBlockID.isEmpty
+                    ? .object(objectId: operation.targetObjectID)
+                    : .block(objectId: operation.targetObjectID, blockId: operation.targetBlockID),
                 canonicalBytes: variant.canonicalBytes,
                 provenance: [.init(creator: variant.provenance.creator,
                     nativeChangeID: variant.provenance.changeID, nativeACLHeadID: variant.provenance.aclHeadID)],

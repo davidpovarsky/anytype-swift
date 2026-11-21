@@ -14,7 +14,8 @@ final class TorahAuthorizedOperationReadTests: XCTestCase {
                          bytes: Data = Data([0, 255, 1])) throws -> TorahAuthorizedOperationVariant {
         try .init(claimID: String(repeating: "1", count: 64) + "/" + String(repeating: digit, count: 64),
             operationID: operationID, spaceID: space, authorID: author,
-            target: .init(objectId: "object", blockId: block), canonicalBytes: bytes,
+            target: block.map { TorahAssociationTarget.block(objectId: "object", blockId: $0) } ?? .object(objectId: "object"),
+            canonicalBytes: bytes,
             provenance: [.init(creator: creator, nativeChangeID: "change", nativeACLHeadID: "acl")],
             reachability: state)
     }
