@@ -5,7 +5,7 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from run_authorized_operation_read_packages import PINS, SUITES, qualified_cases, resolved_pins
+from run_authorized_operation_read_packages import PINS, SUITES, qualified_cases, qualified_xctest_output, resolved_pins
 
 
 class ReadPackageReceiptTests(unittest.TestCase):
@@ -61,6 +61,22 @@ class ReadPackageReceiptTests(unittest.TestCase):
             path.write_text(json.dumps({"pins": changed}))
             with self.assertRaises(ValueError):
                 resolved_pins(path, "PinkhaAnyIntegration")
+
+    def test_original_darwin_and_swift_xctest_results_are_required(self):
+        for objc in [True, False]:
+            records = []
+            for method in self.methods:
+                name = f"-[{self.package}Tests.{self.suite} {method}]" if objc else f"{self.suite}.{method}"
+                records.append(f"Test Case '{name}' passed (0.001 seconds).")
+            self.assertEqual(qualified_xctest_output("\n".join(records), self.package), list(self.methods))
+
+    def test_xunit_process_success_cannot_hide_a_skipped_method(self):
+        self.save(self.fixture())
+        self.assertEqual(len(qualified_cases(self.path, self.package)), 6)
+        passed = [f"Test Case '-[{self.package}Tests.{self.suite} {method}]' passed (0.001 seconds)." for method in self.methods]
+        for records in [passed[:-1], [*passed, passed[0]], [passed[0].replace(" passed ", " skipped "), *passed[1:]]]:
+            with self.assertRaises(ValueError):
+                qualified_xctest_output("\n".join(records), self.package)
 
 
 if __name__ == "__main__":

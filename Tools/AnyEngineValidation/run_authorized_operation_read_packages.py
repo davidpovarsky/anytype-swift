@@ -93,6 +93,20 @@ def qualified_cases(path: Path, package: str) -> list[dict[str, str]]:
     return result
 
 
+def qualified_xctest_output(output: str, package: str) -> list[str]:
+    # SwiftPM XUnitGenerator uses process success and can omit XCTest skips.
+    # Require the original terminal result for every method as well as XML.
+    suite, expected = SUITES[package]
+    pattern = (r"^\s*Test Case '(?:-\[)?(?:" + re.escape(package + "Tests.") + r")?"
+               + re.escape(suite) + r"[. /](test\w+)\]?' (passed|failed|skipped)(?:\s|$)")
+    cases = re.findall(pattern, output, re.MULTILINE)
+    names = [name for name, _ in cases]
+    if (len(names) != len(expected) or len(set(names)) != len(names)
+            or set(names) != set(expected) or any(status != "passed" for _, status in cases)):
+        raise ValueError("original XCTest output does not prove every selected method passed without skips")
+    return names
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path.cwd())
@@ -120,7 +134,7 @@ def main() -> None:
             # Fixed exact reviewed methods; one worker avoids redundant parallel
             # processes and enables original SwiftPM xUnit evidence.
             selected = f"^{package}Tests\\.{suite}/({'|'.join(methods)})$"
-            argv = ["swift", "test", "--package-path", str(package_path), "--jobs", "2",
+            argv = ["swift", "test", "--verbose", "--package-path", str(package_path), "--jobs", "2",
                     "--parallel", "--num-workers", "1", "--filter", selected,
                     "--xunit-output", str(xunit)]
             row = {"package": package, "suite": suite, "command": argv,
@@ -133,6 +147,7 @@ def main() -> None:
             if run.returncode:
                 raise ValueError(f"{package} build or selected tests failed; see original log")
             row["cases"] = qualified_cases(xunit, package)
+            row["originalXCTestPassedMethods"] = qualified_xctest_output(log.read_text(), package)
             row["xunitSHA256"] = digest(xunit)
             row["resolvedPins"] = resolved_pins(package_path / "Package.resolved", package)
             row["resolvedSHA256"] = digest(package_path / "Package.resolved")
