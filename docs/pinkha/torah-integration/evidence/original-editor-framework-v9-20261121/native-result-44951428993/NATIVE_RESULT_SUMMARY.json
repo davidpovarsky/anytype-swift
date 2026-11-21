@@ -1,0 +1,598 @@
+{
+  "run_id": 44951428993,
+  "run_attempt": 1,
+  "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44951428993",
+  "source_sha": "bba49c59edc974a4ca448676823c3cc8bcf65522",
+  "conclusion": "FAIL",
+  "artifact_id": 14726780634,
+  "artifact_bytes": 10988051,
+  "artifact_sha256": "41347a830c202ddc1e2b3fda5ff8d54bfe63e51c03ead931e5b158b608b9aa28",
+  "zip_crc": "PASS",
+  "inner_members": 527,
+  "source_controls": {
+    "status": "PASS_SOURCE_CONTROLS_187",
+    "expected_count": 187,
+    "tests_run": 187,
+    "failures": [],
+    "errors": [],
+    "skipped": [],
+    "exact_id_sets_equal": true,
+    "case_ids": [
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_actual_original_two_slices_and_all_signing_page_hashes_parse",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_actual_pinned_upstream_has_only_the_two_required_missing_members",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_actual_post_sign_strict_failure_remains_failure",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_another_package_revision_cannot_get_the_exception",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_changed_architecture_or_unexpected_third_slice_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_changed_native_code_page_hash_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_changed_native_special_hash_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_device_platform_cannot_get_the_simulator_exception",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_different_native_preverification_failure_never_signs",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_entitlement_slot_cannot_replace_the_empty_cms_slot",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_existing_packager_retains_complete_signing_attachments",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_extra_alignment_size_zero_fat_gap_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_missing_original_product_is_refused_before_any_signer",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_native_shape_preserves_exact_residue_and_architecture_pages",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_native_signature_uses_documented_fixed_16k_vm_rounding",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_native_signer_timeout_cannot_produce_qualification",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_nonzero_fat_padding_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_old_x86_four_kib_rounding_is_refused_after_rehashing",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_one_changed_residue_byte_is_refused_on_either_architecture",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_ordinary_resource_or_unknown_payload_is_refused_before_any_signer",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_original_source_change_during_verification_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_other_page_policy_is_refused_even_when_its_page_hashes_match",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_payload_after_the_terminal_fat_allocation_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_pipeline_retains_actual_payloads_and_signs_only_owned_export",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_post_sign_executable_mutation_with_valid_page_hashes_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_post_sign_resource_mutation_is_refused_without_native_credit",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_rehashed_dylib_timestamp_change_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_rehashed_executable_code_change_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_rehashed_linkedit_overlap_with_an_original_segment_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_rehashed_linkedit_symbols_change_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_same_allocation_replacement_preserves_every_nonsignature_byte",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_signature_dataoff_movement_is_not_a_general_padding_exemption",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_signing_identifier_cannot_change",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_slack_must_fit_inside_the_parsed_original_allocation",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_smaller_signature_shrinks_only_to_exact_rounded_allocation",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_symbolic_export_root_is_refused_before_any_signer",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_unaligned_native_signing_allocation_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_unexpected_upstream_signature_success_never_signs",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_unnecessary_virtual_range_growth_is_refused",
+      "test_amplitude_simulator_signing.KnownSimulatorSigningControls.test_zeroing_the_nonzero_prior_arm_residue_is_not_an_exemption",
+      "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_corrupt_signer_stops_original_driver_before_strict_gate_or_consumer",
+      "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_failed_signing_retains_full_after_inventory_without_qualification",
+      "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_other_framework_signature_failure_still_blocks_consumer_and_boot",
+      "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_whole_driver_keeps_strict_gate_and_exact_transformed_consumer_inputs",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_aliased_export_cannot_sign_original_producer",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_diagnostics_report_all_failures_without_signing_or_qualification",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_different_native_failure_never_authorizes_signing",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_exact_export_preserves_original_bytes_and_keeps_native_strict_gate",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_export_source_byte_difference_fails_before_signing",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_extra_original_resource_is_not_an_authorized_generated_product",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_instruction_and_symbol_bytes_are_preserved_even_with_successful_tool_double",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_native_post_sign_strict_failure_remains_failure",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_native_signer_failure_retains_fail_receipt_and_partial_observation",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_new_entitlements_or_authority_slot_is_rejected",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_non_simulator_product_fails_before_signing",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_signature_movement_and_unreviewed_size_fields_are_rejected",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_signing_cannot_change_original_info_bytes",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_signing_cannot_change_original_producer",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_unexpected_existing_strict_success_does_not_resign",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_unobserved_payload_cannot_hide_in_signature_slack",
+      "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_wrong_package_revision_cannot_reach_signer",
+      "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_failed_signer_preserves_observation_and_blocks_all_later_gates",
+      "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_original_driver_requires_strict_signature_before_binary_consumer",
+      "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_unrelated_distribution_mutation_stops_consumer",
+      "test_framework.ActualTargetPublicSurfaceControls.test_graph_for_another_module_cannot_qualify_the_inspection_facade",
+      "test_framework.ActualTargetPublicSurfaceControls.test_imported_dependency_symbols_do_not_become_our_public_editor_api",
+      "test_framework.ActualTargetPublicSurfaceControls.test_original_public_editor_constructor_is_rejected",
+      "test_framework.BoundedCommandEvidence.test_actual_nonzero_exit_is_preserved_and_cannot_be_pass",
+      "test_framework.BoundedCommandEvidence.test_real_timeout_preserves_partial_stdout_and_nonpassing_receipt",
+      "test_framework.ObservedOriginalBuildBudget.test_new_route_budget_contains_actual_original_build_and_consumer",
+      "test_framework.OriginalProjectPreservation.test_any_additional_original_source_exclusion_is_rejected",
+      "test_framework.OriginalProjectPreservation.test_changed_original_app_target_is_rejected_beyond_candidate_hash",
+      "test_framework.OriginalProjectPreservation.test_changed_original_compilation_setting_is_rejected",
+      "test_framework.OriginalProjectPreservation.test_entrypoint_exception_cannot_target_the_original_app",
+      "test_framework.OriginalProjectPreservation.test_framework_cannot_be_an_application_product",
+      "test_framework.OriginalProjectPreservation.test_framework_cannot_depend_on_the_original_app_or_test_binary",
+      "test_framework.OriginalProjectPreservation.test_framework_has_no_original_app_boot_scripts_or_extensions",
+      "test_framework.OriginalProjectPreservation.test_genuine_additive_target_preserves_all_original_app_objects",
+      "test_framework.OriginalProjectPreservation.test_new_target_cannot_replace_real_source_groups",
+      "test_framework.OriginalProjectPreservation.test_new_target_cannot_substitute_the_original_package_product",
+      "test_framework.OriginalProjectPreservation.test_original_baseline_snapshot_is_bound_to_its_git_blob",
+      "test_framework.OriginalProjectPreservation.test_original_heart_installer_changes_only_one_new_branch_choice",
+      "test_framework.OriginalProjectPreservation.test_original_project_does_not_already_claim_the_new_framework",
+      "test_framework.RealFilesystemExportControls.test_app_binary_is_never_accepted_as_framework_input",
+      "test_framework.RealFilesystemExportControls.test_duplicate_framework_product_name_fails_closed",
+      "test_framework.RealFilesystemExportControls.test_export_preserves_every_real_fixture_byte_without_runtime_credit",
+      "test_framework.RealFilesystemExportControls.test_export_refuses_to_overwrite_prior_product",
+      "test_framework.RealFilesystemExportControls.test_external_consumer_compiles_only_its_own_importer",
+      "test_framework.RealFilesystemExportControls.test_external_resource_symlink_is_rejected",
+      "test_framework.RealFilesystemExportControls.test_internal_resource_alias_is_materialized_and_does_not_escape",
+      "test_framework.RealFilesystemExportControls.test_missing_original_asset_catalog_is_rejected",
+      "test_framework.RealFilesystemExportControls.test_missing_original_font_bundle_is_rejected",
+      "test_framework.RealFilesystemExportControls.test_missing_original_hebrew_bundle_is_rejected",
+      "test_framework.RealFilesystemExportControls.test_resources_inside_genuine_framework_are_preserved",
+      "test_framework.RealFilesystemExportControls.test_test_binary_is_never_accepted_as_framework_input",
+      "test_framework.RuntimeReceiptBoundary.test_changed_font_bytes_cannot_pass",
+      "test_framework.RuntimeReceiptBoundary.test_expected_language_must_be_actual_process_language",
+      "test_framework.RuntimeReceiptBoundary.test_framework_loaded_from_producer_is_not_external_qualification",
+      "test_framework.RuntimeReceiptBoundary.test_hebrew_generated_accessor_cannot_pass_with_english_fallback",
+      "test_framework.RuntimeReceiptBoundary.test_main_bundle_prefix_is_not_path_ownership",
+      "test_framework.RuntimeReceiptBoundary.test_missing_actual_image_cannot_pass",
+      "test_framework.RuntimeReceiptBoundary.test_nonfinite_image_geometry_is_rejected",
+      "test_framework.RuntimeReceiptBoundary.test_producer_font_fallback_is_rejected_even_with_matching_bytes",
+      "test_framework.RuntimeReceiptBoundary.test_stale_nonce_cannot_borrow_a_previous_language_result",
+      "test_framework.RuntimeReceiptBoundary.test_swapped_adaptive_color_appearances_cannot_pass",
+      "test_framework.RuntimeReceiptBoundary.test_unknown_error_or_partial_runtime_json_cannot_pass",
+      "test_framework.RuntimeReceiptBoundary.test_well_formed_synthetic_boundary_is_explicitly_zero_editor_ui",
+      "test_framework.RuntimeReceiptBoundary.test_wrong_original_type_or_module_cannot_pass",
+      "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_attribute_changed_between_probe_and_read_fails",
+      "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_duplicate_name_fails",
+      "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_genuine_empty_list_is_empty_without_skipping_the_api",
+      "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_list_changed_between_probe_and_read_fails",
+      "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_missing_nul_terminator_fails",
+      "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_nofollow_inspects_link_attributes",
+      "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_oversized_list_fails_before_allocation",
+      "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_typed_abi_reads_binary_and_empty_attributes",
+      "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_unreadable_attribute_fails",
+      "test_framework_duplicates.DarwinAttributeBoundaryControls.test_darwin_unreadable_list_fails_closed",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_additional_empty_directory_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_broken_alias_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_changed_materialized_output_cannot_publish_success",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_cyclic_internal_directory_alias_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_different_binary_byte_fails_without_choosing_the_first",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_different_directory_mode_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_different_extended_attribute_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_different_file_mode_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_different_literal_symlink_target_fails_even_with_same_resolved_bytes",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_different_relative_filename_with_same_bytes_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_different_signature_byte_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_duplicate_original_editor_framework_still_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_equal_internal_file_alias_is_materialized",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_equal_versioned_directory_aliases_preserve_all_resolved_members",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_exact_known_pair_preserves_complete_equal_inputs_and_exports_one_lib",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_known_input_changed_during_copy_cannot_publish_success",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_missing_original_editor_framework_still_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_missing_resource_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_only_timestamps_may_differ",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_product_alias_to_owned_but_other_framework_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_root_framework_alias_is_not_an_independent_known_product",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_same_pair_under_unreviewed_parent_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_special_fifo_fails_without_reading_it",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_unexpected_third_lib_location_fails",
+      "test_framework_duplicates.KnownLibDuplicateControls.test_whole_exporter_darwin_path_does_not_require_linux_os_xattr",
+      "test_framework_flow.OriginalDriverFlowControls.test_boot_command_failure_keeps_build_evidence_but_never_runs_bootstatus_or_install",
+      "test_framework_flow.OriginalDriverFlowControls.test_build_graph_consumer_and_signature_complete_before_original_boot_pair",
+      "test_framework_flow.OriginalDriverFlowControls.test_consumer_compile_failure_cannot_boot_or_install",
+      "test_framework_flow.OriginalDriverFlowControls.test_different_embedded_product_cannot_reach_boot_or_install",
+      "test_framework_flow.OriginalDriverFlowControls.test_multiple_notices_preserve_exact_contents_and_consumer_destination",
+      "test_framework_flow.OriginalDriverFlowControls.test_one_notice_preserves_selected_simulator_for_both_original_build_commands",
+      "test_framework_flow.OriginalDriverFlowControls.test_original_framework_compile_failure_cannot_boot_or_install",
+      "test_framework_flow.OriginalDriverFlowControls.test_original_public_surface_tool_failure_cannot_boot_or_install",
+      "test_framework_flow.OriginalDriverFlowControls.test_original_source_only_admission_never_invokes_any_tool_or_work_directory",
+      "test_framework_flow.OriginalDriverFlowControls.test_same_180_second_boot_timeout_retains_partial_builds_without_runtime_credit",
+      "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_duplicate_generated_bundle_accessor_still_fails",
+      "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_foreign_unowned_source_still_fails",
+      "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_malformed_original_source_line_still_fails",
+      "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_missing_generated_bundle_accessor_still_fails",
+      "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_missing_original_input_still_fails",
+      "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_original_app_entrypoint_still_fails",
+      "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_original_packager_retains_all_four_exact_raw_proofs_as_text",
+      "test_framework_temporary_paths.TemporaryRootAliasControls.test_known_input_mutation_is_really_injected_and_refused_under_directory_alias",
+      "test_framework_temporary_paths.TemporaryRootAliasControls.test_materialized_mutation_is_really_injected_and_refused_under_directory_alias",
+      "test_framework_temporary_paths.TemporaryRootAliasControls.test_original_raw_compiler_proofs_are_retained_under_directory_alias",
+      "test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_unchanged_source_accepts_separate_owned_generated_build_metadata",
+      "test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_untracked_swift_resource_and_ignored_source_are_rejected_without_cleanup",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_alias_cannot_redirect_signing_to_original_producer",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_device_product_is_not_an_eligible_simulator_export",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_different_native_failure_is_not_a_signing_exception",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_dirty_local_module_bytes_fail_against_pinned_blob",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_every_exact_profile_preserves_all_original_and_nested_bytes",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_export_must_match_original_before_native_signing",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_extra_local_module_file_is_not_in_the_source_closure",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_modified_executable_instruction_stops_acceptance",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_modified_original_producer_stops_acceptance",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_native_post_sign_failure_preserves_receipt_without_qualification",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_nested_resource_metadata_mutation_is_rejected",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_nested_signature_must_verify_before_any_root_signing",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_resource_and_nested_signature_mutations_are_rejected",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_unexpected_valid_original_is_not_resigned",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_unknown_resource_or_signature_member_is_refused",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_unreviewed_product_name_has_no_wildcard_exception",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_wrong_external_revision_never_reaches_native_signer",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_wrong_local_module_tree_never_reaches_native_signer",
+      "test_observed_package_simulator_signing.ObservedExportSigningControls.test_wrong_new_signing_identifier_is_rejected",
+      "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_failed_signer_keeps_failure_inventory_and_stops_native_acceptance",
+      "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_original_driver_keeps_full_strict_gate_before_external_consumer",
+      "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_unrelated_distribution_change_cannot_reach_consumer"
+    ],
+    "receipt_sha256": "efbc6a5019a23a1fa3e28e78b14aa9379fd66d10d20058ee779252fb3a1a5e5f"
+  },
+  "original_framework_build": "PASS",
+  "actual_original_swift_inputs": 2238,
+  "generated_swift_inputs": 1,
+  "strict_dynamic_frameworks": 15,
+  "scoped_signing": [
+    {
+      "status": "PASS_CONSTRAINED_ANYCRYPTO_SIMULATOR_EXPORT_SIGNATURE",
+      "native_post_signature": "PASS",
+      "original_producer_unchanged": true,
+      "original_info_unchanged": true,
+      "nonsignature_executable_unchanged": true,
+      "framework": "AnyCryptoSwift_4B7B7B8889D5B5C4_PackageProduct.framework"
+    },
+    {
+      "framework": "AppTarget_-256A0C750C206F_PackageProduct.framework",
+      "status": "PASS_CONSTRAINED_GENERATED_SIMULATOR_EXPORT_SIGNATURE",
+      "native_post_signature": "PASS",
+      "original_producer_unchanged": true,
+      "original_metadata_unchanged": true,
+      "original_resources_and_nested_signatures_unchanged": true,
+      "nonsignature_executable_unchanged": true
+    },
+    {
+      "framework": "BigInt_175F1397B99A03_PackageProduct.framework",
+      "status": "PASS_CONSTRAINED_GENERATED_SIMULATOR_EXPORT_SIGNATURE",
+      "native_post_signature": "PASS",
+      "original_producer_unchanged": true,
+      "original_metadata_unchanged": true,
+      "original_resources_and_nested_signatures_unchanged": true,
+      "nonsignature_executable_unchanged": true
+    },
+    {
+      "framework": "Crypto_17A3B1FFC41E47_PackageProduct.framework",
+      "status": "PASS_CONSTRAINED_GENERATED_SIMULATOR_EXPORT_SIGNATURE",
+      "native_post_signature": "PASS",
+      "original_producer_unchanged": true,
+      "original_metadata_unchanged": true,
+      "original_resources_and_nested_signatures_unchanged": true,
+      "nonsignature_executable_unchanged": true
+    },
+    {
+      "framework": "Factory_32A9B87E1196645F_PackageProduct.framework",
+      "status": "PASS_CONSTRAINED_GENERATED_SIMULATOR_EXPORT_SIGNATURE",
+      "native_post_signature": "PASS",
+      "original_producer_unchanged": true,
+      "original_metadata_unchanged": true,
+      "original_resources_and_nested_signatures_unchanged": true,
+      "nonsignature_executable_unchanged": true
+    },
+    {
+      "framework": "NotificationsCore_5AD5AD79262EBF4_PackageProduct.framework",
+      "status": "PASS_CONSTRAINED_GENERATED_SIMULATOR_EXPORT_SIGNATURE",
+      "native_post_signature": "PASS",
+      "original_producer_unchanged": true,
+      "original_metadata_unchanged": true,
+      "original_resources_and_nested_signatures_unchanged": true,
+      "nonsignature_executable_unchanged": true
+    },
+    {
+      "framework": "SwiftProtobuf_7CEE9AB92C12BC6B_PackageProduct.framework",
+      "status": "PASS_CONSTRAINED_GENERATED_SIMULATOR_EXPORT_SIGNATURE",
+      "native_post_signature": "PASS",
+      "original_producer_unchanged": true,
+      "original_metadata_unchanged": true,
+      "original_resources_and_nested_signatures_unchanged": true,
+      "nonsignature_executable_unchanged": true
+    }
+  ],
+  "symbolgraph_command": {
+    "command": [
+      "xcrun",
+      "swift-symbolgraph-extract",
+      "-module-name",
+      "AnytypeOriginalEditor",
+      "-target",
+      "arm64-apple-ios27.0-simulator",
+      "-sdk",
+      "/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+      "-F",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Products/Debug-Anytype-iphonesimulator",
+      "-F",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks",
+      "-I",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Products/Debug-Anytype-iphonesimulator",
+      "-I",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Products/Debug-Anytype-iphonesimulator/Modules",
+      "-minimum-access-level",
+      "public",
+      "-output-dir",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-evidence/actual-public-symbol-graphs"
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "finished_at": "2026-11-21T21:47:28.050653+00:00",
+    "returncode": -15,
+    "started_at": "2026-11-21T21:45:27.990791+00:00",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": true,
+    "timeout_seconds": 120
+  },
+  "symbolgraph_files": [],
+  "symbolgraph_stdout_bytes": 0,
+  "symbolgraph_stderr_bytes": 0,
+  "external_consumer_build": "NOT_RUN",
+  "resource_runtime": "NOT_RUN",
+  "editable_mount": "NOT_EXPOSED",
+  "native_editor_ui_tests": 0,
+  "owned_simulator_cleanup": [
+    {
+      "operation": "shutdown",
+      "returncode": 149,
+      "stderr": "An error was encountered processing the command (domain=com.apple.CoreSimulator.SimError, code=405):\nUnable to shutdown device in current state: Shutdown\n",
+      "stdout": "",
+      "udid": "4E2DE015-6AB0-4FF0-A117-387C8978915F"
+    },
+    {
+      "operation": "delete",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "",
+      "udid": "4E2DE015-6AB0-4FF0-A117-387C8978915F"
+    },
+    {
+      "operation": "shutdown",
+      "returncode": 149,
+      "stderr": "An error was encountered processing the command (domain=com.apple.CoreSimulator.SimError, code=405):\nUnable to shutdown device in current state: Shutdown\n",
+      "stdout": "",
+      "udid": "B674E7CA-5F62-4EE1-8CB0-40106B64BC36"
+    },
+    {
+      "operation": "delete",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "",
+      "udid": "B674E7CA-5F62-4EE1-8CB0-40106B64BC36"
+    }
+  ],
+  "retained_target_binary": false,
+  "retained_target_swiftmodule": false,
+  "reusable_product_archive": false,
+  "job_id": 136989994264,
+  "strict_dynamic_framework_commands": [
+    {
+      "file": "framework-signature-0.command.json",
+      "sha256": "24f495d9322b7cf4593600d87715acba88f2acd4b27293b7fe3a735f232b4f3c",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/AmplitudeCore.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-1.command.json",
+      "sha256": "ad0e9dbf09b5c54a35c3c0d19ba1229690829e13da83e5d159a8e25acde0e7b9",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/AnyCryptoSwift_4B7B7B8889D5B5C4_PackageProduct.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-10.command.json",
+      "sha256": "0f6185c85e04b601ef4cd88f0acd14b341c8a70271ec29c019b523232206960f",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/NotificationsCore_5AD5AD79262EBF4_PackageProduct.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-11.command.json",
+      "sha256": "367b982888415ed6a9dee2c4af8fd23326906f8ad52b503896476fe7b5338fa8",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/ProtobufMessages.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-12.command.json",
+      "sha256": "6e5b4c61ec7e39597b33501a6d91eb3922d90c14707a756dfe811cea51342704",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/SecureService.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-14.command.json",
+      "sha256": "b9b4e9a49cd93133c7fff6398b41ea91dbf75ea171899a0b7a1a7b5866d94060",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/Services.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-15.command.json",
+      "sha256": "836f512b75e8a4fbde73ddac085b3c3bc3e487e76998ff86b86ed58d18bfd7f0",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/SharedContentManager.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-16.command.json",
+      "sha256": "69270130ac1ca2762b9545ea23b0dab5b60c1ed24685bcd616665d4254623151",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/SwiftProtobuf_7CEE9AB92C12BC6B_PackageProduct.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-2.command.json",
+      "sha256": "4899826a0411e787557fdd8cec0aed895b5a9f9142acbff7cf0f65f35e67032f",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/AnytypeCore.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-3.command.json",
+      "sha256": "117d8b5b4ee0f6f2b69bd51e577a225c135f6d14e444ed2112aaa2442f0bcd3c",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/AnytypeOriginalEditor.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-4.command.json",
+      "sha256": "803a86256fd75d270ffad2f04cb0b9fe5cc2064d04b5df851b8f64123343216b",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/AppTarget_-256A0C750C206F_PackageProduct.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-5.command.json",
+      "sha256": "ce1e687ccb66d42390afabf4ce528d6c31c57fb9ce780d9759ac14b99e180a41",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/BigInt_175F1397B99A03_PackageProduct.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-6.command.json",
+      "sha256": "c8209496f71a5a32c8e0743b9c718bd15384688a3f296c16ead008a907faa3ae",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/Crypto_17A3B1FFC41E47_PackageProduct.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-7.command.json",
+      "sha256": "073026c2d19451b9ee49ad0559bbe3c3e773965d37425e33b12778300c9bcc9e",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/Factory_32A9B87E1196645F_PackageProduct.framework"
+      ],
+      "returncode": 0
+    },
+    {
+      "file": "framework-signature-9.command.json",
+      "sha256": "faf8f4c95396d667da7a6b3b10d4b485cbf1394f03c53c8993a6d021b950edde",
+      "command": [
+        "codesign",
+        "--verify",
+        "--strict",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/distribution/Frameworks/Logger.framework"
+      ],
+      "returncode": 0
+    }
+  ],
+  "key_original_evidence": {
+    "execution.json": {
+      "bytes": 52395,
+      "sha256": "9103e6ff0a97cab9537a743ff0ef03753b260ed46d867aee5df5ff3489fbd3a7"
+    },
+    "source-controls-result.json": {
+      "bytes": 90721,
+      "sha256": "efbc6a5019a23a1fa3e28e78b14aa9379fd66d10d20058ee779252fb3a1a5e5f"
+    },
+    "framework-build.command.json": {
+      "bytes": 1338,
+      "sha256": "001dce39c4acb864be81b9e6764ca477b08e612f9e713a43d676483ce7d9be94"
+    },
+    "framework-distribution.json": {
+      "bytes": 383198,
+      "sha256": "5772f96c8825819727faace9b7e86b25f8ca58de5c44148849557fc7a87f6e5a"
+    },
+    "dependency-checkouts.json": {
+      "bytes": 3025,
+      "sha256": "f814b137dfa096b60c1eb65119cd7d1dac1f14b0152c09356eefc9c830e38e55"
+    },
+    "source-before.json": {
+      "bytes": 239160,
+      "sha256": "9fe6958d46c2ad33fae8c16a7131fcb5bbcb5829e13c8bc4cd35c419e0e6b917"
+    },
+    "source-after.json": {
+      "bytes": 239160,
+      "sha256": "9fe6958d46c2ad33fae8c16a7131fcb5bbcb5829e13c8bc4cd35c419e0e6b917"
+    },
+    "actual-target-public-symbol-graph.command.json": {
+      "bytes": 1613,
+      "sha256": "7e847bf0effa46f989109f89fded227573911b1d7ffb09e5ed390e8429f189e5"
+    },
+    "actual-target-public-symbol-graph.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "actual-target-public-symbol-graph.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "owned-simulator-cleanup.json": {
+      "bytes": 899,
+      "sha256": "cd5fbd771e972e093de75c1deb8a69227ad5091f1a35a6f67897c1f731599788"
+    },
+    "amplitude-simulator-signing.json": {
+      "bytes": 31424,
+      "sha256": "cafc9abdd05a797a2a9495cf0535ed1c9c7096cf62e705b2881ddcf4c967ef5d"
+    },
+    "anycrypto-simulator-signing.json": {
+      "bytes": 12118,
+      "sha256": "b8f8ce882bea0a655bd6ce2579bd0d3e871b85cd665ea7541990136d3b2a04a5"
+    },
+    "observed-app-target-simulator-signing.json": {
+      "bytes": 11699,
+      "sha256": "89856ad0df6488d1e4cdea1af0135c51e9e9e3864801699979dd14ec94b5d248"
+    },
+    "observed-bigint-simulator-signing.json": {
+      "bytes": 12192,
+      "sha256": "9ed10659d6036933115ed6f795cc03064e5519dd10208e3d769c68a256d3de82"
+    },
+    "observed-crypto-simulator-signing.json": {
+      "bytes": 23063,
+      "sha256": "1540afb6f4cd5ba0aac92caa126bf3d22b903242b65db02bb036348145d68949"
+    },
+    "observed-factory-simulator-signing.json": {
+      "bytes": 14188,
+      "sha256": "f13190a67c8778ab26edb11ad4d37d7894323436b4d9eeae81ef7a4522ca17ea"
+    },
+    "observed-notifications-core-simulator-signing.json": {
+      "bytes": 17487,
+      "sha256": "c643c7162c80cdf18f0de7487a72dc59a734e3bb6093a844bf81a89a105d331b"
+    },
+    "observed-swift-protobuf-simulator-signing.json": {
+      "bytes": 23490,
+      "sha256": "5261509b442d259b7d6d7880c06855b6f65c92f12d475b91a719a96ad7db6e2f"
+    }
+  },
+  "inner_zip_sha256": "8543d11897167eaccdfae5c34ac467e200a7b0f666cd1f80d153defb407053ae"
+}
