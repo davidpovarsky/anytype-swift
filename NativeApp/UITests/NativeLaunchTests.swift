@@ -54,7 +54,11 @@ final class NativeLaunchTests: XCTestCase {
 
         let addParagraph = app.buttons["any-native-add-paragraph"]
         // Native library creation opens its confirmed new document.
-        tapWhenEnabled(addParagraph, timeout: 60)
+        // A navigation transition can publish this enabled overlay before
+        // UIKit has a usable hit point. Observe readiness before one real tap.
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: addParagraph, timeout: 60)
+        addParagraph.tap()
 
         let textViews = app.textViews.matching(
             NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-"))
@@ -235,7 +239,7 @@ final class NativeLaunchTests: XCTestCase {
             format: "identifier BEGINSWITH %@ AND value == %@",
             "any-native-source-result-", reference)).firstMatch
         tapWhenEnabled(result, timeout: 60)
-        let segment = app.buttons["torah-reader-segment-sefaria:" + reference]
+        let segment = app.buttons["torah-reader-segment-" + reference]
         waitUntilEnabled(segment, timeout: 60)
         // Embedded search is the same retained presenter inside the pinned
         // inspector's navigation stack, not another host-owned modal sheet.
@@ -249,7 +253,7 @@ final class NativeLaunchTests: XCTestCase {
         XCTAssertFalse(providerText.isEmpty)
         XCTAssertNotEqual(providerText, reference)
         segment.press(forDuration: 1.1)
-        tapWhenEnabled(app.buttons["torah-reader-insert-sefaria:" + reference])
+        tapWhenEnabled(app.buttons["torah-reader-insert-" + reference])
 
         // The inspector allows background interaction. A real source badge is
         // exposed only after canonical association readback, so the next source
@@ -365,7 +369,9 @@ final class NativeLaunchTests: XCTestCase {
                 object: options, timeout: 45)
         tapWhenEnabled(options)
         tapWhenEnabled(app.buttons["any-native-text-alignment"])
-        tapWhenEnabled(app.buttons["any-native-text-alignment-center"])
+        // UIKit exposes this nested menu by its visible localized title;
+        // the test app pins Hebrew. Native readback remains the assertion.
+        tapWhenEnabled(app.buttons["למרכז"])
         let savedStyle = "העיצוב השמור: כתיבה מימין לשמאל, יישור למרכז"
         // This value comes only from the current native readback snapshot;
         // choosing the menu action does not update it optimistically.
@@ -390,10 +396,12 @@ final class NativeLaunchTests: XCTestCase {
         XCTAssertTrue(rtl.isSelected, "The reopened native direction must be selected.")
         XCTAssertFalse(app.buttons["any-native-writing-direction-ltr"].isSelected)
         tapWhenEnabled(app.buttons["any-native-text-alignment"])
-        let center = app.buttons["any-native-text-alignment-center"]
+        let center = app.buttons["למרכז"]
         waitUntilEnabled(center)
         XCTAssertTrue(center.isSelected, "The reopened explicit alignment must be selected.")
-        XCTAssertFalse(app.buttons["any-native-text-alignment-natural"].isSelected)
+        let natural = app.buttons["טבעי"]
+        waitUntilEnabled(natural)
+        XCTAssertFalse(natural.isSelected)
     }
 
     func testHierarchyDragIntoFolderPersistsAfterColdReopen() {
@@ -502,7 +510,7 @@ final class NativeLaunchTests: XCTestCase {
             format: "identifier BEGINSWITH %@ AND value == %@",
             "any-native-source-result-", reference)).firstMatch
         tapWhenEnabled(result, timeout: 60)
-        let segment = app.buttons["torah-reader-segment-sefaria:" + reference]
+        let segment = app.buttons["torah-reader-segment-" + reference]
         waitUntilEnabled(segment, timeout: 60)
         let providerText = segment.label
         XCTAssertFalse(providerText.isEmpty)

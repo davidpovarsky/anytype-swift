@@ -913,6 +913,9 @@ public final class AnyDocumentPresentation: Sendable {
             do {
                 let query: AnyJSON = .object([
                     "objectId": .string(objectID), "dataset": .string(documents.dataset),
+                    // A bounded live window requires a stable native order.
+                    // The editor still renders the snapshot's hierarchy order.
+                    "sort": .array([.string("id")]),
                     "limit": .integer(10_001), "includeTotal": .bool(true)])
                 let updates = try await client.subscribeQuery(spaceID: workspace.spaceID,
                     query: query, streamSession: stream, maximumRecords: 10_000, requireComplete: true)
