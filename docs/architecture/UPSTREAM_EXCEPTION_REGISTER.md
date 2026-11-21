@@ -1,5 +1,70 @@
 # Pinkha upstream exception register
 
+## 2026-11-22 — Shared infrastructure and candidate Heart read ownership
+
+The owner's current instruction is to finish the remaining work for both engines
+on shared infrastructure and retain valid passing evidence without unnecessary
+reruns. Work continues on the isolated
+`codex/chatgpt-wave15-shared-20261121` branch under that instruction and the
+standing implementation/publication authorization recorded below. This entry
+records the implemented protected seams and their review; it grants no new
+permission.
+
+The shared integration at
+`0712b0492361e422c5b0cffdf0a95374f29eb305` has an exact
+[88-entry source mapping](../any-engine-port/SOURCE_REFACTOR_MAP.json) against
+`586c98bcc17dee425664224e508fc0e8df277678`. Every mapped replacement and shared
+source blob passed the retention gate, with zero unreviewed changes or inventory
+errors. This gate establishes source provenance, not runtime or UI acceptance.
+
+### Exact candidate-only protected seams
+
+| Path | Before Git blob | Reviewed replacement Git blob |
+| --- | --- | --- |
+| `Modules/ProtobufMessages/Package.swift` | `57972496dd061849f48c79d6d147c518dfa39826` | `bb396368a445a250672e6bb4a9b14280741827bf` |
+| `Modules/ProtobufMessages/Sources/Invocation.swift` | `75147606621653a013e2995570b22fd93cd29e2d` | `d71dca5c6ab8e7518c3c24128b2bc63860b59084` |
+
+Integration commit: `1e06035b3f` (reviewed source
+`7fcfbf0c2c18ef57ba493d80e1f4437577d970e2`).
+The package adds only the explicit
+`PINKHA_NATIVE_T2_AUTHORIZED_READ_V1=1` candidate definition. The Invocation seam
+observes lifecycle boundaries before the existing native dispatch and consumes
+their actual typed completions or failures. Native scheduling, cancellation,
+request/response bodies, dependencies and default Swift settings are preserved.
+
+A downstream reader alone cannot observe an independently invoked AccountStop,
+AccountSelect, WorkspaceOpen, WorkspaceSelect or Space deletion before its native
+transition begins. The existing generated Invocation boundary owns that dispatch.
+The production caller audit found all relevant lifecycle invocations there and
+no direct Lib lifecycle bypass. No generated WorkspaceClose or SpaceClose API
+exists in this pinned Swift schema.
+
+Policy and transport live downstream in
+`PinkhaNativeReadLifetime`, `PinkhaAuthorizedReadByteBridge`,
+`PinkhaHeartNative` and the shared
+`PinkhaKit/TorahAuthorizedOperationRead` contract. Native successful responses
+establish account ownership; immutable requests and typed Space responses bind
+leases. Retirement invalidates publication before teardown, and overlapping or
+late completions cannot revive an owner. Private operation bytes do not enter
+Invocation's body logger.
+
+### Required evidence and rollback boundary
+
+Nine focused owner/byte controls and the actual Lib-to-shared-reader journey are
+authored, with syntax review complete. Their actual iOS execution is pending in
+the dedicated 25-method host. The candidate one-slice Apple builder is
+[44958624297](https://github.com/davidpovarsky/anytype-swift/actions/runs/44958624297).
+It must match the complete qualified native source/generated/module closure from
+[44954793488](https://github.com/davidpovarsky/anytype-swift/actions/runs/44954793488).
+The existing native 71 terminal cases, two native account processes, and shared
+Apple 14 cases retain their original scopes and are not rerun for this seam.
+
+The default candidate definition remains absent, and full T2, two iOS clients
+and physical-device acceptance remain open. A rollback must verify later edits,
+remove only these candidate hooks and downstream candidate references, and keep
+the original Invocation body, histories and user data intact. Review date:
+2026-11-22.
+
 ## 2026-11-03 — Historical native derived-property feasibility (before subsequent owner approvals)
 
 [נועם | DEV] [MAIN_SESSION] — isolated branch
