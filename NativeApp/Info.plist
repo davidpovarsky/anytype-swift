@@ -13,6 +13,25 @@
 			</dict>
 		</dict>
 	</dict>
+	<!-- Only intentional user exports live in Documents. Native databases and
+	     journals use Application Support; account secrets remain in Keychain. -->
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.gloiiire.pinkha.torahSource</string>
+			<key>UTTypeDescription</key>
+			<string>Torah source transfer</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+		</dict>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

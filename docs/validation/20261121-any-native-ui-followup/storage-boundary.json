@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "integratedSourceCommit": "abb91f578a11bbea0fa8477fa048063e22f9d304",
+  "purpose": "Expose only intentional user exports through Files; private native storage stays outside Documents.",
+  "privateStorage": [
+    {
+      "path": "NativeApp/Sources/AnyNativeApp.swift",
+      "gitBlob": "94ea14782cce9e3e95385ad56a25b28a104c28b6",
+      "canonicalSHA256": "953ec2b1241e9fe6b3fc4107fc3deefdbe79b02269a6e8d7186fac86b0ac5446",
+      "claim": "Production uses the private default directory; the explicit UI fixture uses a unique temporary directory and Keychain service.",
+      "anchors": [
+        {
+          "line": 22,
+          "text": "directory = FileManager.default.temporaryDirectory.appendingPathComponent(\"native-ui-\" + scope)"
+        },
+        {
+          "line": 25,
+          "text": "directory = try AnyNativeApplication.defaultDataDirectory()"
+        },
+        {
+          "line": 29,
+          "text": "directory = try AnyNativeApplication.defaultDataDirectory()"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeApplication.swift",
+      "gitBlob": "703047fb089dd7744d44541467c8f3006f4e0e18",
+      "canonicalSHA256": "a60088ab88934abcae4fa9efa499722c68bd8a6376337d09b6517f9def73947b",
+      "claim": "The native database root is Application Support/PinkhaAnyNativeV1, passed unchanged to the embedded runtime.",
+      "anchors": [
+        {
+          "line": 90,
+          "text": "let support = try FileManager.default.url(for: .applicationSupportDirectory,"
+        },
+        {
+          "line": 92,
+          "text": "return support.appendingPathComponent(\"PinkhaAnyNativeV1\", isDirectory: true)"
+        },
+        {
+          "line": 113,
+          "text": "let session = try await runtime.start(dataDirectory: dataDirectory, network: network, build: .pinkhaNativeV1)"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyRuntime/Sources/PinkhaAnyRuntime/AnyEmbeddedRuntime.swift",
+      "gitBlob": "01d28b4c70e0ad5917fc525e3411d12c1e8f143c",
+      "canonicalSHA256": "e77f1d948d22480c4e15fb647a61911db38ae3ec2029a85404dded75f8953ee2",
+      "claim": "The C startup receives the owned directory path; the managed bootstrap token is in memory rather than Documents.",
+      "anchors": [
+        {
+          "line": 177,
+          "text": "let strings = [dataDirectory.path, \"127.0.0.1:0\", nodeconf, pushPeer, pushAddresses, \"managed\", token]"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyNative/Sources/PinkhaAnyNative/AnyNativeCredentialVault.swift",
+      "gitBlob": "b25bdb8143aa596f41d8527a28ef45870c0c94e0",
+      "canonicalSHA256": "51d178aa74614364a40101a890029429abfcd71c6ac1eec4c32cd2b4307f291c",
+      "claim": "Account secrets are Keychain records with device-only accessibility.",
+      "anchors": [
+        {
+          "line": 55,
+          "text": "let status = SecItemCopyMatching(query as CFDictionary, &result)"
+        },
+        {
+          "line": 70,
+          "text": "let status = SecItemCopyMatching(query as CFDictionary, &result)"
+        },
+        {
+          "line": 88,
+          "text": "kSecAttrAccessible: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly"
+        },
+        {
+          "line": 90,
+          "text": "let status = SecItemUpdate(query as CFDictionary, updates as CFDictionary)"
+        },
+        {
+          "line": 94,
+          "text": "let created = SecItemAdd(item as CFDictionary, nil)"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyProtectedCreationJournal.swift",
+      "gitBlob": "7612298ae4a38518136d3430e477665a8367dc29",
+      "canonicalSHA256": "5f0c526fa4f88e530242198bb152c3e1840cc5396df771420bff64f4183de8d5",
+      "claim": "Native creation metadata uses Application Support/Anytype.",
+      "anchors": [
+        {
+          "line": 30,
+          "text": "let support = try FileManager.default.url(for: .applicationSupportDirectory,"
+        },
+        {
+          "line": 32,
+          "text": "let host = support.appendingPathComponent(\"Anytype\", isDirectory: true)"
+        },
+        {
+          "line": 133,
+          "text": "let support = try FileManager.default.url(for: .applicationSupportDirectory,"
+        },
+        {
+          "line": 136,
+          "text": "parent: support.appendingPathComponent(\"Anytype\", isDirectory: true))"
+        }
+      ]
+    },
+    {
+      "path": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinWriteJournal.swift",
+      "gitBlob": "14bfb33ab6c03564a93a224d2b0ce4dfe0ba1efd",
+      "canonicalSHA256": "088df901983e03e3921477658cb04b35fe2a1875b07a57876747d3f960c8cf8f",
+      "claim": "Protected Hanlin write/recovery metadata uses Application Support/Anytype.",
+      "anchors": [
+        {
+          "line": 38,
+          "text": "let base = try FileManager.default.url(for: .applicationSupportDirectory,"
+        },
+        {
+          "line": 40,
+          "text": "let host = base.appendingPathComponent(\"Anytype\", isDirectory: true)"
+        },
+        {
+          "line": 234,
+          "text": "let base = try FileManager.default.url(for: .applicationSupportDirectory,"
+        },
+        {
+          "line": 237,
+          "text": "parent: base.appendingPathComponent(\"Anytype\", isDirectory: true))"
+        }
+      ]
+    }
+  ],
+  "newUserDirectory": "Documents/Exports",
+  "newUserDirectorySource": "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeArchiveTransfer.swift",
+  "nativeInfoCanonicalSHA256": "0e5194a520aa3c40478d71244a80702f401823965b6c422dfb9e9e9ebfdb6c1d",
+  "plistValidation": "PASS",
+  "systemFilesExecution": "NOT_RUN"
+}

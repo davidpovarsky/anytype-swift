@@ -58,12 +58,16 @@ final class NativeLaunchTests: XCTestCase {
         // UIKit has a usable hit point. Observe readiness before one real tap.
         waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
                 object: addParagraph, timeout: 60)
+        let addControl = XCTAttachment(string:
+            "enabled=\(addParagraph.isEnabled)\nhittable=\(addParagraph.isHittable)\nframe=\(addParagraph.frame)")
+        addControl.name = "native-empty-paragraph-pre-tap-control"
+        addControl.lifetime = .keepAlways; add(addControl)
         addParagraph.tap()
 
         let textViews = app.textViews.matching(
             NSPredicate(format: "identifier BEGINSWITH %@", "any-native-block-"))
         let editor = textViews.firstMatch
-        waitUntilEnabled(editor)
+        waitForNativeEditorInput(app, editor)
         editor.tap()
         editor.typeText(text)
         tapWhenEnabled(app.buttons["any-native-editor-done"])
@@ -153,6 +157,7 @@ final class NativeLaunchTests: XCTestCase {
         // The fresh workspace has Page only. Choosing its actual catalog entry
         // exercises the picker without inventing a custom Type seed or claiming
         // a second-Type transition that this UI has not created.
+        revealNativeProperty(app, app.buttons["any-native-property-name"])
         tapWhenEnabled(app.buttons["any-native-property-name"])
         let field = app.descendants(matching: .any).matching(identifier: "any-native-property-value-input").firstMatch
         waitUntilEnabled(field)
@@ -164,14 +169,15 @@ final class NativeLaunchTests: XCTestCase {
         tapWhenEnabled(app.buttons["any-native-property-save"])
         let nameRow = app.buttons["any-native-property-name"]
         waitFor(NSPredicate(format: "exists == true AND value == %@", updatedName), object: nameRow, timeout: 45)
+        revealNativeProperty(app, type, scrollDown: true)
         XCTAssertEqual(type.value as? String, typeName)
 
         tapWhenEnabled(app.buttons["any-native-property-menu"])
         tapWhenEnabled(app.buttons["any-native-property-customize"])
         let visibility = app.switches["any-native-property-visibility-name"]
-        waitUntilEnabled(visibility)
+        revealNativeProperty(app, visibility, listID: "any-native-property-customization-list")
         XCTAssertEqual(visibility.value as? String, "1")
-        visibility.tap()
+        toggleNativePropertyVisibility(visibility, expected: "1")
         waitFor(NSPredicate(format: "exists == true AND enabled == true AND value == %@", "0"),
                 object: visibility, timeout: 45)
         tapWhenEnabled(app.buttons["any-native-property-customization-close"])
@@ -199,17 +205,20 @@ final class NativeLaunchTests: XCTestCase {
 
         tapWhenEnabled(app.buttons["any-native-document-properties"])
         waitUntilEnabled(type)
+        revealNativeProperty(app, type, scrollDown: true)
         XCTAssertEqual(type.value as? String, typeName)
         XCTAssertFalse(nameRow.exists)
         tapWhenEnabled(app.buttons["any-native-property-menu"])
         tapWhenEnabled(app.buttons["any-native-property-customize"])
-        waitUntilEnabled(visibility)
+        revealNativeProperty(app, visibility, listID: "any-native-property-customization-list")
         XCTAssertEqual(visibility.value as? String, "0", "Hidden preference survives native reopen.")
-        visibility.tap()
+        toggleNativePropertyVisibility(visibility, expected: "0")
         waitFor(NSPredicate(format: "exists == true AND enabled == true AND value == %@", "1"),
                 object: visibility, timeout: 45)
         tapWhenEnabled(app.buttons["any-native-property-customization-close"])
+        revealNativeProperty(app, nameRow)
         waitFor(NSPredicate(format: "exists == true AND value == %@", updatedName), object: nameRow, timeout: 45)
+        revealNativeProperty(app, type, scrollDown: true)
         XCTAssertEqual(type.value as? String, typeName)
         tapWhenEnabled(app.buttons["any-native-property-close"])
         XCTAssertEqual(blocks.firstMatch.value as? String, body)
@@ -255,9 +264,10 @@ final class NativeLaunchTests: XCTestCase {
         segment.press(forDuration: 1.1)
         tapWhenEnabled(app.buttons["torah-reader-insert-" + reference])
 
-        // The inspector allows background interaction. A real source badge is
-        // exposed only after canonical association readback, so the next source
-        // action cannot race ahead of that separate metadata write.
+        // The executed iPad sheet remains expanded after insertion and hides
+        // the underlying editor from AX. Collapse its real header before
+        // inspecting the quote. The badge still requires canonical readback.
+        collapseInspectorForBackgroundRead(app)
         let sourceBadges = app.buttons.matching(NSPredicate(
             format: "identifier BEGINSWITH %@", "any-native-block-sources-"))
         waitFor(NSPredicate(format: "exists == true"), object: sourceBadges.firstMatch, timeout: 60)
@@ -275,7 +285,7 @@ final class NativeLaunchTests: XCTestCase {
 
         // Open the quote's retained association, then use the real Notes tool.
         // The normal T5 action creates and navigates to the native Note.
-        tapWhenEnabled(segment)
+        tapWhenEnabled(app.buttons[quoteBadgeIdentifier])
         selectInspectorTool(app, hebrew: "הערות", english: "Notes")
         tapWhenEnabled(app.buttons["torah-inspector-add-note"], timeout: 60)
         waitFor(NSPredicate(format: "exists == true"),
@@ -683,8 +693,8 @@ final class NativeLaunchTests: XCTestCase {
         let topicMenuA = "any-native-derived-actions-" + topicAssociationA
         let wordMenuA = "any-native-derived-actions-" + wordAssociationA
         tapWhenEnabled(app.buttons["any-native-document-properties"])
-        waitUntilEnabled(app.buttons[topicMenuA], timeout: 60)
-        waitUntilEnabled(app.buttons[wordMenuA], timeout: 60)
+        revealNativeProperty(app, app.buttons[topicMenuA])
+        revealNativeProperty(app, app.buttons[wordMenuA])
         XCTAssertTrue(app.buttons[topicMenuA].label.contains(topicTitle))
         XCTAssertTrue(app.buttons[wordMenuA].label.contains(wordTitle))
         tapWhenEnabled(app.buttons["any-native-property-close"])
@@ -714,7 +724,9 @@ final class NativeLaunchTests: XCTestCase {
         // committed documents must appear, then the normal owned-sheet route
         // must dismiss the child and parent before opening A's mounted editor.
         tapWhenEnabled(app.buttons["any-native-document-properties"])
-        tapWhenEnabled(app.buttons["any-native-derived-actions-" + topicAssociationB], timeout: 60)
+        let topicMenuB = app.buttons["any-native-derived-actions-" + topicAssociationB]
+        revealNativeProperty(app, topicMenuB)
+        tapWhenEnabled(topicMenuB)
         tapWhenEnabled(app.buttons.matching(NSPredicate(
             format: "label == %@ OR label == %@", "מסמכים מקושרים", "Related documents")).firstMatch)
         waitFor(NSPredicate(format: "exists == true"), object: app.navigationBars[topicTitleB], timeout: 60)
@@ -726,8 +738,9 @@ final class NativeLaunchTests: XCTestCase {
         waitUntilEnabled(app.buttons["any-native-document-properties"])
 
         tapWhenEnabled(app.buttons["any-native-document-properties"])
-        waitUntilEnabled(app.buttons[topicMenuA], timeout: 60)
-        tapWhenEnabled(app.buttons[wordMenuA], timeout: 60)
+        revealNativeProperty(app, app.buttons[topicMenuA])
+        revealNativeProperty(app, app.buttons[wordMenuA])
+        tapWhenEnabled(app.buttons[wordMenuA])
         tapWhenEnabled(app.buttons.matching(NSPredicate(
             format: "label == %@ OR label == %@", "מסמכים מקושרים", "Related documents")).firstMatch)
         waitFor(NSPredicate(format: "exists == true"), object: app.navigationBars[wordTitle], timeout: 60)
@@ -739,8 +752,8 @@ final class NativeLaunchTests: XCTestCase {
         reopenOwnedWorkspace(app, spaceName: spaceName)
         tapWhenEnabled(app.buttons[documentA].firstMatch, timeout: 60)
         tapWhenEnabled(app.buttons["any-native-document-properties"], timeout: 60)
-        waitUntilEnabled(app.buttons[topicMenuA], timeout: 60)
-        waitUntilEnabled(app.buttons[wordMenuA], timeout: 60)
+        revealNativeProperty(app, app.buttons[topicMenuA])
+        revealNativeProperty(app, app.buttons[wordMenuA])
         XCTAssertTrue(app.buttons[topicMenuA].label.contains(topicTitle))
         XCTAssertTrue(app.buttons[wordMenuA].label.contains(wordTitle))
         XCTAssertEqual(app.buttons.matching(NSPredicate(
@@ -1134,6 +1147,77 @@ final class NativeLaunchTests: XCTestCase {
         }
     }
 
+    private func waitForNativeEditorInput(_ app: XCUIApplication, _ editor: XCUIElement,
+                                          file: StaticString = #filePath, line: UInt = #line) {
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "exists == true AND enabled == true"), object: editor)
+        let result = XCTWaiter.wait(for: [expectation], timeout: 30)
+        if result != .completed {
+            // Capture only this disposable document after the backup/recovery
+            // surfaces are gone. This attachment is diagnosis, never acceptance.
+            do {
+                try requireArchiveObservationPastOnboarding(app)
+                let tree = String(decoding: app.debugDescription.utf8.prefix(131_072), as: UTF8.self)
+                try requireArchiveObservationPastOnboarding(app)
+                let state = XCTAttachment(string: tree)
+                state.name = "FAILED_EDITOR_PRIVATE_post_onboarding_AX"
+                state.lifetime = .keepAlways; add(state)
+                let screen = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+                screen.name = "FAILED_EDITOR_PRIVATE_post_onboarding_screen"
+                screen.lifetime = .keepAlways; add(screen)
+            } catch {
+                let refusal = XCTAttachment(string: "Post-onboarding capture guard refused; no UI contents captured.")
+                refusal.name = "FAILED_EDITOR_capture_refused"; refusal.lifetime = .keepAlways; add(refusal)
+            }
+        }
+        XCTAssertEqual(result, .completed, "The actual native editor did not appear after adding a paragraph.",
+                       file: file, line: line)
+    }
+
+    private func collapseInspectorForBackgroundRead(_ app: XCUIApplication,
+                                                    file: StaticString = #filePath, line: UInt = #line) {
+        let sheet = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "torah-inspector-sheet-")).firstMatch
+        waitUntilEnabled(sheet, timeout: 30, file: file, line: line)
+        // These are normal sheet-header drags, scoped to the retained presenter's
+        // actual AX element. No direct selection binding or test-only dismissal.
+        for _ in 0..<2 {
+            if !sheet.exists || sheet.identifier == "torah-inspector-sheet-peek" { return }
+            let header = sheet.navigationBars.firstMatch
+            waitUntilEnabled(header, timeout: 10, file: file, line: line)
+            let start = header.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.25))
+            let end = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.9))
+            start.press(forDuration: 0.15, thenDragTo: end)
+        }
+        waitFor(NSPredicate(format: "exists == false OR identifier == %@", "torah-inspector-sheet-peek"),
+                object: sheet, timeout: 10, file: file, line: line)
+    }
+
+    private func revealNativeProperty(_ app: XCUIApplication, _ target: XCUIElement,
+                                      listID: String = "any-native-properties-list", scrollDown: Bool = false,
+                                      file: StaticString = #filePath, line: UInt = #line) {
+        let list = app.descendants(matching: .any).matching(identifier: listID).firstMatch
+        waitUntilEnabled(list, timeout: 30, file: file, line: line)
+        for _ in 0..<8 {
+            if target.exists && target.isEnabled && target.isHittable { return }
+            if scrollDown { list.swipeDown() } else { list.swipeUp() }
+        }
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: target, timeout: 10, file: file, line: line)
+    }
+
+    private func toggleNativePropertyVisibility(_ row: XCUIElement, expected: String,
+                                                file: StaticString = #filePath, line: UInt = #line) {
+        // The same iPad AX shape already observed for the backup Toggle: a
+        // semantic row can contain a separate physical switch control.
+        let children = row.descendants(matching: .switch)
+        let control = children.count == 1 ? children.firstMatch : row
+        XCTAssertLessThanOrEqual(children.count, 1, file: file, line: line)
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true AND value == %@", expected),
+                object: control, timeout: 10, file: file, line: line)
+        control.tap()
+    }
+
     private func selectInspectorTool(_ app: XCUIApplication, hebrew: String, english: String) {
         let tools = app.descendants(matching: .any)
             .matching(identifier: "torah-inspector-tools").firstMatch
@@ -1198,6 +1282,267 @@ final class NativeLaunchTests: XCTestCase {
         tapWhenEnabled(app.buttons["any-native-saved-account"].firstMatch, timeout: 60)
         tapWhenEnabled(app.buttons[spaceName].firstMatch, timeout: 60)
     }
+
+
+    // BEGIN_CANONICAL_ARCHIVE_ROUNDTRIP_V1
+    func testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies() throws {
+        let scope = UUID()
+        let suffix = String(scope.uuidString.prefix(8))
+        let app = makeApplication(scope: scope)
+        let spaceName = "Archive UI Space " + suffix
+        let sourceName = "Archive source " + suffix
+        let destinationName = "Archive destination " + suffix
+        let reference = "Genesis 1:1"
+        let sourceFile = "canonical-source-" + scope.uuidString + ".json"
+        let destinationFile = "canonical-destination-" + scope.uuidString + ".json"
+        let sourceColdFile = "canonical-source-cold-" + scope.uuidString + ".json"
+        let destinationBody = "יעד לייבוא: הטקסט הזה נשמר 246 " + suffix
+
+        func hash(_ text: String) -> String {
+            SHA256.hash(data: Data(text.utf8)).map { String(format: "%02x", $0) }.joined()
+        }
+        func exactBody(_ element: XCUIElement, _ expected: String) -> String {
+            waitFor(NSPredicate(format: "exists == true AND value == %@", expected),
+                    object: element, timeout: 60)
+            let actual = element.value as? String ?? ""
+            XCTAssertEqual(Array(actual.utf8), Array(expected.utf8),
+                           "Native readback must preserve every UTF-8 byte.")
+            return actual
+        }
+        func returnToLibrary() {
+            let back = app.navigationBars.buttons.matching(
+                NSPredicate(format: "label == %@ OR label == %@", "ספרייה", "Library")).firstMatch
+            tapWhenEnabled(back)
+            waitUntilEnabled(app.buttons["any-native-create-menu"], timeout: 60)
+        }
+
+        enum FileJourneyError: Error {
+            case controlNotReady(String), ambiguousControl(String), unexpectedFileName
+        }
+        func captureFilesState(_ phase: String) throws {
+            try requireArchiveObservationPastOnboarding(app)
+            let tree = String(decoding: Data(app.debugDescription.utf8).prefix(131_072), as: UTF8.self)
+            try requireArchiveObservationPastOnboarding(app)
+            let ax = XCTAttachment(string: tree)
+            ax.name = "ARCHIVE_ROUNDTRIP_" + phase + "_private_AX"
+            ax.lifetime = .keepAlways
+            add(ax)
+            let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            screenshot.name = "ARCHIVE_ROUNDTRIP_" + phase + "_private_screen"
+            screenshot.lifetime = .keepAlways
+            add(screenshot)
+        }
+        func uniqueReady(_ query: XCUIElementQuery, phase: String,
+                         timeout: TimeInterval = 30) throws -> XCUIElement {
+            let expectation = XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: query.firstMatch)
+            guard XCTWaiter.wait(for: [expectation], timeout: timeout) == .completed else {
+                try captureFilesState(phase + "_NOT_READY")
+                throw FileJourneyError.controlNotReady(phase)
+            }
+            guard query.count == 1 else {
+                try captureFilesState(phase + "_AMBIGUOUS")
+                throw FileJourneyError.ambiguousControl(phase)
+            }
+            return query.firstMatch
+        }
+        func exportUsingFiles(named filename: String) throws {
+            XCTAssertTrue(filename.hasSuffix(".json"))
+            let basename = String(filename.dropLast(".json".count))
+            tapWhenEnabled(app.buttons["any-native-archive-export"])
+            // The old picker observation accepted only modal coverage. This
+            // journey requires real, enabled system controls before any action.
+            let saveQuery = app.buttons.matching(NSPredicate(
+                format: "label IN %@", ["Save", "שמירה", "שמור"]))
+            _ = try uniqueReady(saveQuery, phase: basename + "_save", timeout: 45)
+            let filenameField = try uniqueReady(app.textFields, phase: basename + "_filename")
+            guard let currentName = filenameField.value as? String,
+                  ["source-associations", "source-associations.json", basename, filename].contains(currentName) else {
+                try captureFilesState(basename + "_UNEXPECTED_FILENAME")
+                throw FileJourneyError.unexpectedFileName
+            }
+            filenameField.tap()
+            filenameField.typeKey("a", modifierFlags: .command)
+            filenameField.typeText(basename)
+            waitFor(NSPredicate(format: "value == %@ OR value == %@", basename, filename),
+                    object: filenameField, timeout: 10)
+            try captureFilesState(basename + "_save_READY")
+            try uniqueReady(saveQuery, phase: basename + "_save_after_name").tap()
+            let exported = app.descendants(matching: .any)
+                .matching(identifier: "any-native-archive-exported-file").firstMatch
+            waitFor(NSPredicate(format: "exists == true AND value == %@", filename),
+                    object: exported, timeout: 45)
+        }
+        func importUsingFiles(named filename: String) throws {
+            let basename = String(filename.dropLast(".json".count))
+            tapWhenEnabled(app.buttons["any-native-archive-import"])
+            // Query actual Files rows/text. All names contain this test's UUID;
+            // there is no injected URL, fake picker, or filesystem selection.
+            let exactName = NSPredicate(format: "label == %@ OR label == %@", filename, basename)
+            let rowName = NSPredicate(format: "label == %@ OR label == %@ OR label BEGINSWITH %@",
+                                      filename, basename, basename + ",")
+            let textQuery = app.staticTexts.matching(exactName)
+            let cellQuery = app.cells.matching(rowName)
+            let buttonQuery = app.buttons.matching(rowName)
+            let choices = [textQuery.firstMatch, cellQuery.firstMatch, buttonQuery.firstMatch]
+            let expectation = XCTNSPredicateExpectation(
+                predicate: NSPredicate(format:
+                    "SUBQUERY(SELF, $entry, $entry.exists == true AND $entry.enabled == true AND $entry.hittable == true).@count > 0"),
+                object: choices)
+            guard XCTWaiter.wait(for: [expectation], timeout: 45) == .completed else {
+                try captureFilesState(basename + "_import_NOT_READY")
+                throw FileJourneyError.controlNotReady("import_file")
+            }
+            // Prefer the visible filename. A cell and its filename can both be
+            // exposed by Files, so uniqueness is required within the chosen role.
+            let queries = [textQuery, cellQuery, buttonQuery]
+            guard let query = queries.first(where: {
+                $0.count == 1 && $0.firstMatch.exists && $0.firstMatch.isEnabled && $0.firstMatch.isHittable
+            }) else {
+                try captureFilesState(basename + "_import_AMBIGUOUS")
+                throw FileJourneyError.ambiguousControl("import_file")
+            }
+            try captureFilesState(basename + "_import_READY")
+            query.firstMatch.tap()
+        }
+
+        app.launch()
+        defer { app.terminate() }
+        createOwnedWorkspace(app, spaceName: spaceName)
+        createNamedItem(app, action: "any-native-new-document", title: sourceName)
+        waitUntilEnabled(app.buttons["any-native-add-paragraph"], timeout: 60)
+        tapWhenEnabled(app.buttons["any-native-document-sources"])
+        let search = app.searchFields.firstMatch
+        waitUntilEnabled(search)
+        search.tap(); search.typeText(reference)
+        let sourceResult = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@ AND value == %@",
+            "any-native-source-result-", reference)).firstMatch
+        tapWhenEnabled(sourceResult, timeout: 60)
+        let segment = app.buttons["torah-reader-segment-" + reference]
+        waitUntilEnabled(segment, timeout: 60)
+        let providerText = segment.label
+        XCTAssertFalse(providerText.isEmpty)
+        XCTAssertNotEqual(providerText, reference)
+        segment.press(forDuration: 1.1)
+        tapWhenEnabled(app.buttons["torah-reader-insert-" + reference])
+
+        let blocks = app.textViews.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-"))
+        let badges = app.buttons.matching(NSPredicate(
+            format: "identifier BEGINSWITH %@", "any-native-block-sources-"))
+        collapseInspectorForBackgroundRead(app)
+        waitFor(NSPredicate(format: "exists == true"), object: badges.firstMatch, timeout: 60)
+        XCTAssertEqual(blocks.count, 1)
+        XCTAssertEqual(badges.count, 1)
+        let sourceAssociationCount = badges.count
+        let sourceEditorID = blocks.firstMatch.identifier
+        let sourceBlockID = String(sourceEditorID.dropFirst("any-native-block-".count))
+        XCTAssertFalse(sourceBlockID.isEmpty)
+        XCTAssertEqual(badges.firstMatch.identifier, "any-native-block-sources-" + sourceBlockID)
+        let sourceBody = exactBody(app.textViews[sourceEditorID], providerText)
+        let peek = app.descendants(matching: .any)
+            .matching(identifier: "torah-inspector-sheet-peek").firstMatch
+        if peek.exists {
+            peek.swipeDown()
+            waitFor(NSPredicate(format: "exists == false"), object: peek, timeout: 15)
+        }
+        openCanonicalArchiveObservationEntry(app)
+        try exportUsingFiles(named: sourceFile)
+        tapWhenEnabled(app.buttons["any-native-archive-close"])
+        returnToLibrary()
+
+        createNamedItem(app, action: "any-native-new-document", title: destinationName)
+        let add = app.buttons["any-native-add-paragraph"]
+        waitFor(NSPredicate(format: "exists == true AND enabled == true AND hittable == true"),
+                object: add, timeout: 60)
+        add.tap()
+        waitUntilEnabled(blocks.firstMatch)
+        blocks.firstMatch.tap(); blocks.firstMatch.typeText(destinationBody)
+        tapWhenEnabled(app.buttons["any-native-editor-done"])
+        let save = app.descendants(matching: .any).matching(identifier: "any-native-save-status").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", "saved"), object: save, timeout: 45)
+        XCTAssertEqual(blocks.count, 1)
+        XCTAssertEqual(badges.count, 0)
+        let destinationEditorID = blocks.firstMatch.identifier
+        let destinationBlockID = String(destinationEditorID.dropFirst("any-native-block-".count))
+        XCTAssertFalse(destinationBlockID.isEmpty)
+        XCTAssertNotEqual(destinationBlockID, sourceBlockID)
+        let destinationBefore = exactBody(app.textViews[destinationEditorID], destinationBody)
+
+        openCanonicalArchiveObservationEntry(app)
+        try importUsingFiles(named: sourceFile)
+        let chosenFile = app.descendants(matching: .any).matching(identifier: "any-native-archive-file").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", sourceFile),
+                object: chosenFile, timeout: 45)
+        let prepare = app.buttons["any-native-archive-prepare"]
+        waitFor(NSPredicate(format: "exists == true AND enabled == false"), object: prepare, timeout: 20)
+        let mappingWasRequired = prepare.exists && !prepare.isEnabled
+        let mapping = app.descendants(matching: .any)
+            .matching(identifier: "any-native-archive-block-map-" + sourceBlockID).firstMatch
+        tapWhenEnabled(mapping)
+        let destinationLabel = destinationBody + " · " + String(destinationBlockID.prefix(8))
+        tapWhenEnabled(app.buttons[destinationLabel].firstMatch)
+        tapWhenEnabled(prepare)
+        tapWhenEnabled(app.buttons["any-native-archive-confirm"])
+        let receipt = app.descendants(matching: .any)
+            .matching(identifier: "any-native-archive-import-result").firstMatch
+        waitFor(NSPredicate(format: "exists == true AND value == %@", "complete"),
+                object: receipt, timeout: 60)
+        tapWhenEnabled(app.buttons["any-native-archive-close"])
+        let destinationAfter = exactBody(app.textViews[destinationEditorID], destinationBody)
+        waitFor(NSPredicate(format: "exists == true"),
+                object: app.buttons["any-native-block-sources-" + destinationBlockID], timeout: 45)
+        XCTAssertEqual(badges.count, 1)
+
+        // One real process restart. Neither document is rewritten or relinked.
+        reopenOwnedWorkspace(app, spaceName: spaceName)
+        tapWhenEnabled(app.buttons[destinationName].firstMatch, timeout: 60)
+        let destinationCold = exactBody(app.textViews[destinationEditorID], destinationBody)
+        waitFor(NSPredicate(format: "exists == true"),
+                object: app.buttons["any-native-block-sources-" + destinationBlockID], timeout: 45)
+        XCTAssertEqual(blocks.count, 1)
+        XCTAssertEqual(badges.count, 1)
+        let destinationColdAssociationCount = badges.count
+        openCanonicalArchiveObservationEntry(app)
+        try exportUsingFiles(named: destinationFile)
+        tapWhenEnabled(app.buttons["any-native-archive-close"])
+        returnToLibrary()
+        tapWhenEnabled(app.buttons[sourceName].firstMatch, timeout: 60)
+        let sourceCold = exactBody(app.textViews[sourceEditorID], sourceBody)
+        waitFor(NSPredicate(format: "exists == true"),
+                object: app.buttons["any-native-block-sources-" + sourceBlockID], timeout: 45)
+        XCTAssertEqual(blocks.count, 1)
+        XCTAssertEqual(badges.count, 1)
+        openCanonicalArchiveObservationEntry(app)
+        try exportUsingFiles(named: sourceColdFile)
+        tapWhenEnabled(app.buttons["any-native-archive-close"])
+
+        let proof: [String: Any] = [
+            "schemaVersion": 1,
+            "method": "NativeLaunchTests/testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies",
+            "scopeUUID": scope.uuidString, "coldReopenObserved": true,
+            "sourceFileName": sourceFile, "destinationFileName": destinationFile,
+            "sourceColdFileName": sourceColdFile,
+            "sourceBlockID": sourceBlockID, "destinationBlockID": destinationBlockID,
+            "canonicalReference": reference, "mappingRequiredBeforePrepare": mappingWasRequired,
+            "sourceAssociationCount": sourceAssociationCount,
+            "destinationColdAssociationCount": destinationColdAssociationCount,
+            "sourceBodySHA256": hash(sourceBody), "sourceColdBodySHA256": hash(sourceCold),
+            "sourceBodyUTF8Count": sourceBody.utf8.count,
+            "destinationBeforeBodySHA256": hash(destinationBefore),
+            "destinationAfterBodySHA256": hash(destinationAfter),
+            "destinationColdBodySHA256": hash(destinationCold),
+            "destinationBodyUTF8Count": destinationCold.utf8.count
+        ]
+        let attachment = XCTAttachment(data: try JSONSerialization.data(withJSONObject: proof, options: [.sortedKeys]),
+                                       uniformTypeIdentifier: "public.json")
+        attachment.name = "native-canonical-archive-roundtrip-receipt"
+        attachment.lifetime = .keepAlways
+        self.add(attachment)
+    }
+    // END_CANONICAL_ARCHIVE_ROUNDTRIP_V1
 
     private func makeApplication(scope: UUID = UUID()) -> XCUIApplication {
         let app = XCUIApplication()

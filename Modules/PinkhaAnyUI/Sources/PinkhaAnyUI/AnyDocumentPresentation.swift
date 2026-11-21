@@ -771,15 +771,31 @@ public final class AnyDocumentPresentation: Sendable {
         }
     }
 
+    func recordEditorDiagnostic(_ phase: AnyNativeEditorDiagnostics.Phase,
+                                request: UUID? = nil, expectedOwner: UUID? = nil,
+                                errorType: String? = nil) {
+        AnyNativeEditorDiagnostics.record(phase, request: request,
+            ownerMatches: expectedOwner.map { $0 == epoch },
+            mounted: isMounted, active: lifetime.isActive, saving: saving, errorType: errorType,
+            canMutate: canMutate, canWrite: canWrite, navigating: isNavigating,
+            draftReview: requiresDraftReview, composing: isComposing,
+            foreground: surface?.isForegroundMounted)
+    }
+
     public func addParagraph(before targetID: String? = nil) async {
-        let requestEpoch = epoch
+        let requestEpoch = epoch, diagnosticRequest = UUID()
+        recordEditorDiagnostic(.addParagraphEntered, request: diagnosticRequest, expectedOwner: requestEpoch)
         do {
             let id = try await createBlock(type: "paragraph", text: "", before: targetID,
-                                           direction: .natural)
+                                           direction: .natural, diagnosticRequest: diagnosticRequest)
             try requireMounted(requestEpoch)
             focusedBlockID = id; selectedBlockIDs = [id]; selectedTextRange = .init(location: 0, length: 0)
             surface?.reveal(blockID: id, selection: selectedTextRange)
+            AnyNativeEditorDiagnostics.record(.addParagraphCompleted, request: diagnosticRequest,
+                ownerMatches: requestEpoch == epoch, mounted: isMounted, active: lifetime.isActive, saving: saving)
         } catch {
+            recordEditorDiagnostic(.addParagraphFailed, request: diagnosticRequest, expectedOwner: requestEpoch,
+                                   errorType: String(reflecting: type(of: error)))
             guard requestEpoch == epoch, lifetime.isActive else { return }
             message = AnyUIErrorText.describe(error)
         }
@@ -797,19 +813,25 @@ public final class AnyDocumentPresentation: Sendable {
 
     private func createBlock(type: String, text: String, before targetID: String?,
                              direction: AnyWritingDirection,
-                             untargetedPlacement: AnyNativeBlockInsertionPolicy = .endOfRoot) async throws -> String {
+                             untargetedPlacement: AnyNativeBlockInsertionPolicy = .endOfRoot,
+                             diagnosticRequest: UUID = UUID()) async throws -> String {
         let requestEpoch = epoch
         await flush()
+        AnyNativeEditorDiagnostics.record(.flushCompleted, request: diagnosticRequest,
+            ownerMatches: requestEpoch == epoch, mounted: isMounted, active: lifetime.isActive, saving: saving)
         try requireMounted(requestEpoch)
         guard !hasPendingEdits else { throw AnyHostError.changedDocument }
         guard canWrite else { throw TorahAssociationRepositoryError.permissionDenied }
         let mutationID = try beginNativeMutation(owner: requestEpoch)
         var completed = false
         defer { finishNativeMutation(mutationID, owner: requestEpoch, completed: completed) }
+        AnyNativeEditorDiagnostics.record(.mutationReserved, request: diagnosticRequest,
+            ownerMatches: true, mounted: isMounted, active: lifetime.isActive, saving: saving)
         let documents = documents, objectID = objectID, blocks = blocks
         let authorize = mutationAuthorization(requestEpoch), readOperation = editorReadOperation
         let result = try await nativeSession.perform { lease in
             let current = try await documents.read(objectID: objectID, lease: lease)
+            await AnyNativeEditorDiagnostics.record(.prewriteReadCompleted, request: diagnosticRequest)
             let placement = try AnyNativeBlockInsertionPosition.resolve(snapshot: current.snapshot,
                 policy: targetID.map(AnyNativeBlockInsertionPolicy.beforeBlock) ?? untargetedPlacement)
             let intent = try AnyNativeBlockCreationIntent(workspace: lease.workspace,
@@ -821,13 +843,17 @@ public final class AnyDocumentPresentation: Sendable {
             let id = try await blocks.ensureBlock(intent) {
                 try await lease.validate(); try await authorize()
             }
+            await AnyNativeEditorDiagnostics.record(.nativeCreationVerified, request: diagnosticRequest)
             let readback = try await readOperation(.mutationReadback, documents, objectID, lease)
             guard readback.snapshot.depthFirstIDs.contains(id) else { throw AnyHostError.writeUncertain }
+            await AnyNativeEditorDiagnostics.record(.mutationReadbackVerified, request: diagnosticRequest)
             return (id, readback)
         }
         try requireMounted(requestEpoch)
         guard ownsNativeMutation(mutationID, owner: requestEpoch) else { throw AnyHostError.sessionClosed }
         acceptAcknowledged(result.1, blockID: nil, undo: nil)
+        AnyNativeEditorDiagnostics.record(.readbackPublished, request: diagnosticRequest,
+            ownerMatches: requestEpoch == epoch, mounted: isMounted, active: lifetime.isActive, saving: saving)
         completed = true
         return result.0
     }

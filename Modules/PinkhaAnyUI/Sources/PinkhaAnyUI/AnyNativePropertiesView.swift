@@ -82,6 +82,7 @@ public struct AnyNativePropertiesView: View {
                 if model.isSaving { ProgressView(AnyUIErrorText.text("שומר…", "Saving…")) }
             }
             .navigationTitle(AnyUIErrorText.text("מאפיינים", "Properties"))
+            .accessibilityIdentifier("any-native-properties-list")
             .refreshable { await model.load(reviewCurrent: true) }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -259,6 +260,7 @@ public struct AnyNativePropertiesView: View {
                 if model.isSaving { ProgressView() }
                 if let message = model.message { Text(message).font(.footnote).foregroundStyle(.secondary) }
             }
+            .accessibilityIdentifier("any-native-property-customization-list")
             .navigationTitle(AnyUIErrorText.text("בחירת מאפיינים", "Choose properties"))
             .toolbar { ToolbarItem(placement: .confirmationAction) {
                 Button(AnyUIErrorText.text("סיום", "Done")) { showsCustomization = false }

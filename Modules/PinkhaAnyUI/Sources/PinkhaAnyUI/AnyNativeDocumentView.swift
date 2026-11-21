@@ -1,5 +1,6 @@
 #if canImport(UIKit) && canImport(SwiftUI)
 import Foundation
+import Combine
 import SwiftUI
 import UIKit
 import PinkhaKit
@@ -25,6 +26,7 @@ public struct AnyNativeDocumentView: View {
                                 Label(AnyUIErrorText.text("מסמך ריק", "Empty document"), systemImage: "doc.text")
                             } actions: {
                                 Button(AnyUIErrorText.text("הוספת פסקה", "Add paragraph")) {
+                                    presentation.recordEditorDiagnostic(.emptyButtonTapped)
                                     Task { await presentation.addParagraph() }
                                 }.disabled(!presentation.canMutate)
                                     .accessibilityIdentifier("any-native-add-paragraph")
@@ -64,6 +66,7 @@ public struct AnyNativeDocumentView: View {
                         .accessibilityIdentifier("any-native-canonical-transfer")
                         .disabled(!canPresentDocumentChild)
                     Button(AnyUIErrorText.text("הוספת פסקה", "Add paragraph"), systemImage: "plus") {
+                        presentation.recordEditorDiagnostic(.menuButtonTapped)
                         Task { await presentation.addParagraph() }
                     }.disabled(!presentation.canMutate)
                     Button(AnyUIErrorText.text("כתיבה מימין לשמאל", "Right to left")) {
@@ -152,6 +155,16 @@ public struct AnyNativeDocumentView: View {
             }
         } message: { Text(presentation.message ?? "") }
         .task { await presentation.load() }
+        .onAppear { presentation.recordEditorDiagnostic(.documentAppeared) }
+        .onChange(of: presentation.canMutate) { _, _ in
+            presentation.recordEditorDiagnostic(.documentReadinessChanged)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            presentation.recordEditorDiagnostic(.documentSceneChanged)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+            presentation.recordEditorDiagnostic(.documentSceneChanged)
+        }
         // Block-source buttons can open the retained Inspector directly. Keep
         // its ownership until onDismiss, including the closing animation.
         .onChange(of: presentation.torah.selection?.id) { _, value in

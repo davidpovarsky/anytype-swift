@@ -316,6 +316,7 @@ public struct AnyNativeArchiveTransferView: View {
     @State private var showsExporter = false
     @State private var showsImporter = false
     @State private var exportedFileName: String?
+    @State private var exportsDirectory: URL?
     @Environment(\.dismiss) private var dismiss
 
     public init(document: AnyDocumentPresentation) {
@@ -336,10 +337,10 @@ public struct AnyNativeArchiveTransferView: View {
                         Task {
                             if let file = await model.exportFile() { export = file; showsExporter = true }
                         }
-                    }.disabled(model.isBusy).accessibilityIdentifier("any-native-archive-export")
+                    }.disabled(model.isBusy || exportsDirectory == nil).accessibilityIdentifier("any-native-archive-export")
                     Button(AnyUIErrorText.text("בחירת קובץ לייבוא", "Choose archive to import"),
                            systemImage: "square.and.arrow.down") { showsImporter = true }
-                        .disabled(!model.canChangeMapping).accessibilityIdentifier("any-native-archive-import")
+                        .disabled(!model.canChangeMapping || exportsDirectory == nil).accessibilityIdentifier("any-native-archive-import")
                     if let exportedFileName {
                         LabeledContent(AnyUIErrorText.text("הקובץ שיוצא", "Exported archive"), value: exportedFileName)
                             .accessibilityIdentifier("any-native-archive-exported-file")
@@ -439,9 +440,30 @@ public struct AnyNativeArchiveTransferView: View {
                 case .failure(let error): model.message = AnyUIErrorText.describe(error)
                 }
             }
-            .task { model.activate() }
+            .fileDialogDefaultDirectory(exportsDirectory)
+            .task {
+                model.activate()
+                do { exportsDirectory = try Self.userExportsDirectory() }
+                catch { model.message = AnyUIErrorText.describe(error) }
+            }
             .onDisappear { if !document.showsArchiveTransfer { model.deactivate() } }
         }
+    }
+
+    /// Documents is intentionally user-visible in Files. Native storage and
+    /// journals continue to use Application Support; credentials stay in Keychain.
+    private static func userExportsDirectory() throws -> URL {
+        let documents = try FileManager.default.url(for: .documentDirectory,
+            in: .userDomainMask, appropriateFor: nil, create: true)
+        let directory = documents.appendingPathComponent("Exports", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let values = try directory.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
+        guard values.isDirectory == true, values.isSymbolicLink != true,
+              directory.resolvingSymlinksInPath().deletingLastPathComponent() ==
+                documents.resolvingSymlinksInPath() else {
+            throw CocoaError(.fileWriteInvalidFileName)
+        }
+        return directory
     }
 
     private func blockLabel(_ block: AnyEditorBlock) -> String {

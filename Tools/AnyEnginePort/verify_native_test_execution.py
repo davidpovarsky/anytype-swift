@@ -124,12 +124,28 @@ PROFILES["ui-ios-remaining"] = {
 PROFILES["native-ui-remaining"] = {
     "NativeLaunchTests": PROFILES["native-ui"]["NativeLaunchTests"][2:],
 }
+PROFILES["native-ui-entry"] = {
+    "NativeLaunchTests": ["testCreateEditHanlinConsentBackgroundAndColdReopen"],
+}
+PROFILES["native-ui-followup"] = {
+    "NativeLaunchTests": [name for name in PROFILES["native-ui-remaining"]["NativeLaunchTests"]
+                         if name != "testCreateEditHanlinConsentBackgroundAndColdReopen"],
+}
 SOURCE_PATHS["ui-ios-remaining"] = [
     "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeMarkedTextTests.swift",
     "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeFocusLifecycleTests.swift",
     "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
 ]
 SOURCE_PATHS["native-ui-remaining"] = SOURCE_PATHS["native-ui"]
+SOURCE_PATHS["native-ui-entry"] = SOURCE_PATHS["native-ui"]
+SOURCE_PATHS["native-ui-followup"] = SOURCE_PATHS["native-ui"]
+EXACT_PROFILES = frozenset({"native-ui-entry", "native-ui-followup", "archive-roundtrip"})
+
+# This is a real export/import/remap/cold-reopen journey, separate from picker observation.
+PROFILES["archive-roundtrip"] = {
+    "NativeLaunchTests": ["testCanonicalArchiveFilesRoundtripPreservesMappingAndBodies"],
+}
+SOURCE_PATHS["archive-roundtrip"] = SOURCE_PATHS["native-ui"]
 
 def require(condition, message):
     if not condition:
@@ -165,6 +181,8 @@ def validate(summary, tree, profile, udid):
               ("totalTestCount", "passedTests", "failedTests", "skippedTests")}
     require(all(type(value) is int for value in counts.values()), "Missing integer execution counts")
     require(counts["totalTestCount"] >= len(expected) > 0, "Zero or incomplete test execution")
+    if profile in EXACT_PROFILES:
+        require(counts["totalTestCount"] == len(expected), "Unexpected tests outside this exact selection")
     require(counts["passedTests"] == counts["totalTestCount"] and
             counts["failedTests"] == counts["skippedTests"] == 0, "Failed or skipped tests")
     configurations = summary.get("devicesAndConfigurations", [])
@@ -179,6 +197,8 @@ def validate(summary, tree, profile, udid):
     cases = test_cases(tree)
     require(cases and all(result == "Passed" for result in cases.values()),
             "Missing, failed, or skipped actual test nodes")
+    if profile in EXACT_PROFILES:
+        require(len(cases) == len(expected), "Actual case inventory differs from this exact selection")
     observed = set()
     for identifier in cases:
         for method in expected:

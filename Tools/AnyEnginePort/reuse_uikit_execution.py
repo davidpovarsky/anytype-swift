@@ -119,6 +119,69 @@ def verify_sources(producer: str, consumer: str, root: Path = ROOT) -> dict[str,
     return current
 
 
+# Only individually reviewed, unexecuted files may differ in this component
+# profile. No directory wildcard or changed renderer/focus/test source can be
+# excused by a review record. Every permitted difference is bound to both blobs.
+REVIEWABLE_UNEXECUTED_PATHS = frozenset({
+    "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHostAuthorizedTorahOperationReader.swift",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyDocumentPresentation.swift",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeDocumentView.swift",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativePropertiesView.swift",
+    "Modules/PinkhaAnyUI/Sources/PinkhaAnyUI/AnyNativeEditorDiagnostics.swift",
+})
+REVIEW_CLAIM = "not_executed_by_original_fourteen_methods"
+
+
+def verify_reviewed_source_maps(original: dict[str, str], current: dict[str, str],
+                                review: dict, producer: str, run_id: str) -> tuple[dict, list]:
+    require(review.get("schemaVersion") == 1 and review.get("profile") == PROFILE and
+            review.get("producerCommit") == producer and review.get("producerRunID") == run_id,
+            "review_producer_or_profile_mismatch")
+    require(review.get("claim") == REVIEW_CLAIM, "review_cannot_relabel_changed_source_as_passed")
+    require(review.get("requiredMethods") == sorted(execution.expected_methods(PROFILE)),
+            "review_required_methods_changed")
+    expected_tests = {path: original.get(path) for path in execution.SOURCE_PATHS[PROFILE]}
+    require(all(expected_tests.values()) and review.get("testSourceGitBlobs") == expected_tests,
+            "review_test_sources_mismatch")
+    entries = review.get("reviewedChanges")
+    require(isinstance(entries, list) and entries, "missing_reviewed_changes")
+    paths = [entry.get("path") for entry in entries if isinstance(entry, dict)]
+    require(len(paths) == len(entries) and len(paths) == len(set(paths)) and
+            set(paths) <= REVIEWABLE_UNEXECUTED_PATHS, "unreviewable_or_duplicate_source_change")
+    changed = {path for path in original.keys() | current.keys()
+               if original.get(path) != current.get(path)}
+    require(changed == set(paths), "new_or_missing_source_difference_requires_review")
+    for entry in entries:
+        path = entry["path"]
+        require(set(entry) == {"path", "beforeGitBlob", "afterGitBlob", "claim", "reason"} and
+                entry["claim"] == REVIEW_CLAIM and isinstance(entry["reason"], str) and
+                len(entry["reason"]) >= 60, "incomplete_or_relabelled_source_review")
+        before, after = original.get(path), current.get(path)
+        require(entry["beforeGitBlob"] == before and entry["afterGitBlob"] == after and
+                isinstance(after, str) and re.fullmatch(r"[0-9a-f]{40}", after) is not None and
+                before != after, "reviewed_source_blob_mismatch")
+    # These are the only entries described as unchanged in the new consumer.
+    return {path: blob for path, blob in current.items() if path not in changed}, entries
+
+
+def verify_reviewed_sources(producer: str, consumer: str, run_id: str, review_path: Path,
+                            root: Path = ROOT) -> tuple[dict, dict]:
+    original, current = source_tree(producer, root), source_tree(consumer, root)
+    data = review_path.read_bytes()
+    sources, entries = verify_reviewed_source_maps(original, current, json.loads(data), producer, run_id)
+    dirty = git("diff", "--name-only", "-z", "HEAD", "--", *PROTECTED_PATHS, root=root)
+    untracked = git("ls-files", "--others", "--exclude-standard", "-z",
+                    "--", *PROTECTED_PATHS, root=root)
+    require(all(not path or path.decode("utf-8") == EXCLUDED_SOURCE
+                for path in (dirty + untracked).split(b"\0")), "tested_worktree_source_is_dirty")
+    return sources, {"reviewSHA256": digest(data), "claim": REVIEW_CLAIM,
+                     "reviewedDifferentSource": entries,
+                     "executedChangedSourceCountInOriginalRun": 0}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--evidence", required=True, type=Path)
@@ -126,6 +189,7 @@ def main() -> int:
     parser.add_argument("--producer-run", required=True)
     parser.add_argument("--consumer-simulator", required=True, type=Path)
     parser.add_argument("--consumer-xcode-version", required=True, type=Path)
+    parser.add_argument("--reviewed-source-changes", type=Path)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     record = {"schemaVersion": 1, "status": "FAIL",
@@ -138,7 +202,12 @@ def main() -> int:
         consumer = git("rev-parse", "HEAD").decode("ascii").strip()
         record["consumerCommit"] = consumer
         original = verify_evidence(args.evidence, args.producer_commit, args.producer_run)
-        sources = verify_sources(args.producer_commit, consumer)
+        reviewed = None
+        if args.reviewed_source_changes is not None:
+            sources, reviewed = verify_reviewed_sources(args.producer_commit, consumer,
+                args.producer_run, args.reviewed_source_changes)
+        else:
+            sources = verify_sources(args.producer_commit, consumer)
         previous_simulator = read_json(args.evidence / "simulator.json")
         current_simulator = read_json(args.consumer_simulator)
         require(all(previous_simulator.get(key) and
@@ -159,6 +228,13 @@ def main() -> int:
                       originalReceiptPath="reused-ui-ios/" + RECEIPT,
                       unchangedSourceGitBlobs=sources, excludedUnexecutedSource=EXCLUDED_SOURCE,
                       originalDevice=original["device"])
+        if reviewed is not None:
+            record["sourceReview"] = reviewed
+            record["claimBoundary"] = (
+                "Fourteen unchanged component methods executed only in the original producer. "
+                "The exact reviewed different files were not executed by those methods; "
+                "their changed behavior is not covered by the original PASS."
+            )
     except Exception as error:
         record["error"] = str(error)
     args.output.parent.mkdir(parents=True, exist_ok=True)
