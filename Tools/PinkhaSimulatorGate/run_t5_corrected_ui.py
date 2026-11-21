@@ -16,6 +16,7 @@ import sys
 
 import run_t5_apple_pair as pair
 import run_t5_native_ui as native_ui
+import t5_host_actions as host_actions
 import run_ui27 as ui
 from validate_release import method_results
 
@@ -38,6 +39,7 @@ def build_once(app, derived, work, proof, selection, source, binding):
         "-configuration", CONFIGURATION, "-destination", "platform=iOS Simulator,id=" + selection["udid"],
         "-derivedDataPath", str(derived), "-parallel-testing-enabled", "NO",
         "-only-testing:AnytypeTests/" + PREPARATION.split("/")[0], *pair.FLAGS,
+        "-only-testing:AnytypeTests/" + host_actions.SUITE,
     ]
     _, log = pair.run_logged(command, app, proof, "build-corrected-r15", 5400)
     pair.require(pair.git(app, "rev-parse", "HEAD") == source and not pair.git(app, "status", "--porcelain"),
@@ -84,6 +86,7 @@ def execute(args, result):
     pair.require(not work.exists(), "Fresh controller-owned private work directory required")
     work.mkdir(parents=True, mode=0o700)
     source = pair.verify_published_source(app, proof)
+    host_actions.source_contract(app)  # Reject declaration drift before compilation.
     run_id = os.environ["GITHUB_RUN_ID"]
     preflight = json.loads((proof / "preflight/preflight.json").read_text(encoding="utf8"))
     pair.require(preflight.get("status") == "PREFLIGHT_PASS_UI_NOT_RUN"
@@ -100,7 +103,13 @@ def execute(args, result):
     # Compilation uses a newly owned destination. The shared UI controller then
     # creates and verifies a separate empty simulator for its actual account.
     build = build_once(app, derived, work, proof / "build", selection, source, binding)
-    result.update(completed_app_builds=1, phase="ACTUAL_NATIVE_UI")
+    result.update(completed_app_builds=1, phase="ACTUAL_HOST_ACTIONS", host_actions_status="RUNNING")
+    pair.write(proof / "result.json", result)
+    host = host_actions.execute(app=app, build=build, selection=selection,
+        evidence=proof / "host-actions", pair=pair, ui=ui, source=source, run_id=run_id)
+    pair.require(host["status"] == host_actions.PASS, "Exact pending T5 host actions did not pass")
+    result.update(host_actions_status=host["status"], host_actions_result="host-actions/execution.json",
+                  phase="ACTUAL_NATIVE_UI")
     pair.write(proof / "result.json", result)
     outcome = native_ui.run_after_corrected_build(app=app, work=work, proof=proof, build=build,
         selection=selection, pair=pair, ui=ui, method_results=method_results, source=source, run_id=run_id)
@@ -117,7 +126,8 @@ def execute(args, result):
         and outcome.get("mixed_version_accepted") is False and outcome.get("host_freshness_accepted") is False
         and outcome.get("ui_simulator_shutdown") is True, "Standalone scope or owned cleanup differs")
     result.update(status=PASS, phase="COMPLETE", actual_counts=dict(
-        app_builds=1, native_preparation_methods=1, native_mutations=2, native_mutation_observations=3, core_ui_methods=2,
+        app_builds=1, host_action_methods=11, host_action_cases=12,
+        native_preparation_methods=1, native_mutations=2, native_mutation_observations=3, core_ui_methods=2,
         hebrew_readonly_ui_executions=2, ui_app_lifetimes=5, failed=0, skipped=0),
         actual_ui_observations=outcome.get("actual_observation_counts"))
 
@@ -129,6 +139,7 @@ def main(argv=None):
     parser.add_argument("--source-run-id", required=True)
     args = parser.parse_args(argv)
     result = dict(status="RUNNING", phase="PREFLIGHT", completed_app_builds=0, native_ui_status="NOT_RUN",
+        host_actions_status="NOT_RUN",
         mixed_version_accepted=False, host_freshness_accepted=False, full_matrix_accepted=False,
         product_lookup_flag="OFF", voice_over_status="NOT_RUN", visual_review_status="PENDING",
         physical_device_accepted=False, started_at=datetime.now(timezone.utc).isoformat())
@@ -137,6 +148,8 @@ def main(argv=None):
     except BaseException as error:
         result.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else "FAIL",
                       error_type=type(error).__name__, error=str(error))
+        if result["phase"] == "ACTUAL_HOST_ACTIONS":
+            result["host_actions_status"] = result["status"]
         raise
     finally:
         result["finished_at"] = datetime.now(timezone.utc).isoformat()
