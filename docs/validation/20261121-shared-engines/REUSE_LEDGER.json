@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "recordedDate": "2026-11-21",
+  "originalRunID": "44695105165",
+  "originalCommit": "31ae2e63890b6e10af8413625534f6234ed263bb",
+  "consumerAtDispatch": "96173b0afc6b360c8f780ae70c6c80042fda98da",
+  "focusedRunID": "44942212731",
+  "originalEvidence": [
+    {
+      "path": "original-44695105165/runtime-named-execution.json",
+      "sha256": "6538099640633adcaf29a1b5597df69721680c7d077d6f5c15ebcfec14bed197",
+      "status": "PASS",
+      "counts": {
+        "totalTestCount": 3,
+        "passedTests": 3,
+        "failedTests": 0,
+        "skippedTests": 0
+      },
+      "scope": "actual_named_apple_test_execution",
+      "observationOnly": false
+    },
+    {
+      "path": "original-44695105165/hanlin-ios-named-execution.json",
+      "sha256": "9d77b164be174b9db9b591d5a423d3bb27c412ea4f6dcf6d77fc9e047a678625",
+      "status": "PASS",
+      "counts": {
+        "totalTestCount": 36,
+        "passedTests": 36,
+        "failedTests": 0,
+        "skippedTests": 0
+      },
+      "scope": "actual_named_apple_test_execution",
+      "observationOnly": false
+    },
+    {
+      "path": "original-44695105165/ui-ios-named-execution.json",
+      "sha256": "30054e30da91c0c1dca29c53c70e114c3994cd8e56983dadc2b492da3a622bab",
+      "status": "PASS",
+      "counts": {
+        "totalTestCount": 115,
+        "passedTests": 115,
+        "failedTests": 0,
+        "skippedTests": 0
+      },
+      "scope": "actual_named_apple_test_execution",
+      "observationOnly": false
+    },
+    {
+      "path": "original-44695105165/application-named-execution.json",
+      "sha256": "09f13bfe7488b819633dcb4da7725483cd6336131e0d5aa377f9defc38c9c7bc",
+      "status": "PASS",
+      "counts": {
+        "totalTestCount": 9,
+        "passedTests": 9,
+        "failedTests": 0,
+        "skippedTests": 0
+      },
+      "scope": "actual_named_apple_test_execution",
+      "observationOnly": false
+    },
+    {
+      "path": "original-44695105165/native-ui-named-execution.json",
+      "sha256": "95c07ff5ab16e04cdc9d7f0460575d3b2ccd67607ed9b289404bbf97abe722c9",
+      "status": "FAIL",
+      "counts": null,
+      "scope": "actual_named_apple_test_execution",
+      "observationOnly": false
+    },
+    {
+      "path": "original-44695105165/archive-picker-observation-named-execution.json",
+      "sha256": "287e91621916a5424df5c893261fd3c7f4a78a4aedfb990a0cede3d5ee7a927c",
+      "status": "FAIL",
+      "counts": null,
+      "scope": "actual_named_apple_ui_observation",
+      "observationOnly": true
+    }
+  ],
+  "evidenceRelabeled": false,
+  "fullAcceptance": false,
+  "reusedPassingScopes": [
+    {
+      "scope": "patched native runtime",
+      "methods": 3
+    },
+    {
+      "scope": "shared Hanlin iOS",
+      "methods": 36
+    },
+    {
+      "scope": "hosted application",
+      "methods": 9
+    },
+    {
+      "scope": "unaffected UIKit methods",
+      "methods": 104
+    },
+    {
+      "scope": "native UI account entry and background foreground reopen",
+      "methods": 2
+    }
+  ],
+  "rerunChangedScopes": [
+    {
+      "scope": "Any UIKit renderer, marked input and focus",
+      "existingMethods": 11,
+      "newMethods": 3
+    },
+    {
+      "scope": "Heart UIKit local input ownership",
+      "methods": 10,
+      "declaredInvocations": 15
+    }
+  ],
+  "rerunUnpassedScopes": [
+    {
+      "scope": "native UI acceptance",
+      "methods": 8
+    },
+    {
+      "scope": "archive picker observation only",
+      "methods": 1
+    }
+  ],
+  "sourceReview": {
+    "nativeInputs": "Exact previous producer binary/manifest/overlays verified by prepare_native_runtime at consumer; original producer receipt preserved.",
+    "nativeRuntimeHanlinHost": "No implementation/test diffs in these modules from producer to shared source.",
+    "hostedApplication": "Implementation and tests unchanged; only package dependency pin converges with retained Heart at TorahInspectorKit158acb.",
+    "kitPin": "158acb is one existing cancellation correction ahead of4e59. Its51macOS+51iOStests already passed in44567239957; selected UI acceptance covers consuming behavior.",
+    "ui": "Existing115 test declarations unchanged. The11marked/focus methods affected by rendering are selected again;3new renderer tests are added. The104other original passes retain original source and receipt.",
+    "nativeUI": "Only original2passing account-entry/lifecycle methods reused; all9failed methods selected again. Picker observation is not archive roundtrip acceptance."
+  }
+}
