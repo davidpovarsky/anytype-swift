@@ -254,15 +254,13 @@ public final class AnyNativeEditorController: UIViewController, AnyEditorMounted
         let selected = presentation.selectedBlockIDs.contains(block.id)
         cell.contentView.backgroundColor = selected ? UIColor.systemBlue.withAlphaComponent(0.045) : .clear
         if cell.renderedSource != renderedSource || cell.renderedNativeStyle != block.native["style"] {
-            let selection = cell.textView.selectedRange
             rendering = true
-            cell.textView.attributedText = attributed(projection, block: block)
-            if selection.location <= cell.textView.text.utf16.count {
-                cell.textView.selectedRange = NSRange(location: selection.location,
-                    length: min(selection.length, cell.textView.text.utf16.count - selection.location))
-            }
+            let applied = AnyNativeTextRenderer.apply(attributed(projection, block: block),
+                to: cell.textView, isComposing: cell.textView.isComposingMarkedText)
             rendering = false
-            cell.renderedSource = renderedSource; cell.renderedNativeStyle = block.native["style"]
+            if applied {
+                cell.renderedSource = renderedSource; cell.renderedNativeStyle = block.native["style"]
+            }
         }
         var depth = 0, parent = block.parentID, seen = Set<String>()
         while !parent.isEmpty, let ancestor = blockByID[parent], seen.insert(parent).inserted {

@@ -83,7 +83,8 @@ final class AnyNativeArchivePresentation {
     var message: String?
     @ObservationIgnored private weak var document: AnyDocumentPresentation?
     @ObservationIgnored private var epoch = UUID()
-    @ObservationIgnored private var active = false
+    // Activation changes the import controls after the sheet's first render.
+    private var active = false
 
     init(document: AnyDocumentPresentation) { self.document = document }
     var targetTitle: String { document?.title ?? "" }
