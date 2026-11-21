@@ -91,6 +91,13 @@ on:
           - en
           - he
         default: en
+      runtime_profile:
+        description: Exact retained Heart runtime; corrected runtime must use its own producer run
+        type: choice
+        options:
+          - r14
+          - r15-attachment-v1
+        default: r14
       source_run_id:
         description: Verified Heart runtime run, or native evidence source for diagnostics
         type: string
@@ -123,12 +130,14 @@ jobs:
     uses: ./.github/workflows/pinkha-simulator-ui27.yml
     with:
       ui_scope: ${{ inputs.ui_scope }}
+      runtime_profile: ${{ inputs.runtime_profile }}
       heart_source_run_id: ${{ inputs.source_run_id }}
 
   wave15-acceptance:
     if: ${{ inputs.route == 'wave15-acceptance' }}
     uses: ./.github/workflows/pinkha-simulator-ui27.yml
     with:
+      runtime_profile: ${{ inputs.runtime_profile }}
       heart_source_run_id: ${{ inputs.source_run_id }}
       acceptance_lane: ${{ inputs.acceptance_lane }}
       acceptance_device: ${{ inputs.acceptance_device }}
@@ -138,6 +147,7 @@ jobs:
     if: ${{ inputs.route == 'editor-host-tests' }}
     uses: ./.github/workflows/pinkha-sdk06-tests.yml
     with:
+      runtime_profile: ${{ inputs.runtime_profile }}
       heart_source_run_id: ${{ inputs.source_run_id }}
       expected_app_branch: ${{ github.ref_name }}
       profile: editor
@@ -146,6 +156,7 @@ jobs:
     if: ${{ inputs.route == 'wave15-core-tests' }}
     uses: ./.github/workflows/pinkha-sdk06-tests.yml
     with:
+      runtime_profile: ${{ inputs.runtime_profile }}
       heart_source_run_id: ${{ inputs.source_run_id }}
       expected_app_branch: ${{ github.ref_name }}
       profile: wave15-core
@@ -154,6 +165,7 @@ jobs:
     if: ${{ inputs.route == 'wave15-component-tests' }}
     uses: ./.github/workflows/pinkha-sdk06-tests.yml
     with:
+      runtime_profile: ${{ inputs.runtime_profile }}
       heart_source_run_id: ${{ inputs.source_run_id }}
       expected_app_branch: ${{ github.ref_name }}
       profile: wave15-components
@@ -184,6 +196,7 @@ jobs:
     if: ${{ inputs.route == 'sdk06-tests' }}
     uses: ./.github/workflows/pinkha-sdk06-tests.yml
     with:
+      runtime_profile: ${{ inputs.runtime_profile }}
       heart_source_run_id: ${{ inputs.source_run_id }}
       expected_app_branch: ${{ github.ref_name }}
 

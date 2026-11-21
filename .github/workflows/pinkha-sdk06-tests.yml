@@ -3,8 +3,12 @@ name: Source-bound Apple host component tests
 on:
   workflow_call:
     inputs:
+      runtime_profile:
+        description: Explicit Heart runtime identity; no automatic fallback between variants
+        type: string
+        default: r14
       heart_source_run_id:
-        description: Successful run containing the exact verified universal r14 runtime
+        description: Successful run containing the explicitly selected verified Heart runtime
         required: true
         type: string
       expected_app_branch:
@@ -28,6 +32,7 @@ jobs:
     env:
       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
       HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}
+      HEART_RUNTIME_PROFILE: ${{ inputs.runtime_profile }}
       EXPECTED_APP_BRANCH: ${{ inputs.expected_app_branch }}
       HOST_PROFILE: ${{ inputs.profile }}
       HOST_EVIDENCE: build/${{ inputs.profile == 'shared-editor' && 'shared-editor' || inputs.profile == 'wave15-components' && 'wave15-components' || inputs.profile == 'editor' && 'editor-host' || inputs.profile == 'wave15-core' && 'wave15-core' || 'sdk06' }}-evidence
@@ -79,27 +84,24 @@ jobs:
           fi
       - name: Verify actual Xcode27 and create disposable OS27 devices
         run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence "$HOST_EVIDENCE/preflight"
-      - name: Install explicit verified Heart source without a stale fallback
+      - name: Install the explicitly selected original verified runtime
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          gh run download "$HEART_SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" \
-            --name Pinkha-Universal-Verified-Heart-r14 --dir build/sdk06-verified-heart
-          python3 Tools/PinkhaNativeDerived/install_verified_heart.py \
-            --archive build/sdk06-verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz \
-            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
-            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
-            --app-source "$GITHUB_WORKSPACE" --source-run-id "$HEART_SOURCE_RUN_ID" \
-            --expected-app-branch "$EXPECTED_APP_BRANCH" --evidence "$HOST_EVIDENCE/heart"
+          python3 -B Tools/PinkhaNativeDerived/download_heart_runtime.py \
+            --runtime-profile "$HEART_RUNTIME_PROFILE" --source-run-id "$HEART_SOURCE_RUN_ID" \
+            --app-source "$GITHUB_WORKSPACE" --expected-app-branch "$EXPECTED_APP_BRANCH" \
+            --work "build/host-heart-${{ github.run_id }}-${{ github.run_attempt }}" \
+            --evidence "$HOST_EVIDENCE/heart"
       - name: Build Debug-Anytype and execute the exact reviewed component profile
         timeout-minutes: 100
         run: |
           python3 Tools/Hanlin/run_host_tests.py --app "$GITHUB_WORKSPACE" \
             --evidence "$HOST_EVIDENCE" --derived "$HOST_DERIVED" \
             --expected-app-branch "$EXPECTED_APP_BRANCH" --heart-source-run-id "$HEART_SOURCE_RUN_ID" \
-            --profile "$HOST_PROFILE"
+            --profile "$HOST_PROFILE" --runtime-profile "$HEART_RUNTIME_PROFILE"
       - name: Package actual logs and xcresult even on failure
         if: always()
         run: |

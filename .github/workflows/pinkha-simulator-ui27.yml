@@ -6,6 +6,10 @@ on:
       ui_scope:
         type: string
         default: FULL_SMOKE
+      runtime_profile:
+        description: Explicit Heart runtime identity; no automatic fallback between variants
+        type: string
+        default: r14
       heart_source_run_id:
         type: string
         required: true
@@ -34,6 +38,8 @@ jobs:
       UI27_ACCEPTANCE_LANE: ${{ inputs.acceptance_lane }}
       UI27_DEVICE_FAMILY: ${{ inputs.acceptance_device }}
       UI27_LANGUAGE: ${{ inputs.acceptance_language }}
+      HEART_RUNTIME_PROFILE: ${{ inputs.runtime_profile }}
+      HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}
     steps:
       - name: Checkout exact integration source
         uses: actions/checkout@v4
@@ -62,19 +68,15 @@ jobs:
           python3 -B Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py -v >> build/ui27-evidence/hanlin-runtime-controller-controls.log 2>&1
       - name: Verify actual Xcode27 and create disposable OS27 iPhone and iPad
         run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/ui27-evidence/preflight
-      - name: Install exact already verified universal r14 runtime
+      - name: Install the explicitly selected original verified runtime
         env:
           GH_TOKEN: ${{ github.token }}
-          HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}
         run: |
-          [[ "$HEART_SOURCE_RUN_ID" =~ ^[0-9]+$ ]] || { echo "Supply source_run_id from the heart-runtime route." >&2; exit 1; }
-          gh run download "$HEART_SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name Pinkha-Universal-Verified-Heart-r14 --dir build/verified-heart
-          python3 Tools/PinkhaNativeDerived/install_verified_heart.py \
-            --archive build/verified-heart/Pinkha-Universal-Verified-Heart-r14.tar.gz \
-            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
-            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
-            --app-source "$GITHUB_WORKSPACE" --source-run-id "$HEART_SOURCE_RUN_ID" \
-            --expected-app-branch "$GITHUB_REF_NAME" --evidence build/ui27-evidence/heart
+          python3 -B Tools/PinkhaNativeDerived/download_heart_runtime.py \
+            --runtime-profile "$HEART_RUNTIME_PROFILE" --source-run-id "$HEART_SOURCE_RUN_ID" \
+            --app-source "$GITHUB_WORKSPACE" --expected-app-branch "$GITHUB_REF_NAME" \
+            --work "build/ui27-heart-${{ github.run_id }}-${{ github.run_attempt }}" \
+            --evidence build/ui27-evidence/heart
       - name: Restore compatible ARM64 Xcode27 compiled dependencies
         id: ui27-cache
         uses: actions/cache/restore@v4
@@ -89,13 +91,17 @@ jobs:
         timeout-minutes: 105
         run: |
           python3 Tools/PinkhaSimulatorGate/run_ui27.py --app "$GITHUB_WORKSPACE" \
-            --evidence build/ui27-evidence --derived build/ui27-derived --ui-scope "$UI27_SCOPE"
+            --evidence build/ui27-evidence --derived build/ui27-derived --ui-scope "$UI27_SCOPE" \
+            --runtime-profile "$HEART_RUNTIME_PROFILE" --heart-source-run-id "$HEART_SOURCE_RUN_ID"
       - name: Execute the selected existing Wave-15 lane or reviewed batch preset
         if: ${{ inputs.acceptance_lane != '' }}
         id: wave15-execution
         timeout-minutes: 120
         run: |
-          python3 Tools/PinkhaSimulatorGate/run_wave15_acceptance.py --app "$GITHUB_WORKSPACE"             --evidence build/ui27-evidence --derived build/ui27-derived             --lane "$UI27_ACCEPTANCE_LANE" --device "$UI27_DEVICE_FAMILY" --language "$UI27_LANGUAGE"
+          python3 Tools/PinkhaSimulatorGate/run_wave15_acceptance.py --app "$GITHUB_WORKSPACE" \
+            --evidence build/ui27-evidence --derived build/ui27-derived \
+            --lane "$UI27_ACCEPTANCE_LANE" --device "$UI27_DEVICE_FAMILY" --language "$UI27_LANGUAGE" \
+            --runtime-profile "$HEART_RUNTIME_PROFILE" --heart-source-run-id "$HEART_SOURCE_RUN_ID"
       - name: Package actual logs screenshots xcresult even on failure
         if: always()
         run: python3 Tools/PinkhaNativeDerived/package_evidence.py build/ui27-evidence

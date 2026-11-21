@@ -407,12 +407,11 @@ def execute(args, receipt, *, build_context=None):
                      if build_context is None else build_context.device["name"])
     require(selected["name"] == expected_name, "Refuse a non-disposable simulator")
     installation = json.loads((evidence / "heart/heart-installation.json").read_text())
-    require(installation.get("status") == "PASS" and installation.get("app_source_sha") == head
-            and installation.get("marker") == shared.MARKER, "Exact native runtime was not installed")
+    binding = shared.runtime_binding(app, evidence, head, args, installation)
     matrix = json.loads((app / "Tools/PinkhaSimulatorGate/required-coverage.json").read_text())
     identity = shared.candidate_identity(app, matrix)
     receipt.update(source_sha=head, run_id=os.environ["GITHUB_RUN_ID"], run_attempt=os.environ["GITHUB_RUN_ATTEMPT"],
-                   kit_sha=shared.KIT, native_marker=shared.MARKER, selection=selection,
+                   kit_sha=shared.KIT, **binding, selection=selection,
                    candidate_input_hashes=identity["hashes"], runtime_installation=installation, phase="BUILD")
     shared.write(evidence / "selection-plan.json", selection)
     shared.write(evidence / "execution.json", receipt)
@@ -459,7 +458,7 @@ def execute(args, receipt, *, build_context=None):
     receipt.update(native_build_succeeded=True, native_build_flags=flags)
     built = derived / "Build/Products" / (configuration_name + "-iphonesimulator/Anytype.app")
     shared.verify_signed_simulator(built, evidence)
-    shared.verify_runtime_copies(built, shared.MARKER.encode(), evidence)
+    shared.verify_runtime_copies(built, binding['native_marker'].encode(), evidence)
     checkouts = derived / "SourcePackages/checkouts"
     kit = next(p for p in checkouts.iterdir() if p.name.casefold() == "torahinspectorkit")
     require(shared.git(kit, "rev-parse", "HEAD") == shared.KIT, "Actual Kit checkout differs")
@@ -527,7 +526,7 @@ def execute(args, receipt, *, build_context=None):
     shared.write(evidence / "execution.json", receipt)
     runtime_identity = {
         "source_sha": head, "run_id": receipt["run_id"], "run_attempt": receipt["run_attempt"],
-        "kit_sha": shared.KIT, "native_marker": shared.MARKER,
+        "kit_sha": shared.KIT, **binding,
         "candidate_inputs_sha256": hashlib.sha256(json.dumps(identity["hashes"], sort_keys=True).encode()).hexdigest()}
     ui_runtime_observer = None
     if args.lane == "hanlin-native":
@@ -643,6 +642,8 @@ def main():
     parser.add_argument("--lane", choices=[*LANES, *wave15_batch.PROFILES], required=True)
     parser.add_argument("--device", choices=["iphone", "ipad"], required=True)
     parser.add_argument("--language", choices=["en", "he"], required=True)
+    parser.add_argument("--runtime-profile", choices=shared.heart_profiles.PROFILE_NAMES, default="r14")
+    parser.add_argument("--heart-source-run-id", default="")
     args = parser.parse_args()
     if args.lane in wave15_batch.PROFILES:
         return wave15_batch.run(args, sys.modules[__name__])

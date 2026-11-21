@@ -20,6 +20,7 @@ from simulator_identity import (read_simulator_entitlements, verify_simulator_ke
 from compiled_products import capture_products
 from rerun_original_ui import ui_only_project, install_ui_runner, export_ui_console
 import wave15_diagnostics as diagnostics
+import heart_runtime_profile as heart_profiles
 
 SMOKE = ['testObjectAddPropertyButtonAndPickerSearch', 'testDocumentSourceSearchPresentation',
          'testSourceChipOpensAndClosesInspector']
@@ -439,10 +440,19 @@ def installed_runtime_source(udid, evidence, built, source_identity, *, command_
     return source
 
 
+def runtime_binding(app, evidence, head, args, installation=None):
+    if installation is None:
+        installation = json.loads((evidence / "heart/heart-installation.json").read_text())
+    return heart_profiles.installed_binding(
+        app, installation, head, getattr(args, "runtime_profile", "r14"),
+        getattr(args, "heart_source_run_id", ""))
+
+
 def observe_running_runtime(pid, evidence, built, source, *, command_timeout=lambda: None, metadata=None):
     """Map one supplied live PID. This function never launches or activates an app."""
     if type(pid) is not int or pid <= 1:
         raise ValueError('Actual app process ID is missing')
+    marker = heart_profiles.verify_binding(source)
     installed = Path(source['installed_app'])
     runtime = installed / 'Frameworks/ProtobufMessages.framework/ProtobufMessages'
     identity = read_process_identity(pid, installed / 'Anytype', command_timeout=command_timeout)
@@ -453,7 +463,7 @@ def observe_running_runtime(pid, evidence, built, source, *, command_timeout=lam
               and re.search(r'\[\s*' + str(pid) + r'\s*\]', mapping.stdout) is not None)
     identity_after = read_process_identity(pid, installed / 'Anytype', command_timeout=command_timeout)
     record = dict(pid=pid, installed_app=str(installed), runtime_path=str(runtime),
-                  runtime_sha256=digest(runtime), marker_present=contains(runtime, MARKER.encode()),
+                  runtime_sha256=digest(runtime), marker_present=contains(runtime, marker.encode()),
                   runtime_loaded=loaded, vmmap_exit_code=mapping.returncode,
                   process_start_identity=identity, process_identity_unchanged=identity == identity_after,
                   runtime_verified_at=datetime.now(timezone.utc).isoformat(), every_launch_verified=False,
@@ -504,7 +514,8 @@ def execute(args, receipt):
         raise RuntimeError('Actual source/run identity differs')
     matrix = json.loads((app / 'Tools/PinkhaSimulatorGate/required-coverage.json').read_text())
     identity = candidate_identity(app, matrix)
-    receipt.update(source_sha=head, kit_sha=KIT, native_marker=MARKER,
+    binding = runtime_binding(app, evidence, head, args)
+    receipt.update(source_sha=head, kit_sha=KIT, **binding,
                    run_id=os.environ['GITHUB_RUN_ID'], run_attempt=os.environ['GITHUB_RUN_ATTEMPT'],
                    candidate_input_hashes=identity['hashes'], preflight=preflight)
     ipad = preflight['selected']['ipad']
@@ -551,7 +562,7 @@ def execute(args, receipt):
     receipt['app_executable_sha256'] = digest(built / 'Anytype')
     write(evidence / 'execution.json', receipt)
     verify_signed_simulator(built, evidence)
-    verify_runtime_copies(built, MARKER.encode(), evidence)
+    verify_runtime_copies(built, binding['native_marker'].encode(), evidence)
     checkout = derived / 'SourcePackages/checkouts/TorahInspectorKit'
     if not checkout.exists():
         checkout = next(p for p in (derived / 'SourcePackages/checkouts').iterdir() if p.name.lower() == 'torahinspectorkit')
@@ -599,7 +610,7 @@ def execute(args, receipt):
         receipt[kind]['restore_storage_before_launch'] = observe_restore_storage(container, device_evidence, 'before-launch')
         try:
             live = live_runtime(udid, device_evidence, built,
-                source_identity={**{key: receipt[key] for key in ['source_sha', 'run_id', 'run_attempt', 'kit_sha', 'native_marker']},
+                source_identity={**binding, **{key: receipt[key] for key in ['source_sha', 'run_id', 'run_attempt', 'kit_sha']},
                     'candidate_inputs_sha256': hashlib.sha256(json.dumps(receipt['candidate_input_hashes'], sort_keys=True).encode()).hexdigest()})
             receipt[kind]['live_runtime'] = live
             install_ui_runner(udid, ui_products, app, device_evidence)
@@ -642,6 +653,8 @@ def main():
     parser.add_argument('--evidence', type=Path, required=True)
     parser.add_argument('--derived', type=Path, required=True)
     parser.add_argument('--ui-scope', choices=['FULL_SMOKE', 'STARTUP_IPAD_DIAGNOSTIC', 'NATIVE_CANCELLATION_DIAGNOSTIC'], default='FULL_SMOKE')
+    parser.add_argument('--runtime-profile', choices=heart_profiles.PROFILE_NAMES, default='r14')
+    parser.add_argument('--heart-source-run-id', default='')
     args = parser.parse_args()
     args.evidence.mkdir(parents=True, exist_ok=True)
     receipt = dict(status='RUNNING', phase='PREFLIGHT', components={}, release_accepted=False,

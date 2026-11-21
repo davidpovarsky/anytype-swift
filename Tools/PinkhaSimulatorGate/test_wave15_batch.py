@@ -143,7 +143,8 @@ class BatchControls(unittest.TestCase):
             self.assertNotEqual(item["head_sha256"], item["worktree_sha256"])
             self.assertEqual(frozen_source["package_locks"]["Project/Package.resolved"], original)
             args = argparse.Namespace(app=root, evidence=root / "evidence", derived=root / "build/derived",
-                                      deadline=time.monotonic() + batch.WORKER_SECONDS - 1)
+                                      deadline=time.monotonic() + batch.WORKER_SECONDS - 1,
+                                  runtime_profile=runtime_profile, heart_source_run_id="9991")
             lane = types.SimpleNamespace(plan=selection, execute=Mock())
             with patch.object(batch, "build_once", side_effect=raised.exception):
                 code = batch.worker(args, lane, {"parent_pid": os.getppid()})
@@ -920,13 +921,14 @@ class BatchControls(unittest.TestCase):
                 if name not in {"lanes", "broken-worker"}:
                     self.assertEqual((evidence / name).read_text(), "original data")
 
-    def worker_case(self, mode, profile=batch.PROFILE):
+    def worker_case(self, mode, profile=batch.PROFILE, runtime_profile="r14"):
         spec = batch.profile_spec(profile)
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         root = Path(temporary.name)
         args = argparse.Namespace(app=root, evidence=root / "evidence", derived=root / "build/derived",
-                                  deadline=time.monotonic() + batch.WORKER_SECONDS - 1)
+                                  deadline=time.monotonic() + batch.WORKER_SECONDS - 1,
+                                  runtime_profile=runtime_profile, heart_source_run_id="9991")
         devices = [{**DEVICE, "udid": str(index + 1) * 8 + "-1111-1111-1111-111111111111",
                     "name": "owned-" + name, "lane": name} for index, name in enumerate(spec.lanes)]
         ownership = [{key: value for key, value in device.items() if key != "udid"} for device in devices]
@@ -940,6 +942,8 @@ class BatchControls(unittest.TestCase):
             pass
 
         def execute(local, receipt, *, build_context):
+            self.assertEqual(local.runtime_profile, args.runtime_profile)
+            self.assertEqual(local.heart_source_run_id, args.heart_source_run_id)
             calls.append(local.lane)
             if mode == "setup" and local.lane == "inspector":
                 raise RuntimeError("injected setup failure")
@@ -997,6 +1001,13 @@ class BatchControls(unittest.TestCase):
         self.assertEqual(len(receipt["lane_receipts"]), 6)
         owned = [json.loads((root / "evidence/lanes" / name / "owned-simulator.json").read_text())["udid"] for name in batch.LANES]
         self.assertEqual(len(set(owned)), 6)
+
+    def test_corrected_runtime_profile_and_original_producer_survive_each_fresh_worker_lane(self):
+        root, calls, code, receipt = self.worker_case("pass", batch.RETAINED_HEART_PROFILE,
+                                                     runtime_profile="r15-attachment-v1")
+        self.assertEqual(calls, ["editor", "quote-drop", "properties-set"])
+        self.assertEqual(code, 0)
+        self.assertEqual(receipt["status"], "BATCH_PASS_ACCEPTANCE_REVIEW_PENDING")
 
     def test_retained_heart_worker_shares_only_build_with_three_fresh_devices(self):
         root, calls, code, receipt = self.worker_case("pass", batch.RETAINED_HEART_PROFILE)

@@ -479,8 +479,7 @@ def build_once(args, lane, selections, receipt):
             and preflight.get("run_id") == os.environ.get("GITHUB_RUN_ID"), "Original OS27 preflight identity differs")
     runtime_path = evidence / "heart/heart-installation.json"
     runtime = json.loads(runtime_path.read_text())
-    require(runtime.get("status") == "PASS" and runtime.get("app_source_sha") == head
-            and runtime.get("marker") == shared.MARKER, "Exact r14 runtime installation is required")
+    binding = shared.runtime_binding(app, evidence, head, args, runtime)
     source = source_snapshot(app, shared, stage="BEFORE_BUILD")
     matrix = json.loads((app / "Tools/PinkhaSimulatorGate/required-coverage.json").read_text())
     identity = shared.candidate_identity(app, matrix)
@@ -489,7 +488,7 @@ def build_once(args, lane, selections, receipt):
     common = evidence / "batch-build"
     common.mkdir(parents=True, exist_ok=False)
     receipt.update(source=source, candidate_input_hashes=identity["hashes"],
-                   preflight_sha256=digest(preflight_path), runtime_installation=runtime, phase="BUILD")
+                   preflight_sha256=digest(preflight_path), runtime_installation=runtime, **binding, phase="BUILD")
     write(evidence / "batch-worker.json", receipt)
     udid = preflight["selected"]["ipad"]["udid"]
     shared.command(["xcrun", "simctl", "boot", udid], app, common)
@@ -508,7 +507,7 @@ def build_once(args, lane, selections, receipt):
             "Source or package inputs changed during App/native test build")
     built = derived / "Build/Products" / (CONFIGURATION + "-iphonesimulator/Anytype.app")
     shared.verify_signed_simulator(built, common)
-    shared.verify_runtime_copies(built, shared.MARKER.encode(), common)
+    shared.verify_runtime_copies(built, binding['native_marker'].encode(), common)
     native_configuration = shared.test_configuration(derived / "Build/Products", "AnytypeTests")
     project = shared.ui_only_project(app)
     require(source_snapshot(app, shared, stage="AFTER_UI_PROJECT_GENERATION") == source,
@@ -636,7 +635,9 @@ def worker(args, lane, intent):
             (directory / "heart").mkdir()
             (directory / "heart/heart-installation.json").write_bytes(frozen.runtime_receipt_path.read_bytes())
             local = type(args)(app=args.app, evidence=directory, derived=args.derived,
-                               lane=name, device="ipad", language="en")
+                               lane=name, device="ipad", language="en",
+                               runtime_profile=getattr(args, "runtime_profile", "r14"),
+                               heart_source_run_id=getattr(args, "heart_source_run_id", ""))
             lane_receipt = {"status": "FAIL", "phase": "PREFLIGHT", "started_at": now(),
                             "same_job_build_receipt_sha256": receipt["build_receipt_sha256"],
                             "full_matrix_accepted": False, "release_accepted": False}
@@ -993,7 +994,9 @@ def run(args, lane):
     try:
         command = [sys.executable, "-B", str(Path(__file__).resolve()), "--worker", "--app", str(args.app.resolve()),
                    "--evidence", str(evidence), "--derived", str(args.derived.resolve()),
-                   "--deadline", str(time.monotonic() + WORKER_SECONDS)]
+                   "--deadline", str(time.monotonic() + WORKER_SECONDS),
+                   "--runtime-profile", getattr(args, "runtime_profile", "r14"),
+                   "--heart-source-run-id", getattr(args, "heart_source_run_id", "")]
         outcome = run_worker_command(command, args.app.resolve(), evidence / "batch-worker.log", WORKER_SECONDS)
         worker_receipt = json.loads((evidence / "batch-worker.json").read_text())
         validate_worker_conclusion(worker_receipt, intent, evidence, lane)
@@ -1061,5 +1064,7 @@ if __name__ == "__main__":
     parser.add_argument("--evidence", type=Path, required=True)
     parser.add_argument("--derived", type=Path, required=True)
     parser.add_argument("--deadline", type=float, required=True)
+    parser.add_argument("--runtime-profile", choices=lane.shared.heart_profiles.PROFILE_NAMES, default="r14")
+    parser.add_argument("--heart-source-run-id", default="")
     arguments = parser.parse_args()
     sys.exit(worker(arguments, lane, json.loads((arguments.evidence / "batch-intent.json").read_text())))

@@ -506,6 +506,7 @@ def execute(args, receipt):
     require(platform.system() == "Darwin" and platform.machine() == "arm64", "Actual Apple silicon Mac required")
     sys.path.insert(0, str(app / "Tools/PinkhaNativeDerived"))
     from build_custom_heart import digest, git
+    import heart_runtime_profile as heart_profiles
     from build_native_ipa import prepare_source_cache, run_xctest, test_configuration
     from validate_wave1 import verify_runtime_copies
     from prepare_sdk import verify
@@ -532,6 +533,8 @@ def execute(args, receipt):
     installation = json.loads((evidence / "heart/heart-installation.json").read_text())
     require(installation.get("status") == "PASS" and installation.get("app_source_sha") == head
             and installation.get("source_run_id") == args.heart_source_run_id, "Installed Heart provenance differs")
+    binding = heart_profiles.installed_binding(
+        app, installation, head, getattr(args, "runtime_profile", "r14"), args.heart_source_run_id)
     heart = json.loads((app / "Dependencies/Middleware/PinkhaNativeHeartBuild.json").read_text())
     require(heart.get("status") == "PASS" and heart.get("target") == "ios"
             and heart.get("marker") == installation["marker"], "Verified iOS Heart is missing")
@@ -542,7 +545,7 @@ def execute(args, receipt):
                    profile=profile.value, selection=["AnytypeTests/" + name for name in
                        (sorted(expected) if profile is HostTestProfile.SHARED_EDITOR else profile.suites)],
                    expected_methods=sorted(expected),
-                   test_source_hashes=sources, hanlin_revision=pin["revision"], heart=installation,
+                   test_source_hashes=sources, hanlin_revision=pin["revision"], heart=installation, **binding,
                    hanlin_snapshot_sha256=sha256(evidence / "hanlin-snapshot.json"), phase="SIMULATOR_BOOT")
     if profile in {HostTestProfile.CORE, HostTestProfile.COMPONENTS}:
         receipt["core_manifest_sha256"] = sha256(core_profile.MANIFEST_PATH)
@@ -570,7 +573,7 @@ def execute(args, receipt):
     receipt["app_executable_sha256"] = digest(app_executable)
     receipt["test_executable_sha256"] = digest(test_executable)
     command(["codesign", "--verify", "--strict", str(built)], app, evidence)
-    verify_runtime_copies(built, installation["marker"].encode(), evidence)
+    verify_runtime_copies(built, binding["native_marker"].encode(), evidence)
     receipt["dependency_checkouts"] = verify_packages(app, derived, evidence, pin, git)
     verify(app / "Dependencies/Hanlin")
     receipt["xctestrun_sha256"] = digest(configuration)
@@ -645,6 +648,7 @@ def main():
     parser.add_argument("--derived", required=True, type=Path)
     parser.add_argument("--expected-app-branch", required=True, choices=APPROVED_BRANCHES)
     parser.add_argument("--heart-source-run-id", required=True)
+    parser.add_argument("--runtime-profile", choices=["r14", "r15-attachment-v1"], default="r14")
     parser.add_argument("--profile", choices=[profile.value for profile in HostTestProfile], default=HostTestProfile.SDK06.value)
     args = parser.parse_args()
     args.evidence.mkdir(parents=True, exist_ok=True)

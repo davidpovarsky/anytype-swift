@@ -1,0 +1,112 @@
+{
+  "methods": 22,
+  "native_test_executions": 0,
+  "platform": "Windows-11-10.0.26300-SP0",
+  "python": "3.12.5 (tags/v3.12.5:ff3bc82, Aug  6 2024, 20:45:27) [MSC v.1940 64 bit (AMD64)]",
+  "results": [
+    {
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-shared-t5-20261121\\Tools\\PinkhaNativeDerived\\test_heart_runtime_profile.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_methods": 11,
+      "log_sha256": "9b7ff45a8d2c86cba3570847978915e8271f4a5a3983be645dcbc1b1742ad460",
+      "name": "admission",
+      "status": "PASS",
+      "wall_seconds": 10.387939214706421
+    },
+    {
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-shared-t5-20261121\\Tools\\PinkhaSimulatorGate\\test_heart_runtime_binding.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_methods": 6,
+      "log_sha256": "757d6bc1fe449597b4a92969d4bfc87cb4959802111137cd68f8bf2e5aea59d1",
+      "name": "corrected-observer",
+      "status": "PASS",
+      "wall_seconds": 2.228729486465454
+    },
+    {
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-shared-t5-20261121\\Tools\\PinkhaSimulatorGate\\test_hanlin_ui_runtime.py",
+        "ExistingProcessMappingControls.test_existing_process_mapping_has_no_launch_and_each_command_is_bounded",
+        "ExistingProcessMappingControls.test_legacy_probe_wrapper_retains_its_single_launch_and_mapping",
+        "ExistingProcessMappingControls.test_changed_main_or_missing_runtime_marker_is_rejected",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_methods": 3,
+      "log_sha256": "3e07d260afda89cd341b3cfdecdcf46ab696bf9007a902a701806b984fb022e7",
+      "name": "legacy-observer",
+      "status": "PASS",
+      "wall_seconds": 0.9248237609863281
+    },
+    {
+      "command": [
+        "C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-B",
+        "C:\\Users\\DAVID\\Code\\anytype-swift-shared-t5-20261121\\Tools\\PinkhaSimulatorGate\\test_wave15_batch.py",
+        "BatchControls.test_corrected_runtime_profile_and_original_producer_survive_each_fresh_worker_lane",
+        "BatchControls.test_retained_heart_worker_shares_only_build_with_three_fresh_devices",
+        "-v"
+      ],
+      "exit_code": 0,
+      "expected_methods": 2,
+      "log_sha256": "feae015e3e60c10a65d0bca353a6213acf892ba061116310591e35df406410a4",
+      "name": "worker-propagation",
+      "status": "PASS",
+      "wall_seconds": 1.5118536949157715
+    }
+  ],
+  "simulator_executions": 0,
+  "source_after": {
+    ".github/workflows/pinkha-sdk06-tests.yml": "8c06752b0a8aa312d11cb7c5c5049f918bdab8c75ffc784949ab2847191793f7",
+    ".github/workflows/pinkha-simulator-ui27.yml": "f27f544bf085ae7c9f1e5f4f91222f477b6f8438d4e1ee44bfb6dd510a51d947",
+    ".github/workflows/torah-inspector-ipados27.yml": "278c96ef27edc364701a3fadb8e3907722365dee7ef2c16f3931731d5e65924b",
+    "Tools/Hanlin/run_host_tests.py": "67516db5f69961c9c836a8be896429e00a66813463883bdc2804d2a6910f856e",
+    "Tools/PinkhaNativeDerived/attachment_runtime.py": "0154ae5f6b0af197d62abc7eeb6233adbe3d469723a75e15e233e7ab5e37019a",
+    "Tools/PinkhaNativeDerived/build_t5_r15_runtime.py": "32804c0897b9d6f6f9751247028009aa6395a596aadbb6d878bf97389f60807f",
+    "Tools/PinkhaNativeDerived/download_heart_runtime.py": "fcccbfd7f405c44eaffab528917c7f4921723cc5163806a0b3635e9b987a226c",
+    "Tools/PinkhaNativeDerived/heart_runtime_profile.py": "c41ca5b66f6901f325d1600b8dbfbc290daba84064b44d20edae77f3b1f02b1a",
+    "Tools/PinkhaNativeDerived/install_verified_heart.py": "0f3286d5c3f84c5b892234b557028eed3125935db8ba843a838cb28be641ab18",
+    "Tools/PinkhaNativeDerived/run_t5_native_attachment.py": "13e635b1df2ba14692c08fb552f8c4b168b7fa3c2f95b694e26692cce8a56742",
+    "Tools/PinkhaNativeDerived/test_heart_runtime_profile.py": "4362c45fcdd488e665f2106c7b2e8ae0743d036858cc5fe6fb16a59d9cadc79b",
+    "Tools/PinkhaSimulatorGate/run_ui27.py": "ed1f95ba2bebd9205f9fb6829ad41725b5d49c918cf4173be1ecf305ab8edb87",
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": "0f237ba644887e2ee56d1ef4d703970b63fba28bc3a95305154deb6b6e62b585",
+    "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py": "66dfb2f6290fee4a5e0be8250f723e3f1d4e469772edf7c27a486b3bd18cf26c",
+    "Tools/PinkhaSimulatorGate/test_heart_runtime_binding.py": "e9e229d19f20e68ae540f2383ddf0ffc6ea4d57d0224e7f3a0516b84db4af940",
+    "Tools/PinkhaSimulatorGate/test_wave15_batch.py": "2321a8f67913cad4cc28dc5ed6505adc52d8a3e11d39b8cd29991dc2224a3dc4",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": "012e6ada04af045c15a974d5d2d1093c0415ae31c53cb74a3994e787ef01d822"
+  },
+  "source_before": {
+    ".github/workflows/pinkha-sdk06-tests.yml": "8c06752b0a8aa312d11cb7c5c5049f918bdab8c75ffc784949ab2847191793f7",
+    ".github/workflows/pinkha-simulator-ui27.yml": "f27f544bf085ae7c9f1e5f4f91222f477b6f8438d4e1ee44bfb6dd510a51d947",
+    ".github/workflows/torah-inspector-ipados27.yml": "278c96ef27edc364701a3fadb8e3907722365dee7ef2c16f3931731d5e65924b",
+    "Tools/Hanlin/run_host_tests.py": "67516db5f69961c9c836a8be896429e00a66813463883bdc2804d2a6910f856e",
+    "Tools/PinkhaNativeDerived/attachment_runtime.py": "0154ae5f6b0af197d62abc7eeb6233adbe3d469723a75e15e233e7ab5e37019a",
+    "Tools/PinkhaNativeDerived/build_t5_r15_runtime.py": "32804c0897b9d6f6f9751247028009aa6395a596aadbb6d878bf97389f60807f",
+    "Tools/PinkhaNativeDerived/download_heart_runtime.py": "fcccbfd7f405c44eaffab528917c7f4921723cc5163806a0b3635e9b987a226c",
+    "Tools/PinkhaNativeDerived/heart_runtime_profile.py": "c41ca5b66f6901f325d1600b8dbfbc290daba84064b44d20edae77f3b1f02b1a",
+    "Tools/PinkhaNativeDerived/install_verified_heart.py": "0f3286d5c3f84c5b892234b557028eed3125935db8ba843a838cb28be641ab18",
+    "Tools/PinkhaNativeDerived/run_t5_native_attachment.py": "13e635b1df2ba14692c08fb552f8c4b168b7fa3c2f95b694e26692cce8a56742",
+    "Tools/PinkhaNativeDerived/test_heart_runtime_profile.py": "4362c45fcdd488e665f2106c7b2e8ae0743d036858cc5fe6fb16a59d9cadc79b",
+    "Tools/PinkhaSimulatorGate/run_ui27.py": "ed1f95ba2bebd9205f9fb6829ad41725b5d49c918cf4173be1ecf305ab8edb87",
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": "0f237ba644887e2ee56d1ef4d703970b63fba28bc3a95305154deb6b6e62b585",
+    "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py": "66dfb2f6290fee4a5e0be8250f723e3f1d4e469772edf7c27a486b3bd18cf26c",
+    "Tools/PinkhaSimulatorGate/test_heart_runtime_binding.py": "e9e229d19f20e68ae540f2383ddf0ffc6ea4d57d0224e7f3a0516b84db4af940",
+    "Tools/PinkhaSimulatorGate/test_wave15_batch.py": "2321a8f67913cad4cc28dc5ed6505adc52d8a3e11d39b8cd29991dc2224a3dc4",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": "012e6ada04af045c15a974d5d2d1093c0415ae31c53cb74a3994e787ef01d822"
+  },
+  "source_hash_normalization": "Git LF text bytes",
+  "sources_unchanged": true,
+  "status": "PASS_CONTROLLER_CONTROLS",
+  "synthetic_fixture_scope": "DOWNLOAD_ADMISSION_AND_PROCESS_OBSERVER_CONTROLS"
+}
