@@ -82,6 +82,122 @@ struct PinkhaSerialTextEditQueueTests {
         try await queue.drain()
         #expect(!queue.hasPendingChanges)
     }
+
+    @Test("Mandatory commands preserve the latest full text on both sides of the barrier")
+    func mandatoryWritePreservesBothCoalescingSegments() async throws {
+        let queue = PinkhaSerialTextEditQueue()
+        let gate = TextEditTestGate()
+        var writes = [String]()
+        queue.enqueue { writes.append("in flight"); await gate.pause(); return true }
+        await gate.waitUntilPaused()
+        queue.enqueue { writes.append("obsolete before"); return true }
+        queue.enqueue { writes.append("latest before"); return true }
+        queue.enqueue(mode: .mandatory) { writes.append("command"); return true }
+        queue.enqueue { writes.append("obsolete after"); return true }
+        queue.enqueue { writes.append("latest after"); return true }
+        gate.resume()
+        try await queue.drain()
+        #expect(writes == ["in flight", "latest before", "command", "latest after"])
+        #expect(!queue.hasPendingChanges)
+    }
+
+    @Test("Consecutive mandatory commands cannot be cancelled by a later full-text draft")
+    func consecutiveMandatoryWritesCannotBeCoalesced() async throws {
+        let queue = PinkhaSerialTextEditQueue()
+        let gate = TextEditTestGate()
+        var writes = [String]()
+        queue.enqueue { writes.append("in flight"); await gate.pause(); return true }
+        await gate.waitUntilPaused()
+        queue.enqueue(mode: .mandatory) { writes.append("first command"); return true }
+        queue.enqueue(mode: .mandatory) { writes.append("second command"); return true }
+        queue.enqueue { writes.append("later text"); return true }
+        gate.resume()
+        try await queue.drain()
+        #expect(writes == ["in flight", "first command", "second command", "later text"])
+        #expect(!queue.hasPendingChanges)
+    }
+
+    @Test("A rejected mandatory command is reported and cannot acknowledge a later draft")
+    func failedMandatoryWriteDoesNotAcknowledgeLaterDraft() async throws {
+        let queue = PinkhaSerialTextEditQueue()
+        let commandGate = TextEditTestGate()
+        let laterGate = TextEditTestGate()
+        var attempts = [String]()
+        let command = queue.enqueue(mode: .mandatory) {
+            attempts.append("command")
+            await commandGate.pause()
+            throw TextEditTestError.denied
+        }
+        await commandGate.waitUntilPaused()
+        queue.enqueue {
+            attempts.append("later text")
+            await laterGate.pause()
+            return true
+        }
+        commandGate.resume()
+        do { try await command.value; Issue.record("Expected the command failure") }
+        catch TextEditTestError.denied {}
+        catch { Issue.record("Unexpected error: \(error)") }
+        await laterGate.waitUntilPaused()
+        #expect(queue.hasPendingChanges)
+        #expect(attempts == ["command", "later text"])
+        laterGate.resume()
+        try await queue.drain()
+        #expect(!queue.hasPendingChanges)
+        #expect(attempts == ["command", "later text"], "A structural mutation is never retried implicitly")
+    }
+
+    @Test("An identity reset retires a mandatory command that has not reached native code")
+    func identityResetRetiresUndispatchedMandatoryWrite() async throws {
+        let queue = PinkhaSerialTextEditQueue()
+        let gate = TextEditTestGate()
+        var writes = [String]()
+        queue.enqueue { writes.append("old in flight"); await gate.pause(); return true }
+        await gate.waitUntilPaused()
+        queue.enqueue(mode: .mandatory) { writes.append("retired command"); return true }
+        queue.resetOwnership()
+        queue.enqueue { writes.append("new owner"); return true }
+        gate.resume()
+        try await queue.drain()
+        #expect(writes == ["old in flight", "new owner"])
+        #expect(!queue.hasPendingChanges)
+    }
+
+    @Test("Resetting an in-flight mandatory command neither overlaps nor acknowledges the new owner")
+    func identityResetWaitsForDispatchedMandatoryWrite() async throws {
+        let queue = PinkhaSerialTextEditQueue()
+        let oldGate = TextEditTestGate()
+        let newGate = TextEditTestGate()
+        var writes = [String]()
+        var concurrent = 0
+        var maximumConcurrent = 0
+        queue.enqueue(mode: .mandatory) {
+            concurrent += 1
+            maximumConcurrent = max(maximumConcurrent, concurrent)
+            writes.append("old command")
+            await oldGate.pause()
+            concurrent -= 1
+            return true
+        }
+        await oldGate.waitUntilPaused()
+        queue.resetOwnership()
+        queue.enqueue {
+            concurrent += 1
+            maximumConcurrent = max(maximumConcurrent, concurrent)
+            writes.append("new owner")
+            await newGate.pause()
+            concurrent -= 1
+            return true
+        }
+        oldGate.resume()
+        await newGate.waitUntilPaused()
+        #expect(queue.hasPendingChanges)
+        #expect(writes == ["old command", "new owner"])
+        #expect(maximumConcurrent == 1)
+        newGate.resume()
+        try await queue.drain()
+        #expect(!queue.hasPendingChanges)
+    }
 }
 
 private enum TextEditTestError: Error { case denied }

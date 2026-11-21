@@ -640,15 +640,34 @@
     },
     {
       "kind": "refactor",
-      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift",
-      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift",
-      "baselineBlob": "6f91eb88f75a00fb2368041ffef669c7d454ce44",
-      "replacementBlob": "c67756570e7d1fa956670001c5676b9338868276",
-      "reason": "Serialize immutable text/caret/composition snapshots through the shared edit queue; retain dirty ownership through deferred/failing writes and drain before structural native edits. Capture structural input before the asynchronous handoff.",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/SimpleTable/Block/TextBlock/SimpleTablesTextBlockActionHandler.swift",
+      "baselineBlob": "2884859133941f7beceed98cb271c94a63af6931",
+      "replacementBlob": "b85547a6b4396edc9261b4d38182e581f725f119",
+      "reason": "Use the shared serial text writer for immutable table input, publication-before-suspension ownership, deferred defocus commits and explicit links. Markdown structural commands and captured text form mandatory FIFO barriers; owner generation fences every resumed step and late replies never republish stale text.",
       "sharedSources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
-          "gitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23"
+          "gitBlob": "bb55f7eb2997f7c4a1cdc8196bd51703aef0c418"
+        }
+      ],
+      "validation": [
+        "Eleven narrowly scoped actual-handler UIKit/service test methods (fourteen argument cases) cover text capture, publication ordering, coalescing, failure, defocus, row rebinding and markdown command sequencing.",
+        "Changed common queue has nine focused source-bound Swift Testing methods; the separate scoped receipt records actual execution and syntax-only checks.",
+        "Apple type checking, actual table-handler execution, real native table journeys and physical iPad acceptance remain separate gates."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift",
+      "baselineBlob": "6f91eb88f75a00fb2368041ffef669c7d454ce44",
+      "replacementBlob": "4d4116a5bd6b9a28f775eb1e7db3b58c5a929fd1",
+      "reason": "Serialize immutable text/caret/composition snapshots through the shared edit queue; retain dirty ownership through deferred/failing writes and drain before structural native edits. Capture structural input before the asynchronous handoff. Explicit replacements now enter the same queue before synchronous reset publication; synchronous link callbacks freeze and accept their value before launching an awaiting task, with generation-fenced completion.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
+          "gitBlob": "bb55f7eb2997f7c4a1cdc8196bd51703aef0c418"
         },
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaTextInputRenderPolicy.swift",
@@ -657,7 +676,8 @@
       ],
       "validation": [
         "Reviewed integration diff and exact replacement blob retained.",
-        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map.",
+        "The followup changes only explicit replacement acceptance/publication ordering; original receipts retain their exact earlier source scope. New source is recorded in docs/validation/20261121-shared-table-editor."
       ]
     },
     {
@@ -670,7 +690,7 @@
       "sharedSources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
-          "gitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23"
+          "gitBlob": "bb55f7eb2997f7c4a1cdc8196bd51703aef0c418"
         },
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaTextInputRenderPolicy.swift",
@@ -679,7 +699,8 @@
       ],
       "validation": [
         "Reviewed integration diff and exact replacement blob retained.",
-        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map.",
+        "Shared queue dependency gains an explicit mandatory FIFO mode; this consumer's implementation remains the pinned replacement blob. The current queue receipt is separate from its original evidence."
       ]
     },
     {
@@ -692,7 +713,7 @@
       "sharedSources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
-          "gitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23"
+          "gitBlob": "bb55f7eb2997f7c4a1cdc8196bd51703aef0c418"
         },
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaTextInputRenderPolicy.swift",
@@ -701,7 +722,8 @@
       ],
       "validation": [
         "Reviewed integration diff and exact replacement blob retained.",
-        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map.",
+        "Shared queue dependency gains an explicit mandatory FIFO mode; this consumer's implementation remains the pinned replacement blob. The current queue receipt is separate from its original evidence."
       ]
     },
     {
@@ -730,7 +752,7 @@
       "sharedSources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
-          "gitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23"
+          "gitBlob": "bb55f7eb2997f7c4a1cdc8196bd51703aef0c418"
         },
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaTextInputRenderPolicy.swift",
@@ -739,7 +761,8 @@
       ],
       "validation": [
         "Reviewed integration diff and exact replacement blob retained.",
-        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map.",
+        "Shared queue dependency gains an explicit mandatory FIFO mode; this consumer's implementation remains the pinned replacement blob. The current queue receipt is separate from its original evidence."
       ]
     },
     {
@@ -752,7 +775,7 @@
       "sharedSources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
-          "gitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23"
+          "gitBlob": "bb55f7eb2997f7c4a1cdc8196bd51703aef0c418"
         },
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaTextInputRenderPolicy.swift",
@@ -761,7 +784,8 @@
       ],
       "validation": [
         "Reviewed integration diff and exact replacement blob retained.",
-        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map.",
+        "Shared queue dependency gains an explicit mandatory FIFO mode; this consumer's implementation remains the pinned replacement blob. The current queue receipt is separate from its original evidence."
       ]
     },
     {
@@ -790,13 +814,14 @@
       "sharedSources": [
         {
           "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
-          "gitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23"
+          "gitBlob": "bb55f7eb2997f7c4a1cdc8196bd51703aef0c418"
         }
       ],
       "validation": [
         "Reviewed failed-native-write then optimistic-equality counterexample; seven focused native acknowledgement component methods added.",
         "Swift parser accepted service, mock and regression source on 2026-11-21. This is syntax evidence, not Apple type-check, native execution or UI acceptance.",
-        "Existing shared queue policy and its successful pure tests are unchanged. A separate narrow Apple acknowledgement profile and retained native UI acceptance remain required."
+        "The default shared queue policy is retained; the newly explicit mandatory mode is separately covered by the nine focused queue methods. A separate narrow Apple acknowledgement profile and retained native UI acceptance remain required.",
+        "Shared queue dependency gains an explicit mandatory FIFO mode; this consumer's implementation remains the pinned replacement blob. The current queue receipt is separate from its original evidence."
       ]
     },
     {

@@ -881,17 +881,28 @@ extension TextBlockActionHandler: AccessoryViewOutput {
     }
     
     func setNewText(attributedString: SafeNSAttributedString) async throws {
-        // Update the view in this turn so subsequent keys include the explicit
-        // replacement. Persist it in order with native keyboard writes.
-        resetSubject.send(attributedString.value)
+        let generation = forkGeneration
+        let task = enqueueNewText(attributedString: attributedString)
+        try await finishNewText(task, generation: generation)
+    }
+
+    /// Accept an explicit replacement before notifying synchronous subscribers.
+    /// Link callbacks use this same entry point before their first Task suspension.
+    private func enqueueNewText(attributedString: SafeNSAttributedString) -> Task<Void, any Error> {
         let task = textEditQueue.enqueue { [weak self] in
             guard let self else { return false }
             if try await carryOrSync(attributedString.value, focusAt: endOfTextFocus(attributedString.value)) { return true }
             try await actionHandler.changeText(attributedString, blockId: info.id)
             return true
         }
+        resetSubject.send(attributedString.value)
+        return task
+    }
+
+    private func finishNewText(_ task: Task<Void, any Error>, generation: Int) async throws {
         try await task.value
         try await textEditQueue.drain()
+        guard forkGeneration == generation else { return }
         viewModel.map { collectionController.itemDidChangeFrame(item: .block($0)) }
     }
 
@@ -992,7 +1003,9 @@ extension TextBlockActionHandler: AccessoryViewOutput {
     }
 
     private func setNewTextSync(attributedString: NSAttributedString) {
-        Task { try await setNewText(attributedString: attributedString.sendable()) }
+        let generation = forkGeneration
+        let task = enqueueNewText(attributedString: attributedString.sendable())
+        Task { try await finishNewText(task, generation: generation) }
     }
 
     /// Like `setNewTextSync`, but after the write refreshes the live cell for the current block id.
@@ -1002,8 +1015,11 @@ extension TextBlockActionHandler: AccessoryViewOutput {
     /// re-syncs its text view, so the next keystroke cannot read the stale link back and overwrite
     /// the plain text.
     private func setNewTextRefreshingLiveBlock(attributedString: NSAttributedString) {
+        let generation = forkGeneration
+        let task = enqueueNewText(attributedString: attributedString.sendable())
         Task { @MainActor in
-            try await setNewText(attributedString: attributedString.sendable())
+            try await finishNewText(task, generation: generation)
+            guard forkGeneration == generation else { return }
             reconfigureLiveBlock(info.id)
         }
     }

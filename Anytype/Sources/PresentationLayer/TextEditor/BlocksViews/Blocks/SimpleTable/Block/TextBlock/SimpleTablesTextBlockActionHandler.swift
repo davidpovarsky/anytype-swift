@@ -3,11 +3,22 @@ import Combine
 import UIKit
 import AnytypeCore
 import Factory
+import PinkhaKit
+import Logger
 
 
 final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearchDelegate {
     private let document: any BaseDocumentProtocol
-    var info: BlockInformation
+    var info: BlockInformation {
+        didSet {
+            // Unlike page text, a table cell never forks its identity.
+            // Rebinding this handler must retire the previous row's draft.
+            if oldValue.id != info.id {
+                textOwnerGeneration &+= 1
+                textEditQueue.resetOwnership()
+            }
+        }
+    }
     
     private let showObject: (String) -> Void
     private let openURL: (URL) -> Void
@@ -43,6 +54,14 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
     
     // MARK: - Dynamic
     private var changeType: TextChangeType?
+    private let textEditQueue = PinkhaSerialTextEditQueue()
+    private var textOwnerGeneration: UInt64 = 0
+    private struct TextOwner: Equatable {
+        let id: String
+        let generation: UInt64
+    }
+    private var textOwner: TextOwner { TextOwner(id: info.id, generation: textOwnerGeneration) }
+    var hasPendingTextChanges: Bool { textEditQueue.hasPendingChanges }
     
     var accessoryState: AccessoryViewInputState = .none
     
@@ -173,9 +192,7 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
             .textChangeType(changeTextRange: range, replacementText: replacementText)
         
         if mentionDetecter.removeMentionIfNeeded(textView: textView, replacementText: replacementText) {
-            Task { @MainActor in
-                try await actionHandler.changeText(textView.attributedText.sendable(), blockId: info.id)
-            }
+            enqueueTextChange(textView: textView, allowDeferral: false)
             return false
         }
    
@@ -188,30 +205,42 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
             switch markdownChange {
             case let .turnInto(style, newText):
                 guard let content = info.textContent, content.contentType != style else { return true }
-                guard BlockRestrictionsBuilder.build(content:  info.content).canApplyTextStyle(style) else { return true }
-                Task { @MainActor in
-                    try await actionHandler.turnInto(style, blockId: info.id)
-                    try await setNewText(attributedString: newText.sendable())
-                    cursorManager.focus(in: textView, position: .beginning)
+                guard BlockRestrictionsBuilder.build(content: info.content).canApplyTextStyle(style) else { return true }
+                let owner = textOwner
+                let snapshot = newText.sendable()
+                let command = textEditQueue.enqueue(mode: .mandatory) { [weak self] in
+                    guard let self, textOwner == owner else { return false }
+                    try await actionHandler.turnInto(style, blockId: owner.id)
+                    guard textOwner == owner else { return false }
+                    try await actionHandler.changeText(snapshot, blockId: owner.id)
+                    return true
                 }
+                reportMarkdownFailure(command, operation: "turnInto")
+                // Publish the accepted replacement now. Later typing must include
+                // it; a delayed native reply must never reset the live buffer.
+                resetSubject.send(snapshot.value)
+                if textOwner == owner { cursorManager.focus(in: textView, position: .beginning) }
             case let .addBlock(type, newText):
-                Task { @MainActor in
-                    try await setNewText(attributedString: newText.sendable())
-                    try await actionHandler.addBlock(type, blockId: info.id, blockText: newText.sendable(), position: .top)
-                    resetSubject.send(nil)
+                let owner = textOwner
+                let snapshot = newText.sendable()
+                let command = textEditQueue.enqueue(mode: .mandatory) { [weak self] in
+                    guard let self, textOwner == owner else { return false }
+                    try await actionHandler.changeText(snapshot, blockId: owner.id)
+                    guard textOwner == owner else { return false }
+                    try await actionHandler.addBlock(
+                        type, blockId: owner.id, blockText: snapshot, position: .top)
+                    return true
                 }
+                reportMarkdownFailure(command, operation: "addBlock")
+                resetSubject.send(snapshot.value)
             case let .addStyle(style, currentText, styleRange, focusRange):
-                Task { @MainActor in
-                    let newText = try await actionHandler.setTextStyle(
-                        style,
-                        range: styleRange,
-                        blockId: info.id,
-                        currentText: currentText.sendable(),
-                        contentType: info.content.type
-                    )
-                    resetSubject.send(newText.value)
-                    cursorManager.focus(in: textView, position: .at(focusRange))
-                }
+                let owner = textOwner
+                let styledText = markupChanger.setMarkup(
+                    style, range: styleRange, attributedString: currentText,
+                    contentType: info.content.type)
+                AnytypeAnalytics.instance().logChangeTextStyle(markupType: style, objectType: .custom)
+                setNewTextSync(attributedString: styledText)
+                if textOwner == owner { cursorManager.focus(in: textView, position: .at(focusRange)) }
             }
             
             return false
@@ -220,6 +249,20 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
         return true
     }
     
+    /// Observe each structural result itself. A later successful full-text
+    /// write may drain the queue, but cannot prove this command succeeded.
+    private func reportMarkdownFailure(_ command: Task<Void, any Error>, operation: String) {
+        Task { @MainActor in
+            do {
+                try await command.value
+            } catch {
+                EventLogger.default.error(
+                    "Table markdown command failed",
+                    metadata: ["operation": operation, "errorType": String(reflecting: type(of: error))])
+            }
+        }
+    }
+
     private func makeAttributedString(
         attributedText: NSAttributedString,
         replacementURL: URL?,
@@ -289,7 +332,17 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
     }
     
     private func handleKeyboardAction(action: CustomTextView.KeyboardAction, textView: UITextView) {
-        onKeyboardAction(action)
+        guard textEditQueue.hasPendingChanges else {
+            onKeyboardAction(action)
+            return
+        }
+        let owner = textOwner
+        enqueueTextChange(textView: textView, allowDeferral: false)
+        Task { @MainActor in
+            try await textEditQueue.drain()
+            guard textOwner == owner else { return }
+            onKeyboardAction(action)
+        }
     }
     
     private func textBlockSetNeedsLayout(textView: UITextView) {}
@@ -298,16 +351,35 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
     private func textViewDidChangeText(textView: UITextView) {
         changeType.map { accessoryViewStateManager.textDidChange(changeType: $0) }
         
-        switch accessoryState {
-        case .none:
-            Task {
-                try await actionHandler.changeText(textView.attributedText.sendable(), blockId: info.id)
-            }
-        case .search:
-            break
-        }
+        enqueueTextChange(textView: textView, allowDeferral: true)
     }
     
+    /// Freeze the accepted UIKit value in the delegate turn. Native callbacks
+    /// may arrive after this view has been reused or edited again.
+    private func enqueueTextChange(textView: UITextView, allowDeferral: Bool) {
+        let snapshot = NSAttributedString(attributedString: textView.attributedText).sendable()
+        enqueueTextChange(attributedString: snapshot, allowDeferral: allowDeferral)
+    }
+
+    @discardableResult
+    private func enqueueTextChange(
+        attributedString: SafeNSAttributedString, allowDeferral: Bool = false
+    ) -> Task<Void, any Error> {
+        let owner = textOwner
+        return textEditQueue.enqueue { [weak self] in
+            guard let self, textOwner == owner else { return false }
+            if allowDeferral, case .search = accessoryState { return false }
+            try await actionHandler.changeText(attributedString, blockId: owner.id)
+            return true
+        }
+    }
+
+    private func setNewTextSync(attributedString: NSAttributedString) {
+        let snapshot = NSAttributedString(attributedString: attributedString).sendable()
+        enqueueTextChange(attributedString: snapshot)
+        resetSubject.send(snapshot.value)
+    }
+
     @MainActor
     private func textViewWillBeginEditing(textView: UITextView) {
         accessoryViewStateManager.willBeginEditing(with: accessoryConfiguration(using: textView))
@@ -324,6 +396,9 @@ final class SimpleTablesTextBlockActionHandler: TextBlockActionHandlerProtocol, 
     
     @MainActor
     private func textViewDidEndEditing(textView: UITextView) {
+        if textEditQueue.hasPendingChanges {
+            enqueueTextChange(textView: textView, allowDeferral: false)
+        }
         accessoryViewStateManager.didEndEditing(with: accessoryConfiguration(using: textView))
     }
     
@@ -359,24 +434,15 @@ extension SimpleTablesTextBlockActionHandler: AccessoryViewOutput {
     // MARK: - LinkToSearchDelegate
     
     func updateTextForLinkToObject(newText: NSAttributedString, range: NSRange, originalText: NSAttributedString) {
-        Task { @MainActor in
-            self.resetSubject.send(newText)
-            try await self.actionHandler.changeText(newText.sendable(), blockId: self.info.id)
-        }
+        setNewTextSync(attributedString: newText)
     }
     
     func updateTextForLinkToUrl(newText: NSAttributedString, range: NSRange, originalText: NSAttributedString) {
-        Task { @MainActor in
-            self.resetSubject.send(newText)
-            try await self.actionHandler.changeText(newText.sendable(), blockId: self.info.id)
-        }
+        setNewTextSync(attributedString: newText)
     }
     
     func removeLink(markup: MarkupType, newText: NSAttributedString, range: NSRange, originalText: NSAttributedString) {
-        Task { @MainActor in
-            self.resetSubject.send(newText)
-            try await self.actionHandler.changeText(newText.sendable(), blockId: self.info.id)
-        }
+        setNewTextSync(attributedString: newText)
     }
     
     func openLinkToObject(data: LinkToObjectSearchModuleData) {
@@ -384,12 +450,16 @@ extension SimpleTablesTextBlockActionHandler: AccessoryViewOutput {
     }
     
     func setNewText(attributedString: SafeNSAttributedString) async throws {
+        let task = enqueueTextChange(attributedString: attributedString)
         resetSubject.send(attributedString.value)
-        try await actionHandler.changeText(attributedString, blockId: info.id)
+        try await task.value
+        try await textEditQueue.drain()
     }
     
     func changeText(attributedString: SafeNSAttributedString) async throws {
-        try await actionHandler.changeText(attributedString, blockId: info.id)
+        let task = enqueueTextChange(attributedString: attributedString)
+        try await task.value
+        try await textEditQueue.drain()
     }
     
     func didSelectAddMention(
@@ -398,6 +468,7 @@ extension SimpleTablesTextBlockActionHandler: AccessoryViewOutput {
         attributedString: SafeNSAttributedString
     ) async throws {
         guard let textContent = info.textContent else { return }
+        let owner = textOwner
         
         let mutableString = NSMutableAttributedString(attributedString: attributedString.value)
         
@@ -415,7 +486,8 @@ extension SimpleTablesTextBlockActionHandler: AccessoryViewOutput {
         let newAttributedString = anytypeText.attrString
         
         try await setNewText(attributedString: newAttributedString.sendable())
-        cursorManager.focus(at: info.id, position: .at(.init(location: position + mention.name.count + 2, length: 0)))
+        guard textOwner == owner else { return }
+        cursorManager.focus(at: owner.id, position: .at(.init(location: position + mention.name.count + 2, length: 0)))
     }
     
     func didSelectSlashAction(

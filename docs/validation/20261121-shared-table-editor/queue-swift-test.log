@@ -1,0 +1,51 @@
+[0/1] Planning build
+Building for debugging...
+[0/13] Write sources
+[2/13] Write swift-version-2807070033DA82CF.txt
+[4/15] Emitting module PinkhaKit
+[5/15] Compiling PinkhaKit PinkhaSerialTextEditQueue.swift
+[6/16] Wrapping AST for PinkhaKit for debugging
+[8/18] Emitting module PinkhaKitTests
+[9/18] Compiling PinkhaKitTests PinkhaSerialTextEditQueueTests.swift
+[10/19] C:\Users\DAVID\Code\anytype-swift-shared-table-20261121\build\shared-table-scoped-checks\package\.build\x86_64-unknown-windows-msvc\debug\PinkhaKitPackageDiscoveredTests.derived\all-discovered-tests.swift
+[11/19] Wrapping AST for PinkhaKitTests for debugging
+[12/19] Write sources
+[14/21] Emitting module PinkhaKitPackageDiscoveredTests
+[15/21] Compiling PinkhaKitPackageDiscoveredTests PinkhaKitTests.swift
+[16/22] Compiling PinkhaKitPackageDiscoveredTests all-discovered-tests.swift
+[17/23] C:\Users\DAVID\Code\anytype-swift-shared-table-20261121\build\shared-table-scoped-checks\package\.build\x86_64-unknown-windows-msvc\debug\PinkhaKitPackageTests.derived\runner.swift
+[18/23] Write sources
+[19/23] Wrapping AST for PinkhaKitPackageDiscoveredTests for debugging
+[21/25] Emitting module PinkhaKitPackageTests
+[22/25] Compiling PinkhaKitPackageTests runner.swift
+[23/26] Wrapping AST for PinkhaKitPackageTests for debugging
+[24/26] Write Objects.LinkFileList
+[25/26] Linking PinkhaKitPackageTests.xctest
+Build complete! (76.84s)
+Test Suite 'Selected tests' started at 2026-11-21 21:41:44.694
+Test Suite 'Selected tests' passed at 2026-11-21 21:41:44.792
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◊ Test run started.
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+→ Target Platform: x86_64-unknown-windows-msvc
+◊ Suite "Serial native text writes" started.
+◊ Test "A delayed native fork serializes writes and carries only the latest queued text" started.
+√ Test "A delayed native fork serializes writes and carries only the latest queued text" passed after 0.002 seconds.
+◊ Test "Failure preserves dirty ownership and a later user correction can save" started.
+√ Test "Failure preserves dirty ownership and a later user correction can save" passed after 0.004 seconds.
+◊ Test "A deferred composition remains dirty until its explicit commit" started.
+√ Test "A deferred composition remains dirty until its explicit commit" passed after 0.001 seconds.
+◊ Test "Identity reset drops queued old edits and waits for the dispatched request" started.
+√ Test "Identity reset drops queued old edits and waits for the dispatched request" passed after 0.001 seconds.
+◊ Test "Mandatory commands preserve the latest full text on both sides of the barrier" started.
+√ Test "Mandatory commands preserve the latest full text on both sides of the barrier" passed after 0.001 seconds.
+◊ Test "Consecutive mandatory commands cannot be cancelled by a later full-text draft" started.
+√ Test "Consecutive mandatory commands cannot be cancelled by a later full-text draft" passed after 0.010 seconds.
+◊ Test "A rejected mandatory command is reported and cannot acknowledge a later draft" started.
+√ Test "A rejected mandatory command is reported and cannot acknowledge a later draft" passed after 0.003 seconds.
+◊ Test "An identity reset retires a mandatory command that has not reached native code" started.
+√ Test "An identity reset retires a mandatory command that has not reached native code" passed after 0.001 seconds.
+◊ Test "Resetting an in-flight mandatory command neither overlaps nor acknowledges the new owner" started.
+√ Test "Resetting an in-flight mandatory command neither overlaps nor acknowledges the new owner" passed after 0.001 seconds.
+√ Suite "Serial native text writes" passed after 0.031 seconds.
+√ Test run with 9 tests in 1 suite passed after 0.032 seconds.
