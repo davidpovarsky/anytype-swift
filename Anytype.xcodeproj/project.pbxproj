@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA9102012F112100006805CC /* PinkhaKit in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101012F112100006805CC /* PinkhaKit */; };
+		FA9102022F112100006805CC /* Loc in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101022F112100006805CC /* Loc */; };
+		FA9102032F112100006805CC /* TorahInspectorUI in Frameworks */ = {isa = PBXBuildFile; productRef = FA9101032F112100006805CC /* TorahInspectorUI */; };
 		0303ED0522D8EDAD005C552B /* SystemAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0303ED0422D8EDAD005C552B /* SystemAssets.xcassets */; };
 		0318D576230186CA000527B1 /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0318D575230186CA000527B1 /* LocalAuthentication.framework */; };
 		03A46A40231417D6009AC10C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 03A46A42231417D6009AC10C /* InfoPlist.strings */; };
@@ -342,6 +345,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA9102012F112100006805CC /* PinkhaKit in Frameworks */,
+				FA9102022F112100006805CC /* Loc in Frameworks */,
+				FA9102032F112100006805CC /* TorahInspectorUI in Frameworks */,
 				FA8301012F111900006805CC /* PinkhaTorahPresentation in Frameworks */,
 				FA7501012F111900006805CC /* PinkhaHanlinUI in Frameworks */,
 				FA7301012F111900006805CC /* PinkhaHanlinCore in Frameworks */,
@@ -587,6 +593,9 @@
 			);
 			name = AnytypeTests;
 			packageProductDependencies = (
+				FA9101012F112100006805CC /* PinkhaKit */,
+				FA9101022F112100006805CC /* Loc */,
+				FA9101032F112100006805CC /* TorahInspectorUI */,
 				FA8201012F111900006805CC /* PinkhaTorahPresentation */,
 				FA7401012F111900006805CC /* PinkhaHanlinUI */,
 				FA7201012F111900006805CC /* PinkhaHanlinCore */,
@@ -2279,6 +2288,19 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		FA9101012F112100006805CC /* PinkhaKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PinkhaKit;
+		};
+		FA9101022F112100006805CC /* Loc */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Loc;
+		};
+		FA9101032F112100006805CC /* TorahInspectorUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FA1000002F000001006805CC /* XCRemoteSwiftPackageReference "TorahInspectorKit" */;
+			productName = TorahInspectorUI;
+		};
 		1259300426F3A5C500B115CD /* Highlightr */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1259300326F3A5C500B115CD /* XCRemoteSwiftPackageReference "Highlightr" */;
