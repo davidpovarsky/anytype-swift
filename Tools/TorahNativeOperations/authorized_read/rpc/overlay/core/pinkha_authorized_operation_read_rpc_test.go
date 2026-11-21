@@ -128,7 +128,7 @@ func TestPinkhaAuthorizedOperationRPCBoundsAndInvalidShape(t *testing.T) {
 }
 
 func TestPinkhaAuthorizedOperationRPCRejectsBeforeAccount(t *testing.T) {
-	mw := &Middleware{}
+	mw := New()
 	for _, version := range []uint32{0, 2} {
 		reply := mw.PinkhaTorahAuthorizedOperationRead(context.Background(), &pb.PinkhaTorahAuthorizedOperationReadRequest{ProtocolVersion: version})
 		require.Equal(t, int32(3), int32(reply.Error.Code))

@@ -27,6 +27,7 @@ import run_account_lifecycle as process_control
 import run_native_operations as registry
 import run_native_registration as closure
 from authorized_read import profile as authorized
+from authorized_read import account as authorized_account
 
 HEART = registry.HEART_SHA
 VERSION = "go version go1.26.5 linux/amd64"
@@ -270,12 +271,18 @@ def native_tests(args, receipt, run) -> None:
     if extension:
         new_go += [str(heart / name) for name in extension["paths"] if name.endswith(".go")]
     require(not subprocess.check_output(["gofmt", "-l", *new_go], text=True).strip(), "RPC source is not formatted")
-    run(["go", "test", "-p", "1", "-count=1", "-run", "^$", "./pb/service"], "generated-grpc-compile", heart, env)
     receipt.update(generation_receipt_sha256=digest(evidence / "generation-receipt.json"),
                    rpc_manifest_sha256=digest(rpc / "heart-rpc.json"), generated_sha256=previous["generated_sha256"],
                    native_source_sha256=previous["source_sha256"], tantivy=native,
                    genproto={"Path": effective["Path"], "Version": effective["Version"], "Sum": effective["Sum"], "GoModSum": effective["GoModSum"]},
-                   grpc_registration_package="COMPILED_NO_TESTS_CLAIMED")
+                   grpc_registration_package="NOT_RUN_IN_THIS_STAGE")
+    if args.stage == "account":
+        require(extension is not None, "Account read proof requires explicit candidate profile")
+        authorized_account.execute(args, receipt, run, previous, env, lambda: verify_composed_source(
+            heart, previous["source_sha256"], set(previous["tracked_paths"]), previous["module_sha256"]))
+        return
+    run(["go", "test", "-p", "1", "-count=1", "-run", "^$", "./pb/service"], "generated-grpc-compile", heart, env)
+    receipt["grpc_registration_package"] = "COMPILED_NO_TESTS_CLAIMED"
     pattern = authorized.TEST_PATTERN if extension else "^TestPinkhaTorah(RPC|GeneratedByte)"
     packages = (["./" + name for name in authorized.TOP_LEVEL] if extension else ["./core", "./clientlibrary/service"])
     command = ["go", "test", "-p", "1", "-parallel", "1", "-count=1", "-timeout=240s", "-json", "-tags", TAGS,
@@ -300,7 +307,7 @@ def native_tests(args, receipt, run) -> None:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("stage", choices=["generate", "test"])
+    parser.add_argument("stage", choices=["generate", "test", "account"])
     for name in ["control", "heart-source", "work", "evidence"]:
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--expected-app-sha", required=True)
@@ -341,6 +348,7 @@ def main(argv=None) -> int:
         finally:
             process_control.write_json(receipt_path, receipt)
     try:
+        require(args.stage != "account" or args.rpc_profile == authorized.PROFILE, "Account proof requires explicit authorized-read profile")
         require(sys.platform == "linux" and platform.machine() == "x86_64", "Linux amd64 runner required")
         require(len({args.control, args.heart_source, args.work, args.evidence}) == 4, "Separate source/work/evidence paths required")
         require(re.fullmatch(r"[0-9a-f]{40}", args.expected_app_sha) is not None, "Exact source SHA required")

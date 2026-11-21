@@ -9,6 +9,9 @@ on:
       rpc_profile:
         type: string
         default: retained-v1
+      native_stage:
+        type: string
+        default: test
 
 permissions:
   contents: read
@@ -21,6 +24,7 @@ jobs:
       EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}
       T2_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8
       RPC_PROFILE: ${{ inputs.rpc_profile }}
+      RPC_STAGE: ${{ inputs.native_stage }}
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - name: Checkout exact isolated RPC source
@@ -45,7 +49,11 @@ jobs:
         run: |
           mkdir -p evidence/toolchain
           cd control/Tools/TorahNativeOperations
-          if [ "$RPC_PROFILE" = "authorized-operation-read-v1" ]; then
+          case "$RPC_STAGE" in test|account) ;; *) exit 2 ;; esac
+          if [ "$RPC_STAGE" = "account" ]; then
+            test "$RPC_PROFILE" = "authorized-operation-read-v1"
+            python3 -B -m unittest -v authorized_read.test_account > "$GITHUB_WORKSPACE/evidence/controller-controls.log" 2>&1
+          elif [ "$RPC_PROFILE" = "authorized-operation-read-v1" ]; then
             python3 -B -m unittest -v test_native_rpc authorized_read.test_profile > "$GITHUB_WORKSPACE/evidence/controller-controls.log" 2>&1
           else
             python3 -B -m unittest -v test_native_rpc > "$GITHUB_WORKSPACE/evidence/controller-controls.log" 2>&1
@@ -74,7 +82,7 @@ jobs:
             --mount "type=bind,src=$GITHUB_WORKSPACE/work,dst=/workspace/work" \
             --mount "type=bind,src=$GITHUB_WORKSPACE/evidence,dst=/workspace/evidence" \
             --mount "type=bind,src=$GITHUB_WORKSPACE/.t2-cache,dst=/cache" \
-            -e EXPECTED_APP_SHA -e RPC_PROFILE -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_WORKFLOW_REF \
+            -e EXPECTED_APP_SHA -e RPC_PROFILE -e RPC_STAGE -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e GITHUB_WORKFLOW_REF \
             -e CC=gcc -e CXX=g++ -e GOTOOLCHAIN=local \
             -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
             -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \
@@ -95,6 +103,7 @@ jobs:
                   'run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT'),
                   'app_sha': os.environ.get('EXPECTED_APP_SHA'),
                   'rpc_profile': os.environ.get('RPC_PROFILE'),
+                  'native_stage': os.environ.get('RPC_STAGE'),
                   'account_wire_acceptance': 'NOT_RUN',
                   'app_capability': 'OFF',
                   'two_app_clients': 'NOT_RUN',
@@ -105,7 +114,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.rpc_profile == 'authorized-operation-read-v1' && format('Pinkha-T2-Authorized-Read-{0}-{1}', github.run_id, github.run_attempt) || format('Pinkha-T2-Native-RPC-{0}-{1}', github.run_id, github.run_attempt) }}
+          name: ${{ inputs.native_stage == 'account' && format('Pinkha-T2-Authorized-Read-Account-{0}-{1}', github.run_id, github.run_attempt) || inputs.rpc_profile == 'authorized-operation-read-v1' && format('Pinkha-T2-Authorized-Read-{0}-{1}', github.run_id, github.run_attempt) || format('Pinkha-T2-Native-RPC-{0}-{1}', github.run_id, github.run_attempt) }}
           path: evidence/
           retention-days: 14
           if-no-files-found: error

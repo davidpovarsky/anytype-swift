@@ -15,7 +15,8 @@ int main(void) { int values[] = {2,1}; qsort_r(values, 2, sizeof(int), cmp, NULL
 EOF
 gcc -static /workspace/work/qsort-probe.c -o /workspace/work/qsort-probe > /workspace/evidence/toolchain/qsort-link.log 2>&1
 /workspace/work/qsort-probe
-exec python3 -B /workspace/control/Tools/TorahNativeOperations/run_native_rpc.py test \
+case "${RPC_STAGE:-test}" in test|account) ;; *) exit 2 ;; esac
+exec python3 -B /workspace/control/Tools/TorahNativeOperations/run_native_rpc.py "${RPC_STAGE:-test}" \
   --control /workspace/control --heart-source /workspace/heart --work /workspace/work \
   --evidence /workspace/evidence --expected-app-sha "$EXPECTED_APP_SHA" \
   --rpc-profile "${RPC_PROFILE:-retained-v1}"
