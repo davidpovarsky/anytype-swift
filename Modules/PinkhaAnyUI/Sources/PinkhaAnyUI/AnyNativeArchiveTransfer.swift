@@ -155,11 +155,23 @@ final class AnyNativeArchivePresentation {
                 guard url.isFileURL else { throw AnyTorahArchiveError.invalidArchive }
                 let scoped = url.startAccessingSecurityScopedResource()
                 defer { if scoped { url.stopAccessingSecurityScopedResource() } }
-                let handle = try FileHandle(forReadingFrom: url)
-                defer { try? handle.close() }
-                return try AnyCanonicalArchiveBoundedReader.read(maximumBytes: AnyTorahArchive.maximumBytes) {
-                    try handle.read(upToCount: $0)
+                // File providers can replace or update an imported document.
+                // Coordinate the bounded snapshot while security scope is held.
+                let coordinator = NSFileCoordinator(filePresenter: nil)
+                var coordinationError: NSError?
+                var snapshot: Result<Data, Error>?
+                coordinator.coordinate(readingItemAt: url, options: [], error: &coordinationError) { coordinatedURL in
+                    snapshot = Result {
+                        let handle = try FileHandle(forReadingFrom: coordinatedURL)
+                        defer { try? handle.close() }
+                        return try AnyCanonicalArchiveBoundedReader.read(maximumBytes: AnyTorahArchive.maximumBytes) {
+                            try handle.read(upToCount: $0)
+                        }
+                    }
                 }
+                if let coordinationError { throw coordinationError }
+                guard let snapshot else { throw AnyTorahArchiveError.invalidArchive }
+                return try snapshot.get()
             }.value
             try requireActive(expected, mounted: mounted)
             let value = try AnyTorahArchive.decode(bytes)
@@ -303,6 +315,7 @@ public struct AnyNativeArchiveTransferView: View {
     @State private var export: AnyCanonicalAssociationFile?
     @State private var showsExporter = false
     @State private var showsImporter = false
+    @State private var exportedFileName: String?
     @Environment(\.dismiss) private var dismiss
 
     public init(document: AnyDocumentPresentation) {
@@ -327,10 +340,17 @@ public struct AnyNativeArchiveTransferView: View {
                     Button(AnyUIErrorText.text("בחירת קובץ לייבוא", "Choose archive to import"),
                            systemImage: "square.and.arrow.down") { showsImporter = true }
                         .disabled(!model.canChangeMapping).accessibilityIdentifier("any-native-archive-import")
+                    if let exportedFileName {
+                        LabeledContent(AnyUIErrorText.text("הקובץ שיוצא", "Exported archive"), value: exportedFileName)
+                            .accessibilityIdentifier("any-native-archive-exported-file")
+                            .accessibilityValue(exportedFileName)
+                    }
                 }
                 if let archive = model.archive {
                     Section(AnyUIErrorText.text("בדיקת הייבוא", "Review import")) {
                         LabeledContent(AnyUIErrorText.text("קובץ", "File"), value: model.fileName ?? "")
+                            .accessibilityIdentifier("any-native-archive-file")
+                            .accessibilityValue(model.fileName ?? "")
                         LabeledContent(AnyUIErrorText.text("מסמך היעד", "Destination document"),
                                        value: model.targetTitle.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : model.targetTitle)
                         LabeledContent(AnyUIErrorText.text("קישורים פעילים", "Live associations"),
@@ -349,8 +369,10 @@ public struct AnyNativeArchiveTransferView: View {
                                     Text(AnyUIErrorText.text("בחירת בלוק יעד", "Choose destination block")).tag("")
                                     ForEach(model.blocks, id: \.id) { block in
                                         Text(blockLabel(block)).tag(block.id)
+                                            .accessibilityIdentifier("any-native-archive-target-block-" + block.id)
                                     }
                                 }.disabled(!model.canChangeMapping)
+                                    .accessibilityIdentifier("any-native-archive-block-map-" + id)
                             }
                         }
                     }
@@ -365,6 +387,7 @@ public struct AnyNativeArchiveTransferView: View {
                                         Text(note.title.isEmpty ? AnyUIErrorText.text("ללא כותרת", "Untitled") : note.title).tag(note.objectID)
                                     }
                                 }.disabled(!model.canChangeMapping)
+                                    .accessibilityIdentifier("any-native-archive-note-map-" + id)
                             }
                         }
                     }
@@ -375,6 +398,8 @@ public struct AnyNativeArchiveTransferView: View {
                                 Text(receipt.status == .complete ?
                                      AnyUIErrorText.text("כל הקישורים בתוכנית אומתו במנוע.", "Every association in the plan was verified in the engine.") :
                                      AnyUIErrorText.text("הייבוא הושלם חלקית; הקישורים שאומתו נשמרו.", "Import is incomplete; verified associations were retained."))
+                                    .accessibilityIdentifier("any-native-archive-import-result")
+                                    .accessibilityValue(receipt.status == .complete ? "complete" : "incomplete")
                                 if receipt.status == .incomplete {
                                     Text(AnyUIErrorText.text("ממתינים לאימות", "Pending verification") + ": \(receipt.pendingClaimIDs.count)")
                                 }
@@ -399,10 +424,14 @@ public struct AnyNativeArchiveTransferView: View {
             .navigationTitle(AnyUIErrorText.text("העברת קישורי מקורות", "Transfer source associations"))
             .toolbar { ToolbarItem(placement: .confirmationAction) {
                 Button(AnyUIErrorText.text("סיום", "Done")) { dismiss() }
+                    .accessibilityIdentifier("any-native-archive-close")
             }}
             .fileExporter(isPresented: $showsExporter, document: export, contentType: .json,
                           defaultFilename: "source-associations") { result in
-                if case .failure(let error) = result { model.message = AnyUIErrorText.describe(error) }
+                switch result {
+                case .success(let url): exportedFileName = url.lastPathComponent
+                case .failure(let error): model.message = AnyUIErrorText.describe(error)
+                }
             }
             .fileImporter(isPresented: $showsImporter, allowedContentTypes: [.json]) { result in
                 switch result {
