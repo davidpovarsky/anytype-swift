@@ -1,0 +1,40 @@
+{
+  "status": "PASS_ORIGINAL_MANIFEST_SOURCE_BINDING",
+  "verification": "Reconstructed the exact original prepare_native_runtime.verify_source receipt shape, including resolved pins and optional tag-object fields.",
+  "sourceCommit": "abc1aebfcdebbe801aab928e9576f39ef3c7f0ac",
+  "manifestSHA256": "e289b8a79cbc66ec9ffc1d772b2d4bc4ea707a5851de3c963c01f6d5f3101997",
+  "sourceChecks": {
+    "any": {
+      "matchedFields": 9,
+      "sourceFiles": 54,
+      "completeRecordedSourceIdentityMatch": true
+    },
+    "sdk": {
+      "matchedFields": 9,
+      "sourceFiles": 41,
+      "completeRecordedSourceIdentityMatch": true
+    }
+  },
+  "wireCompatibility": {
+    "canonicalOperationVersionChanged": false,
+    "existingAppendOrTargetReadChanged": false,
+    "readContract": "pinkha-authorized-operation-read-v1",
+    "runtimeCapabilityAdvertised": true,
+    "capabilityScope": "explicit candidate-runtime-read profile only",
+    "advertisedFields": {
+      "nativeAuthorizedOperationRead": 1,
+      "authorizedOperationReadContract": "pinkha-authorized-operation-read-v1",
+      "authorizedOperationReadMaxVariants": 256,
+      "authorizedOperationReadMaxBytes": 4194304
+    },
+    "maximumVariants": 256,
+    "maximumEncodedResponseBytes": 4194304
+  },
+  "acceptance": {
+    "fullT2Complete": false,
+    "twoClientReadAcceptanceComplete": false,
+    "iOSAdapterReadAcceptanceComplete": false,
+    "defaultRuntimeActivation": false
+  },
+  "testsExecuted": 0
+}

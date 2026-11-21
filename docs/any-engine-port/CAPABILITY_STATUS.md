@@ -1,5 +1,21 @@
 # Native Any port capability status
 
+## Current scoped checkpoint — 21 November 2026
+
+**Full native-application acceptance remains open.** This checkpoint distinguishes retained original execution from newly qualified candidate work and pending real UI journeys. The historical tables below remain unchanged; their then-pending labels do not overwrite newer source-bound evidence.
+
+| Scope | Current verified status | Exact boundary |
+| --- | --- | --- |
+| Native v9 producer at `31ae2e63890b6e10af8413625534f6234ed263bb` | Retain the original [44695105165](https://github.com/davidpovarsky/anytype-swift/actions/runs/44695105165) linked runtime 3, protected Hanlin 36 and hosted application 9 passes | These are their original source-bound results. The unchanged native binary is reused through exact manifest/patch/tree/member verification; no new execution is claimed. |
+| Shared UIKit renderer, marked text and focus | [44942212731](https://github.com/davidpovarsky/anytype-swift/actions/runs/44942212731) at `96173b0afc6b360c8f780ae70c6c80042fda98da`: all 14 selected methods PASS | The integrated `9f83adf96d13036e4cf4dea7240c274a0454df0b` retains 61 identical protected files and [eight exact reviewed differences](../../Tools/AnyEnginePort/reviews/uikit14-unexecuted-source-changes-20261121.json) that these methods do not execute. Changed behavior is not relabelled as passed by that run. |
+| Authorized operation read candidate | [44954305345](https://github.com/davidpovarsky/anytype-swift/actions/runs/44954305345) at `abc1aebfcdebbe801aab928e9576f39ef3c7f0ac`: exactly 1 real iOS method PASS in 7.273 seconds, zero failures/skips; [original evidence and qualification](../validation/20261121-any-authorized-read-ios/README.md) | Actual C runtime, managed account/Space, owned Host and shared reader; original operation bytes/provenance survive block deletion and C-runtime stop/start on the same disk within the **same iOS test process**. Stale owner use and new construction are refused. This is not signed native ACL revocation, two-client acceptance, full T2 or default activation. |
+| Native UI business journeys | [44958245692](https://github.com/davidpovarsky/anytype-swift/actions/runs/44958245692) at `9f83adf96d13036e4cf4dea7240c274a0454df0b`: queued at this checkpoint | One existing create/edit method must pass its exact named gate before the other seven pending methods run from the same build. Previous failures remain preserved; diagnostics are bounded and noncontent. |
+| Actual Files canonical roundtrip | [Source, storage audit and staged gate](../validation/20261121-any-native-ui-followup/README.md) implemented; actual result pending in 44958245692 | Distinct system Files save/import, explicit block mapping, real app cold reopen/body assertions and read-only comparison of actual exported canonical files. The earlier raw picker-observation pass established modal coverage only and is not repeated or treated as transfer acceptance. |
+
+The authorized-read candidate remains separate from the frozen v9/default runtime. Its original input manifest stays immutable; the new execution receipt records the scoped qualification separately. No task or baseline capability is promoted to broad parity by this checkpoint.
+
+## Historical checkpoint recorded on 20 November 2026
+
 Updated 2026-11-20. Published helper checkpoint: `3d9932b1b68fada61a3d1ef54694f75c9ef2398d`, retaining native v9, the backup-control correction, passive runtime metrics, source drag, Topic/Word, selected-context Hanlin and a separate system-picker observation. This follow-up corrects sparse empty-paragraph creation readback and the retained application's missing shared-module import. Actual Apple results and remaining gates are separated below; full acceptance remains open.
 
 **This is a scoped status ledger, not a complete parity claim.** All 38 original baseline states and all original source/test references remain unchanged. The inventory includes implemented source, disabled candidates and baseline plans; `MIG-01`, `APP-01` and durable semantic anchors were not implemented custom capabilities.

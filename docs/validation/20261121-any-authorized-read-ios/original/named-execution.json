@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_REAL_IOS_AUTHORIZED_OPERATION_READ",
+  "profile": "authorized-read-runtime",
+  "scope": "actual_iOS_C_runtime_managed_account_space_owned_host_shared_reader",
+  "fullT2Acceptance": false,
+  "twoClientAcceptance": false,
+  "defaultRuntimeActivation": false,
+  "runnerSHA256": "c3609bca032218052471351bf9670cc778c6afe3600ce68aef597807705588cf",
+  "commit": "abc1aebfcdebbe801aab928e9576f39ef3c7f0ac",
+  "summarySHA256": "7ec0ac9afb64aac9bc0cc600502029e19e17fbad85e8feb99c459cd38bca3288",
+  "testTreeSHA256": "1642e54c7b360490702313562a6a5758a795a388d384185437f13f9755414ad7",
+  "nativeBinding": {
+    "schemaVersion": 1,
+    "status": "SOURCE_IDENTICAL_NATIVE_ARTIFACT",
+    "producerCommit": "abc1aebfcdebbe801aab928e9576f39ef3c7f0ac",
+    "consumerCommit": "abc1aebfcdebbe801aab928e9576f39ef3c7f0ac",
+    "sourceManifestSHA256": "e289b8a79cbc66ec9ffc1d772b2d4bc4ea707a5851de3c963c01f6d5f3101997",
+    "artifactReceiptSHA256": "11dd5c075808bdec13fccb2d6489890424bd5b79841d6e25c25f01fdc9bd0998",
+    "archiveSHA256": "ae3d6bbbe0fcaeadce8d3e40015cb4f7631fb728b973a7d51e198ac8eb875cea",
+    "reused": false,
+    "testResultsRelabeled": false
+  },
+  "nativeManifestSHA256": "e289b8a79cbc66ec9ffc1d772b2d4bc4ea707a5851de3c963c01f6d5f3101997",
+  "sourceSHA256": {
+    "Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAuthorizedOperationRead.swift": "4ae1fc37e98b8ee7ec04d3ec7b2df6fcbdb0912ea2e5fab2378c5d0b9c066af0",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahOperationRead.swift": "7205b72e687975bfda695bcccbcdbdd486af45c13ef7f0ddd20fcf58c9d5a312",
+    "Modules/PinkhaAnyEngine/Sources/PinkhaAnyEngine/AnyGuardedTorahContract.swift": "048ebd2d82e3a22265c3fea4ead6ba406b4f8d7d8f00367ec0c7779fac1b0d8f",
+    "Modules/PinkhaAnyIntegration/Sources/PinkhaAnyIntegration/AnyAuthorizedTorahOperationReader.swift": "f217196aaaadb431cc34852ac50a7a54f2eb978b0705a885bb668fec55b166d5",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyApplicationSession.swift": "ff7480f71e2d0bdbd8de5825aca391fcbe237ca37a07dfe7e3d8f859af860acd",
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyHostAuthorizedTorahOperationReader.swift": "6f79093740239ace8bce02f16ffe9919eb893af8e95e5a97d01565b14905eb20",
+    "Modules/PinkhaAnyRuntime/Package.swift": "c396e7d63cb533085ad91d222ec127e55e84d86b5c52edfbad6fe11c5feb5745",
+    "Modules/PinkhaAnyRuntime/Sources/PinkhaAnyRuntime/AnyEmbeddedRuntime.swift": "e77f1d948d22480c4e15fb647a61911db38ae3ec2029a85404dded75f8953ee2",
+    "Modules/PinkhaAnyRuntime/Tests/PinkhaAnyRuntimeTests/AnyAuthorizedOperationReadRuntimeTests.swift": "9881039e8f4d665616ae66bc57d205dc21a70f29a7f46b89dfa8d0af618ca052",
+    "Tools/AnyEnginePort/prepare_native_runtime.py": "ab470062a3c183d6456b2fc6e4c5e1f16ff36895b5dcb44a5fa345e69381afa0",
+    "Tools/AnyEnginePort/verify_native_test_execution.py": "454bd334f0347957b4d7facf5b1f67579f5ff3c71bd59962c56f6a037cc756a1",
+    "Tools/AnyEnginePort/verify_authorized_operation_read_execution.py": "c3609bca032218052471351bf9670cc778c6afe3600ce68aef597807705588cf",
+    ".github/workflows/pinkha-any-engine-port.yml": "c9ae79b0870d9bcc07880e14114900387679a9155937a7635426e988af281196",
+    "Tools/AnyEngineValidation/evidence/native-authorized-operation-read-v10-candidate-source.json": "e289b8a79cbc66ec9ffc1d772b2d4bc4ea707a5851de3c963c01f6d5f3101997",
+    "Tools/AnyEngineValidation/evidence/native-authorized-operation-read-v10-candidate-any.patch": "64f7da56fb4f30b78baae8afe850fa0429dccde4b977bd3c7e30fc03d26dfa5e",
+    "Tools/AnyEngineValidation/evidence/native-property-receipts-v9-sdk.patch": "b9021dc305ab150501e86243270df73f3d6a27490ec343cf6252e5a214f5a461"
+  },
+  "verifiedInstalledMemberCount": 7,
+  "counts": {
+    "totalTestCount": 1,
+    "passedTests": 1,
+    "failedTests": 0,
+    "skippedTests": 0
+  },
+  "requiredMethods": [
+    "AnyAuthorizedOperationReadRuntimeTests/testManagedNativeAuthorizedReadPreservesBytesAcrossBlockDeletionAndColdReopen"
+  ],
+  "observedRequiredMethods": [
+    "AnyAuthorizedOperationReadRuntimeTests/testManagedNativeAuthorizedReadPreservesBytesAcrossBlockDeletionAndColdReopen"
+  ],
+  "actualCases": {
+    "AnyAuthorizedOperationReadRuntimeTests/testManagedNativeAuthorizedReadPreservesBytesAcrossBlockDeletionAndColdReopen()": "Passed"
+  },
+  "device": {
+    "architecture": "arm64",
+    "deviceId": "508D9845-7D23-48C8-A890-F36A0C4C1FC5",
+    "deviceName": "AnyAuthorizedRead-44954305345",
+    "modelName": "iPad mini (A20 Pro)",
+    "osBuildNumber": "24B8117",
+    "osVersion": "27.2",
+    "platform": "iOS Simulator"
+  }
+}

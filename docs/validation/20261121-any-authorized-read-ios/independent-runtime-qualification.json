@@ -1,0 +1,46 @@
+{
+  "status": "PASS_ORIGINAL_EXACT_ONE_IOS_QUALIFICATION",
+  "runID": 44954305345,
+  "artifactID": 14728139061,
+  "commit": "abc1aebfcdebbe801aab928e9576f39ef3c7f0ac",
+  "namedReceiptSHA256": "ed9fd933641fbf6426a4882680175ccd71688039b3e00fb81737afad374b89e4",
+  "originalFileSHA256": {
+    "named-execution.json": "ed9fd933641fbf6426a4882680175ccd71688039b3e00fb81737afad374b89e4",
+    "test-counts.json": "7ec0ac9afb64aac9bc0cc600502029e19e17fbad85e8feb99c459cd38bca3288",
+    "test-methods.json": "1642e54c7b360490702313562a6a5758a795a388d384185437f13f9755414ad7",
+    "native-consumer-binding.json": "0f7975f20a088f10cf6a54552fa140517548e788ff8dc3e19f259a838b164db6",
+    "original-native-artifact.json": "11dd5c075808bdec13fccb2d6489890424bd5b79841d6e25c25f01fdc9bd0998",
+    "simulator.json": "b424dcff0dab18bc0d20262fc6b2c255c6f742b0c175f86e0e809f6b8e6647d5",
+    "source-sha.txt": "5247ef5809c4fa4ea21506fc90c95eba0262c873ac07dbd87db9614c0cb08830"
+  },
+  "method": "AnyAuthorizedOperationReadRuntimeTests/testManagedNativeAuthorizedReadPreservesBytesAcrossBlockDeletionAndColdReopen",
+  "actualCounts": {
+    "totalTestCount": 1,
+    "passedTests": 1,
+    "failedTests": 0,
+    "skippedTests": 0
+  },
+  "actualMethodSeconds": 7.273383021354675,
+  "device": {
+    "architecture": "arm64",
+    "deviceId": "508D9845-7D23-48C8-A890-F36A0C4C1FC5",
+    "deviceName": "AnyAuthorizedRead-44954305345",
+    "modelName": "iPad mini (A20 Pro)",
+    "osBuildNumber": "24B8117",
+    "osVersion": "27.2",
+    "platform": "iOS Simulator"
+  },
+  "nativeBinaryIntegrity": "independently verified seven original members and both required arm64 slices",
+  "nativeSourceRecordsVerified": {
+    "any": 54,
+    "sdk": 41
+  },
+  "runtimeReopenBoundary": "Actual C runtime stop/start on the same on-disk directory within the same iOS test process.",
+  "oldOwnerBoundary": "Session revokeAndDrain and refused stale/new reader ownership; not a signed native ACL revocation.",
+  "fullT2Acceptance": false,
+  "twoClientAcceptance": false,
+  "defaultRuntimeActivation": false,
+  "testsExecutedDuringQualification": 0,
+  "appProcessRestartAcceptance": false,
+  "signedNativeACLRevocationAcceptance": false
+}
