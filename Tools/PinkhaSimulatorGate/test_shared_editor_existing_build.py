@@ -326,8 +326,10 @@ class ExistingBuildTests(unittest.TestCase):
         for phase in ("enumeration", "execution"):
             self.after_enumeration, self.after_run = None, None
             directory = "selected-mutation-" + phase
-            path = self.configuration.with_name("UI27-" + directory + "-selected.xctestrun")
-            action = lambda path=path: path.write_bytes(path.read_bytes() + b"changed")
+            def action():
+                command = self.enumerations[-1]
+                path = Path(command[command.index("-xctestrun") + 1])
+                path.write_bytes(path.read_bytes() + b"changed")
             if phase == "enumeration":
                 self.after_enumeration = action
             else:
@@ -336,6 +338,23 @@ class ExistingBuildTests(unittest.TestCase):
             with self.subTest(phase=phase), self.assertRaisesRegex(ValueError, "xctestrun changed"):
                 self.execute(directory)
             self.assertEqual(len(self.commands) - executed_before, int(phase == "execution"))
+
+    def test_fresh_owned_nonce_preserves_cached_other_run_configuration_files(self):
+        stale = [self.configuration.with_name("UI27-evidence-" + suffix + ".xctestrun")
+                 for suffix in ("discovery", "selected")]
+        for path in stale:
+            path.write_bytes(b"preserved-other-run-copy")
+        result = self.execute()
+        enumeration = result["enumeration"]
+        nonce = enumeration["selection_nonce"]
+        self.assertRegex(nonce, r"^[0-9a-f]{32}$")
+        for key, suffix in (("discovery_configuration", "discovery"), ("selected_configuration", "selected")):
+            path = Path(enumeration[key]["path"])
+            self.assertEqual(path.name, "UI27-evidence-" + nonce + "-" + suffix + ".xctestrun")
+            self.assertEqual(self.digest(path), enumeration[key]["sha256"])
+        for path in stale:
+            self.assertEqual(path.read_bytes(), b"preserved-other-run-copy")
+        self.assertEqual(result["status"], runner.PASS_STATUS)
 
 
 class TrackedContractTests(unittest.TestCase):

@@ -11,6 +11,7 @@ import plistlib
 import re
 import subprocess
 import sys
+from uuid import uuid4
 
 HANLIN_TOOLS = Path(__file__).resolve().parents[1] / "Hanlin"
 if str(HANLIN_TOOLS) not in sys.path:
@@ -145,8 +146,10 @@ def enumerate_selection(app, base, evidence, shared, source):
     discovery_path = evidence / "compiled-suite-enumeration.json"
     selected_path = evidence / "compiled-selected-enumeration.json"
     original = Path(base[base.index("-xctestrun") + 1])
-    discovery_configuration = original.with_name("UI27-" + evidence.name + "-discovery.xctestrun")
-    selected_configuration = original.with_name("UI27-" + evidence.name + "-selected.xctestrun")
+    selection_nonce = uuid4().hex
+    prefix = "UI27-" + evidence.name + "-" + selection_nonce
+    discovery_configuration = original.with_name(prefix + "-discovery.xctestrun")
+    selected_configuration = original.with_name(prefix + "-selected.xctestrun")
 
     def enumerate_to(path, configuration, selectors):
         binding = scoped_configuration(original, configuration, selectors, shared)
@@ -177,7 +180,7 @@ def enumerate_selection(app, base, evidence, shared, source):
                  "Compiled pending selection differs from the exact21 methods; no tests executed")
     host.require(len(selected) == EXPECTED_METHOD_COUNT,
                  "Compiled pending selection does not contain21 methods")
-    return {"status": "EXACT_COMPILED_SELECTION_VERIFIED", "test_plan": plan,
+    return {"status": "EXACT_COMPILED_SELECTION_VERIFIED", "test_plan": plan, "selection_nonce": selection_nonce,
             "selected_identifiers": selected, "selected_method_count": len(selected),
             "enumerated_source_method_count": len(discovered),
             "unselected_identifiers": sorted(discovered - observed),

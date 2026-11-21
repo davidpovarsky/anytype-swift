@@ -133,3 +133,18 @@ instead of silently re-enabling them, and reject mutation of the selected
 copy before or after execution. Original app, test executable and xctestrun
 binding remain enforced. No Apple test body or additional application build
 ran during this controller check.
+
+### Cached-copy collision prevention
+
+Review identified that a cached Products directory can retain previously owned
+UI27 xctestrun copies. The discovery/selected pair now shares one fresh UUID
+nonce, recorded with both paths and hashes. Old copies are neither overwritten
+nor deleted. The original xctestrun and all product bindings remain unchanged.
+
+Only the two affected controls were executed for this follow-up:
+`test_fresh_owned_nonce_preserves_cached_other_run_configuration_files` and
+`test_selected_configuration_mutation_before_or_after_execution_is_rejected`.
+Both passed in job `job_c9057128b7be`,
+2026-11-21T22:13:19Z–22:13:23Z, Python 3.12, exit 0. The previous fourteen-control
+result remains evidence for the unchanged selection, argument and source gates;
+those cases were not repeated.
