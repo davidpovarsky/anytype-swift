@@ -35,3 +35,7 @@ An independent source review checked main-actor ordering, tail ownership, failed
 The seven new methods are to run once in the existing `hanlin-native` Debug acceptance build, before its fresh native fixture, with their own exact result/count receipt. This avoids another full Debug app build. No existing passing pure-queue or UIKit test is repeated merely for this adapter addition.
 
 Apple type checking, actual seven-method execution, retained editor UI, quote UI and physical iPad acceptance remain separate requirements until their original results exist.
+
+## Implemented efficient selection
+
+The explicit hanlin-native-text-ack lane resolves to the existing SDK06 hanlin-native Debug journey and adds exactly these seven component methods before its fresh native fixture. It reuses that same built app and XCTest bundle, records a separate count/source receipt, and fails before fixture creation on any missing, skipped or failing component. The original hanlin-native lane excludes these added methods, allowing later UI work to retain already qualified component evidence without rerunning it. Five declaration/result/scope rejection controls and the two workflow syntax checks passed; actual Apple execution remains pending.

@@ -22,6 +22,7 @@ import hanlin_ui_runtime
 import hanlin_selection_evidence as hanlin_selection
 import wave15_diagnostics as diagnostics
 import type_preservation as preservation
+import text_native_ack
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
@@ -389,6 +390,14 @@ def execute(args, receipt, *, build_context=None):
     require(platform.system() == "Darwin", "Actual Apple host required")
     app, evidence, derived = args.app.resolve(), args.evidence.resolve(), args.derived.resolve()
     selection = plan(args.lane, args.device, args.language)
+    acknowledgement = None
+    if getattr(args, "include_text_native_ack", False):
+        require(args.lane == text_native_ack.BASE_LANE and build_context is None,
+                "Native-ack components require the explicit single SDK06 Debug build")
+        acknowledgement = text_native_ack.source_contract(app)
+        selection["additional_components"] = acknowledgement
+        selection["requested_lane"] = text_native_ack.LANE
+        receipt["text_native_acknowledgement"] = {"status": "NOT_RUN", **acknowledgement}
     hanlin_lane = HANLIN_LANES.get(args.lane)
     source_methods(app, selection["methods"])
     head = shared.git(app, "rev-parse", "HEAD")
@@ -450,7 +459,9 @@ def execute(args, receipt, *, build_context=None):
     if build_context is None:
         shared.command([*base, "-project", "Anytype.xcodeproj", "-scheme", "Anytype",
                         "-derivedDataPath", str(derived), "-only-testing:AnytypeTests/" + native_suite,
-                        *(["-only-testing:AnytypeTests/" + preservation.SUITE] if args.lane == "properties-set" else []), *flags], app, evidence)
+                        *(["-only-testing:AnytypeTests/" + preservation.SUITE] if args.lane == "properties-set" else []),
+                        *(["-only-testing:AnytypeTests/" + text_native_ack.SUITE] if acknowledgement else []),
+                        *flags], app, evidence)
     else:
         require(derived == build_context.derived, "Same-job native product directory differs")
         build_context.verify(app, head, identity, flags, configuration_name)
@@ -480,6 +491,19 @@ def execute(args, receipt, *, build_context=None):
         native_environment.update(preservation.binding_environment(preservation_binding))
         native_environment["PINKHA_PREPARE_TYPE_PRESERVATION"] = "1"
     run_selection = shared.run_selection if build_context is None else build_context.run_selection
+    if acknowledgement:
+        receipt["phase"] = "TEXT_NATIVE_ACK_COMPONENTS"
+        shared.write(evidence / "execution.json", receipt)
+        component = run_selection(app, native_configuration, "AnytypeTests", udid,
+            text_native_ack.METHODS, {}, evidence / "text-native-ack", "text-native-ack")
+        receipt["text_native_acknowledgement"] = {"source": acknowledgement, "execution": component}
+        shared.write(evidence / "execution.json", receipt)
+        qualified = text_native_ack.qualify_result(component)
+        require(text_native_ack.source_contract(app) == acknowledgement,
+                "Native-ack source changed during component execution")
+        receipt["text_native_acknowledgement"].update(qualified)
+        receipt["phase"] = "PREPARATION"
+        shared.write(evidence / "execution.json", receipt)
     preparation = run_selection(app, native_configuration, "AnytypeTests", udid,
         [LANES[args.lane]["preparation"]], native_environment, evidence / "preparation", "prepare")
     receipt["preparation"] = preparation
@@ -639,12 +663,13 @@ def main():
     parser.add_argument("--app", type=Path, required=True)
     parser.add_argument("--evidence", type=Path, required=True)
     parser.add_argument("--derived", type=Path, required=True)
-    parser.add_argument("--lane", choices=[*LANES, *wave15_batch.PROFILES], required=True)
+    parser.add_argument("--lane", choices=[*LANES, *wave15_batch.PROFILES, text_native_ack.LANE], required=True)
     parser.add_argument("--device", choices=["iphone", "ipad"], required=True)
     parser.add_argument("--language", choices=["en", "he"], required=True)
     parser.add_argument("--runtime-profile", choices=shared.heart_profiles.PROFILE_NAMES, default="r14")
     parser.add_argument("--heart-source-run-id", default="")
     args = parser.parse_args()
+    args.lane, args.include_text_native_ack = text_native_ack.resolve_lane(args.lane)
     if args.lane in wave15_batch.PROFILES:
         return wave15_batch.run(args, sys.modules[__name__])
     args.evidence.mkdir(parents=True, exist_ok=True)

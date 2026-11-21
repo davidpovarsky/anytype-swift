@@ -839,12 +839,22 @@
       "from": "Tools/PinkhaNativeDerived/install_verified_heart.py",
       "to": "Tools/PinkhaNativeDerived/install_verified_heart.py",
       "baselineBlob": "1ed1f7fa90083cc110f4cb73ec69ac5973d34a1c",
-      "replacementBlob": "70024290822294cfa7b355651d0f3971338aba27",
-      "reason": "Admit both isolated engine work lanes and their merged shared branch as consumers of the existing verified Heart artifact; preserve all binary, native source, patch and archive integrity checks.",
-      "sharedSources": [],
+      "replacementBlob": "04bab7f476492fe743b7e8d75bc8131c99afdf96",
+      "reason": "Admit explicit r14 or corrected r15-attachment-v1 runtime profiles while preserving the original r14 default and all binary/native source/patch integrity checks. The corrected profile binds the original producer source/run/attempt, full version and both artifact hashes through installation and observed app process.",
+      "sharedSources": [
+        {
+          "path": "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
+          "gitBlob": "0849481b380ca3a2401476fce5ca075847a5bfce"
+        },
+        {
+          "path": "Tools/PinkhaNativeDerived/download_heart_runtime.py",
+          "gitBlob": "2d154bad91d7e10e57ae4659f3b57abafaf229f2"
+        }
+      ],
       "validation": [
-        "Reviewed the retained source and bounded integration changes, with exact current replacement blob pinned.",
-        "Focused controller/component evidence is retained separately; source preservation does not imply native runtime, mounted UI or physical-device acceptance."
+        "Twenty-two selected artifact-admission, observer/CLI and fresh-worker propagation controls passed in docs/validation/20261121-heart-runtime-consumer.",
+        "Corrected producer run44943967103 passed at4ee2d7fd9f8acd74f51cbb2236d08f55a93af08b; original artifact verification remains source-bound and does not rerun native tests.",
+        "This reviewed map proves source provenance only. Actual app process/SDK06/Properties/UI acceptance is recorded by separate original execution receipts."
       ]
     },
     {
