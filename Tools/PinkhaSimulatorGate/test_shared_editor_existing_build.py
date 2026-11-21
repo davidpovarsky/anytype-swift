@@ -71,7 +71,7 @@ class ExistingBuildTests(unittest.TestCase):
             command = self.commands[-1]
             self.assertEqual(command[:2], ["xcodebuild", "test-without-building"])
             self.assertEqual({item for item in command if item.startswith("-only-testing:")},
-                             {"-only-testing:AnytypeTests/" + item for item in fixtures.EXPECTED})
+                             {"-only-testing:AnytypeTests/" + runner.SUITE})
             self.assertNotIn("build-for-testing", command)
         self.assertEqual(len(self.commands), 2)
 

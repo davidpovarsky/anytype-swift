@@ -39,7 +39,7 @@ def execute(app, configuration, udid, expected_app, evidence, shared):
     command = ["xcodebuild", "test-without-building", "-xctestrun", str(configuration),
                "-destination", "platform=iOS Simulator,id=" + udid,
                "-parallel-testing-enabled", "NO",
-               *["-only-testing:AnytypeTests/" + name for name in source["methods"]],
+               "-only-testing:AnytypeTests/" + SUITE,
                "-resultBundlePath", str(bundle)]
     receipt = {"status": "FAIL", "phase": "EXECUTION", "profile": PROFILE.value,
                "build_mode": "SAME_JOB_EXISTING_SDK06_BUILD", "additional_app_builds": 0,
