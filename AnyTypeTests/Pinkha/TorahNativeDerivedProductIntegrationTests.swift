@@ -997,6 +997,30 @@ private enum NativeTypePreservation {
         let directories: Int
     }
 
+    struct NativeOpenInventory: Codable, Equatable {
+        let algorithm: String
+        let sha256: String
+        let files: Int
+        let bytes: Int
+        let directories: Int
+    }
+
+    struct PreopenProof: Codable {
+        let schemaVersion: Int
+        let status: String
+        let binding: Binding
+        let installationSHA256: String
+        let baselineSHA256: String
+        let fixtureSHA256: String
+        let accountID: String
+        let spaceID: String
+        let subjectID: String
+        let processID: Int32
+        let directories: Directories
+        let directoryBirthNanoseconds: [String: String]
+        let nativeOpenInventory: NativeOpenInventory
+    }
+
     struct StoppedProcessCheck: Decodable {
         let status: String
         let commandExitCode: Int
@@ -1022,6 +1046,8 @@ private enum NativeTypePreservation {
         let currentDirectories: Directories
         let beforeInventory: Inventory
         let afterInventory: Inventory
+        let nativeOpenInventory: NativeOpenInventory
+        let directoryBirthNanoseconds: [String: String]
         let stoppedProcessChecks: [String: StoppedProcessCheck]
         let containerRelocated: Bool
     }
@@ -1078,6 +1104,7 @@ private enum NativeTypePreservation {
         let baselineSHA256: String
         let installationSHA256: String
         let directoriesBefore: Directories
+        let preopenProof: PreopenProof
         let preparationPID: Int32
         let postflightPID: Int32
         let verifierCallsMutationAPI: Bool
@@ -1270,6 +1297,7 @@ private enum NativeTypePreservation {
     static func verify() async throws {
         let env = ProcessInfo.processInfo.environment
         try #require(disabledFlags.allSatisfy { env[$0] == "0" })
+        try #require(env["PINKHA_TYPE_PRESERVATION_MODE"] == "SIMULATOR_NORMAL_INSTALL_PREOPEN_PROOF")
         let binding = try binding()
         let input = try #require(env["PINKHA_TYPE_PRESERVATION_BASELINE_BASE64"])
         try #require(input.utf8.count <= 87_384)
@@ -1284,7 +1312,7 @@ private enum NativeTypePreservation {
         try #require(installationData.count <= 65_536 &&
                      sha256(installationData) == env["PINKHA_TYPE_PRESERVATION_INSTALLATION_SHA256"])
         let installation = try JSONDecoder().decode(Installation.self, from: installationData)
-        try #require(installation.schemaVersion == 1 &&
+        try #require(installation.schemaVersion == 2 &&
                      installation.status == "PASS_STOPPED_NATIVE_STORE_UNCHANGED" &&
                      installation.binding == binding && installation.baselineSHA256 == sha256(data) &&
                      installation.preparationPID == baseline.preparationPID &&
@@ -1309,26 +1337,47 @@ private enum NativeTypePreservation {
         try matchesController(expected.middleware, installation.originalDirectories.middleware)
         try #require(installation.containerRelocated ==
                      (installation.originalDirectories.container.path != installation.currentDirectories.container.path))
-        let before = try directories()
-        try matchesController(before.0, installation.currentDirectories.container)
-        try matchesController(before.1, installation.currentDirectories.middleware)
-        try #require(UUID(uuidString: installation.simulatorUDID) != nil &&
-                     URL(fileURLWithPath: before.0.path).pathComponents.map { $0.lowercased() }
-                        .contains(installation.simulatorUDID.lowercased()))
-        let initialDirectories = Directories(container: before.0, middleware: before.1)
-        let expectedAtCurrentRoot = stateAtInstalledDirectories(expected, initialDirectories)
-        // The original identity files must survive the controlled install too.
-        let support = try supportURL()
-        let preservedBaseline = try Data(contentsOf: support.appendingPathComponent(baselineName))
-        let preservedFixture = try Data(contentsOf: support.appendingPathComponent("pinkha-native-derived-ui-fixture.json"))
-        try #require(preservedBaseline.count <= 65_536 && sha256(preservedBaseline) == sha256(data) &&
-                     preservedFixture.count <= 65_536 && sha256(preservedFixture) == installation.fixtureSHA256)
+        // Startup captures every original stopped-store byte before AccountSelect.
+        // A post-open inventory would include legitimate engine changes and could
+        // not prove whether XCTest preserved the original store on installation.
         let clock = ContinuousClock()
         let deadline = clock.now.advanced(by: .seconds(45))
         while Container.shared.accountManager().account.id.isEmpty && clock.now < deadline {
             try await Task.sleep(for: .milliseconds(100))
         }
         try #require(Container.shared.accountManager().account.id == expected.accountID && !expected.accountID.isEmpty)
+        let support = try supportURL()
+        let preopenURL = support.appendingPathComponent("pinkha-type-preservation-preopen-" + binding.nonce + ".json")
+        try #require(preopenURL.standardizedFileURL.resolvingSymlinksInPath().path == preopenURL.path)
+        let preopenData = try Data(contentsOf: preopenURL)
+        try #require(!preopenData.isEmpty && preopenData.count <= 65_536)
+        let preopen = try JSONDecoder().decode(PreopenProof.self, from: preopenData)
+        try #require(preopen.schemaVersion == 1 && preopen.status == "PASS_BEFORE_ACCOUNT_SELECT" &&
+                     preopen.binding == binding && preopen.installationSHA256 == sha256(installationData) &&
+                     preopen.baselineSHA256 == sha256(data) && preopen.fixtureSHA256 == installation.fixtureSHA256 &&
+                     preopen.accountID == expected.accountID && preopen.spaceID == expected.spaceID &&
+                     preopen.subjectID == expected.subjectID &&
+                     preopen.processID == ProcessInfo.processInfo.processIdentifier &&
+                     preopen.processID != baseline.preparationPID &&
+                     preopen.directoryBirthNanoseconds == installation.directoryBirthNanoseconds &&
+                     preopen.nativeOpenInventory == installation.nativeOpenInventory &&
+                     preopen.nativeOpenInventory.algorithm == "sha256-length-framed-utf8-v1")
+        let before = try directories()
+        try #require(before.0 == preopen.directories.container && before.1 == preopen.directories.middleware)
+        try #require(before.0.device == installation.currentDirectories.container.device &&
+                     before.0.inode == installation.currentDirectories.container.inode &&
+                     before.1.device == installation.currentDirectories.middleware.device &&
+                     before.1.inode == installation.currentDirectories.middleware.inode)
+        try #require(UUID(uuidString: installation.simulatorUDID) != nil &&
+                     URL(fileURLWithPath: before.0.path).pathComponents.map { $0.lowercased() }
+                        .contains(installation.simulatorUDID.lowercased()))
+        let initialDirectories = Directories(container: before.0, middleware: before.1)
+        let expectedAtCurrentRoot = stateAtInstalledDirectories(expected, initialDirectories)
+        // The original identity files must survive the controlled install too.
+        let preservedBaseline = try Data(contentsOf: support.appendingPathComponent(baselineName))
+        let preservedFixture = try Data(contentsOf: support.appendingPathComponent("pinkha-native-derived-ui-fixture.json"))
+        try #require(preservedBaseline.count <= 65_536 && sha256(preservedBaseline) == sha256(data) &&
+                     preservedFixture.count <= 65_536 && sha256(preservedFixture) == installation.fixtureSHA256)
         let restored = try directories()
         try #require(restored.0 == before.0 && restored.1 == before.1)
         try validateCanonical(expected.canonicalRaw, subjectID: expected.subjectID, spaceID: expected.spaceID)
@@ -1343,9 +1392,10 @@ private enum NativeTypePreservation {
         try #require(after.0 == before.0 && after.1 == before.1)
         let pid = ProcessInfo.processInfo.processIdentifier
         try #require(pid != baseline.preparationPID)
-        let receipt = Receipt(schemaVersion: 2, status: "PASS", scope: "FINAL_UI_TYPE_ROUNDTRIP",
+        let receipt = Receipt(schemaVersion: 3, status: "PASS", scope: "FINAL_UI_TYPE_ROUNDTRIP",
                               binding: binding, baselineSHA256: sha256(data),
                               installationSHA256: sha256(installationData), directoriesBefore: initialDirectories,
+                              preopenProof: preopen,
                               preparationPID: baseline.preparationPID,
                               postflightPID: pid, verifierCallsMutationAPI: false, state: actual)
         let path = try supportURL().appendingPathComponent("pinkha-type-preservation-result-" + binding.nonce + ".json")

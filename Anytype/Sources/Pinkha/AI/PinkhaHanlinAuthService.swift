@@ -40,6 +40,9 @@ actor PinkhaHanlinAuthService: AuthServiceProtocol {
 
     func selectAccount(id: String, preferredSpaceId: String) async throws -> AccountData {
         try beginAccountChange(); defer { changingAccount = false }
+        #if PINKHA_NATIVE_DERIVED && targetEnvironment(simulator)
+        try PinkhaTypePreservationLaunchProof.captureBeforeAccountSelect(accountID: id)
+        #endif
         try await PinkhaHanlinAccountOwner.shared.closeAccount(accounts.account.id, removeData: false)
         await bootstrap.quiesceAccountOperations()
         let account = try await base.selectAccount(id: id, preferredSpaceId: preferredSpaceId)

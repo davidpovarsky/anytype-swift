@@ -594,7 +594,9 @@ def execute(args, receipt, *, build_context=None):
             build_context.verify_current()
         # Application_Home may move during installation (Apple TN2285). Prove
         # stopped native bytes and original fixture continuity across one
-        # explicit same-build install before binding XCTest to its current root.
+        # explicit same-build install. Normal simulator XCTest may then relocate
+        # that same store; the native host proves its identity and all bytes
+        # again before AccountSelect opens it.
         post_installation = preservation.install_for_postflight(
             frozen_preservation, built, before["sha256"], evidence, shared.code_carriers)
         receipt["preservation_installation_sha256"] = post_installation.sha256
@@ -608,7 +610,6 @@ def execute(args, receipt, *, build_context=None):
         shared.write(evidence / "execution.json", receipt)
         current_container = Path(subprocess.check_output(
             ["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "data"], text=True).strip())
-        preservation.verify_installed(frozen_preservation, post_installation, current_container)
         if postflight["status"] != "PASS":
             raise SelectionFailure("Actual existing-account preservation postflight did not pass")
         raw_receipt = preservation.read_bytes(current_container / "Library/Application Support" /
@@ -617,7 +618,7 @@ def execute(args, receipt, *, build_context=None):
             stream.write(raw_receipt)
         receipt["preservation_native_receipt_sha256"] = preservation.sha256(raw_receipt)
         receipt["type_preservation"] = preservation.validate_result(
-            frozen_preservation, post_installation, preservation.decode(raw_receipt), postflight)
+            frozen_preservation, post_installation, preservation.decode(raw_receipt), postflight, current_container)
         if build_context is not None:
             build_context.verify_current()
     installed = Path(subprocess.check_output(["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "app"], text=True).strip())

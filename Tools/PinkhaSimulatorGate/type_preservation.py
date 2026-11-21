@@ -23,6 +23,8 @@ FIXTURE = "pinkha-native-derived-ui-fixture.json"
 SUPPORT = Path("Library/Application Support")
 STORE = SUPPORT / "Anytype/middleware-go"
 INSTALLATION = "type-preservation-installation.json"
+INVENTORY_ALGORITHM = "sha256-length-framed-utf8-v1"
+POSTFLIGHT_MODE = "SIMULATOR_NORMAL_INSTALL_PREOPEN_PROOF"
 STOP_STAGES = ("BEFORE_INVENTORY", "BEFORE_INSTALL", "AFTER_INSTALL", "AFTER_INVENTORY")
 QUERY_SECONDS = 30
 PROCESS_SECONDS = 30
@@ -110,6 +112,13 @@ def validate_directory(value, observed):
             "Native directory creation identity is missing")
     # Native Foundation and Python each compare their own original creation-time
     # representation after the UI; no float rounding tolerance replaces identity.
+
+
+def directory_birth_nanoseconds(path):
+    info = path.stat()
+    born = getattr(info, "st_birthtime_ns", None)
+    require(type(born) is int and born > 0, "Exact macOS directory birth nanoseconds are unavailable")
+    return str(born)
 
 
 def validate_baseline(value, expected_binding, fixture, directories):
@@ -347,6 +356,28 @@ def inventory_summary(value):
             "directories": len(value["directories"])}
 
 
+def native_open_inventory(value):
+    """Portable digest also computed by the host before its first AccountSelect.
+
+    Length framing avoids JSON/Unicode escaping differences; full relative paths
+    and file bytes contribute, but only the aggregate is published.
+    """
+    digest = hashlib.sha256(b"pinkha-native-store-inventory-v1\0")
+    def fields(*items):
+        for item in items:
+            raw = str(item).encode("utf-8")
+            digest.update(len(raw).to_bytes(8, "big")); digest.update(raw)
+    for name in sorted(value["directories"], key=lambda x: x.encode("utf-8")):
+        fields("D", name)
+    for name, entry in sorted(value["files"].items(), key=lambda row: row[0].encode("utf-8")):
+        fields("F", name, entry["bytes"], entry["sha256"])
+    for name, checksum in sorted(value["identitySHA256"].items(), key=lambda row: row[0].encode("utf-8")):
+        fields("I", name, checksum)
+    return {"algorithm": INVENTORY_ALGORITHM, "sha256": digest.hexdigest(),
+            "files": len(value["files"]), "bytes": sum(x["bytes"] for x in value["files"].values()),
+            "directories": len(value["directories"])}
+
+
 @dataclass(frozen=True)
 class Installation:
     path: Path
@@ -360,9 +391,10 @@ def validate_installation(value, baseline, baseline_sha, fixture_sha, udid, orig
         "schemaVersion", "status", "binding", "baselineSHA256", "fixtureSHA256", "simulatorUDID",
         "accountID", "spaceID", "subjectID", "preparationPID", "codeCarriersSHA256",
         "installedBeforeCodeSHA256", "installedAfterCodeSHA256", "originalDirectories", "currentDirectories",
-        "beforeInventory", "afterInventory", "stoppedProcessChecks", "containerRelocated"},
+        "beforeInventory", "afterInventory", "stoppedProcessChecks", "containerRelocated",
+        "nativeOpenInventory", "directoryBirthNanoseconds"},
         "Unknown controlled-install schema")
-    require(type(value["schemaVersion"]) is int and value["schemaVersion"] == 1
+    require(type(value["schemaVersion"]) is int and value["schemaVersion"] == 2
             and value["status"] == "PASS_STOPPED_NATIVE_STORE_UNCHANGED"
             and value["binding"] == baseline["binding"] and value["baselineSHA256"] == baseline_sha
             and value["fixtureSHA256"] == fixture_sha and value["simulatorUDID"] == udid
@@ -387,12 +419,22 @@ def validate_installation(value, baseline, baseline_sha, fixture_sha, udid, orig
     require(type(value["containerRelocated"]) is bool and value["containerRelocated"] ==
             (value["originalDirectories"]["container"]["path"] != value["currentDirectories"]["container"]["path"]),
             "Controlled install relocation observation differs")
+    births = value["directoryBirthNanoseconds"]
+    require(isinstance(births, dict) and set(births) == {"container", "middleware"}
+            and all(isinstance(x, str) and re.fullmatch(r"[1-9][0-9]*", x) for x in births.values()),
+            "Controlled install lacks exact directory birth identity")
     summary = value["beforeInventory"]
     require(isinstance(summary, dict) and set(summary) == {"sha256", "files", "bytes", "directories"}
             and re.fullmatch(r"[0-9a-f]{64}", summary["sha256"] or "")
             and all(type(summary[k]) is int for k in ("files", "bytes", "directories"))
             and summary["files"] > 0 and summary["bytes"] > 0 and summary["directories"] >= 0
             and value["afterInventory"] == summary, "Controlled install did not preserve every original native file")
+    preopen = value["nativeOpenInventory"]
+    require(isinstance(preopen, dict) and set(preopen) == {"algorithm", "sha256", "files", "bytes", "directories"}
+            and preopen["algorithm"] == INVENTORY_ALGORITHM
+            and re.fullmatch(r"[0-9a-f]{64}", preopen["sha256"] or "")
+            and all(type(preopen[k]) is int and preopen[k] == summary[k] for k in ("files", "bytes", "directories")),
+            "Controlled install lacks its complete native-open inventory")
     checks = value["stoppedProcessChecks"]
     require(isinstance(checks, dict) and set(checks) == set(STOP_STAGES), "Stopped-App checks are incomplete")
     for check in checks.values():
@@ -433,8 +475,6 @@ def install_for_postflight(frozen, built, code_sha, evidence, code_carriers):
         test_bundle = destination_mode.test_bundle(built, built_carriers)
         require(destination_mode.test_bundle(installed, installed_carriers) == test_bundle,
                 "Installed native test bundle differs before controlled install")
-        observation["phase"] = "DESTINATION_ARTIFACTS_SUPPORT"
-        destination_mode.capture(evidence, frozen.value["binding"], code_sha, test_bundle, deadline)
         observation["phase"] = "BEFORE_INSTALL"
         checks = {STOP_STAGES[0]: stopped(installed)}
         prior = native_inventory(frozen.container, frozen, deadline=deadline)
@@ -460,7 +500,7 @@ def install_for_postflight(frozen, built, code_sha, evidence, code_carriers):
         checks[STOP_STAGES[3]] = stopped(installed)
         require(prior == after, "Controlled install changed or removed original native account data")
         directories = {"container": directory_identity(current), "middleware": directory_identity(current / STORE)}
-        value = {"schemaVersion": 1, "status": "PASS_STOPPED_NATIVE_STORE_UNCHANGED",
+        value = {"schemaVersion": 2, "status": "PASS_STOPPED_NATIVE_STORE_UNCHANGED",
                  "binding": frozen.value["binding"], "baselineSHA256": frozen.sha256,
                  "fixtureSHA256": frozen.fixture_sha256, "simulatorUDID": frozen.udid,
                  **{k: frozen.value["state"][k] for k in ("accountID", "spaceID", "subjectID")},
@@ -468,6 +508,9 @@ def install_for_postflight(frozen, built, code_sha, evidence, code_carriers):
                  "installedBeforeCodeSHA256": before_code, "installedAfterCodeSHA256": after_code,
                  "originalDirectories": frozen.directories, "currentDirectories": directories,
                  "beforeInventory": inventory_summary(prior), "afterInventory": inventory_summary(after),
+                 "nativeOpenInventory": native_open_inventory(after),
+                 "directoryBirthNanoseconds": {k: directory_birth_nanoseconds(Path(v["path"]))
+                                               for k, v in directories.items()},
                  "stoppedProcessChecks": checks, "containerRelocated": current != frozen.container}
         validate_installation(value, frozen.value, frozen.sha256, frozen.fixture_sha256,
                               frozen.udid, frozen.directories, code_sha)
@@ -490,19 +533,52 @@ def install_for_postflight(frozen, built, code_sha, evidence, code_carriers):
             json.dumps(observation, sort_keys=True), encoding="utf-8")
 
 
-def verify_installed(frozen, installation, observed_container=None):
+def validate_preopen(proof, installation, installation_sha, postflight_pid):
+    require(isinstance(proof, dict) and set(proof) == {"schemaVersion", "status", "binding", "installationSHA256",
+        "baselineSHA256", "fixtureSHA256", "accountID", "spaceID", "subjectID", "processID", "directories",
+        "directoryBirthNanoseconds", "nativeOpenInventory"}, "Missing native pre-AccountSelect proof")
+    require(type(proof["schemaVersion"]) is int and proof["schemaVersion"] == 1
+            and proof["status"] == "PASS_BEFORE_ACCOUNT_SELECT"
+            and proof["installationSHA256"] == installation_sha
+            and type(proof["processID"]) is int and proof["processID"] == postflight_pid
+            and proof["processID"] > 1 and proof["processID"] != installation["preparationPID"]
+            and all(proof[k] == installation[k] for k in ("binding", "baselineSHA256", "fixtureSHA256",
+                    "accountID", "spaceID", "subjectID", "directoryBirthNanoseconds", "nativeOpenInventory")),
+            "Native pre-open source/account/store inventory differs")
+    dirs = proof["directories"]
+    require(isinstance(dirs, dict) and set(dirs) == {"container", "middleware"}, "Missing native pre-open directories")
+    root = Path(dirs["container"]["path"])
+    require(root.is_absolute() and installation["simulatorUDID"].lower() in {x.lower() for x in root.parts}
+            and dirs["middleware"]["path"] == str(root / STORE), "Native pre-open store escaped its simulator")
+    for name, observed in dirs.items():
+        expected = installation["currentDirectories"][name]
+        validate_directory(observed, {**expected, "path": observed["path"]})
+    return dirs
+
+
+def verify_installed(frozen, installation, observed_container=None, *, native_receipt=None):
     require(isinstance(installation, Installation), "A proved controlled install is required")
     verify_original_bytes(frozen)
     require(sha256(read_bytes(installation.path)) == installation.sha256, "Controlled install receipt changed")
     require(decode(read_bytes(installation.path)) == installation.value, "Controlled install value changed")
-    if observed_container is not None:
-        require(owned_container(observed_container, frozen.udid) == installation.container,
-                "Additional unproved postflight App relocation")
+    current = installation.container if observed_container is None else owned_container(observed_container, frozen.udid)
+    proved = None
+    if native_receipt is not None:
+        proved = validate_preopen(native_receipt.get("preopenProof"), installation.value,
+                                  installation.sha256, native_receipt.get("postflightPID"))
+        require(current == Path(proved["container"]["path"]), "Native pre-open container differs from the controller")
+    else:
+        require(current == installation.container, "Additional unproved postflight App relocation")
     for name, observed in installation.value["currentDirectories"].items():
-        require(directory_identity(Path(observed["path"])) == observed,
+        path = current if name == "container" else current / STORE
+        actual = directory_identity(path)
+        require(actual == {**observed, "path": str(path)}
+                and directory_birth_nanoseconds(path) == installation.value["directoryBirthNanoseconds"][name],
                 "Installed container/store directory was recreated or replaced")
+        if proved is not None:
+            validate_directory(proved[name], actual)
     for name, expected in ((BASELINE, frozen.sha256), (FIXTURE, frozen.fixture_sha256)):
-        require(sha256(read_bytes(installation.container / SUPPORT / name)) == expected,
+        require(sha256(read_bytes(current / SUPPORT / name)) == expected,
                 "Installed native baseline/fixture changed")
 
 
@@ -510,9 +586,8 @@ def environment(frozen, installation):
     verify_installed(frozen, installation)
     result = {key: "0" for key in DISABLED_FLAGS}
     result.update(binding_environment(frozen.value["binding"]))
-    result.update(destination_mode.environment(installation.path.parent, frozen.value["binding"],
-                                          installation.value["codeCarriersSHA256"]))
-    result.update(PINKHA_TYPE_PRESERVATION_POSTFLIGHT="1", PINKHA_TYPE_PRESERVATION_BASELINE_SHA256=frozen.sha256,
+    result.update(PINKHA_TYPE_PRESERVATION_MODE=POSTFLIGHT_MODE,
+                  PINKHA_TYPE_PRESERVATION_POSTFLIGHT="1", PINKHA_TYPE_PRESERVATION_BASELINE_SHA256=frozen.sha256,
                   PINKHA_TYPE_PRESERVATION_BASELINE_BASE64=base64.b64encode(read_bytes(frozen.path)).decode("ascii"),
                   PINKHA_TYPE_PRESERVATION_INSTALLATION_SHA256=installation.sha256,
                   PINKHA_TYPE_PRESERVATION_INSTALLATION_BASE64=base64.b64encode(read_bytes(installation.path)).decode("ascii"))
@@ -529,7 +604,11 @@ def configure_target(target, environment):
     expected_binding = {field: environment.get("PINKHA_TYPE_PRESERVATION_" + key) for key, field in
                         (("SOURCE_SHA", "sourceSHA"), ("RUN_ID", "runID"), ("RUN_ATTEMPT", "runAttempt"), ("NONCE", "nonce"))}
     require(installation.get("binding") == expected_binding, "Postflight controlled-install binding differs")
-    destination_mode.configure(target, environment, expected_binding, installation.get("codeCarriersSHA256"))
+    require(environment.get("PINKHA_TYPE_PRESERVATION_MODE") == POSTFLIGHT_MODE
+            and target.get("UseDestinationArtifacts", False) is False
+            and nonempty(target.get("TestHostPath")) and nonempty(target.get("TestBundlePath")),
+            "Simulator postflight requires normal XCTest artifacts and a pre-open proof")
+    destination_mode.validate_native_target(target)
     for key, value in target.items():
         if key.endswith("CommandLineArguments"):
             require(isinstance(value, list) and not any("PINKHA_" in str(x) for x in value),
@@ -599,9 +678,9 @@ def validate_native_receipt(baseline, baseline_sha, udid, receipt, result, insta
         d.get("deviceId", "").lower() == udid.lower() and d.get("architecture") == "arm64"
         and d.get("osVersion", "").split(".")[0] == "27" for d in devices), "Postflight actual device differs")
     require(isinstance(receipt, dict) and set(receipt) == {"schemaVersion", "status", "scope", "binding", "baselineSHA256",
-        "installationSHA256", "directoriesBefore", "preparationPID", "postflightPID", "verifierCallsMutationAPI", "state"},
+        "installationSHA256", "directoriesBefore", "preopenProof", "preparationPID", "postflightPID", "verifierCallsMutationAPI", "state"},
         "Unknown native postflight receipt schema")
-    require(type(receipt["schemaVersion"]) is int and receipt["schemaVersion"] == 2 and receipt["status"] == "PASS"
+    require(type(receipt["schemaVersion"]) is int and receipt["schemaVersion"] == 3 and receipt["status"] == "PASS"
             and receipt["scope"] == "FINAL_UI_TYPE_ROUNDTRIP" and receipt["binding"] == baseline["binding"]
             and receipt["baselineSHA256"] == baseline_sha and receipt["preparationPID"] == baseline["preparationPID"]
             and receipt["installationSHA256"] == installation_sha
@@ -612,25 +691,29 @@ def validate_native_receipt(baseline, baseline_sha, udid, receipt, result, insta
     observed = receipt["directoriesBefore"]
     require(isinstance(observed, dict) and set(observed) == {"container", "middleware"},
             "Native initial directory proof is missing")
-    for name in ("container", "middleware"):
-        validate_directory(observed[name], installation["currentDirectories"][name])
+    proved = validate_preopen(receipt["preopenProof"], installation, installation_sha, receipt["postflightPID"])
+    require(observed == proved, "Native store changed between pre-open proof and postflight")
     # Only the OS-proved location is replaced. All original account, canonical
     # bytes/IDs/timestamps, complete Tag/link sets and Type fields stay exact.
     expected = {**baseline["state"], **observed}
     require(receipt["state"] == expected, "Native final preservation state differs from the original baseline")
     return {"status": "PASS", "scope": receipt["scope"], "baseline_sha256": baseline_sha,
             "installation_sha256": installation_sha, "stopped_native_install_continuity": True,
+            "native_preopen_byte_inventory_verified": True,
             "native_preparations": 1, "ui_methods": 2, "native_postflight_methods": 1,
             "canonical_byte_preservation": True, "original_tag_and_links_preserved": True,
             "intermediate_canonical_states_verified": False, "full_stage2_accepted": False}
 
 
-def validate_result(frozen, installation, receipt, result):
-    verify_installed(frozen, installation)
+def validate_result(frozen, installation, receipt, result, observed_container=None):
     validate_installation(installation.value, frozen.value, frozen.sha256, frozen.fixture_sha256,
                           frozen.udid, frozen.directories, installation.value["codeCarriersSHA256"])
-    return validate_native_receipt(frozen.value, frozen.sha256, frozen.udid, receipt, result,
-                                   installation.value, installation.sha256)
+    qualified = validate_native_receipt(frozen.value, frozen.sha256, frozen.udid, receipt, result,
+                                        installation.value, installation.sha256)
+    if observed_container is None:
+        observed_container = Path(receipt["directoriesBefore"]["container"]["path"])
+    verify_installed(frozen, installation, observed_container, native_receipt=receipt)
+    return qualified
 
 
 def validate_saved(directory, execution, udid):
@@ -660,10 +743,15 @@ def validate_saved(directory, execution, udid):
     carriers = json.loads((directory / "built-code-carriers.json").read_text(encoding="utf8"))
     installation = validate_installation(decode(raw_installation), baseline, sha256(raw_baseline),
         sha256(raw_fixture), udid, inputs["directories"], carriers["sha256"])
-    destination_environment = destination_mode.environment(directory, expected, carriers["sha256"])
     selected = decode(read_bytes(directory / "postflight/selection-inputs.json"))
-    require(all(selected.get("environment", {}).get(key) == value for key, value in destination_environment.items()),
-            "Saved postflight destination-artifact capability binding differs")
+    env = selected.get("environment", {})
+    require(env.get("PINKHA_TYPE_PRESERVATION_MODE") == POSTFLIGHT_MODE
+            and env.get("PINKHA_TYPE_PRESERVATION_POSTFLIGHT") == "1"
+            and env.get("PINKHA_TYPE_PRESERVATION_INSTALLATION_SHA256") == sha256(raw_installation)
+            and env.get("PINKHA_TYPE_PRESERVATION_BASELINE_SHA256") == sha256(raw_baseline)
+            and all(env.get(k) == "0" for k in DISABLED_FLAGS)
+            and all(env.get(k) == v for k, v in binding_environment(expected).items()),
+            "Saved simulator postflight pre-open binding differs")
     qualified = validate_native_receipt(baseline, sha256(raw_baseline), udid,
         decode(raw_receipt), execution.get("postflight", {}), installation, sha256(raw_installation))
     require(execution.get("type_preservation") == qualified, "Saved preservation qualification differs")

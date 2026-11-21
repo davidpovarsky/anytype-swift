@@ -17,13 +17,6 @@ UDID = "11111111-1111-1111-1111-111111111111"
 BINDING = gate.binding("a" * 40, "12345", "1", "b" * 32)
 CODE_SHA = "c" * 64
 TEST_IMAGE = b"synthetic native test executable"
-XCODE_MANUAL = b"test-without-building uses -xctestrun for an existing test configuration.\n"
-XCTESTRUN_MANUAL = b""".It Sy UseDestinationArtifacts <bool>
-When this flag is set, xcodebuild will not install test artifacts to the destination during testing.
-TestBundlePath, TestHostPath, and UITargetAppPath should be excluded.
-TestHostBundleIdentifier TestBundleDestinationRelativePath UITargetAppBundleIdentifier __TESTHOST__
-"""
-
 
 def native_target():
     return {"BlueprintName": "AnytypeTests", "IsAppHostedTestBundle": True,
@@ -31,24 +24,6 @@ def native_target():
             "TestHostPath": "__TESTROOT__/Release-Anytype-iphonesimulator/Anytype.app",
             "TestingEnvironmentVariables": {"XCInjectBundleInto": "__TESTHOST__/Anytype", "XCODE_REQUIRED": "kept"},
             "CommandLineArguments": []}
-
-
-def synthetic_destination_proof(directory, bound, code_sha=CODE_SHA):
-    """Only for synthetic artifact controls; never actual runner evidence."""
-    records = {}
-    for key, raw in (("xcodebuild", XCODE_MANUAL), ("xctestrun", XCTESTRUN_MANUAL)):
-        filename = "type-preservation-" + gate.destination_mode.MANUALS[key][1]
-        (directory / filename).write_bytes(raw)
-        records[key] = {"sourcePath": "/synthetic/Xcode.app/Contents/Developer/usr/share/man/" + filename, "file": filename,
-                        "sha256": gate.sha256(raw), "bytes": len(raw), "compressed": False}
-    value = {"schemaVersion": 1, "status": "SUPPORTED_SELECTED_XCODE", "binding": bound,
-             "codeCarriersSHA256": code_sha, "xcodebuildPath": "/synthetic/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
-             "xcodebuildVersion": "Xcode 27.0\nBuild version 18A1", "manuals": records,
-             "testBundle": {"hostBundleIdentifier": gate.destination_mode.HOST, "testBundleIdentifier": "io.anytype.tests",
-                 "relativeBundlePath": gate.destination_mode.RELATIVE, "executableRelativePath": gate.destination_mode.EXECUTABLE,
-                 "sha256": gate.sha256(TEST_IMAGE), "bytes": len(TEST_IMAGE)}}
-    (directory / gate.destination_mode.PROOF).write_text(json.dumps(value, sort_keys=True, separators=(",", ":")))
-    return value
 
 
 def linux_control_identity(path):
@@ -97,13 +72,15 @@ def installation_proof(original, original_sha, fixture_sha, udid, directories):
               "inventorySHA256": "d" * 64, "executablePathSHA256": "e" * 64} for stage in gate.STOP_STAGES}
     summary = {"sha256": "f" * 64, "files": 2, "bytes": 64, "directories": 1}
     original_dirs = {k: copy.deepcopy(original["state"][k]) for k in ("container", "middleware")}
-    return {"schemaVersion": 1, "status": "PASS_STOPPED_NATIVE_STORE_UNCHANGED", "binding": original["binding"],
+    return {"schemaVersion": 2, "status": "PASS_STOPPED_NATIVE_STORE_UNCHANGED", "binding": original["binding"],
             "baselineSHA256": original_sha, "fixtureSHA256": fixture_sha, "simulatorUDID": udid,
             **{k: original["state"][k] for k in ("accountID", "spaceID", "subjectID")},
             "preparationPID": original["preparationPID"], "codeCarriersSHA256": CODE_SHA,
             "installedBeforeCodeSHA256": CODE_SHA, "installedAfterCodeSHA256": CODE_SHA,
             "originalDirectories": original_dirs, "currentDirectories": copy.deepcopy(directories),
             "beforeInventory": copy.deepcopy(summary), "afterInventory": copy.deepcopy(summary),
+            "nativeOpenInventory": {**summary, "algorithm": gate.INVENTORY_ALGORITHM},
+            "directoryBirthNanoseconds": {k: "1700000000000000000" for k in ("container", "middleware")},
             "stoppedProcessChecks": checks,
             "containerRelocated": original_dirs["container"]["path"] != directories["container"]["path"]}
 
@@ -112,13 +89,19 @@ def installation_bytes(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
 
 
-def native_receipt(original, original_sha, installation):
+def native_receipt(original, original_sha, installation, directories=None):
+    directories = installation["currentDirectories"] if directories is None else directories
     state = copy.deepcopy(original["state"])
-    state.update(copy.deepcopy(installation["currentDirectories"]))
-    return {"schemaVersion": 2, "status": "PASS", "scope": "FINAL_UI_TYPE_ROUNDTRIP", "binding": original["binding"],
+    state.update(copy.deepcopy(directories))
+    proof = {"schemaVersion": 1, "status": "PASS_BEFORE_ACCOUNT_SELECT",
+             **{k: copy.deepcopy(installation[k]) for k in ("binding", "baselineSHA256", "fixtureSHA256",
+                 "accountID", "spaceID", "subjectID", "directoryBirthNanoseconds", "nativeOpenInventory")},
+             "installationSHA256": gate.sha256(installation_bytes(installation)), "processID": 202,
+             "directories": copy.deepcopy(directories)}
+    return {"schemaVersion": 3, "status": "PASS", "scope": "FINAL_UI_TYPE_ROUNDTRIP", "binding": original["binding"],
             "baselineSHA256": original_sha, "preparationPID": original["preparationPID"], "postflightPID": 202,
             "installationSHA256": gate.sha256(installation_bytes(installation)),
-            "directoriesBefore": copy.deepcopy(installation["currentDirectories"]),
+            "directoriesBefore": copy.deepcopy(directories), "preopenProof": proof,
             "verifierCallsMutationAPI": False, "state": state}
 
 
@@ -133,6 +116,8 @@ class PreservationControls(unittest.TestCase):
         self.evidence = self.root / "evidence"; self.evidence.mkdir()
         self.patch = patch.object(gate, "directory_identity", side_effect=linux_control_identity)
         self.patch.start(); self.addCleanup(self.patch.stop)
+        births = patch.object(gate, "directory_birth_nanoseconds", return_value="1700000000000000000")
+        births.start(); self.addCleanup(births.stop)
         self.directories = {"container": linux_control_identity(self.container),
                             "middleware": linux_control_identity(self.support / "Anytype/middleware-go")}
         self.original = baseline(self.directories)
@@ -150,13 +135,6 @@ class PreservationControls(unittest.TestCase):
             (bundle / "Info.plist").write_bytes(plistlib.dumps({"CFBundleIdentifier": "io.anytype.tests",
                                                                "CFBundleExecutable": "AnytypeTests"}))
             (app / gate.destination_mode.EXECUTABLE).write_bytes(TEST_IMAGE)
-        self.developer = self.root / "Xcode.app/Contents/Developer"
-        self.xcodebuild = self.developer / "usr/bin/xcodebuild"
-        self.xcodebuild.parent.mkdir(parents=True); self.xcodebuild.write_bytes(b"synthetic Xcode executable")
-        for key, raw in (("xcodebuild", XCODE_MANUAL), ("xctestrun", XCTESTRUN_MANUAL)):
-            section, name = gate.destination_mode.MANUALS[key]
-            path = self.developer / "usr/share/man" / section / name
-            path.parent.mkdir(parents=True); path.write_bytes(raw)
         self.capability_calls = []
         self.install_calls = []
 
@@ -168,28 +146,13 @@ class PreservationControls(unittest.TestCase):
     def freeze(self):
         return gate.freeze(self.container, self.evidence, BINDING, fixture(), UDID)
 
-    def install(self, frozen, change=None, *, install_error=None, process=None, code=None, capability_error=None):
-        if not (self.evidence / gate.INSTALLATION).exists():
-            # Each repeated negative is a new synthetic attempt, not a production retry.
-            for path in self.evidence.iterdir():
-                if path.name == gate.destination_mode.PROOF or path.name.startswith("type-preservation-xcodebuild."):
-                    path.unlink()
+    def install(self, frozen, change=None, *, install_error=None, process=None, code=None):
         current = [self.container]
         def query(udid, kind, *, timeout):
             self.assertEqual(udid, UDID)
             self.assertGreater(timeout, 0); self.assertLessEqual(timeout, gate.QUERY_SECONDS)
             return current[0] if kind == "data" else self.installed
         def command(argv, **kwargs):
-            if argv == ["xcrun", "--find", "xcodebuild"]:
-                self.capability_calls.append(argv)
-                if capability_error and capability_error[0] == 1:
-                    raise capability_error[1]
-                return SimpleNamespace(returncode=0, stdout=(str(self.xcodebuild) + "\n").encode(), stderr=b"")
-            if argv == [str(self.xcodebuild), "-version"]:
-                self.capability_calls.append(argv)
-                if capability_error and capability_error[0] == 2:
-                    raise capability_error[1]
-                return SimpleNamespace(returncode=0, stdout=b"Xcode 27.0\nBuild version 18A1\n", stderr=b"")
             if argv[0] == "/bin/ps":
                 self.assertEqual(argv, ["/bin/ps", "-ww", "-axo", "pid=,ucomm=,comm="])
                 if isinstance(process, BaseException):
@@ -325,11 +288,11 @@ class PreservationControls(unittest.TestCase):
         self.assertEqual(selected.parent, products); self.assertEqual(original.read_bytes(), raw)
         observed = plistlib.loads(selected.read_bytes())["TestConfigurations"][0]["TestTargets"][0]
         self.assertEqual(observed["OnlyTestIdentifiers"], [gate.METHOD]); self.assertEqual(observed["SkipTestIdentifiers"], [])
-        self.assertTrue(observed["UseDestinationArtifacts"])
+        self.assertFalse(observed.get("UseDestinationArtifacts", False))
         self.assertEqual(observed["TestHostBundleIdentifier"], gate.destination_mode.HOST)
-        self.assertEqual(observed["UITargetAppBundleIdentifier"], gate.destination_mode.HOST)
-        self.assertEqual(observed["TestBundleDestinationRelativePath"], gate.destination_mode.RELATIVE)
-        self.assertFalse(any(k in observed for k in ("TestHostPath", "TestBundlePath", "UITargetAppPath")))
+        self.assertEqual(observed["TestHostPath"], target["TestHostPath"])
+        self.assertEqual(observed["TestBundlePath"], target["TestBundlePath"])
+        self.assertNotIn("TestBundleDestinationRelativePath", observed)
         self.assertEqual(observed["TestingEnvironmentVariables"], target["TestingEnvironmentVariables"])
         self.assertEqual(observed["EnvironmentVariables"]["PINKHA_UNEXPECTED_PREP"], "0")
         self.assertEqual(observed["EnvironmentVariables"]["SIMCTL_CHILD_PINKHA_OTHER"], "0")
@@ -592,6 +555,7 @@ class PreservationControls(unittest.TestCase):
         # A cross-library fractional representation difference is not a tolerance.
         for key in ("container", "middleware"):
             receipt["directoriesBefore"][key]["createdAt"] += 0.000001
+            receipt["preopenProof"]["directories"][key]["createdAt"] = receipt["directoriesBefore"][key]["createdAt"]
             receipt["state"][key]["createdAt"] = receipt["directoriesBefore"][key]["createdAt"]
         self.assertEqual(gate.validate_result(frozen, installation, receipt, result())["status"], "PASS")
         receipt["state"]["middleware"]["createdAt"] += 0.000001
@@ -637,6 +601,60 @@ class PreservationControls(unittest.TestCase):
             self.assertEqual(gate.remaining(110, 120), 10)
             with self.assertRaisesRegex(ValueError, "phase budget exhausted"):
                 gate.remaining(100, 120)
+
+    def test_normal_simulator_mode_rejects_device_destination_artifacts(self):
+        frozen = self.freeze(); installation = self.install(frozen)
+        self.assertEqual(self.capability_calls, [])
+        env = gate.environment(frozen, installation)
+        with self.assertRaisesRegex(ValueError, "normal XCTest"):
+            gate.configure_target({**native_target(), "UseDestinationArtifacts": True}, env)
+        env["PINKHA_TYPE_PRESERVATION_MODE"] = "unproved"
+        with self.assertRaisesRegex(ValueError, "normal XCTest"):
+            gate.configure_target(native_target(), env)
+
+    def test_xctest_rename_requires_same_original_identity_and_preopen_bytes(self):
+        frozen = self.freeze(); installation = self.install(frozen)
+        target = self.root / UDID / "xctest-relocated-data"
+        self.container.rename(target)
+        directories = {"container": linux_control_identity(target), "middleware": linux_control_identity(target / gate.STORE)}
+        receipt = native_receipt(frozen.value, frozen.sha256, installation.value, directories)
+        qualified = gate.validate_result(frozen, installation, receipt, result(), target)
+        self.assertTrue(qualified["native_preopen_byte_inventory_verified"])
+        for change in (lambda x: x.pop("preopenProof"),
+                       lambda x: x["preopenProof"].update(processID=999),
+                       lambda x: x["preopenProof"]["directoryBirthNanoseconds"].update(middleware="1700000000000000001"),
+                       lambda x: x["preopenProof"]["nativeOpenInventory"].update(sha256="a" * 64),
+                       lambda x: x["preopenProof"]["directories"]["middleware"].update(inode="999")):
+            bad = copy.deepcopy(receipt); change(bad)
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                gate.validate_result(frozen, installation, bad, result(), target)
+
+    def test_xctest_copy_of_identical_bytes_cannot_substitute_original_store(self):
+        frozen = self.freeze(); installation = self.install(frozen)
+        target = self.root / UDID / "xctest-copied-data"; shutil.copytree(self.container, target)
+        directories = {"container": linux_control_identity(target), "middleware": linux_control_identity(target / gate.STORE)}
+        receipt = native_receipt(frozen.value, frozen.sha256, installation.value, directories)
+        with self.assertRaisesRegex(ValueError, "directory identity"):
+            gate.validate_result(frozen, installation, receipt, result(), target)
+
+    def test_portable_preopen_inventory_is_utf8_framed_and_covers_every_entry(self):
+        value = {"directories": ["בראשית", "a\\\""],
+                 "files": {"בראשית/😀": {"bytes": 3, "sha256": gate.sha256(b"abc")},
+                           "a": {"bytes": 1, "sha256": gate.sha256(b"x")}},
+                 "identitySHA256": {gate.BASELINE: "a" * 64, gate.FIXTURE: "b" * 64}}
+        summary = gate.native_open_inventory(value)
+        self.assertEqual(summary["algorithm"], gate.INVENTORY_ALGORITHM)
+        self.assertEqual((summary["files"], summary["bytes"], summary["directories"]), (2, 4, 2))
+        reversed_value = {"directories": list(reversed(value["directories"])),
+                          "files": dict(reversed(list(value["files"].items()))),
+                          "identitySHA256": dict(reversed(list(value["identitySHA256"].items())))}
+        self.assertEqual(gate.native_open_inventory(reversed_value), summary)
+        for change in (lambda x: x["files"]["a"].update(sha256="c" * 64),
+                       lambda x: x["directories"].append("empty"),
+                       lambda x: x["files"].update(z=x["files"].pop("a")),
+                       lambda x: x["identitySHA256"].update({gate.FIXTURE: "c" * 64})):
+            bad = copy.deepcopy(value); change(bad)
+            self.assertNotEqual(gate.native_open_inventory(bad)["sha256"], summary["sha256"])
 
 
 if __name__ == "__main__":
