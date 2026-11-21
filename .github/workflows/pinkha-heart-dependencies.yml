@@ -1,0 +1,48 @@
+name: Resolve only the missing Heart dependency pins
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  resolve-only:
+    runs-on: xcode-27
+    timeout-minutes: 20
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact published application source
+        uses: actions/checkout@v4
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Checkout immutable Hanlin dependency source
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: build/heart-dependency-hanlin-source
+          persist-credentials: false
+      - name: Prepare the exact SDK
+        run: |
+          python3 Tools/Hanlin/prepare_sdk.py --source build/heart-dependency-hanlin-source
+          python3 Tools/Hanlin/prepare_sdk.py --check
+      - name: Resolve packages without building the App or tests
+        run: python3 -B Tools/PinkhaSimulatorGate/resolve_heart_dependencies.py --app "$GITHUB_WORKSPACE" --evidence build/heart-dependency-resolution
+      - name: Retain exact original and generated locks for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Heart-Dependency-Resolution-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/heart-dependency-resolution/result.json
+            build/heart-dependency-resolution/resolve.log
+            build/heart-dependency-resolution/original-Package.resolved
+            build/heart-dependency-resolution/generated-Package.resolved
+          if-no-files-found: error
+          retention-days: 14

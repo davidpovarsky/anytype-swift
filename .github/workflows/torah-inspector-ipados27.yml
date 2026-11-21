@@ -31,6 +31,7 @@ on:
           - t2-rpc-space-close
           - simulator-ui27
           - heart-runtime
+          - heart-dependency-resolution
           - t5-r15-runtime
           - t5-r15-attachment-runtime
           - t5-apple-pairs
@@ -203,6 +204,10 @@ jobs:
       runtime_profile: ${{ inputs.runtime_profile }}
       heart_source_run_id: ${{ inputs.source_run_id }}
       expected_app_branch: ${{ github.ref_name }}
+
+  heart-dependency-resolution:
+    if: ${{ inputs.route == 'heart-dependency-resolution' }}
+    uses: ./.github/workflows/pinkha-heart-dependencies.yml
 
   heart-runtime:
     if: ${{ inputs.route == 'heart-runtime' }}
