@@ -50,6 +50,26 @@ EXPECTED_IDS = (
     "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_failed_signing_retains_full_after_inventory_without_qualification",
     "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_other_framework_signature_failure_still_blocks_consumer_and_boot",
     "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_whole_driver_keeps_strict_gate_and_exact_transformed_consumer_inputs",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_aliased_export_cannot_sign_original_producer",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_diagnostics_report_all_failures_without_signing_or_qualification",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_different_native_failure_never_authorizes_signing",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_exact_export_preserves_original_bytes_and_keeps_native_strict_gate",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_export_source_byte_difference_fails_before_signing",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_extra_original_resource_is_not_an_authorized_generated_product",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_instruction_and_symbol_bytes_are_preserved_even_with_successful_tool_double",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_native_post_sign_strict_failure_remains_failure",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_native_signer_failure_retains_fail_receipt_and_partial_observation",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_new_entitlements_or_authority_slot_is_rejected",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_non_simulator_product_fails_before_signing",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_signature_movement_and_unreviewed_size_fields_are_rejected",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_signing_cannot_change_original_info_bytes",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_signing_cannot_change_original_producer",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_unexpected_existing_strict_success_does_not_resign",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_unobserved_payload_cannot_hide_in_signature_slack",
+    "test_anycrypto_simulator_signing.AnyCryptoExportSigningControls.test_wrong_package_revision_cannot_reach_signer",
+    "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_failed_signer_preserves_observation_and_blocks_all_later_gates",
+    "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_original_driver_requires_strict_signature_before_binary_consumer",
+    "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_unrelated_distribution_mutation_stops_consumer",
     "test_framework.ActualTargetPublicSurfaceControls.test_graph_for_another_module_cannot_qualify_the_inspection_facade",
     "test_framework.ActualTargetPublicSurfaceControls.test_imported_dependency_symbols_do_not_become_our_public_editor_api",
     "test_framework.ActualTargetPublicSurfaceControls.test_original_public_editor_constructor_is_rejected",
@@ -150,7 +170,7 @@ EXPECTED_IDS = (
     "test_framework_temporary_paths.TemporaryRootAliasControls.test_materialized_mutation_is_really_injected_and_refused_under_directory_alias",
     "test_framework_temporary_paths.TemporaryRootAliasControls.test_original_raw_compiler_proofs_are_retained_under_directory_alias",
 )
-EXPECTED_COUNT = 143
+EXPECTED_COUNT = 163
 
 
 def cases(suite):
@@ -194,7 +214,7 @@ def main():
         receipt['discovered_ids'] = actual_ids
         if (len(EXPECTED_IDS) != EXPECTED_COUNT or len(set(EXPECTED_IDS)) != EXPECTED_COUNT
                 or actual_ids != list(EXPECTED_IDS)):
-            raise RuntimeError('Actual unittest discovery differs from the exact reviewed 143 cases')
+            raise RuntimeError('Actual unittest discovery differs from the exact reviewed 163 cases')
         receipt['phase'] = 'EXECUTION'
         result = unittest.TextTestRunner(verbosity=2, resultclass=ObservedResult).run(suite)
         receipt.update({
@@ -214,8 +234,8 @@ def main():
                 or result.failures or result.errors or result.skipped
                 or result.expectedFailures or result.unexpectedSuccesses
                 or not result.wasSuccessful()):
-            raise RuntimeError('The exact 143 source controls did not all pass without skips')
-        receipt['status'] = 'PASS_SOURCE_CONTROLS_143'
+            raise RuntimeError('The exact 163 source controls did not all pass without skips')
+        receipt['status'] = 'PASS_SOURCE_CONTROLS_163'
         receipt['phase'] = 'COMPLETE'
         code = 0
     except BaseException as error:

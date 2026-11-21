@@ -24,6 +24,8 @@ import uuid
 from framework_profile import BRANCH, TARGET, blob, git, read_manifest, sha256, source_observation
 from framework_products import consumer_project, export_products, inventory, original_oracles, verify_observation, verify_public_surface
 from amplitude_simulator_signing import prepare_amplitude_simulator_export
+from anycrypto_simulator_signing import (NAME as ANYCRYPTO_NAME, EXECUTABLE as ANYCRYPTO_EXECUTABLE,
+                                        diagnose_generated_package_exports, prepare_anycrypto_simulator_export)
 from pbx_source import require
 
 
@@ -225,6 +227,8 @@ def execute(args, receipt):
     exported_proof['files'] = inventory(exported)
     exported_proof['bytes'] = sum(item['bytes'] for item in exported_proof['files'].values())
     write(evidence / 'framework-distribution.json', exported_proof)
+    diagnose_generated_package_exports(root, products, exported, evidence,
+                                       exported_proof['frameworks'], before['head_sha'], command)
     dynamic = []
     for number, name in enumerate(exported_proof['frameworks']):
         framework = exported / 'Frameworks' / name
@@ -265,6 +269,30 @@ def execute(args, receipt):
                 exported_proof['files'] = after_signing
                 exported_proof['bytes'] = sum(item['bytes'] for item in after_signing.values())
                 exported_proof['simulator_signing_transformations'] = [transformation]
+                write(evidence / 'framework-distribution.json', exported_proof)
+            elif name == ANYCRYPTO_NAME:
+                write(evidence / 'framework-distribution-before-anycrypto-signing.json', exported_proof)
+                try:
+                    transformation = prepare_anycrypto_simulator_export(root, products, exported, evidence, command)
+                except BaseException:
+                    try:
+                        write(evidence / 'framework-distribution-after-failed-anycrypto-signing.json',
+                              {'status': 'OBSERVED_ONLY_NOT_QUALIFIED', 'files': inventory(exported)})
+                    except BaseException as observation_error:
+                        receipt['after_failed_anycrypto_inventory_error'] = {
+                            'type': type(observation_error).__name__, 'message': str(observation_error)}
+                    raise
+                after_signing = inventory(exported)
+                write(evidence / 'framework-distribution-after-anycrypto-signing.json',
+                      {'status': 'OBSERVED_ONLY_NOT_QUALIFIED', 'files': after_signing})
+                prefix = 'Frameworks/' + ANYCRYPTO_NAME + '/'
+                require(set(after_signing) == set(exported_proof['files']) | {prefix + '_CodeSignature/CodeResources'}
+                        and {path for path in exported_proof['files']
+                             if after_signing[path] != exported_proof['files'][path]} == {prefix + ANYCRYPTO_EXECUTABLE},
+                        'AnyCrypto export sealing changed unrelated distribution bytes')
+                exported_proof['files'] = after_signing
+                exported_proof['bytes'] = sum(item['bytes'] for item in after_signing.values())
+                exported_proof.setdefault('simulator_signing_transformations', []).append(transformation)
                 write(evidence / 'framework-distribution.json', exported_proof)
             command(['codesign', '--verify', '--strict', str(framework)], root, evidence,
                     'framework-signature-' + str(number), 30)

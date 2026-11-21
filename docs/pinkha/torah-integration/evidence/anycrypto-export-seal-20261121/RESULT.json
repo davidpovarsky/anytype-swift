@@ -1,0 +1,242 @@
+{
+  "status": "PASS_PORTABLE_SOURCE_CONTROLS_163_NATIVE_NOT_RUN",
+  "parent_source": "7fb63538482265e703e462d8a8066402641d1b07",
+  "branch": "codex/otzaria-original-editor-package-seal-20261121",
+  "portable_host": {
+    "system": "Linux",
+    "python": "3.12.14"
+  },
+  "original143_ids_preserved": true,
+  "original_test_inputs_unchanged": {
+    "Tools/OriginalEditor/test_amplitude_simulator_signing.py": {
+      "git_blob": "4eda8921093f8ea59a73329f9482f9b36c88b811",
+      "bytes": 36027,
+      "sha256": "f675d572a2ee266530799e94d31f13989bfa369ea1dc898c9641952b6d7400f3"
+    },
+    "Tools/OriginalEditor/test_framework.py": {
+      "git_blob": "7bf7d324f0365d1f9f0fbc2f9775f1570e1d29ff",
+      "bytes": 19229,
+      "sha256": "3c19387fe84df68ca4c26527a57987b56242b39f057228223b70b7a16427d8f0"
+    },
+    "Tools/OriginalEditor/test_framework_duplicates.py": {
+      "git_blob": "4759315a22f964a17d6b32eb149e158bc8bf12d5",
+      "bytes": 14123,
+      "sha256": "45b5962ff34c44fba96514cab46f7374bc78eaca674a4cf741ac41814be6fef5"
+    },
+    "Tools/OriginalEditor/test_framework_flow.py": {
+      "git_blob": "3eb018965ce0493c894042f7727925f162f69691",
+      "bytes": 14804,
+      "sha256": "5ce447f5c82482cd83ced77947693bc355fd91329fcd9f7a3d32f8e94f5f20f7"
+    },
+    "Tools/OriginalEditor/test_framework_source_retention.py": {
+      "git_blob": "5d0ad91e447c8e5763d2c4f7d965ad297d9e9839",
+      "bytes": 5308,
+      "sha256": "d6f6f07642e62223aad725d3d47c15097b5d5ed90c02d7c310e75ca87f1a33ab"
+    },
+    "Tools/OriginalEditor/test_framework_temporary_paths.py": {
+      "git_blob": "68dc9c30dc66c6ae49db836a7b78497a318e225f",
+      "bytes": 2331,
+      "sha256": "619dbd3f1111681950c83ee79d6b5b308b6eec6ecfd9bbacc9717309ccf99e46"
+    }
+  },
+  "canonical_baseline_inputs": {
+    "source_sha": "7fb63538482265e703e462d8a8066402641d1b07",
+    "files": {
+      ".github/workflows/pinkha-original-editor-framework.yml": {
+        "git_blob": "d118b12a2fc8325e3960d39fa2682007c64f44dc",
+        "bytes": 5050,
+        "sha256": "637570e746738dc3c6fc84251d8965496b5ffaa0014e1ebc7fbcffacaeeb7a7f"
+      },
+      "Anytype.xcodeproj/project.pbxproj": {
+        "git_blob": "138bf8c58ceb063726073df388c06198e2648f18",
+        "bytes": 145980,
+        "sha256": "6d8ea7d95077a20f6e8343db77d30cfdd7a59a3e85a4a2a69c8e075c8adcf05c"
+      },
+      "OriginalEditorFramework/AnytypeOriginalEditorModule.swift": {
+        "git_blob": "723ac59f33c7cd7bd87aa925d247932c4217abfe",
+        "bytes": 4743,
+        "sha256": "1cf817420c8fb1906388ec9f8842ce19b878b09b652d714bb5bd0b6b38e1c5cd"
+      },
+      "Tools/OriginalEditor/Consumer/ConsumerApp.swift": {
+        "git_blob": "47f43ac342bfd0eb4bcaf70dcc416a3bc3dd4d21",
+        "bytes": 2966,
+        "sha256": "df388d0015e2fcff114cebc7990a111f1033c22f02c085c3b3278f168c48d373"
+      },
+      "Tools/OriginalEditor/amplitude_simulator_signing.json": {
+        "git_blob": "0a129b916508d73851f18ffdbd2eecfc357d9a2a",
+        "bytes": 3691,
+        "sha256": "41b8bfaf15380f8658b94c9b714e146d3d338c39f3ddc8f2ae99efcf0bf7fc3b"
+      },
+      "Tools/OriginalEditor/amplitude_simulator_signing.py": {
+        "git_blob": "99bb8e5273335c83024dba2653cef337d3833bec",
+        "bytes": 24140,
+        "sha256": "ea222037b349d6266ea6a7a8fba43e155b0eefb4afa9295bf2508e11837744f9"
+      },
+      "Tools/OriginalEditor/framework_products.py": {
+        "git_blob": "64e1223983dc216ea5d9e069346f65a8808deedb",
+        "bytes": 28161,
+        "sha256": "15799dea4ceee7c6b5fc8b3daa9d7c2803efd70c71bbb69fb6552e90eee83e6d"
+      },
+      "Tools/OriginalEditor/framework_profile.json": {
+        "git_blob": "db9b704cce142d975a30cdc3ef0070052cee61b8",
+        "bytes": 2653,
+        "sha256": "83d773521ae45aa74439b7e6fcba1caa963ff1f6add1a07e8688aef66b614e51"
+      },
+      "Tools/OriginalEditor/framework_profile.py": {
+        "git_blob": "4096ad7e83aaf48a48884da990ce2da713680524",
+        "bytes": 9491,
+        "sha256": "cdc14c7d6bede58c6e5b31a2d03d1acfbaddc5480a7f495d54070c0bdb39a656"
+      },
+      "Tools/OriginalEditor/original_project.pbxproj": {
+        "git_blob": "1bf62787cd425001ec9b8c941aa7b7d4f9967f8f",
+        "bytes": 117644,
+        "sha256": "d051bbc11c82705b4f473b1d51c2e5fedbce015b8ccaa2d5eca00f16fdd1cd59"
+      },
+      "Tools/OriginalEditor/pbx_source.py": {
+        "git_blob": "e1f3eef060d70226b955a51166903ed7097b3910",
+        "bytes": 4635,
+        "sha256": "113436ddb2837c9d0c65a650dbde8fe18461c0421a94f6830f60f55961332055"
+      },
+      "Tools/OriginalEditor/run_framework_acceptance.py": {
+        "git_blob": "042b05c87a817ab9e5a0a47bf973d304b76a7dd7",
+        "bytes": 28451,
+        "sha256": "23a11a5a3f3ea323374a4cd0f6b2ab9f360c5d2c11ba140ebc20b30f5d1e9d40"
+      },
+      "Tools/OriginalEditor/run_source_controls.py": {
+        "git_blob": "a1e08ecc2ad9b64caf05b19a8f214f4b25da47ed",
+        "bytes": 20318,
+        "sha256": "c6e607433cc7945cf46aff8d7f2b53462321be506f9bc4805ead69b68ebcb868"
+      },
+      "Tools/OriginalEditor/test_amplitude_simulator_signing.py": {
+        "git_blob": "4eda8921093f8ea59a73329f9482f9b36c88b811",
+        "bytes": 36027,
+        "sha256": "f675d572a2ee266530799e94d31f13989bfa369ea1dc898c9641952b6d7400f3"
+      },
+      "Tools/OriginalEditor/test_framework.py": {
+        "git_blob": "7bf7d324f0365d1f9f0fbc2f9775f1570e1d29ff",
+        "bytes": 19229,
+        "sha256": "3c19387fe84df68ca4c26527a57987b56242b39f057228223b70b7a16427d8f0"
+      },
+      "Tools/OriginalEditor/test_framework_duplicates.py": {
+        "git_blob": "4759315a22f964a17d6b32eb149e158bc8bf12d5",
+        "bytes": 14123,
+        "sha256": "45b5962ff34c44fba96514cab46f7374bc78eaca674a4cf741ac41814be6fef5"
+      },
+      "Tools/OriginalEditor/test_framework_flow.py": {
+        "git_blob": "3eb018965ce0493c894042f7727925f162f69691",
+        "bytes": 14804,
+        "sha256": "5ce447f5c82482cd83ced77947693bc355fd91329fcd9f7a3d32f8e94f5f20f7"
+      },
+      "Tools/OriginalEditor/test_framework_source_retention.py": {
+        "git_blob": "5d0ad91e447c8e5763d2c4f7d965ad297d9e9839",
+        "bytes": 5308,
+        "sha256": "d6f6f07642e62223aad725d3d47c15097b5d5ed90c02d7c310e75ca87f1a33ab"
+      },
+      "Tools/OriginalEditor/test_framework_temporary_paths.py": {
+        "git_blob": "68dc9c30dc66c6ae49db836a7b78497a318e225f",
+        "bytes": 2331,
+        "sha256": "619dbd3f1111681950c83ee79d6b5b308b6eec6ecfd9bbacc9717309ccf99e46"
+      },
+      "Tools/PinkhaNativeDerived/install_verified_heart.py": {
+        "git_blob": "8f619427a9dfa7f0adfd4af26aa958642af0c4f8",
+        "bytes": 5116,
+        "sha256": "0560c51a603da55e91e87335ff70898a624682d9cd6c14c5a7d780934910428d"
+      },
+      "Tools/PinkhaNativeDerived/package_evidence.py": {
+        "git_blob": "e55d2a959296630686a60aa5d927a3b4c34401f9",
+        "bytes": 1275,
+        "sha256": "0faf11a18f2c8a220fab570ef3a199e2016091340c0b261148dd7c581294c895"
+      },
+      "docs/pinkha/torah-integration/evidence/original-editor-framework-20261120/raw/budget-original-command-44750790626.json.gz": {
+        "git_blob": "5dba2813ee0528111eccaa1f3186d1789ef7604f",
+        "bytes": 678,
+        "sha256": "046d75df7bba0523017376012751bc051460927a3f311099f14cdb6be14d122e"
+      },
+      "docs/pinkha/torah-integration/evidence/original-editor-framework-44812859123-20261120/pinned-upstream-AmplitudeCore.zip": {
+        "git_blob": "ce80aba68e685309ed0279a6bc31705c8cdabbd9",
+        "bytes": 1964793,
+        "sha256": "2c0fbe60170efdf0b634ae73298803880098e1d352c9afef2baface15b45070c"
+      },
+      "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved": {
+        "git_blob": "2ee4435d9563f3e8b8691fbb36600bf63ec35a36",
+        "bytes": 12076,
+        "sha256": "5b2dc85295e14c33e750d9a9b33e2422ef0a56af8049cdc4638b8508c8ddfb07"
+      }
+    }
+  },
+  "candidate_inputs": {
+    "Tools/OriginalEditor/anycrypto_simulator_signing.py": {
+      "bytes": 17641,
+      "sha256": "e092c74d104bdab57f61454dbc171ee125920de18c4e5acaaa72274406883189"
+    },
+    "Tools/OriginalEditor/run_framework_acceptance.py": {
+      "bytes": 30691,
+      "sha256": "30385d19854027dedcf25849123f96d1532d7c33e4336c509a12482c06b01fb6"
+    },
+    "Tools/OriginalEditor/run_source_controls.py": {
+      "bytes": 22923,
+      "sha256": "9b19f551e6d58f18f9643b52283f4c95d3c61fa8a391b14b2ca5ee1ae9af5f77"
+    },
+    "Tools/OriginalEditor/test_anycrypto_simulator_signing.py": {
+      "bytes": 16111,
+      "sha256": "4f185389be983df6880006487ec7b105030347c8ccc865454c58ec44d82d9f8b"
+    }
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "FAIL",
+      "passed": 153,
+      "errors": 9,
+      "failures": 1,
+      "cause": "git archive exported CRLF text; canonical immutable Git blob fixtures subsequently recovered without changing assertions"
+    },
+    {
+      "attempt": 2,
+      "status": "PASS_SOURCE_CONTROLS_163",
+      "executed": 163,
+      "passed": 163,
+      "skipped": 0,
+      "failed": 0
+    }
+  ],
+  "evidence": {
+    "controls-attempt1-source-controls-result.json.gz": {
+      "bytes": 89656,
+      "sha256": "f44cc8392c66ed35dab91b0233965a9fc8ee121571806276f5d36725b94876f7",
+      "compressed_sha256": "c32a6b25c9f646dda0598ca5bced6b92f4ff4372c419c6f4cb77b0993dee568c"
+    },
+    "controls-attempt1.stdout.log.gz": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressed_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    "controls-attempt1.stderr.log.gz": {
+      "bytes": 43742,
+      "sha256": "a3e21ee937cc8d02e6510eaea764819cfc737df499bc1ed4020790536a9c274e",
+      "compressed_sha256": "4825c3d29a182f1525a95f6b671fc0e6191fc4c566a4e50731d472dda4062993"
+    },
+    "controls-attempt2-source-controls-result.json.gz": {
+      "bytes": 77549,
+      "sha256": "020fcd5600d636798fbac475a86f637c59f74c31c69b19713ee3bdc23fd6823a",
+      "compressed_sha256": "4137f7e4970cc85e17c242ccbba9d6e6f707af2d51619905804e67a88d70295e"
+    },
+    "controls-attempt2.stdout.log.gz": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "compressed_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    "controls-attempt2.stderr.log.gz": {
+      "bytes": 28935,
+      "sha256": "dd58b959c5487681e614d6f13899c29df2159fd458667cf214e11381f1db0ebf",
+      "compressed_sha256": "809af7d15f3f62e80539647e1deb0589a2dbcfaae9c1d7ba5658056e859b90ab"
+    }
+  },
+  "native_signing": "NOT_RUN",
+  "new_apple_builds": 0,
+  "native_editor_ui_tests": 0,
+  "external_consumer": "NOT_RUN",
+  "editable_mount": "NOT_EXPOSED",
+  "current_branch_admission": "NOT_ADMITTED_BY_UNCHANGED_V7_WORKFLOW_AND_PROFILE",
+  "publication": "NOT_PUSHED_NOT_DISPATCHED"
+}
