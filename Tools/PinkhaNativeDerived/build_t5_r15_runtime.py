@@ -1,5 +1,6 @@
 """Build-only r15 Apple runtime using the unchanged, hash-bound r14 builder helpers."""
 import argparse
+from dataclasses import dataclass
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -15,6 +16,7 @@ import sys
 import run_t5_coverage_ci as coverage
 import run_t5_pairs_ci as pair_ci
 import r15_runtime_go as launcher
+import attachment_runtime
 
 HELPER_SHA = "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669"
 INVENTORY_SHA = "f0e4a4c2d1b4c1baa11347362cfd18368ad272a8902b2beaf8de52270f809ee7"
@@ -131,7 +133,7 @@ def verify_source(heart, inventory):
     return approved
 
 
-def validate_framework(plist, slices):
+def validate_framework(plist, slices, expected_version=VERSION):
     libraries = plist.get("AvailableLibraries", [])
     expected_libraries = {
         "ios-arm64": ("", {"arm64"}),
@@ -156,7 +158,7 @@ def validate_framework(plist, slices):
         raise RuntimeError("All three original Apple binary architectures must be verified")
     for item in slices:
         value = item.get("sha256", "")
-        if item.get("marker") != VERSION or len(value) != 64 or set(value) - set("0123456789abcdef"):
+        if item.get("marker") != expected_version or len(value) != 64 or set(value) - set("0123456789abcdef"):
             raise RuntimeError("A slice lacks the exact full r15 runtime identity or binary hash")
     return dict(device_architectures=["arm64"], simulator_architectures=["arm64", "x86_64"],
                 verified_architecture_count=3)
@@ -439,6 +441,81 @@ def validate_post_tidy_seed_graph(graph, downloads):
 
 
 
+@dataclass(frozen=True)
+class RuntimeInputs:
+    variant: str
+    patch: Path
+    inventory_path: Path
+    patch_sha256: str
+    inventory_sha256: str
+    version: str
+    marker: str
+    capability_marker: str | None
+    lookup_capability: int
+    inventory: dict
+
+    @property
+    def artifact_name(self):
+        return "Pinkha-Universal-Verified-Heart-" + self.variant + ".tar.gz"
+
+
+def select_runtime_inputs(source, control, evidence, attachment_variant=None):
+    if attachment_variant is None:
+        approval = source / pair_ci.APPROVAL_ROOT / "revision-15"
+        patch, inventory_path = approval / "native-heart-integration.patch", approval / "native-heart-integration.json"
+        expected_patch, expected_inventory = coverage.PATCH, INVENTORY_SHA
+        variant, version, capability = "r15", VERSION, 1
+    else:
+        corrected = attachment_runtime.prepare(source, control, attachment_variant)
+        patch, inventory_path = corrected.write(evidence / "corrected-native-source")
+        expected_patch, expected_inventory = corrected.patch_sha256, corrected.inventory_sha256
+        variant, version, capability = corrected.variant, corrected.version, corrected.lookup_capability
+    if digest(patch, True) != expected_patch or digest(inventory_path, True) != expected_inventory:
+        raise RuntimeError("Exact reviewed runtime patch and inventory required")
+    inventory = json.loads(inventory_path.read_text(encoding="utf8"))
+    if (inventory["heart_sha"] != coverage.HEART or inventory["patch_sha256"] != expected_patch
+            or inventory.get("features", {}).get("t5_related_lookup", 0) != capability):
+        raise RuntimeError("Unexpected native capability inventory")
+    return RuntimeInputs(variant, patch, inventory_path, expected_patch, expected_inventory,
+                         version, "pinkha-native-derived-v1-" + expected_patch,
+                         "pinkha-native-t5-lookup-v1-" + expected_patch if capability else None,
+                         capability, inventory)
+
+
+def qualify_corrected_fixtures(log):
+    # Reuse the established real native log parser, then require exactly the
+    # impacted fixture set. These are 2 methods / 6 parent-and-subtest records,
+    # never the previously completed 48 methods / 250 records.
+    import run_t5_native_attachment as attachment
+    result = attachment.qualify_log(log, 0, negative=False)
+    expected = {(attachment.BASIC_PACKAGE, name)
+                for name in attachment.NEGATIVE_CASES | {attachment.BASIC_TEST}}
+    expected.add((attachment.EXPLICIT_PACKAGE, attachment.EXPLICIT_TEST))
+    actual = {(test["package"], test["name"]) for test in result["tests"]}
+    if actual != expected:
+        raise RuntimeError("Corrected runtime requires only the exact two impacted native fixtures")
+    return dict(status="PASS_COMBINED_RUNTIME_ATTACHMENT_FIXTURES",
+                native_test_methods=2, native_test_and_subtest_records=6, **{
+                    key: value for key, value in result.items() if key != "status"})
+
+
+def bind_corrected_dependency_provenance(preparation, runtime):
+    if runtime.variant == "r15":
+        return
+    # The generated module must still equal the complete original reviewed
+    # manifest and all live three-architecture graph checks remain mandatory.
+    # Record the actual corrected source separately from the reused r15
+    # dependency declaration; do not relabel the old runtime proof.
+    baseline = preparation.pop("source_inputs")
+    preparation.update(
+        strategy="EXACT_REVIEWED_DEPENDENCIES_WITH_SCOPED_ATTACHMENT_SOURCE",
+        dependency_baseline_source_inputs=baseline,
+        source_inputs=dict(baseline, patch_sha256=runtime.patch_sha256,
+                           runtime_variant=runtime.variant),
+        source_composition=runtime.inventory["correction_provenance"],
+    )
+
+
 def execute(args, control, evidence):
     if platform.system() != "Darwin" or platform.machine() != "arm64":
         raise RuntimeError("Actual ARM64 macOS/Xcode environment required; no native source modified")
@@ -454,14 +531,11 @@ def execute(args, control, evidence):
     if digest(helper_path, True) != HELPER_SHA:
         raise RuntimeError("The reviewed native builder helper changed")
     helper = pair_ci.load_module("unchanged_r14_builder_helpers", helper_path)
-    approval = source / pair_ci.APPROVAL_ROOT / "revision-15"
-    patch, inventory_path = approval / "native-heart-integration.patch", approval / "native-heart-integration.json"
-    if digest(patch, True) != coverage.PATCH or digest(inventory_path, True) != INVENTORY_SHA:
-        raise RuntimeError("Exact reviewed r15 patch and inventory required")
-    inventory = json.loads(inventory_path.read_text(encoding="utf8"))
-    if (inventory["heart_sha"] != coverage.HEART or inventory["patch_sha256"] != coverage.PATCH
-            or inventory.get("features", {}).get("t5_related_lookup") != 1):
-        raise RuntimeError("Unexpected native capability inventory")
+    attachment_variant = getattr(args, "attachment_variant", None)
+    if attachment_variant is not None and coverage.git(control, "status", "--porcelain"):
+        raise RuntimeError("Corrected runtime control source must be clean")
+    runtime = select_runtime_inputs(source, control, evidence, attachment_variant)
+    patch, inventory_path, inventory = runtime.patch, runtime.inventory_path, runtime.inventory
     if digest(source / pair_ci.GENPROTO_DECLARATION, True) != pair_ci.GENPROTO_DECLARATION_SHA:
         raise RuntimeError("Reviewed existing genproto declaration changed")
     real_go = Path(shutil.which("go") or "").resolve(strict=True)
@@ -502,7 +576,7 @@ def execute(args, control, evidence):
         raise RuntimeError("The verified Xcode 27 SDK lane is required")
     run([sys.executable, "-B", str(helper_path), "--heart-source", str(heart),
          "--patch", str(patch), "--inventory", str(inventory_path),
-         "--approved-patch-sha256", coverage.PATCH, "--apply-approved-patch",
+         "--approved-patch-sha256", runtime.patch_sha256, "--apply-approved-patch",
          "--target", "verify", "--evidence", str(evidence / "source-preflight")],
         "source-preflight")
     source_hashes = verify_source(heart, inventory)
@@ -578,6 +652,7 @@ def execute(args, control, evidence):
     # declaration separately while the existing online preparation is active.
     # The real gomobile scopes still start from their original immutable input.
     post_seed, post_preparation = prepare_post_tidy_seed(work, control, heart, manifest)
+    bind_corrected_dependency_provenance(post_preparation, runtime)
     post_env = dict(env, GOWORK="off")
     post_initial_log = run([str(real_go), "mod", "edit", "-json"],
                            "post-tidy-original-manifest", post_env, cwd=post_seed)
@@ -664,11 +739,22 @@ def execute(args, control, evidence):
         work, module_cache, heart / "deps/gobind", shutil.which("gobind", path=env["PATH"]),
         tools["gobind"]["sha256"], env)
     coverage.write_receipt(evidence / "gomobile-preparation.json", mobile_preparation)
+    native_fixture_proof = None
+    if runtime.variant == "r15-attachment-v1":
+        native_log = run(
+            [str(real_go), "test", "-mod=readonly", "-p", "2", "-json", "-count=1",
+             "-timeout", "3m", "-tags", pair_ci.TAGS,
+             "-run", "^(TestTorahOrdinaryDetailsDoNotAttachProjectedProperties|TestTorahExplicitAttachmentsSurviveOrdinaryDetailsEdits)$",
+             "./core/block/editor/basic", "./core/block/detailservice"],
+            "corrected-attachment-fixtures",
+            dict(env, CGO_LDFLAGS="-L" + str(heart / "deps/libs/darwin-arm64")), timeout=900)
+        native_fixture_proof = qualify_corrected_fixtures(native_log)
+        coverage.write_receipt(evidence / "corrected-attachment-fixtures.json", native_fixture_proof)
     framework = heart / "dist/ios/Lib.xcframework"
     if framework.exists():
         raise RuntimeError("Stale framework output is forbidden")
     framework.parent.mkdir(parents=True, exist_ok=True)
-    ldflags = ("-X github.com/anyproto/anytype-heart/util/vcs.GitSummary=" + VERSION
+    ldflags = ("-X github.com/anyproto/anytype-heart/util/vcs.GitSummary=" + runtime.version
                + " -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=" + coverage.HEART)
     run([str(heart / "deps/gomobile"), "bind", "-tags",
          "nogrpcserver gomobile nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg",
@@ -704,27 +790,29 @@ def execute(args, control, evidence):
     if (len(verified_generated) != 3 or set(original_generated) != set(verified_generated)
             or digest(graph_contract_path) != graph_contract_sha):
         raise RuntimeError("All three original generated architecture modules need exact dependency proofs")
-    slices = helper.verify_framework_slices(framework, VERSION)
+    slices = helper.verify_framework_slices(framework, runtime.version)
     source_slices = helper.verify_framework_slices(framework, coverage.HEART)
     if {(item["path"], item["architecture"], item["sha256"]) for item in source_slices} != {
             (item["path"], item["architecture"], item["sha256"]) for item in slices}:
         raise RuntimeError("Native source and full runtime markers did not bind identical slices")
     info = plistlib.loads((framework / "Info.plist").read_bytes())
-    architecture_proof = validate_framework(info, slices)
+    architecture_proof = validate_framework(info, slices, runtime.version)
     if verify_source(heart, inventory) != source_hashes:
         raise RuntimeError("Native source changed during framework build")
     if (coverage.require_identity(control) != identity
+            or (runtime.variant != "r15" and coverage.git(control, "status", "--porcelain"))
             or coverage.git(source, "status", "--porcelain")
             or digest(helper_path, True) != HELPER_SHA
-            or digest(patch, True) != coverage.PATCH
-            or digest(inventory_path, True) != INVENTORY_SHA):
+            or digest(patch, True) != runtime.patch_sha256
+            or digest(inventory_path, True) != runtime.inventory_sha256):
         raise RuntimeError("Reviewed control/source inputs changed during build")
     receipt = dict(status="PASS", build_status="APPLE_FRAMEWORK_BUILT_NOT_EXECUTED",
                    **identity, source_sha=coverage.SOURCE, heart_sha=coverage.HEART, heart_tag=helper.TAG,
-                   target="ios", patch_sha256=coverage.PATCH, inventory_sha256=INVENTORY_SHA,
-                   files=inventory["files"], marker=MARKER, capability_marker=CAPABILITY_MARKER,
-                   expected_app_get_version=VERSION, app_get_version_status="NOT_RUN_BUILD_ONLY",
-                   native_tests="NOT_RUN_BUILD_ONLY", native_test_invocations=0,
+                   target="ios", patch_sha256=runtime.patch_sha256, inventory_sha256=runtime.inventory_sha256,
+                   files=inventory["files"], marker=runtime.marker, capability_marker=runtime.capability_marker,
+                   expected_app_get_version=runtime.version, app_get_version_status="NOT_RUN_BUILD_ONLY",
+                   native_tests="PASS_FOCUSED_ATTACHMENT_FIXTURES" if native_fixture_proof else "NOT_RUN_BUILD_ONLY",
+                   native_test_invocations=2 if native_fixture_proof else 0,
                    client_enablement=pair_ci.CLIENT_DISABLED, swift_pairing_status="NOT_RUN", full_F10="NOT_PROVEN",
                    app_compile_flag="NOT_SET_BY_RUNTIME_BUILD", helper_sha256=HELPER_SHA,
                    go_version=version, xcode=xcode, sdk_versions=sdk_versions, native_dependencies=dependencies,
@@ -736,19 +824,30 @@ def execute(args, control, evidence):
                    binary_slices=slices, architecture_proof=architecture_proof, framework=str(framework),
                    artifacts=[dict(path=str(path.relative_to(framework)), sha256=helper.digest(path))
                               for path in sorted(framework.rglob("*")) if path.is_file()])
+    if runtime.variant != "r15":
+        receipt.update(runtime_variant=runtime.variant,
+                       correction_provenance=inventory["correction_provenance"],
+                       native_attachment_fixtures=native_fixture_proof,
+                       old_full_native_source_evidence=("REUSED_EXACT_D055_SOURCE_48_METHODS_250_RECORDS"
+                           if runtime.variant == "r14-attachment-v1" else "NOT_RELABELED_ON_COMBINED_R15"))
     receipt_path = evidence / "custom-heart-build.json"
     coverage.write_receipt(receipt_path, receipt)
     packaged_receipt = framework.parent / "PinkhaNativeHeartBuild.json"
     shutil.copyfile(receipt_path, packaged_receipt)
-    archive = artifacts / "Pinkha-Universal-Verified-Heart-r15.tar.gz"
+    archive = artifacts / runtime.artifact_name
     run(["tar", "-czf", str(archive), "-C", str(framework.parent),
          "Lib.xcframework", "PinkhaNativeHeartBuild.json"], "package-runtime")
     artifact = dict(status="APPLE_RUNTIME_ARTIFACT_BUILT_NOT_EXECUTED",
                     path=str(archive), sha256=helper.digest(archive),
-                    receipt_sha256=helper.digest(receipt_path), expected_app_get_version=VERSION,
+                    receipt_sha256=helper.digest(receipt_path), expected_app_get_version=runtime.version,
                     binary_slices=slices, **identity, source_sha=coverage.SOURCE,
-                    heart_sha=coverage.HEART, patch_sha256=coverage.PATCH,
+                    heart_sha=coverage.HEART, patch_sha256=runtime.patch_sha256,
                     swift_pairing_status="NOT_RUN", client_enablement=pair_ci.CLIENT_DISABLED)
+    if runtime.variant != "r15":
+        artifact.update(runtime_variant=runtime.variant,
+                        native_fixture_methods=2 if native_fixture_proof else 0,
+                        native_test_invocations=2 if native_fixture_proof else 0,
+                        original_r14_r15_write_compatibility="KNOWN_ATTACHMENT_DRIFT_NOT_PROVEN")
     coverage.write_receipt(evidence / "runtime-artifact.json", artifact)
     return artifact
 
@@ -790,11 +889,12 @@ def main(argv=None):
     parser = argparse.ArgumentParser(__doc__)
     for name in ["source", "heart-source", "work", "artifacts", "evidence"]:
         parser.add_argument("--" + name, type=Path, required=True)
+    parser.add_argument("--attachment-variant", choices=attachment_runtime.VARIANTS)
     args = parser.parse_args(argv)
     evidence = args.evidence.resolve()
     evidence.mkdir(parents=True, exist_ok=False)
     receipt = dict(status="RUNNING", started_at=datetime.now(timezone.utc).isoformat(),
-                   component="runtime-r15", native_test_invocations=0, app_get_version_status="NOT_RUN_BUILD_ONLY",
+                   component="runtime-" + (args.attachment_variant or "r15"), native_test_invocations=0, app_get_version_status="NOT_RUN_BUILD_ONLY",
                    swift_pairing_status="NOT_RUN", client_enablement=pair_ci.CLIENT_DISABLED, full_F10="NOT_PROVEN")
     path = evidence / "runtime-build-result.json"
     coverage.write_receipt(path, receipt)

@@ -1,0 +1,86 @@
+name: Build an attachment-safe Heart runtime with its exact source identity
+
+on:
+  workflow_call:
+    inputs:
+      variant:
+        type: string
+        default: r15-attachment-v1
+        description: Explicit corrected variant; original r14 and r15 are never relabeled.
+
+permissions:
+  contents: read
+
+jobs:
+  corrected-runtime:
+    runs-on: xcode-27
+    timeout-minutes: 150
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      ATTACHMENT_VARIANT: ${{ inputs.variant }}
+      T5_RUNTIME_ATTEMPT: build/t5-attachment-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Validate explicit corrected runtime selection
+        shell: bash
+        run: |
+          case "$ATTACHMENT_VARIANT" in
+            r15-attachment-v1|r14-attachment-v1) ;;
+            *) echo "Unsupported corrected runtime variant" >&2; exit 1 ;;
+          esac
+      - name: Checkout the exact caller control source
+        uses: actions/checkout@v4
+        with:
+          path: build/t5-attachment-${{ github.run_id }}-${{ github.run_attempt }}/control
+      - name: Checkout immutable native approval inputs
+        uses: actions/checkout@v4
+        with:
+          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1
+          path: build/t5-attachment-${{ github.run_id }}-${{ github.run_attempt }}/source
+      - name: Select compatible ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install the pinned native Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout the exact native Heart source
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/t5-attachment-${{ github.run_id }}-${{ github.run_attempt }}/heart
+      - name: Prepare isolated runtime output directories
+        run: mkdir -p "$T5_RUNTIME_ATTEMPT/proof" "$T5_RUNTIME_ATTEMPT/work" "$T5_RUNTIME_ATTEMPT/artifacts"
+      - name: Build exact corrected source and verify all three Apple architectures
+        run: |
+          python3 -B "$T5_RUNTIME_ATTEMPT/control/Tools/PinkhaNativeDerived/build_t5_r15_runtime.py" \
+            --attachment-variant "$ATTACHMENT_VARIANT" \
+            --heart-source "$T5_RUNTIME_ATTEMPT/heart" \
+            --source "$T5_RUNTIME_ATTEMPT/source" \
+            --work "$T5_RUNTIME_ATTEMPT/work" \
+            --artifacts "$T5_RUNTIME_ATTEMPT/artifacts" \
+            --evidence "$T5_RUNTIME_ATTEMPT/proof/runtime"
+      - name: Retain corrected runtime without changing legacy artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Universal-Verified-Heart-${{ inputs.variant }}
+          path: build/t5-attachment-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/Pinkha-Universal-Verified-Heart-${{ inputs.variant }}.tar.gz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 14
+      - name: Package original build and source evidence including failures
+        if: always()
+        run: |
+          mkdir -p "$T5_RUNTIME_ATTEMPT/proof"
+          python3 "$T5_RUNTIME_ATTEMPT/control/Tools/PinkhaNativeDerived/package_evidence.py" "$T5_RUNTIME_ATTEMPT/proof"
+      - name: Retain corrected source, native fixtures and module provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-T5-Attachment-Runtime-${{ inputs.variant }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/t5-attachment-${{ github.run_id }}-${{ github.run_attempt }}/proof/Pinkha-Native-Derived-Evidence.zip
+          if-no-files-found: warn
+          retention-days: 14

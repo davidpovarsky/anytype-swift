@@ -30,6 +30,7 @@ on:
           - simulator-ui27
           - heart-runtime
           - t5-r15-runtime
+          - t5-r15-attachment-runtime
           - t5-apple-pairs
           - t5-apple-ui
           - t5-native-pagination
@@ -199,6 +200,11 @@ jobs:
       include_freshness: ${{ inputs.route == 't5-apple-ui' || inputs.t5_component == 'index-freshness' }}
       include_native_ui: ${{ inputs.route == 't5-apple-ui' }}
 
+  t5-r15-attachment-runtime:
+    if: ${{ inputs.route == 't5-r15-attachment-runtime' }}
+    uses: ./.github/workflows/pinkha-t5-attachment-runtime.yml
+    with:
+      variant: r15-attachment-v1
   t5-r15-runtime:
     if: ${{ inputs.route == 't5-r15-runtime' }}
     uses: ./.github/workflows/pinkha-t5-r15-runtime.yml
