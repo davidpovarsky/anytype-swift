@@ -27,8 +27,8 @@ PROTOCOL = "pinkha-t2-generated-byte-space-close-v1"
 METHOD = "TestT2GeneratedByteSpaceClose"
 PASS = "PASS_NATIVE_GENERATED_BYTE_SPACE_CLOSE_AND_COLD_REOPEN"
 PRODUCT_BASE = "16b7493fa05bdc3abbae190c6e6c364c81874eea"
-CANDIDATE_SHA = "994107eacbc2e09335fac38f34d2f3e626cb048bbc87ce25cbe7a9af040f7f0a"
-LANE_MANIFEST_SHA = "fe55fe1c3d95d462dd7b4f75f720634ac7450da7a01eb80aa290078c796974be"
+CANDIDATE_SHA = "edc468223d9a3f2a6e5acdccff386147145094af9a7bc56c5795e6ea96f9f72f"
+LANE_MANIFEST_SHA = "b3fff620bfe3ef2c733eb46222f3e636ad83a57e56166307068be180802e85dd"
 PHASES = ("race", "reopen")
 SCOPE = "original four-process generated-byte baseline plus one real Space.Close race and one cold reopen"
 LIMITS = {"app_capability": "OFF", "response_return_order_relative_to_close": "NOT_ASSERTED",
@@ -137,12 +137,13 @@ def validate_report(report, phase, nonce, pid):
     observation = report["observation"]
     require(isinstance(observation, dict), "Original phase observation required")
     if phase == "race":
-        require(set(observation) == {"trace", "identity_checks", "cache_close_timeout_seconds",
+        require(set(observation) == {"trace", "identity_checks", "cache_close_timeout_seconds", "account_notification_startup",
             "both_entries_closing_before_controller_close", "settings_fence_observed_before_and_after_durable_commit",
             "post_physical_close_read", "native_append", "original_controller_close_calls",
             "raced_generated_append_calls", "raw_changes_sha256_before_append", "heads_before_append",
             "raw_changes_sha256_at_durable_boundary", "heads_at_durable_boundary"}, "Wrong race observation schema")
         require(observation["identity_checks"] == "ALL_EIGHT_PAIRS_EXACT_SAME_LIVE_INSTANCE"
+                and observation["account_notification_startup"] == "ORIGINAL_LOAD_FINISH_BEFORE_RACE_BARRIERS"
                 and type(observation["cache_close_timeout_seconds"]) is int and observation["cache_close_timeout_seconds"] == 10
                 and observation["both_entries_closing_before_controller_close"] is True
                 and observation["settings_fence_observed_before_and_after_durable_commit"] is True

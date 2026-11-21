@@ -14,6 +14,7 @@ import (
 	"github.com/anyproto/any-sync/app"
 	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
 	"github.com/anyproto/anytype-heart/core/block/editor/torahops"
+	"github.com/anyproto/anytype-heart/core/notifications"
 	"github.com/anyproto/anytype-heart/pb"
 	"github.com/anyproto/anytype-heart/pkg/lib/pinkha/torahopscontract"
 	"github.com/anyproto/anytype-heart/space"
@@ -42,7 +43,7 @@ type t2SCState struct {
 	DurableHeads    []string
 }
 
-func t2SCWait[T any](t *testing.T, ch <-chan T) T {
+func t2SCWait[T any](t *testing.T, ch <-chan T, stage string) T {
 	t.Helper()
 	timer := time.NewTimer(30 * time.Second)
 	defer timer.Stop()
@@ -50,9 +51,30 @@ func t2SCWait[T any](t *testing.T, ch <-chan T) T {
 	case value := <-ch:
 		return value
 	case <-timer.C:
-		t.Fatal("required bounded Space.Close event was not observed")
+		t.Fatalf("Space.Close stage %q was not observed within its unchanged 30s bound", stage)
 		var zero T
 		return zero
+	}
+}
+
+func t2SCNotificationReady(t *testing.T) {
+	t.Helper()
+	// The actual account notification loader first discovers its tech-space
+	// object with a 30s peer deadline. ACL notification teardown waits for that
+	// loader (with its own original one-minute startup bound) before reaching
+	// the client cache. Finish this unrelated startup before installing the
+	// controlled close race; never spend the race's barriers on account boot.
+	service := app.MustComponent[notifications.Notifications](mw.GetApp())
+	startup, ok := service.(interface{ LoadFinish() chan struct{} })
+	require.True(t, ok, "the original account notification readiness provider is required")
+	ready := startup.LoadFinish()
+	require.NotNil(t, ready)
+	timer := time.NewTimer(time.Minute)
+	defer timer.Stop()
+	select {
+	case <-ready:
+	case <-timer.C:
+		t.Fatal("original account notification startup did not complete before the Space.Close race")
 	}
 }
 
@@ -167,6 +189,7 @@ func t2SCTrace(t *testing.T, capture *pinkhat2spaceclosetest.Capture) map[string
 
 func t2SCRace(t *testing.T, rpc *t2AccountRPC, state *t2SCState, parent string) map[string]any {
 	t.Helper()
+	t2SCNotificationReady(t)
 	state.Account.OperationID = fmt.Sprintf("%032x", 1)
 	rpc.createTarget(&state.Account)
 	root, err := torahopscontract.Root(state.Account.SpaceID)
@@ -233,26 +256,26 @@ func t2SCRace(t *testing.T, rpc *t2AccountRPC, state *t2SCState, parent string) 
 	})
 	appendDone := make(chan []byte, 1)
 	go func() { appendDone <- PinkhaTorahOperationsAppend(state.Request) }()
-	t2SCWait(t, capture.Arrival("append-before-native"))
+	t2SCWait(t, capture.Arrival("append-before-native"), "append-before-native")
 	targetDone, privateDone, closeDone := make(chan error, 1), make(chan error, 1), make(chan error, 1)
 	go func() { targetDone <- spc.Remove(ctx, state.Account.DocumentID) }()
-	t2SCWait(t, capture.Arrival("cache-entry-closing-target"))
+	t2SCWait(t, capture.Arrival("cache-entry-closing-target"), "cache-entry-closing-target")
 	go func() { privateDone <- spc.Remove(ctx, state.Account.RootID) }()
-	t2SCWait(t, capture.Arrival("cache-entry-closing-private"))
+	t2SCWait(t, capture.Arrival("cache-entry-closing-private"), "cache-entry-closing-private")
 	// Both real cache entries are already Closing before the original owned
 	// controller begins teardown. Its unchanged cache uses its original 10s
 	// deadline; the private-tree closer cannot silently mask the settings fence.
 	go func() { closeDone <- closeOwned(ctx) }()
-	t2SCWait(t, capture.Arrival("cache-deadline-target"))
-	t2SCWait(t, capture.Arrival("cache-deadline-private"))
-	t2SCWait(t, capture.Arrival("settings-close-attempt"))
+	t2SCWait(t, capture.Arrival("cache-deadline-target"), "cache-deadline-target")
+	t2SCWait(t, capture.Arrival("cache-deadline-private"), "cache-deadline-private")
+	t2SCWait(t, capture.Arrival("settings-close-attempt"), "settings-close-attempt")
 	require.False(t, capture.Seen("settings-close-return"))
 	require.False(t, capture.Seen("native-storage-close-attempt"))
 	stillBefore, stillHeads := t2SCHistory(t, spc, state.Account.RootID)
 	require.Equal(t, state.Before, stillBefore)
 	require.Equal(t, state.BeforeHeads, stillHeads)
 	capture.Release("append-before-native")
-	t2SCWait(t, capture.Arrival("commit-after-storage"))
+	t2SCWait(t, capture.Arrival("commit-after-storage"), "commit-after-storage")
 	require.False(t, capture.Seen("settings-close-return"))
 	require.False(t, capture.Seen("native-storage-close-attempt"))
 	state.Durable, state.DurableHeads = t2SCHistory(t, spc, state.Account.RootID)
@@ -262,7 +285,7 @@ func t2SCRace(t *testing.T, rpc *t2AccountRPC, state *t2SCState, parent string) 
 	}
 	capture.Release("commit-after-storage")
 	appended := &pb.RpcPinkhaTorahOperationsAppendResponse{}
-	require.NoError(t, proto.Unmarshal(t2SCWait(t, appendDone), appended))
+	require.NoError(t, proto.Unmarshal(t2SCWait(t, appendDone, "original-append-return"), appended))
 	createdRaw := t2SCVerifyCreated(t, appended, request, state.Author)
 	state.CreatedClaimID, state.CreatedChangeID = appended.Receipt.ClaimId, appended.Receipt.ChangeId
 	state.Claims[state.CreatedClaimID] = createdRaw
@@ -270,9 +293,9 @@ func t2SCRace(t *testing.T, rpc *t2AccountRPC, state *t2SCState, parent string) 
 	require.Equal(t, []string{state.CreatedChangeID}, state.DurableHeads)
 	require.NotEmpty(t, state.Durable[state.CreatedChangeID])
 	require.NotContains(t, state.Before, state.CreatedChangeID)
-	require.NoError(t, t2SCWait(t, targetDone))
-	require.NoError(t, t2SCWait(t, privateDone))
-	require.NoError(t, t2SCWait(t, closeDone))
+	require.NoError(t, t2SCWait(t, targetDone, "target-remove-return"))
+	require.NoError(t, t2SCWait(t, privateDone, "private-remove-return"))
+	require.NoError(t, t2SCWait(t, closeDone, "original-controller-close-return"))
 	trace := t2SCTrace(t, capture)
 	capture.Close()
 	closedTx, closeErr := spc.Storage().AnyStore().ReadTx(ctx)
@@ -283,7 +306,8 @@ func t2SCRace(t *testing.T, rpc *t2AccountRPC, state *t2SCState, parent string) 
 	require.Nil(t, closedTx)
 	require.NoError(t, ctx.Err(), "post-close denial must not be a cancelled probe")
 	return map[string]any{"trace": trace, "identity_checks": "ALL_EIGHT_PAIRS_EXACT_SAME_LIVE_INSTANCE",
-		"cache_close_timeout_seconds": 10, "both_entries_closing_before_controller_close": true,
+		"account_notification_startup": "ORIGINAL_LOAD_FINISH_BEFORE_RACE_BARRIERS",
+		"cache_close_timeout_seconds":  10, "both_entries_closing_before_controller_close": true,
 		"settings_fence_observed_before_and_after_durable_commit": true,
 		"post_physical_close_read":                                "DENIED_WITH_LIVE_PROBE_CONTEXT", "native_append": "CREATED_ORIGINAL_RESPONSE",
 		"original_controller_close_calls": 1, "raced_generated_append_calls": 1,

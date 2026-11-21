@@ -8,7 +8,12 @@ previous three-race fixture, and the App capability (`OFF`) unchanged.
 ## Actual native boundary
 
 The first process creates an account using the original native local-only
-Wallet/Account RPCs. It creates one private operations history through generated
+Wallet/Account RPCs. Before any race barriers are installed, it waits for the
+actual account notification service's `LoadFinish` channel. Its bounded startup
+wait uses the native ACL notification component's existing one-minute startup
+budget; no timer stands in for readiness. The subsequent race retains its
+original 90-second context, 30-second event waits and 40-second gate bounds.
+It creates one private operations history through generated
 protobuf bytes, then forwards one second generated append. Test-only observation
 gates pause that append after the real settings/target/private-tree locks are
 held and before the original native validator takes its final ACL lock.
@@ -81,3 +86,18 @@ duplicate-close joining, settings deletion, account switching, new-engine
 parity, two App clients, iOS UI acceptance or full T2 release acceptance. Those
 claims remain separate. The original three lifecycle races remain unchanged
 and are not rerun by this lane.
+
+## Startup precondition correction, 21 November 2026
+
+Run [44939797011](https://github.com/davidpovarsky/anytype-swift/actions/runs/44939797011)
+compiled the instrumented binary and passed all four original baseline native
+processes. The separate race failed before its first cache-deadline observation;
+cold reopen did not run. The original log reported `common.components.aclnotifications`
+still closing at ten seconds, then 29,612 ms spent in that component before the
+client Space was reached. Pinned native account notification discovery itself
+has a 30-second peer deadline, and ACL notification teardown waits for its
+startup channel. The earlier fixture had started its controlled race during
+that unrelated startup. Waiting on the real readiness channel before installing
+barriers removes that setup overlap without replacing the owned controller,
+changing native cache deadlines, or weakening the fifteen event and eight
+same-instance checks. This correction is not a native PASS claim.

@@ -60,7 +60,8 @@ jobs:
             --work "$GITHUB_WORKSPACE/generator-work" --evidence "$GITHUB_WORKSPACE/evidence/generation" \
             --expected-app-sha "$EXPECTED_APP_SHA"
       - name: Restore compiled musl dependencies only
-        uses: actions/cache@v4
+        id: native-dependencies
+        uses: actions/cache/restore@v4
         with:
           path: .t2-cache
           key: t2-rpc-space-close-alpine-111d7915-go1.26.5-${{ hashFiles('heart-new/go.sum', 'heart-new/tantivity_sha256.txt') }}
@@ -89,6 +90,46 @@ jobs:
             -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
             -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \
             "$T2_GO_IMAGE" sh control/Tools/TorahNativeOperations/run_account_rpc_space_close_container.sh
+      - name: Qualify reusable compiler dependencies after native execution
+        id: compiled-dependencies
+        if: always() && !cancelled()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          paths = [Path('evidence') / name for name in (
+              'space-close-receipt.json', 'space-close-build.json',
+              'space-close-source-after-execution.json')]
+          ready = False
+          if all(path.is_file() and not path.is_symlink() for path in paths):
+              receipt, build, after = [json.loads(path.read_text()) for path in paths]
+              compiles = [entry for entry in receipt.get('commands', [])
+                          if entry.get('name') == 'space-close-compile']
+              cache = Path('.t2-cache')
+              ready = (receipt.get('app_sha') == os.environ['EXPECTED_APP_SHA']
+                       and receipt.get('run_id') == os.environ['GITHUB_RUN_ID']
+                       and len(compiles) == 1 and compiles[0].get('status') == 'PASS_EXIT_0'
+                       and compiles[0].get('process_exit_observed') is True
+                       and compiles[0].get('exit_code') == 0
+                       and after.get('status') == 'PASS_EXACT_REVIEWED_INPUTS_UNCHANGED'
+                       and build.get('source_inputs') and build['source_inputs'] == after.get('source_inputs')
+                       and cache.is_dir() and not cache.is_symlink()
+                       and all(child.name in {'go-mod', 'go-build'} and child.is_dir()
+                               and not child.is_symlink() for child in cache.iterdir())
+                       and (cache / 'go-build').is_dir())
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('ready=' + str(bool(ready)).lower() + '\n')
+          print('Compiler dependency cache eligible:', bool(ready))
+          PY
+      - name: Make the container-owned compiler cache readable to the cache action
+        if: always() && !cancelled() && steps.compiled-dependencies.outputs.ready == 'true' && steps.native-dependencies.outputs.cache-hit != 'true'
+        run: sudo chmod -R a+rX .t2-cache/go-mod .t2-cache/go-build
+      - name: Save compatible compiler dependencies even when native assertions fail
+        if: always() && !cancelled() && steps.compiled-dependencies.outputs.ready == 'true' && steps.native-dependencies.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .t2-cache
+          key: ${{ steps.native-dependencies.outputs.cache-primary-key }}
       - name: Preserve honest bootstrap status
         if: always()
         run: |

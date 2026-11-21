@@ -42,6 +42,7 @@ def reports():
     race = dict(**common, phase="race", nonce="race-nonce", pid=1234, observation=dict(
         trace=dict(events=events, counts={s: 1 for s in stages}, gate_timeouts=[], gate_cancellations=[], overflow=False),
         identity_checks="ALL_EIGHT_PAIRS_EXACT_SAME_LIVE_INSTANCE", cache_close_timeout_seconds=10,
+        account_notification_startup="ORIGINAL_LOAD_FINISH_BEFORE_RACE_BARRIERS",
         both_entries_closing_before_controller_close=True, settings_fence_observed_before_and_after_durable_commit=True,
         post_physical_close_read="DENIED_WITH_LIVE_PROBE_CONTEXT", native_append="CREATED_ORIGINAL_RESPONSE",
         original_controller_close_calls=1, raced_generated_append_calls=1,
@@ -81,6 +82,16 @@ class NativeEvidenceControls(unittest.TestCase):
         for index, event in enumerate(events, 1):
             event["sequence"] = index
         self.check(race)
+
+    def test_missing_or_synthetic_account_readiness_cannot_qualify_the_race(self):
+        for replacement in [None, "SLEPT_30_SECONDS", "MOCK_READY", True]:
+            race, _ = reports()
+            if replacement is None:
+                del race["observation"]["account_notification_startup"]
+            else:
+                race["observation"]["account_notification_startup"] = replacement
+            with self.subTest(replacement=replacement), self.assertRaises(ValueError):
+                self.check(race)
 
     def test_source_process_nonce_and_terminal_state_cannot_be_substituted(self):
         mutations = {"pid": [999, True], "nonce": ["foreign"], "heart_sha": ["f" * 40],
