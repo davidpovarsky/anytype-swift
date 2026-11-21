@@ -125,15 +125,46 @@ def record(args):
     (args.output / "native-artifact.json").write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"status":"BUILT_SOURCE_VERIFIED", "archiveSHA256":receipt["archiveSHA256"], "version":VERSION}))
 
+def validate_artifact_source(receipt, manifest, manifest_path, producer_commit=None):
+    """Reuse a binary only when every native source input still matches."""
+    consumer = git(ROOT, "rev-parse", "HEAD")
+    producer = receipt["sourceCommit"]
+    if producer != consumer:
+        require(producer_commit == producer and len(producer) == 40 and
+                all(c in "0123456789abcdef" for c in producer), "Explicit exact producer commit is required")
+        ancestry = subprocess.run(["git", "-C", str(ROOT), "merge-base", "--is-ancestor",
+                                   producer, consumer], capture_output=True)
+        require(ancestry.returncode == 0, "Native producer is not an ancestor of the consumer")
+        paths = [manifest_path]
+        for name in ("any", "sdk"):
+            paths.append(manifest_path.parent / safe_relative(manifest[name]["patch"]))
+        for path in paths:
+            relative = path.resolve().relative_to(ROOT.resolve()).as_posix()
+            original = subprocess.check_output(["git", "-C", str(ROOT), "show", producer + ":" + relative])
+            require(original == path.read_bytes(), "Native build input changed since producer: " + relative)
+    else:
+        require(producer_commit is None or producer_commit == producer, "Requested native producer differs")
+    require(receipt["sourceManifestSHA256"] == digest(manifest_path), "Source manifest does not match artifact")
+    for name in ("any", "sdk"):
+        observed, expected = receipt["sources"][name], manifest[name]
+        for field in ("upstreamCommit", "patchSHA256", "files", "testedEffectiveTree"):
+            require(observed.get(field) == expected.get(field) and observed.get(field) is not None,
+                    "Native source contract mismatch: " + name + "." + field)
+        require(observed.get("resolvedUpstreamCommit") == PINNED_COMMITS[name], "Resolved native pin differs")
+        patch = manifest_path.parent / safe_relative(expected["patch"])
+        require(digest(patch) == expected["patchSHA256"], "Native patch bytes differ")
+    return {"schemaVersion": 1, "status": "SOURCE_IDENTICAL_NATIVE_ARTIFACT",
+            "producerCommit": producer, "consumerCommit": consumer,
+            "sourceManifestSHA256": digest(manifest_path),
+            "artifactReceiptSHA256": None, "archiveSHA256": receipt["archiveSHA256"],
+            "reused": producer != consumer, "testResultsRelabeled": False}
+
 def install(args):
     manifest = read_manifest(args.manifest)
     receipt = json.loads((args.artifact / "native-artifact.json").read_text(encoding="utf-8"))
     require(receipt["schemaVersion"] == 1 and receipt["version"] == VERSION, "Unrecognized native artifact")
-    require(receipt["sourceCommit"] == git(ROOT, "rev-parse", "HEAD"), "Artifact belongs to another application commit")
-    require(receipt["sourceManifestSHA256"] == digest(args.manifest), "Source manifest does not match artifact")
-    for name in ("any", "sdk"):
-        require(receipt["sources"][name]["upstreamCommit"] == manifest[name]["upstreamCommit"] and
-                receipt["sources"][name]["patchSHA256"] == manifest[name]["patchSHA256"], "Native source pin mismatch")
+    reuse = validate_artifact_source(receipt, manifest, args.manifest, getattr(args, "producer_commit", None))
+    reuse["artifactReceiptSHA256"] = digest(args.artifact / "native-artifact.json")
     archive = args.artifact / safe_relative(receipt["archive"])
     require(digest(archive) == receipt["archiveSHA256"], "Archive SHA256 mismatch")
     require(archive_files(archive) == receipt["filesSHA256"], "Archive member digest mismatch")
@@ -153,6 +184,7 @@ def install(args):
                     with target.open("xb") as f:
                         f.write(z.read(member))
         shutil.copy2(args.artifact / "native-artifact.json", stage / "native-artifact.json")
+        (stage / "consumer-binding.json").write_text(json.dumps(reuse, indent=2) + "\n", encoding="utf-8")
         stage.rename(vendor)
     finally:
         if stage.exists():
@@ -170,6 +202,7 @@ def main():
         s.set_defaults(function=function)
     s = sub.add_parser("install")
     s.add_argument("--artifact", type=Path, required=True)
+    s.add_argument("--producer-commit", help="Exact prior producer; requires unchanged native source inputs")
     s.set_defaults(function=install)
     args = p.parse_args()
     args.manifest = args.manifest.resolve()
