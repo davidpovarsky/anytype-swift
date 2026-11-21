@@ -40,6 +40,7 @@ on:
           - t5-apple-pairs
           - t5-apple-ui
           - t5-corrected-ui
+          - t5-signed-revocation
           - t5-native-pagination
           - t5-native-account-retry
           - t5-native-attachment
@@ -224,6 +225,10 @@ jobs:
     uses: ./.github/workflows/pinkha-t5-corrected-ui.yml
     with:
       heart_source_run_id: ${{ inputs.source_run_id }}
+
+  t5-signed-revocation:
+    if: ${{ inputs.route == 't5-signed-revocation' }}
+    uses: ./.github/workflows/pinkha-t5-signed-revocation.yml
 
   t5-apple-pairs:
     if: ${{ inputs.route == 't5-apple-pairs' || inputs.route == 't5-apple-ui' }}
