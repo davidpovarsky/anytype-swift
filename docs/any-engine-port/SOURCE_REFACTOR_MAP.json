@@ -782,6 +782,25 @@
     },
     {
       "kind": "refactor",
+      "from": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandler.swift",
+      "to": "Anytype/Sources/ServiceLayer/Block/BlockActionHandler/BlockActionHandler.swift",
+      "baselineBlob": "7303378c65854f78919f833b464ad02ed263d86f",
+      "replacementBlob": "059f8ff55ad71d595b044e675e384bc7f362cba4",
+      "reason": "Keep Heart optimistic text separate from native acknowledgement: retry failed equal-text payloads, await identical pending writes, serialize native writes per block, and preserve byte-exact Unicode and unchanged-peer no-op behavior. This is the Heart acknowledgement adapter beneath the shared editor queue.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
+          "gitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23"
+        }
+      ],
+      "validation": [
+        "Reviewed failed-native-write then optimistic-equality counterexample; seven focused native acknowledgement component methods added.",
+        "Swift parser accepted service, mock and regression source on 2026-11-21. This is syntax evidence, not Apple type-check, native execution or UI acceptance.",
+        "Existing shared queue policy and its successful pure tests are unchanged. A separate narrow Apple acknowledgement profile and retained native UI acceptance remain required."
+      ]
+    },
+    {
+      "kind": "refactor",
       "from": "Modules/PinkhaKit/Package.swift",
       "to": "Modules/PinkhaKit/Package.swift",
       "baselineBlob": "eb19331cb8b675b0271f2252a5453463e3f50b88",

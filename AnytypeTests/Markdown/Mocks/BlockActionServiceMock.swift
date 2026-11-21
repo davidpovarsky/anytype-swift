@@ -171,8 +171,13 @@ final class BlockActionServiceMock: BlockActionServiceProtocol, @unchecked Senda
         assertionFailure()
     }
     
-    func setText(contextId: String, blockId: String, middlewareString: MiddlewareString) {
-        assertionFailure()
+    var onSetText: (@MainActor (String, String, MiddlewareString) async throws -> Void)?
+    func setText(contextId: String, blockId: String, middlewareString: MiddlewareString) async throws {
+        guard let onSetText else {
+            assertionFailure()
+            return
+        }
+        try await onSetText(contextId, blockId, middlewareString)
     }
     
     func setTextForced(contextId: String, blockId: String, middlewareString: MiddlewareString) {

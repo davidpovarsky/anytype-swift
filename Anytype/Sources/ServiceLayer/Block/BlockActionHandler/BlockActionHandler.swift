@@ -10,6 +10,17 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     
     private let service: any BlockActionServiceProtocol
     private let markupChanger: any BlockMarkupChangerProtocol
+
+    // A local event is optimistic, not a native acknowledgement. Keep failed
+    // payloads retryable, and order all callers (including simple-table cells)
+    // through one native tail per block.
+    private struct NativeTextWrite {
+        let id: UUID
+        let value: MiddlewareString
+        let task: Task<Void, any Error>
+    }
+    private var nativeTextWrites: [String: NativeTextWrite] = [:]
+    private var unacknowledgedNativeText: [String: MiddlewareString] = [:]
     
     
     @Injected(\.blockService)
@@ -252,26 +263,59 @@ final class BlockActionHandler: BlockActionHandlerProtocol, Sendable {
     }
 
     func changeText(_ text: SafeNSAttributedString, blockId: String) async throws {
-        let middlewareString = AttributedTextConverter.asMiddleware(attributedText: text.value)
+        let value = AttributedTextConverter.asMiddleware(attributedText: text.value)
+        let currentContent = document.infoContainer.get(id: blockId)?.textContent
+        let modelMatches = currentContent.map {
+            $0.text.utf8.elementsEqual(value.text.utf8) && $0.marks == value.marks
+        } ?? false
+        let pending = nativeTextWrites[blockId]
 
-        // Focus and other UIKit quirks can fire text-change callbacks without an actual edit.
-        // Syncing unchanged text is not just wasted traffic: every BlockTextSetText writes the
-        // whole-value LWW text register and can clobber a concurrent peer edit.
-        if let currentContent = document.infoContainer.get(id: blockId)?.textContent,
-           currentContent.text == middlewareString.text,
-           currentContent.marks == middlewareString.marks {
+        // A duplicate optimistic callback must await the native result. Returning
+        // success here would clear the shared editor's dirty state before an
+        // in-flight write can fail.
+        if modelMatches, let pending, Self.sameNativeText(pending.value, value) {
+            try await pending.task.value
             return
         }
 
-        await EventsBunch(
-            contextId: document.objectId,
-            localEvents: [.setText(blockId: blockId, text: middlewareString)]
-        ).send()
+        let needsRetry = unacknowledgedNativeText[blockId].map {
+            Self.sameNativeText($0, value)
+        } ?? false
+        // Keep this decision before the first suspension: a no-op focus callback
+        // must not become a whole-value LWW write after a peer changes the model.
+        // Swift String equality is canonical; text persistence needs exact UTF-8.
+        if pending == nil, modelMatches, !needsRetry { return }
 
-
-        try await service.setText(contextId: document.objectId, blockId: blockId, middlewareString: middlewareString)
+        let writeID = UUID()
+        let predecessor = pending?.task
+        let task = Task<Void, any Error> { @MainActor [self] in
+            // An older failed write must not discard a newer accepted edit.
+            if let predecessor { _ = await predecessor.result }
+            defer {
+                if nativeTextWrites[blockId]?.id == writeID {
+                    nativeTextWrites.removeValue(forKey: blockId)
+                }
+            }
+            unacknowledgedNativeText[blockId] = value
+            await EventsBunch(
+                contextId: document.objectId,
+                localEvents: [.setText(blockId: blockId, text: value)]
+            ).send()
+            try await service.setText(
+                contextId: document.objectId, blockId: blockId, middlewareString: value
+            )
+            // Only the serial native writer's successful acknowledgement clears
+            // the failed/pending payload; optimistic model equality never does.
+            unacknowledgedNativeText.removeValue(forKey: blockId)
+        }
+        nativeTextWrites[blockId] = NativeTextWrite(id: writeID, value: value, task: task)
+        try await task.value
     }
-    
+
+    private static func sameNativeText(_ lhs: MiddlewareString, _ rhs: MiddlewareString) -> Bool {
+        lhs.text.utf8.elementsEqual(rhs.text.utf8) && lhs.marks == rhs.marks
+    }
+
     // MARK: - Public methods
     func uploadMediaFile(uploadingSource: FileUploadingSource, type: MediaPickerContentType, blockId: String, route: UploadMediaRoute) {
         
