@@ -1,0 +1,48 @@
+import hashlib,json,os,subprocess,sys,time
+from pathlib import Path
+root=Path(__file__).resolve().parents[1]
+work=root/"build/heart-read-swift-generation"
+source=work/"swift-protobuf"
+swift=Path(r"C:\Users\DAVID\AppData\Local\Programs\Swift\Toolchains\6.3.3+Asserts\usr\bin\swift.exe")
+sys.path.insert(0,str(root/"Tools/TorahNativeOperations"))
+from run_native_operations import run_bounded
+receipt=json.loads((work/"preparation.json").read_bytes())
+receipt.update(status="BUILDING_PINNED_SWIFT_PROTOBUF_GENERATOR",source_changed=False,native_tests="NOT_RUN")
+out=work/"generation.json"
+def save():out.write_bytes((json.dumps(receipt,indent=2,sort_keys=True)+"\n").encode())
+save()
+start=time.time()
+try:
+ assert subprocess.check_output(["git","rev-parse","HEAD"],cwd=source,text=True).strip()==receipt["swift_protobuf_commit"]
+ assert not subprocess.check_output(["git","status","--porcelain"],cwd=source,text=True).strip()
+ env=dict(os.environ,PROTOBUF_NO_PROTOC="1")
+ env["PATH"]=str(swift.parent)+os.pathsep+env["PATH"]
+ receipt["swift_version"]=subprocess.check_output([str(swift),"--version"],env=env,text=True).strip()
+ command=[str(swift),"build","--package-path",str(source),"--scratch-path",str(work/"swift-build"),"--configuration","debug","--jobs","2","--product","protoc-gen-swift"]
+ receipt["build_command"]=command;save()
+ with (work/"swift-build.log").open("wb") as log:
+  code=run_bounded(command,source,env,log,900)
+ assert code==0,"Swift generator compilation failed"
+ bindir=subprocess.check_output([str(swift),"build","--package-path",str(source),"--scratch-path",str(work/"swift-build"),"--configuration","debug","--show-bin-path"],env=env,text=True,timeout=30).strip()
+ plugin=Path(bindir)/"protoc-gen-swift.exe"
+ assert plugin.is_file()
+ receipt["plugin_version"]=subprocess.check_output([str(plugin),"--version"],env=env,text=True,timeout=30).strip()
+ receipt["plugin_binary_sha256"]=hashlib.sha256(plugin.read_bytes()).hexdigest()
+ proto_root=root/"Tools/TorahNativeOperations/authorized_read/rpc/overlay"
+ proto=proto_root/"pb/protos/pinkha_authorized_operation_read.proto"
+ receipt["proto_sha256"]=hashlib.sha256(proto.read_bytes()).hexdigest()
+ output=work/"generated"
+ output.mkdir(exist_ok=False)
+ generate=[str(work/"protoc/bin/protoc.exe"),"-I",str(proto_root),"--plugin=protoc-gen-swift="+str(plugin),"--swift_out=Visibility=Public:"+str(output),"pb/protos/pinkha_authorized_operation_read.proto"]
+ with (work/"protoc-swift.log").open("wb") as log:
+  subprocess.run(generate,cwd=proto_root,env=env,stdout=log,stderr=subprocess.STDOUT,check=True,timeout=30)
+ generated=list(output.rglob("*.swift"));assert len(generated)==1
+ receipt.update(status="PASS_PINNED_SWIFT_PROTOBUF_GENERATION",generation_command=generate,generated_file=str(generated[0]),generated_sha256=hashlib.sha256(generated[0].read_bytes()).hexdigest())
+except BaseException as error:
+ receipt.update(status="FAIL",error_type=type(error).__name__,error=str(error))
+finally:
+ receipt["wall_seconds"]=time.time()-start
+ receipt["build_log_sha256"]=hashlib.sha256((work/"swift-build.log").read_bytes()).hexdigest() if (work/"swift-build.log").exists() else None
+ save()
+ print(json.dumps({key:receipt.get(key) for key in ["status","error","plugin_version","generated_file","generated_sha256","wall_seconds"]}))
+raise SystemExit(0 if receipt["status"].startswith("PASS_") else 1)
