@@ -1,0 +1,43 @@
+name: T5 R05 shared canonical alias connection
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  alias-connection:
+    runs-on: xcode-27
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      EXPECTED_SOURCE_SHA: ${{ inputs.source_sha }}
+    steps:
+      - name: Checkout the exact reviewed common source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha }}
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Check exact-one receipt rejection gates
+        run: python3 -B -m unittest discover -s Tools/T5RelatedDocuments -p test_r05_alias.py
+      - name: Execute only the new resolver and shared-query connection
+        run: python3 -B Tools/T5RelatedDocuments/run_r05_alias.py --source-sha "$EXPECTED_SOURCE_SHA" --root "$GITHUB_WORKSPACE"
+      - name: Preserve original selected method and source receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-T5-R05-Alias-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/t5-r05-alias/
+          retention-days: 14
+          if-no-files-found: error

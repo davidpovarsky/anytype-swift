@@ -16,6 +16,7 @@ on:
           - native-ipa-repair
           - native-diagnostics
           - t5-coverage-proof
+          - t5-r05-alias
           - t2-native-operations
           - t2-authorized-read-packages
           - t2-native-rpc
@@ -225,6 +226,12 @@ jobs:
     uses: ./.github/workflows/pinkha-t5-corrected-ui.yml
     with:
       heart_source_run_id: ${{ inputs.source_run_id }}
+
+  t5-r05-alias:
+    if: ${{ inputs.route == 't5-r05-alias' }}
+    uses: ./.github/workflows/pinkha-t5-r05-alias.yml
+    with:
+      source_sha: ${{ github.sha }}
 
   t5-signed-revocation:
     if: ${{ inputs.route == 't5-signed-revocation' }}

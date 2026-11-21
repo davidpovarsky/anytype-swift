@@ -18,6 +18,7 @@ let package = Package(
             .product(name: "TorahInspectorUI", package: "TorahInspectorKit",
                      condition: .when(platforms: [.iOS, .macOS]))
         ]),
-        .testTarget(name: "PinkhaTorahPresentationTests", dependencies: ["PinkhaTorahPresentation"])
+        .testTarget(name: "PinkhaTorahPresentationTests", dependencies: ["PinkhaTorahPresentation"],
+                    resources: [.process("Fixtures")])
     ]
 )
