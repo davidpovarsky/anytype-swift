@@ -1,0 +1,110 @@
+name: Corrected r15 T5 native Inspector UI
+
+on:
+  workflow_call:
+    inputs:
+      heart_source_run_id:
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  actual-corrected-ui:
+    runs-on: xcode-27
+    timeout-minutes: 130
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact published source
+        uses: actions/checkout@v4
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Checkout canonical Hanlin SDK
+        uses: actions/checkout@v4
+        with:
+          repository: davidpovarsky/hanlin-ai
+          ref: 116cc6be0654a5d11bc56ba00e0310031107ee36
+          path: build/t5-corrected-hanlin-source
+          persist-credentials: false
+      - name: Prepare the exact SDK
+        run: |
+          python3 Tools/Hanlin/prepare_sdk.py --source build/t5-corrected-hanlin-source
+          python3 Tools/Hanlin/prepare_sdk.py --check
+      - name: Check only new and affected controller boundaries
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/test_t5_corrected_ui.py -v
+          python3 -B Tools/PinkhaSimulatorGate/test_t5_native_ui.py NativeUIEvidenceControls.test_requires_fresh_account_source_and_real_runtime NativeUIEvidenceControls.test_rejects_duplicate_wrong_block_and_incomplete_negative_fixtures NativeUIEvidenceControls.test_cancellation_during_cleanup_or_publication_is_recorded_and_propagated -v
+      - name: Verify Xcode27 and create owned simulator destinations
+        run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/t5-corrected-ui-proof/preflight
+      - name: Verify and install the original corrected r15 runtime
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}
+        run: |
+          python3 -B Tools/PinkhaNativeDerived/download_heart_runtime.py \
+            --runtime-profile r15-attachment-v1 --source-run-id "$HEART_SOURCE_RUN_ID" \
+            --app-source "$GITHUB_WORKSPACE" --expected-app-branch "$GITHUB_REF_NAME" \
+            --work "build/t5-corrected-heart-${{ github.run_id }}-${{ github.run_attempt }}" \
+            --evidence build/t5-corrected-ui-proof/heart
+      - name: Restore compatible compilation inputs
+        id: cache
+        uses: actions/cache/restore@v4
+        with:
+          path: build/ui27-derived
+          key: pinkha-t5-corrected-arm64-xcode27-Release-Anytype-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-${{ github.sha }}
+          restore-keys: |
+            pinkha-t5-corrected-arm64-xcode27-Release-Anytype-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
+            pinkha-t5-apple-pair-arm64-xcode27-Release-Anytype-
+            pinkha-ui27-arm64-xcode27.0-Release-Anytype-
+      - name: Resolve exact locked dependencies before compilation
+        run: |
+          xcodebuild -resolvePackageDependencies -project Anytype.xcodeproj -scheme Anytype -clonedSourcePackagesDirPath build/ui27-derived/SourcePackages -onlyUsePackageVersionsFromResolvedFile
+          git diff --exit-code -- Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+      - name: Build once and run native preparation plus existing T5 UI journeys
+        id: actual
+        env:
+          HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/run_t5_corrected_ui.py \
+            --app "$GITHUB_WORKSPACE" --work build/t5-corrected-ui-private \
+            --evidence build/t5-corrected-ui-proof --derived build/ui27-derived \
+            --source-run-id "$HEART_SOURCE_RUN_ID"
+      - name: Keep native XCTest activity logs out of the compilation cache
+        if: always()
+        id: cache-boundary
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          logs=Path("build/ui27-derived/Logs")
+          private=Path("build/t5-corrected-ui-private/unpublished-derived-logs")
+          if logs.exists():
+              if private.exists():
+                  raise RuntimeError("Refuse stale private cache log destination")
+              private.parent.mkdir(parents=True,exist_ok=True)
+              shutil.move(str(logs),private)
+          PY
+      - name: Package approved and secret-scanned original UI proof
+        if: always()
+        run: python3 Tools/PinkhaNativeDerived/package_evidence.py build/t5-corrected-ui-proof
+      - name: Retain actual T5 result and original screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-T5-Corrected-UI-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/t5-corrected-ui-proof/Pinkha-Native-Derived-Evidence.zip
+          if-no-files-found: error
+          retention-days: 14
+      - name: Preserve compilation inputs after the actual attempt
+        if: ${{ always() && steps.cache-boundary.outcome == 'success' && steps.actual.outcome != 'skipped' && steps.cache.outputs.cache-hit != 'true' && hashFiles('build/ui27-derived/Build/PinkhaSourceInputs.json') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: build/ui27-derived
+          key: ${{ steps.cache.outputs.cache-primary-key }}

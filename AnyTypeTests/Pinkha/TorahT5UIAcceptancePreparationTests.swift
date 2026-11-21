@@ -8,8 +8,8 @@ import Testing
 import TorahInspectorCore
 @testable import Anytype
 
-/// Creates only real native data in a fresh job-owned simulator. The paired
-/// compatibility account lives on a different simulator and is never opened.
+/// Creates only real native data in a fresh job-owned simulator. A paired
+/// compatibility account, when that route is selected, is never opened here.
 @Suite("T5 real Inspector UI fixture", .serialized,
        .enabled(if: ProcessInfo.processInfo.environment["PINKHA_T5_UI_PREPARATION"] == "1"))
 struct TorahT5UIAcceptancePreparationTests {
@@ -88,9 +88,26 @@ struct TorahT5UIAcceptancePreparationTests {
             && !FileManager.default.fileExists(atPath: privateDirectory.path)
             && !FileManager.default.fileExists(atPath: support.appendingPathComponent("pinkha-t5-runtime-pair").path),
             "fixture-or-pair-account-already-present")
-        let patch = "5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2"
-        let expectedVersion = "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-" + patch
-            + "-pinkha-native-t5-lookup-v1-" + patch
+        let expectedVersion: String
+        switch environment["PINKHA_T5_UI_RUNTIME_PROFILE"] ?? "r15" {
+        case "r15":
+            expectedVersion = T5NativeRelatedLookupCapability.runtimeVersion
+        case "r15-attachment-v1":
+            expectedVersion = T5NativeRelatedLookupCapability.correctedRuntimeVersion
+        default:
+            throw Failure.invariant("unknown-explicit-ui-runtime-profile")
+        }
+        // Capability recognition remains exact and cannot turn on an unapproved host.
+        guard case .unavailable = T5NativeRelatedLookupCapability.resolve(
+            enabledByBuild: false, runtimeVersion: expectedVersion
+        ) else { throw Failure.invariant("runtime-enabled-disabled-host") }
+        for foreign in [expectedVersion + "-unreviewed", expectedVersion + "\n",
+                        expectedVersion.replacingOccurrences(of: "595f8142", with: "00000000")] {
+            if foreign == expectedVersion { continue }
+            guard case .unavailable = T5NativeRelatedLookupCapability.resolve(
+                enabledByBuild: true, runtimeVersion: foreign
+            ) else { throw Failure.invariant("foreign-runtime-granted-capability") }
+        }
         let actualVersion = try await ClientCommands.appGetVersion().invoke().version
         try require(actualVersion == expectedVersion, "actual-r15-runtime-required")
         guard case .verified = try await AnytypeT5NativeRelatedLookup.current() else {

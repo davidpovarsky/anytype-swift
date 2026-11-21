@@ -36,6 +36,7 @@ on:
           - t5-r15-attachment-runtime
           - t5-apple-pairs
           - t5-apple-ui
+          - t5-corrected-ui
           - t5-native-pagination
           - t5-native-account-retry
           - t5-native-attachment
@@ -212,6 +213,12 @@ jobs:
   heart-runtime:
     if: ${{ inputs.route == 'heart-runtime' }}
     uses: ./.github/workflows/pinkha-heart-runtime.yml
+
+  t5-corrected-ui:
+    if: ${{ inputs.route == 't5-corrected-ui' }}
+    uses: ./.github/workflows/pinkha-t5-corrected-ui.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
 
   t5-apple-pairs:
     if: ${{ inputs.route == 't5-apple-pairs' || inputs.route == 't5-apple-ui' }}

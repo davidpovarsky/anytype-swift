@@ -65,6 +65,19 @@ def is_hash(value):
 
 
 def validate_fixture(value, *, source, run_id, token, runtime, pair_report):
+    result = _validate_fixture(value, source=source, run_id=run_id, token=token, runtime=runtime)
+    for key, paired in [("accountID", "accountID"), ("spaceID", "spaceID"),
+                        ("accountRootPathSHA256", "rootPathSHA256")]:
+        require(value[key] != pair_report[paired], "UI preparation reused the paired account or storage")
+    return result
+
+
+def validate_standalone_fixture(value, *, source, run_id, token, runtime):
+    """The standalone controller proves empty owned storage before preparation."""
+    return _validate_fixture(value, source=source, run_id=run_id, token=token, runtime=runtime)
+
+
+def _validate_fixture(value, *, source, run_id, token, runtime):
     keys = {"protocolVersion", "token", "appSourceSHA", "runID", "runtimeVersion", "preparationProcessID",
             "accountID", "spaceID", "foreignSpaceID", "accountRootPathSHA256", "providerID", "canonicalReference",
             "coverage", "limitations", "targets", "excluded", "presentationProbe", "productLookupFlag"}
@@ -77,9 +90,8 @@ def validate_fixture(value, *, source, run_id, token, runtime, pair_report):
     require(value["runtimeVersion"] == runtime, "Preparation did not observe the exact actual r15 runtime")
     require(type(value["preparationProcessID"]) is int and value["preparationProcessID"] > 0,
             "Native preparation process identity is absent")
-    for key, paired in [("accountID", "accountID"), ("spaceID", "spaceID"),
-                        ("accountRootPathSHA256", "rootPathSHA256")]:
-        require(nonempty(value[key]) and value[key] != pair_report[paired], "UI preparation reused the paired account or storage")
+    require(all(nonempty(value[key]) for key in ["accountID", "spaceID", "accountRootPathSHA256"]),
+            "Native UI account/Space/storage identity is missing")
     require(is_hash(value["accountRootPathSHA256"]) and nonempty(value["foreignSpaceID"])
             and value["spaceID"] != value["foreignSpaceID"], "Fresh UI Space/root identity differs")
     require(value["providerID"] == "sefaria" and value["canonicalReference"] == "Genesis 1:1", "Canonical UI source differs")

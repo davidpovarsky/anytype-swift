@@ -8,10 +8,20 @@ public enum T5NativeRelatedLookupCapability {
         "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-" + patchSHA256
         + "-pinkha-native-t5-lookup-v1-" + patchSHA256
 
+    /// Reviewed full-r15 runtime with the canonical attachment regression fixed.
+    /// Recognition alone never enables lookup in a build without its explicit flag.
+    public static let correctedPatchSHA256 = "595f8142f00035da2fff4925c8fe125fa7cf36de9ae124b528a9d2130b2a9bf6"
+    public static let correctedRuntimeVersion =
+        "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-" + correctedPatchSHA256
+        + "-pinkha-native-t5-lookup-v1-" + correctedPatchSHA256
+        + "-pinkha-torah-attachment-v1-" + correctedPatchSHA256
+
     public static func resolve(
         enabledByBuild: Bool, runtimeVersion: String
     ) -> T5ExpandedRelatedTargets.Capability {
-        guard enabledByBuild, runtimeVersion == self.runtimeVersion else { return .unavailable }
+        guard enabledByBuild,
+              runtimeVersion == self.runtimeVersion || runtimeVersion == correctedRuntimeVersion
+        else { return .unavailable }
         return .verified
     }
 }

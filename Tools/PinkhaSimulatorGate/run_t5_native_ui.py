@@ -230,9 +230,35 @@ def run_r08(*, private, app, build, container, ui_udid, configuration, environme
 
 
 def run_after_pair(*, app, work, proof, pair_result, build, pair_container, selection, pair, ui, method_results):
+    """Preserve the original strict five-phase prerequisite for the paired route."""
     source = pair_result["app_source_sha"]
     run_id = pair_result["run_id"]
     fresh = require_ready(pair_result, build, source, pair.FLAGS, pair.runtime_version("new"))
+    return _run_on_fresh_simulator(app=app, work=work, proof=proof, build=build, selection=selection,
+        pair=pair, ui=ui, method_results=method_results, source=source, run_id=run_id,
+        runtime=pair.runtime_version("new"), runtime_profile="r15",
+        pair_boundary={"fresh": fresh, "container": pair_container})
+
+
+def run_after_corrected_build(*, app, work, proof, build, selection, pair, ui, method_results, source, run_id):
+    """Qualify UI on one corrected-r15 build; never claim the unexecuted pair."""
+    profile = ui.heart_profiles.select("r15-attachment-v1")
+    evidence.require(build.get("role") == "corrected-r15" and build.get("app_source_sha") == source
+        and build.get("flags") == pair.FLAGS and build.get("runtime_version") == profile.version,
+        "Standalone UI requires its exact separately enabled corrected-r15 build")
+    evidence.require(ui.heart_profiles.verify_binding(build.get("runtime_binding", {})) == profile.version,
+                     "Standalone UI lost the verified original corrected runtime")
+    evidence.require(all(evidence.is_hash(build.get(key)) for key in ["code_sha256", "hanlin_snapshot_sha256"])
+        and re.fullmatch(r"[0-9a-f]{40}", build.get("kit_sha", "")) is not None,
+        "Standalone UI build dependency/carrier identity is missing")
+    return _run_on_fresh_simulator(app=app, work=work, proof=proof, build=build, selection=selection,
+        pair=pair, ui=ui, method_results=method_results, source=source, run_id=run_id,
+        runtime=profile.version, runtime_profile=profile.name, pair_boundary=None)
+
+
+def _run_on_fresh_simulator(*, app, work, proof, build, selection, pair, ui, method_results,
+                           source, run_id, runtime, runtime_profile, pair_boundary):
+    """One real native fixture and the existing UI journeys, shared by both routes."""
     private = work / "native-ui"
     public = proof / "native-ui"
     evidence.require(not private.exists() and not public.exists(), "Fresh owned UI work/evidence directories required")
@@ -241,6 +267,9 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
     record = {"status": "RUNNING", "phase": "FRESH_SIMULATOR", "app_source_sha": source, "run_id": run_id,
               "token": token, "app_builds_added": 0, "ui_runner_builds": 0, "preparation": None, "ui": None,
               "pair_ledger_unchanged": None, "pair_simulator_remained_shutdown": None,
+              "prerequisite_scope": "FIVE_PHASE_PAIR" if pair_boundary else "SINGLE_CORRECTED_RUNTIME",
+              "runtime_profile": runtime_profile,
+              "mixed_version_accepted": False, "host_freshness_accepted": False,
               "product_lookup_flag": "OFF", "physical_device_accepted": False, "full_matrix_accepted": False,
               "started_at": datetime.now(timezone.utc).isoformat(),
               "limitations": ["Current-Space indexed targets remain incomplete", "Visual review and physical iPad acceptance remain separate",
@@ -279,11 +308,13 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
                          and Path(build["configuration"]).resolve().is_relative_to((work / "new").resolve()),
                          "Application products are outside this pair's retained r15 build")
         evidence.require(ui.code_carriers(Path(build["app"]))["sha256"] == build["code_sha256"], "Retained r15 code bytes changed")
-        original_path, original_hash = original_pair_ledger(pair_container, fresh)
-        record["pair_ledger_sha256_before"] = original_hash
+        if pair_boundary is not None:
+            original_path, original_hash = original_pair_ledger(pair_boundary["container"], pair_boundary["fresh"])
+            record["pair_ledger_sha256_before"] = original_hash
         before = inventory("simulators-before")
-        _, paired = simulator_record(before, selection["udid"])
-        evidence.require(paired.get("state") == "Shutdown", "The original pair simulator must remain shut down")
+        if pair_boundary is not None:
+            _, paired = simulator_record(before, selection["udid"])
+            evidence.require(paired.get("state") == "Shutdown", "The original pair simulator must remain shut down")
         name = "Pinkha-T5UI-" + run_id + "-" + token[:12]
         evidence.require(not any(item.get("name") == name for values in before.get("devices", {}).values() for item in values),
                          "Refuse an existing UI simulator name")
@@ -302,9 +333,13 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
         evidence.require(pair.app_container(ui_udid, "data", required=False) is None, "Fresh UI simulator already contains an App account")
         command(["xcrun", "simctl", "install", ui_udid, build["app"]], "install-retained-r15")
         container = pair.app_container(ui_udid, "data")
-        evidence.require(container != pair_container and container.resolve() != pair_container.resolve(), "UI installation reused the pair container")
+        if pair_boundary is not None:
+            pair_container = pair_boundary["container"]
+            evidence.require(container != pair_container and container.resolve() != pair_container.resolve(),
+                             "UI installation reused the pair container")
         environment = {"PINKHA_T5_UI_PREPARATION": "1", "PINKHA_SIMULATOR_UI_DISPOSABLE": "1",
-                       "PINKHA_T5_UI_TOKEN": token, "PINKHA_T5_UI_APP_SHA": source, "PINKHA_T5_UI_RUN_ID": run_id}
+                       "PINKHA_T5_UI_TOKEN": token, "PINKHA_T5_UI_APP_SHA": source, "PINKHA_T5_UI_RUN_ID": run_id,
+                       "PINKHA_T5_UI_RUNTIME_PROFILE": runtime_profile}
         record["phase"] = "ACTUAL_NATIVE_PREPARATION"
         pair.write(private / "execution.json", record)
         record["preparation"] = select_tests(pair=pair, ui=ui, method_results=method_results, app=app,
@@ -319,8 +354,11 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
         evidence.require(fixture_path.is_file() and fixture_path.stat().st_size <= 64 * 1024, "Bounded native UI fixture is missing")
         raw_fixture = fixture_path.read_text(encoding="utf8")
         fixture = json.loads(raw_fixture)
-        evidence.validate_fixture(fixture, source=source, run_id=run_id, token=token,
-                                  runtime=pair.runtime_version("new"), pair_report=fresh)
+        if pair_boundary is not None:
+            evidence.validate_fixture(fixture, source=source, run_id=run_id, token=token,
+                                      runtime=runtime, pair_report=pair_boundary["fresh"])
+        else:
+            evidence.validate_standalone_fixture(fixture, source=source, run_id=run_id, token=token, runtime=runtime)
         evidence.require(fixture["accountRootPathSHA256"] == pair.sha_bytes(str((container / NATIVE_ROOT).resolve()).encode()),
                          "Native preparation root differs from the actual current container")
         (private / "fixture.json").write_bytes(fixture_path.read_bytes())
@@ -399,9 +437,14 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
                 command(["xcrun", "simctl", "shutdown", ui_udid], "shutdown-owned-ui", check=False)
             if cancellation is None:
                 final_inventory = inventory("simulators-final")
-                _, original = simulator_record(final_inventory, selection["udid"])
-                record["pair_simulator_remained_shutdown"] = original.get("state") == "Shutdown"
-                evidence.require(record["pair_simulator_remained_shutdown"], "The original pair simulator became active during UI")
+                if pair_boundary is not None:
+                    _, original = simulator_record(final_inventory, selection["udid"])
+                    record["pair_simulator_remained_shutdown"] = original.get("state") == "Shutdown"
+                    evidence.require(record["pair_simulator_remained_shutdown"], "The original pair simulator became active during UI")
+                elif ui_udid:
+                    _, owned_ui = simulator_record(final_inventory, ui_udid)
+                    record["ui_simulator_shutdown"] = owned_ui.get("state") == "Shutdown"
+                    evidence.require(record["ui_simulator_shutdown"], "Owned standalone UI simulator did not shut down")
         except BaseException as cleanup_error:
             record_failure(cleanup_error, "cleanup_error_type")
         record["finished_at"] = datetime.now(timezone.utc).isoformat()
