@@ -48,6 +48,26 @@ lifetime. Existing credential scanning and publication allowlists apply before
 copying any evidence. Controller controls use explicitly synthetic records and
 are not counted as native tests.
 
+The expected Page-to-Note layout change follows the pinned native command,
+not an assumption about UI behavior. At Heart
+`d98420b1113536afd08cde6de9a5816f6d27ffff`, `core/object.go` forwards
+`ObjectSetObjectType` through `core/block/editor.go` to
+`basic.SetObjectTypesInState`. In
+[`core/block/editor/basic/details.go`](https://github.com/anyproto/anytype-heart/blob/d98420b1113536afd08cde6de9a5816f6d27ffff/core/block/editor/basic/details.go),
+that function explicitly removes the previous layout settings, loads the new
+type's `recommendedLayout`, and calls `SetLayoutInState`. A fresh bundled Page
+changed to the already installed bundled Note therefore must receive the Note
+layout and current related-row kind.
+
+The exact corrected attachment patch `d055933d365d3f0453ad42ce4eb4463a25deceac3d0df11162d460896810a6b4`
+changes only earlier imports/detail attachment/local-key validation hunks in that
+file. It leaves the type/layout functions unchanged. The r15 composer fixes the
+resulting complete file SHA-256 to
+`3247b789370d21d4ff9ca8eeb0df6580be6a7d18819820e31aac2858cff9fc59`.
+The preparation consequently retains both the strict real type-ID change and
+native-layout/current-row-kind checks; it does not infer a new layout solely from
+an updated type label.
+
 ## Retained evidence and impact
 
 Original native pagination run **44579466213**, source
