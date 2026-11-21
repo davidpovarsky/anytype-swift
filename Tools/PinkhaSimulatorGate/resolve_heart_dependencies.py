@@ -9,7 +9,7 @@ import platform
 import subprocess
 
 LOCK = "Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
-EXPECTED_ADDITIONS = {"swift-markdown", "cmark-gfm"}
+EXPECTED_ADDITIONS = {"swift-markdown", "swift-cmark"}
 
 def execute(app, evidence):
     if platform.system() != "Darwin":
@@ -42,11 +42,12 @@ def execute(app, evidence):
                       existing_state_changes=state_changes, original_sha256=hashlib.sha256(before).hexdigest(),
                       generated_sha256=hashlib.sha256(after).hexdigest(),
                       tracked_status=git("status", "--porcelain", "--untracked-files=no"))
-        if done.returncode != 0 or removals or state_changes or set(additions) != EXPECTED_ADDITIONS:
+        if (done.returncode != 0 or removals or state_changes or not EXPECTED_ADDITIONS.issubset(new)
+                or set(additions) not in (EXPECTED_ADDITIONS, set())):
             raise RuntimeError("Resolution differs from the observed two-pin addition; review exact artifact")
-        if result["tracked_status"] != "M " + LOCK:
+        if result["tracked_status"] != ("M " + LOCK if before != after else ""):
             raise RuntimeError("Resolution changed unexpected tracked source")
-        result["status"] = "GENERATED_TWO_MISSING_PINS_FOR_REVIEW"
+        result["status"] = "GENERATED_TWO_MISSING_PINS_FOR_REVIEW" if additions else "PUBLISHED_LOCK_UNCHANGED"
     except BaseException as error:
         result.update(status="FAIL", error_type=type(error).__name__, error=str(error))
         raise

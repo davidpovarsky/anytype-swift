@@ -209,6 +209,8 @@ jobs:
   heart-dependency-resolution:
     if: ${{ inputs.route == 'heart-dependency-resolution' }}
     uses: ./.github/workflows/pinkha-heart-dependencies.yml
+    with:
+      heart_source_run_id: ${{ inputs.source_run_id }}
 
   heart-runtime:
     if: ${{ inputs.route == 'heart-runtime' }}

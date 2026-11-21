@@ -2,9 +2,14 @@ name: Resolve only the missing Heart dependency pins
 
 on:
   workflow_call:
+    inputs:
+      heart_source_run_id:
+        type: string
+        required: true
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   resolve-only:
@@ -32,6 +37,16 @@ jobs:
         run: |
           python3 Tools/Hanlin/prepare_sdk.py --source build/heart-dependency-hanlin-source
           python3 Tools/Hanlin/prepare_sdk.py --check
+      - name: Install the explicitly requested verified runtime for binary dependency resolution
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}
+        run: |
+          python3 -B Tools/PinkhaNativeDerived/download_heart_runtime.py \
+            --runtime-profile r15-attachment-v1 --source-run-id "$HEART_SOURCE_RUN_ID" \
+            --app-source "$GITHUB_WORKSPACE" --expected-app-branch "$GITHUB_REF_NAME" \
+            --work "build/heart-resolver-runtime-${{ github.run_id }}-${{ github.run_attempt }}" \
+            --evidence build/heart-resolver-runtime-proof
       - name: Resolve packages without building the App or tests
         run: python3 -B Tools/PinkhaSimulatorGate/resolve_heart_dependencies.py --app "$GITHUB_WORKSPACE" --evidence build/heart-dependency-resolution
       - name: Retain exact original and generated locks for review
