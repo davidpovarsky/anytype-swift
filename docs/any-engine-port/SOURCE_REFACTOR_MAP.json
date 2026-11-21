@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "baselineCommit": "586c98bcc17dee425664224e508fc0e8df277678",
-  "authorization": "User explicitly requested a new isolated branch, full native port, architectural adaptation preserving all capabilities, and end-to-end tests.",
+  "authorization": "Owner requested complete remaining work on one shared infrastructure for both engines, with targeted verification and reuse of unaffected successful evidence, on 2026-11-21.",
   "purpose": "Reviewable exact extraction/provenance mapping. No statement of runtime or UI parity.",
   "changes": [
     {
@@ -61,6 +61,80 @@
       ]
     },
     {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift",
+      "to": "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift",
+      "baselineBlob": "964c291053ac7aabb67ea759171967198ae45b50",
+      "replacementBlob": "3a502235a2337e9a3cc61a363dcaf4362322c407",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "3a502235a2337e9a3cc61a363dcaf4362322c407",
+      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+      "to": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
+      "baselineBlob": "fd6a031c343d39d21dec10af38dff66b2ca1db79",
+      "replacementBlob": "8f91d07910a8a5864733fdec3245f9454271656f",
+      "reason": "Retain the old focus lifecycle cases and add four methods/five invocations for pending edits, acknowledged remote replacement, reused handler identity and same-handler fork/composition ownership.",
+      "sharedSources": [],
+      "validation": [
+        "Reviewed integration diff and exact replacement blob retained.",
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift",
+      "to": "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift",
+      "baselineBlob": "cab7dcb9c0e5ca7bb08db419f9181b3e8184cec3",
+      "replacementBlob": "24135b5070aaceec764e245a033c4b14bd58d059",
+      "reason": "Retain the native Type/canonical/Tags/link/backlink acceptance assertions and add source/account/PID-bound before-AccountSelect proof of the original simulator store after XCTest installation.",
+      "sharedSources": [],
+      "validation": [
+        "Reviewed integration diff and exact replacement blob retained.",
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "AnyTypeTests/Pinkha/TorahT5RuntimePairTests.swift",
+      "to": "AnyTypeTests/Pinkha/TorahT5RuntimePairTests.swift",
+      "baselineBlob": "5196feb1e5edd3ae3e271e84e106cae678d291b5",
+      "replacementBlob": "d81e36610ca26057ed9123c666294648877268d3",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "d81e36610ca26057ed9123c666294648877268d3",
+      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/FrameworkExtensions/UIKit/UITextView+Convenience.swift",
+      "to": "Anytype/Sources/FrameworkExtensions/UIKit/UITextView+Convenience.swift",
+      "baselineBlob": "6009396c62e1f6223156806e6c9243abff2002cf",
+      "replacementBlob": "749fb99dad0fb8911ba87ae959fee564d6b4372c",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "749fb99dad0fb8911ba87ae959fee564d6b4372c",
+      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
       "kind": "move",
       "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAccountOwner.swift",
       "to": "Modules/PinkhaAnyHanlin/Sources/PinkhaHanlinCore/PinkhaHanlinAccountOwner.swift",
@@ -75,17 +149,16 @@
       ]
     },
     {
-      "kind": "import_only",
+      "kind": "refactor",
       "from": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
       "to": "Anytype/Sources/Pinkha/AI/PinkhaHanlinAuthService.swift",
       "baselineBlob": "d3820631ef1b344babf116ca8766e7c0dcf853df",
-      "replacementBlob": "92155a0fc87dcf6442f1fc7cbd5b4e7c8bff8802",
-      "reason": "Import the extracted shared module; implementation and test bodies unchanged.",
+      "replacementBlob": "4c2d03b7c988402de5f860a3263f4c1a138b305a",
+      "reason": "Retain the extracted shared Hanlin import and add a read-only simulator acceptance hook immediately before AccountSelect. The hook is compiled only with PINKHA_NATIVE_DERIVED on simulator and is inactive without the exact postflight flag.",
       "sharedSources": [],
       "validation": [
-        "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
-        "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Reviewed the retained source and bounded integration changes, with exact current replacement blob pinned.",
+        "Focused controller/component evidence is retained separately; source preservation does not imply native runtime, mounted UI or physical-device acceptance."
       ]
     },
     {
@@ -397,17 +470,45 @@
       ]
     },
     {
-      "kind": "import_only",
+      "kind": "refactor",
       "from": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift",
       "to": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinNativeAcceptanceDriver.swift",
       "baselineBlob": "9c76e9647d81be61e30d8f5e6b4fd7eacf56354e",
-      "replacementBlob": "912033d73760d03edc52b1adbed73c936bc648eb",
-      "reason": "Import the extracted shared module; implementation and test bodies unchanged.",
+      "replacementBlob": "4aa5f9a18777bb54836eced82e17f6ac0f149516",
+      "reason": "Retain the shared Hanlin import; expose the exact native authority stage and require restored account/Space/mounted-scene readiness before continuing the unchanged SDK06 acceptance operations.",
       "sharedSources": [],
       "validation": [
-        "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
-        "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Reviewed the retained source and bounded integration changes, with exact current replacement blob pinned.",
+        "Focused controller/component evidence is retained separately; source preservation does not imply native runtime, mounted UI or physical-device acceptance."
+      ]
+    },
+    {
+      "kind": "import_only",
+      "from": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinSelectionAcceptanceDriver.swift",
+      "to": "Anytype/Sources/Pinkha/Diagnostics/PinkhaHanlinSelectionAcceptanceDriver.swift",
+      "baselineBlob": "3b4a4ae46a47affd56a2736dbbb84a474800dbac",
+      "replacementBlob": "9b94dfe7eb6813f740c6e6544da6412c021df8ba",
+      "reason": "Import the extracted shared Hanlin module so retained selected-context acceptance compiles against the common implementation.",
+      "sharedSources": [],
+      "validation": [
+        "Reviewed integration diff and exact replacement blob retained.",
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/Pinkha/Diagnostics/PinkhaStage1AcceptanceState.swift",
+      "to": "Anytype/Sources/Pinkha/Diagnostics/PinkhaStage1AcceptanceState.swift",
+      "baselineBlob": "60768e4fd4c27348a4f06ffb8c4af21648ed6f1c",
+      "replacementBlob": "4af9af99df35f9589f1e7235599650e3bc992d8b",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "4af9af99df35f9589f1e7235599650e3bc992d8b",
+      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
       ]
     },
     {
@@ -507,17 +608,693 @@
     },
     {
       "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift",
+      "to": "Anytype/Sources/PresentationLayer/Common/UIKit/TextView/CustomTextView+UITextViewDelegate.swift",
+      "baselineBlob": "6590a967d23f3bb39cac38acc37b970e45749ab8",
+      "replacementBlob": "ce9565d3a46fb9c45a7e37e9da2db2312a4525c8",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "ce9565d3a46fb9c45a7e37e9da2db2312a4525c8",
+      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Base/EditorViewListCell.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Base/EditorViewListCell.swift",
+      "baselineBlob": "74f777bcc082c8174230c6ff77f0578f5a4ec710",
+      "replacementBlob": "93678c2418fc43be33fba005124ae5e65e6e2968",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "93678c2418fc43be33fba005124ae5e65e6e2968",
+      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandler.swift",
+      "baselineBlob": "6f91eb88f75a00fb2368041ffef669c7d454ce44",
+      "replacementBlob": "c67756570e7d1fa956670001c5676b9338868276",
+      "reason": "Serialize immutable text/caret/composition snapshots through the shared edit queue; retain dirty ownership through deferred/failing writes and drain before structural native edits. Capture structural input before the asynchronous handoff.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
+          "gitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaTextInputRenderPolicy.swift",
+          "gitBlob": "0ec54dca421d293675ccef47f33d6d013e90f271"
+        }
+      ],
+      "validation": [
+        "Reviewed integration diff and exact replacement blob retained.",
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandlerProtocol.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockActionHandlerProtocol.swift",
+      "baselineBlob": "d539964dd3ae19938a844dd59603e4f960eebb51",
+      "replacementBlob": "0d2827fc0bf654e46f2e18b4448bf390416e6d1f",
+      "reason": "Expose the handler's pending local-edit ownership without duplicating queue semantics.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
+          "gitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaTextInputRenderPolicy.swift",
+          "gitBlob": "0ec54dca421d293675ccef47f33d6d013e90f271"
+        }
+      ],
+      "validation": [
+        "Reviewed integration diff and exact replacement blob retained.",
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentConfiguration.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentConfiguration.swift",
+      "baselineBlob": "92e7e878000fb2d6374d44239aa6eb27628fa378",
+      "replacementBlob": "ab3461aca8bffa1bebbd95c20b63dc1054aac679",
+      "reason": "Carry equality-sensitive stable input-owner identity, explicit replacement intent and a live pending-edit query into the retained UIKit row.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
+          "gitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaTextInputRenderPolicy.swift",
+          "gitBlob": "0ec54dca421d293675ccef47f33d6d013e90f271"
+        }
+      ],
+      "validation": [
+        "Reviewed integration diff and exact replacement blob retained.",
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView+TextViewDelegate.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView+TextViewDelegate.swift",
+      "baselineBlob": "9a4544a8be50e8cd096a67970fb3ef0472660fad",
+      "replacementBlob": "3da236ac47747409114d91e96bacdec89e23ca0b",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "3da236ac47747409114d91e96bacdec89e23ca0b",
+      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockContentView.swift",
+      "baselineBlob": "05e3e4c43a7cb8c75e17472c2ec03a058ca4b1f2",
+      "replacementBlob": "ae003def59b454257bfb6e7457682a98874382ef",
+      "reason": "Use the common text-render policy while respecting composing/pending input; a different handler or explicit user reset replaces stale row contents without delivering them to the incoming handler.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
+          "gitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaTextInputRenderPolicy.swift",
+          "gitBlob": "0ec54dca421d293675ccef47f33d6d013e90f271"
+        }
+      ],
+      "validation": [
+        "Reviewed integration diff and exact replacement blob retained.",
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockViewModel.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Blocks/Text/Base/TextBlockViewModel.swift",
+      "baselineBlob": "304aaa7f19f7f05e62ffe437e53c167e5cadfe62",
+      "replacementBlob": "e306ceb1d1720a2ca26f3520276b523750eae119",
+      "reason": "Bind native row configuration to the same action handler across native block forks, and distinguish explicit nonnil resets from ordinary native refresh.",
+      "sharedSources": [
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaSerialTextEditQueue.swift",
+          "gitBlob": "d2cab57bd99bea694fff8e700853f8ad32719d23"
+        },
+        {
+          "path": "Modules/PinkhaKit/Sources/PinkhaKit/Editor/PinkhaTextInputRenderPolicy.swift",
+          "gitBlob": "0ec54dca421d293675ccef47f33d6d013e90f271"
+        }
+      ],
+      "validation": [
+        "Reviewed integration diff and exact replacement blob retained.",
+        "Shared pure editor evidence: docs/validation/20261121-shared-editor-unit. Native UIKit/Properties acceptance is a separate gate and remains unclaimed by this map."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift",
+      "to": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift",
+      "baselineBlob": "98e3b6cda8a4e40bba0bbc0c320e06ea53302df6",
+      "replacementBlob": "afb652ec7bb3b46aa3012f93d669b7d2ef489809",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "afb652ec7bb3b46aa3012f93d669b7d2ef489809",
+      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Modules/PinkhaKit/Package.swift",
+      "to": "Modules/PinkhaKit/Package.swift",
+      "baselineBlob": "eb19331cb8b675b0271f2252a5453463e3f50b88",
+      "replacementBlob": "5f39dae4261c8dc93ff2832f19f7508e6d84e0e0",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "5f39dae4261c8dc93ff2832f19f7508e6d84e0e0",
+      "reason": "Retain the exact old-engine UIKit, fixture, runtime-pair or shared dependency correction from its active work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
       "from": "Tools/PinkhaNativeDerived/install_verified_heart.py",
       "to": "Tools/PinkhaNativeDerived/install_verified_heart.py",
       "baselineBlob": "1ed1f7fa90083cc110f4cb73ec69ac5973d34a1c",
-      "replacementBlob": "33c27261a65aab447a2ea7e68ab10270bdf9633b",
-      "reason": "Add only codex/any-engine-port-20261119 to isolated consumer branches for unchanged verified Heart artifact compatibility tests; preserve all artifact/patch/source checks.",
+      "replacementBlob": "70024290822294cfa7b355651d0f3971338aba27",
+      "reason": "Admit both isolated engine work lanes and their merged shared branch as consumers of the existing verified Heart artifact; preserve all binary, native source, patch and archive integrity checks.",
       "sharedSources": [],
       "validation": [
-        "Original implementation/extraction diff reviewed; exact replacement blobs pinned.",
-        "Existing app test bodies are retained; import-only edits are mechanically checked.",
-        "Independent source-bound package and UIKit/native gates are required; this map does not mark parity."
+        "Reviewed the retained source and bounded integration changes, with exact current replacement blob pinned.",
+        "Focused controller/component evidence is retained separately; source preservation does not imply native runtime, mounted UI or physical-device acceptance."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/.gitattributes",
+      "to": "Tools/TorahNativeOperations/.gitattributes",
+      "baselineBlob": "2655264460bca46deff3497efb8a1233c8997869",
+      "replacementBlob": "cc86ae0be62e2bde9112a37847a1ca7557fd12b2",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "cc86ae0be62e2bde9112a37847a1ca7557fd12b2",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/account_lifecycle/native_handler_test.go",
+      "to": "Tools/TorahNativeOperations/account_lifecycle/native_handler_test.go",
+      "baselineBlob": "78e978a6b1cd435d0e5a2e91c7814c20da0aaab3",
+      "replacementBlob": "af53735407bc497a64d96ae3bf247db678303cc3",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "af53735407bc497a64d96ae3bf247db678303cc3",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/account_rpc/fixture.json",
+      "to": "Tools/TorahNativeOperations/account_rpc/fixture.json",
+      "baselineBlob": "6245a69974537887e6af2976a686a08ba95fb316",
+      "replacementBlob": "f84a9293f6fe0732c01f3ac9bbd4451f4b68fa59",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "f84a9293f6fe0732c01f3ac9bbd4451f4b68fa59",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/account_rpc/native_rpc_account_test.go",
+      "to": "Tools/TorahNativeOperations/account_rpc/native_rpc_account_test.go",
+      "baselineBlob": "de7ff2b087963e0fe77f7a2208d3dd438a701154",
+      "replacementBlob": "5c8bbe5514c7ceb7f42aded6c17eaf8d3a4c1015",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "5c8bbe5514c7ceb7f42aded6c17eaf8d3a4c1015",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/heart-registration.json",
+      "to": "Tools/TorahNativeOperations/heart-registration.json",
+      "baselineBlob": "3ad5533be23d1e1c154f94cf8dd61bf7f0ef974c",
+      "replacementBlob": "cdbccc94cc1bf6cc7960fbc1848fd59d13ac1c6f",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "cdbccc94cc1bf6cc7960fbc1848fd59d13ac1c6f",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/heart-registration.patch",
+      "to": "Tools/TorahNativeOperations/heart-registration.patch",
+      "baselineBlob": "042e11ce1d6f3ec107dea08e0b1e9375dde0a9c3",
+      "replacementBlob": "8b8ab4054ba4b759fbfdc58fb7972b96cc013509",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "8b8ab4054ba4b759fbfdc58fb7972b96cc013509",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/native_client_concurrent_replace.py",
+      "to": "Tools/TorahNativeOperations/native_client_concurrent_replace.py",
+      "baselineBlob": "2f1ee234259d9954b2339120eb7106c77daac5e6",
+      "replacementBlob": "9b30539764d9f429d80c7fe68feb3f5a47fbd749",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "9b30539764d9f429d80c7fe68feb3f5a47fbd749",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/native_client_diagnostics.py",
+      "to": "Tools/TorahNativeOperations/native_client_diagnostics.py",
+      "baselineBlob": "fc51e9c5025c7a57ba87bd58ea0f6bf8c8097fd8",
+      "replacementBlob": "c52ee11cab81f34e619363d336687d413f1b47d8",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "c52ee11cab81f34e619363d336687d413f1b47d8",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/pinkha_torah_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/pinkha_torah_test.go",
+      "baselineBlob": "4edd7f61b5906838e7e0c7958194d3388c78d9e1",
+      "replacementBlob": "436dd21db470adfe6e3545f8320e1155264ff54f",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "436dd21db470adfe6e3545f8320e1155264ff54f",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_commit_guard.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_commit_guard.go",
+      "baselineBlob": "dab12f6feca39455a2e9ef36c54f2e0d99d98c37",
+      "replacementBlob": "ed3cf8b0de72a24aec4add738a2973ff8395757b",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "ed3cf8b0de72a24aec4add738a2973ff8395757b",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_commit_guard_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_commit_guard_test.go",
+      "baselineBlob": "9b2a7e16b008de0358b4c1e3b8d30dbc7b7cb081",
+      "replacementBlob": "509a1f9907f1d303f4797c2523aa41ac682e65d3",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "509a1f9907f1d303f4797c2523aa41ac682e65d3",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_host.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_host.go",
+      "baselineBlob": "bb36d0e65dec64a2c05033ead140f8a896f7bf20",
+      "replacementBlob": "a298c3db4dca42953ec451ca2a2521e80e14b9e8",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "a298c3db4dca42953ec451ca2a2521e80e14b9e8",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_read_authority_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_read_authority_test.go",
+      "baselineBlob": "33ef0d4fc7953f1630edc4560d4fe5909fe22ad3",
+      "replacementBlob": "fbffa84311cb21e7c7ad8137c1eacbc489916046",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "fbffa84311cb21e7c7ad8137c1eacbc489916046",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_registration_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_registration_test.go",
+      "baselineBlob": "d700a00dbddbacadf852936de08a698411c1ec2f",
+      "replacementBlob": "8091158521701441e6dd732f5de60c00dba28946",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "8091158521701441e6dd732f5de60c00dba28946",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_transport_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_transport_test.go",
+      "baselineBlob": "047a04cd54147d7b1117644c39e9d0b75cce0523",
+      "replacementBlob": "4112d4f8c99f2cd8d39542dc2b42042f169685fb",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "4112d4f8c99f2cd8d39542dc2b42042f169685fb",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_write_authority_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_write_authority_test.go",
+      "baselineBlob": "8f314c4edb968663866b4ab07321486526a285fb",
+      "replacementBlob": "12822dbfd1c1b9e17b3dfa0d3202c33d9a77455b",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "12822dbfd1c1b9e17b3dfa0d3202c33d9a77455b",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/editor/torahopsobject/object.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/editor/torahopsobject/object.go",
+      "baselineBlob": "7e7d71fcfaaffcc9996d92d33a0042a7243bf29e",
+      "replacementBlob": "2728123bb03ed3d94a6a392e5eeb652565cfdb26",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "2728123bb03ed3d94a6a392e5eeb652565cfdb26",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/object/treemanager/pinkha_torah_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/object/treemanager/pinkha_torah_test.go",
+      "baselineBlob": "0f0ec75a70f1577b763eeda2be1a93c3e12cbb39",
+      "replacementBlob": "954b7ecb804b0635de6318b362fda725d79bab5c",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "954b7ecb804b0635de6318b362fda725d79bab5c",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/block/source/sourceimpl/pinkha_torah_test.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/block/source/sourceimpl/pinkha_torah_test.go",
+      "baselineBlob": "086b6c5b3d4b4389ac04f0b9b5e789db69fff6da",
+      "replacementBlob": "9fbfbe1203d4d36893b93229cd9ef32576e28da0",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "9fbfbe1203d4d36893b93229cd9ef32576e28da0",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/core/pinkha_torah_operations.go",
+      "to": "Tools/TorahNativeOperations/overlay/core/pinkha_torah_operations.go",
+      "baselineBlob": "720c68c91de56286be17cb5a7403970d5b8751a2",
+      "replacementBlob": "b109b9ec3f3fe6dab74242b57674ca51dfdc0e5f",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "b109b9ec3f3fe6dab74242b57674ca51dfdc0e5f",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/overlay/internal/pinkhat2test/native.go",
+      "to": "Tools/TorahNativeOperations/overlay/internal/pinkhat2test/native.go",
+      "baselineBlob": "6f6911e83603cfad931c183e8004f8c9b799b7d8",
+      "replacementBlob": "629b8e5bdc311e59d8eb39799592fa58eaca90ba",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "629b8e5bdc311e59d8eb39799592fa58eaca90ba",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/rpc/heart-rpc.json",
+      "to": "Tools/TorahNativeOperations/rpc/heart-rpc.json",
+      "baselineBlob": "a7dda78696383487c37a99eecce6c70fbfb1739a",
+      "replacementBlob": "b409ee058cf24444b79b59479c28f785ad6fe666",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "b409ee058cf24444b79b59479c28f785ad6fe666",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/run_account_rpc.py",
+      "to": "Tools/TorahNativeOperations/run_account_rpc.py",
+      "baselineBlob": "ab47a4f66e18cc38f4926f779038f915f850739d",
+      "replacementBlob": "c4288ea524d0f2f36db6a31a9be4cca2d36b0d01",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "c4288ea524d0f2f36db6a31a9be4cca2d36b0d01",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/run_native_clients.py",
+      "to": "Tools/TorahNativeOperations/run_native_clients.py",
+      "baselineBlob": "0154175baad0c9f992eba073eb01893b96ca79f2",
+      "replacementBlob": "352f598f8afebbda138716f4d330906c1eba20b7",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "352f598f8afebbda138716f4d330906c1eba20b7",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/run_native_operations.py",
+      "to": "Tools/TorahNativeOperations/run_native_operations.py",
+      "baselineBlob": "d0c15ff7370a160720119ea4a73b460f9199cee8",
+      "replacementBlob": "aa5306e6c0aacd86c4c0a6808ebfe6306b3c0e9b",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "aa5306e6c0aacd86c4c0a6808ebfe6306b3c0e9b",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/test_native_client_concurrent_replace.py",
+      "to": "Tools/TorahNativeOperations/test_native_client_concurrent_replace.py",
+      "baselineBlob": "0e00ed4c75bc244d19e2a01967e34f7445504a13",
+      "replacementBlob": "da472a4f3a8c227f0751ce1984f3ae9926e3bc3c",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "da472a4f3a8c227f0751ce1984f3ae9926e3bc3c",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/test_native_clients.py",
+      "to": "Tools/TorahNativeOperations/test_native_clients.py",
+      "baselineBlob": "e2a01476665a6d8ad7ae2df108ed3600a851ca5d",
+      "replacementBlob": "52813438aa17c6ecd1910b143d140d1a86c6f491",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "52813438aa17c6ecd1910b143d140d1a86c6f491",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/test_run_native_operations.py",
+      "to": "Tools/TorahNativeOperations/test_run_native_operations.py",
+      "baselineBlob": "31d2e1a24b2e61c0778db85d6bd11bd74f09baf4",
+      "replacementBlob": "a1b0c830dbd64957f14ba46f7209ee406e3d380b",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "a1b0c830dbd64957f14ba46f7209ee406e3d380b",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/two_clients/fixture.json",
+      "to": "Tools/TorahNativeOperations/two_clients/fixture.json",
+      "baselineBlob": "406d8603cf786b2d2a47450860ed7dda3df47709",
+      "replacementBlob": "36e2e2e0fc7866087226e0877a929bd8ffc61420",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "36e2e2e0fc7866087226e0877a929bd8ffc61420",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
+      ]
+    },
+    {
+      "kind": "refactor",
+      "from": "Tools/TorahNativeOperations/two_clients/native-read-observation.patch",
+      "to": "Tools/TorahNativeOperations/two_clients/native-read-observation.patch",
+      "baselineBlob": "a92f15cf4cca4e740840d291d866e83fd2a88080",
+      "replacementBlob": "e51cae83bba608ca87a5be1ebcb48bfa10e2a455",
+      "inheritedSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+      "inheritedSourceBlob": "e51cae83bba608ca87a5be1ebcb48bfa10e2a455",
+      "reason": "Retain the exact already integrated Heart lifecycle/authority/native-controller source from the old-engine work lane.",
+      "sharedSources": [],
+      "validation": [
+        "Git blob comparison proves byte-identical retention from a05088b98844bba30f90b794effb8cf579e2ef08.",
+        "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
+        "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
       ]
     }
-  ]
+  ],
+  "integration": {
+    "oldEngineSourceCommit": "a05088b98844bba30f90b794effb8cf579e2ef08",
+    "newEngineSourceCommit": "31ae2e63890b6e10af8413625534f6234ed263bb",
+    "mergeCommit": "8a7cc666c5d5f5719d6f94809069024262c05b69",
+    "reviewDate": "2026-11-21",
+    "acceptance": "SEPARATE_SOURCE_BOUND_TEST_EVIDENCE_REQUIRED"
+  }
 }
