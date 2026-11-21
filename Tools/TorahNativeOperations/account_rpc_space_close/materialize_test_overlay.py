@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import re
+import shutil
 
 HERE = Path(__file__).resolve().parent
 PRODUCT = "16b7493fa05bdc3abbae190c6e6c364c81874eea"
@@ -89,13 +90,61 @@ def module_identity(heart, selected):
             "origin": origin, "commit_evidence": "REVIEWED_TAG_SOURCE_BINDINGS_AND_PINNED_MODULE_CHECKSUMS"}
 
 
+def module_tree(root):
+    """Inventory regular source bytes, rejecting links before any copy follows them."""
+    require(root.is_dir() and not root.is_symlink() and root.resolve(strict=True) == root,
+            "Canonical module source directory required")
+    files = {}
+    for path in sorted(root.rglob("*")):
+        require(not path.is_symlink(), "Module source must not contain symlinks")
+        if path.is_file():
+            files[path.relative_to(root).as_posix()] = digest(path)
+        else:
+            require(path.is_dir(), "Module source contains a special file")
+    require("go.mod" in files, "Module source has no go.mod")
+    return files
+
+
+def tree_digest(files):
+    return hashlib.sha256(json.dumps(files, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def copy_module_for_overlay(module, destination):
+    """Make one byte-exact, nonsymlink source copy outside the immutable cache."""
+    root = Path(module["selected_dir"])
+    require(destination.is_absolute() and destination.parent.resolve(strict=True) == destination.parent
+            and not destination.exists() and not destination.is_symlink()
+            and not destination.is_relative_to(root), "Fresh separate module copy required")
+    before = module_tree(root)
+    destination.mkdir(mode=0o700)
+    for name in before:
+        source, target = root / relative(name), destination / relative(name)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, target)  # New writable bytes; never chmod a cached source.
+    require(module_tree(root) == before and module_tree(destination) == before,
+            "Selected module changed while copying")
+    return {"source_dir": str(root), "copy_dir": str(destination),
+            "tree_sha256": tree_digest(before), "file_count": len(before),
+            "scope": "BYTE_EXACT_TEST_WORKSPACE_COPY_NOT_SHIPPED_PRODUCT"}
+
+
+def verify_module_copy(module, copy):
+    require(copy.get("source_dir") == module["selected_dir"]
+            and copy.get("scope") == "BYTE_EXACT_TEST_WORKSPACE_COPY_NOT_SHIPPED_PRODUCT",
+            "Foreign module copy binding")
+    original = module_tree(Path(module["selected_dir"]))
+    copied = module_tree(Path(copy["copy_dir"]))
+    require(original == copied and len(original) == copy["file_count"]
+            and tree_digest(original) == copy["tree_sha256"], "Module source/copy changed")
+    return True
+
+
 def prepare(heart, selected, existing, output):
     heart, existing = heart.resolve(strict=True), existing.resolve(strict=True)
     output = output.absolute()
     require(output.parent.resolve(strict=True) == output.parent
             and not output.exists() and not output.is_symlink(), "Fresh canonical overlay destination required")
     module = module_identity(heart, selected)
-    roots = {"heart": heart, "any-sync": Path(module["selected_dir"])}
     manifest_path = HERE / "candidate.json"
     manifest = json.loads(manifest_path.read_text())
     require(manifest.get("schema") == "pinkha-t2-space-close-composition-v1"
@@ -113,6 +162,8 @@ def prepare(heart, selected, existing, output):
             "Exactly seven reviewed native observation paths required")
     require(isinstance(manifest.get("added"), dict) and set(manifest["added"]) == set(ADDED),
             "Exactly three reviewed test-only Go files required")
+    module_copy = copy_module_for_overlay(module, output.parent / "any-sync-source")
+    roots = {"heart": heart, "any-sync": Path(module_copy["copy_dir"])}
     original = json.loads(existing.read_text())
     require(set(original) == {"Replace"} and isinstance(original["Replace"], dict)
             and original["Replace"], "Original account-RPC overlay required")
@@ -137,6 +188,8 @@ def prepare(heart, selected, existing, output):
                 "Observation cannot hide an existing compile overlay")
         added[str(target)] = str(source)
         source_before[str(target)] = entry["before_sha256"]
+        if entry["module"] == "any-sync":
+            source_before[str(Path(module["selected_dir"]) / rel)] = entry["before_sha256"]
         replacement_after[str(source)] = entry["after_sha256"]
     for name, fixture in ADDED.items():
         entry = manifest["added"][name]
@@ -159,7 +212,7 @@ def prepare(heart, selected, existing, output):
     return {"scope": manifest["scope"], "candidate_sha256": digest(manifest_path),
             "original_overlay_sha256": digest(existing), "composed_overlay_sha256": digest(output),
             "added_overlay_entries": len(added), "product_source_mutations": 0, "module_cache_mutations": 0,
-            "empty_package_directory": str(helper), "any_sync": module,
+            "empty_package_directory": str(helper), "any_sync": module, "any_sync_copy": module_copy,
             "source_before_sha256": source_before, "replacement_after_sha256": replacement_after,
             "original_fixture_sha256": hashes, "native_execution": "NOT_RUN"}
 

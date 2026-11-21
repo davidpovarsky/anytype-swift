@@ -41,10 +41,15 @@ the entire read protobuf, including its local watermark.
 The source composition contains five Heart observations, two observations in
 the actual selected `any-sync v0.13.8` module and three new test-only Go files.
 The original Heart, module-cache files and original account fixtures are never
-overwritten. Go receives a separate compile overlay; only an empty helper
-package directory is created so Go can discover it. The module version,
+overwritten. Go forbids compile overlays beneath `GOMODCACHE`. The controller
+copies the complete selected module into its owned build directory, verifies
+every file against the original cache, and selects that copy through one
+version-scoped replacement in a separate test-only `go.work`. The original
+workspace is unchanged. Go receives a compile overlay against the copy and
+Heart; an empty helper package directory permits discovery. The module version,
 checksums from pinned Heart's unchanged `go.sum`, original source bytes and
-selected module paths are checked before use and after execution.
+selected module paths, complete copied source tree and both workspace files
+are checked before use and after execution.
 
 The instrumented binary links its exact composition SHA alongside the existing
 Heart, registration, account fixture and generated RPC schema identities. It

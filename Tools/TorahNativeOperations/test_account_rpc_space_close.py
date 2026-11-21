@@ -437,6 +437,38 @@ class MaterializerControls(unittest.TestCase):
             self.assertEqual(result["reviewed_commit"], materializer.COMMIT)
             self.assertEqual(result["go_mod_sha256"], hashlib.sha256((module / "go.mod").read_bytes()).hexdigest())
 
+    def test_byte_exact_workspace_copy_preserves_readonly_cache_and_detects_later_changes(self):
+        with TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            heart, module, selected = self.setup_module(root)
+            nested = module / "nested/source.go"
+            nested.parent.mkdir()
+            nested.write_bytes(b"package nested\n")
+            nested.chmod(0o444)
+            identity = materializer.module_identity(heart, selected)
+            before = materializer.module_tree(module)
+            copy = materializer.copy_module_for_overlay(identity, root / "owned-copy")
+            self.assertEqual(materializer.module_tree(module), before)
+            self.assertTrue(materializer.verify_module_copy(identity, copy))
+            self.assertEqual(copy["file_count"], 2)
+            (Path(copy["copy_dir"]) / "nested/source.go").write_bytes(b"changed")
+            with self.assertRaisesRegex(ValueError, "Module source/copy changed"):
+                materializer.verify_module_copy(identity, copy)
+            self.assertEqual(materializer.module_tree(module), before)
+            nested.chmod(0o644)  # Permit Windows fixture cleanup.
+
+    def test_module_copy_refuses_existing_destination_before_writing(self):
+        with TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            heart, module, selected = self.setup_module(root)
+            destination = root / "owned-copy"
+            destination.mkdir()
+            sentinel = destination / "keep"
+            sentinel.write_bytes(b"preexisting bytes")
+            with self.assertRaisesRegex(ValueError, "Fresh separate module copy"):
+                materializer.copy_module_for_overlay(materializer.module_identity(heart, selected), destination)
+            self.assertEqual(sentinel.read_bytes(), b"preexisting bytes")
+
     def test_module_replacement_version_checksum_origin_and_directory_substitution_are_rejected(self):
         with TemporaryDirectory() as temporary:
             heart, module, original = self.setup_module(Path(temporary).resolve())
@@ -462,9 +494,9 @@ class MaterializerControls(unittest.TestCase):
                 target = copies / entry["module"] / entry["path"]
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(materializer.HERE / "overlay" / entry["module"] / entry["path"], target)
-            subprocess.run(["git", "apply", "--reverse", "--check", str(materializer.HERE / "test-composition.patch")],
+            subprocess.run(["git", "-c", "core.autocrlf=false", "apply", "--reverse", "--check", str(materializer.HERE / "test-composition.patch")],
                            cwd=copies, check=True, capture_output=True)
-            subprocess.run(["git", "apply", "--reverse", str(materializer.HERE / "test-composition.patch")],
+            subprocess.run(["git", "-c", "core.autocrlf=false", "apply", "--reverse", str(materializer.HERE / "test-composition.patch")],
                            cwd=copies, check=True, capture_output=True)
             before = {}
             for entry in manifest["instrumented"]:
@@ -483,7 +515,12 @@ class MaterializerControls(unittest.TestCase):
             self.assertEqual(result["added_overlay_entries"], 10)
             self.assertEqual(result["product_source_mutations"], 0)
             self.assertEqual(result["module_cache_mutations"], 0)
-            self.assertEqual(len(json.loads(output.read_text())["Replace"]), 11)
+            replacements = json.loads(output.read_text())["Replace"]
+            self.assertEqual(len(replacements), 11)
+            self.assertFalse(any(Path(name).is_relative_to(module) for name in replacements))
+            copy_root = Path(result["any_sync_copy"]["copy_dir"])
+            self.assertEqual(sum(Path(name).is_relative_to(copy_root) for name in replacements), 2)
+            self.assertTrue(materializer.verify_module_copy(result["any_sync"], result["any_sync_copy"]))
             self.assertEqual(before, {name: lane.digest(Path(name)) for name in before})
             self.assertEqual(list((heart / "util/pinkhat2spaceclosetest").iterdir()), [])
             with self.assertRaisesRegex(ValueError, "Fresh canonical overlay destination"):

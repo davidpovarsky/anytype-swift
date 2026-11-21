@@ -28,7 +28,7 @@ METHOD = "TestT2GeneratedByteSpaceClose"
 PASS = "PASS_NATIVE_GENERATED_BYTE_SPACE_CLOSE_AND_COLD_REOPEN"
 PRODUCT_BASE = "16b7493fa05bdc3abbae190c6e6c364c81874eea"
 CANDIDATE_SHA = "994107eacbc2e09335fac38f34d2f3e626cb048bbc87ce25cbe7a9af040f7f0a"
-LANE_MANIFEST_SHA = "98d20fe7a7a7294ab389985fa864d0362131438ad76065ef919a64e3a6b72bac"
+LANE_MANIFEST_SHA = "fe55fe1c3d95d462dd7b4f75f720634ac7450da7a01eb80aa290078c796974be"
 PHASES = ("race", "reopen")
 SCOPE = "original four-process generated-byte baseline plus one real Space.Close race and one cold reopen"
 LIMITS = {"app_capability": "OFF", "response_return_order_relative_to_close": "NOT_ASSERTED",
@@ -405,6 +405,24 @@ def execute(args, receipt, run):
     require(composed["candidate_sha256"] == CANDIDATE_SHA and composed["added_overlay_entries"] == 10
             and composed["product_source_mutations"] == composed["module_cache_mutations"] == 0,
             "Wrong test-only Space.Close composition")
+    # Go rejects overlays inside GOMODCACHE. Bind the exact selected module
+    # version to its byte-verified copy in a separate test-only workspace.
+    test_gowork = directory / "go.work"
+    test_gowork.write_text(gowork.read_text() + "\nreplace " + helper.ANY_SYNC + " " + helper.VERSION
+                          + " => " + json.dumps(composed["any_sync_copy"]["copy_dir"]) + "\n")
+    if gowork.with_suffix(".work.sum").exists():
+        shutil.copyfile(gowork.with_suffix(".work.sum"), test_gowork.with_suffix(".work.sum"))
+    test_gowork_sha = digest(test_gowork)
+    env["GOWORK"] = str(test_gowork)
+    run(["go", "list", "-m", "-json", helper.ANY_SYNC], "space-close-any-sync-copy-selection",
+        args.heart_new, env, 60)
+    copied_selection = json.loads((args.evidence / "space-close-any-sync-copy-selection.log").read_text())
+    require(copied_selection.get("Path") == helper.ANY_SYNC
+            and copied_selection.get("Version") == helper.VERSION
+            and copied_selection.get("Dir") == composed["any_sync_copy"]["copy_dir"]
+            and copied_selection.get("Replace", {}).get("Dir") == composed["any_sync_copy"]["copy_dir"]
+            and Path(copied_selection["GoMod"]).read_bytes() == Path(selected["GoMod"]).read_bytes(),
+            "Separate test workspace did not select the exact owned AnySync copy")
     source = baseline["identities"]["new"]
     registration, schema = source["registration_patch_sha256"], source["rpc_manifest_sha256"]
     flags = ("-extldflags=-static -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=" + base.HEART
@@ -420,6 +438,7 @@ def execute(args, receipt, run):
 
     def verify_unchanged():
         require(source_inputs(control) == inputs and digest(gowork) == gowork_sha
+                and digest(test_gowork) == test_gowork_sha
                 and digest(overlay) == composed["composed_overlay_sha256"]
                 and digest(original_overlay) == original_overlay_sha
                 and all(digest(Path(name)) == sha for name, sha in original_fixtures.items())
@@ -430,6 +449,7 @@ def execute(args, receipt, run):
                     "An original or instrumented native source changed")
         require(helper.module_identity(args.heart_new, selected) == composed["any_sync"],
                 "Selected immutable AnySync module changed")
+        helper.verify_module_copy(composed["any_sync"], composed["any_sync_copy"])
         for role, heart in hearts.items():
             account.verify_rpc_binary(role, baseline["identities"][role], registration, schema)
             require(accepted.native_snapshot(heart, builds[role]) == snapshots[role],
@@ -453,7 +473,8 @@ def execute(args, receipt, run):
         write_json(args.evidence / "space-close-build.json", {"identity": identity, "composition": composed,
                    "source_inputs": inputs, "original_build_bindings": initial_bindings,
                    "overlay": json.loads(overlay.read_text()), "original_fixture_sha256": original_fixtures,
-                   "gowork_sha256": gowork_sha})
+                   "gowork_sha256": gowork_sha, "test_gowork_sha256": test_gowork_sha,
+                   "test_any_sync_selection": copied_selection})
         prior = json.loads((args.evidence / "account-sequence/result.json").read_text())
         pids = {phase["pid"] for phase in prior["phase_reports"]}
         require(len(pids) == 4, "Original baseline process identities are incomplete")
