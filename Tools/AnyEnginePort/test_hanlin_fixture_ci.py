@@ -23,7 +23,8 @@ class SimulatorKeychainCapabilityTests(unittest.TestCase):
             directory = Path(temporary)
             args = argparse.Namespace(safe_dir=directory, simulator_receipt=directory / "simulator.json")
             with patch.object(CI, "github_context", return_value=("123", "a" * 40, directory)), \
-                 patch.object(CI, "verify_simulator", return_value=("owned", {})), \
+                 patch.object(CI, "verify_simulator", return_value=("owned", {}, "Booted")), \
+                 patch.object(CI, "ensure_owned_simulator_booted"), \
                  patch.object(CI.subprocess, "run", return_value=subprocess.CompletedProcess(
                      ["xcrun", "simctl", "help", "keychain"], returncode, stdout, stderr)) as command, \
                  patch.object(CI.tempfile, "mkdtemp", side_effect=ReadyToCreateOwnedFixture) as create:
@@ -69,6 +70,66 @@ class SimulatorKeychainCapabilityTests(unittest.TestCase):
         with patch.object(CI.subprocess, "run", return_value=subprocess.CompletedProcess(
                 ["private-command"], 0, "public-stdout", "private-diagnostics")):
             self.assertEqual(CI.run(["private-command"]), "public-stdout")
+
+
+
+class OwnedSimulatorReadinessTests(unittest.TestCase):
+    def test_shutdown_device_is_booted_and_reverified_before_fixture_setup(self):
+        result = {}
+        with patch.object(CI, "run", return_value="") as command, \
+             patch.object(CI, "verify_simulator", return_value=("owned", {"runtime": "test"}, "Booted")) as verify:
+            CI.ensure_owned_simulator_booted(Path("receipt"), "123", "owned",
+                                            {"runtime": "test"}, "Shutdown", result)
+        self.assertEqual([entry.args[0] for entry in command.call_args_list], [
+            ["xcrun", "simctl", "boot", "owned"],
+            ["xcrun", "simctl", "bootstatus", "owned", "-b"]])
+        verify.assert_called_once_with(Path("receipt"), "123")
+        self.assertEqual(result, {"simulatorInitialState": "Shutdown",
+                                 "simulatorBootRequested": True, "simulatorReadyState": "Booted"})
+
+    def test_already_booting_or_booted_device_is_waited_without_duplicate_boot(self):
+        for state in ("Booting", "Booted"):
+            with self.subTest(state=state), \
+                 patch.object(CI, "run", return_value="") as command, \
+                 patch.object(CI, "verify_simulator", return_value=("owned", {}, "Booted")):
+                result = {}
+                CI.ensure_owned_simulator_booted(Path("receipt"), "123", "owned", {}, state, result)
+                self.assertEqual([entry.args[0] for entry in command.call_args_list],
+                                 [["xcrun", "simctl", "bootstatus", "owned", "-b"]])
+                self.assertFalse(result["simulatorBootRequested"])
+
+    def test_unknown_state_fails_before_any_boot_or_trust_command(self):
+        with patch.object(CI, "run") as command:
+            with self.assertRaisesRegex(CI.BoundaryError, "^owned_simulator_state_unavailable$"):
+                CI.ensure_owned_simulator_booted(Path("receipt"), "123", "owned", {}, "Creating", {})
+        command.assert_not_called()
+
+
+
+    def test_boot_failure_does_not_continue_to_readiness_or_fixture_setup(self):
+        with patch.object(CI, "run", side_effect=CI.BoundaryError("owned_simulator_boot_failed")) as command, \
+             patch.object(CI, "verify_simulator") as verify:
+            with self.assertRaisesRegex(CI.BoundaryError, "^owned_simulator_boot_failed$"):
+                CI.ensure_owned_simulator_booted(Path("receipt"), "123", "owned", {}, "Shutdown", {})
+        self.assertEqual(command.call_count, 1)
+        verify.assert_not_called()
+
+    def test_changed_ownership_or_not_booted_after_readiness_is_rejected(self):
+        for final in (("other", {}, "Booted"), ("owned", {"changed": True}, "Booted"),
+                      ("owned", {}, "Shutdown")):
+            with self.subTest(final=final), patch.object(CI, "run", return_value=""), \
+                 patch.object(CI, "verify_simulator", return_value=final):
+                with self.assertRaisesRegex(CI.BoundaryError, "^owned_simulator_boot_verification_failed$"):
+                    CI.ensure_owned_simulator_booted(Path("receipt"), "123", "owned", {}, "Booting", {})
+
+    def test_command_failure_uses_fixed_stage_without_private_output(self):
+        for failure in (subprocess.CompletedProcess(["private-command"], 1, "secret", "private"),
+                        subprocess.TimeoutExpired(["private-command", "secret"], 1, output="private")):
+            with self.subTest(kind=type(failure).__name__):
+                kwargs = {"side_effect": failure} if isinstance(failure, Exception) else {"return_value": failure}
+                with patch.object(CI.subprocess, "run", **kwargs):
+                    with self.assertRaisesRegex(CI.BoundaryError, "^owned_simulator_root_install_failed$"):
+                        CI.run(["private-command"], failure_reason="owned_simulator_root_install_failed")
 
 
 if __name__ == "__main__":

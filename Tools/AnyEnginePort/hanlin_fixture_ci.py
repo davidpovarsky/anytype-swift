@@ -43,9 +43,14 @@ def utc_now() -> str:
     return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
 
-def run(command: list[str], *, timeout: int = 30, include_stderr: bool = False) -> str:
-    result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=timeout)
-    require(result.returncode == 0, "owned_command_failed")
+def run(command: list[str], *, timeout: int = 30, include_stderr: bool = False,
+        failure_reason: str = "owned_command_failed") -> str:
+    try:
+        result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=timeout)
+    except (subprocess.TimeoutExpired, OSError):
+        # Report the fixed stage identifier, never private command arguments or output.
+        raise BoundaryError(failure_reason) from None
+    require(result.returncode == 0, failure_reason)
     return result.stdout + result.stderr if include_stderr else result.stdout
 
 
@@ -85,7 +90,7 @@ def append_environment(values: dict[str, str]) -> None:
             output.write(key + "=" + value + "\n")
 
 
-def verify_simulator(receipt_path: Path, run_id: str) -> tuple[str, dict]:
+def verify_simulator(receipt_path: Path, run_id: str) -> tuple[str, dict, str]:
     expected_receipt = ROOT / "build/any-patched-evidence/simulator.json"
     require(receipt_path.resolve() == expected_receipt.resolve(), "unexpected_simulator_receipt")
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
@@ -107,7 +112,25 @@ def verify_simulator(receipt_path: Path, run_id: str) -> tuple[str, dict]:
             runtime == receipt.get("runtime") and
             device.get("deviceTypeIdentifier") == receipt.get("deviceType"),
             "owned_simulator_receipt_mismatch")
-    return normalized, receipt
+    state = device.get("state")
+    require(state in {"Shutdown", "Booting", "Booted"}, "owned_simulator_state_unavailable")
+    return normalized, receipt, state
+
+
+def ensure_owned_simulator_booted(receipt_path: Path, run_id: str, udid: str,
+                                 receipt: dict, state: str, result: dict) -> None:
+    # xcodebuild may shut the owned device down after a preceding test target.
+    # A focused UI-only run also starts with the freshly created device shut down.
+    require(state in {"Shutdown", "Booting", "Booted"}, "owned_simulator_state_unavailable")
+    result.update(simulatorInitialState=state, simulatorBootRequested=state == "Shutdown")
+    if state == "Shutdown":
+        run(["xcrun", "simctl", "boot", udid], failure_reason="owned_simulator_boot_failed")
+    run(["xcrun", "simctl", "bootstatus", udid, "-b"], timeout=120,
+        failure_reason="owned_simulator_boot_readiness_failed")
+    verified_udid, verified_receipt, final_state = verify_simulator(receipt_path, run_id)
+    require(verified_udid == udid and verified_receipt == receipt and final_state == "Booted",
+            "owned_simulator_boot_verification_failed")
+    result["simulatorReadyState"] = final_state
 
 
 def read_owned_config(run_id: str, source_sha: str, temp_root: Path) -> tuple[Path, Path, dict]:
@@ -166,7 +189,7 @@ def validate_private_config(config_path: Path, private_fixture: Path) -> dict[st
 
 def prepare(args: argparse.Namespace, result: dict) -> None:
     run_id, source_sha, temp_root = github_context()
-    udid, receipt = verify_simulator(args.simulator_receipt, run_id)
+    udid, receipt, simulator_state = verify_simulator(args.simulator_receipt, run_id)
     require(FIXTURE.is_file(), "fixture_source_missing")
     result.update(sourceCommit=source_sha, githubRunID=run_id, ownedSimulatorUDID=udid)
     # simctl emits help to stderr on supported Xcode versions. Inspect both
@@ -175,6 +198,8 @@ def prepare(args: argparse.Namespace, result: dict) -> None:
     help_text = run(["xcrun", "simctl", "help", "keychain"], include_stderr=True)
     (args.safe_dir / "simctl-keychain-help.txt").write_text(help_text, encoding="utf-8", newline="\n")
     require("add-root-cert" in help_text, "simulator_root_command_unavailable")
+    ensure_owned_simulator_booted(args.simulator_receipt, run_id, udid, receipt,
+                                 simulator_state, result)
 
     owned = Path(tempfile.mkdtemp(prefix="pinkha-hanlin-ci-" + run_id + "-", dir=temp_root)).resolve()
     owned.chmod(0o700)
@@ -189,12 +214,14 @@ def prepare(args: argparse.Namespace, result: dict) -> None:
     append_environment({OWNED_DIR_ENV: str(owned), CONFIG_ENV: str(config_path)})
     run([sys.executable, str(FIXTURE), "start",
          "--private-dir", str(private_fixture),
-         "--safe-result", str(args.safe_dir / "server-start.json")], timeout=90)
+         "--safe-result", str(args.safe_dir / "server-start.json")], timeout=90,
+        failure_reason="owned_fixture_start_failed")
     values = validate_private_config(config_path, private_fixture)
     private_config = json.loads(config_path.read_text(encoding="utf-8"))
     ca = private_fixture / "root-ca.pem"
     # This command can affect only the verified, explicitly named simulator.
-    run(["xcrun", "simctl", "keychain", udid, "add-root-cert", str(ca)])
+    run(["xcrun", "simctl", "keychain", udid, "add-root-cert", str(ca)],
+        failure_reason="owned_simulator_root_install_failed")
     append_environment(values)
     result.update(status="HOST_TLS_READY_SIMULATOR_ROOT_INSTALLED_UI_EXECUTION_PENDING",
                   fixtureSourceSHA256=hashlib.sha256(FIXTURE.read_bytes()).hexdigest(),
