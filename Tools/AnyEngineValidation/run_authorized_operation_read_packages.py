@@ -107,6 +107,19 @@ def qualified_xctest_output(output: str, package: str) -> list[str]:
     return names
 
 
+def preserve_resolved_files(root: Path, output: Path, phase: str) -> dict[str, str]:
+    copies = output / "dependency-locks" / phase
+    copies.mkdir(parents=True, exist_ok=True)
+    result = {}
+    for package in SUITES:
+        source = root / "Modules" / package / "Package.resolved"
+        if source.is_file():
+            destination = copies / f"{package}.Package.resolved"
+            destination.write_bytes(source.read_bytes())
+            result[package] = digest(destination)
+    return result
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path.cwd())
@@ -127,6 +140,27 @@ def main() -> None:
         receipt["packageSourceTrees"] = {
             name: command(root, "git", "rev-parse", f"HEAD:Modules/{name}") for name in SUITES
         }
+        receipt["originalResolvedFiles"] = preserve_resolved_files(root, output, "before")
+        receipt["dependencyPreflight"] = []
+        # Resolve every package before compiling any of the new methods. A
+        # platform-specific lock rewrite must fail before consuming a real test
+        # pass, with both original/generated locks available for exact review.
+        for package in SUITES:
+            package_path = root / "Modules" / package
+            log = output / f"{package}-resolve.log"
+            argv = ["swift", "package", "--package-path", str(package_path), "resolve"]
+            row = {"package": package, "command": argv, "status": "FAILED"}
+            receipt["dependencyPreflight"].append(row)
+            print(f"Resolving declared dependencies for {package}; no compilation", flush=True)
+            with log.open("w") as stream:
+                run = subprocess.run(argv, cwd=root, stdout=stream, stderr=subprocess.STDOUT, timeout=180)
+            row.update(returncode=run.returncode, logSHA256=digest(log))
+            if run.returncode:
+                raise ValueError(f"{package} resolve-only preflight failed; no selected tests built")
+            row["resolvedPins"] = resolved_pins(package_path / "Package.resolved", package)
+            row["status"] = "RESOLVED_EXACT_PINS"
+        require_exact_source(root, args.source_sha)
+        receipt["resolvedPreflightPassed"] = True
         for package, (suite, methods) in SUITES.items():
             package_path = root / "Modules" / package
             log = output / f"{package}.log"
@@ -135,6 +169,7 @@ def main() -> None:
             # processes and enables original SwiftPM xUnit evidence.
             selected = f"^{package}Tests\\.{suite}/({'|'.join(methods)})$"
             argv = ["swift", "test", "--verbose", "--package-path", str(package_path), "--jobs", "2",
+                    "--force-resolved-versions",
                     "--parallel", "--num-workers", "1", "--filter", selected,
                     "--xunit-output", str(xunit)]
             row = {"package": package, "suite": suite, "command": argv,
@@ -159,6 +194,7 @@ def main() -> None:
         receipt["error"] = f"{type(error).__name__}: {error}"
         raise
     finally:
+        receipt["generatedResolvedFiles"] = preserve_resolved_files(root, output, "after")
         (output / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
 
 
