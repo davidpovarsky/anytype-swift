@@ -13,6 +13,7 @@ import shutil
 from uuid import uuid4
 
 import t5_native_ui_evidence as evidence
+import t5_native_ui_mutations as native_mutations
 import t5_native_ui_r08 as r08
 
 PASS = "T5_NATIVE_UI_PASS_VISUAL_REVIEW_PENDING"
@@ -30,6 +31,9 @@ def native_ui_identity(container):
     evidence.require(root.is_dir() and not root.is_symlink()
                      and root.resolve(strict=True).is_relative_to(owned), "Native UI account store is missing or foreign")
     paths = {"fixture_sha256": container / UI_FIXTURE, "credentials_sha256": container / UI_SECRETS}
+    mutation_receipt = container / native_mutations.RELATIVE
+    if mutation_receipt.exists() or mutation_receipt.is_symlink():
+        paths["native_mutations_sha256"] = mutation_receipt
     for path in paths.values():
         evidence.require(path.is_file() and not path.is_symlink() and 0 < path.stat().st_size <= 64 * 1024
                          and path.resolve(strict=True).is_relative_to(owned), "Bounded native UI identity is missing or foreign")
@@ -362,6 +366,10 @@ def _run_on_fresh_simulator(*, app, work, proof, build, selection, pair, ui, met
         evidence.require(fixture["accountRootPathSHA256"] == pair.sha_bytes(str((container / NATIVE_ROOT).resolve()).encode()),
                          "Native preparation root differs from the actual current container")
         (private / "fixture.json").write_bytes(fixture_path.read_bytes())
+        record["native_mutations"] = native_mutations.capture(container, private, fixture, runtime_profile)
+        if runtime_profile == native_mutations.PROFILE:
+            evidence.require(record["native_mutations"]["receipt_sha256"] == original_identity.get("native_mutations_sha256"),
+                             "Native mutation evidence changed after its original identity was frozen")
         installed = pair.app_container(ui_udid, "app")
         evidence.require(ui.code_carriers(installed)["sha256"] == build["code_sha256"], "Preparation installed different executable bytes")
         record.update(native_fixture_sha256=evidence.digest(private / "fixture.json"),
@@ -458,7 +466,7 @@ def _run_on_fresh_simulator(*, app, work, proof, build, selection, pair, ui, met
             if credential_inventory is not None or (secret_path and secret_path.is_file()):
                 secrets = credential_inventory if credential_inventory is not None else json.loads(secret_path.read_text(encoding="utf8"))
                 allowed = [private / "execution.json"]
-                for name in ["fixture.json", "actual-ui-observations.json", "post-ui-code-carriers.json", "core-result.json", "r08-result.json"]:
+                for name in ["fixture.json", native_mutations.COPY_NAME, "actual-ui-observations.json", "post-ui-code-carriers.json", "core-result.json", "r08-result.json"]:
                     if (private / name).is_file():
                         allowed.append(private / name)
                 for directory in [private / "commands", private / "preparation", private / "ui", *[private / ("r08-he-" + x) for x in r08.APPEARANCES]]:

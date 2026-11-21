@@ -105,14 +105,19 @@ def execute(args, result):
     outcome = native_ui.run_after_corrected_build(app=app, work=work, proof=proof, build=build,
         selection=selection, pair=pair, ui=ui, method_results=method_results, source=source, run_id=run_id)
     result.update(native_ui_status=outcome["status"], native_ui_result="native-ui/result.json",
+        native_mutations=outcome.get("native_mutations", {"status": "NOT_RUN"}),
         core_ui_status=outcome.get("core_ui_status", "NOT_RUN"),
         r08_status=outcome.get("r08", {}).get("status", "NOT_RUN"))
     pair.require(outcome["status"] == native_ui.PASS, "Actual corrected-r15 native/UI acceptance failed")
+    mutations = outcome.get("native_mutations", {})
+    pair.require(mutations.get("status") == native_ui.native_mutations.PASS
+        and mutations.get("actual_mutations") == 2 and mutations.get("actual_observations") == 3,
+        "Actual type change and whole-object deletion evidence is missing")
     pair.require(outcome.get("prerequisite_scope") == "SINGLE_CORRECTED_RUNTIME"
         and outcome.get("mixed_version_accepted") is False and outcome.get("host_freshness_accepted") is False
         and outcome.get("ui_simulator_shutdown") is True, "Standalone scope or owned cleanup differs")
     result.update(status=PASS, phase="COMPLETE", actual_counts=dict(
-        app_builds=1, native_preparation_methods=1, core_ui_methods=2,
+        app_builds=1, native_preparation_methods=1, native_mutations=2, native_mutation_observations=3, core_ui_methods=2,
         hebrew_readonly_ui_executions=2, ui_app_lifetimes=5, failed=0, skipped=0),
         actual_ui_observations=outcome.get("actual_observation_counts"))
 

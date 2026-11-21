@@ -66,6 +66,56 @@ struct TorahT5UIAcceptancePreparationTests {
         let accountKey: String
     }
 
+    private struct MutationRow: Codable, Equatable {
+        let resultID: String
+        let objectID: String
+        let spaceID: String
+        let blockID: String?
+        let title: String
+        let typeID: String
+        let kind: String
+        let canUnlink: Bool
+    }
+
+    private struct MutationObservation: Codable {
+        let stage: String
+        let nativeReadStatus: String
+        let nativeTypeID: String?
+        let nativeTypeKey: String?
+        let nativeLayout: Int?
+        let nativeTitle: String?
+        let associationID: String?
+        let canonicalSHA256: String?
+        let bodySHA256: String?
+        let blockReachable: Bool?
+        let relatedRows: [MutationRow]
+        let coverage: String
+        let limitations: [String]
+    }
+
+    private struct MutationReceipt: Codable {
+        let protocolVersion: Int
+        let status: String
+        let scope: String
+        let token: String
+        let appSourceSHA: String
+        let runID: String
+        let runtimeVersion: String
+        let preparationProcessID: Int32
+        let accountID: String
+        let spaceID: String
+        let accountRootPathSHA256: String
+        let providerID: String
+        let canonicalReference: String
+        let transientObjectID: String
+        let transientAssociationID: String
+        let transientBlockID: String
+        let canonicalPropertyKey: String
+        let observations: [MutationObservation]
+        let productLookupFlag: String
+        let fullT5Accepted: Bool
+    }
+
     private enum Failure: Error { case invariant(String) }
     private let source = T5SourceIdentity(providerID: "sefaria", canonicalReference: "Genesis 1:1")
 
@@ -246,7 +296,20 @@ struct TorahT5UIAcceptancePreparationTests {
         _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: spaceID)
         let service = AnytypeTorahSpaceRelatedDocumentsService(associations: associations)
         let selection = TorahInspectorSelection(providerID: source.providerID, canonicalRef: source.canonicalReference)
-        let snapshot = try await waitForSnapshot(service, selection: selection, targets: targets, spaceID: spaceID)
+        var snapshot = try await waitForSnapshot(service, selection: selection, targets: targets, spaceID: spaceID)
+        // Only the new corrected-runtime route adds the two missing mutations.
+        // The historical pair route and its existing five-target fixture are unchanged.
+        var mutationReceipt: MutationReceipt?
+        if environment["PINKHA_T5_UI_RUNTIME_PROFILE"] == "r15-attachment-v1" {
+            let result = try await verifyTypeChangeAndWholeObjectDelete(
+                service: service, associations: associations, selection: selection, baseline: snapshot,
+                spaceID: spaceID, canonicalPropertyKey: manifest.documentAssociationsPropertyKey,
+                token: token, sourceSHA: sourceSHA, runID: runID, runtimeVersion: actualVersion,
+                accountID: account.id, root: root
+            )
+            mutationReceipt = result.receipt
+            snapshot = result.finalSnapshot
+        }
         try require(snapshot.coverage == .indexedTargetsOnly && snapshot.limitations == [.indexFreshnessUnverified],
             "coverage-must-remain-explicitly-incomplete")
         try require(Set(snapshot.documents.map(\.id)).count == 5, "native-result-ids-not-distinct")
@@ -269,7 +332,154 @@ struct TorahT5UIAcceptancePreparationTests {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         try encoder.encode(fixture).write(to: fixtureURL, options: .withoutOverwriting)
+        if let mutationReceipt {
+            try encoder.encode(mutationReceipt).write(
+                to: support.appendingPathComponent("pinkha-t5-native-ui-mutations.json"), options: .withoutOverwriting)
+            print("T5_UI_NATIVE_MUTATIONS real_type_change=1 real_whole_object_delete=1 observations=3 final_targets=5")
+        }
         print("T5_UI_PREPARED real_native_targets=5 excluded=3 keychain_readback=matched coverage=indexedTargetsOnly")
+    }
+
+    @MainActor
+    private func verifyTypeChangeAndWholeObjectDelete(
+        service: AnytypeTorahSpaceRelatedDocumentsService, associations: AnytypeTorahAssociationRepository,
+        selection: TorahInspectorSelection, baseline: TorahRelatedDocumentsSnapshot,
+        spaceID: String, canonicalPropertyKey: String, token: String, sourceSHA: String,
+        runID: String, runtimeVersion: String, accountID: String, root: String
+    ) async throws -> (receipt: MutationReceipt, finalSnapshot: TorahRelatedDocumentsSnapshot) {
+        let originalRows = mutationRows(baseline)
+        try require(originalRows.count == 5 && Set(originalRows.map(\.objectID)).count == 5,
+            "mutation-baseline-must-be-the-original-five")
+        let object = try await create(type: .page, name: "T5 transient type/delete " + String(token.prefix(8)), spaceID: spaceID)
+        try require(!originalRows.contains { $0.objectID == object.id }, "mutation-object-reuses-ui-target")
+        let body = "T5 native type/delete preserved body " + token
+        let blockID = try await append(body, objectID: object.id, spaceID: spaceID)
+        let saved = try await associations.addAssociation(source.item, target: .object(objectId: object.id), spaceId: spaceID)
+        let before = try await mutationReadback(objectID: object.id, blockID: blockID, body: body,
+            spaceID: spaceID, canonicalPropertyKey: canonicalPropertyKey, expectedType: .page)
+        let originalLinks = try await associations.listDocumentAssociations(objectId: object.id, spaceId: spaceID)
+        try require(originalLinks.count == 1 && originalLinks[0].id == saved.id && source.matches(originalLinks[0]),
+            "mutation-original-canonical-link-differs")
+        let first = try await waitForMutationSnapshot(service, selection: selection, originalRows: originalRows,
+            spaceID: spaceID, objectID: object.id, typeID: before.details.type, isNote: false)
+        var observations = [mutationObservation(stage: "page-before-type-change", readback: before,
+            typeKey: ObjectTypeUniqueKey.page.value, associationID: originalLinks[0].id, snapshot: first)]
+
+        // This is the normal native command, with no fake search response or rewritten receipt.
+        try await Container.shared.objectActionsService().setObjectType(objectId: object.id, typeUniqueKey: .note)
+        let changed = try await mutationReadback(objectID: object.id, blockID: blockID, body: body,
+            spaceID: spaceID, canonicalPropertyKey: canonicalPropertyKey, expectedType: .note)
+        try require(changed.details.type != before.details.type && Data(changed.canonical.utf8) == Data(before.canonical.utf8),
+            "type-change-did-not-preserve-exact-canonical-bytes")
+        let changedLinks = try await associations.listDocumentAssociations(objectId: object.id, spaceId: spaceID)
+        try require(changedLinks.count == 1 && changedLinks[0].id == saved.id && source.matches(changedLinks[0]),
+            "type-change-altered-canonical-link-identity")
+        let second = try await waitForMutationSnapshot(service, selection: selection, originalRows: originalRows,
+            spaceID: spaceID, objectID: object.id, typeID: changed.details.type, isNote: true)
+        observations.append(mutationObservation(stage: "note-after-type-change", readback: changed,
+            typeKey: ObjectTypeUniqueKey.note.value, associationID: changedLinks[0].id, snapshot: second))
+
+        // Delete this whole disposable document; none of the five UI targets is mutated.
+        try await Container.shared.objectActionsService().delete(objectIds: [object.id])
+        let deletedStatus = try await waitForNativeDeletion(objectID: object.id, spaceID: spaceID)
+        let final = try await waitForMutationSnapshot(service, selection: selection, originalRows: originalRows,
+            spaceID: spaceID, objectID: object.id, typeID: nil, isNote: nil)
+        try require(mutationRows(final) == originalRows, "whole-object-delete-altered-original-five-rows")
+        observations.append(.init(stage: "whole-object-deleted", nativeReadStatus: deletedStatus,
+            nativeTypeID: nil, nativeTypeKey: nil, nativeLayout: nil, nativeTitle: nil, associationID: nil, canonicalSHA256: nil, bodySHA256: nil,
+            blockReachable: nil, relatedRows: mutationRows(final), coverage: "indexedTargetsOnly",
+            limitations: ["indexFreshnessUnverified"]))
+        return (.init(protocolVersion: 1, status: "PASS", scope: "type-change-and-whole-object-delete",
+            token: token, appSourceSHA: sourceSHA, runID: runID, runtimeVersion: runtimeVersion,
+            preparationProcessID: ProcessInfo.processInfo.processIdentifier, accountID: accountID, spaceID: spaceID,
+            accountRootPathSHA256: hash(Data(root.utf8)), providerID: source.providerID,
+            canonicalReference: source.canonicalReference, transientObjectID: object.id,
+            transientAssociationID: saved.id, transientBlockID: blockID, canonicalPropertyKey: canonicalPropertyKey,
+            observations: observations, productLookupFlag: "OFF", fullT5Accepted: false), final)
+    }
+
+    @MainActor
+    private func mutationReadback(objectID: String, blockID: String, body: String, spaceID: String,
+                                  canonicalPropertyKey: String, expectedType: ObjectTypeUniqueKey)
+        async throws -> (details: ObjectDetails, canonical: String, bodySHA256: String) {
+        let response = try await show(objectID, spaceID: spaceID)
+        let value = try rootDetails(response, objectID: objectID, spaceID: spaceID)
+        try require(!value.type.isEmpty, "mutation-native-type-missing")
+        let actualType = ObjectType(details: try await details(value.type, spaceID: spaceID)).uniqueKey
+        try require(actualType == expectedType,
+            "mutation-native-type-readback-differs")
+        let canonical = try #require(value.values[canonicalPropertyKey]?.stringValue)
+        try require(!canonical.isEmpty, "mutation-native-canonical-missing")
+        let graph = try await T5BlockReachability.evaluate(spaceID: spaceID, rootID: objectID,
+            nodes: response.objectView.blocks.map { .init(id: $0.id, childIDs: $0.childrenIds) })
+        try require(graph.isVerified && graph.reachableBlockIDs.contains(blockID), "mutation-native-body-unreachable")
+        let block = try #require(response.objectView.blocks.first { $0.id == blockID })
+        guard case .text(let text) = block.content else { throw Failure.invariant("mutation-native-body-not-text") }
+        try require(Data(text.text.utf8) == Data(body.utf8), "mutation-native-body-bytes-changed")
+        return (value, canonical, hash(Data(text.text.utf8)))
+    }
+
+    private func mutationRows(_ snapshot: TorahRelatedDocumentsSnapshot) -> [MutationRow] {
+        snapshot.documents.map {
+            MutationRow(resultID: $0.id, objectID: $0.objectID, spaceID: $0.spaceID, blockID: $0.blockID,
+                title: $0.title, typeID: $0.typeID ?? "", kind: $0.kind == .note ? "note" : "document", canUnlink: $0.canUnlink)
+        }.sorted { $0.resultID < $1.resultID }
+    }
+
+    private func mutationObservation(stage: String,
+        readback: (details: ObjectDetails, canonical: String, bodySHA256: String), typeKey: String, associationID: String,
+        snapshot: TorahRelatedDocumentsSnapshot) -> MutationObservation {
+        .init(stage: stage, nativeReadStatus: "present", nativeTypeID: readback.details.type,
+            nativeTypeKey: typeKey, nativeLayout: readback.details.resolvedLayout ?? readback.details.layout,
+            nativeTitle: readback.details.name,
+            associationID: associationID,
+            canonicalSHA256: hash(Data(readback.canonical.utf8)), bodySHA256: readback.bodySHA256,
+            blockReachable: true, relatedRows: mutationRows(snapshot), coverage: "indexedTargetsOnly",
+            limitations: ["indexFreshnessUnverified"])
+    }
+
+    @MainActor
+    private func waitForMutationSnapshot(_ service: AnytypeTorahSpaceRelatedDocumentsService,
+        selection: TorahInspectorSelection, originalRows: [MutationRow], spaceID: String,
+        objectID: String, typeID: String?, isNote: Bool?) async throws -> TorahRelatedDocumentsSnapshot {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(45))
+        repeat {
+            do {
+                let snapshot = try await service.relatedDocuments(spaceID: spaceID, selection: selection)
+                let rows = mutationRows(snapshot)
+                let preserved = rows.filter { $0.objectID != objectID }
+                let changed = rows.filter { $0.objectID == objectID }
+                let expectedCount = typeID == nil ? 0 : 1
+                let expectedKind = isNote == true ? "note" : "document"
+                if snapshot.coverage == .indexedTargetsOnly && snapshot.limitations == [.indexFreshnessUnverified]
+                    && preserved == originalRows && changed.count == expectedCount
+                    && changed.allSatisfy({ $0.spaceID == spaceID && $0.blockID == nil
+                        && $0.typeID == typeID && $0.kind == expectedKind && $0.canUnlink }) {
+                    return snapshot
+                }
+            } catch T5SpaceRelatedDocumentsError.indexUnavailable { }
+            try await Task.sleep(for: .milliseconds(100))
+        } while clock.now < deadline
+        throw Failure.invariant("native-type-or-delete-query-did-not-converge")
+    }
+
+    private func waitForNativeDeletion(objectID: String, spaceID: String) async throws -> String {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(45))
+        repeat {
+            do {
+                let response = try await show(objectID, spaceID: spaceID)
+                try require(response.objectView.rootID == objectID, "deleted-readback-root-differs")
+                let value = try ObjectDetails(protobufStruct: try #require(response.objectView.details.first { $0.id == objectID }?.details))
+                try require(value.id == objectID && value.spaceId == spaceID, "deleted-readback-identity-differs")
+                if value.isDeleted { return "isDeleted" }
+            } catch let error as Anytype_Rpc.Object.Show.Response.Error where error.code == .notFound || error.code == .objectDeleted {
+                return error.code == .objectDeleted ? "objectDeleted" : "notFound"
+            }
+            try await Task.sleep(for: .milliseconds(100))
+        } while clock.now < deadline
+        throw Failure.invariant("whole-object-delete-native-state-did-not-converge")
     }
 
     private func presentationTitle(role: String, token: String) -> String {
