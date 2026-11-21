@@ -174,5 +174,46 @@ class OwnedBootOverlapTests(unittest.TestCase):
             self.assertIn("Still booting", log.read_text())
 
 
+class SimulatorOnlyReadinessTests(unittest.TestCase):
+    def test_ready_reverifies_the_owned_device_without_provider_or_trust_mutation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            args = argparse.Namespace(safe_dir=directory, simulator_receipt=directory / "simulator.json")
+            receipt = {"runtime": "owned-runtime", "deviceType": "owned-device"}
+            result = {}
+            with patch.object(CI, "github_context", return_value=("123", "a" * 40, directory)), \
+                 patch.object(CI, "verify_simulator", side_effect=[
+                     ("owned", receipt, "Booting"), ("owned", receipt, "Booted")]) as verify, \
+                 patch.object(CI, "run", return_value="") as command, \
+                 patch.object(CI.tempfile, "mkdtemp") as fixture, \
+                 patch.object(CI, "append_environment") as environment:
+                CI.ready(args, result)
+            self.assertEqual(verify.call_count, 2)
+            self.assertEqual([entry.args[0] for entry in command.call_args_list],
+                             [["xcrun", "simctl", "bootstatus", "owned", "-b"]])
+            self.assertEqual(command.call_args.kwargs["timeout"], 120)
+            self.assertEqual(result["status"], "OWNED_SIMULATOR_READY_NO_PROVIDER_PREPARED")
+            self.assertEqual(result["simulatorReadyState"], "Booted")
+            self.assertFalse(result["providerPrepared"])
+            self.assertNotIn("hostTLSReadiness", result)
+            fixture.assert_not_called()
+            environment.assert_not_called()
+
+    def test_ready_cannot_report_success_when_the_post_wait_owner_changes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            args = argparse.Namespace(safe_dir=directory, simulator_receipt=directory / "simulator.json")
+            result = {}
+            with patch.object(CI, "github_context", return_value=("123", "a" * 40, directory)), \
+                 patch.object(CI, "verify_simulator", side_effect=[
+                     ("owned", {}, "Booted"), ("different", {}, "Booted")]), \
+                 patch.object(CI, "run", return_value=""):
+                with self.assertRaisesRegex(CI.BoundaryError, "^owned_simulator_boot_verification_failed$"):
+                    CI.ready(args, result)
+            self.assertNotIn("status", result)
+            self.assertNotIn("simulatorReadyState", result)
+            self.assertFalse(result["providerPrepared"])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -215,6 +215,18 @@ def boot(args: argparse.Namespace, result: dict) -> None:
                   claimBoundary="Boot requested only; readiness is verified after the required native target build.")
 
 
+def ready(args: argparse.Namespace, result: dict) -> None:
+    """Require the owned device to be ready without preparing an unused provider."""
+    run_id, source_sha, _ = github_context()
+    udid, receipt, state = verify_simulator(args.simulator_receipt, run_id)
+    result.update(sourceCommit=source_sha, githubRunID=run_id, ownedSimulatorUDID=udid,
+                  scope="owned_simulator_readiness_not_product_acceptance", providerPrepared=False)
+    ensure_owned_simulator_booted(args.simulator_receipt, run_id, udid, receipt,
+                                 state, result, args.safe_dir)
+    result.update(status="OWNED_SIMULATOR_READY_NO_PROVIDER_PREPARED",
+                  claimBoundary="Owned simulator readiness only; no provider or UI acceptance is claimed.")
+
+
 def prepare(args: argparse.Namespace, result: dict) -> None:
     run_id, source_sha, temp_root = github_context()
     udid, receipt, simulator_state = verify_simulator(args.simulator_receipt, run_id)
@@ -294,7 +306,7 @@ def cleanup(args: argparse.Namespace, result: dict) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("operation", choices=["boot", "prepare", "verify", "cleanup"])
+    parser.add_argument("operation", choices=["boot", "ready", "prepare", "verify", "cleanup"])
     parser.add_argument("--safe-dir", type=Path, required=True)
     parser.add_argument("--simulator-receipt", type=Path)
     args = parser.parse_args()
@@ -302,9 +314,9 @@ def main() -> int:
               "status": "FAIL", "scope": "owned_hanlin_provider_ci_setup_not_product_acceptance"}
     try:
         args.safe_dir = safe_directory(args.safe_dir)
-        if args.operation in {"boot", "prepare"}:
+        if args.operation in {"boot", "ready", "prepare"}:
             require(args.simulator_receipt is not None, "simulator_receipt_required")
-        {"boot": boot, "prepare": prepare, "verify": verify, "cleanup": cleanup}[args.operation](args, result)
+        {"boot": boot, "ready": ready, "prepare": prepare, "verify": verify, "cleanup": cleanup}[args.operation](args, result)
         exit_code = 0
     except BoundaryError as error:
         result.update(status="FAIL", reason=str(error))
