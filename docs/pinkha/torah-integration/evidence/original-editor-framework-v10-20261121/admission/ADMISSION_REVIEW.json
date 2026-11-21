@@ -1,0 +1,72 @@
+{
+  "status": "READY_FOR_ROOT_REVIEW_NOT_PUBLISHED",
+  "parent": "062e490e52e20553caeb9389641002dd20c44865",
+  "branch": "codex/otzaria-original-editor-framework-v10-reviewed-20261121",
+  "paths": {
+    ".github/workflows/pinkha-original-editor-framework.yml": {
+      "parent_sha256": "0de33a52d0457d40b45ee73fe9d9a1eb5848de225b5eb41588c901bf7a240cae",
+      "parent_git_blob": "1a305270bb9341351db7cf15bd8e2bf18acb53e9",
+      "candidate_sha256": "e93a7d0890d0dea81b030fea56eb95c83ba78333eb0e6a5b8bded8e04f1962f6",
+      "candidate_git_blob": "2bb3376d0fb30b289032aa4ec8e7426e02ad5b73",
+      "candidate_bytes": 5053
+    },
+    "Tools/OriginalEditor/framework_profile.py": {
+      "parent_sha256": "bf9ad1ed4636ddbd200d26954da2877c3134f36cdbd82c08c0c836146fdf1065",
+      "parent_git_blob": "c721dd2cb4d9f409477d52839cb81c9e827a6c86",
+      "candidate_sha256": "2c1b264855c2d0d3ef295ddb2faef3c8fcce99f2df8d5a2d3f718ae7e8311419",
+      "candidate_git_blob": "75bde2a87b65e676cfa60fdeac95510cd3b63ab4",
+      "candidate_bytes": 9492
+    },
+    "Tools/OriginalEditor/framework_profile.json": {
+      "parent_sha256": "450f82cbc7414fac128c3163c80596c1203057410ac279242ce1b87caed38ebe",
+      "parent_git_blob": "e51b1797d3c5cee2a2ba9c7f17dbe3ab9c237925",
+      "candidate_sha256": "13b1f23e37d63bf362e8f94c0bdd461d68f848e8a6c6b548a1b4e88791b107f8",
+      "candidate_git_blob": "674bd79571ec529bedec3d519dbd1c4552a5700d",
+      "candidate_bytes": 2654
+    },
+    "Tools/PinkhaNativeDerived/install_verified_heart.py": {
+      "parent_sha256": "756e5408c61e48ddcc9422880dce7df93d1ca812a5424059bf80d97939cfe7ab",
+      "parent_git_blob": "7efcba968641e7cf223154b5503f404fb9b3fbe3",
+      "candidate_sha256": "8219e41e1b4842537b34ed483f6c33f8c406172e43519fb39ad82410d96ab9e9",
+      "candidate_git_blob": "6dd3399302b70e2de801ea82614a3b616cddee58",
+      "candidate_bytes": 5396
+    },
+    "Tools/OriginalEditor/test_framework.py": {
+      "parent_sha256": "71af66414d3bd58af8afe2b12ac32f3b0f3c8a2f65aaee68ca8893134620512c",
+      "parent_git_blob": "1030b06f9d20a6e6890ca6ce5bfeb5bc842f2f72",
+      "candidate_sha256": "a6148d3953101fa6c67311e8a397172bfe084e67744c0bb6661df0bf6c79b5c3",
+      "candidate_git_blob": "f089b0b6626fb32a75e67065466ecd48411598d4",
+      "candidate_bytes": 19230
+    }
+  },
+  "patch_sha256": "8986e4e9d3ce0e5af1c31095a3465c2257e5f37d099e23e4941a0a53e65c6e78",
+  "original_heart_installer_blob": "7efcba968641e7cf223154b5503f404fb9b3fbe3",
+  "installer_inverse_exact": true,
+  "timeout_minutes": [
+    140,
+    120
+  ],
+  "symbolgraph_timeout_seconds": 120,
+  "existing_expected_case_ids_preserved": 187,
+  "total_control_identities": 192,
+  "native_execution": "NOT_RUN",
+  "external_consumer": "NOT_RUN",
+  "editable_mount": "NOT_EXPOSED",
+  "evidence_commit": "ecb774360a348a3b8c734402143421e18fd92c5a",
+  "targeted_admission_controls": {
+    "status": "PASS_AFFECTED_ADMISSION_CONTROLS_2",
+    "executed": 2,
+    "passed": 2,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "test_ids": [
+      "test_framework.OriginalProjectPreservation.test_original_heart_installer_changes_only_one_new_branch_choice",
+      "test_framework.ObservedOriginalBuildBudget.test_new_route_budget_contains_actual_original_build_and_consumer"
+    ],
+    "discovered_exact_identities": 192,
+    "native_execution": "NOT_RUN",
+    "installer_inverse_blob": "7efcba968641e7cf223154b5503f404fb9b3fbe3"
+  },
+  "source_controls_scope": "25 distinct affected parser/flow/public-surface/signing cases verified across retained24/25 plus corrected1/1 executions; this admission then2/2 affected original controls; full192 mandatory Native not run"
+}
