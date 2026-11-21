@@ -1,0 +1,106 @@
+{
+  "status": "EXACT_FOUR_INCREMENT_SOURCE_JOIN_PASS",
+  "base_source": "bba49c59edc974a4ca448676823c3cc8bcf65522",
+  "patch_chain": [
+    {
+      "path": "original-writer-qualification.patch",
+      "sha256": "7f68e44a2bb9fbf11698b9e933fac8ea0482ced648131d6676e6eabf68548680",
+      "apply_output": "/workspace/scratch/ab739d619196/anytype_writer_qualification/original-writer-qualification.patch:84: new blank line at EOF.\n+\n/workspace/scratch/ab739d619196/anytype_writer_qualification/original-writer-qualification.patch:174: new blank line at EOF.\n+\nwarning: 2 lines add whitespace errors.\n"
+    },
+    {
+      "path": "permission-increment/additive-original-permissions.patch",
+      "sha256": "aaf869a32829f8879645338443fcd84c352e7a62785dcf6d5d0100f053bac490",
+      "apply_output": ""
+    },
+    {
+      "path": "permission-revocation-increment/permission-revocation-queue.patch",
+      "sha256": "fb70caae94a92cf18b65bba9ef3e6c25f877af5f9c70af6f5aadd49a51b8cf77",
+      "apply_output": ""
+    },
+    {
+      "path": "permission-scope-increment/preserve-unbound-permission-lifetime.patch",
+      "sha256": "5821654387d46e22d8c671dcb8864e6a826a1285a1e55770af2beb9032fa87fc",
+      "apply_output": ""
+    }
+  ],
+  "files": [
+    {
+      "path": "Anytype/Sources/Models/Documents/Document/BaseDocument.swift",
+      "bytes": 22393,
+      "sha256": "7409f0a490770641f9a0c75aae5c44f2a89a969ab02cdc51a54f74df78f7c830"
+    },
+    {
+      "path": "Anytype/Sources/Models/Documents/Events/Model/EventBunchSubscribtion.swift",
+      "bytes": 2465,
+      "sha256": "a2f48aab873b8aa7107116a668ad24238ab442d7af0b23aafc35db9d31b617ed"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteLifetime.swift",
+      "bytes": 5574,
+      "sha256": "451054685e2ff0c30371d384904be831412eec16c2a5e16c660d2f1891921eb4"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOperation.swift",
+      "bytes": 2459,
+      "sha256": "d6a1034809671d7550e21c5da4e46e1065d21ca6438bb66c7e1f9ea869b9dc51"
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift",
+      "bytes": 37777,
+      "sha256": "619b86ff25a507976cae15b4efdafe201511e01fb95ea8c8d55302341d8da1e3"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Account/AccountManager.swift",
+      "bytes": 1291,
+      "sha256": "954494a8c39f3c913dccb824a4064fdc1199ea46b0afbd9c54fd35f7105b224b"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Account/EditorAccountWriteTransition.swift",
+      "bytes": 2861,
+      "sha256": "25d37aa7d7dfe1b018c3161eca54c42bb6f0e7394bfdbf6ea6af3182c429c6dc"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Auth/AuthService.swift",
+      "bytes": 8363,
+      "sha256": "f82c4993614dcd2e70f4ccb6d6eeefcf46e5130d5c17f21dca59db3f04cf7075"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/DocumentOwnedObjectActionsService.swift",
+      "bytes": 6971,
+      "sha256": "5cc19c1661ebfc61737e4edef0442a9b669dc901ed3d280686f3f8b352f035e7"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/File/Models/NSItemProvider+Async.swift",
+      "bytes": 2044,
+      "sha256": "4e90ae2a4044b5a6b09d071bea42ce89d1992ad5d68232105b54a3b281ea38cc"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/Pastboard/DocumentService/PasteboardBlockDocumentService.swift",
+      "bytes": 3651,
+      "sha256": "ef4dc60e7ffbb569ed86f92b133689d264762270856bb1eee0ddd49e85336dcd"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/Pastboard/Operations/PasteboardTask.swift",
+      "bytes": 4094,
+      "sha256": "950ce99c79fe1250d0d3cd82e6b8aa502be47a97453b1a4d3f922c42ab6a6701"
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Block/Pastboard/PasteboardBlockService.swift",
+      "bytes": 8741,
+      "sha256": "146672af2bc7bbc53d9c6f4a4051db14dac8c2430fe62a5264f02955f676b4b4"
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/Invocation.swift",
+      "bytes": 5764,
+      "sha256": "cf08d5303044b7e916591e8109bb6d03ab1526d9f4403424dc0e7ab8d555afc2"
+    },
+    {
+      "path": "Modules/ProtobufMessages/Sources/InvocationDispatchBinding.swift",
+      "bytes": 3025,
+      "sha256": "e304f05ed114342795dbc3a603490311142d63f9a6a156bdcdafd68743e710cb"
+    }
+  ],
+  "no_native_test_credit": true,
+  "final_owner_sha256": "619b86ff25a507976cae15b4efdafe201511e01fb95ea8c8d55302341d8da1e3",
+  "final_base_document_sha256": "7409f0a490770641f9a0c75aae5c44f2a89a969ab02cdc51a54f74df78f7c830"
+}

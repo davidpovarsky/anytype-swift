@@ -32,13 +32,15 @@ final class DocumentOwnedObjectHeaderUploadingService: ObjectHeaderUploadingServ
     }
 
     func handleCoverAction(objectId: String, spaceId: String, action: ObjectCoverPickerAction) async throws {
-        try await owner.performMutation(spaceId: spaceId, createdInContext: objectId) { [service] in
+        try await owner.performMutation(spaceId: spaceId, createdInContext: objectId,
+                                        requiredPermissions: [.editDetails, .changeCover]) { [service] in
             try await service.handleCoverAction(objectId: objectId, spaceId: spaceId, action: action)
         }
     }
 
     func handleIconAction(objectId: String, spaceId: String, action: ObjectIconPickerAction) async throws {
-        try await owner.performMutation(spaceId: spaceId, createdInContext: objectId) { [service] in
+        try await owner.performMutation(spaceId: spaceId, createdInContext: objectId,
+                                        requiredPermissions: [.editDetails, .changeIcon]) { [service] in
             try await service.handleIconAction(objectId: objectId, spaceId: spaceId, action: action)
         }
     }

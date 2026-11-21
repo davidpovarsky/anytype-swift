@@ -28,26 +28,26 @@ final class DocumentOwnedDetailsService: DetailsServiceProtocol {
     }
 
     func updateBundledDetails(objectId: String, bundledDetails: [BundledDetails]) async throws {
-        try await owner.performMutation(contextId: objectId) { [service] in
+        try await owner.performMutation(contextId: objectId, requiredPermissions: [.editDetails]) { [service] in
             try await service.updateBundledDetails(objectId: objectId, bundledDetails: bundledDetails)
         }
     }
 
     func setLayout(objectId: String, detailsLayout: DetailsLayout) async throws {
-        try await owner.performMutation(contextId: objectId) { [service] in
+        try await owner.performMutation(contextId: objectId, requiredPermissions: [.editDetails, .changeLayout]) { [service] in
             try await service.setLayout(objectId: objectId, detailsLayout: detailsLayout)
         }
     }
 
     func updateDetails(contextId: String, relationKey: String, value: DataviewGroupValue) async throws {
-        try await owner.performMutation(contextId: contextId) { [service] in
+        try await owner.performMutation(contextId: contextId, requiredPermissions: [.editDetails, .editRelationValues]) { [service] in
             try await service.updateDetails(contextId: contextId, relationKey: relationKey, value: value)
         }
     }
 
     func setCover(objectId: String, spaceId: String, source: FileUploadingSource,
                   createdInContext: String, createdInContextRef: String) async throws {
-        try await owner.performMutation(contextId: objectId) { [owner, service] in
+        try await owner.performMutation(contextId: objectId, requiredPermissions: [.editDetails, .changeCover]) { [owner, service] in
             try await owner.performMutation(spaceId: spaceId, createdInContext: createdInContext) {
                 try await service.setCover(objectId: objectId, spaceId: spaceId, source: source,
                     createdInContext: createdInContext, createdInContextRef: createdInContextRef)
@@ -56,7 +56,7 @@ final class DocumentOwnedDetailsService: DetailsServiceProtocol {
     }
 
     func setCover(objectId: String, imageObjectId: String) async throws {
-        try await owner.performMutation(contextId: objectId) { [service] in
+        try await owner.performMutation(contextId: objectId, requiredPermissions: [.editDetails, .changeCover]) { [service] in
             try await service.setCover(objectId: objectId, imageObjectId: imageObjectId)
         }
     }

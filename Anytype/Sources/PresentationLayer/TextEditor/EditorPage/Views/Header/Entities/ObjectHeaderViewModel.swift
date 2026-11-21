@@ -25,7 +25,7 @@ final class ObjectHeaderViewModel: ObservableObject {
     
     private lazy var onIconTap = { [weak self] in
         guard let self, document.mode.isHandling, document.permissions.canChangeIcon else { return }
-        performOwnedPublication(requiresEditing: true) {
+        performOwnedPublication(requiresEditing: true, requiredPermissions: [.editDetails, .changeIcon]) {
             UISelectionFeedbackGenerator().selectionChanged()
             self.onIconPickerTap?(document)
         }
@@ -35,7 +35,7 @@ final class ObjectHeaderViewModel: ObservableObject {
         guard let self, document.mode.isHandling else { return }
         guard document.details?.resolvedLayoutValue != .note else { return }
         guard document.permissions.canChangeCover else { return }
-        performOwnedPublication(requiresEditing: true) {
+        performOwnedPublication(requiresEditing: true, requiredPermissions: [.editDetails, .changeCover]) {
             UISelectionFeedbackGenerator().selectionChanged()
             output?.showCoverPicker(document: document)
         }
@@ -162,7 +162,7 @@ final class ObjectHeaderViewModel: ObservableObject {
                 .receiveOnMain()
                 .sink { [weak self] update in
                     guard let self else { return }
-                    performOwnedPublication {
+                    performOwnedPublication(requiresEditing: true, requiredPermissions: [.editDetails, .changeCover]) {
                         self.header = buildLoadingHeader(update, showPublishingBanner: showPublishingBanner)
                     }
                 }
@@ -171,14 +171,17 @@ final class ObjectHeaderViewModel: ObservableObject {
 
     /// This executes after receiveOnMain, at the actual published-state write.
     /// It shares the prepared document owner; it creates no second authority.
-    private func performOwnedPublication(requiresEditing: Bool = false, _ operation: () -> Void) {
+    private func performOwnedPublication(requiresEditing: Bool = false,
+                                         requiredPermissions: Set<EditorDocumentWritePermission> = [],
+                                         _ operation: () -> Void) {
         guard let owner = documentWriteOwner else {
             operation()
             return
         }
         do {
             try owner.performSynchronousOperation(
-                contextId: document.objectId, spaceId: document.spaceId, requiresEditing: requiresEditing
+                contextId: document.objectId, spaceId: document.spaceId,
+                requiresEditing: requiresEditing, requiredPermissions: requiredPermissions
             ) {
                 try owner.validateDocument(document)
                 operation()

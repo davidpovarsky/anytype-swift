@@ -177,7 +177,9 @@ final class ObjectHeaderUploadingService: ObjectHeaderUploadingServiceProtocol, 
             return
         }
         try await MainActor.run {
-            try owner.performSynchronousOperation(contextId: objectId, spaceId: spaceId) {
+            try owner.performSynchronousOperation(contextId: objectId, spaceId: spaceId,
+                                                   requiresEditing: true,
+                                                   requiredPermissions: [.editDetails, .changeCover]) {
                 coverUploadSubject.send((objectId, spaceId, update))
             }
         }

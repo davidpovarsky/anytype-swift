@@ -525,7 +525,9 @@ final class BaseDocument: BaseDocumentProtocol, EditorDocumentWriteLifetimeProvi
         )
         
         if permissions != newPermissios {
-            if permissions.canEditBlocks && !newPermissios.canEditBlocks {
+            if (permissions.canEditBlocks && !newPermissios.canEditBlocks)
+                || (originalAccountDispatch != nil
+                    && EditorDocumentWritePermission.revokesAdmission(from: permissions, to: newPermissios)) {
                 editorWriteLifetime.invalidate()
             }
             permissions = newPermissios

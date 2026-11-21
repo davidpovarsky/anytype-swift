@@ -19,6 +19,30 @@ enum EditorDocumentWriteError: Error, Sendable, Equatable {
     case completedWithoutOwnership(EditorDocumentWriteRejection)
 }
 
+/// Additional original document permissions. These requirements never replace
+/// the existing handling, unlocked and block-edit admission checks.
+enum EditorDocumentWritePermission: Hashable, Sendable {
+    case editDetails
+    case changeCover
+    case changeIcon
+    case changeLayout
+    case editRelationValues
+    case editPropertiesList
+
+    /// Called by the original document before publishing changed permissions.
+    /// The same existing lifetime token closes the prepare-to-GCD queue window;
+    /// gaining a permission cannot revive any owner invalidated by an earlier loss.
+    static func revokesAdmission(from previous: ObjectPermissions, to current: ObjectPermissions) -> Bool {
+        (previous.canEditBlocks && !current.canEditBlocks)
+            || (previous.canEditDetails && !current.canEditDetails)
+            || (previous.canChangeCover && !current.canChangeCover)
+            || (previous.canChangeIcon && !current.canChangeIcon)
+            || (previous.canChangeLayout && !current.canChangeLayout)
+            || (previous.canEditRelationValues && !current.canEditRelationValues)
+            || (previous.canEditPropertiesList && !current.canEditPropertiesList)
+    }
+}
+
 /// A host-owned source is observed by the same document writer owner. Its
 /// currentness check must be synchronous, side-effect free and perform no I/O.
 struct EditorDocumentWriteCapture: Sendable {
@@ -294,6 +318,7 @@ final class EditorDocumentWriteOwner {
         let writeIntent: Bool
         let contextId: String
         let requiresEditing: Bool
+        let requiredPermissions: Set<EditorDocumentWritePermission>
         let lineage: EditorDocumentOperationLineage
         let parentWork: EditorDocumentParentWork?
         let onDrained: (@MainActor @Sendable () -> Void)?
@@ -422,8 +447,12 @@ final class EditorDocumentWriteOwner {
         notifyDrainIfNeeded()
     }
 
-    func scheduleMutation(contextId: String) throws -> EditorDocumentScheduledWrite {
-        let lease = try admit(contextId: contextId, requiresEditing: true, access: .mutation, phase: .reserved)
+    func scheduleMutation(
+        contextId: String,
+        requiredPermissions: Set<EditorDocumentWritePermission> = []
+    ) throws -> EditorDocumentScheduledWrite {
+        let lease = try admit(contextId: contextId, requiresEditing: true, access: .mutation,
+                              requiredPermissions: requiredPermissions, phase: .reserved)
         return EditorDocumentScheduledWrite(owner: self, lease: lease)
     }
 
@@ -446,10 +475,12 @@ final class EditorDocumentWriteOwner {
 
     func performMutation<Value: Sendable>(
         contextId: String,
+        requiredPermissions: Set<EditorDocumentWritePermission> = [],
         onDrained: (@MainActor @Sendable () -> Void)? = nil,
         operation: @Sendable () async throws -> Value
     ) async throws -> Value {
-        let lease = try admit(contextId: contextId, requiresEditing: true, access: .mutation, onDrained: onDrained)
+        let lease = try admit(contextId: contextId, requiresEditing: true, access: .mutation,
+                              requiredPermissions: requiredPermissions, onDrained: onDrained)
         defer { finish(lease) }
         return try await execute(lease, operation: operation)
     }
@@ -457,6 +488,7 @@ final class EditorDocumentWriteOwner {
     func performMutation<Value: Sendable>(
         spaceId: String,
         createdInContext: String = "",
+        requiredPermissions: Set<EditorDocumentWritePermission> = [],
         onDrained: (@MainActor @Sendable () -> Void)? = nil,
         operation: @Sendable () async throws -> Value
     ) async throws -> Value {
@@ -465,30 +497,34 @@ final class EditorDocumentWriteOwner {
             recordWriteFailure()
             throw EditorDocumentWriteError.rejected(.wrongContext)
         }
-        return try await performMutation(contextId: data.objectId, onDrained: onDrained, operation: operation)
+        return try await performMutation(contextId: data.objectId, requiredPermissions: requiredPermissions,
+                                         onDrained: onDrained, operation: operation)
     }
 
     func performRead<Value: Sendable>(
         contextId: String? = nil,
         spaceId: String? = nil,
         rpcNames: Set<String>,
+        requiredPermissions: Set<EditorDocumentWritePermission> = [],
         onDrained: (@MainActor @Sendable () -> Void)? = nil,
         operation: @Sendable () async throws -> Value
     ) async throws -> Value {
         try await performRead(contextId: contextId ?? data.objectId, spaceId: spaceId ?? data.spaceId,
-                              rpcNames: rpcNames, onDrained: onDrained, operation: operation)
+                              rpcNames: rpcNames, requiredPermissions: requiredPermissions,
+                              onDrained: onDrained, operation: operation)
     }
 
     func performRead<Value: Sendable>(
         contextId: String,
         spaceId: String,
         rpcNames: Set<String> = [],
+        requiredPermissions: Set<EditorDocumentWritePermission> = [],
         onDrained: (@MainActor @Sendable () -> Void)? = nil,
         operation: @Sendable () async throws -> Value
     ) async throws -> Value {
         try requireSpace(spaceId, writeIntent: false)
         let lease = try admit(contextId: contextId, requiresEditing: false,
-                              access: .read(rpcNames), onDrained: onDrained)
+                              access: .read(rpcNames), requiredPermissions: requiredPermissions, onDrained: onDrained)
         defer { finish(lease) }
         return try await execute(lease, operation: operation)
     }
@@ -547,12 +583,13 @@ final class EditorDocumentWriteOwner {
         contextId: String? = nil,
         spaceId: String? = nil,
         requiresEditing: Bool = true,
+        requiredPermissions: Set<EditorDocumentWritePermission> = [],
         operation: () throws -> Value
     ) throws -> Value {
         if let spaceId { try requireSpace(spaceId, writeIntent: requiresEditing) }
         let contextId = contextId ?? data.objectId
         let lease = try admit(contextId: contextId, requiresEditing: requiresEditing,
-                              access: requiresEditing ? .mutation : .read([]))
+                              access: requiresEditing ? .mutation : .read([]), requiredPermissions: requiredPermissions)
         defer { finish(lease) }
         guard let entry = pending[lease] else { throw EditorDocumentWriteError.rejected(.invalidLease) }
         let binding = dispatchBinding(lease: lease)
@@ -561,7 +598,8 @@ final class EditorDocumentWriteOwner {
             let value = try EditorDocumentOperationContext.$lineage.withValue(lineage) {
                 try InvocationDispatchContext.$binding.withValue(binding, operation: operation)
             }
-            if let reason = rejection(contextId: contextId, requiresEditing: requiresEditing) {
+            if let reason = rejection(contextId: contextId, requiresEditing: entry.requiresEditing,
+                                      requiredPermissions: entry.requiredPermissions) {
                 throw EditorDocumentWriteError.completedWithoutOwnership(reason)
             }
             return value
@@ -574,12 +612,14 @@ final class EditorDocumentWriteOwner {
     func performPublication(
         contextId: String,
         requiresEditing: Bool = true,
+        requiredPermissions: Set<EditorDocumentWritePermission> = [],
         operation: @Sendable () async -> Void
     ) async {
         if requiresEditing {
-            try? await performMutation(contextId: contextId, operation: operation)
+            try? await performMutation(contextId: contextId, requiredPermissions: requiredPermissions, operation: operation)
         } else {
-            try? await performRead(contextId: contextId, rpcNames: [], operation: operation)
+            try? await performRead(contextId: contextId, rpcNames: [],
+                                   requiredPermissions: requiredPermissions, operation: operation)
         }
     }
 
@@ -617,6 +657,7 @@ final class EditorDocumentWriteOwner {
         contextId: String,
         requiresEditing: Bool,
         access: EditorDocumentOperationAccess,
+        requiredPermissions: Set<EditorDocumentWritePermission> = [],
         tracking: Bool = false,
         phase: Phase = .ordinary,
         onDrained: (@MainActor @Sendable () -> Void)? = nil,
@@ -626,8 +667,11 @@ final class EditorDocumentWriteOwner {
         let inheritedID = inherited.leases[ObjectIdentifier(self)]
         let predecessor = inheritedID.flatMap { pending[$0] }
         let writeIntent = access.isMutation || predecessor?.writeIntent == true
+        let permissions = requiredPermissions.union(predecessor?.requiredPermissions ?? [])
+        let requiresEditing = requiresEditing || !permissions.isEmpty || predecessor?.requiresEditing == true
         do {
-            if let reason = rejection(contextId: contextId, requiresEditing: requiresEditing) {
+            if let reason = rejection(contextId: contextId, requiresEditing: requiresEditing,
+                                      requiredPermissions: permissions) {
                 throw EditorDocumentWriteError.rejected(reason)
             }
             if inheritedID != nil {
@@ -650,7 +694,7 @@ final class EditorDocumentWriteOwner {
             }
             pending[lease] = Pending(operation: operation, access: access, tracking: tracking,
                 writeIntent: writeIntent, contextId: contextId, requiresEditing: requiresEditing,
-                lineage: lineage, parentWork: parentWork, onDrained: onDrained, phase: phase)
+                requiredPermissions: permissions, lineage: lineage, parentWork: parentWork, onDrained: onDrained, phase: phase)
             return lease
         } catch {
             if writeIntent { recordWriteFailure() }
@@ -667,13 +711,15 @@ final class EditorDocumentWriteOwner {
         let binding = dispatchBinding(lease: lease)
         let lineage = entry.lineage.dispatching(binding)
         do {
-            if let reason = rejection(contextId: entry.contextId, requiresEditing: entry.requiresEditing) {
+            if let reason = rejection(contextId: entry.contextId, requiresEditing: entry.requiresEditing,
+                                      requiredPermissions: entry.requiredPermissions) {
                 throw EditorDocumentWriteError.rejected(reason)
             }
             let value = try await EditorDocumentOperationContext.$lineage.withValue(lineage) {
                 try await InvocationDispatchContext.$binding.withValue(binding, operation: operation)
             }
-            if let reason = rejection(contextId: entry.contextId, requiresEditing: entry.requiresEditing) {
+            if let reason = rejection(contextId: entry.contextId, requiresEditing: entry.requiresEditing,
+                                      requiredPermissions: entry.requiredPermissions) {
                 throw EditorDocumentWriteError.completedWithoutOwnership(reason)
             }
             guard pending[lease] != nil else {
@@ -696,7 +742,8 @@ final class EditorDocumentWriteOwner {
     private func prepareDispatch(lease: UUID, messageName: String) throws -> InvocationDispatchPermit {
         guard let entry = pending[lease] else { throw EditorDocumentWriteError.rejected(.invalidLease) }
         do {
-            if let reason = rejection(contextId: entry.contextId, requiresEditing: entry.requiresEditing) {
+            if let reason = rejection(contextId: entry.contextId, requiresEditing: entry.requiresEditing,
+                                      requiredPermissions: entry.requiredPermissions) {
                 throw EditorDocumentWriteError.rejected(reason)
             }
             guard entry.operation.isAccepting else { throw EditorDocumentWriteError.rejected(.invalidLease) }
@@ -713,7 +760,11 @@ final class EditorDocumentWriteOwner {
         }
     }
 
-    private func rejection(contextId: String, requiresEditing: Bool) -> EditorDocumentWriteRejection? {
+    private func rejection(
+        contextId: String,
+        requiresEditing: Bool,
+        requiredPermissions: Set<EditorDocumentWritePermission> = []
+    ) -> EditorDocumentWriteRejection? {
         refreshLifetime()
         if Task.isCancelled { return .cancelled }
         guard accepting else { return .retired }
@@ -730,9 +781,22 @@ final class EditorDocumentWriteOwner {
             return .documentChanged
         }
         guard exactSourceMatches() else { return .documentChanged }
+        let permissions = document.permissions
         if requiresEditing {
             guard data.mode == .handling else { return .notHandling }
-            guard !document.isLocked, document.permissions.canEditBlocks else { return .notEditable }
+            guard !document.isLocked, permissions.canEditBlocks else { return .notEditable }
+        }
+        for requirement in requiredPermissions {
+            let allowed: Bool
+            switch requirement {
+            case .editDetails: allowed = permissions.canEditDetails
+            case .changeCover: allowed = permissions.canChangeCover
+            case .changeIcon: allowed = permissions.canChangeIcon
+            case .changeLayout: allowed = permissions.canChangeLayout
+            case .editRelationValues: allowed = permissions.canEditRelationValues
+            case .editPropertiesList: allowed = permissions.canEditPropertiesList
+            }
+            guard allowed else { return .notEditable }
         }
         return nil
     }
