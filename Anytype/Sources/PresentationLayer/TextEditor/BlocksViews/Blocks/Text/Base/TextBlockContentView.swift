@@ -2,6 +2,7 @@ import UIKit
 import Combine
 import Services
 import AnytypeCore
+import PinkhaKit
 
 
 final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, FirstResponder {
@@ -265,13 +266,14 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         )
     }
 
-    private func applyNewConfiguration(configuration: TextBlockContentConfiguration) {
+    private func applyNewConfiguration(configuration: TextBlockContentConfiguration, isExplicitReplacement: Bool = false) {
         if configuredBlockId != configuration.blockId || focusContext !== configuration.focusContext {
             cancelPendingFocus()
         }
         configuredBlockId = configuration.blockId
         focusContext = configuration.focusContext
-        applyTextStorage(configuration.attributedString)
+        applyTextStorage(configuration.attributedString,
+            hasPendingLocalChanges: !isExplicitReplacement && (configuration.hasPendingLocalTextChanges?() ?? false))
 
         textBlockLeadingView.update(blockId: configuration.blockId, style: TextBlockLeadingStyle(with: configuration))
         PinkhaTextBlockLeadingMarkerAdapter.applyNumberAlignment(
@@ -309,7 +311,7 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         
         resetSubscription = configuration.resetPublisher.sink { [weak self] configuration in
             configuration.map {
-                self?.applyNewConfiguration(configuration: $0)
+                self?.applyNewConfiguration(configuration: $0, isExplicitReplacement: true)
             }
         }
         
@@ -323,46 +325,33 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         }
     }
 
-    /// Applies `incoming` to the text storage without needlessly rebuilding the keyboard's
-    /// input session. Reconfiguring the cell being typed in (the fork-time identity-rebind
-    /// refresh, a remote echo of the local text) with `setAttributedString` resets
-    /// autocorrect's word buffer even when nothing changed, so:
-    /// - identical characters, identical attributes: no write at all;
-    /// - identical characters, different attributes: attributes are applied in place — an
-    ///   attribute edit does not touch the word buffer. Characters are compared by `string`,
-    ///   not `isEqual(to:)`: UIKit decorates live text with private attributes (e.g.
-    ///   NSOriginalFont on font substitution), and a spuriously unequal comparison would
-    ///   silently reinstate the session reset;
-    /// - different characters: full write — except during an IME composition when `incoming`
-    ///   is a stale prefix of the live text (the view is legitimately ahead by the uncommitted
-    ///   marked text; the commit syncs view → model, so nothing is lost by skipping). A
-    ///   genuinely different non-empty text (undo, a remote edit) still takes the write:
-    ///   losing the composition is the lesser damage.
-    private func applyTextStorage(_ incoming: NSAttributedString) {
+    /// Both native editors use the same input ownership rule. Heart's serial
+    /// writer owns unacknowledged local text; an ordinary model echo may update
+    /// its attributes but may not erase its characters or UIKit's marked buffer.
+    /// Once the writer acknowledges the latest edit, remote and undo text can
+    /// replace the view normally. Explicit reset actions are identified by their
+    /// existing reset publisher, never by guessing from a text prefix.
+    private func applyTextStorage(_ incoming: NSAttributedString, hasPendingLocalChanges: Bool) {
         let liveTextView = textView.textView
-        guard liveTextView.isFirstResponder else {
-            liveTextView.textStorage.setAttributedString(incoming)
-            return
-        }
         let liveText: NSAttributedString = liveTextView.attributedText ?? NSAttributedString()
-        if liveTextView.markedTextRange != nil {
-            guard incoming.string.isNotEmpty, liveText.string.hasPrefix(incoming.string) else {
-                setAttributedTextKeepingCaret(incoming, in: liveTextView)
-                return
-            }
+        switch PinkhaTextInputRenderPolicy.action(
+            incoming: incoming.string, live: liveText.string,
+            isComposing: liveTextView.markedTextRange != nil,
+            hasPendingLocalChanges: hasPendingLocalChanges
+        ) {
+        case .preserve:
             return
-        }
-        guard liveText.string == incoming.string else {
+        case .replace:
             setAttributedTextKeepingCaret(incoming, in: liveTextView)
-            return
+        case .updateAttributes:
+            guard !liveText.isEqual(to: incoming) else { return }
+            let storage = liveTextView.textStorage
+            storage.beginEditing()
+            incoming.enumerateAttributes(in: NSRange(location: 0, length: incoming.length), options: []) { attributes, range, _ in
+                storage.setAttributes(attributes, range: range)
+            }
+            storage.endEditing()
         }
-        guard !liveText.isEqual(to: incoming) else { return }
-        let storage = liveTextView.textStorage
-        storage.beginEditing()
-        incoming.enumerateAttributes(in: NSRange(location: 0, length: incoming.length), options: []) { attributes, range, _ in
-            storage.setAttributes(attributes, range: range)
-        }
-        storage.endEditing()
     }
 
     /// Replacing the whole storage collapses the selection to the start of the block. While the

@@ -7,6 +7,70 @@ import UIKit
 @Suite("Native text block focus lifetime", .serialized)
 @MainActor
 struct TextBlockFocusLifecycleTests {
+    @Test("An unacknowledged local word survives stale and empty native row configurations")
+    func pendingLocalTextSurvivesNativeReconfiguration() async throws {
+        let fixture = try TextBlockFocusWindow()
+        defer { fixture.close() }
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let row = TextBlockContentView(frame: .zero)
+        var pending = false
+        var config = configuration("pending", cursor: cursor, subjects: subjects, initial: .end)
+        config.hasPendingLocalTextChanges = { pending }
+        row.update(with: config)
+        row.update(with: editingState())
+        fixture.attach(row)
+        await finishMainQueueTurn()
+        let input = row.textView.textView
+        try #require(input.isFirstResponder)
+        pending = true
+        let local = "Wave15 drop anchor אבג"
+        input.attributedText = NSAttributedString(string: local, attributes: [.font: UIFont.systemFont(ofSize: 17)])
+        let caret = NSRange(location: local.utf16.count, length: 0)
+        input.selectedRange = caret
+
+        config.initialBlockFocusPosition = nil
+        config.initialFocusRequestId = nil
+        for stale in ["W", "Wave15", ""] {
+            config.attributedString = NSAttributedString(string: stale)
+            row.update(with: config)
+            #expect(input.text == local)
+            #expect(input.selectedRange == caret)
+            #expect(input.isFirstResponder)
+        }
+    }
+
+    @Test("A completed local write accepts subsequent remote and undo replacements")
+    func completedLocalTextAcceptsRemoteReplacement() async throws {
+        let fixture = try TextBlockFocusWindow()
+        defer { fixture.close() }
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let row = TextBlockContentView(frame: .zero)
+        var pending = false
+        var config = configuration("acknowledged", cursor: cursor, subjects: subjects, initial: .end)
+        config.hasPendingLocalTextChanges = { pending }
+        row.update(with: config)
+        row.update(with: editingState())
+        fixture.attach(row)
+        await finishMainQueueTurn()
+        let input = row.textView.textView
+        try #require(input.isFirstResponder)
+        pending = true
+        input.attributedText = NSAttributedString(string: "local edit")
+        config.initialBlockFocusPosition = nil
+        config.initialFocusRequestId = nil
+        config.attributedString = NSAttributedString(string: "remote edit")
+        row.update(with: config)
+        #expect(input.text == "local edit")
+        pending = false
+        row.update(with: config)
+        #expect(input.text == "remote edit")
+        config.attributedString = NSAttributedString(string: "")
+        row.update(with: config)
+        #expect(input.text == "", "An explicit empty model state must work after local acknowledgement")
+    }
+
     @Test("Focus observations distinguish a denied guard, native refusal and accepted editing",
           arguments: ["ineligible", "refused", "accepted"])
     func nativeFocusObservationDistinguishesOutcomes(outcome: String) async throws {

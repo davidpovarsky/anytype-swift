@@ -4,6 +4,7 @@ import Services
 import AnytypeCore
 import Factory
 import DeepLinks
+import PinkhaKit
 
 struct TextBlockURLInputParameters {
     let textView: UITextView
@@ -92,6 +93,8 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
     // block): their resumed continuation must not act on the forked (deleted) id.
     private var emptyBlockFork: Task<Void, any Error>?
     private var forkGeneration = 0
+    private let textEditQueue = PinkhaSerialTextEditQueue()
+    var hasPendingTextChanges: Bool { textEditQueue.hasPendingChanges }
 
     init(
         document: some BaseDocumentProtocol,
@@ -181,7 +184,9 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
         if let style {
             content.contentType = style
         }
+        let generation = forkGeneration
         let materialization = try await virtualBlockSession.materialize(carrying: content)
+        guard generation == forkGeneration else { throw CancellationError() }
         info = materialization.info
         self.virtualBlockSession = nil
         return materialization.contentCarried
@@ -235,7 +240,9 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
             // The rebind already happened synchronously at initiation; racing callers only
             // wait for the middleware to commit the replace, ordering their own follow-up
             // mutations after the block exists.
+            let generation = forkGeneration
             try await emptyBlockFork.value
+            guard generation == forkGeneration else { throw CancellationError() }
             return false
         }
         guard canForkEmptyBlockOnFill(attrText) else { return false }
@@ -256,6 +263,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
         emptyBlockFork = task
         do {
             try await task.value
+            guard generation == forkGeneration else { throw CancellationError() }
             return true
         } catch {
             anytypeAssertionFailure("Empty block identity fork failed", info: ["error": error.localizedDescription])
@@ -279,6 +287,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
     func resetEmptyBlockFork() {
         emptyBlockFork = nil
         forkGeneration += 1
+        textEditQueue.resetOwnership()
     }
 
     /// Ensures a concrete middleware block carries `attrText` before a text mutation: first via the
@@ -677,6 +686,7 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
 
     private func handleKeyboardAction(action: CustomTextView.KeyboardAction, textView: UITextView) {
         Task { @MainActor in
+            try await textEditQueue.drain()
             if isVirtualUnmaterialized {
                 if case .delete = action {
                     virtualBlockSession?.dismissAndFocusPreviousBlock()
@@ -711,37 +721,35 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
     @MainActor
     private func textViewDidChangeText(textView: UITextView) {
         changeType.map { accessoryViewStateManager.textDidChange(changeType: $0) }
+        enqueueTextChange(textView: textView, allowDeferral: true)
+    }
+
+    /// Capture UIKit's accepted edit synchronously. Re-reading a reused text view
+    /// after suspension can read another row; dispatching one Task per key can
+    /// also resume old snapshots out of order after the same native fork.
+    private func enqueueTextChange(textView: UITextView, allowDeferral: Bool) {
         let text = textView.attributedText.sendable()
         let caret = textView.selectedRange
-        if isVirtualUnmaterialized {
-            Task { [weak textView] in
-                // Checked after the current call stack unwinds: the toolbar slash/mention
-                // buttons insert their trigger symbol first and open the search session
-                // right after this callback, and that session must stay on this text view.
-                guard let textView, virtualBlockCanSyncTextChange(textView) else { return }
-                let contentCarried = try await materializeVirtualBlock(carrying: text.value)
-                guard !contentCarried else { return }
-                try await actionHandler.changeText(text, blockId: info.id)
+        textEditQueue.enqueue { [weak self, weak textView] in
+            guard let self else { return false }
+            let generation = forkGeneration
+            if isVirtualUnmaterialized {
+                // Search sessions may open just after the delegate returns.
+                if allowDeferral {
+                    guard let textView, virtualBlockCanSyncTextChange(textView) else { return false }
+                }
+                let carried = try await materializeVirtualBlock(carrying: text.value)
+                guard generation == forkGeneration else { throw CancellationError() }
+                if carried { return true }
+            } else if allowDeferral, emptyBlockFork == nil, canForkEmptyBlockOnFill(text.value) {
+                if let textView, textView.markedTextRange != nil { return false }
+                if case .search = accessoryState { return false }
             }
-            return
-        }
-        Task { [weak textView] in
-            // Re-read at execution: a second change delivered before this task ran
-            // (dictation, a predictive-bar insert) must not fork with — and have the
-            // fork-time cell refresh rewrite the live view back to — stale text. Read
-            // before the deferral gate below, so the gate judges the same text the fork
-            // would carry.
-            let (text, caret) = textView.map { ($0.attributedText.sendable(), $0.selectedRange) } ?? (text, caret)
-            if emptyBlockFork == nil, canForkEmptyBlockOnFill(text.value) {
-                // Defer the fork to the IME/search-session commit; nothing syncs meanwhile,
-                // so the shared empty register is never written. Checked after the call
-                // stack unwinds so toolbar-inserted "/"/"@" sessions are already open.
-                if let textView, textView.markedTextRange != nil { return }
-                if case .search = accessoryState { return }
-            }
-            let contentCarried = try await forkEmptyBlockIfNeeded(carrying: text.value, focusAt: .at(caret))
-            guard !contentCarried else { return }
+            let carried = try await forkEmptyBlockIfNeeded(carrying: text.value, focusAt: .at(caret))
+            guard generation == forkGeneration else { throw CancellationError() }
+            if carried { return true }
             try await actionHandler.changeText(text, blockId: info.id)
+            return true
         }
     }
 
@@ -759,20 +767,13 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
 
     @MainActor
     private func textViewDidEndEditing(textView: UITextView) {
-        if isVirtualUnmaterialized {
-            let text = textView.attributedText.sendable()
-            if text.value.length > 0 {
-                // Keep text typed during a still-open slash/mention session or an abandoned
-                // IME composition — losing it on defocus would be worse than creating the block.
-                Task { try await materializeVirtualBlock(carrying: text.value) }
-            } else {
-                virtualBlockSession?.dismiss()
-            }
-        } else if emptyBlockFork == nil, canForkEmptyBlockOnFill(textView.attributedText) {
-            // Text held back during a slash/mention session or an IME composition must not
-            // be lost on defocus.
-            let text = textView.attributedText.sendable()
-            Task { try await forkEmptyBlockIfNeeded(carrying: text.value, focusAt: nil) }
+        if textEditQueue.hasPendingChanges ||
+            (isVirtualUnmaterialized && textView.attributedText.length > 0) {
+            // Defocus commits a deferred composition/search buffer through the same
+            // serial writer; it must not race another detached materialization task.
+            enqueueTextChange(textView: textView, allowDeferral: false)
+        } else if isVirtualUnmaterialized {
+            virtualBlockSession?.dismiss()
         }
         let configuration = accessoryConfiguration(using: textView)
 
@@ -874,17 +875,26 @@ extension TextBlockActionHandler: AccessoryViewOutput {
     }
     
     func setNewText(attributedString: SafeNSAttributedString) async throws {
+        // Update the view in this turn so subsequent keys include the explicit
+        // replacement. Persist it in order with native keyboard writes.
         resetSubject.send(attributedString.value)
-        if try await carryOrSync(attributedString.value, focusAt: endOfTextFocus(attributedString.value)) { return }
-        try await actionHandler.changeText(attributedString, blockId: info.id)
-
+        let task = textEditQueue.enqueue { [weak self] in
+            guard let self else { return false }
+            if try await carryOrSync(attributedString.value, focusAt: endOfTextFocus(attributedString.value)) { return true }
+            try await actionHandler.changeText(attributedString, blockId: info.id)
+            return true
+        }
+        try await task.value
+        try await textEditQueue.drain()
         viewModel.map { collectionController.itemDidChangeFrame(item: .block($0)) }
     }
 
     func changeText(attributedString: SafeNSAttributedString) {
-        Task { @MainActor in
-            if try await carryOrSync(attributedString.value, focusAt: nil) { return }
+        textEditQueue.enqueue { [weak self] in
+            guard let self else { return false }
+            if try await carryOrSync(attributedString.value, focusAt: nil) { return true }
             try await actionHandler.changeText(attributedString, blockId: info.id)
+            return true
         }
     }
     

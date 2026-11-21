@@ -169,7 +169,10 @@ final class TextBlockViewModel: BlockViewModelProtocol {
                     self?.textBlockContentConfiguration(attributedString: attributedString)
                 }
                 .eraseToAnyPublisher(),
-            actions: actionHandler.textBlockActions()
+            actions: actionHandler.textBlockActions(),
+            hasPendingLocalTextChanges: { [weak actionHandler] in
+                actionHandler?.hasPendingTextChanges ?? false
+            }
         )
 
         return contentConfiguration

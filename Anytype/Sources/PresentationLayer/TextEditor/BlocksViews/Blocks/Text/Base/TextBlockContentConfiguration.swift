@@ -54,6 +54,7 @@ struct TextBlockContentConfiguration: BlockConfiguration {
     @EquatableNoop private(set) var focusPublisher: AnyPublisher<BlockFocusPosition, Never>
     @EquatableNoop private(set) var resetPublisher: AnyPublisher<TextBlockContentConfiguration?, Never>
     @EquatableNoop private(set) var actions: Actions
+    @EquatableNoop var hasPendingLocalTextChanges: (@MainActor () -> Bool)?
     
     init(
         blockId: String,
@@ -73,7 +74,8 @@ struct TextBlockContentConfiguration: BlockConfiguration {
         focusContext: EditorCursorManager? = nil,
         focusPublisher: AnyPublisher<BlockFocusPosition, Never>,
         resetPublisher: AnyPublisher<TextBlockContentConfiguration?, Never>,
-        actions: Actions
+        actions: Actions,
+        hasPendingLocalTextChanges: (@MainActor () -> Bool)? = nil
     ) {
         self.blockId = blockId
         self.content = content
@@ -95,6 +97,7 @@ struct TextBlockContentConfiguration: BlockConfiguration {
         self.resetPublisher = resetPublisher
         
         self.actions = actions
+        self.hasPendingLocalTextChanges = hasPendingLocalTextChanges
     }
 }
 

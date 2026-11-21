@@ -1,0 +1,60 @@
+Building for debugging...
+[0/13] Write sources
+[2/13] Write swift-version-2807070033DA82CF.txt
+[4/16] Compiling PinkhaKit PinkhaSerialTextEditQueue.swift
+[5/16] Emitting module PinkhaKit
+[6/16] Compiling PinkhaKit PinkhaTextInputRenderPolicy.swift
+[7/17] Wrapping AST for PinkhaKit for debugging
+[9/20] Emitting module PinkhaKitTests
+[10/20] Compiling PinkhaKitTests PinkhaSerialTextEditQueueTests.swift
+[11/20] Compiling PinkhaKitTests PinkhaTextInputRenderPolicyTests.swift
+[12/21] C:\Users\DAVID\Code\anytype-swift-shared-editor-20261121\build\shared-editor-verification\package\.build\x86_64-unknown-windows-msvc\debug\PinkhaKitPackageDiscoveredTests.derived\all-discovered-tests.swift
+[13/21] Write sources
+[14/21] Wrapping AST for PinkhaKitTests for debugging
+[16/24] Emitting module PinkhaKitPackageDiscoveredTests
+[17/24] Compiling PinkhaKitPackageDiscoveredTests PinkhaKitTests.swift
+[18/24] Compiling PinkhaKitPackageDiscoveredTests all-discovered-tests.swift
+[19/25] C:\Users\DAVID\Code\anytype-swift-shared-editor-20261121\build\shared-editor-verification\package\.build\x86_64-unknown-windows-msvc\debug\PinkhaKitPackageTests.derived\runner.swift
+[20/25] Write sources
+[21/27] Wrapping AST for PinkhaKitPackageDiscoveredTests for debugging
+[23/27] Compiling PinkhaKitPackageTests runner.swift
+[24/27] Emitting module PinkhaKitPackageTests
+[25/28] Wrapping AST for PinkhaKitPackageTests for debugging
+[26/28] Write Objects.LinkFileList
+[27/28] Linking PinkhaKitPackageTests.xctest
+Build complete! (86.81s)
+Test Suite 'All tests' started at 2026-11-21 19:16:44.227
+Test Suite 'debug.xctest' started at 2026-11-21 19:16:44.261
+Test Suite 'debug.xctest' passed at 2026-11-21 19:16:44.261
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+Test Suite 'All tests' passed at 2026-11-21 19:16:44.261
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.0 (0.0) seconds
+◊ Test run started.
+→ Testing Library Version: 6.3.3 (48d727cc1cf4eda)
+→ Target Platform: x86_64-unknown-windows-msvc
+◊ Suite "Shared text input render ownership" started.
+◊ Suite "Serial native text writes" started.
+◊ Test "Remote and undo replacements resume after local acknowledgement" started.
+◊ Test "A late native echo cannot erase a newer local word" started.
+◊ Test "Canonically equivalent text with different storage lengths is a replacement" started.
+◊ Test "Compositions survive empty, different, and identical native text" started.
+◊ Test "Formatting a locally owned identical string never replaces its characters" started.
+◊ Test case passing 1 argument incoming → "" to "Compositions survive empty, different, and identical native text" started.
+◊ Test "A delayed native fork serializes writes and carries only the latest queued text" started.
+◊ Test case passing 1 argument incoming → "old" to "Compositions survive empty, different, and identical native text" started.
+◊ Test case passing 1 argument incoming → "שלום" to "Compositions survive empty, different, and identical native text" started.
+√ Test "A late native echo cannot erase a newer local word" passed after 0.001 seconds.
+√ Test "Remote and undo replacements resume after local acknowledgement" passed after 0.001 seconds.
+√ Test "Formatting a locally owned identical string never replaces its characters" passed after 0.001 seconds.
+√ Test "A delayed native fork serializes writes and carries only the latest queued text" passed after 0.001 seconds.
+√ Test "Compositions survive empty, different, and identical native text" with 3 test cases passed after 0.001 seconds.
+◊ Test "Failure preserves dirty ownership and a later user correction can save" started.
+√ Test "Canonically equivalent text with different storage lengths is a replacement" passed after 0.002 seconds.
+√ Suite "Shared text input render ownership" passed after 0.003 seconds.
+√ Test "Failure preserves dirty ownership and a later user correction can save" passed after 0.001 seconds.
+◊ Test "A deferred composition remains dirty until its explicit commit" started.
+√ Test "A deferred composition remains dirty until its explicit commit" passed after 0.001 seconds.
+◊ Test "Identity reset drops queued old edits and waits for the dispatched request" started.
+√ Test "Identity reset drops queued old edits and waits for the dispatched request" passed after 0.001 seconds.
+√ Suite "Serial native text writes" passed after 0.005 seconds.
+√ Test run with 9 tests in 2 suites passed after 0.006 seconds.

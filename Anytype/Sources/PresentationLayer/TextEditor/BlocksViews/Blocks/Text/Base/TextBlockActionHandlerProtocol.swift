@@ -6,6 +6,7 @@ import Foundation
 @MainActor
 protocol TextBlockActionHandlerProtocol: AnyObject {
     var info: BlockInformation { get set }
+    var hasPendingTextChanges: Bool { get }
 
     var resetSubject: PassthroughSubject<NSAttributedString?, Never> { get }
     var focusSubject: PassthroughSubject<BlockFocusPosition, Never> { get }
@@ -14,4 +15,8 @@ protocol TextBlockActionHandlerProtocol: AnyObject {
     /// Undo restored the block this handler forked away from; a completed or in-flight fork
     /// must not gate a fresh first fill nor rebind to the deleted id.
     func resetEmptyBlockFork()
+}
+
+extension TextBlockActionHandlerProtocol {
+    var hasPendingTextChanges: Bool { false }
 }
