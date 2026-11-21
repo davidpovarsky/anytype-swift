@@ -21,6 +21,20 @@ on:
       - 'Tools/AnyEngineValidation/**'
       - '.github/workflows/pinkha-any-engine-port.yml'
   workflow_dispatch:
+    inputs:
+      validation_scope:
+        description: Full validation or only shared-editor and remaining acceptance
+        type: choice
+        options: [full, remaining]
+        default: full
+      native_artifact_run_id:
+        description: Original native binary producer run for unchanged-source reuse
+        type: string
+        default: ''
+      native_producer_commit:
+        description: Exact original native producer commit
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -34,6 +48,7 @@ concurrency:
 
 jobs:
   apple-packages:
+    if: ${{ inputs.validation_scope != 'remaining' }}
     name: Apple package contracts and preserved domain behavior
     runs-on: xcode-27
     timeout-minutes: 40
@@ -66,19 +81,19 @@ jobs:
       - name: Check the retained source and capability inventory
         run: python3 Tools/AnyEnginePort/verify_source_retention.py --base 586c98bcc17dee425664224e508fc0e8df277678 --output build/any-engine-port/source-retention.json
       - name: Test the Any transport and immutable operation contracts
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && inputs.validation_scope != 'remaining' }}
         shell: bash
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaAnyEngine 2>&1 | tee build/any-engine-port/any-engine-tests.log
       - name: Test the Pinkha integration against its canonical domain models
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && inputs.validation_scope != 'remaining' }}
         shell: bash
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaAnyIntegration 2>&1 | tee build/any-engine-port/any-integration-tests.log
       - name: Exercise the original provider against public Sefaria
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && inputs.validation_scope != 'remaining' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -90,31 +105,31 @@ jobs:
             --build-log build/any-engine-port/any-integration-tests.log \
             --timeout-seconds 720
       - name: Test native editor, creation receipts and protected metadata
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && inputs.validation_scope != 'remaining' }}
         shell: bash
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaAnyHost 2>&1 | tee build/any-engine-port/any-host-tests.log
       - name: Test the shared Hanlin policy and native host binding
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && inputs.validation_scope != 'remaining' }}
         shell: bash
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaAnyHanlin 2>&1 | tee build/any-engine-port/any-hanlin-tests.log
       - name: Test the preserved Torah presentation state machine
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && inputs.validation_scope != 'remaining' }}
         shell: bash
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaTorahPresentation 2>&1 | tee build/any-engine-port/torah-presentation-tests.log
       - name: Compile and test the native presentation model on Apple
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && inputs.validation_scope != 'remaining' }}
         shell: bash
         run: |
           set -euo pipefail
           swift test --package-path Modules/PinkhaAnyUI 2>&1 | tee build/any-engine-port/any-ui-tests.log
       - name: Re-run preserved Pinkha domain behavior
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && inputs.validation_scope != 'remaining' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -129,6 +144,7 @@ jobs:
           if-no-files-found: error
 
   ios-runtime:
+    if: ${{ inputs.validation_scope != 'remaining' }}
     name: Real embedded Any library on iOS Simulator
     runs-on: xcode-27
     timeout-minutes: 30
@@ -244,6 +260,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 0
       - name: Checkout immutable canonical Hanlin source
         uses: actions/checkout@v4
         with:
@@ -256,6 +273,7 @@ jobs:
           python3 Tools/Hanlin/prepare_sdk.py --source .ci/hanlin-source
           python3 Tools/Hanlin/prepare_sdk.py --check
       - name: Checkout exact upstream Any
+        if: ${{ inputs.validation_scope != 'remaining' }}
         uses: actions/checkout@v4
         with:
           repository: anyproto/any
@@ -263,6 +281,7 @@ jobs:
           path: .ci/any-source
           persist-credentials: false
       - name: Checkout exact upstream SDK in the portable replace path
+        if: ${{ inputs.validation_scope != 'remaining' }}
         uses: actions/checkout@v4
         with:
           repository: anyproto/any-sync-sdk
@@ -270,33 +289,60 @@ jobs:
           path: .ci/any-source/.runtime-artifacts/sdk-source
           persist-credentials: false
       - uses: actions/setup-go@v6
+        if: ${{ inputs.validation_scope != 'remaining' }}
         with:
           go-version-file: .ci/any-source/go.mod
           cache-dependency-path: |
             .ci/any-source/go.sum
             .ci/any-source/.runtime-artifacts/sdk-source/go.sum
       - name: Apply and verify exact native source overlays
+        if: ${{ inputs.validation_scope != 'remaining' }}
         run: |
           python3 Tools/AnyEnginePort/prepare_native_runtime.py apply \
             --any-root .ci/any-source \
             --output build/any-patched-evidence/native-source.json
       - name: Test the actual iOS C lifecycle shim
+        if: ${{ inputs.validation_scope != 'remaining' }}
         working-directory: .ci/any-source
         run: go test -count=1 ./mobile/ios/
       - name: Build device and simulator native slices
+        if: ${{ inputs.validation_scope != 'remaining' }}
         working-directory: .ci/any-source
         shell: bash
         run: |
           set -euo pipefail
           scripts/build-xcframework.sh dist 2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/native-build.log"
       - name: Bind artifact hashes to the tested sources and install
+        if: ${{ inputs.validation_scope != 'remaining' }}
         id: native-artifact
         run: |
           python3 Tools/AnyEnginePort/prepare_native_runtime.py record \
             --any-root .ci/any-source --output build/any-patched-artifact
           python3 Tools/AnyEnginePort/prepare_native_runtime.py install \
             --artifact build/any-patched-artifact
+      - name: Verify retained source provenance before Apple acceptance
+        run: python3 Tools/AnyEnginePort/verify_source_retention.py --base 586c98bcc17dee425664224e508fc0e8df277678 --output build/any-patched-evidence/source-retention.json
+      - name: Reuse the original binary after exact native source verification
+        id: native-reuse
+        if: ${{ inputs.validation_scope == 'remaining' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NATIVE_ARTIFACT_RUN_ID: ${{ inputs.native_artifact_run_id }}
+          NATIVE_PRODUCER_COMMIT: ${{ inputs.native_producer_commit }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$NATIVE_ARTIFACT_RUN_ID" =~ ^[0-9]+$ ]]
+          [[ "$NATIVE_PRODUCER_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          gh run download "$NATIVE_ARTIFACT_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "any-pinkha-native-xcframework-$NATIVE_PRODUCER_COMMIT" --dir build/any-reused-artifact
+          python3 Tools/AnyEnginePort/prepare_native_runtime.py install \
+            --artifact build/any-reused-artifact --producer-commit "$NATIVE_PRODUCER_COMMIT"
+          mkdir -p build/any-patched-evidence
+          cp Modules/PinkhaAnyRuntime/Vendor/consumer-binding.json build/any-patched-evidence/native-reuse.json
+          cp Modules/PinkhaAnyRuntime/Vendor/native-artifact.json build/any-patched-evidence/original-native-artifact.json
       - name: Create one simulator owned by this run
+        id: native-simulator
         shell: bash
         run: |
           set -euo pipefail
@@ -341,6 +387,7 @@ jobs:
               json.dump({"ownedUDID": udid, "runtime": runtime, "deviceType": device["deviceTypeIdentifier"]}, output)
           PY
       - name: Build and run the linked AnyLib lifecycle tests
+        if: ${{ inputs.validation_scope != 'remaining' }}
         working-directory: Modules/PinkhaAnyRuntime
         shell: bash
         run: |
@@ -369,7 +416,7 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
       - name: Test protected Hanlin recovery on iOS
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && inputs.validation_scope != 'remaining' }}
         working-directory: Modules/PinkhaAnyHanlin
         shell: bash
         run: |
@@ -402,12 +449,17 @@ jobs:
             -maximum-test-execution-time-allowance 180 \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/hanlin-ios.log"
       - name: Test the UIKit editor and composition lifecycle
-        if: ${{ !cancelled() }}
+        id: ui-tests
+        if: ${{ !cancelled() && steps.native-simulator.outcome == 'success' }}
         working-directory: Modules/PinkhaAnyUI
         shell: bash
         run: |
           set -euo pipefail
-          xcodebuild test \
+          selection=()
+          if [ "${{ inputs.validation_scope }}" = remaining ]; then
+            selection=(-only-testing:PinkhaAnyUITests/AnyNativeTextRendererTests -only-testing:PinkhaAnyUITests/AnyNativeMarkedTextTests -only-testing:PinkhaAnyUITests/AnyNativeFocusLifecycleTests)
+          fi
+          xcodebuild test "${selection[@]}" \
             -scheme PinkhaAnyUI \
             -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
             -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
@@ -418,7 +470,7 @@ jobs:
             -maximum-test-execution-time-allowance 180 \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/ui-ios.log"
       - name: Test the real native account, Keychain and cold reopen path
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && inputs.validation_scope != 'remaining' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -450,7 +502,8 @@ jobs:
           retention-days: 14
           if-no-files-found: warn
       - name: Prepare owned Hanlin HTTPS provider for mounted acceptance
-        if: ${{ !cancelled() }}
+        id: provider-fixture
+        if: ${{ !cancelled() && steps.ui-tests.outcome == 'success' }}
         shell: bash
         run: |
           set -euo pipefail
@@ -458,11 +511,15 @@ jobs:
             --simulator-receipt build/any-patched-evidence/simulator.json \
             --safe-dir build/any-patched-evidence/hanlin-provider
       - name: Build and launch the separate native executable
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.provider-fixture.outcome == 'success' && steps.ui-tests.outcome == 'success' }}
         shell: bash
         run: |
           set -euo pipefail
-          xcodebuild test \
+          selection=()
+          if [ "${{ inputs.validation_scope }}" = remaining ]; then
+            selection=(-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCreateEditHanlinConsentBackgroundAndColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceInspectorQuoteAndNoteSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testObserveCanonicalArchiveSystemPickers)
+          fi
+          xcodebuild test "${selection[@]}" \
             -project NativeApp/AnyNative.xcodeproj \
             -scheme PinkhaAnyNativeApp \
             -configuration Debug \
@@ -495,7 +552,13 @@ jobs:
         run: |
           set -euo pipefail
           gate_exit=0
-          for suite in runtime hanlin-ios ui-ios application native-ui; do
+          suites=(runtime hanlin-ios ui-ios application native-ui)
+          if [ "${{ inputs.validation_scope }}" = remaining ]; then
+            suites=(ui-ios native-ui)
+          fi
+          for suite in "${suites[@]}"; do
+            profile="$suite"
+            if [ "${{ inputs.validation_scope }}" = remaining ]; then profile="$suite-remaining"; fi
             if [ -d "build/any-patched-evidence/$suite.xcresult" ]; then
               xcrun xcresulttool get test-results summary \
                 --path "build/any-patched-evidence/$suite.xcresult" --format json \
@@ -505,7 +568,7 @@ jobs:
                 > "build/any-patched-evidence/$suite-test-methods.json" || true
             fi
             python3 Tools/AnyEnginePort/verify_native_test_execution.py \
-              --profile "$suite" --udid "${ANY_NATIVE_SIMULATOR_UDID:-}" \
+              --profile "$profile" --udid "${ANY_NATIVE_SIMULATOR_UDID:-}" \
               --summary "build/any-patched-evidence/$suite-test-counts.json" \
               --tests "build/any-patched-evidence/$suite-test-methods.json" \
               --output "build/any-patched-evidence/$suite-named-execution.json" || gate_exit=1
@@ -555,5 +618,5 @@ jobs:
     uses: ./.github/workflows/pinkha-sdk06-tests.yml
     with:
       heart_source_run_id: '44203168617'
-      expected_app_branch: codex/any-engine-port-20261119
-      profile: sdk06
+      expected_app_branch: ${{ github.ref_name }}
+      profile: ${{ inputs.validation_scope == 'remaining' && 'shared-editor' || 'sdk06' }}

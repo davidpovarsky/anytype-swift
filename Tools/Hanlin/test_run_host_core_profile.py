@@ -26,7 +26,7 @@ class CoreScopeGateTests(unittest.TestCase):
                         for values in product(*method["argument_collections"])]
                 self.nodes.append(node)
         self.tree = dict(testNodes=self.nodes)
-        self.summary = dict(totalTestCount=57, passedTests=57, failedTests=0, skippedTests=0,
+        self.summary = dict(totalTestCount=61, passedTests=61, failedTests=0, skippedTests=0,
             devicesAndConfigurations=[dict(device=dict(deviceId="core-disposable", osVersion="27.0",
                 osBuildNumber="24A-control", architecture="arm64", modelName="iPad (A16)"))])
 
@@ -35,10 +35,10 @@ class CoreScopeGateTests(unittest.TestCase):
                                 "core-disposable", HostTestProfile.CORE)
 
     def test_actual_distinct_cases_required_independently_of_summary_unit(self):
-        for total in (57, 87):
+        for total in (61, 92):
             value = self.validate(summary=dict(self.summary, totalTestCount=total, passedTests=total))
-            self.assertEqual(value["actual_method_count"], 57)
-            self.assertEqual(value["declared_case_count"], 87)
+            self.assertEqual(value["actual_method_count"], 61)
+            self.assertEqual(value["declared_case_count"], 92)
         self.assertEqual(HostTestProfile.CORE.pass_status, "WAVE15_CORE_COMPONENT_PASS")
         self.assertEqual(HostTestProfile.CORE.result_prefix, "wave15-core")
 

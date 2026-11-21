@@ -19,6 +19,7 @@ import sys
 
 from host_command import CommandCancelled, cancellation_signals, command
 import wave15_core_profile as core_profile
+import shared_editor_profile
 
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
@@ -89,11 +90,14 @@ EDITOR_METHODS = {
 class HostTestProfile(str, Enum):
     SDK06 = "sdk06"
     EDITOR = "editor"
+    SHARED_EDITOR = "shared-editor"
     CORE = "wave15-core"
     COMPONENTS = "wave15-components"
 
     @property
     def suites(self):
+        if self is self.SHARED_EDITOR:
+            return {shared_editor_profile.SUITE: len(shared_editor_profile.METHODS)}
         if self is self.COMPONENTS:
             return {name: count for part in (self.SDK06, self.EDITOR, self.CORE)
                     for name, count in part.suites.items()}
@@ -105,12 +109,12 @@ class HostTestProfile(str, Enum):
 
     @property
     def result_prefix(self):
-        return {self.SDK06: "sdk06", self.EDITOR: "editor-host", self.CORE: "wave15-core",
+        return {self.SHARED_EDITOR: "shared-editor", self.SDK06: "sdk06", self.EDITOR: "editor-host", self.CORE: "wave15-core",
                 self.COMPONENTS: "wave15-components"}[self]
 
     @property
     def pass_status(self):
-        return {self.SDK06: "SDK06_COMPONENT_PASS", self.EDITOR: "EDITOR_COMPONENT_PASS",
+        return {self.SHARED_EDITOR: "SHARED_EDITOR_COMPONENT_PASS", self.SDK06: "SDK06_COMPONENT_PASS", self.EDITOR: "EDITOR_COMPONENT_PASS",
                 self.CORE: "WAVE15_CORE_COMPONENT_PASS",
                 self.COMPONENTS: "WAVE15_ALL_COMPONENTS_PASS"}[self]
 
@@ -195,6 +199,8 @@ def expected_methods(app, profile=HostTestProfile.SDK06):
                     require(parameters.strip() == parameter + ": Bool"
                             and re.search(r"\barguments\s*:\s*\[\s*false\s*,\s*true\s*\]", attributes),
                             "Reviewed editor Bool arguments changed: " + name)
+        if profile is HostTestProfile.SHARED_EDITOR:
+            names = sorted(shared_editor_profile.validate_source(text))
         methods.update(suite + "/" + name for name in names)
         files[candidates[0]] = sha256(actual)
     return methods, files
@@ -242,6 +248,9 @@ def validate_results(summary, tree, expected, udid, profile=HostTestProfile.SDK0
         observed.add(matches[0])
     require(observed == expected, "Missing SDK test methods: " + ", ".join(sorted(expected - observed)))
     result = dict(counts=counts, methods=sorted(observed), actual_cases=cases, device=device)
+    if profile is HostTestProfile.SHARED_EDITOR:
+        result.update(shared_editor_profile.validate_arguments(tree, expected))
+        require(counts["totalTestCount"] in {10, 15}, "Shared-editor execution count differs from exact named cases")
     if profile is HostTestProfile.EDITOR:
         result.update(validate_editor_arguments(tree, expected))
         # Some xcresult versions summarize parameterized methods, while the
@@ -251,7 +260,7 @@ def validate_results(summary, tree, expected, udid, profile=HostTestProfile.SDK0
                 "Editor summary does not describe the exact methods or argument cases")
     if profile is HostTestProfile.CORE:
         result.update(core_profile.validate_arguments(tree, expected))
-        require(counts["totalTestCount"] in {57, 87},
+        require(counts["totalTestCount"] in {61, 92},
                 "Core summary differs from its exact method or literal-case scope")
     if profile is HostTestProfile.COMPONENTS:
         result["components"] = validate_component_arguments(tree, expected)
@@ -530,7 +539,8 @@ def execute(args, receipt):
         require(digest(app / "Dependencies/Middleware/Lib.xcframework" / item["path"]) == item["sha256"],
                 "Installed Heart bytes changed after verification")
     receipt.update(source_sha=head, preflight=preflight, configuration=CONFIGURATION,
-                   profile=profile.value, selection=["AnytypeTests/" + name for name in profile.suites],
+                   profile=profile.value, selection=["AnytypeTests/" + name for name in
+                       (sorted(expected) if profile is HostTestProfile.SHARED_EDITOR else profile.suites)],
                    expected_methods=sorted(expected),
                    test_source_hashes=sources, hanlin_revision=pin["revision"], heart=installation,
                    hanlin_snapshot_sha256=sha256(evidence / "hanlin-snapshot.json"), phase="SIMULATOR_BOOT")
@@ -564,7 +574,8 @@ def execute(args, receipt):
     receipt["dependency_checkouts"] = verify_packages(app, derived, evidence, pin, git)
     verify(app / "Dependencies/Hanlin")
     receipt["xctestrun_sha256"] = digest(configuration)
-    result = evidence / {HostTestProfile.SDK06: "SDK06.xcresult",
+    result = evidence / {HostTestProfile.SHARED_EDITOR: "SharedEditor.xcresult",
+                         HostTestProfile.SDK06: "SDK06.xcresult",
                          HostTestProfile.EDITOR: "EditorHost.xcresult",
                          HostTestProfile.CORE: "Wave15Core.xcresult",
                          HostTestProfile.COMPONENTS: "Wave15Components.xcresult"}[profile]
@@ -593,6 +604,9 @@ def execute(args, receipt):
     limitation = ("Native write dispatch, mounted document/account/scene lifetime UI, provider networking and full UI acceptance remain NOT_RUN"
                   if profile is HostTestProfile.SDK06 else
                   "Editor component tests use controlled store and insertion fixtures; native drag/drop UI, real middleware writes, and all SDK06 acceptance remain NOT_RUN by this profile")
+    if profile is HostTestProfile.SHARED_EDITOR:
+        limitation = ("Only the ten UIKit local-edit ownership methods and fifteen declared invocations; "
+                      "native editor and quote journeys still require their separate mounted acceptance.")
     if profile is HostTestProfile.CORE:
         limitation = ("UIKit direction, gesture, marker, focus lifetime and native Properties component tests; "
                       "real multi-block UI, Add Property UI, native account writes and physical devices remain NOT_RUN by this profile")

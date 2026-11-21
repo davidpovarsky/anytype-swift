@@ -374,8 +374,84 @@
     },
     "TextBlockFocusLifecycleTests": {
       "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
-      "source_lf_sha256": "5e99c107a59778f17593dc8929e704fe4a656b0d13c2f034e791a2ea51561e1e",
+      "source_lf_sha256": "0b533aa0500b9a62043d1f5e49827e6be1ac2ce0f839fa6496b6da81ab26dcbf",
       "methods": {
+        "reusedCellDoesNotPreserveDifferentPendingOwner": {
+          "parameters": [
+            {
+              "name": "composing",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "pendingLocalTextSurvivesNativeReconfiguration": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "completedLocalTextAcceptsRemoteReplacement": {
+          "parameters": [],
+          "argument_collections": [],
+          "case_count": 1
+        },
+        "nativeFocusObservationDistinguishesOutcomes": {
+          "parameters": [
+            {
+              "name": "outcome",
+              "type": "String"
+            }
+          ],
+          "argument_collections": [
+            [
+              "ineligible",
+              "refused",
+              "accepted"
+            ]
+          ],
+          "case_count": 3
+        },
+        "insertedCellUsesCurrentEditingBeforeFocus": {
+          "parameters": [
+            {
+              "name": "editing",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "reusedCellUsesCurrentLockBeforeFocus": {
+          "parameters": [
+            {
+              "name": "newLocked",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
         "initialFocusWaitsForAttachment": {
           "parameters": [],
           "argument_collections": [],
@@ -456,56 +532,11 @@
           "parameters": [],
           "argument_collections": [],
           "case_count": 1
-        },
-        "reusedCellUsesCurrentLockBeforeFocus": {
-          "parameters": [
-            {
-              "name": "newLocked",
-              "type": "Bool"
-            }
-          ],
-          "argument_collections": [
-            [
-              false,
-              true
-            ]
-          ],
-          "case_count": 2
-        },
-        "insertedCellUsesCurrentEditingBeforeFocus": {
-          "parameters": [
-            {
-              "name": "editing",
-              "type": "Bool"
-            }
-          ],
-          "argument_collections": [
-            [
-              false,
-              true
-            ]
-          ],
-          "case_count": 2
-        },
-        "nativeFocusObservationDistinguishesOutcomes": {
-          "parameters": [
-            {
-              "name": "outcome",
-              "type": "String"
-            }
-          ],
-          "argument_collections": [
-            [
-              "ineligible",
-              "refused",
-              "accepted"
-            ]
-          ],
-          "case_count": 3
         }
       }
     }
   },
   "focus_regression_source_base": "7ecc723c3334c5361c25216ed97161b7d221c5e4",
-  "focus_native_observation_source_base": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8"
+  "focus_native_observation_source_base": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8",
+  "shared_editor_ownership_source_base": "dcab781cc7df4f3b83da2199e24570abc2821462"
 }

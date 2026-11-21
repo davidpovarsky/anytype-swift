@@ -109,6 +109,28 @@ SOURCE_PATHS = {
     "archive-picker-observation": ["NativeApp/UITests/NativeLaunchTests.swift"],
 }
 
+
+# This selection reuses the independently verified, unaffected runtime/Hanlin/
+# hosted suites. It reports only tests actually executed by the focused run.
+PROFILES["ui-ios-remaining"] = {
+    "AnyNativeMarkedTextTests": PROFILES["ui-ios"]["AnyNativeMarkedTextTests"],
+    "AnyNativeFocusLifecycleTests": PROFILES["ui-ios"]["AnyNativeFocusLifecycleTests"],
+    "AnyNativeTextRendererTests": [
+        "testEqualNativeTextChangesAttributesWithoutReplacingCharactersOrSelection",
+        "testChangedNativeTextReplacesCharactersAndKeepsValidSelection",
+        "testMarkedTextKeepsCharactersSelectionAndAttributesUntilCommit",
+    ],
+}
+PROFILES["native-ui-remaining"] = {
+    "NativeLaunchTests": PROFILES["native-ui"]["NativeLaunchTests"][2:],
+}
+SOURCE_PATHS["ui-ios-remaining"] = [
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeMarkedTextTests.swift",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeFocusLifecycleTests.swift",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyNativeTextRendererTests.swift",
+]
+SOURCE_PATHS["native-ui-remaining"] = SOURCE_PATHS["native-ui"]
+
 def require(condition, message):
     if not condition:
         raise RuntimeError(message)
@@ -180,6 +202,7 @@ def main():
               "scope": ("actual_named_apple_ui_observation" if args.profile == "archive-picker-observation"
                         else "actual_named_apple_test_execution"),
               "observationOnly": args.profile == "archive-picker-observation",
+              "fullAcceptance": False,
               "runnerSHA256": sha(Path(__file__))}
     if record["observationOnly"]:
         record["claimBoundary"] = "System picker observation only; no export/import roundtrip, mapping or writable-directory acceptance."

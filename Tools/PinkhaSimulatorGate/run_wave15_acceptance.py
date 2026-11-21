@@ -26,7 +26,8 @@ import type_preservation as preservation
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
 UI_RESUME_BRANCH = "codex/chatgpt-wave15-ui-resume-20261119"
-APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH)
+SHARED_BRANCH = "codex/chatgpt-wave15-shared-20261121"
+APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, SHARED_BRANCH)
 EDITOR_DEVICE_PREFERENCES_TIMEOUT_SECONDS = 120
 LANES = {
     "hanlin-selection": {

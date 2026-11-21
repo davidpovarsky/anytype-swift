@@ -53,8 +53,8 @@ class CombinedComponentGateTests(unittest.TestCase):
         self.assertEqual(actual["components"]["sdk06"]["actual_method_count"], 6)
         self.assertEqual(actual["components"]["editor"]["actual_method_count"], 10)
         self.assertEqual(actual["components"]["editor"]["declared_case_count"], 12)
-        self.assertEqual(actual["components"]["wave15-core"]["actual_method_count"], 57)
-        self.assertEqual(actual["components"]["wave15-core"]["declared_case_count"], 87)
+        self.assertEqual(actual["components"]["wave15-core"]["actual_method_count"], 61)
+        self.assertEqual(actual["components"]["wave15-core"]["declared_case_count"], 92)
         self.assertEqual(host.HostTestProfile.COMPONENTS.pass_status, "WAVE15_ALL_COMPONENTS_PASS")
         self.assertEqual(len(host.HostTestProfile.COMPONENTS.suites), 12)
 

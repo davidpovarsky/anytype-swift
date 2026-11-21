@@ -77,10 +77,10 @@ def load_manifest():
     require(value.get("schema") == 1 and set(value.get("suites", {})) == set(SUITE_NAMES),
             "Core suite manifest differs from the reviewed scope")
     suites = value["suites"]
-    require(sum(len(item["methods"]) for item in suites.values()) == 57
+    require(sum(len(item["methods"]) for item in suites.values()) == 61
             and sum(method["case_count"] for item in suites.values()
-                    for method in item["methods"].values()) == 87,
-            "Core scope must contain57 functions and87 literal cases")
+                    for method in item["methods"].values()) == 92,
+            "Core scope must contain61 functions and92 literal cases")
     return suites
 
 
@@ -96,11 +96,13 @@ def validate_source(text, specification):
     return set(actual)
 
 
-def validate_arguments(tree, expected):
-    specifications = load_manifest()
+def validate_arguments(tree, expected, specifications=None):
+    if specifications is None:
+        specifications = load_manifest()
     methods = {suite + "/" + name: spec for suite, data in specifications.items()
                for name, spec in data["methods"].items()}
     require(expected == set(methods), "Actual core selection differs from its reviewed inventory")
+    expected_cases = sum(spec["case_count"] for spec in methods.values())
     nodes = []
     def visit(value):
         if isinstance(value, dict):
@@ -150,7 +152,7 @@ def validate_arguments(tree, expected):
                     "Missing or duplicate actual core argument cases")
             actual[method] = [dict(node_identifier=identifier, argument_display=child["name"], result="Passed")
                               for child in arguments]
-    require(observed == expected and sum(len(items) for items in actual.values()) == 87,
+    require(observed == expected and sum(len(items) for items in actual.values()) == expected_cases,
             "Incomplete source-bound core execution")
-    return dict(actual_method_count=len(observed), declared_case_count=87, core_cases=actual,
+    return dict(actual_method_count=len(observed), declared_case_count=expected_cases, core_cases=actual,
                 argument_evidence="DISTINCT_ACTUAL_CASES_BOUND_TO_EXACT_LITERAL_SOURCE_COLLECTIONS")
