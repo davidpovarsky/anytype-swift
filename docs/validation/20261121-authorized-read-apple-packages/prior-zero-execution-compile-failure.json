@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "status": "FAILED",
+  "sourceCommit": "b9c9af30cb0d5a4037909953ca35822b27687ee1",
+  "expectedMethodCount": 14,
+  "suites": [
+    {
+      "package": "PinkhaKit",
+      "suite": "TorahAuthorizedOperationReadTests",
+      "command": [
+        "swift",
+        "test",
+        "--verbose",
+        "--package-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaKit",
+        "--jobs",
+        "2",
+        "--force-resolved-versions",
+        "--parallel",
+        "--num-workers",
+        "1",
+        "--filter",
+        "^PinkhaKitTests\\.TorahAuthorizedOperationReadTests/(testCompleteConflictClosurePreservesExactCanonicalBytesAndProvenance|testAbsenceRequiresCompleteVerifiedLocalSnapshotAndNeverMissingPayload|testRejectsPartialScopeDuplicateAndUnsortedClosures|testAuthorityIdentityUsesExactUTF8InsteadOfUnicodeEquivalentSpelling|testInvalidOperationIdentityAndBoundedResponseFailClosed)$",
+        "--xunit-output",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/authorized-operation-read-packages/PinkhaKit.xml"
+      ],
+      "expectedMethods": [
+        "testCompleteConflictClosurePreservesExactCanonicalBytesAndProvenance",
+        "testAbsenceRequiresCompleteVerifiedLocalSnapshotAndNeverMissingPayload",
+        "testRejectsPartialScopeDuplicateAndUnsortedClosures",
+        "testAuthorityIdentityUsesExactUTF8InsteadOfUnicodeEquivalentSpelling",
+        "testInvalidOperationIdentityAndBoundedResponseFailClosed"
+      ],
+      "status": "FAILED",
+      "returncode": 1,
+      "logSHA256": "609bb511d14b68b3ba5f95f7e0d6e4ab21403c723dd1c3256d41a87d88da0437"
+    }
+  ],
+  "fullT2Complete": false,
+  "nativeRuntimeOrIOSAdapterProof": false,
+  "swiftVersion": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "xcodeVersion": "Xcode 27.0\nBuild version 27A266a",
+  "packageSourceTrees": {
+    "PinkhaKit": "c9a175965ce87da53cf31d04312481c79a377717",
+    "PinkhaAnyEngine": "067326076225ccfc467964b19654569f906bfa4a",
+    "PinkhaAnyIntegration": "329d3a543a935cd0fa650023ac1018e4b06b1cd8"
+  },
+  "originalResolvedFiles": {
+    "PinkhaAnyEngine": "50ddc3fc5398afb197e62f3cd8aa251315dbdd8d9d1d67e0dc665862ef3258af",
+    "PinkhaAnyIntegration": "ed1a2b280065f21ad4d625662c8bd2c7c7712c436f185ee2b1135ad35c973ddc"
+  },
+  "dependencyPreflight": [
+    {
+      "package": "PinkhaKit",
+      "command": [
+        "swift",
+        "package",
+        "--package-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaKit",
+        "resolve"
+      ],
+      "status": "RESOLVED_EXACT_PINS",
+      "returncode": 0,
+      "logSHA256": "e20ec2c7f206a26db92585ec654de38cbfd1a2193546d65de0ff4d4b1b6731fc",
+      "resolvedPins": {
+        "torahinspectorkit": "158acb295f832e96907cdadc813a1c2a4bb6a03c"
+      }
+    },
+    {
+      "package": "PinkhaAnyEngine",
+      "command": [
+        "swift",
+        "package",
+        "--package-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyEngine",
+        "resolve"
+      ],
+      "status": "RESOLVED_EXACT_PINS",
+      "returncode": 0,
+      "logSHA256": "f4681b2c3caa2784170b9edf2a5148db699d9dcadf15621bfa1d14e78c82ea4f",
+      "resolvedPins": {
+        "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+        "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed"
+      }
+    },
+    {
+      "package": "PinkhaAnyIntegration",
+      "command": [
+        "swift",
+        "package",
+        "--package-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyIntegration",
+        "resolve"
+      ],
+      "status": "RESOLVED_EXACT_PINS",
+      "returncode": 0,
+      "logSHA256": "87899acb5a71659c064c52b91773a6ac36ec90c18ba81812ac6fdab8e42bdca4",
+      "resolvedPins": {
+        "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+        "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+        "torahinspectorkit": "158acb295f832e96907cdadc813a1c2a4bb6a03c"
+      }
+    }
+  ],
+  "resolvedPreflightPassed": true,
+  "error": "ValueError: PinkhaKit build or selected tests failed; see original log",
+  "generatedResolvedFiles": {
+    "PinkhaKit": "121d3e698b7c4a26df018a5b4a608a02b4e7d28ffb7326639b834c201cd9142c",
+    "PinkhaAnyEngine": "50ddc3fc5398afb197e62f3cd8aa251315dbdd8d9d1d67e0dc665862ef3258af",
+    "PinkhaAnyIntegration": "ed1a2b280065f21ad4d625662c8bd2c7c7712c436f185ee2b1135ad35c973ddc"
+  }
+}

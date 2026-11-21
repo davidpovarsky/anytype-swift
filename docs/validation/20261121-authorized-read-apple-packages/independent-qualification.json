@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "status": "QUALIFIED_ORIGINAL_APPLE_PACKAGE_14",
+  "runID": 44952901524,
+  "jobID": 136994539259,
+  "artifactID": 14727045427,
+  "sourceCommit": "a7db1f90241b7d4075eb768d3d38446887991ee3",
+  "archiveSHA256": "3680f4216a2f483d57319c9e772ebb1d760bc1b2bc4ec4028d060a1b83199e46",
+  "originalReceiptSHA256": "4336c4e1fb7a81de71e980ee2a2cb90a58c7acf9a30847c7bd54e473409bca80",
+  "methodsPassed": 14,
+  "failed": 0,
+  "skipped": 0,
+  "packageResults": [
+    {
+      "package": "PinkhaKit",
+      "methods": [
+        "testAbsenceRequiresCompleteVerifiedLocalSnapshotAndNeverMissingPayload",
+        "testAuthorityIdentityUsesExactUTF8InsteadOfUnicodeEquivalentSpelling",
+        "testCompleteConflictClosurePreservesExactCanonicalBytesAndProvenance",
+        "testInvalidOperationIdentityAndBoundedResponseFailClosed",
+        "testRejectsPartialScopeDuplicateAndUnsortedClosures"
+      ],
+      "count": 5,
+      "logSHA256": "d3183f6388675ebf0de247d77ccdeaf9fbb966aa06127cebdcc7dfa5a18705a7",
+      "xunitSHA256": "021c3bb20632d91f5b35cd617294ebe162057226663af4077358bd4096992f21"
+    },
+    {
+      "package": "PinkhaAnyEngine",
+      "methods": [
+        "testAbsenceAndScopeAlwaysRequireAnExactCompleteNativeEnvelope",
+        "testCompleteConflictClosureRetainsBothExactCanonicalVariants",
+        "testDuplicateUnsortedAndOversizedFullEnvelopesAreRejected",
+        "testMissingBlockStatePreservesHistoryWithoutClaimingWholeObjectDeletion",
+        "testRetainedRuntimeAndIncompleteCapabilityNeverActivateNewRead",
+        "testTamperedCanonicalBytesIdentityAndProvenanceAreRejected"
+      ],
+      "count": 6,
+      "logSHA256": "11bbeb6a832436537e15ee7829649ff4a948822199e54284b21fbf0dfa18617f",
+      "xunitSHA256": "d894ab2be5ef9aa1d0b7a2f6e33cd7209a1a58f8eda4ffb8027e2363d2053adf"
+    },
+    {
+      "package": "PinkhaAnyIntegration",
+      "methods": [
+        "testInactiveSessionNeverCallsNativeLoaderAndErrorsHaveNoPayload",
+        "testInvalidatedOrCancelledInFlightReadCannotReleaseAcquiredPrivatePayload",
+        "testMapsNativeReadToSharedScopeWithoutChangingBytesOrAuthority"
+      ],
+      "count": 3,
+      "logSHA256": "cec1df394b35d0f7b04d814b25cc24ef9663ebd169933a107e3968ba65e6e4f4",
+      "xunitSHA256": "3c697c366bf816f66182a5ffb2678e2af6291abf2061b248a8eaf093604fa05c"
+    }
+  ],
+  "nativeRuntimeOrIOSAdapterProof": false,
+  "fullT2Complete": false,
+  "testReexecutionPerformed": false
+}

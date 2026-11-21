@@ -1,0 +1,300 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_FOCUSED_SHARED_AND_ANY_READ_PACKAGES_14",
+  "sourceCommit": "a7db1f90241b7d4075eb768d3d38446887991ee3",
+  "expectedMethodCount": 14,
+  "suites": [
+    {
+      "package": "PinkhaKit",
+      "suite": "TorahAuthorizedOperationReadTests",
+      "command": [
+        "swift",
+        "test",
+        "--verbose",
+        "--package-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaKit",
+        "--jobs",
+        "2",
+        "--force-resolved-versions",
+        "--parallel",
+        "--num-workers",
+        "1",
+        "--filter",
+        "^PinkhaKitTests\\.TorahAuthorizedOperationReadTests/(testCompleteConflictClosurePreservesExactCanonicalBytesAndProvenance|testAbsenceRequiresCompleteVerifiedLocalSnapshotAndNeverMissingPayload|testRejectsPartialScopeDuplicateAndUnsortedClosures|testAuthorityIdentityUsesExactUTF8InsteadOfUnicodeEquivalentSpelling|testInvalidOperationIdentityAndBoundedResponseFailClosed)$",
+        "--xunit-output",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/authorized-operation-read-packages/PinkhaKit.xml"
+      ],
+      "expectedMethods": [
+        "testCompleteConflictClosurePreservesExactCanonicalBytesAndProvenance",
+        "testAbsenceRequiresCompleteVerifiedLocalSnapshotAndNeverMissingPayload",
+        "testRejectsPartialScopeDuplicateAndUnsortedClosures",
+        "testAuthorityIdentityUsesExactUTF8InsteadOfUnicodeEquivalentSpelling",
+        "testInvalidOperationIdentityAndBoundedResponseFailClosed"
+      ],
+      "status": "PASSED",
+      "returncode": 0,
+      "logSHA256": "d3183f6388675ebf0de247d77ccdeaf9fbb966aa06127cebdcc7dfa5a18705a7",
+      "cases": [
+        {
+          "class": "PinkhaKitTests.TorahAuthorizedOperationReadTests",
+          "method": "testAbsenceRequiresCompleteVerifiedLocalSnapshotAndNeverMissingPayload",
+          "status": "passed",
+          "durationSeconds": "0.212904125"
+        },
+        {
+          "class": "PinkhaKitTests.TorahAuthorizedOperationReadTests",
+          "method": "testAuthorityIdentityUsesExactUTF8InsteadOfUnicodeEquivalentSpelling",
+          "status": "passed",
+          "durationSeconds": "0.208671041"
+        },
+        {
+          "class": "PinkhaKitTests.TorahAuthorizedOperationReadTests",
+          "method": "testCompleteConflictClosurePreservesExactCanonicalBytesAndProvenance",
+          "status": "passed",
+          "durationSeconds": "0.0983695"
+        },
+        {
+          "class": "PinkhaKitTests.TorahAuthorizedOperationReadTests",
+          "method": "testInvalidOperationIdentityAndBoundedResponseFailClosed",
+          "status": "passed",
+          "durationSeconds": "0.120019416"
+        },
+        {
+          "class": "PinkhaKitTests.TorahAuthorizedOperationReadTests",
+          "method": "testRejectsPartialScopeDuplicateAndUnsortedClosures",
+          "status": "passed",
+          "durationSeconds": "0.132870958"
+        }
+      ],
+      "originalXCTestPassedMethods": [
+        "testAbsenceRequiresCompleteVerifiedLocalSnapshotAndNeverMissingPayload",
+        "testAuthorityIdentityUsesExactUTF8InsteadOfUnicodeEquivalentSpelling",
+        "testCompleteConflictClosurePreservesExactCanonicalBytesAndProvenance",
+        "testInvalidOperationIdentityAndBoundedResponseFailClosed",
+        "testRejectsPartialScopeDuplicateAndUnsortedClosures"
+      ],
+      "xunitSHA256": "021c3bb20632d91f5b35cd617294ebe162057226663af4077358bd4096992f21",
+      "resolvedPins": {
+        "torahinspectorkit": "158acb295f832e96907cdadc813a1c2a4bb6a03c"
+      },
+      "resolvedSHA256": "121d3e698b7c4a26df018a5b4a608a02b4e7d28ffb7326639b834c201cd9142c"
+    },
+    {
+      "package": "PinkhaAnyEngine",
+      "suite": "AnyGuardedOperationReadTests",
+      "command": [
+        "swift",
+        "test",
+        "--verbose",
+        "--package-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyEngine",
+        "--jobs",
+        "2",
+        "--force-resolved-versions",
+        "--parallel",
+        "--num-workers",
+        "1",
+        "--filter",
+        "^PinkhaAnyEngineTests\\.AnyGuardedOperationReadTests/(testCompleteConflictClosureRetainsBothExactCanonicalVariants|testMissingBlockStatePreservesHistoryWithoutClaimingWholeObjectDeletion|testTamperedCanonicalBytesIdentityAndProvenanceAreRejected|testAbsenceAndScopeAlwaysRequireAnExactCompleteNativeEnvelope|testDuplicateUnsortedAndOversizedFullEnvelopesAreRejected|testRetainedRuntimeAndIncompleteCapabilityNeverActivateNewRead)$",
+        "--xunit-output",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/authorized-operation-read-packages/PinkhaAnyEngine.xml"
+      ],
+      "expectedMethods": [
+        "testCompleteConflictClosureRetainsBothExactCanonicalVariants",
+        "testMissingBlockStatePreservesHistoryWithoutClaimingWholeObjectDeletion",
+        "testTamperedCanonicalBytesIdentityAndProvenanceAreRejected",
+        "testAbsenceAndScopeAlwaysRequireAnExactCompleteNativeEnvelope",
+        "testDuplicateUnsortedAndOversizedFullEnvelopesAreRejected",
+        "testRetainedRuntimeAndIncompleteCapabilityNeverActivateNewRead"
+      ],
+      "status": "PASSED",
+      "returncode": 0,
+      "logSHA256": "11bbeb6a832436537e15ee7829649ff4a948822199e54284b21fbf0dfa18617f",
+      "cases": [
+        {
+          "class": "PinkhaAnyEngineTests.AnyGuardedOperationReadTests",
+          "method": "testAbsenceAndScopeAlwaysRequireAnExactCompleteNativeEnvelope",
+          "status": "passed",
+          "durationSeconds": "0.107201917"
+        },
+        {
+          "class": "PinkhaAnyEngineTests.AnyGuardedOperationReadTests",
+          "method": "testCompleteConflictClosureRetainsBothExactCanonicalVariants",
+          "status": "passed",
+          "durationSeconds": "0.091592917"
+        },
+        {
+          "class": "PinkhaAnyEngineTests.AnyGuardedOperationReadTests",
+          "method": "testDuplicateUnsortedAndOversizedFullEnvelopesAreRejected",
+          "status": "passed",
+          "durationSeconds": "0.241101"
+        },
+        {
+          "class": "PinkhaAnyEngineTests.AnyGuardedOperationReadTests",
+          "method": "testMissingBlockStatePreservesHistoryWithoutClaimingWholeObjectDeletion",
+          "status": "passed",
+          "durationSeconds": "0.192104167"
+        },
+        {
+          "class": "PinkhaAnyEngineTests.AnyGuardedOperationReadTests",
+          "method": "testRetainedRuntimeAndIncompleteCapabilityNeverActivateNewRead",
+          "status": "passed",
+          "durationSeconds": "0.118747791"
+        },
+        {
+          "class": "PinkhaAnyEngineTests.AnyGuardedOperationReadTests",
+          "method": "testTamperedCanonicalBytesIdentityAndProvenanceAreRejected",
+          "status": "passed",
+          "durationSeconds": "0.112451875"
+        }
+      ],
+      "originalXCTestPassedMethods": [
+        "testAbsenceAndScopeAlwaysRequireAnExactCompleteNativeEnvelope",
+        "testCompleteConflictClosureRetainsBothExactCanonicalVariants",
+        "testDuplicateUnsortedAndOversizedFullEnvelopesAreRejected",
+        "testMissingBlockStatePreservesHistoryWithoutClaimingWholeObjectDeletion",
+        "testRetainedRuntimeAndIncompleteCapabilityNeverActivateNewRead",
+        "testTamperedCanonicalBytesIdentityAndProvenanceAreRejected"
+      ],
+      "xunitSHA256": "d894ab2be5ef9aa1d0b7a2f6e33cd7209a1a58f8eda4ffb8027e2363d2053adf",
+      "resolvedPins": {
+        "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+        "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed"
+      },
+      "resolvedSHA256": "50ddc3fc5398afb197e62f3cd8aa251315dbdd8d9d1d67e0dc665862ef3258af"
+    },
+    {
+      "package": "PinkhaAnyIntegration",
+      "suite": "AnyAuthorizedTorahOperationReaderTests",
+      "command": [
+        "swift",
+        "test",
+        "--verbose",
+        "--package-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyIntegration",
+        "--jobs",
+        "2",
+        "--force-resolved-versions",
+        "--parallel",
+        "--num-workers",
+        "1",
+        "--filter",
+        "^PinkhaAnyIntegrationTests\\.AnyAuthorizedTorahOperationReaderTests/(testMapsNativeReadToSharedScopeWithoutChangingBytesOrAuthority|testInvalidatedOrCancelledInFlightReadCannotReleaseAcquiredPrivatePayload|testInactiveSessionNeverCallsNativeLoaderAndErrorsHaveNoPayload)$",
+        "--xunit-output",
+        "/Users/runner/work/anytype-swift/anytype-swift/build/authorized-operation-read-packages/PinkhaAnyIntegration.xml"
+      ],
+      "expectedMethods": [
+        "testMapsNativeReadToSharedScopeWithoutChangingBytesOrAuthority",
+        "testInvalidatedOrCancelledInFlightReadCannotReleaseAcquiredPrivatePayload",
+        "testInactiveSessionNeverCallsNativeLoaderAndErrorsHaveNoPayload"
+      ],
+      "status": "PASSED",
+      "returncode": 0,
+      "logSHA256": "cec1df394b35d0f7b04d814b25cc24ef9663ebd169933a107e3968ba65e6e4f4",
+      "cases": [
+        {
+          "class": "PinkhaAnyIntegrationTests.AnyAuthorizedTorahOperationReaderTests",
+          "method": "testInactiveSessionNeverCallsNativeLoaderAndErrorsHaveNoPayload",
+          "status": "passed",
+          "durationSeconds": "0.164336667"
+        },
+        {
+          "class": "PinkhaAnyIntegrationTests.AnyAuthorizedTorahOperationReaderTests",
+          "method": "testInvalidatedOrCancelledInFlightReadCannotReleaseAcquiredPrivatePayload",
+          "status": "passed",
+          "durationSeconds": "0.161835959"
+        },
+        {
+          "class": "PinkhaAnyIntegrationTests.AnyAuthorizedTorahOperationReaderTests",
+          "method": "testMapsNativeReadToSharedScopeWithoutChangingBytesOrAuthority",
+          "status": "passed",
+          "durationSeconds": "0.126496041"
+        }
+      ],
+      "originalXCTestPassedMethods": [
+        "testInactiveSessionNeverCallsNativeLoaderAndErrorsHaveNoPayload",
+        "testInvalidatedOrCancelledInFlightReadCannotReleaseAcquiredPrivatePayload",
+        "testMapsNativeReadToSharedScopeWithoutChangingBytesOrAuthority"
+      ],
+      "xunitSHA256": "3c697c366bf816f66182a5ffb2678e2af6291abf2061b248a8eaf093604fa05c",
+      "resolvedPins": {
+        "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+        "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+        "torahinspectorkit": "158acb295f832e96907cdadc813a1c2a4bb6a03c"
+      },
+      "resolvedSHA256": "ed1a2b280065f21ad4d625662c8bd2c7c7712c436f185ee2b1135ad35c973ddc"
+    }
+  ],
+  "fullT2Complete": false,
+  "nativeRuntimeOrIOSAdapterProof": false,
+  "swiftVersion": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "xcodeVersion": "Xcode 27.0\nBuild version 27A266a",
+  "packageSourceTrees": {
+    "PinkhaKit": "9d681b71fdf95496d8fef35cc70008a834021d13",
+    "PinkhaAnyEngine": "067326076225ccfc467964b19654569f906bfa4a",
+    "PinkhaAnyIntegration": "8e71f16dcf501eba5ee52a5a2fcb958109198216"
+  },
+  "originalResolvedFiles": {
+    "PinkhaAnyEngine": "50ddc3fc5398afb197e62f3cd8aa251315dbdd8d9d1d67e0dc665862ef3258af",
+    "PinkhaAnyIntegration": "ed1a2b280065f21ad4d625662c8bd2c7c7712c436f185ee2b1135ad35c973ddc"
+  },
+  "dependencyPreflight": [
+    {
+      "package": "PinkhaKit",
+      "command": [
+        "swift",
+        "package",
+        "--package-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaKit",
+        "resolve"
+      ],
+      "status": "RESOLVED_EXACT_PINS",
+      "returncode": 0,
+      "logSHA256": "3ca9276b0409cb39134e72b281effe650bd1069a77b307528355c0fe37190dbc",
+      "resolvedPins": {
+        "torahinspectorkit": "158acb295f832e96907cdadc813a1c2a4bb6a03c"
+      }
+    },
+    {
+      "package": "PinkhaAnyEngine",
+      "command": [
+        "swift",
+        "package",
+        "--package-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyEngine",
+        "resolve"
+      ],
+      "status": "RESOLVED_EXACT_PINS",
+      "returncode": 0,
+      "logSHA256": "a9e4c6c1959e8bb62875e666326f52b7101250fbf678b2f00562d7097b8c4a7a",
+      "resolvedPins": {
+        "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+        "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed"
+      }
+    },
+    {
+      "package": "PinkhaAnyIntegration",
+      "command": [
+        "swift",
+        "package",
+        "--package-path",
+        "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyIntegration",
+        "resolve"
+      ],
+      "status": "RESOLVED_EXACT_PINS",
+      "returncode": 0,
+      "logSHA256": "8c56a2ee6d91ccf6c6ce65eaee046c2178d09f0736e10c517732c307ecb9c728",
+      "resolvedPins": {
+        "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+        "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+        "torahinspectorkit": "158acb295f832e96907cdadc813a1c2a4bb6a03c"
+      }
+    }
+  ],
+  "resolvedPreflightPassed": true,
+  "generatedResolvedFiles": {
+    "PinkhaKit": "121d3e698b7c4a26df018a5b4a608a02b4e7d28ffb7326639b834c201cd9142c",
+    "PinkhaAnyEngine": "50ddc3fc5398afb197e62f3cd8aa251315dbdd8d9d1d67e0dc665862ef3258af",
+    "PinkhaAnyIntegration": "ed1a2b280065f21ad4d625662c8bd2c7c7712c436f185ee2b1135ad35c973ddc"
+  }
+}
