@@ -798,6 +798,25 @@
     },
     {
       "kind": "refactor",
+      "from": "Tools/PinkhaNativeDerived/build_t5_r15_runtime.py",
+      "to": "Tools/PinkhaNativeDerived/build_t5_r15_runtime.py",
+      "baselineBlob": "902714a86076e264392e240b9447dfba8a9cf83d",
+      "replacementBlob": "ff4f3274cadab843dff980629e180a19007b0c94",
+      "reason": "Preserve the original r15 builder and exact legacy identity while adding explicit corrected runtime variants: full r15 lookup source plus the exact previously tested attachment correction, two affected native fixtures and distinct source/binary/artifact receipts.",
+      "sharedSources": [
+        {
+          "path": "Tools/PinkhaNativeDerived/attachment_runtime.py",
+          "gitBlob": "7e25529bccec4b7e5ec5d598a6781238ad73e20f"
+        }
+      ],
+      "validation": [
+        "Root and independent lifecycle reviewer inspected the exact composition, fixture selection, three-architecture/full-marker binding and unchanged original default.",
+        "15 focused controls and source-hashed raw evidence are retained in docs/validation/20261121-t5-attachment-runtime.",
+        "Corrected source composition is not application acceptance; native fixture execution, Apple runtime build and consumer execution retain separate receipts."
+      ]
+    },
+    {
+      "kind": "refactor",
       "from": "Tools/PinkhaNativeDerived/install_verified_heart.py",
       "to": "Tools/PinkhaNativeDerived/install_verified_heart.py",
       "baselineBlob": "1ed1f7fa90083cc110f4cb73ec69ac5973d34a1c",
