@@ -17,9 +17,10 @@ public final class HeartAuthorizedOperationSession {
     private let transport: any HeartAuthorizedOperationTransport
     private var active = true
 
-    public init(accountID: String, spaceID: String, transport: any HeartAuthorizedOperationTransport) throws {
+    public init(accountID: String, spaceID: String, sessionGeneration: UUID = UUID(),
+                transport: any HeartAuthorizedOperationTransport) throws {
         self.scope = try TorahOperationReadScope(engine: .heart, accountID: accountID,
-                                                 spaceID: spaceID, sessionGeneration: UUID())
+                                                 spaceID: spaceID, sessionGeneration: sessionGeneration)
         self.transport = transport
     }
 

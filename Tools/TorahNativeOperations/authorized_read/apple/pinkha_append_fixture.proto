@@ -1,0 +1,170 @@
+syntax = "proto3";
+package pinkha.fixture;
+// Test-only projection: the following nested Pinkha block is copied verbatim
+// from the frozen native commands.proto patch. The production wire is unchanged.
+message Rpc {
+    // Fork-local, explicitly versioned native private-history API. No App
+    // capability is enabled by declaring these messages.
+    message Pinkha {
+        message TorahOperations {
+            enum Kind {
+                KIND_UNSPECIFIED = 0;
+                ADD = 1;
+                REMOVE = 2;
+                REPLACE = 3;
+            }
+            enum Disposition {
+                DISPOSITION_UNSPECIFIED = 0;
+                CREATED = 1;
+                ALREADY_EXISTS_SAME_PAYLOAD = 2;
+                COLLISION_DIFFERENT_PAYLOAD = 3;
+            }
+            enum Issue {
+                ISSUE_UNSPECIFIED = 0;
+                ISSUE_BAD_INPUT = 1;
+                ISSUE_UNSUPPORTED_VERSION = 2;
+                ISSUE_PERMISSION_DENIED = 3;
+                ISSUE_NOT_LOGGED_IN = 4;
+                ISSUE_ACCOUNT_CHANGED = 5;
+                ISSUE_TARGET_UNAVAILABLE = 6;
+                ISSUE_HISTORY_UNAVAILABLE = 7;
+                ISSUE_PROJECTION_BEHIND = 8;
+                ISSUE_READ_LIMIT = 9;
+                ISSUE_CANCELLED = 10;
+                ISSUE_DEADLINE_EXCEEDED = 11;
+                ISSUE_COLLISION = 12;
+                ISSUE_INVALID_NATIVE_HISTORY = 13;
+                ISSUE_UNKNOWN_INTERNAL = 14;
+            }
+            enum SnapshotScope {
+                SCOPE_UNSPECIFIED = 0;
+                // This is not acknowledgement from another client or a server.
+                LOCAL_VERIFIED_TREE = 1;
+            }
+            message Target {
+                string objectId = 1;
+                string blockId = 2;
+            }
+            message Source {
+                string providerId = 1;
+                string canonicalRef = 2;
+            }
+            // Returned operations include native-derived authors. Append.Request
+            // deliberately does not accept this message or an author/root/key.
+            message Operation {
+                uint32 version = 1;
+                string spaceId = 2;
+                string operationId = 3;
+                string authorId = 4;
+                Kind kind = 5;
+                Target target = 6;
+                Source source = 7;
+                bytes payload = 8;
+                repeated string observedClaimIds = 9;
+            }
+            message Claim {
+                string claimId = 1;
+                string digest = 2;
+                Operation operation = 3;
+            }
+            message Resolution {
+                string operationId = 1;
+                bool conflict = 2;
+                // All variants; no arrival-order winner is selected.
+                repeated Claim claims = 3;
+            }
+            message AppendReceipt {
+                Disposition disposition = 1;
+                string claimId = 2;
+                // Set only for an actual new signed change, not an idempotent retry.
+                string changeId = 3;
+                Resolution resolution = 4;
+            }
+            message Snapshot {
+                repeated Claim live = 1;
+                repeated Resolution conflicts = 2;
+                repeated string pendingObservedClaimIds = 3;
+                repeated string verifiedLocalHeads = 4;
+                // Local storage watermark, never a cross-client cursor/version.
+                uint64 localAppliedSeq = 5;
+                SnapshotScope scope = 6;
+            }
+            message Append {
+                message Request {
+                    uint32 protocolVersion = 1;
+                    string spaceId = 2;
+                    string operationId = 3;
+                    Kind kind = 4;
+                    Target target = 5;
+                    Source source = 6;
+                    // Exact opaque bytes, reused without normalization on retry.
+                    bytes payload = 7;
+                    repeated string observedClaimIds = 8;
+                }
+                message Response {
+                    message Error {
+                        enum Code {
+                            NULL = 0;
+                            UNKNOWN_ERROR = 1;
+                            BAD_INPUT = 2;
+                            UNSUPPORTED_VERSION = 3;
+                            PERMISSION_DENIED = 4;
+                            NOT_LOGGED_IN = 5;
+                            ACCOUNT_CHANGED = 6;
+                            TARGET_UNAVAILABLE = 7;
+                            HISTORY_UNAVAILABLE = 8;
+                            PROJECTION_BEHIND = 9;
+                            READ_LIMIT = 10;
+                            CANCELLED = 11;
+                            DEADLINE_EXCEEDED = 12;
+                            COLLISION = 13;
+                        }
+                        Code code = 1;
+                        // Constant server label; never arbitrary native error text.
+                        string description = 2;
+                        repeated Issue issues = 3;
+                    }
+                    Error error = 1;
+                    uint32 protocolVersion = 2;
+                    // Preserved even when error is non-NULL after a durable write.
+                    AppendReceipt receipt = 3;
+                }
+            }
+            message ReadTarget {
+                message Request {
+                    uint32 protocolVersion = 1;
+                    string spaceId = 2;
+                    Target target = 3;
+                    uint32 limit = 4;
+                }
+                message Response {
+                    message Error {
+                        enum Code {
+                            NULL = 0;
+                            UNKNOWN_ERROR = 1;
+                            BAD_INPUT = 2;
+                            UNSUPPORTED_VERSION = 3;
+                            PERMISSION_DENIED = 4;
+                            NOT_LOGGED_IN = 5;
+                            ACCOUNT_CHANGED = 6;
+                            TARGET_UNAVAILABLE = 7;
+                            HISTORY_UNAVAILABLE = 8;
+                            PROJECTION_BEHIND = 9;
+                            READ_LIMIT = 10;
+                            CANCELLED = 11;
+                            DEADLINE_EXCEEDED = 12;
+                            COLLISION = 13;
+                        }
+                        Code code = 1;
+                        string description = 2;
+                        repeated Issue issues = 3;
+                    }
+                    Error error = 1;
+                    uint32 protocolVersion = 2;
+                    // Absent on every error; absence of local history is an error.
+                    Snapshot snapshot = 3;
+                }
+            }
+        }
+    }
+}

@@ -61,6 +61,9 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
         }
         
         try Task.checkCancellation()
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1
+        let readLifetimeTransition = await PinkhaNativeReadLifetime.shared.beforeInvocation(name: messageName, request: request)
+#endif
         
         do {
             result = try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Response, Error>) in
@@ -74,9 +77,15 @@ public struct Invocation<Request, Response>: Sendable where Request: Message & S
                 }
             }
         } catch {
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1
+            await PinkhaNativeReadLifetime.shared.failedInvocation(readLifetimeTransition)
+#endif
             log(message: messageName, requestId: requestId, data: nil, error: error)
             throw error
         }
+#if PINKHA_NATIVE_T2_AUTHORIZED_READ_V1
+        await PinkhaNativeReadLifetime.shared.completedInvocation(readLifetimeTransition, response: result)
+#endif
         
         if logEnabled {
             var resultForLog = result

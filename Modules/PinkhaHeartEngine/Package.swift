@@ -16,6 +16,7 @@ let package = Package(
             .product(name: "SwiftProtobuf", package: "swift-protobuf"),
             .product(name: "Crypto", package: "swift-crypto")
         ]),
-        .testTarget(name: "PinkhaHeartEngineTests", dependencies: ["PinkhaHeartEngine"])
+        .testTarget(name: "PinkhaHeartEngineTests", dependencies: ["PinkhaHeartEngine"],
+                    resources: [.copy("Fixtures")])
     ]
 )

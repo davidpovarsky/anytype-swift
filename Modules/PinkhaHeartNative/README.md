@@ -1,0 +1,11 @@
+# Candidate Heart Lib read owner
+
+This additive factory binds the portable authorized-operation reader to the actual generated Lib byte endpoint. It is compiled only with explicit `PINKHA_NATIVE_T2_AUTHORIZED_READ_V1=1`; the default factory returns unsupportedContract and the default Invocation path is unchanged. The candidate framework must contain the generated entry; there is no dynamic lookup or legacy fallback.
+
+The candidate Invocation observer retires leases synchronously before native lifecycle dispatch. Native Account.Create/Select responses establish account identity; successful Workspace.Open establishes a Space lease only inside that unchanged owned account. The factory accepts only an existing registry lease selected by SpaceID. It never accepts caller-supplied account identity. Native read still enforces current account, Space, ACL, target and complete history closure.
+
+Eligibility is fixed at transition begin. An overlapping latest call cannot activate merely because an older continuation finished first. Monotonic account/workspace/per-Space revisions fence earlier completions, and account activation additionally requires no intervening lifecycle revision. Independent Spaces remain usable concurrently. Failures consume the transition and never restore retired readers. The lease's synchronous weak observer invalidates the portable session, including its final UI publication guard. The existing native call scheduling and MigrateCancel interrupt behavior are preserved.
+
+The byte bridge bounds the generated response before decoding, preserves readLimit for oversize and malformedNativeResponse for empty/invalid bytes, and keeps private-history bytes out of Invocation body logging. The actual generated inventory has no WorkspaceClose or SpaceClose RPC; existing SpaceDelete, SpaceJoinCancel, WorkspaceSelect and native account/application transitions are covered.
+
+Nine new owner/byte controls and one real native-byte fixture decoding test accompany the existing fourteen unexecuted Heart adapter tests. Source parsing does not qualify these tests. Actual Lib+iOS execution is a separate explicit candidate host proof; no full T2 capability or default runtime is enabled here.
