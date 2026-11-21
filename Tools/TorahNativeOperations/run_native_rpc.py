@@ -129,12 +129,19 @@ def verify_composed_source(heart: Path, expected: dict, tracked: set[str], modul
     require({name: digest(heart / name) for name in modules} == modules, "Go module pin changed")
 
 
-def generate(args, receipt, run) -> None:
+def generate(args, receipt, run, *, protoc_profile="linux-amd64") -> None:
     control, heart, work, evidence = args.control, args.heart_source, args.work, args.evidence
     rpc = control / "Tools/TorahNativeOperations/rpc"
     manifest, inventory = source_inputs(control, rpc)
     extension = (authorized.read_sources(control, manifest, inventory)
                  if getattr(args, "rpc_profile", "retained-v1") == authorized.PROFILE else None)
+    compiler = manifest["generation"]["protoc"]
+    if protoc_profile == "darwin-universal":
+        from authorized_read.apple_toolchain import PROTOC
+        require(extension is not None, "Apple generator is an explicit authorized-read candidate only")
+        compiler = PROTOC
+    else:
+        require(protoc_profile == "linux-amd64", "Unknown pinned protobuf compiler profile")
     require(not git(heart, "status", "--porcelain"), "Fresh clean pinned Heart checkout required")
     work.mkdir(parents=True, exist_ok=False)
     modules = {name: digest(heart / name) for name in ["go.mod", "go.sum"]}
@@ -158,7 +165,6 @@ def generate(args, receipt, run) -> None:
         expected[name] = sha
     if extension:
         authorized.apply_sources(extension, heart, expected, tracked, run)
-    compiler = manifest["generation"]["protoc"]
     archive = work / "protoc.zip"
     with urllib.request.urlopen(compiler["url"], timeout=60) as response:
         data = response.read(5 * 1024 * 1024)

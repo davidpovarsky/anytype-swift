@@ -21,6 +21,7 @@ on:
           - t2-native-rpc
           - t2-authorized-operation-read
           - t2-authorized-read-account
+          - t2-authorized-read-apple-runtime
           - t2-account-rpc
           - t2-native-clients
           - t2-native-clients-offline
@@ -391,5 +392,11 @@ jobs:
   t2-rpc-space-close:
     if: ${{ inputs.route == 't2-rpc-space-close' }}
     uses: ./.github/workflows/pinkha-t2-rpc-space-close.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-authorized-read-apple-runtime:
+    if: ${{ inputs.route == 't2-authorized-read-apple-runtime' }}
+    uses: ./.github/workflows/pinkha-heart-authorized-read-runtime.yml
     with:
       source_sha: ${{ github.sha }}

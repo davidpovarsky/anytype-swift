@@ -1,0 +1,74 @@
+name: Build the qualified Heart authorized-read simulator candidate
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-runtime:
+    runs-on: xcode-27
+    timeout-minutes: 90
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}
+      ATTEMPT: build/heart-authorized-read-${{ github.run_id }}-${{ github.run_attempt }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact candidate controller source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha || github.sha }}
+          path: build/heart-authorized-read-${{ github.run_id }}-${{ github.run_attempt }}/control
+          persist-credentials: false
+      - name: Checkout fresh exact Heart source
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/heart-authorized-read-${{ github.run_id }}-${{ github.run_attempt }}/heart
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Select exact Go compiler
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Check candidate controller controls only
+        run: |
+          mkdir -p "$ATTEMPT/controls"
+          python3 -B "$ATTEMPT/control/Tools/TorahNativeOperations/authorized_read/test_build_apple.py" -v > "$ATTEMPT/controls/results.log" 2>&1
+          cat "$ATTEMPT/controls/results.log"
+      - name: Build one simulator slice from the qualified native source closure
+        run: |
+          python3 -B "$ATTEMPT/control/Tools/TorahNativeOperations/authorized_read/build_apple.py" \
+            --control "$ATTEMPT/control" --heart-source "$ATTEMPT/heart" \
+            --work "$ATTEMPT/work" --evidence "$ATTEMPT/proof" --artifacts "$ATTEMPT/artifacts" \
+            --expected-app-sha "$EXPECTED_APP_SHA"
+      - name: Retain the distinct candidate framework for one later iOS host build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Heart-Authorized-Read-Simulator-v1
+          path: build/heart-authorized-read-${{ github.run_id }}-${{ github.run_attempt }}/artifacts/Pinkha-Heart-Authorized-Read-Simulator-v1.tar.gz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 14
+      - name: Retain original build receipts and controls including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Heart-Authorized-Read-Apple-Build-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/heart-authorized-read-${{ github.run_id }}-${{ github.run_attempt }}/proof
+            build/heart-authorized-read-${{ github.run_id }}-${{ github.run_attempt }}/controls
+          if-no-files-found: warn
+          retention-days: 14
