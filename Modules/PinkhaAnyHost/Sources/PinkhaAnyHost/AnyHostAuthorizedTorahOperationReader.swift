@@ -12,14 +12,19 @@ public struct AnyHostAuthorizedTorahOperationReader: TorahAuthorizedOperationRea
     private let reader: AnyAuthorizedTorahOperationReader
 
     public init(client: AnyHTTPClient, session: AnyApplicationSession) async throws {
-        let workspace = session.workspace
-        guard client.expectedAccountID.utf8.elementsEqual(workspace.accountID.utf8),
-              await session.isActive else {
-            throw TorahOperationReadError.accountChanged
+        let reader: AnyAuthorizedTorahOperationReader
+        do {
+            reader = try await session.perform { lease in
+                guard client.expectedAccountID.utf8.elementsEqual(lease.workspace.accountID.utf8) else {
+                    throw TorahOperationReadError.accountChanged
+                }
+                let stream = AnyStreamSession(generation: lease.generation)
+                return try await AnyAuthorizedTorahOperationReader(
+                    client: client, workspace: lease.workspace, session: stream)
+            }
+        } catch {
+            throw Self.mappedError(error)
         }
-        let stream = AnyStreamSession(generation: session.generation)
-        let reader = try await AnyAuthorizedTorahOperationReader(
-            client: client, workspace: workspace, session: stream)
         self.session = session
         self.reader = reader
         self.scope = reader.scope
@@ -42,16 +47,20 @@ public struct AnyHostAuthorizedTorahOperationReader: TorahAuthorizedOperationRea
                 return value
             }
         } catch {
-            if error is CancellationError { throw error }
-            if let shared = error as? TorahOperationReadError { throw shared }
-            if let host = error as? AnyHostError {
-                switch host {
-                case .sessionClosed, .engineRestarted, .wrongWorkspace:
-                    throw TorahOperationReadError.accountChanged
-                default: break
-                }
-            }
-            throw TorahOperationReadError.nativeFailure
+            throw Self.mappedError(error)
         }
+    }
+
+    private static func mappedError(_ error: any Error) -> any Error {
+        if error is CancellationError { return error }
+        if let shared = error as? TorahOperationReadError { return shared }
+        if let host = error as? AnyHostError {
+            switch host {
+            case .sessionClosed, .engineRestarted, .wrongWorkspace:
+                return TorahOperationReadError.accountChanged
+            default: break
+            }
+        }
+        return TorahOperationReadError.nativeFailure
     }
 }
