@@ -685,12 +685,12 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
     }
 
     private func handleKeyboardAction(action: CustomTextView.KeyboardAction, textView: UITextView) {
+        if textEditQueue.hasPendingChanges, textView.attributedText.length > 0 {
+            // Snapshot in the delegate's turn, before this view could be reused.
+            // A structural key explicitly commits a deferred composition/search buffer.
+            enqueueTextChange(textView: textView, allowDeferral: false)
+        }
         Task { @MainActor in
-            if textEditQueue.hasPendingChanges, textView.attributedText.length > 0 {
-                // A structural key commits a deferred composition/search buffer;
-                // otherwise a successful native fork would leave stale dirty ownership.
-                enqueueTextChange(textView: textView, allowDeferral: false)
-            }
             try await textEditQueue.drain()
             if isVirtualUnmaterialized {
                 if case .delete = action {
