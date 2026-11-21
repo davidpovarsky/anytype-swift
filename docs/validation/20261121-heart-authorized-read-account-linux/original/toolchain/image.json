@@ -1,0 +1,65 @@
+[
+    {
+        "Id": "sha256:7849a63a4b6c8ad0698b3bfc67b07165835208d8d82ec5766dfc9be5d56ceeab",
+        "RepoTags": [],
+        "RepoDigests": [
+            "golang@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8"
+        ],
+        "Parent": "",
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2026-07-07T22:12:44.245056127Z",
+        "DockerVersion": "",
+        "Author": "",
+        "Config": {
+            "Hostname": "",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "GOLANG_VERSION=1.26.5",
+                "GOTOOLCHAIN=local",
+                "GOPATH=/go"
+            ],
+            "Cmd": [
+                "/bin/sh"
+            ],
+            "Image": "",
+            "Volumes": null,
+            "WorkingDir": "/go",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": null
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 241243335,
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/3b4cebf982638067d75e09df1efa16d8cd8f2b87dd9872c3ec7342f8e3dc764a/diff:/var/lib/docker/overlay2/2f3d839061ebff91d5470e71be98d9985776efe1b8701cdca121924316fe96f0/diff:/var/lib/docker/overlay2/68f9aea4fb7ad8cded2afe4f4d6521b2269e621fc3589bd6ea6d756be9463c40/diff:/var/lib/docker/overlay2/d8fb287c17c282de05a83c618967195972ab322d00a655782b79a3141bbb4d84/diff",
+                "MergedDir": "/var/lib/docker/overlay2/624c4598e434fa2864f415ac1470bdd940b4e05b7089c757afc365fe521b3123/merged",
+                "UpperDir": "/var/lib/docker/overlay2/624c4598e434fa2864f415ac1470bdd940b4e05b7089c757afc365fe521b3123/diff",
+                "WorkDir": "/var/lib/docker/overlay2/624c4598e434fa2864f415ac1470bdd940b4e05b7089c757afc365fe521b3123/work"
+            },
+            "Name": "overlay2"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:34884abbe92863fce933ed7c39c0e045631af0ed86d5cc0dfbdf9fdca426ce3c",
+                "sha256:64d757042d6ce26ac82283cd0ffb63eb9327337e8b74c6b524e5f12b055bb5a3",
+                "sha256:033cd45a45cca6a35cb4d690c95b811b4661364d4a1f99a0f9785d49eda8bc63",
+                "sha256:62678e3bb9250342e61f594d010dd32588b0a8aff3b9b66f3ddf80e6307103da",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "0001-01-01T00:00:00Z"
+        }
+    }
+]

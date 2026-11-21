@@ -1,0 +1,71 @@
+mw lib: build on 0001-01-01 00:00:00 +0000 UTC at #d98420b1113536afd08cde6de9a5816f6d27ffff
+=== RUN   TestPinkhaAuthorizedOperationAccountByteLifecycle
+2026-11-21T22:12:20.771Z	[34mINFO[0m	client.space.localdiscovery	local discovery: no native discovery proxy installed, using zeroconf
+2026-11-21T22:12:20.772Z	[34mINFO[0m	anytype-app	starting app	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-authorized-read-v1-69b6b3fc8616b11230cbc45ced0635f60098950a1e611a089ab73baf70550b67", "appVersion": "ios:0.51.0/middle:v0.51.7-nightly.20261014.1-pinkha-authorized-read-v1-69b6b3fc8616b11230cbc45ced0635f60098950a1e611a089ab73baf70550b67/any-sync:"}
+2026-11-21T22:12:20.773Z	[33mWARN[0m	anytype-config	using sqlite storage
+### lenient true
+2026-11-21T22:12:20.797Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreiah3wmkddhlw4hal7x6jqaff7mgialdpi65ybmxt7u5mw733busim.17iw0c1q0hw5b"}
+2026-11-21T22:12:20.797Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreigaea6dlwicd4iarqscc37ahleeior3fhlmd4cgvaobl2na6b4ege.17iw0c1q0hw5b"}
+2026-11-21T22:12:20.797Z	[31mERROR[0m	filesync	init space usage manager	{"error": "get space info: get node peer for reserved conn: no connection to any file client"}
+2026-11-21T22:12:20.808Z	[33mWARN[0m	common.nodeconf	periodic call error	{"error": "unable to connect"}
+2026/11/21 22:12:20 failed to sufficiently increase receive buffer size (was: 1024 kiB, wanted: 7168 kiB, got: 2048 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+2026-11-21T22:12:20.809Z	[34mINFO[0m	client.space.localdiscovery	net interfaces configuration changed	{"ifaces": ["eth0"]}
+2026-11-21T22:12:20.809Z	[34mINFO[0m	client.space.localdiscovery	own lan addresses	{"addrs": ["eth0 172.17.0.2/16 advertised"]}
+2026-11-21T22:12:20.809Z	[34mINFO[0m	client.space.localdiscovery	starting mdns server	{"ips": ["172.17.0.2"], "port": 32969, "peerId": "12D3KooWMCBrGYoMA92ehQoQ44ZhiYxn28eKQ99QUBPVDyGmxKMV", "linkLocalIfaces": []}
+2026-11-21T22:12:20.818Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreiah3wmkddhlw4hal7x6jqaff7mgialdpi65ybmxt7u5mw733busim.17iw0c1q0hw5b", "spaceId": "bafyreiah3wmkddhlw4hal7x6jqaff7mgialdpi65ybmxt7u5mw733busim.17iw0c1q0hw5b", "accountStatus": "Unknown"}
+2026-11-21T22:12:20.819Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-21T22:12:20.819Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-21T22:12:20.819Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-21T22:12:20.820Z	[33mWARN[0m	anytype-mw-configfetcher	periodic call error	{"error": "unable to connect"}
+2026-11-21T22:12:20.821Z	[31mERROR[0m	nameservice.nameserviceclient	no ns peers configured. Maybe you're on a custom network. Node config ID: 
+2026-11-21T22:12:20.821Z	[31mERROR[0m	anytype-identity	error fetching global name of our own identity from Naming Service	{"error": "no namingNode peers configured. Maybe you're on a custom network. Node config ID: "}
+2026-11-21T22:12:20.821Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-21T22:12:20.821Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-21T22:12:20.822Z	[31mERROR[0m	heart.inboxclient	inbox: fetchMessages batch error	{"error": "unable to connect"}
+2026-11-21T22:12:20.823Z	[33mWARN[0m	anytype-doc-indexer	reindexOutdatedObjects: found outdated objects to reindex{len 11 1  <nil>} {durMs 11 0  <nil>}
+2026-11-21T22:12:20.842Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreiah3wmkddhlw4hal7x6jqaff7mgialdpi65ybmxt7u5mw733busim.17iw0c1q0hw5b", "spaceId": "bafyreiah3wmkddhlw4hal7x6jqaff7mgialdpi65ybmxt7u5mw733busim.17iw0c1q0hw5b", "accountStatus": "Deleted"}
+2026-11-21T22:12:20.844Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreigaea6dlwicd4iarqscc37ahleeior3fhlmd4cgvaobl2na6b4ege.17iw0c1q0hw5b", "spaceId": "bafyreigaea6dlwicd4iarqscc37ahleeior3fhlmd4cgvaobl2na6b4ege.17iw0c1q0hw5b", "accountStatus": "Unknown"}
+2026-11-21T22:12:20.845Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-21T22:12:21.821Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "1s"}
+2026-11-21T22:12:21.821Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-21T22:12:21.821Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-21T22:12:23.821Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "2s"}
+2026-11-21T22:12:23.821Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-21T22:12:23.821Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-21T22:12:26.822Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "3s"}
+2026-11-21T22:12:26.822Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-21T22:12:26.822Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-21T22:12:30.821Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-21T22:12:30.822Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "4s"}
+2026-11-21T22:12:30.822Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-21T22:12:30.822Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-21T22:12:30.845Z	[33mWARN[0m	app	components close in progress	{"common.components.aclobjectmanager": 0, "common.components.migration": 0, "client.components.invitecleaner": 0, "common.components.participantwatcher": 0, "total": 0, "in_progress": "common.components.aclnotifications"}
+2026-11-21T22:12:35.822Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "5s"}
+2026-11-21T22:12:35.822Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-21T22:12:35.822Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-21T22:12:41.823Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "6s"}
+2026-11-21T22:12:41.823Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-21T22:12:41.823Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-21T22:12:48.824Z	[31mERROR[0m	common.subscribeclient	streamWatcher: subscribe watch error, retry	{"error": "unable to connect", "waitTime": "7s"}
+2026-11-21T22:12:48.824Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-21T22:12:48.824Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-21T22:12:50.821Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-21T22:12:50.822Z	[31mERROR[0m	heart.inboxclient	inbox: fetchMessages batch error	{"error": "unable to connect"}
+2026-11-21T22:12:50.823Z	[33mWARN[0m	anytype-mw-smartblock	apply on empty tree discarded	{"sbType": "DevicesObject", "objectId": "bafyreicc2xpqqhkctknmxo7uvrjem7kljth3niawgq2dvjfoe6vw3arzxe"}
+2026-11-21T22:12:50.823Z	[31mERROR[0m	deviceService	failed to apply device state: apply on empty tree disallowed
+2026-11-21T22:12:50.823Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreiah3wmkddhlw4hal7x6jqaff7mgialdpi65ybmxt7u5mw733busim.17iw0c1q0hw5b", "error": "context canceled"}
+2026-11-21T22:12:50.824Z	[33mWARN[0m	app	all components have been closed	{"common.components.migration": 0, "client.components.invitecleaner": 0, "common.components.participantwatcher": 0, "common.components.aclobjectmanager": 0, "common.components.aclnotifications": 29979, "client.components.spaceloader": 0, "client.components.builder": 0, "total": 29979}
+2026-11-21T22:12:50.824Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-21T22:12:51.331Z	[34mINFO[0m	anytype-core-account	closing app: initiated	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-authorized-read-v1-69b6b3fc8616b11230cbc45ced0635f60098950a1e611a089ab73baf70550b67"}
+2026-11-21T22:12:51.511Z	[31mERROR[0m	common.acl.aclservice	wait message	{"error": "context canceled"}
+2026-11-21T22:12:51.511Z	[31mERROR[0m	fileobject	index loop: wait for index request: context canceled
+2026-11-21T22:12:51.511Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreigaea6dlwicd4iarqscc37ahleeior3fhlmd4cgvaobl2na6b4ege.17iw0c1q0hw5b", "error": "context canceled"}
+2026-11-21T22:12:51.541Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreia42ex34hw3fgwtejscodrmwce2jeiaqur2uthvfovnepwz3ejj3m.17iw0c1q0hw5b", "error": "context canceled"}
+2026-11-21T22:12:51.670Z	[33mWARN[0m	common.commonspace	call space.Close on closed space	{"id": "bafyreia42ex34hw3fgwtejscodrmwce2jeiaqur2uthvfovnepwz3ejj3m.17iw0c1q0hw5b"}
+2026-11-21T22:12:51.671Z	[31mERROR[0m	net.transport.quic	listener closed with error	{"localAddr": "[::]:32969", "error": "context canceled"}
+2026-11-21T22:12:51.671Z	[31mERROR[0m	net.transport.yamux	listener closed with error	{"localAddr": "[::]:32969", "error": "accept tcp [::]:32969: use of closed network connection"}
+2026-11-21T22:12:51.679Z	[34mINFO[0m	anytype-core-account	closing app: finished	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-authorized-read-v1-69b6b3fc8616b11230cbc45ced0635f60098950a1e611a089ab73baf70550b67", "tookMs": 167}
+[anytype-heart] Shutdown: graceful shutdown finished
+    pinkha_t2_read_authorized_operation_account_test.go:300: PASS generated operation-ID read on the same disposable native account
+--- PASS: TestPinkhaAuthorizedOperationAccountByteLifecycle (31.07s)
+PASS

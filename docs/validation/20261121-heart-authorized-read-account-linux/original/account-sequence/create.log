@@ -1,0 +1,273 @@
+mw lib: build on 0001-01-01 00:00:00 +0000 UTC at #d98420b1113536afd08cde6de9a5816f6d27ffff
+=== RUN   TestPinkhaAuthorizedOperationAccountByteLifecycle
+2026-11-21T22:12:19.034Z	[34mINFO[0m	client.space.localdiscovery	local discovery: no native discovery proxy installed, using zeroconf
+2026-11-21T22:12:19.034Z	[34mINFO[0m	anytype-app	starting app	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-authorized-read-v1-69b6b3fc8616b11230cbc45ced0635f60098950a1e611a089ab73baf70550b67", "appVersion": "ios:0.51.0/middle:v0.51.7-nightly.20261014.1-pinkha-authorized-read-v1-69b6b3fc8616b11230cbc45ced0635f60098950a1e611a089ab73baf70550b67/any-sync:"}
+2026-11-21T22:12:19.035Z	[33mWARN[0m	anytype-config	using sqlite storage
+### lenient true
+2026-11-21T22:12:19.060Z	[33mWARN[0m	common.nodeconf	periodic call error	{"error": "unable to connect"}
+2026/11/21 22:12:19 failed to sufficiently increase receive buffer size (was: 1024 kiB, wanted: 7168 kiB, got: 2048 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.
+2026-11-21T22:12:19.061Z	[34mINFO[0m	client.space.localdiscovery	net interfaces configuration changed	{"ifaces": ["eth0"]}
+2026-11-21T22:12:19.061Z	[34mINFO[0m	client.space.localdiscovery	own lan addresses	{"addrs": ["eth0 172.17.0.2/16 advertised"]}
+2026-11-21T22:12:19.061Z	[34mINFO[0m	client.space.localdiscovery	starting mdns server	{"ips": ["172.17.0.2"], "port": 32969, "peerId": "12D3KooWMCBrGYoMA92ehQoQ44ZhiYxn28eKQ99QUBPVDyGmxKMV", "linkLocalIfaces": []}
+2026-11-21T22:12:19.095Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreigaea6dlwicd4iarqscc37ahleeior3fhlmd4cgvaobl2na6b4ege.17iw0c1q0hw5b", "spaceId": "bafyreigaea6dlwicd4iarqscc37ahleeior3fhlmd4cgvaobl2na6b4ege.17iw0c1q0hw5b", "accountStatus": "Unknown"}
+2026-11-21T22:12:19.095Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreigaea6dlwicd4iarqscc37ahleeior3fhlmd4cgvaobl2na6b4ege.17iw0c1q0hw5b"}
+2026-11-21T22:12:19.489Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-21T22:12:19.490Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-21T22:12:19.490Z	[33mWARN[0m	anytype-mw-configfetcher	periodic call error	{"error": "unable to connect"}
+2026-11-21T22:12:19.498Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-21T22:12:19.498Z	[31mERROR[0m	nameservice.nameserviceclient	no ns peers configured. Maybe you're on a custom network. Node config ID: 
+2026-11-21T22:12:19.498Z	[31mERROR[0m	anytype-identity	error fetching global name of our own identity from Naming Service	{"error": "no namingNode peers configured. Maybe you're on a custom network. Node config ID: "}
+2026-11-21T22:12:19.498Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-21T22:12:19.498Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-21T22:12:19.507Z	[31mERROR[0m	heart.inboxclient	inbox: fetchMessages batch error	{"error": "unable to connect"}
+2026-11-21T22:12:19.530Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreiah3wmkddhlw4hal7x6jqaff7mgialdpi65ybmxt7u5mw733busim.17iw0c1q0hw5b", "spaceId": "bafyreiah3wmkddhlw4hal7x6jqaff7mgialdpi65ybmxt7u5mw733busim.17iw0c1q0hw5b", "accountStatus": "Unknown"}
+2026-11-21T22:12:19.532Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreiah3wmkddhlw4hal7x6jqaff7mgialdpi65ybmxt7u5mw733busim.17iw0c1q0hw5b"}
+2026-11-21T22:12:19.532Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-21T22:12:19.822Z	[33mWARN[0m	anytype-doc-indexer	ft consistency check completed	{"checked": 88, "enqueued": 42, "complete": true, "duration": "41.822206ms"}
+2026-11-21T22:12:19.841Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-21T22:12:19.848Z	[33mWARN[0m	anytype-mw-smartblock	failed to get recommended layout from details of type: failed to find id of object type. Guessing the layout
+2026-11-21T22:12:19.858Z	[34mINFO[0m	anytype-core-account	closing app: initiated	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-authorized-read-v1-69b6b3fc8616b11230cbc45ced0635f60098950a1e611a089ab73baf70550b67"}
+2026-11-21T22:12:19.858Z	[31mERROR[0m	anytype-doc-indexer	list ids from full-text queue: process ids: context canceled
+2026-11-21T22:12:20.361Z	[31mERROR[0m	deviceService	failed to get device object: failed to derive device object: put tree: context canceled
+2026-11-21T22:12:20.361Z	[31mERROR[0m	notifications	failed to derive notification object: put tree: context canceled
+2026-11-21T22:12:20.499Z	[31mERROR[0m	common.acl.aclservice	wait message	{"error": "context canceled"}
+2026-11-21T22:12:20.500Z	[31mERROR[0m	fileobject	index loop: wait for index request: context canceled
+2026-11-21T22:12:20.500Z	[31mERROR[0m	fileobject	list non indexed files{error 26 0  wait stores loaded: context canceled}
+2026-11-21T22:12:20.500Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreigaea6dlwicd4iarqscc37ahleeior3fhlmd4cgvaobl2na6b4ege.17iw0c1q0hw5b", "error": "context canceled"}
+2026-11-21T22:12:20.500Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreiah3wmkddhlw4hal7x6jqaff7mgialdpi65ybmxt7u5mw733busim.17iw0c1q0hw5b", "error": "context canceled"}
+2026-11-21T22:12:20.503Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreia42ex34hw3fgwtejscodrmwce2jeiaqur2uthvfovnepwz3ejj3m.17iw0c1q0hw5b", "error": "context canceled"}
+2026-11-21T22:12:20.505Z	[33mWARN[0m	common.commonspace	call space.Close on closed space	{"id": "bafyreia42ex34hw3fgwtejscodrmwce2jeiaqur2uthvfovnepwz3ejj3m.17iw0c1q0hw5b"}
+2026-11-21T22:12:20.505Z	[31mERROR[0m	net.transport.quic	listener closed with error	{"localAddr": "[::]:32969", "error": "context canceled"}
+2026-11-21T22:12:20.505Z	[31mERROR[0m	net.transport.yamux	listener closed with error	{"localAddr": "[::]:32969", "error": "accept tcp [::]:32969: use of closed network connection"}
+2026-11-21T22:12:20.505Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreifrljuait3fsrlaezjwmzrcw2ouhc4ur44vctr6xaz6e5mj5kgzp4", "error": "object cache closed"}
+2026-11-21T22:12:20.505Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifrljuait3fsrlaezjwmzrcw2ouhc4ur44vctr6xaz6e5mj5kgzp4", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.505Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicescluclmzoee3uhp6t55okuhhr7crxvjxcvhx7xxxwwxrr2wv4a", "error": "object cache closed"}
+2026-11-21T22:12:20.505Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicescluclmzoee3uhp6t55okuhhr7crxvjxcvhx7xxxwwxrr2wv4a", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.505Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreielwqcv4ygo3av4awcxljue6m4bv6633dinpu4e4z3qyxacjqjxci", "error": "object cache closed"}
+2026-11-21T22:12:20.505Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreielwqcv4ygo3av4awcxljue6m4bv6633dinpu4e4z3qyxacjqjxci", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.505Z	[31mERROR[0m	anytype-mw-smartblock	index object _ottask error: context canceled
+2026-11-21T22:12:20.505Z	[31mERROR[0m	anytype-mw-smartblock	index object _brsizeInBytes error: context canceled
+2026-11-21T22:12:20.505Z	[31mERROR[0m	anytype-mw-smartblock	index object _braudioAlbum error: context canceled
+2026-11-21T22:12:20.505Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreig6eqldc7bax7mw3sfsls4oyksszb7b2h6htxfyhkvdnedxsexbp4", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreig6eqldc7bax7mw3sfsls4oyksszb7b2h6htxfyhkvdnedxsexbp4", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiciuigb67m5antgptrxju57jaxasvuqdnbiuwqx3e4hezb4yfx5nq", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiciuigb67m5antgptrxju57jaxasvuqdnbiuwqx3e4hezb4yfx5nq", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreihhungaqshfa3v5nhatksmorbyktyx24n6cncn3q44m3oqgdaz2dm", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreihhungaqshfa3v5nhatksmorbyktyx24n6cncn3q44m3oqgdaz2dm", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiatbcmr7yrwqewl4dry2z4ciyx3nhfuqrt24s3bfhi7yj6rucswfm", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiatbcmr7yrwqewl4dry2z4ciyx3nhfuqrt24s3bfhi7yj6rucswfm", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _brrelationDefaultValue error: context canceled
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _brrecommendedLayout error: context canceled
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigafssqn4s7n25fkqo6wdjkoza75fxz5hwwmzm47mrh7t3vt22wbi", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigafssqn4s7n25fkqo6wdjkoza75fxz5hwwmzm47mrh7t3vt22wbi", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreidxajat6br7dymiiyy2xxj6n5onuuwlrfekba6jrst5cscabppcte", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidxajat6br7dymiiyy2xxj6n5onuuwlrfekba6jrst5cscabppcte", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigyjsuqamugau6jbv4y5im4clniwr3trosv4kyuqzoisc4d6mkscy", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigyjsuqamugau6jbv4y5im4clniwr3trosv4kyuqzoisc4d6mkscy", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicyhrdq4crgpbgmmsvxbbhbmuynlneptnfelggf27nsguafnkcuxy", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicyhrdq4crgpbgmmsvxbbhbmuynlneptnfelggf27nsguafnkcuxy", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreidgsvq7jr4egi6jvf4czzkydssxvjuqyihltdixv2n65q273etksm", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidgsvq7jr4egi6jvf4czzkydssxvjuqyihltdixv2n65q273etksm", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreih5h3tqcvdm3kkr3eo3ah4tjx65nubwljjcmuj6eq2hs562fjy3vy", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreih5h3tqcvdm3kkr3eo3ah4tjx65nubwljjcmuj6eq2hs562fjy3vy", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreifklerg3mzynfs4uf3ne5t4dr75cjikxtuvfavcwyezz5d3uxd3hi", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifklerg3mzynfs4uf3ne5t4dr75cjikxtuvfavcwyezz5d3uxd3hi", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreieyhcsawa7mleqr7egq4ucxaiafj6zqvcjdwa2veq643tl6ri4rwi", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreieyhcsawa7mleqr7egq4ucxaiafj6zqvcjdwa2veq643tl6ri4rwi", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _brsetOf error: context canceled
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _brrelationMaxCount error: context canceled
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigxyqbyqzypyaaqf6aedxuox4ta6sizuymj3px2unlfw5kjriknbi", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigxyqbyqzypyaaqf6aedxuox4ta6sizuymj3px2unlfw5kjriknbi", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreidh3qskev6vm352ozqgcwii27bekysync5kex34owbyl4vgtjexq4", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidh3qskev6vm352ozqgcwii27bekysync5kex34owbyl4vgtjexq4", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreifgklcfe25pmbixikbjh7hbqsbnp7ekfea6niibigbqtg6m427a6y", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifgklcfe25pmbixikbjh7hbqsbnp7ekfea6niibigbqtg6m427a6y", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicyeikavk6rigtgbytdwua2u3u636j2xlsy7celkku5s3lhy53akq", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicyeikavk6rigtgbytdwua2u3u636j2xlsy7celkku5s3lhy53akq", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreidtet5srwe5vpgb243tfuak2c4bsdjyarxr34dixgv5eaa4gsm7xq", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidtet5srwe5vpgb243tfuak2c4bsdjyarxr34dixgv5eaa4gsm7xq", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreielep2lyst4y4rsbgyt476bgr66yq5dia46awcwfagf6otcpljn4q", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreielep2lyst4y4rsbgyt476bgr66yq5dia46awcwfagf6otcpljn4q", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _braudioAlbumTrackNumber error: context canceled
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreifkjw554dgdk77wur2q2a5lub36v556dsfjzs4l2syaseae6lw5fm", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifkjw554dgdk77wur2q2a5lub36v556dsfjzs4l2syaseae6lw5fm", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigdzjl7qhcucxtnctukcv4nefgs6jwm2qr5eqoaktonydmgfoiafa", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigdzjl7qhcucxtnctukcv4nefgs6jwm2qr5eqoaktonydmgfoiafa", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreierjad2o7dbpjqdcp5ttvu6wtvqgce233nn6nl734rmdbmdgtawd4", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreierjad2o7dbpjqdcp5ttvu6wtvqgce233nn6nl734rmdbmdgtawd4", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicqhe2qkhfdk7tamz5o2gcrjz4so6bsfgnqw2jk7t2ezdj2eqvxki", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicqhe2qkhfdk7tamz5o2gcrjz4so6bsfgnqw2jk7t2ezdj2eqvxki", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _brrelationFormatObjectTypes error: context canceled
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _brprogress error: context canceled
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicljahoubgrm4sgfoojwxhqxybxw3gd4msvohgzeblf37k5skjiry", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicljahoubgrm4sgfoojwxhqxybxw3gd4msvohgzeblf37k5skjiry", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiawirjrr3fwlkjpqm4nw3vug6pulffolimcwx2il3ehzrchqnc47q", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiawirjrr3fwlkjpqm4nw3vug6pulffolimcwx2il3ehzrchqnc47q", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibfdfb7jtnya32frh645cshigud7mjuhtgdfkaiymk5an2glcfl4e", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibfdfb7jtnya32frh645cshigud7mjuhtgdfkaiymk5an2glcfl4e", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicwenb55w6t2dlvjti6udvfgwsqpba6fbgubgauuxojcokphlvzj4", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicwenb55w6t2dlvjti6udvfgwsqpba6fbgubgauuxojcokphlvzj4", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibl5me5zebmksai4z22m6jufthyhsade24b742dfismvzpmv5k4ea", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibl5me5zebmksai4z22m6jufthyhsade24b742dfismvzpmv5k4ea", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _brpicture error: context canceled
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreictlvy2vf3nmd6fbfievpstd6muimpofq4mfjcbg43xfutdujvqri", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreictlvy2vf3nmd6fbfievpstd6muimpofq4mfjcbg43xfutdujvqri", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreifpnvqddgvg6ludpqs34elje2sj2ztly6gwctyorucoxcozwpjfvm", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifpnvqddgvg6ludpqs34elje2sj2ztly6gwctyorucoxcozwpjfvm", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _brartist error: context canceled
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _brgenre error: context canceled
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _brurl error: context canceled
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreido6fl4pqto7avfvlsqp2zcwqvy2axotlsexxmogskgr4climx2zi", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreido6fl4pqto7avfvlsqp2zcwqvy2axotlsexxmogskgr4climx2zi", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _otspace error: context canceled
+2026-11-21T22:12:20.506Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreidf4o7twet6vb7vs2ehgpixbkhcqsigfj33jwewiq4jt3qkzmzhzu", "error": "object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidf4o7twet6vb7vs2ehgpixbkhcqsigfj33jwewiq4jt3qkzmzhzu", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.506Z	[31mERROR[0m	anytype-mw-smartblock	index object _brtag error: context canceled
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _brfileExt error: context canceled
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _braudioLyrics error: context canceled
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreics4d6yt32m4dvaie445npl32dxuyrlslcavcvfpxycgzavhigvc4", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreics4d6yt32m4dvaie445npl32dxuyrlslcavcvfpxycgzavhigvc4", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigktgzbpet644tfxe7g4i25b4t4gn4mcl3t4ctp2nlx665qiwzcbq", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigktgzbpet644tfxe7g4i25b4t4gn4mcl3t4ctp2nlx665qiwzcbq", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _brstatus error: context canceled
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreih47kxa5ve7ic7j7rrcsl2x647pqeyv7gfrdqtopmtnddme6swoge", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreih47kxa5ve7ic7j7rrcsl2x647pqeyv7gfrdqtopmtnddme6swoge", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreihlinph6colmonhjsrh3keik43owh3cnjanxnnrkgnrqhnmfjs3sm", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreihlinph6colmonhjsrh3keik43owh3cnjanxnnrkgnrqhnmfjs3sm", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreidhjbw2piquq3hmqu6ro6gzd2x3n6yqifuprthkqw4magljdj5ngq", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidhjbw2piquq3hmqu6ro6gzd2x3n6yqifuprthkqw4magljdj5ngq", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiedmtw75vyqnft4jqiw7g2eebsab5vdcm76d2druh3jmwsc4jkntq", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiedmtw75vyqnft4jqiw7g2eebsab5vdcm76d2druh3jmwsc4jkntq", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicemjyhu2v6nd3juk64uwj53b6yuofw2sdjn5qtmyg6odbewyzng4", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicemjyhu2v6nd3juk64uwj53b6yuofw2sdjn5qtmyg6odbewyzng4", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibepqdd53gw5hvwqit3b5ul4ivxfh2caqf2b2ynvimwxnq26gwfwm", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibepqdd53gw5hvwqit3b5ul4ivxfh2caqf2b2ynvimwxnq26gwfwm", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _otrelation error: context canceled
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _otparticipant error: context canceled
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _brcompany error: context canceled
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _bremail error: context canceled
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiceg2i6jyamefolmhvcmpm5y6zhgo2672oz4vcz3hxyv7cj3mhqza", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiceg2i6jyamefolmhvcmpm5y6zhgo2672oz4vcz3hxyv7cj3mhqza", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreie37sfnkhjdz7u4a3zlqt53k32umck64mtwmgkeysfx6ykiotkgd4", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreie37sfnkhjdz7u4a3zlqt53k32umck64mtwmgkeysfx6ykiotkgd4", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibsux2pbvsuauqkjytvxhhjfql4hn2wgf5da5iqwi5qw7vo4btxtq", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibsux2pbvsuauqkjytvxhhjfql4hn2wgf5da5iqwi5qw7vo4btxtq", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _brphone error: context canceled
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _brreleasedYear error: context canceled
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreib2shhz23rj2zenoctdzfxqgafkfbohaj3i7d266bn6dfdxbjc7vi", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreib2shhz23rj2zenoctdzfxqgafkfbohaj3i7d266bn6dfdxbjc7vi", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicta4ze6g532bgfh3t53wziprldu2zghr65rb6i3xtduwosyvwnge", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicta4ze6g532bgfh3t53wziprldu2zghr65rb6i3xtduwosyvwnge", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreif7g277iwr35iv35gl5oe4axmrfuxbp7zk5ve6w37fcmky5xgusje", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreif7g277iwr35iv35gl5oe4axmrfuxbp7zk5ve6w37fcmky5xgusje", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _brdone error: context canceled
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _brheightInPixels error: context canceled
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiadasxgc7zkoilgmwgtwjco5t7laje64ywsgz6esvpixzd53qekti", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiadasxgc7zkoilgmwgtwjco5t7laje64ywsgz6esvpixzd53qekti", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreihaex4d4xn6fp25izcexdxdgg7jde3cdj5sjrjls6vtxrti46er4y", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreihaex4d4xn6fp25izcexdxdgg7jde3cdj5sjrjls6vtxrti46er4y", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiffnas6mm3arojfwyj2lwgubs7x5hmppyqmkqyjpnyadhay4zberm", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiffnas6mm3arojfwyj2lwgubs7x5hmppyqmkqyjpnyadhay4zberm", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _otcontact error: context canceled
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreih34457sla5oapyjfg6yxca47ys7ffc767xg47brdmgsh6stul6z4", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreih34457sla5oapyjfg6yxca47ys7ffc767xg47brdmgsh6stul6z4", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreignnew4b6fyaq57zrednruyibgadwyx7c6dbh3adp3q3otr5qekgy", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreignnew4b6fyaq57zrednruyibgadwyx7c6dbh3adp3q3otr5qekgy", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _brfileMimeType error: context canceled
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _brsource error: context canceled
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibfdqqkfigjdguk3rxt2w25fmeqijb2okslthrhrjsnbd3kyofomi", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibfdqqkfigjdguk3rxt2w25fmeqijb2okslthrhrjsnbd3kyofomi", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreidq7zuyvuun4fy6cjxcukzuvlbckjflgvvvwter3r43cbk65twhim", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidq7zuyvuun4fy6cjxcukzuvlbckjflgvvvwter3r43cbk65twhim", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	anytype-mw-smartblock	index object _bringredients error: context canceled
+2026-11-21T22:12:20.507Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreieh5nrxlcqlczy2wq7rfs6zlyx6hrankl4hwvjtoeok7xcdcc3hoi", "error": "object cache closed"}
+2026-11-21T22:12:20.507Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreieh5nrxlcqlczy2wq7rfs6zlyx6hrankl4hwvjtoeok7xcdcc3hoi", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _brlinkedProjects error: context canceled
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _brrelationFormat error: context canceled
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _brcamera error: context canceled
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreidwwuprlfyy6bak4il27bcoqjf4md4cr3kscsgi2rat2wapgs4rla", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidwwuprlfyy6bak4il27bcoqjf4md4cr3kscsgi2rat2wapgs4rla", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreia7z2ikunnmsmh2wxqvvxrbl2ndwgkqnqkobzt5kgrk7a35raf3re", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreia7z2ikunnmsmh2wxqvvxrbl2ndwgkqnqkobzt5kgrk7a35raf3re", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicv4tn7wjnqvjfulzofnmxlpcxmenkgt5xrmgoibllmj5yolhbq6a", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicv4tn7wjnqvjfulzofnmxlpcxmenkgt5xrmgoibllmj5yolhbq6a", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _brdueDate error: context canceled
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _brfocalRatio error: context canceled
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreic3oskc77c4iaiqbbi7vgvjyoxr3spw7ei2dmt6qup225owo6d264", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreic3oskc77c4iaiqbbi7vgvjyoxr3spw7ei2dmt6qup225owo6d264", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreifww6w7eaiynsqvs4i4lre7uoiris5tqilqwjzagjnkhr7puvl4li", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifww6w7eaiynsqvs4i4lre7uoiris5tqilqwjzagjnkhr7puvl4li", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiglyhd3uxij3wyprra3wf5pfh3te7fiv6pdtigqxgxksbekn6le7y", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiglyhd3uxij3wyprra3wf5pfh3te7fiv6pdtigqxgxksbekn6le7y", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreihtgtw4pwu7boivfj3m563wytav7mruygts3ow4wml46k63cge6pm", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreihtgtw4pwu7boivfj3m563wytav7mruygts3ow4wml46k63cge6pm", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _brtargetObjectType error: context canceled
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _brwidthInPixels error: context canceled
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreihuaazrfdimmbyfk5yifhmigosyeyxsafeepbjvgonsubrsh6kzom", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreihuaazrfdimmbyfk5yifhmigosyeyxsafeepbjvgonsubrsh6kzom", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _otimage error: context canceled
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _braudioGenre error: context canceled
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _brmood error: context canceled
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _brrecommendedRelations error: context canceled
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _otobjectType error: context canceled
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _brexposure error: context canceled
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiaqlnq37peboip53blkfjyvrsijwegydhruohbkfvfu7holrndeci", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiaqlnq37peboip53blkfjyvrsijwegydhruohbkfvfu7holrndeci", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _brassignee error: context canceled
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreier4f7oghs5axpbja4jnd26bxzqznx4b4tfh26wqmxvtfww77ryca", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreier4f7oghs5axpbja4jnd26bxzqznx4b4tfh26wqmxvtfww77ryca", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiel6eis35fhw2ausn5hfrj3ecowoz2rydr7l2r3sjp2naysv6xfdq", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiel6eis35fhw2ausn5hfrj3ecowoz2rydr7l2r3sjp2naysv6xfdq", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigyo3wvaegvp3nun43ydpw7kkxbnuwtcmekdk3yzrhn3tjjez23tq", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigyo3wvaegvp3nun43ydpw7kkxbnuwtcmekdk3yzrhn3tjjez23tq", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	anytype-mw-smartblock	index object _brdescription error: context canceled
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicy4l46wrd5vdrjrlapwncqzmacip7pggucnu5rfldeqn2oaecrfu", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicy4l46wrd5vdrjrlapwncqzmacip7pggucnu5rfldeqn2oaecrfu", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicakdcywvmb4vv4a3oci2tlsr7co7n5ioyp4mtyixidxx25snqeza", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicakdcywvmb4vv4a3oci2tlsr7co7n5ioyp4mtyixidxx25snqeza", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreifda22bgm5qwlrvqheubaz7mllnn5e47svz4p5bhwn3e3e46aie6i", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifda22bgm5qwlrvqheubaz7mllnn5e47svz4p5bhwn3e3e46aie6i", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreih77atqzdauwsx3o4lm2pymrgraw32o5s3oakar7kwacp4izgwnje", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreih77atqzdauwsx3o4lm2pymrgraw32o5s3oakar7kwacp4izgwnje", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiaio7iyfhbjxcjendqx72jd3fvufv7yuytmmv5zdopvefald2lcje", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiaio7iyfhbjxcjendqx72jd3fvufv7yuytmmv5zdopvefald2lcje", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreifhagpx3dk6shoc6zkon7s3c4nevjz6fojzbimwu3k4zguaj2rd4m", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifhagpx3dk6shoc6zkon7s3c4nevjz6fojzbimwu3k4zguaj2rd4m", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreighmbbiapz23ggykv2vohc7zr74bh5auvoipjfbgmzxj63le5d74a", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreighmbbiapz23ggykv2vohc7zr74bh5auvoipjfbgmzxj63le5d74a", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.508Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiaw6uaxyrqtwum5acgrpbgk3pzqdfxw5se2erebkdqwgziry4j5um", "error": "object cache closed"}
+2026-11-21T22:12:20.508Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiaw6uaxyrqtwum5acgrpbgk3pzqdfxw5se2erebkdqwgziry4j5um", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	anytype-mw-smartblock	index object _brstarred error: context canceled
+2026-11-21T22:12:20.509Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiedmt2erl4asndyqntwg725dvowt36gmmewdjgw5obl42qfavejue", "error": "object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiedmt2erl4asndyqntwg725dvowt36gmmewdjgw5obl42qfavejue", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.509Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreifvlzpqfp2dg3dqfmmqfyaoq3vgm6fapnh47afdksxupj34ium2hm", "error": "object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifvlzpqfp2dg3dqfmmqfyaoq3vgm6fapnh47afdksxupj34ium2hm", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.509Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigcxnhoipmccv4eamrvigipscscidiz6j3nlentb3kkcqlkacse6m", "error": "object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigcxnhoipmccv4eamrvigipscscidiz6j3nlentb3kkcqlkacse6m", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.509Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreidmhmetpkfquui7pvwwwjqmcvaec4ucatumqyzfgndzsx4rczvf5i", "error": "object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidmhmetpkfquui7pvwwwjqmcvaec4ucatumqyzfgndzsx4rczvf5i", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.509Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigg7ddh2e35ato6sepone3uim2lx5z7on6tpj42fstajjsbeg7zr4", "error": "object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigg7ddh2e35ato6sepone3uim2lx5z7on6tpj42fstajjsbeg7zr4", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	anytype-mw-smartblock	index object _braddedDate error: context canceled
+2026-11-21T22:12:20.509Z	[31mERROR[0m	anytype-mw-smartblock	index object _brorigin error: context canceled
+2026-11-21T22:12:20.509Z	[31mERROR[0m	anytype-mw-smartblock	index object _brtime error: context canceled
+2026-11-21T22:12:20.509Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiehr22hsrw652tbyreqg2expoje3khswj5k6cy2ggq4qvdgnpwbzq", "error": "object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiehr22hsrw652tbyreqg2expoje3khswj5k6cy2ggq4qvdgnpwbzq", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.509Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigwkwd2hkmia6bdykd6pqcl5jdx5ufclwsu6nmdpnajyuuijutpti", "error": "object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigwkwd2hkmia6bdykd6pqcl5jdx5ufclwsu6nmdpnajyuuijutpti", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	anytype-mw-smartblock	index object _brtemplateIsBundled error: context canceled
+2026-11-21T22:12:20.509Z	[31mERROR[0m	anytype-mw-smartblock	index object _braperture error: context canceled
+2026-11-21T22:12:20.509Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicpwzodmdx2bokofblyan3x6buv75ywfvqsopltmipvqsj2bkfc3y", "error": "object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicpwzodmdx2bokofblyan3x6buv75ywfvqsopltmipvqsj2bkfc3y", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.509Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigj2rheyh7z4yysqmjzbvtqta3qfjifhifwquol2mltnykofny6ma", "error": "object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigj2rheyh7z4yysqmjzbvtqta3qfjifhifwquol2mltnykofny6ma", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.509Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreig2zpiaft6rdet7oy2ylriykbwwxneficfhzqulxnlwkkwsqaq7ku", "error": "object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreig2zpiaft6rdet7oy2ylriykbwwxneficfhzqulxnlwkkwsqaq7ku", "error": "failed to update backlinks: object cache closed"}
+2026-11-21T22:12:20.509Z	[31mERROR[0m	anytype-mw-smartblock	index object _otproject error: context canceled
+2026-11-21T22:12:20.509Z	[31mERROR[0m	anytype-mw-smartblock	index object _brauthor error: context canceled
+2026-11-21T22:12:20.509Z	[31mERROR[0m	anytype-mw-smartblock	index object _brcameraIso error: context canceled
+2026-11-21T22:12:20.527Z	[34mINFO[0m	anytype-core-account	closing app: finished	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-authorized-read-v1-69b6b3fc8616b11230cbc45ced0635f60098950a1e611a089ab73baf70550b67", "tookMs": 166}
+[anytype-heart] Shutdown: graceful shutdown finished
+    pinkha_t2_read_authorized_operation_account_test.go:300: PASS generated operation-ID read on the same disposable native account
+--- PASS: TestPinkhaAuthorizedOperationAccountByteLifecycle (1.50s)
+PASS
