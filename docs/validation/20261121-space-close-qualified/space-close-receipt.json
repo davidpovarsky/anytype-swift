@@ -1,0 +1,154 @@
+{
+  "status": "PASS_NATIVE_GENERATED_BYTE_SPACE_CLOSE_AND_COLD_REOPEN",
+  "protocol": "pinkha-t2-generated-byte-space-close-v1",
+  "scope": "original four-process generated-byte baseline plus one real Space.Close race and one cold reopen",
+  "app_sha": "4ee2d7fd9f8acd74f51cbb2236d08f55a93af08b",
+  "product_base_sha": "16b7493fa05bdc3abbae190c6e6c364c81874eea",
+  "run_id": "44943962391",
+  "run_attempt": "1",
+  "workflow_ref": "davidpovarsky/anytype-swift/.github/workflows/torah-inspector-ipados27.yml@refs/heads/codex/chatgpt-wave15-shared-20261121",
+  "commands": [
+    {
+      "name": "space-close-any-sync-selection",
+      "status": "PASS_EXIT_0",
+      "argv": [
+        "go",
+        "list",
+        "-m",
+        "-json",
+        "github.com/anyproto/any-sync"
+      ],
+      "launch_requested": true,
+      "pid": 18665,
+      "exit_code": 0,
+      "process_exit_observed": true
+    },
+    {
+      "name": "space-close-any-sync-copy-selection",
+      "status": "PASS_EXIT_0",
+      "argv": [
+        "go",
+        "list",
+        "-m",
+        "-json",
+        "github.com/anyproto/any-sync"
+      ],
+      "launch_requested": true,
+      "pid": 18669,
+      "exit_code": 0,
+      "process_exit_observed": true
+    },
+    {
+      "name": "space-close-compile",
+      "status": "PASS_EXIT_0",
+      "argv": [
+        "go",
+        "test",
+        "-c",
+        "-p",
+        "1",
+        "-tags",
+        "nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg",
+        "-overlay",
+        "/workspace/work/account-rpc/space-close-build/overlay.json",
+        "-ldflags",
+        "-extldflags=-static -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=d98420b1113536afd08cde6de9a5816f6d27ffff -X github.com/anyproto/anytype-heart/util/vcs.GitSummary=v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077-pinkha-t2-registry-v1-57930393f9378873bd2f94b16a16288c1b42cd34941ca5cdd3d13546b66528f4 -X github.com/anyproto/anytype-heart/clientlibrary/service.t2AccountFixtureSHA=3c970648c0421df7c78370291409a8e5ea1ff3d8aedeea0b7fa5c3e828c8057a -X github.com/anyproto/anytype-heart/clientlibrary/service.t2AccountRuntimeRole=new -X github.com/anyproto/anytype-heart/clientlibrary/service.t2AccountRegistrationSHA=57930393f9378873bd2f94b16a16288c1b42cd34941ca5cdd3d13546b66528f4 -X github.com/anyproto/anytype-heart/clientlibrary/service.t2RPCAccountSchemaSHA=5c9400464b832e1249894de3485088e22296b9dc9cfd7df1e8665d579b00e7d1 -X github.com/anyproto/anytype-heart/clientlibrary/service.t2SpaceCloseFixtureSHA=edc468223d9a3f2a6e5acdccff386147145094af9a7bc56c5795e6ea96f9f72f",
+        "-o",
+        "/workspace/work/account-rpc/space-close-build/pinkha-t2-rpc-space-close.test",
+        "./clientlibrary/service"
+      ],
+      "launch_requested": true,
+      "pid": 18725,
+      "exit_code": 0,
+      "process_exit_observed": true
+    }
+  ],
+  "started_at": "2026-11-21T20:01:44.221613+00:00",
+  "space_close_execution": "PASS_ORIGINAL_RACE_AND_COLD_REOPEN",
+  "app_capability": "OFF",
+  "response_return_order_relative_to_close": "NOT_ASSERTED",
+  "duplicate_close_completion": "NOT_CLAIMED",
+  "settings_delete": "NOT_RUN",
+  "account_switch": "NOT_RUN",
+  "new_engine_parity": "NOT_PROVEN",
+  "two_app_clients": "NOT_RUN",
+  "ios_acceptance": "NOT_RUN",
+  "full_t2_acceptance": "NOT_RUN",
+  "source_inputs": {
+    "product_base_sha": "16b7493fa05bdc3abbae190c6e6c364c81874eea",
+    "candidate_sha256": "edc468223d9a3f2a6e5acdccff386147145094af9a7bc56c5795e6ea96f9f72f",
+    "lane_manifest_sha256": "b3fff620bfe3ef2c733eb46222f3e636ad83a57e56166307068be180802e85dd",
+    "files_sha256": {
+      "account_rpc/fixture.json": "3c970648c0421df7c78370291409a8e5ea1ff3d8aedeea0b7fa5c3e828c8057a",
+      "heart-registration.json": "f57fb369c687d06aaa3fad8411ed3a080c358103bfd0da01c2431fab6bdbc494",
+      "heart-registration.patch": "57930393f9378873bd2f94b16a16288c1b42cd34941ca5cdd3d13546b66528f4",
+      "rpc/heart-rpc.json": "5c9400464b832e1249894de3485088e22296b9dc9cfd7df1e8665d579b00e7d1",
+      "run_account_lifecycle.py": "c17c801fdc85163c391f7eabddc51abfdf72e81c30030aa14f50de5c0e888154",
+      "run_account_rpc.py": "0a992407ad8cabee47543f9167739fb00f319f5bb25aa8ca0ac780bb241a2d3e",
+      "run_account_rpc_lifecycle.py": "fc25aff4b9b023da81d8aae5011c5f4bea00fc2fa1a95b437978fff9dd85d40f",
+      "run_native_registration.py": "d37affc5ee0437d22cf4b51555f26f1753a8144bc2e1c349c1605b46019edcc3",
+      "run_native_rpc.py": "e0cac9ba2e4bf3aa23ed86a4a1fd72a5c97626301e03a3ea5086a54a03ea2baa",
+      "account_rpc_space_close/README.md": "27cd76b46762d9259b5e79aafe760c40144e4b5d842773d2ef310c6ca45b3469",
+      "account_rpc_space_close/candidate.json": "edc468223d9a3f2a6e5acdccff386147145094af9a7bc56c5795e6ea96f9f72f",
+      "account_rpc_space_close/materialize_test_overlay.py": "033f63d2747716e0bf6701ddc0e1ad60896032130762de4456d4ab35caa25e5f",
+      "account_rpc_space_close/native_rpc_space_close_test.go": "9cbed5a36e2b5a95afe13c1c29d777a635579cdf38673a9cd1fcbfd78de8b41e",
+      "account_rpc_space_close/overlay/any-sync/app/ocache/ocache.go": "41caff55778b8ca549c4faa961f48c4cdbdfd60e3761dfb77b88bd4e63f52625",
+      "account_rpc_space_close/overlay/any-sync/commonspace/settings/settingsobject.go": "b6ca16f92d20cdfc4e5104c126349a9159979b1359b7e09edac6750fb93a16fa",
+      "account_rpc_space_close/overlay/heart/core/block/editor/torahops/native_commit_guard.go": "2d8d317eb2562676317844c1bf7aac85e9e5ad9331e055d8d74f23ab4d60c321",
+      "account_rpc_space_close/overlay/heart/core/block/editor/torahops/native_host.go": "9ff4cae9eb5088a1777a169b51ebf03eb903292479b17e13a6e1bd6ef75da462",
+      "account_rpc_space_close/overlay/heart/core/block/editor/torahopsobject/target_lease.go": "4fd510c50ade01f3c919ab638c7eda00da3790394221c8dfc5ed9e4d94ba7e78",
+      "account_rpc_space_close/overlay/heart/space/clientspace/space.go": "51cbc75ea1b439eee7f4cd309d959886389e112b61852147c13d49cdd0281ba1",
+      "account_rpc_space_close/overlay/heart/space/spacecore/storage/anystorage/clientstorage.go": "1b3d705158c6ac1ad9a0e9ded138747e39dcb1af8c46c5c2dd3d3c47e9ab7fea",
+      "account_rpc_space_close/owned_controller.go": "7485198c9c10817b9f74945dcd55253f7b58b0e0ef246c077fd5fa6a8e5b5068",
+      "account_rpc_space_close/space_close_observer.go": "ad13b765e7a67fdc8eba8b485ffd0b72f8773c88c99028b8a4dd8f7fc9b11438",
+      "account_rpc_space_close/test-composition.patch": "49c3071f0d5b2e363ed09f9ac42da018d826749b3803b65215ded7c0e06eaae3"
+    }
+  },
+  "baseline": {
+    "status": "PASS_NATIVE_ACCOUNT_GENERATED_RPC_LIFECYCLE",
+    "actual_counts": {
+      "binaries": 2,
+      "native_processes": 4,
+      "passing_test_invocations": 4,
+      "actual_export_files": 8
+    },
+    "receipt_sha256": "1057520edad08df4fef612f4d5c45f66acd0ab647dc536abe15c2b0ba800c7f7",
+    "account_receipt_sha256": "419948c6b618fe3b55373ebe7c2c67970590d6eb880c98a42f65a8fb0707d3da"
+  },
+  "space_close": {
+    "actual_counts": {
+      "native_processes": 2,
+      "passing_test_invocations": 2
+    },
+    "native_pids": [
+      22271,
+      22298
+    ],
+    "phase_report_sha256": {
+      "race": "9f243a3028bf3f2889632ef7add6bbfa541c87b52c583f8de4a730d579201e47",
+      "reopen": "50e78d16126283805b5810c98429b427f7b267ccde466070f7d732b3708c03f2"
+    },
+    "same_account_space_request_and_durable_history": "PASS_TWO_ORIGINAL_PHASE_REPORTS"
+  },
+  "instrumented_identity": {
+    "role": "new",
+    "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+    "legacy_patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+    "registration_patch_sha256": "57930393f9378873bd2f94b16a16288c1b42cd34941ca5cdd3d13546b66528f4",
+    "fixture_sha256": "3c970648c0421df7c78370291409a8e5ea1ff3d8aedeea0b7fa5c3e828c8057a",
+    "runtime_version": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077-pinkha-t2-registry-v1-57930393f9378873bd2f94b16a16288c1b42cd34941ca5cdd3d13546b66528f4",
+    "binary": "/workspace/work/account-rpc/space-close-build/pinkha-t2-rpc-space-close.test",
+    "binary_sha256": "bafa555d323c2e23c72ec4aed63964e3d8b56bd5b0ef02395143a1c8bf6948ac",
+    "rpc_manifest_sha256": "5c9400464b832e1249894de3485088e22296b9dc9cfd7df1e8665d579b00e7d1",
+    "native_client_fixture_sha256": "none",
+    "native_read_observation": null,
+    "candidate_sha256": "edc468223d9a3f2a6e5acdccff386147145094af9a7bc56c5795e6ea96f9f72f",
+    "scope": "SEPARATE_TEST_INSTRUMENTED_BINARY",
+    "original_new_binary_sha256": "9e53f86a98702780cc69651c61e0320812ebf4974e253063db45f28b835f81dd"
+  },
+  "original_account_baseline": "PASS_UNMODIFIED_FOUR_PROCESSES_AND_EIGHT_EXPORTS",
+  "prior_three_race_fixture": "UNCHANGED_NOT_RERUN_BY_THIS_LANE",
+  "source_after_execution": "PASS_UNCHANGED_PRODUCT_AND_EXACT_TEST_COMPOSITION",
+  "artifact_runtime_binary_bytes": "NOT_RETAINED_BUILD_AND_PHASE_RECEIPTS_ONLY",
+  "finished_at": "2026-11-21T20:17:34.351130+00:00"
+}
