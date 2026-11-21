@@ -44,12 +44,23 @@ def utc_now() -> str:
 
 
 def run(command: list[str], *, timeout: int = 30, include_stderr: bool = False,
-        failure_reason: str = "owned_command_failed") -> str:
+        failure_reason: str = "owned_command_failed", public_log: Path | None = None) -> str:
+    def save_public_output(stdout, stderr) -> None:
+        if public_log is None:
+            return
+        def text(value):
+            return value.decode("utf-8", errors="replace") if isinstance(value, bytes) else value or ""
+        public_log.write_text((text(stdout) + text(stderr))[:65536], encoding="utf-8", newline="\n")
     try:
         result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=timeout)
-    except (subprocess.TimeoutExpired, OSError):
-        # Report the fixed stage identifier, never private command arguments or output.
+    except subprocess.TimeoutExpired as error:
+        save_public_output(error.stdout, error.stderr)
         raise BoundaryError(failure_reason) from None
+    except OSError:
+        raise BoundaryError(failure_reason) from None
+    # Only fixed, public simctl boot/readiness commands opt into this log.
+    # Private fixture commands never provide a public_log.
+    save_public_output(result.stdout, result.stderr)
     require(result.returncode == 0, failure_reason)
     return result.stdout + result.stderr if include_stderr else result.stdout
 
@@ -117,16 +128,24 @@ def verify_simulator(receipt_path: Path, run_id: str) -> tuple[str, dict, str]:
     return normalized, receipt, state
 
 
-def ensure_owned_simulator_booted(receipt_path: Path, run_id: str, udid: str,
-                                 receipt: dict, state: str, result: dict) -> None:
-    # xcodebuild may shut the owned device down after a preceding test target.
-    # A focused UI-only run also starts with the freshly created device shut down.
+def request_owned_simulator_boot(udid: str, state: str, result: dict,
+                                 diagnostic_directory: Path | None = None) -> None:
     require(state in {"Shutdown", "Booting", "Booted"}, "owned_simulator_state_unavailable")
     result.update(simulatorInitialState=state, simulatorBootRequested=state == "Shutdown")
     if state == "Shutdown":
-        run(["xcrun", "simctl", "boot", udid], failure_reason="owned_simulator_boot_failed")
+        run(["xcrun", "simctl", "boot", udid], failure_reason="owned_simulator_boot_failed",
+            public_log=diagnostic_directory / "simulator-boot.txt" if diagnostic_directory else None)
+
+
+def ensure_owned_simulator_booted(receipt_path: Path, run_id: str, udid: str,
+                                 receipt: dict, state: str, result: dict,
+                                 diagnostic_directory: Path | None = None) -> None:
+    # Keep the bounded readiness gate. The focused workflow requests cold boot
+    # before its required build, allowing startup and compilation to overlap.
+    request_owned_simulator_boot(udid, state, result, diagnostic_directory)
     run(["xcrun", "simctl", "bootstatus", udid, "-b"], timeout=120,
-        failure_reason="owned_simulator_boot_readiness_failed")
+        failure_reason="owned_simulator_boot_readiness_failed",
+        public_log=diagnostic_directory / "simulator-bootstatus.txt" if diagnostic_directory else None)
     verified_udid, verified_receipt, final_state = verify_simulator(receipt_path, run_id)
     require(verified_udid == udid and verified_receipt == receipt and final_state == "Booted",
             "owned_simulator_boot_verification_failed")
@@ -187,6 +206,15 @@ def validate_private_config(config_path: Path, private_fixture: Path) -> dict[st
     return values
 
 
+def boot(args: argparse.Namespace, result: dict) -> None:
+    run_id, source_sha, _ = github_context()
+    udid, _, state = verify_simulator(args.simulator_receipt, run_id)
+    result.update(sourceCommit=source_sha, githubRunID=run_id, ownedSimulatorUDID=udid)
+    request_owned_simulator_boot(udid, state, result, args.safe_dir)
+    result.update(status="OWNED_SIMULATOR_BOOT_REQUESTED_READINESS_PENDING",
+                  claimBoundary="Boot requested only; readiness is verified after the required native target build.")
+
+
 def prepare(args: argparse.Namespace, result: dict) -> None:
     run_id, source_sha, temp_root = github_context()
     udid, receipt, simulator_state = verify_simulator(args.simulator_receipt, run_id)
@@ -199,7 +227,7 @@ def prepare(args: argparse.Namespace, result: dict) -> None:
     (args.safe_dir / "simctl-keychain-help.txt").write_text(help_text, encoding="utf-8", newline="\n")
     require("add-root-cert" in help_text, "simulator_root_command_unavailable")
     ensure_owned_simulator_booted(args.simulator_receipt, run_id, udid, receipt,
-                                 simulator_state, result)
+                                 simulator_state, result, args.safe_dir)
 
     owned = Path(tempfile.mkdtemp(prefix="pinkha-hanlin-ci-" + run_id + "-", dir=temp_root)).resolve()
     owned.chmod(0o700)
@@ -266,7 +294,7 @@ def cleanup(args: argparse.Namespace, result: dict) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("operation", choices=["prepare", "verify", "cleanup"])
+    parser.add_argument("operation", choices=["boot", "prepare", "verify", "cleanup"])
     parser.add_argument("--safe-dir", type=Path, required=True)
     parser.add_argument("--simulator-receipt", type=Path)
     args = parser.parse_args()
@@ -274,9 +302,9 @@ def main() -> int:
               "status": "FAIL", "scope": "owned_hanlin_provider_ci_setup_not_product_acceptance"}
     try:
         args.safe_dir = safe_directory(args.safe_dir)
-        if args.operation == "prepare":
+        if args.operation in {"boot", "prepare"}:
             require(args.simulator_receipt is not None, "simulator_receipt_required")
-        {"prepare": prepare, "verify": verify, "cleanup": cleanup}[args.operation](args, result)
+        {"boot": boot, "prepare": prepare, "verify": verify, "cleanup": cleanup}[args.operation](args, result)
         exit_code = 0
     except BoundaryError as error:
         result.update(status="FAIL", reason=str(error))

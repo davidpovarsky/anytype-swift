@@ -132,5 +132,47 @@ class OwnedSimulatorReadinessTests(unittest.TestCase):
                         CI.run(["private-command"], failure_reason="owned_simulator_root_install_failed")
 
 
+
+class OwnedBootOverlapTests(unittest.TestCase):
+    def test_boot_request_is_pending_without_a_fixture_or_full_boot_wait(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            args = argparse.Namespace(safe_dir=directory, simulator_receipt=directory / "simulator.json")
+            result = {}
+            with patch.object(CI, "github_context", return_value=("123", "a" * 40, directory)), \
+                 patch.object(CI, "verify_simulator", return_value=("owned", {}, "Shutdown")), \
+                 patch.object(CI, "run", return_value="") as command, \
+                 patch.object(CI.tempfile, "mkdtemp") as fixture:
+                CI.boot(args, result)
+            self.assertEqual([entry.args[0] for entry in command.call_args_list],
+                             [["xcrun", "simctl", "boot", "owned"]])
+            self.assertEqual(result["status"], "OWNED_SIMULATOR_BOOT_REQUESTED_READINESS_PENDING")
+            self.assertNotIn("simulatorReadyState", result)
+            fixture.assert_not_called()
+
+    def test_unverified_device_cannot_receive_an_early_boot_request(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            args = argparse.Namespace(safe_dir=directory, simulator_receipt=directory / "simulator.json")
+            with patch.object(CI, "github_context", return_value=("123", "a" * 40, directory)), \
+                 patch.object(CI, "verify_simulator", side_effect=CI.BoundaryError("owned_simulator_receipt_mismatch")), \
+                 patch.object(CI, "run") as command:
+                with self.assertRaisesRegex(CI.BoundaryError, "^owned_simulator_receipt_mismatch$"):
+                    CI.boot(args, {})
+            command.assert_not_called()
+
+    def test_public_readiness_timeout_keeps_original_progress_and_fixed_failure(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            log = Path(temporary) / "simulator-bootstatus.txt"
+            with patch.object(CI.subprocess, "run", side_effect=subprocess.TimeoutExpired(
+                    ["xcrun", "simctl", "bootstatus", "owned", "-b"], 120,
+                    output=b"Waiting for data migration\\n", stderr=b"Still booting\\n")):
+                with self.assertRaisesRegex(CI.BoundaryError, "^owned_simulator_boot_readiness_failed$"):
+                    CI.run(["xcrun", "simctl", "bootstatus", "owned", "-b"], timeout=120,
+                           failure_reason="owned_simulator_boot_readiness_failed", public_log=log)
+            self.assertIn("Waiting for data migration", log.read_text())
+            self.assertIn("Still booting", log.read_text())
+
+
 if __name__ == "__main__":
     unittest.main()

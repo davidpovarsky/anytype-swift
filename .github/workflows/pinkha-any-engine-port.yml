@@ -222,7 +222,7 @@ jobs:
             -maximum-test-execution-time-allowance 180 \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-native-evidence/runtime.log"
       - name: Extract native execution counts
-        if: always()
+        if: ${{ always() && (inputs.validation_scope != 'remaining-native-ui' || steps.native-ui-tests.outcome != 'skipped') }}
         shell: bash
         run: |
           set -euo pipefail
@@ -529,15 +529,64 @@ jobs:
             build/any-patched-evidence/simulator.json
           retention-days: 14
           if-no-files-found: warn
+      - name: Start the owned simulator while the required native target builds
+        id: native-boot
+        if: ${{ !cancelled() && inputs.validation_scope == 'remaining-native-ui' && steps.ui-reuse.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 Tools/AnyEnginePort/hanlin_fixture_ci.py boot \
+            --simulator-receipt build/any-patched-evidence/simulator.json \
+            --safe-dir build/any-patched-evidence/hanlin-provider
+      - name: Build the selected native executable and UI tests once
+        id: native-ui-build
+        if: ${{ !cancelled() && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') && (inputs.validation_scope != 'remaining-native-ui' || steps.native-boot.outcome == 'success') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          selection=()
+          if [ "${{ inputs.validation_scope }}" = remaining ] || [ "${{ inputs.validation_scope }}" = remaining-native-ui ]; then
+            selection=(-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCreateEditHanlinConsentBackgroundAndColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceInspectorQuoteAndNoteSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testObserveCanonicalArchiveSystemPickers)
+          fi
+          xcodebuild build-for-testing "${selection[@]}" \
+            -project NativeApp/AnyNative.xcodeproj \
+            -scheme PinkhaAnyNativeApp \
+            -configuration Debug \
+            -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
+            -derivedDataPath "$GITHUB_WORKSPACE/build/any-native-app-derived" \
+            -resultBundlePath "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui-build.xcresult" \
+            -parallel-testing-enabled NO \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 360 \
+            -maximum-test-execution-time-allowance 360 \
+            ARCHS=arm64 ONLY_ACTIVE_ARCH=YES \
+            CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=YES CODE_SIGN_IDENTITY=- \
+            2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui-build.log"
+      - name: Verify the built native app ownership boundary
+        id: native-app-boundary
+        if: ${{ !cancelled() && steps.native-ui-build.outcome == 'success' }}
+        shell: bash
+        run: |
+          python3 Tools/AnyEnginePort/verify_native_app_bundle.py \
+            --bundle build/any-native-app-derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNative.app \
+            --output build/any-patched-evidence/native-app-bundle.json
       - name: Prepare owned Hanlin HTTPS provider for mounted acceptance
         id: provider-fixture
-        if: ${{ !cancelled() && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') }}
+        if: ${{ !cancelled() && steps.native-ui-build.outcome == 'success' && steps.native-app-boundary.outcome == 'success' && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') }}
         shell: bash
         run: |
           set -euo pipefail
           python3 Tools/AnyEnginePort/hanlin_fixture_ci.py prepare \
             --simulator-receipt build/any-patched-evidence/simulator.json \
             --safe-dir build/any-patched-evidence/hanlin-provider
+      - name: Publish a failed owned simulator or provider preflight
+        if: ${{ failure() && (steps.native-boot.outcome == 'failure' || steps.provider-fixture.outcome == 'failure') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: any-engine-port-provider-preflight-${{ github.sha }}
+          path: build/any-patched-evidence/hanlin-provider/
+          retention-days: 14
+          if-no-files-found: warn
       - name: Build and launch the separate native executable
         id: native-ui-tests
         if: ${{ !cancelled() && steps.provider-fixture.outcome == 'success' && (steps.ui-tests.outcome == 'success' || steps.ui-reuse.outcome == 'success') }}
@@ -548,7 +597,7 @@ jobs:
           if [ "${{ inputs.validation_scope }}" = remaining ] || [ "${{ inputs.validation_scope }}" = remaining-native-ui ]; then
             selection=(-only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testCreateEditHanlinConsentBackgroundAndColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyMoveAndPropertyVisibilityRetainNativeBodyAndType -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceInspectorQuoteAndNoteSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testExplicitHebrewDirectionAndAlignmentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHierarchyDragIntoFolderPersistsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testSourceDragIntoNativeEditorPreservesTargetAndColdReopens -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testTopicAndWordLinksDriveDerivedRelatedDocumentsAfterColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testHanlinSelectedContextAndSeparateCreateConsentSurviveColdReopen -only-testing:PinkhaAnyNativeUITests/NativeLaunchTests/testObserveCanonicalArchiveSystemPickers)
           fi
-          xcodebuild test "${selection[@]}" \
+          xcodebuild test-without-building "${selection[@]}" \
             -project NativeApp/AnyNative.xcodeproj \
             -scheme PinkhaAnyNativeApp \
             -configuration Debug \
@@ -563,18 +612,11 @@ jobs:
             CODE_SIGNING_ALLOWED=YES CODE_SIGNING_REQUIRED=YES CODE_SIGN_IDENTITY=- \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-patched-evidence/native-ui.log"
       - name: Verify mounted Hanlin provider transcript contract
-        if: always()
+        if: ${{ !cancelled() && steps.provider-fixture.outcome == 'success' && steps.native-ui-tests.outcome != 'skipped' }}
         shell: bash
         run: |
           python3 Tools/AnyEnginePort/hanlin_fixture_ci.py verify \
             --safe-dir build/any-patched-evidence/hanlin-provider
-      - name: Verify the built native app ownership boundary
-        if: ${{ !cancelled() }}
-        shell: bash
-        run: |
-          python3 Tools/AnyEnginePort/verify_native_app_bundle.py \
-            --bundle build/any-native-app-derived/Build/Products/Debug-iphonesimulator/PinkhaAnyNative.app \
-            --output build/any-patched-evidence/native-app-bundle.json
       - name: Extract native execution counts
         if: always()
         shell: bash
