@@ -468,6 +468,9 @@ def select_runtime_inputs(source, control, evidence, attachment_variant=None):
     else:
         corrected = attachment_runtime.prepare(source, control, attachment_variant)
         patch, inventory_path = corrected.write(evidence / "corrected-native-source")
+        # The existing proof packager retains .txt and .json; preserve exact
+        # patch bytes without broadening legacy archive collection rules.
+        patch.with_suffix(".patch.txt").write_bytes(corrected.patch)
         expected_patch, expected_inventory = corrected.patch_sha256, corrected.inventory_sha256
         variant, version, capability = corrected.variant, corrected.version, corrected.lookup_capability
     if digest(patch, True) != expected_patch or digest(inventory_path, True) != expected_inventory:

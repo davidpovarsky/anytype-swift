@@ -148,6 +148,7 @@ class AttachmentRuntimeControls(unittest.TestCase):
             self.assertEqual(selected.artifact_name, "Pinkha-Universal-Verified-Heart-r15-attachment-v1.tar.gz")
             self.assertNotEqual(selected.version, builder.VERSION)
             self.assertEqual(selected.inventory["runtime_variant"], "r15-attachment-v1")
+            self.assertEqual(selected.patch.with_suffix(".patch.txt").read_bytes(), selected.patch.read_bytes())
 
     def test_dependency_reuse_records_original_baseline_and_actual_corrected_source(self):
         with tempfile.TemporaryDirectory() as directory:
