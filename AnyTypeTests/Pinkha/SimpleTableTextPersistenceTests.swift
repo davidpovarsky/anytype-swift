@@ -352,7 +352,7 @@ private final class SimpleTableTextFixture {
     var nativeWrite: @MainActor (String, MiddlewareString) async throws -> Void = { _, _ in }
 
     init(
-        markdownListener: (any MarkdownListener)? = nil,
+        markdownListener: SimpleTableMarkdownListener? = nil,
         onKeyboardAction: @escaping @MainActor () -> Void = {}
     ) {
         let markupChanger = BlockMarkupChangerMock()
@@ -378,7 +378,7 @@ private final class SimpleTableTextFixture {
             document: document, info: initial,
             focusSubject: PassthroughSubject<BlockFocusPosition, Never>(),
             actionHandler: native, pasteboardService: pasteboard,
-            markdownListener: markdownListener ?? MarkdownListenerImpl(internalListeners: []),
+            markdownListener: markdownListener ?? SimpleTableMarkdownListener(),
             cursorManager: EditorCursorManager(focusSubjectHolder: subjects),
             accessoryViewStateManager: SimpleTableUnusedAccessory(),
             markupChanger: markupChanger,
