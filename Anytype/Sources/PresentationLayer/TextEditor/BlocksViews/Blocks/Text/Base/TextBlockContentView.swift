@@ -36,6 +36,7 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     private var focusSubscription: AnyCancellable?
     private var resetSubscription: AnyCancellable?
     private var configuredBlockId: String?
+    private var configuredInputOwnerIdentity: ObjectIdentifier?
     private var focusContext: EditorCursorManager?
     private var pendingFocus: (id: UUID, position: BlockFocusPosition, requestId: UUID?)?
     private var focusLifetimeId = UUID()
@@ -266,14 +267,27 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         )
     }
 
-    private func applyNewConfiguration(configuration: TextBlockContentConfiguration, isExplicitReplacement: Bool = false) {
+    private func applyNewConfiguration(configuration: TextBlockContentConfiguration) {
+        let sameInputOwner: Bool
+        switch (configuredInputOwnerIdentity, configuration.inputOwnerIdentity) {
+        case let (previous?, incoming?):
+            sameInputOwner = previous == incoming
+        case (nil, nil):
+            // Legacy/test configurations without a handler identity cannot carry
+            // input ownership across a different row or editor.
+            sameInputOwner = configuredBlockId == configuration.blockId && focusContext === configuration.focusContext
+        default:
+            sameInputOwner = false
+        }
         if configuredBlockId != configuration.blockId || focusContext !== configuration.focusContext {
             cancelPendingFocus()
         }
         configuredBlockId = configuration.blockId
+        configuredInputOwnerIdentity = configuration.inputOwnerIdentity
         focusContext = configuration.focusContext
         applyTextStorage(configuration.attributedString,
-            hasPendingLocalChanges: !isExplicitReplacement && (configuration.hasPendingLocalTextChanges?() ?? false))
+            hasPendingLocalChanges: configuration.hasPendingLocalTextChanges?() ?? false,
+            forceReplacement: !sameInputOwner || configuration.isExplicitTextReplacement)
 
         textBlockLeadingView.update(blockId: configuration.blockId, style: TextBlockLeadingStyle(with: configuration))
         PinkhaTextBlockLeadingMarkerAdapter.applyNumberAlignment(
@@ -311,7 +325,7 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
         
         resetSubscription = configuration.resetPublisher.sink { [weak self] configuration in
             configuration.map {
-                self?.applyNewConfiguration(configuration: $0, isExplicitReplacement: true)
+                self?.applyNewConfiguration(configuration: $0)
             }
         }
         
@@ -331,8 +345,20 @@ final class TextBlockContentView: UIView, BlockContentView, DynamicHeightView, F
     /// Once the writer acknowledges the latest edit, remote and undo text can
     /// replace the view normally. Explicit reset actions are identified by their
     /// existing reset publisher, never by guessing from a text prefix.
-    private func applyTextStorage(_ incoming: NSAttributedString, hasPendingLocalChanges: Bool) {
+    private func applyTextStorage(_ incoming: NSAttributedString, hasPendingLocalChanges: Bool, forceReplacement: Bool) {
         let liveTextView = textView.textView
+        if forceReplacement {
+            // A reused row's marked text belongs to its previous handler. An
+            // explicit user reset also supersedes composition. Disconnect the
+            // custom delegate while ending it so no old buffer is delivered to
+            // the incoming handler; accepted edits already own immutable snapshots.
+            let previousDelegate = textView.delegate
+            textView.delegate = nil
+            liveTextView.unmarkText()
+            setAttributedTextKeepingCaret(incoming, in: liveTextView)
+            textView.delegate = previousDelegate
+            return
+        }
         let liveText: NSAttributedString = liveTextView.attributedText ?? NSAttributedString()
         switch PinkhaTextInputRenderPolicy.action(
             incoming: incoming.string, live: liveText.string,

@@ -192,16 +192,16 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
         return materialization.contentCarried
     }
 
-    private func virtualBlockCanSyncTextChange(_ textView: UITextView) -> Bool {
+    private func virtualBlockCanSyncTextChange(hasMarkedText: Bool, textLength: Int) -> Bool {
         // Wait for the IME commit — creating the block mid-composition would bounce the
         // first responder and break the composition.
-        guard textView.markedTextRange == nil else { return false }
+        guard !hasMarkedText else { return false }
         // During a slash/mention session typing is a local search filter; the commit paths
         // (setNewText, didSelectSlashAction) materialize with the final text.
         if case .search = accessoryState { return false }
         // Empty text creates nothing, but a deletion racing an in-flight creation must
         // still propagate to the created block.
-        return textView.attributedText.length > 0 || virtualBlockSession?.isMaterializing == true
+        return textLength > 0 || virtualBlockSession?.isMaterializing == true
     }
 
     private func endOfTextFocus(_ attrText: NSAttributedString) -> BlockFocusPosition {
@@ -686,6 +686,11 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
 
     private func handleKeyboardAction(action: CustomTextView.KeyboardAction, textView: UITextView) {
         Task { @MainActor in
+            if textEditQueue.hasPendingChanges, textView.attributedText.length > 0 {
+                // A structural key commits a deferred composition/search buffer;
+                // otherwise a successful native fork would leave stale dirty ownership.
+                enqueueTextChange(textView: textView, allowDeferral: false)
+            }
             try await textEditQueue.drain()
             if isVirtualUnmaterialized {
                 if case .delete = action {
@@ -730,19 +735,20 @@ final class TextBlockActionHandler: TextBlockActionHandlerProtocol, LinkToSearch
     private func enqueueTextChange(textView: UITextView, allowDeferral: Bool) {
         let text = textView.attributedText.sendable()
         let caret = textView.selectedRange
-        textEditQueue.enqueue { [weak self, weak textView] in
+        let hasMarkedText = textView.markedTextRange != nil
+        textEditQueue.enqueue { [weak self] in
             guard let self else { return false }
             let generation = forkGeneration
             if isVirtualUnmaterialized {
                 // Search sessions may open just after the delegate returns.
                 if allowDeferral {
-                    guard let textView, virtualBlockCanSyncTextChange(textView) else { return false }
+                    guard virtualBlockCanSyncTextChange(hasMarkedText: hasMarkedText, textLength: text.value.length) else { return false }
                 }
                 let carried = try await materializeVirtualBlock(carrying: text.value)
                 guard generation == forkGeneration else { throw CancellationError() }
                 if carried { return true }
             } else if allowDeferral, emptyBlockFork == nil, canForkEmptyBlockOnFill(text.value) {
-                if let textView, textView.markedTextRange != nil { return false }
+                if hasMarkedText { return false }
                 if case .search = accessoryState { return false }
             }
             let carried = try await forkEmptyBlockIfNeeded(carrying: text.value, focusAt: .at(caret))

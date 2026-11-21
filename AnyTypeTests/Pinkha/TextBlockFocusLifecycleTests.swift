@@ -7,6 +7,78 @@ import UIKit
 @Suite("Native text block focus lifetime", .serialized)
 @MainActor
 struct TextBlockFocusLifecycleTests {
+    @Test("A reused row must render a different pending owner, including its old marked buffer",
+          arguments: [false, true])
+    func reusedCellDoesNotPreserveDifferentPendingOwner(composing: Bool) async throws {
+        let fixture = try TextBlockFocusWindow()
+        defer { fixture.close() }
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let row = TextBlockContentView(frame: .zero)
+        let previousOwner = NSObject()
+        let nextOwner = NSObject()
+        var config = configuration("same-row", cursor: cursor, subjects: subjects, initial: .end)
+        config.inputOwnerIdentity = ObjectIdentifier(previousOwner)
+        config.hasPendingLocalTextChanges = { true }
+        row.update(with: config)
+        row.update(with: editingState())
+        fixture.attach(row)
+        await finishMainQueueTurn()
+        let input = row.textView.textView
+        try #require(input.isFirstResponder)
+        input.attributedText = NSAttributedString(string: "old owner private text")
+        if composing {
+            input.setMarkedText("שלום", selectedRange: NSRange(location: 4, length: 0))
+            try #require(input.markedTextRange != nil)
+        }
+        config.initialBlockFocusPosition = nil
+        config.initialFocusRequestId = nil
+        var newOwner = config
+        newOwner.inputOwnerIdentity = ObjectIdentifier(nextOwner)
+        #expect(config != newOwner, "Handler ownership must participate in configuration equality")
+        newOwner.attributedString = NSAttributedString(string: "new owner pending text")
+        row.update(with: newOwner)
+        #expect(input.text == "new owner pending text")
+        #expect(input.markedTextRange == nil)
+    }
+
+    @Test("A handler keeps input through its block fork; only an explicit replacement ends composition")
+    func sameInputOwnerSurvivesForkAndExplicitReplacementEndsComposition() async throws {
+        let fixture = try TextBlockFocusWindow()
+        defer { fixture.close() }
+        let subjects = FocusSubjectsHolder()
+        let cursor = EditorCursorManager(focusSubjectHolder: subjects)
+        let row = TextBlockContentView(frame: .zero)
+        let owner = NSObject()
+        var config = configuration("before-fork", cursor: cursor, subjects: subjects, initial: .end)
+        config.inputOwnerIdentity = ObjectIdentifier(owner)
+        config.hasPendingLocalTextChanges = { true }
+        row.update(with: config)
+        row.update(with: editingState())
+        fixture.attach(row)
+        await finishMainQueueTurn()
+        let input = row.textView.textView
+        try #require(input.isFirstResponder)
+        input.attributedText = NSAttributedString(string: "latest local input")
+        config.initialBlockFocusPosition = nil
+        config.initialFocusRequestId = nil
+        config.blockId = "native-forked-block"
+        config.attributedString = NSAttributedString(string: "first native snapshot")
+        row.update(with: config)
+        #expect(input.text == "latest local input", "An identity fork retains its handler's live input")
+        input.setMarkedText("שלום", selectedRange: NSRange(location: 4, length: 0))
+        try #require(input.markedTextRange != nil)
+        let markedBuffer = input.text
+        row.update(with: config)
+        #expect(input.text == markedBuffer)
+        #expect(input.markedTextRange != nil, "A native echo or nil reset must preserve composition")
+        config.isExplicitTextReplacement = true
+        config.attributedString = NSAttributedString(string: "chosen replacement")
+        row.update(with: config)
+        #expect(input.text == "chosen replacement")
+        #expect(input.markedTextRange == nil)
+    }
+
     @Test("An unacknowledged local word survives stale and empty native row configurations")
     func pendingLocalTextSurvivesNativeReconfiguration() async throws {
         let fixture = try TextBlockFocusWindow()

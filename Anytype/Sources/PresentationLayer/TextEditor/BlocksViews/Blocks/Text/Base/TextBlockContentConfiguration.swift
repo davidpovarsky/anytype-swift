@@ -36,6 +36,8 @@ struct TextBlockContentConfiguration: BlockConfiguration {
     }
     
     var blockId: String
+    var inputOwnerIdentity: ObjectIdentifier?
+    var isExplicitTextReplacement: Bool
     var content: BlockText
     var attributedString: NSAttributedString
     var isCheckable: Bool
@@ -75,9 +77,13 @@ struct TextBlockContentConfiguration: BlockConfiguration {
         focusPublisher: AnyPublisher<BlockFocusPosition, Never>,
         resetPublisher: AnyPublisher<TextBlockContentConfiguration?, Never>,
         actions: Actions,
-        hasPendingLocalTextChanges: (@MainActor () -> Bool)? = nil
+        hasPendingLocalTextChanges: (@MainActor () -> Bool)? = nil,
+        inputOwnerIdentity: ObjectIdentifier? = nil,
+        isExplicitTextReplacement: Bool = false
     ) {
         self.blockId = blockId
+        self.inputOwnerIdentity = inputOwnerIdentity
+        self.isExplicitTextReplacement = isExplicitTextReplacement
         self.content = content
         self.attributedString = attributedString
         self.placeholderAttributes = placeholderAttributes

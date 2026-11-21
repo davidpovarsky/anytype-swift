@@ -172,7 +172,9 @@ final class TextBlockViewModel: BlockViewModelProtocol {
             actions: actionHandler.textBlockActions(),
             hasPendingLocalTextChanges: { [weak actionHandler] in
                 actionHandler?.hasPendingTextChanges ?? false
-            }
+            },
+            inputOwnerIdentity: ObjectIdentifier(actionHandler),
+            isExplicitTextReplacement: attributedString != nil
         )
 
         return contentConfiguration
