@@ -1336,6 +1336,58 @@
         "The merge keeps both engine histories; no old-lane source or acceptance fixture is replaced by the earlier Any branch.",
         "This mapping establishes preservation/provenance only. Historical test claims retain their original source/run and scope; no new semantic or product acceptance is inferred."
       ]
+    },
+    {
+      "kind": "refactor",
+      "to": "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift",
+      "baselineBlob": "62fe7bcd241211919a679807137f41cb0322995f",
+      "replacementBlob": "185f7d73f8a1b5ff1932e686f457b73afd000da5",
+      "reason": "Preserve the original native five-target UI fixture and add explicit corrected-r15 identity selection plus negative capability checks; real assertions and account isolation remain unchanged.",
+      "sharedSources": [],
+      "validation": [
+        "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
+        "Corrected-runtime controller3 and affected existing fixture/cancellation3 controls passed. The standalone UI route remains NOT_RUN before actual dispatch; no product/full acceptance inferred."
+      ],
+      "from": "AnyTypeTests/Pinkha/TorahT5UIAcceptancePreparationTests.swift"
+    },
+    {
+      "kind": "refactor",
+      "to": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift",
+      "baselineBlob": "940b1dc6c1ac9b6ff8ced049e8bfdf479086214e",
+      "replacementBlob": "51a5571f230b2399f7b0b668b31683e3e22e6b6a",
+      "reason": "Recognize the exact reviewed full corrected-r15 runtime only under the existing build flag. Preserve original identity and reject partial/foreign identities.",
+      "sharedSources": [],
+      "validation": [
+        "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
+        "Corrected-runtime controller3 and affected existing fixture/cancellation3 controls passed. The standalone UI route remains NOT_RUN before actual dispatch; no product/full acceptance inferred."
+      ],
+      "from": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift"
+    },
+    {
+      "kind": "refactor",
+      "to": "Tools/TorahNativeOperations/run_native_rpc.py",
+      "baselineBlob": "3945481c470d4ec4f1a8458275f5ccc9c9e0a5a8",
+      "replacementBlob": "5441a0a90fc717165be27e2dbcd305103df88d99",
+      "reason": "Add a separate exact authorized-operation-read candidate profile with pinned source/generation and 23 new methods/71 records. Preserve retained/default native RPC profile and its acceptance.",
+      "sharedSources": [],
+      "validation": [
+        "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
+        "Dedicated candidate controller controls passed; actual Linux23/71 proof is run44952909883 and not accepted until original results pass."
+      ],
+      "from": "Tools/TorahNativeOperations/run_native_rpc.py"
+    },
+    {
+      "kind": "refactor",
+      "to": "Tools/TorahNativeOperations/run_native_rpc_container.sh",
+      "baselineBlob": "cf76434bf22bf63788d7834357c88fb628f70add",
+      "replacementBlob": "4a0a9cde2b1852a589fab6d72694a52ec47334d6",
+      "reason": "Pass the explicit native read candidate profile to the existing pinned Linux container; keep the default retained profile unchanged.",
+      "sharedSources": [],
+      "validation": [
+        "Exact original and replacement Git blobs reviewed; original source/acceptance evidence remains scoped to its original run.",
+        "Dedicated candidate controller controls passed; actual Linux23/71 proof is run44952909883 and not accepted until original results pass."
+      ],
+      "from": "Tools/TorahNativeOperations/run_native_rpc_container.sh"
     }
   ],
   "integration": {
