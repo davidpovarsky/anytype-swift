@@ -196,6 +196,25 @@ func TestT5NativeCachedQueriesAfterSignedRevocation(t *testing.T) {
 	// Use the already qualified native fixture's binding shape. The canonical
 	// Property and three registered Types are actual native Objects. Auxiliary
 	// template/folder slots are outside this single-source query scenario.
+	// WaitMandatoryObjects starts bundled installation asynchronously. Require
+	// its actual indexed Page before any one-shot ObjectCreate; never retry a
+	// mutation whose native outcome may be ambiguous.
+	wait("actual indexed native Page type", func() bool {
+		response := &pb.RpcObjectSearchResponse{}
+		invoke(ObjectSearch, &pb.RpcObjectSearchRequest{SpaceId: spaceID, Limit: 2,
+			Filters: []*model.BlockContentDataviewFilter{{RelationKey: "uniqueKey",
+				Condition: model.BlockContentDataviewFilter_Equal, Value: domain.String("ot-page").ToProto()}},
+			Keys: []string{"id", "spaceId", "uniqueKey"}}, response)
+		if len(response.Records) == 0 {
+			return false
+		}
+		require.Len(t, response.Records, 1)
+		row := domain.NewDetailsFromProto(response.Records[0])
+		require.NotEmpty(t, row.GetString(bundle.RelationKeyId))
+		require.Equal(t, spaceID, row.GetString(bundle.RelationKeySpaceId))
+		require.Equal(t, "ot-page", row.GetString(bundle.RelationKeyUniqueKey))
+		return true
+	})
 	canonical := &pb.RpcObjectCreateRelationResponse{}
 	invoke(ObjectCreateRelation, &pb.RpcObjectCreateRelationRequest{SpaceId: spaceID, Details: domain.NewDetails().
 		SetString(bundle.RelationKeyName, "Synthetic canonical source").SetInt64(bundle.RelationKeyRelationFormat, 0).ToProto()}, canonical)
