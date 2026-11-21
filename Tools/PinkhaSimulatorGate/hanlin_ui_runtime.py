@@ -190,11 +190,11 @@ class NativeUIRuntimeObserver:
             self.shared.write(self.directory / "observation.json", snapshot)
         return snapshot
 
-    def timeout(self):
+    def timeout(self, command_seconds=COMMAND_SECONDS):
         require(not self.stop_event.is_set(), "Actual UI runtime observation cancelled")
         available = self.deadline - time.monotonic()
         require(available > 0, "Actual UI runtime observation timed out")
-        return min(COMMAND_SECONDS, available)
+        return min(command_seconds, available)
 
     def container(self, timeout):
         raw = subprocess.check_output(["xcrun", "simctl", "get_app_container", self.udid,
@@ -261,9 +261,12 @@ class NativeUIRuntimeObserver:
                     and all(source[key]["sha256"] == self.before_source[key]["sha256"]
                             for key in ("installed_code_carriers", "built_code_carriers")),
                     "Application executable bytes changed between pre-UI validation and actual process mapping")
+                # Mapping must fit the unchanged 45-second total deadline. The
+                # observed vmmap operation exhausted the generic 10-second IPC
+                # limit; give it only the budget left after source verification.
                 mapped = self.diagnostic_operation("map_running_process", lambda:
                     self.shared.observe_running_runtime(identity["processID"], self.directory, self.built,
-                        source, command_timeout=self.timeout,
+                        source, command_timeout=lambda: self.timeout(MAPPING_SECONDS),
                         metadata={"observation_source": "ACTUAL_NATIVE_UI_RECEIPT_NO_LAUNCH"}))
                 self.retain_partial("runtime_mapping_returned", {"file": "live-runtime.json",
                     "pid": mapped["pid"], "runtime_sha256": mapped["runtime_sha256"],
@@ -315,7 +318,7 @@ class NativeUIRuntimeObserver:
         # A created worker keeps its ident after exit; an unstarted Thread cannot
         # be joined. A delayed worker sees stop_event before its first command.
         if self.thread is not None and self.thread.ident is not None:
-            self.thread.join(COMMAND_SECONDS + 5)
+            self.thread.join(MAPPING_SECONDS + 5)
             if self.thread.is_alive():
                 self.error = RuntimeError("Actual UI runtime observer did not finish within its stop bound")
                 self.observation = None

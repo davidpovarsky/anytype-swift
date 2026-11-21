@@ -100,6 +100,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         var documentExitAttribution: String?
         var invalidationCauses: [String: String] = [:]
         var logoutRootState: String?
+        var nativeAuthorityStage: String?
     }
 
     /// Observation only: records the first existing production invalidation call.
@@ -321,6 +322,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
             try await denied(host: host, invocation: copyCreationForDeniedAttempt(createdCall))
             try emit("CHECKING_NATIVE_AUTHORITY")
             try await verifyNativeAuthorityChanges()
+            receipt.nativeAuthorityStage = "retained_commit_receipt"
             let retained = try await journal.receipt(for: plan.identity)
             try require(retained?.effect == .committed && retained?.createdObjectReference == objectID,
                         "ordinary_logout_lost_original_write_metadata")
@@ -535,6 +537,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         }
         // Each negative case starts with a distinct live authority that validates
         // before the real native change. An already-revoked fence cannot mask it.
+        receipt.nativeAuthorityStage = "source_permission_authority"
         let permission = try PinkhaHanlinNativeAccess(presenter: editor, routeOwner: routeOwner,
             conversationID: UUID(), locale: Locale(identifier: "en"))
         try permission.validate(permission.session.context)
@@ -546,6 +549,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         try await Container.shared.objectActionsService().setLocked(false, objectId: fixture.sourceObjectID)
         try await waitUntil { !document.isLocked && document.permissions.canEditBlocks }
 
+        receipt.nativeAuthorityStage = "active_space_authority"
         let space = try PinkhaHanlinNativeAccess(presenter: rootPresenter, routeOwner: routeOwner,
             conversationID: UUID(), locale: Locale(identifier: "en"))
         try space.validate(space.session.context)
@@ -554,14 +558,24 @@ final class PinkhaHanlinNativeAcceptanceDriver {
                     "native_space_did_not_change")
         try denied(space)
         receipt.checks["native_active_space_change_denied"] = true
+        receipt.nativeAuthorityStage = "restore_original_space"
         _ = try await Container.shared.activeSpaceManager().setActiveSpace(spaceId: fixture.spaceID)
-        try await waitUntil { routeOwner.currentSpaceId == self.fixture.spaceID }
+        receipt.nativeAuthorityStage = "await_restored_space_route"
+        try await waitUntil {
+            routeOwner.currentSpaceId == self.fixture.spaceID
+                && Container.shared.activeSpaceManager().workspaceInfo?.accountSpaceId == self.fixture.spaceID
+                && self.rootPresenter.viewIfLoaded?.window?.windowScene === self.scene
+                && self.scene?.activationState == .foregroundActive
+        }
 
+        receipt.nativeAuthorityStage = "restored_account_authority"
         let account = try PinkhaHanlinNativeAccess(presenter: rootPresenter, routeOwner: routeOwner,
             conversationID: UUID(), locale: Locale(identifier: "en"))
         try account.validate(account.session.context)
         try require(Container.shared.accountManager().account.id == fixture.accountID, "foreign_account_before_logout")
+        receipt.nativeAuthorityStage = "native_logout"
         try await Container.shared.authService().logout(removeData: false)
+        receipt.nativeAuthorityStage = "logout_revocation"
         try require(!PinkhaHanlinAccountOwner.shared.isAvailable(account: fixture.accountID), "account_owner_not_revoked")
         try denied(account)
         receipt.checks["native_account_logout_denied"] = true
@@ -569,6 +583,7 @@ final class PinkhaHanlinNativeAcceptanceDriver {
         // Complete the original Settings logout owner's route, after the real
         // service succeeded. Leaving SpaceHub mounted is not a completed UI logout.
         // InitialCoordinator decides the next root; do not force an auth screen.
+        receipt.nativeAuthorityStage = "logout_root_route"
         let applicationState = Container.shared.applicationStateService()
         applicationState.state = .initial
         try await waitUntil { applicationState.state == .auth }

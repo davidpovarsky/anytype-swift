@@ -126,6 +126,22 @@ class ObserverControls(unittest.TestCase):
         self.assertEqual(self.continuity_calls, [(51457, [METHOD], "ACTUAL_COLD_LAUNCH_UI_METHOD_BOUNDARIES")])
         self.assertTrue(all("launch" not in argv and "terminate" not in argv for argv in self.commands))
 
+    def test_mapping_uses_remaining_budget_without_extending_the_total_deadline(self):
+        original = self.shared.observe_running_runtime
+        observed = []
+        def mapped(*args, **kwargs):
+            limit = kwargs["command_timeout"]()
+            observed.append(limit)
+            self.assertGreater(limit, gate.COMMAND_SECONDS)
+            self.assertLessEqual(limit, 20)
+            return original(*args, **kwargs)
+        self.shared.observe_running_runtime = mapped
+        self.source_hook = lambda: setattr(self.observer, "deadline", time.monotonic() + 20)
+        self.observe()
+        self.assertIsNone(self.observer.error)
+        self.assertEqual(len(observed), 1)
+        self.assertEqual(self.mapped_pids, [51457])
+
     def test_preexisting_receipt_is_rejected_before_observer_or_mapping(self):
         atomic_write(self.support / gate.RESULT, self.phase())
         with self.assertRaisesRegex(RuntimeError, "pre-existing"):
