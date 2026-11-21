@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import plistlib
+import shlex
 import shutil
 import subprocess
 import sys
@@ -75,6 +76,21 @@ class OriginalDriverFlowControls(unittest.TestCase):
     def produce_framework_fixture(self):
         derived = self.work / 'producer-derived'
         products = derived / 'Build/Products/Debug-Anytype-iphonesimulator'
+        cache = derived / 'ModuleCache.noindex'
+        # Explicit Apple-tool double for the actual compiler-context reader.
+        # This is not a compiler execution or a qualified module cache.
+        compiler = ['builtin-SwiftDriver', '--', '/EXPLICIT_TOOL_DOUBLE/swiftc',
+                    '-module-name', TARGET, '-target', 'arm64-apple-ios27.0-simulator',
+                    '-sdk', '/EXPLICIT_SYNTHETIC_SDK_NOT_USED', '-swift-version', '5',
+                    '-module-cache-path', str(cache), '-explicit-module-build',
+                    '-module-cache-path', str(derived / 'Build/Intermediates.noindex/SwiftExplicitPrecompiledModules'),
+                    '-clang-scanner-module-cache-path', str(cache),
+                    '-F', str(products), '-F', str(products / 'PackageFrameworks'), '-I', str(products)]
+        build_log = self.evidence / 'framework-build.stdout.log'
+        build_log.write_text(shlex.join(compiler) + '\n')
+        driver.write(self.evidence / 'framework-build.command.json', {
+            'returncode': 0, 'timed_out': False, 'cwd': str(self.root), 'stdout_sha256': sha256(build_log),
+            'scope': 'EXPLICIT_APPLE_TOOL_DOUBLE_NO_COMPILER_EXECUTED'})
         framework = products / (TARGET + '.framework')
         framework.mkdir(parents=True)
         (framework / TARGET).write_bytes(b'EXPLICIT_SYNTHETIC_FRAMEWORK_NOT_A_MACHO')

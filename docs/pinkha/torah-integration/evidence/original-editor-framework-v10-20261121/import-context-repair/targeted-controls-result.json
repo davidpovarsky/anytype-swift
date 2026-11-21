@@ -1,0 +1,47 @@
+{
+  "status": "PASS_25_DISTINCT_AFFECTED_CONTROLS_ACROSS_RECORDED_EXECUTIONS",
+  "scope": "20 original orchestration/surface controls +5 new import-context controls; no Apple execution",
+  "executions": [
+    {
+      "receipt": "attempt1-targeted-controls-result.json",
+      "executed": 25,
+      "passed": 24,
+      "failed": 1
+    },
+    {
+      "receipt": "corrected-positive-control.log",
+      "executed": 1,
+      "passed": 1,
+      "failed": 0
+    }
+  ],
+  "corrected_new_expectation": "Actual v9 line has15 module maps,47 Clang arguments; original assertions unchanged",
+  "verified_ids": [
+    "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_corrupt_signer_stops_original_driver_before_strict_gate_or_consumer",
+    "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_failed_signing_retains_full_after_inventory_without_qualification",
+    "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_other_framework_signature_failure_still_blocks_consumer_and_boot",
+    "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_whole_driver_keeps_strict_gate_and_exact_transformed_consumer_inputs",
+    "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_failed_signer_preserves_observation_and_blocks_all_later_gates",
+    "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_original_driver_requires_strict_signature_before_binary_consumer",
+    "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_unrelated_distribution_mutation_stops_consumer",
+    "test_framework.ActualTargetPublicSurfaceControls.test_graph_for_another_module_cannot_qualify_the_inspection_facade",
+    "test_framework.ActualTargetPublicSurfaceControls.test_imported_dependency_symbols_do_not_become_our_public_editor_api",
+    "test_framework.ActualTargetPublicSurfaceControls.test_original_public_editor_constructor_is_rejected",
+    "test_framework_flow.OriginalDriverFlowControls.test_boot_command_failure_keeps_build_evidence_but_never_runs_bootstatus_or_install",
+    "test_framework_flow.OriginalDriverFlowControls.test_build_graph_consumer_and_signature_complete_before_original_boot_pair",
+    "test_framework_flow.OriginalDriverFlowControls.test_consumer_compile_failure_cannot_boot_or_install",
+    "test_framework_flow.OriginalDriverFlowControls.test_different_embedded_product_cannot_reach_boot_or_install",
+    "test_framework_flow.OriginalDriverFlowControls.test_multiple_notices_preserve_exact_contents_and_consumer_destination",
+    "test_framework_flow.OriginalDriverFlowControls.test_one_notice_preserves_selected_simulator_for_both_original_build_commands",
+    "test_framework_flow.OriginalDriverFlowControls.test_original_framework_compile_failure_cannot_boot_or_install",
+    "test_framework_flow.OriginalDriverFlowControls.test_original_public_surface_tool_failure_cannot_boot_or_install",
+    "test_framework_flow.OriginalDriverFlowControls.test_original_source_only_admission_never_invokes_any_tool_or_work_directory",
+    "test_framework_flow.OriginalDriverFlowControls.test_same_180_second_boot_timeout_retains_partial_builds_without_runtime_credit",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_ambiguous_original_target_command_is_rejected",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_changed_log_is_rejected_before_any_extraction_authority",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_failed_timed_out_or_foreign_build_is_not_import_authority",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_observed_original_context_keeps_all_clang_imports_and_implicit_cache",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_wrong_target_sdk_language_or_cache_is_rejected"
+  ],
+  "full_192_native_gate": "NOT_RUN"
+}

@@ -1,0 +1,57 @@
+{
+  "base_source": "bba49c59edc974a4ca448676823c3cc8bcf65522",
+  "files": {
+    "Tools/OriginalEditor/run_framework_acceptance.py": {
+      "bytes": 37156,
+      "sha256": "1dc7f04a788058dfb1018ce959efa57f30443d97ea7a44b69510e63f1e73d226",
+      "base_sha256": "3d010bd28590fe56129ca8b9022e0353ade11932aab231aa2e8e1e25ee8bad02"
+    },
+    "Tools/OriginalEditor/test_framework_flow.py": {
+      "bytes": 16018,
+      "sha256": "7c404e4c22f43ce47d180d49895ba3421940ee51dc3e679ad9de8600366afe16",
+      "base_sha256": "5ce447f5c82482cd83ced77947693bc355fd91329fcd9f7a3d32f8e94f5f20f7"
+    },
+    "Tools/OriginalEditor/run_source_controls.py": {
+      "bytes": 26934,
+      "sha256": "adb4a5f257ae931d59e02964f54fdc5e5a42d6829e4f9b2a21badf63ec98e478",
+      "base_sha256": "5ce210c5cef2cd078af8e06916e66e3a02da99be2e0430e60dc747a69a797fe4"
+    },
+    "Tools/OriginalEditor/test_symbolgraph_import_context.py": {
+      "bytes": 5033,
+      "sha256": "66c093f34212f84dd115087cda0662a32432bbd5e101374f88a5ee95757ce4fb",
+      "base_sha256": null
+    },
+    "Tools/OriginalEditor/fixtures/v9-original-swift-driver.txt": {
+      "bytes": 14140,
+      "sha256": "4a109408517a12f6a274d032a90bf5b52db560bab196d14583a4347682dabfd7",
+      "base_sha256": null
+    }
+  },
+  "patch_sha256": "226f59a95f9b7d4fca0b509976d94cb0139a74059b3f1cabe51f8f1192b3668e",
+  "actual_v9_context_replay": {
+    "input_run": 44951428993,
+    "original_build_log_sha256": "b06c9dda4a82fe075f710a90b605d0639d21242939f31e4ac433369ff9c22f46",
+    "compiler_line_sha256": "820cce823b850e24d2a1b5cbdc7325285c3f06ee4df59c60dbeffa5a36b9038f",
+    "module_maps": 15,
+    "all_original_clang_arguments": 47,
+    "cache": "Original Clang scanner implicit cache, not effective explicit Swift module cache",
+    "swift_language_mode": "5"
+  },
+  "original_test_method_asts_unchanged": true,
+  "original_expected_case_ids_preserved": 187,
+  "new_case_ids": [
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_ambiguous_original_target_command_is_rejected",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_changed_log_is_rejected_before_any_extraction_authority",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_failed_timed_out_or_foreign_build_is_not_import_authority",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_observed_original_context_keeps_all_clang_imports_and_implicit_cache",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_wrong_target_sdk_language_or_cache_is_rejected"
+  ],
+  "full_native_expected_count": 192,
+  "targeted_control_summary": "25 distinct cases passed across retained24/25+corrected1/1 executions; full192 not run",
+  "public_verifier_sha256": "15799dea4ceee7c6b5fc8b3daa9d7c2803efd70c71bbb69fb6552e90eee83e6d",
+  "symbolgraph_timeout_seconds": 120,
+  "original_framework_build_timeout_seconds": 6000,
+  "external_consumer_build_timeout_seconds": 600,
+  "native_status": "NOT_RUN",
+  "official_primary_reference": "https://github.com/swiftlang/swift-package-manager/blob/main/Sources/Build/BuildDescription/SwiftModuleBuildDescription.swift#symbolGraphExtractArguments"
+}

@@ -74,6 +74,73 @@ def command(arguments, cwd, evidence, name, timeout):
     return stdout.read_text(errors='replace')
 
 
+def symbolgraph_import_context(root, derived, products, sdk_path, evidence):
+    """Reuse this build's actual import context without filtering its public API.
+
+    The standalone extractor imports modules implicitly. Xcode's explicit Swift
+    module cache is a different input from its Clang scanner/implicit cache;
+    carry the latter using the extractor's supported module-cache option.
+    """
+    root, derived, products, evidence = map(Path, (root, derived, products, evidence))
+    log = evidence / 'framework-build.stdout.log'
+    build = json.loads((evidence / 'framework-build.command.json').read_text())
+    require(build.get('returncode') == 0 and build.get('timed_out') is False
+            and build.get('cwd') == str(root)
+            and build.get('stdout_sha256') == sha256(log),
+            'Symbol graph import context is not from the successful original build')
+    candidates = []
+    with log.open() as stream:
+        for line in stream:
+            if 'builtin-SwiftDriver --' not in line:
+                continue
+            arguments = shlex.split(line.strip())
+            if '-module-name' in arguments and arguments[arguments.index('-module-name') + 1] == TARGET:
+                candidates.append((line.rstrip('\n'), arguments))
+    require(len(candidates) == 1, 'Missing or ambiguous original target compiler import context')
+    line, arguments = candidates[0]
+
+    def values(option):
+        indices = [index for index, value in enumerate(arguments) if value == option]
+        require(all(index + 1 < len(arguments) for index in indices), 'Missing compiler option value: ' + option)
+        return [arguments[index + 1] for index in indices]
+
+    require(values('-module-name') == [TARGET]
+            and values('-target') == ['arm64-apple-ios27.0-simulator']
+            and values('-sdk') == [str(sdk_path)]
+            and values('-swift-version') == ['5'],
+            'Original compiler target, SDK or language mode differs')
+    implicit_cache = str(derived / 'ModuleCache.noindex')
+    require(values('-clang-scanner-module-cache-path') == [implicit_cache]
+            and implicit_cache in values('-module-cache-path'),
+            'Original Clang scanner cache is not the owned producer cache')
+    # Keep the driver's existing import paths and order. Append every additional
+    # search path and each original Clang import argument, including module maps,
+    # header maps and the SDK stat/VFS caches. Do not guess dependency paths.
+    seen = {'-F': {str(products), str(products / 'PackageFrameworks')},
+            '-I': {str(products), str(products / 'Modules')}}
+    extra = []
+    for option in ['-F', '-I']:
+        for value in values(option):
+            if value not in seen[option]:
+                extra.extend([option, value])
+                seen[option].add(value)
+    clang_arguments = values('-Xcc')
+    for value in clang_arguments:
+        extra.extend(['-Xcc', value])
+    result = ['-module-cache-path', implicit_cache, '-swift-version', '5', '-v', *extra]
+    write(evidence / 'symbolgraph-import-context.json', {
+        'source_build_stdout_sha256': sha256(log),
+        'source_compiler_line_sha256': hashlib.sha256(line.encode()).hexdigest(),
+        'source_compiler_arguments': arguments,
+        'original_explicit_and_implicit_module_cache_options': values('-module-cache-path'),
+        'extractor_cache_role': 'ORIGINAL_CLANG_SCANNER_IMPLICIT_CACHE',
+        'original_clang_import_arguments': clang_arguments,
+        'extractor_additional_arguments': result,
+        'public_symbol_filtering_added': False,
+        'status': 'ACTUAL_BUILD_IMPORT_CONTEXT_BOUND_EXTRACTION_NOT_YET_PASSED'})
+    return result
+
+
 def source_file_proof(root, derived, before, evidence):
     paths = [p for p in Path(derived).rglob('*.SwiftFileList') if TARGET + '.build' in p.parts]
     require(paths, 'Actual original framework compiler input lists are absent')
@@ -344,10 +411,11 @@ def execute(args, receipt):
                        'actual-simulator-sdk-path', 30).strip()
     graph_directory = evidence / 'actual-public-symbol-graphs'
     graph_directory.mkdir()
+    import_context = symbolgraph_import_context(root, derived, products, sdk_path, evidence)
     command(['xcrun', 'swift-symbolgraph-extract', '-module-name', TARGET,
              '-target', 'arm64-apple-ios27.0-simulator', '-sdk', sdk_path,
              '-F', str(products), '-F', str(products / 'PackageFrameworks'),
-             '-I', str(products), '-I', str(products / 'Modules'),
+             '-I', str(products), '-I', str(products / 'Modules'), *import_context,
              '-minimum-access-level', 'public', '-output-dir', str(graph_directory)],
             root, evidence, 'actual-target-public-symbol-graph', 120)
     graphs = sorted(graph_directory.glob('*.symbols.json'))

@@ -193,8 +193,13 @@ EXPECTED_IDS = (
     "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_failed_signer_keeps_failure_inventory_and_stops_native_acceptance",
     "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_original_driver_keeps_full_strict_gate_before_external_consumer",
     "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_unrelated_distribution_change_cannot_reach_consumer",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_ambiguous_original_target_command_is_rejected",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_changed_log_is_rejected_before_any_extraction_authority",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_failed_timed_out_or_foreign_build_is_not_import_authority",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_observed_original_context_keeps_all_clang_imports_and_implicit_cache",
+    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_wrong_target_sdk_language_or_cache_is_rejected",
 )
-EXPECTED_COUNT = 187
+EXPECTED_COUNT = 192
 
 
 def cases(suite):

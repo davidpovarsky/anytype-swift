@@ -1,0 +1,246 @@
+--- a/Tools/OriginalEditor/run_framework_acceptance.py
++++ b/Tools/OriginalEditor/run_framework_acceptance.py
+@@ -72,6 +72,73 @@
+         write(evidence / (name + '.command.json'), result)
+     require(result['returncode'] == 0, 'Actual command failed: ' + name)
+     return stdout.read_text(errors='replace')
++
++
++def symbolgraph_import_context(root, derived, products, sdk_path, evidence):
++    """Reuse this build's actual import context without filtering its public API.
++
++    The standalone extractor imports modules implicitly. Xcode's explicit Swift
++    module cache is a different input from its Clang scanner/implicit cache;
++    carry the latter using the extractor's supported module-cache option.
++    """
++    root, derived, products, evidence = map(Path, (root, derived, products, evidence))
++    log = evidence / 'framework-build.stdout.log'
++    build = json.loads((evidence / 'framework-build.command.json').read_text())
++    require(build.get('returncode') == 0 and build.get('timed_out') is False
++            and build.get('cwd') == str(root)
++            and build.get('stdout_sha256') == sha256(log),
++            'Symbol graph import context is not from the successful original build')
++    candidates = []
++    with log.open() as stream:
++        for line in stream:
++            if 'builtin-SwiftDriver --' not in line:
++                continue
++            arguments = shlex.split(line.strip())
++            if '-module-name' in arguments and arguments[arguments.index('-module-name') + 1] == TARGET:
++                candidates.append((line.rstrip('\n'), arguments))
++    require(len(candidates) == 1, 'Missing or ambiguous original target compiler import context')
++    line, arguments = candidates[0]
++
++    def values(option):
++        indices = [index for index, value in enumerate(arguments) if value == option]
++        require(all(index + 1 < len(arguments) for index in indices), 'Missing compiler option value: ' + option)
++        return [arguments[index + 1] for index in indices]
++
++    require(values('-module-name') == [TARGET]
++            and values('-target') == ['arm64-apple-ios27.0-simulator']
++            and values('-sdk') == [str(sdk_path)]
++            and values('-swift-version') == ['5'],
++            'Original compiler target, SDK or language mode differs')
++    implicit_cache = str(derived / 'ModuleCache.noindex')
++    require(values('-clang-scanner-module-cache-path') == [implicit_cache]
++            and implicit_cache in values('-module-cache-path'),
++            'Original Clang scanner cache is not the owned producer cache')
++    # Keep the driver's existing import paths and order. Append every additional
++    # search path and each original Clang import argument, including module maps,
++    # header maps and the SDK stat/VFS caches. Do not guess dependency paths.
++    seen = {'-F': {str(products), str(products / 'PackageFrameworks')},
++            '-I': {str(products), str(products / 'Modules')}}
++    extra = []
++    for option in ['-F', '-I']:
++        for value in values(option):
++            if value not in seen[option]:
++                extra.extend([option, value])
++                seen[option].add(value)
++    clang_arguments = values('-Xcc')
++    for value in clang_arguments:
++        extra.extend(['-Xcc', value])
++    result = ['-module-cache-path', implicit_cache, '-swift-version', '5', '-v', *extra]
++    write(evidence / 'symbolgraph-import-context.json', {
++        'source_build_stdout_sha256': sha256(log),
++        'source_compiler_line_sha256': hashlib.sha256(line.encode()).hexdigest(),
++        'source_compiler_arguments': arguments,
++        'original_explicit_and_implicit_module_cache_options': values('-module-cache-path'),
++        'extractor_cache_role': 'ORIGINAL_CLANG_SCANNER_IMPLICIT_CACHE',
++        'original_clang_import_arguments': clang_arguments,
++        'extractor_additional_arguments': result,
++        'public_symbol_filtering_added': False,
++        'status': 'ACTUAL_BUILD_IMPORT_CONTEXT_BOUND_EXTRACTION_NOT_YET_PASSED'})
++    return result
+ 
+ 
+ def source_file_proof(root, derived, before, evidence):
+@@ -344,10 +411,11 @@
+                        'actual-simulator-sdk-path', 30).strip()
+     graph_directory = evidence / 'actual-public-symbol-graphs'
+     graph_directory.mkdir()
++    import_context = symbolgraph_import_context(root, derived, products, sdk_path, evidence)
+     command(['xcrun', 'swift-symbolgraph-extract', '-module-name', TARGET,
+              '-target', 'arm64-apple-ios27.0-simulator', '-sdk', sdk_path,
+              '-F', str(products), '-F', str(products / 'PackageFrameworks'),
+-             '-I', str(products), '-I', str(products / 'Modules'),
++             '-I', str(products), '-I', str(products / 'Modules'), *import_context,
+              '-minimum-access-level', 'public', '-output-dir', str(graph_directory)],
+             root, evidence, 'actual-target-public-symbol-graph', 120)
+     graphs = sorted(graph_directory.glob('*.symbols.json'))
+--- a/Tools/OriginalEditor/test_framework_flow.py
++++ b/Tools/OriginalEditor/test_framework_flow.py
+@@ -10,6 +10,7 @@
+ import os
+ from pathlib import Path
+ import plistlib
++import shlex
+ import shutil
+ import subprocess
+ import sys
+@@ -75,6 +76,21 @@
+     def produce_framework_fixture(self):
+         derived = self.work / 'producer-derived'
+         products = derived / 'Build/Products/Debug-Anytype-iphonesimulator'
++        cache = derived / 'ModuleCache.noindex'
++        # Explicit Apple-tool double for the actual compiler-context reader.
++        # This is not a compiler execution or a qualified module cache.
++        compiler = ['builtin-SwiftDriver', '--', '/EXPLICIT_TOOL_DOUBLE/swiftc',
++                    '-module-name', TARGET, '-target', 'arm64-apple-ios27.0-simulator',
++                    '-sdk', '/EXPLICIT_SYNTHETIC_SDK_NOT_USED', '-swift-version', '5',
++                    '-module-cache-path', str(cache), '-explicit-module-build',
++                    '-module-cache-path', str(derived / 'Build/Intermediates.noindex/SwiftExplicitPrecompiledModules'),
++                    '-clang-scanner-module-cache-path', str(cache),
++                    '-F', str(products), '-F', str(products / 'PackageFrameworks'), '-I', str(products)]
++        build_log = self.evidence / 'framework-build.stdout.log'
++        build_log.write_text(shlex.join(compiler) + '\n')
++        driver.write(self.evidence / 'framework-build.command.json', {
++            'returncode': 0, 'timed_out': False, 'cwd': str(self.root), 'stdout_sha256': sha256(build_log),
++            'scope': 'EXPLICIT_APPLE_TOOL_DOUBLE_NO_COMPILER_EXECUTED'})
+         framework = products / (TARGET + '.framework')
+         framework.mkdir(parents=True)
+         (framework / TARGET).write_bytes(b'EXPLICIT_SYNTHETIC_FRAMEWORK_NOT_A_MACHO')
+--- a/Tools/OriginalEditor/run_source_controls.py
++++ b/Tools/OriginalEditor/run_source_controls.py
+@@ -193,8 +193,13 @@
+     "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_failed_signer_keeps_failure_inventory_and_stops_native_acceptance",
+     "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_original_driver_keeps_full_strict_gate_before_external_consumer",
+     "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_unrelated_distribution_change_cannot_reach_consumer",
++    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_ambiguous_original_target_command_is_rejected",
++    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_changed_log_is_rejected_before_any_extraction_authority",
++    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_failed_timed_out_or_foreign_build_is_not_import_authority",
++    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_observed_original_context_keeps_all_clang_imports_and_implicit_cache",
++    "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_wrong_target_sdk_language_or_cache_is_rejected",
+ )
+-EXPECTED_COUNT = 187
++EXPECTED_COUNT = 192
+ 
+ 
+ def cases(suite):
+--- /dev/null
++++ b/Tools/OriginalEditor/test_symbolgraph_import_context.py
+@@ -0,0 +1,101 @@
++"""Check original build-context admission using the observed v9 compiler line.
++
++These are Python controls with an explicitly reconstructed command receipt.
++They do not execute an Apple compiler, extractor, consumer or editor.
++"""
++import hashlib
++import json
++from pathlib import Path
++import shlex
++import tempfile
++import unittest
++
++import run_framework_acceptance as driver
++from framework_profile import HERE
++
++
++class ActualCompilerImportContextControls(unittest.TestCase):
++    def setUp(self):
++        self.temporary = tempfile.TemporaryDirectory()
++        self.addCleanup(self.temporary.cleanup)
++        self.evidence = Path(self.temporary.name)
++        raw = (HERE / 'fixtures/v9-original-swift-driver.txt').read_bytes()
++        self.assertEqual(hashlib.sha256(raw).hexdigest(),
++                         '4a109408517a12f6a274d032a90bf5b52db560bab196d14583a4347682dabfd7')
++        self.arguments = shlex.split(raw.decode().strip())
++        self.root = Path(self.arguments[self.arguments.index('-working-directory') + 1])
++        self.cache = Path(self.arguments[self.arguments.index('-clang-scanner-module-cache-path') + 1])
++        self.derived = self.cache.parent
++        self.products = self.derived / 'Build/Products/Debug-Anytype-iphonesimulator'
++        self.sdk = self.arguments[self.arguments.index('-sdk') + 1]
++        self.log = self.evidence / 'framework-build.stdout.log'
++        self.log.write_bytes(raw)
++        self.write_receipt()
++
++    def write_receipt(self, **overrides):
++        value = {'returncode': 0, 'timed_out': False, 'cwd': str(self.root),
++                 'stdout_sha256': hashlib.sha256(self.log.read_bytes()).hexdigest(),
++                 'scope': 'RECONSTRUCTED_RECEIPT_AROUND_ONE_OBSERVED_COMPILER_LINE_NO_APPLE_EXECUTION'}
++        value.update(overrides)
++        driver.write(self.evidence / 'framework-build.command.json', value)
++
++    def context(self):
++        return driver.symbolgraph_import_context(
++            self.root, self.derived, self.products, self.sdk, self.evidence)
++
++    def test_observed_original_context_keeps_all_clang_imports_and_implicit_cache(self):
++        actual = self.context()
++        xcc = [self.arguments[i + 1] for i, value in enumerate(self.arguments) if value == '-Xcc']
++        maps = [value for value in xcc if value.startswith('-fmodule-map-file=')]
++        self.assertEqual(len(maps), 15)
++        self.assertEqual([actual[i + 1] for i, value in enumerate(actual) if value == '-Xcc'], xcc)
++        self.assertEqual(actual[actual.index('-module-cache-path') + 1], str(self.cache))
++        self.assertNotIn('SwiftExplicitPrecompiledModules', actual[actual.index('-module-cache-path') + 1])
++        self.assertEqual(actual[actual.index('-swift-version') + 1], '5')
++        self.assertIn('-v', actual)
++        self.assertFalse(any('skip' in value or 'reexported' in value for value in actual))
++        for path in [str(self.root), str(self.root / 'Dependencies/Middleware')]:
++            self.assertIn(path, actual)
++        proof = json.loads((self.evidence / 'symbolgraph-import-context.json').read_text())
++        self.assertEqual(proof['source_compiler_line_sha256'],
++                         '820cce823b850e24d2a1b5cbdc7325285c3f06ee4df59c60dbeffa5a36b9038f')
++        self.assertFalse(proof['public_symbol_filtering_added'])
++
++    def test_changed_log_is_rejected_before_any_extraction_authority(self):
++        self.log.write_bytes(self.log.read_bytes() + b'UNRECORDED_CHANGE\n')
++        with self.assertRaisesRegex(ValueError, 'successful original build'):
++            self.context()
++
++    def test_ambiguous_original_target_command_is_rejected(self):
++        self.log.write_bytes(self.log.read_bytes() * 2)
++        self.write_receipt()
++        with self.assertRaisesRegex(ValueError, 'Missing or ambiguous'):
++            self.context()
++
++    def test_wrong_target_sdk_language_or_cache_is_rejected(self):
++        original = self.log.read_text()
++        replacements = [
++            ('arm64-apple-ios27.0-simulator', 'x86_64-apple-ios27.0-simulator'),
++            ('-sdk ' + self.sdk, '-sdk /UNRELATED_SDK'),
++            ('-swift-version 5', '-swift-version 6'),
++            ('-clang-scanner-module-cache-path ' + str(self.cache),
++             '-clang-scanner-module-cache-path /UNRELATED_CACHE'),
++        ]
++        for old, new in replacements:
++            with self.subTest(changed=old):
++                self.assertIn(old, original)
++                self.log.write_text(original.replace(old, new))
++                self.write_receipt()
++                with self.assertRaises(ValueError):
++                    self.context()
++
++    def test_failed_timed_out_or_foreign_build_is_not_import_authority(self):
++        for change in [{'returncode': 1}, {'timed_out': True}, {'cwd': '/UNRELATED_CHECKOUT'}]:
++            with self.subTest(change=change):
++                self.write_receipt(**change)
++                with self.assertRaisesRegex(ValueError, 'successful original build'):
++                    self.context()
++
++
++if __name__ == '__main__':
++    unittest.main(verbosity=2)
+--- /dev/null
++++ b/Tools/OriginalEditor/fixtures/v9-original-swift-driver.txt
+@@ -0,0 +1 @@
++    builtin-SwiftDriver -- /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name AnytypeOriginalEditor -Onone @/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/Objects-normal/arm64/AnytypeOriginalEditor.SwiftFileList -DDEBUG -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/promises/Sources/FBLPromises/include/module.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-UserDefaults.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-Network.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-NSData.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-AppDelegateSwizzler.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-Logger.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-Environment.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/third-party-IsAppEncrypted.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleUtilities-Reachability.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/GoogleDataTransport.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/nanopb.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/FirebaseInstallations.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/FirebaseCore.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/firebase-ios-sdk/CoreOnly/Sources/module.modulemap -Xcc -fmodule-map-file\=/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/FirebaseMessaging.modulemap -Xfrontend -warn-long-expression-type-checking\=120 -Xfrontend -warn-long-function-bodies\=120 -D PINKHA_NATIVE_DERIVED -enable-upcoming-feature ConciseMagicFile -enable-upcoming-feature ForwardTrailingClosures -enable-upcoming-feature StrictConcurrency -enable-bare-slash-regex -enable-upcoming-feature DeprecateApplicationMain -enable-upcoming-feature ImportObjcForwardDeclarations -enable-upcoming-feature DisableOutwardActorInference -enable-upcoming-feature IsolatedDefaultValues -enable-upcoming-feature GlobalConcurrency -enable-upcoming-feature InferSendableFromCaptures -enable-upcoming-feature ImplicitOpenExistentials -enable-upcoming-feature RegionBasedIsolation -enable-upcoming-feature NonfrozenEnumExhaustivity -enable-upcoming-feature GlobalActorIsolatedTypesUsability -enable-upcoming-feature ExistentialAny -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios27.0-simulator -g -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Products/Debug-Anytype-iphonesimulator -F /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Products/Debug-Anytype-iphonesimulator/PackageFrameworks -F /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Products/Debug-Anytype-iphonesimulator -F /Users/runner/work/anytype-swift/anytype-swift -F /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Middleware -Xfrontend -load-plugin-executable -Xfrontend /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Products/Debug-Anytype/StoredHashMacroMacros\#StoredHashMacroMacros -c -j3 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SDKStatCaches.noindex/iphonesimulator27.0-24A430-e829b21a6f8c9b70876ba0858053c044155dc1fa6e968f55248c4516efa38917.sdkstatcache -output-file-map /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/Objects-normal/arm64/AnytypeOriginalEditor-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/ModuleCache.noindex -sdk-module-cache-path /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/Objects-normal/arm64/AnytypeOriginalEditor.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/Objects-normal/arm64/AnytypeOriginalEditor-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/Objects-normal/arm64/AnytypeOriginalEditor_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/AnytypeOriginalEditor-generated-files.hmap -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/AnytypeOriginalEditor-own-target-headers.hmap -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/AnytypeOriginalEditor-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/Anytype-eb7f3945f8c18b2669cb7c5a18c3e0c0-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/AnytypeOriginalEditor-project-headers.hmap -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/promises/Sources/FBLPromises/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/UserDefaults/Public -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Network/Public -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/NSData+zlib/Public -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/AppDelegateSwizzler/Public -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Logger/Public -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Environment/Public -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/third_party/IsAppEncrypted/Public -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/GoogleUtilities/GoogleUtilities/Reachability/Public -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/GoogleDataTransport/GoogleDataTransport/GDTCORLibrary/Public -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/nanopb/spm_headers -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/firebase-ios-sdk/FirebaseInstallations/Source/Library/Public -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/firebase-ios-sdk/FirebaseCore/Sources/Public -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/firebase-ios-sdk/CoreOnly/Sources -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/SourcePackages/checkouts/firebase-ios-sdk/FirebaseMessaging/Sources/Public -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Products/Debug-Anytype-iphonesimulator/include -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/DerivedSources -emit-objc-header -emit-objc-header-path /Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44951428993-1/producer-derived/Build/Intermediates.noindex/Anytype.build/Debug-Anytype-iphonesimulator/AnytypeOriginalEditor.build/Objects-normal/arm64/AnytypeOriginalEditor-Swift.h -working-directory /Users/runner/work/anytype-swift/anytype-swift -experimental-emit-module-separately -disable-cmo
