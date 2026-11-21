@@ -470,7 +470,7 @@ def execute(args, receipt, *, build_context=None):
                         "-derivedDataPath", str(derived), "-only-testing:AnytypeTests/" + native_suite,
                         *(["-only-testing:AnytypeTests/" + preservation.SUITE] if args.lane == "properties-set" else []),
                         *(["-only-testing:AnytypeTests/" + text_native_ack.SUITE] if acknowledgement else []),
-                        *(["-only-testing:AnytypeTests/" + shared_editor_existing_build.SUITE] if shared_editor else []),
+                        *(["-only-testing:AnytypeTests/" + suite for suite in shared_editor_existing_build.SUITES] if shared_editor else []),
                         *flags], app, evidence)
     else:
         require(derived == build_context.derived, "Same-job native product directory differs")
