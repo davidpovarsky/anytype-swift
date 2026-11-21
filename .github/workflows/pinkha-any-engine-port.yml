@@ -23,9 +23,9 @@ on:
   workflow_dispatch:
     inputs:
       validation_scope:
-        description: Full, shared-editor plus remaining acceptance, or only unpassed native UI
+        description: Full, remaining acceptance, unpassed native UI, or isolated candidate operation read
         type: choice
-        options: [full, remaining, remaining-native-ui]
+        options: [full, remaining, remaining-native-ui, candidate-runtime-read]
         default: full
       native_artifact_run_id:
         description: Original native binary producer run for unchanged-source reuse
@@ -56,7 +56,7 @@ concurrency:
 
 jobs:
   apple-packages:
-    if: ${{ inputs.validation_scope != 'remaining' && inputs.validation_scope != 'remaining-native-ui' }}
+    if: ${{ inputs.validation_scope != 'remaining' && inputs.validation_scope != 'remaining-native-ui' && inputs.validation_scope != 'candidate-runtime-read' }}
     name: Apple package contracts and preserved domain behavior
     runs-on: xcode-27
     timeout-minutes: 40
@@ -152,7 +152,7 @@ jobs:
           if-no-files-found: error
 
   ios-runtime:
-    if: ${{ inputs.validation_scope != 'remaining' && inputs.validation_scope != 'remaining-native-ui' }}
+    if: ${{ inputs.validation_scope != 'remaining' && inputs.validation_scope != 'remaining-native-ui' && inputs.validation_scope != 'candidate-runtime-read' }}
     name: Real embedded Any library on iOS Simulator
     runs-on: xcode-27
     timeout-minutes: 30
@@ -257,6 +257,7 @@ jobs:
           if-no-files-found: error
 
   ios-native-runtime:
+    if: ${{ inputs.validation_scope != 'candidate-runtime-read' }}
     name: Patched native Any library on iOS Simulator
     runs-on: xcode-27
     timeout-minutes: 80
@@ -687,9 +688,220 @@ jobs:
   retained-app-compatibility:
     name: Retained UIKit consumers after shared extraction
     needs: apple-packages
-    if: ${{ always() && !cancelled() && inputs.validation_scope != 'remaining-native-ui' }}
+    if: ${{ always() && !cancelled() && inputs.validation_scope != 'remaining-native-ui' && inputs.validation_scope != 'candidate-runtime-read' }}
     uses: ./.github/workflows/pinkha-sdk06-tests.yml
     with:
       heart_source_run_id: '44203168617'
       expected_app_branch: ${{ github.ref_name }}
       profile: ${{ inputs.validation_scope == 'remaining' && 'shared-editor' || 'sdk06' }}
+
+  ios-authorized-read-candidate:
+    if: ${{ inputs.validation_scope == 'candidate-runtime-read' }}
+    name: Candidate authorized operation read through the real iOS runtime
+    runs-on: xcode-27
+    timeout-minutes: 80
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
+      PINKHA_ANY_AUTHORIZED_READ_ACCEPTANCE: candidate-v10
+      ANY_BUILD_VERSION: v0.5.0-pinkha.1
+      ANY_AUTHORIZED_READ_MANIFEST: Tools/AnyEngineValidation/evidence/native-authorized-operation-read-v10-candidate-source.json
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Validate the isolated candidate and its optional exact binary producer
+        id: candidate-inputs
+        env:
+          NATIVE_ARTIFACT_RUN_ID: ${{ inputs.native_artifact_run_id }}
+          NATIVE_PRODUCER_COMMIT: ${{ inputs.native_producer_commit }}
+          UI_ARTIFACT_RUN_ID: ${{ inputs.ui_artifact_run_id }}
+          UI_PRODUCER_COMMIT: ${{ inputs.ui_producer_commit }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/any-authorized-read-evidence
+          test -z "$UI_ARTIFACT_RUN_ID"
+          test -z "$UI_PRODUCER_COMMIT"
+          if [ -n "$NATIVE_ARTIFACT_RUN_ID" ] || [ -n "$NATIVE_PRODUCER_COMMIT" ]; then
+            [[ "$NATIVE_ARTIFACT_RUN_ID" =~ ^[0-9]+$ ]]
+            [[ "$NATIVE_PRODUCER_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+            echo 'reuse=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'reuse=false' >> "$GITHUB_OUTPUT"
+          fi
+          python3 - <<'PY'
+          import os, sys
+          from pathlib import Path
+          sys.path.insert(0, 'Tools/AnyEnginePort')
+          import prepare_native_runtime as native
+          from verify_authorized_operation_read_execution import validate_candidate
+          validate_candidate(native.read_manifest(Path(os.environ['ANY_AUTHORIZED_READ_MANIFEST'])))
+          PY
+          python3 -m unittest discover -s Tools/AnyEnginePort -p test_authorized_operation_read_execution.py -v
+          python3 Tools/AnyEnginePort/verify_source_retention.py --base 586c98bcc17dee425664224e508fc0e8df277678 --output build/any-authorized-read-evidence/source-retention.json
+      - name: Checkout exact candidate upstream Any
+        if: ${{ steps.candidate-inputs.outputs.reuse == 'false' }}
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/any
+          ref: 88fae2e5ae7d0f46d6707567a3123081faa8de9a
+          path: .ci/any-source
+          persist-credentials: false
+      - name: Checkout the exact unchanged SDK in its portable replace path
+        if: ${{ steps.candidate-inputs.outputs.reuse == 'false' }}
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/any-sync-sdk
+          ref: 854df54cdadd76006ae823cbd1b1d923138356d0
+          path: .ci/any-source/.runtime-artifacts/sdk-source
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        if: ${{ steps.candidate-inputs.outputs.reuse == 'false' }}
+        with:
+          go-version-file: .ci/any-source/go.mod
+          cache-dependency-path: |
+            .ci/any-source/go.sum
+            .ci/any-source/.runtime-artifacts/sdk-source/go.sum
+      - name: Apply and verify only the reviewed candidate source manifest
+        if: ${{ steps.candidate-inputs.outputs.reuse == 'false' }}
+        run: |
+          python3 Tools/AnyEnginePort/prepare_native_runtime.py --manifest "$ANY_AUTHORIZED_READ_MANIFEST" apply \
+            --any-root .ci/any-source --output build/any-authorized-read-evidence/native-source.json
+      - name: Build both required native slices for this candidate
+        if: ${{ steps.candidate-inputs.outputs.reuse == 'false' }}
+        working-directory: .ci/any-source
+        shell: bash
+        run: |
+          set -euo pipefail
+          scripts/build-xcframework.sh dist 2>&1 | tee "$GITHUB_WORKSPACE/build/any-authorized-read-evidence/native-build.log"
+      - name: Bind and install the exact candidate archive
+        id: candidate-native-artifact
+        if: ${{ steps.candidate-inputs.outputs.reuse == 'false' }}
+        run: |
+          python3 Tools/AnyEnginePort/prepare_native_runtime.py --manifest "$ANY_AUTHORIZED_READ_MANIFEST" record \
+            --any-root .ci/any-source --output build/any-authorized-read-artifact
+          python3 Tools/AnyEnginePort/prepare_native_runtime.py --manifest "$ANY_AUTHORIZED_READ_MANIFEST" install \
+            --artifact build/any-authorized-read-artifact
+      - name: Preserve the completed source-bound candidate before Swift acceptance
+        if: ${{ !cancelled() && steps.candidate-native-artifact.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: any-pinkha-authorized-read-xcframework-${{ github.sha }}
+          path: build/any-authorized-read-artifact/
+          retention-days: 14
+          if-no-files-found: error
+      - name: Reuse only a source-identical candidate binary after an adapter correction
+        if: ${{ steps.candidate-inputs.outputs.reuse == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NATIVE_ARTIFACT_RUN_ID: ${{ inputs.native_artifact_run_id }}
+          NATIVE_PRODUCER_COMMIT: ${{ inputs.native_producer_commit }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh run download "$NATIVE_ARTIFACT_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name "any-pinkha-authorized-read-xcframework-$NATIVE_PRODUCER_COMMIT" --dir build/any-authorized-read-reused-artifact
+          python3 Tools/AnyEnginePort/prepare_native_runtime.py --manifest "$ANY_AUTHORIZED_READ_MANIFEST" install \
+            --artifact build/any-authorized-read-reused-artifact --producer-commit "$NATIVE_PRODUCER_COMMIT"
+      - name: Preserve installed candidate identity
+        run: |
+          cp Modules/PinkhaAnyRuntime/Vendor/consumer-binding.json build/any-authorized-read-evidence/native-consumer-binding.json
+          cp Modules/PinkhaAnyRuntime/Vendor/native-artifact.json build/any-authorized-read-evidence/original-native-artifact.json
+      - name: Create one simulator owned by this run
+        id: native-simulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/any-authorized-read-evidence
+          git rev-parse HEAD > build/any-authorized-read-evidence/source-sha.txt
+          xcodebuild -version > build/any-authorized-read-evidence/xcode-version.txt
+          python3 - <<'PY'
+          import json, os, subprocess
+          devices = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "--json"]))
+          candidates = [
+              (runtime, device)
+              for runtime, values in devices["devices"].items()
+              if ".iOS-" in runtime
+              for device in values
+              if device.get("isAvailable") and device.get("deviceTypeIdentifier")
+              and (device["name"].startswith("iPad") or device["name"].startswith("iPhone"))
+          ]
+          if not candidates:
+              raise SystemExit("No compatible iOS simulator template is available")
+          runtime_info = json.loads(subprocess.check_output(["xcrun", "simctl", "list", "runtimes", "--json"]))
+          runtime_by_id = {value["identifier"]: value for value in runtime_info["runtimes"]}
+          def runtime_version(identifier):
+              info = runtime_by_id.get(identifier, {})
+              version = info.get("version", "")
+              parts = version.split(".") if isinstance(version, str) else []
+              if not info.get("isAvailable") or not parts or not all(part.isdigit() for part in parts):
+                  return ()
+              return tuple(int(part) for part in parts)
+          candidates = [item for item in candidates if runtime_version(item[0]) >= (27,)]
+          if not candidates:
+              raise SystemExit("No iOS 27 or newer simulator template is available")
+          runtime, device = sorted(candidates,
+              key=lambda item: (runtime_version(item[0]), item[1]["name"].startswith("iPad")),
+              reverse=True)[0]
+          udid = subprocess.check_output([
+              "xcrun", "simctl", "create", "AnyAuthorizedRead-" + os.environ["GITHUB_RUN_ID"],
+              device["deviceTypeIdentifier"], runtime
+          ], text=True).strip()
+          with open(os.environ["GITHUB_ENV"], "a") as output:
+              output.write("ANY_NATIVE_SIMULATOR_UDID=" + udid + "\n")
+          with open("build/any-authorized-read-evidence/simulator.json", "w") as output:
+              json.dump({"ownedUDID": udid, "runtime": runtime, "deviceType": device["deviceTypeIdentifier"]}, output)
+          PY
+      - name: Execute only the new owned-host authorized read journey
+        working-directory: Modules/PinkhaAnyRuntime
+        shell: bash
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -scheme PinkhaAnyRuntime \
+            -only-testing:PinkhaAnyRuntimeTests/AnyAuthorizedOperationReadRuntimeTests/testManagedNativeAuthorizedReadPreservesBytesAcrossBlockDeletionAndColdReopen \
+            -destination "platform=iOS Simulator,id=$ANY_NATIVE_SIMULATOR_UDID" \
+            -derivedDataPath "$GITHUB_WORKSPACE/build/any-authorized-read-derived" \
+            -resultBundlePath "$GITHUB_WORKSPACE/build/any-authorized-read-evidence/runtime.xcresult" \
+            -parallel-testing-enabled NO \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 180 \
+            -maximum-test-execution-time-allowance 180 \
+            ARCHS=arm64 ONLY_ACTIVE_ARCH=YES \
+            2>&1 | tee "$GITHUB_WORKSPACE/build/any-authorized-read-evidence/runtime.log"
+      - name: Qualify the exact one named iOS method and its installed native binary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -d build/any-authorized-read-evidence/runtime.xcresult ]; then
+            xcrun xcresulttool get test-results summary \
+              --path build/any-authorized-read-evidence/runtime.xcresult --format json \
+              > build/any-authorized-read-evidence/test-counts.json || true
+            xcrun xcresulttool get test-results tests \
+              --path build/any-authorized-read-evidence/runtime.xcresult --format json \
+              > build/any-authorized-read-evidence/test-methods.json || true
+          fi
+          python3 Tools/AnyEnginePort/verify_authorized_operation_read_execution.py \
+            --udid "${ANY_NATIVE_SIMULATOR_UDID:-}" \
+            --summary build/any-authorized-read-evidence/test-counts.json \
+            --tests build/any-authorized-read-evidence/test-methods.json \
+            --output build/any-authorized-read-evidence/named-execution.json
+      - name: Remove only this candidate run's simulator
+        if: always()
+        shell: bash
+        run: |
+          if [ -n "${ANY_NATIVE_SIMULATOR_UDID:-}" ]; then
+            xcrun simctl shutdown "$ANY_NATIVE_SIMULATOR_UDID" || true
+            xcrun simctl delete "$ANY_NATIVE_SIMULATOR_UDID"
+          fi
+      - name: Upload original candidate iOS execution evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: any-engine-port-ios-authorized-read-${{ github.sha }}
+          path: build/any-authorized-read-evidence/
+          retention-days: 14
+          if-no-files-found: error
