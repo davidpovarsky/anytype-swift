@@ -1,0 +1,47 @@
+diff --git a/Tools/OriginalEditor/test_framework_flow.py b/Tools/OriginalEditor/test_framework_flow.py
+--- a/Tools/OriginalEditor/test_framework_flow.py
++++ b/Tools/OriginalEditor/test_framework_flow.py
+@@ -31,7 +31,7 @@
+     def setUp(self):
+         self.temporary = tempfile.TemporaryDirectory()
+         self.addCleanup(self.temporary.cleanup)
+-        self.root = Path(self.temporary.name)
++        self.root = Path(self.temporary.name).resolve()
+         self.evidence = self.root / 'build/evidence'
+         self.work = self.root / 'build/work'
+         self.events = []
+diff --git a/Tools/OriginalEditor/test_framework_temporary_paths.py b/Tools/OriginalEditor/test_framework_temporary_paths.py
+--- a/Tools/OriginalEditor/test_framework_temporary_paths.py
++++ b/Tools/OriginalEditor/test_framework_temporary_paths.py
+@@ -47,6 +47,11 @@
+             'test_framework_source_retention.OriginalRawCompilerEvidenceControls.'
+             'test_original_packager_retains_all_four_exact_raw_proofs_as_text')
+ 
++    def test_original_driver_import_context_reaches_consumer_under_directory_alias(self):
++        self.run_original_control(
++            'test_framework_flow.OriginalDriverFlowControls.'
++            'test_build_graph_consumer_and_signature_complete_before_original_boot_pair')
++
+ 
+ if __name__ == '__main__':
+     unittest.main()
+diff --git a/Tools/OriginalEditor/run_source_controls.py b/Tools/OriginalEditor/run_source_controls.py
+--- a/Tools/OriginalEditor/run_source_controls.py
++++ b/Tools/OriginalEditor/run_source_controls.py
+@@ -168,6 +168,7 @@
+     "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_original_packager_retains_all_four_exact_raw_proofs_as_text",
+     "test_framework_temporary_paths.TemporaryRootAliasControls.test_known_input_mutation_is_really_injected_and_refused_under_directory_alias",
+     "test_framework_temporary_paths.TemporaryRootAliasControls.test_materialized_mutation_is_really_injected_and_refused_under_directory_alias",
++    "test_framework_temporary_paths.TemporaryRootAliasControls.test_original_driver_import_context_reaches_consumer_under_directory_alias",
+     "test_framework_temporary_paths.TemporaryRootAliasControls.test_original_raw_compiler_proofs_are_retained_under_directory_alias",
+     "test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_unchanged_source_accepts_separate_owned_generated_build_metadata",
+     "test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_untracked_swift_resource_and_ignored_source_are_rejected_without_cleanup",
+@@ -199,7 +200,7 @@
+     "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_observed_original_context_keeps_all_clang_imports_and_implicit_cache",
+     "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_wrong_target_sdk_language_or_cache_is_rejected",
+ )
+-EXPECTED_COUNT = 192
++EXPECTED_COUNT = 193
+ 
+ 
+ def cases(suite):

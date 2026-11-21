@@ -31,7 +31,7 @@ class OriginalDriverFlowControls(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
         self.addCleanup(self.temporary.cleanup)
-        self.root = Path(self.temporary.name)
+        self.root = Path(self.temporary.name).resolve()
         self.evidence = self.root / 'build/evidence'
         self.work = self.root / 'build/work'
         self.events = []

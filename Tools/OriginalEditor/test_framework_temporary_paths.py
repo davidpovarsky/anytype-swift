@@ -47,6 +47,11 @@ class TemporaryRootAliasControls(unittest.TestCase):
             'test_framework_source_retention.OriginalRawCompilerEvidenceControls.'
             'test_original_packager_retains_all_four_exact_raw_proofs_as_text')
 
+    def test_original_driver_import_context_reaches_consumer_under_directory_alias(self):
+        self.run_original_control(
+            'test_framework_flow.OriginalDriverFlowControls.'
+            'test_build_graph_consumer_and_signature_complete_before_original_boot_pair')
+
 
 if __name__ == '__main__':
     unittest.main()

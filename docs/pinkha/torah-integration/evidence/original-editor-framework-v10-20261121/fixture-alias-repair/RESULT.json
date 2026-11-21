@@ -1,0 +1,199 @@
+{
+  "status": "PASS_NINE_REPRODUCTIONS_NINE_REPAIRS_ONE_NEW_ALIAS_CONTROL",
+  "scope": "Real filesystem alias; original Python driver and original assertions; explicit Apple-tool doubles. No Apple build/runtime credit.",
+  "native_failed_run": 44955835428,
+  "native_source_sha": "2b8cb06eede49af0b3f09aa91d87686cb28abe82",
+  "utc": "2026-11-21T22:53:01.245599+00:00",
+  "results": [
+    {
+      "phase": "base",
+      "case": "test_framework_flow.OriginalDriverFlowControls.test_boot_command_failure_keeps_build_evidence_but_never_runs_bootstatus_or_install",
+      "exit": 1,
+      "receipt_error": "Symbol graph import context is not from the successful original build",
+      "stderr_sha256": "bb2a94e2e38a6bf38bccd64730b80042a9ccac61a0cab02927907b0195556d20",
+      "real_directory_alias": true,
+      "reused_existing_reproduction": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "base",
+      "case": "test_framework_flow.OriginalDriverFlowControls.test_different_embedded_product_cannot_reach_boot_or_install",
+      "exit": 1,
+      "receipt_error": "Symbol graph import context is not from the successful original build",
+      "stderr_sha256": "926d2d282ab3beb7df3aa37ac9467074a229dab1ecf036fd19c35476219b0c86",
+      "real_directory_alias": true,
+      "reused_existing_reproduction": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "base",
+      "case": "test_framework_flow.OriginalDriverFlowControls.test_multiple_notices_preserve_exact_contents_and_consumer_destination",
+      "exit": 1,
+      "receipt_error": "Symbol graph import context is not from the successful original build",
+      "stderr_sha256": "c5f5f2a2d040a8fe754a4c16499bb2210e0e9814dd2d7a096b837783e6b49b84",
+      "real_directory_alias": true,
+      "reused_existing_reproduction": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "base",
+      "case": "test_framework_flow.OriginalDriverFlowControls.test_one_notice_preserves_selected_simulator_for_both_original_build_commands",
+      "exit": 1,
+      "receipt_error": "Symbol graph import context is not from the successful original build",
+      "stderr_sha256": "adbb7744d6aeeac7f4b4827a880a1eb6edf49cf80d05bdb99ead01741143eff3",
+      "real_directory_alias": true,
+      "reused_existing_reproduction": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "base",
+      "case": "test_framework_flow.OriginalDriverFlowControls.test_same_180_second_boot_timeout_retains_partial_builds_without_runtime_credit",
+      "exit": 1,
+      "receipt_error": "Symbol graph import context is not from the successful original build",
+      "stderr_sha256": "471e8490d76a3c190b626e10cc3223ebcb6c823daa82e77fe52e2408d52df46c",
+      "real_directory_alias": true,
+      "reused_existing_reproduction": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "base",
+      "case": "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_whole_driver_keeps_strict_gate_and_exact_transformed_consumer_inputs",
+      "exit": 1,
+      "receipt_error": "Symbol graph import context is not from the successful original build",
+      "stderr_sha256": "2102658bfd592c8297c733c163170bfa66d59fc33a37152f730e4d08ba970ef9",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "base",
+      "case": "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_original_driver_requires_strict_signature_before_binary_consumer",
+      "exit": 1,
+      "receipt_error": "Symbol graph import context is not from the successful original build",
+      "stderr_sha256": "54f033a8d7d9de6226ab39d61186117feb883b8f9a15a48163d20e685349c81c",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "base",
+      "case": "test_framework_flow.OriginalDriverFlowControls.test_build_graph_consumer_and_signature_complete_before_original_boot_pair",
+      "exit": 1,
+      "receipt_error": "Symbol graph import context is not from the successful original build",
+      "stderr_sha256": "01faa948f2a7cd95a249b333611573326c4b546bf3d6241914cae0c2daa4393d",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "base",
+      "case": "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_original_driver_keeps_full_strict_gate_before_external_consumer",
+      "exit": 1,
+      "receipt_error": "Symbol graph import context is not from the successful original build",
+      "stderr_sha256": "48d498c95b74be214e04349658272f62f759c216066be22ed7a3762df31de08d",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "candidate",
+      "case": "test_framework_flow.OriginalDriverFlowControls.test_boot_command_failure_keeps_build_evidence_but_never_runs_bootstatus_or_install",
+      "exit": 0,
+      "receipt_error": "EXPLICIT_TOOL_FAILURE:boot-owned-simulator",
+      "stderr_sha256": "f2e189708fdfdc478b1cc380316bad0abcf5523a694c5d807e2b5e484ecdfb7d",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "candidate",
+      "case": "test_framework_flow.OriginalDriverFlowControls.test_different_embedded_product_cannot_reach_boot_or_install",
+      "exit": 0,
+      "receipt_error": "The actual consumer did not embed the exact exported framework: AnytypeOriginalEditor.framework",
+      "stderr_sha256": "f60cb57da752c7f6791be128408e0eed80ad052507b01d94fc2900e0afb49bb9",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "candidate",
+      "case": "test_framework_flow.OriginalDriverFlowControls.test_multiple_notices_preserve_exact_contents_and_consumer_destination",
+      "exit": 0,
+      "receipt_error": "Synthetic control stops before real installation",
+      "stderr_sha256": "1557cb55b4bc108541f79a33c48ef11ad8e38d11a83aa561d66f209e5aa05daf",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "candidate",
+      "case": "test_framework_flow.OriginalDriverFlowControls.test_one_notice_preserves_selected_simulator_for_both_original_build_commands",
+      "exit": 0,
+      "receipt_error": "Synthetic control stops before real installation",
+      "stderr_sha256": "461dd351f192f0480f7bb40b2f44ad15acac70337813e28ea360823fd0f41085",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "candidate",
+      "case": "test_framework_flow.OriginalDriverFlowControls.test_same_180_second_boot_timeout_retains_partial_builds_without_runtime_credit",
+      "exit": 0,
+      "receipt_error": "Command '['xcrun', 'simctl', 'bootstatus', '12345678-1234-1234-1234-1234567890AB', '-b']' timed out after 180 seconds",
+      "stderr_sha256": "7003e51e462c99f796377b599c7a1a03dfe48ddfd5842aa1ecde645894c0427c",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "candidate",
+      "case": "test_amplitude_simulator_signing.OriginalSigningDriverFlowControls.test_whole_driver_keeps_strict_gate_and_exact_transformed_consumer_inputs",
+      "exit": 0,
+      "receipt_error": "Synthetic control stops before real installation",
+      "stderr_sha256": "1b984d24f6ef31b90ee02fad269b77a4c9d9e908cb88d7e626dd7f389180bca4",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "candidate",
+      "case": "test_anycrypto_simulator_signing.AnyCryptoOriginalDriverControls.test_original_driver_requires_strict_signature_before_binary_consumer",
+      "exit": 0,
+      "receipt_error": "Synthetic control stops before real installation",
+      "stderr_sha256": "359e38d2c2d07e1bf97425312b94eabf35a0ab47c2f03e2cf4ace35463939019",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "candidate",
+      "case": "test_framework_flow.OriginalDriverFlowControls.test_build_graph_consumer_and_signature_complete_before_original_boot_pair",
+      "exit": 0,
+      "receipt_error": "Synthetic control stops before real installation",
+      "stderr_sha256": "254b4da2e2f4511e011e396c11c1e234bfbdef8d7bf3cc04be1f0c3f1a73e091",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    },
+    {
+      "phase": "candidate",
+      "case": "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_original_driver_keeps_full_strict_gate_before_external_consumer",
+      "exit": 0,
+      "receipt_error": "Synthetic control stops before real installation",
+      "stderr_sha256": "21c083bcbdbbbe9a484f00d9de7ef85f9e0259b0d3b16d3ab001f95b1d3a22e5",
+      "real_directory_alias": true,
+      "apple_builds_executed": 0,
+      "native_tests_executed": 0
+    }
+  ],
+  "new_regression": {
+    "id": "test_framework_temporary_paths.TemporaryRootAliasControls.test_original_driver_import_context_reaches_consumer_under_directory_alias",
+    "exit": 0
+  },
+  "unchanged_native_passed_cases_not_rerun": 183
+}

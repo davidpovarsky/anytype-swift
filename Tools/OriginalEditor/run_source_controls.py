@@ -168,6 +168,7 @@ EXPECTED_IDS = (
     "test_framework_source_retention.OriginalRawCompilerEvidenceControls.test_original_packager_retains_all_four_exact_raw_proofs_as_text",
     "test_framework_temporary_paths.TemporaryRootAliasControls.test_known_input_mutation_is_really_injected_and_refused_under_directory_alias",
     "test_framework_temporary_paths.TemporaryRootAliasControls.test_materialized_mutation_is_really_injected_and_refused_under_directory_alias",
+    "test_framework_temporary_paths.TemporaryRootAliasControls.test_original_driver_import_context_reaches_consumer_under_directory_alias",
     "test_framework_temporary_paths.TemporaryRootAliasControls.test_original_raw_compiler_proofs_are_retained_under_directory_alias",
     "test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_unchanged_source_accepts_separate_owned_generated_build_metadata",
     "test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_untracked_swift_resource_and_ignored_source_are_rejected_without_cleanup",
@@ -199,7 +200,7 @@ EXPECTED_IDS = (
     "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_observed_original_context_keeps_all_clang_imports_and_implicit_cache",
     "test_symbolgraph_import_context.ActualCompilerImportContextControls.test_wrong_target_sdk_language_or_cache_is_rejected",
 )
-EXPECTED_COUNT = 192
+EXPECTED_COUNT = 193
 
 
 def cases(suite):
