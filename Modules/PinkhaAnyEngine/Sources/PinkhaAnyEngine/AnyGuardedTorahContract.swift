@@ -17,6 +17,7 @@ public struct AnyGuardedTorahCapabilities: Sendable, Equatable {
     public let nativeRelatedVersion: Int
     public let nativeObjectClaimsSnapshot: Bool
     public let nativeObjectClaimsWatch: Bool
+    public let nativeAuthorizedOperationRead: Bool
 
     public init(response: AnyJSON) throws {
         for (key, value) in [
@@ -51,6 +52,10 @@ public struct AnyGuardedTorahCapabilities: Sendable, Equatable {
         nativeRelatedVersion = response["nativeRelatedVersion"]?.integer == 1 ? 1 : 0
         nativeObjectClaimsSnapshot = response["nativeObjectClaimsSnapshot"]?.integer == 1
         nativeObjectClaimsWatch = response["nativeObjectClaimsWatch"]?.integer == 1
+        nativeAuthorizedOperationRead = response["nativeAuthorizedOperationRead"]?.integer == 1
+            && response["authorizedOperationReadContract"]?.string == AnyGuardedTorahOperationReadSnapshot.readContract
+            && response["authorizedOperationReadMaxVariants"]?.integer == Int64(AnyGuardedTorahOperationReadSnapshot.maximumVariants)
+            && response["authorizedOperationReadMaxBytes"]?.integer == Int64(AnyGuardedTorahOperationReadSnapshot.maximumBytes)
     }
 }
 
