@@ -7,6 +7,7 @@ import copy
 import hashlib
 import json
 from pathlib import Path
+import plistlib
 from types import SimpleNamespace
 import tempfile
 import unittest
@@ -66,8 +67,18 @@ class ExistingBuildTests(unittest.TestCase):
         self.test_bundle.mkdir()
         self.test_executable = self.test_bundle / "AnytypeTests"
         self.configuration = self.root / "Anytype.xctestrun"
-        for path in (self.app_executable, self.test_executable, self.configuration):
+        for path in (self.app_executable, self.test_executable):
             path.write_bytes(path.name.encode())
+        self.original_configuration = {"__xctestrun_metadata__": {"FormatVersion": 2}, "TestConfigurations": [
+            {"Name": "Anytype", "IsEnabled": True, "TestTargets": [
+                {"BlueprintName": "AnytypeTests", "TestHostPath": "__TESTROOT__/Anytype.app",
+                 "TestBundlePath": "__TESTHOST__/AnytypeTests.xctest", "EnvironmentVariables": {"OWNED": "1"},
+                 "OnlyTestIdentifiers": [fixtures.SUITE, TABLE_SUITE, text_native_ack.SUITE],
+                 "SkipTestIdentifiers": []},
+                {"BlueprintName": "OtherTests", "TestBundlePath": "__TESTROOT__/OtherTests.xctest"}]}]}
+        self.configuration.write_bytes(plistlib.dumps(self.original_configuration))
+        self.original_product_bytes = {path: path.read_bytes()
+                                       for path in (self.app_executable, self.test_executable, self.configuration)}
         self.tree = dict(children=fixtures.tree()["children"] + table_tree()["children"])
         declarations = {node["nodeIdentifier"].removeprefix("AnytypeTests/").split("(", 1)[0]:
                         node["nodeIdentifier"] for node in self.tree["children"]}
@@ -109,10 +120,25 @@ class ExistingBuildTests(unittest.TestCase):
         self.assertEqual(command[command.index("-test-enumeration-format") + 1], "json")
         path = Path(command[command.index("-test-enumeration-output-path") + 1])
         discovery = path.name == "compiled-suite-enumeration.json"
-        identifiers = sorted(self.source["compiled_declarations"].values()) if discovery else [
-            argument.removeprefix("-only-testing:") for argument in command if argument.startswith("-only-testing:")]
-        payload = {"errors": [], "values": [{"testPlan": "Anytype", "disabledTests": [],
-                    "enabledTests": [{"identifier": identifier} for identifier in identifiers]}]}
+        configuration_path = Path(command[command.index("-xctestrun") + 1])
+        self.assertNotEqual(configuration_path, self.configuration)
+        self.assertEqual(configuration_path.parent, self.configuration.parent)
+        value = plistlib.loads(configuration_path.read_bytes())
+        targets = value["TestConfigurations"][0]["TestTargets"]
+        self.assertEqual(len(targets), 1)
+        self.assertEqual(targets[0]["BlueprintName"], "AnytypeTests")
+        self.assertEqual(targets[0]["EnvironmentVariables"], {"OWNED": "1"})
+        # Deliberately ignore CLI filters here: the native configuration must
+        # constrain discovery even on an SDK that enumerates past CLI filters.
+        enabled, disabled = [], []
+        for identifier in sorted(self.source["compiled_declarations"].values()):
+            relative = identifier.removeprefix("AnytypeTests/")
+            matches = lambda candidate: relative == candidate or relative.startswith(candidate + "/")
+            if any(matches(candidate) for candidate in targets[0]["OnlyTestIdentifiers"]):
+                (disabled if any(matches(candidate) for candidate in targets[0]["SkipTestIdentifiers"])
+                 else enabled).append({"identifier": identifier})
+        payload = {"errors": [], "values": [{"testPlan": "Anytype",
+                    "enabledTests": enabled, "disabledTests": disabled}]}
         if self.mutate_enumeration:
             self.mutate_enumeration(payload, discovery)
         self.write(path, payload)
@@ -144,12 +170,19 @@ class ExistingBuildTests(unittest.TestCase):
             self.assertFalse(result["real_native_persistence_accepted"])
             self.assertEqual(result["enumeration"]["enumerated_source_method_count"], 28)
             self.assertEqual(len(result["enumeration"]["unselected_identifiers"]), 7)
+            self.assertEqual(plistlib.loads(self.configuration.read_bytes()), self.original_configuration)
+            binding = result["enumeration"]["selected_configuration"]
+            self.assertEqual(binding["other_targets_removed_from_copy"], ["OtherTests"])
+            self.assertEqual(set(binding["only_test_identifiers"]),
+                             {self.source["compiled_declarations"][name].removeprefix("AnytypeTests/") for name in EXPECTED})
             selected = {"-only-testing:" + self.source["compiled_declarations"][name] for name in EXPECTED}
             for command in (self.enumerations[-1], self.commands[-1]):
                 self.assertEqual(command[:2], ["xcodebuild", "test-without-building"])
                 self.assertEqual({item for item in command if item.startswith("-only-testing:")}, selected)
                 self.assertNotIn("build-for-testing", command)
             self.assertNotIn("-enumerate-tests", self.commands[-1])
+            self.assertEqual(self.commands[-1][self.commands[-1].index("-xctestrun") + 1],
+                             self.enumerations[-1][self.enumerations[-1].index("-xctestrun") + 1])
         self.assertEqual(len(self.commands), 2)
         self.assertEqual(len(self.enumerations), 4)
 
@@ -244,13 +277,15 @@ class ExistingBuildTests(unittest.TestCase):
         for phase in ("enumeration", "execution"):
             for index, path in enumerate((self.app_executable, self.test_executable, self.configuration)):
                 self.after_enumeration, self.after_run = None, None
+                for product, raw in self.original_product_bytes.items():
+                    product.write_bytes(raw)
                 action = lambda path=path: path.write_bytes(path.read_bytes() + b"changed")
                 if phase == "enumeration":
                     self.after_enumeration = action
                 else:
                     self.after_run = action
                 executed_before = len(self.commands)
-                with self.subTest(phase=phase, path=path.name), self.assertRaisesRegex(ValueError, "built products changed"):
+                with self.subTest(phase=phase, path=path.name), self.assertRaisesRegex(ValueError, "(built products|xctestrun) changed"):
                     self.execute(phase + str(index))
                 self.assertEqual(len(self.commands) - executed_before, int(phase == "execution"))
 
@@ -259,6 +294,48 @@ class ExistingBuildTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "stale"):
             self.execute()
         self.assertEqual(self.commands + self.enumerations, [])
+
+    def test_ambiguous_disabled_or_unknown_original_configuration_never_executes(self):
+        for change in ("version", "configuration", "duplicate-target", "disabled-target"):
+            value = copy.deepcopy(self.original_configuration)
+            if change == "version":
+                value["__xctestrun_metadata__"]["FormatVersion"] = 1
+            elif change == "configuration":
+                value["TestConfigurations"].append(copy.deepcopy(value["TestConfigurations"][0]))
+            elif change == "duplicate-target":
+                targets = value["TestConfigurations"][0]["TestTargets"]
+                targets.append(copy.deepcopy(targets[0]))
+            else:
+                value["TestConfigurations"][0]["TestTargets"][0]["IsEnabled"] = False
+            self.configuration.write_bytes(plistlib.dumps(value))
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.execute(change)
+            self.assertEqual(self.commands + self.enumerations, [])
+
+    def test_existing_skip_cannot_be_silently_reenabled_by_a_scoped_copy(self):
+        value = copy.deepcopy(self.original_configuration)
+        value["TestConfigurations"][0]["TestTargets"][0]["SkipTestIdentifiers"] = [
+            TABLE_SUITE + "/acceptedSnapshotSurvivesViewReuse()"]
+        self.configuration.write_bytes(plistlib.dumps(value))
+        with self.assertRaisesRegex(ValueError, "exact28"):
+            self.execute()
+        self.assertEqual(self.commands, [])
+        self.assertEqual(plistlib.loads(self.configuration.read_bytes()), value)
+
+    def test_selected_configuration_mutation_before_or_after_execution_is_rejected(self):
+        for phase in ("enumeration", "execution"):
+            self.after_enumeration, self.after_run = None, None
+            directory = "selected-mutation-" + phase
+            path = self.configuration.with_name("UI27-" + directory + "-selected.xctestrun")
+            action = lambda path=path: path.write_bytes(path.read_bytes() + b"changed")
+            if phase == "enumeration":
+                self.after_enumeration = action
+            else:
+                self.after_run = action
+            executed_before = len(self.commands)
+            with self.subTest(phase=phase), self.assertRaisesRegex(ValueError, "xctestrun changed"):
+                self.execute(directory)
+            self.assertEqual(len(self.commands) - executed_before, int(phase == "execution"))
 
 
 class TrackedContractTests(unittest.TestCase):

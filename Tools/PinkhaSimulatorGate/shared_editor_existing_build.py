@@ -7,6 +7,7 @@ This wrapper never creates or restores an application build.
 import hashlib
 import json
 from pathlib import Path
+import plistlib
 import re
 import subprocess
 import sys
@@ -93,6 +94,49 @@ def enumerated_identifiers(payload):
     return value["testPlan"], inventories["enabledTests"], inventories["disabledTests"]
 
 
+def scoped_configuration(original, destination, identifiers, shared):
+    """Restrict an owned v2 copy, retaining the exact target/product settings.
+
+    OnlyTestIdentifiers is target-relative. Keeping the copy beside the original
+    preserves __TESTROOT__; the original xctestrun is never written. Filtering
+    the plist avoids relying only on CLI filters during Xcode enumeration.
+    """
+    host.require(destination.parent.resolve() == original.parent.resolve()
+                 and destination != original and not destination.exists() and not destination.is_symlink(),
+                 "Fresh sibling component xctestrun required")
+    value = plistlib.loads(original.read_bytes())
+    host.require(isinstance(value, dict)
+                 and value.get("__xctestrun_metadata__", {}).get("FormatVersion") == 2,
+                 "Only the reviewed Xcode v2 test configuration is supported")
+    configurations = value.get("TestConfigurations")
+    host.require(isinstance(configurations, list) and len(configurations) == 1
+                 and isinstance(configurations[0], dict)
+                 and configurations[0].get("IsEnabled", True) is True,
+                 "Expected one enabled original test configuration")
+    targets = configurations[0].get("TestTargets")
+    host.require(isinstance(targets, list) and all(isinstance(target, dict) for target in targets),
+                 "Unknown Xcode test-target structure")
+    selected = [target for target in targets if target.get("BlueprintName") == "AnytypeTests"]
+    host.require(len(selected) == 1 and selected[0].get("IsEnabled", True) is True
+                 and isinstance(selected[0].get("TestHostPath"), str)
+                 and isinstance(selected[0].get("TestBundlePath"), str),
+                 "Expected one enabled actual AnytypeTests target")
+    target = selected[0]
+    host.require(identifiers and len(set(identifiers)) == len(identifiers)
+                 and all(identifier.startswith("AnytypeTests/") for identifier in identifiers),
+                 "Scoped configuration identifiers must belong to AnytypeTests")
+    target["OnlyTestIdentifiers"] = [identifier.removeprefix("AnytypeTests/") for identifier in identifiers]
+    # Preserve existing SkipTestIdentifiers and all non-selection fields. A
+    # disabled requested method must fail enumeration, never be re-enabled.
+    configurations[0]["TestTargets"] = selected
+    with destination.open("xb") as output:
+        plistlib.dump(value, output, sort_keys=False)
+    return {"path": str(destination), "sha256": shared.digest(destination),
+            "original_sha256": shared.digest(original), "format_version": 2,
+            "target": "AnytypeTests", "only_test_identifiers": target["OnlyTestIdentifiers"],
+            "other_targets_removed_from_copy": [item.get("BlueprintName") for item in targets if item is not target]}
+
+
 def enumerate_selection(app, base, evidence, shared, source):
     declaration_ids = set(source["compiled_declarations"].values())
     selected_source_ids = {source["compiled_declarations"][method] for method in source["methods"]}
@@ -100,24 +144,35 @@ def enumerate_selection(app, base, evidence, shared, source):
                  "Pending component source selection does not identify21 methods")
     discovery_path = evidence / "compiled-suite-enumeration.json"
     selected_path = evidence / "compiled-selected-enumeration.json"
+    original = Path(base[base.index("-xctestrun") + 1])
+    discovery_configuration = original.with_name("UI27-" + evidence.name + "-discovery.xctestrun")
+    selected_configuration = original.with_name("UI27-" + evidence.name + "-selected.xctestrun")
 
-    def enumerate_to(path, selectors):
-        command = [*base, *["-only-testing:" + identifier for identifier in selectors],
+    def enumerate_to(path, configuration, selectors):
+        binding = scoped_configuration(original, configuration, selectors, shared)
+        shared.write(evidence / (path.stem + "-configuration.json"), binding)
+        scoped = list(base)
+        scoped[scoped.index("-xctestrun") + 1] = str(configuration)
+        command = [*scoped, *["-only-testing:" + identifier for identifier in selectors],
                    "-enumerate-tests", "-test-enumeration-style", "flat",
                    "-test-enumeration-format", "json", "-test-enumeration-output-path", str(path)]
         host.command(command, app, evidence)
         host.require(path.is_file(), "Xcode did not write compiled test enumeration")
-        return command, enumerated_identifiers(json.loads(path.read_text(encoding="utf-8")))
+        host.require(shared.digest(configuration) == binding["sha256"]
+                     and shared.digest(original) == binding["original_sha256"],
+                     "Component xctestrun changed during enumeration")
+        return command, binding, enumerated_identifiers(json.loads(path.read_text(encoding="utf-8")))
 
-    discovery_command, (plan, discovered, disabled) = enumerate_to(
-        discovery_path, ["AnytypeTests/" + suite for suite in SUITES])
+    discovery_command, discovery_binding, (plan, discovered, disabled) = enumerate_to(
+        discovery_path, discovery_configuration, ["AnytypeTests/" + suite for suite in SUITES])
     host.require(discovered == declaration_ids and not declaration_ids.intersection(disabled),
                  "Compiled suites differ from the exact28 source declarations")
     # Reuse actual returned strings. Source signatures are equality checks, not
     # guessed only-testing filters; in particular bare Swift method names are
     # never sent to Xcode.
     selected = sorted(identifier for identifier in discovered if identifier in selected_source_ids)
-    selected_command, (selected_plan, observed, disabled) = enumerate_to(selected_path, selected)
+    selected_command, selected_binding, (selected_plan, observed, disabled) = enumerate_to(
+        selected_path, selected_configuration, selected)
     host.require(selected_plan == plan and observed == set(selected) and not observed.intersection(disabled),
                  "Compiled pending selection differs from the exact21 methods; no tests executed")
     host.require(len(selected) == EXPECTED_METHOD_COUNT,
@@ -127,6 +182,7 @@ def enumerate_selection(app, base, evidence, shared, source):
             "enumerated_source_method_count": len(discovered),
             "unselected_identifiers": sorted(discovered - observed),
             "discovery_command": discovery_command, "selected_command": selected_command,
+            "discovery_configuration": discovery_binding, "selected_configuration": selected_binding,
             "discovery_sha256": shared.digest(discovery_path),
             "selected_sha256": shared.digest(selected_path), "tests_executed": 0}
 
@@ -179,6 +235,7 @@ def execute(app, configuration, udid, expected_app, evidence, shared):
     hashes = {"app_executable": shared.digest(app_executable),
               "test_executable": shared.digest(test_executable),
               "xctestrun": shared.digest(configuration)}
+    selected_configuration = None
 
     def verify_binding():
         host.require(source_contract(app) == source, "Shared-editor/table source changed during execution")
@@ -186,6 +243,9 @@ def execute(app, configuration, udid, expected_app, evidence, shared):
                      and shared.digest(test_executable) == hashes["test_executable"]
                      and shared.digest(configuration) == hashes["xctestrun"],
                      "Shared-editor built products changed during execution")
+        if selected_configuration is not None:
+            host.require(shared.digest(Path(selected_configuration["path"])) == selected_configuration["sha256"],
+                         "Selected component xctestrun changed during execution")
 
     bundle = evidence / "SharedEditorTable.xcresult"
     base = ["xcodebuild", "test-without-building", "-xctestrun", str(configuration),
@@ -198,8 +258,11 @@ def execute(app, configuration, udid, expected_app, evidence, shared):
     try:
         enumeration = enumerate_selection(app, base, evidence, shared, source)
         receipt["enumeration"] = enumeration
+        selected_configuration = enumeration["selected_configuration"]
         verify_binding()
-        command = [*base, *["-only-testing:" + identifier for identifier in enumeration["selected_identifiers"]],
+        selected_base = list(base)
+        selected_base[selected_base.index("-xctestrun") + 1] = selected_configuration["path"]
+        command = [*selected_base, *["-only-testing:" + identifier for identifier in enumeration["selected_identifiers"]],
                    "-resultBundlePath", str(bundle)]
         receipt.update(phase="EXECUTION", command=command)
         shared.write(evidence / "execution.json", receipt)
