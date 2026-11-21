@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "scope": "Read-only basis frozen before candidate edits; no Apple runtime acceptance",
+  "apple_document": {
+    "url": "https://developer.apple.com/library/archive/technotes/tn2339/_index.html",
+    "support": "Apple documents test-without-building with an xctestrun file and refers to the xcodebuild.xctestrun manual for its parameters."
+  },
+  "apple_manual_content": {
+    "url": "https://keith.github.io/xcode-man-pages/xcodebuild.xctestrun.5.html",
+    "distribution": "Third-party mirror of the Apple-authored manual; current selected runner manual must independently support the option before use.",
+    "exact_statement": "When this flag is set, xcodebuild will not install test artifacts to the destination during testing.",
+    "statement_flag": "UseDestinationArtifacts",
+    "documented_replacements": ["TestHostBundleIdentifier", "TestBundleDestinationRelativePath", "UITargetAppBundleIdentifier"],
+    "documented_removed_paths": ["TestBundlePath", "TestHostPath", "UITargetAppPath"]
+  },
+  "original_artifact": {
+    "run_id": 44584920580,
+    "head_sha": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8",
+    "artifact_id": 14565803439,
+    "sha256": "b49b5c988546bd6e16da2bd49faa86ead39e91a52fc4baf2c7bc4496ce33e0a3",
+    "built_installed_carriers_aggregate_sha256": "a66126d4fcb4e603787a5f350af350e70e145a09b52dfffad40d5423beb8e0d4",
+    "native_test_executable_relative_path": "PlugIns/AnytypeTests.xctest/AnytypeTests",
+    "native_test_executable_sha256": "099eeb9864893d6e63c0022d4b1534f259229dbf9278d17eecef80b58f359dac",
+    "native_test_executable_bytes": 21540992,
+    "derived_destination_relative_bundle_path": "__TESTHOST__/PlugIns/AnytypeTests.xctest",
+    "host_bundle_identifier": "io.anytype.app"
+  },
+  "startup_order": "Original native app/SQLite/space activity predates the Swift Testing method body. An inventory newly inserted at verify() entry would not prove pre-account-open bytes.",
+  "preservation": "Retain every existing Swift path/device/inode/creation and native semantic comparison. The candidate will suppress a second installation, never accept a second unproved relocation."
+}

@@ -287,7 +287,7 @@ func openNativeFixture(ctx context.Context, config nativeFixtureConfig) (_ *nati
 	if err != nil {
 		return nil, err
 	}
-	f.host, err = OpenNativeHost(ctx, f.projectionDB, f.space.Id(), f.tree, signKey, f.validateTarget)
+	f.host, err = OpenNativeHost(ctx, f.projectionDB, f.space.Id(), f.tree, signKey, f.acquireTarget)
 	if err != nil {
 		return nil, err
 	}
@@ -305,6 +305,15 @@ func openNativeFixture(ctx context.Context, config nativeFixtureConfig) (_ *nati
 	f.serverDone = make(chan error, 1)
 	go func() { f.serverDone <- drpcserver.New(mux).Serve(serverCtx, f.listener) }()
 	return f, nil
+}
+
+// This transport fixture has immutable disposable target roots. Full target
+// lifecycle exclusion is exercised separately by the native registry fixtures.
+func (f *nativeFixture) acquireTarget(ctx context.Context, target Target) (func(), error) {
+	if err := f.validateTarget(ctx, target); err != nil {
+		return nil, err
+	}
+	return func() {}, nil
 }
 
 func (f *nativeFixture) validateTarget(ctx context.Context, target Target) error {
@@ -804,7 +813,7 @@ func TestNativeHostRejectsUnboundAuthorityAndInvalidHistory(t *testing.T) {
 			data, err := build.StoreChange.Marshal()
 			require.NoError(t, err)
 			f.tree.Lock()
-			ctx, _, guardErr := nativeCommitContext(context.Background(), f.tree, f.keys.SignKey.GetPublic())
+			ctx, _, guardErr := nativeCommitContext(context.Background(), f.tree, f.keys.SignKey.GetPublic(), func() {})
 			if guardErr == nil {
 				_, err = f.tree.AddContent(ctx, objecttree.SignableChangeContent{Data: data, Key: f.keys.SignKey, ShouldBeEncrypted: test != "plaintext", IsSnapshot: test == "snapshot"})
 			}

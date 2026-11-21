@@ -32,7 +32,7 @@
     },
     "PinkhaTextDirectionUIKitAdapterTests": {
       "path": "AnyTypeTests/Pinkha/PinkhaTextDirectionUIKitAdapterTests.swift",
-      "source_lf_sha256": "52e0f75dd59e405e1ea0f556287c79c304f2a5afd386bdeacca3903c4bc3604c",
+      "source_lf_sha256": "2ce86ed514569dfb5a838df0e78731b98233f71f1dfbeb2d1125f1a31a984efa",
       "methods": {
         "caretObservationIsNotAFocusRequest": {
           "parameters": [],
@@ -136,6 +136,36 @@
           "parameters": [
             {
               "name": "configureAfterAttachment",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "nativeFocusRestoresEmptyDirection": {
+          "parameters": [
+            {
+              "name": "isRTL",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "nativeBeginAndInsertionRestoreEmptyDirection": {
+          "parameters": [
+            {
+              "name": "isRTL",
               "type": "Bool"
             }
           ],
@@ -344,7 +374,7 @@
     },
     "TextBlockFocusLifecycleTests": {
       "path": "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift",
-      "source_lf_sha256": "b143e5cae6423c28d73dffbceafc3444a30d90b3b15a2d6f5bcc338dc2704cb6",
+      "source_lf_sha256": "5e99c107a59778f17593dc8929e704fe4a656b0d13c2f034e791a2ea51561e1e",
       "methods": {
         "initialFocusWaitsForAttachment": {
           "parameters": [],
@@ -441,9 +471,41 @@
             ]
           ],
           "case_count": 2
+        },
+        "insertedCellUsesCurrentEditingBeforeFocus": {
+          "parameters": [
+            {
+              "name": "editing",
+              "type": "Bool"
+            }
+          ],
+          "argument_collections": [
+            [
+              false,
+              true
+            ]
+          ],
+          "case_count": 2
+        },
+        "nativeFocusObservationDistinguishesOutcomes": {
+          "parameters": [
+            {
+              "name": "outcome",
+              "type": "String"
+            }
+          ],
+          "argument_collections": [
+            [
+              "ineligible",
+              "refused",
+              "accepted"
+            ]
+          ],
+          "case_count": 3
         }
       }
     }
   },
-  "focus_regression_source_base": "7ecc723c3334c5361c25216ed97161b7d221c5e4"
+  "focus_regression_source_base": "7ecc723c3334c5361c25216ed97161b7d221c5e4",
+  "focus_native_observation_source_base": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8"
 }

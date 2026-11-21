@@ -1,0 +1,445 @@
+{
+  "acceptance": {
+    "full_properties_task": false,
+    "full_release": false,
+    "native_type_hide_preparation": true,
+    "native_type_preservation_postflight": false,
+    "physical_ipad": "NOT_RUN",
+    "properties_set_lane": false,
+    "two_selected_properties_ui_methods": true
+  },
+  "actual_outcomes": {
+    "postflight": {
+      "counts": {
+        "failed": 1,
+        "passed": 0,
+        "skipped": 0
+      },
+      "finish": 1795108441.689,
+      "methods": {
+        "TorahStage2TypePreservationTests/verifyExistingTypeRoundtrip": "Failed"
+      },
+      "raw_test_nodes": [
+        {
+          "children": [
+            {
+              "name": "Expectation failed: before.0 == expected.container && before.1 == expected.middleware\nbefore.0 == expected.container → false\nbefore.1 == expected.middleware → <not evaluated>",
+              "nodeType": "Failure Message",
+              "sourceLocation": {
+                "filePath": "/Users/runner/work/anytype-swift/anytype-swift/AnytypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift",
+                "lineNumber": 1224
+              }
+            }
+          ],
+          "duration": "0.94s",
+          "durationInSeconds": 0.9437770843505859,
+          "name": "Existing account retains original canonical bytes, Tag and native links",
+          "nodeIdentifier": "TorahStage2TypePreservationTests/verifyExistingTypeRoundtrip()",
+          "nodeIdentifierURL": "test://com.apple.xcode/Anytype/AnytypeTests/TorahStage2TypePreservationTests/verifyExistingTypeRoundtrip()",
+          "nodeType": "Test Case",
+          "result": "Failed"
+        }
+      ],
+      "start": 1795108342.371,
+      "summary_sha256": "d1a518c58aac594c378b283e8e42f137036d010df0977d2ace26a138dff4a334",
+      "tests_sha256": "ccc36ae7958721389adde72ce2afee4eca8c04ce5230332c71bf608a2fb9ba84"
+    },
+    "preparation": {
+      "counts": {
+        "failed": 0,
+        "passed": 1,
+        "skipped": 0
+      },
+      "finish": 1795107861.569,
+      "methods": {
+        "TorahNativeDerivedProductIntegrationTests/originalProductPipeline": "Passed"
+      },
+      "raw_test_nodes": [
+        {
+          "duration": "10s",
+          "durationInSeconds": 10.010934829711914,
+          "name": "Real schema, canonical writes, native Set filters, columns and live membership",
+          "nodeIdentifier": "TorahNativeDerivedProductIntegrationTests/originalProductPipeline()",
+          "nodeIdentifierURL": "test://com.apple.xcode/Anytype/AnytypeTests/TorahNativeDerivedProductIntegrationTests/originalProductPipeline()",
+          "nodeType": "Test Case",
+          "result": "Passed"
+        }
+      ],
+      "start": 1795107765.171,
+      "summary_sha256": "0f2852c1c612199fb39a9baa192febd8e4e98944add85b5a2207bd5f88910306",
+      "tests_sha256": "a06cc06c1082f91a470cf1d3c31cb5a784428bdc2fb4fbaa8c2de24249b8226c"
+    },
+    "ui": {
+      "counts": {
+        "failed": 0,
+        "passed": 2,
+        "skipped": 0
+      },
+      "finish": 1795108320.275,
+      "methods": {
+        "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing": "Passed",
+        "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet": "Passed"
+      },
+      "raw_test_nodes": [
+        {
+          "duration": "2m 8s",
+          "durationInSeconds": 128.15139400959015,
+          "name": "testRemainingNativeSourceFilterEditing()",
+          "nodeIdentifier": "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing()",
+          "nodeIdentifierURL": "test://com.apple.xcode/PinkhaPrebuiltUI/PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing",
+          "nodeType": "Test Case",
+          "result": "Passed"
+        },
+        {
+          "duration": "3m 35s",
+          "durationInSeconds": 215.96658396720886,
+          "name": "testRemainingUniversalTypePickersAndMixedSet()",
+          "nodeIdentifier": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+          "nodeIdentifierURL": "test://com.apple.xcode/PinkhaPrebuiltUI/PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet",
+          "nodeType": "Test Case",
+          "result": "Passed"
+        }
+      ],
+      "start": 1795107960.186,
+      "summary_sha256": "5690b60d7cdd606d5ac92fc573845f719418db33337123f052fb44a1a1d1658f",
+      "tests_sha256": "ebc912a997dff3d184eab3163eaded58d434a16875fb7d4ca9013411e3576d06"
+    }
+  },
+  "artifact": {
+    "bytes": 32477167,
+    "github_digest_matches": true,
+    "id": 14555377996,
+    "inner_bytes": 32714031,
+    "inner_crc": "PASS",
+    "inner_sha256": "2d4d1299729668c762fd5c9cfb69dabd0d8e471cdd2f89c7ecb873bcff318cad",
+    "member_index_sha256": "7e470c46a6b25e6e0eb049017dbba1c82130f2700004bef53402ef5d009bacdf",
+    "outer_crc": "PASS",
+    "sha256": "da616de41794653944f96dde60630549f046864d51ce9b2390b51a2cbc193a92",
+    "unique_inner_members": 1374,
+    "whole_xcresults_extracted": false
+  },
+  "attempt": 1,
+  "configuration": "Release-Anytype",
+  "device": {
+    "architecture": "arm64",
+    "deviceId": "6C692185-8B32-46EF-A3B7-46E3AA0B7047",
+    "deviceName": "Pinkha-UI27-44562643472-ipad",
+    "modelName": "iPad Pro 13-inch (M5)",
+    "osBuildNumber": "24A434",
+    "osVersion": "27.0",
+    "platform": "iOS Simulator"
+  },
+  "exact_test_sources": {
+    "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift": {
+      "bytes": 75308,
+      "sha256": "8007682e484604e999be7200ef39bb87837a84974c6a6151a3760e4088d9c8b1"
+    },
+    "PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift": {
+      "bytes": 67409,
+      "sha256": "14f825b44c562d6e12e83f86b95531f040759584e8b5b4ad1286bf415ea70621"
+    },
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
+      "bytes": 39423,
+      "sha256": "1c8f6cd073d6ca6425e805c6237703dc304b3cbe583c277b2d589608b0fe0ac4"
+    },
+    "Tools/PinkhaSimulatorGate/type_preservation.py": {
+      "bytes": 18966,
+      "sha256": "7e17adb1ddacff1afb160da839aeed19300914910e7c1dab4dce0895339694f2"
+    }
+  },
+  "failure": {
+    "canonical_tag_link_account_readback_comparison": "NOT_REACHED",
+    "controller_failure": "Postflight App data container changed",
+    "data_loss_proven": false,
+    "inference": "Controlled-install container relocation is consistent with the observed boundary. Original evidence has no stopped native-file inventory across it, so semantic preservation is not accepted.",
+    "native_failure": "Expectation failed: before.0 == expected.container && before.1 == expected.middleware\nbefore.0 == expected.container → false\nbefore.1 == expected.middleware → <not evaluated>",
+    "native_test": "TorahStage2TypePreservationTests/verifyExistingTypeRoundtrip",
+    "observed_boundary": "Pre-call verify_frozen succeeded; xcodebuild test-without-building installed/launched the native host; native entry rejected original directory identity; post-call live-container lookup differed from the frozen path.",
+    "source_line": 1224,
+    "stage": "POSTFLIGHT_ENTRY_DIRECTORY_IDENTITY",
+    "unchanged_native_data_across_relocation_proven": false
+  },
+  "immutable_baseline": {
+    "binding": {
+      "nonce": "e80fdd28276b476e8960f1044ccf6764",
+      "runAttempt": "1",
+      "runID": "44562643472",
+      "sourceSHA": "53dbcbc214b0310f168f073c2efb2be96cb201fa"
+    },
+    "canonical_sha256": "5a311bc2ee185a3d311030cb9aace97938f1c5b7fc3e9e97cd35748e4ccbeb17",
+    "frozen_before_ui": true,
+    "original_container": {
+      "createdAt": 1795107788.9473653,
+      "device": "16777228",
+      "inode": "2218329",
+      "path": "/Users/runner/Library/Developer/CoreSimulator/Devices/6C692185-8B32-46EF-A3B7-46E3AA0B7047/data/Containers/Data/Application/52B54451-D9A5-44A8-9EC3-F9150BE77745"
+    },
+    "original_middleware": {
+      "createdAt": 1795107849.801721,
+      "device": "16777228",
+      "inode": "2218808",
+      "path": "/Users/runner/Library/Developer/CoreSimulator/Devices/6C692185-8B32-46EF-A3B7-46E3AA0B7047/data/Containers/Data/Application/52B54451-D9A5-44A8-9EC3-F9150BE77745/Library/Application Support/Anytype/middleware-go"
+    },
+    "postflight_receipt": "ABSENT",
+    "sha256": "2adc8d5343c659db63913097c8c83205a06aaaea898cb55cd186e56b5f3b0f85",
+    "validated_original_native_state": true
+  },
+  "prior_runs": {
+    "44432009798": "Distinct cancelled batch; zero Native/UI/postflight execution. Its prior conclusions remain unchanged."
+  },
+  "run_id": 44562643472,
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44562643472",
+  "runtime": {
+    "every_cold_launch_separately_verified": false,
+    "full_bundle_equivalence": false,
+    "initial_pid": 35054,
+    "initial_runtime_mapping": "PASS",
+    "installation": {
+      "app_source_sha": "53dbcbc214b0310f168f073c2efb2be96cb201fa",
+      "archive_sha256": "7aa836e081740b99e7e26485fd7f1845fc3ea99fa2331b2ab99330675a4c590f",
+      "marker": "pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+      "original_build_app_sha": null,
+      "patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+      "source_run_id": "44203168617",
+      "status": "PASS"
+    },
+    "installed_and_built_app_executable_sha256": "bdab154bbc932178100e3ed000013eceb7193444c447fc61f0857e2313f0fc76",
+    "installed_and_built_code_carriers_sha256": "4f9416a67e55c1639f51a1602669abb733402ba99e45b228a5b9a5efb7908a07",
+    "kit_sha": "4e59e909dd22685bb46f9396bc57e5f8c627d773",
+    "live_framework_sha256": "f869ae5b32c7a557ac22d7ed0b48959f48dfbcbddab5087940aebd925c86e81e",
+    "live_vmmap_exit_code": 0,
+    "marker": "pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+    "post_ui_code_recheck": "NOT_REACHED_AFTER_POSTFLIGHT_FAILURE"
+  },
+  "schema": 1,
+  "source_binding": {
+    "count": 5612,
+    "function_file_sha256": "2b4162be85c3164a4d75869f67b3bfe9e58fac033a581d6f6f57d38e639961e0",
+    "hashes_json_sha256": "e1ba60278aa6da57756b18105a81ae04abe7028f3d2f855edde92f79db2def7f",
+    "method": "Exact committed source_inputs function, read-only git ls-tree pinned to the run source",
+    "source_sha": "53dbcbc214b0310f168f073c2efb2be96cb201fa",
+    "source_tree": "74a49c6826061bc84c45a91db2aca9db8458644b"
+  },
+  "source_sha": "53dbcbc214b0310f168f073c2efb2be96cb201fa",
+  "status": "NATIVE_PREPARATION_AND_TWO_UI_METHODS_PASS_POSTFLIGHT_FAILED",
+  "type_hide_native_observations": [
+    {
+      "action": "notStarted",
+      "canonical": {
+        "attachedToDocument": false,
+        "documentIdentityMatches": true,
+        "featuredOnType": false,
+        "hiddenOnType": false,
+        "recommendedOnType": true,
+        "typeIdentityMatches": true,
+        "typeListCounts": [
+          6,
+          3,
+          3
+        ],
+        "typeListsSHA256": "17e7a78e94b338963304e1cb4d616acffccd6273b0a3531ec849e9191dabf909"
+      },
+      "canonicalReadSucceeded": true,
+      "hiddenOnDocument": false,
+      "hiddenOnType": false,
+      "phase": "before"
+    },
+    {
+      "action": "succeeded",
+      "canonical": {
+        "attachedToDocument": false,
+        "documentIdentityMatches": true,
+        "featuredOnType": false,
+        "hiddenOnType": true,
+        "recommendedOnType": false,
+        "typeIdentityMatches": true,
+        "typeListCounts": [
+          5,
+          3,
+          4
+        ],
+        "typeListsSHA256": "0a3f1160d7ad2543d4b3366bffe1e422f664b28162bfc0eaaaca79cc6e3f7ec8"
+      },
+      "canonicalReadSucceeded": true,
+      "hiddenOnDocument": true,
+      "hiddenOnType": true,
+      "phase": "completed"
+    }
+  ],
+  "verified_at": "2026-11-19T17:35:12.786831+00:00",
+  "verifier_sha256": "b618b7d8a2b3f063c5938bb451adf3f55966330a7ee691dad17931e7c327e2b8",
+  "visual_review": {
+    "media": [
+      {
+        "bytes": 185160,
+        "name": "remaining-native-Set-restored-filter-members_0_50869262-3156-4562-870A-8F4A8A34BB4D.png",
+        "path": "ui/wave15-properties-set-attachments/B7672829-5FD8-47B4-B9EE-405ACD76734D.png",
+        "sha256": "cb04b84434850f74064f545e9e2fe5de5b64dd3ce26830903895e46bd000f2eb",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing()",
+        "timestamp": 1795108101.148
+      },
+      {
+        "bytes": 391483,
+        "name": "native-set-filter-selection-Genesis 11_0_D4D98946-770E-41BB-A693-39E8E56F4960.png",
+        "path": "ui/wave15-properties-set-attachments/497C60BC-EDF6-4C32-816F-1385B027074A.png",
+        "sha256": "d0ea6b3259370020cbc3263163b780f4ab2cd0c7f2ded9eb61d13c6e7b35933f",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing()",
+        "timestamp": 1795108071.63
+      },
+      {
+        "bytes": 168857,
+        "name": "remaining-native-Set-nonmatching-filter-empty_0_159EFBD0-BC4C-4012-A903-59A5E072EC26.png",
+        "path": "ui/wave15-properties-set-attachments/D2216FF8-C829-4F34-9D2B-522296DEA40D.png",
+        "sha256": "f61c0f1670b5c951c73a2bd131490bfb000eb2dabcc6931ee84c42137e85f43d",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing()",
+        "timestamp": 1795108055.929
+      },
+      {
+        "bytes": 409859,
+        "name": "native-set-filter-selection-Genesis 12_0_BEC5351D-DA2C-4B7B-9044-98492A54517B.png",
+        "path": "ui/wave15-properties-set-attachments/9B4E3A95-D359-4CF8-B305-AEF54BD5091C.png",
+        "sha256": "456bbaca762d052452938946e2cbf3dc7af785897c15d39d2db6955dbca31a84",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing()",
+        "timestamp": 1795108024.616
+      },
+      {
+        "bytes": 196587,
+        "name": "remaining-universal-mixed-native-filter-membership_0_4148A462-CAAA-4451-95CD-337660BAEC4D.png",
+        "path": "ui/wave15-properties-set-attachments/EAD82015-042E-4311-9249-791BF85422F2.png",
+        "sha256": "a21ce7143d1974374d466244ce6666bbc23500babe421b9a1085ce27cf60271b",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108318.136
+      },
+      {
+        "bytes": 382984,
+        "name": "native-set-original-fields-switches_0_3ED61677-512D-4B3E-B2CC-4EA7B9F019D6.png",
+        "path": "ui/wave15-properties-set-attachments/536411E1-FFE2-44E1-AC53-C34D449010EE.png",
+        "sha256": "b461a5901b42654d8e132b157d1115571a7f6b6b242537edbc02099ddb8e9d96",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108294.983
+      },
+      {
+        "bytes": 20942,
+        "name": "native-type-switch-cold-reopen-chiddush-accessibility_0_55B9CF69-3B1A-4956-8457-3BEEFB484BC6.txt",
+        "path": "ui/wave15-properties-set-attachments/AEDFC83B-1514-4C01-B578-6DD972460EC9.txt",
+        "sha256": "2b8109324aa4f461e8592b86c75f60444836c1a0bd9fc883ac96eec19ad86390",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108259.754
+      },
+      {
+        "bytes": 331329,
+        "name": "native-type-switch-cold-reopen-chiddush_0_90C03441-2AB6-4DF7-8444-02BCF4EFE8D1.png",
+        "path": "ui/wave15-properties-set-attachments/17A0F061-04B8-4785-971A-B028B0087269.png",
+        "sha256": "e0268a6baf402e8c4a31ac61994307db58d400f7daa0626a48f420c1225268e2",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108258.722
+      },
+      {
+        "bytes": 21118,
+        "name": "native-type-switch-changed-chiddush-accessibility_0_F2DA5EE9-7323-4C9B-ADCD-D8149AF03C1A.txt",
+        "path": "ui/wave15-properties-set-attachments/87D623D6-77BF-4F8E-927A-D2BE0628B853.txt",
+        "sha256": "f268e03dbf198bcabe3bbcf8d84ab8f0b7788c0154093ece95a8746e885e8032",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108227.415
+      },
+      {
+        "bytes": 331329,
+        "name": "native-type-switch-changed-chiddush_0_BB812562-49C0-466B-9F46-E59694501D4F.png",
+        "path": "ui/wave15-properties-set-attachments/91434CF1-D9AC-4DA3-B836-529EC2D3FAE4.png",
+        "sha256": "e0268a6baf402e8c4a31ac61994307db58d400f7daa0626a48f420c1225268e2",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108226.234
+      },
+      {
+        "bytes": 20941,
+        "name": "native-type-switch-cold-reopen-research-accessibility_0_31AA4D07-4A38-4C5B-97EA-E03A55A1C183.txt",
+        "path": "ui/wave15-properties-set-attachments/B4447962-83BE-4C37-B16E-DDB968C3D7D1.txt",
+        "sha256": "8c9bf27609f0097ed9a552a4f6c9b509b4e76b8543f8b5b5da3e327fe2a7000c",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108215.541
+      },
+      {
+        "bytes": 331615,
+        "name": "native-type-switch-cold-reopen-research_0_6C58648F-9BA2-4A3D-A59F-A6771ABB00D4.png",
+        "path": "ui/wave15-properties-set-attachments/4F25FF2E-5230-4472-9F5A-6A791D0F8DE1.png",
+        "sha256": "dbb4f487fcb96537ab5af21d79c4b345d477d37dfe4acb5382e39357012208d2",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108214.752
+      },
+      {
+        "bytes": 21117,
+        "name": "native-type-switch-changed-research-accessibility_0_BA36E378-4325-4269-B05D-16BCDE946B34.txt",
+        "path": "ui/wave15-properties-set-attachments/EB0E1ACC-85C9-4507-A587-F59C6F7A2DD2.txt",
+        "sha256": "8e4b89874a4852eb1ae5cbcd1a01cf9c00bc2c63521994842a391a3abc3c9ff5",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108186.521
+      },
+      {
+        "bytes": 332097,
+        "name": "native-type-switch-changed-research_0_D048784B-CF9A-4D73-9CA6-01BFD3628A9E.png",
+        "path": "ui/wave15-properties-set-attachments/1292BA79-4366-4FBB-A12B-AEC3B5C5329B.png",
+        "sha256": "7ae409c887be1477dbf00404d426212a4145f81b7902b84a77e10c4101afd773",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108185.598
+      },
+      {
+        "bytes": 20947,
+        "name": "native-type-switch-cold-reopen-article-accessibility_0_1CB7A232-FFB1-46A1-ADB9-099B45D425CA.txt",
+        "path": "ui/wave15-properties-set-attachments/5F13B568-A5E1-466A-9AC6-02DD85AF7587.txt",
+        "sha256": "414f288971c18ce5eb608a4ec0a1412c66c4367768dcffc0a784faa3bc54db74",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108175.323
+      },
+      {
+        "bytes": 332283,
+        "name": "native-type-switch-cold-reopen-article_0_9D57EFA6-E232-42FD-BE71-7C8D00A72BBE.png",
+        "path": "ui/wave15-properties-set-attachments/EF203B07-C4D4-4428-8A46-766A5A996475.png",
+        "sha256": "a32cb9788820ec70ddff9924600531efec00e7adfc9c9438d6b5864a098bbb5b",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108174.461
+      },
+      {
+        "bytes": 21123,
+        "name": "native-type-switch-changed-article-accessibility_0_B2027859-2B79-4A4C-88BE-0684B63F7581.txt",
+        "path": "ui/wave15-properties-set-attachments/D18BE07A-415B-4D40-B4C6-B11396D84F5C.txt",
+        "sha256": "66e1796592f33a0c2fcc5beef0e804d49f0c0926eb38be4d25c1925edec3ed01",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108145.279
+      },
+      {
+        "bytes": 332283,
+        "name": "native-type-switch-changed-article_0_157C1227-9D6D-4E47-BAC4-3D6258820084.png",
+        "path": "ui/wave15-properties-set-attachments/AEEA548D-2151-49D1-83B1-F833E3936E1A.png",
+        "sha256": "a32cb9788820ec70ddff9924600531efec00e7adfc9c9438d6b5864a098bbb5b",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108144.091
+      },
+      {
+        "bytes": 20942,
+        "name": "native-type-switch-initial-chiddush-accessibility_0_607355AA-3F7E-4507-A293-076AD5314D46.txt",
+        "path": "ui/wave15-properties-set-attachments/2225408E-C888-4651-962A-305204BFC256.txt",
+        "sha256": "29518fdb7a5b5e1cef700a3833190b6df93d3be029f0d97525ff3f5499de7e4e",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108133.621
+      },
+      {
+        "bytes": 331946,
+        "name": "native-type-switch-initial-chiddush_0_C3EE89BD-BB95-49C2-86FA-CFF56891B6BB.png",
+        "path": "ui/wave15-properties-set-attachments/E02CAF26-7171-4F59-8E71-1098478F1929.png",
+        "sha256": "88f16ccd77d228f1b030629efde9426d204656a848160d4016abb6abf7063d94",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795108132.753
+      }
+    ],
+    "observed": [
+      "Native source picker changes Genesis1:1 to Genesis1:2 and back.",
+      "Nonmatching filter produces empty mixed Set; restored filter contains Page, Note and custom documents.",
+      "Three original native Source/Topic/Word column switches are enabled and mixed Set values are visible.",
+      "Chiddush, Article, Research and restored Chiddush screens, including cold reopens, retain visible Genesis3:1, Creation, בראשית, original Tag and incoming/outgoing links.",
+      "Object Type remains visible and correct across original UI type mutations/reopens."
+    ],
+    "original_accessibility_exports": 7,
+    "original_pngs_inspected": 13,
+    "scope": "Visible UI evidence only; it does not replace the failed byte-level/native postflight."
+  }
+}

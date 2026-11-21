@@ -1,0 +1,21 @@
+{
+  "status": "PASS_PYTHON_CONTROLS_ONLY",
+  "base_app_sha": "cab855d95c74f4f45eeacd07a6b1b6334151c138",
+  "controller_tests": 108,
+  "rpc_controller_tests": 6,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "native_go_execution": "NOT_RUN",
+  "native_full_t2_acceptance": "NOT_RUN",
+  "app_capability": "OFF",
+  "commands": [
+    "python -B -m unittest -v test_run_native_operations test_native_clients test_account_rpc test_account_lifecycle test_native_client_crash test_native_client_observed_remove test_native_client_concurrent_replace",
+    "python -B -m unittest -v test_native_rpc"
+  ],
+  "evidence_sha256": {
+    "source-validation.json": "ce897a1c23f0470c71601c8b8a26f767100780cd40c0ec4dd8a98c6c6ba70d2d",
+    "linux-controller-tests.log": "cff039f000dd769cc72f66cc12f9ae23764e331e797e28dd42256414a8ac9ca5",
+    "linux-rpc-controller-tests.log": "88a414e7614324995bb515959b4230e8d58d55d78f26774692abe8b0901d584c"
+  }
+}

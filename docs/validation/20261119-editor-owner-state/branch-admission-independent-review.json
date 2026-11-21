@@ -1,0 +1,61 @@
+{
+  "schema": "branch-admission-independent-review-v1",
+  "reviewer": "ChatGPT /root/asana_audit",
+  "base_sha": "d9682f9a945cfb4b501f5912e34039353899e8c0",
+  "verdict": "SOURCE_REVIEW_PASS",
+  "apple_execution": "NOT_RUN",
+  "review_scope": "Read-only four-file diff and preserved guard inspection; no product tests executed by reviewer.",
+  "approved_branch": "codex/chatgpt-wave15-ui-resume-20261119",
+  "reviewed_hashes": {
+    ".github/workflows/pinkha-sdk06-tests.yml": "9c44b6fa477ebebf5972e48cf720590af52a3a560e65081566123a3ed63f6251",
+    "Tools/PinkhaNativeDerived/install_verified_heart.py": "5f441fbab95f9fdbda57f78be873b944f353f48e325f592c6f1dd9ea3f1dcb82",
+    "Tools/Hanlin/run_host_tests.py": "316d1a3b259f76cce58e5259c7e3dd4a377388953643eeb8d217a7c3f6c1b58f",
+    "Tools/Hanlin/test_run_host_tests.py": "c8d73d1b6fe374742580cf687b39224dbdab6efaa71e48bc2a215f807909ac59"
+  },
+  "unchanged_product_and_manifest_hashes": {
+    "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Base/EditorViewListCell.swift": "6a9558b73c7d903d07087e80f13b5f01f7514f90f6b1b53474e5cb2cee440cde",
+    "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift": "413b26dcfdd2a74a52da7a0c64e283f002e06c329b87e18ff09c1df6dfb75b0b",
+    "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift": "4aa45454da88efa8f1e55e061dae4afa57be2fc2b483a19a950926fa0d83f22e",
+    "Tools/Hanlin/wave15-core-tests.json": "377fc72574d6e6f38bcb137be238ede48eeb55fec4fc0b44684980711f713d7a"
+  },
+  "preserved_guards": [
+    "Shell exact branch case list and GITHUB_REF == refs/heads/EXPECTED_APP_BRANCH.",
+    "Shell checkout HEAD == GITHUB_SHA before and after exact disposable CI branch creation.",
+    "Host require_identity: expected branch in explicit tuple, actual branch == expected, exact 40-character lowercase source SHA, positive run/attempt IDs.",
+    "Pinned canonical Hanlin SDK source and verified materialization.",
+    "Installer exact patch/inventory match and actual application branch == declared branch.",
+    "Installer exact native receipt status, target, Heart pin, patch marker and source inventory.",
+    "Installer exact framework file set, every file SHA256, and thin architecture proof.",
+    "Installer refuses overwrite of existing middleware.",
+    "No wildcard branch admission, checksum relaxation, stale fallback, timeout increase, test selection reduction or Swift product change."
+  ],
+  "negative_controls": "Declared/actual branch mismatches and near-name equal-but-unreviewed branches rejected for both reviewed consumer branches; existing wrong-source/missing-run controls retained.",
+  "diff_check": "PASS",
+  "controller_tests": {
+    "scope": "Reported by root; not rerun by reviewer",
+    "discovered": 56,
+    "passed": 54,
+    "skipped": 2,
+    "skip_reason": "Existing POSIX-only cases on Windows",
+    "failed": 0
+  },
+  "prior_dispatches": [
+    {
+      "run": 44561271368,
+      "outcome": "SETUP_FAILURE",
+      "stage": "Verify exact caller identity before preparing dependencies"
+    },
+    {
+      "run": 44561279271,
+      "outcome": "SETUP_FAILURE",
+      "stage": "Install exact already verified universal r14 runtime"
+    },
+    {
+      "run": 44561286545,
+      "outcome": "SETUP_FAILURE",
+      "stage": "Install exact already verified universal r14 runtime"
+    }
+  ],
+  "remaining": "Fresh Apple core and Native/UI executions at the committed registration fix are required. No existing runtime acceptance promoted by this source review.",
+  "verified_at": "2026-11-19T16:07:20.168912+00:00"
+}

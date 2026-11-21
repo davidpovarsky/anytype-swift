@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-11-19T16:30:58.014825+00:00",
+  "base_sha": "db52731177bc41268e85a17970b5efdcdddf7c62",
+  "branch": "codex/chatgpt-wave15-t2-guard-20261119",
+  "native_failure": {
+    "run_id": 44560628796,
+    "artifact_id": 14548404353,
+    "artifact_sha256": "0dc04c31a9e7237f259998c5a5d073da3d17ce2112ac2be5123d0a5f99c614bf",
+    "member": "native-clients/recovered/native.log",
+    "commit_guard": true,
+    "committed": false,
+    "acl_changed": false,
+    "permission_denied": false,
+    "target_unavailable": false,
+    "history_unavailable": false,
+    "cancelled": false,
+    "deadline": false
+  },
+  "diagnosis": "AnySync v0.13.8 remote getter returns the validator-built tree's guarded storage. Final SyncTree construction previously wrapped that storage again, making the inner guard reject the outer one-call token.",
+  "change": "Reuse the existing exact ACL/root-bound storage guard; reject foreign ACL, changed root header and nested guards. No token/context stripping, no relaxed authorization or history validation.",
+  "source_sha256": {
+    "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_commit_guard.go": "794335046c8582bcafcab8aa6254c8e122d09cff9d6b0dfbcf37cef4f5338a13",
+    "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_host.go": "f00df2153f2c15863af31a19a5db540fd0b208d4535e891a657c3d6ae04f14c8",
+    "Tools/TorahNativeOperations/overlay/core/block/editor/torahops/native_remote_commit_guard_test.go": "02f3c30cf065773fdd5c70de2434118e0613698fea742600d71502625df02bb8",
+    "Tools/TorahNativeOperations/heart-registration.json": "d060cc0d5220bf471f75d8d133afaecff4a9de8cafe4ec4f125b806d79f8b3d4",
+    "Tools/TorahNativeOperations/rpc/heart-rpc.json": "9541f5106d6c77c22de2342dc3cd45e5686df36f692254a8bf1405713673265a",
+    "Tools/TorahNativeOperations/account_rpc/fixture.json": "217266a8401150e9e9a4359d4470c3da769d0bf885544959d18c983ba54fcc4d",
+    "Tools/TorahNativeOperations/run_native_operations.py": "aee74d92512cab9019ffb35f2a537904e35e6d3339a8064ab2ba2eaa3ee15dc0",
+    "Tools/TorahNativeOperations/test_run_native_operations.py": "278a1c03dfb11daabedb1998fb97927779c9e6581e5014db9734c05117782f5e"
+  },
+  "validation": {
+    "source_review": "PASS",
+    "gofmt": "PASS",
+    "diff_check": "PASS",
+    "python_controller_tests": {
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0
+    },
+    "rpc_source_inputs": "PASS",
+    "account_fixture_inputs": "PASS",
+    "two_client_source_inputs": "PASS",
+    "go_compilation": "NOT_RUN",
+    "native_remote_regression": "NOT_RUN",
+    "two_native_clients": "NOT_RUN"
+  },
+  "regression": "Real loopback DRPC remote fetch through NativeTreeValidator and final NativeTreeBuilder; mandatory guard denial, durable append, projection readback, idempotent retry and three foreign-binding rejection cases.",
+  "scope_limits": [
+    "Current target/settings/application lifetime patch remains a separate uncommitted candidate.",
+    "No app product capability enabled; full T2 and iOS acceptance remain open."
+  ]
+}

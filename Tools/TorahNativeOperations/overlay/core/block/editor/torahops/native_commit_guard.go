@@ -36,13 +36,29 @@ type nativeCommitContextKey struct{}
 // All fields belong to one synchronous append while its tree lock is held.
 // No token, author, ACL head or guard callback is accepted from an RPC request.
 type nativeCommitGuard struct {
-	storage   *nativeCommitStorage
-	author    crypto.PubKey
-	used      bool
-	active    bool
-	attempted bool
-	prepared  *objecttree.StorageChange
-	committed *objecttree.StorageChange
+	storage       *nativeCommitStorage
+	author        crypto.PubKey
+	used          bool
+	active        bool
+	attempted     bool
+	prepared      *objecttree.StorageChange
+	committed     *objecttree.StorageChange
+	releaseTarget func()
+}
+
+func bindNativeCommitStorage(storage objecttree.Storage, acl list.AclList, header *treechangeproto.RawTreeChangeWithId) (*nativeCommitStorage, error) {
+	if existing, ok := storage.(*nativeCommitStorage); ok {
+		if existing == nil || existing.Storage == nil || existing.acl != acl || existing.header == nil ||
+			existing.Id() != header.Id || existing.header.Id != header.Id ||
+			!bytes.Equal(existing.header.RawChange, header.RawChange) {
+			return nil, ErrNativeCommitGuard
+		}
+		if _, nested := existing.Storage.(*nativeCommitStorage); nested {
+			return nil, ErrNativeCommitGuard
+		}
+		return existing, nil
+	}
+	return &nativeCommitStorage{Storage: storage, acl: acl, header: header}, nil
 }
 
 func boundNativeCommitStorage(tree objecttree.ObjectTree) (*nativeCommitStorage, error) {
@@ -58,12 +74,12 @@ func boundNativeCommitStorage(tree objecttree.ObjectTree) (*nativeCommitStorage,
 	return storage, nil
 }
 
-func nativeCommitContext(ctx context.Context, tree objecttree.ObjectTree, author crypto.PubKey) (context.Context, *nativeCommitGuard, error) {
+func nativeCommitContext(ctx context.Context, tree objecttree.ObjectTree, author crypto.PubKey, releaseTarget func()) (context.Context, *nativeCommitGuard, error) {
 	storage, err := boundNativeCommitStorage(tree)
-	if ctx == nil || err != nil || author == nil {
+	if ctx == nil || err != nil || author == nil || releaseTarget == nil {
 		return nil, nil, ErrNativeCommitGuard
 	}
-	guard := &nativeCommitGuard{storage: storage, author: author}
+	guard := &nativeCommitGuard{storage: storage, author: author, releaseTarget: releaseTarget}
 	return context.WithValue(ctx, nativeCommitContextKey{}, guard), guard, nil
 }
 
@@ -155,25 +171,31 @@ func (s *nativeCommitStorage) AddAll(ctx context.Context, changes []objecttree.S
 	// prepareBuilderContent and validateTree have released their own ACL locks.
 	// Hold this final read lock only across the real native storage transaction,
 	// never across SyncTree head-update construction, broadcast or projection.
-	s.acl.RLock()
-	defer s.acl.RUnlock()
-	if err = ctx.Err(); err != nil {
-		return err
-	}
-	if !s.acl.AclState().Permissions(guard.author).CanWrite() {
-		return list.ErrInsufficientPermissions
-	}
-	head := s.acl.Head()
-	if head == nil || change.AclHeadId != head.Id {
-		return errors.Join(ErrNativeACLChanged, list.ErrInsufficientPermissions)
-	}
-	if err = s.Storage.AddAll(ctx, changes, heads, snapshot); err != nil {
+	err = func() error {
+		s.acl.RLock()
+		defer s.acl.RUnlock()
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+		if !s.acl.AclState().Permissions(guard.author).CanWrite() {
+			return list.ErrInsufficientPermissions
+		}
+		head := s.acl.Head()
+		if head == nil || change.AclHeadId != head.Id {
+			return errors.Join(ErrNativeACLChanged, list.ErrInsufficientPermissions)
+		}
+		return s.Storage.AddAll(ctx, changes, heads, snapshot)
+	}()
+	if err != nil {
 		return err
 	}
 	// AddAll returns only after its deferred tx.Commit succeeds. The underlying
 	// store has also assigned AddSeq in this slice. This is the durable witness
 	// even if SyncTree later returns an error while creating its head update.
 	guard.committed = copyNativeStorageChange(changes[0])
+	// Release target/settings only after durable commit and the ACL unlock,
+	// before SyncTree creates/broadcasts a head update or projection commits.
+	guard.releaseTarget()
 	return nil
 }
 

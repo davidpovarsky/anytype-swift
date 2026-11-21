@@ -1,0 +1,594 @@
+{
+  "acceptance": {
+    "explicit_stopped_install_continuity": true,
+    "full_properties_task": false,
+    "full_release": false,
+    "native_type_hide_preparation": true,
+    "native_type_preservation_postflight": false,
+    "physical_ipad": "NOT_RUN",
+    "properties_set_lane": false,
+    "two_selected_properties_ui_methods": true
+  },
+  "actual_outcomes": {
+    "postflight": {
+      "counts": {
+        "failed": 1,
+        "passed": 0,
+        "skipped": 0
+      },
+      "finish": 1795116233.261,
+      "methods": {
+        "TorahStage2TypePreservationTests/verifyExistingTypeRoundtrip": "Failed"
+      },
+      "raw_test_nodes": [
+        {
+          "children": [
+            {
+              "name": "Expectation failed: actual.path == controller.path && actual.device == controller.device &&\n                     actual.inode == controller.inode && controller.createdAt.isFinite && controller.createdAt > 0\nactual.path == controller.path && actual.device == controller.device &&\n                     actual.inode == controller.inode && controller.createdAt.isFinite → false\ncontroller.createdAt > 0 → <not evaluated>",
+              "nodeType": "Failure Message",
+              "sourceLocation": {
+                "filePath": "/Users/runner/work/anytype-swift/anytype-swift/AnytypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift",
+                "lineNumber": 1132
+              }
+            }
+          ],
+          "duration": "0.077s",
+          "durationInSeconds": 0.07672715187072754,
+          "name": "Existing account retains original canonical bytes, Tag and native links",
+          "nodeIdentifier": "TorahStage2TypePreservationTests/verifyExistingTypeRoundtrip()",
+          "nodeIdentifierURL": "test://com.apple.xcode/Anytype/AnytypeTests/TorahStage2TypePreservationTests/verifyExistingTypeRoundtrip()",
+          "nodeType": "Test Case",
+          "result": "Failed"
+        }
+      ],
+      "start": 1795116183.147,
+      "summary_sha256": "ac6408b8c83709629cdcddbb9f13ce74cd9fdbae695646b70b644668f53dda91",
+      "tests_sha256": "78eb242b3827cce08ca38828d7e8e36922e741dbfd9517aa315fdd06ddbe2a1a"
+    },
+    "preparation": {
+      "counts": {
+        "failed": 0,
+        "passed": 1,
+        "skipped": 0
+      },
+      "finish": 1795115702.691,
+      "methods": {
+        "TorahNativeDerivedProductIntegrationTests/originalProductPipeline": "Passed"
+      },
+      "raw_test_nodes": [
+        {
+          "duration": "13s",
+          "durationInSeconds": 13.34850788116455,
+          "name": "Real schema, canonical writes, native Set filters, columns and live membership",
+          "nodeIdentifier": "TorahNativeDerivedProductIntegrationTests/originalProductPipeline()",
+          "nodeIdentifierURL": "test://com.apple.xcode/Anytype/AnytypeTests/TorahNativeDerivedProductIntegrationTests/originalProductPipeline()",
+          "nodeType": "Test Case",
+          "result": "Passed"
+        }
+      ],
+      "start": 1795115627.692,
+      "summary_sha256": "4f514dcf32731836ae9f146af96f9a5ab5ef604d0b5416ab922aa026c6ea3e10",
+      "tests_sha256": "fb33d1fe473ba20888aef4b277e650d4a770900e179c1e9c265f753b0e1885bb"
+    },
+    "ui": {
+      "counts": {
+        "failed": 0,
+        "passed": 2,
+        "skipped": 0
+      },
+      "finish": 1795116148.675,
+      "methods": {
+        "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing": "Passed",
+        "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet": "Passed"
+      },
+      "raw_test_nodes": [
+        {
+          "duration": "2m 10s",
+          "durationInSeconds": 130.91372096538544,
+          "name": "testRemainingNativeSourceFilterEditing()",
+          "nodeIdentifier": "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing()",
+          "nodeIdentifierURL": "test://com.apple.xcode/PinkhaPrebuiltUI/PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing",
+          "nodeType": "Test Case",
+          "result": "Passed"
+        },
+        {
+          "duration": "3m 3s",
+          "durationInSeconds": 183.6414020061493,
+          "name": "testRemainingUniversalTypePickersAndMixedSet()",
+          "nodeIdentifier": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+          "nodeIdentifierURL": "test://com.apple.xcode/PinkhaPrebuiltUI/PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet",
+          "nodeType": "Test Case",
+          "result": "Passed"
+        }
+      ],
+      "start": 1795115815.689,
+      "summary_sha256": "f397b3d76ebc549b65d86ce207c14eb6bb9a4d7fed04f4311456e231e382236e",
+      "tests_sha256": "655b3dcce39a2a3996397f0de5bdcf38a166dc988958ddb9ffa6bde462b442ee"
+    }
+  },
+  "artifact": {
+    "all_member_sha256_index": "original-member-sha256.json",
+    "bytes": 36005230,
+    "github_digest_matches": true,
+    "id": 14565803439,
+    "inner_bytes": 36242125,
+    "inner_crc": "PASS",
+    "inner_sha256": "dfd48a2e48218e836a80e4fd7c65b38bfafc127db4e6841ec42edeee00b0cb4e",
+    "member_index_sha256": "90ad76b869c450421ba7c633777123eafdd93a5e4aa6b37c3fdde4752ee1934d",
+    "outer_crc": "PASS",
+    "sha256": "b49b5c988546bd6e16da2bd49faa86ead39e91a52fc4baf2c7bc4496ce33e0a3",
+    "unique_inner_members": 1384,
+    "whole_xcresults_extracted": false
+  },
+  "attempt": 1,
+  "configuration": "Release-Anytype",
+  "controlled_install": {
+    "limitation": "Raw native-store bytes and ps enumerations are not retained. Original exact-source controller checks, summaries and hashes are retained; they cannot prove the later unobserved install boundary.",
+    "observation": {
+      "binding": {
+        "nonce": "bd3db5c8552a45b6b5ed3d789fc3ab6a",
+        "runAttempt": "1",
+        "runID": "44584920580",
+        "sourceSHA": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8"
+      },
+      "elapsedSeconds": 18.247809,
+      "installExitCode": 0,
+      "installationSHA256": "24dda5b0706f8045bd3ab96312c63ab3d22cddbb28b033ba3851b7460c7ef059",
+      "phase": "COMPLETE",
+      "phaseBudgetSeconds": 660,
+      "status": "PASS",
+      "timeoutSeconds": 120
+    },
+    "original_receipt": {
+      "accountID": "A7eHDQgzpcuDV88N2JQjYCXQ2njWecs341KrZENmKVYRHn76",
+      "afterInventory": {
+        "bytes": 117418928,
+        "directories": 20,
+        "files": 48,
+        "sha256": "04624ebcea8200bc816ede1451f4ae48f1f7a4d211aef10b597f441ae858b3c4"
+      },
+      "baselineSHA256": "e48a5b6c40534cd874ab7ffbfdf31fdd61b6cd49d8b8e174f2c8d53556852b9e",
+      "beforeInventory": {
+        "bytes": 117418928,
+        "directories": 20,
+        "files": 48,
+        "sha256": "04624ebcea8200bc816ede1451f4ae48f1f7a4d211aef10b597f441ae858b3c4"
+      },
+      "binding": {
+        "nonce": "bd3db5c8552a45b6b5ed3d789fc3ab6a",
+        "runAttempt": "1",
+        "runID": "44584920580",
+        "sourceSHA": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8"
+      },
+      "codeCarriersSHA256": "a66126d4fcb4e603787a5f350af350e70e145a09b52dfffad40d5423beb8e0d4",
+      "containerRelocated": true,
+      "currentDirectories": {
+        "container": {
+          "createdAt": 1795115645.7063806,
+          "device": "16777230",
+          "inode": "2514943",
+          "path": "/Users/runner/Library/Developer/CoreSimulator/Devices/EEEBEE96-1BB8-408E-8C98-ACB1E646FE04/data/Containers/Data/Application/435FD3B2-03C0-43DC-AF2E-19D586464E76"
+        },
+        "middleware": {
+          "createdAt": 1795115687.080441,
+          "device": "16777230",
+          "inode": "2515360",
+          "path": "/Users/runner/Library/Developer/CoreSimulator/Devices/EEEBEE96-1BB8-408E-8C98-ACB1E646FE04/data/Containers/Data/Application/435FD3B2-03C0-43DC-AF2E-19D586464E76/Library/Application Support/Anytype/middleware-go"
+        }
+      },
+      "fixtureSHA256": "cf2f1b1817952fe5ed913bc9fe6f65e96b16633abdc25cce3058100888eea3c4",
+      "installedAfterCodeSHA256": "a66126d4fcb4e603787a5f350af350e70e145a09b52dfffad40d5423beb8e0d4",
+      "installedBeforeCodeSHA256": "a66126d4fcb4e603787a5f350af350e70e145a09b52dfffad40d5423beb8e0d4",
+      "originalDirectories": {
+        "container": {
+          "createdAt": 1795115645.7063806,
+          "device": "16777230",
+          "inode": "2514943",
+          "path": "/Users/runner/Library/Developer/CoreSimulator/Devices/EEEBEE96-1BB8-408E-8C98-ACB1E646FE04/data/Containers/Data/Application/9D91CFD4-3E47-4586-BBB9-158E4D69C5B0"
+        },
+        "middleware": {
+          "createdAt": 1795115687.080441,
+          "device": "16777230",
+          "inode": "2515360",
+          "path": "/Users/runner/Library/Developer/CoreSimulator/Devices/EEEBEE96-1BB8-408E-8C98-ACB1E646FE04/data/Containers/Data/Application/9D91CFD4-3E47-4586-BBB9-158E4D69C5B0/Library/Application Support/Anytype/middleware-go"
+        }
+      },
+      "preparationPID": 1244,
+      "schemaVersion": 1,
+      "simulatorUDID": "EEEBEE96-1BB8-408E-8C98-ACB1E646FE04",
+      "spaceID": "bafyreicplldcpa7ausd7hwworhj6hiwkmsbwepg6srvdzypvxqjat23rpm.yvv0v65agko7",
+      "status": "PASS_STOPPED_NATIVE_STORE_UNCHANGED",
+      "stoppedProcessChecks": {
+        "AFTER_INSTALL": {
+          "commandExitCode": 0,
+          "controllerPID": 3157,
+          "enumeratedProcesses": 608,
+          "executablePathSHA256": "4ba009003edc43d04974acba2e6383aa106d9c841c08d6552b37d0dd989fad7a",
+          "inventorySHA256": "e73849859468270a4b1b4baea515e81bdfc4cc46d03fd23a044e854178447d56",
+          "ownedAppMatches": 0,
+          "status": "PASS_APP_NOT_RUNNING",
+          "unresolvedAppMatches": 0
+        },
+        "AFTER_INVENTORY": {
+          "commandExitCode": 0,
+          "controllerPID": 3157,
+          "enumeratedProcesses": 607,
+          "executablePathSHA256": "4ba009003edc43d04974acba2e6383aa106d9c841c08d6552b37d0dd989fad7a",
+          "inventorySHA256": "2ee017adc7250f5529509cf1d3d63c779a9340067040df559975fde09e849bd0",
+          "ownedAppMatches": 0,
+          "status": "PASS_APP_NOT_RUNNING",
+          "unresolvedAppMatches": 0
+        },
+        "BEFORE_INSTALL": {
+          "commandExitCode": 0,
+          "controllerPID": 3157,
+          "enumeratedProcesses": 612,
+          "executablePathSHA256": "d165664068897e5fb7403f3e472524b2a1be80d2d1f58383e9feacd607ed3499",
+          "inventorySHA256": "8a9f7f563bb80c838c24893a101d1706c54b25365bd225449f7eb94cd8e0a03b",
+          "ownedAppMatches": 0,
+          "status": "PASS_APP_NOT_RUNNING",
+          "unresolvedAppMatches": 0
+        },
+        "BEFORE_INVENTORY": {
+          "commandExitCode": 0,
+          "controllerPID": 3157,
+          "enumeratedProcesses": 612,
+          "executablePathSHA256": "d165664068897e5fb7403f3e472524b2a1be80d2d1f58383e9feacd607ed3499",
+          "inventorySHA256": "30759883b331dab141c33d34685e28993cef451a220f9a398c89d0a191a73e0c",
+          "ownedAppMatches": 0,
+          "status": "PASS_APP_NOT_RUNNING",
+          "unresolvedAppMatches": 0
+        }
+      },
+      "subjectID": "bafyreiepllozk7bukk2lshg4ba2awpmsjfxlzkdfuv2x3q2ez52p3g5rqm"
+    },
+    "scope": "Only the explicit stopped same-build install before the later xcodebuild invocation.",
+    "sha256": "24dda5b0706f8045bd3ab96312c63ab3d22cddbb28b033ba3851b7460c7ef059",
+    "status": "SOURCE_BOUND_EXECUTED_CONTROLLER_RECEIPT_VALIDATED"
+  },
+  "device": {
+    "architecture": "arm64",
+    "deviceId": "EEEBEE96-1BB8-408E-8C98-ACB1E646FE04",
+    "deviceName": "Pinkha-UI27-44584920580-ipad",
+    "modelName": "iPad Pro 13-inch (M5)",
+    "osBuildNumber": "24A434",
+    "osVersion": "27.0",
+    "platform": "iOS Simulator"
+  },
+  "exact_sources": {
+    "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift": {
+      "bytes": 81361,
+      "git_blob_sha1": "b36a0b62f988843543382affbc0561d4ded63dc1",
+      "sha256": "2ddab02fb826776d382686c2276061d44be5fc26eca0707e2782b1745b10e222"
+    },
+    "PinkhaStage1Acceptance/Tests/PinkhaStage1AcceptanceUITests.swift": {
+      "bytes": 67409,
+      "git_blob_sha1": "4160938d504811ed130e53c78993f084d9815e36",
+      "sha256": "14f825b44c562d6e12e83f86b95531f040759584e8b5b4ad1286bf415ea70621"
+    },
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
+      "bytes": 40553,
+      "git_blob_sha1": "2514505923430becadfcbb92b2a53c663a4a225e",
+      "sha256": "90a3e3eeb11a8a634e773f99c62d811494bd1c3616eb25698884e6f9a1a2a7ca"
+    },
+    "Tools/PinkhaSimulatorGate/test_type_preservation.py": {
+      "bytes": 36071,
+      "git_blob_sha1": "e0f385ea92b6f7b1b3408cba8be2c68b98a6f538",
+      "sha256": "c8649ebf54a58bbdddeba80471a278b2b676fecf0fedcfdf6530a9f144daa600"
+    },
+    "Tools/PinkhaSimulatorGate/test_wave15_batch.py": {
+      "bytes": 69300,
+      "git_blob_sha1": "8313d8ec370df253952c9532e602513525c32d76",
+      "sha256": "40817475ae9dfdacaeebfca535b1e29110281f29d04e2b3afdf6a89b1d55f57e"
+    },
+    "Tools/PinkhaSimulatorGate/type_preservation.py": {
+      "bytes": 39223,
+      "git_blob_sha1": "6f06ce858e3579f261f6537b82264266b90531b9",
+      "sha256": "7b51ce452f743cfbe45a9ccc562ca871c5e7a072dade292cdf501494c9cead9e"
+    },
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": {
+      "bytes": 60770,
+      "git_blob_sha1": "1cd077e9c38b4f5e184304cfdd6209a1cc3a9c6c",
+      "sha256": "20daa269697d859b92d089f4ccadc5165d13a5f77ad951c94b9cbb8480bde586"
+    }
+  },
+  "failure": {
+    "canonical_tag_link_account_readback_comparison": "NOT_REACHED",
+    "controller_failure": "Additional unproved postflight App relocation",
+    "data_loss_proven": false,
+    "exact_final_directory_identity": "NOT_RECORDED; combined assertion does not identify each differing field",
+    "mandatory_gate_behavior": "FAIL_CLOSED; no bypass, no retry and no native success receipt",
+    "native_failure": "Expectation failed: actual.path == controller.path && actual.device == controller.device &&\n                     actual.inode == controller.inode && controller.createdAt.isFinite && controller.createdAt > 0\nactual.path == controller.path && actual.device == controller.device &&\n                     actual.inode == controller.inode && controller.createdAt.isFinite → false\ncontroller.createdAt > 0 → <not evaluated>",
+    "native_test": "TorahStage2TypePreservationTests/verifyExistingTypeRoundtrip",
+    "observed_boundary": "Explicit controlled install passed, then the original native test-without-building invocation ran; native entry rejected the bound directory identity and the subsequent live container lookup proved another data-container path change.",
+    "postflight_pid_from_original_log": 18543,
+    "source_line": 1132,
+    "stage": "POSTFLIGHT_ENTRY_DIRECTORY_IDENTITY_AFTER_ADDITIONAL_RELOCATION",
+    "unchanged_native_data_across_second_relocation_proven": false
+  },
+  "immutable_baseline": {
+    "binding": {
+      "nonce": "bd3db5c8552a45b6b5ed3d789fc3ab6a",
+      "runAttempt": "1",
+      "runID": "44584920580",
+      "sourceSHA": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8"
+    },
+    "canonical_sha256": "0ae1a60a90fd66c39e55ca60155848149c06fed4edd83100de4407714017f227",
+    "fixture_sha256": "cf2f1b1817952fe5ed913bc9fe6f65e96b16633abdc25cce3058100888eea3c4",
+    "frozen_before_ui": true,
+    "postflight_receipt": "ABSENT",
+    "preparation_pid": 1244,
+    "sha256": "e48a5b6c40534cd874ab7ffbfdf31fdd61b6cd49d8b8e174f2c8d53556852b9e",
+    "validated_original_native_state": true
+  },
+  "prior_runs": {
+    "44432009798": "Distinct cancelled batch:zero Native/UI/postflight execution.",
+    "44562643472": "Distinct53db source:1prep+2UI PASS, native postflight FAIL before semantic comparison."
+  },
+  "run_id": 44584920580,
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44584920580",
+  "runtime": {
+    "compiled_products": {
+      "build_reuse_enabled": false,
+      "entries": 3072,
+      "manifest_path": "compiled-products/manifest.json",
+      "manifest_sha256": "a665dd05eb71e0abbfc029b05c77e56d9133b5180af829b204078c013a1a0612",
+      "source_inputs_path": "compiled-products/source-inputs.json",
+      "source_inputs_sha256": "d00f7a6e76c354621db612c3050d5f9e3ddde51f4ed55d823c2210ce3b9a9ca3",
+      "status": "OBSERVED_PRODUCTS_INVENTORY_NOT_BUILD_PROVENANCE"
+    },
+    "every_cold_launch_separately_verified": false,
+    "full_bundle_equivalence": false,
+    "initial_pid": 6014,
+    "initial_runtime_mapping": "PASS",
+    "installation": {
+      "app_source_sha": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8",
+      "archive_sha256": "7aa836e081740b99e7e26485fd7f1845fc3ea99fa2331b2ab99330675a4c590f",
+      "marker": "pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+      "original_build_app_sha": null,
+      "patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+      "source_run_id": "44203168617",
+      "status": "PASS"
+    },
+    "installed_and_built_app_executable_sha256": "a8052f812c81bd1a6cd78653df5b32bbc6a5a5c9394d173e7aa9b4b0262b4285",
+    "installed_and_built_code_carriers_sha256": "a66126d4fcb4e603787a5f350af350e70e145a09b52dfffad40d5423beb8e0d4",
+    "kit_sha": "158acb295f832e96907cdadc813a1c2a4bb6a03c",
+    "live_framework_sha256": "f8222686f27773d0a6f4bb60931f4cb5e0127b73da54c2ac57b1cd8faeaf40fb",
+    "live_vmmap_exit_code": 0,
+    "marker": "pinkha-native-derived-v1-fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+    "post_native_postflight_recheck": "NOT_REACHED_AFTER_ADDITIONAL_RELOCATION",
+    "post_ui_code_recheck": "PASS_BEFORE_CONTROLLED_INSTALL"
+  },
+  "schema": 1,
+  "source_binding": {
+    "count": 5612,
+    "function_file_sha256": "2b4162be85c3164a4d75869f67b3bfe9e58fac033a581d6f6f57d38e639961e0",
+    "hashes_json_sha256": "c8e6961bb76a0626496b38c93675680f5879b6be1e69bf78169575cf9656a749",
+    "method": "Exact committed source_inputs function, read-only git ls-tree pinned to the run source",
+    "original_runtime_receipt_comparison": "PASS",
+    "source_sha": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8",
+    "source_tree": "60aaf47bd2333e6f67386505324e4f3b9dd8deef"
+  },
+  "source_sha": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8",
+  "status": "NATIVE_PREPARATION_AND_TWO_UI_METHODS_PASS_CONTROLLED_INSTALL_PASS_POSTFLIGHT_FAILED",
+  "type_hide_native_observations": [
+    {
+      "action": "notStarted",
+      "canonical": {
+        "attachedToDocument": false,
+        "documentIdentityMatches": true,
+        "featuredOnType": false,
+        "hiddenOnType": false,
+        "recommendedOnType": true,
+        "typeIdentityMatches": true,
+        "typeListCounts": [
+          6,
+          3,
+          3
+        ],
+        "typeListsSHA256": "1a7514855f5653ea5668ccfbd116503fd91b0c58a789954ef4b2da3c6e84f00e"
+      },
+      "canonicalReadSucceeded": true,
+      "hiddenOnDocument": false,
+      "hiddenOnType": false,
+      "phase": "before"
+    },
+    {
+      "action": "succeeded",
+      "canonical": {
+        "attachedToDocument": false,
+        "documentIdentityMatches": true,
+        "featuredOnType": false,
+        "hiddenOnType": true,
+        "recommendedOnType": false,
+        "typeIdentityMatches": true,
+        "typeListCounts": [
+          5,
+          3,
+          4
+        ],
+        "typeListsSHA256": "bfc67ea69ceff0b2fbb913415d24e6f58c8b951456cd722feea4c0f1d8832ef5"
+      },
+      "canonicalReadSucceeded": true,
+      "hiddenOnDocument": true,
+      "hiddenOnType": true,
+      "phase": "completed"
+    }
+  ],
+  "verified_at": "2026-11-19T19:39:02.259986+00:00",
+  "verifier_sha256": "da0d23793bd920758e9de25afdf1a34c6aa3246c24d1ab017ca5fe4a7a7ebb86",
+  "visual_review": {
+    "media": [
+      {
+        "bytes": 184462,
+        "name": "remaining-native-Set-restored-filter-members_0_62958BA7-6E9F-4D2F-9412-4E75304EAD28.png",
+        "path": "ui/wave15-properties-set-attachments/23B56D7B-97C2-4679-A64B-8AC13F0AB75F.png",
+        "sha256": "8d733fb1f516b9fca7ed15ef2f53045ceb0718e921e89aed86dfa41172efc0ea",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing()",
+        "timestamp": 1795115961.32
+      },
+      {
+        "bytes": 390938,
+        "name": "native-set-filter-selection-Genesis 11_0_FEB6F2CB-AABF-4E77-8676-EC5837B27D5B.png",
+        "path": "ui/wave15-properties-set-attachments/38F9FDD8-69A4-4867-9304-40E014B39659.png",
+        "sha256": "cc9e3456d27481a2ed2f6d6bec97388e9a9c0349b6ac178d54436dd8ed815533",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing()",
+        "timestamp": 1795115936.62
+      },
+      {
+        "bytes": 168758,
+        "name": "remaining-native-Set-nonmatching-filter-empty_0_EB988F39-F373-4E16-8917-9850E9BA3A1A.png",
+        "path": "ui/wave15-properties-set-attachments/C6B52BB1-D440-48C1-8A21-33E62C735B86.png",
+        "sha256": "ddda40d1811b3109259645ec196d94801b08c80ab7b7f6d4f4b1a392fecfb509",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing()",
+        "timestamp": 1795115920.926
+      },
+      {
+        "bytes": 409512,
+        "name": "native-set-filter-selection-Genesis 12_0_898DDDF0-3E34-4211-B32E-A7D46495C562.png",
+        "path": "ui/wave15-properties-set-attachments/30BEEF0D-0834-41E8-9426-E0352D5E28EC.png",
+        "sha256": "43e7b3543ce19aacf8b8115057c2d54614b395b86627ae80d676ad81427d3718",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing()",
+        "timestamp": 1795115882.602
+      },
+      {
+        "bytes": 196356,
+        "name": "remaining-universal-mixed-native-filter-membership_0_AA6206AB-18A6-4EDA-89E5-6231D8BC72F4.png",
+        "path": "ui/wave15-properties-set-attachments/228BF9FF-F4EF-409D-AE4E-EAE105DFFC86.png",
+        "sha256": "cce3a1d0a2367698e9948f2ddfdd16746e764cf442de70e35b6411c7548404b7",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116146.614
+      },
+      {
+        "bytes": 383240,
+        "name": "native-set-original-fields-switches_0_BB2A100F-2198-40DD-9C56-4999164C56D0.png",
+        "path": "ui/wave15-properties-set-attachments/3478A5BB-F89E-443A-BC04-172E6D86C9EC.png",
+        "sha256": "c1cd058e80903a4ae9dc002ffc77d0590a96ca54deaf2f99ec8a128185e7f1f3",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116128.426
+      },
+      {
+        "bytes": 20942,
+        "name": "native-type-switch-cold-reopen-chiddush-accessibility_0_6D094B4B-46F9-4F3A-AE20-2666760039AB.txt",
+        "path": "ui/wave15-properties-set-attachments/58EAECC8-1A3E-40BB-8BA6-BF7456633FEE.txt",
+        "sha256": "244e01745a7e6bbb2861b68348a347ebdcb293b0b4a3ed356d8328c67557c31c",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116100.842
+      },
+      {
+        "bytes": 331126,
+        "name": "native-type-switch-cold-reopen-chiddush_0_D78174D9-42EF-4704-B577-383D05FFE125.png",
+        "path": "ui/wave15-properties-set-attachments/D0499FCB-E6E7-4AE4-9BFC-5A55C2A42194.png",
+        "sha256": "dd2873f17e7092ad34a63e7147afe20e116a8d6d6fe934ce20fee1d1d65d6e2d",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116100.221
+      },
+      {
+        "bytes": 21118,
+        "name": "native-type-switch-changed-chiddush-accessibility_0_FD3C9149-4004-4EAD-95A9-D67478976A34.txt",
+        "path": "ui/wave15-properties-set-attachments/9F2FB95D-8739-4247-AF16-65B717478B4D.txt",
+        "sha256": "7709dbf9c6fca03aeb31b472a62c34f466712716c6019873592a1c7204abfe8f",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116075.986
+      },
+      {
+        "bytes": 331126,
+        "name": "native-type-switch-changed-chiddush_0_FE58155A-0561-4D82-9088-EEBB096C771E.png",
+        "path": "ui/wave15-properties-set-attachments/F8315688-52A2-4245-A8B1-B3E07C03DA4A.png",
+        "sha256": "dd2873f17e7092ad34a63e7147afe20e116a8d6d6fe934ce20fee1d1d65d6e2d",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116075.035
+      },
+      {
+        "bytes": 20941,
+        "name": "native-type-switch-cold-reopen-research-accessibility_0_0CB50EDB-495A-4B36-B163-BCA4C1ABB3A3.txt",
+        "path": "ui/wave15-properties-set-attachments/2D659FDB-5A40-42A7-938F-6186440AF3F5.txt",
+        "sha256": "10341d14eb29542b987661605a54eeef9a4235c9f96391fa047b5a0133955d3d",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116065.325
+      },
+      {
+        "bytes": 331394,
+        "name": "native-type-switch-cold-reopen-research_0_15693E05-C463-45BD-9145-6DC1C8380055.png",
+        "path": "ui/wave15-properties-set-attachments/957E9443-FB88-45FF-9AE8-88E38BDF018A.png",
+        "sha256": "3fd18e32186c7a921617694ccd5bb0ce967bb298328ab052e052469a1c12c58d",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116064.446
+      },
+      {
+        "bytes": 21117,
+        "name": "native-type-switch-changed-research-accessibility_0_07890C8B-5407-4D03-80D3-156DA77DEE06.txt",
+        "path": "ui/wave15-properties-set-attachments/A8743C9C-C297-4EED-B660-0B94E1D92ED9.txt",
+        "sha256": "6e71f2dc2064b01331607c3fa72d0bf1aa473dcd97d47767739d0081e97f71ef",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116039.479
+      },
+      {
+        "bytes": 331767,
+        "name": "native-type-switch-changed-research_0_685E810B-3AA5-491F-98EE-6627671A8BE1.png",
+        "path": "ui/wave15-properties-set-attachments/5AE57CF7-5A7B-4A8B-9337-51B4C8A90B81.png",
+        "sha256": "7c9157e63c0db1365c0307c5e1977147a03b1ab15ffad152d4fb1bfcc519b38a",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116038.736
+      },
+      {
+        "bytes": 20947,
+        "name": "native-type-switch-cold-reopen-article-accessibility_0_5194ECCB-BB20-46EB-9D52-F24523F36823.txt",
+        "path": "ui/wave15-properties-set-attachments/A3238B92-E471-4E77-B9E1-691820319D65.txt",
+        "sha256": "35b7d124da5a993d74600181a7746712ceec37d5caabd3cf4f153f45ffd1c426",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116029.071
+      },
+      {
+        "bytes": 331984,
+        "name": "native-type-switch-cold-reopen-article_0_671B8B24-9D5E-4D4B-B236-0AC9170A94C5.png",
+        "path": "ui/wave15-properties-set-attachments/499A5165-0C1C-4D5F-A0D7-389D0493580A.png",
+        "sha256": "d5f8980489e9b8e9c44244b304bcd1f50871d609252a1ba533f7e7ba8378149a",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116028.368
+      },
+      {
+        "bytes": 21123,
+        "name": "native-type-switch-changed-article-accessibility_0_129A44BA-D626-4BAF-97D1-E2EC0C15AB41.txt",
+        "path": "ui/wave15-properties-set-attachments/B1D045E2-DC49-4E00-BD63-9A25D67AA7CB.txt",
+        "sha256": "c2024d3108a9343d1a37d37bcc7cfceb9ef8c376e52261bdcfb178ab4f440b1c",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116003.622
+      },
+      {
+        "bytes": 331984,
+        "name": "native-type-switch-changed-article_0_74A346D3-CF6D-402E-99E7-207577CC129D.png",
+        "path": "ui/wave15-properties-set-attachments/E1E1958C-DD7C-4F8F-81AF-EC57997B5337.png",
+        "sha256": "d5f8980489e9b8e9c44244b304bcd1f50871d609252a1ba533f7e7ba8378149a",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795116002.718
+      },
+      {
+        "bytes": 20942,
+        "name": "native-type-switch-initial-chiddush-accessibility_0_EA22594F-A6CE-44F4-8E53-02E55ADAC98C.txt",
+        "path": "ui/wave15-properties-set-attachments/6FE8B7A9-0018-46AE-A60C-CB541E594A17.txt",
+        "sha256": "f9ccfc0db60cbd89ba188e52ad7c9b67ddbbf79646b729d263151b1f1db77161",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795115991.988
+      },
+      {
+        "bytes": 331137,
+        "name": "native-type-switch-initial-chiddush_0_E3D1CCC7-3824-41E2-B740-F2F555113054.png",
+        "path": "ui/wave15-properties-set-attachments/04949F69-AF44-4C6B-B4C1-BADB2E85A7BE.png",
+        "sha256": "3bb303ba11b1643f6a96e90747f2d702f38fbc2fd4fa07320aacadca13b1dc0f",
+        "test": "PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet()",
+        "timestamp": 1795115991.253
+      }
+    ],
+    "observed": [
+      "Source filter changes Genesis1:1 to Genesis1:2 and returns to original membership.",
+      "Nonmatching filter yields empty mixed Set; restored filter shows Page, Note and custom documents.",
+      "Three original native Source/Topic/Word column switches are enabled and mixed Set values visible.",
+      "Chiddush to Article to Research to Chiddush, including cold reopens, retain visible Genesis3:1, Creation, בראשית, original Tag, incoming and outgoing links.",
+      "Object Type is visible and changes/restores as selected."
+    ],
+    "original_accessibility_exports_checked": 7,
+    "original_pngs_inspected": 13,
+    "scope": "Original UI visuals and AX only; these do not replace the failed final semantic preservation comparison."
+  }
+}

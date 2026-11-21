@@ -1,0 +1,170 @@
+--- a/heart/core/block/editor/torahops/native_host.go
++++ b/heart/core/block/editor/torahops/native_host.go
+@@ -5,6 +5,7 @@
+ 	"context"
+ 	"errors"
+ 	"fmt"
++	"github.com/anyproto/anytype-heart/util/pinkhat2spaceclosetest"
+ 	"slices"
+ 	"sync"
+ 	"time"
+@@ -276,6 +277,7 @@
+ 	if err != nil {
+ 		return NativeAppendResult{}, err
+ 	}
++	pinkhat2spaceclosetest.Point(ctx, "append-before-native", h.tree.Id(), "", h.tree)
+ 	added, err := h.tree.AddContentWithValidator(appendCtx, objecttree.SignableChangeContent{
+ 		Data: data, DataType: dataType, Key: h.key, ShouldBeEncrypted: true, Timestamp: time.Now().Unix(),
+ 	}, func(raw objecttree.StorageChange) error {
+--- a/heart/core/block/editor/torahops/native_commit_guard.go
++++ b/heart/core/block/editor/torahops/native_commit_guard.go
+@@ -4,6 +4,7 @@
+ 	"bytes"
+ 	"context"
+ 	"errors"
++	"github.com/anyproto/anytype-heart/util/pinkhat2spaceclosetest"
+ 	"slices"
+ 
+ 	"github.com/anyproto/any-sync/commonspace/object/acl/list"
+@@ -184,7 +185,10 @@
+ 		if head == nil || change.AclHeadId != head.Id {
+ 			return errors.Join(ErrNativeACLChanged, list.ErrInsufficientPermissions)
+ 		}
+-		return s.Storage.AddAll(ctx, changes, heads, snapshot)
++		pinkhat2spaceclosetest.Point(ctx, "commit-before-storage", s.header.Id, "", s)
++		err := s.Storage.AddAll(ctx, changes, heads, snapshot)
++		pinkhat2spaceclosetest.Return(ctx, "commit-after-storage", s.header.Id, s, err)
++		return err
+ 	}()
+ 	if err != nil {
+ 		return err
+--- a/heart/core/block/editor/torahopsobject/target_lease.go
++++ b/heart/core/block/editor/torahopsobject/target_lease.go
+@@ -3,6 +3,7 @@
+ import (
+ 	"context"
+ 	"errors"
++	"github.com/anyproto/anytype-heart/util/pinkhat2spaceclosetest"
+ 	"sync"
+ 	"sync/atomic"
+ 
+@@ -86,10 +87,12 @@
+ 	}
+ 	lease := &targetLease{space: space, privateID: privateID, target: target}
+ 	lease.active.Store(true)
++	pinkhat2spaceclosetest.Point(ctx, "lease-settings-held", settings.Id(), "", settings)
+ 	var once sync.Once
+ 	lease.release = func() {
+ 		once.Do(func() {
+ 			lease.active.Store(false)
++			pinkhat2spaceclosetest.Point(ctx, "lease-before-release", settings.Id(), "", settings)
+ 			sb.Unlock()
+ 			settings.Unlock()
+ 		})
+--- a/heart/space/clientspace/space.go
++++ b/heart/space/clientspace/space.go
+@@ -4,6 +4,7 @@
+ 	"context"
+ 	"errors"
+ 	"fmt"
++	"github.com/anyproto/anytype-heart/util/pinkhat2spaceclosetest"
+ 	"sync/atomic"
+ 	"time"
+ 
+@@ -444,14 +445,18 @@
+ 	}
+ 
+ 	err := s.Cache.Close(ctx)
++	pinkhat2spaceclosetest.Return(ctx, "client-cache-close-return", s.Id(), s, err)
+ 	if err != nil {
+ 		return err
+ 	}
+ 	if s.spaceCore != nil {
+ 		// we need to remove it from space cache also
+-		return s.spaceCore.CloseSpace(ctx, s.Id())
+-	}
+-	return s.common.Close()
++		err = s.spaceCore.CloseSpace(ctx, s.Id())
++	} else {
++		err = s.common.Close()
++	}
++	pinkhat2spaceclosetest.Return(ctx, "client-space-close-return", s.Id(), s, err)
++	return err
+ }
+ 
+ func getBundledObjectsToInstall() []string {
+--- a/heart/space/spacecore/storage/anystorage/clientstorage.go
++++ b/heart/space/spacecore/storage/anystorage/clientstorage.go
+@@ -3,6 +3,7 @@
+ import (
+ 	"context"
+ 	"errors"
++	"github.com/anyproto/anytype-heart/util/pinkhat2spaceclosetest"
+ 
+ 	anystore "github.com/anyproto/any-store"
+ 	"github.com/anyproto/any-store/anyenc"
+@@ -61,7 +62,9 @@
+ 
+ func (r *clientStorage) Close(ctx context.Context) (err error) {
+ 	spaceStorageErr := r.SpaceStorage.Close(ctx)
++	pinkhat2spaceclosetest.Point(ctx, "native-storage-close-attempt", r.Id(), "", r)
+ 	anyStoreErr := r.SpaceStorage.AnyStore().Close()
++	pinkhat2spaceclosetest.Return(ctx, "native-storage-close-return", r.Id(), r, anyStoreErr)
+ 	return errors.Join(spaceStorageErr, anyStoreErr)
+ }
+ 
+--- a/any-sync/app/ocache/ocache.go
++++ b/any-sync/app/ocache/ocache.go
+@@ -4,6 +4,7 @@
+ 	"context"
+ 	"errors"
+ 	"fmt"
++	"github.com/anyproto/anytype-heart/util/pinkhat2spaceclosetest"
+ 	"reflect"
+ 	"sync"
+ 	"time"
+@@ -420,6 +421,8 @@
+ 	}
+ 	if curState == entryStateClosing {
+ 		ok = true
++		pinkhat2spaceclosetest.Point(ctx, "cache-entry-closing-target", e.id, "", e.value)
++		pinkhat2spaceclosetest.Point(ctx, "cache-entry-closing-private", e.id, "", e.value)
+ 		err = e.value.Close()
+ 		c.closeAndDelete(e)
+ 	}
+@@ -668,7 +671,12 @@
+ 		// is the loadErr of a load this Close killed itself, and ErrNotExists
+ 		// is a loadFunc verdict (a load that found nothing left nothing to
+ 		// close) — none are worth a warning
+-		if _, err := c.removeCtx(closingCtx, e); err != nil &&
++		_, err := c.removeCtx(closingCtx, e)
++		if errors.Is(err, context.DeadlineExceeded) {
++			pinkhat2spaceclosetest.Point(context.Background(), "cache-deadline-target", e.id, "DEADLINE_EXCEEDED", e.value)
++			pinkhat2spaceclosetest.Point(context.Background(), "cache-deadline-private", e.id, "DEADLINE_EXCEEDED", e.value)
++		}
++		if err != nil &&
+ 			!errors.Is(err, ErrNotExists) && !errors.Is(err, ErrClosed) && !errors.Is(err, context.Canceled) {
+ 			c.log.With("object_id", e.id).Warnf("cache close: object close error: %v", err)
+ 		}
+--- a/any-sync/commonspace/settings/settingsobject.go
++++ b/any-sync/commonspace/settings/settingsobject.go
+@@ -4,6 +4,7 @@
+ 	"context"
+ 	"errors"
+ 	"fmt"
++	"github.com/anyproto/anytype-heart/util/pinkhat2spaceclosetest"
+ 
+ 	"github.com/anyproto/any-sync/commonspace/deletionmanager"
+ 	"github.com/anyproto/any-sync/commonspace/headsync/headstorage"
+@@ -174,7 +175,10 @@
+ 
+ func (s *settingsObject) Close() error {
+ 	if s.SyncTree != nil {
+-		return s.SyncTree.Close()
++		pinkhat2spaceclosetest.Point(context.Background(), "settings-close-attempt", s.Id(), "", s)
++		err := s.SyncTree.Close()
++		pinkhat2spaceclosetest.Return(context.Background(), "settings-close-return", s.Id(), s, err)
++		return err
+ 	}
+ 	return nil
+ }

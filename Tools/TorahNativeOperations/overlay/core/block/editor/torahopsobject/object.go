@@ -67,16 +67,12 @@ func (o *object) Init(ctx *smartblock.InitContext) error {
 	}
 	// The factory holds this tree lock. Calling OpenNativeHost here would
 	// re-enter it. The CRDT projection DB is distinct from native store.db.
-	host, err := torahops.OpenNativeHostLocked(ctx.Ctx, o.projectionDB, o.space.Id(), tree, o.key, o.validateTarget)
+	host, err := torahops.OpenNativeHostLocked(ctx.Ctx, o.projectionDB, o.space.Id(), tree, o.key, o.leaseTarget)
 	if err != nil {
 		return err
 	}
 	o.host = host
 	return nil
-}
-
-func (o *object) validateTarget(ctx context.Context, target torahops.Target) error {
-	return ValidateNativeTarget(ctx, o.space, o.Id(), target)
 }
 
 // ValidateNativeTarget is shared by the account-scoped boundary before lazy
@@ -99,40 +95,37 @@ func ValidateNativeTarget(ctx context.Context, space smartblock.Space, privateID
 		return ErrTargetUnavailable
 	}
 	return loader.DoCtx(ctx, target.ObjectID, func(sb smartblock.SmartBlock) error {
-		if err := ctx.Err(); err != nil {
-			return err
-		}
-		if sb.SpaceID() != space.Id() || sb.IsDeleted() || sb.Details().GetBool(bundle.RelationKeyIsDeleted) ||
-			sb.Details().GetBool(bundle.RelationKeyIsUninstalled) ||
-			!sb.Type().IsOneOf(coresb.SmartBlockTypePage, coresb.SmartBlockTypeTemplate) {
-			return ErrTargetUnavailable
-		}
-		if target.BlockID != "" && sb.Pick(target.BlockID) == nil {
-			return ErrTargetUnavailable
-		}
-		return nil
+		return validateNativeSmartblock(ctx, space, target, sb)
 	})
+}
+
+func validateNativeSmartblock(ctx context.Context, space smartblock.Space, target torahops.Target, sb smartblock.SmartBlock) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	if sb == nil || sb.Id() != target.ObjectID || sb.SpaceID() != space.Id() || sb.IsDeleted() || sb.Details().GetBool(bundle.RelationKeyIsDeleted) ||
+		sb.Details().GetBool(bundle.RelationKeyIsUninstalled) ||
+		!sb.Type().IsOneOf(coresb.SmartBlockTypePage, coresb.SmartBlockTypeTemplate) {
+		return ErrTargetUnavailable
+	}
+	if target.BlockID != "" && sb.Pick(target.BlockID) == nil {
+		return ErrTargetUnavailable
+	}
+	return nil
 }
 
 func (o *object) AppendTorahOperation(ctx context.Context, op torahops.Operation) (torahops.NativeAppendResult, error) {
 	if o.host == nil {
 		return torahops.NativeAppendResult{}, torahopscontract.ErrPrivateOperation
 	}
-	// A previously durable receipt is preserved, but the host adapter refuses
-	// new/retried access through a target that is currently unavailable. The
-	// native callback checks again under the operation-tree lock before write.
-	if err := o.validateTarget(ctx, op.Target); err != nil {
-		return torahops.NativeAppendResult{}, err
-	}
+	// NativeHost acquires settings/target before its private tree and releases
+	// at the durable commit boundary. It also checks idempotent retry targets.
 	return o.host.Append(ctx, op)
 }
 
 func (o *object) ReadTorahTarget(ctx context.Context, target torahops.Target, limit uint) (torahops.NativeSnapshot, error) {
 	if o.host == nil {
 		return torahops.NativeSnapshot{}, torahopscontract.ErrPrivateOperation
-	}
-	if err := o.validateTarget(ctx, target); err != nil {
-		return torahops.NativeSnapshot{}, err
 	}
 	return o.host.ReadTarget(ctx, target, limit)
 }

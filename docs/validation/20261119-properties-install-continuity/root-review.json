@@ -1,0 +1,29 @@
+{
+  "schema": "root-properties-install-review-v1",
+  "status": "SOURCE_REVIEW_PASS_APPLE_PENDING",
+  "base_commit": "14f03b1955d2ecaf1a687e94abff07ce0e608790",
+  "source_candidate_report_sha256": "e22e279bb10356ebb670a89f60b513460da14ce16d293fdc34d65626c2a3f3ad",
+  "independent_review_sha256": "c844bafc62f6f411407703366b0e9504250962e2bd8c9e782bcc2bedee577278",
+  "reviewed": [
+    "Frozen pre-UI canonical state remains immutable; only the two directory identities are rebound after separately proved same-build install.",
+    "Native fixture and baseline byte hashes, original account/Space/subject/source/run/nonce, installed executable hashes, stopped process checks and complete native inventory remain mandatory.",
+    "Unreadable directory traversal raises; symlink/nonregular input fails; live mutation during each file hash fails.",
+    "One shared 660-second install phase clamps bounded operations and requires final remaining time; Properties-set minimum admission is2040seconds within unchanged105-minute worker.",
+    "Original full native state equality retains all object IDs, canonical bytes, timestamps, Type, Tag, public links/backlinks and seeded link blocks.",
+    "Further unproved XCTest container movement fails; no native result is synthesized and no missing phase counts as success."
+  ],
+  "independent_controls": {
+    "passed": 84,
+    "failed": 0,
+    "skipped": 0
+  },
+  "swift_grammar": {
+    "path": "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift",
+    "sha256": "2ddab02fb826776d382686c2276061d44be5fc26eca0707e2782b1745b10e222",
+    "returncode": 0,
+    "diagnostics": ""
+  },
+  "grammar_note": "Swift6.3.3 Windows frontend parse only, with PINKHA_NATIVE_DERIVED and PINKHA_NATIVE_T5_LOOKUP_V1. Initial stdin invocation unsupported by this frontend; bounded .swift tempfiles parsed successfully and were removed. Apple typecheck/runtime remain pending.",
+  "native_acceptance": "NOT_RUN_CURRENT_CANDIDATE",
+  "product_behavior_changed": false
+}

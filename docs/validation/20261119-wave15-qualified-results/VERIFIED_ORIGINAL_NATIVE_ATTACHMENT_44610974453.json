@@ -1,0 +1,1414 @@
+{
+  "checks": {
+    "all_15_actual_controller_controls_pass": true,
+    "all_37_applied_native_files_unchanged": true,
+    "all_91_source_inputs_unchanged": true,
+    "all_original_members_unchanged": true,
+    "all_ten_frozen_sources_match": true,
+    "applied_source_matches_inventory": true,
+    "candidate_patch_and_pinned_heart_match": true,
+    "exact_pinned_linux_musl_toolchain": true,
+    "exact_source_run_attempt": true,
+    "final_validation_and_scoped_status": true,
+    "frozen_candidate_inventory_matches": true,
+    "immutable_original_r14_patch_unchanged": true,
+    "native_packages_command_receipt_matches": true,
+    "native_packages_finite_actual_execution": true,
+    "native_packages_independent_original_log_replay": true,
+    "official_archive_digest_and_size": true,
+    "original_native_job_completed_successfully": true,
+    "original_source_counterexample_exact": true,
+    "original_source_negative_control_command_receipt_matches": true,
+    "original_source_negative_control_finite_actual_execution": true,
+    "original_source_negative_control_independent_original_log_replay": true,
+    "original_zip_crc": true
+  },
+  "counterexample_source": {
+    "candidate_sha256": "3247b789370d21d4ff9ca8eeb0df6580be6a7d18819820e31aac2858cff9fc59",
+    "patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+    "path": "core/block/editor/basic/details.go",
+    "sha256": "0ac058091f7ab161aec3d462d3cfa3e844af980cb0d5cecf2400b64360f7f033"
+  },
+  "generator_patch_sha256": "d055933d365d3f0453ad42ce4eb4463a25deceac3d0df11162d460896810a6b4",
+  "native_packages": {
+    "ended_unix": 1795120990.5947273,
+    "exit_code": 0,
+    "log_sha256": "c573ef05ed9a9e55971ae7e59920d43908020a5e7e534018826c74495f692da7",
+    "packages": {
+      "github.com/anyproto/anytype-heart/core/block/detailservice": [
+        "pass"
+      ],
+      "github.com/anyproto/anytype-heart/core/block/editor/basic": [
+        "pass"
+      ]
+    },
+    "pid": 88,
+    "record_counts_by_package": {
+      "github.com/anyproto/anytype-heart/core/block/detailservice": 98,
+      "github.com/anyproto/anytype-heart/core/block/editor/basic": 152
+    },
+    "started_unix": 1795120820.7950444,
+    "status": "PASS_ACTUAL_NATIVE_PACKAGES",
+    "test_and_subtest_records": 250,
+    "tests": [
+      {
+        "name": "TestAddValueToListDetail",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestAddValueToListDetail/int_+_int_list",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestAddValueToListDetail/int_list_+_int",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestAddValueToListDetail/int_list_+_int_list",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestAddValueToListDetail/int_list_+_int_list_(intersect)",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestAddValueToListDetail/string_+_string_list",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestAddValueToListDetail/string_list_+_empty",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestAddValueToListDetail/string_list_+_no_such_key",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestAddValueToListDetail/string_list_+_string",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestAddValueToListDetail/string_list_+_string_list",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestAddValueToListDetail/string_list_+_string_list_(intersect)",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestRemoveValueFromListDetail",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestRemoveValueFromListDetail/empty_-_string_list",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestRemoveValueFromListDetail/int_-_int_list",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestRemoveValueFromListDetail/int_list_-_int",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestRemoveValueFromListDetail/int_list_-_int_list",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestRemoveValueFromListDetail/int_list_-_int_list_(some_are_not_presented)",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestRemoveValueFromListDetail/string_-_string_list",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestRemoveValueFromListDetail/string_list_-_string",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestRemoveValueFromListDetail/string_list_-_string_list",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestRemoveValueFromListDetail/string_list_-_string_list_(some_are_not_presented)",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ListRelationsWithValue",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ListRelationsWithValue/bool",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ListRelationsWithValue/date_object_-_today",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ListRelationsWithValue/date_object_-_yesterday",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ListRelationsWithValue/number",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ListRelationsWithValue/string_list",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ModifyDetailsList",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ModifyDetailsList/all_updates_failed",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ModifyDetailsList/no_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ModifyDetailsList/set_false_value",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ModifyDetailsList/some_updates_failed",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypeListConflictingRelations",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypeListConflictingRelations/list_conflicting_relations",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/a_property_the_type_keeps_in_its_file_section_is_not_moved_out",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/already_listed_property_heals_the_missing_column_and_link",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/bundled_key_not_installed_in_the_space_is_installed",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/editing_of_bundled_types_is_prohibited",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/empty_key_without_a_name_is_bad_input_and_mints_nothing",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/enableInViews_false_adds_the_column_hidden",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/mint_a_new_property_when_key_is_empty",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/move_a_property_between_sections",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/reference_an_existing_key",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/the_file_section_cannot_be_asked_for",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/unknown_format_is_bad_input_and_mints_nothing",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/unknown_key_is_bad_input_and_mints_nothing",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyAdd/unknown_section_is_bad_input",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyRemove",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyRemove/a_key_the_type_does_not_list_still_converges_the_views",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyRemove/a_link_no_view_shows_is_dropped",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyRemove/a_property_in_the_file_section_is_refused",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyRemove/editing_of_bundled_types_is_prohibited",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyRemove/leaves_a_view_that_groups_by_the_property_and_reports_it",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_ObjectTypePropertyRemove/prunes_the_column_from_every_view_and_drops_the_link",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetDetailsList",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetDetailsList/all_updates_failed",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetDetailsList/no_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetDetailsList/some_updates_failed",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetIsArchived",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetIsArchived/can't_delete_others_files",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetIsArchived/cannot_move_to_bin_an_object_with_restriction",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetIsArchived/no_error_on_moving_to_bin",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetListIsArchived",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetListIsArchived/all_updates_failed",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetListIsArchived/no_error_on_moving_from_bin",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetListIsArchived/no_error_on_moving_to_bin",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetListIsArchived/some_updates_failed",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetListIsFavorite",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetListIsFavorite/all_updates_failed",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetSpaceInfo",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetSpaceInfo/allow_homepage_change_for_regular_space",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetSpaceInfo/allow_non-homepage_changes_for_1-on-1_space",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetSpaceInfo/error_on_details_setting",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetSpaceInfo/no_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_SetSpaceInfo/reject_homepage_change_for_1-on-1_space",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_objectTypeSetRelations",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_objectTypeSetRelations/set_recommended_featured_relations_to_type",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_objectTypeSetRelations/set_recommended_relations_to_type",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_objectTypeSetRelations/setting_recommended_featured_relations_to_bundled_type_is_prohibited",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestService_objectTypeSetRelations/setting_recommended_relations_to_bundled_type_is_prohibited",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetCreatedInContextIgnored_Reversible",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetCreatedInContextIgnored_SetsDetailWithNonUserChangeType",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetCreatedInContextInternal",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetCreatedInContextInternal/empty_ref_is_not_written",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetCreatedInContextInternal/existing_context_is_not_overwritten",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetCreatedInContextInternal/sets_context_and_ref_with_non-user_change_type",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetDetailsAllowsBaseRestrictedObject",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetDetailsRefusesRestrictedObject",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetDetailsRefusesRestrictedObject/ModifyDetails_is_refused_on_a_restricted_object",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetDetailsRefusesRestrictedObject/SetDetailsInternal_ignores_the_restriction",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetDetailsRefusesRestrictedObject/details_write_to_a_restricted_object_is_refused",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetDetailsRefusesRestrictedObject/details_write_to_an_unrestricted_object_goes_through",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetIsArchived_EmitsCleanupSuggestion",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetIsArchived_RefusedTargetIsNotRescuedByCascade",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetIsArchived_SkipCascade_NoGC",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestSetListIsArchived_EmitsPerContextCleanupSuggestion",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestTorahExplicitAttachmentsSurviveOrdinaryDetailsEdits",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/detailservice"
+      },
+      {
+        "name": "TestBasic_Create",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Create/generic",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Create/restricted",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Create/title",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_DescriptionHide",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_DescriptionHide/hide_description_removes_from_featured",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_DescriptionHide/hide_description_when_already_hidden_is_no-op",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_DescriptionShow",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_DescriptionShow/show_description_adds_to_featured",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_DescriptionShow/show_description_when_already_shown_is_no-op",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Duplicate",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Duplicate/dup_blocks_to_same_state",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Duplicate/dup_file_block_-_no_target_change_if_failed_to_create_file_object",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Duplicate/dup_file_block_-_no_target_change_if_failed_to_retrieve_file_id",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Duplicate/dup_file_block_-_other_space",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Duplicate/dup_file_block_-_same_space",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_LayoutChangeConvertsBlocks",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_LayoutChangeConvertsBlocks/setting_the_layout_detail_to_note_converts_a_titled_object_in_the_same_change",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_LayoutChangeConvertsBlocks/type_change_from_a_guessed_layout_keeps_the_first_paragraph",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_LayoutChangeConvertsBlocks/type_change_keeping_the_layout_still_repairs_an_object_in_note_shape",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_LayoutChangeConvertsBlocks/type_change_of_an_object_still_in_note_shape_promotes_its_first_line_to_the_name",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/do_not_move_block_-_when_a_required_relation_is_(description)",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/do_not_move_block_-_when_a_required_relation_is_(featuredRelations)",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/do_not_move_block_-_when_a_required_relation_is_(header)",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/do_not_move_block_-_when_a_required_relation_is_(title)",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/do_not_replace_empty_on_top_insert",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/generic",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/header",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/callout",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/checkbox",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/code",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/header1",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/header2",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/header3",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/header4",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/marked/bulleted",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/numbered",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/paragraph",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/quote",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/title",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/toggle",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/toggle_header_1",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/toggle_header_2",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_inside_text_block_that_cannot_have_children_is_prohibited/toggle_header_3",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/moving_blocks_to_its_children_is_prohibited",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/replace_background_and_color",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Move/replace_empty",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveIndent",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveIndent/basic_indent_with_children_-_children_become_siblings_under_new_parent",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveIndent/indent_last_block_with_children_-_children_follow_block_under_new_parent",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveIndent/indent_with_numbered_list_items",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveIndent/indent_without_children_-_no_special_behavior",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveIndent/move_to_Inner_of_non-sibling_-_children_stay_with_block",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveIndent/multiple_blocks_-_no_indent_children_handling",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveOutdent",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveOutdent/basic_outdent_with_siblings_-_siblings_become_children",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveOutdent/move_to_Inner_position_-_not_outdent",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveOutdent/multiple_blocks_moving_-_only_last_captures_siblings",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveOutdent/outdent_block_that_cannot_have_children_-_header_block",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveOutdent/outdent_last_block_-_no_siblings_to_capture",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveOutdent/outdent_middle_block_with_siblings_before_and_after",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveOutdent/outdent_with_Top_position",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveOutdent/outdent_with_numbered_list_items",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveOutdent/regular_move_within_same_parent_-_not_outdent",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_a_block_to_'column'_block_leads_to_moving_it_under_the_table",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_a_block_to_'column-row'_block_leads_to_moving_it_under_the_table",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_a_block_to_'columns'_block_leads_to_moving_it_under_the_table",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_a_block_to_'row'_block_leads_to_moving_it_under_the_table",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_a_block_to_'rows'_block_leads_to_moving_it_under_the_table",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_a_block_to_the_invalid_table_leads_to_moving_it_under_the_table",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_non-root_table_block_'column'_leads_to_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_non-root_table_block_'column-row'_leads_to_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_non-root_table_block_'columns'_leads_to_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_non-root_table_block_'row'_leads_to_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_non-root_table_block_'rows'_leads_to_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_rows_and_some_other_blocks_between_another_leads_to_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_rows_with_incorrect_position_leads_to_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_table_block_from_invalid_table_leads_to_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/moving_the_row_between_itself_leads_to_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/no_error_on_moving_one_row_between_another",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveTableBlocks/no_error_on_moving_root_table_block",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveToAnotherObject",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_MoveToAnotherObject/basic",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Replace",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetDivStyle",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetFields",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetObjectTypesInState",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetObjectTypesInState/change_to_type_with_other_layout_group_is_restricted._From_'basic'_to_'set'",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetObjectTypesInState/change_to_type_with_other_layout_group_is_restricted._From_'basic'_to_'todo'",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetObjectTypesInState/change_to_type_with_other_layout_group_is_restricted._From_'collection'_to_'todo'",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetObjectTypesInState/change_to_type_with_other_layout_group_is_restricted._From_'dashboard'_to_'collection'",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetObjectTypesInState/change_to_type_with_other_layout_group_is_restricted._From_'profile'_to_'note'",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetObjectTypesInState/change_to_type_with_other_layout_group_is_restricted._From_'tag'_to_'note'",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetObjectTypesInState/change_to_type_with_other_layout_group_is_restricted._From_'todo'_to_'relation'",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetObjectTypesInState/changing_to_template_type_is_restricted",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetObjectTypesInState/layout_settings_should_be_removed",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetObjectTypesInState/no_error",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetObjectTypesInState/type_change_is_restricted",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetRelationKey",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetRelationKey/correct",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetRelationKey/not_relation_block",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_SetRelationKey/relation_not_found",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Unlink",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Unlink/base_case",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Unlink/unlink_parent_and_its_child",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_Update",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_UpdateDetails",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_UpdateDetails/add_new_details",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_UpdateDetails/delete_details",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_UpdateDetails/modify_details",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_UpdateDetails/removal_of_internal_relation_should_fail",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBasic_UpdateDetails/setting_empty_string_is_noop",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBuildBlock",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBuildBlock/bookmark",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBuildBlock/dataview",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBuildBlock/file",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBuildBlock/link",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBuildBlock/nil",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestBuildBlock/other",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestCutBlocks",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/add_custom_link_block",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/add_custom_link_block_for_multiple_blocks",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/add_relation_name_-_when_creating_not_note",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/block_with_children,_from_template",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/block_with_multiple_children",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/block_with_one_child",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/block_with_one_child,_child_id_also_presents_in_request",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/do_not_add_relation_name_-_when_creating_note",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/if_target_layout_includes_title,_root_is_not_added",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/leaf_block",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/template_and_source_are_the_same_objects",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/two_blocks,_all_descendants_present_in_requests",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/two_blocks,_not_all_descendants_present_in_requests",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/two_blocks_with_children,_from_template",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestExtractObjects/undefined_block",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestHistory_Redo",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestHistory_Undo",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestHistory_Undo/basic",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestHistory_Undo/column_remove_undo",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestReassignSubtreeIds",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestReassignSubtreeIds/plain_blocks_receive_new_ids",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestReassignSubtreeIds/table_blocks_receive_new_ids",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestReassignSubtreeIds/table_blocks_receive_plain_ids_in_case_of_error_on_dup",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestTorahOrdinaryDetailsDoNotAttachProjectedProperties",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestTorahOrdinaryDetailsDoNotAttachProjectedProperties/SetDetails/explicit-source-already-attached",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestTorahOrdinaryDetailsDoNotAttachProjectedProperties/SetDetails/unattached",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestTorahOrdinaryDetailsDoNotAttachProjectedProperties/UpdateDetails/explicit-source-already-attached",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestTorahOrdinaryDetailsDoNotAttachProjectedProperties/UpdateDetails/unattached",
+        "outcome": "pass",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      }
+    ],
+    "top_level_tests": 48
+  },
+  "original_artifact": {
+    "archive_download_url": "https://api.github.com/repos/davidpovarsky/anytype-swift/actions/artifacts/14571684164/zip",
+    "created_at": "2026-11-19T20:43:16Z",
+    "digest": "sha256:c66ae9716884316f470d56a7c57cf5f82552b0111fb05dd20e2d650102213e5a",
+    "expired": false,
+    "id": 14571684164,
+    "name": "Pinkha-T5-Native-Attachment-44610974453-1",
+    "size_in_bytes": 53061,
+    "workflow_run": {
+      "head_branch": "codex/chatgpt-wave15-ui-resume-20261119",
+      "head_repository_id": 1289863025,
+      "head_sha": "be6cc5d8b5e65ee78f46e09b3105e3360eec894f",
+      "id": 44610974453,
+      "repository_id": 1289863025
+    }
+  },
+  "original_member_count": 28,
+  "original_member_sha256": {
+    "applied-native-source-after.json": "098862265ae08e2fa4973a45f1d2d670f3a7cbcaf9d49cc1391db1a62661276f",
+    "applied-native-source.json": "098862265ae08e2fa4973a45f1d2d670f3a7cbcaf9d49cc1391db1a62661276f",
+    "apply-check.command.json": "b600272d4cba12d35b54e6044105ff3a4922656f4c3e54943726e4129fff253e",
+    "apply-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "apply.command.json": "9483f3f2af0647e9de2c63f9f6f23637e9cf3d5bda6c89df8e7231af27a83459",
+    "apply.log": "ae34fd27a1b8316d68f65dad60f134b34cfd46a8d6db19119f2b29c3cd9edb32",
+    "attachment-receipt.json": "26b12c4571afec2724356558ce68a6d4b8c4cdc329029e1132ff8764b63f3e51",
+    "candidate-inventory.json": "cf14f85960210748e83f1b72ae6bebeaf589c358518c56ca8b72ba0bb19282c5",
+    "controller-controls.log": "86206423093462462608d733a8924ed7b19fd762837e4a25bd95030837e5d3a9",
+    "counterexample-source.json": "fd0d451ccd87957c5fa7c72d48c01e421989776ea59d5d6365915e8bdd2d0c26",
+    "generate.command.json": "7c1a59fed69c632527ee73d7d223d3f1f25ca0897b804e5a5d2157ae3c2d1329",
+    "generate.log": "4f24df4ab9b4771bff33c9a24716ab22820c78769323e0d7f936d10681e49ab6",
+    "native-packages.command.json": "62c8897405d8a8999ad1495ff5a81ac98afa8b3568d4e66758ab6ff051157c93",
+    "native-packages.log": "c573ef05ed9a9e55971ae7e59920d43908020a5e7e534018826c74495f692da7",
+    "original-source-negative.command.json": "6bd87fa279c29fa6dd425bb27a7eb283211c9aea544d56a1740670446d71ac29",
+    "original-source-negative.log": "c8d75ddd526aff7a9805351899419864cb10fa122ca73d0d1505588b9bec67b9",
+    "prepare-original-source.command.json": "a66f17ea85d81955fa7560bd4fb94756f24949aaae6bea638e176dab1f26e1a8",
+    "prepare-original-source.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source-inputs-after.json": "81852845d92d1481394a85388bab6e39c67fa8ce89c0b87c34e100fe3b0bcfe8",
+    "source-inputs-before.json": "81852845d92d1481394a85388bab6e39c67fa8ce89c0b87c34e100fe3b0bcfe8",
+    "tantivy.json": "48c57e9119ae13ab936207e24df8da60cecb984cdb0c11489dbb1cd270716531",
+    "toolchain/apk-install.log": "6f1a33c853227961ca863220231a901ed4faf00719738729eca6e729d3882bb9",
+    "toolchain/compiler-target.txt": "66c45e7df6309dd685144a621b781d80bce1064015211b26f85313cfa834b671",
+    "toolchain/compiler.log": "aa0aa3ad11bcb51d619d508b4b5952c30b34f571d7e7411b55d30096771ce93f",
+    "toolchain/go-version.txt": "ca25a53670d7230b3c37a21135d0b41d44ea1528bf3bb0a4793158538f03e3b7",
+    "toolchain/image.json": "85fefb25d3debf40d1d3d2288da28bce87f16b501221ae430c74324cc0b89737",
+    "toolchain/packages.txt": "a732d47198733e230c69d1ef4c8723c36c4e0ece336164ffcdba5f304ee9a560",
+    "toolchain/qsort-link.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "original_source_negative_control": {
+    "ended_unix": 1795120994.1319742,
+    "exit_code": 1,
+    "log_sha256": "c8d75ddd526aff7a9805351899419864cb10fa122ca73d0d1505588b9bec67b9",
+    "packages": {
+      "github.com/anyproto/anytype-heart/core/block/editor/basic": [
+        "fail"
+      ]
+    },
+    "pid": 12306,
+    "record_counts_by_package": {
+      "github.com/anyproto/anytype-heart/core/block/editor/basic": 5
+    },
+    "started_unix": 1795120990.5991688,
+    "status": "PASS_EXPECTED_ORIGINAL_SOURCE_FAILURE",
+    "test_and_subtest_records": 5,
+    "tests": [
+      {
+        "name": "TestTorahOrdinaryDetailsDoNotAttachProjectedProperties",
+        "outcome": "fail",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestTorahOrdinaryDetailsDoNotAttachProjectedProperties/SetDetails/explicit-source-already-attached",
+        "outcome": "fail",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestTorahOrdinaryDetailsDoNotAttachProjectedProperties/SetDetails/unattached",
+        "outcome": "fail",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestTorahOrdinaryDetailsDoNotAttachProjectedProperties/UpdateDetails/explicit-source-already-attached",
+        "outcome": "fail",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      },
+      {
+        "name": "TestTorahOrdinaryDetailsDoNotAttachProjectedProperties/UpdateDetails/unattached",
+        "outcome": "fail",
+        "package": "github.com/anyproto/anytype-heart/core/block/editor/basic"
+      }
+    ],
+    "top_level_tests": 1
+  },
+  "run_attempt": "1",
+  "run_id": "44610974453",
+  "scope": {
+    "actual_linux_native_packages": "PASS",
+    "apple_corrected_runtime_build": "NOT_RUN",
+    "explicit_attachment_preservation": "PASS",
+    "full_t5_acceptance": false,
+    "native_attachment_regression": "PASS",
+    "original_r14_r15_replaced": false,
+    "same_fixtures_on_original_source_fail_as_expected": true,
+    "t5_task_complete": false,
+    "unmodified_old_client_compatibility": "NOT_PROVEN"
+  },
+  "source_sha": "be6cc5d8b5e65ee78f46e09b3105e3360eec894f",
+  "status": "VERIFIED_ORIGINAL_NATIVE_ATTACHMENT_CORRECTION_PASS"
+}

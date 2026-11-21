@@ -1,0 +1,95 @@
+{
+  "schema": "editor-language-readback-independent-review-v1",
+  "verified_at": "2026-11-19T16:36:57.408210+00:00",
+  "reviewer": "ChatGPT /root/asana_audit",
+  "verdict": "SOURCE_REVIEW_PASS",
+  "scope": "Two Python controller files and original pre-build failure evidence; fixed-readback Apple execution not performed by this review.",
+  "reviewed_base": "53dbcbc214b0310f168f073c2efb2be96cb201fa",
+  "reviewed_hashes": {
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": "15570ceb47789316510de5bc5ae5c0ce111add236ff57d7d08dcca38e90eeca5",
+    "Tools/PinkhaSimulatorGate/test_run_wave15_acceptance.py": "7277f7feae1d27b5b973f4cf7071ca75688f81c6efade34d77ddaaea25573c05"
+  },
+  "unchanged_product_and_manifest_hashes": {
+    "Anytype/Sources/PresentationLayer/TextEditor/BlocksViews/Base/EditorViewListCell.swift": "6a9558b73c7d903d07087e80f13b5f01f7514f90f6b1b53474e5cb2cee440cde",
+    "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageController.swift": "413b26dcfdd2a74a52da7a0c64e283f002e06c329b87e18ff09c1df6dfb75b0b",
+    "AnyTypeTests/Pinkha/TextBlockFocusLifecycleTests.swift": "4aa45454da88efa8f1e55e061dae4afa57be2fc2b483a19a950926fa0d83f22e",
+    "Tools/Hanlin/wave15-core-tests.json": "377fc72574d6e6f38bcb137be238ede48eeb55fec4fc0b44684980711f713d7a"
+  },
+  "change": {
+    "command": "xcrun simctl spawn <owned UDID> defaults export NSGlobalDomain -",
+    "previous_timeout_seconds": 30,
+    "candidate_timeout_seconds": 120,
+    "single_call": true,
+    "retry_or_fallback_added": false,
+    "success_and_handled_failure_elapsed_recorded": true,
+    "native_ui_timeout_changed": false,
+    "private_globals_stdout_saved": false
+  },
+  "preserved_gates": [
+    "Exact fresh run-owned simulator identity.",
+    "Post-reboot actual plist readback; opposite device/app language and exact locale.",
+    "Nonempty plist <= 1 MiB and required AppleLanguages/AppleLocale types.",
+    "Failure and KeyboardInterrupt write FAIL and rethrow; no successful language or verification scope.",
+    "Source/ref/run identity; method/argument selection; Native/UI assertions and timeouts."
+  ],
+  "test_evidence": {
+    "python_controls": 18,
+    "reported_result": "PASS",
+    "executed_by": "root; reviewer inspected tests but did not rerun them",
+    "apple_fixed_readback": "NOT_RUN",
+    "native_preparation_original_run": "NOT_RUN",
+    "ui_original_run": "NOT_RUN"
+  },
+  "original_run": {
+    "id": 44562636925,
+    "url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44562636925",
+    "attempt": 1,
+    "source_sha": "53dbcbc214b0310f168f073c2efb2be96cb201fa",
+    "phase": "DEVICE_LANGUAGE_CONFIGURATION",
+    "error_type": "TimeoutExpired",
+    "error": "Command '['xcrun', 'simctl', 'spawn', '2AA581A0-F866-451B-9972-A28DD72BFFA7', 'defaults', 'export', 'NSGlobalDomain', '-']' timed out after 30 seconds",
+    "native_executions": 0,
+    "ui_executions": 0,
+    "build_for_testing": "NOT_RUN",
+    "release_accepted": false
+  },
+  "artifact": {
+    "id": 14549557752,
+    "bytes": 315791,
+    "sha256": "fde1a75cb07da6266a79b0c2ce60c82fa981f0b9c2a73b54f543998e1991f20d",
+    "nested_sha256": "42937c539f62fcb70364e08a6d73a4b3f3bc74557bbd3cec79d94b95af35dbae",
+    "members": 15,
+    "api_digest_and_zip_integrity": "PASS"
+  },
+  "original_receipts": {
+    "execution_sha256": "84cfa7efdb7d7ed0eceec57af4fe393caf1f4c9f7f968bebba08de7f21faf8e1",
+    "language_observation_sha256": "7a47e684bc15fe21c6e9da0c14625f1f2e5ffb923f761052e81da96efdbc9a8c",
+    "requested_device_language": "en",
+    "requested_locale": "en_US",
+    "app_language": "he"
+  },
+  "observed_latency": {
+    "apple_languages_command_logged_at": "2026-11-19T16:11:31.9802220Z",
+    "next_apple_locale_command_logged_at": "2026-11-19T16:12:44.9274470Z",
+    "serial_command_log_interval_seconds": 72.947225,
+    "interpretation": "Observed command latency exceeded the old30s readback limit. This motivates a bounded120s readback ceiling; it does not prove the replacement run will pass."
+  },
+  "member_hashes": {
+    "selection-plan.json": "6da99366f25693a4244b0e2f8cd76495ab89ad5bc58082ae98310331a34db209",
+    "command-02.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "hanlin-snapshot.json": "87b87db6bff6e577acbcfc7b76490e31a588b387f390291146f79d01f5f2e51c",
+    "command-03.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "command-01.log": "daeb16ef69731ea784475018c1d52bfca6cff2e47b07a23dc63af2562e97a7e9",
+    "command-00.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "command-04.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "command-05.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "execution.json": "84cfa7efdb7d7ed0eceec57af4fe393caf1f4c9f7f968bebba08de7f21faf8e1",
+    "device-language-observation.json": "7a47e684bc15fe21c6e9da0c14625f1f2e5ffb923f761052e81da96efdbc9a8c",
+    "command-06.log": "daeb16ef69731ea784475018c1d52bfca6cff2e47b07a23dc63af2562e97a7e9",
+    "heart/heart-installation.json": "1a4a7c43d1dcac8866eb0c894d9c33848959647d02c9a2673c426313c0fad086",
+    "heart/custom-heart-build.json": "c49e93715f0b87b30d8d3a6a87bd287205ecd7269907abccf6976ae6085465b3",
+    "preflight/simulator-inventory.json": "0257b00d8f84de7fa94da48d867508800e20aa6c05eadba952f025aafd6cca37",
+    "preflight/preflight.json": "085a2fa7413099bb5916e7e876e2e12121f168d40edc55e62a315394313cc0e3"
+  },
+  "remaining": "Fresh exact-source Hebrew iPad Native preparation and all3 UI tests; broader RTL/LTR/physical-device acceptance remain separate."
+}

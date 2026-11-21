@@ -1,0 +1,46 @@
+{
+  "status": "PASS_ROOT_INDEPENDENT_SOURCE_REVIEW_DIAGNOSTICS_ONLY_APPLE_NOT_RUN",
+  "base_head": "be6cc5d8b5e65ee78f46e09b3105e3360eec894f",
+  "source_paths": [
+    {
+      "path": "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py",
+      "before_sha256": "d053a2f8b0635460bb61121c36e5f8ac3a467c2803bc9b99cf9f985c4f606c8e",
+      "after_sha256": "4d3bdb12a37e845e01d653402888198cae5bfe291128eb07bfc651217df20941",
+      "bytes": 22822
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py",
+      "before_sha256": "4d4b5cb50efb35af95faaca801ff9bf0c052483a3600bb02b52315ff7e8cd2a6",
+      "after_sha256": "f9db5d2d40d327e7addd4f42d759be2d740544db5b4a76300baf2c5359991e66",
+      "bytes": 42675
+    }
+  ],
+  "original_30_observer_controls_AST_unchanged": true,
+  "new_observer_regressions": 12,
+  "independent_controls": {
+    "total": 62,
+    "failures": 0,
+    "skips": 0,
+    "observer": 42,
+    "native_evidence": 20,
+    "log_sha256": "5b2ef0abda08eb12a5dffeb37673d9aefe4c744f67a99cc5dd69754efb0e28ed"
+  },
+  "base_verification_sha256": "7d0a55ce29ae2c2c6d277ceed2344ed341f7322dc2e776dcf47ace057f0308de",
+  "original_sdk_report_sha256": "1511cb6bb15d422b080912a187b93b850f9b9a871fa9e843ca305c2bac010e5a",
+  "v1_reproduced_gaps": [
+    "final_export_timeout_in_memory_failure_not_saved",
+    "boundary_qualification_timeout_in_memory_failure_not_saved"
+  ],
+  "v2_review": [
+    "final snapshots persisted to disk and execution receipt after export and boundary checks",
+    "primary errors retained when diagnostic persistence fails",
+    "bounded fixed-stage aggregates and bounded failing argv, no subprocess stdout/stderr",
+    "original validated partial phase and returned source/mapping metadata retained with incomplete qualification labels",
+    "no change to actual runtime qualification conditions, native/UI methods or launch count",
+    "original command10s/observation420s/mapping45s/stopjoin15s retained"
+  ],
+  "source_diff_sha256": "f5a79c3c06310c104b58667bc8eb352a5fd5553c2664bc326306ac30c4dedc05",
+  "manifest_sha256": "d8844a95694b0ccbf7ebbce803387b565db7f890140d1e77f82e2ff5b813987f",
+  "native_runtime_acceptance": "NOT_RUN_FOR_THIS_CANDIDATE",
+  "full_sdk_acceptance": false
+}

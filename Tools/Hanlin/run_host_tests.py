@@ -24,7 +24,9 @@ import wave15_core_profile as core_profile
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
 ANY_ENGINE_BRANCH = "codex/any-engine-port-20261119"
-APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, ANY_ENGINE_BRANCH)
+UI_RESUME_BRANCH = "codex/chatgpt-wave15-ui-resume-20261119"
+SHARED_BRANCH = "codex/chatgpt-wave15-shared-20261121"
+APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, ANY_ENGINE_BRANCH, SHARED_BRANCH)
 CONFIGURATION = "Debug-Anytype"
 SUITES = {
     "HanlinHostAdapterTests": 35,
@@ -249,7 +251,7 @@ def validate_results(summary, tree, expected, udid, profile=HostTestProfile.SDK0
                 "Editor summary does not describe the exact methods or argument cases")
     if profile is HostTestProfile.CORE:
         result.update(core_profile.validate_arguments(tree, expected))
-        require(counts["totalTestCount"] in {53, 78},
+        require(counts["totalTestCount"] in {57, 87},
                 "Core summary differs from its exact method or literal-case scope")
     if profile is HostTestProfile.COMPONENTS:
         result["components"] = validate_component_arguments(tree, expected)

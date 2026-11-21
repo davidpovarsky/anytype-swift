@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 
 	"github.com/anyproto/any-sync/commonspace/object/accountdata"
@@ -82,12 +83,28 @@ func (s *privateFactorySource) ReadDoc(context.Context, source.ChangeReceiver, b
 
 type privateFactorySpace struct {
 	smartblock.Space
-	id      string
-	targets map[string]*privateTarget
+	id       string
+	targets  map[string]*privateTarget
+	settings objecttree.ObjectTree
 }
 
 func (s *privateFactorySpace) Id() string         { return s.id }
 func (*privateFactorySpace) CanManageSpace() bool { return true }
+func (s *privateFactorySpace) GetObject(ctx context.Context, id string) (smartblock.SmartBlock, error) {
+	if err := ctx.Err(); err != nil {
+		return nil, err
+	}
+	if target := s.targets[id]; target != nil {
+		return target, nil
+	}
+	return nil, torahopsobject.ErrTargetUnavailable
+}
+func (s *privateFactorySpace) PinkhaTorahSettingsTree(context.Context) (objecttree.ObjectTree, error) {
+	return s.settings, nil
+}
+func (s *privateFactorySpace) PinkhaTorahTargetIsCurrent(sb smartblock.SmartBlock) bool {
+	return s.targets[sb.Id()] == sb
+}
 func (s *privateFactorySpace) DoCtx(ctx context.Context, id string, fn func(smartblock.SmartBlock) error) error {
 	if err := ctx.Err(); err != nil {
 		return err
@@ -100,6 +117,8 @@ func (s *privateFactorySpace) Do(id string, fn func(smartblock.SmartBlock) error
 	if target == nil {
 		return torahopsobject.ErrTargetUnavailable
 	}
+	target.Lock()
+	defer target.Unlock()
 	return fn(target)
 }
 
@@ -108,7 +127,11 @@ type privateTarget struct {
 	doc     *state.State
 	spaceID string
 	deleted bool
+	mu      sync.Mutex
 }
+
+func (t *privateTarget) Lock()   { t.mu.Lock() }
+func (t *privateTarget) Unlock() { t.mu.Unlock() }
 
 func (t *privateTarget) Id() string                  { return t.doc.RootId() }
 func (t *privateTarget) SpaceID() string             { return t.spaceID }
@@ -120,7 +143,7 @@ func (t *privateTarget) Pick(id string) simple.Block { return t.doc.Pick(id) }
 func TestPinkhaPrivateFactoryNativeStorageAndTargetLifecycle(t *testing.T) {
 	ctx := context.Background()
 	native := pinkhat2test.New(t)
-	sp := &privateFactorySpace{id: native.Space.Id(), targets: map[string]*privateTarget{}}
+	sp := &privateFactorySpace{id: native.Space.Id(), targets: map[string]*privateTarget{}, settings: native.Settings}
 	doc := state.NewDoc("disposable-target", map[string]simple.Block{"block-a": simple.New(&model.Block{Id: "block-a", Content: &model.BlockContentOfText{Text: &model.BlockContentText{Text: "disposable block", Style: model.BlockContentText_Paragraph}}})}).(*state.State)
 	target := &privateTarget{doc: doc, spaceID: sp.id}
 	sp.targets[target.Id()] = target
@@ -182,6 +205,12 @@ func TestPinkhaPrivateFactoryNativeStorageAndTargetLifecycle(t *testing.T) {
 			}
 			_, err := host.AppendTorahOperation(ctx, invalid)
 			require.ErrorIs(t, err, torahopsobject.ErrTargetUnavailable)
+			// A retry's durable receipt remains in history, but production access
+			// through an unavailable target has always been refused.
+			retry := operation
+			retry.Target = invalid.Target
+			_, err = host.AppendTorahOperation(ctx, retry)
+			require.ErrorIs(t, err, torahopsobject.ErrTargetUnavailable)
 			_, err = host.ReadTorahTarget(ctx, invalid.Target, 100)
 			require.ErrorIs(t, err, torahopsobject.ErrTargetUnavailable)
 			require.Equal(t, count, host.Tree().Len(), "unavailable target never deletes or retargets the journal")
@@ -190,6 +219,10 @@ func TestPinkhaPrivateFactoryNativeStorageAndTargetLifecycle(t *testing.T) {
 	restored, err := host.ReadTorahTarget(ctx, operation.Target, 100)
 	require.NoError(t, err)
 	require.Equal(t, snapshot.Projection, restored.Projection)
+	retried, err := host.AppendTorahOperation(ctx, operation)
+	require.NoError(t, err)
+	require.Equal(t, torahops.AlreadyExistsSamePayload, retried.Disposition)
+	require.Equal(t, count, host.Tree().Len())
 	require.NoError(t, host.Close())
 	// Reopen the same native history through the factory into a fresh projection DB.
 	freshAccount := t.TempDir()

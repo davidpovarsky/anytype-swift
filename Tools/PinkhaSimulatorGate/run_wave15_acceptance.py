@@ -14,16 +14,20 @@ import plistlib
 import re
 import subprocess
 import sys
+import time
 
 import run_ui27 as shared
 import hanlin_acceptance_evidence as hanlin
+import hanlin_ui_runtime
 import hanlin_selection_evidence as hanlin_selection
 import wave15_diagnostics as diagnostics
 import type_preservation as preservation
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
-APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH)
+UI_RESUME_BRANCH = "codex/chatgpt-wave15-ui-resume-20261119"
+APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH)
+EDITOR_DEVICE_PREFERENCES_TIMEOUT_SECONDS = 120
 LANES = {
     "hanlin-selection": {
         "suite": "HanlinSelectionAcceptanceUITests",
@@ -347,8 +351,14 @@ def configure_editor_device_language(app, evidence, udid, app_language):
         ]:
             shared.command(command, app, evidence)
         command = ["xcrun", "simctl", "spawn", udid, "defaults", "export", "NSGlobalDomain", "-"]
-        observed = subprocess.run(command, capture_output=True, timeout=30)
-        observation.update(command=command, command_exit_code=observed.returncode,
+        observation.update(command=command, readback_timeout_seconds=EDITOR_DEVICE_PREFERENCES_TIMEOUT_SECONDS)
+        shared.write(path, observation)
+        started = time.monotonic()
+        try:
+            observed = subprocess.run(command, capture_output=True, timeout=EDITOR_DEVICE_PREFERENCES_TIMEOUT_SECONDS)
+        finally:
+            observation["readback_elapsed_seconds"] = round(time.monotonic() - started, 3)
+        observation.update(command_exit_code=observed.returncode,
                            error=observed.stderr.decode("utf-8", errors="replace"),
                            preferences_sha256=hashlib.sha256(observed.stdout).hexdigest())
         require(observed.returncode == 0, "Could not read actual simulator language after reboot")
@@ -494,8 +504,10 @@ def execute(args, receipt, *, build_context=None):
     if args.lane == "properties-set":
         frozen_preservation = preservation.freeze(container, evidence, preservation_binding, fixture, udid)
         receipt["preservation_baseline_sha256"] = frozen_preservation.sha256
+        receipt["preservation_fixture_sha256"] = frozen_preservation.fixture_sha256
         shared.write(evidence / "type-preservation-inputs.json", {
             "binding": preservation_binding, "baseline_sha256": frozen_preservation.sha256,
+            "fixture_sha256": frozen_preservation.fixture_sha256,
             "directories": frozen_preservation.directories, "container": str(frozen_preservation.container),
             "simulator_udid": udid, "source": "FROZEN_BEFORE_UI"})
 
@@ -512,11 +524,21 @@ def execute(args, receipt, *, build_context=None):
         receipt["ui_build_mode"] = "SAME_JOB_FROZEN_BUILD"
     receipt["phase"] = "UI_RUNTIME_PREPARATION"
     shared.write(evidence / "execution.json", receipt)
-    live = shared.live_runtime(udid, evidence, built, args.language, source_identity={
+    runtime_identity = {
         "source_sha": head, "run_id": receipt["run_id"], "run_attempt": receipt["run_attempt"],
         "kit_sha": shared.KIT, "native_marker": shared.MARKER,
-        "candidate_inputs_sha256": hashlib.sha256(json.dumps(identity["hashes"], sort_keys=True).encode()).hexdigest()})
-    receipt["live_runtime_before_ui"] = live
+        "candidate_inputs_sha256": hashlib.sha256(json.dumps(identity["hashes"], sort_keys=True).encode()).hexdigest()}
+    ui_runtime_observer = None
+    if args.lane == "hanlin-native":
+        # This UI method cold-launches its own app. Observe that actual process
+        # during its original native journey; a preflight probe cannot bind it.
+        ui_runtime_observer = hanlin_ui_runtime.NativeUIRuntimeObserver(
+            udid, evidence, built, fixture, raw_fixture, runtime_identity, shared)
+        receipt["live_runtime_before_ui"] = {"status": "ACTUAL_UI_PROCESS_OBSERVATION_REQUIRED",
+                                            "extra_app_launches": 0}
+    else:
+        live = shared.live_runtime(udid, evidence, built, args.language, source_identity=runtime_identity)
+        receipt["live_runtime_before_ui"] = live
     shared.install_ui_runner(udid, ui_derived / "Build/Products", app, evidence, configuration=configuration_name)
     configuration = shared.test_configuration(ui_derived / "Build/Products", "PinkhaStage1AcceptanceUITests")
     environment.update(PINKHA_UI27_APP_LANGUAGE=args.language, PINKHA_UI27_SELECTION_SCOPE="WAVE15_ACCEPTANCE")
@@ -525,22 +547,32 @@ def execute(args, receipt, *, build_context=None):
     receipt["phase"] = "UI"
     shared.write(evidence / "execution.json", receipt)
     try:
+        if ui_runtime_observer is not None:
+            ui_runtime_observer.start()
         result = run_selection(app, configuration, "PinkhaStage1AcceptanceUITests", udid,
             selection["methods"], environment, evidence / "ui", "wave15-" + args.lane, built)
         receipt["ui"] = result
     finally:
-        shared.export_ui_console(udid, evidence)
-        if hanlin_lane is not None:
-            result_path = container / "Library/Application Support" / hanlin_lane[1]
-            if result_path.is_file():
+        if ui_runtime_observer is not None:
+            ui_runtime_observer.finalize(receipt, evidence / hanlin_lane[2],
+                lambda: shared.export_ui_console(udid, evidence), sys.exception())
+        else:
+            shared.export_ui_console(udid, evidence)
+            if hanlin_lane is not None:
+                result_path = container / "Library/Application Support" / hanlin_lane[1]
                 # Preserve failure receipts too; copying a label does not qualify it.
-                (evidence / hanlin_lane[2]).write_bytes(result_path.read_bytes())
+                if result_path.is_file():
+                    (evidence / hanlin_lane[2]).write_bytes(result_path.read_bytes())
     if result["status"] != "PASS" or result["passed"] != selection["expected_ui_executions"]:
         raise SelectionFailure("Actual named UI selection did not pass")
     if hanlin_lane is not None:
-        native_result = json.loads((evidence / hanlin_lane[2]).read_text(encoding="utf-8"))
+        raw_result = (evidence / hanlin_lane[2]).read_bytes()
+        native_result = hanlin_ui_runtime.decode(raw_result) if ui_runtime_observer is not None else json.loads(raw_result)
         receipt[hanlin_lane[3]] = hanlin_lane[0].validate_result(native_result, fixture, head,
             receipt["run_id"], receipt["run_attempt"], datetime.now(timezone.utc).timestamp())
+        if ui_runtime_observer is not None:
+            receipt["actual_ui_runtime"] = ui_runtime_observer.qualify(native_result, raw_result,
+                evidence / "ui", "wave15-hanlin-native", selection["methods"])
     if args.lane == "inspector":
         receipt["ui_process_continuity"] = shared.verify_ui_process_continuity(
             evidence / "ui", "wave15-" + args.lane, live, selection["methods"])
@@ -559,7 +591,14 @@ def execute(args, receipt, *, build_context=None):
                 "Installed executable bytes changed before native postflight")
         if build_context is not None:
             build_context.verify_current()
-        post_environment = preservation.environment(frozen_preservation)
+        # Application_Home may move during installation (Apple TN2285). Prove
+        # stopped native bytes and original fixture continuity across one
+        # explicit same-build install before binding XCTest to its current root.
+        post_installation = preservation.install_for_postflight(
+            frozen_preservation, built, before["sha256"], evidence, shared.code_carriers)
+        receipt["preservation_installation_sha256"] = post_installation.sha256
+        shared.write(evidence / "execution.json", receipt)
+        post_environment = preservation.environment(frozen_preservation, post_installation)
         post_configuration = native_configuration if build_context is not None else preservation.selected_configuration(
             native_configuration, post_environment)
         postflight = run_selection(app, post_configuration, "AnytypeTests", udid,
@@ -568,7 +607,7 @@ def execute(args, receipt, *, build_context=None):
         shared.write(evidence / "execution.json", receipt)
         current_container = Path(subprocess.check_output(
             ["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "data"], text=True).strip())
-        preservation.verify_frozen(frozen_preservation, current_container)
+        preservation.verify_installed(frozen_preservation, post_installation, current_container)
         if postflight["status"] != "PASS":
             raise SelectionFailure("Actual existing-account preservation postflight did not pass")
         raw_receipt = preservation.read_bytes(current_container / "Library/Application Support" /
@@ -577,7 +616,7 @@ def execute(args, receipt, *, build_context=None):
             stream.write(raw_receipt)
         receipt["preservation_native_receipt_sha256"] = preservation.sha256(raw_receipt)
         receipt["type_preservation"] = preservation.validate_result(
-            frozen_preservation, preservation.decode(raw_receipt), postflight)
+            frozen_preservation, post_installation, preservation.decode(raw_receipt), postflight)
         if build_context is not None:
             build_context.verify_current()
     installed = Path(subprocess.check_output(["xcrun", "simctl", "get_app_container", udid, "io.anytype.app", "app"], text=True).strip())

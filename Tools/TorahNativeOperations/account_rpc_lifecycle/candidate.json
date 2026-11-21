@@ -1,0 +1,45 @@
+{
+  "added": {
+    "clientlibrary/service/pinkha_t2_native_rpc_lifecycle_test.go": {
+      "fixture": "native_rpc_lifecycle_test.go",
+      "sha256": "dfdea5f3768f3e37768d5a18484032a434ca1037f1471a26857f3859bca6c218"
+    },
+    "util/pinkhat2test/lifecycle.go": {
+      "fixture": "lifecycle_observer.go",
+      "sha256": "cb509cc92c1db03cf1c43ef58d1fa835d899c52e2a1645078792a62f4b3f7ee1"
+    }
+  },
+  "app_capability": "OFF",
+  "app_sha": "16b7493fa05bdc3abbae190c6e6c364c81874eea",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "instrumented": [
+    {
+      "after_sha256": "1ddec63a82bc8b8e396edd1d5d65e3fc2674e8edb6a97adfcfd3c1f7c3742939",
+      "before_sha256": "d30fb5f7749e9abf41ee6c5f145ce0fabb7cd31581c8f7e95f3208692656ba39",
+      "path": "core/pinkha_torah_operations.go"
+    },
+    {
+      "after_sha256": "1b385e5a80c605af3fcc099ddd0808e6bbe7b182bd1825af9429018c77052e59",
+      "before_sha256": "26ef149415810e5305f7ce42287fc69c06755c462ee631b0306c59b0302001be",
+      "path": "core/block/editor/torahops/native_commit_guard.go"
+    },
+    {
+      "after_sha256": "fd65a56a8bdd806fef00483d1a55954a69b0e32df02c9e8381c733c7476c1977",
+      "before_sha256": "2964d64dde48ea025f9e761197f33210d4541665ad97398ca82a2729faa5fd83",
+      "path": "core/application/pinkha_torah_lifecycle.go"
+    },
+    {
+      "after_sha256": "622f561f56d84138c9a82e67d80e7a9a50eb73e18ef4ec92eb123e0ddf9f5416",
+      "before_sha256": "4577909a70a480c2bde63985ee3f800e86d4dfa4121d004f15b676544778b3f7",
+      "path": "core/block/cache/cache.go"
+    },
+    {
+      "after_sha256": "0babbc45cd046e9d769d7db2b5afd718dbb1036b95391b6310a2075ba4ad19be",
+      "before_sha256": "5675f1211e5fcb3d95d54ea1d9894a5834df27b8ab3af75d0e7d075b55f1069a",
+      "path": "core/application/account_stop.go"
+    }
+  ],
+  "patch_sha256": "f915b00b421721d4fe5778ad5d13b6aa4d0d6f2b87b8329937ab23fdbc240b1c",
+  "scope": "TEST_COMPILE_OVERLAYS_ONLY_NOT_SHIPPED_PRODUCT",
+  "status": "LOCAL_CANDIDATE_NOT_COMPILED_NOT_DISPATCHED"
+}

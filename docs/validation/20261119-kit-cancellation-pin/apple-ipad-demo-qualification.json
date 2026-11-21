@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "status": "PASS_WITH_BOUNDED_SCOPE",
+  "source_sha": "158acb295f832e96907cdadc813a1c2a4bb6a03c",
+  "run_id": "44573446290",
+  "run_url": "https://github.com/davidpovarsky/TorahInspectorKit/actions/runs/44573446290",
+  "artifacts": [
+    {
+      "id": 14557461882,
+      "bytes": 535585,
+      "sha256": "d8858ce33432d09999639f09ee5a0ef77f118eb307e6b441b01b26a20bb728e3"
+    },
+    {
+      "id": 14556418532,
+      "bytes": 23527,
+      "sha256": "f48a1521fffcb801890e55fa237545e8f4026576ff41ed02eb779897e6575ed3"
+    },
+    {
+      "id": 14556108942,
+      "bytes": 272168,
+      "sha256": "7d6d6bbbd25816f2a13f12fd7caf0bb1daa25112eb6ff26c9e2917ab804a0f30"
+    }
+  ],
+  "package_tests": 51,
+  "native_ipad_ui_tests": 3,
+  "failed_tests": 0,
+  "skipped_tests": 0,
+  "native_ui_methods": [
+    "testHostSearchUsesTheExistingStackAndPreservesSearchState",
+    "testPeekSearchPromotesTheSameSheetBeforeShowingSearch",
+    "testThreeNativeDetentsInHebrewRTL"
+  ],
+  "visual_review": {
+    "reviewed_original_pngs": 3,
+    "peek": "Compact native sheet with visible Hebrew tabs; underlying document remains visible.",
+    "medium": "Native source sheet with Hebrew text and selected verse; document visible behind.",
+    "large": "Expanded native sheet with Hebrew source text and selected verse; expected dimmed background."
+  },
+  "limits": [
+    "Standalone TorahInspectorKit demonstration on iPadOS27, not integrated Anytype release acceptance.",
+    "No physical-device or real VoiceOver acceptance inferred."
+  ],
+  "swift-test.log": {
+    "sha256": "3fef671dfdbbc65e9b06f73aa449f15618d5348650735856b4949af5b99497df",
+    "test_summaries": [
+      "\u2714 Test run with 21 tests in 1 suite passed after 0.041 seconds.",
+      "\u2714 Test run with 30 tests in 4 suites passed after 0.045 seconds."
+    ]
+  },
+  "ui-test.log": {
+    "sha256": "6c20d6ad26698a2b47257784dbb075cf70d93ea4cd8db06087ab811b83690048",
+    "test_summaries": [
+      "Test Case '-[TorahInspectorSheetDemoUITests.TorahInspectorSheetDemoUITests testHostSearchUsesTheExistingStackAndPreservesSearchState]' passed (52.345 seconds).",
+      "Test Case '-[TorahInspectorSheetDemoUITests.TorahInspectorSheetDemoUITests testPeekSearchPromotesTheSameSheetBeforeShowingSearch]' passed (19.089 seconds).",
+      "Test Case '-[TorahInspectorSheetDemoUITests.TorahInspectorSheetDemoUITests testThreeNativeDetentsInHebrewRTL]' passed (46.742 seconds)."
+    ]
+  }
+}

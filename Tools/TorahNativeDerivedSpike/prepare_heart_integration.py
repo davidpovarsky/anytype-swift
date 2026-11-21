@@ -402,11 +402,23 @@ edit(statechange,'if !slices.Contains(bundle.LocalAndDerivedRelationKeys, domain
 edit(statechange,'if !slices.Contains(bundle.LocalAndDerivedRelationKeys, domain.RelationKey(key)) {','if torah.IsProperty(key) || !slices.Contains(bundle.LocalAndDerivedRelationKeys, domain.RelationKey(key)) {')
 details='core/block/editor/basic/details.go'
 edit(details,'"github.com/anyproto/anytype-heart/core/domain"','"github.com/anyproto/anytype-heart/core/domain"\n torah "github.com/anyproto/anytype-heart/core/pinkha/torah"')
+edit(details,'\tif err = bs.addRelationLinks(s, newDetails.Keys()...); err != nil {',''' // CombinedDetails includes local projection values. An ordinary edit must
+ // not turn those values into explicit document property attachments.
+ // Existing links stay in State; ObjectRelationAdd uses AttachTorahProperties.
+ ordinaryKeys := make([]domain.RelationKey, 0, newDetails.Len())
+ for key := range newDetails.IterateKeys() {
+  if !torah.IsProperty(string(key)) { ordinaryKeys = append(ordinaryKeys, key) }
+ }
+\tif err = bs.addRelationLinks(s, ordinaryKeys...); err != nil {''')
 edit(details,'\tfor key, value := range diff.Iterate() {',''' for _,key:=range removedKeys {
   if torah.IsLocalKey(string(key)){return fmt.Errorf("canonical derived property cannot be removed directly: %w",domain.ErrValidationFailed)}
  }
 \tfor key, value := range diff.Iterate() {
   if torah.IsLocalKey(string(key)){return fmt.Errorf("canonical derived property cannot be written directly: %w",domain.ErrValidationFailed)}''')
+add('core/block/editor/basic/pinkha_torah_attachment_test.go',
+    (root/'Tools/PinkhaNativeDerived/native_test_templates/pinkha_torah_basic_attachment_test.go').read_text(encoding='utf8'))
+add('core/block/detailservice/pinkha_torah_attachment_test.go',
+    (root/'Tools/PinkhaNativeDerived/native_test_templates/pinkha_torah_explicit_attachment_test.go').read_text(encoding='utf8'))
 
 # Native exports omit local caches; canonical longText and unknown fields remain
 # byte-for-byte intact. Each converter also has direct callers outside export.

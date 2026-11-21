@@ -26,7 +26,7 @@ class CoreScopeGateTests(unittest.TestCase):
                         for values in product(*method["argument_collections"])]
                 self.nodes.append(node)
         self.tree = dict(testNodes=self.nodes)
-        self.summary = dict(totalTestCount=53, passedTests=53, failedTests=0, skippedTests=0,
+        self.summary = dict(totalTestCount=57, passedTests=57, failedTests=0, skippedTests=0,
             devicesAndConfigurations=[dict(device=dict(deviceId="core-disposable", osVersion="27.0",
                 osBuildNumber="24A-control", architecture="arm64", modelName="iPad (A16)"))])
 
@@ -35,10 +35,10 @@ class CoreScopeGateTests(unittest.TestCase):
                                 "core-disposable", HostTestProfile.CORE)
 
     def test_actual_distinct_cases_required_independently_of_summary_unit(self):
-        for total in (53, 78):
+        for total in (57, 87):
             value = self.validate(summary=dict(self.summary, totalTestCount=total, passedTests=total))
-            self.assertEqual(value["actual_method_count"], 53)
-            self.assertEqual(value["declared_case_count"], 78)
+            self.assertEqual(value["actual_method_count"], 57)
+            self.assertEqual(value["declared_case_count"], 87)
         self.assertEqual(HostTestProfile.CORE.pass_status, "WAVE15_CORE_COMPONENT_PASS")
         self.assertEqual(HostTestProfile.CORE.result_prefix, "wave15-core")
 
@@ -76,6 +76,44 @@ class CoreScopeGateTests(unittest.TestCase):
         with self.assertRaises(core.CoreEvidenceReviewPending):
             self.validate(tree=tree)
 
+    def test_new_cell_regression_requires_initial_editing_and_denial_cases(self):
+        name = "insertedCellUsesCurrentEditingBeforeFocus"
+        spec = self.specs["TextBlockFocusLifecycleTests"]["methods"][name]
+        self.assertEqual(spec, dict(parameters=[dict(name="editing", type="Bool")],
+                                    argument_collections=[[False, True]], case_count=2))
+        identity = "TextBlockFocusLifecycleTests/" + name + "(editing:)"
+        for mutation in ("missing", "duplicate", "failed", "skipped"):
+            tree = deepcopy(self.tree)
+            node = next(item for item in tree["testNodes"] if item["nodeIdentifier"] == identity)
+            if mutation == "missing":
+                node["children"].pop()
+            elif mutation == "duplicate":
+                node["children"][1]["name"] = node["children"][0]["name"]
+            else:
+                node["children"][0]["result"] = "Failed" if mutation == "failed" else "Skipped"
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                self.validate(tree=tree)
+
+    def test_native_focus_observation_requires_all_three_actual_outcomes(self):
+        name = "nativeFocusObservationDistinguishesOutcomes"
+        specification = self.specs["TextBlockFocusLifecycleTests"]["methods"][name]
+        self.assertEqual(specification, dict(
+            parameters=[dict(name="outcome", type="String")],
+            argument_collections=[["ineligible", "refused", "accepted"]], case_count=3))
+        identity = "TextBlockFocusLifecycleTests/" + name + "(outcome:)"
+        for index in range(3):
+            for mutation in ("missing", "duplicate", "failed", "skipped"):
+                tree = deepcopy(self.tree)
+                node = next(item for item in tree["testNodes"] if item["nodeIdentifier"] == identity)
+                if mutation == "missing":
+                    node["children"].pop(index)
+                elif mutation == "duplicate":
+                    node["children"][index]["name"] = node["children"][(index + 1) % 3]["name"]
+                else:
+                    node["children"][index]["result"] = "Failed" if mutation == "failed" else "Skipped"
+                with self.subTest(case=index, mutation=mutation), self.assertRaises(ValueError):
+                    self.validate(tree=tree)
+
     def test_reused_cell_regression_requires_both_lock_cases(self):
         name = "reusedCellUsesCurrentLockBeforeFocus"
         spec = self.specs["TextBlockFocusLifecycleTests"]["methods"][name]
@@ -93,6 +131,25 @@ class CoreScopeGateTests(unittest.TestCase):
                 node["children"][0]["result"] = "Failed" if mutation == "failed" else "Skipped"
             with self.subTest(mutation=mutation), self.assertRaises(ValueError):
                 self.validate(tree=tree)
+
+    def test_empty_direction_regressions_require_both_actual_language_cases(self):
+        for name in ("nativeFocusRestoresEmptyDirection", "nativeBeginAndInsertionRestoreEmptyDirection"):
+            specification = self.specs["PinkhaTextDirectionUIKitAdapterTests"]["methods"][name]
+            self.assertEqual(specification, dict(parameters=[dict(name="isRTL", type="Bool")],
+                argument_collections=[[False, True]], case_count=2))
+            identity = "PinkhaTextDirectionUIKitAdapterTests/" + name + "(isRTL:)"
+            for index in range(2):
+                for mutation in ("missing", "duplicate", "failed", "skipped"):
+                    tree = deepcopy(self.tree)
+                    node = next(item for item in tree["testNodes"] if item["nodeIdentifier"] == identity)
+                    if mutation == "missing":
+                        node["children"].pop(index)
+                    elif mutation == "duplicate":
+                        node["children"][index]["name"] = node["children"][1 - index]["name"]
+                    else:
+                        node["children"][index]["result"] = "Failed" if mutation == "failed" else "Skipped"
+                    with self.subTest(method=name, case=index, mutation=mutation), self.assertRaises(ValueError):
+                        self.validate(tree=tree)
 
     def test_changed_source_or_literal_matrix_requires_explicit_inventory_review(self):
         source = '@Test("literal combinations", arguments: [false, true], ["first", "second"])\n' \

@@ -1,0 +1,31 @@
+{
+  "app_capability": "OFF",
+  "base": "36757c8389006c6d30bf8f73997fcd928330601d",
+  "full_t2_acceptance": "NOT_RUN",
+  "native_clients_rerun": "NOT_RUN",
+  "native_registry_recompile": "NOT_RUN",
+  "original_failure_limit": "Run44570372111 did not preserve raw live Docker inspection or daemon version. This review does not retrospectively identify its exact differing field. New diagnostics retain that boundary on rerun.",
+  "primary_source": "https://github.com/moby/moby/commit/ff0b471f2091c7b7be351cee44c2a013fb6914d7",
+  "primary_source_finding": "Moby documents nondeterministic inspect mount enumeration from its map and adds stable output sorting. This supports order-insensitive comparison of the mount collection only.",
+  "reviewer": "root",
+  "root_controller_execution": {
+    "failed": 0,
+    "passed": 25,
+    "platform": "Linux",
+    "skipped": 0,
+    "tests": 25
+  },
+  "scope": [
+    "Only Docker Mounts collection ordering is canonicalized by unique absolute Destination; every mount field/value and all other lists remain exact",
+    "Malformed/duplicate mount destinations fail before comparison; raw observed metadata is deep-copied and not rewritten",
+    "Original native signed-history, claim/provenance, retry, network partition, process and source checks are retained",
+    "Fixed-schema per-phase/check identity-match booleans add diagnostics without raw config/mount/environment data or new native calls",
+    "Actual absent-root regression uses real TreeStorage API and requires exact ErrUnknownTreeId plus nil before and after denied creation"
+  ],
+  "source_sha256": {
+    "Tools/TorahNativeOperations/native_client_concurrent_replace.py": "40d0ab5c9dc23d2cc43c6de4407383d6f984dc438cc963605d145f138a698e17",
+    "Tools/TorahNativeOperations/overlay/core/block/object/objectcache/pinkha_torah_lifecycle_test.go": "569ff67213c5e8ebe3c19031277bfbf0a8dbdf8f669a5ebe53de5f8935ed7dc6",
+    "Tools/TorahNativeOperations/test_native_client_concurrent_replace.py": "959d8d5eb6f24ef6cdfe86a6d72ae433c2fa7c4b2d447ab83b265bebce647d10"
+  },
+  "status": "INDEPENDENT_CONTROLLER_AND_ROOT_ABSENCE_SOURCE_REVIEW_PASS"
+}

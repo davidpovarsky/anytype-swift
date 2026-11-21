@@ -18,6 +18,32 @@ import t5_native_ui_r08 as r08
 PASS = "T5_NATIVE_UI_PASS_VISUAL_REVIEW_PENDING"
 PAIR_PASS = "APPLE_SAME_ACCOUNT_RUNTIME_PAIR_PASS"
 COMBINED_PASS = "APPLE_SAME_ACCOUNT_RUNTIME_PAIR_AND_UI_PASS_VISUAL_REVIEW_PENDING"
+UI_FIXTURE = "Library/Application Support/pinkha-t5-native-ui-fixture.json"
+UI_SECRETS = "Library/Application Support/pinkha-t5-native-ui-private/secrets.json"
+NATIVE_ROOT = "Library/Application Support/Anytype/middleware-go"
+
+
+def native_ui_identity(container):
+    """Bind the immutable fixture and credentials, independent of container UUID."""
+    owned = container.resolve(strict=True)
+    root = container / NATIVE_ROOT
+    evidence.require(root.is_dir() and not root.is_symlink()
+                     and root.resolve(strict=True).is_relative_to(owned), "Native UI account store is missing or foreign")
+    paths = {"fixture_sha256": container / UI_FIXTURE, "credentials_sha256": container / UI_SECRETS}
+    for path in paths.values():
+        evidence.require(path.is_file() and not path.is_symlink() and 0 < path.stat().st_size <= 64 * 1024
+                         and path.resolve(strict=True).is_relative_to(owned), "Bounded native UI identity is missing or foreign")
+    secrets = json.loads(paths["credentials_sha256"].read_text(encoding="utf8"))
+    evidence.require(all(evidence.nonempty(secrets.get(key)) for key in ["token", "mnemonic", "accountKey"]),
+                     "Complete original native UI credential inventory required")
+    return {key: evidence.digest(path) for key, path in paths.items()}, secrets
+
+
+def current_ui_container(pair, udid, expected):
+    container = pair.app_container(udid, "data")
+    actual, _ = native_ui_identity(container)
+    evidence.require(actual == expected, "UI replaced the original native fixture or credentials")
+    return container
 
 
 def require_ready(pair_result, build, source, flags, runtime):
@@ -156,8 +182,8 @@ def run_r08(*, private, app, build, container, ui_udid, configuration, environme
     retained = {key: retained[key] for key in ["objectID", "blockID", "actualText"]}
     used_processes = {fixture["preparationProcessID"]}
     used_processes.update(pid for values in observed["actual_processes"].values() for pid in values)
-    fixture_path = container / "Library/Application Support/pinkha-t5-native-ui-fixture.json"
-    fixture_hash = evidence.digest(fixture_path)
+    original_identity, _ = native_ui_identity(container)
+    fixture_hash = original_identity["fixture_sha256"]
     result = {"status": "RUNNING", "selections": {}, "voice_over_status": "NOT_RUN", "visual_review_status": "PENDING",
               "dynamic_type_scope": "fixed-large-only", "physical_device_accepted": False,
               "app_source_sha": fixture["appSourceSHA"], "run_id": fixture["runID"], "token": fixture["token"],
@@ -184,8 +210,7 @@ def run_r08(*, private, app, build, container, ui_udid, configuration, environme
                         configuration=configuration, udid=ui_udid, blueprint="PinkhaStage1AcceptanceUITests",
                         selections=[r08.METHOD], environment=selection_environment, directory=private / scope,
                         app_path=Path(build["app"]))
-            evidence.require(pair.app_container(ui_udid, "data") == container
-                             and evidence.digest(fixture_path) == fixture_hash, "R08 replaced the UI account/fixture")
+            container = current_ui_container(pair, ui_udid, original_identity)
             evidence.require(ui.code_carriers(pair.app_container(ui_udid, "app"))["sha256"] == build["code_sha256"],
                              "R08 installed different App executable bytes")
             report, _ = r08.read_receipt(private / scope / "attachments", appearance, fixture, retained, used_processes)
@@ -230,6 +255,7 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
     core_result_path = None
     core_result_hash = None
     cancellation = None
+    credential_inventory = None
 
     def record_failure(error, key):
         nonlocal cancellation
@@ -284,17 +310,24 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
         record["preparation"] = select_tests(pair=pair, ui=ui, method_results=method_results, app=app,
             configuration=Path(build["configuration"]), udid=ui_udid, blueprint="AnytypeTests",
             selections=[evidence.PREPARATION], environment=environment, directory=private / "preparation")
-        evidence.require(pair.app_container(ui_udid, "data") == container, "Native preparation replaced the fresh UI data container")
-        fixture_path = container / "Library/Application Support/pinkha-t5-native-ui-fixture.json"
+        # XCTest can reinstall the test host. Resolve its actual container after
+        # preparation; persistent identity is checked using native account data.
+        container = pair.app_container(ui_udid, "data")
+        original_identity, credential_inventory = native_ui_identity(container)
+        evidence.require(credential_inventory["token"] == token, "Native UI credentials belong to another run")
+        fixture_path = container / UI_FIXTURE
         evidence.require(fixture_path.is_file() and fixture_path.stat().st_size <= 64 * 1024, "Bounded native UI fixture is missing")
         raw_fixture = fixture_path.read_text(encoding="utf8")
         fixture = json.loads(raw_fixture)
         evidence.validate_fixture(fixture, source=source, run_id=run_id, token=token,
                                   runtime=pair.runtime_version("new"), pair_report=fresh)
+        evidence.require(fixture["accountRootPathSHA256"] == pair.sha_bytes(str((container / NATIVE_ROOT).resolve()).encode()),
+                         "Native preparation root differs from the actual current container")
         (private / "fixture.json").write_bytes(fixture_path.read_bytes())
         installed = pair.app_container(ui_udid, "app")
         evidence.require(ui.code_carriers(installed)["sha256"] == build["code_sha256"], "Preparation installed different executable bytes")
         record.update(native_fixture_sha256=evidence.digest(private / "fixture.json"),
+                      original_native_identity=original_identity,
                       account_root_path_sha256=fixture["accountRootPathSHA256"],
                       container_path_sha256=pair.sha_bytes(str(container).encode()), phase="UI_RUNNER_BUILD")
         pair.write(private / "execution.json", record)
@@ -327,7 +360,8 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
             selections=list(evidence.METHODS.values()), environment=environment, directory=private / "ui", app_path=Path(build["app"]))
         observed, additional_files = evidence.read_ui_receipts(private / "ui/attachments", fixture)
         pair.write(private / "actual-ui-observations.json", observed)
-        evidence.require(pair.app_container(ui_udid, "data") == container, "UI/relaunch changed the fresh account container")
+        container = current_ui_container(pair, ui_udid, original_identity)
+        record["post_ui_container_path_sha256"] = pair.sha_bytes(str(container).encode())
         carriers = ui.code_carriers(pair.app_container(ui_udid, "app"))
         evidence.require(carriers["sha256"] == build["code_sha256"], "Actual UI installation differs from the packaged r15 App")
         pair.write(private / "post-ui-code-carriers.json", carriers)
@@ -344,6 +378,8 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
         record["r08"] = run_r08(private=private, app=app, build=build, container=container, ui_udid=ui_udid,
             configuration=configuration, environment=environment, fixture=fixture, observed=observed,
             pair=pair, ui=ui, method_results=method_results, command=command)
+        container = current_ui_container(pair, ui_udid, original_identity)
+        record["final_container_path_sha256"] = pair.sha_bytes(str(container).encode())
         record.update(status=PASS, phase="COMPLETE", actual_observation_counts={"related_targets": 7, "note_lifecycle": 6},
                       actual_ui_lifetimes=5, installed_code_sha256=carriers["sha256"])
     except BaseException as error:
@@ -372,9 +408,12 @@ def run_after_pair(*, app, work, proof, pair_result, build, pair_container, sele
         pair.write(private / "execution.json", record)
         policy = {"status": "WITHHELD_NO_SECRET_INVENTORY", "raw_xcresult_uploaded": False, "account_data_uploaded": False}
         try:
-            secret_path = container / "Library/Application Support/pinkha-t5-native-ui-private/secrets.json" if container else None
-            if secret_path and secret_path.is_file():
-                secrets = json.loads(secret_path.read_text(encoding="utf8"))
+            # Keep the first validated credentials even if a failed install
+            # removes or relocates the current container before publication.
+            live_container = pair.app_container(ui_udid, "data", required=False) if ui_udid else None
+            secret_path = live_container / UI_SECRETS if live_container else None
+            if credential_inventory is not None or (secret_path and secret_path.is_file()):
+                secrets = credential_inventory if credential_inventory is not None else json.loads(secret_path.read_text(encoding="utf8"))
                 allowed = [private / "execution.json"]
                 for name in ["fixture.json", "actual-ui-observations.json", "post-ui-code-carriers.json", "core-result.json", "r08-result.json"]:
                     if (private / name).is_file():

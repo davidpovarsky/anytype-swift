@@ -1,0 +1,73 @@
+{
+  "added": {
+    "clientlibrary/service/pinkha_t2_native_rpc_space_close_test.go": {
+      "fixture": "native_rpc_space_close_test.go",
+      "sha256": "130fbe9cc2bd830fd50edb127c74473a37b7efa84882f45435328c289bcc4937"
+    },
+    "space/pinkha_t2_owned_space_close.go": {
+      "fixture": "owned_controller.go",
+      "sha256": "7485198c9c10817b9f74945dcd55253f7b58b0e0ef246c077fd5fa6a8e5b5068"
+    },
+    "util/pinkhat2spaceclosetest/observer.go": {
+      "fixture": "space_close_observer.go",
+      "sha256": "ad13b765e7a67fdc8eba8b485ffd0b72f8773c88c99028b8a4dd8f7fc9b11438"
+    }
+  },
+  "any_sync": {
+    "commit": "5d71ccad5db77997df2d2426011ebae4e7600d98",
+    "module": "github.com/anyproto/any-sync",
+    "version": "v0.13.8"
+  },
+  "app_capability": "OFF",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "instrumented": [
+    {
+      "after_sha256": "9ff4cae9eb5088a1777a169b51ebf03eb903292479b17e13a6e1bd6ef75da462",
+      "before_sha256": "ac934c890e8d32f45c8cee0e2bc9bfc3adae4c56074751a2e3e09d172de7ae44",
+      "module": "heart",
+      "path": "core/block/editor/torahops/native_host.go"
+    },
+    {
+      "after_sha256": "2d8d317eb2562676317844c1bf7aac85e9e5ad9331e055d8d74f23ab4d60c321",
+      "before_sha256": "26ef149415810e5305f7ce42287fc69c06755c462ee631b0306c59b0302001be",
+      "module": "heart",
+      "path": "core/block/editor/torahops/native_commit_guard.go"
+    },
+    {
+      "after_sha256": "4fd510c50ade01f3c919ab638c7eda00da3790394221c8dfc5ed9e4d94ba7e78",
+      "before_sha256": "b81e96a0a62fc630b5cf4045d170c4cbdc090ea73e920eef1c2f123084cae137",
+      "module": "heart",
+      "path": "core/block/editor/torahopsobject/target_lease.go"
+    },
+    {
+      "after_sha256": "51cbc75ea1b439eee7f4cd309d959886389e112b61852147c13d49cdd0281ba1",
+      "before_sha256": "9d013f65a61ddd3c436622b9809d37e67fdd8246130005d21461e51a89416f32",
+      "module": "heart",
+      "path": "space/clientspace/space.go"
+    },
+    {
+      "after_sha256": "1b3d705158c6ac1ad9a0e9ded138747e39dcb1af8c46c5c2dd3d3c47e9ab7fea",
+      "before_sha256": "a4e2a03dd15c89bf464e5364dfc004df0ef7c331cbaa571b43e2444724c588ec",
+      "module": "heart",
+      "path": "space/spacecore/storage/anystorage/clientstorage.go"
+    },
+    {
+      "after_sha256": "41caff55778b8ca549c4faa961f48c4cdbdfd60e3761dfb77b88bd4e63f52625",
+      "before_sha256": "fb5f296ebd9e6bb823850d3efb5db7c5a9de11ce698d0aeea3f8c05c737ca258",
+      "module": "any-sync",
+      "path": "app/ocache/ocache.go"
+    },
+    {
+      "after_sha256": "b6ca16f92d20cdfc4e5104c126349a9159979b1359b7e09edac6750fb93a16fa",
+      "before_sha256": "0f74c835ee5daab90a3ca3a5d5d61f781dc3fb60cc97e88dfbeda1013e0b6f19",
+      "module": "any-sync",
+      "path": "commonspace/settings/settingsobject.go"
+    }
+  ],
+  "original_cache_close_timeout_seconds": 10,
+  "patch_sha256": "49c3071f0d5b2e363ed09f9ac42da018d826749b3803b65215ded7c0e06eaae3",
+  "product_base_sha": "16b7493fa05bdc3abbae190c6e6c364c81874eea",
+  "schema": "pinkha-t2-space-close-composition-v1",
+  "scope": "TEST_COMPILE_OVERLAYS_ONLY_NOT_SHIPPED_PRODUCT",
+  "status": "LOCAL_SOURCE_CANDIDATE_NATIVE_NOT_RUN"
+}

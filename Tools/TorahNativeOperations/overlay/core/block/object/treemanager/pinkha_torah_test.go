@@ -69,7 +69,7 @@ func TestPinkhaPrivateTreeManagerRejectsGenericImportBeforeStorage(t *testing.T)
 	db, err := anystore.Open(ctx, filepath.Join(f.Dir, "projection.db"), &anystore.Config{ReadConnections: 1})
 	require.NoError(t, err)
 	t.Cleanup(func() { require.NoError(t, db.Close()) })
-	host, err := torahops.OpenNativeHost(ctx, db, spaceID, tree, f.Keys.SignKey, func(context.Context, torahops.Target) error { return nil })
+	host, err := torahops.OpenNativeHost(ctx, db, spaceID, tree, f.Keys.SignKey, func(context.Context, torahops.Target) (func(), error) { return func() {}, nil })
 	require.NoError(t, err)
 	op := torahops.Operation{Version: torahops.Version, SpaceID: spaceID, OperationID: "000000000000000000000000000000c1",
 		AuthorID: f.Keys.SignKey.GetPublic().Account(), Kind: torahops.Add, Target: torahops.Target{ObjectID: "fixture-target"},

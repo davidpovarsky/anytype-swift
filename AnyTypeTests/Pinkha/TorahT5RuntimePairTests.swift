@@ -53,6 +53,7 @@ private struct T5ApplePairLedger: Codable {
     let token: String
     let appSourceSHA: String
     let rootPathSHA256: String
+    let rootRelativePath: String
     let accountID: String
     let spaceID: String
     let manifestID: String
@@ -135,6 +136,8 @@ private struct T5ApplePairReceipt: Codable {
     let coverage: String
     let limitations: [String]
     let rootPathSHA256: String
+    let rootRelativePath: String
+    let currentRootPathSHA256: String
     let accountID: String
     let spaceID: String
     let manifestID: String
@@ -177,6 +180,10 @@ struct TorahT5RuntimePairTests {
         let resultURL = directory.appendingPathComponent("result-" + phase.rawValue + ".json")
         try require(!FileManager.default.fileExists(atPath: resultURL.path), "phase-result-already-exists")
         let root = Container.shared.localRepoService().middlewareRepoURL.resolvingSymlinksInPath().path
+        let rootRelativePath = "Library/Application Support/Anytype/middleware-go"
+        let currentHome = URL(fileURLWithPath: NSHomeDirectory(), isDirectory: true).resolvingSymlinksInPath()
+        try require(root == currentHome.appendingPathComponent(rootRelativePath).resolvingSymlinksInPath().path,
+                    "native-root-is-not-original-relative-location")
         let rootSHA = hash(Data(root.utf8))
         let version = try await ClientCommands.appGetVersion().invoke().version
         try require(version == phase.expectedVersion, "actual-runtime-version-differs")
@@ -225,7 +232,8 @@ struct TorahT5RuntimePairTests {
                 previousLedgerSHA = hash(previous)
                 ledger = try JSONDecoder().decode(T5ApplePairLedger.self, from: previous)
                 try require(
-                    ledger.token == token && ledger.appSourceSHA == sourceSHA && ledger.rootPathSHA256 == rootSHA,
+                    ledger.token == token && ledger.appSourceSHA == sourceSHA
+                        && ledger.rootRelativePath == rootRelativePath,
                     "existing-ledger-identity-differs"
                 )
                 try require(ledger.completedPhases == phase.predecessors, "invalid-native-process-sequence")
@@ -355,11 +363,12 @@ struct TorahT5RuntimePairTests {
             ledger.completedPhases.append(phase.rawValue)
             try writePrivate(ledger, to: ledgerURL)
             let receipt = T5ApplePairReceipt(
-                protocolVersion: "pinkha-t5-apple-runtime-pair-v1", status: "PASS", phase: phase.rawValue,
+                protocolVersion: "pinkha-t5-apple-runtime-pair-v2", status: "PASS", phase: phase.rawValue,
                 token: token, nonce: nonce, processID: ProcessInfo.processInfo.processIdentifier,
                 appSourceSHA: sourceSHA, runtimeVersion: version, actualCapability: expanded ? "verified" : "unavailable",
                 coverage: snapshot.coverage.rawValue, limitations: snapshot.limitations.map { String(describing: $0) }.sorted(),
-                rootPathSHA256: rootSHA, accountID: ledger.accountID, spaceID: ledger.spaceID,
+                rootPathSHA256: ledger.rootPathSHA256, rootRelativePath: rootRelativePath,
+                currentRootPathSHA256: rootSHA, accountID: ledger.accountID, spaceID: ledger.spaceID,
                 manifestID: ledger.manifestID, manifestSHA256: ledger.manifestSHA256, canonicalKey: ledger.canonicalKey,
                 previousLedgerSHA256: previousLedgerSHA, nextLedgerSHA256: hash(try Data(contentsOf: ledgerURL)),
                 migrationPerformed: migration, walletCreated: phase == .oldCreate, walletRecovered: phase != .oldCreate,
@@ -649,7 +658,9 @@ struct TorahT5RuntimePairTests {
         let manifestDetails = try await details(manifestID, spaceID: spaceID)
         let raw = try #require(manifestDetails.values[BundledPropertyKey.description.rawValue]?.stringValue)
         return .init(
-            token: token, appSourceSHA: sourceSHA, rootPathSHA256: rootSHA, accountID: accountID, spaceID: spaceID,
+            token: token, appSourceSHA: sourceSHA, rootPathSHA256: rootSHA,
+            rootRelativePath: "Library/Application Support/Anytype/middleware-go",
+            accountID: accountID, spaceID: spaceID,
             manifestID: manifestID, manifestSHA256: hash(Data(raw.utf8)),
             canonicalKey: manifest.documentAssociationsPropertyKey, documents: documents, completedPhases: []
         )

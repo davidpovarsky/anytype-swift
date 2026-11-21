@@ -24,6 +24,7 @@ def ledger_for(phase):
         documents.append(item)
     index = [name for name, _ in controller.PHASES].index(phase)
     return dict(token=TOKEN, appSourceSHA=SOURCE, rootPathSHA256="d" * 64,
+                rootRelativePath=controller.ROOT_RELATIVE_PATH,
                 accountID="account", spaceID="space", manifestID="manifest", manifestSHA256="e" * 64,
                 canonicalKey="canonical-key", documents=documents,
                 completedPhases=[name for name, _ in controller.PHASES[:index + 1]])
@@ -44,6 +45,7 @@ def report_for(phase, role):
         readbacks.append(observed)
     report = dict(protocolVersion=controller.PROTOCOL, status="PASS", phase=phase, token=TOKEN,
                   nonce=str(index + 1) * 32, processID=100 + index, appSourceSHA=SOURCE,
+                  rootRelativePath=controller.ROOT_RELATIVE_PATH, currentRootPathSHA256="d" * 64,
                   runtimeVersion=controller.runtime_version(role), actualCapability="verified" if expanded else "unavailable",
                   coverage="indexedTargetsOnly" if expanded else "indexedDocumentsOnly",
                   limitations=["indexFreshnessUnverified"] if expanded else [

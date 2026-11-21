@@ -1,0 +1,90 @@
+{
+  "schema": "properties-controlled-install-independent-review-v2",
+  "status": "SOURCE_REVIEW_PASS",
+  "reviewer": "/root/t5_finish",
+  "reviewed_at_utc": "2026-11-19T18:05:20.692464+00:00",
+  "integration_base": "14f03b1955d2ecaf1a687e94abff07ce0e608790",
+  "candidate_report_sha256": "e22e279bb10356ebb670a89f60b513460da14ce16d293fdc34d65626c2a3f3ad",
+  "candidate_diff_sha256": "45aeb3db1e202fc551fb048a5baaace12bc93185363d11bd61923edf79870410",
+  "reviewed_files": {
+    "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift": {
+      "after_sha256": "2ddab02fb826776d382686c2276061d44be5fc26eca0707e2782b1745b10e222",
+      "before_sha256": "8007682e484604e999be7200ef39bb87837a84974c6a6151a3760e4088d9c8b1",
+      "bytes": 81361
+    },
+    "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py": {
+      "after_sha256": "90a3e3eeb11a8a634e773f99c62d811494bd1c3616eb25698884e6f9a1a2a7ca",
+      "before_sha256": "15570ceb47789316510de5bc5ae5c0ce111add236ff57d7d08dcca38e90eeca5",
+      "bytes": 40553
+    },
+    "Tools/PinkhaSimulatorGate/test_type_preservation.py": {
+      "after_sha256": "c8649ebf54a58bbdddeba80471a278b2b676fecf0fedcfdf6530a9f144daa600",
+      "before_sha256": "c37f77fdfc48c445d39d552e60eab5664deaa9bb5e64566d835a3e9ac305ea91",
+      "bytes": 36071
+    },
+    "Tools/PinkhaSimulatorGate/test_wave15_batch.py": {
+      "after_sha256": "40817475ae9dfdacaeebfca535b1e29110281f29d04e2b3afdf6a89b1d55f57e",
+      "before_sha256": "4c95a77626c32d4606f28ce524131c35b2347a34333c3b5a5245598286153f3f",
+      "bytes": 69300
+    },
+    "Tools/PinkhaSimulatorGate/type_preservation.py": {
+      "after_sha256": "7b51ce452f743cfbe45a9ccc562ca871c5e7a072dade292cdf501494c9cead9e",
+      "before_sha256": "7e17adb1ddacff1afb160da839aeed19300914910e7c1dab4dce0895339694f2",
+      "bytes": 39223
+    },
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": {
+      "after_sha256": "20daa269697d859b92d089f4ccadc5165d13a5f77ad951c94b9cbb8480bde586",
+      "before_sha256": "5752d5873632e68127a6ecac0747ca1011c93efcb9df4ee807bd7a946d4c3bc7",
+      "bytes": 60770
+    }
+  },
+  "previous_review_sha256": "834c0e093235136c28751d7704fb520807eeaa5c3a7a555a6b0a11a82ad87bca",
+  "resolved_findings": [
+    {
+      "id": "PRESERVE-01",
+      "status": "RESOLVED",
+      "verification": "Mandatory os.walk onerror rejects unreadable directories. Repeated regression uses a real hidden child, deterministic scandir PermissionError and changed real bytes: each attempt fails, no install occurs, no qualifying installation receipt is written."
+    },
+    {
+      "id": "PRESERVE-02",
+      "status": "RESOLVED",
+      "verification": "One660-second transition deadline is shared by six bounded queries, four process observations, two inventories and one install; timeouts clamp to remaining time. Properties-set admission now reserves2040seconds. Near-deadline1500seconds regression stops before this simulator is created, preserves first three successful lanes and marks remaining lanes NOT_RUN_BUDGET."
+    }
+  ],
+  "verification": {
+    "six_frozen_source_hashes_verified": true,
+    "six_base_blob_hashes_verified_against_14f03b": true,
+    "24_complete_controller_input_hashes_verified": true,
+    "controls": {
+      "total": 84,
+      "passed": 84,
+      "failed": 0,
+      "skipped": 0,
+      "type_preservation": 28,
+      "acceptance_controller": 18,
+      "batch_controller": 38,
+      "command": "python -B -m unittest test_type_preservation test_run_wave15_acceptance test_wave15_batch -v",
+      "platform": "Linux Python3.12",
+      "log_sha256": "12ecab8d16a09fff80acb42af0b9399a0ec72998d4561b8796318a8812d75cb6"
+    }
+  },
+  "scope_review": [
+    "Original source/run/attempt/nonce, account/Space/subject/preparationPID and exact frozen baseline/fixture bindings remain mandatory.",
+    "Exactly one controlled same-build installation preserves exact native relative directories/file bytes and frozen private identity files; one additional unproved relocation or directory recreation fails.",
+    "Python and Foundation preserve exact creation identities within each observer. Cross-library checks match path/device/inode; no numeric float tolerance is introduced.",
+    "Native canonical bytes, original association IDs/timestamps, complete Tag/link/backlink sets, seeded blocks and final Type comparisons remain unchanged. Only the proved current directory pair is substituted into the original expected state.",
+    "Schema2 native receipt must bind exact installation bytes. Saved batch qualification requires the frozen baseline, fixture, installation and native receipt original hashes plus matching fresh run/nonce.",
+    "Global worker and cleanup limits, existing UI assertions/timeouts, selected method counts, product code and Kit pins remain unchanged."
+  ],
+  "remaining_findings": [],
+  "limits": {
+    "actual_apple_installation": "NOT_RUN",
+    "apple_typecheck": "NOT_RUN",
+    "actual_macos_process_output_format": "NOT_OBSERVED_BY_THIS_REVIEW",
+    "native_or_ui_acceptance": "NOT_RUN",
+    "full_bundle_equivalence": false,
+    "deadline_scope": "Cooperative qualification deadline for filesystem/hash work; each subprocess is timed. Existing whole-worker process cancellation remains the outer hard bound.",
+    "code_edits_by_reviewer": false,
+    "ci_dispatch_by_reviewer": false
+  }
+}

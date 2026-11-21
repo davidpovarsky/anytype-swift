@@ -1,0 +1,11 @@
+{
+  "status": "REPRODUCED_ORIGINAL_CI_FAILURE_WITH_REAL_SYMLINKED_TEMP_PARENT",
+  "source": "40789dc97176bfa2a7166d2345e6b0dd3de9cada",
+  "controls_source_sha256": "719d1b0f4f4c813676c312059bdd32061be47d9617a7bbad65d54680cfdce7f0",
+  "tests_run": 1,
+  "failures": 0,
+  "errors": 1,
+  "traceback": "Traceback (most recent call last):\n  File \"/workspace/scratch/5e78163ba431/sdk06-temp-root-fix/Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py\", line 385, in test_atomic_file_replacement_during_read_is_not_a_stable_snapshot\n    gate.stable_bytes(path)\n  File \"/workspace/scratch/5e78163ba431/sdk06-temp-root-fix/Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py\", line 50, in stable_bytes\n    require(path.resolve(strict=True) == path.absolute(), \"Native runtime evidence contains a symlink\")\n  File \"/workspace/scratch/5e78163ba431/sdk06-temp-root-fix/Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py\", line 38, in require\n    raise RuntimeError(reason)\nRuntimeError: Native runtime evidence contains a symlink\n",
+  "real_parent_alias": true,
+  "fixture_root_canonical": false
+}

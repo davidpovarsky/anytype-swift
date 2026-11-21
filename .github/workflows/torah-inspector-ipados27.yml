@@ -25,11 +25,16 @@ on:
           - t2-native-clients-observed-remove
           - t2-native-clients-concurrent-replace
           - t2-account-lifecycle
+          - t2-rpc-lifecycle-races
+          - t2-rpc-space-close
           - simulator-ui27
           - heart-runtime
           - t5-r15-runtime
           - t5-apple-pairs
           - t5-apple-ui
+          - t5-native-pagination
+          - t5-native-account-retry
+          - t5-native-attachment
           - sdk06-tests
           - hanlin-journal-probe
           - editor-host-tests
@@ -197,6 +202,17 @@ jobs:
     if: ${{ inputs.route == 't5-r15-runtime' }}
     uses: ./.github/workflows/pinkha-t5-r15-runtime.yml
 
+  t5-native-pagination:
+    if: ${{ inputs.route == 't5-native-pagination' || inputs.route == 't5-native-account-retry' }}
+    uses: ./.github/workflows/pinkha-t5-native-pagination.yml
+    with:
+      heart_r15_run_id: ${{ inputs.t5_r15_run_id }}
+      include_account_retry: ${{ inputs.route == 't5-native-account-retry' }}
+
+  t5-native-attachment:
+    if: ${{ inputs.route == 't5-native-attachment' }}
+    uses: ./.github/workflows/pinkha-t5-native-attachment.yml
+
   t2-account-lifecycle:
     if: ${{ inputs.route == 't2-account-lifecycle' }}
     uses: ./.github/workflows/pinkha-t2-account-lifecycle.yml
@@ -305,3 +321,15 @@ jobs:
             build/ipa-repair/sha256.txt
           if-no-files-found: warn
           retention-days: 14
+
+  t2-rpc-lifecycle-races:
+    if: ${{ inputs.route == 't2-rpc-lifecycle-races' }}
+    uses: ./.github/workflows/pinkha-t2-rpc-lifecycle-races.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  t2-rpc-space-close:
+    if: ${{ inputs.route == 't2-rpc-space-close' }}
+    uses: ./.github/workflows/pinkha-t2-rpc-space-close.yml
+    with:
+      source_sha: ${{ github.sha }}

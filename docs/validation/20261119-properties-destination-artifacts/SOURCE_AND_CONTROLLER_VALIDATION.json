@@ -1,0 +1,169 @@
+{
+  "actual_runner_assumptions_fail_closed": [
+    "xcrun --find xcodebuild resolves to a full Xcode.app/Contents/Developer/usr/bin/xcodebuild; -version returns Xcode numeric version and alphanumeric Build version.",
+    "Both selected Developer/usr/share/man manuals exist as exactly one plain or gzip file, are bounded, remain inside selected toolchain, and explicitly document this mode and its replacement fields.",
+    "Original native xctestrun target has BlueprintName AnytypeTests, IsAppHostedTestBundle true, no UI-test flag, io.anytype.app TestHostBundleIdentifier, exact __TESTHOST__/PlugIns/AnytypeTests.xctest path, original __TESTROOT__ host path and TestingEnvironmentVariables dictionary.",
+    "Built and installed Anytype.app each contain real PlugIns/AnytypeTests.xctest with nonempty matching native bundle identifier, AnytypeTests executable and identical executable code-carrier record.",
+    "Actual selected Xcode/manual and installed Info.plist/schema observations have not executed on Apple; any unsupported formatting/schema stops before native postflight."
+  ],
+  "controller_controls": {
+    "command": "python -B -m unittest -v test_destination_artifacts test_type_preservation test_run_wave15_acceptance test_wave15_batch",
+    "cwd": "candidate/Tools/PinkhaSimulatorGate",
+    "failed": 0,
+    "log": "root-independent-controls-v2.log",
+    "log_sha256": "a29e452271b989cdc55b96c69ab3936e4c29fc5fac5cb51b95cbfeea59285b42",
+    "module_counts": {
+      "test_destination_artifacts": 14,
+      "test_run_wave15_acceptance": 18,
+      "test_type_preservation": 28,
+      "test_wave15_batch": 38
+    },
+    "negative_scope": [
+      "missing/wrong host and test bundle identifiers or executable identity",
+      "missing/foreign test bundle paths and unsafe native target flags",
+      "missing/ambiguous/unsupported/opposite/escaped manuals",
+      "bounded raw and gzip/manual macro handling",
+      "foreign source/run/build proof and tampered manual bytes",
+      "each capability command timeout/cancellation once-only, no install/private output",
+      "existing 660-second installation deadline and bounded command failures",
+      "standalone and batch identical postflight mode, original/unrelated targets retained",
+      "other native preparation, native SDK and UI SDK selections retain install behavior"
+    ],
+    "passed": 98,
+    "skipped": 0
+  },
+  "diff_sha256": "ef78a543b98685846e8811afbfc526c6d9efa1ac52fe86c2e4fb5af121ffbda8",
+  "dispatch": "NOT_DISPATCHED",
+  "documentation_basis_sha256": "7401d3dfec87bd396e95083b7e7143c25d06c59a59713e31dca519f1b2beb1eb",
+  "freeze_sha256": "00dfbcfbf6b06671fc3adf6f4bae18fa98286f9669a7121686c5ead0af049b6c",
+  "independent_review": "ROOT_PASS_SOURCE_AND_98_PORTABLE_CONTROLS_ONLY",
+  "local_base_and_drift": {
+    "all_27_validation_base_inputs_match_exact_git": true,
+    "all_three_modified_existing_files_equal_current_root_ui_before_bytes": true,
+    "exact_git_base": "c787745ad99348aa198b91be0c672f5a9ba2fbda",
+    "remote_source_or_refs_mutated": false,
+    "root_ui_mutated": false,
+    "support_fixture_scope": "All 27 validation inputs frozen; source-specific controls use these bytes only. Root must retain current unrelated SDK changes and transfer only the five listed source/test files.",
+    "three_previously_stale_validation_dependencies_refreshed": [
+      "Tools/PinkhaSimulatorGate/run_ui27.py",
+      "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+      "Tools/PinkhaSimulatorGate/test_run_wave15_acceptance.py"
+    ],
+    "verification_sha256": "4379ca38598c1bdd9f949368c4490a145a4b8c6e3733fa7e211df5d98096a630"
+  },
+  "native_Apple_runtime": "NOT_RUN",
+  "original_failure": {
+    "native_postflight_failed": 1,
+    "native_preparation_passed": 1,
+    "qualification_sha256": "a69585009828da5026dc62a0522d10b676f2ba4b4e3107a259bbc68633eff5bb",
+    "remaining_gap": "Second XCTest install caused additional unproved data-container relocation; no native semantic preservation acceptance.",
+    "run_id": 44584920580,
+    "source_sha": "5fa5fb572f90a9e7b6c97b99591d164ce280f0b8",
+    "ui_passed": 2
+  },
+  "publication": "NOT_PUBLISHED",
+  "retained_initial_failures": {
+    "controller-baseline-replay.log": "83 existing relevant controls PASS after fixture repairs.",
+    "controller-destination-initial.log": "13 new controls PASS before adding mdoc macro control; final14 PASS.",
+    "controller-initial.log": "Local test helper variable alias collision plus missing Package.resolved dependency; fixed before final 97-control replay. No native or Apple tests executed."
+  },
+  "revision": 2,
+  "schema": 1,
+  "scope": "Properties-only native postflight destination-artifact selection; no native Swift/product/SDK observer source edits",
+  "selection_propagation": {
+    "batch": "wave15_batch.explicit_selection -> configure_target -> run_ui27.run_selection -> run_ui27.inject -> original run_xctest",
+    "inject_match_after_removing_TestBundlePath": "Original BlueprintName=AnytypeTests remains; original injector matches it.",
+    "mandatory_final_checks": "Native original directory path/device/inode/creation plus canonical/Tag/link/Type/account comparisons and controller observed container re-resolution are unchanged.",
+    "native_postflight_app_path": "None in both unmodified call paths; no UITargetAppPath is reintroduced.",
+    "shared_boundary": "type_preservation.configure_target",
+    "standalone": "selected_configuration -> run_ui27.run_selection -> run_ui27.inject -> original run_xctest"
+  },
+  "source_files": [
+    {
+      "base_sha256": null,
+      "bytes": 13539,
+      "candidate_sha256": "4c71c7a1f358202c52c854261b292755fdc01bb202fe7be6563cfb2dcd80db13",
+      "path": "Tools/PinkhaSimulatorGate/destination_artifacts.py"
+    },
+    {
+      "base_sha256": null,
+      "bytes": 19514,
+      "candidate_sha256": "4f15eb6de2e3dd5ef0e5bc35bd180b7cda3094a22c7860aa5566a6e49a9f6123",
+      "path": "Tools/PinkhaSimulatorGate/test_destination_artifacts.py"
+    },
+    {
+      "base_sha256": "c8649ebf54a58bbdddeba80471a278b2b676fecf0fedcfdf6530a9f144daa600",
+      "bytes": 41235,
+      "candidate_sha256": "74ea007278ee9d9dc4aae003a25cc44452b6b3346861d1c2f52ac8b919431cfd",
+      "path": "Tools/PinkhaSimulatorGate/test_type_preservation.py"
+    },
+    {
+      "base_sha256": "40817475ae9dfdacaeebfca535b1e29110281f29d04e2b3afdf6a89b1d55f57e",
+      "bytes": 69594,
+      "candidate_sha256": "8d0c6684794840adb7a023ad0bc7b284fb9400f5f65df85577773296085a738e",
+      "path": "Tools/PinkhaSimulatorGate/test_wave15_batch.py"
+    },
+    {
+      "base_sha256": "7b51ce452f743cfbe45a9ccc562ca871c5e7a072dade292cdf501494c9cead9e",
+      "bytes": 41377,
+      "candidate_sha256": "b99271d8be3bf6820a634e9f85007b58042d99f90deafec1cf87bdb10f682e9a",
+      "path": "Tools/PinkhaSimulatorGate/type_preservation.py"
+    }
+  ],
+  "status": "LOCAL_SOURCE_AND_CONTROLLER_PASS_APPLE_EXECUTION_NOT_RUN",
+  "strict_unchanged": {
+    "changed_methods": [
+      "install_for_postflight",
+      "environment",
+      "configure_target",
+      "validate_saved"
+    ],
+    "installation_phase_seconds": 660,
+    "lane_controllers": [
+      "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+      "Tools/PinkhaSimulatorGate/wave15_batch.py"
+    ],
+    "native_swift": {
+      "modified": false,
+      "path": "AnyTypeTests/Pinkha/TorahNativeDerivedProductIntegrationTests.swift",
+      "sha256": "2ddab02fb826776d382686c2276061d44be5fc26eca0707e2782b1745b10e222"
+    },
+    "native_test_timeout_changed": false,
+    "sdk_observers_and_launch_helpers": [
+      "Tools/PinkhaSimulatorGate/run_ui27.py",
+      "Tools/PinkhaSimulatorGate/hanlin_ui_runtime.py",
+      "Tools/PinkhaSimulatorGate/hanlin_acceptance_evidence.py",
+      "Tools/PinkhaSimulatorGate/hanlin_selection_evidence.py"
+    ],
+    "type_preservation_methods": [
+      "require",
+      "sha256",
+      "nonempty",
+      "read_bytes",
+      "decode",
+      "binding",
+      "binding_environment",
+      "directory_identity",
+      "validate_directory",
+      "validate_baseline",
+      "FrozenBaseline",
+      "freeze",
+      "verify_original_bytes",
+      "verify_frozen",
+      "owned_container",
+      "remaining",
+      "app_container",
+      "assert_app_stopped",
+      "native_inventory",
+      "inventory_summary",
+      "Installation",
+      "validate_installation",
+      "verify_installed",
+      "selected_configuration",
+      "require_ui_passed",
+      "validate_native_receipt",
+      "validate_result"
+    ],
+    "worker_and_cleanup_timeouts_changed": false
+  }
+}

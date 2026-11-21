@@ -239,6 +239,8 @@ class PairFixture:
             assert value["role"] == role and value["nonce"] == self.owner and value["protocol"] == tail.PROTOCOL
         self.events.append((phase, role))
         report = copy.deepcopy(self.reports[phase][role])
+        if self.fault == "mount_order" and phase != "ready":
+            self.infos[resource["id"]]["Mounts"].reverse()
         if self.fault == "container_rebound" and phase == "diverged":
             self.infos[resource["id"]]["Mounts"][0]["Source"] = "/foreign-store"
         if self.fault == "process_replaced" and phase == "merged":
@@ -258,6 +260,91 @@ class PairFixture:
 
 
 class ConcurrentReplaceControls(unittest.TestCase):
+    def test_mount_identity_is_order_independent_but_preserves_every_field(self):
+        original = info_fixture("creator")
+        original["Mounts"][0]["FutureMountField"] = {"value": "must remain exact", "ordered": ["first", "second"]}
+        original["HostConfig"]["FutureHostField"] = ["first", "second"]
+        before = copy.deepcopy(original)
+        wanted = tail.process_identity(original)
+        for mounts in itertools.permutations(original["Mounts"]):
+            value = copy.deepcopy(original)
+            value["Mounts"] = list(mounts)
+            self.assertEqual(tail.process_identity(value), wanted)
+        self.assertEqual(original, before, "identity comparison cannot rewrite observed Docker metadata")
+        mutations = {
+            "source": lambda v: v["Mounts"][0].__setitem__("Source", "/foreign-store"),
+            "destination": lambda v: v["Mounts"][0].__setitem__("Destination", "/foreign-target"),
+            "rw": lambda v: v["Mounts"][0].__setitem__("RW", False),
+            "type": lambda v: v["Mounts"][0].__setitem__("Type", "volume"),
+            "unknown-field": lambda v: v["Mounts"][0]["FutureMountField"].__setitem__("value", "changed"),
+            "nested-order": lambda v: v["Mounts"][0]["FutureMountField"]["ordered"].reverse(),
+            "removed-field": lambda v: v["Mounts"][0].pop("FutureMountField"),
+            "added-field": lambda v: v["Mounts"][0].__setitem__("AdditionalField", True),
+            "added-mount": lambda v: v["Mounts"].append({"Destination": "/other", "Type": "tmpfs"}),
+            "removed-mount": lambda v: v["Mounts"].pop(),
+            "args-order": lambda v: v["Args"].reverse(),
+            "env-order": lambda v: v["Config"]["Env"].reverse(),
+            "host-config": lambda v: v["HostConfig"].__setitem__("Privileged", True),
+            "host-order": lambda v: v["HostConfig"]["FutureHostField"].reverse(),
+        }
+        for name, mutate in mutations.items():
+            value = copy.deepcopy(original)
+            mutate(value)
+            with self.subTest(name=name):
+                self.assertNotEqual(tail.process_identity(value), wanted)
+
+    def test_mount_identity_rejects_duplicate_or_malformed_destinations(self):
+        original = info_fixture("creator")
+        cases = [None, {}, [None], [{}], [{"Destination": ""}], [{"Destination": "relative"}],
+                 [{"Destination": "/private\x00other"}], [{"Destination": 1}],
+                 [copy.deepcopy(original["Mounts"][0]), copy.deepcopy(original["Mounts"][0])]]
+        for mounts in cases:
+            value = copy.deepcopy(original)
+            value["Mounts"] = mounts
+            with self.subTest(mounts=mounts), self.assertRaises(ValueError):
+                tail.process_identity(value)
+
+    def test_orchestration_accepts_only_mount_order_change(self):
+        with tempfile.TemporaryDirectory() as temp:
+            pair = PairFixture(Path(temp))
+            pair.fault = "mount_order"
+            result = pair.run()
+            self.assertEqual(result["status"], tail.PASS)
+            self.assertEqual(result["actual_counts"]["successor_retry_entries"], 4)
+            self.assertEqual(result["actual_counts"]["predecessor_retry_entries"], 2)
+
+    def test_identity_failure_diagnostic_exports_only_fixed_fields_and_booleans(self):
+        original = info_fixture("creator")
+        changed = copy.deepcopy(original)
+        private = "private-value\n::error::must-not-be-exported"
+        changed["Mounts"][0]["Source"] = private
+        receipt = {}
+        diagnostic = tail.phase_diagnostic(receipt, "creator", "partitioned")
+        with self.assertRaises(ValueError):
+            tail.require_same_identity(changed, tail.process_identity(original), diagnostic)
+        self.assertEqual(diagnostic["check"], "PROCESS_METADATA")
+        self.assertEqual(diagnostic["identity_fields_match"], {key: key != "Mounts" for key in tail.IDENTITY_FIELDS})
+        self.assertNotIn(private, json.dumps(receipt))
+        self.assertEqual(diagnostic["scope"], "DIAGNOSTIC_ONLY_NO_ACCEPTANCE")
+        self.assertEqual(diagnostic["status"], "IN_PROGRESS")
+        for role, phase in [(private, "ready"), ("creator", private)]:
+            with self.subTest(role=role, phase=phase), self.assertRaises(ValueError):
+                tail.phase_diagnostic(receipt, role, phase)
+
+    def test_orchestration_preserves_failed_identity_and_process_check(self):
+        for fault, check, field in [("container_rebound", "PROCESS_METADATA", "Mounts"),
+                                    ("process_replaced", "PROCESS_CONTINUITY", "started_at")]:
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as temp:
+                pair = PairFixture(Path(temp))
+                pair.fault = fault
+                with self.assertRaises(ValueError):
+                    pair.run()
+                diagnostic = pair.receipt["concurrent_replace_diagnostic"]
+                self.assertEqual(diagnostic["check"], check)
+                fields = "identity_fields_match" if fault == "container_rebound" else "process_fields_match"
+                self.assertIs(diagnostic[fields][field], False)
+                self.assertNotIn("/foreign-store", json.dumps(diagnostic))
+
     def test_selection_is_explicit_default_off_exclusive_and_offline_only(self):
         for scenario in ("bootstrap", "offline"):
             tail.validate_selection(scenario, False, False, False)

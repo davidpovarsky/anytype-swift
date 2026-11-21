@@ -1,0 +1,127 @@
+{
+  "candidate_sha256": "b021c51a0541a4603036a579bb339318d15e6fbb0f100cd913db480aa3259799",
+  "diff_verification": {
+    "added_test_files": 2,
+    "all_original_hashes_match": true,
+    "all_overlay_hashes_match": true,
+    "independently_reconstructed_patch_matches_exact_bytes": true,
+    "instrumented_native_files": 5,
+    "production_source_mutations": 0
+  },
+  "files_sha256": {
+    "Tools/TorahNativeOperations/account_rpc_lifecycle/README.md": "3c129c993d080d4e075c147223baf91e4887f508b0a11d3c76dfde8be4b47929",
+    "Tools/TorahNativeOperations/account_rpc_lifecycle/candidate.json": "b021c51a0541a4603036a579bb339318d15e6fbb0f100cd913db480aa3259799",
+    "Tools/TorahNativeOperations/account_rpc_lifecycle/lifecycle_observer.go": "cb509cc92c1db03cf1c43ef58d1fa835d899c52e2a1645078792a62f4b3f7ee1",
+    "Tools/TorahNativeOperations/account_rpc_lifecycle/materialize_test_overlay.py": "eb244068a1be6d7d45df51ebbdc0526d46987399a2d5b8acaf5b856e3fbc147b",
+    "Tools/TorahNativeOperations/account_rpc_lifecycle/native_rpc_lifecycle_test.go": "dfdea5f3768f3e37768d5a18484032a434ca1037f1471a26857f3859bca6c218",
+    "Tools/TorahNativeOperations/account_rpc_lifecycle/overlay/core/application/account_stop.go": "0babbc45cd046e9d769d7db2b5afd718dbb1036b95391b6310a2075ba4ad19be",
+    "Tools/TorahNativeOperations/account_rpc_lifecycle/overlay/core/application/pinkha_torah_lifecycle.go": "fd65a56a8bdd806fef00483d1a55954a69b0e32df02c9e8381c733c7476c1977",
+    "Tools/TorahNativeOperations/account_rpc_lifecycle/overlay/core/block/cache/cache.go": "622f561f56d84138c9a82e67d80e7a9a50eb73e18ef4ec92eb123e0ddf9f5416",
+    "Tools/TorahNativeOperations/account_rpc_lifecycle/overlay/core/block/editor/torahops/native_commit_guard.go": "1b385e5a80c605af3fcc099ddd0808e6bbe7b182bd1825af9429018c77052e59",
+    "Tools/TorahNativeOperations/account_rpc_lifecycle/overlay/core/pinkha_torah_operations.go": "1ddec63a82bc8b8e396edd1d5d65e3fc2674e8edb6a97adfcfd3c1f7c3742939",
+    "Tools/TorahNativeOperations/account_rpc_lifecycle/prepare_candidate.py": "5f967ef7ce38b9c6eeabaf7e773f6c7848d6ebbc175f5be7004f79e01ddaa020",
+    "Tools/TorahNativeOperations/account_rpc_lifecycle/test-composition.patch": "f915b00b421721d4fe5778ad5d13b6aa4d0d6f2b87b8329937ab23fdbc240b1c",
+    "go-formatting.json": "7cf47dc16431e15ba1be532e1997bf439fd8906846f43d6764f30a19c43495e3",
+    "source-composition-checks.json": "675068cc5ea2412627852da98f1004950479ae10b715954ef9321266e4265389"
+  },
+  "formatting_review": {
+    "all_seven_receipt_hashes_verified": true,
+    "author_reported_all_seven_gofmt_idempotent": true,
+    "five_instrumented_overlays_and_patch_unchanged": true,
+    "native_compile": "NOT_RUN",
+    "receipt_sha256": "7cf47dc16431e15ba1be532e1997bf439fd8906846f43d6764f30a19c43495e3",
+    "status": "PASS_FORMAT_ONLY_DELTA_REVIEWED",
+    "two_added_go_files_only_alignment_multiline_expansion_and_equivalent_struct_field_separators": true
+  },
+  "freeze_sha256": "af88822fb4bf94e5c43dbdcef6e923ba1fe38ffa3d457b2ee4d0f75a6fd2f603",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "independent_controls_rerun_after_formatting": {
+    "candidate_sha256": "b021c51a0541a4603036a579bb339318d15e6fbb0f100cd913db480aa3259799",
+    "cases": [
+      "exact_composition",
+      "wrong_native_hash",
+      "existing_overlay_collision",
+      "existing_output"
+    ],
+    "failed": 0,
+    "passed": 4
+  },
+  "independent_linux_controls": [
+    {
+      "assertions": "Seven additions; all five original product byte streams and all preexisting overlay mappings unchanged; helper package remains an empty discovery directory.",
+      "case": "exact_composition",
+      "status": "PASS"
+    },
+    {
+      "assertions": "No new overlay or helper directory created.",
+      "case": "wrong_native_hash",
+      "status": "PASS_REJECTED"
+    },
+    {
+      "assertions": "Original overlay retained; no new overlay or helper directory created.",
+      "case": "existing_overlay_collision",
+      "status": "PASS_REJECTED"
+    },
+    {
+      "assertions": "Existing output sentinel bytes retained; no helper directory created.",
+      "case": "existing_output",
+      "status": "PASS_REJECTED"
+    }
+  ],
+  "preformat_review_sha256": "2af5929f25b8a8bbda4cb36e2a656eda4069c04abdc0d5528df2e5a2769a19a4",
+  "remaining_findings": [],
+  "reviewed_at_utc": "2026-11-19T18:18:19.576052+00:00",
+  "reviewed_invariants": [
+    "Instrumentation is test compile overlay only. Original guarded Storage.AddAll remains exactly once with original context, prepared change bytes, heads, snapshot and returned error.",
+    "Before/after durable gates are within the original final ACL read hold. Original ACL unlock, durable witness and target/settings release remain in their original order.",
+    "Capture uses its own short-lived mutexes and channels. It invokes no application callback, replaces no context or identity, returns no native outcome and acquires/releases no native lock.",
+    "Observer waits are bounded to twenty seconds, owner waits to fifteen; expected exact event sequence/counts and zero gate timeouts are required. Cleanup releases each gate once.",
+    "Block deletion uses actual generated BlockListDelete and original cache.Do[basic.Unlinkable]. Observer requires the exact previously loaded SmartBlock pointer and object ID.",
+    "AccountStop uses the original cancelStart behavior and real Service writer lock. Same live Service identity is checked against the successful native application lease. Controller performs no GetApp/cache preload while that writer is queued.",
+    "Generated append/delete/stop request bytes are marshaled once before their goroutine and forwarded once to original generated functions. No concurrent use of the existing non-thread-safe RPC count map or testing Fatal in those goroutines is introduced.",
+    "First-add loser requires TARGET_UNAVAILABLE with nil receipt and original ErrUnknownTreeId plus nil storage after real block deletion.",
+    "Commit-winning deletion requires exact old raw history preservation, one new signed entry with heads bound to the unchanged CREATED receipt, later read/retry TARGET_UNAVAILABLE with nil results, and identical raw history afterward.",
+    "Commit-winning AccountStop requires exact old raw preservation at the durable boundary, native return before writer acquisition, successful original Stop, and later generated read/retry NOT_LOGGED_IN with nil results."
+  ],
+  "reviewer": "/root/asana_audit",
+  "schema": "t2-generated-byte-lifecycle-independent-source-review-v1",
+  "scope_limits": {
+    "account_switch": "NOT_RUN",
+    "actual_three_native_races": "NOT_RUN",
+    "app_capability": "OFF",
+    "dedicated_lane_review": "PENDING_SEPARATE_CANDIDATE",
+    "full_t2_acceptance": "NOT_RUN",
+    "generated_byte_caller_cancellation": "NOT_EXPOSED_NOT_CLAIMED",
+    "go_formatting": "PASS_AUTHOR_GOFMT_RECEIPT_HASHES_VERIFIED_AND_FORMAT_ONLY_DELTA_INDEPENDENTLY_REVIEWED",
+    "ios": "NOT_RUN",
+    "native_go_compile": "NOT_RUN",
+    "native_results_not_replaced_by_source_review": true,
+    "new_engine_parity": "NOT_PROVEN",
+    "power_loss": "NOT_RUN",
+    "remote_writes_or_ci_dispatch_by_reviewer": false,
+    "separate_member_acl_revocation": "NOT_RUN",
+    "settings_delete": "NOT_RUN",
+    "standalone_space_close": "NOT_RUN",
+    "template_uninstall": "NOT_RUN",
+    "toolchain": "No local Go toolchain; author used the existing Windows gofmt through bounded stdin/stdout without candidate source writes. Native compilation remains NOT_RUN."
+  },
+  "source_app_sha": "16b7493fa05bdc3abbae190c6e6c364c81874eea",
+  "source_findings_resolved": [
+    {
+      "finding": "AccountStop case originally counted three entries without proving both preexisting raw changes remained unchanged.",
+      "id": "RAW-HISTORY-STOP",
+      "resolution": "Fixture now captures original two raw hashes and seeded head, compares each original hash at the durable barrier, and retains the before map/heads in its receipt."
+    },
+    {
+      "finding": "Native return while app lease is held must be distinguished from later generated-byte response conversion/encoding.",
+      "id": "NATIVE-RETURN-SCOPE",
+      "resolution": "README explicitly allows AccountStop writer acquisition after the native handler releases its lease and before final response-byte encoding completes."
+    },
+    {
+      "finding": "Case 2 README originally implied deletion lock acquisition after the CREATED receipt returns, beyond its actual trace.",
+      "id": "DELETE-RESPONSE-ORDER",
+      "resolution": "Final README requires deletion acquisition after durable AddAll and both successful results; no append/deletion response ordering is claimed."
+    }
+  ],
+  "status": "SOURCE_REVIEW_PASS"
+}

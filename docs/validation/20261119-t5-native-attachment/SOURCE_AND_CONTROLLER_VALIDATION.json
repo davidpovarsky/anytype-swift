@@ -1,0 +1,77 @@
+{
+  "status": "SOURCE_AND_CONTROLLER_VALIDATED_NATIVE_RUNTIME_NOT_RUN",
+  "diagnostic_run": 44587184541,
+  "original_report_sha256": "ffec924ef5c4ed5ea1c01bca812e75009feb9960fa1576e90616637152650c55",
+  "exact_original_difference": "_pinkhaTorahAttachedProperties: [] -> [pinkhaTorahSources] after name-only old-edit on firstPage",
+  "root_cause": "basic.UpdateDetails clones CombinedDetails then automatically adds relation links for every key including local native Source/Topic/Word projection keys",
+  "scope": "Filter only torah.IsProperty keys at the existing UpdateDetails automatic link call; explicit AttachTorahProperties and existing links unchanged",
+  "heart_source": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "original_r14_patch_sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+  "candidate_patch_sha256": "d055933d365d3f0453ad42ce4eb4463a25deceac3d0df11162d460896810a6b4",
+  "generated_delta": {
+    "core/block/editor/basic/pinkha_torah_attachment_test.go": {
+      "before": null,
+      "after": {
+        "path": "core/block/editor/basic/pinkha_torah_attachment_test.go",
+        "before_sha256": null,
+        "after_sha256": "3e68b777e64b28d7a5d88ea5eea92cd01b67db00ae9e4fd87df2f355ff9e764f"
+      }
+    },
+    "core/block/editor/basic/details.go": {
+      "before": {
+        "path": "core/block/editor/basic/details.go",
+        "before_sha256": "581e9357b14334a9882fe4fd2907bb1d77e6109c2bdc59955d03bda4a5504b9b",
+        "after_sha256": "0ac058091f7ab161aec3d462d3cfa3e844af980cb0d5cecf2400b64360f7f033"
+      },
+      "after": {
+        "path": "core/block/editor/basic/details.go",
+        "before_sha256": "581e9357b14334a9882fe4fd2907bb1d77e6109c2bdc59955d03bda4a5504b9b",
+        "after_sha256": "3247b789370d21d4ff9ca8eeb0df6580be6a7d18819820e31aac2858cff9fc59"
+      }
+    },
+    "core/block/detailservice/pinkha_torah_attachment_test.go": {
+      "before": null,
+      "after": {
+        "path": "core/block/detailservice/pinkha_torah_attachment_test.go",
+        "before_sha256": null,
+        "after_sha256": "efb25c593e4a1eabf04ca98ff0af824d8daed449a4284ad6dd5205857a5be41d"
+      }
+    }
+  },
+  "local_checks": {
+    "generator_baseline_exact_r14": "PASS",
+    "git_apply_check": "PASS",
+    "gofmt_both_native_fixture_files": "PASS_GRAMMAR_ONLY",
+    "python_grammar": "PASS",
+    "shell_grammar": "PASS",
+    "yaml_and_image_binding": "PASS",
+    "controller_rejection_controls": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "log_sha256": "111a7a565b53875892faef45e9474c114e7e4693e04ac486991dc9f29c819bde"
+    }
+  },
+  "native_tests": {
+    "status": "NOT_RUN",
+    "methods": [
+      "TestTorahOrdinaryDetailsDoNotAttachProjectedProperties",
+      "TestTorahExplicitAttachmentsSurviveOrdinaryDetailsEdits"
+    ],
+    "ordinary_edit_cases": 4,
+    "positive_gate": "All actual basic and detailservice package tests plus both new fixtures, no failures/skips",
+    "negative_gate": "Compile the same basic fixture using exact immutable r14 details.go through one-file Go overlay; require all4 subcases and parent to fail for the exact attachment assertion",
+    "source_inputs_stability": "Before/after tracked control source and actual applied Heart inventory, frozen generator output identity, exact original-source overlay identity"
+  },
+  "limitations": [
+    "No native Go compile/runtime yet",
+    "No corrected Apple runtime has been built",
+    "No unmodified old-client compatibility claim",
+    "No complete T5 acceptance claim",
+    "No original r14/r15 approval, runtime constant, or existing pair invariant modified"
+  ],
+  "manifest_sha256": "eaf100bdbcac4dcdbd454677ab534512c80ded181a11e848e565c527f2ae79df",
+  "source_diff_sha256": "ae16b24b1015089fa3e468de91d92451cf6510b8de325fecfe70223643c83c2e",
+  "version": 2,
+  "v2_receipt_correction": "Actual executed native stages now retain PID/exit/log evidence even if qualification fails; failure is never mislabeled NOT_RUN. Final control/applied-source/negative-overlay validation runs on failure and preserves the original error."
+}

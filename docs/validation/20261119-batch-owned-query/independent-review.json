@@ -1,0 +1,37 @@
+{
+  "acceptance_claim": "CONTROLLER_REVIEW_ONLY",
+  "actual_apple_retry": "NOT_RUN",
+  "integration_base": "c6a219d3377e6f820a9aa5f995bb7d74c05ff53e",
+  "original_run": {
+    "artifact_id": "14491180253",
+    "artifact_sha256": "2ed4404a428cd9a9caaea3911011111d2816dcafab28baa2dfd311d1bbe14a38",
+    "failure": "Exact owned UDID simctl list devices timed out after30seconds after successful builds; cleanup exact owned UDID query timed out after20seconds",
+    "id": "44432009798",
+    "native_postflight": 0,
+    "native_preparations": 0,
+    "original_worker_result": "BATCH_ABORTED_SETUP_OR_IDENTITY",
+    "ui_methods": 0
+  },
+  "reviewed_changes": [
+    "One exact-name/owned-UDID inventory query with120second ceiling, no retry or global fallback",
+    "Cleanup uses minimum of120seconds and remaining original180second cleanup budget",
+    "Query result still passes exact UDID/name/runtime/type/state/availability checks before any native preparation or cleanup action",
+    "Bounded identity/status/timeout/monotonic elapsed observations are retained on successful or failed query; partial command output never copied",
+    "Container lookup/create/lane shutdown remain30seconds, cleanup actions20seconds, worker105minutes, execution step120minutes; native and UI test limits unchanged"
+  ],
+  "reviewer": "root",
+  "source_sha256": {
+    "Tools/PinkhaSimulatorGate/test_wave15_batch.py": "4c95a77626c32d4606f28ce524131c35b2347a34333c3b5a5245598286153f3f",
+    "Tools/PinkhaSimulatorGate/wave15_batch.py": "5752d5873632e68127a6ecac0747ca1011c93efcb9df4ee807bd7a946d4c3bc7"
+  },
+  "status": "INDEPENDENT_SOURCE_REVIEW_PASS",
+  "validation": {
+    "both_posix_ownership_controls_executed": true,
+    "controller_tests": 37,
+    "failed": 0,
+    "log_sha256": "4303f416590bc25844aa3f517c0842fc5c956eb7cb287c24b696140871831d5e",
+    "passed": 37,
+    "platform": "Linux",
+    "skipped": 0
+  }
+}

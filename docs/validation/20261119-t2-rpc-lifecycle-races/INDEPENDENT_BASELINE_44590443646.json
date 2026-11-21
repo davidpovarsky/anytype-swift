@@ -1,0 +1,184 @@
+{
+  "actual_counts": {
+    "actual_export_files": 8,
+    "binaries": 2,
+    "native_processes": 4,
+    "passing_test_invocations": 4
+  },
+  "artifact_id": 14564286488,
+  "checks": {
+    "account_stop_and_shutdown": "PASS_ALL_4",
+    "last_phase_target_orphan_then_space_projection_cleanup": "PASS",
+    "later_race_binary_pid_separate_from_original_baseline": "PASS",
+    "legacy_unknown_private_type_and_ordinary_edit_preserved": "PASS",
+    "new_client_generated_byte_native_read_retry_collision_guards_after_stop": "PASS_ALL_3_NEW_PHASES",
+    "ordinary_native_search_show_and_exports": "PASS_ALL_4",
+    "original_json_byte_continuity": "PASS_CREATE_EQUALS_REOPEN_AND_LEGACY_EDIT_EQUALS_NEW_RECOVER",
+    "pbc_exports": "ALL4_ACTUAL_HASHES_BOUND; NATIVE_FIXTURE_DECODE_AND_BLOCK_NAME_ASSERTIONS_PASSED; CROSS_PROCESS_RAW_EQUALITY_NOT_CLAIMED",
+    "private_search_show_export_exclusion": "PASS_ALL_4",
+    "same_original_account_space_document_block_and_state": "PASS_ALL_4",
+    "same_original_signed_root_operation_hashes_heads": "PASS_ALL_4",
+    "secret_scanned_public_copy_hashes": "PASS",
+    "source_and_generated_binding": "PASS",
+    "unique_phase_pid_and_nonce": "PASS_4"
+  },
+  "crc": "PASS_ALL_MEMBERS",
+  "exports_sha256": {
+    "legacy-edit": {
+      "document.json": "7859f8ff48b5e8b13deb455f80d3b0ae257078b17c3021b52d766aa46d6c0ebf",
+      "document.pbc": "e02c88b38ab6fdc8fa799d30f4d42e7bdfb3862ab5be3940f57ed229a5573549"
+    },
+    "new-create": {
+      "document.json": "1bd55a9dc8c7d8e99fac5dc69af6e47529e9f39a3807a29c8c0b24fc3b7dc240",
+      "document.pbc": "c30eac0bf03bb242930e740b2535f87bd314e29be53cd08aa071eab800faea4b"
+    },
+    "new-recover": {
+      "document.json": "7859f8ff48b5e8b13deb455f80d3b0ae257078b17c3021b52d766aa46d6c0ebf",
+      "document.pbc": "10f1180229d96d23738e7e9de8d656d295cf528d400db1da803b537f385d66d9"
+    },
+    "new-reopen": {
+      "document.json": "1bd55a9dc8c7d8e99fac5dc69af6e47529e9f39a3807a29c8c0b24fc3b7dc240",
+      "document.pbc": "6ad45f6e08c51eecbb854ed6694ae97cf5e8e102051966c8832fadaa8bab88aa"
+    }
+  },
+  "limitations": [
+    "This review qualifies the original4-process baseline only. The3additional instrumented cases remain separately qualified by t2_finish.",
+    "Native executable bytes are not retained in the artifact; checked source/build/runtime identity receipts are the available provenance.",
+    "One synthetic account reopened in4processes is not two simultaneous App clients.",
+    "App capability OFF; iOS/device/fullT2/new-engine parity acceptance NOT_RUN in this baseline.",
+    "Secret scan result is validated against the original evidence-copy receipt and exact allowlisted bytes; private secret needles were intentionally not uploaded."
+  ],
+  "metadata_sha256": "38ea6fd0974a34fddfbe5f5939dd2978b7057ddfcfdfa902d3ea0e139ed3fb61",
+  "method": "Read original retained authenticated run/artifact metadata, original ZIP, exact source-pinned pure validators, actual native logs, phase receipts and all8 export bytes. No native rerun, new download, source edits or C: writes.",
+  "phases": [
+    {
+      "account_stop_verified": true,
+      "cleanup": "NOT_REQUESTED_IN_THIS_PHASE",
+      "exact_native_method": "TestT2AccountLifecyclePhase",
+      "log_sha256": "029f9c21faf1c2ccd7bd45110c46494c58e946d4356264a76ac237596e88bbbf",
+      "native_fail": 0,
+      "native_pass": 1,
+      "native_skip": 0,
+      "phase": "new-create",
+      "pid": 18454,
+      "raw_heads_exact": true,
+      "raw_private_history_exact": true,
+      "report_sha256": "6e2b0a26be6ff95998dc75b144c34902e61139209da9c0f2ffbf3d713cf21555",
+      "role": "new",
+      "rpc_calls": {
+        "AccountCreate": 1,
+        "AccountStop": 1,
+        "AppGetVersion": 1,
+        "AppShutdown": 1,
+        "BlockCreate": 1,
+        "InitialSetParameters": 1,
+        "ObjectCreate": 1,
+        "ObjectExport": 4,
+        "ObjectSearch": 5,
+        "ObjectShow": 2,
+        "WalletCreate": 1,
+        "WorkspaceCreate": 1,
+        "WorkspaceOpen": 1
+      }
+    },
+    {
+      "account_stop_verified": true,
+      "cleanup": "NOT_REQUESTED_IN_THIS_PHASE",
+      "exact_native_method": "TestT2AccountLifecyclePhase",
+      "log_sha256": "d58a5a64b46a6f8419aef47b6981a91581a16685e85867346a64614d0c3c5eea",
+      "native_fail": 0,
+      "native_pass": 1,
+      "native_skip": 0,
+      "phase": "new-reopen",
+      "pid": 18479,
+      "raw_heads_exact": true,
+      "raw_private_history_exact": true,
+      "report_sha256": "531d3b770ba944f280b0110e20cff84c1e8da6303ae2a1a4baabd8f180fe9784",
+      "role": "new",
+      "rpc_calls": {
+        "AccountSelect": 1,
+        "AccountStop": 1,
+        "AppGetVersion": 1,
+        "AppShutdown": 1,
+        "InitialSetParameters": 1,
+        "ObjectExport": 4,
+        "ObjectSearch": 4,
+        "ObjectShow": 2,
+        "WalletRecover": 1,
+        "WorkspaceOpen": 1
+      }
+    },
+    {
+      "account_stop_verified": true,
+      "cleanup": "NOT_REQUESTED_IN_THIS_PHASE",
+      "exact_native_method": "TestT2AccountLifecyclePhase",
+      "log_sha256": "91ef4ecf91dae93670008f01b984f6ea1f0dffb7b0850cd5fb233f28095b6cd1",
+      "native_fail": 0,
+      "native_pass": 1,
+      "native_skip": 0,
+      "phase": "legacy-edit",
+      "pid": 18496,
+      "raw_heads_exact": true,
+      "raw_private_history_exact": true,
+      "report_sha256": "e1659a764a6e7f2e43bc5dbfdb851eb92f88ba9ea68fe2ac56cb9efed57b4dc8",
+      "role": "legacy",
+      "rpc_calls": {
+        "AccountSelect": 1,
+        "AccountStop": 1,
+        "AppGetVersion": 1,
+        "AppShutdown": 1,
+        "InitialSetParameters": 1,
+        "ObjectExport": 4,
+        "ObjectSearch": 4,
+        "ObjectSetDetails": 1,
+        "ObjectShow": 2,
+        "WalletRecover": 1,
+        "WorkspaceOpen": 1
+      }
+    },
+    {
+      "account_stop_verified": true,
+      "cleanup": "TARGET_ORPHAN_PRESERVED_THEN_SPACE_AND_PROJECTION_REMOVED",
+      "exact_native_method": "TestT2AccountLifecyclePhase",
+      "log_sha256": "fcdf8e1c8c5aaef72d1f9372815eeecfe0163ec967995ffa89428e9739e72414",
+      "native_fail": 0,
+      "native_pass": 1,
+      "native_skip": 0,
+      "phase": "new-recover",
+      "pid": 18509,
+      "raw_heads_exact": true,
+      "raw_private_history_exact": true,
+      "report_sha256": "aabb2c0240ec9c28dcf08bb9ca900a04c46eeefc954fa991e90da51a1060dbb2",
+      "role": "new",
+      "rpc_calls": {
+        "AccountSelect": 1,
+        "AccountStop": 1,
+        "AppGetVersion": 1,
+        "AppShutdown": 1,
+        "BlockListDelete": 1,
+        "InitialSetParameters": 1,
+        "ObjectExport": 4,
+        "ObjectSearch": 4,
+        "ObjectShow": 2,
+        "SpaceDelete": 1,
+        "WalletRecover": 1,
+        "WorkspaceOpen": 1
+      }
+    }
+  ],
+  "pure_validator_sha256": {
+    "run_account_lifecycle.py": "c17c801fdc85163c391f7eabddc51abfdf72e81c30030aa14f50de5c0e888154",
+    "run_account_rpc.py": "0a992407ad8cabee47543f9167739fb00f319f5bb25aa8ca0ac780bb241a2d3e",
+    "run_native_rpc.py": "e0cac9ba2e4bf3aa23ed86a4a1fd72a5c97626301e03a3ea5086a54a03ea2baa"
+  },
+  "qualified_at": "2026-11-19T19:10:58.558054+00:00",
+  "qualifier_sha256": "d1e514177ee72c4c76afcd753a0e44d8222ca3c0c3c665f4b934930f042d6748",
+  "reviewer_correction": "Initial overbroad cross-process PBC byte-equality assertion failed in the reviewer only; original native tests all passed. Initial script/diagnosis retained in this report directory. No product/native source changed.",
+  "run_id": "44590443646",
+  "run_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/44590443646",
+  "source_sha": "cbebcd5464fc43b4cda46d4f915bf16ccefd64f9",
+  "status": "INDEPENDENT_VERIFIED_PASS_ORIGINAL_FOUR_PROCESS_GENERATED_BYTE_BASELINE",
+  "zip_bytes": 82123,
+  "zip_members": 59,
+  "zip_sha256": "e4089c45899d2a8b1b4af815e046d7abfe30f9a49a0818327bbe9c17dba766de"
+}

@@ -780,6 +780,7 @@ private extension EditorPageController {
     func setupCell(cell: EditorViewListCell, indexPath: IndexPath, item: some BlockViewModelProtocol) {
         cell.setContentConfiguration(
             item.makeContentConfiguration(maxWidth: cell.bounds.width),
+            in: collectionView,
             isMoving: collectionView.indexPathsForMovingItems.contains(indexPath),
             isLocked: collectionView.isLocked
         )
