@@ -83,8 +83,24 @@ jobs:
             --app-source "$GITHUB_WORKSPACE" --expected-app-branch "$GITHUB_REF_NAME" \
             --work "build/ui27-heart-${{ github.run_id }}-${{ github.run_attempt }}" \
             --evidence build/ui27-evidence/heart
-      - name: Restore compatible ARM64 Xcode27 compiled dependencies
+      - name: Restore compatible compilation cache without indexing state
         id: ui27-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/ui27-derived/Build
+            build/ui27-derived/SourcePackages
+            build/ui27-derived/ModuleCache.noindex
+            build/ui27-derived/SDKStatCaches.noindex
+            build/ui27-derived/SDKExplicitPrecompiledModules
+            build/ui27-derived/CompilationCache.noindex
+            build/ui27-derived/info.plist
+          key: pinkha-ui27-compiled-v2-arm64-xcode27.0-${{ ((inputs.acceptance_lane == 'hanlin-native' || (inputs.acceptance_lane == 'hanlin-native-text-ack' || inputs.acceptance_lane == 'hanlin-native-shared-editor')) || inputs.acceptance_lane == 'hanlin-selection') && 'Debug-Anytype' || 'Release-Anytype' }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-${{ github.sha }}
+          restore-keys: |
+            pinkha-ui27-compiled-v2-arm64-xcode27.0-${{ ((inputs.acceptance_lane == 'hanlin-native' || (inputs.acceptance_lane == 'hanlin-native-text-ack' || inputs.acceptance_lane == 'hanlin-native-shared-editor')) || inputs.acceptance_lane == 'hanlin-selection') && 'Debug-Anytype' || 'Release-Anytype' }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
+      - name: Reuse the preceding cache layout only when no v2 cache matched
+        if: ${{ steps.ui27-cache.outputs.cache-matched-key == '' }}
+        id: ui27-cache-legacy
         uses: actions/cache/restore@v4
         with:
           path: build/ui27-derived
@@ -104,7 +120,11 @@ jobs:
         id: wave15-execution
         timeout-minutes: 120
         run: |
-          python3 Tools/PinkhaSimulatorGate/run_wave15_acceptance.py --app "$GITHUB_WORKSPACE" \
+          controller=Tools/PinkhaSimulatorGate/run_wave15_acceptance.py
+          if [ "$UI27_ACCEPTANCE_LANE" = "hanlin-native-shared-editor" ]; then
+            controller=Tools/PinkhaSimulatorGate/run_owned_single_lane.py
+          fi
+          python3 "$controller" --app "$GITHUB_WORKSPACE" \
             --evidence build/ui27-evidence --derived build/ui27-derived \
             --lane "$UI27_ACCEPTANCE_LANE" --device "$UI27_DEVICE_FAMILY" --language "$UI27_LANGUAGE" \
             --runtime-profile "$HEART_RUNTIME_PROFILE" --heart-source-run-id "$HEART_SOURCE_RUN_ID"
@@ -119,9 +139,20 @@ jobs:
           path: build/ui27-evidence/Pinkha-Native-Derived-Evidence.zip
           if-no-files-found: error
           retention-days: 14
+      - name: Verify the owned SDK worker finished cleanup before caching
+        id: ui27-cache-readiness
+        if: ${{ always() && inputs.acceptance_lane == 'hanlin-native-shared-editor' && steps.wave15-execution.outcome != 'skipped' }}
+        run: python3 -B Tools/PinkhaSimulatorGate/run_owned_single_lane.py --check-cache-ready build/ui27-evidence
       - name: Preserve compatible compilation cache after success or failed tests
-        if: ${{ always() && (steps.actual-execution.outcome != 'skipped' || steps.wave15-execution.outcome != 'skipped') && steps.ui27-cache.outputs.cache-hit != 'true' && hashFiles('build/ui27-derived/Build/PinkhaSourceInputs.json') != '' }}
+        if: ${{ always() && (steps.actual-execution.outcome != 'skipped' || steps.wave15-execution.outcome != 'skipped') && (inputs.acceptance_lane != 'hanlin-native-shared-editor' || steps.ui27-cache-readiness.outcome == 'success') && steps.ui27-cache.outputs.cache-hit != 'true' && hashFiles('build/ui27-derived/Build/PinkhaSourceInputs.json') != '' }}
         uses: actions/cache/save@v4
         with:
-          path: build/ui27-derived
+          path: |
+            build/ui27-derived/Build
+            build/ui27-derived/SourcePackages
+            build/ui27-derived/ModuleCache.noindex
+            build/ui27-derived/SDKStatCaches.noindex
+            build/ui27-derived/SDKExplicitPrecompiledModules
+            build/ui27-derived/CompilationCache.noindex
+            build/ui27-derived/info.plist
           key: ${{ steps.ui27-cache.outputs.cache-primary-key }}

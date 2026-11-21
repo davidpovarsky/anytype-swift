@@ -1,0 +1,8 @@
+test_sigterm_latches_cancellation_then_reaps_group (test_owned_single_lane.OwnedSingleLaneTests.test_sigterm_latches_cancellation_then_reaps_group) ... ok
+test_timeout_reaps_group_and_keeps_incomplete_receipt (test_owned_single_lane.OwnedSingleLaneTests.test_timeout_reaps_group_and_keeps_incomplete_receipt) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.356s
+
+OK
+{"cleanup": {"status": "PASS"}, "error": "Command '['/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python', '/tmp/pinkha-owned-single-kqp58gb3/worker.py']' timed out after 0.8 seconds", "error_type": "TimeoutExpired", "finished_at": "2026-11-21T23:47:40.071860+00:00", "full_matrix_accepted": false, "lane": "hanlin-native-shared-editor", "original_evidence": {"execution.json": "4d41860f65a3b829d56831913568ff62372115f5cba04baaed3980960527288b", "single-lane-worker.command.json": "41f0e11a4baa390938067e66d03f998c054604b36846c024cf31c097d7ee9345"}, "protocol": "pinkha-owned-single-lane-v1", "release_accepted": false, "run_attempt": "1", "run_id": "123", "source_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "started_at": "2026-11-21T23:47:39.269651+00:00", "status": "TIMED_OUT"}

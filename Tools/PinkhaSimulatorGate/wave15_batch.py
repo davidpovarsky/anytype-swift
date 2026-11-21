@@ -721,6 +721,7 @@ def run_worker_command(command, cwd, log, timeout):
                 if process is not None:
                     try:
                         terminate_owned(process)
+                        record["owned_group_cleanup"] = "TERM_THEN_KILL"
                     except BaseException as cleanup_error:
                         record["cleanup_error_type"] = type(cleanup_error).__name__
                 raise

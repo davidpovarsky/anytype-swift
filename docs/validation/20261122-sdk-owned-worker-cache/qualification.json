@@ -1,0 +1,48 @@
+{
+  "protocol": "pinkha-sdk-owned-worker-cache-v1",
+  "status": "CONTROLLER_FIX_QUALIFIED_APPLE_REPLACEMENT_PENDING",
+  "source_parent": "8deb1e58dc41638714606a7917ea651e1fc31baf",
+  "original": {
+    "run_id": 44956239736,
+    "job_id": 137004880241,
+    "artifact_id": 14729893377,
+    "outer_bytes": 1506049,
+    "outer_sha256": "d0345122f18f97bf700c82c12e6a3e15275cb51030aedbc4c33de3e58448240e",
+    "inner_sha256": "e4885be0f2eb1bd03d78c2548bb88e8e6ffd723318585817a482374f3617b09b",
+    "execution_sha256": "bd1e03e8fa6d96fc88d8fa785695df139fe6027ed273faf8a94128b857683e72",
+    "status": "CANCELLED_DURING_BUILD",
+    "product_tests_executed": 0,
+    "cache_save": "FAILED_GNU_TAR_CHANGED_INDEX"
+  },
+  "controller": {
+    "environment": "Linux x86_64 Python 3.12.14",
+    "new_methods": 5,
+    "initial": {
+      "passed": 3,
+      "errors": 2
+    },
+    "affected_followup": {
+      "passed": 2,
+      "failed": 0,
+      "seconds": 1.356
+    },
+    "source_sha256": {
+      "run_owned_single_lane.py": "f0ca94f3a9d315ef9d1afec14bbf0377c1c3c11f729d4605d756d75aebb221ee",
+      "test_owned_single_lane.py": "551236e770877f6aa5f9423cbd5c55a9e39e902dbd607a8ee75c2771f3d1fa51",
+      "wave15_batch.py": "aa945314e2eda94507154ac5780e347d0200bde59df3e854070a0bcaff953846",
+      "pinkha-simulator-ui27.yml": "b599b4d2341cc711bb81f1f0932f3450e8e8a846e204c04b125a9d3003709d0c",
+      "focused-controls-initial.log": "9ff115144dbcec738da84ebdae39be635c9d55bf159405619cb0fd76221496ef",
+      "focused-controls-cancel-timeout.log": "dde9c70cf9fa194086ff46da489e24362e05afa5640a91a4ad86c553085dd301"
+    },
+    "retained_old_product_tests_not_rerun": true,
+    "final_after_peer_review": {
+      "passed": 5,
+      "failed": 0,
+      "seconds": 2.068,
+      "log_sha256": "e9a0d97e5d9a65a83006450ef3350a82b82c14eb0910dd3e3b79f43f730cf8fc",
+      "reason": "Require live owned PGID quiescence after signal delivery on every supervisor path."
+    }
+  },
+  "replacement_apple_run": "NOT_RUN",
+  "full_acceptance": false
+}

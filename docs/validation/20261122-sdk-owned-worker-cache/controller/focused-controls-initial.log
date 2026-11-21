@@ -1,0 +1,35 @@
+test_cache_publication_rejects_missing_cleanup_evidence (test_owned_single_lane.OwnedSingleLaneTests.test_cache_publication_rejects_missing_cleanup_evidence) ... ok
+test_sigterm_latches_cancellation_then_reaps_group (test_owned_single_lane.OwnedSingleLaneTests.test_sigterm_latches_cancellation_then_reaps_group) ... ERROR
+test_success_reaps_owned_descendant_and_preserves_original_pass (test_owned_single_lane.OwnedSingleLaneTests.test_success_reaps_owned_descendant_and_preserves_original_pass) ... ok
+test_timeout_reaps_group_and_keeps_incomplete_receipt (test_owned_single_lane.OwnedSingleLaneTests.test_timeout_reaps_group_and_keeps_incomplete_receipt) ... ERROR
+test_zero_worker_exit_cannot_promote_original_failure (test_owned_single_lane.OwnedSingleLaneTests.test_zero_worker_exit_cannot_promote_original_failure) ... ok
+
+======================================================================
+ERROR: test_sigterm_latches_cancellation_then_reaps_group (test_owned_single_lane.OwnedSingleLaneTests.test_sigterm_latches_cancellation_then_reaps_group)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/292d7a286e77/owned-single-lane/test_owned_single_lane.py", line 112, in test_sigterm_latches_cancellation_then_reaps_group
+    self.assert_finished("CANCELLED", digest)
+  File "/workspace/scratch/292d7a286e77/owned-single-lane/test_owned_single_lane.py", line 57, in assert_finished
+    self.assertEqual(record["owned_group_cleanup"], "TERM_THEN_KILL")
+                     ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'owned_group_cleanup'
+
+======================================================================
+ERROR: test_timeout_reaps_group_and_keeps_incomplete_receipt (test_owned_single_lane.OwnedSingleLaneTests.test_timeout_reaps_group_and_keeps_incomplete_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/292d7a286e77/owned-single-lane/test_owned_single_lane.py", line 88, in test_timeout_reaps_group_and_keeps_incomplete_receipt
+    self.assert_finished("TIMED_OUT", digest)
+  File "/workspace/scratch/292d7a286e77/owned-single-lane/test_owned_single_lane.py", line 57, in assert_finished
+    self.assertEqual(record["owned_group_cleanup"], "TERM_THEN_KILL")
+                     ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'owned_group_cleanup'
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.905s
+
+FAILED (errors=2)
+{"cleanup": {"status": "PASS"}, "finished_at": "2026-11-21T23:46:57.381765+00:00", "full_matrix_accepted": false, "lane": "hanlin-native-shared-editor", "original_evidence": {"execution.json": "8e5fa771c418a2641587a31616bef651075d8d73b48e43b1cf9466bbb9d1941a", "single-lane-worker.command.json": "600830b09d77475e8bb92df129dfd1bbfa66c0f43f5f97155e01577631c8ebe7"}, "original_worker_status": "LANE_PASS_ACCEPTANCE_REVIEW_PENDING", "protocol": "pinkha-owned-single-lane-v1", "release_accepted": false, "run_attempt": "1", "run_id": "123", "source_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "started_at": "2026-11-21T23:46:57.116645+00:00", "status": "SUPERVISED_LANE_PASS_ACCEPTANCE_REVIEW_PENDING", "worker_command": {"argv": ["/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python", "/tmp/pinkha-owned-single-c21gknof/worker.py"], "finished_at": "2026-11-21T23:46:57.381121+00:00", "owned_group_cleanup": "TERM_THEN_KILL", "return_code": 0, "started_at": "2026-11-21T23:46:57.116691+00:00", "status": "COMPLETE", "timeout_seconds": 5, "worker_pid": 13}}
+{"cleanup": {"status": "PASS"}, "error": "Command '['/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python', '/tmp/pinkha-owned-single-p36vhqp2/worker.py']' timed out after 0.8 seconds", "error_type": "TimeoutExpired", "finished_at": "2026-11-21T23:46:58.264653+00:00", "full_matrix_accepted": false, "lane": "hanlin-native-shared-editor", "original_evidence": {"execution.json": "4d41860f65a3b829d56831913568ff62372115f5cba04baaed3980960527288b", "single-lane-worker.command.json": "61d7bb651fb00e46f84296dd64085774a99b68e1fb878f56dd913526e3c6beae"}, "protocol": "pinkha-owned-single-lane-v1", "release_accepted": false, "run_attempt": "1", "run_id": "123", "source_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "started_at": "2026-11-21T23:46:57.456806+00:00", "status": "TIMED_OUT"}
+{"cleanup": {"status": "PASS"}, "error": "Original lane has not passed", "error_type": "RuntimeError", "finished_at": "2026-11-21T23:46:58.532658+00:00", "full_matrix_accepted": false, "lane": "hanlin-native-shared-editor", "original_evidence": {"execution.json": "4d41860f65a3b829d56831913568ff62372115f5cba04baaed3980960527288b", "single-lane-worker.command.json": "7ed336fdafabdc7279583b5a9f98b148fceb3d0565676ba63c97489d1162e2eb"}, "original_worker_status": "FAIL", "protocol": "pinkha-owned-single-lane-v1", "release_accepted": false, "run_attempt": "1", "run_id": "123", "source_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "started_at": "2026-11-21T23:46:58.267225+00:00", "status": "FAIL", "worker_command": {"argv": ["/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python", "/tmp/pinkha-owned-single-u8wfq3ai/worker.py"], "finished_at": "2026-11-21T23:46:58.532003+00:00", "owned_group_cleanup": "TERM_THEN_KILL", "return_code": 0, "started_at": "2026-11-21T23:46:58.267278+00:00", "status": "COMPLETE", "timeout_seconds": 5, "worker_pid": 24}}
