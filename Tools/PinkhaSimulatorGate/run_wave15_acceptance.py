@@ -635,16 +635,16 @@ def execute(args, receipt, *, build_context=None):
 
 
 def main():
+    import wave15_batch
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--app", type=Path, required=True)
     parser.add_argument("--evidence", type=Path, required=True)
     parser.add_argument("--derived", type=Path, required=True)
-    parser.add_argument("--lane", choices=[*LANES, "remaining-release"], required=True)
+    parser.add_argument("--lane", choices=[*LANES, *wave15_batch.PROFILES], required=True)
     parser.add_argument("--device", choices=["iphone", "ipad"], required=True)
     parser.add_argument("--language", choices=["en", "he"], required=True)
     args = parser.parse_args()
-    if args.lane == "remaining-release":
-        import wave15_batch
+    if args.lane in wave15_batch.PROFILES:
         return wave15_batch.run(args, sys.modules[__name__])
     args.evidence.mkdir(parents=True, exist_ok=True)
     require(not (args.evidence / "execution.json").exists(), "Refuse stale execution evidence")

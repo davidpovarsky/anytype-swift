@@ -61,7 +61,7 @@ on:
           - NATIVE_CANCELLATION_DIAGNOSTIC
         default: FULL_SMOKE
       acceptance_lane:
-        description: Existing Wave-15 lane or six isolated Release lanes after Startup is working
+        description: Existing lane, six Release lanes, or the three remaining retained-Heart lanes
         type: choice
         options:
           - inspector
@@ -74,6 +74,7 @@ on:
           - hanlin-native
           - hanlin-selection
           - remaining-release
+          - retained-heart-release
         default: inspector
       acceptance_device:
         description: Disposable OS27 device family

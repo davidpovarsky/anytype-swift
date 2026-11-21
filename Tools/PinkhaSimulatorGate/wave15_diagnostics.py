@@ -16,8 +16,12 @@ MAX_COUNT = 10000
 MAX_ANNOTATION = 12000
 LANES = ("inspector", "inspector-search", "properties", "properties-set",
          "canonical-properties", "editor", "quote-drop", "hanlin-native",
-         "hanlin-selection", "remaining-release", "startup")
+         "hanlin-selection", "remaining-release", "retained-heart-release", "startup")
 BATCH_LANES = LANES[:6]
+
+
+def _batch_lanes(profile):
+    return ("editor", "quote-drop", "properties-set") if profile == "retained-heart-release" else BATCH_LANES
 STATUSES = frozenset({"PASS", "FAIL", "RUNNING", "NOT_RUN", "CANCELLED", "DIAGNOSTIC_READ_FAILED",
     "LANE_PASS_ACCEPTANCE_REVIEW_PENDING", "LANE_FAILED_OBSERVED_TEST",
     "LANE_ABORTED_SETUP_OR_IDENTITY", "BATCH_ABORTED_SETUP_OR_IDENTITY",
@@ -197,8 +201,9 @@ def execution_observation(receipt, lane):
     receipt = _record(receipt)
     change = _record(receipt.get("tracked_source_change"))
     statuses = _record(receipt.get("lane_statuses"))
+    batch_lanes = _batch_lanes(lane)
     return {"schema": 1, "kind": "EXECUTION", "diagnostic_only": True,
-        "lane": _enum(lane, LANES), "current_lane": _enum(receipt.get("current_lane"), BATCH_LANES),
+        "lane": _enum(lane, LANES), "current_lane": _enum(receipt.get("current_lane"), batch_lanes),
         "reported_status": _enum(receipt.get("status"), STATUSES),
         "phase": _enum(receipt.get("phase"), PHASES),
         "error_category": _error_category(receipt.get("error_type")),
@@ -207,7 +212,7 @@ def execution_observation(receipt, lane):
         "source_change_stage": _enum(change.get("stage"), SOURCE_STAGES),
         "changed_path_count": _integer(change.get("changed_path_count")),
         "lane_statuses": [{"lane_index": index, "reported_status": _enum(statuses.get(name), STATUSES)}
-                          for index, name in enumerate(BATCH_LANES)],
+                          for index, name in enumerate(batch_lanes)],
         "preparation": _project_selection(_record(receipt.get("preparation")).get("public_diagnostics")),
         "ui": _project_selection(_record(receipt.get("ui")).get("public_diagnostics"))}
 
@@ -218,14 +223,15 @@ def _project_execution(value):
             or value.get("kind") != "EXECUTION" or value.get("diagnostic_only") is not True):
         return NOT_RECORDED
     statuses = {}
+    batch_lanes = _batch_lanes(value.get("lane"))
     raw = value.get("lane_statuses")
-    if type(raw) is list and len(raw) == len(BATCH_LANES):
+    if type(raw) is list and len(raw) == len(batch_lanes):
         for index, item in enumerate(raw):
             item = _record(item)
             if type(item.get("lane_index")) is int and item["lane_index"] == index:
-                statuses[BATCH_LANES[index]] = _enum(item.get("reported_status"), STATUSES)
+                statuses[batch_lanes[index]] = _enum(item.get("reported_status"), STATUSES)
     return {"schema": 1, "kind": "EXECUTION", "diagnostic_only": True,
-        "lane": _enum(value.get("lane"), LANES), "current_lane": _enum(value.get("current_lane"), BATCH_LANES),
+        "lane": _enum(value.get("lane"), LANES), "current_lane": _enum(value.get("current_lane"), batch_lanes),
         "reported_status": _enum(value.get("reported_status"), STATUSES),
         "phase": _enum(value.get("phase"), PHASES),
         "error_category": _enum(value.get("error_category"), ERROR_CATEGORIES),
@@ -234,7 +240,7 @@ def _project_execution(value):
         "source_change_stage": _enum(value.get("source_change_stage"), SOURCE_STAGES),
         "changed_path_count": _integer(value.get("changed_path_count")),
         "lane_statuses": [{"lane_index": index, "reported_status": _enum(statuses.get(name), STATUSES)}
-                          for index, name in enumerate(BATCH_LANES)],
+                          for index, name in enumerate(batch_lanes)],
         "preparation": _project_selection(value.get("preparation")),
         "ui": _project_selection(value.get("ui"))}
 

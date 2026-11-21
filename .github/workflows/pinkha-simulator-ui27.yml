@@ -10,6 +10,7 @@ on:
         type: string
         required: true
       acceptance_lane:
+        description: Existing lane or reviewed remaining-release/retained-heart-release preset
         type: string
         default: ''
       acceptance_device:
@@ -89,7 +90,7 @@ jobs:
         run: |
           python3 Tools/PinkhaSimulatorGate/run_ui27.py --app "$GITHUB_WORKSPACE" \
             --evidence build/ui27-evidence --derived build/ui27-derived --ui-scope "$UI27_SCOPE"
-      - name: Execute the selected existing Wave-15 acceptance lane
+      - name: Execute the selected existing Wave-15 lane or reviewed batch preset
         if: ${{ inputs.acceptance_lane != '' }}
         id: wave15-execution
         timeout-minutes: 120

@@ -1,4 +1,4 @@
-"""Opt-in, same-job Release/r14 build for six existing Wave15 UI lanes.
+"""Fixed same-job Release/r14 profiles over existing Wave15 UI lanes.
 
 The existing lane executor remains the authority for native preparation, live
 runtime mapping, UI selection, language observations, and installed code bytes.
@@ -23,6 +23,7 @@ import type_preservation as preservation
 
 
 PROFILE = "remaining-release"
+RETAINED_HEART_PROFILE = "retained-heart-release"
 PROTOCOL = "pinkha-wave15-same-job-batch-v1"
 LANES = ("inspector", "inspector-search", "properties", "properties-set", "canonical-properties", "editor")
 COUNTS = (5, 1, 3, 2, 1, 3)
@@ -37,6 +38,43 @@ PREPARATIONS = (
     "PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState",
     "PinkhaStage1AcceptancePreparationTests/prepareRealApplicationState",
 )
+
+
+@dataclass(frozen=True)
+class BatchProfile:
+    name: str
+    lanes: tuple
+    counts: tuple
+    preparations: tuple
+
+    @property
+    def ui_count(self):
+        return sum(self.counts)
+
+    @property
+    def preparation_count(self):
+        return len(self.lanes)
+
+    @property
+    def postflight_count(self):
+        return self.lanes.count("properties-set")
+
+
+# Reviewed presets only. Callers select a name, never a method list, an
+# arbitrary lane subset, a previous build, or a previously populated simulator.
+PROFILES = {
+    PROFILE: BatchProfile(PROFILE, LANES, COUNTS, PREPARATIONS),
+    RETAINED_HEART_PROFILE: BatchProfile(RETAINED_HEART_PROFILE,
+        ("editor", "quote-drop", "properties-set"), (3, 1, 2),
+        (PREPARATIONS[5], PREPARATIONS[0], PREPARATIONS[3])),
+}
+
+
+def profile_spec(name=PROFILE):
+    require(isinstance(name, str) and name in PROFILES, "Unknown reviewed batch profile")
+    return PROFILES[name]
+
+
 CONFIGURATION = "Release-Anytype"
 FLAGS = ["OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED", "ENABLE_TESTABILITY=YES",
          "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-",
@@ -71,9 +109,10 @@ def digest(path):
         return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
-def plan(lane):
+def plan(lane, profile=PROFILE):
+    spec = profile_spec(profile)
     result = []
-    for name, count, preparation in zip(LANES, COUNTS, PREPARATIONS, strict=True):
+    for name, count, preparation in zip(spec.lanes, spec.counts, spec.preparations, strict=True):
         item = lane.plan(name, "ipad", "en")
         require(item["build_configuration"] == CONFIGURATION
                 and item["expected_ui_executions"] == count
@@ -84,7 +123,8 @@ def plan(lane):
                 "An existing lane changed; review the bounded batch profile")
         result.append(item)
     methods = [method for item in result for method in item["methods"]]
-    require(len(methods) == UI_COUNT and len(set(methods)) == UI_COUNT, "Exactly 15 existing UI methods required")
+    require(len(methods) == spec.ui_count and len(set(methods)) == spec.ui_count,
+            "Exactly the reviewed profile's existing UI methods are required")
     require(len({item["preparation"].split("/")[0] for item in result}) == 3,
             "Exactly three separately executed preparation suites required")
     return result
@@ -431,8 +471,8 @@ def build_once(args, lane, selections, receipt):
     require(derived.is_relative_to(app / "build") and evidence.is_relative_to(app / "build"),
             "Batch requires this checkout's job-owned build/evidence paths")
     head = shared.git(app, "rev-parse", "HEAD")
-    require(head == os.environ.get("GITHUB_SHA") and shared.git(app, "branch", "--show-current") == lane.BRANCH,
-            "Actual integration source identity differs")
+    lane.require_source_identity(head, os.environ.get("GITHUB_SHA"),
+        shared.git(app, "branch", "--show-current"), os.environ.get("GITHUB_REF"))
     preflight_path = evidence / "preflight/preflight.json"
     preflight = json.loads(preflight_path.read_text())
     require(preflight.get("status") == "PREFLIGHT_PASS_UI_NOT_RUN" and preflight.get("source_sha") == head
@@ -547,11 +587,13 @@ def validate_lane_pass(receipt, directory, selection, context):
 def worker(args, lane, intent):
     require(os.getppid() == intent["parent_pid"], "Batch worker has another parent")
     require(0 < args.deadline - time.monotonic() <= WORKER_SECONDS, "Invalid bounded worker deadline")
-    selections = plan(lane)
+    spec = profile_spec(intent.get("profile", PROFILE))
+    selections = plan(lane, spec.name)
     receipt = {"protocol": PROTOCOL, "status": "FAIL", "phase": "SETUP", "started_at": now(),
-               "profile": PROFILE, "planned_ui_methods": UI_COUNT, "planned_native_preparations": PREPARATION_COUNT,
-               "planned_native_postflights": POSTFLIGHT_COUNT,
-               "lane_statuses": {name: "NOT_RUN_SETUP" for name in LANES},
+               "profile": spec.name, "planned_ui_methods": spec.ui_count,
+               "planned_native_preparations": spec.preparation_count,
+               "planned_native_postflights": spec.postflight_count,
+               "lane_statuses": {name: "NOT_RUN_SETUP" for name in spec.lanes},
                "lane_receipts": {}, "device_queries": [], "full_matrix_accepted": False, "release_accepted": False}
     evidence = args.evidence.resolve()
     write(evidence / "batch-worker.json", receipt)
@@ -768,16 +810,18 @@ def cleanup_owned(intent, evidence):
 
 
 def validate_worker_conclusion(receipt, intent, evidence, lane):
-    require(receipt.get("protocol") == PROTOCOL and receipt.get("profile") == PROFILE
-            and receipt.get("planned_ui_methods") == UI_COUNT and receipt.get("planned_native_preparations") == PREPARATION_COUNT
-            and receipt.get("planned_native_postflights") == POSTFLIGHT_COUNT
-            and set(receipt.get("lane_statuses", {})) == set(LANES), "Worker receipt profile differs")
+    spec = profile_spec(intent.get("profile", PROFILE))
+    require(receipt.get("protocol") == PROTOCOL and receipt.get("profile") == spec.name
+            and receipt.get("planned_ui_methods") == spec.ui_count
+            and receipt.get("planned_native_preparations") == spec.preparation_count
+            and receipt.get("planned_native_postflights") == spec.postflight_count
+            and set(receipt.get("lane_statuses", {})) == set(spec.lanes), "Worker receipt profile differs")
     if receipt.get("status") != "BATCH_PASS_ACCEPTANCE_REVIEW_PENDING":
         require(receipt.get("status") in {"BATCH_FAILED_OBSERVED_TESTS", "BATCH_BUDGET_EXHAUSTED",
                 "BATCH_ABORTED_SETUP_OR_IDENTITY", "CANCELLED"}, "Unknown terminal worker status")
         return
     require(all(value == "LANE_PASS_ACCEPTANCE_REVIEW_PENDING" for value in receipt["lane_statuses"].values())
-            and set(receipt.get("lane_receipts", {})) == set(LANES), "Passing batch lacks six passing lane receipts")
+            and set(receipt.get("lane_receipts", {})) == set(spec.lanes), "Passing batch lacks every reviewed lane receipt")
     require(receipt.get("source", {}).get("source_sha") == intent["source_sha"], "Passing worker source differs")
     build_path = evidence / "batch-build/same-job-build.json"
     require(digest(build_path) == receipt["build_receipt_sha256"], "Same-job successful build receipt changed")
@@ -788,7 +832,7 @@ def validate_worker_conclusion(receipt, intent, evidence, lane):
             "Passing worker has no exact successful same-job build")
     observed_udids, observed_spaces, observed_containers = set(), set(), set()
     totals = {"native_preparations": 0, "ui_methods": 0, "native_postflights": 0}
-    for selection in plan(lane):
+    for selection in plan(lane, spec.name):
         name = selection["lane"]
         reference = receipt["lane_receipts"][name]
         require(reference.get("path") == "lanes/" + name + "/execution.json", "Lane receipt path differs")
@@ -826,7 +870,8 @@ def validate_worker_conclusion(receipt, intent, evidence, lane):
             observed = validate_observed_result(json.loads(summary_path.read_text()),
                 lane.shared.method_results(json.loads(tests_path.read_text())), expected, device["udid"], passing=True)
             totals[total_key] += observed["original_counts"]["passedTests"]
-    require(totals == {"native_preparations": PREPARATION_COUNT, "ui_methods": UI_COUNT, "native_postflights": POSTFLIGHT_COUNT}, "Original batch execution counts differ")
+    require(totals == {"native_preparations": spec.preparation_count, "ui_methods": spec.ui_count,
+                      "native_postflights": spec.postflight_count}, "Original batch execution counts differ")
 
 
 def publish_batch_observations(evidence, result):
@@ -836,7 +881,8 @@ def publish_batch_observations(evidence, result):
     same bounded schema without forwarding that log or reading old artifacts.
     Diagnostic faults never change the original controller result.
     """
-    diagnostics.emit_execution(result, PROFILE)
+    spec = profile_spec(result.get("profile", PROFILE))
+    diagnostics.emit_execution(result, spec.name)
     root = evidence.resolve()
 
     def read_receipt(path, expected_sha):
@@ -858,16 +904,16 @@ def publish_batch_observations(evidence, result):
     try:
         retained = result.get("retained_worker_receipt", {})
         worker = read_receipt(worker_path, retained.get("sha256"))
-        if worker.get("protocol") != PROTOCOL or worker.get("profile") != PROFILE:
+        if worker.get("protocol") != PROTOCOL or worker.get("profile") != spec.name:
             raise ValueError("Diagnostic worker profile differs")
-        diagnostics.emit_execution(worker, PROFILE)
+        diagnostics.emit_execution(worker, spec.name)
         references = worker.get("lane_receipts", {})
         if type(references) is not dict:
             raise ValueError("Diagnostic worker lane references differ")
     except Exception:
-        diagnostics.emit_execution({"status": "DIAGNOSTIC_READ_FAILED"}, PROFILE)
+        diagnostics.emit_execution({"status": "DIAGNOSTIC_READ_FAILED"}, spec.name)
         return
-    for name in LANES:
+    for name in spec.lanes:
         if name not in references:
             continue
         try:
@@ -892,7 +938,8 @@ def run(args, lane):
     require(not any(path.exists() or path.is_symlink() for path in
                     (evidence / name for name in ("execution.json", "batch-intent.json", "batch-worker.json", "lanes"))),
             "Refuse stale batch evidence")
-    plan(lane)
+    spec = profile_spec(getattr(args, "lane", PROFILE))
+    plan(lane, spec.name)
     preflight = json.loads((evidence / "preflight/preflight.json").read_text())
     require(preflight.get("source_sha") == os.environ.get("GITHUB_SHA")
             and preflight.get("run_id") == os.environ.get("GITHUB_RUN_ID")
@@ -906,22 +953,22 @@ def run(args, lane):
         require(kind in {"ipad", "iphone"} and device["name"] == "Pinkha-UI27-" + os.environ["GITHUB_RUN_ID"] + "-" + kind,
                 "Original preflight device is not owned by this run")
         validate_owned_device(baseline, device, expected_state="Shutdown")
-    intent = {"protocol": PROTOCOL, "token": token, "parent_pid": os.getpid(),
+    intent = {"protocol": PROTOCOL, "profile": spec.name, "token": token, "parent_pid": os.getpid(),
               "source_sha": os.environ["GITHUB_SHA"], "run_id": os.environ["GITHUB_RUN_ID"],
               "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
               "baseline_udids": sorted(item["udid"] for items in baseline["devices"].values() for item in items),
               "baseline_inventory_sha256": hashlib.sha256(baseline_raw).hexdigest(),
               "preflight_devices": list(preflight["selected"].values()),
               "lane_devices": [{"lane": name, "name": "Pinkha-UI27-" + os.environ["GITHUB_RUN_ID"] + "-batch-" + token + "-" + name,
-                                "device": template["device"], "runtime": template["runtime"]} for name in LANES]}
+                                "device": template["device"], "runtime": template["runtime"]} for name in spec.lanes]}
     require(not any(item.get("name") in {device["name"] for device in intent["lane_devices"]}
                     for items in baseline["devices"].values() for item in items), "Planned simulator name already exists")
     (evidence / "batch-simulator-baseline.json").write_bytes(baseline_raw)
     write(evidence / "batch-intent.json", intent)
-    result = {"protocol": PROTOCOL, "profile": PROFILE, "status": "FAIL", "started_at": now(),
+    result = {"protocol": PROTOCOL, "profile": spec.name, "status": "FAIL", "started_at": now(),
               "source_sha": intent["source_sha"], "run_id": intent["run_id"], "run_attempt": intent["run_attempt"],
-              "planned_ui_methods": UI_COUNT, "planned_native_preparations": PREPARATION_COUNT,
-               "planned_native_postflights": POSTFLIGHT_COUNT,
+              "planned_ui_methods": spec.ui_count, "planned_native_preparations": spec.preparation_count,
+              "planned_native_postflights": spec.postflight_count,
               "full_matrix_accepted": False, "release_accepted": False, "visual_review": "PENDING"}
     write(evidence / "execution.json", result)
     cancellation = None
@@ -998,7 +1045,7 @@ def run(args, lane):
         result["status"], cancellation = "CANCELLED", cancellation or error
         write(evidence / "execution.json", result)
     except Exception:
-        diagnostics.emit_execution({"status": "DIAGNOSTIC_READ_FAILED"}, PROFILE)
+        diagnostics.emit_execution({"status": "DIAGNOSTIC_READ_FAILED"}, spec.name)
     if cancellation is not None:
         raise cancellation
     print(json.dumps(result))

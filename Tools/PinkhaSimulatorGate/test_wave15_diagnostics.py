@@ -162,6 +162,18 @@ class Wave15DiagnosticsTests(unittest.TestCase):
         self.assertEqual(value["source_change_stage"], diagnostics.NOT_RECORDED)
         self.assertSafe(value)
 
+    def test_retained_heart_profile_reports_only_its_three_fixed_lane_indexes(self):
+        receipt = {"status": "BATCH_FAILED_OBSERVED_TESTS", "current_lane": "quote-drop",
+            "lane_statuses": {"editor": "LANE_PASS_ACCEPTANCE_REVIEW_PENDING",
+                "quote-drop": "LANE_FAILED_OBSERVED_TEST", "properties-set": "NOT_RUN_BUDGET", SECRET: SECRET}}
+        value = diagnostics.execution_observation(receipt, "retained-heart-release")
+        self.assertEqual(value["lane"], "retained-heart-release")
+        self.assertEqual(value["current_lane"], "quote-drop")
+        self.assertEqual([item["reported_status"] for item in value["lane_statuses"]],
+            ["LANE_PASS_ACCEPTANCE_REVIEW_PENDING", "LANE_FAILED_OBSERVED_TEST", "NOT_RUN_BUDGET"])
+        self.assertEqual(diagnostics._project_execution(value), value)
+        self.assertSafe(value)
+
     def test_nested_public_diagnostics_are_reprojected_and_detached(self):
         public = diagnostics.selection_observation(selection(), summary())
         public["secret"] = SECRET

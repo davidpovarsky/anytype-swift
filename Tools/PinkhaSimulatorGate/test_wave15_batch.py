@@ -40,6 +40,12 @@ DEVICE = {"udid": UDID, "name": "owned", "lane": "inspector",
 
 
 def selection(name, device="ipad", language="en"):
+    if name == "quote-drop":
+        return {"lane": name, "device_family": device, "app_language": language,
+            "build_configuration": batch.CONFIGURATION, "expected_ui_executions": 1,
+            "expected_preparation_executions": 1, "preparation": batch.PREPARATIONS[0],
+            "expected_postflight_executions": 0, "postflight": None,
+            "methods": ["PinkhaTorahQuoteAcceptanceUITests/testNativeQuoteUndoRedoDragAndRelaunch"]}
     index = batch.LANES.index(name)
     suite, names = SPECS[index]
     return {"lane": name, "device_family": device, "app_language": language,
@@ -613,23 +619,25 @@ class BatchControls(unittest.TestCase):
             with self.subTest(key=key, value=value), self.assertRaises(RuntimeError):
                 batch.minimum_lane_budget(selected)
 
-    def test_batch_pass_requires_six_original_preparations_and_fifteen_original_ui_cases(self):
+    def conclusion_case(self, profile=batch.PROFILE):
+        spec = batch.profile_spec(profile)
         with tempfile.TemporaryDirectory() as temporary:
             evidence = Path(temporary)
             source = {"source_sha": "a" * 40}
-            intent = {"source_sha": source["source_sha"], "run_id": "123", "run_attempt": "1",
+            intent = {"profile": spec.name, "source_sha": source["source_sha"], "run_id": "123", "run_attempt": "1",
                       "baseline_udids": [], "lane_devices": []}
             build_path = evidence / "batch-build/same-job-build.json"
             batch.write(build_path, {"status": "SAME_JOB_SUCCESSFUL_BUILD_WITH_FROZEN_PRODUCTS", "source": source,
                                      "build_flags": batch.FLAGS, "configuration": batch.CONFIGURATION,
                                      "previous_artifact_reuse": False})
             build_sha = batch.digest(build_path)
-            receipt = {"protocol": batch.PROTOCOL, "profile": batch.PROFILE, "source": source,
-                       "status": "BATCH_PASS_ACCEPTANCE_REVIEW_PENDING", "planned_ui_methods": 15,
-                       "planned_native_preparations": 6, "planned_native_postflights": 1, "build_receipt_sha256": build_sha,
-                       "lane_statuses": {name: "LANE_PASS_ACCEPTANCE_REVIEW_PENDING" for name in batch.LANES},
+            receipt = {"protocol": batch.PROTOCOL, "profile": spec.name, "source": source,
+                       "status": "BATCH_PASS_ACCEPTANCE_REVIEW_PENDING", "planned_ui_methods": spec.ui_count,
+                       "planned_native_preparations": spec.preparation_count, "planned_native_postflights": 1,
+                       "build_receipt_sha256": build_sha,
+                       "lane_statuses": {name: "LANE_PASS_ACCEPTANCE_REVIEW_PENDING" for name in spec.lanes},
                        "lane_receipts": {}}
-            for index, name in enumerate(batch.LANES):
+            for index, name in enumerate(spec.lanes):
                 directory = evidence / "lanes" / name
                 device = {**DEVICE, "lane": name, "name": "unique-" + name, "udid": str(index) + UDID[1:]}
                 intent["lane_devices"].append({key: value for key, value in device.items() if key != "udid"})
@@ -702,10 +710,10 @@ class BatchControls(unittest.TestCase):
                 batch.validate_worker_conclusion(receipt, intent, evidence, lane)
             post_summary.write_bytes(saved_post)
             missing = copy.deepcopy(receipt)
-            missing["lane_receipts"].pop("properties")
-            with self.assertRaisesRegex(RuntimeError, "six passing"):
+            missing["lane_receipts"].pop(spec.lanes[0])
+            with self.assertRaisesRegex(RuntimeError, "every reviewed lane"):
                 batch.validate_worker_conclusion(missing, intent, evidence, lane)
-            changed = evidence / "lanes/properties/ui/wave15-properties-summary.json"
+            changed = evidence / "lanes" / spec.lanes[0] / "ui" / ("wave15-" + spec.lanes[0] + "-summary.json")
             before = changed.read_bytes()
             value = json.loads(before)
             value["totalTestCount"] = 999
@@ -715,10 +723,59 @@ class BatchControls(unittest.TestCase):
             changed.write_bytes(before)
             fixture = evidence / "lanes/properties-set/fixture-isolation.json"
             value = json.loads(fixture.read_text())
-            value["space_id"] = "synthetic-controller-space-properties"
+            value["space_id"] = "synthetic-controller-space-" + spec.lanes[0]
             batch.write(fixture, value)
             with self.assertRaisesRegex(RuntimeError, "independent fresh"):
                 batch.validate_worker_conclusion(receipt, intent, evidence, lane)
+
+    def test_batch_pass_requires_six_original_preparations_and_fifteen_original_ui_cases(self):
+        self.conclusion_case()
+
+    def test_retained_heart_batch_requires_three_original_preparations_six_ui_and_native_postflight(self):
+        self.conclusion_case(batch.RETAINED_HEART_PROFILE)
+
+    def test_retained_heart_profile_is_exact_and_does_not_trim_existing_six_lane_profile(self):
+        import run_wave15_acceptance as lane
+        spec = batch.profile_spec(batch.RETAINED_HEART_PROFILE)
+        self.assertEqual(spec.lanes, ("editor", "quote-drop", "properties-set"))
+        self.assertEqual((spec.ui_count, spec.preparation_count, spec.postflight_count), (6, 3, 1))
+        plans = batch.plan(lane, spec.name)
+        self.assertEqual([x["methods"] for x in plans], [selection(x)["methods"] for x in spec.lanes])
+        self.assertEqual([x["preparation"] for x in plans], list(spec.preparations))
+        self.assertEqual(plans[-1]["postflight"], batch.preservation.METHOD)
+        original = batch.plan(lane)
+        self.assertEqual([x["lane"] for x in original], list(batch.LANES))
+        self.assertEqual(sum(x["expected_ui_executions"] for x in original), 15)
+        for value in ("editor,properties-set", ["editor"], "unreviewed-release"):
+            with self.subTest(value=value), self.assertRaisesRegex(RuntimeError, "reviewed batch profile"):
+                batch.plan(lane, value)
+
+    def test_worker_cannot_report_another_fixed_profile_or_omit_its_postflight(self):
+        spec = batch.profile_spec(batch.RETAINED_HEART_PROFILE)
+        receipt = {"protocol": batch.PROTOCOL, "profile": spec.name, "status": "BATCH_BUDGET_EXHAUSTED",
+            "planned_ui_methods": 6, "planned_native_preparations": 3, "planned_native_postflights": 1,
+            "lane_statuses": {name: "NOT_RUN_BUDGET" for name in spec.lanes}}
+        intent = {"profile": spec.name}
+        batch.validate_worker_conclusion(receipt, intent, Path("."), None)
+        for change in (lambda x: x.update(profile=batch.PROFILE), lambda x: x.update(planned_native_postflights=0),
+                       lambda x: x.update(planned_ui_methods=5), lambda x: x["lane_statuses"].pop("quote-drop")):
+            bad = copy.deepcopy(receipt); change(bad)
+            with self.subTest(change=change), self.assertRaisesRegex(RuntimeError, "profile differs"):
+                batch.validate_worker_conclusion(bad, intent, Path("."), None)
+
+    def test_batch_uses_common_source_identity_guard_before_build(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            args = argparse.Namespace(app=root, evidence=root / "build/evidence", derived=root / "build/derived")
+            branch = "codex/chatgpt-wave15-shared-20261121"
+            guard = Mock(side_effect=ValueError("observed common admission boundary"))
+            shared = types.SimpleNamespace(git=Mock(side_effect=["a" * 40, branch]), command=Mock())
+            lane = types.SimpleNamespace(shared=shared, require_source_identity=guard)
+            with patch.dict(os.environ, {"GITHUB_SHA": "a" * 40, "GITHUB_REF": "refs/heads/" + branch}):
+                with self.assertRaisesRegex(ValueError, "common admission"):
+                    batch.build_once(args, lane, [], {})
+            guard.assert_called_once_with("a" * 40, "a" * 40, branch, "refs/heads/" + branch)
+            shared.command.assert_not_called()
 
     def test_first_cancellation_in_cleanup_or_publication_is_not_swallowed(self):
         for phase in ["cleanup", "publication", "signals_worker", "signals_cleanup", "signals_publication", "diagnostics"]:
@@ -863,16 +920,17 @@ class BatchControls(unittest.TestCase):
                 if name not in {"lanes", "broken-worker"}:
                     self.assertEqual((evidence / name).read_text(), "original data")
 
-    def worker_case(self, mode):
+    def worker_case(self, mode, profile=batch.PROFILE):
+        spec = batch.profile_spec(profile)
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         root = Path(temporary.name)
         args = argparse.Namespace(app=root, evidence=root / "evidence", derived=root / "build/derived",
                                   deadline=time.monotonic() + batch.WORKER_SECONDS - 1)
         devices = [{**DEVICE, "udid": str(index + 1) * 8 + "-1111-1111-1111-111111111111",
-                    "name": "owned-" + name, "lane": name} for index, name in enumerate(batch.LANES)]
+                    "name": "owned-" + name, "lane": name} for index, name in enumerate(spec.lanes)]
         ownership = [{key: value for key, value in device.items() if key != "udid"} for device in devices]
-        intent = {"parent_pid": os.getppid(), "lane_devices": ownership, "baseline_udids": []}
+        intent = {"profile": spec.name, "parent_pid": os.getppid(), "lane_devices": ownership, "baseline_udids": []}
         calls = []
         active = []
         context = frozen(root)
@@ -919,13 +977,14 @@ class BatchControls(unittest.TestCase):
         elif mode == "properties_budget":
             args.deadline = time.monotonic() + 2200
         verification = Mock(side_effect=[None, None, RuntimeError("shared source changed")]) if mode == "drift" else Mock()
-        with patch.object(batch, "build_once", side_effect=build_once), \
+        with patch.object(batch, "build_once", side_effect=build_once) as build, \
              patch.object(batch.FrozenBuild, "verify_current", verification), \
              patch.object(batch.subprocess, "check_output", side_effect=check_output), \
              patch.object(batch.subprocess, "run", return_value=types.SimpleNamespace(returncode=0)), \
              patch.object(batch, "validate_lane_pass", return_value={"synthetic_control": True}), \
              patch.object(batch, "qualify_functional_failure", return_value={"original_counts": {"failedTests": 1}}):
             code = batch.worker(args, lane, intent)
+        build.assert_called_once()
         return root, calls, code, json.loads((args.evidence / "batch-worker.json").read_text())
 
     def test_functional_failure_remains_failed_while_five_fresh_lanes_continue(self):
@@ -938,6 +997,18 @@ class BatchControls(unittest.TestCase):
         self.assertEqual(len(receipt["lane_receipts"]), 6)
         owned = [json.loads((root / "evidence/lanes" / name / "owned-simulator.json").read_text())["udid"] for name in batch.LANES]
         self.assertEqual(len(set(owned)), 6)
+
+    def test_retained_heart_worker_shares_only_build_with_three_fresh_devices(self):
+        root, calls, code, receipt = self.worker_case("pass", batch.RETAINED_HEART_PROFILE)
+        self.assertEqual(calls, ["editor", "quote-drop", "properties-set"])
+        self.assertEqual(code, 0)
+        self.assertEqual(receipt["profile"], batch.RETAINED_HEART_PROFILE)
+        self.assertEqual(receipt["planned_ui_methods"], 6)
+        self.assertEqual(receipt["planned_native_preparations"], 3)
+        self.assertEqual(receipt["planned_native_postflights"], 1)
+        owned = [json.loads((root / "evidence/lanes" / name / "owned-simulator.json").read_text())["udid"] for name in calls]
+        self.assertEqual(len(set(owned)), 3)
+        self.assertEqual(set(receipt["lane_receipts"]), set(calls))
 
     def test_setup_failure_aborts_remaining_lanes_without_relabelling_them(self):
         _, calls, code, receipt = self.worker_case("setup")
