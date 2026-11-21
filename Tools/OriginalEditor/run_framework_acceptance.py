@@ -26,6 +26,8 @@ from framework_products import consumer_project, export_products, inventory, ori
 from amplitude_simulator_signing import prepare_amplitude_simulator_export
 from anycrypto_simulator_signing import (NAME as ANYCRYPTO_NAME, EXECUTABLE as ANYCRYPTO_EXECUTABLE,
                                         diagnose_generated_package_exports, prepare_anycrypto_simulator_export)
+from observed_package_simulator_signing import (PROFILES as OBSERVED_PACKAGE_PROFILES,
+                                               prepare_observed_package_simulator_export)
 from pbx_source import require
 
 
@@ -138,10 +140,16 @@ def dependency_proof(root, derived, profile, evidence):
         require(checkout.resolve().is_relative_to((derived / 'SourcePackages/checkouts').resolve()), 'Dependency checkout escapes cache')
         require(git(checkout, 'rev-parse', 'HEAD') == revision, 'Actual dependency Git HEAD differs: ' + identity)
         require(not git(checkout, 'diff', '--name-only', 'HEAD'), 'Actual dependency source was modified: ' + identity)
+        # Generated compiler/accessor outputs belong to owned DerivedData, not
+        # immutable source checkouts. Include Git-ignored additions: SwiftPM can
+        # still compile them or copy them as resources. Do not clean either.
+        untracked = [path for path in git(checkout, 'ls-files', '--others', '-z').split('\0') if path]
+        require(not untracked, 'Untracked dependency inputs: ' + identity + ': ' + repr(untracked[:8]))
         actual[identity] = revision
     require({'torahinspectorkit', 'swift-ai-sdk'} <= set(actual), 'Canonical inspector/Hanlin dependency checkout missing')
     receipt = {'original_pin_count': len(expected), 'actual_checkout_revisions': actual,
-               'locked_but_not_materialized': sorted(set(expected) - set(actual))}
+               'locked_but_not_materialized': sorted(set(expected) - set(actual)),
+               'all_checkout_files_tracked': True}
     write(evidence / 'dependency-checkouts.json', receipt)
     return receipt
 
@@ -290,6 +298,32 @@ def execute(args, receipt):
                         and {path for path in exported_proof['files']
                              if after_signing[path] != exported_proof['files'][path]} == {prefix + ANYCRYPTO_EXECUTABLE},
                         'AnyCrypto export sealing changed unrelated distribution bytes')
+                exported_proof['files'] = after_signing
+                exported_proof['bytes'] = sum(item['bytes'] for item in after_signing.values())
+                exported_proof.setdefault('simulator_signing_transformations', []).append(transformation)
+                write(evidence / 'framework-distribution.json', exported_proof)
+            elif name in OBSERVED_PACKAGE_PROFILES:
+                label = 'observed-' + OBSERVED_PACKAGE_PROFILES[name]['label']
+                write(evidence / ('framework-distribution-before-' + label + '-signing.json'), exported_proof)
+                try:
+                    transformation = prepare_observed_package_simulator_export(
+                        root, products, exported, evidence, name, command)
+                except BaseException:
+                    try:
+                        write(evidence / ('framework-distribution-after-failed-' + label + '-signing.json'),
+                              {'status': 'OBSERVED_ONLY_NOT_QUALIFIED', 'files': inventory(exported)})
+                    except BaseException as observation_error:
+                        receipt['after_failed_' + label + '_inventory_error'] = {
+                            'type': type(observation_error).__name__, 'message': str(observation_error)}
+                    raise
+                after_signing = inventory(exported)
+                write(evidence / ('framework-distribution-after-' + label + '-signing.json'),
+                      {'status': 'OBSERVED_ONLY_NOT_QUALIFIED', 'files': after_signing})
+                prefix = 'Frameworks/' + name + '/'
+                require(set(after_signing) == set(exported_proof['files']) | {prefix + '_CodeSignature/CodeResources'}
+                        and {path for path in exported_proof['files']
+                             if after_signing[path] != exported_proof['files'][path]} == {prefix + executable},
+                        'Observed package export sealing changed unrelated distribution bytes')
                 exported_proof['files'] = after_signing
                 exported_proof['bytes'] = sum(item['bytes'] for item in after_signing.values())
                 exported_proof.setdefault('simulator_signing_transformations', []).append(transformation)

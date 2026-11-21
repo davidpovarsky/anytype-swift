@@ -1,0 +1,66 @@
+{
+  "source_run": 44946489804,
+  "artifact_sha256": "1a45863adb5c3d45bfcc290536bda759fa3842b25f3888bf14c7b0d1a681243b",
+  "scope": "READ_ONLY_REPLAY_OF_RETAINED_ACTUAL_BYTES_NO_NEW_NATIVE_SIGNING_CREDIT",
+  "initial_audit_assumption_corrected": "Resource-only native CodeDirectory uses one code slot covering Info.plist, not zero; no production control changed. All actual special and code hashes now checked.",
+  "actual_anycrypto_before_after_shared_parser": "PASS",
+  "actual_anycrypto_normalized_payload_sha256": "f26a59ec81d3cbcb8ecf2b68fa0e94ee059dd23a5a5585b3c3c7be454a57d2a9",
+  "observed_products": [
+    {
+      "framework": "AppTarget_-256A0C750C206F_PackageProduct.framework",
+      "preimage_sha256": "62c63481859e9339cdb8e74fb65781ff959dc1b9045590a21ea81b04664d1fe2",
+      "exact_observe_and_macho_shape": "PASS",
+      "terminal_signature_offset": 54304,
+      "nested_resource_native_codedirectory_hashes": {},
+      "native_signing_execution": false
+    },
+    {
+      "framework": "BigInt_175F1397B99A03_PackageProduct.framework",
+      "preimage_sha256": "e9f839283414355603e0ccf604d8b76e0ecdc8fed0b5c5b9c343c975ba408adc",
+      "exact_observe_and_macho_shape": "PASS",
+      "terminal_signature_offset": 504912,
+      "nested_resource_native_codedirectory_hashes": {},
+      "native_signing_execution": false
+    },
+    {
+      "framework": "Crypto_17A3B1FFC41E47_PackageProduct.framework",
+      "preimage_sha256": "13ecaf1a968acaf60ec5fb7be48fe87fdce513afae97016f36f5a37ef58a6f79",
+      "exact_observe_and_macho_shape": "PASS",
+      "terminal_signature_offset": 101952,
+      "nested_resource_native_codedirectory_hashes": {
+        "Info.plist": "d29b3ea018ee60444369666b7e1e3337a409f024a412e1a0228ecb08c415f054",
+        "_CodeSignature/CodeRequirements": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986",
+        "_CodeSignature/CodeResources": "992cb9b56db418544103d3f0d9cfe363d28882ab1d8aa3cac3cd2099aa799d4d"
+      },
+      "native_signing_execution": false
+    },
+    {
+      "framework": "Factory_32A9B87E1196645F_PackageProduct.framework",
+      "preimage_sha256": "ad63fa5a6f85a9b57c846549eed6117520718ed5ceb9d84cdd9782ab5354b066",
+      "exact_observe_and_macho_shape": "PASS",
+      "terminal_signature_offset": 427248,
+      "nested_resource_native_codedirectory_hashes": {},
+      "native_signing_execution": false
+    },
+    {
+      "framework": "NotificationsCore_5AD5AD79262EBF4_PackageProduct.framework",
+      "preimage_sha256": "f327bfd787b510d28716084c35f5194299d9e2ee1d630135b4b3148aa9a1457a",
+      "exact_observe_and_macho_shape": "PASS",
+      "terminal_signature_offset": 250768,
+      "nested_resource_native_codedirectory_hashes": {},
+      "native_signing_execution": false
+    },
+    {
+      "framework": "SwiftProtobuf_7CEE9AB92C12BC6B_PackageProduct.framework",
+      "preimage_sha256": "0b2f9c992f50875d381abeae7ed7b3d81feffb1e7076f912f813641d6f19e024",
+      "exact_observe_and_macho_shape": "PASS",
+      "terminal_signature_offset": 4935456,
+      "nested_resource_native_codedirectory_hashes": {
+        "Info.plist": "e4d3db23ffe3257aa92423c9b5a3afb1d3a1696be52a66b2f96b08259dfb0d7d",
+        "_CodeSignature/CodeRequirements": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986",
+        "_CodeSignature/CodeResources": "4dbd75dd6ecfc7dee138859716714fa5b2897c54f7956eb11286e43d2e8c3678"
+      },
+      "native_signing_execution": false
+    }
+  ]
+}

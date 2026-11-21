@@ -1,0 +1,23 @@
+{
+  "scope": "TWO_AFFECTED_SOURCE_CLOSURE_CONTROLS_ONLY",
+  "evidence_origin": "exec_command result chunk21fc29",
+  "tests_run": 2,
+  "passed_ids": [
+    "test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_unchanged_source_accepts_separate_owned_generated_build_metadata",
+    "test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_untracked_swift_resource_and_ignored_source_are_rejected_without_cleanup"
+  ],
+  "failures": [],
+  "errors": [],
+  "skipped": [],
+  "exit_code": 0,
+  "positive": "unchanged original Git checkouts plus separate owned DerivedData generated metadata",
+  "negative_variants": [
+    "untracked Sources/Extra.swift",
+    "untracked Resources/Extra.json",
+    "Git-ignored Sources/Ignored.swift"
+  ],
+  "original_checkout_not_cleaned": true,
+  "full_187_gate": "NOT_RERUN_LOCALLY; mandatory native workflow retains exact187 identity gate",
+  "prior185_execution": "controls/source-controls-result.json",
+  "exact187_identity_discovery_matches": true
+}

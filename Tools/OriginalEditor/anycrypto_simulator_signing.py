@@ -75,7 +75,7 @@ def diagnose_generated_package_exports(root, products, exported, evidence, frame
         (evidence / 'package-product-signature-diagnostics.json').write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
 
 
-def layout(binary):
+def layout(binary, executable=EXECUTABLE):
     require(len(binary) >= 32, 'Truncated generated framework executable')
     magic, cpu, subtype, kind, count, size, flags, reserved = struct.unpack_from('<8I', binary)
     require((magic, cpu, subtype, kind) == (0xfeedfacf, 0x0100000c, 0, 6)
@@ -109,7 +109,7 @@ def layout(binary):
             install_names.append(binary[cursor + start:cursor + length].split(b'\0', 1)[0])
         cursor += length
     require(cursor == 32 + size and platforms == [7]
-            and install_names == [('@rpath/' + NAME + '/' + EXECUTABLE).encode()]
+            and install_names == [('@rpath/' + executable + '.framework/' + executable).encode()]
             and linkedit is not None and signature is not None,
             'Generated product identity or Simulator command closure differs')
     require(32 + size <= linkedit['fileoff'] < signature['offset']
@@ -121,8 +121,8 @@ def layout(binary):
     return dict(signature=signature, linkedit=linkedit, commands=commands)
 
 
-def executable_preservation(before, after):
-    old, new = layout(before), layout(after)
+def executable_preservation(before, after, executable=EXECUTABLE):
+    old, new = layout(before, executable), layout(after, executable)
     require(old['commands'] == new['commands']
             and old['signature']['offset'] == new['signature']['offset'],
             'Signing changed command layout or moved the original signature')

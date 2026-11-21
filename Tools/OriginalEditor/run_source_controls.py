@@ -169,8 +169,32 @@ EXPECTED_IDS = (
     "test_framework_temporary_paths.TemporaryRootAliasControls.test_known_input_mutation_is_really_injected_and_refused_under_directory_alias",
     "test_framework_temporary_paths.TemporaryRootAliasControls.test_materialized_mutation_is_really_injected_and_refused_under_directory_alias",
     "test_framework_temporary_paths.TemporaryRootAliasControls.test_original_raw_compiler_proofs_are_retained_under_directory_alias",
+    "test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_unchanged_source_accepts_separate_owned_generated_build_metadata",
+    "test_observed_package_simulator_signing.DependencyCheckoutSourceClosureControls.test_untracked_swift_resource_and_ignored_source_are_rejected_without_cleanup",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_alias_cannot_redirect_signing_to_original_producer",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_device_product_is_not_an_eligible_simulator_export",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_different_native_failure_is_not_a_signing_exception",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_dirty_local_module_bytes_fail_against_pinned_blob",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_every_exact_profile_preserves_all_original_and_nested_bytes",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_export_must_match_original_before_native_signing",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_extra_local_module_file_is_not_in_the_source_closure",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_modified_executable_instruction_stops_acceptance",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_modified_original_producer_stops_acceptance",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_native_post_sign_failure_preserves_receipt_without_qualification",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_nested_resource_metadata_mutation_is_rejected",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_nested_signature_must_verify_before_any_root_signing",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_resource_and_nested_signature_mutations_are_rejected",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_unexpected_valid_original_is_not_resigned",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_unknown_resource_or_signature_member_is_refused",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_unreviewed_product_name_has_no_wildcard_exception",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_wrong_external_revision_never_reaches_native_signer",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_wrong_local_module_tree_never_reaches_native_signer",
+    "test_observed_package_simulator_signing.ObservedExportSigningControls.test_wrong_new_signing_identifier_is_rejected",
+    "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_failed_signer_keeps_failure_inventory_and_stops_native_acceptance",
+    "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_original_driver_keeps_full_strict_gate_before_external_consumer",
+    "test_observed_package_simulator_signing.ObservedPackageOriginalDriverControls.test_unrelated_distribution_change_cannot_reach_consumer",
 )
-EXPECTED_COUNT = 163
+EXPECTED_COUNT = 187
 
 
 def cases(suite):
@@ -214,7 +238,7 @@ def main():
         receipt['discovered_ids'] = actual_ids
         if (len(EXPECTED_IDS) != EXPECTED_COUNT or len(set(EXPECTED_IDS)) != EXPECTED_COUNT
                 or actual_ids != list(EXPECTED_IDS)):
-            raise RuntimeError('Actual unittest discovery differs from the exact reviewed 163 cases')
+            raise RuntimeError(f'Actual unittest discovery differs from the exact reviewed {EXPECTED_COUNT} cases')
         receipt['phase'] = 'EXECUTION'
         result = unittest.TextTestRunner(verbosity=2, resultclass=ObservedResult).run(suite)
         receipt.update({
@@ -234,8 +258,8 @@ def main():
                 or result.failures or result.errors or result.skipped
                 or result.expectedFailures or result.unexpectedSuccesses
                 or not result.wasSuccessful()):
-            raise RuntimeError('The exact 163 source controls did not all pass without skips')
-        receipt['status'] = 'PASS_SOURCE_CONTROLS_163'
+            raise RuntimeError(f'The exact {EXPECTED_COUNT} source controls did not all pass without skips')
+        receipt['status'] = f'PASS_SOURCE_CONTROLS_{EXPECTED_COUNT}'
         receipt['phase'] = 'COMPLETE'
         code = 0
     except BaseException as error:
