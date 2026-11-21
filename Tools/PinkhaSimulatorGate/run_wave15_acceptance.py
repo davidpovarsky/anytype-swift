@@ -23,6 +23,7 @@ import hanlin_selection_evidence as hanlin_selection
 import wave15_diagnostics as diagnostics
 import type_preservation as preservation
 import text_native_ack
+import shared_editor_existing_build
 
 BRANCH = "codex/chatgpt-wave15-integration-20261118"
 CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
@@ -398,6 +399,14 @@ def execute(args, receipt, *, build_context=None):
         selection["additional_components"] = acknowledgement
         selection["requested_lane"] = text_native_ack.LANE
         receipt["text_native_acknowledgement"] = {"status": "NOT_RUN", **acknowledgement}
+    shared_editor = None
+    if getattr(args, "include_shared_editor", False):
+        require(acknowledgement is not None and args.device == "ipad",
+                "The shared-editor profile requires the same SDK06 iPad Debug build")
+        shared_editor = shared_editor_existing_build.source_contract(app)
+        selection["shared_editor_components"] = shared_editor
+        selection["requested_lane"] = shared_editor_existing_build.LANE
+        receipt["shared_editor_components"] = {"status": "NOT_RUN", **shared_editor}
     hanlin_lane = HANLIN_LANES.get(args.lane)
     source_methods(app, selection["methods"])
     head = shared.git(app, "rev-parse", "HEAD")
@@ -461,6 +470,7 @@ def execute(args, receipt, *, build_context=None):
                         "-derivedDataPath", str(derived), "-only-testing:AnytypeTests/" + native_suite,
                         *(["-only-testing:AnytypeTests/" + preservation.SUITE] if args.lane == "properties-set" else []),
                         *(["-only-testing:AnytypeTests/" + text_native_ack.SUITE] if acknowledgement else []),
+                        *(["-only-testing:AnytypeTests/" + shared_editor_existing_build.SUITE] if shared_editor else []),
                         *flags], app, evidence)
     else:
         require(derived == build_context.derived, "Same-job native product directory differs")
@@ -491,6 +501,18 @@ def execute(args, receipt, *, build_context=None):
         native_environment.update(preservation.binding_environment(preservation_binding))
         native_environment["PINKHA_PREPARE_TYPE_PRESERVATION"] = "1"
     run_selection = shared.run_selection if build_context is None else build_context.run_selection
+    if shared_editor:
+        receipt["phase"] = "SHARED_EDITOR_COMPONENTS"
+        shared.write(evidence / "execution.json", receipt)
+        component_evidence = evidence / "shared-editor-components"
+        try:
+            receipt["shared_editor_components"] = shared_editor_existing_build.execute(
+                app, native_configuration, udid, built, component_evidence, shared)
+        finally:
+            component_receipt = component_evidence / "execution.json"
+            if component_receipt.is_file():
+                receipt["shared_editor_components"] = json.loads(component_receipt.read_text())
+            shared.write(evidence / "execution.json", receipt)
     if acknowledgement:
         receipt["phase"] = "TEXT_NATIVE_ACK_COMPONENTS"
         shared.write(evidence / "execution.json", receipt)
@@ -663,12 +685,15 @@ def main():
     parser.add_argument("--app", type=Path, required=True)
     parser.add_argument("--evidence", type=Path, required=True)
     parser.add_argument("--derived", type=Path, required=True)
-    parser.add_argument("--lane", choices=[*LANES, *wave15_batch.PROFILES, text_native_ack.LANE], required=True)
+    parser.add_argument("--lane", choices=[*LANES, *wave15_batch.PROFILES, text_native_ack.LANE, shared_editor_existing_build.LANE], required=True)
     parser.add_argument("--device", choices=["iphone", "ipad"], required=True)
     parser.add_argument("--language", choices=["en", "he"], required=True)
     parser.add_argument("--runtime-profile", choices=shared.heart_profiles.PROFILE_NAMES, default="r14")
     parser.add_argument("--heart-source-run-id", default="")
     args = parser.parse_args()
+    args.include_shared_editor = args.lane == shared_editor_existing_build.LANE
+    if args.include_shared_editor:
+        args.lane = text_native_ack.LANE
     args.lane, args.include_text_native_ack = text_native_ack.resolve_lane(args.lane)
     if args.lane in wave15_batch.PROFILES:
         return wave15_batch.run(args, sys.modules[__name__])

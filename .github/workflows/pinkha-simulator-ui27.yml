@@ -62,13 +62,16 @@ jobs:
           mkdir -p build/ui27-evidence
           cp Dependencies/Hanlin/.pinkha-source.json build/ui27-evidence/hanlin-snapshot.json
       - name: Check actual SDK06 process and native receipt rejection controls
-        if: ${{ (inputs.acceptance_lane == 'hanlin-native' || inputs.acceptance_lane == 'hanlin-native-text-ack') }}
+        if: ${{ (inputs.acceptance_lane == 'hanlin-native' || (inputs.acceptance_lane == 'hanlin-native-text-ack' || inputs.acceptance_lane == 'hanlin-native-shared-editor')) }}
         run: |
           python3 -B Tools/PinkhaSimulatorGate/test_hanlin_ui_runtime.py -v > build/ui27-evidence/hanlin-runtime-controller-controls.log 2>&1
           python3 -B Tools/PinkhaSimulatorGate/test_hanlin_acceptance_evidence.py -v >> build/ui27-evidence/hanlin-runtime-controller-controls.log 2>&1
       - name: Check the seven new acknowledgement selection controls
-        if: ${{ inputs.acceptance_lane == 'hanlin-native-text-ack' }}
+        if: ${{ (inputs.acceptance_lane == 'hanlin-native-text-ack' || inputs.acceptance_lane == 'hanlin-native-shared-editor') }}
         run: python3 -B Tools/PinkhaSimulatorGate/test_text_native_ack.py -v
+      - name: Check existing-build shared-editor product and result binding
+        if: ${{ inputs.acceptance_lane == 'hanlin-native-shared-editor' }}
+        run: python3 -B Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py -v
       - name: Verify actual Xcode27 and create disposable OS27 iPhone and iPad
         run: python3 Tools/PinkhaSimulatorGate/preflight.py --evidence build/ui27-evidence/preflight
       - name: Install the explicitly selected original verified runtime
@@ -85,9 +88,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: build/ui27-derived
-          key: pinkha-ui27-arm64-xcode27.0-${{ ((inputs.acceptance_lane == 'hanlin-native' || inputs.acceptance_lane == 'hanlin-native-text-ack') || inputs.acceptance_lane == 'hanlin-selection') && 'Debug-Anytype' || 'Release-Anytype' }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-${{ github.sha }}
+          key: pinkha-ui27-arm64-xcode27.0-${{ ((inputs.acceptance_lane == 'hanlin-native' || (inputs.acceptance_lane == 'hanlin-native-text-ack' || inputs.acceptance_lane == 'hanlin-native-shared-editor')) || inputs.acceptance_lane == 'hanlin-selection') && 'Debug-Anytype' || 'Release-Anytype' }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-${{ github.sha }}
           restore-keys: |
-            pinkha-ui27-arm64-xcode27.0-${{ ((inputs.acceptance_lane == 'hanlin-native' || inputs.acceptance_lane == 'hanlin-native-text-ack') || inputs.acceptance_lane == 'hanlin-selection') && 'Debug-Anytype' || 'Release-Anytype' }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
+            pinkha-ui27-arm64-xcode27.0-${{ ((inputs.acceptance_lane == 'hanlin-native' || (inputs.acceptance_lane == 'hanlin-native-text-ack' || inputs.acceptance_lane == 'hanlin-native-shared-editor')) || inputs.acceptance_lane == 'hanlin-selection') && 'Debug-Anytype' || 'Release-Anytype' }}-${{ hashFiles('Modules/PinkhaKit/Package.swift', 'Anytype.xcodeproj/project.pbxproj', 'Anytype.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved', 'Tools/Hanlin/source.json') }}-
       - name: Build once and execute the declared native and UI selection
         if: ${{ inputs.acceptance_lane == '' }}
         id: actual-execution
