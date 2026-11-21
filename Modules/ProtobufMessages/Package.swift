@@ -3,6 +3,8 @@ import Foundation
 import PackageDescription
 
 let authorizedReadCandidate = ProcessInfo.processInfo.environment["PINKHA_NATIVE_T2_AUTHORIZED_READ_V1"] == "1"
+let authorizedReadFixture = authorizedReadCandidate
+    && ProcessInfo.processInfo.environment["PINKHA_NATIVE_T2_AUTHORIZED_READ_FIXTURE"] == "1"
 
 let package = Package(
     name: "ProtobufMessages",
@@ -30,7 +32,8 @@ let package = Package(
             resources: [.process("Loc/Resources")],
             swiftSettings: [
                 .swiftLanguageMode(.v6)
-            ] + (authorizedReadCandidate ? [.define("PINKHA_NATIVE_T2_AUTHORIZED_READ_V1")] : []),
+            ] + (authorizedReadCandidate ? [.define("PINKHA_NATIVE_T2_AUTHORIZED_READ_V1")] : [])
+              + (authorizedReadFixture ? [.define("PINKHA_NATIVE_T2_AUTHORIZED_READ_FIXTURE")] : []),
             linkerSettings: [
                 .linkedLibrary("c++"),
                 .linkedLibrary("resolv")

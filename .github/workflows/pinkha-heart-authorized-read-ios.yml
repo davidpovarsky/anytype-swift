@@ -1,0 +1,68 @@
+name: Prove the candidate Heart Lib shared reader on iOS
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        type: string
+        default: ''
+      runtime_run:
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  candidate-ios:
+    runs-on: xcode-27
+    timeout-minutes: 60
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}
+      RUNTIME_RUN: ${{ inputs.runtime_run }}
+      ATTEMPT: build/heart-authorized-read-ios-${{ github.run_id }}-${{ github.run_attempt }}
+      PYTHONDONTWRITEBYTECODE: '1'
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout exact candidate adapter source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha || github.sha }}
+          path: build/heart-authorized-read-ios-${{ github.run_id }}-${{ github.run_attempt }}/control
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Check only the new host admission controls
+        run: |
+          mkdir -p "$ATTEMPT/controls"
+          python3 -c 'import os,re; assert re.fullmatch(r"[0-9]+",os.environ["RUNTIME_RUN"]), "Exact successful candidate producer run is required"'
+          python3 -B "$ATTEMPT/control/Tools/TorahNativeOperations/authorized_read/test_apple_host.py" -v > "$ATTEMPT/controls/results.log" 2>&1
+          cat "$ATTEMPT/controls/results.log"
+      - name: Download the separately qualified candidate framework
+        uses: actions/download-artifact@v4
+        with:
+          name: Pinkha-Heart-Authorized-Read-Simulator-v1
+          path: build/heart-authorized-read-ios-${{ github.run_id }}-${{ github.run_attempt }}/input
+          run-id: ${{ inputs.runtime_run }}
+          github-token: ${{ github.token }}
+      - name: Build the minimal host once and execute only the 25 new methods
+        run: |
+          python3 -B "$ATTEMPT/control/Tools/TorahNativeOperations/authorized_read/run_apple_host.py" \
+            --control "$ATTEMPT/control" --work "$ATTEMPT/work" --evidence "$ATTEMPT/proof" \
+            --runtime-archive "$ATTEMPT/input/Pinkha-Heart-Authorized-Read-Simulator-v1.tar.gz" \
+            --runtime-run "$RUNTIME_RUN" --expected-app-sha "$EXPECTED_APP_SHA"
+      - name: Preserve actual xcresult, native receipt and all original failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Heart-Authorized-Read-iOS-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            build/heart-authorized-read-ios-${{ github.run_id }}-${{ github.run_attempt }}/proof
+            build/heart-authorized-read-ios-${{ github.run_id }}-${{ github.run_attempt }}/controls
+          if-no-files-found: warn
+          retention-days: 14
