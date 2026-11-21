@@ -19,6 +19,7 @@ on:
           - t2-native-operations
           - t2-authorized-read-packages
           - t2-native-rpc
+          - t2-authorized-operation-read
           - t2-account-rpc
           - t2-native-clients
           - t2-native-clients-offline
@@ -253,6 +254,13 @@ jobs:
     uses: ./.github/workflows/pinkha-authorized-operation-read-packages.yml
     with:
       source_sha: ${{ github.sha }}
+
+  t2-authorized-operation-read:
+    if: ${{ inputs.route == 't2-authorized-operation-read' }}
+    uses: ./.github/workflows/pinkha-t2-native-rpc.yml
+    with:
+      source_sha: ${{ github.sha }}
+      rpc_profile: authorized-operation-read-v1
 
   t2-native-operations:
     if: ${{ inputs.route == 't2-native-operations' }}

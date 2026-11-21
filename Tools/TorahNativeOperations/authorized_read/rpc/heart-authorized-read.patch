@@ -1,0 +1,16 @@
+--- a/pb/protos/service/service.proto
++++ b/pb/protos/service/service.proto
+@@ -3,6 +3,7 @@
+ option go_package = "service";
+ 
+ import "pb/protos/commands.proto";
++import "pb/protos/pinkha_authorized_operation_read.proto";
+ import "pb/protos/events.proto";
+ 
+ service ClientCommands {
+@@ -481,4 +482,5 @@
+     rpc PushNotificationResetIds(anytype.Rpc.PushNotification.ResetIds.Request) returns (anytype.Rpc.PushNotification.ResetIds.Response);
+     rpc PinkhaTorahOperationsAppend (anytype.Rpc.Pinkha.TorahOperations.Append.Request) returns (anytype.Rpc.Pinkha.TorahOperations.Append.Response);
+     rpc PinkhaTorahOperationsReadTarget (anytype.Rpc.Pinkha.TorahOperations.ReadTarget.Request) returns (anytype.Rpc.Pinkha.TorahOperations.ReadTarget.Response);
++    rpc PinkhaTorahAuthorizedOperationRead (anytype.PinkhaTorahAuthorizedOperationRead.Request) returns (anytype.PinkhaTorahAuthorizedOperationRead.Response);
+ }

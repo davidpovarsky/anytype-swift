@@ -17,4 +17,5 @@ gcc -static /workspace/work/qsort-probe.c -o /workspace/work/qsort-probe > /work
 /workspace/work/qsort-probe
 exec python3 -B /workspace/control/Tools/TorahNativeOperations/run_native_rpc.py test \
   --control /workspace/control --heart-source /workspace/heart --work /workspace/work \
-  --evidence /workspace/evidence --expected-app-sha "$EXPECTED_APP_SHA"
+  --evidence /workspace/evidence --expected-app-sha "$EXPECTED_APP_SHA" \
+  --rpc-profile "${RPC_PROFILE:-retained-v1}"

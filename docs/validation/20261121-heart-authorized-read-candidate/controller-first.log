@@ -1,0 +1,36 @@
+test_exit_failure_skip_and_package_failure_remain_failure (test_native_rpc.NativeRPCControllerTests.test_exit_failure_skip_and_package_failure_remain_failure) ... ok
+test_inventory_and_proto_import_paths_cannot_escape (test_native_rpc.NativeRPCControllerTests.test_inventory_and_proto_import_paths_cannot_escape) ... ok
+test_missing_required_generated_boundary_cannot_pass (test_native_rpc.NativeRPCControllerTests.test_missing_required_generated_boundary_cannot_pass) ... ok
+test_schema_import_closure_hashes_exact_inputs (test_native_rpc.NativeRPCControllerTests.test_schema_import_closure_hashes_exact_inputs) ... ok
+test_sigterm_cleans_owned_group_and_preserves_completed_commands (test_native_rpc.NativeRPCControllerTests.test_sigterm_cleans_owned_group_and_preserves_completed_commands) ... skipped 'Real Linux process-group control'
+test_sigterm_during_finalization_rewrites_cancelled_receipt (test_native_rpc.NativeRPCControllerTests.test_sigterm_during_finalization_rewrites_cancelled_receipt) ... skipped 'Real Linux signal during final receipt write'
+test_complete_actual_records_and_packages_pass (authorized_read.test_profile.AuthorizedOperationReadProfileTests.test_complete_actual_records_and_packages_pass) ... ok
+test_duplicate_record_fails (authorized_read.test_profile.AuthorizedOperationReadProfileTests.test_duplicate_record_fails) ... ok
+test_failure_skip_or_exit_code_cannot_qualify (authorized_read.test_profile.AuthorizedOperationReadProfileTests.test_failure_skip_or_exit_code_cannot_qualify) ... ok
+test_missing_subcase_fails (authorized_read.test_profile.AuthorizedOperationReadProfileTests.test_missing_subcase_fails) ... ok
+test_package_without_terminal_success_fails (authorized_read.test_profile.AuthorizedOperationReadProfileTests.test_package_without_terminal_success_fails) ... ok
+test_path_traversal_absolute_and_platform_paths_are_rejected (authorized_read.test_profile.AuthorizedOperationReadProfileTests.test_path_traversal_absolute_and_platform_paths_are_rejected) ... ok
+test_source_declarations_match_exact_twenty_three_methods (authorized_read.test_profile.AuthorizedOperationReadProfileTests.test_source_declarations_match_exact_twenty_three_methods) ... ERROR
+test_source_inventory_matches_retained_baseline_and_candidate (authorized_read.test_profile.AuthorizedOperationReadProfileTests.test_source_inventory_matches_retained_baseline_and_candidate) ... ok
+test_unchanged_prior_tests_are_not_part_of_candidate_selection (authorized_read.test_profile.AuthorizedOperationReadProfileTests.test_unchanged_prior_tests_are_not_part_of_candidate_selection) ... ok
+test_wrong_native_package_fails (authorized_read.test_profile.AuthorizedOperationReadProfileTests.test_wrong_native_package_fails) ... ok
+
+======================================================================
+ERROR: test_source_declarations_match_exact_twenty_three_methods (authorized_read.test_profile.AuthorizedOperationReadProfileTests.test_source_declarations_match_exact_twenty_three_methods)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\DAVID\Code\anytype-swift-shared-heart-read-20261121\Tools\TorahNativeOperations\authorized_read\test_profile.py", line 22, in test_source_declarations_match_exact_twenty_three_methods
+    for name in re.findall(r"^func (Test\w+)\(t \*testing\.T\)", path.read_text(), re.M):
+                                                                 ^^^^^^^^^^^^^^^^
+  File "C:\Users\DAVID\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1028, in read_text
+    return f.read()
+           ^^^^^^^^
+  File "C:\Users\DAVID\AppData\Local\Programs\Python\Python312\Lib\encodings\cp1252.py", line 23, in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 10707: character maps to <undefined>
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.305s
+
+FAILED (errors=1, skipped=2)

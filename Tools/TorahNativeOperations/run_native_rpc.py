@@ -26,6 +26,7 @@ from pathlib import Path, PurePosixPath
 import run_account_lifecycle as process_control
 import run_native_operations as registry
 import run_native_registration as closure
+from authorized_read import profile as authorized
 
 HEART = registry.HEART_SHA
 VERSION = "go version go1.26.5 linux/amd64"
@@ -131,6 +132,8 @@ def generate(args, receipt, run) -> None:
     control, heart, work, evidence = args.control, args.heart_source, args.work, args.evidence
     rpc = control / "Tools/TorahNativeOperations/rpc"
     manifest, inventory = source_inputs(control, rpc)
+    extension = (authorized.read_sources(control, manifest, inventory)
+                 if getattr(args, "rpc_profile", "retained-v1") == authorized.PROFILE else None)
     require(not git(heart, "status", "--porcelain"), "Fresh clean pinned Heart checkout required")
     work.mkdir(parents=True, exist_ok=False)
     modules = {name: digest(heart / name) for name in ["go.mod", "go.sum"]}
@@ -152,6 +155,8 @@ def generate(args, receipt, run) -> None:
         shutil.copyfile(rpc / "overlay" / name, target)
         require(digest(target) == sha, "RPC overlay copy differs")
         expected[name] = sha
+    if extension:
+        authorized.apply_sources(extension, heart, expected, tracked, run)
     compiler = manifest["generation"]["protoc"]
     archive = work / "protoc.zip"
     with urllib.request.urlopen(compiler["url"], timeout=60) as response:
@@ -191,15 +196,20 @@ def generate(args, receipt, run) -> None:
     env["PATH"] = str(bin_dir) + os.pathsep + env["PATH"]
     inputs = proto_closure(heart, tool / "include")
     generated = {}
-    for name, source, plugins, flags, target in [
+    generation_jobs = [
         ("messages", "pb/protos/commands.proto", "", {}, "pb/commands.pb.go"),
         ("grpc", "pb/protos/service/service.proto", ",plugins=grpc", {"GOGO_GRPC_SERVER_METHOD_NO_ERROR": "1"}, "pb/service/service.pb.go"),
         ("gomobile", "pb/protos/service/service.proto", ",plugins=gomobile", {"GOGO_GOMOBILE_WITH_CONTEXT": "1"}, "clientlibrary/service/service.pb.go"),
-    ]:
+    ]
+    proto_map = PROTO_MAP
+    if extension:
+        generation_jobs.insert(1, ("authorized-operation-read", authorized.PROTO, "", {}, authorized.GENERATED))
+        proto_map += ",M" + authorized.PROTO + "=github.com/anyproto/anytype-heart/pb"
+    for name, source, plugins, flags, target in generation_jobs:
         destination = work / ("generated-" + name)
         destination.mkdir()
         run([str(protoc), "-I", str(heart), "-I", str(tool / "include"),
-             "--gogofaster_out=" + PROTO_MAP + plugins + ":" + str(destination), source], "generate-" + name, heart, dict(env, **flags))
+             "--gogofaster_out=" + proto_map + plugins + ":" + str(destination), source], "generate-" + name, heart, dict(env, **flags))
         files = list(destination.rglob("*.pb.go"))
         require(len(files) == 1 and files[0].name == Path(target).name, "Unexpected generated output set")
         generated[target] = digest(files[0])
@@ -213,16 +223,28 @@ def generate(args, receipt, run) -> None:
                              "generator_binary_sha256": digest(bin_dir / "protoc-gen-gogofaster")},
                    protobuf_inputs_sha256=inputs, generated_sha256=generated, source_sha256=expected,
                    tracked_paths=sorted(tracked), module_sha256=modules)
+    if extension:
+        receipt.update(authorized_read_manifest_sha256=extension["manifest_sha256"],
+                       native_read_inventory_sha256=extension["native_inventory_sha256"],
+                       authorized_schema_patch_sha256=extension["manifest"]["patch_sha256"])
 
 
 def native_tests(args, receipt, run) -> None:
     control, heart, work, evidence = args.control, args.heart_source, args.work, args.evidence
     rpc = control / "Tools/TorahNativeOperations/rpc"
-    manifest, _ = source_inputs(control, rpc)
+    manifest, inventory = source_inputs(control, rpc)
+    extension = (authorized.read_sources(control, manifest, inventory)
+                 if getattr(args, "rpc_profile", "retained-v1") == authorized.PROFILE else None)
     previous = json.loads((evidence / "generation-receipt.json").read_text())
     require(previous["status"] == "PASS_PINNED_RPC_GENERATION" and previous["app_sha"] == args.expected_app_sha
             and previous["run_id"] == receipt["run_id"] and previous["run_attempt"] == receipt["run_attempt"]
             and previous["rpc_manifest_sha256"] == digest(rpc / "heart-rpc.json"), "Generation evidence does not match this run/source")
+    if extension:
+        require(previous.get("authorized_read_manifest_sha256") == extension["manifest_sha256"]
+                and previous.get("native_read_inventory_sha256") == extension["native_inventory_sha256"],
+                "Authorized read generation source differs")
+    else:
+        require(not previous.get("authorized_read_manifest_sha256"), "Candidate generation cannot qualify retained RPC")
     verify_composed_source(heart, previous["source_sha256"], set(previous["tracked_paths"]), previous["module_sha256"])
     helper = control / "Tools/PinkhaNativeDerived/build_custom_heart.py"
     spec = importlib.util.spec_from_file_location("t2_rpc_tantivy_helper", helper)
@@ -245,6 +267,8 @@ def native_tests(args, receipt, run) -> None:
             and effective.get("Sum") == closure.GENPROTO_SUM and effective.get("GoModSum") == closure.GENPROTO_MOD_SUM,
             "Wrong pinned native genproto closure")
     new_go = [str(heart / name) for name in manifest["overlay"]]
+    if extension:
+        new_go += [str(heart / name) for name in extension["paths"] if name.endswith(".go")]
     require(not subprocess.check_output(["gofmt", "-l", *new_go], text=True).strip(), "RPC source is not formatted")
     run(["go", "test", "-p", "1", "-count=1", "-run", "^$", "./pb/service"], "generated-grpc-compile", heart, env)
     receipt.update(generation_receipt_sha256=digest(evidence / "generation-receipt.json"),
@@ -252,8 +276,10 @@ def native_tests(args, receipt, run) -> None:
                    native_source_sha256=previous["source_sha256"], tantivy=native,
                    genproto={"Path": effective["Path"], "Version": effective["Version"], "Sum": effective["Sum"], "GoModSum": effective["GoModSum"]},
                    grpc_registration_package="COMPILED_NO_TESTS_CLAIMED")
+    pattern = authorized.TEST_PATTERN if extension else "^TestPinkhaTorah(RPC|GeneratedByte)"
+    packages = (["./" + name for name in authorized.TOP_LEVEL] if extension else ["./core", "./clientlibrary/service"])
     command = ["go", "test", "-p", "1", "-parallel", "1", "-count=1", "-timeout=240s", "-json", "-tags", TAGS,
-               "-ldflags=-extldflags=-static", "-run", "^TestPinkhaTorah(RPC|GeneratedByte)", "./core", "./clientlibrary/service"]
+               "-ldflags=-extldflags=-static", "-run", pattern, *packages]
     run(command, "native-rpc-tests", heart, env, 1800)
     lines = (evidence / "native-rpc-tests.log").read_text().splitlines()
     events = []
@@ -262,10 +288,14 @@ def native_tests(args, receipt, run) -> None:
             events.append(json.loads(line))
         else:
             require(not line.strip() or line.startswith("go: downloading "), "Unexpected non-JSON test output")
-    counts = validate_test_events(events, True)
+    counts = (authorized.validate_test_events if extension else validate_test_events)(events, True)
     verify_composed_source(heart, previous["source_sha256"], set(previous["tracked_paths"]), previous["module_sha256"])
-    receipt.update(status="PASS_GENERATED_NATIVE_RPC_BOUNDARY", actual_counts=counts,
+    receipt.update(status="PASS_AUTHORIZED_OPERATION_READ_NATIVE_BOUNDARY" if extension else "PASS_GENERATED_NATIVE_RPC_BOUNDARY", actual_counts=counts,
                    native_test_log_sha256=digest(evidence / "native-rpc-tests.log"))
+    if extension:
+        receipt.update(authorized_read_manifest_sha256=extension["manifest_sha256"],
+                       native_read_inventory_sha256=extension["native_inventory_sha256"],
+                       unchanged_prior_tests_executed=0)
 
 
 def main(argv=None) -> int:
@@ -274,13 +304,14 @@ def main(argv=None) -> int:
     for name in ["control", "heart-source", "work", "evidence"]:
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--expected-app-sha", required=True)
+    parser.add_argument("--rpc-profile", choices=["retained-v1", authorized.PROFILE], default="retained-v1")
     args = parser.parse_args(argv)
     for name in ["control", "heart_source", "work", "evidence"]:
         setattr(args, name, getattr(args, name).resolve())
     args.evidence.mkdir(parents=True, exist_ok=True)
     receipt_path = args.evidence / ("generation-receipt.json" if args.stage == "generate" else "receipt.json")
     require(not receipt_path.exists(), "Fresh source-bound receipt required")
-    receipt = {"status": "NOT_RUN_PREFLIGHT", "stage": args.stage, "app_sha": args.expected_app_sha, "heart_sha": HEART,
+    receipt = {"status": "NOT_RUN_PREFLIGHT", "stage": args.stage, "rpc_profile": args.rpc_profile, "app_sha": args.expected_app_sha, "heart_sha": HEART,
                "run_id": os.environ.get("GITHUB_RUN_ID"), "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT"),
                "workflow_ref": os.environ.get("GITHUB_WORKFLOW_REF"), "commands": [], "started_at": datetime.now(timezone.utc).isoformat(),
                "scope": "generated protocol/mapping and native no-account byte boundary; not account wire or two App clients",

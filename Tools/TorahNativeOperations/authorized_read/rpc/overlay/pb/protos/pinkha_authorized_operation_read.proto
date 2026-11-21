@@ -1,0 +1,81 @@
+syntax = "proto3";
+package anytype;
+option go_package = "pb";
+
+// Additive candidate contract. Existing TorahOperations messages and v1 calls
+// retain their exact fields and semantics. Declaring this RPC enables no UI.
+message PinkhaTorahAuthorizedOperationRead {
+    message Request {
+        uint32 protocolVersion = 1;
+        string spaceId = 2;
+        string operationId = 3;
+    }
+    enum Outcome {
+        OUTCOME_UNSPECIFIED = 0;
+        FOUND = 1;
+        ABSENT_IN_VERIFIED_LOCAL_SNAPSHOT = 2;
+    }
+    enum Reachability {
+        REACHABILITY_UNSPECIFIED = 0;
+        LIVE_DOCUMENT = 1;
+        LIVE_BLOCK = 2;
+        UNREACHABLE_BLOCK = 3;
+    }
+    message Target {
+        string objectId = 1;
+        string blockId = 2;
+    }
+    message Provenance {
+        string creator = 1;
+        string nativeChangeId = 2;
+        string nativeAclHeadId = 3;
+    }
+    message Variant {
+        string claimId = 1;
+        string operationId = 2;
+        string spaceId = 3;
+        string authorId = 4;
+        Target target = 5;
+        bytes canonicalBytes = 6;
+        repeated Provenance provenance = 7;
+        Reachability reachability = 8;
+    }
+    message Snapshot {
+        string contract = 1;
+        string accountId = 2;
+        string spaceId = 3;
+        string operationId = 4;
+        Outcome outcome = 5;
+        bool complete = 6;
+        // Opaque local authority identity; never a clock or reusable permission.
+        string nativeSnapshotToken = 7;
+        repeated Variant variants = 8;
+    }
+    message Response {
+        message Error {
+            enum Code {
+                NULL = 0;
+                UNKNOWN_ERROR = 1;
+                BAD_INPUT = 2;
+                UNSUPPORTED_VERSION = 3;
+                PERMISSION_DENIED = 4;
+                NOT_LOGGED_IN = 5;
+                ACCOUNT_CHANGED = 6;
+                TARGET_STATE_UNAVAILABLE = 7;
+                HISTORY_UNAVAILABLE = 8;
+                SNAPSHOT_CHANGED = 9;
+                PROJECTION_BEHIND = 10;
+                READ_LIMIT = 11;
+                CANCELLED = 12;
+                DEADLINE_EXCEEDED = 13;
+            }
+            Code code = 1;
+            // Fixed labels only; native errors may contain private identifiers.
+            string description = 2;
+        }
+        Error error = 1;
+        uint32 protocolVersion = 2;
+        // Absent on every error, including any failed final authority fence.
+        Snapshot snapshot = 3;
+    }
+}
