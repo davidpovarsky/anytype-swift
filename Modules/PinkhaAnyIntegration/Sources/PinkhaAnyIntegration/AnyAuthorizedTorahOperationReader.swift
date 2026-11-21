@@ -5,6 +5,8 @@ import PinkhaAnyEngine
 /// The engine owner supplies its real stream/session lifetime. Invalidation
 /// cancels an in-flight read and prevents an old-account response being released.
 /// This adapter does not install data or fall back to a workspace scan.
+/// After awaiting, a UI owner must compare the returned scope with its current
+/// engine/account/Space/generation on the publishing actor before changing UI.
 public struct AnyAuthorizedTorahOperationReader: TorahAuthorizedOperationReading, Sendable {
     public let scope: TorahOperationReadScope
     private let session: AnyStreamSession

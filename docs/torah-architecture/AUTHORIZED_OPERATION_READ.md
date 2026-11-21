@@ -57,6 +57,12 @@ or authorization that survives an account switch. The adapter rechecks its
 owned session after awaits and prevents an invalidated or cancelled read from
 releasing a value.
 
+The account owner that consumes a read must also compare the immutable returned
+`scope` with its current engine/account/Space/session generation after its await,
+on the same actor and without another suspension before publishing UI. A native
+snapshot token cannot replace this final ownership check. The new contract has
+no production UI caller while its native capability remains unadvertised.
+
 ## Native implementations
 
 Any performs two `NativeReadSnapshot` calls. The final one holds the private

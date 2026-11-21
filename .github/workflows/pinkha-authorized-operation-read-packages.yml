@@ -1,0 +1,49 @@
+name: Pinkha authorized operation read package proof
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        type: string
+        required: true
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Exact reviewed source SHA for only the 14 new read methods
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  reviewed-read-packages:
+    runs-on: xcode-27
+    timeout-minutes: 30
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      PYTHONDONTWRITEBYTECODE: '1'
+      EXPECTED_SOURCE_SHA: ${{ inputs.source_sha }}
+    steps:
+      - name: Checkout exact reviewed package source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha }}
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Verify package receipt rejection gates
+        run: python3 -m unittest discover -s Tools/AnyEngineValidation -p test_authorized_operation_read_packages.py
+      - name: Execute only the fixed 14 shared and Any read methods
+        run: python3 Tools/AnyEngineValidation/run_authorized_operation_read_packages.py --source-sha "$EXPECTED_SOURCE_SHA" --root "$GITHUB_WORKSPACE"
+      - name: Preserve original test records and exact source receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Authorized-Operation-Read-Packages-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/authorized-operation-read-packages/
+          retention-days: 14
+          if-no-files-found: error

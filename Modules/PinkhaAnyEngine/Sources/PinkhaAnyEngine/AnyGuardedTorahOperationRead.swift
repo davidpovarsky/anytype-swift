@@ -60,6 +60,11 @@ public struct AnyGuardedTorahOperationReadSnapshot: Sendable {
             "records": .array(records), "readiness": response["readiness"] ?? .null
         ]), expectedSpaceID: expectedSpaceID, expectedRootObjectID: expectedRootObjectID,
            limit: Self.maximumVariants)
+        // The shared decoder preserves input order through a throwing map.
+        // Keep cardinality explicit: zip must never hide a partial closure.
+        guard decoded.claims.count == values.count else {
+            throw AnyEngineError.invalidClaim("partial authorized operation closure")
+        }
         let variants = try zip(values, decoded.claims).map { value, claim -> Variant in
             let operation = claim.operation
             guard operation.operationID == expectedOperationID,
