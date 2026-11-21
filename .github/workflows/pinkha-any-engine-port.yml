@@ -222,7 +222,7 @@ jobs:
             -maximum-test-execution-time-allowance 180 \
             2>&1 | tee "$GITHUB_WORKSPACE/build/any-native-evidence/runtime.log"
       - name: Extract native execution counts
-        if: ${{ always() && (inputs.validation_scope != 'remaining-native-ui' || steps.native-ui-tests.outcome != 'skipped') }}
+        if: always()
         shell: bash
         run: |
           set -euo pipefail
@@ -618,7 +618,7 @@ jobs:
           python3 Tools/AnyEnginePort/hanlin_fixture_ci.py verify \
             --safe-dir build/any-patched-evidence/hanlin-provider
       - name: Extract native execution counts
-        if: always()
+        if: ${{ always() && (inputs.validation_scope != 'remaining-native-ui' || steps.native-ui-tests.outcome != 'skipped') }}
         shell: bash
         run: |
           set -euo pipefail
