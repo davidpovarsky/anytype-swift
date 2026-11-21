@@ -43,10 +43,10 @@ def utc_now() -> str:
     return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
 
-def run(command: list[str], *, timeout: int = 30) -> str:
+def run(command: list[str], *, timeout: int = 30, include_stderr: bool = False) -> str:
     result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=timeout)
     require(result.returncode == 0, "owned_command_failed")
-    return result.stdout
+    return result.stdout + result.stderr if include_stderr else result.stdout
 
 
 def github_context() -> tuple[str, str, Path]:
@@ -169,9 +169,12 @@ def prepare(args: argparse.Namespace, result: dict) -> None:
     udid, receipt = verify_simulator(args.simulator_receipt, run_id)
     require(FIXTURE.is_file(), "fixture_source_missing")
     result.update(sourceCommit=source_sha, githubRunID=run_id, ownedSimulatorUDID=udid)
-    help_text = run(["xcrun", "simctl", "help", "keychain"])
-    require("add-root-cert" in help_text, "simulator_root_command_unavailable")
+    # simctl emits help to stderr on supported Xcode versions. Inspect both
+    # streams only for this public help command, after requiring exit success.
+    # Persist the public capability evidence even when the command is absent.
+    help_text = run(["xcrun", "simctl", "help", "keychain"], include_stderr=True)
     (args.safe_dir / "simctl-keychain-help.txt").write_text(help_text, encoding="utf-8", newline="\n")
+    require("add-root-cert" in help_text, "simulator_root_command_unavailable")
 
     owned = Path(tempfile.mkdtemp(prefix="pinkha-hanlin-ci-" + run_id + "-", dir=temp_root)).resolve()
     owned.chmod(0o700)

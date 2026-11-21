@@ -1,5 +1,6 @@
 #if DEBUG && targetEnvironment(simulator)
 import Foundation
+import PinkhaHanlinCore
 import CryptoKit
 import UIKit
 import Factory
