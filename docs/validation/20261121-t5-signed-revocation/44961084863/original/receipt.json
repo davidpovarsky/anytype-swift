@@ -1,0 +1,46 @@
+{
+  "actual": {
+    "exit_code": 1,
+    "method": "TestT5NativeCachedQueriesAfterSignedRevocation",
+    "native_log_sha256": "193b20f9de194c3ab0aa124579be4372752101a1deb4c89b0d6fe1caa5703930",
+    "tests_failed": 1,
+    "tests_passed": 0,
+    "tests_skipped": 0,
+    "tests_started": 1
+  },
+  "app_sha": "cce67545ec284aed02c36314eeb7b41c582a3128",
+  "error": "Actual locally revoked query returned rows/payload or ambiguous success",
+  "error_type": "ValueError",
+  "evidence_export": {
+    "files": {
+      "native-observation.json": "0f43bd9e6fb1e339ead0905ae98aa39dd3709a64bda4f404d3273e36c31fc0c2",
+      "native.log": "193b20f9de194c3ab0aa124579be4372752101a1deb4c89b0d6fe1caa5703930",
+      "ownership.json": "4100134befc2a857942e1b817a2c43b6e255f90fa744f7a566fc1e89448c9efc"
+    },
+    "status": "PASS_EXACT_ACCOUNT_SECRET_SCAN"
+  },
+  "execution": {
+    "command": [
+      "/workspace/work/pinkha-t5-signed-revocation.test",
+      "-test.run",
+      "^TestT5NativeCachedQueriesAfterSignedRevocation$",
+      "-test.count=1",
+      "-test.v",
+      "-test.timeout=300s"
+    ],
+    "exit_code": 1,
+    "pid": 13640
+  },
+  "finished_at": "2026-11-21T23:23:59.667103+00:00",
+  "full_t5_acceptance": "NOT_PROVEN",
+  "ios_acceptance": "NOT_RUN",
+  "native_status": "FAIL_REVOKED_NATIVE_QUERY_EXPOSED_OR_AMBIGUOUS",
+  "network_acl_transport": "NOT_RUN",
+  "offline_unknown_revocation": "NOT_PROVEN",
+  "phase": "ACTUAL_LOCAL_SIGNED_REVOCATION",
+  "product_source_changes": 0,
+  "run_attempt": "1",
+  "run_id": "44961084863",
+  "started_at": "2026-11-21T23:18:18.274673+00:00",
+  "status": "FAIL"
+}
