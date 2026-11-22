@@ -1,0 +1,187 @@
+{
+  "affected_existing_controls": 7,
+  "affected_existing_seven": {
+    "exit_code": 0,
+    "failed_or_skipped": [],
+    "log": "inline-stage2-affected-old-guards.log",
+    "log_sha256": "4dac6891291f3a26bd134fade63f1ed26d7278d8ebe4478db71e0de6ff644400",
+    "methods": [
+      {
+        "duration": "0.74s",
+        "name": "TestActualACLFinalCommitFence"
+      },
+      {
+        "duration": "0.18s",
+        "name": "TestACLHeldThroughRealCommitAndReleasedAfter"
+      },
+      {
+        "duration": "0.16s",
+        "name": "TestPreparedRawNativeDurableStoragePrecedesUpdater"
+      },
+      {
+        "duration": "1.05s",
+        "name": "TestPreparedRawRefusesMissingDeferredUpdaterAndModeConfusion"
+      },
+      {
+        "duration": "0.18s",
+        "name": "TestPreparedRawCurrentACLRecheckedAtNativeAppend"
+      },
+      {
+        "duration": "0.41s",
+        "name": "TestPreparedRawRevokedWriterCannotAppendOrRecoverAsAuthorized"
+      },
+      {
+        "duration": "0.30s",
+        "name": "TestPreparedRawLostAckRecoversExactNativeHistory"
+      }
+    ],
+    "scope": "Original named native methods only; package no-tests-to-run lines are not counted"
+  },
+  "candidate_bundle_sha256": "48c1c55941a71faf6f980291ee6b9b71933c31d0e6721e36fddcc1688e24667f",
+  "candidate_manifest_sha256": "bff726fc54530af8f3cc0361b5a041d1c46019a5584e877303ef88aaf60c9c44",
+  "candidate_source": {
+    "any": {
+      "inventory_sha256": "728d997a9eba3bf9a1b9263afeb410fd8b5d6d28f2b5bd03ba8d54a749a8bc22",
+      "native_source_files": 635,
+      "overlay_files": 62,
+      "patch_sha256": "b09956ac593ca90a50b722a96b290ff3d5a5edff58c29c4d1d7a2896d97ef444",
+      "tree": "03aa9a973995c831ed86d7a0ffb675519afe266a"
+    },
+    "sdk": {
+      "inventory_sha256": "970d6852b0a0a5260b1f0ec57e4d732185b72e5300cc6e80edcf4773e8f7ee34",
+      "native_source_files": 653,
+      "overlay_files": 61,
+      "patch_sha256": "f0018c5b131d2b8e4dafa6f8578a873e108a2d1cd51adb14ac90b5eadba10c76",
+      "tree": "ae9bb6f8ef182b648c5a4423338797a79486dc5a"
+    }
+  },
+  "candidate_version": "v0.5.0-pinkha.prepared.1",
+  "exact_inline_source_files_verified": 10,
+  "final_actual_native_three": {
+    "exit_code": 0,
+    "failed_or_skipped": [],
+    "log": "inline-stage4-current-owner-fence-native.log",
+    "log_sha256": "6f3d8f98436fbf1cd24e09b7b9071fe1811fa7c2d1e4d74f7cffe3b25950ed26",
+    "methods": [
+      {
+        "duration": "1.00s",
+        "name": "TestPreparedInlineFileOwnerQueuedDuringNativeLockWaitRefuses"
+      },
+      {
+        "duration": "1.49s",
+        "name": "TestPreparedInlineFileProductionSDKStageRestartReadbackAndDelete"
+      },
+      {
+        "duration": "0.80s",
+        "name": "TestPreparedInlineFileNativeOversizeAndChangedOwnerRefuseBeforeAppend"
+      }
+    ],
+    "scope": "Original named native methods only; package no-tests-to-run lines are not counted"
+  },
+  "frozen_inline_files_verified": 23,
+  "inline_bundle_sha256": "1bdb3178f1d46743923a2e42e6f14baab010140b181bc37a455cae24ebab2890",
+  "limits": {
+    "apple": "NOT_RUN",
+    "complete_space_snapshot": "NOT_PROVEN",
+    "file_capability": 0,
+    "full_migration": "OPEN",
+    "network_verified": false,
+    "physical_power_loss": "NOT_TESTED",
+    "public_http_file": "NOT_IMPLEMENTED"
+  },
+  "new_top_level_controls": 12,
+  "original_cascade_probe_passed_before_reread": {
+    "exit_code": 0,
+    "failed_or_skipped": [],
+    "log": "inline-stage3-old-owner-fence-negative.log",
+    "log_sha256": "563ac37ac3f196f1633deab1cc2e2f6ef26e19f17cd4d216a5a07f1ac6ce4c0a",
+    "methods": [
+      {
+        "duration": "0.81s",
+        "name": "TestPreparedInlineFileOwnerQueuedDuringNativeLockWaitRefuses"
+      }
+    ],
+    "scope": "Original named native methods only; package no-tests-to-run lines are not counted"
+  },
+  "original_initial_modfile_error": {
+    "exit_code": 1,
+    "failed_or_skipped": [],
+    "log": "inline-stage1-native.log",
+    "log_sha256": "1530a380bf6ea31538817222d4b649bdc8061e3f066a737d0343f1ed310f78bc",
+    "methods": [],
+    "scope": "Original named native methods only; package no-tests-to-run lines are not counted"
+  },
+  "original_sdk_nine": {
+    "exit_code": 0,
+    "failed_or_skipped": [],
+    "log": "inline-stage1-sdk.log",
+    "log_sha256": "0a88a6bc0a00b0bf78ce6b4bc549c0892b50ae5f35a87c31e40fe4a7818b450b",
+    "methods": [
+      {
+        "duration": "0.15s",
+        "name": "TestPreparedInlineLedgerConcurrentRootRowReservationAndRestart"
+      },
+      {
+        "duration": "0.34s",
+        "name": "TestPreparedInlineLedgerCrossKindIntentAndStageIsolation"
+      },
+      {
+        "duration": "0.08s",
+        "name": "TestPreparedInlineLedgerImmutablePlanSpecAndEntity"
+      },
+      {
+        "duration": "0.06s",
+        "name": "TestPreparedInlineLedgerCheckpointFailureAdmitsNoPreparation"
+      },
+      {
+        "duration": "0.00s",
+        "name": "TestPreparedInlineNativeStrictTierBoundary"
+      },
+      {
+        "duration": "0.30s",
+        "name": "TestPreparedInlineGuardDurableStorageBeforeUpdater"
+      },
+      {
+        "duration": "2.40s",
+        "name": "TestPreparedInlineGuardRejectsClassAndPayloadConfusion"
+      },
+      {
+        "duration": "1.41s",
+        "name": "TestPreparedInlineGuardCurrentACLRekeyAndRevocationAtStorage"
+      },
+      {
+        "duration": "0.28s",
+        "name": "TestPreparedInlineGuardLostAckAndRevokedHistoryRead"
+      }
+    ],
+    "scope": "Original named native methods only; package no-tests-to-run lines are not counted"
+  },
+  "original_two_before_owner_reread": {
+    "exit_code": 0,
+    "failed_or_skipped": [],
+    "log": "inline-stage2-native.log",
+    "log_sha256": "1e6516ffee683a4d20cb843e9b850c1d52356b4bde1c6465f1b7f3f015476c78",
+    "methods": [
+      {
+        "duration": "2.13s",
+        "name": "TestPreparedInlineFileProductionSDKStageRestartReadbackAndDelete"
+      },
+      {
+        "duration": "0.86s",
+        "name": "TestPreparedInlineFileNativeOversizeAndChangedOwnerRefuseBeforeAppend"
+      }
+    ],
+    "scope": "Original named native methods only; package no-tests-to-run lines are not counted"
+  },
+  "repeated_by_this_review": 0,
+  "review": [
+    "Native sealed inline payload and strict original 0..4095-byte range are explicit.",
+    "Both exact derived root and signed row bytes are reserved before append; retries retain them.",
+    "Current live ordinary owner is read after native lock acquisition; owner row, current ACL, read-key and carrier checks remain.",
+    "The same ordinary cascade probe passed before the owner re-read; no reproduced regression or owner-only race closure is claimed.",
+    "Existing encrypted-token guards and historical replay remain; seven affected guard controls retain exact original output.",
+    "Composition retains current default and v10 capabilities; no any-sync/any-store patch is introduced.",
+    "Native logs remain attributed to their original scopes; source composition is not a repeated aggregate test run."
+  ],
+  "schema": "pinkha-prepared-inline-and-apple-source-root-review-v1"
+}

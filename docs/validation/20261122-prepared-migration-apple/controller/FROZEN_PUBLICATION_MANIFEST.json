@@ -1,0 +1,183 @@
+{
+  "status": "FROZEN_APPLE_CONTROLLER_CANDIDATE_APPLE_NOT_RUN",
+  "ownedImplementationPaths": [
+    ".github/workflows/pinkha-prepared-migration-apple.yml",
+    "Tools/AnyEngineValidation/prepared_migration_apple/contract.py",
+    "Tools/AnyEngineValidation/prepared_migration_apple/execution.py",
+    "Tools/AnyEngineValidation/prepared_migration_apple/build.py",
+    "Tools/AnyEngineValidation/prepared_migration_apple/proof.py",
+    "Tools/AnyEngineValidation/prepared_migration_apple/run_host.py",
+    "Tools/AnyEngineValidation/prepared_migration_apple/test_controls.py",
+    "Tools/AnyEngineValidation/prepared_migration_apple/README.md"
+  ],
+  "existingPathsModified": 0,
+  "newControllerControls": 16,
+  "appleProductTestsExecuted": 0,
+  "retainedProductTestsRerun": 0,
+  "workflowInputs": {
+    "native_artifact_run_attempt": {
+      "type": "string",
+      "default": ""
+    },
+    "native_artifact_run_id": {
+      "type": "string",
+      "default": ""
+    },
+    "native_producer_commit": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "sourceSHAInputRequired": false,
+  "immutableInputs": {
+    "nativeCandidateSHA256": "bff726fc54530af8f3cc0361b5a041d1c46019a5584e877303ef88aaf60c9c44",
+    "actualXCTestSHA256": "ba446f2a78f475517439111169cd6d4c33541bff470d848e63b7bf6207d0818f",
+    "nativeVersion": "v0.5.0-pinkha.prepared.1",
+    "nativeArtifactFlag": "verified-prepared-v1"
+  },
+  "requiredRootOwnedIntegration": [
+    "candidate native manifest and two full source patches",
+    "manifest-driven prepare_native_runtime.py helper",
+    "runtime Package.swift and AnyEmbeddedRuntime prepared candidate route",
+    "frozen AnyPreparedMigrationRuntimeTests.swift",
+    "optional main dispatcher call route"
+  ],
+  "files": [
+    {
+      "path": ".github/workflows/pinkha-prepared-migration-apple.yml",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 7760,
+      "sha256": "67afae3001c7760905182855be82920be9ea4fce6cd4e938c268676106a693b1",
+      "gitBlob": "08a7ad70215a088610856d1a91de7ac0543034b2",
+      "role": "new-controller-workflow-documentation"
+    },
+    {
+      "path": "Tools/AnyEngineValidation/prepared_migration_apple/contract.py",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 8061,
+      "sha256": "53bccfed9ad544507fca2a134fe12ecc59c65ab0135a3a47ebbe73f0a04f2382",
+      "gitBlob": "a28f3aa402d9de3cbe599c8453e989d5f5729390",
+      "role": "new-controller-workflow-documentation"
+    },
+    {
+      "path": "Tools/AnyEngineValidation/prepared_migration_apple/execution.py",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 4337,
+      "sha256": "f90e2af672397845153a9724b039e3638712ab138d663b6c41ce893460248b69",
+      "gitBlob": "6bc51ec2e0dd243b9b8028cd6554a8a334c804c6",
+      "role": "new-controller-workflow-documentation"
+    },
+    {
+      "path": "Tools/AnyEngineValidation/prepared_migration_apple/build.py",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 6211,
+      "sha256": "0c493e2e7e698936545b3e6bab24e1fbb57e9b26da91ecdcece3c7d2f3e18dba",
+      "gitBlob": "28c2c988c6edf9d2d4630e116be9040ddad7acea",
+      "role": "new-controller-workflow-documentation"
+    },
+    {
+      "path": "Tools/AnyEngineValidation/prepared_migration_apple/proof.py",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 11906,
+      "sha256": "4af0ab223cb5ece404e3a85620d8be1da51fba76e11311d22bd45b5ad1a60a8f",
+      "gitBlob": "b1970bb074a5a253c5a4b4887bc5414de62deea9",
+      "role": "new-controller-workflow-documentation"
+    },
+    {
+      "path": "Tools/AnyEngineValidation/prepared_migration_apple/run_host.py",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 19311,
+      "sha256": "c6a4d0d20df445cf6c4be740eeba57407d0027d4603d3a96d198c807ca54c401",
+      "gitBlob": "dfd9164ec20a1314b78b225de1940b23d8de5391",
+      "role": "new-controller-workflow-documentation"
+    },
+    {
+      "path": "Tools/AnyEngineValidation/prepared_migration_apple/test_controls.py",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 20758,
+      "sha256": "11a98bd24d5ee9ee86f40c39fb857355b108412057f515a71128d09a6b76b743",
+      "gitBlob": "ba6f068d5365b8711c6a4bd2ac3859cd7a32130d",
+      "role": "new-controller-workflow-documentation"
+    },
+    {
+      "path": "Tools/AnyEngineValidation/prepared_migration_apple/README.md",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 7791,
+      "sha256": "65230cd51ef7736832f22d6b9b414afea1a81ad2a280ecc04f738f55fb8a648b",
+      "gitBlob": "6d97f0b400d65109efd626d4842f4fc752ad736b",
+      "role": "new-controller-workflow-documentation"
+    },
+    {
+      "path": "validation/new-controller-controls.json",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 554,
+      "sha256": "f0af423efbaccb89121988a2ad363913d2f32eb09e52dc81deb014801cbd4a26",
+      "gitBlob": "7f1ec4851f4b5f18acfadb9ae1b81ae5afd507ac",
+      "role": "validation-evidence"
+    },
+    {
+      "path": "validation/new-controller-controls.log",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 2959,
+      "sha256": "bd610c7e9c640e2d1643de62e2a7a66e75bbf115f6147768d0e4efab6106c13e",
+      "gitBlob": "26f0353aece35a73830ca2a0fe70b79e2dc731d9",
+      "role": "validation-evidence"
+    },
+    {
+      "path": "validation/static-wiring.json",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 1528,
+      "sha256": "08a633233188e9d9e22b6157eb948f2f1813c6867825a9ab4d68fc28b7c774a9",
+      "gitBlob": "2a4b1e4f5e8ca48812e94da39438d24a8c43b4df",
+      "role": "validation-evidence"
+    },
+    {
+      "path": "validation/independent-proof-review.json",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 778,
+      "sha256": "3528eabb1a30a25a6956aad70c4cc6b134c88458ced366f2609685fec1411ff3",
+      "gitBlob": "8e9a2c18c5e7e729e0784e61b246d82a91781399",
+      "role": "validation-evidence"
+    },
+    {
+      "path": "validation/pre-uuid-15-controller-controls.log",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 2792,
+      "sha256": "6518d642beb9db485118c954af3ebcdb0161c0a71bf524570434cb1ddcecca52",
+      "gitBlob": "50ece2ce3c22728f482d80afa3eee866acdc2776",
+      "role": "validation-evidence"
+    },
+    {
+      "path": "validation/initial-13-controller-controls.log",
+      "new": true,
+      "baseGitBlob": null,
+      "bytes": 2448,
+      "sha256": "0227a57b501b9bf8c46bab2efc0a25fab99779c6440c48a2f61ddf479c542054",
+      "gitBlob": "25d25fd55682abf7d17b6bd5e4e7914d9f772819",
+      "role": "validation-evidence"
+    }
+  ],
+  "exclusions": [
+    "__pycache__",
+    "*.pyc"
+  ],
+  "limits": {
+    "fileCapability": 0,
+    "networkVerified": false,
+    "appleStatus": "NOT_RUN",
+    "fullSpaceMigration": "NOT_PROVEN"
+  }
+}

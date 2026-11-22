@@ -1,0 +1,75 @@
+{
+  "status": "SOURCE_REVIEW_ONLY_APPLE_NOT_RUN",
+  "ownedSource": {
+    "path": "Modules/PinkhaAnyRuntime/Tests/PinkhaAnyRuntimeTests/AnyPreparedMigrationRuntimeTests.swift",
+    "bytes": 25958,
+    "sha256": "ba446f2a78f475517439111169cd6d4c33541bff470d848e63b7bf6207d0818f"
+  },
+  "sourceReferences": {
+    "migration-work/Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedMigration.swift": {
+      "bytes": 18794,
+      "sha256": "e8c0e084b0a18a7c4892529054f9b9d393d8cdd72d357aef4d330ea2a4ae059d"
+    },
+    "migration-apple-integration-work/baseline/Modules/PinkhaAnyRuntime/Tests/PinkhaAnyRuntimeTests/AnyAuthorizedOperationReadRuntimeTests.swift": {
+      "bytes": 11293,
+      "sha256": "9881039e8f4d665616ae66bc57d205dc21a70f29a7f46b89dfa8d0af618ca052"
+    },
+    "migration-apple-integration-work/baseline/Modules/PinkhaAnyRuntime/Sources/PinkhaAnyRuntime/AnyEmbeddedRuntime.swift": {
+      "bytes": 11774,
+      "sha256": "e77f1d948d22480c4e15fb647a61911db38ae3ec2029a85404dded75f8953ee2"
+    },
+    "migration-native-work/any/internal/server/handlers_pinkha_migration.go": {
+      "bytes": 9659,
+      "sha256": "49d9e1a6d9d6c0b0758caabe2d1cf36283a1e7e855ff0f394703045b7803075e"
+    },
+    "migration-native-work/any/internal/api/pinkha_migration.go": {
+      "bytes": 1006,
+      "sha256": "fe779daf6cb1ffe0a43163a37a54caeb3119df57142544d4c01950939e0a5dbf"
+    },
+    "migration-native-work/any/internal/pinkha/migrationnative/native_test.go": {
+      "bytes": 10830,
+      "sha256": "539c78e9c135d944f49e03782bb43da169297d41fcf3b74da43d1189410c5721"
+    },
+    "migration-native-work/any/internal/pinkha/migrationnative/peer_test.go": {
+      "bytes": 8353,
+      "sha256": "322236568ac674855cd02623213241b1cab8d4bbf033648ba731ef2ca4849ed0"
+    }
+  },
+  "selectedMethods": [
+    "testManagedPreparedObjectAndBlockSurviveOrderlyReopenAndRejectRevokedOwner"
+  ],
+  "nativeRuntimeStarts": {
+    "initial": 1,
+    "orderlyReopens": 5,
+    "newOSProcesses": 0
+  },
+  "buildFlag": "PINKHA_PREPARED_MIGRATION_ACCEPTANCE",
+  "requiredLinkedBuild": "pinkhaPreparedMigrationCandidateV1",
+  "requiredVersionPrefix": "any v0.5.0-pinkha.prepared.1 ",
+  "testCountExecuted": 0,
+  "typecheck": "NOT_RUN",
+  "appleExecution": "NOT_RUN",
+  "nativeWireReview": "Independent migration implementation agent found no concrete staged-wire blocker; original source peer uses objects for root history and editor_blocks for block history.",
+  "limitations": [
+    "No OS process crash or kill",
+    "No injected lost HTTP acknowledgement",
+    "No network synchronization or native ACL mutation",
+    "No inline-file HTTP route",
+    "No full-Space migration certification"
+  ],
+  "upstreamHistoryHandler": {
+    "repository": "anyproto/any",
+    "ref": "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
+    "path": "internal/server/handlers_history.go",
+    "gitBlob": "b51ed63a6698ef65064f4851e780a77e00b3344f",
+    "sha256": "792c114595fe29952c47583acd70f215d4a9a9c8950286057df3d1c910c60fb5"
+  },
+  "grammar": {
+    "jobID": "job_cf28e56cf672",
+    "sourceSHA256": "ba446f2a78f475517439111169cd6d4c33541bff470d848e63b7bf6207d0818f",
+    "exitCode": 0,
+    "tests": 0,
+    "typecheck": false,
+    "appleExecution": false
+  }
+}

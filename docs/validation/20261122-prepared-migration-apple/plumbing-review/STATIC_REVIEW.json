@@ -1,0 +1,31 @@
+{
+  "status": "READ_ONLY_SCOPED_SOURCE_REVIEW",
+  "prepareRuntimeChangedFunctions": [
+    "apply",
+    "install",
+    "main",
+    "read_manifest",
+    "record"
+  ],
+  "prepareRuntimeAddedFunctions": [
+    "native_version",
+    "show_version"
+  ],
+  "prepareRuntimeUnchangedFunctions": [
+    "archive_files",
+    "digest",
+    "git",
+    "require",
+    "safe_relative",
+    "validate_artifact_source",
+    "verify_source"
+  ],
+  "runtimeOnlyEnumChanged": true,
+  "retainedVersionControlsRerun": false,
+  "retainedControlsCount": 4,
+  "newConcerns": [],
+  "limitations": [
+    "Manifest evaluation and extracted enum compilation still require separate original outputs",
+    "No Apple typecheck or runtime binary validation from this static review"
+  ]
+}

@@ -7,6 +7,7 @@ from pathlib import Path, PurePosixPath
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MANIFEST = ROOT / "Tools/AnyEngineValidation/evidence/native-property-receipts-v9-source.json"
 VERSION = "v0.5.0-pinkha.1"
+PREPARED_MIGRATION_VERSION = "v0.5.0-pinkha.prepared.1"
 # The SDK v0.8.0 annotated tag object and its checkout commit are pinned
 # separately; compare actual HEAD to the peeled commit.
 PINNED_COMMITS = {"any": "88fae2e5ae7d0f46d6707567a3123081faa8de9a",
@@ -22,11 +23,19 @@ def digest(path):
 def git(root, *args):
     return subprocess.check_output(["git", "-C", str(root), *args], text=True).strip()
 
+def native_version(manifest):
+    """Keep the retained default exact; candidates select a distinct identity."""
+    value = manifest.get("nativeVersion", VERSION)
+    require(isinstance(value, str) and value in (VERSION, PREPARED_MIGRATION_VERSION),
+            "Unknown native source-manifest version")
+    return value
+
 def read_manifest(path):
     data = json.loads(path.read_text(encoding="utf-8"))
     require(data["any"]["upstreamCommit"] == "88fae2e5ae7d0f46d6707567a3123081faa8de9a", "Unexpected Any base")
     require(data["sdk"]["upstreamCommit"] == "854df54cdadd76006ae823cbd1b1d923138356d0", "Unexpected SDK base")
     require(data["sdk"]["upstreamTagObject"] == "b161a0475479bbe7d9d693bc496c6fdd90c3969b", "Unexpected SDK tag object")
+    native_version(data)
     return data
 
 def safe_relative(value):
@@ -67,7 +76,7 @@ def apply(args):
         require(digest(patch) == spec["patchSHA256"], name + " patch digest mismatch")
         subprocess.run(["git", "-C", str(root), "apply", "--check", "--index", str(patch)], check=True)
         subprocess.run(["git", "-C", str(root), "apply", "--index", str(patch)], check=True)
-    receipt = {"schemaVersion": 1, "version": VERSION, "sourceManifestSHA256": digest(args.manifest),
+    receipt = {"schemaVersion": 1, "version": native_version(manifest), "sourceManifestSHA256": digest(args.manifest),
                "sources": verify_source(manifest, args.manifest, args.any_root)}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
@@ -109,21 +118,22 @@ def archive_files(archive):
 
 def record(args):
     manifest = read_manifest(args.manifest)
+    version = native_version(manifest)
     sources = verify_source(manifest, args.manifest, args.any_root)
     archive = args.any_root / "dist/any.xcframework.zip"
     files = archive_files(archive)
-    require(os.environ.get("ANY_BUILD_VERSION") == VERSION, "Native build version was not explicitly selected")
+    require(os.environ.get("ANY_BUILD_VERSION") == version, "Native build version was not explicitly selected")
     args.output.mkdir(parents=True, exist_ok=True)
     destination = args.output / archive.name
     shutil.copy2(archive, destination)
-    receipt = {"schemaVersion": 1, "version": VERSION, "sourceCommit": git(ROOT, "rev-parse", "HEAD"),
+    receipt = {"schemaVersion": 1, "version": version, "sourceCommit": git(ROOT, "rev-parse", "HEAD"),
                "sourceManifestSHA256": digest(args.manifest), "sources": sources,
                "archive": archive.name, "archiveSHA256": digest(destination), "filesSHA256": files,
                "toolchain": {"go": subprocess.check_output(["go", "version"], text=True).strip(),
                              "xcode": subprocess.check_output(["xcodebuild", "-version"], text=True).strip(),
                              "iphoneosSDK": subprocess.check_output(["xcrun", "--sdk", "iphoneos", "--show-sdk-version"], text=True).strip()}}
     (args.output / "native-artifact.json").write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"status":"BUILT_SOURCE_VERIFIED", "archiveSHA256":receipt["archiveSHA256"], "version":VERSION}))
+    print(json.dumps({"status":"BUILT_SOURCE_VERIFIED", "archiveSHA256":receipt["archiveSHA256"], "version":version}))
 
 def validate_artifact_source(receipt, manifest, manifest_path, producer_commit=None):
     """Reuse a binary only when every native source input still matches."""
@@ -162,7 +172,7 @@ def validate_artifact_source(receipt, manifest, manifest_path, producer_commit=N
 def install(args):
     manifest = read_manifest(args.manifest)
     receipt = json.loads((args.artifact / "native-artifact.json").read_text(encoding="utf-8"))
-    require(receipt["schemaVersion"] == 1 and receipt["version"] == VERSION, "Unrecognized native artifact")
+    require(receipt["schemaVersion"] == 1 and receipt["version"] == native_version(manifest), "Unrecognized native artifact")
     reuse = validate_artifact_source(receipt, manifest, args.manifest, getattr(args, "producer_commit", None))
     reuse["artifactReceiptSHA256"] = digest(args.artifact / "native-artifact.json")
     archive = args.artifact / safe_relative(receipt["archive"])
@@ -189,12 +199,18 @@ def install(args):
     finally:
         if stage.exists():
             shutil.rmtree(stage)
-    print("Installed exact source-bound native artifact; select PINKHA_ANY_NATIVE_ARTIFACT=verified-v1.")
+    selection = "verified-prepared-v1" if native_version(manifest) == PREPARED_MIGRATION_VERSION else "verified-v1"
+    print("Installed exact source-bound native artifact; select PINKHA_ANY_NATIVE_ARTIFACT=" + selection + ".")
+
+def show_version(args):
+    print(native_version(read_manifest(args.manifest)))
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
     sub = p.add_subparsers(dest="command", required=True)
+    s = sub.add_parser("version", help="Print the exact explicitly selected source-manifest version")
+    s.set_defaults(function=show_version)
     for name, function in (("apply", apply), ("record", record)):
         s = sub.add_parser(name)
         s.add_argument("--any-root", type=Path, required=True)

@@ -1,0 +1,170 @@
+name: Prepared migration Apple candidate
+
+on:
+  workflow_call:
+    inputs:
+      native_artifact_run_id:
+        type: string
+        default: ''
+      native_producer_commit:
+        type: string
+        default: ''
+      native_artifact_run_attempt:
+        type: string
+        default: ''
+  workflow_dispatch:
+    inputs:
+      native_artifact_run_id:
+        description: Exact original producer run; leave all three fields empty for a new build
+        type: string
+        default: ''
+      native_producer_commit:
+        description: Exact original producer source commit
+        type: string
+        default: ''
+      native_artifact_run_attempt:
+        description: Exact original producer attempt
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  native-producer:
+    if: ${{ inputs.native_artifact_run_id == '' }}
+    name: Build prepared migration native runtime
+    runs-on: xcode-27
+    timeout-minutes: 80
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      ATTEMPT: build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout the immutable control source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}/control
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Validate candidate and producer inputs
+        id: admission
+        env:
+          PRODUCER_RUN: ${{ inputs.native_artifact_run_id }}
+          PRODUCER_COMMIT: ${{ inputs.native_producer_commit }}
+          PRODUCER_ATTEMPT: ${{ inputs.native_artifact_run_attempt }}
+        run: |
+          python3 -B "$ATTEMPT/control/Tools/AnyEngineValidation/prepared_migration_apple/build.py" \
+            --control "$ATTEMPT/control" --expected-app-sha "$GITHUB_SHA" --preflight \
+            --native-artifact-run-id "$PRODUCER_RUN" --native-producer-commit "$PRODUCER_COMMIT" \
+            --native-artifact-run-attempt "$PRODUCER_ATTEMPT"
+      - name: Checkout the exact original Any base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/any
+          ref: 88fae2e5ae7d0f46d6707567a3123081faa8de9a
+          path: build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}/any
+          persist-credentials: false
+      - name: Checkout the exact SDK in its native replacement path
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/any-sync-sdk
+          ref: 854df54cdadd76006ae823cbd1b1d923138356d0
+          path: build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}/any/.runtime-artifacts/sdk-source
+          persist-credentials: false
+      - name: Select the original native module's Go toolchain
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}/any/go.mod
+          cache-dependency-path: |
+            build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}/any/go.sum
+            build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}/any/.runtime-artifacts/sdk-source/go.sum
+      - name: Build both native slices and record exact provenance
+        id: native
+        run: |
+          python3 -B "$ATTEMPT/control/Tools/AnyEngineValidation/prepared_migration_apple/build.py" \
+            --control "$ATTEMPT/control" --expected-app-sha "$GITHUB_SHA" \
+            --any-root "$ATTEMPT/any" --artifacts "$ATTEMPT/native-artifact" \
+            --evidence "$ATTEMPT/producer-evidence"
+      - name: Publish the verified native artifact before any consumer test
+        if: ${{ !cancelled() && steps.native.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.admission.outputs.artifact_name }}
+          path: build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}/native-artifact/
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 14
+      - name: Preserve original native build evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Any-Prepared-Migration-Producer-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}/producer-evidence/
+          if-no-files-found: warn
+          retention-days: 14
+
+  prepared-runtime:
+    needs: native-producer
+    if: ${{ always() && !cancelled() && (needs.native-producer.result == 'success' || needs.native-producer.result == 'skipped') }}
+    name: Prove one prepared migration Apple journey
+    runs-on: xcode-27
+    timeout-minutes: 85
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      ATTEMPT: build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}
+      PYTHONDONTWRITEBYTECODE: '1'
+      GH_TOKEN: ${{ github.token }}
+      PRODUCER_RUN: ${{ inputs.native_artifact_run_id }}
+      PRODUCER_COMMIT: ${{ inputs.native_producer_commit }}
+      PRODUCER_ATTEMPT: ${{ inputs.native_artifact_run_attempt }}
+    steps:
+      - name: Checkout the immutable consumer source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}/control
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Select native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Validate exact current candidate and optional original producer
+        id: admission
+        run: |
+          python3 -B "$ATTEMPT/control/Tools/AnyEngineValidation/prepared_migration_apple/build.py" \
+            --control "$ATTEMPT/control" --expected-app-sha "$GITHUB_SHA" --preflight \
+            --native-artifact-run-id "$PRODUCER_RUN" --native-producer-commit "$PRODUCER_COMMIT" \
+            --native-artifact-run-attempt "$PRODUCER_ATTEMPT"
+      - name: Retrieve the exact producer attempt's source-bound native artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.admission.outputs.artifact_name }}
+          run-id: ${{ inputs.native_artifact_run_id || github.run_id }}
+          github-token: ${{ github.token }}
+          path: build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}/native-artifact/
+      - name: Execute only the new actual C-runtime managed-HTTP XCTest
+        run: |
+          python3 -B "$ATTEMPT/control/Tools/AnyEngineValidation/prepared_migration_apple/run_host.py" \
+            --control "$ATTEMPT/control" --expected-app-sha "$GITHUB_SHA" \
+            --artifact "$ATTEMPT/native-artifact" --work "$ATTEMPT/host-work" \
+            --evidence "$ATTEMPT/consumer-evidence" \
+            --native-artifact-run-id "$PRODUCER_RUN" --native-producer-commit "$PRODUCER_COMMIT" \
+            --native-artifact-run-attempt "$PRODUCER_ATTEMPT"
+      - name: Preserve original xcresults, summaries, attachments and command receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Any-Prepared-Migration-Apple-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/prepared-migration-${{ github.run_id }}-${{ github.run_attempt }}/consumer-evidence/
+          if-no-files-found: warn
+          retention-days: 14

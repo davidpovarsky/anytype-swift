@@ -23,9 +23,12 @@ public enum AnyEmbeddedRuntimeError: Error, Equatable, Sendable {
 public enum AnyEmbeddedBuild: String, Sendable, Codable {
     case upstreamV050
     case pinkhaNativeV1
+    case pinkhaPreparedMigrationCandidateV1
 
     public static var linked: Self {
-        #if PINKHA_NATIVE_RUNTIME
+        #if PINKHA_PREPARED_MIGRATION_RUNTIME
+        return .pinkhaPreparedMigrationCandidateV1
+        #elseif PINKHA_NATIVE_RUNTIME
         return .pinkhaNativeV1
         #else
         return .upstreamV050
@@ -36,6 +39,7 @@ public enum AnyEmbeddedBuild: String, Sendable, Codable {
         switch self {
         case .upstreamV050: return "any v0.5.0 "
         case .pinkhaNativeV1: return "any v0.5.0-pinkha.1 "
+        case .pinkhaPreparedMigrationCandidateV1: return "any v0.5.0-pinkha.prepared.1 "
         }
     }
 }

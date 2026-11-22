@@ -1,0 +1,15 @@
+# Prepared migration client: 18 focused controls
+
+**PASS: 18 exact XCTest methods, 18 passes, zero failures or skips.** Sentinel job `job_95a9ac95c0f6` executed the new `NativePreparedMigrationTests` on Swift 6.3.3 for Windows. The raw log is 8,360 bytes, SHA-256 `ec6814dde7ab417d3678ee8f8fe1eb9fae788f1a47e6bc7399c20f8dd82c90fd`; the original receipt is SHA-256 `46d2b2e007a6c7682094f834fa4abf3c213578e9382031017975606e68f56702`. Every expected method has exactly one start and one pass terminal.
+
+The executed client is SHA-256 `e8c0e084b0a18a7c4892529054f9b9d393d8cdd72d357aef4d330ea2a4ae059d`; the executed tests are `4563e1b986db75116afb509c566b3115811b57f1042a57dc44c2057bc2dbf2af`. Controls cover stable plan/source identity, exact JSON specification bytes, supported shape bounds, capability and receipt scope binding, staged commit progress, retained fingerprint and signed CID, lost acknowledgements without duplicate automatic POST, restart at remaining stages, and owner/store changes before another write. Deleted, modified, obsolete, no-progress, and regressing stages are refused.
+
+The fresh Host/test stage uses 32 exact Git-tracked Host baseline files from app `bf5b2fb4e0b446f8e13c04c8f9d8c16a44b41345`. Only its local dependency paths were rewired to the existing exact Kit, Engine, and Integration source stages. All 233 common baseline files, six history files, copied Host files, and two client/test files stayed unchanged. Clean dependency checkouts retained swift-crypto `e8d6eba1fef23ae5b359c46b03f7d94be2f41fed`, swift-asn1 `917b472dbe53ba699cbb0495f9a95a084bc6364d`, and TorahInspectorKit `511454e49450cb2581ddf77f644146ff3e30dbef`. No dependency models were stubbed and no old history suite was rerun.
+
+## Rejected zero-test attempt
+
+The preceding job `job_a0b7c619151b` exited 0 but ran zero matching methods because the shared SwiftPM scratch directory reused an old build manifest. Its raw log explicitly reports `No matching test cases were run`. The original provisional PASS receipt and log are retained verbatim under `original/attempt-1-zero-tests`; **that attempt is rejected and contributes no pass**. The isolated retry added the documented `--disable-build-manifest-caching` option, built the correct graph, and qualified all 18 exact terminals. The source files were unchanged between the attempts.
+
+`ORIGINALS_MANIFEST.json` records ten exact original files, including the local package wiring, resolved pins, source snapshot, successful stream/receipt, and rejected stream/receipt. Run `python qualify_client.py --source-root <repository-root>` to check original hashes, current source hashes, dependency identities, and exact method terminals without executing any tests. The generated result is `AUDIT.json`.
+
+These are actual Swift client/transport-contract controls with scripted native replies. Native SDK execution, real native HTTP calls, and Apple execution are **NOT_RUN** in this proof. It does not establish completed whole-Space migration; native prepared-byte, restart, and peer delivery evidence is handled separately.

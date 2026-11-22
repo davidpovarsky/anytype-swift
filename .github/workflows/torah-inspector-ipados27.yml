@@ -48,6 +48,7 @@ on:
           - coherent-heart-apple
           - coherent-heart-peers
           - semantic-anchor-native
+          - prepared-migration-apple
           - t5-native-pagination
           - t5-native-account-retry
           - t5-native-attachment
@@ -119,6 +120,14 @@ on:
         default: r14
       source_run_id:
         description: Verified Heart runtime run, or native evidence source for diagnostics
+        type: string
+        default: ''
+      prepared_native_producer_commit:
+        description: Exact original prepared migration producer commit when reusing source_run_id
+        type: string
+        default: ''
+      prepared_native_artifact_run_attempt:
+        description: Exact original prepared migration producer attempt when reusing source_run_id
         type: string
         default: ''
       t5_r15_run_id:
@@ -272,6 +281,14 @@ jobs:
     uses: ./.github/workflows/pinkha-coherent-heart-peers.yml
     with:
       source_sha: ${{ github.sha }}
+
+  prepared-migration-apple:
+    if: ${{ inputs.route == 'prepared-migration-apple' }}
+    uses: ./.github/workflows/pinkha-prepared-migration-apple.yml
+    with:
+      native_artifact_run_id: ${{ inputs.source_run_id }}
+      native_producer_commit: ${{ inputs.prepared_native_producer_commit }}
+      native_artifact_run_attempt: ${{ inputs.prepared_native_artifact_run_attempt }}
 
   semantic-anchor-native:
     if: ${{ inputs.route == 'semantic-anchor-native' }}

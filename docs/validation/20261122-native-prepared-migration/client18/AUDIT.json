@@ -1,0 +1,56 @@
+{
+  "apple_execution": "NOT_RUN",
+  "baseline_app_sha": "bf5b2fb4e0b446f8e13c04c8f9d8c16a44b41345",
+  "baseline_source_count": 233,
+  "copied_host_source_count": 32,
+  "dependencies": {
+    "swift-asn1": "917b472dbe53ba699cbb0495f9a95a084bc6364d",
+    "swift-crypto": "e8d6eba1fef23ae5b359c46b03f7d94be2f41fed",
+    "torahinspectorkit": "511454e49450cb2581ddf77f644146ff3e30dbef"
+  },
+  "executed_methods": 18,
+  "failed_methods": 0,
+  "harness": "Separate exact Host/test source stage; only dependency path wiring changed. Existing idle compiler cache reused with manifest-cache bypass. No old history/client suite rerun.",
+  "history_source_count_unchanged": 6,
+  "methods": [
+    "testAuthorityLostAfterPrepareSuppressesReceiptButKeepsIdentityForRecovery",
+    "testCapabilitiesRequireExactScopeAndExplicitFileBoundary",
+    "testChangedNativeFingerprintStopsBeforeCommit",
+    "testChangedPersistentStoreStopsBeforePrepare",
+    "testCommitChecksCurrentReceiptAndDispatchesOnlyOnce",
+    "testDeletedModifiedAndObsoleteNeverRecreateOrCommit",
+    "testExactSpecificationBytesSurviveEnvelopeEncoding",
+    "testIdentitySeparatesAccountSpaceStorePlanAndKind",
+    "testKnownTypedBoundsRejectUnsupportedAndUnboundedShapes",
+    "testLogicalIdentityDoesNotChangeWithPayloadOrPlanDigest",
+    "testLostAcknowledgementReconcilesOriginalCommitWithoutAnotherPost",
+    "testObjectCommitAdvancesThreeDurableStagesWithOneImmutableIdentity",
+    "testObjectCommitRefusesNoProgressAndRegressingStagesWithoutRetryLoop",
+    "testObjectResumeUsesOnlyRemainingStagesAndLostAcknowledgementNeverCreatesAnotherRoot",
+    "testObjectStageCannotChangeItsFingerprintOrSignedRootIdentity",
+    "testObjectStagesRecheckOwnerAndPersistentStoreBeforeTheNextWrite",
+    "testPrepareTransmitsOnlyTheExactBoundSpecification",
+    "testReceiptCannotCrossIdentitySpecificationOrPlan"
+  ],
+  "native_http": "NOT_RUN",
+  "native_sdk_execution": "NOT_RUN",
+  "original_receipt_sha256": "46d2b2e007a6c7682094f834fa4abf3c213578e9382031017975606e68f56702",
+  "passed_methods": 18,
+  "raw_log_sha256": "ec6814dde7ab417d3678ee8f8fe1eb9fae788f1a47e6bc7399c20f8dd82c90fd",
+  "rejected_zero_test_attempt": {
+    "admission": "REJECTED",
+    "executed_methods": 0,
+    "job_id": "job_a0b7c619151b",
+    "reason": "Exit 0 reused an old SwiftPM build graph and selected no methods. The original provisional PASS receipt is retained verbatim and explicitly overridden by this qualification."
+  },
+  "runtime": "Swift 6.3.3, x86_64-unknown-windows-msvc",
+  "schema_version": 1,
+  "sentinel_job_id": "job_95a9ac95c0f6",
+  "skipped_methods": 0,
+  "source_sha256": {
+    "Modules/PinkhaAnyHost/Sources/PinkhaAnyHost/AnyNativePreparedMigration.swift": "e8c0e084b0a18a7c4892529054f9b9d393d8cdd72d357aef4d330ea2a4ae059d",
+    "Modules/PinkhaAnyHost/Tests/PinkhaAnyHostTests/NativePreparedMigrationTests.swift": "4563e1b986db75116afb509c566b3115811b57f1042a57dc44c2057bc2dbf2af"
+  },
+  "status": "PASS_18_FOCUSED_PORTABLE_CLIENT_CONTROLS",
+  "whole_migration": "NOT_PROVEN"
+}

@@ -3,13 +3,16 @@ import PackageDescription
 import Foundation
 
 let nativeMode = ProcessInfo.processInfo.environment["PINKHA_ANY_NATIVE_ARTIFACT"]
-precondition(nativeMode == nil || nativeMode == "verified-v1", "Unknown native artifact selection")
-let isNative = nativeMode == "verified-v1"
+precondition(nativeMode == nil || nativeMode == "verified-v1" || nativeMode == "verified-prepared-v1", "Unknown native artifact selection")
+let isPreparedCandidate = nativeMode == "verified-prepared-v1"
+let isNative = nativeMode == "verified-v1" || isPreparedCandidate
 // This acceptance-only host is never added to the retained runtime test lane.
 let readAcceptance = ProcessInfo.processInfo.environment["PINKHA_ANY_AUTHORIZED_READ_ACCEPTANCE"]
 precondition(readAcceptance == nil || readAcceptance == "candidate-v10", "Unknown authorized read acceptance selection")
 let isReadCandidate = readAcceptance == "candidate-v10"
 precondition(!isReadCandidate || isNative, "Authorized read acceptance requires an explicitly installed candidate binary")
+precondition(!isReadCandidate || !isPreparedCandidate, "Acceptance candidates require separate explicit selections")
+let isHostAcceptance = isReadCandidate || isPreparedCandidate
 let binary: Target = isNative
     ? .binaryTarget(name: "AnyLib", path: "Vendor/any.xcframework")
     : .binaryTarget(
@@ -22,7 +25,7 @@ let package = Package(
     name: "PinkhaAnyRuntime",
     platforms: [.iOS("18.4")],
     products: [.library(name: "PinkhaAnyRuntime", targets: ["PinkhaAnyRuntime"])],
-    dependencies: [.package(path: "../PinkhaAnyEngine")] + (isReadCandidate ? [
+    dependencies: [.package(path: "../PinkhaAnyEngine")] + (isHostAcceptance ? [
         .package(path: "../PinkhaAnyIntegration"),
         .package(path: "../PinkhaAnyHost"),
         .package(path: "../PinkhaKit")
@@ -32,14 +35,16 @@ let package = Package(
         .target(
             name: "PinkhaAnyRuntime",
             dependencies: ["AnyLib", "PinkhaAnyEngine"],
-            swiftSettings: isNative ? [.define("PINKHA_NATIVE_RUNTIME")] : [],
+            swiftSettings: (isNative ? [.define("PINKHA_NATIVE_RUNTIME")] : []) +
+                (isPreparedCandidate ? [.define("PINKHA_PREPARED_MIGRATION_RUNTIME")] : []),
             linkerSettings: [.linkedFramework("Security"), .linkedFramework("SystemConfiguration"), .linkedLibrary("resolv")]
         ),
         .testTarget(
             name: "PinkhaAnyRuntimeTests",
-            dependencies: ["PinkhaAnyRuntime"] + (isReadCandidate
+            dependencies: ["PinkhaAnyRuntime"] + (isHostAcceptance
                 ? ["PinkhaAnyEngine", "PinkhaAnyIntegration", "PinkhaAnyHost", "PinkhaKit"] : []),
-            swiftSettings: isReadCandidate ? [.define("PINKHA_AUTHORIZED_READ_CANDIDATE")] : []
+            swiftSettings: (isReadCandidate ? [.define("PINKHA_AUTHORIZED_READ_CANDIDATE")] : []) +
+                (isPreparedCandidate ? [.define("PINKHA_PREPARED_MIGRATION_ACCEPTANCE")] : [])
         )
     ]
 )
