@@ -24,14 +24,21 @@ struct PropertiesListCoordinatorView: View {
             torahSession: torahSession,
             preparedSession: preparedSession
         )
+        .onDisappear { model.cancelTypePreparation() }
         .sheet(item: $model.relationValueData) { data in
             PropertyValueCoordinatorView(data: data, output: model)
         }
         .sheet(item: $model.relationsSearchData) {
             PropertyCreationView(data: $0)
         }
-        .sheet(item: $model.objectTypeData) {
-            TypePropertiesView(data: $0)
+        .sheet(item: $model.objectTypeData, onDismiss: model.didDismissTypeProperties) { data in
+            if let child = model.preparedTypePropertiesSession,
+               child.document.objectId.utf8.elementsEqual(data.objectId.utf8),
+               child.document.spaceId.utf8.elementsEqual(data.spaceId.utf8) {
+                TypePropertiesView(preparedSession: child)
+            } else if preparedSession == nil {
+                TypePropertiesView(data: data)
+            }
         }
         .sheet(isPresented: $model.showTypePicker) {
             ObjectTypeSearchView(
@@ -42,5 +49,6 @@ struct PropertiesListCoordinatorView: View {
                 model.onTypeSelected(type)
             }
         }
+        .snackbar(toastBarData: $model.typePropertiesToast)
     }
 }

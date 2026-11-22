@@ -16,8 +16,18 @@ protocol TypePropertiesMoveHandlerProtocol: Sendable {
 
 final class TypePropertiesMoveHandler: Sendable {
     private let propertiesService: any PropertiesServiceProtocol = Container.shared.propertiesService()
+    private let originalEditorScope: OriginalEditorPropertyScope?
+
+    init(originalEditorScope: OriginalEditorPropertyScope? = nil) {
+        self.originalEditorScope = originalEditorScope
+    }
     
     func onMove(from: Int, to: Int, relationRows: [TypePropertiesRow], document: any BaseDocumentProtocol) async throws {
+        if let originalEditorScope {
+            try await originalEditorScope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                try originalEditorScope.owner.validateDocument(document)
+            }
+        }
         guard let fromRow = relationRows[safe: from], case let .relation(fromRelation) = fromRow else {
             anytypeAssertionFailure("Wrong data for fromRow", info: ["fromIndex": from.description, "rows": relationRows.description])
             throw TypePropertiesMoveError.wrongDataForFromRow
@@ -315,7 +325,8 @@ final class TypePropertiesMoveHandler: Sendable {
             typeId: typeId,
             recommendedProperties: recommendedRelationIds,
             recommendedFeaturedProperties: recommendedFeaturedRelationsIds,
-            recommendedHiddenProperties: recommendedHiddenRelationsIds
+            recommendedHiddenProperties: recommendedHiddenRelationsIds,
+            originalEditorScope: originalEditorScope
         )
     }
 }

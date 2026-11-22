@@ -1,0 +1,68 @@
+{
+  "reviewed_utc": "2026-11-22T01:36:15.642897+00:00",
+  "reviewer": "integration_audit",
+  "base": "bbd11635598a77d98e7ffcb336fafee9a75eba10",
+  "files": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorView.swift",
+      "sha256": "67512e02856a99f56325ddc7b07d06597a77b6d34222874712a39e1db552c44e",
+      "bytes": 2113,
+      "matches_manifest": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Coordinator/PropertiesListCoordinatorViewModel.swift",
+      "sha256": "a02bc0f84691e430a47011f6b324553ddc28c8ae7b6470359ec68261c2a564c1",
+      "bytes": 7364,
+      "matches_manifest": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesDropDelegate.swift",
+      "sha256": "f359ad56b6ddec2c789eb34ad319cd02081431e3c16d015bd34522495a9920c3",
+      "bytes": 1830,
+      "matches_manifest": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/Model/TypePropertiesMoveHandler.swift",
+      "sha256": "96b5167c6d7b60ca91f416beb9922264d345ab90259490397993a121ac2821b7",
+      "bytes": 16666,
+      "matches_manifest": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesView.swift",
+      "sha256": "c104d37a2e0935166e5a82477307789541d6b13fe6fba1e830977496b13072a9",
+      "bytes": 7931,
+      "matches_manifest": true
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/TypePropertiesView/TypePropertiesViewModel.swift",
+      "sha256": "bab724bb8c35ab1051e3def430f0863428778c8cf595328b553150034f641947",
+      "bytes": 16478,
+      "matches_manifest": true
+    },
+    {
+      "path": "Anytype/Sources/ServiceLayer/Extensions/PropertiesServiceProtocolExtensions.swift",
+      "sha256": "c53c793877254d9dfa70e8c0b98179cacfd463640616412f00fae71fa21b59d6",
+      "bytes": 9584,
+      "matches_manifest": true
+    }
+  ],
+  "patch_sha256": "0a93b302ace640edef150621211cbf46aaacf4e641c942cd6caf1236d1fb4094",
+  "result": "NO_CONCRETE_SOURCE_BLOCKER_IN_BOUNDED_REVIEW",
+  "review_scope": [
+    "actual selected type child acquisition through existing factory and original BaseDocument",
+    "original ObjectSetDetails and BlockDataviewRelationSet calls preserved",
+    "exact original delegate admission, same type Owner and Space, named permissions",
+    "synchronous drop admission before Task and post-await shared cache publication",
+    "nil legacy behavior and no configured catalog bootstrap",
+    "actual DocumentsProvider.document versus separate setDocument path"
+  ],
+  "limitations": [
+    "Apple semantic compilation NOT_RUN",
+    "Native drag, permission revocation and sheet lifecycle acceptance NOT_RUN",
+    "other original catalog/property routes remain separately unqualified"
+  ],
+  "mutations_or_tests_by_reviewer": "NONE",
+  "final_manifest_sha256": "c8abc32b795115ced3ca0118d4d850d9d7ad519136b3f677e908f589276edc26",
+  "previous_reviewed_patch_sha256": "b2e35118c56858ddadc36a4c33cdeeadf6c12faf0f4bb9bfc7e33f13f6afdadd",
+  "addendum": "One-line correction changes the new disabled predicate from !canUseCatalogActions to originalEditorScope != nil. This preserves original nil-scope menu availability while retaining the configured catalog restriction. Other six reviewed source files are byte-identical. No test rerun by reviewer."
+}

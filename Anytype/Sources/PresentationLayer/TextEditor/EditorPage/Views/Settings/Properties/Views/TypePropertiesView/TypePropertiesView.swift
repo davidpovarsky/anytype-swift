@@ -16,10 +16,17 @@ struct TypePropertiesView: View {
     init(document: some BaseDocumentProtocol) {
         _model = State(initialValue: TypePropertiesViewModel(document: document))
     }
+
+    init(preparedSession: PreparedEditorPageSession) {
+        _model = State(initialValue: TypePropertiesViewModel(
+            document: preparedSession.document, preparedSession: preparedSession
+        ))
+    }
     
     var body: some View {
         content
             .task { await model.setupSubscriptions() }
+            .onDisappear { model.retireOwnedPresentation() }
             .sheet(item: $model.relationsSearchData) { data in
                 PropertyCreationView(data: data)
             }
@@ -90,7 +97,8 @@ struct TypePropertiesView: View {
                     destinationRow: row,
                     document: model.document,
                     draggedRow: $draggedRow,
-                    allRows: $model.relationRows)
+                    allRows: $model.relationRows,
+                    originalEditorScope: model.originalEditorScope)
                 )
         }
     }
@@ -110,7 +118,7 @@ struct TypePropertiesView: View {
     
     private func headerRow(_ data: TypePropertiesSectionRow) -> some View {
         ListSectionHeaderView(title: data.title, increasedTopPadding: true) {
-            if model.canEditPropertiesList && data.canCreateRelations {
+            if model.canUseCatalogActions && data.canCreateRelations {
                 Button(action: {
                     model.onAddRelationTap(section: data)
                 }, label: {
@@ -135,7 +143,7 @@ struct TypePropertiesView: View {
                 Spacer()
             }.disabled(!model.canInspectRelation(data))
             
-            if model.canEditPropertiesList && model.isRelationHidden(data) {
+            if model.canUseCatalogActions && model.isRelationHidden(data) {
                 Button {
                     model.onRelationReveal(data)
                 } label: {
@@ -159,7 +167,7 @@ struct TypePropertiesView: View {
         
         .padding(.horizontal, 20)
         .contextMenu {
-            if model.canEditPropertiesList {
+            if model.canUseCatalogActions {
                 if model.isRelationHidden(data) {
                     Button(Loc.show) {
                         model.onRelationReveal(data)
@@ -219,6 +227,7 @@ struct TypePropertiesView: View {
         
                 MoreIndicator()
             }
+            .disabled(model.originalEditorScope != nil)
         }
         .frame(height: 52)
     }
