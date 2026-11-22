@@ -417,42 +417,89 @@ def terminate_owned(process):
 
 
 def run_logged(argv, cwd, directory, name, timeout, check=True, output=None):
+    # Reuse the same owned executor and quiescence check as the package/SDK
+    # supervisors. A completed xcodebuild parent can leave compiler children;
+    # the next stage and cache publication must wait for its own group only.
+    import wave15_batch as owned
+    from run_owned_single_lane import verify_owned_group_stopped
+
     directory.mkdir(parents=True, exist_ok=True)
     log_path = output or directory / (name + ".log")
-    require(not log_path.exists(), "Refuse stale command output")
+    command_path = log_path.with_suffix(".command.json")
+    original_path = directory / (name + ".owned.command.json")
+    metadata_path = directory / (name + ".command.json")
+    require(not any(path.exists() for path in (log_path, command_path, original_path, metadata_path)),
+            "Refuse stale command output or ownership evidence")
     metadata = dict(argv=[str(item) for item in argv], cwd=str(cwd), status="FAILED",
                     started_at=datetime.now(timezone.utc).isoformat(), timeout_seconds=timeout)
-    env = dict(os.environ, GH_PROMPT_DISABLED="1")
-    env.pop("GH_DEBUG", None)
-    process = None
+    previous = {number: signal.getsignal(number) for number in (signal.SIGTERM, signal.SIGINT)}
+    previous_env = {key: os.environ.get(key) for key in ("GH_PROMPT_DISABLED", "GH_DEBUG")}
+    cancelled = finalizing = False
+    failure = cleanup_failure = None
+    outcome = None
+
+    def cancel(signum, frame):
+        nonlocal cancelled
+        if cancelled:
+            return
+        cancelled = True
+        if not finalizing:
+            raise KeyboardInterrupt("Owned T5 command cancelled")
+
+    for number in previous:
+        signal.signal(number, cancel)
+    os.environ["GH_PROMPT_DISABLED"] = "1"
+    os.environ.pop("GH_DEBUG", None)
     try:
-        with log_path.open("xb") as stream:
-            try:
-                process = subprocess.Popen(argv, cwd=cwd, stdout=stream, stderr=subprocess.STDOUT,
-                                           env=env, start_new_session=True)
-                metadata["controller_process_id"] = process.pid
-                metadata["return_code"] = process.wait(timeout=timeout)
-                metadata["status"] = "SUCCESS" if process.returncode == 0 else "FAILED"
-            except BaseException as exc:
-                metadata["status"] = ("CANCELLED" if isinstance(exc, KeyboardInterrupt) else
-                                      "TIMED_OUT" if isinstance(exc, subprocess.TimeoutExpired) else "FAILED")
-                metadata["error_type"] = type(exc).__name__
-                metadata["timed_out"] = isinstance(exc, subprocess.TimeoutExpired)
-                if process is not None:
-                    try:
-                        terminate_owned(process)
-                        metadata["owned_group_termination"] = "TERM_THEN_KILL"
-                    except BaseException as cleanup_error:
-                        metadata["cleanup_error_type"] = type(cleanup_error).__name__
-                raise
-            finally:
-                if process is not None:
-                    metadata["return_code"] = process.returncode
-                stream.flush()
-                os.fsync(stream.fileno())
+        outcome = owned.run_worker_command([str(item) for item in argv], cwd, log_path, timeout)
+        metadata.update(return_code=outcome["return_code"],
+                        status="SUCCESS" if outcome["return_code"] == 0 else "FAILED")
+    except BaseException as error:
+        failure = error
+        metadata.update(status="CANCELLED" if isinstance(error, KeyboardInterrupt) else
+                        "TIMED_OUT" if isinstance(error, subprocess.TimeoutExpired) else "FAILED",
+                        error_type=type(error).__name__, timed_out=isinstance(error, subprocess.TimeoutExpired))
     finally:
-        metadata["finished_at"] = datetime.now(timezone.utc).isoformat()
-        write(directory / (name + ".command.json"), metadata)
+        finalizing = True
+        try:
+            if command_path.is_file():
+                original = json.loads(command_path.read_bytes())
+                if original.get("worker_pid") is not None:
+                    metadata.update(controller_process_id=original["worker_pid"],
+                                    return_code=original.get("return_code"),
+                                    owned_group_termination=original.get("owned_group_cleanup"))
+                    metadata["owned_group_quiescence"] = verify_owned_group_stopped(command_path)
+                else:
+                    metadata["owned_group_quiescence"] = {"status": "NOT_STARTED"}
+        except BaseException as error:
+            cleanup_failure = error
+            metadata.update(status="FAILED_PROCESS_CLEANUP", cleanup_error_type=type(error).__name__)
+        try:
+            if command_path.is_file():
+                command_path.rename(original_path)
+                metadata.update(original_owned_command=original_path.name,
+                                original_owned_command_sha256=digest(original_path))
+            if cancelled:
+                metadata["status"] = "CANCELLED"
+                failure = failure or KeyboardInterrupt("Owned T5 command cancelled")
+            metadata["finished_at"] = datetime.now(timezone.utc).isoformat()
+            write(metadata_path, metadata)
+            if cancelled:
+                metadata["status"] = "CANCELLED"
+                failure = failure or KeyboardInterrupt("Owned T5 command cancelled")
+                write(metadata_path, metadata)
+        finally:
+            for key, value in previous_env.items():
+                if value is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = value
+            for number, previous_handler in previous.items():
+                signal.signal(number, previous_handler)
+    if failure is not None:
+        raise failure
+    if cleanup_failure is not None:
+        raise cleanup_failure
     if check:
         require(metadata["return_code"] == 0, name + " failed; original private output retained")
     return metadata, log_path

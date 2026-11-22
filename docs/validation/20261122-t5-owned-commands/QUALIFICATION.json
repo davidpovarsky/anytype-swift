@@ -1,0 +1,45 @@
+{
+  "affected_original_controls": {
+    "executed_pair_source_sha256": "d56f13abb8e7486b47be81f4aa734b3e662e9f4ac082a5d3624d3dafd830e9e1",
+    "executed_test_source_sha256": "136103291b89b2a3f092b4ff116d937dcfc47f98bff9ea408b4d093b43b02737",
+    "failed": 0,
+    "passed": 3,
+    "seconds": 3.346,
+    "skipped": 0,
+    "test_source_impact": "Only an extra trailing blank line from local retrieval was removed after execution; exact test AST unchanged."
+  },
+  "base_commit": "f6d565064462d73300e66861c8113dd6e6a085a9",
+  "final_eof_normalization": {
+    "change": "Removed an extra blank line at EOF added during source transfer; no AST/token behavior change; no test rerun.",
+    "from_sha256": "d56f13abb8e7486b47be81f4aa734b3e662e9f4ac082a5d3624d3dafd830e9e1",
+    "to_sha256": "f4319201307e7ee5c7eb758228401ee051b448bf02e7da26c2a48c30ab656556"
+  },
+  "initial_import_attempt": {
+    "executed_test_bodies": 0,
+    "unittest_loader_errors": 3
+  },
+  "native_or_apple_acceptance": "NOT_RUN",
+  "new_controls": {
+    "executed_pair_source_sha256": "6fea30a0044ba465e19604f2353bf7fcf214465f97c5ef8fa628f012a25a3a12",
+    "passed": 3,
+    "seconds": 10.703,
+    "source_impact": "Only failed-Popen no-process metadata assignment subsequently changed; all three started-process branches unchanged. No repeat."
+  },
+  "original_logs": {
+    "affected-process-controls.log": "26d68158f4c118d89d83ff97736f654a8364fc9c403b3b1dc44ea04a2b43dbcb",
+    "initial-import-failure.log": "cabcf08e38812eeed069266fca03829e23961df4dc4ec87a5e087ee0c20319c4",
+    "new-process-controls.log": "5ba455d2a0225e01043bb6682794af73d850c87f35fa1a83cc754ca7f61f6d46"
+  },
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "source_files": {
+    "Tools/PinkhaSimulatorGate/run_t5_apple_pair.py": "f4319201307e7ee5c7eb758228401ee051b448bf02e7da26c2a48c30ab656556",
+    "Tools/PinkhaSimulatorGate/test_t5_apple_pair_process.py": "e40cbd86467e545a9c0da556d3c6fd9e955f801d0c3d2bc0cf4630861a9944dc",
+    "Tools/PinkhaSimulatorGate/test_t5_owned_commands.py": "fddd96d42f744e22803b2448beec018d555a1efc22b95a2774bdc54dd2bbfb5a"
+  },
+  "status": "VERIFIED_SCOPED_POSIX_CONTROLLER_CONTROLS",
+  "unchanged_reused_function_ast_sha256": {
+    "run_worker_command": "4b8ddcbc985089c70c57c4a002a15297e274e9af00520f5ff0086bcd40e809f5",
+    "terminate_owned": "ba9feff0f8e955a8ae975c6e7bb96ef2852b5a9f0a1e354edc7948482e2e3891",
+    "verify_owned_group_stopped": "ebe172a213b36246c934b4eacb461a3b7639d85cb05dbcb2f3af317157940f8c"
+  }
+}
