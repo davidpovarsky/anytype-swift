@@ -1,0 +1,426 @@
+[
+  {
+    "absolute_command_deadline_unix": 1795374501,
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "version"
+    ],
+    "child_started_unix": 1795367820.697505,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795367820.7275991
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+    "duration_seconds": 0.033,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "go-version",
+    "pid": 1988,
+    "process_group_id": 1988,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795367820.695858,
+    "status": "TERMINAL",
+    "stderr": "01-go-version.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "01-go-version.stdout",
+    "stdout_sha256": "278375c8a03c34bb0f855154850de7c4f217fd3b8cdf37986819e3f05d0a4c33",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795374501,
+    "argv": [
+      "xcodebuild",
+      "-version"
+    ],
+    "child_started_unix": 1795367820.7439082,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795367820.8573282
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+    "duration_seconds": 0.118,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "xcode-version",
+    "pid": 1989,
+    "process_group_id": 1989,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795367820.740086,
+    "status": "TERMINAL",
+    "stderr": "02-xcode-version.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "02-xcode-version.stdout",
+    "stdout_sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795374501,
+    "argv": [
+      "xcrun",
+      "--sdk",
+      "macosx",
+      "--show-sdk-version"
+    ],
+    "child_started_unix": 1795367820.86187,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795367823.047222
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+    "duration_seconds": 2.19,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "macos-sdk-version",
+    "pid": 1990,
+    "process_group_id": 1990,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795367820.858624,
+    "status": "TERMINAL",
+    "stderr": "03-macos-sdk-version.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "03-macos-sdk-version.stdout",
+    "stdout_sha256": "7b01c549928398a045692f24bcac7803b348524cdd76f21265b02984b2ba556a",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795374501,
+    "argv": [
+      "xcrun",
+      "--sdk",
+      "macosx",
+      "clang",
+      "--version"
+    ],
+    "child_started_unix": 1795367823.052263,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795367823.801968
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+    "duration_seconds": 0.754,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "clang-version",
+    "pid": 1998,
+    "process_group_id": 1998,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795367823.049134,
+    "status": "TERMINAL",
+    "stderr": "04-clang-version.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "04-clang-version.stdout",
+    "stdout_sha256": "f7d94e70f50cd55c0a560f909290570818892beae3a1c0ee41f35ee034d050b0",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795374501,
+    "argv": [
+      "git",
+      "apply",
+      "--check",
+      "/Users/runner/work/anytype-swift/anytype-swift/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch"
+    ],
+    "child_started_unix": 1795367823.807086,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795367823.8249862
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+    "duration_seconds": 0.021,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "r14-apply-check",
+    "pid": 2003,
+    "process_group_id": 2003,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795367823.8049762,
+    "status": "TERMINAL",
+    "stderr": "05-r14-apply-check.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "05-r14-apply-check.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795374501,
+    "argv": [
+      "git",
+      "apply",
+      "/Users/runner/work/anytype-swift/anytype-swift/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch"
+    ],
+    "child_started_unix": 1795367823.8284411,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795367823.8455539
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+    "duration_seconds": 0.02,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "r14-apply",
+    "pid": 2004,
+    "process_group_id": 2004,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795367823.826245,
+    "status": "TERMINAL",
+    "stderr": "06-r14-apply.stderr",
+    "stderr_sha256": "931867f881ba67a861a077731750b3649071bc5765d1124ce06bfb8566f289cf",
+    "stdout": "06-r14-apply.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795374501,
+    "argv": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "-I",
+      "/Users/runner/work/anytype-swift/anytype-swift/docs/pinkha/torah-integration/native-import-request-compat-20261122/install_native_sources.py",
+      "--source-root",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+      "--receipt",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile-Evidence/SOURCE_OVERLAY.json"
+    ],
+    "child_started_unix": 1795367823.852504,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795367823.921333
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+    "duration_seconds": 0.072,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "install-frozen-origin-overlay",
+    "pid": 2005,
+    "process_group_id": 2005,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795367823.8505359,
+    "status": "TERMINAL",
+    "stderr": "07-install-frozen-origin-overlay.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "07-install-frozen-origin-overlay.stdout",
+    "stdout_sha256": "19d0b07e92671192cc5011b9cd3139f4f8996adf947d9dd551b2e7e98534880f",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795374501,
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/gofmt",
+      "-l",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile/core/block/import/common/types.go",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile/core/block/import/mapping_observation.go",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile/core/block/import/mapping_observation_processor.go",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile/core/block/import/pb/converter.go",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile/core/block/import/processor.go",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile/core/block/import/types.go"
+    ],
+    "child_started_unix": 1795367823.959886,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795367824.016161
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+    "duration_seconds": 0.066,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "source-format-equality",
+    "pid": 2008,
+    "process_group_id": 2008,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795367823.951383,
+    "status": "TERMINAL",
+    "stderr": "08-source-format-equality.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "08-source-format-equality.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795374501,
+    "argv": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "-I",
+      "/Users/runner/work/anytype-swift/anytype-swift/docs/pinkha/torah-integration/native-import-module-compile-20261122/bootstrap/prepare_original_tantivy.py",
+      "--heart",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+      "--helper",
+      "/Users/runner/work/anytype-swift/anytype-swift/docs/pinkha/torah-integration/native-import-module-compile-20261122/bootstrap/build_custom_heart.py",
+      "--helper-sha256",
+      "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+      "--receipt",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile-Evidence/TANTIVY_SETUP.json"
+    ],
+    "child_started_unix": 1795367824.023781,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795367824.798135
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+    "duration_seconds": 0.783,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 600.0,
+    "label": "original-tantivy-setup",
+    "pid": 2009,
+    "process_group_id": 2009,
+    "requested_timeout_seconds": 600,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795367824.021885,
+    "status": "TERMINAL",
+    "stderr": "09-original-tantivy-setup.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "09-original-tantivy-setup.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795374501,
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "list",
+      "-deps",
+      "-test",
+      "-json",
+      "./core/block/import"
+    ],
+    "child_started_unix": 1795367824.841165,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795367859.249284
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+    "duration_seconds": 34.414,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 1200.0,
+    "label": "declared-dependency-inputs",
+    "pid": 2119,
+    "process_group_id": 2119,
+    "requested_timeout_seconds": 1200,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795367824.8389492,
+    "status": "TERMINAL",
+    "stderr": "10-declared-dependency-inputs.stderr",
+    "stderr_sha256": "733500834621b79e678ec6e2ed20a26283c3e653ae05ccfbde432b41087c29bb",
+    "stdout": "10-declared-dependency-inputs.stdout",
+    "stdout_sha256": "6f6a4f12a38c761ce848b64886ce74e40776883f99b37d98cd986f71e3b9d4cf",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795374501,
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "test",
+      "-c",
+      "-p",
+      "2",
+      "-o",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile-Owned-Work/original-importer.test",
+      "./core/block/import"
+    ],
+    "child_started_unix": 1795367860.717391,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795367985.641199
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+    "duration_seconds": 124.96,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 3600.0,
+    "label": "compile-original-importer",
+    "pid": 2669,
+    "process_group_id": 2669,
+    "requested_timeout_seconds": 3600,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795367860.71357,
+    "status": "TERMINAL",
+    "stderr": "11-compile-original-importer.stderr",
+    "stderr_sha256": "0a1c70ee90329a349776501de9d69c2d739dae4ca1d2917b233ee77ace8741cb",
+    "stdout": "11-compile-original-importer.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": false
+  },
+  {
+    "absolute_command_deadline_unix": 1795374501,
+    "argv": [
+      "/Users/runner/hostedtoolcache/go/1.26.5/arm64/bin/go",
+      "version",
+      "-m",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile-Owned-Work/original-importer.test"
+    ],
+    "child_started_unix": 1795367985.7880142,
+    "cleanup": [
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_ABSENT_AFTER_WAIT",
+        "unix": 1795367985.8959942
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift/build/Heart-Import-Compile",
+    "duration_seconds": 0.114,
+    "effective_returncode": 0,
+    "effective_timeout_seconds": 30.0,
+    "label": "compiled-binary-buildinfo",
+    "pid": 8521,
+    "process_group_id": 8521,
+    "requested_timeout_seconds": 30,
+    "returncode": 0,
+    "start_new_session": true,
+    "started_unix": 1795367985.783266,
+    "status": "TERMINAL",
+    "stderr": "12-compiled-binary-buildinfo.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "12-compiled-binary-buildinfo.stdout",
+    "stdout_sha256": "b557f097d24bd349241154c51aa5ad5e495121f29cc147c222b0364722c90d7d",
+    "timed_out": false
+  }
+]
