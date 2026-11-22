@@ -1,0 +1,224 @@
+{
+  "candidateSHA256" : "f1570f8cff28d87152ea455ded6bc0bdfeb729e0beb3a70e3a47fb06b4710a57",
+  "originalNativeCalls" : 0,
+  "priorSuitesRerun" : false,
+  "processID" : 31264,
+  "results" : [
+    {
+      "name" : "initial_callback_before_start_returns",
+      "observations" : [
+        "actual callback admitted during starting",
+        "exact tech-A",
+        "one start and awaited cleanup"
+      ],
+      "seconds" : 0.014999999999417923,
+      "status" : "PASS"
+    },
+    {
+      "name" : "display_update_retains_authority_token",
+      "observations" : [
+        "display value refreshed",
+        "same actual view token"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "disappearance_retires_before_publication",
+      "observations" : [
+        "retired before synchronous publication probe",
+        "no permission after disappearance"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "legacy_change_retires_before_publication",
+      "observations" : [
+        "legacy value preserved for future owner predicate",
+        "old view capture retired before publication",
+        "no full-canEdit claim"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "inactive_first_duplicate_denies_authority",
+      "observations" : [
+        "inactive first record denied",
+        "later duplicate cannot grant",
+        "restoration requires new token"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "native_view_identity_replacement_retires_capture",
+      "observations" : [
+        "exact native view identity changed",
+        "fresh capture required"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "access_status_type_changes_retire_capture",
+      "observations" : [
+        "3 exact access\/type\/status transitions retire before publication",
+        "original isActive predicate retained"
+      ],
+      "seconds" : 0.01600000000325963,
+      "status" : "PASS"
+    },
+    {
+      "name" : "account_change_retires_before_account_publication",
+      "observations" : [
+        "actual AccountManager generation retired before publication",
+        "old-account callback denied"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "same_account_relogin_does_not_revive_generation",
+      "observations" : [
+        "same textual account does not revive old generation",
+        "fresh start matches new actual token"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "wrong_account_space_and_byte_case_are_denied",
+      "observations" : [
+        "foreign source denied",
+        "wrong Space denied",
+        "byte-case variant denied"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "foreign_account_manager_cannot_mint_permission",
+      "observations" : [
+        "protocol-conforming foreign account cannot mint",
+        "public UI path preserved"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "stop_revokes_before_native_stop_returns",
+      "observations" : [
+        "retired before original stop await",
+        "late callback denied",
+        "one unsubscribe"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "stop_drains_pending_start_before_unsubscribe",
+      "observations" : [
+        "start drain precedes one unsubscribe",
+        "other-task callback denied while stopping",
+        "no callback\/stop deadlock"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "duplicate_stop_joins_and_duplicate_start_is_denied",
+      "observations" : [
+        "duplicate start denied",
+        "second stop joined original actor waiter",
+        "one native stop"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "failed_stop_blocks_start_until_successful_retry",
+      "observations" : [
+        "failed unsubscribe blocks start",
+        "explicit successful stop retry enables fresh start",
+        "no same-data cached restart"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "old_attempt_callback_cannot_replace_new_snapshot",
+      "observations" : [
+        "old original callback index rejected",
+        "new attempt snapshot and token unchanged"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "cancellation_before_handler_installation_denies_subscribe",
+      "observations" : [
+        "original builder entered before handler",
+        "initiating task cancelled",
+        "zero subscribes",
+        "awaited original empty teardown"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "cancelled_pending_start_rejects_other_task_callback",
+      "observations" : [
+        "other task callback denied before initial start returns",
+        "late initiating callback denied",
+        "one awaited unsubscribe after drain"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "cancellation_after_initial_snapshot_retires_synchronously",
+      "observations" : [
+        "actual view observer fired before cancel returned",
+        "no actor hop before capture rejection",
+        "late other-task callback denied"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "retained_capture_dies_with_storage_source",
+      "observations" : [
+        "actual weak original actor released",
+        "account still current",
+        "retained view rejected",
+        "no deinit RPC or revival"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "failed_start_cannot_leave_authority",
+      "observations" : [
+        "failed original start settled",
+        "late callback rejected",
+        "one original teardown"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    },
+    {
+      "name" : "already_cancelled_start_does_not_subscribe",
+      "observations" : [
+        "zero original start calls",
+        "zero cleanup calls",
+        "no authority"
+      ],
+      "seconds" : 0,
+      "status" : "PASS"
+    }
+  ],
+  "schema" : 1,
+  "scope" : "Actual original actor\/lifetimes\/account with explicit portable input\/dependency probes; no native decoder, Combine, RPC, Apple or full Space capability qualification"
+}

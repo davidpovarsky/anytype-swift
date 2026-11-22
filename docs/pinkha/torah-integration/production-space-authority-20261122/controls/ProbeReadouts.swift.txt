@@ -1,0 +1,12 @@
+
+// Fixture-only readouts appended after the complete unchanged actor projection.
+// These expose waiter counts without changing phase, admission, state or bodies.
+extension OriginalSpaceViewSubscriptionLifecycle {
+    fileprivate var probeStartWaiterCount: Int { startWaiters.count }
+    fileprivate var probeStopWaiterCount: Int { stopWaiters.count }
+}
+extension SpaceViewsStorage {
+    func probeWaiterCounts() -> (start: Int, stop: Int) {
+        (subscriptionLifecycle.probeStartWaiterCount, subscriptionLifecycle.probeStopWaiterCount)
+    }
+}

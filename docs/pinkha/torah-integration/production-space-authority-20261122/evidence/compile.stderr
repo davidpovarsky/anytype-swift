@@ -1,0 +1,176 @@
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:397:55: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+395 |     static func main() async {
+396 |         let entries: [(String, @Sendable () async throws -> [String])] = [
+397 |             ("initial_callback_before_start_returns", initialCallback),
+    |                                                       `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+398 |             ("display_update_retains_authority_token", displayUpdate),
+399 |             ("disappearance_retires_before_publication", disappearance),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:398:56: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+396 |         let entries: [(String, @Sendable () async throws -> [String])] = [
+397 |             ("initial_callback_before_start_returns", initialCallback),
+398 |             ("display_update_retains_authority_token", displayUpdate),
+    |                                                        `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+399 |             ("disappearance_retires_before_publication", disappearance),
+400 |             ("legacy_change_retires_before_publication", legacyRestriction),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:399:58: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+397 |             ("initial_callback_before_start_returns", initialCallback),
+398 |             ("display_update_retains_authority_token", displayUpdate),
+399 |             ("disappearance_retires_before_publication", disappearance),
+    |                                                          `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+400 |             ("legacy_change_retires_before_publication", legacyRestriction),
+401 |             ("inactive_first_duplicate_denies_authority", inactiveDuplicate),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:400:58: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+398 |             ("display_update_retains_authority_token", displayUpdate),
+399 |             ("disappearance_retires_before_publication", disappearance),
+400 |             ("legacy_change_retires_before_publication", legacyRestriction),
+    |                                                          `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+401 |             ("inactive_first_duplicate_denies_authority", inactiveDuplicate),
+402 |             ("native_view_identity_replacement_retires_capture", identityReplacement),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:401:59: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+399 |             ("disappearance_retires_before_publication", disappearance),
+400 |             ("legacy_change_retires_before_publication", legacyRestriction),
+401 |             ("inactive_first_duplicate_denies_authority", inactiveDuplicate),
+    |                                                           `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+402 |             ("native_view_identity_replacement_retires_capture", identityReplacement),
+403 |             ("access_status_type_changes_retire_capture", authorityFields),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:402:66: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+400 |             ("legacy_change_retires_before_publication", legacyRestriction),
+401 |             ("inactive_first_duplicate_denies_authority", inactiveDuplicate),
+402 |             ("native_view_identity_replacement_retires_capture", identityReplacement),
+    |                                                                  `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+403 |             ("access_status_type_changes_retire_capture", authorityFields),
+404 |             ("account_change_retires_before_account_publication", accountReplacement),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:403:59: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+401 |             ("inactive_first_duplicate_denies_authority", inactiveDuplicate),
+402 |             ("native_view_identity_replacement_retires_capture", identityReplacement),
+403 |             ("access_status_type_changes_retire_capture", authorityFields),
+    |                                                           `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+404 |             ("account_change_retires_before_account_publication", accountReplacement),
+405 |             ("same_account_relogin_does_not_revive_generation", sameAccountRelogin),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:404:67: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+402 |             ("native_view_identity_replacement_retires_capture", identityReplacement),
+403 |             ("access_status_type_changes_retire_capture", authorityFields),
+404 |             ("account_change_retires_before_account_publication", accountReplacement),
+    |                                                                   `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+405 |             ("same_account_relogin_does_not_revive_generation", sameAccountRelogin),
+406 |             ("wrong_account_space_and_byte_case_are_denied", wrongContexts),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:405:65: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+403 |             ("access_status_type_changes_retire_capture", authorityFields),
+404 |             ("account_change_retires_before_account_publication", accountReplacement),
+405 |             ("same_account_relogin_does_not_revive_generation", sameAccountRelogin),
+    |                                                                 `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+406 |             ("wrong_account_space_and_byte_case_are_denied", wrongContexts),
+407 |             ("foreign_account_manager_cannot_mint_permission", foreignManager),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:406:62: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+404 |             ("account_change_retires_before_account_publication", accountReplacement),
+405 |             ("same_account_relogin_does_not_revive_generation", sameAccountRelogin),
+406 |             ("wrong_account_space_and_byte_case_are_denied", wrongContexts),
+    |                                                              `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+407 |             ("foreign_account_manager_cannot_mint_permission", foreignManager),
+408 |             ("stop_revokes_before_native_stop_returns", stopBeforeAwait),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:407:64: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+405 |             ("same_account_relogin_does_not_revive_generation", sameAccountRelogin),
+406 |             ("wrong_account_space_and_byte_case_are_denied", wrongContexts),
+407 |             ("foreign_account_manager_cannot_mint_permission", foreignManager),
+    |                                                                `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+408 |             ("stop_revokes_before_native_stop_returns", stopBeforeAwait),
+409 |             ("stop_drains_pending_start_before_unsubscribe", pendingStartDrain),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:408:57: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+406 |             ("wrong_account_space_and_byte_case_are_denied", wrongContexts),
+407 |             ("foreign_account_manager_cannot_mint_permission", foreignManager),
+408 |             ("stop_revokes_before_native_stop_returns", stopBeforeAwait),
+    |                                                         `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+409 |             ("stop_drains_pending_start_before_unsubscribe", pendingStartDrain),
+410 |             ("duplicate_stop_joins_and_duplicate_start_is_denied", duplicateTransitions),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:409:62: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+407 |             ("foreign_account_manager_cannot_mint_permission", foreignManager),
+408 |             ("stop_revokes_before_native_stop_returns", stopBeforeAwait),
+409 |             ("stop_drains_pending_start_before_unsubscribe", pendingStartDrain),
+    |                                                              `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+410 |             ("duplicate_stop_joins_and_duplicate_start_is_denied", duplicateTransitions),
+411 |             ("failed_stop_blocks_start_until_successful_retry", failedStopRetry),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:410:68: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+408 |             ("stop_revokes_before_native_stop_returns", stopBeforeAwait),
+409 |             ("stop_drains_pending_start_before_unsubscribe", pendingStartDrain),
+410 |             ("duplicate_stop_joins_and_duplicate_start_is_denied", duplicateTransitions),
+    |                                                                    `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+411 |             ("failed_stop_blocks_start_until_successful_retry", failedStopRetry),
+412 |             ("old_attempt_callback_cannot_replace_new_snapshot", oldAttemptCallback),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:411:65: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+409 |             ("stop_drains_pending_start_before_unsubscribe", pendingStartDrain),
+410 |             ("duplicate_stop_joins_and_duplicate_start_is_denied", duplicateTransitions),
+411 |             ("failed_stop_blocks_start_until_successful_retry", failedStopRetry),
+    |                                                                 `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+412 |             ("old_attempt_callback_cannot_replace_new_snapshot", oldAttemptCallback),
+413 |             ("cancellation_before_handler_installation_denies_subscribe", preHandlerCancellation),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:412:66: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+410 |             ("duplicate_stop_joins_and_duplicate_start_is_denied", duplicateTransitions),
+411 |             ("failed_stop_blocks_start_until_successful_retry", failedStopRetry),
+412 |             ("old_attempt_callback_cannot_replace_new_snapshot", oldAttemptCallback),
+    |                                                                  `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+413 |             ("cancellation_before_handler_installation_denies_subscribe", preHandlerCancellation),
+414 |             ("cancelled_pending_start_rejects_other_task_callback", pendingCancellationOtherTask),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:413:75: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+411 |             ("failed_stop_blocks_start_until_successful_retry", failedStopRetry),
+412 |             ("old_attempt_callback_cannot_replace_new_snapshot", oldAttemptCallback),
+413 |             ("cancellation_before_handler_installation_denies_subscribe", preHandlerCancellation),
+    |                                                                           `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+414 |             ("cancelled_pending_start_rejects_other_task_callback", pendingCancellationOtherTask),
+415 |             ("cancellation_after_initial_snapshot_retires_synchronously", synchronousCancellation),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:414:69: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+412 |             ("old_attempt_callback_cannot_replace_new_snapshot", oldAttemptCallback),
+413 |             ("cancellation_before_handler_installation_denies_subscribe", preHandlerCancellation),
+414 |             ("cancelled_pending_start_rejects_other_task_callback", pendingCancellationOtherTask),
+    |                                                                     `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+415 |             ("cancellation_after_initial_snapshot_retires_synchronously", synchronousCancellation),
+416 |             ("retained_capture_dies_with_storage_source", storageDeallocation),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:415:75: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+413 |             ("cancellation_before_handler_installation_denies_subscribe", preHandlerCancellation),
+414 |             ("cancelled_pending_start_rejects_other_task_callback", pendingCancellationOtherTask),
+415 |             ("cancellation_after_initial_snapshot_retires_synchronously", synchronousCancellation),
+    |                                                                           `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+416 |             ("retained_capture_dies_with_storage_source", storageDeallocation),
+417 |             ("failed_start_cannot_leave_authority", failedStart),
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:416:59: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+414 |             ("cancelled_pending_start_rejects_other_task_callback", pendingCancellationOtherTask),
+415 |             ("cancellation_after_initial_snapshot_retires_synchronously", synchronousCancellation),
+416 |             ("retained_capture_dies_with_storage_source", storageDeallocation),
+    |                                                           `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+417 |             ("failed_start_cannot_leave_authority", failedStart),
+418 |             ("already_cancelled_start_does_not_subscribe", alreadyCancelled)
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:417:53: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+415 |             ("cancellation_after_initial_snapshot_retires_synchronously", synchronousCancellation),
+416 |             ("retained_capture_dies_with_storage_source", storageDeallocation),
+417 |             ("failed_start_cannot_leave_authority", failedStart),
+    |                                                     `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+418 |             ("already_cancelled_start_does_not_subscribe", alreadyCancelled)
+419 |         ]
+
+C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\compiled-inputs\Controls.swift:418:60: warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+416 |             ("retained_capture_dies_with_storage_source", storageDeallocation),
+417 |             ("failed_start_cannot_leave_authority", failedStart),
+418 |             ("already_cancelled_start_does_not_subscribe", alreadyCancelled)
+    |                                                            `- warning: converting non-Sendable function value to '@Sendable () async throws -> [String]' may introduce data races
+419 |         ]
+420 |         let args = CommandLine.arguments
+   Creating library C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\spaceview-authority-controls.lib and object C:\Users\DAVID\AppData\Local\Temp\otzaria-spaceview-authority-controls-20261122\spaceview-authority-controls.exp

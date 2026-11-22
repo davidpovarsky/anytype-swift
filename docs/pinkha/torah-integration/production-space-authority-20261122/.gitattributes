@@ -1,0 +1,13 @@
+* -text
+evidence/*.stdout -whitespace
+evidence/*.stderr -whitespace
+evidence/execution_wrapper.py -whitespace
+evidence/EXECUTION.json whitespace=cr-at-eol
+evidence/root_independent_review.py -whitespace
+CANDIDATE*.patch -whitespace
+controls/AccountManager.swift -whitespace
+controls/Capture.swift -whitespace
+controls/Lifetime.swift -whitespace
+evidence/compiled-inputs/AccountManager.swift -whitespace
+evidence/compiled-inputs/Capture.swift -whitespace
+evidence/compiled-inputs/Lifetime.swift -whitespace
