@@ -1,0 +1,115 @@
+--- a/pb/protos/commands.proto
++++ b/pb/protos/commands.proto
+@@ -10101,6 +10101,102 @@
+         }
+ 
+     }
++    // Historical native schema registration facts. These messages carry no
++    // reusable account/Space authority, annotation identity, body proof or ACK.
++    message Annotation {
++        message Schema {
++            message NativeObservation {
++                // Exact FixedSchemaDisposition numeric value from the native
++                // source; zero is unobserved, never a missing-root proof.
++                uint32 disposition = 1;
++                string accountIdentity = 2;
++                string spaceId = 3;
++                string objectId = 4;
++                string nativeKey = 5;
++                repeated string persistedHeads = 6;
++                string archiveId = 7;
++                repeated string archiveHeads = 8;
++                string aclId = 9;
++                string aclHead = 10;
++                // Present only when the unchanged native observer published
++                // its strict persisted match; complete owned protobuf copies.
++                google.protobuf.Struct details = 11;
++                repeated anytype.model.Block blocks = 12;
++            }
++
++            message DefinitionObservation {
++                NativeObservation native = 1;
++                string indexDisposition = 2;
++                bool persistedStateConflict = 3;
++            }
++
++            message TypeLayoutObservation {
++                string disposition = 1;
++                string reason = 2;
++                bool hidden = 3;
++                bool discoveryHidden = 4;
++                repeated string hiddenRelationIds = 5;
++                repeated string missingRelationKeys = 6;
++                repeated string viewIds = 7;
++            }
++
++            message Observation {
++                string disposition = 1;
++                string accountIdentity = 2;
++                string spaceId = 3;
++                repeated DefinitionObservation definitions = 4;
++                TypeLayoutObservation typeLayout = 5;
++            }
++
++            message Creation {
++                NativeObservation before = 1;
++                NativeObservation after = 2;
++                bool invoked = 3;
++                string returnedObjectId = 4;
++            }
++
++            message Registration {
++                string schemaProtocol = 1;
++                Observation observation = 2;
++                bool appAdmitted = 3;
++                repeated Creation creations = 4;
++                bool typeApplyInvoked = 5;
++                bool typeApplyReturned = 6;
++            }
++
++            message Register {
++                message Request {
++                    // Comparisons only; native admission uses the actual
++                    // original active application and existing regular Space.
++                    string expectedAccountId = 1;
++                    string spaceId = 2;
++                    string schemaProtocol = 3;
++                }
++                message Response {
++                    Error error = 1;
++                    // Set whenever the native Register function returned,
++                    // including a native error or caller cancellation. Its
++                    // absence is unobserved history, never evidence of no write.
++                    Registration registration = 2;
++
++                    message Error {
++                        Code code = 1;
++                        string description = 2;
++                        enum Code {
++                            NULL = 0;
++                            UNKNOWN_ERROR = 1;
++                            BAD_INPUT = 2;
++                            UNRESOLVED = 3;
++                            CONFLICT = 4;
++                            CANCELED = 5;
++                            RUNTIME_UNAVAILABLE = 6;
++                            PERMISSION_DENIED = 7;
++                        }
++                    }
++                }
++            }
++        }
++    }
+ }
+ 
+ message Empty {
+--- a/pb/protos/service/service.proto
++++ b/pb/protos/service/service.proto
+@@ -479,4 +479,7 @@
+     rpc PushNotificationSetSpaceMode(anytype.Rpc.PushNotification.SetSpaceMode.Request) returns (anytype.Rpc.PushNotification.SetSpaceMode.Response);
+     rpc PushNotificationSetForceModeIds(anytype.Rpc.PushNotification.SetForceModeIds.Request) returns (anytype.Rpc.PushNotification.SetForceModeIds.Response);
+     rpc PushNotificationResetIds(anytype.Rpc.PushNotification.ResetIds.Request) returns (anytype.Rpc.PushNotification.ResetIds.Response);
++
++    // Original annotation schema registration, with historical phase copyout.
++    rpc AnnotationSchemaRegister (anytype.Rpc.Annotation.Schema.Register.Request) returns (anytype.Rpc.Annotation.Schema.Register.Response);
+ }

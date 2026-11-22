@@ -1,0 +1,30 @@
+{
+  "status": "PASS_BOUNDED_SOURCE_REVIEW_NO_EXECUTION",
+  "reviewer": "stageb_auth",
+  "at_utc": "2026-11-22T17:34:05.354900+00:00",
+  "source_sha256": {
+    "generate_original_schema_rpc.py": "183648a9c0cf230b8ad9472c3d79d4f1703bee9d4eacb1e20357f3f1f233db5a",
+    "EXECUTION_INPUTS.json": "800c0745ddc36537c443e17f9d984c98a11fd22c4d825c4a935ffa4f8d264ee3",
+    "otzaria-schema-rpc-generation.yml": "9c8c7b446f5e1bae859358e9191cace616c96f09981f2a319c4cdc902eac0602"
+  },
+  "control_input_bindings_verified": 11,
+  "support_sha256": "aae68a25c0499d1bf61e98eca0ace9ffc48997823fdce9a775b22b239e904cdf",
+  "reviewed": [
+    "Complete driver, workflow and execution manifest; all original invoked native/Swift Make and generate scripts; exact imported Commands and check_file implementations.",
+    "Original Heart and SDK checkouts are independently copied for baseline/candidate; source inventories compare equal before the two explicit proto overlays.",
+    "Exact hashed tool archives/member executables are verified before execution. Mutable PATH updates reach Commands by the same retained env object. Original makefiles prepend each lane own Go plugin deps directory.",
+    "Inherited SHELLOPTS plus explicit Bash errexit/pipefail stop original semicolon/pipeline failures; commands retain raw stdout/stderr, owned groups and finite absolute remaining budgets.",
+    "Fresh required output families replace only disposable-copy outputs; baseline versus tracked drift is retained separately from candidate versus same-toolchain baseline.",
+    "Generated sources are retained before compilation and on failure; scope explicitly limits Go build to pb/pb-service and Swift typecheck to generated protocol models against genuine pinned SwiftProtobuf.",
+    "Only actually created owned work is removed after all child groups drain; failure partials remain explicitly unqualified. Signals enter existing owned-group cleanup."
+  ],
+  "remaining_gates": [
+    "Actual original generator execution may reveal tool/recipe/typecheck failures; this review does not predict PASS.",
+    "Generated deltas and baseline drift require exact output review before integration.",
+    "Middleware endpoint, Swift Invocation/permission/drain source, full iOS SDK and live schema runtime are not compiled or executed by this gate."
+  ],
+  "source_edits": 0,
+  "test_or_generator_executions": 0,
+  "artifact_downloads": 0,
+  "dispatches": 0
+}

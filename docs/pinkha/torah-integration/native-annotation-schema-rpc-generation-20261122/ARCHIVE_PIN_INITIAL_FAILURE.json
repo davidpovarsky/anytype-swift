@@ -1,0 +1,37 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"ok\":true,\"job\":{\"id\":\"job_71d4f266f9ba\",\"type\":\"job_result\",\"source\":\"script_run@host_7ec8382e82747448\",\"severity\":\"warning\",\"tool\":\"script_run\",\"host\":\"host_7ec8382e82747448\",\"status\":\"failed\",\"exit_code\":1,\"created_at\":1795367124.3181603,\"started_at\":\"2026-11-22T17:05:24.390974+00:00\",\"finished_at\":\"2026-11-22T17:05:45.652993+00:00\",\"duration_s\":21.26,\"error\":null,\"output_truncated\":false,\"timeout_s\":300,\"read\":false,\"notified\":{\"telegram\":null,\"resend\":null},\"notify_spec\":{},\"output\":\"Traceback (most recent call last):\\r\\n  File \\\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_df72389b8a274ba6999bf56473198c28\\\\script.py\\\", line 32, in <module>\\r\\n    for f in futures:rows.append(f.result())\\r\\n                                 ^^^^^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Lib\\\\concurrent\\\\futures\\\\_base.py\\\", line 449, in result\\r\\n    return self.__get_result()\\r\\n           ^^^^^^^^^^^^^^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Lib\\\\concurrent\\\\futures\\\\_base.py\\\", line 401, in __get_result\\r\\n    raise self._exception\\r\\n  File \\\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Lib\\\\concurrent\\\\futures\\\\thread.py\\\", line 58, in run\\r\\n    result = self.fn(*self.args, **self.kwargs)\\r\\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\r\\n  File \\\"C:\\\\ProgramData\\\\SentinelX\\\\uploads\\\\.sentinelx_uploads\\\\script_job_df72389b8a274ba6999bf56473198c28\\\\script.py\\\", line 25, in one\\r\\n    artifact_info=json.loads(z.read(info_names[0])) if len(info_names)==1 else None\\r\\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Lib\\\\json\\\\__init__.py\\\", line 346, in loads\\r\\n    return _default_decoder.decode(s)\\r\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Lib\\\\json\\\\decoder.py\\\", line 337, in decode\\r\\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\\r\\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\r\\n  File \\\"C:\\\\Users\\\\DAVID\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Lib\\\\json\\\\decoder.py\\\", line 355, in raw_decode\\r\\n    raise JSONDecodeError(\\\"Expecting value\\\", s, err.value) from None\\r\\njson.decoder.JSONDecodeError: Expecting value: line 28 column 13 (char 1097)\"}}"
+    }
+  ],
+  "structuredContent": {
+    "ok": true,
+    "job": {
+      "id": "job_71d4f266f9ba",
+      "type": "job_result",
+      "source": "script_run@host_7ec8382e82747448",
+      "severity": "warning",
+      "tool": "script_run",
+      "host": "host_7ec8382e82747448",
+      "status": "failed",
+      "exit_code": 1,
+      "created_at": 1795367124.3181603,
+      "started_at": "2026-11-22T17:05:24.390974+00:00",
+      "finished_at": "2026-11-22T17:05:45.652993+00:00",
+      "duration_s": 21.26,
+      "error": null,
+      "output_truncated": false,
+      "timeout_s": 300,
+      "read": false,
+      "notified": {
+        "telegram": null,
+        "resend": null
+      },
+      "notify_spec": {},
+      "output": "Traceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_df72389b8a274ba6999bf56473198c28\\script.py\", line 32, in <module>\r\n    for f in futures:rows.append(f.result())\r\n                                 ^^^^^^^^^^\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\concurrent\\futures\\_base.py\", line 449, in result\r\n    return self.__get_result()\r\n           ^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\concurrent\\futures\\_base.py\", line 401, in __get_result\r\n    raise self._exception\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\concurrent\\futures\\thread.py\", line 58, in run\r\n    result = self.fn(*self.args, **self.kwargs)\r\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_df72389b8a274ba6999bf56473198c28\\script.py\", line 25, in one\r\n    artifact_info=json.loads(z.read(info_names[0])) if len(info_names)==1 else None\r\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\json\\__init__.py\", line 346, in loads\r\n    return _default_decoder.decode(s)\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\json\\decoder.py\", line 337, in decode\r\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\r\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\Users\\DAVID\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\json\\decoder.py\", line 355, in raw_decode\r\n    raise JSONDecodeError(\"Expecting value\", s, err.value) from None\r\njson.decoder.JSONDecodeError: Expecting value: line 28 column 13 (char 1097)"
+    }
+  },
+  "isError": false
+}
+

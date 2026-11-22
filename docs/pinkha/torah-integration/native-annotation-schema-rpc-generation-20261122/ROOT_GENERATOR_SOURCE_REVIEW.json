@@ -1,0 +1,24 @@
+{
+  "schema": "otzaria.root-schema-rpc-generation-source-review/1",
+  "at_utc": "2026-11-22T17:34:48.823355+00:00",
+  "driver_sha256": "183648a9c0cf230b8ad9472c3d79d4f1703bee9d4eacb1e20357f3f1f233db5a",
+  "execution_inputs_sha256": "800c0745ddc36537c443e17f9d984c98a11fd22c4d825c4a935ffa4f8d264ee3",
+  "workflow_sha256": "9c8c7b446f5e1bae859358e9191cace616c96f09981f2a319c4cdc902eac0602",
+  "full_driver_and_workflow_read": true,
+  "control_input_hashes_verified": 11,
+  "original_input_path_inventory_read": 42,
+  "finite_commands_helper_sha256": "aae68a25c0499d1bf61e98eca0ace9ffc48997823fdce9a775b22b239e904cdf",
+  "reviews": [
+    "Original Make native and Swift generation routes retained; Bash errexit/pipefail propagated through inherited environment and explicit make shell to stop masked intermediate errors.",
+    "Output paths removed only in disposable owned lanes; required fresh nonempty native files and Swift output families checked.",
+    "Pinned original protoc/SwiftProtobuf/Sourcery/SwiftGen and custom Go protobuf tools measured before and after use; same tools for baseline and candidate.",
+    "Full source variants and baseline-vs-tracked drift kept separately from candidate-vs-baseline RPC delta.",
+    "First signal permits process-group drain; work deletion only after owned creation and confirmed group absence; partial outputs explicitly not success.",
+    "Only two proto afterimages installed. Generated Go message packages and generated Swift Protocol models receive genuine compile/typecheck. Invocation, middleware endpoint, SDK and app integration remain pending."
+  ],
+  "independent_peer": "STAGEB_GENERATOR_SOURCE_REVIEW.json",
+  "source_blockers": [],
+  "generation_executed": false,
+  "new_test_executions": 0,
+  "next": "Publish exact source and evidence on neutral ref; verify immutable remote binding; activate one original generation with sole finite observer/intake. Review actual generated delta before integration."
+}

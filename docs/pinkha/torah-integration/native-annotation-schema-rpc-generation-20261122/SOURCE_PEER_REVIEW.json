@@ -1,0 +1,51 @@
+{
+  "status": "ROOT_AND_CLANG_SOURCE_REVIEW_CLEAR_NOT_GENERATED_OR_COMPILED",
+  "files": [
+    {
+      "path": "native/core/annotation_schema.go",
+      "bytes": 5986,
+      "sha256": "cad2741edad5153d8e63552af7e3d18630b6d2d8fecd22f2f49a533fe4ca2e96",
+      "gitblob": "fcba89d2e3b1a38540ce8a8dc0feef63469c74f6"
+    },
+    {
+      "path": "native/pb/protos/commands.proto",
+      "bytes": 312798,
+      "sha256": "64b166598d1086a8dce63e449ca1f8dea00bc4a09315a6ef927408c94a331fd1",
+      "gitblob": "0db5196e105b706736387884879e1f735a926bda"
+    },
+    {
+      "path": "native/pb/protos/service/service.proto",
+      "bytes": 47566,
+      "sha256": "230720100f85ec5658ae63b57a0541b27c8df2acd025e0502ad24c0dc4b0a7fe",
+      "gitblob": "00e28dc7fc208dad77a5302a30366b3771ca41c4"
+    },
+    {
+      "path": "swift/Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationSchemaRegistration.swift",
+      "bytes": 2340,
+      "sha256": "22ca541163fe4439940fe2111e52ef158798eb6fbb5d4e72f9937521dd99e751",
+      "gitblob": "3a507f3ce256f98163abd1605431d879c9f0a7f8"
+    },
+    {
+      "path": "swift/Modules/ProtobufMessages/Sources/Invocation.swift",
+      "bytes": 13890,
+      "sha256": "7265a3ec902081f62c79c6fc56cb71b1ff81c687a595a3e15b78351cc9aa8dfd",
+      "gitblob": "8265a43bccb43dee9479e3018015b334c1625a0a"
+    }
+  ],
+  "native_phase_boundary": "All public phase and observation fields are copied synchronously before non-NULL native error classification. Historical response stays distinct from success and cannot authorize writes/ACK.",
+  "invocation_boundary": "Private synchronous observer precedes continuation/completion while retaining original error decoding, cancellation, succeeded and markFailed behavior.",
+  "history_and_drain": "Single invocation claim, locked complete serialized response copy and fresh value-copy getters; actual source-binding onDrained observes after original admitted-call completion.",
+  "permission_boundary": "Original opaque participant and Space-view permission captures and actual source/account binding remain required.",
+  "reviewers": [
+    "clang_sdk",
+    "root"
+  ],
+  "pending": [
+    "original generator tool/source closure and generated names/adoptions",
+    "native endpoint and Swift compilation",
+    "actual native error and late-cancellation controls",
+    "actual selected-destination production wiring",
+    "registrar focused native repair result"
+  ],
+  "reviewer_executions": 0
+}

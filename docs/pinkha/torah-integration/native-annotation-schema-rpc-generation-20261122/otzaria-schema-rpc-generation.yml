@@ -1,0 +1,101 @@
+name: Original schema RPC source generation
+
+on:
+  push:
+    branches:
+      - codex/otzaria-schema-rpc-generation-20261122
+    paths:
+      - .github/workflows/otzaria-schema-rpc-generation.yml
+      - docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/generate_original_schema_rpc.py
+      - docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/EXECUTION_INPUTS.json
+      - docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/TOOL_PINS.json
+      - docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/native/pb/**/*.proto
+
+permissions:
+  contents: read
+
+concurrency:
+  group: otzaria-schema-rpc-generation-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  generate-original-rpc:
+    runs-on: xcode-27
+    timeout-minutes: 120
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+    steps:
+      - name: Fix absolute owned generation deadline
+        run: |
+          echo "OTZARIA_SCHEMA_RPC_JOB_DEADLINE=$(( $(date +%s) + 6900 ))" >> "$GITHUB_ENV"
+      - name: Checkout reviewed control source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/otzaria-schema-rpc-generation.yml
+            /docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/
+            /docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/run_native_defaults_repair.py
+      - name: Select actual ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install exact original Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout immutable original Heart
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Schema-RPC-Inputs/heart
+          persist-credentials: false
+      - name: Checkout immutable original SDK generator source
+        uses: actions/checkout@v4
+        with:
+          ref: 3be6ecab805b17e2c90fee897fdab45a0b03bfdc
+          path: build/Schema-RPC-Inputs/swift
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Makefile
+            /Scripts/
+            /Modules/ProtobufMessages/
+            /Modules/Services/
+            /Tools/anytype-swift-codegen
+            /Tools/anytype-swift-filesplit/
+      - name: Checkout exact original SwiftProtobuf source
+        uses: actions/checkout@v4
+        with:
+          repository: apple/swift-protobuf
+          ref: c6fe6442e6a64250495669325044052e113e990c
+          path: build/Schema-RPC-Inputs/swift-protobuf
+          persist-credentials: false
+      - name: Generate baseline and candidate through original routes
+        run: |
+          python3 docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/generate_original_schema_rpc.py \
+            --control-root "$GITHUB_WORKSPACE" \
+            --control-head "$GITHUB_SHA" \
+            --packet docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122 \
+            --manifest-sha256 800c0745ddc36537c443e17f9d984c98a11fd22c4d825c4a935ffa4f8d264ee3 \
+            --support docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/run_native_defaults_repair.py \
+            --heart-input build/Schema-RPC-Inputs/heart \
+            --swift-input build/Schema-RPC-Inputs/swift \
+            --plugin-input build/Schema-RPC-Inputs/swift-protobuf \
+            --work build/Schema-RPC-Owned-Work \
+            --evidence build/Schema-RPC-Generation-Evidence \
+            --job-deadline-unix "$OTZARIA_SCHEMA_RPC_JOB_DEADLINE"
+      - name: Retain generated source and original failure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Schema-RPC-Generation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/Schema-RPC-Generation-Evidence
+          include-hidden-files: true
+          if-no-files-found: warn
+          compression-level: 6
+          retention-days: 14
