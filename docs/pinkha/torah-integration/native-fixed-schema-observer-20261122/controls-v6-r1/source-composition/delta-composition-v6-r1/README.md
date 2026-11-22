@@ -1,0 +1,3 @@
+# Preserved local source-materialization failure
+
+The first source-only materialization applied the V6 patch with the Windows host system Git core.autocrlf=true. Both git commands exited0, but exact byte validation then failed: all338 output lines were CRLF. Its normalized SHA equals the frozen LF candidate exactly. No source/candidate/native test was changed or run. The structured command list was held in process memory and not written before the failed assertion; the actual executed script and both command raw stdout/stderr files remain retained. A distinct fresh owned continuation explicitly fixes Git newline configuration and verifies8 outputs. This is a source-admission environment correction, not Native test evidence.

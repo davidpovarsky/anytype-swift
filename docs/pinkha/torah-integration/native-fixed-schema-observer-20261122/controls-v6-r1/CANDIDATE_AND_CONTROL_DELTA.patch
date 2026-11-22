@@ -1,0 +1,192 @@
+--- a/core/block/object/objectcreator/fixed_schema_replay.go
++++ b/core/block/object/objectcreator/fixed_schema_replay.go
+@@ -294,6 +294,9 @@
+ // not visit those rows. Native keys and decryption are the same as IterateFrom;
+ // no replacement protobuf, compression, or state codec is used.
+ func validateFixedSchemaStoredContent(ctx context.Context, acl list.AclList, rootID string, changes []*objecttree.Change) error {
++	// Original objecttree.readKeysFromAclState derives one key for this exact
++	// tree ID. The ACL read key itself cannot decrypt native tree content.
++	deriver := crypto.NewKeyDeriver(fmt.Sprintf(crypto.AnysyncTreePath, rootID))
+ 	for _, change := range changes {
+ 		if err := ctx.Err(); err != nil {
+ 			return err
+@@ -309,8 +312,15 @@
+ 			if !found || keys.ReadKey == nil {
+ 				return list.ErrNoReadKey
+ 			}
+-			var err error
+-			data, err = keys.ReadKey.DecryptReuse(nil, data)
++			rawKey, err := keys.ReadKey.Raw()
++			if err != nil {
++				return fmt.Errorf("read original ACL key for tree: %w", err)
++			}
++			treeKey, err := deriver.DeriveKey(rawKey)
++			if err != nil {
++				return fmt.Errorf("derive original tree content key: %w", err)
++			}
++			data, err = treeKey.DecryptReuse(nil, data)
+ 			if err != nil {
+ 				return fmt.Errorf("decrypt original stored content: %w", err)
+ 			}
+--- a/core/block/object/objectcreator/fixed_schema_native_fixture_test.go
++++ b/core/block/object/objectcreator/fixed_schema_native_fixture_test.go
+@@ -3,7 +3,9 @@
+ import (
+ 	"bytes"
+ 	"context"
++	"errors"
+ 	"fmt"
++	"strings"
+ 	"testing"
+ 	"time"
+ 
+@@ -12,10 +14,13 @@
+ 	"github.com/anyproto/any-store/query"
+ 	"github.com/anyproto/any-sync/app"
+ 	"github.com/anyproto/any-sync/commonspace/object/acl/aclrecordproto"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list/listtest"
+ 	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
+ 	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
++	"github.com/anyproto/any-sync/nodeconf"
+ 	"github.com/gogo/protobuf/proto"
+ 
++	"github.com/anyproto/anytype-heart/core/anytype/config"
+ 	"github.com/anyproto/anytype-heart/core/application"
+ 	"github.com/anyproto/anytype-heart/core/block"
+ 	"github.com/anyproto/anytype-heart/core/block/object/objectcreator"
+@@ -185,6 +190,16 @@
+ 	return err
+ }
+ 
++// A generic unavailable result can be masked by an earlier independent failure.
++// The selected retry negatives must reach their exact original failure boundary.
++func (f *nativeSchemaFixture) unavailableCause(t *testing.T, spc clientspace.Space, definition objectcreator.FixedSchemaDefinition, wanted error, fragment string) {
++	t.Helper()
++	err := f.unavailable(t, spc, definition)
++	if !errors.Is(err, wanted) || !strings.Contains(err.Error(), fragment) {
++		t.Fatalf("wrong original unavailable cause: wanted %v / %q; got %v", wanted, fragment, err)
++	}
++}
++
+ func nativeSchemaChangeDescription(value string) *pb.Change {
+ 	return &pb.Change{Content: []*pb.ChangeContent{{
+ 		Value: &pb.ChangeContentValueOfDetailsSet{DetailsSet: &pb.ChangeDetailsSet{
+@@ -277,12 +292,34 @@
+ 
+ func (f *nativeSchemaFixture) appendACLRecord(t *testing.T, spc clientspace.Space) {
+ 	t.Helper()
++	nativeSchemaNoError(t, f.ctx.Err())
++	nativeApp := f.service.GetApp()
++	if !app.MustComponent[*config.Config](nativeApp).IsLocalOnlyMode() ||
++		app.MustComponent[nodeconf.Service](nativeApp).Configuration().NetworkId != "" {
++		t.Fatal("local ACL fixture requires actual original LocalOnly configuration without a network acceptor")
++	}
++	// The original LocalOnly runtime selected its own verifier at Space startup.
++	// Do not replace it or manufacture an acceptor signature. The original test
++	// helper only wraps the already author-signed native record with its real CID.
++	// Actual AddRawRecord performs native signature/CID/content/state/storage work.
+ 	acl := spc.CommonSpace().Acl()
+ 	acl.Lock()
++	defer acl.Unlock()
++	before := len(acl.Records())
+ 	raw, err := acl.RecordBuilder().BuildSpaceOptionsChange(&aclrecordproto.AclSpaceOptions{})
+-	acl.Unlock()
+-	nativeSchemaNoError(t, err)
+-	nativeSchemaNoError(t, spc.CommonSpace().AclClient().AddRecord(f.ctx, raw))
++	nativeSchemaNoError(t, err)
++	record := listtest.WrapAclRecord(raw)
++	nativeSchemaNoError(t, acl.AddRawRecord(record))
++	if len(acl.Records()) != before+1 || acl.Head().Id != record.Id {
++		t.Fatal("original local ACL ingestion did not advance exactly one actual signed record")
++	}
++	storage, err := spc.Storage().AclStorage()
++	nativeSchemaNoError(t, err)
++	persisted, err := storage.Get(f.ctx, record.Id)
++	nativeSchemaNoError(t, err)
++	if persisted.Id != record.Id || !bytes.Equal(persisted.RawRecord, record.Payload) {
++		t.Fatal("actual original ACL storage did not retain the exact native record")
++	}
+ }
+ 
+ func nativeSchemaRawChange(t *testing.T, tree objecttree.ObjectTree, change *pb.Change, timestamp int64) *treechangeproto.RawTreeChangeWithId {
+--- a/core/block/object/objectcreator/fixed_schema_native_observer_test.go
++++ b/core/block/object/objectcreator/fixed_schema_native_observer_test.go
+@@ -11,6 +11,7 @@
+ 	"github.com/anyproto/any-store/anyenc"
+ 	"github.com/anyproto/any-sync/commonspace/headsync/headstorage"
+ 	"github.com/anyproto/any-sync/commonspace/object/acl/aclrecordproto"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
+ 	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
+ 	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
+ 	"github.com/anyproto/any-sync/commonspace/spacesyncproto"
+@@ -122,7 +123,7 @@
+ 		nativeSchemaMutateRow(t, f.ctx, db, objecttree.CollName, added.Added[0].Id, func(a *anyenc.Arena, v *anyenc.Value) {
+ 			v.Set(objecttree.SnapshotCounterKey, a.NewNumberInt(999999))
+ 		})
+-		f.unavailable(t, spc, definition)
++		f.unavailableCause(t, spc, definition, objectcreator.ErrFixedSchemaStorage, "native snapshot reference/counter")
+ 	})
+ 
+ 	t.Run("FractionalCounterCannotDefaultToZero", func(t *testing.T) {
+@@ -144,7 +145,7 @@
+ 		secondRow := nativeSchemaReadRow(t, f.ctx, db, objecttree.CollName, second.Id)
+ 		t.Cleanup(func() { nativeSchemaSwapOrder(t, f.ctx, db, first.Id, second.Id, first.OrderId, second.OrderId) })
+ 		nativeSchemaSwapOrder(t, f.ctx, db, first.Id, second.Id, second.OrderId, first.OrderId)
+-		f.unavailable(t, spc, definition)
++		f.unavailableCause(t, spc, definition, objectcreator.ErrFixedSchemaStorage, "stored order differs from original traversal")
+ 		// Restore atomically before byte readback; cleanup remains idempotent.
+ 		nativeSchemaSwapOrder(t, f.ctx, db, first.Id, second.Id, first.OrderId, second.OrderId)
+ 		nativeSchemaRowsEqual(t, f.ctx, db, objecttree.CollName, first.Id, firstRow)
+@@ -185,7 +186,7 @@
+ 		nativeSchemaNoError(t, spc.Storage().HeadStorage().UpdateEntry(f.ctx, headstorage.HeadsUpdate{
+ 			Id: id, CommonSnapshot: &common,
+ 		}))
+-		f.unavailable(t, spc, definition)
++		f.unavailableCause(t, spc, definition, objectcreator.ErrFixedSchemaStorage, "persisted common snapshot is not an allowed native ancestor")
+ 	})
+ 
+ 	t.Run("ExplicitLongtextPresenceCannotDefault", func(t *testing.T) {
+@@ -215,7 +216,7 @@
+ 			v.Set("r", a.NewBinary(otherRoot.RawChange))
+ 			v.Set(objecttree.ChangeSizeKey, a.NewNumberInt(len(otherRoot.RawChange)))
+ 		})
+-		f.unavailable(t, spc, definition)
++		f.unavailableCause(t, spc, definition, objectcreator.ErrFixedSchemaStorage, "original derived header mismatch")
+ 	})
+ 
+ 	t.Run("OriginalPooledReaderAndACLLockOrder", func(t *testing.T) {
+@@ -244,7 +245,7 @@
+ 		nativeSchemaNoError(t, err)
+ 		t.Cleanup(func() { nativeSchemaRestoreRow(t, f.ctx, aclDB, aclID, original) })
+ 		nativeSchemaNoError(t, collection.DeleteId(f.ctx, id))
+-		f.unavailable(t, aclSpace, definition)
++		f.unavailableCause(t, aclSpace, definition, objectcreator.ErrFixedSchemaStorage, "complete persisted ACL chain")
+ 	})
+ 
+ 	t.Run("FullACLExtraRecordRefused", func(t *testing.T) {
+@@ -281,14 +282,17 @@
+ 		aclID, headID := acl.Id(), acl.Head().Id
+ 		acl.RUnlock()
+ 		nativeSchemaMutateRow(t, f.ctx, aclSpace.Storage().AnyStore(), aclID, headID, func(a *anyenc.Arena, v *anyenc.Value) {
+-			raw := bytes.Clone(v.GetBytes("r"))
+-			if len(raw) == 0 {
+-				t.Fatal("native ACL record has empty signed bytes")
+-			}
+-			raw[len(raw)-1] ^= 1
+-			v.Set("r", a.NewBinary(raw))
+-		})
+-		f.unavailable(t, aclSpace, definition)
++			raw := &consensusproto.RawRecord{}
++			nativeSchemaNoError(t, raw.UnmarshalVT(v.GetBytes("r")))
++			if len(raw.Signature) == 0 {
++				t.Fatal("native ACL record has no original author signature")
++			}
++			raw.Signature[len(raw.Signature)-1] ^= 1
++			corrupt, err := raw.MarshalVT()
++			nativeSchemaNoError(t, err)
++			v.Set("r", a.NewBinary(corrupt))
++		})
++		f.unavailableCause(t, aclSpace, definition, list.ErrInvalidSignature, "verify original persisted ACL record:")
+ 	})
+ 
+ 	t.Run("SecondSnapshotSeesInvisibleEncodedRowChange", func(t *testing.T) {

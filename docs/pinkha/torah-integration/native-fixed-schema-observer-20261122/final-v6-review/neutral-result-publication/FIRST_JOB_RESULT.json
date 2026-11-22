@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "job": {
+    "id": "job_862a92de78cc",
+    "type": "job_result",
+    "source": "script_run@host_7ec8382e82747448",
+    "severity": "warning",
+    "tool": "script_run",
+    "host": "host_7ec8382e82747448",
+    "status": "failed",
+    "exit_code": 1,
+    "created_at": 1795342339.7766109,
+    "started_at": "2026-11-22T10:12:19.821853+00:00",
+    "finished_at": "2026-11-22T10:13:16.781188+00:00",
+    "duration_s": 56.96,
+    "error": null,
+    "output_truncated": false,
+    "timeout_s": 300,
+    "read": false,
+    "notified": {
+      "telegram": null,
+      "resend": null
+    },
+    "notify_spec": {},
+    "output": "Traceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_112bb1294fe64a7d8c63c43c47a8a224\\schema_native_first_result_neutral_commit.py\", line 34, in <module>\r\n    run(\"diff-check\",[\"git\",\"diff\",\"--cached\",\"--check\"],target)\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_112bb1294fe64a7d8c63c43c47a8a224\\schema_native_first_result_neutral_commit.py\", line 22, in run\r\n    if code:raise RuntimeError(label+\" exit \"+str(code))\r\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nRuntimeError: diff-check exit 2"
+  }
+}

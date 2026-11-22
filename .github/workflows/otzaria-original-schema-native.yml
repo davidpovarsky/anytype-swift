@@ -1,4 +1,4 @@
-name: Original Heart fixed-schema observer — new native controls
+name: Original Heart fixed-schema observer â€” new native controls
 
 on:
   push:
@@ -7,10 +7,11 @@ on:
     paths:
       - .github/workflows/otzaria-original-schema-native.yml
       - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/candidate-v5/CANDIDATE.patch
-      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v5-r2/EXECUTION_INPUTS.json
-      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v5-r2/run_original_native_schema_controls.py
-      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v5-r2/prepare_original_tantivy.py
-      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v5-r2/candidate/**/*.go
+      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1/EXECUTION_INPUTS.json
+      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1/V5_TO_V6.patch
+      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1/run_original_native_schema_controls.py
+      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1/prepare_original_tantivy.py
+      - docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1/candidate/**/*.go
 
 permissions:
   contents: read
@@ -50,14 +51,14 @@ jobs:
           ref: d98420b1113536afd08cde6de9a5816f6d27ffff
           path: build/Heart-Schema-Observer
           persist-credentials: false
-      - name: Build and execute only the reviewed new native cases
+      - name: Build and execute only 20 unresolved native cases
         run: |
-          python3 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v5-r2/run_original_native_schema_controls.py \
+          python3 docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1/run_original_native_schema_controls.py \
             --control-root "$GITHUB_WORKSPACE" \
             --control-head "$GITHUB_SHA" \
             --source docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/candidate-v5 \
-            --controls docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v5-r2 \
-            --execution-manifest-sha256 0a9751cb534c184e35ee166ef6b1aff9d2756ab2cd3c2a20b20f9e0d7b25f792 \
+            --controls docs/pinkha/torah-integration/native-fixed-schema-observer-20261122/controls-v6-r1 \
+            --execution-manifest-sha256 dc843c2a08a1a55fc96ebe822f2c6e70b3c46bf83edd248266761a1cda8137e7 \
             --job-deadline-unix "$OTZARIA_SCHEMA_JOB_DEADLINE" \
             --heart build/Heart-Schema-Observer \
             --work build/Heart-Schema-Owned-Work \

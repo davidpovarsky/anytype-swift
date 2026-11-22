@@ -1,0 +1,143 @@
+{
+  "schema": "otzaria.heart-v6-localonly-acl-source-review/1",
+  "reviewer": "/root/native_completion",
+  "status": "APPROVED_FOR_SCOPED_VALIDATION",
+  "scope": "read-only source review of the new LocalOnly ACL fixture route; no native/Go/control execution or product edits",
+  "packet": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-schema-observer-source-20261122\\controls-v6-r1",
+  "patchSHA256": "649632629d00956ebe7bd3ceca3807e956fa7eca7b2a7e96d02549102964f1a7",
+  "fixtureSHA256": "1afa72779c24aff5a78fe63b181f112ca7a4fa7c6984f1395a0cf5fc4a308999",
+  "inputManifestSHA256": "c02ae44f350ed969dba986658da586a20cf361c5b0fd3367a41381f7bec47053",
+  "inputs": [
+    {
+      "path": "commonspace/object/tree/objecttree/objecttree.go",
+      "sha256": "8e439c2a300e0cf089e59eb3cf9bb2e10a9a0fd80e37d6288f91902a69544766",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "util/crypto/derived.go",
+      "sha256": "20c2dee12c1ba4f10ff817f2ca844f3df53ed4fde9c7a09311b394a90620dac5",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "commonspace/spaceservice.go",
+      "sha256": "4910f9e6854f0d699e87f3710c81ee9b0257eda59625f3d05f73640f15c62585",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "commonspace/object/acl/recordverifier/recordverifier.go",
+      "sha256": "80dae314e4d130d6fc28fd833cdaf31d69ae8179077ef2db7721010c466b944a",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "commonspace/object/acl/recordverifier/validatefull.go",
+      "sha256": "98f563d6e543266eb2b525a25eb8f967a8345c8329ab554f699936db75b8f5f0",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "commonspace/object/acl/list/aclrecordbuilder.go",
+      "sha256": "e8ba4a5b35427a4aee24c099cbb814b6dcfdd41e7ba5aa4479b48148f3f5c98b",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "commonspace/object/acl/list/list.go",
+      "sha256": "7a44abd9184d1b05191c1955989c7eb45026ec664acab2811635b230d543cc2c",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "commonspace/object/acl/list/listtest/listtest.go",
+      "sha256": "9f6c1053c9177d2658de069741c00deb4df776aacb039c68e9894c406ee49b64",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "commonspace/object/acl/list/storage.go",
+      "sha256": "99a45d282bed2fb5c6f817f350f4e31f20f2b7246c7846835c20b2b8282a32ef",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "commonspace/object/acl/syncacl/syncacl.go",
+      "sha256": "30221434dcdb4748950869c5c4bdf55b4e78fa4b4cbf4076a6ce62245051cb64",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "commonspace/acl/aclclient/aclspaceclient.go",
+      "sha256": "3cf2643d45b431510e2a953d24dcfae3e434319e8d94a20e05cf46d3bd85142e",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "nodeconf/nodeconf.go",
+      "sha256": "1074bdb4f7ffaf8a1b53c1af08e3563915c829e324b020267c23c117a0d891c5",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "nodeconf/service.go",
+      "sha256": "38198a7f27f40f8e926bf6392d835d5092b2ce5b8433b00855954efa50e9396b",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "app/app.go",
+      "sha256": "209fd71566c053bc300e03c67a952ee9067eb6bec39b0e76f87a1818c896f914",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "core/anytype/config/config.go",
+      "sha256": "f85e9d7db1a9d8dfc43baca0eacad43260e3f71a8d096a8dac4825849a47ff9e",
+      "gitBlobMatches": true
+    },
+    {
+      "path": "space/spacecore/service.go",
+      "sha256": "2afc4adc6606dc849697b9285c9b2c8d9c29f8c05616753a44592e2f321cccf4",
+      "gitBlobMatches": true
+    }
+  ],
+  "findings": [
+    {
+      "file": "fixed_schema_native_fixture_test.go",
+      "anchors": "293-323",
+      "finding": "Actual fixture app config must be LocalOnly and actual nodeconf NetworkId empty before obtaining its original Space ACL. One existing ACL lock covers original builder, WrapAclRecord, the same syncAcl.AddRawRecord, exact one-record/head advance, and raw persisted-byte readback."
+    },
+    {
+      "file": "commonspace/spaceservice.go",
+      "anchors": "104-115,125-134,194-265",
+      "finding": "Original service reads its real nodeconf component; empty NetworkId selects original NewValidateFull. NewSpace builds that verifier then passes it to syncacl.New. Its optional override is unexported deps.recordVerifier."
+    },
+    {
+      "file": "space/spacecore/service.go",
+      "anchors": "334-381",
+      "finding": "Original Heart loadSpace constructs commonspace.Deps without a verifier override and calls original commonSpace.NewSpace. No fixture verifier installation is present in the reviewed route."
+    },
+    {
+      "file": "commonspace/object/acl/recordverifier/validatefull.go",
+      "anchors": "9-18",
+      "finding": "Only the absent network acceptor check is a no-op; ShouldValidate returns true. This is original LocalOnly behavior, not proof of remote consensus acceptance."
+    },
+    {
+      "file": "commonspace/object/acl/list/aclrecordbuilder.go",
+      "anchors": "299-342,970-982,984-1025,1028-1085,1191-1209",
+      "finding": "Owner-only BuildSpaceOptionsChange constructs original content; original account signing key signs the record, then preflight applies it on a copy. Ingest decodes with original verifier and verifies actual author signature and outer CID; invalid author signature returns native ErrInvalidSignature."
+    },
+    {
+      "file": "commonspace/object/acl/list/listtest/listtest.go",
+      "anchors": "12-25",
+      "finding": "Original helper only marshals supplied RawRecord and calculates its actual CID. It does not invent an acceptor/author signature or replace verification."
+    },
+    {
+      "file": "commonspace/object/acl/list/list.go",
+      "anchors": "162-169,261-288",
+      "finding": "Original ingestion unmarshals/validates, applies to copied state, and persists the exact record before publishing live state/index."
+    },
+    {
+      "file": "commonspace/object/acl/syncacl/syncacl.go",
+      "anchors": "88-108",
+      "finding": "Same real syncAcl ingestion delegates to original ACL list then creates native head update/broadcast. A later error is not claimed to roll back an already persisted record."
+    }
+  ],
+  "limits": [
+    "No claim of network consensus, production ensure, full observer correctness, runtime PASS, or other V6 KeyDeriver changes.",
+    "All 16 retained original inputs matched their declared byte counts, SHA256 and Git blob identity formula. Their repository membership relies on the already-retained fixed-commit source/tree provenance; no new fetch or source-tree inventory was performed.",
+    "Root retains ownership of the complete negative-control source/case review. This review confirms the native invalid-signature cause boundary, not an executed assertion.",
+    "No watcher/artifact/test was added; Native45006363282 remains exclusively observed by d061."
+  ],
+  "testsExecuted": 0,
+  "productChanges": 0,
+  "created": "2026-11-22T10:05:37.700399+00:00"
+}

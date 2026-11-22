@@ -1,0 +1,30 @@
+--- a/core/block/object/objectcreator/fixed_schema_replay.go
++++ b/core/block/object/objectcreator/fixed_schema_replay.go
+@@ -294,6 +294,9 @@
+ // not visit those rows. Native keys and decryption are the same as IterateFrom;
+ // no replacement protobuf, compression, or state codec is used.
+ func validateFixedSchemaStoredContent(ctx context.Context, acl list.AclList, rootID string, changes []*objecttree.Change) error {
++	// Original objecttree.readKeysFromAclState derives one key for this exact
++	// tree ID. The ACL read key itself cannot decrypt native tree content.
++	deriver := crypto.NewKeyDeriver(fmt.Sprintf(crypto.AnysyncTreePath, rootID))
+ 	for _, change := range changes {
+ 		if err := ctx.Err(); err != nil {
+ 			return err
+@@ -309,8 +312,15 @@
+ 			if !found || keys.ReadKey == nil {
+ 				return list.ErrNoReadKey
+ 			}
+-			var err error
+-			data, err = keys.ReadKey.DecryptReuse(nil, data)
++			rawKey, err := keys.ReadKey.Raw()
++			if err != nil {
++				return fmt.Errorf("read original ACL key for tree: %w", err)
++			}
++			treeKey, err := deriver.DeriveKey(rawKey)
++			if err != nil {
++				return fmt.Errorf("derive original tree content key: %w", err)
++			}
++			data, err = treeKey.DecryptReuse(nil, data)
+ 			if err != nil {
+ 				return fmt.Errorf("decrypt original stored content: %w", err)
+ 			}
