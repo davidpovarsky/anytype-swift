@@ -1,0 +1,127 @@
+name: Original editor retained framework runtime continuation
+
+on:
+  push:
+    branches:
+      - codex/otzaria-original-editor-runtime-v13-20261122
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: original-editor-runtime-continuation-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  original-editor-runtime-continuation:
+    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-runtime-v13-20261122' && github.run_attempt == 1
+    runs-on: xcode-27
+    timeout-minutes: 50
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+      CONTINUATION_PACKET: docs/pinkha/torah-integration/evidence/original-editor-runtime-continuation-20261122
+      CONTINUATION_EVIDENCE: build/original-editor-runtime-evidence
+      CONTINUATION_WORK: build/original-editor-runtime-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - name: Fix the absolute owned execution deadline
+        run: echo "OTZARIA_RUNTIME_DEADLINE=$(( $(date +%s) + 2700 ))" >> "$GITHUB_ENV"
+      - name: Checkout exact reviewed continuation source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Select actual ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Verify continuation controls
+        run: |
+          python3 - <<'PY'
+          import ast, hashlib, json, os
+          from pathlib import Path
+          packet = Path(os.environ['CONTINUATION_PACKET'])
+          result = json.loads((packet / 'controls/RESULT.json').read_bytes())
+          assert result['status'] == 'PASS_NEW_CONTINUATION_BOUNDARY_CONTROLS'
+          tree = ast.parse(Path('Tools/OriginalEditor/runtime_continuation_controls.py').read_text())
+          expected = [method.name for item in tree.body if isinstance(item, ast.ClassDef) and item.name == 'ContinuationBoundaries'
+                      for method in item.body if isinstance(method, ast.FunctionDef) and method.name.startswith('test_')]
+          assert result['tests_run'] == len(result['expected_ids']) == len(expected) == 24
+          assert sorted(result['expected_ids']) == sorted(expected)
+          assert sorted(result['passed_ids']) == sorted(result['expected_ids'])
+          assert len(set(result['passed_ids'])) == result['tests_run']
+          assert not result['failures'] and not result['errors'] and not result['skipped']
+          binding = json.loads((packet / 'controls/SOURCE_BINDING.json').read_bytes())
+          assert hashlib.sha256((packet / 'controls/RESULT.json').read_bytes()).hexdigest() == binding['executed_result_sha256']
+          assert set(binding['files']) == set(result['source_sha256'])
+          for path, commitment in result['source_sha256'].items():
+              item = binding['files'][path]
+              raw = Path(item['current_path']).read_bytes()
+              assert hashlib.sha256(raw).hexdigest() == item['current_sha256'], path
+              if 'inverse' in item:
+                  inverse = item['inverse']
+                  assert raw.count(inverse['current'].encode()) == inverse['count'] == 1
+                  raw = raw.replace(inverse['current'].encode(), inverse['executed'].encode())
+              assert hashlib.sha256(raw).hexdigest() == commitment == item['executed_sha256'], path
+          for row in json.loads((packet / 'ORIGINAL_HELPER_BINDINGS.json').read_bytes()):
+              source = Path('Tools/OriginalEditor') / row['path']
+              assert hashlib.sha256(source.read_bytes()).hexdigest() == row['sha256'], row['path']
+          Path('build').mkdir(exist_ok=True)
+          Path('build/runtime-continuation-control-admission.json').write_text(json.dumps({
+              'status': 'SOURCE_BOUND_NEW_CONTROLS_RETAINED_WITHOUT_REPLAY',
+              'control_sha': os.environ['GITHUB_SHA'], 'run_id': os.environ['GITHUB_RUN_ID'],
+              'retained_new_control_count': result['tests_run'], 'prior_source_controls_replayed': 0,
+              'new_control_bodies_replayed': 0,
+              'result_sha256': hashlib.sha256((packet / 'controls/RESULT.json').read_bytes()).hexdigest(),
+          }, indent=2, sort_keys=True) + '\n')
+          PY
+      - name: Qualify retained original framework runtime
+        id: runtime
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 Tools/OriginalEditor/run_runtime_continuation.py \
+            --inputs Tools/OriginalEditor/runtime_continuation_inputs.json \
+            --inputs-sha256 51fc7e47df710254e29cf2ef6e4e9ceb8c83743d6b5e3f361099a7f7991fc032 \
+            --work "$CONTINUATION_WORK" --evidence "$CONTINUATION_EVIDENCE" \
+            --deadline-unix "$OTZARIA_RUNTIME_DEADLINE"
+      - name: Preserve runtime continuation evidence
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, shutil, zipfile
+          from pathlib import Path
+          root = Path(os.environ['CONTINUATION_EVIDENCE'])
+          root.mkdir(parents=True, exist_ok=True)
+          for source in [Path('build/runtime-continuation-control-admission.json'),
+                         Path('Tools/OriginalEditor/runtime_continuation_inputs.json')]:
+              if source.is_file(): shutil.copyfile(source, root / source.name)
+          archive = root / 'runtime-continuation-evidence.zip'
+          assert not archive.exists()
+          files, omitted = [], []
+          for path in sorted(root.rglob('*')):
+              assert not path.is_symlink()
+              if not path.is_file(): continue
+              with path.open('rb') as stream: sha = hashlib.file_digest(stream, 'sha256').hexdigest()
+              row = {'path': path.relative_to(root).as_posix(), 'bytes': path.stat().st_size, 'sha256': sha}
+              if path.parent.name == 'github-commands' and path.name.endswith('-download.stdout'):
+                  omitted.append(row)  # Interrupted binary artifact streams remain owned, never reuploaded as products.
+              else: files.append(row)
+          index = root / 'UPLOAD_INDEX.json'
+          index.write_text(json.dumps({'files': files, 'omitted_binary_artifact_streams': omitted}, indent=2, sort_keys=True) + '\n')
+          with zipfile.ZipFile(archive, 'x', zipfile.ZIP_DEFLATED, compresslevel=6) as output:
+              for row in files: output.write(root / row['path'], row['path'])
+              output.write(index, index.name)
+          PY
+      - name: Upload runtime continuation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Otzaria-Original-Editor-Runtime-Continuation-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ env.CONTINUATION_EVIDENCE }}/runtime-continuation-evidence.zip
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14

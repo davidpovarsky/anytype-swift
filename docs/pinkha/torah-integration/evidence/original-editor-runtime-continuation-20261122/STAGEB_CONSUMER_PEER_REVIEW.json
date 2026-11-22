@@ -1,0 +1,68 @@
+{
+  "status": "BOUNDED_SOURCE_REVIEW_CLEAR",
+  "reviewer": "/root/stageb_auth",
+  "reviewed_at": "2026-11-22T17:10:29.143855+00:00",
+  "producer_files": [
+    {
+      "path": "Tools/OriginalEditor/run_runtime_continuation.py",
+      "bytes": 37976,
+      "sha256": "7bc41f89357564cdef6fb85ccf05452ab39798814b292135143a4177352949a0"
+    },
+    {
+      "path": "Tools/OriginalEditor/runtime_continuation_process.py",
+      "bytes": 7495,
+      "sha256": "d55f83a6eb3f3334356087813743dce773ec74b7c07695f2184d77c4a07d212f"
+    },
+    {
+      "path": "Tools/OriginalEditor/runtime_continuation_inputs.json",
+      "bytes": 6477,
+      "sha256": "51fc7e47df710254e29cf2ef6e4e9ceb8c83743d6b5e3f361099a7f7991fc032"
+    },
+    {
+      "path": ".github/workflows/pinkha-original-editor-runtime-continuation.yml",
+      "bytes": 6333,
+      "sha256": "352eaa67dd2575d554827f8f69018fcc4b64399d8a20a2df26600e9649708da1"
+    }
+  ],
+  "consumer_files": [
+    {
+      "path": "Scripts/CI/hq-original-editor-distribution.py",
+      "bytes": 35281,
+      "sha256": "4711f3089b9a214923a0ccc36808b6efbfbef7250646db0915006e3e01736d3d",
+      "original_git_blob": "b4e4163b869084b4cfcb12b5b9a030fb9de8dbf7"
+    },
+    {
+      "path": "Scripts/CI/original_editor_continuation_admission.py",
+      "bytes": 27570,
+      "sha256": "a8bca577b337eec3f3d6a154036c28447fce5b5dc57f83e950a74532c3446f5f",
+      "original_git_blob": null
+    },
+    {
+      "path": "Scripts/CI/restore-original-editor-distribution.py",
+      "bytes": 12482,
+      "sha256": "152a7bb8d4bb2abd5591d907453f13a859de5e9b55c13b74a0221876af8bd3d4",
+      "original_git_blob": "2ba388080aa49756e852442b2d063ccf6ee30ead"
+    },
+    {
+      "path": "Scripts/CI/runtime27-original-editor-native.py",
+      "bytes": 43410,
+      "sha256": "0d4fb04c71b133ab364b313fd4d58ff2008a6518051d50d7db2e03fa98235d19",
+      "original_git_blob": "726eb809b2543e15268c5c93b91aa90cae06f3fe"
+    }
+  ],
+  "findings": [
+    "The two allowed omissions are fixed to immutable source repository, commit, path, Git blob, byte count and SHA256, and must match the original full 2528-member product inventory. Runtime retrieves exact immutable source bytes; the original archive and unqualified producer receipt remain unchanged.",
+    "Original raw command and source evidence remains attributed to source edce5b975b173059522f90adb71271fb95adf963/run45041382512/attempt1. The separate runtime result uses framework_source_sha and runtime_qualification_producer.control_sha, and labels the framework build REUSED_SUCCESSFUL_ORIGINAL_PRODUCER.",
+    "The workflow has the four exact schema2 required step names, the one runtime-continuation-evidence.zip wrapper, and the artifact name bound to new control SHA/run/attempt. No framework build, original source suite or prior runtime replay is present.",
+    "The original consumer generation function is retained, uses the same relative sibling distribution path, and is compared against the original four-file source inventory before the new consumer build.",
+    "One fresh owned simulator is created; unknown creation identity is recovered only by exact new name/type/runtime and exclusion of prior device IDs. Command groups must drain and the owned simulator must be confirmed absent before a successful sidecar is written.",
+    "The schema2 consumer helper agrees with producer result fields, restoration receipt and separate source role. The five shared validation functions remain byte-identical to the current frozen producer source."
+  ],
+  "limits": [
+    "This is read-only source review, with no producer control replay, simulator execution or SDK acceptance.",
+    "The 20 separate consumer boundary controls use explicit synthetic GitHub metadata/ZIP fixtures; final immutable runtime run/job/artifact/sidecar pins remain unavailable until actual successful execution.",
+    "The application input manifest remains unchanged and the Native StageB source placeholder remains fail-closed."
+  ],
+  "no_source_changes": true,
+  "no_test_execution": true
+}
