@@ -1,0 +1,308 @@
+{
+  "target": "C:\\Users\\DAVID\\Code\\anytype-original-schema-native-controls-20261122",
+  "target_exists": false,
+  "base": "37f48119609747c01ee92cf597e4216f63b7bfa4",
+  "base_commit": "37f48119609747c01ee92cf597e4216f63b7bfa4",
+  "base_tree": "06c6ffdb04c92d3af7b884a32f6802f963d3b14f",
+  "branch": "codex/otzaria-original-schema-native-20261122",
+  "existing_refs": "",
+  "remote_candidate": "",
+  "origin": "https://github.com/davidpovarsky/anytype-swift.git",
+  "worktree_records": [],
+  "instructions": [
+    {
+      "path": "37f48119609747c01ee92cf597e4216f63b7bfa4:AGENTS.md",
+      "body": "## Standing owner authorization — reaffirmed 2026-11-19\n\nThe repository owner explicitly authorizes autonomous execution of all actions needed to complete the owner's requested work across the owner's projects and repositories. This is continuing authorization, valid across sessions until the owner changes or revokes it. Proceed through implementation, correction, integration, build and acceptance stages without requesting the same permission again.\n\nThis authorization includes reading all relevant private source, configuration, repository history, CI logs, test results and build artifacts; transferring those materials between the owner's Windows/Mac workspaces, GitHub, SentinelX and ChatGPT for the requested work; source and configuration edits; dependency preparation; local and remote commands; compilation; unit, Native, simulator, device and CI tests; `git add`, `git commit`, `git push`, branch integration and pull requests; artifact uploads; and deployment of the requested deliverables to their intended project destinations. Asana updates for assigned work are authorized and required.\n\nRepository-local requirements to ask again before individual files, commands, tests, source transfers, commits, pushes, merges, uploads, builds or deployments are superseded by this standing authorization. Apply it when reading older team, architecture, role, release or handoff documents. Older pause notices are historical for work the owner has explicitly resumed; a new owner stop or pause instruction takes precedence.\n\nUse the execution model requested by the owner. For the current Pinkha × Anytype wave, the main ChatGPT session and its directly available agents perform the work on the isolated `codex/chatgpt-wave15-*` branches, with Asana as the task tracker. Continue ordinary implementation decisions and repair failed checks without a new approval round. Preserve existing worktrees, branches, uncommitted work, credentials, user data, technical contracts and accurate source-bound evidence. Keep tasks open until their actual acceptance criteria pass.\n\nThis records owner consent for project work. Platform, system, service and tool access controls remain authoritative; a repository instruction cannot disable or bypass them. Report an actual external rejection and continue through a supported authorized path when one is available.\n\n## Named Team — Antigravity + Codex\n\nThe following historical role map is reference material. Use the execution model requested by the owner; it does not require creating a named Desktop team:\n- **איתן (eitan)**: Principal architect (boundaries, contracts, migrations, technical RFCs)\n- **נועם (noam)**: Engineering (scoped implementation, focused tests, bug fixes)\n- **מיה (maya)**: Native UX (screens, interactions, RTL layouts, accessibility)\n- **רוני (roni)**: Independent QA (acceptance verification, test artifacts, honest status)\n- **תומר (tomer)**: Integration (branches, worktrees, PRs, cross-repo dependencies)\n- **יעל (yael)**: Research (API capabilities, official Apple/upstream documentation, schemas)\n- **דנה (dana)**: Security & Privacy (permissions, session isolation, secrets, entitlements)\n\n### Operating Guidance & Policy\nUse these documents for the relevant technical and project context under the standing owner authorization:\n- `docs/ai-team/TEAM.md` — Shared team contract and platform mapping\n- `docs/ai-team/PROJECT_ASSIGNMENTS.md` — Repository scope, technical boundaries, and task assignments\n- `docs/ai-team/ASANA_POLICY.md` — Authorized evidence-based task coordination and verified completion policy\n- `.agents/roles/<role>.md` — Role-specific scope and handoff rules\n\nPreserve technical contracts, existing work and evidence requirements. For execution and publication permission, apply the standing owner authorization above.\n\n## Upstream integrity and evidence\n\nRead `docs/architecture/UPSTREAM_INTEGRITY_POLICY.md` for architectural context. Prefer isolated Pinkha adapters, wrappers, protocols and packages, and preserve the canonical Hanlin engine. Make only source changes required by the requested task and record their exact provenance. The standing owner authorization above replaces older per-file and Git approval requirements. Successful compilation alone does not prove functional parity. Asana updates for the current wave are explicitly authorized and required.\n"
+    }
+  ],
+  "attributes": null,
+  "existing_destination_paths": [],
+  "workflow_headers": [
+    {
+      "path": ".github/workflows/automerge.yaml",
+      "head": "name: Auto-merge\n\non: pull_request_target\n\npermissions:\n  actions: read\n  contents: write\n  pull-requests: write\n\njobs:\n  dependencies:\n    runs-on: ubuntu-latest\n    if: github.actor == 'any-association'\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}\n          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}\n          github_token: ${{ github.token }}\n      - uses: hmarr/auto-approve-action@v4\n\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}\n          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}"
+    },
+    {
+      "path": ".github/workflows/branch_build.yaml",
+      "head": "name: Branch build\n\non:\n  # Allows you to run this workflow manually from the Actions tab\n  workflow_dispatch:\n    inputs:\n      tf_comment:\n        description: 'TestFlight Comment'\n        default: ''\n\nconcurrency:\n  group: ${{ github.workflow }}\n  cancel-in-progress: false\n\njobs:\n  ui27-acceptance-gate:\n    permissions:\n      contents: read\n      actions: read\n    uses: ./.github/workflows/pinkha-ui27-release-gate.yml\n\n  main:\n    needs: ui27-acceptance-gate\n    runs-on: macos-26\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}"
+    },
+    {
+      "path": ".github/workflows/cla.yml",
+      "head": "name: \"CLA Check\"\non:\n  issue_comment:\n    types: [created]\n  pull_request_target:\n    types: [opened,closed,synchronize]\n\npermissions:\n  actions: write\n  contents: write\n  pull-requests: write\n  statuses: write\n  \njobs:\n  cla-check:\n    name: CLA Checks\n    uses: anyproto/open/.github/workflows/cla.yml@main\n    secrets: inherit"
+    },
+    {
+      "path": ".github/workflows/claude-code-review.yml",
+      "head": "name: Claude Code Review\n\non:\n  pull_request:\n    types: [opened, synchronize]\n    # Optional: Only run on specific file changes\n    # paths:\n    #   - \"src/**/*.ts\"\n    #   - \"src/**/*.tsx\"\n    #   - \"src/**/*.js\"\n    #   - \"src/**/*.jsx\"\n\njobs:\n  claude-review:\n    # Optional: Filter by PR author\n    # if: |\n    #   github.event.pull_request.user.login == 'external-contributor' ||\n    #   github.event.pull_request.user.login == 'new-developer' ||\n    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'\n\n    runs-on: ubuntu-latest\n    permissions:\n      actions: read\n      contents: read\n      pull-requests: read\n      issues: read\n      id-token: write\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true"
+    },
+    {
+      "path": ".github/workflows/claude.yml",
+      "head": "name: Claude Code\n\non:\n  issue_comment:\n    types: [created]\n  pull_request_review_comment:\n    types: [created]\n  issues:\n    types: [opened, assigned]\n  pull_request_review:\n    types: [submitted]\n\njobs:\n  claude:\n    if: |\n      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||\n      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||\n      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||\n      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read\n      pull-requests: read\n      issues: read\n      id-token: write\n      actions: read # Required for Claude to read CI results on PRs\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh"
+    },
+    {
+      "path": ".github/workflows/dev_build.yaml",
+      "head": "name: Anytype Dev\n\npermissions:\n  actions: read\n  contents: 'write'\n\non:\n  schedule:\n    # 05:00 UTC\n    - cron:  '0 5 * * 1-5'\n  workflow_dispatch:\n\nconcurrency:\n  group: ${{ github.workflow }}\n  cancel-in-progress: false\n\njobs:\n  ui27-acceptance-gate:\n    permissions:\n      contents: read\n      actions: read\n    uses: ./.github/workflows/pinkha-ui27-release-gate.yml\n\n  main:\n    needs: ui27-acceptance-gate\n    runs-on: macos-26\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:"
+    },
+    {
+      "path": ".github/workflows/generator_checks.yaml",
+      "head": "name: Check generated files\n\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: true\n\non:\n  pull_request:\n  workflow_dispatch:\n\njobs:\n  unit-tests:\n    name: Check\n    runs-on: macos-26\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}\n          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}\n          github_token: ${{ github.token }}\n      - name: Checkout\n        uses: actions/checkout@v3\n      \n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh"
+    },
+    {
+      "path": ".github/workflows/ipa.yaml",
+      "head": "name: Build IPA\n\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: true\n\non:\n  workflow_dispatch:\n    inputs:\n      build_type:\n        description: \"App build type\"\n        required: false\n        default: release\n        type: choice\n        options:\n          - release\n          - dev\n  repository_dispatch:\n    types:\n      - trigger-build\n\njobs:\n  main:\n    runs-on: macos-26\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}"
+    },
+    {
+      "path": ".github/workflows/license-checks.yml",
+      "head": "name: License Checks\n\non:\n  pull_request:\n  workflow_dispatch:\n\njobs:\n  license-checks:\n    name: License Checks\n    runs-on: macos-26\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}\n          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}\n          github_token: ${{ github.token }}\n      - name: Checkout\n        uses: actions/checkout@v3\n\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}\n          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}\n          github_token: ${{ github.token }}\n      - name: Xcode Cache"
+    },
+    {
+      "path": ".github/workflows/link_issue_to_release.yaml",
+      "head": "name: Link merged PR to Linear release\n\n# Automatically assigns the Linear issue referenced by a merged PR to the\n# appropriate release in the \"Anytype iOS\" pipeline.\n#\n# Mapping:\n#   PR merged to `release` → release with stage name \"Beta\"\n#   PR merged to `develop` → release with stage name \"In Progress\" (preferred), else \"Planned\"\n#\n# Behavior:\n#   - Branch name must start with `ios-XXXX`; otherwise the run exits silently.\n#   - If the issue already has any release assigned, the run exits silently.\n#   - If multiple releases share the target stage, the lowest semver name wins.\n#   - If no release matches the target stage(s), a comment is posted on the\n#     Linear issue and the workflow fails.\n#\n# Required secrets:\n#   - LINEAR_TOKEN: Linear API token with write access to issues and releases.\n\non:\n  pull_request:\n    types: [closed]\n    branches:\n      - develop\n      - release\n\njobs:\n  link:\n    name: Link issue to release\n    if: github.event.pull_request.merged == true\n    runs-on: ubuntu-latest\n    env:"
+    },
+    {
+      "path": ".github/workflows/pinkha-fast-ci.yml",
+      "head": "name: Pinkha Fast CI\n\non:\n  push:\n    branches:\n      - pinkha/torah-associations-native-ux-persistence-localization-2026-10-20\n\nconcurrency:\n  group: pinkha-fast-${{ github.ref }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  fast-ci:\n    runs-on: xcode-27\n    timeout-minutes: 75\n\n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n\n      - name: Record toolchain\n        run: |\n          mkdir -p build/evidence\n          xcodebuild -version | tee build/evidence/xcode-version.txt\n          xcodebuild -showsdks | tee build/evidence/xcode-sdks.txt\n          swift --version | tee build/evidence/swift-version.txt\n\n      - name: Verify immutable TorahInspectorKit pins"
+    },
+    {
+      "path": ".github/workflows/pinkha-full-acceptance.yml",
+      "head": "name: Pinkha Full Acceptance\n\non:\n  workflow_call:\n\nconcurrency:\n  group: pinkha-full-acceptance-${{ github.ref }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  full-acceptance:\n    runs-on: xcode-27\n    timeout-minutes: 150\n\n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n\n      - name: Require successful Fast CI for this SHA\n        env:\n          GH_TOKEN: ${{ github.token }}\n        run: |\n          conclusion=\"$(gh run list \\\n            --workflow pinkha-fast-ci.yml \\\n            --commit \"$GITHUB_SHA\" \\\n            --event push \\\n            --limit 1 \\\n            --json conclusion \\"
+    },
+    {
+      "path": ".github/workflows/pinkha-hanlin-journal-probe.yml",
+      "head": "name: Pinkha Hanlin journal platform probe\n\non:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        required: true\n  workflow_dispatch:\n    inputs:\n      source_sha:\n        description: Exact immutable reviewed source SHA\n        type: string\n        required: true\n\npermissions:\n  contents: read\n\njobs:\n  platform-probe:\n    runs-on: xcode-27\n    timeout-minutes: 20\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer\n      PYTHONDONTWRITEBYTECODE: '1'\n      EXPECTED_SOURCE_SHA: ${{ inputs.source_sha }}\n    steps:\n      - name: Checkout the exact reviewed diagnostic source\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ inputs.source_sha }}\n          persist-credentials: false"
+    },
+    {
+      "path": ".github/workflows/pinkha-heart-runtime.yml",
+      "head": "name: Rebuild the pinned r14 Heart runtime\n\non:\n  workflow_call:\n\npermissions:\n  contents: read\n\njobs:\n  runtime:\n    runs-on: xcode-27\n    timeout-minutes: 150\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer\n    steps:\n      - name: Checkout exact control source\n        uses: actions/checkout@v4\n      - name: Select compatible native ARM64 Python\n        uses: actions/setup-python@v5\n        with:\n          python-version: '3.12'\n          architecture: arm64\n      - name: Install the pinned Go toolchain\n        uses: actions/setup-go@v5\n        with:\n          go-version: '1.26.5'\n          cache: false\n      - name: Checkout the exact native Heart source\n        uses: actions/checkout@v4\n        with:\n          repository: anyproto/anytype-heart\n          ref: d98420b1113536afd08cde6de9a5816f6d27ffff"
+    },
+    {
+      "path": ".github/workflows/pinkha-ipa-only.yml",
+      "head": "name: Pinkha IPA-only\n\non:\n  workflow_call:\n    inputs:\n      require_full_acceptance:\n        description: Require Full Acceptance success on the same SHA\n        type: boolean\n        default: true\n\nconcurrency:\n  group: pinkha-ipa-${{ github.ref }}\n  cancel-in-progress: true\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  unsigned-ipa:\n    runs-on: xcode-27\n    timeout-minutes: 45\n\n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n\n      - name: Require Full Acceptance for this SHA\n        if: inputs.require_full_acceptance\n        env:\n          GH_TOKEN: ${{ github.token }}\n        run: |"
+    },
+    {
+      "path": ".github/workflows/pinkha-native-derived.yml",
+      "head": "name: Pinkha native derived custom Heart and iPad\n\non:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        type: string\n        default: ''\n      validation_scope:\n        type: string\n        default: all\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  native-product:\n    runs-on: macos-15-intel\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer\n    timeout-minutes: 150\n    steps:\n      - name: Checkout isolated native-derived source\n        uses: actions/checkout@v4\n\n      - name: Create and boot compatible disposable iPad BEFORE native build\n        run: python3 Tools/PinkhaNativeDerived/create_disposable_ipad.py --evidence build/native-evidence\n\n      - name: Install pinned Go toolchain\n        if: ${{ inputs.validation_scope != 'failed-ui' && inputs.heart_source_run_id == '' }}\n        uses: actions/setup-go@v5"
+    },
+    {
+      "path": ".github/workflows/pinkha-native-diagnostics.yml",
+      "head": "name: Export existing native XCTest evidence\n\non:\n  workflow_call:\n    inputs:\n      source_run_id:\n        required: true\n        type: string\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  export:\n    runs-on: xcode-27\n    timeout-minutes: 15\n    steps:\n      - name: Export actual failed-run screenshots and summaries\n        env:\n          GH_TOKEN: ${{ github.token }}\n          SOURCE_RUN_ID: ${{ inputs.source_run_id }}\n        run: |\n          python3 - <<'PY'\n          import json, os, pathlib, subprocess, zipfile\n          run = os.environ['SOURCE_RUN_ID']\n          if not run.isdigit(): raise RuntimeError('A numeric existing run ID is required')\n          root = pathlib.Path('native-diagnostics').resolve()\n          root.mkdir()\n          subprocess.run(['gh','run','download',run,'--repo',os.environ['GITHUB_REPOSITORY'],\n            '-n','Pinkha-Native-Derived-Evidence','-D',str(root/'download')],check=True)\n          with zipfile.ZipFile(root/'download/Pinkha-Native-Derived-Evidence.zip') as archive:"
+    },
+    {
+      "path": ".github/workflows/pinkha-native-fast-ipa.yml",
+      "head": "name: Pinkha fast native Heart iPad IPA\n\non:\n  workflow_dispatch:\n  workflow_call:\n\npermissions:\n  contents: read\n\njobs:\n  fast-ipa:\n    runs-on: xcode-27\n    timeout-minutes: 120\n    steps:\n      - name: Checkout exact Pinkha source\n        uses: actions/checkout@v4\n\n      - name: Install pinned Go\n        uses: actions/setup-go@v5\n        with:\n          go-version: '1.26.5'\n          cache-dependency-path: Modules/PinkhaHeart/go.mod\n\n      - name: Checkout pinned Anytype Heart\n        uses: actions/checkout@v4\n        with:\n          repository: anyproto/anytype-heart\n          ref: d98420b1113536afd08cde6de9a5816f6d27ffff\n          path: build/Heart-Native-Fast\n\n      - name: Build and verify CUSTOM Heart for iOS\n        run: |"
+    },
+    {
+      "path": ".github/workflows/pinkha-native-ipa-fast.yml",
+      "head": "name: Pinkha custom Heart fast IPA (build only)\nrun-name: Pinkha FAST IPA | ${{ github.sha }}\n\non:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        type: string\n        default: ''\n  workflow_dispatch:\n    inputs:\n      heart_source_run_id:\n        type: string\n        default: ''\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  native-ipa-fast:\n    runs-on: macos-15-intel\n    timeout-minutes: 110\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer\n    steps:\n      - name: Confirm Intel macOS and Xcode 26.3\n        run: |\n          test \"$(uname -m)\" = \"x86_64\"\n          xcodebuild -version\n          xcodebuild -version | grep -Fq 'Xcode 26.3'\n          xcrun --sdk iphoneos --show-sdk-version"
+    },
+    {
+      "path": ".github/workflows/pinkha-original-editor-framework.yml",
+      "head": "name: Original editor framework external import and resources\n\non:\n  push:\n    branches:\n      - codex/otzaria-original-editor-framework-v11-host-reviewed-20261122\n\npermissions:\n  contents: read\n  actions: read\n\nconcurrency:\n  group: original-editor-framework-${{ github.ref }}\n  cancel-in-progress: false\n\njobs:\n  original-editor-framework:\n    if: github.repository == 'davidpovarsky/anytype-swift' && github.event_name == 'push' && github.ref == 'refs/heads/codex/otzaria-original-editor-framework-v11-host-reviewed-20261122'\n    runs-on: xcode-27\n    timeout-minutes: 140\n    env:\n      PYTHONDONTWRITEBYTECODE: '1'\n      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer\n      EXPECTED_APP_BRANCH: codex/otzaria-original-editor-framework-v11-host-reviewed-20261122\n      HEART_SOURCE_RUN_ID: '44203168617'\n      EDITOR_EVIDENCE: build/original-editor-framework-evidence\n      EDITOR_WORK: build/original-editor-framework-${{ github.run_id }}-${{ github.run_attempt }}\n    steps:\n      - name: Checkout exact reviewed source\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ github.sha }}"
+    },
+    {
+      "path": ".github/workflows/pinkha-original-editor.yml",
+      "head": "name: Original editor Apple component acceptance\n\non:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        required: true\n        type: string\n      expected_app_branch:\n        required: true\n        type: string\n\npermissions:\n  contents: read\n  actions: read\n\nconcurrency:\n  group: original-editor-${{ github.ref }}\n  cancel-in-progress: false\n\njobs:\n  original-editor:\n    runs-on: xcode-27\n    timeout-minutes: 120\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer\n      EXPECTED_APP_BRANCH: ${{ inputs.expected_app_branch }}\n      HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}\n      EDITOR_EVIDENCE: build/original-editor-evidence\n      EDITOR_DERIVED: build/original-editor-derived-${{ github.run_id }}-${{ github.run_attempt }}\n    steps:\n      - name: Checkout exact reviewed source"
+    },
+    {
+      "path": ".github/workflows/pinkha-sdk06-tests.yml",
+      "head": "name: Source-bound Apple host component tests\n\non:\n  workflow_call:\n    inputs:\n      heart_source_run_id:\n        description: Successful run containing the exact verified universal r14 runtime\n        required: true\n        type: string\n      expected_app_branch:\n        description: Reviewed isolated integration branch; producer branches are not accepted\n        required: true\n        type: string\n      profile:\n        description: Explicit reviewed profile sdk06/editor/wave15-core/wave15-components; no arbitrary test selection\n        required: false\n        type: string\n        default: sdk06\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  sdk06-host-tests:\n    runs-on: xcode-27\n    timeout-minutes: 120\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer\n      HEART_SOURCE_RUN_ID: ${{ inputs.heart_source_run_id }}\n      EXPECTED_APP_BRANCH: ${{ inputs.expected_app_branch }}\n      HOST_PROFILE: ${{ inputs.profile }}"
+    },
+    {
+      "path": ".github/workflows/pinkha-simulator-ui27.yml",
+      "head": "name: Real OS27 native and iPhone iPad UI smoke\n\non:\n  workflow_call:\n    inputs:\n      ui_scope:\n        type: string\n        default: FULL_SMOKE\n      heart_source_run_id:\n        type: string\n        required: true\n      acceptance_lane:\n        type: string\n        default: ''\n      acceptance_device:\n        type: string\n        default: ipad\n      acceptance_language:\n        type: string\n        default: en\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  actual-native-and-ui:\n    runs-on: xcode-27\n    timeout-minutes: 150\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer\n      UI27_SCOPE: ${{ inputs.ui_scope }}"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-account-lifecycle.yml",
+      "head": "name: Pinkha T2 native account and private history lifecycle\n\non:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\npermissions:\n  contents: read\n\njobs:\n  native-account-lifecycle:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 50\n    env:\n      T2_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8\n      EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}\n    steps:\n      - name: Checkout exact T2 control and registry source\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ inputs.source_sha || github.sha }}\n          path: control\n          persist-credentials: false\n      - name: Checkout immutable approved r14 source\n        uses: actions/checkout@v4\n        with:\n          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1\n          path: approved-source\n          persist-credentials: false"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-account-rpc.yml",
+      "head": "name: Pinkha T2 generated RPC account lifecycle\n\non:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\npermissions:\n  contents: read\n\njobs:\n  account-rpc:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 45\n    env:\n      EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}\n      T2_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8\n      PYTHONDONTWRITEBYTECODE: '1'\n    steps:\n      - name: Checkout exact account-wire source\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ inputs.source_sha || github.sha }}\n          path: control\n          persist-credentials: false\n      - name: Checkout immutable r14 and builder source\n        uses: actions/checkout@v4\n        with:\n          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1\n          path: approved-source"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-native-clients.yml",
+      "head": "name: Pinkha T2 two native clients LAN cold bootstrap\n\non:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n      scenario:\n        type: string\n        default: bootstrap\n      crash_after_commit:\n        type: boolean\n        default: false\n      observed_remove_after_reopen:\n        type: boolean\n        default: false\n      concurrent_replace_after_reopen:\n        type: boolean\n        default: false\n\npermissions:\n  contents: read\n\njobs:\n  native-clients:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 60\n    env:\n      EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}\n      T2_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8\n      PYTHONDONTWRITEBYTECODE: '1'"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-native-operations.yml",
+      "head": "name: Pinkha T2 native operations and two-process transport\n\non:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\npermissions:\n  contents: read\n\njobs:\n  native-operations:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 25\n    steps:\n      - name: Checkout exact app source\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ inputs.source_sha || github.sha }}\n\n      - name: Checkout exact upstream Heart\n        uses: actions/checkout@v4\n        with:\n          repository: anyproto/anytype-heart\n          ref: d98420b1113536afd08cde6de9a5816f6d27ffff\n          path: build/Heart-T2-Operations\n\n      - name: Install pinned Go toolchain\n        uses: actions/setup-go@v5\n        with:"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-native-rpc.yml",
+      "head": "name: Pinkha T2 generated native RPC boundary\n\non:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\npermissions:\n  contents: read\n\njobs:\n  generated-native-rpc:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 40\n    env:\n      EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}\n      T2_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8\n      PYTHONDONTWRITEBYTECODE: '1'\n    steps:\n      - name: Checkout exact isolated RPC source\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ inputs.source_sha || github.sha }}\n          path: control\n          persist-credentials: false\n      - name: Checkout pinned Heart for isolated generation and native tests\n        uses: actions/checkout@v4\n        with:\n          repository: anyproto/anytype-heart\n          ref: d98420b1113536afd08cde6de9a5816f6d27ffff"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-rpc-lifecycle-races.yml",
+      "head": "name: Pinkha T2 generated byte lifecycle races\n\non:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\npermissions:\n  contents: read\n\njobs:\n  generated-byte-lifecycle-races:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 60\n    env:\n      EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}\n      T2_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8\n      PYTHONDONTWRITEBYTECODE: '1'\n    steps:\n      - name: Checkout exact account-wire source\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ inputs.source_sha || github.sha }}\n          path: control\n          persist-credentials: false\n      - name: Checkout immutable r14 and builder source\n        uses: actions/checkout@v4\n        with:\n          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1\n          path: approved-source"
+    },
+    {
+      "path": ".github/workflows/pinkha-t2-rpc-space-close.yml",
+      "head": "name: Pinkha T2 generated byte Space close\n\non:\n  workflow_call:\n    inputs:\n      source_sha:\n        type: string\n        default: ''\n\npermissions:\n  contents: read\n\njobs:\n  generated-byte-space-close:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 60\n    env:\n      EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}\n      T2_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8\n      PYTHONDONTWRITEBYTECODE: '1'\n    steps:\n      - name: Checkout exact account-wire source\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ inputs.source_sha || github.sha }}\n          path: control\n          persist-credentials: false\n      - name: Checkout immutable r14 and builder source\n        uses: actions/checkout@v4\n        with:\n          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1\n          path: approved-source"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-account-pairs.yml",
+      "head": "name: Pinkha bounded T5 native account and export pairing\n\non:\n  workflow_call:\n    inputs:\n      include_freshness:\n        description: Run a fifth process with native index mutations after the compatibility sequence\n        type: boolean\n        default: false\n\npermissions:\n  contents: read\n\njobs:\n  account-pairs:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 60\n    env:\n      PINKHA_T5_INCLUDE_FRESHNESS: ${{ inputs.include_freshness && 'true' || 'false' }}\n      T5_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8\n    steps:\n      - name: Checkout integration proof control\n        uses: actions/checkout@v4\n        with:\n          path: control\n      - name: Checkout exact reviewed native inventories\n        uses: actions/checkout@v4\n        with:\n          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1\n          path: source\n      - name: Checkout exact old native Heart source\n        uses: actions/checkout@v4"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-apple-pair.yml",
+      "head": "name: Same source T5 Apple r14 r15 account pair\n\non:\n  workflow_call:\n    inputs:\n      include_native_ui:\n        description: After five passing native phases reuse the retained r15 App for real Inspector UI on a separate fresh iPad\n        type: boolean\n        default: false\n      include_freshness:\n        description: After four passing compatibility phases run bounded host freshness in a fifth process\n        type: boolean\n        default: false\n      heart_r14_run_id:\n        type: string\n        required: true\n      heart_r15_run_id:\n        type: string\n        required: true\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  actual-apple-pair:\n    runs-on: xcode-27\n    timeout-minutes: 240\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer\n      PYTHONDONTWRITEBYTECODE: '1'\n    steps:"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-compatibility-pairs.yml",
+      "head": "name: Pinkha bounded T5 native component pairing\n\non:\n  workflow_call:\n\npermissions:\n  contents: read\n\njobs:\n  compatibility-pairs:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 60\n    env:\n      T5_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8\n    steps:\n      - name: Checkout integration proof control\n        uses: actions/checkout@v4\n        with:\n          path: control\n      - name: Checkout exact reviewed native inventories\n        uses: actions/checkout@v4\n        with:\n          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1\n          path: source\n      - name: Checkout exact old native Heart source\n        uses: actions/checkout@v4\n        with:\n          repository: anyproto/anytype-heart\n          ref: d98420b1113536afd08cde6de9a5816f6d27ffff\n          path: heart-old\n      - name: Checkout exact new native Heart source\n        uses: actions/checkout@v4"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-coverage-proof.yml",
+      "head": "name: Pinkha bounded T5 native source proof\n\non:\n  workflow_call:\n    inputs:\n      component:\n        type: string\n        default: native-index\n\npermissions:\n  contents: read\n\njobs:\n  component:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 60\n    env:\n      # Official golang:1.26.5-alpine, exact linux/amd64 manifest from Docker Hub.\n      T5_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8\n    steps:\n      - name: Checkout integration proof control\n        uses: actions/checkout@v4\n        with:\n          path: control\n      - name: Checkout exact reviewed T5 fixtures\n        uses: actions/checkout@v4\n        with:\n          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1\n          path: source\n      - name: Checkout exact native Heart source\n        uses: actions/checkout@v4\n        with:"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-native-attachment.yml",
+      "head": "name: Pinkha T5 native property attachment correction\n\non:\n  workflow_call:\n\npermissions:\n  contents: read\n\njobs:\n  native-attachment:\n    runs-on: ubuntu-24.04\n    timeout-minutes: 60\n    env:\n      T5_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8\n      PYTHONDONTWRITEBYTECODE: '1'\n    steps:\n      - name: Checkout exact correction and evidence controller\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ github.sha }}\n          path: control\n          persist-credentials: false\n      - name: Checkout pinned native Heart\n        uses: actions/checkout@v4\n        with:\n          repository: anyproto/anytype-heart\n          ref: d98420b1113536afd08cde6de9a5816f6d27ffff\n          path: heart\n          persist-credentials: false\n      - name: Verify the native evidence rejection controls\n        run: |\n          mkdir -p evidence/toolchain"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-native-pagination.yml",
+      "head": "name: T5 production native pagination and current Space\n\non:\n  workflow_call:\n    inputs:\n      heart_r15_run_id:\n        type: string\n        required: true\n      include_account_retry:\n        type: boolean\n        default: false\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  actual-native-pagination:\n    runs-on: xcode-27\n    timeout-minutes: 180\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer\n      PYTHONDONTWRITEBYTECODE: '1'\n    steps:\n      - name: Checkout exact published application and controller source\n        uses: actions/checkout@v4\n      - name: Checkout immutable native approval inventories\n        uses: actions/checkout@v4\n        with:\n          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1\n          path: build/t5-pagination-native-source\n          persist-credentials: false"
+    },
+    {
+      "path": ".github/workflows/pinkha-t5-r15-runtime.yml",
+      "head": "name: Build the pinned r15 Heart runtime for T5 pairing\n\non:\n  workflow_call:\n\npermissions:\n  contents: read\n\njobs:\n  runtime-r15:\n    runs-on: xcode-27\n    timeout-minutes: 150\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer\n      T5_RUNTIME_ATTEMPT: build/t5-r15-${{ github.run_id }}-${{ github.run_attempt }}\n    steps:\n      - name: Checkout exact integration control source\n        uses: actions/checkout@v4\n        with:\n          path: build/t5-r15-${{ github.run_id }}-${{ github.run_attempt }}/control\n      - name: Checkout exact reviewed r15 patch and inventory\n        uses: actions/checkout@v4\n        with:\n          ref: 947fbde24d5657d0e1229f45bb3993648884a8a1\n          path: build/t5-r15-${{ github.run_id }}-${{ github.run_attempt }}/source\n      - name: Select compatible native ARM64 Python\n        uses: actions/setup-python@v5\n        with:\n          python-version: '3.12'\n          architecture: arm64\n      - name: Install the pinned native Go toolchain\n        uses: actions/setup-go@v5"
+    },
+    {
+      "path": ".github/workflows/pinkha-tests.yaml",
+      "head": "name: Pinkha Tests\n\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: true\n\non:\n  push:\n    branches:\n      - 'pinkha/*'\n    paths:\n      - 'Modules/PinkhaKit/**'\n      - 'Anytype/Sources/Pinkha/**'\n      - '.github/workflows/pinkha-tests.yaml'\n  pull_request:\n    paths:\n      - 'Modules/PinkhaKit/**'\n      - 'Anytype/Sources/Pinkha/**'\n      - '.github/workflows/pinkha-tests.yaml'\n  workflow_dispatch:\n\njobs:\n  pinkha-tests:\n    name: PinkhaKit Tests\n    runs-on: macos-26\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh"
+    },
+    {
+      "path": ".github/workflows/pinkha-ui27-release-gate.yml",
+      "head": "name: Required OS27 simulator UI evidence\n\non:\n  workflow_call:\n\npermissions:\n  contents: read\n  actions: read\n\njobs:\n  accepted-ui-evidence:\n    runs-on: ubuntu-22.04\n    timeout-minutes: 20\n    steps:\n      - name: Checkout exact distribution candidate\n        uses: actions/checkout@v4\n      - name: Verify actual required UI case and visual evidence\n        env:\n          GH_TOKEN: ${{ github.token }}\n        run: |\n          python3 Tools/PinkhaSimulatorGate/validate_release.py \\\n            --ledger docs/pinkha/torah-integration/ui27/accepted-ledger.json \\\n            --evidence build/ui27-release-gate\n      - name: Preserve gate outcome including rejected evidence\n        if: always()\n        uses: actions/upload-artifact@v4\n        with:\n          name: Pinkha-UI27-Release-Gate-${{ github.run_id }}-${{ github.run_attempt }}\n          path: build/ui27-release-gate/\n          if-no-files-found: error\n          retention-days: 14"
+    },
+    {
+      "path": ".github/workflows/pinkha-validation.yml",
+      "head": "name: Pinkha Validation & Build\n\non:\n  workflow_dispatch:\n    inputs:\n      build_type:\n        description: \"Build type\"\n        required: false\n        default: release\n        type: choice\n        options:\n          - release\n          - dev\n\njobs:\n  validate-and-build:\n    name: Test PinkhaKit & Build Unsigned IPA\n    runs-on: macos-26\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}\n          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}\n          github_token: ${{ github.token }}\n      - name: Checkout Repository\n        uses: actions/checkout@v4\n        with:\n          fetch-depth: 0"
+    },
+    {
+      "path": ".github/workflows/pinkha_t2l_native_probe.yml",
+      "head": "name: Pinkha T2-L Native Middleware Gate\n\non:\n  push:\n    branches:\n      - pinkha/torah-functional-ui-single-device-2026-10-18\n    paths:\n      - Anytype/Sources/Pinkha/Torah/Storage/**\n      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationPayloadCodec.swift\n      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahAssociationRepository.swift\n      - Modules/PinkhaKit/Sources/PinkhaKit/Torah/TorahCanonicalAssociations.swift\n      - Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Storage/**\n      - AnyTypeTests/Pinkha/TorahAssociationNativeMiddlewareProbeTests.swift\n      - AnyTypeTests/Pinkha/TorahAssociationNativeRepositoryTests.swift\n  workflow_dispatch:\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: pinkha-t2l-native-${{ github.ref }}\n  cancel-in-progress: false\n\njobs:\n  native-single-writer-gate:\n    runs-on: macos-26\n    timeout-minutes: 90\n\n    steps:\n      - name: Checkout exact pushed SHA\n        uses: actions/checkout@v4\n        with:"
+    },
+    {
+      "path": ".github/workflows/pinkha_u10_native_tests.yml",
+      "head": "name: Pinkha U10 Native Tests\n\non:\n  push:\n    branches:\n      - pinkha/upstream-u10-validation-2026-10-18\n    paths-ignore:\n      - docs/pinkha/torah-integration/UPSTREAM_U10_VALIDATION_2026-10-18.md\n  workflow_dispatch:\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: pinkha-u10-native-${{ github.ref }}\n  cancel-in-progress: false\n\njobs:\n  focused-native-tests:\n    name: Focused AnytypeTests\n    if: github.ref == 'refs/heads/pinkha/upstream-u10-validation-2026-10-18'\n    runs-on: macos-26\n    timeout-minutes: 75\n\n    steps:\n      - name: Checkout exact pushed SHA\n        uses: actions/checkout@v4\n        with:\n          ref: ${{ github.sha }}\n          fetch-depth: 1\n\n      - name: Initialize isolated evidence paths"
+    },
+    {
+      "path": ".github/workflows/pr_tests.yml",
+      "head": "name: Unit Tests\n\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: true\n\non:\n  pull_request:\n  workflow_dispatch:\n\njobs:\n  unit-tests:\n    name: Build & Test\n    runs-on: macos-26\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}\n          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}\n          github_token: ${{ github.token }}\n      - name: Checkout\n        uses: actions/checkout@v3\n\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh"
+    },
+    {
+      "path": ".github/workflows/release_build.yaml",
+      "head": "name: Anytype\n\npermissions:\n  actions: read\n  contents: 'write'\n\non:\n  # Allows you to run this workflow manually from the Actions tab\n  workflow_dispatch:\n\nconcurrency:\n  group: ${{ github.workflow }}\n  cancel-in-progress: false\n\njobs:\n  ui27-acceptance-gate:\n    permissions:\n      contents: read\n      actions: read\n    uses: ./.github/workflows/pinkha-ui27-release-gate.yml\n\n  main:\n    needs: ui27-acceptance-gate\n    runs-on: macos-26\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}"
+    },
+    {
+      "path": ".github/workflows/test_fastlane_build.yaml",
+      "head": "name: Fastlane test build\n\npermissions:\n  actions: read\n  contents: 'write'\n\non:\n  workflow_dispatch:\n\njobs:\n  main:\n    runs-on: macos-26\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}\n          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}\n          github_token: ${{ github.token }}\n      - uses: actions/checkout@v4\n\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}\n          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}\n          github_token: ${{ github.token }}"
+    },
+    {
+      "path": ".github/workflows/torah-inspector-ipados27.yml",
+      "head": "name: Pinkha Stage 1 Manual Dispatcher\nrun-name: Pinkha ${{ inputs.route }} · ${{ github.sha }}\n\non:\n  workflow_dispatch:\n    inputs:\n      route:\n        description: Stage 1 route to run\n        type: choice\n        required: true\n        options:\n          - full-acceptance\n          - ipa-only\n          - native-derived\n          - native-ipa-fast\n          - native-ipa-repair\n          - native-diagnostics\n          - t5-coverage-proof\n          - t2-native-operations\n          - t2-native-rpc\n          - t2-account-rpc\n          - t2-native-clients\n          - t2-native-clients-offline\n          - t2-native-clients-crash\n          - t2-native-clients-observed-remove\n          - t2-native-clients-concurrent-replace\n          - t2-account-lifecycle\n          - t2-rpc-lifecycle-races\n          - t2-rpc-space-close\n          - simulator-ui27\n          - heart-runtime\n          - t5-r15-runtime"
+    },
+    {
+      "path": ".github/workflows/update_cache.yaml",
+      "head": "name: Update build cache\n\non:\n  schedule:\n    - cron:  '0 5 * * 6'\n  workflow_dispatch:\n\njobs:\n  main:\n    name: Update build cache\n    runs-on: macos-26\n\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}\n          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}\n          github_token: ${{ github.token }}\n      - name: Checkout\n        uses: actions/checkout@v3\n\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}\n          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}\n          github_token: ${{ github.token }}"
+    },
+    {
+      "path": ".github/workflows/update_middleware.yaml",
+      "head": "name: Update middleware version\n\n# This workflow automates the process of updating the middleware version:\n# 1. Checks if the version is already up-to-date\n# 2. Updates the version in Libraryfile\n# 3. Downloads new middleware binaries and regenerates files\n# 4. Runs unit tests to ensure compatibility\n# 5. Creates a PR with the changes\n# 6. Closes the associated Linear issue (if task_name is provided)\n#\n# Required secrets:\n# - SERVICE_USER_GITHUB_TOKEN: GitHub token for creating PRs and pushing changes\n# - MIDDLEWARE_TOKEN: Token for accessing middleware repository\n# - LINEAR_TOKEN: Linear API token for closing issues (required when task_name is provided)\n\non:\n  workflow_dispatch:\n    inputs:\n      middle_version:\n        description: \"Middleware version\"\n        required: true\n        type: string\n      task_name:\n        description: \"Task name (e.g. IOS-123)\"\n        required: false\n        type: string\n  workflow_call:\n    inputs:\n      middle_version:\n        required: true\n        type: string\n      task_name:"
+    },
+    {
+      "path": ".github/workflows/update_middleware_nightly.yaml",
+      "head": "name: Update middleware nightly\n\non:\n  workflow_dispatch:\n  schedule:\n    # Weekdays 03:00 UTC (adjust as needed)\n    - cron: \"0 3 * * 1-5\"\n\n# Parent must grant write permissions so the child can push commits/PRs\npermissions:\n  contents: write\n  pull-requests: write\n  actions: write\n\njobs:\n  resolve_version:\n    name: Resolve latest nightly\n    runs-on: ubuntu-latest\n    outputs:\n      version: ${{ steps.get.outputs.version }}\n    steps:\n      - name: Live Activity · refresh\n        uses: davidpovarsky/github-automation/live-refresh@main\n        continue-on-error: true\n        with:\n          event: refresh\n          device_id: ${{ secrets.NOTIFY_DEVICE_ID }}\n          token: ${{ secrets.NOTIFY_DEVICE_TOKEN }}\n          github_token: ${{ github.token }}\n      - name: Checkout\n        uses: actions/checkout@v4\n"
+    }
+  ],
+  "packet_indexes": [
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-schema-observer-source-20261122\\candidate-v5\\SOURCE_REVIEW_INDEX.json",
+      "sha256": "3487663a830281fc33bef1f944d68047c784819918f03dc76341bd35413e7581",
+      "top_keys": [
+        "schema",
+        "status",
+        "payload_count",
+        "payload_bytes",
+        "files"
+      ],
+      "sample": {
+        "schema": "otzaria.original-heart-schema-observer-source/5",
+        "status": "SOURCE_REVIEW_ONLY_CONTROLS_PENDING",
+        "payload_count": 138,
+        "payload_bytes": 4198338
+      },
+      "entries_sample": [
+        {
+          "path": "CALL_SITES.json",
+          "sha256": "8ea30aec685476e4476ba4afdd3631f0b377bc179bc46a22fc2c04080995331a",
+          "bytes": 7236
+        },
+        {
+          "path": "candidate/core/block/object/objectcreator/fixed_schema_acl.go",
+          "sha256": "170a100526f0be337c12bf9831099eb78381948b41f851791e00bbb54160a09e",
+          "bytes": 4218
+        }
+      ]
+    },
+    {
+      "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-schema-observer-source-20261122\\controls-v5-r2\\REVIEW_INDEX.json",
+      "sha256": "c8a125a81915b88b5da80f62f9cb7758d777630a652c501de0c24171f9d94e61",
+      "top_keys": [
+        "schema",
+        "status",
+        "files",
+        "payload_count",
+        "payload_bytes",
+        "native_cases",
+        "strict_cases",
+        "source_composition",
+        "builds",
+        "tests",
+        "native_calls",
+        "ci_dispatches"
+      ],
+      "sample": {
+        "schema": "otzaria.original-heart-schema-controls-review/5-r2",
+        "status": "SOURCE_REVIEW_ONLY_NO_GO_BUILD_TEST_NATIVE_EXECUTION",
+        "payload_count": 112,
+        "payload_bytes": 1944458,
+        "native_cases": 33,
+        "strict_cases": 12,
+        "source_composition": "PASS_SOURCE_COMPOSITION_ONLY",
+        "builds": 0,
+        "tests": 0,
+        "native_calls": 0,
+        "ci_dispatches": 0
+      },
+      "entries_sample": [
+        {
+          "path": "candidate/core/block/object/objectcreator/fixed_schema_native_fixture_test.go",
+          "bytes": 13021,
+          "sha256": "574a92ed1b1f8ebc23d96bff7f24cfbabb46d0dde9186edacbd2948327afe66e"
+        },
+        {
+          "path": "candidate/core/block/object/objectcreator/fixed_schema_native_observer_test.go",
+          "bytes": 25210,
+          "sha256": "32b20449a80496c9b624dac6f09dd97356522740d953f742d4b00f081e078221"
+        }
+      ]
+    }
+  ],
+  "root_review_files": [
+    {
+      "name": "EXECUTED_ROOT_REVIEW.py",
+      "bytes": 9422,
+      "sha256": "a5bbc0d9eac65d74576e779e130442dde6d42f3ae3906630fb056ce2402e6499"
+    },
+    {
+      "name": "ROOT_CONTROL_REVIEW.json",
+      "bytes": 1926,
+      "sha256": "05a8db798601ccd07683f11ca5ca38fb79d4db052b1060b8729ee4294fa7df34"
+    }
+  ],
+  "peer_review": {
+    "bytes": 4296,
+    "sha256": "810b73cbea035411a91ae575fc406d726dd87a1305a7c15990c4d760f91d6f58"
+  }
+}

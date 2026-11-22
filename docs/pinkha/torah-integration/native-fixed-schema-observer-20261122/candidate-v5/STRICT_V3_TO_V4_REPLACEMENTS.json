@@ -1,0 +1,17 @@
+{
+  "replacements": [
+    {
+      "old": "func unmarshalChangeMode(treeChange *objecttree.Change, data []byte, needSnapshot, strict bool) (result any, err error) {\n\tvar change proto.Message",
+      "now": "func unmarshalChangeMode(treeChange *objecttree.Change, data []byte, needSnapshot, strict bool) (result any, err error) {\n\tif strict && (treeChange == nil || (treeChange.DataType != \"\" && treeChange.DataType != dataTypeSnappy)) {\n\t\treturn nil, fmt.Errorf(\"strict replay: unsupported native change data type\")\n\t}\n\tvar change proto.Message"
+    },
+    {
+      "old": "\t\tfor _, block := range snapshot.Data.Blocks {\n\t\t\tif block == nil || block.Id == \"\" {\n\t\t\t\treturn fmt.Errorf(\"strict replay: invalid snapshot block\")\n\t\t\t}",
+      "now": "\t\tfor _, block := range snapshot.Data.Blocks {\n\t\t\tif err := validateStrictStateBlock(block); err != nil {\n\t\t\t\treturn err\n\t\t\t}"
+    },
+    {
+      "old": "\t\tif set := content.GetDetailsSet(); set != nil {",
+      "now": "\t\tif create := content.GetBlockCreate(); create != nil {\n\t\t\tfor _, block := range create.Blocks {\n\t\t\t\tif err := validateStrictStateBlock(block); err != nil {\n\t\t\t\t\treturn err\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tif update := content.GetBlockUpdate(); update != nil {\n\t\t\tfor _, event := range update.Events {\n\t\t\t\tif event == nil || event.Value == nil {\n\t\t\t\t\treturn fmt.Errorf(\"strict replay: missing original block event\")\n\t\t\t\t}\n\t\t\t\tif fields := event.GetBlockSetFields(); fields != nil {\n\t\t\t\t\t// nil Fields is an original empty/reset operation.\n\t\t\t\t\tif err := pbtypes.ValidateStruct(fields.Fields); err != nil {\n\t\t\t\t\t\treturn fmt.Errorf(\"validate original block fields event: %w\", err)\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\tif set := content.GetDetailsSet(); set != nil {"
+    }
+  ],
+  "addition": "\n// Validate before simple.New can synthesize an ID or state replay can retain\n// malformed Fields. Preserve original nil Fields semantics through ValidateStruct.\nfunc validateStrictStateBlock(block *model.Block) error {\n\tif block == nil || block.Id == \"\" {\n\t\treturn fmt.Errorf(\"strict replay: invalid original block\")\n\t}\n\tif err := pbtypes.ValidateStruct(block.Fields); err != nil {\n\t\treturn fmt.Errorf(\"validate original block fields: %w\", err)\n\t}\n\treturn nil\n}\n"
+}

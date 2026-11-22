@@ -1,0 +1,30 @@
+[
+  {
+    "old": "import (\n\t\"testing\"",
+    "now": "import (\n\t\"errors\"\n\t\"testing\""
+  },
+  {
+    "old": "accept := func(t *testing.T, change *pb.Change) {",
+    "now": "accept := func(t *testing.T, change *pb.Change) *pb.Change {"
+  },
+  {
+    "old": "\t\tif _, ok := result.(*pb.Change); !ok {\n\t\t\tt.Fatal(\"original decoder returned another model\")\n\t\t}\n\t}",
+    "now": "\t\tgot, ok := result.(*pb.Change)\n\t\tif !ok {\n\t\t\tt.Fatal(\"original decoder returned another model\")\n\t\t}\n\t\tif !proto.Equal(got, change) {\n\t\t\tt.Fatal(\"original decoded protobuf changed the intended field/reset values\")\n\t\t}\n\t\treturn got\n\t}"
+  },
+  {
+    "old": "\tt.Run(\"InvalidNativeSnappyErrorPropagated\", func(t *testing.T) {\n\t\tif _, err := sourceimpl.UnmarshalChangeStrict(&objecttree.Change{DataType: \"1/s\"}, []byte{0xff}); err == nil {\n\t\t\tt.Fatal(\"actual original Snappy decoding error was suppressed\")\n\t\t}\n\t})",
+    "now": "\tt.Run(\"InvalidNativeSnappyErrorPropagated\", func(t *testing.T) {\n\t\t// This is valid original protobuf, while the actual original Snappy\n\t\t// length decoder rejects it. The ordinary path must still decode it,\n\t\t// isolating compression propagation from an unrelated protobuf error.\n\t\twanted := &pb.Change{}\n\t\tdata := encode(t, wanted)\n\t\t_, nativeCompressionError := snappy.DecodedLen(data)\n\t\tif nativeCompressionError == nil {\n\t\t\tt.Fatal(\"fixture is not an actual original Snappy length failure\")\n\t\t}\n\t\tordinary, err := sourceimpl.UnmarshalChange(&objecttree.Change{DataType: \"1/s\"}, data)\n\t\tif err != nil {\n\t\t\tt.Fatalf(\"ordinary original protobuf fallback failed: %v\", err)\n\t\t}\n\t\tgot, ok := ordinary.(*pb.Change)\n\t\tif !ok || !proto.Equal(got, wanted) {\n\t\t\tt.Fatal(\"ordinary path did not preserve the actual valid protobuf input\")\n\t\t}\n\t\t_, err = sourceimpl.UnmarshalChangeStrict(&objecttree.Change{DataType: \"1/s\"}, data)\n\t\tif !errors.Is(err, nativeCompressionError) {\n\t\t\tt.Fatalf(\"strict path lost the actual original compression cause: %v\", err)\n\t\t}\n\t})"
+  },
+  {
+    "old": "\tt.Run(\"NilSnapshotFieldsPreserved\", func(t *testing.T) { accept(t, snapshot(\"original-fixture-block\", nil)) })",
+    "now": "\tt.Run(\"NilSnapshotFieldsPreserved\", func(t *testing.T) {\n\t\tgot := accept(t, snapshot(\"original-fixture-block\", nil))\n\t\tif got.Snapshot.Data.Blocks[0].Fields != nil { t.Fatal(\"nil snapshot Fields was replaced\") }\n\t})"
+  },
+  {
+    "old": "\tt.Run(\"NilCreatedFieldsPreserved\", func(t *testing.T) { accept(t, create(\"original-fixture-block\", nil)) })",
+    "now": "\tt.Run(\"NilCreatedFieldsPreserved\", func(t *testing.T) {\n\t\tgot := accept(t, create(\"original-fixture-block\", nil))\n\t\tif got.Content[0].GetBlockCreate().Blocks[0].Fields != nil { t.Fatal(\"nil created Fields was replaced\") }\n\t})"
+  },
+  {
+    "old": "\tt.Run(\"NilFieldsResetEventPreserved\", func(t *testing.T) { accept(t, setFields(nil)) })",
+    "now": "\tt.Run(\"NilFieldsResetEventPreserved\", func(t *testing.T) {\n\t\tgot := accept(t, setFields(nil))\n\t\tif got.Content[0].GetBlockUpdate().Events[0].GetBlockSetFields().Fields != nil { t.Fatal(\"nil reset Fields was replaced\") }\n\t})"
+  }
+]

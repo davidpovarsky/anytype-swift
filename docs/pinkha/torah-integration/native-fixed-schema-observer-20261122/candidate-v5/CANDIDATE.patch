@@ -1,0 +1,1533 @@
+--- /dev/null
++++ b/core/block/object/objectcreator/fixed_schema_observer.go
+@@ -0,0 +1,345 @@
++package objectcreator
++
++import (
++	"bytes"
++	"context"
++	"errors"
++	"fmt"
++	"math"
++	"reflect"
++	"slices"
++	"strings"
++
++	"github.com/anyproto/any-sync/commonspace/headsync/statestorage"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/util/crypto"
++
++	"github.com/anyproto/anytype-heart/core/block/object/payloadcreator"
++	"github.com/anyproto/anytype-heart/core/domain"
++	"github.com/anyproto/anytype-heart/pkg/lib/bundle"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++	"github.com/anyproto/anytype-heart/space/clientspace"
++	"github.com/anyproto/anytype-heart/space/spacecore/storage/anystorage"
++)
++
++// FixedSchemaDisposition describes a bounded persisted observation, never permission
++// to create, initialize, repair, replace, bind an annotation, or acknowledge a body.
++type FixedSchemaDisposition uint8
++
++const (
++	FixedSchemaUnobserved FixedSchemaDisposition = iota
++	FixedSchemaPersistedMatch
++	FixedSchemaRootOnlyIncomplete
++	FixedSchemaPopulatedConflict
++	FixedSchemaLocallyMissing
++	FixedSchemaChangedWhileReading
++	FixedSchemaUnsupportedDerivationContext
++	FixedSchemaUnavailable
++)
++
++var (
++	ErrFixedSchemaInvalidDefinition  = errors.New("invalid fixed schema definition")
++	ErrFixedSchemaUnsupportedContext = errors.New("unsupported fixed schema derivation context")
++	ErrFixedSchemaStorage            = errors.New("incomplete or inconsistent fixed schema storage")
++	ErrFixedSchemaChanged            = errors.New("fixed schema context or persisted input changed while reading")
++	ErrFixedSchemaReadOnly           = errors.New("fixed schema observation does not own a writable or closeable tree")
++)
++
++// FixedSchemaDefinition is a requested structural comparison, not account or Space
++// authority. Local/derived properties are inadmissible: native headers establish
++// unique keys and the original Archive tree establishes archive membership.
++type FixedSchemaDefinition struct {
++	Key      domain.UniqueKey
++	Required *domain.Details
++}
++
++type FixedSchemaObservation struct {
++	Disposition     FixedSchemaDisposition
++	SpaceID         string
++	ObjectID        string
++	NativeKey       domain.UniqueKey
++	PersistedHeads  []string
++	ArchiveID       string
++	ArchiveHeads    []string
++	ACLID           string
++	ACLHead         string
++	AccountIdentity string
++}
++
++// FixedSchemaObserver is additive. Existing Service, generated messages, and all
++// creation/initialization paths are unchanged. The caller supplies an already
++// retained original native Space; this method never loads a Space or SmartBlock.
++type FixedSchemaObserver interface {
++	ObserveFixedSchema(context.Context, clientspace.Space, FixedSchemaDefinition) (FixedSchemaObservation, error)
++}
++
++var _ FixedSchemaObserver = (*service)(nil)
++
++func (s *service) ObserveFixedSchema(ctx context.Context, spc clientspace.Space, requested FixedSchemaDefinition) (result FixedSchemaObservation, err error) {
++	result.Disposition = FixedSchemaUnavailable
++	defer func() {
++		if errors.Is(err, ErrFixedSchemaChanged) {
++			result.Disposition = FixedSchemaChangedWhileReading
++		}
++	}()
++	definition, err := freezeFixedSchemaDefinition(requested)
++	if err != nil {
++		return result, err
++	}
++	scope, err := captureFixedSchemaScope(spc)
++	if err != nil {
++		if errors.Is(err, ErrFixedSchemaUnsupportedContext) {
++			result.Disposition = FixedSchemaUnsupportedDerivationContext
++		}
++		return result, err
++	}
++	result.SpaceID = scope.spaceID
++	result.NativeKey = definition.Key
++	result.ACLID, result.ACLHead = scope.aclID, scope.aclHead
++	result.AccountIdentity = scope.identity.Account()
++	if err = ctx.Err(); err != nil {
++		return result, err
++	}
++
++	expected, err := spc.DeriveTreePayload(ctx, payloadcreator.PayloadDerivationParams{Key: definition.Key})
++	if err != nil {
++		return result, fmt.Errorf("derive original fixed root: %w", err)
++	}
++	archiveKey, err := domain.NewUniqueKey(coresb.SmartBlockTypeArchive, "")
++	if err != nil {
++		return result, err
++	}
++	archive, err := spc.DeriveTreePayload(ctx, payloadcreator.PayloadDerivationParams{Key: archiveKey})
++	if err != nil {
++		return result, fmt.Errorf("derive original archive root: %w", err)
++	}
++	if expected.RootRawChange == nil || archive.RootRawChange == nil ||
++		expected.RootRawChange.Id == "" || archive.RootRawChange.Id == "" ||
++		archive.RootRawChange.Id != spc.DerivedIDs().Archive {
++		return result, fmt.Errorf("%w: original derived target is unavailable", ErrFixedSchemaStorage)
++	}
++	result.ObjectID, result.ArchiveID = expected.RootRawChange.Id, archive.RootRawChange.Id
++
++	first, disposition, err := observeFixedSchemaSnapshot(ctx, scope, definition, expected.RootRawChange, archive.RootRawChange)
++	result.PersistedHeads = slices.Clone(first.schema.head.Heads)
++	result.ArchiveHeads = slices.Clone(first.archive.head.Heads)
++	if err != nil {
++		return result, fmt.Errorf("observe original persisted schema: %w", err)
++	}
++	// A second independently owned read transaction can see commits after the
++	// first snapshot. Compare complete native encoded rows, not just heads:
++	// an extra non-head row must not disappear from this check.
++	last, err := rereadFixedSchemaSnapshot(ctx, scope, result.ObjectID, result.ArchiveID)
++	if err != nil {
++		return result, fmt.Errorf("recheck original persisted inputs: %w", err)
++	}
++	current, err := captureFixedSchemaScope(spc)
++	if err != nil {
++		return result, fmt.Errorf("recheck original native scope: %w", err)
++	}
++	if !scope.same(current) || !first.same(last) {
++		result.Disposition = FixedSchemaChangedWhileReading
++		return result, ErrFixedSchemaChanged
++	}
++	if err = ctx.Err(); err != nil {
++		return result, err
++	}
++	result.Disposition = disposition
++	return result, nil
++}
++
++func freezeFixedSchemaDefinition(request FixedSchemaDefinition) (FixedSchemaDefinition, error) {
++	if request.Key == nil || request.Required == nil || request.Required.Len() == 0 {
++		return FixedSchemaDefinition{}, ErrFixedSchemaInvalidDefinition
++	}
++	key, err := domain.UnmarshalUniqueKey(request.Key.Marshal())
++	if err != nil || key == nil || key.SmartblockType() != request.Key.SmartblockType() || key.InternalKey() != request.Key.InternalKey() {
++		return FixedSchemaDefinition{}, fmt.Errorf("%w: native key", ErrFixedSchemaInvalidDefinition)
++	}
++	required := domain.NewDetails()
++	for field, value := range request.Required.Iterate() {
++		if field == "" || slices.Contains(bundle.LocalAndDerivedRelationKeys, field) {
++			return FixedSchemaDefinition{}, fmt.Errorf("%w: local or derived field %q", ErrFixedSchemaInvalidDefinition, field)
++		}
++		// Preserve native value types; copy list storage before any suspension.
++		switch {
++		case value.IsString():
++			required.Set(field, domain.String(value.String()))
++		case value.IsBool():
++			required.Set(field, domain.Bool(value.Bool()))
++		case value.IsFloat64():
++			number, ok := value.TryFloat64()
++			if !ok || math.IsNaN(number) || math.IsInf(number, 0) {
++				return FixedSchemaDefinition{}, ErrFixedSchemaInvalidDefinition
++			}
++			required.Set(field, domain.Float64(number))
++		case value.IsStringList():
++			values, ok := value.TryStringList()
++			if !ok {
++				return FixedSchemaDefinition{}, ErrFixedSchemaInvalidDefinition
++			}
++			required.Set(field, domain.StringList(values))
++		default:
++			return FixedSchemaDefinition{}, fmt.Errorf("%w: unsupported structural value %q", ErrFixedSchemaInvalidDefinition, field)
++		}
++	}
++	name, hasName := required.TryString(bundle.RelationKeyName)
++	if !hasName || name == "" {
++		return FixedSchemaDefinition{}, fmt.Errorf("%w: missing name", ErrFixedSchemaInvalidDefinition)
++	}
++	switch key.SmartblockType() {
++	case coresb.SmartBlockTypeRelation:
++		if !required.Has(bundle.RelationKeyLayout) || !required.Has(bundle.RelationKeyRelationFormat) ||
++			!required.Get(bundle.RelationKeyLayout).Equal(domain.Int64(model.ObjectType_relation)) ||
++			!required.Get(bundle.RelationKeyRelationFormat).Equal(domain.Int64(model.RelationFormat_longtext)) {
++			return FixedSchemaDefinition{}, fmt.Errorf("%w: explicit relation layout and longtext required", ErrFixedSchemaInvalidDefinition)
++		}
++	case coresb.SmartBlockTypeObjectType:
++		if !required.Has(bundle.RelationKeyLayout) || !required.Has(bundle.RelationKeyRecommendedLayout) ||
++			!required.Get(bundle.RelationKeyLayout).Equal(domain.Int64(model.ObjectType_objectType)) ||
++			!required.Get(bundle.RelationKeyRecommendedLayout).Equal(domain.Int64(model.ObjectType_basic)) {
++			return FixedSchemaDefinition{}, fmt.Errorf("%w: explicit object type and basic layout required", ErrFixedSchemaInvalidDefinition)
++		}
++	default:
++		return FixedSchemaDefinition{}, fmt.Errorf("%w: unsupported native kind", ErrFixedSchemaInvalidDefinition)
++	}
++	return FixedSchemaDefinition{Key: key, Required: required}, nil
++}
++
++type fixedSchemaACLRecordIdentity struct {
++	id         string
++	previousID string
++}
++
++type fixedSchemaScope struct {
++	spaceID      string
++	storage      anystorage.ClientSpaceStorage
++	stateStorage statestorage.StateStorage
++	settingsID   string
++	acl          list.AclList
++	identity     crypto.PubKey
++	aclID        string
++	aclHead      string
++	aclRoot      []byte
++	aclRecords   []fixedSchemaACLRecordIdentity
++}
++
++func captureFixedSchemaScope(spc clientspace.Space) (fixedSchemaScope, error) {
++	var scope fixedSchemaScope
++	if spc == nil || spc.CommonSpace() == nil || spc.TreeBuilder() == nil || spc.IsPersonal() {
++		return scope, ErrFixedSchemaUnsupportedContext
++	}
++	scope.spaceID, scope.storage, scope.acl = spc.Id(), spc.Storage(), spc.CommonSpace().Acl()
++	scope.identity = spc.GetAclIdentity()
++	if scope.spaceID == "" || scope.storage == nil || scope.storage.Id() != scope.spaceID ||
++		scope.storage.AnyStore() == nil || scope.storage.HeadStorage() == nil || scope.storage.StateStorage() == nil ||
++		scope.acl == nil || scope.identity == nil {
++		return scope, fmt.Errorf("%w: native Space storage or identity", ErrFixedSchemaStorage)
++	}
++	// These are retained native getters only: no DB read or initialization.
++	scope.stateStorage = scope.storage.StateStorage()
++	scope.settingsID = strings.Clone(scope.stateStorage.SettingsId())
++	if scope.settingsID == "" {
++		return scope, fmt.Errorf("%w: native settings identity", ErrFixedSchemaStorage)
++	}
++	scope.acl.RLock()
++	defer scope.acl.RUnlock()
++	return scope.captureACLStateLocked()
++}
++
++// Caller owns the actual original ACL lock. This makes no database call.
++func (scope fixedSchemaScope) captureACLStateLocked() (fixedSchemaScope, error) {
++	state, head, root := scope.acl.AclState(), scope.acl.Head(), scope.acl.Root()
++	if state == nil || state.Identity() == nil || !state.Identity().Equals(scope.identity) ||
++		head == nil || head.Id == "" || root == nil || root.Id != scope.acl.Id() || len(root.Payload) == 0 {
++		return scope, fmt.Errorf("%w: actual ACL identity or root", ErrFixedSchemaStorage)
++	}
++	// This is read admission only. No native CanWrite or UI permission is minted.
++	switch state.Permissions(scope.identity) {
++	case list.AclPermissionsReader, list.AclPermissionsGuest, list.AclPermissionsWriter, list.AclPermissionsAdmin, list.AclPermissionsOwner:
++	default:
++		return scope, list.ErrInsufficientPermissions
++	}
++	if !state.HadReadPermissions(scope.identity) {
++		return scope, list.ErrNoReadKey
++	}
++	scope.aclID, scope.aclHead = strings.Clone(scope.acl.Id()), strings.Clone(head.Id)
++	scope.aclRoot = slices.Clone(root.Payload)
++	records := scope.acl.Records() // The original list includes the root at index 0.
++	scope.aclRecords = make([]fixedSchemaACLRecordIdentity, 0, len(records))
++	seen := make(map[string]struct{}, len(records))
++	previousID := ""
++	for _, record := range records {
++		if record == nil || record.Id == "" || record.PrevId != previousID {
++			return scope, fmt.Errorf("%w: actual ACL chain", ErrFixedSchemaStorage)
++		}
++		if _, duplicate := seen[record.Id]; duplicate {
++			return scope, fmt.Errorf("%w: duplicate actual ACL record", ErrFixedSchemaStorage)
++		}
++		seen[record.Id] = struct{}{}
++		scope.aclRecords = append(scope.aclRecords, fixedSchemaACLRecordIdentity{id: strings.Clone(record.Id), previousID: strings.Clone(record.PrevId)})
++		previousID = record.Id
++	}
++	if len(scope.aclRecords) == 0 || scope.aclRecords[0].id != scope.aclID || previousID != scope.aclHead {
++		return scope, fmt.Errorf("%w: actual ACL endpoints", ErrFixedSchemaStorage)
++	}
++	return scope, nil
++}
++
++func (s fixedSchemaScope) same(other fixedSchemaScope) bool {
++	return s.spaceID == other.spaceID && s.storage == other.storage && s.acl == other.acl &&
++		s.stateStorage == other.stateStorage && s.settingsID == other.settingsID &&
++		s.identity.Equals(other.identity) && s.aclID == other.aclID && s.aclHead == other.aclHead &&
++		bytes.Equal(s.aclRoot, other.aclRoot) && slices.Equal(s.aclRecords, other.aclRecords)
++}
++
++type fixedSchemaRead struct {
++	space   fixedSchemaStoredSpace
++	schema  fixedSchemaStoredTree
++	archive fixedSchemaStoredTree
++	acl     fixedSchemaStoredACL
++}
++
++func (r fixedSchemaRead) same(other fixedSchemaRead) bool {
++	return r.space.same(other.space) && r.schema.same(other.schema) && r.archive.same(other.archive) && r.acl.same(other.acl)
++}
++
++// These comparisons intentionally describe historical local observations. They
++// are not a lock held across a later RPC, an account lifetime, or a global absence
++// fence. Any later mutation needs fresh original capability and source admission.
++func equalFixedSchemaHeads(a, b []string) bool {
++	a, b = slices.Clone(a), slices.Clone(b)
++	slices.Sort(a)
++	slices.Sort(b)
++	return len(a) != 0 && slices.Equal(a, b) && len(slices.Compact(a)) == len(a)
++}
++
++func fixedSchemaDetailsMatch(got, required *domain.Details) bool {
++	for key, wanted := range required.Iterate() {
++		if !got.Has(key) || !got.Get(key).Equal(wanted) {
++			return false
++		}
++	}
++	return true
++}
++
++// Keep the observation comparison independent of original decoder defaults by
++// also retaining native anyenc bytes for every persisted record and head entry.
++func equalFixedSchemaRows(a, b map[string][]byte) bool {
++	return reflect.DeepEqual(a, b)
++}
++
++func fixedSchemaObjectTypeMatches(kind coresb.SmartBlockType, keys []domain.TypeKey) bool {
++	if len(keys) != 1 {
++		return false
++	}
++	switch kind {
++	case coresb.SmartBlockTypeRelation:
++		return keys[0] == bundle.TypeKeyRelation
++	case coresb.SmartBlockTypeObjectType:
++		return keys[0] == bundle.TypeKeyObjectType
++	default:
++		return false
++	}
++}
+--- /dev/null
++++ b/core/block/object/objectcreator/fixed_schema_snapshot.go
+@@ -0,0 +1,473 @@
++package objectcreator
++
++import (
++	"bytes"
++	"context"
++	"errors"
++	"fmt"
++	"slices"
++	"strings"
++
++	anystore "github.com/anyproto/any-store"
++	"github.com/anyproto/any-store/anyenc"
++	"github.com/anyproto/any-store/query"
++	"github.com/anyproto/any-sync/commonspace/headsync/headstorage"
++	"github.com/anyproto/any-sync/commonspace/headsync/statestorage"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
++)
++
++// This owns only tx. OpenCollection and original NewStorage borrow collections;
++// neither a collection nor a native storage handle is retained after finish.
++// No ACL lock or ACL-dependent builder may run while this read transaction lives.
++type fixedSchemaSnapshot struct {
++	ctx     context.Context
++	tx      anystore.ReadTx
++	scope   fixedSchemaScope
++	changes anystore.Collection
++	heads   anystore.Collection
++}
++
++func openFixedSchemaSnapshot(ctx context.Context, scope fixedSchemaScope) (_ *fixedSchemaSnapshot, err error) {
++	tx, err := scope.storage.AnyStore().ReadTx(ctx)
++	if err != nil {
++		return nil, err
++	}
++	snapshot := &fixedSchemaSnapshot{ctx: tx.Context(), tx: tx, scope: scope}
++	defer func() {
++		if err != nil {
++			err = errors.Join(err, snapshot.finish())
++		}
++	}()
++	snapshot.changes, err = scope.storage.AnyStore().OpenCollection(snapshot.ctx, objecttree.CollName)
++	if err != nil {
++		return nil, err
++	}
++	snapshot.heads, err = scope.storage.AnyStore().OpenCollection(snapshot.ctx, headstorage.HeadsCollectionName)
++	if err != nil {
++		return nil, err
++	}
++	return snapshot, nil
++}
++
++func (s *fixedSchemaSnapshot) finish() error {
++	if s.tx == nil {
++		return nil
++	}
++	tx := s.tx
++	s.tx = nil
++	s.changes, s.heads = nil, nil
++	return tx.Commit()
++}
++
++// The state decoder and full encoded row are read from the same real ReadTx.
++// The settings ID comes from the retained original StateStorage, not the row
++// being compared. Its actual persisted root is additionally bound to the signed
++// Space header by the original payload validator, after releasing this reader.
++type fixedSchemaStoredSpace struct {
++	state             statestorage.State
++	stateBytes        []byte
++	settingsRoot      *treechangeproto.RawTreeChangeWithId
++	settingsRootBytes []byte
++}
++
++func (s fixedSchemaStoredSpace) same(other fixedSchemaStoredSpace) bool {
++	return bytes.Equal(s.stateBytes, other.stateBytes) &&
++		bytes.Equal(s.settingsRootBytes, other.settingsRootBytes)
++}
++
++func (s *fixedSchemaSnapshot) readSpace() (result fixedSchemaStoredSpace, err error) {
++	if err = s.ctx.Err(); err != nil {
++		return result, err
++	}
++	// Do not construct statestorage.New: that path can create a collection.
++	state, err := s.scope.stateStorage.GetState(s.ctx)
++	if err != nil {
++		return result, err
++	}
++	if state.SpaceId != s.scope.spaceID || state.AclId != s.scope.aclID ||
++		state.SettingsId != s.scope.settingsID || len(state.SpaceHeader) == 0 {
++		return result, fmt.Errorf("%w: persisted native Space metadata", ErrFixedSchemaStorage)
++	}
++	state.SpaceId, state.AclId, state.SettingsId = strings.Clone(state.SpaceId), strings.Clone(state.AclId), strings.Clone(state.SettingsId)
++	state.NewHash, state.SpaceHeader = strings.Clone(state.NewHash), slices.Clone(state.SpaceHeader)
++	// These are the exact original private statestorage field names. Require
++	// their native types as well as the original decoder's values; absent/wrong
++	// fields must not be accepted through GetString/GetBytes defaulting.
++	coll, err := s.scope.storage.AnyStore().OpenCollection(s.ctx, "state")
++	if err != nil {
++		return result, err
++	}
++	doc, err := coll.FindId(s.ctx, s.scope.spaceID)
++	if err != nil {
++		return result, err
++	}
++	value := doc.Value()
++	if value.Get("id").Type() != anyenc.TypeString || value.GetString("id") != state.SpaceId ||
++		value.Get("a").Type() != anyenc.TypeString || value.GetString("a") != state.AclId ||
++		value.Get("s").Type() != anyenc.TypeString || value.GetString("s") != state.SettingsId ||
++		value.Get("e").Type() != anyenc.TypeBinary || !bytes.Equal(value.GetBytes("e"), state.SpaceHeader) {
++		return result, fmt.Errorf("%w: native state row types or projection", ErrFixedSchemaStorage)
++	}
++	result.state, result.stateBytes = state, value.MarshalTo(nil)
++	root, err := s.scope.storage.TreeRoot(s.ctx, s.scope.settingsID)
++	if err != nil {
++		return result, err
++	}
++	if root == nil || root.Id != s.scope.settingsID || len(root.RawChange) == 0 {
++		return result, fmt.Errorf("%w: original settings root identity", ErrFixedSchemaStorage)
++	}
++	result.settingsRoot = &treechangeproto.RawTreeChangeWithId{Id: strings.Clone(root.Id), RawChange: slices.Clone(root.RawChange)}
++	doc, err = s.changes.FindId(s.ctx, s.scope.settingsID)
++	if err != nil {
++		return result, err
++	}
++	value = doc.Value()
++	if value.GetString("id") != s.scope.settingsID || value.GetString(objecttree.TreeKey) != s.scope.settingsID {
++		return result, fmt.Errorf("%w: original settings root row", ErrFixedSchemaStorage)
++	}
++	result.settingsRootBytes = value.MarshalTo(nil)
++	return result, nil
++}
++
++type fixedSchemaStoredTree struct {
++	head        headstorage.HeadsEntry
++	headPresent bool
++	headBytes   []byte
++	rootPresent bool
++	root        *treechangeproto.RawTreeChangeWithId
++	rootBytes   []byte
++	rows        map[string][]byte
++	changes     []objecttree.StorageChange
++}
++
++func (t fixedSchemaStoredTree) same(other fixedSchemaStoredTree) bool {
++	return t.headPresent == other.headPresent && t.rootPresent == other.rootPresent &&
++		bytes.Equal(t.headBytes, other.headBytes) && bytes.Equal(t.rootBytes, other.rootBytes) &&
++		equalFixedSchemaRows(t.rows, other.rows)
++}
++
++type fixedSchemaStoredACL struct {
++	headBytes []byte
++	root      []byte
++	rows      map[string][]byte
++	records   []list.StorageRecord
++}
++
++func (a fixedSchemaStoredACL) same(other fixedSchemaStoredACL) bool {
++	return bytes.Equal(a.headBytes, other.headBytes) && bytes.Equal(a.root, other.root) &&
++		equalFixedSchemaRows(a.rows, other.rows)
++}
++
++func (s *fixedSchemaSnapshot) readACL() (result fixedSchemaStoredACL, err error) {
++	if err = s.ctx.Err(); err != nil {
++		return result, err
++	}
++	// AclStorage returns the retained native handle. Do not call list.NewStorage:
++	// its original implementation can create a collection/index.
++	native, err := s.scope.storage.AclStorage()
++	if err != nil {
++		return result, err
++	}
++	if native == nil || native.Id() != s.scope.aclID {
++		return result, fmt.Errorf("%w: persisted ACL scope", ErrFixedSchemaStorage)
++	}
++	entry, err := s.scope.storage.HeadStorage().GetEntry(s.ctx, s.scope.aclID)
++	if err != nil {
++		return result, err
++	}
++	if entry.Id != s.scope.aclID || len(entry.Heads) != 1 || entry.Heads[0] != s.scope.aclHead ||
++		entry.DeletedStatus != headstorage.DeletedStatusNotDeleted {
++		return result, ErrFixedSchemaChanged
++	}
++	doc, err := s.heads.FindId(s.ctx, s.scope.aclID)
++	if err != nil {
++		return result, err
++	}
++	result.headBytes = doc.Value().MarshalTo(nil)
++	records, err := s.scope.storage.AnyStore().OpenCollection(s.ctx, s.scope.aclID)
++	if err != nil {
++		return result, err
++	}
++	result.rows = make(map[string][]byte)
++	// Full enumeration has no o>=1 predicate: extra/malformed rows must remain
++	// visible. Use original Storage.Get decoding and check every iterator error.
++	err = scanFixedSchemaRows(s.ctx, records.Find(nil).Sort("o"), func(doc anystore.Doc) error {
++		value := doc.Value()
++		id := value.GetString("id")
++		if id == "" {
++			return fmt.Errorf("%w: ACL row identity", ErrFixedSchemaStorage)
++		}
++		if _, duplicate := result.rows[id]; duplicate {
++			return fmt.Errorf("%w: duplicate ACL row", ErrFixedSchemaStorage)
++		}
++		record, readErr := native.Get(s.ctx, id)
++		if readErr != nil {
++			return readErr
++		}
++		index := len(result.records)
++		if index >= len(s.scope.aclRecords) || record.Id != id ||
++			record.Id != s.scope.aclRecords[index].id || record.PrevId != s.scope.aclRecords[index].previousID ||
++			record.Order != index+1 || len(record.RawRecord) == 0 || record.ChangeSize != len(record.RawRecord) ||
++			value.Get("p").Type() != anyenc.TypeString {
++			return fmt.Errorf("%w: complete persisted ACL chain", ErrFixedSchemaStorage)
++		}
++		if err := requireFixedSchemaInteger(value, "o", record.Order); err != nil {
++			return err
++		}
++		if err := requireFixedSchemaInteger(value, "sz", record.ChangeSize); err != nil {
++			return err
++		}
++		record.Id, record.PrevId = strings.Clone(record.Id), strings.Clone(record.PrevId)
++		record.RawRecord = slices.Clone(record.RawRecord)
++		result.rows[record.Id] = value.MarshalTo(nil)
++		result.records = append(result.records, record)
++		return nil
++	})
++	if err != nil {
++		return result, err
++	}
++	if len(result.records) == 0 || len(result.records) != len(s.scope.aclRecords) ||
++		result.records[0].Id != s.scope.aclID || !bytes.Equal(result.records[0].RawRecord, s.scope.aclRoot) {
++		return result, fmt.Errorf("%w: missing persisted ACL record or root", ErrFixedSchemaStorage)
++	}
++	result.root = slices.Clone(result.records[0].RawRecord)
++	return result, nil
++}
++
++func (s *fixedSchemaSnapshot) readTree(id string) (tree fixedSchemaStoredTree, err error) {
++	tree.rows = make(map[string][]byte)
++	if err = s.ctx.Err(); err != nil {
++		return tree, err
++	}
++	tree.head, err = s.scope.storage.HeadStorage().GetEntry(s.ctx, id)
++	switch {
++	case err == nil:
++		tree.headPresent = true
++		tree.head.Id, tree.head.CommonSnapshot, tree.head.ParentId = strings.Clone(tree.head.Id), strings.Clone(tree.head.CommonSnapshot), strings.Clone(tree.head.ParentId)
++		tree.head.Heads = slices.Clone(tree.head.Heads)
++		for i := range tree.head.Heads {
++			tree.head.Heads[i] = strings.Clone(tree.head.Heads[i])
++		}
++		doc, readErr := s.heads.FindId(s.ctx, id)
++		if readErr != nil {
++			return tree, readErr
++		}
++		tree.headBytes = doc.Value().MarshalTo(nil)
++	case errors.Is(err, anystore.ErrDocNotFound):
++		err = nil
++	default:
++		return tree, err
++	}
++	tree.root, err = s.scope.storage.TreeRoot(s.ctx, id)
++	switch {
++	case err == nil:
++		if tree.root == nil {
++			return tree, fmt.Errorf("%w: nil original root on successful read", ErrFixedSchemaStorage)
++		}
++		tree.rootPresent = true
++		tree.root = &treechangeproto.RawTreeChangeWithId{Id: strings.Clone(tree.root.Id), RawChange: slices.Clone(tree.root.RawChange)}
++		doc, readErr := s.changes.FindId(s.ctx, id)
++		if readErr != nil {
++			return tree, readErr
++		}
++		tree.rootBytes = doc.Value().MarshalTo(nil)
++	case errors.Is(err, anystore.ErrDocNotFound):
++		err = nil
++	default:
++		return tree, err
++	}
++	var native objecttree.Storage
++	if tree.headPresent && tree.rootPresent {
++		// The original NewStorage uses OpenCollection and reads its root. It does
++		// not create/initialize the tree. Never call Close on its borrowed handle.
++		native, err = objecttree.NewStorage(s.ctx, id, s.scope.storage.HeadStorage(), s.scope.storage.AnyStore())
++		if err != nil {
++			return tree, err
++		}
++	}
++	filter := query.Key{Path: []string{objecttree.TreeKey}, Filter: query.NewComp(query.CompOpEq, id)}
++	err = scanFixedSchemaRows(s.ctx, s.changes.Find(filter).Sort(objecttree.OrderKey), func(doc anystore.Doc) error {
++		value := doc.Value()
++		recordID := value.GetString("id")
++		if recordID == "" || value.GetString(objecttree.TreeKey) != id {
++			return fmt.Errorf("%w: persisted row identity", ErrFixedSchemaStorage)
++		}
++		if _, duplicate := tree.rows[recordID]; duplicate {
++			return fmt.Errorf("%w: duplicate persisted row", ErrFixedSchemaStorage)
++		}
++		tree.rows[strings.Clone(recordID)] = value.MarshalTo(nil)
++		if native == nil {
++			return nil // Complete raw rows still disprove absence/root-only.
++		}
++		change, readErr := native.Get(s.ctx, recordID)
++		if readErr != nil {
++			return readErr
++		}
++		if change.Id != recordID || change.OrderId == "" || len(change.RawChange) == 0 ||
++			change.ChangeSize != len(change.RawChange) || value.Get("i").Type() != anyenc.TypeString {
++			return fmt.Errorf("%w: incomplete native change row", ErrFixedSchemaStorage)
++		}
++		if err := requireFixedSchemaInteger(value, objecttree.ChangeSizeKey, change.ChangeSize); err != nil {
++			return err
++		}
++		// Native local AddContent persists zero for ordinary non-snapshots.
++		// Actual counter/graph consistency is checked after original reconstruction.
++		if err := requireFixedSchemaInteger(value, objecttree.SnapshotCounterKey, change.SnapshotCounter); err != nil {
++			return err
++		}
++		if value.Get(objecttree.AddSeqKey) != nil {
++			if err := requireFixedSchemaInteger(value, objecttree.AddSeqKey, value.GetInt(objecttree.AddSeqKey)); err != nil {
++				return err
++			}
++		}
++		if previous := value.Get("p"); previous != nil {
++			items, readErr := previous.Array()
++			if readErr != nil {
++				return readErr
++			}
++			for _, item := range items {
++				if item.Type() != anyenc.TypeString {
++					return fmt.Errorf("%w: non-string previous change", ErrFixedSchemaStorage)
++				}
++			}
++		}
++		tree.changes = append(tree.changes, cloneFixedSchemaStorageChange(change))
++		return nil
++	})
++	return tree, err
++}
++
++// The original row decoder uses GetInt (which can default/truncate). Require
++// presence, exact number type, and a nonnegative exact integer projection.
++func requireFixedSchemaInteger(value *anyenc.Value, key string, decoded int) error {
++	number, err := value.Get(key).Float64()
++	if err != nil {
++		return fmt.Errorf("%w: numeric native field %s: %w", ErrFixedSchemaStorage, key, err)
++	}
++	if decoded < 0 || number != float64(decoded) {
++		return fmt.Errorf("%w: non-integral native field %s", ErrFixedSchemaStorage, key)
++	}
++	return nil
++}
++
++func scanFixedSchemaRows(ctx context.Context, qry anystore.Query, visit func(anystore.Doc) error) (err error) {
++	iter, err := qry.Iter(ctx)
++	if err != nil {
++		return err
++	}
++	defer func() { err = errors.Join(err, iter.Err(), iter.Close()) }()
++	for iter.Next() {
++		if err = ctx.Err(); err != nil {
++			return err
++		}
++		doc, readErr := iter.Doc()
++		if readErr != nil {
++			return readErr
++		}
++		if err = visit(doc); err != nil {
++			return err
++		}
++	}
++	return nil
++}
++
++func cloneFixedSchemaStorageChange(change objecttree.StorageChange) objecttree.StorageChange {
++	change.Id, change.OrderId, change.SnapshotId = strings.Clone(change.Id), strings.Clone(change.OrderId), strings.Clone(change.SnapshotId)
++	change.RawChange = slices.Clone(change.RawChange)
++	change.PrevIds = slices.Clone(change.PrevIds)
++	for i := range change.PrevIds {
++		change.PrevIds[i] = strings.Clone(change.PrevIds[i])
++	}
++	return change
++}
++
++// This is an immutable projection of original decoded rows, not another database,
++// codec, or state engine. It retains no native store/collection/transaction handle.
++// Original builders sometimes pass Background; every read still checks ctx.
++type fixedSchemaTreeStorage struct {
++	ctx            context.Context
++	id             string
++	heads          []string
++	commonSnapshot string
++	changes        []objecttree.StorageChange
++	byID           map[string]objecttree.StorageChange
++}
++
++var _ objecttree.Storage = (*fixedSchemaTreeStorage)(nil)
++
++func newFixedSchemaTreeStorage(ctx context.Context, stored fixedSchemaStoredTree) *fixedSchemaTreeStorage {
++	storage := &fixedSchemaTreeStorage{ctx: ctx, id: stored.head.Id, heads: slices.Clone(stored.head.Heads),
++		commonSnapshot: strings.Clone(stored.head.CommonSnapshot), byID: make(map[string]objecttree.StorageChange, len(stored.changes))}
++	for _, change := range stored.changes {
++		copy := cloneFixedSchemaStorageChange(change)
++		storage.changes = append(storage.changes, copy)
++		storage.byID[copy.Id] = copy
++	}
++	return storage
++}
++
++func (s *fixedSchemaTreeStorage) Id() string { return s.id }
++func (s *fixedSchemaTreeStorage) Root(context.Context) (objecttree.StorageChange, error) {
++	return s.Get(s.ctx, s.id)
++}
++func (s *fixedSchemaTreeStorage) Heads(context.Context) ([]string, error) {
++	if err := s.ctx.Err(); err != nil {
++		return nil, err
++	}
++	return slices.Clone(s.heads), nil
++}
++func (s *fixedSchemaTreeStorage) CommonSnapshot(context.Context) (string, error) {
++	return s.commonSnapshot, s.ctx.Err()
++}
++func (s *fixedSchemaTreeStorage) Has(_ context.Context, id string) (bool, error) {
++	_, err := s.Get(s.ctx, id)
++	if errors.Is(err, anystore.ErrDocNotFound) {
++		return false, nil
++	}
++	return err == nil, err
++}
++func (s *fixedSchemaTreeStorage) Get(_ context.Context, id string) (objecttree.StorageChange, error) {
++	if err := s.ctx.Err(); err != nil {
++		return objecttree.StorageChange{}, err
++	}
++	change, found := s.byID[id]
++	if !found {
++		return objecttree.StorageChange{}, anystore.ErrDocNotFound
++	}
++	return cloneFixedSchemaStorageChange(change), nil
++}
++func (s *fixedSchemaTreeStorage) iterate(selectRow func(objecttree.StorageChange) bool, visit objecttree.StorageIterator) error {
++	for _, change := range s.changes {
++		if err := s.ctx.Err(); err != nil {
++			return err
++		}
++		if !selectRow(change) {
++			continue
++		}
++		keepGoing, err := visit(s.ctx, cloneFixedSchemaStorageChange(change))
++		if err != nil {
++			return err
++		}
++		if !keepGoing {
++			return nil
++		}
++	}
++	return s.ctx.Err()
++}
++func (s *fixedSchemaTreeStorage) GetAfterOrder(_ context.Context, order string, visit objecttree.StorageIterator) error {
++	return s.iterate(func(change objecttree.StorageChange) bool { return change.OrderId >= order }, visit)
++}
++func (s *fixedSchemaTreeStorage) GetAfterAddSeq(_ context.Context, seq uint64, visit objecttree.StorageIterator) error {
++	// Original GetAfterAddSeq also sorts by OrderKey, not AddSeq.
++	return s.iterate(func(change objecttree.StorageChange) bool { return change.AddSeq > seq }, visit)
++}
++func (*fixedSchemaTreeStorage) AddAll(context.Context, []objecttree.StorageChange, []string, string) error {
++	return ErrFixedSchemaReadOnly
++}
++func (*fixedSchemaTreeStorage) AddAllNoError(context.Context, []objecttree.StorageChange, []string, string) error {
++	return ErrFixedSchemaReadOnly
++}
++func (*fixedSchemaTreeStorage) Delete(context.Context) error { return ErrFixedSchemaReadOnly }
++func (*fixedSchemaTreeStorage) Close() error                 { return ErrFixedSchemaReadOnly }
+--- /dev/null
++++ b/core/block/object/objectcreator/fixed_schema_acl.go
+@@ -0,0 +1,105 @@
++package objectcreator
++
++import (
++	"bytes"
++	"context"
++	"fmt"
++
++	"github.com/anyproto/any-sync/commonspace/object/acl/aclrecordproto"
++	"github.com/anyproto/any-sync/commonspace/spacepayloads"
++	"github.com/anyproto/any-sync/commonspace/spacestorage"
++	"github.com/anyproto/any-sync/commonspace/spacesyncproto"
++	"github.com/anyproto/any-sync/consensus/consensusproto"
++)
++
++// Validate only copied persisted bytes, after the owned ReadTx has finished.
++// This is the original Space creation-payload verifier: actual header CID,
++// signature and replication key; ACL/settings root CIDs and signatures; and
++// version-specific Space/ACL/settings binding. V1 embeds the exact ACL/settings
++// payloads in its signed header and legitimately leaves root SpaceId empty.
++// No new crypto, live DB handle, ACL lock, or Space initialization is involved.
++func validateFixedSchemaSpace(ctx context.Context, scope fixedSchemaScope, stored fixedSchemaStoredSpace, acl fixedSchemaStoredACL) error {
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	if stored.state.SpaceId != scope.spaceID || stored.state.AclId != scope.aclID ||
++		stored.state.SettingsId != scope.settingsID || stored.settingsRoot == nil ||
++		stored.settingsRoot.Id != scope.settingsID || len(acl.root) == 0 {
++		return fmt.Errorf("%w: original Space payload identity", ErrFixedSchemaStorage)
++	}
++	err := spacepayloads.ValidateSpaceStorageCreatePayload(spacestorage.SpaceStorageCreatePayload{
++		SpaceHeaderWithId:   &spacesyncproto.RawSpaceHeaderWithId{Id: stored.state.SpaceId, RawHeader: stored.state.SpaceHeader},
++		AclWithId:           &consensusproto.RawRecordWithId{Id: scope.aclID, Payload: acl.root},
++		SpaceSettingsWithId: stored.settingsRoot,
++	})
++	if err != nil {
++		return fmt.Errorf("verify original persisted Space payload: %w", err)
++	}
++	return ctx.Err()
++}
++
++// validateFixedSchemaACL runs only after the owned ReadTx has released its
++// reader. The original RecordBuilder and its key storage are shared with native
++// ACL users; signature verification can populate their in-memory key caches.
++// Use the original exclusive ACL lock, as normal AddRawRecord/ACL RPC paths do.
++// There are no persisted writes, no storage reads, and no role replay here.
++func validateFixedSchemaACL(ctx context.Context, scope fixedSchemaScope, stored fixedSchemaStoredACL) error {
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	scope.acl.Lock()
++	defer scope.acl.Unlock()
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	current, err := scope.captureACLStateLocked()
++	if err != nil {
++		return err
++	}
++	if !scope.same(current) {
++		return ErrFixedSchemaChanged
++	}
++	if len(stored.records) != len(scope.aclRecords) || len(stored.rows) != len(scope.aclRecords) ||
++		!bytes.Equal(stored.root, scope.aclRoot) {
++		return fmt.Errorf("%w: persisted ACL membership", ErrFixedSchemaStorage)
++	}
++	builder := scope.acl.RecordBuilder()
++	if builder == nil {
++		return fmt.Errorf("%w: original ACL record verifier unavailable", ErrFixedSchemaStorage)
++	}
++	for index, persisted := range stored.records {
++		if err := ctx.Err(); err != nil {
++			return err
++		}
++		// Actual retained verifier performs original CID, author signature, and
++		// configured acceptor verification. It is not a caller-supplied verifier.
++		decoded, err := builder.UnmarshallWithId(persisted.RawRecordWithId())
++		if err != nil {
++			return fmt.Errorf("verify original persisted ACL record: %w", err)
++		}
++		identity := scope.aclRecords[index]
++		if decoded == nil || decoded.Id != identity.id || decoded.PrevId != identity.previousID ||
++			decoded.Id != persisted.Id || decoded.PrevId != persisted.PrevId {
++			return fmt.Errorf("%w: original verified ACL membership", ErrFixedSchemaStorage)
++		}
++		if index == 0 {
++			// Space binding was already verified by the original version-aware
++			// payload validator; V1 native ACL roots have no explicit SpaceId.
++			root, ok := decoded.Model.(*aclrecordproto.AclRoot)
++			if !ok || root == nil {
++				return fmt.Errorf("%w: original ACL root model", ErrFixedSchemaStorage)
++			}
++		}
++	}
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	current, err = scope.captureACLStateLocked()
++	if err != nil {
++		return err
++	}
++	if !scope.same(current) {
++		return ErrFixedSchemaChanged
++	}
++	return nil
++}
+--- /dev/null
++++ b/core/block/object/objectcreator/fixed_schema_replay.go
+@@ -0,0 +1,328 @@
++package objectcreator
++
++import (
++	"bytes"
++	"context"
++	"errors"
++	"fmt"
++	"slices"
++
++	"github.com/anyproto/any-sync/commonspace/headsync/headstorage"
++	"github.com/anyproto/any-sync/commonspace/object/acl/list"
++	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
++	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
++	"github.com/anyproto/any-sync/util/crypto"
++
++	"github.com/anyproto/anytype-heart/core/block/editor/state"
++	"github.com/anyproto/anytype-heart/core/block/simple"
++	"github.com/anyproto/anytype-heart/core/block/source/sourceimpl"
++	"github.com/anyproto/anytype-heart/pb"
++	coresb "github.com/anyproto/anytype-heart/pkg/lib/core/smartblock"
++	"github.com/anyproto/anytype-heart/space/spacecore/typeprovider"
++)
++
++func observeFixedSchemaSnapshot(ctx context.Context, scope fixedSchemaScope, definition FixedSchemaDefinition, expected, archiveRoot *treechangeproto.RawTreeChangeWithId) (read fixedSchemaRead, disposition FixedSchemaDisposition, err error) {
++	disposition = FixedSchemaUnavailable
++	read, err = readFixedSchemaSnapshot(ctx, scope, expected.Id, archiveRoot.Id)
++	if err != nil {
++		return read, disposition, err
++	}
++	// The owned native read transaction is already committed/released here.
++	// Original ACL users can hold the ACL lock while waiting for a DB reader;
++	// retaining our reader across any ACL lock would invert that ordering.
++	if err = validateFixedSchemaSpace(ctx, scope, read.space, read.acl); err != nil {
++		return read, disposition, err
++	}
++	if err = validateFixedSchemaACL(ctx, scope, read.acl); err != nil {
++		return read, disposition, err
++	}
++	archiveState, archiveCount, err := replayFixedSchemaTree(ctx, scope, read.archive, archiveRoot, coresb.SmartBlockTypeArchive, "")
++	if err != nil {
++		return read, disposition, fmt.Errorf("read original archive: %w", err)
++	}
++	if archiveCount < 2 {
++		return read, disposition, fmt.Errorf("%w: archive has no persisted initialization", ErrFixedSchemaStorage)
++	}
++	var archived bool
++	err = archiveState.Iterate(func(block simple.Block) bool {
++		if link := block.Model().GetLink(); link != nil && link.TargetBlockId == expected.Id {
++			archived = true
++		}
++		return true
++	})
++	if err != nil {
++		return read, disposition, fmt.Errorf("iterate original archive state: %w", err)
++	}
++	if archived || (read.schema.headPresent && read.schema.head.DeletedStatus != headstorage.DeletedStatusNotDeleted) {
++		return read, FixedSchemaPopulatedConflict, nil
++	}
++	if !read.schema.headPresent && !read.schema.rootPresent && len(read.schema.rows) == 0 {
++		return read, FixedSchemaLocallyMissing, nil
++	}
++	st, count, err := replayFixedSchemaTree(ctx, scope, read.schema, expected, definition.Key.SmartblockType(), definition.Key.InternalKey())
++	if err != nil {
++		return read, disposition, err
++	}
++	if count == 1 {
++		return read, FixedSchemaRootOnlyIncomplete, nil
++	}
++	if !fixedSchemaObjectTypeMatches(definition.Key.SmartblockType(), st.ObjectTypeKeys()) ||
++		!fixedSchemaDetailsMatch(st.Details(), definition.Required) {
++		return read, FixedSchemaPopulatedConflict, nil
++	}
++	return read, FixedSchemaPersistedMatch, nil
++}
++
++func rereadFixedSchemaSnapshot(ctx context.Context, scope fixedSchemaScope, schemaID, archiveID string) (fixedSchemaRead, error) {
++	return readFixedSchemaSnapshot(ctx, scope, schemaID, archiveID)
++}
++
++// Every real DB read and original row decoder runs through this one actual
++// ReadTx context. The returned data owns only copied native values/raw rows.
++func readFixedSchemaSnapshot(ctx context.Context, scope fixedSchemaScope, schemaID, archiveID string) (read fixedSchemaRead, err error) {
++	snapshot, err := openFixedSchemaSnapshot(ctx, scope)
++	if err != nil {
++		return read, err
++	}
++	defer func() { err = errors.Join(err, snapshot.finish()) }()
++	read.space, err = snapshot.readSpace()
++	if err != nil {
++		return read, err
++	}
++	read.acl, err = snapshot.readACL()
++	if err != nil {
++		return read, err
++	}
++	read.schema, err = snapshot.readTree(schemaID)
++	if err != nil {
++		return read, err
++	}
++	read.archive, err = snapshot.readTree(archiveID)
++	return read, err
++}
++
++// replayFixedSchemaTree builds only private in-memory original native views.
++// It never calls InitObject, migrations, cache.GetObject, AddContent, or Close on
++// borrowed storage. The owned ReadTx has already closed; only copied original
++// rows remain behind the immutable Storage adapter.
++func replayFixedSchemaTree(ctx context.Context, scope fixedSchemaScope, stored fixedSchemaStoredTree, expected *treechangeproto.RawTreeChangeWithId, kind coresb.SmartBlockType, internalKey string) (*state.State, int, error) {
++	if !stored.headPresent || !stored.rootPresent || len(stored.changes) == 0 || len(stored.changes) != len(stored.rows) {
++		return nil, 0, fmt.Errorf("%w: root, heads, and full membership are required", ErrFixedSchemaStorage)
++	}
++	if stored.head.Id != expected.Id || stored.head.DeletedStatus != headstorage.DeletedStatusNotDeleted ||
++		!stored.head.IsDerived || stored.head.ParentId != "" || stored.head.CommonSnapshot == "" ||
++		!equalFixedSchemaHeads(stored.head.Heads, stored.head.Heads) {
++		return nil, 0, fmt.Errorf("%w: malformed/deleted native head entry", ErrFixedSchemaStorage)
++	}
++	if stored.root.Id != expected.Id || !bytes.Equal(stored.root.RawChange, expected.RawChange) {
++		return nil, 0, fmt.Errorf("%w: original derived header mismatch", ErrFixedSchemaStorage)
++	}
++	if _, exists := stored.rows[expected.Id]; !exists || stored.changes[0].Id != expected.Id {
++		return nil, 0, fmt.Errorf("%w: root missing from complete tree membership", ErrFixedSchemaStorage)
++	}
++	actualKind, actualKey, err := typeprovider.GetTypeAndKeyFromRoot(stored.root)
++	if err != nil {
++		return nil, 0, err
++	}
++	if actualKind != kind || actualKey != internalKey {
++		return nil, 0, fmt.Errorf("%w: native header kind/key", ErrFixedSchemaStorage)
++	}
++	storage := newFixedSchemaTreeStorage(ctx, stored)
++	builder := objecttree.NewChangeBuilder(crypto.NewKeyStorage(), stored.root)
++	changes := make([]*objecttree.Change, 0, len(stored.changes))
++	previousOrder := ""
++	for _, persisted := range stored.changes {
++		if err := ctx.Err(); err != nil {
++			return nil, 0, err
++		}
++		change, err := builder.Unmarshall(persisted.RawTreeChangeWithId(), true)
++		if err != nil {
++			return nil, 0, fmt.Errorf("verify original persisted change: %w", err)
++		}
++		if persisted.OrderId <= previousOrder || change.Id != persisted.Id ||
++			change.SnapshotId != persisted.SnapshotId || !sameFixedSchemaIDs(change.PreviousIds, persisted.PrevIds) ||
++			(change.Id != expected.Id && (change.IsDerived || len(change.PreviousIds) == 0)) {
++			return nil, 0, fmt.Errorf("%w: inconsistent original change metadata", ErrFixedSchemaStorage)
++		}
++		// Reconstruct through the original Tree with no persisted order/counter
++		// supplied. Original CreateStorageTx seeds the native root counter at 1.
++		if change.Id == expected.Id {
++			change.SnapshotCounter = 1
++		}
++		previousOrder = persisted.OrderId
++		changes = append(changes, change)
++	}
++	full := &objecttree.Tree{}
++	full.AddFast(changes...)
++	if full.RootId() != expected.Id || full.Len() != len(stored.rows) ||
++		!equalFixedSchemaHeads(full.Heads(), stored.head.Heads) {
++		return nil, 0, fmt.Errorf("%w: unattached, extra, or mismatched native membership", ErrFixedSchemaStorage)
++	}
++	for index, change := range changes {
++		if full.Get(change.Id) != change {
++			return nil, 0, fmt.Errorf("%w: discarded original change", ErrFixedSchemaStorage)
++		}
++		persisted := stored.changes[index]
++		if change.Id == expected.Id {
++			if persisted.SnapshotCounter != 1 {
++				return nil, 0, fmt.Errorf("%w: original root snapshot counter", ErrFixedSchemaStorage)
++			}
++			continue
++		}
++		snapshot := full.Get(change.SnapshotId)
++		if snapshot == nil || !snapshot.IsSnapshot ||
++			(persisted.SnapshotCounter != change.SnapshotCounter && (change.IsSnapshot || persisted.SnapshotCounter != 0)) {
++			return nil, 0, fmt.Errorf("%w: native snapshot reference/counter", ErrFixedSchemaStorage)
++		}
++	}
++	// Native traversal establishes order. Absolute lex IDs can legitimately
++	// differ after prior insertions; only the stored ordering must agree.
++	orderIndex := 0
++	var orderErr error
++	full.IterateBranching(expected.Id, func(change *objecttree.Change, _ int) bool {
++		if orderIndex >= len(stored.changes) || stored.changes[orderIndex].Id != change.Id {
++			orderErr = fmt.Errorf("%w: stored order differs from original traversal", ErrFixedSchemaStorage)
++			return false
++		}
++		orderIndex++
++		return true
++	})
++	if orderErr != nil {
++		return nil, 0, orderErr
++	}
++	if orderIndex != len(stored.changes) {
++		return nil, 0, fmt.Errorf("%w: incomplete original traversal", ErrFixedSchemaStorage)
++	}
++	// Original validator's explicit contract requires its own ACL read lock.
++	// Do not hold this lock around BuildObjectTree, which acquires it itself.
++	err = validateFixedSchemaFullTree(scope.acl, full)
++	if err != nil {
++		return nil, 0, err
++	}
++	if err = validateFixedSchemaStoredContent(ctx, scope.acl, expected.Id, changes); err != nil {
++		return nil, 0, err
++	}
++	if err = validateFixedSchemaCommonSnapshot(ctx, scope.acl, full, storage); err != nil {
++		return nil, 0, err
++	}
++	original, err := objecttree.BuildObjectTree(storage, scope.acl)
++	if err != nil {
++		return nil, 0, fmt.Errorf("build original persisted tree: %w", err)
++	}
++	if original.Id() != expected.Id || !bytes.Equal(original.Header().RawChange, expected.RawChange) ||
++		!equalFixedSchemaHeads(original.Heads(), stored.head.Heads) {
++		return nil, 0, fmt.Errorf("%w: original replay view disagrees", ErrFixedSchemaStorage)
++	}
++	if len(stored.rows) == 1 && (stored.head.CommonSnapshot != expected.Id ||
++		!equalFixedSchemaHeads(stored.head.Heads, []string{expected.Id}) || original.Len() != 1) {
++		return nil, 0, fmt.Errorf("%w: not an exact root-only tree", ErrFixedSchemaStorage)
++	}
++	st, _, _, err := sourceimpl.BuildStateStrict(scope.spaceID, original)
++	if err != nil {
++		return nil, 0, fmt.Errorf("replay original persisted state: %w", err)
++	}
++	if st == nil || st.RootId() != expected.Id {
++		return nil, 0, fmt.Errorf("%w: original state is unavailable", ErrFixedSchemaStorage)
++	}
++	if len(stored.rows) > 1 && (st.Pick(st.RootId()) == nil || st.Pick(st.RootId()).Model() == nil) {
++		return nil, 0, fmt.Errorf("%w: populated original state has no root block", ErrFixedSchemaStorage)
++	}
++	return st, len(stored.rows), nil
++}
++
++// Use the exported original history builder's native common-snapshot selection,
++// after complete raw membership, signatures, counters and traversal were checked.
++// An older persisted replay base is valid only along that native signed snapshot
++// chain. This does not regenerate graph IDs or invent another ancestor engine.
++func validateFixedSchemaCommonSnapshot(ctx context.Context, acl list.AclList, full *objecttree.Tree, storage *fixedSchemaTreeStorage) error {
++	history, err := objecttree.BuildHistoryTree(objecttree.HistoryTreeParams{
++		Storage: storage, AclList: acl, Heads: slices.Clone(storage.heads), IncludeBeforeId: true,
++	})
++	if err != nil {
++		return fmt.Errorf("select original common snapshot: %w", err)
++	}
++	if history == nil || history.Root() == nil || !equalFixedSchemaHeads(history.Heads(), storage.heads) {
++		return fmt.Errorf("%w: native history membership", ErrFixedSchemaStorage)
++	}
++	latest := history.Root().Id
++	// Original Tree.reduceTree makes a sole snapshot head the root directly.
++	// BuildHistoryTree starts from its predecessor SnapshotId, so preserve this
++	// documented original native case before checking allowed older ancestry.
++	if len(storage.heads) == 1 {
++		if head := full.Get(storage.heads[0]); head != nil && head.IsSnapshot {
++			latest = head.Id
++		}
++	}
++	for remaining := full.Len(); remaining > 0; remaining-- {
++		if err := ctx.Err(); err != nil {
++			return err
++		}
++		snapshot := full.Get(latest)
++		if snapshot == nil || !snapshot.IsSnapshot {
++			return fmt.Errorf("%w: native common snapshot path", ErrFixedSchemaStorage)
++		}
++		if snapshot.Id == storage.commonSnapshot {
++			return nil
++		}
++		if snapshot.Id == full.RootId() {
++			break
++		}
++		previous := full.Get(snapshot.SnapshotId)
++		if previous == nil || !previous.IsSnapshot || previous.SnapshotCounter >= snapshot.SnapshotCounter {
++			return fmt.Errorf("%w: invalid native snapshot ancestry", ErrFixedSchemaStorage)
++		}
++		latest = previous.Id
++	}
++	return fmt.Errorf("%w: persisted common snapshot is not an allowed native ancestor", ErrFixedSchemaStorage)
++}
++
++func validateFixedSchemaFullTree(acl list.AclList, tree *objecttree.Tree) error {
++	acl.RLock()
++	defer acl.RUnlock()
++	return objecttree.NewTreeValidatorWithContentCheck(true, false, nil).ValidateFullTree(tree, acl)
++}
++
++func sameFixedSchemaIDs(a, b []string) bool {
++	a, b = slices.Clone(a), slices.Clone(b)
++	slices.Sort(a)
++	slices.Sort(b)
++	return slices.Equal(a, b)
++}
++
++// Decode every persisted non-root record through the original strict companion,
++// including records older than CommonSnapshot. Current-state replay alone does
++// not visit those rows. Native keys and decryption are the same as IterateFrom;
++// no replacement protobuf, compression, or state codec is used.
++func validateFixedSchemaStoredContent(ctx context.Context, acl list.AclList, rootID string, changes []*objecttree.Change) error {
++	for _, change := range changes {
++		if err := ctx.Err(); err != nil {
++			return err
++		}
++		if change.Id == rootID {
++			continue
++		}
++		data := change.Data
++		if change.ReadKeyId != "" {
++			acl.RLock()
++			keys, found := acl.AclState().Keys()[change.ReadKeyId]
++			acl.RUnlock()
++			if !found || keys.ReadKey == nil {
++				return list.ErrNoReadKey
++			}
++			var err error
++			data, err = keys.ReadKey.DecryptReuse(nil, data)
++			if err != nil {
++				return fmt.Errorf("decrypt original stored content: %w", err)
++			}
++		}
++		decoded, err := sourceimpl.UnmarshalChangeStrict(change, data)
++		if err != nil {
++			return fmt.Errorf("decode original stored content: %w", err)
++		}
++		model, ok := decoded.(*pb.Change)
++		if !ok || model == nil || change.IsSnapshot != (model.Snapshot != nil) {
++			return fmt.Errorf("%w: original snapshot content marker", ErrFixedSchemaStorage)
++		}
++	}
++	return nil
++}
+--- a/core/block/source/sourceimpl/source.go
++++ b/core/block/source/sourceimpl/source.go
+@@ -36,6 +36,7 @@
+ 	"github.com/anyproto/anytype-heart/pkg/lib/logging"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+ 	"github.com/anyproto/anytype-heart/space/spacecore/typeprovider"
++	"github.com/anyproto/anytype-heart/util/pbtypes"
+ 	"github.com/anyproto/anytype-heart/util/reflection"
+ 	"github.com/anyproto/anytype-heart/util/slice"
+ )
+@@ -83,6 +84,19 @@
+ }
+ 
+ func unmarshalChange(treeChange *objecttree.Change, data []byte, needSnapshot bool) (result any, err error) {
++	return unmarshalChangeMode(treeChange, data, needSnapshot, false)
++}
++
++// UnmarshalChangeStrict reuses the original decoder but refuses failed Snappy
++// decoding and invalid native metadata before a caller can normalize it.
++func UnmarshalChangeStrict(treeChange *objecttree.Change, data []byte) (result any, err error) {
++	return unmarshalChangeMode(treeChange, data, true, true)
++}
++
++func unmarshalChangeMode(treeChange *objecttree.Change, data []byte, needSnapshot, strict bool) (result any, err error) {
++	if strict && (treeChange == nil || (treeChange.DataType != "" && treeChange.DataType != dataTypeSnappy)) {
++		return nil, fmt.Errorf("strict replay: unsupported native change data type")
++	}
+ 	var change proto.Message
+ 	if needSnapshot {
+ 		change = &pb.Change{}
+@@ -105,21 +119,35 @@
+ 			}
+ 		}
+ 	}
++	if strict && err != nil {
++		return nil, fmt.Errorf("decode native change compression: %w", err)
++	}
+ 	if err = proto.Unmarshal(data, change); err != nil {
+ 		return
+ 	}
+ 	if needSnapshot {
++		if strict {
++			if err = validateStrictStateChange(change.(*pb.Change)); err != nil {
++				return nil, err
++			}
++		}
+ 		return change, nil
+ 	} else {
+ 		noSnapshotChange := change.(*pb.ChangeNoSnapshot)
+-		return &pb.Change{
++		result := &pb.Change{
+ 			Content:         noSnapshotChange.Content,
+ 			FileKeys:        noSnapshotChange.FileKeys,
+ 			Timestamp:       noSnapshotChange.Timestamp,
+ 			Version:         noSnapshotChange.Version,
+ 			ChangeType:      noSnapshotChange.ChangeType,
+ 			IntegrationName: noSnapshotChange.IntegrationName,
+-		}, nil
++		}
++		if strict {
++			if err = validateStrictStateChange(result); err != nil {
++				return nil, err
++			}
++		}
++		return result, nil
+ 	}
+ }
+ 
+@@ -128,6 +156,15 @@
+ 	var changeCount atomic.Int32
+ 	return func(treeChange *objecttree.Change, data []byte) (result any, err error) {
+ 		return unmarshalChange(treeChange, data, changeCount.CompareAndSwap(0, 1))
++	}
++}
++
++// NewUnmarshalTreeChangeStrict preserves the original first-snapshot selection
++// while selecting error-returning decode for the explicit strict reader.
++func NewUnmarshalTreeChangeStrict() objecttree.ChangeConvertFunc {
++	var changeCount atomic.Int32
++	return func(treeChange *objecttree.Change, data []byte) (any, error) {
++		return unmarshalChangeMode(treeChange, data, changeCount.CompareAndSwap(0, 1), true)
+ 	}
+ }
+ 
+@@ -605,6 +642,18 @@
+ }
+ 
+ func BuildState(spaceId string, initState *state.State, ot objecttree.ReadableObjectTree, applyState bool) (st *state.State, appliedContent []*pb.ChangeContent, changesAppliedSinceSnapshot int, err error) {
++	return buildState(spaceId, initState, ot, applyState, false)
++}
++
++// BuildStateStrict is an opt-in persisted reader over the same original replay
++// body. It never applies default state or migrations, normalizes invalid
++// snapshot metadata, or discards State.ApplyChange failures. All existing callers
++// remain on BuildState's original behavior.
++func BuildStateStrict(spaceId string, ot objecttree.ReadableObjectTree) (st *state.State, appliedContent []*pb.ChangeContent, changesAppliedSinceSnapshot int, err error) {
++	return buildState(spaceId, nil, ot, false, true)
++}
++
++func buildState(spaceId string, initState *state.State, ot objecttree.ReadableObjectTree, applyState, strict bool) (st *state.State, appliedContent []*pb.ChangeContent, changesAppliedSinceSnapshot int, err error) {
+ 	var (
+ 		startId string
+ 		count   int
+@@ -635,7 +684,11 @@
+ 
+ 	var iterErr error
+ 	var lastMigrationVersion uint32
+-	err = ot.IterateFrom(startId, NewUnmarshalTreeChange(),
++	convert := NewUnmarshalTreeChange()
++	if strict {
++		convert = NewUnmarshalTreeChangeStrict()
++	}
++	err = ot.IterateFrom(startId, convert,
+ 		func(change *objecttree.Change) bool {
+ 			count++
+ 
+@@ -653,6 +706,16 @@
+ 				return true
+ 			}
+ 
++			if strict {
++				model, ok := change.Model.(*pb.Change)
++				if !ok || model == nil {
++					iterErr = fmt.Errorf("strict replay: invalid native change model")
++					return false
++				}
++				if iterErr = validateStrictStateChange(model); iterErr != nil {
++					return false
++				}
++			}
+ 			model := change.Model.(*pb.Change)
+ 
+ 			if model.ChangeType == domain.ChangeTypeUserChange.Raw() {
+@@ -684,7 +747,13 @@
+ 			cleanUpChange(ot.Id(), change, model)
+ 			appliedContent = append(appliedContent, model.Content...)
+ 			st.SetChangeId(change.Id)
+-			st.ApplyChangeIgnoreErr(model.Content...)
++			if strict {
++				if iterErr = st.ApplyChange(model.Content...); iterErr != nil {
++					return false
++				}
++			} else {
++				st.ApplyChangeIgnoreErr(model.Content...)
++			}
+ 			st.AddFileKeys(model.FileKeys...)
+ 
+ 			return true
+@@ -696,6 +765,16 @@
+ 	if iterErr != nil {
+ 		err = fmt.Errorf("iter: %w", iterErr)
+ 		return
++	}
++	if strict {
++		if st == nil {
++			return nil, appliedContent, changesAppliedSinceSnapshot, fmt.Errorf("strict replay: no original state")
++		}
++		if !st.IsTheHeaderChange() {
++			if err = st.Validate(); err != nil {
++				return st, appliedContent, changesAppliedSinceSnapshot, fmt.Errorf("validate strict original state: %w", err)
++			}
++		}
+ 	}
+ 	if applyState {
+ 		_, _, err = state.ApplyStateFastOne(spaceId, st)
+@@ -711,3 +790,104 @@
+ 	st.SetMigrationVersion(lastMigrationVersion)
+ 	return
+ }
++
++// validateStrictStateChange runs before NewDocFromSnapshot can remove/normalize
++// metadata and before the original apply body can convert values. It does not
++// synthesize properties, infer numeric zero, or implement another replay engine.
++func validateStrictStateChange(change *pb.Change) error {
++	if change == nil {
++		return fmt.Errorf("strict replay: nil native change")
++	}
++	if snapshot := change.Snapshot; snapshot != nil {
++		if snapshot.Data == nil {
++			return fmt.Errorf("strict replay: nil snapshot data")
++		}
++		if err := pbtypes.ValidateStruct(snapshot.Data.Details); err != nil {
++			return fmt.Errorf("validate original snapshot details: %w", err)
++		}
++		if err := pbtypes.ValidateStruct(snapshot.Data.Collections); err != nil {
++			return fmt.Errorf("validate original snapshot collections: %w", err)
++		}
++		seen := make(map[string]struct{}, len(snapshot.Data.Blocks))
++		for _, block := range snapshot.Data.Blocks {
++			if err := validateStrictStateBlock(block); err != nil {
++				return err
++			}
++			if _, duplicate := seen[block.Id]; duplicate {
++				return fmt.Errorf("strict replay: duplicate snapshot block")
++			}
++			seen[block.Id] = struct{}{}
++		}
++		for _, key := range snapshot.FileKeys {
++			if key == nil {
++				return fmt.Errorf("strict replay: nil snapshot file key")
++			}
++		}
++		for _, relation := range snapshot.Data.RelationLinks {
++			if relation == nil {
++				return fmt.Errorf("strict replay: nil snapshot relation")
++			}
++		}
++	}
++	for _, content := range change.Content {
++		if content == nil || content.Value == nil {
++			return fmt.Errorf("strict replay: missing native change content")
++		}
++		if create := content.GetBlockCreate(); create != nil {
++			for _, block := range create.Blocks {
++				if err := validateStrictStateBlock(block); err != nil {
++					return err
++				}
++			}
++		}
++		if update := content.GetBlockUpdate(); update != nil {
++			for _, event := range update.Events {
++				if event == nil || event.Value == nil {
++					return fmt.Errorf("strict replay: missing original block event")
++				}
++				if fields := event.GetBlockSetFields(); fields != nil {
++					// nil Fields is an original empty/reset operation.
++					if err := pbtypes.ValidateStruct(fields.Fields); err != nil {
++						return fmt.Errorf("validate original block fields event: %w", err)
++					}
++				}
++			}
++		}
++		if set := content.GetDetailsSet(); set != nil {
++			if set.Key == "" || set.Value == nil {
++				return fmt.Errorf("strict replay: incomplete native details set")
++			}
++			if err := pbtypes.ValidateValue(set.Value); err != nil {
++				return fmt.Errorf("validate original details value: %w", err)
++			}
++		}
++		if set := content.GetStoreKeySet(); set != nil {
++			if len(set.Path) == 0 || set.Value == nil {
++				return fmt.Errorf("strict replay: incomplete native store value")
++			}
++			if err := pbtypes.ValidateValue(set.Value); err != nil {
++				return fmt.Errorf("validate original store value: %w", err)
++			}
++		}
++		if add := content.GetRelationAdd(); add != nil {
++			for _, relation := range add.RelationLinks {
++				if relation == nil {
++					return fmt.Errorf("strict replay: nil added relation")
++				}
++			}
++		}
++	}
++	return nil
++}
++
++// Validate before simple.New can synthesize an ID or state replay can retain
++// malformed Fields. Preserve original nil Fields semantics through ValidateStruct.
++func validateStrictStateBlock(block *model.Block) error {
++	if block == nil || block.Id == "" {
++		return fmt.Errorf("strict replay: invalid original block")
++	}
++	if err := pbtypes.ValidateStruct(block.Fields); err != nil {
++		return fmt.Errorf("validate original block fields: %w", err)
++	}
++	return nil
++}

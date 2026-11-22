@@ -1,0 +1,166 @@
+//go:generate mockgen -destination mock_statestorage/mock_statestorage.go github.com/anyproto/any-sync/commonspace/headsync/statestorage StateStorage
+package statestorage
+
+import (
+	anystore "github.com/anyproto/any-store"
+	"github.com/anyproto/any-store/anyenc"
+	"github.com/anyproto/any-store/query"
+	"github.com/anyproto/any-sync/util/storeutil"
+	"golang.org/x/net/context"
+)
+
+type State struct {
+	NewHash     string
+	AclId       string
+	SettingsId  string
+	SpaceId     string
+	SpaceHeader []byte
+}
+
+type Observer interface {
+	OnHashChange(hash string)
+}
+
+type StateStorage interface {
+	GetState(ctx context.Context) (State, error)
+	SettingsId() string
+	SetHash(ctx context.Context, hash string) error
+	SetObserver(observer Observer)
+}
+
+const (
+	stateCollectionKey = "state"
+	idKey              = "id"
+	newHashKey         = "nh"
+	// oldHashKey held the removed V2-diff hash; it is still mirrored on write because
+	// releases before the V2 removal treat a doc with an empty "oh" as legacy format
+	// and misread NewHash as empty (see their stateFromDoc). Drop the mirror once
+	// downgrades/coldsync to those releases are out of support.
+	oldHashKey    = "oh"
+	legacyHashKey = "h"
+	headerKey     = "e"
+	aclIdKey      = "a"
+	settingsIdKey = "s"
+)
+
+type stateStorage struct {
+	spaceId    string
+	settingsId string
+	aclId      string
+	observer   Observer
+	store      anystore.DB
+	stateColl  anystore.Collection
+	arena      *anyenc.Arena
+}
+
+func (s *stateStorage) GetState(ctx context.Context) (State, error) {
+	doc, err := s.stateColl.FindId(ctx, s.spaceId)
+	if err != nil {
+		return State{}, err
+	}
+	return s.stateFromDoc(doc), nil
+}
+
+func (s *stateStorage) SetObserver(observer Observer) {
+	s.observer = observer
+}
+
+func (s *stateStorage) SetHash(ctx context.Context, hash string) (err error) {
+	var modifyResult anystore.ModifyResult
+	defer func() {
+		if s.observer != nil && err == nil && modifyResult.Modified > 0 {
+			s.observer.OnHashChange(hash)
+		}
+	}()
+
+	mod := query.ModifyFunc(func(a *anyenc.Arena, v *anyenc.Value) (result *anyenc.Value, modified bool, err error) {
+		if storeutil.ModifyKey(v, newHashKey, a.NewString(hash)) {
+			modified = true
+		}
+
+		if storeutil.ModifyKey(v, oldHashKey, a.NewString(hash)) {
+			modified = true
+		}
+
+		return v, modified, nil
+	})
+	modifyResult, err = s.stateColl.UpsertId(ctx, s.spaceId, mod)
+
+	return err
+}
+
+func New(ctx context.Context, spaceId string, store anystore.DB) (StateStorage, error) {
+	stateCollection, err := store.Collection(ctx, stateCollectionKey)
+	if err != nil {
+		return nil, err
+	}
+	storage := &stateStorage{
+		store:     store,
+		spaceId:   spaceId,
+		stateColl: stateCollection,
+		arena:     &anyenc.Arena{},
+	}
+	st, err := storage.GetState(ctx)
+	if err != nil {
+		return nil, err
+	}
+	storage.settingsId = st.SettingsId
+	return storage, nil
+}
+
+func Create(ctx context.Context, state State, store anystore.DB) (st StateStorage, err error) {
+	tx, err := store.WriteTx(ctx)
+	if err != nil {
+		return nil, err
+	}
+	storage, err := CreateTx(tx.Context(), state, store)
+	if err != nil {
+		tx.Rollback()
+		return nil, err
+	}
+	return storage, tx.Commit()
+}
+
+func CreateTx(ctx context.Context, state State, store anystore.DB) (StateStorage, error) {
+	arena := &anyenc.Arena{}
+	stateCollection, err := store.Collection(ctx, stateCollectionKey)
+	if err != nil {
+		return nil, err
+	}
+	defer arena.Reset()
+	doc := arena.NewObject()
+	doc.Set(idKey, arena.NewString(state.SpaceId))
+	doc.Set(settingsIdKey, arena.NewString(state.SettingsId))
+	doc.Set(headerKey, arena.NewBinary(state.SpaceHeader))
+	doc.Set(aclIdKey, arena.NewString(state.AclId))
+	err = stateCollection.Insert(ctx, doc)
+	if err != nil {
+		return nil, err
+	}
+	return &stateStorage{
+		spaceId:    state.SpaceId,
+		store:      store,
+		settingsId: state.SettingsId,
+		stateColl:  stateCollection,
+		arena:      arena,
+	}, nil
+}
+
+func (s *stateStorage) SettingsId() string {
+	return s.settingsId
+}
+
+func (s *stateStorage) stateFromDoc(doc anystore.Doc) State {
+	newHash := doc.Value().GetString(newHashKey)
+	// legacy hash is used for backward compatibility, which was due to a mistake in key names
+	if newHash == "" {
+		newHash = doc.Value().GetString(legacyHashKey)
+	}
+	return State{
+		SpaceId:     doc.Value().GetString(idKey),
+		SettingsId:  doc.Value().GetString(settingsIdKey),
+		AclId:       doc.Value().GetString(aclIdKey),
+		NewHash:     newHash,
+		SpaceHeader: doc.Value().GetBytes(headerKey),
+	}
+}

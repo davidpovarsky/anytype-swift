@@ -1,0 +1,238 @@
+--- v4/core/block/object/objectcreator/fixed_schema_observer.go
++++ v5/core/block/object/objectcreator/fixed_schema_observer.go
+@@ -10,6 +10,7 @@
+ 	"slices"
+ 	"strings"
+ 
++	"github.com/anyproto/any-sync/commonspace/headsync/statestorage"
+ 	"github.com/anyproto/any-sync/commonspace/object/acl/list"
+ 	"github.com/anyproto/any-sync/util/crypto"
+ 
+@@ -212,14 +213,16 @@
+ }
+ 
+ type fixedSchemaScope struct {
+-	spaceID    string
+-	storage    anystorage.ClientSpaceStorage
+-	acl        list.AclList
+-	identity   crypto.PubKey
+-	aclID      string
+-	aclHead    string
+-	aclRoot    []byte
+-	aclRecords []fixedSchemaACLRecordIdentity
++	spaceID      string
++	storage      anystorage.ClientSpaceStorage
++	stateStorage statestorage.StateStorage
++	settingsID   string
++	acl          list.AclList
++	identity     crypto.PubKey
++	aclID        string
++	aclHead      string
++	aclRoot      []byte
++	aclRecords   []fixedSchemaACLRecordIdentity
+ }
+ 
+ func captureFixedSchemaScope(spc clientspace.Space) (fixedSchemaScope, error) {
+@@ -230,9 +233,15 @@
+ 	scope.spaceID, scope.storage, scope.acl = spc.Id(), spc.Storage(), spc.CommonSpace().Acl()
+ 	scope.identity = spc.GetAclIdentity()
+ 	if scope.spaceID == "" || scope.storage == nil || scope.storage.Id() != scope.spaceID ||
+-		scope.storage.AnyStore() == nil || scope.storage.HeadStorage() == nil ||
++		scope.storage.AnyStore() == nil || scope.storage.HeadStorage() == nil || scope.storage.StateStorage() == nil ||
+ 		scope.acl == nil || scope.identity == nil {
+ 		return scope, fmt.Errorf("%w: native Space storage or identity", ErrFixedSchemaStorage)
++	}
++	// These are retained native getters only: no DB read or initialization.
++	scope.stateStorage = scope.storage.StateStorage()
++	scope.settingsID = strings.Clone(scope.stateStorage.SettingsId())
++	if scope.settingsID == "" {
++		return scope, fmt.Errorf("%w: native settings identity", ErrFixedSchemaStorage)
+ 	}
+ 	scope.acl.RLock()
+ 	defer scope.acl.RUnlock()
+@@ -280,18 +289,20 @@
+ 
+ func (s fixedSchemaScope) same(other fixedSchemaScope) bool {
+ 	return s.spaceID == other.spaceID && s.storage == other.storage && s.acl == other.acl &&
++		s.stateStorage == other.stateStorage && s.settingsID == other.settingsID &&
+ 		s.identity.Equals(other.identity) && s.aclID == other.aclID && s.aclHead == other.aclHead &&
+ 		bytes.Equal(s.aclRoot, other.aclRoot) && slices.Equal(s.aclRecords, other.aclRecords)
+ }
+ 
+ type fixedSchemaRead struct {
++	space   fixedSchemaStoredSpace
+ 	schema  fixedSchemaStoredTree
+ 	archive fixedSchemaStoredTree
+ 	acl     fixedSchemaStoredACL
+ }
+ 
+ func (r fixedSchemaRead) same(other fixedSchemaRead) bool {
+-	return r.schema.same(other.schema) && r.archive.same(other.archive) && r.acl.same(other.acl)
++	return r.space.same(other.space) && r.schema.same(other.schema) && r.archive.same(other.archive) && r.acl.same(other.acl)
+ }
+ 
+ // These comparisons intentionally describe historical local observations. They
+--- v4/core/block/object/objectcreator/fixed_schema_snapshot.go
++++ v5/core/block/object/objectcreator/fixed_schema_snapshot.go
+@@ -12,6 +12,7 @@
+ 	"github.com/anyproto/any-store/anyenc"
+ 	"github.com/anyproto/any-store/query"
+ 	"github.com/anyproto/any-sync/commonspace/headsync/headstorage"
++	"github.com/anyproto/any-sync/commonspace/headsync/statestorage"
+ 	"github.com/anyproto/any-sync/commonspace/object/acl/list"
+ 	"github.com/anyproto/any-sync/commonspace/object/tree/objecttree"
+ 	"github.com/anyproto/any-sync/commonspace/object/tree/treechangeproto"
+@@ -58,6 +59,76 @@
+ 	s.tx = nil
+ 	s.changes, s.heads = nil, nil
+ 	return tx.Commit()
++}
++
++// The state decoder and full encoded row are read from the same real ReadTx.
++// The settings ID comes from the retained original StateStorage, not the row
++// being compared. Its actual persisted root is additionally bound to the signed
++// Space header by the original payload validator, after releasing this reader.
++type fixedSchemaStoredSpace struct {
++	state             statestorage.State
++	stateBytes        []byte
++	settingsRoot      *treechangeproto.RawTreeChangeWithId
++	settingsRootBytes []byte
++}
++
++func (s fixedSchemaStoredSpace) same(other fixedSchemaStoredSpace) bool {
++	return bytes.Equal(s.stateBytes, other.stateBytes) &&
++		bytes.Equal(s.settingsRootBytes, other.settingsRootBytes)
++}
++
++func (s *fixedSchemaSnapshot) readSpace() (result fixedSchemaStoredSpace, err error) {
++	if err = s.ctx.Err(); err != nil {
++		return result, err
++	}
++	// Do not construct statestorage.New: that path can create a collection.
++	state, err := s.scope.stateStorage.GetState(s.ctx)
++	if err != nil {
++		return result, err
++	}
++	if state.SpaceId != s.scope.spaceID || state.AclId != s.scope.aclID ||
++		state.SettingsId != s.scope.settingsID || len(state.SpaceHeader) == 0 {
++		return result, fmt.Errorf("%w: persisted native Space metadata", ErrFixedSchemaStorage)
++	}
++	state.SpaceId, state.AclId, state.SettingsId = strings.Clone(state.SpaceId), strings.Clone(state.AclId), strings.Clone(state.SettingsId)
++	state.NewHash, state.SpaceHeader = strings.Clone(state.NewHash), slices.Clone(state.SpaceHeader)
++	// These are the exact original private statestorage field names. Require
++	// their native types as well as the original decoder's values; absent/wrong
++	// fields must not be accepted through GetString/GetBytes defaulting.
++	coll, err := s.scope.storage.AnyStore().OpenCollection(s.ctx, "state")
++	if err != nil {
++		return result, err
++	}
++	doc, err := coll.FindId(s.ctx, s.scope.spaceID)
++	if err != nil {
++		return result, err
++	}
++	value := doc.Value()
++	if value.Get("id").Type() != anyenc.TypeString || value.GetString("id") != state.SpaceId ||
++		value.Get("a").Type() != anyenc.TypeString || value.GetString("a") != state.AclId ||
++		value.Get("s").Type() != anyenc.TypeString || value.GetString("s") != state.SettingsId ||
++		value.Get("e").Type() != anyenc.TypeBinary || !bytes.Equal(value.GetBytes("e"), state.SpaceHeader) {
++		return result, fmt.Errorf("%w: native state row types or projection", ErrFixedSchemaStorage)
++	}
++	result.state, result.stateBytes = state, value.MarshalTo(nil)
++	root, err := s.scope.storage.TreeRoot(s.ctx, s.scope.settingsID)
++	if err != nil {
++		return result, err
++	}
++	if root == nil || root.Id != s.scope.settingsID || len(root.RawChange) == 0 {
++		return result, fmt.Errorf("%w: original settings root identity", ErrFixedSchemaStorage)
++	}
++	result.settingsRoot = &treechangeproto.RawTreeChangeWithId{Id: strings.Clone(root.Id), RawChange: slices.Clone(root.RawChange)}
++	doc, err = s.changes.FindId(s.ctx, s.scope.settingsID)
++	if err != nil {
++		return result, err
++	}
++	value = doc.Value()
++	if value.GetString("id") != s.scope.settingsID || value.GetString(objecttree.TreeKey) != s.scope.settingsID {
++		return result, fmt.Errorf("%w: original settings root row", ErrFixedSchemaStorage)
++	}
++	result.settingsRootBytes = value.MarshalTo(nil)
++	return result, nil
+ }
+ 
+ type fixedSchemaStoredTree struct {
+--- v4/core/block/object/objectcreator/fixed_schema_acl.go
++++ v5/core/block/object/objectcreator/fixed_schema_acl.go
+@@ -6,7 +6,37 @@
+ 	"fmt"
+ 
+ 	"github.com/anyproto/any-sync/commonspace/object/acl/aclrecordproto"
++	"github.com/anyproto/any-sync/commonspace/spacepayloads"
++	"github.com/anyproto/any-sync/commonspace/spacestorage"
++	"github.com/anyproto/any-sync/commonspace/spacesyncproto"
++	"github.com/anyproto/any-sync/consensus/consensusproto"
+ )
++
++// Validate only copied persisted bytes, after the owned ReadTx has finished.
++// This is the original Space creation-payload verifier: actual header CID,
++// signature and replication key; ACL/settings root CIDs and signatures; and
++// version-specific Space/ACL/settings binding. V1 embeds the exact ACL/settings
++// payloads in its signed header and legitimately leaves root SpaceId empty.
++// No new crypto, live DB handle, ACL lock, or Space initialization is involved.
++func validateFixedSchemaSpace(ctx context.Context, scope fixedSchemaScope, stored fixedSchemaStoredSpace, acl fixedSchemaStoredACL) error {
++	if err := ctx.Err(); err != nil {
++		return err
++	}
++	if stored.state.SpaceId != scope.spaceID || stored.state.AclId != scope.aclID ||
++		stored.state.SettingsId != scope.settingsID || stored.settingsRoot == nil ||
++		stored.settingsRoot.Id != scope.settingsID || len(acl.root) == 0 {
++		return fmt.Errorf("%w: original Space payload identity", ErrFixedSchemaStorage)
++	}
++	err := spacepayloads.ValidateSpaceStorageCreatePayload(spacestorage.SpaceStorageCreatePayload{
++		SpaceHeaderWithId:   &spacesyncproto.RawSpaceHeaderWithId{Id: stored.state.SpaceId, RawHeader: stored.state.SpaceHeader},
++		AclWithId:           &consensusproto.RawRecordWithId{Id: scope.aclID, Payload: acl.root},
++		SpaceSettingsWithId: stored.settingsRoot,
++	})
++	if err != nil {
++		return fmt.Errorf("verify original persisted Space payload: %w", err)
++	}
++	return ctx.Err()
++}
+ 
+ // validateFixedSchemaACL runs only after the owned ReadTx has released its
+ // reader. The original RecordBuilder and its key storage are shared with native
+@@ -53,9 +83,11 @@
+ 			return fmt.Errorf("%w: original verified ACL membership", ErrFixedSchemaStorage)
+ 		}
+ 		if index == 0 {
++			// Space binding was already verified by the original version-aware
++			// payload validator; V1 native ACL roots have no explicit SpaceId.
+ 			root, ok := decoded.Model.(*aclrecordproto.AclRoot)
+-			if !ok || root == nil || root.SpaceId != scope.spaceID {
+-				return fmt.Errorf("%w: original ACL root Space", ErrFixedSchemaStorage)
++			if !ok || root == nil {
++				return fmt.Errorf("%w: original ACL root model", ErrFixedSchemaStorage)
+ 			}
+ 		}
+ 	}
+--- v4/core/block/object/objectcreator/fixed_schema_replay.go
++++ v5/core/block/object/objectcreator/fixed_schema_replay.go
+@@ -30,6 +30,9 @@
+ 	// The owned native read transaction is already committed/released here.
+ 	// Original ACL users can hold the ACL lock while waiting for a DB reader;
+ 	// retaining our reader across any ACL lock would invert that ordering.
++	if err = validateFixedSchemaSpace(ctx, scope, read.space, read.acl); err != nil {
++		return read, disposition, err
++	}
+ 	if err = validateFixedSchemaACL(ctx, scope, read.acl); err != nil {
+ 		return read, disposition, err
+ 	}
+@@ -82,6 +85,10 @@
+ 		return read, err
+ 	}
+ 	defer func() { err = errors.Join(err, snapshot.finish()) }()
++	read.space, err = snapshot.readSpace()
++	if err != nil {
++		return read, err
++	}
+ 	read.acl, err = snapshot.readACL()
+ 	if err != nil {
+ 		return read, err

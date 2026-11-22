@@ -1,0 +1,92 @@
+{
+  "schema": "otzaria.heart-runner-independent-review/1",
+  "status": "BOUNDED_EXECUTION_WIRING_FIXES_REQUIRED_BEFORE_FIRST_RUN",
+  "reviewedRunnerSHA256": "46574c8baabde3b34c5d2b919c5278bc0fedadb69923b6cbe3ff6cb035bd8d52",
+  "reviewedExecutionManifestSHA256": "5e0e815471463b2f27d824b621f1ee8796685bc39452018f5f5702f9a84579e7",
+  "reviewedWorkflowSHA256": "13676d598a1e6c331b37f0cf63ec29eb05220ca9a9b5d80f93ae1a9b89b43e2c",
+  "scope": "Complementary read-only runner/dependency/selection review; root owns native fixture/ACL/storage/case semantics and aggregate/PID/exit0-timeout/binary-beforeafter findings.",
+  "actualImmutableGitComparisons": [
+    {
+      "role": "original_setup_helper",
+      "commit": "d02a4972e7f124bc97a577e1c6d448d4797acf22",
+      "path": "Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "bytes": 12945,
+      "sha256": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669",
+      "matchesActualImmutableGit": true
+    },
+    {
+      "role": "r14_patch",
+      "commit": "d02a4972e7f124bc97a577e1c6d448d4797acf22",
+      "path": "docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch",
+      "bytes": 91246,
+      "sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077",
+      "matchesActualImmutableGit": true
+    },
+    {
+      "role": "r14_inventory",
+      "commit": "d02a4972e7f124bc97a577e1c6d448d4797acf22",
+      "path": "docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json",
+      "bytes": 7906,
+      "sha256": "952073d8dccc991f21bffe5d3ded4e1d5369bb2c30f247ae5204d47cb03aee14",
+      "matchesActualImmutableGit": true
+    }
+  ],
+  "moduleHashes": {
+    "go.mod": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7",
+    "go.sum": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d",
+    "tantivity_sha256.txt": "14a78977c8b08e3e976cfbe130a6092aaec707e7515aa1811326e1c028cd2948"
+  },
+  "moduleLines": [
+    "go 1.26.5",
+    "\tgithub.com/anyproto/any-store v1.0.3",
+    "\tgithub.com/anyproto/any-sync v0.13.8",
+    "\tgithub.com/anyproto/tantivy-go v1.0.6"
+  ],
+  "darwinArm64ChecksumLines": [
+    "f0e4fa9bdca31da3b115db4fbe6689c5d6cab771be8f9468e5309c818b3f8add  deps/libs/darwin-arm64.tar.gz"
+  ],
+  "originalTantivyMakefile": {
+    "sha256": "c41ebce6c9b990e5d970d95f93f6cbb025a96632347b0e1f219238aa7d819bd1",
+    "text": "### Tantivy Section\n\nREPO := anyproto/tantivy-go\nOUTPUT_DIR := deps/libs\nSHA_FILE = tantivity_sha256.txt\n\nTANTIVY_LIBS := android-386.tar.gz \\\n\tandroid-amd64.tar.gz \\\n\tandroid-arm.tar.gz \\\n\tandroid-arm64.tar.gz \\\n\tdarwin-amd64.tar.gz \\\n\tdarwin-arm64.tar.gz \\\n\tios-amd64.tar.gz \\\n\tios-arm64.tar.gz \\\n\tios-arm64-sim.tar.gz \\\n\tlinux-amd64-musl.tar.gz \\\n\tlinux-arm64-musl.tar.gz \\\n\twindows-amd64.tar.gz\n\ndefine download_tantivy_lib\n\tcurl -L -o $(OUTPUT_DIR)/$(1) https://github.com/$(REPO)/releases/download/$(TANTIVY_VERSION)/$(1)\nendef\n\ndefine remove_arch\n\trm -f $(OUTPUT_DIR)/$(1)\nendef\n\nremove-libs:\n\t@rm -rf deps/libs/*\n\nwrite-tantivy-version:\n\t@echo \"$(TANTIVY_VERSION)\" > $(OUTPUT_DIR)/.verified\n\ndownload-tantivy: remove-libs $(TANTIVY_LIBS)\n\n$(TANTIVY_LIBS):\n\t@mkdir -p $(OUTPUT_DIR)/$(shell echo $@ | cut -d'.' -f1)\n\t$(call download_tantivy_lib,$@)\n\t@tar -C $(OUTPUT_DIR)/$(shell echo $@ | cut -d'.' -f1) -xvzf $(OUTPUT_DIR)/$@\n\ndownload-tantivy-all-force: download-tantivy\n\trm -f $(SHA_FILE)\n\t@for file in $(TANTIVY_LIBS); do \\\n\t\techo \"SHA256 $(OUTPUT_DIR)/$$file\" ; \\\n\t\tshasum -a 256 $(OUTPUT_DIR)/$$file | awk '{print $$1 \"  \" \"'$(OUTPUT_DIR)/$$file'\" }' >> $(SHA_FILE); \\\n\tdone\n\t@rm -rf deps/libs/*.tar.gz\n\t@echo \"SHA256 checksums generated.\"\n\t$(MAKE) write-tantivy-version\n\ndownload-tantivy-all: download-tantivy\n\t@echo \"Validating SHA256 checksums...\"\n\t@shasum -a 256 -c $(SHA_FILE) --status || { echo \"Hash mismatch detected. Call make download-tantivy-all-force\"; exit 1; }\n\t@echo \"All files are valid.\"\n\t@rm -rf deps/libs/*.tar.gz\n\t$(MAKE) write-tantivy-version\n\ndownload-tantivy-local: remove-libs\n\t@mkdir -p $(OUTPUT_DIR)\n\t@cp -r $(TANTIVY_GO_PATH)/libs/* $(OUTPUT_DIR)\n\ncheck-tantivy-version:\n\t$(eval OLD_VERSION := $(shell [ -f $(OUTPUT_DIR)/.verified ] && cat $(OUTPUT_DIR)/.verified || echo \"\"))\n\t@if [ \"$(TANTIVY_VERSION)\" != \"$(OLD_VERSION)\" ]; then \\\n\t\t$(MAKE) download-tantivy-all; \\\n\tfi\n"
+  },
+  "sourceManifestBinding": {
+    "sha256": "c091fa3696f8b3f2610997aed65c988010529c59caeac3d53a47c1d3e028ac4d",
+    "protectedByPinnedSourceReviewIndex": true
+  },
+  "findings": [
+    {
+      "id": "whole-fetch-budget",
+      "source": "runner main inline original_setup.fetch_tantivy; exact helper fetch_tantivy urlretrieve/hash/tar loop",
+      "required": "Invoke only unchanged pinned helper fetch_tantivy in an owned finite child under aggregate deadline; per-socket timeout alone does not bound the whole download or local extraction."
+    },
+    {
+      "id": "declared-closure-coverage",
+      "source": "dependency_inputs and caller before native compile",
+      "required": "Require nonempty go-list closure, both selected original packages, and all five exact candidate plus four new test sources in the actual declared source set before accepting provenance."
+    },
+    {
+      "id": "external-native-inputs",
+      "source": "fetch_tantivy return value and CGO_LDFLAGS selection",
+      "required": "Retain exact extracted Tantivy file-set/hashes before and after linking, separately from Go-declared inputs; original helper currently returns only architecture and archive hash."
+    },
+    {
+      "id": "owned-group-drain",
+      "source": "Commands.run timeout branch",
+      "required": "Ensure only the owned process group has drained after TERM even if the immediate parent exits first; remaining owned children must not outlive TMPDIR cleanup."
+    }
+  ],
+  "acceptedBoundaries": [
+    "Actual d02a helper, r14 patch and inventory bytes match immutable Git.",
+    "Pinned source review index includes SOURCE_MANIFEST.json c091; this manifest is not unbound.",
+    "r14 has35 paths, disjoint from five observer candidates, and no module/checksum input edits.",
+    "Only two anchored new parent test names are executed; 33+12 exact children, duplicate starts/terminal events, unexpected tests and skips are checked.",
+    "Go uses mod=readonly, local pinned toolchain and original module/native checksum before/after validation.",
+    "Explicit source-closure exclusions for generated cgo and complete Apple SDK headers remain necessary.",
+    "Native runtime environment excludes CI credential variables while preserving original HOME/PATH; disposable TMPDIR is an owned newly created directory."
+  ],
+  "limits": [
+    "No Go build/test/native runtime/download was invoked by reviewer.",
+    "No full observer or production schema/authority/receipt/ACK qualification.",
+    "Binary bytes are currently retained only under work; published artifact scope presently contains runner-recorded hashes/logs, not independent downloaded executable bytes."
+  ]
+}

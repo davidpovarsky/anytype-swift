@@ -1,0 +1,27 @@
+{
+  "schema": "otzaria.heart-strict-controls-independent-review/1",
+  "status": "APPROVED_FOR_FIRST_EXECUTION_WITHIN_REVIEWED_SCOPE",
+  "scope": "Read-only review of corrected twelve new strict decoder controls; no edits, compilation or execution",
+  "candidateSHA256": "2cd96e7827eb5a50353a6e3d649aaf2a6f97a1db6dc0e86bfa6ab58e756006d2",
+  "candidateBytes": 5695,
+  "candidateLines": 145,
+  "patchSHA256": "051d0fe35f7cdc719fea3b15490efb17eaf213dd3519d64b06e10a836b7c1b0a",
+  "unchangedOriginalControlSHA256": "f9e922e8486065ae1354003deab01c294b4a2ee2f7ff17db020d540adb214efd",
+  "productSHA256": "30481a09de754219aa3e714cab42a5750880f9d835a720e1330de22690262e55",
+  "priorReviewSHA256": "8d086c947a6b7f8c78adbc290545cdc3f127fb031f7074607ec8223a21180268",
+  "closedFindings": [
+    {
+      "id": "compression-origin",
+      "proof": "The same actual encoded empty pb.Change must yield a nonnil error from native snappy.DecodedLen, succeed and preserve exact protobuf through the ordinary fallback, then yield an errors.Is match to that exact native cause through strict decoding. A generic protobuf parse error no longer satisfies the assertion."
+    },
+    {
+      "id": "nil-fields-preservation",
+      "proof": "The positive helper now asserts actual proto.Equal, returns the actual *pb.Change, and each snapshot/create/BlockSetFields case separately requires its concrete decoded Fields to remain nil."
+    }
+  ],
+  "limits": [
+    "Source/control approval only; actual Go build and test results remain unexecuted.",
+    "No storage/ACL/whole-observer or native fixture qualification.",
+    "No old assertions were executed by reviewer."
+  ]
+}

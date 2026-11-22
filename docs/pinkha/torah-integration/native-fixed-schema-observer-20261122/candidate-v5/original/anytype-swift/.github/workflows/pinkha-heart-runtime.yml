@@ -1,0 +1,68 @@
+name: Rebuild the pinned r14 Heart runtime
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  runtime:
+    runs-on: xcode-27
+    timeout-minutes: 150
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
+    steps:
+      - name: Checkout exact control source
+        uses: actions/checkout@v4
+      - name: Select compatible native ARM64 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: arm64
+      - name: Install the pinned Go toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.5'
+          cache: false
+      - name: Checkout the exact native Heart source
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: build/Heart-Runtime
+      - name: Build and verify the unchanged r14 source and binary slices
+        run: |
+          python3 Tools/PinkhaNativeDerived/build_custom_heart.py \
+            --heart-source build/Heart-Runtime \
+            --patch docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch \
+            --inventory docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json \
+            --approved-patch-sha256 fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077 \
+            --apply-approved-patch --target ios --skip-native-tests \
+            --evidence build/runtime-evidence/heart
+      - name: Package the verified runtime and its source receipt
+        run: |
+          cp build/runtime-evidence/heart/custom-heart-build.json build/Heart-Runtime/dist/ios/PinkhaNativeHeartBuild.json
+          tar -czf build/Pinkha-Universal-Verified-Heart-r14.tar.gz \
+            -C build/Heart-Runtime/dist/ios Lib.xcframework PinkhaNativeHeartBuild.json
+      - name: Retain the exact runtime for source-bound app tests
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Universal-Verified-Heart-r14
+          path: build/Pinkha-Universal-Verified-Heart-r14.tar.gz
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 14
+      - name: Package build evidence
+        if: always()
+        run: |
+          mkdir -p build/runtime-evidence
+          python3 Tools/PinkhaNativeDerived/package_evidence.py build/runtime-evidence
+      - name: Retain build evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Heart-Runtime-Evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/runtime-evidence/Pinkha-Native-Derived-Evidence.zip
+          if-no-files-found: warn
+          retention-days: 14

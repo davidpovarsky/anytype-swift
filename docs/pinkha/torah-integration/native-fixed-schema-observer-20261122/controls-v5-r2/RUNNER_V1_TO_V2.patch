@@ -1,0 +1,41 @@
+--- draft-v1/run_original_native_schema_controls.py
++++ draft-v2/run_original_native_schema_controls.py
+@@ -209,17 +209,21 @@
+         raise RuntimeError("the reviewed real-runtime route requires actual macOS ARM64")
+     evidence.mkdir(parents=True)
+     work.mkdir(parents=True)
++    owned_temp = work / "native-temp"
++    owned_temp.mkdir()
+     # Preserve the real system HOME/PATH. Do not forward CI credentials or arbitrary
+     # API keys to the disposable native runtime; no environment values are logged.
+     allowed_env = ("PATH", "HOME", "TMPDIR", "LANG", "LC_ALL", "DEVELOPER_DIR", "SDKROOT", "GOCACHE", "GOMODCACHE")
+     env = {key: os.environ[key] for key in allowed_env if key in os.environ}
++    env["TMPDIR"] = str(owned_temp)
+     env.update({"CGO_ENABLED": "1", "GOMAXPROCS": "2", "GOTOOLCHAIN": "local", "GOWORK": "off", "GOFLAGS": "-mod=readonly"})
+     commands = Commands(evidence, env)
+     result = {
+         "status": "STARTED_NOT_ACCEPTED", "heart_base": PIN, "control_head": args.control_head,
+         "source_index_sha256": manifest["source_index_sha256"],
+         "execution_manifest_sha256": digest(manifest_path), "tests": {},
+-        "native_schema_writes_by_observer": False, "ios_build": False,
++        "observer_write_scope": "Reviewed observer adds no mutation API; no whole-database no-write runtime measurement is claimed.",
++        "ios_build": False,
+         "scope": "Disposable genuine original LocalOnly Heart runtime; no production registration/repair, annotation authority/receipt or ACK.",
+     }
+     write_json(evidence / "RESULT.json", result)
+@@ -329,6 +333,15 @@
+         result["error_type"] = type(error).__name__
+         result["error"] = str(error)
+     finally:
++        # This exact directory was created by this run under a previously absent
++        # owned work root. No original account path is ever removed.
++        try:
++            shutil.rmtree(owned_temp)
++            result["owned_disposable_temp_removed"] = True
++        except Exception as error:
++            result["owned_disposable_temp_removed"] = False
++            result["cleanup_error_type"] = type(error).__name__
++            result["status"], success = "FAIL", False
+         result["commands"] = len(commands.items)
+         result["finished_unix"] = time.time()
+         write_json(evidence / "RESULT.json", result)

@@ -1,0 +1,370 @@
+--- r1/run_original_native_schema_controls.py
++++ r2/run_original_native_schema_controls.py
+@@ -8,14 +8,12 @@
+ """
+ import argparse
+ import hashlib
+-import importlib.util
+ import json
+ import os
+ from pathlib import Path
+ import platform
+ import shutil
+ import signal
+-import socket
+ import subprocess
+ import sys
+ import time
+@@ -42,7 +40,12 @@
+ 
+ 
+ def write_json(path, value):
+-    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
++    temporary = path.with_name(path.name + ".tmp")
++    with temporary.open("w", encoding="utf-8") as stream:
++        stream.write(json.dumps(value, indent=2, sort_keys=True) + "\n")
++        stream.flush()
++        os.fsync(stream.fileno())
++    os.replace(temporary, path)
+ 
+ 
+ def safe_path(root, relative):
+@@ -64,49 +67,136 @@
+ 
+ 
+ class Commands:
+-    def __init__(self, evidence, env):
+-        self.evidence, self.env, self.items = evidence, env, []
++    def __init__(self, evidence, env, deadline):
++        self.evidence, self.env, self.deadline = evidence, env, deadline
++        self.monotonic_deadline = time.monotonic() + max(0.0, deadline - time.time())
++        self.items = []
++        self.owned_groups_drained = True
++
++    def persist(self):
++        write_json(self.evidence / "COMMANDS.json", self.items)
++
++    def cleanup_event(self, item, event, **values):
++        item.setdefault("cleanup", []).append({"event": event, "unix": time.time(), **values})
++        # Cleanup must still happen if receipt storage itself fails.
++        try:
++            self.persist()
++        except Exception as error:
++            item["receipt_error_type"] = type(error).__name__
++
++    @staticmethod
++    def group_exists(pgid):
++        try:
++            os.killpg(pgid, 0)
++            return True
++        except ProcessLookupError:
++            return False
++
++    def signal_group(self, item, sig):
++        self.cleanup_event(item, "SIGNAL_REQUESTED", signal=int(sig))
++        try:
++            os.killpg(item["process_group_id"], sig)
++            self.cleanup_event(item, "SIGNAL_SENT", signal=int(sig))
++        except ProcessLookupError:
++            self.cleanup_event(item, "GROUP_ALREADY_ABSENT", signal=int(sig))
++
++    def drain(self, item, process, terminate):
++        pgid = item["process_group_id"]
++        if terminate:
++            self.signal_group(item, signal.SIGTERM)
++            try:
++                process.wait(timeout=10)
++            except subprocess.TimeoutExpired:
++                pass
++        # A parent that exits after TERM may leave an ignoring descendant.
++        # Check the originally owned group even when that parent has exited.
++        if self.group_exists(pgid):
++            self.signal_group(item, signal.SIGKILL)
++        try:
++            process.wait(timeout=10)
++        except subprocess.TimeoutExpired:
++            self.cleanup_event(item, "PARENT_REAP_TIMEOUT")
++        deadline = time.monotonic() + 5
++        while self.group_exists(pgid) and time.monotonic() < deadline:
++            time.sleep(0.1)
++        drained = not self.group_exists(pgid)
++        self.cleanup_event(item, "OWNED_GROUP_DRAIN_RESULT", drained=drained)
++        if not drained:
++            self.owned_groups_drained = False
++        return drained
+ 
+     def run(self, label, argv, cwd, seconds):
+         index = len(self.items) + 1
+         stdout = self.evidence / f"{index:02d}-{label}.stdout"
+         stderr = self.evidence / f"{index:02d}-{label}.stderr"
+         started = time.time()
+-        timed_out = False
+-        with stdout.open("wb") as out, stderr.open("wb") as err:
+-            process = subprocess.Popen(argv, cwd=cwd, env=self.env, stdout=out, stderr=err, start_new_session=True)
+-            try:
+-                code = process.wait(timeout=seconds)
+-            except subprocess.TimeoutExpired:
+-                timed_out = True
+-                # Only this freshly spawned owned process group is stopped.
+-                try:
+-                    os.killpg(process.pid, signal.SIGTERM)
+-                except ProcessLookupError:
+-                    pass
+-                try:
+-                    code = process.wait(timeout=10)
+-                except subprocess.TimeoutExpired:
+-                    try:
+-                        os.killpg(process.pid, signal.SIGKILL)
+-                    except ProcessLookupError:
+-                        pass
+-                    code = process.wait(timeout=10)
++        effective_seconds = min(float(seconds), max(0.0, self.monotonic_deadline - time.monotonic()))
+         item = {
+             "label": label, "argv": [str(x) for x in argv], "cwd": str(cwd),
+-            "pid": process.pid, "returncode": code, "timed_out": timed_out,
+-            "duration_seconds": round(time.time() - started, 3),
+-            "stdout": stdout.name, "stdout_sha256": digest(stdout),
+-            "stderr": stderr.name, "stderr_sha256": digest(stderr),
++            "status": "STARTING", "started_unix": started, "pid": None,
++            "process_group_id": None, "start_new_session": True,
++            "requested_timeout_seconds": seconds, "effective_timeout_seconds": effective_seconds,
++            "absolute_command_deadline_unix": self.deadline,
++            "returncode": None, "effective_returncode": None, "timed_out": False,
++            "stdout": stdout.name, "stderr": stderr.name, "cleanup": [],
+         }
+         self.items.append(item)
+-        write_json(self.evidence / "COMMANDS.json", self.items)
+-        print(json.dumps({"stage": label, "returncode": code, "timed_out": timed_out}), flush=True)
+-        return code, stdout, stderr
++        self.persist()  # Actionable start intent exists before Popen.
++        process = None
++        try:
++            with stdout.open("wb") as out, stderr.open("wb") as err:
++                if effective_seconds <= 0:
++                    item.update({"status": "REFUSED_GLOBAL_DEADLINE", "effective_returncode": 124, "budget_exhausted": True})
++                else:
++                    process = subprocess.Popen(argv, cwd=cwd, env=self.env, stdout=out, stderr=err, start_new_session=True)
++                    # POSIX start_new_session creates this owned process group.
++                    item.update({"status": "RUNNING", "pid": process.pid, "process_group_id": process.pid,
++                                 "child_started_unix": time.time()})
++                    self.persist()  # Persist ownership BEFORE awaiting the child.
++                    try:
++                        remaining = min(effective_seconds, max(0.0, self.monotonic_deadline - time.monotonic()))
++                        if remaining <= 0:
++                            raise subprocess.TimeoutExpired(argv, remaining)
++                        code = process.wait(timeout=remaining)
++                    except subprocess.TimeoutExpired:
++                        item.update({"status": "TIMED_OUT", "timed_out": True})
++                        self.persist()
++                        self.drain(item, process, terminate=True)
++                        code = process.returncode
++                    else:
++                        if self.group_exists(process.pid):
++                            item["unexpected_owned_descendants"] = True
++                            self.drain(item, process, terminate=False)
++                        else:
++                            self.cleanup_event(item, "OWNED_GROUP_ABSENT_AFTER_WAIT", drained=True)
++                    effective_code = 124 if item["timed_out"] else (code if code is not None else 125)
++                    if item.get("unexpected_owned_descendants") or not self.owned_groups_drained:
++                        effective_code = effective_code or 125
++                    item.update({"status": "TERMINAL", "returncode": code, "effective_returncode": effective_code})
++        except BaseException as error:
++            item.update({"status": "INTERRUPTED_OR_FAILED", "error_type": type(error).__name__,
++                         "effective_returncode": 125})
++            if process is not None:
++                try:
++                    self.drain(item, process, terminate=True)
++                except Exception as cleanup_error:
++                    self.owned_groups_drained = False
++                    self.cleanup_event(item, "DRAIN_ERROR", error_type=type(cleanup_error).__name__)
++                item["returncode"] = process.returncode
++            raise
++        finally:
++            item["duration_seconds"] = round(time.time() - started, 3)
++            for name, path in (("stdout", stdout), ("stderr", stderr)):
++                if path.exists():
++                    item[name + "_sha256"] = digest(path)
++            self.persist()
++        print(json.dumps({"stage": label, "returncode": item["returncode"],
++                          "effective_returncode": item["effective_returncode"], "timed_out": item["timed_out"]}), flush=True)
++        return item["effective_returncode"], stdout, stderr
+ 
+     def require(self, label, argv, cwd, seconds):
+         code, stdout, stderr = self.run(label, argv, cwd, seconds)
+-        if code:
++        if code or self.items[-1]["timed_out"]:
+             raise RuntimeError("owned command failed: " + label)
+         return stdout
+ 
+@@ -126,7 +216,7 @@
+     return values
+ 
+ 
+-def dependency_inputs(listing):
++def dependency_inputs(listing, heart, expected_inputs):
+     packages, files = [], {}
+     for package in read_json_stream(listing):
+         if package.get("Error") or package.get("DepsErrors"):
+@@ -143,10 +233,38 @@
+                     if not path.is_file():
+                         raise RuntimeError("declared native compilation input is missing: " + str(path))
+                     files[str(path)] = {"path": str(path), "bytes": path.stat().st_size, "sha256": digest(path)}
++    selected = {"github.com/anyproto/anytype-heart/" + package[2:] for package, _ in PACKAGES.values()}
++    present = {entry["import_path"] for entry in packages}
++    if not files or not packages or not selected.issubset(present):
++        raise RuntimeError("empty/incomplete original selected-package dependency closure")
++    coverage = []
++    for entry in expected_inputs:
++        path = str((heart / entry["path"]).resolve())
++        actual = files.get(path)
++        if actual is None or actual["sha256"] != entry["sha256"]:
++            raise RuntimeError("declared closure omits/differs from reviewed product/test input: " + entry["path"])
++        coverage.append({"path": entry["path"], "sha256": actual["sha256"]})
+     return {
++        "selected_original_packages": sorted(selected), "required_product_test_coverage": coverage,
+         "scope": "Actual original Go-declared package/test/embed/native source inputs; generated cgo outputs and complete Apple SDK headers are not claimed.",
+         "packages": packages, "files": sorted(files.values(), key=lambda x: x["path"]),
+     }
++
++
++def native_library_inputs(heart):
++    directory = heart / "deps/libs/darwin-arm64"
++    archive = heart / "deps/libs/darwin-arm64.tar.gz"
++    if not directory.is_dir() or not archive.is_file():
++        raise RuntimeError("actual original Tantivy archive/library directory is absent")
++    files = []
++    for path in sorted(directory.rglob("*")):
++        if path.is_symlink():
++            raise RuntimeError("unexpected native library symlink")
++        if path.is_file():
++            files.append({"path": path.relative_to(directory).as_posix(), "bytes": path.stat().st_size, "sha256": digest(path)})
++    if not files:
++        raise RuntimeError("actual extracted native dependency set is empty")
++    return {"architecture": "darwin-arm64", "archive_sha256": digest(archive), "files": files}
+ 
+ 
+ def validate_cases(path, parent, expected):
+@@ -182,6 +300,7 @@
+     parser.add_argument("--work", required=True, type=Path)
+     parser.add_argument("--evidence", required=True, type=Path)
+     parser.add_argument("--go", default="go")
++    parser.add_argument("--job-deadline-unix", required=True, type=int)
+     args = parser.parse_args()
+     control, source, controls, heart = (p.resolve() for p in (args.control_root, args.source, args.controls, args.heart))
+     evidence, work = args.evidence.resolve(), args.work.resolve()
+@@ -217,11 +336,17 @@
+     env = {key: os.environ[key] for key in allowed_env if key in os.environ}
+     env["TMPDIR"] = str(owned_temp)
+     env.update({"CGO_ENABLED": "1", "GOMAXPROCS": "2", "GOTOOLCHAIN": "local", "GOWORK": "off", "GOFLAGS": "-mod=readonly"})
+-    commands = Commands(evidence, env)
++    # The first workflow step fixes the absolute job deadline. Reserve three
++    # minutes inside it for owned cleanup/evidence, plus five more before the
++    # outer 120-minute job timeout for artifact upload.
++    commands = Commands(evidence, env, args.job_deadline_unix - 180)
+     result = {
+         "status": "STARTED_NOT_ACCEPTED", "heart_base": PIN, "control_head": args.control_head,
+         "source_index_sha256": manifest["source_index_sha256"],
+         "execution_manifest_sha256": digest(manifest_path), "tests": {},
++        "job_deadline_unix": args.job_deadline_unix,
++        "command_deadline_unix": commands.deadline,
++        "cleanup_reserve_seconds": 180,
+         "observer_write_scope": "Reviewed observer adds no mutation API; no whole-database no-write runtime measurement is claimed.",
+         "ios_build": False,
+         "scope": "Disposable genuine original LocalOnly Heart runtime; no production registration/repair, annotation authority/receipt or ACK.",
+@@ -229,6 +354,8 @@
+     write_json(evidence / "RESULT.json", result)
+     success = False
+     try:
++        if args.job_deadline_unix > time.time() + 7000 or commands.deadline <= time.time():
++            raise RuntimeError("invalid/exhausted absolute workflow budget")
+         original_module_hashes = {p: digest(heart / p) for p in ("go.mod", "go.sum", "tantivity_sha256.txt")}
+         if original_module_hashes != manifest["original_module_hashes"]:
+             raise RuntimeError("original module/native checksum inputs differ")
+@@ -279,21 +406,23 @@
+         write_json(evidence / "RESULT.json", result)
+ 
+         helper = check_file(controls, manifest["original_setup_helper"])
+-        spec = importlib.util.spec_from_file_location("reviewed_original_heart_setup", helper)
+-        original_setup = importlib.util.module_from_spec(spec)
+-        sys.dont_write_bytecode = True
+-        spec.loader.exec_module(original_setup)
+-        # Only this pinned original download/checksum/extraction function is reused.
+-        # Its main(), old package list, gomobile and framework build are never called.
+-        prior_socket_timeout = socket.getdefaulttimeout()
+-        socket.setdefaulttimeout(60)
+-        try:
+-            result["tantivy"] = original_setup.fetch_tantivy(heart, "darwin-arm64")
+-        finally:
+-            socket.setdefaulttimeout(prior_socket_timeout)
++        setup_child = check_file(controls, manifest["original_setup_child"])
++        setup_receipt = evidence / "TANTIVY_SETUP.json"
++        commands.require("original-tantivy-setup", [
++            sys.executable, str(setup_child), "--heart", str(heart), "--helper", str(helper),
++            "--helper-sha256", manifest["original_setup_helper"]["sha256"],
++            "--receipt", str(setup_receipt),
++        ], heart, 600)
++        result["tantivy"] = json.loads(setup_receipt.read_text())
++        native_before = native_library_inputs(heart)
++        if native_before["archive_sha256"] != result["tantivy"]["archive_sha256"]:
++            raise RuntimeError("native archive changed after original setup")
++        write_json(evidence / "TANTIVY_INPUTS_BEFORE.json", native_before)
+         env["CGO_LDFLAGS"] = "-L" + str(heart / "deps/libs/darwin-arm64")
+         listing = commands.require("declared-dependency-inputs", [args.go, "list", "-deps", "-test", "-json", *[v[0] for v in PACKAGES.values()]], heart, 1200)
+-        closure = dependency_inputs(listing)
++        closure = dependency_inputs(listing, heart, compiled_product_inputs)
++        if len(closure["required_product_test_coverage"]) != 9:
++            raise RuntimeError("exact five product plus four test input coverage required")
+         write_json(evidence / "DECLARED_NATIVE_INPUTS.json", closure)
+         result["declared_native_inputs_sha256"] = digest(evidence / "DECLARED_NATIVE_INPUTS.json")
+         result["declared_native_input_count"] = len(closure["files"])
+@@ -305,15 +434,25 @@
+                 result["tests"][name] = {"compiled": False, "pass": False}
+                 write_json(evidence / "RESULT.json", result)
+                 continue
++            binary_before = digest(binary)
++            actual = {"compiled": True, "pass": False, "binary_sha256_before": binary_before,
++                      "binary_bytes": binary.stat().st_size, "execution_started": False,
++                      "binary_evidence_scope": "Runner-observed hashes; executable bytes are excluded from uploaded evidence and not independently rehashed by root."}
++            result["tests"][name] = actual
++            write_json(evidence / "RESULT.json", result)
+             buildinfo = commands.require("buildinfo-" + name, [args.go, "version", "-m", str(binary)], heart, 30)
++            actual.update({"buildinfo_sha256": digest(buildinfo), "execution_started": True})
++            write_json(evidence / "RESULT.json", result)
+             code, output, _ = commands.run("run-" + name, [
+                 args.go, "tool", "test2json", "-t", "-p", package, str(binary),
+                 "-test.v=test2json", "-test.count=1", "-test.run=^" + parent + "$", "-test.timeout=12m",
+             ], heart, 780)
+-            actual = validate_cases(output, parent, manifest["expected_cases"][name])
+-            actual.update({"compiled": True, "binary_sha256": digest(binary), "binary_bytes": binary.stat().st_size,
+-                           "buildinfo_sha256": digest(buildinfo), "process_returncode": code})
+-            actual["pass"] = actual["pass"] and code == 0
++            binary_after = digest(binary)
++            actual.update(validate_cases(output, parent, manifest["expected_cases"][name]))
++            actual.update({"binary_sha256_after": binary_after, "binary_unchanged": binary_before == binary_after,
++                           "process_returncode": commands.items[-1]["returncode"], "effective_returncode": code,
++                           "timed_out": commands.items[-1]["timed_out"]})
++            actual["pass"] = actual["pass"] and code == 0 and not actual["timed_out"] and actual["binary_unchanged"]
+             result["tests"][name] = actual
+             write_json(evidence / "RESULT.json", result)
+ 
+@@ -325,6 +464,11 @@
+         for entry in closure["files"]:
+             if digest(entry["path"]) != entry["sha256"]:
+                 raise RuntimeError("declared native source input changed during execution")
++        native_after = native_library_inputs(heart)
++        write_json(evidence / "TANTIVY_INPUTS_AFTER.json", native_after)
++        if native_before != native_after:
++            raise RuntimeError("extracted native library file set/bytes changed during linking/execution")
++        result["native_library_inputs_unchanged"] = True
+         result["post_execution_source_recheck"] = True
+         success = set(result["tests"]) == set(PACKAGES) and all(v["pass"] for v in result["tests"].values())
+         result["status"] = "PASS" if success else "FAIL"
+@@ -336,6 +480,8 @@
+         # This exact directory was created by this run under a previously absent
+         # owned work root. No original account path is ever removed.
+         try:
++            if not commands.owned_groups_drained:
++                raise RuntimeError("owned native process group did not drain; preserve its temporary files for explicit cleanup")
+             shutil.rmtree(owned_temp)
+             result["owned_disposable_temp_removed"] = True
+         except Exception as error:

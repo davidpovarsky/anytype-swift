@@ -1,0 +1,84 @@
+{
+  "schema": "otzaria.heart-runner-independent-review/2",
+  "status": "APPROVED_FOR_FIRST_ACTUAL_EXECUTION_WITHIN_DECLARED_SCOPE",
+  "files": [
+    {
+      "path": "run_original_native_schema_controls.py",
+      "bytes": 27557,
+      "sha256": "e9cebdaac6326374098db331bfe1b05e2d3141a0c1759d77897cb5d1ac83a1e1"
+    },
+    {
+      "path": "prepare_original_tantivy.py",
+      "bytes": 1242,
+      "sha256": "7f2f4b11bc6803241333f04c935ed85f3007fcb6894fd02b03fcc0fa7d50be43"
+    },
+    {
+      "path": "EXECUTION_INPUTS.json",
+      "bytes": 11619,
+      "sha256": "0a9751cb534c184e35ee166ef6b1aff9d2756ab2cd3c2a20b20f9e0d7b25f792"
+    },
+    {
+      "path": "PROPOSED_WORKFLOW.yml",
+      "bytes": 3210,
+      "sha256": "3f19c5958bb026b50e4d0fccc48d4a4a090bf9e4e4c68b06bb9596b6970a2f36"
+    },
+    {
+      "path": "REVIEW_INDEX.json",
+      "bytes": 21886,
+      "sha256": "c8a125a81915b88b5da80f62f9cb7758d777630a652c501de0c24171f9d94e61"
+    }
+  ],
+  "exactR1ToR2PatchSHA256": "7fbd196f12eb39c3a4a2f0f4d7cd46240a1854cb79c983bdba3eccf0944ac0cc",
+  "exactR1ToR2PatchReconstructed": true,
+  "previousReviewSHA256": "28d4d3fb973008112d9075b226ac003cee79dffcfb74d5ea6aa9dc9e3f874378",
+  "unchangedTestSources": [
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_fixture_test.go",
+      "bytes": 13021,
+      "sha256": "574a92ed1b1f8ebc23d96bff7f24cfbabb46d0dde9186edacbd2948327afe66e",
+      "unchangedFromR1": true
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_trace_test.go",
+      "bytes": 8977,
+      "sha256": "129341500230b4e053985b34155cf48f6dcad185027e5ba1d5a89859c347a98d",
+      "unchangedFromR1": true
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_observer_test.go",
+      "bytes": 25210,
+      "sha256": "32b20449a80496c9b624dac6f09dd97356522740d953f742d4b00f081e078221",
+      "unchangedFromR1": true
+    },
+    {
+      "path": "core/block/source/sourceimpl/fixed_schema_strict_test.go",
+      "bytes": 5695,
+      "sha256": "2cd96e7827eb5a50353a6e3d649aaf2a6f97a1db6dc0e86bfa6ab58e756006d2",
+      "unchangedFromR1": true
+    }
+  ],
+  "expectedCaseCounts": {
+    "native": 33,
+    "strict": 12
+  },
+  "sourceIndexAndOriginalModuleInputsUnchanged": true,
+  "closedBoundaries": [
+    "Owned command start intent and spawned PID/process-group ownership are atomically retained before wait.",
+    "Every stage uses remaining absolute monotonic command budget. Timeout remains effective124 even if the immediate process exits0 after TERM.",
+    "Owned group existence is checked after parent exit, surviving descendants are killed, and failed drain refuses disposable TMPDIR removal.",
+    "The unchanged original helper fetch_tantivy is invoked only inside an owned finite600s child, with original helper hashes checked before/after; no old builder main/regression list is invoked.",
+    "Go-declared input set requires nonempty data, both selected original packages and all five candidate/four new test files with exact hashes.",
+    "Archive and entire extracted Tantivy file set are recorded before/after linking/execution and must remain identical.",
+    "Each actual executable is hashed before/after its one selected execution; timeout/nonzero/unexpected events/changed binary cannot qualify.",
+    "Two anchored parent selectors and exact33+12 child names remain unchanged, with no old cases selected.",
+    "Workflow fixes first-step deadline at+6900s; command phase reserves180s inside it, leaving additional margin before120min outer timeout."
+  ],
+  "limits": [
+    "Read-only source/control review; no Go, native download, compilation, test or product patch application performed by reviewer.",
+    "Actual native/Go execution and observed cleanup remain pending.",
+    "Published executable evidence is runner-observed hash/size/buildinfo only; executable bytes are intentionally outside uploaded evidence, so no independent local binary rehash is claimed.",
+    "Generated CGO outputs and full Apple SDK headers remain outside declared source closure.",
+    "Root separately owns full native fixture, storage/ACL, source composition and product admission review.",
+    "No production schema provisioning/annotation capability/body receipt/ACK is authorized by these controls."
+  ]
+}

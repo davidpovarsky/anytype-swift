@@ -1,0 +1,82 @@
+{
+  "schema": "otzaria.heart-v4-strict-delta-review/1",
+  "status": "APPROVED_BOUNDED_SOURCE_CLOSURE_NOT_RUNTIME_QUALIFICATION",
+  "reviewer": "/root/native_completion",
+  "utc": "2026-11-22T08:35:34.115971+00:00",
+  "v3": {
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-schema-observer-source-20261122\\candidate-v3\\candidate\\core\\block\\source\\sourceimpl\\source.go",
+    "bytes": 26279,
+    "sha256": "156ebd86ec2f736c5cb08a26a0a8542470c2f4782a9fa5057073ace2a8251eb7"
+  },
+  "v4": {
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-schema-observer-source-20261122\\candidate-v4\\candidate\\core\\block\\source\\sourceimpl\\source.go",
+    "bytes": 27591,
+    "sha256": "30481a09de754219aa3e714cab42a5750880f9d835a720e1330de22690262e55"
+  },
+  "exactTransform": {
+    "replacements": 3,
+    "helperAddition": true,
+    "uniquePreimages": true,
+    "reconstructsExactBytes": true,
+    "specSHA256": "9e3dc6e3d46a3b0ee194cafc5437f351d58da4700e868eea5452ebea43c0aba7"
+  },
+  "closedFindings": [
+    {
+      "id": "strict-unsupported-data-type",
+      "closure": "Strict-only guard permits exactly the empty tag and original 1/s. Nil treeChange is short-circuited before dereference. Existing ordinary strict=false path still uses the original codec behavior.",
+      "anchors": "source.go unmarshalChangeMode entry"
+    },
+    {
+      "id": "strict-block-metadata",
+      "closure": "Snapshots and ChangeBlockCreate both call validateStrictStateBlock before replay/simple.New. It refuses nil block/empty ID and calls original pbtypes.ValidateStruct(block.Fields). BlockSetFields calls the same original Fields validator before applyEvent can assign it.",
+      "anchors": "validateStrictStateChange snapshot/create/update branches; validateStrictStateBlock"
+    },
+    {
+      "id": "preserve-nil-reset-fields",
+      "closure": "No blanket nonnil Fields guard. Actual original pbtypes.ValidateStruct(nil) returns nil, so existing empty/reset Fields semantics are retained.",
+      "anchors": "d984 util/pbtypes/pbtypes.go657-660"
+    }
+  ],
+  "originalSourceSupport": [
+    {
+      "base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "core/block/editor/state/change.go",
+      "sha256": "0aa6ae2d72ca0d9f5a3551a82a183f0a505e2d31541f19d211f4ea111b46c2ac",
+      "anchors": "NewDocFromSnapshot55-58; changeBlockCreate342-361"
+    },
+    {
+      "base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "core/block/editor/state/event.go",
+      "sha256": "ddf6bc1369c2bf37666bae7316e81f6c22db6beb8aefe3800eab62b676db1bbb",
+      "anchors": "EventBlockSetFields93-99"
+    },
+    {
+      "base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "core/block/editor/state/state.go",
+      "sha256": "664a3e6d69406521e4e9b80a237d74b5c55283eb7f1fc05480ca7e2f072d84a5",
+      "anchors": "Validate1273-1296 structural child graph"
+    },
+    {
+      "base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "core/block/simple/simple.go",
+      "sha256": "d4a405a8811e2551d381c5d2fe456b4e3a3348ebd2938c5f2e92d9ddb1a2e5fd",
+      "anchors": "New68-77 empty-ID synthesis"
+    },
+    {
+      "base": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+      "path": "util/pbtypes/pbtypes.go",
+      "sha256": "3abe704941f2af2bff12f40e58fed811ca4ba8a0de4b88170ec65abbde2d23e4",
+      "anchors": "ValidateStruct657-670; ValidateValue672-694"
+    }
+  ],
+  "priorReview": {
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-heart-v3-strict-replay-independent-review-20261122.json",
+    "sha256": "2da20dd5ec87302a7c0ef4bc6c637ce50c135a2065f83bb0fea442340294a0e9"
+  },
+  "scopeLimits": [
+    "Only the V3-to-V4 strict source.go closure reviewed; default callers remain unchanged.",
+    "Storage snapshots, ACL membership, complete graph/all-row/archive architecture are reviewed by root/author, not certified by this receipt.",
+    "No source edits, Go parsing/build/tests/native calls or runtime reproduction by this reviewer.",
+    "No expanded assertion of universal block metadata validation beyond the reviewed original Fields entry paths."
+  ]
+}

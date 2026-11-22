@@ -1,0 +1,103 @@
+{
+  "status": "NEW_NATIVE_CONTROL_SOURCE_ONLY_NOT_EXECUTED",
+  "source_packet": "../candidate-v5",
+  "source_manifest_sha256": "c091fa3696f8b3f2610997aed65c988010529c59caeac3d53a47c1d3e028ac4d",
+  "source_index_sha256": "3487663a830281fc33bef1f944d68047c784819918f03dc76341bd35413e7581",
+  "control_sources": [
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_fixture_test.go",
+      "bytes": 13021,
+      "lines": 321,
+      "sha256": "574a92ed1b1f8ebc23d96bff7f24cfbabb46d0dde9186edacbd2948327afe66e",
+      "git_blob_if_committed": "589ab67c2c201b4909fa120e0c28a51bdf069cf3",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_native_fixture_test.go"
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_trace_test.go",
+      "bytes": 8977,
+      "lines": 299,
+      "sha256": "129341500230b4e053985b34155cf48f6dcad185027e5ba1d5a89859c347a98d",
+      "git_blob_if_committed": "d1fe1815082e5c94ac8c8344ddc4ac895d6eb06d",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_native_trace_test.go"
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_native_observer_test.go",
+      "bytes": 25210,
+      "lines": 588,
+      "sha256": "32b20449a80496c9b624dac6f09dd97356522740d953f742d4b00f081e078221",
+      "git_blob_if_committed": "b891b951c17d5d0083e7f479e911ba0383b51627",
+      "retained_path": "candidate/core/block/object/objectcreator/fixed_schema_native_observer_test.go"
+    },
+    {
+      "path": "core/block/source/sourceimpl/fixed_schema_strict_test.go",
+      "bytes": 5695,
+      "lines": 145,
+      "sha256": "2cd96e7827eb5a50353a6e3d649aaf2a6f97a1db6dc0e86bfa6ab58e756006d2",
+      "git_blob_if_committed": "2552c4561667b34b4bd55fe6a2057b930ffa4af5",
+      "retained_path": "candidate/core/block/source/sourceimpl/fixed_schema_strict_test.go"
+    }
+  ],
+  "expected_cases": {
+    "native": [
+      "OriginalRelationMatch",
+      "OriginalObjectTypeMatch",
+      "ExactNativeRootOnly",
+      "NativeLocalMissingWithoutCreation",
+      "ActualLocalZeroCounterAccepted",
+      "NativeComputedRemoteCounterAccepted",
+      "NonzeroCounterMetadataConflict",
+      "FractionalCounterCannotDefaultToZero",
+      "StoredOrderMustMatchNativeTraversal",
+      "OlderNativeCommonSnapshotAccepted",
+      "UnrelatedNativeSnapshotCannotBecomeCommon",
+      "ExplicitLongtextPresenceCannotDefault",
+      "ArchiveUsesOriginalNativeLinkTree",
+      "WrongDerivedHeaderUnavailable",
+      "OriginalPooledReaderAndACLLockOrder",
+      "FullACLIntermediateRecordRequired",
+      "FullACLExtraRecordRefused",
+      "OriginalACLSignatureCIDVerification",
+      "SecondSnapshotSeesInvisibleEncodedRowChange",
+      "SecondSnapshotSeesExtraNonHeadChange",
+      "RealNativeOperationsPropagateInjectedIteratorCloseCommitErrors",
+      "RealNativeOpenFailurePropagationStillReleasesReadTx",
+      "MissingOriginalSpaceStateUnavailable",
+      "PersistedStateACLIdentityMismatchUnavailable",
+      "PersistedStateSettingsIdentityMismatchUnavailable",
+      "AnotherRealSpaceHeaderCannotBindCurrentSpace",
+      "ActualSpaceHeaderSignatureCIDFailureUnavailable",
+      "SpaceHeaderNativeTypeCannotDefault",
+      "MissingActualSettingsRootUnavailable",
+      "ActualSettingsRootSignatureCIDFailureUnavailable",
+      "SecondSnapshotSeesCompleteStateRowChange",
+      "SecondSnapshotSeesCompleteSettingsRootRowChange",
+      "CanceledCallerCannotPublishObservation"
+    ],
+    "strict": [
+      "UnknownDataTypeStrictOnlyRefusal",
+      "OriginalPlainAndSnappyTagsAccepted",
+      "InvalidNativeSnappyErrorPropagated",
+      "SnapshotBlockFieldsRefusedBeforeReplay",
+      "CreatedBlockFieldsRefusedBeforeReplay",
+      "BlockSetFieldsEventRefusedBeforeReplay",
+      "NilSnapshotFieldsPreserved",
+      "NilCreatedFieldsPreserved",
+      "NilFieldsResetEventPreserved",
+      "EmptySnapshotIDCannotBeSynthesized",
+      "EmptyCreatedIDCannotBeSynthesized",
+      "MissingOriginalEventRefused"
+    ]
+  },
+  "native_control_count": 33,
+  "strict_control_count": 12,
+  "gofmt_exit": 0,
+  "builds": 0,
+  "tests": 0,
+  "native_calls": 0,
+  "control_revision": "V5-R1: two source-review assertion corrections; no product change or execution",
+  "prior_controls": {
+    "path": "C:\\Users\\DAVID\\AppData\\Local\\Temp\\otzaria-native-schema-observer-source-20261122\\controls-v5",
+    "strict_sha256": "f9e922e8486065ae1354003deab01c294b4a2ee2f7ff17db020d540adb214efd",
+    "source_receipt_sha256": "fa02b49bac6d6a92aa64289cf6d80838bd79adee6043b0d8c809ccb1068f9952"
+  }
+}

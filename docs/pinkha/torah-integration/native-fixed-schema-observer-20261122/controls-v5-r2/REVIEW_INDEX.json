@@ -1,0 +1,575 @@
+{
+  "schema": "otzaria.original-heart-schema-controls-review/5-r2",
+  "status": "SOURCE_REVIEW_ONLY_NO_GO_BUILD_TEST_NATIVE_EXECUTION",
+  "files": [
+    {
+      "path": "candidate/core/block/object/objectcreator/fixed_schema_native_fixture_test.go",
+      "bytes": 13021,
+      "sha256": "574a92ed1b1f8ebc23d96bff7f24cfbabb46d0dde9186edacbd2948327afe66e"
+    },
+    {
+      "path": "candidate/core/block/object/objectcreator/fixed_schema_native_observer_test.go",
+      "bytes": 25210,
+      "sha256": "32b20449a80496c9b624dac6f09dd97356522740d953f742d4b00f081e078221"
+    },
+    {
+      "path": "candidate/core/block/object/objectcreator/fixed_schema_native_trace_test.go",
+      "bytes": 8977,
+      "sha256": "129341500230b4e053985b34155cf48f6dcad185027e5ba1d5a89859c347a98d"
+    },
+    {
+      "path": "candidate/core/block/source/sourceimpl/fixed_schema_strict_test.go",
+      "bytes": 5695,
+      "sha256": "2cd96e7827eb5a50353a6e3d649aaf2a6f97a1db6dc0e86bfa6ab58e756006d2"
+    },
+    {
+      "path": "CONTROL_SOURCE_WRITTEN.json",
+      "bytes": 4582,
+      "sha256": "bf68d02e05c0c1956f7b71f55cc704a9915a134ac5f1798cb1d8dbe8901f92c3"
+    },
+    {
+      "path": "EXECUTION_INPUTS.json",
+      "bytes": 11619,
+      "sha256": "0a9751cb534c184e35ee166ef6b1aff9d2756ab2cd3c2a20b20f9e0d7b25f792"
+    },
+    {
+      "path": "GOFMT.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "GOFMT.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "history/EXECUTION_INPUTS_DRAFT_V1.json",
+      "bytes": 11114,
+      "sha256": "a8823e31eb9b442cc71ff2eeea5d249cbd760843cc162df819a1a8a2613eec4c"
+    },
+    {
+      "path": "history/RUNNER_DRAFT_V1.py",
+      "bytes": 18178,
+      "sha256": "7f055f3aac156c8fcb4be956cfde06cf991de4c097f712c4c30d5f096b3369bf"
+    },
+    {
+      "path": "history/RUNNER_WRITTEN_V1.json",
+      "bytes": 344,
+      "sha256": "6ddbee4c9c69710dfc8a2a52bfdc84a8bdc1e751bc232664f5f6ad59813eac96"
+    },
+    {
+      "path": "original/anytype-heart/space/spacecore/storage/anystorage/storageservice.go",
+      "bytes": 21548,
+      "sha256": "cf2ff5ddaed0f189a37f98e037979559ecd8087d976c0ab8709c6782b3aad475"
+    },
+    {
+      "path": "original/anytype-heart/tantivity_sha256.txt",
+      "bytes": 1156,
+      "sha256": "14a78977c8b08e3e976cfbe130a6092aaec707e7515aa1811326e1c028cd2948"
+    },
+    {
+      "path": "original/anytype-swift/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.json",
+      "bytes": 7906,
+      "sha256": "952073d8dccc991f21bffe5d3ded4e1d5369bb2c30f247ae5204d47cb03aee14"
+    },
+    {
+      "path": "original/anytype-swift/docs/pinkha/torah-integration/evidence/native-derived/8494cfb347/approval/revision-14/native-heart-integration.patch",
+      "bytes": 91246,
+      "sha256": "fb96818eb57bd9e0be8da90a11831bcccc7ca8e72cc0a4e9a065500feb7cc077"
+    },
+    {
+      "path": "original/anytype-swift/Tools/PinkhaNativeDerived/build_custom_heart.py",
+      "bytes": 12945,
+      "sha256": "0ebbe2f6227418eac2c532b0058290158319ba9f786baaf445de444887e8c669"
+    },
+    {
+      "path": "prepare_original_tantivy.py",
+      "bytes": 1242,
+      "sha256": "7f2f4b11bc6803241333f04c935ed85f3007fcb6894fd02b03fcc0fa7d50be43"
+    },
+    {
+      "path": "PROPOSED_WORKFLOW.yml",
+      "bytes": 3210,
+      "sha256": "3f19c5958bb026b50e4d0fccc48d4a4a090bf9e4e4c68b06bb9596b6970a2f36"
+    },
+    {
+      "path": "R1_GOFMT.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "R1_GOFMT.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "R1_REVIEW_INDEX.json",
+      "bytes": 7422,
+      "sha256": "32343ff46151b027c8e8d6c81da26bda2f3941712dbc8e05f944c8bbb762c474"
+    },
+    {
+      "path": "README.md",
+      "bytes": 13161,
+      "sha256": "690434c32ab58083d8a06ed917a9a6518d55869442c1c3320e29aa11715afc6a"
+    },
+    {
+      "path": "reviews/original/any-sync/app/app.go",
+      "bytes": 12410,
+      "sha256": "209fd71566c053bc300e03c67a952ee9067eb6bec39b0e76f87a1818c896f914"
+    },
+    {
+      "path": "reviews/ORIGINAL_COMPONENT_LOOKUP.json",
+      "bytes": 276,
+      "sha256": "f0b4736daf7e8b8342d8b6662be768cc15dab1e96e7dcdfddf0a6ae31578d21d"
+    },
+    {
+      "path": "reviews/ORIGINAL_TEST_ENTRYPOINT_READ.json",
+      "bytes": 1729,
+      "sha256": "fa83cf97984ae85e14c0fbcea58a9ee96c08022e690aa6dd853f65eab5f956bb"
+    },
+    {
+      "path": "reviews/otzaria-heart-v5-r1-runner-independent-review-20261122.json",
+      "bytes": 7205,
+      "sha256": "28d4d3fb973008112d9075b226ac003cee79dffcfb74d5ea6aa9dc9e3f874378"
+    },
+    {
+      "path": "reviews/otzaria-heart-v5-r1-strict-controls-independent-review-20261122.json",
+      "bytes": 1648,
+      "sha256": "b32e33a5d8fa6d169deaa1b27cec04c7cbbbc916d727ef034ca48cf5f45f7be7"
+    },
+    {
+      "path": "reviews/otzaria-heart-v5-strict-controls-independent-review-20261122.json",
+      "bytes": 2356,
+      "sha256": "8d086c947a6b7f8c78adbc290545cdc3f127fb031f7074607ec8223a21180268"
+    },
+    {
+      "path": "reviews/read_original_new_suite_entrypoints.py",
+      "bytes": 682,
+      "sha256": "761040af988a4cca9833abbd58715e0053736eb838e0513ea1bd7c236bbfe6c9"
+    },
+    {
+      "path": "reviews/root-v4-source/any-store.immutable-tree.json",
+      "bytes": 29904,
+      "sha256": "6e7d8ea4cb8566642313dcace02c58bdbada323b9ea6e490e054d7ff47759ea6"
+    },
+    {
+      "path": "reviews/root-v4-source/any-sync.immutable-tree.json",
+      "bytes": 192867,
+      "sha256": "aed1b0743016648c393a9052dccd82f33cb595f7c924d2eb9400be576c2d0426"
+    },
+    {
+      "path": "reviews/root-v4-source/EXECUTED_ROOT_SOURCE_REVIEW.py",
+      "bytes": 6279,
+      "sha256": "8572934dca610a69d1bbc4acebfd377606611ec380adace607caa331a8831eb4"
+    },
+    {
+      "path": "reviews/root-v4-source/ROOT_SOURCE_REVIEW.json",
+      "bytes": 46954,
+      "sha256": "b4e08f42d4863fe89a68c2da16040053af79adaad03f581e99d0fca43861ab86"
+    },
+    {
+      "path": "reviews/root-v5-source/any-store.immutable-tree.json",
+      "bytes": 29904,
+      "sha256": "6e7d8ea4cb8566642313dcace02c58bdbada323b9ea6e490e054d7ff47759ea6"
+    },
+    {
+      "path": "reviews/root-v5-source/any-sync.immutable-tree.json",
+      "bytes": 192867,
+      "sha256": "aed1b0743016648c393a9052dccd82f33cb595f7c924d2eb9400be576c2d0426"
+    },
+    {
+      "path": "reviews/root-v5-source/EXECUTED_ROOT_SOURCE_REVIEW.py",
+      "bytes": 7330,
+      "sha256": "81a397744f708eacb63bdc0079f7d13748ab9b4f60149b6a7c6a6c878c79d2a5"
+    },
+    {
+      "path": "reviews/root-v5-source/ROOT_SOURCE_REVIEW.json",
+      "bytes": 50040,
+      "sha256": "98f4aa277f9ee9ca3ca67eb6b7ca1fa612bac4ffd84adb8c273296ce91d08963"
+    },
+    {
+      "path": "run_original_native_schema_controls.py",
+      "bytes": 27557,
+      "sha256": "e9cebdaac6326374098db331bfe1b05e2d3141a0c1759d77897cb5d1ac83a1e1"
+    },
+    {
+      "path": "RUNNER_R1_TO_R2.patch",
+      "bytes": 20046,
+      "sha256": "7fbd196f12eb39c3a4a2f0f4d7cd46240a1854cb79c983bdba3eccf0944ac0cc"
+    },
+    {
+      "path": "RUNNER_R2_WRITTEN.json",
+      "bytes": 2254,
+      "sha256": "8ac03f51fbee914ee5267d4e7e5bb860248e92a812a3840c3b97b67894f5c44d"
+    },
+    {
+      "path": "RUNNER_V1_TO_V2.patch",
+      "bytes": 2362,
+      "sha256": "2abf22a5e22253122ce316cec983578065d6a1c04e5822c6f99f7e3eb6998361"
+    },
+    {
+      "path": "RUNNER_WRITTEN.json",
+      "bytes": 432,
+      "sha256": "96f35a3e5926dd8f9bfab846fc6f1bcb2bc08f5f22ed9e7e9849096ce0fb255a"
+    },
+    {
+      "path": "source-composition/COMMANDS.json",
+      "bytes": 8096,
+      "sha256": "2394b5ee7eb4c59d5f7b1b99008cf7b401e003a4dad7e1ed210379555888be78"
+    },
+    {
+      "path": "source-composition/EXECUTED_SCRIPT.py",
+      "bytes": 8201,
+      "sha256": "0fbccc4c7342bfb582cc1af3c5ac861f212a8222225c2b30537dc7d25e3066c2"
+    },
+    {
+      "path": "source-composition/logs/1-immutable-tree.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-composition/logs/1-immutable-tree.stdout",
+      "bytes": 1861,
+      "sha256": "10f54bf73ab32a2139a3bb9e7cb92bea9b909af573acfcadeab884a5566e9e3a"
+    },
+    {
+      "path": "source-composition/logs/2-immutable-blobs.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-composition/logs/2-immutable-blobs.stdout",
+      "bytes": 409857,
+      "sha256": "27db1831b3b5d190e916af960c4891372677a8fc7f24bb004ae9398f80bc3d38"
+    },
+    {
+      "path": "source-composition/logs/3-initialize-owned-temporary-git.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-composition/logs/3-initialize-owned-temporary-git.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-composition/logs/4-r14-apply-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-composition/logs/4-r14-apply-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-composition/logs/5-r14-apply.stderr",
+      "bytes": 306,
+      "sha256": "613202183aab0d5b15a7aacad4a89778a5c2e03f02f04263059a94c5d3c5c17f"
+    },
+    {
+      "path": "source-composition/logs/5-r14-apply.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-composition/logs/6-v5-apply-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-composition/logs/6-v5-apply-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-composition/logs/7-v5-apply.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-composition/logs/7-v5-apply.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-composition/materialized/core/block/detailservice/pinkha_torah.go",
+      "bytes": 1360,
+      "sha256": "d39dd006cb20dcbdd91a851a96faf82a42e277b80d0f190a4a7e532831a4768e"
+    },
+    {
+      "path": "source-composition/materialized/core/block/editor/basic/details.go",
+      "bytes": 10386,
+      "sha256": "0ac058091f7ab161aec3d462d3cfa3e844af980cb0d5cecf2400b64360f7f033"
+    },
+    {
+      "path": "source-composition/materialized/core/block/editor/smartblock/detailsinject.go",
+      "bytes": 19923,
+      "sha256": "53b53b277535498564d400d02be348b89cbef6486b2ffeae4b66a8a355aa5503"
+    },
+    {
+      "path": "source-composition/materialized/core/block/editor/smartblock/pinkha_torah.go",
+      "bytes": 1136,
+      "sha256": "32ee6f74b5fe63c8e2c5bb612d32ce532f8caf1c3059338cf97373d20db43174"
+    },
+    {
+      "path": "source-composition/materialized/core/block/editor/state/change.go",
+      "bytes": 28541,
+      "sha256": "51395574aa5d4f96f1dc5cc279b61925dc5de0b2efe0727a96836f57b5a6081f"
+    },
+    {
+      "path": "source-composition/materialized/core/block/export/anyblock/anyblock.go",
+      "bytes": 29415,
+      "sha256": "340f5f9f21ecc0d9ee43077650cf07ce6cdbf378ca1077263bff426132577cbe"
+    },
+    {
+      "path": "source-composition/materialized/core/block/import/processor.go",
+      "bytes": 21316,
+      "sha256": "8c565a3ebc0a230ea359894d1e059bb1fc708af952c6b723c0c1496b3257a256"
+    },
+    {
+      "path": "source-composition/materialized/core/block/object/objectcreator/fixed_schema_acl.go",
+      "bytes": 4218,
+      "sha256": "170a100526f0be337c12bf9831099eb78381948b41f851791e00bbb54160a09e"
+    },
+    {
+      "path": "source-composition/materialized/core/block/object/objectcreator/fixed_schema_native_fixture_test.go",
+      "bytes": 13021,
+      "sha256": "574a92ed1b1f8ebc23d96bff7f24cfbabb46d0dde9186edacbd2948327afe66e"
+    },
+    {
+      "path": "source-composition/materialized/core/block/object/objectcreator/fixed_schema_native_observer_test.go",
+      "bytes": 25210,
+      "sha256": "32b20449a80496c9b624dac6f09dd97356522740d953f742d4b00f081e078221"
+    },
+    {
+      "path": "source-composition/materialized/core/block/object/objectcreator/fixed_schema_native_trace_test.go",
+      "bytes": 8977,
+      "sha256": "129341500230b4e053985b34155cf48f6dcad185027e5ba1d5a89859c347a98d"
+    },
+    {
+      "path": "source-composition/materialized/core/block/object/objectcreator/fixed_schema_observer.go",
+      "bytes": 14244,
+      "sha256": "53a05ff554ff7b23c2ee3d1f322522fb88784139392cc30d7cb9b06d8e0e87d1"
+    },
+    {
+      "path": "source-composition/materialized/core/block/object/objectcreator/fixed_schema_replay.go",
+      "bytes": 14045,
+      "sha256": "3fe8c34b02ee93224e8e52a139871012f4ee8d0b45ee8e1d9c690cd1a4dcdf3f"
+    },
+    {
+      "path": "source-composition/materialized/core/block/object/objectcreator/fixed_schema_snapshot.go",
+      "bytes": 17843,
+      "sha256": "3a404738380ca7b8a6e59c93a377b85927ed4383fed560385f5920f86631e5df"
+    },
+    {
+      "path": "source-composition/materialized/core/block/object/objectcreator/relation_option.go",
+      "bytes": 4069,
+      "sha256": "bcdee6e9747c14361c80153ade1ab969650c689db2f8219e3bef061a3c7e32e7"
+    },
+    {
+      "path": "source-composition/materialized/core/block/object/objectlink/dependent_objects.go",
+      "bytes": 9059,
+      "sha256": "7ae9edb1d19dadae1d9585ed2b3f2b8f637ef67b51912fc23edc0c91a6891602"
+    },
+    {
+      "path": "source-composition/materialized/core/block/simple/dataview/dataview.go",
+      "bytes": 14678,
+      "sha256": "6459c7fa58099622bec3edeb467820f5526f04c7879c21d047c4630109c1c472"
+    },
+    {
+      "path": "source-composition/materialized/core/block/source/sourceimpl/fixed_schema_strict_test.go",
+      "bytes": 5695,
+      "sha256": "2cd96e7827eb5a50353a6e3d649aaf2a6f97a1db6dc0e86bfa6ab58e756006d2"
+    },
+    {
+      "path": "source-composition/materialized/core/block/source/sourceimpl/source.go",
+      "bytes": 27591,
+      "sha256": "30481a09de754219aa3e714cab42a5750880f9d835a720e1330de22690262e55"
+    },
+    {
+      "path": "source-composition/materialized/core/converter/pbc/pbc.go",
+      "bytes": 1684,
+      "sha256": "5d3c6e415b74b29a81e60d31a08b5df4cd96b095647691d9539c8dcc2562a8a2"
+    },
+    {
+      "path": "source-composition/materialized/core/converter/pbjson/pbjson.go",
+      "bytes": 1438,
+      "sha256": "c8303134c3ed0d4d5358084d220c55d0e9bbebf097822e7b1fd660a8d7c502d6"
+    },
+    {
+      "path": "source-composition/materialized/core/details.go",
+      "bytes": 10767,
+      "sha256": "f22d46a91823b2eb907979a86ed43ea80d7387e434ea7eb971e6d57f201748ff"
+    },
+    {
+      "path": "source-composition/materialized/core/indexer/fulltext.go",
+      "bytes": 20407,
+      "sha256": "002421ab874f4eec996c9cb5101872bdbe52148e2a80ad430c71896b0d3ec48d"
+    },
+    {
+      "path": "source-composition/materialized/core/indexer/pinkha_torah.go",
+      "bytes": 976,
+      "sha256": "dde290e4296b611bb65677427b8e3cea8f9c911467ae5868a5b16fc058222240"
+    },
+    {
+      "path": "source-composition/materialized/core/pinkha/torah/binding.go",
+      "bytes": 3585,
+      "sha256": "109508f4cbe04202df229f849368681ca26f994836ee7c1712ac1fbc133ffb0a"
+    },
+    {
+      "path": "source-composition/materialized/core/pinkha/torah/projection.go",
+      "bytes": 8164,
+      "sha256": "2c8467fbd635160f3c40d9bab2b82b8f6a2b07d70590c2c3357663b51af90a62"
+    },
+    {
+      "path": "source-composition/materialized/core/pinkha/torah/properties.go",
+      "bytes": 1269,
+      "sha256": "55b2be3324f2214381ca8a239f5cf27b740f0dfd94388aa156e747bb2f6b0c45"
+    },
+    {
+      "path": "source-composition/materialized/core/pinkha/torah/readiness.go",
+      "bytes": 1979,
+      "sha256": "100afcfcbc5db369599311471ebdab29228a489153b515c2c0ab910b58f247a2"
+    },
+    {
+      "path": "source-composition/materialized/core/pinkha/torahindex/index.go",
+      "bytes": 17828,
+      "sha256": "670ecfcf17bff3b1ba817906d291465aac6556cea8e42cc2b29b37dd79c509f8"
+    },
+    {
+      "path": "source-composition/materialized/core/pinkha/torahindex/recovery_cache.go",
+      "bytes": 3337,
+      "sha256": "6dc34a839f8fdea1773b6f162ab5b274403646b41f3eaa6570902c0b248d59c2"
+    },
+    {
+      "path": "source-composition/materialized/core/pinkha/torahtransport/import.go",
+      "bytes": 5976,
+      "sha256": "70b2d75d6653ed3fea239d594ba0f7fe50607f609894709eac409f7f68b0e916"
+    },
+    {
+      "path": "source-composition/materialized/core/pinkha/torahtransport/json_fields.go",
+      "bytes": 3276,
+      "sha256": "b45af6cef9c6f4babeea95458a2c4d11c4ee58da13b23881d6d977442569cbb6"
+    },
+    {
+      "path": "source-composition/materialized/core/pinkha/torahvalues/values.go",
+      "bytes": 2277,
+      "sha256": "104a073446d888a13fed3deef8ba5015ee906eaabd07c30161f5900258de8721"
+    },
+    {
+      "path": "source-composition/materialized/go.mod",
+      "bytes": 16202,
+      "sha256": "0c506b9ab921a9bfea985871c9c912d362147a6bb76e697ee62c51a2eb678de7"
+    },
+    {
+      "path": "source-composition/materialized/go.sum",
+      "bytes": 132924,
+      "sha256": "7c873be1e5b4c65e5e46d18167ae6bc29f0f5b51c459a8398d75ab22f0b2432d"
+    },
+    {
+      "path": "source-composition/materialized/pkg/lib/bundle/pinkha_torah.go",
+      "bytes": 1395,
+      "sha256": "de000ddaee720d9333962b396f35304a51f7712efe72c3bf341e86648b462c6d"
+    },
+    {
+      "path": "source-composition/materialized/pkg/lib/database/filter.go",
+      "bytes": 30900,
+      "sha256": "0ed1a710c331db36bead7a4b7f515d00d383b2af3c2f0243ea7efbb42629ec16"
+    },
+    {
+      "path": "source-composition/materialized/pkg/lib/localstore/objectstore/spaceindex/delete.go",
+      "bytes": 6601,
+      "sha256": "2e51f49c2b7a1a588f148c805e467cd724e983db04f23f97a1dd2b1a81a746d9"
+    },
+    {
+      "path": "source-composition/materialized/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go",
+      "bytes": 1128,
+      "sha256": "0c9bee77ecbc524a73311fc36431a64bdbc35d757db829b4df1a50813b002c02"
+    },
+    {
+      "path": "source-composition/materialized/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go",
+      "bytes": 4042,
+      "sha256": "ba767700b9a3597c904bc3ad79da01a45874d5bb6337e5c035afecfcc0e8fe7c"
+    },
+    {
+      "path": "source-composition/materialized/pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go",
+      "bytes": 4608,
+      "sha256": "58718c037fdb6fa8c3e117b163b5b068d9b6b365258d18223d483b795afe3106"
+    },
+    {
+      "path": "source-composition/materialized/pkg/lib/localstore/objectstore/spaceindex/store.go",
+      "bytes": 16520,
+      "sha256": "1ad36d01f2b7233d8edd835ea876fa27dab503e6a476bb4cf22deeea3cb6b341"
+    },
+    {
+      "path": "source-composition/materialized/pkg/lib/localstore/objectstore/spaceindex/update.go",
+      "bytes": 13618,
+      "sha256": "50aa3ed27c4754e559930a04d93c0c976c65722d378ff89681635577b97a9a5f"
+    },
+    {
+      "path": "source-composition/materialized/space/internal/components/migration/readonlyfixer/pinkha_torah.go",
+      "bytes": 1030,
+      "sha256": "139a822fa2c0bc7eaca0f7701be2741b147a84f4519eefcf55b48fb6a5f8c319"
+    },
+    {
+      "path": "source-composition/materialized/space/internal/components/migration/readonlyfixer/pinkha_torah_test.go",
+      "bytes": 3082,
+      "sha256": "8e4994925686b8ba48743f8fa7c16f258cd47adc9c497f429d594f17d1059ea5"
+    },
+    {
+      "path": "source-composition/materialized/space/internal/components/migration/readonlyfixer/relationsfixer.go",
+      "bytes": 3209,
+      "sha256": "003cfd50944f9b31920ae4060146bbbaf42c713191595b51582a16f5d94935b8"
+    },
+    {
+      "path": "source-composition/materialized/tantivity_sha256.txt",
+      "bytes": 1156,
+      "sha256": "14a78977c8b08e3e976cfbe130a6092aaec707e7515aa1811326e1c028cd2948"
+    },
+    {
+      "path": "source-composition/ORIGINAL_BLOBS.json",
+      "bytes": 4757,
+      "sha256": "687f41161ac6289cb2d3d3d8bbbb1234782b9d3a91d8192f052e9694d9d7f0c9"
+    },
+    {
+      "path": "source-composition/RESULT.json",
+      "bytes": 10735,
+      "sha256": "ca0079ab0011603e2e707fcf3d1638749f9e19dd2b118445db409cb92893f7f5"
+    },
+    {
+      "path": "source-composition/SCRIPT_IDENTITY.json",
+      "bytes": 382,
+      "sha256": "c8cf06e9ca9e09f9f40dbc1158600aa2deba5834a0e50b0b0b195359bea40161"
+    },
+    {
+      "path": "source-composition/SENTINEL_RESULT.json",
+      "bytes": 1117,
+      "sha256": "b5d258748df86cd2dc137869b5400438ad0c3e79865e43f8af054df615a3fbd9"
+    },
+    {
+      "path": "source-composition/SUBMITTED_SCRIPT.py",
+      "bytes": 8092,
+      "sha256": "cfd6e75177e8383082e86411928ec436a0cdfcf0df9076d144aad7b87c1ed1ed"
+    },
+    {
+      "path": "STRICT_R1.patch",
+      "bytes": 4014,
+      "sha256": "051d0fe35f7cdc719fea3b15490efb17eaf213dd3519d64b06e10a836b7c1b0a"
+    },
+    {
+      "path": "STRICT_R1_REPLACEMENTS.json",
+      "bytes": 3257,
+      "sha256": "f1b302ac3ab66f77224da6237d5a56c17c43537e02ede2df5d4e617d13ed12b7"
+    }
+  ],
+  "payload_count": 112,
+  "payload_bytes": 1944458,
+  "native_cases": 33,
+  "strict_cases": 12,
+  "source_composition": "PASS_SOURCE_COMPOSITION_ONLY",
+  "builds": 0,
+  "tests": 0,
+  "native_calls": 0,
+  "ci_dispatches": 0
+}
