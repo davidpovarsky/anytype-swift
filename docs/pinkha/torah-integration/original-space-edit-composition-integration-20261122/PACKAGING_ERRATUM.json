@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "created_at": "2026-11-22T08:32:24.387400+00:00",
+  "original_job": "job_bc3db4a8fc60",
+  "actual_merge": "d84a52e65df162771d320d4e744821b2eae01e71",
+  "original_job_exit": 1,
+  "failed_step": "Post-merge evidence git diff --cached --check",
+  "cause": "Exact executed Sentinel Python script retains 148 CRLF line endings. Git lint treated CR as trailing whitespace before explicit per-evidence-path policy. All evidence verification and true merge had already succeeded.",
+  "correction": "Preserve exact executed bytes. Add scoped attributes allowing CR-at-EOL only for raw script and diagnostic evidence; retain all ordinary whitespace checks. Complete documentation commit from observed existing merge, without repeating source verification, tests or merge.",
+  "original_script_sha256": "6cff26ec4fa37e270af814fd355229591346dc3ce706f27556b6be703ca52e62",
+  "root_review_sha256": "086acb1707fad951fe4bd2a9028f76f13212e613e72e9b6f43d5a0e8bec77e5c",
+  "merge_repeated": false,
+  "tests_reexecuted": 0,
+  "candidate_changed": false
+}

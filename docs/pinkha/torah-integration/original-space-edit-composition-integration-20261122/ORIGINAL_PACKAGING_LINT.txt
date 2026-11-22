@@ -1,0 +1,296 @@
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:1: trailing whitespace.
++from pathlib import Path,PurePosixPath
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:2: trailing whitespace.
++import subprocess,json,hashlib,datetime,zipfile,io,struct,xml.etree.ElementTree as ET
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:3: trailing whitespace.
++repo=Path(r'C:\Users\DAVID\Code\anytype-original-native-annotation-integration-20261122')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:4: trailing whitespace.
++author=Path(r'C:\Users\DAVID\Code\anytype-original-authority-integration-20261122')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:5: trailing whitespace.
++head='403725a24422103b3562228a64061d24d639eabf'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:6: trailing whitespace.
++incoming='31d3f65c0132ec17e76b11c39d3a5e3314a7aa23'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:7: trailing whitespace.
++source='4262d985ce0648f20f71fb6cc54b10f6f349eb6e'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:8: trailing whitespace.
++base='d33a41338bd0a56326fd02c05977c10d1c4c7baa'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:9: trailing whitespace.
++packet='docs/pinkha/torah-integration/production-space-edit-composition-20261122'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:10: trailing whitespace.
++product='Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorDocumentWriteOwner.swift'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:11: trailing whitespace.
++proof='docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:12: trailing whitespace.
++sha=lambda b:hashlib.sha256(b).hexdigest()
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:13: trailing whitespace.
++def git(*args,cwd=repo,timeout=45):
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:14: trailing whitespace.
++ p=subprocess.run(['git','-c','core.autocrlf=false',*args],cwd=cwd,capture_output=True,timeout=timeout)
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:15: trailing whitespace.
++ if p.returncode: raise RuntimeError('git failure '+str(args)+' '+p.stderr.decode(errors='replace')[:2000])
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:16: trailing whitespace.
++ return p.stdout
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:17: trailing whitespace.
++def textgit(*args,**kw):return git(*args,**kw).decode('utf8').strip()
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:18: trailing whitespace.
++def blobs(specs):
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:19: trailing whitespace.
++ pr=subprocess.run(['git','-c','core.autocrlf=false','cat-file','--batch'],cwd=repo,input=('\n'.join(specs)+'\n').encode(),capture_output=True,timeout=60)
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:20: trailing whitespace.
++ assert pr.returncode==0,pr.stderr
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:21: trailing whitespace.
++ stream=io.BytesIO(pr.stdout);result={}
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:22: trailing whitespace.
++ for spec in specs:
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:23: trailing whitespace.
++  header=stream.readline().decode().strip().split()
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:24: trailing whitespace.
++  assert len(header)==3 and header[1]=='blob',(spec,header)
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:25: trailing whitespace.
++  size=int(header[2]);data=stream.read(size);assert len(data)==size and stream.read(1)==b'\n'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:26: trailing whitespace.
++  result[spec]=(header[0],data)
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:27: trailing whitespace.
++ assert stream.read()==b''
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:28: trailing whitespace.
++ return result
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:29: trailing whitespace.
++def obj(ref,path):return git('show',ref+':'+path)
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:30: trailing whitespace.
++def loadjson(path):return json.loads(payloads[path])
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:31: trailing whitespace.
++assert textgit('rev-parse','HEAD')==head
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:32: trailing whitespace.
++assert textgit('branch','--show-current')=='codex/otzaria-original-native-annotation-integration-20261122'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:33: trailing whitespace.
++assert git('status','--porcelain')==b''
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:34: trailing whitespace.
++assert textgit('rev-parse','HEAD',cwd=author)==incoming and git('status','--porcelain',cwd=author)==b''
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:35: trailing whitespace.
++assert textgit('merge-base',head,incoming)==base
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:36: trailing whitespace.
++assert textgit('rev-parse',source+'^')==base
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:37: trailing whitespace.
++index_b=obj(incoming,packet+'/PACKET_INDEX.json')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:38: trailing whitespace.
++assert sha(index_b)=='26c99ea8af9671cde01b86007482685812aa31353a2267abd39681e551c92c36'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:39: trailing whitespace.
++index=json.loads(index_b);assert index['count']==86 and len(index['files'])==86 and index['source_commit']==source and index['base']==base
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:40: trailing whitespace.
++seen=set()
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:41: trailing whitespace.
++for item in index['files']:
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:42: trailing whitespace.
++ p=PurePosixPath(item['path']);assert not p.is_absolute() and '..' not in p.parts and '\\' not in item['path']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:43: trailing whitespace.
++ assert item['path'] not in seen;seen.add(item['path'])
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:44: trailing whitespace.
++raw=blobs([incoming+':'+packet+'/'+x['path'] for x in index['files']]);payloads={}
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:45: trailing whitespace.
++for item in index['files']:
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:46: trailing whitespace.
++ name=item['path'];data=raw[incoming+':'+packet+'/'+name][1]
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:47: trailing whitespace.
++ assert len(data)==item['bytes'] and sha(data)==item['sha256'],name
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:48: trailing whitespace.
++ assert (author/packet/name).read_bytes()==data,name
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:49: trailing whitespace.
++ payloads[name]=data
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:50: trailing whitespace.
++tracked=set(textgit('ls-tree','-r','--name-only',incoming,'--',packet).splitlines())
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:51: trailing whitespace.
++assert tracked=={packet+'/'+p for p in seen}|{packet+'/PACKET_INDEX.json'}
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:52: trailing whitespace.
++inputs=loadjson('controls/INPUTS.json');result=loadjson('controls/RESULT.json');execution=loadjson('controls/EXECUTION.json')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:53: trailing whitespace.
++assert sha(payloads['controls/INPUTS.json'])=='74a0bf1c732e7d579814c4658d1f718e3c476b0d817fbf1871c481fc490f3d07'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:54: trailing whitespace.
++assert len(inputs['original_inputs'])==18 and len(inputs['compiled_inputs'])==13
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:55: trailing whitespace.
++originals=blobs([base+':'+i['path'] for i in inputs['original_inputs']])
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:56: trailing whitespace.
++for i,item in enumerate(inputs['original_inputs']):
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:57: trailing whitespace.
++ blob,data=originals[base+':'+item['path']]
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:58: trailing whitespace.
++ assert blob==item['git_blob'] and sha(data)==item['sha256'],item['path']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:59: trailing whitespace.
++ assert data==payloads['controls/original-inputs/'+str(i).zfill(2)+'.swift']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:60: trailing whitespace.
++for item in inputs['compiled_inputs']:
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:61: trailing whitespace.
++ b=payloads['controls/'+item['path']]
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:62: trailing whitespace.
++ assert len(b)==item['bytes'] and sha(b)==item['sha256'],item['path']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:63: trailing whitespace.
++assert sha(payloads['controls/Package.swift'])==inputs['package_sha256']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:64: trailing whitespace.
++assert sha(payloads['controls/Tests/CompositionControls/Controls.swift'])=='fde032b0d1bef0fbcf7f376db0b52dacfcc04b5e4dcee9b8664af133f3446877'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:65: trailing whitespace.
++candidate=payloads['OWNER_CANDIDATE.swift']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:66: trailing whitespace.
++assert sha(candidate)==inputs['candidate_sha256']=='bf619f8e022c99d6f7f5f8e374b7213989639502801d36b754dcd95aedae9873'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:67: trailing whitespace.
++assert candidate==payloads['controls/Owner.candidate.swift']==obj(source,product)==obj(incoming,product)==(author/product).read_bytes()
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:68: trailing whitespace.
++assert obj(base,product)==payloads['OWNER_BASE.swift']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:69: trailing whitespace.
++assert sha(payloads['SPACE_EDIT_BINDING.patch'])==inputs['candidate_patch_sha256']=='c8a2cb2f3ff3010bc1ce209aaa12bad5e82bb8cadc5954ed474cc3f1a4b849c0'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:70: trailing whitespace.
++changes=textgit('diff','--name-only',base,incoming).splitlines()
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:71: trailing whitespace.
++assert [p for p in changes if not p.startswith('docs/')]==[product],changes
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:72: trailing whitespace.
++assert set(textgit('diff','--name-only',source,incoming).splitlines())<=set(p for p in changes if p.startswith('docs/'))
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:73: trailing whitespace.
++assert result['tests_run']==10 and result['all_inputs_unchanged'] is True and result['inputs_sha256']==sha(payloads['controls/INPUTS.json'])
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:74: trailing whitespace.
++xml=payloads['controls/TEST_RESULTS.xml'];assert sha(xml)==result['xunit_sha256']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:75: trailing whitespace.
++root=ET.fromstring(xml);cases=root.findall('.//testcase')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:76: trailing whitespace.
++names=[c.attrib['name'].removesuffix('()') for c in cases]
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:77: trailing whitespace.
++assert len(names)==10 and len(set(names))==10 and set(names)==set(inputs['expected_tests'])
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:78: trailing whitespace.
++assert not root.findall('.//failure') and not root.findall('.//error') and not root.findall('.//skipped')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:79: trailing whitespace.
++assert {x['name'].removesuffix('()') for x in result['tests']}==set(names)
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:80: trailing whitespace.
++assert len(execution['commands'])==3
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:81: trailing whitespace.
++for command in execution['commands']:
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:82: trailing whitespace.
++ assert command['phase']=='TERMINAL' and command['returncode']==0 and command['timed_out'] is False and command['all_inputs_unchanged'] is True
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:83: trailing whitespace.
++ for stream in ('stdout','stderr'):
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:84: trailing whitespace.
++  assert sha(payloads['controls/'+command['label']+'.'+stream+'.log'])==command[stream+'_sha256']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:85: trailing whitespace.
++assert execution['commands'][-1]['label']=='swift-testing-composition'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:86: trailing whitespace.
++assert execution['commands'][-1]['started_at']=='2026-11-22T07:36:39.550422+00:00'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:87: trailing whitespace.
++assert execution['commands'][-1]['finished_at']=='2026-11-22T07:41:33.026523+00:00'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:88: trailing whitespace.
++for tool in execution['toolchain']:
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:89: trailing whitespace.
++ b=Path(tool['path']).read_bytes();assert len(b)==tool['bytes'] and sha(b)==tool['sha256']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:90: trailing whitespace.
++archive=loadjson('controls/ACTUAL_BINARY_ARCHIVE.json')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:91: trailing whitespace.
++zb=payloads['controls/actual-test-runner.zip'];assert sha(zb)==archive['sha256'] and len(zb)==archive['bytes']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:92: trailing whitespace.
++with zipfile.ZipFile(io.BytesIO(zb)) as z:
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:93: trailing whitespace.
++ assert z.testzip() is None
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:94: trailing whitespace.
++ members=z.infolist();assert len(members)==1
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:95: trailing whitespace.
++ for info in members:
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:96: trailing whitespace.
++  p=PurePosixPath(info.filename);assert not p.is_absolute() and '..' not in p.parts and '\\' not in info.filename and not info.is_dir() and ((info.external_attr>>16)&0o170000)!=0o120000
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:97: trailing whitespace.
++ binary=z.read(members[0])
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:98: trailing whitespace.
++assert len(binary)==result['binary']['bytes'] and sha(binary)==result['binary']['sha256']=='17b96bc0125df3254a14fcd9c277da1c96e822f8be1a54705b5a965717a3ee2d'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:99: trailing whitespace.
++assert binary[:2]==b'MZ'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:100: trailing whitespace.
++pe=struct.unpack_from('<I',binary,0x3c)[0];assert binary[pe:pe+4]==b'PE\0\0' and struct.unpack_from('<H',binary,pe+4)[0]==0x8664
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:101: trailing whitespace.
++actual_binary=Path(r'C:\Users\DAVID\AppData\Local\Temp\oe-space-bind-20261122')/result['binary']['path']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:102: trailing whitespace.
++assert actual_binary.read_bytes()==binary
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:103: trailing whitespace.
++assert actual_binary.name.encode() in payloads['controls/swift-testing-composition.stderr.log']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:104: trailing whitespace.
++erratum=loadjson('controls/EVIDENCE_STREAM_ERRATUM.json')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:105: trailing whitespace.
++assert erratum['reexecuted_commands']==0 and erratum['actual_process_exit']==0 and erratum['actual_tests']==10 and erratum['actual_failures']==0
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:106: trailing whitespace.
++reg=loadjson('REGISTER_PREFIX_PROOF.json')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:107: trailing whitespace.
++before=obj(base,reg['path']);after=obj(incoming,reg['path'])
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:108: trailing whitespace.
++assert len(before)==reg['base_bytes'] and sha(before)==reg['base_sha256'] and after.startswith(before) and sha(after)==reg['after_sha256']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:109: trailing whitespace.
++composition=loadjson('SOURCE_COMPOSITION.json')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:110: trailing whitespace.
++for path,digest in composition['prior_component_and_shared_trees'].items():
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:111: trailing whitespace.
++ assert textgit('rev-parse',base+':'+path)==digest
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:112: trailing whitespace.
++ assert textgit('rev-parse',incoming+':'+path)==digest
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:113: trailing whitespace.
++ assert textgit('rev-parse',head+':'+path)==digest
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:114: trailing whitespace.
++preserved=['Modules','Anytype/Resources','Scripts','scripts','.github','OriginalEditorFramework','Anytype.xcodeproj',
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:115: trailing whitespace.
++ 'Anytype/Sources/ServiceLayer/ParticipantStorage/ParticipantsStorage.swift',
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:116: trailing whitespace.
++ 'Anytype/Sources/ServiceLayer/SpaceStorage/SpaceViewsStorage.swift',
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:117: trailing whitespace.
++ 'Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationNativeMetadata.swift',
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:118: trailing whitespace.
++ 'Anytype/Sources/Pinkha/Torah/Annotations/OriginalAnnotationObjectReadback.swift']
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:119: trailing whitespace.
++preserved_before={p:textgit('rev-parse',head+':'+p) for p in preserved}
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:120: trailing whitespace.
++receipt={'schema':1,'verified_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'status':'PASS_INDEPENDENT_FROZEN_EVIDENCE_ADMISSION_NO_TEST_REPLAY','base':base,'root_premerge':head,'incoming':incoming,'source_commit':source,'packet_index_sha256':sha(index_b),'payload_count':86,'payload_bytes':sum(len(b) for b in payloads.values()),'original_git_inputs_verified':18,'compiled_inputs_verified':13,'actual_windows_pe_sha256':sha(binary),'actual_windows_pe_bytes':len(binary),'archive_crc_members':1,'actual_test_count':10,'actual_case_names':names,'xunit_sha256':sha(xml),'original_execution_started':execution['commands'][-1]['started_at'],'original_execution_finished':execution['commands'][-1]['finished_at'],'original_tool_wrapper_red_retained':True,'evidence_only_stream_erratum_verified':True,'canonical_register_prefix_preserved':True,'preserved_premerge_objects':preserved_before,'root_tests_executed':0,'native_calls':0,'limits':inputs['limits'],'executed_script_sha256':sha(Path(__file__).read_bytes())}
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:121: trailing whitespace.
++temp=Path(r'C:\Users\DAVID\AppData\Local\Temp\otzaria-continuation-20261122')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:122: trailing whitespace.
++receipt_path=temp/'composition_root_evidence_review.json'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:123: trailing whitespace.
++assert not receipt_path.exists()
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:124: trailing whitespace.
++receipt_path.write_bytes((json.dumps(receipt,indent=2,ensure_ascii=False)+'\n').encode())
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:125: trailing whitespace.
++assert textgit('rev-parse','HEAD')==head and git('status','--porcelain')==b''
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:126: trailing whitespace.
++git('merge','--no-ff',incoming,'-m','Merge verified original Space edit permission composition',timeout=90)
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:127: trailing whitespace.
++merge=textgit('rev-parse','HEAD')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:128: trailing whitespace.
++assert textgit('show','-s','--format=%P',merge).split()==[head,incoming]
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:129: trailing whitespace.
++assert git('status','--porcelain')==b''
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:130: trailing whitespace.
++merged_changes=textgit('diff','--name-only',head,merge).splitlines()
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:131: trailing whitespace.
++assert [p for p in merged_changes if not p.startswith('docs/')]==[product]
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:132: trailing whitespace.
++assert obj(merge,product)==candidate and (repo/product).read_bytes()==candidate
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:133: trailing whitespace.
++preserved_after={p:textgit('rev-parse',merge+':'+p) for p in preserved}
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:134: trailing whitespace.
++assert preserved_after==preserved_before
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:135: trailing whitespace.
++proofdir=repo/proof;assert not proofdir.exists();proofdir.mkdir(parents=True)
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:136: trailing whitespace.
++(proofdir/'ROOT_REVIEW.json').write_bytes(receipt_path.read_bytes())
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:137: trailing whitespace.
++(proofdir/'EXECUTED_ROOT_SCRIPT.py').write_bytes(Path(__file__).read_bytes())
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:138: trailing whitespace.
++integration={'schema':1,'created_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'merge_commit':merge,'merge_parents':[head,incoming],'source_commit':source,'only_product_delta':product,'product_sha256':sha(candidate),'review_sha256':sha(receipt_path.read_bytes()),'preserved_objects':preserved_after,'new_executions':0,'native_calls':0,'runtime_callers_added':0,'root_worktree':str(repo),'branch':textgit('branch','--show-current'),'incoming_packet':packet,'scope':'Original SourceBinding restriction composition with existing Participant/Space captures. No native RPC, schema creation, metadata digest, persisted receipt, writer, ACK or Apple qualification.'}
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:139: trailing whitespace.
++(proofdir/'INTEGRATION.json').write_bytes((json.dumps(integration,indent=2)+'\n').encode())
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:140: trailing whitespace.
++readme='# Original Space edit permission composition: independent integration\n\nTrue merge '+merge+' joins root '+head+' and independently verified source/evidence '+incoming+'. The only product delta is '+product+' (SHA-256 '+sha(candidate)+').\n\nRoot verified all 86 frozen payloads plus their index, 18 original immutable Git inputs, 13 compiled inputs, the actual Windows PE test runner and archived copy, CRC, raw execution streams, and ten distinct successful Swift Testing cases. The original wrapper RED and evidence-only stdout/stderr correction remain retained. No test or compiler command was rerun for this integration.\n\nThe restriction copies the original SourceBinding account, lifetime, source captures, currentness predicate, optional parent and named RPC restriction, appends actual Participant/Space captures, evaluates original SpacePermissions, and revalidates. It does not grant destination or creation authority. Existing component, generated module, resource, project, workflow, metadata and readback objects are unchanged.\n\nThe ten new cases are Windows portable component controls with explicit DI, publisher, decoded-value, document and network-configuration probes. No original native subscription, RPC, ObjectCreate, persistence receipt, identity map, ACK, Apple SDK or device runtime acceptance is claimed. Full original test scope and limits are retained in ROOT_REVIEW.json and the incoming packet.\n'
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:141: trailing whitespace.
++(proofdir/'README.md').write_bytes(readme.encode())
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:142: trailing whitespace.
++files=[{'path':p.name,'bytes':p.stat().st_size,'sha256':sha(p.read_bytes())} for p in sorted(proofdir.iterdir()) if p.is_file()]
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:143: trailing whitespace.
++(proofdir/'FILE_INDEX.json').write_bytes((json.dumps({'schema':1,'files':files,'count':len(files)},indent=2)+'\n').encode())
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:144: trailing whitespace.
++git('add','--',proof);git('diff','--cached','--check')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:145: trailing whitespace.
++git('commit','-m','Record independent original Space edit composition integration evidence',timeout=90)
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:146: trailing whitespace.
++final=textgit('rev-parse','HEAD')
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:147: trailing whitespace.
++assert git('status','--porcelain')==b'' and obj(final,product)==candidate
+docs/pinkha/torah-integration/original-space-edit-composition-integration-20261122/EXECUTED_ROOT_SCRIPT.py:148: trailing whitespace.
++print(json.dumps({'status':'PASS','review':receipt,'integration':integration,'final_commit':final,'remote':textgit('remote','get-url','origin'),'proof':proof,'proof_index_sha256':sha((proofdir/'FILE_INDEX.json').read_bytes()),'new_test_executions':0},ensure_ascii=False))

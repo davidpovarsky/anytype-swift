@@ -1,0 +1,24 @@
+{
+  "id": "job_bc3db4a8fc60",
+  "type": "job_result",
+  "source": "script_run@host_7ec8382e82747448",
+  "severity": "warning",
+  "tool": "script_run",
+  "host": "host_7ec8382e82747448",
+  "status": "failed",
+  "exit_code": 1,
+  "created_at": 1795336210.5398397,
+  "started_at": "2026-11-22T08:30:10.625069+00:00",
+  "finished_at": "2026-11-22T08:30:34.670604+00:00",
+  "duration_s": 24.05,
+  "error": null,
+  "output_truncated": false,
+  "timeout_s": 300,
+  "read": false,
+  "notified": {
+    "telegram": null,
+    "resend": null
+  },
+  "notify_spec": {},
+  "output": "Traceback (most recent call last):\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_046d030257324a3ab13d8f0786553911\\integrate_original_space_edit_composition.py\", line 144, in <module>\r\n    git('add','--',proof);git('diff','--cached','--check')\r\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\n  File \"C:\\ProgramData\\SentinelX\\uploads\\.sentinelx_uploads\\script_job_046d030257324a3ab13d8f0786553911\\integrate_original_space_edit_composition.py\", line 15, in git\r\n    if p.returncode: raise RuntimeError('git failure '+str(args)+' '+p.stderr.decode(errors='replace')[:2000])\r\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nRuntimeError: git failure ('diff', '--cached', '--check')"
+}
