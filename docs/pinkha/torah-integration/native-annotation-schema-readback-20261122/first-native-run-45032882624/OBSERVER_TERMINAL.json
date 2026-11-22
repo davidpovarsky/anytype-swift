@@ -1,0 +1,132 @@
+{
+  "schema": "otzaria.schema-observer-terminal-receipt/1",
+  "job": {
+    "id": "job_c3c6836e239d",
+    "status": "succeeded",
+    "exit_code": 0,
+    "started_at": "2026-11-22T14:28:30.904490+00:00",
+    "finished_at": "2026-11-22T14:37:57.364154+00:00",
+    "duration_s": 566.46,
+    "output_truncated": false,
+    "timeout_s": 3600,
+    "error": null,
+    "notify_spec": {}
+  },
+  "report": {
+    "schema": "otzaria.finite-schema-observer/1",
+    "run_id": 45032882624,
+    "expected_head": "50543a6a3895fb10a03e69e6a39746847b4c7336",
+    "events": [
+      {
+        "utc": "2026-11-22T14:28:32.756303+00:00",
+        "event": "RUN_STATE",
+        "status": "queued",
+        "conclusion": null
+      },
+      {
+        "utc": "2026-11-22T14:33:08.655199+00:00",
+        "event": "RUN_STATE",
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "utc": "2026-11-22T14:37:47.218671+00:00",
+        "event": "RUN_STATE",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "utc": "2026-11-22T14:37:57.252184+00:00",
+        "event": "ARTIFACT_VERIFIED",
+        "artifact_id": 14758163183,
+        "native_status": "PASS"
+      }
+    ],
+    "status": "TERMINAL_ARTIFACT_RETAINED",
+    "owned_directory": "C:\\Users\\DAVID\\Code\\otzaria-schema-readback-observer-20261122-45032882624",
+    "run": {
+      "id": 45032882624,
+      "head_sha": "50543a6a3895fb10a03e69e6a39746847b4c7336",
+      "head_branch": "codex/otzaria-annotation-schema-readback-20261122",
+      "run_attempt": 1,
+      "event": "push",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45032882624",
+      "created_at": "2026-11-22T14:27:07Z",
+      "updated_at": "2026-11-22T14:37:01Z"
+    },
+    "artifact": {
+      "id": 14758163183,
+      "name": "Otzaria-Annotation-Schema-Readback-45032882624-1",
+      "bytes": 2726085,
+      "sha256": "dba227ed9f6f3116649a97af9ce0a0c840cfe2067bc76ada68bbd5281e506b7e",
+      "path": "C:\\Users\\DAVID\\Code\\otzaria-schema-readback-observer-20261122-45032882624\\native-artifact.zip",
+      "payloads": 43
+    },
+    "native_result": {
+      "status": "PASS",
+      "control_head": "50543a6a3895fb10a03e69e6a39746847b4c7336",
+      "tests": {
+        "native": {
+          "binary_bytes": 173055026,
+          "binary_evidence_scope": "Runner-observed hashes; executable bytes are excluded from uploaded evidence and not independently rehashed by root.",
+          "binary_sha256_after": "9ee80bc62b5af34c7f2cbd84623c12b30e7d3dbd8d8150d0d14892846a5404ae",
+          "binary_sha256_before": "9ee80bc62b5af34c7f2cbd84623c12b30e7d3dbd8d8150d0d14892846a5404ae",
+          "binary_unchanged": true,
+          "buildinfo_sha256": "57a4ac73f5ba64e174d410b8f3abb8fac2dedf19afcafc33b4d38eebee0982f1",
+          "compiled": true,
+          "effective_returncode": 0,
+          "execution_started": true,
+          "expected": [
+            "TestOtzariaAnnotationSchemaReadback",
+            "TestOtzariaAnnotationSchemaReadback/ActualDefinitionsHiddenAttachmentsAndViews",
+            "TestOtzariaAnnotationSchemaReadback/CallerMutationCannotChangeCopiedNativeReadback",
+            "TestOtzariaAnnotationSchemaReadback/ConflictCannotExposePersistedPayload",
+            "TestOtzariaAnnotationSchemaReadback/ChangedRowsCannotExposePersistedPayload",
+            "TestOtzariaAnnotationSchemaReadback/FinalCancellationCannotExposePersistedPayload",
+            "TestOtzariaAnnotationSchemaReadback/MissingAttachmentRemainsIncomplete",
+            "TestOtzariaAnnotationSchemaReadback/VisibleNativeMetadataColumnIsConflict",
+            "TestOtzariaAnnotationSchemaReadback/UncertainRootIsPreservedWithoutCreation",
+            "TestOtzariaAnnotationSchemaReadback/OriginalNativeRetirementIsConflict"
+          ],
+          "package_terminal": [
+            "pass"
+          ],
+          "pass": true,
+          "process_returncode": 0,
+          "selection": "^TestOtzariaAnnotationSchemaReadback$/^(ActualDefinitionsHiddenAttachmentsAndViews|CallerMutationCannotChangeCopiedNativeReadback|ConflictCannotExposePersistedPayload|ChangedRowsCannotExposePersistedPayload|FinalCancellationCannotExposePersistedPayload|MissingAttachmentRemainsIncomplete|VisibleNativeMetadataColumnIsConflict|UncertainRootIsPreservedWithoutCreation|OriginalNativeRetirementIsConflict)$",
+          "started": [
+            "TestOtzariaAnnotationSchemaReadback",
+            "TestOtzariaAnnotationSchemaReadback/ActualDefinitionsHiddenAttachmentsAndViews",
+            "TestOtzariaAnnotationSchemaReadback/CallerMutationCannotChangeCopiedNativeReadback",
+            "TestOtzariaAnnotationSchemaReadback/ConflictCannotExposePersistedPayload",
+            "TestOtzariaAnnotationSchemaReadback/ChangedRowsCannotExposePersistedPayload",
+            "TestOtzariaAnnotationSchemaReadback/FinalCancellationCannotExposePersistedPayload",
+            "TestOtzariaAnnotationSchemaReadback/MissingAttachmentRemainsIncomplete",
+            "TestOtzariaAnnotationSchemaReadback/VisibleNativeMetadataColumnIsConflict",
+            "TestOtzariaAnnotationSchemaReadback/UncertainRootIsPreservedWithoutCreation",
+            "TestOtzariaAnnotationSchemaReadback/OriginalNativeRetirementIsConflict"
+          ],
+          "terminal": {
+            "TestOtzariaAnnotationSchemaReadback": "pass",
+            "TestOtzariaAnnotationSchemaReadback/ActualDefinitionsHiddenAttachmentsAndViews": "pass",
+            "TestOtzariaAnnotationSchemaReadback/CallerMutationCannotChangeCopiedNativeReadback": "pass",
+            "TestOtzariaAnnotationSchemaReadback/ChangedRowsCannotExposePersistedPayload": "pass",
+            "TestOtzariaAnnotationSchemaReadback/ConflictCannotExposePersistedPayload": "pass",
+            "TestOtzariaAnnotationSchemaReadback/FinalCancellationCannotExposePersistedPayload": "pass",
+            "TestOtzariaAnnotationSchemaReadback/MissingAttachmentRemainsIncomplete": "pass",
+            "TestOtzariaAnnotationSchemaReadback/OriginalNativeRetirementIsConflict": "pass",
+            "TestOtzariaAnnotationSchemaReadback/UncertainRootIsPreservedWithoutCreation": "pass",
+            "TestOtzariaAnnotationSchemaReadback/VisibleNativeMetadataColumnIsConflict": "pass"
+          },
+          "timed_out": false,
+          "unexpected": []
+        }
+      },
+      "error": null,
+      "error_type": null,
+      "owned_disposable_temp_removed": true
+    }
+  }
+}

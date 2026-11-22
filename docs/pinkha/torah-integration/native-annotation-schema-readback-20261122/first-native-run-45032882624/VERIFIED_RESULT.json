@@ -1,0 +1,156 @@
+{
+  "status": "VERIFIED_NINE_NEW_NATIVE_CASES_PASS",
+  "run_id": 45032882624,
+  "attempt": 1,
+  "source_sha": "50543a6a3895fb10a03e69e6a39746847b4c7336",
+  "artifact_id": 14758163183,
+  "artifact_sha256": "dba227ed9f6f3116649a97af9ce0a0c840cfe2067bc76ada68bbd5281e506b7e",
+  "artifact_bytes": 2726085,
+  "payloads_verified": 43,
+  "commands_verified": 18,
+  "case_counts": {
+    "pass": 9,
+    "fail": 0,
+    "skip": 0
+  },
+  "exact_child_events": [
+    {
+      "Time": "2026-11-22T14:36:51.357229Z",
+      "Action": "pass",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaReadback/ActualDefinitionsHiddenAttachmentsAndViews",
+      "Elapsed": 0.05
+    },
+    {
+      "Time": "2026-11-22T14:36:51.36204Z",
+      "Action": "pass",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaReadback/CallerMutationCannotChangeCopiedNativeReadback",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-22T14:36:51.364245Z",
+      "Action": "pass",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaReadback/ConflictCannotExposePersistedPayload",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-22T14:36:51.366799Z",
+      "Action": "pass",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaReadback/ChangedRowsCannotExposePersistedPayload",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-22T14:36:51.369318Z",
+      "Action": "pass",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaReadback/FinalCancellationCannotExposePersistedPayload",
+      "Elapsed": 0
+    },
+    {
+      "Time": "2026-11-22T14:36:51.395229Z",
+      "Action": "pass",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaReadback/MissingAttachmentRemainsIncomplete",
+      "Elapsed": 0.03
+    },
+    {
+      "Time": "2026-11-22T14:36:51.421641Z",
+      "Action": "pass",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaReadback/VisibleNativeMetadataColumnIsConflict",
+      "Elapsed": 0.03
+    },
+    {
+      "Time": "2026-11-22T14:36:51.875721Z",
+      "Action": "pass",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaReadback/UncertainRootIsPreservedWithoutCreation",
+      "Elapsed": 0.45
+    },
+    {
+      "Time": "2026-11-22T14:36:52.319459Z",
+      "Action": "pass",
+      "Package": "./core/block/object/objectcreator",
+      "Test": "TestOtzariaAnnotationSchemaReadback/OriginalNativeRetirementIsConflict",
+      "Elapsed": 0.44
+    }
+  ],
+  "prior_cases_replayed": 0,
+  "native_definition_count": 18,
+  "native_view_count": 1,
+  "reported_native_process_id": 20130,
+  "native_declared_input_count": 11323,
+  "composed_product_and_test_inputs": [
+    {
+      "bytes": 15466,
+      "path": "core/block/object/objectcreator/fixed_schema_observer.go",
+      "sha256": "f591939d759e733a37e776d189de36d597ddd30cab284142f82aa8de9de51d89"
+    },
+    {
+      "bytes": 17843,
+      "path": "core/block/object/objectcreator/fixed_schema_snapshot.go",
+      "sha256": "3a404738380ca7b8a6e59c93a377b85927ed4383fed560385f5920f86631e5df"
+    },
+    {
+      "bytes": 4218,
+      "path": "core/block/object/objectcreator/fixed_schema_acl.go",
+      "sha256": "170a100526f0be337c12bf9831099eb78381948b41f851791e00bbb54160a09e"
+    },
+    {
+      "bytes": 14619,
+      "path": "core/block/object/objectcreator/fixed_schema_replay.go",
+      "sha256": "47de485bc746070ee5791cac1efc67e84da31c5477cdb4ad577d62c53310adc7"
+    },
+    {
+      "bytes": 27591,
+      "path": "core/block/source/sourceimpl/source.go",
+      "sha256": "30481a09de754219aa3e714cab42a5750880f9d835a720e1330de22690262e55"
+    },
+    {
+      "bytes": 3520,
+      "path": "core/pinkha/annotationschema/definition.go",
+      "sha256": "cce970f838d91d9f3f06af5e4f2511afc6838c69704deaa4099ba9c392996eac"
+    },
+    {
+      "bytes": 9880,
+      "path": "core/pinkha/annotationschema/observe.go",
+      "sha256": "06eac0c21b0974863a197f8f1a3ae80804c5d97d3e4a49e8f775e9cccc1cc193"
+    },
+    {
+      "bytes": 6266,
+      "path": "core/pinkha/annotationschema/type_layout.go",
+      "sha256": "574f1fc23e9387c59167fdeac72b6a4d727f4c6c782b03ed2a99593a0e7ad312"
+    },
+    {
+      "bytes": 14947,
+      "path": "core/block/object/objectcreator/fixed_schema_native_fixture_test.go",
+      "sha256": "1afa72779c24aff5a78fe63b181f112ca7a4fa7c6984f1395a0cf5fc4a308999"
+    },
+    {
+      "bytes": 8977,
+      "path": "core/block/object/objectcreator/fixed_schema_native_trace_test.go",
+      "sha256": "129341500230b4e053985b34155cf48f6dcad185027e5ba1d5a89859c347a98d"
+    },
+    {
+      "bytes": 25964,
+      "path": "core/block/object/objectcreator/fixed_schema_native_observer_test.go",
+      "sha256": "a8cbec19d91da9442a75bf7a406d7718c54b0224d24377ddd2e5160d218de6cc"
+    },
+    {
+      "bytes": 20028,
+      "path": "core/block/object/objectcreator/fixed_schema_native_counter_observation_test.go",
+      "sha256": "54041071214718844bcec0f8d4a6d8723d844d11bd30ca5129faeec87eab0078"
+    },
+    {
+      "bytes": 17307,
+      "path": "core/block/object/objectcreator/annotation_schema_readback_native_test.go",
+      "sha256": "3cffade31d78d38f577f5cefbaceaa23696ca3077cdcdd53c7fab6ae9da79077"
+    }
+  ],
+  "result_sha256": "97c2cea10e58f50fcdb6d59cb2dc5b41eeb16b7d327d860727827ea612d06edd",
+  "native_log_sha256": "f54f31348ec4fa9577574fb62db715532a25acddc4a86f59f7c8123c97b35588",
+  "boundary": "Genuine disposable original Heart controls only. Report framing, exact source/selection and evidence hashes independently checked; original Go assertions own protobuf semantics. No production registration/recovery, Swift integration, body/mapping/COMMIT/ACK acceptance. Native binary hash and process ID remain runner observations; executable bytes are not uploaded."
+}
