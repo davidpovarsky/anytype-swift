@@ -1,0 +1,367 @@
+mw lib: build on 0001-01-01 00:00:00 +0000 UTC at #d98420b1113536afd08cde6de9a5816f6d27ffff
+=== RUN   TestT5NativeCachedQueriesAfterSignedRevocation
+2026-11-22T00:35:34.261Z	[34mINFO[0m	client.space.localdiscovery	local discovery: no native discovery proxy installed, using zeroconf
+2026-11-22T00:35:34.261Z	[34mINFO[0m	anytype-app	starting app	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-native-t5-lookup-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-torah-attachment-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-current-read-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9", "appVersion": "ios:0.51.0/middle:v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-native-t5-lookup-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-torah-attachment-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-current-read-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9/any-sync:"}
+2026-11-22T00:35:34.262Z	[33mWARN[0m	anytype-config	using sqlite storage
+### lenient true
+2026-11-22T00:35:34.284Z	[33mWARN[0m	common.nodeconf	periodic call error	{"error": "unable to connect"}
+2026-11-22T00:35:34.285Z	[34mINFO[0m	client.space.localdiscovery	net interfaces configuration changed	{"ifaces": ["eth0"]}
+2026-11-22T00:35:34.285Z	[34mINFO[0m	client.space.localdiscovery	own lan addresses	{"addrs": ["eth0 172.17.0.2/16 advertised"]}
+2026-11-22T00:35:34.285Z	[34mINFO[0m	client.space.localdiscovery	starting mdns server	{"ips": ["172.17.0.2"], "port": 33855, "peerId": "12D3KooWC4T2cDQkuukQopd7VFu27aKz2e1SNiiu9FVvgEvCqBzV", "linkLocalIfaces": []}
+2026-11-22T00:35:34.305Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreifggnjrrignrk2cg75677ygz22kysqxe7dkbd2tdp3bpwrmatig4m.2hkxurykm8dvh", "spaceId": "bafyreifggnjrrignrk2cg75677ygz22kysqxe7dkbd2tdp3bpwrmatig4m.2hkxurykm8dvh", "accountStatus": "Unknown"}
+2026-11-22T00:35:34.306Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreifggnjrrignrk2cg75677ygz22kysqxe7dkbd2tdp3bpwrmatig4m.2hkxurykm8dvh"}
+2026-11-22T00:35:34.677Z	[33mWARN[0m	anytype-mw-configfetcher	periodic call error	{"error": "unable to connect"}
+2026-11-22T00:35:34.678Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-22T00:35:34.678Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-22T00:35:34.685Z	[31mERROR[0m	anytype-identity	push profile to identity registry	{"error": "failed to push identity: unable to connect"}
+2026-11-22T00:35:34.685Z	[31mERROR[0m	nameservice.nameserviceclient	no ns peers configured. Maybe you're on a custom network. Node config ID: 
+2026-11-22T00:35:34.685Z	[31mERROR[0m	anytype-identity	error fetching global name of our own identity from Naming Service	{"error": "no namingNode peers configured. Maybe you're on a custom network. Node config ID: "}
+2026-11-22T00:35:34.685Z	[33mWARN[0m	common.subscribeclient	streamWatcher: trying to connect
+2026-11-22T00:35:34.685Z	[33mWARN[0m	common.subscribeclient	streamWatcher: pool error	{"error": "unable to connect"}
+2026-11-22T00:35:34.686Z	[31mERROR[0m	heart.inboxclient	inbox: fetchMessages batch error	{"error": "unable to connect"}
+2026-11-22T00:35:34.709Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreickzrrlffkzq2a6barexyujonn4jemxaxk2ou2g7yu5t7ojqkga4q.2hkxurykm8dvh", "spaceId": "bafyreickzrrlffkzq2a6barexyujonn4jemxaxk2ou2g7yu5t7ojqkga4q.2hkxurykm8dvh", "accountStatus": "Unknown"}
+2026-11-22T00:35:34.710Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-22T00:35:34.712Z	[31mERROR[0m	filesync	update space usage in background	{"error": "get space info: get node peer for reserved conn: no connection to any file client", "spaceId": "bafyreickzrrlffkzq2a6barexyujonn4jemxaxk2ou2g7yu5t7ojqkga4q.2hkxurykm8dvh"}
+2026-11-22T00:35:35.025Z	[33mWARN[0m	anytype-doc-indexer	ft consistency check completed	{"checked": 88, "enqueued": 42, "complete": true, "duration": "52.331537ms"}
+2026-11-22T00:35:35.037Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-22T00:35:35.059Z	[33mWARN[0m	anytype-mw-smartblock	failed to get recommended layout from details of type: failed to find id of object type. Guessing the layout
+2026-11-22T00:35:35.172Z	[33mWARN[0m	anytype-mw-smartblock	failed to get recommended layout from details of type: failed to find id of object type. Guessing the layout
+2026-11-22T00:35:35.178Z	[31mERROR[0m	common.acl.syncacl	broadcast acl message error	{"error": "mb: overflowed"}
+2026-11-22T00:35:35.179Z	[31mERROR[0m	nameservice.nameserviceclient	no ns peers configured. Maybe you're on a custom network. Node config ID: 
+2026-11-22T00:35:35.179Z	[31mERROR[0m	anytype-identity	error fetching global names of guest identities from Naming Service	{"error": "no namingNode peers configured. Maybe you're on a custom network. Node config ID: "}
+2026-11-22T00:35:35.179Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-22T00:35:35.180Z	[31mERROR[0m	common.acl.syncacl	broadcast acl message error	{"error": "mb: overflowed"}
+2026-11-22T00:35:35.183Z	[31mERROR[0m	common.acl.syncacl	broadcast acl message error	{"error": "mb: overflowed"}
+2026-11-22T00:35:35.183Z	[34mINFO[0m	core.block.editor.spaceview	set space persistent info	{"spaceId": "bafyreickzrrlffkzq2a6barexyujonn4jemxaxk2ou2g7yu5t7ojqkga4q.2hkxurykm8dvh", "spaceId": "bafyreickzrrlffkzq2a6barexyujonn4jemxaxk2ou2g7yu5t7ojqkga4q.2hkxurykm8dvh", "accountStatus": "Deleted"}
+2026-11-22T00:35:35.183Z	[33mWARN[0m	common.commonspace.synctree	failed to broadcast head update	{"error": "mb: overflowed"}
+2026-11-22T00:35:35.184Z	[34mINFO[0m	anytype-core-account	closing app: initiated	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-native-t5-lookup-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-torah-attachment-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-current-read-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9"}
+2026-11-22T00:35:35.217Z	[31mERROR[0m	notifications	failed to derive notification object: put tree: context canceled
+2026-11-22T00:35:35.217Z	[31mERROR[0m	deviceService	failed to get device object: failed to derive device object: put tree: context canceled
+2026-11-22T00:35:35.218Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreickzrrlffkzq2a6barexyujonn4jemxaxk2ou2g7yu5t7ojqkga4q.2hkxurykm8dvh", "error": "context canceled"}
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.218Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.219Z	[31mERROR[0m	core.syncstatus.objectsyncstatus.updater	failed to update details object cache closed
+2026-11-22T00:35:35.220Z	[33mWARN[0m	space.deletioncontroller	remote status check error	{"error": "unable to connect"}
+2026-11-22T00:35:35.691Z	[31mERROR[0m	common.acl.aclservice	wait message	{"error": "context canceled"}
+2026-11-22T00:35:35.692Z	[31mERROR[0m	fileobject	index loop: wait for index request: context canceled
+2026-11-22T00:35:35.692Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreifggnjrrignrk2cg75677ygz22kysqxe7dkbd2tdp3bpwrmatig4m.2hkxurykm8dvh", "error": "context canceled"}
+2026-11-22T00:35:35.693Z	[33mWARN[0m	common.commonspace.headsync	periodic call error	{"spaceId": "bafyreihn56omyq6bq7jvur5xb6dru3dljkzts25oewkoj4hhjwgqypx4oe.2hkxurykm8dvh", "error": "context canceled"}
+2026-11-22T00:35:35.694Z	[33mWARN[0m	common.commonspace	call space.Close on closed space	{"id": "bafyreihn56omyq6bq7jvur5xb6dru3dljkzts25oewkoj4hhjwgqypx4oe.2hkxurykm8dvh"}
+2026-11-22T00:35:35.694Z	[31mERROR[0m	net.transport.quic	listener closed with error	{"localAddr": "[::]:33855", "error": "context canceled"}
+2026-11-22T00:35:35.694Z	[31mERROR[0m	net.transport.yamux	listener closed with error	{"localAddr": "[::]:33855", "error": "accept tcp [::]:33855: use of closed network connection"}
+2026-11-22T00:35:35.694Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibss3nhg3pub3itshbnsxl5fvacnizzuw7p43txg6sqnzoageufaa", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _braudioGenre error: context canceled
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _brurl error: context canceled
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicaa2y3xfi5n4mpxeim4yavcqf6twc47am3lvrtonbqsdcr4wnppa", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicaa2y3xfi5n4mpxeim4yavcqf6twc47am3lvrtonbqsdcr4wnppa", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreififbttdjnmkof7uy2bsmzjwvgonsxiycmunuvol4c4p6xz6kgycy", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreih6pftg4wufu3q3kqguohe747bzgkv7yh2lqufhndr6p6ljcucs3m", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigokkzg6elg6pdvzvvcejkkrg6rm4kngbq2c65avwwywzwiujlrhu", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigokkzg6elg6pdvzvvcejkkrg6rm4kngbq2c65avwwywzwiujlrhu", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreignf7nyskb3qdrgtwojdbfnewfkjagyuelpamihz3xms52lvtqeci", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreignf7nyskb3qdrgtwojdbfnewfkjagyuelpamihz3xms52lvtqeci", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _otparticipant error: context canceled
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreihasmftntifu2awe4qr6gskd6vekgchzgdmnjzik24ic74fcxnf7y", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreihasmftntifu2awe4qr6gskd6vekgchzgdmnjzik24ic74fcxnf7y", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreieaxjgcw7ezrgurgvmwf3vgxpd46axl2ff5f6woih3jyc334vnn7i", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreieaxjgcw7ezrgurgvmwf3vgxpd46axl2ff5f6woih3jyc334vnn7i", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreic3esz4udxap4sen3scbb7wltv762f4smr7lya4itahodxj35lg6q", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreielk7ljyjn54phcsgk5pmlrkoudsintn4kqlsrcn2g3nhyfv2hdmu", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _brdueDate error: context canceled
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _brfocalRatio error: context canceled
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreick72mqcoyfzv525t4kyswyjx2yva5tnduvkuud2iirssmdk7mdji", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreick72mqcoyfzv525t4kyswyjx2yva5tnduvkuud2iirssmdk7mdji", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreieqc5lyl2qfk5icoclhnk4zommqrqclfvs65uqcujgj7bdfydfhzu", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreieqc5lyl2qfk5icoclhnk4zommqrqclfvs65uqcujgj7bdfydfhzu", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiazbpbunlh5jideclvm26at3rdi4dskasfsjkh5fud37c3g5jmwfm", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiazbpbunlh5jideclvm26at3rdi4dskasfsjkh5fud37c3g5jmwfm", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiheszxx76whxyyw2eecnojmc443wrubfkfyhgjdfchq7r5v2tcqwu", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiheszxx76whxyyw2eecnojmc443wrubfkfyhgjdfchq7r5v2tcqwu", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibuti24oss7svbrv5w7ndocqscdgsccqp4273emz6ysomr454s2pm", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibuti24oss7svbrv5w7ndocqscdgsccqp4273emz6ysomr454s2pm", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicu7oscybpz2azby2wn5kxjxr3csqzyyhy7aveuivpl2h3ut5lmta", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _ottask error: context canceled
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreig4fjjh4bzsecnayumwm7mfkjpvvm2j2og6xn52fzgp4dwxak6pfe", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreig4fjjh4bzsecnayumwm7mfkjpvvm2j2og6xn52fzgp4dwxak6pfe", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreib2anvyxbplqifwk262tpvzrf3lk6vkw4u63gjwd5ebvk2kwwwuwu", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreib2anvyxbplqifwk262tpvzrf3lk6vkw4u63gjwd5ebvk2kwwwuwu", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigo7rp4aenls37pfggyi5jkazkie4td6vcqy7jobklnr3bowazpiy", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigo7rp4aenls37pfggyi5jkazkie4td6vcqy7jobklnr3bowazpiy", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidzzwvuaobbmrgzeniaviaiqdgbrdhrnozvmzyfhkfdk7cec3utky", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigpguvyykse4ypjqqgpydkrog3oipdu5s63vvdhviwiu77a3o2l7u", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibxlc4xh3p7it3xzkokbv4ptqhahlsh6lswlaubflri5nwo3wjmyq", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _otobjectType error: context canceled
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _brauthor error: context canceled
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibth7akc7ea3ignirrdolmkbcwu44w5amkyq45ataoqxwuh5r7wga", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibth7akc7ea3ignirrdolmkbcwu44w5amkyq45ataoqxwuh5r7wga", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigiosap5sky6ubz7uqwbjou7xd7ppey4q5wd3mehkb7smwg2trqfu", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigclc5gnszwjgckvuk6u2b6uqdsqzqv3vlu4olu667yvf65zgfdnu", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreia2n5iiqpbgxre2e7bxh5y6rq265wdh264shmkpnaffoopcjdi4ta", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _brtemplateIsBundled error: context canceled
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _otcontact error: context canceled
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _brartist error: context canceled
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _brexposure error: context canceled
+2026-11-22T00:35:35.695Z	[31mERROR[0m	anytype-mw-smartblock	index object _brpicture error: context canceled
+2026-11-22T00:35:35.695Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibv4gidc76rfhww5xjx7irlnz7nxqvsg3ylkvmeue4n5whxt6y24m", "error": "object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibv4gidc76rfhww5xjx7irlnz7nxqvsg3ylkvmeue4n5whxt6y24m", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiehw4wxcwxqwglt7hs5yaj4i2fgtgvhyk6z3q34vdkvlymw4uwlva", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.695Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidp2eipo4uqor35k5xvtxvxxw4znllxbkhagr2jti5e7ym25u3upi", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _brwidthInPixels error: context canceled
+2026-11-22T00:35:35.696Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreifanhpdlmpupjx5h6ac7b4fql4lkqrldpwjfflyhzh2wip25pqve4", "error": "object cache closed"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifanhpdlmpupjx5h6ac7b4fql4lkqrldpwjfflyhzh2wip25pqve4", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.696Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreie4amgw2eg4dvidtne24zoprblmmfbgixqqz42pizhigrhmqp2zkq", "error": "object cache closed"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreie4amgw2eg4dvidtne24zoprblmmfbgixqqz42pizhigrhmqp2zkq", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigzuz5cdemyrjqnuvcmv5qndah4dwf72isysjw4gniy55wzqugklm", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifnagcvtgpvn4g5ujat3zz6m6mdmp22ujn6vlmbro2k4yv73tcwpe", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _brheightInPixels error: context canceled
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _brrelationMaxCount error: context canceled
+2026-11-22T00:35:35.696Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiawy3orten2wf437tgjk6d3nuzs544tpwhf6fuxtnwxw2w4oyrewm", "error": "object cache closed"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiawy3orten2wf437tgjk6d3nuzs544tpwhf6fuxtnwxw2w4oyrewm", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.696Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiflyzplspjihxrv5ddp46bpdyvgfsokfdrgvyh5jgyvzv4ydsthey", "error": "object cache closed"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiflyzplspjihxrv5ddp46bpdyvgfsokfdrgvyh5jgyvzv4ydsthey", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.696Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreiakjumf3nltjzjayrvybb3xi52zwv4m3iyc52jusv6syjvs6s3ysu", "error": "object cache closed"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiakjumf3nltjzjayrvybb3xi52zwv4m3iyc52jusv6syjvs6s3ysu", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _braddedDate error: context canceled
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiff7prkyk6vlki65z4cs7x5hqpomnd6c4w7tqy7fc5mcvwi5mk23y", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreif643cejzuil5xvvnxnzxanjzgvadz7kesfz23mkqctb3v5kz5pkq", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreieczapmafxf47atm5fz3qlni2qju47yzybasgab2pgiebu267vugi", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _brreleasedYear error: context canceled
+2026-11-22T00:35:35.696Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreihxh4ou6aeqcckusdorgayna2h33jpmg5cyb3re4y2cqvpzu5nx3e", "error": "object cache closed"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreihxh4ou6aeqcckusdorgayna2h33jpmg5cyb3re4y2cqvpzu5nx3e", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.696Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibxbubxfs55s6ojv7ac5qyrorpqybrrzrglscpnaajhvt6vgx7e3a", "error": "object cache closed"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibxbubxfs55s6ojv7ac5qyrorpqybrrzrglscpnaajhvt6vgx7e3a", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibvviqu25ucjqsroojr6mfodfjstvs3pzvc5ojyhanpg6thyrkurq", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _brtag error: context canceled
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _brsizeInBytes error: context canceled
+2026-11-22T00:35:35.696Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreidyuck3o5p5hlgfepn3673tvf4u5xquwymcznwh7dtq6pc7526iia", "error": "object cache closed"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidyuck3o5p5hlgfepn3673tvf4u5xquwymcznwh7dtq6pc7526iia", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicvvynupm7vihip5ah6awwyk2gmezigg2aqe3ng6vn6rwkfdg2q34", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreieavqp5j322winkgsxc7zwmhh4ryproui3uzx3vfrswc6rkn7bgzq", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _otproject error: context canceled
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _brsetOf error: context canceled
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _braperture error: context canceled
+2026-11-22T00:35:35.696Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreieu2kel5ddszeepxwtfoex6xahtly4dfbv2ra5shxq3l52osqcs6i", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _brassignee error: context canceled
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _braudioLyrics error: context canceled
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _brcamera error: context canceled
+2026-11-22T00:35:35.696Z	[31mERROR[0m	anytype-mw-smartblock	index object _brstarred error: context canceled
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _bremail error: context canceled
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicd2wq6zrvnwnyoikhc3luonylva3zezkqcn3ruzih2kavzisxoaq", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicd2wq6zrvnwnyoikhc3luonylva3zezkqcn3ruzih2kavzisxoaq", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreic7vdv72ztcu7wycx2w2v233rdb4jougtyolybmldolip3y4brcuy", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreig4jqfmz2l4bgdi5hcggiywrjum3t7vtvqgk5trdo7766jap7e6aq", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brdone error: context canceled
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _braudioAlbumTrackNumber error: context canceled
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brcompany error: context canceled
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigrzii4u62xlstbabzsmudxuaag72scnwxi4pevxqvg2bvl7bczou", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigrzii4u62xlstbabzsmudxuaag72scnwxi4pevxqvg2bvl7bczou", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreialav6jxo6kgddlbsfzp3bdb2sc6kcci3zldvhezwzjf25ywfyuiy", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreialav6jxo6kgddlbsfzp3bdb2sc6kcci3zldvhezwzjf25ywfyuiy", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brrelationFormat error: context canceled
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifjpmt3t35udpkfpbdxtrz2dpbptot6sk42arrxxoeropb5iwcsr4", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brorigin error: context canceled
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreihdq4c6yzdzvwmbekbde5jbfdfp7qu3u5zlohmxulmygj3wfdh3e4", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreihdq4c6yzdzvwmbekbde5jbfdfp7qu3u5zlohmxulmygj3wfdh3e4", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brrecommendedLayout error: context canceled
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brtargetObjectType error: context canceled
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibrjb6o2vxiryanvxvinhn77zlgcao76yaekdrgusvbfxy22pycjy", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibrjb6o2vxiryanvxvinhn77zlgcao76yaekdrgusvbfxy22pycjy", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibl7bk46qyqda37szyla74fvu3kq3birx6c24owcmzmrtyjyi6z7u", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brfileExt error: context canceled
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreihww3vmxpqwnuaseqi6eqi4culkfffq4e5nifxsymzqlid2wmp6tm", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreihww3vmxpqwnuaseqi6eqi4culkfffq4e5nifxsymzqlid2wmp6tm", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigqj54wd3iqaxhyyifqo5f5cfytwaeungavyoc6xhrwptmv4qsgzi", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiblljuogpxngfbexndwepjx7lko6y6lqgryxdxa23tplqtz227r3e", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreih5i7srlvjvsyne6vg6dohbqzveuue6r7y433qp4lxuv2v5fvukay", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _otspace error: context canceled
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brstatus error: context canceled
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brlinkedProjects error: context canceled
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreidjgzjbp3kvyoyxrfld53cvmcqlcqqyfbdhyklvt7lgmsc5qxutia", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidjgzjbp3kvyoyxrfld53cvmcqlcqqyfbdhyklvt7lgmsc5qxutia", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreify6iu4vqisyy2y6qzkfbucvvj53sfqtakcqd3z4j2twcp6g2k77a", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreial4ifci7mqysto53yswyqmx4cyfol3crdhbk4bp4f3g5wvziioze", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brfileMimeType error: context canceled
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brmood error: context canceled
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreia22znhfngv7b2vgf5pzmyza7cb4nzxx62xwi3owtizv366734myq", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreihhx2qrhujy4t3xfinjb2slk7iswjzdklwrwiemrcefmilatvk6du", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreihhx2qrhujy4t3xfinjb2slk7iswjzdklwrwiemrcefmilatvk6du", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigdqkopgx3n4m5azd25chlfgx7l4aql77anzrz26jvqfjal6bzgfe", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigdqkopgx3n4m5azd25chlfgx7l4aql77anzrz26jvqfjal6bzgfe", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigyo4rs33vt4notgavdujrsazy3notgl5wpl7aolmktar2yqzw57i", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigyo4rs33vt4notgavdujrsazy3notgl5wpl7aolmktar2yqzw57i", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreig5564xf3czcwtkecjsds4ua6bxtu2voiquyhagofe2wwvuzpnule", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreic2dyuwnwpbigmcpeiqfhxg4xk6qbrmksst5a6cq2vgxquze3iomm", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreif2z5gfhiskpfl4wbcysg54oma5aw5qivcg4jpnia5xhruiik2lje", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brcameraIso error: context canceled
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreia6uh7oxupcewoubyinmt3gyyusqph4y5hvina2zj3brukdoypr6y", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreia6uh7oxupcewoubyinmt3gyyusqph4y5hvina2zj3brukdoypr6y", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	anytype-mw-smartblock	index object _brprogress error: context canceled
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreidw2edapqgzp7pf2riwx2w6btrs6deem7n4qkrpfx65ujgxotu5dm", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidw2edapqgzp7pf2riwx2w6btrs6deem7n4qkrpfx65ujgxotu5dm", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.697Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibfy5wwbdmomthai3sdlxz3vreqi5huk7kttxuj2vzbqmsoktwqju", "error": "object cache closed"}
+2026-11-22T00:35:35.697Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibfy5wwbdmomthai3sdlxz3vreqi5huk7kttxuj2vzbqmsoktwqju", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreidou7pxvk22q2d24tsjbr4qin4idi2talmxveaz5h3syogene5ae4", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreic5uxpc367rosnqwbtzswo75isd5nzrovpn4aw26thpsi32qxosvq", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	anytype-mw-smartblock	index object _otrelation error: context canceled
+2026-11-22T00:35:35.698Z	[31mERROR[0m	anytype-mw-smartblock	index object _brtime error: context canceled
+2026-11-22T00:35:35.698Z	[31mERROR[0m	anytype-mw-smartblock	index object _brrelationFormatObjectTypes error: context canceled
+2026-11-22T00:35:35.698Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicz3cyx4aqoulo6c26eqyhlnpcs3befbofuxvxmrl3wbeyvexxwhq", "error": "object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicz3cyx4aqoulo6c26eqyhlnpcs3befbofuxvxmrl3wbeyvexxwhq", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreifh6verfs3h6siwjl5ch3mawly7fofck4dragnfhfz6cd4gq6celi", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	anytype-mw-smartblock	index object _otimage error: context canceled
+2026-11-22T00:35:35.698Z	[31mERROR[0m	anytype-mw-smartblock	index object _brdescription error: context canceled
+2026-11-22T00:35:35.698Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibp4jd3cbebivwvt5opj4qelgyqy7pbqpda7dv5rw2665aebcipma", "error": "object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibp4jd3cbebivwvt5opj4qelgyqy7pbqpda7dv5rw2665aebcipma", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicelzu54cqka37samnymtaifr6spr5awei53kndlp7k3nxlib237m", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	anytype-mw-smartblock	index object _brrecommendedRelations error: context canceled
+2026-11-22T00:35:35.698Z	[31mERROR[0m	anytype-mw-smartblock	index object _brgenre error: context canceled
+2026-11-22T00:35:35.698Z	[31mERROR[0m	anytype-mw-smartblock	index object _bringredients error: context canceled
+2026-11-22T00:35:35.698Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreicfyqnpvfjeplp6v47hf4tvt42rizuarf4cimqijnz262z763tvje", "error": "object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreicfyqnpvfjeplp6v47hf4tvt42rizuarf4cimqijnz262z763tvje", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.698Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreibcbrexza262ulnzcznc735g3mb3qnw74utw2z2pxrazwy236x7xe", "error": "object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibcbrexza262ulnzcznc735g3mb3qnw74utw2z2pxrazwy236x7xe", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.698Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreif637qphnzqfxj6z2ur2smswyfk2hz2zxl4guovk6d3eyyfakh2kq", "error": "object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreif637qphnzqfxj6z2ur2smswyfk2hz2zxl4guovk6d3eyyfakh2kq", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	anytype-mw-smartblock	index object _brsource error: context canceled
+2026-11-22T00:35:35.698Z	[31mERROR[0m	anytype-mw-smartblock	index object _brrelationDefaultValue error: context canceled
+2026-11-22T00:35:35.698Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreib73a6yr45mzslvy7dbhttvhfo5f3pphtsq3hkrmz24fncautfj4e", "error": "object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreib73a6yr45mzslvy7dbhttvhfo5f3pphtsq3hkrmz24fncautfj4e", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreibkbypon6v72omaii5lys4gk4h4utyv55ayguk5b5ssk26sxrlg7i", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreiglkompro3eqmfnjk76pujastcensrg2ca74tw5ysc6cneg33gs7q", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	anytype-mw-smartblock	index object _braudioAlbum error: context canceled
+2026-11-22T00:35:35.698Z	[31mERROR[0m	anytype-mw-smartblock	index object _brphone error: context canceled
+2026-11-22T00:35:35.698Z	[33mWARN[0m	backlinks-update-watcher	failed to update backlinks for not cached object	{"objectId": "bafyreigvo6l5o5kuvapbcpgwhwo5i2uvswrtc7ahxusbp47csll2intw4a", "error": "object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreigvo6l5o5kuvapbcpgwhwo5i2uvswrtc7ahxusbp47csll2intw4a", "error": "failed to update backlinks: object cache closed"}
+2026-11-22T00:35:35.698Z	[31mERROR[0m	backlinks-update-watcher	failed to update backlinks	{"objectId": "bafyreify3mnxrar5n5iv3cqa3ab4ggltfppf2si37msujmmqcgcl266a6u", "error": "failed to get space: failed to load space, mode is 3: failed to load space"}
+2026-11-22T00:35:35.704Z	[34mINFO[0m	anytype-core-account	closing app: finished	{"mwVersion": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-native-t5-lookup-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-torah-attachment-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-current-read-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9", "tookMs": 487}
+[anytype-heart] Shutdown: graceful shutdown finished
+--- PASS: TestT5NativeCachedQueriesAfterSignedRevocation (1.45s)
+PASS

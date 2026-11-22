@@ -1,0 +1,421 @@
+{
+  "app_capability": "UNCHANGED",
+  "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "inventory": {
+    "cache_proof_generation": "pinkha-torah-cache-v2",
+    "client_enablement": "DISABLED_PENDING_NATIVE_AND_RUNTIME_PROOF",
+    "correction_provenance": {
+      "account_pair": "NOT_RUN",
+      "apple_runtime": "NOT_RUN",
+      "artifact_id": "14571684164",
+      "artifact_sha256": "c66ae9716884316f470d56a7c57cf5f82552b0111fb05dd20e2d650102213e5a",
+      "base_inventory_sha256": "f0e4a4c2d1b4c1baa11347362cfd18368ad272a8902b2beaf8de52270f809ee7",
+      "base_patch_sha256": "5a0906158569d47642d9fc978932cdf254550a31c864a1fb34bd1f8e4e7c10f2",
+      "frozen_base_source_sha": "947fbde24d5657d0e1229f45bb3993648884a8a1",
+      "full_t5_acceptance": false,
+      "native_package_proof_scope": "CORRECTION_IDENTICAL_COMBINED_R15_NOT_RUN",
+      "original_r14_r15_write_compatibility": "KNOWN_ATTACHMENT_DRIFT_NOT_PROVEN",
+      "replaced_or_added_files": [
+        "core/block/detailservice/pinkha_torah_attachment_test.go",
+        "core/block/editor/basic/details.go",
+        "core/block/editor/basic/pinkha_torah_attachment_test.go"
+      ],
+      "run_id": "44610974453",
+      "source_sha": "be6cc5d8b5e65ee78f46e09b3105e3360eec894f",
+      "tested_patch_sha256": "d055933d365d3f0453ad42ce4eb4463a25deceac3d0df11162d460896810a6b4",
+      "unchanged_base_files": [
+        "core/block/detailservice/pinkha_torah.go",
+        "core/block/editor/smartblock/detailsinject.go",
+        "core/block/editor/smartblock/pinkha_torah.go",
+        "core/block/editor/state/change.go",
+        "core/block/export/anyblock/anyblock.go",
+        "core/block/import/processor.go",
+        "core/block/object/objectcreator/relation.go",
+        "core/block/object/objectcreator/relation_option.go",
+        "core/block/object/objectlink/dependent_objects.go",
+        "core/block/simple/dataview/dataview.go",
+        "core/converter/pbc/pbc.go",
+        "core/converter/pbjson/pbjson.go",
+        "core/details.go",
+        "core/indexer/fulltext.go",
+        "core/indexer/pinkha_torah.go",
+        "core/pinkha/torah/binding.go",
+        "core/pinkha/torah/projection.go",
+        "core/pinkha/torah/properties.go",
+        "core/pinkha/torah/readiness.go",
+        "core/pinkha/torah/related_binding_test.go",
+        "core/pinkha/torah/related_sources_test.go",
+        "core/pinkha/torah/testdata/derived-query-golden.json",
+        "core/pinkha/torahindex/index.go",
+        "core/pinkha/torahindex/recovery_cache.go",
+        "core/pinkha/torahindex/related_cache_test.go",
+        "core/pinkha/torahtransport/import.go",
+        "core/pinkha/torahtransport/json_fields.go",
+        "core/pinkha/torahvalues/values.go",
+        "core/relations.go",
+        "pkg/lib/bundle/pinkha_torah.go",
+        "pkg/lib/database/filter.go",
+        "pkg/lib/localstore/objectstore/spaceindex/delete.go",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_related_test.go",
+        "pkg/lib/localstore/objectstore/spaceindex/store.go",
+        "pkg/lib/localstore/objectstore/spaceindex/update.go",
+        "space/internal/components/migration/readonlyfixer/pinkha_torah.go",
+        "space/internal/components/migration/readonlyfixer/pinkha_torah_test.go",
+        "space/internal/components/migration/readonlyfixer/relationsfixer.go"
+      ]
+    },
+    "current_authority_provenance": {
+      "component_tests": [
+        "TestCurrentAppReadPublicationLease",
+        "TestCurrentSpaceReadPublicationLease"
+      ],
+      "default_runtime_unchanged": true,
+      "full_t5_acceptance": false,
+      "network_revocation": "NOT_RUN",
+      "observed_failure_artifact_id": "14729761820",
+      "observed_failure_artifact_sha256": "0b5d456f7b5b03a8873771802aec4d80f904ad67386c4e7b4ab280f5a790c5ba",
+      "observed_failure_run_id": "44961084863",
+      "observed_failure_source_sha": "cce67545ec284aed02c36314eeb7b41c582a3128",
+      "offline_unknown_revocation": "NOT_PROVEN",
+      "product_paths": [
+        "core/application/pinkha_current_read.go",
+        "core/block.go",
+        "core/object.go",
+        "core/pinkha_current_read.go",
+        "space/clientspace/pinkha_current_read.go",
+        "space/clientspace/space.go"
+      ],
+      "swift_ui": "NOT_RUN",
+      "unchanged_r15_paths": [
+        "core/block/detailservice/pinkha_torah.go",
+        "core/block/detailservice/pinkha_torah_attachment_test.go",
+        "core/block/editor/basic/details.go",
+        "core/block/editor/basic/pinkha_torah_attachment_test.go",
+        "core/block/editor/smartblock/detailsinject.go",
+        "core/block/editor/smartblock/pinkha_torah.go",
+        "core/block/editor/state/change.go",
+        "core/block/export/anyblock/anyblock.go",
+        "core/block/import/processor.go",
+        "core/block/object/objectcreator/relation.go",
+        "core/block/object/objectcreator/relation_option.go",
+        "core/block/object/objectlink/dependent_objects.go",
+        "core/block/simple/dataview/dataview.go",
+        "core/converter/pbc/pbc.go",
+        "core/converter/pbjson/pbjson.go",
+        "core/details.go",
+        "core/indexer/fulltext.go",
+        "core/indexer/pinkha_torah.go",
+        "core/pinkha/torah/binding.go",
+        "core/pinkha/torah/projection.go",
+        "core/pinkha/torah/properties.go",
+        "core/pinkha/torah/readiness.go",
+        "core/pinkha/torah/related_binding_test.go",
+        "core/pinkha/torah/related_sources_test.go",
+        "core/pinkha/torah/testdata/derived-query-golden.json",
+        "core/pinkha/torahindex/index.go",
+        "core/pinkha/torahindex/recovery_cache.go",
+        "core/pinkha/torahindex/related_cache_test.go",
+        "core/pinkha/torahtransport/import.go",
+        "core/pinkha/torahtransport/json_fields.go",
+        "core/pinkha/torahvalues/values.go",
+        "core/relations.go",
+        "pkg/lib/bundle/pinkha_torah.go",
+        "pkg/lib/database/filter.go",
+        "pkg/lib/localstore/objectstore/spaceindex/delete.go",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go",
+        "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_related_test.go",
+        "pkg/lib/localstore/objectstore/spaceindex/store.go",
+        "pkg/lib/localstore/objectstore/spaceindex/update.go",
+        "space/internal/components/migration/readonlyfixer/pinkha_torah.go",
+        "space/internal/components/migration/readonlyfixer/pinkha_torah_test.go",
+        "space/internal/components/migration/readonlyfixer/relationsfixer.go"
+      ]
+    },
+    "expected_app_get_version": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-native-t5-lookup-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-torah-attachment-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-current-read-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9",
+    "features": {
+      "current_authority_read_fence": 1,
+      "ordinary_details_preserve_torah_attachment": 1,
+      "t5_related_lookup": 1
+    },
+    "files": [
+      {
+        "after_sha256": "107cda73897f750644e6c3a3f23692b74382710409dd906088149e9e4d59e3b5",
+        "before_sha256": null,
+        "path": "core/application/pinkha_current_read.go"
+      },
+      {
+        "after_sha256": "ece83e0c058a27769ad85b6388622813f7792a5dfec0580feedfad7089b1979b",
+        "before_sha256": null,
+        "path": "core/application/pinkha_current_read_test.go"
+      },
+      {
+        "after_sha256": "01c9db826f331f9992286b34c5716c72ed9cf7437a622fc71162cc67e9b425e4",
+        "before_sha256": "44f03ff2601d060cddf83aca13bdb185b6bf3d90765768571276e3168afd3d75",
+        "path": "core/block.go"
+      },
+      {
+        "after_sha256": "d39dd006cb20dcbdd91a851a96faf82a42e277b80d0f190a4a7e532831a4768e",
+        "before_sha256": null,
+        "path": "core/block/detailservice/pinkha_torah.go"
+      },
+      {
+        "after_sha256": "efb25c593e4a1eabf04ca98ff0af824d8daed449a4284ad6dd5205857a5be41d",
+        "before_sha256": null,
+        "path": "core/block/detailservice/pinkha_torah_attachment_test.go"
+      },
+      {
+        "after_sha256": "3247b789370d21d4ff9ca8eeb0df6580be6a7d18819820e31aac2858cff9fc59",
+        "before_sha256": "581e9357b14334a9882fe4fd2907bb1d77e6109c2bdc59955d03bda4a5504b9b",
+        "path": "core/block/editor/basic/details.go"
+      },
+      {
+        "after_sha256": "3e68b777e64b28d7a5d88ea5eea92cd01b67db00ae9e4fd87df2f355ff9e764f",
+        "before_sha256": null,
+        "path": "core/block/editor/basic/pinkha_torah_attachment_test.go"
+      },
+      {
+        "after_sha256": "53b53b277535498564d400d02be348b89cbef6486b2ffeae4b66a8a355aa5503",
+        "before_sha256": "32906e86936d48914515514afbf9711d80b52cf23aabc4016c40184147a3c99c",
+        "path": "core/block/editor/smartblock/detailsinject.go"
+      },
+      {
+        "after_sha256": "32ee6f74b5fe63c8e2c5bb612d32ce532f8caf1c3059338cf97373d20db43174",
+        "before_sha256": null,
+        "path": "core/block/editor/smartblock/pinkha_torah.go"
+      },
+      {
+        "after_sha256": "51395574aa5d4f96f1dc5cc279b61925dc5de0b2efe0727a96836f57b5a6081f",
+        "before_sha256": "0aa6ae2d72ca0d9f5a3551a82a183f0a505e2d31541f19d211f4ea111b46c2ac",
+        "path": "core/block/editor/state/change.go"
+      },
+      {
+        "after_sha256": "340f5f9f21ecc0d9ee43077650cf07ce6cdbf378ca1077263bff426132577cbe",
+        "before_sha256": "483bd2a9b3cc0766d318fba777529c0622c3605345856f61f96371a9cb77b4d7",
+        "path": "core/block/export/anyblock/anyblock.go"
+      },
+      {
+        "after_sha256": "8c565a3ebc0a230ea359894d1e059bb1fc708af952c6b723c0c1496b3257a256",
+        "before_sha256": "23bfa073c314f5f07f3e5ef98b573ff078d3b2f71fc617cb84c95277ee857d47",
+        "path": "core/block/import/processor.go"
+      },
+      {
+        "after_sha256": "d53bb71f138996f73bd9648571039ddaac242395b16eacbc5732345ce0e09541",
+        "before_sha256": "cc9fe7bb4e824c1fc06c02bec2e2c27760281bab0b2e1786b757fc7cd10108b6",
+        "path": "core/block/object/objectcreator/relation.go"
+      },
+      {
+        "after_sha256": "88b3b1e04689464c802f2c5b81871b868d88139167dce63044cd8634dbbbb6f0",
+        "before_sha256": "61eb0dc2d404fe524bfc91c0226d0f270e89a09d8940729eeaac89b457b55c18",
+        "path": "core/block/object/objectcreator/relation_option.go"
+      },
+      {
+        "after_sha256": "7ae9edb1d19dadae1d9585ed2b3f2b8f637ef67b51912fc23edc0c91a6891602",
+        "before_sha256": "57b2c0f852f251b600d68d3c42d455de62222ef0805b57bbb8bd42e009e2967e",
+        "path": "core/block/object/objectlink/dependent_objects.go"
+      },
+      {
+        "after_sha256": "6459c7fa58099622bec3edeb467820f5526f04c7879c21d047c4630109c1c472",
+        "before_sha256": "a2f7be5466270e77cbf2062604f942ccdea4a9fa2605c9b14a5ef3f2857df402",
+        "path": "core/block/simple/dataview/dataview.go"
+      },
+      {
+        "after_sha256": "5d3c6e415b74b29a81e60d31a08b5df4cd96b095647691d9539c8dcc2562a8a2",
+        "before_sha256": "164b5e95d4a057495cc2421b0156d2c017ab102681ad663f24185fef0eb0a05d",
+        "path": "core/converter/pbc/pbc.go"
+      },
+      {
+        "after_sha256": "c8303134c3ed0d4d5358084d220c55d0e9bbebf097822e7b1fd660a8d7c502d6",
+        "before_sha256": "81f6fca368f7685f1959836b2d68c2af4e9f2bf983235ce5a73bb81f4550ab3b",
+        "path": "core/converter/pbjson/pbjson.go"
+      },
+      {
+        "after_sha256": "1661dcaab53cfeac26bf7b0a322616737fcebcb5495d83df50ea46cf7f6981ab",
+        "before_sha256": "4cc5776343253291642837201748dc6546a5800e4b5f5b0217026cdc13132ec8",
+        "path": "core/details.go"
+      },
+      {
+        "after_sha256": "002421ab874f4eec996c9cb5101872bdbe52148e2a80ad430c71896b0d3ec48d",
+        "before_sha256": "e3248ab6191e9e3e8ff7f47eb68999aaf21d8c49e14dd0aa7d1468902ba57d08",
+        "path": "core/indexer/fulltext.go"
+      },
+      {
+        "after_sha256": "dde290e4296b611bb65677427b8e3cea8f9c911467ae5868a5b16fc058222240",
+        "before_sha256": null,
+        "path": "core/indexer/pinkha_torah.go"
+      },
+      {
+        "after_sha256": "620f0800760b3db9440b530c6931ef33ae795fb940c9bc91add124e0f4546eec",
+        "before_sha256": "ce7a2c4c8a0690814a915e16833c0ec214f7f8787dccbf20adc08ee64a3cee34",
+        "path": "core/object.go"
+      },
+      {
+        "after_sha256": "30322f55d4aab1b3ff6adfb3920945e5eae8be298ad9cfac338d257c82248c00",
+        "before_sha256": null,
+        "path": "core/pinkha/torah/binding.go"
+      },
+      {
+        "after_sha256": "4bc54b70a75d4c1dc5ae87cc85271d7304ee4f64216ce14150ed2bba3685e679",
+        "before_sha256": null,
+        "path": "core/pinkha/torah/projection.go"
+      },
+      {
+        "after_sha256": "5985c43c4da7ef2baaabe6f0ee3e9606c0ee2b1af87563f2b2af4b9535a8a5d0",
+        "before_sha256": null,
+        "path": "core/pinkha/torah/properties.go"
+      },
+      {
+        "after_sha256": "100afcfcbc5db369599311471ebdab29228a489153b515c2c0ab910b58f247a2",
+        "before_sha256": null,
+        "path": "core/pinkha/torah/readiness.go"
+      },
+      {
+        "after_sha256": "83db1873ff2944d4d5f2fdd95a4f5969883f0db12f05538f788c208b88b2247a",
+        "before_sha256": null,
+        "path": "core/pinkha/torah/related_binding_test.go"
+      },
+      {
+        "after_sha256": "0a82733fd0e7e8db50db0cab0723ee202393d2479f1276c237fe52045ffc2d8f",
+        "before_sha256": null,
+        "path": "core/pinkha/torah/related_sources_test.go"
+      },
+      {
+        "after_sha256": "57270a2eeee6c48eddcf3a1ce497c7d2e634b005ad4be473a091b9d9405cbfb3",
+        "before_sha256": null,
+        "path": "core/pinkha/torah/testdata/derived-query-golden.json"
+      },
+      {
+        "after_sha256": "9873f508c27021157c17b28b04ee6f18c74a0cf1bea7028e355696f31c42f929",
+        "before_sha256": null,
+        "path": "core/pinkha/torahindex/index.go"
+      },
+      {
+        "after_sha256": "325fb4f2b2abcbaa9afdc5bd32dd42f1c95b8fa524641d624bed9c309fe13352",
+        "before_sha256": null,
+        "path": "core/pinkha/torahindex/recovery_cache.go"
+      },
+      {
+        "after_sha256": "7e1c9ac52b67ceee64e9680da98e29966930465af2317b8269839f4c43fd0810",
+        "before_sha256": null,
+        "path": "core/pinkha/torahindex/related_cache_test.go"
+      },
+      {
+        "after_sha256": "70b2d75d6653ed3fea239d594ba0f7fe50607f609894709eac409f7f68b0e916",
+        "before_sha256": null,
+        "path": "core/pinkha/torahtransport/import.go"
+      },
+      {
+        "after_sha256": "b45af6cef9c6f4babeea95458a2c4d11c4ee58da13b23881d6d977442569cbb6",
+        "before_sha256": null,
+        "path": "core/pinkha/torahtransport/json_fields.go"
+      },
+      {
+        "after_sha256": "104a073446d888a13fed3deef8ba5015ee906eaabd07c30161f5900258de8721",
+        "before_sha256": null,
+        "path": "core/pinkha/torahvalues/values.go"
+      },
+      {
+        "after_sha256": "aa07483e974039638b290591e2f73157303560a977ab82b968d4dcfd6a943df5",
+        "before_sha256": null,
+        "path": "core/pinkha_current_read.go"
+      },
+      {
+        "after_sha256": "61cce8b257f9766ee4d1972c971721b2da41934aac680d9e1c330cf861221900",
+        "before_sha256": "34aaec40aa6d17c5eed9dbac5226a1feaf9111e7dc4ee5ebf23c6fd0ba9c3b6a",
+        "path": "core/relations.go"
+      },
+      {
+        "after_sha256": "5f8f9f747a2b8158af2c8d36367d4f923c3b152a2ebead79e72a063cf7536ef5",
+        "before_sha256": null,
+        "path": "pkg/lib/bundle/pinkha_torah.go"
+      },
+      {
+        "after_sha256": "57b36ce584fa255aa92ba7319f6ae2b2eca4c473ff238596f1e5ca36bd3d85c6",
+        "before_sha256": "f6c2ad4ff566b84ba228ca1a8188f522f924d6df0be77b3427f4fbb2bc915bdf",
+        "path": "pkg/lib/database/filter.go"
+      },
+      {
+        "after_sha256": "2e51f49c2b7a1a588f148c805e467cd724e983db04f23f97a1dd2b1a81a746d9",
+        "before_sha256": "3b6a6a9468f44f5551d705ec8c504bbbfd3bcf7a4bddbefd8ce06151834b1f71",
+        "path": "pkg/lib/localstore/objectstore/spaceindex/delete.go"
+      },
+      {
+        "after_sha256": "0c9bee77ecbc524a73311fc36431a64bdbc35d757db829b4df1a50813b002c02",
+        "before_sha256": null,
+        "path": "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah.go"
+      },
+      {
+        "after_sha256": "ba767700b9a3597c904bc3ad79da01a45874d5bb6337e5c035afecfcc0e8fe7c",
+        "before_sha256": null,
+        "path": "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext.go"
+      },
+      {
+        "after_sha256": "58718c037fdb6fa8c3e117b163b5b068d9b6b365258d18223d483b795afe3106",
+        "before_sha256": null,
+        "path": "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_fulltext_test.go"
+      },
+      {
+        "after_sha256": "37b3b5b7a05d0c417396d1f7150ab922fd41b9e28fdf87848c4c393c07cabfa9",
+        "before_sha256": null,
+        "path": "pkg/lib/localstore/objectstore/spaceindex/pinkha_torah_related_test.go"
+      },
+      {
+        "after_sha256": "1ad36d01f2b7233d8edd835ea876fa27dab503e6a476bb4cf22deeea3cb6b341",
+        "before_sha256": "54d7217099362d7fc81dcdb81f5617ccb17df6abab81baa19370c51d90967e9a",
+        "path": "pkg/lib/localstore/objectstore/spaceindex/store.go"
+      },
+      {
+        "after_sha256": "50aa3ed27c4754e559930a04d93c0c976c65722d378ff89681635577b97a9a5f",
+        "before_sha256": "b7b489270414f77ec2b46373a2a1b3e9f1da3936c7eb28459e86c79339614948",
+        "path": "pkg/lib/localstore/objectstore/spaceindex/update.go"
+      },
+      {
+        "after_sha256": "ca7bc57f9c15cde547c8cd14dfac8cc60193093c8eb094f04d5bc9653dd5a104",
+        "before_sha256": null,
+        "path": "space/clientspace/pinkha_current_read.go"
+      },
+      {
+        "after_sha256": "a81eebeacf12c72386f7ec82d5c23d12251c0d850b1b4ab5be8ce8653ae7766f",
+        "before_sha256": null,
+        "path": "space/clientspace/pinkha_current_read_test.go"
+      },
+      {
+        "after_sha256": "6570cf7701c1a0bcf87032626e2cb8f83619fa62cdf7000fbde89b9cceda219c",
+        "before_sha256": "9d013f65a61ddd3c436622b9809d37e67fdd8246130005d21461e51a89416f32",
+        "path": "space/clientspace/space.go"
+      },
+      {
+        "after_sha256": "139a822fa2c0bc7eaca0f7701be2741b147a84f4519eefcf55b48fb6a5f8c319",
+        "before_sha256": null,
+        "path": "space/internal/components/migration/readonlyfixer/pinkha_torah.go"
+      },
+      {
+        "after_sha256": "8e4994925686b8ba48743f8fa7c16f258cd47adc9c497f429d594f17d1059ea5",
+        "before_sha256": null,
+        "path": "space/internal/components/migration/readonlyfixer/pinkha_torah_test.go"
+      },
+      {
+        "after_sha256": "003cfd50944f9b31920ae4060146bbbaf42c713191595b51582a16f5d94935b8",
+        "before_sha256": "1320fa7ee2bae4a1e02c51d59e71f408b9e85c28e095b319ade5b424167a2785",
+        "path": "space/internal/components/migration/readonlyfixer/relationsfixer.go"
+      }
+    ],
+    "heart_sha": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+    "patch_sha256": "977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9",
+    "previous_patch_sha256": "595f8142f00035da2fff4925c8fe125fa7cf36de9ae124b528a9d2130b2a9bf6",
+    "product_source_changes": 6,
+    "public_projection_version": 1,
+    "required_client_feature_flag": "PINKHA_NATIVE_T5_LOOKUP_V1",
+    "runtime_variant": "r15-attachment-current-read-v1",
+    "status": "SOURCE_COMPOSED_CURRENT_AUTHORITY_NATIVE_NOT_RUN"
+  },
+  "inventory_sha256": "d7ff255272a947c008b2bbbf951fff863b4b2469a37954c60a7cc22b0fa8301f",
+  "patch_sha256": "977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9",
+  "product_source_changes": 6,
+  "runtime_version": "v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-native-t5-lookup-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-torah-attachment-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-current-read-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9",
+  "variant": "r15-attachment-current-read-v1"
+}

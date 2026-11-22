@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-c",
+    "-p",
+    "1",
+    "-tags",
+    "nogrpcserver nowatchdog nosigar nomutexdeadlockdetector timetzdata rasterizesvg",
+    "-overlay",
+    "/workspace/work/overlay.json",
+    "-ldflags",
+    "-extldflags=-static -X github.com/anyproto/anytype-heart/util/vcs.GitCommit=d98420b1113536afd08cde6de9a5816f6d27ffff -X github.com/anyproto/anytype-heart/util/vcs.GitSummary=v0.51.7-nightly.20261014.1-pinkha-native-derived-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-native-t5-lookup-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-torah-attachment-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9-pinkha-current-read-v1-977f485e13892d259da5f47b9c96bdcf3b34b23defff25271b22af43ac91b9f9 -X github.com/anyproto/anytype-heart/clientlibrary/service.t5ACLFixtureSHA=6fa635293b34d1822b509930474ec1906365097c4fc3903993e5ce28c1da88a9",
+    "-o",
+    "/workspace/work/pinkha-t5-signed-revocation.test",
+    "./clientlibrary/service"
+  ],
+  "ended_unix": 1795307726.1868813,
+  "exit_code": 0,
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "pid": 115,
+  "started_unix": 1795307445.6144218
+}

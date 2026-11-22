@@ -1,0 +1,7 @@
+# Original retained Heart Release simulator-query failure
+Run44960843842 at87a543d8 completed both the App/native-test build and UI-runner build successfully. The frozen same-job-build receipt and original TEST BUILD SUCCEEDED terminals are preserved.
+Before first native preparation or UI execution, the editor lane failed in a redundant postboot scoped inventory query: xcrun simctl list devices AEC1659B-53AB-4A81-B40B-CFA2308ECF20 --json. Its configured timeout was120s; recorded elapsed time was427.993s. The lane receipt phase BUILD is not a compiler-failure diagnosis. The exact preboot ownership/state check had succeeded, and bootstatus reported that the owned device was already booted.
+The original batch cleanup also failed: the scoped lookup for the owned preflight iPhone took61.838s and its delete command exceeded20s. Cleanup is not accepted. No global simulator reset or unrelated process action was performed.
+Native3, UI6 and postflight1 have no execution/pass evidence in this run. This is a controller/simulator-service failure before product tests; its deeper cause remains unproven. The actual compilation-cache save succeeded, as shown by original GitHub job137019089690 at00:35:06UTC, key pinkha-ui27-arm64-xcode27.0-Release-Anytype-eac7ea32a9215f2a28e258290c50bc1064896f03dbcfd99a4bcc34e44cc7f28a-87a543d81b51ca16d624d2f21f9ce50d70c0ab5b.
+
+Source: https://github.com/davidpovarsky/anytype-swift/actions/runs/44960843842

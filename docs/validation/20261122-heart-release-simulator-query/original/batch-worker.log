@@ -1,0 +1,92 @@
+{"command": ["xcrun", "simctl", "boot", "8DA267C9-4EBE-49BE-9EE1-F102459E8FDC"], "log": "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/batch-build/command-00.log"}
+{"command": ["xcrun", "simctl", "bootstatus", "8DA267C9-4EBE-49BE-9EE1-F102459E8FDC", "-b"], "log": "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/batch-build/command-01.log"}
+Monitoring boot status for Pinkha-UI27-44960843842-ipad (8DA267C9-4EBE-49BE-9EE1-F102459E8FDC).
+{"content_verified_source_timestamps": 10236}
+{"command": ["xcodebuild", "build-for-testing", "-configuration", "Release-Anytype", "-destination", "platform=iOS Simulator,id=8DA267C9-4EBE-49BE-9EE1-F102459E8FDC", "-parallel-testing-enabled", "NO", "-project", "Anytype.xcodeproj", "-scheme", "Anytype", "-derivedDataPath", "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived", "-only-testing:AnytypeTests/PinkhaStage1AcceptancePreparationTests", "-only-testing:AnytypeTests/SimulatorAcceptancePreparationTests", "-only-testing:AnytypeTests/TorahNativeDerivedProductIntegrationTests", "-only-testing:AnytypeTests/TorahStage2TypePreservationTests", "OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED", "ENABLE_TESTABILITY=YES", "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-", "CODE_SIGNING_ALLOWED=YES", "CODE_SIGNING_REQUIRED=YES", "PROVISIONING_PROFILE_SPECIFIER="], "log": "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/batch-build/command-02.log"}
+Command line invocation:
+        ➜ Explicit dependency on target 'SwiftParser' in project 'swift-syntax'
+    Target 'FloatingPanel-product' in project 'FloatingPanel'
+        ➜ Explicit dependency on target 'GoogleProvider-product' in project 'SwiftAISDK'
+    Target 'swift-crypto_Crypto' in project 'swift-crypto' (no dependencies)
+Ld /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Products/Release-Anytype-iphonesimulator/SwiftImageReadWrite.o normal (in target 'SwiftImageReadWrite' from project 'SwiftImageReadWrite')
+    cd /Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/SourcePackages/checkouts/Highlightr
+
+    cd /Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj
+
+    /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -Xlinker -reproducible -target arm64-apple-ios27.0-simulator -emit-library -sdk /Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -Xlinker -no_warn_duplicate_libraries -L/Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Release-Anytype-iphonesimulator -L/Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Products/Release-Anytype-iphonesimulator -L/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F/Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Release-Anytype-iphonesimulator -F/Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Products/Release-Anytype-iphonesimulator -Fsystem /Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -Fsystem /Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks @/Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/HanlinPresentationSDK.build/Release-Anytype-iphonesimulator/HanlinPresentationKit-t.build/Objects-normal/arm64/HanlinPresentationKit.LinkFileList -Xclang-linker -install_name -Xclang-linker @rpath/HanlinPresentationKit.framework/HanlinPresentationKit -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/HanlinPresentationSDK.build/Release-Anytype-iphonesimulator/HanlinPresentationKit-t.build/Objects-normal/arm64/HanlinPresentationKit_lto.o -Xclang-linker -rdynamic -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/HanlinPresentationSDK.build/Release-Anytype-iphonesimulator/HanlinPresentationKit-t.build/Objects-normal/arm64/HanlinPresentationKit_dependency_info.dat -link-objc-runtime -L/Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/HanlinPresentationSDK.build/Release-Anytype-iphonesimulator/HanlinPresentationKit-t.build/Objects-normal/arm64/HanlinPresentationKit.swiftmodule -o /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Products/Release-Anytype-iphonesimulator/PackageFrameworks/HanlinPresentationKit.framework/HanlinPresentationKit
+
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/SourcePackages/checkouts/DeviceKit
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/SourcePackages/checkouts/Pulse
+    /usr/bin/codesign --force --sign - --generate-entitlement-der /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Products/Release-Anytype-iphonesimulator/AmplitudeSwift.o
+    /Applications/Xcode_27.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v27.1.266.1.k58beT/Metal.xctoolchain --module-name SwiftOperators --sdk-root /Applications/Xcode_27.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --xcode-version 27A266a --platform-family macOS --deployment-target 12.0 --bundle-identifier swift-syntax.SwiftOperators --output /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Products/Release-Anytype/SwiftOperators.appintents --target-triple arm64-apple-macos12.0 --target-triple x86_64-apple-macos12.0 --binary-file /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Products/Release-Anytype/SwiftOperators.o --dependency-file /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/swift-syntax.build/Release-Anytype/SwiftOperators-t.build/Objects-normal/arm64/SwiftOperators_dependency_info.dat --dependency-file /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/swift-syntax.build/Release-Anytype/SwiftOperators-t.build/Objects-normal/x86_64/SwiftOperators_dependency_info.dat --stringsdata-file /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/swift-syntax.build/Release-Anytype/SwiftOperators-t.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --stringsdata-file /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/swift-syntax.build/Release-Anytype/SwiftOperators-t.build/Objects-normal/x86_64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/swift-syntax.build/Release-Anytype/SwiftOperators-t.build/Objects-normal/arm64/SwiftOperators.SwiftFileList --source-file-list /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/swift-syntax.build/Release-Anytype/SwiftOperators-t.build/Objects-normal/x86_64/SwiftOperators.SwiftFileList --metadata-file-list /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/swift-syntax.build/Release-Anytype/SwiftOperators-t.build/SwiftOperators.DependencyMetadataFileList --static-metadata-file-list /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/swift-syntax.build/Release-Anytype/SwiftOperators-t.build/SwiftOperators.DependencyStaticMetadataFileList --swift-const-vals-list /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/swift-syntax.build/Release-Anytype/SwiftOperators-t.build/Objects-normal/arm64/SwiftOperators.SwiftConstValuesFileList --swift-const-vals-list /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Intermediates.noindex/swift-syntax.build/Release-Anytype/SwiftOperators-t.build/Objects-normal/x86_64/SwiftOperators.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-11-21 23:58:34.881 appintentsmetadataprocessor[24446:73377] Starting appintentsmetadataprocessor export
+    cd /Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj
+    builtin-SwiftPerFileCompile InfoContainer.swift
+/Users/runner/work/anytype-swift/anytype-swift/Modules/Services/Sources/Models/Block/BlockRestrictions/ToggleHeaderBlockRestrictions.swift:10:9: warning: cannot use enum 'Align' in a property declaration member of a type not marked '@_implementationOnly'; 'ProtobufMessages' was not imported by this file
+    cd /Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj
+ExtractAppIntentsMetadata (in target 'ProtobufMessages' from project 'ProtobufMessages')
+    cd /Users/runner/work/anytype-swift/anytype-swift/Dependencies/Hanlin/Packages/HanlinAgentSDK
+
+183 |     private func observeUI27Startup(_ phase: String, consumed: ApplicationState? = nil, error: Error? = nil) {
+ 7 |         Self.main.bounds.size == Self.fourInchIphoneScreenSize
+311 |         originalError: Error
+115 |             let notifiedSpace = notification.userInfo?["spaceId"] as? String
+
+/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/Common/UIKit/Extensions/UIImageExtensions.swift:60:76: warning: 'main' was deprecated in iOS 26.0: Use a UIScreen instance found through context instead (i.e, view.window.windowScene.screen), or for properties like UIScreen.scale with trait equivalents, use a traitCollection found through context. [#DeprecatedDeclaration]
+463 |         Task { try await showScreen(data: data, searchOrigin: searchOrigin) }
+46 |             }
+ 49 |             .glassEffectInteractiveIOS26(in: Circle())
+/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/Modules/Membership/EmailVerification/EmailVerificationView.swift:9:17: warning: cannot use generic class 'Autoconnect' in a property declaration member of a type not marked '@_implementationOnly'; 'Combine' was not imported by this file
+/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/ObjectCreationSettings/Views/Selection/Dataview/SetObjectCreationSettingsInteractor.swift:156:9: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/SpaceSettings/SpaceSettings/SpaceSettingsView.swift:90:18: warning: 'glassEffectInteractiveIOS26(in:)' was deprecated in iOS 26.0 [#DeprecatedDeclaration]
+
+     |         `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+30 |
+
+ 3 |     struct Dataview {
+141 |         }
+ 9 |         static let movingInsents: UIEdgeInsets =
+2026-11-21 23:59:10.595 appintentsmetadataprocessor[27319:79375] Extracted no relevant App Intents symbols, skipping writing output
+    cd /Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/SourcePackages/checkouts/swift-ai-sdk
+2026-11-22 00:00:04.774 appintentsmetadataprocessor[30527:86408] Extracted no relevant App Intents symbols, skipping writing output
+    cd /Users/runner/work/anytype-swift/anytype-swift
+    Signing Identity:     "Sign to Run Locally"
+    export BUNDLE_FRAMEWORKS_FOLDER_PATH\=Frameworks
+    export JAVA_COMPILER\=/usr/bin/javac
+    export SYSTEM_DEVELOPER_GRAPHICS_TOOLS_DIR\=/Applications/Xcode_27.app/Contents/Developer/Applications/Graphics\ Tools
+    export DEVELOPER_APPLICATIONS_DIR\=/Applications/Xcode_27.app/Contents/Developer/Applications
+    export PLATFORM_DEVELOPER_APPLICATIONS_DIR\=/Applications/Xcode_27.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Applications
+    export variant\=normal
+ 38 |     @Test
+/Users/runner/work/anytype-swift/anytype-swift/AnytypeTests/Kanban/SetKanbanColumnHeaderTests.swift:21:16: warning: instance method 'testStatusGroup_ResolvedOption()' took 234ms to type-check (limit: 120ms)
+322 |     func placeholderAndCaretAlignment() throws {
+ 898 |         let store = NativeStoreProbe(spaceId: spaceId, objectId: objectId, blockIds: ["block"])
+
+786 |         if let match = firstSubview(of: type, in: subview) { return match }
+112 |             #expect(client.activeRegistrations.isEmpty)
+209 |         #expect(scheduler.pendingDelays == [1])
+329 |     @Test func briefFlapWithinTheDebounceIsNotReportedLost() throws {
+470 |         #expect(client.activeBrowses.isEmpty)
+    |         `- warning: expression took 142ms to type-check (limit: 120ms)
+ 17 |     var subscribeLastMessagesError: Error?
+136 |         #expect(ids == ["anchor", "streamed-id"])
+159 |
+
+    cd /Users/runner/work/anytype-swift/anytype-swift
+    Signing Identity:     "Sign to Run Locally"
+warning: 'HanlinChatCore' is missing a dependency on 'AISDKJSONSchema' because dependency scan of Swift module 'HanlinChatCore' discovered a dependency on 'AISDKJSONSchema'
+{"command": ["/usr/bin/codesign", "--verify", "--deep", "--strict", "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived/Build/Products/Release-Anytype-iphonesimulator/Anytype.app"], "log": "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/batch-build/command-03.log"}
+{"command": ["xcodebuild", "build-for-testing", "-configuration", "Release-Anytype", "-destination", "platform=iOS Simulator,id=8DA267C9-4EBE-49BE-9EE1-F102459E8FDC", "-parallel-testing-enabled", "NO", "-project", "/Users/runner/work/anytype-swift/anytype-swift/PinkhaStage1Acceptance/PinkhaPrebuiltUI.xcodeproj", "-scheme", "PinkhaPrebuiltUI", "-derivedDataPath", "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-derived-ui", "-only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testAppWideDirectionPersistenceAndInteractiveBack", "-only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testMultiBlockEnterCreationAndTypingLifecycle", "-only-testing:PinkhaStage1AcceptanceUITests/PinkhaStage1AcceptanceUITests/testDocumentSourcesEntryOpensExistingSearch", "-only-testing:PinkhaStage1AcceptanceUITests/PinkhaTorahQuoteAcceptanceUITests/testNativeQuoteUndoRedoDragAndRelaunch", "-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testRemainingNativeSourceFilterEditing", "-only-testing:PinkhaStage1AcceptanceUITests/PinkhaNativeDerivedAcceptanceUITests/testRemainingUniversalTypePickersAndMixedSet", "OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED", "ENABLE_TESTABILITY=YES", "ONLY_ACTIVE_ARCH=YES", "SWIFT_OPTIMIZATION_LEVEL=-Onone", "CODE_SIGN_IDENTITY=-", "CODE_SIGNING_ALLOWED=YES", "CODE_SIGNING_REQUIRED=YES", "PROVISIONING_PROFILE_SPECIFIER="], "log": "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/batch-build/command-04.log"}
+Command line invocation:
+
+    |                 `- note: property declared here
+
+  44 |     override func tearDownWithError() throws {
+ 944 |     private var expectsRTL: Bool {
+ 14 |     private let sourceRef = "Genesis 1:1"
+    :
+{"command": ["xcrun", "simctl", "shutdown", "8DA267C9-4EBE-49BE-9EE1-F102459E8FDC"], "log": "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/batch-build/command-05.log"}
+{"command": ["xcrun", "simctl", "boot", "AEC1659B-53AB-4A81-B40B-CFA2308ECF20"], "log": "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/lanes/editor/command-00.log"}
+{"command": ["xcrun", "simctl", "bootstatus", "AEC1659B-53AB-4A81-B40B-CFA2308ECF20", "-b"], "log": "/Users/runner/work/anytype-swift/anytype-swift/build/ui27-evidence/lanes/editor/command-01.log"}
+Monitoring boot status for Pinkha-UI27-44960843842-batch-3f0be5c394ff4ed5a471201f71fb2ffb-editor (AEC1659B-53AB-4A81-B40B-CFA2308ECF20).

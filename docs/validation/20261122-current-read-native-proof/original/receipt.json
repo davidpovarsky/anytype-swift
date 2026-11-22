@@ -1,0 +1,65 @@
+{
+  "actual": {
+    "exit_code": 0,
+    "method": "TestT5NativeCachedQueriesAfterSignedRevocation",
+    "native_log_sha256": "e1bd1dbcb86809fa54b98cea624d2b0552dc1a201c0267ba104f59858d8ac3db",
+    "tests_failed": 0,
+    "tests_passed": 1,
+    "tests_skipped": 0,
+    "tests_started": 1
+  },
+  "app_sha": "3daed522cbc7532f51a75c77d11790dd8775bb11",
+  "evidence_export": {
+    "files": {
+      "native-observation.json": "1d24ada41e7c5b1d7a5127bb254d0d48b8b89abbf56be304244711d09feead12",
+      "native.log": "e1bd1dbcb86809fa54b98cea624d2b0552dc1a201c0267ba104f59858d8ac3db",
+      "ownership.json": "834b9e813966afc71b61f6431b7b7c5793f09a1fbf3b417c69390ef36a8762e6"
+    },
+    "status": "PASS_EXACT_ACCOUNT_SECRET_SCAN"
+  },
+  "execution": {
+    "command": [
+      "/workspace/work/pinkha-t5-signed-revocation.test",
+      "-test.run",
+      "^TestT5NativeCachedQueriesAfterSignedRevocation$",
+      "-test.count=1",
+      "-test.v",
+      "-test.timeout=300s"
+    ],
+    "exit_code": 0,
+    "pid": 13836
+  },
+  "finished_at": "2026-11-22T00:35:35.912137+00:00",
+  "full_t5_acceptance": "NOT_PROVEN",
+  "ios_acceptance": "NOT_RUN",
+  "native_status": "PASS_LOCAL_SIGNED_REVOCATION",
+  "network_acl_transport": "NOT_RUN",
+  "offline_unknown_revocation": "NOT_PROVEN",
+  "phase": "COMPLETE",
+  "product_source_changes": 6,
+  "publication_components": [
+    {
+      "failed": 0,
+      "log_sha256": "676a341ae5a10d003c1bcb74db2efea4eccded63303e7f353ac389cb2868bf23",
+      "method": "TestCurrentAppReadPublicationLease",
+      "passed": 1,
+      "scope": "Native lifecycle lock component; not an account or UI journey",
+      "skipped": 0,
+      "status": "PASS_NATIVE_COMPONENT"
+    },
+    {
+      "failed": 0,
+      "log_sha256": "39ca1fea7bddc4216d4f78f6409155b2e792c6ec270437c3eacb52620e1db4a4",
+      "method": "TestCurrentSpaceReadPublicationLease",
+      "passed": 1,
+      "scope": "Native lifecycle lock component; not an account or UI journey",
+      "skipped": 0,
+      "status": "PASS_NATIVE_COMPONENT"
+    }
+  ],
+  "run_attempt": "1",
+  "run_id": "44966862922",
+  "runtime_profile": "r15-attachment-current-read-v1",
+  "started_at": "2026-11-22T00:29:57.686807+00:00",
+  "status": "PASS_LOCAL_SIGNED_REVOCATION"
+}
