@@ -1,0 +1,16 @@
+{
+  "status": "BLOCKED_DRAFT_BEFORE_COMPILER_OR_PUBLICATION",
+  "reviewer": "root",
+  "patch_sha256": "f348fa5d380cc0deee8c5bda52dc6cd4002fedf9bf88f948c3fdfbb971ed11cd",
+  "published_base": "06b639ff196a66c19d22dda7ea28b47ce6801705",
+  "finding": "canAddOriginalProperty passed details.isTemplate into original includesDocument, but isTemplate resolves objectType through the global ObjectTypeProvider cache and deleted fallback. This is not captured-account type provenance.",
+  "reference": {
+    "path": "Anytype/Sources/Models/Extensions/ObjectDetailsExtensions.swift",
+    "git_blob": "4b6edb9d389205addb2fae02cd4dcfab4444a7c8",
+    "url": "https://github.com/davidpovarsky/anytype-swift/blob/06b639ff196a66c19d22dda7ea28b47ce6801705/Anytype/Sources/Models/Extensions/ObjectDetailsExtensions.swift"
+  },
+  "required_correction": "Add-specific async read through existing strict OriginalSearchMiddleServiceBinding and same Owner ObjectSearch; actual raw type ID, Space, cardinality, objectType layout and uniqueKey; preserve original template constant; recheck current parent and subscription after awaits. No new store/Owner/dispatcher or every-modal type read.",
+  "asana_story": "1220766022287083",
+  "tests_run": 0,
+  "source_publications": 0
+}

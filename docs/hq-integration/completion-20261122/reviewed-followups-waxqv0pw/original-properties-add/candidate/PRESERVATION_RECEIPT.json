@@ -1,0 +1,47 @@
+{
+  "timestamp": "2026-11-22T03:55:24.571537+00:00",
+  "status": "PASS_STATIC_SOURCE_PRESERVATION_AND_EXACT_PATCH_APPLICATION",
+  "patch_sha256": "0e909411da157ffa3e5f25980f016017fd46629827ed181d0d11cf0740b8171e",
+  "base_source_commit": "388a3726e7a38cf47aaeb32948013c395b8b2b01",
+  "base_evidence_commit": "06b639ff196a66c19d22dda7ea28b47ce6801705",
+  "changed_paths": [
+    "Anytype/Sources/PresentationLayer/PropertyValueFlow/PropertyValueCoordinator/OriginalEditorPropertyScope.swift",
+    "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Properties/Views/ObjectFieldsView/ObjectPropertiesViewModel.swift"
+  ],
+  "checks": {
+    "legacy_canAdd_expression_identical": true,
+    "legacy_setupSubscriptions_body_identical": true,
+    "legacy_onAdd_body_identical": true,
+    "schema_type_unqualified_methods_identical": true,
+    "onEdit_guard_identical": true,
+    "value_remove_and_original_row_builders_identical": true,
+    "original_prepared_row_projection_identical": true,
+    "scope_existing_owner_scheduling_helpers_identical": true,
+    "scope_existing_modal_validation_and_write_routes_identical": true,
+    "original_eligibility_field_mapping_identical_except_bound_type_and_manifest": true
+  },
+  "patch_application": [
+    {
+      "arguments": [
+        "--check",
+        "--whitespace=error-all"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "arguments": [
+        "--whitespace=error-all"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "exact_postimage_files": 2,
+  "source_references_verified": 10,
+  "compiler_or_tests_executed": false,
+  "native_or_service_acceptance": false,
+  "root_publication_directory_modified": false
+}
