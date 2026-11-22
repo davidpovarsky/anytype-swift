@@ -1,0 +1,29 @@
+{
+  "scope": "Exact changed LoginState methods and unchanged membership Task; controlled Sendable type fixtures; typecheck only, no execution or Apple acceptance",
+  "source_sha256": "8eaaa4ad9bc5bc757a18dc1c9b982cf4cb9c1af97f0d5a303b4206a993c4afb6",
+  "fragments": [
+    {
+      "marker": "private final class Stopping:",
+      "line": 134,
+      "sha256": "10d055c4d19b5adfde16a52c27603f8f5310d9bfc6730093973fc1199c2f9096"
+    },
+    {
+      "marker": "private func stopOwnedSubscriptions(",
+      "line": 306,
+      "sha256": "22fc966a5d7073b17641658ff8532fa5f926b4c818a32f55f73bd72d173021aa"
+    },
+    {
+      "marker": "private func completeOwnedStop(",
+      "line": 326,
+      "sha256": "ef915f084bdef46756d91cc3264e25d127be4aca9b6a3bcdfc38be8badf9334d"
+    },
+    {
+      "marker": "exact membership Task plus installMembership",
+      "sha256": "a140790b4b603010fa43deadbf2c0367abdd041ea85ef3f989e1a65fa72123dc"
+    }
+  ],
+  "previous_tests_rerun": 0,
+  "membership_protocol_source_blob": "cdb63389c17eaf81cdb86dd76da226870a90949c",
+  "membership_protocol_isolation": "@MainActor protocol, Sendable; async startSubscription; fixture injected rather than initialized across actors",
+  "harness_sha256": "fc520625320dd643962603c650b3646959f3e9023ca617305d4565f8b85042a6"
+}

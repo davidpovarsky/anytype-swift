@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "status": "PASS_GIT_BOUND_METADATA_PREFLIGHT_NOT_FULL_CHECKOUT_SOURCE_OBSERVATION",
+  "base_head": "fbc47f3c10a2dfa474e3f2305bf2396ecca2868d",
+  "source_checkpoint": "ab6992d6fcbcab428010845b7ea48d26fe8ff0cc",
+  "source_tree": "5368846b3219456d1dc12fb3b1ac22c3051dc1f1",
+  "source_blob": "4f86624cc4f6c98de39811b818eadf32cf2ddf4a",
+  "build_branch": "codex/otzaria-original-editor-framework-v12-composed-20261122",
+  "neutral_review_branch": "codex/otzaria-sdk-v12-actor-isolation-fix-20261122",
+  "product_delta": "Only LoginStateService stop cleanup moves into an actor-isolated private method; task and attempt drains, cleanup ordering, escalation, and matching ownership remain.",
+  "profile_delta": [
+    "original_trees.Anytype/Sources",
+    "source_checkpoint"
+  ],
+  "original_trees": {
+    "Anytype/Resources": "0827010674c089cfe9846e592e1d801e9d3f7a9b",
+    "Anytype/Sources": "5368846b3219456d1dc12fb3b1ac22c3051dc1f1",
+    "Modules": "8fa8e654ca3e045a429c50296265266e6187a619"
+  },
+  "original_swift_sources": 2254,
+  "package_pins": 51,
+  "framework_facades": 7,
+  "required_host_spi_selectors": 38,
+  "heart_source_run_id": "44203168617",
+  "project_workflow_driver_clang_tests_installer_unchanged": true,
+  "body_comparator_files_included": false,
+  "retained_producer_run": "45034016674",
+  "retained_source_controls": {
+    "pass": 239,
+    "fail": 0,
+    "error": 0,
+    "skip": 0,
+    "scope": "exact fbc47 source/control closure; not a new candidate execution"
+  },
+  "new_validation": {
+    "kind": "Swift 6.3.3 strict-concurrency typecheck of actual changed stop methods and unchanged membership Task with explicit fixtures",
+    "exit": 0,
+    "tests_run": 0
+  },
+  "prior_auth_stop_10": "Retained unchanged exact StartupTasks fragment and original receipts; not replayed",
+  "previous_passed_tests_replayed": 0,
+  "apple_swift_6_4_compile": "PENDING",
+  "public_spi_38": "PENDING",
+  "external_consumer_compile_and_runtime": "PENDING",
+  "qualified_sdk": false,
+  "next_gate": "Root review, then one approved expected-head push to the existing v12 producer branch. The required239 source gate and full Apple framework/consumer gates remain enforced."
+}

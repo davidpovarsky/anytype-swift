@@ -1,0 +1,58 @@
+{
+  "source_base": "fbc47f3c10a2dfa474e3f2305bf2396ecca2868d",
+  "preimage_git_blob": "6f7b860deb3c7040752704da21942381d2b6e3e5",
+  "candidate_git_blob": "4f86624cc4f6c98de39811b818eadf32cf2ddf4a",
+  "candidate_sha256": "8eaaa4ad9bc5bc757a18dc1c9b982cf4cb9c1af97f0d5a303b4206a993c4afb6",
+  "changed_file": "Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift",
+  "change": "Task keeps weak-self strong guard and only awaits the ordinary LoginStateService actor's private completeOwnedStop; the previous cleanup ordering and matching owner/stop guards move unchanged",
+  "not_changed": [
+    "No MainActor annotation on LoginStateService",
+    "No new unchecked Sendable",
+    "No nonisolated escape",
+    "No compiler flag relaxation",
+    "No AuthService/PinkhaHanlinAuthService/lifetime/transition edits"
+  ],
+  "membership_audit": {
+    "protocol_blob": "cdb63389c17eaf81cdb86dd76da226870a90949c",
+    "protocol_shape": "@MainActor, Sendable, async startSubscription",
+    "findings": [
+      "Membership task awaits self.validate before/after actual service start",
+      "Membership dependency is immutable and Sendable",
+      "Calling async @MainActor startSubscription remains awaited",
+      "No mutable LoginState actor properties are read/written directly in the membership task",
+      "runPrimary task already awaits actor-isolated runPhase"
+    ]
+  },
+  "other_auth_task_audit": {
+    "AuthService_blob": "d9ab374accad37a2b6e2bb9602eb586aba38f04c",
+    "PinkhaHanlinAuthService_blob": "d413baf9dcdb09f0db61f46eb37b1c795a0ed465",
+    "finding": "Both accepted Stop cleanup Tasks capture strong [self] and use lexical actor-isolated state. No corresponding weak-self alias state mutation found; neither is changed."
+  },
+  "prior10": {
+    "changed_method_in_compiled_closure": false,
+    "only_LoginState_fragment": "private final class StartupTasks",
+    "fragment_sha256": "601b1b11a0e89f46fb11a6d1a3a8955b85f181fabc41c2c45d7a0eb44818fd32",
+    "fragment_unchanged": true,
+    "execution": "Swift 6.3.3 compiler, Swift 5 language mode, strict concurrency; 10 PASS",
+    "later_capture_compile": "Swift 6 language mode strict typecheck; no test rerun",
+    "receipt_treatment": "preserve historical exact source/receipt, no new claim for changed LoginState closure",
+    "replayed": false
+  },
+  "new_validation": {
+    "kind": "typecheck only",
+    "compiler": "Swift 6.3.3 Windows",
+    "language_mode": 6,
+    "strict_concurrency": "complete",
+    "exit": 0,
+    "stdout_empty": true,
+    "stderr_empty": true,
+    "result_sha256": "fe7850e435c5e568423e2c3aa2bfc27b70a6315f640319c307cc1544ff537b63",
+    "tests_executed": 0,
+    "Apple_6_4_acceptance": false
+  },
+  "peer_reviews": [
+    "/root/clang_sdk reviewed exact production delta",
+    "/root reviewed exact production delta and full typecheck fixture"
+  ],
+  "remaining_gate": "Actual Apple Swift 6.4 framework composition in the root-approved SDK producer"
+}

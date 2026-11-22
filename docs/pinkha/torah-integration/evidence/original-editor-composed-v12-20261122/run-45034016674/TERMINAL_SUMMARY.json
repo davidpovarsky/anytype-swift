@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "run_id": "45034016674",
+  "run_attempt": 1,
+  "source_sha": "fbc47f3c10a2dfa474e3f2305bf2396ecca2868d",
+  "conclusion": "failure",
+  "failure_phase": "ORIGINAL_FRAMEWORK_BUILD",
+  "source_controls": {
+    "executed": 239,
+    "passed": 239,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "sha256": "83e9f4fd2d890548adaa3f51f990b0279f234084c2ae6240bf4dc275b6f2fd94"
+  },
+  "framework_command_exit_code": 65,
+  "framework_compile": "FAILED",
+  "public_spi_38": "NOT_REACHED",
+  "external_consumer_build": "NOT_REACHED",
+  "external_consumer_runtime": "NOT_REACHED",
+  "qualified_sdk_artifact": null,
+  "unqualified_producer_artifact": null,
+  "primary_compiler_error_count": 6,
+  "primary_compiler_errors": [
+    "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:327:22: error: actor-isolated property 'startup' can not be mutated from a nonisolated context",
+    "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:328:22: error: actor-isolated property 'accountSource' can not be mutated from a nonisolated context",
+    "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:329:22: error: actor-isolated property 'primaryRunning' can not be mutated from a nonisolated context",
+    "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:331:46: error: actor-isolated property 'stopping' can not be mutated from a nonisolated context",
+    "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:326:21: error: actor-isolated property 'startup' cannot be accessed from outside of the actor",
+    "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/ServiceLayer/Auth/LoginStateService.swift:331:21: error: actor-isolated property 'stopping' cannot be accessed from outside of the actor"
+  ],
+  "artifact_id": 14759692887,
+  "outer_artifact_sha256": "e4899bad2999301250f6439f232cd520510d734083ee8a6014cf6fae28347834",
+  "inner_evidence_sha256": "b07f8466582348ab29ece849a49acb3a579207d845d7faee7254546fbb85ec84",
+  "inner_evidence_git_blob": "0440f2c328f41de5db06dc1ae8928a66e654ffa4",
+  "inner_evidence_bytes": 1722638
+}
