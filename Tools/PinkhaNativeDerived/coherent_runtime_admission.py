@@ -36,6 +36,13 @@ MODULES = ("Modules/PinkhaKit", "Modules/PinkhaHeartEngine")
 require = profiles.require
 
 
+def expected_producer_branch(consumer_branch):
+    """The explicit continuation consumes the original shared producer proof."""
+    if consumer_branch == "codex/chatgpt-wave15-acceptance-continuation-20261122":
+        return "codex/chatgpt-wave15-shared-20261121"
+    return consumer_branch
+
+
 def json_value(raw, label):
     require(len(raw) <= MAX_JSON_BYTES, "Oversized JSON: " + label)
     def pairs(values):
@@ -592,7 +599,8 @@ def execute(args, profile, command):
     run_path = args.evidence / "original-producer-run.json"
     command(["gh", "api", "repos/" + args.repository + "/actions/runs/" + args.source_run_id], run_path, timeout=120)
     run = read_json(run_path)
-    producer = profiles.validate_producer(run, args.source_run_id, args.repository, args.expected_app_branch, profiles.COHERENT)
+    producer = profiles.validate_producer(run, args.source_run_id, args.repository,
+                                         expected_producer_branch(args.expected_app_branch), profiles.COHERENT)
     list_path = args.evidence / "original-artifact-list.json"
     command(["gh", "api", "repos/" + args.repository + "/actions/runs/" + args.source_run_id + "/artifacts?per_page=100"], list_path, timeout=120)
     listing = read_json(list_path)

@@ -273,6 +273,7 @@ jobs:
       DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer
       PINKHA_ANY_NATIVE_ARTIFACT: verified-v1
       ANY_BUILD_VERSION: v0.5.0-pinkha.1
+      PYTHONDONTWRITEBYTECODE: "1"
     steps:
       - uses: actions/checkout@v4
         with:

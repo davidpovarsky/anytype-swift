@@ -174,6 +174,20 @@ def verify_maps(before, after, review, read_before, read_after):
             "claim": "Original execution remains at its original sources; exact reviewed presentation additions are not described as executed or byte-identical."}
 
 
+def verify_worktree(root=ROOT):
+    paths = (*PROTECTED, PROVIDER, "Tools/AnyEnginePort", ".github/workflows/pinkha-any-engine-port.yml")
+    tracked = [name.decode("utf-8") for name in
+               git("diff", "--name-only", "-z", "HEAD", "--", *paths, root=root).split(b"\0") if name]
+    untracked = [name.decode("utf-8") for name in
+                 git("ls-files", "--others", "--exclude-standard", "-z", "--", *paths, root=root).split(b"\0") if name]
+    # Bytecode is not exempt. The workflow prevents its creation; an existing
+    # cache or any other unreviewed source still fails this admission fence.
+    if tracked or untracked:
+        raise ValueError("consumer_source_worktree_not_clean " + json.dumps({
+            "trackedCount": len(tracked), "untrackedCount": len(untracked),
+            "tracked": tracked[:64], "untracked": untracked[:64]}, sort_keys=True))
+
+
 def verify_sources(consumer, root=ROOT):
     require(git("rev-parse", "HEAD", root=root).decode().strip() == consumer, "consumer_checkout_mismatch")
     raw = (root / REVIEW).read_bytes()
@@ -186,8 +200,5 @@ def verify_sources(consumer, root=ROOT):
                         lambda path: source(PRODUCER, path, root), lambda path: source(consumer, path, root))
     require(sha(source(PRODUCER, PROVIDER, root)) == PROVIDER_SHA and
             sha(source(consumer, PROVIDER, root)) == PROVIDER_SHA, "finite_provider_fixture_changed")
-    paths = (*PROTECTED, PROVIDER, "Tools/AnyEnginePort", ".github/workflows/pinkha-any-engine-port.yml")
-    require(not git("diff", "--name-only", "HEAD", "--", *paths, root=root).strip() and
-            not git("ls-files", "--others", "--exclude-standard", "--", *paths, root=root).strip(),
-            "consumer_source_worktree_not_clean")
+    verify_worktree(root)
     return {**proof, "reviewSHA256": sha(raw), "unchangedProviderFixtureSHA256": PROVIDER_SHA}

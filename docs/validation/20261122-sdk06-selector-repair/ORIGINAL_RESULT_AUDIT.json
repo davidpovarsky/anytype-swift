@@ -1,0 +1,80 @@
+{
+  "status": "CONFIRMED_ORIGINAL_BUILD_PASS_ENUMERATION_FAILURE_NOT_ACCEPTANCE",
+  "runID": "45047827580",
+  "runAttempt": "1",
+  "jobID": "137286199026",
+  "sourceSHA": "58b9de8f7a26d798e18e301ad1ed8be14f2a8c14",
+  "runURL": "https://github.com/davidpovarsky/anytype-swift/actions/runs/45047827580",
+  "originalFileCount": 56,
+  "allRetainedFileDigestsVerified": true,
+  "artifact": {
+    "id": 14765919670,
+    "bytes": 2433954,
+    "sha256": "7ebc72520f55608edf3855f5cea5e861334fec3d4c64fe00446c9220c201e618",
+    "innerSHA256": "677469e491b5cc8cfc09737c1bedd65cdb8f5976cf9526a7133ff8999c0156f6"
+  },
+  "applicationBuild": "PASS_ORIGINAL_TEST_BUILD_SUCCEEDED",
+  "builtProductObservedHashes": {
+    "app_executable": "5ecae66d0ad24c294bf13ff37ce97cbae583ecbe751707662095e59dc6b1bcc5",
+    "test_executable": "1cffd8c32131f3874612d685fb8e6d709803fe59a1844f40d6c7d70de8e76e95",
+    "xctestrun": "128c1977344f1089a3aa1778eca6683f1741dd6b3f389b9816c25fd94c78bb1a"
+  },
+  "enumeration": {
+    "discoveredMethods": 30,
+    "requestedMethods": 23,
+    "declaredArgumentCases": 32,
+    "selectedMethods": 15,
+    "missingParameterizedMethods": [
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownAddBlockDoesNotContinueAfterOwnerRebind(returnToOriginalID:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/markdownCommandsKeepCapturedTextBeforeLaterTyping(addBlock:)",
+      "AnytypeTests/SimpleTableTextPersistenceTests/replacementClaimsPendingOwnershipBeforePublication(asyncEntry:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/insertedCellUsesCurrentEditingBeforeFocus(editing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellDoesNotPreserveDifferentPendingOwner(composing:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/reusedCellUsesCurrentLockBeforeFocus(newLocked:)",
+      "AnytypeTests/TextBlockFocusLifecycleTests/staleFocusDoesNotSurviveRowLifetime(change:)",
+      "AnytypeTests/TorahRelatedReadAuthorityMappingTests/nativeDenialRequiresExactTypedCodeAndDescription(objectShow:)"
+    ],
+    "extraSelectedMethods": [],
+    "commands": [
+      {
+        "file": "shared-editor-components/command-00.json",
+        "startedAt": "2026-11-22T18:04:48.530193+00:00",
+        "finishedAt": "2026-11-22T18:06:16.932242+00:00",
+        "exitCode": 0,
+        "enumerationOnly": true
+      },
+      {
+        "file": "shared-editor-components/command-01.json",
+        "startedAt": "2026-11-22T18:06:17.026712+00:00",
+        "finishedAt": "2026-11-22T18:06:52.728114+00:00",
+        "exitCode": 0,
+        "enumerationOnly": true
+      }
+    ]
+  },
+  "currentConsumerExecution": {
+    "productTestMethods": 0,
+    "productTestInvocations": 0,
+    "editor23Methods32Cases": "NOT_RUN",
+    "acknowledgements7": "NOT_RUN",
+    "nativePreparation1": "NOT_RUN",
+    "mountedUI1": "NOT_RUN"
+  },
+  "compiledProductReuse": {
+    "originalAppTestExecutablesArchived": false,
+    "originalXctestrunArchived": false,
+    "inventoryIsBuildProvenance": false,
+    "githubCacheSaveStep": "SUCCESS",
+    "exactBinaryReuseQualified": false
+  },
+  "cleanup": "PASS_OWNED_WORKER_QUIESCENT_AND_TWO_DISPOSABLE_SIMULATORS_DELETED",
+  "cause": {
+    "observed": "All eight requested parameterized full-signature selectors were disabled while all15 nonparameterized requested selectors were enabled",
+    "inference": "The enumeration identifier syntax is not accepted as the parameterized outbound selector grammar; changed grammar must be proved by actual Apple re-enumeration"
+  },
+  "upstreamEvidenceBoundary": "Replayed coherent producer xcresult/fixture success is upstream proof, not current consumer execution",
+  "originalControllerGate": "PASS_HISTORICAL_STEP8_OLD_SYNTHETIC_SELECTOR_MODEL",
+  "testsExecutedByAudit": 0,
+  "fullAcceptance": false,
+  "releaseAcceptance": false
+}

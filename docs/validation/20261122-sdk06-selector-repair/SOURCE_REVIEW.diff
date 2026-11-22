@@ -1,0 +1,238 @@
+--- a/Tools/PinkhaSimulatorGate/shared_editor_existing_build.py
++++ b/Tools/PinkhaSimulatorGate/shared_editor_existing_build.py
+@@ -142,6 +142,30 @@
+             "other_targets_removed_from_copy": [item.get("BlueprintName") for item in targets if item is not target]}
+ 
+ 
++def xcode_method_selectors(identifiers, declarations):
++    """Map reviewed compiled identities to unambiguous Xcode method filters.
++
++    Xcode27 enumeration returned full parameter signatures, but those strings
++    selected none of the eight parameterized methods in run45047827580. Use
++    target/suite/method for those filters only. Full signatures remain the
++    required enumeration and result identities; no argument case is removed.
++    """
++    by_method = {}
++    for identifier in declarations:
++        match = re.fullmatch(r"(AnytypeTests/([A-Za-z_][A-Za-z0-9_]*)/[A-Za-z_][A-Za-z0-9_]*)"
++                             r"\((?:[A-Za-z_][A-Za-z0-9_]*:)*\)", identifier)
++        host.require(match is not None and match.group(2) in SUITES,
++                     "Unreviewed compiled component signature")
++        method = match.group(1)
++        host.require(method not in by_method, "Ambiguous compiled method selector")
++        by_method[method] = identifier
++    host.require(identifiers and len(set(identifiers)) == len(identifiers)
++                 and set(identifiers).issubset(set(by_method.values())),
++                 "Method selectors require unique reviewed compiled identities")
++    return [identifier if identifier.endswith("()") else identifier.split("(", 1)[0]
++            for identifier in identifiers]
++
++
+ def enumerate_selection(app, base, evidence, shared, source):
+     declaration_ids = set(source["compiled_declarations"].values())
+     selected_source_ids = {source["compiled_declarations"][method] for method in source["methods"]}
+@@ -174,18 +198,21 @@
+         discovery_path, discovery_configuration, ["AnytypeTests/" + suite for suite in SUITES])
+     host.require(discovered == declaration_ids and not declaration_ids.intersection(disabled),
+                  "Compiled suites differ from the exact30 source declarations")
+-    # Reuse actual returned strings. Source signatures are equality checks, not
+-    # guessed only-testing filters; in particular bare Swift method names are
+-    # never sent to Xcode.
++    # Preserve actual full signatures for equality/result checks. Outbound
++    # parameterized filters use Xcode's method selector grammar, independently
++    # qualified by another original enumeration before any test can execute.
+     selected = sorted(identifier for identifier in discovered if identifier in selected_source_ids)
++    selectors = xcode_method_selectors(selected, discovered)
+     selected_command, selected_binding, (selected_plan, observed, disabled) = enumerate_to(
+-        selected_path, selected_configuration, selected)
++        selected_path, selected_configuration, selectors)
+     host.require(selected_plan == plan and observed == set(selected) and not observed.intersection(disabled),
+                  "Compiled pending selection differs from the exact23 methods; no tests executed")
+     host.require(len(selected) == EXPECTED_METHOD_COUNT,
+                  "Compiled pending selection does not contain23 methods")
+     return {"status": "EXACT_COMPILED_SELECTION_VERIFIED", "test_plan": plan, "selection_nonce": selection_nonce,
+             "selected_identifiers": selected, "selected_method_count": len(selected),
++            "xcode_method_selectors": selectors,
++            "selector_identity_binding": dict(zip(selectors, selected)),
+             "enumerated_source_method_count": len(discovered),
+             "unselected_identifiers": sorted(discovered - observed),
+             "discovery_command": discovery_command, "selected_command": selected_command,
+@@ -270,7 +297,7 @@
+         verify_binding()
+         selected_base = list(base)
+         selected_base[selected_base.index("-xctestrun") + 1] = selected_configuration["path"]
+-        command = [*selected_base, *["-only-testing:" + identifier for identifier in enumeration["selected_identifiers"]],
++        command = [*selected_base, *["-only-testing:" + identifier for identifier in enumeration["xcode_method_selectors"]],
+                    "-resultBundlePath", str(bundle)]
+         receipt.update(phase="EXECUTION", command=command)
+         shared.write(evidence / "execution.json", receipt)
+--- a/Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py
++++ b/Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py
+@@ -149,10 +149,18 @@
+         enabled, disabled = [], []
+         for identifier in sorted(self.source["compiled_declarations"].values()):
+             relative = identifier.removeprefix("AnytypeTests/")
+-            matches = lambda candidate: relative == candidate or relative.startswith(candidate + "/")
++            # Original run45047827580 enabled zero-argument full signatures,
++            # but rejected all parameterized full-signature selectors. Model
++            # that observed failure and the separate method-name grammar here;
++            # actual Apple enumeration still has to verify the latter.
++            matches = lambda candidate: (relative.startswith(candidate + "/")
++                                         or relative.split("(", 1)[0] == candidate
++                                         or (relative.endswith("()") and relative == candidate))
+             if any(matches(candidate) for candidate in targets[0]["OnlyTestIdentifiers"]):
+                 (disabled if any(matches(candidate) for candidate in targets[0]["SkipTestIdentifiers"])
+                  else enabled).append({"identifier": identifier})
++            else:
++                disabled.append({"identifier": identifier})
+         payload = {"errors": [], "values": [{"testPlan": "Anytype",
+                     "enabledTests": enabled, "disabledTests": disabled}]}
+         if self.mutate_enumeration:
+@@ -203,9 +211,11 @@
+             self.assertEqual(plistlib.loads(self.configuration.read_bytes()), self.original_configuration)
+             binding = result["enumeration"]["selected_configuration"]
+             self.assertEqual(binding["other_targets_removed_from_copy"], ["OtherTests"])
++            selectors = {identifier if identifier.endswith("()") else identifier.split("(", 1)[0]
++                         for identifier in (self.source["compiled_declarations"][name] for name in EXPECTED)}
+             self.assertEqual(set(binding["only_test_identifiers"]),
+-                             {self.source["compiled_declarations"][name].removeprefix("AnytypeTests/") for name in EXPECTED})
+-            selected = {"-only-testing:" + self.source["compiled_declarations"][name] for name in EXPECTED}
++                             {identifier.removeprefix("AnytypeTests/") for identifier in selectors})
++            selected = {"-only-testing:" + identifier for identifier in selectors}
+             for command in (self.enumerations[-1], self.commands[-1]):
+                 self.assertEqual(command[:2], ["xcodebuild", "test-without-building"])
+                 self.assertEqual({item for item in command if item.startswith("-only-testing:")}, selected)
+@@ -407,6 +417,72 @@
+         self.assertEqual(result["status"], runner.PASS_STATUS)
+ 
+ 
++class SelectorRepairTests(unittest.TestCase):
++    """New controller controls; synthetic terminals are never product proof."""
++
++    setUp = ExistingBuildTests.setUp
++    write = staticmethod(ExistingBuildTests.write)
++    digest = staticmethod(ExistingBuildTests.digest)
++    enumerate_tests = ExistingBuildTests.enumerate_tests
++    run_xctest = ExistingBuildTests.run_xctest
++    execute = ExistingBuildTests.execute
++
++    def test_parameterized_filter_mapping_preserves_exact_full_identity_and_32_cases(self):
++        result = self.execute()
++        enumeration = result["enumeration"]
++        full_ids = {self.source["compiled_declarations"][name] for name in EXPECTED}
++        parameterized = {identifier for identifier in full_ids if not identifier.endswith("()")}
++        self.assertEqual(len(parameterized), 8)
++        self.assertEqual(set(enumeration["selected_identifiers"]), full_ids)
++        expected_filters = {identifier.split("(", 1)[0] for identifier in parameterized} | (full_ids - parameterized)
++        self.assertEqual(set(enumeration["xcode_method_selectors"]), expected_filters)
++        self.assertEqual(set(enumeration["selector_identity_binding"].values()), full_ids)
++        self.assertEqual(len(enumeration["selector_identity_binding"]), 23)
++        self.assertEqual(result["actual"]["declared_case_count"], 32)
++        self.assertEqual({item for item in self.commands[0] if item.startswith("-only-testing:")},
++                         {"-only-testing:" + name for name in expected_filters})
++        self.assertEqual(plistlib.loads(self.configuration.read_bytes()), self.original_configuration)
++
++    def test_original_full_parameter_signature_filters_reproduce_15_only_refusal(self):
++        with patch.object(runner, "xcode_method_selectors", side_effect=lambda selected, declarations: selected):
++            with self.assertRaisesRegex(ValueError, "exact23"):
++                self.execute()
++        payload = json.loads((self.root / "evidence/compiled-selected-enumeration.json").read_text())
++        _, enabled, disabled = runner.enumerated_identifiers(payload)
++        expected = {self.source["compiled_declarations"][name] for name in EXPECTED}
++        self.assertEqual(len(enabled), 15)
++        self.assertEqual(expected - enabled, {name for name in expected if not name.endswith("()")})
++        self.assertTrue((expected - enabled).issubset(disabled))
++        self.assertEqual(self.commands, [])
++
++    def test_mapped_filter_still_rejects_changed_full_signature_before_execution(self):
++        def mutate(payload, discovery):
++            if not discovery:
++                node = next(row for row in payload["values"][0]["enabledTests"]
++                            if "(objectShow:)" in row["identifier"])
++                node["identifier"] = node["identifier"].replace("(objectShow:)", "(unreviewed:)")
++        self.mutate_enumeration = mutate
++        with self.assertRaisesRegex(ValueError, "exact23"):
++            self.execute()
++        self.assertEqual(self.commands, [])
++
++    def test_selector_mapping_refuses_overloads_unknown_or_unscoped_identities(self):
++        identifier = "AnytypeTests/" + AUTHORITY_SUITE + "/" + AUTHORITY_PARAMETERIZED + "(objectShow:)"
++        declarations = list(self.source["compiled_declarations"].values())
++        cases = [
++            ([identifier], declarations + [identifier.replace("(objectShow:)", "(other:)")]),
++            ([identifier, identifier], declarations),
++            ([], declarations),
++            ([identifier.replace("(objectShow:)", "(unknown:)")], declarations),
++            (["AnytypeTests/" + AUTHORITY_SUITE], declarations),
++            ([identifier], declarations + ["OtherTarget/OtherSuite/method()"]),
++        ]
++        for selected, inventory in cases:
++            with self.subTest(selected=selected), self.assertRaises(ValueError):
++                runner.xcode_method_selectors(selected, inventory)
++        self.assertEqual(self.commands + self.enumerations, [])
++
++
+ class TrackedContractTests(unittest.TestCase):
+     def test_actual_tracked_profiles_keep_exact_pending_selection_and_original_ack7(self):
+         root = Path(__file__).resolve().parents[2]
+--- a/Tools/PinkhaSimulatorGate/run_wave15_acceptance.py
++++ b/Tools/PinkhaSimulatorGate/run_wave15_acceptance.py
+@@ -29,7 +29,8 @@
+ CONSUMER_BRANCH = "codex/chatgpt-wave15-hanlin-consumer-20261119"
+ UI_RESUME_BRANCH = "codex/chatgpt-wave15-ui-resume-20261119"
+ SHARED_BRANCH = "codex/chatgpt-wave15-shared-20261121"
+-APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, SHARED_BRANCH)
++CONTINUATION_BRANCH = "codex/chatgpt-wave15-acceptance-continuation-20261122"
++APPROVED_BRANCHES = (BRANCH, CONSUMER_BRANCH, UI_RESUME_BRANCH, SHARED_BRANCH, CONTINUATION_BRANCH)
+ EDITOR_DEVICE_PREFERENCES_TIMEOUT_SECONDS = 120
+ LANES = {
+     "hanlin-selection": {
+--- a/Tools/PinkhaNativeDerived/install_verified_heart.py
++++ b/Tools/PinkhaNativeDerived/install_verified_heart.py
+@@ -20,6 +20,7 @@
+     "codex/any-engine-port-20261119",
+     "codex/chatgpt-wave15-ui-resume-20261119",
+     "codex/chatgpt-wave15-shared-20261121",
++    "codex/chatgpt-wave15-acceptance-continuation-20261122",
+ ]
+ 
+ 
+--- a/Tools/PinkhaNativeDerived/coherent_runtime_admission.py
++++ b/Tools/PinkhaNativeDerived/coherent_runtime_admission.py
+@@ -34,6 +34,13 @@
+ MAX_JSON_BYTES = 16 * 1024**2
+ MODULES = ("Modules/PinkhaKit", "Modules/PinkhaHeartEngine")
+ require = profiles.require
++
++
++def expected_producer_branch(consumer_branch):
++    """The explicit continuation consumes the original shared producer proof."""
++    if consumer_branch == "codex/chatgpt-wave15-acceptance-continuation-20261122":
++        return "codex/chatgpt-wave15-shared-20261121"
++    return consumer_branch
+ 
+ 
+ def json_value(raw, label):
+@@ -592,7 +599,8 @@
+     run_path = args.evidence / "original-producer-run.json"
+     command(["gh", "api", "repos/" + args.repository + "/actions/runs/" + args.source_run_id], run_path, timeout=120)
+     run = read_json(run_path)
+-    producer = profiles.validate_producer(run, args.source_run_id, args.repository, args.expected_app_branch, profiles.COHERENT)
++    producer = profiles.validate_producer(run, args.source_run_id, args.repository,
++                                         expected_producer_branch(args.expected_app_branch), profiles.COHERENT)
+     list_path = args.evidence / "original-artifact-list.json"
+     command(["gh", "api", "repos/" + args.repository + "/actions/runs/" + args.source_run_id + "/artifacts?per_page=100"], list_path, timeout=120)
+     listing = read_json(list_path)
+--- a/.github/workflows/pinkha-simulator-ui27.yml
++++ b/.github/workflows/pinkha-simulator-ui27.yml
+@@ -73,7 +73,9 @@
+         run: python3 -B Tools/PinkhaSimulatorGate/test_text_native_ack.py -v
+       - name: Check existing-build shared-editor product and result binding
+         if: ${{ inputs.acceptance_lane == 'hanlin-native-shared-editor' }}
+-        run: python3 -B Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py -v
++        run: |
++          python3 -B Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py -v
++          python3 -B Tools/PinkhaNativeDerived/test_acceptance_continuation_branch.py -v
+       - name: Check coherent same-build selection identity and cleanup controls
+         if: ${{ inputs.acceptance_lane == 'coherent-heart-release' }}
+         run: |

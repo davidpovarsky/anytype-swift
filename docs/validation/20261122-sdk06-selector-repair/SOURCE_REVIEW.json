@@ -1,0 +1,101 @@
+{
+  "status": "PASS_BOUNDED_SOURCE_AND_CALL_PATH_REVIEW",
+  "baseCommit": "edf1545f2ebcd1a71d307735a645c779cb9dc3bb",
+  "files": [
+    {
+      "path": "Tools/PinkhaSimulatorGate/shared_editor_existing_build.py",
+      "beforeGitBlob": "ee10fbb6f73de10f2af77284d0ecc47e88bc249a",
+      "beforeSHA256": "3215f15dcffc2c089ad814294a8f82376864966fc2f42795d9f3ec1d88e26f4a",
+      "afterSHA256": "ff25ef9fc14630a67decf242b327c53111cfb8b77e0c2f10511a46a926aef8f0",
+      "bytes": 20271,
+      "changedExistingDefinitions": [
+        "enumerate_selection",
+        "execute"
+      ],
+      "addedDefinitions": [
+        "xcode_method_selectors"
+      ],
+      "allOtherDefinitionsUnchanged": true
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py",
+      "beforeGitBlob": "42faf6d43f2cb6391635a4d336de588ba3ade278",
+      "beforeSHA256": "d7711d6f159219bff2400aea94d9dd4981a0c0d18c662e914207edae030036c0",
+      "afterSHA256": "b4f2cea82d84bcaed1d1ee96bd8f7718be84b0dec5181e4f5d4e3ed799cbf975",
+      "bytes": 29540,
+      "changedExistingDefinitions": [
+        "ExistingBuildTests"
+      ],
+      "addedDefinitions": [
+        "SelectorRepairTests"
+      ],
+      "allOtherDefinitionsUnchanged": true
+    },
+    {
+      "path": "Tools/PinkhaSimulatorGate/run_wave15_acceptance.py",
+      "beforeGitBlob": "a2d6311e55fe238d9a8565899ae829e050bff928",
+      "beforeSHA256": "8ff0648ce74153b635c3686d6d517786f2cf0cd21fad2a19b201525bb74ef41b",
+      "afterSHA256": "cfac4fd4f3a7b52aca0be49adc2b089ce4977153722c0afb36bf2ba10cf2d002",
+      "bytes": 45385,
+      "changedExistingDefinitions": [],
+      "addedDefinitions": [],
+      "allOtherDefinitionsUnchanged": true
+    },
+    {
+      "path": "Tools/PinkhaNativeDerived/install_verified_heart.py",
+      "beforeGitBlob": "04bab7f476492fe743b7e8d75bc8131c99afdf96",
+      "beforeSHA256": "0f3286d5c3f84c5b892234b557028eed3125935db8ba843a838cb28be641ab18",
+      "afterSHA256": "fe643439f65e1e20282607d95865c02937a5501d58125834a5cd4bef2532176a",
+      "bytes": 10519,
+      "changedExistingDefinitions": [],
+      "addedDefinitions": [],
+      "allOtherDefinitionsUnchanged": true
+    },
+    {
+      "path": "Tools/PinkhaNativeDerived/coherent_runtime_admission.py",
+      "beforeGitBlob": "70b8c6d33cafa8ddbc3a2398fccae234436014f5",
+      "beforeSHA256": "d2f49d147f16e705b4c40610c4bbd53c88ed4d3e4f6f2fbe50d0486b76046da7",
+      "afterSHA256": "3abc33c74a65d3bd3eec1183c33f1ece79bee0665821dfbf29f1a5d1842f4983",
+      "bytes": 46786,
+      "changedExistingDefinitions": [
+        "execute"
+      ],
+      "addedDefinitions": [
+        "expected_producer_branch"
+      ],
+      "allOtherDefinitionsUnchanged": true
+    },
+    {
+      "path": ".github/workflows/pinkha-simulator-ui27.yml",
+      "beforeGitBlob": "8c2f24ce191765509f3f0c4992e0e8599907d331",
+      "beforeSHA256": "7eee48b084f4e5487f9cbc7fc72d14acdaec709b61e7d149c99691c15a868ef0",
+      "afterSHA256": "9ea81f8e0394d39f507efb690428948cef592cf618e440e967160050a416c272",
+      "bytes": 11094
+    }
+  ],
+  "unchangedSharedValidatorsAndSources": [
+    "Tools/Hanlin/run_host_tests.py",
+    "Tools/Hanlin/shared_editor_profile.py",
+    "Tools/Hanlin/shared_table_profile.py",
+    "Tools/Hanlin/related_read_authority_profile.py",
+    "Tools/Hanlin/wave15_core_profile.py",
+    "Tools/PinkhaNativeDerived/heart_runtime_profile.py",
+    "Tools/PinkhaNativeDerived/download_heart_runtime.py",
+    "Tools/PinkhaSimulatorGate/run_owned_single_lane.py"
+  ],
+  "existingFinalResultsValidator": "BYTE_AST_UNCHANGED",
+  "newBranch": "codex/chatgpt-wave15-acceptance-continuation-20261122",
+  "branchCallPath": [
+    "workflow runtime installer --expected-app-branch=$GITHUB_REF_NAME uses the one expanded installer allowlist",
+    "coherent admission verifies actual branch/HEAD and module byte closure unchanged",
+    "only exact continuation maps expected producer branch to original shared branch",
+    "unchanged profiles.validate_producer verifies successful original run/head format/attempt/workflow/route/repository/branch",
+    "unchanged artifact and source proof validators retain original hash and native139 requirements",
+    "run_owned_single_lane delegates to run_wave15_acceptance with one additional exact permitted consumer branch",
+    "standalone run_host_tests branch list unchanged and not called for this route"
+  ],
+  "workflowChange": "Same existing lane-conditioned controller step gains only the new branch-control invocation",
+  "sourceIdentityAndTerminalChecksLoosened": false,
+  "productCodeChanged": false,
+  "appleExecution": "NOT_RUN"
+}

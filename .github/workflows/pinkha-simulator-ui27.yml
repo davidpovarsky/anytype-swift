@@ -73,7 +73,9 @@ jobs:
         run: python3 -B Tools/PinkhaSimulatorGate/test_text_native_ack.py -v
       - name: Check existing-build shared-editor product and result binding
         if: ${{ inputs.acceptance_lane == 'hanlin-native-shared-editor' }}
-        run: python3 -B Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py -v
+        run: |
+          python3 -B Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py -v
+          python3 -B Tools/PinkhaNativeDerived/test_acceptance_continuation_branch.py -v
       - name: Check coherent same-build selection identity and cleanup controls
         if: ${{ inputs.acceptance_lane == 'coherent-heart-release' }}
         run: |

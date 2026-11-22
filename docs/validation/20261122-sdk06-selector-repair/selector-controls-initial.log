@@ -1,0 +1,17 @@
+test_mapped_filter_still_rejects_changed_full_signature_before_execution (test_shared_editor_existing_build.SelectorRepairTests.test_mapped_filter_still_rejects_changed_full_signature_before_execution) ... ok
+test_original_full_parameter_signature_filters_reproduce_15_only_refusal (test_shared_editor_existing_build.SelectorRepairTests.test_original_full_parameter_signature_filters_reproduce_15_only_refusal) ... FAIL
+test_parameterized_filter_mapping_preserves_exact_full_identity_and_32_cases (test_shared_editor_existing_build.SelectorRepairTests.test_parameterized_filter_mapping_preserves_exact_full_identity_and_32_cases) ... ok
+test_selector_mapping_refuses_overloads_unknown_or_unscoped_identities (test_shared_editor_existing_build.SelectorRepairTests.test_selector_mapping_refuses_overloads_unknown_or_unscoped_identities) ... ok
+
+======================================================================
+FAIL: test_original_full_parameter_signature_filters_reproduce_15_only_refusal (test_shared_editor_existing_build.SelectorRepairTests.test_original_full_parameter_signature_filters_reproduce_15_only_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/15ed7c0f4658/sdk06-selector-repair-work/Tools/PinkhaSimulatorGate/test_shared_editor_existing_build.py", line 453, in test_original_full_parameter_signature_filters_reproduce_15_only_refusal
+    self.assertTrue((expected - enabled).issubset(disabled))
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.016s
+
+FAILED (failures=1)

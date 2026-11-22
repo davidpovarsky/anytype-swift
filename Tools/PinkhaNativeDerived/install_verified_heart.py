@@ -20,6 +20,7 @@ APPROVED_BRANCHES = [
     "codex/any-engine-port-20261119",
     "codex/chatgpt-wave15-ui-resume-20261119",
     "codex/chatgpt-wave15-shared-20261121",
+    "codex/chatgpt-wave15-acceptance-continuation-20261122",
 ]
 
 
