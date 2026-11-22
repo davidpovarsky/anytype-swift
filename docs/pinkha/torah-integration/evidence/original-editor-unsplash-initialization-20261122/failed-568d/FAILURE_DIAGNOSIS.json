@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "run": 44997870962,
+  "attempt": 1,
+  "head": "568d69f55a4b1b1bc318b8ee20144c720c8c16a5",
+  "source_checkpoint": "955c082bdd559050da38413f60897fcea876d8c4",
+  "phase": "ORIGINAL_FRAMEWORK_BUILD",
+  "actual_framework_command_attempted": true,
+  "semantic_framework_build_completed": false,
+  "external_consumer_executed": false,
+  "native_editor_ui_tests": 0,
+  "framework_command": {
+    "command": [
+      "xcodebuild",
+      "build",
+      "-project",
+      "/Users/runner/work/anytype-swift/anytype-swift/Anytype.xcodeproj",
+      "-scheme",
+      "AnytypeOriginalEditor",
+      "-configuration",
+      "Debug-Anytype",
+      "-destination",
+      "platform=iOS Simulator,id=C4C85C49-3DF2-46B4-80A9-090B26570550",
+      "-derivedDataPath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-44997870962-1/producer-derived",
+      "-resultBundlePath",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/original-editor-framework-evidence/framework-build.xcresult",
+      "-onlyUsePackageVersionsFromResolvedFile",
+      "OTHER_SWIFT_FLAGS=$(inherited) -D PINKHA_NATIVE_DERIVED $(ORIGINAL_EDITOR_SYMBOL_GRAPH_FLAGS)",
+      "ONLY_ACTIVE_ARCH=YES",
+      "ARCHS=arm64",
+      "SWIFT_OPTIMIZATION_LEVEL=-Onone",
+      "CODE_SIGN_IDENTITY=-",
+      "CODE_SIGNING_ALLOWED=YES",
+      "CODE_SIGNING_REQUIRED=YES",
+      "PROVISIONING_PROFILE_SPECIFIER="
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "finished_at": "2026-11-22T07:37:15.300637+00:00",
+    "returncode": 65,
+    "started_at": "2026-11-22T07:22:53.913956+00:00",
+    "stderr_sha256": "491fcb9bc2a09f8f53e95c62ef7f6c4ca7a3ab2043826218ab7ffaeab2d61e7a",
+    "stdout_sha256": "062e603ebb0bad5ff8e616a6474771026eed3e85f6d0bb47ec0cedc904002305",
+    "timed_out": false,
+    "timeout_seconds": 6000
+  },
+  "unique_source_diagnostics": [
+    {
+      "line": 41702,
+      "diagnostic": "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Cover/Unsplash/UnsplashItemsViewModel.swift:33:30: error: 'self' used in property access 'unsplashService' before all stored properties are initialized",
+      "context": [
+        " 14 |     private let spacerView = UIView()",
+        "",
+        "/Users/runner/work/anytype-swift/anytype-swift/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Cover/Unsplash/UnsplashItemsViewModel.swift:33:30: error: 'self' used in property access 'unsplashService' before all stored properties are initialized",
+        "20 |     @Injected(\\.unsplashService)",
+        "21 |     private var unsplashService: any UnsplashServiceProtocol",
+        "22 |     private let documentWriteOwner: EditorDocumentWriteOwner?",
+        "   |                 `- note: 'self.documentWriteOwner' not initialized",
+        "23 |     private(set) var isLoading: Bool = true",
+        "24 |     private var searchTextChangedSubscription: AnyCancellable?",
+        "   :",
+        "31 |     ) {",
+        "32 |         self.onItemSelect = onItemSelect",
+        "33 |         self.unsplashService = unsplashService",
+        "   |                              `- error: 'self' used in property access 'unsplashService' before all stored properties are initialized",
+        "34 |         self.documentWriteOwner = documentWriteOwner",
+        "35 | ",
+        ""
+      ]
+    }
+  ],
+  "unlocated_driver_diagnostics": [
+    {
+      "line": 41441,
+      "diagnostic": "Internal Error: DecodingError.dataCorrupted: Data was corrupted. Debug description: Corrupted JSON. Underlying error: unexpected end of file"
+    }
+  ],
+  "unlocated_driver_cause": "Unattributed; no source-specific cause inferred.",
+  "source_controls_status": "PASS_SOURCE_CONTROLS_221",
+  "source_controls_tests_run": 221,
+  "macro_trust_restored": "EXACT_ORIGINAL_MACRO_TRUST_RESTORED",
+  "source_before_after_bytes_equal": true,
+  "download_count": 1,
+  "outer_archive_sha256": "97915d84057d876394844cd4e53f557d3e77d726dc38633e85a0903f9fa66215"
+}

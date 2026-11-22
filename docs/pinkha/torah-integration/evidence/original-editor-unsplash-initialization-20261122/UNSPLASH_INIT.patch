@@ -1,0 +1,12 @@
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Cover/Unsplash/UnsplashItemsViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Cover/Unsplash/UnsplashItemsViewModel.swift
+@@ -30,8 +30,8 @@
+         documentWriteOwner: EditorDocumentWriteOwner? = nil
+     ) {
+         self.onItemSelect = onItemSelect
++        self.documentWriteOwner = documentWriteOwner
+         self.unsplashService = unsplashService
+-        self.documentWriteOwner = documentWriteOwner
+ 
+         searchImages(query: "")
+ 

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "status": "PASS_EXACT_EXPECTED_OLD_INIT_ERROR_AND_ONE_CANDIDATE_INITIALIZATION_CONTROL",
+  "candidate_sha256": "4314074843d861bc42d1a55030ada5b88d4c440455c6374c5edb59aa87128753",
+  "inputs_sha256": "9e289004f92b4798ee68a147d5c2137dea2d297f243163921e44387a5b888907",
+  "expected_red_errors": [
+    "C:\\Users\\DAVID\\AppData\\Local\\Temp\\oe-unsplash-init-20261122\\RED_UnsplashViewModel.swift:31:30: error: 'self' used in property access 'unsplashService' before all stored properties are initialized"
+  ],
+  "expected_red_exit": 1,
+  "new_tests": 1,
+  "test": {
+    "classname": "UnsplashInitialization.UnsplashInitializationBoundary",
+    "name": "exactInitializerRetainsInjectedIdentityOwnerCallbackAndNilLegacy()",
+    "time": "0.0070729"
+  },
+  "xunit_sha256": "cfa331cc5d74fc13ae99997692d236505ed1b60c5bbde8c42deb7bc0131a7316",
+  "binary": {
+    "path": "semantic-package\\.build\\x86_64-unknown-windows-msvc\\debug\\OriginalUnsplashInitializationPackageTests.xctest",
+    "sha256": "b96124e647459bec5a3fe944ced84beb7fb1e37ac577fb3e3ab0f1b9202669fb",
+    "bytes": 570368
+  },
+  "all_inputs_unchanged": true,
+  "limits": [
+    "Exact complete original ViewModel preimage/candidate, only external imports projected and two read-only same-file identity accessors appended.",
+    "Full actual locked Factory Injected<T> declaration is unchanged. Factory, references and Container resolution are explicit disposable dependencies; no Factory package/runtime acceptance.",
+    "Exact original UnsplashItem value and UnsplashServiceProtocol/default method and complete DocumentOwnedUnsplashService declarations. The backend and Owner are explicit probes, not original native invocation/owner authority.",
+    "Combine, publisher, debounce, UI grid/item types and localized string are explicit portable dependencies. No native network/decoder/Combine/UI/editor/runtime behavior is qualified.",
+    "One semantic initialization boundary: expected old uninitialized-self diagnostic; candidate compiles and executes one new genuine Swift Testing case with actual default-injected dependency identity, owner/callback identity, owner-wrapper routing and nil legacy path.",
+    "Existing complete same-toolchain Foundation module cache is reused; no previous package target or assertion is rebuilt or executed. No ownership, composition, prior boundary or source-control suite replay."
+  ]
+}

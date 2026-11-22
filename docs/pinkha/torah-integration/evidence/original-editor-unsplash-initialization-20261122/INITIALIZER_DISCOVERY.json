@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "head": "568d69f55a4b1b1bc318b8ee20144c720c8c16a5",
+  "owner_mention_files": 30,
+  "owner_and_injected_files": 7,
+  "reviewed_files": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/Flows/EditorPageFlow/EditorPageCoordinatorViewModel.swift",
+      "blob": "dddd28beacddf8111143a20546b9a53e15dbdef0",
+      "sha256": "ba6c0977e8239dbc5e1086846af145f1b6678f42dac047ff49043da861c4060b",
+      "injected_properties": [
+        "propertyValueProcessingService"
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/Modules/CodeLanguage/CodeLanguageListViewModel.swift",
+      "blob": "6b4b290d2892fd4c54e6394d69b2924f9f3d624f",
+      "sha256": "c911e61a53f4a13c20963206157fd74a7e2e4221a6b6848f8c07ab076e094867",
+      "injected_properties": [
+        "blockService"
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/ObjectCreationSettings/SetObjectCreationSettingsCoordinator.swift",
+      "blob": "1747fda7abe14500603b37afbd12914577eb1bda",
+      "sha256": "fb8374cda480ef7e3f6a970fbf0b919fb0bb906c69543fa3ac959bfa18756c27",
+      "injected_properties": [
+        "navigationContext",
+        "toastPresenter"
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/ObjectCreationSettings/TemplatesCoordinator.swift",
+      "blob": "ffa48b7c12c93e2e4a1525c2a8d3bcb0f700b304",
+      "sha256": "7c1f5b50a640d8049e88e4f7dd662e3caec49067aab3e1fd9ee629097282dd65",
+      "injected_properties": [
+        "navigationContext",
+        "toastPresenter"
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/ObjectCreationSettings/Views/Picker/TemplatePickerViewModel.swift",
+      "blob": "55f411730929422c77136f993d9e6cb0fa714a06",
+      "sha256": "091fe54d6ef41174063861cfdbda67bd3c26d344eecdb2a48c30d1470439d3a8",
+      "injected_properties": [
+        "objectService",
+        "templatesSubscriptionService"
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/EditorPageModuleAssembly.swift",
+      "blob": "0e8c7a1983499180c89ddcce4f18414d3eb83a74",
+      "sha256": "3da7ddfef29ac9fbfed36b377ae94007926d0fb9d985b494c964f5a526353782",
+      "injected_properties": [
+        "documentService"
+      ]
+    },
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Cover/Unsplash/UnsplashItemsViewModel.swift",
+      "blob": "ec2bd2724cbe29a4583b6d81f290d8e9e609d8d7",
+      "sha256": "badfaab8433033cae78004bf343207104514540ff47c62b620b96dc8889a95fe",
+      "injected_properties": [
+        "unsplashService"
+      ]
+    }
+  ],
+  "property_self_assignments": [
+    {
+      "path": "Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/Cover/Unsplash/UnsplashItemsViewModel.swift",
+      "line": 33,
+      "injected_property": "unsplashService",
+      "context": [
+        "    }",
+        "    @Injected(\\.unsplashService)",
+        "    private var unsplashService: any UnsplashServiceProtocol",
+        "    private let documentWriteOwner: EditorDocumentWriteOwner?",
+        "    private(set) var isLoading: Bool = true",
+        "    private var searchTextChangedSubscription: AnyCancellable?",
+        "",
+        "    @Published private var searchValue: String = \"\"",
+        "",
+        "    init(",
+        "        onItemSelect: @escaping (UnsplashItem) -> (),",
+        "        documentWriteOwner: EditorDocumentWriteOwner? = nil",
+        "    ) {",
+        "        self.onItemSelect = onItemSelect",
+        "        self.unsplashService = unsplashService",
+        "        self.documentWriteOwner = documentWriteOwner",
+        "",
+        "        searchImages(query: \"\")",
+        "",
+        "        searchTextChangedSubscription = $searchValue",
+        "            .debounce(for: .seconds(0.5), scheduler: RunLoop.main)",
+        "            .sink { [weak self] value in",
+        "                self?.searchImages(query: value)",
+        "            }",
+        "    }",
+        "",
+        "    func didSelectItem(item: UnsplashItemViewModel) {"
+      ],
+      "source_sha256": "badfaab8433033cae78004bf343207104514540ff47c62b620b96dc8889a95fe"
+    }
+  ],
+  "limits": "Bounded static candidate discovery for this newly observed definite-initialization pattern only. No old weak-self/actor/preparation audit replay, no parsing/testing, no source edits, no exhaustive compiler certification."
+}
