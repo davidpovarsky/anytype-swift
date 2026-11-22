@@ -1,0 +1,157 @@
+{
+  "job": {
+    "id": "job_80704e19f7ec",
+    "type": "job_result",
+    "source": "script_run@host_7ec8382e82747448",
+    "severity": "info",
+    "tool": "script_run",
+    "host": "host_7ec8382e82747448",
+    "status": "succeeded",
+    "exit_code": 0,
+    "created_at": 1795369569.4143386,
+    "started_at": "2026-11-22T17:46:09.487870+00:00",
+    "finished_at": "2026-11-22T17:46:19.300312+00:00",
+    "duration_s": 9.81,
+    "error": null,
+    "output_truncated": false,
+    "timeout_s": 420,
+    "read": false,
+    "notified": {
+      "telegram": null,
+      "resend": null
+    },
+    "notify_spec": {},
+    "output": "{\"schema\": \"otzaria.single-schema-rpc-generation-activation/1\", \"head\": \"fa022fdffa25ec93d8c8c324f20889e526fdf498\", \"branch\": \"codex/otzaria-schema-rpc-generation-20261122\", \"status\": \"ONE_NORMAL_PUSH_VERIFIED\", \"commands\": [{\"args\": [\"C:\\\\Program Files\\\\GitHub CLI\\\\gh.EXE\", \"api\", \"repos/davidpovarsky/anytype-swift/git/matching-refs/heads/codex/otzaria-schema-rpc-generation-20261122\"], \"started_utc\": \"2026-11-22T17:46:10.106548+00:00\", \"returncode\": 0, \"stdout\": \"[]\", \"stderr\": \"\"}, {\"args\": [\"C:\\\\Program Files\\\\GitHub CLI\\\\gh.EXE\", \"api\", \"repos/davidpovarsky/anytype-swift/actions/runs?head_sha=fa022fdffa25ec93d8c8c324f20889e526fdf498&per_page=100\"], \"started_utc\": \"2026-11-22T17:46:10.913501+00:00\", \"returncode\": 0, \"stdout\": \"{\\\"total_count\\\":0,\\\"workflow_runs\\\":[]}\", \"stderr\": \"\"}, {\"args\": [\"C:\\\\Program Files\\\\Git\\\\cmd\\\\git.EXE\", \"init\", \"--bare\", \"owned.git\"], \"started_utc\": \"2026-11-22T17:46:11.755350+00:00\", \"returncode\": 0, \"stdout\": \"Initialized empty Git repository in C:/Users/DAVID/Code/otzaria-schema-rpc-generation-activation-20261122/owned.git/\\n\", \"stderr\": \"\"}, {\"args\": [\"C:\\\\Program Files\\\\Git\\\\cmd\\\\git.EXE\", \"-C\", \"C:\\\\Users\\\\DAVID\\\\Code\\\\otzaria-schema-rpc-generation-activation-20261122\\\\owned.git\", \"remote\", \"add\", \"origin\", \"https://github.com/davidpovarsky/anytype-swift.git\"], \"started_utc\": \"2026-11-22T17:46:12.095501+00:00\", \"returncode\": 0, \"stdout\": \"\", \"stderr\": \"\"}, {\"args\": [\"C:\\\\Program Files\\\\Git\\\\cmd\\\\git.EXE\", \"-C\", \"C:\\\\Users\\\\DAVID\\\\Code\\\\otzaria-schema-rpc-generation-activation-20261122\\\\owned.git\", \"fetch\", \"--no-tags\", \"--filter=blob:none\", \"--depth=1\", \"origin\", \"refs/heads/source/otzaria-schema-rpc-generation-20261122\"], \"started_utc\": \"2026-11-22T17:46:12.319687+00:00\", \"returncode\": 0, \"stdout\": \"\", \"stderr\": \"From https://github.com/davidpovarsky/anytype-swift\\n * branch            source/otzaria-schema-rpc-generation-20261122 -> FETCH_HEAD\\n * [new branch]      source/otzaria-schema-rpc-generation-20261122 -> origin/source/otzaria-schema-rpc-generation-20261122\\n\"}, {\"args\": [\"C:\\\\Program Files\\\\Git\\\\cmd\\\\git.EXE\", \"-C\", \"C:\\\\Users\\\\DAVID\\\\Code\\\\otzaria-schema-rpc-generation-activation-20261122\\\\owned.git\", \"rev-parse\", \"FETCH_HEAD\"], \"started_utc\": \"2026-11-22T17:46:13.946553+00:00\", \"returncode\": 0, \"stdout\": \"fa022fdffa25ec93d8c8c324f20889e526fdf498\\n\", \"stderr\": \"\"}, {\"args\": [\"C:\\\\Program Files\\\\Git\\\\cmd\\\\git.EXE\", \"-C\", \"C:\\\\Users\\\\DAVID\\\\Code\\\\otzaria-schema-rpc-generation-activation-20261122\\\\owned.git\", \"ls-remote\", \"--heads\", \"origin\", \"refs/heads/codex/otzaria-schema-rpc-generation-20261122\"], \"started_utc\": \"2026-11-22T17:46:14.125655+00:00\", \"returncode\": 0, \"stdout\": \"\", \"stderr\": \"\"}, {\"args\": [\"C:\\\\Program Files\\\\Git\\\\cmd\\\\git.EXE\", \"-C\", \"C:\\\\Users\\\\DAVID\\\\Code\\\\otzaria-schema-rpc-generation-activation-20261122\\\\owned.git\", \"push\", \"--porcelain\", \"origin\", \"fa022fdffa25ec93d8c8c324f20889e526fdf498:refs/heads/codex/otzaria-schema-rpc-generation-20261122\"], \"started_utc\": \"2026-11-22T17:46:14.977705+00:00\", \"returncode\": 0, \"stdout\": \"To https://github.com/davidpovarsky/anytype-swift.git\\n*\\tfa022fdffa25ec93d8c8c324f20889e526fdf498:refs/heads/codex/otzaria-schema-rpc-generation-20261122\\t[new branch]\\nDone\\n\", \"stderr\": \"remote: \\nremote: Create a pull request for 'codex/otzaria-schema-rpc-generation-20261122' on GitHub by visiting:        \\nremote:      https://github.com/davidpovarsky/anytype-swift/pull/new/codex/otzaria-schema-rpc-generation-20261122        \\nremote: \\n\"}, {\"args\": [\"C:\\\\Program Files\\\\GitHub CLI\\\\gh.EXE\", \"api\", \"repos/davidpovarsky/anytype-swift/git/ref/heads/codex/otzaria-schema-rpc-generation-20261122\"], \"started_utc\": \"2026-11-22T17:46:18.404221+00:00\", \"returncode\": 0, \"stdout\": \"{\\\"ref\\\":\\\"refs/heads/codex/otzaria-schema-rpc-generation-20261122\\\",\\\"node_id\\\":\\\"REF_kwDOTOG_cdoAN3JlZnMvaGVhZHMvY29kZXgvb3R6YXJpYS1zY2hlbWEtcnBjLWdlbmVyYXRpb24tMjAyNjExMjI\\\",\\\"url\\\":\\\"https://api.github.com/repos/davidpovarsky/anytype-swift/git/refs/heads/codex/otzaria-schema-rpc-generation-20261122\\\",\\\"object\\\":{\\\"sha\\\":\\\"fa022fdffa25ec93d8c8c324f20889e526fdf498\\\",\\\"type\\\":\\\"commit\\\",\\\"url\\\":\\\"https://api.github.com/repos/davidpovarsky/anytype-swift/git/commits/fa022fdffa25ec93d8c8c324f20889e526fdf498\\\"}}\", \"stderr\": \"\"}], \"push_attempts\": 1, \"remote_ref\": \"refs/heads/codex/otzaria-schema-rpc-generation-20261122\", \"verified_head\": \"fa022fdffa25ec93d8c8c324f20889e526fdf498\"}"
+  },
+  "activation": {
+    "schema": "otzaria.single-schema-rpc-generation-activation/1",
+    "head": "fa022fdffa25ec93d8c8c324f20889e526fdf498",
+    "branch": "codex/otzaria-schema-rpc-generation-20261122",
+    "status": "ONE_NORMAL_PUSH_VERIFIED",
+    "commands": [
+      {
+        "args": [
+          "C:\\Program Files\\GitHub CLI\\gh.EXE",
+          "api",
+          "repos/davidpovarsky/anytype-swift/git/matching-refs/heads/codex/otzaria-schema-rpc-generation-20261122"
+        ],
+        "started_utc": "2026-11-22T17:46:10.106548+00:00",
+        "returncode": 0,
+        "stdout": "[]",
+        "stderr": ""
+      },
+      {
+        "args": [
+          "C:\\Program Files\\GitHub CLI\\gh.EXE",
+          "api",
+          "repos/davidpovarsky/anytype-swift/actions/runs?head_sha=fa022fdffa25ec93d8c8c324f20889e526fdf498&per_page=100"
+        ],
+        "started_utc": "2026-11-22T17:46:10.913501+00:00",
+        "returncode": 0,
+        "stdout": "{\"total_count\":0,\"workflow_runs\":[]}",
+        "stderr": ""
+      },
+      {
+        "args": [
+          "C:\\Program Files\\Git\\cmd\\git.EXE",
+          "init",
+          "--bare",
+          "owned.git"
+        ],
+        "started_utc": "2026-11-22T17:46:11.755350+00:00",
+        "returncode": 0,
+        "stdout": "Initialized empty Git repository in C:/Users/DAVID/Code/otzaria-schema-rpc-generation-activation-20261122/owned.git/\n",
+        "stderr": ""
+      },
+      {
+        "args": [
+          "C:\\Program Files\\Git\\cmd\\git.EXE",
+          "-C",
+          "C:\\Users\\DAVID\\Code\\otzaria-schema-rpc-generation-activation-20261122\\owned.git",
+          "remote",
+          "add",
+          "origin",
+          "https://github.com/davidpovarsky/anytype-swift.git"
+        ],
+        "started_utc": "2026-11-22T17:46:12.095501+00:00",
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "args": [
+          "C:\\Program Files\\Git\\cmd\\git.EXE",
+          "-C",
+          "C:\\Users\\DAVID\\Code\\otzaria-schema-rpc-generation-activation-20261122\\owned.git",
+          "fetch",
+          "--no-tags",
+          "--filter=blob:none",
+          "--depth=1",
+          "origin",
+          "refs/heads/source/otzaria-schema-rpc-generation-20261122"
+        ],
+        "started_utc": "2026-11-22T17:46:12.319687+00:00",
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "From https://github.com/davidpovarsky/anytype-swift\n * branch            source/otzaria-schema-rpc-generation-20261122 -> FETCH_HEAD\n * [new branch]      source/otzaria-schema-rpc-generation-20261122 -> origin/source/otzaria-schema-rpc-generation-20261122\n"
+      },
+      {
+        "args": [
+          "C:\\Program Files\\Git\\cmd\\git.EXE",
+          "-C",
+          "C:\\Users\\DAVID\\Code\\otzaria-schema-rpc-generation-activation-20261122\\owned.git",
+          "rev-parse",
+          "FETCH_HEAD"
+        ],
+        "started_utc": "2026-11-22T17:46:13.946553+00:00",
+        "returncode": 0,
+        "stdout": "fa022fdffa25ec93d8c8c324f20889e526fdf498\n",
+        "stderr": ""
+      },
+      {
+        "args": [
+          "C:\\Program Files\\Git\\cmd\\git.EXE",
+          "-C",
+          "C:\\Users\\DAVID\\Code\\otzaria-schema-rpc-generation-activation-20261122\\owned.git",
+          "ls-remote",
+          "--heads",
+          "origin",
+          "refs/heads/codex/otzaria-schema-rpc-generation-20261122"
+        ],
+        "started_utc": "2026-11-22T17:46:14.125655+00:00",
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "args": [
+          "C:\\Program Files\\Git\\cmd\\git.EXE",
+          "-C",
+          "C:\\Users\\DAVID\\Code\\otzaria-schema-rpc-generation-activation-20261122\\owned.git",
+          "push",
+          "--porcelain",
+          "origin",
+          "fa022fdffa25ec93d8c8c324f20889e526fdf498:refs/heads/codex/otzaria-schema-rpc-generation-20261122"
+        ],
+        "started_utc": "2026-11-22T17:46:14.977705+00:00",
+        "returncode": 0,
+        "stdout": "To https://github.com/davidpovarsky/anytype-swift.git\n*\tfa022fdffa25ec93d8c8c324f20889e526fdf498:refs/heads/codex/otzaria-schema-rpc-generation-20261122\t[new branch]\nDone\n",
+        "stderr": "remote: \nremote: Create a pull request for 'codex/otzaria-schema-rpc-generation-20261122' on GitHub by visiting:        \nremote:      https://github.com/davidpovarsky/anytype-swift/pull/new/codex/otzaria-schema-rpc-generation-20261122        \nremote: \n"
+      },
+      {
+        "args": [
+          "C:\\Program Files\\GitHub CLI\\gh.EXE",
+          "api",
+          "repos/davidpovarsky/anytype-swift/git/ref/heads/codex/otzaria-schema-rpc-generation-20261122"
+        ],
+        "started_utc": "2026-11-22T17:46:18.404221+00:00",
+        "returncode": 0,
+        "stdout": "{\"ref\":\"refs/heads/codex/otzaria-schema-rpc-generation-20261122\",\"node_id\":\"REF_kwDOTOG_cdoAN3JlZnMvaGVhZHMvY29kZXgvb3R6YXJpYS1zY2hlbWEtcnBjLWdlbmVyYXRpb24tMjAyNjExMjI\",\"url\":\"https://api.github.com/repos/davidpovarsky/anytype-swift/git/refs/heads/codex/otzaria-schema-rpc-generation-20261122\",\"object\":{\"sha\":\"fa022fdffa25ec93d8c8c324f20889e526fdf498\",\"type\":\"commit\",\"url\":\"https://api.github.com/repos/davidpovarsky/anytype-swift/git/commits/fa022fdffa25ec93d8c8c324f20889e526fdf498\"}}",
+        "stderr": ""
+      }
+    ],
+    "push_attempts": 1,
+    "remote_ref": "refs/heads/codex/otzaria-schema-rpc-generation-20261122",
+    "verified_head": "fa022fdffa25ec93d8c8c324f20889e526fdf498"
+  }
+}

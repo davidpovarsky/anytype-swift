@@ -1,0 +1,89 @@
+{
+  "schema": "otzaria.schema-rpc-initial-branch-zero-run/1",
+  "head": "fa022fdffa25ec93d8c8c324f20889e526fdf498",
+  "parent": "c21b9ebcbf255e6f4c02611069d8f40b75436a05",
+  "tree": "8d2cfbd2f90494811dc0ebd10b8aa9a2a0d4c0fc",
+  "commit_message": "Freeze original schema RPC generator source and tool provenance\n\nPreserve five source-reviewed RPC inputs and the original generator route.\nPrepare isolated baseline/candidate generation with exact tool pins,\nfresh outputs, finite owned drain and limited message compilation.\nGeneration and production SDK integration remain unexecuted.",
+  "commit_skip_ci_markers_found": false,
+  "branch": {
+    "name": "codex/otzaria-schema-rpc-generation-20261122",
+    "head": "fa022fdffa25ec93d8c8c324f20889e526fdf498",
+    "protected": false
+  },
+  "activation_finished_utc": "2026-11-22T17:46:19.300312+00:00",
+  "push_attempts": 1,
+  "post_push_run_query": {
+    "utc": "2026-11-22T17:51:32.265690+00:00",
+    "exit": 0,
+    "stderr": "",
+    "response": {
+      "total_count": 0,
+      "workflow_runs": []
+    }
+  },
+  "check_suites": [
+    {
+      "id": 121916657477,
+      "head_branch": "source/otzaria-schema-rpc-generation-20261122",
+      "head_sha": "fa022fdffa25ec93d8c8c324f20889e526fdf498",
+      "status": "queued",
+      "conclusion": null,
+      "app_slug": "render",
+      "created_at": "2026-11-22T17:36:42Z",
+      "updated_at": "2026-11-22T17:36:42Z",
+      "latest_check_runs_count": 0
+    },
+    {
+      "id": 121916657822,
+      "head_branch": "source/otzaria-schema-rpc-generation-20261122",
+      "head_sha": "fa022fdffa25ec93d8c8c324f20889e526fdf498",
+      "status": "queued",
+      "conclusion": null,
+      "app_slug": "cloudflare-workers-and-pages",
+      "created_at": "2026-11-22T17:36:42Z",
+      "updated_at": "2026-11-22T17:36:42Z",
+      "latest_check_runs_count": 0
+    },
+    {
+      "id": 121916658100,
+      "head_branch": "source/otzaria-schema-rpc-generation-20261122",
+      "head_sha": "fa022fdffa25ec93d8c8c324f20889e526fdf498",
+      "status": "queued",
+      "conclusion": null,
+      "app_slug": "codemagic-ci-cd",
+      "created_at": "2026-11-22T17:36:42Z",
+      "updated_at": "2026-11-22T17:36:42Z",
+      "latest_check_runs_count": 0
+    }
+  ],
+  "check_runs": {
+    "total_count": 0,
+    "check_runs": []
+  },
+  "workflow_metadata": {
+    "utc": "2026-11-22T17:51:31.385658+00:00",
+    "exit": 1,
+    "stderr": "gh: Not Found (HTTP 404)\n",
+    "response": {
+      "message": "Not Found",
+      "documentation_url": "https://docs.github.com/rest/actions/workflows#get-a-workflow",
+      "status": "404"
+    }
+  },
+  "workflow_source": {
+    "utc": "2026-11-22T17:51:33.047141+00:00",
+    "exit": 0,
+    "stderr": "",
+    "response": {
+      "path": ".github/workflows/otzaria-schema-rpc-generation.yml",
+      "git_blob": "884b8ecb231d9499aba8cd54153f8b440165e4d6",
+      "bytes": 4405,
+      "sha256": "9c8c7b446f5e1bae859358e9191cace616c96f09981f2a319c4cdc902eac0602",
+      "content": "name: Original schema RPC source generation\n\non:\n  push:\n    branches:\n      - codex/otzaria-schema-rpc-generation-20261122\n    paths:\n      - .github/workflows/otzaria-schema-rpc-generation.yml\n      - docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/generate_original_schema_rpc.py\n      - docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/EXECUTION_INPUTS.json\n      - docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/TOOL_PINS.json\n      - docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/native/pb/**/*.proto\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: otzaria-schema-rpc-generation-${{ github.ref }}\n  cancel-in-progress: false\n\njobs:\n  generate-original-rpc:\n    runs-on: xcode-27\n    timeout-minutes: 120\n    env:\n      DEVELOPER_DIR: /Applications/Xcode_27.app/Contents/Developer\n    steps:\n      - name: Fix absolute owned generation deadline\n        run: |\n          echo \"OTZARIA_SCHEMA_RPC_JOB_DEADLINE=$(( $(date +%s) + 6900 ))\" >> \"$GITHUB_ENV\"\n      - name: Checkout reviewed control source\n        uses: actions/checkout@v4\n        with:\n          persist-credentials: false\n          sparse-checkout-cone-mode: false\n          sparse-checkout: |\n            /.github/workflows/otzaria-schema-rpc-generation.yml\n            /docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/\n            /docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/run_native_defaults_repair.py\n      - name: Select actual ARM64 Python\n        uses: actions/setup-python@v5\n        with:\n          python-version: '3.12'\n          architecture: arm64\n      - name: Install exact original Go toolchain\n        uses: actions/setup-go@v5\n        with:\n          go-version: '1.26.5'\n          cache: false\n      - name: Checkout immutable original Heart\n        uses: actions/checkout@v4\n        with:\n          repository: anyproto/anytype-heart\n          ref: d98420b1113536afd08cde6de9a5816f6d27ffff\n          path: build/Schema-RPC-Inputs/heart\n          persist-credentials: false\n      - name: Checkout immutable original SDK generator source\n        uses: actions/checkout@v4\n        with:\n          ref: 3be6ecab805b17e2c90fee897fdab45a0b03bfdc\n          path: build/Schema-RPC-Inputs/swift\n          persist-credentials: false\n          sparse-checkout-cone-mode: false\n          sparse-checkout: |\n            /Makefile\n            /Scripts/\n            /Modules/ProtobufMessages/\n            /Modules/Services/\n            /Tools/anytype-swift-codegen\n            /Tools/anytype-swift-filesplit/\n      - name: Checkout exact original SwiftProtobuf source\n        uses: actions/checkout@v4\n        with:\n          repository: apple/swift-protobuf\n          ref: c6fe6442e6a64250495669325044052e113e990c\n          path: build/Schema-RPC-Inputs/swift-protobuf\n          persist-credentials: false\n      - name: Generate baseline and candidate through original routes\n        run: |\n          python3 docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122/generate_original_schema_rpc.py \\\n            --control-root \"$GITHUB_WORKSPACE\" \\\n            --control-head \"$GITHUB_SHA\" \\\n            --packet docs/pinkha/torah-integration/native-annotation-schema-rpc-generation-20261122 \\\n            --manifest-sha256 800c0745ddc36537c443e17f9d984c98a11fd22c4d825c4a935ffa4f8d264ee3 \\\n            --support docs/pinkha/torah-integration/native-annotation-schema-native-defaults-20261122/run_native_defaults_repair.py \\\n            --heart-input build/Schema-RPC-Inputs/heart \\\n            --swift-input build/Schema-RPC-Inputs/swift \\\n            --plugin-input build/Schema-RPC-Inputs/swift-protobuf \\\n            --work build/Schema-RPC-Owned-Work \\\n            --evidence build/Schema-RPC-Generation-Evidence \\\n            --job-deadline-unix \"$OTZARIA_SCHEMA_RPC_JOB_DEADLINE\"\n      - name: Retain generated source and original failure evidence\n        if: always()\n        uses: actions/upload-artifact@v4\n        with:\n          name: Otzaria-Schema-RPC-Generation-${{ github.run_id }}-${{ github.run_attempt }}\n          path: build/Schema-RPC-Generation-Evidence\n          include-hidden-files: true\n          if-no-files-found: warn\n          compression-level: 6\n          retention-days: 14\n"
+    }
+  },
+  "conclusion": "No Actions run or GitHub Actions check suite was observed after more than five minutes following one verified normal branch push. The exact workflow source and branch are present, the commit has no skip-CI marker, and no invalid-workflow check was reported. Workflow metadata lookup returns HTTP 404. The remote routing cause is not established.",
+  "native_or_generation_executions_observed": 0,
+  "automatic_repushes": 0,
+  "next": "A separately reviewed comment-only FF child may trigger the existing same workflow, with all eleven control inputs and manifest unchanged."
+}
