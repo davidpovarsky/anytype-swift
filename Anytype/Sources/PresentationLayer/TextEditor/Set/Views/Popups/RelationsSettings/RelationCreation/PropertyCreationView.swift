@@ -11,7 +11,7 @@ struct PropertyCreationView: View {
     var body: some View {
         content
             .safeAreaInset(edge: .bottom) {
-                if model.nativeLookupFailed {
+                if model.nativeLookupFailed || model.preparedRouteUnavailable {
                     VStack {
                         AnytypeText(Loc.Content.Common.error, style: .uxBodyRegular)
                         Button(Loc.Pinkha.Home.retry) { Task { await model.retryNativeLookup() } }

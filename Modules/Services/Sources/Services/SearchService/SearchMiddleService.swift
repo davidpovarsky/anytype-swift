@@ -5,6 +5,21 @@ public protocol SearchMiddleServiceProtocol: AnyObject, Sendable {
     func search(data: SearchRequest) async throws -> [ObjectDetails]
 }
 
+public enum OriginalSearchMiddleServiceBindingError: Error, Sendable {
+    case unsupportedOriginalDelegate
+}
+
+/// Identity admission for an existing source-bound reader; the original
+/// implementation and its native ObjectSearch request remain unchanged.
+public enum OriginalSearchMiddleServiceBinding {
+    public static func requireOriginal(_ service: any SearchMiddleServiceProtocol) throws -> any SearchMiddleServiceProtocol {
+        guard service is SearchMiddleService else {
+            throw OriginalSearchMiddleServiceBindingError.unsupportedOriginalDelegate
+        }
+        return service
+    }
+}
+
 public extension SearchMiddleServiceProtocol {
     func search(
         spaceId: String,

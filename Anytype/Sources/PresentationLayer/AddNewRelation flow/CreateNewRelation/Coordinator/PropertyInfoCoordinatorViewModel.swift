@@ -26,6 +26,14 @@ final class PropertyInfoCoordinatorViewModel: PropertyInfoModuleOutput {
     // MARK: - PropertyInfoModuleOutput
     
     func didAskToShowPropertyFormats(selectedFormat: SupportedPropertyFormat, onSelect: @escaping (SupportedPropertyFormat) -> Void) {
+        if let scope = data.originalEditorScope {
+            try? scope.withCurrent {
+                propertyFormatsData = PropertyFormatsData(format: selectedFormat, onSelect: { format in
+                    try? scope.withCurrent { onSelect(format) }
+                })
+            }
+            return
+        }
         propertyFormatsData = PropertyFormatsData(
             format: selectedFormat,
             onSelect: onSelect
@@ -33,6 +41,9 @@ final class PropertyInfoCoordinatorViewModel: PropertyInfoModuleOutput {
     }
     
     func didAskToShowObjectTypesSearch(selectedObjectTypesIds: [String], onSelect: @escaping ([String]) -> Void) {
+        // This legacy search has its own unqualified subscription/tasks. The
+        // prepared object-property increment does not activate that subroute.
+        guard data.originalEditorScope == nil else { return }
         searchData = ObjectTypesLimitedSearchData(
             title: Loc.limitObjectTypes,
             spaceId: data.spaceId,
@@ -44,6 +55,12 @@ final class PropertyInfoCoordinatorViewModel: PropertyInfoModuleOutput {
     }
     
     func didPressConfirm(_ relation: PropertyDetails) {
+        if let scope = data.originalEditorScope {
+            try? scope.withActionCallback(requiredPermissions: OriginalEditorPropertyScope.listPermissions) {
+                output?.didPressConfirm(relation)
+            }
+            return
+        }
         output?.didPressConfirm(relation)
     }
     

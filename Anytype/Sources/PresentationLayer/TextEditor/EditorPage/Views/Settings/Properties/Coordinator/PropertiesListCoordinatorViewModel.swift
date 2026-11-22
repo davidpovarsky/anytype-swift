@@ -60,6 +60,10 @@ final class PropertiesListCoordinatorViewModel:
     // MARK: - PropertiesListModuleOutput
     
     func editRelationValueAction(document: some BaseDocumentProtocol, relationKey: String) {
+        if let scope = originalEditorScope {
+            editOriginalRelationValue(document: document, relationKey: relationKey, scope: scope)
+            return
+        }
         guard (try? withCurrentSource {
             try preparedSession?.owner.validateDocument(document)
         }) != nil else { return }
@@ -78,6 +82,71 @@ final class PropertiesListCoordinatorViewModel:
             propertyId: relation.id, key: relation.key, spaceId: document.spaceId
         ) else { return }
         handlePropertyValue(relation: relation, objectDetails: objectDetails)
+    }
+
+    /// Resolve canonical identity through the original current-account reader.
+    /// No prepared value tap enters the policy's implicit bootstrap path.
+    private func editOriginalRelationValue(
+        document candidate: any BaseDocumentProtocol, relationKey: String,
+        scope: OriginalEditorPropertyScope
+    ) {
+        do {
+            let selected = try scope.withCurrent {
+                try scope.owner.validateDocument(candidate)
+                guard !relationKey.isEmpty, !relationKey.utf8.contains(0),
+                      let relation = document.parsedProperties.installed.first(where: {
+                          $0.key.utf8.elementsEqual(relationKey.utf8)
+                      }) else {
+                    throw EditorDocumentWriteError.rejected(.wrongContext)
+                }
+                return relation
+            }
+            let writesCheckbox: Bool
+            if case .checkbox = selected { writesCheckbox = selected.isEditable }
+            else { writesCheckbox = false }
+
+            let operation: @MainActor @Sendable () async throws -> Void = { [self] in
+                let identity = try await scope.loadModalPropertyIdentity()
+                let present = {
+                    try scope.owner.validateDocument(self.document)
+                    guard let current = self.document.parsedProperties.installed.first(where: {
+                        $0.key.utf8.elementsEqual(relationKey.utf8)
+                    }), current.id.utf8.elementsEqual(selected.id.utf8),
+                        current.key.utf8.elementsEqual(selected.key.utf8), current == selected,
+                        let details = self.document.details,
+                        details.id.utf8.elementsEqual(scope.objectId.utf8),
+                        details.spaceId.utf8.elementsEqual(scope.spaceId.utf8) else {
+                        throw EditorDocumentWriteError.rejected(.documentChanged)
+                    }
+                    try scope.requireOriginalPropertyValue(
+                        propertyId: current.id, key: current.key, identity: identity
+                    )
+                    self.handlePropertyValue(relation: current, objectDetails: details)
+                }
+                if writesCheckbox {
+                    // The original processor synchronously registers its real
+                    // checkbox write; a publication read cannot authorize it.
+                    try scope.withActionCallback(present)
+                } else {
+                    try scope.withCurrent(present)
+                }
+            }
+            // Reserve the actual editable-checkbox action at the UI callback,
+            // before the asynchronous canonical read or original Task starts.
+            let action = writesCheckbox
+                ? scope.prepareAction(operation: operation)
+                : operation
+            Task { [weak self] in
+                do { try await action() }
+                catch { self?.reportOriginalPropertyFailure(scope: scope) }
+            }
+        } catch { reportOriginalPropertyFailure(scope: scope) }
+    }
+
+    private func reportOriginalPropertyFailure(scope: OriginalEditorPropertyScope) {
+        try? scope.withCurrent {
+            typePropertiesToast = ToastBarData(Loc.error, type: .failure)
+        }
     }
     
     private func handlePropertyValue(relation: Property, objectDetails: ObjectDetails) {

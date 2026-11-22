@@ -159,6 +159,14 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
     }
     
     func showAddPropertyInfoView(document: some BaseDocumentProtocol, onSelect: @escaping (PropertyDetails, _ isNew: Bool) -> Void) {
+        let scope = preparedEditorSession.map {
+            OriginalEditorPropertyScope(preparedSession: $0, objectId: document.objectId,
+                                        spaceId: document.spaceId, document: document)
+        }
+        guard !hasQualifiedPreparation || scope != nil else { return }
+        if let scope {
+            guard (try? scope.withCurrent(requiredPermissions: OriginalEditorPropertyScope.listPermissions, {})) != nil else { return }
+        }
         guard let details = document.details else { return }
         let visibleInstalledIds = (
             document.parsedProperties.featuredProperties +
@@ -173,6 +181,7 @@ final class EditorPageCoordinatorViewModel: EditorPageModuleOutput, PropertyValu
             excludedRelationsIds: visibleInstalledIds,
             hiddenRelationsIds: hiddenIds,
             target: .object(objectId: details.id),
+            originalEditorScope: scope,
             onRelationSelect: onSelect
         )
     }

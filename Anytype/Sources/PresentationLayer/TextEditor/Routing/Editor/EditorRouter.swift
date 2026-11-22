@@ -417,6 +417,15 @@ extension EditorRouter {
 
     @MainActor
     func showAddPropertyInfoView(document: some BaseDocumentProtocol, onSelect: @escaping (PropertyDetails, _ isNew: Bool) -> Void) {
+        if let documentWriteOwner {
+            // The prepared route must continue through its actual retained
+            // coordinator. A generic output cannot silently drop the source.
+            guard let coordinator = output as? EditorPageCoordinatorViewModel,
+                  coordinator.preparedEditorSession?.owner === documentWriteOwner,
+                  (try? documentWriteOwner.performSynchronousOperation(requiresEditing: false, operation: {
+                      try documentWriteOwner.validateDocument(document)
+                  })) != nil else { return }
+        }
         output?.showAddPropertyInfoView(document: document, onSelect: onSelect)
     }
 }

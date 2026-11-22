@@ -7,7 +7,9 @@ struct PropertyInfoView: View {
     @Environment(\.dismiss) private var dismiss
 
     init(data: PropertyInfoData, output: (any PropertyInfoModuleOutput)?) {
-        let relationsInteractor = PropertiesInteractor(objectId: data.objectId, spaceId: data.spaceId)
+        let relationsInteractor = PropertiesInteractor(
+            objectId: data.objectId, spaceId: data.spaceId, originalEditorScope: data.originalEditorScope
+        )
         _viewModel = State(initialValue: PropertyInfoViewModel(
             data: data,
             relationsInteractor: relationsInteractor,
@@ -21,9 +23,11 @@ struct PropertyInfoView: View {
             TitleView(title: viewModel.title) {
                 if viewModel.canShowMenu {
                     Menu {
-                        AsyncButton(Loc.delete, role: .destructive) {
+                        AsyncButton(role: .destructive, prepareAction: viewModel.prepareDeleteAction(onCompletion: { dismiss() })) {
                             try await viewModel.didTapDelete()
                             dismiss()
+                        } label: {
+                            Text(Loc.delete)
                         }
                     } label: {
                         MoreIndicator()
@@ -102,16 +106,20 @@ struct PropertyInfoView: View {
                     UIApplication.shared.hideKeyboard()
                     viewModel.didTapTypesRestrictionSection()
                 },
-                isArrowVisible: !viewModel.isReadOnly
+                isArrowVisible: viewModel.canEditTypeRestrictions
             )
-            .disabled(viewModel.isReadOnly)
+            .disabled(!viewModel.canEditTypeRestrictions)
         }
     }
     
     private var button: some View {
         StandardButton(viewModel.confirmButtonTitle, style: .primaryLarge) {
-            viewModel.didTapAddButton()
-            dismiss()
+            if viewModel.hasOriginalEditorScope {
+                viewModel.didTapAddButton(onCompletion: { dismiss() })
+            } else {
+                viewModel.didTapAddButton()
+                dismiss()
+            }
         }
         .disabled(!viewModel.isSaveButtonActive)
         .padding(.vertical, 10)
