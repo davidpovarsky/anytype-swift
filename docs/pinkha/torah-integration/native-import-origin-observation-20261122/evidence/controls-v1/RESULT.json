@@ -1,0 +1,448 @@
+{
+  "started_at": "2026-11-22T15:43:12.763737+00:00",
+  "status": "PASS_NATIVE_IMPORT_ORIGIN_UNIT_CONTROLS",
+  "native_executions": 0,
+  "prior_suites_replayed": 0,
+  "scope": "Actual new pure observation helper, processor glue, response accessors, source recorder and original workerpool/readResults with explicit controlled dependencies. No protobuf reader/native engine/side-effect execution or import authority.",
+  "compiler": "C:\\Program Files\\Go\\bin\\go.exe",
+  "compiler_sha256": "f42439591f4592adfb02a9744af1f2c3a03b704f614d9e939a2d5d04b0a054b3",
+  "source_manifest": {
+    "scope": "Actual new pure observation helper, processor glue, response accessors, source recorder and original workerpool/readResults with explicit controlled dependencies. No protobuf reader/native engine/side-effect execution or import authority.",
+    "native_executions": 0,
+    "prior_suites_replayed": 0,
+    "actual_source_fragments": [
+      {
+        "path": "core/block/import/mapping_observation.go",
+        "start": "package importer",
+        "end": null,
+        "source_sha256": "851c5ad1a2c65e3698816bf8be5ccdd85e4074d9afb3b3f3dd79d5758e6be9cf",
+        "fragment_sha256": "851c5ad1a2c65e3698816bf8be5ccdd85e4074d9afb3b3f3dd79d5758e6be9cf",
+        "bytes": 9367
+      },
+      {
+        "path": "core/block/import/mapping_observation_processor.go",
+        "start": "package importer",
+        "end": null,
+        "source_sha256": "26120b7b2396c84e69adff0681ea6c082412761a6a24eafa03ee561c89463e67",
+        "fragment_sha256": "26120b7b2396c84e69adff0681ea6c082412761a6a24eafa03ee561c89463e67",
+        "bytes": 2810
+      },
+      {
+        "path": "core/block/import/common/types.go",
+        "start": "type Snapshot struct {",
+        "end": "\n// ProtobufSourceObservation",
+        "source_sha256": "458829293a09663646e6a76d6d8cc4e7325359b2e2e8619bb4960e8e36509149",
+        "fragment_sha256": "ea640841ad38b6917e89c8e9f463e7d35a99efb12ce9ff4a909feaabdada9d43",
+        "bytes": 322
+      },
+      {
+        "path": "core/block/import/common/types.go",
+        "start": "type ProtobufSourceObservation struct {",
+        "end": "\ntype SnapshotModel",
+        "source_sha256": "458829293a09663646e6a76d6d8cc4e7325359b2e2e8619bb4960e8e36509149",
+        "fragment_sha256": "15cf22d427d70c1f65e624f2a81f3f9c08f5a52bfefd281e773c47a582df7a86",
+        "bytes": 711
+      },
+      {
+        "path": "core/block/import/common/types.go",
+        "start": "type Response struct {",
+        "end": "\ntype SnapshotContext",
+        "source_sha256": "458829293a09663646e6a76d6d8cc4e7325359b2e2e8619bb4960e8e36509149",
+        "fragment_sha256": "8966f095e9b7c21491c2393ddea3e0c485b6c4989f4836977feabe98f5ad8b71",
+        "bytes": 819
+      },
+      {
+        "path": "core/block/import/common/types.go",
+        "start": "type SnapshotContext struct {",
+        "end": null,
+        "source_sha256": "458829293a09663646e6a76d6d8cc4e7325359b2e2e8619bb4960e8e36509149",
+        "fragment_sha256": "bcc19854ad2467b3fd2c2471985056a20d7f55cba8a6e2aacbe076828da58c27",
+        "bytes": 2035
+      },
+      {
+        "path": "core/block/import/types.go",
+        "start": "type ImportRequest struct {",
+        "end": "\ntype Dependencies",
+        "source_sha256": "e175307ed43e205e7495541945c26e002053a216e4a3ac21413814f7b04f487b",
+        "fragment_sha256": "e2e13301df6427aef9592093b55d901c6455ff1889fc7877ec0120a8ee1fec31",
+        "bytes": 1350
+      },
+      {
+        "path": "core/block/import/processor.go",
+        "start": "func (p *importProcessor) readResults(",
+        "end": "\nfunc (p *importProcessor) finalize",
+        "source_sha256": "b7858e25041c38015b4b49e91c5a0b86ac32b1cf2dd79ff7748a90e7b853d119",
+        "fragment_sha256": "d0894e062c06405f2f772e5bd4c1ce0e1f29fd03c026dc0dbf3a9f0a0361053e",
+        "bytes": 805
+      },
+      {
+        "path": "original/core/block/import/common/workerpool/workerpool.go",
+        "full_file_sha256": "619d4f594618d1339f81da4d1a572106e52a43ca395227b0cbeee9f07bfbb979",
+        "original_revision": "d98420b1113536afd08cde6de9a5816f6d27ffff"
+      }
+    ],
+    "explicit_fixture_files": [
+      "core/domain/fixture.go",
+      "core/domain/objectorigin/fixture.go",
+      "core/block/process/fixture.go",
+      "pkg/lib/pb/model/fixture.go",
+      "pb/fixture.go",
+      "core/block/import/common/objectcreator/fixture.go"
+    ],
+    "additional_inline_fixtures": [
+      "SnapshotModel",
+      "ConvertError",
+      "ErrCancel",
+      "importProcessor dependency fields"
+    ],
+    "module_files": [
+      {
+        "path": "core/block/import/actual_drain_fragment.go",
+        "sha256": "36b7cf72484ea2837248c5550c9c6cf8b8d7df403975d878fcaaffaf64edff99",
+        "bytes": 1641
+      },
+      {
+        "path": "core/block/import/actual_response_fragments.go",
+        "sha256": "89b24be2f7e37c98f7c89c30c73c18299edc82a1c280a1063c15b63eb5c99b81",
+        "bytes": 1590
+      },
+      {
+        "path": "core/block/import/common/actual_source_fragments.go",
+        "sha256": "6890fd3953195a74d69674f1b40c8da1c2bcb03e61e36cc4beb3b421ddcbb8bc",
+        "bytes": 4424
+      },
+      {
+        "path": "core/block/import/common/objectcreator/fixture.go",
+        "sha256": "55ca811bcfb80503ac244a97a6b6a2066d82c84383665bc1f310ae5ff1cc875a",
+        "bytes": 149
+      },
+      {
+        "path": "core/block/import/common/workerpool/workerpool.go",
+        "sha256": "619d4f594618d1339f81da4d1a572106e52a43ca395227b0cbeee9f07bfbb979",
+        "bytes": 1189
+      },
+      {
+        "path": "core/block/import/mapping_observation.go",
+        "sha256": "851c5ad1a2c65e3698816bf8be5ccdd85e4074d9afb3b3f3dd79d5758e6be9cf",
+        "bytes": 9367
+      },
+      {
+        "path": "core/block/import/mapping_observation_external_test.go",
+        "sha256": "07828610934856f76c1d2a2fe08ddc0a1d4448858be48bec7e0d828d76278fed",
+        "bytes": 1072
+      },
+      {
+        "path": "core/block/import/mapping_observation_processor.go",
+        "sha256": "26120b7b2396c84e69adff0681ea6c082412761a6a24eafa03ee561c89463e67",
+        "bytes": 2810
+      },
+      {
+        "path": "core/block/import/mapping_observation_test.go",
+        "sha256": "feb92c64e41324a62fd6b15fa2c6aec333cd65fa5bf75b4afff496dfc820c257",
+        "bytes": 20019
+      },
+      {
+        "path": "core/block/process/fixture.go",
+        "sha256": "2fb724cd6ad77ef0b895486c85b26ac3293dce75c50012aff51330b80adacf9a",
+        "bytes": 65
+      },
+      {
+        "path": "core/domain/fixture.go",
+        "sha256": "6e6834a812734001899fec932861c9901d60732aa1e42b9526853ebd81d93a8f",
+        "bytes": 72
+      },
+      {
+        "path": "core/domain/objectorigin/fixture.go",
+        "sha256": "7f6df244a630847d66268d4dccb578ea297da81aa0cde5ccc695a1f0c70d0f71",
+        "bytes": 46
+      },
+      {
+        "path": "go.mod",
+        "sha256": "5d712b19301f9a24ae1a57ae9d93f8e8fa5b47abea78e1af2fc536f65e28f14f",
+        "bytes": 52
+      },
+      {
+        "path": "pb/fixture.go",
+        "sha256": "735fb0e4f6f2ce4f170c92d87f5cc9c8e0cd2e3dbedc3830e011314e28aaae76",
+        "bytes": 249
+      },
+      {
+        "path": "pkg/lib/pb/model/fixture.go",
+        "sha256": "d580fe8cc6d725512f6b9f0348435f97f427b65c9c7e8f36b8fe4d565d013d4e",
+        "bytes": 91
+      }
+    ]
+  },
+  "product_files": [
+    {
+      "path": "core/block/import/common/types.go",
+      "sha256": "458829293a09663646e6a76d6d8cc4e7325359b2e2e8619bb4960e8e36509149",
+      "bytes": 8403
+    },
+    {
+      "path": "core/block/import/mapping_observation.go",
+      "sha256": "851c5ad1a2c65e3698816bf8be5ccdd85e4074d9afb3b3f3dd79d5758e6be9cf",
+      "bytes": 9367
+    },
+    {
+      "path": "core/block/import/mapping_observation_processor.go",
+      "sha256": "26120b7b2396c84e69adff0681ea6c082412761a6a24eafa03ee561c89463e67",
+      "bytes": 2810
+    },
+    {
+      "path": "core/block/import/pb/converter.go",
+      "sha256": "9542dc143969622b7264d6de7e83c86eea1ad4756dcd21268616884e787445ee",
+      "bytes": 19568
+    },
+    {
+      "path": "core/block/import/processor.go",
+      "sha256": "b7858e25041c38015b4b49e91c5a0b86ac32b1cf2dd79ff7748a90e7b853d119",
+      "bytes": 22151
+    },
+    {
+      "path": "core/block/import/types.go",
+      "sha256": "e175307ed43e205e7495541945c26e002053a216e4a3ac21413814f7b04f487b",
+      "bytes": 3333
+    }
+  ],
+  "commands": [
+    {
+      "name": "go-version",
+      "args": [
+        "C:\\Program Files\\Go\\bin\\go.exe",
+        "version"
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "seconds": 0.922,
+      "stdout_sha256": "a1ae6dc6b3b40081e3c80e6066e60c64af94a96582f26ceea875c8dd0807125b",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "controls",
+      "args": [
+        "C:\\Program Files\\Go\\bin\\go.exe",
+        "test",
+        "-json",
+        "-count=1",
+        "-timeout",
+        "25s",
+        "./core/block/import/..."
+      ],
+      "exit": 0,
+      "timed_out": false,
+      "seconds": 120.546,
+      "stdout_sha256": "84ac9cb6c858a5a777f83f90122fcf95c50f550ec72250c059c59d3bd95ff7a0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "tests": [
+    {
+      "name": "TestActualCompletionGateRequiresEveryLifecycleCondition/assignment_unfinished",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualCompletionGateRequiresEveryLifecycleCondition/context_canceled",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualCompletionGateRequiresEveryLifecycleCondition/creation_not_returned",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualCompletionGateRequiresEveryLifecycleCondition/ignored_task_error",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualCompletionGateRequiresEveryLifecycleCondition/legacy_error",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualCompletionGateRequiresEveryLifecycleCondition/missing_error_accumulator",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualCompletionGateRequiresEveryLifecycleCondition/missing_process",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualCompletionGateRequiresEveryLifecycleCondition/missing_trace",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualCompletionGateRequiresEveryLifecycleCondition/no_started_batches",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualCompletionGateRequiresEveryLifecycleCondition/target_changed",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualCompletionGateRequiresEveryLifecycleCondition/unmatched_drain",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualWorkerDrainDistinguishesSuccessFromEarlyStop/all-or-nothing_task_error",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualWorkerDrainDistinguishesSuccessFromEarlyStop/ignored_task_error",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualWorkerDrainDistinguishesSuccessFromEarlyStop/progress_cancellation",
+      "status": "PASS"
+    },
+    {
+      "name": "TestActualWorkerDrainDistinguishesSuccessFromEarlyStop/success",
+      "status": "PASS"
+    },
+    {
+      "name": "TestCollisionAndCoverageFailuresStayUnproven/duplicate_converter",
+      "status": "PASS"
+    },
+    {
+      "name": "TestCollisionAndCoverageFailuresStayUnproven/duplicate_kept",
+      "status": "PASS"
+    },
+    {
+      "name": "TestCollisionAndCoverageFailuresStayUnproven/duplicate_selected_snapshot",
+      "status": "PASS"
+    },
+    {
+      "name": "TestCollisionAndCoverageFailuresStayUnproven/duplicate_source",
+      "status": "PASS"
+    },
+    {
+      "name": "TestCollisionAndCoverageFailuresStayUnproven/extra_selected_snapshot",
+      "status": "PASS"
+    },
+    {
+      "name": "TestCollisionAndCoverageFailuresStayUnproven/generated_collision",
+      "status": "PASS"
+    },
+    {
+      "name": "TestCollisionAndCoverageFailuresStayUnproven/kept_converter_collision",
+      "status": "PASS"
+    },
+    {
+      "name": "TestCollisionAndCoverageFailuresStayUnproven/kept_source_collision",
+      "status": "PASS"
+    },
+    {
+      "name": "TestCollisionAndCoverageFailuresStayUnproven/missing_selected_snapshot",
+      "status": "PASS"
+    },
+    {
+      "name": "TestCollisionAndCoverageFailuresStayUnproven/only_filtered_and_generated",
+      "status": "PASS"
+    },
+    {
+      "name": "TestCollisionAndCoverageFailuresStayUnproven/too_many_source_records",
+      "status": "PASS"
+    },
+    {
+      "name": "TestCollisionAndCoverageFailuresStayUnproven/truncated_source_observation",
+      "status": "PASS"
+    },
+    {
+      "name": "TestDestinationReuseOfKeptIDIsExplicit",
+      "status": "PASS"
+    },
+    {
+      "name": "TestDiagnosticFieldsPreserveImplicitJSONShape",
+      "status": "PASS"
+    },
+    {
+      "name": "TestInitializationRequiresExplicitProtobufOptIn",
+      "status": "PASS"
+    },
+    {
+      "name": "TestInvalidAssignmentAndAliasFactsStayUnproven/alias_overwrites_converter",
+      "status": "PASS"
+    },
+    {
+      "name": "TestInvalidAssignmentAndAliasFactsStayUnproven/alias_overwrites_kept",
+      "status": "PASS"
+    },
+    {
+      "name": "TestInvalidAssignmentAndAliasFactsStayUnproven/duplicate_alias",
+      "status": "PASS"
+    },
+    {
+      "name": "TestInvalidAssignmentAndAliasFactsStayUnproven/duplicate_assignment",
+      "status": "PASS"
+    },
+    {
+      "name": "TestInvalidAssignmentAndAliasFactsStayUnproven/empty_alias_destination",
+      "status": "PASS"
+    },
+    {
+      "name": "TestInvalidAssignmentAndAliasFactsStayUnproven/empty_native_destination",
+      "status": "PASS"
+    },
+    {
+      "name": "TestInvalidAssignmentAndAliasFactsStayUnproven/missing_assignment",
+      "status": "PASS"
+    },
+    {
+      "name": "TestInvalidAssignmentAndAliasFactsStayUnproven/unknown_assignment",
+      "status": "PASS"
+    },
+    {
+      "name": "TestManyToOneRetainsBothSourceRows",
+      "status": "PASS"
+    },
+    {
+      "name": "TestObservationCopiesInputAndAllReturnedRows",
+      "status": "PASS"
+    },
+    {
+      "name": "TestPublicLegacyResponseAndJSONCannotConstructObservation",
+      "status": "PASS"
+    },
+    {
+      "name": "TestSourceChainKeepsAllDomainsDistinct",
+      "status": "PASS"
+    },
+    {
+      "name": "TestSourceRecorderBoundAndMergePreserveLegacySnapshots",
+      "status": "PASS"
+    },
+    {
+      "name": "TestSuccessfulCompletionAndDiagnosticReset",
+      "status": "PASS"
+    },
+    {
+      "name": "TestUnsupportedSourceRecordsStayUnproven/legacy_JSON_encoding",
+      "status": "PASS"
+    },
+    {
+      "name": "TestUnsupportedSourceRecordsStayUnproven/missing_archive",
+      "status": "PASS"
+    },
+    {
+      "name": "TestUnsupportedSourceRecordsStayUnproven/missing_converter_id",
+      "status": "PASS"
+    },
+    {
+      "name": "TestUnsupportedSourceRecordsStayUnproven/missing_member",
+      "status": "PASS"
+    },
+    {
+      "name": "TestUnsupportedSourceRecordsStayUnproven/missing_source_object",
+      "status": "PASS"
+    },
+    {
+      "name": "TestUnsupportedSourceRecordsStayUnproven/missing_source_space",
+      "status": "PASS"
+    }
+  ],
+  "tests_run": 50,
+  "expected_leaf_controls": 50,
+  "go_version": "go version go1.25.6 windows/amd64",
+  "tests_passed": 50,
+  "tests_failed": 0,
+  "tests_skipped": 0,
+  "finished_at": "2026-11-22T15:45:14.872084+00:00"
+}

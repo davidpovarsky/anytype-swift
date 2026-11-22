@@ -1,0 +1,18 @@
+{
+  "revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "reference_file_count": 50,
+  "serialization_candidate_files": [
+    {
+      "path": "core/block/import/pb/anyblock_test.go",
+      "sha256_lf": "d35dcdfd48a64b833a76588b6c3d8a9e9e83b65fb503bd13a20cc19502d5a716",
+      "matches": [
+        [
+          394,
+          "\tindexData, err := json.Marshal(idx)"
+        ]
+      ]
+    }
+  ],
+  "scope": "Immutable git grep across 50 source files mentioning common.Snapshot/common.Response, then serialization-site scan. The only direct JSON marshal is an unrelated test index. Diagnostic fields still receive json exclusion tags to preserve incidental JSON shape.",
+  "is_full_language_dataflow_analysis": false
+}

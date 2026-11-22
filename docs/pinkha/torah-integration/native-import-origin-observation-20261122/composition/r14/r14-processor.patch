@@ -1,0 +1,29 @@
+diff --git a/core/block/import/processor.go b/core/block/import/processor.go
+--- a/core/block/import/processor.go
++++ b/core/block/import/processor.go
+@@ -18,6 +18,7 @@
+ 	"github.com/anyproto/anytype-heart/core/block/import/web"
+ 	"github.com/anyproto/anytype-heart/core/block/process"
+ 	"github.com/anyproto/anytype-heart/core/domain"
++ torahtransport "github.com/anyproto/anytype-heart/core/pinkha/torahtransport"
+ 	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
+ 	"github.com/anyproto/anytype-heart/core/event"
+ 	"github.com/anyproto/anytype-heart/metrics"
+@@ -252,6 +253,17 @@
+ 		return nil, ""
+ 	}
+ 
++ objects:=make([]torahtransport.Object,0,len(p.converterResponse.Snapshots))
++ for _,snapshot:=range p.converterResponse.Snapshots {
++  if snapshot.Snapshot!=nil && snapshot.Snapshot.Data!=nil {
++   data:=snapshot.Snapshot.Data
++   objects=append(objects,torahtransport.Object{ID:snapshot.Id,OriginalID:data.Details.GetString(bundle.RelationKeyOldAnytypeID),PropertyKey:data.Key,Details:data.Details})
++  }
++ }
++ if err:=torahtransport.RemapObjects(p.request.SpaceId,objects,p.oldIDToNew);err!=nil {
++  p.errors.Add(err)
++  return nil,""
++ }
+ 	dataObject := creator.NewDataObject(
+ 		ctx,
+ 		p.oldIDToNew,

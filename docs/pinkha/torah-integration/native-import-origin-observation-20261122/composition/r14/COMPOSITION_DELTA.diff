@@ -1,0 +1,28 @@
+--- d984-hook/processor.go
++++ r14-hook/processor.go
+@@ -20,6 +20,7 @@
+ 	"github.com/anyproto/anytype-heart/core/domain"
+ 	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
+ 	"github.com/anyproto/anytype-heart/core/event"
++	torahtransport "github.com/anyproto/anytype-heart/core/pinkha/torahtransport"
+ 	"github.com/anyproto/anytype-heart/metrics"
+ 	"github.com/anyproto/anytype-heart/metrics/anymetry"
+ 	"github.com/anyproto/anytype-heart/pb"
+@@ -263,6 +264,17 @@
+ 	if err := p.assignIdsToAllObjects(ctx); err != nil {
+ 		return nil, ""
+ 	}
++	objects := make([]torahtransport.Object, 0, len(p.converterResponse.Snapshots))
++	for _, snapshot := range p.converterResponse.Snapshots {
++		if snapshot.Snapshot != nil && snapshot.Snapshot.Data != nil {
++			data := snapshot.Snapshot.Data
++			objects = append(objects, torahtransport.Object{ID: snapshot.Id, OriginalID: data.Details.GetString(bundle.RelationKeyOldAnytypeID), PropertyKey: data.Key, Details: data.Details})
++		}
++	}
++	if err := torahtransport.RemapObjects(p.request.SpaceId, objects, p.oldIDToNew); err != nil {
++		p.errors.Add(err)
++		return nil, ""
++	}
+ 	if p.nativeMapping != nil {
+ 		p.nativeMappingAssignmentsFinished = true
+ 	}

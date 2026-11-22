@@ -1,0 +1,702 @@
+--- a/core/block/import/common/types.go
++++ b/core/block/import/common/types.go
+@@ -43,6 +43,31 @@
+ 	Id       string
+ 	FileName string
+ 	Snapshot *SnapshotModel
++	// Parsed source facts only. Other converters leave these empty. They are
++	// captured by the protobuf reader before normalization, never indexed proof.
++	ProtobufSourceObjectID string `json:"-"`
++	ProtobufSourceSpaceID  string `json:"-"`
++}
++
++// ProtobufSourceObservation is ordinary parsed input data, not import authority.
++// Selected records describe the original shouldImportSnapshot decision; filtered
++// records and generated collections remain separate from assigned objects.
++type ProtobufSourceObservation struct {
++	ArchivePath, MemberPath, SourceSpaceID, SourceObjectID, ConverterID, Encoding string
++	Selected                                                                      bool
++}
++
++type protobufSourceObservationKey struct{}
++
++// This requests diagnostic parsing facts; it does not create any receipt or
++// permission. The existing wire ObjectImport route never sets this context.
++func WithProtobufSourceObservation(ctx context.Context) context.Context {
++	return context.WithValue(ctx, protobufSourceObservationKey{}, true)
++}
++
++func ProtobufSourceObservationRequested(ctx context.Context) bool {
++	requested, _ := ctx.Value(protobufSourceObservationKey{}).(bool)
++	return requested
+ }
+ 
+ type SnapshotModel struct {
+@@ -147,12 +172,31 @@
+ 	// AnyBlock bundle declares its source space DELETED (SPEC §2c). The
+ 	// creation stage maps each to itself and writes a tombstone for it, so a
+ 	// link to a deleted object restores as a link to a deleted object.
+-	KeptIDs []string
++	KeptIDs                             []string
++	ProtobufSources                     []ProtobufSourceObservation `json:"-"`
++	ProtobufGeneratedIDs                []string                    `json:"-"`
++	ProtobufSourceObservationIncomplete bool                        `json:"-"`
+ }
+ 
+ type SnapshotContext struct {
+-	snapshots         []*Snapshot
+-	widget, workspace *Snapshot
++	snapshots                 []*Snapshot
++	widget, workspace         *Snapshot
++	protobufSources           []ProtobufSourceObservation
++	protobufSourcesIncomplete bool
++}
++
++// Recording is bounded and never changes converter behavior on incomplete
++// evidence. The original importer still decides all creation/error semantics.
++func (sl *SnapshotContext) RecordProtobufSource(source ProtobufSourceObservation) {
++	if len(sl.protobufSources) >= 512 {
++		sl.protobufSourcesIncomplete = true
++		return
++	}
++	sl.protobufSources = append(sl.protobufSources, source)
++}
++
++func (sl *SnapshotContext) ProtobufSources() ([]ProtobufSourceObservation, bool) {
++	return append([]ProtobufSourceObservation(nil), sl.protobufSources...), sl.protobufSourcesIncomplete
+ }
+ 
+ func NewSnapshotContext() *SnapshotContext {
+@@ -206,6 +250,10 @@
+ 
+ func (sl *SnapshotContext) Merge(sl2 *SnapshotContext) {
+ 	sl.snapshots = append(sl.snapshots, sl2.snapshots...)
++	for _, source := range sl2.protobufSources {
++		sl.RecordProtobufSource(source)
++	}
++	sl.protobufSourcesIncomplete = sl.protobufSourcesIncomplete || sl2.protobufSourcesIncomplete
+ 	if sl2.widget != nil {
+ 		sl.widget = sl2.widget
+ 	}
+--- /dev/null
++++ b/core/block/import/mapping_observation.go
+@@ -0,0 +1,248 @@
++package importer
++
++// These copied facts describe ID choices made by one original import execution.
++// They do not prove account lifetime, archive binding, applied body, complete file
++// effects, atomicity, durable mapping, or acknowledgment authority.
++
++const nativeMappingFactLimit = 512
++
++type NativeProtobufSourceAssignment struct {
++	ArchivePath    string
++	MemberPath     string
++	SourceSpaceID  string
++	SourceObjectID string
++	ConverterID    string
++	NativeID       string
++}
++
++type NativeProtobufFilteredSource struct {
++	ArchivePath    string
++	MemberPath     string
++	SourceSpaceID  string
++	SourceObjectID string
++	ConverterID    string
++}
++
++type NativeProtobufGeneratedAssignment struct {
++	ConverterID string
++	NativeID    string
++}
++
++type NativeProtobufInternalKeyAlias struct {
++	ConverterID string
++	SourceKey   string
++	NativeKey   string
++}
++
++// NativeProtobufImportMappingObservation has no exported constructor or writable
++// fields. Its zero value is incomplete. Its copied rows remain evidence data,
++// not admission tokens. Only the original processor can install a complete value
++// in ImportResponse after every started batch has successfully drained.
++type NativeProtobufImportMappingObservation struct {
++	complete                 bool
++	traceID                  string
++	processID                string
++	targetSpaceID            string
++	sources                  []NativeProtobufSourceAssignment
++	filtered                 []NativeProtobufFilteredSource
++	generated                []NativeProtobufGeneratedAssignment
++	aliases                  []NativeProtobufInternalKeyAlias
++	keptReferenceIDs         []string
++	nonInjectiveDestinations bool
++}
++
++func (o NativeProtobufImportMappingObservation) CompleteForSelectedSnapshots() bool {
++	return o.complete
++}
++func (o NativeProtobufImportMappingObservation) TraceID() string       { return o.traceID }
++func (o NativeProtobufImportMappingObservation) ProcessID() string     { return o.processID }
++func (o NativeProtobufImportMappingObservation) TargetSpaceID() string { return o.targetSpaceID }
++func (o NativeProtobufImportMappingObservation) SourceAssignments() []NativeProtobufSourceAssignment {
++	return append([]NativeProtobufSourceAssignment(nil), o.sources...)
++}
++func (o NativeProtobufImportMappingObservation) FilteredSources() []NativeProtobufFilteredSource {
++	return append([]NativeProtobufFilteredSource(nil), o.filtered...)
++}
++func (o NativeProtobufImportMappingObservation) GeneratedAssignments() []NativeProtobufGeneratedAssignment {
++	return append([]NativeProtobufGeneratedAssignment(nil), o.generated...)
++}
++func (o NativeProtobufImportMappingObservation) InternalKeyAliases() []NativeProtobufInternalKeyAlias {
++	return append([]NativeProtobufInternalKeyAlias(nil), o.aliases...)
++}
++func (o NativeProtobufImportMappingObservation) KeptReferenceIDs() []string {
++	return append([]string(nil), o.keptReferenceIDs...)
++}
++
++// NonInjectiveDestinations includes kept reference IDs, which the original
++// processor seeds as identity mappings, as well as selected/generated rows.
++func (o NativeProtobufImportMappingObservation) NonInjectiveDestinations() bool {
++	return o.nonInjectiveDestinations
++}
++
++func (o NativeProtobufImportMappingObservation) copy() NativeProtobufImportMappingObservation {
++	o.sources = o.SourceAssignments()
++	o.filtered = o.FilteredSources()
++	o.generated = o.GeneratedAssignments()
++	o.aliases = o.InternalKeyAliases()
++	o.keptReferenceIDs = o.KeptReferenceIDs()
++	return o
++}
++
++type nativeProtobufSourceRecord struct {
++	archivePath, memberPath, sourceSpaceID, sourceObjectID, converterID, encoding string
++	selected                                                                      bool
++}
++
++type nativeMappingBuilder struct {
++	sources         []nativeProtobufSourceRecord
++	selected        map[string]bool
++	generatedIDs    []string
++	keptIDs         []string
++	assignments     map[string]string
++	assignmentOrder []string
++	aliases         []NativeProtobufInternalKeyAlias
++	aliasKeys       map[string]bool
++	problems        []string
++}
++
++func newNativeMappingBuilder(sources []nativeProtobufSourceRecord, generatedIDs, keptIDs, snapshotIDs []string, incomplete bool) *nativeMappingBuilder {
++	b := &nativeMappingBuilder{selected: map[string]bool{}, assignments: map[string]string{}, aliasKeys: map[string]bool{}}
++	if incomplete {
++		b.problem("source-observation-incomplete")
++	}
++	if len(sources) == 0 || len(sources) > nativeMappingFactLimit || len(generatedIDs) > nativeMappingFactLimit || len(keptIDs) > nativeMappingFactLimit || len(snapshotIDs) > nativeMappingFactLimit {
++		b.problem("source-observation-count")
++		return b
++	}
++	sourceIDs, converterIDs := map[string]bool{}, map[string]bool{}
++	selectedOriginals := 0
++	for _, row := range sources {
++		if row.sourceObjectID == "" || row.converterID == "" || row.sourceSpaceID == "" || row.archivePath == "" || row.memberPath == "" || row.encoding != ".pb" {
++			b.problem("unsupported-source-record")
++		}
++		if sourceIDs[row.sourceObjectID] || converterIDs[row.converterID] {
++			b.problem("duplicate-source-or-converter-id")
++		}
++		sourceIDs[row.sourceObjectID], converterIDs[row.converterID] = true, true
++		b.sources = append(b.sources, row)
++		if row.selected {
++			b.selected[row.converterID] = true
++			selectedOriginals++
++		}
++	}
++	if selectedOriginals == 0 {
++		b.problem("no-selected-original-source")
++	}
++	for _, id := range generatedIDs {
++		if id == "" || converterIDs[id] {
++			b.problem("generated-id-collision")
++		}
++		converterIDs[id] = true
++		b.selected[id] = true
++		b.generatedIDs = append(b.generatedIDs, id)
++	}
++	seenSnapshots := map[string]bool{}
++	for _, id := range snapshotIDs {
++		if id == "" || seenSnapshots[id] || !b.selected[id] {
++			b.problem("selected-snapshot-coverage")
++		}
++		seenSnapshots[id] = true
++	}
++	if len(seenSnapshots) != len(b.selected) || len(b.selected) == 0 {
++		b.problem("selected-snapshot-coverage")
++	}
++	seenKept := map[string]bool{}
++	for _, id := range keptIDs {
++		if id == "" || seenKept[id] || converterIDs[id] || sourceIDs[id] {
++			b.problem("kept-reference-collision")
++		}
++		seenKept[id] = true
++		b.keptIDs = append(b.keptIDs, id)
++	}
++	return b
++}
++
++func (b *nativeMappingBuilder) problem(code string) {
++	if len(b.problems) < 16 {
++		b.problems = append(b.problems, code)
++	}
++}
++
++// Called immediately beside the actual oldIDToNew[snapshot.Id] = id write.
++func (b *nativeMappingBuilder) recordAssignment(converterID, nativeID string) {
++	if len(b.assignmentOrder) >= nativeMappingFactLimit {
++		b.problem("assignment-count")
++		return
++	}
++	if !b.selected[converterID] || nativeID == "" || b.aliasKeys[converterID] {
++		b.problem("invalid-assignment")
++	}
++	if _, exists := b.assignments[converterID]; exists {
++		b.problem("duplicate-assignment")
++		return
++	}
++	b.assignments[converterID] = nativeID
++	b.assignmentOrder = append(b.assignmentOrder, converterID)
++}
++
++// The original local newUniqueKey is passed here; evidence never re-reads the
++// shared provider's mutable GetInternalKey value.
++func (b *nativeMappingBuilder) recordAlias(converterID, sourceKey, nativeKey string) {
++	if len(b.aliases) >= nativeMappingFactLimit {
++		b.problem("alias-count")
++		return
++	}
++	if sourceKey == "" || nativeKey == "" || !b.selected[converterID] || b.selected[sourceKey] || b.aliasKeys[sourceKey] {
++		b.problem("alias-domain-collision")
++	}
++	for _, id := range b.keptIDs {
++		if id == sourceKey {
++			b.problem("alias-kept-reference-collision")
++		}
++	}
++	b.aliasKeys[sourceKey] = true
++	b.aliases = append(b.aliases, NativeProtobufInternalKeyAlias{ConverterID: converterID, SourceKey: sourceKey, NativeKey: nativeKey})
++}
++
++func (b *nativeMappingBuilder) finish(traceID, processID, targetSpaceID string, eligible bool) (NativeProtobufImportMappingObservation, []string) {
++	if !eligible || traceID == "" || processID == "" || targetSpaceID == "" {
++		b.problem("execution-not-eligible")
++	}
++	if len(b.assignments) != len(b.selected) {
++		b.problem("assignment-coverage")
++	}
++	for id := range b.selected {
++		if b.assignments[id] == "" {
++			b.problem("missing-assignment")
++		}
++	}
++	if len(b.problems) != 0 {
++		return NativeProtobufImportMappingObservation{}, append([]string(nil), b.problems...)
++	}
++	o := NativeProtobufImportMappingObservation{complete: true, traceID: traceID, processID: processID, targetSpaceID: targetSpaceID,
++		aliases: append([]NativeProtobufInternalKeyAlias(nil), b.aliases...), keptReferenceIDs: append([]string(nil), b.keptIDs...)}
++	for _, row := range b.sources {
++		if row.selected {
++			o.sources = append(o.sources, NativeProtobufSourceAssignment{ArchivePath: row.archivePath, MemberPath: row.memberPath,
++				SourceSpaceID: row.sourceSpaceID, SourceObjectID: row.sourceObjectID, ConverterID: row.converterID, NativeID: b.assignments[row.converterID]})
++		} else {
++			o.filtered = append(o.filtered, NativeProtobufFilteredSource{ArchivePath: row.archivePath, MemberPath: row.memberPath,
++				SourceSpaceID: row.sourceSpaceID, SourceObjectID: row.sourceObjectID, ConverterID: row.converterID})
++		}
++	}
++	for _, id := range b.generatedIDs {
++		o.generated = append(o.generated, NativeProtobufGeneratedAssignment{ConverterID: id, NativeID: b.assignments[id]})
++	}
++	destinations := map[string]bool{}
++	for _, id := range b.keptIDs {
++		destinations[id] = true
++	}
++	for _, id := range b.assignmentOrder {
++		destination := b.assignments[id]
++		if destinations[destination] {
++			o.nonInjectiveDestinations = true
++		}
++		destinations[destination] = true
++	}
++	return o, nil
++}
+--- /dev/null
++++ b/core/block/import/mapping_observation_processor.go
+@@ -0,0 +1,65 @@
++package importer
++
++import (
++	"context"
++
++	"github.com/anyproto/anytype-heart/core/block/import/common"
++	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
++)
++
++// Clear only diagnostic state, including on an early failed reuse of a processor.
++// Legacy response/error and native side-effect semantics are unchanged.
++func (p *importProcessor) resetNativeMappingObservation() {
++	p.nativeMapping = nil
++	p.nativeMappingTraceID, p.nativeMappingSpaceID = "", ""
++	p.nativeMappingAssignmentsFinished, p.nativeMappingCreationReturned = false, false
++	p.nativeMappingBatchesStarted, p.nativeMappingBatchesDrained = 0, 0
++	p.response.nativeMapping, p.response.nativeMappingProblems = nil, nil
++}
++
++func (p *importProcessor) initializeNativeMappingObservation(response *common.Response) {
++	if !p.request.CaptureMappingObservation || p.request.Type != model.Import_Pb {
++		return
++	}
++	sources := make([]nativeProtobufSourceRecord, 0, min(len(response.ProtobufSources), nativeMappingFactLimit+1))
++	for i, source := range response.ProtobufSources {
++		if i > nativeMappingFactLimit {
++			break
++		}
++		sources = append(sources, nativeProtobufSourceRecord{archivePath: source.ArchivePath, memberPath: source.MemberPath,
++			sourceSpaceID: source.SourceSpaceID, sourceObjectID: source.SourceObjectID, converterID: source.ConverterID,
++			encoding: source.Encoding, selected: source.Selected})
++	}
++	ids := make([]string, 0, min(len(response.Snapshots), nativeMappingFactLimit+1))
++	for i, snapshot := range response.Snapshots {
++		if i > nativeMappingFactLimit {
++			break
++		}
++		if snapshot == nil {
++			ids = append(ids, "")
++		} else {
++			ids = append(ids, snapshot.Id)
++		}
++	}
++	p.nativeMapping = newNativeMappingBuilder(sources, response.ProtobufGeneratedIDs, response.KeptIDs, ids,
++		response.ProtobufSourceObservationIncomplete)
++}
++
++func (p *importProcessor) retainNativeMappingObservation(ctx context.Context) {
++	if p.nativeMapping == nil {
++		return
++	}
++	// Assignment success, successful return through all creation batches and
++	// exact successful worker drains are independent prerequisites. A nil legacy
++	// error/count alone is insufficient. Finalize's other effects remain outside
++	// this observation's selected-snapshot assignment scope.
++	eligible := p.nativeMappingAssignmentsFinished && p.nativeMappingCreationReturned &&
++		p.nativeMappingBatchesStarted > 0 && p.nativeMappingBatchesDrained == p.nativeMappingBatchesStarted &&
++		p.response.Err == nil && p.errors != nil && p.errors.IsEmpty() && ctx.Err() == nil &&
++		p.request.SpaceId == p.nativeMappingSpaceID
++	observation, problems := p.nativeMapping.finish(p.nativeMappingTraceID, p.response.ProcessId, p.nativeMappingSpaceID, eligible)
++	p.response.nativeMappingProblems = append([]string(nil), problems...)
++	if observation.complete {
++		p.response.nativeMapping = &observation
++	}
++}
+--- a/core/block/import/pb/converter.go
++++ b/core/block/import/pb/converter.go
+@@ -99,7 +99,14 @@
+ 		rootCollectionID = rootCollections[0].Id
+ 	}
+ 	progress.SetTotalPreservingRatio(int64(snapshots.Len()))
+-	return &common.Response{Snapshots: snapshots.List(), RootObjectID: rootCollectionID, RootObjectWidgetType: model.BlockContentWidget_CompactList, KeptIDs: slices.Clone(p.keptIds)}, p.errors.ErrorOrNil()
++	response := &common.Response{Snapshots: snapshots.List(), RootObjectID: rootCollectionID, RootObjectWidgetType: model.BlockContentWidget_CompactList, KeptIDs: slices.Clone(p.keptIds)}
++	if common.ProtobufSourceObservationRequested(ctx) {
++		response.ProtobufSources, response.ProtobufSourceObservationIncomplete = snapshots.ProtobufSources()
++		for _, generated := range rootCollections {
++			response.ProtobufGeneratedIDs = append(response.ProtobufGeneratedIDs, generated.Id)
++		}
++	}
++	return response, p.errors.ErrorOrNil()
+ }
+ 
+ func (p *Pb) Name() string {
+@@ -158,7 +165,7 @@
+ 		if bundleSource, ok := converted.(*snapshotSource); ok {
+ 			p.keptIds = append(p.keptIds, bundleSource.unresolved.Deleted...)
+ 		}
+-		return p.getSnapshotsFromProvidedFiles(converted, path, "")
++		return p.getSnapshotsFromProvidedFiles(converted, path, "", common.ProtobufSourceObservationRequested(ctx))
+ 	}
+ 	importSource := source.GetSource(path)
+ 	defer importSource.Close()
+@@ -190,7 +197,7 @@
+ 		p.importWidgets = p.needToImportWidgets(profile.Address, pr.AccountId)
+ 		profileID = profile.ProfileId
+ 	}
+-	return p.getSnapshotsFromProvidedFiles(importSource, path, profileID)
++	return p.getSnapshotsFromProvidedFiles(importSource, path, profileID, common.ProtobufSourceObservationRequested(ctx))
+ }
+ 
+ func (p *Pb) extractFiles(importPath string, importSource source.Source) error {
+@@ -244,14 +251,15 @@
+ 	return address == accountID
+ }
+ 
+-func (p *Pb) getSnapshotsFromProvidedFiles(pbFiles source.Source, path, profileID string) (snapshots *common.SnapshotContext) {
++func (p *Pb) getSnapshotsFromProvidedFiles(pbFiles source.Source, path, profileID string, observeSource ...bool) (snapshots *common.SnapshotContext) {
+ 	snapshots = common.NewSnapshotContext()
++	observe := len(observeSource) == 1 && observeSource[0]
+ 	if iterateErr := pbFiles.Iterate(func(fileName string, fileReader io.ReadCloser) (isContinue bool) {
+ 		// skip files from "files" directory
+ 		if filepath.Dir(fileName) == fileDir {
+ 			return true
+ 		}
+-		snapshot, err := p.makeSnapshot(fileName, profileID, path, fileReader, pbFiles)
++		snapshot, err := p.makeSnapshot(fileName, profileID, path, fileReader, pbFiles, observe)
+ 		if err != nil {
+ 			p.errors.Add(err)
+ 			if p.errors.ShouldAbortImport(p.pathCount, model.Import_Pb) {
+@@ -259,7 +267,15 @@
+ 			}
+ 		}
+ 		if snapshot != nil {
+-			if p.shouldImportSnapshot(snapshot) {
++			selected := p.shouldImportSnapshot(snapshot)
++			if observe {
++				snapshots.RecordProtobufSource(common.ProtobufSourceObservation{
++					ArchivePath: path, MemberPath: fileName, SourceSpaceID: snapshot.ProtobufSourceSpaceID,
++					SourceObjectID: snapshot.ProtobufSourceObjectID, ConverterID: snapshot.Id,
++					Encoding: filepath.Ext(fileName), Selected: selected,
++				})
++			}
++			if selected {
+ 				snapshots.Add(snapshot)
+ 			}
+ 			switch snapshot.Snapshot.SbType {
+@@ -280,6 +296,7 @@
+ 	name, profileID, path string,
+ 	file io.ReadCloser,
+ 	pbFiles source.Source,
++	observeSource ...bool,
+ ) (*common.Snapshot, error) {
+ 	if name == constant.ProfileFile || name == configFile {
+ 		return nil, nil
+@@ -292,6 +309,11 @@
+ 		}
+ 		return nil, fmt.Errorf("%w: %s", common.ErrPbNotAnyBlockFormat, errGS.Error())
+ 	}
++	var sourceObjectID, sourceSpaceID string
++	if len(observeSource) == 1 && observeSource[0] && snapshot.Data.Details != nil {
++		sourceObjectID = snapshot.Data.Details.GetString(bundle.RelationKeyId)
++		sourceSpaceID = snapshot.Data.Details.GetString(bundle.RelationKeySpaceId)
++	}
+ 	id := uuid.New().String()
+ 	id, err := p.normalizeSnapshot(snapshot, id, profileID, path, pbFiles)
+ 	if err != nil {
+@@ -299,9 +321,11 @@
+ 	}
+ 	p.injectImportDetails(snapshot)
+ 	return &common.Snapshot{
+-		Id:       id,
+-		FileName: name,
+-		Snapshot: snapshot,
++		Id:                     id,
++		FileName:               name,
++		Snapshot:               snapshot,
++		ProtobufSourceObjectID: sourceObjectID,
++		ProtobufSourceSpaceID:  sourceSpaceID,
+ 	}, nil
+ }
+ 
+--- a/core/block/import/processor.go
++++ b/core/block/import/processor.go
+@@ -18,9 +18,9 @@
+ 	"github.com/anyproto/anytype-heart/core/block/import/web"
+ 	"github.com/anyproto/anytype-heart/core/block/process"
+ 	"github.com/anyproto/anytype-heart/core/domain"
+- torahtransport "github.com/anyproto/anytype-heart/core/pinkha/torahtransport"
+ 	"github.com/anyproto/anytype-heart/core/domain/objectorigin"
+ 	"github.com/anyproto/anytype-heart/core/event"
++	torahtransport "github.com/anyproto/anytype-heart/core/pinkha/torahtransport"
+ 	"github.com/anyproto/anytype-heart/metrics"
+ 	"github.com/anyproto/anytype-heart/metrics/anymetry"
+ 	"github.com/anyproto/anytype-heart/pb"
+@@ -51,22 +51,29 @@
+ 	converterResponse *common.Response
+ 	errors            *common.ConvertError
+ 
+-	oldIDToNew           map[string]string
+-	createPayloads       map[string]treestorage.TreeStorageCreatePayload
+-	relationKeysToFormat map[domain.RelationKey]int32
++	oldIDToNew                                                      map[string]string
++	createPayloads                                                  map[string]treestorage.TreeStorageCreatePayload
++	relationKeysToFormat                                            map[domain.RelationKey]int32
++	nativeMapping                                                   *nativeMappingBuilder
++	nativeMappingTraceID, nativeMappingSpaceID                      string
++	nativeMappingAssignmentsFinished, nativeMappingCreationReturned bool
++	nativeMappingBatchesStarted, nativeMappingBatchesDrained        int
+ }
+ 
+ func (p *importProcessor) Execute(ctx context.Context) *ImportResponse {
++	p.resetNativeMappingObservation()
+ 	if p.request.SpaceId == "" {
+ 		p.response.Err = fmt.Errorf("spaceId is empty")
+ 		return p.response
+ 	}
+ 
+ 	importId := uuid.New().String()
++	p.nativeMappingTraceID, p.nativeMappingSpaceID = importId, p.request.SpaceId
+ 	recordEvent(&metrics.ImportStartedEvent{ID: importId, ImportType: p.request.Type.String()})
+ 
+ 	defer func() {
+ 		p.finalize(ctx, importId)
++		p.retainNativeMappingObservation(ctx)
+ 	}()
+ 
+ 	if p.request.Progress == nil {
+@@ -152,7 +159,11 @@
+ 	}
+ 
+ 	allErrors := common.NewError(p.request.Mode)
+-	response, convErr := converter.GetSnapshots(ctx, p.request.RpcObjectImportRequest, p.request.Progress)
++	conversionContext := ctx
++	if p.request.CaptureMappingObservation && p.request.Type == model.Import_Pb {
++		conversionContext = common.WithProtobufSourceObservation(ctx)
++	}
++	response, convErr := converter.GetSnapshots(conversionContext, p.request.RpcObjectImportRequest, p.request.Progress)
+ 	if !convErr.IsEmpty() {
+ 		resultErr := convErr.GetResultError(p.request.Type)
+ 		if shouldReturnError(resultErr, response, p.request.RpcObjectImportRequest) {
+@@ -245,6 +256,7 @@
+ 	}
+ 	p.createPayloads = make(map[string]treestorage.TreeStorageCreatePayload, len(converterResponse.Snapshots))
+ 	p.relationKeysToFormat = make(map[domain.RelationKey]int32, len(converterResponse.Snapshots))
++	p.initializeNativeMappingObservation(converterResponse)
+ 	return nil
+ }
+ 
+@@ -252,18 +264,21 @@
+ 	if err := p.assignIdsToAllObjects(ctx); err != nil {
+ 		return nil, ""
+ 	}
+-
+- objects:=make([]torahtransport.Object,0,len(p.converterResponse.Snapshots))
+- for _,snapshot:=range p.converterResponse.Snapshots {
+-  if snapshot.Snapshot!=nil && snapshot.Snapshot.Data!=nil {
+-   data:=snapshot.Snapshot.Data
+-   objects=append(objects,torahtransport.Object{ID:snapshot.Id,OriginalID:data.Details.GetString(bundle.RelationKeyOldAnytypeID),PropertyKey:data.Key,Details:data.Details})
+-  }
+- }
+- if err:=torahtransport.RemapObjects(p.request.SpaceId,objects,p.oldIDToNew);err!=nil {
+-  p.errors.Add(err)
+-  return nil,""
+- }
++	objects := make([]torahtransport.Object, 0, len(p.converterResponse.Snapshots))
++	for _, snapshot := range p.converterResponse.Snapshots {
++		if snapshot.Snapshot != nil && snapshot.Snapshot.Data != nil {
++			data := snapshot.Snapshot.Data
++			objects = append(objects, torahtransport.Object{ID: snapshot.Id, OriginalID: data.Details.GetString(bundle.RelationKeyOldAnytypeID), PropertyKey: data.Key, Details: data.Details})
++		}
++	}
++	if err := torahtransport.RemapObjects(p.request.SpaceId, objects, p.oldIDToNew); err != nil {
++		p.errors.Add(err)
++		return nil, ""
++	}
++	if p.nativeMapping != nil {
++		p.nativeMappingAssignmentsFinished = true
++	}
++
+ 	dataObject := creator.NewDataObject(
+ 		ctx,
+ 		p.oldIDToNew,
+@@ -286,6 +301,9 @@
+ 		if len(batch) == 0 {
+ 			continue
+ 		}
++		if p.nativeMapping != nil {
++			p.nativeMappingBatchesStarted++
++		}
+ 		batchDetails := p.createObjectsBatch(dataObject, batch)
+ 		if batchDetails == nil {
+ 			// batch was cancelled, or failed under ALL_OR_NOTHING - either way the
+@@ -298,6 +316,9 @@
+ 	}
+ 
+ 	rootCollectionID := p.oldIDToNew[p.converterResponse.RootObjectID]
++	if p.nativeMapping != nil {
++		p.nativeMappingCreationReturned = true
++	}
+ 
+ 	return details, rootCollectionID
+ }
+@@ -396,6 +417,9 @@
+ 		return err
+ 	}
+ 	p.oldIDToNew[snapshot.Id] = id
++	if p.nativeMapping != nil {
++		p.nativeMapping.recordAssignment(snapshot.Id, id)
++	}
+ 	var isBundled bool
+ 	switch snapshot.Snapshot.SbType {
+ 	case smartblock.SmartBlockTypeObjectType:
+@@ -428,6 +452,9 @@
+ 
+ 	if oldUniqueKey != "" {
+ 		p.oldIDToNew[oldUniqueKey] = newUniqueKey
++		if p.nativeMapping != nil {
++			p.nativeMapping.recordAlias(snapshot.Id, oldUniqueKey, newUniqueKey)
++		}
+ 	}
+ }
+ 
+@@ -490,6 +517,11 @@
+ 		details[result.NewID] = result.Details
+ 	}
+ 
++	// Reaching this point follows result-channel closure after the original
++	// worker wait group drains. Stop/error early returns never mark a drain.
++	if p.nativeMapping != nil {
++		p.nativeMappingBatchesDrained++
++	}
+ 	return details
+ }
+ 
+--- a/core/block/import/types.go
++++ b/core/block/import/types.go
+@@ -30,14 +30,36 @@
+ 	Progress         process.Progress
+ 	SendNotification bool
+ 	IsSync           bool
++	// Internal opt-in diagnostic only. No wire RPC or production caller enables
++	// it here; ordinary imports retain their existing outputs and side effects.
++	CaptureMappingObservation bool `json:"-"`
+ }
+ 
+ type ImportResponse struct {
+-	RootCollectionId string
+-	RootWidgetLayout model.BlockContentWidgetLayout
+-	ProcessId        string
+-	ObjectsCount     int64
+-	Err              error
++	RootCollectionId      string
++	RootWidgetLayout      model.BlockContentWidgetLayout
++	ProcessId             string
++	ObjectsCount          int64
++	Err                   error
++	nativeMapping         *NativeProtobufImportMappingObservation
++	nativeMappingProblems []string
++}
++
++// NativeMappingObservation describes actual selected-snapshot ID choices only.
++// It is unavailable for incomplete/failed/undrained observations, even if callers
++// fill the public legacy response fields themselves. It grants no body/ACK right.
++func (r *ImportResponse) NativeMappingObservation() (NativeProtobufImportMappingObservation, bool) {
++	if r == nil || r.nativeMapping == nil || !r.nativeMapping.complete {
++		return NativeProtobufImportMappingObservation{}, false
++	}
++	return r.nativeMapping.copy(), true
++}
++
++func (r *ImportResponse) NativeMappingProblems() []string {
++	if r == nil {
++		return nil
++	}
++	return append([]string(nil), r.nativeMappingProblems...)
+ }
+ 
+ type Dependencies struct {

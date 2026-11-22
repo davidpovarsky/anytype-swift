@@ -1,0 +1,39 @@
+{
+  "kind": "actual git apply --check against exact immutable preimages",
+  "original_revision": "d98420b1113536afd08cde6de9a5816f6d27ffff",
+  "command": [
+    "git",
+    "apply",
+    "--check",
+    "../candidate/native-import-origin.patch"
+  ],
+  "working_directory_kind": "isolated immutable original source copies",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "patch_sha256": "5bd69974bc8cc700a1c7acbedf894491426309aa7bff16a948d2db6e77d277f3",
+  "verified_original_blobs": [
+    {
+      "path": "core/block/import/common/types.go",
+      "sha": "b503ae80b27d34d39c643907304853044a156638",
+      "size": 6104
+    },
+    {
+      "path": "core/block/import/pb/converter.go",
+      "sha": "304f965b442dc373ec49870c5b8d23b741e76c94",
+      "size": 18287
+    },
+    {
+      "path": "core/block/import/processor.go",
+      "sha": "d69696c42d09870ded4bc58cf30254c98d05be83",
+      "size": 20705
+    },
+    {
+      "path": "core/block/import/types.go",
+      "sha": "adb740cbbe31839e298454b211c1dd917704b48f",
+      "size": 2345
+    }
+  ],
+  "new_files": 2,
+  "native_executions": 0
+}
