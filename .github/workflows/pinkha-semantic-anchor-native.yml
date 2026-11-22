@@ -1,0 +1,108 @@
+name: Pinkha additive semantic anchor native controls
+
+on:
+  workflow_call:
+    inputs:
+      source_sha:
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  semantic-anchor-native:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      EXPECTED_APP_SHA: ${{ inputs.source_sha || github.sha }}
+      T2_GO_IMAGE: golang:1.26.5-alpine@sha256:111d79159b2326f7e80c4a4706e1ba166acb0e2611df853955f3621828cd49e8
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - name: Checkout exact additive CAS controller
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_sha || github.sha }}
+          path: control
+          persist-credentials: false
+      - name: Checkout clean pinned Heart base
+        uses: actions/checkout@v4
+        with:
+          repository: anyproto/anytype-heart
+          ref: d98420b1113536afd08cde6de9a5816f6d27ffff
+          path: heart
+          persist-credentials: false
+      - name: Verify original successful native run and retained controller checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p evidence/toolchain
+          gh api repos/davidpovarsky/anytype-swift/actions/runs/45026227924 > evidence/original-native-run.json
+          python3 -B control/Tools/PinkhaSemanticAnchor/retain_controller.py \
+            --output evidence/retained-controller-controls.json
+      - name: Restore compatible compiled musl dependencies
+        uses: actions/cache@v4
+        with:
+          path: .t2-cache
+          key: semantic-anchor-native-alpine-111d7915-go1.26.5-${{ hashFiles('heart/go.sum', 'heart/tantivity_sha256.txt') }}
+          restore-keys: |
+            t2-coherent-peers-alpine-111d7915-go1.26.5-
+            t2-native-clients-alpine-111d7915-go1.26.5-
+            t2-account-rpc-alpine-111d7915-go1.26.5-
+            t2-account-alpine-111d7915-go1.26.5-
+      - name: Compile all candidate packages then execute only nine new controls
+        run: |
+          mkdir -p .t2-cache native-work
+          docker pull --platform linux/amd64 "$T2_GO_IMAGE"
+          docker image inspect "$T2_GO_IMAGE" > evidence/toolchain/image.json
+          docker run --rm --platform linux/amd64 --cpus=2 --memory=6g --pids-limit=512 \
+            --workdir /workspace \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/control,dst=/workspace/control,readonly" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/heart,dst=/workspace/heart" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/native-work,dst=/workspace/work" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/evidence,dst=/workspace/evidence" \
+            --mount "type=bind,src=$GITHUB_WORKSPACE/.t2-cache,dst=/cache" \
+            -e EXPECTED_APP_SHA -e GITHUB_RUN_ID -e GITHUB_RUN_ATTEMPT -e T2_GO_IMAGE \
+            -e CC=gcc -e CXX=g++ -e GOTOOLCHAIN=local \
+            -e GOMODCACHE=/cache/go-mod -e GOCACHE=/cache/go-build \
+            -e GIT_OPTIONAL_LOCKS=0 -e PYTHONDONTWRITEBYTECODE=1 \
+            "$T2_GO_IMAGE" sh -eu -c '
+              apk add --no-cache python3 git build-base > /workspace/evidence/toolchain/apk-install.log 2>&1
+              git config --global --add safe.directory /workspace/control
+              git config --global --add safe.directory /workspace/heart
+              go version > /workspace/evidence/toolchain/go-version.txt
+              gcc --version > /workspace/evidence/toolchain/compiler.txt
+              gcc -dumpmachine > /workspace/evidence/toolchain/compiler-target.txt
+              exec python3 -B /workspace/control/Tools/PinkhaSemanticAnchor/run.py \
+                --control /workspace/control --heart /workspace/heart --work /workspace/work/build \
+                --evidence /workspace/evidence --original-run /workspace/evidence/original-native-run.json \
+                --expected-app-sha "$EXPECTED_APP_SHA"
+            '
+      - name: Preserve truthful native execution status
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          directory = Path('evidence')
+          directory.mkdir(parents=True, exist_ok=True)
+          path = directory / 'receipt.json'
+          if not path.exists():
+              path.write_text(json.dumps({
+                  'status': 'NOT_RUN_NATIVE_PREFLIGHT_OR_CONTROLLER_FAILED',
+                  'run_id': os.environ.get('GITHUB_RUN_ID'), 'run_attempt': os.environ.get('GITHUB_RUN_ATTEMPT'),
+                  'app_sha': os.environ.get('EXPECTED_APP_SHA'), 'app_capability': 'OFF',
+                  'old_test_methods_executed': 0, 'actual_new_top_level_methods': 0,
+                  'full_page_apply_acceptance': 'NOT_RUN', 'account_lifecycle_acceptance': 'NOT_RUN',
+                  'wire_acceptance': 'NOT_RUN', 'apple_acceptance': 'NOT_RUN', 'editor02_acceptance': 'NOT_COMPLETE'
+              }, indent=2) + '\n')
+          PY
+      - name: Preserve source-bound candidate and original retained evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Pinkha-Semantic-Anchor-Native-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/
+          retention-days: 14
+          if-no-files-found: error

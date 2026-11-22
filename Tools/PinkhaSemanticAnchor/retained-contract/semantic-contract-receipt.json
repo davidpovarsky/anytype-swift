@@ -1,0 +1,29 @@
+{
+  "command": [
+    "/home/david/pinkha-migration-prepared-20261122/go/bin/go",
+    "test",
+    "-json",
+    "-count=1",
+    "contract.go",
+    "contract_test.go"
+  ],
+  "exit_code": 0,
+  "failed": [],
+  "go_version": "go version go1.26.5 linux/amd64",
+  "log_path": "/home/david/pinkha-semantic-anchor-20261122/semantic-contract-controls.jsonl",
+  "log_sha256": "8b3b3a2a82240bae0c0833ddf7f5540e2f0a18185220017c51a58c7495c31d21",
+  "native_apply_executed": false,
+  "old_tests_executed": 0,
+  "passed": [
+    "TestSemanticAnchorCaptureComparesEveryNativeMarkAndPreservesBytes",
+    "TestSemanticAnchorCaptureRejectsUTF16AndIdentityAmbiguity",
+    "TestSemanticAnchorCaptureRefusesExistingLinksAndDuplicateIdentity",
+    "TestSemanticAnchorPostApplyComparisonKeepsEveryMarkAndDuplicate",
+    "TestSemanticAnchorCaptureBoundsMalformedNativeMarks"
+  ],
+  "schema": "pinkha-semantic-anchor-native-contract-v1",
+  "source_sha256": {
+    "contract.go": "f15e9c4900e350605e9d71911adf50710e775b58aaa811d02be36e80976c52a8",
+    "contract_test.go": "f72f5cd435d10efddc4c9deef0b4a8c7f689ee5aede70c64ee3a03a537c06179"
+  }
+}

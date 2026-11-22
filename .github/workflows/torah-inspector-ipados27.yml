@@ -47,6 +47,7 @@ on:
           - coherent-heart-native
           - coherent-heart-apple
           - coherent-heart-peers
+          - semantic-anchor-native
           - t5-native-pagination
           - t5-native-account-retry
           - t5-native-attachment
@@ -269,6 +270,12 @@ jobs:
   coherent-heart-peers:
     if: ${{ inputs.route == 'coherent-heart-peers' }}
     uses: ./.github/workflows/pinkha-coherent-heart-peers.yml
+    with:
+      source_sha: ${{ github.sha }}
+
+  semantic-anchor-native:
+    if: ${{ inputs.route == 'semantic-anchor-native' }}
+    uses: ./.github/workflows/pinkha-semantic-anchor-native.yml
     with:
       source_sha: ${{ github.sha }}
 

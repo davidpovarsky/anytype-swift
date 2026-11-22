@@ -1,0 +1,58 @@
+{
+  "reviewer": "root",
+  "retainedEvidence": {
+    "status": "PASS_RETAINED_CONTROLLER_AND_PURE_CONTRACT_CONTROLS",
+    "github_run_id": null,
+    "github_run_attempt": null,
+    "original_controller_receipt_sha256": "efc626987495241f6c923fe1044e5252ca88900bde99f8996f556c6a10feacd9",
+    "original_controller_log_sha256": "d745d364f0404d0103b9afe4448fcc7d7f217fbf274715feac464989ae4e1413",
+    "retained_controller_methods": [
+      "test_candidate_inventory_rejects_changed_source_extra_files_and_old_source_claims",
+      "test_named_output_rejects_missing_repeated_skipped_and_unselected_cases",
+      "test_original_five_are_source_bound_and_retained_without_execution",
+      "test_selected_methods_are_exactly_the_new_native_declarations"
+    ],
+    "retained_pure_contract": {
+      "status": "RETAINED_FIVE_PURE_CONTRACT_CONTROLS",
+      "receipt_sha256": "54da16c0fd8b48c5b2475aae813040d7cc5eed00210d6f4574855f9df77ac043",
+      "original_log_sha256": "8b3b3a2a82240bae0c0833ddf7f5540e2f0a18185220017c51a58c7495c31d21",
+      "original_source_sha256": {
+        "contract.go": "f15e9c4900e350605e9d71911adf50710e775b58aaa811d02be36e80976c52a8",
+        "contract_test.go": "f72f5cd435d10efddc4c9deef0b4a8c7f689ee5aede70c64ee3a03a537c06179"
+      },
+      "methods": [
+        "TestSemanticAnchorCaptureBoundsMalformedNativeMarks",
+        "TestSemanticAnchorCaptureComparesEveryNativeMarkAndPreservesBytes",
+        "TestSemanticAnchorCaptureRefusesExistingLinksAndDuplicateIdentity",
+        "TestSemanticAnchorCaptureRejectsUTF16AndIdentityAmbiguity",
+        "TestSemanticAnchorPostApplyComparisonKeepsEveryMarkAndDuplicate"
+      ],
+      "methods_executed_again": 0,
+      "native_apply_executed": false
+    },
+    "source_and_input_sha256": {
+      "retained-contract/semantic-contract-receipt.json": "54da16c0fd8b48c5b2475aae813040d7cc5eed00210d6f4574855f9df77ac043",
+      "native/core/pinkha_semantic_anchor.go": "3cf59eaf715993fbd3979543620b08af225c043fbf86814e1a4f8a46ebf2bf3b",
+      "native-source.json": "3e85e4b8ebe66c03e0ff95c45f55fc01d2e77fe1f14ad7895c72957b0f97af77",
+      "test_contract.py": "c43da781ec7ce1891dcd4b0fd6cdefbdcab93f278ce2274ea6beb311098e8830",
+      "native/core/block/editor/pinkha_semantic_anchor.go": "02f167d9a97fcbe0db0e7d88c7766e3439695d7fdec65accb65ecc448269876a",
+      "retained-contract/semantic-contract-controls.jsonl": "8b3b3a2a82240bae0c0833ddf7f5540e2f0a18185220017c51a58c7495c31d21",
+      "contract.py": "68b4b5d16c8bfdbaf6ab4ac6c0a8665496bc0175ce5e0abfd20d399bb348bf47",
+      "native/core/block/editor/torahopsobject/semantic_anchor_lease.go": "2d8f45987436eee782067d558ac9afe4ca26c6296f5d3e9cbecc07f0fb7caa8b",
+      "native/pkg/lib/pinkha/semanticanchor/contract_test.go": "f72f5cd435d10efddc4c9deef0b4a8c7f689ee5aede70c64ee3a03a537c06179",
+      "native/core/block/editor/stext/pinkha_semantic_anchor.go": "42f8f04a7ab19ed23b5a231248762ad1fed22679b21c3adf7f0e047f32092e09",
+      "native/core/block/editor/torahopsobject/semantic_anchor_lease_test.go": "374d8f56756a55f98ec402eae9b0f1bc11ba6ca3cdc99b85ef6190c5292fa784",
+      "native/core/pinkha_semantic_anchor_test.go": "3fef3cfe0fb3ffda566cd5a6b4873b44e794964e08410f43d6feda40bcc1e964",
+      "native/core/block/editor/stext/pinkha_semantic_anchor_test.go": "072597c372d2101b0a0ffa966ca9a5b45011361c5eed536d2ce3d23d5a25316a",
+      "native/pkg/lib/pinkha/semanticanchor/contract.go": "f15e9c4900e350605e9d71911adf50710e775b58aaa811d02be36e80976c52a8"
+    },
+    "controller_methods_rerun": 0,
+    "pure_contract_methods_rerun": 0,
+    "native_component_storage_methods_executed": 0,
+    "verifier_sha256": "804570a492e720577b4e1a9197da065b9e88ee6d92152748b0a62c071de3d310"
+  },
+  "dispatcherRestoresExactOriginalBytes": true,
+  "currentNativeExecution": "NOT_RUN",
+  "fullPageApply": "NOT_RUN",
+  "capability": "OFF"
+}
