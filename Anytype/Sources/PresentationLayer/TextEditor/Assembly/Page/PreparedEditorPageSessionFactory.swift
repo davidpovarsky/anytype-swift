@@ -64,6 +64,69 @@ enum PreparedEditorPageSessionFactory {
             participants: Container.shared.participantsStorage(),
             requiredPermissions: requiredPermissions
         )
+        return try makeOriginalSession(
+            data: data, document: ownedDocument, sourceBinding: sourceBinding,
+            navigationContext: navigationContext
+        )
+    }
+
+    /// History acquires the original version document, never the handling
+    /// document under a different label. Only the same-object child route below
+    /// can enter this read-only acquisition; normal preparation stays editable.
+    fileprivate static func prepareReadOnlyVersion(
+        data: EditorPageObject,
+        sourceBinding: EditorDocumentWriteSourceBinding,
+        navigationContext: (any NavigationContextProtocol)?
+    ) async throws -> PreparedEditorPageSession {
+        try sourceBinding.validate()
+        guard case .version(let versionId) = data.mode,
+              !versionId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !data.objectId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !data.spaceId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw PreparedEditorPageSessionFactoryError.invalidIdentity
+        }
+        guard sourceBinding.committedEventBinding != nil else {
+            throw PreparedEditorPageSessionFactoryError.unsupportedAccountLifetime
+        }
+        let document = Container.shared.documentsProvider().document(
+            objectId: data.objectId, spaceId: data.spaceId, mode: data.mode
+        )
+        guard let ownedDocument = document as? any BaseDocumentProtocol & EditorDocumentWriteLifetimeProviding else {
+            throw PreparedEditorPageSessionFactoryError.unsupportedDocumentLifetime
+        }
+        guard ownedDocument.objectId.utf8.elementsEqual(data.objectId.utf8),
+              ownedDocument.spaceId.utf8.elementsEqual(data.spaceId.utf8),
+              case .version(let actualVersionId) = ownedDocument.mode,
+              actualVersionId.utf8.elementsEqual(versionId.utf8) else {
+            throw PreparedEditorPageSessionFactoryError.invalidIdentity
+        }
+        guard let originalDocument = ownedDocument as? BaseDocument else {
+            throw PreparedEditorPageSessionFactoryError.unsupportedDocumentLifetime
+        }
+        let openingRetention = PreparedEditorOpeningDocumentRetention(ownedDocument)
+        try await sourceBinding.performRead(
+            rpcNames: ["HistoryShowVersion"],
+            onDrained: { openingRetention.release() }
+        ) {
+            try await originalDocument.openForOriginalEditorSource()
+        }
+        try Task.checkCancellation()
+        try sourceBinding.validate()
+        try PreparedEditorPageDocument.validate(data: data, document: ownedDocument)
+        // The existing Owner accepts this exact opened version for reads and
+        // rejects every mutation because its document mode is not handling.
+        return try makeOriginalSession(
+            data: data, document: ownedDocument, sourceBinding: sourceBinding,
+            navigationContext: navigationContext
+        )
+    }
+
+    private static func makeOriginalSession(
+        data: EditorPageObject,
+        document: any BaseDocumentProtocol & EditorDocumentWriteLifetimeProviding,
+        sourceBinding: EditorDocumentWriteSourceBinding,
+        navigationContext: (any NavigationContextProtocol)?
+    ) throws -> PreparedEditorPageSession {
         let services = EditorPageServiceDependencies(
             blockActionService: .original(),
             blockActionHandler: .original(),
@@ -79,7 +142,7 @@ enum PreparedEditorPageSessionFactory {
         )
         return try PreparedEditorPageSession(
             data: data,
-            document: ownedDocument,
+            document: document,
             textService: Container.shared.textService(),
             services: services,
             sourceBinding: sourceBinding
@@ -150,6 +213,20 @@ struct PreparedEditorChildPreparation {
         }
     }
 
+    func prepareReadOnlyVersion(data: EditorPageObject) async throws -> PreparedEditorPageSession {
+        try validateVersionParent(data: data)
+        let session = try await PreparedEditorPageSessionFactory.prepareReadOnlyVersion(
+            data: data, sourceBinding: sourceBinding, navigationContext: navigationContext
+        )
+        do {
+            try validateVersionParent(data: data)
+            return session
+        } catch {
+            session.retire()
+            throw error
+        }
+    }
+
     /// The caller receives the acquired child Owner so post-await synchronous
     /// original writes use the child, rather than the parent's object authority.
     func performMutation<Value: Sendable>(
@@ -180,6 +257,19 @@ struct PreparedEditorChildPreparation {
     private func validateParent(spaceId: String) throws {
         guard let parentOwner else { throw EditorDocumentWriteError.rejected(.retired) }
         try parentOwner.performSynchronousOperation(spaceId: spaceId, requiresEditing: false) {
+            try sourceBinding.validate()
+        }
+    }
+
+    private func validateVersionParent(data: EditorPageObject) throws {
+        guard case .version(let versionId) = data.mode,
+              !versionId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw PreparedEditorPageSessionFactoryError.invalidIdentity
+        }
+        guard let parentOwner else { throw EditorDocumentWriteError.rejected(.retired) }
+        try parentOwner.performSynchronousOperation(
+            contextId: data.objectId, spaceId: data.spaceId, requiresEditing: false
+        ) {
             try sourceBinding.validate()
         }
     }

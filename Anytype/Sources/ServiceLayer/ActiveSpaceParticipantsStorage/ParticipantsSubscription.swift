@@ -37,6 +37,42 @@ actor ParticipantsSubscription: ParticipantsSubscriptionProtocol {
             try await startSubscription(spaceId: spaceId)
         }
     }
+
+    /// The prepared route uses this same original actor and subscription body,
+    /// but awaits startup instead of spawning a task before admission exists.
+    private init(subId: String, originalStorage: SubscriptionStorage) {
+        self.subId = subId
+        self.subscriptionStorage = originalStorage
+        self.participantsPublisher = originalStorage.statePublisher
+            .map { $0.items.compactMap { try? Participant(details: $0) } }
+            .eraseToAnyPublisher()
+    }
+
+    @MainActor
+    static func prepareOriginal(
+        spaceId: String, owner: EditorDocumentWriteOwner
+    ) async throws -> ParticipantsSubscription {
+        let subscription = try owner.performSynchronousOperation(
+            spaceId: spaceId, requiresEditing: false
+        ) {
+            guard let accountDispatch = try owner.childSourceBinding().committedEventBinding,
+                  let provider = Container.shared.subscriptionStorageProvider() as? SubscriptionStorageProvider else {
+                throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+            }
+            let subId = "ParticipantsSubscription-\(UUID())-\(spaceId)"
+            let storage = try provider.createOriginalAccountBoundStorage(
+                subId: subId, accountDispatch: accountDispatch
+            )
+            return ParticipantsSubscription(subId: subId, originalStorage: storage)
+        }
+        try await owner.performRead(
+            spaceId: spaceId, rpcNames: ["ObjectSearchSubscribe"],
+            onDrained: { [subscription] in withExtendedLifetime(subscription) {} }
+        ) {
+            try await subscription.startSubscription(spaceId: spaceId)
+        }
+        return subscription
+    }
     
     
     // MARK: - Private

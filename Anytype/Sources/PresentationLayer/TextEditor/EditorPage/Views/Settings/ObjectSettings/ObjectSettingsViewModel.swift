@@ -346,8 +346,14 @@ final class ObjectSettingsViewModel {
     
     func onTapHistory() {
         do {
-            try requireQualifiedTarget()
-            try withCurrentSource { output?.showVersionHistory(document: document) }
+            try withCurrentSource {
+                // The original set-version renderer still needs its own
+                // prepared set session. Never mount it with a page owner.
+                if preparedSession != nil, document.details?.isList != false {
+                    throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
+                }
+                output?.showVersionHistory(document: document)
+            }
         } catch { }
     }
     

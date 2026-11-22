@@ -1,0 +1,795 @@
+--- a/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageSessionFactory.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/Assembly/Page/PreparedEditorPageSessionFactory.swift
+@@ -64,6 +64,69 @@
+             participants: Container.shared.participantsStorage(),
+             requiredPermissions: requiredPermissions
+         )
++        return try makeOriginalSession(
++            data: data, document: ownedDocument, sourceBinding: sourceBinding,
++            navigationContext: navigationContext
++        )
++    }
++
++    /// History acquires the original version document, never the handling
++    /// document under a different label. Only the same-object child route below
++    /// can enter this read-only acquisition; normal preparation stays editable.
++    fileprivate static func prepareReadOnlyVersion(
++        data: EditorPageObject,
++        sourceBinding: EditorDocumentWriteSourceBinding,
++        navigationContext: (any NavigationContextProtocol)?
++    ) async throws -> PreparedEditorPageSession {
++        try sourceBinding.validate()
++        guard case .version(let versionId) = data.mode,
++              !versionId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
++              !data.objectId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
++              !data.spaceId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
++            throw PreparedEditorPageSessionFactoryError.invalidIdentity
++        }
++        guard sourceBinding.committedEventBinding != nil else {
++            throw PreparedEditorPageSessionFactoryError.unsupportedAccountLifetime
++        }
++        let document = Container.shared.documentsProvider().document(
++            objectId: data.objectId, spaceId: data.spaceId, mode: data.mode
++        )
++        guard let ownedDocument = document as? any BaseDocumentProtocol & EditorDocumentWriteLifetimeProviding else {
++            throw PreparedEditorPageSessionFactoryError.unsupportedDocumentLifetime
++        }
++        guard ownedDocument.objectId.utf8.elementsEqual(data.objectId.utf8),
++              ownedDocument.spaceId.utf8.elementsEqual(data.spaceId.utf8),
++              case .version(let actualVersionId) = ownedDocument.mode,
++              actualVersionId.utf8.elementsEqual(versionId.utf8) else {
++            throw PreparedEditorPageSessionFactoryError.invalidIdentity
++        }
++        guard let originalDocument = ownedDocument as? BaseDocument else {
++            throw PreparedEditorPageSessionFactoryError.unsupportedDocumentLifetime
++        }
++        let openingRetention = PreparedEditorOpeningDocumentRetention(ownedDocument)
++        try await sourceBinding.performRead(
++            rpcNames: ["HistoryShowVersion"],
++            onDrained: { openingRetention.release() }
++        ) {
++            try await originalDocument.openForOriginalEditorSource()
++        }
++        try Task.checkCancellation()
++        try sourceBinding.validate()
++        try PreparedEditorPageDocument.validate(data: data, document: ownedDocument)
++        // The existing Owner accepts this exact opened version for reads and
++        // rejects every mutation because its document mode is not handling.
++        return try makeOriginalSession(
++            data: data, document: ownedDocument, sourceBinding: sourceBinding,
++            navigationContext: navigationContext
++        )
++    }
++
++    private static func makeOriginalSession(
++        data: EditorPageObject,
++        document: any BaseDocumentProtocol & EditorDocumentWriteLifetimeProviding,
++        sourceBinding: EditorDocumentWriteSourceBinding,
++        navigationContext: (any NavigationContextProtocol)?
++    ) throws -> PreparedEditorPageSession {
+         let services = EditorPageServiceDependencies(
+             blockActionService: .original(),
+             blockActionHandler: .original(),
+@@ -79,7 +142,7 @@
+         )
+         return try PreparedEditorPageSession(
+             data: data,
+-            document: ownedDocument,
++            document: document,
+             textService: Container.shared.textService(),
+             services: services,
+             sourceBinding: sourceBinding
+@@ -143,6 +206,20 @@
+         let session = try await PreparedEditorPageSessionFactory.prepare(data: data, sourceBinding: sourceBinding, navigationContext: navigationContext, requiredPermissions: requiredPermissions)
+         do {
+             try validateParent(spaceId: data.spaceId)
++            return session
++        } catch {
++            session.retire()
++            throw error
++        }
++    }
++
++    func prepareReadOnlyVersion(data: EditorPageObject) async throws -> PreparedEditorPageSession {
++        try validateVersionParent(data: data)
++        let session = try await PreparedEditorPageSessionFactory.prepareReadOnlyVersion(
++            data: data, sourceBinding: sourceBinding, navigationContext: navigationContext
++        )
++        do {
++            try validateVersionParent(data: data)
+             return session
+         } catch {
+             session.retire()
+@@ -183,4 +260,17 @@
+             try sourceBinding.validate()
+         }
+     }
+-}
++
++    private func validateVersionParent(data: EditorPageObject) throws {
++        guard case .version(let versionId) = data.mode,
++              !versionId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
++            throw PreparedEditorPageSessionFactoryError.invalidIdentity
++        }
++        guard let parentOwner else { throw EditorDocumentWriteError.rejected(.retired) }
++        try parentOwner.performSynchronousOperation(
++            contextId: data.objectId, spaceId: data.spaceId, requiresEditing: false
++        ) {
++            try sourceBinding.validate()
++        }
++    }
++}
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Coordinator/VersionHistoryCoordinatorView.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Coordinator/VersionHistoryCoordinatorView.swift
+@@ -6,17 +6,21 @@
+     @State private var model: VersionHistoryCoordinatorViewModel
+     @Environment(\.dismiss) private var dismiss
+ 
+-    init(data: VersionHistoryData, output: (any ObjectVersionModuleOutput)?) {
+-        _model = State(initialValue: VersionHistoryCoordinatorViewModel(data: data, output: output))
++    init(data: VersionHistoryData, output: (any ObjectVersionModuleOutput)?,
++         preparedSession: PreparedEditorPageSession? = nil) {
++        _model = State(initialValue: VersionHistoryCoordinatorViewModel(
++            data: data, output: output, preparedSession: preparedSession
++        ))
+     }
+     
+     var body: some View {
+         VersionHistoryView(
+             data: model.data,
+-            output: model
++            output: model,
++            preparedSession: model.preparedSession
+         )
+         .sheet(item: $model.objectVersionData) {
+-            ObjectVersionView(data: $0, output: model)
++            ObjectVersionView(data: $0, output: model, preparedSession: model.preparedSession)
+         }
+     }
+ }
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Coordinator/VersionHistoryCoordinatorViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Coordinator/VersionHistoryCoordinatorViewModel.swift
+@@ -11,32 +11,51 @@
+     var objectVersionData: ObjectVersionData?
+     
+     let data: VersionHistoryData
++    let preparedSession: PreparedEditorPageSession?
+     
+     private weak var output: (any ObjectVersionModuleOutput)?
+     
+-    init(data: VersionHistoryData, output: (any ObjectVersionModuleOutput)?) {
++    init(data: VersionHistoryData, output: (any ObjectVersionModuleOutput)?,
++         preparedSession: PreparedEditorPageSession? = nil) {
+         self.data = data
+         self.output = output
++        self.preparedSession = preparedSession
+     }
+     
+     // MARK: VersionHistoryModuleOutput
+     
+     func onVersionTap(title: String, icon: ObjectIcon?, versionId: String) {
+-        objectVersionData = ObjectVersionData(
+-            title: title,
+-            icon: icon,
+-            objectId: data.objectId, 
+-            spaceId: data.spaceId,
+-            versionId: versionId,
+-            isListType: data.isListType,
+-            canRestore: data.canRestore
+-        )
++        try? withCurrentSource {
++            if preparedSession != nil,
++               versionId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
++                throw EditorDocumentWriteError.rejected(.wrongContext)
++            }
++            objectVersionData = ObjectVersionData(
++                title: title,
++                icon: icon,
++                objectId: data.objectId,
++                spaceId: data.spaceId,
++                versionId: versionId,
++                isListType: data.isListType,
++                canRestore: data.canRestore
++            )
++        }
+     }
+     
+     // MARK: ObjectVersionModuleOutput
+     
+     func versionRestored(_ text: String) {
+-        output?.versionRestored(text)
++        try? withCurrentSource { output?.versionRestored(text) }
++    }
++
++    private func withCurrentSource<Value>(_ operation: () throws -> Value) throws -> Value {
++        guard let preparedSession else { return try operation() }
++        return try preparedSession.owner.performSynchronousOperation(
++            contextId: data.objectId, spaceId: data.spaceId, requiresEditing: false
++        ) {
++            try preparedSession.owner.validateDocument(preparedSession.document)
++            return try operation()
++        }
+     }
+ }
+ 
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Object/ObjectVersionView.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Object/ObjectVersionView.swift
+@@ -6,8 +6,11 @@
+     @State private var model: ObjectVersionViewModel
+     @Environment(\.dismiss) private var dismiss
+ 
+-    init(data: ObjectVersionData, output: (any ObjectVersionModuleOutput)?) {
+-        _model = State(initialValue: ObjectVersionViewModel(data: data, output: output))
++    init(data: ObjectVersionData, output: (any ObjectVersionModuleOutput)?,
++         preparedSession: PreparedEditorPageSession? = nil) {
++        _model = State(initialValue: ObjectVersionViewModel(
++            data: data, output: output, preparedSession: preparedSession
++        ))
+     }
+     
+     var body: some View {
+@@ -42,13 +45,23 @@
+     
+     @ViewBuilder
+     private var content: some View {
+-        switch model.screenData {
+-        case .page(let data):
+-            EditorPageCoordinatorView(data: data, showHeader: false)
+-        case .list(let data):
+-            EditorSetCoordinatorView(data: data, showHeader: false)
+-        default:
+-            EmptyView()
++        if model.hasPreparedSource {
++            if let preparedModel = model.preparedEditorModel {
++                EditorPageCoordinatorView(preparedModel: preparedModel)
++            } else if model.preparationFailed {
++                DocumentCommonOpenErrorView { dismiss() }
++            } else {
++                ProgressView()
++            }
++        } else {
++            switch model.screenData {
++            case .page(let data):
++                EditorPageCoordinatorView(data: data, showHeader: false)
++            case .list(let data):
++                EditorSetCoordinatorView(data: data, showHeader: false)
++            default:
++                EmptyView()
++            }
+         }
+     }
+     
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Object/ObjectVersionViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/Object/ObjectVersionViewModel.swift
+@@ -11,9 +11,19 @@
+ final class ObjectVersionViewModel {
+ 
+     var screenData: EditorScreenData?
++    var preparedEditorModel: EditorPageCoordinatorViewModel?
++    var preparationFailed = false
+     var dismiss = false
+ 
+     let data: ObjectVersionData
++    @ObservationIgnored
++    private let preparedSession: PreparedEditorPageSession?
++    @ObservationIgnored
++    private var versionSession: PreparedEditorPageSession?
++    @ObservationIgnored
++    private var preparationStarted = false
++
++    var hasPreparedSource: Bool { preparedSession != nil }
+ 
+     @ObservationIgnored
+     @Injected(\.historyVersionsService)
+@@ -22,28 +32,106 @@
+     @ObservationIgnored
+     private weak var output: (any ObjectVersionModuleOutput)?
+     
+-    init(data: ObjectVersionData, output: (any ObjectVersionModuleOutput)?) {
++    init(data: ObjectVersionData, output: (any ObjectVersionModuleOutput)?,
++         preparedSession: PreparedEditorPageSession? = nil) {
+         self.data = data
+         self.output = output
++        self.preparedSession = preparedSession
+     }
+     
+     func onAppear() {
+-        AnytypeAnalytics.instance().logScreenHistoryVersion()
++        try? withCurrentSource { AnytypeAnalytics.instance().logScreenHistoryVersion() }
+     }
+     
+     func setupObject() async {
+-        self.screenData = currentScreenData()
++        guard let preparedSession else {
++            self.screenData = currentScreenData()
++            return
++        }
++        guard !preparationStarted else { return }
++        preparationStarted = true
++        var acquired: PreparedEditorPageSession?
++        do {
++            try withCurrentSource {
++                guard !data.isListType, preparedSession.document.details?.isList == false,
++                      !data.versionId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
++                    throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++                }
++            }
++            let childPreparation = try PreparedEditorChildPreparation(owner: preparedSession.owner)
++            let page = EditorPageObject(
++                objectId: data.objectId, spaceId: data.spaceId,
++                mode: .version(data.versionId), usecase: .embedded
++            )
++            let session = try await childPreparation.prepareReadOnlyVersion(data: page)
++            acquired = session
++            try session.owner.performSynchronousOperation(
++                contextId: data.objectId, spaceId: data.spaceId, requiresEditing: false
++            ) {
++                try session.owner.validateDocument(session.document)
++                guard let details = session.document.details,
++                      details.id.utf8.elementsEqual(data.objectId.utf8), !details.isList else {
++                    throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++                }
++            }
++            let model = try EditorPageCoordinatorViewModel(preparedSession: session, showHeader: false)
++            try withCurrentSource {
++                versionSession = session
++                preparedEditorModel = model
++                screenData = .page(page)
++            }
++        } catch {
++            acquired?.retire()
++            try? withCurrentSource { preparationFailed = true }
++        }
+     }
+     
+     func onCancelTap() {
+-        dismiss.toggle()
++        try? withCurrentSource { dismiss.toggle() }
+     }
+     
+     func onRestoreTap() {
++        if let preparedSession {
++            do {
++                // Reserve at the real button tap, before the original task is
++                // created. Restoration belongs to the current handling owner,
++                // never to the separately acquired read-only version owner.
++                let scheduled = try preparedSession.owner.scheduleDocumentAction(
++                    contextId: data.objectId, requiredPermissions: [.restoreVersionHistory]
++                )
++                Task { @MainActor [self] in
++                    try await scheduled.run { @MainActor [self] in
++                        try withCurrentSource {
++                            guard data.canRestore,
++                                  !data.versionId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
++                                throw EditorDocumentWriteError.rejected(.notEditable)
++                            }
++                        }
++                        let original = try OriginalHistoryVersionsServiceBinding.requireOriginal(historyVersionsService)
++                        try await original.setVersion(objectId: data.objectId, versionId: data.versionId)
++                        try withCurrentSource {
++                            output?.versionRestored(data.title.trimmingCharacters(in: .whitespaces))
++                            AnytypeAnalytics.instance().logRestoreFromHistory()
++                        }
++                    }
++                }
++            } catch { }
++            return
++        }
+         Task {
+             try await historyVersionsService.setVersion(objectId: data.objectId, versionId: data.versionId)
+             output?.versionRestored(data.title.trimmingCharacters(in: .whitespaces))
+             AnytypeAnalytics.instance().logRestoreFromHistory()
++        }
++    }
++
++    private func withCurrentSource<Value>(_ operation: () throws -> Value) throws -> Value {
++        guard let preparedSession else { return try operation() }
++        return try preparedSession.owner.performSynchronousOperation(
++            contextId: data.objectId, spaceId: data.spaceId, requiresEditing: false
++        ) {
++            try preparedSession.owner.validateDocument(preparedSession.document)
++            return try operation()
+         }
+     }
+     
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/VersionHistoryView.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/VersionHistoryView.swift
+@@ -6,8 +6,11 @@
+     @State private var model: VersionHistoryViewModel
+     @Environment(\.dismiss) private var dismiss
+ 
+-    init(data: VersionHistoryData, output: (any VersionHistoryModuleOutput)?) {
+-        _model = State(initialValue: VersionHistoryViewModel(data: data, output: output))
++    init(data: VersionHistoryData, output: (any VersionHistoryModuleOutput)?,
++         preparedSession: PreparedEditorPageSession? = nil) {
++        _model = State(initialValue: VersionHistoryViewModel(
++            data: data, output: output, preparedSession: preparedSession
++        ))
+     }
+     
+     var body: some View {
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/VersionHistoryViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/History/VersionHistoryViewModel.swift
+@@ -28,6 +28,10 @@
+ 
+     @ObservationIgnored
+     private var firstOpen = true
++    @ObservationIgnored
++    private let preparedSession: PreparedEditorPageSession?
++    @ObservationIgnored
++    private var preparedParticipants: ParticipantsSubscription?
+ 
+     @ObservationIgnored @Injected(\.historyVersionsService)
+     private var historyVersionsService: any HistoryVersionsServiceProtocol
+@@ -37,52 +41,103 @@
+     @ObservationIgnored
+     private lazy var participantsSubscription: any ParticipantsSubscriptionProtocol = Container.shared.participantSubscription(spaceId)
+     
+-    init(data: VersionHistoryData, output: (any VersionHistoryModuleOutput)?) {
++    init(data: VersionHistoryData, output: (any VersionHistoryModuleOutput)?,
++         preparedSession: PreparedEditorPageSession? = nil) {
+         self.objectId = data.objectId
+         self.spaceId = data.spaceId
+         self.output = output
++        self.preparedSession = preparedSession
+     }
+     
+     func onAppear() {
+-        AnytypeAnalytics.instance().logScreenHistory()
++        try? withCurrentSource { AnytypeAnalytics.instance().logScreenHistory() }
+     }
+     
+     func startParticipantsSubscription() async {
+-        for await participants in participantsSubscription.participantsPublisher.values {
+-            participantsDict = [:]
+-            participants.forEach { participant in
+-                participantsDict[participant.id] = participant
+-            }
+-            updateView()
++        let subscription: any ParticipantsSubscriptionProtocol
++        if let preparedSession {
++            do {
++                try withCurrentSource {}
++                let original = try await ParticipantsSubscription.prepareOriginal(
++                    spaceId: spaceId, owner: preparedSession.owner
++                )
++                try withCurrentSource { preparedParticipants = original }
++                subscription = original
++            } catch { return }
++        } else {
++            subscription = participantsSubscription
++        }
++        for await participants in subscription.participantsPublisher.values {
++            guard (try? withCurrentSource {
++                participantsDict = [:]
++                participants.forEach { participant in
++                    participantsDict[participant.id] = participant
++                }
++                updateView()
++            }) != nil else { return }
++        }
++    }
++
++    private func withCurrentSource<Value>(_ operation: () throws -> Value) throws -> Value {
++        guard let preparedSession else { return try operation() }
++        return try preparedSession.owner.performSynchronousOperation(
++            contextId: objectId, spaceId: spaceId, requiresEditing: false
++        ) {
++            try preparedSession.owner.validateDocument(preparedSession.document)
++            return try operation()
+         }
+     }
+     
+     func getVersions() async {
+         do {
+-            let newVersions = try await historyVersionsService.getVersions(objectId: objectId, lastVersionId: lastViewedVersionId)
+-            rawVersions.append(contentsOf: newVersions)
+-            updateView()
++            let newVersions: [VersionHistory]
++            if let preparedSession {
++                let cursor = try withCurrentSource { lastViewedVersionId }
++                let original = try OriginalHistoryVersionsServiceBinding.requireOriginal(historyVersionsService)
++                newVersions = try await preparedSession.owner.performRead(
++                    contextId: objectId, spaceId: spaceId, rpcNames: ["HistoryGetVersions"]
++                ) { [objectId] in
++                    try await original.getVersions(objectId: objectId, lastVersionId: cursor)
++                }
++            } else {
++                newVersions = try await historyVersionsService.getVersions(objectId: objectId, lastVersionId: lastViewedVersionId)
++            }
++            try withCurrentSource {
++                rawVersions.append(contentsOf: newVersions)
++                updateView()
++            }
+         } catch {
+-            groups = []
++            try? withCurrentSource { groups = [] }
+         }
+     }
+     
+     func onAppearLastGroup(_ group: VersionHistoryDataGroup) {
+-        guard groups.last == group else { return }
+-        guard lastViewedVersionId != rawVersions.last?.id else { return }
+-        lastViewedVersionId = rawVersions.last?.id ?? ""
++        try? withCurrentSource {
++            guard groups.last == group else { return }
++            guard lastViewedVersionId != rawVersions.last?.id else { return }
++            lastViewedVersionId = rawVersions.last?.id ?? ""
++        }
+     }
+     
+     func onGroupTap(_ group: VersionHistoryDataGroup) {
+-        if expandedGroups.contains(group.title) {
+-            expandedGroups.remove(group.title)
+-        } else {
+-            expandedGroups.insert(group.title)
++        try? withCurrentSource {
++            if expandedGroups.contains(group.title) {
++                expandedGroups.remove(group.title)
++            } else {
++                expandedGroups.insert(group.title)
++            }
+         }
+     }
+     
+     func onVersionTap(_ version: VersionHistoryItem) {
+-        output?.onVersionTap(title: version.dateTime, icon: version.icon, versionId: version.id)
++        try? withCurrentSource {
++            if preparedSession != nil {
++                guard rawVersions.contains(where: { $0.id.utf8.elementsEqual(version.id.utf8) }) else {
++                    throw EditorDocumentWriteError.rejected(.wrongContext)
++                }
++            }
++            output?.onVersionTap(title: version.dateTime, icon: version.icon, versionId: version.id)
++        }
+     }
+     
+     private func updateView() {
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettings/ObjectSettingsViewModel.swift
+@@ -346,8 +346,14 @@
+     
+     func onTapHistory() {
+         do {
+-            try requireQualifiedTarget()
+-            try withCurrentSource { output?.showVersionHistory(document: document) }
++            try withCurrentSource {
++                // The original set-version renderer still needs its own
++                // prepared set session. Never mount it with a page owner.
++                if preparedSession != nil, document.details?.isList != false {
++                    throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++                }
++                output?.showVersionHistory(document: document)
++            }
+         } catch { }
+     }
+     
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuContainer.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/Views/Settings/ObjectSettingsMenu/ObjectSettingsMenuContainer.swift
+@@ -48,7 +48,7 @@
+                                               preparedSession: model.preparedSession)
+             }
+             .sheet(item: $model.versionHistoryData) {
+-                VersionHistoryCoordinatorView(data: $0, output: model)
++                VersionHistoryCoordinatorView(data: $0, output: model, preparedSession: model.preparedSession)
+             }
+             .sheet(item: $model.publishingData) {
+                 PublishToWebCoordinator(data: $0)
+--- a/Anytype/Sources/ServiceLayer/ActiveSpaceParticipantsStorage/ParticipantsSubscription.swift
++++ b/Anytype/Sources/ServiceLayer/ActiveSpaceParticipantsStorage/ParticipantsSubscription.swift
+@@ -37,6 +37,42 @@
+             try await startSubscription(spaceId: spaceId)
+         }
+     }
++
++    /// The prepared route uses this same original actor and subscription body,
++    /// but awaits startup instead of spawning a task before admission exists.
++    private init(subId: String, originalStorage: SubscriptionStorage) {
++        self.subId = subId
++        self.subscriptionStorage = originalStorage
++        self.participantsPublisher = originalStorage.statePublisher
++            .map { $0.items.compactMap { try? Participant(details: $0) } }
++            .eraseToAnyPublisher()
++    }
++
++    @MainActor
++    static func prepareOriginal(
++        spaceId: String, owner: EditorDocumentWriteOwner
++    ) async throws -> ParticipantsSubscription {
++        let subscription = try owner.performSynchronousOperation(
++            spaceId: spaceId, requiresEditing: false
++        ) {
++            guard let accountDispatch = try owner.childSourceBinding().committedEventBinding,
++                  let provider = Container.shared.subscriptionStorageProvider() as? SubscriptionStorageProvider else {
++                throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++            }
++            let subId = "ParticipantsSubscription-\(UUID())-\(spaceId)"
++            let storage = try provider.createOriginalAccountBoundStorage(
++                subId: subId, accountDispatch: accountDispatch
++            )
++            return ParticipantsSubscription(subId: subId, originalStorage: storage)
++        }
++        try await owner.performRead(
++            spaceId: spaceId, rpcNames: ["ObjectSearchSubscribe"],
++            onDrained: { [subscription] in withExtendedLifetime(subscription) {} }
++        ) {
++            try await subscription.startSubscription(spaceId: spaceId)
++        }
++        return subscription
++    }
+     
+     
+     // MARK: - Private
+--- a/Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorage.swift
++++ b/Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorage.swift
+@@ -2,6 +2,7 @@
+ import Services
+ @preconcurrency import Combine
+ import AnytypeCore
++import ProtobufMessages
+ 
+ protocol SubscriptionStorageProtocol: AnyObject, Sendable {
+     var subId: String { get }
+@@ -20,6 +21,7 @@
+     nonisolated let subId: String
+     nonisolated let detailsStorage: ObjectDetailsStorage
+     private let toggler: any SubscriptionTogglerProtocol
++    private let originalAccountDispatch: InvocationDispatchBinding?
+     
+     // MARK: - State
+     
+@@ -35,18 +37,36 @@
+     private let stateSubject = CurrentValueSubject<SubscriptionStorageState?, Never>(nil)
+     nonisolated let statePublisher: AnyPublisher<SubscriptionStorageState, Never>
+     
+-    init(subId: String, detailsStorage: ObjectDetailsStorage, toggler: some SubscriptionTogglerProtocol) {
++    init(subId: String, detailsStorage: ObjectDetailsStorage, toggler: some SubscriptionTogglerProtocol,
++         originalAccountDispatch: InvocationDispatchBinding? = nil) {
+         self.subId = subId
+         self.detailsStorage = detailsStorage
+         self.toggler = toggler
++        self.originalAccountDispatch = originalAccountDispatch
+         self.statePublisher = stateSubject.compactMap { $0 }.eraseToAnyPublisher()
+         handlerRegistration = Task { await setupHandler() }
+     }
+     
+     deinit {
+-        guard let data else { return }
+-        Task { [data, toggler] in
+-            try await toggler.stopSubscription(id: data.identifier)
++        let identifier: String
++        if let data {
++            identifier = data.identifier
++        } else if originalAccountDispatch != nil {
++            // The real subscribe RPC may finish after cancellation has already
++            // returned to its caller. Prepared acquisition retains this storage
++            // through that native drain; then clean up only its fresh owned ID.
++            identifier = subId
++        } else {
++            return
++        }
++        Task { [identifier, toggler, originalAccountDispatch] in
++            if let originalAccountDispatch {
++                try await InvocationDispatchContext.$binding.withValue(originalAccountDispatch) {
++                    try await toggler.stopSubscription(id: identifier)
++                }
++            } else {
++                try await toggler.stopSubscription(id: identifier)
++            }
+         }
+     }
+     
+@@ -114,7 +134,13 @@
+     
+     func stopSubscription() async throws {
+         guard let data else { return }
+-        try await toggler.stopSubscription(id: data.identifier)
++        if let originalAccountDispatch {
++            try await InvocationDispatchContext.$binding.withValue(originalAccountDispatch) {
++                try await toggler.stopSubscription(id: data.identifier)
++            }
++        } else {
++            try await toggler.stopSubscription(id: data.identifier)
++        }
+         self.data = nil
+     }
+     
+--- a/Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorageProvider.swift
++++ b/Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionStorageProvider.swift
+@@ -2,6 +2,7 @@
+ import Services
+ import Combine
+ import AnytypeCore
++import ProtobufMessages
+ 
+ protocol SubscriptionStorageProviderProtocol: AnyObject, Sendable {
+     func createSubscriptionStorage(subId: String) -> any SubscriptionStorageProtocol
+@@ -33,4 +34,23 @@
+         subscriptionCache[subId] = Weak(value: storage)
+         return storage
+     }
++
++    /// A prepared History reader owns a fresh subscription ID. Its original
++    /// cleanup retains the captured account, not a later matching account.
++    func createOriginalAccountBoundStorage(
++        subId: String, accountDispatch: InvocationDispatchBinding
++    ) throws -> SubscriptionStorage {
++        let originalToggler = try SubscriptionToggler.requireOriginal(toggler)
++        lock.lock()
++        defer { lock.unlock() }
++        guard !subId.isEmpty, subscriptionCache[subId]?.value == nil else {
++            throw EditorDocumentWriteError.rejected(.invalidLease)
++        }
++        let storage = SubscriptionStorage(
++            subId: subId, detailsStorage: ObjectDetailsStorage(), toggler: originalToggler,
++            originalAccountDispatch: accountDispatch
++        )
++        subscriptionCache[subId] = Weak(value: storage)
++        return storage
++    }
+ }
+--- a/Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionToggler.swift
++++ b/Anytype/Sources/ServiceLayer/SubscriptionsToggler/Internals/SubscriptionToggler.swift
+@@ -13,6 +13,16 @@
+     private let objectSubscriptionService: any ObjectSubscriptionServiceProtocol = Container.shared.objectSubscriptionService()
+     private let userDefaults: any UserDefaultsStorageProtocol = Container.shared.userDefaultsStorage()
+     private let basicUserInfoStorage: any BasicUserInfoStorageProtocol = Container.shared.basicUserInfoStorage()
++
++    /// The prepared original reader keeps this delegate and its native service.
++    /// It cannot admit a substituted subscription implementation.
++    static func requireOriginal(_ service: any SubscriptionTogglerProtocol) throws -> SubscriptionToggler {
++        guard let original = service as? SubscriptionToggler else {
++            throw EditorDocumentWriteError.rejected(.unqualifiedDispatch)
++        }
++        _ = try OriginalObjectSubscriptionServiceBinding.requireOriginal(original.objectSubscriptionService)
++        return original
++    }
+     
+     func startSubscription(data: SubscriptionData) async throws -> SubscriptionTogglerResult {
+         switch data {
+--- a/Modules/Services/Sources/Services/HistoryVersionsService/HistoryVersionsService.swift
++++ b/Modules/Services/Sources/Services/HistoryVersionsService/HistoryVersionsService.swift
+@@ -1,6 +1,21 @@
+ import Foundation
+ import ProtobufMessages
+ import AnytypeCore
++
++public enum OriginalHistoryVersionsServiceBindingError: Error, Sendable {
++    case unsupportedOriginalDelegate
++}
++
++public enum OriginalHistoryVersionsServiceBinding {
++    public static func requireOriginal(
++        _ service: any HistoryVersionsServiceProtocol
++    ) throws -> any HistoryVersionsServiceProtocol {
++        guard service is HistoryVersionsService else {
++            throw OriginalHistoryVersionsServiceBindingError.unsupportedOriginalDelegate
++        }
++        return service
++    }
++}
+ 
+ public protocol HistoryVersionsServiceProtocol: Sendable {
+     func getVersions(objectId: String, lastVersionId: String) async throws -> [VersionHistory]
+--- a/Modules/Services/Sources/Services/ObjectSubscriptionService/ObjectSubscriptionService.swift
++++ b/Modules/Services/Sources/Services/ObjectSubscriptionService/ObjectSubscriptionService.swift
+@@ -1,4 +1,19 @@
+ import ProtobufMessages
++
++public enum OriginalObjectSubscriptionServiceBindingError: Error, Sendable {
++    case unsupportedOriginalDelegate
++}
++
++public enum OriginalObjectSubscriptionServiceBinding {
++    public static func requireOriginal(
++        _ service: any ObjectSubscriptionServiceProtocol
++    ) throws -> any ObjectSubscriptionServiceProtocol {
++        guard service is ObjectSubscriptionService else {
++            throw OriginalObjectSubscriptionServiceBindingError.unsupportedOriginalDelegate
++        }
++        return service
++    }
++}
+ 
+ public protocol ObjectSubscriptionServiceProtocol: Sendable {
+     func objectSubscribe(data: SubscriptionData.Object) async throws -> ObjectSubscriptionResponse
