@@ -1,0 +1,150 @@
+{
+  "schema": 2,
+  "status": "AUTHENTICATED_RUNTIME_CONTINUATION_FAILURE_NOT_QUALIFIED",
+  "at": "2026-11-22T17:43:02.892213+00:00",
+  "source_sha": "452032e3ae51d4dec3c91b3f14ef1d70e43f1219",
+  "run_id": 45048745285,
+  "attempt": 1,
+  "job_id": 137288983197,
+  "artifact_id": 14764689125,
+  "artifact_sha256": "sha256:085b6fc43ea91127162568cbe2c8c84907b8285f06f35d8baef0200151d24cbb",
+  "inner_sha256": "9233580e1f771917bf0b4788738a11e840bff2ed12a446ea9c12751d397f2b51",
+  "framework_producer": {
+    "source_sha": "edce5b975b173059522f90adb71271fb95adf963",
+    "run_id": 45041382512,
+    "source_controls_passed": 245,
+    "public_spi_requirements_passed": 38,
+    "framework_rebuilt": false
+  },
+  "new_consumer": {
+    "build": "PASS",
+    "signature": "PASS",
+    "files": 642,
+    "bytes": 500498107,
+    "inventory_sha256": "a99f361353f1aa3249737b1d0d80bafb59ed397041094bd844d32a694f6e97af",
+    "actual_build_seconds": 56.195,
+    "app_bytes_retained": false
+  },
+  "toolchain": {
+    "xcode": "Xcode 27.0\nBuild version 27A266a",
+    "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+    "sdk": "27.0"
+  },
+  "owned_simulator": {
+    "device": {
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+      "name": "iPad Pro 13-inch (M5) (16GB)",
+      "productFamily": "iPad"
+    },
+    "name": "Otzaria-Original-Editor-Continuation-45048745285-1",
+    "runtime": {
+      "buildversion": "24A434",
+      "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+      "version": "27.0"
+    },
+    "udid": "C7858FF8-04DA-4515-A009-7F8F2503008A"
+  },
+  "runtime": {
+    "simulator_attempts": 1,
+    "install_attempts": 0,
+    "observations": [],
+    "first_failed_command": {
+      "absolute_command_deadline_unix": 1795370522,
+      "argv": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "C7858FF8-04DA-4515-A009-7F8F2503008A",
+        "-b"
+      ],
+      "child_started_unix": 1795368169.081152,
+      "cleanup": [
+        {
+          "event": "SIGNAL_REQUESTED",
+          "signal": 15,
+          "unix": 1795368352.246034
+        },
+        {
+          "event": "SIGNAL_SENT",
+          "signal": 15,
+          "unix": 1795368352.497282
+        },
+        {
+          "drained": true,
+          "event": "OWNED_GROUP_DRAIN_RESULT",
+          "unix": 1795368353.343034
+        }
+      ],
+      "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+      "duration_seconds": 185.693,
+      "effective_returncode": 124,
+      "effective_timeout_seconds": 180.0,
+      "label": "boot-status",
+      "pid": 8253,
+      "process_group_id": 8253,
+      "requested_timeout_seconds": 180,
+      "returncode": -15,
+      "start_new_session": true,
+      "started_unix": 1795368168.075584,
+      "status": "TERMINAL",
+      "stderr": "50-boot-status.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "50-boot-status.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timed_out": true
+    },
+    "owned_cleanup_commands": [
+      {
+        "absolute_command_deadline_unix": 1795370702,
+        "argv": [
+          "xcrun",
+          "simctl",
+          "shutdown",
+          "C7858FF8-04DA-4515-A009-7F8F2503008A"
+        ],
+        "child_started_unix": 1795368363.987736,
+        "cleanup": [
+          {
+            "event": "SIGNAL_REQUESTED",
+            "signal": 15,
+            "unix": 1795368445.982323
+          },
+          {
+            "event": "SIGNAL_SENT",
+            "signal": 15,
+            "unix": 1795368552.0858681
+          },
+          {
+            "drained": true,
+            "event": "OWNED_GROUP_DRAIN_RESULT",
+            "unix": 1795368689.596323
+          }
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+        "duration_seconds": 335.547,
+        "effective_returncode": 124,
+        "effective_timeout_seconds": 60.0,
+        "label": "shutdown-owned-simulator",
+        "pid": 8815,
+        "process_group_id": 8815,
+        "requested_timeout_seconds": 60,
+        "returncode": -15,
+        "start_new_session": true,
+        "started_unix": 1795368354.192427,
+        "status": "TERMINAL",
+        "stderr": "01-shutdown-owned-simulator.stderr",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "01-shutdown-owned-simulator.stdout",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timed_out": true
+      }
+    ],
+    "owned_simulator_removed": null,
+    "post_boot_device_state": "NOT_OBSERVED",
+    "post_cleanup_device_state": "NOT_OBSERVED",
+    "qualification_sidecar_exists": false
+  },
+  "raw_evidence": "evidence/",
+  "new_downloads_during_local_verification": 0,
+  "scope": "The original product and245/38 gates retain their exact source scope. New consumer build and signature pass; no install or en/he execution reached."
+}

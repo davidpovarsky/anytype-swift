@@ -1,0 +1,73 @@
+{
+  "actual_execution": {
+    "cleanup_error": "Owned simulator shutdown did not finish",
+    "consumer_app_bytes": 500498107,
+    "consumer_app_files": 642,
+    "error": "owned command failed: boot-status",
+    "error_type": "RuntimeError",
+    "external_consumer_build": "PASS",
+    "install_attempts": 0,
+    "original_framework_build": "REUSED_SUCCESSFUL_ORIGINAL_PRODUCER",
+    "owned_simulator_cleanup_completed": null,
+    "phase": "ACTUAL_EXTERNAL_RESOURCE_RUNTIME",
+    "simulator_attempts": 1,
+    "status": "FAIL",
+    "verified_runtime_observations": []
+  },
+  "control_sha": "452032e3ae51d4dec3c91b3f14ef1d70e43f1219",
+  "failed_commands": [
+    {
+      "absolute_command_deadline_unix": 1795370522,
+      "argv": [
+        "xcrun",
+        "simctl",
+        "bootstatus",
+        "C7858FF8-04DA-4515-A009-7F8F2503008A",
+        "-b"
+      ],
+      "child_started_unix": 1795368169.081152,
+      "cleanup": [
+        {
+          "event": "SIGNAL_REQUESTED",
+          "signal": 15,
+          "unix": 1795368352.246034
+        },
+        {
+          "event": "SIGNAL_SENT",
+          "signal": 15,
+          "unix": 1795368352.497282
+        },
+        {
+          "drained": true,
+          "event": "OWNED_GROUP_DRAIN_RESULT",
+          "unix": 1795368353.343034
+        }
+      ],
+      "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+      "duration_seconds": 185.693,
+      "effective_returncode": 124,
+      "effective_timeout_seconds": 180.0,
+      "label": "boot-status",
+      "pid": 8253,
+      "process_group_id": 8253,
+      "requested_timeout_seconds": 180,
+      "returncode": -15,
+      "start_new_session": true,
+      "started_unix": 1795368168.075584,
+      "status": "TERMINAL",
+      "stderr": "50-boot-status.stderr",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "50-boot-status.stdout",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timed_out": true
+    }
+  ],
+  "job_id": 137288983197,
+  "job_name": "original-editor-runtime-continuation",
+  "new_downloads": 0,
+  "run_attempt": 1,
+  "run_conclusion": "failure",
+  "run_id": 45048745285,
+  "schema": 2,
+  "status": "OBSERVED_CONTINUATION_FAILURE_NOT_QUALIFIED"
+}

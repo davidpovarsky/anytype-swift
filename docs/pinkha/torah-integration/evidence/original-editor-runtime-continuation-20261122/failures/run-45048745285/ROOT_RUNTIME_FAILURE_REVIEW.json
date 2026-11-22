@@ -1,0 +1,159 @@
+{
+  "schema": "otzaria.root-sdk-runtime-failure-review/1",
+  "at_utc": "2026-11-22T17:47:35.382987+00:00",
+  "run": 45048745285,
+  "control_sha": "452032e3ae51d4dec3c91b3f14ef1d70e43f1219",
+  "actual_job": 137288983197,
+  "runner_id": 1000023642,
+  "archive_payloads_verified": 144,
+  "upload_index_entries": 143,
+  "execution_index_entries": 140,
+  "command_ledgers_verified": {
+    "commands": 50,
+    "github-commands": 8,
+    "cleanup": 1
+  },
+  "all_command_groups_drained": true,
+  "original_binary_streams_relocated_to_owned_work": [
+    {
+      "label": "original-evidence-outer-download",
+      "artifact_id": 14762747841,
+      "bytes": 15271306,
+      "sha256": "5fe85920a931ebbe6b7ea0a564f981aaf64c7cb6dc7315a9a7838a4deaf457c7",
+      "scope": "Original binary stream moved to owned work by reviewed producer; verified recorded size/hash and immutable artifact identity, not an omitted raw text log."
+    },
+    {
+      "label": "original-framework-download",
+      "artifact_id": 14762329313,
+      "bytes": 360785361,
+      "sha256": "b0ebfc5dc9d86a6b1829aad7117ab005c8eacb019b0d37e3373f9e9df9c2a2df",
+      "scope": "Original binary stream moved to owned work by reviewed producer; verified recorded size/hash and immutable artifact identity, not an omitted raw text log."
+    }
+  ],
+  "original_framework_build": "REUSED_PRIOR_PASS",
+  "original_source_controls_retained": 245,
+  "new_control_results_retained_without_replay": 24,
+  "new_consumer_compile_link_and_signature": "PASS",
+  "consumer_build_seconds": 56.195,
+  "consumer_app_inventory": {
+    "files": 642,
+    "bytes": 500498107,
+    "app_bytes_retained": false
+  },
+  "first_actual_failure": {
+    "absolute_command_deadline_unix": 1795370522,
+    "argv": [
+      "xcrun",
+      "simctl",
+      "bootstatus",
+      "C7858FF8-04DA-4515-A009-7F8F2503008A",
+      "-b"
+    ],
+    "child_started_unix": 1795368169.081152,
+    "cleanup": [
+      {
+        "event": "SIGNAL_REQUESTED",
+        "signal": 15,
+        "unix": 1795368352.246034
+      },
+      {
+        "event": "SIGNAL_SENT",
+        "signal": 15,
+        "unix": 1795368352.497282
+      },
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_DRAIN_RESULT",
+        "unix": 1795368353.343034
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 185.693,
+    "effective_returncode": 124,
+    "effective_timeout_seconds": 180.0,
+    "label": "boot-status",
+    "pid": 8253,
+    "process_group_id": 8253,
+    "requested_timeout_seconds": 180,
+    "returncode": -15,
+    "start_new_session": true,
+    "started_unix": 1795368168.075584,
+    "status": "TERMINAL",
+    "stderr": "50-boot-status.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "50-boot-status.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": true
+  },
+  "cleanup_failure": {
+    "absolute_command_deadline_unix": 1795370702,
+    "argv": [
+      "xcrun",
+      "simctl",
+      "shutdown",
+      "C7858FF8-04DA-4515-A009-7F8F2503008A"
+    ],
+    "child_started_unix": 1795368363.987736,
+    "cleanup": [
+      {
+        "event": "SIGNAL_REQUESTED",
+        "signal": 15,
+        "unix": 1795368445.982323
+      },
+      {
+        "event": "SIGNAL_SENT",
+        "signal": 15,
+        "unix": 1795368552.0858681
+      },
+      {
+        "drained": true,
+        "event": "OWNED_GROUP_DRAIN_RESULT",
+        "unix": 1795368689.596323
+      }
+    ],
+    "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+    "duration_seconds": 335.547,
+    "effective_returncode": 124,
+    "effective_timeout_seconds": 60.0,
+    "label": "shutdown-owned-simulator",
+    "pid": 8815,
+    "process_group_id": 8815,
+    "requested_timeout_seconds": 60,
+    "returncode": -15,
+    "start_new_session": true,
+    "started_unix": 1795368354.192427,
+    "status": "TERMINAL",
+    "stderr": "01-shutdown-owned-simulator.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdout": "01-shutdown-owned-simulator.stdout",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timed_out": true
+  },
+  "owned_simulator": {
+    "device": {
+      "identifier": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+      "name": "iPad Pro 13-inch (M5) (16GB)",
+      "productFamily": "iPad"
+    },
+    "name": "Otzaria-Original-Editor-Continuation-45048745285-1",
+    "runtime": {
+      "buildversion": "24A434",
+      "identifier": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+      "version": "27.0"
+    },
+    "udid": "C7858FF8-04DA-4515-A009-7F8F2503008A"
+  },
+  "install_attempts": 0,
+  "runtime_observations": 0,
+  "delete_attempted": false,
+  "post_boot_device_state": "UNKNOWN",
+  "post_cleanup_device_state": "UNKNOWN",
+  "runtime_qualified": false,
+  "cause_of_wall_time_overrun": "NOT_ESTABLISHED_BY_RETAINED_EVIDENCE",
+  "inner_archive_sha256": "9233580e1f771917bf0b4788738a11e840bff2ed12a446ea9c12751d397f2b51",
+  "original_artifact_id": 14764689125,
+  "original_artifact_sha256": "085b6fc43ea91127162568cbe2c8c84907b8285f06f35d8baef0200151d24cbb",
+  "new_tests_executed": 0,
+  "new_Actions_downloads": 0,
+  "next": "Compare original successful boot and exact runner/toolchain inputs; require evidence-driven simulator observation/cleanup change before any continuation. Prior consumer app bytes cannot be reused because they were not retained."
+}

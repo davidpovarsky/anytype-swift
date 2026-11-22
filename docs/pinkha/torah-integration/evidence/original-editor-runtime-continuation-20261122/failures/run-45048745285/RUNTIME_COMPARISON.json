@@ -1,0 +1,198 @@
+{
+  "status": "SOURCE_BOUND_RUNTIME_COMPARISON_NO_NEW_ATTEMPT",
+  "shared_observed_context": {
+    "runner_label": "xcode-27",
+    "runner_agent_version": "2.338.2",
+    "runner_image": "xcode-27-arm64",
+    "runner_image_version": "20261104.0337.1",
+    "image_release": "xcode-27-arm64/20261104.0337",
+    "hosted_compute_agent_version": "20261103.629",
+    "operating_system": "macOS27.0.1",
+    "os_build": "26A434",
+    "cloud": "MacCloud",
+    "region": "westus",
+    "python": "CPython3.12.10 arm64",
+    "developer_dir": "/Applications/Xcode_27.app/Contents/Developer",
+    "xcode": "Xcode 27.0\nBuild version 27A266a",
+    "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+    "sdk_version": "27.0",
+    "device_type": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB",
+    "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+    "runtime_build": "24A434",
+    "start_new_session": true
+  },
+  "original_framework_run": {
+    "source_sha": "edce5b975b173059522f90adb71271fb95adf963",
+    "run_id": 45041382512,
+    "job_id": 137266395092,
+    "runner_id": 1000023582,
+    "worker_id": "90e83592-8be8-4b03-8d32-5f7dd1578ec1",
+    "timings": {
+      "external-consumer-build": {
+        "returncode": 0,
+        "timed_out": false,
+        "requested_timeout_seconds": 600,
+        "duration_seconds": 34.134
+      },
+      "boot-owned-simulator": {
+        "returncode": 0,
+        "timed_out": false,
+        "requested_timeout_seconds": 60,
+        "duration_seconds": 12.115
+      },
+      "boot-status": {
+        "returncode": 0,
+        "timed_out": false,
+        "requested_timeout_seconds": 180,
+        "duration_seconds": 105.105
+      },
+      "install-external-consumer": {
+        "returncode": -15,
+        "timed_out": true,
+        "requested_timeout_seconds": 60,
+        "duration_seconds": 75.304
+      }
+    },
+    "bootstatus_stdout": "Monitoring boot status for Pinkha-UI27-45041382512-ipad (35142DD7-3633-4A2C-B283-F012AB2129DA).\nDevice already booted, nothing to do.\n\n",
+    "cleanup": [
+      {
+        "operation": "shutdown",
+        "returncode": 149,
+        "stderr": "An error was encountered processing the command (domain=com.apple.CoreSimulator.SimError, code=405):\nUnable to shutdown device in current state: Shutdown\n",
+        "stdout": "",
+        "udid": "A755110D-048B-496F-8E0B-D775F3192A06"
+      },
+      {
+        "operation": "delete",
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "",
+        "udid": "A755110D-048B-496F-8E0B-D775F3192A06"
+      },
+      {
+        "operation": "shutdown",
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "",
+        "udid": "35142DD7-3633-4A2C-B283-F012AB2129DA"
+      },
+      {
+        "operation": "delete",
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "",
+        "udid": "35142DD7-3633-4A2C-B283-F012AB2129DA"
+      }
+    ]
+  },
+  "runtime_continuation": {
+    "control_sha": "452032e3ae51d4dec3c91b3f14ef1d70e43f1219",
+    "run_id": 45048745285,
+    "job_id": 137288983197,
+    "runner_id": 1000023642,
+    "worker_id": "19f4b02b-ade5-44eb-b1d7-9fb8f13a1979",
+    "timings": {
+      "external-consumer-build": {
+        "returncode": 0,
+        "effective_returncode": 0,
+        "timed_out": false,
+        "requested_timeout_seconds": 600,
+        "duration_seconds": 56.195
+      },
+      "boot-owned-simulator": {
+        "returncode": 0,
+        "effective_returncode": 0,
+        "timed_out": false,
+        "requested_timeout_seconds": 60,
+        "duration_seconds": 8.908
+      },
+      "boot-status": {
+        "returncode": -15,
+        "effective_returncode": 124,
+        "timed_out": true,
+        "requested_timeout_seconds": 180,
+        "duration_seconds": 185.693
+      }
+    },
+    "bootstatus_stdout": "",
+    "bootstatus_stderr": "",
+    "cleanup": [
+      {
+        "absolute_command_deadline_unix": 1795370702,
+        "argv": [
+          "xcrun",
+          "simctl",
+          "shutdown",
+          "C7858FF8-04DA-4515-A009-7F8F2503008A"
+        ],
+        "child_started_unix": 1795368363.987736,
+        "cleanup": [
+          {
+            "event": "SIGNAL_REQUESTED",
+            "signal": 15,
+            "unix": 1795368445.982323
+          },
+          {
+            "event": "SIGNAL_SENT",
+            "signal": 15,
+            "unix": 1795368552.0858681
+          },
+          {
+            "drained": true,
+            "event": "OWNED_GROUP_DRAIN_RESULT",
+            "unix": 1795368689.596323
+          }
+        ],
+        "cwd": "/Users/runner/work/anytype-swift/anytype-swift",
+        "duration_seconds": 335.547,
+        "effective_returncode": 124,
+        "effective_timeout_seconds": 60.0,
+        "label": "shutdown-owned-simulator",
+        "pid": 8815,
+        "process_group_id": 8815,
+        "requested_timeout_seconds": 60,
+        "returncode": -15,
+        "start_new_session": true,
+        "started_unix": 1795368354.192427,
+        "status": "TERMINAL",
+        "stderr": "01-shutdown-owned-simulator.stderr",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout": "01-shutdown-owned-simulator.stdout",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timed_out": true
+      }
+    ],
+    "install_attempts": 0
+  },
+  "source_observed_difference": {
+    "original_driver_sha256": "f4efd414ca0f8e9dd041b0b1a663466a9e48f9b1df33035956a238d3349331bc",
+    "original_driver_git_blob": "f32b3659cfb907f21f067f8a5e5b8eb4b7ab528d",
+    "original_child_environment": "Inherited entire caller environment; no explicit env argument",
+    "continuation_child_environment_keys": [
+      "PATH",
+      "HOME",
+      "TMPDIR",
+      "LANG",
+      "LC_ALL",
+      "DEVELOPER_DIR"
+    ],
+    "runtime_session_values_captured": false,
+    "causal_claim": "NONE: this is an unmeasured environment difference, not proof of the failure cause"
+  },
+  "unobserved": [
+    "CPU and memory pressure during the stalled boot",
+    "CoreSimulator service/process state after boot request",
+    "Actual inherited OS/session environment values",
+    "Owned device state after bootstatus timeout or after shutdown timeout"
+  ],
+  "preserved": {
+    "framework_build_replay": 0,
+    "source245_replay": 0,
+    "runtime24_replay": 0,
+    "new_consumer_build": "PASS",
+    "new_consumer_app_inventory_files": 642,
+    "new_consumer_app_bytes": 500498107,
+    "app_binary_retained": false
+  },
+  "inference": "Same fixed toolchain/image/device does not explain two different runner outcomes; the empty bootstatus streams and extreme shutdown wall-time overrun warrant runtime/host diagnostics before a timeout-only continuation."
+}
