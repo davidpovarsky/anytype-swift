@@ -1,0 +1,11 @@
+--- a/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift
++++ b/Anytype/Sources/PresentationLayer/TextEditor/EditorPage/EditorPageViewModel.swift
+@@ -572,7 +572,7 @@
+             alertModel: .undoAlertModel(
+                 undoAction: { [weak self] in
+                     guard let self = self else { return }
+-                    Task {
++                    self.actionHandler.scheduleMutationTask {
+                         try await self.objectActionsService.undo(objectId: self.document.objectId)
+                     }
+                 }
