@@ -1,0 +1,49 @@
+{
+  "status": "INDEPENDENT_SOURCE_REVIEW_CLEAR_NATIVE_NOT_RUN",
+  "reviewer": "/root/clang_sdk",
+  "product_files": [
+    {
+      "path": "core/application/active_app_admission.go",
+      "sha256": "345ae6b7200367d31b420d65332fe63c650da16ed1e87b08e4ad55288f3082ac",
+      "bytes": 1575,
+      "retained_path": "native/core/application/active_app_admission.go"
+    },
+    {
+      "path": "core/block/object/objectcreator/fixed_schema_creation.go",
+      "sha256": "40a78d46222fc84f7b50a820642ffe15bf2a8a5ce2cf0271ef894e286124ec5d",
+      "bytes": 6738,
+      "retained_path": "native/core/block/object/objectcreator/fixed_schema_creation.go"
+    },
+    {
+      "path": "core/pinkha/annotationschema/register.go",
+      "sha256": "a14d21693fa8e60fe7e4d581295816a7e9a73919e61eafd5fd1532b9928cd9fc",
+      "bytes": 12479,
+      "retained_path": "native/core/pinkha/annotationschema/register.go"
+    },
+    {
+      "path": "core/pinkha/annotationschema/register_type_layout.go",
+      "sha256": "806a91025237e5b14acff577bb36d9969963af824880d7e6cc3c5c33b267a50e",
+      "bytes": 4745,
+      "retained_path": "native/core/pinkha/annotationschema/register_type_layout.go"
+    }
+  ],
+  "scope": [
+    "fresh native missing state and original one-call creation",
+    "native PutTree collision before initialization",
+    "actual account/Space/ACL comparison",
+    "strict native versus loaded complete state before Apply",
+    "preservation of unrelated type properties and views",
+    "actual invocation/returned phases retained on uncertainty"
+  ],
+  "result": "No blocker found in this bounded product scope. Root separately owns lifecycle-lock and immutable packet review.",
+  "native_compile": "NOT_RUN",
+  "native_tests": "NOT_RUN",
+  "generated_protocol_changes": 0,
+  "prior_sources_replayed": 0,
+  "root_review": {
+    "status": "APPROVED_FOR_FREEZE",
+    "scope": "Full four product files; all thirteen new controls including actual queued Select/Stop combination; runner delta, workflow, nineteen-input closure and thirteen immutable baseline hashes.",
+    "original_semantics": "Account close/replacement waits behind held application admission. Early Stop acknowledgment of queued Select cancellation is not drain. No original lifecycle behavior is modified.",
+    "remaining_gate": "Root must verify exact immutable commit before creating one activation branch; native compile/execution still NOT_RUN."
+  }
+}
