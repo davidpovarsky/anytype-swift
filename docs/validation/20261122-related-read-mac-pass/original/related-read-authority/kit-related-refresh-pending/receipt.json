@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_EXACT_RELATED_READ_COMPONENT",
+  "profile": "kit-related-refresh-pending",
+  "appSourceCommit": "7ae7282db0962fb4f96eae5134898743f713e73c",
+  "kitCommit": "511454e49450cb2581ddf77f644146ff3e30dbef",
+  "appBuilds": 0,
+  "simulatorRuns": 0,
+  "nativeACLProof": false,
+  "otherProfilesAcceptedByThisReceipt": false,
+  "buildReuseClaim": "NOT_INFERRED_FROM_SHARED_JOB",
+  "contractSHA256": "33d21a9e29a7a130785c636266792e9ef832a887de2b7ee80756be0d52c48a5b",
+  "sourceSHA256": {
+    "Tests/TorahInspectorCoreTests/RelatedDocumentsRefreshTests.swift": "a2d16ada336855937f9f06850ecac9269d65ca2e7821a0fe74b4cae416812c6f"
+  },
+  "swiftVersion": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "xcodeVersion": "Xcode 27.0\nBuild version 27A266a",
+  "platform": {
+    "system": "Darwin",
+    "architecture": "arm64"
+  },
+  "resolution": {
+    "status": "PROCESS_COMPLETE_TEST_ACCEPTANCE_PENDING",
+    "command": [
+      "swift",
+      "package",
+      "--package-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source",
+      "resolve"
+    ],
+    "testAcceptanceInferred": false,
+    "returncode": 0,
+    "ownedGroupQuiescence": {
+      "status": "PASS",
+      "pgid": 63567,
+      "live_members": 0,
+      "observations": 1
+    },
+    "originalCommandSHA256": "85f69c80d8a2323fc407d1024868eab6b1eebc32fa33911e9f2fe206954ee0c3",
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "actualKitCheckout": {
+    "path": "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source",
+    "commit": "511454e49450cb2581ddf77f644146ff3e30dbef"
+  },
+  "execution": {
+    "status": "PROCESS_COMPLETE_TEST_ACCEPTANCE_PENDING",
+    "command": [
+      "swift",
+      "test",
+      "--verbose",
+      "--package-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-kit-source",
+      "--jobs",
+      "2",
+      "--force-resolved-versions",
+      "--disable-xctest",
+      "--enable-swift-testing",
+      "--no-parallel",
+      "--filter",
+      "invalidatedLateResultCannotReplaceFreshRelatedDocuments|preCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache|preCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch|preCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch|refreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback",
+      "--event-stream-output-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-authority/kit-related-refresh-pending/original-events.jsonl",
+      "--event-stream-version",
+      "0"
+    ],
+    "testAcceptanceInferred": false,
+    "returncode": 0,
+    "ownedGroupQuiescence": {
+      "status": "PASS",
+      "pgid": 64103,
+      "live_members": 0,
+      "observations": 1
+    },
+    "originalCommandSHA256": "c3cef8597756b97a8afdb85c08f47c347d864abc1fbb04da2974b0ebe5e0e6d6",
+    "logSHA256": "9b50db02156a5ce3eb3c0b362f9af4d8a1eeaadf87a7c67ffc99fdd6813d2efa"
+  },
+  "methods": [
+    {
+      "method": "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/preCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    },
+    {
+      "method": "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/preCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    },
+    {
+      "method": "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/preCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    },
+    {
+      "method": "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/invalidatedLateResultCannotReplaceFreshRelatedDocuments",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    },
+    {
+      "method": "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/refreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    }
+  ],
+  "eventsSHA256": "8f80a4d34300010efd305ced453b79549c3ee9615934628dd6623cbd618fb7da",
+  "actualMethods": 5,
+  "actualArgumentCases": 5
+}

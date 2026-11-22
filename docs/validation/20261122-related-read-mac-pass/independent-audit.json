@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_ORIGINAL_COMPONENT_RESULTS_INDEPENDENTLY_REPLAYED",
+  "sourceCommit": "7ae7282db0962fb4f96eae5134898743f713e73c",
+  "kitCommit": "511454e49450cb2581ddf77f644146ff3e30dbef",
+  "productTestsRerunDuringAudit": 0,
+  "profiles": [
+    {
+      "profile": "kit-related-refresh-pending",
+      "actualMethods": 5,
+      "actualCases": 5,
+      "methods": [
+        {
+          "method": "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/preCancelledCachedRelatedDocumentsRequestThrowsWithoutChangingCache",
+          "status": "passed",
+          "actualArguments": [],
+          "actualCases": 1
+        },
+        {
+          "method": "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/preCancelledUncachedRelatedDocumentsRequestDoesNotStartFetch",
+          "status": "passed",
+          "actualArguments": [],
+          "actualCases": 1
+        },
+        {
+          "method": "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/preCancelledRelatedDocumentsRefreshDoesNotInvalidateCacheOrFetch",
+          "status": "passed",
+          "actualArguments": [],
+          "actualCases": 1
+        },
+        {
+          "method": "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/invalidatedLateResultCannotReplaceFreshRelatedDocuments",
+          "status": "passed",
+          "actualArguments": [],
+          "actualCases": 1
+        },
+        {
+          "method": "TorahInspectorCoreTests.RelatedDocumentsRefreshTests/refreshedCoverageRetainsExactBlocksAndDropsThemAfterRuntimeFallback",
+          "status": "passed",
+          "actualArguments": [],
+          "actualCases": 1
+        }
+      ],
+      "execution": {
+        "returncode": 0,
+        "ownedGroupQuiescence": {
+          "status": "PASS",
+          "pgid": 64103,
+          "live_members": 0,
+          "observations": 1
+        },
+        "commandSHA256": "c3cef8597756b97a8afdb85c08f47c347d864abc1fbb04da2974b0ebe5e0e6d6",
+        "logSHA256": "9b50db02156a5ce3eb3c0b362f9af4d8a1eeaadf87a7c67ffc99fdd6813d2efa"
+      },
+      "resolution": {
+        "returncode": 0,
+        "ownedGroupQuiescence": {
+          "status": "PASS",
+          "pgid": 63567,
+          "live_members": 0,
+          "observations": 1
+        },
+        "commandSHA256": "85f69c80d8a2323fc407d1024868eab6b1eebc32fa33911e9f2fe206954ee0c3",
+        "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "packageLockUnchanged": "NO_LOCK_IN_ORIGINAL_KIT_PACKAGE"
+    },
+    {
+      "profile": "any-related-authority-mapping",
+      "actualMethods": 3,
+      "actualCases": 4,
+      "methods": [
+        {
+          "method": "PinkhaAnyUITests.AnyTorahRelatedReadFailureTests/confirmedNativeAndOwnerFailuresDiscardPriorResults",
+          "status": "passed",
+          "actualArguments": [],
+          "actualCases": 1
+        },
+        {
+          "method": "PinkhaAnyUITests.AnyTorahRelatedReadFailureTests/cancellationUsesActualOwnerState",
+          "status": "passed",
+          "actualArguments": [
+            "false",
+            "true"
+          ],
+          "actualCases": 2
+        },
+        {
+          "method": "PinkhaAnyUITests.AnyTorahRelatedReadFailureTests/ordinaryFailuresAreNotRelabelledAsPermissionDenials",
+          "status": "passed",
+          "actualArguments": [],
+          "actualCases": 1
+        }
+      ],
+      "execution": {
+        "returncode": 0,
+        "ownedGroupQuiescence": {
+          "status": "PASS",
+          "pgid": 70226,
+          "live_members": 0,
+          "observations": 1
+        },
+        "commandSHA256": "c50cb315bc6732213878ad3a07df488404896f7079d9a6c2de0aefa26b395818",
+        "logSHA256": "d4ae6ad22f90710d52284a9021e131158aa055d500339af6871a22a67476d5ad"
+      },
+      "resolution": {
+        "returncode": 0,
+        "ownedGroupQuiescence": {
+          "status": "PASS",
+          "pgid": 66730,
+          "live_members": 0,
+          "observations": 1
+        },
+        "commandSHA256": "d4b823dfefc7a6ff3f39d4e23b00fea112e45f897e9fa5f9be2d0b64ed4eb60e",
+        "logSHA256": "f2e0d000ea8930e652b6c77234e46043c66ae496e38692be398b684b82744e9f"
+      },
+      "packageLockUnchanged": true
+    },
+    {
+      "profile": "shared-related-session-lifetime",
+      "actualMethods": 1,
+      "actualCases": 1,
+      "methods": [
+        {
+          "method": "PinkhaTorahPresentationTests.SharedRelatedDocumentsLifetimeTests/documentRetirementFencesRelatedCacheUntilExplicitReactivation",
+          "status": "passed",
+          "actualArguments": [],
+          "actualCases": 1
+        }
+      ],
+      "execution": {
+        "returncode": 0,
+        "ownedGroupQuiescence": {
+          "status": "PASS",
+          "pgid": 76340,
+          "live_members": 0,
+          "observations": 1
+        },
+        "commandSHA256": "afd18cf2380a78bff6f2864e7dfb52ae0d3450132e1de848b1c09b67fa6e0209",
+        "logSHA256": "45c84b2200f3f95cc9cec3b0026dbe7b653a08b13b18f34ded6116448feaeb56"
+      },
+      "resolution": {
+        "returncode": 0,
+        "ownedGroupQuiescence": {
+          "status": "PASS",
+          "pgid": 75831,
+          "live_members": 0,
+          "observations": 1
+        },
+        "commandSHA256": "913eb9fe68f0eb9c541fc58968161edbf8aa875237cff7fcd7ccaef5868d536a",
+        "logSHA256": "8f11ae8e68aa93adc01697675c2bbb124e5d8ce0a4bd24ba13902af5d2f11212"
+      },
+      "packageLockUnchanged": true
+    }
+  ],
+  "retainedKitProof": {
+    "status": "PASS_REQUALIFIED_ORIGINAL_TEN_KIT_METHODS",
+    "sourceRunID": 44969141133,
+    "sourceCommit": "f6d565064462d73300e66861c8113dd6e6a085a9",
+    "actualMethods": 10,
+    "actualArgumentCases": 12,
+    "productTestsRerun": 0,
+    "originalPostQualificationSourceGuard": "NOT_REACHED",
+    "originalWorkflowConclusion": "failure"
+  },
+  "r05": {
+    "case": {
+      "class": "PinkhaTorahPresentationTests.T5ResolvedAliasIdentityTests",
+      "method": "testResolvedAliasesRemainDistinctFromOtherVersesAndProviders",
+      "status": "passed",
+      "durationSeconds": "0.165378334"
+    },
+    "executionLogSHA256": "0d96d4b4ee440d375699b22def777373c134e83c047e9c59bfdbfde7740d1437",
+    "xunitSHA256": "19e0f3e21df073dff9333ca03ddb07f838a0dd142bb2ebf1e83652ed629ae64d",
+    "sourceTrees": {
+      "PinkhaTorahPresentation": "5f241185307afd6a490b415873d7d3853fe0f683",
+      "PinkhaKit": "c7b0741999f0e4fa9d5e777cd60f28b2620679a2",
+      "Loc": "e9adc2f46434a2510295125f5d034dc7cec3edd8"
+    },
+    "ownedController": {
+      "returncode": 0,
+      "ownedGroupQuiescence": {
+        "status": "PASS",
+        "pgid": 78287,
+        "live_members": 0,
+        "observations": 1
+      },
+      "commandSHA256": "18125109ee22f84acb8767eeaab09ee8ccdc54d94aace52158734ba8478d62ba",
+      "logSHA256": "97c607342cabf36b69e44df3ce9da8f9970090a6a023dc949edffbb6fe98e43e"
+    },
+    "packageLockUnchanged": true,
+    "retainedProviderProof": {
+      "sourceCommit": "653aa1aac2e61987999d1a54fcdd91e1cfcae228",
+      "originalLog": "docs/pinkha/torah-integration/evidence/2026-11-02/retry-fix-windows.log",
+      "logSHA256": "d097a391c458af6b92bc86a579a97264cd6a3e82260e895a39a68fa117e0ac16",
+      "sourceBlobs": {
+        "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaReferenceProvider.swift": "b96e245bdcb1231ffb1cd8ca55fe24cb83996bc6",
+        "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaClient.swift": "bd6e6fca06c878a81b1d5dd5a772ba15288c971f",
+        "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/TorahHTTPTransport.swift": "6014694433fe21c76543ca2e41798a310c235e35",
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaReferenceProviderTests.swift": "4a5fde87dab8e93589edb02bdecf20258b7d5490",
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/reference-name.json": "20261cc926c9508d6d226e362792176eaf17a679",
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/reference-resolved.json": "d2cca022eb886cda56c5cf2533fbf3db65556bd2",
+        "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/reference-rosh-hashanah.json": "6f329f9fd2a138c3a2dd5df3d2a0b34cd26cf8e2"
+      },
+      "retainedProviderMethods": 6,
+      "providerMethodsRerun": 0
+    }
+  },
+  "kitGitBlobsVerified": {
+    "Tests/TorahInspectorCoreTests/RelatedDocumentsRefreshTests.swift": "a2d16ada336855937f9f06850ecac9269d65ca2e7821a0fe74b4cae416812c6f"
+  },
+  "publicationSourceVerification": "PASS_EXACT_PRODUCER_GIT_BLOBS",
+  "appBuilds": 0,
+  "simulatorRuns": 0,
+  "nativeACLProof": false,
+  "liveSefariaProof": false,
+  "fullT5Acceptance": false,
+  "physicalIPadProof": false,
+  "appGitBlobsVerified": {
+    "Tools/RelatedReadAuthority/run_packages.py": "83dfb45530a1439fe07b8ef54cbbccfb06769d175dfa176a2b1ddc586477ec6b",
+    "Tools/T5RelatedDocuments/run_r05_alias.py": "e760939ce31e39f634b1b4f2ea65b383745bac40dc2a8d036df2cf25bd7e7eb3",
+    "docs/architecture/related-read-authority-20261121/test-profiles.json": "33d21a9e29a7a130785c636266792e9ef832a887de2b7ee80756be0d52c48a5b",
+    "Modules/PinkhaAnyUI/Tests/PinkhaAnyUITests/AnyTorahRelatedReadFailureTests.swift": "37a8c018569b1987dc0ea36cea6df8b49bf9f863fcb46b8146931d2b4e769476",
+    "Modules/PinkhaAnyUI/Package.resolved": "29ae26fd2d9b0eee2d5f0d75c19a6fd4c9adeb3d1c69d54b96f2abe51c47aa2a",
+    "Modules/PinkhaTorahPresentation/Tests/PinkhaTorahPresentationTests/SharedRelatedDocumentsLifetimeTests.swift": "f738b5837a34a4692ab15ff04f31f084ef22a4d7f899c0bacbf7db9098ea971d",
+    "Modules/PinkhaTorahPresentation/Package.resolved": "57ee20f7940f1971a3ba8b37d143637e513ae854560f0f7ca3f9652c99c59f1c"
+  }
+}

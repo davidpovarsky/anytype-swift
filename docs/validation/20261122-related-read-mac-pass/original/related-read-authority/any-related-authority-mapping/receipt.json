@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_EXACT_RELATED_READ_COMPONENT",
+  "profile": "any-related-authority-mapping",
+  "appSourceCommit": "7ae7282db0962fb4f96eae5134898743f713e73c",
+  "kitCommit": "511454e49450cb2581ddf77f644146ff3e30dbef",
+  "appBuilds": 0,
+  "simulatorRuns": 0,
+  "nativeACLProof": false,
+  "otherProfilesAcceptedByThisReceipt": false,
+  "buildReuseClaim": "NOT_INFERRED_FROM_SHARED_JOB",
+  "contractSHA256": "33d21a9e29a7a130785c636266792e9ef832a887de2b7ee80756be0d52c48a5b",
+  "sourceSHA256": {
+    "Tests/PinkhaAnyUITests/AnyTorahRelatedReadFailureTests.swift": "37a8c018569b1987dc0ea36cea6df8b49bf9f863fcb46b8146931d2b4e769476"
+  },
+  "swiftVersion": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "xcodeVersion": "Xcode 27.0\nBuild version 27A266a",
+  "platform": {
+    "system": "Darwin",
+    "architecture": "arm64"
+  },
+  "resolution": {
+    "status": "PROCESS_COMPLETE_TEST_ACCEPTANCE_PENDING",
+    "command": [
+      "swift",
+      "package",
+      "--package-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyUI",
+      "resolve"
+    ],
+    "testAcceptanceInferred": false,
+    "returncode": 0,
+    "ownedGroupQuiescence": {
+      "status": "PASS",
+      "pgid": 66730,
+      "live_members": 0,
+      "observations": 1
+    },
+    "originalCommandSHA256": "d4b823dfefc7a6ff3f39d4e23b00fea112e45f897e9fa5f9be2d0b64ed4eb60e",
+    "logSHA256": "f2e0d000ea8930e652b6c77234e46043c66ae496e38692be398b684b82744e9f"
+  },
+  "packageLockSHA256": "29ae26fd2d9b0eee2d5f0d75c19a6fd4c9adeb3d1c69d54b96f2abe51c47aa2a",
+  "actualKitCheckout": {
+    "path": "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyUI/.build/checkouts/TorahInspectorKit",
+    "commit": "511454e49450cb2581ddf77f644146ff3e30dbef"
+  },
+  "execution": {
+    "status": "PROCESS_COMPLETE_TEST_ACCEPTANCE_PENDING",
+    "command": [
+      "swift",
+      "test",
+      "--verbose",
+      "--package-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaAnyUI",
+      "--jobs",
+      "2",
+      "--force-resolved-versions",
+      "--disable-xctest",
+      "--enable-swift-testing",
+      "--no-parallel",
+      "--filter",
+      "PinkhaAnyUITests\\.AnyTorahRelatedReadFailureTests",
+      "--event-stream-output-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/related-read-authority/any-related-authority-mapping/original-events.jsonl",
+      "--event-stream-version",
+      "0"
+    ],
+    "testAcceptanceInferred": false,
+    "returncode": 0,
+    "ownedGroupQuiescence": {
+      "status": "PASS",
+      "pgid": 70226,
+      "live_members": 0,
+      "observations": 1
+    },
+    "originalCommandSHA256": "c50cb315bc6732213878ad3a07df488404896f7079d9a6c2de0aefa26b395818",
+    "logSHA256": "d4ae6ad22f90710d52284a9021e131158aa055d500339af6871a22a67476d5ad"
+  },
+  "methods": [
+    {
+      "method": "PinkhaAnyUITests.AnyTorahRelatedReadFailureTests/confirmedNativeAndOwnerFailuresDiscardPriorResults",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    },
+    {
+      "method": "PinkhaAnyUITests.AnyTorahRelatedReadFailureTests/cancellationUsesActualOwnerState",
+      "status": "passed",
+      "actualArguments": [
+        "false",
+        "true"
+      ],
+      "actualCases": 2
+    },
+    {
+      "method": "PinkhaAnyUITests.AnyTorahRelatedReadFailureTests/ordinaryFailuresAreNotRelabelledAsPermissionDenials",
+      "status": "passed",
+      "actualArguments": [],
+      "actualCases": 1
+    }
+  ],
+  "eventsSHA256": "9739cb4afad87e2ac384b12ca4139ce6b62ac9569ce478fdeac1d018759ba8fd",
+  "actualMethods": 3,
+  "actualArgumentCases": 4
+}

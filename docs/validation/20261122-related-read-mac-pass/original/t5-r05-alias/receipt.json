@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "status": "PASS_T5_R05_SHARED_ALIAS_CONNECTION_1",
+  "sourceCommit": "7ae7282db0962fb4f96eae5134898743f713e73c",
+  "expectedNewMethodCount": 1,
+  "liveSefariaServerProof": false,
+  "nativeQueryOrSimulatorProof": false,
+  "fullT5Complete": false,
+  "retainedProviderProof": {
+    "sourceCommit": "653aa1aac2e61987999d1a54fcdd91e1cfcae228",
+    "originalLog": "docs/pinkha/torah-integration/evidence/2026-11-02/retry-fix-windows.log",
+    "logSHA256": "d097a391c458af6b92bc86a579a97264cd6a3e82260e895a39a68fa117e0ac16",
+    "sourceBlobs": {
+      "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaReferenceProvider.swift": "b96e245bdcb1231ffb1cd8ca55fe24cb83996bc6",
+      "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/SefariaClient.swift": "bd6e6fca06c878a81b1d5dd5a772ba15288c971f",
+      "Modules/PinkhaKit/Sources/PinkhaKit/Torah/Providers/TorahHTTPTransport.swift": "6014694433fe21c76543ca2e41798a310c235e35",
+      "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/SefariaReferenceProviderTests.swift": "4a5fde87dab8e93589edb02bdecf20258b7d5490",
+      "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/reference-name.json": "20261cc926c9508d6d226e362792176eaf17a679",
+      "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/reference-resolved.json": "d2cca022eb886cda56c5cf2533fbf3db65556bd2",
+      "Modules/PinkhaKit/Tests/PinkhaKitTests/Torah/Fixtures/reference-rosh-hashanah.json": "6f329f9fd2a138c3a2dd5df3d2a0b34cd26cf8e2"
+    },
+    "retainedProviderMethods": 6,
+    "providerMethodsRerun": 0
+  },
+  "swiftVersion": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "xcodeVersion": "Xcode 27.0\nBuild version 27A266a",
+  "sourceTrees": {
+    "PinkhaTorahPresentation": "5f241185307afd6a490b415873d7d3853fe0f683",
+    "PinkhaKit": "c7b0741999f0e4fa9d5e777cd60f28b2620679a2",
+    "Loc": "e9adc2f46434a2510295125f5d034dc7cec3edd8"
+  },
+  "resolve": {
+    "command": [
+      "swift",
+      "package",
+      "--package-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaTorahPresentation",
+      "resolve"
+    ],
+    "returncode": 0,
+    "logSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "resolvedDependency": "511454e49450cb2581ddf77f644146ff3e30dbef",
+  "execution": {
+    "command": [
+      "swift",
+      "test",
+      "--verbose",
+      "--package-path",
+      "/Users/runner/work/anytype-swift/anytype-swift/Modules/PinkhaTorahPresentation",
+      "--jobs",
+      "2",
+      "--force-resolved-versions",
+      "--parallel",
+      "--num-workers",
+      "1",
+      "--filter",
+      "^PinkhaTorahPresentationTests\\.T5ResolvedAliasIdentityTests/testResolvedAliasesRemainDistinctFromOtherVersesAndProviders$",
+      "--xunit-output",
+      "/Users/runner/work/anytype-swift/anytype-swift/build/t5-r05-alias/original-xunit.xml"
+    ],
+    "returncode": 0,
+    "logSHA256": "0d96d4b4ee440d375699b22def777373c134e83c047e9c59bfdbfde7740d1437"
+  },
+  "case": {
+    "class": "PinkhaTorahPresentationTests.T5ResolvedAliasIdentityTests",
+    "method": "testResolvedAliasesRemainDistinctFromOtherVersesAndProviders",
+    "status": "passed",
+    "durationSeconds": "0.165378334"
+  },
+  "xunitSHA256": "19e0f3e21df073dff9333ca03ddb07f838a0dd142bb2ebf1e83652ed629ae64d"
+}
