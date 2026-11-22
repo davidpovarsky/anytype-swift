@@ -1,0 +1,30 @@
+{
+  "scope": "synthetic_controller_and_preservation_checks_only",
+  "nativeOrAppleTestsExecuted": false,
+  "oldSuitesRerun": false,
+  "newControllerTests": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "command": "python3 -m unittest discover -s Tools/AnyEnginePort -p test_compiled_product_identity.py -v",
+    "observedSeconds": 0.033
+  },
+  "preservationControl": "PASS: original inadmissible manifest retained byte-for-byte, matching tar digest, no external symlink followed",
+  "syntax": "PASS: workflow YAML and modified Python parsed",
+  "observedOriginalFailure": {
+    "githubRunID": "45028482383",
+    "sourceCommit": "b2fc3804426067dd1ec8318d6ea92a4bcb8e9545",
+    "buildSucceeded": true,
+    "admissionError": "compiled_ui_target_identity",
+    "originalXctestrunAvailable": false,
+    "originalCompiledProductsAvailable": false
+  },
+  "originalEvidenceSHA256": {
+    "native-ui-build.log": "43e64f1887cbaf2b7f41ce794261170b5ab8fa7037887acb669a0fe46516a6a4",
+    "native-app-bundle.json": "de0ee1b19debec4c575e5c1b80f0c28369fccfc26c79c950328a9e76e18d78d1",
+    "native-shared-products.json": "2088c27922a412eb3310fbaadb96ca4230088a7a0c193975fa5f099bdefbd027",
+    "xcode-version.txt": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77"
+  },
+  "bundleManifestSHA256": "32d8fe0c748df05eeb73b2741b17b753447772b523765e4ea3161a3afde7c437"
+}

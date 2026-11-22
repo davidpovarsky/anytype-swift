@@ -1,0 +1,22 @@
+{
+  "scope": "Any xctestrun repair only; not a blanket review of other pending branch changes",
+  "changedPaths": [
+    "Tools/AnyEnginePort/verify_custom_type.py",
+    "Tools/AnyEnginePort/test_compiled_product_identity.py",
+    ".github/workflows/pinkha-any-engine-port.yml"
+  ],
+  "protectedUIKitPathsTouched": [],
+  "reviewedUIKitPathsTouched": [],
+  "originalUIKitMethodCount": 14,
+  "reviewMetadataChanged": false,
+  "reviewSHA256": "0af5fe8958ddc440ea2c33eaf02c4a4fac3f7906c22db0360179f6e92ed4f2b7",
+  "reuseControllerSHA256": "1d0f2c7b821cc80bc2d2309605bf0b7bd0c835fed6c699541d4f7a87922f9f8b",
+  "result": "NO_UIKIT_REVIEW_HASH_AMENDMENT_REQUIRED",
+  "additionalRootChange": {
+    "path": "Modules/PinkhaKit/Sources/PinkhaKit/Torah/T5NativeRelatedLookupCapability.swift",
+    "beforeSHA256": "ada0887e0c1eb9f7a66bc1050a3fe5ecbd08382adb7bd196f4b279482b039d39",
+    "afterSHA256": "ff8234ab77e4a93cfd8b8fc3e8eab3c0f0105b2f544fbd56ec29b8d93c465ddc",
+    "inUIKitProtectedClosure": false,
+    "review": "Adds exact lazy string runtime identity and one equality alternative under the unchanged enabledByBuild guard. This is outside the component reuse closure and does not gain execution or acceptance from UIKit14."
+  }
+}

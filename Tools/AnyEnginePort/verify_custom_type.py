@@ -21,12 +21,15 @@ ATTACHMENT = "native-custom-type-transition-receipt"
 CONTRACT = "pinkha-native-custom-type-ui-v1"
 PROFILE = "native-custom-type"
 APP_ID = "io.pinkha.anynative.dev"
+UI_TARGET = "PinkhaAnyNativeUITests"
+UI_BUNDLE_ID = "io.pinkha.anynative.uitests"
 ORIGINAL_TEST_SHA256 = "ffc938a140fbaa6bf3cc4ef30603f6d0fde08b30f82c08ae5f8e07859e917ec2"
 SOURCES = (
     "NativeApp/Sources/AnyNativeApp.swift",
     "NativeApp/Sources/NativeCustomTypeFixture.swift",
     "NativeApp/UITests/NativeLaunchTests.swift",
     "NativeApp/AnyNative.xcodeproj/project.pbxproj",
+    "NativeApp/AnyNative.xcodeproj/xcshareddata/xcschemes/PinkhaAnyNativeApp.xcscheme",
     "Tools/AnyEnginePort/verify_custom_type.py",
     "Tools/AnyEnginePort/verify_native_test_execution.py",
     "Tools/AnyEnginePort/verify_archive_roundtrip.py",
@@ -193,21 +196,102 @@ def inventory(directory):
     return {"sha256": canonical(entries), "entries": entries, "codeCarriers": code}
 
 
+class UniquePlistDictionary(dict):
+    def __setitem__(self, key, value):
+        require(key not in self, "duplicate_compiled_plist_key")
+        super().__setitem__(key, value)
+
+
+def compiled_plist(path, products):
+    require(path.resolve().is_relative_to(products.resolve()), "compiled_plist_escaped_products")
+    value = plistlib.loads(regular_bytes(path, path.parent, 8 * 1024 * 1024), dict_type=UniquePlistDictionary)
+    require(isinstance(value, dict), "compiled_plist_dictionary_required")
+    return value
+
+
+def compiled_ui_target(configuration):
+    """Read Apple's two xctestrun schemas without choosing among multiple targets.
+
+    Schemes with Testables (our committed scheme) use format 1; Test Plans use
+    format 2. See Apple's Xcode 11 release notes, Testing (46346053).
+    The format 1 target name is the dictionary key, not a required BlueprintName.
+    """
+    require(isinstance(configuration, dict), "compiled_ui_configuration_shape")
+    metadata = configuration.get("__xctestrun_metadata__")
+    if metadata is None:
+        require("__xctestrun_metadata__" not in configuration, "compiled_ui_metadata_shape")
+        version = 1
+    else:
+        require(isinstance(metadata, dict), "compiled_ui_metadata_shape")
+        version = metadata.get("FormatVersion")
+    require(type(version) is int and version in (1, 2), "compiled_ui_format_version")
+    metadata_keys = {"__xctestrun_metadata__", "CodeCoverageBuildableInfos"}
+    if version == 1:
+        require(set(configuration) - metadata_keys == {UI_TARGET}, "compiled_ui_target_identity")
+        target = configuration[UI_TARGET]
+        require(isinstance(target, dict) and target.get("BlueprintName", UI_TARGET) == UI_TARGET,
+                "compiled_ui_target_identity")
+    else:
+        require(set(configuration) <= metadata_keys | {"TestPlan", "TestConfigurations"},
+                "compiled_ui_mixed_formats")
+        configs = configuration.get("TestConfigurations")
+        require(isinstance(configs, list) and len(configs) == 1 and isinstance(configs[0], dict) and
+                configs[0].get("IsEnabled", True) is True, "compiled_ui_configuration_identity")
+        targets = configs[0].get("TestTargets")
+        require(isinstance(targets, list) and len(targets) == 1 and isinstance(targets[0], dict),
+                "compiled_ui_target_identity")
+        target = targets[0]
+        require(target.get("BlueprintName") == UI_TARGET, "compiled_ui_target_identity")
+    require(target.get("IsUITestBundle", True) is True and target.get("IsEnabled", True) is True and
+            target.get("BlueprintIsSkipped", False) is False and
+            target.get("UseDestinationArtifacts", False) is False,
+            "compiled_ui_local_enabled_test_bundle_required")
+    require(target.get("ProductModuleName", UI_TARGET) == UI_TARGET, "compiled_ui_module_identity")
+    return version, target
+
+
+def compiled_product_path(value, *, products, host, expected):
+    require(isinstance(value, str) and value and "\0" not in value and "\\" not in value,
+            "compiled_ui_product_path_shape")
+    expanded = value
+    placeholders = [("__TESTROOT__", products)]
+    if host is not None:
+        placeholders.append(("__TESTHOST__", host))
+    for placeholder, directory in placeholders:
+        if value == placeholder or value.startswith(placeholder + "/"):
+            expanded = str(directory) + value[len(placeholder):]
+            break
+    path = Path(expanded)
+    require(path.is_absolute() and ".." not in path.parts and not re.search(r"__[A-Z][A-Z0-9_]*__", expanded) and
+            path.is_dir() and path.resolve() == expected.resolve() and
+            path.resolve().is_relative_to(products.resolve()), "compiled_ui_product_path_identity")
+
+
 def product_identity(derived, *, root=ROOT):
     products = derived.resolve() / "Build/Products"
     app = products / "Debug-iphonesimulator/PinkhaAnyNative.app"
     runner = products / "Debug-iphonesimulator/PinkhaAnyNativeUITests-Runner.app"
-    info = plistlib.loads((app / "Info.plist").read_bytes())
+    info = compiled_plist(app / "Info.plist", products)
     require(info.get("CFBundleIdentifier") == APP_ID and info.get("CFBundleExecutable") == "PinkhaAnyNative",
             "native_application_identity")
-    require((runner / "PlugIns/PinkhaAnyNativeUITests.xctest").is_dir(), "actual_ui_test_bundle_missing")
+    bundle = runner / "PlugIns/PinkhaAnyNativeUITests.xctest"
+    require(bundle.is_dir(), "actual_ui_test_bundle_missing")
+    runner_info = compiled_plist(runner / "Info.plist", products)
+    bundle_info = compiled_plist(bundle / "Info.plist", products)
+    require(runner_info.get("CFBundleIdentifier") == UI_BUNDLE_ID + ".xctrunner" and
+            runner_info.get("CFBundleExecutable") == UI_TARGET + "-Runner" and
+            bundle_info.get("CFBundleIdentifier") == UI_BUNDLE_ID and
+            bundle_info.get("CFBundleExecutable") == UI_TARGET, "compiled_ui_bundle_identity")
     candidates = sorted(products.glob("PinkhaAnyNativeApp_*.xctestrun"))
     require(len(candidates) == 1 and not candidates[0].is_symlink(), "one_compiled_native_test_configuration")
-    configuration = plistlib.loads(candidates[0].read_bytes())
-    configs = configuration.get("TestConfigurations", [])
-    require(len(configs) == 1 and len(configs[0].get("TestTargets", [])) == 1 and
-            configs[0]["TestTargets"][0].get("BlueprintName") == "PinkhaAnyNativeUITests",
-            "compiled_ui_target_identity")
+    configuration = compiled_plist(candidates[0], products)
+    version, target = compiled_ui_target(configuration)
+    for field, expected in (("TestHostPath", runner), ("TestBundlePath", bundle), ("UITargetAppPath", app)):
+        compiled_product_path(target.get(field), products=products,
+                              host=runner if field == "TestBundlePath" else None, expected=expected)
+    require(target.get("TestHostBundleIdentifier", UI_BUNDLE_ID + ".xctrunner") == runner_info["CFBundleIdentifier"] and
+            target.get("UITargetAppBundleIdentifier", APP_ID) == info["CFBundleIdentifier"],
+            "compiled_ui_launch_bundle_identity")
     binding_path = root / "Modules/PinkhaAnyRuntime/Vendor/consumer-binding.json"
     artifact_path = root / "Modules/PinkhaAnyRuntime/Vendor/native-artifact.json"
     binding = strict_json(binding_path.read_bytes())
@@ -217,7 +301,11 @@ def product_identity(derived, *, root=ROOT):
             binding.get("reused") is True and binding.get("artifactReceiptSHA256") == sha(artifact_path.read_bytes()),
             "source_identical_native_runtime_binding")
     return {"app": inventory(app), "uiRunner": inventory(runner),
-            "xctestrun": {"name": candidates[0].name, "sha256": sha(candidates[0].read_bytes())},
+            "xctestrun": {"name": candidates[0].name, "sha256": sha(candidates[0].read_bytes()),
+                          "formatVersion": version, "target": UI_TARGET,
+                          "testBundle": bundle.relative_to(products).as_posix(),
+                          "testHost": runner.relative_to(products).as_posix(),
+                          "uiTargetApp": app.relative_to(products).as_posix()},
             "nativeBindingSHA256": sha(binding_path.read_bytes()), "nativeArtifactSHA256": sha(artifact_path.read_bytes()),
             "nativeProducerCommit": binding.get("producerCommit"),
             "nativeSourceManifestSHA256": binding.get("sourceManifestSHA256")}
@@ -313,3 +401,4 @@ def main():
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
