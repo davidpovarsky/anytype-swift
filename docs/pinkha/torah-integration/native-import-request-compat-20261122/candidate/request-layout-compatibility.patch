@@ -1,0 +1,61 @@
+--- a/core/block/import/mapping_observation_processor.go
++++ b/core/block/import/mapping_observation_processor.go
+@@ -6,6 +6,18 @@
+ 	"github.com/anyproto/anytype-heart/core/block/import/common"
+ 	"github.com/anyproto/anytype-heart/pkg/lib/pb/model"
+ )
++
++// newProcessorWithNativeMappingObservation opts only this private processor into
++// diagnostic capture. The public ImportRequest and legacy NewProcessor retain
++// their original layout and default-off behavior. No wire caller uses this path.
++func newProcessorWithNativeMappingObservation(deps *Dependencies, req *ImportRequest) *importProcessor {
++	return &importProcessor{
++		deps:                      deps,
++		request:                   req,
++		response:                  &ImportResponse{},
++		captureMappingObservation: true,
++	}
++}
+ 
+ // Clear only diagnostic state, including on an early failed reuse of a processor.
+ // Legacy response/error and native side-effect semantics are unchanged.
+@@ -18,7 +30,7 @@
+ }
+ 
+ func (p *importProcessor) initializeNativeMappingObservation(response *common.Response) {
+-	if !p.request.CaptureMappingObservation || p.request.Type != model.Import_Pb {
++	if !p.captureMappingObservation || p.request.Type != model.Import_Pb {
+ 		return
+ 	}
+ 	sources := make([]nativeProtobufSourceRecord, 0, min(len(response.ProtobufSources), nativeMappingFactLimit+1))
+--- a/core/block/import/processor.go
++++ b/core/block/import/processor.go
+@@ -54,6 +54,7 @@
+ 	oldIDToNew                                                      map[string]string
+ 	createPayloads                                                  map[string]treestorage.TreeStorageCreatePayload
+ 	relationKeysToFormat                                            map[domain.RelationKey]int32
++	captureMappingObservation                                       bool
+ 	nativeMapping                                                   *nativeMappingBuilder
+ 	nativeMappingTraceID, nativeMappingSpaceID                      string
+ 	nativeMappingAssignmentsFinished, nativeMappingCreationReturned bool
+@@ -160,7 +161,7 @@
+ 
+ 	allErrors := common.NewError(p.request.Mode)
+ 	conversionContext := ctx
+-	if p.request.CaptureMappingObservation && p.request.Type == model.Import_Pb {
++	if p.captureMappingObservation && p.request.Type == model.Import_Pb {
+ 		conversionContext = common.WithProtobufSourceObservation(ctx)
+ 	}
+ 	response, convErr := converter.GetSnapshots(conversionContext, p.request.RpcObjectImportRequest, p.request.Progress)
+--- a/core/block/import/types.go
++++ b/core/block/import/types.go
+@@ -30,9 +30,6 @@
+ 	Progress         process.Progress
+ 	SendNotification bool
+ 	IsSync           bool
+-	// Internal opt-in diagnostic only. No wire RPC or production caller enables
+-	// it here; ordinary imports retain their existing outputs and side effects.
+-	CaptureMappingObservation bool `json:"-"`
+ }
+ 
+ type ImportResponse struct {
